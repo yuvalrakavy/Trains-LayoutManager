@@ -1,0 +1,172 @@
+using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
+using System.Windows.Forms;
+
+using LayoutManager;
+using LayoutManager.Model;
+using LayoutManager.Components;
+
+namespace LayoutManager.Tools.Dialogs
+{
+	/// <summary>
+	/// Summary description for LocomotiveFront.
+	/// </summary>
+	public class LocomotiveFront : System.Windows.Forms.Form
+	{
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Button buttonOk;
+		private System.Windows.Forms.Button buttonCancel;
+		private System.Windows.Forms.Label labelBlockName;
+		private System.Windows.Forms.Panel panel1;
+		private LayoutManager.CommonUI.Controls.LocomotiveFront locomotiveFrontControl;
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.Container components = null;
+
+		public LocomotiveFront(LayoutBlockDefinitionComponent blockInfo, String name)
+		{
+			//
+			// Required for Windows Form Designer support
+			//
+			InitializeComponent();
+
+			locomotiveFrontControl.ConnectionPoints = blockInfo.Track.ConnectionPoints;
+			locomotiveFrontControl.LocomotiveName = name;
+			labelBlockName.Text = blockInfo.NameProvider.Name;
+		}
+
+		public LocomotiveFront(LayoutStraightTrackComponent track, String locoName, String trackName) {
+			InitializeComponent();
+
+			locomotiveFrontControl.ConnectionPoints = track.ConnectionPoints;
+			locomotiveFrontControl.LocomotiveName = locoName;
+			labelBlockName.Text = trackName;
+		}
+
+		public LayoutComponentConnectionPoint Front {
+			get {
+				return locomotiveFrontControl.Front;
+			}
+
+			set {
+				locomotiveFrontControl.Front = value;
+			}
+		}
+
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		protected override void Dispose( bool disposing )
+		{
+			if( disposing )
+			{
+				if(components != null)
+				{
+					components.Dispose();
+				}
+			}
+			base.Dispose( disposing );
+		}
+
+		#region Windows Form Designer generated code
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
+			this.label1 = new System.Windows.Forms.Label();
+			this.buttonOk = new System.Windows.Forms.Button();
+			this.buttonCancel = new System.Windows.Forms.Button();
+			this.labelBlockName = new System.Windows.Forms.Label();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.locomotiveFrontControl = new LayoutManager.CommonUI.Controls.LocomotiveFront();
+			this.panel1.SuspendLayout();
+			this.SuspendLayout();
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(9, 8);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(272, 40);
+			this.label1.TabIndex = 1;
+			this.label1.Text = "The locomotive orientation need to be specified. Please click on the point to whi" +
+				"ch the locomotive front is directed";
+			// 
+			// buttonOk
+			// 
+			this.buttonOk.Location = new System.Drawing.Point(64, 208);
+			this.buttonOk.Name = "buttonOk";
+			this.buttonOk.TabIndex = 2;
+			this.buttonOk.Text = "OK";
+			this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+			// 
+			// buttonCancel
+			// 
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.Location = new System.Drawing.Point(152, 208);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.TabIndex = 2;
+			this.buttonCancel.Text = "Cancel";
+			// 
+			// labelBlockName
+			// 
+			this.labelBlockName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(177)));
+			this.labelBlockName.Location = new System.Drawing.Point(57, 185);
+			this.labelBlockName.Name = "labelBlockName";
+			this.labelBlockName.Size = new System.Drawing.Size(176, 16);
+			this.labelBlockName.TabIndex = 3;
+			this.labelBlockName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// panel1
+			// 
+			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.AddRange(new System.Windows.Forms.Control[] {
+																				 this.locomotiveFrontControl});
+			this.panel1.Location = new System.Drawing.Point(73, 56);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(144, 128);
+			this.panel1.TabIndex = 4;
+			// 
+			// locomotiveFrontControl
+			// 
+			this.locomotiveFrontControl.Location = new System.Drawing.Point(8, 8);
+			this.locomotiveFrontControl.LocomotiveName = null;
+			this.locomotiveFrontControl.Name = "locomotiveFrontControl";
+			this.locomotiveFrontControl.Size = new System.Drawing.Size(128, 112);
+			this.locomotiveFrontControl.TabIndex = 1;
+			this.locomotiveFrontControl.Text = "locomotiveFront1";
+			// 
+			// LocomotiveFront
+			// 
+			this.AcceptButton = this.buttonOk;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+			this.CancelButton = this.buttonCancel;
+			this.ClientSize = new System.Drawing.Size(290, 239);
+			this.ControlBox = false;
+			this.Controls.AddRange(new System.Windows.Forms.Control[] {
+																		  this.panel1,
+																		  this.labelBlockName,
+																		  this.buttonOk,
+																		  this.label1,
+																		  this.buttonCancel});
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.Name = "LocomotiveFront";
+			this.ShowInTaskbar = false;
+			this.Text = "Specify Locomotive Front";
+			this.panel1.ResumeLayout(false);
+			this.ResumeLayout(false);
+
+		}
+		#endregion
+
+		private void buttonOk_Click(object sender, System.EventArgs e) {
+
+			DialogResult = DialogResult.OK;
+			this.Close();
+		}
+	}
+}

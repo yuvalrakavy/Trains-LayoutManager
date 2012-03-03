@@ -1,0 +1,1 @@
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1059:MembersShouldNotExposeCertainConcreteTypes", Scope = "member", Target = "LayoutManager.XmlCollection`1..ctor(System.Xml.XmlElement,System.String)")]

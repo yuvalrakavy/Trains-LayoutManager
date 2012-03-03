@@ -1,0 +1,245 @@
+<LayoutState>
+  <Trains>
+    <TrainState ID="3ddf4576-777a-4191-814f-65f4b350e9e5" LastBlockEdgeCrossingSpeed="-3" _LocomotivesSpeedLimit="10" CurrentSpeedLimit="10" CurrentSlowDownSpeed="3" MotionDirection="Backward" _TriggerCount="1" FinalSpeed="0" Speed="0" LastCrossedBlockEdge="4df6591b-d2aa-4a31-a46e-c99a9c610a26" LastBlockEdgeCrossingTime="632176364485937500">
+      <Locations>
+        <Block BlockID="12d41508-7cc6-472d-aa6b-8966bbd34f8c" BlockEdgeID="4df6591b-d2aa-4a31-a46e-c99a9c610a26" BlockEdgeCrossingTime="632176364486093750" DisplayFront="R" />
+      </Locations>
+      <Name>UP 1</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="d013de72-2c5f-4b90-a08b-43c68e8718ce" Orientation="Forward" />
+      </Locomotives>
+      <Driver TypeName="Automatic (by the computer)" Type="Automatic" AutoDriverState="Stop" Direction="Backward" />
+    </TrainState>
+  </Trains>
+  <Components>
+    <ComponentState ID="ff70b3fd-c812-4fa6-8079-c73d3ff92b9f">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="6475b718-4086-43ff-84b9-207e4bd6ed92">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="89c65bff-091e-485c-a2b6-98a54a7db129">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="d3602c47-9fb3-4861-9664-d3bce6d0ed58">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="bee7c3b2-2c28-4895-9611-7980139aa35d">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="fa0169af-87b4-47b0-8070-a51a36a90a69">
+      <SignalState Value="Red" />
+    </ComponentState>
+    <ComponentState ID="c8ef6295-8fcd-45b8-94ae-70502496fb5b">
+      <SignalState Value="Red" />
+    </ComponentState>
+    <ComponentState ID="e2a57971-63bb-49fe-813f-091e1c0ada0f">
+      <SignalState Value="Red" />
+    </ComponentState>
+    <ComponentState ID="e304fa55-db75-41f4-ae98-82db0a859bd2">
+      <Policies>
+        <Policies>
+          <Policy PolicyID="6d269d85-4ec7-48a3-b1d4-0734aed891ac" />
+        </Policies>
+      </Policies>
+    </ComponentState>
+    <ComponentState ID="6eece8cc-1d9d-432b-acf3-a9766dc6a75b">
+      <Policies>
+        <Policies>
+          <Policy PolicyID="6d269d85-4ec7-48a3-b1d4-0734aed891ac" />
+        </Policies>
+      </Policies>
+    </ComponentState>
+    <ComponentState ID="f6ed6872-920c-47a0-99c3-709c95e11cef">
+      <Policies>
+        <Policies />
+      </Policies>
+    </ComponentState>
+    <ComponentState ID="c4144ec9-1292-4f8e-a88c-1a1a1b31dbb7">
+      <Policies>
+        <Policies />
+      </Policies>
+    </ComponentState>
+    <ComponentState ID="824d37fe-3271-4adb-96ce-db90685f322e">
+      <Policies>
+        <Policies />
+      </Policies>
+    </ComponentState>
+    <ComponentState ID="bda69af8-a9e7-41c3-badd-f64327fd8315">
+      <Policies>
+        <Policies />
+      </Policies>
+    </ComponentState>
+    <ComponentState ID="bc6aa044-2f0e-4877-b7c4-2fdfc4d5756a">
+      <Policies>
+        <Policies />
+      </Policies>
+    </ComponentState>
+    <ComponentState ID="f74b647d-2276-4d37-a510-c2346249cd86">
+      <Policies>
+        <Policies />
+      </Policies>
+    </ComponentState>
+    <ComponentState ID="04ce636f-26b0-4f01-9bdf-bc6fca1ac1cd">
+      <Policies>
+        <Policies />
+      </Policies>
+    </ComponentState>
+    <ComponentState ID="4df6591b-d2aa-4a31-a46e-c99a9c610a26">
+      <Signal State="Red" />
+    </ComponentState>
+  </Components>
+  <TripPlansCatalog>
+    <TripPlans>
+      <TripPlan IsCircular="true" Name="From station to station" ID="b1df8930-219c-444f-88bc-6519b34bd829" FromCatalog="true">
+        <WayPoints>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <BlockInfo BlockID="8e225527-8281-43bb-a849-161d5e01f354" />
+            </Destination>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <BlockInfo BlockID="04ce636f-26b0-4f01-9bdf-bc6fca1ac1cd" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins />
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="To another station (wait 30s at Hor2)" ID="851502ba-49bf-41fd-b8c3-bb092683a417">
+        <WayPoints>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <BlockInfo BlockID="6eece8cc-1d9d-432b-acf3-a9766dc6a75b" />
+            </Destination>
+          </WayPoint>
+          <WayPoint Direction="Backward">
+            <Destination Name="Another station" SelectionMethod="Random">
+              <BlockInfo BlockID="5ade7eb6-c1d4-4775-961f-3fc2de4615b8" />
+              <BlockInfo BlockID="8e225527-8281-43bb-a849-161d5e01f354" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins />
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Main Station (any platform)" ID="1bec3b94-1221-41a2-a348-ccbd6396c145">
+        <WayPoints>
+          <WayPoint>
+            <Destination Name="Main Station (any platform)" SelectionMethod="ListOrder" ID="c27d563d-9678-4065-b216-dca2276cdb8b">
+              <Block BlockID="3b845b4b-9b11-41b9-9ba7-3fc63d755ce1" />
+              <Block BlockID="12d41508-7cc6-472d-aa6b-8966bbd34f8c" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="1ab90d7d-83f8-4f3a-b32e-64aa1f470f19" Front="L" />
+          <Origin BlockID="56fa75e6-a8fe-4443-9272-9aefd13880a3" Front="L" />
+        </Origins>
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Puppy Tower" IconID="e02b9cfa-a33f-4a9b-ac1d-b91ea20d382f" ID="ba5c4da0-6729-4637-9037-be28fcd571ad">
+        <WayPoints>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="e304fa55-db75-41f4-ae98-82db0a859bd2" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Another station" IconID="e02b9cfa-a33f-4a9b-ac1d-b91ea20d382f" ID="63c17741-2504-4230-9d41-8f0bd67a8e65">
+        <WayPoints>
+          <WayPoint>
+            <Destination Name="Another station" SelectionMethod="Random" ID="e7a787f3-a5f1-4149-8da5-569394ec3497">
+              <Block BlockID="1ab90d7d-83f8-4f3a-b32e-64aa1f470f19" />
+              <Block BlockID="56fa75e6-a8fe-4443-9272-9aefd13880a3" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+      </TripPlan>
+    </TripPlans>
+    <Destinations>
+      <Destination Name="Mid-town" SelectionMethod="ListOrder" ID="95162ac3-16f1-4477-9c91-a89574e3fabe">
+        <BlockInfo BlockID="6eece8cc-1d9d-432b-acf3-a9766dc6a75b" />
+      </Destination>
+      <Destination Name="Another station" SelectionMethod="Random" ID="e7a787f3-a5f1-4149-8da5-569394ec3497">
+        <Block BlockID="1ab90d7d-83f8-4f3a-b32e-64aa1f470f19" />
+        <Block BlockID="56fa75e6-a8fe-4443-9272-9aefd13880a3" />
+      </Destination>
+      <Destination Name="Main Station (any platform)" SelectionMethod="ListOrder" ID="c27d563d-9678-4065-b216-dca2276cdb8b">
+        <Block BlockID="3b845b4b-9b11-41b9-9ba7-3fc63d755ce1" />
+        <Block BlockID="12d41508-7cc6-472d-aa6b-8966bbd34f8c" Scope="DisallowIfTrue" />
+      </Destination>
+    </Destinations>
+  </TripPlansCatalog>
+  <ManualDispatchRegions>
+    <ManualDispatchRegion Name="Main station" ID="0bd34012-a171-447e-8a07-ed6a9de8fe6e" Active="false">
+      <Blocks>
+        <Block BlockID="12d41508-7cc6-472d-aa6b-8966bbd34f8c" />
+        <Block BlockID="04ce636f-26b0-4f01-9bdf-bc6fca1ac1cd" />
+        <Block BlockID="677fa5cb-b844-4173-b420-b9ce25573a09" />
+        <Block BlockID="3b845b4b-9b11-41b9-9ba7-3fc63d755ce1" />
+        <Block BlockID="f74b647d-2276-4d37-a510-c2346249cd86" />
+      </Blocks>
+    </ManualDispatchRegion>
+    <ManualDispatchRegion Name="Test" ID="c1147c41-686b-4d8c-bf2d-427997abc776" Active="false">
+      <Blocks>
+        <Block BlockID="12d41508-7cc6-472d-aa6b-8966bbd34f8c" />
+        <Block BlockID="04ce636f-26b0-4f01-9bdf-bc6fca1ac1cd" />
+      </Blocks>
+    </ManualDispatchRegion>
+    <ManualDispatchRegion Name="Another station" ID="5f8c43cb-0b56-4bce-8901-a59c7833c775" Active="false">
+      <Blocks>
+        <Block BlockID="5ade7eb6-c1d4-4775-961f-3fc2de4615b8" />
+        <Block BlockID="8e225527-8281-43bb-a849-161d5e01f354" />
+        <Block BlockID="00be741e-07ce-41e2-a22f-fa08b94fe066" />
+      </Blocks>
+    </ManualDispatchRegion>
+    <ManualDispatchRegion Name="Main station area" ID="d883b813-6e22-4c3e-8028-15d359581ba2" Active="false">
+      <Blocks>
+        <Block BlockID="04ce636f-26b0-4f01-9bdf-bc6fca1ac1cd" />
+        <Block BlockID="12d41508-7cc6-472d-aa6b-8966bbd34f8c" />
+        <Block BlockID="3b845b4b-9b11-41b9-9ba7-3fc63d755ce1" />
+        <Block BlockID="677fa5cb-b844-4173-b420-b9ce25573a09" />
+        <Block BlockID="f74b647d-2276-4d37-a510-c2346249cd86" />
+        <Block BlockID="bc6aa044-2f0e-4877-b7c4-2fdfc4d5756a" />
+        <Block BlockID="6eece8cc-1d9d-432b-acf3-a9766dc6a75b" />
+        <Block BlockID="bda69af8-a9e7-41c3-badd-f64327fd8315" />
+        <Block BlockID="824d37fe-3271-4adb-96ce-db90685f322e" />
+        <Block BlockID="c4144ec9-1292-4f8e-a88c-1a1a1b31dbb7" />
+        <Block BlockID="c4ea11b0-0b38-48c0-83e6-274a463b7f3f" />
+      </Blocks>
+    </ManualDispatchRegion>
+    <ManualDispatchRegion Name="Puppy Line" ID="238398cd-a2ed-4b67-8d7c-94727c787491" Active="false">
+      <Blocks>
+        <Block BlockID="e304fa55-db75-41f4-ae98-82db0a859bd2" />
+        <Block BlockID="f6ed6872-920c-47a0-99c3-709c95e11cef" />
+        <Block BlockID="c4144ec9-1292-4f8e-a88c-1a1a1b31dbb7" />
+      </Blocks>
+    </ManualDispatchRegion>
+  </ManualDispatchRegions>
+  <Policies>
+    <Policy Scope="BlockInfo" Apply="false" Name="Welcome" ID="6d269d85-4ec7-48a3-b1d4-0734aed891ac" Global="false">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <Wait Seconds="2" WaitID="d2e08b3a-b0f0-4331-af04-4a713d1b4604">
+              <Actions>
+                <ShowMessage Message="Welcome" MessageType="Message" />
+              </Actions>
+            </Wait>
+            <Wait Seconds="10" WaitID="7e2cdfbe-03a1-42c7-99da-5f1e30bdc16a">
+              <Actions>
+                <ShowMessage Message="Why are you here for so long" MessageType="Message" />
+              </Actions>
+            </Wait>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+  </Policies>
+  <DefaultDriverParameters SpeedLimit="14" SlowDownSpeed="3">
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Acceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Deceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="4" Role="SlowDown" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="14" Role="Stop" />
+  </DefaultDriverParameters>
+</LayoutState>

@@ -1,0 +1,8 @@
+System.Windows.Forms.Button, System.Windows.Forms, Version=1.0.2411.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+System.Windows.Forms.TabControl, System.Windows.Forms, Version=1.0.2411.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+System.Windows.Forms.TextBox, System.Windows.Forms, Version=1.0.2411.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+System.Windows.Forms.Label, System.Windows.Forms, Version=1.0.2411.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+System.Windows.Forms.Form, System.Windows.Forms, Version=1.0.2411.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+LayoutManager.CommonUI.Controls.XmlInfoEditor, LayoutEditingTools, Version=1.0.745.14777, Culture=neutral, PublicKeyToken=null
+LayoutManager.CommonUI.Controls.XmlInfoEditor, LayoutEditingTools, Version=1.0.744.35982, Culture=neutral, PublicKeyToken=null
+System.Windows.Forms.TabPage, System.Windows.Forms, Version=1.0.2411.0, Culture=neutral, PublicKeyToken=b77a5c561934e089

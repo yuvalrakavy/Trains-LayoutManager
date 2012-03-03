@@ -1,0 +1,143 @@
+<LayoutState AllLayoutManualDispatchRegion="true">
+  <Trains>
+    <TrainState ID="4d35eb37-9383-4a80-b2c4-09640e4c3532" _LocomotivesSpeedLimit="0" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Backward" FinalSpeed="-9" Speed="0">
+      <Locations>
+        <Block BlockID="cc59e42c-3640-4029-ac92-60b19af29764" DisplayFront="L" />
+      </Locations>
+      <Name>Roco Cargo (3)</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="8771eab6-4ab5-4ef9-a2f5-f216a04674d4" Orientation="Forward" />
+      </Locomotives>
+      <FunctionStates>
+        <FunctionState Name="whistle" LocomotiveID="8771eab6-4ab5-4ef9-a2f5-f216a04674d4" Value="false" />
+      </FunctionStates>
+    </TrainState>
+  </Trains>
+  <Components>
+    <ComponentState ID="2b61d53e-17bf-4837-be06-e76cb2fe1851">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="cc86b4e0-b67c-438a-92c7-aa6b02843044">
+      <SignalState Value="Red" />
+    </ComponentState>
+    <ComponentState ID="cc59e42c-3640-4029-ac92-60b19af29764">
+      <TrainDetection />
+    </ComponentState>
+  </Components>
+  <TrackContacts />
+  <TripPlansCatalog>
+    <TripPlans>
+    </TripPlans>
+    <Destinations>
+    </Destinations>
+  </TripPlansCatalog>
+  <ManualDispatchRegions>
+  </ManualDispatchRegions>
+  <DefaultDriverParameters SpeedLimit="14" SlowDownSpeed="3">
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Acceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Deceleration" />
+    <Ramp RampType="LocomotiveHardware" SpeedChangeRate="4" Role="SlowDown" />
+    <Ramp RampType="LocomotiveHardware" SpeedChangeRate="14" Role="Stop" />
+  </DefaultDriverParameters>
+  <Policies>
+    <Policy Scope="Global" Apply="false" Name="Test if Time" ID="9fb2a0b2-ed99-45be-b534-69054e62eafb" Global="false">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <Repeat Count="-1">
+              <Wait Seconds="5" WaitID="e1edd563-ab0d-4307-8a1e-f99b70ada32b">
+                <Condition>
+                  <IfTime>
+                    <Seconds Value="0" From="0" To="29" />
+                  </IfTime>
+                </Condition>
+                <Actions>
+                  <ShowMessage Message="In first half of minute" MessageType="Message" />
+                </Actions>
+              </Wait>
+            </Repeat>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+    <Policy Scope="TripPlan" Apply="false" Name="Beep on stop" ID="b6215e5c-da83-470a-b45a-8efaa6d766ef" Global="false">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <Any>
+              <Events>
+                <Repeat Count="-1">
+                  <WaitForEvent Name="driver-stop">
+                    <Condition>
+                      <IfDefined Symbol="Train" Attribute="BeepOnStop" />
+                    </Condition>
+                    <Actions>
+                      <ShowMessage Message="Beep Beep" MessageType="Warning" />
+                    </Actions>
+                  </WaitForEvent>
+                </Repeat>
+                <Wait Minutes="1" WaitID="7d3aaced-f5e6-4bf0-b9cb-7d90ea340801">
+                  <Actions>
+                    <ShowMessage Message="Beep timeout" MessageType="Warning" />
+                  </Actions>
+                </Wait>
+              </Events>
+            </Any>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+    <Policy Scope="Global" Apply="false" Name="Test foreach" ID="c6160198-5ffd-485f-9c99-3eca0b103240" Global="false">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <ForEachTrain>
+              <Wait Seconds="2" WaitID="e434008a-4240-49d1-a893-e4b99299a32c">
+                <Actions>
+                  <ShowMessage Message="Train [Train.Name]" MessageType="Message" />
+                </Actions>
+              </Wait>
+            </ForEachTrain>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+    <Policy Scope="TripPlan" Apply="false" Name="Test attributes" ID="99b4fbd7-c16b-4003-ae18-0e00cff2e66b" Global="false">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <DoNow>
+              <Actions>
+                <SetAttribute Symbol="Train" Attribute="TextOne" SetTo="Text" Value="This is a text" />
+                <SetAttribute Symbol="Train" Attribute="NumericOne" SetTo="Number" Value="10" />
+                <SetAttribute Symbol="Train" Attribute="BooleanOne" SetTo="Boolean" Value="true" />
+                <SetAttribute Symbol="Train" Attribute="ReferenceOne" SetTo="ValueOf" SymbolTo="Train" NameTo="StatusText" SymbolToAccess="Property" />
+                <SetAttribute Symbol="Train" Attribute="Dummy" SetTo="Text" Value="I am going to die" />
+              </Actions>
+            </DoNow>
+            <DoNow>
+              <Condition>
+                <IfDefined Symbol="Train" Attribute="Dummy" />
+              </Condition>
+              <Actions>
+                <ShowMessage Message="Dummy attribute is defined" MessageType="Message" />
+                <SetAttribute Symbol="Train" Attribute="Dummy" SetTo="Remove" />
+                <SetAttribute Symbol="Train" Attribute="NumericOne" SetTo="Number" Op="Add" Value="2" />
+              </Actions>
+            </DoNow>
+            <DoNow>
+              <Condition>
+                <Not>
+                  <IfDefined Symbol="Train" Attribute="Dummy" />
+                </Not>
+              </Condition>
+              <Actions>
+                <ShowMessage Message="Dummy is no longer defined" MessageType="Message" />
+              </Actions>
+            </DoNow>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+  </Policies>
+</LayoutState>

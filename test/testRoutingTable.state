@@ -1,0 +1,17 @@
+<LayoutState>
+  <Trains />
+  <Components />
+  <TrackContacts />
+  <TripPlansCatalog>
+    <TripPlans />
+    <Destinations />
+  </TripPlansCatalog>
+  <ManualDispatchRegions />
+  <DefaultDriverParameters SpeedLimit="14" SlowDownSpeed="3">
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Acceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Deceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="4" Role="SlowDown" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="14" Role="Stop" />
+  </DefaultDriverParameters>
+  <Policies />
+</LayoutState>

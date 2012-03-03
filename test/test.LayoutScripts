@@ -1,0 +1,17 @@
+<ExportedScripts>
+  <Policy Scope="TripPlan" Apply="false" Global="true" Name="Beep every 3 seconds" ID="c70d17a2-add7-4112-bca7-9b9f9d1cf05f">
+    <EventScript>
+      <Sequence>
+        <Events>
+          <Repeat Count="-1">
+            <Wait Seconds="3">
+              <Actions>
+                <ShowMessage Message="Beep" MessageType="Message" />
+              </Actions>
+            </Wait>
+          </Repeat>
+        </Events>
+      </Sequence>
+    </EventScript>
+  </Policy>
+</ExportedScripts>

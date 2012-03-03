@@ -1,0 +1,5 @@
+SCC = This is a source code control file
+
+[LayoutControlComponents.csproj]
+SCC_Aux_Path = http://Services/VaultService|Trains:2
+SCC_Project_Name = $/LayoutManager/LayoutControlComponents

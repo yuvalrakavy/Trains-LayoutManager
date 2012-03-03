@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RoutingInformation>
+	<Topology>
+		<Component TrackID="363ad445-9db9-4924-976d-cce4834d31f5" Cp="L" States="2">
+			<ConnectTo State="0" Cp="L" TrackID="363ad445-9db9-4924-976d-cce4834d31f5" Penalty="800" />
+			<ConnectTo State="1" Cp="L" TrackID="363ad445-9db9-4924-976d-cce4834d31f5" Penalty="800" />
+		</Component>
+		<Component TrackID="60831c78-4c7f-4147-9471-70822bf67876" Cp="R" States="2">
+			<ConnectTo State="0" Cp="R" TrackID="60831c78-4c7f-4147-9471-70822bf67876" Penalty="800" />
+			<ConnectTo State="1" Cp="R" TrackID="60831c78-4c7f-4147-9471-70822bf67876" Penalty="800" />
+		</Component>
+	</Topology>
+	<RoutingTable>
+		<Entry ID="363ad445-9db9-4924-976d-cce4834d31f5" Cp="L" States="2" />
+		<Entry ID="60831c78-4c7f-4147-9471-70822bf67876" Cp="R" States="2" />
+	</RoutingTable>
+</RoutingInformation>

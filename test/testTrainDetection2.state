@@ -1,0 +1,37 @@
+<LayoutState>
+  <Trains>
+    <TrainState ID="9ed6943b-e350-4174-a566-52cea9ca6c86" _LocomotivesSpeedLimit="10" CurrentSpeedLimit="10" CurrentSlowDownSpeed="3" _TriggerCount="1">
+      <Locations>
+        <Block BlockID="41727604-029e-47b8-a4a8-5b088b4fd844" DisplayFront="L" />
+      </Locations>
+      <Name>Crock</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="1fd149f5-8129-4aa3-92e4-d939b2284c20" Orientation="Forward" />
+      </Locomotives>
+    </TrainState>
+  </Trains>
+  <Components>
+    <ComponentState ID="5d40b63e-ee81-463e-b377-627a3062e824">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="9352eda1-2476-4ba4-83a6-ed3b12bca0f8">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="a56e7abb-813e-48f4-b10a-dbff8f178304">
+      <Signal State="Red" />
+    </ComponentState>
+  </Components>
+  <TrackContacts />
+  <TripPlansCatalog>
+    <TripPlans />
+    <Destinations />
+  </TripPlansCatalog>
+  <ManualDispatchRegions />
+  <DefaultDriverParameters SpeedLimit="14" SlowDownSpeed="3">
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Acceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Deceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="4" Role="SlowDown" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="14" Role="Stop" />
+  </DefaultDriverParameters>
+  <Policies />
+</LayoutState>

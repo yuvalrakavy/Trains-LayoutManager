@@ -1,0 +1,726 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{11CDBBF4-F29B-4053-9E1A-9137FDC074F8}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>LayoutEditingTools</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>LayoutManager.Tools</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AsyncCtpLibrary">
+      <HintPath>..\..\..\Microsoft Visual Studio Async CTP\Samples\AsyncCtpLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+    <ProjectReference Include="..\LayoutBaseServices\LayoutBaseServices.csproj">
+      <Name>LayoutBaseServices</Name>
+      <Project>{D861E89E-9BB2-4080-AA3F-A26EC8ACEF16}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\LayoutCommands\LayoutCommands.csproj">
+      <Name>LayoutCommands</Name>
+      <Project>{5FABCFA6-6359-4126-865A-24119F0E3871}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\LayoutCommonUI\LayoutCommonUI.csproj">
+      <Name>LayoutCommonUI</Name>
+      <Project>{C314F674-90C0-4216-901E-3F411C3F3406}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\LayoutManagerModel\LayoutManagerModel.csproj">
+      <Name>LayoutManagerModel</Name>
+      <Project>{BD926873-4803-4036-868A-9EA11A1AE227}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\LayoutManagerView\LayoutManagerView.csproj">
+      <Name>LayoutManagerView</Name>
+      <Project>{857F7A5E-7B92-4722-BEBF-C3598293627D}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AutoConnectDialogs\AnnounceCreateNewModule.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoConnectDialogs\GetCommandStation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoConnectDialogs\GetConnectLayoutOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoConnectDialogs\GetDaisyChainBusAddOrInsert.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoConnectDialogs\GetModuleLocation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoConnectDialogs\GetModuleType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoConnectDialogs\GetNoSpaceSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ComponentEditingTools.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ComponentMenuItems.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ComponentOperationTools.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TripPlanEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TripPlanList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TripsMonitor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AddCarsToTrain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AddLocomotiveToTrain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AdvancedBlockDefinitionProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\BindBlockEdgeToSignals.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\BlockDefinitionProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\BlockDefinitionResources.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\BlockDefinitionResources.Designer.cs">
+      <DependentUpon>BlockDefinitionResources.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\BlockLockTester.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\BusDefaultProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ChangeLocomotiveAddress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ChangeLocomotiveAddress.Designer.cs">
+      <DependentUpon>ChangeLocomotiveAddress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ControlModuleLocationProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\CommandStationStopped.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\CommandStationStopped.Designer.cs">
+      <DependentUpon>CommandStationStopped.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ControlModuleProgrammingProgressDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ControlModuleProgrammingProgressDialog.Designer.cs">
+      <DependentUpon>ControlModuleProgrammingProgressDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\GetSavedPolicyName.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\GetSavedPolicyName.Designer.cs">
+      <DependentUpon>GetSavedPolicyName.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\PowerSelectorProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\PowerSelectorProperties.Designer.cs">
+      <DependentUpon>PowerSelectorProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SelectProgrammingLocation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\SelectProgrammingLocation.Designer.cs">
+      <DependentUpon>SelectProgrammingLocation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\TrainFrontAndLength.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\GatelProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DefaultDrivingParameters.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DestinationEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ExtendTrainSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\GetNumberOfModules.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\GetTargetSpeed.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ImageProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\LocomotiveController.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\LocomotiveFront.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ManualDispatchRegion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ManualDispatchRegions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\MotionRampDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\MotionRamps.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\PickComponentToConnectToAddress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\PickComponentToConnectToAddress.Designer.cs">
+      <DependentUpon>PickComponentToConnectToAddress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SaveTripPlan.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\SelectTrainToPlace.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\SelectTrainToPlace.Designer.cs">
+      <DependentUpon>SelectTrainToPlace.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SetControlModuleAddress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\SetControlModuleLabel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ShiftOrMove.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ShiftOrMove.Designer.cs">
+      <DependentUpon>ShiftOrMove.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SignalProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\SimulateCommandStationInputEvent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\SimulateCommandStationInputEvent.Designer.cs">
+      <DependentUpon>SimulateCommandStationInputEvent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\TestLayoutObject.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TestLayoutObject.Designer.cs">
+      <DependentUpon>TestLayoutObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\TestThreeWayTurnout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TestThreeWayTurnout.Designer.cs">
+      <DependentUpon>TestThreeWayTurnout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\TextProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TrackContactProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TrackLinkProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TrackPowerConnectorProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TrainProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TripPlanCatalog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TripPlanChangeIcon.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TripPlanCommonDestinations.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TripPlanEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TripPlanManageCommonDestinations.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TripPlanRouteValidationResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TripPlanViewing.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TripPlanWayPointDriverInstructions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TripPlanWayPointStartCondition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TripsMonitorOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TurnoutProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EventScriptDialogs\ExecuteRandomTripPlan.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EventScriptDialogs\ExecuteTripPlan.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EventScriptDialogs\IfTrainLength.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EventScriptDialogs\IfTrainLength.Designer.cs">
+      <DependentUpon>IfTrainLength.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EventScriptDialogs\RunPolicy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EventScriptDialogs\TrainArrivesFrom.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EventScriptDialogs\TrainArrivesFrom.Designer.cs">
+      <DependentUpon>TrainArrivesFrom.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EventScriptDialogs\TrainFunctionAction.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EventScriptDialogs\TrainTargetSpeedAction.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EventScriptTools.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LayoutControlTools.cs">
+    </Compile>
+    <Compile Include="LocomotiveOperationTools.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="StandardMenuItems.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TripPlanTools.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <EmbeddedResource Include="AutoConnectDialogs\AnnounceCreateNewModule.resx">
+      <DependentUpon>AnnounceCreateNewModule.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AutoConnectDialogs\GetCommandStation.resx">
+      <DependentUpon>GetCommandStation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AutoConnectDialogs\GetConnectLayoutOptions.resx">
+      <DependentUpon>GetConnectLayoutOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AutoConnectDialogs\GetDaisyChainBusAddOrInsert.resx">
+      <DependentUpon>GetDaisyChainBusAddOrInsert.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AutoConnectDialogs\GetModuleLocation.resx">
+      <DependentUpon>GetModuleLocation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AutoConnectDialogs\GetModuleType.resx">
+      <DependentUpon>GetModuleType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AutoConnectDialogs\GetNoSpaceSelection.resx">
+      <DependentUpon>GetNoSpaceSelection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ComponentEditingTools.resx">
+      <DependentUpon>ComponentEditingTools.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ComponentMenuItems.resx">
+      <DependentUpon>ComponentMenuItems.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ComponentOperationTools.resx">
+      <DependentUpon>ComponentOperationTools.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TripPlanEditor.resx">
+      <DependentUpon>TripPlanEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TripPlanList.resx">
+      <DependentUpon>TripPlanList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TripsMonitor.resx">
+      <DependentUpon>TripsMonitor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AddCarsToTrain.resx">
+      <DependentUpon>AddCarsToTrain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AddLocomotiveToTrain.resx">
+      <DependentUpon>AddLocomotiveToTrain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AdvancedBlockDefinitionProperties.resx">
+      <DependentUpon>AdvancedBlockDefinitionProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\BindBlockEdgeToSignals.resx">
+      <DependentUpon>BindBlockEdgeToSignals.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\BlockDefinitionProperties.resx">
+      <DependentUpon>BlockDefinitionProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\BlockDefinitionResources.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>BlockDefinitionResources.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\BlockLockTester.resx">
+      <DependentUpon>BlockLockTester.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\BusDefaultProperties.resx">
+      <DependentUpon>BusDefaultProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ChangeLocomotiveAddress.resx">
+      <DependentUpon>ChangeLocomotiveAddress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\CommandStationStopped.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CommandStationStopped.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ControlModuleLocationProperties.resx">
+      <DependentUpon>ControlModuleLocationProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ControlModuleProgrammingProgressDialog.resx">
+      <DependentUpon>ControlModuleProgrammingProgressDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\GetSavedPolicyName.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GetSavedPolicyName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\PowerSelectorProperties.resx">
+      <DependentUpon>PowerSelectorProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\SelectProgrammingLocation.resx">
+      <DependentUpon>SelectProgrammingLocation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TrainFrontAndLength.resx">
+      <DependentUpon>TrainFrontAndLength.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\GatelProperties.resx">
+      <DependentUpon>GatelProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\DefaultDrivingParameters.resx">
+      <DependentUpon>DefaultDrivingParameters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\DestinationEditor.resx">
+      <DependentUpon>DestinationEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ExtendTrainSettings.resx">
+      <DependentUpon>ExtendTrainSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\GetNumberOfModules.resx">
+      <DependentUpon>GetNumberOfModules.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\GetTargetSpeed.resx">
+      <DependentUpon>GetTargetSpeed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ImageProperties.resx">
+      <DependentUpon>ImageProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\LocomotiveController.resx">
+      <DependentUpon>LocomotiveController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\LocomotiveFront.resx">
+      <DependentUpon>LocomotiveFront.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ManualDispatchRegion.resx">
+      <DependentUpon>ManualDispatchRegion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ManualDispatchRegions.resx">
+      <DependentUpon>ManualDispatchRegions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\MotionRampDefinition.resx">
+      <DependentUpon>MotionRampDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\MotionRamps.resx">
+      <DependentUpon>MotionRamps.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\SaveTripPlan.resx">
+      <DependentUpon>SaveTripPlan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\SelectTrainToPlace.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SelectTrainToPlace.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\SetControlModuleAddress.resx">
+      <DependentUpon>SetControlModuleAddress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\SetControlModuleLabel.resx">
+      <DependentUpon>SetControlModuleLabel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ShiftOrMove.resx">
+      <DependentUpon>ShiftOrMove.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\SignalProperties.resx">
+      <DependentUpon>SignalProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TestLayoutObject.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TestLayoutObject.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TestThreeWayTurnout.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TestThreeWayTurnout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TextProperties.resx">
+      <DependentUpon>TextProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TrackContactProperties.resx">
+      <DependentUpon>TrackContactProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TrackLinkProperties.resx">
+      <DependentUpon>TrackLinkProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TrackPowerConnectorProperties.resx">
+      <DependentUpon>TrackPowerConnectorProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TrainProperties.resx">
+      <DependentUpon>TrainProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TripPlanCatalog.resx">
+      <DependentUpon>TripPlanCatalog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TripPlanChangeIcon.resx">
+      <DependentUpon>TripPlanChangeIcon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TripPlanCommonDestinations.resx">
+      <DependentUpon>TripPlanCommonDestinations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TripPlanEditor.resx">
+      <DependentUpon>TripPlanEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TripPlanManageCommonDestinations.resx">
+      <DependentUpon>TripPlanManageCommonDestinations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TripPlanRouteValidationResult.resx">
+      <DependentUpon>TripPlanRouteValidationResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TripPlanViewing.resx">
+      <DependentUpon>TripPlanViewing.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TripPlanWayPointDriverInstructions.resx">
+      <DependentUpon>TripPlanWayPointDriverInstructions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TripPlanWayPointStartCondition.resx">
+      <DependentUpon>TripPlanWayPointStartCondition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TripsMonitorOptions.resx">
+      <DependentUpon>TripsMonitorOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TurnoutProperties.resx">
+      <DependentUpon>TurnoutProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EventScriptDialogs\ExecuteRandomTripPlan.resx">
+      <DependentUpon>ExecuteRandomTripPlan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EventScriptDialogs\ExecuteTripPlan.resx">
+      <DependentUpon>ExecuteTripPlan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EventScriptDialogs\IfTrainLength.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>IfTrainLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EventScriptDialogs\RunPolicy.resx">
+      <DependentUpon>RunPolicy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EventScriptDialogs\TrainArrivesFrom.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TrainArrivesFrom.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EventScriptDialogs\TrainFunctionAction.resx">
+      <DependentUpon>TrainFunctionAction.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EventScriptDialogs\TrainTargetSpeedAction.resx">
+      <DependentUpon>TrainTargetSpeedAction.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LocomotiveOperationTools.resx">
+      <DependentUpon>LocomotiveOperationTools.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TripPlanTools.resx">
+      <DependentUpon>TripPlanTools.cs</DependentUpon>
+    </EmbeddedResource>
+    <Content Include="Images\Area.bmp" />
+    <Content Include="Images\ArrowCollapse.ico" />
+    <Content Include="Images\ArrowExpand.ico" />
+    <Content Include="Images\BitmapAnnotationCategory.bmp" />
+    <Content Include="Images\BitmapComposedTracksCategory.bmp" />
+    <Content Include="Images\BitmapControlCategory.bmp" />
+    <Content Include="Images\BitmapSectionCategory.bmp" />
+    <Content Include="Images\BitMapTrackCategory.bmp" />
+    <Content Include="Images\ConnectedLink.bmp" />
+    <Content Include="Images\DisconnectedLink.bmp" />
+    <Content Include="Images\SelectedConnectedLink.bmp" />
+    <Content Include="Images\SelectedDisconnectedLink.bmp" />
+    <None Include="Resources\warning.ico" />
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

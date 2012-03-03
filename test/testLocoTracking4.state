@@ -1,0 +1,71 @@
+<LayoutState>
+  <Trains>
+    <TrainState ID="1f89da56-2e80-483f-8e10-eb4a4cb89ffc" LastBlockEdgeCrossingSpeed="7" _LocomotivesSpeedLimit="0" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward" TargetSpeed="7" Speed="0" LastCrossedBlockEdge="d1c541d6-b950-4261-90f3-b58007c65910" LastBlockEdgeCrossingTime="631834516688593750" _TriggerCount="1">
+      <Locations>
+        <Block BlockID="283fdf0b-b8e2-491d-8e75-7ded85a0a1b0" BlockEdgeID="d1c541d6-b950-4261-90f3-b58007c65910" BlockEdgeCrossingTime="631834516688750000" DisplayFront="R" />
+      </Locations>
+      <Name>SBB Modern</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="b8afb233-58ae-4ca3-b58e-2c7d41c44898" Orientation="Forward" />
+      </Locomotives>
+    </TrainState>
+    <TrainState ID="0068021f-b4f5-4bc4-87a1-1ab4d4226c2b" LastBlockEdgeCrossingSpeed="7" _LocomotivesSpeedLimit="0" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward" TargetSpeed="7" Speed="0" LastCrossedBlockEdge="aaee05bd-864e-44cb-b60d-65f4d3c4c4e1" LastBlockEdgeCrossingTime="631834516740625000" _TriggerCount="1">
+      <Locations>
+        <Block BlockID="2aa4bd53-b328-4476-9d2f-5542e2ebd290" BlockEdgeID="aaee05bd-864e-44cb-b60d-65f4d3c4c4e1" BlockEdgeCrossingTime="631834516740937500" DisplayFront="L" />
+      </Locations>
+      <Name>Crock (74)</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="b07cde30-190c-4b1e-9d24-a39a6d6a5cd0" Orientation="Forward" />
+      </Locomotives>
+    </TrainState>
+  </Trains>
+  <Components>
+    <ComponentState ID="051cc5e1-0f4a-48de-9422-0690056f93d9">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="6cba3093-eea6-4b5c-88b9-e515b62f7e88">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="d1c541d6-b950-4261-90f3-b58007c65910">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="aaee05bd-864e-44cb-b60d-65f4d3c4c4e1">
+      <Signal State="Red" />
+    </ComponentState>
+  </Components>
+  <TrackContacts />
+  <TripPlansCatalog>
+    <TripPlans />
+    <Destinations>
+      <Destination Name="On slider" SelectionMethod="ListOrder">
+        <Block BlockID="615fa801-a8d4-4c5e-b6d8-03b961f9b719" />
+        <Block BlockID="effae6f0-6f06-4162-af52-caacbe2330f7" />
+      </Destination>
+    </Destinations>
+  </TripPlansCatalog>
+  <ManualDispatchRegions>
+    <ManualDispatchRegion Name="Left">
+      <Blocks>
+        <Block BlockID="2aa4bd53-b328-4476-9d2f-5542e2ebd290" />
+        <Block BlockID="7ae9a18f-6281-41a4-a2e3-fd66b262050a" />
+        <Block BlockID="effae6f0-6f06-4162-af52-caacbe2330f7" />
+        <Block BlockID="615fa801-a8d4-4c5e-b6d8-03b961f9b719" />
+      </Blocks>
+    </ManualDispatchRegion>
+    <ManualDispatchRegion Name="Right" ID="90b7628b-3dac-432a-8b00-9a21c9f6a453" Active="false">
+      <Blocks>
+        <Block BlockID="283fdf0b-b8e2-491d-8e75-7ded85a0a1b0" />
+        <Block BlockID="0e7b8677-0d7c-47b8-88fc-dde601bc344a" />
+        <Block BlockID="effae6f0-6f06-4162-af52-caacbe2330f7" />
+        <Block BlockID="615fa801-a8d4-4c5e-b6d8-03b961f9b719" />
+      </Blocks>
+    </ManualDispatchRegion>
+  </ManualDispatchRegions>
+  <DefaultDriverParameters SpeedLimit="14" SlowDownSpeed="3">
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Acceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Deceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="4" Role="SlowDown" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="14" Role="Stop" />
+  </DefaultDriverParameters>
+  <Policies />
+</LayoutState>

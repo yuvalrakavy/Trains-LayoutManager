@@ -1,0 +1,27 @@
+<LayoutState>
+  <Trains>
+    <TrainState ID="abb38f24-e638-4e5a-af4d-c3e7933a07ed">
+      <Locations>
+        <Block BlockID="b20a3ee3-e793-4770-a506-57042bf1d3d5" DisplayFront="R" />
+      </Locations>
+      <Name>Crock</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="1fd149f5-8129-4aa3-92e4-d939b2284c20" Orientation="Forward" />
+      </Locomotives>
+    </TrainState>
+  </Trains>
+  <Components>
+    <ComponentState ID="5abe30df-6066-4ab4-bd88-689f51cf0af3">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="03c19352-6c30-4f2c-9d5e-e661448bf7e6">
+      <Signal State="Red" />
+    </ComponentState>
+  </Components>
+  <TrackContacts />
+  <TripPlansCatalog>
+    <TripPlans />
+    <Destinations />
+  </TripPlansCatalog>
+  <ManualDispatchRegions />
+</LayoutState>

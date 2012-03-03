@@ -1,0 +1,67 @@
+<LayoutState>
+  <Trains>
+    <TrainState ID="2cff94ea-5e30-4f6d-8e42-12a379e9f6ae" LastBlockEdgeCrossingSpeed="3" _LocomotivesSpeedLimit="0" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward" TargetSpeed="7" FinalSpeed="0" Speed="0" LastCrossedBlockEdge="8132a752-5cca-481e-ad40-7cddb04e1529" LastBlockEdgeCrossingTime="631879225206250000" _TriggerCount="1">
+      <Locations>
+        <Block BlockID="63afe4ff-d230-42e3-8c77-89f8ad49d3c2" BlockEdgeID="8132a752-5cca-481e-ad40-7cddb04e1529" BlockEdgeCrossingTime="631879225206406250" DisplayFront="L" />
+      </Locations>
+      <Name>RhB Ge II</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="fbbf33d2-c2f2-4f2f-80c1-abb9ff6c7e4b" Orientation="Forward" />
+      </Locomotives>
+    </TrainState>
+  </Trains>
+  <Components>
+    <ComponentState ID="97446152-1b86-4c23-9165-bb6e61f72034">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="5c876323-d0b0-4b0b-9774-c6905fd35f61">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="d7683ce7-c4f3-4d29-927d-5790c809fbe5">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="beea0605-cc39-49b1-a477-07082c7e3754">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="8132a752-5cca-481e-ad40-7cddb04e1529">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="3022137d-65ae-4590-b58d-b3409dffac5a">
+      <Signal State="Red" />
+    </ComponentState>
+  </Components>
+  <TripPlansCatalog>
+    <TripPlans>
+    </TripPlans>
+    <Destinations>
+    </Destinations>
+  </TripPlansCatalog>
+  <ManualDispatchRegions>
+  </ManualDispatchRegions>
+  <Policies>
+    <Policy Scope="BlockInfo" Apply="false" Name="Welcome" ID="6d269d85-4ec7-48a3-b1d4-0734aed891ac">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <Wait Seconds="2" WaitID="d2e08b3a-b0f0-4331-af04-4a713d1b4604">
+              <Actions>
+                <ShowMessage Message="Welcome" MessageType="Message" />
+              </Actions>
+            </Wait>
+            <Wait Seconds="10" WaitID="7e2cdfbe-03a1-42c7-99da-5f1e30bdc16a">
+              <Actions>
+                <ShowMessage Message="Why are you here for so long" MessageType="Message" />
+              </Actions>
+            </Wait>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+  </Policies>
+  <DefaultDriverParameters SpeedLimit="14" SlowDownSpeed="3">
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Acceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Deceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="4" Role="SlowDown" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="14" Role="Stop" MotionTime="1000" />
+  </DefaultDriverParameters>
+</LayoutState>

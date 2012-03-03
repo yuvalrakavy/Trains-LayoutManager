@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetMarklinCatalog", "GetMarklinCatalog.csproj", "{AE59BC3C-A048-4A7A-A749-ABF6B2EDE1EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{AE59BC3C-A048-4A7A-A749-ABF6B2EDE1EA}.Debug.ActiveCfg = Debug|.NET
+		{AE59BC3C-A048-4A7A-A749-ABF6B2EDE1EA}.Debug.Build.0 = Debug|.NET
+		{AE59BC3C-A048-4A7A-A749-ABF6B2EDE1EA}.Release.ActiveCfg = Release|.NET
+		{AE59BC3C-A048-4A7A-A749-ABF6B2EDE1EA}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

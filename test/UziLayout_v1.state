@@ -1,0 +1,635 @@
+<LayoutState>
+  <Trains>
+    <TrainState ID="ec645f8b-98d7-4581-b388-e7c77508bfaa" Length="Short" LastBlockEdgeCrossingSpeed="3" _LocomotivesSpeedLimit="0" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward" FinalSpeed="0" Speed="0" LastCrossedBlockEdge="16f295f4-5ca5-4387-acd2-c9c6943afc53" LastBlockEdgeCrossingTime="632804485457500000">
+      <Locations>
+        <Block BlockID="5e4e8bfb-196a-428e-8e6c-9e5e1e3ad860" BlockEdgeID="16f295f4-5ca5-4387-acd2-c9c6943afc53" BlockEdgeCrossingTime="632804485457500000" DisplayFront="L" />
+      </Locations>
+      <Name>Crock</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="c7fee0d5-f5d2-487a-ae25-4a6bcae153b8" Orientation="Forward" />
+      </Locomotives>
+      <Attributes />
+      <Driver TypeName="Automatic (by the computer)" Type="Automatic" AutoDriverState="Stop" Direction="Forward" />
+    </TrainState>
+    <TrainState ID="87b3f672-b048-427a-a75f-07773cd89861" Length="Standard" LastBlockEdgeCrossingSpeed="3" _LocomotivesSpeedLimit="0" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward" FinalSpeed="0" Speed="0" LastCrossedBlockEdge="abeae514-ceb1-4865-8262-55a867d80860" LastBlockEdgeCrossingTime="632804485739687500">
+      <Locations>
+        <Block BlockID="0b4dac1b-47c7-4d17-a750-bfd7e40fd1c4" BlockEdgeID="abeae514-ceb1-4865-8262-55a867d80860" BlockEdgeCrossingTime="632804485739687500" DisplayFront="L" />
+      </Locations>
+      <Name>Roco Cargo</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="8771eab6-4ab5-4ef9-a2f5-f216a04674d4" Orientation="Forward" />
+      </Locomotives>
+      <Attributes />
+      <Driver TypeName="Automatic (by the computer)" Type="Automatic" AutoDriverState="Stop" Direction="Forward" />
+    </TrainState>
+    <TrainState ID="0e09b1b4-3785-4024-9648-68643f6e9da2" Length="Standard" LastBlockEdgeCrossingSpeed="3" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward" FinalSpeed="0" Speed="0" LastCrossedBlockEdge="8d8ab66c-6194-43ee-9248-cf1d7e45f9de" LastBlockEdgeCrossingTime="632804513072656250" _LocomotivesSpeedLimit="0">
+      <Locations>
+        <Block BlockID="6ca5adee-47aa-461d-a805-a1441fe8c97e" BlockEdgeID="8d8ab66c-6194-43ee-9248-cf1d7e45f9de" BlockEdgeCrossingTime="632804513072656250" DisplayFront="L" />
+      </Locations>
+      <Name>Small Diesel</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="d6024498-959f-4c69-921c-3db1caf715b8" Orientation="Forward" />
+      </Locomotives>
+      <Attributes />
+      <Driver TypeName="Automatic (by the computer)" Type="Automatic" AutoDriverState="Stop" Direction="Forward" />
+    </TrainState>
+  </Trains>
+  <Components>
+    <ComponentState ID="0b9562c3-4bd8-48b9-8fa3-00818c2b1f45">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="b2db6941-6de2-4c6a-a075-6b02d1d83c9c">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="6fcb27d3-e2a3-4df6-855c-85da56a23087">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="8e054500-336d-4106-b0b6-a86d916030b8">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="3b612ba9-357d-482e-8c2e-0d746ef40008">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="467023f4-33bf-41e8-801d-4aa06f38db20">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="e521ae17-1930-4f7d-a018-a8d7d9fc8f19">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="2aa7cc58-8643-4c71-9f62-cfc7a02386c9">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="f4b3e7a9-e89d-499a-a06f-639cf18764b4">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="c6b6a061-649b-4b63-a234-18e357ae673c">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="550f9c8e-c7a8-4891-abc5-acf057699efa">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="48ee25ed-b9f5-447d-891e-46ff72540348">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="a011c34f-a3c3-4e8b-a12a-b4b053aff999">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="25262871-792d-40cb-84df-a2b4174a230b">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="6ca5adee-47aa-461d-a805-a1441fe8c97e">
+      <TrainDetection TrainDetected="true" TrainWillBeDetected="true" />
+    </ComponentState>
+    <ComponentState ID="949877e6-3206-45ab-8f76-461ebfa03410">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="acdf894e-1469-4d2c-a293-1f4ba2bac789">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="dfcc8a22-5861-4e28-802e-c5d9aeb99960">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="63ef3755-cc16-4a45-af00-c0eb52afb775">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="00c1415c-d4e9-4ee7-b574-4a37d8a6dbce">
+      <SignalState Value="Red" />
+    </ComponentState>
+    <ComponentState ID="836fbce5-21eb-4c84-9402-ed3340c52f74">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="702293d3-af54-44a0-8d1d-738097e590ba">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="8185dc80-add6-4585-9b0c-6171a6576c0c">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="3a858093-c8a5-4020-a6d1-f4f5b09ce0e9">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="06c49b3e-d715-4709-98c8-9bbebd5b6125">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="60763555-a581-42eb-be15-4e94b5454484">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="0d108832-c741-450e-ade3-c11a3c1604cc">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="7ab62015-77a3-4f4e-a580-18e11309a8a8">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="9d3cedf5-e92f-42f6-a85f-15f2907864e8">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="f6f6ee59-4f9e-4858-b7e1-94fd86efd6ff">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="f2e091f0-094b-4b35-92f2-4d249daf399b">
+      <SignalState Value="Red" />
+    </ComponentState>
+    <ComponentState ID="771dcebd-01a9-4d50-aa43-0011174cee2e">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="1d940c28-79c1-4207-8c18-e79ab07cdb4f">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="5da5fea1-027c-4257-8f5f-920f7e83a0b7">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="4a1ce505-efca-4bde-8d05-e7c8c44889c9">
+      <SignalState Value="Red" />
+    </ComponentState>
+    <ComponentState ID="aa722957-c9e1-4659-955a-2d9eeac7ab9c">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="0a48e9be-177f-47bc-a58c-bab9fd49e123">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="e34cb47d-f7d2-443a-94a8-1fab2c2ed75c">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="222710f1-f5d0-4041-be5e-ec7699b2cbb4">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="2ebba5bc-a97c-4a9b-ae7e-44e21149c435">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="2e5e7168-d45b-4686-b9e0-9c2a39253d09">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="c58c7501-2c32-4167-99b5-786af2940ddf">
+      <SwitchState Value="2" />
+    </ComponentState>
+    <ComponentState ID="ff3f24ad-beb0-429a-b2e9-b2fd3cae1687">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="db4c137f-3e94-4764-81bd-3a8924428672">
+      <SwitchState Value="2" />
+    </ComponentState>
+    <ComponentState ID="8f732411-d106-4e19-b6fd-ef223ceeb113">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="820a9cf8-033e-41cf-b173-79e54d5f80ea">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="fa62a8b5-5a47-4dfa-ba9f-ee4f899da688">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="046cfba4-9f02-48ec-ada2-448e2a4f951b">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="0b4dac1b-47c7-4d17-a750-bfd7e40fd1c4">
+      <TrainDetection TrainDetected="true" TrainWillBeDetected="true" />
+    </ComponentState>
+    <ComponentState ID="3cfb87c0-a10b-4738-9c3f-8b2a996ac590">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="5e4e8bfb-196a-428e-8e6c-9e5e1e3ad860">
+      <TrainDetection TrainDetected="true" TrainWillBeDetected="true" />
+    </ComponentState>
+    <ComponentState ID="e0c0de67-88e6-42d2-9018-9d768c2adb8c">
+      <TrainDetection TrainDetected="false" TrainWillBeDetected="false" />
+    </ComponentState>
+    <ComponentState ID="cb7d10e4-6821-4059-9783-07992bdd4c11">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="e026b027-cbe6-41be-ba50-83dcbdad043a">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="e1f92041-4e8e-4f8e-a470-e434140b5d1e" />
+    <ComponentState ID="1ff0e1bb-c27e-4e6b-90b8-556d34c10d84" />
+    <ComponentState ID="1f40eed0-021a-42b4-93fa-b909200739a9" />
+    <ComponentState ID="43d22d33-00bb-4832-9b0b-9222667fe395" />
+    <ComponentState ID="ff3ac7db-4a77-4988-a9a9-43ef1ef6cbac" />
+    <ComponentState ID="87c94d3d-c4a5-4b7e-8c7f-7dad88b28dd0" />
+    <ComponentState ID="5a326b24-7729-4890-8095-55bf628a4b5b" />
+    <ComponentState ID="e9165915-b3d8-4d8c-b489-a9f31b7fe4c6" />
+    <ComponentState ID="bf0f94e0-0ad6-4ba3-a104-4b358ef12338" />
+    <ComponentState ID="4cfbce22-3a28-49c2-a060-fb424af21934" />
+    <ComponentState ID="2cda9def-f409-41fa-95f0-e240160b86ae" />
+    <ComponentState ID="36979cf8-6314-4763-8a3c-19e1c6742013" />
+    <ComponentState ID="96500ae7-364f-4b82-8443-eafba7c14ffb" />
+    <ComponentState ID="83dd8864-6e32-47ab-adb2-3c416619363c" />
+    <ComponentState ID="722dee33-c82f-4863-84eb-7e5e991284b3" />
+    <ComponentState ID="5ae57509-52af-4dac-b440-8b3813498304" />
+    <ComponentState ID="63619e86-4e03-4acf-9e65-95f2452a92b5" />
+    <ComponentState ID="547f8a5d-b721-4ac1-bedc-79c2ff62ca73" />
+    <ComponentState ID="619dc396-d424-4099-8418-06fac855905c" />
+    <ComponentState ID="3f3d96e7-b7c3-4c2f-9dfb-58ff4932f64b" />
+    <ComponentState ID="e9c3f3a7-7f4d-4ecc-9366-d0d585d24826" />
+    <ComponentState ID="01b9bbf2-0e22-4baa-9101-d114ad172996" />
+    <ComponentState ID="114a15a9-6f47-4380-ab73-32f92a103f53" />
+    <ComponentState ID="0340c914-b658-482e-8aa1-c84ce3f3ea58" />
+    <ComponentState ID="3302d2c1-1fe3-4dec-bc31-755efd5dbefa" />
+    <ComponentState ID="888f9664-c4de-4f58-b19c-b0bed096f310" />
+    <ComponentState ID="5209851b-86de-4034-9a9f-78c92221583e" />
+    <ComponentState ID="290eaa67-dad6-4539-99e5-a57bfa50a62a" />
+    <ComponentState ID="aec007a1-55e8-4421-88e2-52a8731495ef" />
+    <ComponentState ID="b2797bf7-a3bb-4ec1-8440-2f43cf2b2b49" />
+    <ComponentState ID="48bcfdbc-92d0-45b5-9374-4f4aafe1940b" />
+    <ComponentState ID="4dbb58fd-307e-4efc-9d0a-d5d138e60f51" />
+    <ComponentState ID="426eea0d-aace-4bf8-af52-11319f0ba2e5" />
+    <ComponentState ID="50e8b00d-cd14-481c-9982-c7dcd0cd4dc2" />
+    <ComponentState ID="945b0a7d-06e4-4aef-af14-9b3616c76252" />
+    <ComponentState ID="c0eecf05-eec0-4f32-85af-4a189db844ef" />
+    <ComponentState ID="778791ae-cecf-4a5c-a9f9-7cb4e0f40ee6" />
+    <ComponentState ID="9b2efd5a-dc55-4ae6-a987-0d872ca2b89c" />
+    <ComponentState ID="4fac9945-5010-4459-a78d-5a5686b1238d" />
+    <ComponentState ID="310cf161-1c6b-46ed-8f66-b418de30474c" />
+    <ComponentState ID="e7547cc1-62ef-45be-9fb8-2d87b6cabaf2" />
+    <ComponentState ID="d1819d2b-c584-4c86-b2b3-0678d44b93b8" />
+    <ComponentState ID="c4449af2-607d-404e-b131-07c48fa875a6" />
+    <ComponentState ID="16f295f4-5ca5-4387-acd2-c9c6943afc53">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="abeae514-ceb1-4865-8262-55a867d80860">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="caeddf54-b7ab-41f8-85e1-e3555033a5ff">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="8d8ab66c-6194-43ee-9248-cf1d7e45f9de">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="47bc742e-76ac-4b6c-980d-8ecfe10c42c8" />
+    <ComponentState ID="a2f02b54-2e17-42c5-b9ae-dbc3ec57a5dc" />
+    <ComponentState ID="df879f85-a971-427d-bc0f-e71c0c8fb123" />
+    <ComponentState ID="8bf6e9c7-79a1-4504-8341-58a4662f95ec" />
+    <ComponentState ID="77434ed1-b156-4fea-83c9-1917910a901b" />
+  </Components>
+  <TrackContacts />
+  <TripPlansCatalog>
+    <TripPlans>
+      <TripPlan IsCircular="false" ID="b0cd3722-3e5a-40bb-aec2-917c11838e74" IconID="89de88fb-50d8-4059-9f6e-87e478c7b12d" Name="to Main 4A (with Horn)">
+        <WayPoints>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="949877e6-3206-45ab-8f76-461ebfa03410" />
+            </Destination>
+            <DriverInstructions>
+              <Sequence>
+                <Events>
+                  <Wait Seconds="5">
+                    <Actions>
+                      <TriggerTrainFunction TrainSymbol="Train" FunctionName="horn" />
+                    </Actions>
+                  </Wait>
+                </Events>
+              </Sequence>
+            </DriverInstructions>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="6ca5adee-47aa-461d-a805-a1441fe8c97e" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Main 2B via Main 3B, destination" ID="0f084f6f-4c5a-4b2f-8a34-9fa84fea2bb8" FromCatalog="true">
+        <WayPoints>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="25262871-792d-40cb-84df-a2b4174a230b" />
+            </Destination>
+          </WayPoint>
+          <WayPoint Direction="Forward">
+            <Destination>
+              <Block BlockID="550f9c8e-c7a8-4891-abc5-acf057699efa" />
+            </Destination>
+            <StartCondition>
+              <Sequence>
+                <Events>
+                  <Wait Seconds="3" />
+                </Events>
+              </Sequence>
+            </StartCondition>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="6ca5adee-47aa-461d-a805-a1441fe8c97e" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="949877e6-3206-45ab-8f76-461ebfa03410" />
+          <Origin BlockID="dfcc8a22-5861-4e28-802e-c5d9aeb99960" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Main 3A via B3" ID="d33a5c00-0a42-4b25-9c3c-4a135be351cb" IconID="00000000-0000-0000-0000-000000000000">
+        <WayPoints>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="c6b6a061-649b-4b63-a234-18e357ae673c" />
+            </Destination>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="3b612ba9-357d-482e-8c2e-0d746ef40008" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Main 1A via B1" ID="8a8fb719-9933-4f2a-8bb8-0ee354146aa6">
+        <WayPoints>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="e521ae17-1930-4f7d-a018-a8d7d9fc8f19" />
+            </Destination>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="3b612ba9-357d-482e-8c2e-0d746ef40008" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="3b612ba9-357d-482e-8c2e-0d746ef40008" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Main 3A via destination" ID="676242cf-0293-4da5-b27c-a65cd6e92ae4">
+        <WayPoints>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="550f9c8e-c7a8-4891-abc5-acf057699efa" />
+            </Destination>
+          </WayPoint>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="true" Name="to Main 1A via B1 (circular)" ID="e8cd3ff5-e2f3-480b-a9f9-2cffdf5c3a60" IconID="eee23ada-eb89-4861-aab5-ef58fbc1194c">
+        <WayPoints>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="e521ae17-1930-4f7d-a018-a8d7d9fc8f19" />
+            </Destination>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="3b612ba9-357d-482e-8c2e-0d746ef40008" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="3b612ba9-357d-482e-8c2e-0d746ef40008" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="true" Name="to Main 3A via destination, Main 3A, destination (circular)" ID="56f050f9-7ed2-44b6-bd03-2e9c758ffb80" FromCatalog="true" IconID="eee23ada-eb89-4861-aab5-ef58fbc1194c">
+        <WayPoints>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="550f9c8e-c7a8-4891-abc5-acf057699efa" />
+            </Destination>
+          </WayPoint>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb" />
+            </Destination>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="550f9c8e-c7a8-4891-abc5-acf057699efa" />
+            </Destination>
+            <StartCondition>
+              <Sequence>
+                <Events>
+                  <Wait Seconds="2" RandomSeconds="2" />
+                </Events>
+              </Sequence>
+            </StartCondition>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="e521ae17-1930-4f7d-a018-a8d7d9fc8f19" />
+          <Origin BlockID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="true" Name="to Main 2A via B3 (circular)" ID="f83cde0b-a02a-4a0d-9d4a-afe7d751c32e" IconID="eee23ada-eb89-4861-aab5-ef58fbc1194c">
+        <WayPoints>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="c6b6a061-649b-4b63-a234-18e357ae673c" />
+            </Destination>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="8e054500-336d-4106-b0b6-a86d916030b8" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="8e054500-336d-4106-b0b6-a86d916030b8" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Main 4A" IconID="89de88fb-50d8-4059-9f6e-87e478c7b12d" ID="934a12d4-f5b1-4311-b1cd-704a3c7e6fda">
+        <WayPoints>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="949877e6-3206-45ab-8f76-461ebfa03410" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="6ca5adee-47aa-461d-a805-a1441fe8c97e" Front="L" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Main 4A via Main 1A" IconID="e02b9cfa-a33f-4a9b-ac1d-b91ea20d382f" ID="bee71084-47e4-488f-9fbf-c796bb07083c">
+        <WayPoints>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="3b612ba9-357d-482e-8c2e-0d746ef40008" />
+            </Destination>
+          </WayPoint>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="949877e6-3206-45ab-8f76-461ebfa03410" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Main 2B with stop" ID="827c3212-decd-4324-96b7-bebf8426f9d8" FromCatalog="true" IconID="4f0034ef-14aa-4232-9176-d78a353d2941">
+        <WayPoints>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="6ca5adee-47aa-461d-a805-a1441fe8c97e" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="949877e6-3206-45ab-8f76-461ebfa03410" Front="R" />
+          <Origin BlockID="e521ae17-1930-4f7d-a018-a8d7d9fc8f19" Front="R" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+    </TripPlans>
+    <Destinations>
+      <Destination Name="South Station" SelectionMethod="Random" ID="d20e1e56-e7a0-4e77-96b0-882392b36e2c">
+        <Block BlockID="fa62a8b5-5a47-4dfa-ba9f-ee4f899da688" />
+        <Block BlockID="0b4dac1b-47c7-4d17-a750-bfd7e40fd1c4" />
+        <Block BlockID="5e4e8bfb-196a-428e-8e6c-9e5e1e3ad860" />
+      </Destination>
+    </Destinations>
+  </TripPlansCatalog>
+  <ManualDispatchRegions>
+    <ManualDispatchRegion Name="Loop" ID="19fef53c-347d-43ba-8e61-2b4da6176f90" Active="false">
+      <Blocks>
+        <Block BlockID="550f9c8e-c7a8-4891-abc5-acf057699efa" />
+        <Block BlockID="48ee25ed-b9f5-447d-891e-46ff72540348" />
+        <Block BlockID="f4b3e7a9-e89d-499a-a06f-639cf18764b4" />
+        <Block BlockID="c6b6a061-649b-4b63-a234-18e357ae673c" />
+      </Blocks>
+    </ManualDispatchRegion>
+    <ManualDispatchRegion>
+      <Blocks />
+    </ManualDispatchRegion>
+  </ManualDispatchRegions>
+  <DefaultDriverParameters SpeedLimit="14" SlowDownSpeed="3">
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Acceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Deceleration" />
+    <Ramp RampType="LocomotiveHardware" SpeedChangeRate="4" Role="SlowDown" />
+    <Ramp RampType="LocomotiveHardware" SpeedChangeRate="14" Role="Stop" />
+  </DefaultDriverParameters>
+  <Policies>
+    <Policy Scope="Global" Apply="false" Name="Test if Time" ID="9fb2a0b2-ed99-45be-b534-69054e62eafb" Global="false">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <Repeat Count="-1">
+              <Wait Seconds="5" WaitID="e1edd563-ab0d-4307-8a1e-f99b70ada32b">
+                <Condition>
+                  <IfTime>
+                    <Seconds Value="0" From="0" To="29" />
+                  </IfTime>
+                </Condition>
+                <Actions>
+                  <ShowMessage Message="In first half of minute" MessageType="Message" />
+                </Actions>
+              </Wait>
+            </Repeat>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+    <Policy Scope="TripPlan" Apply="false" Name="Beep on stop" ID="b6215e5c-da83-470a-b45a-8efaa6d766ef" Global="false">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <Any>
+              <Events>
+                <Repeat Count="-1">
+                  <WaitForEvent Name="driver-stop">
+                    <Condition>
+                      <IfDefined Symbol="Train" Attribute="BeepOnStop" />
+                    </Condition>
+                    <Actions>
+                      <ShowMessage Message="Beep Beep" MessageType="Warning" />
+                    </Actions>
+                  </WaitForEvent>
+                </Repeat>
+                <Wait Minutes="1" WaitID="7d3aaced-f5e6-4bf0-b9cb-7d90ea340801">
+                  <Actions>
+                    <ShowMessage Message="Beep timeout" MessageType="Warning" />
+                  </Actions>
+                </Wait>
+              </Events>
+            </Any>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+    <Policy Scope="Global" Apply="false" Name="Test foreach" ID="c6160198-5ffd-485f-9c99-3eca0b103240" Global="false">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <ForEachTrain>
+              <Wait Seconds="2" WaitID="e434008a-4240-49d1-a893-e4b99299a32c">
+                <Actions>
+                  <ShowMessage Message="Train [Train.Name]" MessageType="Message" />
+                </Actions>
+              </Wait>
+            </ForEachTrain>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+    <Policy Scope="TripPlan" Apply="false" Name="Test attributes" ID="99b4fbd7-c16b-4003-ae18-0e00cff2e66b" Global="false">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <DoNow>
+              <Actions>
+                <SetAttribute Symbol="Train" Attribute="TextOne" SetTo="Text" Value="This is a text" />
+                <SetAttribute Symbol="Train" Attribute="NumericOne" SetTo="Number" Value="10" />
+                <SetAttribute Symbol="Train" Attribute="BooleanOne" SetTo="Boolean" Value="true" />
+                <SetAttribute Symbol="Train" Attribute="ReferenceOne" SetTo="ValueOf" SymbolTo="Train" NameTo="StatusText" SymbolToAccess="Property" />
+                <SetAttribute Symbol="Train" Attribute="Dummy" SetTo="Text" Value="I am going to die" />
+              </Actions>
+            </DoNow>
+            <DoNow>
+              <Condition>
+                <IfDefined Symbol="Train" Attribute="Dummy" />
+              </Condition>
+              <Actions>
+                <ShowMessage Message="Dummy attribute is defined" MessageType="Message" />
+                <SetAttribute Symbol="Train" Attribute="Dummy" SetTo="Remove" />
+                <SetAttribute Symbol="Train" Attribute="NumericOne" SetTo="Number" Op="Add" Value="2" />
+              </Actions>
+            </DoNow>
+            <DoNow>
+              <Condition>
+                <Not>
+                  <IfDefined Symbol="Train" Attribute="Dummy" />
+                </Not>
+              </Condition>
+              <Actions>
+                <ShowMessage Message="Dummy is no longer defined" MessageType="Message" />
+              </Actions>
+            </DoNow>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+    <Policy Scope="BlockInfo" Apply="false" Global="false" Name="Test" ShowInMenu="false" ID="a5605fe7-5034-492d-8f09-8605baf12705">
+      <EventScript>
+        <Sequence>
+          <Condition>
+            <IfString Symbol1Access="Property" Symbol1="Train" Name1="Name" Type1="String" Symbol2Access="Value" Value2="*A*" Type2="String" Operation="Match" />
+          </Condition>
+          <Events>
+            <DoNow>
+              <Actions>
+                <ShowMessage Message="Hellow" MessageType="Message" />
+              </Actions>
+            </DoNow>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+  </Policies>
+</LayoutState>

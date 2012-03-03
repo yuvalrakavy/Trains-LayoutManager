@@ -1,0 +1,1531 @@
+<LayoutState TripsMonitorAutoClearTimeout="45">
+  <Trains>
+    <TrainState ID="6ebd9045-6fb3-4856-a6df-2dda4623edf6" LastBlockEdgeCrossingSpeed="3" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward" FinalSpeed="0" Speed="0" LastCrossedBlockEdge="e1099822-c196-40b3-9af7-e0b9c57ff07b" LastBlockEdgeCrossingTime="632664109561908488" _LocomotivesSpeedLimit="0">
+      <Locations>
+        <Block BlockID="c13937ce-7b47-4107-86a5-c57acda3b6e4" BlockEdgeID="e1099822-c196-40b3-9af7-e0b9c57ff07b" BlockEdgeCrossingTime="632664109561908488" DisplayFront="R" />
+        <Block BlockID="b761a4ab-80c6-4ce8-b7d3-b5a79230332c" BlockEdgeID="7c340907-4564-4fac-8c72-1a848a4222e5" BlockEdgeCrossingTime="632664109463967656" DisplayFront="R" />
+        <Block BlockID="a9af9178-5cce-47d3-9070-325264d857de" BlockEdgeID="f97e09bc-d78b-455e-b5dc-be7d50af8208" BlockEdgeCrossingTime="632664109368330136" DisplayFront="L" />
+      </Locations>
+      <Name>Cargo Gray/Red (21)</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="6eb070a6-7491-4acb-8aba-b93b25eb8f2b" Orientation="Forward" />
+      </Locomotives>
+      <Attributes />
+      <Driver TypeName="Automatic (by the computer)" Type="Automatic" AutoDriverState="Stop" Direction="Forward" />
+    </TrainState>
+    <TrainState ID="ef3ccfcb-bb8a-4737-8535-01158e59cd6e" LastBlockEdgeCrossingSpeed="4" _LocomotivesSpeedLimit="0" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward" _TriggerCount="1" FinalSpeed="4" Speed="0" LastCrossedBlockEdge="56168a14-7ac2-4090-b55e-71288c7683f9" LastBlockEdgeCrossingTime="632664123297459240" TargetSpeed="4">
+      <Locations>
+        <Block BlockID="0e43fbf0-d106-4d45-9dd1-e95be3549a82" BlockEdgeID="17043e86-313b-4bb5-a901-43519974cba4" BlockEdgeCrossingTime="632664123199017688" DisplayFront="L" />
+      </Locations>
+      <Name>Cream/Bordo (78)</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="39a321e7-611f-49a0-b474-e9189fce5a4b" Orientation="Forward" />
+      </Locomotives>
+      <Attributes />
+      <Driver TypeName="Automatic (by the computer)" Type="Automatic" AutoDriverState="Stop" Direction="Forward" />
+    </TrainState>
+    <TrainState ID="9be5d853-cd88-49b7-9f4e-331300b83ab1" LastBlockEdgeCrossingSpeed="6" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward" FinalSpeed="0" Speed="0" LastCrossedBlockEdge="214c3c13-dd1d-4c3f-a92e-287c84a1da97" LastBlockEdgeCrossingTime="632677018854921472" TargetSpeed="6" _LocomotivesSpeedLimit="0">
+      <Locations>
+        <Block BlockID="8da14963-1df0-4f2c-9329-fe5bc7cbf720" BlockEdgeID="214c3c13-dd1d-4c3f-a92e-287c84a1da97" BlockEdgeCrossingTime="632677018854921472" DisplayFront="B" />
+      </Locations>
+      <Name>V200 (22)</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="42ad726d-fb30-4bf9-a5ac-eb0d544accef" Orientation="Forward" />
+      </Locomotives>
+      <Attributes />
+      <Driver TypeName="Automatic (by the computer)" Type="Automatic" AutoDriverState="Stop" Direction="Forward" />
+    </TrainState>
+    <TrainState ID="f1acdebd-e140-4168-bc93-4c72bac92a42" LastBlockEdgeCrossingSpeed="7" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward" FinalSpeed="7" Speed="0" LastCrossedBlockEdge="b58b25d5-e48b-43ad-8007-d42a0f58b340" LastBlockEdgeCrossingTime="632693528626076256" CalculateLength="true" LastCarTriggerBlockEdge="false" LastCarDetected="false" _LocomotivesSpeedLimit="0">
+      <Locations>
+        <Block BlockID="ba17f26b-5aff-4373-97c2-301a1a66cfa4" BlockEdgeID="b58b25d5-e48b-43ad-8007-d42a0f58b340" BlockEdgeCrossingTime="632693528626076256" DisplayFront="T" />
+      </Locations>
+      <Name>Red Cargo (54)</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="e74e11e4-79ec-495c-aaad-28877bbfb0a4" Orientation="Forward" />
+      </Locomotives>
+      <Attributes />
+      <Cars />
+      <Ramp RampType="RateFixed" SpeedChangeRate="2" Role="SlowDown" />
+      <Driver TypeName="Automatic (by the computer)" Type="Automatic" AutoDriverState="Stop" Direction="Forward" />
+    </TrainState>
+    <TrainState ID="9834c9b5-d416-4bf4-8e13-742ddfb32667" LastBlockEdgeCrossingSpeed="7" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward" LastCrossedBlockEdge="bf0f94e0-0ad6-4ba3-a104-4b358ef12338" LastBlockEdgeCrossingTime="632693530110911344" FinalSpeed="0" Speed="0" _LocomotivesSpeedLimit="0" _TriggerCount="1">
+      <Locations>
+        <Block BlockID="3b612ba9-357d-482e-8c2e-0d746ef40008" BlockEdgeID="bf0f94e0-0ad6-4ba3-a104-4b358ef12338" BlockEdgeCrossingTime="632693530110911344" DisplayFront="R" />
+      </Locations>
+      <Name>Long passanger train (16)</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="539b3bbe-ee22-4854-a401-7728e56dc36b" Orientation="Forward" />
+      </Locomotives>
+      <Driver TypeName="Automatic (by the computer)" Type="Automatic" AutoDriverState="Stop" Direction="Forward" />
+    </TrainState>
+  </Trains>
+  <Components>
+    <ComponentState ID="0b9562c3-4bd8-48b9-8fa3-00818c2b1f45">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="b2db6941-6de2-4c6a-a075-6b02d1d83c9c">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="6fcb27d3-e2a3-4df6-855c-85da56a23087">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="8e054500-336d-4106-b0b6-a86d916030b8">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="3b612ba9-357d-482e-8c2e-0d746ef40008">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="467023f4-33bf-41e8-801d-4aa06f38db20">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="e521ae17-1930-4f7d-a018-a8d7d9fc8f19">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="f4b3e7a9-e89d-499a-a06f-639cf18764b4">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="c6b6a061-649b-4b63-a234-18e357ae673c">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="550f9c8e-c7a8-4891-abc5-acf057699efa">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="48ee25ed-b9f5-447d-891e-46ff72540348">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="a011c34f-a3c3-4e8b-a12a-b4b053aff999">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="25262871-792d-40cb-84df-a2b4174a230b">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="6ca5adee-47aa-461d-a805-a1441fe8c97e">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="949877e6-3206-45ab-8f76-461ebfa03410">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="acdf894e-1469-4d2c-a293-1f4ba2bac789">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="dfcc8a22-5861-4e28-802e-c5d9aeb99960">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="63ef3755-cc16-4a45-af00-c0eb52afb775">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="00c1415c-d4e9-4ee7-b574-4a37d8a6dbce">
+      <SignalState Value="Green" />
+    </ComponentState>
+    <ComponentState ID="836fbce5-21eb-4c84-9402-ed3340c52f74">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="702293d3-af54-44a0-8d1d-738097e590ba">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="8185dc80-add6-4585-9b0c-6171a6576c0c">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="3a858093-c8a5-4020-a6d1-f4f5b09ce0e9">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="06c49b3e-d715-4709-98c8-9bbebd5b6125">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="60763555-a581-42eb-be15-4e94b5454484">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="0d108832-c741-450e-ade3-c11a3c1604cc">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="7ab62015-77a3-4f4e-a580-18e11309a8a8">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="9d3cedf5-e92f-42f6-a85f-15f2907864e8">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="f6f6ee59-4f9e-4858-b7e1-94fd86efd6ff">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="f2e091f0-094b-4b35-92f2-4d249daf399b">
+      <SignalState Value="Green" />
+    </ComponentState>
+    <ComponentState ID="771dcebd-01a9-4d50-aa43-0011174cee2e">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="1d940c28-79c1-4207-8c18-e79ab07cdb4f">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="5da5fea1-027c-4257-8f5f-920f7e83a0b7">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="4a1ce505-efca-4bde-8d05-e7c8c44889c9">
+      <SignalState Value="Green" />
+    </ComponentState>
+    <ComponentState ID="a94e2326-f290-4acd-aa66-804c4f0163b1">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="5474ae2f-b78a-48a4-bfa9-b4a268c96a5e">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="9a4d483a-0803-4230-8cca-313fb9b2bd35">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="a23d7b4b-3419-4b2b-80b6-7b5e5e968c57">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="bfbb40d3-ac17-4231-8dd5-476155cd9587">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="56f02f47-21d3-405a-a111-3cf76fdb1f1f">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="0229fafc-dbfa-4cff-8c55-fe09bf6c3ec3">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="bb4b0bed-4f5a-435a-ab69-5570e13b8046">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="c51ebd33-a70f-4b16-bd6f-5962b89aa0aa">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="96d2ff2c-0704-4645-b79b-87dcb7f9c881">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="eb9bfd61-4135-4582-a03c-57cac914ad68">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="be5e0930-a986-4a39-a79f-a95475f6d09d">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="176ba495-39da-4482-8c05-21a8e9b2802d">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="78554c4e-0f68-486c-9613-2dcf85262617">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="a5f1bb0a-e3b8-4be9-bc73-0d761dcd8d82">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="0b564116-f041-417c-ae76-872276118af2">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="840dff5c-3001-422f-a284-30f640c071f7">
+      <SignalState Value="Green" />
+    </ComponentState>
+    <ComponentState ID="94c64843-d97a-4369-b315-89034578d400">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="a4a3f0d2-f022-40a5-ad07-0967000b2e51">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="cedca046-1884-4a00-8a78-e899518ca7aa">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="e60c2076-b122-4ced-82f4-56ca3156701b">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="eb573883-fb71-4ccd-a844-1b4248e475bc">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="c9d9eba0-fb0f-4c71-9fdb-b79795c8a661">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="dbf12b77-128d-42b1-b708-18b40fd1f443">
+      <SignalState Value="Red" />
+    </ComponentState>
+    <ComponentState ID="51597dce-2abd-4e82-9cd4-78da4f80a2f8">
+      <SignalState Value="Red" />
+    </ComponentState>
+    <ComponentState ID="5429e113-de5c-452e-bf5c-bce20c3390ad">
+      <SignalState Value="Red" />
+    </ComponentState>
+    <ComponentState ID="6eb9e905-ec3a-414f-a659-2ef72929a8a9">
+      <SignalState Value="Red" />
+    </ComponentState>
+    <ComponentState ID="f22d5a69-c21e-437b-8e54-17fb026c7c65">
+      <SignalState Value="Red" />
+    </ComponentState>
+    <ComponentState ID="1b389f16-c8df-415b-9a6f-e35bfe08f35f">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="76e1257b-1c10-4bb7-844b-1799554d06f3">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="d5f2ff8c-d95c-4089-a3bc-17ff37b64b19">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="60ae3d47-2147-4f1b-81ae-7bbd78b2a362">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="f140287c-cadf-40b2-ae4c-ff695b42bd70">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="0b9d62c0-9529-4c04-abba-7c220da223d9">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="733fca39-43c2-4ffe-98da-d3561f08dcea">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="ac64bf58-5173-4c19-96f9-2625e65e2f1e">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="a22aca18-62db-49fe-9b26-a7f03478a7cc">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="62570b82-e430-4b7c-9813-f22129e049c3">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="f4fd2e2c-93f9-4111-97f8-3b9205fe2328">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="218e7eb9-c86c-4dd8-baca-458adbbfc810">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="df2b3473-21a1-417d-bcfa-7cbf9276123c">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="3bb9c353-9b5b-4fc6-9e64-6078b0e3791d">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="23224b9c-d081-4a42-bcb7-ddf8df9d013d">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="1f471950-814a-477f-843b-afeeb6749a72">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="163f01b5-2725-42fe-88bc-bc559c84066f">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="48fcef40-4c9c-435a-9def-08ea703c0578">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="472d63cd-0d33-443b-a6b9-e81a1205a270">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="fb0ac504-99b1-4fee-a672-22d711d46f55">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="1b767c3a-1704-456f-9d80-f312cc7f7402">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="544fa2ba-e268-4aa6-b16d-941fc2777af6">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="fef014ea-bc12-46e4-a95c-3390d3d01e3c">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="ba17f26b-5aff-4373-97c2-301a1a66cfa4">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="928258e4-b482-432f-ab97-6ea9fab43623">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="d47f77fb-40f6-42dd-b020-7befd55fb3b4">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="539d55c1-c80a-4875-b9e6-68752fd6e2b2">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="60afebf8-875b-46ee-86d4-4c35ff232f3a">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="aaa0c917-5c01-4228-82d8-241cc5a21ac9">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="f2916de8-a81c-4aa7-820e-c09ed05b19a4">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="5a59e0a8-78be-4680-91b7-5123178c3115">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="1031e0aa-9201-408a-82cb-816d8bb75fe9">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="f654224e-c756-4096-8806-f7a8e576ef42">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="f7fdafdc-8634-4b69-9753-1d55e4d91a88">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="aba8926a-06ec-4fae-85f5-b6d562842eb2">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="b761a4ab-80c6-4ce8-b7d3-b5a79230332c">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="c13937ce-7b47-4107-86a5-c57acda3b6e4">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="edcf29b7-1a31-4af1-bb13-d9c3c9e2a974">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="b152c878-0244-47bd-bb7d-4052126ba4c5">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="bd2f2ac9-af97-49f6-a7b6-ccffa410d91b">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="b2171e31-888d-4d51-85bd-924cb8da3b5c">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="74240003-ef11-4a36-98c5-6358cc323334">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="b48e2835-2d2a-4d00-a3cb-37b20af4c240">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="7ee2f762-50a0-4730-8257-1e68cc13ac94">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="b8fb0b7c-228b-4042-acb3-de9222f952a9">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="201ccfcf-72cb-429d-87a5-8e3540a37471">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="c195a90c-5a92-4c1b-af44-6269362a5814">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="364a36bf-2248-45bf-92ac-96d99805d789">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="186d6bb5-541d-453a-b16b-5a78effd676a">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="8ef47b39-b9de-47d7-a7a4-646fc0d54a5b">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="3245ba07-daf8-4707-be6f-af70f6e554e4">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="676d5b26-f4fb-49aa-a87b-3f75066b92de">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="da0ee8e8-6033-4550-93af-a3a619d591c8">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="ffab29aa-fc25-4723-81d2-df45fad9ec5f">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="02e1dab8-cc63-4373-9d9c-2782fd17e4fd">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="5c6167e0-13b8-4e84-b0e9-3e38c2764a12">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="f6af6702-a8c5-4376-962b-a97aca5ec2a7">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="1c9b94a0-5a72-4e3c-bf45-57faece8b6e8">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="4fc93e67-948d-4925-a335-e206f7e96569">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="eab91a8c-975e-46a2-a216-9eb0920bb370">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="dcf45b14-34e3-477c-808d-7fdd22c5374b">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="53034f89-c80b-4755-bf21-c08d47d37cb5">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="334af9bc-1db3-4ee0-a496-6ac55bf9257b">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="66e728ae-c67e-4df8-b58c-c4e5bf2fcd74">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="a1c03bf0-7e76-4dd7-9ed4-9134dce004b2">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="693f2c69-bff8-4f1f-aa0a-8d85e14f3c47">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="a53cbf42-0ff1-4db0-a671-8bf558fd7913">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="e663cbb3-2b88-496e-95ba-3953d3678760">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="02fe21d9-0d8f-4b89-a92d-1557d64a01ee">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="cd9157b0-cb1f-4f22-ace4-b70639282a91">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="497d944e-e74f-4c2d-8872-5c250ba66cae">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="dca2e911-f619-471a-a036-174a7256691e">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="2f6775fc-6fc3-447f-a969-0ae35109df1d">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="b5274020-47ff-428a-8ca8-a39fe94ea48f">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="d29a95c0-fbc1-45f1-a6ba-774f89cdf88b">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="143c9668-4915-416e-857a-d678d6ab8ee2">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="abc29c05-1a38-47ff-8626-3483b12cf855">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="b9e3447f-9942-4088-b5de-d83a7d3e1048">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="a42ef1f4-dfd8-4c31-b700-ba0c5dc8365d">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="e1f73f9b-8257-4fce-a841-2a0d71b6c11a">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="28071784-f531-4f06-8025-dce257d30bb7">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="ddf92c8e-51d3-4986-aff2-e5b64f7493d6">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="ee142a70-cab3-4d90-96b0-1b0210f66d1b">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="0bef432e-2b01-4499-a0e3-1e3258abb66a">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="33cc6e17-8a0e-4afb-9561-1c3d961d8cf3">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="21cfdc96-81d2-4a59-bf09-fb72f1fc8e8e">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="b6fcda5e-99d4-49b8-b9b6-756c236eb1b7">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="456e190b-6ad9-4009-a9cf-4ba88d1847c3">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="f049a394-6a4d-498d-bb99-0e4ac7ec22bb">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="4b99c212-3690-429a-a3a3-6ca402518dd9">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="3c8c2590-6b4b-4167-a988-2c06c2f709c4">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="9944520b-10c4-43be-90ea-75f9bca706a3">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="571d6bb3-2816-4256-ae32-b4e3cb9ccc49">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="0e43fbf0-d106-4d45-9dd1-e95be3549a82">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="80915529-256a-4d3a-b95f-f701486bc5a7">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="a9af9178-5cce-47d3-9070-325264d857de">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="c581f50e-34da-4a9b-9e5a-5a7674e7922c">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="bbdc877c-1f49-4f4d-8fd2-9c2e57ebf12a">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="7f6e99e5-97bd-4b9f-9fb6-68e3b01b95d4">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="502ca405-eaa2-4bea-a379-511ea2a6e896">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="47a3cd7f-f330-4485-a109-cb3f2baba9aa">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="1dce56dd-4eae-4d75-8220-471b623f4620">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="ee64c06f-ef62-4ab1-85e1-b295f5ba77ac">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="9b3fc76d-a0c0-4a81-aa91-1c1af38e3c4b">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="b33346cd-7dd9-4620-a82c-c589c7f28e86">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="cd0e7bed-479a-4099-8618-408f2060a2b7">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="535899d7-830e-4772-992f-c8d1f54ad8e5">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="a8be073d-8094-44cc-9dab-cbed43f4b71e">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="d7596072-1a23-4828-9aeb-a720e8480693">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="dd2108ca-eef6-4823-81eb-833b7b387303">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="5190f463-5b63-49f2-86fc-f620f68c40d6">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="450c5ad8-9079-4fa8-ab21-a1914bac1465">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="3330fe9e-e848-4097-8e49-4b09597b0ac6">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="d225afc3-91cc-470b-9acb-34e23fd0443b">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="7a320b41-f7ce-487d-a18c-55ae2e898301">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="c4a1bdb5-28ca-4427-8ade-f45e02335dc2">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="c53f66e2-154e-4655-9fbf-0f63cfabe717">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="f10e6848-633d-484b-9795-b68e7071c00b">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="3f185f20-f323-49ad-a7e5-d44d11083c8b">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="fdcce31b-f1f9-4ec7-ad5e-2053e7054d72">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="611be9ec-6f9f-43fb-bbe2-1f57ab0ed4be">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="951ee03d-4001-4682-b4c1-56c3e9cb6efc">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="8da14963-1df0-4f2c-9329-fe5bc7cbf720">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="b942e062-5c34-4123-a533-9d43e8f5557f">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="bbb4193e-3c60-4d1b-a40e-4d63c99f62f4">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="6562f185-bc1f-4ae5-9cf5-ec5d944bbe38">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="4d3fd741-767f-4289-a89c-ca8310a88a7f">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="7ab3e447-1c09-4d83-92b5-a648aaa524ea">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="1778edc1-8b54-4af4-a046-66c2f7489ce4">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="04172f82-f20d-4645-a3df-1b80df23ad34">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="9af332d5-a725-4b02-80fa-d7c3ace6431e">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="c37c5d37-a135-4220-bb88-4a3c2f42eaa9">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="7aee519d-f2bc-4a2d-ad0c-4b8278176320">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="e59ed1ec-9c04-415f-a29e-48546ae7b068">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="dc34718c-68d2-47f3-aafe-7f83bacb3927">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="d0309347-7fd8-47fd-8558-700de9778341">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="8542d284-a55f-490a-964e-5b9bd29c8085">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="33b6180a-103c-4ee7-98ad-40fff9b5efe8">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="c58391d2-5a7d-4344-b390-b5f36b5759c4">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="47310cc2-68d3-4b6a-b28a-8a8fe748db55">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="823931b4-5c96-4600-b7ab-4907686cfe26">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="aa381515-3b9f-43a1-ad9a-0970c50be7a9">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="3726c5c4-7140-452d-a597-94b5f13d016e">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="b7c9e443-1f6b-478b-bc85-03ba999742c1">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="64d3f4cd-1c43-4834-b626-a6ea63a3500f">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="93b2ee54-c86b-41a7-ae6d-e46ee3a18e47">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="857ec487-9a87-4d27-8900-f025cb2aeaf0">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="256ca7e3-3c64-4b75-bc93-3b270fed4ef1">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="3483e856-cd09-49c4-a515-41e7bf1cd5c4">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="71809a57-6afd-4f58-9158-30b4ecb8be7c">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="146954a8-7947-4207-b559-fd0a564e6a18">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="b393879d-1df9-455e-9cfe-fd628ccbdb48">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="0d8a4ff5-68c8-4033-b619-377d3153f0cf">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="f546a86c-a6df-490a-8c5a-6b3e0f4e390c">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="a9493b1f-2b79-4b21-9959-de6bd62da5a6">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="4d6b73fa-ce30-4478-bc51-d638cf2b6278">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="349707cd-f00e-40b4-aa80-f12117a5bc73">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="7723e686-a329-4c94-be91-e38426f6d71d">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="01e409a6-2569-4f64-948d-3a12392fa62d">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="aa8b02c4-6108-436a-92f4-3f7eb15e629d">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="6bd8940a-c0fe-42c8-8df0-0c51031fff79">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="3ce07226-a1c6-492f-bb78-e986932c8a65">
+      <SignalState Value="Green" />
+    </ComponentState>
+    <ComponentState ID="60c5627a-b7b1-40b4-896f-831ad1864bb0">
+      <SignalState Value="Green" />
+    </ComponentState>
+    <ComponentState ID="1400bb26-d6a3-4b6b-83dc-e751b5170c29">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="fb54e9bf-ccc6-4019-9199-caa0f4f7245e">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="e472ea50-d1f8-4337-a18a-bd3f4334d84c">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="bdb388a4-7e7b-4629-86c9-c3c8de795970">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="2ec2c437-c6fd-4617-827c-9603d38c03e8">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="e76c8f73-e6d9-48c8-a460-7fd03f979c8d">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="4b359160-53fa-4361-861e-6f60af8c5b00">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="6a34fd65-a132-486b-a7bb-73803b0c6a62">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="29b1d2b0-9c37-4f4e-bc17-f05ba929f6a2">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="65985597-c96c-43bb-b722-f6b43a3ffc40">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="c3d7a325-1420-4d30-89d5-ff0e0325d735">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="7d01a629-3e0e-4642-a8cf-90adc2746260">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="ec750485-ad69-4891-8d38-b135b98166d9">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="adde314e-b63b-4688-9ab9-a2f41b719027">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="28bcca87-3f6c-4c9e-bf89-8b97180aeec6">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="1f6e1c75-7959-45bc-8619-993ebb7a162d">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="86da0857-5152-4bad-a868-36cc5d32a1c1">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="fedb2c1c-265d-422f-8a78-42a36344759c">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="b91fa61c-51a1-41e9-9314-3fdda06304ec">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="efcc3a70-e07f-4ae9-afec-4ddab469e9fe">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="1d4d964b-a715-44d1-8611-60d426749525">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="412136dc-5834-4057-b1fd-6c21f5da18c7">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="45426b6d-8edc-48b7-a23b-12fb767a9292">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="98b5152a-21d7-4aec-ad57-7c01843ebb9b">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="92f75173-e1e5-445f-b9fd-8803c1272105">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="82759eac-ded9-4bad-8152-b94449c6130a">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="838b944d-bf82-464a-9ffa-6d6de80044f6">
+      <SignalState Value="Green" />
+    </ComponentState>
+    <ComponentState ID="17f4fe49-226f-4503-88d5-506085e5aad2">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="26e40b9d-b6f1-487c-9993-879918c03e76">
+      <SignalState Value="Green" />
+    </ComponentState>
+    <ComponentState ID="a56def62-e3e6-4c12-a905-4fa47b2b41da">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="db4202c2-6597-499b-932b-8d92784c49ef">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="bd871542-a584-4960-80ab-b68a6e4831a6">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="72dfd7c4-f666-46cd-8b1d-096c37eb5cfa">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="1ef64575-89c4-45d7-819e-3c2b10a0d921">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="b4569670-4516-4e80-943b-6550e8838c72">
+      <SignalState Value="Red" />
+    </ComponentState>
+    <ComponentState ID="0528578b-4aa7-47aa-8020-328ff7c87e75">
+      <SignalState Value="Green" />
+    </ComponentState>
+    <ComponentState ID="d4c1255f-f9d3-4c7c-981b-736adf96f090">
+      <SignalState Value="Green" />
+    </ComponentState>
+    <ComponentState ID="fd9f5dca-3e56-441a-87f5-614d5573e278">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="495f9ba8-7697-4fd3-97fb-619d2c449f9e">
+      <SwitchState Value="0" />
+    </ComponentState>
+    <ComponentState ID="08e60cf1-5fd9-45f6-bd85-966bb6625253">
+      <SignalState Value="Green" />
+    </ComponentState>
+    <ComponentState ID="cc402655-ecc7-4f59-b66f-8fed73a70e7f">
+      <SwitchState Value="1" />
+    </ComponentState>
+    <ComponentState ID="74aab004-4f9f-4e86-80fa-85511b1972b5" />
+    <ComponentState ID="ecf0c895-475c-4105-8303-9b713eadbf16" />
+    <ComponentState ID="7ef1e94c-6697-4384-99d5-f7c79986ab4c" />
+    <ComponentState ID="e29fc779-0d38-4189-9057-2086456814e3" />
+    <ComponentState ID="5cd08971-424d-4cfa-abc2-e92bb6351c84" />
+    <ComponentState ID="8065934e-2eee-4538-9ab6-4004ccdfa151" />
+    <ComponentState ID="ffe6754d-4da7-4777-a961-22ec1644068b" />
+    <ComponentState ID="04f48756-5937-4470-ac52-137fc9529bb1" />
+    <ComponentState ID="b5874115-ef95-4d34-b9f0-3bc947837197" />
+    <ComponentState ID="0c5fb404-8daf-4707-b944-1542e833684b" />
+    <ComponentState ID="8ff20e1e-f168-4555-987c-12b26bb557b8" />
+    <ComponentState ID="4d716973-0886-4738-864a-1801cd9dea20" />
+    <ComponentState ID="63619e86-4e03-4acf-9e65-95f2452a92b5" />
+    <ComponentState ID="2ab2c975-cd2b-44ef-be29-60973372b931" />
+    <ComponentState ID="17d492d6-0756-41ce-83ca-f2fd7c697fab" />
+    <ComponentState ID="cd9a0faa-eb27-4e47-90db-f176f038716d" />
+    <ComponentState ID="4de2bce2-1679-4a2a-9c0e-62c67d43c298" />
+    <ComponentState ID="01b3b5ce-3885-4b45-88a5-ca810c03950e" />
+    <ComponentState ID="26c9d038-1336-454d-804b-0475843ee784" />
+    <ComponentState ID="06434ac8-fb7d-4b57-8dba-27981f6c56f1" />
+    <ComponentState ID="0e55cd34-fe81-4f21-953d-7cf0519c006c" />
+    <ComponentState ID="ea766115-e2d3-4e54-8d93-a2d885b23e6c" />
+    <ComponentState ID="ff150c1a-71ec-4b21-a2da-ef3481c6f8d4" />
+    <ComponentState ID="c094163b-f81f-49fa-94bc-95f0a43cf7ba" />
+    <ComponentState ID="f68251a1-59cb-4c56-bb6c-6a50c057d261" />
+    <ComponentState ID="bf5b9f7b-45d1-4324-810d-aacf7425e152">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="777e7d07-841c-44c2-a2eb-3a02554d93b7" />
+    <ComponentState ID="80f2ad58-a3ed-480f-844c-359538d078f7" />
+    <ComponentState ID="db01761e-78f7-455b-b7d4-99f5375720ac" />
+    <ComponentState ID="5bcee5bc-9fbd-409e-9640-4741f92f09ba" />
+    <ComponentState ID="a6d79983-2f7c-4325-a2ef-e96f4fa6152e" />
+    <ComponentState ID="8aad8ad5-f4af-499c-b72c-f9ca91dd84e9" />
+    <ComponentState ID="caeddf54-b7ab-41f8-85e1-e3555033a5ff" />
+    <ComponentState ID="0fa66c95-0b9a-411a-97ef-35939e7fcc09" />
+    <ComponentState ID="b43f1722-5342-4c8f-ad9d-b3ce611529c3" />
+    <ComponentState ID="45e4e51a-3204-4777-9c10-dae1b47d14f1" />
+    <ComponentState ID="e4d8dbca-201d-4f78-ae64-28257d367519" />
+    <ComponentState ID="24841268-76f1-45d1-80c1-609b1918fc4b" />
+    <ComponentState ID="be7e9634-1d93-477a-9892-7503cf211364" />
+    <ComponentState ID="46a55d5b-71ee-43b7-8b53-36e49321ca45" />
+    <ComponentState ID="38c58dc3-b10c-44af-a568-b4b41fae8bc4" />
+    <ComponentState ID="9a0a3dbe-89ed-4118-aa57-fe78af750c8f" />
+    <ComponentState ID="2cda9def-f409-41fa-95f0-e240160b86ae" />
+    <ComponentState ID="416b5da6-9ed4-4b66-98c0-374d1ca1ebc8" />
+    <ComponentState ID="13dd8eac-5a05-4d31-b3dc-d9fe14e42452" />
+    <ComponentState ID="fe60e1cd-914a-48d7-b052-3eccd8a2be6c" />
+    <ComponentState ID="38bbaa17-2a24-4860-9cf2-633b78bde1be" />
+    <ComponentState ID="81c446ba-75ab-40fc-a5c9-2180974961e4" />
+    <ComponentState ID="66cec2fb-e2fd-4d40-afb2-8e47393880c3" />
+    <ComponentState ID="fda8e5d6-11b9-45f8-940a-3c1229dfbc5f" />
+    <ComponentState ID="8972c2b7-1322-4314-8396-2a86d74f5ae5" />
+    <ComponentState ID="da21cbaa-aac2-4e27-85f4-6619c7ab3d6c" />
+    <ComponentState ID="9506db66-5c8e-4956-9365-daf1c1777fd9" />
+    <ComponentState ID="4985ee24-42b0-4396-82e1-7bad79f39df8" />
+    <ComponentState ID="649a5be7-d6d6-4018-9170-0ebea885bef7" />
+    <ComponentState ID="474755b5-39ac-44b1-899a-c4fe6e8ca8f4" />
+    <ComponentState ID="b913c20e-44a5-411f-871d-768f8a0e48e1" />
+    <ComponentState ID="f528697c-71f3-4521-8816-f08b86c1d595" />
+    <ComponentState ID="0a342c08-81fc-45ad-a340-d83b0f0974e1" />
+    <ComponentState ID="eee0e550-15e4-45b6-b6bb-6323ea199915" />
+    <ComponentState ID="c477ab7f-7dc3-46ef-9287-fe7074c273e7" />
+    <ComponentState ID="6d2132a3-6637-4dd1-92b0-9a83846ac820" />
+    <ComponentState ID="557bcb85-d4bd-4b13-b338-33de22da860b" />
+    <ComponentState ID="2a1152b2-2ed0-4ba1-ad3d-e5b39e4ad44a" />
+    <ComponentState ID="fd6339e0-2ee2-4695-b7d1-41866da7a67f" />
+    <ComponentState ID="ef57084d-5069-49e9-95d5-8f0dbc6c1e3c" />
+    <ComponentState ID="59047be6-76ef-4b07-b8fe-d9a39ac72990" />
+    <ComponentState ID="4e2437e7-0f83-426d-931f-caa17aac3976" />
+    <ComponentState ID="8c69c419-0e89-43c6-bd2b-ed3db0011901" />
+    <ComponentState ID="499f6985-d9ff-4310-aa7f-8e7f94347acf" />
+    <ComponentState ID="fb96859f-e7a2-4a09-af79-eb871ee02928" />
+    <ComponentState ID="fd5a681e-802b-41fc-a5c8-e868e235f1ed" />
+    <ComponentState ID="5f4531fa-241f-44fe-ba2e-aa3632205645" />
+    <ComponentState ID="2e6233e0-ce3c-4b2f-8706-455a4f3f1e80" />
+    <ComponentState ID="0f610eba-7732-4182-9172-e0d19810fd75" />
+    <ComponentState ID="df5d44b2-eebf-4962-9147-dd6be20fe8c5" />
+    <ComponentState ID="714c20c3-fac9-46e9-aef2-a83363249264" />
+    <ComponentState ID="eeef7d2e-9901-4c2d-8631-52388bfab005" />
+    <ComponentState ID="28b63b7e-6def-4525-a76d-4db288c13df8" />
+    <ComponentState ID="f8fc6988-2d97-4087-9432-16713e582128" />
+    <ComponentState ID="8b877730-a477-48e1-9363-354e6d3849a2" />
+    <ComponentState ID="ca8edd3e-82f7-48e8-8396-cf8d898cf3d8" />
+    <ComponentState ID="200bdc9b-1469-49e8-b306-7e6f31058b6b" />
+    <ComponentState ID="960d60c3-8b50-4559-8b1f-559d37b6311e" />
+    <ComponentState ID="45417bf7-49e8-43c2-9264-9c7e16444df6" />
+    <ComponentState ID="3c4e21fb-e527-42f0-b007-631d03afffb2" />
+    <ComponentState ID="d4e7b15d-b5d2-44cf-84b4-64b07ec751c1" />
+    <ComponentState ID="4cdae0af-0fe5-462e-9770-0863e5a2c9be" />
+    <ComponentState ID="01b3165f-ac57-4ee7-9a9c-7a15e11bd939" />
+    <ComponentState ID="71c6f8e4-9439-4c97-b70e-a2aabd77436a" />
+    <ComponentState ID="6ef14a9b-42a6-40a8-b67d-fce03032a023" />
+    <ComponentState ID="f5e3b7e9-c143-4ee6-afc6-166a248021c0" />
+    <ComponentState ID="e227ae0d-f234-4f6b-8f6a-cf757283fe7f" />
+    <ComponentState ID="dee589b4-4929-4979-b3b3-f57f35d01ea3" />
+    <ComponentState ID="46bd22a9-6c4a-4d81-955f-915ac4eb693b" />
+    <ComponentState ID="fe092da9-b33a-4725-bf80-289ed2c7841d" />
+    <ComponentState ID="acca8b42-fee6-469f-b828-c0ac081d5638" />
+    <ComponentState ID="627be70c-13fc-4c7f-aa5b-c87c0db41dea" />
+    <ComponentState ID="b3345888-00c4-4a8a-8586-c3c34f65c63c" />
+    <ComponentState ID="464315d3-bfd0-43e9-a77b-58b7c6a6b3bb" />
+    <ComponentState ID="2e5609ec-47e9-484c-966a-8bc8e050789f" />
+    <ComponentState ID="a4f0a791-d04c-4e14-94b5-661bd405a24e" />
+    <ComponentState ID="78e24d4a-bc33-4d2d-9c76-c39fd080dedd" />
+    <ComponentState ID="15dc5468-4934-44b6-a971-55f1ef984f13" />
+    <ComponentState ID="8692570c-cc86-4720-be35-17b82e05dd84" />
+    <ComponentState ID="7b232ce5-d675-4b01-94dd-d193fb15e3fd" />
+    <ComponentState ID="74dd3f7d-ec57-4179-aafd-f793ce1ae8a9" />
+    <ComponentState ID="d9cbcc67-6e7f-4cbd-8ac8-0d2b89ba896f" />
+    <ComponentState ID="3a79d038-64b5-4ac3-a522-0c2b1ad0bd36" />
+    <ComponentState ID="c6ab3891-9c89-46c7-93a1-1882c124b9d8" />
+    <ComponentState ID="dd811945-4f65-48de-ab0b-27012989e010" />
+    <ComponentState ID="3e4409f3-0156-441e-b7d0-fa6632edc8a8" />
+    <ComponentState ID="c008a40a-a81b-4f13-9317-5695651d2ba7" />
+    <ComponentState ID="6f47bb3a-b68b-479a-bee1-dddfda10649c" />
+    <ComponentState ID="3dae6b78-33e8-4e98-a27e-189a30757d45" />
+    <ComponentState ID="3a026e7c-d72a-4c37-859a-14cdfacd11db" />
+    <ComponentState ID="4119a5d8-4d6a-4741-936a-f91990ebf0d6" />
+    <ComponentState ID="d87dbf6f-457e-43af-8bd0-f24fef8435d0" />
+    <ComponentState ID="af6ddc67-984e-4384-b36b-695003db7a6f" />
+    <ComponentState ID="5ae57509-52af-4dac-b440-8b3813498304" />
+    <ComponentState ID="d2ccd255-e5ca-4625-a78a-f2cfc0d6aa67" />
+    <ComponentState ID="c10b4560-901d-4fd9-80da-2f90ce3508c8" />
+    <ComponentState ID="fc457632-5f91-4ea3-a795-30d9dc287e4b" />
+    <ComponentState ID="bd4ed204-0422-454a-a475-899a14d7275f" />
+    <ComponentState ID="315be1a2-82bd-4477-a73b-66b05dd77197" />
+    <ComponentState ID="81d48043-8e70-4ae8-8137-eba2f696c00b" />
+    <ComponentState ID="6b99bf7f-c644-4402-a306-3a8677788643" />
+    <ComponentState ID="be929249-1848-4021-9389-fc21c7c2fc9f" />
+    <ComponentState ID="21d39034-321e-4d92-bbfa-a5ef7b24727b" />
+    <ComponentState ID="f9297216-8cb1-4747-9ad7-5c57b8d1b43b" />
+    <ComponentState ID="81f66df3-3754-4299-8c67-d2b472223b72" />
+    <ComponentState ID="627b556f-c838-43d7-800d-7320a529466f" />
+    <ComponentState ID="bbe254a2-9a99-4c64-8b7e-2278775516df" />
+    <ComponentState ID="7bf52799-d8ae-4b81-8a90-e4617309ff67" />
+    <ComponentState ID="fb79c884-8bcd-4655-a96a-7c9ce8772225" />
+    <ComponentState ID="8678c766-dd7b-4561-8a11-f8fd2480d8a6" />
+    <ComponentState ID="547f8a5d-b721-4ac1-bedc-79c2ff62ca73" />
+    <ComponentState ID="f4b3e303-defa-49bb-9814-a92814e24eb4" />
+    <ComponentState ID="8a1685cf-7477-4269-ae27-e4b6c5b701eb" />
+    <ComponentState ID="981fb4aa-4e34-4dff-b09a-20e120fec36f" />
+    <ComponentState ID="4f487307-e54d-414e-9b30-de54e8cdb13c" />
+    <ComponentState ID="7ed9ad2f-7725-44d5-98db-d0387ea60434" />
+    <ComponentState ID="4dbb58fd-307e-4efc-9d0a-d5d138e60f51" />
+    <ComponentState ID="7865df4f-42bb-43d3-8827-5fb26105a913" />
+    <ComponentState ID="c52ca4dc-5e0d-4015-85ac-4c2c39b3a435" />
+    <ComponentState ID="a52827ed-045f-4f5b-ae32-a6e4816f9fa0" />
+    <ComponentState ID="1766137b-faa8-4dbe-a0b8-371af2a649ee" />
+    <ComponentState ID="24447d4f-26fd-4716-a003-0b1f8e8820ee" />
+    <ComponentState ID="1c4a0643-f7af-49f8-998d-9d2e3b3b4c78" />
+    <ComponentState ID="9bb9ea92-0215-46e0-bb55-9230e505574a" />
+    <ComponentState ID="d3d894d5-49d5-4e1b-bfb6-d62e9f465dc9" />
+    <ComponentState ID="963ff122-997b-415a-9317-0d4e471decc3" />
+    <ComponentState ID="f5cb0567-93ab-47c4-b7a4-49d959d81639" />
+    <ComponentState ID="1aa872e4-5cba-4c7b-bcf3-39ff688e3089" />
+    <ComponentState ID="fcd10db8-bd95-45ae-89eb-a9821ad2ad6f" />
+    <ComponentState ID="a1a0dddb-f656-4f59-843f-e449a6863f90" />
+    <ComponentState ID="2708e2d4-d23d-4161-a586-889fe700b5ff" />
+    <ComponentState ID="232c684e-b2a1-4182-a45e-9b21130e6ad2" />
+    <ComponentState ID="fc5cfa3b-8eae-4a94-930c-c4412f7636d0" />
+    <ComponentState ID="a3880163-b862-4270-bb60-c25d03aa318a" />
+    <ComponentState ID="26e3bb5b-c31f-41a4-902f-78da1a36bcd0" />
+    <ComponentState ID="0e47f28a-014e-441e-9f86-9891e463b407" />
+    <ComponentState ID="3e183da4-e521-4108-80a3-29649b91dd2e" />
+    <ComponentState ID="109a893b-a5f7-409f-9974-1f49b71e91a9" />
+    <ComponentState ID="ef97bf44-9f35-450e-8870-fb6be8094370" />
+    <ComponentState ID="5a326b24-7729-4890-8095-55bf628a4b5b" />
+    <ComponentState ID="93ac13b5-8d79-41cf-844f-f03eea392e5a" />
+    <ComponentState ID="e7fa4f49-2890-405b-9a91-eebffec790ca" />
+    <ComponentState ID="394fa0a2-d66e-4386-aed0-599cec3d5ece" />
+    <ComponentState ID="5331bf10-f614-4f41-ab98-0771ea5043f1" />
+    <ComponentState ID="7f732002-6975-4535-b965-5c4e3d32f902" />
+    <ComponentState ID="2fe1a5bd-06e8-4e28-ba7b-1540accda487" />
+    <ComponentState ID="b3ac2de4-b071-482c-994c-35a6ca8ece16" />
+    <ComponentState ID="3a684faa-42bd-44ae-9594-8428bbba99fe" />
+    <ComponentState ID="57e59815-7bd1-4b14-b26c-29e76b9db838" />
+    <ComponentState ID="3a6c87a0-13d3-428d-bb24-757efb606cc5" />
+    <ComponentState ID="945b0a7d-06e4-4aef-af14-9b3616c76252" />
+    <ComponentState ID="858b8c7f-7540-491e-af88-b2b29c849a7f" />
+    <ComponentState ID="b269ca2e-6908-438a-81dd-39e04afe75e0" />
+    <ComponentState ID="91c33c45-b27d-441d-91af-ba655970a307" />
+    <ComponentState ID="60270502-66b7-420a-a454-0f9fd0fe5c61" />
+    <ComponentState ID="854804db-3c25-47cf-b61b-31484e691c6e" />
+    <ComponentState ID="dad1aaf6-af16-40ca-9651-38aa1e5edb9a" />
+    <ComponentState ID="ec058d60-fa95-4edb-85c7-fbb2fc14e079" />
+    <ComponentState ID="d45b2781-0f71-4366-8667-1276b4946d31" />
+    <ComponentState ID="7b7dd5b3-1c31-47df-a857-9397079180ef" />
+    <ComponentState ID="83da7293-16df-41d3-aa2b-7317384e53e2" />
+    <ComponentState ID="a04efbe7-05ee-49bd-9b8d-b24bfbf6e85e" />
+    <ComponentState ID="a7d34e98-6dad-4e67-86db-4517ecbd168a" />
+    <ComponentState ID="9a7263cb-de8f-472b-a2d7-d9b9a026c537" />
+    <ComponentState ID="7025dbc4-26e5-4b29-9f3b-a0238c6995f0" />
+    <ComponentState ID="5763cd5e-3e92-4580-b308-5e82d5795476" />
+    <ComponentState ID="88591fe0-32c5-4ba4-b3dc-cf13f6422be1" />
+    <ComponentState ID="92f02687-ed2e-4eeb-b5f7-1e48c875dbdf" />
+    <ComponentState ID="e59ff903-b5d4-43e7-8a22-b79b09e9a49c" />
+    <ComponentState ID="c013ac00-931a-4c8c-9d52-88e668827205" />
+    <ComponentState ID="30ad857c-954a-4858-a3aa-afa91c8585ef" />
+    <ComponentState ID="d5a2dead-252b-465f-b3b2-39d619eaae62" />
+    <ComponentState ID="08f362cf-553b-4995-b90a-881172109489" />
+    <ComponentState ID="3956724d-d824-4edc-b701-5094c2f42a6e" />
+    <ComponentState ID="dc700392-aa3e-451d-b409-d867f774c3ba" />
+    <ComponentState ID="e4593398-14c6-4786-96dd-01c704b8bd54" />
+    <ComponentState ID="8b419446-8326-454c-a6d2-be22acfe2088" />
+    <ComponentState ID="fe0aba4e-7a3f-4df9-9e13-47ad48110f56" />
+    <ComponentState ID="994d82f2-5955-4a71-b582-13cfc338fc23" />
+    <ComponentState ID="99d4aa3e-fe25-43f4-a2a6-09d3bd570c51" />
+    <ComponentState ID="6149f346-dd77-4e56-8897-d080007e449f" />
+    <ComponentState ID="d1819d2b-c584-4c86-b2b3-0678d44b93b8" />
+    <ComponentState ID="ad1586cf-4d47-4ac7-98be-2175c5bd48bc" />
+    <ComponentState ID="26e5cb9e-65d2-41d7-bf9c-d2a4cca7d6aa" />
+    <ComponentState ID="290eaa67-dad6-4539-99e5-a57bfa50a62a" />
+    <ComponentState ID="2377e32c-288d-4aae-bca4-5122604261d1" />
+    <ComponentState ID="8d6d991e-2e1a-474d-b5f3-f0360f11bd52" />
+    <ComponentState ID="2dc95c23-d83b-4ac6-b92a-bdc858c2b5b7" />
+    <ComponentState ID="de5605ec-70f4-472b-9a70-e013d9317fac" />
+    <ComponentState ID="006d29bd-a325-4905-afac-b953694ffb40" />
+    <ComponentState ID="155b4d61-17ac-4368-b691-8dd18b52dc89" />
+    <ComponentState ID="bf0f94e0-0ad6-4ba3-a104-4b358ef12338">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="619dc396-d424-4099-8418-06fac855905c" />
+    <ComponentState ID="42974950-678d-4ade-9d2c-eab4a4470c5c" />
+    <ComponentState ID="5f6527a9-62e1-4754-8a29-7a8ce15a904b" />
+    <ComponentState ID="346bfd00-ca01-4cab-8297-57a54aa03778" />
+    <ComponentState ID="ddbf301a-fa28-4659-8199-ecfef28ea15a" />
+    <ComponentState ID="8487c379-915d-40c6-ac17-9e2a92bdc236" />
+    <ComponentState ID="8871281b-707e-4391-b483-132ee78ea83d" />
+    <ComponentState ID="d535f14e-cb9e-44a2-9069-15ed16214369" />
+    <ComponentState ID="b2797bf7-a3bb-4ec1-8440-2f43cf2b2b49" />
+    <ComponentState ID="44325689-07a9-4c47-8e75-0fdb60998270" />
+    <ComponentState ID="1529d7d0-327f-4e94-9bb6-6c55a05be677" />
+    <ComponentState ID="06bc1923-4750-464a-8ca7-6fae67f95f12" />
+    <ComponentState ID="b0645f83-6a10-46a2-9a58-ba09b4019cd7" />
+    <ComponentState ID="de2b1775-f3e9-4e55-a165-68b33d006336" />
+    <ComponentState ID="affda16c-a0ed-432e-a6dc-31f7c0bed341" />
+    <ComponentState ID="e967b3c8-f954-471d-b950-455f55eb6bf9" />
+    <ComponentState ID="ee044f2b-3b85-472b-a09d-e7d7c5892989" />
+    <ComponentState ID="b0e95531-aa17-4f33-9ba4-d2354d1fe247" />
+    <ComponentState ID="58aac11b-5fc1-41c7-afa1-04baa5932f31" />
+    <ComponentState ID="9122911e-6892-429d-b908-bc52c1aab6d6" />
+    <ComponentState ID="1ff44871-6792-4a4d-b227-269b658d88f2" />
+    <ComponentState ID="9288d4bf-b66c-475c-88b1-8956d0d18e72" />
+    <ComponentState ID="48f7be12-9821-4a33-ab30-8886ab6278f3" />
+    <ComponentState ID="8d8ab66c-6194-43ee-9248-cf1d7e45f9de" />
+    <ComponentState ID="1b74cf72-809c-47b5-81a6-d0c42a79928c" />
+    <ComponentState ID="238dfe0f-a592-4d91-b73c-84e3eed0cfc8" />
+    <ComponentState ID="abc673d8-c2f9-457a-8ce1-5ea2f7c4b089">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="ff8c7bdc-dfc9-49af-8bcf-c186cd77dcd5" />
+    <ComponentState ID="9b2efd5a-dc55-4ae6-a987-0d872ca2b89c" />
+    <ComponentState ID="15c62522-23a2-425c-827d-0917cddf5672" />
+    <ComponentState ID="8d211f19-f564-4ce4-90e3-86afa36775a7" />
+    <ComponentState ID="f97e09bc-d78b-455e-b5dc-be7d50af8208">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="7c340907-4564-4fac-8c72-1a848a4222e5">
+      <Signal State="Green" />
+    </ComponentState>
+    <ComponentState ID="e1099822-c196-40b3-9af7-e0b9c57ff07b">
+      <Signal State="Green" />
+    </ComponentState>
+    <ComponentState ID="bec01b8c-34d6-4984-a50c-a539f279f87a">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="56168a14-7ac2-4090-b55e-71288c7683f9">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="17043e86-313b-4bb5-a901-43519974cba4">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="214c3c13-dd1d-4c3f-a92e-287c84a1da97">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="ea4790cb-7dff-48b5-85b9-cfe1545a0970">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="e5162e1f-0e77-4b95-955d-f1d55bff3e41">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="b58b25d5-e48b-43ad-8007-d42a0f58b340">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="4ff6edf2-c69e-4633-ac68-153dacff776d" />
+    <ComponentState ID="c11bd9ec-4aab-4f78-bb9c-0c8264a8604d" />
+    <ComponentState ID="ed1179a0-c0ff-4a3f-a601-0f4c31868b96" />
+    <ComponentState ID="0eab54ee-c755-4cea-9b1b-d0bdb820adb5" />
+    <ComponentState ID="8c40b4c0-40ac-4316-9964-d14b56c51bac" />
+    <ComponentState ID="2baf61d9-e711-498c-b18e-a6f2a9cd3bbd" />
+    <ComponentState ID="7356eed1-35b2-4581-b62e-62096dfdfdca" />
+    <ComponentState ID="8c9b0830-079e-47c8-bf67-c180da4a4696" />
+    <ComponentState ID="8f5f475e-5a68-4415-84cc-c6fbfec172d4" />
+    <ComponentState ID="cd653b30-95b5-4e79-bf91-f55ed8429882" />
+    <ComponentState ID="a8b43880-ff66-4bd2-8c4e-cae4ddedbde0" />
+    <ComponentState ID="e1b4fa9d-d097-4c70-8fd7-d8405a8aaad9" />
+    <ComponentState ID="ef17e373-6890-40de-a8ba-695839e3be27" />
+    <ComponentState ID="5fc6f98f-c293-4353-8c4f-23b3b916eee8" />
+    <ComponentState ID="d653875c-bddb-4659-b363-29cb2407c74a" />
+    <ComponentState ID="86a4190e-b0f9-4816-856a-c5e8b4996120" />
+    <ComponentState ID="85cabab5-aa70-421a-9cf4-5479800a932b" />
+    <ComponentState ID="2852c9ca-b815-4fa8-ae43-f1c1dd243c83" />
+    <ComponentState ID="01bf2d2d-69f4-47b4-90c5-f52c5bd05534" />
+    <ComponentState ID="d45e1438-e461-47ca-be46-6d1a382822b3" />
+    <ComponentState ID="1310be9c-30ff-4fb1-a250-df6332053d18" />
+    <ComponentState ID="4ab3adf7-16f9-46dc-b7fe-3520c933f3ab" />
+    <ComponentState ID="b26093f7-0ece-4fc2-ba8d-31416f5732c4" />
+    <ComponentState ID="b20e898d-b57a-454c-9a07-5a2c687a4da8" />
+    <ComponentState ID="8944db4f-e4f1-4251-a38a-a51128ba533d" />
+    <ComponentState ID="25865573-505d-4ed6-ab7b-f6b73b56a8c5" />
+    <ComponentState ID="7ea1b85c-0e6f-4e19-b2ab-94b35d26fecc" />
+    <ComponentState ID="9a121dcb-0be1-4fb3-a2de-0a8146d2d43b" />
+    <ComponentState ID="33be9e28-baef-4a9a-b5d4-ea57403b88f4" />
+    <ComponentState ID="01fcb0bd-9ae3-4e9b-9f5d-d5d4c263f44f" />
+    <ComponentState ID="968d8bca-3a57-4848-b3e5-81e7208bf6cf" />
+    <ComponentState ID="df1c1afb-796e-461b-923e-1f53f96c6aca" />
+    <ComponentState ID="aae04e44-f1e5-48f2-bd9a-5c1108b4159c" />
+    <ComponentState ID="c52a01bb-0ef7-42da-a3fa-f4c06aa15c98" />
+    <ComponentState ID="2c337f87-4e93-48d0-a96a-410edee6e648" />
+    <ComponentState ID="bc2599cc-7c18-456a-9dd0-59f1d71fa9d5" />
+    <ComponentState ID="a887463f-571d-45f0-8c01-d4cd95eae6ec" />
+    <ComponentState ID="b9f9f76a-f5b6-4a69-87a1-f08a99b3fd1f" />
+    <ComponentState ID="97426bc6-8567-4834-96da-a7a0893efdb7" />
+    <ComponentState ID="788b7625-0126-4fdf-b3fc-4227932b0704" />
+    <ComponentState ID="ca5bf053-982f-4d62-9626-5ce1b3f35288" />
+    <ComponentState ID="d2156f61-a6dd-4c4d-afcd-c2013409d692" />
+    <ComponentState ID="73a8861b-76d5-4cbd-be79-5c726f6bb778" />
+    <ComponentState ID="78ebc341-30d3-42ca-9a59-2fc0640c15b3" />
+    <ComponentState ID="af75b09b-e77b-4b70-baac-aa8a718c2491" />
+    <ComponentState ID="64fa5819-d6ff-451b-93b0-6e4bc52e2f5d" />
+    <ComponentState ID="20ca7adc-8c02-42e6-9a1e-5b9b7cb516b9" />
+    <ComponentState ID="2dc03450-d98f-4d35-bb21-c0e1220fb4d6" />
+    <ComponentState ID="bbf55d4d-4957-4289-920d-949e26cf9427" />
+    <ComponentState ID="c00bc4e8-39be-4e3c-ad33-ad77a13001e7" />
+    <ComponentState ID="901fd6c0-b822-4a01-8550-ee3ccadc69cd" />
+    <ComponentState ID="75a7238b-58e4-4419-bd1f-b58b9bf20450" />
+    <ComponentState ID="459f9542-9bc5-4c32-8c6a-40031ae5b825" />
+    <ComponentState ID="d04313c4-240a-4b28-91a6-bcfb2df5ce1b" />
+    <ComponentState ID="045a1f09-ea5b-4468-a9aa-f83fddfcfe2b" />
+    <ComponentState ID="1fe33c84-450b-45be-ba59-d5acdc5d14e3" />
+    <ComponentState ID="9a0bdbc0-4313-4ab9-90f5-a2f476e73fd2" />
+    <ComponentState ID="5a84d48c-e0d8-4d3e-be19-1332229c3398" />
+    <ComponentState ID="d4bd94b5-00ea-4c49-b090-5c5298014a47" />
+    <ComponentState ID="51f99e28-1704-4b02-9748-7afe8dce0057" />
+    <ComponentState ID="0fcbaa3a-0a73-4d47-8720-057a5c7c62b7" />
+    <ComponentState ID="6f6624cc-31ef-4557-a498-22fceddda5da" />
+    <ComponentState ID="169d6d87-4d37-440e-89f0-0ec6c241d239" />
+    <ComponentState ID="d2cb9195-2f0a-4386-b61b-e08626aa1e3e" />
+    <ComponentState ID="91e2a503-e6bd-4a97-a909-a41cff53bb54" />
+    <ComponentState ID="9444e794-6569-45fc-b191-92c04ed97186" />
+    <ComponentState ID="9430c4b4-28dc-4dac-857e-256a74eb0540" />
+    <ComponentState ID="03d4aa22-a509-4b54-95dc-30239c5fb987" />
+    <ComponentState ID="3b4b8fa9-43b7-4cf4-bf71-f2a2025eea3c" />
+    <ComponentState ID="661b05fe-8b25-4d19-bc09-26b97d75d176" />
+    <ComponentState ID="2da943ea-3c38-4dfb-9cef-e1fd1a431215" />
+    <ComponentState ID="af8fd157-aa10-44d6-b8a8-29d8cb8c6186" />
+    <ComponentState ID="8554d566-d5c3-48da-b3f1-02512e003ee1" />
+    <ComponentState ID="46b97401-af78-40a3-86f8-8b7fe20116bd" />
+    <ComponentState ID="c2a77ce4-a661-4cfc-871b-682ae680049f" />
+    <ComponentState ID="f6bbec17-29c5-4714-9dec-18be9f9b0923" />
+    <ComponentState ID="f8b87b37-ecce-4350-82fa-97c16b0cbb29" />
+    <ComponentState ID="289b1802-8257-4047-89d3-bf48795c7c93" />
+    <ComponentState ID="a3378494-2318-472f-9081-961bbfe96b7f" />
+    <ComponentState ID="205a9fd7-ccec-42b3-ac19-34ed9708e5cd" />
+    <ComponentState ID="7ce16a8f-d482-4391-98a9-b5b2d294bbb1" />
+    <ComponentState ID="3cd61c8f-fab3-4920-9b28-97542044fc37" />
+    <ComponentState ID="fdaed976-3f0e-4db9-b329-2bac58116372" />
+    <ComponentState ID="759fb820-c216-409a-b1dc-9651ec44cd7f" />
+    <ComponentState ID="2bf75f88-b561-412c-b5d5-d55bcef4e514" />
+    <ComponentState ID="6a5a8e14-2ea1-4423-8fbe-5e6cb7c939af" />
+    <ComponentState ID="caaf7ac2-0dd2-4b6e-a9ab-1d66b21f6315" />
+    <ComponentState ID="7b62923f-17c7-4bc0-bfb3-51eb3e13ae50" />
+    <ComponentState ID="2bc89ab8-2840-4cf7-96b1-cb50a9c21473" />
+    <ComponentState ID="a820f6fe-549b-4724-8cb2-735fe501babf" />
+    <ComponentState ID="cb04ead2-96cc-43fa-9292-8bf8c978b03e" />
+    <ComponentState ID="1a1fea7e-bf1e-429b-af55-c520a5c2fb40" />
+    <ComponentState ID="ffd1bb7e-0df9-48ef-97d1-8077c759ee5f" />
+    <ComponentState ID="50e8b00d-cd14-481c-9982-c7dcd0cd4dc2" />
+    <ComponentState ID="49bdf334-43a7-400a-9c37-eb0df9f93b4a" />
+    <ComponentState ID="c5a5d7c4-c837-406f-8e6a-66ad744b276b" />
+    <ComponentState ID="36979cf8-6314-4763-8a3c-19e1c6742013" />
+    <ComponentState ID="5c0c83fd-b51c-4da2-8177-8b7225e17de3" />
+    <ComponentState ID="43d22d33-00bb-4832-9b0b-9222667fe395" />
+    <ComponentState ID="e7547cc1-62ef-45be-9fb8-2d87b6cabaf2" />
+    <ComponentState ID="8d34d64d-1e82-426f-8eee-c35952262e0d" />
+    <ComponentState ID="1ff0e1bb-c27e-4e6b-90b8-556d34c10d84" />
+    <ComponentState ID="4fac9945-5010-4459-a78d-5a5686b1238d" />
+    <ComponentState ID="4cfbce22-3a28-49c2-a060-fb424af21934" />
+    <ComponentState ID="5209851b-86de-4034-9a9f-78c92221583e" />
+    <ComponentState ID="fd55bf40-d3ce-42a5-9930-2d4898be427b" />
+    <ComponentState ID="481e40b3-fdcc-401f-890b-bbd6817ff935" />
+    <ComponentState ID="833d30bd-587a-4080-b946-ad7e31ca50f0" />
+    <ComponentState ID="9a7d3e19-b9ac-4d5b-a9bb-f0f62a66785a" />
+  </Components>
+  <TrackContacts />
+  <TripPlansCatalog>
+    <TripPlans>
+      <TripPlan IsCircular="false" Name="to Main 4A (with horn)" ID="b0cd3722-3e5a-40bb-aec2-917c11838e74">
+        <WayPoints>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="949877e6-3206-45ab-8f76-461ebfa03410" />
+            </Destination>
+            <DriverInstructions>
+              <Sequence>
+                <Events>
+                  <Wait Seconds="5">
+                    <Actions>
+                      <TriggerTrainFunction TrainSymbol="Train" FunctionName="horn" />
+                    </Actions>
+                  </Wait>
+                </Events>
+              </Sequence>
+            </DriverInstructions>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="6ca5adee-47aa-461d-a805-a1441fe8c97e" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Main 2B via Main 3B, destination" ID="0f084f6f-4c5a-4b2f-8a34-9fa84fea2bb8" FromCatalog="true">
+        <WayPoints>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="25262871-792d-40cb-84df-a2b4174a230b" />
+            </Destination>
+          </WayPoint>
+          <WayPoint Direction="Forward">
+            <Destination>
+              <Block BlockID="550f9c8e-c7a8-4891-abc5-acf057699efa" />
+            </Destination>
+            <StartCondition>
+              <Sequence>
+                <Events>
+                  <Wait Seconds="3" />
+                </Events>
+              </Sequence>
+            </StartCondition>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="6ca5adee-47aa-461d-a805-a1441fe8c97e" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="949877e6-3206-45ab-8f76-461ebfa03410" />
+          <Origin BlockID="dfcc8a22-5861-4e28-802e-c5d9aeb99960" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Main 3A via B3" ID="d33a5c00-0a42-4b25-9c3c-4a135be351cb">
+        <WayPoints>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="c6b6a061-649b-4b63-a234-18e357ae673c" />
+            </Destination>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="3b612ba9-357d-482e-8c2e-0d746ef40008" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Main 1A via B1" ID="8a8fb719-9933-4f2a-8bb8-0ee354146aa6">
+        <WayPoints>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="e521ae17-1930-4f7d-a018-a8d7d9fc8f19" />
+            </Destination>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="3b612ba9-357d-482e-8c2e-0d746ef40008" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="3b612ba9-357d-482e-8c2e-0d746ef40008" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Main 3A via destination" ID="676242cf-0293-4da5-b27c-a65cd6e92ae4">
+        <WayPoints>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="550f9c8e-c7a8-4891-abc5-acf057699efa" />
+            </Destination>
+          </WayPoint>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="true" Name="to Main 1A via B1 (circular)" ID="e8cd3ff5-e2f3-480b-a9f9-2cffdf5c3a60">
+        <WayPoints>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="e521ae17-1930-4f7d-a018-a8d7d9fc8f19" />
+            </Destination>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="3b612ba9-357d-482e-8c2e-0d746ef40008" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="3b612ba9-357d-482e-8c2e-0d746ef40008" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="true" Name="to Main 3A via destination, Main 3A, destination (circular)" ID="56f050f9-7ed2-44b6-bd03-2e9c758ffb80" FromCatalog="true">
+        <WayPoints>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="550f9c8e-c7a8-4891-abc5-acf057699efa" />
+            </Destination>
+          </WayPoint>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb" />
+            </Destination>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="550f9c8e-c7a8-4891-abc5-acf057699efa" />
+            </Destination>
+            <StartCondition>
+              <Sequence>
+                <Events>
+                  <Wait Seconds="2" RandomSeconds="2" />
+                </Events>
+              </Sequence>
+            </StartCondition>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="e521ae17-1930-4f7d-a018-a8d7d9fc8f19" />
+          <Origin BlockID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="true" Name="to Main 2A via B3 (circular)" ID="f83cde0b-a02a-4a0d-9d4a-afe7d751c32e">
+        <WayPoints>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="c6b6a061-649b-4b63-a234-18e357ae673c" />
+            </Destination>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="8e054500-336d-4106-b0b6-a86d916030b8" />
+            </Destination>
+          </WayPoint>
+        </WayPoints>
+        <Origins>
+          <Origin BlockID="8e054500-336d-4106-b0b6-a86d916030b8" />
+        </Origins>
+        <Policies />
+      </TripPlan>
+      <TripPlan IsCircular="false" Name="to Main 3A via us-platform 2" IconID="e02b9cfa-a33f-4a9b-ac1d-b91ea20d382f" ID="6a4d23b7-a646-449a-a0c7-376a6cca8bbd">
+        <WayPoints>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="5474ae2f-b78a-48a4-bfa9-b4a268c96a5e" />
+            </Destination>
+          </WayPoint>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="5d9b7083-cb8c-4b28-8f96-5264dfe264fb" />
+            </Destination>
+            <StartCondition>
+              <Sequence>
+                <Events>
+                  <Wait Seconds="5" RandomSeconds="5" />
+                </Events>
+              </Sequence>
+            </StartCondition>
+          </WayPoint>
+        </WayPoints>
+        <Policies />
+      </TripPlan>
+    </TripPlans>
+    <Destinations>
+      <Destination Name="TestWithCond" SelectionMethod="ListOrder" ID="66bb8c99-8054-4470-9631-5dc61c81e185">
+        <Block BlockID="5474ae2f-b78a-48a4-bfa9-b4a268c96a5e" Scope="AllowIfTrue">
+          <And>
+            <IfString Symbol1="Train" Name1="Name" Symbol1Access="Property" Symbol2Access="Value" Value2="aaa" Operation="Equal" />
+          </And>
+        </Block>
+      </Destination>
+      <Destination Name="TestWithCond" SelectionMethod="ListOrder" ID="ecd230ac-d819-4268-98cc-719faf7c4082">
+        <Block BlockID="5474ae2f-b78a-48a4-bfa9-b4a268c96a5e" Scope="DisallowIfTrue">
+          <And>
+            <IfString Symbol1="Train" Name1="Name" Symbol1Access="Property" Symbol2Access="Value" Value2="aaa" Operation="Equal" />
+          </And>
+        </Block>
+        <Block BlockID="3b612ba9-357d-482e-8c2e-0d746ef40008" />
+      </Destination>
+    </Destinations>
+  </TripPlansCatalog>
+  <ManualDispatchRegions>
+    <ManualDispatchRegion Name="Loop" ID="19fef53c-347d-43ba-8e61-2b4da6176f90" Active="false">
+      <Blocks>
+        <Block BlockID="550f9c8e-c7a8-4891-abc5-acf057699efa" />
+        <Block BlockID="48ee25ed-b9f5-447d-891e-46ff72540348" />
+        <Block BlockID="f4b3e7a9-e89d-499a-a06f-639cf18764b4" />
+      </Blocks>
+    </ManualDispatchRegion>
+  </ManualDispatchRegions>
+  <DefaultDriverParameters SpeedLimit="14" SlowDownSpeed="3">
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Acceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Deceleration" />
+    <Ramp RampType="LocomotiveHardware" SpeedChangeRate="4" Role="SlowDown" />
+    <Ramp RampType="LocomotiveHardware" SpeedChangeRate="14" Role="Stop" />
+  </DefaultDriverParameters>
+  <Policies>
+    <Policy Scope="Global" Apply="false" Global="false" Name="Test GenerateEvent" ID="031cadf8-da0f-446e-867f-5d984884d91b">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <Wait Seconds="3" />
+          </Events>
+          <Actions>
+            <GenerateEvent EventName="test" SenderType="ValueOf" SymbolSenderAccess="Value" TypeSender="String" ValueSender="Hello" InfoType="Context">
+              <Options>
+                <Option Name="Family" SymbolOptionAccess="Value" ValueOption="Rakavy" TypeOption="String" />
+              </Options>
+            </GenerateEvent>
+          </Actions>
+        </Sequence>
+      </EventScript>
+    </Policy>
+    <Policy Scope="Global" Apply="false" Global="false" Name="Test run Policy" ID="ef319b3c-fae9-465b-baae-094c216ae159">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <RunPolicy PolicyID="031cadf8-da0f-446e-867f-5d984884d91b" />
+            <DoNow>
+              <Actions>
+                <ShowMessage Message="Run Policy Test is done" MessageType="Message" />
+              </Actions>
+            </DoNow>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+  </Policies>
+</LayoutState>

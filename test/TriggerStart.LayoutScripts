@@ -1,0 +1,51 @@
+<ExportedScripts>
+  <Policy Scope="Global" Apply="false" Global="true" Name="Send trigger A to waiting trains" ShowInMenu="true" ID="4a972350-0c21-4749-9983-d13e1e87107f">
+    <EventScript>
+      <Sequence>
+        <Events>
+          <DoNow>
+            <Actions>
+              <GenerateEvent EventName="trip-trigger-A" SenderType="Null" InfoType="Null" />
+            </Actions>
+          </DoNow>
+        </Events>
+      </Sequence>
+    </EventScript>
+  </Policy>
+  <Policy Scope="Global" Apply="true" Global="true" Name="Reset InTrip attribute" ShowInMenu="false" ID="eeb9da80-ff83-4c42-822d-a781240f92ee">
+    <EventScript>
+      <Repeat Count="-1">
+        <Any>
+          <Events>
+            <WaitForEvent Name="trip-aborted" LimitToScope="false" />
+            <WaitForEvent Name="trip-done" LimitToScope="false" />
+          </Events>
+          <Actions>
+            <SetAttribute Symbol="Train" Attribute="InTrip" SetTo="Boolean" Value="false" />
+          </Actions>
+        </Any>
+      </Repeat>
+    </EventScript>
+  </Policy>
+  <Policy Scope="RideStart" Apply="false" Global="true" Name="Wait for Trigger (A)" ShowInMenu="false" ID="3fe1a5db-8a7f-4726-b919-f8361dcb9f02">
+    <EventScript>
+      <Sequence>
+        <Condition>
+          <Or>
+            <IfBoolean Symbol1Access="Attribute" Symbol1="Train" Name1="InTrip" Type1="Boolean" Symbol2Access="Value" Value2="false" Type2="Booelan" Operation="Equal" />
+            <Not>
+              <IfDefined Symbol="Train" Attribute="InTrip" />
+            </Not>
+          </Or>
+        </Condition>
+        <Events>
+          <WaitForEvent Name="trip-trigger-A" LimitToScope="false">
+            <Actions>
+              <SetAttribute Symbol="Train" Attribute="InTrip" SetTo="Boolean" Value="true" />
+            </Actions>
+          </WaitForEvent>
+        </Events>
+      </Sequence>
+    </EventScript>
+  </Policy>
+</ExportedScripts>

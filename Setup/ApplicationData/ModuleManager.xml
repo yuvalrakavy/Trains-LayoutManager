@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LayoutModuleManager>
+	<LayoutAssemblies>
+		<LayoutAssembly AssemblyFilename="&lt;ProgramDirectory&gt;\LayoutEventDebugger.dll" Save="true" />
+		<LayoutAssembly AssemblyFilename="&lt;ProgramDirectory&gt;\LayoutLGB.dll" Save="true" />
+	</LayoutAssemblies>
+</LayoutModuleManager>

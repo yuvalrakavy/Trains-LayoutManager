@@ -1,0 +1,31 @@
+ Removing train Duch Diesel (24) because block is free: Component name: A10 at Layout area: {X=25,Y=28} type LayoutBlockDefinitionComponent
+===== Train detection block becomes occupied, block: Component name: A33 at Layout area: {X=14,Y=19} type LayoutBlockDefinitionComponent
+>>> Checking if train crossed Component name:  at Layout area: {X=14,Y=20} type LayoutBlockEdgeComponent to get to occupancy block Component name: A33 at Layout area: {X=14,Y=19} type LayoutBlockDefinitionComponent
+-- getting train in no feedback block Ab7 for finding train in A33 crossing Component name:  at Layout area: {X=14,Y=20} type LayoutBlockEdgeComponent
+Checking trains in Component name: Ab8 at Layout area: {X=14,Y=24} type LayoutBlockDefinitionComponent it has 0 trains
+-- getting train in no feedback block Ab8 for finding train in Ab7 crossing Component name:  at Layout area: {X=14,Y=23} type LayoutBlockEdgeComponent
+Checking trains in Component name: A20 at Layout area: {X=12,Y=29} type LayoutBlockDefinitionComponent it has 0 trains
+Checking trains in Component name: A13 at Layout area: {X=20,Y=27} type LayoutBlockDefinitionComponent it has 0 trains
+Checking trains in Component name: A11 at Layout area: {X=20,Y=28} type LayoutBlockDefinitionComponent it has 1 trains
+! check if train Duch Diesel (24)(Forward at 7 in A11) can cross Component name:  at Layout area: {X=18,Y=28} type LayoutBlockEdgeComponent
+!  Linear block - last block edge crossing speed is known
+!                 testing if locomotive could cross Component name:  at Layout area: {X=18,Y=28} type LayoutBlockEdgeComponent the last block edge crossed is: Component name:  at Layout area: {X=21,Y=28} type LayoutBlockEdgeComponent
+!                 Train speed 7 last crossing speed 1
+!!! Train could cross
+ Train Duch Diesel (24) moving into nofeedback block Component name: Ab8 at Layout area: {X=14,Y=24} type LayoutBlockDefinitionComponent from A11 crossing Component name:  at Layout area: {X=18,Y=28} type LayoutBlockEdgeComponent
+Checking trains in Component name: A9 at Layout area: {X=14,Y=29} type LayoutBlockDefinitionComponent it has 0 trains
+-- Total of 1 trains
+! check if train Duch Diesel (24)(Forward at 7 in Ab8) can cross Component name:  at Layout area: {X=14,Y=23} type LayoutBlockEdgeComponent
+!  Non Linear block - testing if locomotive could cross Component name:  at Layout area: {X=14,Y=23} type LayoutBlockEdgeComponent
+!                     Train speed 7 block edge is in front
+!!! Train could cross
+ Train Duch Diesel (24) moving into nofeedback block Component name: Ab7 at Layout area: {X=14,Y=22} type LayoutBlockDefinitionComponent from Ab8 crossing Component name:  at Layout area: {X=14,Y=23} type LayoutBlockEdgeComponent
+-- Total of 1 trains
+! check if train Duch Diesel (24)(Forward at 7 in Ab7) can cross Component name:  at Layout area: {X=14,Y=20} type LayoutBlockEdgeComponent
+!  Non Linear block - testing if locomotive could cross Component name:  at Layout area: {X=14,Y=20} type LayoutBlockEdgeComponent
+!                     Train speed 7 block edge is in front
+!!! Train could cross
+>>> Train did not cross Component name:  at Layout area: {X=14,Y=20} type LayoutBlockEdgeComponent to get to Component name: A33 at Layout area: {X=14,Y=19} type LayoutBlockDefinitionComponent because Train Duch Diesel (24) motion is not consistent with the turnout settings, moving from Ab7 to A33
+>>> Checking if train crossed Component name:  at Layout area: {X=14,Y=18} type LayoutBlockEdgeComponent to get to occupancy block Component name: A33 at Layout area: {X=14,Y=19} type LayoutBlockDefinitionComponent
+>>> Train did not cross Component name:  at Layout area: {X=14,Y=18} type LayoutBlockEdgeComponent to get to Component name: A33 at Layout area: {X=14,Y=19} type LayoutBlockDefinitionComponent because Unexpected block crossing. No locomotives in surrounding blocks
+--- LayoutManager application not active - free resources ---

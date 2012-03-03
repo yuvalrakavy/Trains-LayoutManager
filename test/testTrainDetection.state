@@ -1,0 +1,47 @@
+<LayoutState>
+  <Trains>
+    <TrainState ID="10776d73-65b9-4c47-b839-383acd7bd5fb" _LocomotivesSpeedLimit="10" CurrentSpeedLimit="10" CurrentSlowDownSpeed="3" TargetSpeed="7" Speed="0" _TriggerCount="1" LastCrossedBlockEdge="091180ed-6ce3-4b98-8982-bf91d36d3859" LastBlockEdgeCrossingTime="631810768293125000" LastBlockEdgeCrossingSpeed="-3">
+      <Locations>
+        <Block BlockID="ee3356f7-024e-4d81-8d09-cf3c57bf7915" BlockEdgeID="091180ed-6ce3-4b98-8982-bf91d36d3859" BlockEdgeCrossingTime="631810768293125000" DisplayFront="L" />
+      </Locations>
+      <Name>Crock</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="1fd149f5-8129-4aa3-92e4-d939b2284c20" Orientation="Forward" />
+      </Locomotives>
+    </TrainState>
+  </Trains>
+  <Components>
+    <ComponentState ID="5d40b63e-ee81-463e-b377-627a3062e824">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="9352eda1-2476-4ba4-83a6-ed3b12bca0f8">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="ee3356f7-024e-4d81-8d09-cf3c57bf7915">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="091180ed-6ce3-4b98-8982-bf91d36d3859">
+      <Signal State="Red" />
+    </ComponentState>
+  </Components>
+  <TrackContacts />
+  <TripPlansCatalog>
+    <TripPlans />
+    <Destinations />
+  </TripPlansCatalog>
+  <ManualDispatchRegions>
+    <ManualDispatchRegion Name="All" ID="6fa357cd-7ff8-4ade-b6ff-0693747c7c75" Active="false">
+      <Blocks>
+        <Block BlockID="9352eda1-2476-4ba4-83a6-ed3b12bca0f8" />
+        <Block BlockID="5d40b63e-ee81-463e-b377-627a3062e824" />
+      </Blocks>
+    </ManualDispatchRegion>
+  </ManualDispatchRegions>
+  <DefaultDriverParameters SpeedLimit="14" SlowDownSpeed="3">
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Acceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Deceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="4" Role="SlowDown" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="14" Role="Stop" />
+  </DefaultDriverParameters>
+  <Policies />
+</LayoutState>

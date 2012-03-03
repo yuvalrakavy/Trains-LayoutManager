@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<xsd:schema id="root" targetNamespace="" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<data name="BitmapSectionCategory" mimetype="text/microsoft-urt/binary-serialized/base64">
+		<value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFRTeXN0ZW0uRHJhd2luZywgVmVyc2lvbj0xLjAuMjQxMS4wLCBD
+        dWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWIwM2Y1ZjdmMTFkNTBhM2EFAQAAABVTeXN0ZW0u
+        RHJhd2luZy5CaXRtYXABAAAABERhdGEHAgIAAAAJAwAAAA8DAAAAngUAAAJCTZ4FAAAAAAAANgQAACgA
+        AAASAAAAEgAAAAEACAAAAAAAAAAAAMQOAADEDgAAAAEAAAABAAAAAAD/AACA/wCAAP8AgID/gAAA/4AA
+        gP+AgAD/wMDA/8DcwP/wyqb/BAQE/wgICP8MDAz/ERER/xYWFv8cHBz/IiIi/ykpKf9VVVX/TU1N/0JC
+        Qv85OTn/gHz//1BQ//+TANb//+zM/8bW7//W5+f/kKmt/wAAM/8AAGb/AACZ/wAAzP8AMwD/ADMz/wAz
+        Zv8AM5n/ADPM/wAz//8AZgD/AGYz/wBmZv8AZpn/AGbM/wBm//8AmQD/AJkz/wCZZv8AmZn/AJnM/wCZ
+        //8AzAD/AMwz/wDMZv8AzJn/AMzM/wDM//8A/2b/AP+Z/wD/zP8zAAD/MwAz/zMAZv8zAJn/MwDM/zMA
+        //8zMwD/MzMz/zMzZv8zM5n/MzPM/zMz//8zZgD/M2Yz/zNmZv8zZpn/M2bM/zNm//8zmQD/M5kz/zOZ
+        Zv8zmZn/M5nM/zOZ//8zzAD/M8wz/zPMZv8zzJn/M8zM/zPM//8z/zP/M/9m/zP/mf8z/8z/M////2YA
+        AP9mADP/ZgBm/2YAmf9mAMz/ZgD//2YzAP9mMzP/ZjNm/2Yzmf9mM8z/ZjP//2ZmAP9mZjP/ZmZm/2Zm
+        mf9mZsz/ZpkA/2aZM/9mmWb/ZpmZ/2aZzP9mmf//ZswA/2bMM/9mzJn/ZszM/2bM//9m/wD/Zv8z/2b/
+        mf9m/8z/zAD///8AzP+ZmQD/mTOZ/5kAmf+ZAMz/mQAA/5kzM/+ZAGb/mTPM/5kA//+ZZgD/mWYz/5kz
+        Zv+ZZpn/mWbM/5kz//+ZmTP/mZlm/5mZmf+Zmcz/mZn//5nMAP+ZzDP/Zsxm/5nMmf+ZzMz/mcz//5n/
+        AP+Z/zP/mcxm/5n/mf+Z/8z/mf///8wAAP+ZADP/zABm/8wAmf/MAMz/mTMA/8wzM//MM2b/zDOZ/8wz
+        zP/MM///zGYA/8xmM/+ZZmb/zGaZ/8xmzP+ZZv//zJkA/8yZM//MmWb/zJmZ/8yZzP/Mmf//zMwA/8zM
+        M//MzGb/zMyZ/8zMzP/MzP//zP8A/8z/M/+Z/2b/zP+Z/8z/zP/M////zAAz//8AZv//AJn/zDMA//8z
+        M///M2b//zOZ//8zzP//M////2YA//9mM//MZmb//2aZ//9mzP/MZv///5kA//+ZM///mWb//5mZ//+Z
+        zP//mf///8wA///MM///zGb//8yZ///MzP//zP////8z/8z/Zv///5n////M/2Zm//9m/2b/Zv////9m
+        Zv//Zv////9m/yEApf9fX1//d3d3/4aGhv+Wlpb/y8vL/7Kysv/X19f/3d3d/+Pj4//q6ur/8fHx//j4
+        +P/w+///pKCg/4CAgP8AAP//AP8A/wD/////AAD//wD/////AP//////////////////////////////
+        AAD///////////////////////8AAP///////////////////////wAA////////////////////////
+        AAD///////////////////////8AAP///////////////////////wAA////Dg4O/////////w4ODv//
+        AAD//w4yMjIO//////8OMjIyDv8AAA4OMjIyMjIODg4ODjIyMjIyDgAADg4yMjIyMg4ODg4OMjIyMjIO
+        AAAODjIyMjIyDg4ODg4yMjIyMg4AAP//DjIyMg7//////w4yMjIO/wAA////Dg4O/////////w4ODv//
+        AAD///////////////////////8AAP///////////////////////wAA////////////////////////
+        AAD///////////////////////8AAP///////////////////////wAACw==
+</value>
+	</data>
+	<resheader name="ResMimeType">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="Version">
+		<value>1.0.0.0</value>
+	</resheader>
+	<resheader name="Reader">
+		<value>System.Resources.ResXResourceReader</value>
+	</resheader>
+	<resheader name="Writer">
+		<value>System.Resources.ResXResourceWriter</value>
+	</resheader>
+</root>

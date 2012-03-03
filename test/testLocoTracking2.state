@@ -1,0 +1,207 @@
+<LayoutState>
+  <Trains>
+    <TrainState ID="c2f063c1-1368-4dd6-8739-4fe2d8750a29" _LocomotivesSpeedLimit="10" CurrentSpeedLimit="10" CurrentSlowDownSpeed="4" _TriggerCount="1" TargetSpeed="7" Speed="0" LastTriggeredTrackContact="e62afc91-d072-411a-90fc-1ce640819788" LastTrackContactTriggerTime="631794399911250000" LastTrackContactCrossingSpeed="-4">
+      <Locations>
+        <Block BlockID="5d40b63e-ee81-463e-b377-627a3062e824" TrackContactID="e62afc91-d072-411a-90fc-1ce640819788" TrackContactTriggerTime="631794399911250000" DisplayFront="L" />
+      </Locations>
+      <Name>Crock</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="1fd149f5-8129-4aa3-92e4-d939b2284c20" Orientation="Forward" />
+      </Locomotives>
+      <Cars />
+    </TrainState>
+  </Trains>
+  <Components>
+    <ComponentState ID="e62afc91-d072-411a-90fc-1ce640819788">
+      <Signal State="Red" />
+    </ComponentState>
+  </Components>
+  <TrackContacts />
+  <TripPlansCatalog>
+    <TripPlans>
+      <TripPlan IsCircular="true" Name="Hopping between blocks" ID="19e046b1-45ee-4c8a-bac3-a23f808b1b78">
+        <WayPoints>
+          <WayPoint>
+            <Destination>
+              <Block BlockID="9352eda1-2476-4ba4-83a6-ed3b12bca0f8" />
+            </Destination>
+            <StartCondition>
+              <Sequence>
+                <Events>
+                  <Wait Seconds="3" />
+                </Events>
+              </Sequence>
+            </StartCondition>
+          </WayPoint>
+          <WayPoint Direction="Backward">
+            <Destination>
+              <Block BlockID="5d40b63e-ee81-463e-b377-627a3062e824" />
+            </Destination>
+            <StartCondition>
+              <Sequence>
+                <Events>
+                  <Wait Seconds="2" />
+                </Events>
+              </Sequence>
+            </StartCondition>
+          </WayPoint>
+        </WayPoints>
+        <Policies />
+      </TripPlan>
+    </TripPlans>
+    <Destinations />
+  </TripPlansCatalog>
+  <ManualDispatchRegions>
+    <ManualDispatchRegion Name="All" ID="9175b26d-45cb-46a7-9bfd-e4727848c3de" Active="false">
+      <Blocks>
+        <Block BlockID="9352eda1-2476-4ba4-83a6-ed3b12bca0f8" />
+        <Block BlockID="5d40b63e-ee81-463e-b377-627a3062e824" />
+      </Blocks>
+    </ManualDispatchRegion>
+  </ManualDispatchRegions>
+  <Policies>
+    <Policy Apply="false" Name="Nag" Scope="TripPlan" ID="da883971-fcf3-403d-960a-ea775005ec4e">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <Repeat Count="-1">
+              <Wait Seconds="6" WaitID="2dbc1d9a-90bb-4bcb-a3cb-932f9862e25d">
+                <Actions>
+                  <ShowMessage Message="I am driving in the rain..." MessageType="Message" />
+                </Actions>
+              </Wait>
+            </Repeat>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+    <Policy Apply="false" Name="Naggi" Scope="TripPlan" ID="56a06969-4755-4538-bae5-5bf70e8cc138">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <Repeat Count="-1">
+              <RandomChoice>
+                <Choice Weight="50">
+                  <Wait Seconds="5" WaitID="56f2ab5d-7435-4630-b691-44af0c9cdd39">
+                    <Actions>
+                      <ShowMessage Message="I am driving in the rain..." MessageType="Message" />
+                    </Actions>
+                  </Wait>
+                </Choice>
+                <Choice Weight="50">
+                  <Wait Seconds="6" WaitID="660febd7-173b-4c9a-b106-7268b8c8ecc9">
+                    <Actions>
+                      <ShowMessage Message="I am driving in the sun" MessageType="Message" />
+                    </Actions>
+                  </Wait>
+                </Choice>
+              </RandomChoice>
+            </Repeat>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+    <Policy Scope="BlockInfo" Apply="false" Name="Too too" ID="a1883aba-7a44-4105-a214-2ae4653b63ce">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <Wait Seconds="3" WaitID="54240c2e-579d-4a59-b7eb-f48c3033a599">
+              <Actions>
+                <ShowMessage Message="Too too" MessageType="Message" />
+              </Actions>
+            </Wait>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+    <Policy Scope="TripPlan" Apply="false" Name="junk" ID="7fb919e5-1f4f-4263-b05c-ba4078be0d65">
+      <EventScript>
+        <Repeat Count="-1">
+          <Sequence>
+            <Events>
+              <Sequence>
+                <Events>
+                  <Repeat Count="-1">
+                    <Sequence>
+                      <Events>
+                        <All>
+                          <Events>
+                            <Wait Seconds="1" Optional="true" />
+                          </Events>
+                        </All>
+                      </Events>
+                    </Sequence>
+                  </Repeat>
+                </Events>
+              </Sequence>
+              <Repeat Count="2">
+                <Any>
+                  <Events>
+                    <Repeat Count="-1">
+                      <Wait Seconds="1" Optional="true" />
+                    </Repeat>
+                  </Events>
+                </Any>
+              </Repeat>
+            </Events>
+          </Sequence>
+        </Repeat>
+      </EventScript>
+    </Policy>
+    <Policy Scope="Global" Apply="false" Name="Global Hello" ID="e72e08e9-c6dc-4135-b40f-93241117932a">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <Repeat Count="-1">
+              <Wait Seconds="3" RandomSeconds="2" WaitID="7f98fd57-fff4-4c0a-86ea-83af28b1aaf3">
+                <Actions>
+                  <ShowMessage Message="Hello" MessageType="Message" />
+                </Actions>
+              </Wait>
+            </Repeat>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+    <Policy Scope="Global" Apply="false" Name="Welcome" ID="cd1c830a-cad0-4b51-bbaa-1f996564b6a5">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <Repeat Count="-1">
+              <WaitForEvent Name="train-enter-block" LimitToScope="false">
+                <Actions>
+                  <ShowMessage Message="Train [Train.Name] welcome to [BlockInfo.Name]" MessageType="Message" />
+                </Actions>
+              </WaitForEvent>
+            </Repeat>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+    <Policy Scope="Global" Apply="true" Name="Say pardon" ID="b44fb75d-9f13-4cf9-8d37-7a7a5f905f4d">
+      <EventScript>
+        <Sequence>
+          <Events>
+            <Repeat Count="-1">
+              <WaitForEvent Name="train-enter-block" LimitToScope="false">
+                <Condition>
+                  <IfString Symbol1="BlockInfo" Name1="pardon" Symbol1Access="Attribute" Symbol2Access="Value" Value2="" Operation="NotEqual" />
+                </Condition>
+                <Actions>
+                  <ShowMessage Message="I have to say &lt;BlockInfo.pardon&gt; on behalf of [Train.Name]" MessageType="Message" />
+                </Actions>
+              </WaitForEvent>
+            </Repeat>
+          </Events>
+        </Sequence>
+      </EventScript>
+    </Policy>
+  </Policies>
+  <Ramps />
+  <DefaultDriverParameters SpeedLimit="14" SlowDownSpeed="4">
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Acceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Deceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="4" Role="SlowDown" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="14" Role="Stop" />
+  </DefaultDriverParameters>
+</LayoutState>

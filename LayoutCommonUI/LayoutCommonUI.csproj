@@ -1,0 +1,643 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C314F674-90C0-4216-901E-3F411C3F3406}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>LayoutCommonUI</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>LayoutManager.CommonUI</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+      <HintPath>..\..\..\..\..\..\WINNT\Microsoft.NET\Framework\v1.0.3705\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+      <HintPath>..\..\..\..\..\..\WINNT\Microsoft.NET\Framework\v1.0.3705\System.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+      <HintPath>..\..\..\..\..\..\WINNT\Microsoft.NET\Framework\v1.0.3705\System.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+      <HintPath>..\..\..\..\..\..\WINNT\Microsoft.NET\Framework\v1.0.3705\System.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+      <HintPath>..\..\..\..\..\..\WINNT\Microsoft.NET\Framework\v1.0.3705\System.XML.dll</HintPath>
+    </Reference>
+    <ProjectReference Include="..\LayoutBaseServices\LayoutBaseServices.csproj">
+      <Name>LayoutBaseServices</Name>
+      <Project>{D861E89E-9BB2-4080-AA3F-A26EC8ACEF16}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\LayoutManagerModel\LayoutManagerModel.csproj">
+      <Project>{BD926873-4803-4036-868A-9EA11A1AE227}</Project>
+      <Name>LayoutManagerModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LayoutManagerView\LayoutManagerView.csproj">
+      <Project>{857F7A5E-7B92-4722-BEBF-C3598293627D}</Project>
+      <Name>LayoutManagerView</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CommonUIservices.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\AttributesEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DIPswitch.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\DrivingParameters.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\EventScriptEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\EventScriptEditorDialogs\GenerateEvent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\EventScriptEditorDialogs\GenerateEventOption.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\EventScriptEditorDialogs\IfCondition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\EventScriptEditorDialogs\IfDefined.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\EventScriptEditorDialogs\IfTime.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\EventScriptEditorDialogs\IfTimeDayOfWeekNode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\EventScriptEditorDialogs\IfTimeNumericNode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\EventScriptEditorDialogs\RepeatCondition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\EventScriptEditorDialogs\SetAttribute.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\EventScriptEditorDialogs\ShowMessage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\EventScriptEditorDialogs\WaitCondition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\EventScriptEditorDialogs\WaitForEvent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\ExtListView.cs">
+    </Compile>
+    <Compile Include="Controls\GenerateEventArgument.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\GlobalPolicyList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\InfoProviderControls.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\LayoutControlViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\LayoutEmulationSetup.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\LengthInput.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\LinkMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\LocomotiveFront.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\LocomotiveImagePainter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controls\LocomotiveList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\LocomotiveListItemPainter.cs">
+    </Compile>
+    <Compile Include="Controls\LocomotiveTypeList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\MotionRampEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MotionRampSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MotionRampWithCopyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\NameDefinition.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\NumericValue.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Operand.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\OperandValueOf.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PictureBoxWithTransparency.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\PolicyList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PositionDefinition.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SelectTripPlanIcon.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TextProviderFontDefinition.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TextProviderPositionDefition.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TrackGuageSelector.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TrackGuageSelector.Designer.cs">
+      <DependentUpon>TrackGuageSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TrackLinkTree.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TrainDriverComboBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UnitInput.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\XmlInfoEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\XmlInfoEditorForms\AttributeInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\XmlQueryCombobox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\XmlQueryListbox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DetailsPopupWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DetailsPopupWindow.Designer.cs">
+      <DependentUpon>DetailsPopupWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogEditingCommands.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AttributeDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ConditionDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\EditMotionRamp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\InputBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\PolicyDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\SerialInterfaceParameters.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\SerialInterfaceParameters.Designer.cs">
+      <DependentUpon>SerialInterfaceParameters.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\TextProviderSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\TrainConditionDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EventScriptUImanager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LayoutControlBusViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ListViewColumnSorter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controls\TrainLengthDiagram.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TrainLengthDiagram.Designer.cs">
+      <DependentUpon>TrainLengthDiagram.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Controls\AttributesEditor.resx">
+      <DependentUpon>AttributesEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DIPswitch.resx">
+      <DependentUpon>DIPswitch.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DrivingParameters.resx">
+      <DependentUpon>DrivingParameters.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EventScriptEditor.resx">
+      <DependentUpon>EventScriptEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EventScriptEditorDialogs\GenerateEvent.resx">
+      <DependentUpon>GenerateEvent.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EventScriptEditorDialogs\GenerateEventOption.resx">
+      <DependentUpon>GenerateEventOption.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EventScriptEditorDialogs\IfCondition.resx">
+      <DependentUpon>IfCondition.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EventScriptEditorDialogs\IfDefined.resx">
+      <DependentUpon>IfDefined.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EventScriptEditorDialogs\IfTime.resx">
+      <DependentUpon>IfTime.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EventScriptEditorDialogs\IfTimeDayOfWeekNode.resx">
+      <DependentUpon>IfTimeDayOfWeekNode.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EventScriptEditorDialogs\IfTimeNumericNode.resx">
+      <DependentUpon>IfTimeNumericNode.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EventScriptEditorDialogs\RepeatCondition.resx">
+      <DependentUpon>RepeatCondition.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EventScriptEditorDialogs\SetAttribute.resx">
+      <DependentUpon>SetAttribute.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EventScriptEditorDialogs\ShowMessage.resx">
+      <DependentUpon>ShowMessage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EventScriptEditorDialogs\WaitCondition.resx">
+      <DependentUpon>WaitCondition.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EventScriptEditorDialogs\WaitForEvent.resx">
+      <DependentUpon>WaitForEvent.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GenerateEventArgument.resx">
+      <DependentUpon>GenerateEventArgument.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\GlobalPolicyList.resx">
+      <DependentUpon>GlobalPolicyList.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\InfoProviderControls.resx">
+      <DependentUpon>InfoProviderControls.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\LayoutControlViewer.resx">
+      <DependentUpon>LayoutControlViewer.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\LayoutEmulationSetup.resx">
+      <DependentUpon>LayoutEmulationSetup.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\LengthInput.resx">
+      <DependentUpon>LengthInput.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\LinkMenu.resx">
+      <DependentUpon>LinkMenu.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\LocomotiveFront.resx">
+      <DependentUpon>LocomotiveFront.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\LocomotiveList.resx">
+      <DependentUpon>LocomotiveList.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\LocomotiveTypeList.resx">
+      <DependentUpon>LocomotiveTypeList.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MotionRampEditor.resx">
+      <DependentUpon>MotionRampEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MotionRampSelector.resx">
+      <DependentUpon>MotionRampSelector.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MotionRampWithCopyEditor.resx">
+      <DependentUpon>MotionRampWithCopyEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\NameDefinition.resx">
+      <DependentUpon>NameDefinition.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\NumericValue.resx">
+      <DependentUpon>NumericValue.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Operand.resx">
+      <DependentUpon>Operand.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\OperandValueOf.resx">
+      <DependentUpon>OperandValueOf.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PictureBoxWithTransparency.resx">
+      <DependentUpon>PictureBoxWithTransparency.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PolicyList.resx">
+      <DependentUpon>PolicyList.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PositionDefinition.resx">
+      <DependentUpon>PositionDefinition.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SelectTripPlanIcon.resx">
+      <DependentUpon>SelectTripPlanIcon.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TextProviderFontDefinition.resx">
+      <DependentUpon>TextProviderFontDefinition.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TextProviderPositionDefition.resx">
+      <DependentUpon>TextProviderPositionDefition.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TrackLinkTree.resx">
+      <DependentUpon>TrackLinkTree.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TrainDriverComboBox.resx">
+      <DependentUpon>TrainDriverComboBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UnitInput.resx">
+      <DependentUpon>UnitInput.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\XmlInfoEditor.resx">
+      <DependentUpon>XmlInfoEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\XmlInfoEditorForms\AttributeInfo.resx">
+      <DependentUpon>AttributeInfo.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\XmlQueryCombobox.resx">
+      <DependentUpon>XmlQueryCombobox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\XmlQueryListbox.resx">
+      <DependentUpon>XmlQueryListbox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DetailsPopupWindow.resx">
+      <DependentUpon>DetailsPopupWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogEditingCommands.resx">
+      <DependentUpon>DialogEditingCommands.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AttributeDefinition.resx">
+      <DependentUpon>AttributeDefinition.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ConditionDefinition.resx">
+      <DependentUpon>ConditionDefinition.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\EditMotionRamp.resx">
+      <DependentUpon>EditMotionRamp.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\InputBox.resx">
+      <DependentUpon>InputBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\PolicyDefinition.resx">
+      <DependentUpon>PolicyDefinition.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\SerialInterfaceParameters.resx">
+      <DependentUpon>SerialInterfaceParameters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TextProviderSettings.resx">
+      <DependentUpon>TextProviderSettings.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TrainConditionDefinition.resx">
+      <DependentUpon>TrainConditionDefinition.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LayoutControlBusViewer.resx">
+      <DependentUpon>LayoutControlBusViewer.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TrainLengthDiagram.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TrainLengthDiagram.cs</DependentUpon>
+    </EmbeddedResource>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\Action.ico" />
+    <Content Include="Images\ActionSection.ico" />
+    <Content Include="Images\Condition.ico" />
+    <Content Include="Images\ConditionSection.ico" />
+    <Content Include="Images\ConditionSectionCheckAfterEvent.ico" />
+    <Content Include="Images\ConnectionPointTypeCurrent.ico" />
+    <Content Include="Images\ConnectionPointTypeResistance.ico" />
+    <Content Include="Images\ConnectionPointTypeResistanceTopRow.ico" />
+    <Content Include="Images\ConnectionPointTypeSolaniod.ico" />
+    <Content Include="Images\ConnectionToBlock.ico" />
+    <Content Include="Images\ConnectionToDistanceSignal.ico" />
+    <Content Include="Images\ConnectionToDoubleSlip.ico" />
+    <Content Include="Images\ConnectionToSemaphore.ico" />
+    <Content Include="Images\ConnectionToSignal.ico" />
+    <Content Include="Images\ConnectionToTrackContact.ico" />
+    <Content Include="Images\ConnectionToTurnout.ico" />
+    <Content Include="Images\Empty.ICO" />
+    <Content Include="Images\EmptyIcon.ico" />
+    <Content Include="Images\Error.ICO" />
+    <Content Include="Images\Event.ico" />
+    <Content Include="Images\EventNotLimitedToScope.ico" />
+    <Content Include="Images\EventsSection.ico" />
+    <Content Include="Images\ZoomIn.bmp" />
+    <Content Include="Images\ZoomIn.Ico" />
+    <Content Include="Images\ZoomOut.bmp" />
+    <Content Include="Images\ZoomOut.Ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

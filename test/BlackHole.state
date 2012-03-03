@@ -1,0 +1,67 @@
+<LayoutState>
+  <Trains>
+    <TrainState ID="c6262cff-3075-436c-974b-acb98f43175a" LastEnteredBlockID="ec165faf-e816-4283-8731-46f942caaa5a" _LocomotivesSpeedLimit="0" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward">
+      <Locations>
+        <Block BlockID="ec165faf-e816-4283-8731-46f942caaa5a" DisplayFront="L" />
+      </Locations>
+      <Name>Crock (74)</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="b07cde30-190c-4b1e-9d24-a39a6d6a5cd0" Orientation="Forward" />
+      </Locomotives>
+    </TrainState>
+    <TrainState ID="ec015a34-799f-444c-b662-937ede1f17e9" LastEnteredBlockID="3f3859b1-c155-4067-8e3d-dd20cd970509" _LocomotivesSpeedLimit="0" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward" Speed="0" LastCrossedBlockEdge="1e3d96ca-45f8-4c94-bb4d-36f4049fb795" LastBlockEdgeCrossingTime="631823888272812500" LastBlockEdgeCrossingSpeed="1">
+      <Locations>
+        <Block BlockID="3f3859b1-c155-4067-8e3d-dd20cd970509" BlockEdgeID="1e3d96ca-45f8-4c94-bb4d-36f4049fb795" BlockEdgeCrossingTime="631823888272812500" DisplayFront="R" />
+      </Locations>
+      <Name>SBB Modern</Name>
+      <Locomotives>
+        <Locomotive LocomotiveID="b8afb233-58ae-4ca3-b58e-2c7d41c44898" Orientation="Forward" />
+      </Locomotives>
+    </TrainState>
+  </Trains>
+  <Components>
+    <ComponentState ID="ec165faf-e816-4283-8731-46f942caaa5a">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="3f3859b1-c155-4067-8e3d-dd20cd970509">
+      <TrainDetection TrainDetected="true" />
+    </ComponentState>
+    <ComponentState ID="db2b9f36-34af-44ec-b5cf-be872e3da8b3">
+      <TrainDetection TrainDetected="false" />
+    </ComponentState>
+    <ComponentState ID="57d3077e-105e-41c5-ae86-12a2b2bf3254">
+      <TrainDetection />
+    </ComponentState>
+    <ComponentState ID="c36ceddc-5a4e-4449-82b1-1ca6c9a3daca">
+      <Signal State="Green" />
+    </ComponentState>
+    <ComponentState ID="117643e5-17f2-40c4-89d4-12b1b2e9f267">
+      <Signal State="Green" />
+    </ComponentState>
+    <ComponentState ID="1e3d96ca-45f8-4c94-bb4d-36f4049fb795">
+      <Signal State="Green" />
+    </ComponentState>
+  </Components>
+  <TrackContacts />
+  <TripPlansCatalog>
+    <TripPlans />
+    <Destinations />
+  </TripPlansCatalog>
+  <ManualDispatchRegions>
+    <ManualDispatchRegion Name="All" ID="42752dd9-66e1-4452-a6dc-a7c7f156db26" Active="true">
+      <Blocks>
+        <Block BlockID="db2b9f36-34af-44ec-b5cf-be872e3da8b3" />
+        <Block BlockID="57d3077e-105e-41c5-ae86-12a2b2bf3254" />
+        <Block BlockID="3f3859b1-c155-4067-8e3d-dd20cd970509" />
+        <Block BlockID="ec165faf-e816-4283-8731-46f942caaa5a" />
+      </Blocks>
+    </ManualDispatchRegion>
+  </ManualDispatchRegions>
+  <DefaultDriverParameters SpeedLimit="14" SlowDownSpeed="3">
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Acceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="7" Role="Deceleration" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="4" Role="SlowDown" />
+    <Ramp RampType="RateFixed" SpeedChangeRate="14" Role="Stop" />
+  </DefaultDriverParameters>
+  <Policies />
+</LayoutState>
