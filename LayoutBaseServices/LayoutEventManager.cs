@@ -1308,7 +1308,7 @@ namespace LayoutManager {
 					EventManager.Instance.RegisterDelayedEvent(this);
 
 					Status = DelayedEventStatus.NotYetCalled;
-					await TaskEx.WhenAny(TaskEx.Delay(delayTime), tcs.Task);
+					await Task.WhenAny(Task.Delay(delayTime), tcs.Task);
 					Status = DelayedEventStatus.Called;
 					EventManager.Event(theEvent);
 				}

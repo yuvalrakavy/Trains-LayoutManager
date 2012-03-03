@@ -131,7 +131,7 @@ namespace MarklinDigital {
 		}
 
 		protected async override Task OnTerminateCommunication() {
-			base.OnTerminateCommunication ();
+			await base.OnTerminateCommunication ();
 
 			if(commandStationManager != null) {
 				await commandStationManager.WaitForIdle();
@@ -252,7 +252,7 @@ namespace MarklinDigital {
 			if(OperationMode)
 				EventManager.Event(new LayoutEvent(connectionPointRef, "control-connection-point-state-changed-notification", null, state));
 
-			return TaskEx.WhenAll(tasks);
+			return Task.WhenAll(tasks);
 		}
 
 		[LayoutEvent("change-signal-state-command", IfEvent="*[CommandStation/@ID='`string(@ID)`']")]

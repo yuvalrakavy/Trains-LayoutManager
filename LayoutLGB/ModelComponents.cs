@@ -101,7 +101,7 @@ namespace LayoutLGB {
 		}
 
 		protected override async Task OnTerminateCommunication() {
-			base.OnTerminateCommunication ();
+			await base.OnTerminateCommunication ();
 
 			if(commandStationManager != null) {
 				await commandStationManager.WaitForIdle();

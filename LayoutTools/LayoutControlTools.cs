@@ -1370,7 +1370,7 @@ namespace LayoutManager.Tools {
 						{
 							if(LayoutController.Instance.BeginDesignTimeActivation()) {
 								await EventManager.AsyncEvent(new LayoutEvent<ILayoutActionContainer, IModelComponentCanProgramLocomotives>("do-command-station-actions", programmingState.ProgrammingActions, aProgrammer));
-								LayoutController.Instance.EnterDesignModeRequest();
+								await LayoutController.Instance.EnterDesignModeRequest();
 							}
 							else {
 								foreach(var action in programmingState.ProgrammingActions)

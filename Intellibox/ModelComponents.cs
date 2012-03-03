@@ -215,7 +215,7 @@ namespace Intellibox {
 		}
 
 		protected override async Task OnTerminateCommunication() {
-			base.OnTerminateCommunication ();
+			await base.OnTerminateCommunication ();
 
 			await commandStationManager.WaitForIdle();
 			if(commandStationManager != null) {
@@ -308,7 +308,7 @@ namespace Intellibox {
 			if(OperationMode)
 				EventManager.Event(new LayoutEvent(connectionPointRef, "control-connection-point-state-changed-notification", null, state));
 
-			return TaskEx.WhenAll(tasks);
+			return Task.WhenAll(tasks);
 		}
 
 		[LayoutAsyncEvent("change-batch-of-track-component-state-command", IfEvent = "LayoutEvent[Options/@CommandStationID='`string(@ID)`']")]
@@ -335,7 +335,7 @@ namespace Intellibox {
                 }
 			}
 
-			return TaskEx.WhenAll(tasks);
+			return Task.WhenAll(tasks);
 		}
 
 		[LayoutEvent("change-signal-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]

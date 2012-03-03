@@ -1059,9 +1059,9 @@ namespace LayoutManager.Components {
 			if(pendingCommands.Count > 0) {
 				Trace.WriteLineIf(traceOutputManager.TraceVerbose, "Waiting for for command station pending commands");
 
-				var pendingCommandsTask = TaskEx.WhenAll(pendingCommands);
+				var pendingCommandsTask = Task.WhenAll(pendingCommands);
 
-				if(await TaskEx.WhenAny(pendingCommandsTask, TaskEx.Delay(5000)) != pendingCommandsTask) {
+				if(await Task.WhenAny(pendingCommandsTask, Task.Delay(5000)) != pendingCommandsTask) {
 					LayoutModuleBase.Warning("Unable to complete all command station's pending commands");
 					Trace.WriteLine("Wait for command station pending commands has timed out after 5 seconds");
 				}

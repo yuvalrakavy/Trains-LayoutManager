@@ -94,7 +94,7 @@ namespace LayoutManager.Logic
 				}
 			}
 
-			return TaskEx.WhenAll(tasks);
+			return Task.WhenAll(tasks);
 		}
 
 		[LayoutEvent("track-component-state-changed-notification")]

@@ -984,7 +984,7 @@ namespace LayoutManager.Logic {
 					await EventManager.AsyncEvent(new LayoutEvent<LayoutBlockDefinitionComponent, string>("wait-for-locomotive-placement", programmingLocation, "Place locomotive on programming track").CopyOptions(e).SetOption("TrainID", train.Id).CopyOperationContext(e));
 
 					// When track is detected or when the user hit the ballon, wait 500ms and then start the actual programming
-					await TaskEx.Delay(500, e.GetCancellationToken());		// TODO: On final (not CTP of Async) change TaskEx to Task
+					await Task.Delay(500, e.GetCancellationToken());
 
 					var commandStation = programmingLocation.Power.PowerOriginComponent as IModelComponentCanProgramLocomotives;
 
@@ -1005,10 +1005,11 @@ namespace LayoutManager.Logic {
 				finally {
 					if(originalPower != programmingLocation.Power) {
 						Trace.WriteLine("Set power back to " + originalPower.Name + " type: " + originalPower.Type.ToString());
-						EventManager.AsyncEvent(new LayoutEvent<object, object>("set-power", programmingLocation, originalPower));
+						Task t = EventManager.AsyncEvent(new LayoutEvent<object, object>("set-power", programmingLocation, originalPower));
 					}
 
 					Trace.WriteLine("Free programming locked");
+
 					EventManager.Event(new LayoutEvent(GetProgrammingTracksLock(Guid.Empty, programmingLocation, CancellationToken.None), "free-layout-lock"));
 
 					if(programmingState.PlacementLocation == null || programmingLocation.Id != programmingState.PlacementLocation.Id)
