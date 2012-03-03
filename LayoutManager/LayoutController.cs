@@ -182,7 +182,7 @@ namespace LayoutManager {
 				FrameWindows[displayState.ActiveWindowIndex].Activate();
 
 			if(!forceDesignMode && displayState.OperationModeSettings != null) {
-				await TaskEx.Delay(500);
+				await Task.Delay(500);
 				EnterOperationModeRequest(displayState.OperationModeSettings);
 			}
 			else
@@ -219,7 +219,7 @@ namespace LayoutManager {
 			Debug.Assert(FrameWindows.Count > 0);
 
 			while(!exit) {
-				var actionTask = await TaskEx.WhenAny(from frameWindow in FrameWindows select frameWindow.Task);
+				var actionTask = await Task.WhenAny(from frameWindow in FrameWindows select frameWindow.Task);
 
 				switch(actionTask.Result.Command) {
 					case FrameWindowCommand.CloseLayout:
@@ -231,7 +231,7 @@ namespace LayoutManager {
 						EventManager.Event(new LayoutEvent(null, "close-all-frame-windows"));
 
 						// Wait until all frame windows are closed
-						await TaskEx.WhenAll(from frameWindow in FrameWindows select frameWindow.Task);
+						await Task.WhenAll(from frameWindow in FrameWindows select frameWindow.Task);
 						exit = true;
 						break;
 
@@ -323,8 +323,8 @@ namespace LayoutManager {
 				catch(Exception ex) {
 					EventManager.Event(new LayoutEvent(null, "add-error", null, "Could not enter operational mode - " + ex.Message));
 
-					ExitOperationModeRequest();
-					EnterDesignModeRequest();
+					ExitOperationModeRequest().Wait();
+					EnterDesignModeRequest().Wait();
 					switchMode = false;
 				}
 			}
@@ -341,7 +341,7 @@ namespace LayoutManager {
 			Trace.WriteLine("After invoking exit-operation-mode-async");
 
 			if(simulation)
-				await TaskEx.Delay(200);		// Allow the emulator to process last command
+				await Task.Delay(200);		// Allow the emulator to process last command
 		}
 
 		[LayoutEvent("command-station-trains-analysis-phase-done")]

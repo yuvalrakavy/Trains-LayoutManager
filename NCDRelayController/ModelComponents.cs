@@ -193,7 +193,7 @@ namespace NCDRelayController {
 		private void EndDesignTimeLayoutActivation(LayoutEvent e) {
 			OnCleanup();
 
-			await OnTerminateCommunication();
+			OnTerminateCommunication().Wait(500);
 			CloseCommunicationStream();
 			e.Info = true;
 		}
