@@ -59,9 +59,9 @@ namespace LayoutManager.Dialogs {
 
 		private void buttonNew_Click(object sender, EventArgs e) {
 			if(saveFileDialog.ShowDialog(this) == System.Windows.Forms.DialogResult.OK) {
-				Action = LaunchAction.NewLayout;
-				LayoutFilename = saveFileDialog.FileName;
-				Close();
+                LayoutFilename = saveFileDialog.FileName;
+                Close();
+                Action = LaunchAction.NewLayout;
 			}
 		}
 
