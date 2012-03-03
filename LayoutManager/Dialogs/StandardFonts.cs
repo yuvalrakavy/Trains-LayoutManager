@@ -46,8 +46,10 @@ namespace LayoutManager.Dialogs
 		private void fill() {
 			XmlNode		fonts = LayoutModel.Instance.XmlInfo.DocumentElement.SelectSingleNode("Fonts");
 
-			foreach(XmlElement fontElement in fonts)
-				listViewFonts.Items.Add(new FontItem(fontElement));
+            if (fonts != null) {
+                foreach (XmlElement fontElement in fonts)
+                    listViewFonts.Items.Add(new FontItem(fontElement));
+            }
 		}
 
 		class FontItem : ListViewItem {

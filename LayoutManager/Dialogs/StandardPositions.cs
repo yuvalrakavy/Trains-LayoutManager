@@ -34,8 +34,10 @@ namespace LayoutManager.Dialogs
 			// Fill the list box
 			XmlNode		positions = LayoutModel.Instance.XmlInfo.DocumentElement.SelectSingleNode("Positions");
 
-			foreach(XmlElement positionElement in positions)
-				listBoxPositions.Items.Add(new LayoutPositionInfo(positionElement));
+            if (positions != null) {
+                foreach (XmlElement positionElement in positions)
+                    listBoxPositions.Items.Add(new LayoutPositionInfo(positionElement));
+            }
 		}
 
 		private bool edit(LayoutPositionInfo positionProvider) {

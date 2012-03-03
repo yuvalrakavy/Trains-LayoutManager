@@ -2167,7 +2167,7 @@ namespace LayoutManager.Model {
 			}
 			else {
 				// TODO: Initialize with a default model document
-				result = false;
+                modelXmlInfo.XmlDocument.LoadXml("<ModelInfo />");
 			}
 
 			return result;

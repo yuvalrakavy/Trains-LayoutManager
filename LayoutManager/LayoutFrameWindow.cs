@@ -1259,7 +1259,7 @@ namespace LayoutManager
 		}
 
 		private void menuItemStyleFonts_Click(object sender, System.EventArgs e) {
-			Dialogs.StadardFonts	standardFonts = new Dialogs.StadardFonts();
+			Dialogs.StandardFonts	standardFonts = new Dialogs.StandardFonts();
 
 			standardFonts.ShowDialog(this);
 			LayoutModel.WriteModelXmlInfo();

@@ -10,10 +10,7 @@ namespace LayoutManager {
 		}
 
 		public LayoutXmlWrapper(string name) {
-			XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
-
-			Element = doc.CreateElement(name);
-			doc.AppendChild(Element);
+            InitElement(name);
 		}
 
 		public LayoutXmlWrapper(XmlElement element) {
@@ -29,6 +26,13 @@ namespace LayoutManager {
 				parent.AppendChild(_element);
 			}
 		}
+
+        public void InitElement(string elementName) {
+            XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
+
+            Element = doc.CreateElement(elementName);
+            doc.AppendChild(Element);
+        }
 
 		public void Load(string filename) {
 			XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();

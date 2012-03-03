@@ -131,10 +131,28 @@ namespace LayoutManager.Model {
 			if(parentPath != null) {
 				XmlNodeList	parentNodes = container.SelectNodes(parentPath);
 
-				if(parentNodes.Count > 0)
-					parentElement = (XmlElement)parentNodes[0];
-				else
-					throw new ArgumentException("Could not find parent node");
+                if (parentNodes.Count > 0)
+                    parentElement = (XmlElement)parentNodes[0];
+                else {
+                    int index = parentPath.IndexOf('/');
+                    string parentName;
+                    string tail = null;
+
+                    if (index < 0)
+                        parentName = parentPath;
+                    else {
+                        parentName = parentPath.Substring(0, index);
+                        tail = parentPath.Substring(index + 1);
+                    }
+
+                    parentElement = container.OwnerDocument.CreateElement(parentName);
+                    container.AppendChild(parentElement);
+
+                    if (!string.IsNullOrEmpty(tail)) {
+                        attachNewElement(parentElement, tail, element);
+                        return;
+                    }
+                }                    
 			}
 
 			parentElement.AppendChild(element);

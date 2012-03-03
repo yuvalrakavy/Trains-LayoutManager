@@ -631,6 +631,8 @@ namespace LayoutManager {
 					ReadXml(r);
 					r.Close();
 				}
+            } catch(DirectoryNotFoundException) {
+                Directory.CreateDirectory(Path.GetDirectoryName(documentFilename));
 			} catch(FileNotFoundException) {
 			}
 		}

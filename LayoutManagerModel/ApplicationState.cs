@@ -19,7 +19,13 @@ namespace LayoutManager {
 
 		public ApplicationStateInfo(string filename) {
 			this.filename = filename;
-			Load(filename);
+
+            try {
+                Load(filename);
+            }
+            catch (System.IO.FileNotFoundException) {
+                InitElement("ApplicationState");
+            }
 		}
 
 		public void Save() {
