@@ -763,21 +763,6 @@ namespace LayoutManager.Model {
 		}
 
 		/// <summary>
-		/// Given an element and a ramp role, return this ramp (if can be found)
-		/// </summary>
-		/// <param name="element"></param>
-		/// <param name="role"></param>
-		/// <returns></returns>
-		protected MotionRampInfo GetRamp(XmlElement element, string role) {
-			XmlElement rampElement = (XmlElement)element.SelectSingleNode("Ramp[@Role='" + role + "']");
-
-			if(rampElement == null)
-				return null;
-			else
-				return new MotionRampInfo(rampElement);
-		}
-
-		/// <summary>
 		/// Search for a motion ramp of a given role. First check if the block with the locomotive
 		/// overrides the default, then check if the train overrides the default, and if neither
 		/// override the default, return the default ramp of this type
@@ -788,13 +773,13 @@ namespace LayoutManager.Model {
 			MotionRampInfo ramp = null;
 
 			if(LocomotiveBlock.BlockDefinintion != null)
-				ramp = GetRamp(LocomotiveBlock.BlockDefinintion.Element, role);
+				ramp = LayoutStateManager.GetRamp(LocomotiveBlock.BlockDefinintion.Element, role);
 
 			if(ramp == null)
-				ramp = GetRamp(Element, role);
+				ramp = LayoutStateManager.GetRamp(Element, role);
 
-			if(ramp == null)
-				ramp = GetRamp(LayoutModel.StateManager.DefaultDriverParameters.Element, role);
+            if (ramp == null)
+                ramp = LayoutModel.StateManager.GetDefaultRamp(role);
 
 			Debug.Assert(ramp != null);
 			return ramp;
@@ -2694,6 +2679,54 @@ namespace LayoutManager.Model {
 				return defaultDriverParameters;
 			}
 		}
+
+        /// <summary>
+        /// Given an element and a ramp role, return this ramp (if can be found)
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        public static MotionRampInfo GetRamp(XmlElement element, string role) {
+            XmlElement rampElement = (XmlElement)element.SelectSingleNode("Ramp[@Role='" + role + "']");
+
+            if (rampElement == null)
+                return null;
+            else
+                return new MotionRampInfo(rampElement);
+        }
+
+        /// <summary>
+        /// Get the default ramp for a given role
+        /// </summary>
+        /// <param name="role">Accelerate, Decelrate, Slowdown, Stop</param>
+        /// <returns>The ramp to be used</returns>
+        public MotionRampInfo GetDefaultRamp(string role) {
+            return GetRamp(DefaultDriverParameters.Element, role);
+        }
+
+        public MotionRampInfo DefaultAccelerationRamp {
+            get {
+                return GetDefaultRamp("Acceleration");
+            }
+        }
+
+        public MotionRampInfo DefaultDecelerationRamp {
+            get {
+                return GetDefaultRamp("Deceleration");
+            }
+        }
+
+        public MotionRampInfo DefaultSlowdownRamp {
+            get {
+                return GetDefaultRamp("SlowDown");
+            }
+        }
+
+        public MotionRampInfo DefaultStopRamp {
+            get {
+                return GetDefaultRamp("Stop");
+            }
+        }
 
 		public List<LayoutPolicyType> PolicyTypes {
 			get {

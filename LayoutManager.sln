@@ -28,8 +28,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutManagerModel", "Layou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutManagerView", "LayoutManagerView\LayoutManagerView.csproj", "{857F7A5E-7B92-4722-BEBF-C3598293627D}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "LayoutManagerSetup", "Setup\Setup.vdproj", "{D0967A5B-4D08-4E98-8960-1EAE9C11AF7F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutCommonUI", "LayoutCommonUI\LayoutCommonUI.csproj", "{C314F674-90C0-4216-901E-3F411C3F3406}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarklinDigital", "MarklinDigital\MarklinDigital.csproj", "{D8B1BEA4-8A37-4052-8D39-2531269C0A2F}"
@@ -104,8 +102,6 @@ Global
 		{C314F674-90C0-4216-901E-3F411C3F3406}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C314F674-90C0-4216-901E-3F411C3F3406}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C314F674-90C0-4216-901E-3F411C3F3406}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D0967A5B-4D08-4E98-8960-1EAE9C11AF7F}.Debug|Any CPU.ActiveCfg = Debug
-		{D0967A5B-4D08-4E98-8960-1EAE9C11AF7F}.Release|Any CPU.ActiveCfg = Release
 		{D1B5FF47-8D71-4119-8B25-FFC6DF7310CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D1B5FF47-8D71-4119-8B25-FFC6DF7310CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1B5FF47-8D71-4119-8B25-FFC6DF7310CA}.Release|Any CPU.ActiveCfg = Release|Any CPU

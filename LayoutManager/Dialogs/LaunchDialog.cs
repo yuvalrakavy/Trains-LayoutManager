@@ -53,7 +53,7 @@ namespace LayoutManager.Dialogs {
 		}
 
 		private void buttonExit_Click(object sender, EventArgs e) {
-			Close();
+            Close();
             Action = LaunchAction.Exit;
         }
 
@@ -76,7 +76,7 @@ namespace LayoutManager.Dialogs {
 		private void linkLabelLastLayoutName_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
 			LayoutFilename = linkLabelLastLayoutName.Text;
 			UseLastOpenLayout = true;
-			Close();
+            Close();
             Action = LaunchAction.OpenLayout;
         }
 	}

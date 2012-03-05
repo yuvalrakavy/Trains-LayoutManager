@@ -768,12 +768,28 @@ namespace LayoutManager.Tools.Dialogs
 				menu.MenuItems.Add(new SpeedChangeMenuItem(train, speed, ramp));
 		}
 
+        private MotionRampInfo GetDefaultRamp(int speed) {
+            if (speed == 0)
+                return LayoutModel.StateManager.DefaultStopRamp;
+            else if (speed > train.Speed)
+                return LayoutModel.StateManager.DefaultAccelerationRamp;
+            else
+                return LayoutModel.StateManager.DefaultDecelerationRamp;
+        }
+
 		private void addSpeedMenuEntries(Menu menu, LocomotiveOrientation direction) {
 			for(int i = 1; i <= LayoutModel.Instance.LogicalSpeedSteps; i++) {
 				int			speed = (direction == LocomotiveOrientation.Forward) ? i : -i;
 				MenuItem	speedItem = new MenuItem(i.ToString());
 
 				addAccelerationMenuEntries(speedItem, speed);
+
+                if (speedItem.MenuItems.Count == 0) {
+                    speedItem.Click += (s, ea) => {
+                        train.ChangeSpeed(speed, GetDefaultRamp(speed));
+                    };
+                }
+
 				menu.MenuItems.Add(speedItem);
 			}
 		}
@@ -782,7 +798,11 @@ namespace LayoutManager.Tools.Dialogs
 			ContextMenu	menu = new ContextMenu();
 
 			addAccelerationMenuEntries(menu, 0);
-			menu.Show(this, new Point(buttonStopMenu.Left, buttonStopMenu.Bottom));
+
+            if (menu.MenuItems.Count > 0)
+                menu.Show(this, new Point(buttonStopMenu.Left, buttonStopMenu.Bottom));
+            else
+                train.ChangeSpeed(0, GetDefaultRamp(0));
 		}
 
 		private void buttonBackwardMenu_Click(object sender, System.EventArgs e) {

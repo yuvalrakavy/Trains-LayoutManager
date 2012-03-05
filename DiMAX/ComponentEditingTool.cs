@@ -124,6 +124,7 @@ namespace DiMAX {
 			var m = (Menu)e.Info;
 
 			m.MenuItems.Add(new MenuItem("Test locomotive select", (s, ea) => new Dialogs.TestLocoSelect(commandStation).ShowDialog()));
+            m.MenuItems.Add(new MenuItem("Test locomotive drive", (s, ea) => new Dialogs.TestLocoDrive(commandStation).ShowDialog()));
 		}
 
 		#region Component Designer generated code

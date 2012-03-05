@@ -23,7 +23,7 @@ namespace DiMAX {
 		public static LayoutTraceSwitch	TraceRawData = new LayoutTraceSwitch("DiMAXrawData", "Trace raw DiMAX central station input/output");
 
 		// Mfg ID for this software (TODO: Ask Massoth for one)
-		public const UInt16 MID_LayoutManager = 0x3498;
+		public const UInt16 MID_LayoutManager = 0x39f4;
 
 		OutputManager	outputManager;
 
@@ -348,7 +348,7 @@ namespace DiMAX {
 					Debug.Assert(activeLocomotive.SelectNesting == 0);
 
 					if(activeLocomotive.ActiveDeselection)
-						outputManager.AddCommand(new DiMAXlocomotiveSelection(this, address, false, false, true));
+						outputManager.AddCommand(new DiMAXlocomotiveSelection(this, address, select:false, deselectActive:false, unconditional:false));
 
 					outputManager.AddCommand(new DiMAXlocomotiveUnregister(this, address));
 					registeredLocomotives.Remove(address);
@@ -387,7 +387,7 @@ namespace DiMAX {
 
 			if(registeredLocomotives.TryGetValue(address, out activeLocomotive)) {
 				if(activeLocomotive.SelectNesting++ == 0)
-					outputManager.AddCommand(new DiMAXlocomotiveSelection(this, address, true, false, true));
+					outputManager.AddCommand(new DiMAXlocomotiveSelection(this, address, select:true, deselectActive:false, unconditional:false));
 			}
 			else
 				Error("Controller actived for locomotive " + locomotive.Name + " (" + address + ") which is not registered");
@@ -410,7 +410,7 @@ namespace DiMAX {
 				if(--activeLocomotive.SelectNesting == 0) { 
 					activeLocomotive.ActiveDeselection = IsLocomotiveActive(train, locomotive);
 
-					outputManager.AddCommand(new DiMAXlocomotiveSelection(this, address, false, activeLocomotive.ActiveDeselection, false));
+					outputManager.AddCommand(new DiMAXlocomotiveSelection(this, address, select:false, deselectActive:activeLocomotive.ActiveDeselection, unconditional:false));
 				}
 			}
 		}
@@ -468,6 +468,16 @@ namespace DiMAX {
 
 			return outputManager.AddCommand(new DiMAXlocomotiveSelection(this, address, select, active, unconditional));
 		}
+
+        [LayoutAsyncEvent("test-loco-speed", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
+        private Task testLocoSpeed(LayoutEvent e0) {
+            var e = e0;
+
+            int address = e.GetIntOption("Address");
+            int speed = e.GetIntOption("Speed");
+
+            return outputManager.AddCommand(new DiMAXlocomotiveMotion(this, address, speed));
+        }
 
 		#endregion
 
@@ -1114,7 +1124,7 @@ namespace DiMAX {
 	class DiMAXlocomotiveMotion : DiMAXcommandBase {
 		public DiMAXlocomotiveMotion(DiMAXcommandStation commandStation, int unit, int speed)
 			: base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoSpeedControl,
-			new byte[] { (byte)(unit >> 8), (byte)(unit & 0xff), (byte)((speed > 0 ? 0x80 : 0x00) | Math.Abs(speed)) })) {
+			new byte[] { (byte)(unit >> 8), (byte)(unit & 0xff), (byte)((speed >= 0 ? 0x80 : 0x00) | Math.Abs(speed)) })) {
 		}
 	}
 
