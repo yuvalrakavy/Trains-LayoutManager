@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace LayoutManager.Dialogs {
 	public partial class LaunchDialog : Form {
@@ -15,7 +16,7 @@ namespace LayoutManager.Dialogs {
 		public LaunchDialog(string lastLayoutFilename) {
 			InitializeComponent();
 
-			if(string.IsNullOrWhiteSpace(lastLayoutFilename))
+			if(string.IsNullOrWhiteSpace(lastLayoutFilename) || !File.Exists(lastLayoutFilename))
 				linkLabelLastLayoutName.Visible = false;
 			else
 				linkLabelLastLayoutName.Text = lastLayoutFilename;
