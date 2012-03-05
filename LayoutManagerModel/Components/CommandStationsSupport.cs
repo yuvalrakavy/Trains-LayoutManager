@@ -943,6 +943,8 @@ namespace LayoutManager.Components {
 
 			for(int i = 0; i < queues.Length; i++)
 				queues[i] = new CommandManagerQueue(workToDo, queues);
+
+            traceOutputManager.Level = TraceLevel.Info;        // DEBUG - set for now
 		}
 
 		#region Operations
