@@ -262,7 +262,7 @@ namespace DiMAX {
 			outputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, function.Number, e.GetBoolOption("FunctionState"), train.Lights));
 		}
 
-		[LayoutEvent("trigger-locomotive-function-command", IfSender = "*[CommandStation/@Name='`string(Name)`']")]
+		[LayoutEvent("trigger-locomotive-function-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
 		private void triggerLocomotiveFunctionStateCommand(LayoutEvent e) {
 			LocomotiveInfo			loco = (LocomotiveInfo)e.Sender;
 			String					functionName = (String)e.Info;
