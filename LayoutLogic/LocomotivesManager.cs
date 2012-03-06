@@ -1533,7 +1533,7 @@ namespace LayoutManager.Logic {
 
 			foreach(XmlElement componentStateElement in LayoutModel.StateManager.Components.Element) {
 				Guid componentID = XmlConvert.ToGuid(componentStateElement.GetAttribute("ID"));
-				var component = LayoutModel.Component<ModelComponent>(componentID, phase);
+				var component = LayoutModel.Component<ModelComponent>(componentID, LayoutPhase.All);
 				bool validStateComponent = true;
 				var topicRemoveList = new List<XmlElement>();
 
