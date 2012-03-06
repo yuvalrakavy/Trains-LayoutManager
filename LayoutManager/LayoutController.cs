@@ -367,6 +367,7 @@ namespace LayoutManager {
 
 			layoutDesignTimeActivationNesting = 0;
 			OperationModeSettings = null;
+            LayoutModel.ActivePhases = LayoutPhase.All;
 
 			EventManager.Event(new LayoutEvent<OperationModeParameters>("enter-design-mode", null));
 			LayoutModel.Instance.Redraw();
