@@ -247,29 +247,23 @@ namespace DiMAX {
 		[LayoutEvent("set-locomotive-lights-command", IfEvent="*[CommandStation/@Name='`string(Name)`']")]
 		private void setLocomotiveLightsCommand(LayoutEvent e) {
 			LocomotiveInfo	loco = (LocomotiveInfo)e.Sender;
+            DccDecoderTypeInfo decoder = loco.DecoderType as DccDecoderTypeInfo;
 			bool lights = (bool)e.Info;
 
 			outputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, 0, false, lights));
+            if(decoder != null && !decoder.ParallelFunctionSupport)
+                outputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, 9, false, false));
 		}
 
 		[LayoutEvent("set-locomotive-function-state-command", IfEvent="*[CommandStation/@Name='`string(Name)`']")]
-		private void setLocomotiveFunctionStateCommand(LayoutEvent e) {
+        [LayoutEvent("trigger-locomotive-function-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
+        private void setLocomotiveFunctionStateCommand(LayoutEvent e) {
 			LocomotiveInfo			loco = (LocomotiveInfo)e.Sender;
 			String					functionName = (String)e.Info;
 			LocomotiveFunctionInfo	function = loco.GetFunctionByName(functionName);
 			TrainStateInfo			train = LayoutModel.StateManager.Trains[loco.Id];
 
 			outputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, function.Number, e.GetBoolOption("FunctionState"), train.Lights));
-		}
-
-		[LayoutEvent("trigger-locomotive-function-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-		private void triggerLocomotiveFunctionStateCommand(LayoutEvent e) {
-			LocomotiveInfo			loco = (LocomotiveInfo)e.Sender;
-			String					functionName = (String)e.Info;
-			LocomotiveFunctionInfo	function = loco.GetFunctionByName(functionName);
-			TrainStateInfo			train = LayoutModel.StateManager.Trains[loco.Id];
-
-			outputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, function.Number, true, train.Lights));
 		}
 
 		[LayoutEvent("add-command-station-loco-bus-to-address-map", IfSender = "*[@ID='`string(@ID)`']")]
@@ -1131,7 +1125,7 @@ namespace DiMAX {
 	class DiMAXlocomotiveFunction : DiMAXcommandBase {
 		public DiMAXlocomotiveFunction(DiMAXcommandStation commandStation, int unit, int functionNumber, bool functionState, bool lightsOn) : 
 			base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoFunctionControl,
-			new byte[] { (byte)(unit >> 8), (byte)(unit & 0xff), (byte)((lightsOn ? 0x80 : 0) | (functionState ? 0x10 : 0) | (functionNumber & 0x0f)) })) {
+			new byte[] { (byte)(unit >> 8), (byte)(unit & 0xff), (byte)((lightsOn ? 0x80 : 0) | (functionState ? 0x20 : 0) | (functionNumber & 0x1f)) })) {
 		}
 	}
 

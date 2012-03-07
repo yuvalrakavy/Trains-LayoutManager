@@ -1298,8 +1298,12 @@ namespace LayoutManager.Logic {
 			foreach(TrainLocomotiveInfo trainLoco in train.Locomotives) {
 				LocomotiveInfo loco = trainLoco.Locomotive;
 
-				if(locomotiveId == Guid.Empty || locomotiveId == loco.Id)
-					EventManager.Event(new LayoutEvent(loco, "trigger-locomotive-function-command", null, functionName).SetCommandStation(train));
+                if (locomotiveId == Guid.Empty || locomotiveId == loco.Id) {
+                    bool state = !train.GetFunctionState(functionName, loco.Id);        // Flip state
+
+                    EventManager.Event(new LayoutEvent(loco, "trigger-locomotive-function-command", null, functionName).SetCommandStation(train).SetOption("FunctionState", state));
+                    train.SetLocomotiveFunctionStateValue(functionName, loco.Id, state);
+                }
 			}
 		}
 

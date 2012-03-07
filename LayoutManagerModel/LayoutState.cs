@@ -1281,7 +1281,7 @@ namespace LayoutManager.Model {
 		/// <param name="locoIndex">which locomotive (relevant if locomotive set)</param>
 		/// <param name="defaultValue">Value to return if no state was defined</param>
 		/// <returns>True = state is ON, false = state is OFF</returns>
-		public bool GetFunctionState(String functionName, Guid locomotiveId, bool defaultValue) {
+		public bool GetFunctionState(String functionName, Guid locomotiveId, bool defaultValue = false) {
 			LocomotiveFunctionInfo function = FindFunctionState(functionName, locomotiveId, false);
 
 			if(function == null || !function.Element.HasAttribute("State"))
@@ -1289,6 +1289,22 @@ namespace LayoutManager.Model {
 			else
 				return function.State;
 		}
+
+        /// <summary>
+        /// Get the state of a given locomotive function
+        /// </summary>
+        /// <param name="functionName">The function number</param>
+        /// <param name="locoIndex">which locomotive (relevant if locomotive set)</param>
+        /// <param name="defaultValue">Value to return if no state was defined</param>
+        /// <returns>True = state is ON, false = state is OFF</returns>
+        public bool GetFunctionState(int functionNumber, Guid locomotiveId, bool defaultValue = false) {
+            LocomotiveFunctionInfo function = FindFunctionState(functionNumber, locomotiveId);
+
+            if (function == null || !function.Element.HasAttribute("State"))
+                return defaultValue;
+            else
+                return function.State;
+        }
 
 		/// <summary>
 		/// Return true if locomotive has any active function
