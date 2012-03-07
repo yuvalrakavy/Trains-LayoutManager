@@ -2588,9 +2588,7 @@ namespace LayoutManager.Model {
 
 
 
-		public LayoutStateManager() {
-			XmlDocument.LoadXml("<LayoutState><Trains /><Components /><TrackContacts /><TripPlansCatalog /></LayoutState>");
-
+		public LayoutStateManager() : base("<LayoutState><Trains /><Components /><TrackContacts /><TripPlansCatalog /></LayoutState>") {
 			initialize();
 		}
 
@@ -2787,6 +2785,7 @@ namespace LayoutManager.Model {
 		public void Load() {
 			try {
 				XmlDocument.Load(LayoutController.LayoutRuntimeStateFilename);
+                initialize();
 			}
 			catch(IOException) {
 				if(Element == null)
