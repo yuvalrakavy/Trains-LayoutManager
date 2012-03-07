@@ -537,7 +537,8 @@ namespace DiMAX {
 					case DiMAXcommandCode.LocoFunctionControl: {
 							DiMAXlocoFunctionControlPacket p = new DiMAXlocoFunctionControlPacket(packet);
 
-							EventManager.Event(new LayoutEvent(this, "set-locomotive-lights-notification", null, p.Lights).SetOption("Address", "Unit", p.Unit));
+                            if(p.FunctionNumber == 0)
+    							EventManager.Event(new LayoutEvent(this, "set-locomotive-lights-notification", null, p.Lights).SetOption("Address", "Unit", p.Unit));
 
 							if(p.FunctionNumber != 0)
 								EventManager.Event
