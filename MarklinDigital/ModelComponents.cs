@@ -528,7 +528,7 @@ namespace MarklinDigital {
 		public MarklinSetFunctions(Stream comm, int address, byte functionMask, int waitPeriod) : base(comm) {
 			this.address = address;
 			this.functionMask = functionMask;
-			WaitPeriod = waitPeriod;
+			DefaultWaitPeriod = waitPeriod;
 		}
 
 		public override void Do() {
@@ -572,7 +572,7 @@ namespace MarklinDigital {
 			this.commandStation = commandStation;
 			this.invoker = invoker;
 			this.unit = unit;
-			WaitPeriod = waitPeriod;
+			DefaultWaitPeriod = waitPeriod;
 		}
 
 		private void ProcessFeedback(MarklinFeedbackResult feedbackResult) {

@@ -361,7 +361,7 @@ namespace LayoutLGB {
 
 	class MTSresetStation : MTScommandBase {
 		public MTSresetStation(Stream stream) : base(stream) {
-			WaitPeriod = 250;
+			DefaultWaitPeriod = 250;
 		}
 
 		public override void Do() {
@@ -371,7 +371,7 @@ namespace LayoutLGB {
 
 	class MTSpowerDisconnect : MTScommandBase {
 		public MTSpowerDisconnect(Stream stream) : base(stream) {
-			WaitPeriod = 250;
+			DefaultWaitPeriod = 250;
 		}
 
 		public override void Do() {

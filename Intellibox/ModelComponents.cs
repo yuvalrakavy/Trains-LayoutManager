@@ -23,15 +23,15 @@ namespace Intellibox {
 	}
 
     public class IntelliboxComponentInfo : LayoutInfo {
-        public IntelliboxComponent commandStation;
+        IntelliboxComponent _commandStation;
 
         public IntelliboxComponentInfo(IntelliboxComponent commandStation, XmlElement element) : base(element) {
-            this.commandStation = commandStation;
+            this._commandStation = commandStation;
         }
 
         public IntelliboxComponent CommandStation {
             get {
-                return commandStation;
+                return _commandStation;
             }
         }
 
@@ -777,7 +777,7 @@ namespace Intellibox {
 		List<FeedbackData> feedbackData = new List<FeedbackData>();
 
 		public InterlliboxProcessEventsCommand(IntelliboxComponent commandStation, int pollingPeriod) : base(commandStation) {
-			WaitPeriod = pollingPeriod;
+			DefaultWaitPeriod = pollingPeriod;
 		}
 
 		protected ControlBus MotorolaBus {

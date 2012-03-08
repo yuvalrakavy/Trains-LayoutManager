@@ -27,7 +27,6 @@ namespace DiMAX {
 
 		OutputManager	outputManager;
 
-		IAsyncResult			pendingReadInfo = null;
 		byte[]					lengthAndCommand = new byte[1];
 		byte[]					directAnswerLength = new byte[2];
 		byte[]					inputBuffer;
@@ -136,7 +135,7 @@ namespace DiMAX {
 			TraceRawData.Level = TraceLevel.Verbose;
 
 			// And finally begin an asynchronous read
-			pendingReadInfo = CommunicationStream.BeginRead(lengthAndCommand, 0, lengthAndCommand.Length, new AsyncCallback(this.OnReadLengthAndCommandDone), null);
+			CommunicationStream.BeginRead(lengthAndCommand, 0, lengthAndCommand.Length, new AsyncCallback(this.OnReadLengthAndCommandDone), null);
 
 			outputManager.AddCommand(new DiMAXinterfaceAnnouncement(this, false));
 
@@ -384,7 +383,7 @@ namespace DiMAX {
 					outputManager.AddCommand(new DiMAXlocomotiveSelection(this, address, select:true, deselectActive:false, unconditional:false));
 			}
 			else
-				Error("Controller actived for locomotive " + locomotive.Name + " (" + address + ") which is not registered");
+				Error("Controller activated for locomotive " + locomotive.Name + " (" + address + ") which is not registered");
 		}
 
 		/// <summary>
@@ -412,7 +411,6 @@ namespace DiMAX {
 		[LayoutEvent("locomotive-controller-activated")]
 		private void locomotiveControllerActivated(LayoutEvent e0) {
 			var e = (LayoutEvent<TrainLocomotiveInfo, TrainStateInfo>)e0;
-			var train = e.Info;
 			var locomotive = e.Sender.Locomotive;
 
 			SelectLocomotive(locomotive);
@@ -539,8 +537,7 @@ namespace DiMAX {
 
                             if(p.FunctionNumber == 0)
     							EventManager.Event(new LayoutEvent(this, "set-locomotive-lights-notification", null, p.Lights).SetOption("Address", "Unit", p.Unit));
-
-							if(p.FunctionNumber != 0)
+                            else
 								EventManager.Event
 									(new LayoutEvent(this, "set-locomotive-function-state-notification", null, p.FunctionActive).SetOption("Address", "Unit", p.Unit).SetOption("Function", "Number", p.FunctionNumber));
 						}
@@ -562,36 +559,11 @@ namespace DiMAX {
 						PowerOn();
 						break;
 
-					case DiMAXcommandCode.LocoSelection: {
-							if(packet.ParameterCount == 3) {
-								int address = ((packet.Parameters[0] & 0x3f) << 8) | packet.Parameters[1];
-								bool select = (packet.Parameters[2] & 0x10) != 0;
-
-								if(select) {
-									ActiveLocomotiveInfo activeLocomotive;
-
-									if(registeredLocomotives.TryGetValue(address, out activeLocomotive)) {
-										TrainStateInfo train = LayoutModel.StateManager.Trains[activeLocomotive.Locomotive.Id];
-
-										if(train != null) {
-											string trainName = train.Name + " (" + address + ") ";
-
-											if(train.LocomotiveBlock.LockRequest == null || !train.LocomotiveBlock.LockRequest.IsManualDispatchLock)
-												Warning("Train" + trainName + "was selected by external controller. Train is not on a manual dispatch region");
-											else if(train.Locomotives.Count > 1)
-												Warning("A locomotive belonging to train" + trainName + "was selected by external controller. This train has more than one locomotive");
-										}
-									}
-									else
-										Warning("Locomotive with address: " + address + " was selected by external controller, locomotive with this address is not on the layout");
-								}
-							}
-						}
+					case DiMAXcommandCode.LocoSelection:
+                        HandleLocomotiveSelection(packet);
 						break;
 
-					case DiMAXcommandCode.LocoConfig: {
-							
-						}
+					case DiMAXcommandCode.LocoConfig:
 						break;
 
 					default:
@@ -600,6 +572,33 @@ namespace DiMAX {
 				}
 			}
 		}
+
+        private void HandleLocomotiveSelection(DiMAXpacket packet) {
+            if (packet.ParameterCount == 3) {
+                int address = ((packet.Parameters[0] & 0x3f) << 8) | packet.Parameters[1];
+                bool select = (packet.Parameters[2] & 0x10) != 0;
+
+                if (select) {
+                    ActiveLocomotiveInfo activeLocomotive;
+
+                    if (registeredLocomotives.TryGetValue(address, out activeLocomotive)) {
+                        TrainStateInfo train = LayoutModel.StateManager.Trains[activeLocomotive.Locomotive.Id];
+
+                        if (train != null) {
+                            string trainName = train.Name + " (" + address + ") ";
+
+                            if (train.LocomotiveBlock.LockRequest == null || !train.LocomotiveBlock.LockRequest.IsManualDispatchLock)
+                                Warning("Train" + trainName + "was selected by external controller. Train is not on a manual dispatch region");
+                            else if (train.Locomotives.Count > 1)
+                                Warning("A locomotive belonging to train" + trainName + "was selected by external controller. This train has more than one locomotive");
+                        }
+                    }
+                    else
+                        Warning("Locomotive with address: " + address + " was selected by external controller, locomotive with this address is not on the layout");
+                }
+            }
+
+        }
 
 		/// <summary>
 		/// Called when an asynchronous read is done
@@ -613,7 +612,7 @@ namespace DiMAX {
 					if(count == 1) {
 						if((lengthAndCommand[0] & 0x1f) == 0) {
 							Trace.WriteLineIf(TraceRawData.TraceVerbose, "DiMAX - got status or direct andwer");
-							pendingReadInfo = CommunicationStream.BeginRead(directAnswerLength, 0, 2, OnReadAnswerLengthDone, null);
+							CommunicationStream.BeginRead(directAnswerLength, 0, 2, OnReadAnswerLengthDone, null);
 						}
 						else {
 							byte length = (byte)(lengthAndCommand[0] >> 5);
@@ -623,11 +622,11 @@ namespace DiMAX {
 								inputBuffer = new byte[restOfPacketLength];
 
 							Trace.WriteLineIf(TraceRawData.TraceInfo, "DiMAX - got packet length and command: " + lengthAndCommand[0].ToString("x2") + " Length: " + length + " command code: " + (lengthAndCommand[0] & 0x1f));
-							pendingReadInfo = CommunicationStream.BeginRead(inputBuffer, 0, restOfPacketLength, OnReadRestOfPacketDone, null);
+							CommunicationStream.BeginRead(inputBuffer, 0, restOfPacketLength, OnReadRestOfPacketDone, null);
 						}
 					}
 					else if(count == 0)
-						pendingReadInfo = CommunicationStream.BeginRead(lengthAndCommand, 0, lengthAndCommand.Length, this.OnReadLengthAndCommandDone, null);
+						CommunicationStream.BeginRead(lengthAndCommand, 0, lengthAndCommand.Length, this.OnReadLengthAndCommandDone, null);
 					else
 						throw new DiMAXException("LengthAndCommand not one byte");
 				} catch(Exception ex) {
@@ -652,7 +651,7 @@ namespace DiMAX {
 						inputBuffer[1] = directAnswerLength[1];
 
 						Trace.WriteLineIf(TraceRawData.TraceInfo, "DiMAX - got direct answer packet length: " + directAnswerLength[1].ToString());
-						pendingReadInfo = CommunicationStream.BeginRead(inputBuffer, 2, restOfPacketLength, OnReadRestOfPacketDone, null);
+						CommunicationStream.BeginRead(inputBuffer, 2, restOfPacketLength, OnReadRestOfPacketDone, null);
 					}
 					else
 						throw new DiMAXException("directAnswerLength not 2 bytes");
@@ -688,7 +687,7 @@ namespace DiMAX {
 					else
 						InterThreadEventInvoker.QueueEvent(new LayoutEvent(this, "processes-DiMAX-packet", null, packet));
 
-					pendingReadInfo = CommunicationStream.BeginRead(lengthAndCommand, 0, lengthAndCommand.Length, new AsyncCallback(this.OnReadLengthAndCommandDone), null);
+					CommunicationStream.BeginRead(lengthAndCommand, 0, lengthAndCommand.Length, new AsyncCallback(this.OnReadLengthAndCommandDone), null);
 				}
 				catch(Exception ex) {
 					Trace.WriteLineIf(TraceDiMAX.TraceInfo, "Pending read aborted (" + ex.Message + ")");
@@ -766,9 +765,16 @@ namespace DiMAX {
 	#region DiMAX command codes and command packet definition
 
 	public class DiMAXException : Exception {
+        public DiMAXException() {
+        }
+
 		public DiMAXException(string message)
 			: base(message) {
 		}
+
+        public DiMAXException(string message, Exception inner)
+            : base(message, inner) {
+        }
 	}
 
 	public enum DiMAXcommandCode {

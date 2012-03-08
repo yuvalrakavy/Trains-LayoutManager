@@ -9,7 +9,7 @@ using LayoutManager;
 
 namespace LayoutBaseServices {
 	[LayoutModule("Interthreads Event Relay", Enabled=true, UserControl=false)]
-	class InterThreadsEvents : LayoutModuleBase, ILayoutInterThreadEventInvoker {
+	class InterThreadsEvents : LayoutModuleBase, ILayoutInterThreadEventInvoker, IDisposable {
 		Control controlInUIthread;
 		Queue<LayoutEvent> eventQueue = new Queue<LayoutEvent>();
 		ManualResetEvent eventInQueue = new ManualResetEvent(false);
@@ -17,6 +17,7 @@ namespace LayoutBaseServices {
 		Thread relayThread = null;
 		object queueLock = new object();
 		Form uiThreadForm;
+        bool _disposed;
 
 		[LayoutEvent("initialize-event-interthread-relay")]
 		private void initializeEventInterthreadRelay(LayoutEvent e) {
@@ -45,7 +46,7 @@ namespace LayoutBaseServices {
 				relayThread.Abort();
 
 			uiThreadForm.Close();
-			uiThreadForm.Dispose();
+            Dispose();
 		}
 
 		[LayoutEvent("get-inter-thread-event-invoker")]
@@ -55,7 +56,8 @@ namespace LayoutBaseServices {
 
 		private delegate object LayoutEventCaller(LayoutEvent e);
 
-		private void eventRelayThreadFunction() {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        private void eventRelayThreadFunction() {
 			// Wait until control is created, so events can be delivered to it
 			while(!controlInUIthread.IsHandleCreated)
 				Thread.Sleep(100);
@@ -97,5 +99,20 @@ namespace LayoutBaseServices {
 		}
 
 		#endregion
-	}
+
+        void Dispose(bool disposing) {
+            if (!_disposed) {
+                if (disposing) {
+                    uiThreadForm.Dispose();
+                    eventInQueue.Dispose();
+                    terminatedEvent.Dispose();
+                }
+            }
+            _disposed = true;
+        }
+
+        public void Dispose() {
+            Dispose(true);
+        }
+    }
 }

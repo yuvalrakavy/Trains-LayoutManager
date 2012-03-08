@@ -41,7 +41,7 @@ namespace LayoutManager {
 			}
 		}
 
-		public AttributeType Type {
+		public AttributeType AttributeType {
 			get {
 				return (AttributeType)Enum.Parse(typeof(AttributeType), Element.GetAttribute("Type"));
 			}
@@ -51,11 +51,12 @@ namespace LayoutManager {
 			}
 		}
 
-		public object Value {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
+        public object Value {
 			get {
 				string	v = Element.GetAttribute("Value");
 
-				switch(Type) {
+				switch(AttributeType) {
 					case AttributeType.String:
 						return v;
 
@@ -66,7 +67,7 @@ namespace LayoutManager {
 						return XmlConvert.ToBoolean(v);
 
 					default:
-						throw new ArgumentException("Invalid attribute type " + Type);
+						throw new ArgumentException("Invalid attribute type " + AttributeType);
 				}
 			}
 
@@ -75,19 +76,19 @@ namespace LayoutManager {
 				Type			type = value.GetType();
 
 				if(type == typeof(int)) {
-					Type = AttributeType.Number;
+					AttributeType = AttributeType.Number;
 					v = XmlConvert.ToString((int)value);
 				}
 				else if(type == typeof(Enum)) {
-					Type = AttributeType.String;
+					AttributeType = AttributeType.String;
 					v = value.ToString();
 				}
 				else if(type == typeof(string)) {
-					Type = AttributeType.String;
+					AttributeType = AttributeType.String;
 					v = (string)value;
 				}
 				else if(type == typeof(bool)) {
-					Type = AttributeType.Boolean;
+					AttributeType = AttributeType.Boolean;
 					v = XmlConvert.ToString((bool)value);
 				}
 				else

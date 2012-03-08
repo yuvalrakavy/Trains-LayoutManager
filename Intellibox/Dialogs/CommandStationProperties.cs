@@ -422,7 +422,7 @@ namespace Intellibox.Dialogs
 			this.groupBox2.Size = new System.Drawing.Size(341, 51);
 			this.groupBox2.TabIndex = 7;
 			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Feedback Debouncing:";
+			this.groupBox2.Text = "Feedback Debounce:";
 			// 
 			// label6
 			// 
@@ -551,10 +551,10 @@ namespace Intellibox.Dialogs
 		{
 			string modeString = _xmlInfo.DocumentElement["ModeString"].InnerText;
 
-			LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
-
-			if(d.ShowDialog(this) == DialogResult.OK)
-				_xmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
+            using (LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString)) {
+                if (d.ShowDialog(this) == DialogResult.OK)
+                    _xmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
+            }
 		}
 
 		#region SOitem
@@ -586,11 +586,12 @@ namespace Intellibox.Dialogs
 
 		private void buttonSOadd_Click(object sender, EventArgs e) {
 			SOinfo so = new SOinfo();
-			Dialogs.SOdefinition d = new SOdefinition(so);
 
-			if(d.ShowDialog(this) == DialogResult.OK)
-				listViewSO.Items.Add(new SOitem(_SOcollection.Add(so)));
-			UpdateButtons();
+            using (Dialogs.SOdefinition d = new SOdefinition(so)) {
+                if (d.ShowDialog(this) == DialogResult.OK)
+                    listViewSO.Items.Add(new SOitem(_SOcollection.Add(so)));
+                UpdateButtons();
+            }
 		}
 
 		private void buttonSOedit_Click(object sender, EventArgs e) {
@@ -603,13 +604,15 @@ namespace Intellibox.Dialogs
 
 				SOinfo tempSOinfo = new SOinfo(doc.DocumentElement);
 
-				if(new Dialogs.SOdefinition(tempSOinfo).ShowDialog(this) == DialogResult.OK) {
-					XmlElement oldElement = item.SOinfo.Element;
+                using (var d = new Dialogs.SOdefinition(tempSOinfo)) {
+                    if (d.ShowDialog(this) == DialogResult.OK) {
+                        XmlElement oldElement = item.SOinfo.Element;
 
-					item.SOinfo.Element = (XmlElement)oldElement.OwnerDocument.ImportNode(tempSOinfo.Element, true);
-					oldElement.ParentNode.ReplaceChild(item.SOinfo.Element, oldElement);
-					item.Update();
-				}
+                        item.SOinfo.Element = (XmlElement)oldElement.OwnerDocument.ImportNode(tempSOinfo.Element, true);
+                        oldElement.ParentNode.ReplaceChild(item.SOinfo.Element, oldElement);
+                        item.Update();
+                    }
+                }
 			}
 			UpdateButtons();
 		}

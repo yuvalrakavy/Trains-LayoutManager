@@ -339,7 +339,7 @@ namespace LayoutManager.CommonUI.Controls
 							foreach(AttributeInfo attribute in attributes) {
 								if(!attributesMap.Contains(attribute.Name) && isAllowedType(attribute.Value.GetType())) {
 									attributesMap.Add(attribute.Name, attribute);
-									comboBoxTag.Items.Add(new TagEntry(attribute.Name, attribute.Type));
+									comboBoxTag.Items.Add(new TagEntry(attribute.Name, attribute.AttributeType));
 								}
 							}
 						}

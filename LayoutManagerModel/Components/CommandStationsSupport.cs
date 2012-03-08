@@ -832,7 +832,7 @@ namespace LayoutManager.Components {
 	}
 
 	public abstract class OutputCommandBase : IOutputCommand {
-		int		waitPeriod;
+		int		_waitPeriod;
 		protected TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 
 		/// <summary>
@@ -840,18 +840,20 @@ namespace LayoutManager.Components {
 		/// </summary>
 		public abstract void Do();
 
-		/// <summary>
-		/// Number of milliseconds to wait after this command before next command from this queue can execute. Default
+        /// <summary>
+        /// The default time to wait after this command is executed before executing the next command
+        /// </summary>
+        public int DefaultWaitPeriod {
+            get { return _waitPeriod; }
+            set { _waitPeriod = value; }
+        }
+
+        /// <summary>
+		/// Number of milliseconds to wait after this command is executed before next command from this queue can execute. Default
 		/// is not to wait
 		/// </summary>
 		public virtual int WaitPeriod {
-			get {
-				return waitPeriod;
-			}
-
-			set {
-				waitPeriod = value;
-			}
+			get { return _waitPeriod; }
 		}
 
 		public Task Task {
@@ -889,7 +891,7 @@ namespace LayoutManager.Components {
 		public EndTrainsAnalysisCommandStationCommand(IModelComponentIsCommandStation commandStation, int passCount) {
 			this.commandStation = commandStation;
 			this.passCount = passCount;
-			WaitPeriod = 250;
+			DefaultWaitPeriod = 250;
 		}
 
 		public EndTrainsAnalysisCommandStationCommand(IModelComponentIsCommandStation commandStation)

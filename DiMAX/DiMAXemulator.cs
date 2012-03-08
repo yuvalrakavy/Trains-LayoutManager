@@ -42,12 +42,13 @@ namespace DiMAX {
 			interThreadEventInvoker.QueueEvent(new LayoutEvent(subject, "add-error", null, message));
 		}
 
-		public void IntergaceThreadWarning(object subject, string message) {
+		public void InterfaceThreadWarning(object subject, string message) {
 			interThreadEventInvoker.QueueEvent(new LayoutEvent(subject, "add-warning", null, message));
 		}
 
 
-		private void InterfaceThreadFunction() {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        private void InterfaceThreadFunction() {
 			commStream = (FileStream)EventManager.Event(new LayoutEvent(pipeName, "wait-named-pipe-request", null, true));
 			layoutEmulationServices.LocomotiveMoved += new EventHandler<LocomotiveMovedEventArgs>(layoutEmulationServices_LocomotiveMoved);
 			layoutEmulationServices.LocomotiveFallFromTrack += (s, ea) => InterfaceThreadError(ea.Location.Track, "Locomotive (address " + ea.Unit + ") fall from track");
@@ -175,6 +176,7 @@ namespace DiMAX {
 
 			commStream.Close();
 			commStream = null;
+            GC.SuppressFinalize(this);
 		}
 
 		#endregion

@@ -25,7 +25,7 @@ namespace DiMAX.Dialogs {
             int speed;
 
             if (!int.TryParse(textBoxLocoAddress.Text, out address)) {
-                MessageBox.Show("Invalid loco address");
+                MessageBox.Show(this, "Invalid loco address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

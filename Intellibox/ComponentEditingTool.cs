@@ -67,14 +67,15 @@ namespace Intellibox
 		[LayoutEvent("model-component-placement-request", SenderType=typeof(IntelliboxComponent))]
 		void PlaceTrackContactRequest(LayoutEvent e) {
 			IntelliboxComponent	component = (IntelliboxComponent)e.Sender;
-			Dialogs.CentralStationProperties csProperties = new Dialogs.CentralStationProperties(component);
+            using (Dialogs.CentralStationProperties csProperties = new Dialogs.CentralStationProperties(component)) {
 
-			if(csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-				component.XmlInfo.XmlDocument = csProperties.XmlInfo.XmlDocument;
-				e.Info = true;		// Place component
-			}
-			else
-				e.Info = false;		// Do not place component
+                if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                    component.XmlInfo.XmlDocument = csProperties.XmlInfo.XmlDocument;
+                    e.Info = true;		// Place component
+                }
+                else
+                    e.Info = false;		// Do not place component
+            }
 		}
 
 		[LayoutEvent("query-component-editing-context-menu", SenderType=typeof(IntelliboxComponent))]

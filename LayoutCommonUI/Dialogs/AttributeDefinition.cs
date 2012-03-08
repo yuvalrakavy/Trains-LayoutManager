@@ -367,7 +367,7 @@ namespace LayoutManager.CommonUI.Dialogs
 			AttributeInfo	attribute = (AttributeInfo)attributesMap[comboBoxName.SelectedItem];
 
 			if(attribute != null) {
-				switch(attribute.Type) {
+				switch(attribute.AttributeType) {
 					case AttributeType.Boolean:
 						radioButtonTypeBoolean.Checked = true;
 						break;

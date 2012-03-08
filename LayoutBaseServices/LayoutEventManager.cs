@@ -465,7 +465,7 @@ namespace LayoutManager {
 	/// <summary>
 	/// Base for subscription to receive a layout event.
 	/// </summary>
-	public abstract class LayoutEventSubscriptionBase : LayoutObject, IComparable<LayoutEventSubscriptionBase> {
+	public abstract class LayoutEventSubscriptionBase : LayoutObject {
 		Type				senderType;
 		Type				eventType;
 		Type				infoType;
@@ -478,7 +478,7 @@ namespace LayoutManager {
 		/// <summary>
 		/// construct a new subscription
 		/// </summary>
-		public LayoutEventSubscriptionBase() {
+		protected LayoutEventSubscriptionBase() {
 			InitializeSubscriptionObject();
 		}
 
@@ -842,35 +842,6 @@ namespace LayoutManager {
 
 			return true;		// Everything matches, the event is applicable to this subscription
 		}
-
-		/// <summary>
-		/// Compare this subscription to another subscription to see which should be
-		/// applied first
-		/// </summary>
-		/// <param name="objSubscription">The other subscription</param>
-		/// <returns>negative value: me first, 0: does not matter, positive value: other first</returns>
-		public int CompareTo(Object objSubscription) {
-			return this.Order - ((LayoutEventSubscriptionBase)objSubscription).Order;
-		}
-
-
-		#region IComparable<LayoutEventSubscription> Members
-
-		/// <summary>
-		/// Compare this subscription to another subscription to see which should be
-		/// applied first
-		/// </summary>
-		/// <param name="objSubscription">The other subscription</param>
-		/// <returns>negative value: me first, 0: does not matter, positive value: other first</returns>
-		public int CompareTo(LayoutEventSubscriptionBase other) {
-			return this.Order - other.Order;
-		}
-
-		public bool Equals(LayoutEventSubscriptionBase other) {
-			return this == other;
-		}
-
-		#endregion
 	}
 
 	public class LayoutEventSubscription : LayoutEventSubscriptionBase {
@@ -1387,7 +1358,7 @@ namespace LayoutManager {
 
 			subscriptions.AddApplicableSubscriptions<LayoutEventSubscription>(applicableSubscriptions, e);
 			if(applicableSubscriptions.Count > 1)
-				applicableSubscriptions.Sort();
+				applicableSubscriptions.Sort((s1, s2) => s1.Order - s2.Order);
 
 			if(traceEvent != null) {
 				traceEvent.ApplicableSubscriptions = applicableSubscriptions;
