@@ -226,6 +226,11 @@ namespace LayoutManager.Model {
 		/// Prepare action for programming operation (for example, generate CV values)
 		/// </summary>
 		void PrepareProgramming();
+
+        /// <summary>
+        /// (If true) Treat NoResponse result as Ok
+        /// </summary>
+        bool IgnoreNoResponseResult { get; set; }
 	}
 
 	public interface ILayoutDccProgrammingAction : ILayoutProgrammingAction {
@@ -311,6 +316,22 @@ namespace LayoutManager.Model {
 		/// </summary>
 		public virtual void PrepareProgramming() {
 		}
+
+        /// <summary>
+        /// (If true) Treat NoResponse result as Ok
+        /// </summary>
+        public bool IgnoreNoResponseResult {
+            get {
+                return XmlConvert.ToBoolean(GetAttribute("IgnoreNoResponse", "false"));
+            }
+
+            set {
+                if (value == false)
+                    Element.RemoveAttribute("IgnoreNoResponse");
+                else
+                    SetAttribute("IgnoreNoResponse", XmlConvert.ToString(value));
+            }
+        }
 	}
 
 	#region CV (DCC control values) handling class
@@ -422,6 +443,9 @@ namespace LayoutManager.Model {
 					result = (LayoutActionResult)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent<DccProgrammingCV, DccDecoderTypeInfo>("program-CV-direct-request", cv, decoderType).SetCommandStation(commandStation));
 				else
 					result = (LayoutActionResult)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent<DccProgrammingCV, DccDecoderTypeInfo>("program-CV-register-requst", cv, decoderType).SetCommandStation(commandStation));
+
+                if (IgnoreNoResponseResult && result == LayoutActionResult.NoResponse)
+                    result = LayoutActionResult.Ok;
 
 				if(result != LayoutActionResult.Ok)
 					break;

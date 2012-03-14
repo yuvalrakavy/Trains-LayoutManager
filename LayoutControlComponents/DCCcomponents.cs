@@ -88,7 +88,10 @@ namespace LayoutManager.ControlComponents {
 			}
 		}
 
-		class ProgramMassothSwitchDecoderAddress : ProgramMassothSwitchDecoder {
+        interface IMassothIgnoreFeedback {
+        }
+
+		class ProgramMassothSwitchDecoderAddress : ProgramMassothSwitchDecoder, IMassothIgnoreFeedback {
 			public ProgramMassothSwitchDecoderAddress(XmlElement actionElement, ControlModule switchDecoder)
 				: base(actionElement, switchDecoder) {
 			}
@@ -138,7 +141,7 @@ namespace LayoutManager.ControlComponents {
 						return "Set address to locomotive bus address " + ProgrammingTarget.Address;
 				}
 			}
-		}
+        }
 
 		[LayoutEvent("query-action", IfEvent = "LayoutEvent[Options/@Action='set-address']", SenderType = typeof(ControlModule), IfSender = "*[starts-with(@ModuleTypeName, 'Massoth8156')]")]
 		private void querySetMassothSwitchDecoderAddress(LayoutEvent e0) {
@@ -220,5 +223,28 @@ namespace LayoutManager.ControlComponents {
 				moduleTypeNames.Add("Massoth8156001_AsFunctionDecoder");
 			}
 		}
+
+        [LayoutEvent("edit-action-settings", InfoType = typeof(IMassothIgnoreFeedback))]
+        private void editMassothIgnoreFeedback(LayoutEvent e0) {
+            var e = (LayoutEvent<object, ILayoutAction, bool>)e0;
+            var programmingAction = e.Info as ILayoutProgrammingAction;
+
+            switch (MessageBox.Show(null, "Did you connect load (e.g. turnout) to SW1 output?", "Is load connected", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)) {
+
+                case DialogResult.Cancel:
+                    e.Result = false;
+                    break;
+
+                case DialogResult.Yes:
+                    programmingAction.IgnoreNoResponseResult = false;
+                    e.Result = true;
+                    break;
+
+                case DialogResult.No:
+                    programmingAction.IgnoreNoResponseResult = true;
+                    e.Result = true;
+                    break;
+            }
+        }
 	}
 }
