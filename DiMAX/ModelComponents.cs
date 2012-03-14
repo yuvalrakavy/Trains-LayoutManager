@@ -1118,7 +1118,7 @@ namespace DiMAX {
 
 	class DiMAXchangeAccessoryState : DiMAXcommandBase {
 		public DiMAXchangeAccessoryState(DiMAXcommandStation commandStation, int unit, int state)
-			: base(commandStation, new DiMAXpacket(DiMAXcommandCode.TurnoutControl, new byte[] { (byte)(unit >> 6), (byte)(((unit << 2) & 0x3f) | state) })) {
+			: base(commandStation, new DiMAXpacket(DiMAXcommandCode.TurnoutControl, new byte[] { (byte)(unit >> 6), (byte)(((unit << 2) & 0x3f) | 2 | state) })) {
 		}
 	}
 
