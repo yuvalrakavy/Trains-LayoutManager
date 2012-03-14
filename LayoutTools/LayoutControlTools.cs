@@ -1363,13 +1363,14 @@ namespace LayoutManager.Tools {
 					// Note: If there is no edit-action-settings, then the result will not be bool.
 					object r = EventManager.Event(new LayoutEvent<object, ILayoutAction, bool>("edit-action-settings", module, setAddressAction));
 
-					if(r is bool && (bool)r) {
+					if(!(r is bool) || (bool)r) {
 						programmingState.ProgrammingActions.PrepareForProgramming();
 
 						var d = new Dialogs.ControlModuleProgrammingProgressDialog(programmingState, doProgramming: async () =>
 						{
 							if(LayoutController.Instance.BeginDesignTimeActivation()) {
 								await EventManager.AsyncEvent(new LayoutEvent<ILayoutActionContainer, IModelComponentCanProgramLocomotives>("do-command-station-actions", programmingState.ProgrammingActions, aProgrammer));
+                                LayoutController.Instance.EndDesignTimeActivation();
 								await LayoutController.Instance.EnterDesignModeRequest();
 							}
 							else {
