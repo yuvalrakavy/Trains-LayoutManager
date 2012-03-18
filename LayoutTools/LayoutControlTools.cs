@@ -233,6 +233,7 @@ namespace LayoutManager.Tools {
 			request.Address = csEvent.Address;
 			request.Index = csEvent.Index;
 			request.State = csEvent.State;
+            request.SetProgrammingRequired = false;
 
 			LayoutCompoundCommand command = new LayoutCompoundCommand("Connect " + request.ConnectionDescription.Value.DisplayName + " to address " + csEvent.GetAddressTextForComponent(connectionDestination), true);
 
