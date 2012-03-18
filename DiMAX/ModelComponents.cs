@@ -522,24 +522,28 @@ namespace DiMAX {
 						}
 						break;
 
-					case DiMAXcommandCode.LocoSpeedControl: {
-							DiMAXlocoSpeedControlPacket p = new DiMAXlocoSpeedControlPacket(packet);
+                    case DiMAXcommandCode.LocoSpeedControl: {
+                            if (OperationMode) {
+                                DiMAXlocoSpeedControlPacket p = new DiMAXlocoSpeedControlPacket(packet);
 
-							EventManager.Event(
-								new LayoutEvent(this, "locomotive-motion-notification", null, p.SpeedInSteps).SetOption("Address", "Unit", p.Unit));
-						}
-						break;
+                                EventManager.Event(
+                                    new LayoutEvent(this, "locomotive-motion-notification", null, p.SpeedInSteps).SetOption("Address", "Unit", p.Unit));
+                            }
+                        }
+                        break;
 
-					case DiMAXcommandCode.LocoFunctionControl: {
-							DiMAXlocoFunctionControlPacket p = new DiMAXlocoFunctionControlPacket(packet);
+                    case DiMAXcommandCode.LocoFunctionControl: {
+                            if (OperationMode) {
+                                DiMAXlocoFunctionControlPacket p = new DiMAXlocoFunctionControlPacket(packet);
 
-                            if(p.FunctionNumber == 0)
-    							EventManager.Event(new LayoutEvent(this, "set-locomotive-lights-notification", null, p.Lights).SetOption("Address", "Unit", p.Unit));
-                            else
-								EventManager.Event
-									(new LayoutEvent(this, "set-locomotive-function-state-notification", null, p.FunctionActive).SetOption("Address", "Unit", p.Unit).SetOption("Function", "Number", p.FunctionNumber));
-						}
-						break;
+                                if (p.FunctionNumber == 0)
+                                    EventManager.Event(new LayoutEvent(this, "set-locomotive-lights-notification", null, p.Lights).SetOption("Address", "Unit", p.Unit));
+                                else
+                                    EventManager.Event
+                                        (new LayoutEvent(this, "set-locomotive-function-state-notification", null, p.FunctionActive).SetOption("Address", "Unit", p.Unit).SetOption("Function", "Number", p.FunctionNumber));
+                            }
+                        }
+                        break;
 
 					case DiMAXcommandCode.ExtendedSystemStatus:
 						dimaxStatus.ExtendedStatusUpdate(this, packet);
@@ -1116,7 +1120,7 @@ namespace DiMAX {
 
 	class DiMAXchangeAccessoryState : DiMAXcommandBase {
 		public DiMAXchangeAccessoryState(DiMAXcommandStation commandStation, int unit, int state)
-			: base(commandStation, new DiMAXpacket(DiMAXcommandCode.TurnoutControl, new byte[] { (byte)(unit >> 6), (byte)(((unit << 2) & 0x3f) | 2 | state) })) {
+			: base(commandStation, new DiMAXpacket(DiMAXcommandCode.TurnoutControl, new byte[] { (byte)(unit >> 6), (byte)(((unit & 0x3f) << 2) | 2 | state) })) {
 		}
 	}
 
