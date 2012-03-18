@@ -1051,6 +1051,8 @@ namespace LayoutManager.Components {
 		public async Task WaitForIdle() {
 			DoIdleCommands = false;
 
+            Trace.WriteLine("Enter wait for idle");
+
 			var pendingCommands = new List<Task>();
 
 			lock(queues) {
@@ -1072,6 +1074,9 @@ namespace LayoutManager.Components {
 				else
 					Trace.WriteLineIf(traceOutputManager.TraceVerbose, "Waiting for idle done");
 			}
+
+            Thread.Sleep(500);
+            Trace.WriteLine("Wait for idle done");
 		}
 
 		#endregion

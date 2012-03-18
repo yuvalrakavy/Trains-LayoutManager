@@ -142,8 +142,6 @@ namespace DiMAX {
 		}
 
 		protected override async Task OnTerminateCommunication() {
-			await base.OnTerminateCommunication ();
-
 			if(outputManager != null) {
 				await outputManager.WaitForIdle();
 				outputManager.Terminate();
