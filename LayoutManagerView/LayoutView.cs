@@ -440,12 +440,16 @@ namespace LayoutManager.View {
 							case LayoutLockType.ManualDispatch: {
 									ILayoutPower power = edge.Track.GetPower(edge.ConnectionPoint);
 
-									switch(power.Type) {
-										default:
-										case LayoutPowerType.Digital: resultColor = Color.DarkCyan; break;
-										case LayoutPowerType.Disconnected: resultColor = Color.FromArgb(0x20, 0x4b, 0x4b); break;
-										case LayoutPowerType.Programmer: resultColor = Color.Red; break;
-									}
+                                    if (power != null) {
+                                        switch (power.Type) {
+                                            default:
+                                            case LayoutPowerType.Digital: resultColor = Color.DarkCyan; break;
+                                            case LayoutPowerType.Disconnected: resultColor = Color.FromArgb(0x20, 0x4b, 0x4b); break;
+                                            case LayoutPowerType.Programmer: resultColor = Color.Red; break;
+                                        }
+                                    }
+                                    else
+                                        resultColor = Color.FromArgb(0x20, 0x4b, 0x4b);
 								}
 								break;
 
