@@ -1971,6 +1971,12 @@ namespace LayoutManager
 
 		}
 
+        private void menuItemVerificationOptions_Click(object sender, EventArgs e) {
+            var d = new LayoutManager.Tools.Dialogs.LayoutVerificationOptions();
+
+            d.ShowDialog(this);
+        }
+
 	}
 
 	public class LayoutFrameWindowAreaTabPage : TabPage {

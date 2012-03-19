@@ -243,6 +243,12 @@
     <Compile Include="Dialogs\GetSavedPolicyName.Designer.cs">
       <DependentUpon>GetSavedPolicyName.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\LayoutVerificationOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\LayoutVerificationOptions.Designer.cs">
+      <DependentUpon>LayoutVerificationOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\PowerSelectorProperties.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -520,6 +526,9 @@
     <EmbeddedResource Include="Dialogs\GetSavedPolicyName.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GetSavedPolicyName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\LayoutVerificationOptions.resx">
+      <DependentUpon>LayoutVerificationOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\PowerSelectorProperties.resx">
       <DependentUpon>PowerSelectorProperties.cs</DependentUpon>

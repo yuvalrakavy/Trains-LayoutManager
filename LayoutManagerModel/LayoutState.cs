@@ -2246,9 +2246,45 @@ namespace LayoutManager.Model {
 
 	#endregion
 
-	#region Policy
+    #region Layout Verification options
 
-	public class LayoutPolicyInfo : LayoutXmlWrapper, IObjectHasId {
+    public class LayoutVerificationOptions : LayoutStateInfoBase {
+        public LayoutVerificationOptions(XmlElement element)
+            : base(element) {
+        }
+
+        /// <summary>
+        /// Ignore feedback (track contacts, block occupancy detectors) components that are not connected
+        /// </summary>
+        public bool IgnoreNotConnectedFeedbacks {
+            get {
+                return XmlConvert.ToBoolean(GetAttribute("IgnoreNotConnectedFeedbacks", "false"));
+            }
+
+            set {
+                SetAttribute("IgnoreNotConnectedFeedbacks", XmlConvert.ToString(value));
+            }
+        }
+
+        /// <summary>
+        /// Ignore not connected power components
+        /// </summary>
+        public bool IgnoreNotConnectedPowerComponents {
+            get {
+                return XmlConvert.ToBoolean(GetAttribute("IgnoreNotPowerComponents", "false"));
+            }
+
+            set {
+                SetAttribute("IgnoreNotPowerComponents", XmlConvert.ToString(value));
+            }
+        }
+    }
+
+    #endregion
+
+    #region Policy
+
+    public class LayoutPolicyInfo : LayoutXmlWrapper, IObjectHasId {
 		public LayoutPolicyInfo(XmlElement element)
 			: base(element) {
 		}
@@ -2582,6 +2618,7 @@ namespace LayoutManager.Model {
 		LayoutPoliciesCollection rideStartPolicies;
 		LayoutPoliciesCollection driverInstructionsPolicies;
 		AllLayoutManualDispatchRegion allLayoutManualDispatch;
+        LayoutVerificationOptions layoutVerificationOptions;
 
 		List<LayoutPolicyType> policyTypes;
 		OperationStates operationStates;
@@ -2598,6 +2635,7 @@ namespace LayoutManager.Model {
 			tripPlansCatalog = new TripPlanCatalogInfo(getElement("TripPlansCatalog"));
 			manualDispatchRegions = new ManualDispatchRegionCollection(getElement("ManualDispatchRegions"));
 			defaultDriverParameters = new DefaultDriverParametersInfo(this, getElement("DefaultDriverParameters"));
+            layoutVerificationOptions = new LayoutVerificationOptions(getElement("LayoutVerificiationOptions"));
 
 			tripPlanPolicies = new LayoutPoliciesCollection(GlobalPoliciesElement, LayoutPoliciesElement, "TripPlan");
 			blockInfoPolicies = new LayoutPoliciesCollection(GlobalPoliciesElement, LayoutPoliciesElement, "BlockInfo");
@@ -2647,6 +2685,12 @@ namespace LayoutManager.Model {
 				return tripPlansCatalog;
 			}
 		}
+
+        public LayoutVerificationOptions VerificationOptions {
+            get {
+                return layoutVerificationOptions;
+            }
+        }
 
 		public ManualDispatchRegionCollection ManualDispatchRegions {
 			get {
