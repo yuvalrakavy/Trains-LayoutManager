@@ -178,9 +178,13 @@ namespace LayoutManager.Logic
 			LayoutSelection		nonConnectedComponents = new LayoutSelection();
 			IEnumerable<IModelComponentConnectToControl> connectableComponents = LayoutModel.Components<IModelComponentConnectToControl>(phase);
 			bool				result = true;
+            bool                ignoreFeedbackComponents = LayoutModel.StateManager.VerificationOptions.IgnoreNotConnectedFeedbacks;
 
 			foreach(IModelComponentConnectToControl component in connectableComponents) {
 				if(!component.FullyConnected) {
+                    if (ignoreFeedbackComponents && (component is LayoutTrackContactComponent || component is LayoutBlockDefinitionComponent))
+                        continue;
+
 					nonConnectedComponents.Add((ModelComponent)component);
 					result = false;
 				}
