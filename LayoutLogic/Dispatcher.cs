@@ -1410,7 +1410,7 @@ namespace LayoutManager.Logic {
 			Guid			ownerID = (Guid)e.Sender;
 			ITripRoute		route = (ITripRoute)e.Info;
 			TrackEdge		edge = route.SourceEdge;
-			TrackEdge		destinationEdge = route.DestinationEdge;
+			TrackEdge		destinationEdge = new TrackEdge(route.DestinationTrack, route.DestinationFront);
 			IList<int>		switchStates = route.SwitchStates;
 //			Dictionary<Guid, object> alreadySwitched = new Dictionary<Guid, object>(switchStates.Count);
 			int switchStateIndex = 0;
@@ -1428,6 +1428,8 @@ namespace LayoutManager.Logic {
 				IModelComponentIsMultiPath	multipath = edge.Track as IModelComponentIsMultiPath;
 
 				if(multipath != null) {
+                    Trace.WriteLine("Setting Switch: Multipath " + multipath.FullDescription + " switchStateIndex: " + switchStateIndex);
+
                     // 13-Feb: Change, change switch only if Split point, this avoid derailment because of changing
                     // switch on reverse loop
 					//if(multipath.IsSplitPoint(edge.ConnectionPoint) || !alreadySwitched.ContainsKey(multipath.Id)) {
