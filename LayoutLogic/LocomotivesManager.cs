@@ -707,28 +707,33 @@ namespace LayoutManager.Logic {
 			var createTrainEvent = new LayoutEvent<LayoutBlockDefinitionComponent, XmlElement, TrainStateInfo>("create-train", blockDefinition, collectionElement).CopyOptions(e, "Train");
 			var train = (TrainStateInfo)EventManager.Event(createTrainEvent);
 
-			if(blockDefinition.Block.LockRequest == null || !blockDefinition.Block.LockRequest.IsManualDispatchLock) {
-				lockRequest = new LayoutLockRequest(train.Id);
+            if (blockDefinition.Block.LockRequest == null || !blockDefinition.Block.LockRequest.IsManualDispatchLock) {
+                lockRequest = new LayoutLockRequest(train.Id);
 
-				lockRequest.CancellationToken = e.GetCancellationToken();
-				lockRequest.ResourceEntries.Add(blockDefinition.Block);
-			}
+                lockRequest.CancellationToken = e.GetCancellationToken();
+                lockRequest.ResourceEntries.Add(blockDefinition.Block);
 
-			Task lockTask = EventManager.AsyncEvent(new LayoutEvent(lockRequest, "request-layout-lock-async").CopyOperationContext(e));
 
-			if(!lockTask.IsCompleted)
-				LayoutBlockBallon.Show(blockDefinition,
-					new LayoutBlockBallon() { Text = "Do not place train on track yet!", CancellationToken = e.GetCancellationToken(),
-						FillColor = System.Drawing.Color.Red, TextColor = System.Drawing.Color.Yellow });
+                Task lockTask = EventManager.AsyncEvent(new LayoutEvent(lockRequest, "request-layout-lock-async").CopyOperationContext(e));
 
-			try {
-				await lockTask;
-			}
-			catch(OperationCanceledException) {
-				if(train != null)
-					LayoutModel.StateManager.Trains.RemoveState(train);
-				throw;
-			}
+                if (!lockTask.IsCompleted)
+                    LayoutBlockBallon.Show(blockDefinition,
+                        new LayoutBlockBallon() {
+                            Text = "Do not place train on track yet!",
+                            CancellationToken = e.GetCancellationToken(),
+                            FillColor = System.Drawing.Color.Red,
+                            TextColor = System.Drawing.Color.Yellow
+                        });
+
+                try {
+                    await lockTask;
+                }
+                catch (OperationCanceledException) {
+                    if (train != null)
+                        LayoutModel.StateManager.Trains.RemoveState(train);
+                    throw;
+                }
+            }
 
 			EventManager.Event(new LayoutEvent<TrainStateInfo, LayoutBlockDefinitionComponent>("place-train-in-block", train, blockDefinition).CopyOptions(createTrainEvent, "Train"));
 			await EventManager.AsyncEvent(new LayoutEvent<LayoutBlockDefinitionComponent, string>("wait-for-locomotive-placement", blockDefinition, "Please place train " + train.Name + " on track").CopyOperationContext(e).SetOption("TrainID", train.Id));
