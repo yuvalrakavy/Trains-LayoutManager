@@ -1001,7 +1001,7 @@ namespace DiMAX {
 
 		public int SpeedInSteps {
 			get {
-				if((Packet.Parameters[2] & 0x80) != 0)
+				if((Packet.Parameters[2] & 0x80) == 0)
 					return -(Packet.Parameters[2] & 0x7f);
 				else
 					return Packet.Parameters[2];
