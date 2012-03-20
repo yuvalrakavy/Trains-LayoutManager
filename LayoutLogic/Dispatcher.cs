@@ -1417,8 +1417,11 @@ namespace LayoutManager.Logic {
 			bool			completed = true;
 			List<SwitchingCommand> switchingCommands = new List<SwitchingCommand>();
 
-			while(edge != destinationEdge) {
+            Trace.WriteLine("Destinaion edge is: " + destinationEdge);
+
+			while(edge.Track != destinationEdge.Track) {
 				LayoutBlock	block = edge.Track.GetBlock(edge.ConnectionPoint);
+
 
 				if(block.LockRequest == null || block.LockRequest.OwnerId != ownerID) {
 					completed = false;
