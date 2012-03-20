@@ -1122,7 +1122,11 @@ namespace LayoutManager.Model {
 
 					for(int index = 0; index < ModuleType.NumberOfConnectionPoints; index++) {
 						if(ConnectionPoints.IsConnected(index)) {
-							var componentPhase = ConnectionPoints[index].Component.Spot.Phase;
+                            var component = ConnectionPoints[index].Component;
+                            var componentPhase = LayoutPhase.Planned;
+
+                            if(component != null)
+							    componentPhase = component.Spot.Phase;
 
 							if(_phase == LayoutPhase.Planned && componentPhase != LayoutPhase.Planned)
 								_phase = componentPhase;
