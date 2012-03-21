@@ -681,8 +681,10 @@ namespace LayoutManager.Model {
 
 				EventManager.Event(new LayoutEvent(trackingResult.Train, "train-enter-block", null, trackingResult.ToBlock));
 				EventManager.Event(new LayoutEvent(trackingResult.Train, "train-crossed-block", null, trackingResult.BlockEdge));
-				EventManager.Event(new LayoutEvent((LayoutBlockEdgeComponent)trackingResult.BlockEdge,
-					"occupancy-block-edge-crossed", null, trackingResult.Train));
+                if (trackingResult.BlockEdge is LayoutBlockEdgeComponent) {
+                    EventManager.Event(new LayoutEvent((LayoutBlockEdgeComponent)trackingResult.BlockEdge,
+                        "occupancy-block-edge-crossed", null, trackingResult.Train));
+                }
 			}
 		}
 

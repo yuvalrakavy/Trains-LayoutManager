@@ -313,7 +313,7 @@ namespace LayoutManager.Logic
 
 					// Check if all edges are non-track contact, if this is the case then the block is a no-feedback block
 					foreach(LayoutBlockEdgeBase blockEdge in block.BlockEdges)
-						if(!(blockEdge is LayoutTrackContactComponent)) {
+						if(!blockEdge.IsTrackContact()) {
 							info.NoFeedback = true;
 							break;
 						}

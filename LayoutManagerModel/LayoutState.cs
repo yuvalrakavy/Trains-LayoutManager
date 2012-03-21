@@ -1437,7 +1437,7 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public long LastBlockEdgeCrossingTime {
+		public Int64 LastBlockEdgeCrossingTime {
 			get {
 				if(Element.HasAttribute("LastBlockEdgeCrossingTime"))
 					return XmlConvert.ToInt64(GetAttribute("LastBlockEdgeCrossingTime"));

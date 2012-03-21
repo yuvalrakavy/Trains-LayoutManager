@@ -140,7 +140,7 @@ namespace LayoutManager.Logic {
 			visitedBlocks.Add(block.Id, block);
 
 			foreach(LayoutBlockEdgeBase blockEdge in block.BlockEdges) {
-				if(!(blockEdge is LayoutTrackContactComponent)) {
+				if(!blockEdge.IsTrackContact()) {
 					LayoutBlock	otherBlock = block.OtherBlock(blockEdge);
 
 					if(!visitedBlocks.Contains(otherBlock.Id)) {
@@ -624,7 +624,7 @@ namespace LayoutManager.Logic {
 					// the "opposite side" of that of the block edge that was crossed and check which one
 					// contain trains which may have moved to this block
 					foreach(LayoutBlockEdgeBase blockEdge in blockEdges) {
-						if(blockEdge is LayoutTrackContactComponent)
+						if(blockEdge.IsTrackContact())
 							continue;				// The train could not cross track contact without being detected
 
 						LayoutTrackComponent	track = blockEdge.Track;

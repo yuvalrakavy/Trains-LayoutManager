@@ -168,6 +168,14 @@ namespace LayoutManager.Components {
 			else
 				throw new ArgumentException(FullDescription + " is not boundry of block " + block.BlockDefinintion.FullDescription);
 		}
+
+        /// <summary>
+        /// Return true if this block edge is a track contact, which is connected to control module (i.e. it will be triggered)
+        /// </summary>
+        /// <returns>True - this component is an active track contact</returns>
+        public virtual bool IsTrackContact() {
+            return false;
+        }
 	}
 
 	#endregion
@@ -223,6 +231,10 @@ namespace LayoutManager.Components {
 				OnComponentChanged();
 			}
 		}
+
+        public override bool IsTrackContact() {
+            return FullyConnected;
+        }
 
 		#region IModelComponentConnectToControl Members
 

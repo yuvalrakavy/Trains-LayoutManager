@@ -1498,7 +1498,7 @@ namespace LayoutManager.Tools {
 			protected override void OnClick(EventArgs e) {
 				int		fromCount = 1, toCount = 1;
 
-				if(extendableTrainInfo.blockEdge is LayoutTrackContactComponent && extendableTrainInfo.Train.TrackContactTriggerCount > 2) {
+				if(extendableTrainInfo.blockEdge.IsTrackContact() && extendableTrainInfo.Train.TrackContactTriggerCount > 2) {
 					Dialogs.ExtendTrainSettings	extendTrainSettings = new Dialogs.ExtendTrainSettings(extendableTrainInfo.Train);
 
 					if(extendTrainSettings.ShowDialog() != DialogResult.OK)
@@ -1516,7 +1516,7 @@ namespace LayoutManager.Tools {
 
 				TrackContactPassingStateInfo	trackContactPassingState = null;
 
-				if(extendableTrainInfo.blockEdge is LayoutTrackContactComponent) {
+				if(extendableTrainInfo.blockEdge.IsTrackContact()) {
 					trackContactPassingState = new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(extendableTrainInfo.blockEdge, "TrainPassing"));
 
 					trackContactPassingState.Train = extendableTrainInfo.Train;

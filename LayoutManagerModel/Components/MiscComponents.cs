@@ -143,7 +143,7 @@ namespace LayoutManager.Components {
 
 		public bool CheckReverseLoops {
 			get {
-				return XmlConvert.ToBoolean(Element.GetAttribute("CheckReverseLoops", "true"));
+				return XmlConvert.ToBoolean(GetAttribute("CheckReverseLoops", "true"));
 			}
 
 			set {
