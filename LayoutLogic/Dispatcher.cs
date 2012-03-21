@@ -1259,7 +1259,7 @@ namespace LayoutManager.Logic {
 					// If the preceeding block is designated as SlowDownRegion, the prepareStop action is moved
 					// to it. This allow the user to control where the train will slow down by designating
 					// the flagging blocks as slow down region.
-					if(tripSection.BlockEntries.Count > 2) {
+					if(tripSection.BlockEntries.Count >= 2) {
 						tripSection.BlockEntries[tripSection.BlockEntries.Count - 2].AddAction(BlockAction.PrepareStop);
 
 						for(int i = tripSection.BlockEntries.Count - 3; i >= 0; i--) {
