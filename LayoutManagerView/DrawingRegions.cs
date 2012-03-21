@@ -505,7 +505,7 @@ namespace LayoutManager.View {
 
 		public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
 			// If the component is not connected, mark it
-			if(!LayoutController.IsOperationMode && !LayoutModel.ControlManager.ConnectionPoints.IsFullyConnected(component.Id)) {
+			if(!LayoutModel.ControlManager.ConnectionPoints.IsFullyConnected(component.Id)) {
 				Image	notConnectedImage = imageListComponents.Images[2];
 
 				g.DrawImage(notConnectedImage, new Rectangle(new Point(0, 0), notConnectedImage.Size));
