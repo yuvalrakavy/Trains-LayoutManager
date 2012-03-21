@@ -944,6 +944,7 @@ namespace LayoutManager.Logic {
 			bool							endOfTripSection = false;
 			bool							reachedDestination = false;
 			bool							sectionStarted = false;
+            bool                            blockEdgeIsDetectable = true;  // The block edge that leads to the current block can be detected (i.e. connected track contact)
 			LayoutComponentConnectionPoint	blockInfoFront = route.SourceFront;
 			IList<LayoutBlock>				routeBlocks = route.Blocks;
 
@@ -1008,9 +1009,12 @@ namespace LayoutManager.Logic {
 
 			while(!endOfTripSection && !reachedDestination && !isNanualDispatchRegion) {
 				LayoutBlock		newBlock = edge.Track.GetBlock(edge.ConnectionPoint);
+                bool            newBlockEdgeIsDetectable = false;
 
-				if(edge.Track.BlockEdgeBase != null)
-					newBlock = edge.Track.GetBlock(edge.Track.ConnectTo(edge.ConnectionPoint, LayoutComponentConnectionType.Passage)[0]);
+                if (edge.Track.BlockEdgeBase != null) {
+                    newBlock = edge.Track.GetBlock(edge.Track.ConnectTo(edge.ConnectionPoint, LayoutComponentConnectionType.Passage)[0]);
+                    newBlockEdgeIsDetectable = edge.Track.BlockEdgeBase.IsTrackContact();
+                }
 
 				// Check if a new block starts
 				if(newBlock != currentBlock || edge.Track == destinationEdge.Track) {
@@ -1023,8 +1027,11 @@ namespace LayoutManager.Logic {
 					}
 
 					if(sectionStarted) {
-						if((currentBlock.BlockDefinintion != null && currentBlock.BlockDefinintion.Info.CanTrainWait) || currentBlock.CanTrainWaitDefault)
-							waitableBlockFound = true;
+                        // A train can wait if the edge leading to the block is detectable (e.g. track contact) or if the block is an active occupancy detection block
+                        if (blockEdgeIsDetectable || (currentBlock.BlockDefinintion.Info.IsOccupancyDetectionBlock && currentBlock.BlockDefinintion.FullyConnected)) {
+                            if ((currentBlock.BlockDefinintion != null && currentBlock.BlockDefinintion.Info.CanTrainWait) || currentBlock.CanTrainWaitDefault)
+                                waitableBlockFound = true;
+                        }
 					}
 
 					if((crossing || foundTripSectionBoundry) && waitableBlockFound)
@@ -1042,6 +1049,7 @@ namespace LayoutManager.Logic {
 
 					crossing = false;
 					currentBlock = newBlock;
+                    blockEdgeIsDetectable = newBlockEdgeIsDetectable;
 					currentBlockHasMergePoint = false;
 					crossedBlocks.Clear();
 
