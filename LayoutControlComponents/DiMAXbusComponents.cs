@@ -183,15 +183,18 @@ namespace LayoutManager.ControlComponents {
 			module.DiMAX_BusConnectionMethod = BusConnectionMethod;
 			module.DiMAX_BusId = BusId;
 
-			module.Label = Regex.Replace(module.Label, "\\[.*\\]", "");
+            string label = module.Label ?? "";
+			label = Regex.Replace(label, "\\[.*\\]", "");
 
-			if(module.Label.Length > 0)
-				module.Label += " ";
+			if(label.Length > 0)
+				label += " ";
 
 			if(BusConnectionMethod == MassothFeedbackDecoderBusConnectionMethod.Slave)
-				module.Label += "[Slave]";
+				label += "[Slave]";
 			else
-				module.Label += "[Master ID: " + BusId + "]";
+				label += "[Master ID: " + BusId + "]";
+
+            module.Label = label;
 		}
 
 		public override string Description {
