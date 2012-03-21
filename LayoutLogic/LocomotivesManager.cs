@@ -1200,6 +1200,28 @@ namespace LayoutManager.Logic {
 				if(block.BlockDefinintion != null)
 					block.BlockDefinintion.OnComponentChanged();
 			}
+
+            if (trainState.SpeedInSteps == 0) {
+                var edgeCrossingTime = new DateTime(trainState.LastBlockEdgeCrossingTime);
+                var timeSinceEdgeCrossing = DateTime.Now - edgeCrossingTime;
+
+                trainState.TrainStoppedOnBlockEdgeCrossing = timeSinceEdgeCrossing.Milliseconds < 500;
+
+                Trace.WriteLine("Train stopped " + timeSinceEdgeCrossing.Milliseconds + " after crossing block edge");
+
+                if (trainState.TrainStoppedOnBlockEdgeCrossing) /****/
+                    Trace.WriteLine("*** Train stopped on block edge crossing");
+            }
+            else {
+                if (trainState.TrainStoppedOnBlockEdgeCrossing && trainState.LastBlockEdgeCrossingSpeed != trainState.SpeedInSteps) {
+                    trainState.TrainStoppedOnBlockEdgeCrossing = false;
+
+                    if (trainState.LastCrossedBlockEdge != null) {
+                        EventManager.Event(new LayoutEvent(trainState.LastCrossedBlockEdge, "anonymous-track-contact-triggerd"));
+                        Trace.WriteLine("*** Triggered block edge, " + trainState.LastCrossedBlockEdge.FullDescription + " because train " + trainState.Name + " was standing on it and started to go in reverse direction");
+                    }
+                }
+            }
 		}
 
 		#endregion
