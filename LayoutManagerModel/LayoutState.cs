@@ -1461,6 +1461,16 @@ namespace LayoutManager.Model {
 			}
 		}
 
+        public bool TrainStoppedOnBlockEdgeCrossing {
+            get {
+                return XmlConvert.ToBoolean(GetAttribute("StoppedOnBlockCrossing", "false"));
+            }
+
+            set {
+                SetAttribute("StoppedOnBlockCrossing", value, removeIf: false);
+            }
+        }
+
 		#region IEqualityComparer<TrainStateInfo> Members
 
 		public bool Equals(TrainStateInfo x, TrainStateInfo y) {

@@ -842,10 +842,7 @@ namespace LayoutManager.Model {
 			}
 
 			set {
-				if(value == Guid.Empty)
-					Element.RemoveAttribute("OutletId");
-				else
-					SetAttribute("OutletId", XmlConvert.ToString(value));
+                SetAttribute("OutletId", value, removeIf: Guid.Empty);
 			}
 		}
 

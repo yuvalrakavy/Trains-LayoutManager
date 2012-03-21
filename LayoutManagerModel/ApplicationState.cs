@@ -38,10 +38,7 @@ namespace LayoutManager {
 			}
 
 			set {
-				if(value == null)
-					Element.RemoveAttribute("LayoutFilename");
-				else
-					SetAttribute("LayoutFilename", value);
+				SetAttribute("LayoutFilename", value);
 			}
 		}
 	}

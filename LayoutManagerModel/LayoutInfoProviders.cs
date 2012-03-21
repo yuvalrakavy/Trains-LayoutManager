@@ -188,10 +188,7 @@ namespace LayoutManager.Model {
 			}
 
 			set {
-				if(value == null)
-					Element.RemoveAttribute("Ref");
-				else
-					SetAttribute("Ref", value);
+                SetAttribute("Ref", value, removeIf: null);
 			}
 		}
 	}
@@ -953,10 +950,7 @@ namespace LayoutManager.Model {
 			}
 
 			set {
-				if(value == false)
-					Element.RemoveAttribute("ImageError");
-				else
-					SetAttribute("ImageError", XmlConvert.ToString(value));
+                SetAttribute("ImageError", value, removeIf: false);
 			}
 		}
 	}

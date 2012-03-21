@@ -326,10 +326,7 @@ namespace LayoutManager.Model {
             }
 
             set {
-                if (value == false)
-                    Element.RemoveAttribute("IgnoreNoResponse");
-                else
-                    SetAttribute("IgnoreNoResponse", XmlConvert.ToString(value));
+                SetAttribute("IgnoreNoResponse", value, removeIf: false);
             }
         }
 	}

@@ -624,10 +624,7 @@ namespace LayoutManager.Model {
 			}
 
 			set {
-				if(value == 0)
-					Element.RemoveAttribute("SpeedLimit");
-				else
-					SetAttribute("SpeedLimit", XmlConvert.ToString(value));
+                SetAttribute("SpeedLimit", value, removeIf: 0);
 			}
 		}
 
@@ -741,17 +738,11 @@ namespace LayoutManager.Model {
 		/// </summary>
 		public string DecoderTypeName {
 			get {
-				if(HasAttribute("DecoderType"))
-					return GetAttribute("DecoderType");
-				else
-					return null;		// TODO: Get default decoder type from the catalog
+                return GetAttribute("DecoderType", null);		// TODO: Get default decoder type from the catalog
 			}
 
 			set {
-				if(value == null)
-					Element.RemoveAttribute("DecoderType");
-				else
-					SetAttribute("DecoderType", value);
+                SetAttribute("DecoderType", value, removeIf: null);
 			}
 		}
 
@@ -942,16 +933,11 @@ namespace LayoutManager.Model {
 		/// </summary>
 		public bool NotManaged {
 			get {
-				if(Element.HasAttribute("NotManaged"))
-					return XmlConvert.ToBoolean(GetAttribute("NotManaged", "false"));
-				return false;
+				return XmlConvert.ToBoolean(GetAttribute("NotManaged", "false"));
 			}
 
 			set {
-				if(value == false)
-					Element.RemoveAttribute("NotManaged");
-				else
-					SetAttribute("NotManaged", XmlConvert.ToString(value));
+                SetAttribute("NotManaged", value, removeIf: false);
 			}
 		}
 
@@ -1211,17 +1197,11 @@ namespace LayoutManager.Model {
 
 		public string DriverId {
 			get {
-				if(Element.HasAttribute("DriverID"))
-					return GetAttribute("DriverID");
-				else
-					return null;
+                return GetAttribute("DriverID", null);
 			}
 
 			set {
-				if(value == null)
-					Element.RemoveAttribute("DriverID");
-				else
-					Element.SetAttribute("DriverID", value);
+                SetAttribute("DriverID", value, removeIf: null);
 			}
 		}
 
@@ -1628,10 +1608,7 @@ namespace LayoutManager.Model {
 			}
 
 			set {
-				if(value == 0)
-					Element.RemoveAttribute("SpeedLimit");
-				else
-					SetAttribute("SpeedLimit", XmlConvert.ToString(value));
+                SetAttribute("SpeedLimit", value, removeIf: 0);
 			}
 		}
 
@@ -1641,10 +1618,7 @@ namespace LayoutManager.Model {
 			}
 			
 			set {
-				if(value == 0)
-					Element.RemoveAttribute("SlowDownSpeed");
-				else
-					SetAttribute("SlowDownSpeed", XmlConvert.ToString(value));
+                SetAttribute("SlowDownSpeed", value, removeIf: 0);
 			}
 		}
 

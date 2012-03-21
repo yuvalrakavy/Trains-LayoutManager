@@ -53,10 +53,7 @@ namespace LayoutManager.Model {
 			}
 
 			set {
-				if(value == null)
-					Element.RemoveAttribute("Role");
-				else
-					SetAttribute("Role", value);
+                SetAttribute("Role", value, removeIf: null);
 			}
 		}
 
@@ -66,10 +63,7 @@ namespace LayoutManager.Model {
 			}
 
 			set {
-				if(value == false)
-					Element.RemoveAttribute("UseInTrainController");
-				else
-					SetAttribute("UseInTrainController", XmlConvert.ToString(value));
+                SetAttribute("UseInTrainController", value, removeIf: false);
 			}
 		}
 		

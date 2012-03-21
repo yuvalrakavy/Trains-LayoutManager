@@ -83,9 +83,27 @@ namespace LayoutManager {
 			return GetAttribute(name, null);
 		}
 
+
 		public void SetAttribute(string name, string v) {
-			_element.SetAttribute(name, v);
+            if (v == null)
+                _element.RemoveAttribute(name);
+            else
+    			_element.SetAttribute(name, v);
 		}
+
+        public void SetAttribute(string name, string v, string removeIf) {
+            if (v == null || v == removeIf)
+                _element.RemoveAttribute(name);
+            else
+                _element.SetAttribute(name, v);
+        }
+
+        public void SetAttribute(string name, int v, int removeIf) {
+            if (v == removeIf)
+                _element.RemoveAttribute(name);
+            else
+                _element.SetAttribute(name, XmlConvert.ToString(v));
+        }
 
 		public void SetAttribute(string name, int v) {
 			_element.SetAttribute(name, XmlConvert.ToString(v));
@@ -95,9 +113,23 @@ namespace LayoutManager {
 			_element.SetAttribute(name, XmlConvert.ToString(v));
 		}
 
+        public void SetAttribute(string name, Guid v, Guid removeIf) {
+            if (v == removeIf)
+                _element.RemoveAttribute(name);
+            else
+                _element.SetAttribute(name, XmlConvert.ToString(v));
+        }
+
 		public void SetAttribute(string name, bool v) {
 			_element.SetAttribute(name, XmlConvert.ToString(v));
 		}
+
+        public void SetAttribute(string name, bool v, bool removeIf) {
+            if (v == removeIf)
+                _element.RemoveAttribute(name);
+            else
+                _element.SetAttribute(name, XmlConvert.ToString(v));
+        }
 
 		public bool HasAttribute(string name) {
 			return Element.HasAttribute(name);

@@ -269,6 +269,7 @@ namespace LayoutManager.Dialogs {
 			if(textBoxSpeedLimit.Text.Trim() != "")
 				limit = int.Parse(textBoxSpeedLimit.Text);
 
+
 			if(limit == 0)
 				element.RemoveAttribute(a);
 			else

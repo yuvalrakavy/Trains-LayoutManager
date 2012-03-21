@@ -507,30 +507,21 @@ namespace LayoutManager.Model {
 
 		public bool IsCircular {
 			get {
-				if(Element.HasAttribute("IsCircular"))
-					return XmlConvert.ToBoolean(Element.GetAttribute("IsCircular"));
-				else
-					return false;
+                return XmlConvert.ToBoolean(GetAttribute("IsCircular", "false"));
 			}
 
 			set {
-				Element.SetAttribute("IsCircular", XmlConvert.ToString(value));
+                SetAttribute("IsCircular", value, removeIf: false);
 			}
 		}
 
 		public string Name {
 			get {
-				if(Element.HasAttribute("Name"))
-					return Element.GetAttribute("Name");
-				else
-					return null;
+                return GetAttribute("Name", null);
 			}
 
 			set {
-				if(value == null)
-					Element.RemoveAttribute("Name");
-				else
-					Element.SetAttribute("Name", value);
+                SetAttribute("Name", value, removeIf: null);
 			}
 		}
 
@@ -549,17 +540,11 @@ namespace LayoutManager.Model {
 
 		public bool FromCatalog {
 			get {
-				if(Element.HasAttribute("FromCatalog"))
-					return XmlConvert.ToBoolean(Element.GetAttribute("FromCatalog"));
-				else
-					return false;
+                return XmlConvert.ToBoolean(GetAttribute("FromCatalog", "false"));
 			}
 
 			set {
-				if(value == false)
-					Element.RemoveAttribute("FromCatalog");
-				else
-					Element.SetAttribute("FromCatalog", XmlConvert.ToString(value));
+                SetAttribute("FromCatalog", value, removeIf: false);
 			}
 		}
 

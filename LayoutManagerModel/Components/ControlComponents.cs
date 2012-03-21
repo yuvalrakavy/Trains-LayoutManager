@@ -395,10 +395,7 @@ namespace LayoutManager.Components {
 			}
 
 			set {
-				if(value == false)
-					Element.RemoveAttribute("SuggestForProgramming");
-				else
-					SetAttribute("SuggestForProgramming", XmlConvert.ToString(value));
+				SetAttribute("SuggestForProgramming", value, removeIf:false);
 			}
 		}
 
@@ -434,10 +431,7 @@ namespace LayoutManager.Components {
 			}
 
 			set {
-				if(value == false)
-					Element.RemoveAttribute("SlowDownRegion");
-				else
-					SetAttribute("SlowDownRegion", XmlConvert.ToString(value));
+                SetAttribute("SlowDownRegion", value, removeIf:false);
 			}
 		}
 
@@ -512,12 +506,8 @@ namespace LayoutManager.Components {
 			}
 
 			set {
-				if(value == 0)
-					Element.RemoveAttribute("SpeedLimit");
-				else {
-					SetAttribute("SpeedLimit", XmlConvert.ToString(value));
-					RefreshSpeedLimit();
-				}
+                SetAttribute("SpeedLimit", value, removeIf: 0);
+				RefreshSpeedLimit();
 			}
 		}
 
@@ -527,12 +517,8 @@ namespace LayoutManager.Components {
 			}
 
 			set {
-				if(value == 0)
-					Element.RemoveAttribute("SlowDownSpeed");
-				else {
-					SetAttribute("SlowDownSpeed", XmlConvert.ToString(value));
-					RefreshSpeedLimit();
-				}
+                SetAttribute("SlowDownSpeed", value, removeIf: 0);
+				RefreshSpeedLimit();
 			}
 		}
 
@@ -580,10 +566,7 @@ namespace LayoutManager.Components {
 		public void SetTripSectionBoundry(int cpIndex, bool isBoundry) {
 			string a = "TripSectonBoundry" + cpIndex;
 
-			if(isBoundry)
-				SetAttribute(a, XmlConvert.ToString(isBoundry));
-			else
-				Element.RemoveAttribute(a);
+            SetAttribute(a, isBoundry, removeIf: false);
 		}
 
 		/// <summary>
@@ -981,10 +964,7 @@ namespace LayoutManager.Components {
 			}
 
 			set {
-				if(value == false)
-					Element.RemoveAttribute("ReverseLogic");
-				else
-					SetAttribute("ReverseLogic", XmlConvert.ToString(value));
+                SetAttribute("ReverseLogic", value, removeIf: false);
 			}
 		}
 	}

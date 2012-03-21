@@ -352,10 +352,7 @@ namespace LayoutManager.Model {
 			}
 
 			set {
-				if(value == null)
-					Element.RemoveAttribute("Name");
-				else
-					SetAttribute("Name", value);
+                SetAttribute("Name", value, removeIf: null);
 			}
 		}
 
@@ -446,17 +443,11 @@ namespace LayoutManager.Model {
 		/// </summary>
 		public string Type {
 			get {
-				if(HasAttribute("Type"))
-					return GetAttribute("Type");
-				else
-					return Module.DefaultControlConnectionPointType;
+                return GetAttribute("Type", Module.DefaultControlConnectionPointType);
 			}
 
 			set {
-				if(value == null || value == Module.DefaultControlConnectionPointType)
-					Element.RemoveAttribute("Type");
-				else
-					SetAttribute("Type", value);
+                SetAttribute("Type", value, removeIf: Module.DefaultControlConnectionPointType);
 			}
 		}
 
@@ -505,10 +496,7 @@ namespace LayoutManager.Model {
 			}
 
 			set {
-				if(value == false)
-					Element.RemoveAttribute("UserActionRequired");
-				else
-					SetAttribute("UserActionRequired", XmlConvert.ToString(value));
+                SetAttribute("UserActionRequired", value, removeIf: false);
 			}
 		}
 
@@ -997,17 +985,11 @@ namespace LayoutManager.Model {
 
 		public string DefaultControlConnectionPointType {
 			get {
-				if(HasAttribute("DefaultConnectionPointType"))
-					return GetAttribute("DefaultConnectionPointType");
-				else
-					return ModuleType.DefaultControlConnectionPointType;
+                return GetAttribute("DefaultConnectionPointType", ModuleType.DefaultControlConnectionPointType);
 			}
 
 			set {
-				if(value == null || value == ModuleType.DefaultControlConnectionPointType)
-					Element.RemoveAttribute("DefaultConnectionPointType");
-				else
-					SetAttribute("DefaultConnectionPointType", value);
+                SetAttribute("DefaultConnectionPointType", value, ModuleType.DefaultControlConnectionPointType);
 			}
 		}
 
@@ -1036,10 +1018,7 @@ namespace LayoutManager.Model {
 			}
 
 			set {
-				if(value == Guid.Empty)
-					Element.RemoveAttribute("LocationID");
-				else
-					SetAttribute("LocationID", XmlConvert.ToString(value));
+                SetAttribute("LocationID", value, removeIf: Guid.Empty);
 			}
 		}
 
@@ -1064,10 +1043,7 @@ namespace LayoutManager.Model {
 			}
 
 			set {
-				if(value == null)
-					Element.RemoveAttribute("Label");
-				else
-					SetAttribute("Label", value);
+                SetAttribute("Label", value, removeIf: null);
 			}
 		}
 
@@ -1080,10 +1056,7 @@ namespace LayoutManager.Model {
 			}
 
 			set {
-				if(value == false)
-					Element.RemoveAttribute("UserActionRequired");
-				else
-					SetAttribute("UserActionRequired", XmlConvert.ToString(value));
+                SetAttribute("UserActionRequired", value, removeIf: false);
 			}
 		}
 
@@ -1096,10 +1069,7 @@ namespace LayoutManager.Model {
 			}
 
 			set {
-				if(value == false)
-					Element.RemoveAttribute("AddressProgrammingRequired");
-				else
-					SetAttribute("AddressProgrammingRequired", XmlConvert.ToString(value));
+                SetAttribute("AddressProgrammingRequired", value, removeIf: false);
 			}
 		}
 
@@ -1442,17 +1412,11 @@ namespace LayoutManager.Model {
 		/// </summary>
 		public string DecoderTypeName {
 			get {
-				if(HasAttribute("DecoderType"))
-					return GetAttribute("DecoderType");
-				else
-					return null;
+                return GetAttribute("DecoderType", null);
 			}
 
 			set {
-				if(value == null)
-					Element.RemoveAttribute("DecoderType");
-				else
-					SetAttribute("DecoderType", value);
+                SetAttribute("DecoderType", value, removeIf: null);
 			}
 		}
 
