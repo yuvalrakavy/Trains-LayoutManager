@@ -1431,8 +1431,6 @@ namespace LayoutManager.Logic {
 				IModelComponentIsMultiPath	multipath = edge.Track as IModelComponentIsMultiPath;
 
 				if(multipath != null) {
-                    Trace.WriteLine("Setting Switch: Multipath " + multipath.FullDescription + " switchStateIndex: " + switchStateIndex);
-
                     // 13-Feb: Change, change switch only if Split point, this avoid derailment because of changing
                     // switch on reverse loop
 					//if(multipath.IsSplitPoint(edge.ConnectionPoint) || !alreadySwitched.ContainsKey(multipath.Id)) {
