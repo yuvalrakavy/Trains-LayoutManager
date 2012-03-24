@@ -477,8 +477,8 @@ namespace LayoutManager.Logic {
 
 			if(trains1.Count == 0 && trains2.Count == 0) {
 				// A track contact was triggered, however, both surrounding blocks have no trains
-				trains1 = getTrainInNoFeedbackBlock(block1, block2, getTrainLockingBlock(block2), blockEdge, motionListManager);
-				trains2 = getTrainInNoFeedbackBlock(block2, block1, getTrainLockingBlock(block1), blockEdge, motionListManager);
+				trains1 = getTrainInNoFeedbackBlock(block1, block2, getTrainLockingBlock(block2), blockEdge, motionListManager, new HashSet<Guid>());
+				trains2 = getTrainInNoFeedbackBlock(block2, block1, getTrainLockingBlock(block1), blockEdge, motionListManager, new HashSet<Guid>());
 			}
 
 			// Figure out which case we are dealing with.
@@ -524,7 +524,7 @@ namespace LayoutManager.Logic {
 			if(sourceBlock.Id == destinationBlock.Id)
 				sourceBlock = track.GetBlock(track.ConnectionPoints[1]);
 
-			trains = getTrains(sourceBlock, destinationBlock, trainLockingDestination, blockEdge, motionListManager);
+			trains = getTrains(sourceBlock, destinationBlock, trainLockingDestination, blockEdge, motionListManager, new HashSet<Guid>());
 
 			// Figure out which case we are dealing with.
 			try {
@@ -601,66 +601,83 @@ namespace LayoutManager.Logic {
 		/// <param name="destinationBlock"></param>
 		/// <param name="blockEdge"></param>
 		/// <returns></returns>
-		private IList<TrainLocationInfo> getTrains(LayoutBlock blockWithTrains, LayoutBlock destinationBlock, TrainStateInfo trainLockingDestination, LayoutBlockEdgeBase blockEdge, TrainMotionListManager motionListManager) {
-            if(blockWithTrains.BlockDefinintion.Info.NoFeedback)
-                return getTrainInNoFeedbackBlock(blockWithTrains, destinationBlock, trainLockingDestination, blockEdge, motionListManager);
-            return blockWithTrains.Trains;
-		}
+        private IList<TrainLocationInfo> getTrains(LayoutBlock blockWithTrains, LayoutBlock destinationBlock, TrainStateInfo trainLockingDestination,
+          LayoutBlockEdgeBase blockEdge, TrainMotionListManager motionListManager, HashSet<Guid> visitedBlocks) {
+            if (blockWithTrains.BlockDefinintion.Info.NoFeedback && !visitedBlocks.Contains(blockWithTrains.Id)) {
+                visitedBlocks.Add(blockWithTrains.Id);
+                return getTrainInNoFeedbackBlock(blockWithTrains, destinationBlock, trainLockingDestination, blockEdge, motionListManager, visitedBlocks);
+            }
+            else
+                return blockWithTrains.Trains;
+        }
 
 		/// <summary>
 		/// Get the trains that may enter the block on which there is no feedback. Those trains in turn are the cadidate to come out from this
 		/// block to the destination block.
 		/// </summary>
-		IList<TrainLocationInfo> getTrainInNoFeedbackBlock(LayoutBlock noFeedbackBlock, LayoutBlock destinationBlock, TrainStateInfo trainLockingDestination, LayoutBlockEdgeBase noFeedbackBlockEdge, TrainMotionListManager motionListManager) {
+		IList<TrainLocationInfo> getTrainInNoFeedbackBlock(LayoutBlock noFeedbackBlock, LayoutBlock destinationBlock, TrainStateInfo trainLockingDestination,
+          LayoutBlockEdgeBase noFeedbackBlockEdge, TrainMotionListManager motionListManager, HashSet<Guid> visitedBlocks) {
 			try {
 				Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, "-- getting train in no feedback block " + noFeedbackBlock.Name + " for finding train in " + destinationBlock.Name + " crossing " + noFeedbackBlockEdge.FullDescription);
 
 				if(noFeedbackBlock.Trains.Count  == 0) {
-					ArrayList				trackingResults = new ArrayList();
+					var				        trackingResults = new List<LocomotiveTrackingResult>();
 					int						cpIndex = noFeedbackBlock.BlockDefinintion.GetOtherConnectionPointIndex(noFeedbackBlockEdge);
 					LayoutBlockEdgeBase[]	blockEdges = noFeedbackBlock.BlockDefinintion.GetBlockEdges(cpIndex);
+                    var                     otherBlocks = new List<Tuple<LayoutBlock, LayoutBlockEdgeBase>>();
 
-					// The contained blocks are empty, yet a train is detected. Look in the neighboring blocks that can be reached from 
-					// the "opposite side" of that of the block edge that was crossed and check which one
-					// contain trains which may have moved to this block
-					foreach(LayoutBlockEdgeBase blockEdge in blockEdges) {
-						if(blockEdge.IsTrackContact())
-							continue;				// The train could not cross track contact without being detected
+                    foreach (var blockEdge in blockEdges) {
+                        if (blockEdge.IsTrackContact())
+                            continue;				// The train could not cross track contact without being detected
 
-						LayoutTrackComponent	track = blockEdge.Track;
-						LayoutBlock				otherBlock = track.GetBlock(track.ConnectionPoints[0]);
+                        LayoutTrackComponent track = blockEdge.Track;
+                        LayoutBlock otherBlock = track.GetBlock(track.ConnectionPoints[0]);
 
-						if(otherBlock.Id == noFeedbackBlock.Id)
-							otherBlock = track.GetBlock(track.ConnectionPoints[1]);
+                        if (otherBlock.Id == noFeedbackBlock.Id)
+                            otherBlock = track.GetBlock(track.ConnectionPoints[1]);
 
-						Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, "Checking trains in " + otherBlock.BlockDefinintion.FullDescription + " it has " + otherBlock.Trains.Count + " trains");
+                        if (otherBlock.Id != destinationBlock.Id) {
+                            otherBlocks.Add(new Tuple<LayoutBlock,LayoutBlockEdgeBase>(otherBlock, blockEdge));
 
-						if(otherBlock.Id != destinationBlock.Id) {
-							IList<TrainLocationInfo>	otherBlockTrains = getTrains(otherBlock, noFeedbackBlock, trainLockingDestination, blockEdge, motionListManager);
+                            if (otherBlock.LockRequest != null && otherBlock.LockRequest.OwnerId == trainLockingDestination.Id) {
+                                // This block is the most probable candidate, so make sure it is the first in the list
+                                var temp = otherBlocks[0];
 
-							try {
-								if(otherBlockTrains.Count > 0) {
-									LocomotiveTrackingResult	tracking = movingFrom(blockEdge, otherBlock, noFeedbackBlock);
-
-									Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, " Train " + tracking.Train.DisplayName + " moving into nofeedback block " + tracking.ToBlock.BlockDefinintion.FullDescription + " from " + tracking.FromBlock.Name + " crossing " + tracking.BlockEdge.FullDescription);
-
-									// If the train that locks the destination can enter this no feedback block, then this is the train!
-									if(trainLockingDestination != null && tracking.TrainId == trainLockingDestination.Id) {
-										Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, "  train " + trainLockingDestination.DisplayName + " locking destination block can enter no-feedback block - selecting only that train");
-										trackingResults.Clear();
-										trackingResults.Add(tracking);
-										break;
-									}
-									else
-										trackingResults.Add(tracking);
-								}
-							} catch(LayoutException ex) {
-								Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, "Train could not move because: " + ex.Message);
-							}
-						}
+                                otherBlocks[0] = otherBlocks[otherBlocks.Count - 1];
+                                otherBlocks[otherBlocks.Count - 1] = temp;
+                            }
+                        }
 						else
 							Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, "Do not check train originating from " + otherBlock.BlockDefinintion.FullDescription);
-					}
+                    }
+
+                    foreach (var otherBlockAndEdge in otherBlocks) {
+                        LayoutBlock otherBlock = otherBlockAndEdge.Item1;
+                        LayoutBlockEdgeBase blockEdge = otherBlockAndEdge.Item2;
+
+                        IList<TrainLocationInfo> otherBlockTrains = getTrains(otherBlock, noFeedbackBlock, trainLockingDestination, blockEdge, motionListManager, visitedBlocks);
+
+                        try {
+                            if (otherBlockTrains.Count > 0) {
+                                LocomotiveTrackingResult tracking = movingFrom(blockEdge, otherBlock, noFeedbackBlock);
+
+                                Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, " Train " + tracking.Train.DisplayName + " moving into nofeedback block " + tracking.ToBlock.BlockDefinintion.FullDescription + " from " + tracking.FromBlock.Name + " crossing " + tracking.BlockEdge.FullDescription);
+
+                                // If the train that locks the destination can enter this no feedback block, then this is the train!
+                                if (trainLockingDestination != null && tracking.TrainId == trainLockingDestination.Id) {
+                                    Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, "  train " + trainLockingDestination.DisplayName + " locking destination block can enter no-feedback block - selecting only that train");
+                                    trackingResults.Clear();
+                                    trackingResults.Add(tracking);
+                                    break;
+                                }
+                                else
+                                    trackingResults.Add(tracking);
+                            }
+                        }
+                        catch (LayoutException ex) {
+                            Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, "Train could not move because: " + ex.Message);
+                        }
+                    }
 
 					if(trackingResults.Count == 1)
 						motionListManager.Add((LocomotiveTrackingResult)trackingResults[0]);
