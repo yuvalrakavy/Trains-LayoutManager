@@ -205,12 +205,14 @@ namespace LayoutManager.Logic {
 			LayoutBlock[]					crossedBlocks;
 			LayoutComponentConnectionPoint	front;
 			bool							hasMergePoint;
+            bool                            waitable;
 
-			public BlockEntry(LayoutBlock block, List<LayoutBlock> crossedBlocks, LayoutComponentConnectionPoint front, bool hasMergePoint) {
+			public BlockEntry(LayoutBlock block, List<LayoutBlock> crossedBlocks, LayoutComponentConnectionPoint front, bool hasMergePoint, bool waitable) {
 				this.block = block;
 				this.action = BlockAction.Go;
 				this.front = front;
 				this.hasMergePoint = hasMergePoint;
+                this.waitable = waitable;
 
 				if(crossedBlocks != null && crossedBlocks.Count != 0)
 					this.crossedBlocks = crossedBlocks.ToArray();
@@ -219,6 +221,7 @@ namespace LayoutManager.Logic {
 			public BlockEntry(TrainStateInfo train) {
 				this.block = train.LocomotiveBlock;
 				this.action = BlockAction.Go;
+                this.waitable = false;
                 if(train.LocomotiveLocation != null)
     				this.front = train.LocomotiveLocation.DisplayFront;
 			}
@@ -268,6 +271,12 @@ namespace LayoutManager.Logic {
 					hasMergePoint = value;
 				}
 			}
+
+            public bool Waitable {
+                get {
+                    return waitable;
+                }
+            }
 		}
 
 		class BlockEntryQueue : Queue {
@@ -880,7 +889,7 @@ namespace LayoutManager.Logic {
 		#region Get Trip Section
 
 		private static void causeTrainToStop(ActiveTripInfo trip, BlockAction actionWhenStopped) {
-			ArrayList	blockEntries = new ArrayList();
+		    var blockEntries = new List<BlockEntry>();
 
 			while(trip.Queue.Count > 0) {
 				BlockEntry	blockEntry = trip.Queue.Dequeue();
@@ -888,7 +897,7 @@ namespace LayoutManager.Logic {
 				Debug.Assert(blockEntry.Block.LockRequest != null && blockEntry.Block.LockRequest.OwnerId == trip.Train.Id);
 				blockEntries.Add(blockEntry);
 
-				if(blockEntry.Block.CanTrainWait)
+				if(blockEntry.Waitable)
 					break;
 			}
 
@@ -1018,6 +1027,8 @@ namespace LayoutManager.Logic {
 
 				// Check if a new block starts
 				if(newBlock != currentBlock || edge.Track == destinationEdge.Track) {
+                    bool waitableBlock = false;
+
 					// If stopped because reached to destination, ensure that the block info front is calculated
 					if(newBlock.Id == currentBlock.Id && edge.Track.BlockDefinitionComponent != null) {
 						if(route.Direction == LocomotiveOrientation.Backward)
@@ -1030,15 +1041,18 @@ namespace LayoutManager.Logic {
                         // A train can wait if the edge leading to the block is detectable (e.g. track contact) or if the block is an active occupancy detection block
                         if (blockEdgeIsDetectable || (currentBlock.BlockDefinintion.Info.IsOccupancyDetectionBlock && currentBlock.BlockDefinintion.FullyConnected)) {
                             if ((currentBlock.BlockDefinintion != null && currentBlock.BlockDefinintion.Info.CanTrainWait) || currentBlock.CanTrainWaitDefault)
-                                waitableBlockFound = true;
+                                waitableBlock = true;
                         }
 					}
+
+                    if (waitableBlock)
+                        waitableBlockFound = true;
 
 					if((crossing || foundTripSectionBoundry) && waitableBlockFound)
 						endOfTripSection = true;
 					else {
 						if(sectionStarted)
-							blockEntries.Add(new BlockEntry(currentBlock, crossedBlocks, blockInfoFront, currentBlockHasMergePoint));
+							blockEntries.Add(new BlockEntry(currentBlock, crossedBlocks, blockInfoFront, currentBlockHasMergePoint, waitableBlock));
 
 						if(edge.Track == destinationEdge.Track)	//**
 							reachedDestination = true;
@@ -1174,7 +1188,7 @@ namespace LayoutManager.Logic {
 
 			// If waitable block was found, trim blocks from the end until the last one is waitable
 			for(int i = blockEntries.Count - 1; i >= 0; i--) {
-				if(!((BlockEntry)blockEntries[i]).Block.CanTrainWait)
+				if(!blockEntries[i].Waitable)
 					blockEntries.RemoveAt(i);
 				else
 					break;
@@ -1488,7 +1502,7 @@ namespace LayoutManager.Logic {
 
 				trip.PendingLockRequest = null;
 						
-				ArrayList	blockIDtoUnlock = new ArrayList();
+				var	blockIDtoUnlock = new List<Guid>();
 
 				bool	unlockingBlocks = false;
 
@@ -1516,7 +1530,7 @@ namespace LayoutManager.Logic {
 				trip.NextSectionStartBlockId = Guid.Empty;
 
 				if(blockIDtoUnlock.Count > 0) {
-					EventManager.Event(new LayoutEvent((Guid[])blockIDtoUnlock.ToArray(typeof(Guid)), "free-layout-lock"));
+					EventManager.Event(new LayoutEvent(blockIDtoUnlock.ToArray(), "free-layout-lock"));
 					if(traceUnlockingManager.TraceVerbose)
 						EventManager.Event(new LayoutEvent(this, "dump-locks"));
 				}
