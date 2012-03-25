@@ -879,7 +879,7 @@ namespace LayoutManager.View {
 			public void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
 				switch(spot.Phase) {
 					case LayoutPhase.Planned: {
-							using(var b = new SolidBrush(Color.FromArgb(170, 0xf0, 0xf0, 0xf0))) {
+							using(var b = new SolidBrush(Color.FromArgb(170, 0xa0, 0xa0, 0xa0))) {
 								g.FillRectangle(b, new Rectangle(new Point(0, 0), view.GridSizeInModelCoordinates));
 							}
 						}
