@@ -195,6 +195,7 @@ namespace LayoutManager.ControlComponents {
 				label += "[Master ID: " + BusId + "]";
 
             module.Label = label;
+            module.AddressProgrammingRequired = false;
 		}
 
 		public override string Description {
