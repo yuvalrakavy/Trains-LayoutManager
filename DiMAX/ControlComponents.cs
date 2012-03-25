@@ -47,7 +47,7 @@ namespace DiMAX {
 				dimaxBus.Topology = ControlBusTopology.RandomAddressing;
 				dimaxBus.FirstAddress = 1;
 				dimaxBus.LastAddress = 2048;
-				dimaxBus.RecommendedStartAddress = 129;
+				dimaxBus.RecommendedStartAddress = 1;
 				dimaxBus.Usage = ControlConnectionPointUsage.Input;
 			}
 
