@@ -317,7 +317,9 @@ namespace LayoutManager.Tools.Controls
 
 		private void updateBallons(IDictionary<Guid, string> newBallons) {
 			foreach(var d in newBallons) {
-				string	displayedBallonText = displayedBallons[d.Key];
+				string	displayedBallonText;
+                
+                displayedBallons.TryGetValue(d.Key, out displayedBallonText);
 
 				if(displayedBallonText != d.Value) {
 					var blockDefinition = LayoutModel.Component<LayoutBlockDefinitionComponent>((Guid)d.Key, LayoutModel.ActivePhases);
