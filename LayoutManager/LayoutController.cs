@@ -385,7 +385,7 @@ namespace LayoutManager {
 			bool ok = false;
 
 			if(layoutDesignTimeActivationNesting == 0) {
-				IEnumerable<IModelComponentIsCommandStation> commandStations = LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All);
+				var commandStations = LayoutModel.Components<IModelComponentIsBusProvider>(LayoutPhase.All);
 
 				if(!commandStations.Any())
 					throw new LayoutException("The layout does not contain any command station component. Please add a command station component");
