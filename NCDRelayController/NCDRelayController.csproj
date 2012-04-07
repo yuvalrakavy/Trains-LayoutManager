@@ -59,9 +59,16 @@
     <Compile Include="ComponentView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Dialogs\DiscoverDigiDevicesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DiscoverDigiDevicesDialog.Designer.cs">
+      <DependentUpon>DiscoverDigiDevicesDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\NCDRelayControllerProperties.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="DigiFinder.cs" />
     <Compile Include="RelayBusComponents.cs" />
     <Compile Include="ModelComponents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,6 +103,9 @@
     <EmbeddedResource Include="ComponentView.resx">
       <DependentUpon>ComponentView.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\DiscoverDigiDevicesDialog.resx">
+      <DependentUpon>DiscoverDigiDevicesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\NCDRelayControllerProperties.resx">
       <DependentUpon>NCDRelayControllerProperties.cs</DependentUpon>
