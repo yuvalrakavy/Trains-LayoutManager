@@ -6,12 +6,18 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 using System.Xml;
+using System.Net.Sockets;
 
 using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace NCDRelayController {
+    public enum InterfaceType {
+        Serial,
+        TCP,
+    };
+
 	public class NCDRelayController : ModelComponent, IModelComponentIsBusProvider {
 		public static LayoutTraceSwitch TraceNCD = new LayoutTraceSwitch("NCDRelayController", "NCD Relay controller");
 
@@ -19,12 +25,12 @@ namespace NCDRelayController {
 		ControlBus _inputBus = null;
 		bool simulation;
 		bool operationMode;
-		FileStream commStream;
+		Stream commStream;
 		OutputManager outputManager;
 
 		public NCDRelayController() {
 			this.XmlDocument.LoadXml(
-				"<RelayController>" +
+				"<RelayController InterfaceType=\"Serial\">" +
 				"<ModeString>baud=115200 parity=N data=8</ModeString>" +
 				"</RelayController>"
 				);
@@ -49,6 +55,19 @@ namespace NCDRelayController {
 		OutputManager OutputManager {
 			get { return outputManager; }
 		}
+
+        InterfaceType InterfaceType {
+            get {
+                if (Element.HasAttribute("InterfaceType"))
+                    return (InterfaceType)Enum.Parse(typeof(InterfaceType), Element.GetAttribute("InterfaceType"));
+                else
+                    return global::NCDRelayController.InterfaceType.Serial;
+            }
+
+            set {
+                Element.SetAttribute("InterfaceType", value.ToString());
+            }
+        }
 
 		Stream CommStream {
 			get { return commStream;  }
@@ -86,7 +105,24 @@ namespace NCDRelayController {
 		}
 
 		void OpenCommunicationStream() {
-			commStream = (FileStream)EventManager.Event(new LayoutEvent(Element, "open-serial-communication-device-request"));
+            if (InterfaceType == global::NCDRelayController.InterfaceType.Serial)
+                commStream = (FileStream)EventManager.Event(new LayoutEvent(Element, "open-serial-communication-device-request"));
+            else {
+                string address = XmlInfo.DocumentElement.GetAttribute("Address");
+                int portIndex = address.IndexOf(':');
+                int port;
+
+                if(portIndex < 0)
+                    port = 2101;
+                else {
+                    int.TryParse(address.Substring(portIndex+1), out port);
+                    address = address.Substring(0, portIndex);
+                }
+
+                TcpClient tcpClient = new TcpClient(address, port);
+
+                commStream = tcpClient.GetStream();
+            }
 		}
 
 		void CloseCommunicationStream() {
@@ -332,12 +368,19 @@ namespace NCDRelayController {
 		class PollContactClosuresCommand : OutputSynchronousCommandBase, IOutputCommandReply, IOutputIdlecommand {
 			protected NCDRelayController RelayController { get; private set; }
 			ContactClosureBankData[] contactClosureData;
+            int pollingPeriod;
 
 			public PollContactClosuresCommand(NCDRelayController relayController, int pollingPeriod) {
 				this.RelayController = relayController;
-				this.WaitPeriod = pollingPeriod;
+				this.pollingPeriod = pollingPeriod;
 				this.contactClosureData = new ContactClosureBankData[relayController.InputBus.Modules.Sum(module => module.ModuleType.NumberOfConnectionPoints / 8)];
 			}
+
+            public override int Timeout {
+                get {
+                    return pollingPeriod;
+                }
+            }
 
 			public override void Do() {
 				var events = new List<LayoutEvent>();
