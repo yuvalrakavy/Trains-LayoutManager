@@ -29,13 +29,15 @@ namespace NCDRelayController.Dialogs {
 
             devices.CollectionChanged += (s, ea) => {
                 if (ea.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add) {
-                    foreach (DigiDevice d in ea.NewItems) {
-                        var item = new ListViewItem(new string[] { d.IpAddress.ToString(), d.DeviceName });
+                    this.Invoke((Action)(() => {
+                        foreach (DigiDevice d in ea.NewItems) {
+                            var item = new ListViewItem(new string[] { d.IpAddress.ToString(), d.DeviceName });
 
-                        listViewDevices.Items.Add(item);
-                        if (listViewDevices.SelectedItems.Count == 0)
-                            item.Selected = true;
-                    }
+                            listViewDevices.Items.Add(item);
+                            if (listViewDevices.SelectedItems.Count == 0)
+                                item.Selected = true;
+                        }
+                    }));
                 }
             };
 
