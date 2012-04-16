@@ -639,7 +639,7 @@ namespace LayoutManager.Logic {
                         if (otherBlock.Id != destinationBlock.Id) {
                             otherBlocks.Add(new Tuple<LayoutBlock,LayoutBlockEdgeBase>(otherBlock, blockEdge));
 
-                            if (otherBlock.LockRequest != null && otherBlock.LockRequest.OwnerId == trainLockingDestination.Id) {
+                            if (otherBlock.LockRequest != null && trainLockingDestination != null && otherBlock.LockRequest.OwnerId == trainLockingDestination.Id) {
                                 // This block is the most probable candidate, so make sure it is the first in the list
                                 var temp = otherBlocks[0];
 
