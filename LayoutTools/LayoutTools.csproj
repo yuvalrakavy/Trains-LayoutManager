@@ -237,6 +237,12 @@
     <Compile Include="Dialogs\ControlModuleProgrammingProgressDialog.Designer.cs">
       <DependentUpon>ControlModuleProgrammingProgressDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\CountComponents.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\CountComponents.Designer.cs">
+      <DependentUpon>CountComponents.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\GetSavedPolicyName.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -522,6 +528,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\ControlModuleProgrammingProgressDialog.resx">
       <DependentUpon>ControlModuleProgrammingProgressDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\CountComponents.resx">
+      <DependentUpon>CountComponents.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\GetSavedPolicyName.resx">
       <SubType>Designer</SubType>

@@ -8,6 +8,7 @@ using System.Xml;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Reflection;
+using System.Linq;
 
 using LayoutManager;
 using LayoutManager.Model;
@@ -1121,9 +1122,36 @@ namespace LayoutManager.Tools
 
 		#endregion
 
-		#region Module Location Component
+        #region Count Components
 
-		[LayoutEvent("query-component-editing-context-menu", SenderType=typeof(LayoutControlModuleLocationComponent))]
+        [LayoutEvent("add-editing-selection-menu-entries", Order = 101)]
+        private void addCountComponentsMenuEntry(LayoutEvent e) {
+            LayoutHitTestResult hitTestResult = (LayoutHitTestResult)e.Sender;
+            Menu menu = (Menu)e.Info;
+
+            menu.MenuItems.Add( "Count Components", (sender, ea) => {
+                Dictionary<string, int[]> counts = new Dictionary<string, int[]>();
+                var connectedComponents = from component in LayoutController.UserSelection.Components where component is IModelComponentConnectToControl select (IModelComponentConnectToControl)component;
+
+                foreach (var component in connectedComponents) {
+                    foreach (var connectionDescription in component.ControlConnectionDescriptions) {
+                        foreach (var type in connectionDescription.ConnectionTypes.Split(',')) {
+                            if (!counts.ContainsKey(type))
+                                counts.Add(type, new int[2]);
+                            counts[type][component.FullyConnected ? 0 : 1]++;
+                        }
+                    }
+                }
+
+                new Dialogs.CountComponents(counts).ShowDialog();
+            });
+        }
+
+        #endregion
+
+        #region Module Location Component
+
+        [LayoutEvent("query-component-editing-context-menu", SenderType=typeof(LayoutControlModuleLocationComponent))]
 		void QueryControlModuleLocationContextMenu(LayoutEvent e) {
 			e.Info = e.Sender;
 		}
@@ -1315,5 +1343,6 @@ namespace LayoutManager.Tools
 		}
 
 		#endregion
-	}
+
+    }
 }
