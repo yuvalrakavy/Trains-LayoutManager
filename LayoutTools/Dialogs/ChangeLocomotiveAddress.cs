@@ -86,7 +86,7 @@ namespace LayoutManager.Tools.Dialogs {
 				var power = (from powerOutlet in CommandStation.PowerOutlets where powerOutlet.Power.Type == LayoutPowerType.Digital select powerOutlet.Power).FirstOrDefault();
 
 				if(power != null) {
-					var result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent<XmlElement, ILayoutPower>("is-locomotive-address-valid", Locomotive.Element, power));
+					var result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent<XmlElement, ILayoutPower>("is-locomotive-address-valid", Locomotive.Element, power).SetOption("LocoAddress", address));
 
 					if(result.ResolveMethod != CanPlaceTrainResolveMethod.Resolved)
 						return MessageBox.Show(this, "Address warning", result.ToString() + "\n\nDo you want to use this address?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;

@@ -159,8 +159,9 @@ namespace LayoutManager.Logic {
 								return;
 							}
 
+                            int locoAddress = e.HasOption("LocoAddress") ? e.GetIntOption("LocoAddress") : loco.AddressProvider.Unit;
 							var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent(power, "get-on-track-locomotive-address-map"));
-							var addressMapEntry = addressMap[loco.AddressProvider.Unit];
+							var addressMapEntry = addressMap[locoAddress];
 
 							// Check that the address is not already used.
 							if(addressMapEntry != null) {
