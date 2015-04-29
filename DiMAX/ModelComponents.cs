@@ -1083,6 +1083,7 @@ namespace DiMAX {
 	class DiMAXsynchronousCommandBase : DiMAXcommandBase, IOutputCommandWithReply {
 		public DiMAXsynchronousCommandBase(DiMAXcommandStation commandStation, DiMAXpacket packet)
 			: base(commandStation, packet) {
+                DefaultWaitPeriod = 250;
 		}
 
 		#region ICommandStationSynchronousCommand Members
