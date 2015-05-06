@@ -13,19 +13,18 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for MotionRampDefinition.
 	/// </summary>
-	public class MotionRampDefinition : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxName;
+	public class MotionRampDefinition : Form {
+		private Label label1;
+		private TextBox textBoxName;
 		private LayoutManager.CommonUI.Controls.MotionRampEditor motionRampEditor;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.CheckBox checkBoxSHowInTrainControllerDialog;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private GroupBox groupBox1;
+		private CheckBox checkBoxSHowInTrainControllerDialog;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		void endOfDesignerVariables() {}
 
@@ -68,13 +67,13 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBoxName = new System.Windows.Forms.TextBox();
+			this.label1 = new Label();
+			this.textBoxName = new TextBox();
 			this.motionRampEditor = new LayoutManager.CommonUI.Controls.MotionRampEditor();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.checkBoxSHowInTrainControllerDialog = new System.Windows.Forms.CheckBox();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.groupBox1 = new GroupBox();
+			this.checkBoxSHowInTrainControllerDialog = new CheckBox();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 

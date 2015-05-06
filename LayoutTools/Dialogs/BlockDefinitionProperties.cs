@@ -15,22 +15,22 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for BlockInfoProperties.
 	/// </summary>
-	public class BlockInfoProperties : System.Windows.Forms.Form, ILayoutComponentPropertiesDialog, CommonUI.Controls.IPolicyListCustomizer
+	public class BlockInfoProperties : Form, ILayoutComponentPropertiesDialog, CommonUI.Controls.IPolicyListCustomizer
 	{
-		private System.Windows.Forms.TabControl tabControl1;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.TabPage tabPageGeneral;
-		private System.Windows.Forms.TabPage tabPageConditions;
-		private System.Windows.Forms.TabPage tabPageAttributes;
+		private TabControl tabControl1;
+		private Button buttonCancel;
+		private Button buttonOK;
+		private TabPage tabPageGeneral;
+		private TabPage tabPageConditions;
+		private TabPage tabPageAttributes;
 		private LayoutManager.CommonUI.Controls.AttributesEditor attributesEditor;
-		private System.Windows.Forms.TabPage tabPageDriver;
+		private TabPage tabPageDriver;
 		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
-		private System.Windows.Forms.TabPage tabPagePolicies;
-		private System.Windows.Forms.Button buttonAdvanced;
-		private System.Windows.Forms.CheckBox checkBoxOccupancyDetectionBlock;
+		private TabPage tabPagePolicies;
+		private Button buttonAdvanced;
+		private CheckBox checkBoxOccupancyDetectionBlock;
 		private LayoutManager.CommonUI.Controls.PolicyList policyListBlockInfo;
-		private System.Windows.Forms.CheckBox checkBoxSuggestAsDestination;
+		private CheckBox checkBoxSuggestAsDestination;
 		private LayoutManager.CommonUI.Controls.DrivingParameters drivingParameters;
 		private Button buttonResources;
 		private GroupBox groupBox2;
@@ -51,7 +51,7 @@ namespace LayoutManager.Tools.Dialogs
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void EndOfDesignerVariables() { }
 
@@ -181,35 +181,35 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.tabPageGeneral = new System.Windows.Forms.TabPage();
-			this.checkBoxSuggestForProgramming = new System.Windows.Forms.CheckBox();
-			this.checkBoxSuggestForLocomotivePlacement = new System.Windows.Forms.CheckBox();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.checkBoxSuggestAsDestination = new System.Windows.Forms.CheckBox();
+			this.tabControl1 = new TabControl();
+			this.tabPageGeneral = new TabPage();
+			this.checkBoxSuggestForProgramming = new CheckBox();
+			this.checkBoxSuggestForLocomotivePlacement = new CheckBox();
+			this.panel1 = new Panel();
+			this.checkBoxSuggestAsDestination = new CheckBox();
 			this.trainLengthDiagram = new LayoutManager.CommonUI.Controls.TrainLengthDiagram();
-			this.label1 = new System.Windows.Forms.Label();
-			this.buttonResources = new System.Windows.Forms.Button();
-			this.checkBoxOccupancyDetectionBlock = new System.Windows.Forms.CheckBox();
-			this.buttonAdvanced = new System.Windows.Forms.Button();
+			this.label1 = new Label();
+			this.buttonResources = new Button();
+			this.checkBoxOccupancyDetectionBlock = new CheckBox();
+			this.buttonAdvanced = new Button();
 			this.nameDefinition = new LayoutManager.CommonUI.Controls.NameDefinition();
-			this.tabPageDriver = new System.Windows.Forms.TabPage();
+			this.tabPageDriver = new TabPage();
 			this.drivingParameters = new LayoutManager.CommonUI.Controls.DrivingParameters();
-			this.tabPageAttributes = new System.Windows.Forms.TabPage();
+			this.tabPageAttributes = new TabPage();
 			this.attributesEditor = new LayoutManager.CommonUI.Controls.AttributesEditor();
-			this.tabPageConditions = new System.Windows.Forms.TabPage();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.buttonEditingTrainStopCondition = new System.Windows.Forms.Button();
-			this.textBoxTrainStopCondition = new System.Windows.Forms.TextBox();
-			this.labelTrainStopConditionScope = new System.Windows.Forms.Label();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.buttonEditingTrainPassCondition = new System.Windows.Forms.Button();
-			this.textBoxTrainPassCondition = new System.Windows.Forms.TextBox();
-			this.labelTrainPassConditionScope = new System.Windows.Forms.Label();
-			this.tabPagePolicies = new System.Windows.Forms.TabPage();
+			this.tabPageConditions = new TabPage();
+			this.groupBox3 = new GroupBox();
+			this.buttonEditingTrainStopCondition = new Button();
+			this.textBoxTrainStopCondition = new TextBox();
+			this.labelTrainStopConditionScope = new Label();
+			this.groupBox2 = new GroupBox();
+			this.buttonEditingTrainPassCondition = new Button();
+			this.textBoxTrainPassCondition = new TextBox();
+			this.labelTrainPassConditionScope = new Label();
+			this.tabPagePolicies = new TabPage();
 			this.policyListBlockInfo = new LayoutManager.CommonUI.Controls.PolicyList();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
+			this.buttonCancel = new Button();
+			this.buttonOK = new Button();
 			this.tabControl1.SuspendLayout();
 			this.tabPageGeneral.SuspendLayout();
 			this.panel1.SuspendLayout();

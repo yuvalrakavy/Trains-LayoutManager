@@ -14,25 +14,24 @@ namespace LayoutEventDebugger
 	/// <summary>
 	/// Summary description for TraceManager.
 	/// </summary>
-	public class TraceManager : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.RadioButton radioButtonTraceNone;
-		private System.Windows.Forms.RadioButton radioButtonTraceError;
-		private System.Windows.Forms.RadioButton radioButtonTraceInfo;
-		private System.Windows.Forms.ListView listViewSwitches;
-		private System.Windows.Forms.RadioButton radioButtonTraceVerbose;
-		private System.Windows.Forms.ColumnHeader columnHeaderSwtchName;
-		private System.Windows.Forms.ColumnHeader columnHeaderSwitchSetting;
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.RadioButton radioButtonWarnings;
-		private System.Windows.Forms.RadioButton radioButtonBooleanOff;
-		private System.Windows.Forms.RadioButton radioButtonBooleanOn;
-		private System.Windows.Forms.GroupBox groupBoxSwitchValue;
-		private System.Windows.Forms.ColumnHeader columnHeaderDescription;
+	public class TraceManager : Form {
+		private RadioButton radioButtonTraceNone;
+		private RadioButton radioButtonTraceError;
+		private RadioButton radioButtonTraceInfo;
+		private ListView listViewSwitches;
+		private RadioButton radioButtonTraceVerbose;
+		private ColumnHeader columnHeaderSwtchName;
+		private ColumnHeader columnHeaderSwitchSetting;
+		private Button buttonClose;
+		private RadioButton radioButtonWarnings;
+		private RadioButton radioButtonBooleanOff;
+		private RadioButton radioButtonBooleanOn;
+		private GroupBox groupBoxSwitchValue;
+		private ColumnHeader columnHeaderDescription;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 		private GroupBox groupBox1;
 		private RadioButton radioButtonAllSwitches;
 		private RadioButton radioButtonApplicationSwitches;
@@ -118,22 +117,22 @@ namespace LayoutEventDebugger
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.listViewSwitches = new System.Windows.Forms.ListView();
-            this.columnHeaderSwtchName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderSwitchSetting = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.groupBoxSwitchValue = new System.Windows.Forms.GroupBox();
-            this.radioButtonBooleanOff = new System.Windows.Forms.RadioButton();
-            this.radioButtonTraceNone = new System.Windows.Forms.RadioButton();
-            this.radioButtonTraceError = new System.Windows.Forms.RadioButton();
-            this.radioButtonTraceInfo = new System.Windows.Forms.RadioButton();
-            this.radioButtonTraceVerbose = new System.Windows.Forms.RadioButton();
-            this.radioButtonWarnings = new System.Windows.Forms.RadioButton();
-            this.radioButtonBooleanOn = new System.Windows.Forms.RadioButton();
-            this.buttonClose = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButtonAllSwitches = new System.Windows.Forms.RadioButton();
-            this.radioButtonApplicationSwitches = new System.Windows.Forms.RadioButton();
+            this.listViewSwitches = new ListView();
+            this.columnHeaderSwtchName = ((ColumnHeader)(new ColumnHeader()));
+            this.columnHeaderDescription = ((ColumnHeader)(new ColumnHeader()));
+            this.columnHeaderSwitchSetting = ((ColumnHeader)(new ColumnHeader()));
+            this.groupBoxSwitchValue = new GroupBox();
+            this.radioButtonBooleanOff = new RadioButton();
+            this.radioButtonTraceNone = new RadioButton();
+            this.radioButtonTraceError = new RadioButton();
+            this.radioButtonTraceInfo = new RadioButton();
+            this.radioButtonTraceVerbose = new RadioButton();
+            this.radioButtonWarnings = new RadioButton();
+            this.radioButtonBooleanOn = new RadioButton();
+            this.buttonClose = new Button();
+            this.groupBox1 = new GroupBox();
+            this.radioButtonAllSwitches = new RadioButton();
+            this.radioButtonApplicationSwitches = new RadioButton();
             this.groupBoxSwitchValue.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -143,7 +142,7 @@ namespace LayoutEventDebugger
             this.listViewSwitches.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listViewSwitches.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listViewSwitches.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderSwtchName,
             this.columnHeaderDescription,
             this.columnHeaderSwitchSetting});

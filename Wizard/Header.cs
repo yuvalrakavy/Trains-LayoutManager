@@ -13,16 +13,16 @@ namespace Gui.Wizard
 	[Designer("Gui.Wizard.HeaderDesigner", "WizardDesigner.dll")]
 	public class Header : UserControl
 	{
-		private System.Windows.Forms.Panel pnlDockPadding;
-		private System.Windows.Forms.Label lblDescription;
-		private System.Windows.Forms.Label lblTitle;
-		private System.Windows.Forms.PictureBox picIcon;
-		private System.Windows.Forms.Panel pnl3dDark;
-		private System.Windows.Forms.Panel pnl3dBright;
+		private Panel pnlDockPadding;
+		private Label lblDescription;
+		private Label lblTitle;
+		private PictureBox picIcon;
+		private Panel pnl3dDark;
+		private Panel pnl3dBright;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		/// <summary>
 		/// Constructor for Header
@@ -56,12 +56,12 @@ namespace Gui.Wizard
 		private void InitializeComponent()
 		{
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(Header));
-			this.pnlDockPadding = new System.Windows.Forms.Panel();
-			this.lblDescription = new System.Windows.Forms.Label();
-			this.lblTitle = new System.Windows.Forms.Label();
-			this.picIcon = new System.Windows.Forms.PictureBox();
-			this.pnl3dDark = new System.Windows.Forms.Panel();
-			this.pnl3dBright = new System.Windows.Forms.Panel();
+			this.pnlDockPadding = new Panel();
+			this.lblDescription = new Label();
+			this.lblTitle = new Label();
+			this.picIcon = new PictureBox();
+			this.pnl3dDark = new Panel();
+			this.pnl3dBright = new Panel();
 			this.pnlDockPadding.SuspendLayout();
 			this.SuspendLayout();
 			// 

@@ -10,17 +10,17 @@ namespace LayoutManager.ControlComponents.Dialogs
 	/// <summary>
 	/// Summary description for LGBbusDIPswitchSetting.
 	/// </summary>
-	public class TurnoutDecoderDIPswitchSetting : System.Windows.Forms.Form, IMarklinControlModuleSettingDialog
+	public class TurnoutDecoderDIPswitchSetting : Form, IMarklinControlModuleSettingDialog
 	{
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		LayoutManager.CommonUI.Controls.DIPswitch	diPswitchSettings;
-		System.Windows.Forms.Label	label2;
-		System.Windows.Forms.CheckBox	checkBoxClearUserActionFlag;
-		System.Windows.Forms.Button	buttonClose;
+        Label label2;
+        CheckBox checkBoxClearUserActionFlag;
+        Button buttonClose;
 
 		public TurnoutDecoderDIPswitchSetting(string moduleName, int address, bool userActionRequiredFlag)
 		{
@@ -68,9 +68,9 @@ namespace LayoutManager.ControlComponents.Dialogs
 		private void InitializeComponent()
 		{
 			this.diPswitchSettings = new LayoutManager.CommonUI.Controls.DIPswitch();
-			this.label2 = new System.Windows.Forms.Label();
-			this.checkBoxClearUserActionFlag = new System.Windows.Forms.CheckBox();
-			this.buttonClose = new System.Windows.Forms.Button();
+			this.label2 = new Label();
+			this.checkBoxClearUserActionFlag = new CheckBox();
+			this.buttonClose = new Button();
 			this.SuspendLayout();
 			// 
 			// diPswitchSettings

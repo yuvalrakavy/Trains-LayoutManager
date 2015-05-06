@@ -12,18 +12,17 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TripPlanRouteValidationResult.
 	/// </summary>
-	public class TripPlanRouteValidationResult : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label labelDescription;
-		private System.Windows.Forms.ListView listViewActions;
-		private System.Windows.Forms.ColumnHeader columnHeaderWayPointDestination;
-		private System.Windows.Forms.ColumnHeader columnHeaderAction;
-		private System.Windows.Forms.Button buttonFixTripPlan;
-		private System.Windows.Forms.Button buttonCancel;
+	public class TripPlanRouteValidationResult : Form {
+		private Label labelDescription;
+		private ListView listViewActions;
+		private ColumnHeader columnHeaderWayPointDestination;
+		private ColumnHeader columnHeaderAction;
+		private Button buttonFixTripPlan;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -69,12 +68,12 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.labelDescription = new System.Windows.Forms.Label();
-			this.listViewActions = new System.Windows.Forms.ListView();
-			this.columnHeaderWayPointDestination = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderAction = new System.Windows.Forms.ColumnHeader();
-			this.buttonFixTripPlan = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.labelDescription = new Label();
+			this.listViewActions = new ListView();
+			this.columnHeaderWayPointDestination = new ColumnHeader();
+			this.columnHeaderAction = new ColumnHeader();
+			this.buttonFixTripPlan = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// labelDescription
@@ -94,7 +93,7 @@ namespace LayoutManager.Tools.Dialogs
 			this.listViewActions.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 				| System.Windows.Forms.AnchorStyles.Left) 
 				| System.Windows.Forms.AnchorStyles.Right);
-			this.listViewActions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewActions.Columns.AddRange(new ColumnHeader[] {
 																							  this.columnHeaderWayPointDestination,
 																							  this.columnHeaderAction});
 			this.listViewActions.FullRowSelect = true;

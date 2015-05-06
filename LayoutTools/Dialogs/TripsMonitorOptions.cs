@@ -9,18 +9,17 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TripsMonitorOptions.
 	/// </summary>
-	public class TripsMonitorOptions : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.CheckBox checkBoxEnableAutoClear;
-		private System.Windows.Forms.Label labelAutoClear1;
-		private System.Windows.Forms.NumericUpDown numericUpDownAutoClearTimeout;
-		private System.Windows.Forms.Label labelAutoClear2;
-		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.Button buttonCancel;
+	public class TripsMonitorOptions : Form {
+		private CheckBox checkBoxEnableAutoClear;
+		private Label labelAutoClear1;
+		private NumericUpDown numericUpDownAutoClearTimeout;
+		private Label labelAutoClear2;
+		private Button buttonOk;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public TripsMonitorOptions(int autoClearTimeout)
 		{
@@ -85,12 +84,12 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.checkBoxEnableAutoClear = new System.Windows.Forms.CheckBox();
-			this.labelAutoClear1 = new System.Windows.Forms.Label();
-			this.numericUpDownAutoClearTimeout = new System.Windows.Forms.NumericUpDown();
-			this.labelAutoClear2 = new System.Windows.Forms.Label();
-			this.buttonOk = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.checkBoxEnableAutoClear = new CheckBox();
+			this.labelAutoClear1 = new Label();
+			this.numericUpDownAutoClearTimeout = new NumericUpDown();
+			this.labelAutoClear2 = new Label();
+			this.buttonOk = new Button();
+			this.buttonCancel = new Button();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownAutoClearTimeout)).BeginInit();
 			this.SuspendLayout();
 			// 

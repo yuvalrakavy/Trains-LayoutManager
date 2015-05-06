@@ -13,24 +13,23 @@ namespace LayoutManager.Tools.EventScriptDialogs
 	/// <summary>
 	/// Summary description for ExecuteRandomTripPlan.
 	/// </summary>
-	public class ExecuteRandomTripPlan : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.TextBox textBoxCondition;
-		private System.Windows.Forms.Button buttonConditionEdit;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.CheckBox checkBoxCircularMayBeSelected;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.RadioButton radioButtonRevresedNotSelected;
-		private System.Windows.Forms.RadioButton radioButtonReversedMayBeSelected;
-		private System.Windows.Forms.RadioButton radioButtonReversedSelected;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.ComboBox comboBoxSymbol;
+	public class ExecuteRandomTripPlan : Form {
+		private TextBox textBoxCondition;
+		private Button buttonConditionEdit;
+		private Label label1;
+		private CheckBox checkBoxCircularMayBeSelected;
+		private GroupBox groupBox1;
+		private RadioButton radioButtonRevresedNotSelected;
+		private RadioButton radioButtonReversedMayBeSelected;
+		private RadioButton radioButtonReversedSelected;
+		private Button buttonCancel;
+		private Button buttonOK;
+		private Label label2;
+		private ComboBox comboBoxSymbol;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -106,18 +105,18 @@ namespace LayoutManager.Tools.EventScriptDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.textBoxCondition = new System.Windows.Forms.TextBox();
-			this.buttonConditionEdit = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.checkBoxCircularMayBeSelected = new System.Windows.Forms.CheckBox();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.radioButtonRevresedNotSelected = new System.Windows.Forms.RadioButton();
-			this.radioButtonReversedMayBeSelected = new System.Windows.Forms.RadioButton();
-			this.radioButtonReversedSelected = new System.Windows.Forms.RadioButton();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.label2 = new System.Windows.Forms.Label();
-			this.comboBoxSymbol = new System.Windows.Forms.ComboBox();
+			this.textBoxCondition = new TextBox();
+			this.buttonConditionEdit = new Button();
+			this.label1 = new Label();
+			this.checkBoxCircularMayBeSelected = new CheckBox();
+			this.groupBox1 = new GroupBox();
+			this.radioButtonRevresedNotSelected = new RadioButton();
+			this.radioButtonReversedMayBeSelected = new RadioButton();
+			this.radioButtonReversedSelected = new RadioButton();
+			this.buttonCancel = new Button();
+			this.buttonOK = new Button();
+			this.label2 = new Label();
+			this.comboBoxSymbol = new ComboBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 

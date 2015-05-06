@@ -11,18 +11,17 @@ namespace LayoutEventDebugger
 	/// <summary>
 	/// Summary description for SubscriptionView.
 	/// </summary>
-	public class SubscriptionView : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.TreeView treeViewSubscriptions;
-		private System.Windows.Forms.GroupBox groupBoxViewBy;
-		private System.Windows.Forms.RadioButton radioButtonViewByEventName;
-		private System.Windows.Forms.RadioButton radioButtonByEventHandlerObject;
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.Button buttonRefresh;
+	public class SubscriptionView : Form {
+		private TreeView treeViewSubscriptions;
+		private GroupBox groupBoxViewBy;
+		private RadioButton radioButtonViewByEventName;
+		private RadioButton radioButtonByEventHandlerObject;
+		private Button buttonClose;
+		private Button buttonRefresh;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public SubscriptionView()
 		{
@@ -113,12 +112,12 @@ namespace LayoutEventDebugger
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.treeViewSubscriptions = new System.Windows.Forms.TreeView();
-			this.groupBoxViewBy = new System.Windows.Forms.GroupBox();
-			this.radioButtonByEventHandlerObject = new System.Windows.Forms.RadioButton();
-			this.radioButtonViewByEventName = new System.Windows.Forms.RadioButton();
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.buttonRefresh = new System.Windows.Forms.Button();
+			this.treeViewSubscriptions = new TreeView();
+			this.groupBoxViewBy = new GroupBox();
+			this.radioButtonByEventHandlerObject = new RadioButton();
+			this.radioButtonViewByEventName = new RadioButton();
+			this.buttonClose = new Button();
+			this.buttonRefresh = new Button();
 			this.groupBoxViewBy.SuspendLayout();
 			this.SuspendLayout();
 			// 

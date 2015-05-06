@@ -13,29 +13,28 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for TestLocoPainter.
 	/// </summary>
-	public class TestLocoPainter : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.RadioButton radioButtonFrontT;
-		private System.Windows.Forms.RadioButton radioButtonFrontB;
-		private System.Windows.Forms.RadioButton radioButtonFrontR;
-		private System.Windows.Forms.RadioButton radioButtonFrontL;
-		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.RadioButton radioButtonDirectionForward;
-		private System.Windows.Forms.RadioButton radioButtonDirectionBackward;
-		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.RadioButton radioButtonOrientationForward;
-		private System.Windows.Forms.RadioButton radioButtonOrientationBackward;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxLabel;
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.Panel panel;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.NumericUpDown numericUpDownSpeed;
+	public class TestLocoPainter : Form {
+		private GroupBox groupBox1;
+		private RadioButton radioButtonFrontT;
+		private RadioButton radioButtonFrontB;
+		private RadioButton radioButtonFrontR;
+		private RadioButton radioButtonFrontL;
+		private GroupBox groupBox2;
+		private RadioButton radioButtonDirectionForward;
+		private RadioButton radioButtonDirectionBackward;
+		private GroupBox groupBox3;
+		private RadioButton radioButtonOrientationForward;
+		private RadioButton radioButtonOrientationBackward;
+		private Label label1;
+		private TextBox textBoxLabel;
+		private Button buttonClose;
+		private Panel panel;
+		private Label label2;
+		private NumericUpDown numericUpDownSpeed;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		LayoutManager.View.LocomotivePainter	locoPainter = new LayoutManager.View.LocomotivePainter();
 
@@ -113,23 +112,23 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.radioButtonFrontT = new System.Windows.Forms.RadioButton();
-			this.radioButtonFrontB = new System.Windows.Forms.RadioButton();
-			this.radioButtonFrontR = new System.Windows.Forms.RadioButton();
-			this.radioButtonFrontL = new System.Windows.Forms.RadioButton();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.radioButtonDirectionForward = new System.Windows.Forms.RadioButton();
-			this.radioButtonDirectionBackward = new System.Windows.Forms.RadioButton();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.radioButtonOrientationForward = new System.Windows.Forms.RadioButton();
-			this.radioButtonOrientationBackward = new System.Windows.Forms.RadioButton();
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBoxLabel = new System.Windows.Forms.TextBox();
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.panel = new System.Windows.Forms.Panel();
-			this.label2 = new System.Windows.Forms.Label();
-			this.numericUpDownSpeed = new System.Windows.Forms.NumericUpDown();
+			this.groupBox1 = new GroupBox();
+			this.radioButtonFrontT = new RadioButton();
+			this.radioButtonFrontB = new RadioButton();
+			this.radioButtonFrontR = new RadioButton();
+			this.radioButtonFrontL = new RadioButton();
+			this.groupBox2 = new GroupBox();
+			this.radioButtonDirectionForward = new RadioButton();
+			this.radioButtonDirectionBackward = new RadioButton();
+			this.groupBox3 = new GroupBox();
+			this.radioButtonOrientationForward = new RadioButton();
+			this.radioButtonOrientationBackward = new RadioButton();
+			this.label1 = new Label();
+			this.textBoxLabel = new TextBox();
+			this.buttonClose = new Button();
+			this.panel = new Panel();
+			this.label2 = new Label();
+			this.numericUpDownSpeed = new NumericUpDown();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();

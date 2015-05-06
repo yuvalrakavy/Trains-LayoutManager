@@ -17,17 +17,17 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class EventScriptEditor : System.Windows.Forms.UserControl, IControlSupportViewOnly, IEventScriptEditor
 	{
-		private System.Windows.Forms.TreeView treeViewConditions;
-		private System.Windows.Forms.Button buttonAddCondition;
-		private System.Windows.Forms.Button buttonEditCondition;
-		private System.Windows.Forms.Button buttonDeleteCondition;
-		private System.Windows.Forms.ImageList imageListButttons;
-		private System.Windows.Forms.Button buttonMoveConditionDown;
-		private System.Windows.Forms.Button buttonMoveConditionUp;
-		private System.Windows.Forms.ImageList imageListConditionTree;
-		private System.Windows.Forms.Button buttonOptions;
-		private System.Windows.Forms.Button buttonInsert;
-		private System.ComponentModel.IContainer components;
+		private TreeView treeViewConditions;
+		private Button buttonAddCondition;
+		private Button buttonEditCondition;
+		private Button buttonDeleteCondition;
+		private ImageList imageListButttons;
+		private Button buttonMoveConditionDown;
+		private Button buttonMoveConditionUp;
+		private ImageList imageListConditionTree;
+		private Button buttonOptions;
+		private Button buttonInsert;
+		private IContainer components;
 
 		private void endOfDesignerVariables() { }
 
@@ -212,18 +212,18 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(EventScriptEditor));
-			this.treeViewConditions = new System.Windows.Forms.TreeView();
-			this.imageListConditionTree = new System.Windows.Forms.ImageList(this.components);
-			this.buttonAddCondition = new System.Windows.Forms.Button();
-			this.buttonEditCondition = new System.Windows.Forms.Button();
-			this.buttonDeleteCondition = new System.Windows.Forms.Button();
-			this.buttonMoveConditionDown = new System.Windows.Forms.Button();
-			this.imageListButttons = new System.Windows.Forms.ImageList(this.components);
-			this.buttonMoveConditionUp = new System.Windows.Forms.Button();
-			this.buttonOptions = new System.Windows.Forms.Button();
-			this.buttonInsert = new System.Windows.Forms.Button();
+			this.treeViewConditions = new TreeView();
+			this.imageListConditionTree = new ImageList(this.components);
+			this.buttonAddCondition = new Button();
+			this.buttonEditCondition = new Button();
+			this.buttonDeleteCondition = new Button();
+			this.buttonMoveConditionDown = new Button();
+			this.imageListButttons = new ImageList(this.components);
+			this.buttonMoveConditionUp = new Button();
+			this.buttonOptions = new Button();
+			this.buttonInsert = new Button();
 			this.SuspendLayout();
 			// 
 			// treeViewConditions

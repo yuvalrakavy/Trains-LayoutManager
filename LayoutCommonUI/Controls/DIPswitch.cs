@@ -15,7 +15,7 @@ namespace LayoutManager.CommonUI.Controls
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		int					switchCount = 8;
 		int					switchCountBase = 1;
@@ -105,7 +105,7 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			components = new System.ComponentModel.Container();
+			components = new Container();
 		}
 		#endregion
 

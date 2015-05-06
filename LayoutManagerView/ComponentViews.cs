@@ -22,14 +22,14 @@ namespace LayoutManager.View
 	[LayoutModule("Component Views", UserControl=false)]
 	public class ComponentViews : System.ComponentModel.Component, ILayoutModuleSetup
 	{
-		private System.ComponentModel.IContainer components;
-		private System.Windows.Forms.ImageList imageListComponents;
-		private System.Windows.Forms.ImageList imageListSignals;
-		private System.Windows.Forms.ImageList imageListConnectionPointImages;
+		private IContainer components;
+		private ImageList imageListComponents;
+		private ImageList imageListSignals;
+		private ImageList imageListConnectionPointImages;
 
 		#region Constructors
 
-		public ComponentViews(System.ComponentModel.IContainer container)
+		public ComponentViews(IContainer container)
 		{
 			/// <summary>
 			/// Required for Windows.Forms Class Composition Designer support
@@ -1335,11 +1335,11 @@ namespace LayoutManager.View
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComponentViews));
-			this.imageListComponents = new System.Windows.Forms.ImageList(this.components);
-			this.imageListSignals = new System.Windows.Forms.ImageList(this.components);
-			this.imageListConnectionPointImages = new System.Windows.Forms.ImageList(this.components);
+			this.imageListComponents = new ImageList(this.components);
+			this.imageListSignals = new ImageList(this.components);
+			this.imageListConnectionPointImages = new ImageList(this.components);
 			// 
 			// imageListComponents
 			// 

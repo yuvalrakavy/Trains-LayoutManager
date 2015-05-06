@@ -16,18 +16,17 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for AddLocomotiveToTrain.
 	/// </summary>
-	public class AddLocomotiveToTrain : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.ListBox listBoxLocomotives;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.RadioButton radioButtonOrientationForward;
-		private System.Windows.Forms.RadioButton radioButtonOrientationBackward;
-		private System.Windows.Forms.Button buttonAdd;
-		private System.Windows.Forms.Button buttonCancel;
+	public class AddLocomotiveToTrain : Form {
+		private ListBox listBoxLocomotives;
+		private GroupBox groupBox1;
+		private RadioButton radioButtonOrientationForward;
+		private RadioButton radioButtonOrientationBackward;
+		private Button buttonAdd;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -174,12 +173,12 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.listBoxLocomotives = new System.Windows.Forms.ListBox();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.radioButtonOrientationForward = new System.Windows.Forms.RadioButton();
-			this.radioButtonOrientationBackward = new System.Windows.Forms.RadioButton();
-			this.buttonAdd = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.listBoxLocomotives = new ListBox();
+			this.groupBox1 = new GroupBox();
+			this.radioButtonOrientationForward = new RadioButton();
+			this.radioButtonOrientationBackward = new RadioButton();
+			this.buttonAdd = new Button();
+			this.buttonCancel = new Button();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 

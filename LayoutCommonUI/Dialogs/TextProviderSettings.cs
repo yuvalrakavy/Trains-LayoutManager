@@ -11,17 +11,16 @@ namespace LayoutManager.CommonUI.Dialogs
 	/// <summary>
 	/// Summary description for TextProviderSettings.
 	/// </summary>
-	public class TextProviderSettings : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class TextProviderSettings : Form {
+		private Button buttonOK;
+		private Button buttonCancel;
 		private LayoutManager.CommonUI.Controls.TextProviderFontDefinition textProviderFontDefinition1;
 		private LayoutManager.CommonUI.Controls.TextProviderPositionDefinition TextProviderPositionDefinition1;
 
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		LayoutTextInfo	textProvider;
 
@@ -67,10 +66,10 @@ namespace LayoutManager.CommonUI.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonOK = new System.Windows.Forms.Button();
+			this.buttonOK = new Button();
 			this.TextProviderPositionDefinition1 = new LayoutManager.CommonUI.Controls.TextProviderPositionDefinition();
 			this.textProviderFontDefinition1 = new LayoutManager.CommonUI.Controls.TextProviderFontDefinition();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// buttonOK

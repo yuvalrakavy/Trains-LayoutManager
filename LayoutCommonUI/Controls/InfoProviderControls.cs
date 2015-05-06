@@ -14,8 +14,7 @@ namespace LayoutManager.CommonUI.Controls
 	/// Drop list box showing all providers in a given container (used to show lists
 	/// of standard fonts, standard positions etc.)
 	/// </summary>
-	public class LayoutInfosComboBox : System.Windows.Forms.ComboBox
-	{
+	public class LayoutInfosComboBox : ComboBox {
 		XmlElement	container = null;
 		Type		infoType = null;
 

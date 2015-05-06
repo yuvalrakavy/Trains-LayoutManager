@@ -17,18 +17,17 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TripPlanManageCommonDestinations.
 	/// </summary>
-	public class TripPlanCommonDestinations : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.TreeView treeViewDestinations;
-		private System.Windows.Forms.Button buttonDelete;
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.Button buttonEdit;
-		private System.Windows.Forms.Button buttonAdd;
+	public class TripPlanCommonDestinations : Form {
+		private TreeView treeViewDestinations;
+		private Button buttonDelete;
+		private Button buttonClose;
+		private Button buttonEdit;
+		private Button buttonAdd;
 
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() {}
 
@@ -183,11 +182,11 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.treeViewDestinations = new System.Windows.Forms.TreeView();
-			this.buttonDelete = new System.Windows.Forms.Button();
-			this.buttonEdit = new System.Windows.Forms.Button();
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.buttonAdd = new System.Windows.Forms.Button();
+			this.treeViewDestinations = new TreeView();
+			this.buttonDelete = new Button();
+			this.buttonEdit = new Button();
+			this.buttonClose = new Button();
+			this.buttonAdd = new Button();
 			this.SuspendLayout();
 			// 
 			// treeViewDestinations

@@ -22,36 +22,36 @@ namespace LayoutManager.Tools.Controls
 	/// </summary>
 	public class TripPlanEditor : System.Windows.Forms.UserControl, ITripPlanEditorDialog, CommonUI.Controls.IPolicyListCustomizer
 	{
-		private System.Windows.Forms.MenuItem menuItemGoHumanDriver;
-		private System.Windows.Forms.ContextMenu contextMenuEdit;
-		private System.Windows.Forms.MenuItem menuItemEditDestination;
-		private System.Windows.Forms.MenuItem menuItemEditDirection;
-		private System.Windows.Forms.MenuItem menuItemEditDirectionForward;
-		private System.Windows.Forms.MenuItem menuItemEditDirectionBackward;
-		private System.Windows.Forms.MenuItem menuItemEditStartCondition;
-		private System.Windows.Forms.MenuItem menuItemEditDriverInstructions;
-		private System.Windows.Forms.MenuItem menuItemGoAutoDriver;
-		private System.Windows.Forms.ImageList imageListButttons;
+		private MenuItem menuItemGoHumanDriver;
+		private ContextMenu contextMenuEdit;
+		private MenuItem menuItemEditDestination;
+		private MenuItem menuItemEditDirection;
+		private MenuItem menuItemEditDirectionForward;
+		private MenuItem menuItemEditDirectionBackward;
+		private MenuItem menuItemEditStartCondition;
+		private MenuItem menuItemEditDriverInstructions;
+		private MenuItem menuItemGoAutoDriver;
+		private ImageList imageListButttons;
 		private CommonUI.CheckBoxWithViewOnly checkBoxTripPlanCircular;
-		private System.Windows.Forms.GroupBox groupBoxWayPoints;
-		private System.Windows.Forms.Button buttonWayPointMoveDown;
-		private System.Windows.Forms.Button buttonWayPointMoveUp;
-		private System.Windows.Forms.Button buttonAddWaypoint;
-		private System.Windows.Forms.Button buttonEditWaypoint;
-		private System.Windows.Forms.Button buttonRemoveWaypoint;
-		private System.Windows.Forms.ListView listViewWayPoints;
-		private System.Windows.Forms.ColumnHeader columnHeaderName;
-		private System.Windows.Forms.ColumnHeader columnHeaderDirection;
-		private System.Windows.Forms.ColumnHeader columnHeaderStartCondition;
-		private System.Windows.Forms.TabControl tabControl1;
-		private System.Windows.Forms.TabPage tabPageTrip;
-		private System.Windows.Forms.TabPage tabPagePolicies;
-		private System.Windows.Forms.TabPage tabPageAttributes;
+		private GroupBox groupBoxWayPoints;
+		private Button buttonWayPointMoveDown;
+		private Button buttonWayPointMoveUp;
+		private Button buttonAddWaypoint;
+		private Button buttonEditWaypoint;
+		private Button buttonRemoveWaypoint;
+		private ListView listViewWayPoints;
+		private ColumnHeader columnHeaderName;
+		private ColumnHeader columnHeaderDirection;
+		private ColumnHeader columnHeaderStartCondition;
+		private TabControl tabControl1;
+		private TabPage tabPageTrip;
+		private TabPage tabPagePolicies;
+		private TabPage tabPageAttributes;
 		private LayoutManager.CommonUI.Controls.AttributesEditor attributesEditor;
 		private LayoutManager.CommonUI.Controls.PolicyList policyList;
-		private System.Windows.Forms.ColumnHeader columnHeaderDriverInstructions;
-		private System.Windows.Forms.ImageList imageListWayPointStatus;
-		private System.ComponentModel.IContainer components;
+		private ColumnHeader columnHeaderDriverInstructions;
+		private ImageList imageListWayPointStatus;
+		private IContainer components;
 
 		private void endOfDesignerVariables() { }
 
@@ -637,36 +637,36 @@ namespace LayoutManager.Tools.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TripPlanEditor));
-			this.menuItemGoHumanDriver = new System.Windows.Forms.MenuItem();
-			this.contextMenuEdit = new System.Windows.Forms.ContextMenu();
-			this.menuItemEditDestination = new System.Windows.Forms.MenuItem();
-			this.menuItemEditDirection = new System.Windows.Forms.MenuItem();
-			this.menuItemEditDirectionForward = new System.Windows.Forms.MenuItem();
-			this.menuItemEditDirectionBackward = new System.Windows.Forms.MenuItem();
-			this.menuItemEditStartCondition = new System.Windows.Forms.MenuItem();
-			this.menuItemEditDriverInstructions = new System.Windows.Forms.MenuItem();
-			this.menuItemGoAutoDriver = new System.Windows.Forms.MenuItem();
-			this.imageListButttons = new System.Windows.Forms.ImageList(this.components);
+			this.menuItemGoHumanDriver = new MenuItem();
+			this.contextMenuEdit = new ContextMenu();
+			this.menuItemEditDestination = new MenuItem();
+			this.menuItemEditDirection = new MenuItem();
+			this.menuItemEditDirectionForward = new MenuItem();
+			this.menuItemEditDirectionBackward = new MenuItem();
+			this.menuItemEditStartCondition = new MenuItem();
+			this.menuItemEditDriverInstructions = new MenuItem();
+			this.menuItemGoAutoDriver = new MenuItem();
+			this.imageListButttons = new ImageList(this.components);
 			this.checkBoxTripPlanCircular = new LayoutManager.CommonUI.CheckBoxWithViewOnly();
-			this.groupBoxWayPoints = new System.Windows.Forms.GroupBox();
-			this.buttonWayPointMoveDown = new System.Windows.Forms.Button();
-			this.buttonWayPointMoveUp = new System.Windows.Forms.Button();
-			this.buttonAddWaypoint = new System.Windows.Forms.Button();
-			this.buttonEditWaypoint = new System.Windows.Forms.Button();
-			this.buttonRemoveWaypoint = new System.Windows.Forms.Button();
-			this.listViewWayPoints = new System.Windows.Forms.ListView();
-			this.columnHeaderName = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderDirection = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderStartCondition = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderDriverInstructions = new System.Windows.Forms.ColumnHeader();
-			this.imageListWayPointStatus = new System.Windows.Forms.ImageList(this.components);
-			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.tabPageTrip = new System.Windows.Forms.TabPage();
-			this.tabPagePolicies = new System.Windows.Forms.TabPage();
+			this.groupBoxWayPoints = new GroupBox();
+			this.buttonWayPointMoveDown = new Button();
+			this.buttonWayPointMoveUp = new Button();
+			this.buttonAddWaypoint = new Button();
+			this.buttonEditWaypoint = new Button();
+			this.buttonRemoveWaypoint = new Button();
+			this.listViewWayPoints = new ListView();
+			this.columnHeaderName = new ColumnHeader();
+			this.columnHeaderDirection = new ColumnHeader();
+			this.columnHeaderStartCondition = new ColumnHeader();
+			this.columnHeaderDriverInstructions = new ColumnHeader();
+			this.imageListWayPointStatus = new ImageList(this.components);
+			this.tabControl1 = new TabControl();
+			this.tabPageTrip = new TabPage();
+			this.tabPagePolicies = new TabPage();
 			this.policyList = new LayoutManager.CommonUI.Controls.PolicyList();
-			this.tabPageAttributes = new System.Windows.Forms.TabPage();
+			this.tabPageAttributes = new TabPage();
 			this.attributesEditor = new LayoutManager.CommonUI.Controls.AttributesEditor();
 			this.groupBoxWayPoints.SuspendLayout();
 			this.tabControl1.SuspendLayout();
@@ -682,7 +682,7 @@ namespace LayoutManager.Tools.Controls
 			// 
 			// contextMenuEdit
 			// 
-			this.contextMenuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.contextMenuEdit.MenuItems.AddRange(new MenuItem[] {
             this.menuItemEditDestination,
             this.menuItemEditDirection,
             this.menuItemEditStartCondition,
@@ -697,7 +697,7 @@ namespace LayoutManager.Tools.Controls
 			// menuItemEditDirection
 			// 
 			this.menuItemEditDirection.Index = 1;
-			this.menuItemEditDirection.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.menuItemEditDirection.MenuItems.AddRange(new MenuItem[] {
             this.menuItemEditDirectionForward,
             this.menuItemEditDirectionBackward});
 			this.menuItemEditDirection.Text = "D&irection";
@@ -824,7 +824,7 @@ namespace LayoutManager.Tools.Controls
 			this.listViewWayPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewWayPoints.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewWayPoints.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderName,
             this.columnHeaderDirection,
             this.columnHeaderStartCondition,

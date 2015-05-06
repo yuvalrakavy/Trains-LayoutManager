@@ -69,11 +69,11 @@ namespace LayoutManager.Tools
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		#region Constructors
 
-		public ComponentEditingTools(System.ComponentModel.IContainer container) {
+		public ComponentEditingTools(IContainer container) {
 			/// <summary>
 			/// Required for Windows.Forms Class Composition Designer support
 			/// </summary>
@@ -1204,7 +1204,7 @@ namespace LayoutManager.Tools
 		/// </summary>
 		private void InitializeComponent()
 		{
-			components = new System.ComponentModel.Container();
+			components = new Container();
 		}
 		#endregion
 

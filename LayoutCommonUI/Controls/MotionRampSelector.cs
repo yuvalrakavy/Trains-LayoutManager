@@ -17,14 +17,14 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class MotionRampSelector : System.Windows.Forms.UserControl, IObjectHasXml
 	{
-		private System.Windows.Forms.GroupBox groupBoxRampSelector;
-		private System.Windows.Forms.Label labelRampDescription;
-		private System.Windows.Forms.Button buttonOverrideDefault;
-		private System.Windows.Forms.CheckBox checkBoxOverrideDefault;
+		private GroupBox groupBoxRampSelector;
+		private Label labelRampDescription;
+		private Button buttonOverrideDefault;
+		private CheckBox checkBoxOverrideDefault;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -145,10 +145,10 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.groupBoxRampSelector = new System.Windows.Forms.GroupBox();
-			this.checkBoxOverrideDefault = new System.Windows.Forms.CheckBox();
-			this.buttonOverrideDefault = new System.Windows.Forms.Button();
-			this.labelRampDescription = new System.Windows.Forms.Label();
+			this.groupBoxRampSelector = new GroupBox();
+			this.checkBoxOverrideDefault = new CheckBox();
+			this.buttonOverrideDefault = new Button();
+			this.labelRampDescription = new Label();
 			this.groupBoxRampSelector.SuspendLayout();
 			this.SuspendLayout();
 			// 

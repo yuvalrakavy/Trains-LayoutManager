@@ -22,7 +22,7 @@ namespace LayoutManager
 	{
 		LayoutStraightTrackComponent	lastTrack = null;
 		String							lastCategoryName = null;
-		private System.Windows.Forms.ImageList imageListComponentMenu;
+		private ImageList imageListComponentMenu;
 		private System.ComponentModel.IContainer components;
 
 		public LayoutEditingTool() {
@@ -354,7 +354,7 @@ namespace LayoutManager
 
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
-			this.imageListComponentMenu = new System.Windows.Forms.ImageList(this.components);
+			this.imageListComponentMenu = new ImageList(this.components);
 			// 
 			// imageListComponentMenu
 			// 

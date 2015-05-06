@@ -17,7 +17,7 @@ namespace NCDRelayController {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 		LayoutModule		_module;
 
 		#region Implementation of ILayoutModuleSetup
@@ -36,7 +36,7 @@ namespace NCDRelayController {
 
 		#region Constructors
 
-		public ComponentTool(System.ComponentModel.IContainer container)
+		public ComponentTool(IContainer container)
 		{
 			/// <summary>
 			/// Required for Windows.Forms Class Composition Designer support
@@ -102,7 +102,7 @@ namespace NCDRelayController {
 		/// </summary>
 		private void InitializeComponent()
 		{
-			components = new System.ComponentModel.Container();
+			components = new Container();
 		}
 		#endregion
 	}

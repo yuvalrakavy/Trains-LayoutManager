@@ -11,20 +11,19 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 	/// <summary>
 	/// Summary description for IfTimeNumericNode.
 	/// </summary>
-	public class IfTimeNumericNode : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.RadioButton radioButtonValue;
-		private System.Windows.Forms.RadioButton radioButtonRange;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.NumericUpDown numericUpDownValue;
-		private System.Windows.Forms.NumericUpDown numericUpDownFrom;
-		private System.Windows.Forms.NumericUpDown numericUpDownTo;
+	public class IfTimeNumericNode : Form {
+		private RadioButton radioButtonValue;
+		private RadioButton radioButtonRange;
+		private Label label1;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private NumericUpDown numericUpDownValue;
+		private NumericUpDown numericUpDownFrom;
+		private NumericUpDown numericUpDownTo;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -82,14 +81,14 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.radioButtonValue = new System.Windows.Forms.RadioButton();
-			this.numericUpDownValue = new System.Windows.Forms.NumericUpDown();
-			this.radioButtonRange = new System.Windows.Forms.RadioButton();
-			this.numericUpDownFrom = new System.Windows.Forms.NumericUpDown();
-			this.label1 = new System.Windows.Forms.Label();
-			this.numericUpDownTo = new System.Windows.Forms.NumericUpDown();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.radioButtonValue = new RadioButton();
+			this.numericUpDownValue = new NumericUpDown();
+			this.radioButtonRange = new RadioButton();
+			this.numericUpDownFrom = new NumericUpDown();
+			this.label1 = new Label();
+			this.numericUpDownTo = new NumericUpDown();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownValue)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownFrom)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownTo)).BeginInit();

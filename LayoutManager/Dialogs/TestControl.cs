@@ -13,14 +13,13 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for TestControl.
 	/// </summary>
-	public class TestControl : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Button buttonClose;
+	public class TestControl : Form {
+		private Button buttonClose;
 		private LayoutManager.CommonUI.Controls.SelectTripPlanIcon selectTripPlanIcon1;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -57,7 +56,7 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonClose = new System.Windows.Forms.Button();
+			this.buttonClose = new Button();
 			this.selectTripPlanIcon1 = new LayoutManager.CommonUI.Controls.SelectTripPlanIcon();
 			this.SuspendLayout();
 			// 

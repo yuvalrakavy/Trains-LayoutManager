@@ -19,9 +19,9 @@ namespace LayoutManager.CommonUI
 	/// Summary description for LayoutControlBusViewer.
 	/// </summary>
 	public class LayoutControlBusViewer : System.Windows.Forms.Control {
-		private System.ComponentModel.IContainer components;
+		private IContainer components;
 		private System.Windows.Forms.HScrollBar hScrollBar;
-		private System.Windows.Forms.ImageList imageListConnectionPointTypes;
+		private ImageList imageListConnectionPointTypes;
 		private System.Windows.Forms.VScrollBar vScrollBar;
 
 		private void endOfDesignerVariables() { }
@@ -373,11 +373,11 @@ namespace LayoutManager.CommonUI
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LayoutControlBusViewer));
 			this.hScrollBar = new System.Windows.Forms.HScrollBar();
 			this.vScrollBar = new System.Windows.Forms.VScrollBar();
-			this.imageListConnectionPointTypes = new System.Windows.Forms.ImageList(this.components);
+			this.imageListConnectionPointTypes = new ImageList(this.components);
 			this.SuspendLayout();
 			// 
 			// hScrollBar

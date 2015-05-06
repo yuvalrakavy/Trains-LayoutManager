@@ -10,18 +10,17 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 	/// <summary>
 	/// Summary description for RepeatCondition.
 	/// </summary>
-	public class RepeatCondition : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.NumericUpDown numericUpDownCount;
-		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.Button buttonCancel;
+	public class RepeatCondition : Form {
+		private Label label2;
+		private NumericUpDown numericUpDownCount;
+		private Button buttonOk;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
-		private System.Windows.Forms.RadioButton radioButtonRepeatForever;
-		private System.Windows.Forms.RadioButton radioButtonRepeatCount;
+		private Container components = null;
+		private RadioButton radioButtonRepeatForever;
+		private RadioButton radioButtonRepeatCount;
 
 		XmlElement	element;
 
@@ -67,12 +66,12 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.numericUpDownCount = new System.Windows.Forms.NumericUpDown();
-			this.label2 = new System.Windows.Forms.Label();
-			this.buttonOk = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.radioButtonRepeatForever = new System.Windows.Forms.RadioButton();
-			this.radioButtonRepeatCount = new System.Windows.Forms.RadioButton();
+			this.numericUpDownCount = new NumericUpDown();
+			this.label2 = new Label();
+			this.buttonOk = new Button();
+			this.buttonCancel = new Button();
+			this.radioButtonRepeatForever = new RadioButton();
+			this.radioButtonRepeatCount = new RadioButton();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownCount)).BeginInit();
 			this.SuspendLayout();
 			// 

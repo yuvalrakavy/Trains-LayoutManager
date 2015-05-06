@@ -13,17 +13,16 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 	/// <summary>
 	/// Summary description for GetModuleType.
 	/// </summary>
-	public class GetModuleType : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.ComboBox comboBoxModuleTypes;
+	public class GetModuleType : Form {
+		private Label label1;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private ComboBox comboBoxModuleTypes;
 		private CheckBox checkBoxUseAsDefault;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public GetModuleType(IList<string> moduleTypeNames)
 		{
@@ -78,11 +77,11 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.comboBoxModuleTypes = new System.Windows.Forms.ComboBox();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.checkBoxUseAsDefault = new System.Windows.Forms.CheckBox();
+			this.label1 = new Label();
+			this.comboBoxModuleTypes = new ComboBox();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.checkBoxUseAsDefault = new CheckBox();
 			this.SuspendLayout();
 			// 
 			// label1

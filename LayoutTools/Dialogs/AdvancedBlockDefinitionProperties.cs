@@ -14,14 +14,13 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for AdvancedBlockInfoProperties.
 	/// </summary>
-	public class AdvancedBlockInfoProperties : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.CheckBox checkBoxWaitable;
-		private System.Windows.Forms.CheckBox checkBoxOverrideWaitable;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.CheckBox checkBoxSlowDownRegion;
+	public class AdvancedBlockInfoProperties : Form {
+		private GroupBox groupBox1;
+		private CheckBox checkBoxWaitable;
+		private CheckBox checkBoxOverrideWaitable;
+		private Button buttonCancel;
+		private Button buttonOK;
+		private CheckBox checkBoxSlowDownRegion;
 		private GroupBox groupBox2;
 		private Panel panelTripSectonBoundry;
 		private CheckBox checkBoxFromRight;
@@ -31,7 +30,7 @@ namespace LayoutManager.Tools.Dialogs
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void EndOfDesignerVariables() { }
 
@@ -114,18 +113,18 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.checkBoxWaitable = new System.Windows.Forms.CheckBox();
-			this.checkBoxOverrideWaitable = new System.Windows.Forms.CheckBox();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.checkBoxSlowDownRegion = new System.Windows.Forms.CheckBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.checkBoxFromLeft = new System.Windows.Forms.CheckBox();
-			this.checkBoxFromBottom = new System.Windows.Forms.CheckBox();
-			this.checkBoxFromTop = new System.Windows.Forms.CheckBox();
-			this.checkBoxFromRight = new System.Windows.Forms.CheckBox();
-			this.panelTripSectonBoundry = new System.Windows.Forms.Panel();
+			this.groupBox1 = new GroupBox();
+			this.checkBoxWaitable = new CheckBox();
+			this.checkBoxOverrideWaitable = new CheckBox();
+			this.buttonCancel = new Button();
+			this.buttonOK = new Button();
+			this.checkBoxSlowDownRegion = new CheckBox();
+			this.groupBox2 = new GroupBox();
+			this.checkBoxFromLeft = new CheckBox();
+			this.checkBoxFromBottom = new CheckBox();
+			this.checkBoxFromTop = new CheckBox();
+			this.checkBoxFromRight = new CheckBox();
+			this.panelTripSectonBoundry = new Panel();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();

@@ -12,12 +12,12 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class UnitInput : System.Windows.Forms.UserControl
 	{
-		private System.Windows.Forms.TextBox textBoxValue;
+		private TextBox textBoxValue;
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenuUnits;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -153,7 +153,7 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.textBoxValue = new System.Windows.Forms.TextBox();
+			this.textBoxValue = new TextBox();
 			this.linkMenuUnits = new LayoutManager.CommonUI.Controls.LinkMenu();
 			this.SuspendLayout();
 			// 

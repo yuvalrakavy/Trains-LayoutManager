@@ -14,62 +14,62 @@ namespace LayoutManager.Dialogs
 	/// </summary>
 	public class LocomotiveProperties : LocomotiveBasePropertiesForm
 	{
-		private System.Windows.Forms.TabControl tabControl1;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxName;
-		private System.Windows.Forms.ColumnHeader columnHeaderFunctionNumber;
-		private System.Windows.Forms.ColumnHeader columnHeaderFunctionDescription;
-		private System.Windows.Forms.Button buttonFunctionAdd;
-		private System.Windows.Forms.Button buttonFunctionEdit;
-		private System.Windows.Forms.Button buttonFunctionRemove;
-		private System.Windows.Forms.CheckBox checkBoxHasLights;
-		private System.Windows.Forms.TabPage tabPageGeneral;
-		private System.Windows.Forms.TabPage tabPageFunctions;
-		private System.Windows.Forms.ListView listViewFunctions;
+		private TabControl tabControl1;
+		private Button buttonCancel;
+		private Button buttonOk;
+		private Label label1;
+		private TextBox textBoxName;
+		private ColumnHeader columnHeaderFunctionNumber;
+		private ColumnHeader columnHeaderFunctionDescription;
+		private Button buttonFunctionAdd;
+		private Button buttonFunctionEdit;
+		private Button buttonFunctionRemove;
+		private CheckBox checkBoxHasLights;
+		private TabPage tabPageGeneral;
+		private TabPage tabPageFunctions;
+		private ListView listViewFunctions;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
-		private System.Windows.Forms.Button buttonCopyFrom;
-		private System.Windows.Forms.GroupBox groupBoxOrigin;
-		private System.Windows.Forms.RadioButton radioButtonOriginUS;
-		private System.Windows.Forms.RadioButton radioButtonOriginEurope;
-		private System.Windows.Forms.GroupBox groupBoxKind;
-		private System.Windows.Forms.RadioButton radioButtonKindSoundUnit;
-		private System.Windows.Forms.RadioButton radioButtonKindElectric;
-		private System.Windows.Forms.RadioButton radioButtonKindDiesel;
-		private System.Windows.Forms.RadioButton radioButtonKindSteam;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Button buttonImageClear;
-		private System.Windows.Forms.Button buttonImageSet;
-		private System.Windows.Forms.PictureBox pictureBoxImage;
-		private System.Windows.Forms.GroupBox groupBox2;
+		private Button buttonCopyFrom;
+		private GroupBox groupBoxOrigin;
+		private RadioButton radioButtonOriginUS;
+		private RadioButton radioButtonOriginEurope;
+		private GroupBox groupBoxKind;
+		private RadioButton radioButtonKindSoundUnit;
+		private RadioButton radioButtonKindElectric;
+		private RadioButton radioButtonKindDiesel;
+		private RadioButton radioButtonKindSteam;
+		private GroupBox groupBox1;
+		private Button buttonImageClear;
+		private Button buttonImageSet;
+		private PictureBox pictureBoxImage;
+		private GroupBox groupBox2;
 		private System.Windows.Forms.LinkLabel linkLabelTypeName;
-		private System.Windows.Forms.Button buttonSelectType;
-		private System.Windows.Forms.CheckBox checkBoxLinkedToType;
-		private System.Windows.Forms.ComboBox comboBoxStore;
-		private System.Windows.Forms.ColumnHeader columnHeaderName;
-		private System.Windows.Forms.ColumnHeader columnHeaderType;
+		private Button buttonSelectType;
+		private CheckBox checkBoxLinkedToType;
+		private ComboBox comboBoxStore;
+		private ColumnHeader columnHeaderName;
+		private ColumnHeader columnHeaderType;
 		private LayoutManager.CommonUI.Controls.LengthInput lengthInput;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.CheckBox checkBoxTriggerTrackContact;
-		private System.Windows.Forms.TextBox textBoxCollectionID;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.TabPage tabPageProperties;
-		private System.Windows.Forms.TabPage tabPageAttributes;
+		private Label label4;
+		private CheckBox checkBoxTriggerTrackContact;
+		private TextBox textBoxCollectionID;
+		private Label label2;
+		private TabPage tabPageProperties;
+		private TabPage tabPageAttributes;
 		private LayoutManager.CommonUI.Controls.AttributesEditor attributesEditor;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.TextBox textBoxSpeedLimit;
+		private Label label5;
+		private TextBox textBoxSpeedLimit;
 		private Label label6;
 		private CommonUI.Controls.TrackGuageSelector trackGuageSelector;
 		private TabPage tabPageDecoder;
 		private TabPage tabPageLog;
 		private ComboBox comboBoxDecoderType;
 		private Label label7;
-		private System.Windows.Forms.Label label3;
+		private Label label3;
 
 		private void EndOfDesignerVariables() { }
 
@@ -133,57 +133,57 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.tabPageGeneral = new System.Windows.Forms.TabPage();
-			this.textBoxCollectionID = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.checkBoxTriggerTrackContact = new System.Windows.Forms.CheckBox();
-			this.comboBoxStore = new System.Windows.Forms.ComboBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.checkBoxLinkedToType = new System.Windows.Forms.CheckBox();
+			this.tabControl1 = new TabControl();
+			this.tabPageGeneral = new TabPage();
+			this.textBoxCollectionID = new TextBox();
+			this.label2 = new Label();
+			this.checkBoxTriggerTrackContact = new CheckBox();
+			this.comboBoxStore = new ComboBox();
+			this.label3 = new Label();
+			this.groupBox2 = new GroupBox();
+			this.checkBoxLinkedToType = new CheckBox();
 			this.linkLabelTypeName = new System.Windows.Forms.LinkLabel();
-			this.buttonSelectType = new System.Windows.Forms.Button();
-			this.textBoxName = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.tabPageProperties = new System.Windows.Forms.TabPage();
-			this.label6 = new System.Windows.Forms.Label();
+			this.buttonSelectType = new Button();
+			this.textBoxName = new TextBox();
+			this.label1 = new Label();
+			this.tabPageProperties = new TabPage();
+			this.label6 = new Label();
 			this.trackGuageSelector = new LayoutManager.CommonUI.Controls.TrackGuageSelector();
-			this.textBoxSpeedLimit = new System.Windows.Forms.TextBox();
-			this.label5 = new System.Windows.Forms.Label();
+			this.textBoxSpeedLimit = new TextBox();
+			this.label5 = new Label();
 			this.lengthInput = new LayoutManager.CommonUI.Controls.LengthInput();
-			this.label4 = new System.Windows.Forms.Label();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.buttonImageClear = new System.Windows.Forms.Button();
-			this.buttonImageSet = new System.Windows.Forms.Button();
-			this.pictureBoxImage = new System.Windows.Forms.PictureBox();
-			this.groupBoxOrigin = new System.Windows.Forms.GroupBox();
-			this.radioButtonOriginUS = new System.Windows.Forms.RadioButton();
-			this.radioButtonOriginEurope = new System.Windows.Forms.RadioButton();
-			this.groupBoxKind = new System.Windows.Forms.GroupBox();
-			this.radioButtonKindSoundUnit = new System.Windows.Forms.RadioButton();
-			this.radioButtonKindElectric = new System.Windows.Forms.RadioButton();
-			this.radioButtonKindDiesel = new System.Windows.Forms.RadioButton();
-			this.radioButtonKindSteam = new System.Windows.Forms.RadioButton();
-			this.tabPageFunctions = new System.Windows.Forms.TabPage();
-			this.buttonCopyFrom = new System.Windows.Forms.Button();
-			this.checkBoxHasLights = new System.Windows.Forms.CheckBox();
-			this.buttonFunctionAdd = new System.Windows.Forms.Button();
-			this.listViewFunctions = new System.Windows.Forms.ListView();
-			this.columnHeaderFunctionNumber = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeaderType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeaderFunctionDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.buttonFunctionEdit = new System.Windows.Forms.Button();
-			this.buttonFunctionRemove = new System.Windows.Forms.Button();
-			this.tabPageDecoder = new System.Windows.Forms.TabPage();
-			this.label7 = new System.Windows.Forms.Label();
-			this.comboBoxDecoderType = new System.Windows.Forms.ComboBox();
-			this.tabPageAttributes = new System.Windows.Forms.TabPage();
+			this.label4 = new Label();
+			this.groupBox1 = new GroupBox();
+			this.buttonImageClear = new Button();
+			this.buttonImageSet = new Button();
+			this.pictureBoxImage = new PictureBox();
+			this.groupBoxOrigin = new GroupBox();
+			this.radioButtonOriginUS = new RadioButton();
+			this.radioButtonOriginEurope = new RadioButton();
+			this.groupBoxKind = new GroupBox();
+			this.radioButtonKindSoundUnit = new RadioButton();
+			this.radioButtonKindElectric = new RadioButton();
+			this.radioButtonKindDiesel = new RadioButton();
+			this.radioButtonKindSteam = new RadioButton();
+			this.tabPageFunctions = new TabPage();
+			this.buttonCopyFrom = new Button();
+			this.checkBoxHasLights = new CheckBox();
+			this.buttonFunctionAdd = new Button();
+			this.listViewFunctions = new ListView();
+			this.columnHeaderFunctionNumber = ((ColumnHeader)(new ColumnHeader()));
+			this.columnHeaderType = ((ColumnHeader)(new ColumnHeader()));
+			this.columnHeaderName = ((ColumnHeader)(new ColumnHeader()));
+			this.columnHeaderFunctionDescription = ((ColumnHeader)(new ColumnHeader()));
+			this.buttonFunctionEdit = new Button();
+			this.buttonFunctionRemove = new Button();
+			this.tabPageDecoder = new TabPage();
+			this.label7 = new Label();
+			this.comboBoxDecoderType = new ComboBox();
+			this.tabPageAttributes = new TabPage();
 			this.attributesEditor = new LayoutManager.CommonUI.Controls.AttributesEditor();
-			this.tabPageLog = new System.Windows.Forms.TabPage();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOk = new System.Windows.Forms.Button();
+			this.tabPageLog = new TabPage();
+			this.buttonCancel = new Button();
+			this.buttonOk = new Button();
 			this.tabControl1.SuspendLayout();
 			this.tabPageGeneral.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -551,7 +551,7 @@ namespace LayoutManager.Dialogs
 			// 
 			// listViewFunctions
 			// 
-			this.listViewFunctions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewFunctions.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderFunctionNumber,
             this.columnHeaderType,
             this.columnHeaderName,

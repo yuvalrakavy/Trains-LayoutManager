@@ -16,11 +16,11 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class GlobalPolicyList : PolicyList
 	{
-		private System.Windows.Forms.Button buttonStartStop;
+		private Button buttonStartStop;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public GlobalPolicyList()
 		{
@@ -69,7 +69,7 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonStartStop = new System.Windows.Forms.Button();
+			this.buttonStartStop = new Button();
 			this.SuspendLayout();
 			// 
 			// buttonStartStop

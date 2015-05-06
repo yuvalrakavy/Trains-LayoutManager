@@ -17,19 +17,19 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for ManualDispatchRegion.
 	/// </summary>
-	public class ManualDispatchRegion : System.Windows.Forms.Form, IModelComponentReceiverDialog, IObjectHasXml
+	public class ManualDispatchRegion : Form, IModelComponentReceiverDialog, IObjectHasXml
 	{
-		private System.Windows.Forms.ListBox listBoxBlocks;
-		private System.Windows.Forms.Button buttonAddBlock;
-		private System.Windows.Forms.Button buttonRemoveBlock;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxName;
-		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.Button buttonCancel;
+		private ListBox listBoxBlocks;
+		private Button buttonAddBlock;
+		private Button buttonRemoveBlock;
+		private Label label1;
+		private TextBox textBoxName;
+		private Button buttonOk;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -155,13 +155,13 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.listBoxBlocks = new System.Windows.Forms.ListBox();
-			this.buttonAddBlock = new System.Windows.Forms.Button();
-			this.buttonRemoveBlock = new System.Windows.Forms.Button();
-			this.buttonOk = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBoxName = new System.Windows.Forms.TextBox();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.listBoxBlocks = new ListBox();
+			this.buttonAddBlock = new Button();
+			this.buttonRemoveBlock = new Button();
+			this.buttonOk = new Button();
+			this.label1 = new Label();
+			this.textBoxName = new TextBox();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// listBoxBlocks

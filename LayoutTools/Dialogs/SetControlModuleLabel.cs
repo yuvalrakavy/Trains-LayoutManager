@@ -9,16 +9,15 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for SetControlModuleLabel.
 	/// </summary>
-	public class SetControlModuleLabel : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxLabel;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class SetControlModuleLabel : Form {
+		private Label label1;
+		private TextBox textBoxLabel;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public SetControlModuleLabel(string label)
 		{
@@ -64,10 +63,10 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBoxLabel = new System.Windows.Forms.TextBox();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.label1 = new Label();
+			this.textBoxLabel = new TextBox();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// label1

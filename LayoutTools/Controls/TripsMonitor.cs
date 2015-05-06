@@ -20,22 +20,22 @@ namespace LayoutManager.Tools.Controls
 	/// </summary>
 	public class TripsMonitor : System.Windows.Forms.UserControl
 	{
-		private System.Windows.Forms.ListView listViewTrips;
-		private System.Windows.Forms.Button buttonAbort;
-		private System.Windows.Forms.ColumnHeader columnHeaderTrain;
-		private System.Windows.Forms.ColumnHeader columnHeaderStatus;
-		private System.Windows.Forms.ColumnHeader columnHeaderDriver;
-		private System.Windows.Forms.ColumnHeader columnHeaderFinalDestination;
-		private System.Windows.Forms.ColumnHeader columnHeaderState;
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.Button buttonView;
-		private System.Windows.Forms.Button buttonSave;
-		private System.Windows.Forms.Button buttonTalk;
-		private System.Windows.Forms.Button buttonOptions;
-		private System.Windows.Forms.ImageList imageListTripState;
-		private System.Windows.Forms.Button buttonSpeed;
-		private System.Windows.Forms.Button buttonSuspend;
-		private System.ComponentModel.IContainer components;
+		private ListView listViewTrips;
+		private Button buttonAbort;
+		private ColumnHeader columnHeaderTrain;
+		private ColumnHeader columnHeaderStatus;
+		private ColumnHeader columnHeaderDriver;
+		private ColumnHeader columnHeaderFinalDestination;
+		private ColumnHeader columnHeaderState;
+		private Button buttonClose;
+		private Button buttonView;
+		private Button buttonSave;
+		private Button buttonTalk;
+		private Button buttonOptions;
+		private ImageList imageListTripState;
+		private Button buttonSpeed;
+		private Button buttonSuspend;
+		private IContainer components;
 
 		private void endOfDesignerVariables() { }
 
@@ -240,23 +240,23 @@ namespace LayoutManager.Tools.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(TripsMonitor));
-			this.listViewTrips = new System.Windows.Forms.ListView();
-			this.columnHeaderTrain = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderDriver = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderStatus = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderFinalDestination = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderState = new System.Windows.Forms.ColumnHeader();
-			this.imageListTripState = new System.Windows.Forms.ImageList(this.components);
-			this.buttonAbort = new System.Windows.Forms.Button();
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.buttonView = new System.Windows.Forms.Button();
-			this.buttonSave = new System.Windows.Forms.Button();
-			this.buttonTalk = new System.Windows.Forms.Button();
-			this.buttonOptions = new System.Windows.Forms.Button();
-			this.buttonSpeed = new System.Windows.Forms.Button();
-			this.buttonSuspend = new System.Windows.Forms.Button();
+			this.listViewTrips = new ListView();
+			this.columnHeaderTrain = new ColumnHeader();
+			this.columnHeaderDriver = new ColumnHeader();
+			this.columnHeaderStatus = new ColumnHeader();
+			this.columnHeaderFinalDestination = new ColumnHeader();
+			this.columnHeaderState = new ColumnHeader();
+			this.imageListTripState = new ImageList(this.components);
+			this.buttonAbort = new Button();
+			this.buttonClose = new Button();
+			this.buttonView = new Button();
+			this.buttonSave = new Button();
+			this.buttonTalk = new Button();
+			this.buttonOptions = new Button();
+			this.buttonSpeed = new Button();
+			this.buttonSuspend = new Button();
 			this.SuspendLayout();
 			// 
 			// listViewTrips
@@ -265,7 +265,7 @@ namespace LayoutManager.Tools.Controls
 			this.listViewTrips.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 				| System.Windows.Forms.AnchorStyles.Left) 
 				| System.Windows.Forms.AnchorStyles.Right);
-			this.listViewTrips.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewTrips.Columns.AddRange(new ColumnHeader[] {
 																							this.columnHeaderTrain,
 																							this.columnHeaderDriver,
 																							this.columnHeaderStatus,

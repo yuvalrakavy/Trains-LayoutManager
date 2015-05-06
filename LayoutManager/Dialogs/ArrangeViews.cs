@@ -11,17 +11,16 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for ArrangeAreas.
 	/// </summary>
-	public class ArrangeViews : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Button buttonMoveDown;
-		private System.Windows.Forms.ImageList imageListButtons;
-		private System.Windows.Forms.Button buttonMoveUp;
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.Button buttonNew;
-		private System.Windows.Forms.Button buttonDelete;
-		private System.Windows.Forms.Button buttonRename;
-		private System.ComponentModel.IContainer components;
-		private System.Windows.Forms.ListBox listBoxViews;
+	public class ArrangeViews : Form {
+		private Button buttonMoveDown;
+		private ImageList imageListButtons;
+		private Button buttonMoveUp;
+		private Button buttonClose;
+		private Button buttonNew;
+		private Button buttonDelete;
+		private Button buttonRename;
+		private IContainer components;
+		private ListBox listBoxViews;
 
 		LayoutFrameWindowAreaTabPage	areaPage;
 		bool							rebuildTabs = false;
@@ -83,16 +82,16 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(ArrangeViews));
-			this.listBoxViews = new System.Windows.Forms.ListBox();
-			this.buttonMoveDown = new System.Windows.Forms.Button();
-			this.imageListButtons = new System.Windows.Forms.ImageList(this.components);
-			this.buttonMoveUp = new System.Windows.Forms.Button();
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.buttonNew = new System.Windows.Forms.Button();
-			this.buttonDelete = new System.Windows.Forms.Button();
-			this.buttonRename = new System.Windows.Forms.Button();
+			this.listBoxViews = new ListBox();
+			this.buttonMoveDown = new Button();
+			this.imageListButtons = new ImageList(this.components);
+			this.buttonMoveUp = new Button();
+			this.buttonClose = new Button();
+			this.buttonNew = new Button();
+			this.buttonDelete = new Button();
+			this.buttonRename = new Button();
 			this.SuspendLayout();
 			// 
 			// listBoxViews

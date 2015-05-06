@@ -12,19 +12,19 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TrackContactProperties.
 	/// </summary>
-	public class TrackContactProperties : System.Windows.Forms.Form, ILayoutComponentPropertiesDialog
+	public class TrackContactProperties : Form, ILayoutComponentPropertiesDialog
 	{
-		private System.Windows.Forms.TabPage tabPageAddress;
-		private System.Windows.Forms.TabControl tabControl;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private TabPage tabPageAddress;
+		private TabControl tabControl;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
 
-		private System.Windows.Forms.TabPage tabPageAttributes;
+		private TabPage tabPageAttributes;
 		private LayoutManager.CommonUI.Controls.AttributesEditor attributesEditor;
 		LayoutXmlInfo	xmlInfo;
 
@@ -72,12 +72,12 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.tabControl = new System.Windows.Forms.TabControl();
-			this.tabPageAddress = new System.Windows.Forms.TabPage();
+			this.buttonCancel = new Button();
+			this.buttonOK = new Button();
+			this.tabControl = new TabControl();
+			this.tabPageAddress = new TabPage();
 			this.nameDefinition = new LayoutManager.CommonUI.Controls.NameDefinition();
-			this.tabPageAttributes = new System.Windows.Forms.TabPage();
+			this.tabPageAttributes = new TabPage();
 			this.attributesEditor = new LayoutManager.CommonUI.Controls.AttributesEditor();
 			this.tabControl.SuspendLayout();
 			this.tabPageAddress.SuspendLayout();

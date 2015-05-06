@@ -13,16 +13,15 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 	/// <summary>
 	/// Summary description for GetConnectLayoutOptions.
 	/// </summary>
-	public class GetConnectLayoutOptions : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.RadioButton radioButtonConnectNotConnected;
-		private System.Windows.Forms.RadioButton radioButtonConnectAllLayout;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.GroupBox groupBoxWarning;
-		private System.Windows.Forms.CheckBox checkBoxSetUserActionRequired;
+	public class GetConnectLayoutOptions : Form {
+		private Label label1;
+		private RadioButton radioButtonConnectNotConnected;
+		private RadioButton radioButtonConnectAllLayout;
+		private Label label2;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private GroupBox groupBoxWarning;
+		private CheckBox checkBoxSetUserActionRequired;
 		private GroupBox groupBox1;
 		private RadioButton radioButtonScopeOperational;
 		private RadioButton radioButtonScopNotPlanned;
@@ -33,7 +32,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public GetConnectLayoutOptions()
 		{
@@ -112,21 +111,21 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.radioButtonConnectNotConnected = new System.Windows.Forms.RadioButton();
-			this.radioButtonConnectAllLayout = new System.Windows.Forms.RadioButton();
-			this.groupBoxWarning = new System.Windows.Forms.GroupBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.checkBoxSetUserActionRequired = new System.Windows.Forms.CheckBox();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.radioButtonScopeOperational = new System.Windows.Forms.RadioButton();
-			this.radioButtonScopNotPlanned = new System.Windows.Forms.RadioButton();
-			this.radioButtonScopeAll = new System.Windows.Forms.RadioButton();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.checkBoxSetProgrammingRequired = new System.Windows.Forms.CheckBox();
+			this.label1 = new Label();
+			this.radioButtonConnectNotConnected = new RadioButton();
+			this.radioButtonConnectAllLayout = new RadioButton();
+			this.groupBoxWarning = new GroupBox();
+			this.label2 = new Label();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.checkBoxSetUserActionRequired = new CheckBox();
+			this.groupBox1 = new GroupBox();
+			this.radioButtonScopeOperational = new RadioButton();
+			this.radioButtonScopNotPlanned = new RadioButton();
+			this.radioButtonScopeAll = new RadioButton();
+			this.groupBox2 = new GroupBox();
+			this.groupBox3 = new GroupBox();
+			this.checkBoxSetProgrammingRequired = new CheckBox();
 			this.groupBoxWarning.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();

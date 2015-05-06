@@ -15,21 +15,21 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TrackContactProperties.
 	/// </summary>
-	public class TurnoutProperties : System.Windows.Forms.Form, ILayoutComponentPropertiesDialog
+	public class TurnoutProperties : Form, ILayoutComponentPropertiesDialog
 	{
-		private System.Windows.Forms.TabPage tabPageAddress;
-		private System.Windows.Forms.TabControl tabControl;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private TabPage tabPageAddress;
+		private TabControl tabControl;
+		private Button buttonOK;
+		private Button buttonCancel;
 
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
-		private System.Windows.Forms.CheckBox checkBoxReverseLogic;
-		private System.Windows.Forms.CheckBox checkBoxHasBuiltinDecoder;
-		private System.Windows.Forms.ComboBox comboBoxBuiltinDecoders;
+		private CheckBox checkBoxReverseLogic;
+		private CheckBox checkBoxHasBuiltinDecoder;
+		private ComboBox comboBoxBuiltinDecoders;
 		private CheckBox checkBoxHasFeedback;
 		LayoutXmlInfo	xmlInfo;
 
@@ -136,14 +136,14 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.tabControl = new System.Windows.Forms.TabControl();
-			this.tabPageAddress = new System.Windows.Forms.TabPage();
-			this.comboBoxBuiltinDecoders = new System.Windows.Forms.ComboBox();
-			this.checkBoxHasBuiltinDecoder = new System.Windows.Forms.CheckBox();
-			this.checkBoxReverseLogic = new System.Windows.Forms.CheckBox();
-			this.checkBoxHasFeedback = new System.Windows.Forms.CheckBox();
+			this.buttonCancel = new Button();
+			this.buttonOK = new Button();
+			this.tabControl = new TabControl();
+			this.tabPageAddress = new TabPage();
+			this.comboBoxBuiltinDecoders = new ComboBox();
+			this.checkBoxHasBuiltinDecoder = new CheckBox();
+			this.checkBoxReverseLogic = new CheckBox();
+			this.checkBoxHasFeedback = new CheckBox();
 			this.tabControl.SuspendLayout();
 			this.tabPageAddress.SuspendLayout();
 			this.SuspendLayout();

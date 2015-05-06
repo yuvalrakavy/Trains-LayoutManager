@@ -13,18 +13,18 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TrackPowerConnectorProperties.
 	/// </summary>
-	public class TrackPowerConnectorProperties : System.Windows.Forms.Form, ILayoutComponentPropertiesDialog
+	public class TrackPowerConnectorProperties : Form, ILayoutComponentPropertiesDialog
 	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.ComboBox comboBoxPowerSources;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.CheckBox checkBoxDisplayPowerSourceName;
-		private System.Windows.Forms.Button buttonSettings;
+		private Label label1;
+		private ComboBox comboBoxPowerSources;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private CheckBox checkBoxDisplayPowerSourceName;
+		private Button buttonSettings;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		LayoutXmlInfo xmlInfo;
 		private CommonUI.Controls.TrackGuageSelector trackGaugeSelector;
@@ -107,15 +107,15 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.comboBoxPowerSources = new System.Windows.Forms.ComboBox();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.checkBoxDisplayPowerSourceName = new System.Windows.Forms.CheckBox();
-			this.buttonSettings = new System.Windows.Forms.Button();
+			this.label1 = new Label();
+			this.comboBoxPowerSources = new ComboBox();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.checkBoxDisplayPowerSourceName = new CheckBox();
+			this.buttonSettings = new Button();
 			this.trackGaugeSelector = new LayoutManager.CommonUI.Controls.TrackGuageSelector();
-			this.label2 = new System.Windows.Forms.Label();
-			this.checkBoxDetectReverseLoops = new System.Windows.Forms.CheckBox();
+			this.label2 = new Label();
+			this.checkBoxDetectReverseLoops = new CheckBox();
 			this.SuspendLayout();
 			// 
 			// label1

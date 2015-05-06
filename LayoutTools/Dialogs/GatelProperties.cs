@@ -13,17 +13,17 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TrackContactProperties.
 	/// </summary>
-	public class GateProperties : System.Windows.Forms.Form, ILayoutComponentPropertiesDialog
+	public class GateProperties : Form, ILayoutComponentPropertiesDialog
 	{
-		private System.Windows.Forms.TabPage tabPageGeneral;
-		private System.Windows.Forms.TabControl tabControl;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private TabPage tabPageGeneral;
+		private TabControl tabControl;
+		private Button buttonOK;
+		private Button buttonCancel;
 
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
 		private GroupBox groupBox1;
@@ -145,26 +145,26 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.tabControl = new System.Windows.Forms.TabControl();
-			this.tabPageGeneral = new System.Windows.Forms.TabPage();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.radioButtonOpenLeft = new System.Windows.Forms.RadioButton();
-			this.radioButtonOpenRight = new System.Windows.Forms.RadioButton();
-			this.radioButtonOpenDown = new System.Windows.Forms.RadioButton();
-			this.panelGatePreview = new System.Windows.Forms.Panel();
-			this.radioButtonOpenUp = new System.Windows.Forms.RadioButton();
+			this.buttonCancel = new Button();
+			this.buttonOK = new Button();
+			this.tabControl = new TabControl();
+			this.tabPageGeneral = new TabPage();
+			this.groupBox1 = new GroupBox();
+			this.radioButtonOpenLeft = new RadioButton();
+			this.radioButtonOpenRight = new RadioButton();
+			this.radioButtonOpenDown = new RadioButton();
+			this.panelGatePreview = new Panel();
+			this.radioButtonOpenUp = new RadioButton();
 			this.nameDefinition = new LayoutManager.CommonUI.Controls.NameDefinition();
-			this.tabPageSetup = new System.Windows.Forms.TabPage();
-			this.checkBoxGateClosedAcriveState = new System.Windows.Forms.CheckBox();
-			this.checkBoxGateOpenActiveState = new System.Windows.Forms.CheckBox();
-			this.checkBoxHasGateOpenSensor = new System.Windows.Forms.CheckBox();
-			this.checkBoxReverseLogic = new System.Windows.Forms.CheckBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.textBoxOpenCloseTimeout = new System.Windows.Forms.TextBox();
-			this.checkBoxHasGateClosedSensor = new System.Windows.Forms.CheckBox();
-			this.label2 = new System.Windows.Forms.Label();
+			this.tabPageSetup = new TabPage();
+			this.checkBoxGateClosedAcriveState = new CheckBox();
+			this.checkBoxGateOpenActiveState = new CheckBox();
+			this.checkBoxHasGateOpenSensor = new CheckBox();
+			this.checkBoxReverseLogic = new CheckBox();
+			this.label3 = new Label();
+			this.textBoxOpenCloseTimeout = new TextBox();
+			this.checkBoxHasGateClosedSensor = new CheckBox();
+			this.label2 = new Label();
 			this.tabControl.SuspendLayout();
 			this.tabPageGeneral.SuspendLayout();
 			this.groupBox1.SuspendLayout();

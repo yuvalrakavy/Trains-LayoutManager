@@ -12,13 +12,12 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for PoliciesDefinition.
 	/// </summary>
-	public class PoliciesDefinition : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.TabControl tabControlStartCondition;
-		private System.Windows.Forms.TabPage tabPageGlobal;
-		private System.Windows.Forms.TabPage tabPageTripPlan;
-		private System.Windows.Forms.TabPage tabPageBlock;
+	public class PoliciesDefinition : Form {
+		private Button buttonClose;
+		private TabControl tabControlStartCondition;
+		private TabPage tabPageGlobal;
+		private TabPage tabPageTripPlan;
+		private TabPage tabPageBlock;
 		private LayoutManager.CommonUI.Controls.PolicyList policyListTripPlan;
 		private LayoutManager.CommonUI.Controls.PolicyList policyListBlock;
 		private LayoutManager.CommonUI.Controls.GlobalPolicyList globalPolicyListGlobal;
@@ -31,7 +30,7 @@ namespace LayoutManager.Dialogs
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -91,20 +90,20 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.tabControlStartCondition = new System.Windows.Forms.TabControl();
-			this.tabPageGlobal = new System.Windows.Forms.TabPage();
-			this.tabPageBlock = new System.Windows.Forms.TabPage();
-			this.tabPageTripPlan = new System.Windows.Forms.TabPage();
-			this.tabPageStartCondition = new System.Windows.Forms.TabPage();
-			this.tabPageDriverInstructions = new System.Windows.Forms.TabPage();
-			this.buttonExport = new System.Windows.Forms.Button();
+			this.buttonClose = new Button();
+			this.tabControlStartCondition = new TabControl();
+			this.tabPageGlobal = new TabPage();
+			this.tabPageBlock = new TabPage();
+			this.tabPageTripPlan = new TabPage();
+			this.tabPageStartCondition = new TabPage();
+			this.tabPageDriverInstructions = new TabPage();
+			this.buttonExport = new Button();
 			this.globalPolicyListGlobal = new LayoutManager.CommonUI.Controls.GlobalPolicyList();
 			this.policyListBlock = new LayoutManager.CommonUI.Controls.PolicyList();
 			this.policyListTripPlan = new LayoutManager.CommonUI.Controls.PolicyList();
 			this.policyListStartCondition = new LayoutManager.CommonUI.Controls.PolicyList();
 			this.policyListDriverInstructions = new LayoutManager.CommonUI.Controls.PolicyList();
-			this.buttonImport = new System.Windows.Forms.Button();
+			this.buttonImport = new Button();
 			this.tabControlStartCondition.SuspendLayout();
 			this.tabPageGlobal.SuspendLayout();
 			this.tabPageBlock.SuspendLayout();

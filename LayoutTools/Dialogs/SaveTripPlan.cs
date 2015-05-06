@@ -12,18 +12,17 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for SaveTripPlan.
 	/// </summary>
-	public class SaveTripPlan : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxName;
+	public class SaveTripPlan : Form {
+		private Label label1;
+		private TextBox textBoxName;
 		private LayoutManager.CommonUI.Controls.SelectTripPlanIcon selectTripPlanIcon;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Button buttonSave;
-		private System.Windows.Forms.Button buttonCancel;
+		private Label label2;
+		private Button buttonSave;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public SaveTripPlan()
 		{
@@ -74,12 +73,12 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBoxName = new System.Windows.Forms.TextBox();
+			this.label1 = new Label();
+			this.textBoxName = new TextBox();
 			this.selectTripPlanIcon = new LayoutManager.CommonUI.Controls.SelectTripPlanIcon();
-			this.label2 = new System.Windows.Forms.Label();
-			this.buttonSave = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.label2 = new Label();
+			this.buttonSave = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// label1

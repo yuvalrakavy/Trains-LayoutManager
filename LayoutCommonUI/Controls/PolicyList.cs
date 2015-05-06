@@ -23,15 +23,15 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class PolicyList : System.Windows.Forms.UserControl, IPolicyListCustomizer, IControlSupportViewOnly
 	{
-		private System.Windows.Forms.ListView listViewPolicies;
-		private System.Windows.Forms.ColumnHeader columnHeaderName;
-		private System.Windows.Forms.Button buttonNew;
-		private System.Windows.Forms.Button buttonRemove;
-		private System.Windows.Forms.Button buttonEdit;
+		private ListView listViewPolicies;
+		private ColumnHeader columnHeaderName;
+		private Button buttonNew;
+		private Button buttonRemove;
+		private Button buttonEdit;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() {}
 
@@ -190,11 +190,11 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.listViewPolicies = new System.Windows.Forms.ListView();
-			this.columnHeaderName = new System.Windows.Forms.ColumnHeader();
-			this.buttonNew = new System.Windows.Forms.Button();
-			this.buttonRemove = new System.Windows.Forms.Button();
-			this.buttonEdit = new System.Windows.Forms.Button();
+			this.listViewPolicies = new ListView();
+			this.columnHeaderName = new ColumnHeader();
+			this.buttonNew = new Button();
+			this.buttonRemove = new Button();
+			this.buttonEdit = new Button();
 			this.SuspendLayout();
 			// 
 			// listViewPolicies
@@ -203,7 +203,7 @@ namespace LayoutManager.CommonUI.Controls
 				| System.Windows.Forms.AnchorStyles.Left) 
 				| System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewPolicies.CheckBoxes = true;
-			this.listViewPolicies.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewPolicies.Columns.AddRange(new ColumnHeader[] {
 																							   this.columnHeaderName});
 			this.listViewPolicies.FullRowSelect = true;
 			this.listViewPolicies.GridLines = true;

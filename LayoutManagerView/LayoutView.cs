@@ -1290,7 +1290,7 @@ namespace LayoutManager.View {
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			this.vScrollBar = new System.Windows.Forms.VScrollBar();
 			this.hScrollBar = new System.Windows.Forms.HScrollBar();
 			this.timerScrollForDrop = new System.Windows.Forms.Timer(this.components);

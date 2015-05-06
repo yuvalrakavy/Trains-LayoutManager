@@ -9,16 +9,15 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for GetAreasName.
 	/// </summary>
-	public class GetAreasName : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxAreaName;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class GetAreasName : Form {
+		private Label label1;
+		private TextBox textBoxAreaName;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public String AreaName {
 			get {
@@ -64,10 +63,10 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBoxAreaName = new System.Windows.Forms.TextBox();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonOK = new Button();
+			this.label1 = new Label();
+			this.textBoxAreaName = new TextBox();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// buttonOK

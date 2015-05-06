@@ -12,16 +12,15 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for LocomotiveFunctionsCopyFrom.
 	/// </summary>
-	public class LocomotiveFunctionsCopyFrom : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class LocomotiveFunctionsCopyFrom : Form {
+		private Label label1;
+		private Button buttonOK;
+		private Button buttonCancel;
 		private LayoutManager.CommonUI.Controls.XmlQueryCombobox xmlQueryComboboxCopyFrom;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		LocomotiveTypeInfo	selection = null;
 
@@ -65,10 +64,10 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new Label();
 			this.xmlQueryComboboxCopyFrom = new LayoutManager.CommonUI.Controls.XmlQueryCombobox();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// label1

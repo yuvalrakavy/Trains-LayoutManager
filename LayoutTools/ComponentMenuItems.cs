@@ -20,11 +20,11 @@ namespace LayoutManager.Tools
 		private System.Windows.Forms.ImageList imageListCategories;
 		private System.Windows.Forms.ImageList imageListComponents;
 		private System.Windows.Forms.ImageList imageListComponentsLarge;
-		private System.ComponentModel.IContainer components;
+		private IContainer components;
 
 		#region Constructors
 
-		public ComponentMenuItems(System.ComponentModel.IContainer container)
+		public ComponentMenuItems(IContainer container)
 		{
 			/// <summary>
 			/// Required for Windows.Forms Class Composition Designer support
@@ -962,7 +962,7 @@ namespace LayoutManager.Tools
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComponentMenuItems));
 			this.imageListCategories = new System.Windows.Forms.ImageList(this.components);
 			this.imageListComponents = new System.Windows.Forms.ImageList(this.components);

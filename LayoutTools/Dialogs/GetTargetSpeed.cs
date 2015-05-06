@@ -12,18 +12,17 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for GetTargetSpeed.
 	/// </summary>
-	public class GetTargetSpeed : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class GetTargetSpeed : Form {
+		private Button buttonOK;
+		private Button buttonCancel;
 		private System.Windows.Forms.TrackBar trackBarTargetSpeed;
-		private System.Windows.Forms.NumericUpDown numericUpDownTargetSpeed;
-		private System.Windows.Forms.Label labelLowerLimit;
-		private System.Windows.Forms.Label labelUpperLimit;
+		private NumericUpDown numericUpDownTargetSpeed;
+		private Label labelLowerLimit;
+		private Label labelUpperLimit;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -74,11 +73,11 @@ namespace LayoutManager.Tools.Dialogs
 		private void InitializeComponent()
 		{
 			this.trackBarTargetSpeed = new System.Windows.Forms.TrackBar();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.numericUpDownTargetSpeed = new System.Windows.Forms.NumericUpDown();
-			this.labelLowerLimit = new System.Windows.Forms.Label();
-			this.labelUpperLimit = new System.Windows.Forms.Label();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.numericUpDownTargetSpeed = new NumericUpDown();
+			this.labelLowerLimit = new Label();
+			this.labelUpperLimit = new Label();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarTargetSpeed)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownTargetSpeed)).BeginInit();
 			this.SuspendLayout();

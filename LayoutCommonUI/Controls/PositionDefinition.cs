@@ -14,19 +14,19 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class PositionDefinition : System.Windows.Forms.UserControl
 	{
-		private System.Windows.Forms.NumericUpDown numericUpDownDistance;
-		private System.Windows.Forms.Label labelDistance;
-		private System.Windows.Forms.Label labelAlignment;
-		private System.Windows.Forms.Label labelPosition;
+		private NumericUpDown numericUpDownDistance;
+		private Label labelDistance;
+		private Label labelAlignment;
+		private Label labelPosition;
 		private LayoutManager.CommonUI.Controls.EnumComboBox enumComboBoxPosition;
 		private LayoutManager.CommonUI.Controls.EnumComboBox enumComboBoxAlignment;
 		private LayoutManager.CommonUI.Controls.LayoutPositionInfoPreview layoutPositionInfoPreview1;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.NumericUpDown numericUpDownWidth;
+		private Label label1;
+		private NumericUpDown numericUpDownWidth;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public PositionDefinition()
 		{
@@ -74,14 +74,14 @@ namespace LayoutManager.CommonUI.Controls
 		private void InitializeComponent()
 		{
 			this.layoutPositionInfoPreview1 = new LayoutManager.CommonUI.Controls.LayoutPositionInfoPreview();
-			this.labelAlignment = new System.Windows.Forms.Label();
-			this.numericUpDownWidth = new System.Windows.Forms.NumericUpDown();
-			this.labelPosition = new System.Windows.Forms.Label();
+			this.labelAlignment = new Label();
+			this.numericUpDownWidth = new NumericUpDown();
+			this.labelPosition = new Label();
 			this.enumComboBoxAlignment = new LayoutManager.CommonUI.Controls.EnumComboBox();
 			this.enumComboBoxPosition = new LayoutManager.CommonUI.Controls.EnumComboBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.labelDistance = new System.Windows.Forms.Label();
-			this.numericUpDownDistance = new System.Windows.Forms.NumericUpDown();
+			this.label1 = new Label();
+			this.labelDistance = new Label();
+			this.numericUpDownDistance = new NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownWidth)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownDistance)).BeginInit();
 			this.SuspendLayout();

@@ -12,23 +12,22 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 	/// <summary>
 	/// Summary description for IfTime.
 	/// </summary>
-	public class IfTime : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.TreeView treeView;
-		private System.Windows.Forms.Button buttonAdd;
-		private System.Windows.Forms.Button buttonEdit;
-		private System.Windows.Forms.Button buttonDelete;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.MenuItem menuItemSeconds;
-		private System.Windows.Forms.MenuItem menuItemMinutes;
-		private System.Windows.Forms.MenuItem menuItemHours;
-		private System.Windows.Forms.MenuItem menuItemDayOfWeek;
-		private System.Windows.Forms.ContextMenu contextMenuAdd;
+	public class IfTime : Form {
+		private TreeView treeView;
+		private Button buttonAdd;
+		private Button buttonEdit;
+		private Button buttonDelete;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private MenuItem menuItemSeconds;
+		private MenuItem menuItemMinutes;
+		private MenuItem menuItemHours;
+		private MenuItem menuItemDayOfWeek;
+		private ContextMenu contextMenuAdd;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -121,17 +120,17 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.treeView = new System.Windows.Forms.TreeView();
-			this.buttonAdd = new System.Windows.Forms.Button();
-			this.buttonEdit = new System.Windows.Forms.Button();
-			this.buttonDelete = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.contextMenuAdd = new System.Windows.Forms.ContextMenu();
-			this.menuItemSeconds = new System.Windows.Forms.MenuItem();
-			this.menuItemMinutes = new System.Windows.Forms.MenuItem();
-			this.menuItemHours = new System.Windows.Forms.MenuItem();
-			this.menuItemDayOfWeek = new System.Windows.Forms.MenuItem();
+			this.treeView = new TreeView();
+			this.buttonAdd = new Button();
+			this.buttonEdit = new Button();
+			this.buttonDelete = new Button();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.contextMenuAdd = new ContextMenu();
+			this.menuItemSeconds = new MenuItem();
+			this.menuItemMinutes = new MenuItem();
+			this.menuItemHours = new MenuItem();
+			this.menuItemDayOfWeek = new MenuItem();
 			this.SuspendLayout();
 			// 
 			// treeView
@@ -201,7 +200,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 			// 
 			// contextMenuAdd
 			// 
-			this.contextMenuAdd.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.contextMenuAdd.MenuItems.AddRange(new MenuItem[] {
 																						   this.menuItemSeconds,
 																						   this.menuItemMinutes,
 																						   this.menuItemHours,

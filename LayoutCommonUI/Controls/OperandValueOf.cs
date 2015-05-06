@@ -18,14 +18,14 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class OperandValueOf : System.Windows.Forms.UserControl
 	{
-		private System.Windows.Forms.ComboBox comboBoxTag;
-		private System.Windows.Forms.ComboBox comboBoxSymbol;
+		private ComboBox comboBoxTag;
+		private ComboBox comboBoxSymbol;
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenuPropertyOrAttribute;
-		private System.Windows.Forms.Label label1;
+		private Label label1;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -191,10 +191,10 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.comboBoxTag = new System.Windows.Forms.ComboBox();
-			this.comboBoxSymbol = new System.Windows.Forms.ComboBox();
+			this.comboBoxTag = new ComboBox();
+			this.comboBoxSymbol = new ComboBox();
 			this.linkMenuPropertyOrAttribute = new LayoutManager.CommonUI.Controls.LinkMenu();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new Label();
 			this.SuspendLayout();
 			// 
 			// comboBoxTag

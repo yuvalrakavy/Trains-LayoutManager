@@ -11,19 +11,18 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for StandardPositionProperties.
 	/// </summary>
-	public class StandardPositionProperties : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxTitle;
+	public class StandardPositionProperties : Form {
+		private Label label1;
+		private TextBox textBoxTitle;
 		private LayoutManager.CommonUI.Controls.PositionDefinition positionDefinition;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.TextBox textBoxRef;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private Label label2;
+		private TextBox textBoxRef;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public StandardPositionProperties(LayoutPositionInfo positionProvider)
 		{
@@ -68,13 +67,13 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonOK = new Button();
+			this.label1 = new Label();
+			this.buttonCancel = new Button();
 			this.positionDefinition = new LayoutManager.CommonUI.Controls.PositionDefinition();
-			this.textBoxTitle = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.textBoxRef = new System.Windows.Forms.TextBox();
+			this.textBoxTitle = new TextBox();
+			this.label2 = new Label();
+			this.textBoxRef = new TextBox();
 			this.SuspendLayout();
 			// 
 			// buttonOK

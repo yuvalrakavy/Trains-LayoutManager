@@ -18,19 +18,19 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class LayoutControlViewer : System.Windows.Forms.UserControl
 	{
-		private System.Windows.Forms.ImageList imageListCloseButton;
-		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.Button buttonClose;
+		private ImageList imageListCloseButton;
+		private Panel panel1;
+		private Button buttonClose;
 		private LayoutManager.CommonUI.LayoutControlBusViewer layoutControlBusViewer;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.ComboBox comboBoxBusProvider;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.ComboBox comboBoxBus;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.ComboBox comboBoxLocation;
-		private System.Windows.Forms.Button buttonZoomIn;
-		private System.Windows.Forms.Button buttonZoomOut;
-		private System.ComponentModel.IContainer components;
+		private Label label1;
+		private ComboBox comboBoxBusProvider;
+		private Label label2;
+		private ComboBox comboBoxBus;
+		private Label label3;
+		private ComboBox comboBoxLocation;
+		private Button buttonZoomIn;
+		private Button buttonZoomOut;
+		private IContainer components;
 
 		private void endOfDesignerVariables() { }
 
@@ -241,20 +241,20 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LayoutControlViewer));
-			this.imageListCloseButton = new System.Windows.Forms.ImageList(this.components);
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.buttonClose = new System.Windows.Forms.Button();
+			this.imageListCloseButton = new ImageList(this.components);
+			this.panel1 = new Panel();
+			this.buttonClose = new Button();
 			this.layoutControlBusViewer = new LayoutManager.CommonUI.LayoutControlBusViewer();
-			this.label1 = new System.Windows.Forms.Label();
-			this.comboBoxBusProvider = new System.Windows.Forms.ComboBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.comboBoxBus = new System.Windows.Forms.ComboBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.comboBoxLocation = new System.Windows.Forms.ComboBox();
-			this.buttonZoomIn = new System.Windows.Forms.Button();
-			this.buttonZoomOut = new System.Windows.Forms.Button();
+			this.label1 = new Label();
+			this.comboBoxBusProvider = new ComboBox();
+			this.label2 = new Label();
+			this.comboBoxBus = new ComboBox();
+			this.label3 = new Label();
+			this.comboBoxLocation = new ComboBox();
+			this.buttonZoomIn = new Button();
+			this.buttonZoomOut = new Button();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 

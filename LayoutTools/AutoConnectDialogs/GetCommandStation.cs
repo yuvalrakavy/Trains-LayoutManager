@@ -13,16 +13,15 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 	/// <summary>
 	/// Summary description for GetCommandStation.
 	/// </summary>
-	public class GetCommandStation : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.ComboBox comboBoxCommandStations;
+	public class GetCommandStation : Form {
+		private Label label1;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private ComboBox comboBoxCommandStations;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public GetCommandStation(IList<IModelComponentIsCommandStation> commandStations)
 		{
@@ -70,10 +69,10 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.comboBoxCommandStations = new System.Windows.Forms.ComboBox();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.label1 = new Label();
+			this.comboBoxCommandStations = new ComboBox();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// label1

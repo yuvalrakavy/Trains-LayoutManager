@@ -18,8 +18,8 @@ namespace NCDRelayController
 	[LayoutModule("NCD Relay controller Component View", UserControl=false)]
 	public class ComponentView : System.ComponentModel.Component, ILayoutModuleSetup
 	{
-		private System.Windows.Forms.ImageList imageListComponents;
-		private System.ComponentModel.IContainer components = null;
+		private ImageList imageListComponents;
+		private IContainer components = null;
 
 		#region Implementation of ILayoutModuleSetup
 
@@ -178,9 +178,9 @@ namespace NCDRelayController
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComponentView));
-			this.imageListComponents = new System.Windows.Forms.ImageList(this.components);
+			this.imageListComponents = new ImageList(this.components);
 			// 
 			// imageListComponents
 			// 

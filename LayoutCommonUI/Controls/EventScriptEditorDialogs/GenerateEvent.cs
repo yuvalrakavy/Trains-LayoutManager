@@ -12,27 +12,26 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 	/// <summary>
 	/// Summary description for GenerateEvent.
 	/// </summary>
-	public class GenerateEvent : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.ComboBox comboBoxEventName;
-		private System.Windows.Forms.GroupBox groupBox1;
+	public class GenerateEvent : Form {
+		private Label label1;
+		private ComboBox comboBoxEventName;
+		private GroupBox groupBox1;
 		private LayoutManager.CommonUI.Controls.GenerateEventArgument generateEventArgumentSender;
-		private System.Windows.Forms.GroupBox groupBox2;
+		private GroupBox groupBox2;
 		private LayoutManager.CommonUI.Controls.GenerateEventArgument generateEventArgumentInfo;
-		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.ListView listViewOptions;
-		private System.Windows.Forms.ColumnHeader columnHeaderOptionName;
-		private System.Windows.Forms.ColumnHeader columnHeaderOptionValue;
-		private System.Windows.Forms.Button buttonAddOption;
-		private System.Windows.Forms.Button buttonEditOption;
-		private System.Windows.Forms.Button buttonDeleteOption;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private GroupBox groupBox3;
+		private ListView listViewOptions;
+		private ColumnHeader columnHeaderOptionName;
+		private ColumnHeader columnHeaderOptionValue;
+		private Button buttonAddOption;
+		private Button buttonEditOption;
+		private Button buttonDeleteOption;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -113,21 +112,21 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.comboBoxEventName = new System.Windows.Forms.ComboBox();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label1 = new Label();
+			this.comboBoxEventName = new ComboBox();
+			this.groupBox1 = new GroupBox();
 			this.generateEventArgumentSender = new LayoutManager.CommonUI.Controls.GenerateEventArgument();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.groupBox2 = new GroupBox();
 			this.generateEventArgumentInfo = new LayoutManager.CommonUI.Controls.GenerateEventArgument();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.buttonDeleteOption = new System.Windows.Forms.Button();
-			this.buttonEditOption = new System.Windows.Forms.Button();
-			this.buttonAddOption = new System.Windows.Forms.Button();
-			this.listViewOptions = new System.Windows.Forms.ListView();
-			this.columnHeaderOptionName = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderOptionValue = new System.Windows.Forms.ColumnHeader();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.groupBox3 = new GroupBox();
+			this.buttonDeleteOption = new Button();
+			this.buttonEditOption = new Button();
+			this.buttonAddOption = new Button();
+			this.listViewOptions = new ListView();
+			this.columnHeaderOptionName = new ColumnHeader();
+			this.columnHeaderOptionValue = new ColumnHeader();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -231,7 +230,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 			// 
 			// listViewOptions
 			// 
-			this.listViewOptions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewOptions.Columns.AddRange(new ColumnHeader[] {
 																							  this.columnHeaderOptionName,
 																							  this.columnHeaderOptionValue});
 			this.listViewOptions.FullRowSelect = true;

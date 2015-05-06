@@ -14,18 +14,17 @@ namespace LayoutManager.CommonUI.Dialogs
 	/// <summary>
 	/// Summary description for PolicyDefinition.
 	/// </summary>
-	public class TrainConditionDefinition : System.Windows.Forms.Form
-	{
+	public class TrainConditionDefinition : Form {
 		private LayoutManager.CommonUI.Controls.EventScriptEditor eventScriptEditor;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.RadioButton radioButtonNoCondition;
-		private System.Windows.Forms.RadioButton radioButtonCondition;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private RadioButton radioButtonNoCondition;
+		private RadioButton radioButtonCondition;
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenuConditionScope;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -108,10 +107,10 @@ namespace LayoutManager.CommonUI.Dialogs
 		private void InitializeComponent()
 		{
 			this.eventScriptEditor = new LayoutManager.CommonUI.Controls.EventScriptEditor();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.radioButtonNoCondition = new System.Windows.Forms.RadioButton();
-			this.radioButtonCondition = new System.Windows.Forms.RadioButton();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.radioButtonNoCondition = new RadioButton();
+			this.radioButtonCondition = new RadioButton();
 			this.linkMenuConditionScope = new LayoutManager.CommonUI.Controls.LinkMenu();
 			this.SuspendLayout();
 			// 

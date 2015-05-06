@@ -22,19 +22,18 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 	/// <summary>
 	/// Summary description for IfCondition.
 	/// </summary>
-	public class IfCondition : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.GroupBox groupBox1;
+	public class IfCondition : Form {
+		private GroupBox groupBox1;
 		private LayoutManager.CommonUI.Controls.Operand operand1;
-		private System.Windows.Forms.GroupBox groupBox2;
+		private GroupBox groupBox2;
 		private LayoutManager.CommonUI.Controls.Operand operand2;
-		private System.Windows.Forms.ComboBox comboBoxOperation;
-		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.Button buttonCancel;
+		private ComboBox comboBoxOperation;
+		private Button buttonOk;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		IIfConditionDialogCustomizer	customizer;
 
@@ -90,13 +89,13 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.groupBox1 = new GroupBox();
 			this.operand1 = new LayoutManager.CommonUI.Controls.Operand();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.groupBox2 = new GroupBox();
 			this.operand2 = new LayoutManager.CommonUI.Controls.Operand();
-			this.comboBoxOperation = new System.Windows.Forms.ComboBox();
-			this.buttonOk = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.comboBoxOperation = new ComboBox();
+			this.buttonOk = new Button();
+			this.buttonCancel = new Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();

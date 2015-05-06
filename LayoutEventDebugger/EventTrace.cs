@@ -12,16 +12,15 @@ namespace LayoutEventDebugger
 	/// <summary>
 	/// Summary description for EventTrace.
 	/// </summary>
-	public class EventTrace : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.TreeView treeViewEventTrace;
-		private System.Windows.Forms.Button buttonTraceState;
-		private System.Windows.Forms.Button buttonClose;
+	public class EventTrace : Form {
+		private TreeView treeViewEventTrace;
+		private Button buttonTraceState;
+		private Button buttonClose;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
-		private System.Windows.Forms.Button buttonClear;
+		private Container components = null;
+		private Button buttonClear;
 
 		public EventTrace()
 		{
@@ -99,10 +98,10 @@ namespace LayoutEventDebugger
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.treeViewEventTrace = new System.Windows.Forms.TreeView();
-			this.buttonTraceState = new System.Windows.Forms.Button();
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.buttonClear = new System.Windows.Forms.Button();
+			this.treeViewEventTrace = new TreeView();
+			this.buttonTraceState = new Button();
+			this.buttonClose = new Button();
+			this.buttonClear = new Button();
 			this.SuspendLayout();
 			// 
 			// treeViewEventTrace

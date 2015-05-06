@@ -26,16 +26,16 @@ namespace LayoutManager
 
 		static LayoutTraceSwitch	traceMessages = new LayoutTraceSwitch("Messages", "Trace errors, warning etc.");
 
-		private System.Windows.Forms.ListView listViewMessages;
-		private System.Windows.Forms.ColumnHeader columnHeaderMessage;
-		private System.Windows.Forms.ColumnHeader columnHeaderArea;
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.Button buttonPrevMessage;
-		private System.Windows.Forms.Button buttonNextMessage;
-		private System.Windows.Forms.Button buttonPreviousComponent;
-		private System.Windows.Forms.Button buttonNextComponent;
-		private System.Windows.Forms.ImageList imageListSeverity;
-		private System.ComponentModel.IContainer components;
+		private ListView listViewMessages;
+		private ColumnHeader columnHeaderMessage;
+		private ColumnHeader columnHeaderArea;
+		private Button buttonClose;
+		private Button buttonPrevMessage;
+		private Button buttonNextMessage;
+		private Button buttonPreviousComponent;
+		private Button buttonNextComponent;
+		private ImageList imageListSeverity;
+		private IContainer components;
 
 		public MessageViewer()
 		{
@@ -350,17 +350,17 @@ namespace LayoutManager
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(MessageViewer));
-			this.listViewMessages = new System.Windows.Forms.ListView();
-			this.columnHeaderMessage = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderArea = new System.Windows.Forms.ColumnHeader();
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.buttonNextMessage = new System.Windows.Forms.Button();
-			this.buttonPrevMessage = new System.Windows.Forms.Button();
-			this.buttonNextComponent = new System.Windows.Forms.Button();
-			this.buttonPreviousComponent = new System.Windows.Forms.Button();
-			this.imageListSeverity = new System.Windows.Forms.ImageList(this.components);
+			this.listViewMessages = new ListView();
+			this.columnHeaderMessage = new ColumnHeader();
+			this.columnHeaderArea = new ColumnHeader();
+			this.buttonClose = new Button();
+			this.buttonNextMessage = new Button();
+			this.buttonPrevMessage = new Button();
+			this.buttonNextComponent = new Button();
+			this.buttonPreviousComponent = new Button();
+			this.imageListSeverity = new ImageList(this.components);
 			this.SuspendLayout();
 			// 
 			// listViewMessages
@@ -368,7 +368,7 @@ namespace LayoutManager
 			this.listViewMessages.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 				| System.Windows.Forms.AnchorStyles.Left) 
 				| System.Windows.Forms.AnchorStyles.Right);
-			this.listViewMessages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewMessages.Columns.AddRange(new ColumnHeader[] {
 																							   this.columnHeaderMessage,
 																							   this.columnHeaderArea});
 			this.listViewMessages.FullRowSelect = true;

@@ -10,16 +10,15 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for GetNumberOfModules.
 	/// </summary>
-	public class GetNumberOfModules : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label labelQuestion;
-		private System.Windows.Forms.NumericUpDown numericUpDownModuleCount;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class GetNumberOfModules : Form {
+		private Label labelQuestion;
+		private NumericUpDown numericUpDownModuleCount;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public GetNumberOfModules(string moduleName, int maxModules)
 		{
@@ -62,10 +61,10 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.labelQuestion = new System.Windows.Forms.Label();
-			this.numericUpDownModuleCount = new System.Windows.Forms.NumericUpDown();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.labelQuestion = new Label();
+			this.numericUpDownModuleCount = new NumericUpDown();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownModuleCount)).BeginInit();
 			this.SuspendLayout();
 			// 

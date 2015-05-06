@@ -12,25 +12,24 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for LocomotiveCatalog.
 	/// </summary>
-	public class LocomotiveCatalog : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.Button buttonAdd;
-		private System.Windows.Forms.Button buttonEdit;
-		private System.Windows.Forms.Button buttonRemove;
+	public class LocomotiveCatalog : Form {
+		private Button buttonClose;
+		private Button buttonAdd;
+		private Button buttonEdit;
+		private Button buttonRemove;
 		private LayoutManager.CommonUI.Controls.LocomotiveTypeList locomotiveTypeList;
 
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 		
-		private System.Windows.Forms.ContextMenu contextMenuOptions;
-		private System.Windows.Forms.MenuItem menuItemArrange;
-		private System.Windows.Forms.MenuItem menuItemStorage;
-		private System.Windows.Forms.MenuItem menuItemStandardImages;
-		private System.Windows.Forms.Button buttonOptions;
-		private System.Windows.Forms.MenuItem menuItemStandardLocomotiveFunctions;
+		private ContextMenu contextMenuOptions;
+		private MenuItem menuItemArrange;
+		private MenuItem menuItemStorage;
+		private MenuItem menuItemStandardImages;
+		private Button buttonOptions;
+		private MenuItem menuItemStandardLocomotiveFunctions;
 		LocomotiveCatalogInfo	catalog;
 
 		public LocomotiveCatalog()
@@ -104,17 +103,17 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.buttonAdd = new System.Windows.Forms.Button();
-			this.buttonEdit = new System.Windows.Forms.Button();
-			this.buttonRemove = new System.Windows.Forms.Button();
+			this.buttonClose = new Button();
+			this.buttonAdd = new Button();
+			this.buttonEdit = new Button();
+			this.buttonRemove = new Button();
 			this.locomotiveTypeList = new LayoutManager.CommonUI.Controls.LocomotiveTypeList();
-			this.contextMenuOptions = new System.Windows.Forms.ContextMenu();
-			this.menuItemArrange = new System.Windows.Forms.MenuItem();
-			this.menuItemStorage = new System.Windows.Forms.MenuItem();
-			this.menuItemStandardImages = new System.Windows.Forms.MenuItem();
-			this.buttonOptions = new System.Windows.Forms.Button();
-			this.menuItemStandardLocomotiveFunctions = new System.Windows.Forms.MenuItem();
+			this.contextMenuOptions = new ContextMenu();
+			this.menuItemArrange = new MenuItem();
+			this.menuItemStorage = new MenuItem();
+			this.menuItemStandardImages = new MenuItem();
+			this.buttonOptions = new Button();
+			this.menuItemStandardLocomotiveFunctions = new MenuItem();
 			this.SuspendLayout();
 			// 
 			// buttonClose
@@ -173,7 +172,7 @@ namespace LayoutManager.Dialogs
 			// 
 			// contextMenuOptions
 			// 
-			this.contextMenuOptions.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.contextMenuOptions.MenuItems.AddRange(new MenuItem[] {
 																							   this.menuItemArrange,
 																							   this.menuItemStorage,
 																							   this.menuItemStandardImages,

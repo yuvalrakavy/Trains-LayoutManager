@@ -13,21 +13,21 @@ namespace LayoutManager.Tools.EventScriptDialogs
 	/// <summary>
 	/// Summary description for TrainFunctionAction.
 	/// </summary>
-	public class TrainFunctionAction : System.Windows.Forms.Form {
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.ComboBox comboBoxTrain;
-		private System.Windows.Forms.ComboBox comboBoxFunctionName;
-		private System.Windows.Forms.GroupBox groupBoxFunctionState;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.RadioButton radioButtonToggle;
-		private System.Windows.Forms.RadioButton radioButtonOn;
-		private System.Windows.Forms.RadioButton radioButtonOff;
+	public class TrainFunctionAction : Form {
+		private Label label1;
+		private Label label2;
+		private ComboBox comboBoxTrain;
+		private ComboBox comboBoxFunctionName;
+		private GroupBox groupBoxFunctionState;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private RadioButton radioButtonToggle;
+		private RadioButton radioButtonOn;
+		private RadioButton radioButtonOff;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() {} 
 	
@@ -100,16 +100,16 @@ namespace LayoutManager.Tools.EventScriptDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.comboBoxTrain = new System.Windows.Forms.ComboBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.comboBoxFunctionName = new System.Windows.Forms.ComboBox();
-			this.groupBoxFunctionState = new System.Windows.Forms.GroupBox();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.radioButtonOn = new System.Windows.Forms.RadioButton();
-			this.radioButtonOff = new System.Windows.Forms.RadioButton();
-			this.radioButtonToggle = new System.Windows.Forms.RadioButton();
+			this.label1 = new Label();
+			this.comboBoxTrain = new ComboBox();
+			this.label2 = new Label();
+			this.comboBoxFunctionName = new ComboBox();
+			this.groupBoxFunctionState = new GroupBox();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.radioButtonOn = new RadioButton();
+			this.radioButtonOff = new RadioButton();
+			this.radioButtonToggle = new RadioButton();
 			this.groupBoxFunctionState.SuspendLayout();
 			this.SuspendLayout();
 			// 

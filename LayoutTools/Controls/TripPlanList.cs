@@ -18,13 +18,13 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class TripPlanList : System.Windows.Forms.UserControl
 	{
-		private System.Windows.Forms.Button buttonChangeIcon;
-		private System.Windows.Forms.Button buttonDelete;
-		private System.Windows.Forms.ListView listViewTripPlans;
-		private System.Windows.Forms.Button buttonRename;
-		private System.Windows.Forms.Button buttonDuplicate;
-		private System.Windows.Forms.ImageList imageListState;
-		private System.ComponentModel.IContainer components;
+		private Button buttonChangeIcon;
+		private Button buttonDelete;
+		private ListView listViewTripPlans;
+		private Button buttonRename;
+		private Button buttonDuplicate;
+		private ImageList imageListState;
+		private IContainer components;
 
 		private void endOfDesignerVariables() { }
 
@@ -183,14 +183,14 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(TripPlanList));
-			this.buttonChangeIcon = new System.Windows.Forms.Button();
-			this.buttonDelete = new System.Windows.Forms.Button();
-			this.listViewTripPlans = new System.Windows.Forms.ListView();
-			this.buttonRename = new System.Windows.Forms.Button();
-			this.buttonDuplicate = new System.Windows.Forms.Button();
-			this.imageListState = new System.Windows.Forms.ImageList(this.components);
+			this.buttonChangeIcon = new Button();
+			this.buttonDelete = new Button();
+			this.listViewTripPlans = new ListView();
+			this.buttonRename = new Button();
+			this.buttonDuplicate = new Button();
+			this.imageListState = new ImageList(this.components);
 			this.SuspendLayout();
 			// 
 			// buttonChangeIcon

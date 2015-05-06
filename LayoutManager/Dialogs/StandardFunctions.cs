@@ -13,20 +13,19 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for StandardFunctions.
 	/// </summary>
-	public class StandardFunctions : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.ListView listViewFunctionInfo;
-		private System.Windows.Forms.Button buttonNew;
-		private System.Windows.Forms.Button buttonEdit;
-		private System.Windows.Forms.Button buttonDelete;
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.ColumnHeader columnHeaderType;
-		private System.Windows.Forms.ColumnHeader columnHeaderName;
-		private System.Windows.Forms.ColumnHeader columnHeaderDescription;
+	public class StandardFunctions : Form {
+		private ListView listViewFunctionInfo;
+		private Button buttonNew;
+		private Button buttonEdit;
+		private Button buttonDelete;
+		private Button buttonClose;
+		private ColumnHeader columnHeaderType;
+		private ColumnHeader columnHeaderName;
+		private ColumnHeader columnHeaderDescription;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		XmlElement		commonFunctionsElement;
 
@@ -78,14 +77,14 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.listViewFunctionInfo = new System.Windows.Forms.ListView();
-			this.buttonNew = new System.Windows.Forms.Button();
-			this.buttonEdit = new System.Windows.Forms.Button();
-			this.buttonDelete = new System.Windows.Forms.Button();
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.columnHeaderType = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderName = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderDescription = new System.Windows.Forms.ColumnHeader();
+			this.listViewFunctionInfo = new ListView();
+			this.buttonNew = new Button();
+			this.buttonEdit = new Button();
+			this.buttonDelete = new Button();
+			this.buttonClose = new Button();
+			this.columnHeaderType = new ColumnHeader();
+			this.columnHeaderName = new ColumnHeader();
+			this.columnHeaderDescription = new ColumnHeader();
 			this.SuspendLayout();
 			// 
 			// listViewFunctionInfo
@@ -93,7 +92,7 @@ namespace LayoutManager.Dialogs
 			this.listViewFunctionInfo.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 				| System.Windows.Forms.AnchorStyles.Left) 
 				| System.Windows.Forms.AnchorStyles.Right);
-			this.listViewFunctionInfo.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewFunctionInfo.Columns.AddRange(new ColumnHeader[] {
 																								   this.columnHeaderType,
 																								   this.columnHeaderName,
 																								   this.columnHeaderDescription});

@@ -13,19 +13,19 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 	/// <summary>
 	/// Summary description for WaitForEvent.
 	/// </summary>
-	public class WaitForEvent : System.Windows.Forms.Form, IObjectHasXml
+	public class WaitForEvent : Form, IObjectHasXml
 	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.ComboBox comboBoxEvent;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private Label label1;
+		private ComboBox comboBoxEvent;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		XmlElement			element;
-		private System.Windows.Forms.CheckBox checkBoxLimitedToScope;
+		private CheckBox checkBoxLimitedToScope;
 
 		public WaitForEvent(XmlElement element) {
 			//
@@ -76,11 +76,11 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.comboBoxEvent = new System.Windows.Forms.ComboBox();
-			this.checkBoxLimitedToScope = new System.Windows.Forms.CheckBox();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.label1 = new Label();
+			this.comboBoxEvent = new ComboBox();
+			this.checkBoxLimitedToScope = new CheckBox();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// label1

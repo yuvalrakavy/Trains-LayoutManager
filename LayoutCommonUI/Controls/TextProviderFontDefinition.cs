@@ -13,15 +13,15 @@ namespace LayoutManager.CommonUI.Controls {
 	/// Summary description for TextProviderFontDefinition.
 	/// </summary>
 	public class TextProviderFontDefinition : System.Windows.Forms.UserControl {
-		private System.Windows.Forms.GroupBox groupBoxFont;
-		private System.Windows.Forms.RadioButton radioButtonCustomFont;
-		private System.Windows.Forms.RadioButton radioButtonStandardFont;
-		private System.Windows.Forms.Label labelFontDescription;
-		private System.Windows.Forms.Button buttonCustomFontSettings;
+		private GroupBox groupBoxFont;
+		private RadioButton radioButtonCustomFont;
+		private RadioButton radioButtonStandardFont;
+		private Label labelFontDescription;
+		private Button buttonCustomFontSettings;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 		private LayoutManager.CommonUI.Controls.LayoutInfosComboBox layoutInfosComboBoxFonts;
 		private System.Windows.Forms.FontDialog fontDialogCustomSetting;
 
@@ -118,12 +118,12 @@ namespace LayoutManager.CommonUI.Controls {
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			this.buttonCustomFontSettings = new System.Windows.Forms.Button();
-			this.groupBoxFont = new System.Windows.Forms.GroupBox();
+			this.buttonCustomFontSettings = new Button();
+			this.groupBoxFont = new GroupBox();
 			this.layoutInfosComboBoxFonts = new LayoutManager.CommonUI.Controls.LayoutInfosComboBox();
-			this.radioButtonCustomFont = new System.Windows.Forms.RadioButton();
-			this.radioButtonStandardFont = new System.Windows.Forms.RadioButton();
-			this.labelFontDescription = new System.Windows.Forms.Label();
+			this.radioButtonCustomFont = new RadioButton();
+			this.radioButtonStandardFont = new RadioButton();
+			this.labelFontDescription = new Label();
 			this.fontDialogCustomSetting = new System.Windows.Forms.FontDialog();
 			this.groupBoxFont.SuspendLayout();
 			this.SuspendLayout();

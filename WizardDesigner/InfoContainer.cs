@@ -14,12 +14,12 @@ namespace Gui.Wizard
 	[Designer(typeof(InfoContainerDesigner))]
 	public class InfoContainer: System.Windows.Forms.UserControl
 	{
-		private System.Windows.Forms.PictureBox picImage;
-		private System.Windows.Forms.Label lblTitle;
+		private PictureBox picImage;
+		private Label lblTitle;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		/// <summary>
 		/// 
@@ -53,8 +53,8 @@ namespace Gui.Wizard
 		private void InitializeComponent()
 		{
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(InfoContainer));
-			this.picImage = new System.Windows.Forms.PictureBox();
-			this.lblTitle = new System.Windows.Forms.Label();
+			this.picImage = new PictureBox();
+			this.lblTitle = new Label();
 			this.SuspendLayout();
 			// 
 			// picImage

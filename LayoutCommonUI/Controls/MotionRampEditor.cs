@@ -16,19 +16,19 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class MotionRampEditor : System.Windows.Forms.UserControl
 	{
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.RadioButton radioButtonSpeedChangeLength;
-		private System.Windows.Forms.TextBox textBoxSpeedChangeLength;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.RadioButton radioButtonSpeedChangeRate;
-		private System.Windows.Forms.TextBox textBoxSpeedChangeRate;
-		private System.Windows.Forms.Label label2;
+		private GroupBox groupBox1;
+		private RadioButton radioButtonSpeedChangeLength;
+		private TextBox textBoxSpeedChangeLength;
+		private Label label1;
+		private RadioButton radioButtonSpeedChangeRate;
+		private TextBox textBoxSpeedChangeRate;
+		private Label label2;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
-		private System.Windows.Forms.RadioButton radioButtonLocomotiveHardware;
+		private RadioButton radioButtonLocomotiveHardware;
 		MotionRampInfo		ramp;
 
 		public MotionRampEditor()
@@ -156,14 +156,14 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBoxSpeedChangeLength = new System.Windows.Forms.TextBox();
-			this.radioButtonSpeedChangeLength = new System.Windows.Forms.RadioButton();
-			this.radioButtonSpeedChangeRate = new System.Windows.Forms.RadioButton();
-			this.textBoxSpeedChangeRate = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.radioButtonLocomotiveHardware = new System.Windows.Forms.RadioButton();
+			this.groupBox1 = new GroupBox();
+			this.label1 = new Label();
+			this.textBoxSpeedChangeLength = new TextBox();
+			this.radioButtonSpeedChangeLength = new RadioButton();
+			this.radioButtonSpeedChangeRate = new RadioButton();
+			this.textBoxSpeedChangeRate = new TextBox();
+			this.label2 = new Label();
+			this.radioButtonLocomotiveHardware = new RadioButton();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 

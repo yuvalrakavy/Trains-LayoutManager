@@ -14,16 +14,15 @@ namespace LayoutManager.CommonUI.Dialogs
 	/// <summary>
 	/// Summary description for InputBox.
 	/// </summary>
-	public class InputBox : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label labelPrompt;
-		private System.Windows.Forms.TextBox textBox;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class InputBox : Form {
+		private Label labelPrompt;
+		private TextBox textBox;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private InputBoxValidationOptions	validationOptions = 0;
 
@@ -98,10 +97,10 @@ namespace LayoutManager.CommonUI.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.textBox = new System.Windows.Forms.TextBox();
-			this.labelPrompt = new System.Windows.Forms.Label();
-			this.buttonOK = new System.Windows.Forms.Button();
+			this.buttonCancel = new Button();
+			this.textBox = new TextBox();
+			this.labelPrompt = new Label();
+			this.buttonOK = new Button();
 			this.SuspendLayout();
 			// 
 			// buttonCancel

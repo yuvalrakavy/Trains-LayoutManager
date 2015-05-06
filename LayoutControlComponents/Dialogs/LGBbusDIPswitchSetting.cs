@@ -12,27 +12,26 @@ namespace LayoutManager.ControlComponents.Dialogs
 	/// <summary>
 	/// Summary description for LGBbusDIPswitchSetting.
 	/// </summary>
-	public class LGBbusDIPswitchSetting : System.Windows.Forms.Form
-	{
+	public class LGBbusDIPswitchSetting : Form {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		LayoutManager.CommonUI.Controls.DIPswitch	diPswitchSettings;
-		System.Windows.Forms.Label	label1;
-		System.Windows.Forms.Label	label2;
-		System.Windows.Forms.Label	label3;
-		System.Windows.Forms.Label	label4;
+        Label label1;
+        Label label2;
+        Label label3;
+        Label label4;
 		LayoutManager.CommonUI.Controls.DIPswitch	diPswitch2;
-		System.Windows.Forms.Label	label5;
-		System.Windows.Forms.Label	label6;
-		System.Windows.Forms.Label	label7;
-		System.Windows.Forms.Label	label8;
-		System.Windows.Forms.Label	label9;
-		System.Windows.Forms.Label	label10;
-		System.Windows.Forms.CheckBox	checkBoxClearUserActionFlag;
-		System.Windows.Forms.Button	buttonClose;
+        Label label5;
+        Label label6;
+        Label label7;
+        Label label8;
+        Label label9;
+        Label label10;
+        CheckBox checkBoxClearUserActionFlag;
+        Button buttonClose;
 
 		public LGBbusDIPswitchSetting(string moduleName, int address, bool userActionRequiredFlag)
 		{
@@ -80,19 +79,19 @@ namespace LayoutManager.ControlComponents.Dialogs
 		private void InitializeComponent()
 		{
 			this.diPswitchSettings = new LayoutManager.CommonUI.Controls.DIPswitch();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
+			this.label1 = new Label();
+			this.label2 = new Label();
+			this.label3 = new Label();
+			this.label4 = new Label();
 			this.diPswitch2 = new LayoutManager.CommonUI.Controls.DIPswitch();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
-			this.label8 = new System.Windows.Forms.Label();
-			this.label9 = new System.Windows.Forms.Label();
-			this.label10 = new System.Windows.Forms.Label();
-			this.checkBoxClearUserActionFlag = new System.Windows.Forms.CheckBox();
-			this.buttonClose = new System.Windows.Forms.Button();
+			this.label5 = new Label();
+			this.label6 = new Label();
+			this.label7 = new Label();
+			this.label8 = new Label();
+			this.label9 = new Label();
+			this.label10 = new Label();
+			this.checkBoxClearUserActionFlag = new CheckBox();
+			this.buttonClose = new Button();
 			this.SuspendLayout();
 			// 
 			// diPswitchSettings

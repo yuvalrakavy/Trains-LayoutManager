@@ -11,15 +11,14 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for RoutingTableCalcProgress.
 	/// </summary>
-	public class RoutingTableCalcProgress : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
+	public class RoutingTableCalcProgress : Form {
+		private Label label1;
 		private System.Windows.Forms.ProgressBar progressBar;
-		private System.Windows.Forms.Button buttonAbort;
+		private Button buttonAbort;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public RoutingTableCalcProgress(int nTurnouts)
 		{
@@ -56,9 +55,9 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new Label();
 			this.progressBar = new System.Windows.Forms.ProgressBar();
-			this.buttonAbort = new System.Windows.Forms.Button();
+			this.buttonAbort = new Button();
 			this.SuspendLayout();
 			// 
 			// label1

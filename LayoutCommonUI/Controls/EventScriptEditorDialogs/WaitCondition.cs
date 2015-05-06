@@ -10,23 +10,22 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 	/// <summary>
 	/// Summary description for WaitCondition.
 	/// </summary>
-	public class WaitCondition : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.NumericUpDown numericUpDownMinutes;
-		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.NumericUpDown numericUpDownSeconds;
-		private System.Windows.Forms.CheckBox checkBoxRadomWait;
-		private System.Windows.Forms.NumericUpDown numericUpDownRandomSeconds;
-		private System.Windows.Forms.CheckBox checkBoxErrorState;
+	public class WaitCondition : Form {
+		private Label label1;
+		private Label label2;
+		private Label label3;
+		private Label label4;
+		private NumericUpDown numericUpDownMinutes;
+		private Button buttonOk;
+		private Button buttonCancel;
+		private NumericUpDown numericUpDownSeconds;
+		private CheckBox checkBoxRadomWait;
+		private NumericUpDown numericUpDownRandomSeconds;
+		private CheckBox checkBoxErrorState;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		XmlElement	conditionElement;
 
@@ -84,17 +83,17 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.numericUpDownMinutes = new System.Windows.Forms.NumericUpDown();
-			this.label2 = new System.Windows.Forms.Label();
-			this.numericUpDownSeconds = new System.Windows.Forms.NumericUpDown();
-			this.label3 = new System.Windows.Forms.Label();
-			this.checkBoxRadomWait = new System.Windows.Forms.CheckBox();
-			this.label4 = new System.Windows.Forms.Label();
-			this.numericUpDownRandomSeconds = new System.Windows.Forms.NumericUpDown();
-			this.checkBoxErrorState = new System.Windows.Forms.CheckBox();
-			this.buttonOk = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.label1 = new Label();
+			this.numericUpDownMinutes = new NumericUpDown();
+			this.label2 = new Label();
+			this.numericUpDownSeconds = new NumericUpDown();
+			this.label3 = new Label();
+			this.checkBoxRadomWait = new CheckBox();
+			this.label4 = new Label();
+			this.numericUpDownRandomSeconds = new NumericUpDown();
+			this.checkBoxErrorState = new CheckBox();
+			this.buttonOk = new Button();
+			this.buttonCancel = new Button();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownMinutes)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownSeconds)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownRandomSeconds)).BeginInit();

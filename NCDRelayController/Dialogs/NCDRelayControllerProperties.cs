@@ -15,15 +15,15 @@ namespace NCDRelayController.Dialogs
 	/// <summary>
 	/// Summary description for CentralStationProperties.
 	/// </summary>
-	public class NCDRelayControllerProperties : System.Windows.Forms.Form {
-		private System.Windows.Forms.ComboBox comboBoxPort;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class NCDRelayControllerProperties : Form {
+		private ComboBox comboBoxPort;
+		private Label label1;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		NCDRelayController component;
 		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
@@ -102,21 +102,21 @@ namespace NCDRelayController.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.comboBoxPort = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.buttonOK = new System.Windows.Forms.Button();
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.buttonCOMsettings = new System.Windows.Forms.Button();
+            this.comboBoxPort = new ComboBox();
+            this.label1 = new Label();
+            this.buttonOK = new Button();
+            this.buttonCancel = new Button();
+            this.buttonCOMsettings = new Button();
             this.nameDefinition = new LayoutManager.CommonUI.Controls.NameDefinition();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBoxPollingPeriod = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.textBoxAddress = new System.Windows.Forms.TextBox();
-            this.radioButtonTCP = new System.Windows.Forms.RadioButton();
-            this.radioButtonSerial = new System.Windows.Forms.RadioButton();
-            this.label3 = new System.Windows.Forms.Label();
-            this.buttonBrowseForDigiDevices = new System.Windows.Forms.Button();
-            this.buttonIpSettings = new System.Windows.Forms.Button();
+            this.label2 = new Label();
+            this.textBoxPollingPeriod = new TextBox();
+            this.groupBox1 = new GroupBox();
+            this.textBoxAddress = new TextBox();
+            this.radioButtonTCP = new RadioButton();
+            this.radioButtonSerial = new RadioButton();
+            this.label3 = new Label();
+            this.buttonBrowseForDigiDevices = new Button();
+            this.buttonIpSettings = new Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 

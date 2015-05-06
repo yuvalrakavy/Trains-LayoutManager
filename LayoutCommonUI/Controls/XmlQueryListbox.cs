@@ -64,9 +64,9 @@ namespace LayoutManager.CommonUI.Controls {
 	/// A node may contains subnodes. You should derive specialized controls from this
 	/// control in order to customize for the specific item.
 	/// </summary>
-	public abstract class XmlQueryListbox : System.Windows.Forms.ListBox {
-		private System.Windows.Forms.ImageList imageListArrows;
-		private System.ComponentModel.IContainer components;
+	public abstract class XmlQueryListbox : ListBox {
+		private ImageList imageListArrows;
+		private IContainer components;
 
 		XmlElement		containerElement;
 		XPathNavigator	containerNavigator;
@@ -401,9 +401,9 @@ namespace LayoutManager.CommonUI.Controls {
 		}
 
 		private void InitializeComponent() {
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(XmlQueryListbox));
-			this.imageListArrows = new System.Windows.Forms.ImageList(this.components);
+			this.imageListArrows = new ImageList(this.components);
 			// 
 			// imageListArrows
 			// 

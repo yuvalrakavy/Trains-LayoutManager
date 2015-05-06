@@ -17,14 +17,14 @@ namespace LayoutManager.CommonUI.Controls
 	public class SelectTripPlanIcon : System.Windows.Forms.UserControl
 	{
 		private NoBackgroundErasePanel panelIcons;
-		private System.Windows.Forms.Button buttonAdd;
-		private System.Windows.Forms.Button buttonDelete;
+		private Button buttonAdd;
+		private Button buttonDelete;
 		private System.Windows.Forms.OpenFileDialog openFileDialog;
 		private System.Windows.Forms.HScrollBar hScrollBar;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -161,8 +161,8 @@ namespace LayoutManager.CommonUI.Controls
 		{
 			this.panelIcons = new LayoutManager.CommonUI.Controls.SelectTripPlanIcon.NoBackgroundErasePanel();
 			this.hScrollBar = new System.Windows.Forms.HScrollBar();
-			this.buttonAdd = new System.Windows.Forms.Button();
-			this.buttonDelete = new System.Windows.Forms.Button();
+			this.buttonAdd = new Button();
+			this.buttonDelete = new Button();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.panelIcons.SuspendLayout();
 			this.SuspendLayout();

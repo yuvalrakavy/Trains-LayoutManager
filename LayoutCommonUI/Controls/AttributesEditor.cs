@@ -18,17 +18,17 @@ namespace LayoutManager.CommonUI.Controls {
 	/// Summary description for AttributesEditor.
 	/// </summary>
 	public class AttributesEditor : System.Windows.Forms.UserControl, ICheckIfNameUsed, IControlSupportViewOnly {
-		private System.Windows.Forms.ListView listViewAttributes;
-		private System.Windows.Forms.Button buttonAdd;
-		private System.Windows.Forms.Button buttonEdit;
-		private System.Windows.Forms.Button buttonRemove;
-		private System.Windows.Forms.ColumnHeader columnHeaderName;
-		private System.Windows.Forms.ColumnHeader columnHeaderType;
-		private System.Windows.Forms.ColumnHeader columnHeaderValue;
+		private ListView listViewAttributes;
+		private Button buttonAdd;
+		private Button buttonEdit;
+		private Button buttonRemove;
+		private ColumnHeader columnHeaderName;
+		private ColumnHeader columnHeaderType;
+		private ColumnHeader columnHeaderValue;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		void endOfDesignerVariables() { }
 
@@ -177,13 +177,13 @@ namespace LayoutManager.CommonUI.Controls {
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.listViewAttributes = new System.Windows.Forms.ListView();
-			this.columnHeaderName = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderType = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderValue = new System.Windows.Forms.ColumnHeader();
-			this.buttonAdd = new System.Windows.Forms.Button();
-			this.buttonEdit = new System.Windows.Forms.Button();
-			this.buttonRemove = new System.Windows.Forms.Button();
+			this.listViewAttributes = new ListView();
+			this.columnHeaderName = new ColumnHeader();
+			this.columnHeaderType = new ColumnHeader();
+			this.columnHeaderValue = new ColumnHeader();
+			this.buttonAdd = new Button();
+			this.buttonEdit = new Button();
+			this.buttonRemove = new Button();
 			this.SuspendLayout();
 			// 
 			// listViewAttributes
@@ -191,7 +191,7 @@ namespace LayoutManager.CommonUI.Controls {
 			this.listViewAttributes.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 				| System.Windows.Forms.AnchorStyles.Left) 
 				| System.Windows.Forms.AnchorStyles.Right);
-			this.listViewAttributes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewAttributes.Columns.AddRange(new ColumnHeader[] {
 																								 this.columnHeaderName,
 																								 this.columnHeaderType,
 																								 this.columnHeaderValue});

@@ -14,7 +14,7 @@ namespace LayoutManager.Dialogs {
 	/// <summary>
 	/// Base form for the locomotive & locomotive type properties
 	/// </summary>
-	public class LocomotiveBasePropertiesForm : System.Windows.Forms.Form {
+	public class LocomotiveBasePropertiesForm : Form {
 		Dictionary<string, Control> nameToControlMap = new Dictionary<string, Control>();
 		protected XmlElement		element;
 		protected bool				hasImage = false;

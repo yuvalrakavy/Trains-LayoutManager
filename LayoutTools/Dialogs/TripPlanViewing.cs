@@ -13,15 +13,14 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TripPlanViewing.
 	/// </summary>
-	public class TripPlanViewing : System.Windows.Forms.Form
-	{
+	public class TripPlanViewing : Form {
 		private LayoutManager.Tools.Controls.TripPlanEditor tripPlanEditor;
-		private System.Windows.Forms.Button buttonSave;
-		private System.Windows.Forms.Button buttonClose;
+		private Button buttonSave;
+		private Button buttonClose;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -69,8 +68,8 @@ namespace LayoutManager.Tools.Dialogs
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TripPlanViewing));
 			this.tripPlanEditor = new LayoutManager.Tools.Controls.TripPlanEditor();
-			this.buttonSave = new System.Windows.Forms.Button();
-			this.buttonClose = new System.Windows.Forms.Button();
+			this.buttonSave = new Button();
+			this.buttonClose = new Button();
 			this.SuspendLayout();
 			// 
 			// tripPlanEditor

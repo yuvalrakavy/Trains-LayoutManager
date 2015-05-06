@@ -17,7 +17,7 @@ namespace LayoutManager.CommonUI.Controls {
 	Serializable(), System.ComponentModel.DesignerCategory("Code"),
 	ToolboxBitmapAttribute(typeof(LayoutManager.CommonUI.Controls.DataListView), "DataListView.ico")
 	]
-	public class DataListView : System.Windows.Forms.ListView {
+	public class DataListView : ListView {
 		#region Variables used within Scope of this Class.
 		private object mDataSource = null;
 		private string mDataMember = string.Empty;
@@ -307,21 +307,21 @@ namespace LayoutManager.CommonUI.Controls {
 
 		#region LargeImageList Property - Turn this off
 		[System.ComponentModel.Browsable(false)]
-		public new System.Windows.Forms.ImageList LargeImageList{
+		public new ImageList LargeImageList {
 			get{ return null; }
 		}
 		#endregion
 
 		#region SmallImageList Property - Turn this off
 		[System.ComponentModel.Browsable(false)]
-		public new System.Windows.Forms.ImageList SmallImageList{
+		public new ImageList SmallImageList {
 			get{ return null; }
 		}
 		#endregion
 
 		#region StateImageList Property - Turn this off
 		[System.ComponentModel.Browsable(false)]
-		public new System.Windows.Forms.ImageList StateImageList{
+		public new ImageList StateImageList {
 			get{ return null; }
 		}
 		#endregion
@@ -807,7 +807,7 @@ namespace LayoutManager.CommonUI.Controls {
 
 	#region DataColumnHeader Class
 	[Serializable()]
-	public class DataColumnHeader : System.Windows.Forms.ColumnHeader{
+	public class DataColumnHeader : ColumnHeader {
 		private string mField;
 		public string Field{
 			get{ return this.mField; }

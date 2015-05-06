@@ -12,21 +12,20 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 	/// <summary>
 	/// Summary description for ShowMessage.
 	/// </summary>
-	public class ShowMessage : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxMessage;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.RadioButton radioButtonMessage;
-		private System.Windows.Forms.RadioButton radioButtonWanrning;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class ShowMessage : Form {
+		private Label label1;
+		private TextBox textBoxMessage;
+		private GroupBox groupBox1;
+		private RadioButton radioButtonMessage;
+		private RadioButton radioButtonWanrning;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
-		private System.Windows.Forms.RadioButton radioButtonError;
-		private System.Windows.Forms.Label label2;
+		private Container components = null;
+		private RadioButton radioButtonError;
+		private Label label2;
 
 		XmlElement	element;
 
@@ -84,15 +83,15 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBoxMessage = new System.Windows.Forms.TextBox();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.radioButtonMessage = new System.Windows.Forms.RadioButton();
-			this.radioButtonWanrning = new System.Windows.Forms.RadioButton();
-			this.radioButtonError = new System.Windows.Forms.RadioButton();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new Label();
+			this.textBoxMessage = new TextBox();
+			this.groupBox1 = new GroupBox();
+			this.radioButtonMessage = new RadioButton();
+			this.radioButtonWanrning = new RadioButton();
+			this.radioButtonError = new RadioButton();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.label2 = new Label();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 

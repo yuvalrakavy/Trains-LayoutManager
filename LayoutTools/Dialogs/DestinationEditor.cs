@@ -16,28 +16,28 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for DestinationEditor.
 	/// </summary>
-	public class DestinationEditor : System.Windows.Forms.Form, IModelComponentReceiverDialog, IControlSupportViewOnly
+	public class DestinationEditor : Form, IModelComponentReceiverDialog, IControlSupportViewOnly
 	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.GroupBox groupBoxSelection;
-		private System.Windows.Forms.ImageList imageListButttons;
+		private Label label1;
+		private Label label2;
+		private GroupBox groupBoxSelection;
+		private ImageList imageListButttons;
 		private CommonUI.TextBoxWithViewOnly textBoxName;
-		private System.Windows.Forms.GroupBox groupBoxLocations;
+		private GroupBox groupBoxLocations;
 		private CommonUI.RadioButtonWithViewOnly radioButtonSelectionListOrder;
 		private CommonUI.RadioButtonWithViewOnly radioButtonSelectionRandom;
-		private System.Windows.Forms.Button buttonMoveLocationDown;
-		private System.Windows.Forms.Button buttonMoveLocationUp;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Button buttonAddLocation;
-		private System.Windows.Forms.Button buttonRemoveLocation;
-		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.Button buttonSave;
-		private System.Windows.Forms.ListView listViewLocations;
-		private System.Windows.Forms.ColumnHeader columnHeaderLocation;
-		private System.Windows.Forms.ColumnHeader columnHeaderCondition;
-		private System.Windows.Forms.Button buttonCondition;
-		private System.ComponentModel.IContainer components;
+		private Button buttonMoveLocationDown;
+		private Button buttonMoveLocationUp;
+		private Button buttonCancel;
+		private Button buttonAddLocation;
+		private Button buttonRemoveLocation;
+		private Button buttonOk;
+		private Button buttonSave;
+		private ListView listViewLocations;
+		private ColumnHeader columnHeaderLocation;
+		private ColumnHeader columnHeaderCondition;
+		private Button buttonCondition;
+		private IContainer components;
 
 		private void endOfDesignerVariables() { }
 
@@ -214,27 +214,27 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DestinationEditor));
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
+			this.buttonCancel = new Button();
+			this.label1 = new Label();
 			this.textBoxName = new LayoutManager.CommonUI.TextBoxWithViewOnly();
-			this.groupBoxLocations = new System.Windows.Forms.GroupBox();
-			this.buttonCondition = new System.Windows.Forms.Button();
-			this.listViewLocations = new System.Windows.Forms.ListView();
-			this.columnHeaderLocation = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderCondition = new System.Windows.Forms.ColumnHeader();
-			this.buttonAddLocation = new System.Windows.Forms.Button();
-			this.buttonRemoveLocation = new System.Windows.Forms.Button();
-			this.buttonMoveLocationUp = new System.Windows.Forms.Button();
-			this.imageListButttons = new System.Windows.Forms.ImageList(this.components);
-			this.buttonMoveLocationDown = new System.Windows.Forms.Button();
-			this.label2 = new System.Windows.Forms.Label();
-			this.groupBoxSelection = new System.Windows.Forms.GroupBox();
+			this.groupBoxLocations = new GroupBox();
+			this.buttonCondition = new Button();
+			this.listViewLocations = new ListView();
+			this.columnHeaderLocation = new ColumnHeader();
+			this.columnHeaderCondition = new ColumnHeader();
+			this.buttonAddLocation = new Button();
+			this.buttonRemoveLocation = new Button();
+			this.buttonMoveLocationUp = new Button();
+			this.imageListButttons = new ImageList(this.components);
+			this.buttonMoveLocationDown = new Button();
+			this.label2 = new Label();
+			this.groupBoxSelection = new GroupBox();
 			this.radioButtonSelectionListOrder = new LayoutManager.CommonUI.RadioButtonWithViewOnly();
 			this.radioButtonSelectionRandom = new LayoutManager.CommonUI.RadioButtonWithViewOnly();
-			this.buttonOk = new System.Windows.Forms.Button();
-			this.buttonSave = new System.Windows.Forms.Button();
+			this.buttonOk = new Button();
+			this.buttonSave = new Button();
 			this.groupBoxLocations.SuspendLayout();
 			this.groupBoxSelection.SuspendLayout();
 			this.SuspendLayout();
@@ -300,7 +300,7 @@ namespace LayoutManager.Tools.Dialogs
 			this.listViewLocations.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewLocations.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewLocations.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderLocation,
             this.columnHeaderCondition});
 			this.listViewLocations.FullRowSelect = true;

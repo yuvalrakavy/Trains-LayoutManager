@@ -13,17 +13,16 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for BlockLockTester.
 	/// </summary>
-	public class BlockLockTester : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.ListBox listBoxBlockInfo;
-		private System.Windows.Forms.Button buttonLock;
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.Button buttonUnlock;
-		private System.Windows.Forms.Button buttonRemove;
+	public class BlockLockTester : Form {
+		private ListBox listBoxBlockInfo;
+		private Button buttonLock;
+		private Button buttonClose;
+		private Button buttonUnlock;
+		private Button buttonRemove;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public BlockLockTester(LayoutBlockDefinitionComponent blockInfo)
 		{
@@ -73,11 +72,11 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.listBoxBlockInfo = new System.Windows.Forms.ListBox();
-			this.buttonLock = new System.Windows.Forms.Button();
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.buttonUnlock = new System.Windows.Forms.Button();
-			this.buttonRemove = new System.Windows.Forms.Button();
+			this.listBoxBlockInfo = new ListBox();
+			this.buttonLock = new Button();
+			this.buttonClose = new Button();
+			this.buttonUnlock = new Button();
+			this.buttonRemove = new Button();
 			this.SuspendLayout();
 			// 
 			// listBoxBlockInfo

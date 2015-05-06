@@ -9,17 +9,16 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for SetZoom.
 	/// </summary>
-	public class SetZoom : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxZoomFactor;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class SetZoom : Form {
+		private Label label1;
+		private TextBox textBoxZoomFactor;
+		private Label label2;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public SetZoom()
 		{
@@ -61,11 +60,11 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBoxZoomFactor = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.label1 = new Label();
+			this.textBoxZoomFactor = new TextBox();
+			this.label2 = new Label();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// label1
