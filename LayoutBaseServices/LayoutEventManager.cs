@@ -556,7 +556,7 @@ namespace LayoutManager {
 
 					nextPos = xpath.IndexOf('`', nextPos+1);		// nextPos is the index of the terminating `
 					if(nextPos < 0)
-						throw new ArgumentException("XPath missing a ` character for expanded string", "xpath");
+						throw new ArgumentException("XPath missing a ` character for expanded string", nameof(xpath));
 
 					expandXpath = xpath.Substring(s+1, nextPos-s-1);
 

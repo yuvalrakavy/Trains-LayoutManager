@@ -127,7 +127,7 @@ namespace LayoutManager {
 
 		public LayoutComponentLinkCommand(LayoutTrackLinkComponent trackLinkComponent, LayoutTrackLink destinationTrackLink) {
 			if(destinationTrackLink == null)
-				throw new ArgumentException("desintation TrackLink is null", "destinationTrackLink");
+				throw new ArgumentException("desintation TrackLink is null", nameof(destinationTrackLink));
 
 			this.trackLinkComponent = trackLinkComponent;
 			this.destinationTrackLink = destinationTrackLink;

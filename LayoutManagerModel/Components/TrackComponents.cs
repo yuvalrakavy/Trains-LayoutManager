@@ -24,7 +24,7 @@ namespace LayoutManager.Components
 				cp != LayoutComponentConnectionPoint.B &&
 				cp != LayoutComponentConnectionPoint.R &&
 				cp != LayoutComponentConnectionPoint.L)
-				throw new ArgumentException("Invalid connection point for GridConnectionPoint", "cp");
+				throw new ArgumentException("Invalid connection point for GridConnectionPoint", nameof(cp));
 
 			this.cp = cp;
 			this.ml = ml;
@@ -472,7 +472,7 @@ namespace LayoutManager.Components
 			else if(cp == cp1 || cp == cp2)
 				return block;
 
-			throw new ArgumentException("Track does not have this connection point", "cp");
+			throw new ArgumentException("Track does not have this connection point", nameof(cp));
 		}
 
 		public override void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock block) {
@@ -485,7 +485,7 @@ namespace LayoutManager.Components
 			else if(cp == cp1 || cp == cp2)
 				this.block = block;
 			else
-				throw new ArgumentException("Track does not have this connection point", "cp");
+				throw new ArgumentException("Track does not have this connection point", nameof(cp));
 		}
 	
 		/// <summary>
@@ -508,7 +508,7 @@ namespace LayoutManager.Components
 			else if(cp == cp1 || cp == cp2)
 				return powerConnector;
 
-			throw new ArgumentException("Track does not have this connection point", "cp");
+			throw new ArgumentException("Track does not have this connection point", nameof(cp));
 		}
 
 		public override void SetPowerConnector(LayoutComponentConnectionPoint cp, LayoutTrackPowerConnectorComponent powerConnectorComponent) {
@@ -521,7 +521,7 @@ namespace LayoutManager.Components
 			else if(cp == cp1 || cp == cp2)
 				this.powerConnector = powerConnectorComponent;
 			else
-				throw new ArgumentException("Track does not have this connection point", "cp");
+				throw new ArgumentException("Track does not have this connection point", nameof(cp));
 		}
 
 		public bool IsDiagonal() {
@@ -641,7 +641,7 @@ namespace LayoutManager.Components
 				return cp12block;
 			else if(cp == cp3 || cp == cp4)
 				return cp34block;
-			throw new ArgumentException("Track does not have this connection point", "cp");
+			throw new ArgumentException("Track does not have this connection point", nameof(cp));
 		}
 
 		public override void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock block) {
@@ -650,7 +650,7 @@ namespace LayoutManager.Components
 			else if(cp == cp3 || cp == cp4)
 				cp34block = block;
 			else
-				throw new ArgumentException("Track does not have this connection point", "cp");
+				throw new ArgumentException("Track does not have this connection point", nameof(cp));
 		}
 
 		public LayoutBlock GetOtherBlock(LayoutComponentConnectionPoint cp) {
@@ -658,7 +658,7 @@ namespace LayoutManager.Components
 				return cp34block;
 			else if(cp == cp3 || cp == cp4)
 				return cp12block;
-			throw new ArgumentException("Track does not have this connection point", "cp");
+			throw new ArgumentException("Track does not have this connection point", nameof(cp));
 		}
 
 		public override LayoutTrackPowerConnectorComponent GetPowerConnector(LayoutComponentConnectionPoint cp) {
@@ -666,7 +666,7 @@ namespace LayoutManager.Components
 				return cp12powerConnector;
 			else if(cp == cp3 || cp == cp4)
 				return cp34powerConnector;
-			throw new ArgumentException("Track does not have this connection point", "cp");
+			throw new ArgumentException("Track does not have this connection point", nameof(cp));
 		}
 
 		public override void SetPowerConnector(LayoutComponentConnectionPoint cp, LayoutTrackPowerConnectorComponent powerConnectorComponent) {
@@ -675,7 +675,7 @@ namespace LayoutManager.Components
 			else if(cp == cp3 || cp == cp4)
 				cp34powerConnector = powerConnectorComponent;
 			else
-				throw new ArgumentException("Track does not have this connection point", "cp");
+				throw new ArgumentException("Track does not have this connection point", nameof(cp));
 		}
 
 		public override String ToString() {
@@ -760,7 +760,7 @@ namespace LayoutManager.Components
 		public override LayoutBlock GetBlock(LayoutComponentConnectionPoint cp) {
 			if(HasConnectionPoint(cp))
 				return block;
-			throw new ArgumentException("Track does not have this connection point", "cp");
+			throw new ArgumentException("Track does not have this connection point", nameof(cp));
 		}
 
 		public override void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock block) {
@@ -771,14 +771,14 @@ namespace LayoutManager.Components
 		public override LayoutTrackPowerConnectorComponent GetPowerConnector(LayoutComponentConnectionPoint cp) {
 			if(HasConnectionPoint(cp))
 				return powerConnector;
-			throw new ArgumentException("Track does not have this connection point", "cp");
+			throw new ArgumentException("Track does not have this connection point", nameof(cp));
 		}
 
 		public override void SetPowerConnector(LayoutComponentConnectionPoint cp, LayoutTrackPowerConnectorComponent powerConnectorComponent) {
 			if(HasConnectionPoint(cp))
 				this.powerConnector = powerConnectorComponent;
 			else
-				throw new ArgumentException("Track does not have this connection point", "cp");
+				throw new ArgumentException("Track does not have this connection point", nameof(cp));
 		}
 
 		public abstract LayoutComponentConnectionPoint ConnectTo(LayoutComponentConnectionPoint from, int switchState);

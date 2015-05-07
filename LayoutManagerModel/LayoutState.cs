@@ -1070,7 +1070,7 @@ namespace LayoutManager.Model {
 		/// <returns>The new train location object</returns>
 		public TrainLocationInfo EnterBlock(TrainPart trainPart, LayoutBlock block, LayoutBlockEdgeBase blockEdge, string eventName) {
 			if(trainPart != TrainPart.Locomotive && trainPart != TrainPart.LastCar)
-				throw new ArgumentException("Invalid train part - can be only Locomotive or LastCar", "trainPart");
+				throw new ArgumentException("Invalid train part - can be only Locomotive or LastCar", nameof(trainPart));
 
 			TrainLocationInfo trainLocation = new TrainLocationInfo(this, Element.OwnerDocument.CreateElement("Block"));
 			XmlElement locationsElement = LocationsElement;
@@ -1105,7 +1105,7 @@ namespace LayoutManager.Model {
 			TrainLocationInfo trainLocation = LocationOfBlock(block);
 
 			if(trainLocation == null)
-				throw new ArgumentException("Train is not in the given block", "block");
+				throw new ArgumentException("Train is not in the given block", nameof(block));
 
 			block.RemoveTrain(trainLocation);
 			LocationsElement.RemoveChild(trainLocation.Element);

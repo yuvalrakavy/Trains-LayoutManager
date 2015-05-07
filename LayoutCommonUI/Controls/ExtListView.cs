@@ -837,7 +837,7 @@ namespace LayoutManager.CommonUI.Controls {
 					bError = true;
 				}catch(System.ArgumentOutOfRangeException){
 					bError = true;
-					throw new System.ArgumentOutOfRangeException("Index", (int)Index, "There is no such index value in this collection\nSource: ExtListView:nsListViewEx.DataColumnHeaderCollection");
+					throw new System.ArgumentOutOfRangeException(nameof(Index), (int)Index, "There is no such index value in this collection\nSource: ExtListView:nsListViewEx.DataColumnHeaderCollection");
 				}
 				if (bError) return null;
 				return null;

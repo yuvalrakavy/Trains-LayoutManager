@@ -116,7 +116,7 @@ namespace LayoutManager.CommonUI.Controls
 
 		public void SelectUnit(int unitIndex) {
 			if(unitIndex < 0 || unitIndex >= units.Count)
-				throw new ArgumentException("Invalid unit index", "unitIndex");
+				throw new ArgumentException("Invalid unit index", nameof(unitIndex));
 
 			SelectUnit((Unit)units[unitIndex]);
 		}
