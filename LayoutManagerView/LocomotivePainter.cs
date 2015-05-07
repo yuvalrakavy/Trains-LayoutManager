@@ -123,13 +123,9 @@ namespace LayoutManager.View
 			}
 		}
 
-		public LocomotiveOrientation Direction {
-			get {
-				return Speed >= 0 ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
-			}
-		}
+        public LocomotiveOrientation Direction => Speed >= 0 ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
 
-		public bool DrawFront {
+        public bool DrawFront {
 			get {
 				return drawFront;
 			}
@@ -261,16 +257,14 @@ namespace LayoutManager.View
 			return new SizeF(locoRectSize.Width + (DrawFront ? frontMargin : 0) + (DrawExtensionMark ? extensionMarkSize : 0), locoRectSize.Height);
 		}
 
-		public Size Measure(Graphics g) {
-			return Size.Ceiling(GetDirectionalLocoSize(g));
-		}
+        public Size Measure(Graphics g) => Size.Ceiling(GetDirectionalLocoSize(g));
 
-		/// <summary>
-		/// Draw the locomotive image. It is assumed that the passed graphics is set such
-		/// that the center of the drawn locomotive is at (0, 0)
-		/// </summary>
-		/// <param name="g"></param>
-		public void Draw(Graphics g) {
+        /// <summary>
+        /// Draw the locomotive image. It is assumed that the passed graphics is set such
+        /// that the center of the drawn locomotive is at (0, 0)
+        /// </summary>
+        /// <param name="g"></param>
+        public void Draw(Graphics g) {
 			if(!frontDefined)
 				throw new ArgumentException("Locomotive Painter 'front' is not set");
 
@@ -428,11 +422,9 @@ void  IDisposable.Dispose()
 			vertical = LayoutTrackComponent.IsVertical(blockInfoTrack);
 		}
 
-		public TrainStateInfo LocomotiveState {
-			get { return trainState; }
-		}
+        public TrainStateInfo LocomotiveState => trainState;
 
-		public bool ShowTrainDetails {
+        public bool ShowTrainDetails {
 			get { return showTrainDetails; }
 			set { showTrainDetails = value; }
 		}

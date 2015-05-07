@@ -69,13 +69,9 @@ namespace LayoutManager.CommonUI.Controls {
 			}
 		}
 
-		public AttributesInfo Attributes {
-			get {
-				return attributesOwner.Attributes;
-			}
-		}
+        public AttributesInfo Attributes => attributesOwner.Attributes;
 
-		public bool ViewOnly {
+        public bool ViewOnly {
 			get {
 				return viewOnly;
 			}

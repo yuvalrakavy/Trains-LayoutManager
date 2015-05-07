@@ -77,25 +77,23 @@ namespace LayoutManager {
 			return itemElement;
 		}
 
-		#region IObjectHasXml Members
+        #region IObjectHasXml Members
 
-		/// <summary>
-		/// The collection XML element. The child of this element are the collection items' elements
-		/// </summary>
-		/// <value></value>
-		public XmlElement Element {
-			get { return element; }
-		}
+        /// <summary>
+        /// The collection XML element. The child of this element are the collection items' elements
+        /// </summary>
+        /// <value></value>
+        public XmlElement Element => element;
 
-		#endregion
+        #endregion
 
-		#region ICollection<T> Members
+        #region ICollection<T> Members
 
-		/// <summary>
-		/// Add new item to the collection
-		/// </summary>
-		/// <param name="item">Item to be added</param>
-		public virtual void Add(T item) {
+        /// <summary>
+        /// Add new item to the collection
+        /// </summary>
+        /// <param name="item">Item to be added</param>
+        public virtual void Add(T item) {
 			AddItem(item);
 		}
 
@@ -130,28 +128,24 @@ namespace LayoutManager {
 				array[arrayIndex++] = FromElement(itemElement);
 		}
 
-		/// <summary>
-		/// Get the collection size
-		/// </summary>
-		/// <value>Number of items in the collection</value>
-		public int Count {
-			get { return Element.ChildNodes.Count; }
-		}
+        /// <summary>
+        /// Get the collection size
+        /// </summary>
+        /// <value>Number of items in the collection</value>
+        public int Count => Element.ChildNodes.Count;
 
-		/// <summary>
-		/// Is this collection read-only
-		/// </summary>
-		/// <value>True if read-only collection</value>
-		virtual public bool IsReadOnly {
-			get { return false; }
-		}
+        /// <summary>
+        /// Is this collection read-only
+        /// </summary>
+        /// <value>True if read-only collection</value>
+        virtual public bool IsReadOnly => false;
 
-		/// <summary>
-		/// Remove the first instance of a given item from the collection
-		/// </summary>
-		/// <param name="item">The item to be removed</param>
-		/// <returns>True if item was removed, false if item was not found</returns>
-		virtual public bool Remove(T item) {
+        /// <summary>
+        /// Remove the first instance of a given item from the collection
+        /// </summary>
+        /// <param name="item">The item to be removed</param>
+        /// <returns>True if item was removed, false if item was not found</returns>
+        virtual public bool Remove(T item) {
 			foreach(XmlElement itemElement in Element) {
 				if(FromElement(itemElement).Equals(item)) {
 					Element.RemoveChild(itemElement);
@@ -175,16 +169,14 @@ namespace LayoutManager {
 				yield return FromElement(itemElement);
 		}
 
-		#endregion
+        #endregion
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
-		#endregion
-}
+        #endregion
+    }
 
 	/// <summary>
 	/// Base class for collections that store there data inside XML element. Items in the collection are indexed by
@@ -233,24 +225,22 @@ namespace LayoutManager {
 			}
 		}
 
-		/// <summary>
-		/// Get the key associated with a given item XML element.
-		/// </summary>
-		/// <remarks>
-		/// The default implementation create the item (using FromElement() method), and get its key (using GetItemKey()).
-		/// However, in some cases, it is desired to get the key directly from the XML data instead of creating the whole item.
-		/// </remarks>
-		/// <param name="itemElement">The XML data associated with the item</param>
-		/// <returns>The key associated with the item</returns>
-		virtual protected KeyT GetElementKey(XmlElement itemElement) {
-			return GetItemKey(FromElement(itemElement));
-		}
+        /// <summary>
+        /// Get the key associated with a given item XML element.
+        /// </summary>
+        /// <remarks>
+        /// The default implementation create the item (using FromElement() method), and get its key (using GetItemKey()).
+        /// However, in some cases, it is desired to get the key directly from the XML data instead of creating the whole item.
+        /// </remarks>
+        /// <param name="itemElement">The XML data associated with the item</param>
+        /// <returns>The key associated with the item</returns>
+        virtual protected KeyT GetElementKey(XmlElement itemElement) => GetItemKey(FromElement(itemElement));
 
-		/// <summary>
-		/// Add new item to the collection
-		/// </summary>
-		/// <param name="item">Item to be added</param>
-		public override void Add(T item) {
+        /// <summary>
+        /// Add new item to the collection
+        /// </summary>
+        /// <param name="item">Item to be added</param>
+        public override void Add(T item) {
 			CreateIndex();
 
 			XmlElement itemElement = AddItem(item);
@@ -259,28 +249,24 @@ namespace LayoutManager {
 			sorted = null;
 		}
 
-		/// <summary>
-		/// Check if the collection contains a given item
-		/// </summary>
-		/// <param name="item">The item to check</param>
-		/// <returns>True if the collection contains this item</returns>
-		public override bool Contains(T item) {
-			return ItemsDictionary.ContainsKey(GetItemKey(item));
-		}
+        /// <summary>
+        /// Check if the collection contains a given item
+        /// </summary>
+        /// <param name="item">The item to check</param>
+        /// <returns>True if the collection contains this item</returns>
+        public override bool Contains(T item) => ItemsDictionary.ContainsKey(GetItemKey(item));
 
-		/// <summary>
-		/// Check if an item associated with a key is contained in the collection
-		/// </summary>
-		/// <param name="key">The item's key</param>
-		/// <returns>True if item is in the collection</returns>
-		public bool ContainsKey(KeyT key) {
-			return ItemsDictionary.ContainsKey(key);
-		}
+        /// <summary>
+        /// Check if an item associated with a key is contained in the collection
+        /// </summary>
+        /// <param name="key">The item's key</param>
+        /// <returns>True if item is in the collection</returns>
+        public bool ContainsKey(KeyT key) => ItemsDictionary.ContainsKey(key);
 
-		/// <summary>
-		/// Remove all items from the collection
-		/// </summary>
-		public override void Clear() {
+        /// <summary>
+        /// Remove all items from the collection
+        /// </summary>
+        public override void Clear() {
 			base.Clear();
 			ItemsDictionary.Clear();
 			sorted = null;
@@ -407,46 +393,36 @@ namespace LayoutManager {
 			updateAttribute();
 		}
 
-		public bool Contains(string item) {
-			return items.Contains(item);
-		}
+        public bool Contains(string item) => items.Contains(item);
 
-		public void CopyTo(string[] array, int arrayIndex) {
+        public void CopyTo(string[] array, int arrayIndex) {
 			items.CopyTo(array, arrayIndex);
 		}
 
-		public int Count {
-			get { return items.Count; }
-		}
+        public int Count => items.Count;
 
-		public bool IsReadOnly {
-			get { return false; }
-		}
+        public bool IsReadOnly => false;
 
 
-		public bool Remove(string item) {
+        public bool Remove(string item) {
 			bool result = items.Remove(item);
 			updateAttribute();
 
 			return result;
 		}
 
-		#endregion
+        #endregion
 
-		#region IEnumerable<string> Members
+        #region IEnumerable<string> Members
 
-		public IEnumerator<string> GetEnumerator() {
-			return items.GetEnumerator();
-		}
+        public IEnumerator<string> GetEnumerator() => items.GetEnumerator();
 
-		#endregion
+        #endregion
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
-		#endregion
-}
+        #endregion
+    }
 }

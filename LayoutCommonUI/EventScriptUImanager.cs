@@ -125,11 +125,9 @@ namespace LayoutManager.CommonUI {
 			return eventsElement != null && eventsElement.ChildNodes.Count == 1 && containerElement["Condition"] == null && containerElement["Actions"] == null;
 		}
 
-		public static string GetElementDescription(XmlElement element) {
-			return (string)EventManager.Event(new LayoutEvent(element, "get-event-script-description"));
-		}
+        public static string GetElementDescription(XmlElement element) => (string)EventManager.Event(new LayoutEvent(element, "get-event-script-description"));
 
-		public static string GetActionsDescription(XmlElement actionsElement) {
+        public static string GetActionsDescription(XmlElement actionsElement) {
 			string[]	actions = new string[actionsElement.ChildNodes.Count];
 
 			int	i = 0;
@@ -179,19 +177,13 @@ namespace LayoutManager.CommonUI {
 			}
 		}
 
-		public static string GetEventOrEventContainerDescription(XmlElement element, string prefix) {
-			return GetEventOrEventContainerDescription(element, prefix, null);
-		}
+        public static string GetEventOrEventContainerDescription(XmlElement element, string prefix) => GetEventOrEventContainerDescription(element, prefix, null);
 
-		public static string GetEventOrEventContainerDescription(LayoutEvent e, string prefix, string suffix) {
-			return GetEventOrEventContainerDescription((XmlElement)e.Sender, prefix, suffix);
-		}
+        public static string GetEventOrEventContainerDescription(LayoutEvent e, string prefix, string suffix) => GetEventOrEventContainerDescription((XmlElement)e.Sender, prefix, suffix);
 
-		public static string GetEventOrEventContainerDescription(LayoutEvent e, string prefix) {
-			return GetEventOrEventContainerDescription(e, prefix, null);
-		}
+        public static string GetEventOrEventContainerDescription(LayoutEvent e, string prefix) => GetEventOrEventContainerDescription(e, prefix, null);
 
-		public static void getConditionContainerDescription(LayoutEvent e, string containerName) {
+        public static void getConditionContainerDescription(LayoutEvent e, string containerName) {
 			XmlElement	containerElement = (XmlElement)e.Sender;
 
 			if(containerElement.ChildNodes.Count == 1)		// If there is only one some condition, return its description
@@ -257,13 +249,9 @@ namespace LayoutManager.CommonUI {
 				AddChildEventScriptTreeNodes();
 			}
 
-			protected override string Description {
-				get {
-					return "Sequence";
-				}
-			}
+            protected override string Description => "Sequence";
 
-			public override bool ShouldInsertAsFirst(XmlElement elementToInsert) {
+            public override bool ShouldInsertAsFirst(XmlElement elementToInsert) {
 				if(elementToInsert.Name == "Condition")
 					return true;
 				return false;
@@ -291,18 +279,10 @@ namespace LayoutManager.CommonUI {
 				AddChildEventScriptTreeNodes();
 			}
 
-			protected override string Description {
-				get {
-					return "All";
-				}
-			}
+            protected override string Description => "All";
 
-			public override bool CanHaveOptionalSubItems {
-				get {
-					return true;
-				}
-			}
-		}
+            public override bool CanHaveOptionalSubItems => true;
+        }
 
 		#endregion
 
@@ -325,18 +305,10 @@ namespace LayoutManager.CommonUI {
 				AddChildEventScriptTreeNodes();
 			}
 
-			protected override string Description {
-				get {
-					return "Any";
-				}
-			}
+            protected override string Description => "Any";
 
-			public override bool CanHaveOptionalSubItems {
-				get {
-					return true;
-				}
-			}
-		}
+            public override bool CanHaveOptionalSubItems => true;
+        }
 
 		#endregion
 
@@ -375,25 +347,13 @@ namespace LayoutManager.CommonUI {
 				AddChildEventScriptTreeNodes();
 			}
 
-			public override string AddNodeEventName {
-				get {
-					return "get-event-script-editor-events-section-menu";
-				}
-			}
+            public override string AddNodeEventName => "get-event-script-editor-events-section-menu";
 
-			public override string InsertNodeEventName {
-				get {
-					return "get-event-script-editor-insert-event-container-menu";
-				}
-			}
+            public override string InsertNodeEventName => "get-event-script-editor-insert-event-container-menu";
 
-			protected override int IconIndex {
-				get {
-					return IconEvent;
-				}
-			}
+            protected override int IconIndex => IconEvent;
 
-			static public string GetDescription(XmlElement element) {
+            static public string GetDescription(XmlElement element) {
 				int	count = XmlConvert.ToInt32(element.GetAttribute("Count"));
 
 				if(count < 0)
@@ -404,28 +364,16 @@ namespace LayoutManager.CommonUI {
 					return "Repeat " + count + " times";
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
+            protected override string Description => GetDescription(Element);
 
-			/// <summary>
-			/// Repeat can have no more than one subcondition
-			/// </summary>
-			public override int MaxSubNodes {
-				get {
-					return 1;
-				}
-			}
+            /// <summary>
+            /// Repeat can have no more than one subcondition
+            /// </summary>
+            public override int MaxSubNodes => 1;
 
-			public override Controls.LayoutEventScriptEditorTreeNode NodeToEdit {
-				get {
-					return this;		// repeat rule can be edited (changing the count)
-				}
-			}
+            public override Controls.LayoutEventScriptEditorTreeNode NodeToEdit => this;        // repeat rule can be edited (changing the count)
 
-			public override bool ShouldInsertAsFirst(XmlElement elementToInsert) {
+            public override bool ShouldInsertAsFirst(XmlElement elementToInsert) {
 				if(elementToInsert.Name == "Condition")
 					return true;
 				return false;
@@ -466,31 +414,15 @@ namespace LayoutManager.CommonUI {
 				AddChildEventScriptTreeNodes();
 			}
 
-			public override string AddNodeEventName {
-				get {
-					return "get-event-script-editor-random-choice-menu";
-				}
-			}
+            public override string AddNodeEventName => "get-event-script-editor-random-choice-menu";
 
-			protected override string Description {
-				get {
-					return "Random-Choice";
-				}
-			}
+            protected override string Description => "Random-Choice";
 
-			protected override int IconIndex {
-				get {
-					return IconEvent;
-				}
-			}
+            protected override int IconIndex => IconEvent;
 
-			public override Controls.LayoutEventScriptEditorTreeNode NodeToEdit {
-				get {
-					return null;
-				}
-			}
+            public override Controls.LayoutEventScriptEditorTreeNode NodeToEdit => null;
 
-		}
+        }
 
 		#endregion
 
@@ -523,42 +455,18 @@ namespace LayoutManager.CommonUI {
 				AddChildEventScriptTreeNodes();
 			}
 
-			public override string AddNodeEventName {
-				get {
-					return "get-event-script-editor-events-section-menu";
-				}
-			}
+            public override string AddNodeEventName => "get-event-script-editor-events-section-menu";
 
-			protected override string Description {
-				get {
-					return "Choice (" + Element.GetAttribute("Weight") + ")";
-				}
-			}
+            protected override string Description => "Choice (" + Element.GetAttribute("Weight") + ")";
 
-			protected override int IconIndex {
-				get {
-					return IconEvent;
-				}
-			}
+            protected override int IconIndex => IconEvent;
 
-			public override int MinSubNodes {
-				get {
-					return 1;
-				}
-			}
+            public override int MinSubNodes => 1;
 
-			public override int MaxSubNodes {
-				get {
-					return 1;
-				}
-			}
+            public override int MaxSubNodes => 1;
 
-			public override Controls.LayoutEventScriptEditorTreeNode NodeToEdit {
-				get {
-					return this;		// Choice can be edited
-				}
-			}
-		}
+            public override Controls.LayoutEventScriptEditorTreeNode NodeToEdit => this;        // Choice can be edited
+        }
 
 		#endregion
 
@@ -596,50 +504,24 @@ namespace LayoutManager.CommonUI {
 				AddChildEventScriptTreeNodes();
 			}
 
-			public override string AddNodeEventName {
-				get {
-					return "get-event-script-editor-events-section-menu";
-				}
-			}
+            public override string AddNodeEventName => "get-event-script-editor-events-section-menu";
 
-			public override string InsertNodeEventName {
-				get {
-					return "get-event-script-editor-insert-event-container-menu";
-				}
-			}
+            public override string InsertNodeEventName => "get-event-script-editor-insert-event-container-menu";
 
-			protected override int IconIndex {
-				get {
-					return IconEvent;
-				}
-			}
+            protected override int IconIndex => IconEvent;
 
-			static public string GetDescription(XmlElement element) {
-				return "Task";
-			}
+            static public string GetDescription(XmlElement element) => "Task";
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
+            protected override string Description => GetDescription(Element);
 
-			/// <summary>
-			/// Repeat can have no more than one subcondition
-			/// </summary>
-			public override int MaxSubNodes {
-				get {
-					return 1;
-				}
-			}
+            /// <summary>
+            /// Repeat can have no more than one subcondition
+            /// </summary>
+            public override int MaxSubNodes => 1;
 
-			public override Controls.LayoutEventScriptEditorTreeNode NodeToEdit {
-				get {
-					return this;		// repeat rule can be edited (changing the count)
-				}
-			}
+            public override Controls.LayoutEventScriptEditorTreeNode NodeToEdit => this;        // repeat rule can be edited (changing the count)
 
-			public override bool ShouldInsertAsFirst(XmlElement elementToInsert) {
+            public override bool ShouldInsertAsFirst(XmlElement elementToInsert) {
 				if(elementToInsert.Name == "Condition")
 					return true;
 				return false;
@@ -708,12 +590,8 @@ namespace LayoutManager.CommonUI {
 				return s;
 			}
 
-			protected override string Description {
-				get {
-					return GetWaitDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetWaitDescription(Element);
+        }
 
 		#endregion
 
@@ -737,22 +615,12 @@ namespace LayoutManager.CommonUI {
 				AddChildEventScriptTreeNodes();
 			}
 
-			public static string GetDescription(XmlElement element) {
-				return "Do now";
-			}
+            public static string GetDescription(XmlElement element) => "Do now";
 
-			public override Controls.LayoutEventScriptEditorTreeNode NodeToEdit {
-				get {
-					return null;		// Nothing to edit
-				}
-			}
+            public override Controls.LayoutEventScriptEditorTreeNode NodeToEdit => null;		// Nothing to edit
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetDescription(Element);
+        }
 
 		#endregion
 
@@ -794,12 +662,8 @@ namespace LayoutManager.CommonUI {
 				return "Wait for event " + name;
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetDescription(Element);
+        }
 
 		#endregion
 
@@ -827,12 +691,8 @@ namespace LayoutManager.CommonUI {
 			}
 
 
-			protected override string Description {
-				get {
-					return "And";
-				}
-			}
-		}
+            protected override string Description => "And";
+        }
 
 		#endregion
 
@@ -856,12 +716,8 @@ namespace LayoutManager.CommonUI {
 			}
 
 
-			protected override string Description {
-				get {
-					return "Or";
-				}
-			}
-		}
+            protected override string Description => "Or";
+        }
 
 		#endregion
 
@@ -886,18 +742,10 @@ namespace LayoutManager.CommonUI {
 				AddChildEventScriptTreeNodes();
 			}
 
-			protected override string Description {
-				get {
-					return "Not";
-				}
-			}
+            protected override string Description => "Not";
 
-			public override int MaxSubNodes {
-				get {
-					return 1;
-				}
-			}
-		}
+            public override int MaxSubNodes => 1;
+        }
 
 		#endregion
 
@@ -924,39 +772,19 @@ namespace LayoutManager.CommonUI {
 		}
 
 		class IfStringCustomizer : Controls.EventScriptEditorDialogs.IIfConditionDialogCustomizer {
-			public string Title {
-				get {
-					return "If (string)";
-				}
-			}
+            public string Title => "If (string)";
 
-			public string[] OperatorNames {
-				get {
-					return new string[] { "Equal", "NotEqual", "Match" };
-				}
-			}
+            public string[] OperatorNames => new string[] { "Equal", "NotEqual", "Match" };
 
-			public string[] OperatorDescriptions {
-				get {
-					return new string[] { "=", "<>", "Match" };
-				}
-			}
+            public string[] OperatorDescriptions => new string[] { "=", "<>", "Match" };
 
-			public Type[] AllowedTypes {
-				get {
-					return new Type[] {
-										  typeof(string),
-										  typeof(Enum),
-					};
-				}
-			}
+            public Type[] AllowedTypes => new Type[] {
+                                          typeof(string),
+                                          typeof(Enum),
+                    };
 
-			public bool ValueIsBoolean {
-				get {
-					return false;
-				}
-			}
-		}
+            public bool ValueIsBoolean => false;
+        }
 
 		[LayoutEvent("event-script-editor-edit-element", IfSender="IfString")]
 		private void editIfStringNode(LayoutEvent e) {
@@ -987,12 +815,8 @@ namespace LayoutManager.CommonUI {
 				return "If (string) " + GetOperandDescription(element, "1", typeof(string)) + " " + operatorName + " " + GetOperandDescription(element, "2", typeof(string));
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetDescription(Element);
+        }
 
 		#endregion
 
@@ -1006,38 +830,18 @@ namespace LayoutManager.CommonUI {
 		}
 
 		class IfNumberCustomizer : Controls.EventScriptEditorDialogs.IIfConditionDialogCustomizer {
-			public string Title {
-				get {
-					return "If (number)";
-				}
-			}
+            public string Title => "If (number)";
 
-			public string[] OperatorNames {
-				get {
-					return new string[] { "eq", "ne", "gt", "ge", "le", "lt"};
-				}
-			}
+            public string[] OperatorNames => new string[] { "eq", "ne", "gt", "ge", "le", "lt" };
 
-			public string[] OperatorDescriptions {
-				get {
-					return new string[] { "=", "<>", ">", ">=", "=<", "<" };
-				}
-			}
+            public string[] OperatorDescriptions => new string[] { "=", "<>", ">", ">=", "=<", "<" };
 
-			public Type[] AllowedTypes {
-				get {
-					return new Type[] {
-										  typeof(int),
-					};
-				}
-			}
+            public Type[] AllowedTypes => new Type[] {
+                                          typeof(int),
+                    };
 
-			public bool ValueIsBoolean {
-				get {
-					return false;
-				}
-			}
-		}
+            public bool ValueIsBoolean => false;
+        }
 
 		[LayoutEvent("event-script-editor-edit-element", IfSender="IfNumber")]
 		private void editIfNumberNode(LayoutEvent e) {
@@ -1068,12 +872,8 @@ namespace LayoutManager.CommonUI {
 				return "If (number) " + GetOperandDescription(element, "1", typeof(int)) + " " + operatorName + " " + GetOperandDescription(element, "2", typeof(int));
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetDescription(Element);
+        }
 
 		#endregion
 
@@ -1087,38 +887,18 @@ namespace LayoutManager.CommonUI {
 		}
 
 		class IfBooleanCustomizer : Controls.EventScriptEditorDialogs.IIfConditionDialogCustomizer {
-			public string Title {
-				get {
-					return "If (Boolean)";
-				}
-			}
+            public string Title => "If (Boolean)";
 
-			public string[] OperatorNames {
-				get {
-					return new string[] { "Equal", "NotEqual" };
-				}
-			}
+            public string[] OperatorNames => new string[] { "Equal", "NotEqual" };
 
-			public string[] OperatorDescriptions {
-				get {
-					return new string[] { "=", "<>" };
-				}
-			}
+            public string[] OperatorDescriptions => new string[] { "=", "<>" };
 
-			public Type[] AllowedTypes {
-				get {
-					return new Type[] {
-										  typeof(bool),
-					};
-				}
-			}
+            public Type[] AllowedTypes => new Type[] {
+                                          typeof(bool),
+                    };
 
-			public bool ValueIsBoolean {
-				get {
-					return true;
-				}
-			}
-		}
+            public bool ValueIsBoolean => true;
+        }
 
 		[LayoutEvent("event-script-editor-edit-element", IfSender="IfBoolean")]
 		private void editIfBooleanNode(LayoutEvent e) {
@@ -1149,12 +929,8 @@ namespace LayoutManager.CommonUI {
 				return "If (Boolean) " + GetOperandDescription(element, "1", typeof(bool)) + " " + operatorName + " " + GetOperandDescription(element, "2", typeof(bool));
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetDescription(Element);
+        }
 
 		#endregion
 
@@ -1202,12 +978,8 @@ namespace LayoutManager.CommonUI {
 					return "If defined symbol " + symbol;
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetDescription(Element);
+        }
 
 		#endregion
 
@@ -1278,12 +1050,8 @@ namespace LayoutManager.CommonUI {
 				return string.Concat((string[] )parts.ToArray(typeof(string)));
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetDescription(Element);
+        }
 
 		#endregion
 
@@ -1344,12 +1112,8 @@ namespace LayoutManager.CommonUI {
 				return "Show " + messageType + ": '" + element.GetAttribute("Message") + "'";
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetDescription(Element);
+        }
 
 		#endregion
 
@@ -1420,12 +1184,8 @@ namespace LayoutManager.CommonUI {
 				}
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetDescription(Element);
+        }
 
 		#endregion
 
@@ -1530,12 +1290,8 @@ namespace LayoutManager.CommonUI {
 				return string.Join(" ", (string[] )parts.ToArray(typeof(string)));
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetDescription(Element);
+        }
 
 		#endregion
 

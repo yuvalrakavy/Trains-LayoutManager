@@ -72,22 +72,14 @@ namespace LayoutManager.Tools.Dialogs
 			updateButtons();
 		}
 
-		public LayoutXmlInfo XmlInfo {
-			get {
-				return xmlInfo;
-			}
-		}
+        public LayoutXmlInfo XmlInfo => xmlInfo;
 
-		public LayoutControlModuleLocationComponent Component {
-			get {
-				return controlModuleLocation;
-			}
-		}
+        public LayoutControlModuleLocationComponent Component => controlModuleLocation;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{
@@ -364,13 +356,9 @@ namespace LayoutManager.Tools.Dialogs
 				Update();
 			}
 
-			public ControlModuleLocationBusDefaultInfo BusDefault {
-				get {
-					return busDefault;
-				}
-			}
+            public ControlModuleLocationBusDefaultInfo BusDefault => busDefault;
 
-			public void Update() {
+            public void Update() {
 				if(busDefault.DefaultModuleTypeName != null)
 					SubItems[1].Text = busDefault.DefaultModuleType.Name;
 				else
@@ -422,15 +410,9 @@ namespace LayoutManager.Tools.Dialogs
 				this.text = text;
 			}
 
-			public override string ToString() {
-				return text;
-			}
+            public override string ToString() => text;
 
-			public Guid ID {
-				get {
-					return id;
-				}
-			}
-		}
+            public Guid ID => id;
+        }
 	}
 }

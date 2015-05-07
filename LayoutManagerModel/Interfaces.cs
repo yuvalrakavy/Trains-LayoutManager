@@ -68,28 +68,28 @@ namespace LayoutManager {
 		// Properties
 		public static ILayoutController Instance { get; set; }
 
-		public static string LayoutFilename { get { return Instance.LayoutFilename; } }
-		public static string LayoutRuntimeStateFilename { get { return Instance.LayoutRuntimeStateFilename; } }
-		public static string LayoutRoutingFilename { get { return Instance.LayoutRoutingFilename;  } }
-		public static string CommonDataFolderName { get { return Instance.CommonDataFolderName;  } }
+        public static string LayoutFilename => Instance.LayoutFilename;
+        public static string LayoutRuntimeStateFilename => Instance.LayoutRuntimeStateFilename;
+        public static string LayoutRoutingFilename => Instance.LayoutRoutingFilename;
+        public static string CommonDataFolderName => Instance.CommonDataFolderName;
 
-		public static bool IsOperationMode { get { return Instance.IsOperationMode;  } }
-		public static bool IsDesignMode { get { return !IsOperationMode; } }
-		public static bool TrainsAnalysisPhase { get { return Instance.TrainsAnalysisPhase; } }
-		public static bool IsDesignTimeActivation { get { return Instance.IsDesignTimeActivation;  } }
-		public static bool IsOperationSimulationMode { get { return IsOperationMode && OperationModeSettings.Simulation;  } }
+        public static bool IsOperationMode => Instance.IsOperationMode;
+        public static bool IsDesignMode => !IsOperationMode;
+        public static bool TrainsAnalysisPhase => Instance.TrainsAnalysisPhase;
+        public static bool IsDesignTimeActivation => Instance.IsDesignTimeActivation;
+        public static bool IsOperationSimulationMode => IsOperationMode && OperationModeSettings.Simulation;
 
-		public static PreviewRouteManager PreviewRouteManager { get { return Instance.PreviewRouteManager; } }
-		public static ILayoutSelectionManager SelectionManager { get { return (ILayoutSelectionManager)Instance; } }
-		public static LayoutSelection UserSelection { get { return Instance.UserSelection; } }
-		public static OperationModeParameters OperationModeSettings { get { return Instance.OperationModeSettings; } }
-		public static ILayoutCommandManager CommandManager { get { return Instance.CommandManager; } }
-		public static LayoutModuleManager ModuleManager { get { return Instance.ModuleManager; } }
+        public static PreviewRouteManager PreviewRouteManager => Instance.PreviewRouteManager;
+        public static ILayoutSelectionManager SelectionManager => (ILayoutSelectionManager)Instance;
+        public static LayoutSelection UserSelection => Instance.UserSelection;
+        public static OperationModeParameters OperationModeSettings => Instance.OperationModeSettings;
+        public static ILayoutCommandManager CommandManager => Instance.CommandManager;
+        public static LayoutModuleManager ModuleManager => Instance.ModuleManager;
 
-		/// <summary>
-		/// Currently active frame window
-		/// </summary>
-		public static ILayoutFrameWindow ActiveFrameWindow {
+        /// <summary>
+        /// Currently active frame window
+        /// </summary>
+        public static ILayoutFrameWindow ActiveFrameWindow {
 			get { return Instance.ActiveFrameWindow; }
 			set { Instance.ActiveFrameWindow = value; }
 		}
@@ -97,23 +97,17 @@ namespace LayoutManager {
 		// Operations
 		public static void Do(ILayoutCommand command) { Instance.Do(command); }
 		public static void LayoutModified() { Instance.LayoutModified();  }
-		public static LayoutModelArea AddArea(string areaName) { return Instance.AddArea(areaName); }
-	}
+        public static LayoutModelArea AddArea(string areaName) => Instance.AddArea(areaName);
+    }
 
 	public static class FrameWindoeExtender {
-		public static LayoutEvent SetFrameWindow(this LayoutEvent e, Guid frameWindowId) {
-			return e.SetOption(elementName: "FrameWindow", optionName: "ID", id: frameWindowId);
-		}
+        public static LayoutEvent SetFrameWindow(this LayoutEvent e, Guid frameWindowId) => e.SetOption(elementName: "FrameWindow", optionName: "ID", id: frameWindowId);
 
-		public static LayoutEvent SetFrameWindow(this LayoutEvent e, ILayoutFrameWindow frameWindow) {
-			return SetFrameWindow(e, frameWindow.Id);
-		}
+        public static LayoutEvent SetFrameWindow(this LayoutEvent e, ILayoutFrameWindow frameWindow) => SetFrameWindow(e, frameWindow.Id);
 
-		public static LayoutEvent SetFrameWindow(this LayoutEvent e, LayoutEvent previousEvent) {
-			return SetFrameWindow(e, previousEvent.GetFrameWindowId());
-		}
+        public static LayoutEvent SetFrameWindow(this LayoutEvent e, LayoutEvent previousEvent) => SetFrameWindow(e, previousEvent.GetFrameWindowId());
 
-		public static Guid GetFrameWindowId(this LayoutEvent e) {
+        public static Guid GetFrameWindowId(this LayoutEvent e) {
 			if(e.HasOption(elementName: "FrameWindow", optionName: "ID"))
 				return XmlConvert.ToGuid(e.GetOption(elementName: "FrameWindow", optionName: "ID", defaultValue: XmlConvert.ToString(Guid.Empty)));
 			else if(LayoutController.ActiveFrameWindow != null)
@@ -122,10 +116,8 @@ namespace LayoutManager {
 				return Guid.Empty;
 		}
 
-		public static bool IsThisFrameWindow(this LayoutEvent e, ILayoutFrameWindow me) {
-			return me.Id == e.GetFrameWindowId();
-		}
-	}
+        public static bool IsThisFrameWindow(this LayoutEvent e, ILayoutFrameWindow me) => me.Id == e.GetFrameWindowId();
+    }
 
 	/// <summary>
 	/// This interface defines methods that are implemented by the controller and

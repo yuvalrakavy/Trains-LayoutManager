@@ -32,18 +32,10 @@ namespace LayoutManager {
 			this.node = node;
 		}
 
-		public LayoutEventScriptNode Node {
-			get {
-				return node;
-			}
-		}
+        public LayoutEventScriptNode Node => node;
 
-		public LayoutEventScriptExecutionPhase ExecutionPhase {
-			get {
-				return executionPhase;
-			}
-		}
-	}
+        public LayoutEventScriptExecutionPhase ExecutionPhase => executionPhase;
+    }
 
 	public class LayoutEventScriptErrorInfo {
 		ILayoutScript					script;
@@ -61,36 +53,16 @@ namespace LayoutManager {
 			this.ex = ex;
 		}
 
-		public ILayoutScript Script {
-			get {
-				return script;
-			}
-		}
+        public ILayoutScript Script => script;
 
-		public LayoutEventScriptTask Task {
-			get {
-				return task;
-			}
-		}
+        public LayoutEventScriptTask Task => task;
 
-		public LayoutEventScriptNode Node {
-			get {
-				return node;
-			}
-		}
+        public LayoutEventScriptNode Node => node;
 
-		public LayoutEventScriptExecutionPhase ExecutionPhase {
-			get {
-				return executionPhase;
-			}
-		}
+        public LayoutEventScriptExecutionPhase ExecutionPhase => executionPhase;
 
-		public Exception Exception {
-			get {
-				return ex;
-			}
-		}
-	}
+        public Exception Exception => ex;
+    }
 
 	#endregion
 
@@ -138,31 +110,15 @@ namespace LayoutManager {
 			return node;
 		}
 
-		public LayoutEventScriptNode Root {
-			get {
-				return root;
-			}
-		}
+        public LayoutEventScriptNode Root => root;
 
-		public LayoutEventScriptNodeEventBase EventRoot {
-			get {
-				return Root as LayoutEventScriptNodeEventBase;
-			}
-		}
+        public LayoutEventScriptNodeEventBase EventRoot => Root as LayoutEventScriptNodeEventBase;
 
-		public LayoutEventScriptNodeCondition ConditionRoot {
-			get {
-				return Root as LayoutEventScriptNodeCondition;
-			}
-		}
+        public LayoutEventScriptNodeCondition ConditionRoot => Root as LayoutEventScriptNodeCondition;
 
-		LayoutEventScript EventScript {
-			get {
-				return script as LayoutEventScript;
-			}
-		}
+        LayoutEventScript EventScript => script as LayoutEventScript;
 
-		public void RecalculateTask() {
+        public void RecalculateTask() {
 			try {
 				EventRoot.Recalculate();
 			} catch(LayoutEventScriptException ex) {
@@ -201,25 +157,13 @@ namespace LayoutManager {
 			}
 		}
 
-		public bool Occurred {
-			get {
-				return EventRoot.Occurred;
-			}
-		}
+        public bool Occurred => EventRoot.Occurred;
 
-		public bool IsErrorState {
-			get {
-				return EventRoot.IsErrorState;
-			}
-		}
+        public bool IsErrorState => EventRoot.IsErrorState;
 
-		public string Description {
-			get {
-				return (string)EventManager.Event(new LayoutEvent(scriptElement, "get-event-script-description"));
-			}
-		}
+        public string Description => (string)EventManager.Event(new LayoutEvent(scriptElement, "get-event-script-description"));
 
-		public void Cancel() {
+        public void Cancel() {
 			EventRoot.Cancel();
 		}
 
@@ -309,17 +253,13 @@ namespace LayoutManager {
 			}
 		}
 
-		/// <summary>
-		/// The scope for which this event script belongs. This mean that unless otherwise specified, the script
-		/// will process only events that are sent (or their info field) is an object with this ID.
-		/// </summary>
-		public ICollection<Guid> ScopeIDs {
-			get {
-				return scopeIDs;
-			}
-		}
+        /// <summary>
+        /// The scope for which this event script belongs. This mean that unless otherwise specified, the script
+        /// will process only events that are sent (or their info field) is an object with this ID.
+        /// </summary>
+        public ICollection<Guid> ScopeIDs => scopeIDs;
 
-		public object ScriptSubject {
+        public object ScriptSubject {
 			get {
 				return scriptSubject;
 			}
@@ -329,16 +269,12 @@ namespace LayoutManager {
 			}
 		}
 
-		/// <summary>
-		/// The script name, used for identification in scenarios such as debugging
-		/// </summary>
-		public string Name {
-			get {
-				return name;
-			}
-		}
+        /// <summary>
+        /// The script name, used for identification in scenarios such as debugging
+        /// </summary>
+        public string Name => name;
 
-		public LayoutEventScriptTask AddTask(XmlElement scriptElement, LayoutScriptContext context) {
+        public LayoutEventScriptTask AddTask(XmlElement scriptElement, LayoutScriptContext context) {
 			LayoutEventScriptTask	task = new LayoutEventScriptTask(this, scriptElement, context);
 
 			tasks.Add(task);
@@ -373,25 +309,13 @@ namespace LayoutManager {
 
 		}
 
-		public bool Occurred {
-			get {
-				return RootTask.Occurred;
-			}
-		}
+        public bool Occurred => RootTask.Occurred;
 
-		public bool IsErrorState {
-			get {
-				return RootTask.IsErrorState;
-			}
-		}
+        public bool IsErrorState => RootTask.IsErrorState;
 
-		public string Description {
-			get {
-				return (string)EventManager.Event(new LayoutEvent(scriptElement, "get-event-script-description"));
-			}
-		}
+        public string Description => (string)EventManager.Event(new LayoutEvent(scriptElement, "get-event-script-description"));
 
-		public void Dispose() {
+        public void Dispose() {
 			EventManager.Event(new LayoutEvent(this, "event-script-dispose"));
 
 			foreach(LayoutEventScriptTask task in tasks) {
@@ -537,37 +461,25 @@ namespace LayoutManager {
 			this.context = context;
 		}
 
-		/// <summary>
-		/// The conditonal event being built
-		/// </summary>
-		public ILayoutScript Script {
-			get {
-				return script;
-			}
-		}
+        /// <summary>
+        /// The conditonal event being built
+        /// </summary>
+        public ILayoutScript Script => script;
 
-		/// <summary>
-		/// Return the event script task for which this element is parsed
-		/// </summary>
-		public LayoutEventScriptTask Task {
-			get {
-				return eventScriptTask;
-			}
-		}
+        /// <summary>
+        /// Return the event script task for which this element is parsed
+        /// </summary>
+        public LayoutEventScriptTask Task => eventScriptTask;
 
-		/// <summary>
-		/// The XML element representing the condition
-		/// </summary>
-		public XmlElement Element {
-			get {
-				return element;
-			}
-		}
+        /// <summary>
+        /// The XML element representing the condition
+        /// </summary>
+        public XmlElement Element => element;
 
-		/// <summary>
-		/// Return the context associated with this node
-		/// </summary>
-		public LayoutScriptContext Context {
+        /// <summary>
+        /// Return the context associated with this node
+        /// </summary>
+        public LayoutScriptContext Context {
 			get {
 				return context;
 			}
@@ -588,18 +500,10 @@ namespace LayoutManager {
 			this.parsedNode = parsedNode;
 		}
 
-		public ILayoutScript Script {
-			get {
-				return script;
-			}
-		}
+        public ILayoutScript Script => script;
 
-		public XmlElement ParsedNode {
-			get {
-				return parsedNode;
-			}
-		}
-	}
+        public XmlElement ParsedNode => parsedNode;
+    }
 
 	#endregion
 
@@ -627,13 +531,9 @@ namespace LayoutManager {
 			this.symbols = symbols;
 		}
 
-		public string Name {
-			get {
-				return name;
-			}
-		}
+        public string Name => name;
 
-		public bool CopyOnClone {
+        public bool CopyOnClone {
 			get {
 				return copyOnClone;
 			}
@@ -643,13 +543,9 @@ namespace LayoutManager {
 			}
 		}
 
-		public LayoutScriptContext ParentContext {
-			get {
-				return parentContext;
-			}
-		}
+        public LayoutScriptContext ParentContext => parentContext;
 
-		public object SearchSymbol(string symbolName) {
+        public object SearchSymbol(string symbolName) {
 			object symbolValue;
 
 			symbols.TryGetValue(symbolName, out symbolValue);
@@ -839,25 +735,13 @@ namespace LayoutManager {
 			this.parseEventInfo = (LayoutParseEventScript)e.Sender;
 		}
 
-		public XmlElement Element {
-			get {
-				return parseEventInfo.Element;
-			}
-		}
+        public XmlElement Element => parseEventInfo.Element;
 
-		public ILayoutScript Script {
-			get {
-				return parseEventInfo.Script;
-			}
-		}
+        public ILayoutScript Script => parseEventInfo.Script;
 
-		public LayoutEventScriptTask Task {
-			get {
-				return parseEventInfo.Task;
-			}
-		}
+        public LayoutEventScriptTask Task => parseEventInfo.Task;
 
-		public LayoutScriptContext Context {
+        public LayoutScriptContext Context {
 			get {
 				return parseEventInfo.Context;
 			}
@@ -867,17 +751,13 @@ namespace LayoutManager {
 			}
 		}
 
-		protected LayoutEventScriptNode Parse(XmlElement elementToParse) {
-			return Task.Parse(elementToParse, Context);
-		}
+        protected LayoutEventScriptNode Parse(XmlElement elementToParse) => Task.Parse(elementToParse, Context);
 
-		protected LayoutEventScriptParseException ParseErrorException(string message) {
-			return new LayoutEventScriptParseException(Script, Element, message);
-		}
+        protected LayoutEventScriptParseException ParseErrorException(string message) => new LayoutEventScriptParseException(Script, Element, message);
 
-		#region Common Access methods
+        #region Common Access methods
 
-		protected object GetOperand(XmlElement element, string symbolName, object symbolValue, string symbolAccess, string suffix) {
+        protected object GetOperand(XmlElement element, string symbolName, object symbolValue, string symbolAccess, string suffix) {
 			string	tagName = element.GetAttribute("Name" + suffix);
 
 			if(symbolAccess == "Property")
@@ -888,11 +768,9 @@ namespace LayoutManager {
 				throw new ArgumentException("Invalid symbol access method " + symbolAccess + " for symbol " + symbolName);
 		}
 
-		protected object GetOperand(string symbolName, object symbolValue, string symbolAccess, string suffix) {
-			return GetOperand(Element, symbolName, symbolValue, symbolAccess, suffix);
-		}
+        protected object GetOperand(string symbolName, object symbolValue, string symbolAccess, string suffix) => GetOperand(Element, symbolName, symbolValue, symbolAccess, suffix);
 
-		protected object GetOperand(XmlElement element, string suffix) {
+        protected object GetOperand(XmlElement element, string suffix) {
 			string	symbolAccess = element.GetAttribute("Symbol" + suffix + "Access");
 
 			if(symbolAccess == "Value") {
@@ -928,12 +806,10 @@ namespace LayoutManager {
 			}
 		}
 
-		protected object GetOperand(string suffix) {
-			return GetOperand(Element, suffix);
-		}
+        protected object GetOperand(string suffix) => GetOperand(Element, suffix);
 
-		#endregion
-	}
+        #endregion
+    }
 
 	#region Events
 
@@ -1116,24 +992,16 @@ namespace LayoutManager {
 				Task.RecalculateTask();
 		}
 
-		/// <summary>
-		/// Get the condition associated with this event
-		/// </summary>
-		protected LayoutEventScriptNodeCondition Condition {
-			get {
-				return condition;
-			}
-		}
+        /// <summary>
+        /// Get the condition associated with this event
+        /// </summary>
+        protected LayoutEventScriptNodeCondition Condition => condition;
 
-		/// <summary>
-		/// Get the actions to perform when this event occurred
-		/// </summary>
-		protected LayoutEventScriptNodeActions Actions {
-			get {
-				return actions;
-			}
-		}
-	}
+        /// <summary>
+        /// Get the actions to perform when this event occurred
+        /// </summary>
+        protected LayoutEventScriptNodeActions Actions => actions;
+    }
 
 	/// <summary>
 	/// Base class events (or event containers)
@@ -1158,16 +1026,12 @@ namespace LayoutManager {
 			}
 		}
 
-		/// <summary>
-		/// You may override this with the event name to subscribe to
-		/// </summary>
-		protected virtual string EventName {
-			get {
-				return eventName;
-			}
-		}
+        /// <summary>
+        /// You may override this with the event name to subscribe to
+        /// </summary>
+        protected virtual string EventName => eventName;
 
-		public override void Reset() {
+        public override void Reset() {
 			base.Reset();
 
 			try {
@@ -1282,13 +1146,9 @@ namespace LayoutManager {
 			events.Add(eventNode);
 		}
 
-		public IList<LayoutEventScriptNodeEventBase> Events {
-			get {
-				return events.AsReadOnly();
-			}
-		}
+        public IList<LayoutEventScriptNodeEventBase> Events => events.AsReadOnly();
 
-		public override void Cancel() {
+        public override void Cancel() {
 			foreach(LayoutEventScriptNodeEventBase eventNode in events)
 				eventNode.Cancel();
 		}
@@ -1332,12 +1192,8 @@ namespace LayoutManager {
 			}
 		}
 
-		public IList<LayoutEventScriptNodeCondition> Conditions {
-			get {
-				return conditions;
-			}
-		}
-	}
+        public IList<LayoutEventScriptNodeCondition> Conditions => conditions;
+    }
 
 	#endregion
 
@@ -1701,18 +1557,10 @@ namespace LayoutManager {
 					this.node = node;
 				}
 
-				public int Weight {
-					get {
-						return weight;
-					}
-				}
+                public int Weight => weight;
 
-				public LayoutEventScriptNodeEventBase Node {
-					get {
-						return node;
-					}
-				}
-			}
+                public LayoutEventScriptNodeEventBase Node => node;
+            }
 		}
 
 		#endregion
@@ -1929,12 +1777,8 @@ namespace LayoutManager {
 					throw ParseErrorException("Invalid number of sub-conditions for 'not'");
 			}
 
-			public override bool IsTrue {
-				get {
-					return !Conditions[0].IsTrue;
-				}
-			}
-		}
+            public override bool IsTrue => !Conditions[0].IsTrue;
+        }
 
 		#endregion
 
@@ -2210,19 +2054,11 @@ namespace LayoutManager {
 					this.element = element;
 				}
 
-				public XmlElement Element {
-					get {
-						return element;
-					}
-				}
+                public XmlElement Element => element;
 
-				public bool IsRange {
-					get {
-						return element.HasAttribute("From");
-					}
-				}
+                public bool IsRange => element.HasAttribute("From");
 
-				public int Value {
+                public int Value {
 					get {
 						return XmlConvert.ToInt32(Element.GetAttribute("Value"));
 					}
@@ -2273,11 +2109,9 @@ namespace LayoutManager {
 				public IfTimeDayOfWeekNode(XmlElement element) : base(element) {
 				}
 
-				public string toDay(int i) {
-					return new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" }[i];
-				}
+                public string toDay(int i) => new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" }[i];
 
-				public override string Description {
+                public override string Description {
 					get {
 						if(IsRange)
 							return toDay(From) + "-" + toDay(To);

@@ -115,13 +115,9 @@ namespace LayoutManager.Tools.Dialogs
 			updateButtons();
 		}
 
-		public LayoutXmlInfo XmlInfo {
-			get {
-				return xmlInfo;
-			}
-		}
+        public LayoutXmlInfo XmlInfo => xmlInfo;
 
-		private void updateButtons() {
+        private void updateButtons() {
 			radioButtonHeightOriginal.Text = "Maintain original image aspect ratio";
 			radioButtonWidthOriginal.Text = "Maintain original image aspect ratio";
 

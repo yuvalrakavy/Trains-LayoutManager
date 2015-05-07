@@ -405,13 +405,9 @@ namespace LayoutManager.CommonUI.Controls
 				formatNodeText();
 			}
 
-			public XmlNode XmlNode {
-				get {
-					return node;
-				}
-			}
+            public XmlNode XmlNode => node;
 
-			public new String Text {
+            public new String Text {
 				get {
 					if(node.NodeType == XmlNodeType.Text)
 						return node.Value;
@@ -429,13 +425,9 @@ namespace LayoutManager.CommonUI.Controls
 				}
 			}
 
-			public bool IsTextNode {
-				get {
-					return node.NodeType == XmlNodeType.Text;
-				}
-			}
+            public bool IsTextNode => node.NodeType == XmlNodeType.Text;
 
-			public void formatNodeText() {
+            public void formatNodeText() {
 				if(node.NodeType == XmlNodeType.Text)
 					base.Text = "\"" + node.Value + "\"";
 				else
@@ -479,13 +471,9 @@ namespace LayoutManager.CommonUI.Controls
 				this.SubItems.Add(attribute.Value);
 			}
 
-			public XmlAttribute XmlAttribute {
-				get {
-					return attribute;
-				}
-			}
+            public XmlAttribute XmlAttribute => attribute;
 
-			public String AttributeName {
+            public String AttributeName {
 				get {
 					return attribute.Name;
 				}

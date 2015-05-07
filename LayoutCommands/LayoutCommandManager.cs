@@ -28,15 +28,11 @@ namespace LayoutManager
 		/// <returns></returns>
 		public abstract override String ToString();
 
-		/// <summary>
-		/// True if this command returned the model to its presistent state
-		/// </summary>
-		public bool IsCheckpoint {
-			get {
-				return false;
-			}
-		}
-	}
+        /// <summary>
+        /// True if this command returned the model to its presistent state
+        /// </summary>
+        public bool IsCheckpoint => false;
+    }
 
 	/// <summary>
 	/// Manage Undo/Redo queue for layout commands
@@ -113,28 +109,20 @@ namespace LayoutManager
 			ChangeLevel++;
 		}
 
-		/// <summary>
-		/// Return true if there is a command that can be undone
-		/// </summary>
-		public bool CanUndo {
-			get {
-				return !(getUndoIndex() < 0);
-			}
-		}
+        /// <summary>
+        /// Return true if there is a command that can be undone
+        /// </summary>
+        public bool CanUndo => !(getUndoIndex() < 0);
 
-		/// <summary>
-		/// Return true if there is a command that can be redone
-		/// </summary>
-		public bool CanRedo {
-			get {
-				return getRedoIndex() < commands.Count;
-			}
-		}
+        /// <summary>
+        /// Return true if there is a command that can be redone
+        /// </summary>
+        public bool CanRedo => getRedoIndex() < commands.Count;
 
-		/// <summary>
-		/// Return the command name that can be undone
-		/// </summary>
-		public string UndoCommandName {
+        /// <summary>
+        /// Return the command name that can be undone
+        /// </summary>
+        public string UndoCommandName {
 			get {
 				int i = getUndoIndex();
 
@@ -236,13 +224,9 @@ namespace LayoutManager
 				command.Do();
 		}
 
-		public int Count {
-			get {
-				return commands.Count;
-			}
-		}
+        public int Count => commands.Count;
 
-		public override void Do() {
+        public override void Do() {
 			if(!executeAtOnce) {
 				foreach(ILayoutCommand command in commands) {
 					command.Do();
@@ -260,18 +244,14 @@ namespace LayoutManager
 			executeAtOnce = false;		// So Do (which now really means redo, will execute the commands)
 		}
 
-		public override String ToString() {
-			return description;
-		}
+        public override String ToString() => description;
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		public IEnumerator GetEnumerator() {
-			return commands.GetEnumerator();
-		}
+        public IEnumerator GetEnumerator() => commands.GetEnumerator();
 
-		#endregion
-	}
+        #endregion
+    }
 
 
 	public class LayoutCommandException : Exception {

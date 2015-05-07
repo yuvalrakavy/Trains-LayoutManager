@@ -283,10 +283,8 @@ namespace LayoutManager.Tools {
 						return direction;
 				}
 
-				public LocomotiveOrientation Get(TripPlanWaypointInfo wayPoint) {
-					return Get(wayPoint.Direction);
-				}
-			}
+                public LocomotiveOrientation Get(TripPlanWaypointInfo wayPoint) => Get(wayPoint.Direction);
+            }
 
 			protected bool IsTripPlanApplicable(TripPlanInfo tripPlan, bool shouldReverse) {
 				Direction						d = new Direction(shouldReverse);

@@ -224,11 +224,9 @@ namespace LayoutManager.Logic
 			return ok;
 		}
 
-		private bool checkBlockResources(LayoutPhase phase) {
-			return LayoutModel.Components<LayoutBlockDefinitionComponent>(phase).All(blockInfo => blockInfo.Info.Resources.CheckIntegrity(this, phase));
-		}
+        private bool checkBlockResources(LayoutPhase phase) => LayoutModel.Components<LayoutBlockDefinitionComponent>(phase).All(blockInfo => blockInfo.Info.Resources.CheckIntegrity(this, phase));
 
-		[LayoutEvent("perform-trains-analysis")]
+        [LayoutEvent("perform-trains-analysis")]
 		private void performTrainsAnalysis(LayoutEvent e) {
 			LayoutSelection phantomTrains = new LayoutSelection();
 			LayoutSelection unexpectedTrains = new LayoutSelection();

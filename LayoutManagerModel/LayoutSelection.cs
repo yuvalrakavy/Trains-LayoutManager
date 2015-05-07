@@ -29,16 +29,12 @@ namespace LayoutManager.Model {
 			Add(components);
 		}
 
-		public int Count {
-			get {
-				return selection.Count;
-			}
-		}
+        public int Count => selection.Count;
 
-		/// <summary>
-		/// Return a point with the top left component that is in this selection
-		/// </summary>
-		public Point TopLeftLocation {
+        /// <summary>
+        /// Return a point with the top left component that is in this selection
+        /// </summary>
+        public Point TopLeftLocation {
 			get {
 				Point			minLocation = new Point(0, 0);
 				bool			first = true;
@@ -61,30 +57,24 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		/// <summary>
-		/// An array with all the components in the selection
-		/// </summary>
-		public IEnumerable<ModelComponent> Components {
-			get {
-				return selection.Keys;
-			}
-		}
-				
-		/// <summary>
-		/// Check if the selection contains a given component
-		/// </summary>
-		/// <param name="component"></param>
-		/// <returns></returns>
-		public bool Contains(ModelComponent component) {
-			return selection.ContainsKey(component);
-		}
+        /// <summary>
+        /// An array with all the components in the selection
+        /// </summary>
+        public IEnumerable<ModelComponent> Components => selection.Keys;
 
-		/// <summary>
-		/// Check if this selection contains any component that is part of another selection
-		/// </summary>
-		/// <param name="selection">The other selection</param>
-		/// <returns>True if this selection contains any component which is also part of the other selection</returns>
-		public bool ContainsAny(LayoutSelection selection) {
+        /// <summary>
+        /// Check if the selection contains a given component
+        /// </summary>
+        /// <param name="component"></param>
+        /// <returns></returns>
+        public bool Contains(ModelComponent component) => selection.ContainsKey(component);
+
+        /// <summary>
+        /// Check if this selection contains any component that is part of another selection
+        /// </summary>
+        /// <param name="selection">The other selection</param>
+        /// <returns>True if this selection contains any component which is also part of the other selection</returns>
+        public bool ContainsAny(LayoutSelection selection) {
 			foreach(ModelComponent component in selection)
 				if(Contains(component))
 					return true;
@@ -250,16 +240,12 @@ namespace LayoutManager.Model {
 			Display(selectionLook, ZOrderTopmost);
 		}
 
-		public ILayoutSelectionLook SelectionLook {
-			get {
-				return selectionLook;
-			}
-		}
+        public ILayoutSelectionLook SelectionLook => selectionLook;
 
-		/// <summary>
-		/// Hide the selection
-		/// </summary>
-		public void Hide() {
+        /// <summary>
+        /// Hide the selection
+        /// </summary>
+        public void Hide() {
 			this.EraseImage();
 			this.selectionLook = null;
 			LayoutController.SelectionManager.HideSelection(this);
@@ -280,15 +266,13 @@ namespace LayoutManager.Model {
 			return null;
 		}
 
-		/// <summary>
-		/// Return an enumerator on all the components in the selection
-		/// </summary>
-		/// <returns></returns>
-		public IEnumerator<ModelComponent> GetEnumerator() {
-			return selection.Keys.GetEnumerator();
-		}
+        /// <summary>
+        /// Return an enumerator on all the components in the selection
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator<ModelComponent> GetEnumerator() => selection.Keys.GetEnumerator();
 
-		private void AddComponentsToDataObject(XmlWriter w, Point mlOrigin, bool doTracks) {
+        private void AddComponentsToDataObject(XmlWriter w, Point mlOrigin, bool doTracks) {
 			foreach(ModelComponent component in this) {
 				if((doTracks && component.Kind == ModelComponentKind.Track) || (!doTracks && component.Kind != ModelComponentKind.Track)) {
 					w.WriteStartElement("Component");
@@ -332,14 +316,12 @@ namespace LayoutManager.Model {
 			return dataObj;
 		}
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		#endregion
-}
+        #endregion
+    }
 
 	/// <summary>
 	/// Encupsolate the information on the look of a selection, such as the selection
@@ -356,15 +338,11 @@ namespace LayoutManager.Model {
 			this.color = color;
 		}
 
-		/// <summary>
-		/// The selection visual indicator color
-		/// </summary>
-		public Color Color {
-			get {
-				return color;
-			}
-		}
-	}
+        /// <summary>
+        /// The selection visual indicator color
+        /// </summary>
+        public Color Color => color;
+    }
 
 
 }

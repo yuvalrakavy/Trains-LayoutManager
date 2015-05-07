@@ -41,30 +41,14 @@ namespace LayoutManager {
 			this.master = master;
 		}
 
-		public new bool TraceError {
-			get {
-				return master.TraceError || base.TraceError;
-			}
-		}
+        public new bool TraceError => master.TraceError || base.TraceError;
 
-		public new bool TraceWarning {
-			get {
-				return master.TraceWarning || base.TraceWarning;
-			}
-		}
+        public new bool TraceWarning => master.TraceWarning || base.TraceWarning;
 
-		public new bool TraceInfo {
-			get {
-				return master.TraceInfo || base.TraceInfo;
-			}
-		}
+        public new bool TraceInfo => master.TraceInfo || base.TraceInfo;
 
-		public new bool TraceVerbose {
-			get {
-				return master.TraceVerbose || base.TraceVerbose;
-			}
-		}
-	}
+        public new bool TraceVerbose => master.TraceVerbose || base.TraceVerbose;
+    }
 
 
 }

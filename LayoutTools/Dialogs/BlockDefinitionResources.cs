@@ -89,13 +89,9 @@ namespace LayoutManager.Tools.Dialogs {
 				this.resourceInfo = resourceInfo;
 			}
 
-			public ResourceInfo ResourceInfo {
-				get {
-					return resourceInfo;
-				}
-			}
+            public ResourceInfo ResourceInfo => resourceInfo;
 
-			public override string ToString() {
+            public override string ToString() {
 				string result;
 				ILayoutLockResource resource = resourceInfo.GetResource(LayoutPhase.All);
 

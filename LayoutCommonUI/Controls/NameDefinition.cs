@@ -58,13 +58,9 @@ namespace LayoutManager.CommonUI.Controls
 			}
 		}
 
-		public bool IsEmptyName {
-			get {
-				return textBoxName.Text.Trim() == "";
-			}
-		}
+        public bool IsEmptyName => textBoxName.Text.Trim() == "";
 
-		public bool DefaultIsVisible {
+        public bool DefaultIsVisible {
 			set {
 				defaultIsVisible = value;
 			}

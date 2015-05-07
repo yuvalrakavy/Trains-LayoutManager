@@ -289,19 +289,11 @@ namespace LayoutManager
 					throw new ArgumentException("Invalid messageSubject - can be either selection or component", messageSubject.ToString());
 			}
 
-			public LayoutSelection Selection {
-				get {
-					return selection;
-				}
-			}
+            public LayoutSelection Selection => selection;
 
-			public MessageSeverity Severity {
-				get {
-					return severity;
-				}
-			}
+            public MessageSeverity Severity => severity;
 
-			public void TraceMessage() {
+            public void TraceMessage() {
 				bool	show = false;
 
 				if(Severity == MessageSeverity.Error && traceMessages.TraceError)

@@ -60,13 +60,9 @@ namespace LayoutManager.Tools.Dialogs
 			trackLinkTree.Enabled = radioButtonLinked.Checked;
 		}
 
-		public LayoutXmlInfo XmlInfo {
-			get {
-				return xmlInfo;
-			}
-		}
+        public LayoutXmlInfo XmlInfo => xmlInfo;
 
-		public LayoutTrackLink TrackLink {
+        public LayoutTrackLink TrackLink {
 			get {
 				if(radioButtonLinked.Checked)
 					return trackLinkTree.SelectedTrackLink;

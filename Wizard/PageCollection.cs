@@ -19,21 +19,15 @@ namespace Gui.Wizard
 			vParent = parent;
 		}
 
-		/// <summary>
-		/// Returns the wizard that owns this collection
-		/// </summary>
-		public Wizard Parent
-		{
-			get 
-			{
-				return vParent;
-			}
-		}
+        /// <summary>
+        /// Returns the wizard that owns this collection
+        /// </summary>
+        public Wizard Parent => vParent;
 
-		/// <summary>
-		/// Finds the Page in the collection
-		/// </summary>
-		public WizardPage this[ int index ]  
+        /// <summary>
+        /// Finds the Page in the collection
+        /// </summary>
+        public WizardPage this[ int index ]  
 		{
 			get  
 			{
@@ -71,22 +65,19 @@ namespace Gui.Wizard
 			}
 		}
 
-		/// <summary>
-		/// Finds the position of the page in the colleciton
-		/// </summary>
-		/// <param name="value">Page to find position of</param>
-		/// <returns>Index of Page in collection</returns>
-		public int IndexOf( WizardPage value )  
-		{
-			return( List.IndexOf( value ) );
-		}
+        /// <summary>
+        /// Finds the position of the page in the colleciton
+        /// </summary>
+        /// <param name="value">Page to find position of</param>
+        /// <returns>Index of Page in collection</returns>
+        public int IndexOf(WizardPage value) => (List.IndexOf(value));
 
-		/// <summary>
-		/// Adds a new page at a particular position in the Collection
-		/// </summary>
-		/// <param name="index">Position</param>
-		/// <param name="value">Page to be added</param>
-		public void Insert( int index, WizardPage value )  
+        /// <summary>
+        /// Adds a new page at a particular position in the Collection
+        /// </summary>
+        /// <param name="index">Position</param>
+        /// <param name="value">Page to be added</param>
+        public void Insert( int index, WizardPage value )  
 		{
 			List.Insert(index, value );
 		}
@@ -102,23 +93,19 @@ namespace Gui.Wizard
 			List.Remove( value );
 		}
 
-		/// <summary>
-		/// Detects if a given Page is in the Collection
-		/// </summary>
-		/// <param name="value">Page to find</param>
-		/// <returns></returns>
-		public bool Contains( WizardPage value )  
-		{
-			// If value is not of type Int16, this will return false.
-			return( List.Contains( value ) );
-		}
+        /// <summary>
+        /// Detects if a given Page is in the Collection
+        /// </summary>
+        /// <param name="value">Page to find</param>
+        /// <returns></returns>
+        public bool Contains(WizardPage value) => (List.Contains(value));
 
-		/// <summary>
-		/// Propgate when a external designer modifies the pages
-		/// </summary>
-		/// <param name="index"></param>
-		/// <param name="value"></param>
-		protected override void OnInsertComplete(int index, object value)
+        /// <summary>
+        /// Propgate when a external designer modifies the pages
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
+        protected override void OnInsertComplete(int index, object value)
 		{
 			base.OnInsertComplete (index, value);
 			//Showthe page added

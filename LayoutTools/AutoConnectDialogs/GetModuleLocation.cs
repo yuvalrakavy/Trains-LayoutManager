@@ -195,16 +195,10 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 				this.text = text;
 			}
 
-			public LayoutControlModuleLocationComponent ModuleLocation {
-				get {
-					return moduleLocation;
-				}
-			}
+            public LayoutControlModuleLocationComponent ModuleLocation => moduleLocation;
 
-			public override string ToString() {
-				return text;
-			}
-		}
+            public override string ToString() => text;
+        }
 
 	}
 }

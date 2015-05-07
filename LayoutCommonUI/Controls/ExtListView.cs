@@ -173,19 +173,17 @@ namespace LayoutManager.CommonUI.Controls {
 				 }
 			}
 		}
-		#endregion
+        #endregion
 
-		#region Columns Property
-		[System.ComponentModel.Category("Data"),
-		System.ComponentModel.Browsable(true),
-		System.ComponentModel.Description("Columns.")]
-		public new DataColumnHeaderCollection Columns{
-			get{ return this.mColumns; }
-		}
-		#endregion
+        #region Columns Property
+        [System.ComponentModel.Category("Data"),
+        System.ComponentModel.Browsable(true),
+        System.ComponentModel.Description("Columns.")]
+        public new DataColumnHeaderCollection Columns => this.mColumns;
+        #endregion
 
-		#region GridLines Property
-		[DefaultValue(false)]
+        #region GridLines Property
+        [DefaultValue(false)]
 		public new bool GridLines {
 			get { return this.mGridLines; }
 			set { this.mGridLines = value; Invalidate(); }
@@ -303,32 +301,26 @@ namespace LayoutManager.CommonUI.Controls {
 				return false; }
 			set{ base.MultiSelect = false; }
 		}
-		#endregion
+        #endregion
 
-		#region LargeImageList Property - Turn this off
-		[System.ComponentModel.Browsable(false)]
-		public new ImageList LargeImageList {
-			get{ return null; }
-		}
-		#endregion
+        #region LargeImageList Property - Turn this off
+        [System.ComponentModel.Browsable(false)]
+        public new ImageList LargeImageList => null;
+        #endregion
 
-		#region SmallImageList Property - Turn this off
-		[System.ComponentModel.Browsable(false)]
-		public new ImageList SmallImageList {
-			get{ return null; }
-		}
-		#endregion
+        #region SmallImageList Property - Turn this off
+        [System.ComponentModel.Browsable(false)]
+        public new ImageList SmallImageList => null;
+        #endregion
 
-		#region StateImageList Property - Turn this off
-		[System.ComponentModel.Browsable(false)]
-		public new ImageList StateImageList {
-			get{ return null; }
-		}
-		#endregion
-		#endregion
+        #region StateImageList Property - Turn this off
+        [System.ComponentModel.Browsable(false)]
+        public new ImageList StateImageList => null;
+        #endregion
+        #endregion
 
-		#region DataBind Method - Private
-		private void DataBind(){
+        #region DataBind Method - Private
+        private void DataBind(){
 			if (this.mThreadDataBind){
 				this.t_DataBind = new Thread(new ThreadStart(DataBindThread));
 				this.t_DataBind.IsBackground = true;
@@ -837,7 +829,7 @@ namespace LayoutManager.CommonUI.Controls {
 					bError = true;
 				}catch(System.ArgumentOutOfRangeException){
 					bError = true;
-					throw new System.ArgumentOutOfRangeException("Index", (int)Index, "There is no such index value in this collection\nSource: ExtListView:nsListViewEx.DataColumnHeaderCollection");
+					throw new System.ArgumentOutOfRangeException(nameof(Index), (int)Index, "There is no such index value in this collection\nSource: ExtListView:nsListViewEx.DataColumnHeaderCollection");
 				}
 				if (bError) return null;
 				return null;

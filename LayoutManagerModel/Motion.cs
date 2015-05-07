@@ -152,10 +152,8 @@ namespace LayoutManager.Model {
 			throw new NotImplementedException();
 		}
 
-		protected override MotionRampInfo FromElement(XmlElement itemElement) {
-			return new MotionRampInfo(itemElement);
-		}
-	}
+        protected override MotionRampInfo FromElement(XmlElement itemElement) => new MotionRampInfo(itemElement);
+    }
 
 
 	public class TrainSpeedChangeParameters {
@@ -167,18 +165,10 @@ namespace LayoutManager.Model {
 			this.ramp = ramp;
 		}
 
-		public int RequestedSpeed {
-			get {
-				return requestedSpeed;
-			}
-		}
+        public int RequestedSpeed => requestedSpeed;
 
-		public MotionRampInfo Ramp {
-			get {
-				return ramp;
-			}
-		}
-	}
+        public MotionRampInfo Ramp => ramp;
+    }
 
 	/// <summary>
 	/// This structure is returned by command station in response to get-command-station-capabilities event
@@ -268,28 +258,12 @@ namespace LayoutManager.Model {
 				return new MotionRampInfo(rampElement);
 		}
 
-		public MotionRampInfo AccelerationProfile {
-			get {
-				return getRamp("Acceleration");
-			}
-		}
+        public MotionRampInfo AccelerationProfile => getRamp("Acceleration");
 
-		public MotionRampInfo DecelerationProfile {
-			get {
-				return getRamp("Deceleration");
-			}
-		}
+        public MotionRampInfo DecelerationProfile => getRamp("Deceleration");
 
-		public MotionRampInfo SlowdownProfile {
-			get {
-				return getRamp("SlowDown");
-			}
-		}
+        public MotionRampInfo SlowdownProfile => getRamp("SlowDown");
 
-		public MotionRampInfo StopProfile {
-			get {
-				return getRamp("Stop");
-			}
-		}
-	}
+        public MotionRampInfo StopProfile => getRamp("Stop");
+    }
 }

@@ -64,19 +64,13 @@ namespace LayoutLGB {
 			}
 		}
 
-		#region Specific implementation to base class overrideble methods and properties
+        #region Specific implementation to base class overrideble methods and properties
 
-		public override IList<string> BusTypeNames {
-			get {
-				return Array.AsReadOnly<string>(new string[] { "LGBDCC", "LGBBUS" });
-			}
-		}
+        public override IList<string> BusTypeNames => Array.AsReadOnly<string>(new string[] { "LGBDCC", "LGBBUS" });
 
-		public override DigitalPowerFormats SupportedDigitalPowerFormats {
-			get { return DigitalPowerFormats.NRMA; }
-		}
+        public override DigitalPowerFormats SupportedDigitalPowerFormats => DigitalPowerFormats.NRMA;
 
-		protected override void OnCommunicationSetup() {
+        protected override void OnCommunicationSetup() {
 			base.OnCommunicationSetup ();
 
 			if(!Element.HasAttribute("OverlappedIO"))
@@ -110,27 +104,19 @@ namespace LayoutLGB {
 			}
 		}
 
-		public override bool LayoutEmulationSupported {
-			get {return true; }
-		}
+        public override bool LayoutEmulationSupported => true;
 
-		public override bool DesignTimeLayoutActivationSupported {
-			get { return true; }
-		}
+        public override bool DesignTimeLayoutActivationSupported => true;
 
-		public override int GetHighestLocomotiveAddress(DigitalPowerFormats format) {
-			return 22;		// Poor thing...
-		}
+        public override int GetHighestLocomotiveAddress(DigitalPowerFormats format) => 22;      // Poor thing...
 
-		protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) {
-			return new MTScommandStationEmulator(this, pipeName, EmulationTickTime);
-		}
+        protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) => new MTScommandStationEmulator(this, pipeName, EmulationTickTime);
 
-		#endregion
+        #endregion
 
-		#region Request Event Handlers
+        #region Request Event Handlers
 
-		[LayoutEvent("get-command-station-capabilities", IfEvent="*[CommandStation/@Name='`string(Name)`']")]
+        [LayoutEvent("get-command-station-capabilities", IfEvent="*[CommandStation/@Name='`string(Name)`']")]
 		void GetCommandStationCapabilities(LayoutEvent e) {
 			CommandStationCapabilitiesInfo	cap = new CommandStationCapabilitiesInfo();
 			int								minTimeBetweenSpeedSteps = 100;
@@ -347,13 +333,9 @@ namespace LayoutLGB {
 			this.mtsMessage = mtsMessage;
 		}
 
-		public Stream Stream {
-			get {
-				return stream;
-			}
-		}
+        public Stream Stream => stream;
 
-		public override void Do() {
+        public override void Do() {
 			if(mtsMessage != null)
 				mtsMessage.Send(Stream);
 		}
@@ -543,13 +525,9 @@ namespace LayoutLGB {
 			}
 		}
 
-		public byte[] Buffer {
-			get {
-				return message;
-			}
-		}
+        public byte[] Buffer => message;
 
-		public override String ToString() {
+        public override String ToString() {
 			MTScommand	cmd = (MTScommand)message[0];
 
 			return String.Format("MTS command: {0} {1:x} {2:x} (Checksum {3:x})", cmd, message[1], message[2], message[3]);

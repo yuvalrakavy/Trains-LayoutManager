@@ -34,13 +34,9 @@ namespace LayoutManager.Model {
 			set;
 		}
 
-		public string TypeName {
-			get {
-				return Manufacturer + Name;
-			}
-		}
+        public string TypeName => Manufacturer + Name;
 
-		public static DecoderTypeInfo GetDecoderType(string decoderTypeName) {
+        public static DecoderTypeInfo GetDecoderType(string decoderTypeName) {
 			if(decoderTypeName != null) {
 				List<DecoderTypeInfo> decoders = new List<DecoderTypeInfo>();
 

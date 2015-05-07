@@ -108,16 +108,12 @@ namespace LayoutManager.Tools.Dialogs
 			comboBoxBuiltinDecoders.Enabled = checkBoxHasBuiltinDecoder.Checked;
 		}
 
-		public LayoutXmlInfo XmlInfo {
-			get {
-				return xmlInfo;
-			}
-		}
+        public LayoutXmlInfo XmlInfo => xmlInfo;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{
@@ -268,15 +264,9 @@ namespace LayoutManager.Tools.Dialogs
 				this.moduleType = moduleType;
 			}
 
-			public ControlModuleType ModuleType {
-				get {
-					return moduleType;
-				}
-			}
+            public ControlModuleType ModuleType => moduleType;
 
-			public override string ToString() {
-				return moduleType.Name;
-			}
-		}
+            public override string ToString() => moduleType.Name;
+        }
 	}
 }

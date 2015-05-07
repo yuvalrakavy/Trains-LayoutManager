@@ -50,25 +50,13 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 			updateButtons();
 		}
 
-		public bool ConnectAllLayout {
-			get {
-				return radioButtonConnectAllLayout.Checked;
-			}
-		}
+        public bool ConnectAllLayout => radioButtonConnectAllLayout.Checked;
 
-		public bool SetUserActionRequired {
-			get {
-				return checkBoxSetUserActionRequired.Checked;
-			}
-		}
+        public bool SetUserActionRequired => checkBoxSetUserActionRequired.Checked;
 
-		public bool SetProgrammingRequired {
-			get {
-				return checkBoxSetProgrammingRequired.Checked;
-			}
-		}
+        public bool SetProgrammingRequired => checkBoxSetProgrammingRequired.Checked;
 
-		public LayoutPhase Phase {
+        public LayoutPhase Phase {
 			get {
 				if(radioButtonScopeAll.Checked)
 					return LayoutPhase.All;

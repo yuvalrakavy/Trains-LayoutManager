@@ -57,13 +57,9 @@ namespace MarklinDigital.Dialogs
 			updateButtons(null, null);
 		}
 
-		public LayoutXmlInfo XmlInfo {
-			get {
-				return xmlInfo;
-			}
-		}
+        public LayoutXmlInfo XmlInfo => xmlInfo;
 
-		private void updateButtons(object sender, EventArgs e) {
+        private void updateButtons(object sender, EventArgs e) {
 		}
 
 		/// <summary>

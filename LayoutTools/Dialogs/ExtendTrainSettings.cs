@@ -52,22 +52,14 @@ namespace LayoutManager.Tools.Dialogs
 			numericUpDownFrom.Value = train.TrackContactTriggerCount - 1;
 		}
 
-		public int FromCount {
-			get {
-				return (int)numericUpDownFrom.Value;
-			}
-		}
+        public int FromCount => (int)numericUpDownFrom.Value;
 
-		public int ToCount {
-			get {
-				return (int)numericUpDownTo.Value;
-			}
-		}
+        public int ToCount => (int)numericUpDownTo.Value;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{

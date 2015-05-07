@@ -185,11 +185,7 @@ namespace LayoutManager.Tools.Dialogs
 				this.SubItems.Add(action.Description);
 			}
 
-			public ITripRouteValidationAction Action {
-				get {
-					return action;
-				}
-			}
-		}
+            public ITripRouteValidationAction Action => action;
+        }
 	}
 }

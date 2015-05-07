@@ -319,13 +319,11 @@ namespace LayoutManager.Tools.EventScriptDialogs
 			tripPlanEditor.EnablePreview = locomotiveBlock != null;
 		}
 
-		#region IModelComponentReceiverComponent Members
+        #region IModelComponentReceiverComponent Members
 
-		public string DialogName(IModelComponent component) {
-			return Text;
-		}
+        public string DialogName(IModelComponent component) => Text;
 
-		public void AddComponent(IModelComponent component) {
+        public void AddComponent(IModelComponent component) {
 			LayoutBlockDefinitionComponent	blockInfo = (LayoutBlockDefinitionComponent)component;
 
 			locomotiveBlock = blockInfo.Block;

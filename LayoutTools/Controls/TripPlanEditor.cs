@@ -421,15 +421,13 @@ namespace LayoutManager.Tools.Controls
 			}
 		}
 
-		#endregion
+        #endregion
 
-		// Implementation of IPolicyListCustomizer
+        // Implementation of IPolicyListCustomizer
 
-		public bool IsPolicyChecked(LayoutPolicyInfo policy) {
-			return tripPlan.Policies.Contains(policy.Id);
-		}
+        public bool IsPolicyChecked(LayoutPolicyInfo policy) => tripPlan.Policies.Contains(policy.Id);
 
-		public void SetPolicyChecked(LayoutPolicyInfo policy, bool checkValue) {
+        public void SetPolicyChecked(LayoutPolicyInfo policy, bool checkValue) {
 			if(checkValue)
 				tripPlan.Policies.Add(policy.Id);
 			else
@@ -466,13 +464,9 @@ namespace LayoutManager.Tools.Controls
 			}
 		}
 
-		public string DialogName {
-			get {
-				return dialogName;
-			}
-		}
+        public string DialogName => dialogName;
 
-		public void SetDialogName(string dialogName) {
+        public void SetDialogName(string dialogName) {
 			this.dialogName = dialogName;
 		}
 
@@ -497,13 +491,9 @@ namespace LayoutManager.Tools.Controls
 			}
 		}
 
-		public int Count {
-			get {
-				return listViewWayPoints.Items.Count;
-			}
-		}
+        public int Count => listViewWayPoints.Items.Count;
 
-		public void AddWayPoint(TripPlanWaypointInfo newWaypoint) {
+        public void AddWayPoint(TripPlanWaypointInfo newWaypoint) {
 			listViewWayPoints.Items.Add(new WayPointItem(newWaypoint));
 			tripPlanSelection.Add(newWaypoint.Destination.Selection);
 
@@ -1308,13 +1298,9 @@ namespace LayoutManager.Tools.Controls
 				}
 			}
 
-			public TripPlanWaypointInfo WayPoint {
-				get {
-					return wayPoint;
-				}
-			}
+            public TripPlanWaypointInfo WayPoint => wayPoint;
 
-			public bool ShouldReverese {
+            public bool ShouldReverese {
 				get {
 					return shouldReverese;
 				}

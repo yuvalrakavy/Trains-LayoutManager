@@ -45,19 +45,11 @@ namespace LayoutManager.Tools.Dialogs {
 			}
 		}
 
-		public LayoutComponentConnectionPoint Front {
-			get {
-				return locomotiveFront.Front;
-			}
-		}
+        public LayoutComponentConnectionPoint Front => locomotiveFront.Front;
 
-		public TrainLength Length {
-			get {
-				return trainLengthDiagram.Length;
-			}
-		}
+        public TrainLength Length => trainLengthDiagram.Length;
 
-		private void UpdateInstructions() {
+        private void UpdateInstructions() {
 			if(textBoxSearch.Text.Trim().Length == 0) {
 				listBoxSearchResult.Visible = false;
 				labelSearchInstructions.Visible = true;
@@ -161,13 +153,9 @@ namespace LayoutManager.Tools.Dialogs {
 				this.namedObject = namedObject;
 			}
 
-			public LayoutNamedTrainObject NamedObject {
-				get {
-					return namedObject;
-				}
-			}
+            public LayoutNamedTrainObject NamedObject => namedObject;
 
-			public bool DeleteMe {
+            public bool DeleteMe {
 				get {
 					return deleteMe;
 				}
@@ -177,10 +165,8 @@ namespace LayoutManager.Tools.Dialogs {
 				}
 			}
 
-			public override string ToString() {
-				return NamedObject.DisplayName;
-			}
-		}
+            public override string ToString() => NamedObject.DisplayName;
+        }
 
 		private void textBoxSearch_TextChanged(object sender, EventArgs e) {
 			Search();

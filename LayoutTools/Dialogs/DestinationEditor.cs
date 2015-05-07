@@ -147,13 +147,11 @@ namespace LayoutManager.Tools.Dialogs
 				dialogs.Add(this);
 		}
 
-		// Implementation of IModelComponentReceiverComponent
+        // Implementation of IModelComponentReceiverComponent
 
-		public string DialogName(IModelComponent component) {
-			return this.Text;
-		}
+        public string DialogName(IModelComponent component) => this.Text;
 
-		public void AddComponent(IModelComponent component) {
+        public void AddComponent(IModelComponent component) {
 			LayoutBlockDefinitionComponent	blockInfo = (LayoutBlockDefinitionComponent)component;
 
 			TripPlanDestinationEntryInfo	newEntry = destination.Add(blockInfo);
@@ -640,13 +638,9 @@ namespace LayoutManager.Tools.Dialogs
 				SubItems[1].Text = entry.GetDescription();
 			}
 
-			public TripPlanDestinationEntryInfo Entry {
-				get {
-					return entry;
-				}
-			}
+            public TripPlanDestinationEntryInfo Entry => entry;
 
-			public LayoutBlockDefinitionComponent BlockDefinition {
+            public LayoutBlockDefinitionComponent BlockDefinition {
 				get {
 					LayoutBlock	block = LayoutModel.Blocks[entry.BlockId];
 

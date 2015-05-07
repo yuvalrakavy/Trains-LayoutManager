@@ -531,13 +531,9 @@ namespace LayoutManager.Tools {
 				return "Do " + policyName;
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
+            protected override string Description => GetDescription(Element);
 
-			public override bool SupportedInGlobalPolicy {
+            public override bool SupportedInGlobalPolicy {
 				get {
 					Guid						policyID = XmlConvert.ToGuid(Element.GetAttribute("PolicyID"));
 					LayoutPoliciesCollection	policies = new LayoutPoliciesCollection(LayoutModel.Instance.GlobalPoliciesElement, null, null);
@@ -690,49 +686,23 @@ namespace LayoutManager.Tools {
 				AddChildEventScriptTreeNodes();
 			}
 
-			public override string AddNodeEventName {
-				get {
-					return "get-event-script-editor-events-section-menu";
-				}
-			}
+            public override string AddNodeEventName => "get-event-script-editor-events-section-menu";
 
-			public override string InsertNodeEventName {
-				get {
-					return "get-event-script-editor-insert-event-container-menu";
-				}
-			}
+            public override string InsertNodeEventName => "get-event-script-editor-insert-event-container-menu";
 
-			protected override int IconIndex {
-				get {
-					return IconEvent;
-				}
-			}
+            protected override int IconIndex => IconEvent;
 
-			static public string GetDescription(XmlElement element) {
-				return "For each train";
-			}
+            static public string GetDescription(XmlElement element) => "For each train";
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
+            protected override string Description => GetDescription(Element);
 
-			/// <summary>
-			/// ForEachTrain can have no more than one subcondition
-			/// </summary>
-			public override int MaxSubNodes {
-				get {
-					return 1;
-				}
-			}
+            /// <summary>
+            /// ForEachTrain can have no more than one subcondition
+            /// </summary>
+            public override int MaxSubNodes => 1;
 
-			public override CommonUI.Controls.LayoutEventScriptEditorTreeNode NodeToEdit {
-				get {
-					return null;		// Node cannot be edited
-				}
-			}
-		}
+            public override CommonUI.Controls.LayoutEventScriptEditorTreeNode NodeToEdit => null;       // Node cannot be edited
+        }
 
 		#endregion
 
@@ -828,13 +798,9 @@ namespace LayoutManager.Tools {
 				AddChildEventScriptTreeNodes();
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
+            protected override string Description => GetDescription(Element);
 
-			internal static string GetDescription(XmlElement element) {
+            internal static string GetDescription(XmlElement element) {
 				LayoutComponentConnectionPoint from = LayoutComponentConnectionPoint.Parse(element.GetAttribute("From"));
 				string fromText;
 
@@ -964,13 +930,9 @@ namespace LayoutManager.Tools {
 				AddChildEventScriptTreeNodes();
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
+            protected override string Description => GetDescription(Element);
 
-			internal static string GetDescription(XmlElement element) {
+            internal static string GetDescription(XmlElement element) {
 				string symbolName = element.GetAttribute("TrainSymbol");
 				TrainLength length = TrainLength.Parse(element.GetAttribute("Length"));
 				TrainLengthComparison comparison = (TrainLengthComparison)Enum.Parse(typeof(TrainLengthComparison), element.GetAttribute("Comparison"));
@@ -1061,12 +1023,8 @@ namespace LayoutManager.Tools {
 				return "Trigger function " + functionName + " of " + symbolName;
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetDescription(Element);
+        }
 
 		#endregion	// Editing
 
@@ -1163,12 +1121,8 @@ namespace LayoutManager.Tools {
 				return verb + " function " + functionName + " of " + symbolName;
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetDescription(Element);
+        }
 
 		#endregion	// Editing
 
@@ -1285,12 +1239,8 @@ namespace LayoutManager.Tools {
 				return verb + " target speed of " + symbolName + " " + relation + " " + GetOperandDescription(element, "Value", typeof(int));
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetDescription(Element);
+        }
 
 		#endregion
 
@@ -1392,19 +1342,11 @@ namespace LayoutManager.Tools {
 				return symbolName + " executes trip plan " + tripPlanName + (shouldReverse ? " (reversed)" : "");
 			}
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
+            protected override string Description => GetDescription(Element);
 
-			public override bool SupportedInGlobalPolicy {
-				get {
-					return false;
-				}
-			}
+            public override bool SupportedInGlobalPolicy => false;
 
-		}
+        }
 
 		#endregion
 
@@ -1575,16 +1517,10 @@ namespace LayoutManager.Tools {
 			public LayoutEventScriptEditorTreeNodeExecuteRandomTripPlan(XmlElement conditionElement) : base(conditionElement) {
 			}
 
-			public static string GetDescription(XmlElement element) {
-				return element.GetAttribute("Symbol") + " executes random trip-plan";
-			}
+            public static string GetDescription(XmlElement element) => element.GetAttribute("Symbol") + " executes random trip-plan";
 
-			protected override string Description {
-				get {
-					return GetDescription(Element);
-				}
-			}
-		}
+            protected override string Description => GetDescription(Element);
+        }
 
 		#endregion
 

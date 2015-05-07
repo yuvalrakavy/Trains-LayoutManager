@@ -63,13 +63,9 @@ namespace LayoutManager.CommonUI.Controls
 			}
 		}
 
-		public Form Form {
-			get {
-				return FindForm();
-			}
-		}
+        public Form Form => FindForm();
 
-		public LayoutBlockDefinitionComponent BlockDefinition {
+        public LayoutBlockDefinitionComponent BlockDefinition {
 			get {
 				return blockDefinition;
 			}
@@ -419,19 +415,11 @@ namespace LayoutManager.CommonUI.Controls
 				this.blockDefinition = blockDefinition;
 			}
 
-			public Form Form {
-				get {
-					return form;
-				}
-			}
+            public Form Form => form;
 
-			public LayoutBlockDefinitionComponent BlockDefinition {
-				get {
-					return blockDefinition;
-				}
-			}
+            public LayoutBlockDefinitionComponent BlockDefinition => blockDefinition;
 
-			public void EditingDone() {
+            public void EditingDone() {
 				node.NodeToEdit.UpdateNode();
 			}
 
@@ -546,13 +534,9 @@ namespace LayoutManager.CommonUI.Controls
 				this.eventScriptElement = eventScriptElement;
 			}
 
-			public Form Form {
-				get {
-					return form;
-				}
-			}
+            public Form Form => form;
 
-			public void EditingDone() {
+            public void EditingDone() {
 				bool		insertAsFirst = parentNode.ShouldInsertAsFirst(eventScriptElement);
 
 				newNode.UpdateNode();
@@ -569,12 +553,8 @@ namespace LayoutManager.CommonUI.Controls
 				parentNode.Element.RemoveChild(eventScriptElement);	// Editing was canceled
 			}
 
-			public LayoutBlockDefinitionComponent BlockDefinition {
-				get {
-					return blockDefinition;
-				}
-			}
-		}
+            public LayoutBlockDefinitionComponent BlockDefinition => blockDefinition;
+        }
 	}
 
 	#endregion
@@ -633,13 +613,9 @@ namespace LayoutManager.CommonUI.Controls
 				this.eventScriptElementName = eventScriptElementName;
 			}
 
-			public Form Form {
-				get {
-					return form;
-				}
-			}
+            public Form Form => form;
 
-			public void EditingDone() {
+            public void EditingDone() {
 				newNode.UpdateNode();
 
 				node.Element.RemoveChild(eventScriptElement);
@@ -689,12 +665,8 @@ namespace LayoutManager.CommonUI.Controls
 				node.Element.RemoveChild(eventScriptElement);
 			}
 
-			public LayoutBlockDefinitionComponent BlockDefinition {
-				get {
-					return blockDefinition;
-				}
-			}
-		}
+            public LayoutBlockDefinitionComponent BlockDefinition => blockDefinition;
+        }
 	}
 
 	#endregion
@@ -753,13 +725,9 @@ namespace LayoutManager.CommonUI.Controls
 				this.eventScriptElementName = eventScriptElementName;
 			}
 
-			public Form Form {
-				get {
-					return form;
-				}
-			}
+            public Form Form => form;
 
-			public void EditingDone() {
+            public void EditingDone() {
 				newNode.UpdateNode();
 
 				node.Element.RemoveChild(eventScriptElement);
@@ -791,12 +759,8 @@ namespace LayoutManager.CommonUI.Controls
 				node.Element.RemoveChild(eventScriptElement);
 			}
 
-			public LayoutBlockDefinitionComponent BlockDefinition {
-				get {
-					return blockDefinition;
-				}
-			}
-		}
+            public LayoutBlockDefinitionComponent BlockDefinition => blockDefinition;
+        }
 	}
 
 	#endregion
@@ -821,13 +785,9 @@ namespace LayoutManager.CommonUI.Controls
 			this.Expand();
 		}
 
-		public XmlElement Element {
-			get {
-				return eventScriptElement;
-			}
-		}
+        public XmlElement Element => eventScriptElement;
 
-		static public string GetOperandDescription(XmlElement element, string suffix, Type type) {
+        static public string GetOperandDescription(XmlElement element, string suffix, Type type) {
 			string	symbolAccess = element.GetAttribute("Symbol" + suffix + "Access");
 
 			if(symbolAccess == "Value") {
@@ -912,106 +872,55 @@ namespace LayoutManager.CommonUI.Controls
 
 		protected abstract string Description { get; }
 
-		/// <summary>
-		/// Optional options menu
-		/// </summary>
-		public virtual ContextMenu OptionsMenu {
-			get {
-				return null;
-			}
-		}
+        /// <summary>
+        /// Optional options menu
+        /// </summary>
+        public virtual ContextMenu OptionsMenu => null;
 
-		/// <summary>
-		/// The event name that is used for building the Add button menu. The default implementation returns
-		/// null, so the add button is disabled
-		/// </summary>
-		public virtual string AddNodeEventName {
-			get {
-				return null;
-			}
-		}
+        /// <summary>
+        /// The event name that is used for building the Add button menu. The default implementation returns
+        /// null, so the add button is disabled
+        /// </summary>
+        public virtual string AddNodeEventName => null;
 
-		/// <summary>
-		/// The event name that is used for building the insert button menu.
-		/// </summary>
-		public virtual string InsertNodeEventName {
-			get {
-				return null;
-			}
-		}
+        /// <summary>
+        /// The event name that is used for building the insert button menu.
+        /// </summary>
+        public virtual string InsertNodeEventName => null;
 
-		
-		/// <summary>
-		/// The node to be edited when edit command is given. The default is to edit the current node
-		/// </summary>
-		public  virtual LayoutEventScriptEditorTreeNode NodeToEdit {
-			get {
-				return this;
-			}
-		}
 
-		/// <summary>
-		/// Return true if the node can be deleted.
-		/// </summary>
-		public virtual bool CanDeleteNode {
-			get {
-				return true;
-			}
-		}
+        /// <summary>
+        /// The node to be edited when edit command is given. The default is to edit the current node
+        /// </summary>
+        public virtual LayoutEventScriptEditorTreeNode NodeToEdit => this;
 
-		/// <summary>
-		/// The maximum number of children conditions that can be added - default implementation - no limit
-		/// </summary>
-		public virtual int MaxSubNodes {
-			get {
-				return -1;
-			}
-		}
+        /// <summary>
+        /// Return true if the node can be deleted.
+        /// </summary>
+        public virtual bool CanDeleteNode => true;
 
-		/// <summary>
-		/// The minimum number of subconditions that can be added.
-		/// </summary>
-		public virtual int MinSubNodes {
-			get {
-				return 1;
-			}
-		}
+        /// <summary>
+        /// The maximum number of children conditions that can be added - default implementation - no limit
+        /// </summary>
+        public virtual int MaxSubNodes => -1;
 
-		public virtual bool CanReorder {
-			get {
-				return false;
-			}
-		}
+        /// <summary>
+        /// The minimum number of subconditions that can be added.
+        /// </summary>
+        public virtual int MinSubNodes => 1;
 
-		public virtual bool CanHaveOptionalSubItems {
-			get {
-				return false;
-			}
-		}
+        public virtual bool CanReorder => false;
 
-		public virtual bool ShouldInsertAsFirst(XmlElement elementToInsert) {
-			return false;
-		}
+        public virtual bool CanHaveOptionalSubItems => false;
 
-		public virtual bool SupportConditions {
-			get {
-				return true;
-		
-			}
-		}
+        public virtual bool ShouldInsertAsFirst(XmlElement elementToInsert) => false;
 
-		public virtual bool SupportActions {
-			get {
-				return true;
-			}
-		}
+        public virtual bool SupportConditions => true;
 
-		public virtual bool SupportedInGlobalPolicy {
-			get {
-				return true;
-			}
-		}
-	}
+        public virtual bool SupportActions => true;
+
+        public virtual bool SupportedInGlobalPolicy => true;
+    }
 
 	public abstract class LayoutEventScriptEditorTreeNodeMayBeOptional : LayoutEventScriptEditorTreeNode {
 		public LayoutEventScriptEditorTreeNodeMayBeOptional(XmlElement eventElement) : base(eventElement) {
@@ -1088,30 +997,14 @@ namespace LayoutManager.CommonUI.Controls
 			}
 		}
 
-		public override string AddNodeEventName {
-			get {
-				return "get-event-script-editor-event-container-menu";
-			}
-		}
+        public override string AddNodeEventName => "get-event-script-editor-event-container-menu";
 
-		public override string InsertNodeEventName {
-			get {
-				return "get-event-script-editor-insert-event-container-menu";
-			}
-		}
+        public override string InsertNodeEventName => "get-event-script-editor-insert-event-container-menu";
 
-		public override LayoutEventScriptEditorTreeNode NodeToEdit {
-			get {
-				return null;		// Composite rules can not be edited
-			}
-		}
-		
-		protected override int IconIndex {
-			get {
-				return (Element.HasAttribute("LimitToScope") && XmlConvert.ToBoolean("LimitToScope") == false) ? 4 : 3;
-			}
-		}
-	}
+        public override LayoutEventScriptEditorTreeNode NodeToEdit => null;		// Composite rules can not be edited
+
+        protected override int IconIndex => (Element.HasAttribute("LimitToScope") && XmlConvert.ToBoolean("LimitToScope") == false) ? 4 : 3;
+    }
 
 	public abstract class LayoutEventScriptEditorTreeNodeEventSection : LayoutEventScriptEditorTreeNode {
 
@@ -1119,118 +1012,58 @@ namespace LayoutManager.CommonUI.Controls
 			AddChildEventScriptTreeNodes();
 		}
 
-		public override LayoutEventScriptEditorTreeNode NodeToEdit {
-			get {
-				return null;		// Event section cannot be edited
-			}
-		}
+        public override LayoutEventScriptEditorTreeNode NodeToEdit => null;     // Event section cannot be edited
 
-		public override bool CanReorder {
-			get {
-				return true;
-			}
-		}
-	}
+        public override bool CanReorder => true;
+    }
 
 	public abstract class LayoutEventScriptEditorTreeNodeEvent : LayoutEventScriptEditorTreeNodeMayBeOptional {
 		public LayoutEventScriptEditorTreeNodeEvent(XmlElement eventElement) : base(eventElement) {
 		}
 
-		public override string AddNodeEventName {
-			get {
-				return "get-event-script-editor-event-menu";
-			}
-		}
+        public override string AddNodeEventName => "get-event-script-editor-event-menu";
 
-		public override string InsertNodeEventName {
-			get {
-				return "get-event-script-editor-insert-event-container-menu";
-			}
-		}
+        public override string InsertNodeEventName => "get-event-script-editor-insert-event-container-menu";
 
-		protected override int IconIndex {
-			get {
-				return (Element.HasAttribute("LimitToScope") && XmlConvert.ToBoolean(Element.GetAttribute("LimitToScope")) == false) ? IconEventNotLimitedToScope : IconEvent;
-			}
-		}
+        protected override int IconIndex => (Element.HasAttribute("LimitToScope") && XmlConvert.ToBoolean(Element.GetAttribute("LimitToScope")) == false) ? IconEventNotLimitedToScope : IconEvent;
 
-		public override int MinSubNodes {
-			get {
-				return 0;
-			}
-		}
-	}
+        public override int MinSubNodes => 0;
+    }
 
 	public abstract class LayoutEventScriptEditorTreeNodeConditionContainer : LayoutEventScriptEditorTreeNode {
 		public LayoutEventScriptEditorTreeNodeConditionContainer(XmlElement conditionElement) : base(conditionElement) {
 		}
 
-		public override string AddNodeEventName {
-			get {
-				return "get-event-script-editor-condition-section-menu";
-			}
-		}
+        public override string AddNodeEventName => "get-event-script-editor-condition-section-menu";
 
-		public override string InsertNodeEventName {
-			get {
-				return "get-event-script-editor-insert-condition-container-menu";
-			}
-		}
+        public override string InsertNodeEventName => "get-event-script-editor-insert-condition-container-menu";
 
-		public override LayoutEventScriptEditorTreeNode NodeToEdit {
-			get {
-				return null;		// Condition container cannot be edited
-			}
-		}
+        public override LayoutEventScriptEditorTreeNode NodeToEdit => null;     // Condition container cannot be edited
 
-		public override bool CanReorder {
-			get {
-				return true;		// Conditions within the container can be reordered
-			}
-		}
+        public override bool CanReorder => true;		// Conditions within the container can be reordered
 
-		protected override int IconIndex {
-			get {
-				return IconCondition;
-			}
-		}
-	}
+        protected override int IconIndex => IconCondition;
+    }
 
 	public abstract class LayoutEventScriptEditorTreeNodeCondition : LayoutEventScriptEditorTreeNode {
 
 		public LayoutEventScriptEditorTreeNodeCondition(XmlElement conditionElement) : base(conditionElement) {
 		}
 
-		public override string InsertNodeEventName {
-			get {
-				return "get-event-script-editor-insert-condition-container-menu";
-			}
-		}
+        public override string InsertNodeEventName => "get-event-script-editor-insert-condition-container-menu";
 
-		protected override int IconIndex {
-			get {
-				return IconCondition;
-			}
-		}
+        protected override int IconIndex => IconCondition;
 
-		public override int MinSubNodes {
-			get {
-				return 0;
-			}
-		}
-	}
+        public override int MinSubNodes => 0;
+    }
 
 	public abstract class LayoutEventScriptEditorTreeNodeAction : LayoutEventScriptEditorTreeNode {
 
 		public LayoutEventScriptEditorTreeNodeAction(XmlElement actionElement) : base(actionElement) {
 		}
 
-		protected override int IconIndex {
-			get {
-				return IconAction;
-			}
-		}
-	}
+        protected override int IconIndex => IconAction;
+    }
 
 	#endregion
 
@@ -1241,24 +1074,12 @@ namespace LayoutManager.CommonUI.Controls
 		public LayoutEventScriptEditorTreeNodeEventsSection(XmlElement eventsElement) : base(eventsElement) {
 		}
 
-		public override string AddNodeEventName {
-			get {
-				return "get-event-script-editor-events-section-menu";
-			}
-		}
+        public override string AddNodeEventName => "get-event-script-editor-events-section-menu";
 
-		protected override int IconIndex {
-			get {
-				return IconEventSection;
-			}
-		}
+        protected override int IconIndex => IconEventSection;
 
-		protected override string Description {
-			get {
-				return "Events";
-			}
-		}
-	}
+        protected override string Description => "Events";
+    }
 
 	public class LayoutEventScriptEditorTreeNodeConditionSection : LayoutEventScriptEditorTreeNodeEventSection {
 
@@ -1266,30 +1087,14 @@ namespace LayoutManager.CommonUI.Controls
 			Text = "Condition";
 		}
 
-		public override string AddNodeEventName {
-			get {
-				return "get-event-script-editor-condition-section-menu";
-			}
-		}
+        public override string AddNodeEventName => "get-event-script-editor-condition-section-menu";
 
-		protected override int IconIndex {
-			get {
-				return IconConditionSection;
-			}
-		}
+        protected override int IconIndex => IconConditionSection;
 
-		public override int MaxSubNodes {
-			get {
-				return 1;
-			}
-		}
+        public override int MaxSubNodes => 1;
 
-		protected override string Description {
-			get {
-				return "Condition";
-			}
-		}
-	}
+        protected override string Description => "Condition";
+    }
 
 	public class LayoutEventScriptEditorTreeNodeActionsSection : LayoutEventScriptEditorTreeNodeEventSection {
 
@@ -1297,24 +1102,12 @@ namespace LayoutManager.CommonUI.Controls
 			Text = "Actions";
 		}
 
-		public override string AddNodeEventName {
-			get {
-				return "get-event-script-editor-actions-section-menu";
-			}
-		}
+        public override string AddNodeEventName => "get-event-script-editor-actions-section-menu";
 
-		protected override int IconIndex {
-			get {
-				return 2;
-			}
-		}
+        protected override int IconIndex => 2;
 
-		protected override string Description {
-			get {
-				return "Actions";
-			}
-		}
-	}
+        protected override string Description => "Actions";
+    }
 
 	#endregion
 }

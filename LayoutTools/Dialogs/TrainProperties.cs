@@ -94,13 +94,9 @@ namespace LayoutManager.Tools.Dialogs
 			EventManager.AddObjectSubscriptions(this);
 		}
 
-		public XmlElement Element {
-			get {
-				return train.Element;
-			}
-		}
+        public XmlElement Element => train.Element;
 
-		private void updateControls(Object sender, EventArgs e) {
+        private void updateControls(Object sender, EventArgs e) {
 			updateControls();
 		}
 
@@ -713,14 +709,9 @@ namespace LayoutManager.Tools.Dialogs
 			}
 		}
 
-		private int ImageWidth {
-			get {
+        private int ImageWidth => ((panelLocoImages.Height - 8) * 50) / 36;
 
-				return ((panelLocoImages.Height - 8) * 50) / 36;
-			}
-		}
-
-		private void panelLocoImages_Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
+        private void panelLocoImages_Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
 			int						x = 2;
 			int						w = ImageWidth;
 			LocomotiveImagePainter	locoPainter = new LocomotiveImagePainter();
@@ -780,12 +771,8 @@ namespace LayoutManager.Tools.Dialogs
 				SubItems[3].Text = loco.TypeName;
 			}
 
-			public TrainLocomotiveInfo TrainLocomotive {
-				get {
-					return trainLocomotive;
-				}
-			}
-		}
+            public TrainLocomotiveInfo TrainLocomotive => trainLocomotive;
+        }
 
 		class TrainLocomotiveCancelInfo {
 			public Guid						LocomotiveID;

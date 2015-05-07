@@ -13,12 +13,8 @@ namespace LayoutManager {
 			this.loco = loco;
 		}
 
-		public LocomotiveInfo Locomotive {
-			get {
-				return loco;
-			}
-		}
-	}
+        public LocomotiveInfo Locomotive => loco;
+    }
 
 	#region Locomotive Manager Exception classess
 
@@ -36,12 +32,8 @@ namespace LayoutManager {
 			this.usedBy = usedBy;
 		}
 
-		public TrainStateInfo UsedBy {
-			get {
-				return usedBy;
-			}
-		}
-	}
+        public TrainStateInfo UsedBy => usedBy;
+    }
 
 	public class TrainLocomotiveAlreadyUsedException : LayoutLocomotiveException {
 		TrainInCollectionInfo	trainInCollection;
@@ -53,18 +45,10 @@ namespace LayoutManager {
 			this.trainState = trainState;
 		}
 
-		public TrainInCollectionInfo TrainInCollection {
-			get {
-				return trainInCollection;
-			}
-		}
+        public TrainInCollectionInfo TrainInCollection => trainInCollection;
 
-		public TrainStateInfo Train {
-			get {
-				return trainState;
-			}
-		}
-	}
+        public TrainStateInfo Train => trainState;
+    }
 
 	public class LocomotiveAlreadyUsedException : LayoutLocomotiveException {
 		TrainStateInfo	trainState;
@@ -74,12 +58,8 @@ namespace LayoutManager {
 			this.trainState = trainState;
 		}
 
-		public TrainStateInfo Train {
-			get {
-				return trainState;
-			}
-		}
-	}
+        public TrainStateInfo Train => trainState;
+    }
 
 	public class TrainLocomotiveDuplicateAddressException : LayoutException {
 		TrainInCollectionInfo	trainInCollection;
@@ -94,24 +74,12 @@ namespace LayoutManager {
 			this.loco2 = loco2;
 		}
 
-		public TrainInCollectionInfo Train {
-			get {
-				return trainInCollection;
-			}
-		}
+        public TrainInCollectionInfo Train => trainInCollection;
 
-		public LocomotiveInfo Locomotive1 {
-			get {
-				return loco1;
-			}
-		}
+        public LocomotiveInfo Locomotive1 => loco1;
 
-		public LocomotiveInfo Locomotive2 {
-			get {
-				return loco2;
-			}
-		}
-	}
+        public LocomotiveInfo Locomotive2 => loco2;
+    }
 
 	public abstract class ElementNotOnTrackException : LayoutException {
 		XmlElement	_element;
@@ -120,24 +88,12 @@ namespace LayoutManager {
 			this._element = element;
 		}
 
-		public XmlElement Element {
-			get {
-				return _element;
-			}
-		}
+        public XmlElement Element => _element;
 
-		public bool IsLocomotive {
-			get {
-				return _element.Name == "Locomotive";
-			}
-		}
+        public bool IsLocomotive => _element.Name == "Locomotive";
 
-		public bool IsTrain {
-			get {
-				return _element.Name == "Train";
-			}
-		}
-	}
+        public bool IsTrain => _element.Name == "Train";
+    }
 
 	public class LocomotiveNotOnTrackException : ElementNotOnTrackException {
 		public LocomotiveNotOnTrackException(LocomotiveInfo loco) : 
@@ -175,12 +131,8 @@ namespace LayoutManager {
 			this.train = train;
 		}
 
-		public TrainCommonInfo Train {
-			get {
-				return train;
-			}
-		}
-	}
+        public TrainCommonInfo Train => train;
+    }
 
 	public class LocomotiveNotManagedException : LayoutLocomotiveException {
 		public LocomotiveNotManagedException(LocomotiveInfo loco) :
@@ -220,13 +172,9 @@ namespace LayoutManager {
 			base(blockEdge, "Unexpected block crossing. No locomotives in surrounding blocks") {
 		}
 
-		public override String DefaultMessageType {
-			get {
-				return "warning";
-			}
-		}
+        public override String DefaultMessageType => "warning";
 
-	}
+    }
 
 	public class AmbiguousBlockCrossingException : BlockEdgeCrossingException {
 		public AmbiguousBlockCrossingException(LayoutBlockEdgeBase blockEdge) :
@@ -251,12 +199,8 @@ namespace LayoutManager {
 			Subject = selection;
 		}
 
-		public TrainStateInfo LocomotiveState {
-			get {
-				return trainState;
-			}
-		}
-	}
+        public TrainStateInfo LocomotiveState => trainState;
+    }
 
 	public class LocomotiveMotionNotConsistentWithTurnoutSettingException : BlockEdgeCrossingException {
 		TrainStateInfo	train;
@@ -270,24 +214,12 @@ namespace LayoutManager {
 			this.toBlock = toBlock;
 		}
 
-		public TrainStateInfo Train {
-			get {
-				return train;
-			}
-		}
+        public TrainStateInfo Train => train;
 
-		public LayoutBlock FromBlock {
-			get {
-				return fromBlock;
-			}
-		}
+        public LayoutBlock FromBlock => fromBlock;
 
-		public LayoutBlock ToBlock {
-			get {
-				return toBlock;
-			}
-		}
-	}
+        public LayoutBlock ToBlock => toBlock;
+    }
 
 
 	public class TrainDetectionException : LayoutException {
@@ -298,12 +230,8 @@ namespace LayoutManager {
 			this.occupancyBlock = occupancyBlock;
 		}
 
-		public LayoutOccupancyBlock OccupancyBlock {
-			get {
-				return occupancyBlock;
-			}
-		}
-	}
+        public LayoutOccupancyBlock OccupancyBlock => occupancyBlock;
+    }
 
 	public class UnexpectedTrainDetectionException : TrainDetectionException {
 		public UnexpectedTrainDetectionException(LayoutOccupancyBlock occupancyBlock) :
@@ -322,12 +250,8 @@ namespace LayoutManager {
 			base(block, "It is not possible to figure out which train enters this no-feedback block") {
 		}
 
-		public LayoutBlock Block {
-			get {
-				return (LayoutBlock)Subject;
-			}
-		}
-	}
+        public LayoutBlock Block => (LayoutBlock)Subject;
+    }
 
 	public class DetectedRunawayTrainException : TrainDetectionException {
 		TrainStateInfo train;
@@ -342,12 +266,8 @@ namespace LayoutManager {
 			this.train = train;
 		}
 
-		public TrainStateInfo Train {
-			get {
-				return train;
-			}
-		}
-	}
+        public TrainStateInfo Train => train;
+    }
 
 	public class DetectedRunawayTrainAndFaultyTurnout : DetectedRunawayTrainException {
 		IModelComponentIsMultiPath turnout;
@@ -359,12 +279,8 @@ namespace LayoutManager {
 			Subject = new LayoutSelection(new ModelComponent[] { occupancyBlock.BlockDefinintion, (ModelComponent)turnout });
 		}
 
-		public IModelComponentIsMultiPath Turnout {
-			get {
-				return turnout;
-			}
-		}
-	}
+        public IModelComponentIsMultiPath Turnout => turnout;
+    }
 
 	#endregion
 
@@ -378,12 +294,8 @@ namespace LayoutManager {
 			this.imageFilename = imageFilename;
 		}
 
-		public String ImageFilename {
-			get {
-				return imageFilename;
-			}
-		}
-	}
+        public String ImageFilename => imageFilename;
+    }
 
 	#endregion
 
@@ -396,18 +308,10 @@ namespace LayoutManager {
 			this.tripPlan = tripPlan;
 		}
 
-		public LayoutBlockDefinitionComponent BlockInfo {
-			get {
-				return (LayoutBlockDefinitionComponent)Subject;
-			}
-		}
+        public LayoutBlockDefinitionComponent BlockInfo => (LayoutBlockDefinitionComponent)Subject;
 
-		public TripPlanInfo TripPlan {
-			get {
-				return tripPlan;
-			}
-		}
-	}
+        public TripPlanInfo TripPlan => tripPlan;
+    }
 
 	#endregion
 }

@@ -145,25 +145,21 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		/// <summary>
-		/// Check whether any action in this container requires that tagret to be connected to (or on) track
-		/// </summary>
-		/// <returns>True - target need to be placed on track</returns>
-		public bool IsTrackRequired() {
-			return (from action in this where action is ILayoutProgrammingAction select action as ILayoutProgrammingAction).Any(action => action.RequiresTrack);
-		}
+        /// <summary>
+        /// Check whether any action in this container requires that tagret to be connected to (or on) track
+        /// </summary>
+        /// <returns>True - target need to be placed on track</returns>
+        public bool IsTrackRequired() => (from action in this where action is ILayoutProgrammingAction select action as ILayoutProgrammingAction).Any(action => action.RequiresTrack);
 
-		/// <summary>
-		/// Check whether allocation of programing track is needed for applying the actions stored in this container
-		/// </summary>
-		/// <returns>True = programming track is needed, false = no programming track is needed</returns>
-		public bool IsProgrammingTrackRequired() {
-			return (from action in this where action is ILayoutDccProgrammingAction select action as ILayoutDccProgrammingAction).Any(action => !action.CanUseProgramOnMain);
-		}
+        /// <summary>
+        /// Check whether allocation of programing track is needed for applying the actions stored in this container
+        /// </summary>
+        /// <returns>True = programming track is needed, false = no programming track is needed</returns>
+        public bool IsProgrammingTrackRequired() => (from action in this where action is ILayoutDccProgrammingAction select action as ILayoutDccProgrammingAction).Any(action => !action.CanUseProgramOnMain);
 
-		#region IEnumerable<LayoutAction> Members
+        #region IEnumerable<LayoutAction> Members
 
-		public IEnumerator<LayoutAction> GetEnumerator() {
+        public IEnumerator<LayoutAction> GetEnumerator() {
 			// Pass on a static list so it would be possible to delete action during the loop
 			foreach(XmlElement actionElement in Element) {
 				LayoutAction action = (LayoutAction)GetAction(actionElement);
@@ -173,16 +169,14 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		#endregion
+        #endregion
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
-		#endregion
-	}
+        #endregion
+    }
 
 	public enum LayoutActionResult {
 		Ok,
@@ -201,10 +195,8 @@ namespace LayoutManager.Model {
 			this.Action = action;
 		}
 
-		public override string ToString() {
-			return "Action: " + Action.ToString() + " failed (" + Result.ToString() + ")";
-		}
-	}
+        public override string ToString() => "Action: " + Action.ToString() + " failed (" + Result.ToString() + ")";
+    }
 
 	public enum ActionStatus {
 		Pending, InProgress, Done, Failed
@@ -259,13 +251,9 @@ namespace LayoutManager.Model {
 				Status = ActionStatus.Pending;
 		}
 
-		public virtual string Description {
-			get {
-				return "Action: " + GetType().Name;
-			}
-		}
+        public virtual string Description => "Action: " + GetType().Name;
 
-		public ActionStatus Status {
+        public ActionStatus Status {
 			get {
 				return (ActionStatus)Enum.Parse(typeof(ActionStatus), GetAttribute("Status"));
 			}
@@ -284,37 +272,31 @@ namespace LayoutManager.Model {
 
 		}
 
-		public override string ToString() {
-			return Description ?? "Action: " + this.GetType().Name;
-		}
+        public override string ToString() => Description ?? "Action: " + this.GetType().Name;
 
-		/// <summary>
-		/// Return true if a given action is defined for a given target
-		/// </summary>
-		/// <param name="actionName">Action name (e.g. set-address)</param>
-		/// <param name="target">The object on which the action should be done</param>
-		/// <returns>True - action is defined, false action is not defined</returns>
-		public static bool HasAction(string actionName, IHasDecoder target) {
-			return (bool)EventManager.Event(new LayoutEvent<IHasDecoder, bool, bool>("query-action", target, false).SetOption("Action", actionName));
-		}
-	}
+        /// <summary>
+        /// Return true if a given action is defined for a given target
+        /// </summary>
+        /// <param name="actionName">Action name (e.g. set-address)</param>
+        /// <param name="target">The object on which the action should be done</param>
+        /// <returns>True - action is defined, false action is not defined</returns>
+        public static bool HasAction(string actionName, IHasDecoder target) => (bool)EventManager.Event(new LayoutEvent<IHasDecoder, bool, bool>("query-action", target, false).SetOption("Action", actionName));
+    }
 
 	public abstract class LayoutProgrammingAction : LayoutAction, ILayoutProgrammingAction {
 		public LayoutProgrammingAction(XmlElement actionElement)
 			: base(actionElement) {
 		}
 
-		/// <summary>
-		/// Target must be connected to (or on) a track for action to be applied
-		/// </summary>
-		public virtual bool RequiresTrack {
-			get { return true; }
-		}
+        /// <summary>
+        /// Target must be connected to (or on) a track for action to be applied
+        /// </summary>
+        public virtual bool RequiresTrack => true;
 
-		/// <summary>
-		/// Do what ever is needed to preprare action for programming (for example, generate CVs values)
-		/// </summary>
-		public virtual void PrepareProgramming() {
+        /// <summary>
+        /// Do what ever is needed to preprare action for programming (for example, generate CVs values)
+        /// </summary>
+        public virtual void PrepareProgramming() {
 		}
 
         /// <summary>
@@ -390,16 +372,14 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		/// <summary>
-		/// Set CV to be programmed
-		/// </summary>
-		/// <param name="cvNumber">Control variable (CV) number</param>
-		/// <param name="value">The value to be programmed</param>
-		public DccProgrammingCV SetCV(int cvNumber, byte value) {
-			return new DccProgrammingCV(Element, cvNumber, value);
-		}
+        /// <summary>
+        /// Set CV to be programmed
+        /// </summary>
+        /// <param name="cvNumber">Control variable (CV) number</param>
+        /// <param name="value">The value to be programmed</param>
+        public DccProgrammingCV SetCV(int cvNumber, byte value) => new DccProgrammingCV(Element, cvNumber, value);
 
-		public IEnumerable<DccProgrammingCV> CVs {
+        public IEnumerable<DccProgrammingCV> CVs {
 			get {
 				foreach(XmlElement cvElement in Element.GetElementsByTagName("CV"))
 					yield return new DccProgrammingCV(cvElement);
@@ -514,13 +494,9 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public override string Description {
-			get {
-				return "Set address to " + Address + ", " + SpeedSteps + " speed steps" + (ReverseDirection ? ", reverse direction" : "");
-			}
-		}
+        public override string Description => "Set address to " + Address + ", " + SpeedSteps + " speed steps" + (ReverseDirection ? ", reverse direction" : "");
 
-		public override void PrepareProgramming() {
+        public override void PrepareProgramming() {
 			byte cv29 = 0;
 
 			if(Address > 127)

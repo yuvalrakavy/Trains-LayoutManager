@@ -45,16 +45,12 @@ namespace LayoutManager.Tools.Dialogs
 			}
 		}
 
-		public Guid IconID {
-			get {
-				return selectTripPlanIcon.SelectedID;
-			}
-		}
+        public Guid IconID => selectTripPlanIcon.SelectedID;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{

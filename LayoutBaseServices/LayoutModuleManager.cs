@@ -91,19 +91,15 @@ namespace LayoutManager {
 			}
 		}
 
-		/// <summary>
-		/// Return the instance of the module class (or null if the module is in disabled state)
-		/// </summary>
-		public Object ModuleInstance {
-			get {
-				return moduleInstance;
-			}
-		}
+        /// <summary>
+        /// Return the instance of the module class (or null if the module is in disabled state)
+        /// </summary>
+        public Object ModuleInstance => moduleInstance;
 
-		/// <summary>
-		/// Internal method to enable the module
-		/// </summary>
-		protected void EnableModule() {
+        /// <summary>
+        /// Internal method to enable the module
+        /// </summary>
+        protected void EnableModule() {
 			if(moduleInstance == null) {
 				moduleInstance = layoutAssembly.Assembly.CreateInstance(moduleType.FullName);
 
@@ -168,19 +164,15 @@ namespace LayoutManager {
 		public LayoutModuleAttribute() {
 		}
 
-		/// <summary>
-		/// The module name (as shown to the user)
-		/// </summary>
-		public String ModuleName {
-			get {
-				return moduleName;
-			}
-		}
+        /// <summary>
+        /// The module name (as shown to the user)
+        /// </summary>
+        public String ModuleName => moduleName;
 
-		/// <summary>
-		/// If true, the user can enable/disable the module via the UI
-		/// </summary>
-		public bool UserControl {
+        /// <summary>
+        /// If true, the user can enable/disable the module via the UI
+        /// </summary>
+        public bool UserControl {
 			set {
 				userControl = value;
 			}
@@ -335,16 +327,12 @@ namespace LayoutManager {
 			}
 		}
 
-		/// <summary>
-		/// Return the assembly object
-		/// </summary>
-		public Assembly Assembly {
-			get {
-				return assembly;
-			}
-		}
+        /// <summary>
+        /// Return the assembly object
+        /// </summary>
+        public Assembly Assembly => assembly;
 
-		public AssemblyOrigin Origin {
+        public AssemblyOrigin Origin {
 			get {
 				return _origin;
 			}
@@ -370,19 +358,15 @@ namespace LayoutManager {
 			}
 		}
 
-		/// <summary>
-		/// Return an array with all the layout modules in this assembly
-		/// </summary>
-		public IList<LayoutModule> LayoutModules {
-			get {
-				return layoutModules.AsReadOnly();
-			}
-		}
+        /// <summary>
+        /// Return an array with all the layout modules in this assembly
+        /// </summary>
+        public IList<LayoutModule> LayoutModules => layoutModules.AsReadOnly();
 
-		/// <summary>
-		/// Scan assembly for classes annotated with the LayoutModule attribute
-		/// </summary>
-		protected void ScanAssembly() {
+        /// <summary>
+        /// Scan assembly for classes annotated with the LayoutModule attribute
+        /// </summary>
+        protected void ScanAssembly() {
 			if(assembly == null)
 				assembly = Assembly.LoadFrom(AssemblyFilename);
 
@@ -557,20 +541,16 @@ namespace LayoutManager {
 			}
 		}
 
-		/// <summary>
-		/// A collection of all the referenced layout assemblies
-		/// </summary>
-		public LayoutAssemblyCollection LayoutAssemblies {
-			get {
-				return layoutAssemblies;
-			}
-		}
+        /// <summary>
+        /// A collection of all the referenced layout assemblies
+        /// </summary>
+        public LayoutAssemblyCollection LayoutAssemblies => layoutAssemblies;
 
-		/// <summary>
-		/// Store the layout module manager state on a XML document
-		/// </summary>
-		/// <param name="w">XML document writer</param>
-		public void WriteXml(XmlWriter w) {
+        /// <summary>
+        /// Store the layout module manager state on a XML document
+        /// </summary>
+        /// <param name="w">XML document writer</param>
+        public void WriteXml(XmlWriter w) {
 			w.WriteStartElement("LayoutModuleManager");
 			layoutAssemblies.WriteXml(w);
 			w.WriteEndElement();

@@ -233,13 +233,9 @@ namespace LayoutManager.Dialogs
 				this.SubItems.Add(element.GetAttribute("Description"));
 			}
 
-			public XmlElement Element {
-				get {
-					return element;
-				}
-			}
+            public XmlElement Element => element;
 
-			public void Edit() {
+            public void Edit() {
 				StandardFunction	d = new StandardFunction(element);
 
 				if(d.ShowDialog(this.ListView.Parent) == DialogResult.OK) {

@@ -26,22 +26,16 @@ namespace LayoutManager {
 		}
 
 		public class ZorderSorter : IComparer<ModelComponent> {
-			#region IComparer<ModelComponent> Members
+            #region IComparer<ModelComponent> Members
 
-			public int Compare(ModelComponent x, ModelComponent y) {
-				return y.ZOrder - x.ZOrder;
-			}
+            public int Compare(ModelComponent x, ModelComponent y) => y.ZOrder - x.ZOrder;
 
-			public bool Equals(ModelComponent x, ModelComponent y) {
-				return x == y;
-			}
+            public bool Equals(ModelComponent x, ModelComponent y) => x == y;
 
-			public int GetHashCode(ModelComponent obj) {
-				return obj.GetHashCode();
-			}
+            public int GetHashCode(ModelComponent obj) => obj.GetHashCode();
 
-			#endregion
-		}
+            #endregion
+        }
 
 		protected override void OnClick(EventArgs e) {
 			base.OnClick(e);

@@ -178,12 +178,8 @@ namespace LayoutManager.Dialogs {
 			Text = policyType.DisplayName;
 		}
 
-		public LayoutPolicyType PolicyType {
-			get {
-				return policyType;
-			}
-		}
-	}
+        public LayoutPolicyType PolicyType => policyType;
+    }
 
 	class PolicyTreeNode : TreeNode {
 		LayoutPolicyInfo policy;
@@ -194,13 +190,9 @@ namespace LayoutManager.Dialogs {
 			this.Text = policy.Name;
 		}
 
-		public LayoutPolicyInfo Policy {
-			get {
-				return policy;
-			}
-		}
+        public LayoutPolicyInfo Policy => policy;
 
-		public bool Exported {
+        public bool Exported {
 			get {
 				return exported;
 			}

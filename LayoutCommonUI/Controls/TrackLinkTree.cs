@@ -88,12 +88,8 @@ namespace LayoutManager.CommonUI.Controls
 				}
 			}
 
-			internal LayoutTrackLink Link {
-				get {
-					return thisLink;
-				}
-			}
-		}
+            internal LayoutTrackLink Link => thisLink;
+        }
 
 		class AreaTreeNode : TreeNode {
 			internal AreaTreeNode(LayoutModelArea area) {

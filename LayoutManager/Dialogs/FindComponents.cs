@@ -23,13 +23,9 @@ namespace LayoutManager.Dialogs {
 			this.activeArea = area;
 		}
 
-		public LayoutModelArea ActiveArea {
-			get {
-				return activeArea;
-			}
-		}
+        public LayoutModelArea ActiveArea => activeArea;
 
-		private bool isMatch(string text, string findWhat) {
+        private bool isMatch(string text, string findWhat) {
 			if(checkBoxExactMatch.Checked)
 				return text.ToLower() == findWhat;
 			else
