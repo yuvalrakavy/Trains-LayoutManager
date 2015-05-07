@@ -11,40 +11,39 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for LocomotiveCatalogStandardImages.
 	/// </summary>
-	public class LocomotiveCatalogStandardImages : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.PictureBox pictureBoxES;
-		private System.Windows.Forms.PictureBox pictureBoxED;
-		private System.Windows.Forms.PictureBox pictureBoxEE;
-		private System.Windows.Forms.Button buttonSetES;
-		private System.Windows.Forms.Button buttonClearES;
-		private System.Windows.Forms.Button buttonClearED;
-		private System.Windows.Forms.Button buttonSetED;
-		private System.Windows.Forms.Button buttonClearEE;
-		private System.Windows.Forms.Button buttonSetEE;
-		private System.Windows.Forms.Button buttonSetUS;
-		private System.Windows.Forms.PictureBox pictureBoxUS;
-		private System.Windows.Forms.PictureBox pictureBoxUD;
-		private System.Windows.Forms.PictureBox pictureBoxUE;
-		private System.Windows.Forms.Button buttonClearUS;
-		private System.Windows.Forms.Button buttonClearUD;
-		private System.Windows.Forms.Button buttonSetUD;
-		private System.Windows.Forms.Button buttonClearUE;
-		private System.Windows.Forms.Button buttonSetUE;
+	public class LocomotiveCatalogStandardImages : Form {
+		private GroupBox groupBox1;
+		private GroupBox groupBox2;
+		private Label label1;
+		private Label label2;
+		private Label label3;
+		private Label label4;
+		private Label label5;
+		private Label label6;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private PictureBox pictureBoxES;
+		private PictureBox pictureBoxED;
+		private PictureBox pictureBoxEE;
+		private Button buttonSetES;
+		private Button buttonClearES;
+		private Button buttonClearED;
+		private Button buttonSetED;
+		private Button buttonClearEE;
+		private Button buttonSetEE;
+		private Button buttonSetUS;
+		private PictureBox pictureBoxUS;
+		private PictureBox pictureBoxUD;
+		private PictureBox pictureBoxUE;
+		private Button buttonClearUS;
+		private Button buttonClearUD;
+		private Button buttonSetUD;
+		private Button buttonClearUE;
+		private Button buttonSetUE;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		class ImageEntry {
 			public PictureBox	picBox;
@@ -62,14 +61,14 @@ namespace LayoutManager.Dialogs
 		ImageEntry[,]				imageTable;
 		LocomotiveOrigin[]			origins = new LocomotiveOrigin[] { LocomotiveOrigin.Europe, LocomotiveOrigin.US };
 		LocomotiveKind[]			kinds = new LocomotiveKind[] { LocomotiveKind.Steam, LocomotiveKind.Diesel, LocomotiveKind.Electric, LocomotiveKind.SoundUnit };
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.Button buttonSetESU;
-		private System.Windows.Forms.PictureBox pictureBoxESU;
-		private System.Windows.Forms.Button buttonClearESU;
-		private System.Windows.Forms.Button buttonSetUSU;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.PictureBox pictureBoxUSU;
-		private System.Windows.Forms.Button buttonClearUSU;
+		private Label label7;
+		private Button buttonSetESU;
+		private PictureBox pictureBoxESU;
+		private Button buttonClearESU;
+		private Button buttonSetUSU;
+		private Label label8;
+		private PictureBox pictureBoxUSU;
+		private Button buttonClearUSU;
 		bool[,]						modified;
 
 		public LocomotiveCatalogStandardImages(LocomotiveCatalogInfo catalog) {
@@ -125,42 +124,42 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.pictureBoxES = new System.Windows.Forms.PictureBox();
-			this.pictureBoxED = new System.Windows.Forms.PictureBox();
-			this.pictureBoxEE = new System.Windows.Forms.PictureBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.buttonSetES = new System.Windows.Forms.Button();
-			this.buttonClearES = new System.Windows.Forms.Button();
-			this.buttonClearED = new System.Windows.Forms.Button();
-			this.buttonSetED = new System.Windows.Forms.Button();
-			this.buttonClearEE = new System.Windows.Forms.Button();
-			this.buttonSetEE = new System.Windows.Forms.Button();
-			this.buttonSetUS = new System.Windows.Forms.Button();
-			this.label4 = new System.Windows.Forms.Label();
-			this.pictureBoxUS = new System.Windows.Forms.PictureBox();
-			this.pictureBoxUD = new System.Windows.Forms.PictureBox();
-			this.pictureBoxUE = new System.Windows.Forms.PictureBox();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.buttonClearUS = new System.Windows.Forms.Button();
-			this.buttonClearUD = new System.Windows.Forms.Button();
-			this.buttonSetUD = new System.Windows.Forms.Button();
-			this.buttonClearUE = new System.Windows.Forms.Button();
-			this.buttonSetUE = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonSetESU = new System.Windows.Forms.Button();
-			this.label7 = new System.Windows.Forms.Label();
-			this.pictureBoxESU = new System.Windows.Forms.PictureBox();
-			this.buttonClearESU = new System.Windows.Forms.Button();
-			this.buttonSetUSU = new System.Windows.Forms.Button();
-			this.label8 = new System.Windows.Forms.Label();
-			this.pictureBoxUSU = new System.Windows.Forms.PictureBox();
-			this.buttonClearUSU = new System.Windows.Forms.Button();
+			this.groupBox1 = new GroupBox();
+			this.groupBox2 = new GroupBox();
+			this.pictureBoxES = new PictureBox();
+			this.pictureBoxED = new PictureBox();
+			this.pictureBoxEE = new PictureBox();
+			this.label1 = new Label();
+			this.label2 = new Label();
+			this.label3 = new Label();
+			this.buttonSetES = new Button();
+			this.buttonClearES = new Button();
+			this.buttonClearED = new Button();
+			this.buttonSetED = new Button();
+			this.buttonClearEE = new Button();
+			this.buttonSetEE = new Button();
+			this.buttonSetUS = new Button();
+			this.label4 = new Label();
+			this.pictureBoxUS = new PictureBox();
+			this.pictureBoxUD = new PictureBox();
+			this.pictureBoxUE = new PictureBox();
+			this.label5 = new Label();
+			this.label6 = new Label();
+			this.buttonClearUS = new Button();
+			this.buttonClearUD = new Button();
+			this.buttonSetUD = new Button();
+			this.buttonClearUE = new Button();
+			this.buttonSetUE = new Button();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.buttonSetESU = new Button();
+			this.label7 = new Label();
+			this.pictureBoxESU = new PictureBox();
+			this.buttonClearESU = new Button();
+			this.buttonSetUSU = new Button();
+			this.label8 = new Label();
+			this.pictureBoxUSU = new PictureBox();
+			this.buttonClearUSU = new Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();

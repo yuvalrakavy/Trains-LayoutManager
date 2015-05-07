@@ -12,22 +12,21 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for LocomotiveFunction.
 	/// </summary>
-	public class LocomotiveFunction : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.NumericUpDown numericUpDownFunctionNumber;
+	public class LocomotiveFunction : Form {
+		private Label label1;
+		private Label label2;
+		private NumericUpDown numericUpDownFunctionNumber;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
-		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.ComboBox comboBoxFunctionName;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.TextBox textBoxFunctionDescription;
-		private System.Windows.Forms.ComboBox comboBoxFunctionType;
+		private Container components = null;
+		private Button buttonOk;
+		private Button buttonCancel;
+		private ComboBox comboBoxFunctionName;
+		private Label label3;
+		private Label label4;
+		private TextBox textBoxFunctionDescription;
+		private ComboBox comboBoxFunctionType;
 
 		private void endOfDesignerVariables() { }
 
@@ -84,16 +83,16 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.numericUpDownFunctionNumber = new System.Windows.Forms.NumericUpDown();
-			this.label2 = new System.Windows.Forms.Label();
-			this.buttonOk = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.comboBoxFunctionName = new System.Windows.Forms.ComboBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.comboBoxFunctionType = new System.Windows.Forms.ComboBox();
-			this.label4 = new System.Windows.Forms.Label();
-			this.textBoxFunctionDescription = new System.Windows.Forms.TextBox();
+			this.label1 = new Label();
+			this.numericUpDownFunctionNumber = new NumericUpDown();
+			this.label2 = new Label();
+			this.buttonOk = new Button();
+			this.buttonCancel = new Button();
+			this.comboBoxFunctionName = new ComboBox();
+			this.label3 = new Label();
+			this.comboBoxFunctionType = new ComboBox();
+			this.label4 = new Label();
+			this.textBoxFunctionDescription = new TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownFunctionNumber)).BeginInit();
 			this.SuspendLayout();
 			// 

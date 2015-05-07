@@ -20,16 +20,16 @@ namespace Gui.Wizard
 	[ToolboxBitmap(typeof(Gui.Wizard.Wizard))]
 	public class Wizard : System.Windows.Forms.UserControl
 	{
-		protected internal System.Windows.Forms.Panel pnlButtons;
-		private System.Windows.Forms.Panel pnlButtonBright3d;
-		private System.Windows.Forms.Panel pnlButtonDark3d;
-		public System.Windows.Forms.Button btnBack;
-		public System.Windows.Forms.Button btnNext;
-		private System.Windows.Forms.Button btnCancel;
+		protected internal Panel pnlButtons;
+		private Panel pnlButtonBright3d;
+		private Panel pnlButtonDark3d;
+		public Button btnBack;
+		public Button btnNext;
+		private Button btnCancel;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		/// <summary>
 		/// Wizard control with designer support
@@ -77,12 +77,12 @@ namespace Gui.Wizard
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.pnlButtons = new System.Windows.Forms.Panel();
-			this.btnCancel = new System.Windows.Forms.Button();
-			this.btnNext = new System.Windows.Forms.Button();
-			this.btnBack = new System.Windows.Forms.Button();
-			this.pnlButtonBright3d = new System.Windows.Forms.Panel();
-			this.pnlButtonDark3d = new System.Windows.Forms.Panel();
+			this.pnlButtons = new Panel();
+			this.btnCancel = new Button();
+			this.btnNext = new Button();
+			this.btnBack = new Button();
+			this.pnlButtonBright3d = new Panel();
+			this.pnlButtonDark3d = new Panel();
 			this.pnlButtons.SuspendLayout();
 			this.SuspendLayout();
 			// 

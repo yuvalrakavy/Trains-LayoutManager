@@ -13,8 +13,8 @@ namespace Gui.Wizard
 	/// </summary>
 	public class InfoPage : InfoContainer
 	{
-		private System.Windows.Forms.Label lblDescription;
-		private System.ComponentModel.IContainer components = null;
+		private Label lblDescription;
+		private IContainer components = null;
 
 		/// <summary>
 		/// Default Constructor
@@ -49,7 +49,7 @@ namespace Gui.Wizard
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.lblDescription = new System.Windows.Forms.Label();
+			this.lblDescription = new Label();
 			this.SuspendLayout();
 			// 
 			// lblDescription

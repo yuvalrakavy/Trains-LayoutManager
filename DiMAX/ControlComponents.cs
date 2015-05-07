@@ -13,7 +13,7 @@ using LayoutManager.CommonUI;
 namespace DiMAX {
 
 	[LayoutModule("DiMAX Bus Definitions")]
-	class LGBcontrolComponents : LayoutModuleBase {
+	class DiMAXControlComponents : LayoutModuleBase {
 
 		ControlBusType	dccBus = null;
 		ControlBusType	dimaxBus = null;

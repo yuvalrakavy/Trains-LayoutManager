@@ -13,19 +13,18 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for MotionRamps.
 	/// </summary>
-	public class MotionRamps : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.ListView listViewRamps;
-		private System.Windows.Forms.Button buttonAdd;
-		private System.Windows.Forms.Button buttonEdit;
-		private System.Windows.Forms.Button buttonRemove;
-		private System.Windows.Forms.ImageList imageListButttons;
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.ColumnHeader columnHeaderName;
-		private System.Windows.Forms.ColumnHeader columnHeaderUsage;
-		private System.Windows.Forms.Button buttonMoveDown;
-		private System.Windows.Forms.Button buttonMoveUp;
-		private System.ComponentModel.IContainer components;
+	public class MotionRamps : Form {
+		private ListView listViewRamps;
+		private Button buttonAdd;
+		private Button buttonEdit;
+		private Button buttonRemove;
+		private ImageList imageListButttons;
+		private Button buttonClose;
+		private ColumnHeader columnHeaderName;
+		private ColumnHeader columnHeaderUsage;
+		private Button buttonMoveDown;
+		private Button buttonMoveUp;
+		private IContainer components;
 
 		private void endOfDesignerVariables() { }
 
@@ -90,18 +89,18 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(MotionRamps));
-			this.listViewRamps = new System.Windows.Forms.ListView();
-			this.buttonAdd = new System.Windows.Forms.Button();
-			this.buttonEdit = new System.Windows.Forms.Button();
-			this.buttonRemove = new System.Windows.Forms.Button();
-			this.buttonMoveDown = new System.Windows.Forms.Button();
-			this.imageListButttons = new System.Windows.Forms.ImageList(this.components);
-			this.buttonMoveUp = new System.Windows.Forms.Button();
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.columnHeaderName = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderUsage = new System.Windows.Forms.ColumnHeader();
+			this.listViewRamps = new ListView();
+			this.buttonAdd = new Button();
+			this.buttonEdit = new Button();
+			this.buttonRemove = new Button();
+			this.buttonMoveDown = new Button();
+			this.imageListButttons = new ImageList(this.components);
+			this.buttonMoveUp = new Button();
+			this.buttonClose = new Button();
+			this.columnHeaderName = new ColumnHeader();
+			this.columnHeaderUsage = new ColumnHeader();
 			this.SuspendLayout();
 			// 
 			// listViewRamps
@@ -109,7 +108,7 @@ namespace LayoutManager.Tools.Dialogs
 			this.listViewRamps.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 				| System.Windows.Forms.AnchorStyles.Left) 
 				| System.Windows.Forms.AnchorStyles.Right);
-			this.listViewRamps.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewRamps.Columns.AddRange(new ColumnHeader[] {
 																							this.columnHeaderName,
 																							this.columnHeaderUsage});
 			this.listViewRamps.FullRowSelect = true;

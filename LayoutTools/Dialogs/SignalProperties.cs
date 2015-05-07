@@ -13,22 +13,22 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TrackContactProperties.
 	/// </summary>
-	public class SignalProperties : System.Windows.Forms.Form, ILayoutComponentPropertiesDialog
+	public class SignalProperties : Form, ILayoutComponentPropertiesDialog
 	{
-		private System.Windows.Forms.TabPage tabPageAddress;
-		private System.Windows.Forms.TabControl tabControl;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private TabPage tabPageAddress;
+		private TabControl tabControl;
+		private Button buttonOK;
+		private Button buttonCancel;
 
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.RadioButton radioButtonSignalTypeLights;
-		private System.Windows.Forms.RadioButton radioButtonSignalTypeSemaphore;
-		private System.Windows.Forms.RadioButton radioButtonSignalTypeDistance;
+		private GroupBox groupBox1;
+		private RadioButton radioButtonSignalTypeLights;
+		private RadioButton radioButtonSignalTypeSemaphore;
+		private RadioButton radioButtonSignalTypeDistance;
 		private LayoutManager.CommonUI.Controls.PictureBoxWithTransparency pictureBoxWithTransparency1;
 		private LayoutManager.CommonUI.Controls.PictureBoxWithTransparency pictureBoxWithTransparency2;
 		private LayoutManager.CommonUI.Controls.PictureBoxWithTransparency pictureBoxWithTransparency3;
@@ -92,15 +92,15 @@ namespace LayoutManager.Tools.Dialogs
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SignalProperties));
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.tabControl = new System.Windows.Forms.TabControl();
-			this.tabPageAddress = new System.Windows.Forms.TabPage();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.radioButtonSignalTypeLights = new System.Windows.Forms.RadioButton();
-			this.radioButtonSignalTypeSemaphore = new System.Windows.Forms.RadioButton();
-			this.radioButtonSignalTypeDistance = new System.Windows.Forms.RadioButton();
-			this.checkBoxReverseLogic = new System.Windows.Forms.CheckBox();
+			this.buttonCancel = new Button();
+			this.buttonOK = new Button();
+			this.tabControl = new TabControl();
+			this.tabPageAddress = new TabPage();
+			this.groupBox1 = new GroupBox();
+			this.radioButtonSignalTypeLights = new RadioButton();
+			this.radioButtonSignalTypeSemaphore = new RadioButton();
+			this.radioButtonSignalTypeDistance = new RadioButton();
+			this.checkBoxReverseLogic = new CheckBox();
 			this.pictureBoxWithTransparency1 = new LayoutManager.CommonUI.Controls.PictureBoxWithTransparency();
 			this.pictureBoxWithTransparency2 = new LayoutManager.CommonUI.Controls.PictureBoxWithTransparency();
 			this.pictureBoxWithTransparency3 = new LayoutManager.CommonUI.Controls.PictureBoxWithTransparency();

@@ -16,15 +16,14 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TripPlanEditor.
 	/// </summary>
-	public class TripPlanEditor : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Button buttonSaveTripPlan;
-		private System.Windows.Forms.Button buttonGo;
-		private System.Windows.Forms.Button buttonCancel;
+	public class TripPlanEditor : Form {
+		private Button buttonSaveTripPlan;
+		private Button buttonGo;
+		private Button buttonCancel;
 		private LayoutManager.Tools.Controls.TripPlanEditor tripPlanEditor1;
 		private LayoutManager.CommonUI.Controls.TrainDriverComboBox trainDriverComboBox;
-		private System.Windows.Forms.Label label1;
-		private System.ComponentModel.IContainer components = null;
+		private Label label1;
+		private IContainer components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -109,12 +108,12 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonSaveTripPlan = new System.Windows.Forms.Button();
-			this.buttonGo = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonSaveTripPlan = new Button();
+			this.buttonGo = new Button();
+			this.buttonCancel = new Button();
 			this.tripPlanEditor1 = new LayoutManager.Tools.Controls.TripPlanEditor();
 			this.trainDriverComboBox = new LayoutManager.CommonUI.Controls.TrainDriverComboBox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label1 = new Label();
 			this.SuspendLayout();
 // 
 // buttonSaveTripPlan

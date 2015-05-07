@@ -18,11 +18,11 @@ namespace LayoutLGB
 	public class ComponentView : System.ComponentModel.Component, ILayoutModuleSetup
 	{
 		private System.Windows.Forms.ImageList imageListComponents;
-		private System.ComponentModel.IContainer components;
+		private IContainer components;
 
 		#region Constructors
 
-		public ComponentView(System.ComponentModel.IContainer container)
+		public ComponentView(IContainer container)
 		{
 			/// <summary>
 			/// Required for Windows.Forms Class Composition Designer support
@@ -190,7 +190,7 @@ namespace LayoutLGB
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(ComponentView));
 			this.imageListComponents = new System.Windows.Forms.ImageList(this.components);
 			// 

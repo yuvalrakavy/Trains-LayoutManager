@@ -10,22 +10,21 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Implement the module management dialog
 	/// </summary>
-	public class ModuleManagement : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.Button buttonAdd;
-		private System.ComponentModel.IContainer components;
+	public class ModuleManagement : Form {
+		private Button buttonClose;
+		private Button buttonAdd;
+		private IContainer components;
 		private System.Windows.Forms.OpenFileDialog openFileDialogAssembly;
-		private System.Windows.Forms.Button buttonChangeStatus;
-		private System.Windows.Forms.TreeView treeViewAssemblies;
-		private System.Windows.Forms.Button buttonRemove;
+		private Button buttonChangeStatus;
+		private TreeView treeViewAssemblies;
+		private Button buttonRemove;
 
 		// Images
 		// 0 - Saved module reference
 		// 1 - Temporary module reference
 		// 2 - Disabled module
 		// 3 - Enabled module
-		private System.Windows.Forms.ImageList imageListTree;
+		private ImageList imageListTree;
 
 		bool				needToSaveState = false;
 
@@ -107,14 +106,14 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(ModuleManagement));
-			this.buttonRemove = new System.Windows.Forms.Button();
-			this.buttonChangeStatus = new System.Windows.Forms.Button();
-			this.treeViewAssemblies = new System.Windows.Forms.TreeView();
-			this.imageListTree = new System.Windows.Forms.ImageList(this.components);
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.buttonAdd = new System.Windows.Forms.Button();
+			this.buttonRemove = new Button();
+			this.buttonChangeStatus = new Button();
+			this.treeViewAssemblies = new TreeView();
+			this.imageListTree = new ImageList(this.components);
+			this.buttonClose = new Button();
+			this.buttonAdd = new Button();
 			this.openFileDialogAssembly = new System.Windows.Forms.OpenFileDialog();
 			this.SuspendLayout();
 			// 

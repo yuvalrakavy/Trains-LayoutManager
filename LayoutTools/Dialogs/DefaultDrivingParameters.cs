@@ -12,28 +12,27 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for DefaultDrivingParameters.
 	/// </summary>
-	public class DefaultDrivingParameters : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxSpeedLimit;
-		private System.Windows.Forms.Label labelSpeedLimitValues;
-		private System.Windows.Forms.GroupBox groupBox1;
+	public class DefaultDrivingParameters : Form {
+		private Label label1;
+		private TextBox textBoxSpeedLimit;
+		private Label labelSpeedLimitValues;
+		private GroupBox groupBox1;
 		private LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor motionRampWithCopyEditorAcceleration;
-		private System.Windows.Forms.GroupBox groupBox2;
+		private GroupBox groupBox2;
 		private LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor motionRampWithCopyEditorDeceleration;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.TextBox textBoxSlowdown;
-		private System.Windows.Forms.Label labelSlowdownValues;
-		private System.Windows.Forms.GroupBox groupBox3;
+		private Label label3;
+		private TextBox textBoxSlowdown;
+		private Label labelSlowdownValues;
+		private GroupBox groupBox3;
 		private LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor motionRampWithCopyEditorSlowdown;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.GroupBox groupBox4;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private GroupBox groupBox4;
 		private LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor motionRampWithCopyEditorStop;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -81,21 +80,21 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBoxSpeedLimit = new System.Windows.Forms.TextBox();
-			this.labelSpeedLimitValues = new System.Windows.Forms.Label();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label1 = new Label();
+			this.textBoxSpeedLimit = new TextBox();
+			this.labelSpeedLimitValues = new Label();
+			this.groupBox1 = new GroupBox();
 			this.motionRampWithCopyEditorAcceleration = new LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.groupBox2 = new GroupBox();
 			this.motionRampWithCopyEditorDeceleration = new LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor();
-			this.label3 = new System.Windows.Forms.Label();
-			this.textBoxSlowdown = new System.Windows.Forms.TextBox();
-			this.labelSlowdownValues = new System.Windows.Forms.Label();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.label3 = new Label();
+			this.textBoxSlowdown = new TextBox();
+			this.labelSlowdownValues = new Label();
+			this.groupBox3 = new GroupBox();
 			this.motionRampWithCopyEditorSlowdown = new LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.groupBox4 = new GroupBox();
 			this.motionRampWithCopyEditorStop = new LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();

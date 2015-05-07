@@ -14,23 +14,23 @@ namespace LayoutManager.CommonUI.Controls
 	/// Summary description for XmlInfoEditor.
 	/// </summary>
 	public class XmlInfoEditor : System.Windows.Forms.UserControl {
-		private System.Windows.Forms.TreeView treeViewElements;
-		private System.Windows.Forms.Button buttonNewElement;
-		private System.Windows.Forms.Button buttonEditElement;
-		private System.Windows.Forms.Button buttonDeleteElement;
-		private System.Windows.Forms.ImageList imageListButtons;
-		private System.Windows.Forms.ListView listViewAttributes;
-		private System.Windows.Forms.Button buttonNewAttribute;
-		private System.Windows.Forms.Button buttonEditAttribute;
-		private System.Windows.Forms.Button buttonDeleteAttribute;
-		private System.Windows.Forms.ColumnHeader columnHeaderAttributeName;
-		private System.Windows.Forms.ColumnHeader columnHeaderAttributeValue;
-		private System.Windows.Forms.Label labelElementAttributes;
+		private TreeView treeViewElements;
+		private Button buttonNewElement;
+		private Button buttonEditElement;
+		private Button buttonDeleteElement;
+		private ImageList imageListButtons;
+		private ListView listViewAttributes;
+		private Button buttonNewAttribute;
+		private Button buttonEditAttribute;
+		private Button buttonDeleteAttribute;
+		private ColumnHeader columnHeaderAttributeName;
+		private ColumnHeader columnHeaderAttributeValue;
+		private Label labelElementAttributes;
 		private System.Windows.Forms.ToolTip toolTips;
-		private System.Windows.Forms.ContextMenu contextMenuAddElement;
-		private System.Windows.Forms.MenuItem menuItemAddElement;
-		private System.Windows.Forms.MenuItem menuItemText;
-		private System.ComponentModel.IContainer components;
+		private ContextMenu contextMenuAddElement;
+		private MenuItem menuItemAddElement;
+		private MenuItem menuItemText;
+		private IContainer components;
 
 		LayoutXmlInfo	xmlInfo = null;
 
@@ -87,24 +87,24 @@ namespace LayoutManager.CommonUI.Controls
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(XmlInfoEditor));
-			this.buttonDeleteElement = new System.Windows.Forms.Button();
-			this.imageListButtons = new System.Windows.Forms.ImageList(this.components);
-			this.columnHeaderAttributeValue = new System.Windows.Forms.ColumnHeader();
-			this.listViewAttributes = new System.Windows.Forms.ListView();
-			this.columnHeaderAttributeName = new System.Windows.Forms.ColumnHeader();
+			this.buttonDeleteElement = new Button();
+			this.imageListButtons = new ImageList(this.components);
+			this.columnHeaderAttributeValue = new ColumnHeader();
+			this.listViewAttributes = new ListView();
+			this.columnHeaderAttributeName = new ColumnHeader();
 			this.toolTips = new System.Windows.Forms.ToolTip(this.components);
-			this.buttonEditAttribute = new System.Windows.Forms.Button();
-			this.buttonNewElement = new System.Windows.Forms.Button();
-			this.buttonEditElement = new System.Windows.Forms.Button();
-			this.buttonNewAttribute = new System.Windows.Forms.Button();
-			this.buttonDeleteAttribute = new System.Windows.Forms.Button();
-			this.treeViewElements = new System.Windows.Forms.TreeView();
-			this.menuItemText = new System.Windows.Forms.MenuItem();
-			this.contextMenuAddElement = new System.Windows.Forms.ContextMenu();
-			this.menuItemAddElement = new System.Windows.Forms.MenuItem();
-			this.labelElementAttributes = new System.Windows.Forms.Label();
+			this.buttonEditAttribute = new Button();
+			this.buttonNewElement = new Button();
+			this.buttonEditElement = new Button();
+			this.buttonNewAttribute = new Button();
+			this.buttonDeleteAttribute = new Button();
+			this.treeViewElements = new TreeView();
+			this.menuItemText = new MenuItem();
+			this.contextMenuAddElement = new ContextMenu();
+			this.menuItemAddElement = new MenuItem();
+			this.labelElementAttributes = new Label();
 			this.SuspendLayout();
 			// 
 			// buttonDeleteElement
@@ -137,7 +137,7 @@ namespace LayoutManager.CommonUI.Controls
 			this.listViewAttributes.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 				| System.Windows.Forms.AnchorStyles.Left) 
 				| System.Windows.Forms.AnchorStyles.Right);
-			this.listViewAttributes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewAttributes.Columns.AddRange(new ColumnHeader[] {
 																								 this.columnHeaderAttributeName,
 																								 this.columnHeaderAttributeValue});
 			this.listViewAttributes.FullRowSelect = true;
@@ -240,7 +240,7 @@ namespace LayoutManager.CommonUI.Controls
 			// 
 			// contextMenuAddElement
 			// 
-			this.contextMenuAddElement.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.contextMenuAddElement.MenuItems.AddRange(new MenuItem[] {
 																								  this.menuItemAddElement,
 																								  this.menuItemText});
 			// 

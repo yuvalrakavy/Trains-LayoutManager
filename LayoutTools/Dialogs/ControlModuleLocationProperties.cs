@@ -15,25 +15,25 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for ControlModuleLocationProperties.
 	/// </summary>
-	public class ControlModuleLocationProperties : System.Windows.Forms.Form, ILayoutComponentPropertiesDialog
+	public class ControlModuleLocationProperties : Form, ILayoutComponentPropertiesDialog
 	{
 		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.ListView listViewDefaults;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.ColumnHeader columnHeaderBusName;
-		private System.Windows.Forms.ColumnHeader columnHeaderModuleType;
-		private System.Windows.Forms.ColumnHeader columnHeaderStartAddress;
-		private System.Windows.Forms.Button buttonAdd;
-		private System.Windows.Forms.Button buttonEdit;
-		private System.Windows.Forms.Button buttonRemove;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.ComboBox comboBoxCommandStation;
+		private GroupBox groupBox1;
+		private ListView listViewDefaults;
+		private Button buttonCancel;
+		private Button buttonOK;
+		private ColumnHeader columnHeaderBusName;
+		private ColumnHeader columnHeaderModuleType;
+		private ColumnHeader columnHeaderStartAddress;
+		private Button buttonAdd;
+		private Button buttonEdit;
+		private Button buttonRemove;
+		private Label label1;
+		private ComboBox comboBoxCommandStation;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void EndOfDesignerVariables() { }
 
@@ -118,18 +118,18 @@ namespace LayoutManager.Tools.Dialogs
 		private void InitializeComponent()
 		{
 			this.nameDefinition = new LayoutManager.CommonUI.Controls.NameDefinition();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.buttonEdit = new System.Windows.Forms.Button();
-			this.buttonAdd = new System.Windows.Forms.Button();
-			this.listViewDefaults = new System.Windows.Forms.ListView();
-			this.columnHeaderBusName = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderModuleType = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderStartAddress = new System.Windows.Forms.ColumnHeader();
-			this.buttonRemove = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.comboBoxCommandStation = new System.Windows.Forms.ComboBox();
+			this.groupBox1 = new GroupBox();
+			this.buttonEdit = new Button();
+			this.buttonAdd = new Button();
+			this.listViewDefaults = new ListView();
+			this.columnHeaderBusName = new ColumnHeader();
+			this.columnHeaderModuleType = new ColumnHeader();
+			this.columnHeaderStartAddress = new ColumnHeader();
+			this.buttonRemove = new Button();
+			this.buttonCancel = new Button();
+			this.buttonOK = new Button();
+			this.label1 = new Label();
+			this.comboBoxCommandStation = new ComboBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -182,7 +182,7 @@ namespace LayoutManager.Tools.Dialogs
 			this.listViewDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 				| System.Windows.Forms.AnchorStyles.Left) 
 				| System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewDefaults.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewDefaults.Columns.AddRange(new ColumnHeader[] {
 																							   this.columnHeaderBusName,
 																							   this.columnHeaderModuleType,
 																							   this.columnHeaderStartAddress});

@@ -12,17 +12,16 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TripPlanChangeIcon.
 	/// </summary>
-	public class TripPlanChangeIcon : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label labelTripPlanName;
+	public class TripPlanChangeIcon : Form {
+		private Label label1;
+		private Label labelTripPlanName;
 		private LayoutManager.CommonUI.Controls.SelectTripPlanIcon selectTripPlanIcon;
-		private System.Windows.Forms.Button ButtonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private Button ButtonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		TripPlanInfo	tripPlan;
 
@@ -63,11 +62,11 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.labelTripPlanName = new System.Windows.Forms.Label();
+			this.label1 = new Label();
+			this.labelTripPlanName = new Label();
 			this.selectTripPlanIcon = new LayoutManager.CommonUI.Controls.SelectTripPlanIcon();
-			this.ButtonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.ButtonOK = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// label1

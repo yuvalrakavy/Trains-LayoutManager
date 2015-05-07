@@ -17,22 +17,22 @@ namespace LayoutManager
 	/// </summary>
 	public class LocomotivesViewer : System.Windows.Forms.UserControl
 	{
-		private System.Windows.Forms.ContextMenu contextMenuAdd;
-		private System.Windows.Forms.MenuItem menuItemAddLocomotive;
-		private System.ComponentModel.IContainer components;
-		private System.Windows.Forms.ContextMenu contextMenuOptions;
-		private System.Windows.Forms.MenuItem menuItemArrange;
-		private System.Windows.Forms.Button buttonAdd;
-		private System.Windows.Forms.Button buttonEdit;
-		private System.Windows.Forms.Button buttonDelete;
-		private System.Windows.Forms.Button buttonOptions;
-		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.ImageList imageListCloseButton;
-		private System.Windows.Forms.ContextMenu contextMenuArrange;
+		private ContextMenu contextMenuAdd;
+		private MenuItem menuItemAddLocomotive;
+		private IContainer components;
+		private ContextMenu contextMenuOptions;
+		private MenuItem menuItemArrange;
+		private Button buttonAdd;
+		private Button buttonEdit;
+		private Button buttonDelete;
+		private Button buttonOptions;
+		private Panel panel1;
+		private Button buttonClose;
+		private ImageList imageListCloseButton;
+		private ContextMenu contextMenuArrange;
 		private LayoutManager.CommonUI.Controls.LocomotiveList locomotiveList;
-		private System.Windows.Forms.MenuItem menuItemAddTrain;
-		private System.Windows.Forms.MenuItem menuItemStorage;
+		private MenuItem menuItemAddTrain;
+		private MenuItem menuItemStorage;
 
 		private void EndOfDesignerVariables() { }
 
@@ -293,29 +293,29 @@ namespace LayoutManager
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(LocomotivesViewer));
-			this.contextMenuAdd = new System.Windows.Forms.ContextMenu();
-			this.menuItemAddLocomotive = new System.Windows.Forms.MenuItem();
-			this.menuItemAddTrain = new System.Windows.Forms.MenuItem();
-			this.contextMenuOptions = new System.Windows.Forms.ContextMenu();
-			this.menuItemArrange = new System.Windows.Forms.MenuItem();
-			this.menuItemStorage = new System.Windows.Forms.MenuItem();
-			this.buttonAdd = new System.Windows.Forms.Button();
-			this.buttonEdit = new System.Windows.Forms.Button();
-			this.buttonDelete = new System.Windows.Forms.Button();
-			this.buttonOptions = new System.Windows.Forms.Button();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.imageListCloseButton = new System.Windows.Forms.ImageList(this.components);
-			this.contextMenuArrange = new System.Windows.Forms.ContextMenu();
+			this.contextMenuAdd = new ContextMenu();
+			this.menuItemAddLocomotive = new MenuItem();
+			this.menuItemAddTrain = new MenuItem();
+			this.contextMenuOptions = new ContextMenu();
+			this.menuItemArrange = new MenuItem();
+			this.menuItemStorage = new MenuItem();
+			this.buttonAdd = new Button();
+			this.buttonEdit = new Button();
+			this.buttonDelete = new Button();
+			this.buttonOptions = new Button();
+			this.panel1 = new Panel();
+			this.buttonClose = new Button();
+			this.imageListCloseButton = new ImageList(this.components);
+			this.contextMenuArrange = new ContextMenu();
 			this.locomotiveList = new LayoutManager.CommonUI.Controls.LocomotiveList();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// contextMenuAdd
 			// 
-			this.contextMenuAdd.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.contextMenuAdd.MenuItems.AddRange(new MenuItem[] {
 																						   this.menuItemAddLocomotive,
 																						   this.menuItemAddTrain});
 			// 
@@ -333,7 +333,7 @@ namespace LayoutManager
 			// 
 			// contextMenuOptions
 			// 
-			this.contextMenuOptions.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.contextMenuOptions.MenuItems.AddRange(new MenuItem[] {
 																							   this.menuItemArrange,
 																							   this.menuItemStorage});
 			// 

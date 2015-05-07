@@ -13,11 +13,11 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class NumericValue : System.Windows.Forms.UserControl {
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenuOperation;
-		private System.Windows.Forms.TextBox textBoxValue;
+		private TextBox textBoxValue;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		XmlElement		element;
 
@@ -104,7 +104,7 @@ namespace LayoutManager.CommonUI.Controls
 		private void InitializeComponent()
 		{
 			this.linkMenuOperation = new LayoutManager.CommonUI.Controls.LinkMenu();
-			this.textBoxValue = new System.Windows.Forms.TextBox();
+			this.textBoxValue = new TextBox();
 			this.SuspendLayout();
 			// 
 			// linkMenuOperation

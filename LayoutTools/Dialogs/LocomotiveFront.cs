@@ -13,18 +13,17 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for LocomotiveFront.
 	/// </summary>
-	public class LocomotiveFront : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Label labelBlockName;
-		private System.Windows.Forms.Panel panel1;
+	public class LocomotiveFront : Form {
+		private Label label1;
+		private Button buttonOk;
+		private Button buttonCancel;
+		private Label labelBlockName;
+		private Panel panel1;
 		private LayoutManager.CommonUI.Controls.LocomotiveFront locomotiveFrontControl;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public LocomotiveFront(LayoutBlockDefinitionComponent blockInfo, String name)
 		{
@@ -78,11 +77,11 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.buttonOk = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.labelBlockName = new System.Windows.Forms.Label();
-			this.panel1 = new System.Windows.Forms.Panel();
+			this.label1 = new Label();
+			this.buttonOk = new Button();
+			this.buttonCancel = new Button();
+			this.labelBlockName = new Label();
+			this.panel1 = new Panel();
 			this.locomotiveFrontControl = new LayoutManager.CommonUI.Controls.LocomotiveFront();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();

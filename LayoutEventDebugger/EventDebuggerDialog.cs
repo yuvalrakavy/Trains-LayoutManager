@@ -11,38 +11,37 @@ namespace LayoutEventDebugger
 	/// <summary>
 	/// Summary description for EventDebuggerDialog.
 	/// </summary>
-	public class EventDebuggerDialog : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.TabControl tabControl1;
-		private System.Windows.Forms.TabPage tabPageSubscription;
-		private System.Windows.Forms.TabPage tabPageSender;
-		private System.Windows.Forms.TabPage tabPageEvent;
+	public class EventDebuggerDialog : Form {
+		private TabControl tabControl1;
+		private TabPage tabPageSubscription;
+		private TabPage tabPageSender;
+		private TabPage tabPageEvent;
 		private LayoutManager.CommonUI.Controls.XmlInfoEditor xmlInfoEditorSender;
 		private LayoutManager.CommonUI.Controls.XmlInfoEditor xmlInfoEditorEvent;
-		private System.Windows.Forms.Label labelEventName;
-		private System.Windows.Forms.TextBox textBoxEventName;
-		private System.Windows.Forms.Label labelSenderType;
-		private System.Windows.Forms.TextBox textBoxSenderType;
-		private System.Windows.Forms.TextBox textBoxEventType;
-		private System.Windows.Forms.Label labelEventType;
-		private System.Windows.Forms.TextBox textBoxIfSender;
-		private System.Windows.Forms.Label labelIfSender;
-		private System.Windows.Forms.TextBox textBoxIfEvent;
-		private System.Windows.Forms.Label labelIfEvent;
-		private System.Windows.Forms.Button buttonSubscribe;
-		private System.Windows.Forms.Button buttonUnsubscribe;
-		private System.Windows.Forms.Label labelSubscriptionStatus;
-		private System.Windows.Forms.Button buttonSendEvent;
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.TabPage tabPageSubscriber;
+		private Label labelEventName;
+		private TextBox textBoxEventName;
+		private Label labelSenderType;
+		private TextBox textBoxSenderType;
+		private TextBox textBoxEventType;
+		private Label labelEventType;
+		private TextBox textBoxIfSender;
+		private Label labelIfSender;
+		private TextBox textBoxIfEvent;
+		private Label labelIfEvent;
+		private Button buttonSubscribe;
+		private Button buttonUnsubscribe;
+		private Label labelSubscriptionStatus;
+		private Button buttonSendEvent;
+		private Button buttonClose;
+		private TabPage tabPageSubscriber;
 		private LayoutManager.CommonUI.Controls.XmlInfoEditor xmlInfoEditorSubscriber;
 
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
-		private System.Windows.Forms.Label labelEvent;
-		private System.Windows.Forms.TextBox textBoxEvent;
+		private Container components = null;
+		private Label labelEvent;
+		private TextBox textBoxEvent;
 
 		EventDebugger	ed;
 
@@ -157,30 +156,30 @@ namespace LayoutEventDebugger
 		private void InitializeComponent()
 		{
 			this.xmlInfoEditorEvent = new LayoutManager.CommonUI.Controls.XmlInfoEditor();
-			this.tabPageSender = new System.Windows.Forms.TabPage();
+			this.tabPageSender = new TabPage();
 			this.xmlInfoEditorSender = new LayoutManager.CommonUI.Controls.XmlInfoEditor();
-			this.textBoxEventType = new System.Windows.Forms.TextBox();
-			this.textBoxEventName = new System.Windows.Forms.TextBox();
-			this.labelIfEvent = new System.Windows.Forms.Label();
-			this.textBoxSenderType = new System.Windows.Forms.TextBox();
-			this.labelEventType = new System.Windows.Forms.Label();
-			this.textBoxIfEvent = new System.Windows.Forms.TextBox();
-			this.labelEventName = new System.Windows.Forms.Label();
-			this.buttonSendEvent = new System.Windows.Forms.Button();
-			this.tabPageEvent = new System.Windows.Forms.TabPage();
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.buttonUnsubscribe = new System.Windows.Forms.Button();
-			this.buttonSubscribe = new System.Windows.Forms.Button();
-			this.labelSubscriptionStatus = new System.Windows.Forms.Label();
-			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.tabPageSubscription = new System.Windows.Forms.TabPage();
-			this.textBoxIfSender = new System.Windows.Forms.TextBox();
-			this.labelIfSender = new System.Windows.Forms.Label();
-			this.labelSenderType = new System.Windows.Forms.Label();
-			this.tabPageSubscriber = new System.Windows.Forms.TabPage();
+			this.textBoxEventType = new TextBox();
+			this.textBoxEventName = new TextBox();
+			this.labelIfEvent = new Label();
+			this.textBoxSenderType = new TextBox();
+			this.labelEventType = new Label();
+			this.textBoxIfEvent = new TextBox();
+			this.labelEventName = new Label();
+			this.buttonSendEvent = new Button();
+			this.tabPageEvent = new TabPage();
+			this.buttonClose = new Button();
+			this.buttonUnsubscribe = new Button();
+			this.buttonSubscribe = new Button();
+			this.labelSubscriptionStatus = new Label();
+			this.tabControl1 = new TabControl();
+			this.tabPageSubscription = new TabPage();
+			this.textBoxIfSender = new TextBox();
+			this.labelIfSender = new Label();
+			this.labelSenderType = new Label();
+			this.tabPageSubscriber = new TabPage();
 			this.xmlInfoEditorSubscriber = new LayoutManager.CommonUI.Controls.XmlInfoEditor();
-			this.labelEvent = new System.Windows.Forms.Label();
-			this.textBoxEvent = new System.Windows.Forms.TextBox();
+			this.labelEvent = new Label();
+			this.textBoxEvent = new TextBox();
 			this.tabPageSender.SuspendLayout();
 			this.tabPageEvent.SuspendLayout();
 			this.tabControl1.SuspendLayout();

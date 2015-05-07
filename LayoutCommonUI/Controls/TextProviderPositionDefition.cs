@@ -15,16 +15,16 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class TextProviderPositionDefinition : System.Windows.Forms.UserControl
 	{
-		private System.Windows.Forms.GroupBox groupBoxPosition;
-		private System.Windows.Forms.RadioButton radioButtonCustomPosition;
-		private System.Windows.Forms.RadioButton radioButtonStandardPosition;
+		private GroupBox groupBoxPosition;
+		private RadioButton radioButtonCustomPosition;
+		private RadioButton radioButtonStandardPosition;
 		private LayoutManager.CommonUI.Controls.PositionDefinition positionDefinition1;
 		private LayoutManager.CommonUI.Controls.LayoutInfosComboBox layoutInfosComboBoxPositions;
 
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		String				customPositionElementName = "Position";
 		LayoutXmlInfo		xmlInfo;
@@ -132,9 +132,9 @@ namespace LayoutManager.CommonUI.Controls
 		{
 			this.layoutInfosComboBoxPositions = new LayoutManager.CommonUI.Controls.LayoutInfosComboBox();
 			this.positionDefinition1 = new LayoutManager.CommonUI.Controls.PositionDefinition();
-			this.groupBoxPosition = new System.Windows.Forms.GroupBox();
-			this.radioButtonCustomPosition = new System.Windows.Forms.RadioButton();
-			this.radioButtonStandardPosition = new System.Windows.Forms.RadioButton();
+			this.groupBoxPosition = new GroupBox();
+			this.radioButtonCustomPosition = new RadioButton();
+			this.radioButtonStandardPosition = new RadioButton();
 			this.groupBoxPosition.SuspendLayout();
 			this.SuspendLayout();
 			// 

@@ -13,22 +13,21 @@ namespace LayoutManager.Tools.EventScriptDialogs
 	/// <summary>
 	/// Summary description for TrainTargetSpeedAction.
 	/// </summary>
-	public class TrainTargetSpeedAction : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.ComboBox comboBoxTrain;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.GroupBox groupBox1;
+	public class TrainTargetSpeedAction : Form {
+		private ComboBox comboBoxTrain;
+		private Label label1;
+		private GroupBox groupBox1;
 		private LayoutManager.CommonUI.Controls.Operand operandValue;
-		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.RadioButton radioButtonSet;
-		private System.Windows.Forms.RadioButton radioButtonDecrease;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.RadioButton radioButtonIncrease;
+		private GroupBox groupBox2;
+		private RadioButton radioButtonSet;
+		private RadioButton radioButtonDecrease;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private RadioButton radioButtonIncrease;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -85,16 +84,16 @@ namespace LayoutManager.Tools.EventScriptDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.comboBoxTrain = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.comboBoxTrain = new ComboBox();
+			this.label1 = new Label();
+			this.groupBox1 = new GroupBox();
 			this.operandValue = new LayoutManager.CommonUI.Controls.Operand();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.radioButtonSet = new System.Windows.Forms.RadioButton();
-			this.radioButtonIncrease = new System.Windows.Forms.RadioButton();
-			this.radioButtonDecrease = new System.Windows.Forms.RadioButton();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.groupBox2 = new GroupBox();
+			this.radioButtonSet = new RadioButton();
+			this.radioButtonIncrease = new RadioButton();
+			this.radioButtonDecrease = new RadioButton();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();

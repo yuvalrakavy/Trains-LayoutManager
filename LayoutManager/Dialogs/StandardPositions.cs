@@ -12,17 +12,16 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for StandardPositions.
 	/// </summary>
-	public class StandardPositions : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.ListBox listBoxPositions;
-		private System.Windows.Forms.Button buttonNew;
-		private System.Windows.Forms.Button buttonEdit;
-		private System.Windows.Forms.Button buttonDelete;
-		private System.Windows.Forms.Button buttonClose;
+	public class StandardPositions : Form {
+		private ListBox listBoxPositions;
+		private Button buttonNew;
+		private Button buttonEdit;
+		private Button buttonDelete;
+		private Button buttonClose;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public StandardPositions()
 		{
@@ -73,11 +72,11 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.listBoxPositions = new System.Windows.Forms.ListBox();
-			this.buttonNew = new System.Windows.Forms.Button();
-			this.buttonDelete = new System.Windows.Forms.Button();
-			this.buttonEdit = new System.Windows.Forms.Button();
-			this.buttonClose = new System.Windows.Forms.Button();
+			this.listBoxPositions = new ListBox();
+			this.buttonNew = new Button();
+			this.buttonDelete = new Button();
+			this.buttonEdit = new Button();
+			this.buttonClose = new Button();
 			this.SuspendLayout();
 			// 
 			// listBoxPositions

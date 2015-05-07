@@ -13,26 +13,25 @@ namespace LayoutManager.CommonUI.Dialogs
 	/// <summary>
 	/// Summary description for AttributeDefinition.
 	/// </summary>
-	public class AttributeDefinition : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.ComboBox comboBoxName;
-		private System.Windows.Forms.RadioButton radioButtonTypeString;
-		private System.Windows.Forms.RadioButton radioButtonTypeNumber;
-		private System.Windows.Forms.RadioButton radioButtonTypeBoolean;
-		private System.Windows.Forms.Panel panelTextValue;
-		private System.Windows.Forms.TextBox textBoxValue;
-		private System.Windows.Forms.GroupBox groupBoxBooleanValue;
-		private System.Windows.Forms.RadioButton radioButtonValueTrue;
-		private System.Windows.Forms.RadioButton radioButtonValueFalse;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Button buttonOK;
+	public class AttributeDefinition : Form {
+		private Label label1;
+		private GroupBox groupBox1;
+		private Label label2;
+		private ComboBox comboBoxName;
+		private RadioButton radioButtonTypeString;
+		private RadioButton radioButtonTypeNumber;
+		private RadioButton radioButtonTypeBoolean;
+		private Panel panelTextValue;
+		private TextBox textBoxValue;
+		private GroupBox groupBoxBooleanValue;
+		private RadioButton radioButtonValueTrue;
+		private RadioButton radioButtonValueFalse;
+		private Button buttonCancel;
+		private Button buttonOK;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		Controls.ICheckIfNameUsed	checkName;
 		string						originalAttributeName;
@@ -136,20 +135,20 @@ namespace LayoutManager.CommonUI.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.comboBoxName = new System.Windows.Forms.ComboBox();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.radioButtonTypeString = new System.Windows.Forms.RadioButton();
-			this.radioButtonTypeNumber = new System.Windows.Forms.RadioButton();
-			this.radioButtonTypeBoolean = new System.Windows.Forms.RadioButton();
-			this.panelTextValue = new System.Windows.Forms.Panel();
-			this.textBoxValue = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.groupBoxBooleanValue = new System.Windows.Forms.GroupBox();
-			this.radioButtonValueTrue = new System.Windows.Forms.RadioButton();
-			this.radioButtonValueFalse = new System.Windows.Forms.RadioButton();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
+			this.label1 = new Label();
+			this.comboBoxName = new ComboBox();
+			this.groupBox1 = new GroupBox();
+			this.radioButtonTypeString = new RadioButton();
+			this.radioButtonTypeNumber = new RadioButton();
+			this.radioButtonTypeBoolean = new RadioButton();
+			this.panelTextValue = new Panel();
+			this.textBoxValue = new TextBox();
+			this.label2 = new Label();
+			this.groupBoxBooleanValue = new GroupBox();
+			this.radioButtonValueTrue = new RadioButton();
+			this.radioButtonValueFalse = new RadioButton();
+			this.buttonCancel = new Button();
+			this.buttonOK = new Button();
 			this.groupBox1.SuspendLayout();
 			this.panelTextValue.SuspendLayout();
 			this.groupBoxBooleanValue.SuspendLayout();

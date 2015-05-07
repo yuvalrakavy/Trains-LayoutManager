@@ -17,15 +17,15 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class Operand : System.Windows.Forms.UserControl, IObjectHasXml
 	{
-		private System.Windows.Forms.RadioButton radioButtonValue;
-		private System.Windows.Forms.TextBox textBoxValue;
+		private RadioButton radioButtonValue;
+		private TextBox textBoxValue;
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenu1Boolean;
-		private System.Windows.Forms.RadioButton radioButtonPropertyOrAttribute;
+		private RadioButton radioButtonPropertyOrAttribute;
 		private LayoutManager.CommonUI.Controls.OperandValueOf operandValueOf;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -191,10 +191,10 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.radioButtonValue = new System.Windows.Forms.RadioButton();
-			this.textBoxValue = new System.Windows.Forms.TextBox();
+			this.radioButtonValue = new RadioButton();
+			this.textBoxValue = new TextBox();
 			this.linkMenu1Boolean = new LayoutManager.CommonUI.Controls.LinkMenu();
-			this.radioButtonPropertyOrAttribute = new System.Windows.Forms.RadioButton();
+			this.radioButtonPropertyOrAttribute = new RadioButton();
 			this.operandValueOf = new LayoutManager.CommonUI.Controls.OperandValueOf();
 			this.SuspendLayout();
 			// 

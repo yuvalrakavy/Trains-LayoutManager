@@ -23,11 +23,11 @@ namespace LayoutManager.Tools {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		#region Constructors
 
-		public LocomotiveOperationTools(System.ComponentModel.IContainer container) {
+		public LocomotiveOperationTools(IContainer container) {
 			/// <summary>
 			/// Required for Windows.Forms Class Composition Designer support
 			/// </summary>
@@ -511,7 +511,7 @@ namespace LayoutManager.Tools {
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			components = new System.ComponentModel.Container();
+			components = new Container();
 		}
 		#endregion
 	}

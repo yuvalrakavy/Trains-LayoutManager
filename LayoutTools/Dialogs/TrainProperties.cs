@@ -14,44 +14,44 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TrainProperties.
 	/// </summary>
-	public class TrainProperties : System.Windows.Forms.Form, IObjectHasXml
+	public class TrainProperties : Form, IObjectHasXml
 	{
-		private System.Windows.Forms.TabControl tabControl1;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.TabPage tabPageGeneral;
-		private System.Windows.Forms.TabPage tabPageLocomotives;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxName;
-		private System.Windows.Forms.ListView listViewLocomotives;
-		private System.Windows.Forms.ColumnHeader columnHeaderLocoName;
-		private System.Windows.Forms.ColumnHeader columnAddress;
-		private System.Windows.Forms.ColumnHeader columnHeaderLocoOrientation;
-		private System.Windows.Forms.ColumnHeader columnHeaderLocoType;
-		private System.Windows.Forms.Button buttonLocoAdd;
-		private System.Windows.Forms.Button buttonLocoRemove;
-		private System.Windows.Forms.Button buttonLocoEdit;
-		private System.Windows.Forms.ContextMenu contextMenuEditLocomotive;
-		private System.Windows.Forms.MenuItem menuItemLocoOrientation;
-		private System.Windows.Forms.MenuItem menuItemLocoOrientationForward;
-		private System.Windows.Forms.MenuItem menuItemLocoOrientationBackward;
-		private System.Windows.Forms.MenuItem menuItemEditLocoDefinition;
-		private System.Windows.Forms.Button buttonLocoMoveDown;
-		private System.Windows.Forms.ImageList imageListButttons;
-		private System.Windows.Forms.Button buttonLocoMoveUp;
-		private System.Windows.Forms.Panel panelLocoImages;
-		private System.Windows.Forms.TabPage tabPageAttributes;
+		private TabControl tabControl1;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private TabPage tabPageGeneral;
+		private TabPage tabPageLocomotives;
+		private Label label1;
+		private TextBox textBoxName;
+		private ListView listViewLocomotives;
+		private ColumnHeader columnHeaderLocoName;
+		private ColumnHeader columnAddress;
+		private ColumnHeader columnHeaderLocoOrientation;
+		private ColumnHeader columnHeaderLocoType;
+		private Button buttonLocoAdd;
+		private Button buttonLocoRemove;
+		private Button buttonLocoEdit;
+		private ContextMenu contextMenuEditLocomotive;
+		private MenuItem menuItemLocoOrientation;
+		private MenuItem menuItemLocoOrientationForward;
+		private MenuItem menuItemLocoOrientationBackward;
+		private MenuItem menuItemEditLocoDefinition;
+		private Button buttonLocoMoveDown;
+		private ImageList imageListButttons;
+		private Button buttonLocoMoveUp;
+		private Panel panelLocoImages;
+		private TabPage tabPageAttributes;
 		private LayoutManager.CommonUI.Controls.AttributesEditor attributesEditor;
-		private System.Windows.Forms.TabPage tabPageDriver;
-		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.CheckBox checkBoxMagnetOnLastCar;
-		private System.Windows.Forms.CheckBox checkBoxLastCarDetected;
-		private System.Windows.Forms.Label label2;
+		private TabPage tabPageDriver;
+		private GroupBox groupBox2;
+		private CheckBox checkBoxMagnetOnLastCar;
+		private CheckBox checkBoxLastCarDetected;
+		private Label label2;
 		private LayoutManager.CommonUI.Controls.TrainDriverComboBox trainDriverComboBox;
 		private LayoutManager.CommonUI.Controls.DrivingParameters drivingParameters;
 		private LayoutManager.CommonUI.Controls.TrainLengthDiagram trainLengthDiagram;
 		private GroupBox groupBox1;
-		private System.ComponentModel.IContainer components;
+		private IContainer components;
 
 		private void endOfDesignerVariables() { }
 
@@ -152,39 +152,39 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TrainProperties));
-			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.tabPageGeneral = new System.Windows.Forms.TabPage();
-			this.label2 = new System.Windows.Forms.Label();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.checkBoxLastCarDetected = new System.Windows.Forms.CheckBox();
-			this.checkBoxMagnetOnLastCar = new System.Windows.Forms.CheckBox();
-			this.textBoxName = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.tabPageLocomotives = new System.Windows.Forms.TabPage();
-			this.panelLocoImages = new System.Windows.Forms.Panel();
-			this.buttonLocoMoveDown = new System.Windows.Forms.Button();
-			this.imageListButttons = new System.Windows.Forms.ImageList(this.components);
-			this.buttonLocoAdd = new System.Windows.Forms.Button();
-			this.listViewLocomotives = new System.Windows.Forms.ListView();
-			this.columnHeaderLocoName = new System.Windows.Forms.ColumnHeader();
-			this.columnAddress = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderLocoOrientation = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderLocoType = new System.Windows.Forms.ColumnHeader();
-			this.buttonLocoRemove = new System.Windows.Forms.Button();
-			this.buttonLocoEdit = new System.Windows.Forms.Button();
-			this.buttonLocoMoveUp = new System.Windows.Forms.Button();
-			this.tabPageDriver = new System.Windows.Forms.TabPage();
-			this.tabPageAttributes = new System.Windows.Forms.TabPage();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.contextMenuEditLocomotive = new System.Windows.Forms.ContextMenu();
-			this.menuItemLocoOrientation = new System.Windows.Forms.MenuItem();
-			this.menuItemLocoOrientationForward = new System.Windows.Forms.MenuItem();
-			this.menuItemLocoOrientationBackward = new System.Windows.Forms.MenuItem();
-			this.menuItemEditLocoDefinition = new System.Windows.Forms.MenuItem();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.tabControl1 = new TabControl();
+			this.tabPageGeneral = new TabPage();
+			this.label2 = new Label();
+			this.groupBox2 = new GroupBox();
+			this.checkBoxLastCarDetected = new CheckBox();
+			this.checkBoxMagnetOnLastCar = new CheckBox();
+			this.textBoxName = new TextBox();
+			this.label1 = new Label();
+			this.tabPageLocomotives = new TabPage();
+			this.panelLocoImages = new Panel();
+			this.buttonLocoMoveDown = new Button();
+			this.imageListButttons = new ImageList(this.components);
+			this.buttonLocoAdd = new Button();
+			this.listViewLocomotives = new ListView();
+			this.columnHeaderLocoName = new ColumnHeader();
+			this.columnAddress = new ColumnHeader();
+			this.columnHeaderLocoOrientation = new ColumnHeader();
+			this.columnHeaderLocoType = new ColumnHeader();
+			this.buttonLocoRemove = new Button();
+			this.buttonLocoEdit = new Button();
+			this.buttonLocoMoveUp = new Button();
+			this.tabPageDriver = new TabPage();
+			this.tabPageAttributes = new TabPage();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.contextMenuEditLocomotive = new ContextMenu();
+			this.menuItemLocoOrientation = new MenuItem();
+			this.menuItemLocoOrientationForward = new MenuItem();
+			this.menuItemLocoOrientationBackward = new MenuItem();
+			this.menuItemEditLocoDefinition = new MenuItem();
+			this.groupBox1 = new GroupBox();
 			this.trainLengthDiagram = new LayoutManager.CommonUI.Controls.TrainLengthDiagram();
 			this.trainDriverComboBox = new LayoutManager.CommonUI.Controls.TrainDriverComboBox();
 			this.drivingParameters = new LayoutManager.CommonUI.Controls.DrivingParameters();
@@ -336,7 +336,7 @@ namespace LayoutManager.Tools.Dialogs
 			this.listViewLocomotives.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewLocomotives.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewLocomotives.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderLocoName,
             this.columnAddress,
             this.columnHeaderLocoOrientation,
@@ -445,14 +445,14 @@ namespace LayoutManager.Tools.Dialogs
 			// 
 			// contextMenuEditLocomotive
 			// 
-			this.contextMenuEditLocomotive.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.contextMenuEditLocomotive.MenuItems.AddRange(new MenuItem[] {
             this.menuItemLocoOrientation,
             this.menuItemEditLocoDefinition});
 			// 
 			// menuItemLocoOrientation
 			// 
 			this.menuItemLocoOrientation.Index = 0;
-			this.menuItemLocoOrientation.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.menuItemLocoOrientation.MenuItems.AddRange(new MenuItem[] {
             this.menuItemLocoOrientationForward,
             this.menuItemLocoOrientationBackward});
 			this.menuItemLocoOrientation.Text = "Orientation";

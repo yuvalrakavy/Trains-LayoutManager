@@ -210,7 +210,7 @@ namespace LayoutManager.Model {
 		Pending, InProgress, Done, Failed
 	}
 
-	public interface ILayoutAction : IObjectHasId {
+	public interface ILayoutAction : IObjectHasId, IObjectHasXml {
 		string Description { get; }
 		void Commit();
 		ActionStatus Status { get; }

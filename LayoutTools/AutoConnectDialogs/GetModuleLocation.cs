@@ -14,20 +14,19 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 	/// <summary>
 	/// Summary description for GetModuleLocation.
 	/// </summary>
-	public class GetModuleLocation : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.PictureBox pictureBox1;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.ComboBox comboBoxModuleLocation;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class GetModuleLocation : Form {
+		private Label label1;
+		private Label label2;
+		private Label label3;
+		private PictureBox pictureBox1;
+		private Label label4;
+		private ComboBox comboBoxModuleLocation;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public GetModuleLocation(IEnumerable<LayoutControlModuleLocationComponent> moduleLocations)
 		{
@@ -76,14 +75,14 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 		private void InitializeComponent()
 		{
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(GetModuleLocation));
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.comboBoxModuleLocation = new System.Windows.Forms.ComboBox();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.label4 = new System.Windows.Forms.Label();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.label1 = new Label();
+			this.label2 = new Label();
+			this.label3 = new Label();
+			this.comboBoxModuleLocation = new ComboBox();
+			this.pictureBox1 = new PictureBox();
+			this.label4 = new Label();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// label1

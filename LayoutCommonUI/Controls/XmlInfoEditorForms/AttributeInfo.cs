@@ -10,18 +10,17 @@ namespace LayoutManager.CommonUI.Controls.XmlInfoEditorForms
 	/// <summary>
 	/// Summary description for AttributeInfo.
 	/// </summary>
-	public class AttributeInfo : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.TextBox textBoxValue;
-		private System.Windows.Forms.Label labelName;
-		private System.Windows.Forms.TextBox textBoxName;
-		private System.Windows.Forms.Label labelValue;
+	public class AttributeInfo : Form {
+		private Button buttonOK;
+		private Button buttonCancel;
+		private TextBox textBoxValue;
+		private Label labelName;
+		private TextBox textBoxName;
+		private Label labelValue;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public AttributeInfo() {
 			//
@@ -75,12 +74,12 @@ namespace LayoutManager.CommonUI.Controls.XmlInfoEditorForms
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.textBoxValue = new System.Windows.Forms.TextBox();
-			this.labelName = new System.Windows.Forms.Label();
-			this.textBoxName = new System.Windows.Forms.TextBox();
-			this.labelValue = new System.Windows.Forms.Label();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.textBoxValue = new TextBox();
+			this.labelName = new Label();
+			this.textBoxName = new TextBox();
+			this.labelValue = new Label();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// textBoxValue

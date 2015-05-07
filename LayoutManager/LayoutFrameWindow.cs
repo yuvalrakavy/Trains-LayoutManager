@@ -27,7 +27,7 @@ namespace LayoutManager
 	/// <summary>
 	/// Summary description for Form1.
 	/// </summary>
-	public partial class LayoutFrameWindow : System.Windows.Forms.Form, ILayoutFrameWindow
+	public partial class LayoutFrameWindow : Form, ILayoutFrameWindow
 	{
 		TaskCompletionSource<FrameWindowAction>	tcs;
 

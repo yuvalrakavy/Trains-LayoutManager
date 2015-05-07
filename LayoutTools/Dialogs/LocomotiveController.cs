@@ -17,28 +17,28 @@ namespace LayoutManager.Tools.Dialogs
 	/// </summary>
 	[LayoutEventDef("train-controller-activated", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
 	[LayoutEventDef("train-controller-deactivated", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
-	public class LocomotiveController : System.Windows.Forms.Form, IObjectHasXml
+	public class LocomotiveController : Form, IObjectHasXml
 	{
-		private System.Windows.Forms.Panel panelInfo;
-		private System.Windows.Forms.ImageList imageListMotionButtons;
-		private System.Windows.Forms.Button buttonBackward;
-		private System.Windows.Forms.Button buttonStop;
-		private System.Windows.Forms.Button buttonForward;
-		private System.Windows.Forms.Button buttonFunction;
-		private System.Windows.Forms.Button buttonLight;
-		private System.Windows.Forms.Button buttonLocate;
+		private Panel panelInfo;
+		private ImageList imageListMotionButtons;
+		private Button buttonBackward;
+		private Button buttonStop;
+		private Button buttonForward;
+		private Button buttonFunction;
+		private Button buttonLight;
+		private Button buttonLocate;
 		private System.Windows.Forms.ToolTip toolTips;
-		private System.Windows.Forms.ContextMenu contextMenuLights;
-		private System.Windows.Forms.MenuItem menuItemLightsOn;
-		private System.Windows.Forms.MenuItem menuItemLightsOff;
-		private System.Windows.Forms.Button buttonProperties;
-		private System.Windows.Forms.Label labelDriverInstructions;
-		private System.Windows.Forms.Panel panelSpeedLimit;
-		private System.Windows.Forms.Label labelSpeedLimit;
-		private System.Windows.Forms.Button buttonBackwardMenu;
-		private System.Windows.Forms.Button buttonStopMenu;
-		private System.Windows.Forms.Button buttonForwardMenu;
-		private System.ComponentModel.IContainer components;
+		private ContextMenu contextMenuLights;
+		private MenuItem menuItemLightsOn;
+		private MenuItem menuItemLightsOff;
+		private Button buttonProperties;
+		private Label labelDriverInstructions;
+		private Panel panelSpeedLimit;
+		private Label labelSpeedLimit;
+		private Button buttonBackwardMenu;
+		private Button buttonStopMenu;
+		private Button buttonForwardMenu;
+		private IContainer components;
 
 		private void EndOfDesignerVariables() { }
 
@@ -405,27 +405,27 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(LocomotiveController));
-			this.panelInfo = new System.Windows.Forms.Panel();
-			this.imageListMotionButtons = new System.Windows.Forms.ImageList(this.components);
-			this.buttonBackward = new System.Windows.Forms.Button();
-			this.buttonStop = new System.Windows.Forms.Button();
-			this.buttonForward = new System.Windows.Forms.Button();
-			this.buttonFunction = new System.Windows.Forms.Button();
-			this.buttonLight = new System.Windows.Forms.Button();
-			this.contextMenuLights = new System.Windows.Forms.ContextMenu();
-			this.menuItemLightsOn = new System.Windows.Forms.MenuItem();
-			this.menuItemLightsOff = new System.Windows.Forms.MenuItem();
-			this.buttonLocate = new System.Windows.Forms.Button();
+			this.panelInfo = new Panel();
+			this.imageListMotionButtons = new ImageList(this.components);
+			this.buttonBackward = new Button();
+			this.buttonStop = new Button();
+			this.buttonForward = new Button();
+			this.buttonFunction = new Button();
+			this.buttonLight = new Button();
+			this.contextMenuLights = new ContextMenu();
+			this.menuItemLightsOn = new MenuItem();
+			this.menuItemLightsOff = new MenuItem();
+			this.buttonLocate = new Button();
 			this.toolTips = new System.Windows.Forms.ToolTip(this.components);
-			this.buttonProperties = new System.Windows.Forms.Button();
-			this.labelDriverInstructions = new System.Windows.Forms.Label();
-			this.panelSpeedLimit = new System.Windows.Forms.Panel();
-			this.labelSpeedLimit = new System.Windows.Forms.Label();
-			this.buttonBackwardMenu = new System.Windows.Forms.Button();
-			this.buttonStopMenu = new System.Windows.Forms.Button();
-			this.buttonForwardMenu = new System.Windows.Forms.Button();
+			this.buttonProperties = new Button();
+			this.labelDriverInstructions = new Label();
+			this.panelSpeedLimit = new Panel();
+			this.labelSpeedLimit = new Label();
+			this.buttonBackwardMenu = new Button();
+			this.buttonStopMenu = new Button();
+			this.buttonForwardMenu = new Button();
 			this.panelSpeedLimit.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -512,7 +512,7 @@ namespace LayoutManager.Tools.Dialogs
 			// 
 			// contextMenuLights
 			// 
-			this.contextMenuLights.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.contextMenuLights.MenuItems.AddRange(new MenuItem[] {
 																							  this.menuItemLightsOn,
 																							  this.menuItemLightsOff});
 			// 

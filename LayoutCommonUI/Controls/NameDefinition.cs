@@ -14,15 +14,15 @@ namespace LayoutManager.CommonUI.Controls
 	/// Summary description for NameDefinition.
 	/// </summary>
 	public class NameDefinition : System.Windows.Forms.UserControl {
-		private System.Windows.Forms.CheckBox checkBoxVisible;
-		private System.Windows.Forms.TextBox textBoxName;
-		private System.Windows.Forms.Button buttonSettings;
-		private System.Windows.Forms.Label labelName;
+		private CheckBox checkBoxVisible;
+		private TextBox textBoxName;
+		private Button buttonSettings;
+		private Label labelName;
 
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		String			elementName = "Name";
 		LayoutXmlInfo	xmlInfo;
@@ -172,10 +172,10 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.checkBoxVisible = new System.Windows.Forms.CheckBox();
-			this.textBoxName = new System.Windows.Forms.TextBox();
-			this.buttonSettings = new System.Windows.Forms.Button();
-			this.labelName = new System.Windows.Forms.Label();
+			this.checkBoxVisible = new CheckBox();
+			this.textBoxName = new TextBox();
+			this.buttonSettings = new Button();
+			this.labelName = new Label();
 			this.SuspendLayout();
 			// 
 			// checkBoxVisible

@@ -12,23 +12,22 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for StadardFonts.
 	/// </summary>
-	public class StandardFonts : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.ListView listViewFonts;
-		private System.Windows.Forms.ColumnHeader columnHeaderTitle;
-		private System.Windows.Forms.ColumnHeader columnHeaderDescription;
-		private System.Windows.Forms.Button buttonAdd;
-		private System.Windows.Forms.Button buttonEdit;
-		private System.Windows.Forms.Button buttonDelete;
-		private System.Windows.Forms.Button buttonClose;
+	public class StandardFonts : Form {
+		private ListView listViewFonts;
+		private ColumnHeader columnHeaderTitle;
+		private ColumnHeader columnHeaderDescription;
+		private Button buttonAdd;
+		private Button buttonEdit;
+		private Button buttonDelete;
+		private Button buttonClose;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
-		private System.Windows.Forms.ContextMenu contextMenuEdit;
-		private System.Windows.Forms.MenuItem menuItemEditSettings;
-		private System.Windows.Forms.MenuItem menuItemEditTitle;
-		private System.Windows.Forms.MenuItem menuItemFontID;
+		private Container components = null;
+		private ContextMenu contextMenuEdit;
+		private MenuItem menuItemEditSettings;
+		private MenuItem menuItemEditTitle;
+		private MenuItem menuItemFontID;
 
 		public StandardFonts()
 		{
@@ -102,17 +101,17 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.columnHeaderTitle = new System.Windows.Forms.ColumnHeader();
-			this.buttonDelete = new System.Windows.Forms.Button();
-			this.buttonEdit = new System.Windows.Forms.Button();
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.buttonAdd = new System.Windows.Forms.Button();
-			this.listViewFonts = new System.Windows.Forms.ListView();
-			this.columnHeaderDescription = new System.Windows.Forms.ColumnHeader();
-			this.contextMenuEdit = new System.Windows.Forms.ContextMenu();
-			this.menuItemEditSettings = new System.Windows.Forms.MenuItem();
-			this.menuItemEditTitle = new System.Windows.Forms.MenuItem();
-			this.menuItemFontID = new System.Windows.Forms.MenuItem();
+			this.columnHeaderTitle = new ColumnHeader();
+			this.buttonDelete = new Button();
+			this.buttonEdit = new Button();
+			this.buttonClose = new Button();
+			this.buttonAdd = new Button();
+			this.listViewFonts = new ListView();
+			this.columnHeaderDescription = new ColumnHeader();
+			this.contextMenuEdit = new ContextMenu();
+			this.menuItemEditSettings = new MenuItem();
+			this.menuItemEditTitle = new MenuItem();
+			this.menuItemFontID = new MenuItem();
 			this.SuspendLayout();
 			// 
 			// columnHeaderTitle
@@ -158,7 +157,7 @@ namespace LayoutManager.Dialogs
 			// 
 			// listViewFonts
 			// 
-			this.listViewFonts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewFonts.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderTitle,
             this.columnHeaderDescription});
 			this.listViewFonts.HideSelection = false;
@@ -178,7 +177,7 @@ namespace LayoutManager.Dialogs
 			// 
 			// contextMenuEdit
 			// 
-			this.contextMenuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.contextMenuEdit.MenuItems.AddRange(new MenuItem[] {
             this.menuItemEditSettings,
             this.menuItemEditTitle,
             this.menuItemFontID});

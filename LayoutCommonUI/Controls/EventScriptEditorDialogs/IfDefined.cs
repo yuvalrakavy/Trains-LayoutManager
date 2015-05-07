@@ -14,19 +14,18 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 	/// <summary>
 	/// Summary description for IfExist.
 	/// </summary>
-	public class IfDefined : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.ComboBox comboBoxSymbol;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.CheckBox checkBoxAttribute;
-		private System.Windows.Forms.ComboBox comboBoxAttribute;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class IfDefined : Form {
+		private GroupBox groupBox1;
+		private ComboBox comboBoxSymbol;
+		private Label label1;
+		private CheckBox checkBoxAttribute;
+		private ComboBox comboBoxAttribute;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -107,13 +106,13 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.comboBoxSymbol = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.checkBoxAttribute = new System.Windows.Forms.CheckBox();
-			this.comboBoxAttribute = new System.Windows.Forms.ComboBox();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.groupBox1 = new GroupBox();
+			this.comboBoxSymbol = new ComboBox();
+			this.label1 = new Label();
+			this.checkBoxAttribute = new CheckBox();
+			this.comboBoxAttribute = new ComboBox();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 

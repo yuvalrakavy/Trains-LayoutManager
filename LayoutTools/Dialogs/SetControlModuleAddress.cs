@@ -13,18 +13,17 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for SetControlModuleAddress.
 	/// </summary>
-	public class SetControlModuleAddress : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxAddress;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.ComboBox comboBoxAddress;
-		private System.Windows.Forms.CheckBox checkBoxSetUserActionRequired;
+	public class SetControlModuleAddress : Form {
+		private Label label1;
+		private TextBox textBoxAddress;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private ComboBox comboBoxAddress;
+		private CheckBox checkBoxSetUserActionRequired;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -151,12 +150,12 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.comboBoxAddress = new System.Windows.Forms.ComboBox();
-			this.textBoxAddress = new System.Windows.Forms.TextBox();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.checkBoxSetUserActionRequired = new System.Windows.Forms.CheckBox();
+			this.label1 = new Label();
+			this.comboBoxAddress = new ComboBox();
+			this.textBoxAddress = new TextBox();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.checkBoxSetUserActionRequired = new CheckBox();
 			this.SuspendLayout();
 			// 
 			// label1

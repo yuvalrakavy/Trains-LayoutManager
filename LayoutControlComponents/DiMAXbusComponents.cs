@@ -81,6 +81,7 @@ namespace LayoutManager.ControlComponents {
 
 	public interface IMassothFeedbackDecoderSetAddress : ILayoutAction {
 		MassothFeedbackDecoderBusConnectionMethod BusConnectionMethod { get; set; }
+
 		int BusId { get; set; }
 	}
 
@@ -113,7 +114,7 @@ namespace LayoutManager.ControlComponents {
 
 		public int DiMAX_BusId {
 			get {
-				return XmlConvert.ToInt32(GetAttribute("DiMAXBusID", "11"));
+				return XmlConvert.ToInt32(GetAttribute("DiMAXBusID", "12"));
 			}
 
 			set {
@@ -150,7 +151,6 @@ namespace LayoutManager.ControlComponents {
 	class ProgramMassothFeedbackDecoderAddress : ProgramMassothFeedbackDecoder, IMassothFeedbackDecoderSetAddress {
 		public ProgramMassothFeedbackDecoderAddress(XmlElement actionElement, ControlModule feedbackModule)
 			: base(actionElement, feedbackModule) {
-			BusConnectionMethod = MassothFeedbackDecoderBusConnectionMethod.Slave;
 		}
 
 		public override void PrepareProgramming() {
@@ -196,10 +196,29 @@ namespace LayoutManager.ControlComponents {
 			}
 		}
 
-		#region IMassothFeedbackDecoderSetAddress Members
+        #region IMassothFeedbackDecoderSetAddress Members
+        const string BusConnectionAttribute = "BusConnectionMethod";
 
-		public MassothFeedbackDecoderBusConnectionMethod BusConnectionMethod { get; set; }
-		public int BusId { get; set; }
+
+        public MassothFeedbackDecoderBusConnectionMethod BusConnectionMethod {
+            get {
+                return Element.HasAttribute(BusConnectionAttribute) ? (MassothFeedbackDecoderBusConnectionMethod)Enum.Parse(typeof(MassothFeedbackDecoderBusConnectionMethod), Element.GetAttribute(BusConnectionAttribute)) : MassothFeedbackDecoderBusConnectionMethod.Slave;
+            }
+
+            set {
+                Element.SetAttribute("BusConnectionMethod", value.ToString());
+            }
+        }
+
+        public int BusId {
+            get {
+                return int.Parse(Element.GetAttribute("BusID"));
+            }
+
+            set {
+                Element.SetAttribute("BusID", value.ToString());
+            }
+        }
 
 		#endregion
 	}

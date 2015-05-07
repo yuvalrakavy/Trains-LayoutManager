@@ -13,17 +13,16 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for SelectLocomotiveType.
 	/// </summary>
-	public class SelectLocomotiveType : System.Windows.Forms.Form
-	{
+	public class SelectLocomotiveType : Form {
 		private LayoutManager.CommonUI.Controls.LocomotiveTypeList locomotiveTypeList;
-		private System.Windows.Forms.Button buttonSelect;
-		private System.Windows.Forms.Button buttonCancel;
+		private Button buttonSelect;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
-		private System.Windows.Forms.Button buttonArrangeBy;
+		private Button buttonArrangeBy;
 		LocomotiveCatalogInfo	catalog;
 
 		public SelectLocomotiveType()
@@ -79,9 +78,9 @@ namespace LayoutManager.Dialogs
 		private void InitializeComponent()
 		{
 			this.locomotiveTypeList = new LayoutManager.CommonUI.Controls.LocomotiveTypeList();
-			this.buttonSelect = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonArrangeBy = new System.Windows.Forms.Button();
+			this.buttonSelect = new Button();
+			this.buttonCancel = new Button();
+			this.buttonArrangeBy = new Button();
 			this.SuspendLayout();
 			// 
 			// locomotiveTypeList

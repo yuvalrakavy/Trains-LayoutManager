@@ -16,14 +16,14 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class LayoutEmulationSetup : System.Windows.Forms.UserControl
 	{
-		private System.Windows.Forms.GroupBox groupBoxEmulationServices;
-		private System.Windows.Forms.CheckBox checkBoxAnimateTrainMotion;
-		private System.Windows.Forms.TextBox textBoxEmulationTickTime;
-		private System.Windows.Forms.Label labelEmulationTickTime;
+		private GroupBox groupBoxEmulationServices;
+		private CheckBox checkBoxAnimateTrainMotion;
+		private TextBox textBoxEmulationTickTime;
+		private Label labelEmulationTickTime;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -114,10 +114,10 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.groupBoxEmulationServices = new System.Windows.Forms.GroupBox();
-			this.checkBoxAnimateTrainMotion = new System.Windows.Forms.CheckBox();
-			this.textBoxEmulationTickTime = new System.Windows.Forms.TextBox();
-			this.labelEmulationTickTime = new System.Windows.Forms.Label();
+			this.groupBoxEmulationServices = new GroupBox();
+			this.checkBoxAnimateTrainMotion = new CheckBox();
+			this.textBoxEmulationTickTime = new TextBox();
+			this.labelEmulationTickTime = new Label();
 			this.groupBoxEmulationServices.SuspendLayout();
 			this.SuspendLayout();
 			// 

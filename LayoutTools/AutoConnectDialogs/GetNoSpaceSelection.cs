@@ -14,20 +14,19 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 	/// <summary>
 	/// Summary description for GetNoSpaceSelection.
 	/// </summary>
-	public class GetNoSpaceSelection : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label labelTitle;
-		private System.Windows.Forms.RadioButton radioButtonUseModuleLocation;
-		private System.Windows.Forms.ComboBox comboBoxModuleLocation;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.RadioButton radioButtonAddNewModule;
+	public class GetNoSpaceSelection : Form {
+		private Label label2;
+		private Label label3;
+		private Label labelTitle;
+		private RadioButton radioButtonUseModuleLocation;
+		private ComboBox comboBoxModuleLocation;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private RadioButton radioButtonAddNewModule;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public GetNoSpaceSelection(LayoutControlModuleLocationComponent noSpaceLocation, IEnumerable<LayoutControlModuleLocationComponent> otherModuleLocations)
 		{
@@ -92,14 +91,14 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.labelTitle = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.radioButtonUseModuleLocation = new System.Windows.Forms.RadioButton();
-			this.comboBoxModuleLocation = new System.Windows.Forms.ComboBox();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.radioButtonAddNewModule = new System.Windows.Forms.RadioButton();
+			this.labelTitle = new Label();
+			this.label2 = new Label();
+			this.label3 = new Label();
+			this.radioButtonUseModuleLocation = new RadioButton();
+			this.comboBoxModuleLocation = new ComboBox();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.radioButtonAddNewModule = new RadioButton();
 			this.SuspendLayout();
 			// 
 			// labelTitle

@@ -15,16 +15,16 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for BindBlockEdgeToSignals.
 	/// </summary>
-	public class BindBlockEdgeToSignals : System.Windows.Forms.Form, IModelComponentReceiverDialog {
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.ListBox listBoxSignals;
-		private System.Windows.Forms.Button buttonRemove;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Button buttonOk;
+	public class BindBlockEdgeToSignals : Form, IModelComponentReceiverDialog {
+		private Label label1;
+		private ListBox listBoxSignals;
+		private Button buttonRemove;
+		private Button buttonCancel;
+		private Button buttonOk;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public void endOfDesignerVariables() { }
 
@@ -139,11 +139,11 @@ namespace LayoutManager.Tools.Dialogs
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			this.label1 = new System.Windows.Forms.Label();
-			this.listBoxSignals = new System.Windows.Forms.ListBox();
-			this.buttonRemove = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOk = new System.Windows.Forms.Button();
+			this.label1 = new Label();
+			this.listBoxSignals = new ListBox();
+			this.buttonRemove = new Button();
+			this.buttonCancel = new Button();
+			this.buttonOk = new Button();
 			this.SuspendLayout();
 			// 
 			// label1

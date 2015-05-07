@@ -12,17 +12,17 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 	/// <summary>
 	/// Summary description for GenerateEventOption.
 	/// </summary>
-	public class GenerateEventOption : System.Windows.Forms.Form {
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxName;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class GenerateEventOption : Form {
+		private Label label1;
+		private TextBox textBoxName;
+		private GroupBox groupBox1;
+		private Button buttonOK;
+		private Button buttonCancel;
 		private LayoutManager.CommonUI.Controls.Operand operand;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		XmlElement	optionsElement;
 		XmlElement	element;
@@ -68,12 +68,12 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBoxName = new System.Windows.Forms.TextBox();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label1 = new Label();
+			this.textBoxName = new TextBox();
+			this.groupBox1 = new GroupBox();
 			this.operand = new LayoutManager.CommonUI.Controls.Operand();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 

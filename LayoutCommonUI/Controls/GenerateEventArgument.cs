@@ -16,20 +16,20 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class GenerateEventArgument : System.Windows.Forms.UserControl
 	{
-		private System.Windows.Forms.RadioButton radioButtonNull;
-		private System.Windows.Forms.RadioButton radioButtonObjectReference;
-		private System.Windows.Forms.ComboBox comboBoxReferencedObject;
-		private System.Windows.Forms.RadioButton radioButtonValueOf;
-		private System.Windows.Forms.RadioButton radioButtonConstant;
+		private RadioButton radioButtonNull;
+		private RadioButton radioButtonObjectReference;
+		private ComboBox comboBoxReferencedObject;
+		private RadioButton radioButtonValueOf;
+		private RadioButton radioButtonConstant;
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenuConstantType;
-		private System.Windows.Forms.TextBox textBoxConstantValue;
-		private System.Windows.Forms.RadioButton radioButtonContext;
+		private TextBox textBoxConstantValue;
+		private RadioButton radioButtonContext;
 		private LayoutManager.CommonUI.Controls.OperandValueOf operandValueOf;
-		private System.Windows.Forms.ComboBox comboBoxBooleanConstant;
+		private ComboBox comboBoxBooleanConstant;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -285,16 +285,16 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.radioButtonNull = new System.Windows.Forms.RadioButton();
-			this.radioButtonObjectReference = new System.Windows.Forms.RadioButton();
-			this.comboBoxReferencedObject = new System.Windows.Forms.ComboBox();
+			this.radioButtonNull = new RadioButton();
+			this.radioButtonObjectReference = new RadioButton();
+			this.comboBoxReferencedObject = new ComboBox();
 			this.operandValueOf = new LayoutManager.CommonUI.Controls.OperandValueOf();
-			this.radioButtonValueOf = new System.Windows.Forms.RadioButton();
-			this.radioButtonConstant = new System.Windows.Forms.RadioButton();
+			this.radioButtonValueOf = new RadioButton();
+			this.radioButtonConstant = new RadioButton();
 			this.linkMenuConstantType = new LayoutManager.CommonUI.Controls.LinkMenu();
-			this.textBoxConstantValue = new System.Windows.Forms.TextBox();
-			this.radioButtonContext = new System.Windows.Forms.RadioButton();
-			this.comboBoxBooleanConstant = new System.Windows.Forms.ComboBox();
+			this.textBoxConstantValue = new TextBox();
+			this.radioButtonContext = new RadioButton();
+			this.comboBoxBooleanConstant = new ComboBox();
 			this.SuspendLayout();
 			// 
 			// radioButtonNull

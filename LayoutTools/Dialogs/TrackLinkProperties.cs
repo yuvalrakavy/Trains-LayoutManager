@@ -12,19 +12,18 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TrackLinkForm.
 	/// </summary>
-	public class TrackLinkProperties : System.Windows.Forms.Form
-	{
+	public class TrackLinkProperties : Form {
 		private LayoutManager.CommonUI.Controls.TrackLinkTree trackLinkTree;
-		private System.Windows.Forms.RadioButton radioButtonNotLinked;
-		private System.Windows.Forms.RadioButton radioButtonLinked;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private RadioButton radioButtonNotLinked;
+		private RadioButton radioButtonLinked;
+		private Button buttonOK;
+		private Button buttonCancel;
 		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
 
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		LayoutXmlInfo		xmlInfo;
 
@@ -97,10 +96,10 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.radioButtonNotLinked = new System.Windows.Forms.RadioButton();
-			this.radioButtonLinked = new System.Windows.Forms.RadioButton();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonOK = new System.Windows.Forms.Button();
+			this.radioButtonNotLinked = new RadioButton();
+			this.radioButtonLinked = new RadioButton();
+			this.buttonCancel = new Button();
+			this.buttonOK = new Button();
 			this.trackLinkTree = new LayoutManager.CommonUI.Controls.TrackLinkTree();
 			this.nameDefinition = new LayoutManager.CommonUI.Controls.NameDefinition();
 			this.SuspendLayout();

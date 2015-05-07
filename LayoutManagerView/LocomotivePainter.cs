@@ -21,7 +21,7 @@ namespace LayoutManager.View
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components;
+		private Container components;
 
 		String							label = "";
 		bool							frontDefined;
@@ -45,7 +45,7 @@ namespace LayoutManager.View
 		bool							drawExtensionMark;
 		ViewDetailLevel					detailLevel = ViewDetailLevel.High;
 
-		public LocomotivePainter(System.ComponentModel.IContainer container) {
+		public LocomotivePainter(IContainer container) {
 			/// <summary>
 			/// Required for Windows.Forms Class Composition Designer support
 			/// </summary>
@@ -380,7 +380,7 @@ namespace LayoutManager.View
 		/// </summary>
 		private void InitializeComponent()
 		{
-			components = new System.ComponentModel.Container();
+			components = new Container();
 		}
 		#endregion
 	

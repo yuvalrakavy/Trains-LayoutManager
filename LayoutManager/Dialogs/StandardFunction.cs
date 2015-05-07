@@ -13,21 +13,20 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Dialog box for creating/editing locomotive function template
 	/// </summary>
-	public class StandardFunction : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.ComboBox comboBoxFunctionType;
-		private System.Windows.Forms.TextBox textBoxFunctionName;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.TextBox textBoxDescription;
-		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.Button buttonCancel;
+	public class StandardFunction : Form {
+		private Label label1;
+		private Label label2;
+		private ComboBox comboBoxFunctionType;
+		private TextBox textBoxFunctionName;
+		private Label label3;
+		private TextBox textBoxDescription;
+		private Button buttonOk;
+		private Button buttonCancel;
 
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		XmlElement	functionInfoElement;
 
@@ -74,14 +73,14 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.comboBoxFunctionType = new System.Windows.Forms.ComboBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.textBoxFunctionName = new System.Windows.Forms.TextBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.textBoxDescription = new System.Windows.Forms.TextBox();
-			this.buttonOk = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.label1 = new Label();
+			this.comboBoxFunctionType = new ComboBox();
+			this.label2 = new Label();
+			this.textBoxFunctionName = new TextBox();
+			this.label3 = new Label();
+			this.textBoxDescription = new TextBox();
+			this.buttonOk = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// label1

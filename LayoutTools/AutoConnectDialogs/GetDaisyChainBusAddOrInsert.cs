@@ -14,17 +14,16 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 	/// <summary>
 	/// Summary description for GetDaisyChainBusAddOrInsert.
 	/// </summary>
-	public class GetDaisyChainBusAddOrInsert : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.RadioButton radioButtonInsert;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.RadioButton radioButtonAdd;
-		private System.Windows.Forms.Label labelTitle;
+	public class GetDaisyChainBusAddOrInsert : Form {
+		private RadioButton radioButtonInsert;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private RadioButton radioButtonAdd;
+		private Label labelTitle;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public GetDaisyChainBusAddOrInsert(LayoutControlModuleLocationComponent moduleLocation)
 		{
@@ -66,11 +65,11 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.labelTitle = new System.Windows.Forms.Label();
-			this.radioButtonInsert = new System.Windows.Forms.RadioButton();
-			this.radioButtonAdd = new System.Windows.Forms.RadioButton();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.labelTitle = new Label();
+			this.radioButtonInsert = new RadioButton();
+			this.radioButtonAdd = new RadioButton();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// labelTitle

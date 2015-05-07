@@ -14,18 +14,17 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for ManualDispatchRegions.
 	/// </summary>
-	public class ManualDispatchRegions : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.ListBox listBoxRegions;
-		private System.Windows.Forms.Button buttonNewRegion;
-		private System.Windows.Forms.Button buttonEditRegion;
-		private System.Windows.Forms.Button buttonDeleteRegion;
-		private System.Windows.Forms.Button buttonToggleRegionActivation;
-		private System.Windows.Forms.Button buttonClose;
+	public class ManualDispatchRegions : Form {
+		private ListBox listBoxRegions;
+		private Button buttonNewRegion;
+		private Button buttonEditRegion;
+		private Button buttonDeleteRegion;
+		private Button buttonToggleRegionActivation;
+		private Button buttonClose;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -136,12 +135,12 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.listBoxRegions = new System.Windows.Forms.ListBox();
-			this.buttonNewRegion = new System.Windows.Forms.Button();
-			this.buttonEditRegion = new System.Windows.Forms.Button();
-			this.buttonDeleteRegion = new System.Windows.Forms.Button();
-			this.buttonToggleRegionActivation = new System.Windows.Forms.Button();
-			this.buttonClose = new System.Windows.Forms.Button();
+			this.listBoxRegions = new ListBox();
+			this.buttonNewRegion = new Button();
+			this.buttonEditRegion = new Button();
+			this.buttonDeleteRegion = new Button();
+			this.buttonToggleRegionActivation = new Button();
+			this.buttonClose = new Button();
 			this.SuspendLayout();
 			// 
 			// listBoxRegions

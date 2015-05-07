@@ -13,20 +13,19 @@ namespace LayoutManager.CommonUI.Dialogs
 	/// <summary>
 	/// Summary description for PolicyDefinition.
 	/// </summary>
-	public class PolicyDefinition : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxName;
+	public class PolicyDefinition : Form {
+		private Label label1;
+		private TextBox textBoxName;
 		private LayoutManager.CommonUI.Controls.EventScriptEditor eventScriptEditor;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.CheckBox checkBoxApply;
-		private System.Windows.Forms.CheckBox checkBoxGlobalPolicy;
-		private System.Windows.Forms.CheckBox checkBoxShowInMenu;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private CheckBox checkBoxApply;
+		private CheckBox checkBoxGlobalPolicy;
+		private CheckBox checkBoxShowInMenu;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -88,14 +87,14 @@ namespace LayoutManager.CommonUI.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBoxName = new System.Windows.Forms.TextBox();
-			this.checkBoxApply = new System.Windows.Forms.CheckBox();
+			this.label1 = new Label();
+			this.textBoxName = new TextBox();
+			this.checkBoxApply = new CheckBox();
 			this.eventScriptEditor = new LayoutManager.CommonUI.Controls.EventScriptEditor();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.checkBoxGlobalPolicy = new System.Windows.Forms.CheckBox();
-			this.checkBoxShowInMenu = new System.Windows.Forms.CheckBox();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.checkBoxGlobalPolicy = new CheckBox();
+			this.checkBoxShowInMenu = new CheckBox();
 			this.SuspendLayout();
 			// 
 			// label1

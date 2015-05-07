@@ -14,16 +14,15 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 	/// <summary>
 	/// Summary description for AnnounceCreateNewModule.
 	/// </summary>
-	public class AnnounceCreateNewModule : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label labelModuleName;
-		private System.Windows.Forms.Label labelModuleLocation;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class AnnounceCreateNewModule : Form {
+		private Label labelModuleName;
+		private Label labelModuleLocation;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public AnnounceCreateNewModule(ControlModuleType moduleType, LayoutControlModuleLocationComponent moduleLocation)
 		{
@@ -62,10 +61,10 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.labelModuleName = new System.Windows.Forms.Label();
-			this.labelModuleLocation = new System.Windows.Forms.Label();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.labelModuleName = new Label();
+			this.labelModuleLocation = new Label();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// labelModuleName

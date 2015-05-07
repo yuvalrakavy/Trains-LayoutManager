@@ -14,19 +14,18 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TripPlanCatalog.
 	/// </summary>
-	public class TripPlanCatalog : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Panel panelTripPlans;
-		private System.Windows.Forms.Splitter splitter;
-		private System.Windows.Forms.GroupBox groupBoxTripPlanPreview;
+	public class TripPlanCatalog : Form {
+		private Panel panelTripPlans;
+		private Splitter splitter;
+		private GroupBox groupBoxTripPlanPreview;
 		private LayoutManager.Tools.Controls.TripPlanEditor tripPlanViewer;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Button buttonGo;
-		private System.Windows.Forms.Button buttonEdit;
+		private Button buttonCancel;
+		private Button buttonGo;
+		private Button buttonEdit;
 		private LayoutManager.CommonUI.Controls.TrainDriverComboBox trainDriverComboBox;
-		private System.Windows.Forms.Label label1;
+		private Label label1;
 		private LayoutManager.CommonUI.Controls.TripPlanList tripPlanList;
-		private System.Windows.Forms.Panel panelTripPlanPreview;
+		private Panel panelTripPlanPreview;
 
 		private void endOfDesignerVariables() { }
 
@@ -133,17 +132,17 @@ namespace LayoutManager.Tools.Dialogs
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TripPlanCatalog));
-			this.panelTripPlans = new System.Windows.Forms.Panel();
+			this.panelTripPlans = new Panel();
 			this.tripPlanList = new LayoutManager.CommonUI.Controls.TripPlanList();
-			this.splitter = new System.Windows.Forms.Splitter();
-			this.panelTripPlanPreview = new System.Windows.Forms.Panel();
-			this.label1 = new System.Windows.Forms.Label();
+			this.splitter = new Splitter();
+			this.panelTripPlanPreview = new Panel();
+			this.label1 = new Label();
 			this.trainDriverComboBox = new LayoutManager.CommonUI.Controls.TrainDriverComboBox();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.groupBoxTripPlanPreview = new System.Windows.Forms.GroupBox();
+			this.buttonCancel = new Button();
+			this.groupBoxTripPlanPreview = new GroupBox();
 			this.tripPlanViewer = new LayoutManager.Tools.Controls.TripPlanEditor();
-			this.buttonGo = new System.Windows.Forms.Button();
-			this.buttonEdit = new System.Windows.Forms.Button();
+			this.buttonGo = new Button();
+			this.buttonEdit = new Button();
 			this.panelTripPlans.SuspendLayout();
 			this.panelTripPlanPreview.SuspendLayout();
 			this.groupBoxTripPlanPreview.SuspendLayout();

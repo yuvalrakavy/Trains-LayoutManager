@@ -10,20 +10,19 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for LocomotiveCollectionStores.
 	/// </summary>
-	public class LocomotiveCollectionStores : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Button buttonClose;
-		private System.Windows.Forms.ListView listViewStores;
-		private System.Windows.Forms.Button buttonNew;
-		private System.Windows.Forms.Button buttonEdit;
-		private System.Windows.Forms.Button buttonRemove;
-		private System.Windows.Forms.ColumnHeader columnHeaderName;
-		private System.Windows.Forms.ColumnHeader columnHeaderFile;
+	public class LocomotiveCollectionStores : Form {
+		private Button buttonClose;
+		private ListView listViewStores;
+		private Button buttonNew;
+		private Button buttonEdit;
+		private Button buttonRemove;
+		private ColumnHeader columnHeaderName;
+		private ColumnHeader columnHeaderFile;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
-		private System.Windows.Forms.Button buttonSetAsDefault;
+		private Container components = null;
+		private Button buttonSetAsDefault;
 
 		XmlElement	storesElement;
 		String		storesName;
@@ -94,14 +93,14 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonClose = new System.Windows.Forms.Button();
-			this.listViewStores = new System.Windows.Forms.ListView();
-			this.columnHeaderName = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderFile = new System.Windows.Forms.ColumnHeader();
-			this.buttonNew = new System.Windows.Forms.Button();
-			this.buttonEdit = new System.Windows.Forms.Button();
-			this.buttonRemove = new System.Windows.Forms.Button();
-			this.buttonSetAsDefault = new System.Windows.Forms.Button();
+			this.buttonClose = new Button();
+			this.listViewStores = new ListView();
+			this.columnHeaderName = new ColumnHeader();
+			this.columnHeaderFile = new ColumnHeader();
+			this.buttonNew = new Button();
+			this.buttonEdit = new Button();
+			this.buttonRemove = new Button();
+			this.buttonSetAsDefault = new Button();
 			this.SuspendLayout();
 			// 
 			// buttonClose
@@ -118,7 +117,7 @@ namespace LayoutManager.Dialogs
 			this.listViewStores.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 				| System.Windows.Forms.AnchorStyles.Left) 
 				| System.Windows.Forms.AnchorStyles.Right);
-			this.listViewStores.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewStores.Columns.AddRange(new ColumnHeader[] {
 																							 this.columnHeaderName,
 																							 this.columnHeaderFile});
 			this.listViewStores.FullRowSelect = true;

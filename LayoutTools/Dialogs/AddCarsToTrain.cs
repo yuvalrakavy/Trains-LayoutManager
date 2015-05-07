@@ -12,26 +12,25 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for AddCarsToTrain.
 	/// </summary>
-	public class AddCarsToTrain : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.ComboBox comboBoxDescription;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.NumericUpDown numericUpDownCount;
-		private System.Windows.Forms.RadioButton radioButtonLength_76;
-		private System.Windows.Forms.RadioButton radioButtonLength_65;
-		private System.Windows.Forms.RadioButton radioButtonLength_46;
-		private System.Windows.Forms.RadioButton radioButtonLength_41;
-		private System.Windows.Forms.RadioButton radioButtonLength_30;
-		private System.Windows.Forms.RadioButton radioButtonOther;
+	public class AddCarsToTrain : Form {
+		private ComboBox comboBoxDescription;
+		private Label label1;
+		private Label label2;
+		private NumericUpDown numericUpDownCount;
+		private RadioButton radioButtonLength_76;
+		private RadioButton radioButtonLength_65;
+		private RadioButton radioButtonLength_46;
+		private RadioButton radioButtonLength_41;
+		private RadioButton radioButtonLength_30;
+		private RadioButton radioButtonOther;
 		private LayoutManager.CommonUI.Controls.LengthInput lengthInput;
-		private System.Windows.Forms.Button ButtonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private Button ButtonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
-		private System.Windows.Forms.GroupBox groupBoxLength;
+		private Container components = null;
+		private GroupBox groupBoxLength;
 
 		TrainCarsInfo	trainCars;
 
@@ -119,20 +118,20 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.comboBoxDescription = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.numericUpDownCount = new System.Windows.Forms.NumericUpDown();
-			this.groupBoxLength = new System.Windows.Forms.GroupBox();
+			this.comboBoxDescription = new ComboBox();
+			this.label1 = new Label();
+			this.label2 = new Label();
+			this.numericUpDownCount = new NumericUpDown();
+			this.groupBoxLength = new GroupBox();
 			this.lengthInput = new LayoutManager.CommonUI.Controls.LengthInput();
-			this.radioButtonLength_65 = new System.Windows.Forms.RadioButton();
-			this.radioButtonLength_76 = new System.Windows.Forms.RadioButton();
-			this.radioButtonLength_46 = new System.Windows.Forms.RadioButton();
-			this.radioButtonLength_41 = new System.Windows.Forms.RadioButton();
-			this.radioButtonLength_30 = new System.Windows.Forms.RadioButton();
-			this.radioButtonOther = new System.Windows.Forms.RadioButton();
-			this.ButtonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.radioButtonLength_65 = new RadioButton();
+			this.radioButtonLength_76 = new RadioButton();
+			this.radioButtonLength_46 = new RadioButton();
+			this.radioButtonLength_41 = new RadioButton();
+			this.radioButtonLength_30 = new RadioButton();
+			this.radioButtonOther = new RadioButton();
+			this.ButtonOK = new Button();
+			this.buttonCancel = new Button();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownCount)).BeginInit();
 			this.groupBoxLength.SuspendLayout();
 			this.SuspendLayout();

@@ -13,10 +13,10 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for LocomotiveFront.
 	/// </summary>
-	public class TrainFrontAndLength : System.Windows.Forms.Form {
-		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Label labelBlockName;
+	public class TrainFrontAndLength : Form {
+		private Button buttonOk;
+		private Button buttonCancel;
+		private Label labelBlockName;
 		private LayoutManager.CommonUI.Controls.LocomotiveFront locomotiveFrontControl;
 		private GroupBox groupBox1;
 		private GroupBox groupBox2;
@@ -24,7 +24,7 @@ namespace LayoutManager.Tools.Dialogs
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public TrainFrontAndLength(LayoutBlockDefinitionComponent blockInfo, String name)
 		{
@@ -89,12 +89,12 @@ namespace LayoutManager.Tools.Dialogs
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TrainFrontAndLength));
-			this.buttonOk = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.labelBlockName = new System.Windows.Forms.Label();
+			this.buttonOk = new Button();
+			this.buttonCancel = new Button();
+			this.labelBlockName = new Label();
 			this.locomotiveFrontControl = new LayoutManager.CommonUI.Controls.LocomotiveFront();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.groupBox1 = new GroupBox();
+			this.groupBox2 = new GroupBox();
 			this.trainLengthDiagram = new LayoutManager.CommonUI.Controls.TrainLengthDiagram();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();

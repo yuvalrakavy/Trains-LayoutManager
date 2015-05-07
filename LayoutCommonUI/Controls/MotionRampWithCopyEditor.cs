@@ -15,11 +15,11 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class MotionRampWithCopyEditor : MotionRampEditor
 	{
-		private System.Windows.Forms.Button buttonUsrExistingRamp;
+		private Button buttonUsrExistingRamp;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public MotionRampWithCopyEditor()
 		{
@@ -49,7 +49,7 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonUsrExistingRamp = new System.Windows.Forms.Button();
+			this.buttonUsrExistingRamp = new Button();
 			this.SuspendLayout();
 			// 
 			// buttonUsrExistingRamp

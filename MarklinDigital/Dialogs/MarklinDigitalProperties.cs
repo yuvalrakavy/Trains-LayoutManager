@@ -14,23 +14,22 @@ namespace MarklinDigital.Dialogs
 	/// <summary>
 	/// Summary description for MarklinDigitalProperties.
 	/// </summary>
-	public class MarklinDigitalProperties : System.Windows.Forms.Form
-	{
+	public class MarklinDigitalProperties : Form {
 		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
-		private System.Windows.Forms.ComboBox comboBoxPort;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.NumericUpDown numericUpDownFeedbackPolling;
-		private System.Windows.Forms.Label label3;
+		private ComboBox comboBoxPort;
+		private Label label1;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private Label label2;
+		private NumericUpDown numericUpDownFeedbackPolling;
+		private Label label3;
 		private LayoutManager.CommonUI.Controls.LayoutEmulationSetup layoutEmulationSetup;
 		private Button buttonCOMsettings;
 
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -90,15 +89,15 @@ namespace MarklinDigital.Dialogs
 		private void InitializeComponent()
 		{
             this.nameDefinition = new LayoutManager.CommonUI.Controls.NameDefinition();
-            this.comboBoxPort = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.buttonOK = new System.Windows.Forms.Button();
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.numericUpDownFeedbackPolling = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
+            this.comboBoxPort = new ComboBox();
+            this.label1 = new Label();
+            this.buttonOK = new Button();
+            this.buttonCancel = new Button();
+            this.label2 = new Label();
+            this.numericUpDownFeedbackPolling = new NumericUpDown();
+            this.label3 = new Label();
             this.layoutEmulationSetup = new LayoutManager.CommonUI.Controls.LayoutEmulationSetup();
-            this.buttonCOMsettings = new System.Windows.Forms.Button();
+            this.buttonCOMsettings = new Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFeedbackPolling)).BeginInit();
             this.SuspendLayout();
             // 

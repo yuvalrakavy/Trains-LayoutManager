@@ -14,21 +14,20 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 	/// <summary>
 	/// Summary description for SetAttribute.
 	/// </summary>
-	public class SetAttribute : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.ComboBox comboBoxSymbol;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.ComboBox comboBoxAttribute;
-		private System.Windows.Forms.GroupBox groupBox2;
+	public class SetAttribute : Form {
+		private GroupBox groupBox1;
+		private ComboBox comboBoxSymbol;
+		private Label label1;
+		private Label label2;
+		private ComboBox comboBoxAttribute;
+		private GroupBox groupBox2;
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenuType;
-		private System.Windows.Forms.TextBox textBoxTextValue;
-		private System.Windows.Forms.GroupBox groupBoxValueBoolean;
-		private System.Windows.Forms.RadioButton radioButtonValueTrue;
-		private System.Windows.Forms.RadioButton radioButtonValueFalse;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private TextBox textBoxTextValue;
+		private GroupBox groupBoxValueBoolean;
+		private RadioButton radioButtonValueTrue;
+		private RadioButton radioButtonValueFalse;
+		private Button buttonOK;
+		private Button buttonCancel;
 		private LayoutManager.CommonUI.Controls.OperandValueOf operandValueOf;
 		private LayoutManager.CommonUI.Controls.NumericValue numericValue;
 
@@ -36,7 +35,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -186,20 +185,20 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.comboBoxSymbol = new System.Windows.Forms.ComboBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.comboBoxAttribute = new System.Windows.Forms.ComboBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.groupBox1 = new GroupBox();
+			this.label1 = new Label();
+			this.comboBoxSymbol = new ComboBox();
+			this.label2 = new Label();
+			this.comboBoxAttribute = new ComboBox();
+			this.groupBox2 = new GroupBox();
 			this.operandValueOf = new LayoutManager.CommonUI.Controls.OperandValueOf();
-			this.groupBoxValueBoolean = new System.Windows.Forms.GroupBox();
-			this.radioButtonValueTrue = new System.Windows.Forms.RadioButton();
-			this.radioButtonValueFalse = new System.Windows.Forms.RadioButton();
-			this.textBoxTextValue = new System.Windows.Forms.TextBox();
+			this.groupBoxValueBoolean = new GroupBox();
+			this.radioButtonValueTrue = new RadioButton();
+			this.radioButtonValueFalse = new RadioButton();
+			this.textBoxTextValue = new TextBox();
 			this.linkMenuType = new LayoutManager.CommonUI.Controls.LinkMenu();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.numericValue = new LayoutManager.CommonUI.Controls.NumericValue();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();

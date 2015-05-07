@@ -12,22 +12,21 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for BusDefaultProperties.
 	/// </summary>
-	public class BusDefaultProperties : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.ComboBox comboBoxModuleType;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.TextBox textBoxStartAddress;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.Label labelStartAddress1;
-		private System.Windows.Forms.Label labelStartAddress2;
-		private System.Windows.Forms.Label labelStartAddress3;
+	public class BusDefaultProperties : Form {
+		private Label label2;
+		private ComboBox comboBoxModuleType;
+		private Label label3;
+		private Label label4;
+		private TextBox textBoxStartAddress;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private Label labelStartAddress1;
+		private Label labelStartAddress2;
+		private Label labelStartAddress3;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -116,16 +115,16 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label2 = new System.Windows.Forms.Label();
-			this.comboBoxModuleType = new System.Windows.Forms.ComboBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.labelStartAddress1 = new System.Windows.Forms.Label();
-			this.textBoxStartAddress = new System.Windows.Forms.TextBox();
-			this.labelStartAddress2 = new System.Windows.Forms.Label();
-			this.labelStartAddress3 = new System.Windows.Forms.Label();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.label2 = new Label();
+			this.comboBoxModuleType = new ComboBox();
+			this.label3 = new Label();
+			this.label4 = new Label();
+			this.labelStartAddress1 = new Label();
+			this.textBoxStartAddress = new TextBox();
+			this.labelStartAddress2 = new Label();
+			this.labelStartAddress3 = new Label();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// label2

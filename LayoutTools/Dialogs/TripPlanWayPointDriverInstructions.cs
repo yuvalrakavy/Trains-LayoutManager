@@ -14,17 +14,17 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for TripPlanWayPointStartCondition.
 	/// </summary>
-	public class TripPlanWayPointDriverInstructions : System.Windows.Forms.Form, IControlSupportViewOnly
+	public class TripPlanWayPointDriverInstructions : Form, IControlSupportViewOnly
 	{
 		private LayoutManager.CommonUI.Controls.EventScriptEditor eventScriptEditor;
-		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.Button buttonCancel;
+		private Button buttonOk;
+		private Button buttonCancel;
 		private Button buttonSave;
 
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -101,9 +101,9 @@ namespace LayoutManager.Tools.Dialogs
 		private void InitializeComponent()
 		{
 			this.eventScriptEditor = new LayoutManager.CommonUI.Controls.EventScriptEditor();
-			this.buttonOk = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonSave = new System.Windows.Forms.Button();
+			this.buttonOk = new Button();
+			this.buttonCancel = new Button();
+			this.buttonSave = new Button();
 			this.SuspendLayout();
 			// 
 			// eventScriptEditor

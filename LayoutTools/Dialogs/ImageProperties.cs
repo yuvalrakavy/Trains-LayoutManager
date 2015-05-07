@@ -13,44 +13,44 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for ImageProperties.
 	/// </summary>
-	public class ImageProperties : System.Windows.Forms.Form, ILayoutComponentPropertiesDialog
+	public class ImageProperties : Form, ILayoutComponentPropertiesDialog
 	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.GroupBox groupBox4;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.TextBox textBoxImageFile;
-		private System.Windows.Forms.Button buttonBrowse;
-		private System.Windows.Forms.RadioButton radioButtonWidthOriginal;
-		private System.Windows.Forms.RadioButton radioButtonWidthSet;
-		private System.Windows.Forms.NumericUpDown numericUpDownWidth;
-		private System.Windows.Forms.NumericUpDown numericUpDownHeight;
-		private System.Windows.Forms.RadioButton radioButtonHeightSet;
-		private System.Windows.Forms.RadioButton radioButtonHeightOriginal;
-		private System.Windows.Forms.NumericUpDown numericUpDownHorizontalOffset;
-		private System.Windows.Forms.NumericUpDown numericUpDownVerticalOffset;
-		private System.Windows.Forms.RadioButton radioButtonEffectStretch;
-		private System.Windows.Forms.RadioButton radioButtonEffectTile;
+		private Label label1;
+		private GroupBox groupBox1;
+		private GroupBox groupBox2;
+		private GroupBox groupBox3;
+		private Label label2;
+		private Label label3;
+		private Label label4;
+		private Label label5;
+		private GroupBox groupBox4;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private TextBox textBoxImageFile;
+		private Button buttonBrowse;
+		private RadioButton radioButtonWidthOriginal;
+		private RadioButton radioButtonWidthSet;
+		private NumericUpDown numericUpDownWidth;
+		private NumericUpDown numericUpDownHeight;
+		private RadioButton radioButtonHeightSet;
+		private RadioButton radioButtonHeightOriginal;
+		private NumericUpDown numericUpDownHorizontalOffset;
+		private NumericUpDown numericUpDownVerticalOffset;
+		private RadioButton radioButtonEffectStretch;
+		private RadioButton radioButtonEffectTile;
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenuHorizontalUnits;
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenuVerticalUnits;
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenuOrigin;
-		private System.Windows.Forms.Label label6;
+		private Label label6;
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenuVerticalAlignment;
-		private System.Windows.Forms.Label label7;
+		private Label label7;
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenuHorizontalAlignment;
-		private System.Windows.Forms.Label label8;
+		private Label label8;
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenuRotateFlip;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void EndOfDesignerVariables() { } 
 
@@ -163,37 +163,37 @@ namespace LayoutManager.Tools.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBoxImageFile = new System.Windows.Forms.TextBox();
-			this.buttonBrowse = new System.Windows.Forms.Button();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label1 = new Label();
+			this.textBoxImageFile = new TextBox();
+			this.buttonBrowse = new Button();
+			this.groupBox1 = new GroupBox();
 			this.linkMenuHorizontalUnits = new LayoutManager.CommonUI.Controls.LinkMenu();
-			this.numericUpDownWidth = new System.Windows.Forms.NumericUpDown();
-			this.radioButtonWidthSet = new System.Windows.Forms.RadioButton();
-			this.radioButtonWidthOriginal = new System.Windows.Forms.RadioButton();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.numericUpDownWidth = new NumericUpDown();
+			this.radioButtonWidthSet = new RadioButton();
+			this.radioButtonWidthOriginal = new RadioButton();
+			this.groupBox2 = new GroupBox();
 			this.linkMenuVerticalUnits = new LayoutManager.CommonUI.Controls.LinkMenu();
-			this.numericUpDownHeight = new System.Windows.Forms.NumericUpDown();
-			this.radioButtonHeightSet = new System.Windows.Forms.RadioButton();
-			this.radioButtonHeightOriginal = new System.Windows.Forms.RadioButton();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.numericUpDownHeight = new NumericUpDown();
+			this.radioButtonHeightSet = new RadioButton();
+			this.radioButtonHeightOriginal = new RadioButton();
+			this.groupBox3 = new GroupBox();
 			this.linkMenuVerticalAlignment = new LayoutManager.CommonUI.Controls.LinkMenu();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.numericUpDownVerticalOffset = new System.Windows.Forms.NumericUpDown();
-			this.label3 = new System.Windows.Forms.Label();
-			this.numericUpDownHorizontalOffset = new System.Windows.Forms.NumericUpDown();
-			this.label2 = new System.Windows.Forms.Label();
+			this.label6 = new Label();
+			this.label5 = new Label();
+			this.numericUpDownVerticalOffset = new NumericUpDown();
+			this.label3 = new Label();
+			this.numericUpDownHorizontalOffset = new NumericUpDown();
+			this.label2 = new Label();
 			this.linkMenuOrigin = new LayoutManager.CommonUI.Controls.LinkMenu();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
+			this.label4 = new Label();
+			this.label7 = new Label();
 			this.linkMenuHorizontalAlignment = new LayoutManager.CommonUI.Controls.LinkMenu();
-			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.radioButtonEffectTile = new System.Windows.Forms.RadioButton();
-			this.radioButtonEffectStretch = new System.Windows.Forms.RadioButton();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.label8 = new System.Windows.Forms.Label();
+			this.groupBox4 = new GroupBox();
+			this.radioButtonEffectTile = new RadioButton();
+			this.radioButtonEffectStretch = new RadioButton();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.label8 = new Label();
 			this.linkMenuRotateFlip = new LayoutManager.CommonUI.Controls.LinkMenu();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownWidth)).BeginInit();

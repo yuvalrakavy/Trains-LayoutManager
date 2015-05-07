@@ -16,12 +16,12 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class TrainDriverComboBox : System.Windows.Forms.UserControl
 	{
-		private System.Windows.Forms.ComboBox comboBoxDrivers;
-		private System.Windows.Forms.Button buttonDriverSettings;
+		private ComboBox comboBoxDrivers;
+		private Button buttonDriverSettings;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() {}
 
@@ -126,8 +126,8 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.comboBoxDrivers = new System.Windows.Forms.ComboBox();
-			this.buttonDriverSettings = new System.Windows.Forms.Button();
+			this.comboBoxDrivers = new ComboBox();
+			this.buttonDriverSettings = new Button();
 			this.SuspendLayout();
 			// 
 			// comboBoxDrivers

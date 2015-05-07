@@ -17,20 +17,20 @@ namespace LayoutManager.CommonUI.Controls
 	/// </summary>
 	public class DrivingParameters : System.Windows.Forms.UserControl, IObjectHasXml
 	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.TextBox textBoxSpeedLimit;
-		private System.Windows.Forms.Label labelSpeedLimitValues;
-		private System.Windows.Forms.TextBox textBoxSlowDownSpeed;
+		private Label label1;
+		private Label label2;
+		private TextBox textBoxSpeedLimit;
+		private Label labelSpeedLimitValues;
+		private TextBox textBoxSlowDownSpeed;
 		private LayoutManager.CommonUI.Controls.MotionRampSelector motionRampSelectorAcceleration;
 		private LayoutManager.CommonUI.Controls.MotionRampSelector motionRampSelectorDeceleration;
 		private LayoutManager.CommonUI.Controls.MotionRampSelector motionRampSelectorSlowdown;
-		private System.Windows.Forms.Label labelSlowDownSpeedValues;
+		private Label labelSlowDownSpeedValues;
 		private LayoutManager.CommonUI.Controls.MotionRampSelector motionRampSelectorStop;
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void endOfDesignerVariables() { }
 
@@ -184,15 +184,15 @@ namespace LayoutManager.CommonUI.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.textBoxSpeedLimit = new System.Windows.Forms.TextBox();
-			this.labelSpeedLimitValues = new System.Windows.Forms.Label();
-			this.textBoxSlowDownSpeed = new System.Windows.Forms.TextBox();
+			this.label1 = new Label();
+			this.label2 = new Label();
+			this.textBoxSpeedLimit = new TextBox();
+			this.labelSpeedLimitValues = new Label();
+			this.textBoxSlowDownSpeed = new TextBox();
 			this.motionRampSelectorAcceleration = new LayoutManager.CommonUI.Controls.MotionRampSelector();
 			this.motionRampSelectorDeceleration = new LayoutManager.CommonUI.Controls.MotionRampSelector();
 			this.motionRampSelectorSlowdown = new LayoutManager.CommonUI.Controls.MotionRampSelector();
-			this.labelSlowDownSpeedValues = new System.Windows.Forms.Label();
+			this.labelSlowDownSpeedValues = new Label();
 			this.motionRampSelectorStop = new LayoutManager.CommonUI.Controls.MotionRampSelector();
 			this.SuspendLayout();
 			// 

@@ -14,21 +14,21 @@ namespace LayoutManager.Tools.EventScriptDialogs
 	/// <summary>
 	/// Summary description for ExecuteTripPlan.
 	/// </summary>
-	public class ExecuteTripPlan : System.Windows.Forms.Form, IModelComponentReceiverDialog
+	public class ExecuteTripPlan : Form, IModelComponentReceiverDialog
 	{
 		private LayoutManager.CommonUI.Controls.TripPlanList tripPlanList;
-		private System.Windows.Forms.Splitter splitter1;
-		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.ComboBox comboBoxTrainSymbol;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.GroupBox groupBox1;
+		private Splitter splitter1;
+		private Panel panel1;
+		private Label label1;
+		private ComboBox comboBoxTrainSymbol;
+		private Button buttonOK;
+		private Button buttonCancel;
+		private GroupBox groupBox1;
 		private LayoutManager.Tools.Controls.TripPlanEditor tripPlanEditor;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		private void EndOfDesignerVariables() { }
 
@@ -128,14 +128,14 @@ namespace LayoutManager.Tools.EventScriptDialogs
 		private void InitializeComponent()
 		{
 			this.tripPlanList = new LayoutManager.CommonUI.Controls.TripPlanList();
-			this.splitter1 = new System.Windows.Forms.Splitter();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.splitter1 = new Splitter();
+			this.panel1 = new Panel();
+			this.groupBox1 = new GroupBox();
 			this.tripPlanEditor = new LayoutManager.Tools.Controls.TripPlanEditor();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.comboBoxTrainSymbol = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonOK = new Button();
+			this.comboBoxTrainSymbol = new ComboBox();
+			this.label1 = new Label();
+			this.buttonCancel = new Button();
 			this.panel1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();

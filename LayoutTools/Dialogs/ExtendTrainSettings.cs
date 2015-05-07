@@ -12,22 +12,21 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for ExtendTrainSettings.
 	/// </summary>
-	public class ExtendTrainSettings : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label labelTrainInfo;
-		private System.Windows.Forms.PictureBox pictureBox1;
-		private System.Windows.Forms.NumericUpDown numericUpDownFrom;
-		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.NumericUpDown numericUpDownTo;
-		private System.Windows.Forms.Panel panel2;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class ExtendTrainSettings : Form {
+		private Label label1;
+		private Label label3;
+		private Label labelTrainInfo;
+		private PictureBox pictureBox1;
+		private NumericUpDown numericUpDownFrom;
+		private Panel panel1;
+		private NumericUpDown numericUpDownTo;
+		private Panel panel2;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		TrainStateInfo		train;
 
@@ -88,16 +87,16 @@ namespace LayoutManager.Tools.Dialogs
 		private void InitializeComponent()
 		{
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(ExtendTrainSettings));
-			this.label1 = new System.Windows.Forms.Label();
-			this.labelTrainInfo = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.numericUpDownFrom = new System.Windows.Forms.NumericUpDown();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.numericUpDownTo = new System.Windows.Forms.NumericUpDown();
-			this.panel2 = new System.Windows.Forms.Panel();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.label1 = new Label();
+			this.labelTrainInfo = new Label();
+			this.label3 = new Label();
+			this.pictureBox1 = new PictureBox();
+			this.numericUpDownFrom = new NumericUpDown();
+			this.panel1 = new Panel();
+			this.numericUpDownTo = new NumericUpDown();
+			this.panel2 = new Panel();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownFrom)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownTo)).BeginInit();
 			this.SuspendLayout();

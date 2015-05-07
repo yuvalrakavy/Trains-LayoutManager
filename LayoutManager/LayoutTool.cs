@@ -443,7 +443,7 @@ namespace LayoutManager {
 		}
 
 		private void InitializeComponent() {
-			this.components = new System.ComponentModel.Container();
+			this.components = new Container();
 
 		}
 	}

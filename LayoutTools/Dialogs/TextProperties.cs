@@ -12,18 +12,18 @@ namespace LayoutManager.Tools.Dialogs
 	/// <summary>
 	/// Summary description for LabelProperties.
 	/// </summary>
-	public class TextProperties : System.Windows.Forms.Form, ILayoutComponentPropertiesDialog
+	public class TextProperties : Form, ILayoutComponentPropertiesDialog
 	{
-		private System.Windows.Forms.Label labelText;
-		private System.Windows.Forms.TextBox textBoxText;
+		private Label labelText;
+		private TextBox textBoxText;
 		private LayoutManager.CommonUI.Controls.TextProviderFontDefinition textProviderFontDefinition;
 		private LayoutManager.CommonUI.Controls.TextProviderPositionDefinition textProviderPositionDefinition;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		LayoutXmlInfo		xmlInfo;
 
@@ -76,11 +76,11 @@ namespace LayoutManager.Tools.Dialogs
 		private void InitializeComponent()
 		{
 			this.textProviderPositionDefinition = new LayoutManager.CommonUI.Controls.TextProviderPositionDefinition();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.textBoxText = new System.Windows.Forms.TextBox();
-			this.labelText = new System.Windows.Forms.Label();
+			this.buttonOK = new Button();
+			this.textBoxText = new TextBox();
+			this.labelText = new Label();
 			this.textProviderFontDefinition = new LayoutManager.CommonUI.Controls.TextProviderFontDefinition();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// TextProviderPositionDefinition

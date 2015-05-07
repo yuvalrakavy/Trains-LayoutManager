@@ -12,8 +12,7 @@ namespace LayoutManager.CommonUI.Controls
 	/// <summary>
 	/// Summary description for XmlQueryCombobox.
 	/// </summary>
-	public class XmlQueryCombobox : System.Windows.Forms.ComboBox
-	{
+	public class XmlQueryCombobox : ComboBox {
 		XmlElement	container;
 		String		query = "*[contains(Name, '<TEXT>')]";
 		String		extract = "string(Name)";

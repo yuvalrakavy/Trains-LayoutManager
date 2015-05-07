@@ -14,17 +14,17 @@ namespace LayoutLGB.Dialogs
 	/// <summary>
 	/// Summary description for CentralStationProperties.
 	/// </summary>
-	public class CentralStationProperties : System.Windows.Forms.Form {
-		private System.Windows.Forms.ComboBox comboBoxPort;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.NumericUpDown numericUpDownXbusID;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+	public class CentralStationProperties : Form {
+		private ComboBox comboBoxPort;
+		private Label label1;
+		private Label label2;
+		private NumericUpDown numericUpDownXbusID;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		MTScentralStation component;
 		private LayoutManager.CommonUI.Controls.LayoutEmulationSetup layoutEmulationSetup;
@@ -79,15 +79,15 @@ namespace LayoutLGB.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.comboBoxPort = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.numericUpDownXbusID = new System.Windows.Forms.NumericUpDown();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.comboBoxPort = new ComboBox();
+			this.label1 = new Label();
+			this.label2 = new Label();
+			this.numericUpDownXbusID = new NumericUpDown();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.layoutEmulationSetup = new LayoutManager.CommonUI.Controls.LayoutEmulationSetup();
 			this.nameDefinition = new LayoutManager.CommonUI.Controls.NameDefinition();
-			this.buttonCOMsettings = new System.Windows.Forms.Button();
+			this.buttonCOMsettings = new Button();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownXbusID)).BeginInit();
 			this.SuspendLayout();
 // 

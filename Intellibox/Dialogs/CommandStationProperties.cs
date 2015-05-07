@@ -14,13 +14,12 @@ namespace Intellibox.Dialogs
 	/// <summary>
 	/// Summary description for CentralStationProperties.
 	/// </summary>
-	public class CentralStationProperties : System.Windows.Forms.Form
-	{
+	public class CentralStationProperties : Form {
 		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
-		private System.Windows.Forms.ComboBox comboBoxPort;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private ComboBox comboBoxPort;
+		private Label label1;
+		private Button buttonOK;
+		private Button buttonCancel;
 		private IContainer components = null;
 
 		private Button buttonSettings;
@@ -123,35 +122,35 @@ namespace Intellibox.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.columnHeaderSOnumber = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderSOvalue = new System.Windows.Forms.ColumnHeader();
-			this.columnHeaderSOdescription = new System.Windows.Forms.ColumnHeader();
-			this.comboBoxPort = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
-			this.buttonSettings = new System.Windows.Forms.Button();
-			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.tabPageGeneral = new System.Windows.Forms.TabPage();
+			this.columnHeaderSOnumber = new ColumnHeader();
+			this.columnHeaderSOvalue = new ColumnHeader();
+			this.columnHeaderSOdescription = new ColumnHeader();
+			this.comboBoxPort = new ComboBox();
+			this.label1 = new Label();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.buttonSettings = new Button();
+			this.tabControl1 = new TabControl();
+			this.tabPageGeneral = new TabPage();
 			this.nameDefinition = new LayoutManager.CommonUI.Controls.NameDefinition();
 			this.layoutEmulationSetup = new LayoutManager.CommonUI.Controls.LayoutEmulationSetup();
-			this.tabPageAdvanced = new System.Windows.Forms.TabPage();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.listViewSO = new System.Windows.Forms.ListView();
-			this.buttonSOdelete = new System.Windows.Forms.Button();
-			this.buttonSOedit = new System.Windows.Forms.Button();
-			this.buttonSOadd = new System.Windows.Forms.Button();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.textBoxSwitchingTime = new System.Windows.Forms.TextBox();
-			this.label4 = new System.Windows.Forms.Label();
-			this.textBoxPollingPeriod = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.label6 = new System.Windows.Forms.Label();
-			this.textBoxOperationModeDebounceCount = new System.Windows.Forms.TextBox();
-			this.label7 = new System.Windows.Forms.Label();
-			this.textBoxDesignTimeDebounceCount = new System.Windows.Forms.TextBox();
+			this.tabPageAdvanced = new TabPage();
+			this.groupBox1 = new GroupBox();
+			this.listViewSO = new ListView();
+			this.buttonSOdelete = new Button();
+			this.buttonSOedit = new Button();
+			this.buttonSOadd = new Button();
+			this.label5 = new Label();
+			this.label3 = new Label();
+			this.textBoxSwitchingTime = new TextBox();
+			this.label4 = new Label();
+			this.textBoxPollingPeriod = new TextBox();
+			this.label2 = new Label();
+			this.groupBox2 = new GroupBox();
+			this.label6 = new Label();
+			this.textBoxOperationModeDebounceCount = new TextBox();
+			this.label7 = new Label();
+			this.textBoxDesignTimeDebounceCount = new TextBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPageGeneral.SuspendLayout();
 			this.tabPageAdvanced.SuspendLayout();
@@ -307,7 +306,7 @@ namespace Intellibox.Dialogs
 			this.listViewSO.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewSO.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.listViewSO.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderSOnumber,
             this.columnHeaderSOvalue,
             this.columnHeaderSOdescription});

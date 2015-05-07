@@ -10,19 +10,18 @@ namespace LayoutManager.Dialogs
 	/// <summary>
 	/// Summary description for LocomotiveCollectionStore.
 	/// </summary>
-	public class LocomotiveCollectionStore : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.TextBox textBoxName;
-		private System.Windows.Forms.TextBox textBoxFile;
-		private System.Windows.Forms.Button buttonBrowse;
-		private System.Windows.Forms.Button buttonOk;
-		private System.Windows.Forms.Button buttonCancel;
+	public class LocomotiveCollectionStore : Form {
+		private Label label1;
+		private Label label2;
+		private TextBox textBoxName;
+		private TextBox textBoxFile;
+		private Button buttonBrowse;
+		private Button buttonOk;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		XmlElement	storeElement;
 		string		defaultExtension;
@@ -68,13 +67,13 @@ namespace LayoutManager.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.textBoxName = new System.Windows.Forms.TextBox();
-			this.textBoxFile = new System.Windows.Forms.TextBox();
-			this.buttonBrowse = new System.Windows.Forms.Button();
-			this.buttonOk = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.label1 = new Label();
+			this.label2 = new Label();
+			this.textBoxName = new TextBox();
+			this.textBoxFile = new TextBox();
+			this.buttonBrowse = new Button();
+			this.buttonOk = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// label1

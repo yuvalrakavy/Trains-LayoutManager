@@ -12,15 +12,14 @@ namespace LayoutManager.CommonUI.Dialogs
 	/// <summary>
 	/// Summary description for EditMotionRamp.
 	/// </summary>
-	public class EditMotionRamp : System.Windows.Forms.Form
-	{
+	public class EditMotionRamp : Form {
 		private LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor motionRampEditor;
-		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
+		private Button buttonOK;
+		private Button buttonCancel;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		public EditMotionRamp(MotionRampInfo ramp)
 		{
@@ -55,8 +54,8 @@ namespace LayoutManager.CommonUI.Dialogs
 		private void InitializeComponent()
 		{
 			this.motionRampEditor = new LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor();
-			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
 			this.SuspendLayout();
 			// 
 			// motionRampEditor
