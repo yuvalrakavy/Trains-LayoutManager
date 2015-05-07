@@ -64,12 +64,8 @@ namespace LayoutManager
 		abstract class UIsettingEntry {
 			protected UIitemSetting	setting;
 
-			public UIitemSetting Setting {
-				get {
-					return setting;
-				}
-			}
-		}
+            public UIitemSetting Setting => setting;
+        }
 
 		class DoSettingEntry : UIsettingEntry {
 			public UIsettingEntry[] DoThis { get; private set; }
@@ -87,12 +83,8 @@ namespace LayoutManager
 				this.setting = setting;
 			}
 
-			public MenuItem MenuItem {
-				get {
-					return menuItem;
-				}
-			}
-		}
+            public MenuItem MenuItem => menuItem;
+        }
 
 		class ToolbarSettingEntry : UIsettingEntry {
 			ToolBarButton	button;
@@ -102,12 +94,8 @@ namespace LayoutManager
 				this.setting = setting;
 			}
 
-			public ToolBarButton Button {
-				get {
-					return button;
-				}
-			}
-		}
+            public ToolBarButton Button => button;
+        }
 
 		#endregion
 
@@ -311,35 +299,29 @@ namespace LayoutManager
 			private set;
 		}
 
-		/// <summary>
-		/// Task associated with this frame window. The controller await on this task, and will do the action
-		/// specified by the returned value
-		/// </summary>
-		public Task<FrameWindowAction> Task {
-			get {
-				return tcs.Task;
-			}
-		}
+        /// <summary>
+        /// Task associated with this frame window. The controller await on this task, and will do the action
+        /// specified by the returned value
+        /// </summary>
+        public Task<FrameWindowAction> Task => tcs.Task;
 
-		/// <summary>
-		/// Return the area tab pages in the window
-		/// </summary>
-		internal IEnumerable<LayoutFrameWindowAreaTabPage> AreaTabs {
+        /// <summary>
+        /// Return the area tab pages in the window
+        /// </summary>
+        internal IEnumerable<LayoutFrameWindowAreaTabPage> AreaTabs {
 			get {
 				foreach(LayoutFrameWindowAreaTabPage areaTab in tabAreas.TabPages)
 					yield return areaTab;
 			}
 		}
 
-		internal int ActiveAreaIndex {
-			get { return tabAreas.SelectedIndex;  }
-		}
+        internal int ActiveAreaIndex => tabAreas.SelectedIndex;
 
-		/// <summary>
-		/// Tell the controller what to do with frame window. Setting this property will set the task state associated with
-		/// this frame window to completed
-		/// </summary>
-		private FrameWindowCommand ControllerCommand {
+        /// <summary>
+        /// Tell the controller what to do with frame window. Setting this property will set the task state associated with
+        /// this frame window to completed
+        /// </summary>
+        private FrameWindowCommand ControllerCommand {
 			set {
 				Debug.Assert(tcs != null);
 				var myTcs = tcs;
@@ -351,15 +333,11 @@ namespace LayoutManager
 			}
 		}
 
-		#region active Area/View properties
+        #region active Area/View properties
 
-		LayoutFrameWindowAreaTabPage ActiveAreaPage {
-			get {
-				return (LayoutFrameWindowAreaTabPage)tabAreas.SelectedTab;
-			}
-		}
+        LayoutFrameWindowAreaTabPage ActiveAreaPage => (LayoutFrameWindowAreaTabPage)tabAreas.SelectedTab;
 
-		LayoutFrameWindowAreaViewTabPage ActiveViewPage {
+        LayoutFrameWindowAreaViewTabPage ActiveViewPage {
 			get {
 				if(ActiveAreaPage == null)
 					return null;
@@ -481,11 +459,9 @@ namespace LayoutManager
 			return viewTabPage;
 		}
 
-		public LayoutFrameWindowAreaViewTabPage AddViewToArea(LayoutFrameWindowAreaTabPage areaPage, String name) {
-			return AddViewToArea(areaPage, name, new LayoutView());
-		}
+        public LayoutFrameWindowAreaViewTabPage AddViewToArea(LayoutFrameWindowAreaTabPage areaPage, String name) => AddViewToArea(areaPage, name, new LayoutView());
 
-		void ChangeAllViewsPhases(LayoutPhase phases) {
+        void ChangeAllViewsPhases(LayoutPhase phases) {
 			foreach(LayoutFrameWindowAreaTabPage atp in tabAreas.TabPages) {
 				foreach(LayoutFrameWindowAreaViewTabPage vtp in atp.TabViews.TabPages) {
 					if(vtp.View.Phases != phases) {
@@ -793,12 +769,8 @@ namespace LayoutManager
 		#region Marker class
 
 		class MarkerLook : ILayoutSelectionLook {
-			public Color Color {
-				get {
-					return Color.IndianRed;
-				}
-			}
-		}
+            public Color Color => Color.IndianRed;
+        }
 
 		class Marker {
 			Timer				hideMarkerTimer;
@@ -2002,13 +1974,9 @@ namespace LayoutManager
 			private set;
 		}
 
-		public LayoutFrameWindow FrameWindow {
-			get {
-				return (LayoutFrameWindow)this.FindForm();
-			}
-		}
+        public LayoutFrameWindow FrameWindow => (LayoutFrameWindow)this.FindForm();
 
-		protected override void Dispose(bool disposing) {
+        protected override void Dispose(bool disposing) {
 			if(disposing)
 				TabViews.SelectedIndexChanged -= new EventHandler(tabViews_SelectedIndexChanged);
 		}
@@ -2030,13 +1998,9 @@ namespace LayoutManager
 			ShowActivePhases = false;
 		}
 
-		public LayoutView View {
-			get {
-				return view;
-			}
-		}
+        public LayoutView View => view;
 
-		public bool ShowActivePhases {
+        public bool ShowActivePhases {
 			get;
 			set;
 		}
@@ -2059,31 +2023,15 @@ namespace LayoutManager
 			this.printDialog = printDialog;
 		}
 
-		public Dialogs.Print PrintDialog {
-			get {
-				return printDialog;
-			}
-		}
+        public Dialogs.Print PrintDialog => printDialog;
 
-		public bool AllAreas {
-			get {
-				return printDialog.AllAreas;
-			}
-		}
+        public bool AllAreas => printDialog.AllAreas;
 
-		public PrintViewScope PrintViewScope {
-			get {
-				return PrintDialog.PrintViewScope;
-			}
-		}
+        public PrintViewScope PrintViewScope => PrintDialog.PrintViewScope;
 
-		public bool GridLines {
-			get {
-				return printDialog.GridLines;
-			}
-		}
+        public bool GridLines => printDialog.GridLines;
 
-		public int AreaIndex {
+        public int AreaIndex {
 			get {
 				return areaIndex;
 			}

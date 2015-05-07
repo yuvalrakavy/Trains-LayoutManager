@@ -29,16 +29,12 @@ namespace LayoutManager.View {
 			return imageFilename;
 		}
 
-		private String getEffectName(LayoutEvent e) {
-			return e.GetOption("Type", "Effect");
-		}
+        private String getEffectName(LayoutEvent e) => e.GetOption("Type", "Effect");
 
-		private String getImageCacheKey(LayoutEvent e) {
-			return getEffectName(e) + "|" + getImageFilename(e);
-		}
+        private String getImageCacheKey(LayoutEvent e) => getEffectName(e) + "|" + getImageFilename(e);
 
 
-		[LayoutEvent("get-image-from-cache")]
+        [LayoutEvent("get-image-from-cache")]
 		private void getImageFromCache(LayoutEvent e) {
 			String	imageCacheKey = getImageCacheKey(e);
 			Image image;

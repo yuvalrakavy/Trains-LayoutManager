@@ -1,4 +1,6 @@
+using System.ComponentModel;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace LayoutManager.ControlComponents.Dialogs {
     /// <summary>
@@ -33,16 +35,12 @@ namespace LayoutManager.ControlComponents.Dialogs {
 			Text = Regex.Replace(Text, "MODULENAME", moduleName);
 		}
 
-		public bool ClearUserActionRequiredFlag {
-			get {
-				return checkBoxClearUserActionFlag.Checked;
-			}
-		}
+        public bool ClearUserActionRequiredFlag => checkBoxClearUserActionFlag.Checked;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{

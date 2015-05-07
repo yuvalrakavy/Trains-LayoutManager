@@ -52,10 +52,8 @@ namespace LayoutManager {
 				area.RemoveSpot(component.Spot);
 		}
 
-		override public String ToString() {
-			return description;
-		}
-	}
+        override public String ToString() => description;
+    }
 
 	public class LayoutComponentRemovalCommand : LayoutCommand {
 		LayoutComponentPlacmentCommand	placementCommand;
@@ -72,10 +70,8 @@ namespace LayoutManager {
 			placementCommand.Do();
 		}
 
-		public override String ToString() {
-			return placementCommand.ToString();
-		}
-	}
+        public override String ToString() => placementCommand.ToString();
+    }
 
 	public class LayoutComponentSelectCommand : LayoutCommand {
 		ModelComponent		component;
@@ -96,10 +92,8 @@ namespace LayoutManager {
 			selection.Remove(component);
 		}
 
-		public override String ToString() {
-			return description;
-		}
-	}
+        public override String ToString() => description;
+    }
 
 	public class LayoutComponentDeselectCommand : LayoutCommand {
 		LayoutComponentSelectCommand	selectCommand;
@@ -116,10 +110,8 @@ namespace LayoutManager {
 			selectCommand.Do();
 		}
 
-		public override String ToString() {
-			return selectCommand.ToString();
-		}
-	}
+        public override String ToString() => selectCommand.ToString();
+    }
 
 	public class LayoutComponentLinkCommand : LayoutCommand {
 		LayoutTrackLinkComponent	trackLinkComponent;
@@ -127,7 +119,7 @@ namespace LayoutManager {
 
 		public LayoutComponentLinkCommand(LayoutTrackLinkComponent trackLinkComponent, LayoutTrackLink destinationTrackLink) {
 			if(destinationTrackLink == null)
-				throw new ArgumentException("desintation TrackLink is null", "destinationTrackLink");
+				throw new ArgumentException("desintation TrackLink is null", nameof(destinationTrackLink));
 
 			this.trackLinkComponent = trackLinkComponent;
 			this.destinationTrackLink = destinationTrackLink;
@@ -155,10 +147,8 @@ namespace LayoutManager {
 			unlinkCommand.Do();
 		}
 
-		public override String ToString() {
-			return "link track";
-		}
-	}
+        public override String ToString() => "link track";
+    }
 
 	public class LayoutComponentUnlinkCommand : LayoutCommand {
 		LayoutTrackLinkComponent	trackLinkComponent;
@@ -193,10 +183,8 @@ namespace LayoutManager {
 			}
 		}
 
-		public override String ToString() {
-			return "unlink Track";
-		}
-	}
+        public override String ToString() => "unlink Track";
+    }
 
 	public class LayoutModifyComponentDocumentCommand : LayoutCommand {
 		ModelComponent			component;
@@ -235,10 +223,8 @@ namespace LayoutManager {
 			EventManager.Event(new LayoutEvent(component, "component-configuration-changed"));
 		}
 
-		public override String ToString() {
-			return "Edit " + component.ToString() + " properties";
-		}
-	}
+        public override String ToString() => "Edit " + component.ToString() + " properties";
+    }
 
 	public class LayoutMoveModelSpotCommand : LayoutCommand {
 		LayoutModelSpotComponentCollection		spot;
@@ -249,19 +235,11 @@ namespace LayoutManager {
 			this.location = newLocation;
 		}
 
-		public LayoutModelSpotComponentCollection Spot {
-			get {
-				return spot;
-			}
-		}
+        public LayoutModelSpotComponentCollection Spot => spot;
 
-		public Point Location {
-			get {
-				return location;
-			}
-		}
+        public Point Location => location;
 
-		public override void Do() {
+        public override void Do() {
 			Point	newLocation = this.location;
 
 			this.location = spot.Location;
@@ -272,10 +250,8 @@ namespace LayoutManager {
 			Do();
 		}
 
-		public override string ToString() {
-			return "Move spot to " + location;
-		}
-	}
+        public override string ToString() => "Move spot to " + location;
+    }
 
 	public class RedrawLayoutModelAreaCommand : LayoutCommand {
 		LayoutModelArea	area;
@@ -292,10 +268,8 @@ namespace LayoutManager {
 			Do();
 		}
 
-		public override string ToString() {
-			return "Redraw";
-		}
-	}
+        public override string ToString() => "Redraw";
+    }
 
 	#region Layout Control Related commands
 
@@ -338,20 +312,14 @@ namespace LayoutManager {
 				addedModule = new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName, address));
 		}
 
-		public ControlModuleReference AddModule {
-			get {
-				return addedModule;
-			}
-		}
+        public ControlModuleReference AddModule => addedModule;
 
-		public override void Undo() {
+        public override void Undo() {
 			bus.Remove(addedModule);
 		}
 
-		public override string ToString() {
-			return "Add " + addedModule.Module.ModuleType.Name + " control module";
-		}
-	}
+        public override string ToString() => "Add " + addedModule.Module.ModuleType.Name + " control module";
+    }
 
 	public class RemoveControlModuleCommand : LayoutCommand {
 		ControlModuleReference	module;
@@ -403,10 +371,8 @@ namespace LayoutManager {
 			module.Module.LocationId = moduleLocationID;
 		}
 
-		public override string ToString() {
-			return "Remove " + module.Module.ModuleType.Name + " control module";
-		}
-	}
+        public override string ToString() => "Remove " + module.Module.ModuleType.Name + " control module";
+    }
 
 	public class SetControlModuleAddressCommand : LayoutCommand {
 		ControlModuleReference	module;
@@ -430,10 +396,8 @@ namespace LayoutManager {
 			Do();
 		}
 
-		public override string ToString() {
-			return "Set control module address";
-		}
-	}
+        public override string ToString() => "Set control module address";
+    }
 
 	public class AssignControlModuleLocationCommand : LayoutCommand {
 		ControlModuleReference	module;
@@ -456,10 +420,8 @@ namespace LayoutManager {
 			Do();
 		}
 
-		public override string ToString() {
-			return "Assign module location";
-		}
-	}
+        public override string ToString() => "Assign module location";
+    }
 
 	public class ConnectComponentToControlConnectionPointCommand : LayoutCommand {
 		IModelComponentConnectToControl	component;
@@ -510,10 +472,8 @@ namespace LayoutManager {
 			module.Module.ConnectionPoints.Disconnect(index);
 		}
 
-		public override string ToString() {
-			return "Connect component";
-		}
-	}
+        public override string ToString() => "Connect component";
+    }
 
 	public class DisconnectComponentFromConnectionPointCommand : LayoutCommand {
 		ConnectComponentToControlConnectionPointCommand[]	commands = null;
@@ -547,10 +507,8 @@ namespace LayoutManager {
 				command.Do();
 		}
 
-		public override string ToString() {
-			return "Disconnect " + (disconnectComponent ? "component" : "module connection");
-		}
-	}
+        public override string ToString() => "Disconnect " + (disconnectComponent ? "component" : "module connection");
+    }
 
 	public class ReconnectBusToAnotherCommandBusProvider : LayoutCommand {
 		ControlBus						bus;
@@ -577,10 +535,8 @@ namespace LayoutManager {
 			Do();
 		}
 
-		public override string ToString() {
-			return "Reconnect control bus";
-		}
-	}
+        public override string ToString() => "Reconnect control bus";
+    }
 
 	public class MoveControlModuleInDaisyChainBusCommand : LayoutCommand {
 		ControlBus	bus;
@@ -614,10 +570,8 @@ namespace LayoutManager {
 			Do();
 		}
 
-		public override string ToString() {
-			return commandName;
-		}
-	}
+        public override string ToString() => commandName;
+    }
 
 	public class SetControlModuleLabelCommand : LayoutCommand {
 		ControlModuleReference	moduleRef;
@@ -642,10 +596,8 @@ namespace LayoutManager {
 			Do();
 		}
 
-		public override string ToString() {
-			return "Set control module label";
-		}
-	}
+        public override string ToString() => "Set control module label";
+    }
 
 	public class SetControlUserActionRequiredCommand : LayoutCommand {
 		ControlModuleReference			moduleRef = null;
@@ -690,10 +642,8 @@ namespace LayoutManager {
 			Do();
 		}
 
-		public override string ToString() {
-			return "Change user action required";
-		}
-	}
+        public override string ToString() => "Change user action required";
+    }
 
 	public class SetControlAddressProgrammingRequiredCommand : LayoutCommand {
 		bool addressProgrammingRequired;
@@ -774,10 +724,8 @@ namespace LayoutManager {
 			Do();
 		}
 
-		public override string ToString() {
-			return "Change component phase";
-		}
-	}
+        public override string ToString() => "Change component phase";
+    }
 
 	#endregion
 }

@@ -34,30 +34,14 @@ namespace LayoutManager.Tools
 			location = component.Location;
 		}
 
-		public LayoutModelArea Area {
-			get {
-				return area;
-			}
-		}
+        public LayoutModelArea Area => area;
 
-		public Point Location {
-			get {
-				return location;
-			}
-		}
+        public Point Location => location;
 
-		public LayoutModelSpotComponentCollection Spot {
-			get {
-				return Area.Grid[Location];
-			}
-		}
+        public LayoutModelSpotComponentCollection Spot => Area.Grid[Location];
 
-		public LayoutTrackComponent Track {
-			get {
-				return Spot.Track;
-			}
-		}
-	}
+        public LayoutTrackComponent Track => Spot.Track;
+    }
 
 	/// <summary>
 	/// Summary description for ComponentTools.
@@ -593,10 +577,8 @@ namespace LayoutManager.Tools
 				To = Math.Max(v1, v2);
 			}
 
-			public bool Contains(int v) {
-				return From <= v && v <= To;
-			}
-		}
+            public bool Contains(int v) => From <= v && v <= To;
+        }
 
 		class ShiftComponentsMenuEntryBase : MenuItem {
 			LayoutHitTestResult	hitTestResult = null;
@@ -630,13 +612,9 @@ namespace LayoutManager.Tools
 				this.Text = text;
 			}
 
-			protected OperationType Operation {
-				get {
-					return operation;
-				}
-			}
+            protected OperationType Operation => operation;
 
-			protected ChangeCoordinate ChangeWhat {
+            protected ChangeCoordinate ChangeWhat {
 				get {
 					return changeWhat;
 				}
@@ -665,13 +643,9 @@ namespace LayoutManager.Tools
 				}
 			}
 
-			public LayoutHitTestResult HitTestResult {
-				get {
-					return hitTestResult;
-				}
-			}
+            public LayoutHitTestResult HitTestResult => hitTestResult;
 
-			public int Delta {
+            public int Delta {
 				get {
 					return delta;
 				}
@@ -715,10 +689,8 @@ namespace LayoutManager.Tools
 			}
 
 			class ZorderSorter : IComparer {
-				public int Compare(Object o1, Object o2) {
-					return ((ModelComponent)o2).ZOrder - ((ModelComponent)o1).ZOrder;
-				}
-			}
+                public int Compare(Object o1, Object o2) => ((ModelComponent)o2).ZOrder - ((ModelComponent)o1).ZOrder;
+            }
 
 
 			protected enum ChangeCoordinate {

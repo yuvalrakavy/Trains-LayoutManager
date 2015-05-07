@@ -384,18 +384,10 @@ namespace LayoutManager.CommonUI.Controls
 				ImageIndex = tripPlanIconList[tripPlan.IconId];
 			}
 
-			public TripPlanInfo TripPlan {
-				get {
-					return tripPlan;
-				}
-			}
+            public TripPlanInfo TripPlan => tripPlan;
 
-			public bool Reversed {
-				get {
-					return reversed;
-				}
-			}
-		}
+            public bool Reversed => reversed;
+        }
 
 		#endregion
 	}

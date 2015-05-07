@@ -29,11 +29,7 @@ namespace Intellibox {
             this._commandStation = commandStation;
         }
 
-        public IntelliboxComponent CommandStation {
-            get {
-                return _commandStation;
-            }
-        }
+        public IntelliboxComponent CommandStation => _commandStation;
 
         public string Port {
             get {
@@ -125,13 +121,9 @@ namespace Intellibox {
 			new SOcollection(Element).Add(33, 0, "Disable echo to I2C bus");
 		}
 
-        public IntelliboxComponentInfo Info {
-            get {
-                return new IntelliboxComponentInfo(this, Element);
-            }
-        }
+        public IntelliboxComponentInfo Info => new IntelliboxComponentInfo(this, Element);
 
-		public ControlBus MotorolaBus {
+        public ControlBus MotorolaBus {
 			get {
 				if(_motorolaBus == null)
 					_motorolaBus = LayoutModel.ControlManager.Buses.GetBus(this, "Motorola");
@@ -168,20 +160,14 @@ namespace Intellibox {
         }
 
 
-		#region Specific implementation to base class overrideble methods and properties
+        #region Specific implementation to base class overrideble methods and properties
 
-		public override IList<string> BusTypeNames {
-			get {
-				return Array.AsReadOnly<string>(new string[] { "Motorola", "S88BUS" });
-			}
-		}
+        public override IList<string> BusTypeNames => Array.AsReadOnly<string>(new string[] { "Motorola", "S88BUS" });
 
-		//TODO: Add DigitalPowerFormats.NRMA when support for this is added. (Intellibox support mutiple on track formats)
-		public override DigitalPowerFormats SupportedDigitalPowerFormats {
-			get { return DigitalPowerFormats.Motorola; }
-		}
+        //TODO: Add DigitalPowerFormats.NRMA when support for this is added. (Intellibox support mutiple on track formats)
+        public override DigitalPowerFormats SupportedDigitalPowerFormats => DigitalPowerFormats.Motorola;
 
-		protected override void OnCommunicationSetup() {
+        protected override void OnCommunicationSetup() {
 			base.OnCommunicationSetup ();
 
             CachedOperationModeDebounceCount = Info.OperationModeDebounceCount;
@@ -224,39 +210,21 @@ namespace Intellibox {
 			}
 		}
 
-		public override bool LayoutEmulationSupported {
-			get {
-				return false;
-			}
-		}
+        public override bool LayoutEmulationSupported => false;
 
-		public override bool DesignTimeLayoutActivationSupported {
-			get { 
-				return true;
-			}
-		}
+        public override bool DesignTimeLayoutActivationSupported => true;
 
-		public override bool BatchMultipathSwitchingSupported {
-			get {
-				return true;
-			}
-		}
+        public override bool BatchMultipathSwitchingSupported => true;
 
-		public override bool TrainsAnalysisSupported {
-			get {
-				return true;
-			}
-		}
+        public override bool TrainsAnalysisSupported => true;
 
-		protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) {
-			return null;
-		}
+        protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) => null;
 
-		#endregion
+        #endregion
 
-		#region Request Event Handlers
+        #region Request Event Handlers
 
-		[LayoutEvent("get-command-station-capabilities", IfEvent="*[CommandStation/@Name='`string(Name)`']")]
+        [LayoutEvent("get-command-station-capabilities", IfEvent="*[CommandStation/@Name='`string(Name)`']")]
 		void GetCommandStationCapabilities(LayoutEvent e) {
 			CommandStationCapabilitiesInfo	cap = new CommandStationCapabilitiesInfo();
 			int								minTimeBetweenSpeedSteps = 100;
@@ -497,13 +465,9 @@ namespace Intellibox {
 			return Add(so);
 		}
 
-		public int Count {
-			get {
-				return Element.ChildNodes.Count;
-			}
-		}
+        public int Count => Element.ChildNodes.Count;
 
-		public bool Remove(SOinfo item) {
+        public bool Remove(SOinfo item) {
 			if(item.Element.OwnerDocument == Element.OwnerDocument) {
 				Element.RemoveChild(item.Element);
 				return true;
@@ -520,12 +484,10 @@ namespace Intellibox {
 				yield return new SOinfo(e);
 		}
 
-		IEnumerator IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		#endregion
-	}
+        #endregion
+    }
 
 	#endregion
 
@@ -541,19 +503,11 @@ namespace Intellibox {
 			this.stream = commandStation.CommunicationStream;
 		}
 
-		protected IntelliboxComponent CommandStation {
-			get {
-				return commandStation;
-			}
-		}
+        protected IntelliboxComponent CommandStation => commandStation;
 
-		protected Stream Stream {
-			get {
-				return stream;
-			}
-		}
+        protected Stream Stream => stream;
 
-		protected void BeginCommand() {
+        protected void BeginCommand() {
 			Stream.WriteByte((byte)'x');
 		}
 
@@ -594,16 +548,14 @@ namespace Intellibox {
 			return response;
 		}
 
-		/// <summary>
-		/// Send a single byte command
-		/// </summary>
-		/// <param name="b">The command byte</param>
-		/// <returns>The reply (1st byte) recieved for the command</returns>
-		protected byte Command(byte b) {
-			return Command(new byte[] { b });
-		}
+        /// <summary>
+        /// Send a single byte command
+        /// </summary>
+        /// <param name="b">The command byte</param>
+        /// <returns>The reply (1st byte) recieved for the command</returns>
+        protected byte Command(byte b) => Command(new byte[] { b });
 
-		protected void ReportError(byte errorCode) {
+        protected void ReportError(byte errorCode) {
 			string message = null;
 
 			switch(errorCode) {
@@ -703,10 +655,8 @@ namespace Intellibox {
 			Command(command);
 		}
 
-		public override string ToString() {
-			return "Set SO#" + soNumber + " to " + soValue;
-		}
-	}
+        public override string ToString() => "Set SO#" + soNumber + " to " + soValue;
+    }
 
 
 	class IntelliboxPowerOnCommand : IntelliboxCommand {
@@ -717,10 +667,8 @@ namespace Intellibox {
 			Command(0xa7);
 		}
 
-		public override string ToString() {
-			return "Power On";
-		}
-	}
+        public override string ToString() => "Power On";
+    }
 
 	class IntelliboxPowerOffCommand : IntelliboxCommand {
 		public IntelliboxPowerOffCommand(IntelliboxComponent commandStation) : base(commandStation) {
@@ -730,10 +678,8 @@ namespace Intellibox {
 			Command(0xa6);
 		}
 
-		public override string ToString() {
-			return "Power off";
-		}
-	}
+        public override string ToString() => "Power off";
+    }
 
 	class IntelliboxTrackPowerOnCommand : IntelliboxCommand {
 		public IntelliboxTrackPowerOnCommand(IntelliboxComponent commandStation) : base(commandStation) {
@@ -745,10 +691,8 @@ namespace Intellibox {
 			Command(0xa5);
 		}
 
-		public override string ToString() {
-			return "Track power On";
-		}
-	}
+        public override string ToString() => "Track power On";
+    }
 
 	/// <summary>
 	/// Force all sensors that are not off to report event. Used to set the initial state
@@ -761,10 +705,8 @@ namespace Intellibox {
 			Command(0x99);
 		}
 
-		public override string ToString() {
-			return "Force reporting of Sensor Events";
-		}
-	}
+        public override string ToString() => "Force reporting of Sensor Events";
+    }
 
 	/// <summary>
 	/// Send command for checking whether any event is reported. If events are reported, interrogate for the event details
@@ -920,11 +862,9 @@ namespace Intellibox {
 			CommandStation.InterThreadEventInvoker.QueueEvent(new LayoutEvent(CommandStation, "intellibox-invoke-events", null, events));
 		}
 
-		public override string ToString() {
-			return "Process Events";
-		}
+        public override string ToString() => "Process Events";
 
-		class FeedbackData {
+        class FeedbackData {
 			UInt16 currentData = 0;
 			byte[] debounceCounters = new byte[16];
 
@@ -972,14 +912,12 @@ namespace Intellibox {
 			}
 		}
 
-		#region ICommandStationIdlecommand Members
+        #region ICommandStationIdlecommand Members
 
-		public bool RemoveFromQueue {
-			get { return false; }
-		}
+        public bool RemoveFromQueue => false;
 
-		#endregion
-	}
+        #endregion
+    }
 
 	abstract class IntelliboxAccessoryCommandBase : IntelliboxCommand {
 		protected List<KeyValuePair<int, int>> listOfunitAndState = new List<KeyValuePair<int, int>>();
@@ -1024,14 +962,10 @@ namespace Intellibox {
 			}
 		}
 
-		// Wait 100 milliseconds before sending next command from this queue
-		public override int WaitPeriod {
-			get {
-				return CommandStation.Info.AccessoryCommandTime;
-			}
-		}
+        // Wait 100 milliseconds before sending next command from this queue
+        public override int WaitPeriod => CommandStation.Info.AccessoryCommandTime;
 
-		public override string ToString() {
+        public override string ToString() {
 			string s;
 
 			if(listOfunitAndState.Count > 1)
@@ -1116,10 +1050,8 @@ namespace Intellibox {
 				ReportError(reply);
 		}
 
-		public override string ToString() {
-			return "Locomotive: " + unit + " speed: " + speed + " direction: " + ((direction & 0x20) != 0 ? "forward" : "backward") + " lights: " + (lights != 0 ? "On" : "Off");
-		}
-	}
+        public override string ToString() => "Locomotive: " + unit + " speed: " + speed + " direction: " + ((direction & 0x20) != 0 ? "forward" : "backward") + " lights: " + (lights != 0 ? "On" : "Off");
+    }
 
 	class IntelliboxLocomotiveFunctionsCommand : IntelliboxCommand {
 		int		unit;
@@ -1144,10 +1076,8 @@ namespace Intellibox {
 				ReportError(reply);
 		}
 
-		public override string ToString() {
-			return "Locomotive: " + unit + " set functions: " + functionMask;
-		}
-	}
+        public override string ToString() => "Locomotive: " + unit + " set functions: " + functionMask;
+    }
 
 	#endregion
 }

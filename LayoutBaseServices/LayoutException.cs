@@ -32,17 +32,13 @@ namespace LayoutManager {
 			}
 		}
 
-		/// <summary>
-		/// The event to generate for reporting this exception. The default is add-error, but it can
-		/// also be add-warning or add-message
-		/// </summary>
-		public virtual String DefaultMessageType {
-			get {
-				return "error";
-			}
-		}
+        /// <summary>
+        /// The event to generate for reporting this exception. The default is add-error, but it can
+        /// also be add-warning or add-message
+        /// </summary>
+        public virtual String DefaultMessageType => "error";
 
-		virtual protected void Generate(String messageType) {
+        virtual protected void Generate(String messageType) {
 			String	messageEventName = "add-" + messageType;
 
 			EventManager.Event(new LayoutEvent(Subject, messageEventName, null, Message));

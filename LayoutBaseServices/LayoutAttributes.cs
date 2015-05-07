@@ -25,13 +25,9 @@ namespace LayoutManager {
 			this.element = element;
 		}
 
-		public XmlElement Element {
-			get {
-				return element;
-			}
-		}
+        public XmlElement Element => element;
 
-		public string Name {
+        public string Name {
 			get {
 				return Element.GetAttribute("Name");
 			}
@@ -98,12 +94,8 @@ namespace LayoutManager {
 			}
 		}
 
-		public string ValueAsString {
-			get {
-				return Element.GetAttribute("Value");
-			}
-		}
-	}
+        public string ValueAsString => Element.GetAttribute("Value");
+    }
 
 	public class AttributesInfo : XmlIndexedCollection<AttributeInfo, string> {
 		public AttributesInfo(XmlElement element) : base(element) {
@@ -115,15 +107,11 @@ namespace LayoutManager {
 			return (XmlElement)Element.OwnerDocument.ImportNode(item.Element, true);
 		}
 
-  		protected override AttributeInfo FromElement(XmlElement itemElement) {
-			return new AttributeInfo(itemElement);
-		}
+        protected override AttributeInfo FromElement(XmlElement itemElement) => new AttributeInfo(itemElement);
 
-  		protected override string GetItemKey(AttributeInfo item) {
-			return item.Name;
-		}
+        protected override string GetItemKey(AttributeInfo item) => item.Name;
 
-		public new object this[string name] {
+        public new object this[string name] {
 			get {
 				AttributeInfo	attribute = base[name];
 
@@ -157,19 +145,11 @@ namespace LayoutManager {
 			this.element = element;
 		}
 
-		public XmlElement Element {
-			get {
-				return element;
-			}
-		}
+        public XmlElement Element => element;
 
-		public bool HasAttributes {
-			get {
-				return Element["Attributes"] != null;
-			}
-		}
+        public bool HasAttributes => Element["Attributes"] != null;
 
-		public AttributesInfo Attributes {
+        public AttributesInfo Attributes {
 			get {
 				XmlElement	attributesElement = Element["Attributes"];
 

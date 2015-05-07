@@ -89,15 +89,11 @@ namespace LayoutManager.Tools.Dialogs
 				this.Text = train.DisplayName;
 		}
 
-		public XmlElement Element {
-			get {
-				return train.Element;
-			}
-		}
+        public XmlElement Element => train.Element;
 
-		#region Layout Event Handlers
+        #region Layout Event Handlers
 
-		[LayoutEvent("activate-locomotive-controller", IfSender="*[@ID='`string(@ID)`']")]
+        [LayoutEvent("activate-locomotive-controller", IfSender="*[@ID='`string(@ID)`']")]
 		private void acivateLocomotiveController(LayoutEvent e) {
 			this.Activate();
 			e.Info = this;

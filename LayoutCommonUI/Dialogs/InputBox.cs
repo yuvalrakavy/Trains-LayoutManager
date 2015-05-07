@@ -67,18 +67,14 @@ namespace LayoutManager.CommonUI.Dialogs
 				return null;
 		}
 
-		public static String Show(String caption, String prompt) {
-			return InputBox.Show(caption, prompt, 0);
-		}
+        public static String Show(String caption, String prompt) => InputBox.Show(caption, prompt, 0);
 
-		public static String Show(String prompt) {
-			return InputBox.Show("", prompt);
-		}
+        public static String Show(String prompt) => InputBox.Show("", prompt);
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{

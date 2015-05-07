@@ -57,36 +57,18 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public LayoutTrackComponent Track {
-			get {
-				return track;
-			}
-		}
+        public LayoutTrackComponent Track => track;
 
-		public IList<LayoutComponentConnectionPoint> ConnectionPoints {
-			get {
-				return Array.AsReadOnly<LayoutComponentConnectionPoint>(new LayoutComponentConnectionPoint[] { cp1, cp2 });
-			}
-		}
+        public IList<LayoutComponentConnectionPoint> ConnectionPoints => Array.AsReadOnly<LayoutComponentConnectionPoint>(new LayoutComponentConnectionPoint[] { cp1, cp2 });
 
-		public LayoutComponentConnectionPoint Cp1 {
-			get {
-				return cp1;
-			}
-		}
+        public LayoutComponentConnectionPoint Cp1 => cp1;
 
-		public LayoutComponentConnectionPoint Cp2 {
-			get {
-				return cp2;
-			}
-		}
+        public LayoutComponentConnectionPoint Cp2 => cp2;
 
-		public override string ToString() {
-			return track.FullDescription + " (" + cp1.ToString() + " to " + cp2.ToString() + ")";
-		}
+        public override string ToString() => track.FullDescription + " (" + cp1.ToString() + " to " + cp2.ToString() + ")";
 
 
-		public override bool Equals(object obj) {
+        public override bool Equals(object obj) {
 			if(obj is TrackSegment) {
 				TrackSegment other = (TrackSegment)obj;
 
@@ -96,18 +78,12 @@ namespace LayoutManager.Model {
 			return true;
 		}
 
-		static public bool operator==(TrackSegment s1, TrackSegment s2) {
-			return s1.Equals(s2);
-		}
+        static public bool operator ==(TrackSegment s1, TrackSegment s2) => s1.Equals(s2);
 
-		static public bool operator !=(TrackSegment s1, TrackSegment s2) {
-			return !s1.Equals(s2);
-		}
+        static public bool operator !=(TrackSegment s1, TrackSegment s2) => !s1.Equals(s2);
 
-		public override int GetHashCode() {
-			return track.GetHashCode() ^ cp1.GetHashCode() ^ cp2.GetHashCode();
-		}
-	}
+        public override int GetHashCode() => track.GetHashCode() ^ cp1.GetHashCode() ^ cp2.GetHashCode();
+    }
 
 	/// <summary>
 	/// Information needed to draw annotation on the preview route showing the locomotive orientation and motion direction.
@@ -151,18 +127,10 @@ namespace LayoutManager.Model {
 			_annotation = annotation;
 		}
 
-		public RoutePreviewRequest Request {
-			get {
-				return _request;
-			}
-		}
+        public RoutePreviewRequest Request => _request;
 
-		public RoutePreviewAnnotation Annotation {
-			get {
-				return _annotation;
-			}
-		}
-	}
+        public RoutePreviewAnnotation Annotation => _annotation;
+    }
 
 	/// <summary>
 	/// An object of this type is returned when the route preview manager is queried for a preview information
@@ -177,18 +145,10 @@ namespace LayoutManager.Model {
 			_annotations = annotations;
 		}
 
-		public RoutePreviewRequest Request {
-			get {
-				return _request;
-			}
-		}
+        public RoutePreviewRequest Request => _request;
 
-		public IList<RoutePreviewAnnotation> Annotations {
-			get {
-				return _annotations;
-			}
-		}
-	}
+        public IList<RoutePreviewAnnotation> Annotations => _annotations;
+    }
 
 	internal struct PreviewRequestEntry {
 		TrackSegment				_trackSegment;
@@ -204,18 +164,10 @@ namespace LayoutManager.Model {
 			_previewAnnotation = previewAnnotation;
 		}
 
-		public TrackSegment TrackSegment {
-			get {
-				return _trackSegment;
-			}
-		}
+        public TrackSegment TrackSegment => _trackSegment;
 
-		public RoutePreviewAnnotation PreviewAnnotation {
-			get {
-				return _previewAnnotation;
-			}
-		}
-	}
+        public RoutePreviewAnnotation PreviewAnnotation => _previewAnnotation;
+    }
 
 	public class RoutePreviewRequest {
 		List<PreviewRequestEntry> requestEntries = new List<PreviewRequestEntry>();
@@ -289,19 +241,11 @@ namespace LayoutManager.Model {
 			Add(route, -1);
 		}
 
-		internal IList<PreviewRequestEntry> RequestEntries {
-			get {
-				return requestEntries;
-			}
-		}
+        internal IList<PreviewRequestEntry> RequestEntries => requestEntries;
 
-		public Color Color {
-			get {
-				return color;
-			}
-		}
+        public Color Color => color;
 
-		public bool Selected {
+        public bool Selected {
 			get {
 				return selected;
 			}
@@ -439,19 +383,11 @@ namespace LayoutManager.Model {
 				}
 			}
 
-			public TrackSegmentPreviewInfo TopPreviewInfo {
-				get {
-					return topPreviewInfo;
-				}
-			}
+            public TrackSegmentPreviewInfo TopPreviewInfo => topPreviewInfo;
 
-			public bool IsEmpty {
-				get {
-					return topPreviewInfo == null && otherPreviewInfos == null;
-				}
-			}
+            public bool IsEmpty => topPreviewInfo == null && otherPreviewInfos == null;
 
-			public int AnnotationCount {
+            public int AnnotationCount {
 				get {
 					if(annotationCount < 0) {
 						annotationCount = 0;

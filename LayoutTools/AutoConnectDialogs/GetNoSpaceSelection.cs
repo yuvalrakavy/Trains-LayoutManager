@@ -55,13 +55,9 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 			comboBoxModuleLocation.Enabled = !radioButtonAddNewModule.Checked;
 		}
 
-		public bool AddNewModule {
-			get {
-				return radioButtonAddNewModule.Checked;
-			}
-		}
+        public bool AddNewModule => radioButtonAddNewModule.Checked;
 
-		public LayoutControlModuleLocationComponent ModuleLocation {
+        public LayoutControlModuleLocationComponent ModuleLocation {
 			get {
 				if(comboBoxModuleLocation.SelectedItem == null)
 					return null;
@@ -220,15 +216,9 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 				this.text = text;
 			}
 
-			public LayoutControlModuleLocationComponent ModuleLocation {
-				get {
-					return moduleLocation;
-				}
-			}
+            public LayoutControlModuleLocationComponent ModuleLocation => moduleLocation;
 
-			public override string ToString() {
-				return text;
-			}
-		}
+            public override string ToString() => text;
+        }
 	}
 }

@@ -142,13 +142,9 @@ namespace LayoutManager.CommonUI
 			}
 		}
 
-		public bool IsOperationMode {
-			get {
-				return LayoutController.IsOperationMode;
-			}
-		}
+        public bool IsOperationMode => LayoutController.IsOperationMode;
 
-		public void Initialize() {
+        public void Initialize() {
 			EventManager.AddObjectSubscriptions(this);
 
 			selectedComponents = new LayoutSelection();
@@ -187,15 +183,11 @@ namespace LayoutManager.CommonUI
 			SelectedModule = null;
 		}
 
-		private RectangleF DrawnRectangle {
-			get {
-				return new RectangleF(new PointF(origin.X, origin.Y), new SizeF(
-					(ClientSize.Width - (vScrollBar.Visible ? vScrollBar.Width : 0)) / zoom,
-					(ClientSize.Height - (hScrollBar.Visible ? hScrollBar.Height : 0)) / zoom));
-			}
-		}
+        private RectangleF DrawnRectangle => new RectangleF(new PointF(origin.X, origin.Y), new SizeF(
+                    (ClientSize.Width - (vScrollBar.Visible ? vScrollBar.Width : 0)) / zoom,
+                    (ClientSize.Height - (hScrollBar.Visible ? hScrollBar.Height : 0)) / zoom));
 
-		internal void EnsureVisible(DrawControlModule drawModuleObject) {
+        internal void EnsureVisible(DrawControlModule drawModuleObject) {
 			zoom = 1.0F;
 
 			while(!DrawnRectangle.Contains(drawModuleObject.Bounds)) {
@@ -429,13 +421,9 @@ namespace LayoutManager.CommonUI
 				g.FillRectangle(b, clipBounds);
 		}
 
-		private RectangleF DrawingBounds {
-			get {
-				return RectangleF.FromLTRB(0, 0, drawRoot.Bounds.Right, drawRoot.Bounds.Bottom);
-			}
-		}
+        private RectangleF DrawingBounds => RectangleF.FromLTRB(0, 0, drawRoot.Bounds.Right, drawRoot.Bounds.Bottom);
 
-		private bool updateScrollBars() {
+        private bool updateScrollBars() {
 			bool	needRedraw = false;
 			float	vMargin = 20 / zoom;
 			float	hMargin = 20 / zoom;
@@ -859,13 +847,9 @@ namespace LayoutManager.CommonUI
 			this.viewer = viewer;
 		}
 
-		public LayoutControlBusViewer Viewer {
-			get {
-				return viewer;
-			}
-		}
+        public LayoutControlBusViewer Viewer => viewer;
 
-		public bool Enabled {
+        public bool Enabled {
 			get {
 				return enabled;
 			}
@@ -910,19 +894,11 @@ namespace LayoutManager.CommonUI
 			drawObjects.Add(drawObject);
 		}
 
-		public DrawControlBase[] DrawObjects {
-			get {
-				return (DrawControlBase[] )drawObjects.ToArray(typeof(DrawControlBase));
-			}
-		}
+        public DrawControlBase[] DrawObjects => (DrawControlBase[])drawObjects.ToArray(typeof(DrawControlBase));
 
-		public virtual Cursor Cursor {
-			get {
-				return null;
-			}
-		}
+        public virtual Cursor Cursor => null;
 
-		public abstract void Draw(Graphics g, PointF startingPoint);
+        public abstract void Draw(Graphics g, PointF startingPoint);
 
 		public DrawControlBase GetDrawObjectContainingPoint(PointF p) {
 			DrawControlBase	hitDrawObject = null;
@@ -1158,13 +1134,9 @@ namespace LayoutManager.CommonUI
 			BrokenBus		= 0x00000002,		// Show the bus as broken (daisy chain bus only)
 		}
 
-		public ControlBus Bus {
-			get {
-				return bus;
-			}
-		}
+        public ControlBus Bus => bus;
 
-		public override void Draw(Graphics g, PointF startingPoint) {
+        public override void Draw(Graphics g, PointF startingPoint) {
 			PointF		busStartPoint;
 
 			using(Font busNameFont = new Font("Arial", 8)) {
@@ -1322,13 +1294,9 @@ namespace LayoutManager.CommonUI
 			}
 		}
 
-		public ControlModule Module {
-			get {
-				return module;
-			}
-		}
+        public ControlModule Module => module;
 
-		public bool Selected {
+        public bool Selected {
 			get {
 				if(Viewer.SelectedModule == null)
 					return false;
@@ -1412,15 +1380,11 @@ namespace LayoutManager.CommonUI
 				drawConnectionPoints(g, bottomRow, new PointF(moduleRect.Left + connectionPointMargin, moduleRect.Bottom), false);
 		}
 
-		private Font getModuleNameFont() {
-			return new Font("Arial", 8, FontStyle.Bold);
-		}
+        private Font getModuleNameFont() => new Font("Arial", 8, FontStyle.Bold);
 
-		private Font getModulePhaseFont() {
-			return new Font("Arial", 8, FontStyle.Regular);
-		}
+        private Font getModulePhaseFont() => new Font("Arial", 8, FontStyle.Regular);
 
-		int ConnectionPointsPerRow {
+        int ConnectionPointsPerRow {
 			get {
 				int		connectionPointsPerRow = module.ModuleType.NumberOfConnectionPoints;
 
@@ -1543,20 +1507,12 @@ namespace LayoutManager.CommonUI
 			}
 		}
 
-		public ControlBus Bus {
-			get {
-				return bus;
-			}
-		}
+        public ControlBus Bus => bus;
 
-		public override Cursor Cursor {
-			get {
-				return Cursors.Hand;
-			}
-		}
+        public override Cursor Cursor => Cursors.Hand;
 
 
-		public override void Draw(Graphics g, PointF startingPoint) {
+        public override void Draw(Graphics g, PointF startingPoint) {
 			Font	textFont;
 			Pen		framePen;
 			Brush	textBrush;
@@ -1608,25 +1564,13 @@ namespace LayoutManager.CommonUI
 			this.index = index;
 		}
 
-		public ControlModule Module {
-			get {
-				return drawModule.Module;
-			}
-		}
+        public ControlModule Module => drawModule.Module;
 
-		public DrawControlModule DrawModule {
-			get {
-				return drawModule;
-			}
-		}
+        public DrawControlModule DrawModule => drawModule;
 
-		public int Index {
-			get {
-				return index;
-			}
-		}
+        public int Index => index;
 
-		public bool Selected {
+        public bool Selected {
 			get {
 				if(Viewer.SelectedConnectionPoint == null)
 					return false;
@@ -1641,13 +1585,9 @@ namespace LayoutManager.CommonUI
 			}
 		}
 
-		private bool drawSelection {
-			get {
-				return Selected || (drawModule.Selected && Module.ConnectionPoints.IsConnected(index));
-			}
-		}
+        private bool drawSelection => Selected || (drawModule.Selected && Module.ConnectionPoints.IsConnected(index));
 
-		public bool TopRow {
+        public bool TopRow {
 			get {
 				return topRow;
 			}
@@ -1662,23 +1602,13 @@ namespace LayoutManager.CommonUI
 			}
 		}
 
-		public ControlConnectionPoint ConnectionPoint {
-			get {
-				return Module.ConnectionPoints[index];
-			}
-		}
+        public ControlConnectionPoint ConnectionPoint => Module.ConnectionPoints[index];
 
-		public static SizeF Measure() {
-			return new SizeF(connectionPointWidth, connectionPointHeight);
-		}
+        public static SizeF Measure() => new SizeF(connectionPointWidth, connectionPointHeight);
 
-		public string FullDescription {
-			get {
-				return Module.ModuleType.Name + " address " + Module.ConnectionPoints.GetLabel(index);
-			}
-		}
-						
-		public override void Draw(Graphics g, PointF startingPoint) {
+        public string FullDescription => Module.ModuleType.Name + " address " + Module.ConnectionPoints.GetLabel(index);
+
+        public override void Draw(Graphics g, PointF startingPoint) {
 			RectangleF	shapeRect;
 			RectangleF	statusRect;
 

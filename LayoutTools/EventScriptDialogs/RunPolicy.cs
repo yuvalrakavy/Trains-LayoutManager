@@ -78,52 +78,24 @@ namespace LayoutManager.Tools.EventScriptDialogs
 			}
 		}
 
-		Font PolicyNameFont {
-			get {
-				return comboBoxPolicy.Font;
-			}
-		}
+        Font PolicyNameFont => comboBoxPolicy.Font;
 
-		Font GlobalOrLayoutFont {
-			get {
-				return globalOrLayoutFont;
-			}
-		}
+        Font GlobalOrLayoutFont => globalOrLayoutFont;
 
-		Font PolicyUsageFont {
-			get {
-				return policyUsageFont;
-			}
-		}
+        Font PolicyUsageFont => policyUsageFont;
 
-		Pen GlobalOrLayoutUnderlinePen {
-			get {
-				return globalOrLayoutUnderlinePen;
-			}
-		}
+        Pen GlobalOrLayoutUnderlinePen => globalOrLayoutUnderlinePen;
 
-		Pen PolicyUsageUnderlinePen {
-			get {
-				return policyUsageUnderlinePen;
-			}
-		}
+        Pen PolicyUsageUnderlinePen => policyUsageUnderlinePen;
 
-		Brush GlobalOrLayoutBackBrush {
-			get {
-				return globalOrLayoutBackBrush;
-			}
-		}
+        Brush GlobalOrLayoutBackBrush => globalOrLayoutBackBrush;
 
-		Brush PolicyUsageBackBrush {
-			get {
-				return policyUsageBackBrush;
-			}
-		}
-				
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        Brush PolicyUsageBackBrush => policyUsageBackBrush;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{
@@ -254,13 +226,9 @@ namespace LayoutManager.Tools.EventScriptDialogs
 				this.form = form;
 			}
 
-			protected RunPolicy RunPolicy {
-				get {
-					return form;
-				}
-			}
+            protected RunPolicy RunPolicy => form;
 
-			public virtual void MeasureItem(MeasureItemEventArgs e) {
+            public virtual void MeasureItem(MeasureItemEventArgs e) {
 				SizeF	titleSize = e.Graphics.MeasureString(ToString(), Font);
 
 				e.ItemHeight = (int)Math.Ceiling(titleSize.Height + VerticalMargins);
@@ -300,36 +268,16 @@ namespace LayoutManager.Tools.EventScriptDialogs
 
 			abstract protected int Indent { get; }
 
-			protected virtual Brush FontBrush {
-				get {
-					return Brushes.Black;
-				}
-			}
+            protected virtual Brush FontBrush => Brushes.Black;
 
-			protected virtual Brush BackBrush {
-				get {
-					return null;
-				}
-			}
+            protected virtual Brush BackBrush => null;
 
-			protected virtual int VerticalMargins {
-				get {
-					return 0;
-				}
-			}
+            protected virtual int VerticalMargins => 0;
 
-			protected virtual bool IsTitle {
-				get {
-					return false;
-				}
-			}
+            protected virtual bool IsTitle => false;
 
-			protected virtual Pen UnderlinePen {
-				get {
-					return null;
-				}
-			}
-		}
+            protected virtual Pen UnderlinePen => null;
+        }
 
 		class PolicyEntry : PolicyEntryBase {
 			LayoutPolicyInfo	policy;
@@ -338,34 +286,16 @@ namespace LayoutManager.Tools.EventScriptDialogs
 				this.policy = policy;
 			}
 
-			public LayoutPolicyInfo Policy {
-				get {
-					return policy;
-				}
-			}
+            public LayoutPolicyInfo Policy => policy;
 
-			protected override int Indent {
-				get {
-					return 16;
-				}
-			}
+            protected override int Indent => 16;
 
-			protected override Font Font {
-				get {
-					return RunPolicy.PolicyNameFont;
-				}
-			}
+            protected override Font Font => RunPolicy.PolicyNameFont;
 
-			protected override int VerticalMargins {
-				get {
-					return 2;
-				}
-			}
+            protected override int VerticalMargins => 2;
 
-			public override string ToString() {
-				return policy.Name;
-			}
-		}
+            public override string ToString() => policy.Name;
+        }
 
 		class GlobalOrLayoutEntry : PolicyEntryBase {
 			string	title;
@@ -374,48 +304,22 @@ namespace LayoutManager.Tools.EventScriptDialogs
 				this.title = title;
 			}
 
-			protected override Font Font {
-				get {
-					return RunPolicy.GlobalOrLayoutFont;
-				}
-			}
+            protected override Font Font => RunPolicy.GlobalOrLayoutFont;
 
-			protected override int Indent {
-				get {
-					return 0;
-				}
-			}
+            protected override int Indent => 0;
 
-			protected override bool IsTitle {
-				get {
-					return true;
-				}
-			}
+            protected override bool IsTitle => true;
 
-			protected override int VerticalMargins {
-				get {
-					return 8;
-				}
-			}
+            protected override int VerticalMargins => 8;
 
-			protected override Pen UnderlinePen {
-				get {
-					return RunPolicy.GlobalOrLayoutUnderlinePen;
-				}
-			}
+            protected override Pen UnderlinePen => RunPolicy.GlobalOrLayoutUnderlinePen;
 
-			public override string ToString() {
-				return title;
-			}
+            public override string ToString() => title;
 
-			protected override Brush BackBrush {
-				get {
-					return RunPolicy.GlobalOrLayoutBackBrush;
-				}
-			}
+            protected override Brush BackBrush => RunPolicy.GlobalOrLayoutBackBrush;
 
 
-		}
+        }
 
 		class PolicyUsageEntry : PolicyEntryBase {
 			string	title;
@@ -424,45 +328,19 @@ namespace LayoutManager.Tools.EventScriptDialogs
 				this.title = title;
 			}
 
-			protected override Font Font {
-				get {
-					return RunPolicy.PolicyUsageFont;
-				}
-			}
+            protected override Font Font => RunPolicy.PolicyUsageFont;
 
-			protected override int Indent {
-				get {
-					return 8;
-				}
-			}
+            protected override int Indent => 8;
 
-			protected override bool IsTitle {
-				get {
-					return true;
-				}
-			}
+            protected override bool IsTitle => true;
 
-			protected override int VerticalMargins {
-				get {
-					return 6;
-				}
-			}
+            protected override int VerticalMargins => 6;
 
-			protected override Pen UnderlinePen {
-				get {
-					return RunPolicy.PolicyUsageUnderlinePen;
-				}
-			}
+            protected override Pen UnderlinePen => RunPolicy.PolicyUsageUnderlinePen;
 
-			public override string ToString() {
-				return title;
-			}
+            public override string ToString() => title;
 
-			protected override Brush BackBrush {
-				get {
-					return RunPolicy.PolicyUsageBackBrush;
-				}
-			}
-		}
+            protected override Brush BackBrush => RunPolicy.PolicyUsageBackBrush;
+        }
 	}
 }

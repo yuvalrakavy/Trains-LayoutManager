@@ -139,15 +139,9 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 				this.commandStation = commandStation;
 			}
 
-			public IModelComponentIsCommandStation CommandStation {
-				get {
-					return commandStation;
-				}
-			}
+            public IModelComponentIsCommandStation CommandStation => commandStation;
 
-			public override string ToString() {
-				return commandStation.NameProvider.Name.ToString();
-			}
-		}
+            public override string ToString() => commandStation.NameProvider.Name.ToString();
+        }
 	}
 }

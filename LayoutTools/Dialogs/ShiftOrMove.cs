@@ -34,13 +34,9 @@ namespace LayoutManager.Tools.Dialogs {
 			}
 		}
 
-		public bool FillGaps {
-			get {
-				return checkBoxFillGaps.Checked;
-			}
-		}
+        public bool FillGaps => checkBoxFillGaps.Checked;
 
-		private void buttonOK_Click(object sender, EventArgs e) {
+        private void buttonOK_Click(object sender, EventArgs e) {
 			if(!radioButtonDown.Checked && !radioButtonLeft.Checked && !radioButtonRight.Checked && !radioButtonUp.Checked) {
 				MessageBox.Show("Please pick a direction", "Missing Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				radioButtonUp.Focus();

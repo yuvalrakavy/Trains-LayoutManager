@@ -433,24 +433,20 @@ namespace LayoutManager {
 				EventManager.Event(new LayoutEvent(this, "end-design-time-layout-activation"));
 		}
 
-		/// <summary>
-		/// True if design time activation is in effect.
-		/// </summary>
-		public bool IsDesignTimeActivation {
-			get {
-				return layoutDesignTimeActivationNesting > 0;
-			}
-		}
+        /// <summary>
+        /// True if design time activation is in effect.
+        /// </summary>
+        public bool IsDesignTimeActivation => layoutDesignTimeActivationNesting > 0;
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-		#region Controller Properties
+        #region Controller Properties
 
-		#region Layout files
+        #region Layout files
 
-		public string LayoutDisplayStateFilename {
+        public string LayoutDisplayStateFilename {
 			get;
 			private set;
 		}
@@ -491,17 +487,15 @@ namespace LayoutManager {
 			set;
 		}
 
-		/// <summary>
-		/// The command manager (Do/Undo support)
-		/// </summary>
-		public ILayoutCommandManager CommandManager {
-			get { return commandManager;  }
-		}
+        /// <summary>
+        /// The command manager (Do/Undo support)
+        /// </summary>
+        public ILayoutCommandManager CommandManager => commandManager;
 
-		/// <summary>
-		/// Operation mode settings, Null if in design mode
-		/// </summary>
-		public OperationModeParameters OperationModeSettings {
+        /// <summary>
+        /// Operation mode settings, Null if in design mode
+        /// </summary>
+        public OperationModeParameters OperationModeSettings {
 			get;
 			private set;
 		}
@@ -514,27 +508,21 @@ namespace LayoutManager {
 			private set;
 		}
 
-		/// <summary>
-		/// Where common data (settings that are relevant to all layouts) are saved
-		/// </summary>
-		public string CommonDataFolderName {
-			get {
-				return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + Application.ProductName;
-			}
-		}
+        /// <summary>
+        /// Where common data (settings that are relevant to all layouts) are saved
+        /// </summary>
+        public string CommonDataFolderName => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + Path.DirectorySeparatorChar + Application.ProductName;
 
-		public LayoutSelection UserSelection {
-			get { return userSelection; }
-		}
+        public LayoutSelection UserSelection => userSelection;
 
-		#endregion
+        #endregion
 
-		#region Model Initialization/Loading/saving
+        #region Model Initialization/Loading/saving
 
-		/// <summary>
-		/// Create a new layout, that is a new model, and one default view called overview
-		/// </summary>
-		void CreateNewModel(string layoutFilename) {
+        /// <summary>
+        /// Create a new layout, that is a new model, and one default view called overview
+        /// </summary>
+        void CreateNewModel(string layoutFilename) {
 			LayoutModel.Instance.Clear();
 			LayoutModelArea area = new LayoutModelArea();
 
@@ -648,28 +636,18 @@ namespace LayoutManager {
 			commandManager.Do(command);
 		}
 
-		public LayoutModuleManager ModuleManager {
-			get { return moduleManager; }
-		}
+        public LayoutModuleManager ModuleManager => moduleManager;
 
-		public bool IsOperationMode {
-			get { return OperationModeSettings != null; }
-		}
+        public bool IsOperationMode => OperationModeSettings != null;
 
-		public bool TrainsAnalysisPhase {
-			get {
-				return trainsAnalysisPhaseCount > 0;
-			}
-		}
+        public bool TrainsAnalysisPhase => trainsAnalysisPhaseCount > 0;
 
-		public PreviewRouteManager PreviewRouteManager {
-			get { return previewRouteManager; }
-		}
+        public PreviewRouteManager PreviewRouteManager => previewRouteManager;
 
-		/// <summary>
-		/// Called to mark the layout as modified
-		/// </summary>
-		public void LayoutModified() {
+        /// <summary>
+        /// Called to mark the layout as modified
+        /// </summary>
+        public void LayoutModified() {
 			commandManager.ChangeLevel++;
 		}
 
@@ -688,17 +666,13 @@ namespace LayoutManager {
 			displayedSelections.Remove(selection);
 		}
 
-		public IList<LayoutSelection> DisplayedSelections {
-			get {
-				return displayedSelections.AsReadOnly();
-			}
-		}
+        public IList<LayoutSelection> DisplayedSelections => displayedSelections.AsReadOnly();
 
-		#endregion
+        #endregion
 
-		#region Event Handlers
+        #region Event Handlers
 
-		[LayoutEvent("save-layout")]
+        [LayoutEvent("save-layout")]
 		private void saveLayout(LayoutEvent e) {
 			SaveModel(LayoutFilename);
 			SaveDisplayState(FrameWindows);

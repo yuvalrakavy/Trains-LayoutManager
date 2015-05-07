@@ -70,25 +70,19 @@ namespace LayoutManager.Components {
 			switchingStateSupport = GetSwitchingStateSupporter();
 		}
 
-		protected virtual SwitchingStateSupport GetSwitchingStateSupporter() {
-			return new SwitchingStateSupport(this);
-		}
+        protected virtual SwitchingStateSupport GetSwitchingStateSupporter() => new SwitchingStateSupport(this);
 
-		#region IModelComponentHasSwitchingState Members
+        #region IModelComponentHasSwitchingState Members
 
-		public int CurrentSwitchState {
-			get { return switchingStateSupport.CurrentSwitchState; }
-		}
+        public int CurrentSwitchState => switchingStateSupport.CurrentSwitchState;
 
-		public void SetSwitchState(ControlConnectionPoint connectionPoint, int switchState) {
+        public void SetSwitchState(ControlConnectionPoint connectionPoint, int switchState) {
 			switchingStateSupport.SetSwitchState(connectionPoint, switchState);
 		}
 
-		public int SwitchStateCount {
-			get { return switchingStateSupport.SwitchStateCount; }
-		}
+        public int SwitchStateCount => switchingStateSupport.SwitchStateCount;
 
-		public void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState) {
+        public void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState) {
 			switchingStateSupport.AddSwitchingCommands(switchingCommands, switchingState);
 		}
 

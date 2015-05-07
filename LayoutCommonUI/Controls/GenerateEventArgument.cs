@@ -255,11 +255,9 @@ namespace LayoutManager.CommonUI.Controls
 			return Element.GetAttribute(attributeName);
 		}
 
-		protected string GetAttribute(string name) {
-			return GetAttribute(name, null);
-		}
+        protected string GetAttribute(string name) => GetAttribute(name, null);
 
-		protected void SetAttribute(string name, string value) {
+        protected void SetAttribute(string name, string value) {
 			element.SetAttribute(prefix + name, value);
 		}
 

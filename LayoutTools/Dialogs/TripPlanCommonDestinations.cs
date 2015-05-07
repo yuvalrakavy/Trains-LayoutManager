@@ -381,13 +381,9 @@ namespace LayoutManager.Tools.Dialogs
 					Text = "*UNKNOWN*" + condition;
 			}
 
-			public TripPlanDestinationEntryInfo Entry {
-				get {
-					return entry;
-				}
-			}
+            public TripPlanDestinationEntryInfo Entry => entry;
 
-			public LayoutBlockDefinitionComponent BlockInfo {
+            public LayoutBlockDefinitionComponent BlockInfo {
 				get {
 					LayoutBlock	block = LayoutModel.Blocks[entry.BlockId];
 

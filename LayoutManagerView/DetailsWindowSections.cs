@@ -40,11 +40,9 @@ namespace LayoutManager.View {
 				this.section = section;
 			}
 
-			public Size GetSize(Graphics g) {
-				return section.GetSize(g);
-			}
+            public Size GetSize(Graphics g) => section.GetSize(g);
 
-			public void Paint(Graphics g) {
+            public void Paint(Graphics g) {
 				GraphicsState gs = g.Save();
 
 				g.TranslateTransform(origin.X, origin.Y);
@@ -52,12 +50,8 @@ namespace LayoutManager.View {
 				g.Restore(gs);
 			}
 
-			public Point Origin {
-				get {
-					return origin;
-				}
-			}
-		};
+            public Point Origin => origin;
+        };
 
 		#endregion
 
@@ -83,20 +77,16 @@ namespace LayoutManager.View {
 		/// </summary>
 		public Control Parent { get; private set; }
 
-		/// <summary>
-		///  Number of sections in the container
-		/// </summary>
-		public int Count {
-			get {
-				return sectionEntries.Count;
-			}
-		}
+        /// <summary>
+        ///  Number of sections in the container
+        /// </summary>
+        public int Count => sectionEntries.Count;
 
-		/// <summary>
-		/// Margins around the sections in the container, this margin is "before" an optional container 
-		/// border line
-		/// </summary>
-		public Size OuterMargins {
+        /// <summary>
+        /// Margins around the sections in the container, this margin is "before" an optional container 
+        /// border line
+        /// </summary>
+        public Size OuterMargins {
 			get {
 				return outerMargins;
 			}
@@ -201,19 +191,17 @@ namespace LayoutManager.View {
 			AddVerticalSection(new PopupWindowTextSection(text));
 		}
 
-		/// <summary>
-		/// Create a new container section for the same view as the current container
-		/// </summary>
-		/// <returns>A new container section</returns>
-		public PopupWindowContainerSection CreateContainer() {
-			return new PopupWindowContainerSection(this.Parent);
-		}
+        /// <summary>
+        /// Create a new container section for the same view as the current container
+        /// </summary>
+        /// <returns>A new container section</returns>
+        public PopupWindowContainerSection CreateContainer() => new PopupWindowContainerSection(this.Parent);
 
-		#endregion
+        #endregion
 
-		#region IDetailsPopWindowSection Members
+        #region IDetailsPopWindowSection Members
 
-		public Size GetSize(Graphics g) {
+        public Size GetSize(Graphics g) {
 			Size totalSize = new Size(0, 0);
 
 			foreach(SectionEntry entry in sectionEntries) {
@@ -405,13 +393,11 @@ namespace LayoutManager.View {
 			this.drawingSize = drawingSize;
 		}
 
-		#region IDetailsPopWindowSection Members
+        #region IDetailsPopWindowSection Members
 
-		public Size GetSize(Graphics g) {
-			return drawingSize;
-		}
+        public Size GetSize(Graphics g) => drawingSize;
 
-		public void Paint(Graphics g) {
+        public void Paint(Graphics g) {
 			Rectangle drawingRect = new Rectangle(new Point(0, 0), drawingSize);
 
 			view.Draw(g, drawingRect, new Rectangle(ml, new Size(1, 1)), 0, false);

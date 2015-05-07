@@ -457,9 +457,7 @@ namespace LayoutManager.CommonUI.Controls
 				this.Value = theValue;
 			}
 
-			public override string ToString() {
-				return Text;
-			}
-		}
+            public override string ToString() => Text;
+        }
 	}
 }

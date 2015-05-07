@@ -44,13 +44,9 @@ namespace LayoutManager.Dialogs {
 				comboBoxPrinters.SelectedItem = defaultPrinterName;
 		}
 
-		public bool AllAreas {
-			get {
-				return radioButtonAllAreas.Checked;
-			}
-		}
+        public bool AllAreas => radioButtonAllAreas.Checked;
 
-		public PrintViewScope PrintViewScope {
+        public PrintViewScope PrintViewScope {
 			get {
 				if(radioButtonBestFit.Checked)
 					return PrintViewScope.BestFit;
@@ -61,13 +57,9 @@ namespace LayoutManager.Dialogs {
 			}
 		}
 
-		public bool GridLines {
-			get {
-				return checkBoxGridLines.Checked;
-			}
-		}
+        public bool GridLines => checkBoxGridLines.Checked;
 
-		private void buttonOK_Click(object sender, EventArgs e) {
+        private void buttonOK_Click(object sender, EventArgs e) {
 			printDoc.PrinterSettings.PrinterName = comboBoxPrinters.SelectedItem.ToString();
 
 			DialogResult = DialogResult.OK;

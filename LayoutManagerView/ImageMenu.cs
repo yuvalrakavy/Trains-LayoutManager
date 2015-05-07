@@ -54,13 +54,9 @@ namespace LayoutManager.UIGadgets {
 		ImageMenuItemCollection		items = new ImageMenuItemCollection();
 		String				name;
 
-		public ImageMenuItemCollection Items {
-			get {
-				return items;
-			}
-		}
+        public ImageMenuItemCollection Items => items;
 
-		public ImageMenu Menu {
+        public ImageMenu Menu {
 			get {
 				return menu;
 			}
@@ -253,19 +249,15 @@ namespace LayoutManager.UIGadgets {
 
 		MenuState		menuState = new MenuState();
 
-		/// <summary>
-		/// Return a collection of items in the menu
-		/// </summary>
-		public ImageMenuCategoryCollection Categories {
-			get {
-				return categories;
-			}
-		}
+        /// <summary>
+        /// Return a collection of items in the menu
+        /// </summary>
+        public ImageMenuCategoryCollection Categories => categories;
 
-		/// <summary>
-		/// Make sure that the menu is shown in such a way that it is not truncated.
-		/// </summary>
-		private void adjustLocation() {
+        /// <summary>
+        /// Make sure that the menu is shown in such a way that it is not truncated.
+        /// </summary>
+        private void adjustLocation() {
 			if(Right >= Parent.Right)
 				Left = Parent.Right - Width - 5;
 			if(Bottom >= Parent.Bottom)
@@ -365,22 +357,18 @@ namespace LayoutManager.UIGadgets {
 			}
 		}
 
-		/// <summary>
-		/// The last category that was selected (it make sense to use this property after calling show)
-		/// </summary>
-		public ImageMenuCategory SelectedCategory {
-			get {
-				return selectedCategory;
-			}
-		}
+        /// <summary>
+        /// The last category that was selected (it make sense to use this property after calling show)
+        /// </summary>
+        public ImageMenuCategory SelectedCategory => selectedCategory;
 
-		/// <summary>
-		/// Show the menu. The menu is shown in a given point of a given parent control
-		/// </summary>
-		/// <param name="parent">The control on which the menu is shown</param>
-		/// <param name="p">The position where the menu should be shown</param>
-		/// <returns>The selected menu item or null if no item is selected.</returns>
-		public ImageMenuItem Show(Control parent, Point p) {
+        /// <summary>
+        /// Show the menu. The menu is shown in a given point of a given parent control
+        /// </summary>
+        /// <param name="parent">The control on which the menu is shown</param>
+        /// <param name="p">The position where the menu should be shown</param>
+        /// <returns>The selected menu item or null if no item is selected.</returns>
+        public ImageMenuItem Show(Control parent, Point p) {
 			this.Parent = parent;
 			this.Location = p;		// TODO: Location should be much smarter (considering alighment) etc.
 
@@ -702,8 +690,6 @@ namespace LayoutManager.UIGadgets {
 		}
 
 
-		protected override bool IsInputKey(Keys keyData) {
-			return true;
-		}
-	}
+        protected override bool IsInputKey(Keys keyData) => true;
+    }
 }

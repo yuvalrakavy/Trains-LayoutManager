@@ -51,14 +51,12 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 			}
 		}
 
-		public bool UseAsDefault {
-			get { return checkBoxUseAsDefault.Checked;  }
-		}
+        public bool UseAsDefault => checkBoxUseAsDefault.Checked;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{
@@ -162,15 +160,9 @@ namespace LayoutManager.Tools.AutoConnectDialogs
 				this.moduleType = moduleType;
 			}
 
-			public ControlModuleType ModuleType {
-				get {
-					return moduleType;
-				}
-			}
+            public ControlModuleType ModuleType => moduleType;
 
-			public override string ToString() {
-				return moduleType.Name;
-			}
-		}
+            public override string ToString() => moduleType.Name;
+        }
 	}
 }

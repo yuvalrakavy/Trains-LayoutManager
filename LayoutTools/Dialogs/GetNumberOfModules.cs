@@ -33,16 +33,12 @@ namespace LayoutManager.Tools.Dialogs
 			numericUpDownModuleCount.Maximum = maxModules;
 		}
 
-		public int Count {
-			get {
-				return (int)numericUpDownModuleCount.Value;
-			}
-		}
+        public int Count => (int)numericUpDownModuleCount.Value;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{

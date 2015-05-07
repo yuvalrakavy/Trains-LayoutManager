@@ -81,15 +81,11 @@ namespace LayoutManager.CommonUI.Dialogs
 			updateButtons(null, null);
 		}
 
-		#region Properties
+        #region Properties
 
-		public string AttributeName {
-			get {
-				return comboBoxName.Text;
-			}
-		}
+        public string AttributeName => comboBoxName.Text;
 
-		public object Value {
+        public object Value {
 			get {
 				if(radioButtonTypeBoolean.Checked)
 					return (bool)radioButtonValueTrue.Checked;

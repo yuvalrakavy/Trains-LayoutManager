@@ -157,12 +157,10 @@ namespace LayoutManager.CommonUI.Controls
 			}
 		}
 
-		// Default implementation of IPolicyListCustomizer
-		public bool IsPolicyChecked(LayoutPolicyInfo policy) {
-			return policy.Apply;
-		}
+        // Default implementation of IPolicyListCustomizer
+        public bool IsPolicyChecked(LayoutPolicyInfo policy) => policy.Apply;
 
-		public void SetPolicyChecked(LayoutPolicyInfo policy, bool checkValue) {
+        public void SetPolicyChecked(LayoutPolicyInfo policy, bool checkValue) {
 			policy.Apply = checkValue;
 		}
 
@@ -432,11 +430,7 @@ namespace LayoutManager.CommonUI.Controls
 					this.Checked = policyList.Customizer.IsPolicyChecked(policy);
 			}
 
-			public LayoutPolicyInfo Policy {
-				get {
-					return policy;
-				}
-			}
-		}
+            public LayoutPolicyInfo Policy => policy;
+        }
 	}
 }

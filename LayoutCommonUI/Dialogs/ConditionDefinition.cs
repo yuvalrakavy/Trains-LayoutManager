@@ -71,16 +71,12 @@ namespace LayoutManager.CommonUI.Dialogs
 			}
 		}
 
-		public bool NoCondition {
-			get {
-				return radioButtonNoCondition.Checked;
-			}
-		}
+        public bool NoCondition => radioButtonNoCondition.Checked;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{

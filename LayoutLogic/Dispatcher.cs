@@ -80,13 +80,9 @@ namespace LayoutManager.Logic {
 				blockEntryQueue = new BlockEntryQueue(this);
 			}
 
-			public BlockEntryQueue Queue {
-				get {
-					return blockEntryQueue;
-				}
-			}
+            public BlockEntryQueue Queue => blockEntryQueue;
 
-			public LayoutEventScript PendingStartCondition {
+            public LayoutEventScript PendingStartCondition {
 				get {
 					return pendingStartCondition;
 				}
@@ -181,12 +177,8 @@ namespace LayoutManager.Logic {
 		}
 
 		class ActiveTripsCollection : Hashtable {
-			public ActiveTripInfo this[Guid trainID] {
-				get {
-					return (ActiveTripInfo)base[trainID];
-				}
-			}
-		}
+            public ActiveTripInfo this[Guid trainID] => (ActiveTripInfo)base[trainID];
+        }
 
 		[Flags]
 		enum BlockAction {
@@ -226,13 +218,9 @@ namespace LayoutManager.Logic {
     				this.front = train.LocomotiveLocation.DisplayFront;
 			}
 
-			public LayoutBlock Block {
-				get {
-					return block;
-				}
-			}
+            public LayoutBlock Block => block;
 
-			public BlockAction Action {
+            public BlockAction Action {
 				get {
 					return action;
 				}
@@ -242,19 +230,11 @@ namespace LayoutManager.Logic {
 				}
 			}
 
-			public LayoutBlock[] CrossedBlocks {
-				get {
-					return crossedBlocks;
-				}
-			}
+            public LayoutBlock[] CrossedBlocks => crossedBlocks;
 
-			public LayoutComponentConnectionPoint Front {
-				get {
-					return front;
-				}
-			}
+            public LayoutComponentConnectionPoint Front => front;
 
-			public void AddAction(BlockAction action) {
+            public void AddAction(BlockAction action) {
 				this.action |= action;
 			}
 
@@ -272,12 +252,8 @@ namespace LayoutManager.Logic {
 				}
 			}
 
-            public bool Waitable {
-                get {
-                    return waitable;
-                }
-            }
-		}
+            public bool Waitable => waitable;
+        }
 
 		class BlockEntryQueue : Queue {
 			IDictionary		blockEntriesInQueue = new HybridDictionary();
@@ -307,21 +283,13 @@ namespace LayoutManager.Logic {
 					return (BlockEntry)base.Peek();
 			}
 
-			public bool Contains(Guid blockID) {
-				return blockEntriesInQueue.Contains(blockID);
-			}
+            public bool Contains(Guid blockID) => blockEntriesInQueue.Contains(blockID);
 
-			public BlockEntry this[Guid blockID] {
-				get {
-					return (BlockEntry)blockEntriesInQueue[blockID];
-				}
-			}
+            public BlockEntry this[Guid blockID] => (BlockEntry)blockEntriesInQueue[blockID];
 
-			public bool Contains(LayoutBlock block) {
-				return Contains(block.Id);
-			}
+            public bool Contains(LayoutBlock block) => Contains(block.Id);
 
-			public new void Clear() {
+            public new void Clear() {
 				blockEntriesInQueue.Clear();
 				base.Clear();
 			}
@@ -488,31 +456,15 @@ namespace LayoutManager.Logic {
 				this.arrivedToDestination = arrivedToDestination;
 			}
 
-			public ActiveTripInfo Trip {
-				get {
-					return trip;
-				}
-			}
+            public ActiveTripInfo Trip => trip;
 
-			public ITripRoute Route {
-				get {
-					return route;
-				}
-			}
+            public ITripRoute Route => route;
 
-			public IList<BlockEntry> BlockEntries {
-				get {
-					return blockEntries;
-				}
-			}
+            public IList<BlockEntry> BlockEntries => blockEntries;
 
-			public bool ArrivedToDestination {
-				get {
-					return arrivedToDestination;
-				}
-			}
+            public bool ArrivedToDestination => arrivedToDestination;
 
-			public LayoutLockRequest RequestLayoutLock(ActiveTripInfo trip, BlockUnlockingManager blockUnlockingManager) {
+            public LayoutLockRequest RequestLayoutLock(ActiveTripInfo trip, BlockUnlockingManager blockUnlockingManager) {
 				LayoutLockRequest	lockRequest = new LayoutLockRequest(trip.TrainId);
 				bool				gotLock;
 
@@ -873,11 +825,9 @@ namespace LayoutManager.Logic {
 			return new TripBestRouteResult(bestRoute.DestinationTarget == null ? null : bestRoute, bestRoute.Quality, false);
 		}
 
-		TripBestRouteResult findBestRoute(ActiveTripInfo trip, ModelComponent sourceComponent, LayoutComponentConnectionPoint front) {
-			return findBestRoute(trip.TrainId, trip.CurrentWaypoint.Destination, sourceComponent, front, trip.CurrentWaypoint.Direction, trip.CurrentWaypoint.TrainStopping);
-		}
+        TripBestRouteResult findBestRoute(ActiveTripInfo trip, ModelComponent sourceComponent, LayoutComponentConnectionPoint front) => findBestRoute(trip.TrainId, trip.CurrentWaypoint.Destination, sourceComponent, front, trip.CurrentWaypoint.Direction, trip.CurrentWaypoint.TrainStopping);
 
-		[LayoutEvent("find-best-route-request")]
+        [LayoutEvent("find-best-route-request")]
 		private void findBestRouteRequest(LayoutEvent e) {
 			TripBestRouteRequest	r = (TripBestRouteRequest)e.Sender;
 
@@ -927,17 +877,15 @@ namespace LayoutManager.Logic {
 			return false;
 		}
 
-		private static bool canClearTrip(ActiveTripInfo trip) {
-			return trip.Status == TripStatus.Done || trip.Status == TripStatus.Aborted;
-		}
+        private static bool canClearTrip(ActiveTripInfo trip) => trip.Status == TripStatus.Done || trip.Status == TripStatus.Aborted;
 
-		/// <summary>
-		/// Return the next trip section. For explaination regarding how the trip section is figured out
-		/// see the comment on the top of the file.
-		/// </summary>
-		/// <param name="trip">The trip for which the lock request is needed</param>
-		/// <param name="route">The route which the train is about to make</param>
-		TripSection getTripSection(ActiveTripInfo trip, ITripRoute route, Guid startSectionBlockID) {
+        /// <summary>
+        /// Return the next trip section. For explaination regarding how the trip section is figured out
+        /// see the comment on the top of the file.
+        /// </summary>
+        /// <param name="trip">The trip for which the lock request is needed</param>
+        /// <param name="route">The route which the train is about to make</param>
+        TripSection getTripSection(ActiveTripInfo trip, ITripRoute route, Guid startSectionBlockID) {
 			List<BlockEntry>				blockEntries = new List<BlockEntry>();
 			List<LayoutBlock>				crossedBlocks = new List<LayoutBlock>();	// Blocks that are crossed by the current route
 			TrackEdge						edge = route.SourceEdge;
@@ -2120,18 +2068,10 @@ namespace LayoutManager.Logic {
 				this.actions = actions.AsReadOnly();
 			}
 
-			public bool CanBeFixed {
-				get {
-					return canBeFixed;
-				}
-			}
+            public bool CanBeFixed => canBeFixed;
 
-			public IList<ITripRouteValidationAction> Actions {
-				get {
-					return actions;
-				}
-			}
-		}
+            public IList<ITripRouteValidationAction> Actions => actions;
+        }
 
 		class RouteValidationActionBase {
 			protected int		waypointIndex;
@@ -2140,25 +2080,17 @@ namespace LayoutManager.Logic {
 				this.waypointIndex = wayPointIndex;
 			}
 
-			public int WaypointIndex {
-				get {
-					return waypointIndex;
-				}
-			}
-		}
+            public int WaypointIndex => waypointIndex;
+        }
 
 		class RouteValidationActionNoPath : RouteValidationActionBase, ITripRouteValidationAction {
 
 			public RouteValidationActionNoPath(int wayPointIndex) : base(wayPointIndex) {
 			}
 
-			public string Description {
-				get {
-					return "No path from previous way point to this one";
-				}
-			}
+            public string Description => "No path from previous way point to this one";
 
-			public void Apply(TripPlanInfo tripPlan) {
+            public void Apply(TripPlanInfo tripPlan) {
 				Debug.Assert(false, "Cannot fix no path problem");
 			}
 		}
@@ -2170,14 +2102,10 @@ namespace LayoutManager.Logic {
 				this.direction = direction;
 			}
 
-			public string Description {
-				get {
-					return "Switch direction from " + ((direction == LocomotiveOrientation.Forward) ? "backward" : "forward") + " to " +
-						((direction == LocomotiveOrientation.Forward) ? "forward" : "backward");
-				}
-			}
+            public string Description => "Switch direction from " + ((direction == LocomotiveOrientation.Forward) ? "backward" : "forward") + " to " +
+                        ((direction == LocomotiveOrientation.Forward) ? "forward" : "backward");
 
-			public void Apply(TripPlanInfo tripPlan) {
+            public void Apply(TripPlanInfo tripPlan) {
 				tripPlan.Waypoints[waypointIndex].Direction = direction;
 			}
 		}

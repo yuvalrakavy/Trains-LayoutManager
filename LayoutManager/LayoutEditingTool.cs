@@ -38,90 +38,38 @@ namespace LayoutManager
 			menu.MenuItems.Add(new MenuItemPasteComponents(hitTestResult));			
 		}
 
-		#region Implement properties for returning various context menu related event names
+        #region Implement properties for returning various context menu related event names
 
-		protected override string ComponentContextMenuAddTopEntriesEventName {
-			get {
-				return "add-component-editing-context-menu-top-entries";
-			}
-		}
+        protected override string ComponentContextMenuAddTopEntriesEventName => "add-component-editing-context-menu-top-entries";
 
-		protected override string ComponentContextMenuQueryEventName {
-			get {
-				return "query-component-editing-context-menu";
-			}
-		}
+        protected override string ComponentContextMenuQueryEventName => "query-component-editing-context-menu";
 
-		protected override string ComponentContextMenuQueryCanRemoveEventName {
-			get {
-				return "query-can-remove-model-component";
-			}
-		}
+        protected override string ComponentContextMenuQueryCanRemoveEventName => "query-can-remove-model-component";
 
-		protected override string ComponentContextMenuAddEntriesEventName {
-			get {
-				return "add-component-editing-context-menu-entries";
-			}
-		}
+        protected override string ComponentContextMenuAddEntriesEventName => "add-component-editing-context-menu-entries";
 
-		protected override string ComponentContextMenuAddBottomEntriesEventName {
-			get {
-				return "add-component-editing-context-menu-bottom-entries";
-			}
-		}
+        protected override string ComponentContextMenuAddBottomEntriesEventName => "add-component-editing-context-menu-bottom-entries";
 
-		protected override string ComponentContextMenuAddCommonEntriesEventName {
-			get {
-				return "add-component-editing-context-menu-common-entries";
-			}
-		}
+        protected override string ComponentContextMenuAddCommonEntriesEventName => "add-component-editing-context-menu-common-entries";
 
-		protected override string ComponentContextMenuQueryNameEventName {
-			get {
-				return "query-component-editing-context-menu-name";
-			}
-		}
+        protected override string ComponentContextMenuQueryNameEventName => "query-component-editing-context-menu-name";
 
-		protected override string ComponentContextMenuAddEmptySpotEntriesEventName {
-			get {
-				return "add-editing-empty-spot-context-menu-entries";
-			}
-		}
+        protected override string ComponentContextMenuAddEmptySpotEntriesEventName => "add-editing-empty-spot-context-menu-entries";
 
-		protected override string ComponentContextMenuAddSelectionEntriesEventName {
-			get {
-				return "add-editing-selection-menu-entries";
-			}
-		}
+        protected override string ComponentContextMenuAddSelectionEntriesEventName => "add-editing-selection-menu-entries";
 
-		protected override string QueryDragEventName {
-			get {
-				return "query-editing-drag";
-			}
-		}
+        protected override string QueryDragEventName => "query-editing-drag";
 
-		protected override string DragDoneEventName {
-			get {
-				return "editing-drag-done";
-			}
-		}
+        protected override string DragDoneEventName => "editing-drag-done";
 
-		protected override string QueryDropEventName {
-			get {
-				return "query-editing-drop";
-			}
-		}
+        protected override string QueryDropEventName => "query-editing-drop";
 
-		protected override string DropEventName {
-			get {
-				return "do-editing-drop";
-			}
-		}
+        protected override string DropEventName => "do-editing-drop";
 
 
-		#endregion
+        #endregion
 
-		[LayoutEvent("add-component-editing-context-menu-common-entries", Order=0)]
+        [LayoutEvent("add-component-editing-context-menu-common-entries", Order=0)]
 		void addContextMenuCommonEntries(LayoutEvent e) {
 			Menu				menu = (Menu)e.Info;
 			LayoutHitTestResult	hitTestResult = (LayoutHitTestResult)e.Sender;

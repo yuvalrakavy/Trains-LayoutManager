@@ -302,11 +302,9 @@ namespace LayoutManager {
 			return false;
 		}
 
-		public bool HasOption(string optionName) {
-			return HasOption("Options", optionName);
-		}
+        public bool HasOption(string optionName) => HasOption("Options", optionName);
 
-		public string GetOption(string optionName, string elementName = "Options", string defaultValue = null) {
+        public string GetOption(string optionName, string elementName = "Options", string defaultValue = null) {
 			XmlElement	optionElement = Element[elementName];
 
 			if(optionElement != null && optionElement.HasAttribute(optionName))
@@ -323,39 +321,23 @@ namespace LayoutManager {
 			return this;
 		}
 
-		public bool GetBoolOption(string elementName, string optionName, bool defaultValue) {
-			return XmlConvert.ToBoolean(GetOption(optionName, elementName, XmlConvert.ToString(defaultValue)));
-		}
+        public bool GetBoolOption(string elementName, string optionName, bool defaultValue) => XmlConvert.ToBoolean(GetOption(optionName, elementName, XmlConvert.ToString(defaultValue)));
 
-		public bool GetBoolOption(string elementName, string optionName) {
-			return GetBoolOption(elementName, optionName, false);
-		}
+        public bool GetBoolOption(string elementName, string optionName) => GetBoolOption(elementName, optionName, false);
 
-		public bool GetBoolOption(string optionName) {
-			return GetBoolOption("Options", optionName);
-		}
+        public bool GetBoolOption(string optionName) => GetBoolOption("Options", optionName);
 
-		public bool GetBoolOption(string optionName, bool defaultValue) {
-			return GetBoolOption("Options", optionName, defaultValue);
-		}
+        public bool GetBoolOption(string optionName, bool defaultValue) => GetBoolOption("Options", optionName, defaultValue);
 
-		public int GetIntOption(string elementName, string optionName, int defaultValue) {
-			return XmlConvert.ToInt32(GetOption(optionName, elementName, XmlConvert.ToString(defaultValue)));
-		}
+        public int GetIntOption(string elementName, string optionName, int defaultValue) => XmlConvert.ToInt32(GetOption(optionName, elementName, XmlConvert.ToString(defaultValue)));
 
-		public int GetIntOption(string elementName, string optionName) {
-			return GetIntOption(elementName, optionName, -1);
-		}
+        public int GetIntOption(string elementName, string optionName) => GetIntOption(elementName, optionName, -1);
 
-		public int GetIntOption(string optionName, int defaultValue) {
-			return GetIntOption("Options", optionName, defaultValue);
-		}
+        public int GetIntOption(string optionName, int defaultValue) => GetIntOption("Options", optionName, defaultValue);
 
-		public int GetIntOption(string optionName) {
-			return GetIntOption("Options", optionName);
-		}
+        public int GetIntOption(string optionName) => GetIntOption("Options", optionName);
 
-		public LayoutEvent SetOption(string elementName, string optionName, string value) {
+        public LayoutEvent SetOption(string elementName, string optionName, string value) {
 			XmlElement	optionElement = Element[elementName];
 
 			if(optionElement == null) {
@@ -368,37 +350,23 @@ namespace LayoutManager {
 			return this;
 		}
 
-		public LayoutEvent SetOption(string optionName, string value) {
-			return SetOption("Options", optionName, value);
-		}
+        public LayoutEvent SetOption(string optionName, string value) => SetOption("Options", optionName, value);
 
-		public LayoutEvent SetOption(string elementName, string optionName, bool value) {
-			return SetOption(elementName, optionName, XmlConvert.ToString(value));
-		}
+        public LayoutEvent SetOption(string elementName, string optionName, bool value) => SetOption(elementName, optionName, XmlConvert.ToString(value));
 
-		public LayoutEvent SetOption(string optionName, bool value) {
-			return SetOption("Options", optionName, value);
-		}
+        public LayoutEvent SetOption(string optionName, bool value) => SetOption("Options", optionName, value);
 
-		public LayoutEvent SetOption(string elementName, string optionName, int value) {
-			return SetOption(elementName, optionName, XmlConvert.ToString(value));
-		}
+        public LayoutEvent SetOption(string elementName, string optionName, int value) => SetOption(elementName, optionName, XmlConvert.ToString(value));
 
-		public LayoutEvent SetOption(string optionName, int value) {
-			return SetOption("Options", optionName, value);
-		}
+        public LayoutEvent SetOption(string optionName, int value) => SetOption("Options", optionName, value);
 
-		public LayoutEvent SetOption(string elementName, string optionName, Guid id) {
-			return SetOption(elementName, optionName, XmlConvert.ToString(id));
-		}
+        public LayoutEvent SetOption(string elementName, string optionName, Guid id) => SetOption(elementName, optionName, XmlConvert.ToString(id));
 
-		public LayoutEvent SetOption(string optionName, Guid id) {
-			return SetOption("Options", optionName, id);
-		}
+        public LayoutEvent SetOption(string optionName, Guid id) => SetOption("Options", optionName, id);
 
-		#endregion
+        #endregion
 
-	}
+    }
 
 	public class LayoutEvent<TSender, TInfo> : LayoutEvent {
 		public LayoutEvent(string eventName, TSender sender = default(TSender), TInfo info = default(TInfo))
@@ -556,7 +524,7 @@ namespace LayoutManager {
 
 					nextPos = xpath.IndexOf('`', nextPos+1);		// nextPos is the index of the terminating `
 					if(nextPos < 0)
-						throw new ArgumentException("XPath missing a ` character for expanded string", "xpath");
+						throw new ArgumentException("XPath missing a ` character for expanded string", nameof(xpath));
 
 					expandXpath = xpath.Substring(s+1, nextPos-s-1);
 
@@ -677,16 +645,12 @@ namespace LayoutManager {
 			}
 		}
 
-		public String NonExpandedIfSender {
-			get {
-				return DocumentElement.GetAttribute("IfSender");
-			}
-		}
+        public String NonExpandedIfSender => DocumentElement.GetAttribute("IfSender");
 
-		/// <summary>
-		/// Get/Set the XPath for filtering the event XML document
-		/// </summary>
-		public String IfEvent {
+        /// <summary>
+        /// Get/Set the XPath for filtering the event XML document
+        /// </summary>
+        public String IfEvent {
 			get {
 				return ifEvent;
 			}
@@ -701,16 +665,12 @@ namespace LayoutManager {
 			}
 		}
 
-		public String NonExpandedIfEvent {
-			get {
-				return DocumentElement.GetAttribute("IfEvent");
-			}
-		}
+        public String NonExpandedIfEvent => DocumentElement.GetAttribute("IfEvent");
 
-		/// <summary>
-		/// Get/Set the XPath for filtering the info object
-		/// </summary>
-		public String IfInfo {
+        /// <summary>
+        /// Get/Set the XPath for filtering the info object
+        /// </summary>
+        public String IfInfo {
 			get {
 				return ifInfo;
 			}
@@ -725,16 +685,12 @@ namespace LayoutManager {
 			}
 		}
 
-		public String NonExpandedIfInfo {
-			get {
-				return DocumentElement.GetAttribute("IfInfo");
-			}
-		}
+        public String NonExpandedIfInfo => DocumentElement.GetAttribute("IfInfo");
 
-		/// <summary>
-		/// Get/Set subscription processing order
-		/// </summary>
-		public int Order {
+        /// <summary>
+        /// Get/Set subscription processing order
+        /// </summary>
+        public int Order {
 			get {
 				return order;
 			}
@@ -861,21 +817,17 @@ namespace LayoutManager {
 		/// </summary>
 		public LayoutEventHandler EventHandler { get; private set; }
 
-		/// <summary>
-		/// The object in which the event handler reside
-		/// </summary>
-		public override object TargetObject {
-			get { return EventHandler != null ? EventHandler.Target : null; }
-		}
+        /// <summary>
+        /// The object in which the event handler reside
+        /// </summary>
+        public override object TargetObject => EventHandler != null ? EventHandler.Target : null;
 
-		/// <summary>
-		/// Event handler method name
-		/// </summary>
-		public override string MethodName {
-			get { return EventHandler.Method.Name; }
-		}
+        /// <summary>
+        /// Event handler method name
+        /// </summary>
+        public override string MethodName => EventHandler.Method.Name;
 
-		public override void SetMethod(object objectInstance, MethodInfo method) {
+        public override void SetMethod(object objectInstance, MethodInfo method) {
 			if(objectInstance == null)
 				EventHandler = (LayoutEventHandler)Delegate.CreateDelegate(typeof(LayoutEventHandler), method);
 			else
@@ -915,22 +867,18 @@ namespace LayoutManager {
 				return _eventHandler(e);
 		}
 
-	
-		/// <summary>
-		/// The object in which the event handler reside
-		/// </summary>
-		public override object TargetObject {
-			get { return EventHandler != null ? EventHandler.Target : null; }
-		}
 
-		/// <summary>
-		/// Event handler method name
-		/// </summary>
-		public override string MethodName {
-			get { return EventHandler.Method.Name; }
-		}
+        /// <summary>
+        /// The object in which the event handler reside
+        /// </summary>
+        public override object TargetObject => EventHandler != null ? EventHandler.Target : null;
 
-		public override void SetMethod(object objectInstance, MethodInfo method) {
+        /// <summary>
+        /// Event handler method name
+        /// </summary>
+        public override string MethodName => EventHandler.Method.Name;
+
+        public override void SetMethod(object objectInstance, MethodInfo method) {
 			if(objectInstance == null) {
 				_voidEventHandler = (LayoutVoidAsyncEventHandler)Delegate.CreateDelegate(typeof(LayoutVoidAsyncEventHandler), method, false);
 				if(_voidEventHandler == null)
@@ -1101,14 +1049,12 @@ namespace LayoutManager {
 			: base(eventName) {
 		}
 
-		/// <summary>
-		/// Create the subscription initialized by this attribute
-		/// </summary>
-		/// <returns>The new subscription object</returns>
-		public override LayoutEventSubscriptionBase CreateSubscription() {
-			return new LayoutEventSubscription();
-		}
-	}
+        /// <summary>
+        /// Create the subscription initialized by this attribute
+        /// </summary>
+        /// <returns>The new subscription object</returns>
+        public override LayoutEventSubscriptionBase CreateSubscription() => new LayoutEventSubscription();
+    }
 
 	public class LayoutAsyncEventAttribute : LayoutEventAttributeBase {
 		public LayoutAsyncEventAttribute()
@@ -1119,14 +1065,12 @@ namespace LayoutManager {
 			: base(eventName) {
 		}
 
-		/// <summary>
-		/// Create the subscription initialized by this attribute
-		/// </summary>
-		/// <returns>The new subscription object</returns>
-		public override LayoutEventSubscriptionBase CreateSubscription() {
-			return new LayoutAsyncEventSubscription();
-		}
-	}
+        /// <summary>
+        /// Create the subscription initialized by this attribute
+        /// </summary>
+        /// <returns>The new subscription object</returns>
+        public override LayoutEventSubscriptionBase CreateSubscription() => new LayoutAsyncEventSubscription();
+    }
 
 	public enum LayoutEventRole {
 		Notification,
@@ -1179,13 +1123,9 @@ namespace LayoutManager {
 			}
 		}
 
-		public string Name {
-			get {
-				return name;
-			}
-		}
+        public string Name => name;
 
-		public LayoutEventScope Scope {
+        public LayoutEventScope Scope {
 			get {
 				return scope;
 			}
@@ -1315,19 +1255,15 @@ namespace LayoutManager {
 			this.moduleManager = moduleManager;
 		}
 
-		/// <summary>
-		/// A collection of active event subscriptions
-		/// </summary>
-		public ILayoutSubscriptionCollection Subscriptions {
-			get {
-				return subscriptions;
-			}
-		}
+        /// <summary>
+        /// A collection of active event subscriptions
+        /// </summary>
+        public ILayoutSubscriptionCollection Subscriptions => subscriptions;
 
-		/// <summary>
-		/// If true, event tracing is enabled
-		/// </summary>
-		public bool TraceEvents {
+        /// <summary>
+        /// If true, event tracing is enabled
+        /// </summary>
+        public bool TraceEvents {
 			get {
 				return traceEvents;
 			}
@@ -1392,21 +1328,19 @@ namespace LayoutManager {
 			return e.Info;
 		}
 
-		public Object Event(LayoutEvent e) {
-			return Event(e, LayoutEventScope.MyProcess);
-		}
+        public Object Event(LayoutEvent e) => Event(e, LayoutEventScope.MyProcess);
 
-		#endregion
+        #endregion
 
-		#region Async events
+        #region Async events
 
-		/// <summary>
-		/// Internal method for generating async event
-		/// </summary>
-		/// <param name="e">The event to generate</param>
-		/// <param name="scope">The event scope</param>
-		/// <param name="traceEvent">Optional trace event to be generated</param>
-		protected List<Task> GenerateAsyncEvent(LayoutEvent e, LayoutEventScope scope, LayoutEventTraceEvent traceEvent) {
+        /// <summary>
+        /// Internal method for generating async event
+        /// </summary>
+        /// <param name="e">The event to generate</param>
+        /// <param name="scope">The event scope</param>
+        /// <param name="traceEvent">Optional trace event to be generated</param>
+        protected List<Task> GenerateAsyncEvent(LayoutEvent e, LayoutEventScope scope, LayoutEventTraceEvent traceEvent) {
 			var applicableSubscriptions = new List<LayoutEventSubscriptionBase>();
 
 			subscriptions.AddApplicableSubscriptions<LayoutAsyncEventSubscription>(applicableSubscriptions, e);
@@ -1448,11 +1382,9 @@ namespace LayoutManager {
 			throw new ApplicationException("AsyncEvent " + e.EventName + " has no or more than one event handlers - (consider using AsyncEventBroadcast)");
 		}
 
-		public Task AsyncEvent(LayoutEvent e) {
-			return AsyncEvent(e, LayoutEventScope.MyProcess);
-		}
+        public Task AsyncEvent(LayoutEvent e) => AsyncEvent(e, LayoutEventScope.MyProcess);
 
-		public Task[] AsyncEventBroadcast(LayoutEvent e, LayoutEventScope scope) {
+        public Task[] AsyncEventBroadcast(LayoutEvent e, LayoutEventScope scope) {
 			LayoutEventTraceEvent	traceEvent = null;
 
 			if(traceEvents)
@@ -1461,18 +1393,14 @@ namespace LayoutManager {
 			return GenerateAsyncEvent(e, scope, traceEvent).ToArray();
 		}
 
-		public Task[] AsyncEventBroadcast(LayoutEvent e) {
-			return AsyncEventBroadcast(e, LayoutEventScope.MyProcess);
-		}
+        public Task[] AsyncEventBroadcast(LayoutEvent e) => AsyncEventBroadcast(e, LayoutEventScope.MyProcess);
 
-		#endregion
+        #endregion
 
 
-		public LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) {
-			return new LayoutDelayedEvent(delayTime, e);
-		}
+        public LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) => new LayoutDelayedEvent(delayTime, e);
 
-		internal void RegisterDelayedEvent(LayoutDelayedEvent delayedEvent) {
+        internal void RegisterDelayedEvent(LayoutDelayedEvent delayedEvent) {
 			lock(activeDelayedEvents) {
 				activeDelayedEvents.Add(delayedEvent.Id, delayedEvent);
 			}
@@ -1494,15 +1422,11 @@ namespace LayoutManager {
 			}
 		}
 
-		public LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent, LayoutEvent errorOccurredEvent) {
-			return new LayoutEventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
-		}
+        public LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent, LayoutEvent errorOccurredEvent) => new LayoutEventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
 
-		public LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent) {
-			return EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
-		}
+        public LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
 
-		protected void AddMethodSubscriptions<TSubscriptionAttribute, TSubscription>(ILayoutSubscriptionCollection subscriptions, object objectInstance, MethodInfo methodInfo) where TSubscriptionAttribute : LayoutEventAttributeBase where TSubscription : LayoutEventSubscriptionBase {
+        protected void AddMethodSubscriptions<TSubscriptionAttribute, TSubscription>(ILayoutSubscriptionCollection subscriptions, object objectInstance, MethodInfo methodInfo) where TSubscriptionAttribute : LayoutEventAttributeBase where TSubscription : LayoutEventSubscriptionBase {
 			var eventAttributes = (TSubscriptionAttribute[] )methodInfo.GetCustomAttributes(typeof(TSubscriptionAttribute), true);
 
 			foreach(var eventAttribute in eventAttributes) {
@@ -1673,85 +1597,61 @@ namespace LayoutManager {
 			}
 		}
 
-		/// <summary>
-		/// Send event to subscribers
-		/// </summary>
-		/// <param name="e">The event to be sent</param>
-		/// <returns>The value of the event class Info field</returns>
-		public static object Event(LayoutEvent e) {
-			return Instance.Event(e);
-		}
+        /// <summary>
+        /// Send event to subscribers
+        /// </summary>
+        /// <param name="e">The event to be sent</param>
+        /// <returns>The value of the event class Info field</returns>
+        public static object Event(LayoutEvent e) => Instance.Event(e);
 
-		/// <summary>
-		/// Invoke asynchronous event
-		/// </summary>
-		/// <param name="e">The event</param>
-		/// <returns>A task representing the ongoing event</returns>
-		/// <remarks>Call this method if there is one and only one event handler</remarks>
-		public static Task AsyncEvent(LayoutEvent e) {
-			return Instance.AsyncEvent(e);
-		}
+        /// <summary>
+        /// Invoke asynchronous event
+        /// </summary>
+        /// <param name="e">The event</param>
+        /// <returns>A task representing the ongoing event</returns>
+        /// <remarks>Call this method if there is one and only one event handler</remarks>
+        public static Task AsyncEvent(LayoutEvent e) => Instance.AsyncEvent(e);
 
-		/// <summary>
-		/// Invoke multiple asynchrouns event
-		/// </summary>
-		/// <param name="e">The event</param>
-		/// <returns>An array of tasks representing the ongoing events</returns>
-		public static Task[] AsyncEventBroadcast(LayoutEvent e) {
-			return Instance.AsyncEventBroadcast(e);
-		}
+        /// <summary>
+        /// Invoke multiple asynchrouns event
+        /// </summary>
+        /// <param name="e">The event</param>
+        /// <returns>An array of tasks representing the ongoing events</returns>
+        public static Task[] AsyncEventBroadcast(LayoutEvent e) => Instance.AsyncEventBroadcast(e);
 
-		/// <summary>
-		/// Send event to subscribers after waiting some time
-		/// </summary>
-		/// <param name="delayTime">The time to wait</param>
-		/// <param name="e">The event to send</param>
-		/// <returns>Delay event object</returns>
-		public static LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) {
-			return Instance.DelayedEvent(delayTime, e);
-		}
-		
-		/// <summary>
-		/// Hook up event handlers annotated with the LayoutEvent attribute in a given object instance
-		/// </summary>
-		/// <param name="classInstance">The object instance</param>
-		public static void AddObjectSubscriptions(Object classInstance) {
+        /// <summary>
+        /// Send event to subscribers after waiting some time
+        /// </summary>
+        /// <param name="delayTime">The time to wait</param>
+        /// <param name="e">The event to send</param>
+        /// <returns>Delay event object</returns>
+        public static LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) => Instance.DelayedEvent(delayTime, e);
+
+        /// <summary>
+        /// Hook up event handlers annotated with the LayoutEvent attribute in a given object instance
+        /// </summary>
+        /// <param name="classInstance">The object instance</param>
+        public static void AddObjectSubscriptions(Object classInstance) {
 			Instance.AddObjectSubscriptions(classInstance);
 		}
 
-		/// <summary>
-		/// Return a collection of all events subscription.
-		/// </summary>
-		public static ILayoutSubscriptionCollection Subscriptions {
-			get {
-				return Instance.Subscriptions;
-			}
-		}
+        /// <summary>
+        /// Return a collection of all events subscription.
+        /// </summary>
+        public static ILayoutSubscriptionCollection Subscriptions => Instance.Subscriptions;
 
-		public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent, LayoutEvent errorOccurredEvent) {
-			return new LayoutEventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
-		}
+        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent, LayoutEvent errorOccurredEvent) => new LayoutEventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
 
-		public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent) {
-			return EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
-		}
+        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
 
-		public static object Event(string eventName) {
-			return Instance.Event(new LayoutEvent(null, eventName));
-		}
+        public static object Event(string eventName) => Instance.Event(new LayoutEvent(null, eventName));
 
-		public static object Event(object sender, string eventName) {
-			return Instance.Event(new LayoutEvent(sender, eventName));
-		}
+        public static object Event(object sender, string eventName) => Instance.Event(new LayoutEvent(sender, eventName));
 
-		public static object Event(string eventName, object info) {
-			return Instance.Event(new LayoutEvent(null, eventName, null, info));
-		}
+        public static object Event(string eventName, object info) => Instance.Event(new LayoutEvent(null, eventName, null, info));
 
-		public static object Event(object sender, string eventName, object info) {
-			return Instance.Event(new LayoutEvent(sender, eventName, null, info));
-		}
-	}
+        public static object Event(object sender, string eventName, object info) => Instance.Event(new LayoutEvent(sender, eventName, null, info));
+    }
 
 	/// <summary>
 	/// A subscription collection implemented as an array. <see cref="ILayoutSubscriptionCollection"/>
@@ -1786,18 +1686,14 @@ namespace LayoutManager {
 					applicableSubscriptions.Add(subscription);
 		}
 
-		public IEnumerator<LayoutEventSubscriptionBase> GetEnumerator() {
-			return subscriptions.GetEnumerator();
-		}
+        public IEnumerator<LayoutEventSubscriptionBase> GetEnumerator() => subscriptions.GetEnumerator();
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		#endregion
-}
+        #endregion
+    }
 
 	/// <summary>
 	/// A subscription collection implemented as hash table for subscriptions which filter on a particular
@@ -1872,14 +1768,12 @@ namespace LayoutManager {
 			}
 		}
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		#endregion
-	}
+        #endregion
+    }
 
 	/// <summary>
 	/// A subscription collection implemented as hash table for subscriptions which filter sender type,
@@ -1941,15 +1835,13 @@ namespace LayoutManager {
 			return allSubscriptions.GetEnumerator();
 		}
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		#endregion
+        #endregion
 
-	}
+    }
 
 	/// <summary>
 	/// Interface for defining methods to invoke events in the context of a given thread.

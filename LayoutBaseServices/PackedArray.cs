@@ -78,11 +78,9 @@ namespace LayoutManager {
 			array = new PackedArray(length, bitsPerElement);
 		}
 
-		public int Length {
-			get { return array.Length;  }
-		}
+        public int Length => array.Length;
 
-		public T this[int index] {
+        public T this[int index] {
 			get {
 				return (T)Enum.ToObject(typeof(T), array[index]);
 			}

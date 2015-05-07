@@ -23,13 +23,9 @@ namespace LayoutManager.Tools.Dialogs {
 				listBoxProgrammingLocations.SelectedIndex = 0;
 		}
 
-		public LayoutBlockDefinitionComponent SelectedProgrammingLocation {
-			get {
-				return (LayoutBlockDefinitionComponent)listBoxProgrammingLocations.SelectedItem;
-			}
-		}
+        public LayoutBlockDefinitionComponent SelectedProgrammingLocation => (LayoutBlockDefinitionComponent)listBoxProgrammingLocations.SelectedItem;
 
-		private void listBoxProgrammingLocations_SelectedIndexChanged(object sender, EventArgs e) {
+        private void listBoxProgrammingLocations_SelectedIndexChanged(object sender, EventArgs e) {
 			LayoutBlockDefinitionComponent blockDefinition = (LayoutBlockDefinitionComponent)listBoxProgrammingLocations.SelectedItem;
 
 			if(blockDefinition != null)

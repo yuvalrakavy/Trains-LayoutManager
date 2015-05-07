@@ -379,11 +379,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 				SubItems[1].Text = LayoutEventScriptEditorTreeNode.GetOperandDescription(optionElement, "Option");
 			}
 
-			public XmlElement Element {
-				get {
-					return optionElement;
-				}
-			}
-		}
+            public XmlElement Element => optionElement;
+        }
 	}
 }

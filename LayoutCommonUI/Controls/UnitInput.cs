@@ -116,7 +116,7 @@ namespace LayoutManager.CommonUI.Controls
 
 		public void SelectUnit(int unitIndex) {
 			if(unitIndex < 0 || unitIndex >= units.Count)
-				throw new ArgumentException("Invalid unit index", "unitIndex");
+				throw new ArgumentException("Invalid unit index", nameof(unitIndex));
 
 			SelectUnit((Unit)units[unitIndex]);
 		}
@@ -216,25 +216,13 @@ namespace LayoutManager.CommonUI.Controls
 				this.index = index;
 			}
 
-			public double ToNeutralValue(double valueInUnit) {
-				return valueInUnit * factor + offset;
-			}
+            public double ToNeutralValue(double valueInUnit) => valueInUnit * factor + offset;
 
-			public double ToUnitValue(double neutralValue) {
-				return (neutralValue - offset) / factor;
-			}
+            public double ToUnitValue(double neutralValue) => (neutralValue - offset) / factor;
 
-			public string UnitName {
-				get {
-					return unitName;
-				}
-			}
+            public string UnitName => unitName;
 
-			public int Index {
-				get {
-					return index;
-				}
-			}
-		}
+            public int Index => index;
+        }
 	}
 }

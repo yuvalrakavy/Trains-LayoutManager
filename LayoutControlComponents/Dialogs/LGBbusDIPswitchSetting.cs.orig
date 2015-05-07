@@ -1,15 +1,26 @@
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 
+<<<<<<< HEAD
 namespace LayoutManager.ControlComponents.Dialogs {
     /// <summary>
     /// Summary description for LGBbusDIPswitchSetting.
     /// </summary>
+    public class LGBbusDIPswitchSetting : System.Windows.Forms.Form
+	{
+=======
+using LayoutManager.CommonUI;
+
+namespace LayoutManager.ControlComponents.Dialogs
+{
+	/// <summary>
+	/// Summary description for LGBbusDIPswitchSetting.
+	/// </summary>
 	public class LGBbusDIPswitchSetting : Form {
+>>>>>>> 1a91a0bf691a4a124b818aa40b9145687f03c952
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private Container components = null;
 
 		LayoutManager.CommonUI.Controls.DIPswitch	diPswitchSettings;
         Label label1;
@@ -43,12 +54,16 @@ namespace LayoutManager.ControlComponents.Dialogs {
 			Text = Regex.Replace(Text, "MODULENAME", moduleName);
 		}
 
-        public bool ClearUserActionRequiredFlag => checkBoxClearUserActionFlag.Checked;
+		public bool ClearUserActionRequiredFlag {
+			get {
+				return checkBoxClearUserActionFlag.Checked;
+			}
+		}
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose( bool disposing )
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{

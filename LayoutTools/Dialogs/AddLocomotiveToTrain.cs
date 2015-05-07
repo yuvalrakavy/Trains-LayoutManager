@@ -56,13 +56,9 @@ namespace LayoutManager.Tools.Dialogs
 			}
 		}
 
-		public LocomotiveInfo Locomotive {
-			get {
-				return (LocomotiveInfo)listBoxLocomotives.SelectedItem;
-			}
-		}
+        public LocomotiveInfo Locomotive => (LocomotiveInfo)listBoxLocomotives.SelectedItem;
 
-		private void updateButtons(Object sender, EventArgs e) {
+        private void updateButtons(Object sender, EventArgs e) {
 			buttonAdd.Enabled = listBoxLocomotives.SelectedItem != null;
 		}
 
