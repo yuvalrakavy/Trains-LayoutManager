@@ -48,12 +48,10 @@ namespace LayoutManager.CommonUI.Controls
 				return showOnlyLocomotives;
 			}
 		}
-			
-		public override IXmlQueryListboxItem CreateItem(QueryItem query, XmlElement itemElement) {
-			return new LocomotiveItem(this, query, itemElement);
-		}
 
-		public XmlElement SelectedXmlElement {
+        public override IXmlQueryListboxItem CreateItem(QueryItem query, XmlElement itemElement) => new LocomotiveItem(this, query, itemElement);
+
+        public XmlElement SelectedXmlElement {
 			get {
 				if(SelectedXmlItem != null)
 					return ((IXmlQueryListBoxXmlElementItem)SelectedXmlItem).Element;
@@ -70,13 +68,9 @@ namespace LayoutManager.CommonUI.Controls
 			}
 		}
 
-		protected bool OperationMode {
-			get {
-				return operationMode;
-			}
-		}
+        protected bool OperationMode => operationMode;
 
-		protected void UpdateElementState(XmlElement element) {
+        protected void UpdateElementState(XmlElement element) {
 			Guid	id = XmlConvert.ToGuid(element.GetAttribute("ID"));
 			bool	onTrack;
 
@@ -261,13 +255,9 @@ namespace LayoutManager.CommonUI.Controls
 				this.element = element;
 			}
 
-			public XmlElement Element {
-				get {
-					return element;
-				}
-			}
+            public XmlElement Element => element;
 
-			public void Measure(MeasureItemEventArgs e) {
+            public void Measure(MeasureItemEventArgs e) {
 				LocomotiveListItemPainter.Measure(e, element);
 			}
 
@@ -280,13 +270,9 @@ namespace LayoutManager.CommonUI.Controls
 				LocomotiveListItemPainter.Draw(e, element, list.Catalog, list.OperationMode);
 			}
 
-			public object Bookmark { 
-				get {
-					return new LocomotiveInfo(element).Id.ToString();
-				}
-			}
+            public object Bookmark => new LocomotiveInfo(element).Id.ToString();
 
-			public bool IsBookmarkEqual(object bookmark) {
+            public bool IsBookmarkEqual(object bookmark) {
 				if(bookmark is String)
 					return (String)bookmark == element.GetAttribute("ID");
 				return false;
@@ -299,13 +285,9 @@ namespace LayoutManager.CommonUI.Controls
 
 		class ListLayoutSimple : ListLayout {
 
-			public override String LayoutName {
-				get {
-					return "Simple";
-				}
-			}
+            public override String LayoutName => "Simple";
 
-			public override void ApplyLayout(XmlQueryListbox list) {
+            public override void ApplyLayout(XmlQueryListbox list) {
 				list.AddQuery("Locomotives", "Locomotive").Expand();
 				list.AddQuery("Trains", "Train").Expand();
 			}
@@ -313,13 +295,9 @@ namespace LayoutManager.CommonUI.Controls
 
 		class ListLayoutByOrigin : ListLayout {
 
-			public override String LayoutName {
-				get {
-					return "Locomotive origin";
-				}
-			}
+            public override String LayoutName => "Locomotive origin";
 
-			public override void ApplyLayout(XmlQueryListbox list) {
+            public override void ApplyLayout(XmlQueryListbox list) {
 				list.AddQuery("European", "Locomotive[@Origin='Europe']");
 				list.AddQuery("American", "Locomotive[@Origin='US']");
 				list.AddQuery("Trains", "Train");
@@ -328,13 +306,9 @@ namespace LayoutManager.CommonUI.Controls
 
 		class ListLayoutByType : ListLayout {
 
-			public override String LayoutName {
-				get {
-					return "Locomotive type";
-				}
-			}
+            public override String LayoutName => "Locomotive type";
 
-			public override void ApplyLayout(XmlQueryListbox list) {
+            public override void ApplyLayout(XmlQueryListbox list) {
 				list.AddQuery("Steam", "Locomotive[@Kind='Steam']");
 				list.AddQuery("Diesel", "Locomotive[@Kind='Diesel']");
 				list.AddQuery("Electric", "Locomotive[@Kind='Electric']");
@@ -344,13 +318,9 @@ namespace LayoutManager.CommonUI.Controls
 		}
 
 		class ListLayoutByStorage : ListLayout {
-			public override String LayoutName {
-				get {
-					return "By locomotive storage file";
-				}
-			}
+            public override String LayoutName => "By locomotive storage file";
 
-			public override void ApplyLayout(XmlQueryListbox list) {
+            public override void ApplyLayout(XmlQueryListbox list) {
 				LocomotiveCollectionInfo	collection = LayoutModel.LocomotiveCollection;
 
 				int		iStore = 0;

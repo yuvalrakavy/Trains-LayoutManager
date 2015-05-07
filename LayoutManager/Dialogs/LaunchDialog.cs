@@ -31,24 +31,16 @@ namespace LayoutManager.Dialogs {
 			}
 		}
 
-		public Task<LaunchAction> Task {
-			get {
-				return tcs.Task;
-			}
-		}
+        public Task<LaunchAction> Task => tcs.Task;
 
-		public string LayoutFilename {
+        public string LayoutFilename {
 			get;
 			private set;
 		}
 
-		public bool ResetToDefaultDisplayLayout {
-			get {
-				return checkBoxResetToDefaultDisplayLayout.Checked;
-			}
-		}
+        public bool ResetToDefaultDisplayLayout => checkBoxResetToDefaultDisplayLayout.Checked;
 
-		public bool UseLastOpenLayout {
+        public bool UseLastOpenLayout {
 			get;
 			private set;
 		}

@@ -27,18 +27,10 @@ namespace LayoutManager.Model {
 			: base(element) {
 		}
 
-		public XmlElement ComponentStateElement {
-			get {
-				return (XmlElement)Element.ParentNode;
-			}
-		}
+        public XmlElement ComponentStateElement => (XmlElement)Element.ParentNode;
 
-		public Guid ComponentId {
-			get {
-				return XmlConvert.ToGuid(ComponentStateElement.GetAttribute("ID"));
-			}
-		}
-	}
+        public Guid ComponentId => XmlConvert.ToGuid(ComponentStateElement.GetAttribute("ID"));
+    }
 
 	#endregion
 
@@ -185,12 +177,8 @@ namespace LayoutManager.Model {
 	}
 
 	public class OnTrackLocomotiveAddressMap : LocomotiveAddressMap {
-		public new OnTrackLocomotiveAddressMapEntry this[int address] {
-			get {
-				return base[address] as OnTrackLocomotiveAddressMapEntry;
-			}
-		}
-	}
+        public new OnTrackLocomotiveAddressMapEntry this[int address] => base[address] as OnTrackLocomotiveAddressMapEntry;
+    }
 
 	#endregion
 
@@ -202,38 +190,30 @@ namespace LayoutManager.Model {
 	public class PerOperationStates : IEnumerable<KeyValuePair<object, IOperationState>> {
 		Dictionary<object, IOperationState> states = new Dictionary<object, IOperationState>();
 
-		public bool HasState(object key) {
-			return states.ContainsKey(key);
-		}
+        public bool HasState(object key) => states.ContainsKey(key);
 
-		public void Remove(object key) {
+        public void Remove(object key) {
 			states.Remove(key);
 		}
 
-		public T Get<T>(object key) where T : class, IOperationState {
-			return states[key] as T;
-		}
+        public T Get<T>(object key) where T : class, IOperationState => states[key] as T;
 
-		public void Set<T>(object key, T state) where T : class, IOperationState {
+        public void Set<T>(object key, T state) where T : class, IOperationState {
 			states.Add(key, state);
 		}
 
-		#region IEnumerable<KeyValuePair<object,IOperationState>> Members
+        #region IEnumerable<KeyValuePair<object,IOperationState>> Members
 
-		public IEnumerator<KeyValuePair<object, IOperationState>> GetEnumerator() {
-			return states.GetEnumerator();
-		}
+        public IEnumerator<KeyValuePair<object, IOperationState>> GetEnumerator() => states.GetEnumerator();
 
-		#endregion
+        #endregion
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
-			return this.GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-		#endregion
-	}
+        #endregion
+    }
 
 	public class OperationStates  {
 		Dictionary<string, PerOperationStates> operationStates = new Dictionary<string, PerOperationStates>();
@@ -320,31 +300,27 @@ namespace LayoutManager.Model {
 				operationContexts.Remove(key);
 		}
 
-		/// <summary>
-		/// Get a composed key for a given operation and a given participant
-		/// </summary>
-		/// <param name="operationName">The operation name</param>
-		/// <param name="participant">The participant object</param>
-		/// <returns>A composed key</returns>
-		protected static string GetKey(string operationName, IObjectHasId participant) {
-			return operationName + "-" + participant.Id.ToString();
-		}
+        /// <summary>
+        /// Get a composed key for a given operation and a given participant
+        /// </summary>
+        /// <param name="operationName">The operation name</param>
+        /// <param name="participant">The participant object</param>
+        /// <returns>A composed key</returns>
+        protected static string GetKey(string operationName, IObjectHasId participant) => operationName + "-" + participant.Id.ToString();
 
-		/// <summary>
-		/// Get key for the current operation context and given participant
-		/// </summary>
-		/// <param name="participant">The  participant</param>
-		/// <returns>A composed key</returns>
-		protected string GetKey(IObjectHasId participant) {
-			return GetKey(OperationName, participant);
-		}
+        /// <summary>
+        /// Get key for the current operation context and given participant
+        /// </summary>
+        /// <param name="participant">The  participant</param>
+        /// <returns>A composed key</returns>
+        protected string GetKey(IObjectHasId participant) => GetKey(OperationName, participant);
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		/// Operation context Id
-		/// </summary>
-		public Guid Id { get; private set; }
+        /// <summary>
+        /// Operation context Id
+        /// </summary>
+        public Guid Id { get; private set; }
 
 		/// <summary>
 		/// The operation name
@@ -361,47 +337,45 @@ namespace LayoutManager.Model {
 		/// </summary>
 		public CancellationTokenSource CancellationTokenSource { get; private set; }
 
-		/// <summary>
-		/// Cancellation token for the ongoing operation
-		/// </summary>
-		public CancellationToken CancelationToken { get { return CancellationTokenSource.Token; } }
+        /// <summary>
+        /// Cancellation token for the ongoing operation
+        /// </summary>
+        public CancellationToken CancelationToken => CancellationTokenSource.Token;
 
-		/// <summary>
-		/// Return a key that can be used to find this operation in the state map
-		/// </summary>
-		public string Key { get { return GetKey(this); } }
+        /// <summary>
+        /// Return a key that can be used to find this operation in the state map
+        /// </summary>
+        public string Key => GetKey(this);
 
-		#endregion
+        #endregion
 
-		#region Operations
+        #region Operations
 
-		/// <summary>
-		/// Cancel the ongoing operation
-		/// </summary>
-		public void Cancel() {
+        /// <summary>
+        /// Cancel the ongoing operation
+        /// </summary>
+        public void Cancel() {
 			if(HasPendingOperation(OperationName, this)) {				// If operation is still going on
 				if(!CancellationTokenSource.IsCancellationRequested)	// and it was not already cancelled
 					CancellationTokenSource.Cancel();
 			}
 		}
 
-		/// <summary>
-		/// Check if a given object has a pending operation
-		/// </summary>
-		/// <param name="operationName">The operation name</param>
-		/// <param name="participant">The object for which to check if there is a pending operation</param>
-		/// <returns></returns>
-		public static bool HasPendingOperation(string operationName, IObjectHasId participant) {
-			return LayoutModel.StateManager.OperationStates[ContextSectionName].HasState(GetKey(operationName, participant));
-		}
+        /// <summary>
+        /// Check if a given object has a pending operation
+        /// </summary>
+        /// <param name="operationName">The operation name</param>
+        /// <param name="participant">The object for which to check if there is a pending operation</param>
+        /// <returns></returns>
+        public static bool HasPendingOperation(string operationName, IObjectHasId participant) => LayoutModel.StateManager.OperationStates[ContextSectionName].HasState(GetKey(operationName, participant));
 
-		/// <summary>
-		/// Get the context of a specified operation for a specific object
-		/// </summary>
-		/// <param name="operationName">The operation name</param>
-		/// <param name="participant">The object for which to get operation context</param>
-		/// <returns>Operation context or null if there is no pending operation for this object</returns>
-		public static LayoutOperationContext GetPendingOperation(string operationName, IObjectHasId participant) {
+        /// <summary>
+        /// Get the context of a specified operation for a specific object
+        /// </summary>
+        /// <param name="operationName">The operation name</param>
+        /// <param name="participant">The object for which to get operation context</param>
+        /// <returns>Operation context or null if there is no pending operation for this object</returns>
+        public static LayoutOperationContext GetPendingOperation(string operationName, IObjectHasId participant) {
 			var operationContexts = LayoutModel.StateManager.OperationStates[ContextSectionName];
 			string key = GetKey(operationName, participant);
 
@@ -785,46 +759,30 @@ namespace LayoutManager.Model {
 			return ramp;
 		}
 
-		/// <summary>
-		/// Return the motion ramp that should be used to accelerate the train
-		/// </summary>
-		public MotionRampInfo AccelerationRamp {
-			get {
-				return SearchRamp("Acceleration");
-			}
-		}
+        /// <summary>
+        /// Return the motion ramp that should be used to accelerate the train
+        /// </summary>
+        public MotionRampInfo AccelerationRamp => SearchRamp("Acceleration");
 
-		/// <summary>
-		/// Return the motion ramp that should be used to decelerate the train
-		/// </summary>
-		public MotionRampInfo DecelerationRamp {
-			get {
-				return SearchRamp("Deceleration");
-			}
-		}
+        /// <summary>
+        /// Return the motion ramp that should be used to decelerate the train
+        /// </summary>
+        public MotionRampInfo DecelerationRamp => SearchRamp("Deceleration");
 
-		/// <summary>
-		/// Return the ramp that should be used to slow down the train (in preparation to stop)
-		/// </summary>
-		public MotionRampInfo SlowdownRamp {
-			get {
-				return SearchRamp("SlowDown");
-			}
-		}
+        /// <summary>
+        /// Return the ramp that should be used to slow down the train (in preparation to stop)
+        /// </summary>
+        public MotionRampInfo SlowdownRamp => SearchRamp("SlowDown");
 
-		/// <summary>
-		/// Return the ramp that should be used to stop the train
-		/// </summary>
-		public MotionRampInfo StopRamp {
-			get {
-				return SearchRamp("Stop");
-			}
-		}
+        /// <summary>
+        /// Return the ramp that should be used to stop the train
+        /// </summary>
+        public MotionRampInfo StopRamp => SearchRamp("Stop");
 
-		/// <summary>
-		/// Get or set the locomotive light state
-		/// </summary>
-		public bool Lights {
+        /// <summary>
+        /// Get or set the locomotive light state
+        /// </summary>
+        public bool Lights {
 			get {
 				if(Element.HasAttribute("Lights"))
 					return XmlConvert.ToBoolean(GetAttribute("Lights", "False"));
@@ -904,19 +862,15 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		/// <summary>
-		/// The power that is this train is powered with
-		/// </summary>
-		public ILayoutPower Power {
-			get {
-				return LocomotiveBlock.BlockDefinintion.Power;
-			}
-		}
+        /// <summary>
+        /// The power that is this train is powered with
+        /// </summary>
+        public ILayoutPower Power => LocomotiveBlock.BlockDefinintion.Power;
 
-		/// <summary>
-		/// The command station that is controlling this train
-		/// </summary>
-		public IModelComponentHasPowerOutlets CommandStation {
+        /// <summary>
+        /// The command station that is controlling this train
+        /// </summary>
+        public IModelComponentHasPowerOutlets CommandStation {
 			get {
 				if(Power.PowerOriginComponentId == Guid.Empty) {
 					Debug.Assert(Power.Type == LayoutPowerType.Disconnected);
@@ -1325,32 +1279,26 @@ namespace LayoutManager.Model {
 			return false;
 		}
 
-		/// <summary>
-		/// Return true if locomotive has any active function
-		/// </summary>
-		public bool HasActiveFunction(TrainLocomotiveInfo trainLoco) {
-			return HasActiveFunction(trainLoco.LocomotiveId);
-		}
+        /// <summary>
+        /// Return true if locomotive has any active function
+        /// </summary>
+        public bool HasActiveFunction(TrainLocomotiveInfo trainLoco) => HasActiveFunction(trainLoco.LocomotiveId);
 
-		/// <summary>
-		/// Return true if locomotive has any active function
-		/// </summary>
-		public bool HasActiveFunction(LocomotiveInfo locomotive) {
-			return HasActiveFunction(locomotive.Id);
-		}
+        /// <summary>
+        /// Return true if locomotive has any active function
+        /// </summary>
+        public bool HasActiveFunction(LocomotiveInfo locomotive) => HasActiveFunction(locomotive.Id);
 
-		/// <summary>
-		/// return true if train has any active function
-		/// </summary>
-		public bool HasActiveFunction() {
-			return HasActiveFunction(Guid.Empty);
-		}
+        /// <summary>
+        /// return true if train has any active function
+        /// </summary>
+        public bool HasActiveFunction() => HasActiveFunction(Guid.Empty);
 
-		#endregion
+        #endregion
 
-		#region Speed Limit & Speed
+        #region Speed Limit & Speed
 
-		[LayoutEventDef("train-speed-limit-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
+        [LayoutEventDef("train-speed-limit-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
 		[LayoutEventDef("train-slow-down-speed-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
 		public void RequestSpeedLimit(int requestedSpeedLimit) {
 			if(requestedSpeedLimit < 0)
@@ -1445,13 +1393,9 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public bool IsLastBlockEdgeCrossingSpeedKnown {
-			get {
-				return Element.HasAttribute("LastBlockEdgeCrossingSpeed");
-			}
-		}
+        public bool IsLastBlockEdgeCrossingSpeedKnown => Element.HasAttribute("LastBlockEdgeCrossingSpeed");
 
-		public int LastBlockEdgeCrossingSpeed {
+        public int LastBlockEdgeCrossingSpeed {
 			get {
 				return XmlConvert.ToInt32(GetAttribute("LastBlockEdgeCrossingSpeed", "0"));
 			}
@@ -1471,19 +1415,14 @@ namespace LayoutManager.Model {
             }
         }
 
-		#region IEqualityComparer<TrainStateInfo> Members
+        #region IEqualityComparer<TrainStateInfo> Members
 
-		public bool Equals(TrainStateInfo x, TrainStateInfo y) {
-			return x.Id == y.Id;
+        public bool Equals(TrainStateInfo x, TrainStateInfo y) => x.Id == y.Id;
 
-		}
+        public int GetHashCode(TrainStateInfo obj) => obj.Id.GetHashCode();
 
-		public int GetHashCode(TrainStateInfo obj) {
-			return obj.Id.GetHashCode();
-		}
-
-		#endregion
-	}
+        #endregion
+    }
 
 
 	/// <summary>
@@ -1497,16 +1436,12 @@ namespace LayoutManager.Model {
 			this.trainState = trainState;
 		}
 
-		public TrainStateInfo Train {
-			get {
-				return trainState;
-			}
-		}
+        public TrainStateInfo Train => trainState;
 
-		/// <summary>
-		/// The BlockID of the block in which the train is located
-		/// </summary>
-		public Guid BlockId {
+        /// <summary>
+        /// The BlockID of the block in which the train is located
+        /// </summary>
+        public Guid BlockId {
 			get {
 				return XmlConvert.ToGuid(GetAttribute("BlockID"));
 			}
@@ -1566,22 +1501,14 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		/// <summary>
-		/// The time in which the train had crossed the track contact which caused it to enter this block
-		/// </summary>
-		public long BlockEdgeCrossingTime {
-			get {
-				return XmlConvert.ToInt64(GetAttribute("BlockEdgeCrossingTime"));
-			}
-		}
+        /// <summary>
+        /// The time in which the train had crossed the track contact which caused it to enter this block
+        /// </summary>
+        public long BlockEdgeCrossingTime => XmlConvert.ToInt64(GetAttribute("BlockEdgeCrossingTime"));
 
-		public XmlElement LocomotiveStateElement {
-			get {
-				return (XmlElement)Element.ParentNode.ParentNode;
-			}
-		}
+        public XmlElement LocomotiveStateElement => (XmlElement)Element.ParentNode.ParentNode;
 
-		public TrainPart TrainPart {
+        public TrainPart TrainPart {
 			get {
 				XmlElement locationsElement = (XmlElement)LocomotiveStateElement["Locations"];
 
@@ -1598,13 +1525,9 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public bool IsDisplayFrontKnown {
-			get {
-				return Element.HasAttribute("DisplayFront");
-			}
-		}
+        public bool IsDisplayFrontKnown => Element.HasAttribute("DisplayFront");
 
-		public void SetDisplayFrontToUnknown() {
+        public void SetDisplayFrontToUnknown() {
 			Element.RemoveAttribute("DisplayFront");
 		}
 
@@ -1712,17 +1635,11 @@ namespace LayoutManager.Model {
 			return trainState;
 		}
 
-		public TrainStateInfo Add() {
-			return Add(Guid.Empty);
-		}
+        public TrainStateInfo Add() => Add(Guid.Empty);
 
-		internal Dictionary<Guid, XmlElement> IdToTrainStateElement {
-			get {
-				return _IDtoTrainStateElement;
-			}
-		}
+        internal Dictionary<Guid, XmlElement> IdToTrainStateElement => _IDtoTrainStateElement;
 
-		public void RemoveState(TrainStateInfo trainState) {
+        public void RemoveState(TrainStateInfo trainState) {
 			foreach(TrainLocationInfo trainLocation in trainState.Locations)
 				trainState.LeaveBlock(trainLocation.Block, false);
 
@@ -1771,16 +1688,14 @@ namespace LayoutManager.Model {
 				yield return new TrainStateInfo(trainStateElement);
 		}
 
-		#endregion
+        #endregion
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
-			return this.GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-		#endregion
-	}
+        #endregion
+    }
 
 	#endregion
 
@@ -1834,33 +1749,23 @@ namespace LayoutManager.Model {
 			return componentStateTopicElement;
 		}
 
-		public XmlElement StateOf(IModelComponentHasId component, string topicName) {
-			return StateOf(component.Id, topicName);
-		}
+        public XmlElement StateOf(IModelComponentHasId component, string topicName) => StateOf(component.Id, topicName);
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		public IDictionary<Guid, XmlElement> IdToComponentStateElement {
-			get {
-				return _idToComponentStateElement;
-			}
-		}
+        public IDictionary<Guid, XmlElement> IdToComponentStateElement => _idToComponentStateElement;
 
-		#endregion
+        #endregion
 
-		#region Operations
+        #region Operations
 
-		public bool Contains(Guid componentId) {
-			return _idToComponentStateElement.ContainsKey(componentId);
-		}
+        public bool Contains(Guid componentId) => _idToComponentStateElement.ContainsKey(componentId);
 
-		public bool Contains(ModelComponent component) {
-			return Contains(component.Id);
-		}
+        public bool Contains(ModelComponent component) => Contains(component.Id);
 
-		public bool Contains(Guid componentId, string topicName) {
+        public bool Contains(Guid componentId, string topicName) {
 			XmlElement stateElement = StateOf(componentId);
 
 			if(stateElement != null)
@@ -1868,11 +1773,9 @@ namespace LayoutManager.Model {
 			return false;
 		}
 
-		public bool Contains(ModelComponent component, string topicName) {
-			return Contains(component.Id, topicName);
-		}
+        public bool Contains(ModelComponent component, string topicName) => Contains(component.Id, topicName);
 
-		public void Remove(Guid componentId) {
+        public void Remove(Guid componentId) {
 			if(Contains(componentId)) {
 				XmlElement componentStateElement = StateOf(componentId);
 
@@ -1946,19 +1849,11 @@ namespace LayoutManager.Model {
 			: base(element) {
 		}
 
-		public Guid TrackContactId {
-			get {
-				return ComponentId;
-			}
-		}
+        public Guid TrackContactId => ComponentId;
 
-		public LayoutTrackContactComponent TrackContact {
-			get {
-				return LayoutModel.Component<LayoutTrackContactComponent>(ComponentId, LayoutModel.ActivePhases);
-			}
-		}
+        public LayoutTrackContactComponent TrackContact => LayoutModel.Component<LayoutTrackContactComponent>(ComponentId, LayoutModel.ActivePhases);
 
-		public Guid TrainId {
+        public Guid TrainId {
 			get {
 				return XmlConvert.ToGuid(GetAttribute("TrainID"));
 			}
@@ -2073,11 +1968,9 @@ namespace LayoutManager.Model {
 			return itemElement;
 		}
 
-		protected override Guid FromElement(XmlElement itemElement) {
-			return XmlConvert.ToGuid(itemElement.GetAttribute("BlockID"));
-		}
+        protected override Guid FromElement(XmlElement itemElement) => XmlConvert.ToGuid(itemElement.GetAttribute("BlockID"));
 
-		public override void Add(Guid blockId) {
+        public override void Add(Guid blockId) {
 			if(Contains(blockId))
 				throw new LayoutException(blockId, "This block is already in the manual dispatch region");
 
@@ -2209,16 +2102,12 @@ namespace LayoutManager.Model {
 			: base(manualDispatchRegionsElement) {
 		}
 
-		protected override Guid GetItemKey(ManualDispatchRegionInfo item) {
-			return item.Id;
-		}
+        protected override Guid GetItemKey(ManualDispatchRegionInfo item) => item.Id;
 
 
-		protected override ManualDispatchRegionInfo FromElement(XmlElement itemElement) {
-			return new ManualDispatchRegionInfo(itemElement);
-		}
+        protected override ManualDispatchRegionInfo FromElement(XmlElement itemElement) => new ManualDispatchRegionInfo(itemElement);
 
-		public ManualDispatchRegionInfo Create() {
+        public ManualDispatchRegionInfo Create() {
 			XmlElement manualDispatchRegionElement = Element.OwnerDocument.CreateElement("ManualDispatchRegion");
 			ManualDispatchRegionInfo createdManualDispatchRegion = new ManualDispatchRegionInfo(manualDispatchRegionElement);
 
@@ -2322,13 +2211,9 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public bool IsActive {
-			get {
-				return ActiveScript != null;
-			}
-		}
+        public bool IsActive => ActiveScript != null;
 
-		public string Name {
+        public string Name {
 			get {
 				return GetAttribute("Name");
 			}
@@ -2555,11 +2440,9 @@ namespace LayoutManager.Model {
 			policies.Clear();
 		}
 
-		public bool Contains(LayoutPolicyInfo item) {
-			return this[item.Id] != null;
-		}
+        public bool Contains(LayoutPolicyInfo item) => this[item.Id] != null;
 
-		public bool Contains(string name) {
+        public bool Contains(string name) {
 			foreach(LayoutPolicyInfo policy in this)
 				if(policy.Name == name)
 					return true;
@@ -2571,36 +2454,26 @@ namespace LayoutManager.Model {
 				array[arrayIndex++] = policy;
 		}
 
-		public int Count {
-			get { return policies.Count; }
-		}
+        public int Count => policies.Count;
 
-		public bool IsReadOnly {
-			get { return false; }
-		}
+        public bool IsReadOnly => false;
 
-		public bool Remove(LayoutPolicyInfo policy) {
-			return Remove(policy.Id);
-		}
+        public bool Remove(LayoutPolicyInfo policy) => Remove(policy.Id);
 
-		#endregion
+        #endregion
 
-		#region IEnumerable<LayoutPolicyInfo> Members
+        #region IEnumerable<LayoutPolicyInfo> Members
 
-		public IEnumerator<LayoutPolicyInfo> GetEnumerator() {
-			return policies.GetEnumerator();
-		}
+        public IEnumerator<LayoutPolicyInfo> GetEnumerator() => policies.GetEnumerator();
 
-		#endregion
+        #endregion
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		#endregion
-	}
+        #endregion
+    }
 
 	public class LayoutPolicyType {
 		public string DisplayName;
@@ -2666,87 +2539,33 @@ namespace LayoutManager.Model {
 			return element;
 		}
 
-		public XmlElement LayoutPoliciesElement {
-			get {
-				return getElement("Policies");
-			}
-		}
+        public XmlElement LayoutPoliciesElement => getElement("Policies");
 
-		public XmlElement GlobalPoliciesElement {
-			get {
-				return LayoutModel.Instance.GlobalPoliciesElement;
-			}
-		}
+        public XmlElement GlobalPoliciesElement => LayoutModel.Instance.GlobalPoliciesElement;
 
-		public TrainsStateInfo Trains {
-			get {
-				return trains;
-			}
-		}
+        public TrainsStateInfo Trains => trains;
 
-		public ComponentsStateInfo Components {
-			get {
-				return componentsState;
-			}
-		}
+        public ComponentsStateInfo Components => componentsState;
 
-		public TripPlanCatalogInfo TripPlansCatalog {
-			get {
-				return tripPlansCatalog;
-			}
-		}
+        public TripPlanCatalogInfo TripPlansCatalog => tripPlansCatalog;
 
-        public LayoutVerificationOptions VerificationOptions {
-            get {
-                return layoutVerificationOptions;
-            }
-        }
+        public LayoutVerificationOptions VerificationOptions => layoutVerificationOptions;
 
-		public ManualDispatchRegionCollection ManualDispatchRegions {
-			get {
-				return manualDispatchRegions;
-			}
-		}
+        public ManualDispatchRegionCollection ManualDispatchRegions => manualDispatchRegions;
 
-		public LayoutPoliciesCollection TripPlanPolicies {
-			get {
-				return tripPlanPolicies;
-			}
-		}
+        public LayoutPoliciesCollection TripPlanPolicies => tripPlanPolicies;
 
-		public LayoutPoliciesCollection Policies(string scope) {
-			return new LayoutPoliciesCollection(GlobalPoliciesElement, LayoutPoliciesElement, scope);
-		}
+        public LayoutPoliciesCollection Policies(string scope) => new LayoutPoliciesCollection(GlobalPoliciesElement, LayoutPoliciesElement, scope);
 
-		public LayoutPoliciesCollection BlockInfoPolicies {
-			get {
-				return blockInfoPolicies;
-			}
-		}
+        public LayoutPoliciesCollection BlockInfoPolicies => blockInfoPolicies;
 
-		public LayoutPoliciesCollection LayoutPolicies {
-			get {
-				return layoutPolicies;
-			}
-		}
+        public LayoutPoliciesCollection LayoutPolicies => layoutPolicies;
 
-		public LayoutPoliciesCollection RideStartPolicies {
-			get {
-				return rideStartPolicies;
-			}
-		}
+        public LayoutPoliciesCollection RideStartPolicies => rideStartPolicies;
 
-		public LayoutPoliciesCollection DriverInstructionsPolicies {
-			get {
-				return driverInstructionsPolicies;
-			}
-		}
+        public LayoutPoliciesCollection DriverInstructionsPolicies => driverInstructionsPolicies;
 
-		public DefaultDriverParametersInfo DefaultDriverParameters {
-			get {
-				return defaultDriverParameters;
-			}
-		}
+        public DefaultDriverParametersInfo DefaultDriverParameters => defaultDriverParameters;
 
         /// <summary>
         /// Given an element and a ramp role, return this ramp (if can be found)
@@ -2768,35 +2587,17 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="role">Accelerate, Decelrate, Slowdown, Stop</param>
         /// <returns>The ramp to be used</returns>
-        public MotionRampInfo GetDefaultRamp(string role) {
-            return GetRamp(DefaultDriverParameters.Element, role);
-        }
+        public MotionRampInfo GetDefaultRamp(string role) => GetRamp(DefaultDriverParameters.Element, role);
 
-        public MotionRampInfo DefaultAccelerationRamp {
-            get {
-                return GetDefaultRamp("Acceleration");
-            }
-        }
+        public MotionRampInfo DefaultAccelerationRamp => GetDefaultRamp("Acceleration");
 
-        public MotionRampInfo DefaultDecelerationRamp {
-            get {
-                return GetDefaultRamp("Deceleration");
-            }
-        }
+        public MotionRampInfo DefaultDecelerationRamp => GetDefaultRamp("Deceleration");
 
-        public MotionRampInfo DefaultSlowdownRamp {
-            get {
-                return GetDefaultRamp("SlowDown");
-            }
-        }
+        public MotionRampInfo DefaultSlowdownRamp => GetDefaultRamp("SlowDown");
 
-        public MotionRampInfo DefaultStopRamp {
-            get {
-                return GetDefaultRamp("Stop");
-            }
-        }
+        public MotionRampInfo DefaultStopRamp => GetDefaultRamp("Stop");
 
-		public List<LayoutPolicyType> PolicyTypes {
+        public List<LayoutPolicyType> PolicyTypes {
 			get {
 				if(policyTypes == null) {
 					policyTypes = new List<LayoutPolicyType>(new LayoutPolicyType[] {

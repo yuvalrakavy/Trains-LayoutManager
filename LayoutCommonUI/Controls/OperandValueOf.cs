@@ -400,9 +400,7 @@ namespace LayoutManager.CommonUI.Controls
 				}
 			}
 
-			public override string ToString() {
-				return Name;
-			}
-		}
+            public override string ToString() => Name;
+        }
 	}
 }

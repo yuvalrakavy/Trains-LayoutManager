@@ -95,25 +95,13 @@ namespace LayoutManager.Model {
 		protected LocomotiveCollectionBaseInfo(XmlElement element) : base(element) {
 		}
 
-		public bool IsLoaded {
-			get {
-				return collection != null;
-			}
-		}
+        public bool IsLoaded => collection != null;
 
-		public XmlElement CollectionElement {
-			get {
-				return collection.DocumentElement;
-			}
-		}
+        public XmlElement CollectionElement => collection.DocumentElement;
 
-		public XmlDocument CollectionDocument {
-			get {
-				return collection.XmlDocument;
-			}
-		}
+        public XmlDocument CollectionDocument => collection.XmlDocument;
 
-		public abstract string CollectionElementName { get; }
+        public abstract string CollectionElementName { get; }
 
 		public abstract string CollectionName { get; }
 
@@ -142,16 +130,12 @@ namespace LayoutManager.Model {
 			return path;
 		}
 
-		/// <summary>
-		/// The default storage to which new locomotive type elements are added
-		/// </summary>
-		public int DefaultStore {
-			get {
-				return XmlConvert.ToInt32(Element["Stores"].GetAttribute("DefaultStore"));
-			}
-		}
+        /// <summary>
+        /// The default storage to which new locomotive type elements are added
+        /// </summary>
+        public int DefaultStore => XmlConvert.ToInt32(Element["Stores"].GetAttribute("DefaultStore"));
 
-		public void Load() {
+        public void Load() {
 			if(collection == null) {
 				collection = new LayoutXmlInfo();
 
@@ -263,18 +247,10 @@ namespace LayoutManager.Model {
 			return collectionElement;
 		}
 
-		public XmlElement this[string name] {
-			get {
-				return (XmlElement)CollectionElement.SelectSingleNode("*/[./Name='" + name + "']");
-			}
-		}
+        public XmlElement this[string name] => (XmlElement)CollectionElement.SelectSingleNode("*/[./Name='" + name + "']");
 
-		public XmlElement this[string elementKind, string name] {
-			get {
-				return (XmlElement)CollectionElement.SelectSingleNode(elementKind + "[./Name='" + name + "']");
-			}
-		}
-	}
+        public XmlElement this[string elementKind, string name] => (XmlElement)CollectionElement.SelectSingleNode(elementKind + "[./Name='" + name + "']");
+    }
 
 	/// <summary>
 	/// Represent the locomotive catalog element in the model document
@@ -296,28 +272,16 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public override String CollectionElementName {
-			get {
-				return "LocomotiveTypes";
-			}
-		}
+        public override String CollectionElementName => "LocomotiveTypes";
 
-		public override String CollectionName {
-			get {
-				return "Locomotive Catalog";
-			}
-		}
+        public override String CollectionName => "Locomotive Catalog";
 
-		public override string DefaultStoreDirectory {
-			get {
-				return GetDataSubdirectoryPath("Catalog");
-			}
-		}
+        public override string DefaultStoreDirectory => GetDataSubdirectoryPath("Catalog");
 
-		/// <summary>
-		/// Common locotive function names
-		/// </summary>
-		public XmlElement LocomotiveFunctionNames {
+        /// <summary>
+        /// Common locotive function names
+        /// </summary>
+        public XmlElement LocomotiveFunctionNames {
 			get {
 				XmlElement	e = Element["CommonFunctionNames"];
 
@@ -386,31 +350,15 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public override String CollectionElementName {
-			get {
-				return "Locomotives";
-			}
-		}
+        public override String CollectionElementName => "Locomotives";
 
-		public override String CollectionName {
-			get {
-				return "Locomotive Collection";
-			}
-		}
+        public override String CollectionName => "Locomotive Collection";
 
-		public override string DefaultStoreDirectory {
-			get {
-				return GetDataSubdirectoryPath("Collection");
-			}
-		}
+        public override string DefaultStoreDirectory => GetDataSubdirectoryPath("Collection");
 
-		public XmlElement this[Guid id] {
-			get {
-				return (XmlElement)CollectionElement.SelectSingleNode("*[@ID='" + id.ToString() + "']");
-			}
-		}
+        public XmlElement this[Guid id] => (XmlElement)CollectionElement.SelectSingleNode("*[@ID='" + id.ToString() + "']");
 
-		public override Image GetStandardImage(LocomotiveKind kind, LocomotiveOrigin origin) {
+        public override Image GetStandardImage(LocomotiveKind kind, LocomotiveOrigin origin) {
 			LocomotiveCatalogInfo	catalog = LayoutModel.LocomotiveCatalog;
 
 			return catalog.GetStandardImage(kind, origin);
@@ -511,18 +459,10 @@ namespace LayoutManager.Model {
 
 		public abstract string GetDisplayName(TrainObjectDisplayNameFormat format);
 
-		public virtual TrainObjectDisplayNameFormat DefaultDisplayNameFormat {
-			get {
-				return TrainObjectDisplayNameFormat.IncludeAddress | TrainObjectDisplayNameFormat.IncludeCollectionId;
-			}
-		}
+        public virtual TrainObjectDisplayNameFormat DefaultDisplayNameFormat => TrainObjectDisplayNameFormat.IncludeAddress | TrainObjectDisplayNameFormat.IncludeCollectionId;
 
-		public string DisplayName {
-			get {
-				return GetDisplayName(DefaultDisplayNameFormat);
-			}
-		}
-	}
+        public string DisplayName => GetDisplayName(DefaultDisplayNameFormat);
+    }
 
 	#endregion
 
@@ -549,17 +489,11 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public LayoutTextInfo NameProvider {
-			get {
-				return new LayoutTextInfo(Element, "TypeName");
-			}
-		}
+        public LayoutTextInfo NameProvider => new LayoutTextInfo(Element, "TypeName");
 
-		public override string GetDisplayName(TrainObjectDisplayNameFormat format) {
-			return NameProvider.Name;
-		}
+        public override string GetDisplayName(TrainObjectDisplayNameFormat format) => NameProvider.Name;
 
-		public LocomotiveKind Kind {
+        public LocomotiveKind Kind {
 			get {
 				if(Element.HasAttribute("Kind"))
 					return (LocomotiveKind)Enum.Parse(typeof(LocomotiveKind), Element.GetAttribute("Kind"));
@@ -595,16 +529,12 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public bool HasAttributes {
-			get {
-				return Element["Attributes"] != null;
-			}
-		}
+        public bool HasAttributes => Element["Attributes"] != null;
 
-		/// <summary>
-		/// User attributes associated with this locomotive type
-		/// </summary>
-		public AttributesInfo Attributes {
+        /// <summary>
+        /// User attributes associated with this locomotive type
+        /// </summary>
+        public AttributesInfo Attributes {
 			get {
 				XmlElement	attributesElement = Element["Attributes"];
 
@@ -682,13 +612,9 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public XmlElement Functions {
-			get {
-				return Element["Functions"];
-			}
-		}
+        public XmlElement Functions => Element["Functions"];
 
-		public LocomotiveFunctionInfo GetFunctionByName(String functionName) {
+        public LocomotiveFunctionInfo GetFunctionByName(String functionName) {
 			if(Functions != null) {
 				XmlElement	functionElement = (XmlElement)Functions.SelectSingleNode("Function[@Name = '" + functionName + "' ]");
 
@@ -723,20 +649,16 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		/// <summary>
-		/// Does this locomotive type has a built-in decoder. If it does, then decoder type name is the
-		/// type of the built in decoder.
-		/// </summary>
-		public bool HasBuiltInDecoder {
-			get {
-				return HasAttribute("DecoderType");
-			}
-		}
+        /// <summary>
+        /// Does this locomotive type has a built-in decoder. If it does, then decoder type name is the
+        /// type of the built in decoder.
+        /// </summary>
+        public bool HasBuiltInDecoder => HasAttribute("DecoderType");
 
-		/// <summary>
-		/// Decoder type name (if locomotive has built in decoder) or default decoder type for this type of locomotive
-		/// </summary>
-		public string DecoderTypeName {
+        /// <summary>
+        /// Decoder type name (if locomotive has built in decoder) or default decoder type for this type of locomotive
+        /// </summary>
+        public string DecoderTypeName {
 			get {
                 return GetAttribute("DecoderType", null);		// TODO: Get default decoder type from the catalog
 			}
@@ -746,15 +668,11 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		/// <summary>
-		/// Decoder type object for the decoder used by this locomotive (type) or null if no decoder is defined
-		/// </summary>
-		public DecoderTypeInfo DecoderType {
-			get {
-				return DecoderTypeInfo.GetDecoderType(DecoderTypeName);
-			}
-		}
-	}
+        /// <summary>
+        /// Decoder type object for the decoder used by this locomotive (type) or null if no decoder is defined
+        /// </summary>
+        public DecoderTypeInfo DecoderType => DecoderTypeInfo.GetDecoderType(DecoderTypeName);
+    }
 
 	public enum LocomotiveFunctionType {
 		Trigger,
@@ -887,25 +805,13 @@ namespace LayoutManager.Model {
 			return name;
 		}
 
-		public new LayoutTextInfo NameProvider {
-			get {
-				return new LayoutTextInfo(Element, "Name");
-			}
-		}
+        public new LayoutTextInfo NameProvider => new LayoutTextInfo(Element, "Name");
 
-		public LayoutTextInfo TypeNameProvider {
-			get {
-				return new LayoutTextInfo(Element, "TypeName");
-			}
-		}
+        public LayoutTextInfo TypeNameProvider => new LayoutTextInfo(Element, "TypeName");
 
-		public LayoutAddressInfo AddressProvider {
-			get {
-				return new LayoutAddressInfo(Element);
-			}
-		}
+        public LayoutAddressInfo AddressProvider => new LayoutAddressInfo(Element);
 
-		public String CollectionId {
+        public String CollectionId {
 			get {
 				return GetAttribute("CollectionID", "");
 			}
@@ -954,20 +860,16 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public LayoutActionContainer<LocomotiveInfo> Actions {
-			get {
-				return new LayoutActionContainer<LocomotiveInfo>(Element, this);
-			}
-		}
+        public LayoutActionContainer<LocomotiveInfo> Actions => new LayoutActionContainer<LocomotiveInfo>(Element, this);
 
-		/// <summary>
-		/// Check if this locomotive has compatible operation characteristics as of another locomotive or
-		/// to those of all the members in a locomotive set. All members in a locomotive set must have
-		/// compatible opertion characteristics.
-		/// </summary>
-		/// <param name="element"></param>
-		/// <returns></returns>
-		public bool IsCompatibleOperationCharacteristics(XmlElement element) {
+        /// <summary>
+        /// Check if this locomotive has compatible operation characteristics as of another locomotive or
+        /// to those of all the members in a locomotive set. All members in a locomotive set must have
+        /// compatible opertion characteristics.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public bool IsCompatibleOperationCharacteristics(XmlElement element) {
 			if(element.Name == "Locomotive") {
 				LocomotiveInfo otherLoco = new LocomotiveInfo(element);
 
@@ -1106,25 +1008,13 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		// The following properties are for allowing easy access from event scripts
-		public string Name {
-			get {
-				return Locomotive.Name;
-			}
-		}
+        // The following properties are for allowing easy access from event scripts
+        public string Name => Locomotive.Name;
 
-		public string TypeName {
-			get {
-				return Locomotive.TypeName;
-			}
-		}
+        public string TypeName => Locomotive.TypeName;
 
-		public string CollectionId {
-			get {
-				return Locomotive.CollectionId;
-			}
-		}
-	}
+        public string CollectionId => Locomotive.CollectionId;
+    }
 
 	public class TrainCarsInfo : LayoutInfo {
 		TrainCommonInfo	train;
@@ -1163,18 +1053,10 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public double Length {
-			get {
-				return Count * CarLength;
-			}
-		}
+        public double Length => Count * CarLength;
 
-		public TrainCommonInfo Train {
-			get {
-				return train;
-			}
-		}
-	}
+        public TrainCommonInfo Train => train;
+    }
 
 	public class TrainDriverInfo : LayoutInfo {
 		public TrainDriverInfo(XmlElement element) : base(element) {
@@ -1183,19 +1065,11 @@ namespace LayoutManager.Model {
 		public TrainDriverInfo(TrainCommonInfo train) : base(train.DriverElement) {
 		}
 
-		public string Type {
-			get {
-				return GetAttribute("Type", "Automatic");
-			}
-		}
+        public string Type => GetAttribute("Type", "Automatic");
 
-		public string TypeName {
-			get {
-				return GetAttribute("TypeName");
-			}
-		}
+        public string TypeName => GetAttribute("TypeName");
 
-		public string DriverId {
+        public string DriverId {
 			get {
                 return GetAttribute("DriverID", null);
 			}
@@ -1205,15 +1079,11 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		/// <summary>
-		/// Return true if locomotive is driven by the computer (true), or by external mean
-		/// </summary>
-		public bool ComputerDriven {
-			get {
-				return XmlConvert.ToBoolean(GetAttribute("ComputerDriven", "true"));
-			}
-		}
-	}
+        /// <summary>
+        /// Return true if locomotive is driven by the computer (true), or by external mean
+        /// </summary>
+        public bool ComputerDriven => XmlConvert.ToBoolean(GetAttribute("ComputerDriven", "true"));
+    }
 
 	#endregion
 
@@ -1244,57 +1114,39 @@ namespace LayoutManager.Model {
 			length = Parse(t).length;
 		}
 
-		public static TrainLength LocomotiveOnly { get { return new TrainLength(KnownTrainLength.LocomotiveOnly); }}
-		public static TrainLength VeryShort { get { return new TrainLength(KnownTrainLength.VeryShort); }}
-		public static TrainLength Short { get { return new TrainLength(KnownTrainLength.Short); }}
-		public static TrainLength Standard { get { return new TrainLength(KnownTrainLength.Standard); }}
-		public static TrainLength Long { get { return new TrainLength(KnownTrainLength.Long); }}
-		public static TrainLength VeryLong { get { return new TrainLength(KnownTrainLength.VeryLong); }}
+        public static TrainLength LocomotiveOnly => new TrainLength(KnownTrainLength.LocomotiveOnly);
+        public static TrainLength VeryShort => new TrainLength(KnownTrainLength.VeryShort);
+        public static TrainLength Short => new TrainLength(KnownTrainLength.Short);
+        public static TrainLength Standard => new TrainLength(KnownTrainLength.Standard);
+        public static TrainLength Long => new TrainLength(KnownTrainLength.Long);
+        public static TrainLength VeryLong => new TrainLength(KnownTrainLength.VeryLong);
 
-		public static implicit operator KnownTrainLength(TrainLength l) {
-			return l.length;
-		}
+        public static implicit operator KnownTrainLength(TrainLength l) => l.length;
 
-		public static explicit operator int(TrainLength l) {
-			return (int)l.length;
-		}
+        public static explicit operator int (TrainLength l) => (int)l.length;
 
-		public static bool operator ==(TrainLength l1, TrainLength l2) {
-			return l1.length == l2.length;
-		}
+        public static bool operator ==(TrainLength l1, TrainLength l2) => l1.length == l2.length;
 
-		public static bool operator !=(TrainLength l1, TrainLength l2) {
-			return !(l1 == l2);
-		}
+        public static bool operator !=(TrainLength l1, TrainLength l2) => !(l1 == l2);
 
-		public static bool operator >(TrainLength l1, TrainLength l2) {
-			return (int)l1.length > (int)l2.length;
-		}
+        public static bool operator >(TrainLength l1, TrainLength l2) => (int)l1.length > (int)l2.length;
 
-		public static bool operator <(TrainLength l1, TrainLength l2) {
-			return (int)l1.length < (int)l2.length;
-		}
+        public static bool operator <(TrainLength l1, TrainLength l2) => (int)l1.length < (int)l2.length;
 
-		public static bool operator >=(TrainLength l1, TrainLength l2) {
-			return l1 > l2 || l1 == l2;
-		}
+        public static bool operator >=(TrainLength l1, TrainLength l2) => l1 > l2 || l1 == l2;
 
-		public static bool operator <=(TrainLength l1, TrainLength l2) {
-			return l1 < l2 || l1 == l2;
-		}
+        public static bool operator <=(TrainLength l1, TrainLength l2) => l1 < l2 || l1 == l2;
 
-		public override bool Equals(object obj) {
+        public override bool Equals(object obj) {
 			if(obj == null || !(obj is TrainLength))
 				return false;
 			else
 				return ((TrainLength)obj).length == length;
 		}
 
-		public override int GetHashCode() {
-			return base.GetHashCode();
-		}
+        public override int GetHashCode() => base.GetHashCode();
 
-		public override string ToString() {
+        public override string ToString() {
 			switch(length) {
 				case KnownTrainLength.LocomotiveOnly: return "LocomotiveOnly";
 				case KnownTrainLength.VeryShort: return "VeryShort";
@@ -1349,10 +1201,8 @@ namespace LayoutManager.Model {
 			return lowerCase ? t.Substring(0, 1).ToLower() + t.Substring(1) : t;
 		}
 
-		public string ToDisplayString() {
-			return ToDisplayString(false);
-		}
-	}
+        public string ToDisplayString() => ToDisplayString(false);
+    }
 
 	/// <summary>
 	/// Comparision operations on train length
@@ -1394,16 +1244,12 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public bool HasAttributes {
-			get {
-				return Element["Attributes"] != null;
-			}
-		}
+        public bool HasAttributes => Element["Attributes"] != null;
 
-		/// <summary>
-		/// User attributes associated with this train
-		/// </summary>
-		public AttributesInfo Attributes {
+        /// <summary>
+        /// User attributes associated with this train
+        /// </summary>
+        public AttributesInfo Attributes {
 			get {
 				XmlElement	attributesElement = Element["Attributes"];
 
@@ -1468,16 +1314,12 @@ namespace LayoutManager.Model {
 				return "";
 		}
 
-		public LayoutTextInfo NameProvider {
-			get {
-				return new LayoutTextInfo(Element, "Name");
-			}
-		}
+        public LayoutTextInfo NameProvider => new LayoutTextInfo(Element, "Name");
 
-		/// <summary>
-		/// The train is not managed. There is no information about the train motion direction or speed
-		/// </summary>
-		public bool NotManaged {
+        /// <summary>
+        /// The train is not managed. There is no information about the train motion direction or speed
+        /// </summary>
+        public bool NotManaged {
 			get {
 				foreach(TrainLocomotiveInfo trainLoco in Locomotives) {
 					if(trainLoco.Locomotive.NotManaged)
@@ -1488,24 +1330,20 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		/// <summary>
-		/// Return true if train is managed, meaning that it is possible to control its speed and direction
-		/// </summary>
-		public bool Managed {
-			get {
-				return !NotManaged;
-			}
-		}
+        /// <summary>
+        /// Return true if train is managed, meaning that it is possible to control its speed and direction
+        /// </summary>
+        public bool Managed => !NotManaged;
 
-		/// <summary>
-		/// Return the number of time a track contact will be triggered when this train passes.
-		/// </summary>
-		/// <remarks>
-		/// This number may be larger than 1 if the train contains more than one magnet. For example a magnet
-		/// on the locomotive and a magnet on the last car. Another possibility is that the train has more than
-		/// one locomotive, each with a track contact magnet
-		/// </remarks>
-		public int TrackContactTriggerCount {
+        /// <summary>
+        /// Return the number of time a track contact will be triggered when this train passes.
+        /// </summary>
+        /// <remarks>
+        /// This number may be larger than 1 if the train contains more than one magnet. For example a magnet
+        /// on the locomotive and a magnet on the last car. Another possibility is that the train has more than
+        /// one locomotive, each with a track contact magnet
+        /// </remarks>
+        public int TrackContactTriggerCount {
 			get {
 				if(!Element.HasAttribute("_TriggerCount")) {
 					int	triggerCount = 0;
@@ -1667,19 +1505,15 @@ namespace LayoutManager.Model {
 			}				
 		}
 
-		public TrainDriverInfo Driver {
-			get {
-				return new TrainDriverInfo(DriverElement);
-			}
-		}
+        public TrainDriverInfo Driver => new TrainDriverInfo(DriverElement);
 
-		#endregion
+        #endregion
 
-		#region Operations
+        #region Operations
 
-			#region Train Locomotives Management
+        #region Train Locomotives Management
 
-			internal XmlElement LocomotivesElement {
+        internal XmlElement LocomotivesElement {
 			get {
 				XmlElement	locomotivesElement = Element["Locomotives"];
 
@@ -1699,13 +1533,11 @@ namespace LayoutManager.Model {
 			return false;
 		}
 
-		public bool ContainsLocomotive(LocomotiveInfo loco) {
-			return ContainsLocomotive(loco.Id);
-		}
+        public bool ContainsLocomotive(LocomotiveInfo loco) => ContainsLocomotive(loco.Id);
 
-		#region Add Locomotive
+        #region Add Locomotive
 
-		public virtual CanPlaceTrainResult AddLocomotive(LocomotiveInfo loco, LocomotiveOrientation orientation, LayoutBlock block, bool validateAddress) {
+        public virtual CanPlaceTrainResult AddLocomotive(LocomotiveInfo loco, LocomotiveOrientation orientation, LayoutBlock block, bool validateAddress) {
 			CanPlaceTrainResult	result = new CanPlaceTrainResult();
 
 			if(Locomotives.Count > 0 && !Locomotives[0].Locomotive.IsCompatibleOperationCharacteristics(loco.Element)) {
@@ -1728,13 +1560,11 @@ namespace LayoutManager.Model {
 			return result;
 		}
 
-		public CanPlaceTrainResult AddLocomotive(LocomotiveInfo loco, bool validateAddress = true) {
-			return AddLocomotive(loco, LocomotiveOrientation.Forward, null, validateAddress);
-		}
+        public CanPlaceTrainResult AddLocomotive(LocomotiveInfo loco, bool validateAddress = true) => AddLocomotive(loco, LocomotiveOrientation.Forward, null, validateAddress);
 
-		#endregion
+        #endregion
 
-		public virtual void RemoveLocomotive(TrainLocomotiveInfo removedTrainLoco) {
+        public virtual void RemoveLocomotive(TrainLocomotiveInfo removedTrainLoco) {
 			LocomotivesElement.RemoveChild(removedTrainLoco.Element);
 			FlushCachedValues();
 		}

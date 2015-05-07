@@ -25,16 +25,12 @@ namespace LayoutManager {
 		/// </summary>
 		private static XmlImplementation _xmlImplementation = new XmlImplementation();
 
-		public static XmlImplementation XmlImplementation {
-			get {
-				return LayoutXmlInfo._xmlImplementation;
-			}
-		}
+        public static XmlImplementation XmlImplementation => LayoutXmlInfo._xmlImplementation;
 
-		/// <summary>
-		/// The xml document
-		/// </summary>
-		internal XmlDocument		xmlDocument;
+        /// <summary>
+        /// The xml document
+        /// </summary>
+        internal XmlDocument		xmlDocument;
 
 		/// <summary>
 		/// Construct an empty document
@@ -67,24 +63,15 @@ namespace LayoutManager {
 			}
 		}
 
-		public XmlElement DocumentElement {
-			get {
-				return xmlDocument.DocumentElement;
-			}
+        public XmlElement DocumentElement => xmlDocument.DocumentElement;
 
-		}
+        public XmlElement Element => DocumentElement;
 
-		public XmlElement Element {
-			get {
-				return DocumentElement;
-			}
-		}
-
-		/// <summary>
-		/// Return a unique ID for this XML document. If the document has no unique ID assigned to it, 
-		/// a new ID will be created.
-		/// </summary>
-		public Guid Id {
+        /// <summary>
+        /// Return a unique ID for this XML document. If the document has no unique ID assigned to it, 
+        /// a new ID will be created.
+        /// </summary>
+        public Guid Id {
 			get {
 				XmlAttribute	idAttribute = (XmlAttribute)DocumentElement.Attributes.GetNamedItem("ID");
 
@@ -127,25 +114,13 @@ namespace LayoutManager {
 			}
 		}
 
-		public XmlDocument XmlDocument {
-			get {
-				return _xmlInfo.XmlDocument;
-			}
-		}
+        public XmlDocument XmlDocument => _xmlInfo.XmlDocument;
 
-		public XmlElement DocumentElement {
-			get {
-				return _xmlInfo.DocumentElement;
-			}
-		}
+        public XmlElement DocumentElement => _xmlInfo.DocumentElement;
 
-		public XmlElement Element {
-			get {
-				return _xmlInfo.Element;
-			}
-		}
+        public XmlElement Element => _xmlInfo.Element;
 
-		public LayoutObject() {
+        public LayoutObject() {
 		}
 
 		public LayoutObject(String xmlDocument) {

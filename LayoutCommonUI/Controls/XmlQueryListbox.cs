@@ -124,17 +124,13 @@ namespace LayoutManager.CommonUI.Controls {
 			}
 		}
 
-		/// <summary>
-		/// Return the XPathNavigator of the container element
-		/// </summary>
-		[Browsable(false)]
-		public virtual XPathNavigator ContainerNavigator {
-			get {
-				return containerNavigator;
-			}
-		}
+        /// <summary>
+        /// Return the XPathNavigator of the container element
+        /// </summary>
+        [Browsable(false)]
+        public virtual XPathNavigator ContainerNavigator => containerNavigator;
 
-		public ListLayout CurrentListLayout {
+        public ListLayout CurrentListLayout {
 			get {
 				return currentLayout;
 			}
@@ -178,13 +174,9 @@ namespace LayoutManager.CommonUI.Controls {
 			return q;
 		}
 
-		public QueryItem Root {
-			get {
-				return root;
-			}
-		}
+        public QueryItem Root => root;
 
-		public String DefaultSortField {
+        public String DefaultSortField {
 			get {
 				return defaultSortField;
 			}
@@ -305,41 +297,33 @@ namespace LayoutManager.CommonUI.Controls {
 		/// <returns>The new item object</returns>
 		public abstract IXmlQueryListboxItem CreateItem(QueryItem queryItem, XmlElement itemElement);
 
-		/// <summary>
-		/// Create a new query node item. You should override this method if you define
-		/// your own customized version of query node items
-		/// </summary>
-		/// <returns>The new query item object</returns>
-		public virtual QueryItem CreateQueryItem() {
-			return new QueryItem();
-		}
+        /// <summary>
+        /// Create a new query node item. You should override this method if you define
+        /// your own customized version of query node items
+        /// </summary>
+        /// <returns>The new query item object</returns>
+        public virtual QueryItem CreateQueryItem() => new QueryItem();
 
-		/// <summary>
-		/// Select nodes to be shown as a result of an XPath query. The default
-		/// implementation simply select the nodes from the container element.
-		/// </summary>
-		/// <param name="xPathQuery">The XPath query</param>
-		/// <returns>A node list with the result nodes</returns>
-		public virtual XPathNodeIterator ProcessQuery(XPathExpression expression) {
-			return ContainerNavigator.Select(expression);
-		}
+        /// <summary>
+        /// Select nodes to be shown as a result of an XPath query. The default
+        /// implementation simply select the nodes from the container element.
+        /// </summary>
+        /// <param name="xPathQuery">The XPath query</param>
+        /// <returns>A node list with the result nodes</returns>
+        public virtual XPathNodeIterator ProcessQuery(XPathExpression expression) => ContainerNavigator.Select(expression);
 
-		/// <summary>
-		/// Images for showing expand/collapse state of query items
-		/// </summary>
-		public virtual ImageList ArrowImageList {
-			get {
-				return imageListArrows;
-			}
-		}
+        /// <summary>
+        /// Images for showing expand/collapse state of query items
+        /// </summary>
+        public virtual ImageList ArrowImageList => imageListArrows;
 
 
-		/// <summary>
-		/// Default double click behavior. If the selected item is a query item, toggle
-		/// its expansion state
-		/// </summary>
-		/// <param name="e"></param>
-		protected override void OnDoubleClick(EventArgs e) {
+        /// <summary>
+        /// Default double click behavior. If the selected item is a query item, toggle
+        /// its expansion state
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnDoubleClick(EventArgs e) {
 			base.OnDoubleClick(e);
 
 			if(SelectedItem is QueryItem) {
@@ -490,41 +474,29 @@ namespace LayoutManager.CommonUI.Controls {
 				return q;
 			}
 
-			/// <summary>
-			/// Array with all the subqueries
-			/// </summary>
-			public QueryItem[] Items {
-				get {
-					return (QueryItem[] )items.ToArray(typeof(QueryItem));
-				}
-			}
+            /// <summary>
+            /// Array with all the subqueries
+            /// </summary>
+            public QueryItem[] Items => (QueryItem[])items.ToArray(typeof(QueryItem));
 
-			/// <summary>
-			/// Remove all subqueries
-			/// </summary>
-			public void ClearItems() {
+            /// <summary>
+            /// Remove all subqueries
+            /// </summary>
+            public void ClearItems() {
 				items.Clear();
 			}
 
-			/// <summary>
-			/// Is current query item expanded?
-			/// </summary>
-			public bool IsExpanded {
-				get {
-					return expanded;
-				}
-			}
+            /// <summary>
+            /// Is current query item expanded?
+            /// </summary>
+            public bool IsExpanded => expanded;
 
-			/// <summary>
-			/// Current query item nesting level
-			/// </summary>
-			public int Level {
-				get {
-					return level;
-				}
-			}
+            /// <summary>
+            /// Current query item nesting level
+            /// </summary>
+            public int Level => level;
 
-			public String SortField {
+            public String SortField {
 				get {
 					return sortField;
 				}
@@ -665,16 +637,10 @@ namespace LayoutManager.CommonUI.Controls {
 				}
 			}
 
-			public object Bookmark {
-				get {
-					return this;
-				}
-			}
+            public object Bookmark => this;
 
-			public bool IsBookmarkEqual(object bookmark) {
-				return bookmark == this.Bookmark;
-			}
-		}
+            public bool IsBookmarkEqual(object bookmark) => bookmark == this.Bookmark;
+        }
 
 		#endregion
 
@@ -684,13 +650,9 @@ namespace LayoutManager.CommonUI.Controls {
 			layouts.Add(layout);
 		}
 
-		public ListLayout[] Layouts {
-			get {
-				return (ListLayout[])layouts.ToArray(typeof(ListLayout));
-			}
-		}
+        public ListLayout[] Layouts => (ListLayout[])layouts.ToArray(typeof(ListLayout));
 
-		protected void ApplyLayout(ListLayout layout) {
+        protected void ApplyLayout(ListLayout layout) {
 			root.ClearItems();
 			layout.ApplyLayout(this);
 			UpdateList();

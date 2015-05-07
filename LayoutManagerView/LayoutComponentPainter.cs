@@ -28,10 +28,8 @@ namespace LayoutManager.Components {
 			}
 		}
 
-		protected static Point Midpoint(Point p1, Point p2) {
-			return new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
-		}
-	}
+        protected static Point Midpoint(Point p1, Point p2) => new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
+    }
 
 	/// <summary>
 	/// 
@@ -73,24 +71,16 @@ namespace LayoutManager.Components {
 			this.componentSize = componentSize;
 		}
 
-		protected Size ComponentSize {
-			get {
-				return componentSize;
-			}
-		}
+        protected Size ComponentSize => componentSize;
 
-		protected IList<LayoutComponentConnectionPoint> ConnectionPoints {
-			get {
-				return cp;
-			}
-		}
+        protected IList<LayoutComponentConnectionPoint> ConnectionPoints => cp;
 
-		/// <summary>
-		/// Center the origin to the middle of the component grid. If the component is vertical, a rotate
-		/// transform is applied
-		/// </summary>
-		/// <param name="g"></param>
-		protected void CenterOrigin(Graphics g) {
+        /// <summary>
+        /// Center the origin to the middle of the component grid. If the component is vertical, a rotate
+        /// transform is applied
+        /// </summary>
+        /// <param name="g"></param>
+        protected void CenterOrigin(Graphics g) {
 			g.TranslateTransform(componentSize.Width / 2.0F, componentSize.Height / 2.0F);
 
 			if(LayoutTrackComponent.IsVertical(cp[0]))
@@ -936,22 +926,12 @@ namespace LayoutManager.Components {
 				}
 			}
 
-			public float X {
-				get {
-					return Value.X;
-				}
-			}
+            public float X => Value.X;
 
-			public float Y {
-				get {
-					return Value.Y;
-				}
-			}
+            public float Y => Value.Y;
 
-			public static implicit operator PointF(LastPoint lp) {
-				return lp.Value;
-			}
-		}
+            public static implicit operator PointF(LastPoint lp) => lp.Value;
+        }
 
 		#endregion
 

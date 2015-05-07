@@ -502,12 +502,8 @@ namespace LayoutEventDebugger
 				}
 			}
 
-			public Switch Switch {
-				get {
-					return theSwitch;
-				}
-			}
-		}
+            public Switch Switch => theSwitch;
+        }
 	}
 
 	[LayoutModule("Trace Manager")]

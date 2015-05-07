@@ -52,9 +52,7 @@ namespace NCDRelayController {
 			}
 		}
 
-		OutputManager OutputManager {
-			get { return outputManager; }
-		}
+        OutputManager OutputManager => outputManager;
 
         InterfaceType InterfaceType {
             get {
@@ -69,13 +67,11 @@ namespace NCDRelayController {
             }
         }
 
-		Stream CommStream {
-			get { return commStream;  }
-		}
+        Stream CommStream => commStream;
 
-		#region Communication init/cleanup
+        #region Communication init/cleanup
 
-		void OnInitialize() {
+        void OnInitialize() {
 			_relayBus = null;
 			_inputBus = null;
 
@@ -154,45 +150,29 @@ namespace NCDRelayController {
 			LayoutModel.ControlManager.Buses.RemoveBusProvider(this);
 		}
 
-		public override ModelComponentKind Kind {
-			get { return ModelComponentKind.ControlComponent; }
-		}
+        public override ModelComponentKind Kind => ModelComponentKind.ControlComponent;
 
-		public override bool DrawOutOfGrid {
-			get {
-				return NameProvider.Element != null && NameProvider.Visible == true;
-			}
-		}
+        public override bool DrawOutOfGrid => NameProvider.Element != null && NameProvider.Visible == true;
 
-		#endregion
+        #endregion
 
-		#region IModelComponentIsBusProvider Members
+        #region IModelComponentIsBusProvider Members
 
-		public IList<string> BusTypeNames {
-			get {
-				return Array.AsReadOnly<string>(new string[] { "NCDRelayBus", "NCDInputBus" });
-			}
-		}
+        public IList<string> BusTypeNames => Array.AsReadOnly<string>(new string[] { "NCDRelayBus", "NCDInputBus" });
 
-		public bool BatchMultipathSwitchingSupported {
-			get { return false; }
-		}
+        public bool BatchMultipathSwitchingSupported => false;
 
-		#endregion
+        #endregion
 
-		#region IObjectHasName Members
+        #region IObjectHasName Members
 
-		public LayoutTextInfo NameProvider {
-			get {
-				return new LayoutTextInfo(this);
-			}
-		}
+        public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
 
-		#endregion
+        #endregion
 
-		#region Event Handlers
+        #region Event Handlers
 
-		[LayoutEvent("enter-operation-mode")]
+        [LayoutEvent("enter-operation-mode")]
 		protected virtual void EnterOperationMode(LayoutEvent e0) {
 			var e = (LayoutEvent<OperationModeParameters>)e0;
 
@@ -326,10 +306,8 @@ namespace NCDRelayController {
 			public EnableReportingCommand(NCDRelayController relayController) : base(relayController) {
 			}
 
-			protected override byte[] Command {
-				get { return new byte[2] { 254, 27 }; }
-			}
-		}	
+            protected override byte[] Command => new byte[2] { 254, 27 };
+        }	
 		
 		class SetRelayCommand : NCDcommandBase {
 			int iRelay;
@@ -360,10 +338,8 @@ namespace NCDRelayController {
 				}
 			}
 
-			public override string ToString() {
-				return "Set relay " + iRelay + " to " + (on ? "ON" : "OFF");
-			}
-		}
+            public override string ToString() => "Set relay " + iRelay + " to " + (on ? "ON" : "OFF");
+        }
 
 		class PollContactClosuresCommand : OutputSynchronousCommandBase, IOutputCommandReply, IOutputIdlecommand {
 			protected NCDRelayController RelayController { get; private set; }
@@ -376,13 +352,9 @@ namespace NCDRelayController {
 				this.contactClosureData = new ContactClosureBankData[relayController.InputBus.Modules.Sum(module => module.ModuleType.NumberOfConnectionPoints / 8)];
 			}
 
-            public override int Timeout {
-                get {
-                    return pollingPeriod;
-                }
-            }
+            public override int Timeout => pollingPeriod;
 
-			public override void Do() {
+            public override void Do() {
 				var events = new List<LayoutEvent>();
 
 				int moduleNumber = 0;
@@ -418,15 +390,13 @@ namespace NCDRelayController {
 			public override void OnReply(object replyPacket) {
 			}
 
-			#region IOutputIdlecommand Members
+            #region IOutputIdlecommand Members
 
-			public bool RemoveFromQueue {
-				get { return false; }
-			}
+            public bool RemoveFromQueue => false;
 
-			#endregion
+            #endregion
 
-			struct ContactClosureBankData {
+            struct ContactClosureBankData {
 				byte currentState;
 
 				public void NewData(IList<LayoutEvent> events, ControlModule module, int moduleNumber, int connectionPointIndex, byte data) {

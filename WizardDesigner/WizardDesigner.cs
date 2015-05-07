@@ -13,51 +13,45 @@ namespace Gui.Wizard
 	/// </summary>
 	public class WizardDesigner : ParentControlDesigner
 	{
-		#region old WndProc
-		//		/// <summary>
-		//		/// Overrides the handling of Mouse clicks to allow back-next to work in the designer
-		//		/// </summary>
-		//		/// <param name="msg"></param>
-		//		protected override void WndProc(ref Message msg)
-		//		{
-		//			const int WM_LBUTTONDOWN = 0x0201;
-		//			const int WM_LBUTTONDBLCLK = 0x0203;
-		//			//When the user left clicks
-		//			if (msg.Msg == WM_LBUTTONDOWN || msg.Msg == WM_LBUTTONDBLCLK)
-		//			{
-		//				// Get the control under the mouse
-		//				ISelectionService ss = (ISelectionService)GetService(typeof(ISelectionService));
-		//				
-		//				if (ss.PrimarySelection is Gui.Wizard.Wizard)
-		//				{
-		//					 Gui.Wizard.Wizard wizard =  (Gui.Wizard.Wizard) ss.PrimarySelection;
-		//					// Extract the mouse position
-		//					int xPos = (short)((uint)msg.LParam & 0x0000FFFF);
-		//					int yPos = (short)(((uint)msg.LParam & 0xFFFF0000) >> 16);
-		//
-		//					// Pass on the mouse message
-		//					wizard.ClickButtons(msg.HWnd, new Point(xPos, yPos));
-		//					
-		//					//Don't pass the Message on (i.e. Consume it)
-		//					return;
-		//				}
-		//			}
-		//
-		//			base.WndProc(ref msg);
-		//		}
-		#endregion
+        #region old WndProc
+        //		/// <summary>
+        //		/// Overrides the handling of Mouse clicks to allow back-next to work in the designer
+        //		/// </summary>
+        //		/// <param name="msg"></param>
+        //		protected override void WndProc(ref Message msg)
+        //		{
+        //			const int WM_LBUTTONDOWN = 0x0201;
+        //			const int WM_LBUTTONDBLCLK = 0x0203;
+        //			//When the user left clicks
+        //			if (msg.Msg == WM_LBUTTONDOWN || msg.Msg == WM_LBUTTONDBLCLK)
+        //			{
+        //				// Get the control under the mouse
+        //				ISelectionService ss = (ISelectionService)GetService(typeof(ISelectionService));
+        //				
+        //				if (ss.PrimarySelection is Gui.Wizard.Wizard)
+        //				{
+        //					 Gui.Wizard.Wizard wizard =  (Gui.Wizard.Wizard) ss.PrimarySelection;
+        //					// Extract the mouse position
+        //					int xPos = (short)((uint)msg.LParam & 0x0000FFFF);
+        //					int yPos = (short)(((uint)msg.LParam & 0xFFFF0000) >> 16);
+        //
+        //					// Pass on the mouse message
+        //					wizard.ClickButtons(msg.HWnd, new Point(xPos, yPos));
+        //					
+        //					//Don't pass the Message on (i.e. Consume it)
+        //					return;
+        //				}
+        //			}
+        //
+        //			base.WndProc(ref msg);
+        //		}
+        #endregion
 
-		/// <summary>
-		/// Prevents the grid from being drawn on the Wizard
-		/// </summary>
-		protected override bool DrawGrid
-		{
-			get 
-			{ 
-				return base.DrawGrid && _allowGrid;
-			}
-		}
-		private bool _allowGrid = true;
+        /// <summary>
+        /// Prevents the grid from being drawn on the Wizard
+        /// </summary>
+        protected override bool DrawGrid => base.DrawGrid && _allowGrid;
+        private bool _allowGrid = true;
 
 		//Doesn't seem to have any effect
 //		protected override bool EnableDragRect

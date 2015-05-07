@@ -215,18 +215,10 @@ namespace LayoutManager.Logic {
 				this.topology = topology;
 			}
 
-			public Dictionary<TrackEdgeId, int> ReachableSplits {
-				get {
-					return reachableSplits;
-				}
-			}
+            public Dictionary<TrackEdgeId, int> ReachableSplits => reachableSplits;
 
-			public ModelTopology Topology {
-				get {
-					return topology;
-				}
-			}
-		}
+            public ModelTopology Topology => topology;
+        }
 
 		private void getReachableSplits(GetSplitsInfo si, TrackEdgeId splitEdgeID, int switchState, int penalty) {
 			ModelTopologyEntry splitEdgeEntry = si.Topology[splitEdgeID];
@@ -409,22 +401,16 @@ namespace LayoutManager.Logic {
 		}
 
 		class TargetQualityComparer : IComparer<RouteTarget> {
-			#region IComparer<RouteTarget> Members
+            #region IComparer<RouteTarget> Members
 
-			public int Compare(RouteTarget x, RouteTarget y) {
-				return x.Quality.CompareTo(y.Quality);
-			}
+            public int Compare(RouteTarget x, RouteTarget y) => x.Quality.CompareTo(y.Quality);
 
-			public bool Equals(RouteTarget x, RouteTarget y) {
-				return Compare(x, y) == 0;
-			}
+            public bool Equals(RouteTarget x, RouteTarget y) => Compare(x, y) == 0;
 
-			public int GetHashCode(RouteTarget obj) {
-				return obj.GetHashCode();
-			}
+            public int GetHashCode(RouteTarget obj) => obj.GetHashCode();
 
-			#endregion
-		}
+            #endregion
+        }
 
 
 		private SortTargetsResult sortTargets(IList<RouteTarget> targets, ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction) {
@@ -852,10 +838,8 @@ namespace LayoutManager.Logic {
 				this.Penalty = penalty;
 			}
 
-			public int CompareTo(object oBacktrackOption) {
-				return Penalty - ((RouteOption)oBacktrackOption).Penalty;
-			}
-		}
+            public int CompareTo(object oBacktrackOption) => Penalty - ((RouteOption)oBacktrackOption).Penalty;
+        }
 
 		class RouteLookupState : ICloneable {
 			List<int>		switchStates = new List<int>();
@@ -879,19 +863,11 @@ namespace LayoutManager.Logic {
 				this.gotToTarget = lookupState.GotToTarget;
 			}
 
-			public List<int> SwitchStates {
-				get {
-					return switchStates;
-				}
-			}
+            public List<int> SwitchStates => switchStates;
 
-			public RouteQuality Quality {
-				get {
-					return quality;
-				}
-			}
+            public RouteQuality Quality => quality;
 
-			public TrackEdge Edge {
+            public TrackEdge Edge {
 				get {
 					return edge;
 				}
@@ -921,10 +897,8 @@ namespace LayoutManager.Logic {
 				}
 			}
 
-			public object Clone() {
-				return new RouteLookupState(this);
-			}
-		}
+            public object Clone() => new RouteLookupState(this);
+        }
 
 		class RouteBacktrackEntry {
 			int						nextOption;
@@ -937,13 +911,9 @@ namespace LayoutManager.Logic {
 				nextOption = 1;
 			}
 
-			public int NextPenalty {
-				get {
-					return routeOptions[nextOption].Penalty;
-				}
-			}
+            public int NextPenalty => routeOptions[nextOption].Penalty;
 
-			public RouteLookupState LookupState {
+            public RouteLookupState LookupState {
 				get {
 					if(IsValid) {
 						RouteLookupState			lookupState = (RouteLookupState)this.lookupState.Clone();
@@ -960,12 +930,8 @@ namespace LayoutManager.Logic {
 				}
 			}
 
-			public bool IsValid {
-				get {
-					return nextOption < routeOptions.Length;
-				}
-			}
-		}
+            public bool IsValid => nextOption < routeOptions.Length;
+        }
 
 		class RouteBacktrackManager {
 			Dictionary<TrackEdge, RouteBacktrackEntry> backtrackEntries = new Dictionary<TrackEdge, RouteBacktrackEntry>();
@@ -975,11 +941,9 @@ namespace LayoutManager.Logic {
 					backtrackEntries.Add(lookupState.Edge, new RouteBacktrackEntry(lookupState, routeOptions));
 			}
 
-			public bool HasEntry(RouteLookupState lookupState) {
-				return backtrackEntries.ContainsKey(lookupState.Edge);
-			}
+            public bool HasEntry(RouteLookupState lookupState) => backtrackEntries.ContainsKey(lookupState.Edge);
 
-			public RouteBacktrackEntry BestBacktrackEntry {
+            public RouteBacktrackEntry BestBacktrackEntry {
 				get {
 					RouteBacktrackEntry	bestEntry = null;
 
@@ -1103,25 +1067,17 @@ namespace LayoutManager.Logic {
 				}
 			}
 
-			public ICollection<RoutingTableEntry> Entries {
-				get {
-					return routingTable.Values;
-				}
-			}
+            public ICollection<RoutingTableEntry> Entries => routingTable.Values;
 
-			public void Clear() {
+            public void Clear() {
 				routingTable.Clear();
 			}
 
-			public bool Contains(TrackEdgeId edgeID) {
-				return routingTable.ContainsKey(edgeID);
-			}
+            public bool Contains(TrackEdgeId edgeID) => routingTable.ContainsKey(edgeID);
 
-			public bool Contains(TrackEdge edge) {
-				return Contains(new TrackEdgeId(edge));
-			}
+            public bool Contains(TrackEdge edge) => Contains(new TrackEdgeId(edge));
 
-			public void Add(TrackEdgeId keyEdgeID, RoutingTableEntry entry) {
+            public void Add(TrackEdgeId keyEdgeID, RoutingTableEntry entry) {
 				routingTable.Add(keyEdgeID, entry);
 			}
 
@@ -1211,28 +1167,20 @@ namespace LayoutManager.Logic {
 				}
 			}
 
-			public int SwitchStateCount {
-				get {
-					return nSwitchingStates;
-				}
-			}
+            public int SwitchStateCount => nSwitchingStates;
 
-			#region IEnumerable< Dictionary<TrackEdgeID, int>> Members
+            #region IEnumerable< Dictionary<TrackEdgeID, int>> Members
 
-			public IEnumerator<Dictionary<TrackEdgeId, int>> GetEnumerator() {
-				return Array.AsReadOnly<Dictionary<TrackEdgeId, int>>(reachableNodes).GetEnumerator();
-			}
+            public IEnumerator<Dictionary<TrackEdgeId, int>> GetEnumerator() => Array.AsReadOnly<Dictionary<TrackEdgeId, int>>(reachableNodes).GetEnumerator();
 
-			#endregion
+            #endregion
 
-			#region IEnumerable Members
+            #region IEnumerable Members
 
-			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-				return GetEnumerator();
-			}
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
-			#endregion
-}
+            #endregion
+        }
 
 		#endregion
 	}

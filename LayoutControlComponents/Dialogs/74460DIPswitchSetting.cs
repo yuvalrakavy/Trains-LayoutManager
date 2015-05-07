@@ -1,15 +1,11 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
-using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
-namespace LayoutManager.ControlComponents.Dialogs
-{
-	/// <summary>
-	/// Summary description for LGBbusDIPswitchSetting.
-	/// </summary>
+namespace LayoutManager.ControlComponents.Dialogs {
+    /// <summary>
+    /// Summary description for LGBbusDIPswitchSetting.
+    /// </summary>
 	public class TurnoutDecoderDIPswitchSetting : Form, IMarklinControlModuleSettingDialog
 	{
 		/// <summary>
@@ -39,16 +35,12 @@ namespace LayoutManager.ControlComponents.Dialogs
 			Text = Regex.Replace(Text, "MODULENAME", moduleName);
 		}
 
-		public bool ClearUserActionRequiredFlag {
-			get {
-				return checkBoxClearUserActionFlag.Checked;
-			}
-		}
+        public bool ClearUserActionRequiredFlag => checkBoxClearUserActionFlag.Checked;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{

@@ -79,12 +79,10 @@ namespace LayoutManager {
 			}
 		}
 
-		public String GetAttribute(string name) {
-			return GetAttribute(name, null);
-		}
+        public String GetAttribute(string name) => GetAttribute(name, null);
 
 
-		public void SetAttribute(string name, string v) {
+        public void SetAttribute(string name, string v) {
             if (v == null)
                 _element.RemoveAttribute(name);
             else
@@ -131,11 +129,9 @@ namespace LayoutManager {
                 _element.SetAttribute(name, XmlConvert.ToString(v));
         }
 
-		public bool HasAttribute(string name) {
-			return Element.HasAttribute(name);
-		}
+        public bool HasAttribute(string name) => Element.HasAttribute(name);
 
-		public Guid Id {
+        public Guid Id {
 			get {
 				if(HasAttribute("ID"))
 					return XmlConvert.ToGuid(GetAttribute("ID"));

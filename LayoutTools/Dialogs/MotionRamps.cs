@@ -325,11 +325,7 @@ namespace LayoutManager.Tools.Dialogs
 					SubItems[1].Text = "";
 			}
 
-			public MotionRampInfo Ramp {
-				get {
-					return ramp;
-				}
-			}
-		}
+            public MotionRampInfo Ramp => ramp;
+        }
 	}
 }

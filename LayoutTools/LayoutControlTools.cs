@@ -141,30 +141,26 @@ namespace LayoutManager.Tools {
 				}
 			}
 
-			/// <summary>
-			/// Return the phase in which module location for a given component is allowed to be
-			/// </summary>
-			/// <param name="component">The component</param>
-			/// <returns></returns>
-			public static LayoutPhase ModuleLocationPhase(IModelComponentConnectToControl component) {
-				return ModuleLocationPhase(component.Spot.Phase);
-			}
+            /// <summary>
+            /// Return the phase in which module location for a given component is allowed to be
+            /// </summary>
+            /// <param name="component">The component</param>
+            /// <returns></returns>
+            public static LayoutPhase ModuleLocationPhase(IModelComponentConnectToControl component) => ModuleLocationPhase(component.Spot.Phase);
 
-			public ControlAutoConnectRequest WithAnotherModuleLocation(LayoutControlModuleLocationComponent moduleLocation) {
+            public ControlAutoConnectRequest WithAnotherModuleLocation(LayoutControlModuleLocationComponent moduleLocation) {
 				ControlAutoConnectRequest newCopy = new ControlAutoConnectRequest(this);
 
 				newCopy.ModuleLocation = moduleLocation;
 				return newCopy;
 			}
 
-			#region ICloneable Members
+            #region ICloneable Members
 
-			public object Clone() {
-				return MemberwiseClone();
-			}
+            public object Clone() => MemberwiseClone();
 
-			#endregion
-		}
+            #endregion
+        }
 
 		struct ModuleLocationDistance : IComparable<ModuleLocationDistance> {
 			LayoutControlModuleLocationComponent _moduleLocation;
@@ -183,30 +179,18 @@ namespace LayoutManager.Tools {
 				this._distance = Math.Sqrt(dx*dx + dy*dy);
 			}
 
-			public LayoutControlModuleLocationComponent ModuleLocation {
-				get {
-					return _moduleLocation;
-				}
-			}
+            public LayoutControlModuleLocationComponent ModuleLocation => _moduleLocation;
 
-			public double Distance {
-				get {
-					return _distance;
-				}
-			}
+            public double Distance => _distance;
 
-			#region IComparable<ModuleLocationDistance> Members
+            #region IComparable<ModuleLocationDistance> Members
 
-			public int CompareTo(ModuleLocationDistance other) {
-				return (int)(_distance - other._distance);
-			}
+            public int CompareTo(ModuleLocationDistance other) => (int)(_distance - other._distance);
 
-			public bool Equals(ModuleLocationDistance other) {
-				return _moduleLocation == other.ModuleLocation && _distance == other.Distance;
-			}
+            public bool Equals(ModuleLocationDistance other) => _moduleLocation == other.ModuleLocation && _distance == other.Distance;
 
-			#endregion
-		}
+            #endregion
+        }
 
 		#endregion
 
@@ -776,18 +760,10 @@ namespace LayoutManager.Tools {
 				}
 			}
 
-			public LayoutControlModuleLocationComponent ModuleLocation {
-				get {
-					return moduleLocation;
-				}
-			}
+            public LayoutControlModuleLocationComponent ModuleLocation => moduleLocation;
 
-			public IList<IModelComponentConnectToControl> Components {
-				get {
-					return components.AsReadOnly();
-				}
-			}
-		}
+            public IList<IModelComponentConnectToControl> Components => components.AsReadOnly();
+        }
 
 		#endregion
 

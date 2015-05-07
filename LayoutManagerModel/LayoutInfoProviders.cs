@@ -50,24 +50,20 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		/// <summary>
-		/// True if the provider element was found in the component document, false otherwise.
-		/// This property has meaning only if the provider element was found (Element is not null)
-		/// </summary>
-		[Browsable(false)]
-		public bool FoundInComponentDocument {
-			get {
-				return elementInComponentDocument;
-			}
-		}
+        /// <summary>
+        /// True if the provider element was found in the component document, false otherwise.
+        /// This property has meaning only if the provider element was found (Element is not null)
+        /// </summary>
+        [Browsable(false)]
+        public bool FoundInComponentDocument => elementInComponentDocument;
 
-		/// <summary>
-		/// Locate the given element. The element is first searched in the component's document.
-		/// If the element cannot be found, it will be searched in the model document
-		/// </summary>
-		/// <param name="xmlInfo">The component XML document in which the provider is searched</param>
-		/// <param name="elementName">The element</param>
-		public LayoutInfo(IObjectHasXml container, string elementPath) {
+        /// <summary>
+        /// Locate the given element. The element is first searched in the component's document.
+        /// If the element cannot be found, it will be searched in the model document
+        /// </summary>
+        /// <param name="xmlInfo">The component XML document in which the provider is searched</param>
+        /// <param name="elementName">The element</param>
+        public LayoutInfo(IObjectHasXml container, string elementPath) {
 			SearchProviderElement(container.Element, elementPath);
 		}
 
@@ -171,18 +167,14 @@ namespace LayoutManager.Model {
 			return element;
 		}
 
-		public static XmlElement CreateProviderElement(LayoutXmlInfo xmlInfo, string elementName, string parentPath = null) {
-			return CreateProviderElement(xmlInfo.DocumentElement, elementName, parentPath);
-		}
+        public static XmlElement CreateProviderElement(LayoutXmlInfo xmlInfo, string elementName, string parentPath = null) => CreateProviderElement(xmlInfo.DocumentElement, elementName, parentPath);
 
-		public static XmlElement CreateProviderElement(ModelComponent component, string elementName, string parentPath = null) {
-			return CreateProviderElement(component.Element, elementName, parentPath);
-		}
+        public static XmlElement CreateProviderElement(ModelComponent component, string elementName, string parentPath = null) => CreateProviderElement(component.Element, elementName, parentPath);
 
-		/// <summary>
-		/// Set/Get well known reference to this provider
-		/// </summary>
-		public string Ref {
+        /// <summary>
+        /// Set/Get well known reference to this provider
+        /// </summary>
+        public string Ref {
 			get {
 				return GetAttribute("Ref");
 			}
@@ -365,16 +357,14 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public override String ToString() {
-			return GetAttribute("Title", "No title");
-		}
+        public override String ToString() => GetAttribute("Title", "No title");
 
-		/// <summary>
-		/// Get the other "side" of a given side.
-		/// </summary>
-		/// <param name="side"></param>
-		/// <returns>The other side</returns>
-		static public LayoutDrawingSide GetAlternateLayoutDrawingSide(LayoutDrawingSide side) {
+        /// <summary>
+        /// Get the other "side" of a given side.
+        /// </summary>
+        /// <param name="side"></param>
+        /// <returns>The other side</returns>
+        static public LayoutDrawingSide GetAlternateLayoutDrawingSide(LayoutDrawingSide side) {
 			switch(side) {
 				case LayoutDrawingSide.Left:
 					return LayoutDrawingSide.Right;
@@ -611,15 +601,11 @@ namespace LayoutManager.Model {
 				tcs.TrySetResult(terminationReason);
 		}
 
-		public static bool IsDisplayed(LayoutBlockDefinitionComponent blockDefinition) {
-			return LayoutModel.StateManager.OperationStates["SimpleBallon"].HasState(blockDefinition.Id);
-		}
+        public static bool IsDisplayed(LayoutBlockDefinitionComponent blockDefinition) => LayoutModel.StateManager.OperationStates["SimpleBallon"].HasState(blockDefinition.Id);
 
-		public static LayoutBlockBallon Get(LayoutBlockDefinitionComponent blockDefinition) {
-			return LayoutModel.StateManager.OperationStates["SimpleBallon"].Get<LayoutBlockBallon>(blockDefinition.Id);
-		}
+        public static LayoutBlockBallon Get(LayoutBlockDefinitionComponent blockDefinition) => LayoutModel.StateManager.OperationStates["SimpleBallon"].Get<LayoutBlockBallon>(blockDefinition.Id);
 
-		public static void Remove(LayoutBlockDefinitionComponent blockDefinition, TerminationReason terminationReason) {
+        public static void Remove(LayoutBlockDefinitionComponent blockDefinition, TerminationReason terminationReason) {
 			LayoutBlockBallon ballon = Get(blockDefinition);
 
 			if(ballon != null) {
@@ -657,19 +643,15 @@ namespace LayoutManager.Model {
 		public float FontSize { get; set; }
 		public CancellationToken CancellationToken { get; set; }
 
-		public Task<TerminationReason> Task {
-			get { return tcs.Task; }
-		}
+        public Task<TerminationReason> Task => tcs.Task;
 
-		/// <summary>
-		/// Convert ballon to its task, so one could do 'await Ballon'...
-		/// </summary>
-		/// <param name="ballon"></param>
-		/// <returns></returns>
-		public static implicit operator Task<TerminationReason>(LayoutBlockBallon ballon) {
-			return ballon.Task;
-		}
-	}
+        /// <summary>
+        /// Convert ballon to its task, so one could do 'await Ballon'...
+        /// </summary>
+        /// <param name="ballon"></param>
+        /// <returns></returns>
+        public static implicit operator Task<TerminationReason>(LayoutBlockBallon ballon) => ballon.Task;
+    }
 
 	public class LayoutAddressInfo : LayoutTextInfo {
 		public LayoutAddressInfo(ModelComponent component, String elementName) : base(component, elementName) {
@@ -938,13 +920,9 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public String ImageCacheEventXml {
-			get {
-				return "<Effect Type='" + RotateFlipEffect.ToString() + "' />";
-			}
-		}
-		
-		public bool ImageError {
+        public String ImageCacheEventXml => "<Effect Type='" + RotateFlipEffect.ToString() + "' />";
+
+        public bool ImageError {
 			get {
 				return XmlConvert.ToBoolean(GetAttribute("ImageError", "false"));
 			}

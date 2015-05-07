@@ -136,15 +136,11 @@ namespace LayoutManager.Tools.Dialogs
 		}
 
 
-		public LayoutXmlInfo XmlInfo {
-			get {
-				return xmlInfo;
-			}
-		}
+        public LayoutXmlInfo XmlInfo => xmlInfo;
 
-		// Implementation of IPolicyListCustomizer
+        // Implementation of IPolicyListCustomizer
 
-		public bool IsPolicyChecked(LayoutPolicyInfo policy) {
+        public bool IsPolicyChecked(LayoutPolicyInfo policy) {
 			LayoutBlockDefinitionComponentInfo	info = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element);
 
 			return info.Policies.Contains(policy.Id);

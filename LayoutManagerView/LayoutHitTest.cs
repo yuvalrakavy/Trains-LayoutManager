@@ -29,66 +29,38 @@ namespace LayoutManager {
 			this.regions = regions;
 		}
 
-		/// <summary>
-		/// The area that was "hit"
-		/// </summary>
-		public LayoutModelArea Area {
-			get {
-				return area;
-			}
-		}
+        /// <summary>
+        /// The area that was "hit"
+        /// </summary>
+        public LayoutModelArea Area => area;
 
-		/// <summary>
-		/// The view that the hit test was performed on
-		/// </summary>
-		public LayoutView View {
-			get {
-				return view;
-			}
-		}
+        /// <summary>
+        /// The view that the hit test was performed on
+        /// </summary>
+        public LayoutView View => view;
 
-		/// <summary>
-		/// The frame window that the hit test was perform on
-		/// </summary>
-		public ILayoutFrameWindow FrameWindow {
-			get {
-				return view.FrameWindow;
-			}
-		}
+        /// <summary>
+        /// The frame window that the hit test was perform on
+        /// </summary>
+        public ILayoutFrameWindow FrameWindow => view.FrameWindow;
 
-		/// <summary>
-		/// Client coordinates for the view
-		/// </summary>
-		public Point ClientLocation {
-			get {
-				return clientLocation;
-			}
-		}
+        /// <summary>
+        /// Client coordinates for the view
+        /// </summary>
+        public Point ClientLocation => clientLocation;
 
-		/// <summary>
-		/// The model grid location that was hit
-		/// </summary>
-		public Point ModelLocation {
-			get {
-				return modelLocation;
-			}
-		}
+        /// <summary>
+        /// The model grid location that was hit
+        /// </summary>
+        public Point ModelLocation => modelLocation;
 
-		/// <summary>
-		/// Selection containing all the components that were "hit"
-		/// </summary>
-		public LayoutSelection Selection {
-			get {
-				return selection;
-			}
-		}
+        /// <summary>
+        /// Selection containing all the components that were "hit"
+        /// </summary>
+        public LayoutSelection Selection => selection;
 
-		public IList<ILayoutDrawingRegion> Regions {
-			get {
-				return regions;
-			}
-		}
-	}
+        public IList<ILayoutDrawingRegion> Regions => regions;
+    }
 
 	public class LayoutDraggedObject {
 		public object DraggedObject;

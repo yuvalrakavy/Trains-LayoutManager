@@ -1,22 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Xml;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Linq;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI;
-using LayoutManager.Tools;
-using LayoutManager.ControlComponents.Dialogs;
 
 namespace LayoutManager.ControlComponents {
 
-	[LayoutModule("DiMAX Bus Control Components")]
+    [LayoutModule("DiMAX Bus Control Components")]
 	class DiMAXBusComponents : LayoutModuleBase {
 
 		[LayoutEvent("get-control-module-type", IfEvent="LayoutEvent[./Options/@ModuleTypeName='Massoth8170001']")]
@@ -98,13 +90,9 @@ namespace LayoutManager.ControlComponents {
 			: base(module.ControlManager, module.Element) {
 		}
 
-		public bool HasDiMAX_BusConnectionMethod {
-			get {
-				return HasAttribute("DiMAXBusConnectionMethod");
-			}
-		}
+        public bool HasDiMAX_BusConnectionMethod => HasAttribute("DiMAXBusConnectionMethod");
 
-		public MassothFeedbackDecoderBusConnectionMethod DiMAX_BusConnectionMethod {
+        public MassothFeedbackDecoderBusConnectionMethod DiMAX_BusConnectionMethod {
 			get {
 				return (MassothFeedbackDecoderBusConnectionMethod)Enum.Parse(typeof(MassothFeedbackDecoderBusConnectionMethod), GetAttribute("DiMAXBusConnectionMethod", "Slave"));
 			}
@@ -114,13 +102,9 @@ namespace LayoutManager.ControlComponents {
 			}
 		}
 
-		public bool HasDiMAX_BusId {
-			get {
-				return HasAttribute("DiMAXBusID");
-			}
-		}
+        public bool HasDiMAX_BusId => HasAttribute("DiMAXBusID");
 
-		public int DiMAX_BusId {
+        public int DiMAX_BusId {
 			get {
 				return XmlConvert.ToInt32(GetAttribute("DiMAXBusID", "12"));
 			}
@@ -198,11 +182,7 @@ namespace LayoutManager.ControlComponents {
             module.AddressProgrammingRequired = false;
 		}
 
-		public override string Description {
-			get {
-				return "Set feedback module address to " + ProgrammingTarget.Address + " to " + (ProgrammingTarget.Address + ProgrammingTarget.ModuleType.NumberOfAddresses - 1);
-			}
-		}
+        public override string Description => "Set feedback module address to " + ProgrammingTarget.Address + " to " + (ProgrammingTarget.Address + ProgrammingTarget.ModuleType.NumberOfAddresses - 1);
 
         #region IMassothFeedbackDecoderSetAddress Members
         const string BusConnectionAttribute = "BusConnectionMethod";

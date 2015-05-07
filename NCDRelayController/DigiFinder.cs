@@ -22,9 +22,7 @@ namespace DigiFinder {
 		public int EncryptedRealPortNumber { get; internal set; }
 		public int PortCount { get; internal set; }
 
-		public override string ToString() {
-			return IpAddress.ToString() + " [" + RealPortNumber + "]: " + DeviceName + " (" + FirmwareDescription + ") " + PortCount + " serial ports";
-		}
+        public override string ToString() => IpAddress.ToString() + " [" + RealPortNumber + "]: " + DeviceName + " (" + FirmwareDescription + ") " + PortCount + " serial ports";
     }
 
     public class DigiFinder {
@@ -225,8 +223,6 @@ namespace DigiFinder {
 			return ((int)fieldData[0] << 24) | ((int)fieldData[1] << 16) | ((int)fieldData[2] << 8) | (int)fieldData[3];
 		}
 
-		public static string GetString(byte[] fieldData) {
-			return System.Text.ASCIIEncoding.Default.GetString(fieldData);
-		}
-	}
+        public static string GetString(byte[] fieldData) => System.Text.ASCIIEncoding.Default.GetString(fieldData);
+    }
 }

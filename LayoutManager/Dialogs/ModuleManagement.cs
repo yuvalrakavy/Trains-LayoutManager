@@ -288,13 +288,9 @@ namespace LayoutManager.Dialogs
 			}
 		}
 
-		internal LayoutAssembly LayoutAssembly {
-			get {
-				return layoutAssembly;
-			}
-		}
+        internal LayoutAssembly LayoutAssembly => layoutAssembly;
 
-		internal void ToggleSaveState() {
+        internal void ToggleSaveState() {
 			layoutAssembly.SaveAssemblyReference = !layoutAssembly.SaveAssemblyReference;
 			setName();
 		}
@@ -323,13 +319,9 @@ namespace LayoutManager.Dialogs
 			}
 		}
 
-		internal LayoutModule Module {
-			get {
-				return module;
-			}
-		}
+        internal LayoutModule Module => module;
 
-		internal void ToggleEnableState() {
+        internal void ToggleEnableState() {
 			module.Enabled = !module.Enabled;
 			setName();
 		}

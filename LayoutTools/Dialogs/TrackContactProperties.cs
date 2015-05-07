@@ -44,16 +44,12 @@ namespace LayoutManager.Tools.Dialogs
 			attributesEditor.AttributesOwner = new AttributesOwner(xmlInfo.Element);
 		}
 
-		public LayoutXmlInfo XmlInfo {
-			get {
-				return xmlInfo;
-			}
-		}
+        public LayoutXmlInfo XmlInfo => xmlInfo;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{

@@ -29,93 +29,39 @@ namespace LayoutManager
 			EventManager.AddObjectSubscriptions(this);
 		}
 
-		protected override ContextMenu GetEmptySpotMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
-			return null;
-		}
+        protected override ContextMenu GetEmptySpotMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) => null;
 
-		#region Implement properties for returning various context menu related event names
+        #region Implement properties for returning various context menu related event names
 
-		protected override string ComponentContextMenuAddTopEntriesEventName {
-			get {
-				return "add-component-operation-context-menu-top-entries";
-			}
-		}
+        protected override string ComponentContextMenuAddTopEntriesEventName => "add-component-operation-context-menu-top-entries";
 
-		protected override string ComponentContextMenuQueryEventName {
-			get {
-				return "query-component-operation-context-menu";
-			}
-		}
+        protected override string ComponentContextMenuQueryEventName => "query-component-operation-context-menu";
 
-		protected override string ComponentContextMenuQueryCanRemoveEventName {
-			get {
-				return null;
-			}
-		}
+        protected override string ComponentContextMenuQueryCanRemoveEventName => null;
 
-		protected override string ComponentContextMenuAddEntriesEventName {
-			get {
-				return "add-component-operation-context-menu-entries";
-			}
-		}
+        protected override string ComponentContextMenuAddEntriesEventName => "add-component-operation-context-menu-entries";
 
-		protected override string ComponentContextMenuAddBottomEntriesEventName {
-			get {
-				return "add-component-operation-context-menu-bottom-entries";
-			}
-		}
+        protected override string ComponentContextMenuAddBottomEntriesEventName => "add-component-operation-context-menu-bottom-entries";
 
-		protected override string ComponentContextMenuAddCommonEntriesEventName {
-			get {
-				return "add-component-operation-context-menu-common-entries";
-			}
-		}
+        protected override string ComponentContextMenuAddCommonEntriesEventName => "add-component-operation-context-menu-common-entries";
 
-		protected override string ComponentContextMenuQueryNameEventName {
-			get {
-				return "query-component-operation-context-menu-name";
-			}
-		}
+        protected override string ComponentContextMenuQueryNameEventName => "query-component-operation-context-menu-name";
 
-		protected override string ComponentContextMenuAddEmptySpotEntriesEventName {
-			get {
-				return "add-operation-empty-spot-context-menu-entries";
-			}
-		}
+        protected override string ComponentContextMenuAddEmptySpotEntriesEventName => "add-operation-empty-spot-context-menu-entries";
 
-		protected override string ComponentContextMenuAddSelectionEntriesEventName {
-			get {
-				return "add-operation-selection-menu-entries";
-			}
-		}
+        protected override string ComponentContextMenuAddSelectionEntriesEventName => "add-operation-selection-menu-entries";
 
-		protected override string QueryDragEventName {
-			get {
-				return "query-operation-drag";
-			}
-		}
+        protected override string QueryDragEventName => "query-operation-drag";
 
-		protected override string DragDoneEventName {
-			get {
-				return "operation-drag-done";
-			}
-		}
+        protected override string DragDoneEventName => "operation-drag-done";
 
-		protected override string QueryDropEventName {
-			get {
-				return "query-operation-drop";
-			}
-		}
+        protected override string QueryDropEventName => "query-operation-drop";
 
-		protected override string DropEventName {
-			get {
-				return "do-operation-drop";
-			}
-		}
+        protected override string DropEventName => "do-operation-drop";
 
-		#endregion
+        #endregion
 
-		protected override void DefaultAction(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
+        protected override void DefaultAction(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
 			foreach(ModelComponent component in hitTestResult.Selection)
 				EventManager.Event(new LayoutEvent(component, "default-action-command", null, hitTestResult));
 		}

@@ -87,32 +87,20 @@ namespace LayoutManager.Logic {
 			}
 		}
 
-		public bool Contains(TrackEdgeId trackEdgeId) {
-			return topology.ContainsKey(trackEdgeId);
-		}
+        public bool Contains(TrackEdgeId trackEdgeId) => topology.ContainsKey(trackEdgeId);
 
-		public bool Contains(TrackEdge edge) {
-			return Contains(new TrackEdgeId(edge));
-		}
+        public bool Contains(TrackEdge edge) => Contains(new TrackEdgeId(edge));
 
-		public ModelTopologyEntry this[TrackEdgeId trackEdgeId] {
-			get {
-				return topology[trackEdgeId];
-			}
-		}
+        public ModelTopologyEntry this[TrackEdgeId trackEdgeId] => topology[trackEdgeId];
 
-		public ModelTopologyEntry this[TrackEdge edge] {
-			get {
-				return topology[new TrackEdgeId(edge)];
-			}
-		}
+        public ModelTopologyEntry this[TrackEdge edge] => topology[new TrackEdgeId(edge)];
 
-		/// <summary>
-		/// Check if this topology is the same as a given other topology
-		/// </summary>
-		/// <param name="obj">The other topology</param>
-		/// <returns>True - the two topologies are the same</returns>
-		public override bool Equals(object obj) {
+        /// <summary>
+        /// Check if this topology is the same as a given other topology
+        /// </summary>
+        /// <param name="obj">The other topology</param>
+        /// <returns>True - the two topologies are the same</returns>
+        public override bool Equals(object obj) {
 			ModelTopology other = obj as ModelTopology;
 
 			if(other == null)
@@ -164,11 +152,9 @@ namespace LayoutManager.Logic {
 			w.WriteEndElement();
 		}
 
-		public override int GetHashCode() {
-			return base.GetHashCode();
-		}
+        public override int GetHashCode() => base.GetHashCode();
 
-		static ModelTopologyConnectionEntry getConnectedSplit(TrackEdge edge) {
+        static ModelTopologyConnectionEntry getConnectedSplit(TrackEdge edge) {
 			TrackEdgeDictionary visitedMergePoints = new TrackEdgeDictionary();
 			int penalty = 0;
 
@@ -211,25 +197,13 @@ namespace LayoutManager.Logic {
 			this.penalty = penalty;
 		}
 
-		public TrackEdgeId Destination {
-			get {
-				return destination;
-			}
-		}
+        public TrackEdgeId Destination => destination;
 
-		public int Penalty {
-			get {
-				return penalty;
-			}
-		}
+        public int Penalty => penalty;
 
-		public bool IsEmpty {
-			get {
-				return destination.IsEmpty;
-			}
-		}
+        public bool IsEmpty => destination.IsEmpty;
 
-		public ModelTopologyEntry DestinationTopologyEntry {
+        public ModelTopologyEntry DestinationTopologyEntry {
 			get {
 				return destinationTopologyEntry;
 			}
@@ -251,10 +225,8 @@ namespace LayoutManager.Logic {
 			return destination.Equals(other.destination) && penalty == other.penalty;
 		}
 
-		public override int GetHashCode() {
-			return destination.GetHashCode() ^ penalty;
-		}
-	}
+        public override int GetHashCode() => destination.GetHashCode() ^ penalty;
+    }
 
 	public class ModelTopologyEntry {
 		int nStates;
@@ -266,13 +238,9 @@ namespace LayoutManager.Logic {
 			connections = new ModelTopologyConnectionEntry[stateCount];
 		}
 
-		public int SwitchingStateCount {
-			get {
-				return nStates;
-			}
-		}
+        public int SwitchingStateCount => nStates;
 
-		public bool Visited {
+        public bool Visited {
 			get {
 				return visited;
 			}

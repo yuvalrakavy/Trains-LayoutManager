@@ -108,30 +108,18 @@ namespace LayoutManager.Tools.Dialogs
 			}
 		}
 
-		private static int GetLastAddress(ControlBus bus, ControlModuleType moduleType) {
-			return moduleType.LastAddress < 0 ? bus.BusType.LastAddress : moduleType.LastAddress;
-		}
+        private static int GetLastAddress(ControlBus bus, ControlModuleType moduleType) => moduleType.LastAddress < 0 ? bus.BusType.LastAddress : moduleType.LastAddress;
 
-		private static int GetFirstAddress(ControlBus bus, ControlModuleType moduleType) {
-			return moduleType.FirstAddress < 0 ? bus.BusType.FirstAddress : moduleType.FirstAddress;
-		}
+        private static int GetFirstAddress(ControlBus bus, ControlModuleType moduleType) => moduleType.FirstAddress < 0 ? bus.BusType.FirstAddress : moduleType.FirstAddress;
 
-		public int Address {
-			get {
-				return address;
-			}
-		}
+        public int Address => address;
 
-		public bool UserActionRequired {
-			get {
-				return checkBoxSetUserActionRequired.Checked;
-			}
-		}
+        public bool UserActionRequired => checkBoxSetUserActionRequired.Checked;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{
@@ -283,13 +271,9 @@ namespace LayoutManager.Tools.Dialogs
 				this.numberOfAddress = numberOfAddress;
 			}
 
-			public int Address {
-				get {
-					return address;
-				}
-			}
+            public int Address => address;
 
-			public override string ToString() {
+            public override string ToString() {
 				if(numberOfAddress == 1)
 					return address.ToString(); 
 				else {

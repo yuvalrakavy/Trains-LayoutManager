@@ -46,16 +46,12 @@ namespace LayoutManager.Dialogs
 			buttonSelect.Enabled = locomotiveTypeList.SelectedLocomotiveType != null;
 		}
 
-		public LocomotiveTypeInfo SelectedLocomotiveType {
-			get {
-				return locomotiveTypeList.SelectedLocomotiveType;
-			}
-		}
+        public LocomotiveTypeInfo SelectedLocomotiveType => locomotiveTypeList.SelectedLocomotiveType;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{

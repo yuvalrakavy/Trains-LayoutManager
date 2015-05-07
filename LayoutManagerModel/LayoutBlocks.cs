@@ -21,16 +21,12 @@ namespace LayoutManager.Model {
 		LayoutBlockDefinitionComponent	blockInfo;
 		Guid						id;
 
-		public TrackEdgeCollection TrackEdges {
-			get {
-				return trackEdges;
-			}
-		}
+        public TrackEdgeCollection TrackEdges => trackEdges;
 
-		/// <summary>
-		/// Return an array of all the track contacts that bounds current block
-		/// </summary>
-		public IList<LayoutBlockEdgeBase> BlockEdges {
+        /// <summary>
+        /// Return an array of all the track contacts that bounds current block
+        /// </summary>
+        public IList<LayoutBlockEdgeBase> BlockEdges {
 			get {
 				if(blockEdges == null) {
 					blockEdges = new List<LayoutBlockEdgeBase>();
@@ -297,39 +293,25 @@ namespace LayoutManager.Model {
 			trainsInBlock.Clear();
 		}
 
-		public IList<TrainLocationInfo> Trains {
-			get {
-				return trainsInBlock.AsReadOnly();
-			}
-		}
+        public IList<TrainLocationInfo> Trains => trainsInBlock.AsReadOnly();
 
-		public bool HasTrains {
-			get {
-				return trainsInBlock.Count > 0;
-			}
-		}
+        public bool HasTrains => trainsInBlock.Count > 0;
 
-		/// <summary>
-		/// All the locomotives in trains in this block
-		/// </summary>
-		public IEnumerable<TrainLocomotiveInfo> Locomotives {
-			get {
-				return Trains.SelectMany(t => t.Train.Locomotives);
-			}
-		}
+        /// <summary>
+        /// All the locomotives in trains in this block
+        /// </summary>
+        public IEnumerable<TrainLocomotiveInfo> Locomotives => Trains.SelectMany(t => t.Train.Locomotives);
 
-		public bool IsTrainInBlock(Guid trainId) {
+        public bool IsTrainInBlock(Guid trainId) {
 			foreach(TrainLocationInfo trainLocation in trainsInBlock)
 				if(trainId == trainLocation.Train.Id)
 					return true;
 			return false;
 		}
 
-		public bool IsTrainInBlock(TrainStateInfo train) {
-			return IsTrainInBlock(train.Id);
-		}
+        public bool IsTrainInBlock(TrainStateInfo train) => IsTrainInBlock(train.Id);
 
-		public LayoutLockRequest LockRequest {
+        public LayoutLockRequest LockRequest {
 			get {
 				return lockRequest;
 			}
@@ -340,17 +322,11 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public bool IsResourceReady() {
-			return true;				// The block is always ready to be locked
-		}
+        public bool IsResourceReady() => true;              // The block is always ready to be locked
 
-		public bool IsLocked {
-			get {
-				return LockRequest != null;
-			}
-		}
+        public bool IsLocked => LockRequest != null;
 
-		public LayoutSelection GetSelection() {
+        public LayoutSelection GetSelection() {
 			LayoutSelection	selection = new LayoutSelection();
 
 			foreach(TrackEdge edge in TrackEdges)
@@ -447,10 +423,8 @@ namespace LayoutManager.Model {
 			this.Clear();
 		}
 
-		public new IEnumerator<LayoutBlock> GetEnumerator() {
-			return Values.GetEnumerator();
-		}
-	}
+        public new IEnumerator<LayoutBlock> GetEnumerator() => Values.GetEnumerator();
+    }
 
 	#endregion
 
@@ -471,19 +445,11 @@ namespace LayoutManager.Model {
 			this.options = options;
 		}
 
-		public ILayoutLockResource Resource {
-			get {
-				return resource;
-			}
-		}
+        public ILayoutLockResource Resource => resource;
 
-		public ResourceOptions Options {
-			get {
-				return options;
-			}
-		}
+        public ResourceOptions Options => options;
 
-		public bool ForceRedSignal {
+        public bool ForceRedSignal {
 			get {
 				return (options & ResourceOptions.ForceRedSignal) != 0;
 			}
@@ -511,10 +477,8 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public string GetDescription() {
-			return GetDescription(resource.Id);
-		}
-	};
+        public string GetDescription() => GetDescription(resource.Id);
+    };
 
 	#region ResourceEntry dictionary
 
@@ -528,14 +492,10 @@ namespace LayoutManager.Model {
 				Add(resource, options);
 		}
 
-		public bool Remove(ILayoutLockResource resource) {
-			return Remove(resource.Id);
-		}
+        public bool Remove(ILayoutLockResource resource) => Remove(resource.Id);
 
-		public new IEnumerator<LayoutLockResourceEntry> GetEnumerator() {
-			return Values.GetEnumerator();
-		}
-	}
+        public new IEnumerator<LayoutLockResourceEntry> GetEnumerator() => Values.GetEnumerator();
+    }
 
 	#endregion
 
@@ -574,29 +534,21 @@ namespace LayoutManager.Model {
 		public CancellationToken CancellationToken { get; set; }
 		public Action OnLockGranted { get; set; }
 
-		public LayoutLockResourceEntryDictionary ResourceEntries {
-			get {
-				return resourceEntries;
-			}
-		}
+        public LayoutLockResourceEntryDictionary ResourceEntries => resourceEntries;
 
-		public LayoutEvent LockedEvent {
+        public LayoutEvent LockedEvent {
 			set {
 				OnLockGranted = () => EventManager.Event(value);
 			}
 		}
 
-		public bool IsManualDispatchLock {
-			get {
-				return Type == LayoutLockType.ManualDispatch;
-			}
-		}
+        public bool IsManualDispatchLock => Type == LayoutLockType.ManualDispatch;
 
-		#endregion
+        #endregion
 
-		#region Operations
+        #region Operations
 
-		public void Dump() {
+        public void Dump() {
 			bool		first = true;
 
 			Trace.Write("Lock request (" + Status.ToString() + "), owner: ");
@@ -776,13 +728,9 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public TrainLocationInfo TrainLocation {
-			get {
-				return trainLocation;
-			}
-		}
+        public TrainLocationInfo TrainLocation => trainLocation;
 
-		public Guid FromBlockId {
+        public Guid FromBlockId {
 			get {
 				return XmlConvert.ToGuid(Element.GetAttribute("FromBlockID"));
 			}
@@ -861,30 +809,14 @@ namespace LayoutManager.Model {
 			_toBlock = toBlock;
 		}
 
-		public LayoutBlockEdgeBase BlockEdge {
-			get {
-				return _blockEdge;
-			}
-		}
+        public LayoutBlockEdgeBase BlockEdge => _blockEdge;
 
-		public TrainStateInfo Train {
-			get {
-				return _train;
-			}
-		}
+        public TrainStateInfo Train => _train;
 
-		public LayoutBlock FromBlock {
-			get {
-				return _fromBlock;
-			}
-		}
+        public LayoutBlock FromBlock => _fromBlock;
 
-		public LayoutBlock ToBlock {
-			get {
-				return _toBlock;
-			}
-		}
-	}
+        public LayoutBlock ToBlock => _toBlock;
+    }
 
 	#endregion
 }

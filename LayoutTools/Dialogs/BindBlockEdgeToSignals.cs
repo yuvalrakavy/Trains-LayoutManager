@@ -75,17 +75,11 @@ namespace LayoutManager.Tools.Dialogs
 			}
 		}
 
-		public string DialogName(IModelComponent component) {
-			return "Link signals to track contact";
-		}
+        public string DialogName(IModelComponent component) => "Link signals to track contact";
 
-		public LayoutBlockEdgeBase BlockEdge {
-			get {
-				return blockEdge;
-			}
-		}
+        public LayoutBlockEdgeBase BlockEdge => blockEdge;
 
-		public void AddComponent(IModelComponent component) {
+        public void AddComponent(IModelComponent component) {
 			LayoutSignalComponent	signalComponent = (LayoutSignalComponent)component;
 
 			foreach(LinkedSignalItem linkedSignalItem in listBoxSignals.Items)
@@ -281,13 +275,9 @@ namespace LayoutManager.Tools.Dialogs
 				this.signalComponent = signalComponent;
 			}
 
-			public LayoutSignalComponent SignalComponent {
-				get {
-					return signalComponent;
-				}
-			}
+            public LayoutSignalComponent SignalComponent => signalComponent;
 
-			public override string ToString() {
+            public override string ToString() {
 				switch(signalComponent.Info.SignalType) {
 
 					case LayoutSignalType.Lights:

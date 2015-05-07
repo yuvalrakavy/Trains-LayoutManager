@@ -52,16 +52,10 @@ namespace LayoutManager.Tools.Dialogs
 				this.driverElement = driverElement;
 			}
 
-			public string DriverName {
-				get {
-					return driverElement.GetAttribute("Name");
-				}
-			}
+            public string DriverName => driverElement.GetAttribute("Name");
 
-			public override string ToString() {
-				return driverElement.GetAttribute("Description");
-			}
-		}
+            public override string ToString() => driverElement.GetAttribute("Description");
+        }
 
 		public GateProperties(ModelComponent component, PlacementInfo placementInfo)
 		{
@@ -117,16 +111,12 @@ namespace LayoutManager.Tools.Dialogs
 			checkBoxGateOpenActiveState.Enabled = checkBoxHasGateOpenSensor.Checked;
 		}
 
-		public LayoutXmlInfo XmlInfo {
-			get {
-				return xmlInfo;
-			}
-		}
+        public LayoutXmlInfo XmlInfo => xmlInfo;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{

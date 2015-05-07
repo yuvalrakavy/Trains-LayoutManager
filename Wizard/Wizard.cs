@@ -163,20 +163,14 @@ namespace Gui.Wizard
 		#endregion
 
 		private PageCollection vPages;
-		/// <summary>
-		/// Returns the collection of Pages in the wizard
-		/// </summary>
-		[Category("Wizard")]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-		public PageCollection Pages
-		{
-			get
-			{
-				return vPages;
-			}
-		}
+        /// <summary>
+        /// Returns the collection of Pages in the wizard
+        /// </summary>
+        [Category("Wizard")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public PageCollection Pages => vPages;
 
-		private WizardPage vActivePage = null;
+        private WizardPage vActivePage = null;
 		/// <summary>
 		/// Gets/Sets the activePage in the wizard
 		/// </summary>
@@ -209,24 +203,13 @@ namespace Gui.Wizard
 			}
 		}
 
-		/// <summary>
-		/// Alternative way of getting/Setiing  the current page by using wizardPage objects
-		/// </summary>
-		public WizardPage Page
-		{
-			get
-			{
-				return vActivePage;
-			}
-			//Dont use this anymore, see Next, Back, NextTo and BackTo
-//			set
-//			{
-//				ActivatePage(value);
-//			}
-		}
+        /// <summary>
+        /// Alternative way of getting/Setiing  the current page by using wizardPage objects
+        /// </summary>
+        public WizardPage Page => vActivePage;
 
 
-		protected void ActivatePage(int index)
+        protected void ActivatePage(int index)
 		{
 			//If the new page is invalid
 			if (index <0 || index >= vPages.Count)

@@ -59,13 +59,9 @@ namespace LayoutManager.Tools.Controls
 			columnSorter = new CommonUI.ListViewStringColumnsSorter(listViewTrips);
 		}
 
-		public int AutoClearTimeout {
-			get {
-				return autoClearTimeout;
-			}
-		}
+        public int AutoClearTimeout => autoClearTimeout;
 
-		public ILayoutFrameWindow FrameWindow {
+        public ILayoutFrameWindow FrameWindow {
 			get {
 				if(frameWindow == null)
 					frameWindow = (ILayoutFrameWindow)FindForm();
@@ -100,19 +96,13 @@ namespace LayoutManager.Tools.Controls
 				removeTripAssignment(item);
 		}
 
-		private TripAssignmentItem getTripAssignmentItem(Guid trainID) {
-			return (TripAssignmentItem)mapTrainToItem[trainID];
-		}
+        private TripAssignmentItem getTripAssignmentItem(Guid trainID) => (TripAssignmentItem)mapTrainToItem[trainID];
 
-		private TripAssignmentItem getTripAssignmentItem(TrainStateInfo train) {
-			return getTripAssignmentItem(train.Id);
-		}
+        private TripAssignmentItem getTripAssignmentItem(TrainStateInfo train) => getTripAssignmentItem(train.Id);
 
-		private TripAssignmentItem getTripAssignmentItem(TripPlanAssignmentInfo tripPlanAssignment) {
-			return getTripAssignmentItem(tripPlanAssignment.TrainId);
-		}
+        private TripAssignmentItem getTripAssignmentItem(TripPlanAssignmentInfo tripPlanAssignment) => getTripAssignmentItem(tripPlanAssignment.TrainId);
 
-		private TripAssignmentItem getSelected() {
+        private TripAssignmentItem getSelected() {
 			TripAssignmentItem	selected = null;
 
 			if(listViewTrips.SelectedItems.Count > 0)
@@ -518,15 +508,11 @@ namespace LayoutManager.Tools.Controls
 				SubItems.Add(getTripState());
 			}
 
-			#region Properties
+            #region Properties
 
-			public TrainStateInfo Train {
-				get {
-					return train;
-				}
-			}
+            public TrainStateInfo Train => train;
 
-			public TripPlanAssignmentInfo TripAssignment {
+            public TripPlanAssignmentInfo TripAssignment {
 				get {
 					return tripAssignment;
 				}

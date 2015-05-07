@@ -423,14 +423,12 @@ namespace LayoutManager.Tools
 			e.Info = new LayoutDoubleTrackComponent(trackCp1, trackCp2);
 		}
 
-		//----
+        //----
 
-		bool CanComposeTrackLink(LayoutStraightTrackComponent existingTrack) {
-			return !LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) &&
-				existingTrack.Spot[ModelComponentKind.TrackLink] == null;
-		}
+        bool CanComposeTrackLink(LayoutStraightTrackComponent existingTrack) => !LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) &&
+                existingTrack.Spot[ModelComponentKind.TrackLink] == null;
 
-		[LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='track-link']")]
+        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='track-link']")]
 		void PaintTrackLinkItem(LayoutEvent e) {
 			Graphics g = (Graphics)e.Info;
 
@@ -730,13 +728,11 @@ namespace LayoutManager.Tools
 			e.Info = new LayoutImageComponent();
 		}
 
-		//----
+        //----
 
-		private bool CanComposeBridge(LayoutTrackComponent old) {
-			return old != null && old is LayoutStraightTrackComponent;
-		}
+        private bool CanComposeBridge(LayoutTrackComponent old) => old != null && old is LayoutStraightTrackComponent;
 
-		[LayoutEvent("paint-image-menu-item", IfSender="Item[@Name='bridge']")]
+        [LayoutEvent("paint-image-menu-item", IfSender="Item[@Name='bridge']")]
 		void PaintBridgeItem(LayoutEvent e) {
 			Graphics g = (Graphics)e.Info;
 
@@ -762,13 +758,11 @@ namespace LayoutManager.Tools
 			e.Info = new LayoutBridgeComponent();
 		}
 
-		//----
+        //----
 
-		private bool CanComposeTunnel(LayoutTrackComponent old) {
-			return old != null && old is LayoutStraightTrackComponent;
-		}
+        private bool CanComposeTunnel(LayoutTrackComponent old) => old != null && old is LayoutStraightTrackComponent;
 
-		[LayoutEvent("paint-image-menu-item", IfSender="Item[@Name='tunnel']")]
+        [LayoutEvent("paint-image-menu-item", IfSender="Item[@Name='tunnel']")]
 		void PaintTunnelItem(LayoutEvent e) {
 			Graphics g = (Graphics)e.Info;
 
@@ -822,14 +816,12 @@ namespace LayoutManager.Tools
 			}
 		}
 
-		//----
+        //----
 
-		private bool canComposeTrackPower(LayoutTrackComponent existingTrack) {
-			return existingTrack != null &&
-				!LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) && existingTrack.BlockDefinitionComponent == null;
-		}
+        private bool canComposeTrackPower(LayoutTrackComponent existingTrack) => existingTrack != null &&
+                !LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) && existingTrack.BlockDefinitionComponent == null;
 
-		[LayoutEvent("paint-image-menu-item", IfSender="Item[@Name='track-power']")]
+        [LayoutEvent("paint-image-menu-item", IfSender="Item[@Name='track-power']")]
 		void PaintTrackPowerItem(LayoutEvent e) {
 			Graphics	g = (Graphics)e.Info;
 
@@ -852,14 +844,12 @@ namespace LayoutManager.Tools
 			e.Info = new LayoutTrackPowerConnectorComponent();
 		}
 
-		//----
+        //----
 
-		private bool canComposeTrackIsolation(LayoutTrackComponent existingTrack) {
-			return existingTrack != null &&
-				!LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) && existingTrack.BlockDefinitionComponent == null && !LayoutTrackReverseLoopModule.Is(existingTrack.Spot);
-		}
+        private bool canComposeTrackIsolation(LayoutTrackComponent existingTrack) => existingTrack != null &&
+                !LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) && existingTrack.BlockDefinitionComponent == null && !LayoutTrackReverseLoopModule.Is(existingTrack.Spot);
 
-		[LayoutEvent("paint-image-menu-item", IfSender="Item[@Name='track-isolation']")]
+        [LayoutEvent("paint-image-menu-item", IfSender="Item[@Name='track-isolation']")]
 		void PaintTrackIsolationItem(LayoutEvent e) {
 			Graphics	g = (Graphics)e.Info;
 
@@ -882,14 +872,12 @@ namespace LayoutManager.Tools
 			e.Info = new LayoutTrackIsolationComponent();
 		}
 
-		//----
+        //----
 
-		private bool canComposeTrackReverseLoopModule(LayoutTrackComponent existingTrack) {
-			return existingTrack != null &&
-				!LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) && existingTrack.BlockDefinitionComponent == null && !LayoutTrackIsolationComponent.Is(existingTrack.Spot);
-		}
+        private bool canComposeTrackReverseLoopModule(LayoutTrackComponent existingTrack) => existingTrack != null &&
+                !LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) && existingTrack.BlockDefinitionComponent == null && !LayoutTrackIsolationComponent.Is(existingTrack.Spot);
 
-		[LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='track-reverse-loop-module']")]
+        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='track-reverse-loop-module']")]
 		void PaintTrackReverseLoopModuleItem(LayoutEvent e) {
 			Graphics g = (Graphics)e.Info;
 
@@ -913,13 +901,11 @@ namespace LayoutManager.Tools
 		}
 
 
-		//----
+        //----
 
-		private bool canComposeControlModuleLocation(LayoutTrackComponent exitingTrack) {
-			return exitingTrack == null;
-		}
+        private bool canComposeControlModuleLocation(LayoutTrackComponent exitingTrack) => exitingTrack == null;
 
-		[LayoutEvent("paint-image-menu-item", IfSender="Item[@Name='control-module-location']")]
+        [LayoutEvent("paint-image-menu-item", IfSender="Item[@Name='control-module-location']")]
 		void PaintControlModuleLocation(LayoutEvent e) {
 			Graphics	g = (Graphics)e.Info;
 

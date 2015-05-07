@@ -40,22 +40,14 @@ namespace LayoutManager.CommonUI.Controls.XmlInfoEditorForms
 			textBoxValue.Text = a.Value;
 		}
 
-		public String AttributeName {
-			get {
-				return textBoxName.Text;
-			}
-		}
+        public String AttributeName => textBoxName.Text;
 
-		public String AttributeValue {
-			get {
-				return textBoxValue.Text;
-			}
-		}
+        public String AttributeValue => textBoxValue.Text;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{

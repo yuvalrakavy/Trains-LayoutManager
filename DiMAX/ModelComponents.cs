@@ -87,27 +87,17 @@ namespace DiMAX {
 			}
 		}
 
-		#region Specific implementation to base class overrideble methods and properties
+        #region Specific implementation to base class overrideble methods and properties
 
-		public override IList<string> BusTypeNames {
-			get {
-				return Array.AsReadOnly<string>(new string[] { "DiMAXDCC", "DiMAXBUS", "DiMAXLocoBus" });
-			}
-		}
+        public override IList<string> BusTypeNames => Array.AsReadOnly<string>(new string[] { "DiMAXDCC", "DiMAXBUS", "DiMAXLocoBus" });
 
-		public bool POMprogrammingSupported {
-			get {
-				return true;
-			}
-		}
+        public bool POMprogrammingSupported => true;
 
-		public override DigitalPowerFormats SupportedDigitalPowerFormats {
-			get { return DigitalPowerFormats.NRMA; }
-		}
+        public override DigitalPowerFormats SupportedDigitalPowerFormats => DigitalPowerFormats.NRMA;
 
-		#endregion
-		
-		protected override void OnCommunicationSetup() {
+        #endregion
+
+        protected override void OnCommunicationSetup() {
 			base.OnCommunicationSetup ();
 
 			if(!Element.HasAttribute("OverlappedIO"))
@@ -149,19 +139,13 @@ namespace DiMAX {
 			}
 		}
 
-		public override bool LayoutEmulationSupported {
-			get {return true; }
-		}
+        public override bool LayoutEmulationSupported => true;
 
-		public override bool DesignTimeLayoutActivationSupported {
-			get { return true; }
-		}
+        public override bool DesignTimeLayoutActivationSupported => true;
 
-		protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) {
-			return new DiMAXcommandStationEmulator(this, pipeName, EmulationTickTime);
-		}
+        protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) => new DiMAXcommandStationEmulator(this, pipeName, EmulationTickTime);
 
-		protected override void OnEnteredOperationMode() {
+        protected override void OnEnteredOperationMode() {
 			base.OnEnteredOperationMode();
 
 			foreach(var train in LayoutModel.StateManager.Trains) {
@@ -277,28 +261,22 @@ namespace DiMAX {
 			}
 		}
 
-		[LayoutAsyncEvent("enable-DiMAX-status-update", IfEvent="*[CommandStation/@Name='`string(Name)`']")]
-		private Task enableDiMAXstatusUpdate(LayoutEvent e) {
-			return outputManager.AddCommand(new DiMAXinterfaceAnnouncement(this, true));
-		}
+        [LayoutAsyncEvent("enable-DiMAX-status-update", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
+        private Task enableDiMAXstatusUpdate(LayoutEvent e) => outputManager.AddCommand(new DiMAXinterfaceAnnouncement(this, true));
 
-		[LayoutAsyncEvent("disable-DiMAX-status-update", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-		private Task disableDiMAXstatusUpdate(LayoutEvent e) {
-			return outputManager.AddCommand(new DiMAXinterfaceAnnouncement(this, false));
-		}
+        [LayoutAsyncEvent("disable-DiMAX-status-update", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
+        private Task disableDiMAXstatusUpdate(LayoutEvent e) => outputManager.AddCommand(new DiMAXinterfaceAnnouncement(this, false));
 
-		[LayoutAsyncEvent("program-CV-direct-request", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
+        [LayoutAsyncEvent("program-CV-direct-request", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
 		private async Task<Object> programCVdirectRequest(LayoutEvent e0) {
 			var e = (LayoutEvent<DccProgrammingCV, DccDecoderTypeInfo>)e0;
 
 			return await (Task<object>)outputManager.AddCommand(new DiMAXprogramCV(this, e.Sender.Number, e.Sender.Value));
 		}
 
-		private async Task<LayoutActionResult> SetRegister(int register, byte value) {
-			return (LayoutActionResult)await (Task<object>)outputManager.AddCommand(new DiMAXprogramRegister(this, (byte)register, value));
-		}
+        private async Task<LayoutActionResult> SetRegister(int register, byte value) => (LayoutActionResult)await (Task<object>)outputManager.AddCommand(new DiMAXprogramRegister(this, (byte)register, value));
 
-		[LayoutAsyncEvent("program-CV-register-requst", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
+        [LayoutAsyncEvent("program-CV-register-requst", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
 		private async Task<Object> programCVregisterRequst(LayoutEvent e0) {
 			var e = (LayoutEvent<DccProgrammingCV, DccDecoderTypeInfo>)e0;
 			var cv = e.Sender;
@@ -384,14 +362,12 @@ namespace DiMAX {
 				Error("Controller activated for locomotive " + locomotive.Name + " (" + address + ") which is not registered");
 		}
 
-		/// <summary>
-		/// Check if a locomotive is completly inactive. 
-		/// </summary>
-		bool IsLocomotiveActive(TrainStateInfo train, LocomotiveInfo locomotive) {
-			return train.Speed != 0 || train.Lights || train.HasActiveFunction(locomotive);
-		}
+        /// <summary>
+        /// Check if a locomotive is completly inactive. 
+        /// </summary>
+        bool IsLocomotiveActive(TrainStateInfo train, LocomotiveInfo locomotive) => train.Speed != 0 || train.Lights || train.HasActiveFunction(locomotive);
 
-		private void DeselectLocomotive(TrainStateInfo train, LocomotiveInfo locomotive) {
+        private void DeselectLocomotive(TrainStateInfo train, LocomotiveInfo locomotive) {
 			int address = locomotive.AddressProvider.Unit;
 			ActiveLocomotiveInfo activeLocomotive;
 
@@ -920,28 +896,16 @@ namespace DiMAX {
 			return buffer;
 		}
 
-		/// <summary>
-		/// The DiMAX command code of this packet
-		/// </summary>
-		public DiMAXcommandCode CommandCode {
-			get {
-				return commandCode;
-			}
-		}
+        /// <summary>
+        /// The DiMAX command code of this packet
+        /// </summary>
+        public DiMAXcommandCode CommandCode => commandCode;
 
-		public int ParameterCount {
-			get {
-				return parameterCount;
-			}
-		}
+        public int ParameterCount => parameterCount;
 
-		public byte[] Parameters {
-			get {
-				return parameters;
-			}
-		}
+        public byte[] Parameters => parameters;
 
-		internal void Dump(string textMessage) {
+        internal void Dump(string textMessage) {
 			Trace.Write(textMessage + ", type " + CommandCode.ToString() + " Parameters: ");
 			foreach(byte p in Parameters)
 				Trace.Write(" " + p.ToString("x2"));
@@ -956,42 +920,26 @@ namespace DiMAX {
 			this.packet = packet;
 		}
 
-		public DiMAXpacket Packet {
-			get {
-				return packet;
-			}
-		}
-	}
+        public DiMAXpacket Packet => packet;
+    }
 
 	public class DiMAXturnoutOrFeedbackControlPacket : DiMAXencodedPacket {
 
 		public DiMAXturnoutOrFeedbackControlPacket(DiMAXpacket packet) : base(packet) {
 		}
 
-		public int Address {
-			get {
-				return ((Packet.Parameters[0] & 0x1f) << 6) | ((Packet.Parameters[1] >> 2) & 0x3f);
-			}
-		}
+        public int Address => ((Packet.Parameters[0] & 0x1f) << 6) | ((Packet.Parameters[1] >> 2) & 0x3f);
 
-		public int State {
-			get {
-				return Packet.Parameters[1] & 1;
-			}
-		}
-	}
+        public int State => Packet.Parameters[1] & 1;
+    }
 
 	public class DiMAXlocoControlPacket : DiMAXencodedPacket {
 		public DiMAXlocoControlPacket(DiMAXpacket packet)
 			: base(packet) {
 		}
 
-		public int Unit {
-			get {
-				return ((Packet.Parameters[0] & 0x3f) << 8) | Packet.Parameters[1];
-			}
-		}
-	}
+        public int Unit => ((Packet.Parameters[0] & 0x3f) << 8) | Packet.Parameters[1];
+    }
 
 	public class DiMAXlocoSpeedControlPacket : DiMAXlocoControlPacket {
 		public DiMAXlocoSpeedControlPacket(DiMAXpacket packet)
@@ -1014,24 +962,12 @@ namespace DiMAX {
 			: base(packet) {
 		}
 
-		public bool Lights {
-			get {
-				return (Packet.Parameters[2] & 0x80) != 0;
-			}
-		}
+        public bool Lights => (Packet.Parameters[2] & 0x80) != 0;
 
-		public bool FunctionActive {
-			get {
-				return (Packet.Parameters[2] & 0x10) != 0;
-			}
-		}
+        public bool FunctionActive => (Packet.Parameters[2] & 0x10) != 0;
 
-		public int FunctionNumber {
-			get {
-				return (Packet.Parameters[2] & 0x0f);
-			}
-		}
-	}
+        public int FunctionNumber => (Packet.Parameters[2] & 0x0f);
+    }
 
 	#endregion
 
@@ -1050,13 +986,9 @@ namespace DiMAX {
 
 		public DiMAXcommandStation CommandStation { get; private set; }
 
-		public Stream Stream {
-			get {
-				return CommandStation.CommunicationStream;
-			}
-		}
+        public Stream Stream => CommandStation.CommunicationStream;
 
-		public DiMAXpacket Packet {
+        public DiMAXpacket Packet {
 			get; protected set;
 		}
 
@@ -1086,13 +1018,11 @@ namespace DiMAX {
                 DefaultWaitPeriod = 250;
 		}
 
-		#region ICommandStationSynchronousCommand Members
+        #region ICommandStationSynchronousCommand Members
 
-		public int Timeout {
-			get { return 2000; }
-		}
+        public int Timeout => 2000;
 
-		public virtual void OnTimeout() {
+        public virtual void OnTimeout() {
 			Trace.WriteLine("Reply was not received on time for " + this.GetType().Name + " DiMAX command");
 		}
 

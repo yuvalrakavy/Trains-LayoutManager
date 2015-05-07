@@ -39,13 +39,9 @@ namespace LayoutManager.Dialogs {
 			addToNameToControlMap(nameToControlMap, this);
 		}
 
-		protected LocomotiveCatalogInfo Catalog {
-			get {
-				return LayoutModel.LocomotiveCatalog;
-			}
-		}
+        protected LocomotiveCatalogInfo Catalog => LayoutModel.LocomotiveCatalog;
 
-		protected void InitializeControls(XmlElement element, XmlElement storesElement) {
+        protected void InitializeControls(XmlElement element, XmlElement storesElement) {
 			this.element = element;
 
 			BuildControlNameMap();
@@ -330,20 +326,12 @@ namespace LayoutManager.Dialogs {
 			
 		}
 
-		protected LocomotiveKind CurrentKind {
-			get {
-				return (LocomotiveKind)Enum.Parse(typeof(LocomotiveKind), GetRadioValue(new LocomotiveKind(), "Kind"));
-			}
-		}
+        protected LocomotiveKind CurrentKind => (LocomotiveKind)Enum.Parse(typeof(LocomotiveKind), GetRadioValue(new LocomotiveKind(), "Kind"));
 
-		protected LocomotiveOrigin CurrentOrigin {
-			get {
-				return (LocomotiveOrigin)Enum.Parse(typeof(LocomotiveOrigin), GetRadioValue(new LocomotiveOrigin(), "Origin"));
-			}
-		}
+        protected LocomotiveOrigin CurrentOrigin => (LocomotiveOrigin)Enum.Parse(typeof(LocomotiveOrigin), GetRadioValue(new LocomotiveOrigin(), "Origin"));
 
 #if DEBUG
-		void Dump() {
+        void Dump() {
 			foreach(String controlName in nameToControlMap.Keys)
 				Debug.WriteLine(controlName);
 		}
@@ -492,13 +480,9 @@ namespace LayoutManager.Dialogs {
 			this.SubItems.Add(function.Description);
 		}
 
-		public XmlElement FunctionElement {
-			get {
-				return functionElement;
-			}
-		}
+        public XmlElement FunctionElement => functionElement;
 
-		public void Update() {
+        public void Update() {
 			LocomotiveFunctionInfo	function = new LocomotiveFunctionInfo(functionElement);
 
 			this.Text = function.Number.ToString();
@@ -524,13 +508,9 @@ namespace LayoutManager.Dialogs {
 			this.decoderType = decoderType;
 		}
 
-		public DecoderTypeInfo DecoderType {
-			get { return this.decoderType; }
-		}
+        public DecoderTypeInfo DecoderType => this.decoderType;
 
-		public override string ToString() {
-			return DecoderType.Manufacturer + " " + DecoderType.Name + (DecoderType.Description != null ? " (" + DecoderType.Description + ")" : "");
-		}
-	}
+        public override string ToString() => DecoderType.Manufacturer + " " + DecoderType.Name + (DecoderType.Description != null ? " (" + DecoderType.Description + ")" : "");
+    }
 }
 

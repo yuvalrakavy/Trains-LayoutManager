@@ -90,27 +90,15 @@ namespace LayoutEmulation {
 			}
 		}
 
-		public int SpeedSteps {
-			get {
-				return 15;			// 0 - 14
-			}
-		}
+        public int SpeedSteps => 15;            // 0 - 14
 
-		public int TicksPerSpeedStep {
-			get {
-				return 1;
-			}
-		}
+        public int TicksPerSpeedStep => 1;
 
-		public object Sync {
-			get {
-				return this;
-			}
-		}
+        public object Sync => this;
 
-		#endregion
+        #endregion
 
-		#region Operations
+        #region Operations
 
 
         public LayoutComponentConnectionPoint FindRouteThroughMultiPathComponent(IModelComponentIsMultiPath turnout, LayoutComponentConnectionPoint from) {
@@ -509,30 +497,14 @@ namespace LayoutEmulation {
 			_rear = _track.ConnectTo(_front, LayoutComponentConnectionType.Passage)[0];
 		}
 
-		public LayoutTrackComponent Track {
-			get {
-				return _track;
-			}
-		}
+        public LayoutTrackComponent Track => _track;
 
-		public LayoutComponentConnectionPoint Front {
-			get {
-				return _front;
-			}
-		}
+        public LayoutComponentConnectionPoint Front => _front;
 
-		public LayoutComponentConnectionPoint Rear {
-			get {
-				return _rear;
-			}
-		}
+        public LayoutComponentConnectionPoint Rear => _rear;
 
-		public TrackEdge Edge {
-			get {
-				return new TrackEdge(_track, _front);
-			}
-		}
-	}
+        public TrackEdge Edge => new TrackEdge(_track, _front);
+    }
 
 	public class LocomotiveState {
 		ILayoutEmulationEnvironment _environment;
@@ -555,19 +527,11 @@ namespace LayoutEmulation {
 			Speed = 0;
 		}
 
-		public Guid CommandStationId {
-			get {
-				return _commandStationId;
-			}
-		}
+        public Guid CommandStationId => _commandStationId;
 
-		public int Unit {
-			get {
-				return _unit;
-			}
-		}
+        public int Unit => _unit;
 
-		public int Speed {
+        public int Speed {
 			get {
 				return _speed;
 			}

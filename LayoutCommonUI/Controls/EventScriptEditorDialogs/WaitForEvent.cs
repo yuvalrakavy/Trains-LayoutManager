@@ -48,16 +48,12 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 				comboBoxEvent.Items.Add(eventDef.Name);
 		}
 
-		public XmlElement Element {
-			get {
-				return element;
-			}
-		}
+        public XmlElement Element => element;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{

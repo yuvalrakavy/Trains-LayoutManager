@@ -1,15 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Xml;
-using System.Windows.Forms;
-
-using LayoutManager;
+﻿using System.Collections.Generic;
 using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.Decoders {
-	public class LGBdecodersVersion {
+    public class LGBdecodersVersion {
 		public static string LgbDecodersVersion = "1.0";
 	}
 

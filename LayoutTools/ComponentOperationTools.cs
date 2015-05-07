@@ -792,12 +792,8 @@ namespace LayoutManager.Tools {
 				}
 			}
 
-			public Guid SourceRegionID {
-				get {
-					return sourceRegionID;
-				}
-			}
-		}
+            public Guid SourceRegionID => sourceRegionID;
+        }
 
 		ManualDispatchRouteSetting	manualDispatchRouteSetting = new ManualDispatchRouteSetting();
 
@@ -1131,19 +1127,11 @@ namespace LayoutManager.Tools {
 				this.Text = placedElement["Name"].InnerText;
 			}
 
-			protected XmlElement PlacedElement {
-				get {
-					return placedElement;
-				}
-			}
+            protected XmlElement PlacedElement => placedElement;
 
-			protected LayoutBlock Block {
-				get {
-					return block;
-				}
-			}
+            protected LayoutBlock Block => block;
 
-			protected override void OnMeasureItem(MeasureItemEventArgs e) {
+            protected override void OnMeasureItem(MeasureItemEventArgs e) {
 				SizeF	textSize;
 				int		imageWidth;
 				int		textShift = 0;

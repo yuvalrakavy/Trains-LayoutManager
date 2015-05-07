@@ -1,20 +1,16 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Diagnostics;
 using System.ComponentModel;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
 using System.Collections.Generic;
 
-namespace LayoutManager
-{
-	/// <summary>
-	/// Base class for design tools (such as Selection, Track tools)
-	/// </summary>
-	public abstract class LayoutTool : Component
+namespace LayoutManager {
+    /// <summary>
+    /// Base class for design tools (such as Selection, Track tools)
+    /// </summary>
+    public abstract class LayoutTool : Component
 	{
 		Point					selectionCorner = Point.Empty;
 		LayoutModelArea			selectionCornerArea = null;

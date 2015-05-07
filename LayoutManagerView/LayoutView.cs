@@ -327,31 +327,23 @@ namespace LayoutManager.View {
 			}
 		}
 
-		/// <summary>
-		/// return the size of layout components
-		/// </summary>
-		public Size GridSizeInModelCoordinates {
-			get {
-				return componentSize;
-			}
-		}
+        /// <summary>
+        /// return the size of layout components
+        /// </summary>
+        public Size GridSizeInModelCoordinates => componentSize;
 
-		/// <summary>
-		/// Width in world coordinates of a "line" (for example selection rectangle line)
-		/// </summary>
-		public float LineWidthInModelCoordinates {
-			get {
-				return mpGridLineSize.Width;
-			}
-		}
+        /// <summary>
+        /// Width in world coordinates of a "line" (for example selection rectangle line)
+        /// </summary>
+        public float LineWidthInModelCoordinates => mpGridLineSize.Width;
 
 
-		/// <summary>
-		/// Given a point in view window client coordinates, check what is "hit" by this point.
-		/// </summary>
-		/// <param name="dcLocation">Point in view client coordinates</param>
-		/// <returns>A LayoutHitTestObject describing the hit test results <see cref="LayoutHitTestResult"/></returns>
-		public LayoutHitTestResult HitTest(LayoutPhase phases, Point dcLocation) {
+        /// <summary>
+        /// Given a point in view window client coordinates, check what is "hit" by this point.
+        /// </summary>
+        /// <param name="dcLocation">Point in view client coordinates</param>
+        /// <returns>A LayoutHitTestObject describing the hit test results <see cref="LayoutHitTestResult"/></returns>
+        public LayoutHitTestResult HitTest(LayoutPhase phases, Point dcLocation) {
 			var mpLocation = new PointF(dcLocation.X / Zoom, dcLocation.Y / Zoom);
 			var regions = new List<ILayoutDrawingRegion>();
 			var clickedRegions = new List<ILayoutDrawingRegion>();
@@ -384,11 +376,9 @@ namespace LayoutManager.View {
 			return new LayoutHitTestResult(Area, this, dcLocation, MapFromDeviceCoordinatesToModelLocationCoordinates(dcLocation), selection, clickedRegions);
 		}
 
-		public LayoutHitTestResult HitTest(Point dcLocation) {
-			return HitTest(LayoutModel.ActivePhases, dcLocation);
-		}
+        public LayoutHitTestResult HitTest(Point dcLocation) => HitTest(LayoutModel.ActivePhases, dcLocation);
 
-		public void ShowAllArea() {
+        public void ShowAllArea() {
 			SizeF		neededSize = new SizeF(
 				(area.Bounds.Width+2) * (GridSizeInModelCoordinates.Width + GridLineWidthInModelCoordinates),
 				(area.Bounds.Height+2) * (GridSizeInModelCoordinates.Height + GridLineWidthInModelCoordinates));
@@ -551,37 +541,25 @@ namespace LayoutManager.View {
 			}
 		}
 
-		/// <summary>
-		/// Return the client rectangle in model points
-		/// </summary>
-		public RectangleF ClientRectangleInModelCoordinates {
-			get {
-				return new RectangleF(0, 0, ClientRectangle.Right / zoom, ClientRectangle.Bottom / zoom);
-			}
-		}
+        /// <summary>
+        /// Return the client rectangle in model points
+        /// </summary>
+        public RectangleF ClientRectangleInModelCoordinates => new RectangleF(0, 0, ClientRectangle.Right / zoom, ClientRectangle.Bottom / zoom);
 
-		public RectangleF DrawingRectangleInModelCoordinates {
-			get {
-				return modelGridToModelCoordinatesStack.Peek().ClientRectangleInModelCoordinates;
-			}
-		}
+        public RectangleF DrawingRectangleInModelCoordinates => modelGridToModelCoordinatesStack.Peek().ClientRectangleInModelCoordinates;
 
-		/// <summary>
-		/// Return the client window size in model grid units
-		/// </summary>
-		public SizeF ClientSizeInModelGridUnits {
-			get {
-				return new SizeF((ClientSize.Width - vScrollBar.Width) / (dcComponentSize.Width + DcGridLineWidth),
-					(ClientSize.Height - hScrollBar.Height) / (dcComponentSize.Height + DcGridLineWidth));
-			}
-		}
+        /// <summary>
+        /// Return the client window size in model grid units
+        /// </summary>
+        public SizeF ClientSizeInModelGridUnits => new SizeF((ClientSize.Width - vScrollBar.Width) / (dcComponentSize.Width + DcGridLineWidth),
+                    (ClientSize.Height - hScrollBar.Height) / (dcComponentSize.Height + DcGridLineWidth));
 
-		/// <summary>
-		/// Get the top left coordinate in model points of a given location in the model
-		/// </summary>
-		/// <param name="mlAbs">Model location</param>
-		/// <returns>Top left coordinate in world coordinates</returns>
-		public PointF ModelLocationInModelCoordinates(Point mlAbs) {
+        /// <summary>
+        /// Get the top left coordinate in model points of a given location in the model
+        /// </summary>
+        /// <param name="mlAbs">Model location</param>
+        /// <returns>Top left coordinate in world coordinates</returns>
+        public PointF ModelLocationInModelCoordinates(Point mlAbs) {
 			Point mlOrigin = modelGridToModelCoordinatesStack.Peek().OriginInModelGridUnits;
 			Point ml = new Point(mlAbs.X - mlOrigin.X, mlAbs.Y - mlOrigin.Y);
 
@@ -589,22 +567,20 @@ namespace LayoutManager.View {
 				GridLineWidthInModelCoordinates * (1 + ml.Y) + GridSizeInModelCoordinates.Height * ml.Y);
 		}
 
-		/// <summary>
-		/// Get the bounding rectangle of a given model grid location
-		/// </summary>
-		/// <param name="ml">The model location</param>
-		/// <returns>The grid location in model points</returns>
-		public RectangleF ModelLocationRectangleInModelCoordinates(Point ml) {
-			return new RectangleF(ModelLocationInModelCoordinates(ml), GridSizeInModelCoordinates);
-		}
+        /// <summary>
+        /// Get the bounding rectangle of a given model grid location
+        /// </summary>
+        /// <param name="ml">The model location</param>
+        /// <returns>The grid location in model points</returns>
+        public RectangleF ModelLocationRectangleInModelCoordinates(Point ml) => new RectangleF(ModelLocationInModelCoordinates(ml), GridSizeInModelCoordinates);
 
-		/// <summary>
-		/// Return a given the bounding rectangle of a given model component (specified
-		/// by location) in client coordinates (pixels relative to the upper left corner of the view)
-		/// </summary>
-		/// <param name="modelLocation">Component location in the model</param>
-		/// <returns>Component bouding rectangle in client coordinates</returns>
-		protected Rectangle GetModelLocationInDeviceCoordinates(Point ml) {
+        /// <summary>
+        /// Return a given the bounding rectangle of a given model component (specified
+        /// by location) in client coordinates (pixels relative to the upper left corner of the view)
+        /// </summary>
+        /// <param name="modelLocation">Component location in the model</param>
+        /// <returns>Component bouding rectangle in client coordinates</returns>
+        protected Rectangle GetModelLocationInDeviceCoordinates(Point ml) {
 			Point	mlRelativeToOrigin = ml - (Size)mlOrigin;
 			
 			return new Rectangle(
@@ -639,24 +615,22 @@ namespace LayoutManager.View {
 			return Rectangle.FromLTRB(mlTopLeft.X, mlTopLeft.Y, mlBottomRight.X, mlBottomRight.Y);
 		}
 
-		/// <summary>
-		/// Given a point in client coordinate (device units relative to client upper-left point)
-		/// return the model location that contains this point.
-		/// </summary>
-		/// <param name="dcClient">Point in client coordinates</param>
-		/// <returns>The model location that contains this point</returns>
-		public Point MapFromDeviceCoordinatesToModelLocationCoordinates(Point dcClient) {
-			return new Point(
-				(int)(dcClient.X / (dcComponentSize.Width + DcGridLineWidth)),
-				(int)(dcClient.Y / (dcComponentSize.Height + DcGridLineWidth))) +
-				(Size)mlOrigin;
-		}
+        /// <summary>
+        /// Given a point in client coordinate (device units relative to client upper-left point)
+        /// return the model location that contains this point.
+        /// </summary>
+        /// <param name="dcClient">Point in client coordinates</param>
+        /// <returns>The model location that contains this point</returns>
+        public Point MapFromDeviceCoordinatesToModelLocationCoordinates(Point dcClient) => new Point(
+                (int)(dcClient.X / (dcComponentSize.Width + DcGridLineWidth)),
+                (int)(dcClient.Y / (dcComponentSize.Height + DcGridLineWidth))) +
+                (Size)mlOrigin;
 
-		#endregion
+        #endregion
 
-		#region Handle Write/Read data in XML
+        #region Handle Write/Read data in XML
 
-		public void WriteXml(XmlWriter w) {
+        public void WriteXml(XmlWriter w) {
 			w.WriteStartElement("LayoutView");
 
 			if(DefaultZoom == 0.0)
@@ -718,16 +692,14 @@ namespace LayoutManager.View {
 			}
 		}
 
-		#endregion
+        #endregion
 
-		#region Handle drawing
+        #region Handle drawing
 
-		private float getValue(float offset, int i, float slope) {
-			return offset + i*slope;
-		}
+        private float getValue(float offset, int i, float slope) => offset + i * slope;
 
 
-		private void drawGrid(Graphics g, RectangleF boundingRect, float gridLineWidthInModelCoordinates) {
+        private void drawGrid(Graphics g, RectangleF boundingRect, float gridLineWidthInModelCoordinates) {
 			using(Pen penGrid = new Pen(gridLineColor, gridLineWidthInModelCoordinates)) {
 				float f;
 
@@ -872,11 +844,9 @@ namespace LayoutManager.View {
 				}
 			}
 
-			public int ZOrder {
-				get { return 0; }
-			}
+            public int ZOrder => 0;
 
-			public void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
+            public void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
 				switch(spot.Phase) {
 					case LayoutPhase.Planned: {
 							using(var b = new SolidBrush(Color.FromArgb(170, 0xa0, 0xa0, 0xa0))) {
@@ -898,12 +868,10 @@ namespace LayoutManager.View {
 
 			public Func<bool> RightClickHandler { get; set; }
 
-			public bool CanBeClicked {
-				get { return false; }
-			}
+            public bool CanBeClicked => false;
 
-			#endregion
-		}
+            #endregion
+        }
 
 		private void addSpotDrawingRegions(Graphics g, ViewDetailLevel detailLevel, List<DrawListEntry> drawList, LayoutModelSpotComponentCollection spot) {
 			List<ILayoutDrawingRegion>	regions = new List<ILayoutDrawingRegion>(10);
@@ -980,11 +948,9 @@ namespace LayoutManager.View {
 			}
 		}
 
-		Bitmap allocateOffScreenBuffer(Graphics g, RectangleF clipBounds) {
-			return (Bitmap)EventManager.Event(new LayoutEvent(g, "allocate-offscreen-buffer", null, clipBounds));
-		}
+        Bitmap allocateOffScreenBuffer(Graphics g, RectangleF clipBounds) => (Bitmap)EventManager.Event(new LayoutEvent(g, "allocate-offscreen-buffer", null, clipBounds));
 
-		protected override void OnPaint(PaintEventArgs e) {
+        protected override void OnPaint(PaintEventArgs e) {
 			base.OnPaint(e);
 
 			Graphics	g;
@@ -1029,21 +995,15 @@ namespace LayoutManager.View {
 				this.lineWidthInModelCoordinates = lineWidthInModelCoordinates;
 			}
 
-			#region ILayoutViewModelGridToModelCoordinatesSettings Members
-			public Point OriginInModelGridUnits {
-				get { return originInGridUnits; }
-			}
+            #region ILayoutViewModelGridToModelCoordinatesSettings Members
+            public Point OriginInModelGridUnits => originInGridUnits;
 
-			public RectangleF ClientRectangleInModelCoordinates {
-				get { return drawingAreaInModelCoordinates; }
-			}
+            public RectangleF ClientRectangleInModelCoordinates => drawingAreaInModelCoordinates;
 
-			public float LineWidthInModelCoordinates {
-				get { return lineWidthInModelCoordinates; }
-			}
+            public float LineWidthInModelCoordinates => lineWidthInModelCoordinates;
 
-			#endregion
-		}
+            #endregion
+        }
 
 		public void Draw(Graphics g, Rectangle drawingRectangleInDeviceCoordinates, Rectangle modelAreaInGridUnits, int gridLineWidthInDeviceCoordinates, bool showCoordinates) {
 			drawBackground(g, drawingRectangleInDeviceCoordinates);
@@ -1611,11 +1571,9 @@ namespace LayoutManager.View {
 			}
 		}
 
-		protected override bool IsInputKey(Keys keyData) {
-			return true;
-		}
+        protected override bool IsInputKey(Keys keyData) => true;
 
-		private void LayoutView_MouseEnter(object sender, System.EventArgs e) {
+        private void LayoutView_MouseEnter(object sender, System.EventArgs e) {
 			Focus();
 		}
 
@@ -1786,23 +1744,17 @@ namespace LayoutManager.View {
 			this.annotations = annotations;
 		}
 
-		public Color Color(int i) {
-			return colors[i];
-		}
+        public Color Color(int i) => colors[i];
 
-		public LayoutComponentConnectionPoint ConnectionPoint(int i) {
+        public LayoutComponentConnectionPoint ConnectionPoint(int i) {
 			if(i == 0)
 				return trackSegment.Cp1;
 			else
 				return trackSegment.Cp2;
 		}
 
-		public IList<RoutePreviewAnnotation> Annotations {
-			get {
-				return annotations;
-			}
-		}
-	}
+        public IList<RoutePreviewAnnotation> Annotations => annotations;
+    }
 
 	public class LayoutGetDrawingRegionsEvent : LayoutEvent {
 		ILayoutView		view;
@@ -1818,37 +1770,17 @@ namespace LayoutManager.View {
 			this.regions = drawingRegions;
 		}
 
-		public ILayoutView View {
-			get {
-				return view;
-			}
-		}
+        public ILayoutView View => view;
 
-		public ViewDetailLevel DetailLevel {
-			get {
-				return detailLevel;
-			}
-		}
+        public ViewDetailLevel DetailLevel => detailLevel;
 
-		public Graphics Graphics {
-			get {
-				return g;
-			}
-		}
+        public Graphics Graphics => g;
 
-		public ModelComponent Component {
-			get {
-				return (ModelComponent)this.Sender;
-			}
-		}
+        public ModelComponent Component => (ModelComponent)this.Sender;
 
-		public IList<ILayoutDrawingRegion> Regions {
-			get {
-				return regions;
-			}
-		}
+        public IList<ILayoutDrawingRegion> Regions => regions;
 
-		public void AddRegion(ILayoutDrawingRegion region) {
+        public void AddRegion(ILayoutDrawingRegion region) {
 			regions.Add(region);
 		}
 	}

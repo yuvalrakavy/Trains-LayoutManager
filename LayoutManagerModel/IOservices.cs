@@ -19,38 +19,34 @@ namespace LayoutManager.Components {
 			return defaultValue;
 		}
 
-		bool GetBool(XmlElement element, string name) {
-			return GetBool(element, name, false);
-		}
+        bool GetBool(XmlElement element, string name) => GetBool(element, name, false);
 
-		uint GetNumber(XmlElement element, string name, uint defaultValue) {
+        uint GetNumber(XmlElement element, string name, uint defaultValue) {
 			if(element.HasAttribute(name))
 				return XmlConvert.ToUInt32(element.GetAttribute(name));
 			return defaultValue;
 		}
 
-		uint GetNumber(XmlElement element, string name) {
-			return GetNumber(element, name, 0);
-		}
+        uint GetNumber(XmlElement element, string name) => GetNumber(element, name, 0);
 
-		#endregion
+        #endregion
 
-		/// <summary>
-		/// Request opening of a serial communication device. The sender is an XML element providing details and setup information
-		/// regarding the device to be opened
-		/// </summary>
-		/// <remarks>
-		/// The following XML attributes are used:
-		///		Port						the port to be opened (e.g. com1)
-		///		OverlappedIO				if True, the stream will be opened in overlapped IO mode
-		///		ReadIntervalTimeout			The timeout between input characters (in milliseconds)
-		///		ReadTotalTimeoutConstant	The total time for read operation
-		///	The following child elements are used:
-		///		ModeString					setup string for setting parameters such as baud rate and parity. The syntax is the same as for the MODE command
-		/// </remarks>
-		/// <param name="e.Sender">XML element with the attributes specifying various details</param>
-		/// <returns>e.Info will be a Stream for the opened device</returns>
-		[LayoutEvent("open-serial-communication-device-request")]
+        /// <summary>
+        /// Request opening of a serial communication device. The sender is an XML element providing details and setup information
+        /// regarding the device to be opened
+        /// </summary>
+        /// <remarks>
+        /// The following XML attributes are used:
+        ///		Port						the port to be opened (e.g. com1)
+        ///		OverlappedIO				if True, the stream will be opened in overlapped IO mode
+        ///		ReadIntervalTimeout			The timeout between input characters (in milliseconds)
+        ///		ReadTotalTimeoutConstant	The total time for read operation
+        ///	The following child elements are used:
+        ///		ModeString					setup string for setting parameters such as baud rate and parity. The syntax is the same as for the MODE command
+        /// </remarks>
+        /// <param name="e.Sender">XML element with the attributes specifying various details</param>
+        /// <returns>e.Info will be a Stream for the opened device</returns>
+        [LayoutEvent("open-serial-communication-device-request")]
 		private void openSerialCommunicationDeviceRequest(LayoutEvent e) {
 			XmlElement				setupElement = (XmlElement)e.Sender;
 			String					port = setupElement.GetAttribute("Port");

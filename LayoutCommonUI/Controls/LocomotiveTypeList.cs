@@ -35,11 +35,9 @@ namespace LayoutManager.CommonUI.Controls
 			}
 		}
 
-		public override IXmlQueryListboxItem CreateItem(XmlQueryListbox.QueryItem queryItem, XmlElement itemElement) {
-			return new LocoTypeItem(this, queryItem, itemElement);
-		}
+        public override IXmlQueryListboxItem CreateItem(XmlQueryListbox.QueryItem queryItem, XmlElement itemElement) => new LocoTypeItem(this, queryItem, itemElement);
 
-		public LocomotiveCatalogInfo Catalog {
+        public LocomotiveCatalogInfo Catalog {
 			get {
 				if(catalog == null)
 					catalog = LayoutModel.LocomotiveCatalog;
@@ -65,19 +63,11 @@ namespace LayoutManager.CommonUI.Controls
 				this.locoTypeElement = locoTypeElement;
 			}
 
-			public LocomotiveTypeInfo LocomotiveType {
-				get {
-					return new LocomotiveTypeInfo(locoTypeElement);
-				}
-			}
+            public LocomotiveTypeInfo LocomotiveType => new LocomotiveTypeInfo(locoTypeElement);
 
-			public Object Bookmark {
-				get {
-					return locoTypeElement.GetAttribute("ID");
-				}
-			}
+            public Object Bookmark => locoTypeElement.GetAttribute("ID");
 
-			public bool IsBookmarkEqual(object bookmark) {
+            public bool IsBookmarkEqual(object bookmark) {
 				if(bookmark is String)
 					return (String)bookmark == locoTypeElement.GetAttribute("ID");
 				return false;
@@ -141,13 +131,9 @@ namespace LayoutManager.CommonUI.Controls
 
 		class ListLayoutByOrigin : ListLayout {
 
-			public override String LayoutName {
-				get {
-					return "Locomotive origin";
-				}
-			}
+            public override String LayoutName => "Locomotive origin";
 
-			public override void ApplyLayout(XmlQueryListbox list) {
+            public override void ApplyLayout(XmlQueryListbox list) {
 				QueryItem	q;
 
 				q = list.AddQuery("European Locomotives", null);
@@ -165,13 +151,9 @@ namespace LayoutManager.CommonUI.Controls
 		}
 
 		class ListLayoutByKind : ListLayout {
-			public override String LayoutName {
-				get {
-					return "Locomotive type";
-				}
-			}
+            public override String LayoutName => "Locomotive type";
 
-			public override void ApplyLayout(XmlQueryListbox list) {
+            public override void ApplyLayout(XmlQueryListbox list) {
 				QueryItem	q;
 
 				q = list.AddQuery("Steam Locomotives", null);
@@ -193,13 +175,9 @@ namespace LayoutManager.CommonUI.Controls
 		}
 
 		class ListLayoutByStorage : ListLayout {
-			public override String LayoutName {
-				get {
-					return "By locomotive type storage file";
-				}
-			}
+            public override String LayoutName => "By locomotive type storage file";
 
-			public override void ApplyLayout(XmlQueryListbox list) {
+            public override void ApplyLayout(XmlQueryListbox list) {
 				LocomotiveCatalogInfo	catalog = LayoutModel.LocomotiveCatalog;
 
 				int		iStore = 0;

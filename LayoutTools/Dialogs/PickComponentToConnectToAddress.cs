@@ -31,13 +31,9 @@ namespace LayoutManager.Tools.Dialogs {
 			EventManager.AddObjectSubscriptions(this);
 		}
 
-		public ControlConnectionPointDestination ConnectionDestination {
-			get {
-				return selectedDestination;
-			}
-		}
+        public ControlConnectionPointDestination ConnectionDestination => selectedDestination;
 
-		[LayoutEvent("query-learn-layout-pick-component-dialog")]
+        [LayoutEvent("query-learn-layout-pick-component-dialog")]
 		private void queryLearnLayoutPickComponentDialog(LayoutEvent e) {
 			List<IControlConnectionPointDestinationReceiverDialog> dialogs = (List<IControlConnectionPointDestinationReceiverDialog>)e.Info;
 
@@ -55,18 +51,14 @@ namespace LayoutManager.Tools.Dialogs {
 			EventManager.Subscriptions.RemoveObjectSubscriptions(this);
 		}
 
-		#region IControlConnectionPointDestinationReceiverDialog Members
+        #region IControlConnectionPointDestinationReceiverDialog Members
 
-		public string DialogName(ControlConnectionPointDestination connectionDestination) {
-			return csEvent.Bus.Name + ": " + csEvent.GetAddressTextForComponent(connectionDestination);
-		}
+        public string DialogName(ControlConnectionPointDestination connectionDestination) => csEvent.Bus.Name + ": " + csEvent.GetAddressTextForComponent(connectionDestination);
 
-		public ControlBus Bus {
-			get { return csEvent.Bus; }
-		}
+        public ControlBus Bus => csEvent.Bus;
 
 
-		public void AddControlConnectionPointDestination(ControlConnectionPointDestination connectionDestination) {
+        public void AddControlConnectionPointDestination(ControlConnectionPointDestination connectionDestination) {
 			selectedDestination = connectionDestination;
 			DialogResult = DialogResult.OK;
 			Close();

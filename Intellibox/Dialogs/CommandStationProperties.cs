@@ -94,16 +94,12 @@ namespace Intellibox.Dialogs
 			}
 		}
 
-		public LayoutXmlInfo XmlInfo {
-			get {
-				return _xmlInfo;
-			}
-		}
+        public LayoutXmlInfo XmlInfo => _xmlInfo;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{
@@ -574,12 +570,8 @@ namespace Intellibox.Dialogs
 				SubItems[2].Text = _so.Description;
 			}
 
-			public SOinfo SOinfo {
-				get {
-					return _so;
-				}
-			}
-		}
+            public SOinfo SOinfo => _so;
+        }
 
 		#endregion
 

@@ -310,13 +310,9 @@ namespace LayoutManager.Dialogs
 					Font = ListView.Font;
 			}
 
-			public XmlElement StoreElement {
-				get {
-					return storeElement;
-				}
-			}
+            public XmlElement StoreElement => storeElement;
 
-			public bool IsDefault {
+            public bool IsDefault {
 				get {
 					return isDefault;
 				}

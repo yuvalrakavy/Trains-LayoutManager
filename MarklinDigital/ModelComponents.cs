@@ -40,13 +40,9 @@ namespace MarklinDigital {
 				);
 		}
 
-		public int FeedbackPolling {
-			get {
-				return XmlConvert.ToInt32(Element.GetAttribute("FeedbackPolling"));
-			}
-		}
+        public int FeedbackPolling => XmlConvert.ToInt32(Element.GetAttribute("FeedbackPolling"));
 
-		public ControlBus S88Bus {
+        public ControlBus S88Bus {
 			get {
 				if(_S88bus == null)
 					_S88bus = LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS");
@@ -54,15 +50,11 @@ namespace MarklinDigital {
 			}
 		}
 
-		#region Specific implementation to base class overrideble methods and properties
+        #region Specific implementation to base class overrideble methods and properties
 
-		public override IList<string> BusTypeNames {
-			get {
-				return Array.AsReadOnly<string>(new string[] { "Motorola", "S88BUS" });
-			}
-		}
+        public override IList<string> BusTypeNames => Array.AsReadOnly<string>(new string[] { "Motorola", "S88BUS" });
 
-		protected override void OnCommunicationSetup() {
+        protected override void OnCommunicationSetup() {
 			base.OnCommunicationSetup ();
 
 			if(!Element.HasAttribute("ReadIntervalTimeout"))
@@ -71,11 +63,9 @@ namespace MarklinDigital {
 				Element.SetAttribute("ReadTotalTimeoutConstant", XmlConvert.ToString(5000));
 		}
 
-		public override DigitalPowerFormats SupportedDigitalPowerFormats {
-			get { return DigitalPowerFormats.Motorola; }
-		}
+        public override DigitalPowerFormats SupportedDigitalPowerFormats => DigitalPowerFormats.Motorola;
 
-		private int getNumberOfFeedbackUnits() {
+        private int getNumberOfFeedbackUnits() {
 			int		maxAddress = 0;
 
 			foreach(ControlModule module in S88Bus.Modules)
@@ -142,31 +132,19 @@ namespace MarklinDigital {
 			}
 		}
 
-		public override bool LayoutEmulationSupported {
-			get {
-				return true;
-			}
-		}
+        public override bool LayoutEmulationSupported => true;
 
-		public override bool TrainsAnalysisSupported {
-			get {
-				return true;
-			}
-		}
+        public override bool TrainsAnalysisSupported => true;
 
-		protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) {
-			return new MarkliinCommandStationEmulator(this, pipeName, EmulationTickTime);			
-		}
+        protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) => new MarkliinCommandStationEmulator(this, pipeName, EmulationTickTime);
 
-		public override bool DesignTimeLayoutActivationSupported {
-			get { return true; }
-		}
+        public override bool DesignTimeLayoutActivationSupported => true;
 
-		#endregion
+        #endregion
 
-		#region Notification Event Handlers
+        #region Notification Event Handlers
 
-		[LayoutEvent("train-is-removed")]
+        [LayoutEvent("train-is-removed")]
 		private void trainRemoved(LayoutEvent e) {
 			TrainStateInfo	train = (TrainStateInfo)e.Sender;
 
@@ -404,13 +382,9 @@ namespace MarklinDigital {
 			this.stream = stream;
 		}
 
-		public Stream Stream {
-			get {
-				return stream;
-			}
-		}
+        public Stream Stream => stream;
 
-		protected void Output(byte v) {
+        protected void Output(byte v) {
 			Thread.Sleep(10);
 			Stream.WriteByte(v);
 			Stream.Flush();
@@ -457,13 +431,9 @@ namespace MarklinDigital {
 			Stream.Flush();
 		}
 
-		// Wait 100 milliseconds before sending next command from this queue
-		public override int WaitPeriod {
-			get {
-				return 100;
-			}
-		}
-	}
+        // Wait 100 milliseconds before sending next command from this queue
+        public override int WaitPeriod => 100;
+    }
 
 	class MarklinEndSwitchingProcedure : MarklinCommand {
 		public MarklinEndSwitchingProcedure(Stream comm) : base(comm) {
@@ -622,14 +592,12 @@ namespace MarklinDigital {
 				Trace.WriteLine("Read feedback returned " + bytesRead + " bytes (expected 2 bytes), ignoring data");
 		}
 
-		#region ICommandStationIdlecommand Members
+        #region ICommandStationIdlecommand Members
 
-		public bool RemoveFromQueue {
-			get { return false; }
-		}
+        public bool RemoveFromQueue => false;
 
-		#endregion
-	}
+        #endregion
+    }
 
 	#endregion
 }

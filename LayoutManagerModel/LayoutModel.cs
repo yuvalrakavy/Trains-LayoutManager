@@ -68,11 +68,9 @@ namespace LayoutManager.Model {
 			return itemElement;
 		}
 
-		protected override Guid FromElement(XmlElement itemElement) {
-			return XmlConvert.ToGuid(itemElement.GetAttribute("PolicyID"));
-		}
+        protected override Guid FromElement(XmlElement itemElement) => XmlConvert.ToGuid(itemElement.GetAttribute("PolicyID"));
 
-		public void CheckIntegrity(string scope) {
+        public void CheckIntegrity(string scope) {
 			IDictionary<Guid, LayoutPolicyInfo>	map = LayoutModel.StateManager.Policies(scope).IdToPolicyMap;
 			List<Guid> removeList = new List<Guid>();
 
@@ -115,48 +113,32 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		/// <summary>
-		/// The location (x, y) in which this component is located in the model
-		/// grid.
-		/// </summary>
-		public Point Location {			// Implemented by ModelComponentBase
-			get {
-				return _spot.Location;
-			}
-		}
+        /// <summary>
+        /// The location (x, y) in which this component is located in the model
+        /// grid.
+        /// </summary>
+        public Point Location => _spot.Location;
 
-		/// <summary>
-		/// Return the Z order of this component. When presented, components with smaller Z order
-		/// should be shown behind those of a larger Z order.
-		/// </summary>
-		public int ZOrder {
-			get {
-				return (int)Kind;
-			}
-		}
+        /// <summary>
+        /// Return the Z order of this component. When presented, components with smaller Z order
+        /// should be shown behind those of a larger Z order.
+        /// </summary>
+        public int ZOrder => (int)Kind;
 
-		/// <summary>
-		/// Return whether this component has associated attributes
-		/// </summary>
-		public bool HasAttributes {
-			get {
-				return new AttributesOwner(Element).HasAttributes;
-			}
-		}
+        /// <summary>
+        /// Return whether this component has associated attributes
+        /// </summary>
+        public bool HasAttributes => new AttributesOwner(Element).HasAttributes;
 
-		/// <summary>
-		/// If a component has attributes associated with it, returns those attributes
-		/// </summary>
-		public AttributesInfo Attributes {
-			get {
-				return new AttributesOwner(Element).Attributes;
-			}
-		}
+        /// <summary>
+        /// If a component has attributes associated with it, returns those attributes
+        /// </summary>
+        public AttributesInfo Attributes => new AttributesOwner(Element).Attributes;
 
-		/// <summary>
-		/// Fire an event to indicate that this component was changed
-		/// </summary>
-		public virtual void OnComponentChanged() {
+        /// <summary>
+        /// Fire an event to indicate that this component was changed
+        /// </summary>
+        public virtual void OnComponentChanged() {
 			_spot.Area.OnComponentChanged(this);
 		}
 
@@ -214,43 +196,31 @@ namespace LayoutManager.Model {
 			_spot.Area.OnEraseComponentImage(this);
 		}
 
-		#region Support for connected components
+        #region Support for connected components
 
-		/// <summary>
-		/// Is this component connected to control module (note, if this connection has more than one control module
-		/// connection, then this will be true if at least one connection is connected)
-		/// </summary>
-		public virtual bool IsConnected {
-			get {
-				return LayoutModel.ControlManager.ConnectionPoints.IsConnected(Id);
-			}
-		}
+        /// <summary>
+        /// Is this component connected to control module (note, if this connection has more than one control module
+        /// connection, then this will be true if at least one connection is connected)
+        /// </summary>
+        public virtual bool IsConnected => LayoutModel.ControlManager.ConnectionPoints.IsConnected(Id);
 
-		/// <summary>
-		/// True if all control module connection of this component are connected to control modules
-		/// </summary>
-		public virtual bool FullyConnected {
-			get {
-				return LayoutModel.ControlManager.ConnectionPoints.IsFullyConnected(Id);
-			}
-		}
+        /// <summary>
+        /// True if all control module connection of this component are connected to control modules
+        /// </summary>
+        public virtual bool FullyConnected => LayoutModel.ControlManager.ConnectionPoints.IsFullyConnected(Id);
 
-		/// <summary>
-		/// No specific control module is requried
-		/// </summary>
-		public virtual string RequiredControlModuleTypeName {
-			get {
-				return null;
-			}
-		}
+        /// <summary>
+        /// No specific control module is requried
+        /// </summary>
+        public virtual string RequiredControlModuleTypeName => null;
 
-		#endregion
+        #endregion
 
-		/// <summary>
-		/// Write the inner part of a component XML
-		/// </summary>
-		/// <param name="w"></param>
-		public void WriteInnerXml(XmlWriter w) {
+        /// <summary>
+        /// Write the inner part of a component XML
+        /// </summary>
+        /// <param name="w"></param>
+        public void WriteInnerXml(XmlWriter w) {
 			if(XmlInfo != null && XmlInfo.DocumentElement != null) {
 				w.WriteStartElement("Info");
 				XmlInfo.DocumentElement.WriteTo(w);
@@ -313,18 +283,16 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		/// <summary>
-		/// Parse a component field from the XML stream. On exit the reader should be on
-		/// an EndElement node.
-		/// </summary>
-		/// <remarks>The default implementation read no fields</remarks>
-		/// <param name="r"></param>
-		/// <returns>True if the field was parsed</returns>
-		protected virtual bool ReadXmlField(XmlReader r) {
-			return false;
-		}
+        /// <summary>
+        /// Parse a component field from the XML stream. On exit the reader should be on
+        /// an EndElement node.
+        /// </summary>
+        /// <remarks>The default implementation read no fields</remarks>
+        /// <param name="r"></param>
+        /// <returns>True if the field was parsed</returns>
+        protected virtual bool ReadXmlField(XmlReader r) => false;
 
-		public virtual void Error(Object subject, String message) {
+        public virtual void Error(Object subject, String message) {
 			EventManager.Event(new LayoutEvent(subject, "add-error", null, message));
 		}
 
@@ -349,32 +317,26 @@ namespace LayoutManager.Model {
 				return "Component name: " + ((nameProvider.Name != null) ? nameProvider.Name : "") + " " + location + " type " + this.GetType().Name + " phase " + phaseName;
 			}
 		}
-		
-		public override String ToString() {
-			return FullDescription;
-		}
 
-		public abstract bool DrawOutOfGrid {
+        public override String ToString() => FullDescription;
+
+        public abstract bool DrawOutOfGrid {
 			get;
 		}
 
-		#region IComparable<ModelComponent> Members
+        #region IComparable<ModelComponent> Members
 
-		/// <summary>
-		/// Find out if another component is "above" this component
-		/// </summary>
-		/// <param name="objModelComponent">The component to compare to</param>
-		/// <returns>+n if this component is above, 0 if same, -n if below</returns>
-		public int CompareTo(ModelComponent other) {
-			return Kind - other.Kind;
-		}
+        /// <summary>
+        /// Find out if another component is "above" this component
+        /// </summary>
+        /// <param name="objModelComponent">The component to compare to</param>
+        /// <returns>+n if this component is above, 0 if same, -n if below</returns>
+        public int CompareTo(ModelComponent other) => Kind - other.Kind;
 
-		public bool Equals(ModelComponent other) {
-			return this == other;
-		}
+        public bool Equals(ModelComponent other) => this == other;
 
-		#endregion
-	}
+        #endregion
+    }
 
 	[Serializable]
 	public struct LayoutComponentConnectionPoint : IComparable<LayoutComponentConnectionPoint> {
@@ -384,17 +346,13 @@ namespace LayoutManager.Model {
 			cp = cpValue;
 		}
 
-		public static implicit operator int(LayoutComponentConnectionPoint v) {
-			return v.cp;
-		}
+        public static implicit operator int (LayoutComponentConnectionPoint v) => v.cp;
 
-		public static implicit operator LayoutComponentConnectionPoint(int v) {
-			return new LayoutComponentConnectionPoint(v);
-		}
+        public static implicit operator LayoutComponentConnectionPoint(int v) => new LayoutComponentConnectionPoint(v);
 
-		// Default value for standard connection points
+        // Default value for standard connection points
 
-		public const int Empty = -1;
+        public const int Empty = -1;
 		public const int T = 0;
 		public const int B = 1;
 		public const int R = 2;
@@ -434,37 +392,25 @@ namespace LayoutManager.Model {
 			return false;
 		}
 
-		public static bool operator ==(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
-			return cp1.Equals(cp2);
-		}
+        public static bool operator ==(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) => cp1.Equals(cp2);
 
-		public static bool operator !=(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
-			return !cp1.Equals(cp2);
-		}
+        public static bool operator !=(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) => !cp1.Equals(cp2);
 
-		public override int GetHashCode() {
-			return cp.GetHashCode();
-		}
+        public override int GetHashCode() => cp.GetHashCode();
 
-		#region IComparable<LayoutComponentConnectionPoint> Members
+        #region IComparable<LayoutComponentConnectionPoint> Members
 
-		public int CompareTo(LayoutComponentConnectionPoint other) {
-			return cp - other.cp;
-		}
+        public int CompareTo(LayoutComponentConnectionPoint other) => cp - other.cp;
 
-		public bool Equals(LayoutComponentConnectionPoint other) {
-			return cp == other.cp;
-		}
+        public bool Equals(LayoutComponentConnectionPoint other) => cp == other.cp;
 
-		#endregion
-	}
+        #endregion
+    }
 
 	public class LayoutComponentConnectionPointConverter : System.ComponentModel.TypeConverter {
-		public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, Type destinationType) {
-			return destinationType == typeof(string);
-		}
+        public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, Type destinationType) => destinationType == typeof(string);
 
-		public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType) {
+        public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType) {
 			if(destinationType == typeof(string) && value is LayoutComponentConnectionPoint)
 				return ((LayoutComponentConnectionPoint)value).ToString();
 			throw new NotSupportedException("Cannot LayoutComponentConnectionPoint convert to " + destinationType.FullName);
@@ -494,35 +440,21 @@ namespace LayoutManager.Model {
 			: this((LayoutTrackComponent)track, cp) {
 		}
 
-		public LayoutTrackComponent Track {
-			get { return track;	}
-		}
+        public LayoutTrackComponent Track => track;
 
-		public IModelComponentIsMultiPath Split {
-			get { return (IModelComponentIsMultiPath)Track;  }
-		}
+        public IModelComponentIsMultiPath Split => (IModelComponentIsMultiPath)Track;
 
-		public LayoutComponentConnectionPoint ConnectionPoint {
-			get { return cp; }
-		}
+        public LayoutComponentConnectionPoint ConnectionPoint => cp;
 
-		public static bool operator==(TrackEdge edge1, TrackEdge edge2) {
-			return edge1.Equals(edge2);
-		}
+        public static bool operator ==(TrackEdge edge1, TrackEdge edge2) => edge1.Equals(edge2);
 
-		public static bool operator!=(TrackEdge edge1, TrackEdge edge2) {
-			return !edge1.Equals(edge2);
-		}
+        public static bool operator !=(TrackEdge edge1, TrackEdge edge2) => !edge1.Equals(edge2);
 
-		public static bool operator <(TrackEdge edge1, TrackEdge edge2) {
-			return edge1.CompareTo(edge2) < 0;
-		}
+        public static bool operator <(TrackEdge edge1, TrackEdge edge2) => edge1.CompareTo(edge2) < 0;
 
-		public static bool operator >(TrackEdge edge1, TrackEdge edge2) {
-			return edge1.CompareTo(edge2) > 0;
-		}
+        public static bool operator >(TrackEdge edge1, TrackEdge edge2) => edge1.CompareTo(edge2) > 0;
 
-		public override bool Equals(object obj) {
+        public override bool Equals(object obj) {
 			if(obj != null) {
 				TrackEdge other = (TrackEdge)obj;
 
@@ -531,15 +463,11 @@ namespace LayoutManager.Model {
 			return false;
 		}
 
-		public override int GetHashCode() {
-			return ((ModelComponent)track).GetHashCode();
-		}
+        public override int GetHashCode() => ((ModelComponent)track).GetHashCode();
 
-		public override String ToString() {
-			return ((LayoutTrackComponent)Track).FullDescription + " (" + cp + ")";
-		}
+        public override String ToString() => ((LayoutTrackComponent)Track).FullDescription + " (" + cp + ")";
 
-		public LayoutComponentConnectionPoint OtherConnectionPoint {
+        public LayoutComponentConnectionPoint OtherConnectionPoint {
 			get {
 				IModelComponentIsMultiPath multiPath = Track as IModelComponentIsMultiPath;
 
@@ -550,22 +478,18 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public TrackEdge OtherSide {
-			get {
-				return new TrackEdge(Track, OtherConnectionPoint);
-			}
-		}
+        public TrackEdge OtherSide => new TrackEdge(Track, OtherConnectionPoint);
 
-		#region IComparable<TrackEdge> Members
+        #region IComparable<TrackEdge> Members
 
-		/// <summary>
-		/// Compare this object to another TrackEdge object. The two objects
-		/// are considered to be equal if they describe the same topological
-		/// pass in the same track component
-		/// </summary>
-		/// <param name="edgeObj">The TrackEdge to compare to</param>
-		/// <returns>0 if the two objects are equal, non-zero otherwise</returns>
-		public int CompareTo(TrackEdge other) {
+        /// <summary>
+        /// Compare this object to another TrackEdge object. The two objects
+        /// are considered to be equal if they describe the same topological
+        /// pass in the same track component
+        /// </summary>
+        /// <param name="edgeObj">The TrackEdge to compare to</param>
+        /// <returns>0 if the two objects are equal, non-zero otherwise</returns>
+        public int CompareTo(TrackEdge other) {
 			if(other.track == track)
 				return ConnectionPoint - other.ConnectionPoint;
 			else {
@@ -575,12 +499,10 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public bool Equals(TrackEdge other) {
-			return track == other.track && cp == other.cp;
-		}
+        public bool Equals(TrackEdge other) => track == other.track && cp == other.cp;
 
-		#endregion
-	}
+        #endregion
+    }
 
 	/// <summary>
 	/// A combination of a track ID and a connection point. Similar to track edge, but instead of holding the track component, 
@@ -609,19 +531,11 @@ namespace LayoutManager.Model {
 			cp = edge.ConnectionPoint;
 		}
 
-		public Guid TrackId {
-			get {
-				return trackId;
-			}
-		}
+        public Guid TrackId => trackId;
 
-		public LayoutComponentConnectionPoint ConnectionPoint {
-			get {
-				return cp;
-			}
-		}
+        public LayoutComponentConnectionPoint ConnectionPoint => cp;
 
-		public override bool Equals(object obj) {
+        public override bool Equals(object obj) {
 			if(obj == null || !(obj is TrackEdgeId))
 				return false;
 
@@ -629,32 +543,18 @@ namespace LayoutManager.Model {
 			return trackId == other.trackId && cp == other.ConnectionPoint;
 		}
 
-		public static bool operator==(TrackEdgeId edge1, TrackEdgeId edge2) {
-			return edge1.Equals(edge2);
-		}
+        public static bool operator ==(TrackEdgeId edge1, TrackEdgeId edge2) => edge1.Equals(edge2);
 
-		public bool IsEmpty {
-			get {
-				return trackId == Guid.Empty || LayoutModel.Component<LayoutTrackComponent>(trackId, LayoutModel.ActivePhases) == null;
-			}
-		}
+        public bool IsEmpty => trackId == Guid.Empty || LayoutModel.Component<LayoutTrackComponent>(trackId, LayoutModel.ActivePhases) == null;
 
-		public static bool operator!=(TrackEdgeId edge1, TrackEdgeId edge2) {
-			return !edge1.Equals(edge2);
-		}
+        public static bool operator !=(TrackEdgeId edge1, TrackEdgeId edge2) => !edge1.Equals(edge2);
 
-		public TrackEdge ToTrackEdge() {
-			return new TrackEdge(LayoutModel.Component<LayoutTrackComponent>(trackId, LayoutModel.ActivePhases), cp);
-		}
+        public TrackEdge ToTrackEdge() => new TrackEdge(LayoutModel.Component<LayoutTrackComponent>(trackId, LayoutModel.ActivePhases), cp);
 
-		public new string ToString() {
-			return ToTrackEdge().ToString();
-		}
+        public new string ToString() => ToTrackEdge().ToString();
 
-		public override int GetHashCode() {
-			return TrackId.GetHashCode() ^ cp.GetHashCode();
-		}
-	}
+        public override int GetHashCode() => TrackId.GetHashCode() ^ cp.GetHashCode();
+    }
 
 	public class TrackEdgeDictionary : Dictionary<TrackEdge, object>, IEnumerable<TrackEdge> {
 
@@ -662,18 +562,14 @@ namespace LayoutManager.Model {
 			Add(edge, null);
 		}
 
-		public bool Contains(TrackEdge edge) {
-			return ContainsKey(edge);
-		}
+        public bool Contains(TrackEdge edge) => ContainsKey(edge);
 
-		#region IEnumerable<TrackEdge> Members
+        #region IEnumerable<TrackEdge> Members
 
-		public new IEnumerator<TrackEdge> GetEnumerator() {
-			return Keys.GetEnumerator();
-		}
+        public new IEnumerator<TrackEdge> GetEnumerator() => Keys.GetEnumerator();
 
-		#endregion
-	}
+        #endregion
+    }
 
 
 
@@ -729,11 +625,9 @@ namespace LayoutManager.Model {
 			private set;
 		}
 
-		public Guid PowerOriginComponentId {
-			get { return PowerOriginComponent.Id; }
-		}
+        public Guid PowerOriginComponentId => PowerOriginComponent.Id;
 
-		public IModelComponentHasPowerOutlets PowerOriginComponent {
+        public IModelComponentHasPowerOutlets PowerOriginComponent {
 			get;
 			private set;
 		}
@@ -781,10 +675,8 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public bool SelectPower(LayoutPowerType powerType, IList<SwitchingCommand> switchingCommands) {
-			return Power != null && powerType == Power.Type;
-		}
-	}
+        public bool SelectPower(LayoutPowerType powerType, IList<SwitchingCommand> switchingCommands) => Power != null && powerType == Power.Type;
+    }
 
 	public class LayoutComponentPowerOutletDescription {
 		IModelComponentHasPowerOutlets component;
@@ -795,22 +687,14 @@ namespace LayoutManager.Model {
 			this.outletIndex = outletIndex;
 		}
 
-		public IModelComponentHasPowerOutlets Component {
-			get { return this.component; }
-		}
+        public IModelComponentHasPowerOutlets Component => this.component;
 
-		public int OutletIndex {
-			get { return this.outletIndex; }
-		}
+        public int OutletIndex => this.outletIndex;
 
-		public ILayoutPowerOutlet PowerOutlet {
-			get { return component.PowerOutlets[this.outletIndex]; }
-		}
+        public ILayoutPowerOutlet PowerOutlet => component.PowerOutlets[this.outletIndex];
 
-		public override string ToString() {
-			return component.NameProvider.Name + " (" + PowerOutlet.OutletDescription + ")";
-		}
-	}
+        public override string ToString() => component.NameProvider.Name + " (" + PowerOutlet.OutletDescription + ")";
+    }
 
 	/// <summary>
 	/// A power inlet to which another component power outlet can be connected
@@ -903,14 +787,12 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		/// <summary>
-		/// Is this inlet connected
-		/// </summary>
-		public bool IsConnected {
-			get { return OutletComponent != null; }
-		}
+        /// <summary>
+        /// Is this inlet connected
+        /// </summary>
+        public bool IsConnected => OutletComponent != null;
 
-		public override string ToString() {
+        public override string ToString() {
 			if(IsConnected) {
 				if(OutletComponent.PowerOutlets.Count == 1)
 					return OutletComponent.NameProvider.Name;
@@ -948,40 +830,28 @@ namespace LayoutManager.Model {
 			this.Phase = phase;
 		}
 
-		/// <summary>
-		/// Get the component of a given kind in a given layer
-		/// </summary>
-		/// <example>c = aSpot[ModelComponentKind.Track];</example>
-		public ModelComponent this[ModelComponentKind kind] {
-			get {
-				return spotComponents.Find(delegate(ModelComponent c) { return c.Kind == kind; });
-			}
-		}
+        /// <summary>
+        /// Get the component of a given kind in a given layer
+        /// </summary>
+        /// <example>c = aSpot[ModelComponentKind.Track];</example>
+        public ModelComponent this[ModelComponentKind kind] => spotComponents.Find(delegate (ModelComponent c) { return c.Kind == kind; });
 
-		/// <summary>
-		/// Get the track in the current spot
-		/// </summary>
-		/// <value>Track component or null if this spot does not have track component</value>
-		public LayoutTrackComponent Track {
-			get {
-				return (LayoutTrackComponent)this[ModelComponentKind.Track];
-			}
-		}
+        /// <summary>
+        /// Get the track in the current spot
+        /// </summary>
+        /// <value>Track component or null if this spot does not have track component</value>
+        public LayoutTrackComponent Track => (LayoutTrackComponent)this[ModelComponentKind.Track];
 
-		/// <summary>
-		/// Collection of all the components in this spot
-		/// </summary>
-		/// <value></value>
-		public ModelComponentCollection Components {
-			get {
-				return spotComponents;
-			}
-		}
+        /// <summary>
+        /// Collection of all the components in this spot
+        /// </summary>
+        /// <value></value>
+        public ModelComponentCollection Components => spotComponents;
 
-		/// <summary>
-		/// Current draw level
-		/// </summary>
-		public int DrawLevel {get; set; }
+        /// <summary>
+        /// Current draw level
+        /// </summary>
+        public int DrawLevel {get; set; }
 
 		/// <summary>
 		/// Planned/UnderConstruction/Operation phase of this spot
@@ -1067,23 +937,19 @@ namespace LayoutManager.Model {
 			return spotComponents.GetEnumerator();
 		}
 
-		// Implementation of ICollection<ModelComponent>
+        // Implementation of ICollection<ModelComponent>
 
-		/// <summary>
-		/// Return the number of components in this spot
-		/// </summary>
-		public int Count {
-			get {
-				return spotComponents.Count;
-			}
-		}
+        /// <summary>
+        /// Return the number of components in this spot
+        /// </summary>
+        public int Count => spotComponents.Count;
 
-		/// <summary>
-		/// Copy the model components in this spot to an array
-		/// </summary>
-		/// <param name="a"></param>
-		/// <param name="i"></param>
-		public void CopyTo(ModelComponent[] a, int i) {
+        /// <summary>
+        /// Copy the model components in this spot to an array
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="i"></param>
+        public void CopyTo(ModelComponent[] a, int i) {
 			spotComponents.CopyTo(a, i);
 		}
 
@@ -1101,14 +967,12 @@ namespace LayoutManager.Model {
 			w.WriteEndElement();
 		}
 
-		#region IEnumerable Members
+        #region IEnumerable Members
 
-		IEnumerator IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		#endregion
-}
+        #endregion
+    }
 
 	/// <summary>
 	/// Track links in this area.
@@ -1122,10 +986,8 @@ namespace LayoutManager.Model {
 			base.Remove(trackLink.TrackLinkGuid);
 		}
 
-		public new IEnumerator<LayoutTrackLinkComponent> GetEnumerator() {
-			return this.Values.GetEnumerator();
-		}
-	}
+        public new IEnumerator<LayoutTrackLinkComponent> GetEnumerator() => this.Values.GetEnumerator();
+    }
 
 	public class LayoutModelArea {
 		String				name;							// The area's name
@@ -1163,56 +1025,36 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		/// <summary>
-		/// Return the layout grid. The grid is a hashtable in which the keys are points providing the
-		/// location on the grid, and the values are LayoutModelSpot which contains all the components that
-		/// are in the given location.
-		/// </summary>
-		public IDictionary<Point, LayoutModelSpotComponentCollection> Grid {
-			get {
-				return grid;
-			}
-		}
+        /// <summary>
+        /// Return the layout grid. The grid is a hashtable in which the keys are points providing the
+        /// location on the grid, and the values are LayoutModelSpot which contains all the components that
+        /// are in the given location.
+        /// </summary>
+        public IDictionary<Point, LayoutModelSpotComponentCollection> Grid => grid;
 
-		/// <summary>
-		/// Unique identifier for this area
-		/// </summary>
-		public Guid AreaGuid {
-			get {
-				return id;
-			}
-		}
+        /// <summary>
+        /// Unique identifier for this area
+        /// </summary>
+        public Guid AreaGuid => id;
 
-		/// <summary>
-		/// Get a hashtable containing all the track links that are in this area.
-		/// </summary>
-		public LayoutAreaTrackLinksDictionary TrackLinks {
-			get {
-				return trackLinks;
-			}
-		}
+        /// <summary>
+        /// Get a hashtable containing all the track links that are in this area.
+        /// </summary>
+        public LayoutAreaTrackLinksDictionary TrackLinks => trackLinks;
 
-		public SortedVector<SortedVector<LayoutModelSpotComponentCollection>> SortedRows {
-			get {
-				return sortedRows;
-			}
-		}
+        public SortedVector<SortedVector<LayoutModelSpotComponentCollection>> SortedRows => sortedRows;
 
-		public IList<LayoutModelSpotComponentCollection> OutOfGridSpots {
-			get {
-				return outOfGridSpots;
-			}
-		}
+        public IList<LayoutModelSpotComponentCollection> OutOfGridSpots => outOfGridSpots;
 
-		#endregion
+        #endregion
 
-		#region Indexers for accessing spots or components
+        #region Indexers for accessing spots or components
 
-		/// <summary>
-		/// Return a layout spot (all components in a given location, regardless of layer
-		/// or their kind)
-		/// </summary>
-		public LayoutModelSpotComponentCollection this[Point p, LayoutPhase phase] {
+        /// <summary>
+        /// Return a layout spot (all components in a given location, regardless of layer
+        /// or their kind)
+        /// </summary>
+        public LayoutModelSpotComponentCollection this[Point p, LayoutPhase phase] {
 			get {
 				LayoutModelSpotComponentCollection	spot;
 
@@ -1245,20 +1087,16 @@ namespace LayoutManager.Model {
 				return LayoutModel.Instance.DefaultPhase;
 		}
 
-		/// <summary>
-		/// Return the phases (operational, in-construction, planned) used in this area
-		/// </summary>
-		public LayoutPhase AreaPhases {
-			get {
-				return Grid.Values.Aggregate<LayoutModelSpotComponentCollection, LayoutPhase>(LayoutPhase.None, (p, spot) => p | spot.Phase);
-			}
-		}
+        /// <summary>
+        /// Return the phases (operational, in-construction, planned) used in this area
+        /// </summary>
+        public LayoutPhase AreaPhases => Grid.Values.Aggregate<LayoutModelSpotComponentCollection, LayoutPhase>(LayoutPhase.None, (p, spot) => p | spot.Phase);
 
-		#endregion
+        #endregion
 
-		#region Adding/Removing spots and components
+        #region Adding/Removing spots and components
 
-		public void AddSpotLocation(LayoutModelSpotComponentCollection spot) {
+        public void AddSpotLocation(LayoutModelSpotComponentCollection spot) {
 			Point	p = spot.Location;
 
 			SortedVector<LayoutModelSpotComponentCollection> sortedColumns;
@@ -1613,17 +1451,13 @@ namespace LayoutManager.Model {
 				AreaRenamed(area, new EventArgs());
 		}
 
-		public new IEnumerator<LayoutModelArea> GetEnumerator() {
-			return Values.GetEnumerator();
-		}
-	}
+        public new IEnumerator<LayoutModelArea> GetEnumerator() => Values.GetEnumerator();
+    }
 
 	public class SortedVector<T> : SortedDictionary<int, T> {
-		public ValueRange RangeValues(int from, int to) {
-			return new ValueRange(this, from, to);
-		}
+        public ValueRange RangeValues(int from, int to) => new ValueRange(this, from, to);
 
-		public class ValueRange : IEnumerable<T> {
+        public class ValueRange : IEnumerable<T> {
 			SortedVector<T> list;
 			int from;
 			int to;
@@ -1645,16 +1479,14 @@ namespace LayoutManager.Model {
 				}
 			}
 
-			#endregion
+            #endregion
 
-			#region IEnumerable Members
+            #region IEnumerable Members
 
-			IEnumerator IEnumerable.GetEnumerator() {
-				return GetEnumerator();
-			}
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-			#endregion
-		}
+            #endregion
+        }
 	}
 
 	/// <summary>
@@ -1690,13 +1522,9 @@ namespace LayoutManager.Model {
 			e.Info = this;
 		}
 
-		public static LayoutModel Instance {
-			get {
-				return instance;
-			}
-		}
+        public static LayoutModel Instance => instance;
 
-		public static LayoutStateManager StateManager {
+        public static LayoutStateManager StateManager {
 			get {
 				if(stateManager == null) {
 					stateManager = new LayoutStateManager();
@@ -1760,69 +1588,37 @@ namespace LayoutManager.Model {
 			e.Info = ControlManager;
 		}
 
-		protected LayoutModelAreaDictionary MyAreas {
-			get {
-				return areas;
-			}
-		}
+        protected LayoutModelAreaDictionary MyAreas => areas;
 
-		/// <summary>
-		/// Return the list of areas in the model
-		/// </summary>
-		public static LayoutModelAreaDictionary Areas {
-			get {
-				return Instance.MyAreas;
-			}
-		}
+        /// <summary>
+        /// Return the list of areas in the model
+        /// </summary>
+        public static LayoutModelAreaDictionary Areas => Instance.MyAreas;
 
-		/// <summary>
-		/// Return the phases (operational, in-construction, planned) used by this model.
-		/// </summary>
-		/// <remarks>This operation passes on all the spots in the model, so use it with care</remarks>
-		public static LayoutPhase ModelPhases {
-			get {
-				return Areas.Aggregate<LayoutModelArea, LayoutPhase>(LayoutPhase.None, (p, area) => p | area.AreaPhases);
-			}
-		}
+        /// <summary>
+        /// Return the phases (operational, in-construction, planned) used by this model.
+        /// </summary>
+        /// <remarks>This operation passes on all the spots in the model, so use it with care</remarks>
+        public static LayoutPhase ModelPhases => Areas.Aggregate<LayoutModelArea, LayoutPhase>(LayoutPhase.None, (p, area) => p | area.AreaPhases);
 
-		protected LayoutModelBlockDictionary MyBlocks {
-			get {
-				return blocks;
-			}
-		}
+        protected LayoutModelBlockDictionary MyBlocks => blocks;
 
-		public static LayoutModelBlockDictionary Blocks {
-			get {
-				return Instance.MyBlocks;
-			}
-		}
+        public static LayoutModelBlockDictionary Blocks => Instance.MyBlocks;
 
-		public LayoutXmlInfo XmlInfo {
-			get {
-				return modelXmlInfo;
-			}
-		}
+        public LayoutXmlInfo XmlInfo => modelXmlInfo;
 
-		public XmlElement Element {
-			get {
-				return modelXmlInfo.Element;
-			}
-		}
+        public XmlElement Element => modelXmlInfo.Element;
 
-		/// <summary>
-		/// The locomotive catalog. This is a catalog of available locomotive types
-		/// </summary>
-		public static LocomotiveCatalogInfo LocomotiveCatalog {
-			get {
-				return new LocomotiveCatalogInfo();
-			}
-		}
+        /// <summary>
+        /// The locomotive catalog. This is a catalog of available locomotive types
+        /// </summary>
+        public static LocomotiveCatalogInfo LocomotiveCatalog => new LocomotiveCatalogInfo();
 
-		/// <summary>
-		/// The locomotive collection. This contains the locomotive that the user has.
-		/// In addition the collection contains locomotive set elements
-		/// </summary>
-		protected LocomotiveCollectionInfo MyLocomotiveCollection {
+        /// <summary>
+        /// The locomotive collection. This contains the locomotive that the user has.
+        /// In addition the collection contains locomotive set elements
+        /// </summary>
+        protected LocomotiveCollectionInfo MyLocomotiveCollection {
 			get {
 				if(locomotiveCollection == null) {
 					locomotiveCollection = new LocomotiveCollectionInfo();
@@ -1835,28 +1631,16 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public static LocomotiveCollectionInfo LocomotiveCollection {
-			get {
-				return Instance.MyLocomotiveCollection;
-			}
-		}
+        public static LocomotiveCollectionInfo LocomotiveCollection => Instance.MyLocomotiveCollection;
 
-		protected LayoutControlManager MyControlManager {
-			get {
-				return controlManager;
-			}
-		}
+        protected LayoutControlManager MyControlManager => controlManager;
 
-		public static LayoutControlManager ControlManager {
-			get {
-				return Instance.MyControlManager;
-			}
-		}
+        public static LayoutControlManager ControlManager => Instance.MyControlManager;
 
-		/// <summary>
-		/// Return ramps collection
-		/// </summary>
-		public MotionRampCollection Ramps {
+        /// <summary>
+        /// Return ramps collection
+        /// </summary>
+        public MotionRampCollection Ramps {
 			get {
 				if(ramps == null) {
 					XmlElement	rampsElement = Element["Ramps"];
@@ -1886,31 +1670,19 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public TripPlanIconListInfo TripPlanIconList {
-			get {
-				return new TripPlanIconListInfo(Element, "TripPlanIconList");
-			}
-		}
+        public TripPlanIconListInfo TripPlanIconList => new TripPlanIconListInfo(Element, "TripPlanIconList");
 
-		public bool ModelIsLoading {
-			get {
-				return modelIsLoading;
-			}
-		}
+        public bool ModelIsLoading => modelIsLoading;
 
-		/// <summary>
-		/// The number of logical speed steps. The train speed is expressed in logical speed steps.
-		/// </summary>
-		public int LogicalSpeedSteps {
-			get {
-				return 14;
-			}
-		}
+        /// <summary>
+        /// The number of logical speed steps. The train speed is expressed in logical speed steps.
+        /// </summary>
+        public int LogicalSpeedSteps => 14;
 
-		/// <summary>
-		/// Phase (design, construction, operational) of new components added to model
-		/// </summary>
-		public LayoutPhase DefaultPhase {
+        /// <summary>
+        /// Phase (design, construction, operational) of new components added to model
+        /// </summary>
+        public LayoutPhase DefaultPhase {
 			get;
 			set;
 		}
@@ -1960,22 +1732,16 @@ namespace LayoutManager.Model {
 			return component;
 		}
 
-		public ModelComponent this[Guid id, LayoutPhase phase] {
-			get {
-				return GetComponentById<ModelComponent>(id, phase);
-			}
-		}
+        public ModelComponent this[Guid id, LayoutPhase phase] => GetComponentById<ModelComponent>(id, phase);
 
-		public static TComponentType Component<TComponentType>(Guid id, LayoutPhase phases) where TComponentType : IModelComponent {
-			return Instance.GetComponentById<TComponentType>(id, phases);
-		}
+        public static TComponentType Component<TComponentType>(Guid id, LayoutPhase phases) where TComponentType : IModelComponent => Instance.GetComponentById<TComponentType>(id, phases);
 
-		/// <summary>
-		/// Return a list of all component of a given type or that implement a given interface
-		/// </summary>
-		/// <typeparam name="ComponentType">Type or interface</typeparam>
-		/// <returns>List of components of this type or that implement that interface</returns>
-		protected IEnumerable<ComponentType> MyComponents<ComponentType>(LayoutPhase phases) where ComponentType : class, IModelComponentHasId {
+        /// <summary>
+        /// Return a list of all component of a given type or that implement a given interface
+        /// </summary>
+        /// <typeparam name="ComponentType">Type or interface</typeparam>
+        /// <returns>List of components of this type or that implement that interface</returns>
+        protected IEnumerable<ComponentType> MyComponents<ComponentType>(LayoutPhase phases) where ComponentType : class, IModelComponentHasId {
 			foreach(ModelComponent modelComponent in componentReferences.Values) {
 				ComponentType component = modelComponent as ComponentType;
 
@@ -2020,33 +1786,21 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public static IEnumerable<ComponentType> Components<ComponentType>(LayoutPhase phases) where ComponentType : class, IModelComponentHasId {
-			return Instance.MyComponents<ComponentType>(phases);
-		}
+        public static IEnumerable<ComponentType> Components<ComponentType>(LayoutPhase phases) where ComponentType : class, IModelComponentHasId => Instance.MyComponents<ComponentType>(phases);
 
-		public static IEnumerable<ComponentType> Components<ComponentType>(LayoutPhase phases, Predicate<ComponentType> filter) where ComponentType : class, IModelComponentHasId {
-			return Instance.MyComponents<ComponentType>(filter, phases);
-		}
+        public static IEnumerable<ComponentType> Components<ComponentType>(LayoutPhase phases, Predicate<ComponentType> filter) where ComponentType : class, IModelComponentHasId => Instance.MyComponents<ComponentType>(filter, phases);
 
-		public static IEnumerable<ComponentType> AllComponents<ComponentType>(LayoutPhase phases, Predicate<ComponentType> filter = null) where ComponentType : class, IModelComponent {
-			return Instance.AllMyComponents<ComponentType>(phases, filter);
-		}
+        public static IEnumerable<ComponentType> AllComponents<ComponentType>(LayoutPhase phases, Predicate<ComponentType> filter = null) where ComponentType : class, IModelComponent => Instance.AllMyComponents<ComponentType>(phases, filter);
 
-		public static IEnumerable<LayoutModelSpotComponentCollection> Spots {
-			get {
-				return Instance.MySpots;
-			}
-		}
+        public static IEnumerable<LayoutModelSpotComponentCollection> Spots => Instance.MySpots;
 
-		public static bool HasPhase(LayoutPhase phases) {
-			return Spots.Any(spot => (spot.Phase & phases) != 0);
-		}
+        public static bool HasPhase(LayoutPhase phases) => Spots.Any(spot => (spot.Phase & phases) != 0);
 
-		#endregion
+        #endregion
 
-		#region Saving/Loading model from XML files
+        #region Saving/Loading model from XML files
 
-		void writeXmlAreas(XmlWriter w) {
+        void writeXmlAreas(XmlWriter w) {
 			w.WriteStartElement("Areas");
 
 			foreach(var area in Areas)
@@ -2242,10 +1996,6 @@ namespace LayoutManager.Model {
 			this.context = context;
 		}
 
-		public LayoutReadXmlContext ReadXmlContext {
-			get {
-				return context;
-			}
-		}
-	}
+        public LayoutReadXmlContext ReadXmlContext => context;
+    }
 }

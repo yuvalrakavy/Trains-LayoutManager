@@ -68,13 +68,9 @@ namespace LayoutManager.Tools.Dialogs
 			EventManager.AddObjectSubscriptions(this);
 		}
 
-		public XmlElement Element {
-			get {
-				return manualDispatchRegion.Element;
-			}
-		}
+        public XmlElement Element => manualDispatchRegion.Element;
 
-		private void updateButtons(object sender, EventArgs e) {
+        private void updateButtons(object sender, EventArgs e) {
 			LayoutBlock	selectedBlock = (LayoutBlock)listBoxBlocks.SelectedItem;
 
 			selectedBlockSelection.Clear();
@@ -104,13 +100,11 @@ namespace LayoutManager.Tools.Dialogs
 			Close();
 		}
 
-		// Impelementation of IModelComponentReceiverComponent
+        // Impelementation of IModelComponentReceiverComponent
 
-		public string DialogName(IModelComponent component) {
-			return this.Text;
-		}
+        public string DialogName(IModelComponent component) => this.Text;
 
-		public void AddComponent(IModelComponent component) {
+        public void AddComponent(IModelComponent component) {
 			LayoutBlockDefinitionComponent	addedBlockInfo = (LayoutBlockDefinitionComponent)component;
 			LayoutBlock					addedBlock = addedBlockInfo.Block;
 			bool						blockFound = false;

@@ -358,19 +358,11 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
 				Text = node.Description;
 			}
 
-			public XmlElement Element {
-				get {
-					return node.Element;
-				}
-			}
+            public XmlElement Element => node.Element;
 
-			public IIfTimeNode Node {
-				get {
-					return node;
-				}
-			}
+            public IIfTimeNode Node => node;
 
-			abstract public bool Edit();
+            abstract public bool Edit();
 		}
 
 		class SecondsTreeNode : TreeNodeBase {

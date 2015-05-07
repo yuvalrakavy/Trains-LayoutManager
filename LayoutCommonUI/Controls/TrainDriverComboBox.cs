@@ -184,21 +184,11 @@ namespace LayoutManager.CommonUI.Controls
 				this.driverElement = driverElement;
 			}
 
-			public XmlElement DriverElement {
-				get {
-					return driverElement;
-				}
-			}
+            public XmlElement DriverElement => driverElement;
 
-			public override string ToString() {
-				return driverElement.GetAttribute("TypeName");
-			}
+            public override string ToString() => driverElement.GetAttribute("TypeName");
 
-			public string Type {
-				get {
-					return driverElement.GetAttribute("Type");
-				}
-			}
-		}
+            public string Type => driverElement.GetAttribute("Type");
+        }
 	}
 }

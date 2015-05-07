@@ -55,16 +55,10 @@ namespace Gui.Wizard
 		}
 
 
-		/// <summary>
-		/// Gets the index of the page 
-		/// </summary>
-		public int PageIndex
-		{
-			get
-			{
-				return vPage;
-			}
-		}
+        /// <summary>
+        /// Gets the index of the page 
+        /// </summary>
+        public int PageIndex => vPage;
 
-	}
+    }
 }

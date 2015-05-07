@@ -20,37 +20,21 @@ namespace LayoutManager.Components {
 			XmlDocument.LoadXml("<PowerConnector />");
 		}
 
-		public override ModelComponentKind Kind {
-			get {
-				return ModelComponentKind.PowerConnector;
-			}
-		}
-		
-		public override String ToString() {
-			return "track power connector";
-		}
+        public override ModelComponentKind Kind => ModelComponentKind.PowerConnector;
 
-		public LayoutTrackPowerConnectorInfo Info {
-			get {
-				return new LayoutTrackPowerConnectorInfo(this);
-			}
-		}
+        public override String ToString() => "track power connector";
 
-		public LayoutPowerInlet Inlet {
-			get { return Info.Inlet; }
-		}
+        public LayoutTrackPowerConnectorInfo Info => new LayoutTrackPowerConnectorInfo(this);
 
-		public override bool DrawOutOfGrid {
-			get {
-				return true;
-			}
-		}
+        public LayoutPowerInlet Inlet => Info.Inlet;
 
-		/// <summary>
-		/// Locomotives that currently receive power from this connector. This can be useful for detecting too many locomotive (power overuse) or that
-		/// only single locomotive is on tracks receiving power from this connector if switch to programming mode
-		/// </summary>
-		public IEnumerable<TrainLocomotiveInfo> Locomotives {
+        public override bool DrawOutOfGrid => true;
+
+        /// <summary>
+        /// Locomotives that currently receive power from this connector. This can be useful for detecting too many locomotive (power overuse) or that
+        /// only single locomotive is on tracks receiving power from this connector if switch to programming mode
+        /// </summary>
+        public IEnumerable<TrainLocomotiveInfo> Locomotives {
 			get {
 				var blockWithTrainsDefinitions = from blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases)
 							 where
@@ -75,24 +59,16 @@ namespace LayoutManager.Components {
 			}
 		}
 
-		/// <summary>
-		/// Trains that currently receive power from this connector
-		/// </summary>
-		public IEnumerable<TrainStateInfo> Trains {
-			get {
-				return (from trainLocation in TrainLocations select trainLocation.Train).Distinct();
-			}
-		}
+        /// <summary>
+        /// Trains that currently receive power from this connector
+        /// </summary>
+        public IEnumerable<TrainStateInfo> Trains => (from trainLocation in TrainLocations select trainLocation.Train).Distinct();
 
-		/// <summary>
-		/// Blocks that receive power from this connector - this can be useful for locking the region (for example when connecting it to programming power, or disconnecting it)
-		/// </summary>
-		public IEnumerable<LayoutBlock> Blocks {
-			get {
-				return from blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases) where blockDefinition.PowerConnector.Id == this.Id select blockDefinition.Block;
-			}
-		}
-	}
+        /// <summary>
+        /// Blocks that receive power from this connector - this can be useful for locking the region (for example when connecting it to programming power, or disconnecting it)
+        /// </summary>
+        public IEnumerable<LayoutBlock> Blocks => from blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases) where blockDefinition.PowerConnector.Id == this.Id select blockDefinition.Block;
+    }
 
 	public class LayoutTrackPowerConnectorInfo : LayoutTextInfo {
 		public LayoutTrackPowerConnectorInfo(ModelComponent component, String elementName)
@@ -116,19 +92,11 @@ namespace LayoutManager.Components {
 			}
 		}
 
-		public override String Text {
-			get {
-				return Name;
-			}
-		}
+        public override String Text => Name;
 
-		public LayoutPowerInlet Inlet {
-			get {
-				return new LayoutPowerInlet(Element, "PowerInlet");
-			}
-		}
+        public LayoutPowerInlet Inlet => new LayoutPowerInlet(Element, "PowerInlet");
 
-		public TrackGauges TrackGauge {
+        public TrackGauges TrackGauge {
 			get {
 				if(!Element.HasAttribute("Gauge"))
 					return TrackGauges.HO;
@@ -161,30 +129,22 @@ namespace LayoutManager.Components {
 			XmlDocument.LoadXml("<PowerSelector />");
 		}
 
-		public override ModelComponentKind Kind {
-			get { return ModelComponentKind.ControlComponent; }
-		}
+        public override ModelComponentKind Kind => ModelComponentKind.ControlComponent;
 
-		public override string ToString() {
-			return IsSwitch ? "Power switch" : "Powser selector";
-		}
+        public override string ToString() => IsSwitch ? "Power switch" : "Powser selector";
 
-		public override bool DrawOutOfGrid {
-			get { return true; }
-		}
+        public override bool DrawOutOfGrid => true;
 
-		public override void OnXmlInfoChanged() {
+        public override void OnXmlInfoChanged() {
 			base.OnXmlInfoChanged();
 
 			_inlet1 = null;
 			_inlet2 = null;
 		}
 
-		protected override SwitchingStateSupport GetSwitchingStateSupporter() {
-			return new LayoutPowerSelectorSwitchingStateSupporter(this);
-		}
+        protected override SwitchingStateSupport GetSwitchingStateSupporter() => new LayoutPowerSelectorSwitchingStateSupporter(this);
 
-		public ILayoutPowerInlet Inlet1 {
+        public ILayoutPowerInlet Inlet1 {
 			get {
 				if(_inlet1 == null)
 					_inlet1 = new LayoutPowerInlet(this, "Inlet1");
@@ -200,19 +160,11 @@ namespace LayoutManager.Components {
 			}
 		}
 
-		public bool IsSwitch {
-			get {
-				return !Inlet1.IsConnected ^ !Inlet2.IsConnected;
-			}
-		}
+        public bool IsSwitch => !Inlet1.IsConnected ^ !Inlet2.IsConnected;
 
-		public bool IsSelector {
-			get {
-				return !IsSwitch;
-			}
-		}
+        public bool IsSelector => !IsSwitch;
 
-		public ILayoutPowerInlet CurrentSelectedInlet {
+        public ILayoutPowerInlet CurrentSelectedInlet {
 			get {
 				if(CurrentSwitchState == 0 && !ReverseLogic)
 					return Inlet1;
@@ -236,33 +188,25 @@ namespace LayoutManager.Components {
 			}
 		}
 
-		public LayoutTextInfo NameProvider {
-			get { return new LayoutPowerSelectorNameInfo(this); }
-		}
+        public LayoutTextInfo NameProvider => new LayoutPowerSelectorNameInfo(this);
 
-		#region IModelComponentHasPowerOutlets Members
+        #region IModelComponentHasPowerOutlets Members
 
-		public IList<ILayoutPowerOutlet> PowerOutlets {
-			get { return Array.AsReadOnly<ILayoutPowerOutlet>(new ILayoutPowerOutlet[] { new LayoutPowerSelectorSwitchOutlet(this) }); }
-		}
+        public IList<ILayoutPowerOutlet> PowerOutlets => Array.AsReadOnly<ILayoutPowerOutlet>(new ILayoutPowerOutlet[] { new LayoutPowerSelectorSwitchOutlet(this) });
 
-		#endregion
+        #endregion
 
-		#region IModelComponentConnectToControl Members
+        #region IModelComponentConnectToControl Members
 
-		public IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions {
-			get {
-				return Array.AsReadOnly<ModelComponentControlConnectionDescription>(new ModelComponentControlConnectionDescription[] {
-					 new ModelComponentControlConnectionDescription("Relay", "PowerSelector", "Power Selector Control")
-				});
-			}
-		}
+        public IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions => Array.AsReadOnly<ModelComponentControlConnectionDescription>(new ModelComponentControlConnectionDescription[] {
+                     new ModelComponentControlConnectionDescription("Relay", "PowerSelector", "Power Selector Control")
+                });
 
-		#endregion
+        #endregion
 
-		#region PowerSelectorComponent related classes
+        #region PowerSelectorComponent related classes
 
-		public class LayoutPowerSelectorSwitchingStateSupporter : SwitchingStateSupport {
+        public class LayoutPowerSelectorSwitchingStateSupporter : SwitchingStateSupport {
 			public LayoutPowerSelectorSwitchingStateSupporter(IModelComponentHasSwitchingState component)
 				: base(component) {
 			}
@@ -284,13 +228,11 @@ namespace LayoutManager.Components {
 				this.PowerSelectorComponent = powerSelectorComponent;
 			}
 
-			#region ILayoutPowerOutlet Members
+            #region ILayoutPowerOutlet Members
 
-			public string OutletDescription {
-				get { return PowerSelectorComponent.IsSwitch ? "Switch output" : "Selector output"; }
-			}
+            public string OutletDescription => PowerSelectorComponent.IsSwitch ? "Switch output" : "Selector output";
 
-			public ILayoutPower Power {
+            public ILayoutPower Power {
 				get {
 					ILayoutPowerInlet selectedInlet = PowerSelectorComponent.CurrentSelectedInlet;
 
@@ -385,12 +327,8 @@ namespace LayoutManager.Components {
 				}
 			}
 
-			public override string Text {
-				get {
-					return Name;
-				}
-			}
-		}
+            public override string Text => Name;
+        }
 
 		#endregion
 
@@ -403,22 +341,14 @@ namespace LayoutManager.Components {
 			XmlDocument.LoadXml("<TrackIsolation />");
 		}
 
-		public override ModelComponentKind Kind {
-			get { return ModelComponentKind.TrackIsolation;	}
-		}
+        public override ModelComponentKind Kind => ModelComponentKind.TrackIsolation;
 
-		public static bool Is(LayoutModelSpotComponentCollection spot) {
-			return spot[ModelComponentKind.TrackIsolation] != null && spot[ModelComponentKind.TrackIsolation] is LayoutTrackIsolationComponent;
-		}
+        public static bool Is(LayoutModelSpotComponentCollection spot) => spot[ModelComponentKind.TrackIsolation] != null && spot[ModelComponentKind.TrackIsolation] is LayoutTrackIsolationComponent;
 
-		public override bool DrawOutOfGrid {
-			get { return false; }
-		}
+        public override bool DrawOutOfGrid => false;
 
-		public override String ToString() {
-			return "track power isolation";
-		}
-	}
+        public override String ToString() => "track power isolation";
+    }
 
 	public class LayoutTrackReverseLoopModule : ModelComponent {
 
@@ -426,22 +356,14 @@ namespace LayoutManager.Components {
 			XmlDocument.LoadXml("<TractReverseLoopModule />");
 		}
 
-		public override ModelComponentKind Kind { 
-			get { return ModelComponentKind.TrackIsolation; }
-		}
+        public override ModelComponentKind Kind => ModelComponentKind.TrackIsolation;
 
-		public static bool Is(LayoutModelSpotComponentCollection spot) {
-			return spot[ModelComponentKind.TrackIsolation] != null && spot[ModelComponentKind.TrackIsolation] is LayoutTrackReverseLoopModule;
-		}
+        public static bool Is(LayoutModelSpotComponentCollection spot) => spot[ModelComponentKind.TrackIsolation] != null && spot[ModelComponentKind.TrackIsolation] is LayoutTrackReverseLoopModule;
 
-		public override bool DrawOutOfGrid {
-			get { return false; }
-		}
+        public override bool DrawOutOfGrid => false;
 
-		public override String ToString() {
-			return "track reverse loop module";
-		}
-	}
+        public override String ToString() => "track reverse loop module";
+    }
 
 	public class LayoutTrackLink : IComparable<LayoutTrackLink> {
 		Guid areaGuid;
@@ -456,19 +378,11 @@ namespace LayoutManager.Components {
 			this.trackLinkGuid = trackLinkGuid;
 		}
 
-		public Guid AreaGuid {
-			get {
-				return areaGuid;
-			}
-		}
+        public Guid AreaGuid => areaGuid;
 
-		public Guid TrackLinkGuid {
-			get {
-				return trackLinkGuid;
-			}
-		}
+        public Guid TrackLinkGuid => trackLinkGuid;
 
-		public LayoutTrackLinkComponent ResolveLink() {
+        public LayoutTrackLinkComponent ResolveLink() {
 			LayoutModelArea area = LayoutModel.Areas[AreaGuid];
 
 			Debug.Assert(area != null, "Cannot resolve track link");
@@ -492,25 +406,21 @@ namespace LayoutManager.Components {
 				r.Skip();
 		}
 
-		public override int GetHashCode() {
-			return trackLinkGuid.GetHashCode();
-		}
+        public override int GetHashCode() => trackLinkGuid.GetHashCode();
 
-		#region IComparable<LayoutTrackLink> Members
+        #region IComparable<LayoutTrackLink> Members
 
-		public int CompareTo(LayoutTrackLink other) {
+        public int CompareTo(LayoutTrackLink other) {
 			if(Equals(other))
 				return 0;
 			else
 				return GetHashCode() - other.GetHashCode();
 		}
 
-		public bool Equals(LayoutTrackLink other) {
-			return areaGuid == other.areaGuid && trackLinkGuid == other.trackLinkGuid;
-		}
+        public bool Equals(LayoutTrackLink other) => areaGuid == other.areaGuid && trackLinkGuid == other.trackLinkGuid;
 
-		#endregion
-	}
+        #endregion
+    }
 
 	public class LayoutTrackLinkComponent : ModelComponent, IModelComponentHasId {
 		Guid trackLinkGuid;
@@ -521,26 +431,14 @@ namespace LayoutManager.Components {
 			XmlInfo.XmlDocument.LoadXml("<TrackLink/>");
 		}
 
-		public override ModelComponentKind Kind {
-			get {
-				return ModelComponentKind.TrackLink;
-			}
-		}
+        public override ModelComponentKind Kind => ModelComponentKind.TrackLink;
 
-		public Guid TrackLinkGuid {
-			get {
-				return trackLinkGuid;
-			}
-		}
+        public Guid TrackLinkGuid => trackLinkGuid;
 
-		public override bool DrawOutOfGrid {
-			get {
-				return true;
-			}
-		}
+        public override bool DrawOutOfGrid => true;
 
 
-		public LayoutTrackLinkComponent LinkedComponent {
+        public LayoutTrackLinkComponent LinkedComponent {
 			get {
 				if(link == null)
 					return null;		// Not linked
@@ -559,26 +457,18 @@ namespace LayoutManager.Components {
 			}
 		}
 
-		public LayoutTrackComponent Track {
-			get {
-				return Spot.Track;
-			}
-		}
+        public LayoutTrackComponent Track => Spot.Track;
 
-		/// <summary>
-		/// Return a LayoutTrackLink for this component
-		/// </summary>
-		public LayoutTrackLink ThisLink {
-			get {
-				return new LayoutTrackLink(Spot.Area.AreaGuid, trackLinkGuid);
-			}
-		}
+        /// <summary>
+        /// Return a LayoutTrackLink for this component
+        /// </summary>
+        public LayoutTrackLink ThisLink => new LayoutTrackLink(Spot.Area.AreaGuid, trackLinkGuid);
 
-		/// <summary>
-		/// Return the LayoutTrackLink of the component that this component is linked to.
-		/// If set, link this component to another one, the other component is linked to this one.
-		/// </summary>
-		public LayoutTrackLink Link {
+        /// <summary>
+        /// Return the LayoutTrackLink of the component that this component is linked to.
+        /// If set, link this component to another one, the other component is linked to this one.
+        /// </summary>
+        public LayoutTrackLink Link {
 			get {
 				return link;
 			}
@@ -588,11 +478,9 @@ namespace LayoutManager.Components {
 			}
 		}
 
-		public override String ToString() {
-			return "track link";
-		}
+        public override String ToString() => "track link";
 
-		public override void OnAddedToModel() {
+        public override void OnAddedToModel() {
 			base.OnAddedToModel();
 
 			Spot.Area.TrackLinks.Add(this);
@@ -720,42 +608,24 @@ namespace LayoutManager.Components {
 			XmlInfo.XmlDocument.LoadXml("<TextLabel/>");
 		}
 
-		public override ModelComponentKind Kind {
-			get {
-				return ModelComponentKind.Annotation;
-			}
-		}
+        public override ModelComponentKind Kind => ModelComponentKind.Annotation;
 
-		public LayoutTextInfo TextProvider {
-			get {
-				return new LayoutTextInfo(this, "Text");
-			}
-		}
+        public LayoutTextInfo TextProvider => new LayoutTextInfo(this, "Text");
 
-		public override String ToString() {
-			return "text: " + TextProvider.Text;
-		}
+        public override String ToString() => "text: " + TextProvider.Text;
 
-		public override bool DrawOutOfGrid {
-			get {
-				return true;
-			}
-		}
+        public override bool DrawOutOfGrid => true;
 
-	}
+    }
 
 	public class LayoutImageComponent : ModelComponent {
 		public LayoutImageComponent() {
 			XmlInfo.XmlDocument.LoadXml("<Image />");
 		}
 
-		public override ModelComponentKind Kind {
-			get {
-				return ModelComponentKind.Background;
-			}
-		}
+        public override ModelComponentKind Kind => ModelComponentKind.Background;
 
-		public override void OnRemovingFromModel() {
+        public override void OnRemovingFromModel() {
 			LayoutImageInfo imageProvider = new LayoutImageInfo(Element);
 
 			EventManager.Event(new LayoutEvent(this, "remove-image-from-cache", imageProvider.ImageCacheEventXml, imageProvider.ImageFile));
@@ -777,71 +647,41 @@ namespace LayoutManager.Components {
 			base.OnXmlInfoChanged();
 		}
 
-		public override bool DrawOutOfGrid {
-			get {
-				return true;
-			}
-		}
+        public override bool DrawOutOfGrid => true;
 
 
-		public override String ToString() {
-			return "Image";
-		}
-	}
+        public override String ToString() => "Image";
+    }
 
 	public abstract class LayoutTrackAnnotationComponent : ModelComponent {
-		public LayoutStraightTrackComponent Track {
-			get {
-				return Spot.Track as LayoutStraightTrackComponent;
-			}
-		}
-	}
+        public LayoutStraightTrackComponent Track => Spot.Track as LayoutStraightTrackComponent;
+    }
 
 	public class LayoutBridgeComponent : LayoutTrackAnnotationComponent {
 		public LayoutBridgeComponent() {
 			XmlDocument.LoadXml("<Bridge />");
 		}
 
-		public override ModelComponentKind Kind {
-			get {
-				return ModelComponentKind.Background;
-			}
-		}
+        public override ModelComponentKind Kind => ModelComponentKind.Background;
 
-		public override bool DrawOutOfGrid {
-			get {
-				return false;
-			}
-		}
+        public override bool DrawOutOfGrid => false;
 
 
-		public override string ToString() {
-			return "bridge";
-		}
-	}
+        public override string ToString() => "bridge";
+    }
 
 	public class LayoutTunnelComponent : LayoutTrackAnnotationComponent {
 		public LayoutTunnelComponent() {
 			XmlDocument.LoadXml("<Tunnel />");
 		}
 
-		public override ModelComponentKind Kind {
-			get {
-				return ModelComponentKind.Background;
-			}
-		}
+        public override ModelComponentKind Kind => ModelComponentKind.Background;
 
-		public override bool DrawOutOfGrid {
-			get {
-				return false;
-			}
-		}
+        public override bool DrawOutOfGrid => false;
 
 
-		public override string ToString() {
-			return "tunnel";
-		}
-	}
+        public override string ToString() => "tunnel";
+    }
 
 	public enum LayoutGateState {
 		/// <summary>
@@ -939,24 +779,16 @@ namespace LayoutManager.Components {
 			XmlDocument.LoadXml("<Gate OpenUpOrLeft=\"false\"/>");
 		}
 
-		public override ModelComponentKind Kind {
-			get { return ModelComponentKind.Gate; }
-		}
+        public override ModelComponentKind Kind => ModelComponentKind.Gate;
 
-		public override bool DrawOutOfGrid {
-			get { return false; }
-		}
+        public override bool DrawOutOfGrid => false;
 
-		public LayoutGateComponentInfo Info {
-			get {
-				return new LayoutGateComponentInfo(this, Element);
-			}
-		}
+        public LayoutGateComponentInfo Info => new LayoutGateComponentInfo(this, Element);
 
-		/// <summary>
-		/// The gate open/close (or transition state)
-		/// </summary>
-		public LayoutGateState GateState {
+        /// <summary>
+        /// The gate open/close (or transition state)
+        /// </summary>
+        public LayoutGateState GateState {
 			get {
 				if(LayoutController.IsOperationMode) {
 					if(LayoutModel.StateManager.Components.Contains(Id))
@@ -976,14 +808,12 @@ namespace LayoutManager.Components {
 			}
 		}
 
-		public override string ToString() {
-			return "gate";
-		}
+        public override string ToString() => "gate";
 
 
-		#region IModelComponentConnectToControl Members
+        #region IModelComponentConnectToControl Members
 
-		public IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions {
+        public IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions {
 			get {
 				var list = new List<ModelComponentControlConnectionDescription>();
 
@@ -1024,18 +854,14 @@ namespace LayoutManager.Components {
 			return GateState == LayoutGateState.Open;		// Resource is ready when the gate is open and train can pass
 		}
 
-		#endregion
+        #endregion
 
-		#region IObjectHasName Members
+        #region IObjectHasName Members
 
-		public LayoutTextInfo NameProvider {
-			get {
-				return new LayoutTextInfo(this);
-			}
-		}
+        public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
 
-		#endregion
-	}
+        #endregion
+    }
 
 	[LayoutModule("Standard Gate Drivers", UserControl=false)]
 	class StandardGateDrivers : LayoutModuleBase {

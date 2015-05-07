@@ -34,22 +34,10 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 			Close();
 		}
 
-		public string SymbolName {
-			get {
-				return comboBoxTrain.Text;
-			}
-		}
+        public string SymbolName => comboBoxTrain.Text;
 
-		public TrainLength Length {
-			get {
-				return trainLengthDiagram.Length;
-			}
-		}
+        public TrainLength Length => trainLengthDiagram.Length;
 
-		public TrainLengthComparison Comparison {
-			get {
-				return trainLengthDiagram.Comparison;
-			}
-		}
-	}
+        public TrainLengthComparison Comparison => trainLengthDiagram.Comparison;
+    }
 }

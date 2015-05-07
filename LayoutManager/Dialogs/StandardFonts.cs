@@ -64,13 +64,9 @@ namespace LayoutManager.Dialogs
 				SubItems.AddRange(items);
 			}
 
-			public LayoutFontInfo FontProvider {
-				get {
-					return new LayoutFontInfo(fontElement);
-				}
-			}
+            public LayoutFontInfo FontProvider => new LayoutFontInfo(fontElement);
 
-			public void Update() {
+            public void Update() {
 				LayoutFontInfo	fontProvider = new LayoutFontInfo(fontElement);
 
 				SubItems[1].Text = fontProvider.Description;

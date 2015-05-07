@@ -68,13 +68,9 @@ namespace LayoutManager.View {
 
 		public Func<bool> RightClickHandler { get; set; }
 
-		public virtual bool CanBeClicked {
-			get {
-				return true;
-			}
-		}
+        public virtual bool CanBeClicked => true;
 
-		public virtual void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
+        public virtual void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
 			if(selectionLook != null) {
 				RectangleF rc = BoundingRegionInModelCoordinates.GetBounds(g);
 				Pen	p = new Pen(selectionLook.Color, view.LineWidthInModelCoordinates);
@@ -96,16 +92,14 @@ namespace LayoutManager.View {
 			BoundingRegionInModelCoordinates = new Region(view.ModelLocationRectangleInModelCoordinates(component.Location));
 		}
 
-		/// <summary>
-		/// Return true if the component grid is visible. The component and the view are extracted
-		/// from the event structure
-		/// </summary>
-		/// <param name="e">LayoutGetDrawingRegion event structure</param>
-		/// <returns></returns>
-		public static bool IsComponentGridVisible(LayoutGetDrawingRegionsEvent e) {
-			return e.View.DrawingRectangleInModelCoordinates.IntersectsWith(e.View.ModelLocationRectangleInModelCoordinates(e.Component.Location));
-		}
-	}
+        /// <summary>
+        /// Return true if the component grid is visible. The component and the view are extracted
+        /// from the event structure
+        /// </summary>
+        /// <param name="e">LayoutGetDrawingRegion event structure</param>
+        /// <returns></returns>
+        public static bool IsComponentGridVisible(LayoutGetDrawingRegionsEvent e) => e.View.DrawingRectangleInModelCoordinates.IntersectsWith(e.View.ModelLocationRectangleInModelCoordinates(e.Component.Location));
+    }
 
 	/// <summary>
 	/// Base class for drawing region that draws a rectangle whose relative to a grid location is provided
@@ -264,19 +258,11 @@ namespace LayoutManager.View {
 			painter.Hotspot = new PointF(painter.Hotspot.X + offsetAmount.X, painter.Hotspot.Y + offsetAmount.Y);
 		}
 
-		public override int ZOrder {
-			get {
-				return 100;
-			}
-		}
-		
-		protected BallonPainter Painter {
-			get {
-				return painter;
-			}
-		}
+        public override int ZOrder => 100;
 
-		public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
+        protected BallonPainter Painter => painter;
+
+        public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
 			GraphicsState	gs = g.Save();
 
 			g.TranslateTransform(3, 3);
@@ -297,18 +283,14 @@ namespace LayoutManager.View {
 		/// <param name="g"></param>
 		protected abstract void DrawBallonContent(Graphics g);
 
-		/// <summary>
-		/// The margins around the content in the ballon
-		/// </summary>
-		protected SizeF Margins {
-			get {
-				return new SizeF(4, 4);
-			}
-		}
+        /// <summary>
+        /// The margins around the content in the ballon
+        /// </summary>
+        protected SizeF Margins => new SizeF(4, 4);
 
-		#region IDisposable Members
+        #region IDisposable Members
 
-		virtual public void Dispose() {
+        virtual public void Dispose() {
 			if(painter != null)
 				painter.Dispose();
 		}
@@ -349,12 +331,8 @@ namespace LayoutManager.View {
 			}
 		}
 
-		protected Font Font {
-			get {
-				return font;
-			}
-		}
-	}
+        protected Font Font => font;
+    }
 
 	public class LayoutDrawingRegionBallonInfo : LayoutDrawingRegionBallonText, IDisposable {
 
@@ -512,12 +490,8 @@ namespace LayoutManager.View {
 			}
 		}
 
-		public override int ZOrder {
-			get {
-				return onTop ? base.ZOrder + 1 : base.ZOrder - 1;		// So it will painted on top or below of the component
-			}
-		}
-	}
+        public override int ZOrder => onTop ? base.ZOrder + 1 : base.ZOrder - 1;        // So it will painted on top or below of the component
+    }
 
 	#endregion
 }

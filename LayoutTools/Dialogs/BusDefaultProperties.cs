@@ -279,13 +279,9 @@ namespace LayoutManager.Tools.Dialogs
 				this.moduleType = moduleType;
 			}
 
-			public ControlModuleType ModuleType {
-				get {
-					return moduleType;
-				}
-			}
+            public ControlModuleType ModuleType => moduleType;
 
-			public override string ToString() {
+            public override string ToString() {
 				if(moduleType == null)
 					return "(Prompt)";
 				else

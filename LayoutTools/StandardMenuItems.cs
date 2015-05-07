@@ -13,12 +13,8 @@ namespace LayoutManager.Tools
 			this.component = component;
 		}
 
-		public ModelComponent Component {
-			get {
-				return component;
-			}
-		}
-	}
+        public ModelComponent Component => component;
+    }
 
 	/// <summary>
 	/// Implement a properties menu item. Invoke the given dialog type

@@ -84,12 +84,8 @@ namespace LayoutManager.Dialogs {
 				SubItems[1].Text = policy.Text;
 			}
 
-			public LayoutPolicyInfo Policy {
-				get {
-					return policy;
-				}
-			}
-		}
+            public LayoutPolicyInfo Policy => policy;
+        }
 
 		private void ImportPolicies_FormClosed(object sender, FormClosedEventArgs e) {
 			boldFont.Dispose();

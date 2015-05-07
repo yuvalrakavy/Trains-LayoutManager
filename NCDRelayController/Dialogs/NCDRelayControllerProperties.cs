@@ -74,16 +74,12 @@ namespace NCDRelayController.Dialogs
             radioButtonInterfaceType_CheckedChanged(null, new EventArgs());
 		}
 
-		public LayoutXmlInfo XmlInfo {
-			get {
-				return xmlInfo;
-			}
-		}
+        public LayoutXmlInfo XmlInfo => xmlInfo;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{
