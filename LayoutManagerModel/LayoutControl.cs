@@ -76,6 +76,11 @@ namespace LayoutManager.Model {
 		/// The modules are chained on the bus, the address of a module is its location in the chain
 		/// </summary>
 		DaisyChain,
+
+        /// <summary>
+        /// Bus is fixed - modules cannot be aded or removed
+        /// </summary>
+        Fixed,
 	}
 
 	/// <summary>

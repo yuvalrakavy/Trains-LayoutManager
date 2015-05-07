@@ -302,14 +302,16 @@ namespace LayoutManager {
 		}
 
 		public override void Do() {
-			if(bus.BusType.Topology == ControlBusTopology.DaisyChain) {
-				if(insertBefore == null)
-					addedModule = new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName));
-				else
-					addedModule = new ControlModuleReference(bus.Insert(moduleLocationID, insertBefore, moduleTypeName));
-			}
-			else
-				addedModule = new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName, address));
+            if (bus.BusType.Topology == ControlBusTopology.DaisyChain) {
+                if (insertBefore == null)
+                    addedModule = new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName));
+                else
+                    addedModule = new ControlModuleReference(bus.Insert(moduleLocationID, insertBefore, moduleTypeName));
+            }
+            else if (bus.BusType.Topology == ControlBusTopology.RandomAddressing)
+                addedModule = new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName, address));
+            else
+                Debug.Assert(false, "Cannot have add module command to a fixed bus");
 		}
 
         public ControlModuleReference AddModule => addedModule;
@@ -335,18 +337,20 @@ namespace LayoutManager {
 			moduleTypeName = module.ModuleTypeName;
 			moduleLocationID = module.LocationId;
 
-			if(bus.BusType.Topology == ControlBusTopology.DaisyChain) {
-				if(module.Address == bus.BusType.LastAddress)
-					insertBefore = null;
-				else {
-					ControlModule	insertBeforeModule = bus.GetModuleUsingAddress(module.Address + module.ModuleType.NumberOfAddresses);
+            if (bus.BusType.Topology == ControlBusTopology.DaisyChain) {
+                if (module.Address == bus.BusType.LastAddress)
+                    insertBefore = null;
+                else {
+                    ControlModule insertBeforeModule = bus.GetModuleUsingAddress(module.Address + module.ModuleType.NumberOfAddresses);
 
-					if(insertBeforeModule != null)
-						insertBefore = new ControlModuleReference(insertBeforeModule);
-				}
-			}
-			else
-				address = module.Address;
+                    if (insertBeforeModule != null)
+                        insertBefore = new ControlModuleReference(insertBeforeModule);
+                }
+            }
+            else if (bus.BusType.Topology == ControlBusTopology.RandomAddressing)
+                address = module.Address;
+            else
+                Debug.Assert(false, "Cannot have remove module command to a fixed bus");
 
 			this.module = new ControlModuleReference(module);
 		}

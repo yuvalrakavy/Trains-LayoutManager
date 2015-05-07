@@ -12,14 +12,8 @@ using LayoutManager.CommonUI;
 
 namespace LayoutManager.ControlComponents {
 
-	public interface IMarklinControlModuleSettingDialog {
-		bool ClearUserActionRequiredFlag { get; }
-
-		DialogResult ShowDialog(IWin32Window owner);
-	}
-
 	[LayoutModule("NCD Relay Components")]
-	class MarklinControlComponents : LayoutModuleBase {
+	class NCDControlComponents : LayoutModuleBase {
 		ControlBusType	relayBus = null;
 		ControlBusType inputBus = null;
 
