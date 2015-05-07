@@ -1,16 +1,10 @@
-using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
 using System.Text.RegularExpressions;
 
-namespace LayoutManager.ControlComponents.Dialogs
-{
-	/// <summary>
-	/// Summary description for LGBbusDIPswitchSetting.
-	/// </summary>
-	public class KxxDIPswitchSetting : System.Windows.Forms.Form, IMarklinControlModuleSettingDialog
+namespace LayoutManager.ControlComponents.Dialogs {
+    /// <summary>
+    /// Summary description for LGBbusDIPswitchSetting.
+    /// </summary>
+    public class KxxDIPswitchSetting : System.Windows.Forms.Form, IMarklinControlModuleSettingDialog
 	{
 		/// <summary>
 		/// Required designer variable.

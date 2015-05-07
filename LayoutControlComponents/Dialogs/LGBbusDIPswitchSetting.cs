@@ -1,18 +1,10 @@
-using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
 using System.Text.RegularExpressions;
 
-using LayoutManager.CommonUI;
-
-namespace LayoutManager.ControlComponents.Dialogs
-{
-	/// <summary>
-	/// Summary description for LGBbusDIPswitchSetting.
-	/// </summary>
-	public class LGBbusDIPswitchSetting : System.Windows.Forms.Form
+namespace LayoutManager.ControlComponents.Dialogs {
+    /// <summary>
+    /// Summary description for LGBbusDIPswitchSetting.
+    /// </summary>
+    public class LGBbusDIPswitchSetting : System.Windows.Forms.Form
 	{
 		/// <summary>
 		/// Required designer variable.

@@ -1,22 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Xml;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Linq;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI;
-using LayoutManager.Tools;
-using LayoutManager.ControlComponents.Dialogs;
 
 namespace LayoutManager.ControlComponents {
 
-	[LayoutModule("DiMAX Bus Control Components")]
+    [LayoutModule("DiMAX Bus Control Components")]
 	class DiMAXBusComponents : LayoutModuleBase {
 
 		[LayoutEvent("get-control-module-type", IfEvent="LayoutEvent[./Options/@ModuleTypeName='Massoth8170001']")]

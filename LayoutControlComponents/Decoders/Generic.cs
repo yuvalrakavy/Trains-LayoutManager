@@ -1,16 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Xml;
-using System.Windows.Forms;
-
-using LayoutManager;
+﻿using System.Collections.Generic;
 using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.Decoders {
 
-	[LayoutModule("Generic decoders")]
+    [LayoutModule("Generic decoders")]
 	class GenericDecoders : LayoutModuleBase {
 		public static string GenericDecodersVersion = "1.0";
 

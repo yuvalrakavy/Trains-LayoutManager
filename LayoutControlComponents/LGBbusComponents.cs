@@ -1,20 +1,13 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Xml;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.Components;
 using LayoutManager.CommonUI;
-using LayoutManager.Tools;
-using LayoutManager.ControlComponents.Dialogs;
 
 namespace LayoutManager.ControlComponents {
 
-	[LayoutModule("LGBBUS Control Components")]
+    [LayoutModule("LGBBUS Control Components")]
 	class LGBBUScomponents : LayoutModuleBase {
 
 		[LayoutEvent("get-control-module-type", IfEvent="LayoutEvent[./Options/@ModuleTypeName='LGB55070']")]
