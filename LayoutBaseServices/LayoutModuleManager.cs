@@ -566,8 +566,10 @@ namespace LayoutManager {
 
 			while(r.NodeType == XmlNodeType.Element) {
 				if(r.Name == "LayoutAssemblies") {
-					if(!r.IsEmptyElement)
-						layoutAssemblies.ReadXml(r);
+                    if (!r.IsEmptyElement)
+                        layoutAssemblies.ReadXml(r);
+                    else
+                        break;
 				}
 				else
 					throw new FileParseException(String.Format("Unpexected element {0}: {1}", r.NodeType, r.Name));
