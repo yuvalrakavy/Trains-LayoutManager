@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\LayoutManager\bin\Debug\Modules\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -42,17 +42,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="ComponentEditingTool.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ComponentView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Dialogs\NumatoRelayControllerProperties.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ModelComponents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RelayBusComponents.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LayoutBaseServices\LayoutBaseServices.csproj">
       <Project>{d861e89e-9bb2-4080-aa3f-a26ec8acef16}</Project>
       <Name>LayoutBaseServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LayoutCommands\LayoutCommands.csproj">
+      <Project>{5fabcfa6-6359-4126-865a-24119f0e3871}</Project>
+      <Name>LayoutCommands</Name>
     </ProjectReference>
     <ProjectReference Include="..\LayoutCommonUI\LayoutCommonUI.csproj">
       <Project>{c314f674-90c0-4216-901e-3f411c3f3406}</Project>
@@ -66,16 +76,23 @@
       <Project>{857f7a5e-7b92-4722-bebf-c3598293627d}</Project>
       <Name>LayoutManagerView</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LayoutManager\LayoutManager.csproj">
-      <Project>{221d7c82-7bba-4d39-80fd-39a018fec162}</Project>
-      <Name>LayoutManager</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ComponentEditingTool.resx">
+      <DependentUpon>ComponentEditingTool.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ComponentView.resx">
+      <DependentUpon>ComponentView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\NumatoRelayControllerProperties.resx">
       <DependentUpon>NumatoRelayControllerProperties.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\Numto.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -18,35 +18,37 @@ namespace NumatoController {
         TCP,
     };
 
-	public class NumatoController : ModelComponent, IModelComponentIsBusProvider {
+    public class NumatoController : ModelComponent, IModelComponentIsBusProvider {
 
+        internal const string relaysCountAttribute = "Relays";
         internal const string interfaceTypeAttribute = "InterfaceType";
+        internal const string portAttribute = "Port";
         internal const string addressAttribute = "Address";
         internal const string userAttribute = "User";
         internal const string passwordAttribute = "Password";
 
         public static LayoutTraceSwitch TraceNumato = new LayoutTraceSwitch("NumatoController", "Numato Relay controller");
 
-		ControlBus _relayBus = null;
-		bool simulation;
-		bool operationMode;
+        ControlBus _relayBus = null;
+        bool simulation;
+        bool operationMode;
         Stream commStream;
 
-		public NumatoController() {
-			this.XmlDocument.LoadXml(
-				$"<NumatoController {interfaceTypeAttribute}=\"TCP\" {addressAttribute}=\"169.254.1.1\" {userAttribute}=\"admin\" {passwordAttribute}=\"admin\">" +
-				"<ModeString>baud=115200 parity=N data=8</ModeString>" +
-				"</NumatoController>"
-				);
-		}
+        public NumatoController() {
+            this.XmlDocument.LoadXml(
+                $"<NumatoController {interfaceTypeAttribute}=\"TCP\" {addressAttribute}=\"169.254.1.1\" {userAttribute}=\"admin\" {passwordAttribute}=\"admin\">" +
+                "<ModeString>baud=115200 parity=N data=8</ModeString>" +
+                "</NumatoController>"
+                );
+        }
 
-		public ControlBus RelayBus {
-			get {
-				if(_relayBus == null)
-					_relayBus = LayoutModel.ControlManager.Buses.GetBus(this, "NumatoRelayBus");
-				return _relayBus;
-			}
-		}
+        public ControlBus RelayBus {
+            get {
+                if (_relayBus == null)
+                    _relayBus = LayoutModel.ControlManager.Buses.GetBus(this, "NumatoRelayBus");
+                return _relayBus;
+            }
+        }
 
         OutputManager OutputManager { get; set; }
 
@@ -63,7 +65,10 @@ namespace NumatoController {
             }
         }
 
-        
+        public int RelaysCount {
+            get { return XmlConvert.ToInt32(Element.GetAttribute(relaysCountAttribute)); }
+        }
+
         string User {
             get { return Element.GetAttribute(userAttribute); }
             set { Element.SetAttribute(userAttribute, value); }
@@ -334,87 +339,6 @@ namespace NumatoController {
             public override string ToString() => "Set relay " + iRelay + " to " + (on ? "ON" : "OFF");
         }
 
-		class PollContactClosuresCommand : OutputSynchronousCommandBase, IOutputCommandReply, IOutputIdlecommand {
-			protected NumatoController RelayController { get; private set; }
-			ContactClosureBankData[] contactClosureData;
-            int pollingPeriod;
-
-			public PollContactClosuresCommand(NumatoController relayController, int pollingPeriod) {
-				this.RelayController = relayController;
-				this.pollingPeriod = pollingPeriod;
-				this.contactClosureData = new ContactClosureBankData[relayController.InputBus.Modules.Sum(module => module.ModuleType.NumberOfConnectionPoints / 8)];
-			}
-
-            public override int Timeout => pollingPeriod;
-
-            public override void Do() {
-				var events = new List<LayoutEvent>();
-
-				int moduleNumber = 0;
-				foreach(var module in RelayController.InputBus.Modules) {
-					int bank = module.Address / 8;
-
-					for(int connectionPointIndex = 0; connectionPointIndex < module.ModuleType.NumberOfConnectionPoints; connectionPointIndex += 8) {
-						//TODO: Poll bank if not in operation mode (design mode learn) or if operation mode and at least one connection point is actually connected 
-						PollContactClosureBank(events, module, moduleNumber, bank, connectionPointIndex);
-						bank++;
-					}
-
-					moduleNumber++;
-				}
-
-				if(events.Count > 0)
-					EventManager.Instance.InterThreadEventInvoker.QueueEvent(new LayoutEvent<IList<LayoutEvent>>("NCD-invoke-events", events).SetCommandStation(RelayController));
-
-				RelayController.OutputManager.SetReply(this);
-			}
-
-			private void PollContactClosureBank(IList<LayoutEvent> events, ControlModule module, int moduleNumber, int bank, int connectionPointIndex) {
-				byte[] command = new byte[] { 254, 175, (byte)bank };
-				byte[] reply = new byte[1];
-
-				RelayController.CommStream.Write(command, 0, command.Length);
-				RelayController.CommStream.Read(reply, 0, reply.Length);
-
-				Trace.WriteLineIf(TraceNumato.TraceVerbose, "Bank " + bank + " value: " + reply[0].ToString("x"));
-				contactClosureData[bank].NewData(events, module, moduleNumber, connectionPointIndex, reply[0]);
-			}
-
-			public override void OnReply(object replyPacket) {
-			}
-
-            #region IOutputIdlecommand Members
-
-            public bool RemoveFromQueue => false;
-
-            #endregion
-
-            struct ContactClosureBankData {
-				byte currentState;
-
-				public void NewData(IList<LayoutEvent> events, ControlModule module, int moduleNumber, int connectionPointIndex, byte data) {
-					byte changedBits = (byte)(currentState ^ data);
-					byte mask = 1;
-					IModelComponentIsBusProvider busProvider = module.Bus.BusProvider;
-
-					for(int i = 0; i < 8; i++) {
-						if((changedBits & mask) != 0) {
-							int isSet = (data & mask) != 0 ? 1 : 0;
-
-							if(LayoutController.IsOperationMode)
-								events.Add(new LayoutEvent(new ControlConnectionPointReference(module.Bus, moduleNumber + 1, i), "control-connection-point-state-changed-notification", null, isSet));
-							else if(LayoutController.IsDesignTimeActivation)
-								events.Add(new LayoutEvent(busProvider, "design-time-command-station-event", null,
-									new CommandStationInputEvent((ModelComponent)busProvider, module.Bus, moduleNumber + 1, i, isSet)));
-						}
-
-						mask <<= 1;
-					}
-
-					currentState = data;
-				}
-			}
-		}
 
 		#endregion
 	}
