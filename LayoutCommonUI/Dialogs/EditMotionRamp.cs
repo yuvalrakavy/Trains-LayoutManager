@@ -53,53 +53,58 @@ namespace LayoutManager.CommonUI.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.motionRampEditor = new LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor();
-			this.buttonOK = new Button();
-			this.buttonCancel = new Button();
-			this.SuspendLayout();
-			// 
-			// motionRampEditor
-			// 
-			this.motionRampEditor.Location = new System.Drawing.Point(8, 8);
-			this.motionRampEditor.Name = "motionRampEditor";
-			this.motionRampEditor.Ramp = null;
-			this.motionRampEditor.Size = new System.Drawing.Size(232, 128);
-			this.motionRampEditor.TabIndex = 0;
-			// 
-			// buttonOK
-			// 
-			this.buttonOK.Location = new System.Drawing.Point(240, 16);
-			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(56, 23);
-			this.buttonOK.TabIndex = 1;
-			this.buttonOK.Text = "OK";
-			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-			// 
-			// buttonCancel
-			// 
-			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(240, 48);
-			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(56, 23);
-			this.buttonCancel.TabIndex = 2;
-			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
-			// 
-			// EditMotionRamp
-			// 
-			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
-			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(304, 142);
-			this.ControlBox = false;
-			this.Controls.AddRange(new System.Windows.Forms.Control[] {
-																		  this.buttonOK,
-																		  this.motionRampEditor,
-																		  this.buttonCancel});
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Name = "EditMotionRamp";
-			this.Text = "Edit Acceleration/Deceleration Profile";
-			this.ResumeLayout(false);
+            this.motionRampEditor = new LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor();
+            this.buttonOK = new System.Windows.Forms.Button();
+            this.buttonCancel = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // motionRampEditor
+            // 
+            this.motionRampEditor.Location = new System.Drawing.Point(26, 19);
+            this.motionRampEditor.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
+            this.motionRampEditor.Name = "motionRampEditor";
+            this.motionRampEditor.Ramp = null;
+            this.motionRampEditor.Size = new System.Drawing.Size(742, 305);
+            this.motionRampEditor.TabIndex = 0;
+            // 
+            // buttonOK
+            // 
+            this.buttonOK.Location = new System.Drawing.Point(768, 38);
+            this.buttonOK.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
+            this.buttonOK.Name = "buttonOK";
+            this.buttonOK.Size = new System.Drawing.Size(179, 55);
+            this.buttonOK.TabIndex = 1;
+            this.buttonOK.Text = "OK";
+            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            // 
+            // buttonCancel
+            // 
+            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.buttonCancel.Location = new System.Drawing.Point(768, 114);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Size = new System.Drawing.Size(179, 55);
+            this.buttonCancel.TabIndex = 2;
+            this.buttonCancel.Text = "Cancel";
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            // 
+            // EditMotionRamp
+            // 
+            this.AcceptButton = this.buttonOK;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
+            this.CancelButton = this.buttonCancel;
+            this.ClientSize = new System.Drawing.Size(973, 339);
+            this.ControlBox = false;
+            this.Controls.Add(this.buttonOK);
+            this.Controls.Add(this.motionRampEditor);
+            this.Controls.Add(this.buttonCancel);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
+            this.Name = "EditMotionRamp";
+            this.Text = "Edit Acceleration/Deceleration Profile";
+            this.ResumeLayout(false);
 
 		}
 		#endregion
