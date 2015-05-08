@@ -59,7 +59,7 @@ namespace NCDRelayController {
                 if (Element.HasAttribute("InterfaceType"))
                     return (InterfaceType)Enum.Parse(typeof(InterfaceType), Element.GetAttribute("InterfaceType"));
                 else
-                    return global::NCDRelayController.InterfaceType.Serial;
+                    return InterfaceType.Serial;
             }
 
             set {
@@ -101,7 +101,7 @@ namespace NCDRelayController {
 		}
 
 		void OpenCommunicationStream() {
-            if (InterfaceType == global::NCDRelayController.InterfaceType.Serial)
+            if (InterfaceType == InterfaceType.Serial)
                 commStream = (FileStream)EventManager.Event(new LayoutEvent(Element, "open-serial-communication-device-request"));
             else {
                 string address = XmlInfo.DocumentElement.GetAttribute("Address");

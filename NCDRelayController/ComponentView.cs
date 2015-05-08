@@ -10,8 +10,7 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
 
-namespace NCDRelayController
-{
+namespace NCDRelayController {
 	/// <summary>
 	/// Summary description for ComponentView.
 	/// </summary>
