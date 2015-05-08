@@ -308,10 +308,10 @@ namespace LayoutManager {
                 else
                     addedModule = new ControlModuleReference(bus.Insert(moduleLocationID, insertBefore, moduleTypeName));
             }
-            else if (bus.BusType.Topology == ControlBusTopology.RandomAddressing)
+            else if (bus.BusType.Topology == ControlBusTopology.RandomAddressing || bus.BusType.Topology == ControlBusTopology.Fixed)
                 addedModule = new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName, address));
             else
-                Debug.Assert(false, "Cannot have add module command to a fixed bus");
+                Debug.Assert(false);
 		}
 
         public ControlModuleReference AddModule => addedModule;
@@ -347,10 +347,10 @@ namespace LayoutManager {
                         insertBefore = new ControlModuleReference(insertBeforeModule);
                 }
             }
-            else if (bus.BusType.Topology == ControlBusTopology.RandomAddressing)
+            else if (bus.BusType.Topology == ControlBusTopology.RandomAddressing || bus.BusType.Topology == ControlBusTopology.Fixed)
                 address = module.Address;
             else
-                Debug.Assert(false, "Cannot have remove module command to a fixed bus");
+                Debug.Assert(false);
 
 			this.module = new ControlModuleReference(module);
 		}

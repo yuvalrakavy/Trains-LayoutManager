@@ -1011,8 +1011,6 @@ namespace LayoutManager.CommonUI
 	}
 
 	public class DrawControlBusProvider : DrawControlBase {
-		IModelComponentIsBusProvider	busProvider;
-
 		SizeF		minSize = new SizeF(60, 28);
 		const int	busLineHorizontalGap = 6;
 		const int	busLineVerticalGap = 16;
@@ -1021,7 +1019,7 @@ namespace LayoutManager.CommonUI
 		public DrawControlBusProvider(LayoutControlBusViewer viewer, IModelComponentIsBusProvider busProvider) : base(viewer) {
 			IEnumerable<ControlBus>	buses = LayoutModel.ControlManager.Buses.Buses(busProvider);
 
-			this.busProvider = busProvider;
+			this.BusProvider = busProvider;
 
 			if(Viewer.BusTypeName == null) {
 				foreach(ControlBus bus in buses)
@@ -1043,12 +1041,14 @@ namespace LayoutManager.CommonUI
 			}
 		}
 
+        public IModelComponentIsBusProvider BusProvider { get; }
+
 		public override void Draw(Graphics g, PointF startingPoint) {
 			RectangleF		busProviderRect;
 
 			using(Font nameFont = new Font("Arial", 9)) {
 				SizeF	busProviderRectSize = new SizeF(0, 0);
-				SizeF	nameSize = g.MeasureString(busProvider.NameProvider.Name, nameFont);
+				SizeF	nameSize = g.MeasureString(BusProvider.NameProvider.Name, nameFont);
 					
 				minSize.Width = Math.Max(minSize.Width, busLineHorizontalGap * (1 + DrawObjects.Length));
 				busProviderRectSize.Width = Math.Max(nameSize.Width + 4, minSize.Width);
@@ -1064,7 +1064,7 @@ namespace LayoutManager.CommonUI
 				format.Alignment = StringAlignment.Center;
 				format.LineAlignment = StringAlignment.Center;
 
-				g.DrawString(busProvider.NameProvider.Name, nameFont, Brushes.Black, busProviderRect, format);
+				g.DrawString(BusProvider.NameProvider.Name, nameFont, Brushes.Black, busProviderRect, format);
 
 				UnionBounds(busProviderRect);
 			}
@@ -1120,7 +1120,7 @@ namespace LayoutManager.CommonUI
 			foreach(ControlModule module in modulesByAddress)
 				AddDrawObject(new DrawControlModule(Viewer, module));
 
-			if(!Viewer.IsOperationMode) {
+			if(!Viewer.IsOperationMode && bus.BusType.Topology != ControlBusTopology.Fixed) {
 				DrawControlClickToAddModule	d = new DrawControlClickToAddModule(Viewer, bus);
 
 				AddDrawObject(d);

@@ -1265,7 +1265,8 @@ namespace LayoutManager.Tools {
 				menu.MenuItems.Add(new MoveControlModuleInDaisyChainMenuItem(module, 1, "Move module &Down the chain"));
 			}
 			else {
-				menu.MenuItems.Add(new SetControlModuleAddressMenuItem(drawObject.Viewer.ModuleLocationID, module));
+                if(module.Bus.BusType.Topology != ControlBusTopology.Fixed)
+    				menu.MenuItems.Add(new SetControlModuleAddressMenuItem(drawObject.Viewer.ModuleLocationID, module));
 
 				var programmers = LayoutModel.Components<IModelComponentCanProgramLocomotives>(LayoutPhase.Operational);
 
@@ -1291,7 +1292,9 @@ namespace LayoutManager.Tools {
 
 			}
 
-			menu.MenuItems.Add("-");
+            if(menu.MenuItems.Count > 0)
+    			menu.MenuItems.Add("-");
+
 			menu.MenuItems.Add(new SetModuleLocationMenuItem(drawObject.Viewer.ModuleLocationID == Guid.Empty, module));
 			menu.MenuItems.Add(new SetModuleLabelMenuItem(module));
 			menu.MenuItems.Add(new ToggleUserActionRequiredMenuItem(module));
@@ -1300,8 +1303,10 @@ namespace LayoutManager.Tools {
 				menu.MenuItems.Add(new MenuItem(module.AddressProgrammingRequired ? "Clear address programming required" : "Set address programming required",
 					(s, ea) => LayoutController.Do(new SetControlAddressProgrammingRequiredCommand(module, !module.AddressProgrammingRequired))));
 
-			menu.MenuItems.Add("-");
-			menu.MenuItems.Add(new RemoveControlModuleMenuItem(module));
+            if (module.Bus.BusType.Topology != ControlBusTopology.Fixed) {
+                menu.MenuItems.Add("-");
+                menu.MenuItems.Add(new RemoveControlModuleMenuItem(module));
+            }
 		}
 
 		[LayoutEvent("control-default-action", SenderType=typeof(DrawControlModule))]
@@ -1459,6 +1464,8 @@ namespace LayoutManager.Tools {
 			Menu						menu = (Menu)e.Info;
 
 			menu.MenuItems.Add(new ClearAllUserActionRequiredMenuItem(drawObject));
+
+            EventManager.Event(new LayoutEvent(drawObject.BusProvider, "add-component-editing-context-menu-entries", null, menu));
 		}
 
 		#endregion

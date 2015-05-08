@@ -203,18 +203,18 @@ namespace LayoutManager
 				}
 
 				if(component != null) {
-					bool					placeComponent = true;
+                    bool placeComponent = true;
+                    var placementXml = $"<PlacementInfo AreaID='{XmlConvert.ToString(area.AreaGuid)}' X='{ml.X}' Y='{ml.Y}' />";
 
-					placeComponent = (bool)EventManager.Event(new LayoutEvent(component, "model-component-placement-request",
-						"<PlacementInfo AreaID='" +
-						XmlConvert.ToString(area.AreaGuid) +
-						"' X='" + XmlConvert.ToString(ml.X) + 
-						"' Y='" + XmlConvert.ToString(ml.Y) + "' />", true));
+                    placeComponent = (bool)EventManager.Event(new LayoutEvent(component, "model-component-placement-request",
+						placementXml, true));
 
 					if(placeComponent) {
-						LayoutComponentPlacmentCommand	command = new LayoutComponentPlacmentCommand(
-							area, ml, component, "add " + component, area.Phase(ml));
+                        var command = new LayoutCompoundCommand($"add {component}", true);
 
+						command.Add(new LayoutComponentPlacmentCommand(area, ml, component, $"add {component}", area.Phase(ml)));
+
+                        EventManager.Event(new LayoutEvent(component, "model-component-post-placement-request", placementXml, command));
 						LayoutController.Do(command);
 					}
 				}
