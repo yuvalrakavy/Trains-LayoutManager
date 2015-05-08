@@ -78,12 +78,16 @@ namespace LayoutManager.CommonUI.Dialogs
 			}
 		}
 
-        public bool NoCondition => radioButtonNoCondition.Checked;
+		public bool NoCondition {
+			get {
+				return radioButtonNoCondition.Checked;
+			}
+		}
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose( bool disposing )
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{
@@ -102,103 +106,93 @@ namespace LayoutManager.CommonUI.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.eventScriptEditor = new LayoutManager.CommonUI.Controls.EventScriptEditor();
-            this.buttonOK = new System.Windows.Forms.Button();
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.radioButtonNoCondition = new System.Windows.Forms.RadioButton();
-            this.radioButtonCondition = new System.Windows.Forms.RadioButton();
-            this.linkMenuConditionScope = new LayoutManager.CommonUI.Controls.LinkMenu();
-            this.SuspendLayout();
-            // 
-            // eventScriptEditor
-            // 
-            this.eventScriptEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.eventScriptEditor.BlockDefinition = null;
-            this.eventScriptEditor.EventScriptElement = null;
-            this.eventScriptEditor.Location = new System.Drawing.Point(51, 126);
-            this.eventScriptEditor.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
-            this.eventScriptEditor.Name = "eventScriptEditor";
-            this.eventScriptEditor.Size = new System.Drawing.Size(1082, 579);
-            this.eventScriptEditor.TabIndex = 3;
-            this.eventScriptEditor.ViewOnly = false;
-            // 
-            // buttonOK
-            // 
-            this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOK.Location = new System.Drawing.Point(742, 730);
-            this.buttonOK.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
-            this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(179, 55);
-            this.buttonOK.TabIndex = 4;
-            this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-            // 
-            // buttonCancel
-            // 
-            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(947, 730);
-            this.buttonCancel.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(179, 55);
-            this.buttonCancel.TabIndex = 5;
-            this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
-            // 
-            // radioButtonNoCondition
-            // 
-            this.radioButtonNoCondition.Location = new System.Drawing.Point(26, 19);
-            this.radioButtonNoCondition.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
-            this.radioButtonNoCondition.Name = "radioButtonNoCondition";
-            this.radioButtonNoCondition.Size = new System.Drawing.Size(333, 57);
-            this.radioButtonNoCondition.TabIndex = 6;
-            this.radioButtonNoCondition.Text = "No condition";
-            this.radioButtonNoCondition.CheckedChanged += new System.EventHandler(this.radioButtonNoCondition_CheckedChanged);
-            // 
-            // radioButtonCondition
-            // 
-            this.radioButtonCondition.Location = new System.Drawing.Point(26, 76);
-            this.radioButtonCondition.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
-            this.radioButtonCondition.Name = "radioButtonCondition";
-            this.radioButtonCondition.Size = new System.Drawing.Size(51, 57);
-            this.radioButtonCondition.TabIndex = 7;
-            this.radioButtonCondition.CheckedChanged += new System.EventHandler(this.radioButtonCondition_CheckedChanged);
-            // 
-            // linkMenuConditionScope
-            // 
-            this.linkMenuConditionScope.Location = new System.Drawing.Point(80, 86);
-            this.linkMenuConditionScope.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.linkMenuConditionScope.Name = "linkMenuConditionScope";
-            this.linkMenuConditionScope.Options = new string[] {
-        "Allow only trains for which the following is True",
-        "Do not allow trains for which the following is True"};
-            this.linkMenuConditionScope.SelectedIndex = -1;
-            this.linkMenuConditionScope.Size = new System.Drawing.Size(819, 38);
-            this.linkMenuConditionScope.TabIndex = 8;
-            this.linkMenuConditionScope.TabStop = true;
-            this.linkMenuConditionScope.Text = "Allow only trains for which the following is True";
-            // 
-            // TrainConditionDefinition
-            // 
-            this.AcceptButton = this.buttonOK;
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-            this.AutoSize = true;
-            this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(1152, 796);
-            this.ControlBox = false;
-            this.Controls.Add(this.linkMenuConditionScope);
-            this.Controls.Add(this.radioButtonCondition);
-            this.Controls.Add(this.radioButtonNoCondition);
-            this.Controls.Add(this.buttonOK);
-            this.Controls.Add(this.eventScriptEditor);
-            this.Controls.Add(this.buttonCancel);
-            this.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
-            this.Name = "TrainConditionDefinition";
-            this.ShowInTaskbar = false;
-            this.Text = "Train Condition Definition";
-            this.ResumeLayout(false);
+			this.eventScriptEditor = new LayoutManager.CommonUI.Controls.EventScriptEditor();
+			this.buttonOK = new Button();
+			this.buttonCancel = new Button();
+			this.radioButtonNoCondition = new RadioButton();
+			this.radioButtonCondition = new RadioButton();
+			this.linkMenuConditionScope = new LayoutManager.CommonUI.Controls.LinkMenu();
+			this.SuspendLayout();
+			// 
+			// eventScriptEditor
+			// 
+			this.eventScriptEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+				| System.Windows.Forms.AnchorStyles.Left) 
+				| System.Windows.Forms.AnchorStyles.Right)));
+			this.eventScriptEditor.EventScriptElement = null;
+			this.eventScriptEditor.Location = new System.Drawing.Point(16, 53);
+			this.eventScriptEditor.Name = "eventScriptEditor";
+			this.eventScriptEditor.Size = new System.Drawing.Size(338, 243);
+			this.eventScriptEditor.TabIndex = 3;
+			this.eventScriptEditor.ViewOnly = false;
+			// 
+			// buttonOK
+			// 
+			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonOK.Location = new System.Drawing.Point(232, 306);
+			this.buttonOK.Name = "buttonOK";
+			this.buttonOK.Size = new System.Drawing.Size(56, 23);
+			this.buttonOK.TabIndex = 4;
+			this.buttonOK.Text = "OK";
+			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			// 
+			// buttonCancel
+			// 
+			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.Location = new System.Drawing.Point(296, 306);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.Size = new System.Drawing.Size(56, 23);
+			this.buttonCancel.TabIndex = 5;
+			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+			// 
+			// radioButtonNoCondition
+			// 
+			this.radioButtonNoCondition.Location = new System.Drawing.Point(8, 8);
+			this.radioButtonNoCondition.Name = "radioButtonNoCondition";
+			this.radioButtonNoCondition.TabIndex = 6;
+			this.radioButtonNoCondition.Text = "No condition";
+			this.radioButtonNoCondition.CheckedChanged += new System.EventHandler(this.radioButtonNoCondition_CheckedChanged);
+			// 
+			// radioButtonCondition
+			// 
+			this.radioButtonCondition.Location = new System.Drawing.Point(8, 32);
+			this.radioButtonCondition.Name = "radioButtonCondition";
+			this.radioButtonCondition.Size = new System.Drawing.Size(16, 24);
+			this.radioButtonCondition.TabIndex = 7;
+			this.radioButtonCondition.CheckedChanged += new System.EventHandler(this.radioButtonCondition_CheckedChanged);
+			// 
+			// linkMenuConditionScope
+			// 
+			this.linkMenuConditionScope.Location = new System.Drawing.Point(25, 36);
+			this.linkMenuConditionScope.Name = "linkMenuConditionScope";
+			this.linkMenuConditionScope.Options = new string[] {
+																   "Allow only trains for which the following is True",
+																   "Do not allow trains for which the following is True"};
+			this.linkMenuConditionScope.SelectedIndex = -1;
+			this.linkMenuConditionScope.Size = new System.Drawing.Size(256, 16);
+			this.linkMenuConditionScope.TabIndex = 8;
+			this.linkMenuConditionScope.TabStop = true;
+			this.linkMenuConditionScope.Text = "Allow only trains for which the following is True";
+			// 
+			// TrainConditionDefinition
+			// 
+			this.AcceptButton = this.buttonOK;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+			this.CancelButton = this.buttonCancel;
+			this.ClientSize = new System.Drawing.Size(360, 334);
+			this.ControlBox = false;
+			this.Controls.Add(this.linkMenuConditionScope);
+			this.Controls.Add(this.radioButtonCondition);
+			this.Controls.Add(this.radioButtonNoCondition);
+			this.Controls.Add(this.buttonOK);
+			this.Controls.Add(this.eventScriptEditor);
+			this.Controls.Add(this.buttonCancel);
+			this.Name = "TrainConditionDefinition";
+			this.ShowInTaskbar = false;
+			this.Text = "Train Condition Definition";
+			this.ResumeLayout(false);
 
 		}
 		#endregion

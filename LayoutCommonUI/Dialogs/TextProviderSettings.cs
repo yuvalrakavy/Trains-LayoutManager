@@ -66,74 +66,66 @@ namespace LayoutManager.CommonUI.Dialogs
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.buttonOK = new System.Windows.Forms.Button();
-            this.TextProviderPositionDefinition1 = new LayoutManager.CommonUI.Controls.TextProviderPositionDefinition();
-            this.textProviderFontDefinition1 = new LayoutManager.CommonUI.Controls.TextProviderFontDefinition();
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.SuspendLayout();
-            // 
-            // buttonOK
-            // 
-            this.buttonOK.Location = new System.Drawing.Point(512, 687);
-            this.buttonOK.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
-            this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(240, 55);
-            this.buttonOK.TabIndex = 7;
-            this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-            // 
-            // TextProviderPositionDefinition1
-            // 
-            this.TextProviderPositionDefinition1.CustomPositionElementName = "Position";
-            this.TextProviderPositionDefinition1.Location = new System.Drawing.Point(13, 267);
-            this.TextProviderPositionDefinition1.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
-            this.TextProviderPositionDefinition1.Name = "TextProviderPositionDefinition1";
-            this.TextProviderPositionDefinition1.Size = new System.Drawing.Size(1024, 410);
-            this.TextProviderPositionDefinition1.TabIndex = 10;
-            this.TextProviderPositionDefinition1.XmlInfo = null;
-            // 
-            // textProviderFontDefinition1
-            // 
-            this.textProviderFontDefinition1.CustomFontElementName = "Font";
-            this.textProviderFontDefinition1.Location = new System.Drawing.Point(13, 10);
-            this.textProviderFontDefinition1.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
-            this.textProviderFontDefinition1.Name = "textProviderFontDefinition1";
-            this.textProviderFontDefinition1.Size = new System.Drawing.Size(1024, 258);
-            this.textProviderFontDefinition1.TabIndex = 9;
-            this.textProviderFontDefinition1.XmlInfo = null;
-            // 
-            // buttonCancel
-            // 
-            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(768, 687);
-            this.buttonCancel.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(240, 55);
-            this.buttonCancel.TabIndex = 8;
-            this.buttonCancel.Text = "Cancel";
-            // 
-            // TextProviderSettings
-            // 
-            this.AcceptButton = this.buttonOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(1075, 777);
-            this.ControlBox = false;
-            this.Controls.Add(this.TextProviderPositionDefinition1);
-            this.Controls.Add(this.textProviderFontDefinition1);
-            this.Controls.Add(this.buttonOK);
-            this.Controls.Add(this.buttonCancel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(10, 7, 10, 7);
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "TextProviderSettings";
-            this.ShowInTaskbar = false;
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.Text = "Appearance";
-            this.ResumeLayout(false);
+			this.buttonOK = new Button();
+			this.TextProviderPositionDefinition1 = new LayoutManager.CommonUI.Controls.TextProviderPositionDefinition();
+			this.textProviderFontDefinition1 = new LayoutManager.CommonUI.Controls.TextProviderFontDefinition();
+			this.buttonCancel = new Button();
+			this.SuspendLayout();
+			// 
+			// buttonOK
+			// 
+			this.buttonOK.Location = new System.Drawing.Point(160, 288);
+			this.buttonOK.Name = "buttonOK";
+			this.buttonOK.TabIndex = 7;
+			this.buttonOK.Text = "OK";
+			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			// 
+			// TextProviderPositionDefinition1
+			// 
+			this.TextProviderPositionDefinition1.CustomPositionElementName = "Position";
+			this.TextProviderPositionDefinition1.Location = new System.Drawing.Point(4, 112);
+			this.TextProviderPositionDefinition1.Name = "TextProviderPositionDefinition1";
+			this.TextProviderPositionDefinition1.Size = new System.Drawing.Size(320, 172);
+			this.TextProviderPositionDefinition1.TabIndex = 10;
+			this.TextProviderPositionDefinition1.XmlInfo = null;
+			// 
+			// textProviderFontDefinition1
+			// 
+			this.textProviderFontDefinition1.CustomFontElementName = "Font";
+			this.textProviderFontDefinition1.Location = new System.Drawing.Point(4, 4);
+			this.textProviderFontDefinition1.Name = "textProviderFontDefinition1";
+			this.textProviderFontDefinition1.Size = new System.Drawing.Size(320, 108);
+			this.textProviderFontDefinition1.TabIndex = 9;
+			this.textProviderFontDefinition1.XmlInfo = null;
+			// 
+			// buttonCancel
+			// 
+			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonCancel.Location = new System.Drawing.Point(240, 288);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.TabIndex = 8;
+			this.buttonCancel.Text = "Cancel";
+			// 
+			// TextProviderSettings
+			// 
+			this.AcceptButton = this.buttonOK;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+			this.CancelButton = this.buttonCancel;
+			this.ClientSize = new System.Drawing.Size(336, 326);
+			this.ControlBox = false;
+			this.Controls.AddRange(new System.Windows.Forms.Control[] {
+																		  this.TextProviderPositionDefinition1,
+																		  this.textProviderFontDefinition1,
+																		  this.buttonOK,
+																		  this.buttonCancel});
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
+			this.Name = "TextProviderSettings";
+			this.ShowInTaskbar = false;
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+			this.Text = "Appearance";
+			this.ResumeLayout(false);
 
 		}
 		#endregion
