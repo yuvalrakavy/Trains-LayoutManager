@@ -66,9 +66,9 @@
     <Compile Include="WizardPageDesigner.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Wizard\Wizard.csproj">
+    <ProjectReference Include="..\Wizard\WizardControl.csproj">
       <Project>{93023B51-CA12-42A4-89CB-E031CC913D3B}</Project>
-      <Name>Wizard</Name>
+      <Name>WizardControl</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

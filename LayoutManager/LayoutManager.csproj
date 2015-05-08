@@ -159,9 +159,9 @@
       <Project>{11CDBBF4-F29B-4053-9E1A-9137FDC074F8}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
-    <ProjectReference Include="..\Wizard\Wizard.csproj">
+    <ProjectReference Include="..\Wizard\WizardControl.csproj">
       <Project>{93023B51-CA12-42A4-89CB-E031CC913D3B}</Project>
-      <Name>Wizard</Name>
+      <Name>WizardControl</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

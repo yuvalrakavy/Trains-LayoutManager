@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Wizard</RootNamespace>
-    <AssemblyName>Wizard</AssemblyName>
+    <AssemblyName>WizardControl</AssemblyName>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
