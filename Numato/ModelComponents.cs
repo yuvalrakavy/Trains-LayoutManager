@@ -96,6 +96,11 @@ namespace NumatoController {
 
 			OutputManager = new OutputManager(NameProvider.Name, 1);
 			OutputManager.Start();
+
+            if (InterfaceType == InterfaceType.TCP)
+                OutputManager.AddCommand(new LoginCommand(this, User, Password));
+            else
+                OutputManager.AddCommand(new EmptyCommand(this));
 		}
 
 		void OnCleanup() {
@@ -224,7 +229,7 @@ namespace NumatoController {
 			return OutputManager.AddCommand(new SetRelayCommand(this, iRelay, on));
 		}
 
-		[LayoutEvent("Numato-invoke-events", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
+		[LayoutEvent("numato-invoke-events", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
 		private void ncdInvokeEvents(LayoutEvent e0) {
 			var e = (LayoutEvent<IList<LayoutEvent>>)e0;
 
@@ -237,75 +242,81 @@ namespace NumatoController {
 		#region Command classes
 
 		public abstract class NumatoCommandBase : OutputSynchronousCommandBase, IOutputCommandReply {
-			byte[] replyBuffer;
+			string replyBuffer;
 
-			protected NumatoController RelayController { get; private set; }
-			protected int ReplySize { get; set; }
+			protected NumatoController RelayController { get; }
 
-			public NumatoCommandBase(NumatoController relayController, int replySize = 1) {
+			public NumatoCommandBase(NumatoController relayController) {
 				this.RelayController = relayController;
-				this.ReplySize = replySize;
-
-				if(replySize > 0)
-					replyBuffer = new byte[replySize];
-
 			}
 
 			public override void OnReply(object replyPacket) {
 			}
 
-			protected abstract byte[] Command { get;  }
+			protected abstract string Command { get;  }
 
 			protected void SendCommand(Stream stream) {
-				byte[] command = this.Command;
-
-				if(TraceNumato.TraceInfo) {
-					string message = $"NumatoRelayController: Sending {command.Length} bytes:";
-
-					foreach(byte b in command)
-						message += " " + b.ToString();
-					Trace.WriteLine(message);
-				}
+				if(TraceNumato.TraceInfo)
+					Trace.WriteLine($"NumatoRelayController: Sending: {Command}");
 
 				try {
-					stream.Write(command, 0, command.Length);
+                    byte[] commandBuffer = Encoding.UTF8.GetBytes(this.Command);
+
+					stream.Write(commandBuffer, 0, commandBuffer.Length);
 					stream.Flush();
 				}
 				catch(OperationCanceledException) { }
 			}
 
 			protected virtual void OnReply(byte[] replyBuffer) {
-				if(ReplySize > 0 && replyBuffer[0] != 85)
-					Trace.WriteLine(TraceNumato.TraceError, "Unexpected reply from controller: " + (int)replyBuffer[0]);
 			}
 
+            const int maxReplySize = 100;
+
 			public override void Do() {
+                var reply = new StringBuilder();
+                var replyLength = 0;
 				SendCommand(RelayController.CommStream);
 
-				if(ReplySize > 0) {
-					int count = RelayController.CommStream.Read(replyBuffer, 0, ReplySize);
+                do {
+                    var b = RelayController.CommStream.ReadByte();
 
-					if(TraceNumato.TraceVerbose) {
-						string message = "NCDRelayController: Got " + count + " bytes:";
+                    if (b == '>')       // If got command prompt, reply has been received
+                        break;
 
-						foreach(byte b in replyBuffer)
-							message += " " + b.ToString();
-						Trace.WriteLine(message);
-					}
+                    reply.Append(Convert.ToChar(b));
+                    replyLength++;
 
-					RelayController.OutputManager.SetReply(this);
-					OnReply(replyBuffer);
-				}
+                } while (replyLength < maxReplySize);        // Some sanity check
+
+                if (replyLength == maxReplySize)
+                    throw new FormatException("Invalid Numator Relay controller reply (too long, probably junk)");
+
+                OnReply(reply.ToString());
 			}
 		}
 
-		class EnableReportingCommand : NumatoCommandBase {
+        class EmptyCommand : NumatoCommandBase {
+            public EmptyCommand(NumatoController relayController) : base(relayController) { }
 
-			public EnableReportingCommand(NumatoController relayController) : base(relayController) {
-			}
+            protected override string Command => "\r";
+            public override string ToString() => "Empty command (just \\r)";
 
-            protected override byte[] Command => new byte[2] { 254, 27 };
-        }	
+        }
+
+        class LoginCommand : NumatoCommandBase {
+            string User { get; }
+            string Password { get; }
+
+            public LoginCommand(NumatoController relayController, string user, string password) : base(relayController) {
+                this.User = user;
+                this.Password = password;
+            }
+
+            protected override string Command => $"{User}\r{Password}\r";
+
+            public override string ToString() => $"Login as {User}, password {Password}";
+        }
 		
 		class SetRelayCommand : NumatoCommandBase {
 			int iRelay;
@@ -316,25 +327,7 @@ namespace NumatoController {
 				this.on = on;
 			}
 
-			protected override byte[] Command {
-				get {
-					byte bank = (byte)(iRelay / 8 + 1);
-					byte command;
-
-					if(on)
-						command = (byte)(108 + (iRelay % 8));
-					else
-						command = (byte)(100 + (iRelay % 8));
-
-
-					byte[] outputBuffer = new byte[3];
-					outputBuffer[0] = 254;
-					outputBuffer[1] = command;
-					outputBuffer[2] = (byte)bank;
-
-					return outputBuffer;
-				}
-			}
+            protected override string Command => $"relay {(on ? "on" : "off")} {iRelay}\r";
 
             public override string ToString() => "Set relay " + iRelay + " to " + (on ? "ON" : "OFF");
         }
