@@ -53,36 +53,36 @@ namespace LayoutManager.ControlComponents {
 			e.Info = inputBus;
 		}
 
-		[LayoutEvent("recommend-control-module-types", IfEvent="LayoutEvent[./Options/@BusFamily='RelayBus']")]
+		[LayoutEvent("recommend-control-module-types", IfEvent="LayoutEvent[./Options/@BusTypeName='NCDRelayBus']")]
 		private void recommendRelayBusControlModuleTypes(LayoutEvent e) {
 			ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)e.Sender;
 			IList<string> moduleTypeNames = (IList<string>)e.Info;
 			string connectionName = connectionDestination.ConnectionDescription.Name;
 
 			if(connectionDestination.ConnectionDescription.IsCompatibleWith("Relay")) {
-				moduleTypeNames.Add("8_Relays");
-				moduleTypeNames.Add("16_Relays");
-				moduleTypeNames.Add("24_Relays");
-				moduleTypeNames.Add("32_Relays");
+				moduleTypeNames.Add("8_NCDRelays");
+				moduleTypeNames.Add("16_NCDRelays");
+				moduleTypeNames.Add("24_NCDRelays");
+				moduleTypeNames.Add("32_NCDRelays");
 			}
 		}
 
-		[LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='NCDInputBus']")]
+		[LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusTypeName='NCDInputBus']")]
 		private void recommendInputBusControlModuleTypes(LayoutEvent e) {
 			ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)e.Sender;
 			IList<string> moduleTypeNames = (IList<string>)e.Info;
 			string connectionName = connectionDestination.ConnectionDescription.Name;
 
 			if(connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "DryContact")) {
-				moduleTypeNames.Add("16_ContactsClosure");
-				moduleTypeNames.Add("32_ContactsClosure");
-				moduleTypeNames.Add("48_ContactsClosure");
+				moduleTypeNames.Add("16_NCDContactsClosure");
+				moduleTypeNames.Add("32_NCDContactsClosure");
+				moduleTypeNames.Add("48_NCDContactsClosure");
 			}
 		}
 
 
 		private ControlModuleType GetRelayModule(XmlElement parentElement, int nRelays) {
-			var moduleType = new ControlModuleType(parentElement, nRelays.ToString() + "_Relays", nRelays.ToString() + " Relays Module")
+			var moduleType = new ControlModuleType(parentElement, nRelays.ToString() + "_NCDRelays", nRelays.ToString() + " Relays Module")
 			{
 				ConnectionPointsPerAddress = 1,
 				ConnectionPointIndexBase = 0,
@@ -97,10 +97,10 @@ namespace LayoutManager.ControlComponents {
 			return moduleType;
 		}
 
-		[LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='8_Relays']")]
-		[LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='16_Relays']")]
-		[LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='24_Relays']")]
-		[LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='32_Relays']")]
+		[LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='8_NCDRelays']")]
+		[LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='16_NCDRelays']")]
+		[LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='24_NCDRelays']")]
+		[LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='32_NCDRelays']")]
 		[LayoutEvent("enum-control-module-types")]
 		private void getRelayModule(LayoutEvent e) {
 			XmlElement	parentElement = (XmlElement)e.Sender;
@@ -119,7 +119,7 @@ namespace LayoutManager.ControlComponents {
 		}
 
 		private ControlModuleType GetContactClosureModule(XmlElement parentElement, int nContacts) {
-			var moduleType = new ControlModuleType(parentElement, nContacts.ToString() + "_ContactsClosure", nContacts.ToString() + " Contacts Closure Module")
+			var moduleType = new ControlModuleType(parentElement, nContacts.ToString() + "_NCDContactsClosure", nContacts.ToString() + " Contacts Closure Module")
 			{
 				ConnectionPointsPerAddress = 1,
 				ConnectionPointIndexBase = 0,
@@ -134,9 +134,9 @@ namespace LayoutManager.ControlComponents {
 			return moduleType;
 		}
 
-		[LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='16_ContactsClosure']")]
-		[LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='32_ContactsClosure']")]
-		[LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='48_ContactsClosure']")]
+		[LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='16_NCDContactsClosure']")]
+		[LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='32_NCDContactsClosure']")]
+		[LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='48_NCDContactsClosure']")]
 		[LayoutEvent("enum-control-module-types")]
 		private void getContactClosureModule(LayoutEvent e) {
 			XmlElement parentElement = (XmlElement)e.Sender;
