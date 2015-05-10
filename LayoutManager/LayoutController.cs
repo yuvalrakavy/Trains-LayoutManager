@@ -337,7 +337,7 @@ namespace LayoutManager {
 
 			EventManager.Event(new LayoutEvent(this, "exit-operation-mode"));
 			Trace.WriteLine("Before invoking exit-operation-mode-async");
-			await EventManager.AsyncEvent(new LayoutEvent(this, "exit-operation-mode-async"));
+			await Task.WhenAll(EventManager.AsyncEventBroadcast(new LayoutEvent(this, "exit-operation-mode-async")));
 			Trace.WriteLine("After invoking exit-operation-mode-async");
 
 			if(simulation)
