@@ -35,7 +35,7 @@ namespace LayoutManager.ControlComponents {
 			e.Info = relayBus;
 		}
 
-		[LayoutEvent("recommend-control-module-types", IfEvent="LayoutEvent[./Options/@BusTypeName='NumatoRelayBus']")]
+		[LayoutEvent("recommend-control-module-types", IfEvent="LayoutEvent[./Options/@BusFamily='RelayBus']")]
 		private void recommendRelayBusControlModuleTypes(LayoutEvent e) {
 			ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)e.Sender;
 			IList<string> moduleTypeNames = (IList<string>)e.Info;

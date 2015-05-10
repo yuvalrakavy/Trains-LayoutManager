@@ -30,7 +30,6 @@ namespace NumatoController {
         public static LayoutTraceSwitch TraceNumato = new LayoutTraceSwitch("NumatoController", "Numato Relay controller");
 
         ControlBus _relayBus = null;
-        bool simulation;
         bool operationMode;
         Stream commStream;
 
@@ -41,6 +40,8 @@ namespace NumatoController {
                 "</NumatoController>"
                 );
         }
+
+        public bool Simulation { get; set; }
 
         public ControlBus RelayBus {
             get {
@@ -118,15 +119,19 @@ namespace NumatoController {
 		}
 
 		void OpenCommunicationStream() {
-            if (InterfaceType == InterfaceType.Serial)
-                commStream = (FileStream)EventManager.Event(new LayoutEvent(Element, "open-serial-communication-device-request"));
-            else
-                commStream = new TcpClient(Address, 23).GetStream();
+            if (!Simulation) {
+                if (InterfaceType == InterfaceType.Serial)
+                    commStream = (FileStream)EventManager.Event(new LayoutEvent(Element, "open-serial-communication-device-request"));
+                else
+                    commStream = new TcpClient(Address, 23).GetStream();
+            }
 		}
 
 		void CloseCommunicationStream() {
-			commStream.Close();
-			commStream = null;
+            if (!Simulation) {
+                commStream.Close();
+                commStream = null;
+            }
 		}
 
 		async Task OnTerminateCommunication() {
@@ -179,7 +184,7 @@ namespace NumatoController {
 		protected virtual void EnterOperationMode(LayoutEvent e0) {
 			var e = (LayoutEvent<OperationModeParameters>)e0;
 
-			simulation= e.Sender.Simulation;
+			Simulation= e.Sender.Simulation;
 
 			OnCommunicationSetup();
 			OpenCommunicationStream();
@@ -241,16 +246,14 @@ namespace NumatoController {
 
 		#region Command classes
 
-		public abstract class NumatoCommandBase : OutputSynchronousCommandBase, IOutputCommandReply {
-			string replyBuffer;
-
+		public abstract class NumatoCommandBase : OutputSynchronousCommandBase {
 			protected NumatoController RelayController { get; }
 
 			public NumatoCommandBase(NumatoController relayController) {
 				this.RelayController = relayController;
 			}
 
-			public override void OnReply(object replyPacket) {
+			public override void OnReply(object reply) {
 			}
 
 			protected abstract string Command { get;  }
@@ -259,13 +262,15 @@ namespace NumatoController {
 				if(TraceNumato.TraceInfo)
 					Trace.WriteLine($"NumatoRelayController: Sending: {Command}");
 
-				try {
-                    byte[] commandBuffer = Encoding.UTF8.GetBytes(this.Command);
+                if (!this.RelayController.Simulation) {
+                    try {
+                        byte[] commandBuffer = Encoding.UTF8.GetBytes(this.Command);
 
-					stream.Write(commandBuffer, 0, commandBuffer.Length);
-					stream.Flush();
-				}
-				catch(OperationCanceledException) { }
+                        stream.Write(commandBuffer, 0, commandBuffer.Length);
+                        stream.Flush();
+                    }
+                    catch (OperationCanceledException) { }
+                }
 			}
 
 			protected virtual void OnReply(byte[] replyBuffer) {
@@ -278,21 +283,23 @@ namespace NumatoController {
                 var replyLength = 0;
 				SendCommand(RelayController.CommStream);
 
-                do {
-                    var b = RelayController.CommStream.ReadByte();
+                if (!RelayController.Simulation) {
+                    do {
+                        var b = RelayController.CommStream.ReadByte();
 
-                    if (b == '>')       // If got command prompt, reply has been received
-                        break;
+                        if (b == '>')       // If got command prompt, reply has been received
+                            break;
 
-                    reply.Append(Convert.ToChar(b));
-                    replyLength++;
+                        reply.Append(Convert.ToChar(b));
+                        replyLength++;
 
-                } while (replyLength < maxReplySize);        // Some sanity check
+                    } while (replyLength < maxReplySize);        // Some sanity check
 
-                if (replyLength == maxReplySize)
-                    throw new FormatException("Invalid Numator Relay controller reply (too long, probably junk)");
+                    if (replyLength == maxReplySize)
+                        throw new FormatException("Invalid Numator Relay controller reply (too long, probably junk)");
+                }
 
-                OnReply(reply.ToString());
+                RelayController.OutputManager.SetReply(reply.ToString());
 			}
 		}
 
@@ -330,8 +337,15 @@ namespace NumatoController {
             protected override string Command => $"relay {(on ? "on" : "off")} {iRelay}\r";
 
             public override string ToString() => "Set relay " + iRelay + " to " + (on ? "ON" : "OFF");
-        }
 
+            public override void OnReply(object reply) {
+                base.OnReply(reply);
+
+                EventManager.Instance.InterThreadEventInvoker.QueueEvent(new LayoutEvent<IList<LayoutEvent>>("numato-invoke-events", new LayoutEvent[] {
+                    new LayoutEvent<ControlConnectionPointReference, int>("control-connection-point-state-changed-notification", new ControlConnectionPointReference(RelayController.RelayBus, iRelay), on ? 1 : 0)
+                }).SetCommandStation(RelayController));
+            }
+        }
 
 		#endregion
 	}
