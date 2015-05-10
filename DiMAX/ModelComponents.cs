@@ -793,7 +793,7 @@ namespace DiMAX {
 	/// <summary>
 	/// Encode DiMAX command/reply packet
 	/// </summary>
-	public class DiMAXpacket : IOutputCommandReply {
+	public class DiMAXpacket {
 		DiMAXcommandCode commandCode;		// Command code
 		byte parameterCount;				// Number of parameters (0..7)
 		byte[] parameters;					// The parameters
