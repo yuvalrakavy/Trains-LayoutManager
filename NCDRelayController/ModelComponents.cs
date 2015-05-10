@@ -238,7 +238,7 @@ namespace NCDRelayController {
 
 		#region Command classes
 
-		public abstract class NCDcommandBase : OutputSynchronousCommandBase, IOutputCommandReply {
+		public abstract class NCDcommandBase : OutputSynchronousCommandBase {
 			byte[] replyBuffer;
 
 			protected NCDRelayController RelayController { get; private set; }
@@ -295,8 +295,7 @@ namespace NCDRelayController {
 						Trace.WriteLine(message);
 					}
 
-					RelayController.OutputManager.SetReply(this);
-					OnReply(replyBuffer);
+					RelayController.OutputManager.SetReply(replyBuffer);
 				}
 			}
 		}
@@ -339,9 +338,19 @@ namespace NCDRelayController {
 			}
 
             public override string ToString() => "Set relay " + iRelay + " to " + (on ? "ON" : "OFF");
+
+            public override void OnReply(object replyPacket) {
+                base.OnReply(replyPacket);
+
+                EventManager.Instance.InterThreadEventInvoker.QueueEvent(new LayoutEvent<IList<LayoutEvent>>("NCD-invoke-events", 
+                    new LayoutEvent[] {
+                        new LayoutEvent<ControlConnectionPointReference, int>("control-connection-point-state-changed-notification", new ControlConnectionPointReference(RelayController.RelayBus, iRelay), on ? 1 : 0)
+                    }).SetCommandStation(RelayController));
+
+            }
         }
 
-		class PollContactClosuresCommand : OutputSynchronousCommandBase, IOutputCommandReply, IOutputIdlecommand {
+		class PollContactClosuresCommand : OutputSynchronousCommandBase, IOutputIdlecommand {
 			protected NCDRelayController RelayController { get; private set; }
 			ContactClosureBankData[] contactClosureData;
             int pollingPeriod;
@@ -373,7 +382,7 @@ namespace NCDRelayController {
 				if(events.Count > 0)
 					EventManager.Instance.InterThreadEventInvoker.QueueEvent(new LayoutEvent<IList<LayoutEvent>>("NCD-invoke-events", events).SetCommandStation(RelayController));
 
-				RelayController.OutputManager.SetReply(this);
+				RelayController.OutputManager.SetReply(null);
 			}
 
 			private void PollContactClosureBank(IList<LayoutEvent> events, ControlModule module, int moduleNumber, int bank, int connectionPointIndex) {
