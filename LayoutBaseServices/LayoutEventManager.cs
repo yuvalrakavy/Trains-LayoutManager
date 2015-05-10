@@ -1345,7 +1345,7 @@ namespace LayoutManager {
 
 			subscriptions.AddApplicableSubscriptions<LayoutAsyncEventSubscription>(applicableSubscriptions, e);
 			if(applicableSubscriptions.Count > 1)
-				applicableSubscriptions.Sort();
+				applicableSubscriptions.Sort((s1, s2) => s1.Order - s2.Order);
 
 			if(traceEvent != null) {
 				traceEvent.ApplicableSubscriptions = applicableSubscriptions;
@@ -1379,7 +1379,7 @@ namespace LayoutManager {
 			if(tasks.Count == 1)
 				return tasks[0];
 
-			throw new ApplicationException("AsyncEvent " + e.EventName + " has no or more than one event handlers - (consider using AsyncEventBroadcast)");
+			throw new ApplicationException("AsyncEvent " + e.EventName + " has one or more than one event handlers - (consider using AsyncEventBroadcast)");
 		}
 
         public Task AsyncEvent(LayoutEvent e) => AsyncEvent(e, LayoutEventScope.MyProcess);
