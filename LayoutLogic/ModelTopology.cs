@@ -41,37 +41,39 @@ namespace LayoutManager.Logic {
 		/// <remarks>Assume current element is "Topology"</remarks>
 		/// <param name="r"></param>
 		public ModelTopology(XmlReader r) {
-			r.Read();
+            if (!r.IsEmptyElement) {
+                r.Read();
 
-			do {
-				if(r.NodeType == XmlNodeType.Element && r.Name == "Component") {
-					Guid id = XmlConvert.ToGuid(r.GetAttribute("TrackID"));
-					LayoutComponentConnectionPoint cp = LayoutComponentConnectionPoint.Parse(r.GetAttribute("Cp"));
-					int states = XmlConvert.ToInt32(r.GetAttribute("States"));
-					ModelTopologyEntry entry = new ModelTopologyEntry(states);
+                do {
+                    if (r.NodeType == XmlNodeType.Element && r.Name == "Component") {
+                        Guid id = XmlConvert.ToGuid(r.GetAttribute("TrackID"));
+                        LayoutComponentConnectionPoint cp = LayoutComponentConnectionPoint.Parse(r.GetAttribute("Cp"));
+                        int states = XmlConvert.ToInt32(r.GetAttribute("States"));
+                        ModelTopologyEntry entry = new ModelTopologyEntry(states);
 
-					if(!r.IsEmptyElement) {
-						do {
-							r.Read();
+                        if (!r.IsEmptyElement) {
+                            do {
+                                r.Read();
 
-							if(r.NodeType == XmlNodeType.Element && r.Name == "ConnectTo") {
-								int state = XmlConvert.ToInt32(r.GetAttribute("State"));
-								Guid destinationID = XmlConvert.ToGuid(r.GetAttribute("TrackID"));
-								LayoutComponentConnectionPoint destinationCp = LayoutComponentConnectionPoint.Parse(r.GetAttribute("Cp"));
-								int penalty = XmlConvert.ToInt32(r.GetAttribute("Penalty"));
+                                if (r.NodeType == XmlNodeType.Element && r.Name == "ConnectTo") {
+                                    int state = XmlConvert.ToInt32(r.GetAttribute("State"));
+                                    Guid destinationID = XmlConvert.ToGuid(r.GetAttribute("TrackID"));
+                                    LayoutComponentConnectionPoint destinationCp = LayoutComponentConnectionPoint.Parse(r.GetAttribute("Cp"));
+                                    int penalty = XmlConvert.ToInt32(r.GetAttribute("Penalty"));
 
-								entry[state] = new ModelTopologyConnectionEntry(new TrackEdgeId(destinationID, destinationCp), penalty);
+                                    entry[state] = new ModelTopologyConnectionEntry(new TrackEdgeId(destinationID, destinationCp), penalty);
 
-								if(!r.IsEmptyElement)
-									r.Skip();
-							}
-						} while(r.NodeType != XmlNodeType.EndElement);
-					}
+                                    if (!r.IsEmptyElement)
+                                        r.Skip();
+                                }
+                            } while (r.NodeType != XmlNodeType.EndElement);
+                        }
 
-					topology.Add(new TrackEdgeId(id, cp), entry);
-				}
-				r.Read();
-			} while(r.NodeType != XmlNodeType.EndElement);
+                        topology.Add(new TrackEdgeId(id, cp), entry);
+                    }
+                    r.Read();
+                } while (r.NodeType != XmlNodeType.EndElement);
+            }
 		}
 
 		public void Compile() {

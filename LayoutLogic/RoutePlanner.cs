@@ -998,10 +998,10 @@ namespace LayoutManager.Logic {
 			/// <remarks>Reader current element is "RoutingTable"</remarks>
 			/// <param name="r"></param>
 			public RoutingTable(XmlReader r) {
-				r.Read();
-
 				if(!r.IsEmptyElement) {
-					do {
+                    r.Read();
+
+                    do {
 						if(r.NodeType == XmlNodeType.Element && r.Name == "Entry") {
 							int								nStates = XmlConvert.ToInt32(r.GetAttribute("States"));
 							Guid							id = XmlConvert.ToGuid(r.GetAttribute("ID"));
