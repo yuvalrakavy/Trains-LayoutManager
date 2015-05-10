@@ -1,0 +1,13 @@
+<DisplayState Mode="Design" ActiveWindowIndex="0">
+  <WindowStates>
+    <WindowState WindowState="Normal" Left="612" Top="313" Width="1377" Height="1446" ActiveAreaIndex="0" LocomotiveViewerWidth="0" ControlViewerWidth="623" MessagesViewerHeight="331" TripsViewerHeight="0">
+      <AreaStates>
+        <AreaState ID="99b09070-5d9d-4ea2-939d-6fc0b5aed66e" ActiveViewIndex="0">
+          <ViewStates>
+            <ViewState Name="Overview" Zoom="1" DefaultZoom="1" OriginX="0" OriginY="0" DefaultOriginX="0" DefaultOriginY="0" Grid="AutoHide" ShowCoordinates="false" ShowActivePhases="false" />
+          </ViewStates>
+        </AreaState>
+      </AreaStates>
+    </WindowState>
+  </WindowStates>
+</DisplayState>

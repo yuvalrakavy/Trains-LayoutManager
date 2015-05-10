@@ -1,10 +1,7 @@
-<LayoutState>
+<LayoutState AllLayoutManualDispatchRegion="true">
   <Trains>
   </Trains>
   <Components>
-    <ComponentState ID="e80193e7-4559-43a8-a3d4-66eee9f385f9">
-      <SwitchState Value="0" />
-    </ComponentState>
     <ComponentState ID="3f2a026d-307d-4bc1-9ff8-d376ea13402d">
       <TrainDetection TrainDetected="true" />
     </ComponentState>
@@ -12,7 +9,10 @@
       <TrainDetection TrainDetected="true" />
     </ComponentState>
     <ComponentState ID="49717106-0d8e-4bc3-b335-73ff7fd86e2c">
-      <Signal State="Red" />
+      <Signal State="Green" />
+    </ComponentState>
+    <ComponentState ID="4b9a8123-1ad9-4eee-bfa4-c4406bfba3c0">
+      <SwitchState Value="0" />
     </ComponentState>
   </Components>
   <TrackContacts />
@@ -21,7 +21,7 @@
     <Destinations />
   </TripPlansCatalog>
   <ManualDispatchRegions>
-    <ManualDispatchRegion Name="All" ID="53e4a3c9-dfa9-43a7-a9dc-9d2653b95cb3" Active="true">
+    <ManualDispatchRegion Name="All" ID="53e4a3c9-dfa9-43a7-a9dc-9d2653b95cb3" Active="false">
       <Blocks>
         <Block BlockID="97cb818e-dac4-4eb0-91e1-d55b22aa834a" />
       </Blocks>
@@ -34,4 +34,5 @@
     <Ramp RampType="RateFixed" SpeedChangeRate="14" Role="Stop" />
   </DefaultDriverParameters>
   <Policies />
+  <LayoutVerificiationOptions />
 </LayoutState>
