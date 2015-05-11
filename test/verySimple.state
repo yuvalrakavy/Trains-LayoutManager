@@ -9,9 +9,13 @@
       <TrainDetection TrainDetected="true" />
     </ComponentState>
     <ComponentState ID="c7f4dc06-28df-48f8-8c1b-7c4c64d2b363">
-      <SwitchState ValuePowerOnOff="0" ValuePowerControl1="0" ValuePowerControl2="0" />
+      <SwitchState ValuePowerOnOff="1" ValuePowerControl1="0" ValuePowerControl2="0" />
+    </ComponentState>
+    <ComponentState ID="63ca1c69-dc52-4a57-b25f-0caa4b5e09d8">
+      <SwitchState ValueTurnout="0" />
     </ComponentState>
     <ComponentState ID="49717106-0d8e-4bc3-b335-73ff7fd86e2c" />
+    <ComponentState ID="879aaa9e-a39c-41ce-9821-b31d5b4ee237" GateState="Close" />
   </Components>
   <TrackContacts />
   <TripPlansCatalog>

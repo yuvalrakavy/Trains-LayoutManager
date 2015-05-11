@@ -841,63 +841,66 @@ namespace LayoutManager.Components {
             this.component = component;
         }
 
-        public bool ReverseLogic {
-            get { return XmlConvert.ToBoolean(GetAttribute("ReverseLogic", "false")); }
-            set { SetAttribute("ReverseLogic", value); }
-        }
-        /// <summary>
-        /// Gate has sensor that sense when gate is open (train can pass)
-        /// </summary>
-        public bool HasGateOpenSensor {
-            get { return XmlConvert.ToBoolean(GetAttribute("HasGateOpenSensor", "true")); }
-            set { SetAttribute("HasGateOpenSensor", value); }
+        public enum FeedbackTypes { NoFeedback, OneSensor, TwoSensors};
+
+        private const string TwoDirectionRelaysAttribute = "TwoDirectionRelays";
+        private const string FeedbackTypeAttribute = "FeedbackType";
+        private const string ReverseDirectionAttribute = "ReverseDirection";
+        private const string ReverseMotionAttribute = "ReverseMotion";
+        private const string HasGateOpenSensorAttribute = "HasGateOpenSensor";
+        private const string GetOpenSensorActiveStateAttribute = "GateOpenSensorActiveState";
+        private const string HasGateClosedSensorAttribute = "HasGateClosedSensor";
+        private const string GateClosedSensorActiveStateAttribute = "GateClosedSensorActiveState";
+        private const string MotionTimeoutAttribute = "MotionTimeout";
+        private const string OpenUpOrLeftAttribute = "OpenUpOrLeft";
+        private const string MotionTimeAttribute = "MotionTime";
+
+        public bool TwoDirectionRelays {
+            get { return XmlConvert.ToBoolean(GetAttribute(TwoDirectionRelaysAttribute, "false")); }
+            set { SetAttribute(TwoDirectionRelaysAttribute, value);  }
         }
 
-        /// <summary>
-        /// State of gate open state when door is open
-        /// </summary>
-        public bool GateOpenSensorActiveState {
-            get { return XmlConvert.ToBoolean(GetAttribute("GateOpenSensorActiveState", "true")); }
-            set { SetAttribute("GateOpenSensorActiveState", value); }
+        public FeedbackTypes FeedbackType {
+            get { return HasAttribute(FeedbackTypeAttribute) ? (FeedbackTypes)Enum.Parse(typeof(FeedbackTypes), GetAttribute(FeedbackTypeAttribute)) : FeedbackTypes.NoFeedback; }
+            set { SetAttribute(FeedbackTypeAttribute, value.ToString()); }
         }
 
-        /// <summary>
-        /// Gate has sensor that sense when gate is closed
-        /// </summary>
-        public bool HasGateClosedSensor {
-            get { return XmlConvert.ToBoolean(GetAttribute("HasGateClosedSensor", "false")); }
-            set { SetAttribute("HasGateClosedSensor", value); }
+        public bool ReverseDirection {
+            get { return XmlConvert.ToBoolean(GetAttribute(ReverseDirectionAttribute, "false")); }
+            set { SetAttribute(ReverseDirectionAttribute, value); }
         }
 
-        /// <summary>
-        /// State of gate close state when door is closed
-        /// </summary>
-        public bool GateClosedSensorActiveState {
-            get { return XmlConvert.ToBoolean(GetAttribute("GateClosedSensorActiveState", "true")); }
-            set { SetAttribute("GateClosedSensorActiveState", value); }
+        public bool ReverseMotion {
+            get { return XmlConvert.ToBoolean(GetAttribute(ReverseMotionAttribute, "false")); }
+            set { SetAttribute(ReverseMotionAttribute, value); }
         }
 
         /// <summary>
         /// The time (in seconds) that the gate is opened/closed.
         /// </summary>
         /// <remarks>
-        /// This time is used during layout simulation or for operation if gate does not have an appropriate sensor. If the gate
-        /// has a sensor, than an error will be generated if the gate did not reach to the desired state after this amount of time.
+        /// Time to wait for feedback sensor to report that the gate motion is done
         /// </remarks>
-        public int OpenCloseTimeout {
-            get { return XmlConvert.ToInt32(GetAttribute("OpenCloseTimeout", "10")); }
-            set { SetAttribute("OpenCloseTimeout", value); }
+        public int MotionTimeout {
+            get { return XmlConvert.ToInt32(GetAttribute(MotionTimeoutAttribute, "10")); }
+            set { SetAttribute(MotionTimeoutAttribute, value); }
+        }
+
+        /// <summary>
+        /// Gate motion time if the gate has no motion done feedback
+        /// </summary>
+        public int MotionTime {
+            get { return XmlConvert.ToInt32(GetAttribute(MotionTimeAttribute, "10"));  }
+            set { SetAttribute(MotionTimeAttribute, value); }
         }
 
         /// <summary>
         /// Gate orientation
         /// </summary>
         public bool OpenUpOrLeft {
-            get { return XmlConvert.ToBoolean(GetAttribute("OpenUpOrLeft")); }
-            set { SetAttribute("OpenUpOrLeft", XmlConvert.ToString(value)); }
+            get { return XmlConvert.ToBoolean(GetAttribute(OpenUpOrLeftAttribute)); }
+            set { SetAttribute(OpenUpOrLeftAttribute, XmlConvert.ToString(value)); }
         }
-
-
     }
 
     public class LayoutGateComponent : LayoutTrackAnnotationComponent, IModelComponentHasName, IModelComponentConnectToControl, IModelComponentLayoutLockResource {
@@ -906,6 +909,8 @@ namespace LayoutManager.Components {
         public LayoutGateComponent() {
             XmlDocument.LoadXml("<Gate OpenUpOrLeft=\"false\"/>");
         }
+
+        const string GateStateAttribute = "GateState";
 
         public override ModelComponentKind Kind => ModelComponentKind.Gate;
 
@@ -920,7 +925,7 @@ namespace LayoutManager.Components {
             get {
                 if (LayoutController.IsOperationMode) {
                     if (LayoutModel.StateManager.Components.Contains(Id))
-                        return (LayoutGateState)Enum.Parse(typeof(LayoutGateState), LayoutModel.StateManager.Components.StateOf(Id).GetAttribute("GateState"));
+                        return (LayoutGateState)Enum.Parse(typeof(LayoutGateState), LayoutModel.StateManager.Components.StateOf(Id).GetAttribute(GateStateAttribute));
                 }
 
                 return LayoutGateState.Close;
@@ -928,7 +933,7 @@ namespace LayoutManager.Components {
 
             set {
                 EraseImage();
-                LayoutModel.StateManager.Components.StateOf(Id).SetAttribute("OpenClearance", value.ToString());
+                LayoutModel.StateManager.Components.StateOf(Id).SetAttribute(GateStateAttribute, value.ToString());
                 Redraw();
 
                 if (value == LayoutGateState.Open)
@@ -945,12 +950,23 @@ namespace LayoutManager.Components {
             get {
                 var list = new List<ModelComponentControlConnectionDescription>();
 
-                list.Add(new ModelComponentControlConnectionDescription("Relay,Solenoid", "GateControl", "Gate Open/Close command"));
 
-                if (Info.HasGateOpenSensor)
-                    list.Add(new ModelComponentControlConnectionDescription("DryContact", "GateOpen", "Gate open sensor"));
-                if (Info.HasGateClosedSensor)
-                    list.Add(new ModelComponentControlConnectionDescription("DryContact", "GateClosed", "Gate closed sensor"));
+                if (Info.TwoDirectionRelays) {
+                    list.Add(new ModelComponentControlConnectionDescription("Relay,Solenoid", StandardGateDrivers.Direction1ConnectionPoint, "Gate direction control 1 (open/close)"));
+                    list.Add(new ModelComponentControlConnectionDescription("Relay,Solenoid", StandardGateDrivers.Direction2ConnectionPoint, "Gate direction control 2 (open/close)"));
+                }
+                else
+                    list.Add(new ModelComponentControlConnectionDescription("Relay,Solenoid", StandardGateDrivers.Direction1ConnectionPoint, "Gate direction control (open/close)"));
+
+
+                list.Add(new ModelComponentControlConnectionDescription("Relay,Soleniod", StandardGateDrivers.MotionConnectionPoint, "Gate motion control"));
+
+                if(Info.FeedbackType == LayoutGateComponentInfo.FeedbackTypes.TwoSensors) {
+                    list.Add(new ModelComponentControlConnectionDescription("DryContact", StandardGateDrivers.GateOpenConnectionPoint, "Gate open sensor"));
+                    list.Add(new ModelComponentControlConnectionDescription("DryContact", StandardGateDrivers.GateCloseConnectionPoint, "Gate closed sensor"));
+                }
+                else if(Info.FeedbackType == LayoutGateComponentInfo.FeedbackTypes.OneSensor)
+                    list.Add(new ModelComponentControlConnectionDescription("DryContact", StandardGateDrivers.GateMotionDoneConnectionPoint, "Gate motion done sensor"));
 
                 return list;
             }
@@ -995,6 +1011,13 @@ namespace LayoutManager.Components {
     class StandardGateDrivers : LayoutModuleBase {
         Dictionary<Guid, LayoutDelayedEvent> pendingEvents = new Dictionary<Guid, LayoutDelayedEvent>();
 
+        internal const string Direction1ConnectionPoint = "Direction1";
+        internal const string Direction2ConnectionPoint = "Direction2";
+        internal const string MotionConnectionPoint = "Motion";
+        internal const string GateOpenConnectionPoint = "GateOpen";
+        internal const string GateCloseConnectionPoint = "GateClose";
+        internal const string GateMotionDoneConnectionPoint = "GateMotionDone";
+
         [LayoutEvent("open-gate-request", SenderType = typeof(LayoutGateComponent))]
         private void openGateRequest(LayoutEvent e) {
             LayoutGateComponent gateComponent = (LayoutGateComponent)e.Sender;
@@ -1005,14 +1028,15 @@ namespace LayoutManager.Components {
                 pendingEvents.Remove(gateComponent.Id);
             }
 
-            if (LayoutController.IsOperationSimulationMode)
-                pendingEvents.Add(gateComponent.Id, EventManager.DelayedEvent(750, new LayoutEvent(gateComponent, "gate-is-open")));
-            else if (LayoutController.IsOperationMode) {
-                var gateControlReference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, "GateControl"]);
-                int state = gateComponent.Info.ReverseLogic ? 0 : 1;
+            if (LayoutController.IsOperationMode) {
+                int directionState = gateComponent.Info.ReverseDirection ? 0 : 1;
 
-                EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateControlReference, state).SetCommandStation(gateControlReference));
-                pendingEvents.Add(gateComponent.Id, EventManager.DelayedEvent(gateComponent.Info.OpenCloseTimeout * 1000, new LayoutEvent(gateComponent, "gate-open-timeout")));
+                StartGateMotion(gateComponent, directionState);
+
+                if (gateComponent.Info.FeedbackType == LayoutGateComponentInfo.FeedbackTypes.NoFeedback || LayoutController.IsOperationSimulationMode)
+                    EventManager.DelayedEvent(gateComponent.Info.MotionTime, new LayoutEvent(gateComponent, "gate-is-open"));
+                else
+                    pendingEvents.Add(gateComponent.Id, EventManager.DelayedEvent(gateComponent.Info.MotionTimeout * 1000, new LayoutEvent(gateComponent, "gate-open-timeout")));
             }
 
             gateComponent.GateState = LayoutGateState.Opening;
@@ -1029,24 +1053,48 @@ namespace LayoutManager.Components {
                 pendingEvents.Remove(gateComponent.Id);
             }
 
-            if (LayoutController.IsOperationSimulationMode)
-                pendingEvents.Add(gateComponent.Id, EventManager.DelayedEvent(750, new LayoutEvent(gateComponent, "gate-is-closed")));
             else if (LayoutController.IsOperationMode) {
-                var gateControlReference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, "GateControl"]);
-                int state = gateComponent.Info.ReverseLogic ? 1 : 0;
+                int directionState = gateComponent.Info.ReverseDirection ? 1 : 0;
 
-                EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateControlReference, state).SetCommandStation(gateControlReference));
-                pendingEvents.Add(gateComponent.Id, EventManager.DelayedEvent(gateComponent.Info.OpenCloseTimeout * 1000, new LayoutEvent(gateComponent, "gate-close-timeout")));
+                StartGateMotion(gateComponent, directionState);
 
+                if (gateComponent.Info.FeedbackType == LayoutGateComponentInfo.FeedbackTypes.NoFeedback || LayoutController.IsOperationSimulationMode)
+                    EventManager.DelayedEvent(gateComponent.Info.MotionTime * 1000, new LayoutEvent(gateComponent, "gate-is-closed"));
+                else
+                    pendingEvents.Add(gateComponent.Id, EventManager.DelayedEvent(gateComponent.Info.MotionTimeout * 1000, new LayoutEvent(gateComponent, "gate-close-timeout")));
             }
 
             gateComponent.GateState = LayoutGateState.Closing;
+        }
+
+        private static void StartGateMotion(LayoutGateComponent gateComponent, int directionState) {
+            int motionState = gateComponent.Info.ReverseMotion ? 0 : 1;
+            var gateDirectionReference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, Direction1ConnectionPoint]);
+            var gateMotionReference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, MotionConnectionPoint]);
+
+            EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateDirectionReference, directionState).SetCommandStation(gateDirectionReference));
+
+            if (gateComponent.Info.TwoDirectionRelays) {
+                gateDirectionReference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, Direction2ConnectionPoint]);
+                EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateDirectionReference, directionState).SetCommandStation(gateDirectionReference));
+            }
+
+            EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateMotionReference, motionState).SetCommandStation(gateMotionReference));
+        }
+
+        private static void StopGateMotion(LayoutGateComponent gateComponent) {
+            int motionState = gateComponent.Info.ReverseMotion ? 1 : 0;
+            var gateMotionReference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, MotionConnectionPoint]);
+
+            EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateMotionReference, motionState).SetCommandStation(gateMotionReference));
         }
 
         [LayoutEvent("gate-is-open", SenderType = typeof(LayoutGateComponent))]
         private void gateIsOpen(LayoutEvent e) {
             LayoutGateComponent gateComponent = (LayoutGateComponent)e.Sender;
             LayoutDelayedEvent pendingEvent;
+
+            StopGateMotion(gateComponent);
 
             if (pendingEvents.TryGetValue(gateComponent.Id, out pendingEvent)) {
                 pendingEvent.Cancel();
@@ -1061,6 +1109,8 @@ namespace LayoutManager.Components {
             LayoutGateComponent gateComponent = (LayoutGateComponent)e.Sender;
             LayoutDelayedEvent pendingEvent;
 
+            StopGateMotion(gateComponent);
+
             if (pendingEvents.TryGetValue(gateComponent.Id, out pendingEvent)) {
                 pendingEvent.Cancel();
                 pendingEvents.Remove(gateComponent.Id);
@@ -1073,20 +1123,16 @@ namespace LayoutManager.Components {
         private void gateOpenTimeout(LayoutEvent e) {
             var gateComponent = (LayoutGateComponent)e.Sender;
 
-            if (gateComponent.Info.HasGateOpenSensor)
-                Error(gateComponent, "Timeout while waiting for gate to open");
-            else
-                EventManager.Event(new LayoutEvent(gateComponent, "gate-is-open"));
+            Error(gateComponent, "Timeout while waiting for gate to open");
+            EventManager.Event(new LayoutEvent(gateComponent, "gate-is-open"));
         }
 
         [LayoutEvent("gate-close-timeout", SenderType = typeof(LayoutGateComponent))]
         private void gateCloseTimeout(LayoutEvent e) {
             var gateComponent = (LayoutGateComponent)e.Sender;
 
-            if (gateComponent.Info.HasGateClosedSensor)
-                Error(gateComponent, "Timeout while waiting for gate to close");
-            else
-                EventManager.Event(new LayoutEvent(gateComponent, "gate-is-closed"));
+            Error(gateComponent, "Timeout while waiting for gate to close");
+            EventManager.Event(new LayoutEvent(gateComponent, "gate-is-closed"));
         }
 
         [LayoutEvent("control-connection-point-state-changed-notification")]
@@ -1100,10 +1146,20 @@ namespace LayoutManager.Components {
                 if (component != null) {
                     bool state = (int)e.Info != 0;
 
-                    if (connectionPoint.Name == "GateOpen" && state == component.Info.GateOpenSensorActiveState)
-                        EventManager.Event(new LayoutEvent(component, "gate-is-open"));
-                    else if (connectionPoint.Name == "GateClosed" && state == component.Info.GateClosedSensorActiveState)
-                        EventManager.Event(new LayoutEvent(component, "gate-is-closed"));
+                    if(component.Info.FeedbackType == LayoutGateComponentInfo.FeedbackTypes.TwoSensors) {
+                        if(connectionPoint.Name == GateOpenConnectionPoint)
+                            EventManager.Event(new LayoutEvent(component, "gate-is-open"));
+                        else if(connectionPoint.Name == GateCloseConnectionPoint)
+                            EventManager.Event(new LayoutEvent(component, "gate-is-closed"));
+                    }
+                    else if(component.Info.FeedbackType == LayoutGateComponentInfo.FeedbackTypes.OneSensor) {
+                        if(connectionPoint.Name == GateMotionDoneConnectionPoint) {
+                            if(component.GateState == LayoutGateState.Closing)
+                                EventManager.Event(new LayoutEvent(component, "gate-is-closed"));
+                            else if(component.GateState == LayoutGateState.Opening)
+                                EventManager.Event(new LayoutEvent(component, "gate-is-open"));
+                        }
+                    }
                 }
             }
         }
