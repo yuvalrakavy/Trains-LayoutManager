@@ -331,12 +331,12 @@ namespace LayoutManager.Components {
                     var result = new List<ILayoutPower>();
 
                     if (PowerSelectorComponent.IsSwitch) {
-                        AddIObtainablePowerFromInlet(PowerSelectorComponent.SwitchedInlet, result);
+                        AddObtainablePowerFromInlet(PowerSelectorComponent.SwitchedInlet, result);
                         result.Add(NoPower);
                     }
                     else {
-                        AddIObtainablePowerFromInlet(PowerSelectorComponent.Inlet1, result);
-                        AddIObtainablePowerFromInlet(PowerSelectorComponent.Inlet2, result);
+                        AddObtainablePowerFromInlet(PowerSelectorComponent.Inlet1, result);
+                        AddObtainablePowerFromInlet(PowerSelectorComponent.Inlet2, result);
 
                         if (PowerSelectorComponent.HasOnOffRelay)
                             result.Add(NoPower);
@@ -346,7 +346,7 @@ namespace LayoutManager.Components {
                 }
             }
 
-            private void AddIObtainablePowerFromInlet(ILayoutPowerInlet inlet, IList<ILayoutPower> obtainablePowers) {
+            private void AddObtainablePowerFromInlet(ILayoutPowerInlet inlet, IList<ILayoutPower> obtainablePowers) {
                 if (inlet.IsConnected) {
                     foreach (ILayoutPower power in inlet.ConnectedOutlet.ObtainablePowers)
                         obtainablePowers.Add(power);
