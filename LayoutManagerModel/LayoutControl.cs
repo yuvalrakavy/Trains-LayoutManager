@@ -2063,10 +2063,14 @@ namespace LayoutManager.Model {
 			IList<ControlConnectionPoint> connectionPoints = this[componentId];
 
 			if(connectionPoints != null) {
-				foreach(ControlConnectionPoint cp in connectionPoints)
+                if (connectionName == null)
+                    return connectionPoints[0];
+
+                foreach (ControlConnectionPoint cp in connectionPoints)
 					if(cp.Name == connectionName)
 						return cp;
 			}
+
 			return null;
 		}
 

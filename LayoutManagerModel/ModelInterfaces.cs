@@ -217,7 +217,7 @@ namespace LayoutManager.Model {
 		/// that the state was changed
 		/// </summary>
 		/// <param name="switchState"></param>
-		void SetSwitchState(ControlConnectionPoint connectionPoint, int switchState);
+		void SetSwitchState(ControlConnectionPoint connectionPoint, int switchState, string connectionPointName = null);
 
 		/// <summary>
 		/// Number of possible switch states
@@ -237,7 +237,7 @@ namespace LayoutManager.Model {
 		/// component like three way turnouts (that is controlled by two solenoids) more than one switching command
 		/// may be added
 		/// </remarks>
-		void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState);
+		void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string connectionPointName = null);
 	}
 
 	/// <summary>

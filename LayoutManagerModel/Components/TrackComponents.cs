@@ -661,8 +661,8 @@ namespace LayoutManager.Components
         /// </summary>
         public virtual int CurrentSwitchState => switchingStateSupport.CurrentSwitchState;
 
-        public virtual void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState) {
-			switchingStateSupport.AddSwitchingCommands(switchingCommands, switchingState);
+        public virtual void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string connectionPointName) {
+			switchingStateSupport.AddSwitchingCommands(switchingCommands, switchingState, connectionPointName);
 		}
 
 		/// <summary>
@@ -670,8 +670,8 @@ namespace LayoutManager.Components
 		/// notification handler, and not directly.
 		/// </summary>
 		/// <param name="switchState">The new switch state</param>
-		public virtual void SetSwitchState(ControlConnectionPoint connectionPoint, int switchState) {
-			switchingStateSupport.SetSwitchState(connectionPoint, switchState);
+		public virtual void SetSwitchState(ControlConnectionPoint connectionPoint, int switchState, string connectionPointName) {
+			switchingStateSupport.SetSwitchState(connectionPoint, switchState, connectionPointName);
 		}
 
 
@@ -940,7 +940,7 @@ namespace LayoutManager.Components
 				: base(component, switchStateCount: 3) {
 			}
 
-			public override void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState) {
+			public override void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string connectionPointName) {
 				if(switchingState < 0 || switchingState > 2)
 					throw new LayoutException(this, "Invalid switch state: " + switchingState);
 
@@ -959,7 +959,7 @@ namespace LayoutManager.Components
 				switchingCommands.Add(new SwitchingCommand(new ControlConnectionPointReference(connectionPointLeft), leftState));
 			}
 
-			public override void SetSwitchState(ControlConnectionPoint connectionPoint, int switchState) {
+			public override void SetSwitchState(ControlConnectionPoint connectionPoint, int switchState, string connectionPointName) {
 				Trace.WriteLine("ThreeWayTurnout::SetSwitchState for " + connectionPoint.Name + " to " + switchState);
 
 				if(connectionPoint.Name == "Right")
