@@ -1135,6 +1135,8 @@ namespace LayoutManager.Components {
 		public void Paint(Graphics g) {
 			PointF side0 = new PointF((ComponentSize.Width - SwitchGap) / 2.0f, ComponentSize.Height / 2.0f);
 			PointF side1 = new PointF((ComponentSize.Width + SwitchGap) / 2.0f, ComponentSize.Height / 2.0f);
+            PointF middle = new PointF(ComponentSize.Width / 2.0f, ComponentSize.Height / 2.0f);
+            var stateToPoint = new PointF[] { middle, side0, side1 };
 
 			g.DrawLine(Pens.Blue, new PointF(ContactOffset, ComponentSize.Height / 2.0f), side0);
 			g.DrawLine(Pens.Blue, side1, new PointF(ComponentSize.Width-ContactOffset, ComponentSize.Height / 2.0f));
@@ -1149,7 +1151,7 @@ namespace LayoutManager.Components {
 				PointF switchTip = new PointF(ComponentSize.Width / 2.0f, ComponentSize.Height - SelectorTipOffset - SelectorTipLength);
 
 				g.DrawLine(SwitchPen, switchTipBottom, switchTip);
-				g.DrawLine(SwitchPen, switchTip, SwitchState == 0 ? side0 : side1);
+				g.DrawLine(SwitchPen, switchTip, stateToPoint[SwitchState +1]);
 				g.FillEllipse(Brushes.Black, new RectangleF(new PointF(switchTipBottom.X - ContactSize.Width / 2.0f, switchTipBottom.Y - ContactSize.Height / 2.0f), ContactSize));
 			}
 		}

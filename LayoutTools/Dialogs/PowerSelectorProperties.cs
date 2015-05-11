@@ -38,7 +38,24 @@ namespace LayoutManager.Tools.Dialogs {
 			else
 				checkBoxReverseLogic.Checked = false;
 
-			UpdateButtons();
+            if (!XmlInfo.Element.HasAttribute(LayoutPowerSelectorComponent.SwitchingMethodAttribute) ||
+                (LayoutPowerSelectorComponent.RelaySwitchingMethod)Enum.Parse(typeof(LayoutPowerSelectorComponent.RelaySwitchingMethod), XmlInfo.Element.GetAttribute(LayoutPowerSelectorComponent.SwitchingMethodAttribute)) == LayoutPowerSelectorComponent.RelaySwitchingMethod.DPDSrelay)
+                radioButtonDTDPrelay.Checked = true;
+            else {
+                radioButtonSTDP.Checked = true;
+
+                if (XmlInfo.Element.HasAttribute(LayoutPowerSelectorComponent.HasOnOffRelayAttribute) && XmlConvert.ToBoolean(XmlInfo.Element.GetAttribute(LayoutPowerSelectorComponent.HasOnOffRelayAttribute)))
+                    checkBoxHasOnOffRelay.Checked = true;
+                else
+                    checkBoxHasOnOffRelay.Checked = false;
+
+                if (XmlInfo.Element.HasAttribute(LayoutPowerSelectorComponent.ReverseOnOffRelayAttribute) && XmlConvert.ToBoolean(XmlInfo.Element.GetAttribute(LayoutPowerSelectorComponent.ReverseOnOffRelayAttribute)))
+                    checkBoxReverseOnOffRelay.Checked = true;
+                else
+                    checkBoxReverseOnOffRelay.Checked = false;
+            }
+
+            UpdateButtons();
 		}
 
 		private void InitInletCombobox(ComboBox comboBox, RadioButton radioButtonConnected, RadioButton radioButtonNotConnected, ILayoutPowerInlet inlet) {
@@ -62,6 +79,8 @@ namespace LayoutManager.Tools.Dialogs {
 			else
 				radioButtonNotConnected.Checked = true;
 		}
+
+        private bool IsPowerSelector() => radioButtonInput1connected.Checked && radioButtonInput2connected.Checked;
 
 		private void ApplyInletModification(ComboBox comboBox, RadioButton radioButtonConnected, RadioButton radioButtonNotConnected, ILayoutPowerInlet inlet) {
 			if(radioButtonNotConnected.Checked || comboBox.SelectedItem == null)
@@ -88,6 +107,17 @@ namespace LayoutManager.Tools.Dialogs {
 		private void UpdateButtons() {
 			comboBoxInput1.Enabled = radioButtonInput1connected.Checked;
 			comboBoxInput2.Enabled = radioButtonInput2connected.Checked;
+
+            groupBoxSwitchingMethod.Enabled = IsPowerSelector();
+
+            if(groupBoxSwitchingMethod.Enabled) {
+                if(radioButtonSTDP.Checked) {
+                    checkBoxHasOnOffRelay.Checked = true;
+                    checkBoxHasOnOffRelay.Enabled = false;
+                }
+                else
+                    checkBoxHasOnOffRelay.Enabled = true;
+            }
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e) {
@@ -114,6 +144,12 @@ namespace LayoutManager.Tools.Dialogs {
 			powerSelectorNameInfo.Visible = checkBoxDisplayPowerSelectorName.Checked;
 			XmlInfo.Element.SetAttribute("ReverseLogic", XmlConvert.ToString(checkBoxReverseLogic.Checked));
 
+            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.SwitchingMethodAttribute,
+                (radioButtonDTDPrelay.Checked ? LayoutPowerSelectorComponent.RelaySwitchingMethod.DPDSrelay : LayoutPowerSelectorComponent.RelaySwitchingMethod.TwoSPDSrelays).ToString());
+
+            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.HasOnOffRelayAttribute, XmlConvert.ToString(checkBoxHasOnOffRelay.Checked));
+            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.ReverseOnOffRelayAttribute, XmlConvert.ToString(checkBoxReverseOnOffRelay.Checked));
+
 			DialogResult = System.Windows.Forms.DialogResult.OK;
 		}
 
@@ -133,5 +169,5 @@ namespace LayoutManager.Tools.Dialogs {
 
 			settings.ShowDialog(this);
 		}
-	}
+    }
 }

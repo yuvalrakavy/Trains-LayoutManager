@@ -941,13 +941,20 @@ namespace LayoutManager.View
 
 			private int GetPainterSwitchState() {
 				if(Component.IsSwitch) {
-					if(Component.CurrentSelectedInlet == Component.SwitchedInlet)
+					if(Component.CurrentSelectedInlet != null)
 						return 1;		// Show ON
 					else
 						return 0;		// Show OFF
 				}
-				else
-					return Component.CurrentSwitchState;		// If selector, no problem...
+				else {
+                    var selectedInlet = Component.CurrentSelectedInlet;
+
+                    if (selectedInlet == null)
+                        return -1;      // Not connected
+                    else
+                        return selectedInlet == Component.Inlet1 ? (Component.ReverseLogic ? 1 : 0) : (Component.ReverseLogic ? 0 : 1);
+
+                }
 			}
 
 			public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
