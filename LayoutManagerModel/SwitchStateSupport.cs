@@ -18,7 +18,17 @@ namespace LayoutManager.Components {
 			this.SwitchStateCount = switchStateCount;
 		}
 
-		public virtual int CurrentSwitchState => GetSwitchState();
+        public string DefaultConnectionPointName {
+            get {
+                var c = Component as IModelComponentConnectToControl;
+
+                if (c != null && c.ControlConnectionDescriptions.Count == 1)
+                    return c.ControlConnectionDescriptions[0].Name;
+
+                throw new ApplicationException($"Cannot get default connection point name for {Component} - not exactly one connection point");
+            }
+        }
+		public virtual int CurrentSwitchState => GetSwitchState(DefaultConnectionPointName);
 
 		public virtual void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string connectionPointName = null) {
 			if(switchingState != 0 && switchingState != 1)
@@ -49,9 +59,9 @@ namespace LayoutManager.Components {
         /// </summary>
         /// <param name="connectionPointName">Connection point name or null for the default connection point</param>
         /// <returns>Connection point state</returns>
-        public virtual int GetSwitchState(string connectionPointName = null) {
+        public virtual int GetSwitchState(string connectionPointName) {
             if (LayoutModel.StateManager.Components.Contains(Component.Id, StateTopic))
-                return XmlConvert.ToInt32(LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic).GetAttribute(($"Value{(connectionPointName == null ? "" : connectionPointName)}")));
+                return XmlConvert.ToInt32(LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic).GetAttribute(($"Value{connectionPointName}")));
             else
                 return 0;
 
