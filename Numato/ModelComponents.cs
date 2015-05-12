@@ -336,7 +336,7 @@ namespace NumatoController {
 
             protected override string Command => $"relay {(on ? "on" : "off")} {iRelay}\r";
 
-            public override string ToString() => "Set relay " + iRelay + " to " + (on ? "ON" : "OFF");
+            public override string ToString() => $"Set relay {iRelay} to {(on ? "ON" : "OFF")}";
 
             public override void OnReply(object reply) {
                 base.OnReply(reply);
