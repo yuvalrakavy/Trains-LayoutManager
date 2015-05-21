@@ -88,6 +88,10 @@ namespace NumatoController {
 
         Stream CommStream => commStream;
 
+        public override void Error(object subject, string message) {
+           EventManager.Instance.InterThreadEventInvoker.QueueEvent(new LayoutEvent(subject, "add-error", null, message));
+        }
+
         #region Communication init/cleanup
 
         void OnInitialize() {
@@ -217,7 +221,7 @@ namespace NumatoController {
 		private void EndDesignTimeLayoutActivation(LayoutEvent e) {
 			OnCleanup();
 
-			OnTerminateCommunication().Wait(500);
+			OnTerminateCommunication().Wait(100);
 			CloseCommunicationStream();
 			e.Info = true;
 		}
@@ -256,50 +260,65 @@ namespace NumatoController {
 			public override void OnReply(object reply) {
 			}
 
-			protected abstract string Command { get;  }
+			protected virtual string Command { get;  } = "";
 
-			protected void SendCommand(Stream stream) {
-				if(TraceNumato.TraceInfo)
-					Trace.WriteLine($"NumatoRelayController: Sending: {Command}");
+            protected void Send(byte[] command) {
+                Trace.WriteLine($"NumatoRelayController: Sending: {Encoding.UTF8.GetString(command)}");
 
-                if (!this.RelayController.Simulation) {
-                    try {
-                        byte[] commandBuffer = Encoding.UTF8.GetBytes(this.Command);
+                if (!this.RelayController.Simulation)
+                    RelayController.commStream.Write(command, 0, command.Length);
 
-                        stream.Write(commandBuffer, 0, commandBuffer.Length);
-                        stream.Flush();
-                    }
-                    catch (OperationCanceledException) { }
-                }
-			}
+            }
+
+            protected void Send(string whatToSend) => Send(Encoding.UTF8.GetBytes(whatToSend));
+
+            protected void SendCommand() => Send(this.Command);
 
 			protected virtual void OnReply(byte[] replyBuffer) {
 			}
 
-            const int maxReplySize = 100;
+            const int maxReplySize = 1024;
 
-			public override void Do() {
-                var reply = new StringBuilder();
-                var replyLength = 0;
-				SendCommand(RelayController.CommStream);
+            private static bool isSuffixOf(byte[] suffix, byte[] buffer, int endOfBufferIndex) {
+                if (endOfBufferIndex < suffix.Length)
+                    return false;
+
+                int offset = endOfBufferIndex - suffix.Length;
+
+                for (int i = 0; i < suffix.Length; i++)
+                    if (suffix[i] != buffer[offset + i])
+                        return false;
+
+                return true;
+            }
+
+            protected string CollectReply(byte[] expectToGet) {
+                byte[] reply = new byte[maxReplySize];
+                var expectLength = expectToGet.Length;
+                var index = 0;
 
                 if (!RelayController.Simulation) {
                     do {
-                        var b = RelayController.CommStream.ReadByte();
+                        RelayController.CommStream.Read(reply, index, 1);
+                        index++;            // Read an additional byte
 
-                        if (b == '>')       // If got command prompt, reply has been received
+                        if(isSuffixOf(expectToGet, reply, index))
                             break;
 
-                        reply.Append(Convert.ToChar(b));
-                        replyLength++;
+                    } while (index < reply.Length);
 
-                    } while (replyLength < maxReplySize);        // Some sanity check
-
-                    if (replyLength == maxReplySize)
+                    if (index == reply.Length)
                         throw new FormatException("Invalid Numator Relay controller reply (too long, probably junk)");
                 }
 
-                RelayController.OutputManager.SetReply(reply.ToString());
+                return reply.ToString();
+            }
+
+            protected string CollectReply(string expectToGet) => CollectReply(Encoding.UTF8.GetBytes(expectToGet));
+
+			public override void Do() {
+				SendCommand();
+                RelayController.OutputManager.SetReply(CollectReply(">"));
 			}
 		}
 
@@ -320,12 +339,27 @@ namespace NumatoController {
                 this.Password = password;
             }
 
-            protected override string Command => $"{User}\r{Password}\r";
+            public override void Do() {
+                try {
+                    CollectReply("Name: ");
+                    Send($"{this.User}\r\n");
+                    // Expect password: prompt + DO Suppress Echo Telnet command
+                    CollectReply(Encoding.UTF8.GetBytes("Password: ").Concat(new byte[] { 0xff, 0xfd, 0x2d }).ToArray());
+                    Send(new byte[] { 0xff, 0xfc, 0x2d });      // Send Telnet WON'T (Suppress echo) Do reply
+                    Send($"{Password}\r\n");
+                    CollectReply(">>");
 
-            public override string ToString() => $"Login as {User}, password {Password}";
+                    RelayController.OutputManager.SetReply("Login");
+                }
+                catch (EndOfStreamException) {
+                    RelayController.Error($"Login command failed for {this.RelayController}");
+                }
+            }
+
+            public override string ToString() => $"Login user {User}";
         }
-		
-		class SetRelayCommand : NumatoCommandBase {
+
+        class SetRelayCommand : NumatoCommandBase {
 			int iRelay;
 			bool on;
 
@@ -334,7 +368,9 @@ namespace NumatoController {
 				this.on = on;
 			}
 
-            protected override string Command => $"relay {(on ? "on" : "off")} {iRelay}\r";
+
+            private static char RelayNumberCharacter(int iRelay) => (char)(iRelay < 10 ? iRelay + '0' : ((iRelay - 10) + 'A'));
+            protected override string Command => $"relay {(on ? "on" : "off")} {RelayNumberCharacter(iRelay)}\r\n";
 
             public override string ToString() => "Set relay " + iRelay + " to " + (on ? "ON" : "OFF");
 
