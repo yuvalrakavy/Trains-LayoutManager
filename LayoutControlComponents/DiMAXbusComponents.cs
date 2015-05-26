@@ -165,7 +165,6 @@ namespace LayoutManager.ControlComponents {
 			var module = new MassothFeedbackModule(ProgrammingTarget);
 
 			module.DiMAX_BusConnectionMethod = BusConnectionMethod;
-			module.DiMAX_BusId = BusId;
 
             string label = module.Label ?? "";
 			label = Regex.Replace(label, "\\[.*\\]", "");
@@ -176,7 +175,7 @@ namespace LayoutManager.ControlComponents {
 			if(BusConnectionMethod == MassothFeedbackDecoderBusConnectionMethod.Slave)
 				label += "[Slave]";
 			else
-				label += "[Master ID: " + BusId + "]";
+				label += $"[Master ID: {module.DiMAX_BusId}]";
 
             module.Label = label;
             module.AddressProgrammingRequired = false;
