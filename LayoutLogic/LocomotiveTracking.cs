@@ -36,107 +36,128 @@ namespace LayoutManager.Logic {
 		[LayoutEventDef("train-leaving-block-details", Role=LayoutEventRole.Notification, SenderType=typeof(LayoutTrackContactComponent), InfoType=typeof(TrainChangingBlock))]
 		[LayoutEventDef("train-enter-block", Role=LayoutEventRole.Notification, SenderType=typeof(TrainStateInfo), InfoType=typeof(LayoutBlock))]
 		[LayoutEventDef("train-crossed-block", Role=LayoutEventRole.Notification, SenderType=typeof(TrainStateInfo), InfoType=typeof(LayoutBlockEdgeBase))]
-		[LayoutEventDef("track-contact-triggered", Role=LayoutEventRole.Notification, SenderType=typeof(LayoutTrackContactComponent), InfoType=typeof(TrainStateInfo))]
+        [LayoutEventDef("track-contact-triggered", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutTrackContactComponent), InfoType = typeof(TrainStateInfo))]
+        [LayoutEventDef("emergency-track-contact-triggered", Role=LayoutEventRole.Notification, SenderType=typeof(LayoutTrackContactComponent))]
 		private void anonymousTrackContactTriggered(LayoutEvent e) {
-			LayoutTrackContactComponent	trackContact = (LayoutTrackContactComponent)e.Sender;
+            LayoutTrackContactComponent trackContact = (LayoutTrackContactComponent)e.Sender;
 
-			Trace.WriteLineIf(traceLocomotiveTracking.TraceInfo, "Track contact trigger at " + trackContact.FullDescription);
+            if (trackContact.IsEmergencyContact)
+                HandleEmergencyTrackContactTrigger(trackContact);
+            else
+                HandleTrackContactTriggering(trackContact);
+        }
 
-			try {
-				TrainStateInfo					train = null;
+        [LayoutEvent("emergency-track-contact-triggered")]
+        private void emergencyTrackContactTriggered(LayoutEvent e0) {
+            var e = e0 as LayoutEvent<LayoutTrackContactComponent>;
 
-				if(LayoutModel.StateManager.Components.Contains(trackContact.Id, "TrainPassing")) {
-					TrackContactPassingStateInfo	trackContactPassingState = 
-						new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(trackContact.Id, "TrainPassing"));
+            EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation, string>("emergency-stop-request", null, $"Emergency track contact {e.Sender.NameProvider.Name} has been triggered"));
+        }
 
-					// Track contact has state. This means that a train with multiple triggers is passing on top of this contact
-					// If the train continue to move in the same direction, one less triggers is expected to come for the train
-					// which is still in the "from" block, and one more is expected from the train portion that is on the "to" block.
-					// If the number of triggers that are expected from the "from" block is 0, then the train had actually left this
-					// block, futhermore, the train is no longer "on top" of the track contact and therefore its state information
-					// is remove.
-					// The same logic but reversing the "to" and "from" is applied if the train moves in an opposite direction
-					train = trackContactPassingState.Train;
+        private static void HandleEmergencyTrackContactTrigger(LayoutTrackContactComponent trackContact) {
+            EventManager.Event(new LayoutEvent<LayoutTrackContactComponent>("emergency-track-contact-triggered", trackContact));
+        }
 
-					LocomotiveOrientation	direction = (train.Speed >= 0) ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
+        private void HandleTrackContactTriggering(LayoutTrackContactComponent trackContact) {
+            Trace.WriteLineIf(traceLocomotiveTracking.TraceInfo, "Track contact trigger at " + trackContact.FullDescription);
 
-					if(direction == trackContactPassingState.Direction) {
-						trackContactPassingState.FromBlockTriggerCount--;
-						trackContactPassingState.ToBlockTriggerCount++;
+            try {
+                TrainStateInfo train = null;
 
-						if(trackContactPassingState.FromBlockTriggerCount == 0) {
-							removeTrainFromPhantomBlocks(trackContactPassingState.FromBlock, train);
-							train.LeaveBlock(trackContactPassingState.FromBlock);
-							trackContactPassingState.Remove();
-							EventManager.Event(new LayoutEvent(trackContact, "train-leaving-block-details", 
-								null, new TrainChangingBlock(trackContact, train, trackContactPassingState.FromBlock, trackContactPassingState.ToBlock)));
-						}
-					}
-					else {
-						trackContactPassingState.ToBlockTriggerCount--;
-						trackContactPassingState.FromBlockTriggerCount++;
+                if (LayoutModel.StateManager.Components.Contains(trackContact.Id, "TrainPassing")) {
+                    TrackContactPassingStateInfo trackContactPassingState =
+                        new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(trackContact.Id, "TrainPassing"));
 
-						if(trackContactPassingState.ToBlockTriggerCount == 0) {
-							removeTrainFromPhantomBlocks(trackContactPassingState.ToBlock, train);
-							train.LeaveBlock(trackContactPassingState.ToBlock);
-							trackContactPassingState.Remove();
-							EventManager.Event(new LayoutEvent(trackContact, "train-leaving-block-details", 
-								null, new TrainChangingBlock(trackContact, train, trackContactPassingState.FromBlock, trackContactPassingState.ToBlock)));
-						}
-					}
-				}
-				else {
-					LocomotiveTrackingResult	trackingResult = (LocomotiveTrackingResult)EventManager.Event(new LayoutEvent(trackContact, "track-locomotive-position"));
+                    // Track contact has state. This means that a train with multiple triggers is passing on top of this contact
+                    // If the train continue to move in the same direction, one less triggers is expected to come for the train
+                    // which is still in the "from" block, and one more is expected from the train portion that is on the "to" block.
+                    // If the number of triggers that are expected from the "from" block is 0, then the train had actually left this
+                    // block, futhermore, the train is no longer "on top" of the track contact and therefore its state information
+                    // is remove.
+                    // The same logic but reversing the "to" and "from" is applied if the train moves in an opposite direction
+                    train = trackContactPassingState.Train;
 
-					train = trackingResult.Train;
+                    LocomotiveOrientation direction = (train.Speed >= 0) ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
 
-					train.LastCrossedBlockEdge = trackingResult.BlockEdge;
-					if(train.Managed)
-						train.LastBlockEdgeCrossingSpeed = train.Speed;
+                    if (direction == trackContactPassingState.Direction) {
+                        trackContactPassingState.FromBlockTriggerCount--;
+                        trackContactPassingState.ToBlockTriggerCount++;
 
-					TrainPart	fromLocationTrainPart = train.LocationOfBlock(trackingResult.FromBlock).TrainPart;
+                        if (trackContactPassingState.FromBlockTriggerCount == 0) {
+                            removeTrainFromPhantomBlocks(trackContactPassingState.FromBlock, train);
+                            train.LeaveBlock(trackContactPassingState.FromBlock);
+                            trackContactPassingState.Remove();
+                            EventManager.Event(new LayoutEvent(trackContact, "train-leaving-block-details",
+                                null, new TrainChangingBlock(trackContact, train, trackContactPassingState.FromBlock, trackContactPassingState.ToBlock)));
+                        }
+                    }
+                    else {
+                        trackContactPassingState.ToBlockTriggerCount--;
+                        trackContactPassingState.FromBlockTriggerCount++;
 
-					// If the train has more than one contact then create a new track contact state to track the passage of the
-					// train on top of the contact. Otherwise, since there is only one contact trigger, the trigger of a contact
-					// implies that the train had left the "from" block
-					if(train.TrackContactTriggerCount > 1) {
-						TrackContactPassingStateInfo	trackContactPassingState = new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(trackingResult.BlockEdge, "TrainPassing"));
+                        if (trackContactPassingState.ToBlockTriggerCount == 0) {
+                            removeTrainFromPhantomBlocks(trackContactPassingState.ToBlock, train);
+                            train.LeaveBlock(trackContactPassingState.ToBlock);
+                            trackContactPassingState.Remove();
+                            EventManager.Event(new LayoutEvent(trackContact, "train-leaving-block-details",
+                                null, new TrainChangingBlock(trackContact, train, trackContactPassingState.FromBlock, trackContactPassingState.ToBlock)));
+                        }
+                    }
+                }
+                else {
+                    LocomotiveTrackingResult trackingResult = (LocomotiveTrackingResult)EventManager.Event(new LayoutEvent(trackContact, "track-locomotive-position"));
 
-						trackContactPassingState.TrainId = trackingResult.TrainId;
-						trackContactPassingState.FromBlockId = trackingResult.FromBlockId;
-						trackContactPassingState.FromBlockTriggerCount = trackingResult.Train.TrackContactTriggerCount - 1;
-						trackContactPassingState.ToBlockId = trackingResult.ToBlockId;
-						trackContactPassingState.ToBlockTriggerCount = 1;
-						trackContactPassingState.Direction = trackingResult.Train.Speed >= 0 ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
-					}
-					else {
-						removeTrainFromPhantomBlocks(trackingResult.FromBlock, trackingResult.Train);
-						trackingResult.Train.LeaveBlock(trackingResult.FromBlock);
-						EventManager.Event(new LayoutEvent(trackContact, "train-leaving-block-details", null, 
-							new TrainChangingBlock(trackContact, train, trackingResult.FromBlock, trackingResult.ToBlock)));
-					}
+                    train = trackingResult.Train;
 
-					train.EnterBlock(fromLocationTrainPart,
-						trackingResult.ToBlock, trackingResult.BlockEdge, "train-enter-block");
+                    train.LastCrossedBlockEdge = trackingResult.BlockEdge;
+                    if (train.Managed)
+                        train.LastBlockEdgeCrossingSpeed = train.Speed;
 
-				}
+                    TrainPart fromLocationTrainPart = train.LocationOfBlock(trackingResult.FromBlock).TrainPart;
 
-				// For now only locomotive tracking is implemented
-				EventManager.Event(new LayoutEvent(train, "train-crossed-block", null, trackContact));
-				EventManager.Event(new LayoutEvent(trackContact, "track-contact-triggered", null, train));
-			} catch(LayoutException lex) {
-				lex.Report();
-				if(switchBreakOnBadLocomotiveTracking.Enabled)
-					Debugger.Break();
-			}
-		}
+                    // If the train has more than one contact then create a new track contact state to track the passage of the
+                    // train on top of the contact. Otherwise, since there is only one contact trigger, the trigger of a contact
+                    // implies that the train had left the "from" block
+                    if (train.TrackContactTriggerCount > 1) {
+                        TrackContactPassingStateInfo trackContactPassingState = new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(trackingResult.BlockEdge, "TrainPassing"));
 
-		/// <summary>
-		/// Remove trains from blocks which surround the given block and are connected via a non-track contact block edge
-		/// </summary>
-		/// <param name="block">The block from which train is about to be removed</param>
-		/// <param name="train">The train that is about to be removed</param>
-		private void removeTrainFromPhantomBlocks(IDictionary visitedBlocks, LayoutBlock block, TrainStateInfo train) {
+                        trackContactPassingState.TrainId = trackingResult.TrainId;
+                        trackContactPassingState.FromBlockId = trackingResult.FromBlockId;
+                        trackContactPassingState.FromBlockTriggerCount = trackingResult.Train.TrackContactTriggerCount - 1;
+                        trackContactPassingState.ToBlockId = trackingResult.ToBlockId;
+                        trackContactPassingState.ToBlockTriggerCount = 1;
+                        trackContactPassingState.Direction = trackingResult.Train.Speed >= 0 ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
+                    }
+                    else {
+                        removeTrainFromPhantomBlocks(trackingResult.FromBlock, trackingResult.Train);
+                        trackingResult.Train.LeaveBlock(trackingResult.FromBlock);
+                        EventManager.Event(new LayoutEvent(trackContact, "train-leaving-block-details", null,
+                            new TrainChangingBlock(trackContact, train, trackingResult.FromBlock, trackingResult.ToBlock)));
+                    }
+
+                    train.EnterBlock(fromLocationTrainPart,
+                        trackingResult.ToBlock, trackingResult.BlockEdge, "train-enter-block");
+
+                }
+
+                // For now only locomotive tracking is implemented
+                EventManager.Event(new LayoutEvent(train, "train-crossed-block", null, trackContact));
+                EventManager.Event(new LayoutEvent(trackContact, "track-contact-triggered", null, train));
+            }
+            catch (LayoutException lex) {
+                lex.Report();
+                if (switchBreakOnBadLocomotiveTracking.Enabled)
+                    Debugger.Break();
+            }
+        }
+
+
+        /// <summary>
+        /// Remove trains from blocks which surround the given block and are connected via a non-track contact block edge
+        /// </summary>
+        /// <param name="block">The block from which train is about to be removed</param>
+        /// <param name="train">The train that is about to be removed</param>
+        private void removeTrainFromPhantomBlocks(IDictionary visitedBlocks, LayoutBlock block, TrainStateInfo train) {
 			visitedBlocks.Add(block.Id, block);
 
 			foreach(LayoutBlockEdgeBase blockEdge in block.BlockEdges) {

@@ -178,7 +178,7 @@ namespace LayoutManager.Components {
 			this.XmlInfo.XmlDocument.LoadXml("<TrackContact/>");
 		}
 
-        public override String ToString() => "track contact";
+        public override String ToString() => IsEmergencyContact ? "emergency track contact" : "track contact";
 
         public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
 
@@ -192,6 +192,18 @@ namespace LayoutManager.Components {
 			}
 		}
 
+        public const string EmergencyContactAttribute = "EmergencyContact";
+
+        public bool IsEmergencyContact {
+            get { return Element.HasAttribute(EmergencyContactAttribute) ? XmlConvert.ToBoolean(Element.GetAttribute(EmergencyContactAttribute)) : false; }
+
+            set {
+                if (value == false)
+                    Element.RemoveAttribute(EmergencyContactAttribute);
+                else
+                    Element.SetAttribute(EmergencyContactAttribute, XmlConvert.ToString(value));
+            }
+        }
 
 		public bool IsTriggered {
 			get {
@@ -213,11 +225,11 @@ namespace LayoutManager.Components {
         #endregion
     }
 
-	#endregion
+    #endregion
 
-	#region Block Edge component
+    #region Block Edge component
 
-	public class LayoutBlockEdgeComponent : LayoutBlockEdgeBase, IObjectHasId {
+    public class LayoutBlockEdgeComponent : LayoutBlockEdgeBase, IObjectHasId {
 		public LayoutBlockEdgeComponent() {
 			XmlInfo.XmlDocument.LoadXml("<OccupancyDetectionBlockEdge />");
 		}

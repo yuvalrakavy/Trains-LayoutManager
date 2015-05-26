@@ -315,8 +315,8 @@ namespace LayoutManager.View
 		void GetTrackContactDrawingRegions(LayoutEvent eBase) {
 			LayoutGetDrawingRegionsEvent	e = (LayoutGetDrawingRegionsEvent)eBase;
 
-			if(LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-				e.AddRegion(new LayoutDrawingRegionTrackContact(e.Component, e.View));
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
+                    e.AddRegion(new LayoutDrawingRegionTrackContact(e.Component, e.View));
 
 			LayoutTextInfo	nameProvider = new LayoutTextInfo(e.Component);
 			
@@ -326,53 +326,62 @@ namespace LayoutManager.View
 			e.AddRegion(new LayoutDrawingRegionNotConnected(e.Component, e.View));
 		}
 
-		class LayoutDrawingRegionTrackContact : LayoutDrawingRegionGrid {
-			LayoutTrackContactComponent	component;
+        class LayoutDrawingRegionTrackContact : LayoutDrawingRegionGrid {
+            LayoutTrackContactComponent component;
 
-			public LayoutDrawingRegionTrackContact(ModelComponent component, ILayoutView view) : base(component, view) {
-				this.component = (LayoutTrackContactComponent)component;
-			}
+            public LayoutDrawingRegionTrackContact(ModelComponent component, ILayoutView view) : base(component, view) {
+                this.component = (LayoutTrackContactComponent)component;
+            }
 
-			public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
-				if(component.Track != null) {
-					LayoutTrackContactPainter	painter = new LayoutTrackContactPainter(view.GridSizeInModelCoordinates, component.Track.ConnectionPoints);
+            public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
+                bool disposeFill = true;
 
-					if(LayoutController.IsOperationMode) {
-						switch(component.SignalState) {
-							case LayoutSignalState.Red:
-								painter.Fill = new SolidBrush(Color.Red);
-								painter.ContactSize = new Size(11, 11);
-								break;
+                if (component.Track != null) {
+                    LayoutTrackContactPainter painter = new LayoutTrackContactPainter(view.GridSizeInModelCoordinates, component.Track.ConnectionPoints);
 
-							case LayoutSignalState.Yellow:
-								painter.Fill = new SolidBrush(Color.Yellow);
-								break;
+                    if (component.IsEmergencyContact) {
+                        painter.Fill = new SolidBrush(Color.DarkRed);
+                        painter.ContactSize = component.IsTriggered ? new Size(13, 13) : new Size(11, 11);
+                    }
+                    else {
+                        if (LayoutController.IsOperationMode) {
+                            switch (component.SignalState) {
+                                case LayoutSignalState.Red:
+                                    painter.Fill = new SolidBrush(Color.Red);
+                                    painter.ContactSize = new Size(11, 11);
+                                    break;
 
-							case LayoutSignalState.Green:
-								painter.Fill = new SolidBrush(Color.Green);
-								painter.ContactSize = new Size(11, 11);
-								break;
-						}
+                                case LayoutSignalState.Yellow:
+                                    painter.Fill = new SolidBrush(Color.Yellow);
+                                    break;
 
-						if(component.IsTriggered)
-							painter.ContactSize = new Size(13, 13);
+                                case LayoutSignalState.Green:
+                                    painter.Fill = new SolidBrush(Color.Green);
+                                    painter.ContactSize = new Size(11, 11);
+                                    break;
+                            }
+                        }
+                        else
+                            disposeFill = false;
+                    }
 
-						painter.Paint(g);
-						painter.Fill.Dispose();
-					}
-					else
-						painter.Paint(g);
-				}
-				else {
-					// If there is no track, paint a large contact in the middle of the component. This case should
-					// not really happend
-					using(LayoutTrackContactPainter	painter = new LayoutTrackContactPainter(view.GridSizeInModelCoordinates, 
-							  new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B } )) {
+                    if (component.IsTriggered)
+                        painter.ContactSize = new Size(13, 13);
 
-						painter.ContactSize = new Size(12, 12);
-						painter.Paint(g);
-					}
-				}
+                    painter.Paint(g);
+                    if (disposeFill)
+                        painter.Fill.Dispose();
+                }
+                else {
+                    // If there is no track, paint a large contact in the middle of the component. This case should
+                    // not really happend
+                    using (LayoutTrackContactPainter painter = new LayoutTrackContactPainter(view.GridSizeInModelCoordinates,
+                              new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B })) {
+
+                        painter.ContactSize = new Size(12, 12);
+                        painter.Paint(g);
+                    }
+                }
 				base.Draw(view, detailLevel, selectionLook, g);
 			}
 		}
