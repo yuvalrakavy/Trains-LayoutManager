@@ -611,36 +611,36 @@ namespace LayoutManager.Model {
 		#region ILayoutPower Members
 
 		public LayoutPowerType Type {
-			get;
-			private set;
-		}
+            get;
 
-		public DigitalPowerFormats DigitalFormats {
-			get;
-			private set;
-		}
+        }
 
-		public String Name {
-			get;
-			private set;
-		}
+        public DigitalPowerFormats DigitalFormats {
+            get;
+
+        }
+
+        public String Name {
+            get;
+
+        }
 
         public Guid PowerOriginComponentId => PowerOriginComponent.Id;
 
         public IModelComponentHasPowerOutlets PowerOriginComponent {
-			get;
-			private set;
-		}
+            get;
 
-		#endregion
-	}
+        }
+
+        #endregion
+    }
 
 	public class LayoutPowerOutlet : LayoutInfo, ILayoutPowerOutlet {
 		ILayoutPower					power;
 		
-		public IEnumerable<ILayoutPower>		ObtainablePowers { get; private set; }
+		public IEnumerable<ILayoutPower>		ObtainablePowers { get; }
 
-		public LayoutPowerOutlet(string outletDescription, IEnumerable<ILayoutPower> obtainablePowers) {
+        public LayoutPowerOutlet(string outletDescription, IEnumerable<ILayoutPower> obtainablePowers) {
 			XmlDocument	doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
 			Element = doc.CreateElement("PowerOutlet");
@@ -906,13 +906,13 @@ namespace LayoutManager.Model {
 		/// <summary>
 		/// Return the model to which this spot belongs
 		/// </summary>
-		public LayoutModelArea Area { get; private set; }
+		public LayoutModelArea Area { get; }
 
-		/// <summary>
-		/// Relocate this spot to a new location. The new location must be empty
-		/// </summary>
-		/// <param name="newLocation"></param>
-		public void MoveTo(Point newLocation) {
+        /// <summary>
+        /// Relocate this spot to a new location. The new location must be empty
+        /// </summary>
+        /// <param name="newLocation"></param>
+        public void MoveTo(Point newLocation) {
 			Debug.Assert(Area.Grid.ContainsKey(Location));
 
 			Area.RemoveSpotLocation(this);

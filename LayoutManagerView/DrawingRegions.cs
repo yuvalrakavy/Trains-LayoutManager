@@ -62,9 +62,9 @@ namespace LayoutManager.View {
 
 		public Region BoundingRegionInModelCoordinates { get; protected set; }
 
-		public virtual int ZOrder { get; private set; }
+		public virtual int ZOrder { get; }
 
-		public Func<bool> ClickHandler { get; set; }
+        public Func<bool> ClickHandler { get; set; }
 
 		public Func<bool> RightClickHandler { get; set; }
 

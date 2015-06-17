@@ -81,9 +81,9 @@ namespace LayoutManager.Tools.Dialogs {
 	}
 
 	class ActionItem : ListViewItem {
-		public Guid Id { get; private set; }
-		public string Description { get; private set; }
-		public string StatusText { get; private set; }
+		public Guid Id { get; }
+        public string Description { get; }
+        public string StatusText { get; private set; }
 
 		public ActionItem(ILayoutAction action) {
 			this.Id = action.Id;

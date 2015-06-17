@@ -44,10 +44,10 @@ namespace LayoutManager.Logic {
 		}
 
 		struct ReverseLoopStackEntry : IComparable<ReverseLoopStackEntry> {
-			public TrackEdge Edge { get; private set; }
-			public bool FromSplit { get; private set; }
+			public TrackEdge Edge { get; }
+            public bool FromSplit { get; }
 
-			public ReverseLoopStackEntry(TrackEdge edge, bool forward) : this() {
+            public ReverseLoopStackEntry(TrackEdge edge, bool forward) : this() {
 				this.Edge = edge;
 				this.FromSplit = forward;
 			}

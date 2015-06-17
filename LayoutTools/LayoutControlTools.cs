@@ -1477,10 +1477,10 @@ namespace LayoutManager.Tools {
 		#region Menu Items or actions
 
 		public class ControlProgrammingAction {
-			public string Description { get; private set; }
-			public Action<IModelComponentCanProgramLocomotives, ControlModule> DoProgramming { get; private set; }
+			public string Description { get; }
+            public Action<IModelComponentCanProgramLocomotives, ControlModule> DoProgramming { get; }
 
-			public ControlProgrammingAction(string description, Action<IModelComponentCanProgramLocomotives, ControlModule> doProgramming) {
+            public ControlProgrammingAction(string description, Action<IModelComponentCanProgramLocomotives, ControlModule> doProgramming) {
 				this.Description = description;
 				this.DoProgramming = doProgramming;
 			}

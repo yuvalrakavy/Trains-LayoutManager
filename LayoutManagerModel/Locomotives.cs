@@ -958,9 +958,9 @@ namespace LayoutManager.Model {
 	#region Objects referenced by train. Locomotivs & Cars
 
 	public class TrainLocomotiveInfo : LayoutInfo {
-		public TrainCommonInfo	Train { get; private set; }
+		public TrainCommonInfo	Train { get; }
 
-		internal TrainLocomotiveInfo(TrainCommonInfo train, XmlElement element) : base(element) {
+        internal TrainLocomotiveInfo(TrainCommonInfo train, XmlElement element) : base(element) {
 			this.Train = train;
 		}
 

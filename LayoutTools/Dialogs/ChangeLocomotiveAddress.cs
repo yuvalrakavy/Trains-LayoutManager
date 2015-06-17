@@ -13,9 +13,9 @@ using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Dialogs {
 	public partial class ChangeLocomotiveAddress : Form {
-		LocomotiveInfo Locomotive { get; set; }
-		public IModelComponentIsCommandStation CommandStation { get; private set; }
-		public int Address { get; private set; }
+		LocomotiveInfo Locomotive { get; }
+        public IModelComponentIsCommandStation CommandStation { get; }
+        public int Address { get; private set; }
 		public bool ProgramLocomotive { get; private set; }
 
 		public ChangeLocomotiveAddress(LocomotiveInfo locomotive, IModelComponentIsCommandStation commandStation = null) {

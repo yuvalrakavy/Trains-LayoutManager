@@ -32,6 +32,7 @@ namespace LayoutManager.Tools {
 
 		#region General services
 
+        [LayoutEventDef("emergency-stop-request", Role = LayoutEventRole.Request)]
 		[LayoutEvent("emergency-stop-request")]
 		private void emergencyStopRequest(LayoutEvent e0) {
 			var e = (LayoutEvent<IModelComponentIsCommandStation, string>)e0;
@@ -70,6 +71,7 @@ namespace LayoutManager.Tools {
 			}
 		}
 
+        [LayoutEventDef("cancel-emergency-stop-request", Role = LayoutEventRole.Request)]
 		[LayoutEvent("cancel-emergency-stop-request")]
 		private void cancelEmergencyStopRequest(LayoutEvent e) {
 			if(e.Sender == null) {

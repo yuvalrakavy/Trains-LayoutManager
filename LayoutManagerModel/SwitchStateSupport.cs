@@ -8,11 +8,11 @@ using LayoutManager.Model;
 
 namespace LayoutManager.Components {
 	public class SwitchingStateSupport {
-		public string StateTopic { get; private set; }
-		public IModelComponentHasSwitchingState Component { get; private set; }
-		public virtual int SwitchStateCount { get; private set; }
+		public string StateTopic { get; }
+        public IModelComponentHasSwitchingState Component { get; }
+        public virtual int SwitchStateCount { get; }
 
-		public SwitchingStateSupport(IModelComponentHasSwitchingState component, string stateTopic = "SwitchState", int switchStateCount = 2) {
+        public SwitchingStateSupport(IModelComponentHasSwitchingState component, string stateTopic = "SwitchState", int switchStateCount = 2) {
 			this.Component = component;
 			this.StateTopic = stateTopic;
 			this.SwitchStateCount = switchStateCount;

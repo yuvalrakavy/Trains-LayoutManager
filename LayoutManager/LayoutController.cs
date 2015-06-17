@@ -25,10 +25,10 @@ namespace LayoutManager {
 	}
 
 	public class FrameWindowAction {
-		public LayoutFrameWindow FrameWindow { get; private set; }
-		public FrameWindowCommand Command { get; private set; }
+		public LayoutFrameWindow FrameWindow { get; }
+        public FrameWindowCommand Command { get; }
 
-		public FrameWindowAction(LayoutFrameWindow frameWindow, FrameWindowCommand command) {
+        public FrameWindowAction(LayoutFrameWindow frameWindow, FrameWindowCommand command) {
 			this.FrameWindow = frameWindow;
 			this.Command = command;
 		}
@@ -637,6 +637,11 @@ namespace LayoutManager {
 		}
 
         public LayoutModuleManager ModuleManager => moduleManager;
+
+        [LayoutEvent("get-module-manager")]
+        private void getModuleManager(LayoutEvent e) {
+            e.Info = ModuleManager;
+        }
 
         public bool IsOperationMode => OperationModeSettings != null;
 

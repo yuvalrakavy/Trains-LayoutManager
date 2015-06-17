@@ -7,10 +7,10 @@ namespace LayoutManager {
 	public class PackedArray {
 		ulong[] storage;
 
-		public int Length { get; private set; }
-		public int BitsPerElement { get; private set; }
-		public int ElementsPerStorageUnit { get; private set; }
-		public static readonly int BitsPerStorageUnit = sizeof(ulong) * 8;
+		public int Length { get; }
+        public int BitsPerElement { get; }
+        public int ElementsPerStorageUnit { get; }
+        public static readonly int BitsPerStorageUnit = sizeof(ulong) * 8;
 
 		ulong elementMask;
 

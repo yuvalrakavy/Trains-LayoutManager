@@ -68,9 +68,9 @@ namespace LayoutManager
         }
 
 		class DoSettingEntry : UIsettingEntry {
-			public UIsettingEntry[] DoThis { get; private set; }
+			public UIsettingEntry[] DoThis { get; }
 
-			public DoSettingEntry(UIsettingEntry[] doThis) {
+            public DoSettingEntry(UIsettingEntry[] doThis) {
 				this.DoThis = doThis;
 			}
 		}
@@ -1965,14 +1965,14 @@ namespace LayoutManager
 		}
 
 		public LayoutModelArea Area {
-			get;
-			private set;
-		}
+            get;
 
-		public TabControl TabViews {
-			get;
-			private set;
-		}
+        }
+
+        public TabControl TabViews {
+            get;
+
+        }
 
         public LayoutFrameWindow FrameWindow => (LayoutFrameWindow)this.FindForm();
 

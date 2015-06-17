@@ -93,18 +93,18 @@ namespace LayoutManager.Tools.Dialogs {
 			}
 		}
 
-		LayoutPowerSelectorComponent Component { get; set; }
+		LayoutPowerSelectorComponent Component { get; }
 
-		#region ILayoutComponentPropertiesDialog Members
+        #region ILayoutComponentPropertiesDialog Members
 
-		public LayoutXmlInfo XmlInfo {
-			get;
-			private set;
-		}
+        public LayoutXmlInfo XmlInfo {
+            get;
 
-		#endregion
+        }
 
-		private void UpdateButtons() {
+        #endregion
+
+        private void UpdateButtons() {
 			comboBoxInput1.Enabled = radioButtonInput1connected.Checked;
 			comboBoxInput2.Enabled = radioButtonInput2connected.Checked;
 

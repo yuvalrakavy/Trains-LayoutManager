@@ -44,8 +44,8 @@ namespace DiMAX {
 		}
 
 		class ActiveLocomotiveInfo {
-			public LocomotiveInfo Locomotive { get; private set; }
-			public int SelectNesting { get; set; }
+			public LocomotiveInfo Locomotive { get; }
+            public int SelectNesting { get; set; }
 			public bool ActiveDeselection { get; set; }
 
 			public ActiveLocomotiveInfo(LocomotiveInfo locomotive) {
@@ -984,7 +984,7 @@ namespace DiMAX {
 			this.Packet = dimaxPacket;
 		}
 
-		public DiMAXcommandStation CommandStation { get; private set; }
+		public DiMAXcommandStation CommandStation { get; }
 
         public Stream Stream => CommandStation.CommunicationStream;
 

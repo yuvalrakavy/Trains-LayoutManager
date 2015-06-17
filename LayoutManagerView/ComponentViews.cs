@@ -941,9 +941,9 @@ namespace LayoutManager.View
 		}
 
 		class LayoutDrawingRegionPowerSelectorConnector : LayoutDrawingRegionGrid {
-			LayoutPowerSelectorComponent Component { get; set; }
+			LayoutPowerSelectorComponent Component { get; }
 
-			public LayoutDrawingRegionPowerSelectorConnector(ModelComponent component, ILayoutView view)
+            public LayoutDrawingRegionPowerSelectorConnector(ModelComponent component, ILayoutView view)
 				: base(component, view) {
 				this.Component = (LayoutPowerSelectorComponent)component;
 			}

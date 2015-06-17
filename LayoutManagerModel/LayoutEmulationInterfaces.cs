@@ -8,13 +8,13 @@ using LayoutManager.Components;
 namespace LayoutManager.Model {
 
 	public class LocomotiveMovedEventArgs : EventArgs {
-		public Guid CommandStationId { get; private set; }
-		public int Unit { get; private set; }
-		public ILocomotiveLocation Location { get; private set; }
-		public LocomotiveOrientation Direction { get; private set; }
-		public int Speed { get; private set; }
+		public Guid CommandStationId { get; }
+        public int Unit { get; }
+        public ILocomotiveLocation Location { get; }
+        public LocomotiveOrientation Direction { get; }
+        public int Speed { get; }
 
-		public LocomotiveMovedEventArgs(Guid commandStationId, int unit, ILocomotiveLocation location, LocomotiveOrientation direction, int speed) {
+        public LocomotiveMovedEventArgs(Guid commandStationId, int unit, ILocomotiveLocation location, LocomotiveOrientation direction, int speed) {
 			CommandStationId = commandStationId;
 			Unit = unit;
 			Location = location;

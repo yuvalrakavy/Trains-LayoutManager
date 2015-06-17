@@ -307,7 +307,7 @@ namespace LayoutManager.Components {
         }
 
         public class LayoutPowerSelectorSwitchOutlet : ILayoutPowerOutlet {
-            LayoutPowerSelectorComponent PowerSelectorComponent { get; set; }
+            LayoutPowerSelectorComponent PowerSelectorComponent { get; }
             ILayoutPower NoPower;
 
             public LayoutPowerSelectorSwitchOutlet(LayoutPowerSelectorComponent powerSelectorComponent) {

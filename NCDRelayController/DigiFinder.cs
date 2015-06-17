@@ -170,10 +170,10 @@ namespace DigiFinder {
 		byte[] buffer;
 		MemoryStream packetStream;
 
-		public int PacketType { get; private set; }
-		public int PayloadLength { get; private set; }
+		public int PacketType { get; }
+        public int PayloadLength { get; }
 
-		public DigiReplyPacket(byte[] buffer) {
+        public DigiReplyPacket(byte[] buffer) {
 			this.buffer = buffer;
 			packetStream = new MemoryStream(buffer);
 

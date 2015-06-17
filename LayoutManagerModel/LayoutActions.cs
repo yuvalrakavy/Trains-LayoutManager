@@ -95,11 +95,11 @@ namespace LayoutManager.Model {
 		}
 
 		public ActionsOwnerType Owner {
-			get;
-			private set;
-		}
+            get;
 
-		ILayoutAction GetAction(XmlElement actionElement) {
+        }
+
+        ILayoutAction GetAction(XmlElement actionElement) {
 			LayoutAction action = null;
 			string actionType = actionElement.GetAttribute("Type");
 
@@ -187,10 +187,10 @@ namespace LayoutManager.Model {
 	}
 
 	public class LayoutActionFailure {
-		public LayoutActionResult Result { get; private set; }
-		public ILayoutAction Action { get; private set; }
+		public LayoutActionResult Result { get; }
+        public ILayoutAction Action { get; }
 
-		public LayoutActionFailure(LayoutActionResult result, ILayoutAction action) {
+        public LayoutActionFailure(LayoutActionResult result, ILayoutAction action) {
 			this.Result = result;
 			this.Action = action;
 		}
@@ -355,14 +355,14 @@ namespace LayoutManager.Model {
 		}
 
 		public TProgrammingTargetType ProgrammingTarget {
-			get;
-			private set;
-		}
+            get;
 
-		/// <summary>
-		/// Address to use if using Programming on Main (POM). If not set then POM will not be possible
-		/// </summary>
-		public int ProgrammingTargetAddress {
+        }
+
+        /// <summary>
+        /// Address to use if using Programming on Main (POM). If not set then POM will not be possible
+        /// </summary>
+        public int ProgrammingTargetAddress {
 			get {
 				return XmlConvert.ToInt32(GetAttribute("ProgrammingTargetAddress", "-1"));
 			}

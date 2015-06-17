@@ -121,17 +121,17 @@ namespace LayoutManager.Model {
 	}
 
 	public abstract class LocomotiveAddressMapEntry : LocomotiveAddressMapEntryBase {
-		public LocomotiveInfo Locomotive { get; private set; }
+		public LocomotiveInfo Locomotive { get; }
 
-		public LocomotiveAddressMapEntry(LocomotiveInfo locomotive) {
+        public LocomotiveAddressMapEntry(LocomotiveInfo locomotive) {
 			this.Locomotive = locomotive;
 		}
 	}
 
 	public abstract class OnTrackLocomotiveAddressMapEntry : LocomotiveAddressMapEntry {
-		public TrainStateInfo Train { get; private set; }
+		public TrainStateInfo Train { get; }
 
-		public OnTrackLocomotiveAddressMapEntry(LocomotiveInfo locomotive, TrainStateInfo train)
+        public OnTrackLocomotiveAddressMapEntry(LocomotiveInfo locomotive, TrainStateInfo train)
 			: base(locomotive) {
 			this.Train = train;
 		}
@@ -156,9 +156,9 @@ namespace LayoutManager.Model {
 	}
 
 	public class LocomotiveBusModuleAddressMapEntry : LocomotiveAddressMapEntryBase {
-		public ControlModule Module { get; private set; }
+		public ControlModule Module { get; }
 
-		public LocomotiveBusModuleAddressMapEntry(ControlModule module) {
+        public LocomotiveBusModuleAddressMapEntry(ControlModule module) {
 			this.Module = module;
 		}
 	}
@@ -320,22 +320,22 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Operation context Id
         /// </summary>
-        public Guid Id { get; private set; }
+        public Guid Id { get; }
 
-		/// <summary>
-		/// The operation name
-		/// </summary>
-		public string OperationName { get; private set; }
+        /// <summary>
+        /// The operation name
+        /// </summary>
+        public string OperationName { get; }
 
-		/// <summary>
-		/// Human readable description of this operation
-		/// </summary>
-		public string Description { get; set; }
+        /// <summary>
+        /// Human readable description of this operation
+        /// </summary>
+        public string Description { get; set; }
 
 		/// <summary>
 		/// Cancellation token source for the ongoing operation
 		/// </summary>
-		public CancellationTokenSource CancellationTokenSource { get; private set; }
+		public CancellationTokenSource CancellationTokenSource { get; }
 
         /// <summary>
         /// Cancellation token for the ongoing operation
@@ -468,8 +468,8 @@ namespace LayoutManager.Model {
 	}
 
 	public class LocomotiveProgrammingState : ProgrammingState {
-		public LocomotiveInfo Locomotive { get; private set; }
-		public LayoutBlockDefinitionComponent PlacementLocation { get; protected set; }
+		public LocomotiveInfo Locomotive { get; }
+        public LayoutBlockDefinitionComponent PlacementLocation { get; protected set; }
 
 		public LocomotiveProgrammingState(LocomotiveInfo locomotive) {
 			this.Locomotive = locomotive;
@@ -477,17 +477,17 @@ namespace LayoutManager.Model {
 	}
 
 	public class PlacedLocomotiveProgrammingState : LocomotiveProgrammingState {
-		public XmlElement PlacedElement { get; private set; }
+		public XmlElement PlacedElement { get; }
 
-		public PlacedLocomotiveProgrammingState(XmlElement placedElement, LocomotiveInfo locomotive, LayoutBlockDefinitionComponent placementLocation) : base(locomotive) {
+        public PlacedLocomotiveProgrammingState(XmlElement placedElement, LocomotiveInfo locomotive, LayoutBlockDefinitionComponent placementLocation) : base(locomotive) {
 			this.PlacedElement = placedElement;
 			this.PlacementLocation = placementLocation;
 		}
 	}
 
 	public class ControlModuleProgrammingState : ProgrammingState {
-		public ControlModule ControlModule { get; private set; }
-		public IModelComponentCanProgramLocomotives Programmer { get; set; }
+		public ControlModule ControlModule { get; }
+        public IModelComponentCanProgramLocomotives Programmer { get; set; }
 
 		public ControlModuleProgrammingState(ControlModule controlModule) {
 			this.ControlModule = controlModule;

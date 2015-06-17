@@ -198,44 +198,44 @@ namespace LayoutManager.Model {
 		/// What type of connection (solenoid, dry contact etc.) is compatible with this connection point
 		/// </summary>
 		public string ConnectionTypes {
-			get;
-			private set;
-		}
+            get;
 
-		/// <summary>
-		/// Unique connection name
-		/// </summary>
-		/// <value>A unique language neutral connection name</value>
-		public string Name {
-			get;
-			private set;
-		}
+        }
 
-		/// <summary>
-		/// Friendly (display) name
-		/// </summary>
-		/// <value>User friendly name and language dependent name for the connection</value>
-		public string DisplayName {
-			get; 
-			private set;
-		}
+        /// <summary>
+        /// Unique connection name
+        /// </summary>
+        /// <value>A unique language neutral connection name</value>
+        public string Name {
+            get;
 
-		/// <summary>
-		/// Optional module type that this connection requires
-		/// </summary>
-		/// <value>Module type name or null if this component connection can be connected to any recommended control module</value>
-		public string RequiredControlModuleTypeName {
-			get;
-			private set;
-		}
+        }
 
-		/// <summary>
-		/// Check if this connection is compatible with a given connection type. This is based on the fact that the connection description
-		/// name has format of (connection-type, ...)-name. For example Solenoid,Relay-Turnout if the connection can be to a relay or Solenoid
-		/// </summary>
-		/// <param name="connectionType"></param>
-		/// <returns>True - can be connected to this kind of connection</returns>
-		public bool IsCompatibleWith(params string[] connectionTypes) {
+        /// <summary>
+        /// Friendly (display) name
+        /// </summary>
+        /// <value>User friendly name and language dependent name for the connection</value>
+        public string DisplayName {
+            get;
+
+        }
+
+        /// <summary>
+        /// Optional module type that this connection requires
+        /// </summary>
+        /// <value>Module type name or null if this component connection can be connected to any recommended control module</value>
+        public string RequiredControlModuleTypeName {
+            get;
+
+        }
+
+        /// <summary>
+        /// Check if this connection is compatible with a given connection type. This is based on the fact that the connection description
+        /// name has format of (connection-type, ...)-name. For example Solenoid,Relay-Turnout if the connection can be to a relay or Solenoid
+        /// </summary>
+        /// <param name="connectionType"></param>
+        /// <returns>True - can be connected to this kind of connection</returns>
+        public bool IsCompatibleWith(params string[] connectionTypes) {
 			string myConnectionTypes = ConnectionTypes;
 
 			return connectionTypes.Any(connectionType => myConnectionTypes.Contains(connectionType));

@@ -528,6 +528,7 @@ namespace LayoutManager.Logic {
 		/// <summary>
 		/// Remove an object (locomotive or locomotive set) from track
 		/// </summary>
+        [LayoutEventDef("remove-from-track-request", Role = LayoutEventRole.AsyncRequest, SenderType = typeof(TrainStateInfo), InfoType = typeof(string))]
 		[LayoutAsyncEvent("remove-from-track-request")]
 		private async Task removeFromTrackRequest(LayoutEvent e0) {
 			var e = (LayoutEvent<object, string>)e0;
@@ -778,6 +779,7 @@ namespace LayoutManager.Logic {
 			return train;
 		}
 
+        [LayoutEventDef("relocate-train-request", Role = LayoutEventRole.Request, SenderType = typeof(TrainStateInfo), InfoType = typeof(LayoutBlockDefinitionComponent))]
 		[LayoutEvent("relocate-train-request")]
 		private void relocateTrainRequest(LayoutEvent e) {
 			TrainStateInfo train;
@@ -1124,6 +1126,7 @@ namespace LayoutManager.Logic {
 		/// </param>
 		/// <param name="e.Info">The speed. Positive value for forward motion, Negative value for backward motion
 		/// </param>
+        [LayoutEventDef("set-train-speed-request", SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
 		[LayoutEvent("set-train-speed-request")]
 		private void setLocomotiveSpeedRequest(LayoutEvent e) {
 			TrainStateInfo train = (TrainStateInfo)EventManager.Event(new LayoutEvent(e.Sender, "extract-train-state"));
@@ -1136,11 +1139,12 @@ namespace LayoutManager.Logic {
 			train.SetSpeedValue(speed);
 		}
 
-		/// <summary>
-		/// Event which is sent to reverse the train motion direction.
-		/// </summary>
-		/// <param name="e.Sender">The train to be reversed</param>
-		[LayoutEvent("reverse-train-motion-direction-request")]
+        /// <summary>
+        /// Event which is sent to reverse the train motion direction.
+        /// </summary>
+        /// <param name="e.Sender">The train to be reversed</param>
+        [LayoutEventDef("reverse-train-motion-direction-request", SenderType = typeof(TrainStateInfo))]
+        [LayoutEvent("reverse-train-motion-direction-request")]
 		private void reverseTrainMotionDirectionRequest(LayoutEvent e) {
 			TrainStateInfo trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent(e.Sender, "extract-train-state"));
 
@@ -1229,7 +1233,8 @@ namespace LayoutManager.Logic {
 
 		#region Lights & Functions
 
-		[LayoutEvent("set-train-lights-request")]
+        [LayoutEventDef("set-train-lights-request", Role =LayoutEventRole.Request, SenderType =typeof(TrainStateInfo), InfoType =typeof(bool))]
+		[LayoutEvent("set-train-lights-request", Role=LayoutEventRole.Request, InfoType=typeof(bool), SenderType=typeof(TrainStateInfo))]
 		private void setLocomotiveLightsRequest(LayoutEvent e) {
 			TrainStateInfo trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent(e.Sender, "extract-train-state"));
 			bool lights = (bool)e.Info;

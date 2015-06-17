@@ -75,7 +75,7 @@ namespace LayoutManager.View {
 		/// <summary>
 		/// The parent control on which this popup window will be displayed
 		/// </summary>
-		public Control Parent { get; private set; }
+		public Control Parent { get; }
 
         /// <summary>
         ///  Number of sections in the container

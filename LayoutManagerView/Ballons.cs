@@ -13,9 +13,9 @@ using LayoutManager.Model;
 namespace LayoutManager.View {
 
 	public class Ballon {
-		public PopupWindowContainerSection Content { get; private set; }
+		public PopupWindowContainerSection Content { get; }
 
-		public Ballon(Control parent = null) {
+        public Ballon(Control parent = null) {
 			Content = new PopupWindowContainerSection(parent);
 		}
 	}

@@ -241,8 +241,8 @@ namespace NCDRelayController {
 		public abstract class NCDcommandBase : OutputSynchronousCommandBase {
 			byte[] replyBuffer;
 
-			protected NCDRelayController RelayController { get; private set; }
-			protected int ReplySize { get; set; }
+			protected NCDRelayController RelayController { get; }
+            protected int ReplySize { get; set; }
 
 			public NCDcommandBase(NCDRelayController relayController, int replySize = 1) {
 				this.RelayController = relayController;
@@ -351,8 +351,8 @@ namespace NCDRelayController {
         }
 
 		class PollContactClosuresCommand : OutputSynchronousCommandBase, IOutputIdlecommand {
-			protected NCDRelayController RelayController { get; private set; }
-			ContactClosureBankData[] contactClosureData;
+			protected NCDRelayController RelayController { get; }
+            ContactClosureBankData[] contactClosureData;
             int pollingPeriod;
 
 			public PollContactClosuresCommand(NCDRelayController relayController, int pollingPeriod) {
