@@ -430,10 +430,18 @@ namespace LayoutManager {
 	public delegate Task LayoutVoidAsyncEventHandler(LayoutEvent e);
 	public delegate Task<object> LayoutAsyncEventHandler(LayoutEvent e);
 
-	/// <summary>
-	/// Base for subscription to receive a layout event.
-	/// </summary>
-	public abstract class LayoutEventSubscriptionBase : LayoutObject {
+    public enum LayoutEventRole {
+        Unspecified,
+        Notification,
+        Request,
+        AsyncRequest,
+    }
+
+    /// <summary>
+    /// Base for subscription to receive a layout event.
+    /// </summary>
+    public abstract class LayoutEventSubscriptionBase : LayoutObject {
+        LayoutEventRole     role = LayoutEventRole.Unspecified;
 		Type				senderType;
 		Type				eventType;
 		Type				infoType;
@@ -470,7 +478,8 @@ namespace LayoutManager {
 		}
 
 		public void SetFromLayoutEventAttribute(LayoutEventAttributeBase ea) {
-			EventName = ea.EventName;
+    		EventName = ea.EventName;
+            Role = ea.Role;
 			SenderType = ea.SenderType;
 			EventType = ea.EventType;
 			InfoType = ea.InfoType;
@@ -573,10 +582,28 @@ namespace LayoutManager {
 			}
 		}
 
-		/// <summary>
-		/// Get/Set the sender entity type filter
-		/// </summary>
-		public Type SenderType {
+        /// <summary>
+        /// Set/Get event role (is it a request or notification)
+        /// </summary>
+        public LayoutEventRole Role {
+            get {
+                return role;
+            }
+
+            set {
+                role = value;
+
+                if (value == LayoutEventRole.Unspecified)
+                    DocumentElement.RemoveAttribute("Role");
+                else
+                    DocumentElement.SetAttribute("Role", value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Get/Set the sender entity type filter
+        /// </summary>
+        public Type SenderType {
 			get {
 				return senderType;
 			}
@@ -897,17 +924,55 @@ namespace LayoutManager {
 	/// </summary>
 	/// TODO: Add SubscriptionType={Type} for creating custom subscription objects
 	public abstract class LayoutEventAttributeBase : System.Attribute {
-		Type	subscriptionType;
-		String	eventName;
-		Type	senderType;
-		Type	eventType;
-		Type	infoType;
-		String	ifSender;
-		String	ifEvent;
-		String	ifInfo;
-		int		order;
+        /// <summary>
+        /// The type of the subscription class to create. The type must be derived from LayoutSubscription
+        /// </summary>
+        public Type	       SubscriptionType { get; set; }
 
-		public LayoutEventAttributeBase() {
+		public String EventName { get; set; }
+
+        /// <summary>
+        /// Role - Is it a request or notification
+        /// </summary>
+        public LayoutEventRole Role { get; set; }
+
+        /// <summary>
+        /// Accept only event which are sent by this type of object (or a type derived from it)
+        /// </summary>
+        public Type SenderType { get; set; }
+
+        /// <summary>
+        /// Accept only events whose event object is of this type (or derived from it)
+        /// </summary>
+        public Type EventType { get; set; }
+
+        /// <summary>
+        /// Accept only events whose info object is of this type (or derived from it)
+        /// </summary>
+        public Type InfoType { get; set; }
+
+        /// <summary>
+        /// Accept events in which the sender XML document matches this XPath expression
+        /// </summary>
+        public string IfSender { get; set; }
+
+        /// <summary>
+        /// Accept events in which the event object XML document matches this XPath expression
+        /// </summary>
+        public string IfEvent { get; set; }
+
+        /// <summary>
+        /// Accept events in which the info object XML matches this XPath expression
+        /// </summary>
+        public string IfInfo { get; set; }
+
+        /// <summary>
+        /// Provide the processing order of this subscription. Subscriptiosn with smaller
+        /// order values will be processed first
+        /// </summary>
+        public int Order { get; set; }
+
+        public LayoutEventAttributeBase() {
 		}
 
 		/// <summary>
@@ -915,125 +980,7 @@ namespace LayoutManager {
 		/// </summary>
 		/// <param name="setupString"></param>
 		public LayoutEventAttributeBase(String eventName) {
-			this.eventName = eventName;
-		}
-
-		/// <summary>
-		/// Accept only events having this name
-		/// </summary>
-		public String EventName {
-			get {
-				return eventName;
-			}
-
-			set {
-				eventName = value;
-			}
-		}
-
-		/// <summary>
-		/// Accept only event which are sent by this type of object (or a type derived from it)
-		/// </summary>
-		public Type SenderType {
-			get {
-				return senderType;
-			}
-
-			set {
-				senderType = value;
-			}
-		}
-
-		/// <summary>
-		/// Accept only events whose event object is of this type (or derived from it)
-		/// </summary>
-		public Type EventType {
-			get {
-				return eventType;
-			}
-
-			set {
-				eventType = value;
-			}
-		}
-
-		/// <summary>
-		/// Accept only events whose info object is of this type (or derived from it)
-		/// </summary>
-		public Type InfoType {
-			get {
-				return infoType;
-			}
-
-			set {
-				infoType = value;
-			}
-		}
-
-		/// <summary>
-		/// Accept events in which the sender XML document matches this XPath expression
-		/// </summary>
-		public String IfSender {
-			get {
-				return ifSender;
-			}
-
-			set {
-				ifSender = value;
-			}
-		}
-
-		/// <summary>
-		/// Accept events in which the event object XML document matches this XPath expression
-		/// </summary>
-		public String IfEvent {
-			get {
-				return ifEvent;
-			}
-
-			set {
-				ifEvent = value;
-			}
-		}
-
-		/// <summary>
-		/// Accept events in which the info object XML matches this XPath expression
-		/// </summary>
-		public String IfInfo {
-			get {
-				return ifInfo;
-			}
-
-			set {
-				ifInfo = value;
-			}
-		}
-
-		/// <summary>
-		/// Provide the processing order of this subscription. Subscriptiosn with smaller
-		/// order values will be processed first
-		/// </summary>
-		public int Order {
-			get {
-				return order;
-			}
-
-			set {
-				order = value;
-			}
-		}
-
-		/// <summary>
-		/// The type of the subscription class to create. The type must be derived from LayoutSubscription
-		/// </summary>
-		public Type SubscriptionType {
-			get {
-				return subscriptionType;
-			}
-
-			set {
-				subscriptionType = value;
-			}
+			this.EventName = eventName;
 		}
 
 		public abstract LayoutEventSubscriptionBase CreateSubscription();
@@ -1071,12 +1018,6 @@ namespace LayoutManager {
         /// <returns>The new subscription object</returns>
         public override LayoutEventSubscriptionBase CreateSubscription() => new LayoutAsyncEventSubscription();
     }
-
-	public enum LayoutEventRole {
-		Notification,
-		Request,
-		AsyncRequest,
-	}
 
 	/// <summary>
 	/// Use this attribute to define properties of a layout event
@@ -1202,9 +1143,9 @@ namespace LayoutManager {
 		CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
 		public DelayedEventStatus Status { get; private set; }
-		public Guid Id { get; private set; }
+		public Guid Id { get; }
 
-		internal LayoutDelayedEvent(int delayTime, LayoutEvent theEvent) {
+        internal LayoutDelayedEvent(int delayTime, LayoutEvent theEvent) {
 			this.theEvent = theEvent;
 
 			Id = Guid.NewGuid();
@@ -1496,8 +1437,8 @@ namespace LayoutManager {
 
 		public LayoutEventDefAttribute[] GetEventDefinitions(LayoutEventRole requiredRole) {
 			if(eventDefs == null) {
-				ArrayList			eventDefsList = new ArrayList();
-				LayoutModuleManager	moduleManager = (LayoutModuleManager)Event(new LayoutEvent(this, "get-module-manager"));
+				var eventDefsList = new List<LayoutEventDefAttribute>();
+				var	moduleManager = (LayoutModuleManager)Event(new LayoutEvent(this, "get-module-manager"));
 
 				foreach(LayoutAssembly layoutAssembly in moduleManager.LayoutAssemblies) {
 					LayoutEventDefAttribute[]	assemblyEventDefs = (LayoutEventDefAttribute[])layoutAssembly.Assembly.GetCustomAttributes(typeof(LayoutEventDefAttribute), true);
@@ -1506,7 +1447,7 @@ namespace LayoutManager {
 					addEventDefs(layoutAssembly.Assembly.GetTypes(), requiredRole, eventDefsList);
 				}
 
-				eventDefs = (LayoutEventDefAttribute[] )eventDefsList.ToArray(typeof(LayoutEventDefAttribute));
+                eventDefs = eventDefsList.ToArray();
 			}
 
 			return eventDefs;
@@ -1518,14 +1459,14 @@ namespace LayoutManager {
 
 		#region Helper methods for getting event attributes
 
-		private void addEventDefs(LayoutEventDefAttribute[] eventDefsToAdd, LayoutEventRole requiredRole, ArrayList eventDefs) {
+		private void addEventDefs(LayoutEventDefAttribute[] eventDefsToAdd, LayoutEventRole requiredRole, List<LayoutEventDefAttribute> eventDefs) {
 			foreach(LayoutEventDefAttribute eventDef in eventDefsToAdd) {
 				if(eventDef.Role == requiredRole)
 					eventDefs.Add(eventDef);
 			}
 		}
 
-		private void addEventDefs(Type[] types, LayoutEventRole requiredRole, ArrayList eventDefs) {
+		private void addEventDefs(Type[] types, LayoutEventRole requiredRole, List<LayoutEventDefAttribute> eventDefs) {
 			foreach(Type type in types) {
 				if(type.IsClass || type.IsInterface) {
 					LayoutEventDefAttribute[]	typeEventDefs = (LayoutEventDefAttribute[])type.GetCustomAttributes(typeof(LayoutEventDefAttribute), true);
