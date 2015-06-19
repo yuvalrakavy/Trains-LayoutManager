@@ -66,9 +66,7 @@ namespace NumatoController {
             }
         }
 
-        public int RelaysCount {
-            get { return XmlConvert.ToInt32(Element.GetAttribute(relaysCountAttribute)); }
-        }
+        public int RelaysCount => XmlConvert.ToInt32(Element.GetAttribute(relaysCountAttribute));
 
         string User {
             get { return Element.GetAttribute(userAttribute); }

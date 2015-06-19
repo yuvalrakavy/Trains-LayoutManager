@@ -15,7 +15,6 @@ namespace LayoutManager.ControlComponents {
 	[LayoutModule("Numato Relay Components")]
 	class NumatoControlComponents : LayoutModuleBase {
 		ControlBusType	relayBus = null;
-		ControlBusType inputBus = null;
 
 		[LayoutEvent("get-control-bus-type", IfEvent="LayoutEvent[./Options/@BusTypeName='NumatoRelayBus']")]
 		private void getRelayBusBusType(LayoutEvent e) {
