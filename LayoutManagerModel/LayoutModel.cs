@@ -1670,7 +1670,18 @@ namespace LayoutManager.Model {
 			}
 		}
 
-        public TripPlanIconListInfo TripPlanIconList => new TripPlanIconListInfo(Element, "TripPlanIconList");
+        public TripPlanIconListInfo TripPlanIconList {
+            get {
+                XmlElement tripPlanIconListElement = Element["TripPlanIconList"];
+
+                if(tripPlanIconListElement == null) {
+                    tripPlanIconListElement = Element.OwnerDocument.CreateElement("TripPlanIconList");
+                    Element.AppendChild(tripPlanIconListElement);
+                }
+
+                return new TripPlanIconListInfo(tripPlanIconListElement);
+            }
+        }
 
         public bool ModelIsLoading => modelIsLoading;
 
