@@ -33,7 +33,6 @@ namespace LayoutManager.CommonUI.Controls
 		XmlElement			element = null;
 		string				defaultAccess = "Property";
 		Type[]				allowedTypes = null;
-		bool				valueIsBoolean = false;
 
 		public Operand()
 		{
@@ -83,15 +82,9 @@ namespace LayoutManager.CommonUI.Controls
 			}
 		}
 
-		public bool ValueIsBoolean {
-			get {
-				return valueIsBoolean;
-			}
+		public bool ValueIsBoolean { get; set; }
 
-			set {
-				valueIsBoolean = value;
-			}
-		}
+        public bool ValueIsOnOff { set; get; }
 
 		#endregion
 
@@ -104,11 +97,14 @@ namespace LayoutManager.CommonUI.Controls
 			operandValueOf.Suffix = suffix;
 			operandValueOf.Initialize();
 
-			if(valueIsBoolean) {
+			if(ValueIsBoolean) {
 				textBoxValue.Visible = false;
 				linkMenu1Boolean.Visible = true;
 				radioButtonValue.Text = "";
 				linkMenu1Boolean.Location = textBoxValue.Location;
+
+                if (ValueIsOnOff)
+                    linkMenu1Boolean.Options = new string[] { "On", "Off" };
 			}
 			else
 				linkMenu1Boolean.Visible = false;
@@ -122,15 +118,16 @@ namespace LayoutManager.CommonUI.Controls
 				radioButtonValue.Checked = true;
 
 				if(Element.HasAttribute("Value" + suffix)) {
-					if(valueIsBoolean)
-						linkMenu1Boolean.SelectedIndex = (XmlConvert.ToBoolean(Element.GetAttribute("Value" + suffix)) ? 0 : 1);
-					else
-						textBoxValue.Text = Element.GetAttribute("Value" + suffix);
+                    if (ValueIsBoolean)
+                        linkMenu1Boolean.SelectedIndex = (XmlConvert.ToBoolean(Element.GetAttribute("Value" + suffix)) ? 0 : 1);
+                    else
+                        textBoxValue.Text = Element.GetAttribute("Value" + suffix);
 				}
 				else
 					textBoxValue.Text = "";
 
-				linkMenu1Boolean.Enabled = true;
+                linkMenu1Boolean.Text = linkMenu1Boolean.Options[linkMenu1Boolean.SelectedIndex];
+                linkMenu1Boolean.Enabled = true;
 			}
 			else
 				radioButtonPropertyOrAttribute.Checked = true;
@@ -152,12 +149,12 @@ namespace LayoutManager.CommonUI.Controls
 			if(radioButtonValue.Checked) {
 				Element.SetAttribute(accessAttribute, "Value");
 
-				if(valueIsBoolean)
+				if(ValueIsBoolean)
 					Element.SetAttribute("Value" + suffix, XmlConvert.ToString(linkMenu1Boolean.SelectedIndex == 0));
 				else
 					Element.SetAttribute("Value" + suffix, textBoxValue.Text);
 
-				if(valueIsBoolean)
+				if(ValueIsBoolean)
 					Element.SetAttribute("Type" + suffix, "Booelan");
 				else
 					Element.SetAttribute("Type" + suffix, "String");
