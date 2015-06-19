@@ -182,19 +182,21 @@ namespace LayoutManager.Tools.Dialogs
 		private void buttonSave_Click(object sender, EventArgs e) {
 			Dialogs.GetSavedPolicyName d = new GetSavedPolicyName(LayoutModel.StateManager.DriverInstructionsPolicies);
 
-			if(d.ShowDialog(this) == DialogResult.OK) {
-				bool doSave = true;
-				bool overwrite = false;
+            if (d.ShowDialog(this) == DialogResult.OK) {
+                bool doSave = true;
+                bool overwrite = false;
 
-				if(!eventScriptEditor.ValidateScript(d.IsGlobalPolicy)) {
-					eventScriptEditor.Focus();
-					return;
-				}
+                if (!eventScriptEditor.ValidateScript(d.IsGlobalPolicy)) {
+                    eventScriptEditor.Focus();
+                    return;
+                }
 
-				if(LayoutModel.StateManager.DriverInstructionsPolicies.Contains(d.PolicyName) && MessageBox.Show("A definition with this name already exists, override?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-					doSave = false;
-				else
-					overwrite = true;
+                if (LayoutModel.StateManager.DriverInstructionsPolicies.Contains(d.PolicyName)) {
+                    if (MessageBox.Show("A definition with this name already exists, override?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        doSave = false;
+                    else
+                        overwrite = true;
+                }
 
 				if(doSave) {
 					LayoutPolicyInfo policy;
