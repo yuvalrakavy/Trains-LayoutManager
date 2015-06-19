@@ -171,9 +171,7 @@
     <Compile Include="AutoConnectDialogs\GetNoSpaceSelection.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ComponentEditingTools.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="ComponentEditingTools.cs" />
     <Compile Include="ComponentMenuItems.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -429,6 +427,9 @@
     <Compile Include="EventScriptDialogs\TrainFunctionAction.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="EventScriptDialogs\TrainLightsAction.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="EventScriptDialogs\TrainTargetSpeedAction.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -682,6 +683,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="EventScriptDialogs\TrainFunctionAction.resx">
       <DependentUpon>TrainFunctionAction.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EventScriptDialogs\TrainLightsAction.resx">
+      <DependentUpon>TrainLightsAction.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EventScriptDialogs\TrainTargetSpeedAction.resx">
       <DependentUpon>TrainTargetSpeedAction.cs</DependentUpon>

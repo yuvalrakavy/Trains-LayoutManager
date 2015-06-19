@@ -388,7 +388,8 @@ namespace LayoutManager.Tools {
 			menu.MenuItems.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Trigger train function", "TriggerTrainFunction"));
 			menu.MenuItems.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Set train function", "SetTrainFunction"));
 			menu.MenuItems.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Change train target speed", "ChangeTrainTargetSpeed"));
-			menu.MenuItems.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Execute Trip-plan", "ExecuteTripPlan"));
+            menu.MenuItems.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Control train lights", "ControlTrainLights"));
+            menu.MenuItems.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Execute Trip-plan", "ExecuteTripPlan"));
 			menu.MenuItems.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Execute random Trip-plan", "ExecuteRandomTripPlan"));
 			menu.MenuItems.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Generate event", "GenerateEvent"));
 		}
@@ -1206,7 +1207,7 @@ namespace LayoutManager.Tools {
 		private void editChangeTrainTargetSpeedTreeNode(LayoutEvent e) {
 			XmlElement										element = (XmlElement)e.Sender;
 			IEventScriptEditorSite							site = (IEventScriptEditorSite)e.Info;
-			EventScriptDialogs.TrainTargetSpeedAction		d = new EventScriptDialogs.TrainTargetSpeedAction(element);
+			EventScriptDialogs.TrainLightsAction		d = new EventScriptDialogs.TrainLightsAction(element);
 
 			if(d.ShowDialog() == DialogResult.OK)
 				site.EditingDone();
@@ -1236,21 +1237,128 @@ namespace LayoutManager.Tools {
 					case "Decrease":	verb = "Decrease";	relation = "by";	break;
 				}
 
-				return verb + " target speed of " + symbolName + " " + relation + " " + GetOperandDescription(element, "Value", typeof(int));
+				return $"{verb} target speed of {symbolName} {relation} {GetOperandDescription(element, "Value", typeof(int))}";
 			}
 
             protected override string Description => GetDescription(Element);
         }
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-		#region Execute Trip-plan
+        #region Control train lights
 
-		#region Runtime
+        #region Runtime
 
-		[LayoutEvent("parse-event-script-definition", IfSender="ExecuteTripPlan")]
+        [LayoutEvent("parse-event-script-definition", IfSender = "ControlTrainLights")]
+        private void parseControlTrainLights(LayoutEvent e) {
+            e.Info = new LayoutEventScriptNodeActionControlTrainLights(e);
+        }
+
+        class LayoutEventScriptNodeActionControlTrainLights : LayoutEventScriptNodeAction {
+
+            public LayoutEventScriptNodeActionControlTrainLights(LayoutEvent e) : base(e) {
+            }
+
+            public override void Execute() {
+                string symbolName = Element.GetAttribute("TrainSymbol");
+                string action = Element.GetAttribute("Action");
+                object oTrain = Context[symbolName];
+
+                if (!(oTrain is TrainStateInfo))
+                    throw new ArgumentException("Symbol " + symbolName + " is not a reference to a valid train object");
+
+                TrainStateInfo train = (TrainStateInfo)oTrain;
+
+                object oState = GetOperand("Value");
+                bool state;
+
+                if (oState is string)
+                    state = bool.Parse((string)oState);
+                else if (oState is bool)
+                    state = (bool)oState;
+                else
+                    throw new ArgumentException("Invalid lights state value");
+
+                switch (action) {
+                    case "Set":
+                        train.Lights = state;
+                        break;
+
+                    case "Toggle":
+                        train.Lights = !state;
+                        break;
+                }
+            }
+        }
+
+        #endregion
+
+        #region Editing
+
+        [LayoutEvent("get-event-script-editor-tree-node", IfSender = "ControlTrainLights")]
+        private void getChangeControlTrainLightsTreeNode(LayoutEvent e) {
+            XmlElement element = (XmlElement)e.Sender;
+
+            e.Info = new LayoutEventScriptEditorTreeNodeControlTrainLights(element);
+        }
+
+        [LayoutEvent("event-script-editor-edit-element", IfSender = "ControlTrainLights")]
+        private void editControlTrainLightsTreeNode(LayoutEvent e) {
+            XmlElement element = (XmlElement)e.Sender;
+            IEventScriptEditorSite site = (IEventScriptEditorSite)e.Info;
+            var d = new EventScriptDialogs.TrainLightsAction(element);
+
+            if (d.ShowDialog() == DialogResult.OK)
+                site.EditingDone();
+            else
+                site.EditingCancelled();
+        }
+
+        [LayoutEvent("get-event-script-description", IfSender = "ControlTrainLights")]
+        private void getControlTrainLightsDescription(LayoutEvent e) {
+            e.Info = LayoutEventScriptEditorTreeNodeControlTrainLights.GetDescription((XmlElement)e.Sender);
+        }
+
+
+        class LayoutEventScriptEditorTreeNodeControlTrainLights : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
+            public LayoutEventScriptEditorTreeNodeControlTrainLights(XmlElement conditionElement) : base(conditionElement) {
+                AddChildEventScriptTreeNodes();
+            }
+
+            public static string GetDescription(XmlElement element) {
+                string symbolName = element.GetAttribute("TrainSymbol");
+                string action = element.GetAttribute("Action");
+                string verb = "";
+
+                switch (action) {
+                    case "Set": verb = "" ; break;
+                    case "Toggle": verb = " toggle"; break;
+                }
+
+                var value = GetOperandDescription(element, "Value", typeof(bool));
+
+                if (value.ToLower() == "true")
+                    value = "On";
+                else if (value.ToLower() == "false")
+                    value = "Off";
+
+                return $"Set lights of {symbolName} to{verb} {value}";
+            }
+
+            protected override string Description => GetDescription(Element);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Execute Trip-plan
+
+        #region Runtime
+
+        [LayoutEvent("parse-event-script-definition", IfSender="ExecuteTripPlan")]
 		private void parseExecuteTripPlan(LayoutEvent e) {
 			e.Info = new LayoutEventScriptNodeActionExecuteTripPlan(e);
 		}
