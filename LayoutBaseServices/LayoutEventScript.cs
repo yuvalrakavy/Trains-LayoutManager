@@ -1040,7 +1040,7 @@ namespace LayoutManager {
 					subscription = subscriptionInfo.CreateSubscription();
 					subscription.SetFromLayoutEventAttribute(subscriptionInfo);
 					subscription.Order = 10000;			// Ensure that built in event handler execute first
-					subscription.SetMethod(this, this.GetType().GetMethod("OnEvent"));
+					subscription.SetMethod(this, this.GetType().GetMethod("OnEvent", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
 
 					EventManager.Subscriptions.Add(subscription);
 				}
