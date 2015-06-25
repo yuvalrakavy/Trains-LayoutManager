@@ -342,7 +342,7 @@ namespace LayoutManager.Logic {
 			public new void Remove(Guid blockID) {
 				LayoutDelayedEvent delayedEvent;
 
-				if(TryGetValue(blockID, out delayedEvent)) {
+                if(TryGetValue(blockID, out delayedEvent)) {
 					Trace.WriteLineIf(traceUnlockingManager.TraceInfo, "UnlockingManager: Removing block " + LayoutModel.Blocks[blockID].Name);
 					delayedEvent.Cancel();
 
@@ -355,14 +355,20 @@ namespace LayoutManager.Logic {
 					Remove(resourceEntry.Resource.Id);
 			}
 
+            public void Dump(string header = "") {
+                Trace.WriteLine($"Unlock Manager - {header} pending unlocks for:");
+                foreach (var blockId in Keys)
+                    Trace.WriteLine($"  {LayoutModel.Blocks[blockId].BlockDefinintion.FullDescription}");
+            }
+
 			public void RemoveByOwner(Guid trainID) {
 				List<Guid>	removeList = new List<Guid>();
 
 				foreach(Guid blockID in Keys) {
 					LayoutBlock	block = LayoutModel.Blocks[blockID];
 
-					Debug.Assert(block.LockRequest != null);
-					if(block.LockRequest.OwnerId == trainID)
+                    Debug.Assert(block.LockRequest != null);
+					if(block.LockRequest?.OwnerId == trainID)
 						removeList.Add(block.Id);
 				}
 
@@ -384,6 +390,14 @@ namespace LayoutManager.Logic {
 				operationMode = true;
 			}
 
+            [LayoutEvent("layout-lock-released")]
+            private void layoutLockReleased(LayoutEvent e0) {
+                var e = (LayoutEvent<Guid>) e0;
+
+                // Remove block from unlock manager since it is no longer locked
+                Remove(e.Sender);
+            }
+
 			[LayoutEvent("dispatcher-free-block-layout-lock")]
 			private void dispatcherFreeBlockLayoutLock(LayoutEvent e) {
 				if(!operationMode)
@@ -400,30 +414,33 @@ namespace LayoutManager.Logic {
 
 				// If request was not removed from the queue, and the block is still locked by this request
 				// (and not by another newer one)
-				if(this.ContainsKey(block.Id) && block.LockRequest != null && block.LockRequest == lockRequest) {
-					resourceIDsToUnlock.Add(block.Id);
-					Remove(block.Id);
+				if(this.ContainsKey(block.Id)) {
+                    Remove(block.Id);
 
-					foreach(TrackEdge edge in block.TrackEdges) {
-						if(edge.Track is LayoutDoubleTrackComponent && ((LayoutDoubleTrackComponent)edge.Track).IsCross) {
-							LayoutBlock	crossedBlock = ((LayoutDoubleTrackComponent)edge.Track).GetOtherBlock(edge.ConnectionPoint);
+                    if (block.LockRequest != null && block.LockRequest == lockRequest) {
+                        resourceIDsToUnlock.Add(block.Id);
 
-							retryWaitingTrains = true;
+                        foreach (TrackEdge edge in block.TrackEdges) {
+                            if (edge.Track is LayoutDoubleTrackComponent && ((LayoutDoubleTrackComponent)edge.Track).IsCross) {
+                                LayoutBlock crossedBlock = ((LayoutDoubleTrackComponent)edge.Track).GetOtherBlock(edge.ConnectionPoint);
 
-							if(crossedBlock.LockRequest != null && crossedBlock.LockRequest.OwnerId == block.LockRequest.OwnerId) {
-								resourceIDsToUnlock.Add(crossedBlock.Id);
-								Remove(crossedBlock.Id);
-							}
-						}
-						else if(edge.Track is IModelComponentIsMultiPath)
-							retryWaitingTrains = true;
-					}
+                                retryWaitingTrains = true;
 
-					// Unlock any other resources that are associated with this block
-					if(block.BlockDefinintion != null) {
-						foreach(ResourceInfo resourceInfo in block.BlockDefinintion.Info.Resources)
-							resourceIDsToUnlock.Add(resourceInfo.ResourceId);
-					}
+                                if (crossedBlock.LockRequest != null && crossedBlock.LockRequest.OwnerId == block.LockRequest.OwnerId) {
+                                    resourceIDsToUnlock.Add(crossedBlock.Id);
+                                    Remove(crossedBlock.Id);
+                                }
+                            }
+                            else if (edge.Track is IModelComponentIsMultiPath)
+                                retryWaitingTrains = true;
+                        }
+
+                        // Unlock any other resources that are associated with this block
+                        if (block.BlockDefinintion != null) {
+                            foreach (ResourceInfo resourceInfo in block.BlockDefinintion.Info.Resources)
+                                resourceIDsToUnlock.Add(resourceInfo.ResourceId);
+                        }
+                    }
 				}
 				else
 					Trace.WriteLineIf(traceUnlockingManager.TraceInfo, "UnlockingManager: Block was already removed");
@@ -1386,8 +1403,6 @@ namespace LayoutManager.Logic {
 			int switchStateIndex = 0;
 			bool			completed = true;
 			List<SwitchingCommand> switchingCommands = new List<SwitchingCommand>();
-
-            Trace.WriteLine("Destinaion edge is: " + destinationEdge);
 
 			while(edge.Track != destinationEdge.Track) {
 				LayoutBlock	block = edge.Track.GetBlock(edge.ConnectionPoint);
