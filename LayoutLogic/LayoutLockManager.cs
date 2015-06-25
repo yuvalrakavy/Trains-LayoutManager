@@ -590,7 +590,7 @@ namespace LayoutManager.Logic {
 				LockedResourceEntry	lockedResourceEntry = d.Value;
 
 				if(!lockedResourceMap.ContainsKey(resourceID) || lockedResourceEntry.Request == null) {
-					EventManager.Event(new LayoutEvent(resourceID, "layout-lock-released"));
+					EventManager.Event(new LayoutEvent<Guid>("layout-lock-released", resourceID));
 
 					LayoutBlock	block;
 
