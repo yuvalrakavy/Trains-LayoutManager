@@ -1497,7 +1497,10 @@ namespace LayoutManager.Model {
 			}
 
 			set {
-				BlockEdgeId = value.Id;
+                if (value == null)
+                    BlockEdgeId = Guid.Empty;
+                else
+    				BlockEdgeId = value.Id;
 			}
 		}
 

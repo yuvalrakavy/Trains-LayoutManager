@@ -1550,7 +1550,7 @@ namespace LayoutManager.Tools {
 					int							iCpIndex = block.BlockDefinintion.GetConnectionPointIndex(newTrainLocation.DisplayFront);
 					LayoutBlockEdgeBase[]	otherBlockEdges = block.BlockDefinintion.GetBlockEdges(1-iCpIndex);
 
-					if(otherBlockEdges == null)
+					if(otherBlockEdges == null || otherBlockEdges.Length == 0)
 						newTrainLocation.BlockEdge = null;
 					else
 						newTrainLocation.BlockEdge = otherBlockEdges[0];
