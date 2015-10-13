@@ -952,14 +952,13 @@ namespace LayoutManager.Components {
 
 
                 if (Info.TwoDirectionRelays) {
-                    list.Add(new ModelComponentControlConnectionDescription("Relay,Solenoid", StandardGateDrivers.Direction1ConnectionPoint, "Gate direction control 1 (open/close)"));
-                    list.Add(new ModelComponentControlConnectionDescription("Relay,Solenoid", StandardGateDrivers.Direction2ConnectionPoint, "Gate direction control 2 (open/close)"));
+                    list.Add(new ModelComponentControlConnectionDescription("Relay,Solenoid", StandardGateDrivers.Direction1ConnectionPoint, "Gate control 1"));
+                    list.Add(new ModelComponentControlConnectionDescription("Relay,Solenoid", StandardGateDrivers.Direction2ConnectionPoint, "Gate control 2"));
                 }
-                else
+                else {
                     list.Add(new ModelComponentControlConnectionDescription("Relay,Solenoid", StandardGateDrivers.Direction1ConnectionPoint, "Gate direction control (open/close)"));
-
-
-                list.Add(new ModelComponentControlConnectionDescription("Relay,Soleniod", StandardGateDrivers.MotionConnectionPoint, "Gate motion control"));
+                    list.Add(new ModelComponentControlConnectionDescription("Relay,Soleniod", StandardGateDrivers.MotionConnectionPoint, "Gate motion control"));
+                }
 
                 if(Info.FeedbackType == LayoutGateComponentInfo.FeedbackTypes.TwoSensors) {
                     list.Add(new ModelComponentControlConnectionDescription("DryContact", StandardGateDrivers.GateOpenConnectionPoint, "Gate open sensor"));
@@ -1068,25 +1067,40 @@ namespace LayoutManager.Components {
         }
 
         private static void StartGateMotion(LayoutGateComponent gateComponent, int directionState) {
-            int motionState = gateComponent.Info.ReverseMotion ? 0 : 1;
-            var gateDirectionReference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, Direction1ConnectionPoint]);
-            var gateMotionReference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, MotionConnectionPoint]);
-
-            EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateDirectionReference, directionState).SetCommandStation(gateDirectionReference));
-
             if (gateComponent.Info.TwoDirectionRelays) {
-                gateDirectionReference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, Direction2ConnectionPoint]);
-                EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateDirectionReference, directionState).SetCommandStation(gateDirectionReference));
-            }
+                var gateRelay1Reference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, Direction1ConnectionPoint]);
+                var gateRelay2Reference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, Direction2ConnectionPoint]);
 
-            EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateMotionReference, motionState).SetCommandStation(gateMotionReference));
+                // Put relays in opposite state, so one end is connected to one pole and the other end is connected to the other pole.
+                // which poles are connected is controlled via the direction state
+                EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateRelay1Reference, directionState).SetCommandStation(gateRelay1Reference));
+                EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateRelay2Reference, 1 - directionState).SetCommandStation(gateRelay2Reference));
+            }
+            else {
+                var gateDirectionReference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, Direction1ConnectionPoint]);
+                var gateMotionReference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, MotionConnectionPoint]);
+                int motionState = gateComponent.Info.ReverseMotion ? 0 : 1;
+
+                EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateDirectionReference, directionState).SetCommandStation(gateDirectionReference));
+                EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateMotionReference, motionState).SetCommandStation(gateMotionReference));
+            }
         }
 
         private static void StopGateMotion(LayoutGateComponent gateComponent) {
-            int motionState = gateComponent.Info.ReverseMotion ? 1 : 0;
-            var gateMotionReference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, MotionConnectionPoint]);
+            if (gateComponent.Info.TwoDirectionRelays) {
+                var gateRelay1Reference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, Direction1ConnectionPoint]);
+                var gateRelay2Reference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, Direction2ConnectionPoint]);
 
-            EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateMotionReference, motionState).SetCommandStation(gateMotionReference));
+                // Put both relays in the same state, thus the same wire is connected to both ends...
+                EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateRelay1Reference, 0).SetCommandStation(gateRelay1Reference));
+                EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateRelay2Reference, 0).SetCommandStation(gateRelay2Reference));
+            }
+            else {
+                int motionState = gateComponent.Info.ReverseMotion ? 1 : 0;
+                var gateMotionReference = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[gateComponent, MotionConnectionPoint]);
+
+                EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", gateMotionReference, motionState).SetCommandStation(gateMotionReference));
+            }
         }
 
         [LayoutEvent("gate-is-open", SenderType = typeof(LayoutGateComponent))]
