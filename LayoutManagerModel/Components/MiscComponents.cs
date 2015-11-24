@@ -1033,7 +1033,7 @@ namespace LayoutManager.Components {
                 StartGateMotion(gateComponent, directionState);
 
                 if (gateComponent.Info.FeedbackType == LayoutGateComponentInfo.FeedbackTypes.NoFeedback || LayoutController.IsOperationSimulationMode)
-                    EventManager.DelayedEvent(gateComponent.Info.MotionTime, new LayoutEvent(gateComponent, "gate-is-open"));
+                    EventManager.DelayedEvent(gateComponent.Info.MotionTime * 1000, new LayoutEvent(gateComponent, "gate-is-open"));
                 else
                     pendingEvents.Add(gateComponent.Id, EventManager.DelayedEvent(gateComponent.Info.MotionTimeout * 1000, new LayoutEvent(gateComponent, "gate-open-timeout")));
             }
