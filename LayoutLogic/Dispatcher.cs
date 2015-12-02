@@ -1342,11 +1342,12 @@ namespace LayoutManager.Logic {
 				TrackEdge		edge = route.SourceEdge;
 				BlockEntry[]	queue = new BlockEntry[trip.Queue.Count];
 				TrackEdge		destinationEdge = route.DestinationEdge;
-				IList<int>		switchStates = route.SwitchStates;
+				var		        switchStates = route.SwitchStates;
 //				Dictionary<Guid, object> alreadySwitched = new Dictionary<Guid, object>(switchStates.Count);
 				int				queueIndex = 0;
 				int				switchStateIndex = 0;
-				List<SwitchingCommand> switchingCommands = new List<SwitchingCommand>();
+				var             switchingCommands = new List<SwitchingCommand>();
+                var             powerConnectors = new Dictionary<Guid, LayoutTrackPowerConnectorComponent>();
 
 				trip.Queue.CopyTo(queue, 0);
 
@@ -1355,6 +1356,13 @@ namespace LayoutManager.Logic {
 
 				while(edge.Track != destinationEdge.Track) {
 					LayoutBlock	block = edge.Track.GetBlock(edge.ConnectionPoint);
+                    var powerConnector = block?.BlockDefinintion?.PowerConnector;
+
+                    // Make sure that tracks are connected to digital power
+                    if(powerConnector != null && !powerConnectors.ContainsKey(powerConnector.Id)) {
+                        powerConnectors.Add(powerConnector.Id, powerConnector);
+                        powerConnector.Inlet.ConnectedOutlet.SelectPower(LayoutPowerType.Digital, switchingCommands);
+                    }
 
 					if(block == firstBlockInQueue)
 						processingQueue = true;
@@ -1403,8 +1411,9 @@ namespace LayoutManager.Logic {
 			int switchStateIndex = 0;
 			bool			completed = true;
 			List<SwitchingCommand> switchingCommands = new List<SwitchingCommand>();
+            var powerConnectors = new Dictionary<Guid, LayoutTrackPowerConnectorComponent>();
 
-			while(edge.Track != destinationEdge.Track) {
+            while (edge.Track != destinationEdge.Track) {
 				LayoutBlock	block = edge.Track.GetBlock(edge.ConnectionPoint);
 
 
@@ -1413,7 +1422,15 @@ namespace LayoutManager.Logic {
 					break;
 				}
 
-				IModelComponentIsMultiPath	multipath = edge.Track as IModelComponentIsMultiPath;
+                var powerConnector = block?.BlockDefinintion?.PowerConnector;
+
+                // Make sure that tracks are connected to digital power
+                if (powerConnector != null && !powerConnectors.ContainsKey(powerConnector.Id)) {
+                    powerConnectors.Add(powerConnector.Id, powerConnector);
+                    powerConnector.Inlet.ConnectedOutlet.SelectPower(LayoutPowerType.Digital, switchingCommands);
+                }
+
+                IModelComponentIsMultiPath multipath = edge.Track as IModelComponentIsMultiPath;
 
 				if(multipath != null) {
                     // 13-Feb: Change, change switch only if Split point, this avoid derailment because of changing
