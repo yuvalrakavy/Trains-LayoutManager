@@ -9,13 +9,16 @@ using System.Linq;
 
 using LayoutManager.Model;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LayoutManager.Components {
     /// <summary>
     /// Implement a connection of track to power source (command station, programming controller etc.)
     /// </summary>
     ///
-    public class LayoutTrackPowerConnectorComponent : ModelComponent, IModelComponentHasId {
+    public class LayoutTrackPowerConnectorComponent : ModelComponent, IModelComponentHasId, IModelComponentLayoutLockResource {
+        LayoutLockRequest lockRequest;
+
         public LayoutTrackPowerConnectorComponent() {
             XmlDocument.LoadXml("<PowerConnector />");
         }
@@ -68,6 +71,76 @@ namespace LayoutManager.Components {
         /// Blocks that receive power from this connector - this can be useful for locking the region (for example when connecting it to programming power, or disconnecting it)
         /// </summary>
         public IEnumerable<LayoutBlock> Blocks => from blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases) where blockDefinition.PowerConnector.Id == this.Id select blockDefinition.Block;
+
+        public bool MakeResourceReady() {
+            if (Info.Inlet.ConnectedOutlet.Power.Type != LayoutPowerType.Disconnected)
+                return true;            // Already has power - can grant lock
+            else {
+                if (Info.Inlet.ConnectedOutlet.ObtainablePowers.Any(p => p.Type == LayoutPowerType.Digital)) {
+                    var switchingCommands = new List<SwitchingCommand>();
+
+                    if (Info.Inlet.ConnectedOutlet.SelectPower(LayoutPowerType.Digital, switchingCommands)) {
+                        if (switchingCommands.Count > 0)
+                            EventManager.AsyncEvent(new LayoutEvent(this, "set-track-components-state", null, switchingCommands)).ContinueWith(
+                                (t) => {
+                                    EventManager.Event(new LayoutEvent(this, "layout-lock-resource-ready"));
+                                    return Task.FromResult(0);
+                                }
+                            );
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        public LayoutLockRequest LockRequest {
+            get {
+                return lockRequest;
+            }
+
+            set {
+                if (lockRequest != null && value == null) {  // Was locked and lock is removed - disconnect power
+                    if (Info.Inlet.ConnectedOutlet.Power.Type != LayoutPowerType.Disconnected && Info.Inlet.ConnectedOutlet.ObtainablePowers.Any(p => p.Type == LayoutPowerType.Disconnected)) {
+                        var switchingCommands = new List<SwitchingCommand>();
+
+                        if (Info.Inlet.ConnectedOutlet.SelectPower(LayoutPowerType.Disconnected, switchingCommands)) {
+                            if (switchingCommands.Count > 0)
+                                EventManager.AsyncEvent(new LayoutEvent(this, "set-track-components-state", null, switchingCommands));
+                        }
+                    }
+                }
+
+                this.lockRequest = value;
+            }
+        }
+
+        public LayoutTextInfo NameProvider => new LayoutTrackPowerConnectorNameInfo(this);
+
+        public class LayoutTrackPowerConnectorNameInfo : LayoutTextInfo {
+            const string ElementName = "PowerConnectorName";
+
+            public LayoutTrackPowerConnectorNameInfo(ModelComponent component, String elementName)
+                : base(component, elementName) {
+            }
+
+            public LayoutTrackPowerConnectorNameInfo(ModelComponent component)
+                : base(component, ElementName) {
+            }
+
+            public LayoutTrackPowerConnectorNameInfo(XmlElement containerElement)
+                : base(containerElement, ElementName) {
+            }
+
+            public void CreateElement(LayoutXmlInfo xmlInfo) {
+                Element = CreateProviderElement(xmlInfo, ElementName);
+            }
+
+            public string Description => ((LayoutTrackPowerConnectorComponent)Component).Info.Name;
+
+            public override string Name => ((LayoutTrackPowerConnectorComponent)Component).Info.Name;
+        }
+
     }
 
     public class LayoutTrackPowerConnectorInfo : LayoutTextInfo {
@@ -990,7 +1063,7 @@ namespace LayoutManager.Components {
             }
         }
 
-        public bool IsResourceReady() {
+        public bool MakeResourceReady() {
             if (GateState != LayoutGateState.Open)
                 EventManager.Event(new LayoutEvent(this, "open-gate-request"));
 
