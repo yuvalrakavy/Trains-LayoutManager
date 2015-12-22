@@ -328,9 +328,9 @@ namespace LayoutManager.Logic {
 		}
 
 		private void dumpResource(Guid resourceID) {
-			LayoutBlock	block = LayoutModel.Blocks[resourceID];
+            LayoutBlock block;
 
-			if(block != null) {
+			if(LayoutModel.Blocks.TryGetValue(resourceID, out block)) {
 				if(string.IsNullOrEmpty(block.Name))
 					Trace.Write("Block at " + block.BlockDefinintion.Location);
 				else
