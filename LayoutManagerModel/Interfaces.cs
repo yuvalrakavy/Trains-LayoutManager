@@ -240,7 +240,7 @@ namespace LayoutManager {
 		/// (in our example, calling IsResourceReady when the gate is closed will initiate the opening
 		/// of this gate, and when the gate is open, the "layout-lock-resource-ready" event is sent.
 		/// </remarks>
-		bool IsResourceReady();
+		bool MakeResourceReady();
 	}
 
 	/// <summary>

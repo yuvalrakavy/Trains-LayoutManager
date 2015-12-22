@@ -322,7 +322,7 @@ namespace LayoutManager.Model {
 			}
 		}
 
-        public bool IsResourceReady() => true;              // The block is always ready to be locked
+        public bool MakeResourceReady() => true;              // The block is always ready to be locked
 
         public bool IsLocked => LockRequest != null;
 

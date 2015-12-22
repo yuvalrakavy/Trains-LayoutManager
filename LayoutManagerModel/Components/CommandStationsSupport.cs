@@ -497,7 +497,7 @@ namespace LayoutManager.Components {
 			get; set;
 		}
 
-        public bool IsResourceReady() => true;
+        public bool MakeResourceReady() => true;
 
         #endregion
     }

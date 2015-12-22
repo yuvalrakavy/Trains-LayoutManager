@@ -403,7 +403,7 @@ namespace LayoutManager.Logic {
 					if(lockedResourceEntry.Request != null && lockedResourceEntry.Request.OwnerId != request.OwnerId)
 						canGrant = false;
 					else if(lockedResourceEntry.Request == null) {
-						if(!resourceEntry.Resource.IsResourceReady()) {
+						if(!resourceEntry.Resource.MakeResourceReady()) {
 							Trace.WriteLineIf(traceLockManager.TraceInfo, "LockManager: Resource " + resourceEntry.GetDescription() + " is not ready - cannot grant");
 							canGrant = false;
 						}
@@ -414,7 +414,7 @@ namespace LayoutManager.Logic {
 					}
 				}
 				else {
-					if(!resourceEntry.Resource.IsResourceReady()) {
+					if(!resourceEntry.Resource.MakeResourceReady()) {
 						// No request was granted, but one is pending...
 						Trace.WriteLineIf(traceLockManager.TraceInfo, "LockManager: Resource " + resourceEntry.GetDescription() + " is not ready - queuing its lock request");
 						canGrant = false;
@@ -456,7 +456,7 @@ namespace LayoutManager.Logic {
 				else {
 					if(lockedResourceEntry.Request != null && lockedResourceEntry.Request.OwnerId == lockRequest.OwnerId)
 						lockIt = true;		// New lock request, replace the old one
-					else if(lockedResourceEntry.Request == null && resourceEntry.Resource.IsResourceReady()) {
+					else if(lockedResourceEntry.Request == null && resourceEntry.Resource.MakeResourceReady()) {
 						Trace.WriteLineIf(traceLockManager.TraceInfo, "LockManager: Resource " + resourceEntry.GetDescription() + " is ready - locking it");
 						lockedResourceEntry.Request = lockRequest;
 						lockedResourceEntry.RemoveRequest(lockRequest);
