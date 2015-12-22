@@ -80,6 +80,7 @@ namespace LayoutManager.Tools.Dialogs {
 
 			foreach(ResourceItem resourceItem in listBoxResources.Items)
 				resourceCollection.Add(resourceItem.ResourceInfo.ResourceId);
+            Close();
 		}
 
 		class ResourceItem {
