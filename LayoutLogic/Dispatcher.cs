@@ -1356,6 +1356,12 @@ namespace LayoutManager.Logic {
 
 				while(edge.Track != destinationEdge.Track) {
 					LayoutBlock	block = edge.Track.GetBlock(edge.ConnectionPoint);
+
+                    // Power connector are lock resources. Blocks that reside in a switchable power region should specify the power connector as a locked resource
+                    // When the block will be locked ppower will be connected (and when the block will be unlocked, power will be disconnected)
+                    //
+                    // However this code ensure that power is connected to any block that is in the dispatch region to ensure that the train is not sent to tracks without power...
+                    //
                     var powerConnector = block?.BlockDefinintion?.PowerConnector;
 
                     // Make sure that tracks are connected to digital power
@@ -1364,7 +1370,7 @@ namespace LayoutManager.Logic {
                         powerConnector.Inlet.ConnectedOutlet.SelectPower(LayoutPowerType.Digital, switchingCommands);
                     }
 
-					if(block == firstBlockInQueue)
+                    if (block == firstBlockInQueue)
 						processingQueue = true;
 
 					if(processingQueue && block.Id != queue[queueIndex].Block.Id) {
@@ -1652,9 +1658,9 @@ namespace LayoutManager.Logic {
 			EventManager.Event(new LayoutEvent(trip.Train, "driver-train-go", null, trip.CurrentWaypoint.Direction));
 		}
 
-		#endregion
+#endregion
 
-		#region Layout Event Handlers
+#region Layout Event Handlers
 
 		[LayoutEvent("enter-operation-mode")]
 		private void dispatcherEnterOperationMode(LayoutEvent e) {
@@ -1908,9 +1914,9 @@ namespace LayoutManager.Logic {
 			}
 		}
 
-		#endregion
+#endregion
 
-		#region Internal Dispatcher States Event Handlers
+#region Internal Dispatcher States Event Handlers
 
 		[LayoutEvent("dispatcher-start-condition-occurred")]
 		private void dispatcherStartConditionOccurred(LayoutEvent e) {
@@ -1983,9 +1989,9 @@ namespace LayoutManager.Logic {
 				trainPrepareStart(trip);
 		}
 
-		#endregion
+#endregion
 
-		#region Validate trip route
+#region Validate trip route
 
 		class CheckRoutesResult {
 			public IDictionary<Guid, TrackEdge>	ReachableDestinationEdges = new Dictionary<Guid, TrackEdge>();
@@ -2089,7 +2095,7 @@ namespace LayoutManager.Logic {
 			e.Info = new RouteValidationResult(canBeFixed, actions);
 		}
 
-		#region Trip route validation action classes
+#region Trip route validation action classes
 
 		class RouteValidationResult : ITripRouteValidationResult {
 			bool								canBeFixed;
@@ -2165,9 +2171,9 @@ namespace LayoutManager.Logic {
 			}
 		}
 
-		#endregion
+#endregion
 
-		#endregion
+#endregion
 
 	}
 }
