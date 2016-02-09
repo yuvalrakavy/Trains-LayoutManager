@@ -95,7 +95,7 @@ namespace NumatoController {
         void OnInitialize() {
 			_relayBus = null;
 
-			TraceNumato.Level = TraceLevel.Verbose;
+			TraceNumato.Level = TraceLevel.Off;
 
 			OutputManager = new OutputManager(NameProvider.Name, 1);
 			OutputManager.Start();
@@ -261,7 +261,7 @@ namespace NumatoController {
 			protected virtual string Command { get;  } = "";
 
             protected void Send(byte[] command) {
-                Trace.WriteLine($"NumatoRelayController: Sending: {Encoding.UTF8.GetString(command)}");
+                Trace.WriteLineIf(TraceNumato.TraceInfo, $"NumatoRelayController: Sending: {Encoding.UTF8.GetString(command)}");
 
                 if (!this.RelayController.Simulation)
                     RelayController.commStream.Write(command, 0, command.Length);

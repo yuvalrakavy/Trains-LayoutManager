@@ -75,7 +75,7 @@ namespace NCDRelayController {
 			_relayBus = null;
 			_inputBus = null;
 
-			TraceNCD.Level = TraceLevel.Verbose;
+			TraceNCD.Level = TraceLevel.Off;
 
 			outputManager = new OutputManager(NameProvider.Name, 1);
 			outputManager.Start();

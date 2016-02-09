@@ -28,7 +28,7 @@ namespace DiMAX {
 			this.pipeName = pipeName;
 			this.interThreadEventInvoker = (ILayoutInterThreadEventInvoker)EventManager.Event(new LayoutEvent(this, "get-inter-thread-event-invoker"));
 
-			traceDiMAXemulator.Level = TraceLevel.Verbose;		// Until it seems to work
+			traceDiMAXemulator.Level = TraceLevel.Off;		// Until it seems to work
 
 			layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent(this, "get-layout-emulation-services"));
 			EventManager.Event(new LayoutEvent(null, "initialize-layout-emulation", null, emulationTickTime));
