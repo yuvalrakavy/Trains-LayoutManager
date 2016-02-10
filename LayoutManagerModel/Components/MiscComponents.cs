@@ -17,8 +17,6 @@ namespace LayoutManager.Components {
     /// </summary>
     ///
     public class LayoutTrackPowerConnectorComponent : ModelComponent, IModelComponentHasId, IModelComponentLayoutLockResource {
-        LayoutLockRequest lockRequest;
-
         public LayoutTrackPowerConnectorComponent() {
             XmlDocument.LoadXml("<PowerConnector />");
         }
@@ -94,24 +92,14 @@ namespace LayoutManager.Components {
             }
         }
 
-        public LayoutLockRequest LockRequest {
-            get {
-                return lockRequest;
-            }
+        public void FreeResource() {
+            if (Info.Inlet.ConnectedOutlet.Power.Type != LayoutPowerType.Disconnected && Info.Inlet.ConnectedOutlet.ObtainablePowers.Any(p => p.Type == LayoutPowerType.Disconnected)) {
+                var switchingCommands = new List<SwitchingCommand>();
 
-            set {
-                if (lockRequest != null && value == null) {  // Was locked and lock is removed - disconnect power
-                    if (Info.Inlet.ConnectedOutlet.Power.Type != LayoutPowerType.Disconnected && Info.Inlet.ConnectedOutlet.ObtainablePowers.Any(p => p.Type == LayoutPowerType.Disconnected)) {
-                        var switchingCommands = new List<SwitchingCommand>();
-
-                        if (Info.Inlet.ConnectedOutlet.SelectPower(LayoutPowerType.Disconnected, switchingCommands)) {
-                            if (switchingCommands.Count > 0)
-                                EventManager.AsyncEvent(new LayoutEvent(this, "set-track-components-state", null, switchingCommands));
-                        }
-                    }
+                if (Info.Inlet.ConnectedOutlet.SelectPower(LayoutPowerType.Disconnected, switchingCommands)) {
+                    if (switchingCommands.Count > 0)
+                        EventManager.AsyncEvent(new LayoutEvent(this, "set-track-components-state", null, switchingCommands));
                 }
-
-                this.lockRequest = value;
             }
         }
 
@@ -977,8 +965,6 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutGateComponent : LayoutTrackAnnotationComponent, IModelComponentHasName, IModelComponentConnectToControl, IModelComponentLayoutLockResource {
-        LayoutLockRequest lockRequest;
-
         public LayoutGateComponent() {
             XmlDocument.LoadXml("<Gate OpenUpOrLeft=\"false\"/>");
         }
@@ -1048,26 +1034,16 @@ namespace LayoutManager.Components {
 
         #region ILayoutLockResource Members
 
-        public LayoutLockRequest LockRequest {
-            get {
-                return lockRequest;
-            }
-
-            set {
-                if (lockRequest != null) {  // Was not locked
-                    if (value == null && GateState != LayoutGateState.Close)
-                        EventManager.Event(new LayoutEvent(this, "close-gate-request"));
-                }
-
-                lockRequest = value;
-            }
-        }
-
         public bool MakeResourceReady() {
             if (GateState != LayoutGateState.Open)
                 EventManager.Event(new LayoutEvent(this, "open-gate-request"));
 
             return GateState == LayoutGateState.Open;       // Resource is ready when the gate is open and train can pass
+        }
+
+        public void FreeResource() {
+            if (GateState != LayoutGateState.Close && GateState != LayoutGateState.Closing)
+                EventManager.Event(new LayoutEvent(this, "close-gate-request"));
         }
 
         #endregion
