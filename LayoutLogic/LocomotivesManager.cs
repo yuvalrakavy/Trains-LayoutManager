@@ -1170,7 +1170,7 @@ namespace LayoutManager.Logic {
 
 
 		/// <summary>
-		/// This event is sent by the command station component when it get an idiciation of a change
+		/// This event is sent by the command station component when it get an indiciation of a change
 		/// in a locomotive motion parameters
 		/// </summary>
 		/// <param name="e.Sender">The command station component</param>
