@@ -88,9 +88,8 @@ namespace LayoutManager.Model {
 	/// figure out what locomotive has triggered the track contact and for which Block to which
 	/// Block the locomotive is passing.
 	/// </summary>
-	public class LayoutBlock : LayoutBlockBase, ILayoutLockResource {
+	public class LayoutBlock : LayoutBlockBase {
 		List<TrainLocationInfo>			trainsInBlock = new List<TrainLocationInfo>();
-		LayoutLockRequest				lockRequest;
 		LayoutOccupancyBlock			occupancyBlock;
 		bool							isLinear = true;
 		bool							isLinearCalculated;
@@ -116,6 +115,8 @@ namespace LayoutManager.Model {
 				occupancyBlock = value;
 			}
 		}
+
+        public LayoutLockRequest LockRequest { get; set; }
 
 		/// <summary>
 		/// Check if a block is a simple linear block. That is, the block does not contain any
@@ -311,19 +312,6 @@ namespace LayoutManager.Model {
 
         public bool IsTrainInBlock(TrainStateInfo train) => IsTrainInBlock(train.Id);
 
-        public LayoutLockRequest LockRequest {
-			get {
-				return lockRequest;
-			}
-
-			set {
-				lockRequest = value;
-				Redraw();
-			}
-		}
-
-        public bool MakeResourceReady() => true;              // The block is always ready to be locked
-
         public bool IsLocked => LockRequest != null;
 
         public LayoutSelection GetSelection() {
@@ -342,7 +330,6 @@ namespace LayoutManager.Model {
 			trainsInBlock.Clear();
 			isLinearCalculated = false;
 			canTrainWaitDefaultCalculated = false;
-			lockRequest = null;
 		}
 
 		public bool CheckForTrainRedetection() {
@@ -430,35 +417,39 @@ namespace LayoutManager.Model {
 
 	#region Locks related classes
 
-	public class LayoutLockResourceEntry {
+	public class LayoutLockBlockEntry {
 		[Flags]
-		public enum ResourceOptions {
+		public enum LockBlockOptions {
 			None = 0,
 			ForceRedSignal = 0x0001
 		};
 
-		ResourceOptions		options;
-		ILayoutLockResource	resource;
+		LockBlockOptions		options;
+		LayoutBlock	block;
 
-		internal LayoutLockResourceEntry(ILayoutLockResource resource, ResourceOptions options) {
-			this.resource = resource;
+		internal LayoutLockBlockEntry(LayoutBlock block, LockBlockOptions options) {
+			this.block = block;
 			this.options = options;
 		}
 
-        public ILayoutLockResource Resource => resource;
+        public LayoutBlock Block => block;
 
-        public ResourceOptions Options => options;
+        public LayoutBlockDefinitionComponent BlockDefinition => block.BlockDefinintion;
+
+        public ResourceCollection Resources => BlockDefinition.Info.Resources;
+
+        public LockBlockOptions Options => options;
 
         public bool ForceRedSignal {
 			get {
-				return (options & ResourceOptions.ForceRedSignal) != 0;
+				return (options & LockBlockOptions.ForceRedSignal) != 0;
 			}
 
 			set {
 				if(value)
-					options |= ResourceOptions.ForceRedSignal;
+					options |= LockBlockOptions.ForceRedSignal;
 				else
-					options &= ~ResourceOptions.ForceRedSignal;
+					options &= ~LockBlockOptions.ForceRedSignal;
 			}
 		}
 
@@ -477,24 +468,50 @@ namespace LayoutManager.Model {
 			}
 		}
 
-        public string GetDescription() => GetDescription(resource.Id);
+        public string GetDescription() => GetDescription(block.Id);
     };
 
-	#region ResourceEntry dictionary
+    #region ResourceEntry dictionary
 
-	public class LayoutLockResourceEntryDictionary : Dictionary<Guid, LayoutLockResourceEntry>, IEnumerable<LayoutLockResourceEntry> {
-		public void Add(ILayoutLockResource resource, LayoutLockResourceEntry.ResourceOptions options = LayoutLockResourceEntry.ResourceOptions.None) {
-			this[resource.Id] = new LayoutLockResourceEntry(resource, options);
-		}
+    /// <summary>
+    /// In addition to track blocks, each lock request may specify additional resources that must be ready in order for the lock to be granted
+    /// The resources are freed when all blocks in the lock request that specified them are no longer locked
+    /// </summary>
+    public class ResourceUseCountMap : Dictionary<Guid, int> {
 
-		public void Add(IEnumerable<ILayoutLockResource> resources, LayoutLockResourceEntry.ResourceOptions options = LayoutLockResourceEntry.ResourceOptions.None) {
-			foreach(var resource in resources)
-				Add(resource, options);
-		}
+    }
 
-        public bool Remove(ILayoutLockResource resource) => Remove(resource.Id);
+	public class LayoutLockBlockEntryDictionary : Dictionary<Guid, LayoutLockBlockEntry>, IEnumerable<LayoutLockBlockEntry> {
+        // Map with resources needed by blocks in this lock request. The value is the number of blocks in the request that needs this resource
+        ResourceUseCountMap resourceUseCount = new ResourceUseCountMap();
 
-        public new IEnumerator<LayoutLockResourceEntry> GetEnumerator() => Values.GetEnumerator();
+		public void Add(LayoutBlock block, LayoutLockBlockEntry.LockBlockOptions options = LayoutLockBlockEntry.LockBlockOptions.None) {
+			this[block.Id] = new LayoutLockBlockEntry(block, options);
+            foreach (var resourceInfo in block.BlockDefinintion.Info.Resources)
+                addResource(resourceInfo.ResourceId);
+        }
+
+        public ResourceUseCountMap ResourcesUseCount => resourceUseCount;
+
+		public void Add(IEnumerable<LayoutBlock> blocks, LayoutLockBlockEntry.LockBlockOptions options = LayoutLockBlockEntry.LockBlockOptions.None) {
+			foreach(var block in blocks)
+				Add(block, options);
+        }
+
+        private Guid addResource(Guid resourceId) {
+            if (resourceUseCount.ContainsKey(resourceId))
+                resourceUseCount[resourceId]++;
+            else
+                resourceUseCount[resourceId] = 1;
+            return resourceId;
+        }
+
+        public void AddResources(IList<ILayoutLockResource> resources) {
+            foreach (var r in resources)
+                addResource(r.Id);
+        }
+
+        public new IEnumerator<LayoutLockBlockEntry> GetEnumerator() => Values.GetEnumerator();
     }
 
 	#endregion
@@ -503,38 +520,54 @@ namespace LayoutManager.Model {
 		Train, ManualDispatch, Programming
 	};
 
-	public class LayoutLockRequest {
-		LayoutLockResourceEntryDictionary	resourceEntries = new LayoutLockResourceEntryDictionary();
+    public class LayoutLockRequest {
+        LayoutLockBlockEntryDictionary blockEntries = new LayoutLockBlockEntryDictionary();
+        IList<ILayoutLockResource> resources = null;
 
-		public enum RequestStatus { NotRequested, NotGranted, Granted, PartiallyUnlocked };
+        public enum RequestStatus { NotRequested, NotGranted, Granted, PartiallyUnlocked };
 
-		public LayoutLockRequest() {
-			CancellationToken = CancellationToken.None;
-			Status = RequestStatus.NotRequested;
-		}
+        public LayoutLockRequest() {
+            CancellationToken = CancellationToken.None;
+            Status = RequestStatus.NotRequested;
+        }
 
-		public LayoutLockRequest(Guid ownerId) {
-			this.OwnerId = ownerId;
-		}
+        public LayoutLockRequest(Guid ownerId) {
+            this.OwnerId = ownerId;
+        }
 
-		public LayoutLockRequest(Guid ownerId, Action onLockGranted)
-			: this(ownerId) {
-			this.OnLockGranted = onLockGranted;
-		}
+        public LayoutLockRequest(Guid ownerId, Action onLockGranted)
+            : this(ownerId) {
+            this.OnLockGranted = onLockGranted;
+        }
 
-		public LayoutLockRequest(Guid ownerId, LayoutEvent lockedEvent) : this(ownerId) {
-			this.LockedEvent = lockedEvent;
-		}
+        public LayoutLockRequest(Guid ownerId, LayoutEvent lockedEvent) : this(ownerId) {
+            this.LockedEvent = lockedEvent;
+        }
 
-		#region Properties
+        #region Properties
 
-		public Guid OwnerId { get; set; }
-		public LayoutLockType Type { get; set; }
-		public RequestStatus Status { get; set; }
-		public CancellationToken CancellationToken { get; set; }
-		public Action OnLockGranted { get; set; }
+        public Guid OwnerId { get; set; }
+        public LayoutLockType Type { get; set; }
+        public RequestStatus Status { get; set; }
+        public CancellationToken CancellationToken { get; set; }
+        public Action OnLockGranted { get; set; }
 
-        public LayoutLockResourceEntryDictionary ResourceEntries => resourceEntries;
+        public LayoutLockBlockEntryDictionary Blocks => blockEntries;
+
+        public IList<ILayoutLockResource> Resources
+        {
+            get { return resources; }
+
+            set {
+                Trace.Assert(resources == null);
+                resources = value;
+                blockEntries.AddResources(resources);
+            }
+        }
+
+        public ResourceUseCountMap ResourceUseCount => blockEntries.ResourcesUseCount;
+
+        public int UnlockedBlocksCount { get; set; }
 
         public LayoutEvent LockedEvent {
 			set {
@@ -551,7 +584,7 @@ namespace LayoutManager.Model {
         public void Dump() {
 			bool		first = true;
 
-			Trace.Write("Lock request (" + Status.ToString() + "), owner: ");
+			Trace.Write("== BEGIN Lock Request (" + Status.ToString() + "), owner: ");
 			
 			TrainStateInfo	train = LayoutModel.StateManager.Trains[OwnerId];
 
@@ -568,26 +601,26 @@ namespace LayoutManager.Model {
 
 			Trace.Write(" for ");
 
-			foreach(LayoutLockResourceEntry resourceEntry in ResourceEntries) {
-				LayoutBlock	block = (LayoutBlock)LayoutModel.Blocks[resourceEntry.Resource.Id];
+			foreach(LayoutLockBlockEntry blockEntry in Blocks) {
+                LayoutBlock block = blockEntry.Block;
 
-				Trace.Write((first ? "" : ", "));
-
-				if(block != null)
-					Trace.Write("Block: " + ((block.BlockDefinintion == null) ? "UNNAMED" : block.BlockDefinintion.Name));
-				else {
-					var component = LayoutModel.Component<ModelComponent>(resourceEntry.Resource.Id, LayoutPhase.All);
-
-					if(component != null)
-						Trace.Write("Component: " + component.FullDescription);
-					else
-						Trace.Write("<ResourceID not found>");
-				}
-
+                Trace.Write($"{(first ? "" : ", ")}{(block.BlockDefinintion == null ? "UNNAMED" : block.BlockDefinintion.FullDescription)}");
 				first = false;
 			}
 
 			Trace.WriteLine("");
+
+            if (ResourceUseCount.Count > 0) {
+                Trace.Write(" Needed Resources ");
+                first = true;
+
+                foreach (var resourceId in ResourceUseCount.Keys) {
+                    Trace.Write($"{(first ? "" : ", ")} {LayoutModel.Component<ModelComponent>(resourceId, LayoutPhase.All).FullDescription}={ResourceUseCount[resourceId]}");
+                    first = false;
+                }
+
+                Trace.WriteLine("== END lock Request");
+            }
 		}
 
 		#endregion
