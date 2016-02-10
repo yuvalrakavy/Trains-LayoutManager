@@ -312,10 +312,16 @@ namespace LayoutManager.Model {
 			get {
 				string	location = (Spot == null) ? "Not placed" : "at " + Spot.Area.Name + ": " + Spot.Location;
 				string phaseName = Spot == null ? LayoutModel.Instance.DefaultPhase.ToString() : Spot.Phase.ToString();
+                string typeName = this.GetType().Name;
 				LayoutTextInfo	nameProvider = new LayoutTextInfo(this);
 
-				return "Component name: " + ((nameProvider.Name != null) ? nameProvider.Name : "") + " " + location + " type " + this.GetType().Name + " phase " + phaseName;
-			}
+                if (typeName.StartsWith("Layout"))
+                    typeName = typeName.Substring("Layout".Length);       // Strip out the Layout
+                if (typeName.EndsWith("Component"))
+                    typeName = typeName.Remove(typeName.Length - "Component".Length);
+
+                return $"{typeName} {location} {(phaseName != "Operational" ? ($"[{phaseName}]") : "")}{(nameProvider.Name != null ? ($" ({nameProvider.Name})") : "")}";
+            }
 		}
 
         public override String ToString() => FullDescription;
@@ -1745,14 +1751,14 @@ namespace LayoutManager.Model {
 
         public ModelComponent this[Guid id, LayoutPhase phase] => GetComponentById<ModelComponent>(id, phase);
 
-        public static TComponentType Component<TComponentType>(Guid id, LayoutPhase phases) where TComponentType : IModelComponent => Instance.GetComponentById<TComponentType>(id, phases);
+        public static TComponentType Component<TComponentType>(Guid id, LayoutPhase phases = LayoutPhase.All) where TComponentType : IModelComponent => Instance.GetComponentById<TComponentType>(id, phases);
 
         /// <summary>
         /// Return a list of all component of a given type or that implement a given interface
         /// </summary>
         /// <typeparam name="ComponentType">Type or interface</typeparam>
         /// <returns>List of components of this type or that implement that interface</returns>
-        protected IEnumerable<ComponentType> MyComponents<ComponentType>(LayoutPhase phases) where ComponentType : class, IModelComponentHasId {
+        protected IEnumerable<ComponentType> MyComponents<ComponentType>(LayoutPhase phases = LayoutPhase.All) where ComponentType : class, IModelComponentHasId {
 			foreach(ModelComponent modelComponent in componentReferences.Values) {
 				ComponentType component = modelComponent as ComponentType;
 
