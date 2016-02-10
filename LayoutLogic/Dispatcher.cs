@@ -351,8 +351,8 @@ namespace LayoutManager.Logic {
 			}
 
 			public void Remove(LayoutLockRequest lockRequest) {
-				foreach(LayoutLockResourceEntry resourceEntry in lockRequest.ResourceEntries)
-					Remove(resourceEntry.Resource.Id);
+				foreach(LayoutLockBlockEntry blockEntry in lockRequest.Blocks)
+					Remove(blockEntry.Block.Id);
 			}
 
             public void Dump(string header = "") {
@@ -435,13 +435,15 @@ namespace LayoutManager.Logic {
                                 retryWaitingTrains = true;
                         }
 
+#if OLD
                         // Unlock any other resources that are associated with this block
                         if (block.BlockDefinintion != null) {
                             foreach (ResourceInfo resourceInfo in block.BlockDefinintion.Info.Resources)
                                 resourceIDsToUnlock.Add(resourceInfo.ResourceId);
                         }
+#endif
                     }
-				}
+                }
 				else
 					Trace.WriteLineIf(traceUnlockingManager.TraceInfo, "UnlockingManager: Block was already removed");
 
@@ -486,22 +488,24 @@ namespace LayoutManager.Logic {
 				bool				gotLock;
 
 				foreach(BlockEntry entry in blockEntries) {
-					lockRequest.ResourceEntries.Add(entry.Block);
+					lockRequest.Blocks.Add(entry.Block);
 
 					if(entry.CrossedBlocks != null)
 						foreach(LayoutBlock crossedBlock in entry.CrossedBlocks) {
-							if(!lockRequest.ResourceEntries.ContainsKey(crossedBlock.Id))
-								lockRequest.ResourceEntries.Add(crossedBlock, LayoutLockResourceEntry.ResourceOptions.ForceRedSignal);
+							if(!lockRequest.Blocks.ContainsKey(crossedBlock.Id))
+								lockRequest.Blocks.Add(crossedBlock, LayoutLockBlockEntry.LockBlockOptions.ForceRedSignal);
 						}
 
-					// Lock any resource associated with this block
-					if(entry.Block.BlockDefinintion != null) {
+#if OLD
+                    // Lock any resource associated with this block
+                    if(entry.Block.BlockDefinintion != null) {
 						foreach(ResourceInfo resourceInfo in entry.Block.BlockDefinintion.Info.Resources)
 							lockRequest.ResourceEntries.Add(resourceInfo.GetResource(LayoutPhase.Operational));
 					}
-				}
+#endif
+                }
 
-				if(traceDispatching.TraceInfo)				 {
+                if (traceDispatching.TraceInfo)				 {
 					Trace.Write("Request lock for train " + trip.Train.DisplayName + ":");
 					lockRequest.Dump();
 				}
@@ -523,7 +527,7 @@ namespace LayoutManager.Logic {
 			}
 		}
 
-		#endregion
+#endregion
 
 		/// <summary>
 		/// activeTrips map from train ID to active trip
@@ -535,7 +539,7 @@ namespace LayoutManager.Logic {
 		ILayoutTopologyServices		_layoutTopologyServices;
 		bool						allSuspended;
 
-		#region External Interface Event Handlers
+#region External Interface Event Handlers
 
 		[LayoutEvent("execute-trip-plan")]
 		[LayoutEventDef("trip-added", Role=LayoutEventRole.Notification, SenderType=typeof(TripPlanAssignmentInfo))]
@@ -778,9 +782,9 @@ namespace LayoutManager.Logic {
 			e.Info = AllSuspended;
 		}
 
-		#endregion
+#endregion
 
-		#region Services getter properties
+#region Services getter properties
 
 		IRoutePlanningServices TripPlanningServices {
 			get {
@@ -822,11 +826,11 @@ namespace LayoutManager.Logic {
 			}
 		}
 
-		#endregion
+#endregion
 
-		#region Utility methods
+#region Utility methods
 
-		#region Finding Best Route
+#region Finding Best Route
 		
 		[LayoutEvent("dispatcher-get-block-unlocking-manager")]
 		private void dispatcherGetBlockUnlockingManager(LayoutEvent e) {
@@ -851,9 +855,9 @@ namespace LayoutManager.Logic {
 			e.Info = findBestRoute(r.RouteOwner, r.Destination, r.Source, r.Front, r.Direction, r.TrainStopping);
 		}
 
-		#endregion
+#endregion
 
-		#region Get Trip Section
+#region Get Trip Section
 
 		private static void causeTrainToStop(ActiveTripInfo trip, BlockAction actionWhenStopped) {
 		    var blockEntries = new List<BlockEntry>();
@@ -1335,7 +1339,7 @@ namespace LayoutManager.Logic {
 			return trainCanMove;
 		}
 
-		#endregion
+#endregion
 
 		private void setSwitchesForTripSection(ActiveTripInfo trip, ITripRoute route) {
 			if(trip.Queue.Count > 0) {
@@ -1811,7 +1815,7 @@ namespace LayoutManager.Logic {
 				if(block.LockRequest == null) {
 					LayoutLockRequest	lockRequest = new LayoutLockRequest(train.Id);
 
-					lockRequest.ResourceEntries.Add(block);
+					lockRequest.Blocks.Add(block);
 					EventManager.Event(new LayoutEvent(lockRequest, "request-layout-lock"));
 				}
 				else {
@@ -1957,9 +1961,9 @@ namespace LayoutManager.Logic {
 
 					// Make sure that the delay lock removal process will not remove those newly locked blocks. Cancel
 					// removal of any block that lock was granted and is still in the queue
-					foreach(LayoutLockResourceEntry resourceEntry in lockRequest.ResourceEntries)
-						if(trip.Queue.Contains(resourceEntry.Resource.Id))
-							blockUnlockingManager.Remove(resourceEntry.Resource.Id);
+					foreach(LayoutLockBlockEntry blockEntry in lockRequest.Blocks)
+						if(trip.Queue.Contains(blockEntry.Block.Id))
+							blockUnlockingManager.Remove(blockEntry.Block.Id);
 				}
 
 				BlockEntry	nextBlockEntry = trip.Queue.Peek();
