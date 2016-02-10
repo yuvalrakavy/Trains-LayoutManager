@@ -485,19 +485,18 @@ namespace LayoutManager.Components {
 				programmingPowerOutlet = null;
 		}
 
-		#endregion
+        #endregion
 
-		#region ILayoutLockResource Members
+        #region ILayoutLockResource Members
 
-		/// <summary>
-		/// Command station is locked when it is used for programming. This prevent a command station from being used
-		/// to perform multiple programming sequences in the same time.
-		/// </summary>
-		public LayoutLockRequest LockRequest {
-			get; set;
-		}
+        /// <summary>
+        /// Command station is locked when it is used for programming. This prevent a command station from being used
+        /// to perform multiple programming sequences in the same time.
+        /// </summary>
 
         public bool MakeResourceReady() => true;
+
+        public void FreeResource() { }
 
         #endregion
     }
@@ -842,7 +841,7 @@ namespace LayoutManager.Components {
 			for(int i = 0; i < queues.Length; i++)
 				queues[i] = new CommandManagerQueue(workToDo, queues);
 
-            traceOutputManager.Level = TraceLevel.Info;        // DEBUG - set for now
+            traceOutputManager.Level = TraceLevel.Off;        // DEBUG - set for now
 		}
 
 		#region Operations
