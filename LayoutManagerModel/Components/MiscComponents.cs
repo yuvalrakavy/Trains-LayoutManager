@@ -17,6 +17,8 @@ namespace LayoutManager.Components {
     /// </summary>
     ///
     public class LayoutTrackPowerConnectorComponent : ModelComponent, IModelComponentHasId, IModelComponentLayoutLockResource {
+        bool switchingInProgress = false;
+
         public LayoutTrackPowerConnectorComponent() {
             XmlDocument.LoadXml("<PowerConnector />");
         }
@@ -66,29 +68,41 @@ namespace LayoutManager.Components {
         public IEnumerable<TrainStateInfo> Trains => (from trainLocation in TrainLocations select trainLocation.Train).Distinct();
 
         /// <summary>
+        /// Block definitios that recieve power from this connector
+        /// </summary>
+        public IEnumerable<LayoutBlockDefinitionComponent> BlockDefinitions => from blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases) where blockDefinition.PowerConnector != null && blockDefinition.PowerConnector.Id == this.Id select blockDefinition;
+
+        /// <summary>
         /// Blocks that receive power from this connector - this can be useful for locking the region (for example when connecting it to programming power, or disconnecting it)
         /// </summary>
-        public IEnumerable<LayoutBlock> Blocks => from blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases) where blockDefinition.PowerConnector.Id == this.Id select blockDefinition.Block;
+        public IEnumerable<LayoutBlock> Blocks => from blockDefinition in BlockDefinitions select blockDefinition.Block;
 
-        public bool MakeResourceReady() {
-            if (Info.Inlet.ConnectedOutlet.Power.Type != LayoutPowerType.Disconnected)
-                return true;            // Already has power - can grant lock
-            else {
+        public bool IsResourceReady() => Info.Inlet.ConnectedOutlet.Power.Type != LayoutPowerType.Disconnected;
+
+        public void MakeResourceReady() {
+            if (Info.Inlet.ConnectedOutlet.Power.Type == LayoutPowerType.Disconnected && !switchingInProgress) {
                 if (Info.Inlet.ConnectedOutlet.ObtainablePowers.Any(p => p.Type == LayoutPowerType.Digital)) {
                     var switchingCommands = new List<SwitchingCommand>();
 
                     if (Info.Inlet.ConnectedOutlet.SelectPower(LayoutPowerType.Digital, switchingCommands)) {
+                        switchingInProgress = true;
+
+                        EventManager.Event(new LayoutEvent<LayoutTrackPowerConnectorComponent>("register-power-connected-lock", this));
+
+                        var power = (from p in this.Inlet.ConnectedOutlet.ObtainablePowers where p.Type == LayoutPowerType.Digital select p).FirstOrDefault();
+
+                        foreach (var train in this.Trains)
+                            EventManager.Event(new LayoutEvent<TrainStateInfo, ILayoutPower>("change-train-power", train, power));
+
                         if (switchingCommands.Count > 0)
                             EventManager.AsyncEvent(new LayoutEvent(this, "set-track-components-state", null, switchingCommands)).ContinueWith(
                                 (t) => {
-                                    EventManager.Event(new LayoutEvent(this, "layout-lock-resource-ready"));
+                                    switchingInProgress = false;
                                     return Task.FromResult(0);
                                 }
                             );
                     }
                 }
-
-                return false;
             }
         }
 
@@ -97,6 +111,11 @@ namespace LayoutManager.Components {
                 var switchingCommands = new List<SwitchingCommand>();
 
                 if (Info.Inlet.ConnectedOutlet.SelectPower(LayoutPowerType.Disconnected, switchingCommands)) {
+                    var power = (from p in this.Inlet.ConnectedOutlet.ObtainablePowers where p.Type == LayoutPowerType.Disconnected select p).FirstOrDefault();
+
+                    foreach (var train in this.Trains)
+                        EventManager.Event(new LayoutEvent<TrainStateInfo, ILayoutPower>("change-train-power", train, power));
+
                     if (switchingCommands.Count > 0)
                         EventManager.AsyncEvent(new LayoutEvent(this, "set-track-components-state", null, switchingCommands));
                 }
@@ -363,7 +382,7 @@ namespace LayoutManager.Components {
                 var powerSelector = (LayoutPowerSelectorComponent)Component;
                 ILayoutPowerOutlet outlet = powerSelector.PowerOutlets[0];
 
-                EventManager.Event(new LayoutEvent(outlet, "power-outlet-changed-state-notification", null, outlet.Power));
+                EventManager.Event(new LayoutEvent<ILayoutPowerOutlet, ILayoutPower>("power-outlet-changed-state-notification", outlet, outlet.Power));
             }
         }
 
@@ -377,6 +396,8 @@ namespace LayoutManager.Components {
             }
 
             #region ILayoutPowerOutlet Members
+
+            public IModelComponentHasPowerOutlets OutletComponent => PowerSelectorComponent;
 
             public string OutletDescription => PowerSelectorComponent.IsSwitch ? "Switch output" : "Selector output";
 
@@ -1034,11 +1055,11 @@ namespace LayoutManager.Components {
 
         #region ILayoutLockResource Members
 
-        public bool MakeResourceReady() {
+        public bool IsResourceReady() => GateState == LayoutGateState.Open;
+
+        public void MakeResourceReady() {
             if (GateState != LayoutGateState.Open)
                 EventManager.Event(new LayoutEvent(this, "open-gate-request"));
-
-            return GateState == LayoutGateState.Open;       // Resource is ready when the gate is open and train can pass
         }
 
         public void FreeResource() {

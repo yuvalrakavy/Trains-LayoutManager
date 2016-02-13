@@ -221,8 +221,14 @@ namespace LayoutManager {
 	/// </summary>
 	public interface ILayoutLockResource : IModelComponentHasId {
 
+        /// <summary>
+        /// Return true if resource is ready to be locked.
+        /// </summary>
+        /// <returns></returns>
+        bool IsResourceReady();
+
 		/// <summary>
-		/// Is the resource ready to be locked. 
+		/// Make sure that the resource ready to be locked. 
 		/// </summary>
 		/// <remarks>
 		/// For example, if the resource is some kind of a gate,
@@ -231,7 +237,7 @@ namespace LayoutManager {
 		/// (in our example, calling IsResourceReady when the gate is closed will initiate the opening
 		/// of this gate, and when the gate is open, the "layout-lock-resource-ready" event is sent.
 		/// </remarks>
-		bool MakeResourceReady();
+		void MakeResourceReady();
 
         /// <summary>
         /// The resource is no longer needed, for example, if the resource is a gate, the gate may be closed.
@@ -601,11 +607,13 @@ namespace LayoutManager {
 	/// A component that can provide power (for example a command station) implement this interface for each power outlet
 	/// </summary>
 	public interface ILayoutPowerOutlet {
-		/// <summary>
-		/// The description of this power source. Please note that a component may generate more than one power source.
-		/// For example, a command station could generate both digital track power and programming track power.
-		/// </summary>
-		string OutletDescription {
+        IModelComponentHasPowerOutlets OutletComponent { get; }
+
+        /// <summary>
+        /// The description of this power source. Please note that a component may generate more than one power source.
+        /// For example, a command station could generate both digital track power and programming track power.
+        /// </summary>
+        string OutletDescription {
 			get;
 		}
 
