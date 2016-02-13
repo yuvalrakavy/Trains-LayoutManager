@@ -179,23 +179,19 @@ namespace LayoutManager.Model {
 			}
 		}
 
-		public String Name {
-			get {
-				String	name = null;
+        public String Name => BlockDefinintion?.Name;
 
-				if(BlockDefinintion != null)
-					name = BlockDefinintion.NameProvider.Name;
+        public string FullDescription => BlockDefinintion?.FullDescription;
 
-				return name;
-			}
-		}
 
-		/// <summary>
-		/// Return the block's power source. It is defined as the power source of the
-		/// block info component is one exists, or the power source for the first
-		/// track edge in the block.
-		/// </summary>
-		public ILayoutPower Power {
+        public override string ToString() => FullDescription;
+
+        /// <summary>
+        /// Return the block's power source. It is defined as the power source of the
+        /// block info component is one exists, or the power source for the first
+        /// track edge in the block.
+        /// </summary>
+        public ILayoutPower Power {
 			get {
 				if(BlockDefinintion != null)
 					return BlockDefinintion.Track.GetPower(BlockDefinintion.Track.ConnectionPoints[0]);
@@ -619,12 +615,14 @@ namespace LayoutManager.Model {
                     first = false;
                 }
 
-                Trace.WriteLine("== END lock Request");
+                Trace.WriteLine("");
             }
-		}
 
-		#endregion
-	}
+            Trace.WriteLine("== END lock Request");
+        }
+
+        #endregion
+    }
 
 	#endregion
 
