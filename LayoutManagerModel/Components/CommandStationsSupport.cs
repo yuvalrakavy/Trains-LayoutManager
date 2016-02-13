@@ -130,9 +130,9 @@ namespace LayoutManager.Components {
         public override void OnAddedToModel() {
 			base.OnAddedToModel();
 
-			trackPowerOutlet = new LayoutPowerOutlet("Track", new LayoutPower(this, LayoutPowerType.Digital, this.SupportedDigitalPowerFormats, "Track"));
+			trackPowerOutlet = new LayoutPowerOutlet(this, "Track", new LayoutPower(this, LayoutPowerType.Digital, this.SupportedDigitalPowerFormats, "Track"));
 			if(this is IModelComponentCanProgramLocomotives)
-				programmingPowerOutlet = new LayoutPowerOutlet("Programming", new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, "Programming"));
+				programmingPowerOutlet = new LayoutPowerOutlet(this, "Programming", new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, "Programming"));
 
 			LayoutModel.ControlManager.Buses.AddBusProvider(this);
 			invoker = EventManager.Instance.InterThreadEventInvoker;
@@ -494,7 +494,9 @@ namespace LayoutManager.Components {
         /// to perform multiple programming sequences in the same time.
         /// </summary>
 
-        public bool MakeResourceReady() => true;
+        public bool IsResourceReady() => true;
+
+        public void MakeResourceReady() { }
 
         public void FreeResource() { }
 

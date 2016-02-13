@@ -14,6 +14,7 @@ namespace LayoutManager.Logic {
 	[LayoutModule("Layout Power Manager", UserControl=false)]
 	class LayoutPowerManager : LayoutModuleBase {
 		static ILayoutTopologyServices	_topologyServices;
+        Dictionary<Guid, Guid> _pendingPowerConnectedLockReady = new Dictionary<Guid, Guid>();
 
 		static ILayoutTopologyServices TopologyServices {
 			get {
@@ -29,11 +30,33 @@ namespace LayoutManager.Logic {
 		/// </summary>
 		/// <param name="e"></param>
 		[LayoutEvent("power-outlet-changed-state-notification")]
-		void PowerOutletChangedState(LayoutEvent e) {
+		void PowerOutletChangedState(LayoutEvent e0) {
+            var e = (LayoutEvent<ILayoutPowerOutlet, ILayoutPower>)e0;
+
 			// Redraw all tracks
 			foreach(LayoutTrackComponent track in LayoutModel.AllComponents<LayoutTrackComponent>(LayoutModel.ActivePhases))
 				track.Redraw();
+
+            var outletComponentId = e.Sender.OutletComponent.Id;
+
+            // If this outlet was connected to power connector which needs to notify that is can be locked.
+            if (_pendingPowerConnectedLockReady.ContainsKey(outletComponentId) && e.Info.Type != LayoutPowerType.Disconnected) {
+                var component = LayoutModel.Component<ILayoutLockResource>(_pendingPowerConnectedLockReady[outletComponentId]);
+
+                if (component != null)
+                    EventManager.Event(new LayoutEvent(component, "layout-lock-resource-ready"));
+                _pendingPowerConnectedLockReady.Remove(outletComponentId);
+            }
 		}
+
+        [LayoutEvent("register-power-connected-lock")]
+        private void registerPowerConnectedLock(LayoutEvent e0) {
+            var e = (LayoutEvent<LayoutTrackPowerConnectorComponent>)e0;
+            var id = e.Sender.Info.Inlet.ConnectedOutlet.OutletComponent.Id;
+
+            if (!_pendingPowerConnectedLockReady.ContainsKey(id))
+                _pendingPowerConnectedLockReady.Add(id, e.Sender.Id);
+        }
 
 		[LayoutEvent("check-layout", Order=101)]
 		void CheckForReverseLoops(LayoutEvent e) {
@@ -136,6 +159,32 @@ namespace LayoutManager.Logic {
 
 			return false;
 		}
+
+        [LayoutEvent("add-power-connector-as-resource")]
+        private void addPowerConnectorAsResource(LayoutEvent e0) {
+            var e = (LayoutEvent<LayoutTrackPowerConnectorComponent, Action<LayoutBlockDefinitionComponent>>)e0;
+            var powerConnector = e.Sender;
+
+            if (powerConnector.Inlet.IsConnected && powerConnector.Inlet.ConnectedOutlet.ObtainablePowers.Count() > 1) {
+                foreach (var blockDefinition in powerConnector.BlockDefinitions) {
+                    if (!blockDefinition.Info.Resources.Any(resourceInfo => resourceInfo.ResourceId == powerConnector.Id)) {
+                        // This block does not have this power connector as a resource
+                        Trace.WriteLine($"Will add {powerConnector.FullDescription} as resource to {blockDefinition.FullDescription}");
+                        e.Info(blockDefinition);
+                    }
+                }
+            }
+        }
+
+#if NOTYET
+        [LayoutEvent("add-all-power-connectors-as-resource")]
+        private void addAllPowerConnectorsAsResource(LayoutEvent e0) {
+            var e = (LayoutEvent<object, LayoutPhase>)e0;
+
+            foreach(var powerConnector in LayoutModel.Components<LayoutTrackPowerConnectorComponent>(e.Info))
+                addPowerConnectorAsResource(new LayoutEvent<LayoutTrackPowerConnectorComponent>("add-power-connector-as-resource", powerConnector));
+        }
+#endif
 
 		[LayoutEvent("check-layout", Order=100)]
 		void AssignPowerSource(LayoutEvent e) {
@@ -314,6 +363,13 @@ namespace LayoutManager.Logic {
 				EventManager.Event(new LayoutEvent<TrainLocomotiveInfo, ILayoutPower>("locomotive-power-changed", trainLoco, power));
 
 		}
+
+        [LayoutEvent("change-train-power")]
+        private void changeTrainPower(LayoutEvent e0) {
+            var e = (LayoutEvent<TrainStateInfo, ILayoutPower>)e0;
+
+            OnTrainPowerChanged(e.Sender, e.Info);
+        }
 
 		[LayoutAsyncEvent("set-power")]
 		private async Task setPower(LayoutEvent e) {
