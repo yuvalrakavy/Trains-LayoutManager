@@ -320,7 +320,7 @@ namespace LayoutManager.Model {
                 if (typeName.EndsWith("Component"))
                     typeName = typeName.Remove(typeName.Length - "Component".Length);
 
-                return $"{typeName} {location} {(phaseName != "Operational" ? ($"[{phaseName}]") : "")}{(nameProvider.Name != null ? ($" ({nameProvider.Name})") : "")}";
+                return $"{typeName} {location} {(phaseName != "Operational" ? ($"[{phaseName}]") : "")}{(!string.IsNullOrWhiteSpace(nameProvider.Name) ? ($" ({nameProvider.Name})") : "")}";
             }
 		}
 
@@ -641,23 +641,26 @@ namespace LayoutManager.Model {
         #endregion
     }
 
-	public class LayoutPowerOutlet : LayoutInfo, ILayoutPowerOutlet {
-		ILayoutPower					power;
-		
-		public IEnumerable<ILayoutPower>		ObtainablePowers { get; }
+    public class LayoutPowerOutlet : LayoutInfo, ILayoutPowerOutlet {
+        ILayoutPower power;
 
-        public LayoutPowerOutlet(string outletDescription, IEnumerable<ILayoutPower> obtainablePowers) {
-			XmlDocument	doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
+        public IEnumerable<ILayoutPower> ObtainablePowers { get; }
 
-			Element = doc.CreateElement("PowerOutlet");
-			doc.AppendChild(Element);
+        public LayoutPowerOutlet(IModelComponentHasPowerOutlets component, string outletDescription, IEnumerable<ILayoutPower> obtainablePowers) {
+            XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
-			OutletDescription = outletDescription;
-			ObtainablePowers = obtainablePowers;
-		}
+            Element = doc.CreateElement("PowerOutlet");
+            doc.AppendChild(Element);
 
-		public LayoutPowerOutlet(string outletDescription, ILayoutPower obtainablePower)
-			: this(outletDescription, Array.AsReadOnly<ILayoutPower>(new ILayoutPower[] { obtainablePower })) {
+            OutletDescription = outletDescription;
+            ObtainablePowers = obtainablePowers;
+            OutletComponent = component;
+        }
+
+        public IModelComponentHasPowerOutlets OutletComponent {get; }
+
+		public LayoutPowerOutlet(IModelComponentHasPowerOutlets component, string outletDescription, ILayoutPower obtainablePower)
+			: this(component, outletDescription, Array.AsReadOnly(new ILayoutPower[] { obtainablePower })) {
 		}
 
 		public string OutletDescription {
@@ -677,7 +680,7 @@ namespace LayoutManager.Model {
 
 			set {
 				power = value;
-				EventManager.Event(new LayoutEvent(this, "power-outlet-changed-state-notification", null, power));
+				EventManager.Event(new LayoutEvent<ILayoutPowerOutlet, ILayoutPower>("power-outlet-changed-state-notification", this, power));
 			}
 		}
 
@@ -1740,10 +1743,11 @@ namespace LayoutManager.Model {
 			componentReferences.Remove(id);
 		}
 
-		public TComponentType GetComponentById<TComponentType>(Guid id, LayoutPhase phase) where TComponentType : IModelComponent {
-			TComponentType component = (TComponentType)componentReferences[id];
+		public TComponentType GetComponentById<TComponentType>(Guid id, LayoutPhase phase) where TComponentType : class, IModelComponent {
+//			TComponentType component = (TComponentType)componentReferences[id];
+            TComponentType component = componentReferences[id] as TComponentType;
 
-			if(component != null && (component.Spot.Phase & phase) == 0)
+            if (component != null && (component.Spot.Phase & phase) == 0)
 				component = default(TComponentType);
 
 			return component;
@@ -1751,7 +1755,7 @@ namespace LayoutManager.Model {
 
         public ModelComponent this[Guid id, LayoutPhase phase] => GetComponentById<ModelComponent>(id, phase);
 
-        public static TComponentType Component<TComponentType>(Guid id, LayoutPhase phases = LayoutPhase.All) where TComponentType : IModelComponent => Instance.GetComponentById<TComponentType>(id, phases);
+        public static TComponentType Component<TComponentType>(Guid id, LayoutPhase phases = LayoutPhase.All) where TComponentType : class, IModelComponent => Instance.GetComponentById<TComponentType>(id, phases);
 
         /// <summary>
         /// Return a list of all component of a given type or that implement a given interface
