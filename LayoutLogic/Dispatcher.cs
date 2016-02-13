@@ -335,7 +335,7 @@ namespace LayoutManager.Logic {
 			public void Add(LayoutBlock block, int timeout) {
 				Remove(block.Id);
 
-				Trace.WriteLineIf(traceUnlockingManager.TraceInfo, "UnlockingManager: Adding block " + block.Name + " timeout " + timeout);
+				Trace.WriteLineIf(traceUnlockingManager.TraceInfo, $"UnlockingManager: Adding {block} timeout {timeout}");
 				base.Add(block.Id, EventManager.DelayedEvent(timeout, new LayoutEvent(block, "dispatcher-free-block-layout-lock", null, block.LockRequest)));
 			}
 
@@ -343,7 +343,7 @@ namespace LayoutManager.Logic {
 				LayoutDelayedEvent delayedEvent;
 
                 if(TryGetValue(blockID, out delayedEvent)) {
-					Trace.WriteLineIf(traceUnlockingManager.TraceInfo, "UnlockingManager: Removing block " + LayoutModel.Blocks[blockID].Name);
+					Trace.WriteLineIf(traceUnlockingManager.TraceInfo, $"UnlockingManager: Removing {LayoutModel.Blocks[blockID]}");
 					delayedEvent.Cancel();
 
 					base.Remove(blockID);
@@ -358,7 +358,7 @@ namespace LayoutManager.Logic {
             public void Dump(string header = "") {
                 Trace.WriteLine($"Unlock Manager - {header} pending unlocks for:");
                 foreach (var blockId in Keys)
-                    Trace.WriteLine($"  {LayoutModel.Blocks[blockId].BlockDefinintion.FullDescription}");
+                    Trace.WriteLine($"  {LayoutModel.Blocks[blockId]}");
             }
 
 			public void RemoveByOwner(Guid trainID) {
@@ -408,7 +408,7 @@ namespace LayoutManager.Logic {
 				List<Guid>				resourceIDsToUnlock = new List<Guid>();
 				bool					retryWaitingTrains = false;
 
-				Trace.WriteLineIf(traceUnlockingManager.TraceInfo, "UnlockingManager: Unlock on timeout " + block.Name);
+				Trace.WriteLineIf(traceUnlockingManager.TraceInfo, $"UnlockingManager: Unlock on timeout {block}");
 
 				/*Debug.Assert(block.LockRequest != null);*/		// Otherwise block was unlocked by someone else!
 
@@ -452,7 +452,7 @@ namespace LayoutManager.Logic {
 					EventManager.Event(new LayoutEvent(this, "dump-locks"));
 
 				if(retryWaitingTrains) {
-					Trace.WriteLineIf(traceUnlockingManager.TraceInfo, "UnlockingManager: Unlocked block with turnouts " + block.Name + " retry routes for waiting trains");
+					Trace.WriteLineIf(traceUnlockingManager.TraceInfo, $"UnlockingManager: Unlocked block with turnouts {block} retry routes for waiting trains");
 					EventManager.Event(new LayoutEvent(null, "dispatcher-retry-waiting-trains", null, (bool)false));
 				}
 			}
@@ -506,7 +506,7 @@ namespace LayoutManager.Logic {
                 }
 
                 if (traceDispatching.TraceInfo)				 {
-					Trace.Write("Request lock for train " + trip.Train.DisplayName + ":");
+					Trace.Write($"Request lock for train {trip.Train.DisplayName}:");
 					lockRequest.Dump();
 				}
 
@@ -622,7 +622,7 @@ namespace LayoutManager.Logic {
 
 			if(trip != null) {
 				if(emergency) {
-					Trace.WriteLineIf(traceDispatching.TraceInfo, "Trip for train " + train.DisplayName + " emergency abort");
+					Trace.WriteLineIf(traceDispatching.TraceInfo, $"Trip for train {train.DisplayName} emergency abort");
 					if(train.Managed) {
 						train.SpeedInSteps = 0;		// Stop the train at once
 						EventManager.Event(new LayoutEvent(trip.Train, "driver-emergency-stop"));
@@ -633,7 +633,7 @@ namespace LayoutManager.Logic {
 					trip.Queue.Flush();
 				}
 				else {
-					Trace.WriteLineIf(traceDispatching.TraceInfo, "Trip for train " + train.DisplayName + " aborted");
+					Trace.WriteLineIf(traceDispatching.TraceInfo, $"Trip for train {train.DisplayName} aborted");
 					if((train.Managed && train.Speed != 0) && (trip.Status == TripStatus.Go || trip.Status == TripStatus.PrepareStop))
 						causeTrainToStop(trip, BlockAction.AbortTrip);
 					else {
@@ -658,9 +658,10 @@ namespace LayoutManager.Logic {
 
 			if(trip != null && !canClearTrip(trip) && trip.Status != TripStatus.Suspended) {
 				if(emergency) {
-					Trace.WriteLineIf(traceDispatching.TraceInfo, "Trip for train " + train.DisplayName + " emergency suspend");
+					Trace.WriteLineIf(traceDispatching.TraceInfo, $"Trip for train {train.DisplayName} emergency suspend");
 
-					if(train.Managed) {
+
+                    if(train.Managed) {
 						train.SpeedInSteps = 0;		// Stop the train at once
 						EventManager.Event(new LayoutEvent(trip.Train, "driver-emergency-stop"));
 					}
@@ -953,7 +954,7 @@ namespace LayoutManager.Logic {
                         startSectionBlockID = blockInfo.Block.Id;
 
                     if(canStartSection && !blockHasTrain) {
-                        Trace.WriteLineIf(traceDispatching.TraceInfo, "-- Section will start in: " + LayoutModel.Blocks[startSectionBlockID].BlockDefinintion.FullDescription);
+                        Trace.WriteLineIf(traceDispatching.TraceInfo, $"-- Section will start in: {LayoutModel.Blocks[startSectionBlockID]}");
                         break;
                     }
                 }
@@ -968,7 +969,7 @@ namespace LayoutManager.Logic {
 				if(canStartSectionID == Guid.Empty || block.Id == canStartSectionID)
 					canStartSection = true;
 
-				Trace.WriteLineIf(traceDispatching.TraceVerbose, "- Checking block: " + block.BlockDefinintion.FullDescription + " canStartSection is " + canStartSection);
+				Trace.WriteLineIf(traceDispatching.TraceVerbose, $"- Checking block: {block} canStartSection is {canStartSection}");
 
 				bool	blockHasTrain = hasTrain(currentBlock, trip.Train);
 
@@ -976,7 +977,7 @@ namespace LayoutManager.Logic {
 					startSectionBlockID = block.Id;
 
 				if(canStartSection && !blockHasTrain) {
-					Trace.WriteLineIf(traceDispatching.TraceInfo, "-- Section will start in: " + Model.Blocks[startSectionBlockID].BlockDefinintion.FullDescription);
+					Trace.WriteLineIf(traceDispatching.TraceInfo, $"-- Section will start in: {Model.Blocks[startSectionBlockID]}");
 					break;
 				}
 			}
@@ -1105,10 +1106,10 @@ namespace LayoutManager.Logic {
 						newBlock = edge.Track.GetBlock(edge.Track.ConnectTo(edge.ConnectionPoint, LayoutComponentConnectionType.Passage)[0]);
 
 					if(newBlock != currentBlock) {
-						Trace.WriteLineIf(traceDeadlock.TraceInfo, "--Block " + newBlock.Name);
+						Trace.WriteLineIf(traceDeadlock.TraceInfo, $"--Block {newBlock}");
 
 						if(newBlock.HasTrains && newBlock.Trains[0].Train.Id != trip.TrainId) {
-							Trace.WriteLineIf(traceDeadlock.TraceInfo, "-Found another train " + newBlock.Trains[0].Train.DisplayName + " in block " + newBlock.Name);
+							Trace.WriteLineIf(traceDeadlock.TraceInfo, $"-Found another train {newBlock.Trains[0].Train.DisplayName} in block {newBlock}");
 							done = true;
 						}
 
@@ -1127,7 +1128,7 @@ namespace LayoutManager.Logic {
 
 					if(turnout != null) {
 						if(turnout.IsMergePoint(edge.ConnectionPoint)) {
-							Trace.WriteLineIf(traceDeadlock.TraceInfo, "-Found merge point at " + edge.Track.FullDescription + " not a deadlock");
+							Trace.WriteLineIf(traceDeadlock.TraceInfo, $"-Found merge point at {edge.Track.FullDescription} not a deadlock");
 							done = true;
 							deadlock = false;
 						}
@@ -1141,7 +1142,7 @@ namespace LayoutManager.Logic {
 				}
 
 				if(deadlock) {
-					Trace.WriteLineIf(traceDeadlock.TraceInfo, "Deadlock condition found for train " + trip.Train.DisplayName + " trimming trip section to avoid deadlock");
+					Trace.WriteLineIf(traceDeadlock.TraceInfo, $"Deadlock condition found for train {trip.Train.DisplayName} trimming trip section to avoid deadlock");
 
 					for(int i = blockEntries.Count - 1; i >= 0; i--) {
 						BlockEntry	blockEntry = (BlockEntry)blockEntries[i];
@@ -1167,7 +1168,7 @@ namespace LayoutManager.Logic {
 			if(traceDispatching.TraceVerbose) {
 				Trace.WriteLine("Next trip section contains blocks: ");
 				foreach(BlockEntry blockEntry in blockEntries)
-					Trace.Write(" " + blockEntry.Block.Name + " (front " + blockEntry.Front.ToString() + ")");
+					Trace.Write($" {blockEntry.Block} (front {blockEntry.Front.ToString()})");
 				Trace.WriteLine("");
 			}
 
@@ -1221,7 +1222,7 @@ namespace LayoutManager.Logic {
 			bool				trainCanMove = false;
 			TripBestRouteResult	tripBestRouteResult;
 				;
-			Trace.WriteLineIf(traceDispatching.TraceInfo, "Prepare Next Trip Section for train " + trip.Train.DisplayName + " Current way point is " + trip.CurrentWaypointIndex + " direction is " + trip.CurrentWaypoint.Direction + " current block is " + currentBlockEntry.Block.BlockDefinintion.FullDescription );
+			Trace.WriteLineIf(traceDispatching.TraceInfo, $"Prepare Next Trip Section for train {trip.Train.DisplayName} Current way point is {trip.CurrentWaypointIndex} direction is {trip.CurrentWaypoint.Direction} current block is {currentBlockEntry.Block}");
 
 			Debug.Assert(currentBlockEntry.Block.BlockDefinintion != null);
 
@@ -1295,7 +1296,7 @@ namespace LayoutManager.Logic {
 				trip.NextSectionStartBlockId = Guid.Empty;
 
 				foreach(BlockEntry entry in tripSection.BlockEntries) {
-					Trace.WriteLineIf(traceDispatching.TraceVerbose, "  Add block " + entry.Block.Name + " action " + entry.Action + " to queue of train " + trip.Train.DisplayName);
+					Trace.WriteLineIf(traceDispatching.TraceVerbose, $"  Add block {entry.Block} action {entry.Action} to queue of train {trip.Train.DisplayName}");
 					trip.Queue.Enqueue(entry);
 					trip.NextSectionStartBlockId = entry.Block.Id;
 				}
@@ -1476,7 +1477,7 @@ namespace LayoutManager.Logic {
 
 		void retryTrip(ActiveTripInfo trip) {
 			if(trip.Status != TripStatus.Done && trip.Status != TripStatus.Aborted) {
-				Trace.WriteLineIf(traceDispatching.TraceInfo, "-- retry to find route for train " + trip.Train.DisplayName);
+				Trace.WriteLineIf(traceDispatching.TraceInfo, $"-- retry to find route for train {trip.Train.DisplayName}");
 
 				if(trip.PendingLockRequest != null) {
 					if(traceDispatching.TraceVerbose) {
@@ -1506,7 +1507,7 @@ namespace LayoutManager.Logic {
 								unlockingBlocks = true;
 							}
 
-							Trace.WriteLineIf(traceDispatching.TraceVerbose, "| " + blockEntry.Block.BlockDefinintion.FullDescription);
+							Trace.WriteLineIf(traceDispatching.TraceVerbose, $"| {blockEntry.Block}");
 							blockUnlockingManager.Remove(blockEntry.Block.Id);
 							blockIDtoUnlock.Add(blockEntry.Block.Id);
 						}
@@ -1540,7 +1541,7 @@ namespace LayoutManager.Logic {
 		bool shouldRetryTrip(ActiveTripInfo trip) {
 			TripBestRouteResult	tripBestRouteResult = findBestRoute(trip, trip.Train.LocomotiveBlock.BlockDefinintion, trip.Train.LocomotiveLocation.DisplayFront);
 
-			Trace.WriteLineIf(traceDispatching.TraceVerbose, " Check if should retry planning for train " + trip.Train.DisplayName);
+			Trace.WriteLineIf(traceDispatching.TraceVerbose, $" Check if should retry planning for train {trip.Train.DisplayName}");
 
 			if(!tripBestRouteResult.Quality.IsValidRoute || tripBestRouteResult.BestRoute == null) {
 				Trace.WriteLineIf(traceDispatching.TraceVerbose, "  No - could not find suitable route");
@@ -1577,7 +1578,7 @@ namespace LayoutManager.Logic {
 		}
 
 		void retryTripsWaitingForLocks(bool retryAllTrains) {
-			Trace.WriteLineIf(traceDispatching.TraceInfo, "-Retry trips for " + (retryAllTrains ? "all trains" : "waiting trains"));
+			Trace.WriteLineIf(traceDispatching.TraceInfo, $"-Retry trips for {(retryAllTrains ? "all trains" : "waiting trains")}");
 
 			foreach(ActiveTripInfo trip in activeTrips.Values) {
 				if((retryAllTrains || 
@@ -1593,7 +1594,7 @@ namespace LayoutManager.Logic {
 			EventManager.Event(new LayoutEvent(trip.Train, "driver-stop"));
 
 			if(atWayPoint) {
-				Trace.WriteLineIf(traceDispatching.TraceInfo, "Train " + trip.Train.DisplayName + " stopped on way point");
+				Trace.WriteLineIf(traceDispatching.TraceInfo, $"Train {trip.Train.DisplayName} stopped on way point");
 
 				if(trip.PendingDriverInstructions != null) {
 					trip.PendingDriverInstructions.Dispose();
@@ -1615,11 +1616,11 @@ namespace LayoutManager.Logic {
 					}
 					else {
 						if(trip.PendingLockRequest == null) {
-							Trace.WriteLineIf(traceDispatching.TraceInfo, "Train " + trip.Train.DisplayName + " train stopped at way point - no start condition - prepare start");
+							Trace.WriteLineIf(traceDispatching.TraceInfo, $"Train {trip.Train.DisplayName} train stopped at way point - no start condition - prepare start");
 							trainPrepareStart(trip);
 						}
 						else
-							Trace.WriteLineIf(traceDispatching.TraceInfo, "Train " + trip.Train.DisplayName + " train stopped at way point - waiting for lock");
+							Trace.WriteLineIf(traceDispatching.TraceInfo, $"Train {trip.Train.DisplayName} train stopped at way point - waiting for lock");
 					}
 				}
 				else {
@@ -1628,14 +1629,14 @@ namespace LayoutManager.Logic {
 				}
 			}
 			else {
-				Trace.WriteLineIf(traceDispatching.TraceInfo, "Train " + trip.Train.DisplayName + " stopped NOT on way point");
+				Trace.WriteLineIf(traceDispatching.TraceInfo, $"Train {trip.Train.DisplayName} stopped NOT on way point");
 				trip.Status = TripStatus.WaitLock;
 			}
 		}
 
 		void trainPrepareStart(ActiveTripInfo trip) {
 
-			Trace.WriteLineIf(traceDispatching.TraceInfo, "Train " + trip.Train.DisplayName + " Prepare Start - calling prepareNextTripSection");
+			Trace.WriteLineIf(traceDispatching.TraceInfo, $"Train {trip.Train.DisplayName} Prepare Start - calling prepareNextTripSection");
 			if(prepareNextTripSection(trip, new BlockEntry(trip.Train), null))
 				trainStart(trip);			// If train can move right away, start
 			else if(trip.Queue.Count == 0)
@@ -1644,12 +1645,12 @@ namespace LayoutManager.Logic {
 
 		[LayoutEventDef("driver-train-go", Role=LayoutEventRole.Notification, SenderType=typeof(TrainStateInfo), InfoType=typeof(LocomotiveOrientation))]
 		void trainStart(ActiveTripInfo trip) {
-			Trace.WriteLineIf(traceDispatching.TraceInfo, "Start moving - trip of train " + trip.Train.DisplayName);
+			Trace.WriteLineIf(traceDispatching.TraceInfo, $"Start moving - trip of train {trip.Train.DisplayName}");
 
 			if(trip.CurrentWaypoint.DriverInstructions != null) {
-				Trace.WriteLineIf(traceDispatcher.TraceInfo, "Train " + trip.Train.DisplayName + " Waypoint " + trip.CurrentWaypoint.Name + " Start driving instructions: " + trip.CurrentWaypoint.DriverInstructionsDescription);
+				Trace.WriteLineIf(traceDispatcher.TraceInfo, $"Train {trip.Train.DisplayName} Waypoint {trip.CurrentWaypoint.Name} Start driving instructions: {trip.CurrentWaypoint.DriverInstructionsDescription}");
 
-				trip.PendingDriverInstructions = EventManager.EventScript("Driver instructions for " + trip.Train.DisplayName + " for going to " + trip.CurrentWaypoint.Destination.Name,
+				trip.PendingDriverInstructions = EventManager.EventScript($"Driver instructions for {trip.Train.DisplayName} for going to {trip.CurrentWaypoint.Destination.Name}",
 					trip.CurrentWaypoint.DriverInstructions,  new Guid[] { trip.TrainId, trip.Id }, null);
 
 				LayoutScriptContext	context = trip.PendingDriverInstructions.ScriptContext;
@@ -1725,7 +1726,7 @@ namespace LayoutManager.Logic {
 				if(trip.Queue.Count > 0 && block.Id == trip.Queue.Peek().Block.Id) {
 					BlockEntry	blockEntry = trip.Queue.Dequeue();
 
-					Trace.WriteLineIf(traceDispatching.TraceInfo, "Train " + trip.Train.DisplayName + " entered the expected block: " + blockEntry.Block.BlockDefinintion.FullDescription + " action " + blockEntry.Action);
+					Trace.WriteLineIf(traceDispatching.TraceInfo, $"Train {trip.Train.DisplayName} entered the expected block: {blockEntry.Block} action {blockEntry.Action}");
 
 					// If arrived to way point, move to next one
 					if((blockEntry.Action & BlockAction.AtWaypoint) != 0)
@@ -1737,22 +1738,21 @@ namespace LayoutManager.Logic {
 						if(trip.Queue.Count > 0)
 							nextBlockEntry = trip.Queue.Peek();
 
-						Trace.WriteLineIf(traceDispatching.TraceInfo, "Prepare next trip section - trip of train " + trip.Train.DisplayName);
+						Trace.WriteLineIf(traceDispatching.TraceInfo, $"Prepare next trip section - trip of train {trip.Train.DisplayName}");
 
 						prepareNextTripSection(trip, blockEntry, nextBlockEntry);
-
 						blockEntry.RemoveAction(BlockAction.PrepareNextSection);
 					}
 
 					if((blockEntry.Action & BlockAction.PrepareStop) != 0) {
 						trip.Status = TripStatus.PrepareStop;
-						Trace.WriteLineIf(traceDispatching.TraceInfo, "Prepare stop - trip of train " + trip.Train.DisplayName);
+						Trace.WriteLineIf(traceDispatching.TraceInfo, $"Prepare stop - trip of train {trip.Train.DisplayName}");
 						EventManager.Event(new LayoutEvent(trip.Train, "driver-prepare-stop"));
 					}
 
 					if((blockEntry.Action & BlockAction.Stop) != 0 || trip.Queue.Count == 0) {
 						trip.Status = TripStatus.Stopped;
-						Trace.WriteLineIf(traceDispatching.TraceInfo, "Stop - trip of train " + trip.Train.DisplayName);
+						Trace.WriteLineIf(traceDispatching.TraceInfo, $"Stop - trip of train {trip.Train.DisplayName}");
 
 						trainStopped(trip, (blockEntry.Action & BlockAction.AtWaypoint) != 0);
 					}
@@ -1773,18 +1773,18 @@ namespace LayoutManager.Logic {
 
 				}
 				else {
-					Trace.WriteLineIf(traceDispatching.TraceInfo, "Train " + trip.Train.DisplayName + " entered unexpected block: " + block.BlockDefinintion.FullDescription);
+					Trace.WriteLineIf(traceDispatching.TraceInfo, $"Train {trip.Train.DisplayName} entered unexpected block: {block}");
 					if(trip.Queue.Count == 0)
 						Trace.WriteLineIf(traceDispatching.TraceInfo, "  The trip queue is empty");
 					else
-						Trace.WriteLineIf(traceDispatching.TraceInfo, "  The expected block is: " + trip.Queue.Peek().Block.BlockDefinintion.FullDescription);
+						Trace.WriteLineIf(traceDispatching.TraceInfo, $"  The expected block is: {trip.Queue.Peek().Block}");
 
 
 					if(block.LockRequest == null)
-						Error(block, "Train " + train.DisplayName + " entered to an block that was not allocated to any train");
+						Error(block, $"Train {train.DisplayName} entered to an block that was not allocated to any train");
 					else {
 						if(block.LockRequest.IsManualDispatchLock)
-							Error(block, "Train " + train.DisplayName + " entered block which is part of a manual dispatch region");
+							Error(block, $"Train {train.DisplayName} entered block which is part of a manual dispatch region");
 						else {
 							TrainStateInfo	otherTrain = LayoutModel.StateManager.Trains[block.LockRequest.OwnerId];
 
@@ -1793,7 +1793,7 @@ namespace LayoutManager.Logic {
 
 							if(otherTrain != null) {
 								if(otherTrain.Id != train.Id) {
-									Error(block, "Train " + train.DisplayName + " entered a block which is already allocated to train " + otherTrain.DisplayName);
+									Error(block, $"Train {train.DisplayName} entered a block which is already allocated to train {otherTrain.DisplayName}");
 									if(otherTrain.Managed)
 										otherTrain.Speed = 0;
 								}
@@ -1858,7 +1858,7 @@ namespace LayoutManager.Logic {
 			TrainStateInfo	train = (TrainStateInfo)e.Sender;
 			LayoutBlock		block = (LayoutBlock)e.Info;
 
-			Trace.WriteLineIf(traceDispatching.TraceInfo, "Train " + train.DisplayName + " leaves block " + block.Name);
+			Trace.WriteLineIf(traceDispatching.TraceInfo, $"Train {train.DisplayName} leaves block {block}");
 
 			if(block.LockRequest != null) {
 				if(block.LockRequest.OwnerId == train.Id) {
@@ -1880,7 +1880,7 @@ namespace LayoutManager.Logic {
 					if(trip == null || !trip.Queue.Contains(block.Id))
 						blockUnlockingManager.Add(block, timeout);			// Unlock block 5 seconds if train has magnet on last car
 					else
-						Trace.WriteLineIf(traceDispatching.TraceVerbose, " Not adding block " + block.Name + " to unlocking manager because it is in queue of train " + train.DisplayName);
+						Trace.WriteLineIf(traceDispatching.TraceVerbose, $" Not adding block {block} to unlocking manager because it is in queue of train {train.DisplayName}");
 				}
 			}
 
@@ -1894,7 +1894,7 @@ namespace LayoutManager.Logic {
 		private void manualDisptachRegionActivationChanged(LayoutEvent e) {
 			bool	active = (bool)e.Info;
 
-			Trace.WriteLineIf(traceDispatching.TraceInfo, "Manual dispatch region was " + (active ? "granted" : "freed") + " recalculate trips");
+			Trace.WriteLineIf(traceDispatching.TraceInfo, $"Manual dispatch region was {(active ? "granted" : "freed")} recalculate trips");
 
 			// If manual dispatch was freed, need to retry only waiting, if it was granted, recalc all trains, since it may
 			// block a route which is already calculated
@@ -1927,14 +1927,14 @@ namespace LayoutManager.Logic {
 			ActiveTripInfo	trip = (ActiveTripInfo)e.Sender;
 
 			if(trip.Status == TripStatus.Suspended) {
-				Trace.WriteLineIf(traceDispatching.TraceInfo, "Suspending " + e.EventName + " for train " + trip.Train.DisplayName);
+				Trace.WriteLineIf(traceDispatching.TraceInfo, $"Suspending {e.EventName} for train {trip.Train.DisplayName}");
 				trip.SuspendedEvent = e;
 			}
 			else {
 				trip.PendingStartCondition.Dispose();
 				trip.PendingStartCondition = null;
 
-				Trace.WriteLineIf(traceDispatching.TraceInfo, "Train " + trip.Train.DisplayName + " Start condition occurred - prepare start");
+				Trace.WriteLineIf(traceDispatching.TraceInfo, $"Train {trip.Train.DisplayName} Start condition occurred - prepare start");
 				trainPrepareStart(trip);
 			}
 		}
@@ -1944,7 +1944,7 @@ namespace LayoutManager.Logic {
 			ActiveTripInfo					trip = (ActiveTripInfo)e.Sender;
 
 			if(trip.Status == TripStatus.Suspended) {
-				Trace.WriteLineIf(traceDispatching.TraceInfo, "Suspending " + e.EventName + " for train " + trip.Train.DisplayName);
+				Trace.WriteLineIf(traceDispatching.TraceInfo, $"Suspending {e.EventName} for train {trip.Train.DisplayName}");
 				trip.SuspendedEvent = e;
 			}
 			else if(trip.Status != TripStatus.Done) {
@@ -1955,7 +1955,7 @@ namespace LayoutManager.Logic {
 
 				if(lockRequest != null) {
 					if(traceDispatching.TraceInfo) {
-						Trace.Write("Dispatcher lock obtained for train " + trip.Train.DisplayName + " ");
+						Trace.Write($"Dispatcher lock obtained for train {trip.Train.DisplayName} ");
 						lockRequest.Dump();
 					}
 
