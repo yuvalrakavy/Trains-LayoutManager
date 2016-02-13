@@ -227,13 +227,22 @@ namespace NumatoController {
 
 		[LayoutAsyncEvent("change-track-component-state-command", IfEvent="*[CommandStation/@ID='`string(@ID)`']")]
 		private Task changeTrackComponentStateCommand(LayoutEvent e0) {
-			var e = (LayoutEvent<ControlConnectionPointReference, int>)e0;
-			var connectionPointRef = e.Sender;
+            var e = (LayoutEvent<ControlConnectionPointReference, int>)e0;
+            var connectionPointRef = e.Sender;
 
-			int iRelay = connectionPointRef.Module.Address + connectionPointRef.Index;
-			bool on = e.Info != 0;
+            int iRelay = connectionPointRef.Module.Address + connectionPointRef.Index;
+            bool on = e.Info != 0;
 
-			return OutputManager.AddCommand(new SetRelayCommand(this, iRelay, on));
+            if (Simulation) {
+                return Task.Delay(100).ContinueWith(t =>
+                    EventManager.Instance.InterThreadEventInvoker.QueueEvent(new LayoutEvent<ControlConnectionPointReference, int>("control-connection-point-state-changed-notification", new ControlConnectionPointReference(this.RelayBus, iRelay), on ? 1 : 0).SetCommandStation(this))
+                );
+//                return Task.FromResult(0);
+            }
+            else {
+
+                return OutputManager.AddCommand(new SetRelayCommand(this, iRelay, on));
+            }
 		}
 
 		[LayoutEvent("numato-invoke-events", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
