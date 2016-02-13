@@ -112,28 +112,30 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="locomotiveFront.ConnectionPoints" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFBMYXlvdXRNYW5hZ2VyTW9kZWwsIFZlcnNpb249MS4wLjM4OTAu
-        MjE0MTQsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAQBAAAAuwFTeXN0ZW0uQ29s
-        bGVjdGlvbnMuT2JqZWN0TW9kZWwuUmVhZE9ubHlDb2xsZWN0aW9uYDFbW0xheW91dE1hbmFnZXIuTW9k
-        ZWwuTGF5b3V0Q29tcG9uZW50Q29ubmVjdGlvblBvaW50LCBMYXlvdXRNYW5hZ2VyTW9kZWwsIFZlcnNp
-        b249MS4wLjM4OTAuMjE0MTQsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbF1dAQAA
-        AARsaXN0BDRMYXlvdXRNYW5hZ2VyLk1vZGVsLkxheW91dENvbXBvbmVudENvbm5lY3Rpb25Qb2ludFtd
-        AgAAAAkDAAAABwMAAAAAAQAAAAIAAAAEMkxheW91dE1hbmFnZXIuTW9kZWwuTGF5b3V0Q29tcG9uZW50
-        Q29ubmVjdGlvblBvaW50AgAAAAX8////MkxheW91dE1hbmFnZXIuTW9kZWwuTGF5b3V0Q29tcG9uZW50
-        Q29ubmVjdGlvblBvaW50AQAAAAJjcAAIAgAAAAMAAAAB+/////z///8CAAAACw==
+        AAEAAAD/////AQAAAAAAAAAMAgAAAJ8BTGF5b3V0TWFuYWdlck1vZGVsLCBWZXJzaW9uPTEuMC41ODg3
+        LjM2MzIwLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPW51bGxdXSwgbXNjb3JsaWIsIFZl
+        cnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRl
+        MDg5DAMAAABQTGF5b3V0TWFuYWdlck1vZGVsLCBWZXJzaW9uPTEuMC41ODg3LjM2MzIwLCBDdWx0dXJl
+        PW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPW51bGwFAQAAAGdTeXN0ZW0uQ29sbGVjdGlvbnMuT2JqZWN0
+        TW9kZWwuUmVhZE9ubHlDb2xsZWN0aW9uYDFbW0xheW91dE1hbmFnZXIuTW9kZWwuTGF5b3V0Q29tcG9u
+        ZW50Q29ubmVjdGlvblBvaW50AQAAAARsaXN0BDRMYXlvdXRNYW5hZ2VyLk1vZGVsLkxheW91dENvbXBv
+        bmVudENvbm5lY3Rpb25Qb2ludFtdAwAAAAIAAAAJBAAAAAcEAAAAAAEAAAACAAAABDJMYXlvdXRNYW5h
+        Z2VyLk1vZGVsLkxheW91dENvbXBvbmVudENvbm5lY3Rpb25Qb2ludAMAAAAF+////zJMYXlvdXRNYW5h
+        Z2VyLk1vZGVsLkxheW91dENvbXBvbmVudENvbm5lY3Rpb25Qb2ludAEAAAACY3AACAMAAAADAAAAAfr/
+        ///7////AgAAAAs=
 </value>
   </data>
   <data name="locomotiveFront.Front" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFBMYXlvdXRNYW5hZ2VyTW9kZWwsIFZlcnNpb249MS4wLjM4OTAu
-        MjE0MTQsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAAMkxheW91dE1hbmFn
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFBMYXlvdXRNYW5hZ2VyTW9kZWwsIFZlcnNpb249MS4wLjU4ODcu
+        MzYzMjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAAMkxheW91dE1hbmFn
         ZXIuTW9kZWwuTGF5b3V0Q29tcG9uZW50Q29ubmVjdGlvblBvaW50AQAAAAJjcAAIAgAAAP////8L
 </value>
   </data>
