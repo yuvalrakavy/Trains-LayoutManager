@@ -402,6 +402,7 @@ namespace LayoutManager.Logic {
 		// Trap events that invalidate the locomotive address map cache
 		[LayoutEvent("train-is-removed")]
 		[LayoutEvent("train-placed-on-track")]
+        [LayoutEvent("locomotive-power-changed")]
 		private void InvalidateAddressMap(LayoutEvent e) {
 			addressMapCache.Clear();
 		}
@@ -1538,20 +1539,24 @@ namespace LayoutManager.Logic {
 			trainLocations.Sort(new TrackContactCrossTimeSorter());
 
 			foreach(TrainLocationInfo trainLocation in trainLocations) {
-				LayoutLockRequest lockRequest = new LayoutLockRequest(trainLocation.Train.Id);
-
-				lockRequest.Blocks.Add(trainLocation.Block);
-				EventManager.Event(new LayoutEvent(lockRequest, "request-layout-lock"));
 
 				trainLocation.Block.AddTrain(trainLocation);
 
 				if(trainLocation.Block.BlockDefinintion != null)
 					trainLocation.Train.RefreshSpeedLimit();
-			}
 
-			LayoutModel.StateManager.Trains.RebuildIdMap();
+            }
 
-			return (invalidStateElements.Count == 0);	// Fail if any invaid element was found
+            LayoutModel.StateManager.Trains.RebuildIdMap();
+
+            foreach (TrainLocationInfo trainLocation in trainLocations) {
+                LayoutLockRequest lockRequest = new LayoutLockRequest(trainLocation.Train.Id);
+
+                lockRequest.Blocks.Add(trainLocation.Block);
+                EventManager.Event(new LayoutEvent(lockRequest, "request-layout-lock").SetOption("DoNotLockResources", true));
+            }
+
+            return (invalidStateElements.Count == 0);	// Fail if any invaid element was found
 		}
 
 		[LayoutEvent("enter-operation-mode", Order = 20000)]
