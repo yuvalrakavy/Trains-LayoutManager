@@ -254,8 +254,10 @@ namespace LayoutManager.Logic
 					Warning(ambiguousBlockEdges, "The locomotive direction is ambiguous when this track contact is crossed. Add more blocks");
 				}
 
-				if(blockDefinition.GetBlockEdges(0).Length == 0 && blockDefinition.GetBlockEdges(1).Length == 0)
+#if NO_WARNING_ON_NO_BLOCK_TRACK_CONTACT
+                if(blockDefinition.GetBlockEdges(0).Length == 0 && blockDefinition.GetBlockEdges(1).Length == 0)
 					blockDefinition.Warning("This block definition is not inside a block. Add block edge components (e.g. track contacts)");
+#endif
 
 				if(traceBlockInfo.TraceInfo) {
 					Trace.WriteLine("Block Info: " + blockDefinition.NameProvider.Name);
@@ -299,9 +301,9 @@ namespace LayoutManager.Logic
 			}
 		}
 
-		#endregion
+#endregion
 
-		#region Build Occupancy (train detection blocks) data structures
+#region Build Occupancy (train detection blocks) data structures
 
 		[LayoutEvent("check-layout", Order=320)]
 		private void locateNoFeedbackBlocks(LayoutEvent e) {
@@ -373,9 +375,9 @@ namespace LayoutManager.Logic
 			}
 		}
 
-		#endregion
+#endregion
 
-		#region Handle block policy
+#region Handle block policy
 
 		[LayoutEvent("train-enter-block")]
 		private void activateBlockPolicy(LayoutEvent e) {
@@ -403,6 +405,6 @@ namespace LayoutManager.Logic
 			}
 		}
 
-		#endregion
+#endregion
 	}
 }
