@@ -36,6 +36,8 @@ namespace NCDRelayController {
 				);
 		}
 
+        public bool LayoutEmulationSupported => false;
+
 		public ControlBus RelayBus {
 			get {
 				if(_relayBus == null)
