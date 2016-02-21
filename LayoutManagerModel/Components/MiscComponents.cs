@@ -17,7 +17,7 @@ namespace LayoutManager.Components {
     /// </summary>
     ///
     public class LayoutTrackPowerConnectorComponent : ModelComponent, IModelComponentHasId, IModelComponentLayoutLockResource {
-        bool switchingInProgress = false;
+        //bool switchingInProgress = false;
 
         public LayoutTrackPowerConnectorComponent() {
             XmlDocument.LoadXml("<PowerConnector />");
@@ -80,12 +80,12 @@ namespace LayoutManager.Components {
         public bool IsResourceReady() => Info.Inlet.ConnectedOutlet.Power.Type != LayoutPowerType.Disconnected;
 
         public void MakeResourceReady() {
-            if (Info.Inlet.ConnectedOutlet.Power.Type == LayoutPowerType.Disconnected && !switchingInProgress) {
+            if (Info.Inlet.ConnectedOutlet.Power.Type == LayoutPowerType.Disconnected/* && !switchingInProgress*/) {
                 if (Info.Inlet.ConnectedOutlet.ObtainablePowers.Any(p => p.Type == LayoutPowerType.Digital)) {
                     var switchingCommands = new List<SwitchingCommand>();
 
                     if (Info.Inlet.ConnectedOutlet.SelectPower(LayoutPowerType.Digital, switchingCommands)) {
-                        switchingInProgress = true;
+                        //switchingInProgress = true;
 
                         EventManager.Event(new LayoutEvent<LayoutTrackPowerConnectorComponent>("register-power-connected-lock", this));
 
@@ -95,11 +95,14 @@ namespace LayoutManager.Components {
                             EventManager.Event(new LayoutEvent<TrainStateInfo, ILayoutPower>("change-train-power", train, power));
 
                         if (switchingCommands.Count > 0)
-                            EventManager.AsyncEvent(new LayoutEvent(this, "set-track-components-state", null, switchingCommands)).ContinueWith(
+                            EventManager.AsyncEvent(new LayoutEvent(this, "set-track-components-state", null, switchingCommands)
+#if NOTUSED
+                                .ContinueWith(
                                 (t) => {
                                     switchingInProgress = false;
                                     return Task.FromResult(0);
                                 }
+#endif
                             );
                     }
                 }
@@ -337,13 +340,13 @@ namespace LayoutManager.Components {
 
         public LayoutTextInfo NameProvider => new LayoutPowerSelectorNameInfo(this);
 
-        #region IModelComponentHasPowerOutlets Members
+#region IModelComponentHasPowerOutlets Members
 
         public IList<ILayoutPowerOutlet> PowerOutlets => Array.AsReadOnly<ILayoutPowerOutlet>(new ILayoutPowerOutlet[] { new LayoutPowerSelectorSwitchOutlet(this) });
 
-        #endregion
+#endregion
 
-        #region IModelComponentConnectToControl Members
+#region IModelComponentConnectToControl Members
 
         public IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions {
             get {
@@ -367,9 +370,9 @@ namespace LayoutManager.Components {
             }
         }
 
-        #endregion
+#endregion
 
-        #region PowerSelectorComponent related classes
+#region PowerSelectorComponent related classes
 
         public class LayoutPowerSelectorSwitchingStateSupporter : SwitchingStateSupport {
             public LayoutPowerSelectorSwitchingStateSupporter(IModelComponentHasSwitchingState component)
@@ -395,7 +398,7 @@ namespace LayoutManager.Components {
                 this.NoPower = new LayoutPower(PowerSelectorComponent, LayoutPowerType.Disconnected, DigitalPowerFormats.None, "Disconnected");
             }
 
-            #region ILayoutPowerOutlet Members
+#region ILayoutPowerOutlet Members
 
             public IModelComponentHasPowerOutlets OutletComponent => PowerSelectorComponent;
 
@@ -506,7 +509,7 @@ namespace LayoutManager.Components {
                 return ok;
             }
 
-            #endregion
+#endregion
         }
 
         public class LayoutPowerSelectorNameInfo : LayoutTextInfo {
@@ -540,7 +543,7 @@ namespace LayoutManager.Components {
             public override string Text => Name;
         }
 
-        #endregion
+#endregion
 
     }
 
@@ -618,7 +621,7 @@ namespace LayoutManager.Components {
 
         public override int GetHashCode() => trackLinkGuid.GetHashCode();
 
-        #region IComparable<LayoutTrackLink> Members
+#region IComparable<LayoutTrackLink> Members
 
         public int CompareTo(LayoutTrackLink other) {
             if (Equals(other))
@@ -629,7 +632,7 @@ namespace LayoutManager.Components {
 
         public bool Equals(LayoutTrackLink other) => areaGuid == other.areaGuid && trackLinkGuid == other.trackLinkGuid;
 
-        #endregion
+#endregion
     }
 
     public class LayoutTrackLinkComponent : ModelComponent, IModelComponentHasId {
@@ -1024,7 +1027,7 @@ namespace LayoutManager.Components {
         public override string ToString() => "gate";
 
 
-        #region IModelComponentConnectToControl Members
+#region IModelComponentConnectToControl Members
 
         public IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions {
             get {
@@ -1051,9 +1054,9 @@ namespace LayoutManager.Components {
             }
         }
 
-        #endregion
+#endregion
 
-        #region ILayoutLockResource Members
+#region ILayoutLockResource Members
 
         public bool IsResourceReady() => GateState == LayoutGateState.Open;
 
@@ -1067,13 +1070,13 @@ namespace LayoutManager.Components {
                 EventManager.Event(new LayoutEvent(this, "close-gate-request"));
         }
 
-        #endregion
+#endregion
 
-        #region IObjectHasName Members
+#region IObjectHasName Members
 
         public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
 
-        #endregion
+#endregion
     }
 
     [LayoutModule("Standard Gate Drivers", UserControl = false)]
