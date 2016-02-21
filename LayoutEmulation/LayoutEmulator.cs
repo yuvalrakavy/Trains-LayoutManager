@@ -338,7 +338,8 @@ namespace LayoutEmulation {
 
 		[LayoutEvent("initialize-layout-emulation")]
 		private void startLayoutEmulation(LayoutEvent e) {
-			tickTime = (int)e.Info;
+            if(e.Info != null)
+    			tickTime = (int)e.Info;
 		}
 
 		[LayoutEvent("get-layout-emulation-services")]
