@@ -285,8 +285,6 @@ namespace LayoutManager {
 			}
 
 			if(switchMode) {
-f
-
 				try {
 					// Switch to operation mode.
 					if(!IsOperationMode) {
