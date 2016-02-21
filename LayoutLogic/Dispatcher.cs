@@ -1980,7 +1980,7 @@ namespace LayoutManager.Logic {
 
 		[LayoutEvent("dispatcher-retry-waiting-trains")]
 		private void retryWaitingTrains(LayoutEvent e) {
-			bool	retryAllTrains = (bool)e.Info;
+			bool	retryAllTrains = (bool)(e.Info ?? true);
 
 			retryTripsWaitingForLocks(retryAllTrains);
 		}
