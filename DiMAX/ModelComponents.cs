@@ -372,9 +372,7 @@ namespace DiMAX {
 			ActiveLocomotiveInfo activeLocomotive;
 
 			if(registeredLocomotives.TryGetValue(address, out activeLocomotive)) {
-				Debug.Assert(activeLocomotive.SelectNesting > 0);
-
-				if(--activeLocomotive.SelectNesting == 0) { 
+				if(activeLocomotive.SelectNesting == 0 || --activeLocomotive.SelectNesting == 0) { 
 					activeLocomotive.ActiveDeselection = IsLocomotiveActive(train, locomotive);
 
 					outputManager.AddCommand(new DiMAXlocomotiveSelection(this, address, select:false, deselectActive:activeLocomotive.ActiveDeselection, unconditional:false));
