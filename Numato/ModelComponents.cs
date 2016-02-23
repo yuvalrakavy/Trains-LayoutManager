@@ -21,9 +21,6 @@ namespace NumatoController {
     public class NumatoController : LayoutBusProviderSupport, IModelComponentIsBusProvider {
 
         internal const string relaysCountAttribute = "Relays";
-        internal const string interfaceTypeAttribute = "InterfaceType";
-        internal const string portAttribute = "Port";
-        internal const string addressAttribute = "Address";
         internal const string userAttribute = "User";
         internal const string passwordAttribute = "Password";
 
@@ -33,7 +30,7 @@ namespace NumatoController {
 
         public NumatoController() {
             this.XmlDocument.LoadXml(
-                $"<NumatoController {interfaceTypeAttribute}=\"TCP\" {addressAttribute}=\"169.254.1.1\" {userAttribute}=\"admin\" {passwordAttribute}=\"admin\">" +
+                $"<NumatoController {InterfaceTypeAttribute}=\"TCP\" {AddressAttribute}=\"169.254.1.1\" {userAttribute}=\"admin\" {passwordAttribute}=\"admin\">" +
                 "<ModeString>baud=115200 parity=N data=8</ModeString>" +
                 "</NumatoController>"
                 );
@@ -55,19 +52,6 @@ namespace NumatoController {
 
         OutputManager OutputManager { get; set; }
 
-        InterfaceType InterfaceType {
-            get {
-                if (Element.HasAttribute(interfaceTypeAttribute))
-                    return (InterfaceType)Enum.Parse(typeof(InterfaceType), Element.GetAttribute(interfaceTypeAttribute));
-                else
-                    return InterfaceType.Serial;
-            }
-
-            set {
-                Element.SetAttribute(interfaceTypeAttribute, value.ToString());
-            }
-        }
-
         public int RelaysCount => XmlConvert.ToInt32(Element.GetAttribute(relaysCountAttribute));
 
         string User {
@@ -81,11 +65,6 @@ namespace NumatoController {
             set { Element.SetAttribute(passwordAttribute, value); }
         }
 
-        string Address {
-            get { return Element.GetAttribute(addressAttribute); }
-            set { Element.SetAttribute(addressAttribute, value); }
-        }
-
         #region Communication init/cleanup
 
         override protected void OnInitialize() {
@@ -94,7 +73,7 @@ namespace NumatoController {
 			OutputManager = new OutputManager(NameProvider.Name, 1);
 			OutputManager.Start();
 
-            if (InterfaceType == InterfaceType.TCP)
+            if (InterfaceType == CommunicationInterfaceType.TCP)
                 OutputManager.AddCommand(new LoginCommand(this, User, Password));
             else
                 OutputManager.AddCommand(new EmptyCommand(this));
@@ -260,7 +239,7 @@ namespace NumatoController {
 
 			public override void Do() {
 				SendCommand();
-                RelayController.OutputManager.SetReply(CollectReply(">>"));
+                RelayController.OutputManager.SetReply(CollectReply(">"));
 			}
 		}
 

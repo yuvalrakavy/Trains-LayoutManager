@@ -11,10 +11,15 @@ using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
 
 using LayoutManager.Model;
+using System.Net.Sockets;
 
 namespace LayoutManager {
+    public enum CommunicationInterfaceType {
+        Serial,
+        TCP,
+    };
 
-	public static class CommandStationLayoutEventExtender {
+    public static class CommandStationLayoutEventExtender {
         /// <summary>
         /// Add command station identifier to event. This should be call for each event that should be handled by a specific command station.
         /// It adds CommandStation option section with the command station's ID and name. The command station's event handler can use this information 
@@ -61,10 +66,14 @@ namespace LayoutManager.Components {
 
     public abstract class LayoutBusProviderSupport : ModelComponent, IModelComponentIsBusProvider {
         ILayoutEmulatorServices _layoutEmulationServices;
-        FileStream commStream;
+        Stream commStream;
         ILayoutCommandStationEmulator commandStationEmulator;
         ILayoutInterThreadEventInvoker invoker;
         bool operationMode;
+
+        public const string InterfaceTypeAttribute = "InterfaceType";
+        public const string PortAttribute = "Port";
+        public const string AddressAttribute = "Address";
 
         public override ModelComponentKind Kind => ModelComponentKind.ControlComponent;
 
@@ -101,12 +110,31 @@ namespace LayoutManager.Components {
 
         #region Properties accessible from derived concrete command station component classes
 
-        public FileStream CommunicationStream => commStream;
+        public Stream CommunicationStream => commStream;
 
         public ILayoutInterThreadEventInvoker InterThreadEventInvoker => invoker;
 
         public bool OperationMode => operationMode;
 
+        public CommunicationInterfaceType InterfaceType {
+            get {
+                if (Element.HasAttribute(InterfaceTypeAttribute))
+                    return (CommunicationInterfaceType)Enum.Parse(typeof(CommunicationInterfaceType), Element.GetAttribute(InterfaceTypeAttribute));
+                else
+                    return CommunicationInterfaceType.Serial;
+            }
+
+            set {
+                Element.SetAttribute(InterfaceTypeAttribute, value.ToString());
+            }
+        }
+
+        public string IPaddress {
+            get { return Element.GetAttribute(AddressAttribute); }
+            set { Element.SetAttribute(AddressAttribute, value); }
+        }
+
+ 
         #endregion
 
         protected virtual void OpenCommunicationStream() {
@@ -121,8 +149,10 @@ namespace LayoutManager.Components {
 
                 commStream = (FileStream)EventManager.Event(new LayoutEvent(handle, "wait-named-pipe-client-to-connect-request", null, overlappedIO));
             }
-            else
+            else if(InterfaceType == CommunicationInterfaceType.Serial)
                 commStream = (FileStream)EventManager.Event(new LayoutEvent(Element, "open-serial-communication-device-request"));
+            else if(InterfaceType == CommunicationInterfaceType.TCP)
+                commStream = new TcpClient(IPaddress, 23).GetStream();
         }
 
         protected virtual void CloseCommunicationStream() {
@@ -134,13 +164,18 @@ namespace LayoutManager.Components {
             }
 
             if (commStream != null) {
-                SafeFileHandle sh = commStream.SafeFileHandle;
+                FileStream fileCommStream = commStream as FileStream;
+                SafeFileHandle safeHandle = fileCommStream?.SafeFileHandle;
 
-                commStream.SafeFileHandle.Close();
+                if (fileCommStream != null)
+                    safeHandle.Close();
+
                 CommunicationStream.Close();
                 System.GC.Collect();
-                if (!sh.IsClosed)
+
+                if (fileCommStream != null && !safeHandle.IsClosed)
                     Trace.WriteLine("Warning: PORT WAS NOT CLOSED");
+
                 commStream = null;
             }
         }
@@ -252,13 +287,13 @@ namespace LayoutManager.Components {
                 OnCleanup();
 
                 // Disconnect power to the layout
-                Trace.WriteLine("Disconnect track request");
+                Trace.WriteLine($"{FullDescription} Disconnect track request");
                 EventManager.Event(new LayoutEvent(this, "disconnect-power-request"));
 
                 await OnTerminateCommunication();
                 CloseCommunicationStream();
 
-                Trace.WriteLine("After CloseCommunicationStream");
+                Trace.WriteLine($"{FullDescription} After CloseCommunicationStream");
 
                 operationMode = false;
             }

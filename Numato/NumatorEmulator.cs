@@ -56,7 +56,7 @@ namespace NumatoController {
                     switch(state) {
                         case NumatoState.GetUser: prompt = Encoding.UTF8.GetBytes("Numato Lab 32 Channel Ethernet Relay Module\r\nUser Name: "); break;
                         case NumatoState.GetPassword: prompt = Encoding.UTF8.GetBytes("Password: ").Concat(new byte[] { 0xff, 0xfd, 0x2d }).ToArray(); break;
-                        case NumatoState.GetCommand: prompt =Encoding.UTF8.GetBytes(">>"); break;
+                        case NumatoState.GetCommand: prompt =Encoding.UTF8.GetBytes(">"); break;
                     }
 
                     Trace.WriteLineIf(traceNumatoEmulator.TraceVerbose, $"Numato emulator prompt with {Encoding.UTF8.GetString(prompt)}");
