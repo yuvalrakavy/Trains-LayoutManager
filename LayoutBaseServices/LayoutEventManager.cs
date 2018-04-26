@@ -1162,7 +1162,7 @@ namespace LayoutManager {
 					Status = DelayedEventStatus.NotYetCalled;
 					await Task.WhenAny(Task.Delay(delayTime), tcs.Task);
 					Status = DelayedEventStatus.Called;
-					EventManager.Event(theEvent);
+                    EventManager.Instance.InterThreadEventInvoker.QueueEvent(theEvent);
 				}
 			}
 			catch(OperationCanceledException) {

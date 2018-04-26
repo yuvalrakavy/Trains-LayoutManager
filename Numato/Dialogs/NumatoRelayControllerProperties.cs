@@ -9,6 +9,7 @@ using System.IO.Ports;
 
 using LayoutManager;
 using LayoutManager.Model;
+using LayoutManager.Components;
 using NumatoController;
 
 namespace NumatoController.Dialogs
@@ -72,8 +73,8 @@ namespace NumatoController.Dialogs
 
             InterfaceType interfaceType = InterfaceType.Serial;
 
-            if (xmlInfo.DocumentElement.HasAttribute(NumatoController.interfaceTypeAttribute))
-                interfaceType = (InterfaceType)Enum.Parse(typeof(InterfaceType), xmlInfo.DocumentElement.GetAttribute(NumatoController.interfaceTypeAttribute));
+            if (xmlInfo.DocumentElement.HasAttribute(LayoutBusProviderSupport.InterfaceTypeAttribute))
+                interfaceType = (InterfaceType)Enum.Parse(typeof(InterfaceType), xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.InterfaceTypeAttribute));
 
             if (interfaceType == InterfaceType.Serial)
                 radioButtonSerial.Checked = true;
@@ -81,10 +82,10 @@ namespace NumatoController.Dialogs
                 radioButtonTCP.Checked = true;
 
 			nameDefinition.XmlInfo = this.xmlInfo;
-			comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute(NumatoController.portAttribute);
+			comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.PortAttribute);
 
-            if(xmlInfo.DocumentElement.HasAttribute(NumatoController.addressAttribute))
-                textBoxAddress.Text = xmlInfo.DocumentElement.GetAttribute(NumatoController.addressAttribute);
+            if(xmlInfo.DocumentElement.HasAttribute(LayoutBusProviderSupport.AddressAttribute))
+                textBoxAddress.Text = xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.AddressAttribute);
 
             if (xmlInfo.DocumentElement.HasAttribute(NumatoController.userAttribute))
                 textBoxUser.Text = xmlInfo.DocumentElement.GetAttribute(NumatoController.userAttribute);

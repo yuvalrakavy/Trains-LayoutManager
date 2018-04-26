@@ -121,8 +121,8 @@ namespace DiMAX {
 			outputManager.Start();
 
 			// Until every one is really happy...
-			TraceDiMAX.Level = TraceLevel.Verbose;
-			TraceRawData.Level = TraceLevel.Verbose;
+			TraceDiMAX.Level = TraceLevel.Off;
+			TraceRawData.Level = TraceLevel.Off;
 
 			// And finally begin an asynchronous read
 			CommunicationStream.BeginRead(lengthAndCommand, 0, lengthAndCommand.Length, new AsyncCallback(this.OnReadLengthAndCommandDone), null);
@@ -372,9 +372,7 @@ namespace DiMAX {
 			ActiveLocomotiveInfo activeLocomotive;
 
 			if(registeredLocomotives.TryGetValue(address, out activeLocomotive)) {
-				Debug.Assert(activeLocomotive.SelectNesting > 0);
-
-				if(--activeLocomotive.SelectNesting == 0) { 
+				if(activeLocomotive.SelectNesting == 0 || --activeLocomotive.SelectNesting == 0) { 
 					activeLocomotive.ActiveDeselection = IsLocomotiveActive(train, locomotive);
 
 					outputManager.AddCommand(new DiMAXlocomotiveSelection(this, address, select:false, deselectActive:activeLocomotive.ActiveDeselection, unconditional:false));

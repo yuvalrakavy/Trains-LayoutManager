@@ -18,30 +18,27 @@ namespace NumatoController {
         TCP,
     };
 
-    public class NumatoController : ModelComponent, IModelComponentIsBusProvider {
+    public class NumatoController : LayoutBusProviderSupport, IModelComponentIsBusProvider {
 
         internal const string relaysCountAttribute = "Relays";
-        internal const string interfaceTypeAttribute = "InterfaceType";
-        internal const string portAttribute = "Port";
-        internal const string addressAttribute = "Address";
         internal const string userAttribute = "User";
         internal const string passwordAttribute = "Password";
 
         public static LayoutTraceSwitch TraceNumato = new LayoutTraceSwitch("NumatoController", "Numato Relay controller");
 
         ControlBus _relayBus = null;
-        bool operationMode;
-        Stream commStream;
 
         public NumatoController() {
             this.XmlDocument.LoadXml(
-                $"<NumatoController {interfaceTypeAttribute}=\"TCP\" {addressAttribute}=\"169.254.1.1\" {userAttribute}=\"admin\" {passwordAttribute}=\"admin\">" +
+                $"<NumatoController {InterfaceTypeAttribute}=\"TCP\" {AddressAttribute}=\"169.254.1.1\" {userAttribute}=\"admin\" {passwordAttribute}=\"admin\">" +
                 "<ModeString>baud=115200 parity=N data=8</ModeString>" +
                 "</NumatoController>"
                 );
         }
 
         public bool Simulation { get; set; }
+
+        public override bool LayoutEmulationSupported => true;
 
         public ControlBus RelayBus {
             get {
@@ -51,20 +48,9 @@ namespace NumatoController {
             }
         }
 
+        protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) => new NumatorEmulator(this, pipeName);
+
         OutputManager OutputManager { get; set; }
-
-        InterfaceType InterfaceType {
-            get {
-                if (Element.HasAttribute(interfaceTypeAttribute))
-                    return (InterfaceType)Enum.Parse(typeof(InterfaceType), Element.GetAttribute(interfaceTypeAttribute));
-                else
-                    return InterfaceType.Serial;
-            }
-
-            set {
-                Element.SetAttribute(interfaceTypeAttribute, value.ToString());
-            }
-        }
 
         public int RelaysCount => XmlConvert.ToInt32(Element.GetAttribute(relaysCountAttribute));
 
@@ -79,37 +65,21 @@ namespace NumatoController {
             set { Element.SetAttribute(passwordAttribute, value); }
         }
 
-        string Address {
-            get { return Element.GetAttribute(addressAttribute); }
-            set { Element.SetAttribute(addressAttribute, value); }
-        }
-
-        Stream CommStream => commStream;
-
-        public override void Error(object subject, string message) {
-           EventManager.Instance.InterThreadEventInvoker.QueueEvent(new LayoutEvent(subject, "add-error", null, message));
-        }
-
         #region Communication init/cleanup
 
-        void OnInitialize() {
+        override protected void OnInitialize() {
 			_relayBus = null;
-
-			TraceNumato.Level = TraceLevel.Verbose;
 
 			OutputManager = new OutputManager(NameProvider.Name, 1);
 			OutputManager.Start();
 
-            if (InterfaceType == InterfaceType.TCP)
+            if (InterfaceType == CommunicationInterfaceType.TCP)
                 OutputManager.AddCommand(new LoginCommand(this, User, Password));
             else
                 OutputManager.AddCommand(new EmptyCommand(this));
 		}
 
-		void OnCleanup() {
-		}
-
-		void OnCommunicationSetup() {
+		override protected void OnCommunicationSetup() {
 			if(!Element.HasAttribute("OverlappedIO"))
 				Element.SetAttribute("OverlappedIO", XmlConvert.ToString(true));
 			if(!Element.HasAttribute("ReadIntervalTimeout"))
@@ -120,23 +90,7 @@ namespace NumatoController {
 				Element.SetAttribute("WriteTotalTimeoutConstant", XmlConvert.ToString(6000));
 		}
 
-		void OpenCommunicationStream() {
-            if (!Simulation) {
-                if (InterfaceType == InterfaceType.Serial)
-                    commStream = (FileStream)EventManager.Event(new LayoutEvent(Element, "open-serial-communication-device-request"));
-                else
-                    commStream = new TcpClient(Address, 23).GetStream();
-            }
-		}
-
-		void CloseCommunicationStream() {
-            if (!Simulation) {
-                commStream.Close();
-                commStream = null;
-            }
-		}
-
-		async Task OnTerminateCommunication() {
+		override protected async Task OnTerminateCommunication() {
 			if(OutputManager != null) {
 				await OutputManager.WaitForIdle();
 				OutputManager.Terminate();
@@ -168,32 +122,16 @@ namespace NumatoController {
 
         #region IModelComponentIsBusProvider Members
 
-        public IList<string> BusTypeNames => Array.AsReadOnly<string>(new string[] { "NumatoRelayBus" });
-
-        public bool BatchMultipathSwitchingSupported => false;
+        public override IList<string> BusTypeNames => Array.AsReadOnly<string>(new string[] { "NumatoRelayBus" });
 
         #endregion
 
         #region IObjectHasName Members
 
-        public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
-
         #endregion
 
         #region Event Handlers
 
-        [LayoutEvent("enter-operation-mode")]
-		protected virtual void EnterOperationMode(LayoutEvent e0) {
-			var e = (LayoutEvent<OperationModeParameters>)e0;
-
-			Simulation= e.Sender.Simulation;
-
-			OnCommunicationSetup();
-			OpenCommunicationStream();
-
-			operationMode = true;
-			OnInitialize();
-		}
 
 		[LayoutEvent("begin-design-time-layout-activation")]
 		private void beginDesignTimeLayoutActivation(LayoutEvent e) {
@@ -201,18 +139,6 @@ namespace NumatoController {
 			OpenCommunicationStream();
 			OnInitialize();
 			e.Info = true;
-		}
-
-		[LayoutAsyncEvent("exit-operation-mode-async")]
-		protected async virtual Task ExitOperationModeAsync(LayoutEvent e) {
-			if(operationMode) {
-				OnCleanup();
-
-				await OnTerminateCommunication();
-				CloseCommunicationStream();
-
-				operationMode = false;
-			}
 		}
 
 		[LayoutEvent("end-design-time-layout-activation")]
@@ -227,17 +153,17 @@ namespace NumatoController {
 
 		[LayoutAsyncEvent("change-track-component-state-command", IfEvent="*[CommandStation/@ID='`string(@ID)`']")]
 		private Task changeTrackComponentStateCommand(LayoutEvent e0) {
-			var e = (LayoutEvent<ControlConnectionPointReference, int>)e0;
-			var connectionPointRef = e.Sender;
+            var e = (LayoutEvent<ControlConnectionPointReference, int>)e0;
+            var connectionPointRef = e.Sender;
 
-			int iRelay = connectionPointRef.Module.Address + connectionPointRef.Index;
-			bool on = e.Info != 0;
+            int iRelay = connectionPointRef.Module.Address + connectionPointRef.Index;
+            bool on = e.Info != 0;
 
-			return OutputManager.AddCommand(new SetRelayCommand(this, iRelay, on));
+            return OutputManager.AddCommand(new SetRelayCommand(this, iRelay, on));
 		}
 
 		[LayoutEvent("numato-invoke-events", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-		private void ncdInvokeEvents(LayoutEvent e0) {
+		private void numatoInvokeEvents(LayoutEvent e0) {
 			var e = (LayoutEvent<IList<LayoutEvent>>)e0;
 
 			foreach(var anEvent in e.Sender)
@@ -261,10 +187,9 @@ namespace NumatoController {
 			protected virtual string Command { get;  } = "";
 
             protected void Send(byte[] command) {
-                Trace.WriteLine($"NumatoRelayController: Sending: {Encoding.UTF8.GetString(command)}");
+                Trace.WriteLineIf(TraceNumato.TraceInfo, $"NumatoRelayController: Sending: {Encoding.UTF8.GetString(command)}");
 
-                if (!this.RelayController.Simulation)
-                    RelayController.commStream.Write(command, 0, command.Length);
+                RelayController.CommunicationStream.Write(command, 0, command.Length);
 
             }
 
@@ -295,19 +220,17 @@ namespace NumatoController {
                 var expectLength = expectToGet.Length;
                 var index = 0;
 
-                if (!RelayController.Simulation) {
-                    do {
-                        RelayController.CommStream.Read(reply, index, 1);
-                        index++;            // Read an additional byte
+                do {
+                    RelayController.CommunicationStream.Read(reply, index, 1);
+                    index++;            // Read an additional byte
 
-                        if(isSuffixOf(expectToGet, reply, index))
-                            break;
+                    if (isSuffixOf(expectToGet, reply, index))
+                        break;
 
-                    } while (index < reply.Length);
+                } while (index < reply.Length);
 
-                    if (index == reply.Length)
-                        throw new FormatException("Invalid Numator Relay controller reply (too long, probably junk)");
-                }
+                if (index == reply.Length)
+                    throw new FormatException("Invalid Numator Relay controller reply (too long, probably junk)");
 
                 return reply.ToString();
             }
@@ -380,6 +303,7 @@ namespace NumatoController {
                 }).SetCommandStation(RelayController));
             }
         }
+
 
 		#endregion
 	}

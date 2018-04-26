@@ -219,19 +219,16 @@ namespace LayoutManager {
 	/// This interface is implemented by any object that is capable of being locked by the lock
 	/// manager. For example, a block object
 	/// </summary>
-	public interface ILayoutLockResource : IObjectHasId {
+	public interface ILayoutLockResource : IModelComponentHasId {
+
+        /// <summary>
+        /// Return true if resource is ready to be locked.
+        /// </summary>
+        /// <returns></returns>
+        bool IsResourceReady();
 
 		/// <summary>
-		/// The lock request by which the resource is locked. If the value is null, then the
-		/// resource is not locked
-		/// </summary>
-		LayoutLockRequest LockRequest {
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Is the resource ready to be locked. 
+		/// Make sure that the resource ready to be locked. 
 		/// </summary>
 		/// <remarks>
 		/// For example, if the resource is some kind of a gate,
@@ -240,7 +237,12 @@ namespace LayoutManager {
 		/// (in our example, calling IsResourceReady when the gate is closed will initiate the opening
 		/// of this gate, and when the gate is open, the "layout-lock-resource-ready" event is sent.
 		/// </remarks>
-		bool IsResourceReady();
+		void MakeResourceReady();
+
+        /// <summary>
+        /// The resource is no longer needed, for example, if the resource is a gate, the gate may be closed.
+        /// </summary>
+        void FreeResource();
 	}
 
 	/// <summary>
@@ -336,9 +338,9 @@ namespace LayoutManager {
 	public interface ILayoutCommandStationEmulator : IDisposable {
 	}
 
-	#endregion
+#endregion
 
-	#region Trip Route planning related interfaces
+#region Trip Route planning related interfaces
 
 	/// <summary>
 	/// Describe one possible route from an origin to a destination.
@@ -452,9 +454,9 @@ namespace LayoutManager {
 		void Apply(TripPlanInfo tripPlan);
 	}
 
-	#endregion
+#endregion
 
-	#region Model Commands interfaces
+#region Model Commands interfaces
 
 	/// <summary>
 	/// Base class for all layout commands. Basically a command encupsolte an operation
@@ -548,9 +550,9 @@ namespace LayoutManager {
 		string RedoCommandName { get; }
 	}
 
-	#endregion
+#endregion
 
-	#region Layout power related interfaces
+#region Layout power related interfaces
 	/// <summary>
 	/// Enumeration of power type
 	/// </summary>
@@ -605,11 +607,13 @@ namespace LayoutManager {
 	/// A component that can provide power (for example a command station) implement this interface for each power outlet
 	/// </summary>
 	public interface ILayoutPowerOutlet {
-		/// <summary>
-		/// The description of this power source. Please note that a component may generate more than one power source.
-		/// For example, a command station could generate both digital track power and programming track power.
-		/// </summary>
-		string OutletDescription {
+        IModelComponentHasPowerOutlets OutletComponent { get; }
+
+        /// <summary>
+        /// The description of this power source. Please note that a component may generate more than one power source.
+        /// For example, a command station could generate both digital track power and programming track power.
+        /// </summary>
+        string OutletDescription {
 			get;
 		}
 
@@ -664,9 +668,9 @@ namespace LayoutManager {
 		bool IsConnected { get; }
 	}
 
-	#endregion
+#endregion
 
-	#region Script Editor related interfaces
+#region Script Editor related interfaces
 
 	/// <summary>
 	/// Functionallity implemented by the event script editor
@@ -687,9 +691,9 @@ namespace LayoutManager {
 		void SetEventScriptEditor(IEventScriptEditor eventScriptEditor);
 	}
 
-	#endregion
+#endregion
 
-	#region Drawing region related interfaces
+#region Drawing region related interfaces
 
 	/// <summary>
 	/// Implement by object referenced by Region.Info field to be notifiy when the region is clicked in editing mode.
@@ -719,7 +723,7 @@ namespace LayoutManager {
 		bool OnRegionRightClick();
 	}
 
-	#endregion
+#endregion
 }
 
 

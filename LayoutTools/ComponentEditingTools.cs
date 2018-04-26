@@ -381,7 +381,44 @@ namespace LayoutManager.Tools
 			menu.MenuItems.Add(item);
 		}
 
-		[LayoutEvent("query-editing-default-action", SenderType=typeof(LayoutTrackLinkComponent))]
+        [LayoutEvent("add-component-editing-context-menu-top-entries", SenderType = typeof(LayoutTrackPowerConnectorComponent))]
+        void addPowerConnectorContextMenuEntries(LayoutEvent e) {
+            Menu menu = (Menu)e.Info;
+            var powerConnectorcomponent = (LayoutTrackPowerConnectorComponent)e.Sender;
+
+            menu.MenuItems.Add("Assign as block resource",
+                (sender, ea) => {
+                    LayoutPhase checkPhases = LayoutPhase.None;
+                    LayoutCompoundCommand command = null;
+
+                    switch(powerConnectorcomponent.Spot.Phase) {
+                        case LayoutPhase.Operational: checkPhases = LayoutPhase.Operational; break;
+                        case LayoutPhase.Construction: checkPhases = LayoutPhase.Operational | LayoutPhase.Construction; break;
+                        case LayoutPhase.Planned: checkPhases = LayoutPhase.All; break;
+                    }
+
+                    if ((bool)EventManager.Event(new LayoutEvent(this, "check-layout", null, true).SetPhases(checkPhases))) {
+                        EventManager.Event(
+                            new LayoutEvent<LayoutTrackPowerConnectorComponent, Action<LayoutBlockDefinitionComponent>>("add-power-connector-as-resource", powerConnectorcomponent,
+                                blockDefinition => {
+                                    LayoutXmlInfo xmlInfo = new LayoutXmlInfo(blockDefinition);
+                                    var newBlockDefinitionInfo = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element);
+                                    command = command ?? new LayoutCompoundCommand("Assign power connector as resource");
+
+                                    newBlockDefinitionInfo.Resources.Add(powerConnectorcomponent.Id);
+                                    command.Add(new LayoutModifyComponentDocumentCommand(blockDefinition, xmlInfo));
+                                }
+                            )
+                        );
+
+                        if (command != null)
+                            LayoutController.Do(command);
+                    }
+                }
+            );
+        }
+  
+        [LayoutEvent("query-editing-default-action", SenderType=typeof(LayoutTrackLinkComponent))]
 		private void trackLinkQueryEditingDefaultAction(LayoutEvent e) {
 			e.Info = true;
 		}

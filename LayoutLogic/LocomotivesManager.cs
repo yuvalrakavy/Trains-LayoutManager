@@ -402,6 +402,7 @@ namespace LayoutManager.Logic {
 		// Trap events that invalidate the locomotive address map cache
 		[LayoutEvent("train-is-removed")]
 		[LayoutEvent("train-placed-on-track")]
+        [LayoutEvent("locomotive-power-changed")]
 		private void InvalidateAddressMap(LayoutEvent e) {
 			addressMapCache.Clear();
 		}
@@ -713,7 +714,7 @@ namespace LayoutManager.Logic {
                 lockRequest = new LayoutLockRequest(train.Id);
 
                 lockRequest.CancellationToken = e.GetCancellationToken();
-                lockRequest.ResourceEntries.Add(blockDefinition.Block);
+                lockRequest.Blocks.Add(blockDefinition.Block);
 
 
                 Task lockTask = EventManager.AsyncEvent(new LayoutEvent(lockRequest, "request-layout-lock-async").CopyOperationContext(e));
@@ -818,7 +819,7 @@ namespace LayoutManager.Logic {
 			// Get lock on the block that the train is about to be placed
 			LayoutLockRequest lockRequest = new LayoutLockRequest(train.Id);
 
-			lockRequest.ResourceEntries.Add(blockDefinition.Block);
+			lockRequest.Blocks.Add(blockDefinition.Block);
 			EventManager.Event(new LayoutEvent(lockRequest, "request-layout-lock"));
 
 			// Create the new location for the train
@@ -925,12 +926,13 @@ namespace LayoutManager.Logic {
 
 			lockRequest.Type = LayoutLockType.Programming;
 			lockRequest.CancellationToken = canellationToken;
-			lockRequest.ResourceEntries.Add(programmingLocation.PowerConnector.Blocks);
+			lockRequest.Blocks.Add(programmingLocation.PowerConnector.Blocks);
 
 			var commandStationResource = (from power in programmingLocation.PowerConnector.Inlet.ConnectedOutlet.ObtainablePowers where power.Type == LayoutPowerType.Programmer select power.PowerOriginComponent).FirstOrDefault() as ILayoutLockResource;
 
 			Debug.Assert(commandStationResource != null);
-			lockRequest.ResourceEntries.Add(commandStationResource);
+
+			lockRequest.Resources = new ILayoutLockResource[] { commandStationResource };
 			return lockRequest;
 		}
 
@@ -1050,7 +1052,7 @@ namespace LayoutManager.Logic {
 				// Get lock on the block that the train is about to be placed
 				LayoutLockRequest lockRequest = new LayoutLockRequest(train.Id);
 
-				lockRequest.ResourceEntries.Add(newBlock);
+				lockRequest.Blocks.Add(newBlock);
 
 				bool granted = (bool)EventManager.Event(new LayoutEvent(lockRequest, "request-layout-lock"));
 
@@ -1169,7 +1171,7 @@ namespace LayoutManager.Logic {
 
 
 		/// <summary>
-		/// This event is sent by the command station component when it get an idiciation of a change
+		/// This event is sent by the command station component when it get an indiciation of a change
 		/// in a locomotive motion parameters
 		/// </summary>
 		/// <param name="e.Sender">The command station component</param>
@@ -1528,7 +1530,7 @@ namespace LayoutManager.Logic {
 				// Get lock on the block that the train is about to be placed
 				LayoutLockRequest lockRequest = new LayoutLockRequest(trainLocation.Train.Id);
 
-				lockRequest.ResourceEntries.Add(trainLocation.Block);
+				lockRequest.Blocks.Add(trainLocation.Block);
 				EventManager.Event(new LayoutEvent(lockRequest, "request-layout-lock"));
 
 				trainLocation.Block.AddTrain(trainLocation);
@@ -1537,20 +1539,24 @@ namespace LayoutManager.Logic {
 			trainLocations.Sort(new TrackContactCrossTimeSorter());
 
 			foreach(TrainLocationInfo trainLocation in trainLocations) {
-				LayoutLockRequest lockRequest = new LayoutLockRequest(trainLocation.Train.Id);
-
-				lockRequest.ResourceEntries.Add(trainLocation.Block);
-				EventManager.Event(new LayoutEvent(lockRequest, "request-layout-lock"));
 
 				trainLocation.Block.AddTrain(trainLocation);
 
 				if(trainLocation.Block.BlockDefinintion != null)
 					trainLocation.Train.RefreshSpeedLimit();
-			}
 
-			LayoutModel.StateManager.Trains.RebuildIdMap();
+            }
 
-			return (invalidStateElements.Count == 0);	// Fail if any invaid element was found
+            LayoutModel.StateManager.Trains.RebuildIdMap();
+
+            foreach (TrainLocationInfo trainLocation in trainLocations) {
+                LayoutLockRequest lockRequest = new LayoutLockRequest(trainLocation.Train.Id);
+
+                lockRequest.Blocks.Add(trainLocation.Block);
+                EventManager.Event(new LayoutEvent(lockRequest, "request-layout-lock").SetOption("DoNotLockResources", true));
+            }
+
+            return (invalidStateElements.Count == 0);	// Fail if any invaid element was found
 		}
 
 		[LayoutEvent("enter-operation-mode", Order = 20000)]

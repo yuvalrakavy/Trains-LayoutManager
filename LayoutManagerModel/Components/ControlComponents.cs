@@ -419,9 +419,13 @@ namespace LayoutManager.Components {
 			set {
 				if(value)
 					Element.RemoveAttribute("IsWaitable");
-				else
-					Element.SetAttribute("IsWaitable", XmlConvert.ToString(blockDefinition.Block.CanTrainWaitDefault));
-			}
+				else {
+                    if (blockDefinition.Block != null)
+                        Element.SetAttribute("IsWaitable", XmlConvert.ToString(blockDefinition.Block.CanTrainWaitDefault));
+                    else
+                        Element.SetAttribute("IsWaitable", XmlConvert.ToString(value));
+                }
+            }
 		}
 
 		public bool CanTrainWait {

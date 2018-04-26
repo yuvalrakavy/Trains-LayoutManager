@@ -171,7 +171,7 @@ namespace LayoutManager.Tools.Dialogs
 			LayoutLockRequest	request = new LayoutLockRequest();
 
 			foreach(LayoutBlockDefinitionComponent blockInfo in listBoxBlockInfo.Items)
-				request.ResourceEntries.Add(blockInfo.Block);
+				request.Blocks.Add(blockInfo.Block);
 
 			request.OwnerId = Guid.NewGuid();
 

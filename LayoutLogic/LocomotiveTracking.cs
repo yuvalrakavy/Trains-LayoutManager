@@ -148,6 +148,8 @@ namespace LayoutManager.Logic {
                 lex.Report();
                 if (switchBreakOnBadLocomotiveTracking.Enabled)
                     Debugger.Break();
+
+                EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation, string>("emergency-stop-request", null, "Train location tracking error: " + lex.Message));
             }
         }
 

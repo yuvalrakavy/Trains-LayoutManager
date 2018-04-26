@@ -1501,7 +1501,7 @@ namespace LayoutManager.Tools {
 				// Get lock on the block that the train is about to be placed
 				LayoutLockRequest	lockRequest = new LayoutLockRequest(extendableTrainInfo.Train.Id);
 
-				lockRequest.ResourceEntries.Add(block);
+				lockRequest.Blocks.Add(block);
 				EventManager.Event(new LayoutEvent(lockRequest, "request-layout-lock"));
 
 				TrackContactPassingStateInfo	trackContactPassingState = null;
@@ -1550,7 +1550,7 @@ namespace LayoutManager.Tools {
 					int							iCpIndex = block.BlockDefinintion.GetConnectionPointIndex(newTrainLocation.DisplayFront);
 					LayoutBlockEdgeBase[]	otherBlockEdges = block.BlockDefinintion.GetBlockEdges(1-iCpIndex);
 
-					if(otherBlockEdges == null)
+					if(otherBlockEdges == null || otherBlockEdges.Length == 0)
 						newTrainLocation.BlockEdge = null;
 					else
 						newTrainLocation.BlockEdge = otherBlockEdges[0];

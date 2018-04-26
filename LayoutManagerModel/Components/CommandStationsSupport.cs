@@ -11,10 +11,15 @@ using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
 
 using LayoutManager.Model;
+using System.Net.Sockets;
 
 namespace LayoutManager {
+    public enum CommunicationInterfaceType {
+        Serial,
+        TCP,
+    };
 
-	public static class CommandStationLayoutEventExtender {
+    public static class CommandStationLayoutEventExtender {
         /// <summary>
         /// Add command station identifier to event. This should be call for each event that should be handled by a specific command station.
         /// It adds CommandStation option section with the command station's ID and name. The command station's event handler can use this information 
@@ -59,22 +64,16 @@ namespace LayoutManager.Components {
 
 	#region Base class for command station components
 
-	/// <summary>
-	///Base class for command station components. This class implements the functionality that is common to command station components,
-	///Thus making it simpler to implement those components.
-	/// </summary>
-	public abstract class LayoutCommandStationComponent : ModelComponent, IModelComponentIsCommandStation, IDisposable, ILayoutLockResource {
-		FileStream						commStream;
-		LayoutPowerOutlet				trackPowerOutlet;
-		LayoutPowerOutlet				programmingPowerOutlet;
-		ILayoutInterThreadEventInvoker	invoker;
-		bool							operationMode;
-		ILayoutEmulatorServices			_layoutEmulationServices;
-		System.Threading.Timer			animatedTrainsTimer;						
-		LayoutSelection					animatedTrainsSelection;
-		ILayoutCommandStationEmulator	commandStationEmulator;
+    public abstract class LayoutBusProviderSupport : ModelComponent, IModelComponentIsBusProvider {
+        ILayoutEmulatorServices _layoutEmulationServices;
+        Stream commStream;
+        ILayoutCommandStationEmulator commandStationEmulator;
+        ILayoutInterThreadEventInvoker invoker;
+        bool operationMode;
 
-        #region Public component properties & methods
+        public const string InterfaceTypeAttribute = "InterfaceType";
+        public const string PortAttribute = "Port";
+        public const string AddressAttribute = "Address";
 
         public override ModelComponentKind Kind => ModelComponentKind.ControlComponent;
 
@@ -84,25 +83,251 @@ namespace LayoutManager.Components {
 
         public string Name => NameProvider.Name;
 
-        public ILayoutEmulatorServices LayoutEmulationServices {
-			get {
-				if(_layoutEmulationServices == null)
-					_layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent(this, "get-layout-emulation-services"));
-				return _layoutEmulationServices;
-			}
-		}
+        public abstract IList<string> BusTypeNames
+        {
+            get;
+        }
 
-		public bool EmulateLayout {
-			get; set;
-		}
+
+        public ILayoutEmulatorServices LayoutEmulationServices
+        {
+            get
+            {
+                if (_layoutEmulationServices == null)
+                    _layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent(this, "get-layout-emulation-services"));
+                return _layoutEmulationServices;
+            }
+        }
+
+        public bool EmulateLayout
+        {
+            get; set;
+        }
+
+        protected virtual ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) {
+            throw new ArgumentException("You must implement a CreateCommandStationEmulator method, or not use layout emulation");
+        }
+
+        #region Properties accessible from derived concrete command station component classes
+
+        public Stream CommunicationStream => commStream;
+
+        public ILayoutInterThreadEventInvoker InterThreadEventInvoker => invoker;
+
+        public bool OperationMode => operationMode;
+
+        public CommunicationInterfaceType InterfaceType {
+            get {
+                if (Element.HasAttribute(InterfaceTypeAttribute))
+                    return (CommunicationInterfaceType)Enum.Parse(typeof(CommunicationInterfaceType), Element.GetAttribute(InterfaceTypeAttribute));
+                else
+                    return CommunicationInterfaceType.Serial;
+            }
+
+            set {
+                Element.SetAttribute(InterfaceTypeAttribute, value.ToString());
+            }
+        }
+
+        public string IPaddress {
+            get { return Element.GetAttribute(AddressAttribute); }
+            set { Element.SetAttribute(AddressAttribute, value); }
+        }
+
+ 
+        #endregion
+
+        protected virtual void OpenCommunicationStream() {
+            if (EmulateLayout && LayoutEmulationSupported) {
+                string pipeName = @"\\.\pipe\CommandStationEmulationFor_" + Name;
+                bool overlappedIO = GetBool("OverlappedIO");
+
+                SafeFileHandle handle = (SafeFileHandle)EventManager.Event(new LayoutEvent(pipeName, "create-named-pipe-request",
+                    null, overlappedIO));
+
+                commandStationEmulator = CreateCommandStationEmulator(pipeName);
+
+                commStream = (FileStream)EventManager.Event(new LayoutEvent(handle, "wait-named-pipe-client-to-connect-request", null, overlappedIO));
+            }
+            else if(InterfaceType == CommunicationInterfaceType.Serial)
+                commStream = (FileStream)EventManager.Event(new LayoutEvent(Element, "open-serial-communication-device-request"));
+            else if(InterfaceType == CommunicationInterfaceType.TCP)
+                commStream = new TcpClient(IPaddress, 23).GetStream();
+        }
+
+        protected virtual void CloseCommunicationStream() {
+            if (commandStationEmulator != null) {
+                commandStationEmulator.Dispose();
+                commandStationEmulator = null;
+
+                EventManager.Event(new LayoutEvent(CommunicationStream, "disconnect-named-pipe-request"));
+            }
+
+            if (commStream != null) {
+                FileStream fileCommStream = commStream as FileStream;
+                SafeFileHandle safeHandle = fileCommStream?.SafeFileHandle;
+
+                if (fileCommStream != null)
+                    safeHandle.Close();
+
+                CommunicationStream.Close();
+                System.GC.Collect();
+
+                if (fileCommStream != null && !safeHandle.IsClosed)
+                    Trace.WriteLine("Warning: PORT WAS NOT CLOSED");
+
+                commStream = null;
+            }
+        }
+
+        public override void OnAddedToModel() {
+            base.OnAddedToModel();
+
+            LayoutModel.ControlManager.Buses.AddBusProvider(this);
+            invoker = EventManager.Instance.InterThreadEventInvoker;
+        }
+
+        public override void OnRemovingFromModel() {
+            base.OnRemovingFromModel();
+
+            LayoutModel.ControlManager.Buses.RemoveBusProvider(this);
+        }
+
+        /// <summary>
+        /// Returns true if this command station component supports layout emulation
+        /// </summary>
+        public virtual bool LayoutEmulationSupported => false;
+
+        /// <summary>
+        /// If design time layout activation supported
+        /// </summary>
+        /// <value>true if yes</value>
+        public virtual bool DesignTimeLayoutActivationSupported => false;
+
+        /// <summary>
+        /// Does this command station supports processing of a batch of multipath (e.g. turnout) switching
+        /// </summary>
+        public virtual bool BatchMultipathSwitchingSupported => false;
+
+        // Error and warning methods that can be called from any thread
+
+        public override void Error(object subject, string message) {
+            if (InterThreadEventInvoker == null)
+                base.Error(subject, message);
+            else
+                InterThreadEventInvoker.QueueEvent(new LayoutEvent(subject, "add-error", null, message));
+        }
+
+        public override void Warning(object subject, string message) {
+            if (InterThreadEventInvoker == null)
+                base.Warning(subject, message);
+            else
+                InterThreadEventInvoker.QueueEvent(new LayoutEvent(subject, "add-warning", null, message));
+        }
+
+        /// <summary>
+        /// Set attributes/elements of this command station XML element to provide all the needed setup information
+        /// for opening the communication channel to the command station.
+        /// </summary>
+        protected virtual void OnCommunicationSetup() {
+        }
+
+        /// <summary>
+        /// Called after the communication stream is opened, initialize command station operation
+        /// </summary>
+        protected virtual void OnInitialize() {
+        }
+
+        /// <summary>
+        /// Called after operation mode has been entered, command station initialized, and power was set on
+        /// </summary>
+        protected virtual void OnEnteredOperationMode() {
+        }
+
+        /// <summary>
+        /// Called just before closing the communication stream, ensure that all commands queue are empty etc.
+        /// Default implementation is returning a completed task that does noting
+        /// </summary>
+        protected virtual Task OnTerminateCommunication() {
+            var tcs = new TaskCompletionSource<object>();
+
+            tcs.SetResult(null);
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Terminate command station operation. Called before terminating power to the layout
+        /// </summary>
+        protected virtual void OnCleanup() {
+        }
+        // Event handlers
+
+        [LayoutEvent("enter-operation-mode")]
+        protected virtual void EnterOperationMode(LayoutEvent e0) {
+            var e = (LayoutEvent<OperationModeParameters>)e0;
+
+            EmulateLayout = e.Sender.Simulation;
+
+            OnCommunicationSetup();
+            OpenCommunicationStream();
+
+            operationMode = true;
+            OnInitialize();
+
+            // Connect power to the layout
+            EventManager.Event(new LayoutEvent(this, "connect-power-request"));
+            EventManager.Event(new LayoutEvent(this, "reset-layout-emulation"));
+
+            OnEnteredOperationMode();
+        }
+
+        [LayoutAsyncEvent("exit-operation-mode-async")]
+        protected async virtual Task ExitOperationModeAsync(LayoutEvent e) {
+            if (OperationMode) {
+                OnCleanup();
+
+                // Disconnect power to the layout
+                Trace.WriteLine($"{FullDescription} Disconnect track request");
+                EventManager.Event(new LayoutEvent(this, "disconnect-power-request"));
+
+                await OnTerminateCommunication();
+                CloseCommunicationStream();
+
+                Trace.WriteLine($"{FullDescription} After CloseCommunicationStream");
+
+                operationMode = false;
+            }
+        }
+
+        #region Utility methods
+
+        bool GetBool(string name, bool defaultValue) {
+            if (Element.HasAttribute(name))
+                return XmlConvert.ToBoolean(Element.GetAttribute(name));
+            return defaultValue;
+        }
+
+        bool GetBool(string name) => GetBool(name, false);
+
+        #endregion
+
+    }
+
+    /// <summary>
+    ///Base class for command station components. This class implements the functionality that is common to command station components,
+    ///Thus making it simpler to implement those components.
+    /// </summary>
+    public abstract class LayoutCommandStationComponent : LayoutBusProviderSupport, IModelComponentIsCommandStation, IDisposable, ILayoutLockResource {
+		LayoutPowerOutlet				trackPowerOutlet;
+		LayoutPowerOutlet				programmingPowerOutlet;
+		System.Threading.Timer			animatedTrainsTimer;						
+		LayoutSelection					animatedTrainsSelection;
+
+        #region Public component properties & methods
 
         public int EmulationTickTime => XmlConvert.ToInt32(Element.GetAttribute("EmulationTickTime"));
 
         public bool AnimateTrainMotion => XmlConvert.ToBoolean(Element.GetAttribute("AnimateTrainMotion"));
-
-        public abstract IList<string> BusTypeNames {
-			get;
-		}
 
 		public IList<ILayoutPowerOutlet> PowerOutlets {
 			get {
@@ -115,33 +340,47 @@ namespace LayoutManager.Components {
 
         #endregion
 
-        #region Properties accessible from derived concrete command station component classes
+        override protected void OpenCommunicationStream() {
+            base.OpenCommunicationStream();
 
-        public FileStream CommunicationStream => commStream;
+            if (EmulateLayout && LayoutEmulationSupported) {
+                if (AnimateTrainMotion) {
+                    animatedTrainsSelection = new LayoutSelection();
+                    animatedTrainsSelection.Display(new LayoutSelectionLook(Color.DarkSlateBlue));
 
-        public ILayoutInterThreadEventInvoker InterThreadEventInvoker => invoker;
+                    animatedTrainsTimer = new System.Threading.Timer(new TimerCallback(animationTimerCallback), null, 500, 200);
+                }
+            }
+        }
 
-        public bool OperationMode => operationMode;
+        override protected void CloseCommunicationStream() {
+            if (animatedTrainsTimer != null) {
+                animatedTrainsTimer.Dispose();
+                animatedTrainsTimer = null;
+            }
 
-        #endregion
+            if (animatedTrainsSelection != null) {
+                animatedTrainsSelection.Hide();
+                animatedTrainsSelection.Clear();
+                animatedTrainsSelection = null;
+            }
+
+            base.CloseCommunicationStream();
+        }
 
         #region Methods callable from derived concrete command station component classes
 
         public override void OnAddedToModel() {
 			base.OnAddedToModel();
 
-			trackPowerOutlet = new LayoutPowerOutlet("Track", new LayoutPower(this, LayoutPowerType.Digital, this.SupportedDigitalPowerFormats, "Track"));
+			trackPowerOutlet = new LayoutPowerOutlet(this, "Track", new LayoutPower(this, LayoutPowerType.Digital, this.SupportedDigitalPowerFormats, "Track"));
 			if(this is IModelComponentCanProgramLocomotives)
-				programmingPowerOutlet = new LayoutPowerOutlet("Programming", new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, "Programming"));
-
-			LayoutModel.ControlManager.Buses.AddBusProvider(this);
-			invoker = EventManager.Instance.InterThreadEventInvoker;
+				programmingPowerOutlet = new LayoutPowerOutlet(this, "Programming", new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, "Programming"));
 		}
 
 		public override void OnRemovingFromModel() {
 			base.OnRemovingFromModel();
 
-			LayoutModel.ControlManager.Buses.RemoveBusProvider(this);
 			trackPowerOutlet = null;
 			programmingPowerOutlet = null;
 		}
@@ -170,76 +409,6 @@ namespace LayoutManager.Components {
 		protected void ProgrammingPowerOff() {
 			if(OperationMode)
 				programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Disconnected, DigitalPowerFormats.None, Name + "_programming");
-		}
-
-		protected void OpenCommunicationStream() {
-			if(EmulateLayout && LayoutEmulationSupported) {
-				string	pipeName = @"\\.\pipe\CommandStationEmulationFor_" + Name;
-				bool	overlappedIO = GetBool("OverlappedIO"); 
-
-				SafeFileHandle	handle = (SafeFileHandle)EventManager.Event(new LayoutEvent(pipeName, "create-named-pipe-request",
-					null, overlappedIO));
-
-				commandStationEmulator = CreateCommandStationEmulator(pipeName);
-
-				commStream = (FileStream)EventManager.Event(new LayoutEvent(handle, "wait-named-pipe-client-to-connect-request", null, overlappedIO));
-
-				if(AnimateTrainMotion) {
-					animatedTrainsSelection = new LayoutSelection();
-					animatedTrainsSelection.Display(new LayoutSelectionLook(Color.DarkSlateBlue));
-
-					animatedTrainsTimer = new System.Threading.Timer(new TimerCallback(animationTimerCallback), null, 500, 200);
-				}
-			}
-			else
-				commStream = (FileStream)EventManager.Event(new LayoutEvent(Element, "open-serial-communication-device-request"));
-		}
-
-		protected void CloseCommunicationStream() {
-			if(commandStationEmulator != null) {
-				if(animatedTrainsTimer != null) {
-					animatedTrainsTimer.Dispose();
-					animatedTrainsTimer = null;
-				}
-
-				if(animatedTrainsSelection != null) {
-					animatedTrainsSelection.Hide();
-					animatedTrainsSelection.Clear();
-					animatedTrainsSelection = null;
-				}
-
-				commandStationEmulator.Dispose();
-				commandStationEmulator = null;
-
-				EventManager.Event(new LayoutEvent(CommunicationStream, "disconnect-named-pipe-request"));
-			}
-
-			if(commStream != null) {
-				SafeFileHandle sh = commStream.SafeFileHandle;
-
-				commStream.SafeFileHandle.Close();
-				CommunicationStream.Close();
-				System.GC.Collect();
-				if(!sh.IsClosed)
-					Trace.WriteLine("Warning: PORT WAS NOT CLOSED");
-				commStream = null;
-			}
-		}
-
-		// Error and warning methods that can be called from any thread
-
-		public override void Error(object subject, string message) {
-			if(InterThreadEventInvoker == null)
-				base.Error(subject, message);
-			else
-				InterThreadEventInvoker.QueueEvent(new LayoutEvent(subject, "add-error", null, message));
-		}
-
-		public override void Warning(object subject, string message) {
-			if(InterThreadEventInvoker == null)
-				base.Warning(subject, message);
-			else
-				InterThreadEventInvoker.QueueEvent(new LayoutEvent(subject, "add-warning", null, message));
 		}
 
 		#region Animate Train (when using emulation)
@@ -273,7 +442,7 @@ namespace LayoutManager.Components {
 		}
 
 		private void animationTimerCallback(object state) {
-			invoker.QueueEvent(new LayoutEvent(this, "show-emulated-locomotive-locations"));
+            InterThreadEventInvoker.QueueEvent(new LayoutEvent(this, "show-emulated-locomotive-locations"));
 		}
 
         #endregion
@@ -281,22 +450,6 @@ namespace LayoutManager.Components {
         #endregion
 
         #region Overridable properties
-
-        /// <summary>
-        /// Returns true if this command station component supports layout emulation
-        /// </summary>
-        public virtual bool LayoutEmulationSupported => false;
-
-        /// <summary>
-        /// If design time layout activation supported
-        /// </summary>
-        /// <value>true if yes</value>
-        public virtual bool DesignTimeLayoutActivationSupported => false;
-
-        /// <summary>
-        /// Does this command station supports processing of a batch of multipath (e.g. turnout) switching
-        /// </summary>
-        public virtual bool BatchMultipathSwitchingSupported => false;
 
         /// <summary>
         /// Does this command station perform train analysis before entering operational mode. Layout analysis is
@@ -312,41 +465,6 @@ namespace LayoutManager.Components {
 
 		#region Overridable methods
 
-		/// <summary>
-		/// Set attributes/elements of this command station XML element to provide all the needed setup information
-		/// for opening the communication channel to the command station.
-		/// </summary>
-		protected virtual void OnCommunicationSetup() {
-		}
-
-		/// <summary>
-		/// Called after the communication stream is opened, initialize command station operation
-		/// </summary>
-		protected virtual void OnInitialize() {
-		}
-
-		/// <summary>
-		/// Called after operation mode has been entered, command station initialized, and power was set on
-		/// </summary>
-		protected virtual void OnEnteredOperationMode() {
-		}
-
-		/// <summary>
-		/// Called just before closing the communication stream, ensure that all commands queue are empty etc.
-		/// Default implementation is returning a completed task that does noting
-		/// </summary>
-		protected virtual Task OnTerminateCommunication() {
-			var tcs = new TaskCompletionSource<object>();
-
-			tcs.SetResult(null);
-			return tcs.Task;
-		}
-
-		/// <summary>
-		/// Terminate command station operation. Called before terminating power to the layout
-		/// </summary>
-		protected virtual void OnCleanup() {
-		}
 
         public virtual int GetLowestLocomotiveAddress(DigitalPowerFormats format) => 1;
 
@@ -359,10 +477,6 @@ namespace LayoutManager.Components {
 				throw new ArgumentException("Unsupported digital power format: " + format.ToString());
 		}
 
-		protected virtual ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) {
-			throw new ArgumentException("You must implement a CreateCommandStationEmulator method, or not use layout emulation");
-		}
-
 		#endregion
 
 		#region Event handlers
@@ -373,43 +487,6 @@ namespace LayoutManager.Components {
 				List<IModelComponentIsCommandStation> needAnalysis = (List<IModelComponentIsCommandStation>)e.Info;
 
 				needAnalysis.Add(this);
-			}
-		}
-
-		[LayoutEvent("enter-operation-mode")]
-		protected virtual void EnterOperationMode(LayoutEvent e0) {
-			var e = (LayoutEvent<OperationModeParameters>)e0;
-
-			EmulateLayout = e.Sender.Simulation;
-
-			OnCommunicationSetup();
-			OpenCommunicationStream();
-
-			operationMode = true;
-			OnInitialize();
-
-			// Connect power to the layout
-			EventManager.Event(new LayoutEvent(this, "connect-power-request"));
-			EventManager.Event(new LayoutEvent(this, "reset-layout-emulation"));
-
-			OnEnteredOperationMode();
-		}
-
-		[LayoutAsyncEvent("exit-operation-mode-async")]
-		protected async virtual Task ExitOperationModeAsync(LayoutEvent e) {
-			if(OperationMode) {
-				OnCleanup();
-
-				// Disconnect power to the layout
-				Trace.WriteLine("Disconnect track request");
-				EventManager.Event(new LayoutEvent(this, "disconnect-power-request"));
-
-				await OnTerminateCommunication();
-				CloseCommunicationStream();
-
-				Trace.WriteLine("After CloseCommunicationStream");
-
-				operationMode = false;
 			}
 		}
 
@@ -458,18 +535,6 @@ namespace LayoutManager.Components {
 
 		#endregion
 
-		#region Utility methods
-
-		bool GetBool(string name, bool defaultValue) {
-			if(Element.HasAttribute(name))
-				return XmlConvert.ToBoolean(Element.GetAttribute(name));
-			return defaultValue;
-		}
-
-        bool GetBool(string name) => GetBool(name, false);
-
-        #endregion
-
         #region IDisposable Members
 
         public void Dispose() {
@@ -485,19 +550,20 @@ namespace LayoutManager.Components {
 				programmingPowerOutlet = null;
 		}
 
-		#endregion
+        #endregion
 
-		#region ILayoutLockResource Members
+        #region ILayoutLockResource Members
 
-		/// <summary>
-		/// Command station is locked when it is used for programming. This prevent a command station from being used
-		/// to perform multiple programming sequences in the same time.
-		/// </summary>
-		public LayoutLockRequest LockRequest {
-			get; set;
-		}
+        /// <summary>
+        /// Command station is locked when it is used for programming. This prevent a command station from being used
+        /// to perform multiple programming sequences in the same time.
+        /// </summary>
 
         public bool IsResourceReady() => true;
+
+        public void MakeResourceReady() { }
+
+        public void FreeResource() { }
 
         #endregion
     }
@@ -841,8 +907,6 @@ namespace LayoutManager.Components {
 
 			for(int i = 0; i < queues.Length; i++)
 				queues[i] = new CommandManagerQueue(workToDo, queues);
-
-            traceOutputManager.Level = TraceLevel.Info;        // DEBUG - set for now
 		}
 
 		#region Operations

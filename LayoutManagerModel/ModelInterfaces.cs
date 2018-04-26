@@ -112,19 +112,19 @@ namespace LayoutManager.Model {
 		/// Does this bus provider supports processing of a batch of multipath (e.g. turnout) switching
 		/// </summary>
 		bool BatchMultipathSwitchingSupported { get; }
-	}
 
-	public interface IModelComponentIsCommandStation : IModelComponentHasId, IModelComponentHasName, IModelComponentIsBusProvider, IModelComponentHasPowerOutlets {
+        /// <summary>
+        /// Is layout emulation supported (operation when off-line)
+        /// </summary>
+        /// <value>True if yes</value>
+        bool LayoutEmulationSupported { get; }
+    }
+
+    public interface IModelComponentIsCommandStation : IModelComponentHasId, IModelComponentHasName, IModelComponentIsBusProvider, IModelComponentHasPowerOutlets {
 		/// <summary>
 		/// The command station name
 		/// </summary>
 		string Name { get; }
-
-		/// <summary>
-		/// Is layout emulation supported (operation when off-line)
-		/// </summary>
-		/// <value>True if yes</value>
-		bool LayoutEmulationSupported { get; }
 
 		/// <summary>
 		/// If design time layout activation supported

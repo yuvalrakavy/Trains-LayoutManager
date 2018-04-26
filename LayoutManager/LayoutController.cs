@@ -285,14 +285,6 @@ namespace LayoutManager {
 			}
 
 			if(switchMode) {
-				if(!(bool)EventManager.Event(new LayoutEvent(LayoutModel.Instance, "rebuild-layout-state").SetPhases(settings.Phases))) {
-					if(MessageBox.Show(ActiveFrameWindow, "The layout design or locomotive collection were modified. The previous state could not be fully restored.\n\n" +
-						"Would you like to continue with the partially restored state?\n\nSelecting \"No\" will clear the state. In this case, you will " +
-						"have to indicate the locomotive positions again", "Locomotive state cannot be restored",
-						MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-						EventManager.Event(new LayoutEvent(LayoutModel.Instance, "clear-layout-state"));
-				}
-
 				try {
 					// Switch to operation mode.
 					if(!IsOperationMode) {
@@ -319,8 +311,16 @@ namespace LayoutManager {
 
 					EventManager.Event(new LayoutEvent<OperationModeParameters>("enter-operation-mode", settings));
 					LayoutModel.Instance.Redraw();
-				}
-				catch(Exception ex) {
+
+                    if (!(bool)EventManager.Event(new LayoutEvent(LayoutModel.Instance, "rebuild-layout-state").SetPhases(settings.Phases))) {
+                        if (MessageBox.Show(ActiveFrameWindow, "The layout design or locomotive collection were modified. The previous state could not be fully restored.\n\n" +
+                            "Would you like to continue with the partially restored state?\n\nSelecting \"No\" will clear the state. In this case, you will " +
+                            "have to indicate the locomotive positions again", "Locomotive state cannot be restored",
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                            EventManager.Event(new LayoutEvent(LayoutModel.Instance, "clear-layout-state"));
+                    }
+                }
+                catch (Exception ex) {
 					EventManager.Event(new LayoutEvent(null, "add-error", null, "Could not enter operational mode - " + ex.Message));
 
 					ExitOperationModeRequest().Wait();
@@ -354,9 +354,9 @@ namespace LayoutManager {
 			Debug.Assert(trainsAnalysisPhaseCount >= 0);
 		}
 
-		#endregion
+#endregion
 
-		#region Design Mode 
+#region Design Mode 
 
 		public async Task EnterDesignModeRequest() {
 			if(IsOperationMode) {
@@ -373,9 +373,9 @@ namespace LayoutManager {
 			LayoutModel.Instance.Redraw();
 		}
 
-		#endregion
+#endregion
 
-		#region Design time activation
+#region Design time activation
 
 		/// <summary>
 		/// Begin design time activation of command stations. Use this for enabling limited operation such as testing elements etc.
@@ -438,13 +438,13 @@ namespace LayoutManager {
         /// </summary>
         public bool IsDesignTimeActivation => layoutDesignTimeActivationNesting > 0;
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region Controller Properties
+#region Controller Properties
 
-        #region Layout files
+#region Layout files
 
         public string LayoutDisplayStateFilename {
 			get;
@@ -477,7 +477,7 @@ namespace LayoutManager {
 			}
 		}
 
-		#endregion
+#endregion
 
 		/// <summary>
 		/// The currently active frame window
@@ -515,9 +515,9 @@ namespace LayoutManager {
 
         public LayoutSelection UserSelection => userSelection;
 
-        #endregion
+#endregion
 
-        #region Model Initialization/Loading/saving
+#region Model Initialization/Loading/saving
 
         /// <summary>
         /// Create a new layout, that is a new model, and one default view called overview
@@ -590,9 +590,9 @@ namespace LayoutManager {
 			w.Close();
 		}
 
-		#endregion
+#endregion
 
-		#region Handle model area /Add/Removed/Rename events
+#region Handle model area /Add/Removed/Rename events
 
 		/// <summary>
 		/// Add a new area to the model
@@ -628,9 +628,9 @@ namespace LayoutManager {
 			LayoutModified();
 		}
 
-		#endregion
+#endregion
 
-		#region ILayoutController Members
+#region ILayoutController Members
 
 		public void Do(ILayoutCommand command) {
 			commandManager.Do(command);
@@ -656,9 +656,9 @@ namespace LayoutManager {
 			commandManager.ChangeLevel++;
 		}
 
-		#endregion
+#endregion
 
-		#region ILayoutSelectionManager Members
+#region ILayoutSelectionManager Members
 
 		public void DisplaySelection(LayoutSelection selection, int zOrder) {
 			if(zOrder == LayoutSelection.ZOrderBottom)
@@ -673,9 +673,9 @@ namespace LayoutManager {
 
         public IList<LayoutSelection> DisplayedSelections => displayedSelections.AsReadOnly();
 
-        #endregion
+#endregion
 
-        #region Event Handlers
+#region Event Handlers
 
         [LayoutEvent("save-layout")]
 		private void saveLayout(LayoutEvent e) {
@@ -686,7 +686,7 @@ namespace LayoutManager {
 				LayoutModel.StateManager.Save();
 		}
 
-		#endregion
+#endregion
 	}
 
 	public class LayoutDisplayState : LayoutXmlWrapper {

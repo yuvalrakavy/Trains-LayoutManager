@@ -60,8 +60,11 @@ namespace LayoutManager.Components {
         /// <param name="connectionPointName">Connection point name or null for the default connection point</param>
         /// <returns>Connection point state</returns>
         public virtual int GetSwitchState(string connectionPointName) {
-            if (LayoutModel.StateManager.Components.Contains(Component.Id, StateTopic))
-                return XmlConvert.ToInt32(LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic).GetAttribute(($"Value{connectionPointName}")));
+            if (LayoutModel.StateManager.Components.Contains(Component.Id, StateTopic)) {
+                var state = LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic).GetAttribute(($"Value{connectionPointName}"));
+
+                return string.IsNullOrWhiteSpace(state) ? 0 : XmlConvert.ToInt32(state);
+            }
             else
                 return 0;
 
