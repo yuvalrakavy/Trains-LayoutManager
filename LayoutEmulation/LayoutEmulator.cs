@@ -301,16 +301,22 @@ namespace LayoutEmulation {
 
 					foreach(TrainLocomotiveInfo trainLocomotive in train.Locomotives) {
 						LocomotiveInfo			loco = trainLocomotive.Locomotive;
-						LayoutTrackComponent	locoTrack = train.LocomotiveLocation.Block.BlockDefinintion.Track;
-						ILayoutPower			locoPower = locoTrack.GetPower(locoTrack.ConnectionPoints[0]);
 
-						LocomotiveState locomotive = AddLocomotive(commandStationId, loco.AddressProvider.Unit, 
-							new TrackEdge(train.LocomotiveBlock.BlockDefinintion.Track, train.LocomotiveLocation.DisplayFront));
+                        if (loco != null) {
+                            LayoutTrackComponent locoTrack = train.LocomotiveLocation.Block.BlockDefinintion.Track;
+                            ILayoutPower locoPower = locoTrack.GetPower(locoTrack.ConnectionPoints[0]);
 
-						locomotive.Direction = train.MotionDirection;
-						if(trainLocomotive.Orientation == LocomotiveOrientation.Backward)
-							locomotive.Direction = (locomotive.Direction == LocomotiveOrientation.Forward ? LocomotiveOrientation.Backward : 
-								LocomotiveOrientation.Forward);
+                            LocomotiveState locomotive = AddLocomotive(commandStationId, loco.AddressProvider.Unit,
+                                new TrackEdge(train.LocomotiveBlock.BlockDefinintion.Track, train.LocomotiveLocation.DisplayFront));
+
+                            locomotive.Direction = train.MotionDirection;
+                            if (trainLocomotive.Orientation == LocomotiveOrientation.Backward)
+                                locomotive.Direction = (locomotive.Direction == LocomotiveOrientation.Forward ? LocomotiveOrientation.Backward :
+                                    LocomotiveOrientation.Forward);
+                        }
+                        else
+                            Warning($"A previouslly used locomotive is no longer defined");
+                      
 					}
 				}
 

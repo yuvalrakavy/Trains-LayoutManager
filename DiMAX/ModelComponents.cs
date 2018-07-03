@@ -151,7 +151,8 @@ namespace DiMAX {
 			foreach(var train in LayoutModel.StateManager.Trains) {
 				if(train.CommandStation.Id == Id && train.IsPowered) {
 					foreach(var trainLoco in train.Locomotives)
-						RegisterLocomotive(trainLoco.Locomotive);
+                        if(trainLoco.Locomotive != null)
+						    RegisterLocomotive(trainLoco.Locomotive);
 				}
 			}
 		}
