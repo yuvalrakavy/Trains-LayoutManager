@@ -182,6 +182,12 @@ namespace LayoutManager {
 		}
 	}
 
+    public class CrossingFromManualDispatchRegion : BlockEdgeCrossingException {
+        public CrossingFromManualDispatchRegion(LayoutBlockEdgeBase blockEdge) :
+            base(blockEdge, "Unexpected crossing from manual dispatch region to non-manual dispatch resion") {
+        }
+    }
+
 	public class InconsistentLocomotiveBlockCrossingException : BlockEdgeCrossingException {
 		TrainStateInfo	trainState;
 

@@ -107,42 +107,45 @@ namespace LayoutManager.Logic {
                 else {
                     LocomotiveTrackingResult trackingResult = (LocomotiveTrackingResult)EventManager.Event(new LayoutEvent(trackContact, "track-locomotive-position"));
 
-                    train = trackingResult.Train;
+                    // If tracking result is null - crossing was within manual dispatch region, and is completly ignored
+                    if (trackingResult != null) {
+                        train = trackingResult.Train;
 
-                    train.LastCrossedBlockEdge = trackingResult.BlockEdge;
-                    if (train.Managed)
-                        train.LastBlockEdgeCrossingSpeed = train.Speed;
+                        train.LastCrossedBlockEdge = trackingResult.BlockEdge;
+                        if (train.Managed)
+                            train.LastBlockEdgeCrossingSpeed = train.Speed;
 
-                    TrainPart fromLocationTrainPart = train.LocationOfBlock(trackingResult.FromBlock).TrainPart;
+                        TrainPart fromLocationTrainPart = train.LocationOfBlock(trackingResult.FromBlock).TrainPart;
 
-                    // If the train has more than one contact then create a new track contact state to track the passage of the
-                    // train on top of the contact. Otherwise, since there is only one contact trigger, the trigger of a contact
-                    // implies that the train had left the "from" block
-                    if (train.TrackContactTriggerCount > 1) {
-                        TrackContactPassingStateInfo trackContactPassingState = new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(trackingResult.BlockEdge, "TrainPassing"));
+                        // If the train has more than one contact then create a new track contact state to track the passage of the
+                        // train on top of the contact. Otherwise, since there is only one contact trigger, the trigger of a contact
+                        // implies that the train had left the "from" block
+                        if (train.TrackContactTriggerCount > 1) {
+                            TrackContactPassingStateInfo trackContactPassingState = new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(trackingResult.BlockEdge, "TrainPassing"));
 
-                        trackContactPassingState.TrainId = trackingResult.TrainId;
-                        trackContactPassingState.FromBlockId = trackingResult.FromBlockId;
-                        trackContactPassingState.FromBlockTriggerCount = trackingResult.Train.TrackContactTriggerCount - 1;
-                        trackContactPassingState.ToBlockId = trackingResult.ToBlockId;
-                        trackContactPassingState.ToBlockTriggerCount = 1;
-                        trackContactPassingState.Direction = trackingResult.Train.Speed >= 0 ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
+                            trackContactPassingState.TrainId = trackingResult.TrainId;
+                            trackContactPassingState.FromBlockId = trackingResult.FromBlockId;
+                            trackContactPassingState.FromBlockTriggerCount = trackingResult.Train.TrackContactTriggerCount - 1;
+                            trackContactPassingState.ToBlockId = trackingResult.ToBlockId;
+                            trackContactPassingState.ToBlockTriggerCount = 1;
+                            trackContactPassingState.Direction = trackingResult.Train.Speed >= 0 ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
+                        }
+                        else {
+                            removeTrainFromPhantomBlocks(trackingResult.FromBlock, trackingResult.Train);
+                            trackingResult.Train.LeaveBlock(trackingResult.FromBlock);
+                            EventManager.Event(new LayoutEvent(trackContact, "train-leaving-block-details", null,
+                                new TrainChangingBlock(trackContact, train, trackingResult.FromBlock, trackingResult.ToBlock)));
+                        }
+
+                        train.EnterBlock(fromLocationTrainPart,
+                            trackingResult.ToBlock, trackingResult.BlockEdge, "train-enter-block");
+
                     }
-                    else {
-                        removeTrainFromPhantomBlocks(trackingResult.FromBlock, trackingResult.Train);
-                        trackingResult.Train.LeaveBlock(trackingResult.FromBlock);
-                        EventManager.Event(new LayoutEvent(trackContact, "train-leaving-block-details", null,
-                            new TrainChangingBlock(trackContact, train, trackingResult.FromBlock, trackingResult.ToBlock)));
-                    }
 
-                    train.EnterBlock(fromLocationTrainPart,
-                        trackingResult.ToBlock, trackingResult.BlockEdge, "train-enter-block");
-
+                    // For now only locomotive tracking is implemented
+                    EventManager.Event(new LayoutEvent(train, "train-crossed-block", null, trackContact));
+                    EventManager.Event(new LayoutEvent(trackContact, "track-contact-triggered", null, train));
                 }
-
-                // For now only locomotive tracking is implemented
-                EventManager.Event(new LayoutEvent(train, "train-crossed-block", null, trackContact));
-                EventManager.Event(new LayoutEvent(trackContact, "track-contact-triggered", null, train));
             }
             catch (LayoutException lex) {
                 lex.Report();
@@ -495,37 +498,44 @@ namespace LayoutManager.Logic {
 			block1 = track.GetBlock(track.ConnectionPoints[0]);
 			block2 = track.GetBlock(track.ConnectionPoints[1]);
 
-			trains1 = block1.Trains;
-			trains2 = block2.Trains;
+            var block1IsManualDispatch = block1.LockRequest?.IsManualDispatchLock ?? false || LayoutModel.StateManager.AllLayoutManualDispatch;
+            var block2isManualDispatch = block2.LockRequest?.IsManualDispatchLock ?? false || LayoutModel.StateManager.AllLayoutManualDispatch;
 
-			if(trains1.Count == 0 && trains2.Count == 0) {
-				// A track contact was triggered, however, both surrounding blocks have no trains
-				trains1 = getTrainInNoFeedbackBlock(block1, block2, getTrainLockingBlock(block2), blockEdge, motionListManager, new HashSet<Guid>());
-				trains2 = getTrainInNoFeedbackBlock(block2, block1, getTrainLockingBlock(block1), blockEdge, motionListManager, new HashSet<Guid>());
-			}
+            if (!block1IsManualDispatch && !block2isManualDispatch) {
+                trains1 = block1.Trains;
+                trains2 = block2.Trains;
 
-			// Figure out which case we are dealing with.
-			try {
-				LocomotiveTrackingResult	trackingResult = null;
+                if (trains1.Count == 0 && trains2.Count == 0) {
+                    // A track contact was triggered, however, both surrounding blocks have no trains
+                    trains1 = getTrainInNoFeedbackBlock(block1, block2, getTrainLockingBlock(block2), blockEdge, motionListManager, new HashSet<Guid>());
+                    trains2 = getTrainInNoFeedbackBlock(block2, block1, getTrainLockingBlock(block1), blockEdge, motionListManager, new HashSet<Guid>());
+                }
 
-				if(trains1.Count == 0 && trains2.Count > 0) {
-					trackingResult = movingFrom(blockEdge, block2, block1);
-				}
-				else if(trains2.Count == 0 && trains1.Count > 0) {
-					trackingResult = movingFrom(blockEdge, block1, block2);
-				}
-				else if(trains1.Count > 0 && trains2.Count > 0)
-					trackingResult = ambiguousMove(blockEdge, block1, block2);
-				else
-					throw new UnexpectedBlockCrossingException(blockEdge);
+                // Figure out which case we are dealing with.
+                try {
+                    LocomotiveTrackingResult trackingResult = null;
 
-				e.Info = trackingResult;
+                    if (trains1.Count == 0 && trains2.Count > 0) {
+                        trackingResult = movingFrom(blockEdge, block2, block1);
+                    }
+                    else if (trains2.Count == 0 && trains1.Count > 0) {
+                        trackingResult = movingFrom(blockEdge, block1, block2);
+                    }
+                    else if (trains1.Count > 0 && trains2.Count > 0)
+                        trackingResult = ambiguousMove(blockEdge, block1, block2);
+                    else
+                        throw new UnexpectedBlockCrossingException(blockEdge);
 
-				motionListManager.Do();		// By default, commit motions to no feedback loops
-			} catch(LayoutException) {
-				motionListManager.Undo();		// Undo motions to no feedback loop
-				throw;
-			}
+                    e.Info = trackingResult;
+
+                    motionListManager.Do();     // By default, commit motions to no feedback loops
+                } catch (LayoutException) {
+                    motionListManager.Undo();       // Undo motions to no feedback loop
+                    throw;
+                }
+            }
+            else if (!block1IsManualDispatch || !block2isManualDispatch)
+                throw new CrossingFromManualDispatchRegion(blockEdge);
 		}
 
 		[LayoutEvent("train-enter-block", Order=-100)]
