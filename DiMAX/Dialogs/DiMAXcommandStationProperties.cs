@@ -47,7 +47,8 @@ namespace DiMAX.Dialogs
 			else
 				layoutEmulationSetup.Visible = false;
 
-			comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute("Port");
+            this.comboBoxPort.SelectedIndex = -1;
+			this.comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute("Port");
 		}
 
         public LayoutXmlInfo XmlInfo => xmlInfo;
