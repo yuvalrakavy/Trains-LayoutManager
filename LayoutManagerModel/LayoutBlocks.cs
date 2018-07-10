@@ -90,7 +90,7 @@ namespace LayoutManager.Model {
 	/// </summary>
 	public class LayoutBlock : LayoutBlockBase {
 		List<TrainLocationInfo>			trainsInBlock = new List<TrainLocationInfo>();
-		LayoutOccupancyBlock			occupancyBlock;
+        LayoutLockRequest               lockRequest;
 		bool							isLinear = true;
 		bool							isLinearCalculated;
 		bool							canTrainWaitDefault;
@@ -103,20 +103,19 @@ namespace LayoutManager.Model {
 		public LayoutBlock() {
 		}
 
-		/// <summary>
-		/// The train occupancy detection block that this block is part of.
-		/// </summary>
-		public LayoutOccupancyBlock OccupancyBlock {
-			get {
-				return occupancyBlock;
-			}
+        /// <summary>
+        /// The train occupancy detection block that this block is part of.
+        /// </summary>
+        public LayoutOccupancyBlock OccupancyBlock { get; set; }
 
-			set {
-				occupancyBlock = value;
-			}
-		}
+        public LayoutLockRequest LockRequest {
+            get { return this.lockRequest; }
 
-        public LayoutLockRequest LockRequest { get; set; }
+            set {
+                this.lockRequest = value;
+                Redraw();
+            }
+        }
 
 		/// <summary>
 		/// Check if a block is a simple linear block. That is, the block does not contain any
