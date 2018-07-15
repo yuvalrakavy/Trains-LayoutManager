@@ -17,6 +17,7 @@ namespace LayoutManager.Tools.Dialogs {
         public IModelComponentIsCommandStation CommandStation { get; }
         public int Address { get; private set; }
 		public bool ProgramLocomotive { get; private set; }
+        public int SpeedSteps { get; private set; }
 
 		public ChangeLocomotiveAddress(LocomotiveInfo locomotive, IModelComponentIsCommandStation commandStation = null) {
 			InitializeComponent();
@@ -33,6 +34,9 @@ namespace LayoutManager.Tools.Dialogs {
 				CommandStation = LayoutModel.Components<IModelComponentIsCommandStation>(LayoutModel.ActivePhases).SingleOrDefault();
 			else
 				this.CommandStation = commandStation;
+
+            radioButton14steps.Checked = locomotive.SpeedSteps == 14;
+            radioButton28steps.Checked = locomotive.SpeedSteps == 28;
 
 			Text = string.Format(Text, locomotive.Name);
 			SetButtons();
@@ -94,7 +98,8 @@ namespace LayoutManager.Tools.Dialogs {
 			}
 
 			this.Address = address;
-
+            this.SpeedSteps = radioButton28steps.Checked ? 28 : 14;
+ 
 			return true;
 		}
 

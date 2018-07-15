@@ -354,6 +354,7 @@ namespace LayoutManager.Tools {
 				var changeAddressAction = (ILayoutLocomotiveAddressChangeAction)programmingState.ProgrammingActions.Add("set-address");
 
 				changeAddressAction.Address = d.Address;
+                changeAddressAction.SpeedSteps = d.SpeedSteps;
 
 				if(d.ProgramLocomotive) {
 					using(var context = new LayoutOperationContext("LocomotiveProgramming", "set locomotive address", locomotive)) {

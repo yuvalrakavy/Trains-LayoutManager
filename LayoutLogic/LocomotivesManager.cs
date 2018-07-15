@@ -869,6 +869,7 @@ namespace LayoutManager.Logic {
 				var changeAddressAction = (ILayoutLocomotiveAddressChangeAction)programmingState.ProgrammingActions.Add("set-address");
 
 				changeAddressAction.Address = address;
+                changeAddressAction.SpeedSteps = programmingState.Locomotive.SpeedSteps;
 				var train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent(programmingState, "program-locomotive").CopyOptions(e, "Train").CopyOperationContext(e));
 
 				return train;

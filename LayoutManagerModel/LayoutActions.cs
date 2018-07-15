@@ -243,6 +243,7 @@ namespace LayoutManager.Model {
 
 	public interface ILayoutLocomotiveAddressChangeAction : ILayoutProgrammingAction {
 		int Address { get; set; }
+        int SpeedSteps { get; set; }
 	}
 
 	public abstract class LayoutAction : LayoutXmlWrapper, ILayoutAction {
