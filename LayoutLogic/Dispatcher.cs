@@ -1667,7 +1667,7 @@ namespace LayoutManager.Logic {
 
 #region Layout Event Handlers
 
-		[LayoutEvent("enter-operation-mode")]
+		[LayoutEvent("prepare-enter-operation-mode")]
 		private void dispatcherEnterOperationMode(LayoutEvent e) {
 			activeTrips.Clear();
 		}

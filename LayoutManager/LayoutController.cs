@@ -309,8 +309,7 @@ namespace LayoutManager {
 					OperationModeSettings = settings;
 					LayoutModel.ActivePhases = settings.Phases;
 
-					EventManager.Event(new LayoutEvent<OperationModeParameters>("enter-operation-mode", settings));
-					LayoutModel.Instance.Redraw();
+					EventManager.Event(new LayoutEvent<OperationModeParameters>("prepare-enter-operation-mode", settings));
 
                     if (!(bool)EventManager.Event(new LayoutEvent(LayoutModel.Instance, "rebuild-layout-state").SetPhases(settings.Phases))) {
                         if (MessageBox.Show(ActiveFrameWindow, "The layout design or locomotive collection were modified. The previous state could not be fully restored.\n\n" +
@@ -319,8 +318,11 @@ namespace LayoutManager {
                             MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                             EventManager.Event(new LayoutEvent(LayoutModel.Instance, "clear-layout-state"));
                     }
-                }
-                catch (Exception ex) {
+
+                    EventManager.Event(new LayoutEvent<OperationModeParameters>("enter-operation-mode", settings));
+                    LayoutModel.Instance.Redraw();
+
+                } catch (Exception ex) {
 					EventManager.Event(new LayoutEvent(null, "add-error", null, "Could not enter operational mode - " + ex.Message));
 
 					ExitOperationModeRequest().Wait();

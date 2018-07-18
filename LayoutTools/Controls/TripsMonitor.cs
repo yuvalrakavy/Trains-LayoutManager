@@ -207,7 +207,7 @@ namespace LayoutManager.Tools.Controls
 				item.UpdateTrainStatus();
 		}
 
-		[LayoutEvent("enter-operation-mode")]
+		[LayoutEvent("prepare-enter-operation-mode")]
 		private void enterOperationMode(LayoutEvent e) {
 			listViewTrips.Items.Clear();
 			mapTrainToItem.Clear();

@@ -341,11 +341,12 @@ namespace LayoutManager.Logic {
 			LocomotiveAddressMap addressMap = (LocomotiveAddressMap)e.Info;
 			IModelComponentIsCommandStation commandStation = ExtractCommandStation(e);
 
-			if(commandStation != null)
-				AddTrains(addressMap,
-					from blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases) where blockDefinition.Power.PowerOriginComponentId == commandStation.Id && blockDefinition.Power.Type == LayoutPowerType.Digital && blockDefinition.Block.HasTrains select blockDefinition.Block,
-					(loco, train) => new OnPoweredTrackLocomotiveAddressMapEntry(loco, train)
-				);
+            if (commandStation != null) {
+                AddTrains(addressMap,
+                    from blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases) where blockDefinition.Power.PowerOriginComponentId == commandStation.Id && blockDefinition.Power.Type == LayoutPowerType.Digital && blockDefinition.Block.HasTrains select blockDefinition.Block,
+                    (loco, train) => new OnPoweredTrackLocomotiveAddressMapEntry(loco, train)
+                );
+            }
 		}
 
 		[LayoutEvent("add-on-non-powered-tracks-locomotives-to-adddress-map")]

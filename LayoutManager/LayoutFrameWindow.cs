@@ -561,7 +561,7 @@ namespace LayoutManager
 			SetUserInterfaceMode(null);
 		}
 
-		[LayoutEvent("enter-operation-mode")]
+		[LayoutEvent("prepare-enter-operation-mode")]
 		private void enterOperationMode(LayoutEvent e0) {
 			var e = (LayoutEvent<OperationModeParameters>)e0;
 
