@@ -1718,10 +1718,10 @@ namespace LayoutManager.Model {
 		/// </summary>
 		/// <param name="componentId">The component ID</param>
 		/// <returns>The component runtime state element</returns>
-		public XmlElement StateOf(Guid componentId) {
+		public XmlElement StateOf(Guid componentId ,bool createIt = false) {
 			XmlElement componentStateElement;
 
-			if(!_idToComponentStateElement.TryGetValue(componentId, out componentStateElement)) {
+			if(!_idToComponentStateElement.TryGetValue(componentId, out componentStateElement) && createIt) {
 				componentStateElement = Element.OwnerDocument.CreateElement("ComponentState");
 
 				componentStateElement.SetAttribute("ID", XmlConvert.ToString(componentId));
@@ -1740,7 +1740,7 @@ namespace LayoutManager.Model {
 		/// <param name="topicName">The topic name</param>
 		/// <returns>The component topic runtime state XML element</returns>
 		public XmlElement StateOf(Guid componentId, string topicName) {
-			XmlElement componentStateElement = StateOf(componentId);
+			XmlElement componentStateElement = StateOf(componentId, createIt: true);
 			XmlElement componentStateTopicElement = componentStateElement[topicName];
 
 			if(componentStateTopicElement == null) {
