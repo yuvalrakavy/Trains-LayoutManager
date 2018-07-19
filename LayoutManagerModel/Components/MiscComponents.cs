@@ -988,12 +988,12 @@ namespace LayoutManager.Components {
         }
     }
 
-    public class LayoutGateComponent : LayoutTrackAnnotationComponent, IModelComponentHasName, IModelComponentConnectToControl, IModelComponentLayoutLockResource {
+    public class LayoutGateComponent : LayoutTrackAnnotationComponent, IModelComponentHasNameAndId, IModelComponentConnectToControl, IModelComponentLayoutLockResource {
         public LayoutGateComponent() {
             XmlDocument.LoadXml("<Gate OpenUpOrLeft=\"false\"/>");
         }
 
-        const string GateStateAttribute = "GateState";
+        const string GateStateTopic = "Gate";
 
         public override ModelComponentKind Kind => ModelComponentKind.Gate;
 
@@ -1006,18 +1006,15 @@ namespace LayoutManager.Components {
         /// </summary>
         public LayoutGateState GateState {
             get {
-                if (LayoutController.IsOperationMode) {
-                    if (LayoutModel.StateManager.Components.Contains(Id))
-                        return (LayoutGateState)Enum.Parse(typeof(LayoutGateState), LayoutModel.StateManager.Components.StateOf(Id).GetAttribute(GateStateAttribute));
-                }
+                if (LayoutModel.StateManager.Components.Contains(Id))
+                    return (LayoutGateState)Enum.Parse(typeof(LayoutGateState), LayoutModel.StateManager.Components.StateOf(Id, GateStateTopic).GetAttribute("State"));
 
                 return LayoutGateState.Close;
             }
 
             set {
-                EraseImage();
-                LayoutModel.StateManager.Components.StateOf(Id).SetAttribute(GateStateAttribute, value.ToString());
-                Redraw();
+                LayoutModel.StateManager.Components.StateOf(Id, GateStateTopic).SetAttribute("State", value.ToString());
+                OnComponentChanged();
 
                 if (value == LayoutGateState.Open)
                     EventManager.Event(new LayoutEvent(this, "layout-lock-resource-ready"));
