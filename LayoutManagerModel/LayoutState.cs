@@ -1718,10 +1718,10 @@ namespace LayoutManager.Model {
 		/// </summary>
 		/// <param name="componentId">The component ID</param>
 		/// <returns>The component runtime state element</returns>
-		public XmlElement StateOf(Guid componentId ,bool createIt = false) {
+		private XmlElement GetComponentStateElement(Guid componentId) {
 			XmlElement componentStateElement;
 
-			if(!_idToComponentStateElement.TryGetValue(componentId, out componentStateElement) && createIt) {
+			if(!_idToComponentStateElement.TryGetValue(componentId, out componentStateElement)) {
 				componentStateElement = Element.OwnerDocument.CreateElement("ComponentState");
 
 				componentStateElement.SetAttribute("ID", XmlConvert.ToString(componentId));
@@ -1740,7 +1740,7 @@ namespace LayoutManager.Model {
 		/// <param name="topicName">The topic name</param>
 		/// <returns>The component topic runtime state XML element</returns>
 		public XmlElement StateOf(Guid componentId, string topicName) {
-			XmlElement componentStateElement = StateOf(componentId, createIt: true);
+			XmlElement componentStateElement = GetComponentStateElement(componentId);
 			XmlElement componentStateTopicElement = componentStateElement[topicName];
 
 			if(componentStateTopicElement == null) {
@@ -1769,7 +1769,7 @@ namespace LayoutManager.Model {
         public bool Contains(ModelComponent component) => Contains(component.Id);
 
         public bool Contains(Guid componentId, string topicName) {
-			XmlElement stateElement = StateOf(componentId);
+			XmlElement stateElement = GetComponentStateElement(componentId);
 
 			if(stateElement != null)
 				return stateElement[topicName] != null;
@@ -1780,7 +1780,7 @@ namespace LayoutManager.Model {
 
         public void Remove(Guid componentId) {
 			if(Contains(componentId)) {
-				XmlElement componentStateElement = StateOf(componentId);
+				XmlElement componentStateElement = GetComponentStateElement(componentId);
 
 				Debug.Assert(componentStateElement != null);
 
@@ -1795,7 +1795,7 @@ namespace LayoutManager.Model {
 
 		public void Remove(Guid componentId, string topicName) {
 			if(Contains(componentId, topicName)) {
-				XmlElement componentStateElement = StateOf(componentId);
+				XmlElement componentStateElement = GetComponentStateElement(componentId);
 				XmlElement componentStateTopicElement = componentStateElement[topicName];
 
 				Debug.Assert(componentStateElement != null);
