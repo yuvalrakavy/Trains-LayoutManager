@@ -823,7 +823,7 @@ namespace LayoutManager.Model {
 
 		public int SpeedSteps {
 			get {
-				return XmlConvert.ToInt32(GetAttribute("SpeedSteps", "14"));
+				return XmlConvert.ToInt32(GetAttribute("SpeedSteps", "28"));
 			}
 
 			set {
