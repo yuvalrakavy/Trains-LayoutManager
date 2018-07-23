@@ -68,39 +68,41 @@ namespace LayoutManager.Tools.Dialogs {
 		}
 
 		private bool ValidateAddress(out int address) {
+            bool result = true;
+
 			if(!int.TryParse(textBoxAddress.Text, out address)) {
 				MessageBox.Show(this, "Invalid address", "You have entered invalid locomotive address", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				textBoxAddress.Focus();
-				return false;
+				result = false;
 			}
-
-			if(address < Locomotive.GetLowestAddress(CommandStation)) {
+            else if(address < Locomotive.GetLowestAddress(CommandStation)) {
 				MessageBox.Show(this, "Invalid address", "Address is below minimum allowed address", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				textBoxAddress.Focus();
-				return false;
+				result = false;
 			}
-
-			if(address > Locomotive.GetHighestAddress(CommandStation)) {
+			else if(address > Locomotive.GetHighestAddress(CommandStation)) {
 				MessageBox.Show(this, "Invalid address", "Address is above maximum allowed address", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				textBoxAddress.Focus();
-				return false;
+				result = false;
 			}
 
-			if(CommandStation != null) {
-				var power = (from powerOutlet in CommandStation.PowerOutlets where powerOutlet.Power.Type == LayoutPowerType.Digital select powerOutlet.Power).FirstOrDefault();
+            if (result) {
+                if (CommandStation != null) {
+                    var power = (from powerOutlet in CommandStation.PowerOutlets where powerOutlet.Power.Type == LayoutPowerType.Digital select powerOutlet.Power).FirstOrDefault();
 
-				if(power != null) {
-					var result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent<XmlElement, ILayoutPower>("is-locomotive-address-valid", Locomotive.Element, power).SetOption("LocoAddress", address));
+                    if (power != null) {
+                        var isAddressValid = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent<XmlElement, ILayoutPower>("is-locomotive-address-valid", Locomotive.Element, power).SetOption("LocoAddress", address));
 
-					if(result.ResolveMethod != CanPlaceTrainResolveMethod.Resolved)
-						return MessageBox.Show(this, "Address warning", result.ToString() + "\n\nDo you want to use this address?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;
-				}
-			}
+                        if (!isAddressValid.CanBeResolved)
+                            result = MessageBox.Show(this, isAddressValid.ToString() + "\n\nDo you want to use this address?", "Address warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;
+                    }
+                }
 
-			this.Address = address;
-            this.SpeedSteps = radioButton28steps.Checked ? 28 : 14;
+                this.Address = address;
+                this.SpeedSteps = radioButton28steps.Checked ? 28 : 14;
+            }
  
-			return true;
+			return result;
 		}
 
 		private void buttonSaveOnly_Click(object sender, EventArgs e) {

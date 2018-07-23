@@ -357,9 +357,11 @@ namespace LayoutManager.Tools {
                 changeAddressAction.SpeedSteps = d.SpeedSteps;
 
 				if(d.ProgramLocomotive) {
-					using(var context = new LayoutOperationContext("LocomotiveProgramming", "set locomotive address", locomotive)) {
-						var train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent(programmingState, "program-locomotive").SetOperationContext(context));
-					}
+                    try {
+                        using (var context = new LayoutOperationContext("LocomotiveProgramming", "set locomotive address", locomotive)) {
+                            var train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent(programmingState, "program-locomotive").SetOperationContext(context));
+                        }
+                    } catch(LayoutException) { }
 				}
 				else
 					programmingState.ProgrammingActions.Commit();
