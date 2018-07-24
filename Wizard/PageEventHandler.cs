@@ -1,12 +1,10 @@
 using System;
-using System.Windows.Forms;
 
-namespace Gui.Wizard
-{
-	/// <summary>
-	/// Delegate definition for handling NextPageEvents
-	/// </summary>
-	public delegate void PageEventHandler(object sender, PageEventArgs e);
+namespace Gui.Wizard {
+    /// <summary>
+    /// Delegate definition for handling NextPageEvents
+    /// </summary>
+    public delegate void PageEventHandler(object sender, PageEventArgs e);
 
 	/// <summary>
 	/// Arguments passed to an application when Page is closed in a wizard. The Next page to be displayed 

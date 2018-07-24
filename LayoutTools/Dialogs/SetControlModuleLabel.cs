@@ -1,15 +1,11 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for SetControlModuleLabel.
-	/// </summary>
-	public class SetControlModuleLabel : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for SetControlModuleLabel.
+    /// </summary>
+    public class SetControlModuleLabel : Form {
 		private Label label1;
 		private TextBox textBoxLabel;
 		private Button buttonOK;

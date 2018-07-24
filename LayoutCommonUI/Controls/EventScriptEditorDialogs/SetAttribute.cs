@@ -1,20 +1,15 @@
 using System;
-using System.Drawing;
 using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
-using LayoutManager;
-using LayoutManager.Model;
-
-namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
-{
-	/// <summary>
-	/// Summary description for SetAttribute.
-	/// </summary>
-	public class SetAttribute : Form {
+namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
+    /// <summary>
+    /// Summary description for SetAttribute.
+    /// </summary>
+    public class SetAttribute : Form {
 		private GroupBox groupBox1;
 		private ComboBox comboBoxSymbol;
 		private Label label1;

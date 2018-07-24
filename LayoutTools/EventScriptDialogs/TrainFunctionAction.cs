@@ -1,19 +1,13 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Tools.EventScriptDialogs
-{
-	/// <summary>
-	/// Summary description for TrainFunctionAction.
-	/// </summary>
-	public class TrainFunctionAction : Form {
+namespace LayoutManager.Tools.EventScriptDialogs {
+    /// <summary>
+    /// Summary description for TrainFunctionAction.
+    /// </summary>
+    public class TrainFunctionAction : Form {
 		private Label label1;
 		private Label label2;
 		private ComboBox comboBoxTrain;

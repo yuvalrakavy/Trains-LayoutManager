@@ -1,17 +1,14 @@
 using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using System.ComponentModel.Design;
-using System.Diagnostics;
 
-namespace Gui.Wizard
-{
-	/// <summary>
-	/// Summary description for WizardDesigner.
-	/// </summary>
-	public class WizardDesigner : ParentControlDesigner
+namespace Gui.Wizard {
+    /// <summary>
+    /// Summary description for WizardDesigner.
+    /// </summary>
+    public class WizardDesigner : ParentControlDesigner
 	{
         #region old WndProc
         //		/// <summary>

@@ -4,18 +4,14 @@ using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.View;
 using LayoutManager.Components;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for BindBlockEdgeToSignals.
-	/// </summary>
-	public class BindBlockEdgeToSignals : Form, IModelComponentReceiverDialog {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for BindBlockEdgeToSignals.
+    /// </summary>
+    public class BindBlockEdgeToSignals : Form, IModelComponentReceiverDialog {
 		private Label label1;
 		private ListBox listBoxSignals;
 		private Button buttonRemove;

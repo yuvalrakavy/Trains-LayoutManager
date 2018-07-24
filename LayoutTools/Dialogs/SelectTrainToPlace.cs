@@ -1,19 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using System.Xml;
 using System.Diagnostics;
 
 namespace LayoutManager.Tools.Dialogs {
-	public partial class SelectTrainToPlace : Form {
+    public partial class SelectTrainToPlace : Form {
 		LayoutBlockDefinitionComponent blockDefinition;
 		LocomotiveCatalogInfo catalog;
 

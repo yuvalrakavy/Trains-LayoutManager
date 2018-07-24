@@ -1,6 +1,4 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -9,12 +7,11 @@ using System.Xml;
 using LayoutManager;
 using LayoutManager.Model;
 
-namespace MarklinDigital.Dialogs
-{
-	/// <summary>
-	/// Summary description for MarklinDigitalProperties.
-	/// </summary>
-	public class MarklinDigitalProperties : Form {
+namespace MarklinDigital.Dialogs {
+    /// <summary>
+    /// Summary description for MarklinDigitalProperties.
+    /// </summary>
+    public class MarklinDigitalProperties : Form {
 		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
 		private ComboBox comboBoxPort;
 		private Label label1;

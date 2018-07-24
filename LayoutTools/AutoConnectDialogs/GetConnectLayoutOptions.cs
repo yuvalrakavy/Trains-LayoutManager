@@ -1,19 +1,14 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Linq;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Tools.AutoConnectDialogs
-{
-	/// <summary>
-	/// Summary description for GetConnectLayoutOptions.
-	/// </summary>
-	public class GetConnectLayoutOptions : Form {
+namespace LayoutManager.Tools.AutoConnectDialogs {
+    /// <summary>
+    /// Summary description for GetConnectLayoutOptions.
+    /// </summary>
+    public class GetConnectLayoutOptions : Form {
 		private Label label1;
 		private RadioButton radioButtonConnectNotConnected;
 		private RadioButton radioButtonConnectAllLayout;

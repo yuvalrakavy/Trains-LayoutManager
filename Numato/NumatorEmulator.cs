@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
 using System.Diagnostics;
 
 using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace NumatoController {
     public class NumatorEmulator : ILayoutCommandStationEmulator {

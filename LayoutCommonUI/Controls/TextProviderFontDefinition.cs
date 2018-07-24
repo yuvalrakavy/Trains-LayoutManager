@@ -1,18 +1,15 @@
 using System;
-using System.Collections;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI.Controls {
-	/// <summary>
-	/// Summary description for TextProviderFontDefinition.
-	/// </summary>
-	public class TextProviderFontDefinition : System.Windows.Forms.UserControl {
+    /// <summary>
+    /// Summary description for TextProviderFontDefinition.
+    /// </summary>
+    public class TextProviderFontDefinition : System.Windows.Forms.UserControl {
 		private GroupBox groupBoxFont;
 		private RadioButton radioButtonCustomFont;
 		private RadioButton radioButtonStandardFont;

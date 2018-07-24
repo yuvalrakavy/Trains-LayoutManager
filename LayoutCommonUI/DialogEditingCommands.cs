@@ -1,14 +1,10 @@
 using System;
-using System.ComponentModel;
-using System.Collections;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace LayoutManager.CommonUI {
 
-	public interface IControlSupportViewOnly {
+    public interface IControlSupportViewOnly {
 
 		bool ViewOnly { get; set; }
 	}

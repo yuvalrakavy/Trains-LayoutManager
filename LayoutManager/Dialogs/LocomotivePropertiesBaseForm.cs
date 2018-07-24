@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 using System.Diagnostics;
@@ -11,10 +10,10 @@ using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
 namespace LayoutManager.Dialogs {
-	/// <summary>
-	/// Base form for the locomotive & locomotive type properties
-	/// </summary>
-	public class LocomotiveBasePropertiesForm : Form {
+    /// <summary>
+    /// Base form for the locomotive & locomotive type properties
+    /// </summary>
+    public class LocomotiveBasePropertiesForm : Form {
 		Dictionary<string, Control> nameToControlMap = new Dictionary<string, Control>();
 		protected XmlElement		element;
 		protected bool				hasImage = false;

@@ -4,19 +4,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.View;
 using LayoutManager.Components;
 using LayoutManager.CommonUI;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for DestinationEditor.
-	/// </summary>
-	public class DestinationEditor : Form, IModelComponentReceiverDialog, IControlSupportViewOnly
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for DestinationEditor.
+    /// </summary>
+    public class DestinationEditor : Form, IModelComponentReceiverDialog, IControlSupportViewOnly
 	{
 		private Label label1;
 		private Label label2;

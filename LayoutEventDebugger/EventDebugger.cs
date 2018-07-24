@@ -1,13 +1,11 @@
 using System;
-using System.Diagnostics;
 using System.Windows.Forms;
 using System.Reflection;
 
 using LayoutManager;
 
-namespace LayoutEventDebugger
-{
-	public enum TitleFormat {
+namespace LayoutEventDebugger {
+    public enum TitleFormat {
 		ShowEventName,
 		ShowHandlerObject
 	};

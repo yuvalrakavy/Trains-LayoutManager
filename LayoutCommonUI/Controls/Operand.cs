@@ -1,21 +1,13 @@
 using System;
-using System.Collections;
-using System.Collections.Specialized;
-using System.Reflection;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
 
-using LayoutManager;
-
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for Operand.
-	/// </summary>
-	public class Operand : System.Windows.Forms.UserControl, IObjectHasXml
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for Operand.
+    /// </summary>
+    public class Operand : System.Windows.Forms.UserControl, IObjectHasXml
 	{
 		private RadioButton radioButtonValue;
 		private TextBox textBoxValue;

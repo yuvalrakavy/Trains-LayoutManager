@@ -1,19 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
-using LayoutManager;
-using LayoutManager.Model;
-
-namespace LayoutManager.CommonUI.Dialogs
-{
-	/// <summary>
-	/// Summary description for PolicyDefinition.
-	/// </summary>
-	public class ConditionDefinition : Form {
+namespace LayoutManager.CommonUI.Dialogs {
+    /// <summary>
+    /// Summary description for PolicyDefinition.
+    /// </summary>
+    public class ConditionDefinition : Form {
 		private LayoutManager.CommonUI.Controls.EventScriptEditor eventScriptEditor;
 		private Button buttonOK;
 		private Button buttonCancel;

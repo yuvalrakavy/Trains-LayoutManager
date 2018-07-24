@@ -1,19 +1,13 @@
-using System;
 using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for SelectLocomotiveType.
-	/// </summary>
-	public class SelectLocomotiveType : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for SelectLocomotiveType.
+    /// </summary>
+    public class SelectLocomotiveType : Form {
 		private LayoutManager.CommonUI.Controls.LocomotiveTypeList locomotiveTypeList;
 		private Button buttonSelect;
 		private Button buttonCancel;

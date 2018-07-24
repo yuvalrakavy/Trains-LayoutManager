@@ -1,14 +1,12 @@
-using System;
 using System.Windows.Forms.Design;
 //If you are misssing ParentControlDesigner, then don't forget that you need a reference in
 //this project to System.Design
 
-namespace Gui.Wizard
-{
-	/// <summary>
-	/// 
-	/// </summary>
-	public class InfoPageDesigner : ParentControlDesigner
+namespace Gui.Wizard {
+    /// <summary>
+    /// 
+    /// </summary>
+    public class InfoPageDesigner : ParentControlDesigner
 	{
 
         /// <summary>

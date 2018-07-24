@@ -5,19 +5,15 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.CommonUI;
 using LayoutManager.Model;
-using LayoutManager.View;
 using LayoutManager.Components;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for ManualDispatchRegion.
-	/// </summary>
-	public class ManualDispatchRegion : Form, IModelComponentReceiverDialog, IObjectHasXml
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for ManualDispatchRegion.
+    /// </summary>
+    public class ManualDispatchRegion : Form, IModelComponentReceiverDialog, IObjectHasXml
 	{
 		private ListBox listBoxBlocks;
 		private Button buttonAddBlock;

@@ -1,18 +1,14 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager.Model;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for LocomotiveFunctionsCopyFrom.
-	/// </summary>
-	public class LocomotiveFunctionsCopyFrom : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for LocomotiveFunctionsCopyFrom.
+    /// </summary>
+    public class LocomotiveFunctionsCopyFrom : Form {
 		private Label label1;
 		private Button buttonOK;
 		private Button buttonCancel;

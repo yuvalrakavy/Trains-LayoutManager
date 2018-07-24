@@ -1,21 +1,16 @@
 using System;
-using System.Drawing;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
-using LayoutManager.CommonUI;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for BlockInfoProperties.
-	/// </summary>
-	public class BlockInfoProperties : Form, ILayoutComponentPropertiesDialog, CommonUI.Controls.IPolicyListCustomizer
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for BlockInfoProperties.
+    /// </summary>
+    public class BlockInfoProperties : Form, ILayoutComponentPropertiesDialog, CommonUI.Controls.IPolicyListCustomizer
 	{
 		private TabControl tabControl1;
 		private Button buttonCancel;

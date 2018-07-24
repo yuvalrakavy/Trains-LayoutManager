@@ -1,18 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for GetTargetSpeed.
-	/// </summary>
-	public class GetTargetSpeed : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for GetTargetSpeed.
+    /// </summary>
+    public class GetTargetSpeed : Form {
 		private Button buttonOK;
 		private Button buttonCancel;
 		private System.Windows.Forms.TrackBar trackBarTargetSpeed;

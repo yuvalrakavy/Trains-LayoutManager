@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
-
-using LayoutManager;
 using LayoutManager.Model;
 
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace LayoutManager.View {
-	public interface IPopupWindowSection {
+    public interface IPopupWindowSection {
 
 		/// <summary>
 		/// Get the size of this section

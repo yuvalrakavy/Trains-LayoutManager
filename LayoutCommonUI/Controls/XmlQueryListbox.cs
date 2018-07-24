@@ -2,19 +2,17 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using System.Diagnostics;
 
 namespace LayoutManager.CommonUI.Controls {
 
-	/// <summary>
-	/// An interface that must be implemented by a class that represents an item in
-	/// a XmlQueryListbox
-	/// </summary>
-	public interface IXmlQueryListboxItem {
+    /// <summary>
+    /// An interface that must be implemented by a class that represents an item in
+    /// a XmlQueryListbox
+    /// </summary>
+    public interface IXmlQueryListboxItem {
 		/// <summary>
 		/// Draw the item.
 		/// </summary>

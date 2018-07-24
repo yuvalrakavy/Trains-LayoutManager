@@ -2,26 +2,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using System.Drawing.Printing;
-
-using System.Diagnostics;
 
 #endregion
 
 namespace LayoutManager {
-	public enum PrintViewScope {
+    public enum PrintViewScope {
 		BestFit, Active, All
 	};
 }
 
 namespace LayoutManager.Dialogs {
-	partial class Print : Form {
+    partial class Print : Form {
 		PrintDocument printDoc;
 		Dictionary<string, IntPtr> devModes = new Dictionary<string, IntPtr>();
 

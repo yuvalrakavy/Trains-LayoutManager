@@ -8,22 +8,18 @@ using System.Xml;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using System.Reflection;
 using System.Linq;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.CommonUI.Controls;
-using LayoutManager.CommonUI;
 using LayoutManager.View;
 
 namespace LayoutManager.Tools {
 
-	/// <summary>
-	/// Summary description for ComponentTools.
-	/// </summary>
-	[LayoutModule("Components Operation Tools", UserControl=false)]
+    /// <summary>
+    /// Summary description for ComponentTools.
+    /// </summary>
+    [LayoutModule("Components Operation Tools", UserControl=false)]
 	public class ComponentOperationTools : System.ComponentModel.Component, ILayoutModuleSetup {
 		/// <summary>
 		/// Required designer variable.

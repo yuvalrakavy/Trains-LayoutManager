@@ -1,17 +1,13 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager.View;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for ArrangeAreas.
-	/// </summary>
-	public class ArrangeViews : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for ArrangeAreas.
+    /// </summary>
+    public class ArrangeViews : Form {
 		private Button buttonMoveDown;
 		private ImageList imageListButtons;
 		private Button buttonMoveUp;

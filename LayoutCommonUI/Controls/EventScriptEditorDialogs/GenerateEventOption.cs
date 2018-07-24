@@ -1,18 +1,13 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
-using LayoutManager;
-
-namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
-{
-	/// <summary>
-	/// Summary description for GenerateEventOption.
-	/// </summary>
-	public class GenerateEventOption : Form {
+namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
+    /// <summary>
+    /// Summary description for GenerateEventOption.
+    /// </summary>
+    public class GenerateEventOption : Form {
 		private Label label1;
 		private TextBox textBoxName;
 		private GroupBox groupBox1;

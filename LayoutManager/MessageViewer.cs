@@ -3,20 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Linq;
 
 using LayoutManager.Model;
-using LayoutManager.View;
 
-namespace LayoutManager
-{
-	/// <summary>
-	/// Summary description for MessageViewer.
-	/// </summary>
-	public class MessageViewer : System.Windows.Forms.UserControl
+namespace LayoutManager {
+    /// <summary>
+    /// Summary description for MessageViewer.
+    /// </summary>
+    public class MessageViewer : System.Windows.Forms.UserControl
 	{
 		ListViewItem		lastMessageMarker = null;
 

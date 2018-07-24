@@ -1,7 +1,4 @@
 using System;
-using System.Drawing;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
@@ -10,14 +7,12 @@ using System.IO.Ports;
 using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
-using NumatoController;
 
-namespace NumatoController.Dialogs
-{
-	/// <summary>
-	/// Summary description for CentralStationProperties.
-	/// </summary>
-	public class NumatoControllerProperties : Form {
+namespace NumatoController.Dialogs {
+    /// <summary>
+    /// Summary description for CentralStationProperties.
+    /// </summary>
+    public class NumatoControllerProperties : Form {
 		private ComboBox comboBoxPort;
 		private Label label1;
 		private Button buttonOK;

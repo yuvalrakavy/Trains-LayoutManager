@@ -1,33 +1,25 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Forms;
-using System.Data;
 using System.Xml;
-using System.Reflection;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Linq;
 using System.Threading.Tasks;
 
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Soap;
 
 using LayoutManager.Model;
 using LayoutManager.View;
 using LayoutManager.CommonUI;
 using LayoutManager.Components;
 
-namespace LayoutManager
-{
-	/// <summary>
-	/// Summary description for Form1.
-	/// </summary>
-	public partial class LayoutFrameWindow : Form, ILayoutFrameWindow
+namespace LayoutManager {
+    /// <summary>
+    /// Summary description for Form1.
+    /// </summary>
+    public partial class LayoutFrameWindow : Form, ILayoutFrameWindow
 	{
 		TaskCompletionSource<FrameWindowAction>	tcs;
 

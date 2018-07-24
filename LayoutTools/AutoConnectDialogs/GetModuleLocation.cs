@@ -1,20 +1,13 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager;
-using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.Tools.AutoConnectDialogs
-{
-	/// <summary>
-	/// Summary description for GetModuleLocation.
-	/// </summary>
-	public class GetModuleLocation : Form {
+namespace LayoutManager.Tools.AutoConnectDialogs {
+    /// <summary>
+    /// Summary description for GetModuleLocation.
+    /// </summary>
+    public class GetModuleLocation : Form {
 		private Label label1;
 		private Label label2;
 		private Label label3;

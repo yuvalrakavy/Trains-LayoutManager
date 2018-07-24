@@ -1,17 +1,14 @@
 using System;
 using System.ComponentModel;
-using System.Collections;
-using System.Diagnostics;
 using System.Windows.Forms;
 
 using LayoutManager;
-using LayoutManager.Model;
 
 namespace DiMAX {
-	/// <summary>
-	/// Summary description for ComponentTool.
-	/// </summary>
-	[LayoutModule("Massoth DiMAX Component Editing Tool", UserControl=false)]
+    /// <summary>
+    /// Summary description for ComponentTool.
+    /// </summary>
+    [LayoutModule("Massoth DiMAX Component Editing Tool", UserControl=false)]
 	public class ComponentTool : System.ComponentModel.Component, ILayoutModuleSetup
 	{
 		/// <summary>

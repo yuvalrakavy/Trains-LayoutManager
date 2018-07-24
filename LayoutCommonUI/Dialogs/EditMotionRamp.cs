@@ -1,18 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.CommonUI.Dialogs
-{
-	/// <summary>
-	/// Summary description for EditMotionRamp.
-	/// </summary>
-	public class EditMotionRamp : Form {
+namespace LayoutManager.CommonUI.Dialogs {
+    /// <summary>
+    /// Summary description for EditMotionRamp.
+    /// </summary>
+    public class EditMotionRamp : Form {
 		private LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor motionRampEditor;
 		private Button buttonOK;
 		private Button buttonCancel;

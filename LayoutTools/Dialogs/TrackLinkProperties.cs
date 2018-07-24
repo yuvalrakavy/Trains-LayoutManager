@@ -1,18 +1,14 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for TrackLinkForm.
-	/// </summary>
-	public class TrackLinkProperties : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for TrackLinkForm.
+    /// </summary>
+    public class TrackLinkProperties : Form {
 		private LayoutManager.CommonUI.Controls.TrackLinkTree trackLinkTree;
 		private RadioButton radioButtonNotLinked;
 		private RadioButton radioButtonLinked;

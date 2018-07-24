@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Xml;
 using System.Xml.XPath;
 using System.Reflection;
@@ -12,10 +11,10 @@ using System.Threading;
 
 namespace LayoutManager {
 
-	/// <summary>
-	/// A Layout Manager event
-	/// </summary>
-	public class LayoutEvent : LayoutObject {
+    /// <summary>
+    /// A Layout Manager event
+    /// </summary>
+    public class LayoutEvent : LayoutObject {
 		Object				sender;
 		private String		eventName;		// Cache the event name
 		bool				continueProcessing = true;

@@ -1,21 +1,17 @@
 using System;
 using System.Drawing;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
-using LayoutManager.CommonUI;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for ControlModuleLocationProperties.
-	/// </summary>
-	public class ControlModuleLocationProperties : Form, ILayoutComponentPropertiesDialog
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for ControlModuleLocationProperties.
+    /// </summary>
+    public class ControlModuleLocationProperties : Form, ILayoutComponentPropertiesDialog
 	{
 		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
 		private GroupBox groupBox1;

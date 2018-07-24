@@ -1,19 +1,16 @@
 using System;
 using System.Xml;
-using System.Xml.XPath;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
-using LayoutManager;
-
 namespace LayoutManager.Model {
 
-	#region Enumerations
+    #region Enumerations
 
-	public enum LocomotiveKind {
+    public enum LocomotiveKind {
 		Steam, Diesel, Electric, SoundUnit
 	};
 

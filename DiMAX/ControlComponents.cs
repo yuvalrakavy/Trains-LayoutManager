@@ -1,18 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Xml;
-using System.Windows.Forms;
 
 using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI;
 
 namespace DiMAX {
 
-	[LayoutModule("DiMAX Bus Definitions")]
+    [LayoutModule("DiMAX Bus Definitions")]
 	class DiMAXControlComponents : LayoutModuleBase {
 
 		ControlBusType	dccBus = null;

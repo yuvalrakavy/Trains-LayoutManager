@@ -1,17 +1,12 @@
-using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
-using System.Windows.Forms.Design;
 
-namespace Gui.Wizard
-{
-	/// <summary>
-	/// Summary description for UserControl1.
-	/// </summary>
-	[Designer(typeof(InfoContainerDesigner))]
+namespace Gui.Wizard {
+    /// <summary>
+    /// Summary description for UserControl1.
+    /// </summary>
+    [Designer(typeof(InfoContainerDesigner))]
 	public class InfoContainer: System.Windows.Forms.UserControl
 	{
 		private PictureBox picImage;

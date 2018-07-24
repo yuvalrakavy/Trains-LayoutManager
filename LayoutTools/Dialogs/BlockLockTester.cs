@@ -1,19 +1,15 @@
 using System;
-using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for BlockLockTester.
-	/// </summary>
-	public class BlockLockTester : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for BlockLockTester.
+    /// </summary>
+    public class BlockLockTester : Form {
 		private ListBox listBoxBlockInfo;
 		private Button buttonLock;
 		private Button buttonClose;

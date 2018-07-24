@@ -1,26 +1,15 @@
-using System;
 using System.Windows.Forms;
-using System.Drawing;
-using System.Diagnostics;
-using System.Xml;
-using System.Collections;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.UIGadgets;
-using LayoutManager.Components;
-using LayoutManager.Tools;
 
 //****
 // This file is no longer used, its functionality was moved to the new publish/subscribe model
 //****
 
-namespace LayoutManager
-{
-	/// <summary>
-	/// This tool is used for editing the layout
-	/// </summary>
-	public class LayoutOperationTool : LayoutTool
+namespace LayoutManager {
+    /// <summary>
+    /// This tool is used for editing the layout
+    /// </summary>
+    public class LayoutOperationTool : LayoutTool
 	{
 		private System.ComponentModel.IContainer components;
 

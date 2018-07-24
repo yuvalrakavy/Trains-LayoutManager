@@ -2,19 +2,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 #endregion
 
-using LayoutManager;
 using LayoutManager.Model;
 
 namespace LayoutManager.Dialogs {
-	partial class FindComponents : Form {
+    partial class FindComponents : Form {
 		LayoutModelArea activeArea;
 
 		public FindComponents(LayoutModelArea area) {

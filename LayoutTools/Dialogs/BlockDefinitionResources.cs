@@ -1,9 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -12,7 +8,7 @@ using LayoutManager.Components;
 using LayoutManager.CommonUI;
 
 namespace LayoutManager.Tools.Dialogs {
-	public partial class BlockDefinitionResources : Form {
+    public partial class BlockDefinitionResources : Form {
 		LayoutBlockDefinitionComponentInfo info;
 
 		public BlockDefinitionResources(LayoutBlockDefinitionComponentInfo info) {

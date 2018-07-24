@@ -1,17 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
-using System.Xml;
-using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Model;
 
 namespace LayoutManager.Logic {
-	/// <summary>
-	/// Handle train motion issues, such as acceleration
-	/// </summary>
-	[LayoutModule("Event Script Manager", UserControl=false)]
+    /// <summary>
+    /// Handle train motion issues, such as acceleration
+    /// </summary>
+    [LayoutModule("Event Script Manager", UserControl=false)]
 	public class EventScriptManagerManager : LayoutModuleBase {
 		IDictionary	activeScripts = new HybridDictionary();
 

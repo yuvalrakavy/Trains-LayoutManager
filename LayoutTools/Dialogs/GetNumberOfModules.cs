@@ -1,16 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for GetNumberOfModules.
-	/// </summary>
-	public class GetNumberOfModules : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for GetNumberOfModules.
+    /// </summary>
+    public class GetNumberOfModules : Form {
 		private Label labelQuestion;
 		private NumericUpDown numericUpDownModuleCount;
 		private Button buttonOK;

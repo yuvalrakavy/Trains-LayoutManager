@@ -1,16 +1,14 @@
 using System;
 using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for LocomotiveCollectionStores.
-	/// </summary>
-	public class LocomotiveCollectionStores : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for LocomotiveCollectionStores.
+    /// </summary>
+    public class LocomotiveCollectionStores : Form {
 		private Button buttonClose;
 		private ListView listViewStores;
 		private Button buttonNew;

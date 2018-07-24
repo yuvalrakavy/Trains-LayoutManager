@@ -1,18 +1,16 @@
 using System;
 using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager.Model;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for StadardFonts.
-	/// </summary>
-	public class StandardFonts : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for StadardFonts.
+    /// </summary>
+    public class StandardFonts : Form {
 		private ListView listViewFonts;
 		private ColumnHeader columnHeaderTitle;
 		private ColumnHeader columnHeaderDescription;

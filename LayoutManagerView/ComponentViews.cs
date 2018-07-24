@@ -1,25 +1,18 @@
 using System;
 using System.ComponentModel;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Components;
 using LayoutManager.Model;
-using LayoutManager.View;
 
-namespace LayoutManager.View
-{
+namespace LayoutManager.View {
 
-	/// <summary>
-	/// Summary description for ComponentViews.
-	/// </summary>
-	[LayoutModule("Component Views", UserControl=false)]
+    /// <summary>
+    /// Summary description for ComponentViews.
+    /// </summary>
+    [LayoutModule("Component Views", UserControl=false)]
 	public class ComponentViews : System.ComponentModel.Component, ILayoutModuleSetup
 	{
 		private IContainer components;

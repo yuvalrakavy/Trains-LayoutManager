@@ -1,18 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for TripPlanChangeIcon.
-	/// </summary>
-	public class TripPlanChangeIcon : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for TripPlanChangeIcon.
+    /// </summary>
+    public class TripPlanChangeIcon : Form {
 		private Label label1;
 		private Label labelTripPlanName;
 		private LayoutManager.CommonUI.Controls.SelectTripPlanIcon selectTripPlanIcon;

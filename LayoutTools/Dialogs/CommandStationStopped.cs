@@ -1,17 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.Tools.Dialogs {
-	public partial class CommandStationStopped : Form {
+    public partial class CommandStationStopped : Form {
 		IModelComponentIsCommandStation _commandStation;
 
 		public CommandStationStopped(IModelComponentIsCommandStation commandStation, string reason) {

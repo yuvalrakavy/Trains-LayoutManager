@@ -1,17 +1,13 @@
 using System;
-using System.Collections;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for NumericValue.
-	/// </summary>
-	public class NumericValue : System.Windows.Forms.UserControl {
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for NumericValue.
+    /// </summary>
+    public class NumericValue : System.Windows.Forms.UserControl {
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenuOperation;
 		private TextBox textBoxValue;
 		/// <summary> 

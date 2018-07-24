@@ -1,16 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI.Controls {
-	public partial class TrainLengthDiagram : UserControl {
+    public partial class TrainLengthDiagram : UserControl {
 		TrainLength _trainLength = TrainLength.Standard;
 		TrainLengthComparison _comparison = TrainLengthComparison.None;
 

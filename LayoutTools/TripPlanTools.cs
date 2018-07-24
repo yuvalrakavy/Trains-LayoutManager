@@ -1,22 +1,14 @@
 using System;
 using System.ComponentModel;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Xml;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using System.Reflection;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
-using LayoutManager.CommonUI.Controls;
 
 namespace LayoutManager.Tools {
 
-	[LayoutModule("Trip Planning Tools", UserControl=false)]
+    [LayoutModule("Trip Planning Tools", UserControl=false)]
 	public class TripPlanningTools : System.ComponentModel.Component, ILayoutModuleSetup {
 		/// <summary>
 		/// Required designer variable.

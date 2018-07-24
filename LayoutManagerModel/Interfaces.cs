@@ -4,7 +4,6 @@
 
 using System;
 using System.Drawing;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
@@ -15,9 +14,9 @@ using LayoutManager.Components;
 
 namespace LayoutManager {
 
-	#region Interfaces for various services
+    #region Interfaces for various services
 
-	public interface ILayoutController {
+    public interface ILayoutController {
 		// Properties
 		ILayoutFrameWindow ActiveFrameWindow { get; set; }
 

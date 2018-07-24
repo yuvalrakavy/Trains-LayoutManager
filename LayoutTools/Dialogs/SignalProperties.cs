@@ -1,19 +1,14 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Xml;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for TrackContactProperties.
-	/// </summary>
-	public class SignalProperties : Form, ILayoutComponentPropertiesDialog
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for TrackContactProperties.
+    /// </summary>
+    public class SignalProperties : Form, ILayoutComponentPropertiesDialog
 	{
 		private TabPage tabPageAddress;
 		private TabControl tabControl;

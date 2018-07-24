@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-
-using LayoutManager;
-using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager.Tools.Dialogs {
-	public partial class SelectProgrammingLocation : Form {
+    public partial class SelectProgrammingLocation : Form {
 		public SelectProgrammingLocation(IEnumerable<LayoutBlockDefinitionComponent> programmingLocations) {
 			InitializeComponent();
 

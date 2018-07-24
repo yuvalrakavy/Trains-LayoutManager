@@ -3,18 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.Logic
-{
-	/// <summary>
-	/// Summary description for LayoutValidator.
-	/// </summary>
-	[LayoutModule("Layout Validator", UserControl=false)]
+namespace LayoutManager.Logic {
+    /// <summary>
+    /// Summary description for LayoutValidator.
+    /// </summary>
+    [LayoutModule("Layout Validator", UserControl=false)]
 	public class LayoutValidator : LayoutModuleBase
 	{
 		IDictionary		commandStationMap = new HybridDictionary();

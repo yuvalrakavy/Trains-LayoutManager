@@ -1,21 +1,14 @@
 using System;
-using System.Collections;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
-using System.Diagnostics;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for DrivingParameters.
-	/// </summary>
-	public class DrivingParameters : System.Windows.Forms.UserControl, IObjectHasXml
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for DrivingParameters.
+    /// </summary>
+    public class DrivingParameters : System.Windows.Forms.UserControl, IObjectHasXml
 	{
 		private Label label1;
 		private Label label2;

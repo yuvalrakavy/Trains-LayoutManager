@@ -1,16 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 
 namespace LayoutManager.Tools.EventScriptDialogs {
-	public partial class IfTrainLength : Form {
+    public partial class IfTrainLength : Form {
 		public IfTrainLength(string symbolName, TrainLength length, TrainLengthComparison comparison) {
 			InitializeComponent();
 

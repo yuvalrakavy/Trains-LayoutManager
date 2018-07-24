@@ -1,7 +1,4 @@
 using System;
-using System.Drawing;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
@@ -10,12 +7,11 @@ using System.IO.Ports;
 using LayoutManager;
 using LayoutManager.Model;
 
-namespace NCDRelayController.Dialogs
-{
-	/// <summary>
-	/// Summary description for CentralStationProperties.
-	/// </summary>
-	public class NCDRelayControllerProperties : Form {
+namespace NCDRelayController.Dialogs {
+    /// <summary>
+    /// Summary description for CentralStationProperties.
+    /// </summary>
+    public class NCDRelayControllerProperties : Form {
 		private ComboBox comboBoxPort;
 		private Label label1;
 		private Button buttonOK;

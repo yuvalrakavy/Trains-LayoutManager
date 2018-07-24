@@ -1,16 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
-{
-	/// <summary>
-	/// Summary description for RepeatCondition.
-	/// </summary>
-	public class RepeatCondition : Form {
+namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
+    /// <summary>
+    /// Summary description for RepeatCondition.
+    /// </summary>
+    public class RepeatCondition : Form {
 		private Label label2;
 		private NumericUpDown numericUpDownCount;
 		private Button buttonOk;

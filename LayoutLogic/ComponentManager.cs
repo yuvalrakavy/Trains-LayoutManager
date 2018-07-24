@@ -1,20 +1,16 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.Diagnostics;
 using System.Threading.Tasks;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.Logic
-{
-	/// <summary>
-	/// Summary description for ComponentManager.
-	/// </summary>
-	[LayoutModule("Component Manager", UserControl=false)]
+namespace LayoutManager.Logic {
+    /// <summary>
+    /// Summary description for ComponentManager.
+    /// </summary>
+    [LayoutModule("Component Manager", UserControl=false)]
 	public class ComponentManager : LayoutModuleBase {
 
 		#region Handle control-connection-point-notification

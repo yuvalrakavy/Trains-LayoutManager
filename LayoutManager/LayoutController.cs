@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
@@ -13,10 +12,10 @@ using LayoutManager.Model;
 
 namespace LayoutManager {
 
-	/// <summary>
-	/// Actions that the user can perform in the launch dialog
-	/// </summary>
-	public enum LaunchAction {
+    /// <summary>
+    /// Actions that the user can perform in the launch dialog
+    /// </summary>
+    public enum LaunchAction {
 		NewLayout, OpenLayout, Exit
 	}
 

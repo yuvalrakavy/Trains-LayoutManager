@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace LayoutManager {
 
-	public interface ILayoutSwitch {
+    public interface ILayoutSwitch {
 	};
 
 	/// <summary>

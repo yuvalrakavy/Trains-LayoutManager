@@ -1,18 +1,13 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for PoliciesDefinition.
-	/// </summary>
-	public class PoliciesDefinition : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for PoliciesDefinition.
+    /// </summary>
+    public class PoliciesDefinition : Form {
 		private Button buttonClose;
 		private TabControl tabControlStartCondition;
 		private TabPage tabPageGlobal;

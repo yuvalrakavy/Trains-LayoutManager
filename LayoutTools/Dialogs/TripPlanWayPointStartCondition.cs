@@ -1,20 +1,15 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.CommonUI;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for TripPlanWayPointStartCondition.
-	/// </summary>
-	public class TripPlanWaypointStartCondition : Form, IControlSupportViewOnly {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for TripPlanWayPointStartCondition.
+    /// </summary>
+    public class TripPlanWaypointStartCondition : Form, IControlSupportViewOnly {
 		private LayoutManager.CommonUI.Controls.EventScriptEditor eventScriptEditor;
 		private Button buttonOk;
 		private Button buttonCancel;

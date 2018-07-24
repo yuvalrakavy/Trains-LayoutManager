@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI.Controls {
-	public partial class TrackGuageSelector : ComboBox {
+    public partial class TrackGuageSelector : ComboBox {
 		public TrackGuageSelector() {
 			InitializeComponent();
 			DropDownStyle = ComboBoxStyle.DropDownList;

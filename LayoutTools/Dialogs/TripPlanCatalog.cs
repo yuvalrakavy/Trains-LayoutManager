@@ -1,20 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
 using System.Windows.Forms;
-using System.Diagnostics;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for TripPlanCatalog.
-	/// </summary>
-	public class TripPlanCatalog : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for TripPlanCatalog.
+    /// </summary>
+    public class TripPlanCatalog : Form {
 		private Panel panelTripPlans;
 		private Splitter splitter;
 		private GroupBox groupBoxTripPlanPreview;

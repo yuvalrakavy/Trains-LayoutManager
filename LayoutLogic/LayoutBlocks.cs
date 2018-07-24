@@ -1,19 +1,15 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Drawing;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.Logic
-{
-	/// <summary>
-	/// Summary description for LayoutCompiler.
-	/// </summary>
-	[LayoutModule("Layout Block Manager", UserControl=false)]
+namespace LayoutManager.Logic {
+    /// <summary>
+    /// Summary description for LayoutCompiler.
+    /// </summary>
+    [LayoutModule("Layout Block Manager", UserControl=false)]
 	class LayoutBlockManager : LayoutModuleBase {
 		static LayoutTraceSwitch	traceBlocks = new LayoutTraceSwitch("BlockIdentification", "Block Identification");
 		static LayoutTraceSwitch	traceBlockInfo = new LayoutTraceSwitch("BlockInfo", "Block Info directions");

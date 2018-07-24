@@ -1,19 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-using System.Reflection;
 
-using LayoutManager;
-
-namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
-{
-	/// <summary>
-	/// Summary description for WaitForEvent.
-	/// </summary>
-	public class WaitForEvent : Form, IObjectHasXml
+namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
+    /// <summary>
+    /// Summary description for WaitForEvent.
+    /// </summary>
+    public class WaitForEvent : Form, IObjectHasXml
 	{
 		private Label label1;
 		private ComboBox comboBoxEvent;

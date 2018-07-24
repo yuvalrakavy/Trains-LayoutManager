@@ -1,15 +1,10 @@
 using System;
-using System.Collections;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Xml;
-using System.Threading;
 using System.Linq;
 
 using LayoutManager.Model;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace LayoutManager.Components {
     /// <summary>

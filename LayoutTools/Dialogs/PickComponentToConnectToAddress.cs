@@ -2,21 +2,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
 #endregion
 
 namespace LayoutManager.Tools.Dialogs {
-	public partial class PickComponentToConnectToAddress : Form, IControlConnectionPointDestinationReceiverDialog {
+    public partial class PickComponentToConnectToAddress : Form, IControlConnectionPointDestinationReceiverDialog {
 		CommandStationInputEvent csEvent;
 		ControlConnectionPointDestination selectedDestination = null;
 

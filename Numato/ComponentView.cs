@@ -1,8 +1,5 @@
-using System;
 using System.Windows.Forms;
 using System.ComponentModel;
-using System.Collections;
-using System.Diagnostics;
 using System.Drawing;
 using System.Xml;
 
@@ -10,12 +7,11 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
 
-namespace NumatoController
-{
-	/// <summary>
-	/// Summary description for ComponentView.
-	/// </summary>
-	[LayoutModule("Numato Relay controller Component View", UserControl=false)]
+namespace NumatoController {
+    /// <summary>
+    /// Summary description for ComponentView.
+    /// </summary>
+    [LayoutModule("Numato Relay controller Component View", UserControl=false)]
 	public class ComponentView : System.ComponentModel.Component, ILayoutModuleSetup
 	{
 		private ImageList imageListComponents;

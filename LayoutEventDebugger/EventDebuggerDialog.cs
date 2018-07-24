@@ -1,17 +1,14 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager;
 
-namespace LayoutEventDebugger
-{
-	/// <summary>
-	/// Summary description for EventDebuggerDialog.
-	/// </summary>
-	public class EventDebuggerDialog : Form {
+namespace LayoutEventDebugger {
+    /// <summary>
+    /// Summary description for EventDebuggerDialog.
+    /// </summary>
+    public class EventDebuggerDialog : Form {
 		private TabControl tabControl1;
 		private TabPage tabPageSubscription;
 		private TabPage tabPageSender;

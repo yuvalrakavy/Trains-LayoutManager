@@ -1,7 +1,5 @@
 using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security.Permissions;
 using System.Runtime.InteropServices;
 
 //
@@ -16,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("LayoutManager")]
 [assembly: AssemblyCopyright("(c) 2003-2005 Yuval Rakavy")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]		
+[assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(false)]

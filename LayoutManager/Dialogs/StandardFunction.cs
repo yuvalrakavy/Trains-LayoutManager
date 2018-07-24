@@ -1,19 +1,14 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Dialog box for creating/editing locomotive function template
-	/// </summary>
-	public class StandardFunction : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Dialog box for creating/editing locomotive function template
+    /// </summary>
+    public class StandardFunction : Form {
 		private Label label1;
 		private Label label2;
 		private ComboBox comboBoxFunctionType;

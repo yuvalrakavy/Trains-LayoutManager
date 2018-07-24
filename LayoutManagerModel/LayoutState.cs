@@ -2,21 +2,17 @@ using System;
 using System.Xml;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
-
-using LayoutManager;
 using LayoutManager.Components;
 
 namespace LayoutManager.Model {
 
-	#region State Management Base classes
+    #region State Management Base classes
 
-	public class LayoutStateInfoBase : LayoutInfo {
+    public class LayoutStateInfoBase : LayoutInfo {
 		public LayoutStateInfoBase(XmlElement element)
 			: base(element) {
 		}
@@ -1470,7 +1466,7 @@ namespace LayoutManager.Model {
 
 		/// <summary>
 		/// The ID of the track contact that the train had crossed in order to enter this block
-		/// </summary>
+		/// </summary>m 
 		public Guid BlockEdgeId {
 			get {
 				if(!Element.HasAttribute("BlockEdgeID"))

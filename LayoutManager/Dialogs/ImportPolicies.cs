@@ -1,18 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 using System.Xml;
 using System.IO;
 
 namespace LayoutManager.Dialogs {
-	public partial class ImportPolicies : Form {
+    public partial class ImportPolicies : Form {
 		Font boldFont;
 
 		public ImportPolicies() {

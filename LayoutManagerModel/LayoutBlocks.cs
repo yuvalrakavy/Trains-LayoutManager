@@ -1,21 +1,17 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Drawing;
 using System.Xml;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
 using LayoutManager.Components;
 using System.Threading;
 
 namespace LayoutManager.Model {
 
-	#region Block related classes
+    #region Block related classes
 
-	public class LayoutBlockBase : IDisposable {
+    public class LayoutBlockBase : IDisposable {
 		TrackEdgeCollection				trackEdges = new TrackEdgeCollection();
 		List<LayoutBlockEdgeBase>	blockEdges;
 		LayoutBlockDefinitionComponent	blockInfo;

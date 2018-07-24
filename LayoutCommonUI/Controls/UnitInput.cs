@@ -1,16 +1,13 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for UnitInput.
-	/// </summary>
-	public class UnitInput : System.Windows.Forms.UserControl
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for UnitInput.
+    /// </summary>
+    public class UnitInput : System.Windows.Forms.UserControl
 	{
 		private TextBox textBoxValue;
 		private LayoutManager.CommonUI.Controls.LinkMenu linkMenuUnits;

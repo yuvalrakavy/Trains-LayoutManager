@@ -1,16 +1,12 @@
 using System;
-using System.Collections;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for LinkMenu.
-	/// </summary>
-	public class LinkMenu : System.Windows.Forms.LinkLabel
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for LinkMenu.
+    /// </summary>
+    public class LinkMenu : System.Windows.Forms.LinkLabel
 	{
 		ContextMenu					menu = new ContextMenu();
 		int							selectedIndex = -1;

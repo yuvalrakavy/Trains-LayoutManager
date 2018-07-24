@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Xml;
 using System.IO;
 using System.Threading.Tasks;
@@ -62,7 +60,7 @@ namespace LayoutManager {
 
 namespace LayoutManager.Components {
 
-	#region Base class for command station components
+    #region Base class for command station components
 
     public abstract class LayoutBusProviderSupport : ModelComponent, IModelComponentIsBusProvider {
         ILayoutEmulatorServices _layoutEmulationServices;

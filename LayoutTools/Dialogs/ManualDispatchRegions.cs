@@ -1,20 +1,15 @@
 using System;
 using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.CommonUI;
 using LayoutManager.Model;
-using LayoutManager.View;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for ManualDispatchRegions.
-	/// </summary>
-	public class ManualDispatchRegions : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for ManualDispatchRegions.
+    /// </summary>
+    public class ManualDispatchRegions : Form {
 		private ListBox listBoxRegions;
 		private Button buttonNewRegion;
 		private Button buttonEditRegion;

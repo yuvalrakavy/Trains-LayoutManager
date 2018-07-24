@@ -1,19 +1,14 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for LocomotiveFront.
-	/// </summary>
-	public class TrainFrontAndLength : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for LocomotiveFront.
+    /// </summary>
+    public class TrainFrontAndLength : Form {
 		private Button buttonOk;
 		private Button buttonCancel;
 		private Label labelBlockName;

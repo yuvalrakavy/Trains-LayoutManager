@@ -1,20 +1,16 @@
 using System;
-using System.Drawing;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.Tools.EventScriptDialogs
-{
-	/// <summary>
-	/// Summary description for ExecuteTripPlan.
-	/// </summary>
-	public class ExecuteTripPlan : Form, IModelComponentReceiverDialog
+namespace LayoutManager.Tools.EventScriptDialogs {
+    /// <summary>
+    /// Summary description for ExecuteTripPlan.
+    /// </summary>
+    public class ExecuteTripPlan : Form, IModelComponentReceiverDialog
 	{
 		private LayoutManager.CommonUI.Controls.TripPlanList tripPlanList;
 		private Splitter splitter1;

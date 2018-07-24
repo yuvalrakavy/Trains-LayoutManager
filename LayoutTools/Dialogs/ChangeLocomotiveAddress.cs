@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Dialogs {
-	public partial class ChangeLocomotiveAddress : Form {
+    public partial class ChangeLocomotiveAddress : Form {
 		LocomotiveInfo Locomotive { get; }
         public IModelComponentIsCommandStation CommandStation { get; }
         public int Address { get; private set; }

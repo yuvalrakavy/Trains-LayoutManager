@@ -1,19 +1,15 @@
 using System;
 using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Tools.EventScriptDialogs
-{
-	/// <summary>
-	/// Summary description for RunPolicy.
-	/// </summary>
-	public class RunPolicy : Form {
+namespace LayoutManager.Tools.EventScriptDialogs {
+    /// <summary>
+    /// Summary description for RunPolicy.
+    /// </summary>
+    public class RunPolicy : Form {
 		private Label label1;
 		private Button buttonOK;
 		private Button buttonCancel;

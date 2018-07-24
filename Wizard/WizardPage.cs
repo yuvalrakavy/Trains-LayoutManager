@@ -1,16 +1,12 @@
 using System;
 using System.Windows.Forms;
 using System.ComponentModel;
-using System.ComponentModel.Design;
 
-using System.Diagnostics;
-
-namespace Gui.Wizard
-{
-	/// <summary>
-	/// 
-	/// </summary>
-	[Designer("Gui.Wizard.WizardPageDesigner", "WizardDesigner.dll")]
+namespace Gui.Wizard {
+    /// <summary>
+    /// 
+    /// </summary>
+    [Designer("Gui.Wizard.WizardPageDesigner", "WizardDesigner.dll")]
 	public class WizardPage : Panel
 	{
 

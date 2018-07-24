@@ -1,14 +1,10 @@
 using System;
 using System.Collections;
-using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 using LayoutManager;
 using LayoutManager.Model;
@@ -16,7 +12,7 @@ using LayoutManager.Components;
 
 namespace Intellibox {
 
-	interface ICommandStationServices {
+    interface ICommandStationServices {
 		void Event(LayoutEvent e);
 
 		void Error(string message);

@@ -1,19 +1,13 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.Components;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for TestLocoPainter.
-	/// </summary>
-	public class TestLocoPainter : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for TestLocoPainter.
+    /// </summary>
+    public class TestLocoPainter : Form {
 		private GroupBox groupBox1;
 		private RadioButton radioButtonFrontT;
 		private RadioButton radioButtonFrontB;

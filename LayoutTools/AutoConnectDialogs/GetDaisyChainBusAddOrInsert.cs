@@ -1,20 +1,13 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
-
-using LayoutManager;
-using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.Tools.AutoConnectDialogs
-{
-	/// <summary>
-	/// Summary description for GetDaisyChainBusAddOrInsert.
-	/// </summary>
-	public class GetDaisyChainBusAddOrInsert : Form {
+namespace LayoutManager.Tools.AutoConnectDialogs {
+    /// <summary>
+    /// Summary description for GetDaisyChainBusAddOrInsert.
+    /// </summary>
+    public class GetDaisyChainBusAddOrInsert : Form {
 		private RadioButton radioButtonInsert;
 		private Button buttonOK;
 		private Button buttonCancel;

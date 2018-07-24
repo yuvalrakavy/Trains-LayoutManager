@@ -1,12 +1,10 @@
-using System;
 using System.Windows.Forms.Design;
 
-namespace Gui.Wizard
-{
-	/// <summary>
-	/// 
-	/// </summary>
-	public class HeaderDesigner : ParentControlDesigner
+namespace Gui.Wizard {
+    /// <summary>
+    /// 
+    /// </summary>
+    public class HeaderDesigner : ParentControlDesigner
 	{
 
         /// <summary>

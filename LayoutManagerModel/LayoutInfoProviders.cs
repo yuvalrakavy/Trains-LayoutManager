@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Drawing;
 using System.Xml;
-using System.Diagnostics;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,13 +8,12 @@ using System.Threading.Tasks;
 //using LayoutManager.Components;
 
 using LayoutManager.Components;
-using LayoutManager;
 
 namespace LayoutManager.Model {
-	/// <summary>
-	/// Base class for information providers. Information providers wrap XML element and add symantics to them.
-	/// </summary>
-	public class LayoutInfo : LayoutXmlWrapper {
+    /// <summary>
+    /// Base class for information providers. Information providers wrap XML element and add symantics to them.
+    /// </summary>
+    public class LayoutInfo : LayoutXmlWrapper {
 		bool					elementInComponentDocument;
 		XmlElement				container;
 		ModelComponent			component;

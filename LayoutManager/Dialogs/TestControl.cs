@@ -1,19 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.Components;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for TestControl.
-	/// </summary>
-	public class TestControl : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for TestControl.
+    /// </summary>
+    public class TestControl : Form {
 		private Button buttonClose;
 		private LayoutManager.CommonUI.Controls.SelectTripPlanIcon selectTripPlanIcon1;
 		/// <summary>

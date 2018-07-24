@@ -1,7 +1,4 @@
 using System;
-using System.Drawing;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
@@ -9,12 +6,11 @@ using System.Xml;
 using LayoutManager;
 using LayoutManager.Model;
 
-namespace Intellibox.Dialogs
-{
-	/// <summary>
-	/// Summary description for CentralStationProperties.
-	/// </summary>
-	public class CentralStationProperties : Form {
+namespace Intellibox.Dialogs {
+    /// <summary>
+    /// Summary description for CentralStationProperties.
+    /// </summary>
+    public class CentralStationProperties : Form {
 		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
 		private ComboBox comboBoxPort;
 		private Label label1;

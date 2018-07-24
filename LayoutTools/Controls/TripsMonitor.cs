@@ -3,22 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
-using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.CommonUI;
 
-namespace LayoutManager.Tools.Controls
-{
-	/// <summary>
-	/// Summary description for TripsMonitor.
-	/// </summary>
-	public class TripsMonitor : System.Windows.Forms.UserControl
+namespace LayoutManager.Tools.Controls {
+    /// <summary>
+    /// Summary description for TripsMonitor.
+    /// </summary>
+    public class TripsMonitor : System.Windows.Forms.UserControl
 	{
 		private ListView listViewTrips;
 		private Button buttonAbort;

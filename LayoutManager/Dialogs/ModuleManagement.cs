@@ -1,16 +1,13 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Implement the module management dialog
-	/// </summary>
-	public class ModuleManagement : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Implement the module management dialog
+    /// </summary>
+    public class ModuleManagement : Form {
 		private Button buttonClose;
 		private Button buttonAdd;
 		private IContainer components;

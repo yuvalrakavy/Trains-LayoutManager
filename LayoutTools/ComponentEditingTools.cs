@@ -1,24 +1,18 @@
 using System;
 using System.ComponentModel;
 using System.Collections;
-using System.Collections.Specialized;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Xml;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Linq;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
-using LayoutManager.CommonUI;
 using LayoutManager.View;
 
-namespace LayoutManager.Tools
-{
-	public class PlacementInfo {
+namespace LayoutManager.Tools {
+    public class PlacementInfo {
 		LayoutModelArea area;
 		Point location;
 

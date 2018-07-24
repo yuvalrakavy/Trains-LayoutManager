@@ -1,15 +1,13 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Xml;
 using System.Diagnostics;
 
 using LayoutManager.Components;
 
 namespace LayoutManager.Model {
 
-	public struct TrackSegment {
+    public struct TrackSegment {
 		LayoutTrackComponent			track;
 		LayoutComponentConnectionPoint	cp1, cp2;
 

@@ -1,14 +1,12 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
 
 namespace LayoutManager {
-	/// <summary>
-	/// This interface is implemented by objects that have user attributes
-	/// </summary>
-	public interface IObjectHasAttributes {
+    /// <summary>
+    /// This interface is implemented by objects that have user attributes
+    /// </summary>
+    public interface IObjectHasAttributes {
 		bool HasAttributes { get; }
 
 		AttributesInfo Attributes { get; }

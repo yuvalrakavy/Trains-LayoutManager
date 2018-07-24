@@ -4,16 +4,14 @@ using System.Xml;
 using System.Diagnostics;
 using System.Threading;
 using System.Linq;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager.Logic {
-	/// <summary>
-	/// Summary description for TripPlanner.
-	/// </summary>
-	[LayoutModule("Route Planner")]
+    /// <summary>
+    /// Summary description for TripPlanner.
+    /// </summary>
+    [LayoutModule("Route Planner")]
 	class RoutePlanner : LayoutModuleBase, IRoutePlanningServices {
 		static LayoutTraceSwitch	traceRoutePlanning = new LayoutTraceSwitch("RoutePlanning", "Route Planning");
 		static LayoutTraceSwitch	traceRoutingTable = new LayoutTraceSwitch("RoutingTable", "Routing table construction");

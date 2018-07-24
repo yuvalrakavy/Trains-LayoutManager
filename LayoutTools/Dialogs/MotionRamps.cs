@@ -1,19 +1,14 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for MotionRamps.
-	/// </summary>
-	public class MotionRamps : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for MotionRamps.
+    /// </summary>
+    public class MotionRamps : Form {
 		private ListView listViewRamps;
 		private Button buttonAdd;
 		private Button buttonEdit;

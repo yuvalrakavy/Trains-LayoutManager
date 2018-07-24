@@ -1,18 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Xml;
-using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI;
 
 namespace LayoutManager.ControlComponents {
 
-	[LayoutModule("Numato Relay Components")]
+    [LayoutModule("Numato Relay Components")]
 	class NumatoControlComponents : LayoutModuleBase {
 		ControlBusType	relayBus = null;
 

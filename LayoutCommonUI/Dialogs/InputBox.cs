@@ -1,12 +1,9 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace LayoutManager.CommonUI.Dialogs
-{
-	[Flags]
+namespace LayoutManager.CommonUI.Dialogs {
+    [Flags]
 	public enum InputBoxValidationOptions {
 		AllowEmpty, IntegerNumber
 	}

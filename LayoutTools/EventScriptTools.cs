@@ -1,11 +1,8 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.CommonUI;
@@ -13,7 +10,7 @@ using LayoutManager.CommonUI.Controls;
 
 namespace LayoutManager.Tools {
 
-	[LayoutModule("EventScript Tools", UserControl=false)]
+    [LayoutModule("EventScript Tools", UserControl=false)]
 	class EventScriptTools : LayoutModuleBase {
 
 		#region Symbol name to object type map

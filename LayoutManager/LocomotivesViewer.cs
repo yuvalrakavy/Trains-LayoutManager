@@ -1,21 +1,17 @@
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
-using LayoutManager.Tools;
 
-namespace LayoutManager
-{
-	/// <summary>
-	/// Summary description for LocomotivesViewer.
-	/// </summary>
-	public class LocomotivesViewer : System.Windows.Forms.UserControl
+namespace LayoutManager {
+    /// <summary>
+    /// Summary description for LocomotivesViewer.
+    /// </summary>
+    public class LocomotivesViewer : System.Windows.Forms.UserControl
 	{
 		private ContextMenu contextMenuAdd;
 		private MenuItem menuItemAddLocomotive;

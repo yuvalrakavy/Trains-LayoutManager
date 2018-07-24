@@ -1,16 +1,12 @@
-using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for PictureBoxWithTransparency.
-	/// </summary>
-	public class PictureBoxWithTransparency : PictureBox
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for PictureBoxWithTransparency.
+    /// </summary>
+    public class PictureBoxWithTransparency : PictureBox
 	{
 		Color	transparentColor = Color.Empty;
 		bool	isTransparent = false;

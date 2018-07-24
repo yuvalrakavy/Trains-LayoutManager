@@ -1,16 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Dialogs {
-	public partial class GetSavedPolicyName : Form {
+    public partial class GetSavedPolicyName : Form {
 		public GetSavedPolicyName(LayoutPoliciesCollection policies) {
 			InitializeComponent();
 

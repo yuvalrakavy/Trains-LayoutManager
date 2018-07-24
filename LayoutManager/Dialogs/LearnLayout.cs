@@ -1,29 +1,22 @@
 ﻿#region Using directives
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using System.Resources;
 using System.IO;
 using System.Diagnostics;
 using System.Linq;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.CommonUI;
-using LayoutManager.Tools;
 using System.Media;
 
 #endregion
 
 
 namespace LayoutManager.Dialogs {
-	partial class LearnLayout : Form {
+    partial class LearnLayout : Form {
 		static bool enableSound = false;
 		long lastSoundTime = 0;
 		const long soundGapThreshold = 4000 * TimeSpan.TicksPerMillisecond;

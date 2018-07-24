@@ -3,20 +3,14 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
 
-using LayoutManager;
-using LayoutManager.Model;
-
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for OperandValueOf.
-	/// </summary>
-	public class OperandValueOf : System.Windows.Forms.UserControl
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for OperandValueOf.
+    /// </summary>
+    public class OperandValueOf : System.Windows.Forms.UserControl
 	{
 		private ComboBox comboBoxTag;
 		private ComboBox comboBoxSymbol;

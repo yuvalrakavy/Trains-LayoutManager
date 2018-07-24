@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.Linq;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using System.Diagnostics;
@@ -12,7 +10,7 @@ using System.Threading.Tasks;
 using System.Threading;
 
 namespace LayoutManager.Logic {
-	[LayoutModule("Trains Manager", UserControl = false)]
+    [LayoutModule("Trains Manager", UserControl = false)]
 	class TrainsManager : LayoutModuleBase {
 		#region Internal properties and helper functions
 

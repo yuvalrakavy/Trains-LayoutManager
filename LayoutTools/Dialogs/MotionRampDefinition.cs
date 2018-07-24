@@ -1,19 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for MotionRampDefinition.
-	/// </summary>
-	public class MotionRampDefinition : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for MotionRampDefinition.
+    /// </summary>
+    public class MotionRampDefinition : Form {
 		private Label label1;
 		private TextBox textBoxName;
 		private LayoutManager.CommonUI.Controls.MotionRampEditor motionRampEditor;

@@ -1,18 +1,13 @@
 using System;
 using System.Diagnostics;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Xml;
-using System.IO;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager.Logic {
 
-	public class ModelTopology {
+    public class ModelTopology {
 		Dictionary<TrackEdgeId, ModelTopologyEntry> topology = new Dictionary<TrackEdgeId, ModelTopologyEntry>();
 		bool compiled;
 

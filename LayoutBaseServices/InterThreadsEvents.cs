@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 using System.Diagnostics;
@@ -8,7 +7,7 @@ using System.Diagnostics;
 using LayoutManager;
 
 namespace LayoutBaseServices {
-	[LayoutModule("Interthreads Event Relay", Enabled=true, UserControl=false)]
+    [LayoutModule("Interthreads Event Relay", Enabled=true, UserControl=false)]
 	class InterThreadsEvents : LayoutModuleBase, ILayoutInterThreadEventInvoker, IDisposable {
 		Control controlInUIthread;
 		Queue<LayoutEvent> eventQueue = new Queue<LayoutEvent>();

@@ -1,18 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
-using LayoutManager;
-
-namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
-{
-	/// <summary>
-	/// Summary description for ShowMessage.
-	/// </summary>
-	public class ShowMessage : Form {
+namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
+    /// <summary>
+    /// Summary description for ShowMessage.
+    /// </summary>
+    public class ShowMessage : Form {
 		private Label label1;
 		private TextBox textBoxMessage;
 		private GroupBox groupBox1;

@@ -1,20 +1,15 @@
 using System;
 using System.ComponentModel;
-using System.Collections;
 using System.Xml;
-using System.Diagnostics;
 using System.Drawing;
-
-using LayoutManager;
 using LayoutManager.Components;
 using LayoutManager.Model;
 
-namespace LayoutManager.Tools
-{
-	/// <summary>
-	/// Summary description for ComponentMenuItems.
-	/// </summary>
-	[LayoutModule("Component Menu Items", UserControl=false)]
+namespace LayoutManager.Tools {
+    /// <summary>
+    /// Summary description for ComponentMenuItems.
+    /// </summary>
+    [LayoutModule("Component Menu Items", UserControl=false)]
 	public class ComponentMenuItems : System.ComponentModel.Component, ILayoutModuleSetup
 	{
 		private System.Windows.Forms.ImageList imageListCategories;

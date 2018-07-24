@@ -1,21 +1,14 @@
-using System;
-using System.Collections;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
 using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for MotionRampSelector.
-	/// </summary>
-	public class MotionRampSelector : System.Windows.Forms.UserControl, IObjectHasXml
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for MotionRampSelector.
+    /// </summary>
+    public class MotionRampSelector : System.Windows.Forms.UserControl, IObjectHasXml
 	{
 		private GroupBox groupBoxRampSelector;
 		private Label labelRampDescription;

@@ -1,18 +1,15 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager.Model;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for LocomotiveFunction.
-	/// </summary>
-	public class LocomotiveFunction : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for LocomotiveFunction.
+    /// </summary>
+    public class LocomotiveFunction : Form {
 		private Label label1;
 		private Label label2;
 		private NumericUpDown numericUpDownFunctionNumber;

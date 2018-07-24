@@ -1,15 +1,12 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for SetZoom.
-	/// </summary>
-	public class SetZoom : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for SetZoom.
+    /// </summary>
+    public class SetZoom : Form {
 		private Label label1;
 		private TextBox textBoxZoomFactor;
 		private Label label2;

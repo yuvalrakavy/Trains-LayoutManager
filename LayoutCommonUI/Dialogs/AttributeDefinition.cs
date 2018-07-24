@@ -1,19 +1,14 @@
 using System;
-using System.Drawing;
 using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-using LayoutManager;
-using LayoutManager.Model;
-
-namespace LayoutManager.CommonUI.Dialogs
-{
-	/// <summary>
-	/// Summary description for AttributeDefinition.
-	/// </summary>
-	public class AttributeDefinition : Form {
+namespace LayoutManager.CommonUI.Dialogs {
+    /// <summary>
+    /// Summary description for AttributeDefinition.
+    /// </summary>
+    public class AttributeDefinition : Form {
 		private Label label1;
 		private GroupBox groupBox1;
 		private Label label2;

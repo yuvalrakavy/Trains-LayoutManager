@@ -1,8 +1,5 @@
-using System;
 using System.Windows.Forms;
 using System.ComponentModel;
-using System.Collections;
-using System.Diagnostics;
 using System.Drawing;
 using System.Xml;
 
@@ -11,10 +8,10 @@ using LayoutManager.Model;
 using LayoutManager.View;
 
 namespace NCDRelayController {
-	/// <summary>
-	/// Summary description for ComponentView.
-	/// </summary>
-	[LayoutModule("NCD Relay controller Component View", UserControl=false)]
+    /// <summary>
+    /// Summary description for ComponentView.
+    /// </summary>
+    [LayoutModule("NCD Relay controller Component View", UserControl=false)]
 	public class ComponentView : System.ComponentModel.Component, ILayoutModuleSetup
 	{
 		private ImageList imageListComponents;

@@ -1,19 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
-using LayoutManager;
-using LayoutManager.Model;
-
-namespace LayoutManager.Tools.EventScriptDialogs
-{
-	/// <summary>
-	/// Summary description for ExecuteRandomTripPlan.
-	/// </summary>
-	public class ExecuteRandomTripPlan : Form {
+namespace LayoutManager.Tools.EventScriptDialogs {
+    /// <summary>
+    /// Summary description for ExecuteRandomTripPlan.
+    /// </summary>
+    public class ExecuteRandomTripPlan : Form {
 		private TextBox textBoxCondition;
 		private Button buttonConditionEdit;
 		private Label label1;

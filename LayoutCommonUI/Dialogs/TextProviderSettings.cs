@@ -1,17 +1,13 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager.Model;
 
-namespace LayoutManager.CommonUI.Dialogs
-{
-	/// <summary>
-	/// Summary description for TextProviderSettings.
-	/// </summary>
-	public class TextProviderSettings : Form {
+namespace LayoutManager.CommonUI.Dialogs {
+    /// <summary>
+    /// Summary description for TextProviderSettings.
+    /// </summary>
+    public class TextProviderSettings : Form {
 		private Button buttonOK;
 		private Button buttonCancel;
 		private LayoutManager.CommonUI.Controls.TextProviderFontDefinition textProviderFontDefinition1;

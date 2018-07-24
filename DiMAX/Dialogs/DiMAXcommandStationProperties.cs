@@ -1,20 +1,15 @@
 using System;
-using System.Drawing;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Xml;
 
 using LayoutManager;
 using LayoutManager.Model;
 
-namespace DiMAX.Dialogs
-{
-	/// <summary>
-	/// Summary description for CentralStationProperties.
-	/// </summary>
-	public class DiMAXcommandlStationProperties : Form {
+namespace DiMAX.Dialogs {
+    /// <summary>
+    /// Summary description for CentralStationProperties.
+    /// </summary>
+    public class DiMAXcommandlStationProperties : Form {
 		private ComboBox comboBoxPort;
 		private Label label1;
 		private Button buttonOK;

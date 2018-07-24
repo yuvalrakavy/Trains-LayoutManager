@@ -1,20 +1,14 @@
-using System;
-using System.Drawing;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
-
-using LayoutManager;
-using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.Tools.AutoConnectDialogs
-{
-	/// <summary>
-	/// Summary description for GetNoSpaceSelection.
-	/// </summary>
-	public class GetNoSpaceSelection : Form {
+namespace LayoutManager.Tools.AutoConnectDialogs {
+    /// <summary>
+    /// Summary description for GetNoSpaceSelection.
+    /// </summary>
+    public class GetNoSpaceSelection : Form {
 		private Label label2;
 		private Label label3;
 		private Label labelTitle;

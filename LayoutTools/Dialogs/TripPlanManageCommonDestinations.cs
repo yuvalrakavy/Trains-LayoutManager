@@ -1,21 +1,15 @@
-using System;
 using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Linq;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.View;
 using LayoutManager.Components;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for TripPlanManageCommonDestinations.
-	/// </summary>
-	public class TripPlanManageCommonDestinations : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for TripPlanManageCommonDestinations.
+    /// </summary>
+    public class TripPlanManageCommonDestinations : Form {
 		private TreeView treeViewDestinations;
 		private Button buttonDelete;
 		private Button buttonRename;

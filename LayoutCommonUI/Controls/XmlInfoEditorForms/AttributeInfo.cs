@@ -1,16 +1,13 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace LayoutManager.CommonUI.Controls.XmlInfoEditorForms
-{
-	/// <summary>
-	/// Summary description for AttributeInfo.
-	/// </summary>
-	public class AttributeInfo : Form {
+namespace LayoutManager.CommonUI.Controls.XmlInfoEditorForms {
+    /// <summary>
+    /// Summary description for AttributeInfo.
+    /// </summary>
+    public class AttributeInfo : Form {
 		private Button buttonOK;
 		private Button buttonCancel;
 		private TextBox textBoxValue;

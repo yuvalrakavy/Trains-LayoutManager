@@ -1,13 +1,10 @@
-using System;
 using System.Collections;
-using System.Windows.Forms;
 
-namespace Gui.Wizard
-{
-	/// <summary>
-	/// Summary description for PanelCollection.
-	/// </summary>
-	public class PageCollection : CollectionBase
+namespace Gui.Wizard {
+    /// <summary>
+    /// Summary description for PanelCollection.
+    /// </summary>
+    public class PageCollection : CollectionBase
 	{
 		private Wizard vParent;
 		/// <summary>

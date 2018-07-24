@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -11,7 +10,7 @@ using LayoutManager.Components;
 
 namespace LayoutManager.Logic {
 
-	[LayoutModule("Layout Power Manager", UserControl=false)]
+    [LayoutModule("Layout Power Manager", UserControl=false)]
 	class LayoutPowerManager : LayoutModuleBase {
 		static ILayoutTopologyServices	_topologyServices;
         Dictionary<Guid, Guid> _pendingPowerConnectedLockReady = new Dictionary<Guid, Guid>();

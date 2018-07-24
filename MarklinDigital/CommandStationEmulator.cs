@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Xml;
 using System.Threading;
 
 using LayoutManager;
@@ -12,7 +10,7 @@ using LayoutManager.Components;
 
 namespace MarklinDigital {
 
-	public class MarkliinCommandStationEmulator : ILayoutCommandStationEmulator {
+    public class MarkliinCommandStationEmulator : ILayoutCommandStationEmulator {
 		Guid				commandStationId;
 		string				pipeName;
 

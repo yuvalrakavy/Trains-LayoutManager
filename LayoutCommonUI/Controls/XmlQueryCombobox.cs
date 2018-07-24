@@ -1,18 +1,13 @@
 using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
 using System.Text.RegularExpressions;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for XmlQueryCombobox.
-	/// </summary>
-	public class XmlQueryCombobox : ComboBox {
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for XmlQueryCombobox.
+    /// </summary>
+    public class XmlQueryCombobox : ComboBox {
 		XmlElement	container;
 		String		query = "*[contains(Name, '<TEXT>')]";
 		String		extract = "string(Name)";

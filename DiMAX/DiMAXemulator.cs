@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Xml;
 using System.Threading;
 using System.Collections.Generic;
 
@@ -11,7 +10,7 @@ using LayoutManager.Components;
 
 namespace DiMAX {
 
-	public class DiMAXcommandStationEmulator : ILayoutCommandStationEmulator {
+    public class DiMAXcommandStationEmulator : ILayoutCommandStationEmulator {
 		Guid commandStationId;
 		string pipeName;
 

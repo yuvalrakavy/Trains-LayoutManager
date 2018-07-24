@@ -5,15 +5,14 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
-using System.Runtime;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Windows.Forms;
 
 namespace LayoutManager.CommonUI.Controls {
-	#region DataListView Class
-	[
+    #region DataListView Class
+    [
 	Serializable(), System.ComponentModel.DesignerCategory("Code"),
 	ToolboxBitmapAttribute(typeof(LayoutManager.CommonUI.Controls.DataListView), "DataListView.ico")
 	]

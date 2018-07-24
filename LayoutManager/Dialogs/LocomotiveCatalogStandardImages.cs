@@ -1,17 +1,15 @@
 using System;
 using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager.Model;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for LocomotiveCatalogStandardImages.
-	/// </summary>
-	public class LocomotiveCatalogStandardImages : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for LocomotiveCatalogStandardImages.
+    /// </summary>
+    public class LocomotiveCatalogStandardImages : Form {
 		private GroupBox groupBox1;
 		private GroupBox groupBox2;
 		private Label label1;

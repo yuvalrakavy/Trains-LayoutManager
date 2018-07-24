@@ -1,21 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Xml;
-using System.Xml.XPath;
 using System.Reflection;
-using System.Threading;
 
 using System.Diagnostics;
 
 namespace LayoutManager {
 
-	#region Event Script Implementations
+    #region Event Script Implementations
 
-	#region Event script error handling
+    #region Event script error handling
 
-	public enum LayoutEventScriptExecutionPhase {
+    public enum LayoutEventScriptExecutionPhase {
 		Unknown , Evaluation, Reset, Cancel, Disposing, EventProcessing, ActionProcessing, ConditionProcessing,
 	}
 

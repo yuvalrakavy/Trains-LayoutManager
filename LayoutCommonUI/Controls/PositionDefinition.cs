@@ -1,18 +1,13 @@
-using System;
-using System.Collections;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 
 using LayoutManager.Model;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for PositionDefinition.
-	/// </summary>
-	public class PositionDefinition : System.Windows.Forms.UserControl
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for PositionDefinition.
+    /// </summary>
+    public class PositionDefinition : System.Windows.Forms.UserControl
 	{
 		private NumericUpDown numericUpDownDistance;
 		private Label labelDistance;

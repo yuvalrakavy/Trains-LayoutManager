@@ -1,24 +1,18 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Diagnostics;
 using System.Xml;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.UIGadgets;
 using LayoutManager.Components;
-using LayoutManager.Tools;
 
-namespace LayoutManager
-{
-	/// <summary>
-	/// This tool is used for editing the layout
-	/// </summary>
-	public class LayoutEditingTool : LayoutTool
+namespace LayoutManager {
+    /// <summary>
+    /// This tool is used for editing the layout
+    /// </summary>
+    public class LayoutEditingTool : LayoutTool
 	{
 		LayoutStraightTrackComponent	lastTrack = null;
 		String							lastCategoryName = null;

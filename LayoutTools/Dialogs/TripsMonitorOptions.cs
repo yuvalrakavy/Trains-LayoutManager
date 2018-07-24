@@ -1,15 +1,12 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for TripsMonitorOptions.
-	/// </summary>
-	public class TripsMonitorOptions : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for TripsMonitorOptions.
+    /// </summary>
+    public class TripsMonitorOptions : Form {
 		private CheckBox checkBoxEnableAutoClear;
 		private Label labelAutoClear1;
 		private NumericUpDown numericUpDownAutoClearTimeout;

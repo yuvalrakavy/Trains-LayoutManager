@@ -1,18 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml;
 using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager.Logic {
-	/// <summary>
-	/// Handle locomotive tracking LocomotiveTracking.
-	/// </summary>
-	[LayoutModule("Locomotive Tracker", UserControl=false)]
+    /// <summary>
+    /// Handle locomotive tracking LocomotiveTracking.
+    /// </summary>
+    [LayoutModule("Locomotive Tracker", UserControl=false)]
 	public class LocomotiveTracking : LayoutModuleBase {
 		ILayoutTopologyServices	_topologyServices;
 		public static LayoutTraceSwitch		traceLocomotiveTracking = new LayoutTraceSwitch("LocomotiveTracking", "Locomotive Tracking");

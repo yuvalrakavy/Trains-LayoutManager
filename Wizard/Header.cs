@@ -1,16 +1,12 @@
-using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 
-namespace Gui.Wizard
-{
-	/// <summary>
-	/// Summary description for WizardHeader.
-	/// </summary>
-	[Designer("Gui.Wizard.HeaderDesigner", "WizardDesigner.dll")]
+namespace Gui.Wizard {
+    /// <summary>
+    /// Summary description for WizardHeader.
+    /// </summary>
+    [Designer("Gui.Wizard.HeaderDesigner", "WizardDesigner.dll")]
 	public class Header : UserControl
 	{
 		private Panel pnlDockPadding;

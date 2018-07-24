@@ -1,18 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for TripPlanRouteValidationResult.
-	/// </summary>
-	public class TripPlanRouteValidationResult : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for TripPlanRouteValidationResult.
+    /// </summary>
+    public class TripPlanRouteValidationResult : Form {
 		private Label labelDescription;
 		private ListView listViewActions;
 		private ColumnHeader columnHeaderWayPointDestination;

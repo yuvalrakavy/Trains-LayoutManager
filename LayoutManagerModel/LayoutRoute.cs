@@ -1,23 +1,13 @@
 using System;
-using System.Xml;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Drawing;
-using System.Data;
-using System.Windows.Forms;
-using System.IO;
-
-using LayoutManager;
 using LayoutManager.Components;
 
 namespace LayoutManager.Model {
 
-	/// <summary>
-	/// Route Clearance quality are numerically ordered from the best to the worst
-	/// </summary>
-	public enum RouteClearanceQuality {
+    /// <summary>
+    /// Route Clearance quality are numerically ordered from the best to the worst
+    /// </summary>
+    public enum RouteClearanceQuality {
 		/// <summary>
 		/// Route is currently free
 		/// </summary>

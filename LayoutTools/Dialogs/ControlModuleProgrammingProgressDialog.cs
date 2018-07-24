@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Threading.Tasks;
-
-using LayoutManager;
 using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Dialogs {
-	public partial class ControlModuleProgrammingProgressDialog : Form {
+    public partial class ControlModuleProgrammingProgressDialog : Form {
 		Func<Task> doProgramming;
 		bool showingProgress = false;
 		bool programmingDone = false;

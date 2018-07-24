@@ -1,19 +1,14 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for StandardFunctions.
-	/// </summary>
-	public class StandardFunctions : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for StandardFunctions.
+    /// </summary>
+    public class StandardFunctions : Form {
 		private ListView listViewFunctionInfo;
 		private Button buttonNew;
 		private Button buttonEdit;

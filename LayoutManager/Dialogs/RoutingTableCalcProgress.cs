@@ -1,17 +1,11 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-using LayoutManager;
-
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for RoutingTableCalcProgress.
-	/// </summary>
-	public class RoutingTableCalcProgress : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for RoutingTableCalcProgress.
+    /// </summary>
+    public class RoutingTableCalcProgress : Form {
 		private Label label1;
 		private System.Windows.Forms.ProgressBar progressBar;
 		private Button buttonAbort;

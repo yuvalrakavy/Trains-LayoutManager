@@ -5,20 +5,15 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Data;
 using System.Windows.Forms;
-using System.Diagnostics;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.CommonUI
-{
-	/// <summary>
-	/// Summary description for LayoutControlBusViewer.
-	/// </summary>
-	public class LayoutControlBusViewer : System.Windows.Forms.Control {
+namespace LayoutManager.CommonUI {
+    /// <summary>
+    /// Summary description for LayoutControlBusViewer.
+    /// </summary>
+    public class LayoutControlBusViewer : System.Windows.Forms.Control {
 		private IContainer components;
 		private System.Windows.Forms.HScrollBar hScrollBar;
 		private ImageList imageListConnectionPointTypes;

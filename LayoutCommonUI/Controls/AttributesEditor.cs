@@ -1,16 +1,11 @@
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
-
-using LayoutManager;
-using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI.Controls {
 
-	public interface ICheckIfNameUsed {
+    public interface ICheckIfNameUsed {
 		bool IsUsed(string name);
 	}
 

@@ -1,12 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using System.Threading;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using System.Threading.Tasks;
 
 using LayoutManager;
@@ -15,10 +12,10 @@ using LayoutManager.Components;
 
 namespace DiMAX {
 
-	/// <summary>
-	/// Summary description for MTScomponents.
-	/// </summary>
-	public class DiMAXcommandStation : LayoutCommandStationComponent, IModelComponentCanProgramLocomotives {
+    /// <summary>
+    /// Summary description for MTScomponents.
+    /// </summary>
+    public class DiMAXcommandStation : LayoutCommandStationComponent, IModelComponentCanProgramLocomotives {
 		public static LayoutTraceSwitch	TraceDiMAX = new LayoutTraceSwitch("DiMAX", "Massoth DiMAX Central Station");
 		public static LayoutTraceSwitch	TraceRawData = new LayoutTraceSwitch("DiMAXrawData", "Trace raw DiMAX central station input/output");
 

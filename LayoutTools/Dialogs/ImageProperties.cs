@@ -1,19 +1,15 @@
 using System;
 using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for ImageProperties.
-	/// </summary>
-	public class ImageProperties : Form, ILayoutComponentPropertiesDialog
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for ImageProperties.
+    /// </summary>
+    public class ImageProperties : Form, ILayoutComponentPropertiesDialog
 	{
 		private Label label1;
 		private GroupBox groupBox1;

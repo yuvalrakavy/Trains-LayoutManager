@@ -1,18 +1,14 @@
 using System;
 using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
-using LayoutManager;
-
-namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
-{
-	/// <summary>
-	/// Summary description for IfTime.
-	/// </summary>
-	public class IfTime : Form {
+namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
+    /// <summary>
+    /// Summary description for IfTime.
+    /// </summary>
+    public class IfTime : Form {
 		private TreeView treeView;
 		private Button buttonAdd;
 		private Button buttonEdit;

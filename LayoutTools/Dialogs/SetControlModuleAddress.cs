@@ -1,19 +1,13 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.Components;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for SetControlModuleAddress.
-	/// </summary>
-	public class SetControlModuleAddress : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for SetControlModuleAddress.
+    /// </summary>
+    public class SetControlModuleAddress : Form {
 		private Label label1;
 		private TextBox textBoxAddress;
 		private Button buttonOK;

@@ -1,22 +1,13 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Xml;
-using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for TripPlanEditor.
-	/// </summary>
-	public class TripPlanEditor : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for TripPlanEditor.
+    /// </summary>
+    public class TripPlanEditor : Form {
 		private Button buttonSaveTripPlan;
 		private Button buttonGo;
 		private Button buttonCancel;

@@ -4,11 +4,9 @@ using System.Xml;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
-using LayoutManager;
-
 namespace LayoutManager.Components {
 
-	[LayoutModule("Layout I/O Services")]
+    [LayoutModule("Layout I/O Services")]
 	public class LayoutIOServices : LayoutModuleBase {
 
 		#region Attribute accessing shortcuts

@@ -1,18 +1,14 @@
 using System;
 using System.ComponentModel;
-using System.Collections;
-using System.Diagnostics;
 using System.Windows.Forms;
 
 using LayoutManager;
-using LayoutManager.Model;
 
-namespace LayoutLGB
-{
-	/// <summary>
-	/// Summary description for ComponentTool.
-	/// </summary>
-	[LayoutModule("LGB MTS Component Editing Tool", UserControl=false)]
+namespace LayoutLGB {
+    /// <summary>
+    /// Summary description for ComponentTool.
+    /// </summary>
+    [LayoutModule("LGB MTS Component Editing Tool", UserControl=false)]
 	public class ComponentTool : System.ComponentModel.Component, ILayoutModuleSetup
 	{
 		/// <summary>

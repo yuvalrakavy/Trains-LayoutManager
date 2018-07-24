@@ -1,19 +1,13 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Tools.AutoConnectDialogs
-{
-	/// <summary>
-	/// Summary description for GetModuleType.
-	/// </summary>
-	public class GetModuleType : Form {
+namespace LayoutManager.Tools.AutoConnectDialogs {
+    /// <summary>
+    /// Summary description for GetModuleType.
+    /// </summary>
+    public class GetModuleType : Form {
 		private Label label1;
 		private Button buttonOK;
 		private Button buttonCancel;

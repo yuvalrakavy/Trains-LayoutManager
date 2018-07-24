@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Xml;
 using System.Linq;
 using System.Diagnostics;
@@ -10,11 +8,11 @@ using LayoutManager.Components;
 
 namespace LayoutManager.Model {
 
-	/// <summary>
-	/// Connection point functionality. A component which can be "wired" to a connection point can declare
-	/// to what type of connection point it may be connected
-	/// </summary>
-	public class ControlConnectionPointTypes {
+    /// <summary>
+    /// Connection point functionality. A component which can be "wired" to a connection point can declare
+    /// to what type of connection point it may be connected
+    /// </summary>
+    public class ControlConnectionPointTypes {
 		public const string OutputOnOff = "OnOff";
 		public const string OutputSolenoid = "Solenoid";
 		public const string OutputRelay = "Relay";

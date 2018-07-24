@@ -4,13 +4,11 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Xml;
 using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager.Logic {
-	[LayoutModule("Disptacher")]
+    [LayoutModule("Disptacher")]
 	class Dispatcher : LayoutModuleBase {
 		static LayoutTraceSwitch		traceDispatcher = new LayoutTraceSwitch("Dispatcher", "Master Dispatcher");
 		static LayoutTraceSubsystem	traceUnlockingManager = new LayoutTraceSubsystem(traceDispatcher, "DispatcherUnlockingManager", "Layout Block Unlock Manager");

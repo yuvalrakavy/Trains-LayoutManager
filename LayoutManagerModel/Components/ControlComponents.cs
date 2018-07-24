@@ -1,20 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Xml;
-using System.IO;
 
 using LayoutManager.Model;
 
 namespace LayoutManager.Components {
 
-	#region Block Edge base classes
+    #region Block Edge base classes
 
-	public enum LayoutSignalState {
+    public enum LayoutSignalState {
 		Red, Yellow, Green
 	};
 

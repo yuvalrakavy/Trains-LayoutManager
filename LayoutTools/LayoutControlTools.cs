@@ -1,21 +1,16 @@
 using System;
 using System.Collections;
-using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
-using System.Xml;
 using System.Linq;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.CommonUI;
-using System.Drawing;
 
 namespace LayoutManager.Tools {
 
-	[LayoutModule("Layout Control Tools", UserControl=false)]
+    [LayoutModule("Layout Control Tools", UserControl=false)]
 	class LayoutControlTools : LayoutModuleBase {
 
 		#region Component/Control connection manager

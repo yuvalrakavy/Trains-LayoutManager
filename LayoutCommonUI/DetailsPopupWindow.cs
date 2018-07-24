@@ -1,19 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.View;
-using System.Drawing.Drawing2D;
-using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI {
 
-	public partial class DetailsPopupWindow : Form {
+    public partial class DetailsPopupWindow : Form {
 		const int VerticalOffset = 20;
 		PopupWindowContainerSection sectionsContainer;
 

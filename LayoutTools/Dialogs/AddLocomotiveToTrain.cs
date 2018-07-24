@@ -6,17 +6,14 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for AddLocomotiveToTrain.
-	/// </summary>
-	public class AddLocomotiveToTrain : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for AddLocomotiveToTrain.
+    /// </summary>
+    public class AddLocomotiveToTrain : Form {
 		private ListBox listBoxLocomotives;
 		private GroupBox groupBox1;
 		private RadioButton radioButtonOrientationForward;

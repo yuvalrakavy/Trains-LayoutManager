@@ -1,18 +1,14 @@
 using System;
-using System.ComponentModel;
 using System.Collections;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace LayoutManager.CommonUI {
 
-	/// <summary>
-	/// Use this to add functionallity of sorting columns by clicking on their headers
-	/// To use simply declare: sorter = ListViewStringColumnSorter(theListToSort);
-	/// </summary>
-	public class ListViewStringColumnsSorter : IComparer {
+    /// <summary>
+    /// Use this to add functionallity of sorting columns by clicking on their headers
+    /// To use simply declare: sorter = ListViewStringColumnSorter(theListToSort);
+    /// </summary>
+    public class ListViewStringColumnsSorter : IComparer {
 		enum SortOrder { Ascending, Decending };
 
 		ListView		listView;

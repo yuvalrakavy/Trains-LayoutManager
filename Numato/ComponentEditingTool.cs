@@ -1,17 +1,14 @@
 using System;
 using System.ComponentModel;
-using System.Collections;
-using System.Diagnostics;
 using System.Windows.Forms;
 
 using LayoutManager;
-using LayoutManager.Model;
 
 namespace NumatoController {
-	/// <summary>
-	/// Summary description for ComponentTool.
-	/// </summary>
-	[LayoutModule("Numato Relay Controller Component Editing Tool", UserControl=false)]
+    /// <summary>
+    /// Summary description for ComponentTool.
+    /// </summary>
+    [LayoutModule("Numato Relay Controller Component Editing Tool", UserControl=false)]
 	public class ComponentTool : System.ComponentModel.Component, ILayoutModuleSetup
 	{
 		/// <summary>

@@ -1,18 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Xml;
-using System.Windows.Forms;
 
 using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI;
 
 namespace LayoutLGB {
 
-	[LayoutModule("LGB MTS Bus Definitions")]
+    [LayoutModule("LGB MTS Bus Definitions")]
 	class LGBcontrolComponents : LayoutModuleBase {
 
 		ControlBusType	dccBus = null;

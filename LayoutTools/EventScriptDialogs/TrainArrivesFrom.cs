@@ -1,19 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager.Tools.EventScriptDialogs {
-	public partial class TrainArrivesFrom : Form {
+    public partial class TrainArrivesFrom : Form {
 
 		public TrainArrivesFrom(LayoutBlockDefinitionComponent blockDefinition, XmlElement element) {
 			LayoutComponentConnectionPoint from = LayoutComponentConnectionPoint.Empty;

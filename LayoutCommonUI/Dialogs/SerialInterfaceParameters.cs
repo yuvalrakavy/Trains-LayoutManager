@@ -1,17 +1,12 @@
 ﻿#region Using directives
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
 #endregion
 
 namespace LayoutManager.CommonUI.Dialogs {
-	partial class SerialInterfaceParameters : Form {
+    partial class SerialInterfaceParameters : Form {
 		public SerialInterfaceParameters(string parametersString) {
 			InitializeComponent();
 

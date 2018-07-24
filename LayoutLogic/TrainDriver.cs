@@ -1,18 +1,12 @@
 using System;
-using System.Collections;
-using System.Collections.Specialized;
 using System.Xml;
-using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.Logic {
-	/// <summary>
-	/// Summary description for TripPlanner.
-	/// </summary>
-	[LayoutModule("Standard Train Drivers")]
+    /// <summary>
+    /// Summary description for TripPlanner.
+    /// </summary>
+    [LayoutModule("Standard Train Drivers")]
 	class TrainDrivers : LayoutModuleBase {
 
 		#region Code common to all driver types

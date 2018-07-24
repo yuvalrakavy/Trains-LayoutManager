@@ -1,19 +1,14 @@
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
 
-using LayoutManager.Model;
-
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for XmlInfoEditor.
-	/// </summary>
-	public class XmlInfoEditor : System.Windows.Forms.UserControl {
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for XmlInfoEditor.
+    /// </summary>
+    public class XmlInfoEditor : System.Windows.Forms.UserControl {
 		private TreeView treeViewElements;
 		private Button buttonNewElement;
 		private Button buttonEditElement;

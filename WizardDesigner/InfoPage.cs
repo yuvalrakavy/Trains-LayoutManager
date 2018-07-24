@@ -1,17 +1,13 @@
-using System;
-using System.Collections;
 using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
 
-namespace Gui.Wizard
-{
+namespace Gui.Wizard {
 
-	/// <summary>
-	/// An inherited <see cref="InfoContainer"/> that contains a <see cref="Label"/> 
-	/// with the description of the page.
-	/// </summary>
-	public class InfoPage : InfoContainer
+    /// <summary>
+    /// An inherited <see cref="InfoContainer"/> that contains a <see cref="Label"/> 
+    /// with the description of the page.
+    /// </summary>
+    public class InfoPage : InfoContainer
 	{
 		private Label lblDescription;
 		private IContainer components = null;

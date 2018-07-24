@@ -1,17 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using System.Xml;
-using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
-using LayoutManager.View;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class TestThreeWayTurnout : Form {

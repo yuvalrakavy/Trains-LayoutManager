@@ -1,19 +1,15 @@
 using System;
-using System.Collections;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for TrackLinkTree.
-	/// </summary>
-	public class TrackLinkTree : TreeView {
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for TrackLinkTree.
+    /// </summary>
+    public class TrackLinkTree : TreeView {
 		private IContainer components;
 		private ImageList imageListTrackLinks;
 

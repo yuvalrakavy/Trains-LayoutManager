@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace LayoutManager {
-	public class PackedArray {
+    public class PackedArray {
 		ulong[] storage;
 
 		public int Length { get; }

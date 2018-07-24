@@ -1,17 +1,12 @@
 using System;
 using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.CommonUI.Controls;
 
 namespace LayoutManager.CommonUI {
 
-	[LayoutModule("Event Script UI Manager", UserControl=false)]
+    [LayoutModule("Event Script UI Manager", UserControl=false)]
 	public class EventScriptUImanager : LayoutModuleBase {
 
 		#region Methods to return add menus for various section (events, condition and actions)

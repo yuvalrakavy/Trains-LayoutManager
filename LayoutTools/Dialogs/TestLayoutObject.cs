@@ -2,25 +2,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Xml;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
-using LayoutManager.View;
 using LayoutManager.CommonUI;
 
 #endregion
 
-using System.Diagnostics;
 
 namespace LayoutManager.Tools.Dialogs {
-	partial class TestLayoutObject : Form {
+    partial class TestLayoutObject : Form {
 		ControlConnectionPointReference connectionPointRef;
 		IModelComponentConnectToControl component;
 		LayoutDelayedEvent toggleEvent = null;

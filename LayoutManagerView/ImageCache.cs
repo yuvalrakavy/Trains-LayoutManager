@@ -1,14 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
-using LayoutManager;
-
 namespace LayoutManager.View {
 
-	[LayoutModule("Image Cache Manager", UserControl=false)]
+    [LayoutModule("Image Cache Manager", UserControl=false)]
 	class ImageCacheManager : LayoutModuleBase {
 		Dictionary<string, Image>	imageHashtable = new Dictionary<string,Image>();
 		string		layoutFileDirectory;

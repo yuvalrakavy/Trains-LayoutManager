@@ -1,21 +1,17 @@
 using System;
-using System.Collections;
 using System.ComponentModel;
-using System.ComponentModel.Design;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace Gui.Wizard
-{
-	/// <summary>
-	/// A wizard is the control added to a form to provide a step by step functionality.
-	/// It contains <see cref="WizardPage"/>s in the <see cref="Pages"/> collection, which
-	/// are containers for other controls. Only one wizard page is shown at a time in the client
-	/// are of the wizard.
-	/// </summary>
-	[Designer("Gui.Wizard.WizardDesigner", "WizardDesigner.dll")]
+namespace Gui.Wizard {
+    /// <summary>
+    /// A wizard is the control added to a form to provide a step by step functionality.
+    /// It contains <see cref="WizardPage"/>s in the <see cref="Pages"/> collection, which
+    /// are containers for other controls. Only one wizard page is shown at a time in the client
+    /// are of the wizard.
+    /// </summary>
+    [Designer("Gui.Wizard.WizardDesigner", "WizardDesigner.dll")]
 	[ToolboxItem(true)]
 	[ToolboxBitmap(typeof(Gui.Wizard.Wizard))]
 	public class Wizard : System.Windows.Forms.UserControl

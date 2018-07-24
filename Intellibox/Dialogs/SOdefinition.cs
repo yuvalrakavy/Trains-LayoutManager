@@ -1,15 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
-using LayoutManager;
-
 namespace Intellibox.Dialogs {
-	public partial class SOdefinition : Form {
+    public partial class SOdefinition : Form {
 		public SOdefinition(SOinfo so) {
 			InitializeComponent();
 			SOinfoBindingSource.DataSource = so;

@@ -1,19 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for TripPlanViewing.
-	/// </summary>
-	public class TripPlanViewing : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for TripPlanViewing.
+    /// </summary>
+    public class TripPlanViewing : Form {
 		private LayoutManager.Tools.Controls.TripPlanEditor tripPlanEditor;
 		private Button buttonSave;
 		private Button buttonClose;

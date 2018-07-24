@@ -1,17 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
-using System.Diagnostics;
 
 using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.CommonUI.Controls {
-	public static class LocomotiveListItemPainter {
+    public static class LocomotiveListItemPainter {
 
 		public static void Measure(MeasureItemEventArgs e, XmlElement element) {
 			if(element.Name == "Train")

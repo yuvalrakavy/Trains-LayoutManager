@@ -1,16 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Components;
 using LayoutManager.Model;
 
 namespace LayoutManager.Logic {
 
-	[LayoutModule("Layout Topology Services", UserControl=false)]
+    [LayoutModule("Layout Topology Services", UserControl=false)]
 	public class LayoutTopologyServices : LayoutModuleBase, ILayoutTopologyServices {
 
 		public static String TopologyServicesVersion = "1.0";

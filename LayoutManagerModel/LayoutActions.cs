@@ -4,13 +4,11 @@ using System.Xml;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-
-using LayoutManager.Components;
 using System.Text;
 
 namespace LayoutManager.Model {
 
-	[LayoutModule("Programming Operations Manager", UserControl = false)]
+    [LayoutModule("Programming Operations Manager", UserControl = false)]
 	class ActionManager : LayoutModuleBase {
 
 		[LayoutAsyncEvent("do-command-station-actions")]

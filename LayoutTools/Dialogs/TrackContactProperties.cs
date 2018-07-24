@@ -1,6 +1,3 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
@@ -8,12 +5,11 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 using System.Xml;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for TrackContactProperties.
-	/// </summary>
-	public class TrackContactProperties : Form, ILayoutComponentPropertiesDialog
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for TrackContactProperties.
+    /// </summary>
+    public class TrackContactProperties : Form, ILayoutComponentPropertiesDialog
 	{
 		private TabPage tabPageAddress;
 		private TabControl tabControl;

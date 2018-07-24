@@ -1,23 +1,19 @@
 using System;
 using System.Xml;
 using System.Collections;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.IO;
-
-using LayoutManager;
 using LayoutManager.Components;
 using System.Collections.Generic;
 
 namespace LayoutManager.Model {
 
-	/// <summary>
-	/// How to select a location from destination with more than one location
-	/// </summary>
-	public enum TripPlanLocationSelectionMethod {
+    /// <summary>
+    /// How to select a location from destination with more than one location
+    /// </summary>
+    public enum TripPlanLocationSelectionMethod {
 		ListOrder, Random
 	};
 

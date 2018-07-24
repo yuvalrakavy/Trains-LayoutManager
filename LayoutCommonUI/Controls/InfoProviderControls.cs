@@ -1,20 +1,16 @@
 using System;
-using System.Collections;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager.Model;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Drop list box showing all providers in a given container (used to show lists
-	/// of standard fonts, standard positions etc.)
-	/// </summary>
-	public class LayoutInfosComboBox : ComboBox {
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Drop list box showing all providers in a given container (used to show lists
+    /// of standard fonts, standard positions etc.)
+    /// </summary>
+    public class LayoutInfosComboBox : ComboBox {
 		XmlElement	container = null;
 		Type		infoType = null;
 

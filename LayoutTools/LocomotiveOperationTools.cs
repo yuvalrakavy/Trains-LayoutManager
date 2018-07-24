@@ -1,23 +1,19 @@
 using System;
 using System.ComponentModel;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
-using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
 using System.Threading.Tasks;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager.Tools {
-	/// <summary>
-	/// Summary description for LocomotiveTools.
-	/// </summary>
-	[LayoutModule("Locomotive Operation Tools", UserControl = false)]
+    /// <summary>
+    /// Summary description for LocomotiveTools.
+    /// </summary>
+    [LayoutModule("Locomotive Operation Tools", UserControl = false)]
 	public class LocomotiveOperationTools : System.ComponentModel.Component, ILayoutModuleSetup {
 
 		/// <summary>

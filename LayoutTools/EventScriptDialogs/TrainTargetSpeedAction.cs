@@ -1,19 +1,13 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
-using LayoutManager;
-using LayoutManager.Model;
-
-namespace LayoutManager.Tools.EventScriptDialogs
-{
-	/// <summary>
-	/// Summary description for TrainTargetSpeedAction.
-	/// </summary>
-	public class TrainTargetSpeedAction : Form {
+namespace LayoutManager.Tools.EventScriptDialogs {
+    /// <summary>
+    /// Summary description for TrainTargetSpeedAction.
+    /// </summary>
+    public class TrainTargetSpeedAction : Form {
 		private ComboBox comboBoxTrain;
 		private Label label1;
 		private GroupBox groupBox1;

@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
-using System.Xml;
 using System.Threading;
 
 using LayoutManager;
@@ -13,7 +10,7 @@ using LayoutManager.Components;
 
 namespace LayoutLGB {
 
-	public class MTScommandStationEmulator : ILayoutCommandStationEmulator {
+    public class MTScommandStationEmulator : ILayoutCommandStationEmulator {
 		static LayoutTraceSwitch	traceMTSemulator = new LayoutTraceSwitch("TraceMTSemulator", "Trace MTS command station emulation");
 		Guid				commandStationId;
 		string				pipeName;

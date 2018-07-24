@@ -1,16 +1,13 @@
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for DIPswitch.
-	/// </summary>
-	public class DIPswitch : System.Windows.Forms.Control
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for DIPswitch.
+    /// </summary>
+    public class DIPswitch : System.Windows.Forms.Control
 	{
 		/// <summary>
 		/// Required designer variable.

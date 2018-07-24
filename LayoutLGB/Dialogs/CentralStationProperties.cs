@@ -1,6 +1,4 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -9,12 +7,11 @@ using System.Xml;
 using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutLGB.Dialogs
-{
-	/// <summary>
-	/// Summary description for CentralStationProperties.
-	/// </summary>
-	public class CentralStationProperties : Form {
+namespace LayoutLGB.Dialogs {
+    /// <summary>
+    /// Summary description for CentralStationProperties.
+    /// </summary>
+    public class CentralStationProperties : Form {
 		private ComboBox comboBoxPort;
 		private Label label1;
 		private Label label2;

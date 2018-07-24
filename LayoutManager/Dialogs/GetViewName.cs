@@ -1,15 +1,12 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for GetAreasName.
-	/// </summary>
-	public class GetViewName : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for GetAreasName.
+    /// </summary>
+    public class GetViewName : Form {
 		private Label label1;
 		private Button buttonOK;
 		private Button buttonCancel;

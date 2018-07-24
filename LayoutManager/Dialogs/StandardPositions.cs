@@ -1,18 +1,14 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager.Model;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for StandardPositions.
-	/// </summary>
-	public class StandardPositions : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for StandardPositions.
+    /// </summary>
+    public class StandardPositions : Form {
 		private ListBox listBoxPositions;
 		private Button buttonNew;
 		private Button buttonEdit;

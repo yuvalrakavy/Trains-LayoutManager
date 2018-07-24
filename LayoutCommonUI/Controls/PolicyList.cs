@@ -1,18 +1,11 @@
 using System;
-using System.Collections;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
-using LayoutManager.CommonUI;
 using LayoutManager.Model;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	public interface IPolicyListCustomizer {
+namespace LayoutManager.CommonUI.Controls {
+    public interface IPolicyListCustomizer {
 		bool IsPolicyChecked(LayoutPolicyInfo policy);
 
 		void SetPolicyChecked(LayoutPolicyInfo policy, bool checkValue);

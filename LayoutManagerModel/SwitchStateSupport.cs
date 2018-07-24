@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
 
 using LayoutManager.Model;
 
 namespace LayoutManager.Components {
-	public class SwitchingStateSupport {
+    public class SwitchingStateSupport {
 		public string StateTopic { get; }
         public IModelComponentHasSwitchingState Component { get; }
         public virtual int SwitchStateCount { get; }

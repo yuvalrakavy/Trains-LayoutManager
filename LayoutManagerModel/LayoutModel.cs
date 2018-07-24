@@ -9,11 +9,10 @@ using System.Reflection;
 using System.Linq;
 
 using LayoutManager.Components;
-using System.Runtime.Serialization;
 
 namespace LayoutManager.Model {
 
-	public enum ModelComponentKind {
+    public enum ModelComponentKind {
 		Background,
 		Track,
 		Annotation,

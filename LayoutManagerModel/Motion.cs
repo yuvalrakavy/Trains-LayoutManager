@@ -1,12 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Xml;
 
 namespace LayoutManager.Model {
 
-	public enum MotionRampType {
+    public enum MotionRampType {
 		/// <summary>
 		/// The speed change will take this amount of time
 		/// </summary>

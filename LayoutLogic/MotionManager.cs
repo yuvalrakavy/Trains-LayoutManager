@@ -1,19 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Xml;
 using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.Logic {
-	/// <summary>
-	/// Handle train motion issues, such as acceleration
-	/// </summary>
-	[LayoutModule("Train Motion Manager", UserControl=false)]
+    /// <summary>
+    /// Handle train motion issues, such as acceleration
+    /// </summary>
+    [LayoutModule("Train Motion Manager", UserControl=false)]
 	public class TrainMotionManager : LayoutModuleBase {
 		Dictionary<string, CommandStationCapabilitiesInfo>	commandStationCapabiltiesMap = new Dictionary<string, CommandStationCapabilitiesInfo>();
 		string							_commandStationName;

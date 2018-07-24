@@ -1,22 +1,16 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Diagnostics;
 using System.Linq;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.UIGadgets;
-using LayoutManager.Components;
 
 namespace LayoutManager {
 
-	#region Context Menu items
+    #region Context Menu items
 
-	class MenuItemDeleteAllComponents : MenuItem {
+    class MenuItemDeleteAllComponents : MenuItem {
 		LayoutHitTestResult	hitTestResult;
 
 		public MenuItemDeleteAllComponents(LayoutHitTestResult hitTestResult) {

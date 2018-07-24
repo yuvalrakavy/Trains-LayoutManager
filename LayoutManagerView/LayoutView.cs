@@ -1,23 +1,19 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Model;
 
 namespace LayoutManager.View {
-	/// <summary>
-	/// Summary description for LayoutView.
-	/// </summary>
-	public class LayoutView : System.Windows.Forms.UserControl, ILayoutView, ILayoutViewModelGridToModelCoordinatesSettings {
+    /// <summary>
+    /// Summary description for LayoutView.
+    /// </summary>
+    public class LayoutView : System.Windows.Forms.UserControl, ILayoutView, ILayoutViewModelGridToModelCoordinatesSettings {
 		/// <summary>
 		/// Each component should draw it self in this size
 		/// </summary>

@@ -1,13 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-
-using LayoutManager;
 
 namespace LayoutManager.Model {
 
-	public abstract class DecoderTypeInfo {
+    public abstract class DecoderTypeInfo {
 
 		public string Name {
 			get;

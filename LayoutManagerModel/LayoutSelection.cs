@@ -7,15 +7,13 @@ using System.Xml;
 using System.Windows.Forms;
 using System.Linq;
 
-using LayoutManager;
-
 namespace LayoutManager.Model {
 
-	/// <summary>
-	/// Represent a selection of layout components. A selection is a collection of components. If a
-	/// selection is displayed, then the component in the selection should be highlighted by the view
-	/// </summary>
-	public class LayoutSelection : IEnumerable<ModelComponent> {
+    /// <summary>
+    /// Represent a selection of layout components. A selection is a collection of components. If a
+    /// selection is displayed, then the component in the selection should be highlighted by the view
+    /// </summary>
+    public class LayoutSelection : IEnumerable<ModelComponent> {
 		Dictionary<ModelComponent, object> selection = new Dictionary<ModelComponent, object>();
 		ILayoutSelectionLook			selectionLook;
 

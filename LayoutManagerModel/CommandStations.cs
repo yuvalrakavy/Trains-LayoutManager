@@ -1,15 +1,13 @@
 using System;
-using System.Collections;
-using System.Diagnostics;
 using System.Xml;
 
 namespace LayoutManager.Model {
-	#region Address format
+    #region Address format
 
-	/// <summary>
-	/// What entity this address is for
-	/// </summary>
-	public enum AddressUsage {
+    /// <summary>
+    /// What entity this address is for
+    /// </summary>
+    public enum AddressUsage {
 		Locomotive,
 		Turnout,
 		Signal,

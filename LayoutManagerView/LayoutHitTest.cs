@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -8,10 +6,10 @@ using LayoutManager.View;
 using System.Windows.Forms;
 
 namespace LayoutManager {
-	/// <summary>
-	/// Hold the results of a hit test.
-	/// </summary>
-	public class LayoutHitTestResult {
+    /// <summary>
+    /// Hold the results of a hit test.
+    /// </summary>
+    public class LayoutHitTestResult {
 		LayoutModelArea					area;
 		LayoutView						view;
 		Point							clientLocation;

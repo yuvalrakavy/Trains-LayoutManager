@@ -1,27 +1,22 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Drawing;
 
 using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.View;
 using LayoutManager.Components;
-using LayoutManager.CommonUI;
 
 namespace MarklinDigital {
 
-	/// <summary>
-	/// Summary description for MTScomponents.
-	/// </summary>
-	public class MarklinDigitalCentralStation : LayoutCommandStationComponent {
+    /// <summary>
+    /// Summary description for MTScomponents.
+    /// </summary>
+    public class MarklinDigitalCentralStation : LayoutCommandStationComponent {
 		static LayoutTraceSwitch			traceMarklinDigital = new LayoutTraceSwitch("MarkinDigital", "Marklin Digital Interface (P50)");
 		OutputManager		commandStationManager;
 

@@ -1,18 +1,12 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for ExtendTrainSettings.
-	/// </summary>
-	public class ExtendTrainSettings : Form {
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for ExtendTrainSettings.
+    /// </summary>
+    public class ExtendTrainSettings : Form {
 		private Label label1;
 		private Label label3;
 		private Label labelTrainInfo;

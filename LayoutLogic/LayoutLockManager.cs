@@ -3,10 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Xml;
 using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using System.Threading.Tasks;
@@ -14,7 +11,7 @@ using System.Threading;
 
 namespace LayoutManager.Logic {
 
-	[LayoutModule("Layout Lock Manager")]
+    [LayoutModule("Layout Lock Manager")]
 	class LayoutLockManager : LayoutModuleBase, ILayoutLockManagerServices {
 		static LayoutTraceSwitch	traceLockManager = new LayoutTraceSwitch("LockManager", "Layout Lock Manager");
 

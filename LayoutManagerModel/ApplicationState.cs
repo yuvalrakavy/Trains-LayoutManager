@@ -1,13 +1,6 @@
-using System;
-using System.Xml;
-using System.Drawing;
-using System.Windows.Forms;
-
-using LayoutManager.Model;
-
 namespace LayoutManager {
 
-	public class ApplicationStateInfo : LayoutXmlWrapper {
+    public class ApplicationStateInfo : LayoutXmlWrapper {
 		string filename;
 
 		public enum LayoutState {

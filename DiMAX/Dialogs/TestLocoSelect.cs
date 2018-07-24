@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using LayoutManager;
 
 namespace DiMAX.Dialogs {
-	public partial class TestLocoSelect : Form {
+    public partial class TestLocoSelect : Form {
 		DiMAXcommandStation commandStation;
 
 		public TestLocoSelect(DiMAXcommandStation commandStation) {

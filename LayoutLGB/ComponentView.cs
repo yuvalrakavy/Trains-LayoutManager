@@ -1,7 +1,4 @@
-using System;
 using System.ComponentModel;
-using System.Collections;
-using System.Diagnostics;
 using System.Drawing;
 using System.Xml;
 
@@ -9,12 +6,11 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
 
-namespace LayoutLGB
-{
-	/// <summary>
-	/// Summary description for ComponentView.
-	/// </summary>
-	[LayoutModule("LGB MTS Component View", UserControl=false)]
+namespace LayoutLGB {
+    /// <summary>
+    /// Summary description for ComponentView.
+    /// </summary>
+    [LayoutModule("LGB MTS Component View", UserControl=false)]
 	public class ComponentView : System.ComponentModel.Component, ILayoutModuleSetup
 	{
 		private System.Windows.Forms.ImageList imageListComponents;

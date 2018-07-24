@@ -1,8 +1,6 @@
 using System;
 using System.ComponentModel;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Xml;
 
@@ -10,12 +8,11 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
 
-namespace Intellibox
-{
-	/// <summary>
-	/// Summary description for ComponentView.
-	/// </summary>
-	[LayoutModule("Intellibox Component View", UserControl=false)]
+namespace Intellibox {
+    /// <summary>
+    /// Summary description for ComponentView.
+    /// </summary>
+    [LayoutModule("Intellibox Component View", UserControl=false)]
 	public class ComponentView : System.ComponentModel.Component, ILayoutModuleSetup
 	{
 		private System.Windows.Forms.ImageList imageListComponents;

@@ -3,24 +3,19 @@ using System.Collections;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
 using System.Linq;
-
-using LayoutManager;
 using LayoutManager.Model;
-using LayoutManager.View;
 using LayoutManager.Components;
 using LayoutManager.CommonUI;
 using System.Collections.Generic;
 
-namespace LayoutManager.Tools.Controls
-{
-	/// <summary>
-	/// Summary description for TripPlanEditor.
-	/// </summary>
-	public class TripPlanEditor : System.Windows.Forms.UserControl, ITripPlanEditorDialog, CommonUI.Controls.IPolicyListCustomizer
+namespace LayoutManager.Tools.Controls {
+    /// <summary>
+    /// Summary description for TripPlanEditor.
+    /// </summary>
+    public class TripPlanEditor : System.Windows.Forms.UserControl, ITripPlanEditorDialog, CommonUI.Controls.IPolicyListCustomizer
 	{
 		private MenuItem menuItemGoHumanDriver;
 		private ContextMenu contextMenuEdit;

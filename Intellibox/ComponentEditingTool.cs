@@ -1,18 +1,14 @@
 using System;
 using System.ComponentModel;
-using System.Collections;
-using System.Diagnostics;
 using System.Windows.Forms;
 
 using LayoutManager;
-using LayoutManager.Model;
 
-namespace Intellibox
-{
-	/// <summary>
-	/// Summary description for ComponentTool.
-	/// </summary>
-	[LayoutModule("Intellibox Component Editing Tool", UserControl=false)]
+namespace Intellibox {
+    /// <summary>
+    /// Summary description for ComponentTool.
+    /// </summary>
+    [LayoutModule("Intellibox Component Editing Tool", UserControl=false)]
 	public class ComponentTool : System.ComponentModel.Component, ILayoutModuleSetup
 	{
 		/// <summary>

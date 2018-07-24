@@ -1,19 +1,15 @@
 using System;
-using System.Collections;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager.View {
 
-	#region Drawing Region interface and helper classes
+    #region Drawing Region interface and helper classes
 
-	public interface ILayoutDrawingRegion {
+    public interface ILayoutDrawingRegion {
 		/// <summary>
 		/// Return a region object describing the bounds of the drawn region. The region is in model points
 		/// </summary>

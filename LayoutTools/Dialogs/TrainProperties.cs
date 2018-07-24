@@ -4,17 +4,14 @@ using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for TrainProperties.
-	/// </summary>
-	public class TrainProperties : Form, IObjectHasXml
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for TrainProperties.
+    /// </summary>
+    public class TrainProperties : Form, IObjectHasXml
 	{
 		private TabControl tabControl1;
 		private Button buttonOK;

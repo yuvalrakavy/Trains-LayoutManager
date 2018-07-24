@@ -1,22 +1,15 @@
-using System;
-using System.Collections;
-using System.Diagnostics;
 using System.Drawing;
-using System.Xml;
-using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 
 namespace LayoutManager {
-	/// <summary>
-	/// Represent a selection of layout components. A selection is a collection of components. If a
-	/// selection is displayed, then the component in the selection should be highlighted by the view.
-	/// 
-	/// Commands on this type of selection can be undone.
-	/// 
-	/// </summary>
-	public class LayoutSelectionWithUndo : LayoutSelection
+    /// <summary>
+    /// Represent a selection of layout components. A selection is a collection of components. If a
+    /// selection is displayed, then the component in the selection should be highlighted by the view.
+    /// 
+    /// Commands on this type of selection can be undone.
+    /// 
+    /// </summary>
+    public class LayoutSelectionWithUndo : LayoutSelection
 	{
 		/// <summary>
 		/// Add a component to this selection. The operation can be undone

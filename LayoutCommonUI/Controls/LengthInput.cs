@@ -1,18 +1,10 @@
 using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Windows.Forms;
 
-using LayoutManager;
-
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for LengthInput.
-	/// </summary>
-	public class LengthInput : UnitInput
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for LengthInput.
+    /// </summary>
+    public class LengthInput : UnitInput
 	{
 		public LengthInput()
 		{

@@ -1,12 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 using LayoutManager;
@@ -15,10 +13,10 @@ using LayoutManager.Components;
 
 namespace LayoutLGB {
 
-	/// <summary>
-	/// Summary description for MTScomponents.
-	/// </summary>
-	public class MTScentralStation : LayoutCommandStationComponent {
+    /// <summary>
+    /// Summary description for MTScomponents.
+    /// </summary>
+    public class MTScentralStation : LayoutCommandStationComponent {
 		static LayoutTraceSwitch		traceMTS = new LayoutTraceSwitch("LGBMTS", "LGB Multi-Train-System Central Station");
 		static LayoutTraceSwitch		traceRawInput = new LayoutTraceSwitch("MTSrawInput", "Trace raw MTS central station input");
 		OutputManager	commandStationManager;

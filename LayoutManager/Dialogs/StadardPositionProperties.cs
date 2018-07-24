@@ -1,17 +1,13 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager.Model;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for StandardPositionProperties.
-	/// </summary>
-	public class StandardPositionProperties : Form {
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for StandardPositionProperties.
+    /// </summary>
+    public class StandardPositionProperties : Form {
 		private Label label1;
 		private TextBox textBoxTitle;
 		private LayoutManager.CommonUI.Controls.PositionDefinition positionDefinition;

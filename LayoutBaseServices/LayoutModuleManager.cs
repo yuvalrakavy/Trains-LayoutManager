@@ -1,18 +1,15 @@
 using System;
 using System.Xml;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
 
 namespace LayoutManager {
 
-	/// <summary>
-	/// Layout module information
-	/// </summary>
-	public class LayoutModule : LayoutObject {
+    /// <summary>
+    /// Layout module information
+    /// </summary>
+    public class LayoutModule : LayoutObject {
 		Type				moduleType;				// The type used to create an instance of the module
 		LayoutAssembly		layoutAssembly;			// The assembly in which the module is found
 		Object				moduleInstance;			// The class instance associated with this module

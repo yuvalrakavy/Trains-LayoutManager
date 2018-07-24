@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
-
-using LayoutManager;
-using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager.Model {
 
-	public class LocomotiveMovedEventArgs : EventArgs {
+    public class LocomotiveMovedEventArgs : EventArgs {
 		public Guid CommandStationId { get; }
         public int Unit { get; }
         public ILocomotiveLocation Location { get; }

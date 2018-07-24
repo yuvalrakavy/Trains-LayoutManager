@@ -1,18 +1,13 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Diagnostics;
 
 using LayoutManager;
 
-namespace LayoutEventDebugger
-{
-	/// <summary>
-	/// Summary description for EventTrace.
-	/// </summary>
-	public class EventTrace : Form {
+namespace LayoutEventDebugger {
+    /// <summary>
+    /// Summary description for EventTrace.
+    /// </summary>
+    public class EventTrace : Form {
 		private TreeView treeViewEventTrace;
 		private Button buttonTraceState;
 		private Button buttonClose;

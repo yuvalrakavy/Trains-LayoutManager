@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.IO;
 
 namespace LayoutManager.Dialogs {
-	public partial class LaunchDialog : Form {
+    public partial class LaunchDialog : Form {
 		TaskCompletionSource<LaunchAction> tcs = new TaskCompletionSource<LaunchAction>();
 
 		public LaunchDialog(string lastLayoutFilename) {

@@ -1,20 +1,13 @@
 using System;
-using System.Collections;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
-using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Edit the parameters of MotionRampInfo
-	/// </summary>
-	public class MotionRampEditor : System.Windows.Forms.UserControl
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Edit the parameters of MotionRampInfo
+    /// </summary>
+    public class MotionRampEditor : System.Windows.Forms.UserControl
 	{
 		private GroupBox groupBox1;
 		private RadioButton radioButtonSpeedChangeLength;

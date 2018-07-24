@@ -1,21 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Xml;
 using System.Diagnostics;
 
 using LayoutManager.Model;
 
-namespace LayoutManager.Components
-{
-	/// <summary>
-	/// Generic location on the grid and a connection point in this grid. A component can
-	/// map this to a concrete component connection point. For simple tracks, this mapping is
-	/// very simple, since the track component occupies exactly one grid location. For complex
-	/// components (for example turntable) the mapping map be more complex
-	/// </summary>
-	public class LayoutGridConnectionPoint {
+namespace LayoutManager.Components {
+    /// <summary>
+    /// Generic location on the grid and a connection point in this grid. A component can
+    /// map this to a concrete component connection point. For simple tracks, this mapping is
+    /// very simple, since the track component occupies exactly one grid location. For complex
+    /// components (for example turntable) the mapping map be more complex
+    /// </summary>
+    public class LayoutGridConnectionPoint {
 		Point							ml;
 		LayoutComponentConnectionPoint	cp;
 

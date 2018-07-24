@@ -1,22 +1,16 @@
 using System;
 using System.ComponentModel;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.View
-{
-	/// <summary>
-	/// Summary description for LocomotivePainter.
-	/// </summary>
-	public class LocomotivePainter : System.ComponentModel.Component, ILayoutComponentPainter, IDisposable
+namespace LayoutManager.View {
+    /// <summary>
+    /// Summary description for LocomotivePainter.
+    /// </summary>
+    public class LocomotivePainter : System.ComponentModel.Component, ILayoutComponentPainter, IDisposable
 	{
 		/// <summary>
 		/// Required designer variable.

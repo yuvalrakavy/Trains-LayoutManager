@@ -1,18 +1,13 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager.Model;
-using LayoutManager.Components;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for LabelProperties.
-	/// </summary>
-	public class TextProperties : Form, ILayoutComponentPropertiesDialog
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for LabelProperties.
+    /// </summary>
+    public class TextProperties : Form, ILayoutComponentPropertiesDialog
 	{
 		private Label labelText;
 		private TextBox textBoxText;

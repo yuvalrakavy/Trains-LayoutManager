@@ -1,15 +1,10 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
-using LayoutManager;
-
-namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
-{
-	public interface IIfConditionDialogCustomizer {
+namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
+    public interface IIfConditionDialogCustomizer {
 
 		string[]	OperatorNames { get; }
 		string[]	OperatorDescriptions { get; }

@@ -1,18 +1,15 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager.Model;
 
-namespace LayoutManager.Dialogs
-{
-	/// <summary>
-	/// Summary description for LocomotiveType.
-	/// </summary>
-	public class LocomotiveProperties : LocomotiveBasePropertiesForm
+namespace LayoutManager.Dialogs {
+    /// <summary>
+    /// Summary description for LocomotiveType.
+    /// </summary>
+    public class LocomotiveProperties : LocomotiveBasePropertiesForm
 	{
 		private TabControl tabControl1;
 		private Button buttonCancel;

@@ -1,22 +1,14 @@
 using System;
-using System.Collections;
-using System.Diagnostics;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
-
-using LayoutManager;
 using LayoutManager.Model;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for LocomotiveTypeList.
-	/// </summary>
-	public class LocomotiveTypeList : XmlQueryListbox
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for LocomotiveTypeList.
+    /// </summary>
+    public class LocomotiveTypeList : XmlQueryListbox
 	{
 		LocomotiveCatalogInfo	catalog = null;
 

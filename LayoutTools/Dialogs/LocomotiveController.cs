@@ -5,17 +5,14 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 using System.Diagnostics;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for LocomotiveController.
-	/// </summary>
-	[LayoutEventDef("train-controller-activated", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for LocomotiveController.
+    /// </summary>
+    [LayoutEventDef("train-controller-activated", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
 	[LayoutEventDef("train-controller-deactivated", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
 	public class LocomotiveController : Form, IObjectHasXml
 	{

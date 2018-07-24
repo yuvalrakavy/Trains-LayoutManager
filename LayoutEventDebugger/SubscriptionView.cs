@@ -1,17 +1,15 @@
 using System;
-using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager;
 
-namespace LayoutEventDebugger
-{
-	/// <summary>
-	/// Summary description for SubscriptionView.
-	/// </summary>
-	public class SubscriptionView : Form {
+namespace LayoutEventDebugger {
+    /// <summary>
+    /// Summary description for SubscriptionView.
+    /// </summary>
+    public class SubscriptionView : Form {
 		private TreeView treeViewSubscriptions;
 		private GroupBox groupBoxViewBy;
 		private RadioButton radioButtonViewByEventName;

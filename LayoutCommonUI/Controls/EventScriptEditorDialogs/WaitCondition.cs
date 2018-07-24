@@ -1,16 +1,13 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
-{
-	/// <summary>
-	/// Summary description for WaitCondition.
-	/// </summary>
-	public class WaitCondition : Form {
+namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
+    /// <summary>
+    /// Summary description for WaitCondition.
+    /// </summary>
+    public class WaitCondition : Form {
 		private Label label1;
 		private Label label2;
 		private Label label3;

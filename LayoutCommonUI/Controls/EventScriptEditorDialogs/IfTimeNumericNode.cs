@@ -1,17 +1,11 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-using LayoutManager;
-
-namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs
-{
-	/// <summary>
-	/// Summary description for IfTimeNumericNode.
-	/// </summary>
-	public class IfTimeNumericNode : Form {
+namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
+    /// <summary>
+    /// Summary description for IfTimeNumericNode.
+    /// </summary>
+    public class IfTimeNumericNode : Form {
 		private RadioButton radioButtonValue;
 		private RadioButton radioButtonRange;
 		private Label label1;

@@ -1,19 +1,12 @@
 using System;
 using System.ComponentModel;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Xml;
-using System.Drawing;
 using System.Windows.Forms;
-using System.Reflection;
-
-using LayoutManager;
 using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI {
-	public delegate bool BuildComponentsMenuComponentFilter<ComponentType>(ComponentType component);
+    public delegate bool BuildComponentsMenuComponentFilter<ComponentType>(ComponentType component);
 
 	/// <summary>
 	/// Add entries to a menu with names of components of a given type or that implement a given interface

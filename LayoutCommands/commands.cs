@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Diagnostics;
@@ -10,10 +9,10 @@ using LayoutManager.Components;
 
 namespace LayoutManager {
 
-	/// <summary>
-	/// Place a component in the model
-	/// </summary>
-	public class LayoutComponentPlacmentCommand : LayoutCommand {
+    /// <summary>
+    /// Place a component in the model
+    /// </summary>
+    public class LayoutComponentPlacmentCommand : LayoutCommand {
 		LayoutModelArea		area;
 		Point				areaLocation;
 		ModelComponent		component;

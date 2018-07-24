@@ -1,15 +1,13 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing;
-
-using LayoutManager;
 using LayoutManager.Model;
 
 /// This file contain implementation of commands that are carried out on a selection
 /// 
 
 namespace LayoutManager {
-	public class MenuItemDeleteSelection : MenuItem {
+    public class MenuItemDeleteSelection : MenuItem {
 
 		public MenuItemDeleteSelection() {
 			this.Text = "&Delete";

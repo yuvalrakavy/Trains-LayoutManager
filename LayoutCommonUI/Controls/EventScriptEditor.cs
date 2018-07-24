@@ -1,21 +1,15 @@
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager;
 using LayoutManager.Components;
-using LayoutManager.Model;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for EventScriptEditor.
-	/// </summary>
-	public class EventScriptEditor : System.Windows.Forms.UserControl, IControlSupportViewOnly, IEventScriptEditor
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for EventScriptEditor.
+    /// </summary>
+    public class EventScriptEditor : System.Windows.Forms.UserControl, IControlSupportViewOnly, IEventScriptEditor
 	{
 		private TreeView treeViewConditions;
 		private Button buttonAddCondition;

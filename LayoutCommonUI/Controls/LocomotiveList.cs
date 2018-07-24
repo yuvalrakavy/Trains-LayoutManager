@@ -1,23 +1,16 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Data;
 using System.Windows.Forms;
 using System.Xml;
-using System.Diagnostics;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for LocomotiveList.
-	/// </summary>
-	public class LocomotiveList : XmlQueryListbox
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for LocomotiveList.
+    /// </summary>
+    public class LocomotiveList : XmlQueryListbox
 	{
 		LocomotiveCatalogInfo			catalog = null;
 		bool							showOnlyLocomotives = false;

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
@@ -7,10 +6,10 @@ using System.Drawing.Drawing2D;
 using System.Diagnostics;
 
 namespace LayoutManager.UIGadgets {
-	/// <summary>
-	/// Base class for ImageMenuItem or ImageMenuCategory
-	/// </summary>
-	public abstract class ImageMenuEntry {
+    /// <summary>
+    /// Base class for ImageMenuItem or ImageMenuCategory
+    /// </summary>
+    public abstract class ImageMenuEntry {
 		String		tooltip;
 		Rectangle	bounds;
 

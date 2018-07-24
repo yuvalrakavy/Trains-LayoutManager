@@ -1,22 +1,15 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
-
-using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-namespace LayoutManager.CommonUI.Controls
-{
-	/// <summary>
-	/// Summary description for LayoutControlViewer.
-	/// </summary>
-	public class LayoutControlViewer : System.Windows.Forms.UserControl
+namespace LayoutManager.CommonUI.Controls {
+    /// <summary>
+    /// Summary description for LayoutControlViewer.
+    /// </summary>
+    public class LayoutControlViewer : System.Windows.Forms.UserControl
 	{
 		private ImageList imageListCloseButton;
 		private Panel panel1;

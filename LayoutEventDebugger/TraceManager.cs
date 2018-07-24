@@ -1,6 +1,4 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Diagnostics;
@@ -9,12 +7,11 @@ using System.Reflection;
 using LayoutManager;
 using LayoutManager.CommonUI;
 
-namespace LayoutEventDebugger
-{
-	/// <summary>
-	/// Summary description for TraceManager.
-	/// </summary>
-	public class TraceManager : Form {
+namespace LayoutEventDebugger {
+    /// <summary>
+    /// Summary description for TraceManager.
+    /// </summary>
+    public class TraceManager : Form {
 		private RadioButton radioButtonTraceNone;
 		private RadioButton radioButtonTraceError;
 		private RadioButton radioButtonTraceInfo;

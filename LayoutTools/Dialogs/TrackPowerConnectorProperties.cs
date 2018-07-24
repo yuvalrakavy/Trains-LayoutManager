@@ -1,19 +1,14 @@
-using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
-using LayoutManager.CommonUI;
 
-namespace LayoutManager.Tools.Dialogs
-{
-	/// <summary>
-	/// Summary description for TrackPowerConnectorProperties.
-	/// </summary>
-	public class TrackPowerConnectorProperties : Form, ILayoutComponentPropertiesDialog
+namespace LayoutManager.Tools.Dialogs {
+    /// <summary>
+    /// Summary description for TrackPowerConnectorProperties.
+    /// </summary>
+    public class TrackPowerConnectorProperties : Form, ILayoutComponentPropertiesDialog
 	{
 		private Label label1;
 		private ComboBox comboBoxPowerSources;
