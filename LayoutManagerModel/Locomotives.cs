@@ -578,7 +578,7 @@ namespace LayoutManager.Model {
 				}
 				else {
 					using(MemoryStream s = new MemoryStream()) {
-						value.Save(s, value.RawFormat);
+						value.Save(s, System.Drawing.Imaging.ImageFormat.Bmp);
 
 						if(Element["Image"] == null)
 							Element.AppendChild(Element.OwnerDocument.CreateElement("Image"));

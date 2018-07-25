@@ -16,14 +16,12 @@ namespace LayoutManager.Dialogs {
     public class LocomotiveBasePropertiesForm : Form {
 		Dictionary<string, Control> nameToControlMap = new Dictionary<string, Control>();
 		protected XmlElement		element;
-		protected bool				hasImage = false;
-		protected bool				imageModified = false;
+        CommonUI.Controls.ImageGetter imageGetter;
 
-		ListView					listViewFunctions;
-		PictureBox					pictureBoxImage;
+        ListView listViewFunctions;
 		AttributesEditor			attributesEditor;
 
-		public LocomotiveBasePropertiesForm() {
+        public LocomotiveBasePropertiesForm() {
 		}
 
 		private void addToNameToControlMap(Dictionary<string, Control> h, Control c) {
@@ -41,12 +39,15 @@ namespace LayoutManager.Dialogs {
         protected LocomotiveCatalogInfo Catalog => LayoutModel.LocomotiveCatalog;
 
         protected void InitializeControls(XmlElement element, XmlElement storesElement) {
-			this.element = element;
+            LocomotiveTypeInfo locoType = new LocomotiveTypeInfo(element);
 
-			BuildControlNameMap();
+            BuildControlNameMap();
 
-			listViewFunctions = (ListView)nameToControlMap["listViewFunctions"];
-			pictureBoxImage = (PictureBox)nameToControlMap["pictureBoxImage"];
+            listViewFunctions = (ListView)nameToControlMap["listViewFunctions"];
+            imageGetter = (ImageGetter)nameToControlMap["imageGetter"];
+
+            this.element = element;
+            imageGetter.DefaultImage = Catalog.GetStandardImage(locoType.Kind, locoType.Origin);
 
 			if(storesElement != null)
 				SetStore(storesElement);
@@ -54,7 +55,6 @@ namespace LayoutManager.Dialogs {
 			attributesEditor = (AttributesEditor)nameToControlMap["attributesEditor"];
 			attributesEditor.AttributesSource = typeof(LocomotiveInfo);
 			attributesEditor.AttributesOwner = new AttributesOwner(element);
-
 
 			SetLocomotiveTypeFields();
 		}
@@ -104,9 +104,9 @@ namespace LayoutManager.Dialogs {
 			GetSpeedLimit("textBoxSpeedLimit", "SpeedLimit");
 			GetGuage();
 
-			if(imageModified) {
+			if(imageGetter.ImageModified) {
 				LocomotiveTypeInfo	locoType = new LocomotiveTypeInfo(element);
-				locoType.Image = hasImage ? pictureBoxImage.Image : null;
+				locoType.Image = imageGetter.HasImage ? imageGetter.Image : null;
 			}
 
 			CheckBox	checkBoxHasLights = (CheckBox)nameToControlMap["checkBoxHasLights"];
@@ -126,16 +126,9 @@ namespace LayoutManager.Dialogs {
 
 		protected void SetImage() {
 			LocomotiveTypeInfo	locoType = new LocomotiveTypeInfo(element);
-			PictureBox				pictureBoxImage = (PictureBox)nameToControlMap["pictureBoxImage"];
 
-			if(locoType.Image != null) {
-				pictureBoxImage.Image = locoType.Image;
-				hasImage = true;
-			}
-			else {
-				pictureBoxImage.Image = Catalog.GetStandardImage(locoType.Kind, locoType.Origin);
-				hasImage = false;
-			}
+			if(locoType.Image != null)
+				imageGetter.Image = locoType.Image;
 		}
 
 		protected void SetCheckbox(String controlName, XmlElement e, String a, bool defaultValue) {
@@ -338,32 +331,6 @@ namespace LayoutManager.Dialogs {
 
 		#region Default event handler implementations
 
-		protected void buttonImageSet_Click(object sender, System.EventArgs e) {
-			FileDialog		fileDialog = new OpenFileDialog();
-
-			fileDialog.AddExtension = true;
-			fileDialog.CheckFileExists = true;
-			fileDialog.Filter = "Image files (*.jpg,*.bmp)|*.jpg;*.bmp|All files|*.*";
-
-			if(fileDialog.ShowDialog(this) == DialogResult.OK) {
-				try {
-					Image	image = Image.FromFile(fileDialog.FileName);
-
-					pictureBoxImage.Image = image;
-					hasImage = true;
-					imageModified = true;
-				} catch(Exception ex) {
-					MessageBox.Show(this, "Error loading image: " + ex.Message, "Image load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-			}
-		}
-
-		protected void buttonImageClear_Click(object sender, System.EventArgs e) {
-			pictureBoxImage.Image = Catalog.GetStandardImage(CurrentKind, CurrentOrigin);
-			hasImage = false;
-			imageModified = true;
-		}
-
 		protected void buttonFunctionAdd_Click(object sender, System.EventArgs e) {
 			XmlElement		functionElement = element.OwnerDocument.CreateElement("Function");
 			FunctionItem	item = new FunctionItem(functionElement);
@@ -420,8 +387,7 @@ namespace LayoutManager.Dialogs {
 		}
 
 		protected void OnUpdateImage(object sender, System.EventArgs e) {
-			if(!hasImage)
-				pictureBoxImage.Image = Catalog.GetStandardImage(CurrentKind, CurrentOrigin);
+			imageGetter.DefaultImage = Catalog.GetStandardImage(CurrentKind, CurrentOrigin);
 		}
 
 		protected void buttonCopyFrom_Click(object sender, System.EventArgs e) {
