@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.21022</ProductVersion>
@@ -37,7 +37,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -77,6 +77,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -140,9 +141,7 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CommonUIservices.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="CommonUIservices.cs" />
     <Compile Include="Controls\AttributesEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -199,6 +198,12 @@
     <Compile Include="Controls\GlobalPolicyList.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\ImageGetter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ImageGetter.Designer.cs">
+      <DependentUpon>ImageGetter.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\InfoProviderControls.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -248,6 +253,12 @@
     </Compile>
     <Compile Include="Controls\OperandValueOf.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PanelNoEraseBackground.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\PanelNoEraseBackground.Designer.cs">
+      <DependentUpon>PanelNoEraseBackground.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\PictureBoxWithTransparency.cs">
       <SubType>Component</SubType>
@@ -300,9 +311,7 @@
     <Compile Include="DetailsPopupWindow.Designer.cs">
       <DependentUpon>DetailsPopupWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="DialogEditingCommands.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="DialogEditingCommands.cs" />
     <Compile Include="Dialogs\AttributeDefinition.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -311,6 +320,12 @@
     </Compile>
     <Compile Include="Dialogs\EditMotionRamp.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ImageTrim.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ImageTrim.Designer.cs">
+      <DependentUpon>ImageTrim.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\InputBox.cs">
       <SubType>Form</SubType>
@@ -416,6 +431,9 @@
     <EmbeddedResource Include="Controls\GlobalPolicyList.resx">
       <DependentUpon>GlobalPolicyList.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ImageGetter.resx">
+      <DependentUpon>ImageGetter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\InfoProviderControls.resx">
       <DependentUpon>InfoProviderControls.cs</DependentUpon>
@@ -548,6 +566,9 @@
     <EmbeddedResource Include="Dialogs\EditMotionRamp.resx">
       <DependentUpon>EditMotionRamp.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ImageTrim.resx">
+      <DependentUpon>ImageTrim.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\InputBox.resx">
       <DependentUpon>InputBox.cs</DependentUpon>
