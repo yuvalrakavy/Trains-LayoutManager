@@ -729,7 +729,12 @@ namespace LayoutManager.Model {
 				SetAttribute("State", XmlConvert.ToString(value));
 			}
 		}
-	}
+
+        public override string ToString() {
+            string description = !string.IsNullOrEmpty(this.Description) ? $" - {this.Description}" : "";
+            return $"{this.Name}{description}";
+        }
+    }
 
 	#endregion
 
