@@ -185,8 +185,15 @@ namespace DiMAX {
 			PowerOn();
 		}
 
-		// Implement command events
-		[LayoutAsyncEvent("change-track-component-state-command", IfEvent="*[CommandStation/@ID='`string(@ID)`']")]
+        [LayoutEvent("get-command-station-set-function-number-support", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
+        private void getSetFunctionNumberSupport(LayoutEvent e) {
+            e.Info = new CommandStationSetFunctionNumberSupportInfo() {
+                SetFunctionNumberSupport = SetFunctionNumberSupport.FunctionNumberAndBooleanState
+            };
+        }
+
+        // Implement command events
+        [LayoutAsyncEvent("change-track-component-state-command", IfEvent="*[CommandStation/@ID='`string(@ID)`']")]
 		Task ChangeTurnoutState(LayoutEvent e0) {
 			var e = (LayoutEvent<ControlConnectionPointReference, int>)e0;
 			ControlConnectionPointReference connectionPointRef = e.Sender;
@@ -244,6 +251,15 @@ namespace DiMAX {
 
 			outputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, function.Number, e.GetBoolOption("FunctionState"), train.Lights));
 		}
+
+        [LayoutEvent("trigger-locomotive-function-number", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
+        private void triggerLocomotiveFunctionNumber(LayoutEvent e) {
+            if(e.Sender is LocomotiveInfo loco && e.Info is int functionNumber) {
+                var train = LayoutModel.StateManager.Trains[loco.Id];
+
+                outputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, functionNumber, e.GetBoolOption("FunctionState"), train.Lights));
+            }
+        }
 
 		[LayoutEvent("add-command-station-loco-bus-to-address-map", IfSender = "*[@ID='`string(@ID)`']")]
 		private void AddCommandStationLocoBusToAddressMap(LayoutEvent e) {

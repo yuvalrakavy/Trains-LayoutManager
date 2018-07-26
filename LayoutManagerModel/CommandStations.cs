@@ -15,97 +15,119 @@ namespace LayoutManager.Model {
 		TrainDetectionBlock,
 	}
 
-	/// <summary>
-	/// Wrapper for Xml element returned by command station component when it is asked to return the address
-	/// format for various usage. For example, the address definition UI control does that in order to adapt itself
-	/// for the requirment for a specific command station
-	/// </summary>
-	public class AddressFormatInfo : LayoutInfo {
+    /// <summary>
+    /// Does this command support setting a specific function#
+    /// 
+    ///  None - feature is not supported
+    ///  FunctionNumber - can set a function but without associated state
+    ///  FunctionNumberAndBooleanState - can set function with an associated state (On/Off)
+    /// </summary>
+    public enum SetFunctionNumberSupport {
+        None,
+        FunctionNumber,
+        FunctionNumberAndBooleanState,
+    }
 
-		public AddressFormatInfo(XmlElement element) : base(element) {
-		}
+    /// <summary>
+    /// Wrapper for Xml element returned by command station component when it is asked to return the address
+    /// format for various usage. For example, the address definition UI control does that in order to adapt itself
+    /// for the requirment for a specific command station
+    /// </summary>
+    public class AddressFormatInfo : LayoutInfo {
 
-		public AddressFormatInfo() {
-			XmlDocument	doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
-			
-			Element = doc.CreateElement("AddressFormat");
-			doc.AppendChild(Element);
-		}
+        public AddressFormatInfo(XmlElement element) : base(element) {
+        }
 
-		public string Namespace {
-			get {
-				return GetAttribute("Namespace", "Default");
-			}
+        public AddressFormatInfo() {
+            XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
-			set {
-				SetAttribute("Namespace", value);
-			}
-		}
+            Element = doc.CreateElement("AddressFormat");
+            doc.AppendChild(Element);
+        }
 
-		public int UnitMin {
-			get {
-				return XmlConvert.ToInt32(GetAttribute("UnitMin", "1"));
-			}
+        public string Namespace {
+            get {
+                return GetAttribute("Namespace", "Default");
+            }
 
-			set {
-				SetAttribute("UnitMin", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                SetAttribute("Namespace", value);
+            }
+        }
 
-		public int UnitMax {
-			get {
-				return XmlConvert.ToInt32(GetAttribute("UnitMax", "256"));
-			}
+        public int UnitMin {
+            get {
+                return XmlConvert.ToInt32(GetAttribute("UnitMin", "1"));
+            }
 
-			set {
-				SetAttribute("UnitMax", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                SetAttribute("UnitMin", XmlConvert.ToString(value));
+            }
+        }
 
-		public bool ShowSubunit {
-			get {
-				return XmlConvert.ToBoolean(GetAttribute("ShowSubunit", "false"));
-			}
+        public int UnitMax {
+            get {
+                return XmlConvert.ToInt32(GetAttribute("UnitMax", "256"));
+            }
 
-			set {
-				SetAttribute("ShowSubunit", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                SetAttribute("UnitMax", XmlConvert.ToString(value));
+            }
+        }
 
-		public enum SubunitFormatValue {
-			Number,
-			Alphabet
-		}
+        public bool ShowSubunit {
+            get {
+                return XmlConvert.ToBoolean(GetAttribute("ShowSubunit", "false"));
+            }
 
-		public SubunitFormatValue SubunitFormat {
-			get {
-				return (SubunitFormatValue)Enum.Parse(typeof(SubunitFormatValue), GetAttribute("SubunitFormat", "Number"));
-			}
+            set {
+                SetAttribute("ShowSubunit", XmlConvert.ToString(value));
+            }
+        }
 
-			set {
-				SetAttribute("SubunitFormat", value.ToString());
-			}
-		}
-		public int SubunitMin {
-			get {
-				return XmlConvert.ToInt32(GetAttribute("SubunitMin", "1"));
-			}
+        public enum SubunitFormatValue {
+            Number,
+            Alphabet
+        }
 
-			set {
-				SetAttribute("SubunitMin", XmlConvert.ToString(value));
-			}
-		}
+        public SubunitFormatValue SubunitFormat {
+            get {
+                return (SubunitFormatValue)Enum.Parse(typeof(SubunitFormatValue), GetAttribute("SubunitFormat", "Number"));
+            }
 
-		public int SubunitMax {
-			get {
-				return XmlConvert.ToInt32(GetAttribute("SubunitMax", "256"));
-			}
+            set {
+                SetAttribute("SubunitFormat", value.ToString());
+            }
+        }
+        public int SubunitMin {
+            get {
+                return XmlConvert.ToInt32(GetAttribute("SubunitMin", "1"));
+            }
 
-			set {
-				SetAttribute("SubunitMax", XmlConvert.ToString(value));
-			}
-		}
-	}
+            set {
+                SetAttribute("SubunitMin", XmlConvert.ToString(value));
+            }
+        }
 
-	#endregion
+        public int SubunitMax {
+            get {
+                return XmlConvert.ToInt32(GetAttribute("SubunitMax", "256"));
+            }
+
+            set {
+                SetAttribute("SubunitMax", XmlConvert.ToString(value));
+            }
+        }
+    }
+
+    public class CommandStationSetFunctionNumberSupportInfo {
+
+        public SetFunctionNumberSupport SetFunctionNumberSupport { get; set; } = SetFunctionNumberSupport.None;
+
+        public int MinFunctionNumber { get; set; } = 1;
+
+        public int MaxFunctionNumber { get; set; } = 12;
+    }
+
+    #endregion
 }

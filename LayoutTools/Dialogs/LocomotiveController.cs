@@ -1,6 +1,6 @@
 using System;
 using System.Drawing;
-using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
@@ -172,14 +172,14 @@ namespace LayoutManager.Tools.Dialogs {
 			labelDriverInstructions.Text = "STOP!";
 		}
 
-		private void addLocomotiveFunctions(SortedList functions, LocomotiveInfo loco) {
+		private void addLocomotiveFunctions(SortedList<string, List<LocomotiveInfo>> functions, LocomotiveInfo loco) {
 			if(loco.Functions != null) {
 				foreach(XmlElement functionElement in loco.Functions) {
 					LocomotiveFunctionInfo	function = new LocomotiveFunctionInfo(functionElement);
-					ArrayList					locos = (ArrayList)functions[function.Name];
+                    List<LocomotiveInfo> locos;
 
-					if(locos == null) {
-						locos = new ArrayList();
+                    if(!functions.TryGetValue(function.Name, out locos)) { 
+						locos = new List<LocomotiveInfo>();
 						functions.Add(function.Name, locos);
 					}
 
@@ -188,16 +188,16 @@ namespace LayoutManager.Tools.Dialogs {
 			}
 		}
 
-		private void addLocomotiveFunctionPresets(SortedList functions, LocomotiveInfo loco) {
+		private void addLocomotiveFunctionPresets(SortedList<string, List<LocomotiveInfo>> functions, LocomotiveInfo loco) {
 			if(loco.Functions != null) {
 				foreach(XmlElement functionElement in loco.Functions) {
 					LocomotiveFunctionInfo	function = new LocomotiveFunctionInfo(functionElement);
 
 					if(function.Type == LocomotiveFunctionType.OnOff) {
-						ArrayList					locos = (ArrayList)functions[function.Name];
+                        List<LocomotiveInfo> locos;
 
-						if(locos == null) {
-							locos = new ArrayList();
+                        if(!functions.TryGetValue(function.Name, out locos)) {
+							locos = new List<LocomotiveInfo>();
 							functions.Add(function.Name, locos);
 						}
 
@@ -209,7 +209,7 @@ namespace LayoutManager.Tools.Dialogs {
 					
 		[LayoutEvent("add-locomotive-controller-function-menu-entries", IfSender="*[@ID='`string(@ID)`']")]
 		private void addLocomotiveControllerFunctionMenuEntries(LayoutEvent e) {
-			SortedList	functions = new SortedList();
+			var	functions = new SortedList<string, List<LocomotiveInfo>>();
 			Menu		m = (Menu)e.Info;
 
 			foreach(TrainLocomotiveInfo trainLoco in train.Locomotives)
@@ -221,9 +221,9 @@ namespace LayoutManager.Tools.Dialogs {
 				if(m.MenuItems.Count > 0)
 					m.MenuItems.Add("-");
 
-				foreach(DictionaryEntry d in functions) {
-					ArrayList	locos = (ArrayList)d.Value;
-					String		functionName = (String)d.Key;
+				foreach(var d in functions) {
+					var	locos = d.Value;
+					var	functionName = d.Key;
 
 					Debug.Assert(locos.Count > 0, "locos array is empty");
 
@@ -262,19 +262,16 @@ namespace LayoutManager.Tools.Dialogs {
 
 					MenuItem	presetItem = new MenuItem("Set function state");
 
-					foreach(DictionaryEntry d in functions) {
-						ArrayList	locos = (ArrayList)d.Value;
-						String		functionName = (String)d.Key;
+					foreach(var d in functions) {
+						var	locos = d.Value;
+						var	functionName = d.Key;
 
-						if(locos.Count == 1) {
-							LocomotiveInfo	loco = (LocomotiveInfo)locos[0];
-
-							presetItem.MenuItems.Add(new LocomotiveFunctionPresetMenuItem(train, loco, functionName, true, train.Locomotives.Count > 1));
-						}
+						if(locos.Count == 1)
+							presetItem.MenuItems.Add(new LocomotiveFunctionPresetMenuItem(train, locos[0], functionName, true, train.Locomotives.Count > 1));
 						else {
-							MenuItem	functionItem = new MenuItem(getFunctionDescription((LocomotiveInfo)locos[0], functionName));
+							MenuItem	functionItem = new MenuItem(getFunctionDescription(locos[0], functionName));
 
-							foreach(LocomotiveInfo loco in locos)
+							foreach(var loco in locos)
 								functionItem.MenuItems.Add(new LocomotiveFunctionPresetMenuItem(train, loco, functionName, false, true));
 
 							presetItem.MenuItems.Add(functionItem);
@@ -284,7 +281,39 @@ namespace LayoutManager.Tools.Dialogs {
 					m.MenuItems.Add(presetItem);
 				}
 			}
+
+            if(EventManager.Event(new LayoutEvent(train, "get-command-station-set-function-number-support").SetCommandStation(train)) is CommandStationSetFunctionNumberSupportInfo functionNumberSupport &&
+                functionNumberSupport.SetFunctionNumberSupport != SetFunctionNumberSupport.None) {
+
+                if (m.MenuItems.Count == 0)
+                    addTrainFunctionNumberItems(m, functionNumberSupport);
+                else {
+                    m.MenuItems.Add("-");
+
+                    var functionNumberMenu = new MenuItem("Other functions...");
+                    
+                    addTrainFunctionNumberItems(functionNumberMenu, functionNumberSupport);
+                    m.MenuItems.Add(functionNumberMenu);
+                }
+            }
 		}
+
+        private void addTrainFunctionNumberItems(Menu m, CommandStationSetFunctionNumberSupportInfo functionNumberSupportInfo) {
+            if (train.Locomotives.Count == 1)
+                addLocomotiveFunctionNumberItems(m, train.Locomotives[0].Locomotive, functionNumberSupportInfo);
+            else
+                foreach(var trainLoco in train.Locomotives) {
+                    MenuItem locoFuncionNumbersMenu = new MenuItem(trainLoco.Name);
+
+                    addLocomotiveFunctionNumberItems(locoFuncionNumbersMenu, trainLoco.Locomotive, functionNumberSupportInfo);
+                    m.MenuItems.Add(locoFuncionNumbersMenu);
+                }
+        }
+
+        private void addLocomotiveFunctionNumberItems(Menu m, LocomotiveInfo loco, CommandStationSetFunctionNumberSupportInfo functionNumberSupportInfo) {
+            for (var functionNumber = functionNumberSupportInfo.MinFunctionNumber; functionNumber <= functionNumberSupportInfo.MaxFunctionNumber; functionNumber++)
+                m.MenuItems.Add(new LocomotiveFunctionNumberMenuItem(train, loco, functionNumber, functionNumberSupportInfo.SetFunctionNumberSupport == SetFunctionNumberSupport.FunctionNumberAndBooleanState));
+        }
 
 		protected static String getFunctionDescription(LocomotiveInfo loco, String functionName) {
 			LocomotiveFunctionInfo	function = loco.GetFunctionByName(functionName);
@@ -343,6 +372,21 @@ namespace LayoutManager.Tools.Dialogs {
 					trainState.TriggerLocomotiveFunction(function.Name, id);
 			}
 		}
+
+        class LocomotiveFunctionNumberMenuItem : MenuItem {
+            public LocomotiveFunctionNumberMenuItem(TrainStateInfo train, LocomotiveInfo loco, int functionNumber, bool canSetBooleanState) {
+                var function = loco.GetFunctionByNumber(functionNumber);
+
+                this.Text = $"Function {functionNumber}{(function != null ? $" ({function.ToString()})" : "")}";
+
+                if (canSetBooleanState) {
+                    this.MenuItems.Add(new MenuItem("On", (sender, e) => EventManager.Event(new LayoutEvent(loco, "trigger-locomotive-function-number", null, functionNumber).SetCommandStation(train).SetOption("FunctionState", true))));
+                    this.MenuItems.Add(new MenuItem("Off", (sender, e) => EventManager.Event(new LayoutEvent(loco, "trigger-locomotive-function-number", null, functionNumber).SetCommandStation(train).SetOption("FunctionState", false))));
+                }
+                else
+                    this.Click += (sender, e) => EventManager.Event(new LayoutEvent(loco, "trigger-locomotive-function-number", null, functionNumber).SetCommandStation(train));
+            }
+        }
 
 		class LocomotiveFunctionPresetMenuItem : MenuItem {
 			LocomotiveFunctionInfo	function;

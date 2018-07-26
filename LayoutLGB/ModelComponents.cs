@@ -147,8 +147,16 @@ namespace LayoutLGB {
 			PowerOn();
 		}
 
-		// Implement command events
-		[LayoutAsyncEvent("change-track-component-state-command", IfEvent="*[CommandStation/@Name='`string(Name)`']")]
+        #region Set function number support
+        [LayoutEvent("get-command-station-set-function-number-support", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
+        private void getSetFunctionNumberSupport(LayoutEvent e) {
+            e.Info = new CommandStationSetFunctionNumberSupportInfo() {
+                SetFunctionNumberSupport = SetFunctionNumberSupport.FunctionNumber
+            };
+        }
+        #endregion
+        // Implement command events
+        [LayoutAsyncEvent("change-track-component-state-command", IfEvent="*[CommandStation/@Name='`string(Name)`']")]
 		Task ChangeTurnoutState(LayoutEvent e0) {
 			var e = (LayoutEvent<ControlConnectionPointReference, int>)e0;
 			ControlConnectionPointReference		connectionPointRef = e.Sender;
@@ -202,11 +210,20 @@ namespace LayoutLGB {
 			commandStationManager.AddCommand(new MTSlocomotiveFunction(CommunicationStream, loco.AddressProvider.Unit, function.Number));
 		}
 
-		#endregion
+        [LayoutEvent("trigger-locomotive-function-number", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
+        private void triggerLocomotiveFunctionNumber(LayoutEvent e) {
+            if (e.Sender is LocomotiveInfo loco && e.Info is int functionNumber) {
+                var train = LayoutModel.StateManager.Trains[loco.Id];
 
-		#region Generate notification events
+                commandStationManager.AddCommand(new MTSlocomotiveFunction(CommunicationStream, loco.AddressProvider.Unit, functionNumber));
+            }
+        }
 
-		private void LGBbusNotification(int address, int state) {
+        #endregion
+
+        #region Generate notification events
+
+        private void LGBbusNotification(int address, int state) {
 			if(OperationMode) {
 				ControlConnectionPointReference connectionPointRef;
 				ControlModule lgbBusModule = LGBbus.GetModuleUsingAddress(address);
