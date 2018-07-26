@@ -26,23 +26,23 @@ namespace LayoutManager.CommonUI.Controls {
         public Image Image {
             set {
                 if (value != null) {
-                    pictureBoxImage.Image = value;
+                    pictureBoxImage.BackgroundImage = value;
                     HasImage = true;
                 }
                 else {
-                    pictureBoxImage.Image = DefaultImage;
+                    pictureBoxImage.BackgroundImage = DefaultImage;
                     HasImage = false;
                 }
             }
 
-            get => pictureBoxImage.Image;
+            get => pictureBoxImage.BackgroundImage;
         }
 
         public Image DefaultImage {
             set {
                 _defaultImage = value;
                 if(!HasImage)
-                    pictureBoxImage.Image = _defaultImage;
+                    pictureBoxImage.BackgroundImage = _defaultImage;
             }
 
             get => _defaultImage;
@@ -64,7 +64,7 @@ namespace LayoutManager.CommonUI.Controls {
                     var trimDialog = new Dialogs.ImageTrim(image, this.RequiredImageSize);
 
                     if(trimDialog.ShowDialog() == DialogResult.OK) {
-                        this.Image = trimDialog.Image;
+                        this.pictureBoxImage.BackgroundImage = trimDialog.Image;
                         this.ImageModified = true;
                     }
                 } catch (Exception ex) {
@@ -76,7 +76,21 @@ namespace LayoutManager.CommonUI.Controls {
         private void buttonClear_Click(object sender, EventArgs e) {
             if (pictureBoxImage.Image != null)
                 this.ImageModified = true;
-            pictureBoxImage.Image = DefaultImage;
+            pictureBoxImage.BackgroundImage = DefaultImage;
+        }
+
+        private void buttonPaste_Click(object sender, EventArgs e) {
+            if (Clipboard.ContainsImage()) {
+                var image = Clipboard.GetImage();
+                var trimDialog = new Dialogs.ImageTrim(image, this.RequiredImageSize);
+
+                if (trimDialog.ShowDialog() == DialogResult.OK) {
+                    pictureBoxImage.BackgroundImage = trimDialog.Image;
+                    this.ImageModified = true;
+                }
+            }
+            else
+                MessageBox.Show("Clipboard does not contains a valid image", "Clipboard has no image", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
     }
 }
