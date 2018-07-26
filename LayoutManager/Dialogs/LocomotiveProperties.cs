@@ -388,19 +388,21 @@ namespace LayoutManager.Dialogs {
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.imageGetter);
-            this.groupBox1.Location = new System.Drawing.Point(112, 20);
+            this.groupBox1.Location = new System.Drawing.Point(112, 8);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(154, 100);
+            this.groupBox1.Size = new System.Drawing.Size(226, 112);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Picture:";
             // 
             // imageGetter
             // 
+            this.imageGetter.DefaultImage = null;
             this.imageGetter.Image = null;
             this.imageGetter.Location = new System.Drawing.Point(6, 18);
             this.imageGetter.Name = "imageGetter";
-            this.imageGetter.Size = new System.Drawing.Size(140, 76);
+            this.imageGetter.RequiredImageSize = new System.Drawing.Size(46, 34);
+            this.imageGetter.Size = new System.Drawing.Size(214, 88);
             this.imageGetter.TabIndex = 0;
             // 
             // groupBoxOrigin
@@ -436,9 +438,9 @@ namespace LayoutManager.Dialogs {
             this.groupBoxKind.Controls.Add(this.radioButtonKindElectric);
             this.groupBoxKind.Controls.Add(this.radioButtonKindDiesel);
             this.groupBoxKind.Controls.Add(this.radioButtonKindSteam);
-            this.groupBoxKind.Location = new System.Drawing.Point(8, 20);
+            this.groupBoxKind.Location = new System.Drawing.Point(8, 8);
             this.groupBoxKind.Name = "groupBoxKind";
-            this.groupBoxKind.Size = new System.Drawing.Size(88, 100);
+            this.groupBoxKind.Size = new System.Drawing.Size(88, 112);
             this.groupBoxKind.TabIndex = 4;
             this.groupBoxKind.TabStop = false;
             this.groupBoxKind.Text = "Type:";

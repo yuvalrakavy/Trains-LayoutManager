@@ -119,6 +119,7 @@ namespace LayoutManager.Dialogs {
             this.lengthInput = new LayoutManager.CommonUI.Controls.LengthInput();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.imageGetter = new LayoutManager.CommonUI.Controls.ImageGetter();
             this.comboBoxStore = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBoxOrigin = new System.Windows.Forms.GroupBox();
@@ -149,7 +150,6 @@ namespace LayoutManager.Dialogs {
             this.attributesEditor = new LayoutManager.CommonUI.Controls.AttributesEditor();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
-            this.imageGetter = new LayoutManager.CommonUI.Controls.ImageGetter();
             this.tabControl1.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -172,7 +172,7 @@ namespace LayoutManager.Dialogs {
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(292, 262);
+            this.tabControl1.Size = new System.Drawing.Size(329, 262);
             this.tabControl1.TabIndex = 1;
             // 
             // tabPageGeneral
@@ -192,7 +192,7 @@ namespace LayoutManager.Dialogs {
             this.tabPageGeneral.Controls.Add(this.label1);
             this.tabPageGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabPageGeneral.Name = "tabPageGeneral";
-            this.tabPageGeneral.Size = new System.Drawing.Size(284, 236);
+            this.tabPageGeneral.Size = new System.Drawing.Size(321, 236);
             this.tabPageGeneral.TabIndex = 0;
             this.tabPageGeneral.Text = "General";
             // 
@@ -256,10 +256,20 @@ namespace LayoutManager.Dialogs {
             this.groupBox1.Controls.Add(this.imageGetter);
             this.groupBox1.Location = new System.Drawing.Point(104, 34);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(168, 100);
+            this.groupBox1.Size = new System.Drawing.Size(206, 100);
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Picture:";
+            // 
+            // imageGetter
+            // 
+            this.imageGetter.DefaultImage = null;
+            this.imageGetter.Image = null;
+            this.imageGetter.Location = new System.Drawing.Point(6, 16);
+            this.imageGetter.Name = "imageGetter";
+            this.imageGetter.RequiredImageSize = new System.Drawing.Size(46, 34);
+            this.imageGetter.Size = new System.Drawing.Size(197, 78);
+            this.imageGetter.TabIndex = 0;
             // 
             // comboBoxStore
             // 
@@ -352,9 +362,9 @@ namespace LayoutManager.Dialogs {
             // 
             // textBoxName
             // 
-            this.textBoxName.Location = new System.Drawing.Point(64, 9);
+            this.textBoxName.Location = new System.Drawing.Point(105, 10);
             this.textBoxName.Name = "textBoxName";
-            this.textBoxName.Size = new System.Drawing.Size(208, 20);
+            this.textBoxName.Size = new System.Drawing.Size(205, 20);
             this.textBoxName.TabIndex = 1;
             // 
             // label1
@@ -517,7 +527,7 @@ namespace LayoutManager.Dialogs {
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(208, 270);
+            this.buttonCancel.Location = new System.Drawing.Point(254, 270);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 2;
@@ -526,27 +536,18 @@ namespace LayoutManager.Dialogs {
             // buttonOk
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOk.Location = new System.Drawing.Point(128, 270);
+            this.buttonOk.Location = new System.Drawing.Point(174, 270);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 1;
             this.buttonOk.Text = "OK";
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
-            // imageGetter
-            // 
-            this.imageGetter.DefaultImage = null;
-            this.imageGetter.Image = null;
-            this.imageGetter.Location = new System.Drawing.Point(6, 16);
-            this.imageGetter.Name = "imageGetter";
-            this.imageGetter.Size = new System.Drawing.Size(156, 78);
-            this.imageGetter.TabIndex = 0;
-            // 
             // LocomotiveTypeProperties
             // 
             this.AcceptButton = this.buttonOk;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(288, 296);
+            this.ClientSize = new System.Drawing.Size(334, 296);
             this.ControlBox = false;
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.tabControl1);
