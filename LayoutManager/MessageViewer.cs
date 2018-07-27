@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,7 +32,8 @@ namespace LayoutManager {
 		private Button buttonPreviousComponent;
 		private Button buttonNextComponent;
 		private ImageList imageListSeverity;
-		private IContainer components;
+        private Button buttonClear;
+        private IContainer components;
 
 		public MessageViewer()
 		{
@@ -339,116 +340,129 @@ namespace LayoutManager {
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new Container();
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(MessageViewer));
-			this.listViewMessages = new ListView();
-			this.columnHeaderMessage = new ColumnHeader();
-			this.columnHeaderArea = new ColumnHeader();
-			this.buttonClose = new Button();
-			this.buttonNextMessage = new Button();
-			this.buttonPrevMessage = new Button();
-			this.buttonNextComponent = new Button();
-			this.buttonPreviousComponent = new Button();
-			this.imageListSeverity = new ImageList(this.components);
-			this.SuspendLayout();
-			// 
-			// listViewMessages
-			// 
-			this.listViewMessages.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-				| System.Windows.Forms.AnchorStyles.Left) 
-				| System.Windows.Forms.AnchorStyles.Right);
-			this.listViewMessages.Columns.AddRange(new ColumnHeader[] {
-																							   this.columnHeaderMessage,
-																							   this.columnHeaderArea});
-			this.listViewMessages.FullRowSelect = true;
-			this.listViewMessages.GridLines = true;
-			this.listViewMessages.HideSelection = false;
-			this.listViewMessages.Location = new System.Drawing.Point(0, 24);
-			this.listViewMessages.MultiSelect = false;
-			this.listViewMessages.Name = "listViewMessages";
-			this.listViewMessages.Size = new System.Drawing.Size(680, 80);
-			this.listViewMessages.SmallImageList = this.imageListSeverity;
-			this.listViewMessages.TabIndex = 5;
-			this.listViewMessages.View = System.Windows.Forms.View.Details;
-			this.listViewMessages.SelectedIndexChanged += new System.EventHandler(this.listViewMessages_SelectedIndexChanged);
-			// 
-			// columnHeaderMessage
-			// 
-			this.columnHeaderMessage.Text = "Message";
-			this.columnHeaderMessage.Width = 393;
-			// 
-			// columnHeaderArea
-			// 
-			this.columnHeaderArea.Text = "Area";
-			this.columnHeaderArea.Width = 180;
-			// 
-			// buttonClose
-			// 
-			this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-			this.buttonClose.Location = new System.Drawing.Point(598, 3);
-			this.buttonClose.Name = "buttonClose";
-			this.buttonClose.Size = new System.Drawing.Size(75, 20);
-			this.buttonClose.TabIndex = 4;
-			this.buttonClose.Text = "&Close";
-			this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
-			// 
-			// buttonNextMessage
-			// 
-			this.buttonNextMessage.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-			this.buttonNextMessage.Location = new System.Drawing.Point(352, 3);
-			this.buttonNextMessage.Name = "buttonNextMessage";
-			this.buttonNextMessage.Size = new System.Drawing.Size(112, 20);
-			this.buttonNextMessage.TabIndex = 2;
-			this.buttonNextMessage.Text = "&Next message";
-			this.buttonNextMessage.Click += new System.EventHandler(this.buttonNextMessage_Click);
-			// 
-			// buttonPrevMessage
-			// 
-			this.buttonPrevMessage.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-			this.buttonPrevMessage.Location = new System.Drawing.Point(472, 3);
-			this.buttonPrevMessage.Name = "buttonPrevMessage";
-			this.buttonPrevMessage.Size = new System.Drawing.Size(112, 20);
-			this.buttonPrevMessage.TabIndex = 3;
-			this.buttonPrevMessage.Text = "&Previous message";
-			this.buttonPrevMessage.Click += new System.EventHandler(this.buttonPrevMessage_Click);
-			// 
-			// buttonNextComponent
-			// 
-			this.buttonNextComponent.Location = new System.Drawing.Point(8, 3);
-			this.buttonNextComponent.Name = "buttonNextComponent";
-			this.buttonNextComponent.Size = new System.Drawing.Size(120, 20);
-			this.buttonNextComponent.TabIndex = 0;
-			this.buttonNextComponent.Text = "Next component";
-			this.buttonNextComponent.Click += new System.EventHandler(this.buttonNextComponent_Click);
-			// 
-			// buttonPreviousComponent
-			// 
-			this.buttonPreviousComponent.Location = new System.Drawing.Point(135, 3);
-			this.buttonPreviousComponent.Name = "buttonPreviousComponent";
-			this.buttonPreviousComponent.Size = new System.Drawing.Size(120, 20);
-			this.buttonPreviousComponent.TabIndex = 1;
-			this.buttonPreviousComponent.Text = "Previous component";
-			this.buttonPreviousComponent.Click += new System.EventHandler(this.buttonPreviousComponent_Click);
-			// 
-			// imageListSeverity
-			// 
-			this.imageListSeverity.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-			this.imageListSeverity.ImageSize = new System.Drawing.Size(16, 16);
-			this.imageListSeverity.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListSeverity.ImageStream")));
-			this.imageListSeverity.TransparentColor = System.Drawing.Color.Transparent;
-			// 
-			// MessageViewer
-			// 
-			this.Controls.AddRange(new System.Windows.Forms.Control[] {
-																		  this.buttonPreviousComponent,
-																		  this.buttonNextComponent,
-																		  this.buttonPrevMessage,
-																		  this.buttonNextMessage,
-																		  this.buttonClose,
-																		  this.listViewMessages});
-			this.Name = "MessageViewer";
-			this.Size = new System.Drawing.Size(680, 112);
-			this.ResumeLayout(false);
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MessageViewer));
+            this.listViewMessages = new System.Windows.Forms.ListView();
+            this.columnHeaderMessage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderArea = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.imageListSeverity = new System.Windows.Forms.ImageList(this.components);
+            this.buttonClose = new System.Windows.Forms.Button();
+            this.buttonNextMessage = new System.Windows.Forms.Button();
+            this.buttonPrevMessage = new System.Windows.Forms.Button();
+            this.buttonNextComponent = new System.Windows.Forms.Button();
+            this.buttonPreviousComponent = new System.Windows.Forms.Button();
+            this.buttonClear = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // listViewMessages
+            // 
+            this.listViewMessages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listViewMessages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderMessage,
+            this.columnHeaderArea});
+            this.listViewMessages.FullRowSelect = true;
+            this.listViewMessages.GridLines = true;
+            this.listViewMessages.HideSelection = false;
+            this.listViewMessages.Location = new System.Drawing.Point(0, 31);
+            this.listViewMessages.MultiSelect = false;
+            this.listViewMessages.Name = "listViewMessages";
+            this.listViewMessages.Size = new System.Drawing.Size(680, 80);
+            this.listViewMessages.SmallImageList = this.imageListSeverity;
+            this.listViewMessages.TabIndex = 5;
+            this.listViewMessages.UseCompatibleStateImageBehavior = false;
+            this.listViewMessages.View = System.Windows.Forms.View.Details;
+            this.listViewMessages.SelectedIndexChanged += new System.EventHandler(this.listViewMessages_SelectedIndexChanged);
+            // 
+            // columnHeaderMessage
+            // 
+            this.columnHeaderMessage.Text = "Message";
+            this.columnHeaderMessage.Width = 393;
+            // 
+            // columnHeaderArea
+            // 
+            this.columnHeaderArea.Text = "Area";
+            this.columnHeaderArea.Width = 180;
+            // 
+            // imageListSeverity
+            // 
+            this.imageListSeverity.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListSeverity.ImageStream")));
+            this.imageListSeverity.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListSeverity.Images.SetKeyName(0, "");
+            this.imageListSeverity.Images.SetKeyName(1, "");
+            this.imageListSeverity.Images.SetKeyName(2, "");
+            // 
+            // buttonClose
+            // 
+            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClose.Location = new System.Drawing.Point(598, 4);
+            this.buttonClose.Name = "buttonClose";
+            this.buttonClose.Size = new System.Drawing.Size(75, 22);
+            this.buttonClose.TabIndex = 4;
+            this.buttonClose.Text = "&Close";
+            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            // 
+            // buttonNextMessage
+            // 
+            this.buttonNextMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonNextMessage.Location = new System.Drawing.Point(419, 4);
+            this.buttonNextMessage.Name = "buttonNextMessage";
+            this.buttonNextMessage.Size = new System.Drawing.Size(74, 22);
+            this.buttonNextMessage.TabIndex = 2;
+            this.buttonNextMessage.Text = "↓ message";
+            this.buttonNextMessage.Click += new System.EventHandler(this.buttonNextMessage_Click);
+            // 
+            // buttonPrevMessage
+            // 
+            this.buttonPrevMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonPrevMessage.Location = new System.Drawing.Point(499, 4);
+            this.buttonPrevMessage.Name = "buttonPrevMessage";
+            this.buttonPrevMessage.Size = new System.Drawing.Size(74, 22);
+            this.buttonPrevMessage.TabIndex = 3;
+            this.buttonPrevMessage.Text = "↑ message";
+            this.buttonPrevMessage.Click += new System.EventHandler(this.buttonPrevMessage_Click);
+            // 
+            // buttonNextComponent
+            // 
+            this.buttonNextComponent.Location = new System.Drawing.Point(8, 4);
+            this.buttonNextComponent.Name = "buttonNextComponent";
+            this.buttonNextComponent.Size = new System.Drawing.Size(91, 22);
+            this.buttonNextComponent.TabIndex = 0;
+            this.buttonNextComponent.Text = "→ component";
+            this.buttonNextComponent.Click += new System.EventHandler(this.buttonNextComponent_Click);
+            // 
+            // buttonPreviousComponent
+            // 
+            this.buttonPreviousComponent.Location = new System.Drawing.Point(105, 4);
+            this.buttonPreviousComponent.Name = "buttonPreviousComponent";
+            this.buttonPreviousComponent.Size = new System.Drawing.Size(91, 22);
+            this.buttonPreviousComponent.TabIndex = 1;
+            this.buttonPreviousComponent.Text = "← component";
+            this.buttonPreviousComponent.Click += new System.EventHandler(this.buttonPreviousComponent_Click);
+            // 
+            // buttonClear
+            // 
+            this.buttonClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClear.Location = new System.Drawing.Point(324, 4);
+            this.buttonClear.Name = "buttonClear";
+            this.buttonClear.Size = new System.Drawing.Size(74, 22);
+            this.buttonClear.TabIndex = 6;
+            this.buttonClear.Text = "Clear";
+            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+            // 
+            // MessageViewer
+            // 
+            this.Controls.Add(this.buttonClear);
+            this.Controls.Add(this.buttonPreviousComponent);
+            this.Controls.Add(this.buttonNextComponent);
+            this.Controls.Add(this.buttonPrevMessage);
+            this.Controls.Add(this.buttonNextMessage);
+            this.Controls.Add(this.buttonClose);
+            this.Controls.Add(this.listViewMessages);
+            this.Name = "MessageViewer";
+            this.Size = new System.Drawing.Size(680, 112);
+            this.ResumeLayout(false);
 
 		}
 		#endregion
@@ -531,5 +545,9 @@ namespace LayoutManager {
 				}
 			}
 		}
-	}
+
+        private void buttonClear_Click(object sender, EventArgs e) {
+            EventManager.Event("clear-messages");
+        }
+    }
 }
