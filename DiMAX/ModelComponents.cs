@@ -45,10 +45,13 @@ namespace DiMAX {
             public int SelectNesting { get; set; }
 			public bool ActiveDeselection { get; set; }
 
+            public bool SerialFunctionState { get; set; }
+
 			public ActiveLocomotiveInfo(LocomotiveInfo locomotive) {
 				this.Locomotive = locomotive;
 				SelectNesting = 0;
 				ActiveDeselection = false;
+                SerialFunctionState = false;
 			}
 		}
 
@@ -249,7 +252,12 @@ namespace DiMAX {
 			LocomotiveFunctionInfo	function = loco.GetFunctionByName(functionName);
 			TrainStateInfo			train = LayoutModel.StateManager.Trains[loco.Id];
 
-			outputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, function.Number, e.GetBoolOption("FunctionState"), train.Lights));
+            if (loco.DecoderType is DccDecoderTypeInfo decoder) {
+                if (decoder.ParallelFunctionSupport)
+                    outputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, function.Number, e.GetBoolOption("FunctionState"), train.Lights));
+                else
+                    generateSerialFunctionCommands(train, loco, function.Number);
+            }
 		}
 
         [LayoutEvent("trigger-locomotive-function-number", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
@@ -257,11 +265,31 @@ namespace DiMAX {
             if(e.Sender is LocomotiveInfo loco && e.Info is int functionNumber) {
                 var train = LayoutModel.StateManager.Trains[loco.Id];
 
-                outputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, functionNumber, e.GetBoolOption("FunctionState"), train.Lights));
+                if (loco.DecoderType is DccDecoderTypeInfo decoder) {
+                    if (decoder.ParallelFunctionSupport)
+                        outputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, functionNumber, e.GetBoolOption("FunctionState"), train.Lights));
+                    else
+                        generateSerialFunctionCommands(train, loco, functionNumber);
+                }
             }
         }
 
-		[LayoutEvent("add-command-station-loco-bus-to-address-map", IfSender = "*[@ID='`string(@ID)`']")]
+        private void generateSerialFunctionCommands(TrainStateInfo train, LocomotiveInfo loco, int functionNumber) {
+            var state = registeredLocomotives[loco.AddressProvider.Unit].SerialFunctionState;
+
+            for (var i = 0; i < functionNumber; i++) {
+                var command = new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, 1, state, train.Lights) {
+                    DefaultWaitPeriod = 200
+                };
+
+                state = !state;
+                outputManager.AddCommand(command);
+            }
+
+            registeredLocomotives[loco.AddressProvider.Unit].SerialFunctionState = state;
+        }
+
+        [LayoutEvent("add-command-station-loco-bus-to-address-map", IfSender = "*[@ID='`string(@ID)`']")]
 		private void AddCommandStationLocoBusToAddressMap(LayoutEvent e) {
 			var addressMap = (LocomotiveAddressMap)e.Info;
 
