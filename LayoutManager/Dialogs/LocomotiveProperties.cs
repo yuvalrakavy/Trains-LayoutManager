@@ -349,6 +349,7 @@ namespace LayoutManager.Dialogs {
             this.trackGuageSelector.Size = new System.Drawing.Size(100, 21);
             this.trackGuageSelector.TabIndex = 21;
             this.trackGuageSelector.Value = LayoutManager.Model.TrackGauges.HO;
+            this.trackGuageSelector.SelectedIndexChanged += new System.EventHandler(this.trackGuageSelector_SelectedIndexChanged);
             // 
             // textBoxSpeedLimit
             // 
@@ -753,5 +754,10 @@ namespace LayoutManager.Dialogs {
 		private void listViewFunctions_SelectedIndexChanged_1(object sender, EventArgs e) {
 			listViewFunctions_SelectedIndexChanged(sender, e);
 		}
-	}
+
+        private void trackGuageSelector_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            trackGuageSelector_SelectedIndexChanged(sender, e);
+        }
+    }
 }

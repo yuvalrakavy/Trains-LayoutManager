@@ -82,6 +82,7 @@ namespace LayoutManager.Dialogs {
 
 			if(comboBoxDecoderType != null) {
 				TrackGuageSelector trackGuageSelector = (TrackGuageSelector)nameToControlMap["trackGuageSelector"];
+                var previousSelectionIndex = comboBoxDecoderType.SelectedIndex;
 
 				List<DecoderTypeInfo> decoderTypes = new List<DecoderTypeInfo>();
 
@@ -91,6 +92,9 @@ namespace LayoutManager.Dialogs {
 
 				foreach(var validDecoderType in from decoderType in decoderTypes where (decoderType.TrackGuages & trackGuageSelector.Value) != 0 orderby decoderType.TypeName select decoderType)
 					comboBoxDecoderType.Items.Add(new DecoderTypeItem(validDecoderType));
+
+                if (previousSelectionIndex < comboBoxDecoderType.Items.Count)
+                    comboBoxDecoderType.SelectedIndex = previousSelectionIndex;
 			}
 		}
 
@@ -382,7 +386,12 @@ namespace LayoutManager.Dialogs {
 			}
 		}
 
-		protected void listViewFunctions_SelectedIndexChanged(object sender, System.EventArgs e) {
+        protected void trackGuageSelector_SelectedIndexChanged(object sender, System.EventArgs e) {
+            InitDecoderTypeComboBox();
+        }
+
+
+        protected void listViewFunctions_SelectedIndexChanged(object sender, System.EventArgs e) {
 			UpdateButtons();
 		}
 

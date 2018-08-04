@@ -214,6 +214,7 @@ namespace LayoutManager.Dialogs {
             this.trackGuageSelector.Size = new System.Drawing.Size(100, 21);
             this.trackGuageSelector.TabIndex = 19;
             this.trackGuageSelector.Value = LayoutManager.Model.TrackGauges.HO;
+            this.trackGuageSelector.SelectedIndexChanged += new System.EventHandler(this.trackGuageSelector_SelectedIndexChanged);
             // 
             // textBoxSpeedLimit
             // 
@@ -386,7 +387,7 @@ namespace LayoutManager.Dialogs {
             this.tabPageFunctions.Controls.Add(this.buttonFunctionRemove);
             this.tabPageFunctions.Location = new System.Drawing.Point(4, 22);
             this.tabPageFunctions.Name = "tabPageFunctions";
-            this.tabPageFunctions.Size = new System.Drawing.Size(284, 236);
+            this.tabPageFunctions.Size = new System.Drawing.Size(321, 236);
             this.tabPageFunctions.TabIndex = 1;
             this.tabPageFunctions.Text = "Functions";
             // 
@@ -480,7 +481,7 @@ namespace LayoutManager.Dialogs {
             this.tabPageDecoder.Controls.Add(this.comboBoxDecoderType);
             this.tabPageDecoder.Location = new System.Drawing.Point(4, 22);
             this.tabPageDecoder.Name = "tabPageDecoder";
-            this.tabPageDecoder.Size = new System.Drawing.Size(284, 236);
+            this.tabPageDecoder.Size = new System.Drawing.Size(321, 236);
             this.tabPageDecoder.TabIndex = 3;
             this.tabPageDecoder.Text = "Decoder";
             // 
@@ -509,7 +510,7 @@ namespace LayoutManager.Dialogs {
             this.tabPageAttributes.Controls.Add(this.attributesEditor);
             this.tabPageAttributes.Location = new System.Drawing.Point(4, 22);
             this.tabPageAttributes.Name = "tabPageAttributes";
-            this.tabPageAttributes.Size = new System.Drawing.Size(284, 236);
+            this.tabPageAttributes.Size = new System.Drawing.Size(321, 236);
             this.tabPageAttributes.TabIndex = 2;
             this.tabPageAttributes.Text = "Attributes";
             // 
@@ -635,6 +636,8 @@ namespace LayoutManager.Dialogs {
 			listViewFunctions_SelectedIndexChanged(sender, e);
 		}
 
-
-	}
+        private void trackGuageSelector_SelectedIndexChanged_1(object sender, EventArgs e) {
+            trackGuageSelector_SelectedIndexChanged(sender, e);
+        }
+    }
 }
