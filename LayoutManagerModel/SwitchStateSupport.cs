@@ -20,10 +20,10 @@ namespace LayoutManager.Components {
             get {
                 var c = Component as IModelComponentConnectToControl;
 
-                if (c != null && c.ControlConnectionDescriptions.Count == 1)
+                if (c != null && c.ControlConnectionDescriptions.Count > 0)
                     return c.ControlConnectionDescriptions[0].Name;
 
-                throw new ApplicationException($"Cannot get default connection point name for {Component} - not exactly one connection point");
+                throw new ApplicationException($"Cannot get default connection point name for {Component} - no connection points are defined");
             }
         }
 		public virtual int CurrentSwitchState => GetSwitchState(DefaultConnectionPointName);
