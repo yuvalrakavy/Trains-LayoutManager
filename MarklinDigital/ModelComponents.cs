@@ -155,9 +155,10 @@ namespace MarklinDigital {
 		#region Request event handlers
 	
 		[LayoutEvent("add-train-operation-menu", Order=100)]
-		private void addTrainOperationMenu(LayoutEvent e) {
-			TrainStateInfo	train = (TrainStateInfo)e.Sender;
-			Menu			menu = (Menu)e.Info;
+		private void addTrainOperationMenu(LayoutEvent e0) {
+            var e = (LayoutEvent<TrainStateInfo, Menu>)e0;
+			TrainStateInfo	train = e.Sender;
+			Menu			menu = e.Info;
 			bool			trainInActiveTrip = (bool)EventManager.Event(new LayoutEvent(train, "is-train-in-active-trip"));
 
 			if(train.CommandStation != null && train.CommandStation.Id == Id) {

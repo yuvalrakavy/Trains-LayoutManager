@@ -427,7 +427,7 @@ namespace LayoutManager.Tools {
 						}
 					}
 
-					EventManager.Event(new LayoutEvent(trains[0], "add-train-operation-menu", null, m));
+					EventManager.Event(new LayoutEvent<TrainStateInfo, Menu>("add-train-operation-menu", trains[0], m));
 				}
 				else {
 					foreach(TrainStateInfo train in trains) {
@@ -442,7 +442,7 @@ namespace LayoutManager.Tools {
 							}
 						}
 
-						EventManager.Event(new LayoutEvent(train, "add-train-operation-menu", null, trainItem));
+						EventManager.Event(new LayoutEvent<TrainStateInfo, Menu>("add-train-operation-menu", train, trainItem));
 
 						if(trainItem.MenuItems.Count > 0)
 							m.MenuItems.Add(trainItem);
@@ -453,6 +453,24 @@ namespace LayoutManager.Tools {
 			if(blockDefinition.Info.IsOccupancyDetectionBlock)
 				m.MenuItems.Add(new ToggleTrainDetectionStateMenuItem(blockDefinition));
 		}
+
+        [LayoutEvent("add-train-operation-menu")]
+        private void addFixTrainOrientationMenu(LayoutEvent e0) {
+            var e = (LayoutEvent<TrainStateInfo, Menu>)e0;
+            var train = e.Sender;
+            var m = e.Info;
+
+            m.MenuItems.Add("Fix: reverse train orientation", (sender, e1) => {
+                foreach(var trainLocation in train.Locations) {
+                    if(trainLocation.IsDisplayFrontKnown) {
+                        var reversedFront = trainLocation.Block.BlockDefinintion.Track.ConnectTo(trainLocation.DisplayFront, LayoutComponentConnectionType.Passage).FirstOrDefault();
+
+                        trainLocation.DisplayFront = reversedFront;
+                        trainLocation.Block.BlockDefinintion.OnComponentChanged();
+                    }
+                }
+            });
+        }
 
 		private void addPowerConnectionEntries(LayoutBlockDefinitionComponent blockDefinition, Menu m) {
 			var menuItems = new List<MenuItem>();
@@ -489,9 +507,10 @@ namespace LayoutManager.Tools {
 		}
 
 		[LayoutEvent("add-train-operation-menu")]
-		private void addTrainOperationMenu(LayoutEvent e) {
-			TrainStateInfo	train = (TrainStateInfo)e.Sender;
-			Menu			m = (Menu)e.Info;
+		private void addTrainOperationMenu(LayoutEvent e0) {
+            var e = (LayoutEvent<TrainStateInfo, Menu>)e0;
+            TrainStateInfo train = e.Sender;
+			Menu			m = e.Info;
 			bool			isDefaultSet = false;
 
 			foreach(MenuItem item in m.MenuItems)
