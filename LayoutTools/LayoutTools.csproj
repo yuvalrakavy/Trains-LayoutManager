@@ -265,6 +265,9 @@
     <Compile Include="Dialogs\SelectProgrammingLocation.Designer.cs">
       <DependentUpon>SelectProgrammingLocation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\TrainFront.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Dialogs\TrainFrontAndLength.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -545,6 +548,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\SelectProgrammingLocation.resx">
       <DependentUpon>SelectProgrammingLocation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\TrainFront.resx">
+      <DependentUpon>TrainFront.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\TrainFrontAndLength.resx">
       <DependentUpon>TrainFrontAndLength.cs</DependentUpon>

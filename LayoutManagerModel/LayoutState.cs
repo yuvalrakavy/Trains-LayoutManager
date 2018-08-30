@@ -1638,23 +1638,27 @@ namespace LayoutManager.Model {
 
         internal Dictionary<Guid, XmlElement> IdToTrainStateElement => _IDtoTrainStateElement;
 
-        public void RemoveState(TrainStateInfo trainState) {
-			foreach(TrainLocationInfo trainLocation in trainState.Locations)
-				trainState.LeaveBlock(trainLocation.Block, false);
+        public void RemoveTrainState(TrainStateInfo trainState) {
+            RemoveTrainFromTrack(trainState);
 
-			LayoutModel.StateManager.Components.RemoveForTrain(trainState.Id, "TrainPassing");
+            foreach (TrainLocomotiveInfo trainLoco in trainState.Locomotives)
+                trainState.RemoveLocomotive(trainLoco);
 
-			foreach(TrainLocomotiveInfo trainLoco in trainState.Locomotives)
-				trainState.RemoveLocomotive(trainLoco);
+            Element.RemoveChild(trainState.Element);
+            IdToTrainStateElement.Remove(trainState.Id);
+        }
 
-			Element.RemoveChild(trainState.Element);
-			IdToTrainStateElement.Remove(trainState.Id);
-		}
+        public void RemoveTrainFromTrack(TrainStateInfo trainState) {
+            foreach (TrainLocationInfo trainLocation in trainState.Locations)
+                trainState.LeaveBlock(trainLocation.Block, generateEvent: false);
 
-		[LayoutEventDef("train-removed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
+            LayoutModel.StateManager.Components.RemoveForTrain(trainState.Id, "TrainPassing");
+        }
+
+        [LayoutEventDef("train-removed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
 		public void Remove(TrainStateInfo trainState) {
 			EventManager.Event(new LayoutEvent<TrainStateInfo>("train-is-removed", trainState));
-			RemoveState(trainState);
+			RemoveTrainState(trainState);
 			EventManager.Event(new LayoutEvent(trainState, "train-removed"));
 		}
 

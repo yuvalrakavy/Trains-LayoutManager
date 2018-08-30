@@ -392,18 +392,41 @@ namespace LayoutManager.Tools {
 				else
 					m.MenuItems.Add("Cancel " + context.Description, (s, ea) => context.Cancel());
 
-				if(blockDefinition.Info.UnexpectedTrainDetected) {
+                if (blockDefinition.Info.UnexpectedTrainDetected) {
+                    MenuItem identifyTrainMenuItem = getRelocateTrainMenuItem(blockDefinition);
 
-					MenuItem	identifyTrainMenuItem = getRelocateTrainMenuItem(blockDefinition);
+                    if (identifyTrainMenuItem.MenuItems.Count > 0)
+                        m.MenuItems.Add(identifyTrainMenuItem);
+                }
+                else {
+                    var otherTrains = new List<TrainStateInfo>();
 
-					if(identifyTrainMenuItem.MenuItems.Count > 0)
-						m.MenuItems.Add(identifyTrainMenuItem);
-				}
+                    if (!block.IsLocked || block.LockRequest.IsManualDispatchLock)
+                        otherTrains.AddRange(LayoutModel.StateManager.Trains);
+                    else {
+                        var train = LayoutModel.StateManager.Trains[block.LockRequest.OwnerId];
 
-				// Check if trains in neighboring blocks can be extended
-				MenuItem	extendTrainMenuItem = (MenuItem)EventManager.Event(new LayoutEvent(blockDefinition, "get-extend-train-menu"));
+                        if (train != null)
+                            otherTrains.Add(train);
+                    }
 
-				if(extendTrainMenuItem != null)
+                    if (otherTrains.Count == 1)
+                        m.MenuItems.Add($"Fix: train '{otherTrains.First().DisplayName}' located here",
+                            (sender, e1) => fixTrainLocation(otherTrains.First(), blockDefinition));
+                    else if (otherTrains.Count > 1) {
+                        var fixTrainLocationMenu = new MenuItem("Fix: train which is located here");
+
+                        foreach (var train in otherTrains)
+                            fixTrainLocationMenu.MenuItems.Add(train.DisplayName, (sender, e1) => fixTrainLocation(train, blockDefinition));
+
+                        m.MenuItems.Add(fixTrainLocationMenu);
+                    }
+                }
+
+                // Check if trains in neighboring blocks can be extended
+                MenuItem extendTrainMenuItem = (MenuItem)EventManager.Event(new LayoutEvent(blockDefinition, "get-extend-train-menu"));
+
+                if (extendTrainMenuItem != null)
 					m.MenuItems.Add(extendTrainMenuItem);
 
 			}
@@ -470,6 +493,37 @@ namespace LayoutManager.Tools {
                     }
                 }
             });
+        }
+
+        void fixTrainLocation(TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
+            var getFrontDialog = new Dialogs.TrainFront(blockDefinition, train.DisplayName);
+
+            if(getFrontDialog.ShowDialog() == DialogResult.OK) {
+                // Verify that can lock this block for new train
+                if(!blockDefinition.Block.IsLocked ||
+                    blockDefinition.Block.LockRequest.IsManualDispatchLock || blockDefinition.Block.LockRequest.OwnerId == train.Id) {
+
+                    // Remove train from old position
+                    LayoutModel.StateManager.Trains.RemoveTrainFromTrack(train);
+                    EventManager.Event(new LayoutEvent<Guid, bool>("free-owned-layout-locks", train.Id, true));
+
+                    // Place the train in the new location
+
+                    // Obtain lock for train if needed
+                    if (!blockDefinition.Block.IsLocked) {
+                        LayoutLockRequest lockRequest = new LayoutLockRequest(train.Id);
+
+                        lockRequest.Blocks.Add(blockDefinition.Block);
+                        EventManager.Event(new LayoutEvent(lockRequest, "request-layout-lock"));
+                    }
+
+                    EventManager.Event(
+                        new LayoutEvent<TrainStateInfo, LayoutBlockDefinitionComponent>(
+                            "place-train-in-block", train, blockDefinition).SetOption("Train", "Front", getFrontDialog.Front.ToString()
+                        )
+                    );
+                }
+            }
         }
 
 		private void addPowerConnectionEntries(LayoutBlockDefinitionComponent blockDefinition, Menu m) {

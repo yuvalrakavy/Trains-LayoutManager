@@ -569,7 +569,7 @@ namespace LayoutManager.Logic {
 				TrainStateInfo train = LayoutModel.StateManager.Trains[trainId];
 
 				if(train != null)
-					LayoutModel.StateManager.Trains.RemoveState(train);
+					LayoutModel.StateManager.Trains.RemoveTrainState(train);
 
 				EventManager.Event(new LayoutEvent<Guid, bool>("free-owned-layout-locks", trainId, true));
 				throw;
@@ -732,7 +732,7 @@ namespace LayoutManager.Logic {
                 }
                 catch (OperationCanceledException) {
                     if (train != null)
-                        LayoutModel.StateManager.Trains.RemoveState(train);
+                        LayoutModel.StateManager.Trains.RemoveTrainState(train);
                     throw;
                 }
             }
