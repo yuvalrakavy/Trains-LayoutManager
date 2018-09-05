@@ -1941,9 +1941,14 @@ namespace LayoutManager {
             d.ShowDialog(this);
         }
 
-	}
+        private void menuItemTrainTracking_Click(object sender, EventArgs e) {
+            var d = new CommonUI.Dialogs.TrainTrackingOptions();
 
-	public class LayoutFrameWindowAreaTabPage : TabPage {
+            d.ShowDialog();
+        }
+    }
+
+    public class LayoutFrameWindowAreaTabPage : TabPage {
 		public LayoutFrameWindowAreaTabPage(LayoutModelArea area) {
 			this.Area = area;
 

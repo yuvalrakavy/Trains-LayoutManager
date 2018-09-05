@@ -89,6 +89,7 @@ namespace LayoutManager {
             this.menuItemSimulation = new System.Windows.Forms.MenuItem();
             this.menuItemDesignTimeOnlySeperator = new System.Windows.Forms.MenuItem();
             this.menuItemCompile = new System.Windows.Forms.MenuItem();
+            this.menuItemVerificationOptions = new System.Windows.Forms.MenuItem();
             this.menuItem8 = new System.Windows.Forms.MenuItem();
             this.menuItemLearnLayout = new System.Windows.Forms.MenuItem();
             this.menuItemConnectLayout = new System.Windows.Forms.MenuItem();
@@ -163,7 +164,7 @@ namespace LayoutManager {
             this.timerDetailsPopup = new System.Windows.Forms.Timer(this.components);
             this.printDocument = new System.Drawing.Printing.PrintDocument();
             this.menuItem13 = new System.Windows.Forms.MenuItem();
-            this.menuItemVerificationOptions = new System.Windows.Forms.MenuItem();
+            this.menuItemTrainTracking = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelOperation)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelMode)).BeginInit();
             this.panelMessageViewer.SuspendLayout();
@@ -622,6 +623,7 @@ namespace LayoutManager {
             this.menuItem6,
             this.menuItemPolicies,
             this.menuItemDefaultDriverParameters,
+            this.menuItemTrainTracking,
             this.menuItemCommonDestinations,
             this.menuItemManualDispatchRegions});
             resources.ApplyResources(this.menuLayout, "menuLayout");
@@ -649,6 +651,12 @@ namespace LayoutManager {
             this.menuItemCompile.Index = 4;
             resources.ApplyResources(this.menuItemCompile, "menuItemCompile");
             this.menuItemCompile.Click += new System.EventHandler(this.menuItemCompile_Click);
+            // 
+            // menuItemVerificationOptions
+            // 
+            this.menuItemVerificationOptions.Index = 5;
+            resources.ApplyResources(this.menuItemVerificationOptions, "menuItemVerificationOptions");
+            this.menuItemVerificationOptions.Click += new System.EventHandler(this.menuItemVerificationOptions_Click);
             // 
             // menuItem8
             // 
@@ -698,13 +706,13 @@ namespace LayoutManager {
             // 
             // menuItemCommonDestinations
             // 
-            this.menuItemCommonDestinations.Index = 14;
+            this.menuItemCommonDestinations.Index = 15;
             resources.ApplyResources(this.menuItemCommonDestinations, "menuItemCommonDestinations");
             this.menuItemCommonDestinations.Click += new System.EventHandler(this.menuItemCommonDestinations_Click);
             // 
             // menuItemManualDispatchRegions
             // 
-            this.menuItemManualDispatchRegions.Index = 15;
+            this.menuItemManualDispatchRegions.Index = 16;
             this.menuItemManualDispatchRegions.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem4});
             resources.ApplyResources(this.menuItemManualDispatchRegions, "menuItemManualDispatchRegions");
@@ -1145,11 +1153,11 @@ namespace LayoutManager {
             this.menuItem13.Index = -1;
             resources.ApplyResources(this.menuItem13, "menuItem13");
             // 
-            // menuItemVerificationOptions
+            // menuItemTrainTracking
             // 
-            this.menuItemVerificationOptions.Index = 5;
-            resources.ApplyResources(this.menuItemVerificationOptions, "menuItemVerificationOptions");
-            this.menuItemVerificationOptions.Click += new System.EventHandler(this.menuItemVerificationOptions_Click);
+            this.menuItemTrainTracking.Index = 14;
+            resources.ApplyResources(this.menuItemTrainTracking, "menuItemTrainTracking");
+            this.menuItemTrainTracking.Click += new System.EventHandler(this.menuItemTrainTracking_Click);
             // 
             // LayoutFrameWindow
             // 
@@ -1317,5 +1325,6 @@ namespace LayoutManager {
 		private MenuItem menuItemSelectPowerConnectors;
 		private MenuItem menuItemSelectReverseLoopModules;
         private MenuItem menuItemVerificationOptions;
-	}
+        private MenuItem menuItemTrainTracking;
+    }
 }

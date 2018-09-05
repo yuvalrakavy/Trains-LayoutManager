@@ -2184,6 +2184,33 @@ namespace LayoutManager.Model {
 
     #endregion
 
+    public enum TrainTrackingInManualDispatchRegion {
+        None,
+        Normal,
+    }
+
+    public class TrainTrackingOptions : LayoutStateInfoBase {
+        const string InManualDispatchRegionAttribute = "InManualDispatchRegion";
+
+        public TrainTrackingOptions(XmlElement element) : base(element) {
+        }
+
+        public TrainTrackingInManualDispatchRegion TrainTrackingInManualDispatchRegion {
+            get {
+                TrainTrackingInManualDispatchRegion result;
+
+                return Enum.TryParse(GetAttribute(InManualDispatchRegionAttribute), out result) ? result : TrainTrackingInManualDispatchRegion.Normal;
+            }
+
+            set {
+                SetAttribute(InManualDispatchRegionAttribute, value.ToString());
+            }
+        }
+    }
+
+    #region Train tracking options
+    #endregion
+
     #region Policy
 
     public class LayoutPolicyInfo : LayoutXmlWrapper, IObjectHasId {
@@ -2505,6 +2532,7 @@ namespace LayoutManager.Model {
 		LayoutPoliciesCollection driverInstructionsPolicies;
 		AllLayoutManualDispatchRegion allLayoutManualDispatch;
         LayoutVerificationOptions layoutVerificationOptions;
+        TrainTrackingOptions trainTrackingOptions;
 
 		List<LayoutPolicyType> policyTypes;
 		OperationStates operationStates;
@@ -2522,6 +2550,7 @@ namespace LayoutManager.Model {
 			manualDispatchRegions = new ManualDispatchRegionCollection(getElement("ManualDispatchRegions"));
 			defaultDriverParameters = new DefaultDriverParametersInfo(this, getElement("DefaultDriverParameters"));
             layoutVerificationOptions = new LayoutVerificationOptions(getElement("LayoutVerificiationOptions"));
+            trainTrackingOptions = new TrainTrackingOptions(getElement("TrainTracking"));
 
 			tripPlanPolicies = new LayoutPoliciesCollection(GlobalPoliciesElement, LayoutPoliciesElement, "TripPlan");
 			blockInfoPolicies = new LayoutPoliciesCollection(GlobalPoliciesElement, LayoutPoliciesElement, "BlockInfo");
@@ -2569,6 +2598,8 @@ namespace LayoutManager.Model {
         public LayoutPoliciesCollection DriverInstructionsPolicies => driverInstructionsPolicies;
 
         public DefaultDriverParametersInfo DefaultDriverParameters => defaultDriverParameters;
+
+        public TrainTrackingOptions TrainTrackingOptions => trainTrackingOptions;
 
         /// <summary>
         /// Given an element and a ramp role, return this ramp (if can be found)

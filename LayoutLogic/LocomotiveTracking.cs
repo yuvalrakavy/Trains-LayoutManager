@@ -498,7 +498,8 @@ namespace LayoutManager.Logic {
             var block1IsManualDispatch = block1.LockRequest?.IsManualDispatchLock ?? false || LayoutModel.StateManager.AllLayoutManualDispatch;
             var block2isManualDispatch = block2.LockRequest?.IsManualDispatchLock ?? false || LayoutModel.StateManager.AllLayoutManualDispatch;
 
-            if (!block1IsManualDispatch && !block2isManualDispatch) {
+            if ((!block1IsManualDispatch && !block2isManualDispatch) ||
+              LayoutModel.StateManager.TrainTrackingOptions.TrainTrackingInManualDispatchRegion == TrainTrackingInManualDispatchRegion.Normal) {
                 trains1 = block1.Trains;
                 trains2 = block2.Trains;
 
