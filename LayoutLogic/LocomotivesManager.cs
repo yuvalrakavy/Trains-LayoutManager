@@ -149,7 +149,7 @@ namespace LayoutManager.Logic {
 						LocomotiveInfo loco = new LocomotiveInfo(placeableElement);
 
 						if(!loco.NotManaged) {
-							if(loco.AddressProvider.Element == null) {
+							if(loco.AddressProvider.Element == null || loco.AddressProvider.Unit <= 0) {
 								result.Status = CanPlaceTrainStatus.LocomotiveHasNoAddress;
 								result.Locomotive = loco;
 								result.CanBeResolved = true;
