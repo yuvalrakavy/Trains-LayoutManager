@@ -78,10 +78,10 @@ namespace LayoutManager.Tools.Dialogs {
 				buttonConnect.Text = "&Disconnect";
 
 			if(component == null)
-				Text = "Testing " + connectionPointRef.Module.ConnectionPoints.GetLabel(connectionPointRef.Index, true) +
+				Text = connectionPointRef.Module.ConnectionPoints.GetLabel(connectionPointRef.Index, true) +
 					" on " + connectionPointRef.Module.Bus.Name;
 			else {
-				Text = "Testing " + connectionPointRef.ConnectionPoint.DisplayName + " at " +
+				Text = connectionPointRef.ConnectionPoint.DisplayName + " at " +
 				connectionPointRef.Module.ModuleType.GetConnectionPointAddressText(connectionPointRef.Module.Address, connectionPointRef.Index, true);
 				EventManager.Event(new LayoutEvent(connectionPointRef, "show-control-connection-point").SetFrameWindow(frameWindowId));
 			}
