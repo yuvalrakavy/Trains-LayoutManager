@@ -16,299 +16,299 @@ namespace LayoutManager {
     /// Actions that the user can perform in the launch dialog
     /// </summary>
     public enum LaunchAction {
-		NewLayout, OpenLayout, Exit
-	}
+        NewLayout, OpenLayout, Exit
+    }
 
-	public enum FrameWindowCommand {
-		CloseLayout, CloseWindow, NewWindow,
-	}
+    public enum FrameWindowCommand {
+        CloseLayout, CloseWindow, NewWindow,
+    }
 
-	public class FrameWindowAction {
-		public LayoutFrameWindow FrameWindow { get; }
+    public class FrameWindowAction {
+        public LayoutFrameWindow FrameWindow { get; }
         public FrameWindowCommand Command { get; }
 
         public FrameWindowAction(LayoutFrameWindow frameWindow, FrameWindowCommand command) {
-			this.FrameWindow = frameWindow;
-			this.Command = command;
-		}
-	}
-	
-	public class LayoutControllerImplementation : ApplicationContext, ILayoutController, ILayoutSelectionManager {
-		string layoutFilename;
-		LayoutCommandManager commandManager;
-		List<LayoutSelection> displayedSelections = new List<LayoutSelection>();
-		LayoutSelectionWithUndo userSelection;
-		PreviewRouteManager previewRouteManager = new PreviewRouteManager();
-		LayoutModuleManager moduleManager;
-		int trainsAnalysisPhaseCount = 0;		// How many command stations perform layout analysis phase
-		int layoutDesignTimeActivationNesting = 0;
-		bool showConnectTrackPowerWarning = true;
-
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		static void Main() {
-			try {
-				Application.EnableVisualStyles();
-				Application.Run(new LayoutControllerImplementation());
-			}
-			catch(TargetInvocationException ex) {
-				Trace.WriteLine("Unhandled exception: " + ex.InnerException.Message);
-				Trace.Write("At: " + ex.InnerException.StackTrace);
-			}
-		}
-
-		public LayoutControllerImplementation() {
-			LayoutController.Instance = this;
-
-			moduleManager = new LayoutModuleManager();
-			EventManager.Instance = new LayoutEventManager(moduleManager);
-			commandManager = new LayoutCommandManager();
-
-			userSelection = new LayoutSelectionWithUndo();
-			userSelection.Display(new LayoutSelectionLook(System.Drawing.Color.Blue));
-
-			#region Modules Initialization
-
-			//
-			// Initialize the module manager
-			//
-			moduleManager.DocumentFilename = CommonDataFolderName + Path.DirectorySeparatorChar + "ModuleManager.xml";
-
-			//
-			// dummy references to assemblies that contains only layout modules. This is needed, otherwise
-			// those assemblies are not automatically referenced and the user will have to use the file/modules
-			// menu to add them.
-			//
-			String s;
-
-			s = LayoutManager.Logic.LayoutTopologyServices.TopologyServicesVersion;
-			s = LayoutManager.Tools.ComponentEditingTools.ComponentEditingToolsVersion;
-			s = LayoutManager.ControlComponents.ControlComponents.ControlComponentsVersion;
-
-			// Initialize built in modules
-
-			AssemblyName[] referenced = this.GetType().Assembly.GetReferencedAssemblies();
-
-			// Load all the assemblies which are referenced by the application
-			foreach(AssemblyName assemblyName in referenced) {
-				Assembly refAssembly = Assembly.Load(assemblyName);
-
-				moduleManager.LayoutAssemblies.Add(new LayoutAssembly(refAssembly));
-			}
-
-			moduleManager.LayoutAssemblies.Add(new LayoutAssembly(this.GetType().Assembly));
-
-			// Add assemblies in the Modules directory
-			string modulesDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules");
-
-			foreach(string moduleFilename in Directory.GetFiles(modulesDirectory, "*.dll")) {
-				if(!moduleManager.LayoutAssemblies.IsDefined(moduleFilename))
-					moduleManager.LayoutAssemblies.Add(new LayoutAssembly(moduleFilename, LayoutAssembly.AssemblyOrigin.InModulesDirectory));
-			}
-
-			// Load assemblies that were defined by the user
-			moduleManager.LoadState();
-
-			EventManager.Instance.AddObjectSubscriptions(this);
-			EventManager.Event(new LayoutEvent(this, "modules-initialized"));
-
-			#endregion
+            this.FrameWindow = frameWindow;
+            this.Command = command;
+        }
+    }
+
+    public class LayoutControllerImplementation : ApplicationContext, ILayoutController, ILayoutSelectionManager {
+        string layoutFilename;
+        readonly LayoutCommandManager commandManager;
+        readonly List<LayoutSelection> displayedSelections = new List<LayoutSelection>();
+        readonly LayoutSelectionWithUndo userSelection;
+        readonly PreviewRouteManager previewRouteManager = new PreviewRouteManager();
+        readonly LayoutModuleManager moduleManager;
+        int trainsAnalysisPhaseCount = 0;       // How many command stations perform layout analysis phase
+        int layoutDesignTimeActivationNesting = 0;
+        bool showConnectTrackPowerWarning = true;
+
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main() {
+            try {
+                Application.EnableVisualStyles();
+                Application.Run(new LayoutControllerImplementation());
+            }
+            catch (TargetInvocationException ex) {
+                Trace.WriteLine("Unhandled exception: " + ex.InnerException.Message);
+                Trace.Write("At: " + ex.InnerException.StackTrace);
+            }
+        }
+
+        public LayoutControllerImplementation() {
+            LayoutController.Instance = this;
+
+            moduleManager = new LayoutModuleManager();
+            EventManager.Instance = new LayoutEventManager(moduleManager);
+            commandManager = new LayoutCommandManager();
+
+            userSelection = new LayoutSelectionWithUndo();
+            userSelection.Display(new LayoutSelectionLook(System.Drawing.Color.Blue));
+
+            #region Modules Initialization
+
+            //
+            // Initialize the module manager
+            //
+            moduleManager.DocumentFilename = CommonDataFolderName + Path.DirectorySeparatorChar + "ModuleManager.xml";
+
+            //
+            // dummy references to assemblies that contains only layout modules. This is needed, otherwise
+            // those assemblies are not automatically referenced and the user will have to use the file/modules
+            // menu to add them.
+            //
+            String s;
+
+            s = LayoutManager.Logic.LayoutTopologyServices.TopologyServicesVersion;
+            s = LayoutManager.Tools.ComponentEditingTools.ComponentEditingToolsVersion;
+            s = LayoutManager.ControlComponents.ControlComponents.ControlComponentsVersion;
+
+            // Initialize built in modules
+
+            AssemblyName[] referenced = this.GetType().Assembly.GetReferencedAssemblies();
+
+            // Load all the assemblies which are referenced by the application
+            foreach (AssemblyName assemblyName in referenced) {
+                Assembly refAssembly = Assembly.Load(assemblyName);
+
+                moduleManager.LayoutAssemblies.Add(new LayoutAssembly(refAssembly));
+            }
+
+            moduleManager.LayoutAssemblies.Add(new LayoutAssembly(this.GetType().Assembly));
+
+            // Add assemblies in the Modules directory
+            string modulesDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules");
+
+            foreach (string moduleFilename in Directory.GetFiles(modulesDirectory, "*.dll")) {
+                if (!moduleManager.LayoutAssemblies.IsDefined(moduleFilename))
+                    moduleManager.LayoutAssemblies.Add(new LayoutAssembly(moduleFilename, LayoutAssembly.AssemblyOrigin.InModulesDirectory));
+            }
 
-			if(!LayoutModel.Instance.ReadModelXmlInfo(CommonDataFolderName)) {
-				MessageBox.Show("The system wide definition files could not be found. Default definitions for " +
-					"fonts etc. will be used", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-			}
+            // Load assemblies that were defined by the user
+            moduleManager.LoadState();
 
-			// Wire areas collection events
-			LayoutModel.Areas.AreaAdded += new EventHandler(Area_Added);
-			LayoutModel.Areas.AreaRemoved += new EventHandler(Area_Removed);
-			LayoutModel.Areas.AreaRenamed += new EventHandler(Area_Renamed);
+            EventManager.Instance.AddObjectSubscriptions(this);
+            EventManager.Event(new LayoutEvent(this, "modules-initialized"));
 
-			EventManager.Event(new LayoutEvent(this, "initialize-event-interthread-relay"));
+            #endregion
 
-			LauchLayoutManager();
-		}
+            if (!LayoutModel.Instance.ReadModelXmlInfo(CommonDataFolderName)) {
+                MessageBox.Show("The system wide definition files could not be found. Default definitions for " +
+                    "fonts etc. will be used", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
 
-		#region Layout Manager flow
+            // Wire areas collection events
+            LayoutModel.Areas.AreaAdded += new EventHandler(Area_Added);
+            LayoutModel.Areas.AreaRemoved += new EventHandler(Area_Removed);
+            LayoutModel.Areas.AreaRenamed += new EventHandler(Area_Renamed);
 
-		private async void LauchLayoutManager() {
-			var applicationState = new ApplicationStateInfo(CommonDataFolderName + Path.DirectorySeparatorChar + "ApplicationState.xml");
-			var launchDialog = new Dialogs.LaunchDialog(applicationState.LayoutFilename);
-			bool restoreDisplayState = true;
-			bool forceDesignMode = true;
+            EventManager.Event(new LayoutEvent(this, "initialize-event-interthread-relay"));
 
-			launchDialog.Show();
+            LauchLayoutManager();
+        }
 
-			var action = await launchDialog.Task;
+        #region Layout Manager flow
 
-			switch(action) {
+        private async void LauchLayoutManager() {
+            var applicationState = new ApplicationStateInfo(CommonDataFolderName + Path.DirectorySeparatorChar + "ApplicationState.xml");
+            var launchDialog = new Dialogs.LaunchDialog(applicationState.LayoutFilename);
+            bool restoreDisplayState = true;
+            bool forceDesignMode = true;
 
-				case LaunchAction.Exit:
-					EventManager.Event(new LayoutEvent(this, "terminate-event-interthread-relay"));
-					ExitThreadCore();
-					return;
+            launchDialog.Show();
 
-				case LaunchAction.NewLayout:
-					CreateNewModel(launchDialog.LayoutFilename);
-					restoreDisplayState = false;
-					break;
+            var action = await launchDialog.Task;
 
-				case LaunchAction.OpenLayout:
-					LoadModel(launchDialog.LayoutFilename);
+            switch (action) {
 
-					if(launchDialog.ResetToDefaultDisplayLayout)
-						restoreDisplayState = false;
-					if(launchDialog.UseLastOpenLayout)
-						forceDesignMode = false;
-					break;
-			};
+                case LaunchAction.Exit:
+                    EventManager.Event(new LayoutEvent(this, "terminate-event-interthread-relay"));
+                    ExitThreadCore();
+                    return;
 
-			LayoutDisplayState displayState;
+                case LaunchAction.NewLayout:
+                    CreateNewModel(launchDialog.LayoutFilename);
+                    restoreDisplayState = false;
+                    break;
 
-			if(restoreDisplayState && File.Exists(LayoutDisplayStateFilename))
-				displayState = new LayoutDisplayState(LayoutDisplayStateFilename);
-			else
-				displayState = new LayoutDisplayState();
+                case LaunchAction.OpenLayout:
+                    LoadModel(launchDialog.LayoutFilename);
 
-			FrameWindows = displayState.FrameWindows;
+                    if (launchDialog.ResetToDefaultDisplayLayout)
+                        restoreDisplayState = false;
+                    if (launchDialog.UseLastOpenLayout)
+                        forceDesignMode = false;
+                    break;
+            };
 
-			foreach(var frameWindow in FrameWindows)
-				frameWindow.Show();
+            LayoutDisplayState displayState;
 
-			if(displayState.ActiveWindowIndex >= 0)
-				FrameWindows[displayState.ActiveWindowIndex].Activate();
+            if (restoreDisplayState && File.Exists(LayoutDisplayStateFilename))
+                displayState = new LayoutDisplayState(LayoutDisplayStateFilename);
+            else
+                displayState = new LayoutDisplayState();
 
-			if(!forceDesignMode && displayState.OperationModeSettings != null) {
-				await Task.Delay(500);
-				EnterOperationModeRequest(displayState.OperationModeSettings);
-			}
-			else
-				await EnterDesignModeRequest();
+            FrameWindows = displayState.FrameWindows;
 
-			await UserInteraction();
+            foreach (var frameWindow in FrameWindows)
+                frameWindow.Show();
 
-			// Save layout model if needed
-			if(CommandManager.ChangeLevel != 0)
-				SaveModel(LayoutFilename);
+            if (displayState.ActiveWindowIndex >= 0)
+                FrameWindows[displayState.ActiveWindowIndex].Activate();
 
-			applicationState.LayoutFilename = LayoutController.LayoutFilename;
-			applicationState.Save();
+            if (!forceDesignMode && displayState.OperationModeSettings != null) {
+                await Task.Delay(500);
+                EnterOperationModeRequest(displayState.OperationModeSettings);
+            }
+            else
+                await EnterDesignModeRequest();
 
-			// Go back into design mode
-			Trace.WriteLine("Before EnterDesignRequest");
-			await EnterDesignModeRequest();
-			Trace.WriteLine("After EnterDesignRequest");
+            await UserInteraction();
 
-			EventManager.Event(new LayoutEvent(this, "terminate-event-interthread-relay"));
+            // Save layout model if needed
+            if (CommandManager.ChangeLevel != 0)
+                SaveModel(LayoutFilename);
 
-			ExitThread();
-		}
+            applicationState.LayoutFilename = LayoutController.LayoutFilename;
+            applicationState.Save();
 
-		void SaveDisplayState(IEnumerable<LayoutFrameWindow> frameWindows) {
-			var displayState = new LayoutDisplayState(frameWindows);
+            // Go back into design mode
+            Trace.WriteLine("Before EnterDesignRequest");
+            await EnterDesignModeRequest();
+            Trace.WriteLine("After EnterDesignRequest");
 
-			displayState.Save(LayoutDisplayStateFilename);
-		}
+            EventManager.Event(new LayoutEvent(this, "terminate-event-interthread-relay"));
 
-		private async Task UserInteraction() {
-			bool exit = false;
+            ExitThread();
+        }
 
-			Debug.Assert(FrameWindows.Count > 0);
+        void SaveDisplayState(IEnumerable<LayoutFrameWindow> frameWindows) {
+            var displayState = new LayoutDisplayState(frameWindows);
 
-			while(!exit) {
-				var actionTask = await Task.WhenAny(from frameWindow in FrameWindows select frameWindow.Task);
+            displayState.Save(LayoutDisplayStateFilename);
+        }
 
-				switch(actionTask.Result.Command) {
-					case FrameWindowCommand.CloseLayout:
-						actionTask.Result.FrameWindow.InitializeTask();
+        private async Task UserInteraction() {
+            bool exit = false;
 
-						SaveDisplayState(FrameWindows);
-						FrameWindows.Remove(actionTask.Result.FrameWindow);
+            Debug.Assert(FrameWindows.Count > 0);
 
-						EventManager.Event(new LayoutEvent(null, "close-all-frame-windows"));
+            while (!exit) {
+                var actionTask = await Task.WhenAny(from frameWindow in FrameWindows select frameWindow.Task);
 
-						// Wait until all frame windows are closed
-						await Task.WhenAll(from frameWindow in FrameWindows select frameWindow.Task);
-						exit = true;
-						break;
+                switch (actionTask.Result.Command) {
+                    case FrameWindowCommand.CloseLayout:
+                        actionTask.Result.FrameWindow.InitializeTask();
 
-					case FrameWindowCommand.CloseWindow:
-						if(FrameWindows.Count == 1) {		// Last window is about to be closed, save its state
-							SaveDisplayState(FrameWindows);
-							exit = true;
-						}
-						else
-							FrameWindows.Remove(actionTask.Result.FrameWindow);
+                        SaveDisplayState(FrameWindows);
+                        FrameWindows.Remove(actionTask.Result.FrameWindow);
 
-						break;
+                        EventManager.Event(new LayoutEvent(null, "close-all-frame-windows"));
 
-					case FrameWindowCommand.NewWindow: {
-							actionTask.Result.FrameWindow.InitializeTask();
+                        // Wait until all frame windows are closed
+                        await Task.WhenAll(from frameWindow in FrameWindows select frameWindow.Task);
+                        exit = true;
+                        break;
 
-							var newWindow = new LayoutFrameWindow();
+                    case FrameWindowCommand.CloseWindow:
+                        if (FrameWindows.Count == 1) {      // Last window is about to be closed, save its state
+                            SaveDisplayState(FrameWindows);
+                            exit = true;
+                        }
+                        else
+                            FrameWindows.Remove(actionTask.Result.FrameWindow);
 
-							newWindow.Show();
-							newWindow.Activate();
-							FrameWindows.Add(newWindow);
-						}
-						break;
-				}
-			}
-		}
+                        break;
 
-		#endregion
+                    case FrameWindowCommand.NewWindow: {
+                            actionTask.Result.FrameWindow.InitializeTask();
 
-		#region Mode transition (design -> operational/simulation and back)
+                            var newWindow = new LayoutFrameWindow();
 
-		#region Operation Mode
+                            newWindow.Show();
+                            newWindow.Activate();
+                            FrameWindows.Add(newWindow);
+                        }
+                        break;
+                }
+            }
+        }
 
-		public bool EnterOperationModeRequest(OperationModeParameters settings) {
-			bool switchMode = true;
+        #endregion
 
-			Debug.Assert(settings.Simulation || settings.Phases == LayoutPhase.Operational);
+        #region Mode transition (design -> operational/simulation and back)
 
-			if(!settings.Simulation)
-				settings.Phases = LayoutPhase.Operational;
+        #region Operation Mode
 
-			if(commandManager.ChangeLevel != 0)
-				SaveModel(LayoutFilename);
+        public bool EnterOperationModeRequest(OperationModeParameters settings) {
+            bool switchMode = true;
 
-			EventManager.Event(new LayoutEvent(this, "clear-messages"));
+            Debug.Assert(settings.Simulation || settings.Phases == LayoutPhase.Operational);
 
-			if(!(bool)EventManager.Event(new LayoutEvent(LayoutModel.Instance, "check-layout", null, true).SetPhases(settings.Phases))) {
-				MessageBox.Show(ActiveFrameWindow, "Problems were detected in the layout. Please fix those problems before entering operation mode", "Layout Check Results",
-					MessageBoxButtons.OK, MessageBoxIcon.Stop);
-				switchMode = false;
-			}
+            if (!settings.Simulation)
+                settings.Phases = LayoutPhase.Operational;
 
-			if(switchMode) {
-				try {
-					// Switch to operation mode.
-					if(!IsOperationMode) {
-						if(layoutDesignTimeActivationNesting > 0) {
-							EndDesignTimeActivation();
-							layoutDesignTimeActivationNesting = 0;
-						}
+            if (commandManager.ChangeLevel != 0)
+                SaveModel(LayoutFilename);
 
-						EventManager.Event(new LayoutEvent(this, "exit-design-mode"));
-					}
+            EventManager.Event(new LayoutEvent(this, "clear-messages"));
 
-					commandManager.Clear();			// Clear undo stack
+            if (!(bool)EventManager.Event(new LayoutEvent(LayoutModel.Instance, "check-layout", null, true).SetPhases(settings.Phases))) {
+                MessageBox.Show(ActiveFrameWindow, "Problems were detected in the layout. Please fix those problems before entering operation mode", "Layout Check Results",
+                    MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                switchMode = false;
+            }
 
-					List<IModelComponentIsCommandStation> performTrainsAnalysis = new List<IModelComponentIsCommandStation>();
+            if (switchMode) {
+                try {
+                    // Switch to operation mode.
+                    if (!IsOperationMode) {
+                        if (layoutDesignTimeActivationNesting > 0) {
+                            EndDesignTimeActivation();
+                            layoutDesignTimeActivationNesting = 0;
+                        }
 
-					EventManager.Event(new LayoutEvent(this, "query-perform-trains-analysis", null, performTrainsAnalysis));
-					trainsAnalysisPhaseCount = performTrainsAnalysis.Count;
+                        EventManager.Event(new LayoutEvent(this, "exit-design-mode"));
+                    }
 
-					if(trainsAnalysisPhaseCount > 0)
-						EventManager.Event(new LayoutEvent(this, "begin-trains-analysis-phase"));
+                    commandManager.Clear();         // Clear undo stack
 
-					OperationModeSettings = settings;
-					LayoutModel.ActivePhases = settings.Phases;
+                    List<IModelComponentIsCommandStation> performTrainsAnalysis = new List<IModelComponentIsCommandStation>();
 
-					EventManager.Event(new LayoutEvent<OperationModeParameters>("prepare-enter-operation-mode", settings));
+                    EventManager.Event(new LayoutEvent(this, "query-perform-trains-analysis", null, performTrainsAnalysis));
+                    trainsAnalysisPhaseCount = performTrainsAnalysis.Count;
+
+                    if (trainsAnalysisPhaseCount > 0)
+                        EventManager.Event(new LayoutEvent(this, "begin-trains-analysis-phase"));
+
+                    OperationModeSettings = settings;
+                    LayoutModel.ActivePhases = settings.Phases;
+
+                    EventManager.Event(new LayoutEvent<OperationModeParameters>("prepare-enter-operation-mode", settings));
 
                     if (!(bool)EventManager.Event(new LayoutEvent(LayoutModel.Instance, "rebuild-layout-state").SetPhases(settings.Phases))) {
                         if (MessageBox.Show(ActiveFrameWindow, "The layout design or locomotive collection were modified. The previous state could not be fully restored.\n\n" +
@@ -321,172 +321,173 @@ namespace LayoutManager {
                     EventManager.Event(new LayoutEvent<OperationModeParameters>("enter-operation-mode", settings));
                     LayoutModel.Instance.Redraw();
 
-                } catch (Exception ex) {
-					EventManager.Event(new LayoutEvent(null, "add-error", null, "Could not enter operational mode - " + ex.Message));
+                }
+                catch (Exception ex) {
+                    EventManager.Event(new LayoutEvent(null, "add-error", null, "Could not enter operational mode - " + ex.Message));
 
-					ExitOperationModeRequest().Wait();
-					EnterDesignModeRequest().Wait();
-					switchMode = false;
-				}
-			}
+                    ExitOperationModeRequest().Wait();
+                    EnterDesignModeRequest().Wait();
+                    switchMode = false;
+                }
+            }
 
-			return switchMode;
-		}
+            return switchMode;
+        }
 
-		public async Task ExitOperationModeRequest() {
-			bool simulation = LayoutController.OperationModeSettings.Simulation;
+        public async Task ExitOperationModeRequest() {
+            bool simulation = LayoutController.OperationModeSettings.Simulation;
 
-			EventManager.Event(new LayoutEvent(this, "exit-operation-mode"));
-			Trace.WriteLine("Before invoking exit-operation-mode-async");
-			await Task.WhenAll(EventManager.AsyncEventBroadcast(new LayoutEvent(this, "exit-operation-mode-async")));
-			Trace.WriteLine("After invoking exit-operation-mode-async");
+            EventManager.Event(new LayoutEvent(this, "exit-operation-mode"));
+            Trace.WriteLine("Before invoking exit-operation-mode-async");
+            await Task.WhenAll(EventManager.AsyncEventBroadcast(new LayoutEvent(this, "exit-operation-mode-async")));
+            Trace.WriteLine("After invoking exit-operation-mode-async");
 
-			if(simulation)
-				await Task.Delay(200);		// Allow the emulator to process last command
-		}
+            if (simulation)
+                await Task.Delay(200);      // Allow the emulator to process last command
+        }
 
-		[LayoutEvent("command-station-trains-analysis-phase-done")]
-		private void trainsAnalysisPhaseDone(LayoutEvent e) {
-			if(--trainsAnalysisPhaseCount == 0) {
-				EventManager.Event(new LayoutEvent(this, "end-trains-analysis-phase"));
-				EventManager.Event(new LayoutEvent(LayoutModel.Instance, "perform-trains-analysis"));
-			}
+        [LayoutEvent("command-station-trains-analysis-phase-done")]
+        private void trainsAnalysisPhaseDone(LayoutEvent e) {
+            if (--trainsAnalysisPhaseCount == 0) {
+                EventManager.Event(new LayoutEvent(this, "end-trains-analysis-phase"));
+                EventManager.Event(new LayoutEvent(LayoutModel.Instance, "perform-trains-analysis"));
+            }
 
-			Debug.Assert(trainsAnalysisPhaseCount >= 0);
-		}
+            Debug.Assert(trainsAnalysisPhaseCount >= 0);
+        }
 
-#endregion
+        #endregion
 
-#region Design Mode 
+        #region Design Mode 
 
-		public async Task EnterDesignModeRequest() {
-			if(IsOperationMode) {
-				Trace.WriteLine("Before ExitOperationModeRequest");
-				await ExitOperationModeRequest();
-				Trace.WriteLine("After ExitOperationModeRequest");
-			}
+        public async Task EnterDesignModeRequest() {
+            if (IsOperationMode) {
+                Trace.WriteLine("Before ExitOperationModeRequest");
+                await ExitOperationModeRequest();
+                Trace.WriteLine("After ExitOperationModeRequest");
+            }
 
-			layoutDesignTimeActivationNesting = 0;
-			OperationModeSettings = null;
+            layoutDesignTimeActivationNesting = 0;
+            OperationModeSettings = null;
             LayoutModel.ActivePhases = LayoutPhase.All;
 
-			EventManager.Event(new LayoutEvent<OperationModeParameters>("enter-design-mode", null));
-			LayoutModel.Instance.Redraw();
-		}
+            EventManager.Event(new LayoutEvent<OperationModeParameters>("enter-design-mode", null));
+            LayoutModel.Instance.Redraw();
+        }
 
-#endregion
+        #endregion
 
-#region Design time activation
+        #region Design time activation
 
-		/// <summary>
-		/// Begin design time activation of command stations. Use this for enabling limited operation such as testing elements etc.
-		/// </summary>
-		/// <returns>True - design time operation activated, false - not activated</returns>
-		public bool BeginDesignTimeActivation() {
-			bool ok = false;
+        /// <summary>
+        /// Begin design time activation of command stations. Use this for enabling limited operation such as testing elements etc.
+        /// </summary>
+        /// <returns>True - design time operation activated, false - not activated</returns>
+        public bool BeginDesignTimeActivation() {
+            bool ok = false;
 
-			if(layoutDesignTimeActivationNesting == 0) {
-				var commandStations = LayoutModel.Components<IModelComponentIsBusProvider>(LayoutPhase.All);
+            if (layoutDesignTimeActivationNesting == 0) {
+                var commandStations = LayoutModel.Components<IModelComponentIsBusProvider>(LayoutPhase.All);
 
-				if(!commandStations.Any())
-					throw new LayoutException("The layout does not contain any command station component. Please add a command station component");
+                if (!commandStations.Any())
+                    throw new LayoutException("The layout does not contain any command station component. Please add a command station component");
 
-				bool doit = true;
+                bool doit = true;
 
-				if(showConnectTrackPowerWarning) {
-					if(MessageBox.Show(ActiveFrameWindow, "This operation will power your layout.\n" +
-						"Make sure that your layout is in a state that it can be safely powered!\n\n" +
-						"Do you want to continue? (this warning will not be shown again)", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No) {
-						doit = false;
-					}
-					else
-						showConnectTrackPowerWarning = false;
-				}
+                if (showConnectTrackPowerWarning) {
+                    if (MessageBox.Show(ActiveFrameWindow, "This operation will power your layout.\n" +
+                        "Make sure that your layout is in a state that it can be safely powered!\n\n" +
+                        "Do you want to continue? (this warning will not be shown again)", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No) {
+                        doit = false;
+                    }
+                    else
+                        showConnectTrackPowerWarning = false;
+                }
 
-				if(doit) {
-					object result = EventManager.Event(new LayoutEvent(this, "begin-design-time-layout-activation"));
+                if (doit) {
+                    object result = EventManager.Event(new LayoutEvent(this, "begin-design-time-layout-activation"));
 
-					if(result == null || !(result is bool))
-						ok = false;
-					else
-						ok = (bool)result;
+                    if (result == null || !(result is bool))
+                        ok = false;
+                    else
+                        ok = (bool)result;
 
-					if(ok)
-						layoutDesignTimeActivationNesting++;
-				}
-			}
-			else {
-				layoutDesignTimeActivationNesting++;		// nested request
-				ok = true;
-			}
+                    if (ok)
+                        layoutDesignTimeActivationNesting++;
+                }
+            }
+            else {
+                layoutDesignTimeActivationNesting++;        // nested request
+                ok = true;
+            }
 
-			return ok;
-		}
+            return ok;
+        }
 
-		/// <summary>
-		/// Terminate design time activation
-		/// </summary>
-		public void EndDesignTimeActivation() {
-			if(layoutDesignTimeActivationNesting <= 0)
-				Trace.WriteLine("unbalanced enter/exit design time layout activation");
+        /// <summary>
+        /// Terminate design time activation
+        /// </summary>
+        public void EndDesignTimeActivation() {
+            if (layoutDesignTimeActivationNesting <= 0)
+                Trace.WriteLine("unbalanced enter/exit design time layout activation");
 
-			if(--layoutDesignTimeActivationNesting == 0)
-				EventManager.Event(new LayoutEvent(this, "end-design-time-layout-activation"));
-		}
+            if (--layoutDesignTimeActivationNesting == 0)
+                EventManager.Event(new LayoutEvent(this, "end-design-time-layout-activation"));
+        }
 
         /// <summary>
         /// True if design time activation is in effect.
         /// </summary>
         public bool IsDesignTimeActivation => layoutDesignTimeActivationNesting > 0;
 
-#endregion
+        #endregion
 
-#endregion
+        #endregion
 
-#region Controller Properties
+        #region Controller Properties
 
-#region Layout files
+        #region Layout files
 
         public string LayoutDisplayStateFilename {
-			get;
-			private set;
-		}
+            get;
+            private set;
+        }
 
-		/// <summary>
-		/// The file name in which layout runtime state is saved
-		/// </summary>
-		public string LayoutRuntimeStateFilename {
-			get;
-			private set;
-		}
+        /// <summary>
+        /// The file name in which layout runtime state is saved
+        /// </summary>
+        public string LayoutRuntimeStateFilename {
+            get;
+            private set;
+        }
 
-		public string LayoutRoutingFilename {
-			get;
-			private set;
-		}
+        public string LayoutRoutingFilename {
+            get;
+            private set;
+        }
 
-		public string LayoutFilename {
-			get {
-				return layoutFilename;
-			}
+        public string LayoutFilename {
+            get {
+                return layoutFilename;
+            }
 
-			private set {
-				layoutFilename = value;
-				LayoutDisplayStateFilename = Path.ChangeExtension(value, ".DisplayState");
-				LayoutRuntimeStateFilename = Path.ChangeExtension(value, ".State");
-				LayoutRoutingFilename = Path.ChangeExtension(value, ".Routing");
-			}
-		}
+            private set {
+                layoutFilename = value;
+                LayoutDisplayStateFilename = Path.ChangeExtension(value, ".DisplayState");
+                LayoutRuntimeStateFilename = Path.ChangeExtension(value, ".State");
+                LayoutRoutingFilename = Path.ChangeExtension(value, ".Routing");
+            }
+        }
 
-#endregion
+        #endregion
 
-		/// <summary>
-		/// The currently active frame window
-		/// </summary>
-		public ILayoutFrameWindow ActiveFrameWindow {
-			get;
-			set;
-		}
+        /// <summary>
+        /// The currently active frame window
+        /// </summary>
+        public ILayoutFrameWindow ActiveFrameWindow {
+            get;
+            set;
+        }
 
         /// <summary>
         /// The command manager (Do/Undo support)
@@ -497,17 +498,17 @@ namespace LayoutManager {
         /// Operation mode settings, Null if in design mode
         /// </summary>
         public OperationModeParameters OperationModeSettings {
-			get;
-			private set;
-		}
+            get;
+            private set;
+        }
 
-		/// <summary>
-		/// Currently open frame windows
-		/// </summary>
-		public List<LayoutFrameWindow> FrameWindows {
-			get;
-			private set;
-		}
+        /// <summary>
+        /// Currently open frame windows
+        /// </summary>
+        public List<LayoutFrameWindow> FrameWindows {
+            get;
+            private set;
+        }
 
         /// <summary>
         /// Where common data (settings that are relevant to all layouts) are saved
@@ -516,126 +517,127 @@ namespace LayoutManager {
 
         public LayoutSelection UserSelection => userSelection;
 
-#endregion
+        #endregion
 
-#region Model Initialization/Loading/saving
+        #region Model Initialization/Loading/saving
 
         /// <summary>
         /// Create a new layout, that is a new model, and one default view called overview
         /// </summary>
         void CreateNewModel(string layoutFilename) {
-			LayoutModel.Instance.Clear();
-			LayoutModelArea area = new LayoutModelArea();
+            LayoutModel.Instance.Clear();
+            LayoutModelArea area = new LayoutModelArea {
 
-			// Create the default area
-			area.Name = "Layout area";
-			LayoutModel.Areas.Add(area);
+                // Create the default area
+                Name = "Layout area"
+            };
+            LayoutModel.Areas.Add(area);
 
-			LayoutFilename = layoutFilename;
-			commandManager.ChangeLevel = 0;
-			EventManager.Event(new LayoutEvent(null, "new-layout-document", null, layoutFilename));
-		}
+            LayoutFilename = layoutFilename;
+            commandManager.ChangeLevel = 0;
+            EventManager.Event(new LayoutEvent(null, "new-layout-document", null, layoutFilename));
+        }
 
-		/// <summary>
-		/// Load existing layout
-		/// </summary>
-		void LoadModel(string layoutFilename) {
-			LayoutModel.Instance.Clear();
-			ReadModelXmlDocument(layoutFilename);
+        /// <summary>
+        /// Load existing layout
+        /// </summary>
+        void LoadModel(string layoutFilename) {
+            LayoutModel.Instance.Clear();
+            ReadModelXmlDocument(layoutFilename);
 
-			LayoutFilename = layoutFilename;
+            LayoutFilename = layoutFilename;
 
-			LayoutModel.StateManager.Load();
-			EventManager.Event(new LayoutEvent(null, "new-layout-document", null, layoutFilename));
-		}
+            LayoutModel.StateManager.Load();
+            EventManager.Event(new LayoutEvent(null, "new-layout-document", null, layoutFilename));
+        }
 
-		void ReadModelXmlDocument(string filename) {
-			XmlTextReader r = new LayoutXmlTextReader(filename, LayoutReadXmlContext.LoadingModel);
+        void ReadModelXmlDocument(string filename) {
+            XmlTextReader r = new LayoutXmlTextReader(filename, LayoutReadXmlContext.LoadingModel) {
+                WhitespaceHandling = WhitespaceHandling.None
+            };
 
-			r.WhitespaceHandling = WhitespaceHandling.None;
+            // Skip all kind of declaration stuff
+            while (r.Read() && r.NodeType == XmlNodeType.XmlDeclaration)
+                ;
 
-			// Skip all kind of declaration stuff
-			while(r.Read() && r.NodeType == XmlNodeType.XmlDeclaration)
-				;
+            r.Read();       // <LayoutManager>
 
-			r.Read();		// <LayoutManager>
+            while (r.NodeType == XmlNodeType.Element) {
+                if (r.Name == "LayoutModel")
+                    LayoutModel.Instance.ReadXml(r);
+                else
+                    r.Skip();
+            }
 
-			while(r.NodeType == XmlNodeType.Element) {
-				if(r.Name == "LayoutModel")
-					LayoutModel.Instance.ReadXml(r);
-				else
-					r.Skip();
-			}
+            r.Close();
+        }
 
-			r.Close();
-		}
+        /// <summary>
+        /// Save the model
+        /// </summary>
+        private void SaveModel(string layoutFilename) {
+            WriteModelXmlDocument(layoutFilename);
 
-		/// <summary>
-		/// Save the model
-		/// </summary>
-		private void SaveModel(string layoutFilename) {
-			WriteModelXmlDocument(layoutFilename);
+            commandManager.ChangeLevel = 0;             // Layout saved
+        }
 
-			commandManager.ChangeLevel = 0;				// Layout saved
-		}
+        void WriteModelXmlDocument(string filename) {
+            XmlTextWriter w = new XmlTextWriter(filename, new System.Text.UTF8Encoding());
 
-		void WriteModelXmlDocument(string filename) {
-			XmlTextWriter w = new XmlTextWriter(filename, new System.Text.UTF8Encoding());
+            w.WriteStartDocument();
+            w.WriteStartElement("LayoutManager");
+            LayoutModel.Instance.WriteXml(w);
+            w.WriteEndElement();
+            w.WriteEndDocument();
 
-			w.WriteStartDocument();
-			w.WriteStartElement("LayoutManager");
-			LayoutModel.Instance.WriteXml(w);
-			w.WriteEndElement();
-			w.WriteEndDocument();
+            w.Close();
+        }
 
-			w.Close();
-		}
+        #endregion
 
-#endregion
+        #region Handle model area /Add/Removed/Rename events
 
-#region Handle model area /Add/Removed/Rename events
+        /// <summary>
+        /// Add a new area to the model
+        /// </summary>
+        /// <returns>The newly created area</returns>
+        public LayoutModelArea AddArea(String areaName) {
+            LayoutModelArea area = new LayoutModelArea {
+                Name = areaName
+            };
+            LayoutModel.Areas.Add(area);
 
-		/// <summary>
-		/// Add a new area to the model
-		/// </summary>
-		/// <returns>The newly created area</returns>
-		public LayoutModelArea AddArea(String areaName) {
-			LayoutModelArea area = new LayoutModelArea();
+            return area;
+        }
 
-			area.Name = areaName;
-			LayoutModel.Areas.Add(area);
+        public void Area_Added(object sender, EventArgs e) {
+            LayoutModelArea area = (LayoutModelArea)sender;
 
-			return area;
-		}
+            EventManager.Event(new LayoutEvent<LayoutModelArea>("area-added", area));
+            LayoutModified();
+        }
 
-		public void Area_Added(object sender, EventArgs e) {
-			LayoutModelArea area = (LayoutModelArea)sender;
+        public void Area_Removed(object sender, EventArgs e) {
+            LayoutModelArea area = (LayoutModelArea)sender;
 
-			EventManager.Event(new LayoutEvent<LayoutModelArea>("area-added", area));
-			LayoutModified();
-		}
+            EventManager.Event(new LayoutEvent<LayoutModelArea>("area-removed", area));
+            LayoutModified();
+        }
 
-		public void Area_Removed(object sender, EventArgs e) {
-			LayoutModelArea area = (LayoutModelArea)sender;
+        public void Area_Renamed(object sender, EventArgs e) {
+            LayoutModelArea area = (LayoutModelArea)sender;
 
-			EventManager.Event(new LayoutEvent<LayoutModelArea>("area-removed", area));
-			LayoutModified();
-		}
+            EventManager.Event(new LayoutEvent<LayoutModelArea>("area-renamed", area));
+            LayoutModified();
+        }
 
-		public void Area_Renamed(object sender, EventArgs e) {
-			LayoutModelArea area = (LayoutModelArea)sender;
+        #endregion
 
-			EventManager.Event(new LayoutEvent<LayoutModelArea>("area-renamed", area));
-			LayoutModified();
-		}
+        #region ILayoutController Members
 
-#endregion
-
-#region ILayoutController Members
-
-		public void Do(ILayoutCommand command) {
-			commandManager.Do(command);
-		}
+        public void Do(ILayoutCommand command) {
+            commandManager.Do(command);
+        }
 
         public LayoutModuleManager ModuleManager => moduleManager;
 
@@ -654,132 +656,132 @@ namespace LayoutManager {
         /// Called to mark the layout as modified
         /// </summary>
         public void LayoutModified() {
-			commandManager.ChangeLevel++;
-		}
+            commandManager.ChangeLevel++;
+        }
 
-#endregion
+        #endregion
 
-#region ILayoutSelectionManager Members
+        #region ILayoutSelectionManager Members
 
-		public void DisplaySelection(LayoutSelection selection, int zOrder) {
-			if(zOrder == LayoutSelection.ZOrderBottom)
-				displayedSelections.Add(selection);
-			else
-				displayedSelections.Insert(0, selection);
-		}
+        public void DisplaySelection(LayoutSelection selection, int zOrder) {
+            if (zOrder == LayoutSelection.ZOrderBottom)
+                displayedSelections.Add(selection);
+            else
+                displayedSelections.Insert(0, selection);
+        }
 
-		public void HideSelection(LayoutSelection selection) {
-			displayedSelections.Remove(selection);
-		}
+        public void HideSelection(LayoutSelection selection) {
+            displayedSelections.Remove(selection);
+        }
 
         public IList<LayoutSelection> DisplayedSelections => displayedSelections.AsReadOnly();
 
-#endregion
+        #endregion
 
-#region Event Handlers
+        #region Event Handlers
 
         [LayoutEvent("save-layout")]
-		private void saveLayout(LayoutEvent e) {
-			SaveModel(LayoutFilename);
-			SaveDisplayState(FrameWindows);
+        private void saveLayout(LayoutEvent e) {
+            SaveModel(LayoutFilename);
+            SaveDisplayState(FrameWindows);
 
-			if(IsOperationMode)
-				LayoutModel.StateManager.Save();
-		}
+            if (IsOperationMode)
+                LayoutModel.StateManager.Save();
+        }
 
-#endregion
-	}
+        #endregion
+    }
 
-	public class LayoutDisplayState : LayoutXmlWrapper {
-		public LayoutDisplayState(IEnumerable<LayoutFrameWindow> frameWindows) : base("DisplayState") {
-			OperationModeSettings = LayoutController.OperationModeSettings;
+    public class LayoutDisplayState : LayoutXmlWrapper {
+        public LayoutDisplayState(IEnumerable<LayoutFrameWindow> frameWindows) : base("DisplayState") {
+            OperationModeSettings = LayoutController.OperationModeSettings;
 
-			XmlElement windowStatesElement = CreateChildElement("WindowStates");
+            XmlElement windowStatesElement = CreateChildElement("WindowStates");
 
-			int windowIndex = 0;
+            int windowIndex = 0;
 
-			foreach(var frameWindow in frameWindows) {
-				var frameWindowState = new FrameWindowState(windowStatesElement, frameWindow);
+            foreach (var frameWindow in frameWindows) {
+                var frameWindowState = new FrameWindowState(windowStatesElement, frameWindow);
 
-				frameWindow.SaveFrameWindowState(frameWindowState);
+                frameWindow.SaveFrameWindowState(frameWindowState);
 
-				if(LayoutController.ActiveFrameWindow == frameWindow)
-					this.ActiveWindowIndex = windowIndex;
-				windowIndex++;
-			}
-		}
-		
-		public LayoutDisplayState(string displayStateFilename) {
-			Load(displayStateFilename);
-		}
+                if (LayoutController.ActiveFrameWindow == frameWindow)
+                    this.ActiveWindowIndex = windowIndex;
+                windowIndex++;
+            }
+        }
 
-		public LayoutDisplayState() : base("DisplayState") {
-			OperationModeSettings = null;		// default is design
-		}
+        public LayoutDisplayState(string displayStateFilename) {
+            Load(displayStateFilename);
+        }
 
-		public void Save(string displayStateFilename) {
-			Element.OwnerDocument.Save(displayStateFilename);
-		}
+        public LayoutDisplayState() : base("DisplayState") {
+            OperationModeSettings = null;       // default is design
+        }
 
-		public OperationModeParameters OperationModeSettings {
-			get {
-				string mode = GetAttribute("Mode");
+        public void Save(string displayStateFilename) {
+            Element.OwnerDocument.Save(displayStateFilename);
+        }
 
-				if(mode == "Design")
-					return null;
-				else {
-					var phases = (LayoutPhase)Enum.Parse(typeof(LayoutPhase), GetAttribute("Phases", "Operational"));
+        public OperationModeParameters OperationModeSettings {
+            get {
+                string mode = GetAttribute("Mode");
 
-					return new OperationModeParameters() { Simulation = (mode == "Simulation"), Phases = phases };
-				}
-			}
+                if (mode == "Design")
+                    return null;
+                else {
+                    var phases = (LayoutPhase)Enum.Parse(typeof(LayoutPhase), GetAttribute("Phases", "Operational"));
 
-			set {
-				string mode = "Design";
+                    return new OperationModeParameters() { Simulation = (mode == "Simulation"), Phases = phases };
+                }
+            }
 
-				if(value != null) {
-					if(value.Simulation)
-						mode = "Simulation";
-					else
-						mode = "Operate";
+            set {
+                string mode = "Design";
 
-					SetAttribute("Phases", value.Phases.ToString());
-				}
+                if (value != null) {
+                    if (value.Simulation)
+                        mode = "Simulation";
+                    else
+                        mode = "Operate";
 
-				SetAttribute("Mode", mode);
-			}
-		}
+                    SetAttribute("Phases", value.Phases.ToString());
+                }
 
-		public int ActiveWindowIndex {
-			get { return XmlConvert.ToInt32(GetAttribute("ActiveWindowIndex", "-1")); }
-			set { SetAttribute("ActiveWindowIndex", XmlConvert.ToString(value)); }
-		}
+                SetAttribute("Mode", mode);
+            }
+        }
 
-		public IEnumerable<FrameWindowState> FrameWindowStates {
-			get {
-				XmlElement windowStatesElement = Element["WindowStates"];
+        public int ActiveWindowIndex {
+            get { return XmlConvert.ToInt32(GetAttribute("ActiveWindowIndex", "-1")); }
+            set { SetAttribute("ActiveWindowIndex", XmlConvert.ToString(value)); }
+        }
 
-				if(windowStatesElement != null)
-					foreach(XmlElement windowStateElement in windowStatesElement)
-						yield return new FrameWindowState(windowStateElement);
-			}
-		}
-		/// <summary>
-		/// Return a list of frame windows. If display state is empty, the list consists of one default frame window
-		/// </summary>
-		public List<LayoutFrameWindow> FrameWindows {
-			get {
-				var frameWindows = new List<LayoutFrameWindow>();
+        public IEnumerable<FrameWindowState> FrameWindowStates {
+            get {
+                XmlElement windowStatesElement = Element["WindowStates"];
 
-				if(FrameWindowStates.Any()) {
-					foreach(var frameWindowState in FrameWindowStates)
-						frameWindowState.Restore(frameWindows);
-				}
-				else
-					frameWindows.Add(new LayoutFrameWindow());
+                if (windowStatesElement != null)
+                    foreach (XmlElement windowStateElement in windowStatesElement)
+                        yield return new FrameWindowState(windowStateElement);
+            }
+        }
+        /// <summary>
+        /// Return a list of frame windows. If display state is empty, the list consists of one default frame window
+        /// </summary>
+        public List<LayoutFrameWindow> FrameWindows {
+            get {
+                var frameWindows = new List<LayoutFrameWindow>();
 
-				return frameWindows;
-			}
-		}
-	}
+                if (FrameWindowStates.Any()) {
+                    foreach (var frameWindowState in FrameWindowStates)
+                        frameWindowState.Restore(frameWindows);
+                }
+                else
+                    frameWindows.Add(new LayoutFrameWindow());
+
+                return frameWindows;
+            }
+        }
+    }
 }

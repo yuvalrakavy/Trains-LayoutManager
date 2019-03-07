@@ -13,18 +13,17 @@ namespace NumatoController.Dialogs {
     /// Summary description for CentralStationProperties.
     /// </summary>
     public class NumatoControllerProperties : Form {
-		private ComboBox comboBoxPort;
-		private Label label1;
-		private Button buttonOK;
-		private Button buttonCancel;
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private Container components = null;
-
-        NumatoController component;
-		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
-		private Button buttonCOMsettings;
+        private ComboBox comboBoxPort;
+        private Label label1;
+        private Button buttonOK;
+        private Button buttonCancel;
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private readonly Container components = null;
+        readonly NumatoController component;
+        private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
+        private Button buttonCOMsettings;
         private GroupBox groupBox1;
         private TextBox textBoxAddress;
         private RadioButton radioButtonTCP;
@@ -38,26 +37,25 @@ namespace NumatoController.Dialogs {
         private Label label4;
         private Label labelRelaysCount;
         private ComboBox comboBoxRelays;
-        LayoutXmlInfo xmlInfo;
+        readonly LayoutXmlInfo xmlInfo;
 
-		public NumatoControllerProperties(NumatoController component)
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+        public NumatoControllerProperties(NumatoController component) {
+            //
+            // Required for Windows Form Designer support
+            //
+            InitializeComponent();
 
-			foreach(var port in SerialPort.GetPortNames())
-				comboBoxPort.Items.Add(port);
+            foreach (var port in SerialPort.GetPortNames())
+                comboBoxPort.Items.Add(port);
 
-			this.component = component;
-			this.xmlInfo = new LayoutXmlInfo(component);
+            this.component = component;
+            this.xmlInfo = new LayoutXmlInfo(component);
 
             if (xmlInfo.DocumentElement.HasAttribute(NumatoController.relaysCountAttribute)) {
                 var nRelays = xmlInfo.DocumentElement.GetAttribute(NumatoController.relaysCountAttribute);
 
                 foreach (var item in comboBoxRelays.Items)
-                    if((string)item == nRelays) {
+                    if ((string)item == nRelays) {
                         comboBoxRelays.SelectedItem = item;
                         break;
                     }
@@ -76,10 +74,10 @@ namespace NumatoController.Dialogs {
             else
                 radioButtonTCP.Checked = true;
 
-			nameDefinition.XmlInfo = this.xmlInfo;
-			comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.PortAttribute);
+            nameDefinition.XmlInfo = this.xmlInfo;
+            comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.PortAttribute);
 
-            if(xmlInfo.DocumentElement.HasAttribute(LayoutBusProviderSupport.AddressAttribute))
+            if (xmlInfo.DocumentElement.HasAttribute(LayoutBusProviderSupport.AddressAttribute))
                 textBoxAddress.Text = xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.AddressAttribute);
 
             if (xmlInfo.DocumentElement.HasAttribute(NumatoController.userAttribute))
@@ -89,32 +87,28 @@ namespace NumatoController.Dialogs {
                 textBoxPassword.Text = xmlInfo.DocumentElement.GetAttribute(NumatoController.passwordAttribute);
 
             radioButtonInterfaceType_CheckedChanged(null, new EventArgs());
-		}
+        }
 
         public LayoutXmlInfo XmlInfo => xmlInfo;
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                if (components != null) {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent() {
             this.comboBoxPort = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonOK = new System.Windows.Forms.Button();
@@ -360,28 +354,27 @@ namespace NumatoController.Dialogs {
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
-		#endregion
+        }
+        #endregion
 
-		private void buttonOK_Click(object sender, System.EventArgs e) {
-			if(nameDefinition.Commit()) {
-				LayoutTextInfo			myName = new LayoutTextInfo(xmlInfo.DocumentElement, "Name");
+        private void buttonOK_Click(object sender, System.EventArgs e) {
+            if (nameDefinition.Commit()) {
+                LayoutTextInfo myName = new LayoutTextInfo(xmlInfo.DocumentElement, "Name");
 
-				foreach(IModelComponentIsCommandStation otherCommandStation in LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All)) {
-					if(otherCommandStation.NameProvider.Name == myName.Name && otherCommandStation.Id != component.Id) {
-						MessageBox.Show(this, "The name " + myName.Text + " is already used", "Invalid name", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						nameDefinition.Focus();
-						return;
-					}
-				}
-			}
-			else
-				return;
+                foreach (IModelComponentIsCommandStation otherCommandStation in LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All)) {
+                    if (otherCommandStation.NameProvider.Name == myName.Name && otherCommandStation.Id != component.Id) {
+                        MessageBox.Show(this, "The name " + myName.Text + " is already used", "Invalid name", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        nameDefinition.Focus();
+                        return;
+                    }
+                }
+            }
+            else
+                return;
 
             // Commit
-            int relayCount;
 
-            if(!int.TryParse(comboBoxRelays.SelectedItem.ToString(), out relayCount)) {
+            if (!int.TryParse(comboBoxRelays.SelectedItem.ToString(), out int relayCount)) {
                 MessageBox.Show(this, "Select the number of relays on the module", "Missing relays count", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 comboBoxRelays.Focus();
                 return;
@@ -398,7 +391,7 @@ namespace NumatoController.Dialogs {
                 xmlInfo.DocumentElement.SetAttribute("Address", textBoxAddress.Text);
             }
 
-            if(string.IsNullOrWhiteSpace(textBoxUser.Text)) {
+            if (string.IsNullOrWhiteSpace(textBoxUser.Text)) {
                 MessageBox.Show(this, "Missing user name", "Missing User Name", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxUser.Focus();
                 return;
@@ -406,7 +399,7 @@ namespace NumatoController.Dialogs {
 
             xmlInfo.DocumentElement.SetAttribute(NumatoController.userAttribute, textBoxUser.Text);
 
-            if(string.IsNullOrWhiteSpace(textBoxPassword.Text)) {
+            if (string.IsNullOrWhiteSpace(textBoxPassword.Text)) {
                 MessageBox.Show(this, "Missing password", "Missing password", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxPassword.Focus();
                 return;
@@ -415,18 +408,17 @@ namespace NumatoController.Dialogs {
             xmlInfo.DocumentElement.SetAttribute(NumatoController.passwordAttribute, textBoxPassword.Text);
 
             DialogResult = DialogResult.OK;
-		}
+        }
 
-		private void buttonCOMsettings_Click(object sender, EventArgs e)
-		{
-			string modeString = xmlInfo.DocumentElement["ModeString"].InnerText;
+        private void buttonCOMsettings_Click(object sender, EventArgs e) {
+            string modeString = xmlInfo.DocumentElement["ModeString"].InnerText;
 
-			LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
+            LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
 
-			if(d.ShowDialog(this) == DialogResult.OK)
-				xmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
+            if (d.ShowDialog(this) == DialogResult.OK)
+                xmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
 
-		}
+        }
 
         private void radioButtonInterfaceType_CheckedChanged(object sender, EventArgs e) {
             if (radioButtonSerial.Checked) {
@@ -453,5 +445,5 @@ namespace NumatoController.Dialogs {
             else
                 MessageBox.Show(this, "No valid IP address was entered", "No address was entered", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-	}
+    }
 }

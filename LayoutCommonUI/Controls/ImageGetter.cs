@@ -41,7 +41,7 @@ namespace LayoutManager.CommonUI.Controls {
         public Image DefaultImage {
             set {
                 _defaultImage = value;
-                if(!HasImage)
+                if (!HasImage)
                     pictureBoxImage.BackgroundImage = _defaultImage;
             }
 
@@ -63,11 +63,12 @@ namespace LayoutManager.CommonUI.Controls {
 
                     var trimDialog = new Dialogs.ImageTrim(image, this.RequiredImageSize);
 
-                    if(trimDialog.ShowDialog() == DialogResult.OK) {
+                    if (trimDialog.ShowDialog() == DialogResult.OK) {
                         this.pictureBoxImage.BackgroundImage = trimDialog.Image;
                         this.ImageModified = true;
                     }
-                } catch (Exception ex) {
+                }
+                catch (Exception ex) {
                     MessageBox.Show(this, "Error loading image: " + ex.Message, "Image load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }

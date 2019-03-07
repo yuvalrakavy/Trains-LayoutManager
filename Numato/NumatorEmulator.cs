@@ -12,12 +12,12 @@ using LayoutManager.Model;
 namespace NumatoController {
     public class NumatorEmulator : ILayoutCommandStationEmulator {
         Guid numatoId;
-        string pipeName;
+        readonly string pipeName;
 
         FileStream commStream;
-        ILayoutEmulatorServices layoutEmulationServices;
+        readonly ILayoutEmulatorServices layoutEmulationServices;
         Thread interfaceThread = null;
-        ILayoutInterThreadEventInvoker interThreadEventInvoker;
+        readonly ILayoutInterThreadEventInvoker interThreadEventInvoker;
 
         enum NumatoState {
             GetUser, GetPassword, GetCommand
@@ -25,7 +25,7 @@ namespace NumatoController {
 
         NumatoState state;
 
-        static LayoutTraceSwitch traceNumatoEmulator = new LayoutTraceSwitch("NumatoEmulator", "Trace Numato Relay Board emulation");
+        static readonly LayoutTraceSwitch traceNumatoEmulator = new LayoutTraceSwitch("NumatoEmulator", "Trace Numato Relay Board emulation");
 
         public NumatorEmulator(IModelComponentIsBusProvider numatoComponent, string pipeName) {
             this.numatoId = numatoComponent.Id;
@@ -35,8 +35,9 @@ namespace NumatoController {
             layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent(this, "get-layout-emulation-services"));
             EventManager.Event(new LayoutEvent(null, "initialize-layout-emulation"));
 
-            interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction));
-            interfaceThread.Name = "Command station emulation for " + numatoComponent.NameProvider.Name;
+            interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction)) {
+                Name = "Command station emulation for " + numatoComponent.NameProvider.Name
+            };
             interfaceThread.Start();
         }
 
@@ -48,13 +49,13 @@ namespace NumatoController {
 
 
             try {
-                while(true) {
+                while (true) {
                     byte[] prompt = null;
 
-                    switch(state) {
+                    switch (state) {
                         case NumatoState.GetUser: prompt = Encoding.UTF8.GetBytes("Numato Lab 32 Channel Ethernet Relay Module\r\nUser Name: "); break;
                         case NumatoState.GetPassword: prompt = Encoding.UTF8.GetBytes("Password: ").Concat(new byte[] { 0xff, 0xfd, 0x2d }).ToArray(); break;
-                        case NumatoState.GetCommand: prompt =Encoding.UTF8.GetBytes(">"); break;
+                        case NumatoState.GetCommand: prompt = Encoding.UTF8.GetBytes(">"); break;
                     }
 
                     Trace.WriteLineIf(traceNumatoEmulator.TraceVerbose, $"Numato emulator prompt with {Encoding.UTF8.GetString(prompt)}");
@@ -72,12 +73,12 @@ namespace NumatoController {
 
                     byte[] reply = null;
 
-                    switch(state) {
+                    switch (state) {
                         case NumatoState.GetUser: state = NumatoState.GetPassword; break;
                         case NumatoState.GetPassword: state = NumatoState.GetCommand; break;
                     }
 
-                    if(reply != null)
+                    if (reply != null)
                         commStream.Write(reply, 0, reply.Length);
                 }
             }

@@ -6,27 +6,25 @@ namespace Gui.Wizard {
     /// <summary>
     /// 
     /// </summary>
-    public class InfoContainerDesigner : ParentControlDesigner
-	{
+    public class InfoContainerDesigner : ParentControlDesigner {
 
-//		/// <summary>
-//		/// Prevents the grid from being drawn on the Wizard
-//		/// </summary>
-//		protected override bool DrawGrid
-//		{
-//			get { return false; }
-//		}
+        //		/// <summary>
+        //		/// Prevents the grid from being drawn on the Wizard
+        //		/// </summary>
+        //		protected override bool DrawGrid
+        //		{
+        //			get { return false; }
+        //		}
 
-		/// <summary>
-		/// Drops the BackgroundImage property
-		/// </summary>
-		/// <param name="properties">properties to remove BackGroundImage from</param>
-		protected override void PreFilterProperties(System.Collections.IDictionary properties)
-		{
-			base.PreFilterProperties (properties);
-			if (properties.Contains("BackgroundImage") == true)
-				properties.Remove("BackgroundImage");
-		}
+        /// <summary>
+        /// Drops the BackgroundImage property
+        /// </summary>
+        /// <param name="properties">properties to remove BackGroundImage from</param>
+        protected override void PreFilterProperties(System.Collections.IDictionary properties) {
+            base.PreFilterProperties(properties);
+            if (properties.Contains("BackgroundImage") == true)
+                properties.Remove("BackgroundImage");
+        }
 
-	}
+    }
 }

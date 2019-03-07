@@ -8,84 +8,83 @@ namespace LayoutManager.CommonUI.Controls {
     /// Summary description for XmlQueryCombobox.
     /// </summary>
     public class XmlQueryCombobox : ComboBox {
-		XmlElement	container;
-		String		query = "*[contains(Name, '<TEXT>')]";
-		String		extract = "string(Name)";
+        XmlElement container;
+        String query = "*[contains(Name, '<TEXT>')]";
+        String extract = "string(Name)";
 
-		public XmlQueryCombobox()
-		{
-		}
+        public XmlQueryCombobox() {
+        }
 
-		public XmlElement ContainerElement {
-			set {
-				container = value;
-			}
+        public XmlElement ContainerElement {
+            set {
+                container = value;
+            }
 
-			get {
-				return container;
-			}
-		}
+            get {
+                return container;
+            }
+        }
 
-		public String Query {
-			get {
-				return query;
-			}
+        public String Query {
+            get {
+                return query;
+            }
 
-			set {
-				query = value;
-			}
-		}
+            set {
+                query = value;
+            }
+        }
 
-		public String Extract {
-			get {
-				return extract;
-			}
+        public String Extract {
+            get {
+                return extract;
+            }
 
-			set {
-				extract = value;
-			}
-		}
+            set {
+                extract = value;
+            }
+        }
 
-		public XmlElement SelectedElement {
-			get {
-				XmlNodeList	l = getElements();
+        public XmlElement SelectedElement {
+            get {
+                XmlNodeList l = getElements();
 
-				if(l.Count > 0)
-					return (XmlElement)l[0];
-				return null;
-			}
-		}
+                if (l.Count > 0)
+                    return (XmlElement)l[0];
+                return null;
+            }
+        }
 
-		public bool IsTextAmbiguous {
-			get {
-				XmlNodeList	l = getElements();
+        public bool IsTextAmbiguous {
+            get {
+                XmlNodeList l = getElements();
 
-				if(l.Count > 1)
-					return true;
-				return false;
-			}
-		}
+                if (l.Count > 1)
+                    return true;
+                return false;
+            }
+        }
 
-		private XmlNodeList getElements() {
-			String	q = "*";
+        private XmlNodeList getElements() {
+            String q = "*";
 
-			if(Text.Trim() != "")
-				q = Regex.Replace(query, "<TEXT>", Text);
+            if (Text.Trim() != "")
+                q = Regex.Replace(query, "<TEXT>", Text);
 
 
-			return container.SelectNodes(q);
-		}
+            return container.SelectNodes(q);
+        }
 
-		protected override void OnDropDown(EventArgs e) {
-			base.OnDropDown(e);
+        protected override void OnDropDown(EventArgs e) {
+            base.OnDropDown(e);
 
-			String	ext = extract;
-			if(ext == null)
-				ext = "string(Name)";
+            String ext = extract;
+            if (ext == null)
+                ext = "string(Name)";
 
-			Items.Clear();
-			foreach(XmlElement element in getElements())
-				Items.Add(element.CreateNavigator().Evaluate(ext));
-		}
-	}
+            Items.Clear();
+            foreach (XmlElement element in getElements())
+                Items.Add(element.CreateNavigator().Evaluate(ext));
+        }
+    }
 }

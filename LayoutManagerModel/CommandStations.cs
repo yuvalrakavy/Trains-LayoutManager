@@ -8,12 +8,12 @@ namespace LayoutManager.Model {
     /// What entity this address is for
     /// </summary>
     public enum AddressUsage {
-		Locomotive,
-		Turnout,
-		Signal,
-		TrackContact,
-		TrainDetectionBlock,
-	}
+        Locomotive,
+        Turnout,
+        Signal,
+        TrackContact,
+        TrainDetectionBlock,
+    }
 
     /// <summary>
     /// Does this command support setting a specific function#

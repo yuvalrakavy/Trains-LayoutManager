@@ -9,67 +9,62 @@ namespace LayoutManager.Tools.Dialogs {
     /// Summary description for LocomotiveFront.
     /// </summary>
     public class TrainFront : Form {
-		private Button buttonOk;
-		private Button buttonCancel;
-		private Label labelBlockName;
-		private LayoutManager.CommonUI.Controls.LocomotiveFront locomotiveFrontControl;
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private Container components = null;
+        private Button buttonOk;
+        private Button buttonCancel;
+        private Label labelBlockName;
+        private LayoutManager.CommonUI.Controls.LocomotiveFront locomotiveFrontControl;
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private readonly Container components = null;
 
-		public TrainFront(LayoutBlockDefinitionComponent blockInfo, String name)
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+        public TrainFront(LayoutBlockDefinitionComponent blockInfo, String name) {
+            //
+            // Required for Windows Form Designer support
+            //
+            InitializeComponent();
 
-			locomotiveFrontControl.ConnectionPoints = blockInfo.Track.ConnectionPoints;
-			locomotiveFrontControl.LocomotiveName = name;
-			labelBlockName.Text = blockInfo.NameProvider.Name;
-		}
+            locomotiveFrontControl.ConnectionPoints = blockInfo.Track.ConnectionPoints;
+            locomotiveFrontControl.LocomotiveName = name;
+            labelBlockName.Text = blockInfo.NameProvider.Name;
+        }
 
-		public TrainFront(LayoutStraightTrackComponent track, String locoName, String trackName) {
-			InitializeComponent();
+        public TrainFront(LayoutStraightTrackComponent track, String locoName, String trackName) {
+            InitializeComponent();
 
-			locomotiveFrontControl.ConnectionPoints = track.ConnectionPoints;
-			locomotiveFrontControl.LocomotiveName = locoName;
-			labelBlockName.Text = trackName;
-		}
+            locomotiveFrontControl.ConnectionPoints = track.ConnectionPoints;
+            locomotiveFrontControl.LocomotiveName = locoName;
+            labelBlockName.Text = trackName;
+        }
 
-		public LayoutComponentConnectionPoint Front {
-			get {
-				return locomotiveFrontControl.Front;
-			}
+        public LayoutComponentConnectionPoint Front {
+            get {
+                return locomotiveFrontControl.Front;
+            }
 
-			set {
-				locomotiveFrontControl.Front = value;
-			}
-		}
+            set {
+                locomotiveFrontControl.Front = value;
+            }
+        }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                if (components != null) {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TrainFront));
             this.buttonOk = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
@@ -131,13 +126,13 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "Set train orientation";
             this.ResumeLayout(false);
 
-		}
-		#endregion
+        }
+        #endregion
 
-		private void buttonOk_Click(object sender, System.EventArgs e) {
+        private void buttonOk_Click(object sender, System.EventArgs e) {
 
-			DialogResult = DialogResult.OK;
-			this.Close();
-		}
-	}
+            DialogResult = DialogResult.OK;
+            this.Close();
+        }
+    }
 }

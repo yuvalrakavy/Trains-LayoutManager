@@ -1,17 +1,17 @@
 namespace LayoutManager {
 
     public class ApplicationStateInfo : LayoutXmlWrapper {
-		string filename;
+        readonly string filename;
 
-		public enum LayoutState {
-			Design, Operation, Simulation
-		};
+        public enum LayoutState {
+            Design, Operation, Simulation
+        };
 
-		public ApplicationStateInfo() : base("ApplicationState") {
-		}
+        public ApplicationStateInfo() : base("ApplicationState") {
+        }
 
-		public ApplicationStateInfo(string filename) {
-			this.filename = filename;
+        public ApplicationStateInfo(string filename) {
+            this.filename = filename;
 
             try {
                 Load(filename);
@@ -19,20 +19,20 @@ namespace LayoutManager {
             catch (System.IO.FileNotFoundException) {
                 InitElement("ApplicationState");
             }
-		}
+        }
 
-		public void Save() {
-			Element.OwnerDocument.Save(filename);
-		}
+        public void Save() {
+            Element.OwnerDocument.Save(filename);
+        }
 
-		public string LayoutFilename {
-			get {
-				return GetAttribute("LayoutFilename");
-			}
+        public string LayoutFilename {
+            get {
+                return GetAttribute("LayoutFilename");
+            }
 
-			set {
-				SetAttribute("LayoutFilename", value);
-			}
-		}
-	}
+            set {
+                SetAttribute("LayoutFilename", value);
+            }
+        }
+    }
 }

@@ -9,41 +9,40 @@ namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for TrackContactProperties.
     /// </summary>
-    public class TrackContactProperties : Form, ILayoutComponentPropertiesDialog
-	{
-		private TabPage tabPageAddress;
-		private TabControl tabControl;
-		private Button buttonOK;
-		private Button buttonCancel;
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private Container components = null;
-		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
+    public class TrackContactProperties : Form, ILayoutComponentPropertiesDialog {
+        private TabPage tabPageAddress;
+        private TabControl tabControl;
+        private Button buttonOK;
+        private Button buttonCancel;
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private readonly Container components = null;
+        private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
 
-		private TabPage tabPageAttributes;
-		private LayoutManager.CommonUI.Controls.AttributesEditor attributesEditor;
+        private TabPage tabPageAttributes;
+        private LayoutManager.CommonUI.Controls.AttributesEditor attributesEditor;
         private Label label1;
         private CheckBox checkBoxEmergencyContact;
-        LayoutXmlInfo xmlInfo;
+        readonly LayoutXmlInfo xmlInfo;
 
-		public TrackContactProperties(ModelComponent component) {
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+        public TrackContactProperties(ModelComponent component) {
+            //
+            // Required for Windows Form Designer support
+            //
+            InitializeComponent();
 
-			this.xmlInfo = new LayoutXmlInfo(component);
+            this.xmlInfo = new LayoutXmlInfo(component);
 
-			nameDefinition.XmlInfo = xmlInfo;
-			nameDefinition.IsOptional = true;
-			nameDefinition.Component = component;
+            nameDefinition.XmlInfo = xmlInfo;
+            nameDefinition.IsOptional = true;
+            nameDefinition.Component = component;
 
             checkBoxEmergencyContact.Checked = IsEmergencyContact;
 
-			attributesEditor.AttributesSource = typeof(LayoutTrackContactComponent);
-			attributesEditor.AttributesOwner = new AttributesOwner(xmlInfo.Element);
-		}
+            attributesEditor.AttributesSource = typeof(LayoutTrackContactComponent);
+            attributesEditor.AttributesOwner = new AttributesOwner(xmlInfo.Element);
+        }
 
         bool IsEmergencyContact {
             get { return xmlInfo.Element.HasAttribute(LayoutTrackContactComponent.EmergencyContactAttribute) ? XmlConvert.ToBoolean(xmlInfo.Element.GetAttribute(LayoutTrackContactComponent.EmergencyContactAttribute)) : false; }
@@ -61,25 +60,21 @@ namespace LayoutManager.Tools.Dialogs {
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                if (components != null) {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent() {
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOK = new System.Windows.Forms.Button();
             this.tabControl = new System.Windows.Forms.TabControl();
@@ -204,16 +199,16 @@ namespace LayoutManager.Tools.Dialogs {
             this.tabPageAttributes.ResumeLayout(false);
             this.ResumeLayout(false);
 
-		}
-		#endregion
+        }
+        #endregion
 
-		private void buttonOK_Click(object sender, System.EventArgs e) {
-			if(nameDefinition.Commit() && attributesEditor.Commit()) {
-				this.DialogResult = DialogResult.OK;
-				Close();
-			}
+        private void buttonOK_Click(object sender, System.EventArgs e) {
+            if (nameDefinition.Commit() && attributesEditor.Commit()) {
+                this.DialogResult = DialogResult.OK;
+                Close();
+            }
 
             IsEmergencyContact = checkBoxEmergencyContact.Checked;
-		}
-	}
+        }
+    }
 }

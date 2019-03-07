@@ -4,22 +4,20 @@ namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for LengthInput.
     /// </summary>
-    public class LengthInput : UnitInput
-	{
-		public LengthInput()
-		{
-			DefineUnit("cm", 1.0, 0.0);
-			DefineUnit("inch", 2.54, 0.0);
-			UnitDefinitionDone();
+    public class LengthInput : UnitInput {
+        public LengthInput() {
+            DefineUnit("cm", 1.0, 0.0);
+            DefineUnit("inch", 2.54, 0.0);
+            UnitDefinitionDone();
 
-			SelectUnit(0);
-		}
+            SelectUnit(0);
+        }
 
-		public void Initialize() {
-			String defaultLengthUnit = (String)EventManager.Event(new LayoutEvent(Parent, "get-default-length-unit"));
+        public void Initialize() {
+            String defaultLengthUnit = (String)EventManager.Event(new LayoutEvent(Parent, "get-default-length-unit"));
 
-			if(defaultLengthUnit != null)
-				SelectUnit(defaultLengthUnit);
-		}
-	}
+            if (defaultLengthUnit != null)
+                SelectUnit(defaultLengthUnit);
+        }
+    }
 }

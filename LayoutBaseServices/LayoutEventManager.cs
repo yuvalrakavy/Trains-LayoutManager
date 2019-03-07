@@ -9,316 +9,294 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Threading;
 
+// Reenable warning when switch to .NET 4.8 and range c#8 feature is supported
+#pragma warning disable IDE0057
+
+#nullable enable
 namespace LayoutManager {
 
     /// <summary>
     /// A Layout Manager event
     /// </summary>
     public class LayoutEvent : LayoutObject {
-		Object				sender;
-		private String		eventName;		// Cache the event name
-		bool				continueProcessing = true;
-		Object				info;			// Additional information for this event
-		String				ifTarget;
-		Type				targetType;
+        object? sender;
+        private string eventName;       // Cache the event name
+        bool continueProcessing = true;
+        object? info;           // Additional information for this event
+        string? ifTarget;
+        Type? targetType;
 
-		/// <summary>
-		/// Construct a new event
-		/// </summary>
-		/// <param name="sender">The entity generating the event</param>
-		/// <param name="name">The event name</param>
-		public LayoutEvent(Object sender, String eventName) {
-			InitializeEventObject(sender, eventName, null, null, null, null);
-		}
+        /// <summary>
+        /// Construct a new event
+        /// </summary>
+        /// <param name="sender">The entity generating the event</param>
+        /// <param name="name">The event name</param>
+        public LayoutEvent(object? sender, string eventName) {
+            XmlInfo.XmlDocument.LoadXml("<LayoutEvent />");
 
-		/// <summary>
-		/// Constructs a new event with attached XML document
-		/// </summary>
-		/// <param name="sender">The entity sending the event</param>
-		/// <param name="name">The event name (optional)</param>
-		/// <param name="xmlDocument">The event inner XML document</param>
-		public LayoutEvent(Object sender, String eventName, String xmlDocument) {
-			InitializeEventObject(sender, eventName, xmlDocument, null, null, null);
-		}
+            this.eventName = eventName;
+            DocumentElement.SetAttribute("EventName", eventName);
 
-		/// <summary>
-		/// Constructs a new event with optional XML document and additional information
-		/// </summary>
-		/// <param name="sender">The entity sending the event</param>
-		/// <param name="name">The event name (optional)</param>
-		/// <param name="xmlDocument">The event inner XML document (can be null)</param>
-		/// <param name="info">Additional information</param>
-		public LayoutEvent(Object sender, String eventName, String xmlDocument, Object info) {
-			InitializeEventObject(sender, eventName, xmlDocument, info, null, null);
-		}
+            this.sender = sender;
+        }
 
-		/// <summary>
-		/// Construct a new event, with constraint on the type of object type that will get this event
-		/// </summary>
-		/// <param name="sender">The entity generating the event</param>
-		/// <param name="name">The event name</param>
-		/// <param name="targetType">The type of objects that receive this event</param>
-		public LayoutEvent(Object sender, String eventName, Type targetType) {
-			InitializeEventObject(sender, eventName, null, null, targetType, null);
-		}
+        /// <summary>
+        /// Constructs a new event with attached XML document
+        /// </summary>
+        /// <param name="sender">The entity sending the event</param>
+        /// <param name="name">The event name (optional)</param>
+        /// <param name="xmlDocument">The event inner XML document</param>
+        public LayoutEvent(object? sender, string eventName, string? xmlDocument) : this(sender, eventName) {
+            if (xmlDocument != null)
+                DocumentElement.InnerXml = xmlDocument;
+        }
 
-		/// <summary>
-		/// Constructs a new event with attached XML document
-		/// </summary>
-		/// <param name="sender">The entity sending the event</param>
-		/// <param name="name">The event name (optional)</param>
-		/// <param name="xmlDocument">The event inner XML document</param>
-		/// <param name="targetType">The type of objects that receive this event</param>
-		public LayoutEvent(Object sender, String eventName, String xmlDocument, Type targetType) {
-			InitializeEventObject(sender, eventName, xmlDocument, null, targetType, null);
-		}
+        /// <summary>
+        /// Constructs a new event with optional XML document and additional information
+        /// </summary>
+        /// <param name="sender">The entity sending the event</param>
+        /// <param name="name">The event name (optional)</param>
+        /// <param name="xmlDocument">The event inner XML document (can be null)</param>
+        /// <param name="info">Additional information</param>
+        public LayoutEvent(object? sender, string eventName, string? xmlDocument, object? info) : this(sender, eventName, xmlDocument) {
+            this.info = info;
+        }
 
-		/// <summary>
-		/// Constructs a new event with optional XML document and additional information,
-		/// with constraint on the type of object type that will get this event
-		/// </summary>
-		/// <param name="sender">The entity sending the event</param>
-		/// <param name="name">The event name (optional)</param>
-		/// <param name="xmlDocument">The event inner XML document (can be null)</param>
-		/// <param name="info">Additional information</param>
-		/// <param name="targetType">The type of objects that receive this event</param>
-		public LayoutEvent(Object sender, String eventName, String xmlDocument, Object info, Type targetType) {
-			InitializeEventObject(sender, eventName, xmlDocument, info, targetType, null);
-		}
+        /// <summary>
+        /// Construct a new event, with constraint on the type of object type that will get this event
+        /// </summary>
+        /// <param name="sender">The entity generating the event</param>
+        /// <param name="name">The event name</param>
+        /// <param name="targetType">The type of objects that receive this event</param>
+        public LayoutEvent(object? sender, string eventName, Type? targetType) : this(sender, eventName) {
+            this.targetType = targetType;
+        }
 
-		/// <summary>
-		/// Construct a new event, with constraint of the type that will receive the event, and with
-		/// XPath expression filtering the objects that can receive the event based on their XML
-		/// document
-		/// </summary>
-		/// <param name="sender">The entity generating the event</param>
-		/// <param name="name">The event name</param>
-		/// <param name="targetType">The type of objects that receive this event (can be null)</param>
-		/// <param name="ifType">An XPath expression filtering the object that will receive the event based on
-		/// their XML document</param>
-		public LayoutEvent(Object sender, String eventName, Type targetType, Type ifType) {
-			InitializeEventObject(sender, eventName, null, null, targetType, ifTarget);
-		}
+        /// <summary>
+        /// Constructs a new event with attached XML document
+        /// </summary>
+        /// <param name="sender">The entity sending the event</param>
+        /// <param name="name">The event name (optional)</param>
+        /// <param name="xmlDocument">The event inner XML document</param>
+        /// <param name="targetType">The type of objects that receive this event</param>
+        public LayoutEvent(object? sender, string eventName, string xmlDocument, Type targetType) : this(sender, eventName, xmlDocument) {
+            this.targetType = targetType;
+        }
 
-		/// <summary>
-		/// Constructs a new event with attached XML document, with constraint of the type that will receive 
-		/// the event, and with XPath expression filtering the objects that can receive the event based on
-		/// their XML document
-		/// </summary>
-		/// <param name="sender">The entity sending the event</param>
-		/// <param name="name">The event name (optional)</param>
-		/// <param name="xmlDocument">The event inner XML document</param>
-		/// <param name="targetType">The type of objects that receive this event</param>
-		/// <param name="ifType">An XPath expression filtering the object that will receive the event based on
-		/// their XML document</param>
-		public LayoutEvent(Object sender, String eventName, String xmlDocument, Type targetType, String ifTarget) {
-			InitializeEventObject(sender, eventName, xmlDocument, null, targetType, ifTarget);
-		}
+        /// <summary>
+        /// Constructs a new event with optional XML document and additional information,
+        /// with constraint on the type of object type that will get this event
+        /// </summary>
+        /// <param name="sender">The entity sending the event</param>
+        /// <param name="name">The event name (optional)</param>
+        /// <param name="xmlDocument">The event inner XML document (can be null)</param>
+        /// <param name="info">Additional information</param>
+        /// <param name="targetType">The type of objects that receive this event</param>
+        public LayoutEvent(object? sender, string eventName, string xmlDocument, object info, Type targetType) : this(sender, eventName, xmlDocument, info) {
+            this.targetType = targetType;
+        }
 
-		/// <summary>
-		/// Constructs a new event with optional XML document and additional information, with constraint of the type
-		/// that will receive the event, and with XPath expression filtering the objects that can receive the 
-		/// event based on their XML document
-		/// </summary>
-		/// <param name="sender">The entity sending the event</param>
-		/// <param name="name">The event name (optional)</param>
-		/// <param name="xmlDocument">The event inner XML document (can be null)</param>
-		/// <param name="info">Additional information</param>
-		/// <param name="targetType">The type of objects that receive this event</param>
-		/// <param name="ifType">An XPath expression filtering the object that will receive the event based on
-		/// their XML document</param>
-		public LayoutEvent(Object sender, String eventName, String xmlDocument, Object info, Type targetType, String ifTarget) {
-			InitializeEventObject(sender, eventName, xmlDocument, info, targetType, ifTarget);
-		}
+        /// <summary>
+        /// Construct a new event, with constraint of the type that will receive the event, and with
+        /// XPath expression filtering the objects that can receive the event based on their XML
+        /// document
+        /// </summary>
+        /// <param name="sender">The entity generating the event</param>
+        /// <param name="name">The event name</param>
+        /// <param name="targetType">The type of objects that receive this event (can be null)</param>
+        /// <param name="ifType">An XPath expression filtering the object that will receive the event based on
+        /// their XML document</param>
+        public LayoutEvent(object? sender, string eventName, Type? targetType, string ifTarget) : this(sender, eventName, targetType) {
+            this.ifTarget = ifTarget;
+        }
 
-		/// <summary>
-		/// New event that is based on another event, but with a different event name
-		/// </summary>
-		/// <param name="eventName">The new event name</param>
-		/// <param name="baseEvent">The base event containing all other parameters</param>
-		public LayoutEvent(string eventName, LayoutEvent baseEvent)
-			: this(baseEvent.Sender, eventName, baseEvent.Element.InnerXml, baseEvent.Info) {
-		}
+        /// <summary>
+        /// Constructs a new event with attached XML document, with constraint of the type that will receive 
+        /// the event, and with XPath expression filtering the objects that can receive the event based on
+        /// their XML document
+        /// </summary>
+        /// <param name="sender">The entity sending the event</param>
+        /// <param name="name">The event name (optional)</param>
+        /// <param name="xmlDocument">The event inner XML document</param>
+        /// <param name="targetType">The type of objects that receive this event</param>
+        /// <param name="ifType">An XPath expression filtering the object that will receive the event based on
+        /// their XML document</param>
+        public LayoutEvent(object? sender, string eventName, string xmlDocument, Type targetType, string ifTarget) : this(sender, eventName, xmlDocument, targetType) {
+            this.ifTarget = ifTarget;
+        }
 
-		/// <summary>
-		/// Initialize the event object
-		/// </summary>
-		/// <param name="sender">The sending object</param>
-		/// <param name="eventName">The event's name</param>
-		/// <param name="xmlDocument">Event inner XML document</param>
-		/// <param name="info">Additional info</param>
-		/// <param name="targetType">Limit the type of object that can receive the event</param>
-		/// <param name="ifTarget">Limit the objects receiving the event based on their XML document</param>
-		protected void InitializeEventObject(Object sender, String eventName, String xmlDocument, Object info, Type targetType, String ifTarget) {
-			XmlInfo.XmlDocument.LoadXml("<LayoutEvent />");
+        /// <summary>
+        /// Constructs a new event with optional XML document and additional information, with constraint of the type
+        /// that will receive the event, and with XPath expression filtering the objects that can receive the 
+        /// event based on their XML document
+        /// </summary>
+        /// <param name="sender">The entity sending the event</param>
+        /// <param name="name">The event name (optional)</param>
+        /// <param name="xmlDocument">The event inner XML document (can be null)</param>
+        /// <param name="info">Additional information</param>
+        /// <param name="targetType">The type of objects that receive this event</param>
+        /// <param name="ifType">An XPath expression filtering the object that will receive the event based on
+        /// their XML document</param>
+        public LayoutEvent(object? sender, string eventName, string xmlDocument, object info, Type targetType, string ifTarget) : this(sender, eventName, xmlDocument, info, targetType) {
+            this.ifTarget = ifTarget;
+        }
 
-			this.eventName = eventName;
-			DocumentElement.SetAttribute("EventName", eventName);
+        /// <summary>
+        /// New event that is based on another event, but with a different event name
+        /// </summary>
+        /// <param name="eventName">The new event name</param>
+        /// <param name="baseEvent">The base event containing all other parameters</param>
+        public LayoutEvent(string eventName, LayoutEvent baseEvent)
+            : this(baseEvent.Sender, eventName, baseEvent.Element.InnerXml, baseEvent.Info) {
+        }
 
-			this.sender = sender;
-			
-			if(xmlDocument != null)
-				DocumentElement.InnerXml = xmlDocument;
+        /// <summary>
+        /// The entity sending the event
+        /// </summary>
+        public object? Sender {
+            get {
+                return sender;
+            }
 
-			this.info = info;
+            set {
+                this.sender = value;
+            }
+        }
 
-			IfTarget = ifTarget;
-			TargetType = targetType;
-		}
+        /// <summary>
+        /// Optional additional information
+        /// </summary>
+        public object? Info {
+            get {
+                return info;
+            }
 
-		/// <summary>
-		/// The entity sending the event
-		/// </summary>
-		public Object Sender {
-			get {
-				return sender;
-			}
+            set {
+                this.info = value;
+            }
+        }
 
-			set {
-				sender = value;
-			}
-		}
+        /// <summary>
+        /// The event name
+        /// </summary>
+        public string EventName {
+            get {
+                if (eventName == null)
+                    eventName = DocumentElement.GetAttribute("EventName");
+                return eventName;
+            }
+        }
 
-		/// <summary>
-		/// Optional additional information
-		/// </summary>
-		public Object Info {
-			get {
-				return info;
-			}
+        /// <summary>
+        /// Determine if more subscriptions should be checked for applicability to this event
+        /// </summary>
+        public bool ContinueProcessing {
+            get {
+                return continueProcessing;
+            }
 
-			set {
-				info = value;
-			}
-		}
+            set {
+                continueProcessing = value;
+            }
+        }
 
-		/// <summary>
-		/// The event name
-		/// </summary>
-		public String EventName {
-			get {
-				if(eventName == null)
-					eventName = DocumentElement.GetAttribute("EventName");
-				return eventName;
-			}
+        /// <summary>
+        /// Limit the objects that will receive the event based on their XML document
+        /// </summary>
+        public string? IfTarget {
+            get {
+                return ifTarget;
+            }
 
-			set {
-				DocumentElement.SetAttribute("EventName", value);
-				eventName = value;
-			}
-		}
+            set {
+                ifTarget = value;
+                if (ifTarget == null)
+                    DocumentElement.RemoveAttribute("IfTarget");
+                else
+                    DocumentElement.SetAttribute("IfTarget", value);
+            }
+        }
 
-		/// <summary>
-		/// Determine if more subscriptions should be checked for applicability to this event
-		/// </summary>
-		public bool ContinueProcessing {
-			get {
-				return continueProcessing;
-			}
+        /// <summary>
+        /// Limit the objects that will receive the event based on the receiving object type
+        /// </summary>
+        public Type? TargetType {
+            get {
+                return targetType;
+            }
 
-			set {
-				continueProcessing = value;
-			}
-		}
+            set {
+                targetType = value;
+                if (targetType == null)
+                    DocumentElement.RemoveAttribute("TargetType");
+                else
+                    DocumentElement.SetAttribute("TargetType", targetType.AssemblyQualifiedName);
+            }
+        }
 
-		/// <summary>
-		/// Limit the objects that will receive the event based on their XML document
-		/// </summary>
-		public String IfTarget {
-			get {
-				return ifTarget;
-			}
+        /// <summary>
+        /// Check if an XML element matches a given XPath pattern
+        /// </summary>
+        /// <param name="element">The element</param>
+        /// <param name="xPathExpr">The XPath pattern</param>
+        /// <returns></returns>
+        protected bool Matches(XmlElement element, string xpathExpression) {
+            try {
+                return element.CreateNavigator().Matches(xpathExpression);
+            }
+            catch (XPathException ex) {
+                Trace.WriteLine($"XPath error: ({ex.Message}) {xpathExpression} Targeted Event: {EventName} Sender {(Sender != null ? $"{Sender} ({Sender.GetType().FullName})" : "(Null)")}");
 
-			set {
-				ifTarget = value;
-				if(ifTarget == null)
-					DocumentElement.RemoveAttribute("IfTarget");
-				else
-					DocumentElement.SetAttribute("IfTarget", value);
-			}
-		}
+                return false;
+            }
+        }
 
-		/// <summary>
-		/// Limit the objects that will receive the event based on the receiving object type
-		/// </summary>
-		public Type TargetType {
-			get {
-				return targetType;
-			}
+        /// <summary>
+        /// Check if a given subscription target (the object who registered the event handler method) is
+        /// applicable for this event
+        /// </summary>
+        /// <param name="subscription">The subscription</param>
+        /// <returns>True - the subscription target should receive this event, false otherwise</returns>
+        public virtual bool IsSubscriptionApplicable(LayoutEventSubscriptionBase subscription) {
+            object? target = subscription.TargetObject;
 
-			set {
-				targetType = value;
-				if(targetType == null)
-					DocumentElement.RemoveAttribute("TargetType");
-				else
-					DocumentElement.SetAttribute("TargetType", targetType.AssemblyQualifiedName);
-			}
-		}
+            if (target == null || (TargetType != null && !TargetType.IsInstanceOfType(target)))
+                return false;
 
-		/// <summary>
-		/// Check if an XML element matches a given XPath pattern
-		/// </summary>
-		/// <param name="element">The element</param>
-		/// <param name="xPathExpr">The XPath pattern</param>
-		/// <returns></returns>
-		protected bool Matches(XmlElement element, String xpathExpression) {
-			try {
-				return element.CreateNavigator().Matches(xpathExpression);
-			} catch(XPathException ex) {
-				Trace.WriteLine("XPath error: (" + ex.Message + ") " + xpathExpression + 
-					" Targeted Event: " + EventName + " Sender " + Sender + " (" + Sender.GetType().FullName + ")");
-				return false;
-			}
-		}
+            if (IfTarget != null && target is IObjectHasXml targetXml && !Matches(targetXml.Element, IfTarget))
+                return false;
 
-		/// <summary>
-		/// Check if a given subscription target (the object who registered the event handler method) is
-		/// applicable for this event
-		/// </summary>
-		/// <param name="subscription">The subscription</param>
-		/// <returns>True - the subscription target should receive this event, false otherwise</returns>
-		public virtual bool IsSubscriptionApplicable(LayoutEventSubscriptionBase subscription) {
-			Object	target = subscription.TargetObject;
+            return true;
+        }
 
-			if(TargetType != null && !TargetType.IsInstanceOfType(target))
-				return false;
+        #region Methods to get/set event parameters
 
-			IObjectHasXml	targetXml = target as IObjectHasXml;
+        public bool HasOption(string elementName, string optionName) {
+            XmlElement optionElement = Element[elementName];
 
-			if(IfTarget != null && targetXml != null && !Matches(targetXml.Element, IfTarget))
-				return false;
-
-			return true;
-		}
-
-		#region Methods to get/set event parameters
-
-		public bool HasOption(string elementName, string optionName) {
-			XmlElement	optionElement = Element[elementName];
-
-			if(optionElement != null)
-				return optionElement.HasAttribute(optionName);
-			return false;
-		}
+            if (optionElement != null)
+                return optionElement.HasAttribute(optionName);
+            return false;
+        }
 
         public bool HasOption(string optionName) => HasOption("Options", optionName);
 
-        public string GetOption(string optionName, string elementName = "Options", string defaultValue = null) {
-			XmlElement	optionElement = Element[elementName];
+        public string? GetOption(string optionName, string elementName = "Options", string? defaultValue = null) {
+            XmlElement optionElement = Element[elementName];
 
-			if(optionElement != null && optionElement.HasAttribute(optionName))
-				return optionElement.GetAttribute(optionName);
-			return defaultValue;
-		}
+            if (optionElement != null && optionElement.HasAttribute(optionName))
+                return optionElement.GetAttribute(optionName);
+            return defaultValue;
+        }
 
-		public LayoutEvent CopyOptions(LayoutEvent other, string elementName = "Options") {
-			XmlElement otherElement = other.Element[elementName];
+        public LayoutEvent CopyOptions(LayoutEvent other, string elementName = "Options") {
+            XmlElement otherElement = other.Element[elementName];
 
-			if(otherElement != null)
-				Element.AppendChild(Element.OwnerDocument.ImportNode(otherElement, true));
+            if (otherElement != null)
+                Element.AppendChild(Element.OwnerDocument.ImportNode(otherElement, true));
 
-			return this;
-		}
+            return this;
+        }
 
         public bool GetBoolOption(string elementName, string optionName, bool defaultValue) => XmlConvert.ToBoolean(GetOption(optionName, elementName, XmlConvert.ToString(defaultValue)));
 
@@ -337,17 +315,17 @@ namespace LayoutManager {
         public int GetIntOption(string optionName) => GetIntOption("Options", optionName);
 
         public LayoutEvent SetOption(string elementName, string optionName, string value) {
-			XmlElement	optionElement = Element[elementName];
+            XmlElement optionElement = Element[elementName];
 
-			if(optionElement == null) {
-				optionElement = Element.OwnerDocument.CreateElement(elementName);
-				Element.AppendChild(optionElement);
-			}
+            if (optionElement == null) {
+                optionElement = Element.OwnerDocument.CreateElement(elementName);
+                Element.AppendChild(optionElement);
+            }
 
-			optionElement.SetAttribute(optionName, value);
+            optionElement.SetAttribute(optionName, value);
 
-			return this;
-		}
+            return this;
+        }
 
         public LayoutEvent SetOption(string optionName, string value) => SetOption("Options", optionName, value);
 
@@ -367,67 +345,115 @@ namespace LayoutManager {
 
     }
 
-	public class LayoutEvent<TSender, TInfo> : LayoutEvent {
-		public LayoutEvent(string eventName, TSender sender = default(TSender), TInfo info = default(TInfo))
-			: base(sender, eventName, null, info) {
+    public class LayoutEvent<TSender, TInfo> : LayoutEvent where TSender : class where TInfo : class {
+        public LayoutEvent(string eventName, TSender? sender, TInfo? info = default)
+            : base(sender, eventName, null, info) {
+        }
 
-		}
+        public new TSender? Sender {
+            get {
+                return base.Sender as TSender;
+            }
+        }
 
-		public new TSender Sender {
-			get {
-				return (TSender)base.Sender;
-			}
+        public new TInfo? Info {
+            get {
+                return (TInfo?)base.Info;
+            }
 
-			set {
-				base.Sender = value;
-			}
-		}
+            set {
+                base.Info = value;
+            }
+        }
+    }
 
-		public new TInfo Info {
-			get {
-				return (TInfo)base.Info;
-			}
+    public class LayoutEvent<TSender> : LayoutEvent<TSender, object> where TSender : class {
+        public LayoutEvent(string eventName, TSender sender)
+            : base(eventName, sender, default) {
+        }
+    }
 
-			set {
-				base.Info = value;
-			}
-		}
-	}
+    public class LayoutEventInfoValueType<TSender, TInfo> : LayoutEvent where TSender : class where TInfo : struct {
+        public LayoutEventInfoValueType(string eventName, TSender? sender, TInfo info) : base(sender, eventName, null, info) {
 
-	public class LayoutEvent<TSender> : LayoutEvent<TSender, object> {
-		public LayoutEvent(string eventName, TSender sender = default(TSender))
-			: base(eventName, sender, default(object)) {
-		}
-	}
+        }
+        public new TSender? Sender {
+            get {
+                return base.Sender as TSender;
+            }
+        }
 
-	public class LayoutEvent<TSender, TInfo, TResult> : LayoutEvent<TSender, TInfo> {
-		public LayoutEvent(string eventName, TSender sender = default(TSender), TInfo info = default(TInfo))
-			: base(eventName, sender, info) {
-		}
+        public new TInfo Info {
+            get {
+                return (TInfo)base.Info;
+            }
 
-		public TResult Result {
-			get {
-				return (TResult)((LayoutEvent)this).Info;
-			}
+            set {
+                base.Info = value;
+            }
+        }
+    }
 
-			set {
-				((LayoutEvent)this).Info = value;
-			}
-		}
-	}
+    public class LayoutEvent<TSender, TInfo, TResult> : LayoutEvent<TSender, TInfo> where TSender : class where TInfo : class where TResult : class {
+        public LayoutEvent(string eventName, TSender sender, TInfo? info = default)
+            : base(eventName, sender, info) {
+        }
 
-	/// <summary>
-	/// A delegate (function pointer) to a method for handling a layout event
-	/// </summary>
-	public delegate void LayoutEventHandler(LayoutEvent e);
+        public TResult? Result {
+            get {
+                return (TResult?)((LayoutEvent)this).Info;
+            }
 
-	/// <summary>
-	/// Delegate to method for async event handlers
-	/// </summary>
-	/// <param name="e">The event</param>
-	/// <returns>Task that will compute the final values of the event</returns>
-	public delegate Task LayoutVoidAsyncEventHandler(LayoutEvent e);
-	public delegate Task<object> LayoutAsyncEventHandler(LayoutEvent e);
+            set {
+                ((LayoutEvent)this).Info = value;
+            }
+        }
+    }
+
+    public class LayoutEventResultValueType<TSender, TInfo, TResult> : LayoutEvent<TSender, TInfo> where TSender : class where TInfo : class where TResult : struct {
+        public LayoutEventResultValueType(string eventName, TSender sender, TInfo info)
+            : base(eventName, sender, info) {
+        }
+
+        public TResult? Result {
+            get {
+                return (TResult?)((LayoutEvent)this).Info;
+            }
+
+            set {
+                ((LayoutEvent)this).Info = value;
+            }
+        }
+    }
+
+    public class LayoutEventInfoResultValueType<TSender, TInfo, TResult> : LayoutEventInfoValueType<TSender, TInfo> where TSender : class where TInfo : struct where TResult : struct {
+        public LayoutEventInfoResultValueType(string eventName, TSender sender, TInfo info)
+            : base(eventName, sender, info) {
+        }
+
+        public TResult? Result {
+            get {
+                return (TResult?)((LayoutEvent)this).Info;
+            }
+
+            set {
+                ((LayoutEvent)this).Info = value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// A delegate (function pointer) to a method for handling a layout event
+    /// </summary>
+    public delegate void LayoutEventHandler(LayoutEvent e);
+
+    /// <summary>
+    /// Delegate to method for async event handlers
+    /// </summary>
+    /// <param name="e">The event</param>
+    /// <returns>Task that will compute the final values of the event</returns>
+    public delegate Task LayoutVoidAsyncEventHandler(LayoutEvent e);
+    public delegate Task<object> LayoutAsyncEventHandler(LayoutEvent e);
 
     public enum LayoutEventRole {
         Unspecified,
@@ -440,146 +466,134 @@ namespace LayoutManager {
     /// Base for subscription to receive a layout event.
     /// </summary>
     public abstract class LayoutEventSubscriptionBase : LayoutObject {
-        LayoutEventRole     role = LayoutEventRole.Unspecified;
-		Type				senderType;
-		Type				eventType;
-		Type				infoType;
-		String				eventName;
-		String				ifSender;
-		String				ifEvent;
-		String				ifInfo;
-		int					order;
+        LayoutEventRole role = LayoutEventRole.Unspecified;
+        Type? senderType;
+        Type? eventType;
+        Type? infoType;
+        readonly string eventName;
+        string? ifSender;
+        string? ifEvent;
+        string? ifInfo;
+        int order;
 
-		/// <summary>
-		/// construct a new subscription
-		/// </summary>
-		protected LayoutEventSubscriptionBase() {
-			InitializeSubscriptionObject();
-		}
+#if NOTDEF
+        /// <summary>
+        /// construct a new subscription
+        /// </summary>
+        protected LayoutEventSubscriptionBase() {
+        }
+#endif
 
-		/// <summary>
-		/// Constuct a new event subscription, for a given event
-		/// </summary>
-		/// <param name="setupString">The setup string (see Parse)</param>
-		public LayoutEventSubscriptionBase(String eventName) {
-			InitializeSubscriptionObject();
-			EventName = eventName;
-		}
+        /// <summary>
+        /// Constuct a new event subscription, for a given event
+        /// </summary>
+        /// <param name="setupString">The setup string (see Parse)</param>
+        public LayoutEventSubscriptionBase(string eventName) {
+            XmlDocument.LoadXml("<LayoutSubscription />");
+            this.eventName = eventName;
+            DocumentElement.SetAttribute("EventName", eventName);
+        }
 
-		/// <summary>
-		/// Construct a subscription using information extract from LayoutEvent attribute
-		/// </summary>
-		/// <param name="ea">The LayoutEvent attribute</param>
-		public LayoutEventSubscriptionBase(LayoutEventAttributeBase ea) {
-			InitializeSubscriptionObject();
+        /// <summary>
+        /// Construct a subscription using information extract from LayoutEvent attribute
+        /// </summary>
+        /// <param name="ea">The LayoutEvent attribute</param>
+        public LayoutEventSubscriptionBase(LayoutEventAttributeBase ea) : this(ea.EventName) {
+            SetFromLayoutEventAttribute(ea);
+        }
 
-			SetFromLayoutEventAttribute(ea);
-		}
-
-		public void SetFromLayoutEventAttribute(LayoutEventAttributeBase ea) {
-    		EventName = ea.EventName;
+        public void SetFromLayoutEventAttribute(LayoutEventAttributeBase ea) {
             Role = ea.Role;
-			SenderType = ea.SenderType;
-			EventType = ea.EventType;
-			InfoType = ea.InfoType;
-			IfSender = ea.IfSender;
-			IfEvent = ea.IfEvent;
-			IfInfo = ea.IfInfo;
-			Order = ea.Order;
-		}
+            SenderType = ea.SenderType;
+            EventType = ea.EventType;
+            InfoType = ea.InfoType;
+            IfSender = ea.IfSender;
+            IfEvent = ea.IfEvent;
+            IfInfo = ea.IfInfo;
+            Order = ea.Order;
+        }
 
-		/// <summary>
-		/// Expand XPath expression so it contain values extracted from the XML document of the object that
-		/// is subscribing to the event. Strings enclosed between ` (back qoute characters) are evaluated
-		/// on the subscriber object XML document, and their result replaces the expression.
-		/// </summary>
-		/// <example>
-		/// Say that you want a XPath pattern to match when the ID attribute is the same as the subscriber object
-		/// ID, you may use the following XPath pattern:
-		///		SenderObj[@ID='`string(@ID)`']
-		///	The expression `string(@ID)` will be replaced with the current value of the ID attribute of the
-		///	subscriber object.
-		/// </example>
-		/// <remarks>
-		/// If the subscriber object XML document is changed the subscription refresh method
-		/// should be called
-		/// </remarks>
-		/// <param name="xPath">The XPath expression to expand</param>
-		/// <returns>The expanded XPath</returns>
-		protected String ExpandXPath(String xpath) {
-			if(xpath == null || xpath.IndexOf('`') < 0)
-				return xpath;
+        /// <summary>
+        /// Expand XPath expression so it contain values extracted from the XML document of the object that
+        /// is subscribing to the event. Strings enclosed between ` (back qoute characters) are evaluated
+        /// on the subscriber object XML document, and their result replaces the expression.
+        /// </summary>
+        /// <example>
+        /// Say that you want a XPath pattern to match when the ID attribute is the same as the subscriber object
+        /// ID, you may use the following XPath pattern:
+        ///		SenderObj[@ID='`string(@ID)`']
+        ///	The expression `string(@ID)` will be replaced with the current value of the ID attribute of the
+        ///	subscriber object.
+        /// </example>
+        /// <remarks>
+        /// If the subscriber object XML document is changed the subscription refresh method
+        /// should be called
+        /// </remarks>
+        /// <param name="xPath">The XPath expression to expand</param>
+        /// <returns>The expanded XPath</returns>
+        protected string? ExpandXPath(string? xpath) {
+            if (xpath == null || xpath.IndexOf('`') < 0)
+                return xpath;
 
-			IObjectHasXml	subscriberXml = TargetObject as IObjectHasXml;
+            if (!(TargetObject is IObjectHasXml subscriberXml))
+                return xpath;
 
-			if(subscriberXml == null)
-				return xpath;
+            XPathNavigator xpn = subscriberXml.Element.CreateNavigator();
+            System.Text.StringBuilder result = new System.Text.StringBuilder(xpath.Length);
+            int pos = 0;
 
-			XPathNavigator				xpn = subscriberXml.Element.CreateNavigator();
-			System.Text.StringBuilder	result = new System.Text.StringBuilder(xpath.Length);
-			int							pos = 0;
+            for (int nextPos; (nextPos = xpath.IndexOf('`', pos)) >= 0; pos = nextPos) {
+                result.Append(xpath.Substring(pos, nextPos - pos));
 
-			for(int nextPos = 0; (nextPos = xpath.IndexOf('`', pos)) >= 0; pos = nextPos) {
-				result.Append(xpath.Substring(pos, nextPos-pos));
+                if (xpath[nextPos + 1] == '`') {
+                    result.Append('`');     // `` is converted to a single `
+                    nextPos += 2;
+                }
+                else {
+                    int s = nextPos;    // s is first ` index
+                    string expandXpath;
 
-				if(xpath[nextPos+1] == '`') {
-					result.Append('`');		// `` is converted to a single `
-					nextPos += 2;
-				}
-				else {
-					int		s = nextPos;	// s is first ` index
-					String	expandXpath = null;
+                    nextPos = xpath.IndexOf('`', nextPos + 1);      // nextPos is the index of the terminating `
+                    if (nextPos < 0)
+                        throw new ArgumentException("XPath missing a ` character for expanded string", nameof(xpath));
 
-					nextPos = xpath.IndexOf('`', nextPos+1);		// nextPos is the index of the terminating `
-					if(nextPos < 0)
-						throw new ArgumentException("XPath missing a ` character for expanded string", nameof(xpath));
+                    expandXpath = xpath.Substring(s + 1, nextPos - s - 1);
 
-					expandXpath = xpath.Substring(s+1, nextPos-s-1);
+                    string expandedXpath = xpn.Evaluate(expandXpath).ToString();
+                    result.Append(expandedXpath);
 
-					String	expandedXpath = xpn.Evaluate(expandXpath).ToString();
-					result.Append(expandedXpath);
+                    nextPos++;      // skip the closing `
+                }
+            }
 
-					nextPos++;		// skip the closing `
-				}
-			}
+            result.Append(xpath.Substring(pos, xpath.Length - pos));
 
-			result.Append(xpath.Substring(pos, xpath.Length-pos));
+            return result.ToString();
+        }
 
-			return result.ToString();
-		}
+        /// <summary>
+        /// Re-expand the IfEvent and IfSender XPath patterns.
+        /// </summary>
+        /// <remarks>
+        /// You should call this method if the subscriber object XML document was changed
+        /// </remarks>
+        public void Refresh() {
+            if (DocumentElement.HasAttribute("IfSender"))
+                ifSender = ExpandXPath(DocumentElement.GetAttribute("IfSender"));
+            if (DocumentElement.HasAttribute("IfEvent"))
+                ifEvent = ExpandXPath(DocumentElement.GetAttribute("IfEvent"));
+            if (DocumentElement.HasAttribute("IfInfo"))
+                ifInfo = ExpandXPath(DocumentElement.GetAttribute("IfInfo"));
+        }
 
-		/// <summary>
-		/// Re-expand the IfEvent and IfSender XPath patterns.
-		/// </summary>
-		/// <remarks>
-		/// You should call this method if the subscriber object XML document was changed
-		/// </remarks>
-		public void Refresh() {
-			if(DocumentElement.HasAttribute("IfSender"))
-				ifSender = ExpandXPath(DocumentElement.GetAttribute("IfSender"));
-			if(DocumentElement.HasAttribute("IfEvent"))
-				ifEvent = ExpandXPath(DocumentElement.GetAttribute("IfEvent"));
-			if(DocumentElement.HasAttribute("IfInfo"))
-				ifInfo = ExpandXPath(DocumentElement.GetAttribute("IfInfo"));
-		}
-
-		/// <summary>
-		/// Get/Set the event name for which this subscription is applicable.
-		/// </summary>
-		public String EventName {
-			get {
-				return eventName;
-			}
-
-			set {
-				eventName = value;
-
-				if(value == null)
-					DocumentElement.RemoveAttribute("EventName");
-				else
-					DocumentElement.SetAttribute("EventName", value);
-			}
-		}
+        /// <summary>
+        /// Get/Set the event name for which this subscription is applicable.
+        /// </summary>
+        public string EventName {
+            get {
+                return eventName;
+            }
+        }
 
         /// <summary>
         /// Set/Get event role (is it a request or notification)
@@ -602,333 +616,336 @@ namespace LayoutManager {
         /// <summary>
         /// Get/Set the sender entity type filter
         /// </summary>
-        public Type SenderType {
-			get {
-				return senderType;
-			}
+        public Type? SenderType {
+            get {
+                return senderType;
+            }
 
-			set {
-				senderType = value;
+            set {
+                senderType = value;
 
-				if(value == null)
-					DocumentElement.RemoveAttribute("SenderType");
-				else
-					DocumentElement.SetAttribute("SenderType", value.AssemblyQualifiedName);
-			}
-		}
+                if (value == null)
+                    DocumentElement.RemoveAttribute("SenderType");
+                else
+                    DocumentElement.SetAttribute("SenderType", value.AssemblyQualifiedName);
+            }
+        }
 
-		/// <summary>
-		/// Get/Set the event object type filter
-		/// </summary>
-		public Type EventType {
-			get {
-				return eventType;
-			}
+        /// <summary>
+        /// Get/Set the event object type filter
+        /// </summary>
+        public Type? EventType {
+            get {
+                return eventType;
+            }
 
-			set {
-				eventType = value;
+            set {
+                eventType = value;
 
-				if(value == null)
-					DocumentElement.RemoveAttribute("EventType");
-				else
-					DocumentElement.SetAttribute("EventType", value.FullName);
-			}
-		}
+                if (value == null)
+                    DocumentElement.RemoveAttribute("EventType");
+                else
+                    DocumentElement.SetAttribute("EventType", value.FullName);
+            }
+        }
 
-		/// <summary>
-		/// Get/Set the info object type filter
-		/// </summary>
-		public Type InfoType {
-			get {
-				return infoType;
-			}
+        /// <summary>
+        /// Get/Set the info object type filter
+        /// </summary>
+        public Type? InfoType {
+            get => infoType;
 
-			set {
-				infoType = value;
+            set {
+                infoType = value;
 
-				if(value == null)
-					DocumentElement.RemoveAttribute("InfoType");
-				else
-					DocumentElement.SetAttribute("InfoType", value.FullName);
-			}
-		}
+                if (value == null)
+                    DocumentElement.RemoveAttribute("InfoType");
+                else
+                    DocumentElement.SetAttribute("InfoType", value.FullName);
+            }
+        }
 
-		/// <summary>
-		/// Get/Set the XPath for filtering the sender XML document
-		/// </summary>
-		public String IfSender {
-			get {
-				return ifSender;
-			}
+        /// <summary>
+        /// Get/Set the XPath for filtering the sender XML document
+        /// </summary>
+        public string? IfSender {
+            get => ifSender;
 
-			set {
-				ifSender = ExpandXPath(value);
+            set {
+                ifSender = ExpandXPath(value);
 
-				if(value == null)
-					DocumentElement.RemoveAttribute("IfSender");
-				else
-					DocumentElement.SetAttribute("IfSender", value);		// Note, this is the non-expanded XPath
-			}
-		}
+                if (value == null)
+                    DocumentElement.RemoveAttribute("IfSender");
+                else
+                    DocumentElement.SetAttribute("IfSender", value);        // Note, this is the non-expanded XPath
+            }
+        }
 
-        public String NonExpandedIfSender => DocumentElement.GetAttribute("IfSender");
+        public string NonExpandedIfSender => DocumentElement.GetAttribute("IfSender");
 
         /// <summary>
         /// Get/Set the XPath for filtering the event XML document
         /// </summary>
-        public String IfEvent {
-			get {
-				return ifEvent;
-			}
+        public string? IfEvent {
+            get {
+                return ifEvent;
+            }
 
-			set {
-				ifEvent = ExpandXPath(value);
+            set {
+                ifEvent = ExpandXPath(value);
 
-				if(value == null)
-					DocumentElement.RemoveAttribute("IfEvent");
-				else
-					DocumentElement.SetAttribute("IfEvent", value);		// Note this is the non-expanded XPath
-			}
-		}
+                if (value == null)
+                    DocumentElement.RemoveAttribute("IfEvent");
+                else
+                    DocumentElement.SetAttribute("IfEvent", value);     // Note this is the non-expanded XPath
+            }
+        }
 
-        public String NonExpandedIfEvent => DocumentElement.GetAttribute("IfEvent");
+        public string NonExpandedIfEvent => DocumentElement.GetAttribute("IfEvent");
 
         /// <summary>
         /// Get/Set the XPath for filtering the info object
         /// </summary>
-        public String IfInfo {
-			get {
-				return ifInfo;
-			}
+        public string? IfInfo {
+            get {
+                return ifInfo;
+            }
 
-			set {
-				ifInfo = ExpandXPath(value);
+            set {
+                ifInfo = ExpandXPath(value);
 
-				if(value == null)
-					DocumentElement.RemoveAttribute("IfInfo");
-				else
-					DocumentElement.SetAttribute("IfInfo", value);		// Note this is the non-expanded XPath
-			}
-		}
+                if (value == null)
+                    DocumentElement.RemoveAttribute("IfInfo");
+                else
+                    DocumentElement.SetAttribute("IfInfo", value);      // Note this is the non-expanded XPath
+            }
+        }
 
-        public String NonExpandedIfInfo => DocumentElement.GetAttribute("IfInfo");
+        public string NonExpandedIfInfo => DocumentElement.GetAttribute("IfInfo");
 
         /// <summary>
         /// Get/Set subscription processing order
         /// </summary>
         public int Order {
-			get {
-				return order;
-			}
+            get {
+                return order;
+            }
 
-			set {
-				order = value;
-				DocumentElement.SetAttribute("Order", XmlConvert.ToString(value));
-			}
-		}
-
-		/// <summary>
-		/// The object that is the target of this event handler
-		/// </summary>
-		public abstract object TargetObject {
-			get;
-		}
-
-		/// <summary>
-		/// Event handler method name
-		/// </summary>
-		public abstract string MethodName {
-			get;
-		}
-
-		/// <summary>
-		/// Set the event handler method
-		/// </summary>
-		/// <param name="objectInstance">Event handler instance (null if this is static method)</param>
-		/// <param name="method">The method</param>
-		public abstract void SetMethod(object objectInstance, MethodInfo method);
-
-		protected void InitializeSubscriptionObject() {
-			XmlDocument.LoadXml("<LayoutSubscription />");
-		}
-
-		protected bool Matches(XmlElement element, String xpathExpression) {
-			try {
-				return element.CreateNavigator().Matches(xpathExpression);
-			} catch(XPathException ex) {
-				Trace.WriteLine("XPath error: (" + ex.Message + ") " + xpathExpression + " Subscription for " + MethodName);
-				return false;
-			}
-		}
-
-		/// <summary>
-		/// Check if a given event is applicable to this subscription
-		/// </summary>
-		/// <param name="e">The event to be checked</param>
-		/// <returns>True - this subscription should process this event</returns>
-		virtual public bool IsEventApplicable(LayoutEvent e) {
-			if(EventName != null && e.EventName != EventName)
-				return false;
-
-			if(SenderType != null && e.Sender != null) {
-				if(e.Sender is Type) {
-					if((Type)e.Sender != SenderType && !((Type)e.Sender).IsSubclassOf(SenderType))
-						return false;
-				}
-				else {
-					if(!SenderType.IsInstanceOfType(e.Sender))
-						return false;
-				}
-			}
-
-			if(EventType != null && EventType.IsInstanceOfType(e))
-				return false;
-
-			if(InfoType != null && e.Info != null) {
-				if(e.Info is Type) {
-					if((Type)e.Info == InfoType && !((Type)e.Info).IsSubclassOf(InfoType))
-						return false;
-				}
-				else {
-					if(!InfoType.IsInstanceOfType(e.Info))
-						return false;
-				}
-			}
-
-			if(e.Sender != null && IfSender != null) {
-				XmlElement	element = null;
-
-				if(e.Sender is IObjectHasXml)
-					element = ((IObjectHasXml)e.Sender).Element;
-				else if(e.Sender is XmlElement)
-					element = (XmlElement)e.Sender;
-
-				if(element != null && !Matches(element, IfSender))
-						return false;
-			}
-
-			if(IfEvent != null && !Matches(e.DocumentElement, IfEvent))
-				return false;
-
-			if(IfInfo != null && e.Info != null) {
-				XmlElement	element = null;
-
-				if(e.Info is IObjectHasXml)
-					element = ((IObjectHasXml)e.Info).Element;
-				else if(e.Info is XmlElement)
-					element = (XmlElement)e.Info;
-
-				if(element != null && !Matches(element, IfInfo))
-					return false;
-			}
-
-			return true;		// Everything matches, the event is applicable to this subscription
-		}
-	}
-
-	public class LayoutEventSubscription : LayoutEventSubscriptionBase {
-
-		public LayoutEventSubscription() : base() { }
-
-		public LayoutEventSubscription(string eventName)
-			: base(eventName) {
-		}
-
-		public LayoutEventSubscription(LayoutEventAttribute ea)
-			: base(ea) {
-		}
-
-		/// <summary>
-		/// Get/Set the delegate to the event handler to be called
-		/// </summary>
-		public LayoutEventHandler EventHandler { get; private set; }
+            set {
+                order = value;
+                DocumentElement.SetAttribute("Order", XmlConvert.ToString(value));
+            }
+        }
 
         /// <summary>
-        /// The object in which the event handler reside
+        /// The object that is the target of this event handler
         /// </summary>
-        public override object TargetObject => EventHandler != null ? EventHandler.Target : null;
+        public abstract object? TargetObject {
+            get;
+        }
 
         /// <summary>
         /// Event handler method name
         /// </summary>
-        public override string MethodName => EventHandler.Method.Name;
+        public abstract string? MethodName {
+            get;
+        }
 
-        public override void SetMethod(object objectInstance, MethodInfo method) {
-			if(objectInstance == null)
-				EventHandler = (LayoutEventHandler)Delegate.CreateDelegate(typeof(LayoutEventHandler), method);
-			else
-				EventHandler = (LayoutEventHandler)Delegate.CreateDelegate(typeof(LayoutEventHandler), objectInstance, method.Name);
-		}
-	}
+        /// <summary>
+        /// Set the event handler method
+        /// </summary>
+        /// <param name="objectInstance">Event handler instance (null if this is static method)</param>
+        /// <param name="method">The method</param>
+        public abstract void SetMethod(object? objectInstance, MethodInfo method);
 
-	public class LayoutAsyncEventSubscription : LayoutEventSubscriptionBase {
-		LayoutVoidAsyncEventHandler _voidEventHandler;
-		LayoutAsyncEventHandler _eventHandler;
+        protected void InitializeSubscriptionObject() {
+            XmlDocument.LoadXml("<LayoutSubscription />");
+        }
 
-		public LayoutAsyncEventSubscription()
+        protected bool Matches(XmlElement element, string xpathExpression) {
+            try {
+                return element.CreateNavigator().Matches(xpathExpression);
+            }
+            catch (XPathException ex) {
+                Trace.WriteLine("XPath error: (" + ex.Message + ") " + xpathExpression + " Subscription for " + MethodName);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Check if a given event is applicable to this subscription
+        /// </summary>
+        /// <param name="e">The event to be checked</param>
+        /// <returns>True - this subscription should process this event</returns>
+        virtual public bool IsEventApplicable(LayoutEvent e) {
+            if (EventName != null && e.EventName != EventName)
+                return false;
+
+            if (SenderType != null && e.Sender != null) {
+                if (e.Sender is Type) {
+                    if ((Type)e.Sender != SenderType && !((Type)e.Sender).IsSubclassOf(SenderType))
+                        return false;
+                }
+                else {
+                    if (!SenderType.IsInstanceOfType(e.Sender))
+                        return false;
+                }
+            }
+
+            if (EventType != null && EventType.IsInstanceOfType(e))
+                return false;
+
+            if (InfoType != null && e.Info != null) {
+                if (e.Info is Type) {
+                    if ((Type)e.Info == InfoType && !((Type)e.Info).IsSubclassOf(InfoType))
+                        return false;
+                }
+                else {
+                    if (!InfoType.IsInstanceOfType(e.Info))
+                        return false;
+                }
+            }
+
+            if (e.Sender != null && IfSender != null) {
+                XmlElement? element = null;
+
+                if (e.Sender is IObjectHasXml)
+                    element = ((IObjectHasXml)e.Sender).Element;
+                else if (e.Sender is XmlElement)
+                    element = (XmlElement)e.Sender;
+
+                if (element != null && !Matches(element, IfSender))
+                    return false;
+            }
+
+            if (IfEvent != null && !Matches(e.DocumentElement, IfEvent))
+                return false;
+
+            if (IfInfo != null && e.Info != null) {
+                XmlElement? element = null;
+
+                if (e.Info is IObjectHasXml)
+                    element = ((IObjectHasXml)e.Info).Element;
+                else if (e.Info is XmlElement)
+                    element = (XmlElement)e.Info;
+
+                if (element != null && !Matches(element, IfInfo))
+                    return false;
+            }
+
+            return true;        // Everything matches, the event is applicable to this subscription
+        }
+    }
+
+    public class LayoutEventSubscription : LayoutEventSubscriptionBase {
+
+        //		public LayoutEventSubscription() : base() { }
+
+        public LayoutEventSubscription(string eventName)
+            : base(eventName) {
+        }
+
+        public LayoutEventSubscription(LayoutEventAttribute ea)
+            : base(ea) {
+        }
+
+        /// <summary>
+        /// Get/Set the delegate to the event handler to be called
+        /// </summary>
+        public LayoutEventHandler? EventHandler { get; private set; }
+
+        /// <summary>
+        /// The object in which the event handler reside
+        /// </summary>
+        public override object? TargetObject => EventHandler?.Target;
+
+        /// <summary>
+        /// Event handler method name
+        /// </summary>
+        public override string? MethodName => EventHandler?.Method.Name;
+
+        public override void SetMethod(object? objectInstance, MethodInfo method) {
+            if (objectInstance == null)
+                EventHandler = (LayoutEventHandler)Delegate.CreateDelegate(typeof(LayoutEventHandler), method);
+            else
+                EventHandler = (LayoutEventHandler)Delegate.CreateDelegate(typeof(LayoutEventHandler), objectInstance, method.Name);
+        }
+    }
+
+    public class LayoutAsyncEventSubscription : LayoutEventSubscriptionBase {
+        LayoutVoidAsyncEventHandler? _voidEventHandler;
+        LayoutAsyncEventHandler? _eventHandler;
+
+#if NOT
+        public LayoutAsyncEventSubscription()
 			: base() {
-
 		}
+#endif
 
-		public LayoutAsyncEventSubscription(string eventName) : base(eventName) {
-		}
+        public LayoutAsyncEventSubscription(string eventName) : base(eventName) {
+        }
 
-		public LayoutAsyncEventSubscription(LayoutEventAttribute ea)
-			: base(ea) {
-		}
+        public LayoutAsyncEventSubscription(LayoutEventAttribute ea)
+            : base(ea) {
+        }
 
-		public Delegate EventHandler {
-			get {
-				if(_voidEventHandler != null)
-					return _voidEventHandler;
-				else
-					return _eventHandler;
-			}
-		}
+        public Delegate EventHandler {
+            get {
+                if (_voidEventHandler != null)
+                    return _voidEventHandler;
+                else if (_eventHandler != null)
+                    return _eventHandler;
 
-		public Task InvokeEventHandler(LayoutEvent e) {
-			if(_voidEventHandler != null)
-				return _voidEventHandler(e);
-			else
-				return _eventHandler(e);
-		}
+                throw new ApplicationException("EventHandler and voidEventHandlers are null");
+            }
+        }
+
+        public Task InvokeEventHandler(LayoutEvent e) {
+            if (_voidEventHandler != null)
+                return _voidEventHandler(e);
+            else if (_eventHandler != null)
+                return _eventHandler(e);
+
+            throw new ApplicationException("EventHandler and voidEventHandlers are null");
+        }
 
 
         /// <summary>
         /// The object in which the event handler reside
         /// </summary>
-        public override object TargetObject => EventHandler != null ? EventHandler.Target : null;
+        public override object? TargetObject => EventHandler?.Target;
 
         /// <summary>
         /// Event handler method name
         /// </summary>
-        public override string MethodName => EventHandler.Method.Name;
+        public override string? MethodName => EventHandler?.Method.Name;
 
-        public override void SetMethod(object objectInstance, MethodInfo method) {
-			if(objectInstance == null) {
-				_voidEventHandler = (LayoutVoidAsyncEventHandler)Delegate.CreateDelegate(typeof(LayoutVoidAsyncEventHandler), method, false);
-				if(_voidEventHandler == null)
-					_eventHandler = (LayoutAsyncEventHandler)Delegate.CreateDelegate(typeof(LayoutAsyncEventHandler), method);
-			}
-			else {
-				_voidEventHandler = (LayoutVoidAsyncEventHandler)Delegate.CreateDelegate(typeof(LayoutVoidAsyncEventHandler), objectInstance, method, false);
-				if(_voidEventHandler == null)
-					_eventHandler = (LayoutAsyncEventHandler)Delegate.CreateDelegate(typeof(LayoutAsyncEventHandler), objectInstance, method);
-			}
-		}
-	}
+        public override void SetMethod(object? objectInstance, MethodInfo method) {
+            if (objectInstance == null) {
+                _voidEventHandler = (LayoutVoidAsyncEventHandler)Delegate.CreateDelegate(typeof(LayoutVoidAsyncEventHandler), method, false);
+                if (_voidEventHandler == null)
+                    _eventHandler = (LayoutAsyncEventHandler)Delegate.CreateDelegate(typeof(LayoutAsyncEventHandler), method);
+            }
+            else {
+                _voidEventHandler = (LayoutVoidAsyncEventHandler)Delegate.CreateDelegate(typeof(LayoutVoidAsyncEventHandler), objectInstance, method, false);
+                if (_voidEventHandler == null)
+                    _eventHandler = (LayoutAsyncEventHandler)Delegate.CreateDelegate(typeof(LayoutAsyncEventHandler), objectInstance, method);
+            }
+        }
+    }
 
-	/// <summary>
-	/// Allow event subscription by annotating event handler methods.
-	/// </summary>
-	/// TODO: Add SubscriptionType={Type} for creating custom subscription objects
-	public abstract class LayoutEventAttributeBase : System.Attribute {
+    /// <summary>
+    /// Allow event subscription by annotating event handler methods.
+    /// </summary>
+    /// TODO: Add SubscriptionType={Type} for creating custom subscription objects
+    public abstract class LayoutEventAttributeBase : System.Attribute {
+
         /// <summary>
         /// The type of the subscription class to create. The type must be derived from LayoutSubscription
         /// </summary>
-        public Type	       SubscriptionType { get; set; }
+        public Type? SubscriptionType { get; set; }
 
-		public String EventName { get; set; }
+        public string EventName { get; set; }
 
         /// <summary>
         /// Role - Is it a request or notification
@@ -938,32 +955,32 @@ namespace LayoutManager {
         /// <summary>
         /// Accept only event which are sent by this type of object (or a type derived from it)
         /// </summary>
-        public Type SenderType { get; set; }
+        public Type? SenderType { get; set; }
 
         /// <summary>
         /// Accept only events whose event object is of this type (or derived from it)
         /// </summary>
-        public Type EventType { get; set; }
+        public Type? EventType { get; set; }
 
         /// <summary>
         /// Accept only events whose info object is of this type (or derived from it)
         /// </summary>
-        public Type InfoType { get; set; }
+        public Type? InfoType { get; set; }
 
         /// <summary>
         /// Accept events in which the sender XML document matches this XPath expression
         /// </summary>
-        public string IfSender { get; set; }
+        public string? IfSender { get; set; }
 
         /// <summary>
         /// Accept events in which the event object XML document matches this XPath expression
         /// </summary>
-        public string IfEvent { get; set; }
+        public string? IfEvent { get; set; }
 
         /// <summary>
         /// Accept events in which the info object XML matches this XPath expression
         /// </summary>
-        public string IfInfo { get; set; }
+        public string? IfInfo { get; set; }
 
         /// <summary>
         /// Provide the processing order of this subscription. Subscriptiosn with smaller
@@ -971,229 +988,230 @@ namespace LayoutManager {
         /// </summary>
         public int Order { get; set; }
 
+#if NOT
         public LayoutEventAttributeBase() {
 		}
+#endif
 
-		/// <summary>
-		/// Construct an event subscription based on setup string
-		/// </summary>
-		/// <param name="setupString"></param>
-		public LayoutEventAttributeBase(String eventName) {
-			this.EventName = eventName;
-		}
+        /// <summary>
+        /// Construct an event subscription based on setup string
+        /// </summary>
+        /// <param name="setupString"></param>
+        public LayoutEventAttributeBase(string eventName) {
+            this.EventName = eventName;
+            this.Role = LayoutEventRole.Unspecified;
+        }
 
-		public abstract LayoutEventSubscriptionBase CreateSubscription();
-	}
+        public abstract LayoutEventSubscriptionBase CreateSubscription();
+    }
 
-	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-	public class LayoutEventAttribute : LayoutEventAttributeBase {
-		public LayoutEventAttribute()
-			: base() {
-		}
-
-		public LayoutEventAttribute(string eventName)
-			: base(eventName) {
-		}
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    public class LayoutEventAttribute : LayoutEventAttributeBase {
+        public LayoutEventAttribute(string eventName)
+            : base(eventName) {
+        }
 
         /// <summary>
         /// Create the subscription initialized by this attribute
         /// </summary>
         /// <returns>The new subscription object</returns>
-        public override LayoutEventSubscriptionBase CreateSubscription() => new LayoutEventSubscription();
+        public override LayoutEventSubscriptionBase CreateSubscription() => new LayoutEventSubscription(this.EventName);
     }
 
-	public class LayoutAsyncEventAttribute : LayoutEventAttributeBase {
-		public LayoutAsyncEventAttribute()
+    public class LayoutAsyncEventAttribute : LayoutEventAttributeBase {
+#if NOT
+        public LayoutAsyncEventAttribute()
 			: base() {
 		}
+#endif
 
-		public LayoutAsyncEventAttribute(string eventName)
-			: base(eventName) {
-		}
+        public LayoutAsyncEventAttribute(string eventName)
+            : base(eventName) {
+        }
 
         /// <summary>
         /// Create the subscription initialized by this attribute
         /// </summary>
         /// <returns>The new subscription object</returns>
-        public override LayoutEventSubscriptionBase CreateSubscription() => new LayoutAsyncEventSubscription();
+        public override LayoutEventSubscriptionBase CreateSubscription() => new LayoutAsyncEventSubscription(this.EventName);
     }
 
-	/// <summary>
-	/// Use this attribute to define properties of a layout event
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Assembly|AttributeTargets.Class|AttributeTargets.Method, AllowMultiple=true)]
-	public sealed class LayoutEventDefAttribute : System.Attribute {
-		string				name;
-		LayoutEventRole		role = LayoutEventRole.Notification;
-		Type				senderType;
-		Type				infoType;
-		LayoutEventScope	scope = LayoutEventScope.MyProcess;
+    /// <summary>
+    /// Use this attribute to define properties of a layout event
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+    public sealed class LayoutEventDefAttribute : System.Attribute {
+        readonly string name;
+        LayoutEventRole role = LayoutEventRole.Notification;
+        Type? senderType;
+        Type? infoType;
+        LayoutEventScope scope = LayoutEventScope.MyProcess;
 
-		public LayoutEventDefAttribute(string name) {
-			this.name = name;
-		}
+        public LayoutEventDefAttribute(string name) {
+            this.name = name;
+        }
 
-		public LayoutEventRole Role {
-			get {
-				return role;
-			}
+        public LayoutEventRole Role {
+            get {
+                return role;
+            }
 
-			set {
-				role = value;
-			}
-		}
+            set {
+                role = value;
+            }
+        }
 
-		public Type SenderType {
-			get {
-				return senderType;
-			}
+        public Type? SenderType {
+            get {
+                return senderType;
+            }
 
-			set {
-				senderType = value;
-			}
-		}
+            set {
+                senderType = value;
+            }
+        }
 
-		public Type InfoType {
-			get {
-				return infoType;
-			}
+        public Type? InfoType {
+            get {
+                return infoType;
+            }
 
-			set {
-				infoType = value;
-			}
-		}
+            set {
+                infoType = value;
+            }
+        }
 
         public string Name => name;
 
         public LayoutEventScope Scope {
-			get {
-				return scope;
-			}
+            get {
+                return scope;
+            }
 
-			set {
-				scope = value;
-			}
-		}
-	}
+            set {
+                scope = value;
+            }
+        }
+    }
 
-	/// <summary>
-	/// Define an interface for a collection of subscription events
-	/// </summary>
-	public interface ILayoutSubscriptionCollection : IEnumerable<LayoutEventSubscriptionBase> {
-		/// <summary>
-		/// Add a subscription
-		/// </summary>
-		/// <param name="subscription">The subscription to add</param>
-		void Add(LayoutEventSubscriptionBase subscription);
+    /// <summary>
+    /// Define an interface for a collection of subscription events
+    /// </summary>
+    public interface ILayoutSubscriptionCollection : IEnumerable<LayoutEventSubscriptionBase> {
+        /// <summary>
+        /// Add a subscription
+        /// </summary>
+        /// <param name="subscription">The subscription to add</param>
+        void Add(LayoutEventSubscriptionBase subscription);
 
-		/// <summary>
-		/// Remove a subscription
-		/// </summary>
-		/// <param name="subscription">The subscription to be removed</param>
-		void Remove(LayoutEventSubscriptionBase subscription);
+        /// <summary>
+        /// Remove a subscription
+        /// </summary>
+        /// <param name="subscription">The subscription to be removed</param>
+        void Remove(LayoutEventSubscriptionBase subscription);
 
-		/// <summary>
-		/// Remove all subscriptions whose event handlers are in a particular instance
-		/// </summary>
-		/// <param name="classInstance"></param>
-		void RemoveObjectSubscriptions(Object instance);
+        /// <summary>
+        /// Remove all subscriptions whose event handlers are in a particular instance
+        /// </summary>
+        /// <param name="classInstance"></param>
+        void RemoveObjectSubscriptions(object instance);
 
-		/// <summary>
-		/// Add all applicable subscriptions for a given event to an array
-		/// </summary>
-		/// <param name="applicableSubscriptions">The array to which the subscriptions will be added</param>
-		/// <param name="e">The event</param>
-		void AddApplicableSubscriptions<TSubscription>(ICollection<LayoutEventSubscriptionBase> applicableSubscriptions, LayoutEvent e);
-	}
+        /// <summary>
+        /// Add all applicable subscriptions for a given event to an array
+        /// </summary>
+        /// <param name="applicableSubscriptions">The array to which the subscriptions will be added</param>
+        /// <param name="e">The event</param>
+        void AddApplicableSubscriptions<TSubscription>(ICollection<LayoutEventSubscriptionBase> applicableSubscriptions, LayoutEvent e);
+    }
 
-	/// <summary>
-	/// Where an event should be propagated
-	/// </summary>
-	public enum LayoutEventScope {
-		/// <summary>
-		/// The event should first be propagated in the model (server) and then in the clients (viewers)
-		/// </summary>
-		SystemWide,
+    /// <summary>
+    /// Where an event should be propagated
+    /// </summary>
+    public enum LayoutEventScope {
+        /// <summary>
+        /// The event should first be propagated in the model (server) and then in the clients (viewers)
+        /// </summary>
+        SystemWide,
 
-		/// <summary>
-		/// The event should be propagated only in the server
-		/// </summary>
-		Model,
+        /// <summary>
+        /// The event should be propagated only in the server
+        /// </summary>
+        Model,
 
-		/// <summary>
-		/// The event should be propagated only in the clients
-		/// </summary>
-		Clients,
+        /// <summary>
+        /// The event should be propagated only in the clients
+        /// </summary>
+        Clients,
 
-		/// <summary>
-		/// The event should be propagated in the calling process only
-		/// </summary>
-		MyProcess
-	};
+        /// <summary>
+        /// The event should be propagated in the calling process only
+        /// </summary>
+        MyProcess
+    };
 
-	public class LayoutDelayedEvent {
-		public enum DelayedEventStatus {
-			NotYetCalled,
-			Called,
-			Canceled,
-		}
+    public class LayoutDelayedEvent {
+        public enum DelayedEventStatus {
+            NotYetCalled,
+            Called,
+            Canceled,
+        }
 
-		LayoutEvent					theEvent;
-		CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        readonly LayoutEvent theEvent;
+        readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-		public DelayedEventStatus Status { get; private set; }
-		public Guid Id { get; }
+        public DelayedEventStatus Status { get; private set; }
+        public Guid Id { get; }
 
         internal LayoutDelayedEvent(int delayTime, LayoutEvent theEvent) {
-			this.theEvent = theEvent;
+            this.theEvent = theEvent;
 
-			Id = Guid.NewGuid();
-			DoDelay(delayTime, cancellationTokenSource.Token);
-		}
+            Id = Guid.NewGuid();
+            DoDelay(delayTime, cancellationTokenSource.Token);
+        }
 
-		async void DoDelay(int delayTime, CancellationToken cancellationToken) {
-			try {
-				var tcs = new TaskCompletionSource<object>();
+        async void DoDelay(int delayTime, CancellationToken cancellationToken) {
+            try {
+                var tcs = new TaskCompletionSource<object>();
 
-				using(cancellationToken.Register(() => tcs.TrySetCanceled())) {
-					EventManager.Instance.RegisterDelayedEvent(this);
+                using (cancellationToken.Register(() => tcs.TrySetCanceled())) {
+                    EventManager.Instance.RegisterDelayedEvent(this);
 
-					Status = DelayedEventStatus.NotYetCalled;
-					await Task.WhenAny(Task.Delay(delayTime), tcs.Task);
-					Status = DelayedEventStatus.Called;
+                    Status = DelayedEventStatus.NotYetCalled;
+                    await Task.WhenAny(Task.Delay(delayTime), tcs.Task);
+                    Status = DelayedEventStatus.Called;
                     EventManager.Instance.InterThreadEventInvoker.QueueEvent(theEvent);
-				}
-			}
-			catch(OperationCanceledException) {
-				Status = DelayedEventStatus.Canceled;
-			}
-			finally { 
-				EventManager.Instance.UnregisterDelayedEvent(this); 
-			}
-		}
+                }
+            }
+            catch (OperationCanceledException) {
+                Status = DelayedEventStatus.Canceled;
+            }
+            finally {
+                EventManager.Instance.UnregisterDelayedEvent(this);
+            }
+        }
 
 
-		public void Cancel() {
-			if(Status != DelayedEventStatus.Called)
-				cancellationTokenSource.Cancel();
-		}
-	}
+        public void Cancel() {
+            if (Status != DelayedEventStatus.Called)
+                cancellationTokenSource.Cancel();
+        }
+    }
 
-	/// <summary>
-	/// Manage events and subscriptions
-	/// </summary>
-	public class LayoutEventManager {
-		ILayoutSubscriptionCollection	subscriptions;
-		bool							traceEvents;
-		ILayoutInterThreadEventInvoker		invoker;
-		Dictionary<Guid, LayoutDelayedEvent> activeDelayedEvents = new Dictionary<Guid,LayoutDelayedEvent>();
-		LayoutEventDefAttribute[]			eventDefs;
-		LayoutModuleManager moduleManager;
+    /// <summary>
+    /// Manage events and subscriptions
+    /// </summary>
+    public class LayoutEventManager {
+        readonly ILayoutSubscriptionCollection subscriptions;
+        bool traceEvents;
+        ILayoutInterThreadEventInvoker? invoker;
+        readonly Dictionary<Guid, LayoutDelayedEvent> activeDelayedEvents = new Dictionary<Guid, LayoutDelayedEvent>();
+        LayoutEventDefAttribute[]? eventDefs;
 
-		public LayoutEventManager(LayoutModuleManager moduleManager) {
-			this.subscriptions = new LayoutSubscriptionHashtableByEventName();
-			this.moduleManager = moduleManager;
-		}
+#pragma warning disable IDE0060 // Remove unused parameter
+        public LayoutEventManager(LayoutModuleManager moduleManager) {
+#pragma warning restore IDE0060 // Remove unused parameter
+            this.subscriptions = new LayoutSubscriptionHashtableByEventName();
+        }
 
         /// <summary>
         /// A collection of active event subscriptions
@@ -1204,71 +1222,70 @@ namespace LayoutManager {
         /// If true, event tracing is enabled
         /// </summary>
         public bool TraceEvents {
-			get {
-				return traceEvents;
-			}
+            get {
+                return traceEvents;
+            }
 
-			set {
-				traceEvents = value;
-			}
-		}
+            set {
+                traceEvents = value;
+            }
+        }
 
-		public ILayoutInterThreadEventInvoker InterThreadEventInvoker {
-			get {
-				if(invoker == null)
-					invoker = (ILayoutInterThreadEventInvoker)Event(new LayoutEvent(this, "get-inter-thread-event-invoker"));
-				return invoker;
-			}
-		}
+        public ILayoutInterThreadEventInvoker InterThreadEventInvoker {
+            get {
+                if (invoker == null)
+                    invoker = (ILayoutInterThreadEventInvoker?)Event(new LayoutEvent(this, "get-inter-thread-event-invoker"));
+                return invoker!;
+            }
+        }
 
-		#region Synchronous (normal) events
+        #region Synchronous (normal) events
 
-		/// <summary>
-		/// Internal method for generating event
-		/// </summary>
-		/// <param name="e">The event to generate</param>
-		/// <param name="scope">The event scope</param>
-		/// <param name="traceEvent">Optional trace event to be generated</param>
-		protected void GenerateEvent(LayoutEvent e, LayoutEventScope scope, LayoutEventTraceEvent traceEvent) {
-			List<LayoutEventSubscriptionBase>	applicableSubscriptions = new List<LayoutEventSubscriptionBase>();
+        /// <summary>
+        /// Internal method for generating event
+        /// </summary>
+        /// <param name="e">The event to generate</param>
+        /// <param name="scope">The event scope</param>
+        /// <param name="traceEvent">Optional trace event to be generated</param>
+        protected void GenerateEvent(LayoutEvent e, LayoutEventScope scope, LayoutEventTraceEvent? traceEvent) {
+            List<LayoutEventSubscriptionBase> applicableSubscriptions = new List<LayoutEventSubscriptionBase>();
 
-			subscriptions.AddApplicableSubscriptions<LayoutEventSubscription>(applicableSubscriptions, e);
-			if(applicableSubscriptions.Count > 1)
-				applicableSubscriptions.Sort((s1, s2) => s1.Order - s2.Order);
+            subscriptions.AddApplicableSubscriptions<LayoutEventSubscription>(applicableSubscriptions, e);
+            if (applicableSubscriptions.Count > 1)
+                applicableSubscriptions.Sort((s1, s2) => s1.Order - s2.Order);
 
-			if(traceEvent != null) {
-				traceEvent.ApplicableSubscriptions = applicableSubscriptions;
-				traceEvent.Scope = scope;
+            if (traceEvent != null) {
+                traceEvent.ApplicableSubscriptions = applicableSubscriptions;
+                traceEvent.Scope = scope;
 
-				GenerateEvent(traceEvent, LayoutEventScope.MyProcess, null);
-			}
+                GenerateEvent(traceEvent, LayoutEventScope.MyProcess, null);
+            }
 
-			foreach(LayoutEventSubscription subscription in applicableSubscriptions) {
-				if(subscription.EventHandler != null)
-					subscription.EventHandler(e);
+            foreach (LayoutEventSubscription subscription in applicableSubscriptions) {
+                subscription.EventHandler?.Invoke(e);
 
-				if(!e.ContinueProcessing)
-					break;
-			}
-		}
+                if (!e.ContinueProcessing)
+                    break;
+            }
+        }
 
-		/// <summary>
-		/// Send an event
-		/// </summary>
-		/// <param name="e">The event to be sent</param>
-		/// <param name="scope">The scope in which the event should be sent <see cref="LayoutEventScope"/></param>
-		/// <returns>The event info field</returns>
-		public Object Event(LayoutEvent e, LayoutEventScope scope) {
-			LayoutEventTraceEvent	traceEvent = null;
+        /// <summary>
+        /// Send an event
+        /// </summary>
+        /// <param name="e">The event to be sent</param>
+        /// <param name="scope">The scope in which the event should be sent <see cref="LayoutEventScope"/></param>
+        /// <returns>The event info field</returns>
+        public object? Event(LayoutEvent e, LayoutEventScope scope) {
+            LayoutEventTraceEvent? traceEvent = null;
 
-			if(traceEvents)
-				traceEvent = new LayoutEventTraceEvent(e, "trace-event");
+            if (traceEvents)
+                traceEvent = new LayoutEventTraceEvent(e, "trace-event");
 
-			GenerateEvent(e, scope, traceEvent);
-			return e.Info;
-		}
+            GenerateEvent(e, scope, traceEvent);
+            return e.Info;
+        }
 
-        public Object Event(LayoutEvent e) => Event(e, LayoutEventScope.MyProcess);
+        public object? Event(LayoutEvent e) => Event(e, LayoutEventScope.MyProcess);
 
         #endregion
 
@@ -1280,58 +1297,58 @@ namespace LayoutManager {
         /// <param name="e">The event to generate</param>
         /// <param name="scope">The event scope</param>
         /// <param name="traceEvent">Optional trace event to be generated</param>
-        protected List<Task> GenerateAsyncEvent(LayoutEvent e, LayoutEventScope scope, LayoutEventTraceEvent traceEvent) {
-			var applicableSubscriptions = new List<LayoutEventSubscriptionBase>();
+        protected List<Task> GenerateAsyncEvent(LayoutEvent e, LayoutEventScope scope, LayoutEventTraceEvent? traceEvent) {
+            var applicableSubscriptions = new List<LayoutEventSubscriptionBase>();
 
-			subscriptions.AddApplicableSubscriptions<LayoutAsyncEventSubscription>(applicableSubscriptions, e);
-			if(applicableSubscriptions.Count > 1)
-				applicableSubscriptions.Sort((s1, s2) => s1.Order - s2.Order);
+            subscriptions.AddApplicableSubscriptions<LayoutAsyncEventSubscription>(applicableSubscriptions, e);
+            if (applicableSubscriptions.Count > 1)
+                applicableSubscriptions.Sort((s1, s2) => s1.Order - s2.Order);
 
-			if(traceEvent != null) {
-				traceEvent.ApplicableSubscriptions = applicableSubscriptions;
-				traceEvent.Scope = scope;
+            if (traceEvent != null) {
+                traceEvent.ApplicableSubscriptions = applicableSubscriptions;
+                traceEvent.Scope = scope;
 
-				GenerateEvent(traceEvent, LayoutEventScope.MyProcess, null);
-			}
+                GenerateEvent(traceEvent, LayoutEventScope.MyProcess, null);
+            }
 
-			var eventTasks = new List<Task>(applicableSubscriptions.Count);
+            var eventTasks = new List<Task>(applicableSubscriptions.Count);
 
-			foreach(LayoutAsyncEventSubscription subscription in applicableSubscriptions) {
-				if(subscription.EventHandler != null)
-					eventTasks.Add(subscription.InvokeEventHandler(e));
+            foreach (LayoutAsyncEventSubscription subscription in applicableSubscriptions) {
+                if (subscription.EventHandler != null)
+                    eventTasks.Add(subscription.InvokeEventHandler(e));
 
-				if(!e.ContinueProcessing)
-					break;
-			}
+                if (!e.ContinueProcessing)
+                    break;
+            }
 
-			return eventTasks;
-		}
+            return eventTasks;
+        }
 
 
-		public Task AsyncEvent(LayoutEvent e, LayoutEventScope scope) {
-			LayoutEventTraceEvent	traceEvent = null;
+        public Task AsyncEvent(LayoutEvent e, LayoutEventScope scope) {
+            LayoutEventTraceEvent? traceEvent = null;
 
-			if(traceEvents)
-				traceEvent = new LayoutEventTraceEvent(e, "trace-event");
+            if (traceEvents)
+                traceEvent = new LayoutEventTraceEvent(e, "trace-event");
 
-			List<Task> tasks = GenerateAsyncEvent(e, scope, traceEvent);
+            List<Task> tasks = GenerateAsyncEvent(e, scope, traceEvent);
 
-			if(tasks.Count == 1)
-				return tasks[0];
+            if (tasks.Count == 1)
+                return tasks[0];
 
-			throw new ApplicationException("AsyncEvent " + e.EventName + " has one or more than one event handlers - (consider using AsyncEventBroadcast)");
-		}
+            throw new ApplicationException("AsyncEvent " + e.EventName + " has one or more than one event handlers - (consider using AsyncEventBroadcast)");
+        }
 
         public Task AsyncEvent(LayoutEvent e) => AsyncEvent(e, LayoutEventScope.MyProcess);
 
         public Task[] AsyncEventBroadcast(LayoutEvent e, LayoutEventScope scope) {
-			LayoutEventTraceEvent	traceEvent = null;
+            LayoutEventTraceEvent? traceEvent = null;
 
-			if(traceEvents)
-				traceEvent = new LayoutEventTraceEvent(e, "trace-event");
+            if (traceEvents)
+                traceEvent = new LayoutEventTraceEvent(e, "trace-event");
 
-			return GenerateAsyncEvent(e, scope, traceEvent).ToArray();
-		}
+            return GenerateAsyncEvent(e, scope, traceEvent).ToArray();
+        }
 
         public Task[] AsyncEventBroadcast(LayoutEvent e) => AsyncEventBroadcast(e, LayoutEventScope.MyProcess);
 
@@ -1341,208 +1358,211 @@ namespace LayoutManager {
         public LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) => new LayoutDelayedEvent(delayTime, e);
 
         internal void RegisterDelayedEvent(LayoutDelayedEvent delayedEvent) {
-			lock(activeDelayedEvents) {
-				activeDelayedEvents.Add(delayedEvent.Id, delayedEvent);
-			}
-		}
+            lock (activeDelayedEvents) {
+                activeDelayedEvents.Add(delayedEvent.Id, delayedEvent);
+            }
+        }
 
-		internal void UnregisterDelayedEvent(LayoutDelayedEvent delayedEvent) {
-			lock(activeDelayedEvents) {
-				activeDelayedEvents.Remove(delayedEvent.Id);
-			}
-		}
+        internal void UnregisterDelayedEvent(LayoutDelayedEvent delayedEvent) {
+            lock (activeDelayedEvents) {
+                activeDelayedEvents.Remove(delayedEvent.Id);
+            }
+        }
 
-		/// <summary>
-		/// Try to find a delayed event based on its ID
-		/// </summary>
-		public LayoutDelayedEvent this[Guid delayedEventID] {
-			get {
-				lock(activeDelayedEvents)
-					return activeDelayedEvents[delayedEventID];
-			}
-		}
+        /// <summary>
+        /// Try to find a delayed event based on its ID
+        /// </summary>
+        public LayoutDelayedEvent this[Guid delayedEventID] {
+            get {
+                lock (activeDelayedEvents)
+                    return activeDelayedEvents[delayedEventID];
+            }
+        }
 
-        public LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent, LayoutEvent errorOccurredEvent) => new LayoutEventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
+        public LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent, LayoutEvent? errorOccurredEvent) => new LayoutEventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
 
         public LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
 
         protected void AddMethodSubscriptions<TSubscriptionAttribute, TSubscription>(ILayoutSubscriptionCollection subscriptions, object objectInstance, MethodInfo methodInfo) where TSubscriptionAttribute : LayoutEventAttributeBase where TSubscription : LayoutEventSubscriptionBase {
-			var eventAttributes = (TSubscriptionAttribute[] )methodInfo.GetCustomAttributes(typeof(TSubscriptionAttribute), true);
+            var eventAttributes = (TSubscriptionAttribute[])methodInfo.GetCustomAttributes(typeof(TSubscriptionAttribute), true);
 
-			foreach(var eventAttribute in eventAttributes) {
-				var subscription = (TSubscription)eventAttribute.CreateSubscription();
+            foreach (var eventAttribute in eventAttributes) {
+                var subscription = (TSubscription)eventAttribute.CreateSubscription();
 
-				subscription.SetMethod(methodInfo.IsStatic ? null : objectInstance, methodInfo);
-				subscription.SetFromLayoutEventAttribute(eventAttribute);
-				subscriptions.Add(subscription);
-			}
-		}
+                subscription.SetMethod(methodInfo.IsStatic ? null : objectInstance, methodInfo);
+                subscription.SetFromLayoutEventAttribute(eventAttribute);
+                subscriptions.Add(subscription);
+            }
+        }
 
-		/// <summary>
-		/// Inspect the type of a given object and add subscriptions for all methods which are annotated with a
-		/// LayoutEvent attribute.
-		/// </summary>
-		/// <param name="classInstance">The instance to be inspected for subscriptions</param>
-		public void AddObjectSubscriptions(Object classInstance) {
-			MethodInfo[]	methodsInfo = classInstance.GetType().GetMethods(
-				BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic);
-			
-			foreach(MethodInfo methodInfo in methodsInfo) {
-				AddMethodSubscriptions<LayoutEventAttribute, LayoutEventSubscription>(Subscriptions, classInstance, methodInfo);
-				AddMethodSubscriptions<LayoutAsyncEventAttribute, LayoutAsyncEventSubscription>(Subscriptions, classInstance, methodInfo);
-			}
-		}
+        /// <summary>
+        /// Inspect the type of a given object and add subscriptions for all methods which are annotated with a
+        /// LayoutEvent attribute.
+        /// </summary>
+        /// <param name="classInstance">The instance to be inspected for subscriptions</param>
+        public void AddObjectSubscriptions(object classInstance) {
+            MethodInfo[] methodsInfo = classInstance.GetType().GetMethods(
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-		/// <summary>
-		/// Get all the subscriptions to event handler of a given object instance
-		/// </summary>
-		/// <param name="instance">The object instance</param>
-		/// <returns>Array of LayoutEventSubscription to event handler of the given object</returns>
-		public LayoutEventSubscriptionBase[] GetObjectSubscriptions(Object instance) {
-			ArrayList	instanceSubscriptions = new ArrayList();
+            foreach (MethodInfo methodInfo in methodsInfo) {
+                AddMethodSubscriptions<LayoutEventAttribute, LayoutEventSubscription>(Subscriptions, classInstance, methodInfo);
+                AddMethodSubscriptions<LayoutAsyncEventAttribute, LayoutAsyncEventSubscription>(Subscriptions, classInstance, methodInfo);
+            }
+        }
 
-			foreach(LayoutEventSubscriptionBase subscription in subscriptions)
-				if(subscription.TargetObject == instance)
-					instanceSubscriptions.Add(subscription);
+        /// <summary>
+        /// Get all the subscriptions to event handler of a given object instance
+        /// </summary>
+        /// <param name="instance">The object instance</param>
+        /// <returns>Array of LayoutEventSubscription to event handler of the given object</returns>
+        public LayoutEventSubscriptionBase[] GetObjectSubscriptions(object instance) {
+            ArrayList instanceSubscriptions = new ArrayList();
 
-			return (LayoutEventSubscriptionBase[])instanceSubscriptions.ToArray(typeof(LayoutEventSubscriptionBase));
-		}
+            foreach (LayoutEventSubscriptionBase subscription in subscriptions)
+                if (subscription.TargetObject == instance)
+                    instanceSubscriptions.Add(subscription);
 
-		/// <summary>
-		/// Refresh all the subscriptions of a given object. This method should be called after changing
-		/// the object XML document
-		/// </summary>
-		/// <param name="instance"></param>
-		public void RefreshObjectSubscriptions(Object instance) {
-			foreach(LayoutEventSubscriptionBase subscription in GetObjectSubscriptions(instance))
-				subscription.Refresh();
-		}
+            return (LayoutEventSubscriptionBase[])instanceSubscriptions.ToArray(typeof(LayoutEventSubscriptionBase));
+        }
 
-		/// <summary>
-		/// Hint the event manager that a given event should be optimized for filtering based on the
-		/// sender type. Calling this method will cause the event to be tested on subscription which
-		/// are found by looking in a hash table where the sender type is the key.
-		/// </summary>
-		/// <remarks>
-		/// Do not optimize event where the sender is a subclass of the filtered sender type. For example
-		/// if you expected to catch all event which are of type B then if an event is sent by a D (which
-		/// is a subclass of B), it will not be "catched" if the event name is optimized for filtering by
-		/// sender type.
-		/// </remarks>
-		/// <param name="eventName">The event name to optimize</param>
-		public void OptimizeForFilteringBySenderType(String eventName) {
-			((LayoutSubscriptionHashtableByEventName)subscriptions).OptimizeForFilteringBySenderType(eventName);
-		}
+        /// <summary>
+        /// Refresh all the subscriptions of a given object. This method should be called after changing
+        /// the object XML document
+        /// </summary>
+        /// <param name="instance"></param>
+        public void RefreshObjectSubscriptions(object instance) {
+            foreach (LayoutEventSubscriptionBase subscription in GetObjectSubscriptions(instance))
+                subscription.Refresh();
+        }
 
-		public LayoutEventDefAttribute[] GetEventDefinitions(LayoutEventRole requiredRole) {
-			if(eventDefs == null) {
-				var eventDefsList = new List<LayoutEventDefAttribute>();
-				var	moduleManager = (LayoutModuleManager)Event(new LayoutEvent(this, "get-module-manager"));
+        /// <summary>
+        /// Hint the event manager that a given event should be optimized for filtering based on the
+        /// sender type. Calling this method will cause the event to be tested on subscription which
+        /// are found by looking in a hash table where the sender type is the key.
+        /// </summary>
+        /// <remarks>
+        /// Do not optimize event where the sender is a subclass of the filtered sender type. For example
+        /// if you expected to catch all event which are of type B then if an event is sent by a D (which
+        /// is a subclass of B), it will not be "catched" if the event name is optimized for filtering by
+        /// sender type.
+        /// </remarks>
+        /// <param name="eventName">The event name to optimize</param>
+        public void OptimizeForFilteringBySenderType(string eventName) {
+            ((LayoutSubscriptionHashtableByEventName)subscriptions).OptimizeForFilteringBySenderType(eventName);
+        }
 
-				foreach(LayoutAssembly layoutAssembly in moduleManager.LayoutAssemblies) {
-					LayoutEventDefAttribute[]	assemblyEventDefs = (LayoutEventDefAttribute[])layoutAssembly.Assembly.GetCustomAttributes(typeof(LayoutEventDefAttribute), true);
+        public LayoutEventDefAttribute[] GetEventDefinitions(LayoutEventRole requiredRole) {
+            if (eventDefs == null) {
+                var eventDefsList = new List<LayoutEventDefAttribute>();
+                var moduleManager = (LayoutModuleManager?)Event(new LayoutEvent(this, "get-module-manager"));
 
-					addEventDefs(assemblyEventDefs, requiredRole, eventDefsList);
-					addEventDefs(layoutAssembly.Assembly.GetTypes(), requiredRole, eventDefsList);
-				}
+                Debug.Assert(moduleManager != null);
+
+                foreach (LayoutAssembly layoutAssembly in moduleManager.LayoutAssemblies) {
+                    LayoutEventDefAttribute[] assemblyEventDefs = (LayoutEventDefAttribute[])layoutAssembly.Assembly.GetCustomAttributes(typeof(LayoutEventDefAttribute), true);
+
+                    addEventDefs(assemblyEventDefs, requiredRole, eventDefsList);
+                    addEventDefs(layoutAssembly.Assembly.GetTypes(), requiredRole, eventDefsList);
+                }
 
                 eventDefs = eventDefsList.ToArray();
-			}
+            }
 
-			return eventDefs;
-		}
+            return eventDefs;
+        }
 
-		public void FlushEventDefinitions() {
-			eventDefs = null;
-		}
+        public void FlushEventDefinitions() {
+            eventDefs = null;
+        }
 
-		#region Helper methods for getting event attributes
+        #region Helper methods for getting event attributes
 
-		private void addEventDefs(LayoutEventDefAttribute[] eventDefsToAdd, LayoutEventRole requiredRole, List<LayoutEventDefAttribute> eventDefs) {
-			foreach(LayoutEventDefAttribute eventDef in eventDefsToAdd) {
-				if(eventDef.Role == requiredRole)
-					eventDefs.Add(eventDef);
-			}
-		}
+        private void addEventDefs(LayoutEventDefAttribute[] eventDefsToAdd, LayoutEventRole requiredRole, List<LayoutEventDefAttribute> eventDefs) {
+            foreach (LayoutEventDefAttribute eventDef in eventDefsToAdd) {
+                if (eventDef.Role == requiredRole)
+                    eventDefs.Add(eventDef);
+            }
+        }
 
-		private void addEventDefs(Type[] types, LayoutEventRole requiredRole, List<LayoutEventDefAttribute> eventDefs) {
-			foreach(Type type in types) {
-				if(type.IsClass || type.IsInterface) {
-					LayoutEventDefAttribute[]	typeEventDefs = (LayoutEventDefAttribute[])type.GetCustomAttributes(typeof(LayoutEventDefAttribute), true);
+        private void addEventDefs(Type[] types, LayoutEventRole requiredRole, List<LayoutEventDefAttribute> eventDefs) {
+            foreach (Type type in types) {
+                if (type.IsClass || type.IsInterface) {
+                    LayoutEventDefAttribute[] typeEventDefs = (LayoutEventDefAttribute[])type.GetCustomAttributes(typeof(LayoutEventDefAttribute), true);
 
-					addEventDefs(typeEventDefs, requiredRole, eventDefs);
+                    addEventDefs(typeEventDefs, requiredRole, eventDefs);
 
-					foreach(MethodInfo method in type.GetMethods(BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance|BindingFlags.DeclaredOnly)) {
-						LayoutEventDefAttribute[]	methodEventDefs = (LayoutEventDefAttribute[])method.GetCustomAttributes(typeof(LayoutEventDefAttribute), true);
+                    foreach (MethodInfo method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)) {
+                        LayoutEventDefAttribute[] methodEventDefs = (LayoutEventDefAttribute[])method.GetCustomAttributes(typeof(LayoutEventDefAttribute), true);
 
-						addEventDefs(methodEventDefs, requiredRole, eventDefs);
-					}
+                        addEventDefs(methodEventDefs, requiredRole, eventDefs);
+                    }
 
-					addEventDefs(type.GetNestedTypes(), requiredRole, eventDefs);
-				}
-			}
-		}
+                    addEventDefs(type.GetNestedTypes(), requiredRole, eventDefs);
+                }
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 
-	/// <summary>
-	/// Event sent when event tracing is enabled. The sender object is the traced event
-	/// </summary>
-	public class LayoutEventTraceEvent : LayoutEvent {
-		public LayoutEventTraceEvent(LayoutEvent theEvent, String traceEventName) : base(theEvent, traceEventName) {
-		}
+    /// <summary>
+    /// Event sent when event tracing is enabled. The sender object is the traced event
+    /// </summary>
+    public class LayoutEventTraceEvent : LayoutEvent {
+        public LayoutEventTraceEvent(LayoutEvent theEvent, string traceEventName) : base(theEvent, traceEventName) {
+            _applicableSubscriptions = new List<LayoutEventSubscriptionBase>();
+        }
 
-		/// <summary>
-		/// The subscriptions which are applicable for the traced event
-		/// </summary>
-		ICollection<LayoutEventSubscriptionBase>	_applicableSubscriptions;
+        /// <summary>
+        /// The subscriptions which are applicable for the traced event
+        /// </summary>
+        ICollection<LayoutEventSubscriptionBase> _applicableSubscriptions;
 
-		/// <summary>
-		/// The scope in which the trace event was sent
-		/// </summary>
-		LayoutEventScope			_scope;
+        /// <summary>
+        /// The scope in which the trace event was sent
+        /// </summary>
+        LayoutEventScope _scope;
 
-		public ICollection<LayoutEventSubscriptionBase> ApplicableSubscriptions {
-			get {
-				return _applicableSubscriptions;
-			}
+        public ICollection<LayoutEventSubscriptionBase> ApplicableSubscriptions {
+            get {
+                return _applicableSubscriptions;
+            }
 
-			set {
-				_applicableSubscriptions = value;
-			}
-		}
+            set {
+                _applicableSubscriptions = value;
+            }
+        }
 
-		public LayoutEventScope Scope {
-			get {
-				return _scope;
-			}
+        public LayoutEventScope Scope {
+            get {
+                return _scope;
+            }
 
-			set {
-				_scope = value;
-			}
-		}
-	}
+            set {
+                _scope = value;
+            }
+        }
+    }
 
-	public static class EventManager {
-		static LayoutEventManager eventManager;
+    public static class EventManager {
+        static LayoutEventManager eventManager;
 
-		public static LayoutEventManager Instance {
-			get {
-				return eventManager;
-			}
+        public static LayoutEventManager Instance {
+            get {
+                return eventManager!;
+            }
 
-			set {
-				eventManager = value;
-			}
-		}
+            set {
+                eventManager = value;
+            }
+        }
 
         /// <summary>
         /// Send event to subscribers
         /// </summary>
         /// <param name="e">The event to be sent</param>
         /// <returns>The value of the event class Info field</returns>
-        public static object Event(LayoutEvent e) => Instance.Event(e);
+        public static object? Event(LayoutEvent e) => Instance.Event(e);
 
         /// <summary>
         /// Invoke asynchronous event
@@ -1571,60 +1591,56 @@ namespace LayoutManager {
         /// Hook up event handlers annotated with the LayoutEvent attribute in a given object instance
         /// </summary>
         /// <param name="classInstance">The object instance</param>
-        public static void AddObjectSubscriptions(Object classInstance) {
-			Instance.AddObjectSubscriptions(classInstance);
-		}
+        public static void AddObjectSubscriptions(object classInstance) {
+            Instance.AddObjectSubscriptions(classInstance);
+        }
 
         /// <summary>
         /// Return a collection of all events subscription.
         /// </summary>
         public static ILayoutSubscriptionCollection Subscriptions => Instance.Subscriptions;
 
-        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent, LayoutEvent errorOccurredEvent) => new LayoutEventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
+        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent, LayoutEvent? errorOccurredEvent) => new LayoutEventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
 
-        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
+        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
 
-        public static object Event(string eventName) => Instance.Event(new LayoutEvent(null, eventName));
+        public static object? Event(object sender, string eventName) => Instance.Event(new LayoutEvent(sender, eventName));
 
-        public static object Event(object sender, string eventName) => Instance.Event(new LayoutEvent(sender, eventName));
-
-        public static object Event(string eventName, object info) => Instance.Event(new LayoutEvent(null, eventName, null, info));
-
-        public static object Event(object sender, string eventName, object info) => Instance.Event(new LayoutEvent(sender, eventName, null, info));
+        public static object? Event(object sender, string eventName, object info) => Instance.Event(new LayoutEvent(sender, eventName, null, info));
     }
 
-	/// <summary>
-	/// A subscription collection implemented as an array. <see cref="ILayoutSubscriptionCollection"/>
-	/// </summary>
-	class LayoutSubscriptionArray : ILayoutSubscriptionCollection {
-		List<LayoutEventSubscriptionBase>		subscriptions = new List<LayoutEventSubscriptionBase>();
+    /// <summary>
+    /// A subscription collection implemented as an array. <see cref="ILayoutSubscriptionCollection"/>
+    /// </summary>
+    class LayoutSubscriptionArray : ILayoutSubscriptionCollection {
+        readonly List<LayoutEventSubscriptionBase> subscriptions = new List<LayoutEventSubscriptionBase>();
 
-		public void Add(LayoutEventSubscriptionBase subscription) {
-			subscriptions.Add(subscription);
-			// TODO: Generate an event that a subscription was added
-		}
+        public void Add(LayoutEventSubscriptionBase subscription) {
+            subscriptions.Add(subscription);
+            // TODO: Generate an event that a subscription was added
+        }
 
-		public void Remove(LayoutEventSubscriptionBase subscription) {
-			subscriptions.Remove(subscription);
-			// TODO: Generate an event that a subscription was removed
-		}
+        public void Remove(LayoutEventSubscriptionBase subscription) {
+            subscriptions.Remove(subscription);
+            // TODO: Generate an event that a subscription was removed
+        }
 
-		public void RemoveObjectSubscriptions(Object classInstance) {
-			List<LayoutEventSubscriptionBase>	subscriptionsToRemove = new List<LayoutEventSubscriptionBase>();
+        public void RemoveObjectSubscriptions(object classInstance) {
+            List<LayoutEventSubscriptionBase> subscriptionsToRemove = new List<LayoutEventSubscriptionBase>();
 
-			foreach(LayoutEventSubscriptionBase subscription in subscriptions)
-				if(subscription.TargetObject == classInstance)
-					subscriptionsToRemove.Add(subscription);
+            foreach (LayoutEventSubscriptionBase subscription in subscriptions)
+                if (subscription.TargetObject == classInstance)
+                    subscriptionsToRemove.Add(subscription);
 
-			foreach(LayoutEventSubscriptionBase subscription in subscriptionsToRemove)
-					Remove(subscription);
-		}
+            foreach (LayoutEventSubscriptionBase subscription in subscriptionsToRemove)
+                Remove(subscription);
+        }
 
-		public void AddApplicableSubscriptions<TSubscription>(ICollection<LayoutEventSubscriptionBase> applicableSubscriptions, LayoutEvent e) {
-			foreach(LayoutEventSubscriptionBase subscription in subscriptions)
-				if(e.IsSubscriptionApplicable(subscription) && subscription.IsEventApplicable(e) && subscription is TSubscription)
-					applicableSubscriptions.Add(subscription);
-		}
+        public void AddApplicableSubscriptions<TSubscription>(ICollection<LayoutEventSubscriptionBase> applicableSubscriptions, LayoutEvent e) {
+            foreach (LayoutEventSubscriptionBase subscription in subscriptions)
+                if (e.IsSubscriptionApplicable(subscription) && subscription.IsEventApplicable(e) && subscription is TSubscription)
+                    applicableSubscriptions.Add(subscription);
+        }
 
         public IEnumerator<LayoutEventSubscriptionBase> GetEnumerator() => subscriptions.GetEnumerator();
 
@@ -1635,78 +1651,74 @@ namespace LayoutManager {
         #endregion
     }
 
-	/// <summary>
-	/// A subscription collection implemented as hash table for subscriptions which filter on a particular
-	/// event name, all other subscriptions are stored in a array based subscription collection.
-	/// </summary>
-	class LayoutSubscriptionHashtableByEventName : ILayoutSubscriptionCollection {
-		Dictionary<string, ILayoutSubscriptionCollection> subscriptionByEventName = new Dictionary<string, ILayoutSubscriptionCollection>();
-		LayoutSubscriptionArray noEventNameFilterSubscriptions = new LayoutSubscriptionArray();
+    /// <summary>
+    /// A subscription collection implemented as hash table for subscriptions which filter on a particular
+    /// event name, all other subscriptions are stored in a array based subscription collection.
+    /// </summary>
+    class LayoutSubscriptionHashtableByEventName : ILayoutSubscriptionCollection {
+        readonly Dictionary<string, ILayoutSubscriptionCollection> subscriptionByEventName = new Dictionary<string, ILayoutSubscriptionCollection>();
+        readonly LayoutSubscriptionArray noEventNameFilterSubscriptions = new LayoutSubscriptionArray();
 
-		private ILayoutSubscriptionCollection getSlot(LayoutEventSubscriptionBase subscription) {
-			if(!string.IsNullOrEmpty(subscription.EventName)) {
-				ILayoutSubscriptionCollection hashEntry;
+        private ILayoutSubscriptionCollection getSlot(LayoutEventSubscriptionBase subscription) {
+            if (!string.IsNullOrEmpty(subscription.EventName)) {
+                if (!subscriptionByEventName.TryGetValue(subscription.EventName, out ILayoutSubscriptionCollection hashEntry)) {
+                    hashEntry = new LayoutSubscriptionArray();
+                    subscriptionByEventName[subscription.EventName] = hashEntry;
+                }
 
-				if(!subscriptionByEventName.TryGetValue(subscription.EventName, out hashEntry)) {
-					hashEntry = new LayoutSubscriptionArray();
-					subscriptionByEventName[subscription.EventName] = hashEntry;
-				}
+                return hashEntry;
+            }
+            else
+                return noEventNameFilterSubscriptions;
+        }
 
-				return hashEntry;
-			}
-			else
-				return noEventNameFilterSubscriptions;
-		}
+        public void Add(LayoutEventSubscriptionBase subscription) {
+            getSlot(subscription).Add(subscription);
+        }
 
-		public void Add(LayoutEventSubscriptionBase subscription) {
-			getSlot(subscription).Add(subscription);
-		}
+        public void Remove(LayoutEventSubscriptionBase subscription) {
+            getSlot(subscription).Remove(subscription);
+        }
 
-		public void Remove(LayoutEventSubscriptionBase subscription) {
-			getSlot(subscription).Remove(subscription);
-		}
+        public void RemoveObjectSubscriptions(object classInstance) {
+            foreach (ILayoutSubscriptionCollection hashEntry in subscriptionByEventName.Values)
+                hashEntry.RemoveObjectSubscriptions(classInstance);
+            noEventNameFilterSubscriptions.RemoveObjectSubscriptions(classInstance);
+        }
 
-		public void RemoveObjectSubscriptions(Object classInstance) {
-			foreach(ILayoutSubscriptionCollection hashEntry in subscriptionByEventName.Values)
-				hashEntry.RemoveObjectSubscriptions(classInstance);
-			noEventNameFilterSubscriptions.RemoveObjectSubscriptions(classInstance);
-		}
+        public void AddApplicableSubscriptions<TSubscription>(ICollection<LayoutEventSubscriptionBase> applicableSubscriptions, LayoutEvent e) {
+            if (subscriptionByEventName.TryGetValue(e.EventName, out ILayoutSubscriptionCollection hashEntry))
+                hashEntry.AddApplicableSubscriptions<TSubscription>(applicableSubscriptions, e);
 
-		public void AddApplicableSubscriptions<TSubscription>(ICollection<LayoutEventSubscriptionBase> applicableSubscriptions, LayoutEvent e) {
-			ILayoutSubscriptionCollection hashEntry;
+            noEventNameFilterSubscriptions.AddApplicableSubscriptions<TSubscription>(applicableSubscriptions, e);
+        }
 
-			if(subscriptionByEventName.TryGetValue(e.EventName, out hashEntry))
-				hashEntry.AddApplicableSubscriptions<TSubscription>(applicableSubscriptions, e);
+        public IEnumerator<LayoutEventSubscriptionBase> GetEnumerator() {
+            List<LayoutEventSubscriptionBase> allSubscriptions = new List<LayoutEventSubscriptionBase>();
 
-			noEventNameFilterSubscriptions.AddApplicableSubscriptions<TSubscription>(applicableSubscriptions, e);
-		}
+            foreach (ILayoutSubscriptionCollection hashEntry in subscriptionByEventName.Values) {
+                foreach (LayoutEventSubscriptionBase subscription in hashEntry)
+                    allSubscriptions.Add(subscription);
+            }
 
-		public IEnumerator<LayoutEventSubscriptionBase> GetEnumerator() {
-			List<LayoutEventSubscriptionBase> allSubscriptions = new List<LayoutEventSubscriptionBase>();
+            foreach (LayoutEventSubscriptionBase subscription in noEventNameFilterSubscriptions)
+                allSubscriptions.Add(subscription);
 
-			foreach(ILayoutSubscriptionCollection hashEntry in subscriptionByEventName.Values) {
-				foreach(LayoutEventSubscriptionBase subscription in hashEntry)
-					allSubscriptions.Add(subscription);
-			}
+            return allSubscriptions.GetEnumerator();
+        }
 
-			foreach(LayoutEventSubscriptionBase subscription in noEventNameFilterSubscriptions)
-				allSubscriptions.Add(subscription);
+        public void OptimizeForFilteringBySenderType(string eventName) {
+            ILayoutSubscriptionCollection hashEntry = (ILayoutSubscriptionCollection)subscriptionByEventName[eventName];
+            ILayoutSubscriptionCollection newEntry = new LayoutSubscriptionHashtableBySenderType();
 
-			return allSubscriptions.GetEnumerator();
-		}
+            subscriptionByEventName.Remove(eventName);
+            subscriptionByEventName[eventName] = newEntry;
 
-		public void OptimizeForFilteringBySenderType(String eventName) {
-			ILayoutSubscriptionCollection hashEntry = (ILayoutSubscriptionCollection)subscriptionByEventName[eventName];
-			ILayoutSubscriptionCollection newEntry = new LayoutSubscriptionHashtableBySenderType();
-
-			subscriptionByEventName.Remove(eventName);
-			subscriptionByEventName[eventName] = newEntry;
-
-			if(hashEntry != null) {
-				foreach(LayoutEventSubscriptionBase subscription in hashEntry)
-					newEntry.Add(subscription);
-			}
-		}
+            if (hashEntry != null) {
+                foreach (LayoutEventSubscriptionBase subscription in hashEntry)
+                    newEntry.Add(subscription);
+            }
+        }
 
         #region IEnumerable Members
 
@@ -1715,65 +1727,62 @@ namespace LayoutManager {
         #endregion
     }
 
-	/// <summary>
-	/// A subscription collection implemented as hash table for subscriptions which filter sender type,
-	/// all other subscriptions are stored in a array based subscription collection.
-	/// </summary>
-	class LayoutSubscriptionHashtableBySenderType : ILayoutSubscriptionCollection {
-		Dictionary<Type, ILayoutSubscriptionCollection> subscriptionBySenderType = new Dictionary<Type,ILayoutSubscriptionCollection>();
-		LayoutSubscriptionArray		noSenderTypeSubscriptions = new LayoutSubscriptionArray();
+    /// <summary>
+    /// A subscription collection implemented as hash table for subscriptions which filter sender type,
+    /// all other subscriptions are stored in a array based subscription collection.
+    /// </summary>
+    class LayoutSubscriptionHashtableBySenderType : ILayoutSubscriptionCollection {
+        readonly Dictionary<Type, ILayoutSubscriptionCollection> subscriptionBySenderType = new Dictionary<Type, ILayoutSubscriptionCollection>();
+        readonly LayoutSubscriptionArray noSenderTypeSubscriptions = new LayoutSubscriptionArray();
 
-		private ILayoutSubscriptionCollection getSlot(LayoutEventSubscriptionBase subscription) {
-			if(subscription.SenderType != null) {
-				ILayoutSubscriptionCollection hashEntry;
+        private ILayoutSubscriptionCollection getSlot(LayoutEventSubscriptionBase subscription) {
+            if (subscription.SenderType != null) {
 
-				if(!subscriptionBySenderType.TryGetValue(subscription.SenderType, out hashEntry)) {
-					hashEntry = new LayoutSubscriptionArray();
-					subscriptionBySenderType[subscription.SenderType] = hashEntry;
-				}
+                if (!subscriptionBySenderType.TryGetValue(subscription.SenderType, out ILayoutSubscriptionCollection hashEntry)) {
+                    hashEntry = new LayoutSubscriptionArray();
+                    subscriptionBySenderType[subscription.SenderType] = hashEntry;
+                }
 
-				return hashEntry;
-			}
-			else
-				return noSenderTypeSubscriptions;
-		}
+                return hashEntry;
+            }
+            else
+                return noSenderTypeSubscriptions;
+        }
 
-		public void Add(LayoutEventSubscriptionBase subscription) {
-			getSlot(subscription).Add(subscription);
-		}
+        public void Add(LayoutEventSubscriptionBase subscription) {
+            getSlot(subscription).Add(subscription);
+        }
 
-		public void Remove(LayoutEventSubscriptionBase subscription) {
-			getSlot(subscription).Remove(subscription);
-		}
+        public void Remove(LayoutEventSubscriptionBase subscription) {
+            getSlot(subscription).Remove(subscription);
+        }
 
-		public void RemoveObjectSubscriptions(Object classInstance) {
-			foreach(ILayoutSubscriptionCollection hashEntry in subscriptionBySenderType.Values)
-				hashEntry.RemoveObjectSubscriptions(classInstance);
-			noSenderTypeSubscriptions.RemoveObjectSubscriptions(classInstance);
-		}
+        public void RemoveObjectSubscriptions(object classInstance) {
+            foreach (ILayoutSubscriptionCollection hashEntry in subscriptionBySenderType.Values)
+                hashEntry.RemoveObjectSubscriptions(classInstance);
+            noSenderTypeSubscriptions.RemoveObjectSubscriptions(classInstance);
+        }
 
-		public void AddApplicableSubscriptions<TSubscription>(ICollection<LayoutEventSubscriptionBase> applicableSubscriptions, LayoutEvent e) {
-			ILayoutSubscriptionCollection hashEntry = (ILayoutSubscriptionCollection)subscriptionBySenderType[e.Sender.GetType()];
+        public void AddApplicableSubscriptions<TSubscription>(ICollection<LayoutEventSubscriptionBase> applicableSubscriptions, LayoutEvent e) {
+            if (e.Sender != null && subscriptionBySenderType.TryGetValue(e.Sender.GetType(), out ILayoutSubscriptionCollection hashEntry))
+                hashEntry.AddApplicableSubscriptions<TSubscription>(applicableSubscriptions, e);
 
-			if(subscriptionBySenderType.TryGetValue(e.Sender.GetType(), out hashEntry))
-				hashEntry.AddApplicableSubscriptions<TSubscription>(applicableSubscriptions, e);
+            noSenderTypeSubscriptions.AddApplicableSubscriptions<TSubscription>(applicableSubscriptions, e);
+        }
 
-			noSenderTypeSubscriptions.AddApplicableSubscriptions<TSubscription>(applicableSubscriptions, e);
-		}
+        public IEnumerator<LayoutEventSubscriptionBase> GetEnumerator() {
+            List<LayoutEventSubscriptionBase> allSubscriptions = new List<LayoutEventSubscriptionBase>();
 
-		public IEnumerator<LayoutEventSubscriptionBase> GetEnumerator() {
-			List<LayoutEventSubscriptionBase>	allSubscriptions = new List<LayoutEventSubscriptionBase>();
+            foreach (ILayoutSubscriptionCollection hashEntry in subscriptionBySenderType.Values) {
+                foreach (LayoutEventSubscriptionBase subscription in hashEntry)
+                    allSubscriptions.Add(subscription);
+            }
 
-			foreach(ILayoutSubscriptionCollection hashEntry in subscriptionBySenderType.Values) {
-				foreach(LayoutEventSubscriptionBase subscription in hashEntry)
-					allSubscriptions.Add(subscription);
-			}
+            foreach (LayoutEventSubscriptionBase subscription in noSenderTypeSubscriptions)
+                allSubscriptions.Add(subscription);
 
-			foreach(LayoutEventSubscriptionBase subscription in noSenderTypeSubscriptions)
-				allSubscriptions.Add(subscription);
-
-			return allSubscriptions.GetEnumerator();
-		}
+            return allSubscriptions.GetEnumerator();
+        }
 
         #region IEnumerable Members
 
@@ -1783,19 +1792,19 @@ namespace LayoutManager {
 
     }
 
-	/// <summary>
-	/// Interface for defining methods to invoke events in the context of a given thread.
-	/// </summary>
-	public interface ILayoutInterThreadEventInvoker {
-		/// <summary>
-		/// Queue an event to be delivered in the context of the main thread (UI thread)
-		/// </summary>
-		/// <param name="e">The event</param>
-		/// <remarks>
-		/// Use this method when you need to invoke an event from thread different than the
-		/// main thread. For example upon completing asynchronous I/O operation
-		/// </remarks>
-		void QueueEvent(LayoutEvent e);
-	}
+    /// <summary>
+    /// Interface for defining methods to invoke events in the context of a given thread.
+    /// </summary>
+    public interface ILayoutInterThreadEventInvoker {
+        /// <summary>
+        /// Queue an event to be delivered in the context of the main thread (UI thread)
+        /// </summary>
+        /// <param name="e">The event</param>
+        /// <remarks>
+        /// Use this method when you need to invoke an event from thread different than the
+        /// main thread. For example upon completing asynchronous I/O operation
+        /// </remarks>
+        void QueueEvent(LayoutEvent e);
+    }
 };
 

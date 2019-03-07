@@ -8,12 +8,12 @@ namespace LayoutManager.Tools.EventScriptDialogs {
     /// Summary description for TrainTargetSpeedAction.
     /// </summary>
     public class TrainLightsAction : Form {
-		private ComboBox comboBoxTrain;
-		private Label label1;
-		private GroupBox groupBox1;
-		private LayoutManager.CommonUI.Controls.Operand operandValue;
-		private Button buttonOK;
-		private Button buttonCancel;
+        private ComboBox comboBoxTrain;
+        private Label label1;
+        private GroupBox groupBox1;
+        private LayoutManager.CommonUI.Controls.Operand operandValue;
+        private Button buttonOK;
+        private Button buttonCancel;
         private RadioButton radioButtonSet;
         private RadioButton radioButtonToggle;
 
@@ -21,64 +21,59 @@ namespace LayoutManager.Tools.EventScriptDialogs {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container components = null;
 
-		private void endOfDesignerVariables() { }
+        private void endOfDesignerVariables() { }
 
-		XmlElement	element;
+        readonly XmlElement element;
 
-		public TrainLightsAction(XmlElement element)
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+        public TrainLightsAction(XmlElement element) {
+            //
+            // Required for Windows Form Designer support
+            //
+            InitializeComponent();
 
-			this.element = element;
+            this.element = element;
 
-			if(element.HasAttribute("TrainSymbol"))
-				comboBoxTrain.Text = element.GetAttribute("TrainSymbol");
+            if (element.HasAttribute("TrainSymbol"))
+                comboBoxTrain.Text = element.GetAttribute("TrainSymbol");
 
-			operandValue.Suffix = "Value";
-			operandValue.Element = element;
-			operandValue.DefaultAccess = "Value";
+            operandValue.Suffix = "Value";
+            operandValue.Element = element;
+            operandValue.DefaultAccess = "Value";
             operandValue.ValueIsBoolean = true;
             operandValue.ValueIsOnOff = true;
-			operandValue.AllowedTypes = new Type[] { typeof(bool) };
-			operandValue.Initialize();
+            operandValue.AllowedTypes = new Type[] { typeof(bool) };
+            operandValue.Initialize();
 
-			if(element.HasAttribute("Action")) {
-				switch(element.GetAttribute("Action")) {
-					case "Set":		radioButtonSet.Checked = true;	    break;
-					case "Toggle":	radioButtonToggle.Checked = true;	break;
-				}
-			}
-			else
-				radioButtonSet.Checked = true;
-		}
+            if (element.HasAttribute("Action")) {
+                switch (element.GetAttribute("Action")) {
+                    case "Set": radioButtonSet.Checked = true; break;
+                    case "Toggle": radioButtonToggle.Checked = true; break;
+                }
+            }
+            else
+                radioButtonSet.Checked = true;
+        }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                if (components != null) {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent() {
             this.comboBoxTrain = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -187,34 +182,34 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
-		}
-		#endregion
+        }
+        #endregion
 
-		private void buttonOK_Click(object sender, System.EventArgs e) {
-			if(comboBoxTrain.Text.Trim() == "") {
-				MessageBox.Show(this, "The name of symbol indicating the train cannot be empty. It most probably need to be set to 'Train'",
-					"Missing Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				comboBoxTrain.Focus();
-				return;
-			}
+        private void buttonOK_Click(object sender, System.EventArgs e) {
+            if (comboBoxTrain.Text.Trim() == "") {
+                MessageBox.Show(this, "The name of symbol indicating the train cannot be empty. It most probably need to be set to 'Train'",
+                    "Missing Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                comboBoxTrain.Focus();
+                return;
+            }
 
-			if(!operandValue.Commit())
-				return;
+            if (!operandValue.Commit())
+                return;
 
-			element.SetAttribute("TrainSymbol", comboBoxTrain.Text);
+            element.SetAttribute("TrainSymbol", comboBoxTrain.Text);
 
-			string	action = "Set";
+            string action = "Set";
 
-			if(radioButtonToggle.Checked)
-				action = "Toggle";
+            if (radioButtonToggle.Checked)
+                action = "Toggle";
 
-			element.SetAttribute("Action", action);
-			DialogResult = DialogResult.OK;
-		}
+            element.SetAttribute("Action", action);
+            DialogResult = DialogResult.OK;
+        }
 
-		private void buttonCancel_Click(object sender, System.EventArgs e) {
-			DialogResult = DialogResult.Cancel;
-			Close();
-		}
+        private void buttonCancel_Click(object sender, System.EventArgs e) {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
     }
 }

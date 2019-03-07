@@ -6,15 +6,16 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager.Tools.Dialogs {
+    #pragma warning disable IDE0051, IDE0060
     public partial class TestThreeWayTurnout : Form {
-        LayoutThreeWayTurnoutComponent turnout;
+        readonly LayoutThreeWayTurnoutComponent turnout;
         int _state = -1;
-		Guid frameWindowId;
+        Guid frameWindowId;
 
         public TestThreeWayTurnout(Guid frameWindowId, LayoutThreeWayTurnoutComponent turnout) {
             InitializeComponent();
 
-			this.frameWindowId = frameWindowId;
+            this.frameWindowId = frameWindowId;
             this.turnout = turnout;
 
             radioButtonBottom.Checked = false;
@@ -23,7 +24,7 @@ namespace LayoutManager.Tools.Dialogs {
             radioButtonRight.Checked = false;
             State = -1;
 
-            switch(turnout.Tip) {
+            switch (turnout.Tip) {
                 case LayoutComponentConnectionPoint.T: radioButtonTop.Visible = false; break;
                 case LayoutComponentConnectionPoint.B: radioButtonBottom.Visible = false; break;
                 case LayoutComponentConnectionPoint.L: radioButtonLeft.Visible = false; break;
@@ -48,7 +49,7 @@ namespace LayoutManager.Tools.Dialogs {
             buttonSwap.Enabled = fullyConnected;
             panelIllustration.Enabled = fullyConnected;
 
-            if(!fullyConnected)
+            if (!fullyConnected)
                 State = -1;
         }
 
@@ -58,23 +59,23 @@ namespace LayoutManager.Tools.Dialogs {
             }
 
             set {
-                if(turnout.FullyConnected) {
+                if (turnout.FullyConnected) {
                     _state = value;
 
-                    if(_state >= 0) {
+                    if (_state >= 0) {
                         ControlConnectionPointReference refRight = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[turnout.Id, "ControlRight"]);
                         ControlConnectionPointReference refLeft = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[turnout.Id, "ControlLeft"]);
                         int stateRight = 0;
                         int stateLeft = 0;
 
 
-                        if(_state == 1)
+                        if (_state == 1)
                             stateRight = 1;
-                        else if(_state == 2)
+                        else if (_state == 2)
                             stateLeft = 1;
 
-						EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", refRight, stateRight).SetCommandStation(refRight));
-						EventManager.AsyncEvent(new LayoutEvent<ControlConnectionPointReference, int>("change-track-component-state-command", refLeft, stateLeft).SetCommandStation(refLeft));
+                        EventManager.AsyncEvent(new LayoutEventInfoValueType<ControlConnectionPointReference, int>("change-track-component-state-command", refRight, stateRight).SetCommandStation(refRight));
+                        EventManager.AsyncEvent(new LayoutEventInfoValueType<ControlConnectionPointReference, int>("change-track-component-state-command", refLeft, stateLeft).SetCommandStation(refLeft));
                     }
                 }
                 else
@@ -89,7 +90,7 @@ namespace LayoutManager.Tools.Dialogs {
 
                 int tipIndex = 0;
 
-                switch(turnout.Tip) {
+                switch (turnout.Tip) {
                     case LayoutComponentConnectionPoint.T: tipIndex = 0; break;
                     case LayoutComponentConnectionPoint.R: tipIndex = 1; break;
                     case LayoutComponentConnectionPoint.B: tipIndex = 2; break;
@@ -98,10 +99,10 @@ namespace LayoutManager.Tools.Dialogs {
 
                 RadioButton checkedRadioButton = null;
 
-                if(_state >= 0)
+                if (_state >= 0)
                     checkedRadioButton = checkRadioButtonTable[tipIndex][_state];
 
-                foreach(RadioButton r in new RadioButton[] { radioButtonTop, radioButtonRight, radioButtonBottom, radioButtonLeft })
+                foreach (RadioButton r in new RadioButton[] { radioButtonTop, radioButtonRight, radioButtonBottom, radioButtonLeft })
                     r.Checked = (r == checkedRadioButton);
 
                 panelIllustration.Invalidate();
@@ -111,7 +112,7 @@ namespace LayoutManager.Tools.Dialogs {
         private void panelIllustration_Paint(object sender, PaintEventArgs e) {
             LayoutThreeWayTurnoutPainter painter = new LayoutThreeWayTurnoutPainter(new Size(64, 64), turnout.Tip, _state);
 
-            if(!panelIllustration.Enabled) {
+            if (!panelIllustration.Enabled) {
                 painter.TrackColor = Color.Gray;
                 painter.SegmentColors = new Color[] { Color.Gray, Color.Gray, Color.Gray };
             }
@@ -131,7 +132,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void TestThreeWayTurnout_FormClosed(object sender, FormClosedEventArgs e) {
-			LayoutController.Instance.EndDesignTimeActivation();
+            LayoutController.Instance.EndDesignTimeActivation();
             EventManager.Event(new LayoutEvent(this, "deselect-control-objects").SetFrameWindow(frameWindowId));
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
@@ -141,7 +142,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void radioButtonTop_Clicked(object sender, EventArgs e) {
-            switch(turnout.Tip) {
+            switch (turnout.Tip) {
                 case LayoutComponentConnectionPoint.B: State = 0; break;
                 case LayoutComponentConnectionPoint.R: State = 1; break;
                 case LayoutComponentConnectionPoint.L: State = 2; break;
@@ -149,7 +150,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void radioButtonRight_Clicked(object sender, EventArgs e) {
-            switch(turnout.Tip) {
+            switch (turnout.Tip) {
                 case LayoutComponentConnectionPoint.L: State = 0; break;
                 case LayoutComponentConnectionPoint.B: State = 1; break;
                 case LayoutComponentConnectionPoint.T: State = 2; break;
@@ -157,7 +158,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void radioButtonBottom_Clicked(object sender, EventArgs e) {
-            switch(turnout.Tip) {
+            switch (turnout.Tip) {
                 case LayoutComponentConnectionPoint.T: State = 0; break;
                 case LayoutComponentConnectionPoint.R: State = 2; break;
                 case LayoutComponentConnectionPoint.L: State = 1; break;
@@ -166,7 +167,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void radioButtonLeft_Clicked(object sender, EventArgs e) {
-            switch(turnout.Tip) {
+            switch (turnout.Tip) {
                 case LayoutComponentConnectionPoint.R: State = 0; break;
                 case LayoutComponentConnectionPoint.B: State = 2; break;
                 case LayoutComponentConnectionPoint.T: State = 1; break;
@@ -174,10 +175,10 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonPassed_Click(object sender, EventArgs e) {
-			IList<ControlConnectionPoint> connectionPoints = LayoutModel.ControlManager.ConnectionPoints[turnout.Id];
+            IList<ControlConnectionPoint> connectionPoints = LayoutModel.ControlManager.ConnectionPoints[turnout.Id];
 
-            foreach(ControlConnectionPoint cp in connectionPoints) {
-                if(cp.UserActionRequired) {
+            foreach (ControlConnectionPoint cp in connectionPoints) {
+                if (cp.UserActionRequired) {
                     SetControlUserActionRequiredCommand setCommand = new SetControlUserActionRequiredCommand(cp, false);
 
                     LayoutController.Do(setCommand);
@@ -189,9 +190,9 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonFailed_Click(object sender, EventArgs e) {
-			IList<ControlConnectionPoint> connectionPoints = LayoutModel.ControlManager.ConnectionPoints[turnout.Id];
+            IList<ControlConnectionPoint> connectionPoints = LayoutModel.ControlManager.ConnectionPoints[turnout.Id];
 
-            foreach(ControlConnectionPoint cp in connectionPoints) {
+            foreach (ControlConnectionPoint cp in connectionPoints) {
                 SetControlUserActionRequiredCommand setCommand = new SetControlUserActionRequiredCommand(cp, true);
 
                 LayoutController.Do(setCommand);
@@ -204,11 +205,11 @@ namespace LayoutManager.Tools.Dialogs {
         private void buttonDisconnect_Click(object sender, EventArgs e) {
             ContextMenu m = new ContextMenu();
 
-			foreach(ControlConnectionPoint cp in LayoutModel.ControlManager.ConnectionPoints[turnout.Id]) {
+            foreach (ControlConnectionPoint cp in LayoutModel.ControlManager.ConnectionPoints[turnout.Id]) {
                 ControlConnectionPoint connectionPoint = cp;
 
                 m.MenuItems.Add(cp.DisplayName + " (" + cp.Module.ConnectionPoints.GetLabel(cp.Index, true) + ")",
-                    delegate(object s, EventArgs ev) {
+                    delegate (object s, EventArgs ev) {
                         DisconnectComponentFromConnectionPointCommand disconnectCommand = new DisconnectComponentFromConnectionPointCommand(connectionPoint);
 
                         LayoutController.Do(disconnectCommand);
@@ -221,12 +222,12 @@ namespace LayoutManager.Tools.Dialogs {
         private void buttonConnect_Click(object sender, EventArgs e) {
             ContextMenu m = new ContextMenu();
 
-            foreach(ModelComponentControlConnectionDescription connectionDescription in turnout.ControlConnectionDescriptions) {
-                if(LayoutModel.ControlManager.ConnectionPoints[turnout.Id, connectionDescription.Name] == null) {
+            foreach (ModelComponentControlConnectionDescription connectionDescription in turnout.ControlConnectionDescriptions) {
+                if (LayoutModel.ControlManager.ConnectionPoints[turnout.Id, connectionDescription.Name] == null) {
                     ModelComponentControlConnectionDescription desc = connectionDescription;
 
                     m.MenuItems.Add(connectionDescription.DisplayName,
-                        delegate(object s, EventArgs ev) {
+                        delegate (object s, EventArgs ev) {
 
                             ControlConnectionPointDestination destination = new ControlConnectionPointDestination(turnout, desc);
                             EventManager.Event(new LayoutEvent(destination, "request-component-to-control-connect"));
@@ -239,8 +240,8 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void buttonSwap_Click(object sender, EventArgs e) {
             LayoutCompoundCommand swapCommand = new LayoutCompoundCommand("Swap three way turnouts controls");
-			ControlConnectionPointReference refRight = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[turnout.Id, "ControlRight"]);
-			ControlConnectionPointReference refLeft = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[turnout.Id, "ControlLeft"]);
+            ControlConnectionPointReference refRight = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[turnout.Id, "ControlRight"]);
+            ControlConnectionPointReference refLeft = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[turnout.Id, "ControlLeft"]);
             string rightName = refRight.ConnectionPoint.Name;
             string rightDisplayName = refRight.ConnectionPoint.DisplayName;
             string leftName = refLeft.ConnectionPoint.Name;

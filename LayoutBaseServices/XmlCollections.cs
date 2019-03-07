@@ -4,78 +4,77 @@ using System.Collections.Generic;
 
 namespace LayoutManager {
 
-	/// <summary>
-	/// Base class for collections that store there data inside XML element
-	/// </summary>
-	/// <typeparam name="T">The collection item type</typeparam>
-	public abstract class XmlCollection<T> : ICollection<T>, IObjectHasXml {
-		XmlElement element;
+    /// <summary>
+    /// Base class for collections that store there data inside XML element
+    /// </summary>
+    /// <typeparam name="T">The collection item type</typeparam>
+    public abstract class XmlCollection<T> : ICollection<T>, IObjectHasXml {
+        readonly XmlElement element;
 
-		/// <summary>
-		/// Construct a collection whose items are child items of a given XML element
-		/// </summary>
-		/// <param name="element">The element that contains the collection item elements</param>
-		protected XmlCollection(XmlElement element) {
-			this.element = element;
-		}
+        /// <summary>
+        /// Construct a collection whose items are child items of a given XML element
+        /// </summary>
+        /// <param name="element">The element that contains the collection item elements</param>
+        protected XmlCollection(XmlElement element) {
+            this.element = element;
+        }
 
-		/// <summary>
-		/// Construct a collection whose items are child items of an element whose name is given. If the
-		/// collection element does not exist, it is created.
-		/// </summary>
-		/// <param name="parentElement">Element containing the collection element</param>
-		/// <param name="collectionElementName">The collection element name</param>
-		protected XmlCollection(XmlElement parentElement, string collectionElementName) {
-			if((this.element = parentElement[collectionElementName]) == null) {
-				this.element = parentElement.OwnerDocument.CreateElement(collectionElementName);
-				parentElement.AppendChild(this.Element);
-			}
-		}
+        /// <summary>
+        /// Construct a collection whose items are child items of an element whose name is given. If the
+        /// collection element does not exist, it is created.
+        /// </summary>
+        /// <param name="parentElement">Element containing the collection element</param>
+        /// <param name="collectionElementName">The collection element name</param>
+        protected XmlCollection(XmlElement parentElement, string collectionElementName) {
+            if ((this.element = parentElement[collectionElementName]) == null) {
+                this.element = parentElement.OwnerDocument.CreateElement(collectionElementName);
+                parentElement.AppendChild(this.Element);
+            }
+        }
 
-		/// <summary>
-		/// Create an XML element storing a collection item data
-		/// </summary>
-		/// <param name="item">The item for which the element need to be created</param>
-		/// <returns>XML element to store the item in</returns>
-		virtual protected XmlElement CreateElement(T item) {
-			throw new NotImplementedException();
-		}
+        /// <summary>
+        /// Create an XML element storing a collection item data
+        /// </summary>
+        /// <param name="item">The item for which the element need to be created</param>
+        /// <returns>XML element to store the item in</returns>
+        virtual protected XmlElement CreateElement(T item) {
+            throw new NotImplementedException();
+        }
 
-		/// <summary>
-		/// Return collection item initialized with data in a XML element
-		/// </summary>
-		/// <param name="itemElement">The XML element storing the collection item data</param>
-		/// <returns>The collection item</returns>
-		abstract protected T FromElement(XmlElement itemElement);
+        /// <summary>
+        /// Return collection item initialized with data in a XML element
+        /// </summary>
+        /// <param name="itemElement">The XML element storing the collection item data</param>
+        /// <returns>The collection item</returns>
+        abstract protected T FromElement(XmlElement itemElement);
 
-		/// <summary>
-		/// Do the actual work of adding an item to the collection. If the item is already associated with Xml Element
-		/// avoid creating new element for the item, and just append the Xml element to the collection
-		/// </summary>
-		/// <param name="item">The item to be added</param>
-		/// <returns>Xml element of the added item</returns>
-		protected XmlElement AddItem(T item) {
-			XmlElement itemElement = item as XmlElement;
+        /// <summary>
+        /// Do the actual work of adding an item to the collection. If the item is already associated with Xml Element
+        /// avoid creating new element for the item, and just append the Xml element to the collection
+        /// </summary>
+        /// <param name="item">The item to be added</param>
+        /// <returns>Xml element of the added item</returns>
+        protected XmlElement AddItem(T item) {
+            XmlElement itemElement = item as XmlElement;
 
-			if(itemElement == null) {
-				IObjectHasXml itemWithXml = item as IObjectHasXml;
+            if (itemElement == null) {
 
-				if(itemWithXml != null)
-					itemElement = itemWithXml.Element;
-			}
+                if (item is IObjectHasXml itemWithXml)
+                    itemElement = itemWithXml.Element;
+            }
 
-			if(itemElement != null) {
-				if(itemElement.OwnerDocument != Element.OwnerDocument)
-					itemElement = (XmlElement)Element.OwnerDocument.ImportNode(itemElement, true);
-			}
-			else
-				itemElement = CreateElement(item);
+            if (itemElement != null) {
+                if (itemElement.OwnerDocument != Element.OwnerDocument)
+                    itemElement = (XmlElement)Element.OwnerDocument.ImportNode(itemElement, true);
+            }
+            else
+                itemElement = CreateElement(item);
 
-			if(itemElement.ParentNode != Element)
-				Element.AppendChild(itemElement);
+            if (itemElement.ParentNode != Element)
+                Element.AppendChild(itemElement);
 
-			return itemElement;
-		}
+            return itemElement;
+        }
 
         #region IObjectHasXml Members
 
@@ -94,39 +93,39 @@ namespace LayoutManager {
         /// </summary>
         /// <param name="item">Item to be added</param>
         public virtual void Add(T item) {
-			AddItem(item);
-		}
+            AddItem(item);
+        }
 
-		/// <summary>
-		/// Remove all items from the collection
-		/// </summary>
-		public virtual void Clear() {
-			Element.RemoveAll();
-		}
+        /// <summary>
+        /// Remove all items from the collection
+        /// </summary>
+        public virtual void Clear() {
+            Element.RemoveAll();
+        }
 
-		/// <summary>
-		/// Check if the collection contains a given item
-		/// </summary>
-		/// <param name="item">The item to check</param>
-		/// <returns>True if the collection contains this item</returns>
-		virtual public bool Contains(T item) {
-			foreach(XmlElement itemElement in Element) {
-				if(FromElement(itemElement).Equals(item))
-					return true;
-			}
+        /// <summary>
+        /// Check if the collection contains a given item
+        /// </summary>
+        /// <param name="item">The item to check</param>
+        /// <returns>True if the collection contains this item</returns>
+        virtual public bool Contains(T item) {
+            foreach (XmlElement itemElement in Element) {
+                if (FromElement(itemElement).Equals(item))
+                    return true;
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		/// <summary>
-		/// Copy items in the collection to an array
-		/// </summary>
-		/// <param name="array">The array to copy the items to</param>
-		/// <param name="arrayIndex">The array index for storing the first item</param>
-		public void CopyTo(T[] array, int arrayIndex) {
-			foreach(XmlElement itemElement in Element)
-				array[arrayIndex++] = FromElement(itemElement);
-		}
+        /// <summary>
+        /// Copy items in the collection to an array
+        /// </summary>
+        /// <param name="array">The array to copy the items to</param>
+        /// <param name="arrayIndex">The array index for storing the first item</param>
+        public void CopyTo(T[] array, int arrayIndex) {
+            foreach (XmlElement itemElement in Element)
+                array[arrayIndex++] = FromElement(itemElement);
+        }
 
         /// <summary>
         /// Get the collection size
@@ -146,28 +145,28 @@ namespace LayoutManager {
         /// <param name="item">The item to be removed</param>
         /// <returns>True if item was removed, false if item was not found</returns>
         virtual public bool Remove(T item) {
-			foreach(XmlElement itemElement in Element) {
-				if(FromElement(itemElement).Equals(item)) {
-					Element.RemoveChild(itemElement);
-					return true;
-				}
-			}
+            foreach (XmlElement itemElement in Element) {
+                if (FromElement(itemElement).Equals(item)) {
+                    Element.RemoveChild(itemElement);
+                    return true;
+                }
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		#endregion
+        #endregion
 
-		#region IEnumerable<T> Members
+        #region IEnumerable<T> Members
 
-		/// <summary>
-		/// Return enumerator on the collection items
-		/// </summary>
-		/// <returns>Enumerator on the collection items</returns>
-		public IEnumerator<T> GetEnumerator() {
-			foreach(XmlElement itemElement in Element)
-				yield return FromElement(itemElement);
-		}
+        /// <summary>
+        /// Return enumerator on the collection items
+        /// </summary>
+        /// <returns>Enumerator on the collection items</returns>
+        public IEnumerator<T> GetEnumerator() {
+            foreach (XmlElement itemElement in Element)
+                yield return FromElement(itemElement);
+        }
 
         #endregion
 
@@ -178,52 +177,52 @@ namespace LayoutManager {
         #endregion
     }
 
-	/// <summary>
-	/// Base class for collections that store there data inside XML element. Items in the collection are indexed by
-	/// key, and can directly accessed.
-	/// </summary>
-	/// <typeparam name="T">The type of items in the collection</typeparam>
-	/// <typeparam name="KeyT">The type of the key used to index the collection</typeparam>
-	public abstract class XmlIndexedCollection<T, KeyT> : XmlCollection<T>, ICollection<T> {
-		Dictionary<KeyT, XmlElement> index;
-		List<KeyValuePair<KeyT, XmlElement>> sorted = null;
+    /// <summary>
+    /// Base class for collections that store there data inside XML element. Items in the collection are indexed by
+    /// key, and can directly accessed.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the collection</typeparam>
+    /// <typeparam name="KeyT">The type of the key used to index the collection</typeparam>
+    public abstract class XmlIndexedCollection<T, KeyT> : XmlCollection<T>, ICollection<T> {
+        Dictionary<KeyT, XmlElement> index;
+        List<KeyValuePair<KeyT, XmlElement>> sorted = null;
 
-		/// <summary>
-		/// Construct a collection whose items are child items of a given XML element
-		/// </summary>
-		/// <param name="element">The element that contains the collection item elements</param>
-		protected XmlIndexedCollection(XmlElement element) : base(element) {
-		}
+        /// <summary>
+        /// Construct a collection whose items are child items of a given XML element
+        /// </summary>
+        /// <param name="element">The element that contains the collection item elements</param>
+        protected XmlIndexedCollection(XmlElement element) : base(element) {
+        }
 
-		/// <summary>
-		/// Construct a collection whose items are child items of an element whose name is given. If the
-		/// collection element does not exist, it is created.
-		/// </summary>
-		/// <param name="parentElement">Element containing the collection element</param>
-		/// <param name="collectionElementName">The collection element name</param>
-		protected XmlIndexedCollection(XmlElement parentElement, string collectionElementName) : base(parentElement, collectionElementName) {
-			InitializeIndex();
-		}
+        /// <summary>
+        /// Construct a collection whose items are child items of an element whose name is given. If the
+        /// collection element does not exist, it is created.
+        /// </summary>
+        /// <param name="parentElement">Element containing the collection element</param>
+        /// <param name="collectionElementName">The collection element name</param>
+        protected XmlIndexedCollection(XmlElement parentElement, string collectionElementName) : base(parentElement, collectionElementName) {
+            InitializeIndex();
+        }
 
-		/// <summary>
-		/// Get the key associated with a given item
-		/// </summary>
-		/// <param name="item">The item</param>
-		/// <returns>The key associated with this item</returns>
-		abstract protected KeyT GetItemKey(T item);
+        /// <summary>
+        /// Get the key associated with a given item
+        /// </summary>
+        /// <param name="item">The item</param>
+        /// <returns>The key associated with this item</returns>
+        abstract protected KeyT GetItemKey(T item);
 
-		protected void CreateIndex() {
-			if(index == null) {
-				index = new Dictionary<KeyT, XmlElement>();
-				InitializeIndex();
-			}
-		}
-		public IDictionary<KeyT, XmlElement> ItemsDictionary {
-			get {
-				CreateIndex();
-				return index;
-			}
-		}
+        protected void CreateIndex() {
+            if (index == null) {
+                index = new Dictionary<KeyT, XmlElement>();
+                InitializeIndex();
+            }
+        }
+        public IDictionary<KeyT, XmlElement> ItemsDictionary {
+            get {
+                CreateIndex();
+                return index;
+            }
+        }
 
         /// <summary>
         /// Get the key associated with a given item XML element.
@@ -241,13 +240,13 @@ namespace LayoutManager {
         /// </summary>
         /// <param name="item">Item to be added</param>
         public override void Add(T item) {
-			CreateIndex();
+            CreateIndex();
 
-			XmlElement itemElement = AddItem(item);
+            XmlElement itemElement = AddItem(item);
 
-			index.Add(GetItemKey(item), itemElement);
-			sorted = null;
-		}
+            index.Add(GetItemKey(item), itemElement);
+            sorted = null;
+        }
 
         /// <summary>
         /// Check if the collection contains a given item
@@ -267,137 +266,135 @@ namespace LayoutManager {
         /// Remove all items from the collection
         /// </summary>
         public override void Clear() {
-			base.Clear();
-			ItemsDictionary.Clear();
-			sorted = null;
-		}
+            base.Clear();
+            ItemsDictionary.Clear();
+            sorted = null;
+        }
 
-		/// <summary>
-		/// Remove the first instance of a given item from the collection
-		/// </summary>
-		/// <param name="item">The item to be removed</param>
-		/// <returns>True if item was removed, false if item was not found</returns>
-		public override bool Remove(T item) {
-			KeyT key = GetItemKey(item);
+        /// <summary>
+        /// Remove the first instance of a given item from the collection
+        /// </summary>
+        /// <param name="item">The item to be removed</param>
+        /// <returns>True if item was removed, false if item was not found</returns>
+        public override bool Remove(T item) {
+            KeyT key = GetItemKey(item);
 
-			return Remove(key);
-		}
+            return Remove(key);
+        }
 
-		/// <summary>
-		/// Remove the first instance of a given item from the collection
-		/// </summary>
-		/// <param name="key">The key associated with the item to be removed</param>
-		/// <returns>True if item was removed, false if item was not found</returns>
-		public bool Remove(KeyT key) {
-			XmlElement itemElement;
+        /// <summary>
+        /// Remove the first instance of a given item from the collection
+        /// </summary>
+        /// <param name="key">The key associated with the item to be removed</param>
+        /// <returns>True if item was removed, false if item was not found</returns>
+        public bool Remove(KeyT key) {
 
-			if(index != null) {
-				if(index.TryGetValue(key, out itemElement)) {
-					ItemsDictionary.Remove(key);
-					sorted = null;
-					Element.RemoveChild(itemElement);
-					return true;
-				}
-			}
+            if (index != null) {
+                if (index.TryGetValue(key, out XmlElement itemElement)) {
+                    ItemsDictionary.Remove(key);
+                    sorted = null;
+                    Element.RemoveChild(itemElement);
+                    return true;
+                }
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		/// <summary>
-		/// Get/set the item associated with a key
-		/// </summary>
-		/// <param name="key">The key associated with the item</param>
-		/// <returns>The collection's item associated with the key</returns>
-		public T this[KeyT key] {
-			get {
-				XmlElement itemElement;
+        /// <summary>
+        /// Get/set the item associated with a key
+        /// </summary>
+        /// <param name="key">The key associated with the item</param>
+        /// <returns>The collection's item associated with the key</returns>
+        public T this[KeyT key] {
+            get {
 
-				CreateIndex();
+                CreateIndex();
 
-				if(index.TryGetValue(key, out itemElement))
-					return FromElement(itemElement);
-				else
-					return default(T);
-			}
+                if (index.TryGetValue(key, out XmlElement itemElement))
+                    return FromElement(itemElement);
+                else
+                    return default;
+            }
 
-			set {
-				XmlElement oldItemElement = index[key];
-				XmlElement newItemElement = CreateElement(value);
+            set {
+                XmlElement oldItemElement = index[key];
+                XmlElement newItemElement = CreateElement(value);
 
-				if(oldItemElement != null)
-					Element.ReplaceChild(newItemElement, oldItemElement);
-				else
-					Element.AppendChild(newItemElement);
+                if (oldItemElement != null)
+                    Element.ReplaceChild(newItemElement, oldItemElement);
+                else
+                    Element.AppendChild(newItemElement);
 
-				ItemsDictionary[key] = newItemElement;
-			}
-		}
+                ItemsDictionary[key] = newItemElement;
+            }
+        }
 
-		/// <summary>
-		/// Initialize the index with based on the collection XML data
-		/// </summary>
-		protected virtual void InitializeIndex() {
-			foreach(XmlElement itemElement in Element)
-				index.Add(GetElementKey(itemElement), itemElement);
-			sorted = null;
-		}
+        /// <summary>
+        /// Initialize the index with based on the collection XML data
+        /// </summary>
+        protected virtual void InitializeIndex() {
+            foreach (XmlElement itemElement in Element)
+                index.Add(GetElementKey(itemElement), itemElement);
+            sorted = null;
+        }
 
-		/// <summary>
-		/// Get enumerator of sorted items in the collection. 
-		/// </summary>
-		/// <param name="comparison">A delegate for function comparing two key/value pairs</param>
-		/// <returns>Enumerator for the sorted items</returns>
-		protected IEnumerator<T> GetSortedIterator(Comparison<KeyValuePair<KeyT, XmlElement>> comparison) {
-			if(sorted == null) {
-				sorted = new List<KeyValuePair<KeyT, XmlElement>>(ItemsDictionary);
-				sorted.Sort(comparison);
-			}
+        /// <summary>
+        /// Get enumerator of sorted items in the collection. 
+        /// </summary>
+        /// <param name="comparison">A delegate for function comparing two key/value pairs</param>
+        /// <returns>Enumerator for the sorted items</returns>
+        protected IEnumerator<T> GetSortedIterator(Comparison<KeyValuePair<KeyT, XmlElement>> comparison) {
+            if (sorted == null) {
+                sorted = new List<KeyValuePair<KeyT, XmlElement>>(ItemsDictionary);
+                sorted.Sort(comparison);
+            }
 
-			foreach(KeyValuePair<KeyT, XmlElement> pair in sorted)
-				yield return FromElement(pair.Value);
-		}
-	}
+            foreach (KeyValuePair<KeyT, XmlElement> pair in sorted)
+                yield return FromElement(pair.Value);
+        }
+    }
 
-	public class XmlAttributeListCollection : ICollection<string> {
-		XmlElement element;
-		string attributeName;
-		List<string> items;
+    public class XmlAttributeListCollection : ICollection<string> {
+        readonly XmlElement element;
+        readonly string attributeName;
+        readonly List<string> items;
 
-		public XmlAttributeListCollection(XmlElement element, string attributeName) {
-			string[] itemsArray;
+        public XmlAttributeListCollection(XmlElement element, string attributeName) {
+            string[] itemsArray;
 
-			this.element = element;
-			this.attributeName = attributeName;
+            this.element = element;
+            this.attributeName = attributeName;
 
-			if(element.HasAttribute(attributeName)) {
-				itemsArray = element.GetAttribute(attributeName).Split(' ', ',');
-				items = new List<string>(itemsArray);
-			}
-			else
-				items = new List<string>();
-		}
+            if (element.HasAttribute(attributeName)) {
+                itemsArray = element.GetAttribute(attributeName).Split(' ', ',');
+                items = new List<string>(itemsArray);
+            }
+            else
+                items = new List<string>();
+        }
 
-		private void updateAttribute() {
-			element.SetAttribute(attributeName, string.Join(",", items.ToArray()));
-		}
+        private void updateAttribute() {
+            element.SetAttribute(attributeName, string.Join(",", items.ToArray()));
+        }
 
-		#region ICollection<string> Members
+        #region ICollection<string> Members
 
-		public void Add(string item) {
-			items.Add(item);
-			updateAttribute();
-		}
+        public void Add(string item) {
+            items.Add(item);
+            updateAttribute();
+        }
 
-		public void Clear() {
-			items.Clear();
-			updateAttribute();
-		}
+        public void Clear() {
+            items.Clear();
+            updateAttribute();
+        }
 
         public bool Contains(string item) => items.Contains(item);
 
         public void CopyTo(string[] array, int arrayIndex) {
-			items.CopyTo(array, arrayIndex);
-		}
+            items.CopyTo(array, arrayIndex);
+        }
 
         public int Count => items.Count;
 
@@ -405,11 +402,11 @@ namespace LayoutManager {
 
 
         public bool Remove(string item) {
-			bool result = items.Remove(item);
-			updateAttribute();
+            bool result = items.Remove(item);
+            updateAttribute();
 
-			return result;
-		}
+            return result;
+        }
 
         #endregion
 

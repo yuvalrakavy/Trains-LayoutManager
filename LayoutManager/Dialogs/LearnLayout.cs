@@ -17,288 +17,282 @@ using System.Media;
 
 namespace LayoutManager.Dialogs {
     partial class LearnLayout : Form {
-		static bool enableSound = false;
-		long lastSoundTime = 0;
-		const long soundGapThreshold = 4000 * TimeSpan.TicksPerMillisecond;
-		Guid frameWindowId;
+        static bool enableSound = false;
+        long lastSoundTime = 0;
+        const long soundGapThreshold = 4000 * TimeSpan.TicksPerMillisecond;
+        Guid frameWindowId;
 
-		public LearnLayout(Guid frameWindowId) {
-			InitializeComponent();
+        public LearnLayout(Guid frameWindowId) {
+            InitializeComponent();
 
-			this.frameWindowId = frameWindowId;
-			EventManager.AddObjectSubscriptions(this);
+            this.frameWindowId = frameWindowId;
+            EventManager.AddObjectSubscriptions(this);
 
-			checkBoxEnableSound.Checked = enableSound;
+            checkBoxEnableSound.Checked = enableSound;
 
-			if(LayoutModel.Components<IModelComponentIsCommandStation>(LayoutModel.ActivePhases).DefaultIfEmpty() != null)
-				listViewEvents.Columns.Add("Command Station", 110);
+            if (LayoutModel.Components<IModelComponentIsCommandStation>(LayoutModel.ActivePhases).DefaultIfEmpty() != null)
+                listViewEvents.Columns.Add("Command Station", 110);
 
-			UpdateButtons();
-		}
+            UpdateButtons();
+        }
 
-		[LayoutEvent("design-time-command-station-event")]
-		private void designTimeCommandStationEvent(LayoutEvent e) {
-			CommandStationInputEvent csEvent = (CommandStationInputEvent)e.Info;
-			EventItem eventItem = null;
+        [LayoutEvent("design-time-command-station-event")]
+        private void designTimeCommandStationEvent(LayoutEvent e) {
+            CommandStationInputEvent csEvent = (CommandStationInputEvent)e.Info;
+            EventItem eventItem = null;
 
-			foreach(EventItem item in listViewEvents.Items)
-				if(item.CommandStationEvent.Equals(csEvent)) {
-					eventItem = item;
-					break;
-				}
+            foreach (EventItem item in listViewEvents.Items)
+                if (item.CommandStationEvent.Equals(csEvent)) {
+                    eventItem = item;
+                    break;
+                }
 
-			if(eventItem == null) {
-				eventItem = new EventItem(csEvent);
+            if (eventItem == null) {
+                eventItem = new EventItem(csEvent);
 
-				if(eventItem.Status != CommandStationEventStatus.Connected || !checkBoxOnlyShowNotConnected.Checked)
-					listViewEvents.Items.Add(eventItem);
-			}
-			else
-				eventItem.CommandStationEvent = csEvent;
+                if (eventItem.Status != CommandStationEventStatus.Connected || !checkBoxOnlyShowNotConnected.Checked)
+                    listViewEvents.Items.Add(eventItem);
+            }
+            else
+                eventItem.CommandStationEvent = csEvent;
 
-			eventItem.Selected = true;
+            eventItem.Selected = true;
 
-			if(enableSound) {
-				long diff = DateTime.Now.Ticks - lastSoundTime;
+            if (enableSound) {
+                long diff = DateTime.Now.Ticks - lastSoundTime;
 
-				if(diff > soundGapThreshold) {
-					string resourceName = null;
+                if (diff > soundGapThreshold) {
+                    string resourceName = null;
 
-					Trace.WriteLine("Sending sound " + DateTime.Now.Ticks + " " + lastSoundTime + " diff " + diff + " threadshold " + soundGapThreshold);
+                    Trace.WriteLine("Sending sound " + DateTime.Now.Ticks + " " + lastSoundTime + " diff " + diff + " threadshold " + soundGapThreshold);
 
-					switch(eventItem.Status) {
-						case CommandStationEventStatus.Connected: resourceName = "soundLearnLayoutConnected"; break;
-						case CommandStationEventStatus.NotConnected: resourceName = "soundLearnLayoutNotConnected"; break;
-						case CommandStationEventStatus.NoControlModule: resourceName = "soundLearnLayoutNoControlModule"; break;
-					}
+                    switch (eventItem.Status) {
+                        case CommandStationEventStatus.Connected: resourceName = "soundLearnLayoutConnected"; break;
+                        case CommandStationEventStatus.NotConnected: resourceName = "soundLearnLayoutNotConnected"; break;
+                        case CommandStationEventStatus.NoControlModule: resourceName = "soundLearnLayoutNoControlModule"; break;
+                    }
 
-					if(resourceName != null) {
-						ResourceManager rm = new ResourceManager("LayoutManager.Sounds", this.GetType().Assembly);
-						byte[] soundData = (byte[])rm.GetObject(resourceName);
-						MemoryStream stream = new MemoryStream(soundData);
-						SoundPlayer soundPlayer = new SoundPlayer(stream);
+                    if (resourceName != null) {
+                        ResourceManager rm = new ResourceManager("LayoutManager.Sounds", this.GetType().Assembly);
+                        byte[] soundData = (byte[])rm.GetObject(resourceName);
+                        MemoryStream stream = new MemoryStream(soundData);
+                        SoundPlayer soundPlayer = new SoundPlayer(stream);
 
-						soundPlayer.Stop();
-						soundPlayer.Play();
-					}
+                        soundPlayer.Stop();
+                        soundPlayer.Play();
+                    }
 
-					lastSoundTime = DateTime.Now.Ticks;
-				}
-				else
-					Trace.WriteLine("No sound, too close");
-			}
-		}
+                    lastSoundTime = DateTime.Now.Ticks;
+                }
+                else
+                    Trace.WriteLine("No sound, too close");
+            }
+        }
 
-		[LayoutEvent("activate-learn-layout")]
-		private void activateLearnLayout(LayoutEvent e) {
-			if(WindowState == FormWindowState.Minimized)
-				WindowState = FormWindowState.Normal;
+        [LayoutEvent("activate-learn-layout")]
+        private void activateLearnLayout(LayoutEvent e) {
+            if (WindowState == FormWindowState.Minimized)
+                WindowState = FormWindowState.Normal;
 
-			e.Info = this;
-		}
+            e.Info = this;
+        }
 
-		[LayoutEvent("exit-design-mode")]
-		private void exitDesignMode(LayoutEvent e) {
-			buttonClose.PerformClick();
-		}
+        [LayoutEvent("exit-design-mode")]
+        private void exitDesignMode(LayoutEvent e) {
+            buttonClose.PerformClick();
+        }
 
-		[LayoutEvent("control-module-removed")]
-		[LayoutEvent("control-module-added")]
-		[LayoutEvent("control-module-address-changed")]
-		[LayoutEvent("control-module-location-changed")]
-		[LayoutEvent("control-bus-reconnected")]
-		[LayoutEvent("component-disconnected-from-control-module")]
-		[LayoutEvent("component-connected-to-control-module")]
-		[LayoutEvent("component-configuration-changed")]
-		[LayoutEvent("control-module-label-changed")]
-		[LayoutEvent("control-user-action-required-changed")]
-		[LayoutEvent("control-address-programming-required-changed")]
-		[LayoutEvent("control-buses-added")]
-		[LayoutEvent("control-buses-removed")]
-		private void updateItems(LayoutEvent e) {
-			foreach(EventItem item in listViewEvents.Items)
-				item.UpdateItem();
-			UpdateButtons();
-		}
+        [LayoutEvent("control-module-removed")]
+        [LayoutEvent("control-module-added")]
+        [LayoutEvent("control-module-address-changed")]
+        [LayoutEvent("control-module-location-changed")]
+        [LayoutEvent("control-bus-reconnected")]
+        [LayoutEvent("component-disconnected-from-control-module")]
+        [LayoutEvent("component-connected-to-control-module")]
+        [LayoutEvent("component-configuration-changed")]
+        [LayoutEvent("control-module-label-changed")]
+        [LayoutEvent("control-user-action-required-changed")]
+        [LayoutEvent("control-address-programming-required-changed")]
+        [LayoutEvent("control-buses-added")]
+        [LayoutEvent("control-buses-removed")]
+        private void updateItems(LayoutEvent e) {
+            foreach (EventItem item in listViewEvents.Items)
+                item.UpdateItem();
+            UpdateButtons();
+        }
 
-		#region Event Item
+        #region Event Item
 
-		public enum CommandStationEventStatus {
-			NoControlModule,
-			NotConnected,
-			Connected
-		};
+        public enum CommandStationEventStatus {
+            NoControlModule,
+            NotConnected,
+            Connected
+        };
 
-		class EventItem : ListViewItem {
-			CommandStationInputEvent csEvent;
+        class EventItem : ListViewItem {
+            CommandStationInputEvent csEvent;
 
-			public EventItem(CommandStationInputEvent csEvent) {
-				this.csEvent = csEvent;
+            public EventItem(CommandStationInputEvent csEvent) {
+                this.csEvent = csEvent;
 
-				Text = "";			// Address
-				SubItems.Add("");	// Connection
-				SubItems.Add("");	// State
-				SubItems.Add("");	// Status
-				SubItems.Add("");	// Command station
+                Text = "";          // Address
+                SubItems.Add("");   // Connection
+                SubItems.Add("");   // State
+                SubItems.Add("");   // Status
+                SubItems.Add("");   // Command station
 
-				UseItemStyleForSubItems = false;
+                UseItemStyleForSubItems = false;
 
-				UpdateItem();
-			}
+                UpdateItem();
+            }
 
-			public CommandStationInputEvent CommandStationEvent {
-				get {
-					return csEvent;
-				}
+            public CommandStationInputEvent CommandStationEvent {
+                get {
+                    return csEvent;
+                }
 
-				set {
-					csEvent = value;
-					UpdateItem();
-				}
-			}
+                set {
+                    csEvent = value;
+                    UpdateItem();
+                }
+            }
 
-			public CommandStationEventStatus Status {
-				get {
-					ControlConnectionPointReference cpr = csEvent.ConnectionPointRef;
+            public CommandStationEventStatus Status {
+                get {
+                    ControlConnectionPointReference cpr = csEvent.ConnectionPointRef;
 
-					if(cpr == null || !cpr.IsModuleDefined())
-						return CommandStationEventStatus.NoControlModule;
-					else if(cpr.IsConnected)
-						return CommandStationEventStatus.Connected;
-					else
-						return CommandStationEventStatus.NotConnected;
-				}
-			}
+                    if (cpr == null || !cpr.IsModuleDefined())
+                        return CommandStationEventStatus.NoControlModule;
+                    else if (cpr.IsConnected)
+                        return CommandStationEventStatus.Connected;
+                    else
+                        return CommandStationEventStatus.NotConnected;
+                }
+            }
 
-			public string StatusText {
-				get {
-					switch(Status) {
+            public string StatusText {
+                get {
+                    switch (Status) {
 
-						case CommandStationEventStatus.Connected: return "Connected to component";
-						case CommandStationEventStatus.NotConnected: return "Not Connected to component";
-						default:
-						case CommandStationEventStatus.NoControlModule: return "No control module";
-					}
-				}
-			}
+                        case CommandStationEventStatus.Connected: return "Connected to component";
+                        case CommandStationEventStatus.NotConnected: return "Not Connected to component";
+                        default:
+                        case CommandStationEventStatus.NoControlModule: return "No control module";
+                    }
+                }
+            }
 
-			public void UpdateItem() {
-				SubItems[0].Text = csEvent.AddressText;
-				SubItems[1].Text = csEvent.Bus.Name;
+            public void UpdateItem() {
+                SubItems[0].Text = csEvent.AddressText;
+                SubItems[1].Text = csEvent.Bus.Name;
 
-				if(csEvent.Bus.BusType.AddressingMethod == ControlAddressingMethod.DirectConnectionPointAddressing &&
-					csEvent.ConnectionPointRef != null && csEvent.ConnectionPointRef.Module.ModuleType.ConnectionPointsPerAddress > 1) {
-					SubItems[2].Text = "";
-					SubItems[2].BackColor = BackColor;
-				}
-				else {
-					if(csEvent.State == 0) {
-						SubItems[2].Text = "Off";
-						SubItems[2].BackColor = Color.Green;
-					}
-					else {
-						SubItems[2].Text = "On";
-						SubItems[2].BackColor = Color.Red;
-					}
-				}
+                if (csEvent.Bus.BusType.AddressingMethod == ControlAddressingMethod.DirectConnectionPointAddressing &&
+                    csEvent.ConnectionPointRef != null && csEvent.ConnectionPointRef.Module.ModuleType.ConnectionPointsPerAddress > 1) {
+                    SubItems[2].Text = "";
+                    SubItems[2].BackColor = BackColor;
+                }
+                else {
+                    if (csEvent.State == 0) {
+                        SubItems[2].Text = "Off";
+                        SubItems[2].BackColor = Color.Green;
+                    }
+                    else {
+                        SubItems[2].Text = "On";
+                        SubItems[2].BackColor = Color.Red;
+                    }
+                }
 
-				SubItems[3].Text = StatusText;
-				SubItems[4].Text = ((IModelComponentIsBusProvider)csEvent.CommandStation).NameProvider.Name;
+                SubItems[3].Text = StatusText;
+                SubItems[4].Text = ((IModelComponentIsBusProvider)csEvent.CommandStation).NameProvider.Name;
 
-				switch(Status) {
-					case CommandStationEventStatus.Connected: ImageIndex = 0; break;
-					case CommandStationEventStatus.NotConnected: ImageIndex = 1; break;
-					case CommandStationEventStatus.NoControlModule: ImageIndex = 2; break;
-				}
-			}
-		}
+                switch (Status) {
+                    case CommandStationEventStatus.Connected: ImageIndex = 0; break;
+                    case CommandStationEventStatus.NotConnected: ImageIndex = 1; break;
+                    case CommandStationEventStatus.NoControlModule: ImageIndex = 2; break;
+                }
+            }
+        }
 
-		#endregion
+        #endregion
 
-		private void LearnLayout_FormClosed(object sender, FormClosedEventArgs e) {
-			EventManager.Event(new LayoutEvent(this, "deselect-control-objects").SetFrameWindow(frameWindowId));
-			LayoutController.Instance.EndDesignTimeActivation();
-			EventManager.Subscriptions.RemoveObjectSubscriptions(this);
-		}
+        private void LearnLayout_FormClosed(object sender, FormClosedEventArgs e) {
+            EventManager.Event(new LayoutEvent(this, "deselect-control-objects").SetFrameWindow(frameWindowId));
+            LayoutController.Instance.EndDesignTimeActivation();
+            EventManager.Subscriptions.RemoveObjectSubscriptions(this);
+        }
 
-		private void buttonClose_Click(object sender, EventArgs e) {
-			Close();
-		}
+        private void buttonClose_Click(object sender, EventArgs e) {
+            Close();
+        }
 
-		private void buttonRemove_Click(object sender, EventArgs e)
-		{
-			if(listViewEvents.SelectedItems.Count > 0) {
-				EventItem selected = (EventItem)listViewEvents.SelectedItems[0];
+        private void buttonRemove_Click(object sender, EventArgs e) {
+            if (listViewEvents.SelectedItems.Count > 0) {
+                EventItem selected = (EventItem)listViewEvents.SelectedItems[0];
 
-				listViewEvents.Items.Remove(selected);
-			}
-		}
+                listViewEvents.Items.Remove(selected);
+            }
+        }
 
-		private void buttonRemoveAll_Click(object sender, EventArgs e)
-		{
-			listViewEvents.Items.Clear();
-			UpdateButtons();
-		}
+        private void buttonRemoveAll_Click(object sender, EventArgs e) {
+            listViewEvents.Items.Clear();
+            UpdateButtons();
+        }
 
-		private void listViewEvents_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			UpdateButtons();
+        private void listViewEvents_SelectedIndexChanged(object sender, EventArgs e) {
+            UpdateButtons();
 
-		}
-		private void UpdateButtons() {
-			if(listViewEvents.SelectedItems.Count == 0) {
-				EventManager.Event(new LayoutEvent(this, "deselect-control-objects").SetFrameWindow(frameWindowId));
-				buttonAction.Enabled = false;
-			}
-			else {
-				EventItem selected = (EventItem)listViewEvents.SelectedItems[0];
+        }
+        private void UpdateButtons() {
+            if (listViewEvents.SelectedItems.Count == 0) {
+                EventManager.Event(new LayoutEvent(this, "deselect-control-objects").SetFrameWindow(frameWindowId));
+                buttonAction.Enabled = false;
+            }
+            else {
+                EventItem selected = (EventItem)listViewEvents.SelectedItems[0];
 
-				switch(selected.Status) {
+                switch (selected.Status) {
 
-					case CommandStationEventStatus.Connected:
-						EventManager.Event(new LayoutEvent(selected.CommandStationEvent.ConnectionPointRef, "show-control-connection-point").SetFrameWindow(frameWindowId));
-						buttonAction.Enabled = false;	// Already connected
-						break;
+                    case CommandStationEventStatus.Connected:
+                        EventManager.Event(new LayoutEvent(selected.CommandStationEvent.ConnectionPointRef, "show-control-connection-point").SetFrameWindow(frameWindowId));
+                        buttonAction.Enabled = false;   // Already connected
+                        break;
 
-					case CommandStationEventStatus.NotConnected:
-						EventManager.Event(new LayoutEvent(selected.CommandStationEvent.ConnectionPointRef.ModuleReference, "show-control-module").SetFrameWindow(frameWindowId));
-						buttonAction.Enabled = true;	// Need to connect
-						break;
+                    case CommandStationEventStatus.NotConnected:
+                        EventManager.Event(new LayoutEvent(selected.CommandStationEvent.ConnectionPointRef.ModuleReference, "show-control-module").SetFrameWindow(frameWindowId));
+                        buttonAction.Enabled = true;    // Need to connect
+                        break;
 
-					case CommandStationEventStatus.NoControlModule:
-						EventManager.Event(new LayoutEvent(this, "deselect-control-objects").SetFrameWindow(frameWindowId));
-						buttonAction.Enabled = true;	// Need to connect
-						break;
-				}
-			}
-		}
+                    case CommandStationEventStatus.NoControlModule:
+                        EventManager.Event(new LayoutEvent(this, "deselect-control-objects").SetFrameWindow(frameWindowId));
+                        buttonAction.Enabled = true;    // Need to connect
+                        break;
+                }
+            }
+        }
 
-		private void buttonAction_Click(object sender, EventArgs e)
-		{
-			if(listViewEvents.SelectedItems.Count > 0) {
-				EventItem selected = (EventItem)listViewEvents.SelectedItems[0];
-				Tools.Dialogs.PickComponentToConnectToAddress pickDialog = new Tools.Dialogs.PickComponentToConnectToAddress(selected.CommandStationEvent);
+        private void buttonAction_Click(object sender, EventArgs e) {
+            if (listViewEvents.SelectedItems.Count > 0) {
+                EventItem selected = (EventItem)listViewEvents.SelectedItems[0];
+                Tools.Dialogs.PickComponentToConnectToAddress pickDialog = new Tools.Dialogs.PickComponentToConnectToAddress(selected.CommandStationEvent);
 
-				new SemiModalDialog(this, pickDialog, delegate(Form dialog, object info) {
-					if(pickDialog.DialogResult == DialogResult.OK) {
-						ControlConnectionPoint connectionPoint = (ControlConnectionPoint)EventManager.Event(new LayoutEvent(pickDialog.ConnectionDestination, "connect-component-to-control-module-address-request", null, selected.CommandStationEvent));
+                new SemiModalDialog(this, pickDialog, delegate (Form dialog, object info) {
+                    if (pickDialog.DialogResult == DialogResult.OK) {
+                        ControlConnectionPoint connectionPoint = (ControlConnectionPoint)EventManager.Event(new LayoutEvent(pickDialog.ConnectionDestination, "connect-component-to-control-module-address-request", null, selected.CommandStationEvent));
 
-						if(connectionPoint != null)
-							EventManager.Event(new LayoutEvent(new ControlConnectionPointReference(connectionPoint), "show-control-connection-point").SetFrameWindow(frameWindowId));
-					}
-				}, null).ShowDialog();
-			}
-		}
+                        if (connectionPoint != null)
+                            EventManager.Event(new LayoutEvent(new ControlConnectionPointReference(connectionPoint), "show-control-connection-point").SetFrameWindow(frameWindowId));
+                    }
+                }, null).ShowDialog();
+            }
+        }
 
-		private void listViewEvents_DoubleClick(object sender, EventArgs e)
-		{
-			if(buttonAction.Enabled)
-				buttonAction.PerformClick();
-		}
+        private void listViewEvents_DoubleClick(object sender, EventArgs e) {
+            if (buttonAction.Enabled)
+                buttonAction.PerformClick();
+        }
 
-		private void checkBoxEnableSound_CheckedChanged(object sender, EventArgs e)
-		{
-			enableSound = checkBoxEnableSound.Checked;
-		}
-	}
+        private void checkBoxEnableSound_CheckedChanged(object sender, EventArgs e) {
+            enableSound = checkBoxEnableSound.Checked;
+        }
+    }
 }

@@ -10,246 +10,245 @@ namespace LayoutManager.View {
     /// <summary>
     /// Summary description for LocomotivePainter.
     /// </summary>
-    public class LocomotivePainter : System.ComponentModel.Component, ILayoutComponentPainter, IDisposable
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private Container components;
+    public class LocomotivePainter : System.ComponentModel.Component, ILayoutComponentPainter, IDisposable {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private Container components;
 
-		String							label = "";
-		bool							frontDefined;
-		bool							drawFront;
-		bool							drawLabel = true;
-		LayoutComponentConnectionPoint	front;
-		LocomotiveOrientation			orientation = LocomotiveOrientation.Forward;
-		int								speed;
-		Font							labelFont = new Font("Arial", 7.0F, GraphicsUnit.World);
-		Brush							labelBrush = Brushes.Black;
-		Brush							motionBrush = Brushes.Red;
-		Brush							backgroundBrush = Brushes.WhiteSmoke;
-		Pen								framePen = Pens.Black;
-		int								verticalMargin = 1;
-		int								HorizontalMargin = 5;
-		int								frontMargin = 4;
-		int								motionTriangleHeight = 3;
-		int								motionTriangleGap = 1;
-		int								extensionMarkSize = 8;
-		SizeF							minSize = new SizeF(20, 12);
-		bool							drawExtensionMark;
-		ViewDetailLevel					detailLevel = ViewDetailLevel.High;
+        String label = "";
+        bool frontDefined;
+        bool drawFront;
+        bool drawLabel = true;
+        LayoutComponentConnectionPoint front;
+        LocomotiveOrientation orientation = LocomotiveOrientation.Forward;
+        int speed;
+        Font labelFont = new Font("Arial", 7.0F, GraphicsUnit.World);
+        Brush labelBrush = Brushes.Black;
+        Brush motionBrush = Brushes.Red;
+        Brush backgroundBrush = Brushes.WhiteSmoke;
+        Pen framePen = Pens.Black;
+        readonly int verticalMargin = 1;
+        readonly int HorizontalMargin = 5;
+        readonly int frontMargin = 4;
+        readonly int motionTriangleHeight = 3;
+        readonly int motionTriangleGap = 1;
+        readonly int extensionMarkSize = 8;
+        SizeF minSize = new SizeF(20, 12);
+        bool drawExtensionMark;
+        readonly ViewDetailLevel detailLevel = ViewDetailLevel.High;
 
-		public LocomotivePainter(IContainer container) {
-			/// <summary>
-			/// Required for Windows.Forms Class Composition Designer support
-			/// </summary>
-			container.Add(this);
-			InitializeComponent();
-		}
+        public LocomotivePainter(IContainer container) {
+            /// <summary>
+            /// Required for Windows.Forms Class Composition Designer support
+            /// </summary>
+            container.Add(this);
+            InitializeComponent();
+        }
 
-		public LocomotivePainter(ViewDetailLevel detailLevel) {
-			/// <summary>
-			/// Required for Windows.Forms Class Composition Designer support
-			/// </summary>
-			InitializeComponent();
-			this.detailLevel = detailLevel;
-		}
+        public LocomotivePainter(ViewDetailLevel detailLevel) {
+            /// <summary>
+            /// Required for Windows.Forms Class Composition Designer support
+            /// </summary>
+            InitializeComponent();
+            this.detailLevel = detailLevel;
+        }
 
-		public LocomotivePainter()
-			: this(ViewDetailLevel.High) {
-		}
+        public LocomotivePainter()
+            : this(ViewDetailLevel.High) {
+        }
 
-		/// <summary>
-		/// Given a locomotive state, construct a painter to paint it
-		/// </summary>
-		/// <param name="trainState"></param>
-		public LocomotivePainter(TrainStateInfo trainState, TrainLocationInfo trainLocation) {
-			/// <summary>
-			/// Required for Windows.Forms Class Composition Designer support
-			/// </summary>
-			InitializeComponent();
+        /// <summary>
+        /// Given a locomotive state, construct a painter to paint it
+        /// </summary>
+        /// <param name="trainState"></param>
+        public LocomotivePainter(TrainStateInfo trainState, TrainLocationInfo trainLocation) {
+            /// <summary>
+            /// Required for Windows.Forms Class Composition Designer support
+            /// </summary>
+            InitializeComponent();
 
-			Speed = trainState.Speed;
-			Label = trainState.DisplayName;
+            Speed = trainState.Speed;
+            Label = trainState.DisplayName;
 
-			if(trainLocation.IsDisplayFrontKnown) {
-				DrawFront = true;
-				Front = trainLocation.DisplayFront;
-			}
-			else {
-				LayoutBlockDefinitionComponent	blockInfo = LayoutModel.Blocks[trainLocation.BlockId].BlockDefinintion;
+            if (trainLocation.IsDisplayFrontKnown) {
+                DrawFront = true;
+                Front = trainLocation.DisplayFront;
+            }
+            else {
+                LayoutBlockDefinitionComponent blockInfo = LayoutModel.Blocks[trainLocation.BlockId].BlockDefinintion;
 
-				DrawFront = false;
-				Front = blockInfo.Track.ConnectionPoints[0];
-			}
-		}
+                DrawFront = false;
+                Front = blockInfo.Track.ConnectionPoints[0];
+            }
+        }
 
-		#region Properties
+        #region Properties
 
-		public String Label {
-			set {
-				label = value;
-			}
+        public String Label {
+            set {
+                label = value;
+            }
 
-			get {
-				return label;
-			}
-		}
+            get {
+                return label;
+            }
+        }
 
-		public LayoutComponentConnectionPoint Front {
-			get {
-				return front;
-			}
+        public LayoutComponentConnectionPoint Front {
+            get {
+                return front;
+            }
 
-			set {
-				front = value;
-				frontDefined = true;
-			}
-		}
+            set {
+                front = value;
+                frontDefined = true;
+            }
+        }
 
-		public LocomotiveOrientation Orientation {
-			get {
-				return orientation;
-			}
+        public LocomotiveOrientation Orientation {
+            get {
+                return orientation;
+            }
 
-			set {
-				orientation = value;
-			}
-		}
+            set {
+                orientation = value;
+            }
+        }
 
         public LocomotiveOrientation Direction => Speed >= 0 ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
 
         public bool DrawFront {
-			get {
-				return drawFront;
-			}
+            get {
+                return drawFront;
+            }
 
-			set {
-				drawFront = value;
-			}
-		}
+            set {
+                drawFront = value;
+            }
+        }
 
-		public bool DrawLabel {
-			get {
-				return drawLabel;
-			}
+        public bool DrawLabel {
+            get {
+                return drawLabel;
+            }
 
-			set {
-				drawLabel = value;
-			}
-		}
+            set {
+                drawLabel = value;
+            }
+        }
 
-		public int Speed {
-			get {
-				return speed;
-			}
+        public int Speed {
+            get {
+                return speed;
+            }
 
-			set {
-				speed = value;
-			}
-		}
+            set {
+                speed = value;
+            }
+        }
 
-		public Font LabelFont {
-			get {
-				return labelFont;
-			}
+        public Font LabelFont {
+            get {
+                return labelFont;
+            }
 
-			set {
-				labelFont = value;
-			}
-		}
+            set {
+                labelFont = value;
+            }
+        }
 
-		public Brush LabelBrush {
-			get {
-				return labelBrush;
-			}
+        public Brush LabelBrush {
+            get {
+                return labelBrush;
+            }
 
-			set {
-				labelBrush = value;
-			}
-		}
+            set {
+                labelBrush = value;
+            }
+        }
 
-		public Brush BackgroundBrush {
-			get {
-				return backgroundBrush;
-			}
+        public Brush BackgroundBrush {
+            get {
+                return backgroundBrush;
+            }
 
-			set {
-				backgroundBrush = value;
-			}
-		}
+            set {
+                backgroundBrush = value;
+            }
+        }
 
-		public Pen FramePen {
-			get {
-				return framePen;
-			}
+        public Pen FramePen {
+            get {
+                return framePen;
+            }
 
-			set {
-				framePen = value;
-			}
-		}
+            set {
+                framePen = value;
+            }
+        }
 
-		public Brush MotionBrush {
-			get {
-				return motionBrush;
-			}
+        public Brush MotionBrush {
+            get {
+                return motionBrush;
+            }
 
-			set {
-				motionBrush = value;
-			}
-		}
+            set {
+                motionBrush = value;
+            }
+        }
 
-		public SizeF MinSize {
-			get {
-				return minSize;
-			}
+        public SizeF MinSize {
+            get {
+                return minSize;
+            }
 
-			set {
-				minSize = value;
-			}
-		}
+            set {
+                minSize = value;
+            }
+        }
 
-		public bool DrawExtensionMark {
-			get {
-				return drawExtensionMark;
-			}
+        public bool DrawExtensionMark {
+            get {
+                return drawExtensionMark;
+            }
 
-			set {
-				drawExtensionMark = value;
-			}
-		}
+            set {
+                drawExtensionMark = value;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Operations
+        #region Operations
 
-		protected SizeF GetLabelSize(Graphics g) {
-			SizeF	labelSize;
+        protected SizeF GetLabelSize(Graphics g) {
+            SizeF labelSize;
 
-			if(string.IsNullOrEmpty(label))
-				labelSize = minSize;
-			else
-				labelSize = g.MeasureString(label, labelFont);
+            if (string.IsNullOrEmpty(label))
+                labelSize = minSize;
+            else
+                labelSize = g.MeasureString(label, labelFont);
 
-			if(labelSize.Width < minSize.Width)
-				labelSize.Width = minSize.Width;
-			if(labelSize.Height < minSize.Height)
-				labelSize.Height = minSize.Height;
+            if (labelSize.Width < minSize.Width)
+                labelSize.Width = minSize.Width;
+            if (labelSize.Height < minSize.Height)
+                labelSize.Height = minSize.Height;
 
-			return labelSize;
-		}
+            return labelSize;
+        }
 
-		protected SizeF GetLocoRectSize(Graphics g) {
-			SizeF	labelSize = GetLabelSize(g);
+        protected SizeF GetLocoRectSize(Graphics g) {
+            SizeF labelSize = GetLabelSize(g);
 
-			return new SizeF(labelSize.Width + 2*HorizontalMargin, labelSize.Height + 2*verticalMargin);
-		}
+            return new SizeF(labelSize.Width + 2 * HorizontalMargin, labelSize.Height + 2 * verticalMargin);
+        }
 
-		public SizeF GetDirectionalLocoSize(Graphics g) {
-			SizeF	locoRectSize = GetLocoRectSize(g);
+        public SizeF GetDirectionalLocoSize(Graphics g) {
+            SizeF locoRectSize = GetLocoRectSize(g);
 
-			return new SizeF(locoRectSize.Width + (DrawFront ? frontMargin : 0) + (DrawExtensionMark ? extensionMarkSize : 0), locoRectSize.Height);
-		}
+            return new SizeF(locoRectSize.Width + (DrawFront ? frontMargin : 0) + (DrawExtensionMark ? extensionMarkSize : 0), locoRectSize.Height);
+        }
 
         public Size Measure(Graphics g) => Size.Ceiling(GetDirectionalLocoSize(g));
 
@@ -259,402 +258,401 @@ namespace LayoutManager.View {
         /// </summary>
         /// <param name="g"></param>
         public void Draw(Graphics g) {
-			if(!frontDefined)
-				throw new ArgumentException("Locomotive Painter 'front' is not set");
+            if (!frontDefined)
+                throw new ArgumentException("Locomotive Painter 'front' is not set");
 
-			LayoutComponentConnectionPoint		drawnFront = Front;
+            LayoutComponentConnectionPoint drawnFront = Front;
 
-			if(Orientation == LocomotiveOrientation.Backward)
-				drawnFront = LayoutTrackComponent.GetPointConnectingTo(Front);
+            if (Orientation == LocomotiveOrientation.Backward)
+                drawnFront = LayoutTrackComponent.GetPointConnectingTo(Front);
 
-			GraphicsState	gs = g.Save();
+            GraphicsState gs = g.Save();
 
-			switch(drawnFront) {
-				case LayoutComponentConnectionPoint.T:
-					g.RotateTransform(-90);
-					break;
+            switch (drawnFront) {
+                case LayoutComponentConnectionPoint.T:
+                    g.RotateTransform(-90);
+                    break;
 
-				case LayoutComponentConnectionPoint.B:
-					g.RotateTransform(90);
-					break;
+                case LayoutComponentConnectionPoint.B:
+                    g.RotateTransform(90);
+                    break;
 
-				case LayoutComponentConnectionPoint.L:
-					g.RotateTransform(180);
-					break;
+                case LayoutComponentConnectionPoint.L:
+                    g.RotateTransform(180);
+                    break;
 
-				case LayoutComponentConnectionPoint.R:
-					break;
-			}
+                case LayoutComponentConnectionPoint.R:
+                    break;
+            }
 
-			SizeF[] locoShapeMold = new SizeF[] {
-													  new SizeF(-0.5F,  0.5F),
-													  new SizeF( 0.5F,  0.5F),
-													  new SizeF( 0.5F,  0.0F),
-													  new SizeF( 0.5F, -0.5F),
-													  new SizeF(-0.5F, -0.5F)
-												  };
+            SizeF[] locoShapeMold = new SizeF[] {
+                                                      new SizeF(-0.5F,  0.5F),
+                                                      new SizeF( 0.5F,  0.5F),
+                                                      new SizeF( 0.5F,  0.0F),
+                                                      new SizeF( 0.5F, -0.5F),
+                                                      new SizeF(-0.5F, -0.5F)
+                                                  };
 
-			PointF[]	locoShape = new PointF[locoShapeMold.Length];
-			SizeF		locoRectSize = GetLocoRectSize(g);
-			int			i = 0;
+            PointF[] locoShape = new PointF[locoShapeMold.Length];
+            SizeF locoRectSize = GetLocoRectSize(g);
+            int i = 0;
 
-			foreach(SizeF s in locoShapeMold)
-				locoShape[i++] = new PointF(s.Width * locoRectSize.Width, s.Height * locoRectSize.Height);
+            foreach (SizeF s in locoShapeMold)
+                locoShape[i++] = new PointF(s.Width * locoRectSize.Width, s.Height * locoRectSize.Height);
 
-			if(DrawFront)
-				locoShape[2].X += frontMargin;
+            if (DrawFront)
+                locoShape[2].X += frontMargin;
 
-			if(backgroundBrush != null)
-				g.FillPolygon(backgroundBrush, locoShape);
-			g.DrawPolygon(framePen, locoShape);
+            if (backgroundBrush != null)
+                g.FillPolygon(backgroundBrush, locoShape);
+            g.DrawPolygon(framePen, locoShape);
 
-			if(drawExtensionMark) {
-				RectangleF extensionRect = new RectangleF(new PointF((float)(locoRectSize.Width * -0.5 - extensionMarkSize), (float)(0-extensionMarkSize*0.5)),
-					new SizeF(extensionMarkSize, extensionMarkSize));
+            if (drawExtensionMark) {
+                RectangleF extensionRect = new RectangleF(new PointF((float)(locoRectSize.Width * -0.5 - extensionMarkSize), (float)(0 - extensionMarkSize * 0.5)),
+                    new SizeF(extensionMarkSize, extensionMarkSize));
 
-				g.FillEllipse(backgroundBrush, extensionRect);
-				g.DrawEllipse(Pens.Black, extensionRect);
-			}
+                g.FillEllipse(backgroundBrush, extensionRect);
+                g.DrawEllipse(Pens.Black, extensionRect);
+            }
 
-			if(Speed != 0) {
-				PointF[]	triangle = new PointF[3];
-				float		d = (Direction == LocomotiveOrientation.Forward) ? 1.0F : -1.0F;
-				float		xTip = (locoRectSize.Width*0.5F - motionTriangleGap);
-				float		xBase = (xTip - motionTriangleHeight);
-				float		y = 0.5F * locoRectSize.Height - verticalMargin;
+            if (Speed != 0) {
+                PointF[] triangle = new PointF[3];
+                float d = (Direction == LocomotiveOrientation.Forward) ? 1.0F : -1.0F;
+                float xTip = (locoRectSize.Width * 0.5F - motionTriangleGap);
+                float xBase = (xTip - motionTriangleHeight);
+                float y = 0.5F * locoRectSize.Height - verticalMargin;
 
-				if(Orientation == LocomotiveOrientation.Backward)
-					d = -d;
+                if (Orientation == LocomotiveOrientation.Backward)
+                    d = -d;
 
-				xBase *= d;
-				xTip *= d;
+                xBase *= d;
+                xTip *= d;
 
-				triangle[0] = new PointF(xBase , y);
-				triangle[1] = new PointF(xTip, 0);
-				triangle[2] = new PointF(xBase, -y);
+                triangle[0] = new PointF(xBase, y);
+                triangle[1] = new PointF(xTip, 0);
+                triangle[2] = new PointF(xBase, -y);
 
-				g.FillPolygon(motionBrush, triangle);
-			}
+                g.FillPolygon(motionBrush, triangle);
+            }
 
-			g.Restore(gs);
+            g.Restore(gs);
 
-			// Draw the label
-			if(drawLabel)
-				DrawLocomotiveLabel(g);
-		}
+            // Draw the label
+            if (drawLabel)
+                DrawLocomotiveLabel(g);
+        }
 
-		public void DrawLocomotiveLabel(Graphics g) {
-			GraphicsState	gs = g.Save();
+        public void DrawLocomotiveLabel(Graphics g) {
+            GraphicsState gs = g.Save();
 
-			if(LayoutTrackComponent.IsVertical(Front))
-				g.RotateTransform(90);
+            if (LayoutTrackComponent.IsVertical(Front))
+                g.RotateTransform(90);
 
-			SizeF	labelSize = GetLabelSize(g);
+            SizeF labelSize = GetLabelSize(g);
 
-			StringFormat	format = new StringFormat();
-			format.Alignment = StringAlignment.Center;
-			format.LineAlignment = StringAlignment.Center;
+            StringFormat format = new StringFormat {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
 
-			g.DrawString(Label, LabelFont, LabelBrush, new RectangleF(new PointF(-(labelSize.Width / 2.0F), -(labelSize.Height / 2.0F)), labelSize), format);
-			g.Restore(gs);
-		}
+            g.DrawString(Label, LabelFont, LabelBrush, new RectangleF(new PointF(-(labelSize.Width / 2.0F), -(labelSize.Height / 2.0F)), labelSize), format);
+            g.Restore(gs);
+        }
 
-		#endregion
+        #endregion
 
-		#region Component Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-			components = new Container();
-		}
-		#endregion
-	
-#region IDisposable Members
+        #region Component Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent() {
+            components = new Container();
+        }
+        #endregion
 
-void  IDisposable.Dispose()
-{
- 	throw new Exception("The method or operation is not implemented.");
-}
+        #region IDisposable Members
 
-#endregion
-}
+        void IDisposable.Dispose() {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-	public class TrainLocationPainter : ILayoutComponentPainter {
-		TrainLocationInfo				trainLocation;
-		TrainStateInfo					trainState;
-		int								verticalMargin = 2;
-		int								horizontalMargin = 2;
-		int								gap = 2;
-		LayoutComponentConnectionPoint	front;
-		bool							drawFront;
-		bool							vertical;
-		bool							showTrainDetails;
-		Color							backColor = Color.Empty;
-		Brush							labelBrush = Brushes.Black;
-		bool							drawExtensionMark;
-		ViewDetailLevel					detailLevel;
-		SizeF							minSize = new SizeF(40, 12);
+        #endregion
+    }
 
-		public TrainLocationPainter(TrainLocationInfo trainLocation, ViewDetailLevel detailLevel) {
-			this.trainLocation = trainLocation;
-			this.trainState = new TrainStateInfo(trainLocation.LocomotiveStateElement);
+    public class TrainLocationPainter : ILayoutComponentPainter {
+        readonly TrainLocationInfo trainLocation;
+        readonly TrainStateInfo trainState;
+        readonly int verticalMargin = 2;
+        readonly int horizontalMargin = 2;
+        readonly int gap = 2;
+        readonly LayoutComponentConnectionPoint front;
+        readonly bool drawFront;
+        readonly bool vertical;
+        bool showTrainDetails;
+        Color backColor = Color.Empty;
+        Brush labelBrush = Brushes.Black;
+        bool drawExtensionMark;
+        readonly ViewDetailLevel detailLevel;
+        SizeF minSize = new SizeF(40, 12);
 
-			LayoutTrackComponent	 blockInfoTrack = LayoutModel.Blocks[trainLocation.BlockId].BlockDefinintion.Track;
+        public TrainLocationPainter(TrainLocationInfo trainLocation, ViewDetailLevel detailLevel) {
+            this.trainLocation = trainLocation;
+            this.trainState = new TrainStateInfo(trainLocation.LocomotiveStateElement);
 
-			this.detailLevel = detailLevel;
+            LayoutTrackComponent blockInfoTrack = LayoutModel.Blocks[trainLocation.BlockId].BlockDefinintion.Track;
 
-			if(trainLocation.IsDisplayFrontKnown) {
-				drawFront = true;
-				front = trainLocation.DisplayFront;
-			}
-			else
-				front = blockInfoTrack.ConnectionPoints[0];
+            this.detailLevel = detailLevel;
 
-			vertical = LayoutTrackComponent.IsVertical(blockInfoTrack);
-		}
+            if (trainLocation.IsDisplayFrontKnown) {
+                drawFront = true;
+                front = trainLocation.DisplayFront;
+            }
+            else
+                front = blockInfoTrack.ConnectionPoints[0];
+
+            vertical = LayoutTrackComponent.IsVertical(blockInfoTrack);
+        }
 
         public TrainStateInfo LocomotiveState => trainState;
 
         public bool ShowTrainDetails {
-			get { return showTrainDetails; }
-			set { showTrainDetails = value; }
-		}
+            get { return showTrainDetails; }
+            set { showTrainDetails = value; }
+        }
 
-		public Color BackColor {
-			get { return backColor; }
-			set { backColor = value; }
-		}
+        public Color BackColor {
+            get { return backColor; }
+            set { backColor = value; }
+        }
 
-		public Brush LabelBrush {
-			get { return labelBrush; }
-			set { labelBrush = value; }
-		}
+        public Brush LabelBrush {
+            get { return labelBrush; }
+            set { labelBrush = value; }
+        }
 
-		public bool DrawExtensionMark {
-			get { return drawExtensionMark; }
-			set { drawExtensionMark = value; }
-		}
+        public bool DrawExtensionMark {
+            get { return drawExtensionMark; }
+            set { drawExtensionMark = value; }
+        }
 
-		public SizeF MinSize {
-			get { return minSize; }
-			set { minSize = value; }
-		}
-	
-		private Pen getFramePen() {
-			Color	penColor = Color.Black;
+        public SizeF MinSize {
+            get { return minSize; }
+            set { minSize = value; }
+        }
 
-			if(trainState.Locomotives.Count > 1)
-				return new Pen(penColor, 2.0F);
-			else
-				return new Pen(penColor);
-		}
+        private Pen getFramePen() {
+            Color penColor = Color.Black;
 
-		string GetLocoLabel(LocomotiveInfo loco) {
-			if(detailLevel == ViewDetailLevel.High)
-				return loco.DisplayName;
-			else if(!string.IsNullOrEmpty(loco.CollectionId))
-				return loco.CollectionId;
-			else if(loco.AddressProvider.Element != null)
-				return loco.AddressProvider.Unit.ToString();
-			else
-				return loco.DisplayName;
-		}
+            if (trainState.Locomotives.Count > 1)
+                return new Pen(penColor, 2.0F);
+            else
+                return new Pen(penColor);
+        }
 
-		string GetTrainLabel(TrainStateInfo train) {
-			if(detailLevel == ViewDetailLevel.High)
-				return train.DisplayName;
-			else {
-				bool first = true;
-				string s = "";
+        string GetLocoLabel(LocomotiveInfo loco) {
+            if (detailLevel == ViewDetailLevel.High)
+                return loco.DisplayName;
+            else if (!string.IsNullOrEmpty(loco.CollectionId))
+                return loco.CollectionId;
+            else if (loco.AddressProvider.Element != null)
+                return loco.AddressProvider.Unit.ToString();
+            else
+                return loco.DisplayName;
+        }
 
-				foreach(TrainLocomotiveInfo trainLoco in train.Locomotives) {
-					LocomotiveInfo loco = trainLoco.Locomotive;
+        string GetTrainLabel(TrainStateInfo train) {
+            if (detailLevel == ViewDetailLevel.High)
+                return train.DisplayName;
+            else {
+                bool first = true;
+                string s = "";
 
-					if(!first)
-						s += "+";
-					else
-						first = false;
+                foreach (TrainLocomotiveInfo trainLoco in train.Locomotives) {
+                    LocomotiveInfo loco = trainLoco.Locomotive;
 
-					s += GetLocoLabel(loco);
-				}
+                    if (!first)
+                        s += "+";
+                    else
+                        first = false;
 
-				return s;
-			}
-		}
+                    s += GetLocoLabel(loco);
+                }
 
-		Font GetLabelFont() {
-			if(detailLevel == ViewDetailLevel.High)
-				return new Font("Arial", 9.0F, GraphicsUnit.World);
-			else
-				return new Font("Arial", 16.0F, FontStyle.Bold, GraphicsUnit.World);
-		}
-		
-		SizeF GetTrainSize(Graphics g, IList<TrainLocomotiveInfo> trainLocos) {
-			float							x = 0;
-			float							y = 0;
+                return s;
+            }
+        }
 
-			foreach(TrainLocomotiveInfo trainLoco in trainLocos) {
-				LocomotiveInfo			loco = trainLoco.Locomotive;
-				LocomotivePainter		locoPainter = new LocomotivePainter();
+        Font GetLabelFont() {
+            if (detailLevel == ViewDetailLevel.High)
+                return new Font("Arial", 9.0F, GraphicsUnit.World);
+            else
+                return new Font("Arial", 16.0F, FontStyle.Bold, GraphicsUnit.World);
+        }
 
-				locoPainter.Label = GetLocoLabel(loco);
-				locoPainter.LabelFont = GetLabelFont();
-				locoPainter.Front = front;
+        SizeF GetTrainSize(Graphics g, IList<TrainLocomotiveInfo> trainLocos) {
+            float x = 0;
+            float y = 0;
 
-				if(loco.Kind == LocomotiveKind.SoundUnit)
-					locoPainter.DrawFront = false;
-				else
-					locoPainter.DrawFront = drawFront;
-				locoPainter.Orientation = trainLoco.Orientation;
+            foreach (TrainLocomotiveInfo trainLoco in trainLocos) {
+                LocomotiveInfo loco = trainLoco.Locomotive;
+                LocomotivePainter locoPainter = new LocomotivePainter {
+                    Label = GetLocoLabel(loco),
+                    LabelFont = GetLabelFont(),
+                    Front = front
+                };
 
-				SizeF						s = locoPainter.GetDirectionalLocoSize(g);
+                if (loco.Kind == LocomotiveKind.SoundUnit)
+                    locoPainter.DrawFront = false;
+                else
+                    locoPainter.DrawFront = drawFront;
+                locoPainter.Orientation = trainLoco.Orientation;
 
-				x += s.Width + gap;
-				if(s.Height > y)
-					y = s.Height;
+                SizeF s = locoPainter.GetDirectionalLocoSize(g);
 
-				locoPainter.LabelFont.Dispose();
-			}
+                x += s.Width + gap;
+                if (s.Height > y)
+                    y = s.Height;
 
-			x -= gap;
+                locoPainter.LabelFont.Dispose();
+            }
 
-			return new SizeF(x + 2*horizontalMargin, y+2*verticalMargin);
-		}
+            x -= gap;
 
-		public SizeF Measure(Graphics g) {
-			SizeF		result;
+            return new SizeF(x + 2 * horizontalMargin, y + 2 * verticalMargin);
+        }
 
-			if(showTrainDetails) {				
-				LocomotivePainter	locoPainter = new LocomotivePainter();
+        public SizeF Measure(Graphics g) {
+            SizeF result;
 
-				locoPainter.Front = front;
-				locoPainter.DrawFront = drawFront;
-				locoPainter.MinSize = GetTrainSize(g, trainState.Locomotives);
-				locoPainter.FramePen = getFramePen();
-				locoPainter.DrawExtensionMark = drawExtensionMark;
+            if (showTrainDetails) {
+                LocomotivePainter locoPainter = new LocomotivePainter {
+                    Front = front,
+                    DrawFront = drawFront,
+                    MinSize = GetTrainSize(g, trainState.Locomotives),
+                    FramePen = getFramePen(),
+                    DrawExtensionMark = drawExtensionMark
+                };
 
-				result = Size.Ceiling(locoPainter.Measure(g));
-				locoPainter.FramePen.Dispose();
-			}
-			else {
-				LocomotivePainter	framePainter = new LocomotivePainter();
+                result = Size.Ceiling(locoPainter.Measure(g));
+                locoPainter.FramePen.Dispose();
+            }
+            else {
+                LocomotivePainter framePainter = new LocomotivePainter {
+                    Label = GetTrainLabel(trainState),
+                    LabelFont = GetLabelFont(),
+                    Front = front,
+                    DrawFront = drawFront,
+                    Speed = trainState.Speed,
+                    FramePen = getFramePen(),
+                    MinSize = minSize,
+                    DrawExtensionMark = drawExtensionMark
+                };
 
-				framePainter.Label = GetTrainLabel(trainState);
-				framePainter.LabelFont = GetLabelFont();
-				framePainter.Front = front;
-				framePainter.DrawFront = drawFront;
-				framePainter.Speed = trainState.Speed;
-				framePainter.FramePen = getFramePen();
-				framePainter.MinSize = minSize;
-				framePainter.DrawExtensionMark = drawExtensionMark;
+                result = Size.Ceiling(framePainter.Measure(g));
+                framePainter.LabelFont.Dispose();
+                framePainter.FramePen.Dispose();
+            }
 
-				result = Size.Ceiling(framePainter.Measure(g));
-				framePainter.LabelFont.Dispose();
-				framePainter.FramePen.Dispose();
-			}
+            return result;
+        }
 
-			return result;
-		}
+        /// <summary>
+        /// Draw the locomotive set image. It is assumed that the passed graphics is set such
+        /// that the center of the drawn locomotive is at (0, 0)
+        /// </summary>
+        /// <param name="g"></param>
+        public void Draw(Graphics g) {
+            if (showTrainDetails) {
+                LocomotivePainter framePainter = new LocomotivePainter {
+                    Label = GetTrainLabel(trainState),
+                    LabelFont = GetLabelFont(),
+                    Front = front,
+                    DrawFront = drawFront,
+                    Speed = trainState.Speed,
+                    MinSize = GetTrainSize(g, trainState.Locomotives),
+                    DrawLabel = false,
+                    FramePen = getFramePen(),
+                    DrawExtensionMark = drawExtensionMark,
+                    LabelBrush = labelBrush
+                };
 
-		/// <summary>
-		/// Draw the locomotive set image. It is assumed that the passed graphics is set such
-		/// that the center of the drawn locomotive is at (0, 0)
-		/// </summary>
-		/// <param name="g"></param>
-		public void Draw(Graphics g) {
-			if(showTrainDetails) {
-				LocomotivePainter		framePainter = new LocomotivePainter();
+                if (backColor != Color.Empty)
+                    framePainter.BackgroundBrush = new SolidBrush(backColor);
 
-				framePainter.Label = GetTrainLabel(trainState);
-				framePainter.LabelFont = GetLabelFont();
-				framePainter.Front = front;
-				framePainter.DrawFront = drawFront;
-				framePainter.Speed = trainState.Speed;
-				framePainter.MinSize = GetTrainSize(g, trainState.Locomotives);
-				framePainter.DrawLabel = false;
-				framePainter.FramePen = getFramePen();
-				framePainter.DrawExtensionMark = drawExtensionMark;
-				framePainter.LabelBrush = labelBrush;
+                framePainter.Draw(g);
 
-				if(backColor != Color.Empty)
-					framePainter.BackgroundBrush = new SolidBrush(backColor);
+                // Draw the set members
 
-				framePainter.Draw(g);
+                SizeF locoSetSize = GetTrainSize(g, trainState.Locomotives);
+                float x = -locoSetSize.Width / 2 + horizontalMargin;
 
-				// Draw the set members
+                foreach (TrainLocomotiveInfo trainLoco in trainState.Locomotives) {
+                    LocomotiveInfo loco = trainLoco.Locomotive;
+                    LocomotivePainter locoPainter = new LocomotivePainter {
+                        Label = GetLocoLabel(loco),
+                        LabelFont = GetLabelFont(),
+                        LabelBrush = Brushes.LightGray,
+                        FramePen = Pens.LightGray,
+                        MotionBrush = Brushes.LightGray,
+                        Front = front,
+                        Speed = trainState.Speed
+                    };
 
-				SizeF		locoSetSize = GetTrainSize(g, trainState.Locomotives);
-				float		x = -locoSetSize.Width/2 + horizontalMargin;
+                    if (loco.Kind == LocomotiveKind.SoundUnit)
+                        locoPainter.DrawFront = false;
+                    else
+                        locoPainter.DrawFront = drawFront;
+                    locoPainter.Orientation = trainLoco.Orientation;
 
-				foreach(TrainLocomotiveInfo trainLoco in trainState.Locomotives) {
-					LocomotiveInfo			loco = trainLoco.Locomotive;
-					LocomotivePainter		locoPainter = new LocomotivePainter();
+                    SizeF locoSize = locoPainter.GetDirectionalLocoSize(g);
 
-					locoPainter.Label = GetLocoLabel(loco);
-					locoPainter.LabelFont = GetLabelFont();
-					locoPainter.LabelBrush = Brushes.LightGray;
-					locoPainter.FramePen = Pens.LightGray;
-					locoPainter.MotionBrush = Brushes.LightGray;
-					locoPainter.Front = front;
-					locoPainter.Speed = trainState.Speed;
+                    GraphicsState gs = g.Save();
 
-					if(loco.Kind == LocomotiveKind.SoundUnit)
-						locoPainter.DrawFront = false;
-					else
-						locoPainter.DrawFront = drawFront;
-					locoPainter.Orientation = trainLoco.Orientation;
+                    if (vertical)
+                        g.TranslateTransform(0, x + locoSize.Width / 2);
+                    else
+                        g.TranslateTransform(x + locoSize.Width / 2, 0);
 
-					SizeF	locoSize = locoPainter.GetDirectionalLocoSize(g);
+                    locoPainter.Draw(g);
+                    g.Restore(gs);
 
-					GraphicsState	gs = g.Save();
+                    x += locoSize.Width + gap;
 
-					if(vertical)
-						g.TranslateTransform(0, x + locoSize.Width / 2);
-					else
-						g.TranslateTransform(x + locoSize.Width / 2, 0);
+                    locoPainter.LabelFont.Dispose();
+                }
 
-					locoPainter.Draw(g);
-					g.Restore(gs);
+                framePainter.DrawLocomotiveLabel(g);
 
-					x += locoSize.Width + gap;
+                framePainter.FramePen.Dispose();
+                framePainter.LabelFont.Dispose();
+                if (backColor != Color.Empty)
+                    framePainter.BackgroundBrush.Dispose();
+            }
+            else {
+                LocomotivePainter framePainter = new LocomotivePainter {
+                    Label = GetTrainLabel(trainState),
+                    LabelFont = GetLabelFont(),
+                    LabelBrush = labelBrush,
+                    Front = front,
+                    DrawFront = drawFront,
+                    Speed = trainState.Speed,
+                    FramePen = getFramePen(),
+                    DrawExtensionMark = drawExtensionMark,
+                    MinSize = minSize
+                };
 
-					locoPainter.LabelFont.Dispose();
-				}
+                if (backColor != Color.Empty)
+                    framePainter.BackgroundBrush = new SolidBrush(backColor);
 
-				framePainter.DrawLocomotiveLabel(g);
+                framePainter.Draw(g);
 
-				framePainter.FramePen.Dispose();
-				framePainter.LabelFont.Dispose();
-				if(backColor != Color.Empty)
-					framePainter.BackgroundBrush.Dispose();
-			}
-			else {
-				LocomotivePainter	framePainter = new LocomotivePainter();
+                framePainter.FramePen.Dispose();
+                framePainter.LabelFont.Dispose();
 
-				framePainter.Label = GetTrainLabel(trainState);
-				framePainter.LabelFont = GetLabelFont();
-				framePainter.LabelBrush = labelBrush;
-				framePainter.Front = front;
-				framePainter.DrawFront = drawFront;
-				framePainter.Speed = trainState.Speed;
-				framePainter.FramePen = getFramePen();
-				framePainter.DrawExtensionMark = drawExtensionMark;
-				framePainter.MinSize = minSize;
-
-				if(backColor != Color.Empty)
-					framePainter.BackgroundBrush = new SolidBrush(backColor);
-
-				framePainter.Draw(g);
-
-				framePainter.FramePen.Dispose();
-				framePainter.LabelFont.Dispose();
-
-				if(backColor != Color.Empty)
-					framePainter.BackgroundBrush.Dispose();
-			}
-		}
-	}
+                if (backColor != Color.Empty)
+                    framePainter.BackgroundBrush.Dispose();
+            }
+        }
+    }
 }

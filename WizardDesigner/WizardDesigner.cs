@@ -8,8 +8,7 @@ namespace Gui.Wizard {
     /// <summary>
     /// Summary description for WizardDesigner.
     /// </summary>
-    public class WizardDesigner : ParentControlDesigner
-	{
+    public class WizardDesigner : ParentControlDesigner {
         #region old WndProc
         //		/// <summary>
         //		/// Overrides the handling of Mouse clicks to allow back-next to work in the designer
@@ -50,103 +49,94 @@ namespace Gui.Wizard {
         protected override bool DrawGrid => base.DrawGrid && _allowGrid;
         private bool _allowGrid = true;
 
-		//Doesn't seem to have any effect
-//		protected override bool EnableDragRect
-//		{
-//			get
-//			{
-//				return false; //base.EnableDragRect;
-//			}
-//		}
+        //Doesn't seem to have any effect
+        //		protected override bool EnableDragRect
+        //		{
+        //			get
+        //			{
+        //				return false; //base.EnableDragRect;
+        //			}
+        //		}
 
 
-		/// <summary>
-		/// Simple way to ensure <see cref="WizardPage"/>s only contained here
-		/// </summary>
-		/// <param name="control"></param>
-		/// <returns></returns>
-		public override bool CanParent(Control control)
-		{
-			if (control is WizardPage)
-				return true;
-			return false;
-		}
-		public override bool CanParent(ControlDesigner controlDesigner)
-		{
-			if (controlDesigner is WizardPageDesigner)
-				return true;
-			return false;
-		}
+        /// <summary>
+        /// Simple way to ensure <see cref="WizardPage"/>s only contained here
+        /// </summary>
+        /// <param name="control"></param>
+        /// <returns></returns>
+        public override bool CanParent(Control control) {
+            if (control is WizardPage)
+                return true;
+            return false;
+        }
+        public override bool CanParent(ControlDesigner controlDesigner) {
+            if (controlDesigner is WizardPageDesigner)
+                return true;
+            return false;
+        }
 
 
-		protected override bool GetHitTest(Point point)
-		{
-			Wizard wiz = this.Control as Wizard;
-		
-			if(wiz.btnNext.Enabled && 
-				wiz.btnNext.ClientRectangle.Contains(wiz.btnNext.PointToClient(point)))
-			{
-				//Next can handle that
-				return true;
-			}
-			if(wiz.btnBack.Enabled && 
-				wiz.btnBack.ClientRectangle.Contains(wiz.btnBack.PointToClient(point)))
-			{
-				//Back can handle that
-				return true;
-			}
-			//Nope not interested
-			return false;
-		}
+        protected override bool GetHitTest(Point point) {
+            Wizard wiz = this.Control as Wizard;
 
-		public override DesignerVerbCollection Verbs
-		{
-			get
-			{
-				DesignerVerbCollection verbs = new DesignerVerbCollection();
-				verbs.Add(new DesignerVerb("Add Page", new EventHandler(handleAddPage)));
+            if (wiz.btnNext.Enabled &&
+                wiz.btnNext.ClientRectangle.Contains(wiz.btnNext.PointToClient(point))) {
+                //Next can handle that
+                return true;
+            }
+            if (wiz.btnBack.Enabled &&
+                wiz.btnBack.ClientRectangle.Contains(wiz.btnBack.PointToClient(point))) {
+                //Back can handle that
+                return true;
+            }
+            //Nope not interested
+            return false;
+        }
 
-				return verbs;
-			}
-		}
+        public override DesignerVerbCollection Verbs {
+            get {
+                DesignerVerbCollection verbs = new DesignerVerbCollection();
+                verbs.Add(new DesignerVerb("Add Page", new EventHandler(handleAddPage)));
 
-		private void handleAddPage(object sender, EventArgs e)
-		{
-			Wizard wiz = this.Control as Wizard;
+                return verbs;
+            }
+        }
 
-			IDesignerHost h  = (IDesignerHost) GetService(typeof(IDesignerHost));
-			IComponentChangeService c = (IComponentChangeService) GetService(typeof (IComponentChangeService));
+        private void handleAddPage(object sender, EventArgs e) {
+            Wizard wiz = this.Control as Wizard;
 
-			DesignerTransaction dt = h.CreateTransaction("Add Page");
-			WizardPage page = (WizardPage) h.CreateComponent(typeof(WizardPage));
-			c.OnComponentChanging(wiz, null);
-    
-			//Add a new page to the collection
-			wiz.Pages.Add(page);
-			wiz.Controls.Add(page);
-			wiz.ActivatePage(page);
+            IDesignerHost h = (IDesignerHost)GetService(typeof(IDesignerHost));
+            IComponentChangeService c = (IComponentChangeService)GetService(typeof(IComponentChangeService));
 
-			c.OnComponentChanged(wiz, null, null, null);
-			dt.Commit();
-		}	
+            DesignerTransaction dt = h.CreateTransaction("Add Page");
+            WizardPage page = (WizardPage)h.CreateComponent(typeof(WizardPage));
+            c.OnComponentChanging(wiz, null);
 
-		protected override void OnPaintAdornments(PaintEventArgs pe)
-		{
-			_allowGrid = false;
-			base.OnPaintAdornments (pe);
-			_allowGrid = true;
+            //Add a new page to the collection
+            wiz.Pages.Add(page);
+            wiz.Controls.Add(page);
+            wiz.ActivatePage(page);
 
-//			if (base.DrawGrid)
-//			{
-//				Wizard wiz = this.Control as Wizard;
-//				Brush brush = new HatchBrush(HatchStyle.Percent10,SystemColors.ControlText, wiz.BackColor);
-//
-//				pe.Graphics.FillRectangle(brush,0,0,wiz.Width,8);
-//				pe.Graphics.FillRectangle(brush,0,0,8,wiz.pnlButtons.Top);
-//				pe.Graphics.FillRectangle(brush,0,wiz.pnlButtons.Top-8,wiz.Width,8);
-//				pe.Graphics.FillRectangle(brush,wiz.Width-8,0,8,wiz.pnlButtons.Top);
-//			}		
-		}
+            c.OnComponentChanged(wiz, null, null, null);
+            dt.Commit();
+        }
 
-	}
+        protected override void OnPaintAdornments(PaintEventArgs pe) {
+            _allowGrid = false;
+            base.OnPaintAdornments(pe);
+            _allowGrid = true;
+
+            //			if (base.DrawGrid)
+            //			{
+            //				Wizard wiz = this.Control as Wizard;
+            //				Brush brush = new HatchBrush(HatchStyle.Percent10,SystemColors.ControlText, wiz.BackColor);
+            //
+            //				pe.Graphics.FillRectangle(brush,0,0,wiz.Width,8);
+            //				pe.Graphics.FillRectangle(brush,0,0,8,wiz.pnlButtons.Top);
+            //				pe.Graphics.FillRectangle(brush,0,wiz.pnlButtons.Top-8,wiz.Width,8);
+            //				pe.Graphics.FillRectangle(brush,wiz.Width-8,0,8,wiz.pnlButtons.Top);
+            //			}		
+        }
+
+    }
 }
