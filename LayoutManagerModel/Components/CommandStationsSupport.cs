@@ -89,7 +89,7 @@ namespace LayoutManager.Components {
         public ILayoutEmulatorServices LayoutEmulationServices {
             get {
                 if (_layoutEmulationServices == null)
-                    _layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent(this, "get-layout-emulation-services"));
+                    _layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
                 return _layoutEmulationServices;
             }
         }
@@ -136,15 +136,15 @@ namespace LayoutManager.Components {
                 string pipeName = @"\\.\pipe\CommandStationEmulationFor_" + Name;
                 bool overlappedIO = GetBool("OverlappedIO");
 
-                SafeFileHandle handle = (SafeFileHandle)EventManager.Event(new LayoutEvent(pipeName, "create-named-pipe-request",
-                    null, overlappedIO));
+                SafeFileHandle handle = (SafeFileHandle)EventManager.Event(new LayoutEvent("create-named-pipe-request", pipeName,
+                    overlappedIO, null));
 
                 commandStationEmulator = CreateCommandStationEmulator(pipeName);
 
-                commStream = (FileStream)EventManager.Event(new LayoutEvent(handle, "wait-named-pipe-client-to-connect-request", null, overlappedIO));
+                commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-client-to-connect-request", handle, overlappedIO, null));
             }
             else if (InterfaceType == CommunicationInterfaceType.Serial)
-                commStream = (FileStream)EventManager.Event(new LayoutEvent(Element, "open-serial-communication-device-request"));
+                commStream = (FileStream)EventManager.Event(new LayoutEvent("open-serial-communication-device-request", Element));
             else if (InterfaceType == CommunicationInterfaceType.TCP)
                 commStream = new TcpClient(IPaddress, 23).GetStream();
         }
@@ -154,7 +154,7 @@ namespace LayoutManager.Components {
                 commandStationEmulator.Dispose();
                 commandStationEmulator = null;
 
-                EventManager.Event(new LayoutEvent(CommunicationStream, "disconnect-named-pipe-request"));
+                EventManager.Event(new LayoutEvent("disconnect-named-pipe-request", CommunicationStream));
             }
 
             if (commStream != null) {
@@ -209,14 +209,14 @@ namespace LayoutManager.Components {
             if (InterThreadEventInvoker == null)
                 base.Error(subject, message);
             else
-                InterThreadEventInvoker.QueueEvent(new LayoutEvent(subject, "add-error", null, message));
+                InterThreadEventInvoker.QueueEvent(new LayoutEvent("add-error", subject, message));
         }
 
         public override void Warning(object subject, string message) {
             if (InterThreadEventInvoker == null)
                 base.Warning(subject, message);
             else
-                InterThreadEventInvoker.QueueEvent(new LayoutEvent(subject, "add-warning", null, message));
+                InterThreadEventInvoker.QueueEvent(new LayoutEvent("add-warning", subject, message));
         }
 
         /// <summary>
@@ -269,8 +269,8 @@ namespace LayoutManager.Components {
             OnInitialize();
 
             // Connect power to the layout
-            EventManager.Event(new LayoutEvent(this, "connect-power-request"));
-            EventManager.Event(new LayoutEvent(this, "reset-layout-emulation"));
+            EventManager.Event(new LayoutEvent("connect-power-request", this));
+            EventManager.Event(new LayoutEvent("reset-layout-emulation", this));
 
             OnEnteredOperationMode();
         }
@@ -282,7 +282,7 @@ namespace LayoutManager.Components {
 
                 // Disconnect power to the layout
                 Trace.WriteLine($"{FullDescription} Disconnect track request");
-                EventManager.Event(new LayoutEvent(this, "disconnect-power-request"));
+                EventManager.Event(new LayoutEvent("disconnect-power-request", this));
 
                 await OnTerminateCommunication();
                 CloseCommunicationStream();
@@ -410,7 +410,7 @@ namespace LayoutManager.Components {
         readonly TrackEdgeDictionary currentShownTrainPositions = new TrackEdgeDictionary();
 
         [LayoutEvent("show-emulated-locomotive-locations")]
-        protected virtual void showTrainPositions(LayoutEvent e) {
+        protected virtual void ShowTrainPositions(LayoutEvent e) {
             if (e.Sender == this) {
                 if (LayoutEmulationServices != null && animatedTrainsSelection != null) {
                     IList<ILocomotiveLocation> locomotiveLocations = LayoutEmulationServices.GetLocomotiveLocations(Id);
@@ -436,7 +436,7 @@ namespace LayoutManager.Components {
         }
 
         private void animationTimerCallback(object state) {
-            InterThreadEventInvoker.QueueEvent(new LayoutEvent(this, "show-emulated-locomotive-locations"));
+            InterThreadEventInvoker.QueueEvent(new LayoutEvent("show-emulated-locomotive-locations", this));
         }
 
         #endregion
@@ -492,7 +492,7 @@ namespace LayoutManager.Components {
                     OpenCommunicationStream();
                     OnInitialize();
 
-                    EventManager.Event(new LayoutEvent(this, "connect-track-power-request"));
+                    EventManager.Event(new LayoutEvent("connect-track-power-request", this));
 
                 }
                 e.Info = true;
@@ -506,7 +506,7 @@ namespace LayoutManager.Components {
             if (DesignTimeLayoutActivationSupported) {
                 OnCleanup();
 
-                EventManager.Event(new LayoutEvent(this, "disconnect-track-power-request"));
+                EventManager.Event(new LayoutEvent("disconnect-track-power-request", this));
                 OnTerminateCommunication();
                 CloseCommunicationStream();
                 e.Info = true;
@@ -518,13 +518,13 @@ namespace LayoutManager.Components {
         [LayoutEvent("connect-track-power-request")]
         virtual protected void OnConnectTrackPower(LayoutEvent e) {
             if (e.Sender == this)
-                EventManager.Event(new LayoutEvent(this, "connect-power-request"));
+                EventManager.Event(new LayoutEvent("connect-power-request", this));
         }
 
         [LayoutEvent("disconnect-track-power-request")]
         virtual protected void OnDisconnectTrackPower(LayoutEvent e) {
             if (e.Sender == this)
-                EventManager.Event(new LayoutEvent(this, "disconnect-power-request"));
+                EventManager.Event(new LayoutEvent("disconnect-power-request", this));
         }
 
         #endregion
@@ -863,7 +863,7 @@ namespace LayoutManager.Components {
                 if (--passCount == 0) {
                     passCount = -1;
                     if (!LayoutController.IsDesignTimeActivation)
-                        commandStation.InterThreadEventInvoker.QueueEvent(new LayoutEvent(this, "command-station-trains-analysis-phase-done"));
+                        commandStation.InterThreadEventInvoker.QueueEvent(new LayoutEvent("command-station-trains-analysis-phase-done", this));
                 }
             }
         }

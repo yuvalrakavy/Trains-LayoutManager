@@ -62,7 +62,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             // enum the possible drivers, and build a menu
             driversDoc.LoadXml("<Drivers />");
-            EventManager.Event(new LayoutEvent(train, "enum-train-drivers", null, driversDoc.DocumentElement));
+            EventManager.Event(new LayoutEvent("enum-train-drivers", train, driversDoc.DocumentElement, null));
 
             foreach (XmlElement driverElement in driversDoc.DocumentElement)
                 comboBoxDrivers.Items.Add(new DriverItem(driverElement));
@@ -80,7 +80,7 @@ namespace LayoutManager.CommonUI.Controls {
             DriverItem selected = (DriverItem)comboBoxDrivers.SelectedItem;
 
             if (selected != null) {
-                object oResult = EventManager.Event(new LayoutEvent(selected.DriverElement, "query-driver-setting-dialog"));
+                object oResult = EventManager.Event(new LayoutEvent("query-driver-setting-dialog", selected.DriverElement));
 
                 if (oResult != null && (bool)oResult)
                     return true;
@@ -161,7 +161,7 @@ namespace LayoutManager.CommonUI.Controls {
             DriverItem selected = (DriverItem)comboBoxDrivers.SelectedItem;
 
             if (selected != null)
-                EventManager.Event(new LayoutEvent(selected.DriverElement, "edit-driver-setting", null, train));
+                EventManager.Event(new LayoutEvent("edit-driver-setting", selected.DriverElement, train, null));
         }
 
         class DriverItem {

@@ -85,7 +85,7 @@ namespace LayoutEmulation {
         public ILayoutTopologyServices TopologyServices {
             get {
                 if (_topologyServices == null)
-                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent(this, "get-topology-services"));
+                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this));
                 return _topologyServices;
             }
         }

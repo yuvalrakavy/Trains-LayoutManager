@@ -102,7 +102,7 @@ namespace LayoutManager {
 
                 // Create subscriptions for event handlers in the new module instance
                 EventManager.AddObjectSubscriptions(moduleInstance);
-                EventManager.Event(new LayoutEvent(moduleInstance, "module-enabled"));
+                EventManager.Event(new LayoutEvent("module-enabled", moduleInstance));
             }
         }
 
@@ -112,13 +112,13 @@ namespace LayoutManager {
         /// <returns>True if the module successfuly disabled, false if the module refused to be disabled</returns>
         protected bool DisableModule() {
             if (moduleInstance != null) {
-                LayoutEvent moduleDisableRequestEvent = new LayoutEvent(moduleInstance, "module-disable-request", null, true);
+                LayoutEvent moduleDisableRequestEvent = new LayoutEvent("module-disable-request", moduleInstance, true, null);
 
                 EventManager.Event(moduleDisableRequestEvent);
                 if ((bool)moduleDisableRequestEvent.Info == false)
                     return false;           // Module refuses to be disabled
 
-                EventManager.Event(new LayoutEvent(moduleInstance, "module-disabled"));
+                EventManager.Event(new LayoutEvent("module-disabled", moduleInstance));
 
                 // Remove all subscriptions for this instance
                 EventManager.Subscriptions.RemoveObjectSubscriptions(moduleInstance);
@@ -625,7 +625,7 @@ namespace LayoutManager {
     /// </summary>
     public class LayoutModuleBase : ILayoutModuleSetup {
         public static void Error(Object subject, String message) {
-            EventManager.Event(new LayoutEvent(subject, "add-error", null, message));
+            EventManager.Event(new LayoutEvent("add-error", subject, message));
         }
 
         public static void Error(String message) {
@@ -633,7 +633,7 @@ namespace LayoutManager {
         }
 
         public static void Warning(Object subject, String message) {
-            EventManager.Event(new LayoutEvent(subject, "add-warning", null, message));
+            EventManager.Event(new LayoutEvent("add-warning", subject, message));
         }
 
         public static void Warning(String message) {
@@ -641,7 +641,7 @@ namespace LayoutManager {
         }
 
         public static void Message(Object subject, String messageText) {
-            EventManager.Event(new LayoutEvent(subject, "add-message", null, messageText));
+            EventManager.Event(new LayoutEvent("add-message", subject, messageText));
         }
 
         public static void Message(String messageText) {

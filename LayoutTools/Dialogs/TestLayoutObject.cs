@@ -84,7 +84,7 @@ namespace LayoutManager.Tools.Dialogs {
             else {
                 Text = "Testing " + connectionPointRef.ConnectionPoint.DisplayName + " at " +
                 connectionPointRef.Module.ModuleType.GetConnectionPointAddressText(connectionPointRef.Module.Address, connectionPointRef.Index, true);
-                EventManager.Event(new LayoutEvent(connectionPointRef, "show-control-connection-point").SetFrameWindow(frameWindowId));
+                EventManager.Event(new LayoutEvent("show-control-connection-point", connectionPointRef).SetFrameWindow(frameWindowId));
             }
         }
 
@@ -136,7 +136,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void TestLayoutObject_FormClosed(object sender, FormClosedEventArgs e) {
             LayoutController.Instance.EndDesignTimeActivation();
-            EventManager.Event(new LayoutEvent(this, "deselect-control-objects").SetFrameWindow(frameWindowId));
+            EventManager.Event(new LayoutEvent("deselect-control-objects", this).SetFrameWindow(frameWindowId));
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 
@@ -153,7 +153,7 @@ namespace LayoutManager.Tools.Dialogs {
         private void checkBoxToggle_CheckedChanged(object sender, EventArgs e) {
             if (checkBoxToggle.Checked) {
                 if (toggleEvent == null) {
-                    toggleEvent = EventManager.DelayedEvent((int)numericUpDownToggleTime.Value * 1000, new LayoutEvent(this, "test-layout-object-toggle"));
+                    toggleEvent = EventManager.DelayedEvent((int)numericUpDownToggleTime.Value * 1000, new LayoutEvent("test-layout-object-toggle", this));
                     State = 1 - State;
                 }
             }
@@ -171,7 +171,7 @@ namespace LayoutManager.Tools.Dialogs {
                 State = 1 - State;
 
                 if (checkBoxToggle.Checked)
-                    toggleEvent = EventManager.DelayedEvent((int)numericUpDownToggleTime.Value * 1000, new LayoutEvent(this, "test-layout-object-toggle"));
+                    toggleEvent = EventManager.DelayedEvent((int)numericUpDownToggleTime.Value * 1000, new LayoutEvent("test-layout-object-toggle", this));
             }
         }
 
@@ -296,9 +296,9 @@ namespace LayoutManager.Tools.Dialogs {
 
                 new SemiModalDialog(this, pickDialog, delegate (Form dialog, object info) {
                     if (pickDialog.DialogResult == DialogResult.OK) {
-                        ControlConnectionPoint result = (ControlConnectionPoint)EventManager.Event(new LayoutEvent(pickDialog.ConnectionDestination, "connect-component-to-control-module-address-request", null, csEvent));
+                        ControlConnectionPoint result = (ControlConnectionPoint)EventManager.Event(new LayoutEvent("connect-component-to-control-module-address-request", pickDialog.ConnectionDestination, csEvent, null));
 
-                        EventManager.Event(new LayoutEvent(connectionPointRef, "show-control-connection-point").SetFrameWindow(frameWindowId));
+                        EventManager.Event(new LayoutEvent("show-control-connection-point", connectionPointRef).SetFrameWindow(frameWindowId));
                         this.component = result.Component;
                         Initialize();
                         panelIllustration.Invalidate();

@@ -1101,7 +1101,7 @@ namespace LayoutManager.Components {
 
         public void Paint(Graphics g) {
             System.Drawing.Imaging.ImageAttributes attributes = new System.Drawing.Imaging.ImageAttributes();
-            Image image = (Image)EventManager.Event(new LayoutEvent(this, "get-image"));
+            Image image = (Image)EventManager.Event(new LayoutEvent("get-image", this));
 
             attributes.SetColorKey(Color.White, Color.White);
 

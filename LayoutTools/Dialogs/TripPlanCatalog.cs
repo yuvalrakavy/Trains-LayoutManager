@@ -66,7 +66,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             trainDriverComboBox.Train = train;
 
-            EventManager.Event(new LayoutEvent(train, "get-applicable-trip-plans-request", null, applicableTripPlansElement).SetOption("CalculatePenalty", false));
+            EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", train, applicableTripPlansElement, null).SetOption("CalculatePenalty", false));
 
             tripPlanList.ApplicableTripPlansElement = applicableTripPlansElement;
             updateButtons();
@@ -335,7 +335,7 @@ namespace LayoutManager.Tools.Dialogs {
 
                 TripPlanAssignmentInfo tripAssignment = new TripPlanAssignmentInfo(tripPlan, train);
 
-                EventManager.Event(new LayoutEvent(tripAssignment, "execute-trip-plan"));
+                EventManager.Event(new LayoutEvent("execute-trip-plan", tripAssignment));
                 DialogResult = DialogResult.OK;
                 Close();
             }

@@ -69,7 +69,7 @@ namespace LayoutEventDebugger {
 
             textBoxEvent!.Text = ed.FiredEventName;
 
-            var editedEvent = new LayoutEvent(ed.Sender, ed.FiredEventName, ed.EventXmlInfo);
+            var editedEvent = new LayoutEvent(ed.FiredEventName, sender: ed.Sender, xmlDocument: ed.EventXmlInfo);
 
             xmlInfoEditorSender!.XmlInfo = ed.Sender.XmlInfo;
             xmlInfoEditorEvent!.XmlInfo = editedEvent.XmlInfo;
@@ -444,7 +444,7 @@ namespace LayoutEventDebugger {
         private void buttonSendEvent_Click(object sender, System.EventArgs e) {
             ed.FiredEventName = textBoxEvent!.Text;
             ed.EventXmlInfo = xmlInfoEditorEvent!.XmlInfo.DocumentElement.InnerXml;
-            LayoutEvent firedEvent = new LayoutEvent(ed.Sender, ed.FiredEventName, ed.EventXmlInfo);
+            LayoutEvent firedEvent = new LayoutEvent(ed.FiredEventName, sender: ed.Sender, xmlDocument: ed.EventXmlInfo);
             EventManager.Event(firedEvent);
         }
     }

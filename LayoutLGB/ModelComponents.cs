@@ -234,14 +234,14 @@ namespace LayoutLGB {
                     else
                         connectionPointRef = new ControlConnectionPointReference(lgbBusModule, address - lgbBusModule.Address);
 
-                    EventManager.Event(new LayoutEvent(connectionPointRef, "control-connection-point-state-changed-notification", null, state));
+                    EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state, null));
                 }
             }
         }
 
         private void DCCbusNotification(int address, int state) {
             if (OperationMode)
-                EventManager.Event(new LayoutEvent(new ControlConnectionPointReference(DCCbus, address), "control-connection-point-state-changed-notification", null, state));
+                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(DCCbus, address), state, null));
         }
 
         #endregion
@@ -262,8 +262,8 @@ namespace LayoutLGB {
                             LGBbusNotification(message.Address, message.Value);
                         }
                         else if (LayoutController.IsDesignTimeActivation)
-                            EventManager.Event(new LayoutEvent(this, "design-time-command-station-event", null,
-                                new CommandStationInputEvent(this, message.Address <= 128 ? DCCbus : LGBbus, message.Address, message.Value)));
+                            EventManager.Event(new LayoutEvent("design-time-command-station-event", this, new CommandStationInputEvent(this, message.Address <= 128 ? DCCbus : LGBbus, message.Address, message.Value),
+                                null));
                         break;
 
                     case MTScommand.ResetStation:
@@ -272,7 +272,7 @@ namespace LayoutLGB {
                             MessageBox.Show(LayoutController.ActiveFrameWindow,
                                 "Emergency stop has been engaged. Click on OK to reactivate layout", "Emergency Stop",
                                 MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                            EventManager.Event(new LayoutEvent(this, "connect-power-request"));
+                            EventManager.Event(new LayoutEvent("connect-power-request", this));
                         }
                         else if (message.Value != 0x81)
                             Warning("Unexpected reset station message (value " + message.Value + ")");
@@ -281,8 +281,8 @@ namespace LayoutLGB {
                     case MTScommand.LocomotiveFunction:
                         if (OperationMode) {
                             if (message.Value == 0x80) {
-                                EventManager.Event(new LayoutEvent(this, "toggle-locomotive-lights-notification",
-                                    "<Address Unit='" + message.Address + "' />"));
+                                EventManager.Event(new LayoutEvent("toggle-locomotive-lights-notification", sender: this,
+                                    xmlDocument: "<Address Unit='" + message.Address + "' />"));
                             }
                         }
                         break;
@@ -291,8 +291,8 @@ namespace LayoutLGB {
                             if (OperationMode) {
                                 int speed = message.Value >= 0x20 ? message.Value - 0x20 : -(int)message.Value;
 
-                                EventManager.Event(new LayoutEvent(this, "locomotive-motion-notification",
-                                    "<Address Unit='" + message.Address + "' />", speed));
+                                EventManager.Event(new LayoutEvent("locomotive-motion-notification", this,
+                                    speed, "<Address Unit='" + message.Address + "' />"));
                             }
                         }
                         break;
@@ -317,7 +317,7 @@ namespace LayoutLGB {
                     }
 
                     for (int offset = 0; offset < count; offset += 4)
-                        InterThreadEventInvoker.QueueEvent(new LayoutEvent(this, "parse-MTS-message", null, new MTSmessage(inputBuffer, offset)));
+                        InterThreadEventInvoker.QueueEvent(new LayoutEvent("parse-MTS-message", this, new MTSmessage(inputBuffer, offset), null));
 
                     // Start the next read
                     CommunicationStream.BeginRead(inputBuffer, 0, inputBuffer.Length, new AsyncCallback(this.OnReadDone), null);

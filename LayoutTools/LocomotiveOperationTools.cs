@@ -9,36 +9,14 @@ using System.Threading.Tasks;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#pragma warning disable IDE0051, IDE0060
+
 namespace LayoutManager.Tools {
     /// <summary>
     /// Summary description for LocomotiveTools.
     /// </summary>
     [LayoutModule("Locomotive Operation Tools", UserControl = false)]
-    public class LocomotiveOperationTools : System.ComponentModel.Component, ILayoutModuleSetup {
-
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private Container components = null;
-
-        #region Constructors
-
-        public LocomotiveOperationTools(IContainer container) {
-            /// <summary>
-            /// Required for Windows.Forms Class Composition Designer support
-            /// </summary>
-            container.Add(this);
-            InitializeComponent();
-        }
-
-        public LocomotiveOperationTools() {
-            /// <summary>
-            /// Required for Windows.Forms Class Composition Designer support
-            /// </summary>
-            InitializeComponent();
-        }
-
-        #endregion
+    public class LocomotiveOperationTools: ILayoutModuleSetup {
 
         enum PlacementProblem {
             NoProblem, NoAddress, AddressAlreadyUsed, Unknown
@@ -56,7 +34,7 @@ namespace LayoutManager.Tools {
             Menu m = (Menu)e.Info;
             CanPlaceTrainResult result;
 
-            result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(placedElement, "can-locomotive-be-placed-on-track", (string)null, null));
+            result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed-on-track", placedElement));
 
             if (result.Status != CanPlaceTrainStatus.CanPlaceTrain) {
                 MenuItem problemItem = new MenuItem(result.ToString()) {
@@ -72,7 +50,7 @@ namespace LayoutManager.Tools {
 
             foreach (LayoutBlockDefinitionComponent blockInfo in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases)) {
                 if (!blockInfo.Block.HasTrains && blockInfo.Info.SuggestForPlacement) {
-                    result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(placedElement, "can-locomotive-be-placed", null, blockInfo));
+                    result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed", placedElement, blockInfo, null));
 
                     problem = PlacementProblem.NoProblem;
 
@@ -140,12 +118,12 @@ namespace LayoutManager.Tools {
 
         [LayoutEvent("show-locomotive-controller")]
         private void showLocomotiveController(LayoutEvent e) {
-            TrainStateInfo trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent(e.Sender, "extract-train-state"));
+            TrainStateInfo trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent("extract-train-state", e.Sender));
 
             if (trainState.NotManaged)
                 throw new LocomotiveNotManagedException(trainState.Locomotives[0].Locomotive);
 
-            if (EventManager.Event(new LayoutEvent(trainState, "activate-locomotive-controller")) == null) {
+            if (EventManager.Event(new LayoutEvent("activate-locomotive-controller", trainState)) == null) {
                 Dialogs.LocomotiveController locoController = new Dialogs.LocomotiveController(trainState);
 
                 locoController.Show();
@@ -168,7 +146,7 @@ namespace LayoutManager.Tools {
                 if (context == null) {
                     MenuItem placeOnTrack = new MenuItem("Place on track");
 
-                    EventManager.Event(new LayoutEvent(placedElement, "add-placeble-blocks-menu-entries", null, placeOnTrack));
+                    EventManager.Event(new LayoutEvent("add-placeble-blocks-menu-entries", placedElement, placeOnTrack, null));
                     placeOnTrack.Enabled = placeOnTrack.MenuItems.Count > 0;
                     m.MenuItems.Add(placeOnTrack);
                 }
@@ -230,7 +208,7 @@ namespace LayoutManager.Tools {
 
             blockDefinition = (LayoutBlockDefinitionComponent)e.Sender;
 
-            EventManager.Event(new LayoutEvent(blockDefinition, "ensure-component-visible", null, false));
+            EventManager.Event(new LayoutEvent("ensure-component-visible", blockDefinition, false, null));
 
             if (e.Info is XmlElement placedElement) {
                 if (placedElement.Name == "Locomotive")
@@ -273,7 +251,7 @@ namespace LayoutManager.Tools {
 
             blockInfo = (LayoutBlockDefinitionComponent)e.Sender;
 
-            EventManager.Event(new LayoutEvent(blockInfo, "ensure-component-visible", null, false));
+            EventManager.Event(new LayoutEvent("ensure-component-visible", blockInfo, false, null));
 
             if (e.Info is XmlElement placedElement) {
                 if (placedElement.Name == "Locomotive")
@@ -350,7 +328,7 @@ namespace LayoutManager.Tools {
                 if (d.ProgramLocomotive) {
                     try {
                         using (var context = new LayoutOperationContext("LocomotiveProgramming", "set locomotive address", locomotive)) {
-                            var train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent(programmingState, "program-locomotive").SetOperationContext(context));
+                            var train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent("program-locomotive", programmingState).SetOperationContext(context));
                         }
                     }
                     catch (LayoutException) { }
@@ -379,7 +357,7 @@ namespace LayoutManager.Tools {
             protected override void OnClick(EventArgs e) {
                 base.OnClick(e);
 
-                EventManager.Event(new LayoutEvent(blockInfo, "ensure-component-visible", null, true));
+                EventManager.Event(new LayoutEvent("ensure-component-visible", blockInfo, true, null));
             }
         }
 
@@ -466,7 +444,7 @@ namespace LayoutManager.Tools {
             }
 
             protected override void OnClick(EventArgs e) {
-                EventManager.Event(new LayoutEvent(train, "edit-train-properties"));
+                EventManager.Event(new LayoutEvent("edit-train-properties", train));
             }
         }
 
@@ -487,7 +465,7 @@ namespace LayoutManager.Tools {
 
             protected override void OnClick(EventArgs e) {
                 try {
-                    EventManager.Event(new LayoutEvent(state, "show-locomotive-controller"));
+                    EventManager.Event(new LayoutEvent("show-locomotive-controller", state));
                 }
                 catch (LayoutException lex) {
                     lex.Report();
@@ -498,16 +476,6 @@ namespace LayoutManager.Tools {
 
         #endregion
 
-        #endregion
-
-        #region Component Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            components = new Container();
-        }
         #endregion
     }
 }

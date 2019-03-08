@@ -468,7 +468,7 @@ namespace LayoutManager.View {
 
         public LayoutDrawingRegionNotConnected(ModelComponent component, ILayoutView view, bool onTop) : base(component, view) {
             this.component = (IModelComponentHasId)component;
-            imageListComponents = (ImageList)EventManager.Event(new LayoutEvent(this, "get-components-image-list"));
+            imageListComponents = (ImageList)EventManager.Event(new LayoutEvent("get-components-image-list", this));
             this.onTop = onTop;
         }
 

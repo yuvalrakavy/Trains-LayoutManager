@@ -27,117 +27,31 @@ namespace LayoutManager {
         Type? targetType;
 
         /// <summary>
-        /// Construct a new event
+        /// Constructs a new event with optional XML document and additional information, with constraint of the type
+        /// that will receive the event, and with XPath expression filtering the objects that can receive the 
+        /// event based on their XML document
         /// </summary>
-        /// <param name="sender">The entity generating the event</param>
-        /// <param name="name">The event name</param>
-        public LayoutEvent(object? sender, string eventName) {
+        /// <param name="eventName">The event name</param>
+        /// <param name="sender">The entity sending the event (optional)</param>
+        /// <param name="info">Additional information (optional)</param>
+        /// <param name="xmlDocument">The event inner XML document (can be null)</param>
+        /// <param name="targetType">The type of objects that receive this event (optional)</param>
+        /// <param name="ifType">An XPath expression filtering the object that will receive the event based on
+        /// their XML document</param>
+        public LayoutEvent(string eventName, object? sender = null, object? info = null, string? xmlDocument = null, Type? targetType = null, string? ifTarget = null) {
             XmlInfo.XmlDocument.LoadXml("<LayoutEvent />");
 
             this.eventName = eventName;
             DocumentElement.SetAttribute("EventName", eventName);
 
             this.sender = sender;
-        }
+            this.ifTarget = ifTarget;
+            this.info = info;
 
-        /// <summary>
-        /// Constructs a new event with attached XML document
-        /// </summary>
-        /// <param name="sender">The entity sending the event</param>
-        /// <param name="name">The event name (optional)</param>
-        /// <param name="xmlDocument">The event inner XML document</param>
-        public LayoutEvent(object? sender, string eventName, string? xmlDocument) : this(sender, eventName) {
             if (xmlDocument != null)
                 DocumentElement.InnerXml = xmlDocument;
-        }
 
-        /// <summary>
-        /// Constructs a new event with optional XML document and additional information
-        /// </summary>
-        /// <param name="sender">The entity sending the event</param>
-        /// <param name="name">The event name (optional)</param>
-        /// <param name="xmlDocument">The event inner XML document (can be null)</param>
-        /// <param name="info">Additional information</param>
-        public LayoutEvent(object? sender, string eventName, string? xmlDocument, object? info) : this(sender, eventName, xmlDocument) {
-            this.info = info;
-        }
-
-        /// <summary>
-        /// Construct a new event, with constraint on the type of object type that will get this event
-        /// </summary>
-        /// <param name="sender">The entity generating the event</param>
-        /// <param name="name">The event name</param>
-        /// <param name="targetType">The type of objects that receive this event</param>
-        public LayoutEvent(object? sender, string eventName, Type? targetType) : this(sender, eventName) {
             this.targetType = targetType;
-        }
-
-        /// <summary>
-        /// Constructs a new event with attached XML document
-        /// </summary>
-        /// <param name="sender">The entity sending the event</param>
-        /// <param name="name">The event name (optional)</param>
-        /// <param name="xmlDocument">The event inner XML document</param>
-        /// <param name="targetType">The type of objects that receive this event</param>
-        public LayoutEvent(object? sender, string eventName, string xmlDocument, Type targetType) : this(sender, eventName, xmlDocument) {
-            this.targetType = targetType;
-        }
-
-        /// <summary>
-        /// Constructs a new event with optional XML document and additional information,
-        /// with constraint on the type of object type that will get this event
-        /// </summary>
-        /// <param name="sender">The entity sending the event</param>
-        /// <param name="name">The event name (optional)</param>
-        /// <param name="xmlDocument">The event inner XML document (can be null)</param>
-        /// <param name="info">Additional information</param>
-        /// <param name="targetType">The type of objects that receive this event</param>
-        public LayoutEvent(object? sender, string eventName, string xmlDocument, object info, Type targetType) : this(sender, eventName, xmlDocument, info) {
-            this.targetType = targetType;
-        }
-
-        /// <summary>
-        /// Construct a new event, with constraint of the type that will receive the event, and with
-        /// XPath expression filtering the objects that can receive the event based on their XML
-        /// document
-        /// </summary>
-        /// <param name="sender">The entity generating the event</param>
-        /// <param name="name">The event name</param>
-        /// <param name="targetType">The type of objects that receive this event (can be null)</param>
-        /// <param name="ifType">An XPath expression filtering the object that will receive the event based on
-        /// their XML document</param>
-        public LayoutEvent(object? sender, string eventName, Type? targetType, string ifTarget) : this(sender, eventName, targetType) {
-            this.ifTarget = ifTarget;
-        }
-
-        /// <summary>
-        /// Constructs a new event with attached XML document, with constraint of the type that will receive 
-        /// the event, and with XPath expression filtering the objects that can receive the event based on
-        /// their XML document
-        /// </summary>
-        /// <param name="sender">The entity sending the event</param>
-        /// <param name="name">The event name (optional)</param>
-        /// <param name="xmlDocument">The event inner XML document</param>
-        /// <param name="targetType">The type of objects that receive this event</param>
-        /// <param name="ifType">An XPath expression filtering the object that will receive the event based on
-        /// their XML document</param>
-        public LayoutEvent(object? sender, string eventName, string xmlDocument, Type targetType, string ifTarget) : this(sender, eventName, xmlDocument, targetType) {
-            this.ifTarget = ifTarget;
-        }
-
-        /// <summary>
-        /// Constructs a new event with optional XML document and additional information, with constraint of the type
-        /// that will receive the event, and with XPath expression filtering the objects that can receive the 
-        /// event based on their XML document
-        /// </summary>
-        /// <param name="sender">The entity sending the event</param>
-        /// <param name="name">The event name (optional)</param>
-        /// <param name="xmlDocument">The event inner XML document (can be null)</param>
-        /// <param name="info">Additional information</param>
-        /// <param name="targetType">The type of objects that receive this event</param>
-        /// <param name="ifType">An XPath expression filtering the object that will receive the event based on
-        /// their XML document</param>
-        public LayoutEvent(object? sender, string eventName, string xmlDocument, object info, Type targetType, string ifTarget) : this(sender, eventName, xmlDocument, info, targetType) {
             this.ifTarget = ifTarget;
         }
 
@@ -147,7 +61,7 @@ namespace LayoutManager {
         /// <param name="eventName">The new event name</param>
         /// <param name="baseEvent">The base event containing all other parameters</param>
         public LayoutEvent(string eventName, LayoutEvent baseEvent)
-            : this(baseEvent.Sender, eventName, baseEvent.Element.InnerXml, baseEvent.Info) {
+            : this(eventName, baseEvent.Sender, baseEvent.Info, baseEvent.Element.InnerXml) {
         }
 
         /// <summary>
@@ -269,7 +183,7 @@ namespace LayoutManager {
             return true;
         }
 
-        #region Methods to get/set event parameters
+#region Methods to get/set event parameters
 
         public bool HasOption(string elementName, string optionName) {
             XmlElement optionElement = Element[elementName];
@@ -341,13 +255,13 @@ namespace LayoutManager {
 
         public LayoutEvent SetOption(string optionName, Guid id) => SetOption("Options", optionName, id);
 
-        #endregion
+#endregion
 
     }
 
     public class LayoutEvent<TSender, TInfo> : LayoutEvent where TSender : class where TInfo : class {
         public LayoutEvent(string eventName, TSender? sender, TInfo? info = default)
-            : base(sender, eventName, null, info) {
+            : base(eventName, sender, info, null) {
         }
 
         public new TSender? Sender {
@@ -374,7 +288,7 @@ namespace LayoutManager {
     }
 
     public class LayoutEventInfoValueType<TSender, TInfo> : LayoutEvent where TSender : class where TInfo : struct {
-        public LayoutEventInfoValueType(string eventName, TSender? sender, TInfo info) : base(sender, eventName, null, info) {
+        public LayoutEventInfoValueType(string eventName, TSender? sender, TInfo info) : base(eventName, sender, info, null) {
 
         }
         public new TSender? Sender {
@@ -1234,12 +1148,12 @@ namespace LayoutManager {
         public ILayoutInterThreadEventInvoker InterThreadEventInvoker {
             get {
                 if (invoker == null)
-                    invoker = (ILayoutInterThreadEventInvoker?)Event(new LayoutEvent(this, "get-inter-thread-event-invoker"));
+                    invoker = (ILayoutInterThreadEventInvoker?)Event(new LayoutEvent("get-inter-thread-event-invoker", this));
                 return invoker!;
             }
         }
 
-        #region Synchronous (normal) events
+#region Synchronous (normal) events
 
         /// <summary>
         /// Internal method for generating event
@@ -1287,9 +1201,9 @@ namespace LayoutManager {
 
         public object? Event(LayoutEvent e) => Event(e, LayoutEventScope.MyProcess);
 
-        #endregion
+#endregion
 
-        #region Async events
+#region Async events
 
         /// <summary>
         /// Internal method for generating async event
@@ -1352,7 +1266,7 @@ namespace LayoutManager {
 
         public Task[] AsyncEventBroadcast(LayoutEvent e) => AsyncEventBroadcast(e, LayoutEventScope.MyProcess);
 
-        #endregion
+#endregion
 
 
         public LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) => new LayoutDelayedEvent(delayTime, e);
@@ -1454,7 +1368,7 @@ namespace LayoutManager {
         public LayoutEventDefAttribute[] GetEventDefinitions(LayoutEventRole requiredRole) {
             if (eventDefs == null) {
                 var eventDefsList = new List<LayoutEventDefAttribute>();
-                var moduleManager = (LayoutModuleManager?)Event(new LayoutEvent(this, "get-module-manager"));
+                var moduleManager = (LayoutModuleManager?)Event(new LayoutEvent("get-module-manager", this));
 
                 Debug.Assert(moduleManager != null);
 
@@ -1475,7 +1389,7 @@ namespace LayoutManager {
             eventDefs = null;
         }
 
-        #region Helper methods for getting event attributes
+#region Helper methods for getting event attributes
 
         private void addEventDefs(LayoutEventDefAttribute[] eventDefsToAdd, LayoutEventRole requiredRole, List<LayoutEventDefAttribute> eventDefs) {
             foreach (LayoutEventDefAttribute eventDef in eventDefsToAdd) {
@@ -1502,14 +1416,14 @@ namespace LayoutManager {
             }
         }
 
-        #endregion
+#endregion
     }
 
     /// <summary>
     /// Event sent when event tracing is enabled. The sender object is the traced event
     /// </summary>
     public class LayoutEventTraceEvent : LayoutEvent {
-        public LayoutEventTraceEvent(LayoutEvent theEvent, string traceEventName) : base(theEvent, traceEventName) {
+        public LayoutEventTraceEvent(LayoutEvent theEvent, string traceEventName) : base(traceEventName, theEvent) {
             _applicableSubscriptions = new List<LayoutEventSubscriptionBase>();
         }
 
@@ -1604,9 +1518,9 @@ namespace LayoutManager {
 
         public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
 
-        public static object? Event(object sender, string eventName) => Instance.Event(new LayoutEvent(sender, eventName));
+        public static object? Event(object sender, string eventName) => Instance.Event(new LayoutEvent(eventName, sender));
 
-        public static object? Event(object sender, string eventName, object info) => Instance.Event(new LayoutEvent(sender, eventName, null, info));
+        public static object? Event(object sender, string eventName, object info) => Instance.Event(new LayoutEvent(eventName, sender, info, null));
     }
 
     /// <summary>
@@ -1644,11 +1558,11 @@ namespace LayoutManager {
 
         public IEnumerator<LayoutEventSubscriptionBase> GetEnumerator() => subscriptions.GetEnumerator();
 
-        #region IEnumerable Members
+#region IEnumerable Members
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        #endregion
+#endregion
     }
 
     /// <summary>
@@ -1720,11 +1634,11 @@ namespace LayoutManager {
             }
         }
 
-        #region IEnumerable Members
+#region IEnumerable Members
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        #endregion
+#endregion
     }
 
     /// <summary>
@@ -1784,11 +1698,11 @@ namespace LayoutManager {
             return allSubscriptions.GetEnumerator();
         }
 
-        #region IEnumerable Members
+#region IEnumerable Members
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        #endregion
+#endregion
 
     }
 

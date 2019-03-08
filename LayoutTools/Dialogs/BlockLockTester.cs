@@ -155,7 +155,7 @@ namespace LayoutManager.Tools.Dialogs {
             foreach (LayoutBlockDefinitionComponent blockInfo in listBoxBlockInfo.SelectedItems)
                 blockIDs[i++] = blockInfo.Block.Id;
 
-            EventManager.Event(new LayoutEvent(blockIDs, "free-layout-lock"));
+            EventManager.Event(new LayoutEvent("free-layout-lock", blockIDs));
         }
 
         private void buttonLock_Click(object sender, System.EventArgs e) {
@@ -166,11 +166,11 @@ namespace LayoutManager.Tools.Dialogs {
 
             request.OwnerId = Guid.NewGuid();
 
-            EventManager.Event(new LayoutEvent(request, "request-layout-lock"));
+            EventManager.Event(new LayoutEvent("request-layout-lock", request));
         }
 
         private void buttonClose_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(this, "block-tester-dialog-closed"));
+            EventManager.Event(new LayoutEvent("block-tester-dialog-closed", this));
             Close();
         }
     }

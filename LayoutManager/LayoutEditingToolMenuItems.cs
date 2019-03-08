@@ -42,7 +42,7 @@ namespace LayoutManager {
             LayoutCompoundCommand deleteCommand = new LayoutCompoundCommand("delete");
 
             for (int i = components.Count - 1; i >= 0; i--) {
-                EventManager.Event(new LayoutEvent(components[i], "prepare-for-component-remove-command", null, deleteCommand));
+                EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", components[i], deleteCommand, null));
                 deleteCommand.Add(new LayoutComponentRemovalCommand(components[i], "Delete"));
             }
 
@@ -132,7 +132,7 @@ namespace LayoutManager {
                 if (LayoutController.UserSelection.Count > 0) {
                     foreach (ModelComponent component in LayoutController.UserSelection) {
                         pasteCommand.Add(new LayoutComponentDeselectCommand(LayoutController.UserSelection, component, "unselect"));
-                        EventManager.Event(new LayoutEvent(component, "prepare-for-component-remove-command", null, pasteCommand));
+                        EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, pasteCommand, null));
                         pasteCommand.Add(new LayoutComponentRemovalCommand(component, "delete"));
                     }
                 }
@@ -182,7 +182,7 @@ namespace LayoutManager {
 
             LayoutCompoundCommand deleteCommand = new LayoutCompoundCommand("remove " + component.ToString());
 
-            EventManager.Event(new LayoutEvent(component, "prepare-for-component-remove-command", null, deleteCommand));
+            EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, deleteCommand, null));
             deleteCommand.Add(new LayoutComponentRemovalCommand(component, "remove " + component.ToString()));
             LayoutController.Do(deleteCommand);
         }

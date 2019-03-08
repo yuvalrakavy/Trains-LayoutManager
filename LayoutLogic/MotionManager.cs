@@ -150,7 +150,7 @@ namespace LayoutManager.Logic {
                     _commandStationName = commandStationName;
 
                     if (!commandStationCapabiltiesMap.TryGetValue(commandStationName, out _commandStationCapabilties)) {
-                        XmlElement commandStationCapabilitiesElement = (XmlElement)EventManager.Event(new LayoutEvent(null, "get-command-station-capabilities").SetCommandStation(train));
+                        XmlElement commandStationCapabilitiesElement = (XmlElement)EventManager.Event(new LayoutEvent("get-command-station-capabilities", null).SetCommandStation(train));
 
                         Debug.Assert(commandStationCapabilitiesElement != null, "Command station " + commandStationName + " does not return capabilities information");
 
@@ -304,17 +304,17 @@ namespace LayoutManager.Logic {
                             nextSpeed += (stepsPerTick > 0) ? 1 : -1;
                     }
 
-                    delayedEvent = EventManager.DelayedEvent(timePerTick, new LayoutEvent(this, "train-speed-change-timer"));
+                    delayedEvent = EventManager.DelayedEvent(timePerTick, new LayoutEvent("train-speed-change-timer", this));
                 }
                 else {
                     delayedEvent = null;
-                    EventManager.Event(new LayoutEvent(train, "train-speed-change-done"));
+                    EventManager.Event(new LayoutEvent("train-speed-change-done", train));
                 }
             }
 
             public void OnTimer(LayoutEvent e) {
                 if (train.SpeedInSteps != expectedSpeed)
-                    EventManager.Event(new LayoutEvent(train, "train-speed-change-aborted"));
+                    EventManager.Event(new LayoutEvent("train-speed-change-aborted", train));
                 else {
                     train.SpeedInSteps = nextSpeed;
                     expectedSpeed = nextSpeed;
@@ -329,7 +329,7 @@ namespace LayoutManager.Logic {
                     delayedEvent.Cancel();
                     delayedEvent = null;
                 }
-                EventManager.Event(new LayoutEvent(train, "train-speed-change-aborted"));
+                EventManager.Event(new LayoutEvent("train-speed-change-aborted", train));
             }
 
             #endregion

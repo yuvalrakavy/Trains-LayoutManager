@@ -278,7 +278,7 @@ namespace LayoutManager.Tools.Dialogs {
                 }
             }
 
-            if (EventManager.Event(new LayoutEvent(train, "get-command-station-set-function-number-support").SetCommandStation(train)) is CommandStationSetFunctionNumberSupportInfo functionNumberSupport &&
+            if (EventManager.Event(new LayoutEvent("get-command-station-set-function-number-support", train).SetCommandStation(train)) is CommandStationSetFunctionNumberSupportInfo functionNumberSupport &&
                 functionNumberSupport.SetFunctionNumberSupport != SetFunctionNumberSupport.None) {
 
                 if (m.MenuItems.Count == 0)
@@ -376,11 +376,11 @@ namespace LayoutManager.Tools.Dialogs {
                 this.Text = $"Function {functionNumber}{(function != null ? $" ({function.ToString()})" : "")}";
 
                 if (canSetBooleanState) {
-                    this.MenuItems.Add(new MenuItem("On", (sender, e) => EventManager.Event(new LayoutEvent(loco, "trigger-locomotive-function-number", null, functionNumber).SetCommandStation(train).SetOption("FunctionState", true))));
-                    this.MenuItems.Add(new MenuItem("Off", (sender, e) => EventManager.Event(new LayoutEvent(loco, "trigger-locomotive-function-number", null, functionNumber).SetCommandStation(train).SetOption("FunctionState", false))));
+                    this.MenuItems.Add(new MenuItem("On", (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber, null).SetCommandStation(train).SetOption("FunctionState", true))));
+                    this.MenuItems.Add(new MenuItem("Off", (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber, null).SetCommandStation(train).SetOption("FunctionState", false))));
                 }
                 else
-                    this.Click += (sender, e) => EventManager.Event(new LayoutEvent(loco, "trigger-locomotive-function-number", null, functionNumber).SetCommandStation(train));
+                    this.Click += (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber, null).SetCommandStation(train));
             }
         }
 
@@ -730,7 +730,7 @@ namespace LayoutManager.Tools.Dialogs {
                     locoLocation = train.LocomotiveBlock.TrackEdges[0].Track;
             }
 
-            EventManager.Event(new LayoutEvent(locoLocation, "ensure-component-visible", null, true).SetFrameWindow(LayoutController.ActiveFrameWindow));
+            EventManager.Event(new LayoutEvent("ensure-component-visible", locoLocation, true, null).SetFrameWindow(LayoutController.ActiveFrameWindow));
         }
 
         private void buttonStop_Click(object sender, System.EventArgs e) {
@@ -748,7 +748,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonLight_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(train, "set-train-lights-request", null, !train.Lights));
+            EventManager.Event(new LayoutEvent("set-train-lights-request", train, !train.Lights, null));
         }
 
         private void menuLightsOn_Click(object sender, System.EventArgs e) {
@@ -762,7 +762,7 @@ namespace LayoutManager.Tools.Dialogs {
         private void buttonFunction_Click(object sender, System.EventArgs e) {
             ContextMenu functionMenu = new ContextMenu();
 
-            EventManager.Event(new LayoutEvent(train, "add-locomotive-controller-function-menu-entries", null, functionMenu));
+            EventManager.Event(new LayoutEvent("add-locomotive-controller-function-menu-entries", train, functionMenu, null));
 
             if (functionMenu.MenuItems.Count == 0) {
                 MenuItem noFunctions = new MenuItem("No functions") {
@@ -775,7 +775,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonProperties_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(train, "edit-train-properties"));
+            EventManager.Event(new LayoutEvent("edit-train-properties", train));
         }
 
         private void panelSpeedLimit_Paint(object sender, System.Windows.Forms.PaintEventArgs e) {

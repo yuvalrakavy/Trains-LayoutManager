@@ -43,11 +43,11 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonPowerOn_Click(object sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent(_commandStation, "cancel-emergency-stop-request"));
+            EventManager.Event(new LayoutEvent("cancel-emergency-stop-request", _commandStation));
         }
 
         private void buttonAbortTrips_Click(object sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent(_commandStation, "suspend-all-trips"));
+            EventManager.Event(new LayoutEvent("suspend-all-trips", _commandStation));
         }
     }
 }

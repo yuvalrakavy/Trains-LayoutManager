@@ -89,8 +89,8 @@ namespace LayoutManager.Dialogs {
                     LayoutController.UserSelection.Add(results);
                 }
                 else {
-                    EventManager.Event(new LayoutEvent(results, "add-message", null, "Components that matched '" + textBoxFind.Text + "'"));
-                    EventManager.Event(new LayoutEvent(this, "show-messages"));
+                    EventManager.Event(new LayoutEvent("add-message", results, "Components that matched '" + textBoxFind.Text + "'"));
+                    EventManager.Event(new LayoutEvent("show-messages", this));
                 }
 
                 Close();

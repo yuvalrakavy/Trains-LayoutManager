@@ -1,9 +1,10 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.CommonUI.Controls;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.CommonUI {
 
     [LayoutModule("Event Script UI Manager", UserControl = false)]
@@ -120,7 +121,7 @@ namespace LayoutManager.CommonUI {
             return eventsElement != null && eventsElement.ChildNodes.Count == 1 && containerElement["Condition"] == null && containerElement["Actions"] == null;
         }
 
-        public static string GetElementDescription(XmlElement element) => (string)EventManager.Event(new LayoutEvent(element, "get-event-script-description"));
+        public static string GetElementDescription(XmlElement element) => (string)EventManager.Event(new LayoutEvent("get-event-script-description", element));
 
         public static string GetActionsDescription(XmlElement actionsElement) {
             string[] actions = new string[actionsElement.ChildNodes.Count];
@@ -135,7 +136,7 @@ namespace LayoutManager.CommonUI {
         }
 
         public static string GetEventOrEventContainerDescription(XmlElement element, string prefix, string suffix) {
-            ArrayList substrings = new ArrayList();
+            var substrings = new List<string>();
 
             if (IsTrivialContainer(element)) {
                 element = (XmlElement)element.ChildNodes[0].ChildNodes[0];
@@ -168,7 +169,7 @@ namespace LayoutManager.CommonUI {
                 if (suffix != null)
                     substrings.Add(suffix);
 
-                return String.Concat((string[])substrings.ToArray(typeof(string)));
+                return String.Concat(substrings);
             }
         }
 
@@ -178,7 +179,7 @@ namespace LayoutManager.CommonUI {
 
         public static string GetEventOrEventContainerDescription(LayoutEvent e, string prefix) => GetEventOrEventContainerDescription(e, prefix, null);
 
-        public static void getConditionContainerDescription(LayoutEvent e, string containerName) {
+        public static void GetConditionContainerDescription(LayoutEvent e, string containerName) {
             XmlElement containerElement = (XmlElement)e.Sender;
 
             if (containerElement.ChildNodes.Count == 1)     // If there is only one some condition, return its description
@@ -330,9 +331,8 @@ namespace LayoutManager.CommonUI {
         [LayoutEvent("get-event-script-description", IfSender = "Repeat")]
         private void getRepeatDescription(LayoutEvent e) {
             XmlElement conditionElement = (XmlElement)e.Sender;
-            XmlElement repeatedConditionElement = (XmlElement)conditionElement.ChildNodes[0];
-
-            int count = XmlConvert.ToInt32(conditionElement.GetAttribute("Count"));
+            //XmlElement repeatedConditionElement = (XmlElement)conditionElement.ChildNodes[0];
+            //int count = XmlConvert.ToInt32(conditionElement.GetAttribute("Count"));
 
             e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeRepeat.GetDescription(conditionElement) + " { ", " } ");
         }
@@ -389,9 +389,9 @@ namespace LayoutManager.CommonUI {
         [LayoutEvent("get-event-script-description", IfSender = "RandomChoice")]
         private void getRandomChoiceDescription(LayoutEvent e) {
             XmlElement element = (XmlElement)e.Sender;
-            ArrayList substrings = new ArrayList();
-
-            substrings.Add("Random-Choice [ ");
+            var substrings = new List<string> {
+                "Random-Choice [ "
+            };
 
             foreach (XmlElement choiceElement in element.GetElementsByTagName("Choice")) {
                 int weight = XmlConvert.ToInt32(choiceElement.GetAttribute("Weight"));
@@ -401,7 +401,7 @@ namespace LayoutManager.CommonUI {
 
             substrings.Add("] ");
 
-            e.Info = string.Concat((string[])substrings.ToArray(typeof(string)));
+            e.Info = string.Concat(substrings);
         }
 
         class LayoutEventScriptEditorTreeNodeRandomChoice : LayoutEventScriptEditorTreeNodeMayBeOptional {
@@ -560,7 +560,7 @@ namespace LayoutManager.CommonUI {
                 AddChildEventScriptTreeNodes();
             }
 
-            private static void addWaitString(XmlElement conditionElement, ArrayList list, string attrName, string unitSingle, string unitPlural) {
+            private static void addWaitString(XmlElement conditionElement, List<string> list, string attrName, string unitSingle, string unitPlural) {
                 if (conditionElement.HasAttribute(attrName)) {
                     int v = XmlConvert.ToInt32(conditionElement.GetAttribute(attrName));
 
@@ -570,14 +570,14 @@ namespace LayoutManager.CommonUI {
             }
 
             public static string GetWaitDescription(XmlElement conditionElement) {
-                ArrayList delayStrings = new ArrayList();
+                var delayStrings = new List<string>();
                 string s;
 
                 addWaitString(conditionElement, delayStrings, "Minutes", "minute", "minutes");
                 addWaitString(conditionElement, delayStrings, "Seconds", "second", "seconds");
                 addWaitString(conditionElement, delayStrings, "MilliSeconds", "milli-second", "milli-seconds");
 
-                s = "Wait for " + String.Concat((string[])delayStrings.ToArray(typeof(string)));
+                s = "Wait for " + String.Concat(delayStrings);
 
                 if (conditionElement.HasAttribute("RandomSeconds"))
                     s += " plus random time upto " + XmlConvert.ToInt32(conditionElement.GetAttribute("RandomSeconds")) + " seconds";
@@ -677,7 +677,7 @@ namespace LayoutManager.CommonUI {
 
         [LayoutEvent("get-event-script-description", IfSender = "And")]
         private void getAndDescription(LayoutEvent e) {
-            getConditionContainerDescription(e, "And");
+            GetConditionContainerDescription(e, "And");
         }
 
         class LayoutEventScriptEditorTreeNodeAnd : LayoutEventScriptEditorTreeNodeConditionContainer {
@@ -702,7 +702,7 @@ namespace LayoutManager.CommonUI {
 
         [LayoutEvent("get-event-script-description", IfSender = "Or")]
         private void getOrDescription(LayoutEvent e) {
-            getConditionContainerDescription(e, "Or");
+            GetConditionContainerDescription(e, "Or");
         }
 
         class LayoutEventScriptEditorTreeNodeOr : LayoutEventScriptEditorTreeNodeConditionContainer {
@@ -805,7 +805,7 @@ namespace LayoutManager.CommonUI {
             }
 
             public static string GetDescription(XmlElement element) {
-                string operatorName = (string)EventManager.Event(new LayoutEvent(element, "get-event-script-operator-name"));
+                string operatorName = (string)EventManager.Event(new LayoutEvent("get-event-script-operator-name", element));
 
                 return "If (string) " + GetOperandDescription(element, "1", typeof(string)) + " " + operatorName + " " + GetOperandDescription(element, "2", typeof(string));
             }
@@ -862,7 +862,7 @@ namespace LayoutManager.CommonUI {
             }
 
             public static string GetDescription(XmlElement element) {
-                string operatorName = (string)EventManager.Event(new LayoutEvent(element, "get-event-script-operator-name"));
+                string operatorName = (string)EventManager.Event(new LayoutEvent("get-event-script-operator-name", element));
 
                 return "If (number) " + GetOperandDescription(element, "1", typeof(int)) + " " + operatorName + " " + GetOperandDescription(element, "2", typeof(int));
             }
@@ -919,7 +919,7 @@ namespace LayoutManager.CommonUI {
             }
 
             public static string GetDescription(XmlElement element) {
-                string operatorName = (string)EventManager.Event(new LayoutEvent(element, "get-event-script-operator-name"));
+                string operatorName = (string)EventManager.Event(new LayoutEvent("get-event-script-operator-name", element));
 
                 return "If (Boolean) " + GetOperandDescription(element, "1", typeof(bool)) + " " + operatorName + " " + GetOperandDescription(element, "2", typeof(bool));
             }
@@ -1011,7 +1011,7 @@ namespace LayoutManager.CommonUI {
             }
 
             static string getNodesDescription(XmlElement element, string nodeName, string title) {
-                IIfTimeNode[] nodes = (IIfTimeNode[])EventManager.Event(new LayoutEvent(element, "parse-if-time-element", null, nodeName));
+                IIfTimeNode[] nodes = (IIfTimeNode[])EventManager.Event(new LayoutEvent("parse-if-time-element", element, nodeName));
                 string d = null;
 
                 if (nodes.Length > 0) {
@@ -1030,7 +1030,7 @@ namespace LayoutManager.CommonUI {
             }
 
             public static string GetDescription(XmlElement element) {
-                ArrayList parts = new ArrayList();
+                var parts = new List<string>();
                 string s;
 
                 if ((s = getNodesDescription(element, "DayOfWeek", "day of week is")) != null)
@@ -1042,7 +1042,7 @@ namespace LayoutManager.CommonUI {
                 if ((s = getNodesDescription(element, "Seconds", "second is")) != null)
                     parts.Add((parts.Count > 0 ? " and " : "") + s);
 
-                return string.Concat((string[])parts.ToArray(typeof(string)));
+                return string.Concat(parts);
             }
 
             protected override string Description => GetDescription(Element);
@@ -1086,7 +1086,6 @@ namespace LayoutManager.CommonUI {
             }
 
             public static string GetDescription(XmlElement element) {
-                string name = element.GetAttribute("Name");
                 string messageType = "message";
 
                 switch (element.GetAttribute("MessageType")) {
@@ -1254,7 +1253,7 @@ namespace LayoutManager.CommonUI {
             }
 
             public static string GetDescription(XmlElement element) {
-                ArrayList parts = new ArrayList();
+                var parts = new List<string>();
                 string argument;
 
                 parts.Add("Generate Event " + element.GetAttribute("EventName"));
@@ -1282,7 +1281,7 @@ namespace LayoutManager.CommonUI {
                     }
                 }
 
-                return string.Join(" ", (string[])parts.ToArray(typeof(string)));
+                return string.Join(" ", parts);
             }
 
             protected override string Description => GetDescription(Element);

@@ -134,7 +134,7 @@ namespace LayoutManager.CommonUI.Controls {
         #endregion
 
         protected void Initialize(XmlElement eventScriptElement) {
-            LayoutEventScriptEditorTreeNode root = (LayoutEventScriptEditorTreeNode)EventManager.Event(new LayoutEvent(eventScriptElement, "get-event-script-editor-tree-node"));
+            LayoutEventScriptEditorTreeNode root = (LayoutEventScriptEditorTreeNode)EventManager.Event(new LayoutEvent("get-event-script-editor-tree-node", eventScriptElement));
 
             if (root == null)
                 throw new ApplicationException("No suitable event script tree node was found");
@@ -357,7 +357,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             if (selected != null && selected.AddNodeEventName != null) {
                 ContextMenu menu = new ContextMenu();
-                LayoutEvent addNodeEvent = new LayoutEvent(selected, selected.AddNodeEventName, null, menu);
+                LayoutEvent addNodeEvent = new LayoutEvent(selected.AddNodeEventName, selected, menu, null);
 
                 if (BlockDefinition != null)
                     addNodeEvent.SetOption("BlockDefinitionID", XmlConvert.ToString(BlockDefinition.Id));
@@ -373,7 +373,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             if (selected != null && selected.InsertNodeEventName != null) {
                 ContextMenu menu = new ContextMenu();
-                LayoutEvent insertNodeEvent = new LayoutEvent(selected, selected.InsertNodeEventName, null, menu);
+                LayoutEvent insertNodeEvent = new LayoutEvent(selected.InsertNodeEventName, selected, menu, null);
 
                 if (BlockDefinition != null)
                     insertNodeEvent.SetOption("BlockDefinitionID", XmlConvert.ToString(BlockDefinition.Id));
@@ -388,7 +388,7 @@ namespace LayoutManager.CommonUI.Controls {
             LayoutEventScriptEditorTreeNode selected = (LayoutEventScriptEditorTreeNode)treeViewConditions.SelectedNode;
 
             if (selected != null && !ViewOnly && selected.NodeToEdit != null)
-                EventManager.Event(new LayoutEvent(selected.NodeToEdit.Element, "event-script-editor-edit-element", null, new EditSite(Form, BlockDefinition, selected)));
+                EventManager.Event(new LayoutEvent("event-script-editor-edit-element", selected.NodeToEdit.Element, new EditSite(Form, BlockDefinition, selected), null));
         }
 
         class EditSite : IEventScriptEditorSite {
@@ -494,7 +494,7 @@ namespace LayoutManager.CommonUI.Controls {
                 parentNode.Element.AppendChild(eventScriptElement);
 
             LayoutEventScriptEditorTreeNode newNode = (LayoutEventScriptEditorTreeNode)EventManager.Event(
-                new LayoutEvent(eventScriptElement, "get-event-script-editor-tree-node"));
+                new LayoutEvent("get-event-script-editor-tree-node", eventScriptElement));
 
             if (newNode != null) {
                 IEventScriptEditorSite site = new EventScriptEditorSite(eventScriptEditor.Form, eventScriptEditor.BlockDefinition, parentNode, newNode, eventScriptElement);
@@ -502,7 +502,7 @@ namespace LayoutManager.CommonUI.Controls {
                 if (newNode.NodeToEdit == null)
                     site.EditingDone();
                 else
-                    EventManager.Event(new LayoutEvent(eventScriptElement, "event-script-editor-edit-element", null, site));
+                    EventManager.Event(new LayoutEvent("event-script-editor-edit-element", eventScriptElement, site, null));
             }
         }
 
@@ -571,7 +571,7 @@ namespace LayoutManager.CommonUI.Controls {
             node.Element.AppendChild(eventScriptElement);
 
             LayoutEventScriptEditorTreeNode newNode = (LayoutEventScriptEditorTreeNode)EventManager.Event(
-                new LayoutEvent(eventScriptElement, "get-event-script-editor-tree-node"));
+                new LayoutEvent("get-event-script-editor-tree-node", eventScriptElement));
 
             if (newNode != null) {
                 IEventScriptEditorSite site = new EventScriptEditorSite(eventScriptEditor.Form, eventScriptEditor.BlockDefinition, node, newNode, eventScriptElement, eventScriptElementName);
@@ -579,7 +579,7 @@ namespace LayoutManager.CommonUI.Controls {
                 if (newNode.NodeToEdit == null)
                     site.EditingDone();
                 else
-                    EventManager.Event(new LayoutEvent(eventScriptElement, "event-script-editor-edit-element", null, site));
+                    EventManager.Event(new LayoutEvent("event-script-editor-edit-element", eventScriptElement, site, null));
             }
         }
 
@@ -683,7 +683,7 @@ namespace LayoutManager.CommonUI.Controls {
             node.Element.AppendChild(eventScriptElement);
 
             LayoutEventScriptEditorTreeNode newNode = (LayoutEventScriptEditorTreeNode)EventManager.Event(
-                new LayoutEvent(eventScriptElement, "get-event-script-editor-tree-node"));
+                new LayoutEvent("get-event-script-editor-tree-node", eventScriptElement));
 
             if (newNode != null) {
                 IEventScriptEditorSite site = new EventScriptEditorSite(eventScriptEditor.Form, eventScriptEditor.BlockDefinition, node, newNode, eventScriptElement, eventScriptElementName);
@@ -691,7 +691,7 @@ namespace LayoutManager.CommonUI.Controls {
                 if (newNode.NodeToEdit == null)
                     site.EditingDone();
                 else
-                    EventManager.Event(new LayoutEvent(eventScriptElement, "event-script-editor-edit-element", null, site));
+                    EventManager.Event(new LayoutEvent("event-script-editor-edit-element", eventScriptElement, site, null));
             }
         }
 
@@ -826,7 +826,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         protected void AddChildEventScriptTreeNodes(XmlElement element) {
             foreach (XmlElement childEventScriptElement in element) {
-                LayoutEventScriptEditorTreeNode node = (LayoutEventScriptEditorTreeNode)EventManager.Event(new LayoutEvent(childEventScriptElement, "get-event-script-editor-tree-node"));
+                LayoutEventScriptEditorTreeNode node = (LayoutEventScriptEditorTreeNode)EventManager.Event(new LayoutEvent("get-event-script-editor-tree-node", childEventScriptElement));
 
                 if (node == null)
                     throw new ApplicationException("No suitable condition tree node was found");

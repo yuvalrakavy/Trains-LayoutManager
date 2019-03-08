@@ -188,7 +188,7 @@ namespace LayoutManager.Model {
         }
 
         public void Add(ITripRoute route, int insertAnnotationEvery) {
-            ILayoutTopologyServices ts = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent(this, "get-topology-services"));
+            ILayoutTopologyServices ts = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this));
             TrackEdge edge = route.SourceEdge;
             TrackEdge destinationEdge = route.DestinationEdge;
             IList<int> switchStates = route.SwitchStates;

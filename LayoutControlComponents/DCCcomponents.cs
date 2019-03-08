@@ -19,7 +19,7 @@ namespace LayoutManager.ControlComponents {
             ControlModuleType moduleType = new ControlModuleType(parentElement, "LGB55025", "LGB Switch Decoder") {
                 AddressAlignment = 4
             };
-            EventManager.Event(new LayoutEvent(moduleType, "add-bus-connectable-to-module").SetOption("GenericBusType", "DCC"));
+            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DCC"));
 
             moduleType.ConnectionPointsPerAddress = 1;
             moduleType.NumberOfAddresses = 4;
@@ -33,7 +33,7 @@ namespace LayoutManager.ControlComponents {
 
             ControlModuleType moduleType = new ControlModuleType(parentElement, "Massoth8156001", "Massoth Switch Decoder");
 
-            EventManager.Event(new LayoutEvent(moduleType, "add-bus-connectable-to-module").SetOption("GenericBusType", "DCC"));
+            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DCC"));
 
             moduleType.AddressAlignment = 1;
             moduleType.ConnectionPointsPerAddress = 1;
@@ -49,7 +49,7 @@ namespace LayoutManager.ControlComponents {
 
             ControlModuleType moduleType = new ControlModuleType(parentElement, "Massoth8156001_AsFunctionDecoder", "Massoth Function Decoder");
 
-            EventManager.Event(new LayoutEvent(moduleType, "add-bus-connectable-to-module").SetOption("GenericBusType", "LocoBus"));
+            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "LocoBus"));
 
             moduleType.AddressAlignment = 1;
             moduleType.ConnectionPointsPerAddress = 8;
@@ -68,7 +68,7 @@ namespace LayoutManager.ControlComponents {
 
             ControlModuleType moduleType = new ControlModuleType(parentElement, "Massoth8156501", "Massoth Single Switch Decoder");
 
-            EventManager.Event(new LayoutEvent(moduleType, "add-bus-connectable-to-module").SetOption("GenericBusType", "DCC"));
+            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DCC"));
 
             moduleType.AddressAlignment = 1;
             moduleType.ConnectionPointsPerAddress = 1;

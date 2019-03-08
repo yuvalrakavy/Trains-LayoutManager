@@ -21,7 +21,7 @@ namespace LayoutManager.Tools.Dialogs {
             LayoutBlockDefinitionComponent blockDefinition = (LayoutBlockDefinitionComponent)listBoxProgrammingLocations.SelectedItem;
 
             if (blockDefinition != null)
-                EventManager.Event(new LayoutEvent(blockDefinition, "ensure-component-visible", null, true).SetFrameWindow(LayoutController.ActiveFrameWindow));
+                EventManager.Event(new LayoutEvent("ensure-component-visible", blockDefinition, true, null).SetFrameWindow(LayoutController.ActiveFrameWindow));
         }
     }
 }

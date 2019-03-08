@@ -93,7 +93,7 @@ namespace LayoutManager.CommonUI.Controls {
                         CanPlaceTrainResult result;
                         bool lookForMoreBlocks = true;
 
-                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(element, "can-locomotive-be-placed", null, blockDefinition));
+                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed", element, blockDefinition, null));
                         canPlaceOnTrack = result.ResolveMethod;
 
                         switch (result.Status) {
@@ -135,10 +135,10 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         protected void UpdateElements() {
-            EventManager.Event(new LayoutEvent(this, "disable-locomotive-list-update"));
+            EventManager.Event(new LayoutEvent("disable-locomotive-list-update", this));
             foreach (XmlElement element in ContainerElement)
                 UpdateElementState(element);
-            EventManager.Event(new LayoutEvent(this, "enable-locomotive-list-update"));
+            EventManager.Event(new LayoutEvent("enable-locomotive-list-update", this));
         }
 
         protected void InvalidateElement(XmlElement element) {

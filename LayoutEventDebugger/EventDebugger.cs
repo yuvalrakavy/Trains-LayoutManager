@@ -65,7 +65,7 @@ namespace LayoutEventDebugger {
         public void FireEvent(string eventName) {
             FiredEventName = eventName;
 
-            var theEvent = new LayoutEvent(Sender, eventName);
+            var theEvent = new LayoutEvent(eventName, Sender);
             EventManager.Event(theEvent);
         }
 

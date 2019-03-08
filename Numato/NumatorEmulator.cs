@@ -30,10 +30,10 @@ namespace NumatoController {
         public NumatorEmulator(IModelComponentIsBusProvider numatoComponent, string pipeName) {
             this.numatoId = numatoComponent.Id;
             this.pipeName = pipeName;
-            this.interThreadEventInvoker = (ILayoutInterThreadEventInvoker)EventManager.Event(new LayoutEvent(this, "get-inter-thread-event-invoker"));
+            this.interThreadEventInvoker = (ILayoutInterThreadEventInvoker)EventManager.Event(new LayoutEvent("get-inter-thread-event-invoker", this));
 
-            layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent(this, "get-layout-emulation-services"));
-            EventManager.Event(new LayoutEvent(null, "initialize-layout-emulation"));
+            layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
+            EventManager.Event(new LayoutEvent("initialize-layout-emulation", null));
 
             interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction)) {
                 Name = "Command station emulation for " + numatoComponent.NameProvider.Name
@@ -43,7 +43,7 @@ namespace NumatoController {
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void InterfaceThreadFunction() {
-            commStream = (FileStream)EventManager.Event(new LayoutEvent(pipeName, "wait-named-pipe-request", null, true));
+            commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true, null));
 
             state = NumatoState.GetUser;
 

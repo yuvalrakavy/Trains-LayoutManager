@@ -366,10 +366,10 @@ namespace LayoutManager.Model {
                 }
 
                 if (previousComponent != null)
-                    EventManager.Event(new LayoutEvent(previousComponent, "component-disconnected-from-control-module", null, this));
+                    EventManager.Event(new LayoutEvent("component-disconnected-from-control-module", previousComponent, this, null));
 
                 if (value != null)
-                    EventManager.Event(new LayoutEvent(value, "component-connected-to-control-module", null, this));
+                    EventManager.Event(new LayoutEvent("component-connected-to-control-module", value, this, null));
             }
         }
 
@@ -513,7 +513,7 @@ namespace LayoutManager.Model {
                 module.ControlManager.ConnectionPoints.Add(connectionPoint);
                 theComponent.Redraw();
 
-                EventManager.Event(new LayoutEvent(connectionPoint.Component, "component-connected-to-control-module", null, connectionPoint));
+                EventManager.Event(new LayoutEvent("component-connected-to-control-module", connectionPoint.Component, connectionPoint, null));
             }
 
             module.OnConnectionChanged();
@@ -618,7 +618,7 @@ namespace LayoutManager.Model {
 
             if (moduleTypeFound)
                 // Check specifically if this connection point can be connected to this component
-                return (bool)EventManager.Event(new LayoutEvent(connectionDestination, "can-control-be-connected", null, (bool)true).SetOption("ModuleTypeName", module.ModuleTypeName).SetOption("ModuleID", XmlConvert.ToString(module.Id)).SetOption("Index", XmlConvert.ToString(index)));
+                return (bool)EventManager.Event(new LayoutEvent("can-control-be-connected", connectionDestination, (bool)true, null).SetOption("ModuleTypeName", module.ModuleTypeName).SetOption("ModuleID", XmlConvert.ToString(module.Id)).SetOption("Index", XmlConvert.ToString(index)));
 
             return false;
         }
@@ -1315,7 +1315,7 @@ namespace LayoutManager.Model {
             string result = "";
 
             if ((format & ControlConnectionPointLabelFormatOptions.Custom) != 0)
-                result = (string)EventManager.Event(new LayoutEvent(this, "control-get-connection-point-label").SetOption("Address", baseAddress).SetOption("Index", index));
+                result = (string)EventManager.Event(new LayoutEvent("control-get-connection-point-label", this).SetOption("Address", baseAddress).SetOption("Index", index));
             else {
                 int address = baseAddress + index / ConnectionPointsPerAddress;
                 string addressText;
@@ -1488,7 +1488,7 @@ namespace LayoutManager.Model {
             ResetAddressModuleMap();
 
             controlManager.ModulesElement.AppendChild(moduleElement);
-            EventManager.Event(new LayoutEvent(module, "control-module-added"));
+            EventManager.Event(new LayoutEvent("control-module-added", module));
 
             return module;
         }
@@ -1608,7 +1608,7 @@ namespace LayoutManager.Model {
             ResetAddressModuleMap();
             controlManager.ModulesElement.RemoveChild(module.Element);
 
-            EventManager.Event(new LayoutEvent(module, "control-module-removed"));
+            EventManager.Event(new LayoutEvent("control-module-removed", module));
         }
 
         /// <summary>
@@ -1821,7 +1821,7 @@ namespace LayoutManager.Model {
 
             doc.AppendChild(moduleTypesElement);
 
-            EventManager.Event(new LayoutEvent(moduleTypesElement, "enum-control-module-types"));
+            EventManager.Event(new LayoutEvent("enum-control-module-types", moduleTypesElement));
 
             return moduleTypesElement;
         }
@@ -1854,7 +1854,7 @@ namespace LayoutManager.Model {
         public IList<string> GetConnectableControlModuleTypeNames(ControlConnectionPointDestination connectionDestination) {
             List<string> applicableModuleTypes = new List<string>();
 
-            EventManager.Event(new LayoutEvent(connectionDestination, "recommend-control-module-types", null, applicableModuleTypes).SetOption("BusType", BusTypeName).SetOption("BusFamily", BusFamilyName));
+            EventManager.Event(new LayoutEvent("recommend-control-module-types", connectionDestination, applicableModuleTypes, null).SetOption("BusType", BusTypeName).SetOption("BusFamily", BusFamilyName));
 
             return applicableModuleTypes.AsReadOnly();
         }
@@ -2215,7 +2215,7 @@ namespace LayoutManager.Model {
                 }
             }
 
-            EventManager.Event(new LayoutEvent(busProvider, "control-buses-added"));
+            EventManager.Event(new LayoutEvent("control-buses-added", busProvider));
         }
 
         /// <summary>
@@ -2236,7 +2236,7 @@ namespace LayoutManager.Model {
                 Remove(bus);
             }
 
-            EventManager.Event(new LayoutEvent(busProvider, "control-buses-removed"));
+            EventManager.Event(new LayoutEvent("control-buses-removed", busProvider));
         }
     }
 
@@ -2322,7 +2322,7 @@ namespace LayoutManager.Model {
 
             doc.AppendChild(moduleTypesElement);
 
-            EventManager.Event(new LayoutEvent(moduleTypesElement, "get-control-module-type").SetOption("ModuleTypeName", moduleTypeName));
+            EventManager.Event(new LayoutEvent("get-control-module-type", moduleTypesElement).SetOption("ModuleTypeName", moduleTypeName));
 
             int count = moduleTypesElement.ChildNodes.Count;
 
@@ -2340,7 +2340,7 @@ namespace LayoutManager.Model {
         /// <param name="busTypeName">The bus type name (e.g. LGBBUS)</param>
         /// <returns>The object describing the bus type</returns>
         public ControlBusType GetBusType(string busTypeName) {
-            ControlBusType busType = (ControlBusType)EventManager.Event(new LayoutEvent(this, "get-control-bus-type").SetOption("BusTypeName", busTypeName));
+            ControlBusType busType = (ControlBusType)EventManager.Event(new LayoutEvent("get-control-bus-type", this).SetOption("BusTypeName", busTypeName));
 
             if (busType == null)
                 throw new ArgumentException("Unable to obtain control bus type object for bus type: " + busTypeName);

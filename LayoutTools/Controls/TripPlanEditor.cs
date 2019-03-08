@@ -246,12 +246,12 @@ namespace LayoutManager.Tools.Controls {
         }
 
         private TripBestRouteResult findBestRoute(TripBestRouteRequest bestRouteRequest) {
-            TripBestRouteResult bestRoute = (TripBestRouteResult)EventManager.Event(new LayoutEvent(bestRouteRequest, "find-best-route-request"));
+            TripBestRouteResult bestRoute = (TripBestRouteResult)EventManager.Event(new LayoutEvent("find-best-route-request", bestRouteRequest));
 
             if (bestRoute.BestRoute == null) {
                 bestRouteRequest.Direction = (bestRouteRequest.Direction == LocomotiveOrientation.Forward) ? LocomotiveOrientation.Backward : LocomotiveOrientation.Forward;
 
-                bestRoute = (TripBestRouteResult)EventManager.Event(new LayoutEvent(bestRouteRequest, "find-best-route-request"));
+                bestRoute = (TripBestRouteResult)EventManager.Event(new LayoutEvent("find-best-route-request", bestRouteRequest));
                 if (bestRoute.BestRoute != null)
                     bestRoute.ShouldReverse = true;
             }
@@ -937,7 +937,7 @@ namespace LayoutManager.Tools.Controls {
                 selectedWaypointSelection.Add(wayPointItem.WayPoint.Destination.Selection);
 
             if (selectedWaypointSelection.Count > 0)
-                EventManager.Event(new LayoutEvent(selectedWaypointSelection.Components.First(), "ensure-component-visible", null, false).SetFrameWindow(LayoutController.ActiveFrameWindow));
+                EventManager.Event(new LayoutEvent("ensure-component-visible", selectedWaypointSelection.Components.First(), false, null).SetFrameWindow(LayoutController.ActiveFrameWindow));
 
             UpdateButtons(sender, e);
         }

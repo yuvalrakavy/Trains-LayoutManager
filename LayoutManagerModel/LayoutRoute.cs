@@ -169,7 +169,7 @@ namespace LayoutManager.Model {
         protected static ILayoutLockManagerServices LockManagerServices {
             get {
                 if (_lockManagerServices == null)
-                    _lockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent(null, "get-layout-lock-manager-services"));
+                    _lockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services", null));
                 return _lockManagerServices;
             }
         }

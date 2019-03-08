@@ -7,7 +7,10 @@ using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
+#pragma warning disable IDE0051, IDE0060
+
 namespace LayoutManager.Tools.Dialogs {
+
     /// <summary>
     /// Summary description for TrainProperties.
     /// </summary>
@@ -53,7 +56,6 @@ namespace LayoutManager.Tools.Dialogs {
 
         readonly TrainCommonInfo train;
         readonly ArrayList locomotiveCancelList = new ArrayList();
-        readonly ArrayList carsCancelList = new ArrayList();
         bool locomotiveEdited = false;
 
         public TrainProperties(TrainCommonInfo train) {
@@ -117,7 +119,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [LayoutEvent("train-configuration-changed", IfSender = "*[@ID='`string(@ID)`']")]
-        private void trainNameChanged(LayoutEvent e) {
+        private void TrainNameChanged(LayoutEvent e) {
             setTitleBar();
         }
 
@@ -566,7 +568,7 @@ namespace LayoutManager.Tools.Dialogs {
             drivingParameters.Commit();
             attributesEditor.Commit();
 
-            EventManager.Event(new LayoutEvent(train, "train-configuration-changed", null, train.Name));
+            EventManager.Event(new LayoutEvent("train-configuration-changed", train, train.Name));
             train.RefreshSpeedLimit();
             train.Redraw();
 
@@ -635,7 +637,7 @@ namespace LayoutManager.Tools.Dialogs {
             TrainLocomotiveItem selected = ((TrainLocomotiveItem)listViewLocomotives.SelectedItems[0]);
             TrainLocomotiveInfo trainLoco = selected.TrainLocomotive;
 
-            EventManager.Event(new LayoutEvent(trainLoco.Locomotive, "edit-locomotive-properties"));
+            EventManager.Event(new LayoutEvent("edit-locomotive-properties", trainLoco.Locomotive));
             locomotiveEdited = true;
             train.FlushCachedValues();
             selected.Update();

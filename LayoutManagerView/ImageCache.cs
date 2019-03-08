@@ -73,12 +73,12 @@ namespace LayoutManager.View {
         [LayoutEvent("new-layout-document")]
         private void newLayoutDocument(LayoutEvent e) {
             layoutFileDirectory = null;     // Invalidate it
-            EventManager.Event(new LayoutEvent(this, "clear-image-cache"));
+            EventManager.Event(new LayoutEvent("clear-image-cache", this));
         }
 
         [LayoutEvent("free-resources")]
         private void mainWindowMinimizedOrDeactivated(LayoutEvent e) {
-            EventManager.Event(new LayoutEvent(this, "clear-image-cache"));
+            EventManager.Event(new LayoutEvent("clear-image-cache", this));
         }
     }
 }

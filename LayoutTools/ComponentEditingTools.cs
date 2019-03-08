@@ -226,10 +226,10 @@ namespace LayoutManager.Tools {
 
             if (canTestComponent(component)) {
                 MenuItem item = new MenuItem("&Test", delegate (object sender, EventArgs ea) {
-                    EventManager.Event(new LayoutEvent(component, "test-layout-object-request").SetFrameWindow(e));
+                    EventManager.Event(new LayoutEvent("test-layout-object-request", component).SetFrameWindow(e));
                 });
 
-                if (EventManager.Event(new LayoutEvent(this, "query-test-layout-object").SetFrameWindow(e)) != null)
+                if (EventManager.Event(new LayoutEvent("query-test-layout-object", this).SetFrameWindow(e)) != null)
                     item.Enabled = false;
                 m.MenuItems.Add(item);
             }
@@ -261,17 +261,17 @@ namespace LayoutManager.Tools {
 
                     if (testDialog == null) {
                         if (testObject is IModelComponentConnectToControl) {
-                            testDialog = (Form)EventManager.Event(new LayoutEvent(testObject, "get-test-component-dialog").SetFrameWindow(e));
+                            testDialog = (Form)EventManager.Event(new LayoutEvent("get-test-component-dialog", testObject).SetFrameWindow(e));
                             if (testDialog == null)
                                 testDialog = new LayoutManager.Tools.Dialogs.TestLayoutObject(e.GetFrameWindowId(), (IModelComponentConnectToControl)testObject);
                         }
                         else if (testObject is ControlConnectionPoint controlCp) {
-                            testDialog = (Form)EventManager.Event(new LayoutEvent(controlCp.Component, "get-test-component-dialog").SetFrameWindow(e));
+                            testDialog = (Form)EventManager.Event(new LayoutEvent("get-test-component-dialog", controlCp.Component).SetFrameWindow(e));
                             if (testDialog == null)
                                 testDialog = new LayoutManager.Tools.Dialogs.TestLayoutObject(e.GetFrameWindowId(), new ControlConnectionPointReference((ControlConnectionPoint)testObject));
                         }
                         else if (testObject is ControlConnectionPointReference controlCpRef) {
-                            testDialog = (Form)EventManager.Event(new LayoutEvent(controlCpRef.ConnectionPoint.Component, "get-test-component-dialog").SetFrameWindow(e));
+                            testDialog = (Form)EventManager.Event(new LayoutEvent("get-test-component-dialog", controlCpRef.ConnectionPoint.Component).SetFrameWindow(e));
 
                             if (testDialog == null)
                                 testDialog = new LayoutManager.Tools.Dialogs.TestLayoutObject(e.GetFrameWindowId(), (ControlConnectionPointReference)testObject);
@@ -387,7 +387,7 @@ namespace LayoutManager.Tools {
                         case LayoutPhase.Planned: checkPhases = LayoutPhase.All; break;
                     }
 
-                    if ((bool)EventManager.Event(new LayoutEvent(this, "check-layout", null, true).SetPhases(checkPhases))) {
+                    if ((bool)EventManager.Event(new LayoutEvent("check-layout", this, true, null).SetPhases(checkPhases))) {
                         EventManager.Event(
                             new LayoutEvent<LayoutTrackPowerConnectorComponent, Action<LayoutBlockDefinitionComponent>>("add-power-connector-as-resource", powerConnectorcomponent,
                                 blockDefinition => {
@@ -421,7 +421,7 @@ namespace LayoutManager.Tools {
             ModelComponent linkedComponent = trackLink.LinkedComponent;
 
             if (linkedComponent != null)
-                EventManager.Event(new LayoutEvent(linkedComponent, "ensure-component-visible", null, true).SetFrameWindow(e));
+                EventManager.Event(new LayoutEvent("ensure-component-visible", linkedComponent, true, null).SetFrameWindow(e));
         }
 
         #region Track Link Menu item classes
@@ -485,7 +485,7 @@ namespace LayoutManager.Tools {
         class TrackLinkMenuItemViewLinkedComponent : MenuItem {
             internal TrackLinkMenuItemViewLinkedComponent(Guid frameWindowId, LayoutTrackLinkComponent trackLinkComponent)
                 : base("&Show other link", (s, ea) => {
-                    EventManager.Event(new LayoutEvent(trackLinkComponent.LinkedComponent, "ensure-component-visible", null, true).SetFrameWindow(frameWindowId));
+                    EventManager.Event(new LayoutEvent("ensure-component-visible", trackLinkComponent.LinkedComponent, true, null).SetFrameWindow(frameWindowId));
                 }) {
 
                 if (trackLinkComponent.LinkedComponent == null)
@@ -511,8 +511,8 @@ namespace LayoutManager.Tools {
             ArrayList myBindDialog = new ArrayList();
             ArrayList allBindDialog = new ArrayList();
 
-            EventManager.Event(new LayoutEvent(component, "query-bind-signals-dialogs", null, myBindDialog));
-            EventManager.Event(new LayoutEvent(null, "query-bind-signals-dialogs", null, allBindDialog));
+            EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", component, myBindDialog, null));
+            EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", null, allBindDialog, null));
 
             MenuItem item = new BlockEdgeBindSignalMenuItem(component);
 
@@ -534,7 +534,7 @@ namespace LayoutManager.Tools {
             protected override void OnClick(EventArgs e) {
                 ArrayList myBindDialog = new ArrayList();
 
-                EventManager.Event(new LayoutEvent(blockEdge, "query-bind-signals-dialogs", null, myBindDialog));
+                EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", blockEdge, myBindDialog, null));
 
                 if (myBindDialog.Count > 0) {
                     Form f = (Form)myBindDialog[0];
@@ -564,7 +564,7 @@ namespace LayoutManager.Tools {
             LayoutSignalComponent component = (LayoutSignalComponent)e.Sender;
             ArrayList allBindDialog = new ArrayList();
 
-            EventManager.Event(new LayoutEvent(null, "query-bind-signals-dialogs", null, allBindDialog));
+            EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", null, allBindDialog, null));
 
             if (allBindDialog.Count > 0) {
                 MenuItem item = new SignalBindSignalMenuItem((IModelComponentReceiverDialog)allBindDialog[0], component);
@@ -758,7 +758,7 @@ namespace LayoutManager.Tools {
                                 Array.Sort(components, new ZorderSorter());     // Sort, so the first delete components will be those with higher Z order
 
                                 for (int i = components.Length - 1; i >= 0; i--) {
-                                    EventManager.Event(new LayoutEvent(components[i], "prepare-for-component-remove-command", null, shiftCommand));
+                                    EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", components[i], shiftCommand, null));
                                     shiftCommand.Add(new LayoutComponentRemovalCommand(components[i], "Delete"));
                                 }
                             }
@@ -1168,7 +1168,7 @@ namespace LayoutManager.Tools {
             protected override void OnClick(EventArgs e) {
                 base.OnClick(e);
 
-                EventManager.Event(new LayoutEvent(component, "show-control-modules-location"));
+                EventManager.Event(new LayoutEvent("show-control-modules-location", component));
             }
         }
 
@@ -1182,7 +1182,7 @@ namespace LayoutManager.Tools {
         private void controlModuleLocationDefaultAction(LayoutEvent e) {
             LayoutControlModuleLocationComponent component = (LayoutControlModuleLocationComponent)e.Sender;
 
-            EventManager.Event(new LayoutEvent(component, "show-control-modules-location"));
+            EventManager.Event(new LayoutEvent("show-control-modules-location", component));
         }
 
         #endregion

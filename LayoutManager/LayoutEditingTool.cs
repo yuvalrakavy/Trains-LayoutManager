@@ -136,14 +136,14 @@ namespace LayoutManager {
                 oldTrack = spot.Track;
 
                 foreach (ModelComponent c in components)
-                    if ((bool)EventManager.Event(new LayoutEvent(c, "query-editing-default-action", null, (bool)false).SetFrameWindow(hitTestResult.FrameWindow))) {
+                    if ((bool)EventManager.Event(new LayoutEvent("query-editing-default-action", c, (bool)false, null).SetFrameWindow(hitTestResult.FrameWindow))) {
                         componentWithDefaultEditingAction = c;
                         break;
                     }
 
                 if (componentWithDefaultEditingAction != null) {
                     showComponentsMenu = false;
-                    EventManager.Event(new LayoutEvent(componentWithDefaultEditingAction, "editing-default-action-command", null, hitTestResult).SetFrameWindow(hitTestResult.FrameWindow));
+                    EventManager.Event(new LayoutEvent("editing-default-action-command", componentWithDefaultEditingAction, hitTestResult, null).SetFrameWindow(hitTestResult.FrameWindow));
                 }
             }
 
@@ -159,12 +159,12 @@ namespace LayoutManager {
 
                     categories.LoadXml("<ComponentMenuCategories />");
 
-                    EventManager.Event(new LayoutEvent(categories.DocumentElement, "get-component-menu-categories",
-                        null, oldTrack));
+                    EventManager.Event(new LayoutEvent("get-component-menu-categories", categories.DocumentElement,
+                        oldTrack, null));
 
                     foreach (XmlElement categoryElement in categories.DocumentElement.ChildNodes) {
-                        EventManager.Event(new LayoutEvent(categoryElement, "get-component-menu-category-items",
-                            null, oldTrack));
+                        EventManager.Event(new LayoutEvent("get-component-menu-category-items", categoryElement,
+                            oldTrack, null));
 
                         // If this category contains at least one item, create the category and add the items
                         if (categoryElement.ChildNodes.Count > 0)
@@ -197,15 +197,15 @@ namespace LayoutManager {
                     bool placeComponent;
                     var placementXml = $"<PlacementInfo AreaID='{XmlConvert.ToString(area.AreaGuid)}' X='{ml.X}' Y='{ml.Y}' />";
 
-                    placeComponent = (bool)EventManager.Event(new LayoutEvent(component, "model-component-placement-request",
-                        placementXml, true));
+                    placeComponent = (bool)EventManager.Event(new LayoutEvent("model-component-placement-request", component,
+                        true, placementXml));
 
                     if (placeComponent) {
                         var command = new LayoutCompoundCommand($"add {component}", true) {
                             new LayoutComponentPlacmentCommand(area, ml, component, $"add {component}", area.Phase(ml))
                         };
 
-                        EventManager.Event(new LayoutEvent(component, "model-component-post-placement-request", placementXml, command));
+                        EventManager.Event(new LayoutEvent("model-component-post-placement-request", component, command, placementXml));
                         LayoutController.Do(command);
                     }
                 }
@@ -309,7 +309,7 @@ namespace LayoutManager {
         }
 
         protected override void Paint(Graphics g) {
-            EventManager.Event(new LayoutEvent(categoryElement, "paint-image-menu-category", null, g));
+            EventManager.Event(new LayoutEvent("paint-image-menu-category", categoryElement, g, null));
         }
     }
 
@@ -323,12 +323,12 @@ namespace LayoutManager {
         }
 
         protected override void Paint(Graphics g) {
-            EventManager.Event(new LayoutEvent(itemElement, "paint-image-menu-item", null, g));
+            EventManager.Event(new LayoutEvent("paint-image-menu-item", itemElement, g, null));
         }
 
         public ModelComponent CreateComponent(ModelComponent old) {
-            ModelComponent newComponent = (ModelComponent)EventManager.Event(new LayoutEvent(itemElement,
-                "create-model-component", null, old));
+            ModelComponent newComponent = (ModelComponent)EventManager.Event(new LayoutEvent("create-model-component",
+                itemElement, old, null));
 
             if (newComponent != old)
                 return newComponent;

@@ -59,7 +59,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("exit-operation-mode", Order = -1000)]
         private void exitOperationalMode(LayoutEvent e) {
-            LayoutEventScript[] scripts = (LayoutEventScript[])EventManager.Event(new LayoutEvent(this, "get-active-event-scripts"));
+            LayoutEventScript[] scripts = (LayoutEventScript[])EventManager.Event(new LayoutEvent("get-active-event-scripts", this));
 
             foreach (LayoutEventScript script in scripts)
                 script.Dispose();

@@ -20,7 +20,7 @@ namespace LayoutManager.ControlComponents {
             ControlModuleType moduleType = new ControlModuleType(parentElement, "Massoth8170001", "Massoth Feedback Interface") {
                 AddressAlignment = 4
             };
-            EventManager.Event(new LayoutEvent(moduleType, "add-bus-connectable-to-module").SetOption("GenericBusType", "DiMAXBus"));
+            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DiMAXBus"));
             moduleType.ConnectionPointsPerAddress = 2;
             moduleType.NumberOfAddresses = 4;
             moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryContact;

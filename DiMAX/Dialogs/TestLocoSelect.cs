@@ -20,7 +20,7 @@ namespace DiMAX.Dialogs {
                 return;
             }
 
-            EventManager.AsyncEvent(new LayoutEvent(this, "test-loco-select").SetOption("Address", address).SetOption("Select", checkBoxSelect.Checked).SetOption("Active", checkBoxActive.Checked).SetOption("Unconditional", checkBoxUnconditional.Checked).SetCommandStation(commandStation));
+            EventManager.AsyncEvent(new LayoutEvent("test-loco-select", this).SetOption("Address", address).SetOption("Select", checkBoxSelect.Checked).SetOption("Active", checkBoxActive.Checked).SetOption("Unconditional", checkBoxUnconditional.Checked).SetCommandStation(commandStation));
         }
 
 

@@ -349,7 +349,7 @@ namespace LayoutManager {
                 statusBarPanelMode.Text = "Design";
 
                 tripsMonitorHeightInOperationMode = tripsMonitor.Height;
-                EventManager.Event(new LayoutEvent(this, "hide-trips-monitor").SetFrameWindow(this));
+                EventManager.Event(new LayoutEvent("hide-trips-monitor", this).SetFrameWindow(this));
                 splitterTripsMonitor.Visible = false;
 
                 ChangeAllViewsPhases(LayoutPhase.All);      // In editing show all phases
@@ -514,7 +514,7 @@ namespace LayoutManager {
 
         [LayoutEvent("tools-menu-open-request")]
         private void OnToolsMenuOpenRequest(LayoutEvent e) {
-            ILayoutEmulatorServices layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent(this, "get-layout-emulation-services"));
+            ILayoutEmulatorServices layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
 
             if (layoutEmulationServices != null) {
                 Menu toolsMenu = (Menu)e.Info;
@@ -532,7 +532,7 @@ namespace LayoutManager {
         }
 
         private void onResetLayoutEmulation(object sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent(this, "reset-layout-emulation"));
+            EventManager.Event(new LayoutEvent("reset-layout-emulation", this));
         }
 
         [LayoutEvent("enter-design-mode")]
@@ -624,7 +624,7 @@ namespace LayoutManager {
             if (e.IsThisFrameWindow(this)) {
                 ControlConnectionPointReference connectionPointRef = (ControlConnectionPointReference)e.Sender;
 
-                EventManager.Event(new LayoutEvent(this, "show-layout-control").SetFrameWindow(e));
+                EventManager.Event(new LayoutEvent("show-layout-control", this).SetFrameWindow(e));
                 layoutControlViewer.EnsureVisible(connectionPointRef, true);
             }
         }
@@ -634,7 +634,7 @@ namespace LayoutManager {
             if (e.IsThisFrameWindow(this)) {
                 ControlModuleReference moduleRef = (ControlModuleReference)e.Sender;
 
-                EventManager.Event(new LayoutEvent(this, "show-layout-control"));
+                EventManager.Event(new LayoutEvent("show-layout-control", this));
                 layoutControlViewer.EnsureVisible(moduleRef, true);
             }
         }
@@ -688,7 +688,7 @@ namespace LayoutManager {
                     bestViewPage.View.EnsureVisible(component.Location);
 
                     if (markComponent)
-                        EventManager.Event(new LayoutEvent(component, "show-marker").SetFrameWindow(e));
+                        EventManager.Event(new LayoutEvent("show-marker", component).SetFrameWindow(e));
                 }
             }
         }
@@ -772,7 +772,7 @@ namespace LayoutManager {
 
             layoutControlVisible = layoutControlViewer.Width > 10;
             if (layoutControlVisible != previousState)
-                EventManager.Event(new LayoutEvent(this, layoutControlVisible ? "layout-control-shown" : "layout-control-hidden").SetFrameWindow(this));
+                EventManager.Event(new LayoutEvent(layoutControlVisible ? "layout-control-shown" : "layout-control-hidden", this).SetFrameWindow(this));
         }
 
         void UpdateTripsMonitorVisible() {
@@ -780,7 +780,7 @@ namespace LayoutManager {
 
             tripsMonitorVisible = tripsMonitor.Height > 10;
             if (tripsMonitorVisible != previousState)
-                EventManager.Event(new LayoutEvent(this, tripsMonitorVisible ? "trips-monitor-shown" : "trips-monitor-hidden").SetFrameWindow(this));
+                EventManager.Event(new LayoutEvent(tripsMonitorVisible ? "trips-monitor-shown" : "trips-monitor-hidden", this).SetFrameWindow(this));
         }
 
         void UpdateMessageVisible() {
@@ -788,7 +788,7 @@ namespace LayoutManager {
 
             messageViewVisible = messageViewer.Height > 10;
             if (messageViewVisible != previousState)
-                EventManager.Event(new LayoutEvent(this, messageViewVisible ? "messages-shown" : "messages-hidden").SetFrameWindow(this));
+                EventManager.Event(new LayoutEvent(messageViewVisible ? "messages-shown" : "messages-hidden", this).SetFrameWindow(this));
         }
 
         void UpdateLocomotivesVisible() {
@@ -796,7 +796,7 @@ namespace LayoutManager {
 
             locomotiveViewVisible = locomotivesViewer.Width > 10;
             if (locomotiveViewVisible != previousState)
-                EventManager.Event(new LayoutEvent(this, locomotiveViewVisible ? "locomotives-shown" : "locomotives-hidden").SetFrameWindow(this));
+                EventManager.Event(new LayoutEvent(locomotiveViewVisible ? "locomotives-shown" : "locomotives-hidden", this).SetFrameWindow(this));
         }
 
         [LayoutEvent("show-messages")]
@@ -1038,7 +1038,7 @@ namespace LayoutManager {
                         PopupWindowContainerSection container = new PopupWindowContainerSection(hitTestResult.View);
 
                         foreach (ModelComponent component in spot)
-                            EventManager.Event(new LayoutEvent(component, "add-" + (LayoutController.IsOperationMode ? "operation" : "editing") + "-details-window-sections", null, container).SetFrameWindow(this));
+                            EventManager.Event(new LayoutEvent("add-" + (LayoutController.IsOperationMode ? "operation" : "editing") + "-details-window-sections", component, container, null).SetFrameWindow(this));
 
                         if (container.Count > 0) {
                             detailsPopupWindow = new DetailsPopupWindow(hitTestResult, container);
@@ -1054,7 +1054,7 @@ namespace LayoutManager {
         }
 
         private void menuItemSave_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(this, "save-layout"));
+            EventManager.Event(new LayoutEvent("save-layout", this));
         }
 
         private void menuSaveAs_Click(object sender, System.EventArgs e) {
@@ -1239,7 +1239,7 @@ namespace LayoutManager {
         private void menuItemTools_Popup(object sender, System.EventArgs e) {
             menuItemTools.MenuItems.Clear();
 
-            EventManager.Event(new LayoutEvent(this, "tools-menu-open-request", null, menuItemTools).SetFrameWindow(this));
+            EventManager.Event(new LayoutEvent("tools-menu-open-request", this, menuItemTools, null).SetFrameWindow(this));
 
             if (menuItemTools.MenuItems.Count == 0) {
                 MenuItem noTools = new MenuItem("No tools") {
@@ -1399,13 +1399,13 @@ namespace LayoutManager {
         }
 
         private void LayoutController_Deactivate(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(this, "frame-window-deactivated").SetFrameWindow(this));
+            EventManager.Event(new LayoutEvent("frame-window-deactivated", this).SetFrameWindow(this));
             timerFreeResources.Enabled = true;
         }
 
         private void LayoutController_Resize(object sender, System.EventArgs e) {
             if (this.WindowState == FormWindowState.Minimized) {
-                EventManager.Event(new LayoutEvent(this, "frame-window-minimized").SetFrameWindow(this));
+                EventManager.Event(new LayoutEvent("frame-window-minimized", this).SetFrameWindow(this));
                 timerFreeResources.Enabled = true;
             }
             else
@@ -1430,30 +1430,30 @@ namespace LayoutManager {
 
         private void menuItemShowMessages_Click(object sender, System.EventArgs e) {
             if (messageViewVisible)
-                EventManager.Event(new LayoutEvent(this, "hide-messages").SetFrameWindow(this));
+                EventManager.Event(new LayoutEvent("hide-messages", this).SetFrameWindow(this));
             else
-                EventManager.Event(new LayoutEvent(this, "show-messages").SetFrameWindow(this));
+                EventManager.Event(new LayoutEvent("show-messages", this).SetFrameWindow(this));
         }
 
         private void menuItemShowTripsMonitor_Click(object sender, System.EventArgs e) {
             if (tripsMonitorVisible)
-                EventManager.Event(new LayoutEvent(this, "hide-trips-monitor").SetFrameWindow(this));
+                EventManager.Event(new LayoutEvent("hide-trips-monitor", this).SetFrameWindow(this));
             else
-                EventManager.Event(new LayoutEvent(this, "show-trips-monitor").SetFrameWindow(this));
+                EventManager.Event(new LayoutEvent("show-trips-monitor", this).SetFrameWindow(this));
         }
 
         private void menuItemShowLocomotives_Click(object sender, System.EventArgs e) {
             if (locomotiveViewVisible)
-                EventManager.Event(new LayoutEvent(this, "hide-locomotives").SetFrameWindow(this));
+                EventManager.Event(new LayoutEvent("hide-locomotives", this).SetFrameWindow(this));
             else
-                EventManager.Event(new LayoutEvent(this, "show-locomotives").SetFrameWindow(this));
+                EventManager.Event(new LayoutEvent("show-locomotives", this).SetFrameWindow(this));
         }
 
         private void menuItemShowLayoutControl_Click(object sender, System.EventArgs e) {
             if (layoutControlVisible)
-                EventManager.Event(new LayoutEvent(this, "hide-layout-control").SetFrameWindow(this));
+                EventManager.Event(new LayoutEvent("hide-layout-control", this).SetFrameWindow(this));
             else
-                EventManager.Event(new LayoutEvent(this, "show-layout-control").SetFrameWindow(this));
+                EventManager.Event(new LayoutEvent("show-layout-control", this).SetFrameWindow(this));
         }
 
         private void menuItemOperational_Click(object sender, System.EventArgs e) {
@@ -1484,7 +1484,7 @@ namespace LayoutManager {
             // 30 seconds (or so) were passed while the application was minimized or deactivated
             // recoverable resources can be disposed.
             Debug.WriteLine("--- LayoutManager application not active - free resources ---");
-            EventManager.Event(new LayoutEvent(this, "free-resources").SetFrameWindow(this));
+            EventManager.Event(new LayoutEvent("free-resources", this).SetFrameWindow(this));
             timerFreeResources.Enabled = false;
         }
 
@@ -1514,7 +1514,7 @@ namespace LayoutManager {
         }
 
         private void menuItemPolicies_Click(object sender, System.EventArgs e) {
-            Form d = (Form)EventManager.Event(new LayoutEvent(this, "query-policies-definition-dialog"));
+            Form d = (Form)EventManager.Event(new LayoutEvent("query-policies-definition-dialog", this));
 
             if (d != null)
                 d.Activate();
@@ -1567,7 +1567,7 @@ namespace LayoutManager {
                     else
                         manualDispatchRegion.Active = true;
 
-                    EventManager.Event(new LayoutEvent(manualDispatchRegion, "manual-dispatch-region-status-changed", null, manualDispatchRegion.Active));
+                    EventManager.Event(new LayoutEvent("manual-dispatch-region-status-changed", manualDispatchRegion, manualDispatchRegion.Active, null));
                 }
                 catch (LayoutException ex) {
                     MessageBox.Show("Could change manual dispatch mode because: " + ex.Message, "Unable to change Manual Dispatch Mode",
@@ -1606,12 +1606,12 @@ namespace LayoutManager {
         }
 
         private void menuItemSuspendLocomotives_Click(object sender, System.EventArgs e) {
-            bool allSuspended = (bool)EventManager.Event(new LayoutEvent(this, "are-all-locomotives-suspended"));
+            bool allSuspended = (bool)EventManager.Event(new LayoutEvent("are-all-locomotives-suspended", this));
 
             if (allSuspended)
-                EventManager.Event(new LayoutEvent(this, "resume-all-locomotives"));
+                EventManager.Event(new LayoutEvent("resume-all-locomotives", this));
             else
-                EventManager.Event(new LayoutEvent(this, "suspend-all-locomotives"));
+                EventManager.Event(new LayoutEvent("suspend-all-locomotives", this));
         }
 
         private List<Tuple<string, EventHandler>> GetPhasesEntries(Action<LayoutPhase> doThis) {
@@ -1631,7 +1631,7 @@ namespace LayoutManager {
         private EventHandler verifyLayoutEventHandler;
 
         private void menuLayout_Popup(object sender, System.EventArgs e) {
-            bool allSuspended = (bool)EventManager.Event(new LayoutEvent(this, "are-all-locomotives-suspended"));
+            bool allSuspended = (bool)EventManager.Event(new LayoutEvent("are-all-locomotives-suspended", this));
 
             if (allSuspended)
                 menuItemSuspendLocomotives.Text = "&Resume train operation";
@@ -1676,8 +1676,8 @@ namespace LayoutManager {
         }
 
         private void verify(LayoutPhase phases) {
-            EventManager.Event(new LayoutEvent(this, "clear-messages"));
-            if ((bool)EventManager.Event(new LayoutEvent(LayoutModel.Instance, "check-layout", null, true).SetPhases(phases)))
+            EventManager.Event(new LayoutEvent("clear-messages", this));
+            if ((bool)EventManager.Event(new LayoutEvent("check-layout", LayoutModel.Instance, true, null).SetPhases(phases)))
                 MessageBox.Show(this, "Layout checked, all seems to be OK", "Layout Check Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -1686,13 +1686,13 @@ namespace LayoutManager {
         }
 
         private void menuItemConnectLayout_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(this, "connect-layout-to-control-request"));
+            EventManager.Event(new LayoutEvent("connect-layout-to-control-request", this));
         }
 
         private void menuItemLearnLayout_Click(object sender, EventArgs e) {
             try {
                 if (LayoutController.Instance.BeginDesignTimeActivation()) {
-                    Form learnLayoutForm = (Form)EventManager.Event(new LayoutEvent(this, "activate-learn-layout"));
+                    Form learnLayoutForm = (Form)EventManager.Event(new LayoutEvent("activate-learn-layout", this));
 
                     if (learnLayoutForm == null) {
                         Dialogs.LearnLayout learnLayout = new LayoutManager.Dialogs.LearnLayout(Id) {
@@ -1806,11 +1806,11 @@ namespace LayoutManager {
             else
                 LayoutModuleBase.Message(selection, "Components which are not fully wired to control modules");
 
-            EventManager.Event(new LayoutEvent(this, "show-messages"));
+            EventManager.Event(new LayoutEvent("show-messages", this));
         }
 
         private void menuItemSelectUnlinkedSignals_Click(object sender, EventArgs e) {
-            Dictionary<Guid, LayoutBlockEdgeBase> map = (Dictionary<Guid, LayoutBlockEdgeBase>)EventManager.Event(new LayoutEvent(this, "get-linked-signal-map"));
+            Dictionary<Guid, LayoutBlockEdgeBase> map = (Dictionary<Guid, LayoutBlockEdgeBase>)EventManager.Event(new LayoutEvent("get-linked-signal-map", this));
             LayoutSelection selection = new LayoutSelection();
 
             foreach (LayoutSignalComponent signal in LayoutModel.Components<LayoutSignalComponent>(LayoutPhase.All))
@@ -1822,7 +1822,7 @@ namespace LayoutManager {
             else
                 LayoutModuleBase.Message(selection, "Singals which are not linked. You should link block edges to signals");
 
-            EventManager.Event(new LayoutEvent(this, "show-messages"));
+            EventManager.Event(new LayoutEvent("show-messages", this));
         }
 
         private void menuItemSelectUnlinkedTrackLinks_Click(object sender, EventArgs e) {
@@ -1837,7 +1837,7 @@ namespace LayoutManager {
             else
                 LayoutModuleBase.Message(selection, "Track links which are not yet linked");
 
-            EventManager.Event(new LayoutEvent(this, "show-messages"));
+            EventManager.Event(new LayoutEvent("show-messages", this));
         }
 
         private void menuItemNewComponentDesignPhase_Click(object sender, EventArgs e) {

@@ -111,7 +111,7 @@ namespace MarklinDigital {
                     if (train.MotionDirection == LocomotiveOrientation.Backward) {
                         foreach (TrainLocomotiveInfo trainLoco in train.Locomotives)
                             if (trainLoco.Orientation == LocomotiveOrientation.Forward)
-                                EventManager.Event(new LayoutEvent(trainLoco.Locomotive, "locomotive-reverse-motion-direction-command"));
+                                EventManager.Event(new LayoutEvent("locomotive-reverse-motion-direction-command", trainLoco.Locomotive));
                     }
                 }
             }
@@ -148,7 +148,7 @@ namespace MarklinDigital {
             if (train.MotionDirection == LocomotiveOrientation.Backward) {
                 foreach (TrainLocomotiveInfo trainLoco in train.Locomotives)
                     if (trainLoco.Orientation == LocomotiveOrientation.Forward)
-                        EventManager.Event(new LayoutEvent(trainLoco.Locomotive, "locomotive-reverse-motion-direction-command"));
+                        EventManager.Event(new LayoutEvent("locomotive-reverse-motion-direction-command", trainLoco.Locomotive));
             }
         }
 
@@ -161,7 +161,7 @@ namespace MarklinDigital {
             var e = (LayoutEvent<TrainStateInfo, Menu>)e0;
             TrainStateInfo train = e.Sender;
             Menu menu = e.Info;
-            bool trainInActiveTrip = (bool)EventManager.Event(new LayoutEvent(train, "is-train-in-active-trip"));
+            bool trainInActiveTrip = (bool)EventManager.Event(new LayoutEvent("is-train-in-active-trip", train));
 
             if (train.CommandStation != null && train.CommandStation.Id == Id) {
                 if (train.Locomotives.Count == 1) {
@@ -226,7 +226,7 @@ namespace MarklinDigital {
             };
 
             if (OperationMode)
-                EventManager.Event(new LayoutEvent(connectionPointRef, "control-connection-point-state-changed-notification", null, state));
+                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state, null));
 
             return Task.WhenAll(tasks);
         }
@@ -247,7 +247,7 @@ namespace MarklinDigital {
             commandStationManager.AddCommand(queueLayoutSwitchingCommands, new MarklinEndSwitchingProcedure(CommunicationStream));
 
             if (OperationMode)
-                EventManager.Event(new LayoutEvent(connectionPointRef, "control-connection-point-state-changed-notification", null, state == LayoutSignalState.Green ? 1 : 0));
+                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state == LayoutSignalState.Green ? 1 : 0, null));
         }
 
         [LayoutEvent("locomotive-reverse-motion-direction-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
@@ -279,7 +279,7 @@ namespace MarklinDigital {
             LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
             TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
 
-            EventManager.Event(new LayoutEvent(loco, "locomotive-motion-command", null, train.SpeedInSteps).SetCommandStation(train));
+            EventManager.Event(new LayoutEvent("locomotive-motion-command", loco, train.SpeedInSteps, null).SetCommandStation(train));
         }
 
         private byte getFunctionMask(LocomotiveInfo loco) {
@@ -337,7 +337,7 @@ namespace MarklinDigital {
             }
 
             protected override void OnClick(EventArgs e) {
-                EventManager.Event(new LayoutEvent(loco, "locomotive-reverse-motion-direction-command"));
+                EventManager.Event(new LayoutEvent("locomotive-reverse-motion-direction-command", loco));
             }
         }
 
@@ -357,8 +357,8 @@ namespace MarklinDigital {
                 bool managed = train.Managed;
 
                 if (!managed) {
-                    LayoutComponentConnectionPoint front = (LayoutComponentConnectionPoint)EventManager.Event(new LayoutEvent(train.LocomotiveBlock.BlockDefinintion,
-                        "get-locomotive-front", null, train.Element));
+                    LayoutComponentConnectionPoint front = (LayoutComponentConnectionPoint)EventManager.Event(new LayoutEvent("get-locomotive-front",
+                        train.LocomotiveBlock.BlockDefinintion, train.Element, null));
 
                     train.LocationOfBlock(train.LocomotiveBlock).DisplayFront = front;
                 }
@@ -546,12 +546,12 @@ namespace MarklinDigital {
         private void ProcessFeedback(MarklinFeedbackResult feedbackResult) {
             for (int i = 0; i < 16 && feedbackResult.Contacts[i].ContactNo > 0; i++) {
                 if (commandStation.OperationMode)
-                    invoker.QueueEvent(new LayoutEvent(new ControlConnectionPointReference(commandStation.S88Bus, feedbackResult.Unit, feedbackResult.Contacts[i].ContactNo - 1),
-                        "control-connection-point-state-changed-notification", null, feedbackResult.Contacts[i].IsSet ? 1 : 0));
+                    invoker.QueueEvent(new LayoutEvent("control-connection-point-state-changed-notification",
+                        new ControlConnectionPointReference(commandStation.S88Bus, feedbackResult.Unit, feedbackResult.Contacts[i].ContactNo - 1), feedbackResult.Contacts[i].IsSet ? 1 : 0, null));
                 else
-                    invoker.QueueEvent(new LayoutEvent(this, "design-time-command-station-event", null,
-                        new CommandStationInputEvent(commandStation, commandStation.S88Bus,
-                        feedbackResult.Unit * 16 + feedbackResult.Contacts[i].ContactNo - 1, feedbackResult.Contacts[i].IsSet ? 1 : 0)));
+                    invoker.QueueEvent(new LayoutEvent("design-time-command-station-event", this, new CommandStationInputEvent(commandStation, commandStation.S88Bus,
+                        feedbackResult.Unit * 16 + feedbackResult.Contacts[i].ContactNo - 1, feedbackResult.Contacts[i].IsSet ? 1 : 0),
+                        null));
             }
         }
 

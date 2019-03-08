@@ -111,7 +111,7 @@ namespace DiMAX {
             }
 
             internal void Paint(Graphics g) {
-                Image image = (Image)EventManager.Event(new LayoutEvent(this, "get-image"));
+                Image image = (Image)EventManager.Event(new LayoutEvent("get-image", this));
 
                 g.DrawImage(image, new Rectangle(new Point(1, 1), image.Size));
             }

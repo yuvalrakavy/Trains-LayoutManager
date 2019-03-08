@@ -124,7 +124,7 @@ namespace Intellibox {
             }
 
             internal void Paint(Graphics g) {
-                Image image = (Image)EventManager.Event(new LayoutEvent(this, "get-image"));
+                Image image = (Image)EventManager.Event(new LayoutEvent("get-image", this));
 
                 g.DrawImage(image, new Rectangle(new Point(1, 1), image.Size));
             }
@@ -191,7 +191,7 @@ namespace Intellibox {
         private void intelliboxNotifiyLocomotiveState(LayoutEvent e) {
             IntelliboxComponent component = (IntelliboxComponent)e.Sender;
             ExternalLocomotiveEventInfo info = (ExternalLocomotiveEventInfo)e.Info;
-            var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent(component, "get-on-track-locomotive-address-map"));
+            var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent("get-on-track-locomotive-address-map", component));
             var addressMapEntry = addressMap[info.Unit];
 
             if (addressMapEntry == null)
@@ -215,12 +215,12 @@ namespace Intellibox {
                         speedInSteps = -speedInSteps;
                 }
 
-                EventManager.Event(new LayoutEvent(component, "locomotive-motion-notification",
-                    "<Address Unit='" + info.Unit + "' />", speedInSteps));
+                EventManager.Event(new LayoutEvent("locomotive-motion-notification", component,
+                    speedInSteps, "<Address Unit='" + info.Unit + "' />"));
 
                 if (info.Lights != train.Lights)
-                    EventManager.Event(new LayoutEvent(component, "set-locomotive-lights-notification",
-                        "<Address Unit='" + info.Unit + "' />", info.Lights));
+                    EventManager.Event(new LayoutEvent("set-locomotive-lights-notification", component,
+                        info.Lights, "<Address Unit='" + info.Unit + "' />"));
             }
         }
 

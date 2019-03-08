@@ -65,7 +65,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             IDictionary symbolNameToTypeMap = new HybridDictionary();
 
-            EventManager.Event(new LayoutEvent(this, "add-context-symbols-and-types", null, symbolNameToTypeMap));
+            EventManager.Event(new LayoutEvent("add-context-symbols-and-types", this, symbolNameToTypeMap, null));
 
             foreach (string n in symbolNameToTypeMap.Keys)
                 comboBoxReferencedObject.Items.Add(n);

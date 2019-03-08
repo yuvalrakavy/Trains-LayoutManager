@@ -244,7 +244,7 @@ namespace LayoutManager {
             }
 
             protected override void OnClick(EventArgs e) {
-                EventManager.Event(new LayoutEvent(element, "edit-locomotive-collection-item"));
+                EventManager.Event(new LayoutEvent("edit-locomotive-collection-item", element));
             }
         }
 
@@ -259,7 +259,7 @@ namespace LayoutManager {
             }
 
             protected override void OnClick(EventArgs e) {
-                EventManager.Event(new LayoutEvent(element, "delete-locomotive-collection-item"));
+                EventManager.Event(new LayoutEvent("delete-locomotive-collection-item", element));
             }
         }
 
@@ -449,7 +449,7 @@ namespace LayoutManager {
         }
 
         private void menuItemAddLocomotive_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(this, "add-new-locomotive-to-collection"));
+            EventManager.Event(new LayoutEvent("add-new-locomotive-to-collection", this));
         }
 
         private void buttonOptions_Click(object sender, System.EventArgs e) {
@@ -483,17 +483,17 @@ namespace LayoutManager {
         private void buttonEdit_Click(object sender, System.EventArgs e) {
             XmlElement selectedElement = locomotiveList.SelectedXmlElement;
 
-            EventManager.Event(new LayoutEvent(selectedElement, "edit-locomotive-collection-item"));
+            EventManager.Event(new LayoutEvent("edit-locomotive-collection-item", selectedElement));
         }
 
         private void buttonDelete_Click(object sender, System.EventArgs e) {
             XmlElement selectedElement = locomotiveList.SelectedXmlElement;
 
-            EventManager.Event(new LayoutEvent(selectedElement, "delete-locomotive-collection-item"));
+            EventManager.Event(new LayoutEvent("delete-locomotive-collection-item", selectedElement));
         }
 
         private void menuItemAddTrain_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(this, "add-new-train-to-collection"));
+            EventManager.Event(new LayoutEvent("add-new-train-to-collection", this));
         }
 
         private void locomotiveList_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
@@ -506,9 +506,9 @@ namespace LayoutManager {
                         ContextMenu m = new ContextMenu();
 
                         if (operationMode)
-                            EventManager.Event(new LayoutEvent(clickedItem.Element, "add-locomotive-collection-operation-context-menu-entries", null, m));
+                            EventManager.Event(new LayoutEvent("add-locomotive-collection-operation-context-menu-entries", clickedItem.Element, m, null));
                         else
-                            EventManager.Event(new LayoutEvent(clickedItem.Element, "add-locomotive-collection-editing-context-menu-entries", null, m));
+                            EventManager.Event(new LayoutEvent("add-locomotive-collection-editing-context-menu-entries", clickedItem.Element, m, null));
 
                         if (m.MenuItems.Count > 0) {
                             Rectangle itemRect = locomotiveList.GetItemRectangle(clickedIndex);
@@ -521,7 +521,7 @@ namespace LayoutManager {
         }
 
         private void buttonClose_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(this, "hide-locomotives"));
+            EventManager.Event(new LayoutEvent("hide-locomotives", this));
         }
     }
 }

@@ -731,7 +731,7 @@ namespace LayoutManager.View {
                     showNotLinked = false;
                 else {
                     if (linkedSignalMap == null)
-                        linkedSignalMap = (Dictionary<Guid, LayoutBlockEdgeBase>)EventManager.Event(new LayoutEvent(this, "get-linked-signal-map"));
+                        linkedSignalMap = (Dictionary<Guid, LayoutBlockEdgeBase>)EventManager.Event(new LayoutEvent("get-linked-signal-map", this));
 
                     showNotLinked = !linkedSignalMap.ContainsKey(signalComponent.Id);
                 }
@@ -1035,7 +1035,7 @@ namespace LayoutManager.View {
 
             try {
                 if (!imageProvider.ImageError)
-                    image = (Image)EventManager.Event(new LayoutEvent(e.Component, "get-image-from-cache", imageProvider.ImageCacheEventXml, imageProvider.ImageFile));
+                    image = (Image)EventManager.Event(new LayoutEvent("get-image-from-cache", e.Component, imageProvider.ImageFile, imageProvider.ImageCacheEventXml));
             }
             catch (LayoutException lex) {
                 lex.Report();

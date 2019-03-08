@@ -69,7 +69,7 @@ namespace LayoutManager.Logic {
 
             if (traceLockManager.TraceVerbose) {
                 Trace.WriteLine("After processing lock request, locks map:");
-                EventManager.Event(new LayoutEvent(this, "dump-locks"));
+                EventManager.Event(new LayoutEvent("dump-locks", this));
             }
 
         }
@@ -127,7 +127,7 @@ namespace LayoutManager.Logic {
                     alreadyManualDispatch.Add(block);
 
                 foreach (TrainLocationInfo trainLocation in block.Trains) {
-                    if ((bool)EventManager.Event(new LayoutEvent(trainLocation.Train, "is-train-in-active-trip")) == true) {
+                    if ((bool)EventManager.Event(new LayoutEvent("is-train-in-active-trip", trainLocation.Train)) == true) {
                         if (!reportedTrains.Contains(trainLocation.Train.Id)) {
                             activeTrains.Add(trainLocation.Train);
                             reportedTrains.Add(trainLocation.Train.Id, trainLocation.Train);
@@ -200,7 +200,7 @@ namespace LayoutManager.Logic {
                 }
             }
 
-            EventManager.Event(new LayoutEvent(manualDispatchRegion.Id, "free-owned-layout-locks", null, false));
+            EventManager.Event(new LayoutEvent("free-owned-layout-locks", manualDispatchRegion.Id, false, null));
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace LayoutManager.Logic {
 
             if (traceLockManager.TraceVerbose) {
                 Trace.WriteLine("After freeing resource, locks map:");
-                EventManager.Event(new LayoutEvent(this, "dump-locks"));
+                EventManager.Event(new LayoutEvent("dump-locks", this));
             }
         }
 
@@ -265,7 +265,7 @@ namespace LayoutManager.Logic {
                 }
             }
 
-            EventManager.Event(new LayoutEvent(resourceIDsToFree.ToArray(), "free-layout-lock"));
+            EventManager.Event(new LayoutEvent("free-layout-lock", resourceIDsToFree.ToArray()));
         }
 
         [LayoutEvent("cancel-layout-lock")]
@@ -530,7 +530,7 @@ namespace LayoutManager.Logic {
                 lockRequest.OnLockGranted();
             }
 
-            EventManager.Event(new LayoutEvent(lockRequest, "layout-lock-granted"));
+            EventManager.Event(new LayoutEvent("layout-lock-granted", lockRequest));
         }
 
         private LockedResourceEntry setResourceLock(Guid id, LayoutLockRequest lockRequest) {

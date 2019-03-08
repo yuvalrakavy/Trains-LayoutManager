@@ -129,7 +129,7 @@ namespace LayoutManager.Logic {
 
                         // Got to this point, each member has a unit address, and no invalid duplicates
                         // within the locomotive set
-                        var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent(power, "get-on-track-locomotive-address-map"));
+                        var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent("get-on-track-locomotive-address-map", power));
 
                         foreach (TrainLocomotiveInfo trainLocomotive in locomotives) {
                             OnTrackLocomotiveAddressMapEntry addressMapEntry = addressMap[trainLocomotive.Locomotive.AddressProvider.Unit];
@@ -158,7 +158,7 @@ namespace LayoutManager.Logic {
                             }
 
                             int locoAddress = e.HasOption("LocoAddress") ? e.GetIntOption("LocoAddress") : loco.AddressProvider.Unit;
-                            var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent(power, "get-on-track-locomotive-address-map"));
+                            var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent("get-on-track-locomotive-address-map", power));
                             var addressMapEntry = addressMap[locoAddress];
 
                             // Check that the address is not already used.
@@ -388,7 +388,7 @@ namespace LayoutManager.Logic {
                 if (!addressMapCache.TryGetValue(commandStation, out addressMap)) {
                     addressMap = new OnTrackLocomotiveAddressMap();
 
-                    EventManager.Event(new LayoutEvent(commandStation, "add-on-powered-tracks-locomotives-to-address-map", null, addressMap));
+                    EventManager.Event(new LayoutEvent("add-on-powered-tracks-locomotives-to-address-map", commandStation, addressMap, null));
                     addressMapCache.Add(commandStation, addressMap);
                 }
             }
@@ -469,10 +469,10 @@ namespace LayoutManager.Logic {
         }
 
         private static void BuildAddressMap(IModelComponentIsCommandStation commandStation, LocomotiveAddressMap addressMap) {
-            EventManager.Event(new LayoutEvent(commandStation, "add-on-powered-tracks-locomotives-to-address-map", null, addressMap));
-            EventManager.Event(new LayoutEvent(commandStation, "add-command-station-loco-bus-to-address-map", null, addressMap));
-            EventManager.Event(new LayoutEvent(commandStation, "add-on-non-powered-tracks-locomotives-to-adddress-map", null, addressMap));
-            EventManager.Event(new LayoutEvent(commandStation, "add-on-shelf-locomotives-to-address-map", null, addressMap));
+            EventManager.Event(new LayoutEvent("add-on-powered-tracks-locomotives-to-address-map", commandStation, addressMap, null));
+            EventManager.Event(new LayoutEvent("add-command-station-loco-bus-to-address-map", commandStation, addressMap, null));
+            EventManager.Event(new LayoutEvent("add-on-non-powered-tracks-locomotives-to-adddress-map", commandStation, addressMap, null));
+            EventManager.Event(new LayoutEvent("add-on-shelf-locomotives-to-address-map", commandStation, addressMap, null));
         }
 
         #region
@@ -504,12 +504,12 @@ namespace LayoutManager.Logic {
                 else if (element.Name == "Locomotive") {
                     LocomotiveInfo loco = new LocomotiveInfo(element);
 
-                    trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent(loco, "extract-train-state"));
+                    trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent("extract-train-state", loco));
                 }
                 else if (element.Name == "Train") {
                     TrainCommonInfo train = new TrainCommonInfo(element);
 
-                    trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent(train, "extract-train-state"));
+                    trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent("extract-train-state", train));
                 }
                 else
                     throw new ArgumentException("Invalid XML element (not LocomotiveState, Locomotive or Train)");
@@ -533,7 +533,7 @@ namespace LayoutManager.Logic {
         [LayoutAsyncEvent("remove-from-track-request")]
         private async Task removeFromTrackRequest(LayoutEvent e0) {
             var e = (LayoutEvent<object, string>)e0;
-            TrainStateInfo trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent(e.Sender, "extract-train-state"));
+            TrainStateInfo trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent("extract-train-state", e.Sender));
             var ballonText = e.Info;
 
             if (ballonText != null) {
@@ -603,7 +603,7 @@ namespace LayoutManager.Logic {
                 front = LayoutComponentConnectionPoint.Parse(e.GetOption(elementName: "Train", optionName: "Front"));
             else {
                 if (collectionElement.Name == "Train") {
-                    object frontObject = EventManager.Event(new LayoutEvent(blockDefinition, "get-locomotive-front", null, collectionElement));
+                    object frontObject = EventManager.Event(new LayoutEvent("get-locomotive-front", blockDefinition, collectionElement, null));
 
                     if (frontObject == null)
                         throw new OperationCanceledException("get-locomotive-front");
@@ -616,7 +616,7 @@ namespace LayoutManager.Logic {
                     trainName = trainInCollection.Name;
                 }
                 else {
-                    Object trainFronAndLengthObject = EventManager.Event(new LayoutEvent(blockDefinition, "get-train-front-and-length", null, collectionElement));
+                    Object trainFronAndLengthObject = EventManager.Event(new LayoutEvent("get-train-front-and-length", blockDefinition, collectionElement, null));
 
                     if (trainFronAndLengthObject == null)
                         throw new OperationCanceledException("get-train-front-and-length");         // User canceled.
@@ -717,7 +717,7 @@ namespace LayoutManager.Logic {
                 lockRequest.Blocks.Add(blockDefinition.Block);
 
 
-                Task lockTask = EventManager.AsyncEvent(new LayoutEvent(lockRequest, "request-layout-lock-async").CopyOperationContext(e));
+                Task lockTask = EventManager.AsyncEvent(new LayoutEvent("request-layout-lock-async", lockRequest).CopyOperationContext(e));
 
                 if (!lockTask.IsCompleted)
                     LayoutBlockBallon.Show(blockDefinition,
@@ -758,7 +758,7 @@ namespace LayoutManager.Logic {
             CanPlaceTrainResult result;
             TrainStateInfo train;
 
-            result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(placedElement, "can-locomotive-be-placed", null, blockDefinition));
+            result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed", placedElement, blockDefinition, null));
 
             if (result.ResolveMethod == CanPlaceTrainResolveMethod.ReprogramAddress) {
                 var programmingState = new PlacedLocomotiveProgrammingState(placedElement, result.Locomotive, blockDefinition);
@@ -766,13 +766,13 @@ namespace LayoutManager.Logic {
                 train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent<PlacedLocomotiveProgrammingState>("placed-locomotive-address-programming", programmingState).CopyOptions(e, "Train").CopyOperationContext(e));
 
                 if (train == null)
-                    result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(placedElement, "can-locomotive-be-placed", null, blockDefinition));
+                    result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed", placedElement, blockDefinition, null));
             }
 
             if (result.ResolveMethod == CanPlaceTrainResolveMethod.Resolved) {
-                train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent(blockDefinition, "place-train-request", null, placedElement).CopyOptions(e, "Train").CopyOptions(e).CopyOperationContext(e));
+                train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent("place-train-request", blockDefinition, placedElement, null).CopyOptions(e, "Train").CopyOptions(e).CopyOperationContext(e));
 
-                EventManager.Event(new LayoutEvent(train, "set-train-initial-motion-direction-request"));
+                EventManager.Event(new LayoutEvent("set-train-initial-motion-direction-request", train));
             }
             else
                 throw new LayoutException("Train/Locomotive cannot be placed");
@@ -795,7 +795,7 @@ namespace LayoutManager.Logic {
             if (e.HasOption("Train", "Front"))
                 front = LayoutComponentConnectionPoint.Parse(e.GetOption("Front", "Train"));
             else {
-                Object frontObject = EventManager.Event(new LayoutEvent(blockDefinition, "get-locomotive-front", null, train.Element));
+                Object frontObject = EventManager.Event(new LayoutEvent("get-locomotive-front", blockDefinition, train.Element, null));
 
                 if (frontObject == null)
                     return;         // User canceled.
@@ -814,19 +814,19 @@ namespace LayoutManager.Logic {
                 train.LeaveBlock(oldTrainLocation.Block, false);
             }
 
-            EventManager.Event(new LayoutEvent(blocksToUnlock, "free-layout-lock"));
+            EventManager.Event(new LayoutEvent("free-layout-lock", blocksToUnlock));
 
             // Get lock on the block that the train is about to be placed
             LayoutLockRequest lockRequest = new LayoutLockRequest(train.Id);
 
             lockRequest.Blocks.Add(blockDefinition.Block);
-            EventManager.Event(new LayoutEvent(lockRequest, "request-layout-lock"));
+            EventManager.Event(new LayoutEvent("request-layout-lock", lockRequest));
 
             // Create the new location for the train
             TrainLocationInfo trainLocation = train.PlaceInBlock(blockDefinition.Block, front);
 
             trainLocation.DisplayFront = front;
-            EventManager.Event(new LayoutEvent(train, "train-relocated", null, blockDefinition.Block));
+            EventManager.Event(new LayoutEvent("train-relocated", train, blockDefinition.Block, null));
 
             // Figure out a block edge which the train could have crossed.
             LayoutBlockEdgeBase[] origins = blockDefinition.GetBlockEdges(blockDefinition.GetOtherConnectionPointIndex(front));
@@ -859,7 +859,7 @@ namespace LayoutManager.Logic {
             var programmingState = (PlacedLocomotiveProgrammingState)e.Sender;
 
             // Figure out the new address to assign to the locomotive
-            object addressObject = EventManager.Event(new LayoutEvent(programmingState.PlacementLocation, "allocate-locomotive-address", null, programmingState.Locomotive));
+            object addressObject = EventManager.Event(new LayoutEvent("allocate-locomotive-address", programmingState.PlacementLocation, programmingState.Locomotive, null));
 
             if (addressObject is Int32) {
                 int address = (int)addressObject;
@@ -870,7 +870,7 @@ namespace LayoutManager.Logic {
 
                 changeAddressAction.Address = address;
                 changeAddressAction.SpeedSteps = programmingState.Locomotive.SpeedSteps;
-                var train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent(programmingState, "program-locomotive").CopyOptions(e, "Train").CopyOperationContext(e));
+                var train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent("program-locomotive", programmingState).CopyOptions(e, "Train").CopyOperationContext(e));
 
                 return train;
             }
@@ -907,7 +907,7 @@ namespace LayoutManager.Logic {
             // Lock the blocks that get power from the inlet that the programming location gets its power from
             var lockRequest = GetProgrammingTracksLock(train.Id, programmingLocation, cancellationToken);
 
-            var lockTask = EventManager.AsyncEvent(new LayoutEvent(lockRequest, "request-layout-lock-async"));
+            var lockTask = EventManager.AsyncEvent(new LayoutEvent("request-layout-lock-async", lockRequest));
 
             if (!lockTask.IsCompleted) {
                 var waitLockBallon = new LayoutBlockBallon() { Text = ballonText, CancellationToken = cancellationToken, FillColor = System.Drawing.Color.Red, TextColor = System.Drawing.Color.Yellow };
@@ -955,7 +955,7 @@ namespace LayoutManager.Logic {
                 if (canUseForProgrammingResult == CanUseForProgrammingResult.Yes)
                     programmingState.ProgrammingLocation = programmingState.PlacementLocation;
                 else
-                    programmingState.ProgrammingLocation = (LayoutBlockDefinitionComponent)EventManager.Event(new LayoutEvent(this, "get-programming-location"));   // Ask the user where should the programming take place
+                    programmingState.ProgrammingLocation = (LayoutBlockDefinitionComponent)EventManager.Event(new LayoutEvent("get-programming-location", this));   // Ask the user where should the programming take place
 
                 if (programmingState.ProgrammingLocation == null)
                     throw new OperationCanceledException("program-locomotive");
@@ -1021,7 +1021,7 @@ namespace LayoutManager.Logic {
 
                     Trace.WriteLine("Free programming locked");
 
-                    EventManager.Event(new LayoutEvent(GetProgrammingTracksLock(Guid.Empty, programmingLocation, CancellationToken.None), "free-layout-lock"));
+                    EventManager.Event(new LayoutEvent("free-layout-lock", GetProgrammingTracksLock(Guid.Empty, programmingLocation, CancellationToken.None)));
 
                     if (programmingState.PlacementLocation == null || programmingLocation.Id != programmingState.PlacementLocation.Id)
                         e.GetOperationContext().RemoveParticipant(programmingLocation);
@@ -1055,7 +1055,7 @@ namespace LayoutManager.Logic {
 
                 lockRequest.Blocks.Add(newBlock);
 
-                bool granted = (bool)EventManager.Event(new LayoutEvent(lockRequest, "request-layout-lock"));
+                bool granted = (bool)EventManager.Event(new LayoutEvent("request-layout-lock", lockRequest));
 
                 Debug.Assert(granted);
 
@@ -1132,12 +1132,12 @@ namespace LayoutManager.Logic {
         [LayoutEventDef("set-train-speed-request", SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
         [LayoutEvent("set-train-speed-request")]
         private void setLocomotiveSpeedRequest(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)EventManager.Event(new LayoutEvent(e.Sender, "extract-train-state"));
+            TrainStateInfo train = (TrainStateInfo)EventManager.Event(new LayoutEvent("extract-train-state", e.Sender));
             int speed = (int)e.Info;
 
             foreach (TrainLocomotiveInfo trainLoco in train.Locomotives)
-                EventManager.Event(new LayoutEvent(trainLoco.Locomotive, "locomotive-motion-command", null,
-                    (trainLoco.Orientation == LocomotiveOrientation.Forward) ? speed : -speed).SetCommandStation(train));
+                EventManager.Event(new LayoutEvent("locomotive-motion-command", trainLoco.Locomotive, (trainLoco.Orientation == LocomotiveOrientation.Forward) ? speed : -speed,
+                    null).SetCommandStation(train));
 
             train.SetSpeedValue(speed);
         }
@@ -1149,10 +1149,10 @@ namespace LayoutManager.Logic {
         [LayoutEventDef("reverse-train-motion-direction-request", SenderType = typeof(TrainStateInfo))]
         [LayoutEvent("reverse-train-motion-direction-request")]
         private void reverseTrainMotionDirectionRequest(LayoutEvent e) {
-            TrainStateInfo trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent(e.Sender, "extract-train-state"));
+            TrainStateInfo trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent("extract-train-state", e.Sender));
 
             foreach (TrainLocomotiveInfo trainLoco in trainState.Locomotives)
-                EventManager.Event(new LayoutEvent(trainLoco.Locomotive, "locomotive-reverse-motion-direction-command"));
+                EventManager.Event(new LayoutEvent("locomotive-reverse-motion-direction-command", trainLoco.Locomotive));
         }
 
         /// <summary>
@@ -1160,11 +1160,11 @@ namespace LayoutManager.Logic {
         /// </summary>
         [LayoutEvent("set-train-initial-motion-direction-request")]
         private void setTrainInitialDirection(LayoutEvent e) {
-            TrainStateInfo trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent(e.Sender, "extract-train-state"));
+            TrainStateInfo trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent("extract-train-state", e.Sender));
 
             foreach (TrainLocomotiveInfo trainLoco in trainState.Locomotives) {
                 if (trainLoco.Orientation == LocomotiveOrientation.Backward)
-                    EventManager.Event(new LayoutEvent(trainLoco.Locomotive, "locomotive-reverse-motion-direction-command"));
+                    EventManager.Event(new LayoutEvent("locomotive-reverse-motion-direction-command", trainLoco.Locomotive));
             }
 
             trainState.MotionDirection = LocomotiveOrientation.Forward;
@@ -1185,7 +1185,7 @@ namespace LayoutManager.Logic {
             int speed = (int)e.Info;
             IModelComponentIsCommandStation commandStation = (IModelComponentIsCommandStation)e.Sender;
 
-            var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent(commandStation, "get-on-track-locomotive-address-map"));
+            var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent("get-on-track-locomotive-address-map", commandStation));
             var addressMapEntry = addressMap[unit];
 
             if (addressMapEntry == null)
@@ -1225,7 +1225,7 @@ namespace LayoutManager.Logic {
                     trainState.TrainStoppedOnBlockEdgeCrossing = false;
 
                     if (trainState.LastCrossedBlockEdge != null) {
-                        EventManager.Event(new LayoutEvent(trainState.LastCrossedBlockEdge, "anonymous-track-contact-triggerd"));
+                        EventManager.Event(new LayoutEvent("anonymous-track-contact-triggerd", trainState.LastCrossedBlockEdge));
                         Trace.WriteLine("*** Triggered block edge, " + trainState.LastCrossedBlockEdge.FullDescription + " because train " + trainState.Name + " was standing on it and started to go in reverse direction");
                     }
                 }
@@ -1239,7 +1239,7 @@ namespace LayoutManager.Logic {
         [LayoutEventDef("set-train-lights-request", Role = LayoutEventRole.Request, SenderType = typeof(TrainStateInfo), InfoType = typeof(bool))]
         [LayoutEvent("set-train-lights-request", Role = LayoutEventRole.Request, InfoType = typeof(bool), SenderType = typeof(TrainStateInfo))]
         private void setLocomotiveLightsRequest(LayoutEvent e) {
-            TrainStateInfo trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent(e.Sender, "extract-train-state"));
+            TrainStateInfo trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent("extract-train-state", e.Sender));
             bool lights = (bool)e.Info;
 
             if (lights != trainState.Lights) {
@@ -1249,7 +1249,7 @@ namespace LayoutManager.Logic {
                     trainState.SetLightsValue(lights);
 
                     if (loco.HasLights)
-                        EventManager.Event(new LayoutEvent(loco, "set-locomotive-lights-command", null, lights).SetCommandStation(trainState));
+                        EventManager.Event(new LayoutEvent("set-locomotive-lights-command", loco, lights, null).SetCommandStation(trainState));
                 }
             }
         }
@@ -1259,7 +1259,7 @@ namespace LayoutManager.Logic {
             int unit = XmlConvert.ToInt32(e.GetOption("Unit", "Address"));
             IModelComponentIsCommandStation commandStation = (IModelComponentIsCommandStation)e.Sender;
 
-            var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent(commandStation, "get-on-track-locomotive-address-map"));
+            var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent("get-on-track-locomotive-address-map", commandStation));
             var addressMapEntry = addressMap[unit];
 
             if (addressMapEntry == null)
@@ -1280,7 +1280,7 @@ namespace LayoutManager.Logic {
             bool lights = (bool)e.Info;
             IModelComponentIsCommandStation commandStation = (IModelComponentIsCommandStation)e.Sender;
 
-            var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent(commandStation, "get-on-track-locomotive-address-map"));
+            var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent("get-on-track-locomotive-address-map", commandStation));
             var addressMapEntry = addressMap[unit];
 
             if (addressMapEntry == null)
@@ -1297,7 +1297,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("set-locomotive-function-state-request")]
         private void setLocomotiveFunctionStateRequest(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)EventManager.Event(new LayoutEvent(e.Sender, "extract-train-state"));
+            TrainStateInfo train = (TrainStateInfo)EventManager.Event(new LayoutEvent("extract-train-state", e.Sender));
             bool state = (bool)e.Info;
             XmlElement functionElement = e.Element["Function"];
             String functionName = functionElement.GetAttribute("Name");
@@ -1312,7 +1312,7 @@ namespace LayoutManager.Logic {
 
                     if (locomotiveId == Guid.Empty || locomotiveId == loco.Id) {
                         train.SetLocomotiveFunctionStateValue(functionName, locomotiveId, state);
-                        EventManager.Event(new LayoutEvent(loco, "set-locomotive-function-state-command", null, functionName).SetOption("FunctionState", state).SetCommandStation(train));
+                        EventManager.Event(new LayoutEvent("set-locomotive-function-state-command", loco, functionName).SetOption("FunctionState", state).SetCommandStation(train));
 
                         if (locomotiveId != Guid.Empty)
                             break;
@@ -1323,7 +1323,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("trigger-locomotive-function-request")]
         private void triggerLocomotiveFunctionRequest(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)EventManager.Event(new LayoutEvent(e.Sender, "extract-train-state"));
+            TrainStateInfo train = (TrainStateInfo)EventManager.Event(new LayoutEvent("extract-train-state", e.Sender));
             XmlElement functionElement = e.Element["Function"];
             String functionName = functionElement.GetAttribute("Name");
             Guid locomotiveId = Guid.Empty;
@@ -1337,7 +1337,7 @@ namespace LayoutManager.Logic {
                 if (locomotiveId == Guid.Empty || locomotiveId == loco.Id) {
                     bool state = !train.GetFunctionState(functionName, loco.Id);        // Flip state
 
-                    EventManager.Event(new LayoutEvent(loco, "trigger-locomotive-function-command", null, functionName).SetCommandStation(train).SetOption("FunctionState", state));
+                    EventManager.Event(new LayoutEvent("trigger-locomotive-function-command", loco, functionName).SetCommandStation(train).SetOption("FunctionState", state));
                     train.SetLocomotiveFunctionStateValue(functionName, loco.Id, state);
                 }
             }
@@ -1349,7 +1349,7 @@ namespace LayoutManager.Logic {
             bool state = (bool)e.Info;
             IModelComponentIsCommandStation commandStation = (IModelComponentIsCommandStation)e.Sender;
 
-            var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent(commandStation, "get-on-track-locomotive-address-map"));
+            var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent("get-on-track-locomotive-address-map", commandStation));
             var addressMapEntry = addressMap[unit];
 
             if (addressMapEntry == null)
@@ -1532,7 +1532,7 @@ namespace LayoutManager.Logic {
                 LayoutLockRequest lockRequest = new LayoutLockRequest(trainLocation.Train.Id);
 
                 lockRequest.Blocks.Add(trainLocation.Block);
-                EventManager.Event(new LayoutEvent(lockRequest, "request-layout-lock"));
+                EventManager.Event(new LayoutEvent("request-layout-lock", lockRequest));
 
                 trainLocation.Block.AddTrain(trainLocation);
             }
@@ -1554,7 +1554,7 @@ namespace LayoutManager.Logic {
                 LayoutLockRequest lockRequest = new LayoutLockRequest(trainLocation.Train.Id);
 
                 lockRequest.Blocks.Add(trainLocation.Block);
-                EventManager.Event(new LayoutEvent(lockRequest, "request-layout-lock").SetOption("DoNotLockResources", true));
+                EventManager.Event(new LayoutEvent("request-layout-lock", lockRequest).SetOption("DoNotLockResources", true));
             }
 
             return (invalidStateElements.Count == 0);   // Fail if any invaid element was found
@@ -1583,7 +1583,7 @@ namespace LayoutManager.Logic {
 
                 if (component != null) {
                     foreach (XmlElement componentStateTopicElement in componentStateElement) {
-                        if ((bool)EventManager.Event(new LayoutEvent(componentStateTopicElement, "verify-component-state-topic", null, true)) == false)
+                        if ((bool)EventManager.Event(new LayoutEvent("verify-component-state-topic", componentStateTopicElement, true, null)) == false)
                             topicRemoveList.Add(componentStateTopicElement);
                     }
 

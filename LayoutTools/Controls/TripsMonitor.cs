@@ -391,14 +391,14 @@ namespace LayoutManager.Tools.Controls {
         #endregion
 
         private void buttonClose_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(this, "hide-trips-monitor").SetFrameWindow((ILayoutFrameWindow)FindForm()));
+            EventManager.Event(new LayoutEvent("hide-trips-monitor", this).SetFrameWindow((ILayoutFrameWindow)FindForm()));
         }
 
         private void buttonSave_Click(object sender, System.EventArgs e) {
             TripAssignmentItem selected = getSelected();
 
             if (selected != null)
-                EventManager.Event(new LayoutEvent(selected.TripAssignment.TripPlan, "save-trip-plan", null, this.ParentForm));
+                EventManager.Event(new LayoutEvent("save-trip-plan", selected.TripAssignment.TripPlan, this.ParentForm, null));
         }
 
         private void buttonView_Click(object sender, System.EventArgs e) {
@@ -422,7 +422,7 @@ namespace LayoutManager.Tools.Controls {
                     ModelComponent component = selected.Train.LocomotiveBlock.BlockDefinintion;
 
                     if (component != null)
-                        EventManager.Event(new LayoutEvent(component, "ensure-component-visible", null, true).SetFrameWindow(FrameWindow));
+                        EventManager.Event(new LayoutEvent("ensure-component-visible", component, true, null).SetFrameWindow(FrameWindow));
                 }
             }
 
@@ -451,9 +451,9 @@ namespace LayoutManager.Tools.Controls {
 
             if (selected != null) {
                 if (selected.TripAssignment.CanBeCleared)
-                    EventManager.Event(new LayoutEvent(selected.Train, "clear-trip"));
+                    EventManager.Event(new LayoutEvent("clear-trip", selected.Train));
                 else
-                    EventManager.Event(new LayoutEvent(selected.Train, "abort-trip", null, true));
+                    EventManager.Event(new LayoutEvent("abort-trip", selected.Train, true, null));
             }
         }
 
@@ -462,9 +462,9 @@ namespace LayoutManager.Tools.Controls {
 
             if (selected != null) {
                 if (selected.TripAssignment.Status == TripStatus.Suspended)
-                    EventManager.Event(new LayoutEvent(selected.Train, "resume-trip"));
+                    EventManager.Event(new LayoutEvent("resume-trip", selected.Train));
                 else
-                    EventManager.Event(new LayoutEvent(selected.Train, "suspend-trip", null, true));
+                    EventManager.Event(new LayoutEvent("suspend-trip", selected.Train, true, null));
             }
         }
 
@@ -472,7 +472,7 @@ namespace LayoutManager.Tools.Controls {
             TripAssignmentItem selected = getSelected();
 
             if (selected != null && selected.Train.Driver.Type == "Automatic")
-                EventManager.Event(new LayoutEvent(selected.TripAssignment.Train, "get-train-target-speed", null, this));
+                EventManager.Event(new LayoutEvent("get-train-target-speed", selected.TripAssignment.Train, this, null));
         }
 
         class TripAssignmentItem : ListViewItem, IDisposable {
@@ -645,7 +645,7 @@ namespace LayoutManager.Tools.Controls {
 
                 if (tripAssignment.CanBeCleared) {
                     if (tripsMonitor.AutoClearTimeout > 0)
-                        clearTripEvent = EventManager.DelayedEvent(tripsMonitor.AutoClearTimeout * 1000, new LayoutEvent(train, "clear-trip"));
+                        clearTripEvent = EventManager.DelayedEvent(tripsMonitor.AutoClearTimeout * 1000, new LayoutEvent("clear-trip", train));
                 }
             }
 

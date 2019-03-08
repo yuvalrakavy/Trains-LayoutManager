@@ -152,7 +152,7 @@ namespace LayoutManager.CommonUI.Controls {
             if (symbolNameToTypeMap == null) {
                 symbolNameToTypeMap = new HybridDictionary();
 
-                EventManager.Event(new LayoutEvent(this, "add-context-symbols-and-types", null, symbolNameToTypeMap));
+                EventManager.Event(new LayoutEvent("add-context-symbols-and-types", this, symbolNameToTypeMap, null));
 
                 comboBoxSymbol.Sorted = true;
                 foreach (string symbolName in symbolNameToTypeMap.Keys)
@@ -289,7 +289,7 @@ namespace LayoutManager.CommonUI.Controls {
                                 comboBoxTag.Items.Add(new TagEntry(property.Name, property.PropertyType));
                         }
 
-                        Type infoType = (Type)EventManager.Event(new LayoutEvent(symbolType, "get-context-symbol-info-type"));
+                        Type infoType = (Type)EventManager.Event(new LayoutEvent("get-context-symbol-info-type", symbolType));
 
                         if (infoType != null) {
                             PropertyInfo[] infoProperties = infoType.GetProperties();
@@ -320,7 +320,7 @@ namespace LayoutManager.CommonUI.Controls {
                         ArrayList attributesList = new ArrayList();
                         IDictionary attributesMap = new HybridDictionary();
 
-                        EventManager.Event(new LayoutEvent(symbolType, "get-object-attributes", null, attributesList));
+                        EventManager.Event(new LayoutEvent("get-object-attributes", symbolType, attributesList, null));
 
                         foreach (AttributesInfo attributes in attributesList) {
                             foreach (AttributeInfo attribute in attributes) {

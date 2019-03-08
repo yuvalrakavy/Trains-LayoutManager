@@ -58,12 +58,12 @@ namespace LayoutManager.Components {
             LinkedSignalInfo newLinkedSignal = new LinkedSignalInfo(blockEdge.LinkedSignalsElement, signalComponent);
 
             Add(newLinkedSignal);
-            EventManager.Event(new LayoutEvent(blockEdge, "signal-component-linked", null, signalComponent));
+            EventManager.Event(new LayoutEvent("signal-component-linked", blockEdge, signalComponent, null));
             return newLinkedSignal;
         }
 
         public void Remove(LayoutSignalComponent signalComponent) {
-            EventManager.Event(new LayoutEvent(blockEdge, "signal-component-unlinked", null, signalComponent));
+            EventManager.Event(new LayoutEvent("signal-component-unlinked", blockEdge, signalComponent, null));
             Remove(signalComponent.Id);
         }
     }
@@ -107,14 +107,14 @@ namespace LayoutManager.Components {
             set {
                 LayoutModel.StateManager.Components.StateOf(this, "Signal").SetAttribute("State", value.ToString());
                 Redraw();
-                EventManager.Event(new LayoutEvent(this, "logical-signal-state-changed", null, value));
+                EventManager.Event(new LayoutEvent("logical-signal-state-changed", this, value, null));
             }
         }
 
         public void RemoveSignalState() {
             LayoutModel.StateManager.Components.Remove(this.Id, "Signal");
             Redraw();
-            EventManager.Event(new LayoutEvent(this, "signal-state-removed"));
+            EventManager.Event(new LayoutEvent("signal-state-removed", this));
         }
 
         /// <summary>
@@ -589,9 +589,9 @@ namespace LayoutManager.Components {
 
                         if (!LayoutController.TrainsAnalysisPhase) {
                             if (value)
-                                EventManager.Event(new LayoutEvent(occupancyBlock, "train-detection-block-will-be-occupied"));
+                                EventManager.Event(new LayoutEvent("train-detection-block-will-be-occupied", occupancyBlock));
                             else
-                                EventManager.Event(new LayoutEvent(occupancyBlock, "train-detection-block-will-be-free"));
+                                EventManager.Event(new LayoutEvent("train-detection-block-will-be-free", occupancyBlock));
                         }
                     }
                 }
@@ -650,9 +650,9 @@ namespace LayoutManager.Components {
 
                         if (!LayoutController.TrainsAnalysisPhase) {
                             if (value)
-                                EventManager.Event(new LayoutEvent(occupancyBlock, "train-detection-block-occupied"));
+                                EventManager.Event(new LayoutEvent("train-detection-block-occupied", occupancyBlock));
                             else
-                                EventManager.Event(new LayoutEvent(occupancyBlock, "train-detection-block-free"));
+                                EventManager.Event(new LayoutEvent("train-detection-block-free", occupancyBlock));
                         }
                     }
                 }
@@ -942,7 +942,7 @@ namespace LayoutManager.Components {
                 if (Info.ReverseLogic)
                     signalState = (signalState == LayoutSignalState.Green) ? LayoutSignalState.Red : LayoutSignalState.Green;
 
-                EventManager.Event(new LayoutEvent(new ControlConnectionPointReference(connectionPoint), "change-signal-state-command", null, signalState).SetCommandStation(connectionPoint.Module.Bus));
+                EventManager.Event(new LayoutEvent("change-signal-state-command", new ControlConnectionPointReference(connectionPoint), signalState, null).SetCommandStation(connectionPoint.Module.Bus));
             }
         }
 

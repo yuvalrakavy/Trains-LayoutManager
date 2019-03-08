@@ -102,7 +102,7 @@ namespace LayoutManager {
 
         public LayoutEventScriptNode Parse(XmlElement elementToParse, LayoutScriptContext context) {
             LayoutEventScriptNode? node = (LayoutEventScriptNode?)EventManager.Event(new LayoutEvent(
-                new LayoutParseEventScript(script, this, elementToParse, context), "parse-event-script-definition"));
+                "parse-event-script-definition", new LayoutParseEventScript(script, this, elementToParse, context)));
 
             if (node == null)
                 throw new LayoutEventScriptParseException(script, elementToParse, "Unrecognized event script option: '" + elementToParse.Name + "'");
@@ -123,12 +123,12 @@ namespace LayoutManager {
                 EventRoot.Recalculate();
             }
             catch (LayoutEventScriptException ex) {
-                EventManager.Event(new LayoutEvent(EventScript, "event-script-error", null,
-                    new LayoutEventScriptErrorInfo(EventScript, this, ex.Node, ex.ExecutionPhase, ex.InnerException)));
+                EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, ex.Node, ex.ExecutionPhase, ex.InnerException),
+                    null));
             }
             catch (Exception ex) {
-                EventManager.Event(new LayoutEvent(EventScript, "event-script-error", null,
-                    new LayoutEventScriptErrorInfo(EventScript, this, root, LayoutEventScriptExecutionPhase.Evaluation, ex)));
+                EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, root, LayoutEventScriptExecutionPhase.Evaluation, ex),
+                    null));
             }
 
             if (EventRoot.Occurred && !taskTerminated) {
@@ -142,16 +142,16 @@ namespace LayoutManager {
             taskTerminated = false;
 
             try {
-                EventManager.Event(new LayoutEvent(EventScript, "event-script-task-reset", null, this));
+                EventManager.Event(new LayoutEvent("event-script-task-reset", EventScript, this, null));
                 EventRoot.Reset();
             }
             catch (LayoutEventScriptException ex) {
-                EventManager.Event(new LayoutEvent(EventScript, "event-script-error", null,
-                    new LayoutEventScriptErrorInfo(EventScript, this, ex.Node, ex.ExecutionPhase, ex.InnerException)));
+                EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, ex.Node, ex.ExecutionPhase, ex.InnerException),
+                    null));
             }
             catch (Exception ex) {
-                EventManager.Event(new LayoutEvent(EventScript, "event-script-error", null,
-                    new LayoutEventScriptErrorInfo(EventScript, this, root, LayoutEventScriptExecutionPhase.Reset, ex)));
+                EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, root, LayoutEventScriptExecutionPhase.Reset, ex),
+                    null));
             }
 
             if (EventRoot.Occurred && !taskTerminated) {
@@ -165,7 +165,7 @@ namespace LayoutManager {
 
         public bool IsErrorState => EventRoot.IsErrorState;
 
-        public string? Description => (string?)EventManager.Event(new LayoutEvent(scriptElement, "get-event-script-description"));
+        public string? Description => (string?)EventManager.Event(new LayoutEvent("get-event-script-description", scriptElement));
 
         public void Cancel() {
             EventRoot.Cancel();
@@ -173,16 +173,16 @@ namespace LayoutManager {
 
         public void Dispose() {
             try {
-                EventManager.Event(new LayoutEvent(EventScript, "event-script-task-dispose", null, this));
+                EventManager.Event(new LayoutEvent("event-script-task-dispose", EventScript, this, null));
                 EventRoot.Dispose();
             }
             catch (LayoutEventScriptException ex) {
-                EventManager.Event(new LayoutEvent(EventScript, "event-script-error", null,
-                    new LayoutEventScriptErrorInfo(EventScript, this, ex.Node, ex.ExecutionPhase, ex.InnerException)));
+                EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, ex.Node, ex.ExecutionPhase, ex.InnerException),
+                    null));
             }
             catch (Exception ex) {
-                EventManager.Event(new LayoutEvent(EventScript, "event-script-error", null,
-                    new LayoutEventScriptErrorInfo(EventScript, this, root, LayoutEventScriptExecutionPhase.Disposing, ex)));
+                EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, root, LayoutEventScriptExecutionPhase.Disposing, ex),
+                    null));
             }
         }
     }
@@ -215,7 +215,7 @@ namespace LayoutManager {
             get {
                 if (scriptContext == null) {
                     if (parentContext == null)
-                        parentContext = (LayoutScriptContext?)EventManager.Event(new LayoutEvent(this, "get-global-event-script-context"));
+                        parentContext = (LayoutScriptContext?)EventManager.Event(new LayoutEvent("get-global-event-script-context", this));
 
                     scriptContext = new LayoutScriptContext("Script", parentContext) {
                         CopyOnClone = false
@@ -284,15 +284,15 @@ namespace LayoutManager {
             LayoutEventScriptTask task = new LayoutEventScriptTask(this, scriptElement, context);
 
             tasks.Add(task);
-            EventManager.Event(new LayoutEvent(this, "event-script-task-created", null, task));
+            EventManager.Event(new LayoutEvent("event-script-task-created", this, task, null));
             return task;
         }
 
         internal void OnTaskTerminated(LayoutEventScriptTask task) {
-            EventManager.Event(new LayoutEvent(this, "event-script-task-terminated", null, task));
+            EventManager.Event(new LayoutEvent("event-script-task-terminated", this, task, null));
 
             if (task == RootTask) {
-                EventManager.Event(new LayoutEvent(this, "event-script-terminated"));
+                EventManager.Event(new LayoutEvent("event-script-terminated", this));
                 if (task.EventRoot.IsErrorState && errorOccurredEvent != null)
                     EventManager.Event(errorOccurredEvent);
                 else if (scriptDoneEvent != null)
@@ -309,7 +309,7 @@ namespace LayoutManager {
             tasks.Clear();
 
             tasks.Add(RootTask);
-            EventManager.Event(new LayoutEvent(this, "event-script-reset", null, RootTask));
+            EventManager.Event(new LayoutEvent("event-script-reset", this, RootTask, null));
 
             RootTask.Reset();
 
@@ -319,22 +319,22 @@ namespace LayoutManager {
 
         public bool IsErrorState => RootTask.IsErrorState;
 
-        public string? Description => (string?)EventManager.Event(new LayoutEvent(scriptElement, "get-event-script-description"));
+        public string? Description => (string?)EventManager.Event(new LayoutEvent("get-event-script-description", scriptElement));
 
         public void Dispose() {
-            EventManager.Event(new LayoutEvent(this, "event-script-dispose"));
+            EventManager.Event(new LayoutEvent("event-script-dispose", this));
 
             foreach (LayoutEventScriptTask task in tasks) {
                 try {
                     task.Dispose();
                 }
                 catch (LayoutEventScriptException ex) {
-                    EventManager.Event(new LayoutEvent(this, "event-script-error", null,
-                        new LayoutEventScriptErrorInfo(this, task, ex.Node, ex.ExecutionPhase, ex.InnerException)));
+                    EventManager.Event(new LayoutEvent("event-script-error", this, new LayoutEventScriptErrorInfo(this, task, ex.Node, ex.ExecutionPhase, ex.InnerException),
+                        null));
                 }
                 catch (Exception ex) {
-                    EventManager.Event(new LayoutEvent(this, "event-script-error", null,
-                        new LayoutEventScriptErrorInfo(this, task, task.Root, LayoutEventScriptExecutionPhase.Disposing, ex)));
+                    EventManager.Event(new LayoutEvent("event-script-error", this, new LayoutEventScriptErrorInfo(this, task, task.Root, LayoutEventScriptExecutionPhase.Disposing, ex),
+                        null));
                 }
             }
 
@@ -416,7 +416,7 @@ namespace LayoutManager {
         public LayoutScriptContext ScriptContext {
             get {
                 if (scriptContext == null) {
-                    LayoutScriptContext? globalContext = (LayoutScriptContext?)EventManager.Event(new LayoutEvent(this, "get-global-event-script-context"));
+                    LayoutScriptContext? globalContext = (LayoutScriptContext?)EventManager.Event(new LayoutEvent("get-global-event-script-context", this));
 
                     scriptContext = new LayoutScriptContext("Script", globalContext) {
                         CopyOnClone = false
@@ -442,7 +442,7 @@ namespace LayoutManager {
                 if (element == null || element.ChildNodes.Count < 1)
                     return "";
 
-                return (string?)EventManager.Event(new LayoutEvent(element.ChildNodes[0], "get-event-script-description"));
+                return (string?)EventManager.Event(new LayoutEvent("get-event-script-description", element.ChildNodes[0]));
             }
         }
 
@@ -1047,7 +1047,7 @@ namespace LayoutManager {
                     EventManager.Subscriptions.Add(subscription);
                 }
 
-                EventManager.Event(new LayoutEvent(this, "event-script-wait-event-reset", null, subscription));
+                EventManager.Event(new LayoutEvent("event-script-wait-event-reset", this, subscription, null));
             }
             catch (Exception ex) {
                 throw new LayoutEventScriptException(this, LayoutEventScriptExecutionPhase.Reset, ex);
@@ -1096,9 +1096,9 @@ namespace LayoutManager {
 
                 if (relevantEvent) {
                     if (e.Sender != null)
-                        EventManager.Event(new LayoutEvent(e.Sender, "set-script-context", null, Context));
+                        EventManager.Event(new LayoutEvent("set-script-context", e.Sender, Context, null));
                     if (e.Info != null)
-                        EventManager.Event(new LayoutEvent(e.Info, "set-script-context", null, Context));
+                        EventManager.Event(new LayoutEvent("set-script-context", e.Info, Context, null));
 
                     if (IsConditionTrue) {
                         Cancel();
@@ -1107,12 +1107,12 @@ namespace LayoutManager {
                 }
             }
             catch (LayoutEventScriptException ex) {
-                EventManager.Event(new LayoutEvent(this.Script, "event-script-error", null,
-                    new LayoutEventScriptErrorInfo(this.Script, this.Task, ex.Node, ex.ExecutionPhase, ex.InnerException)));
+                EventManager.Event(new LayoutEvent("event-script-error", this.Script, new LayoutEventScriptErrorInfo(this.Script, this.Task, ex.Node, ex.ExecutionPhase, ex.InnerException),
+                    null));
             }
             catch (Exception ex) {
-                EventManager.Event(new LayoutEvent(this.Script, "event-script-error", null,
-                    new LayoutEventScriptErrorInfo(this.Script, this.Task, this, LayoutEventScriptExecutionPhase.EventProcessing, ex)));
+                EventManager.Event(new LayoutEvent("event-script-error", this.Script, new LayoutEventScriptErrorInfo(this.Script, this.Task, this, LayoutEventScriptExecutionPhase.EventProcessing, ex),
+                    null));
             }
         }
     }
@@ -1644,7 +1644,7 @@ namespace LayoutManager {
                 }
 
                 if (!Occurred)
-                    delayedEvent = EventManager.DelayedEvent(delay, new LayoutEvent(this, "wait-event-condition-occured"));
+                    delayedEvent = EventManager.DelayedEvent(delay, new LayoutEvent("wait-event-condition-occured", this));
             }
 
             public override void Cancel() {
@@ -1672,7 +1672,7 @@ namespace LayoutManager {
                             if (IsConditionTrue)
                                 Occurred = true;
                             else        // Condition is not true, wait again and check condition again
-                                delayedEvent = EventManager.DelayedEvent(delay, new LayoutEvent(this, "wait-event-condition-occured"));
+                                delayedEvent = EventManager.DelayedEvent(delay, new LayoutEvent("wait-event-condition-occured", this));
                         }
                     }
                     catch (Exception ex) {
@@ -1972,7 +1972,7 @@ namespace LayoutManager {
 
             public override bool IsTrue {
                 get {
-                    DateTime dt = (DateTime)EventManager.Event(new LayoutEvent(this, "get-current-date-time-request"));
+                    DateTime dt = (DateTime)EventManager.Event(new LayoutEvent("get-current-date-time-request", this));
 
                     return checkTimeNodes(seconds, dt.Second) && checkTimeNodes(minutes, dt.Minute) && checkTimeNodes(hours, dt.Hour) &&
                         checkTimeNodes(dayOfWeek, (int)dt.DayOfWeek);
@@ -2321,7 +2321,7 @@ namespace LayoutManager {
             public override void Execute() {
                 var sender = GetArgument("Sender");
                 var info = GetArgument("Info");
-                LayoutEvent theEvent = new LayoutEvent(sender, Element.GetAttribute("EventName"), null, info);
+                LayoutEvent theEvent = new LayoutEvent(Element.GetAttribute("EventName"), sender, info, null);
 
                 XmlElement optionsElement = Element["Options"];
 

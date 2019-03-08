@@ -217,7 +217,7 @@ namespace LayoutEventDebugger {
         }
 
         private void SubscriptionView_Closed(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(this, "subscription-view-closed"));
+            EventManager.Event(new LayoutEvent("subscription-view-closed", this));
         }
     }
 }

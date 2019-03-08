@@ -52,9 +52,9 @@ namespace LayoutManager {
                 changeLevel = value;
 
                 if (changeLevel == 0 && previousValue != 0)
-                    EventManager.Event(new LayoutEvent(this, "model-not-modified"));
+                    EventManager.Event(new LayoutEvent("model-not-modified", this));
                 else if (changeLevel != 0 && previousValue == 0)
-                    EventManager.Event(new LayoutEvent(this, "model-modified"));
+                    EventManager.Event(new LayoutEvent("model-modified", this));
             }
         }
 

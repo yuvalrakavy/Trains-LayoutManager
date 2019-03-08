@@ -364,7 +364,7 @@ namespace LayoutManager.Model {
                 if (StartCondition == null)
                     return "At once";
                 else
-                    return (string)EventManager.Event(new LayoutEvent(StartCondition, "get-event-script-description"));
+                    return (string)EventManager.Event(new LayoutEvent("get-event-script-description", StartCondition));
             }
         }
 
@@ -401,7 +401,7 @@ namespace LayoutManager.Model {
                 if (DriverInstructions == null)
                     return "";
                 else
-                    return (string)EventManager.Event(new LayoutEvent(DriverInstructions, "get-event-script-description"));
+                    return (string)EventManager.Event(new LayoutEvent("get-event-script-description", DriverInstructions));
             }
         }
 
@@ -609,7 +609,7 @@ namespace LayoutManager.Model {
                 TripStatus oldStatus = Status;
 
                 SetAttribute("Status", value.ToString());
-                EventManager.Event(new LayoutEvent(this, "trip-status-changed", null, oldStatus));
+                EventManager.Event(new LayoutEvent("trip-status-changed", this, oldStatus, null));
                 Train.Redraw();
             }
         }

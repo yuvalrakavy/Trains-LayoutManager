@@ -47,7 +47,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
             symbolNameToTypeMap = new HybridDictionary();
 
-            EventManager.Event(new LayoutEvent(this, "add-context-symbols-and-types", null, symbolNameToTypeMap));
+            EventManager.Event(new LayoutEvent("add-context-symbols-and-types", this, symbolNameToTypeMap, null));
 
             comboBoxSymbol.Sorted = true;
             foreach (string symbolName in symbolNameToTypeMap.Keys)
@@ -375,7 +375,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
                 ArrayList attributesList = new ArrayList();
                 IDictionary attributesMap = new HybridDictionary();
 
-                EventManager.Event(new LayoutEvent(symbolType, "get-object-attributes", null, attributesList));
+                EventManager.Event(new LayoutEvent("get-object-attributes", symbolType, attributesList, null));
 
                 foreach (AttributesInfo attributes in attributesList) {
                     foreach (AttributeInfo attribute in attributes) {

@@ -599,7 +599,7 @@ namespace LayoutManager.Dialogs {
 
             inLocoType.Element = locoType.Element;
 
-            EventManager.Event(new LayoutEvent(locoType.Element, "locomotive-type-updated", null, false));
+            EventManager.Event(new LayoutEvent("locomotive-type-updated", locoType.Element, false, null));
             DialogResult = DialogResult.OK;
         }
 

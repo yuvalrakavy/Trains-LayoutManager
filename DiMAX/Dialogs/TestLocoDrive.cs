@@ -25,7 +25,7 @@ namespace DiMAX.Dialogs {
                 return;
             }
 
-            EventManager.AsyncEvent(new LayoutEvent(this, "test-loco-speed").SetOption("Address", address).SetOption("Speed", speed).SetCommandStation(commandStation));
+            EventManager.AsyncEvent(new LayoutEvent("test-loco-speed", this).SetOption("Address", address).SetOption("Speed", speed).SetCommandStation(commandStation));
         }
     }
 }

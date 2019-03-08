@@ -162,7 +162,7 @@ namespace LayoutManager.Model {
                 LayoutModel.Instance.AddComponentReference(this.Id, this);
             }
 
-            EventManager.Event(new LayoutEvent(this, "added-to-model"));
+            EventManager.Event(new LayoutEvent("added-to-model", this));
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace LayoutManager.Model {
                 LayoutModel.Instance.RemoveComponentReference(this.Id);
 
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
-            EventManager.Event(new LayoutEvent(this, "removed-from-model"));
+            EventManager.Event(new LayoutEvent("removed-from-model", this));
         }
 
         /// <summary>
@@ -292,7 +292,7 @@ namespace LayoutManager.Model {
         protected virtual bool ReadXmlField(XmlReader r) => false;
 
         public virtual void Error(Object subject, String message) {
-            EventManager.Event(new LayoutEvent(subject, "add-error", null, message));
+            EventManager.Event(new LayoutEvent("add-error", subject, message));
         }
 
         public void Error(String message) {
@@ -300,7 +300,7 @@ namespace LayoutManager.Model {
         }
 
         public virtual void Warning(Object subject, String message) {
-            EventManager.Event(new LayoutEvent(subject, "add-warning", null, message));
+            EventManager.Event(new LayoutEvent("add-warning", subject, message));
         }
 
         public void Warning(String message) {
@@ -1902,7 +1902,7 @@ namespace LayoutManager.Model {
             }
 
             modelIsLoading = false;
-            EventManager.Event(new LayoutEvent(this, "model-loaded"));
+            EventManager.Event(new LayoutEvent("model-loaded", this));
         }
 
         /// <summary>

@@ -234,7 +234,7 @@ namespace LayoutManager.CommonUI {
                 else if (connectionPointType == ControlConnectionPointTypes.InputCurrent)
                     typeImage = imageListConnectionPointTypes.Images[3];
                 else
-                    typeImage = (Image)EventManager.Event(new LayoutEvent(this, "get-connection-point-type-image").SetOption("ConnectionPointType", connectionPointType).SetOption("TopRow", topRow));
+                    typeImage = (Image)EventManager.Event(new LayoutEvent("get-connection-point-type-image", this).SetOption("ConnectionPointType", connectionPointType).SetOption("TopRow", topRow));
 
 
                 imageMap.Add(key, typeImage);
@@ -260,7 +260,7 @@ namespace LayoutManager.CommonUI {
 
                 if (!imageMap.Contains(key)) {
                     image = (Image)EventManager.Event(
-                        new LayoutEvent(component, "get-connection-point-component-image").SetOption("TopRow", topRow).SetOption("ModuleID", XmlConvert.ToString(connectionPoint.Module.Id)).SetOption("Index", XmlConvert.ToString(connectionPoint.Index)));
+                        new LayoutEvent("get-connection-point-component-image", component).SetOption("TopRow", topRow).SetOption("ModuleID", XmlConvert.ToString(connectionPoint.Module.Id)).SetOption("Index", XmlConvert.ToString(connectionPoint.Index)));
 
                     imageMap.Add(key, image);
                 }
@@ -326,7 +326,7 @@ namespace LayoutManager.CommonUI {
 
                 if (component != null) {
                     selectedComponents.Add((ModelComponent)component);
-                    EventManager.Event(new LayoutEvent(component, "ensure-component-visible", null, false).SetFrameWindow(FrameWindow));
+                    EventManager.Event(new LayoutEvent("ensure-component-visible", component, false, null).SetFrameWindow(FrameWindow));
                 }
             }
 
@@ -473,7 +473,7 @@ namespace LayoutManager.CommonUI {
                 return;
 
             RectangleF clipBounds = pe.Graphics.VisibleClipBounds;
-            Bitmap buffer = (Bitmap)EventManager.Event(new LayoutEvent(pe.Graphics, "allocate-offscreen-buffer", null, clipBounds));
+            Bitmap buffer = (Bitmap)EventManager.Event(new LayoutEvent("allocate-offscreen-buffer", pe.Graphics, clipBounds, null));
 
             using (Graphics g = Graphics.FromImage(buffer)) {
                 // Translate so the top-left of the clip region is on the top/left (0,0)
@@ -916,7 +916,7 @@ namespace LayoutManager.CommonUI {
                     string eventName = "add-control-" + (Viewer.IsOperationMode ? "operation" : "editing") + "-context-menu-entries";
                     ContextMenu menu = new ContextMenu();
 
-                    EventManager.Event(new LayoutEvent(this, eventName, null, menu).SetFrameWindow(Viewer.FrameWindow));
+                    EventManager.Event(new LayoutEvent(eventName, this, menu, null).SetFrameWindow(Viewer.FrameWindow));
                     if (menu.MenuItems.Count > 0)
                         menu.Show(Viewer, Viewer.PointToClient(Control.MousePosition));
                 }
@@ -925,7 +925,7 @@ namespace LayoutManager.CommonUI {
 
         public virtual void OnClick(MouseButtons mouseDownButton) {
             if (mouseDownButton == MouseButtons.Left)                                                       // Normal click
-                EventManager.Event(new LayoutEvent(this, "control-default-action").SetFrameWindow(Viewer.FrameWindow));
+                EventManager.Event(new LayoutEvent("control-default-action", this).SetFrameWindow(Viewer.FrameWindow));
         }
 
         public virtual void OnDoubleClick() {
@@ -1643,7 +1643,7 @@ namespace LayoutManager.CommonUI {
 
         public override Cursor Cursor {
             get {
-                ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)EventManager.Event(new LayoutEvent(this, "get-component-to-control-connect"));
+                ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)EventManager.Event(new LayoutEvent("get-component-to-control-connect", this));
 
                 if (connectionDestination != null && Module.ConnectionPoints.CanBeConnected(connectionDestination, index))
                     return Cursors.Cross;

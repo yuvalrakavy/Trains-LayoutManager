@@ -273,7 +273,7 @@ namespace LayoutManager.Logic {
                                     TrainStateInfo train = otherBlock.Trains[0].Train;
 
                                     // Train was detected, extend the block to include the one that the train
-                                    EventManager.Event(new LayoutEvent(train, "request-auto-train-extend", null, otherBlock.BlockDefinintion));
+                                    EventManager.Event(new LayoutEvent("request-auto-train-extend", train, otherBlock.BlockDefinintion, null));
                                     detected = true;
                                 }
                             }

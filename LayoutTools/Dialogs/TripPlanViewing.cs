@@ -125,7 +125,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonSave_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(tripPlan, "save-trip-plan", null, this));
+            EventManager.Event(new LayoutEvent("save-trip-plan", tripPlan, this, null));
         }
     }
 }

@@ -112,7 +112,7 @@ namespace LayoutManager {
             moduleManager.LoadState();
 
             EventManager.Instance.AddObjectSubscriptions(this);
-            EventManager.Event(new LayoutEvent(this, "modules-initialized"));
+            EventManager.Event(new LayoutEvent("modules-initialized", this));
 
             #endregion
 
@@ -126,7 +126,7 @@ namespace LayoutManager {
             LayoutModel.Areas.AreaRemoved += new EventHandler(Area_Removed);
             LayoutModel.Areas.AreaRenamed += new EventHandler(Area_Renamed);
 
-            EventManager.Event(new LayoutEvent(this, "initialize-event-interthread-relay"));
+            EventManager.Event(new LayoutEvent("initialize-event-interthread-relay", this));
 
             LauchLayoutManager();
         }
@@ -146,7 +146,7 @@ namespace LayoutManager {
             switch (action) {
 
                 case LaunchAction.Exit:
-                    EventManager.Event(new LayoutEvent(this, "terminate-event-interthread-relay"));
+                    EventManager.Event(new LayoutEvent("terminate-event-interthread-relay", this));
                     ExitThreadCore();
                     return;
 
@@ -201,7 +201,7 @@ namespace LayoutManager {
             await EnterDesignModeRequest();
             Trace.WriteLine("After EnterDesignRequest");
 
-            EventManager.Event(new LayoutEvent(this, "terminate-event-interthread-relay"));
+            EventManager.Event(new LayoutEvent("terminate-event-interthread-relay", this));
 
             ExitThread();
         }
@@ -227,7 +227,7 @@ namespace LayoutManager {
                         SaveDisplayState(FrameWindows);
                         FrameWindows.Remove(actionTask.Result.FrameWindow);
 
-                        EventManager.Event(new LayoutEvent(null, "close-all-frame-windows"));
+                        EventManager.Event(new LayoutEvent("close-all-frame-windows", null));
 
                         // Wait until all frame windows are closed
                         await Task.WhenAll(from frameWindow in FrameWindows select frameWindow.Task);
@@ -275,9 +275,9 @@ namespace LayoutManager {
             if (commandManager.ChangeLevel != 0)
                 SaveModel(LayoutFilename);
 
-            EventManager.Event(new LayoutEvent(this, "clear-messages"));
+            EventManager.Event(new LayoutEvent("clear-messages", this));
 
-            if (!(bool)EventManager.Event(new LayoutEvent(LayoutModel.Instance, "check-layout", null, true).SetPhases(settings.Phases))) {
+            if (!(bool)EventManager.Event(new LayoutEvent("check-layout", LayoutModel.Instance, true, null).SetPhases(settings.Phases))) {
                 MessageBox.Show(ActiveFrameWindow, "Problems were detected in the layout. Please fix those problems before entering operation mode", "Layout Check Results",
                     MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 switchMode = false;
@@ -292,30 +292,30 @@ namespace LayoutManager {
                             layoutDesignTimeActivationNesting = 0;
                         }
 
-                        EventManager.Event(new LayoutEvent(this, "exit-design-mode"));
+                        EventManager.Event(new LayoutEvent("exit-design-mode", this));
                     }
 
                     commandManager.Clear();         // Clear undo stack
 
                     List<IModelComponentIsCommandStation> performTrainsAnalysis = new List<IModelComponentIsCommandStation>();
 
-                    EventManager.Event(new LayoutEvent(this, "query-perform-trains-analysis", null, performTrainsAnalysis));
+                    EventManager.Event(new LayoutEvent("query-perform-trains-analysis", this, performTrainsAnalysis, null));
                     trainsAnalysisPhaseCount = performTrainsAnalysis.Count;
 
                     if (trainsAnalysisPhaseCount > 0)
-                        EventManager.Event(new LayoutEvent(this, "begin-trains-analysis-phase"));
+                        EventManager.Event(new LayoutEvent("begin-trains-analysis-phase", this));
 
                     OperationModeSettings = settings;
                     LayoutModel.ActivePhases = settings.Phases;
 
                     EventManager.Event(new LayoutEvent<OperationModeParameters>("prepare-enter-operation-mode", settings));
 
-                    if (!(bool)EventManager.Event(new LayoutEvent(LayoutModel.Instance, "rebuild-layout-state").SetPhases(settings.Phases))) {
+                    if (!(bool)EventManager.Event(new LayoutEvent("rebuild-layout-state", LayoutModel.Instance).SetPhases(settings.Phases))) {
                         if (MessageBox.Show(ActiveFrameWindow, "The layout design or locomotive collection were modified. The previous state could not be fully restored.\n\n" +
                             "Would you like to continue with the partially restored state?\n\nSelecting \"No\" will clear the state. In this case, you will " +
                             "have to indicate the locomotive positions again", "Locomotive state cannot be restored",
                             MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-                            EventManager.Event(new LayoutEvent(LayoutModel.Instance, "clear-layout-state"));
+                            EventManager.Event(new LayoutEvent("clear-layout-state", LayoutModel.Instance));
                     }
 
                     EventManager.Event(new LayoutEvent<OperationModeParameters>("enter-operation-mode", settings));
@@ -337,9 +337,9 @@ namespace LayoutManager {
         public async Task ExitOperationModeRequest() {
             bool simulation = LayoutController.OperationModeSettings.Simulation;
 
-            EventManager.Event(new LayoutEvent(this, "exit-operation-mode"));
+            EventManager.Event(new LayoutEvent("exit-operation-mode", this));
             Trace.WriteLine("Before invoking exit-operation-mode-async");
-            await Task.WhenAll(EventManager.AsyncEventBroadcast(new LayoutEvent(this, "exit-operation-mode-async")));
+            await Task.WhenAll(EventManager.AsyncEventBroadcast(new LayoutEvent("exit-operation-mode-async", this)));
             Trace.WriteLine("After invoking exit-operation-mode-async");
 
             if (simulation)
@@ -349,8 +349,8 @@ namespace LayoutManager {
         [LayoutEvent("command-station-trains-analysis-phase-done")]
         private void trainsAnalysisPhaseDone(LayoutEvent e) {
             if (--trainsAnalysisPhaseCount == 0) {
-                EventManager.Event(new LayoutEvent(this, "end-trains-analysis-phase"));
-                EventManager.Event(new LayoutEvent(LayoutModel.Instance, "perform-trains-analysis"));
+                EventManager.Event(new LayoutEvent("end-trains-analysis-phase", this));
+                EventManager.Event(new LayoutEvent("perform-trains-analysis", LayoutModel.Instance));
             }
 
             Debug.Assert(trainsAnalysisPhaseCount >= 0);
@@ -405,7 +405,7 @@ namespace LayoutManager {
                 }
 
                 if (doit) {
-                    object result = EventManager.Event(new LayoutEvent(this, "begin-design-time-layout-activation"));
+                    object result = EventManager.Event(new LayoutEvent("begin-design-time-layout-activation", this));
 
                     if (result == null || !(result is bool))
                         ok = false;
@@ -432,7 +432,7 @@ namespace LayoutManager {
                 Trace.WriteLine("unbalanced enter/exit design time layout activation");
 
             if (--layoutDesignTimeActivationNesting == 0)
-                EventManager.Event(new LayoutEvent(this, "end-design-time-layout-activation"));
+                EventManager.Event(new LayoutEvent("end-design-time-layout-activation", this));
         }
 
         /// <summary>

@@ -106,7 +106,7 @@ namespace LayoutManager.Dialogs {
         }
 
         private void buttonAbort_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(this, "abort-routing-table-generation"));
+            EventManager.Event(new LayoutEvent("abort-routing-table-generation", this));
         }
     }
 }

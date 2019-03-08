@@ -70,7 +70,7 @@ namespace LayoutManager {
             item.TraceMessage();
 
             if (clearOnNewMessage) {
-                EventManager.Event(new LayoutEvent(this, "clear-messages"));
+                EventManager.Event(new LayoutEvent("clear-messages", this));
                 clearOnNewMessage = false;
             }
 
@@ -78,7 +78,7 @@ namespace LayoutManager {
             columnHeaderArea.Width = -1;
 
             if (item.Severity != MessageSeverity.Message)
-                EventManager.Event(new LayoutEvent(this, "show-messages"));
+                EventManager.Event(new LayoutEvent("show-messages", this));
 
             if (listViewMessages.SelectedItems.Count == 1 && listViewMessages.SelectedItems[0] == lastMessageMarker)
                 listViewMessages.EnsureVisible(lastMessageMarker.Index);
@@ -143,7 +143,7 @@ namespace LayoutManager {
         void setComponentSelection(ModelComponent component) {
             currentComponentSelection.Clear();
             currentComponentSelection.Add(component);
-            EventManager.Event(new LayoutEvent(component, "ensure-component-visible", null, false));
+            EventManager.Event(new LayoutEvent("ensure-component-visible", component, false, null));
         }
 
         [LayoutEvent("messages-hidden")]
@@ -462,7 +462,7 @@ namespace LayoutManager {
 
 
         private void buttonClose_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(this, "hide-messages"));
+            EventManager.Event(new LayoutEvent("hide-messages", this));
         }
 
         private void listViewMessages_SelectedIndexChanged(object sender, System.EventArgs e) {

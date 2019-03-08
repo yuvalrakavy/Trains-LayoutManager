@@ -6,41 +6,15 @@ using System.Windows.Forms;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#pragma warning disable IDE0051, IDE0060
+
 namespace LayoutManager.Tools {
 
     [LayoutModule("Trip Planning Tools", UserControl = false)]
-    public class TripPlanningTools : System.ComponentModel.Component, ILayoutModuleSetup {
+    public class TripPlanningTools : ILayoutModuleSetup {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
-
-        #region Constructors
-
-        public TripPlanningTools(IContainer container) {
-            /// <summary>
-            /// Required for Windows.Forms Class Composition Designer support
-            /// </summary>
-            container.Add(this);
-            InitializeComponent();
-
-            //
-            // TODO: Add any constructor code after InitializeComponent call
-            //
-        }
-
-        public TripPlanningTools() {
-            /// <summary>
-            /// Required for Windows.Forms Class Composition Designer support
-            /// </summary>
-            InitializeComponent();
-
-            //
-            // TODO: Add any constructor code after InitializeComponent call
-            //
-        }
-
-        #endregion
 
         #region Save Trip plan
 
@@ -122,7 +96,6 @@ namespace LayoutManager.Tools {
         #region Applicable Trip Plans
 
         class ApplicableTripPlansData : LayoutXmlWrapper {
-            readonly TripPlanCatalogInfo tripPlansCatalog;
             LayoutBlock locomotiveBlock;
             LayoutComponentConnectionPoint locomotiveFront;
             LayoutBlock lastCarBlock;
@@ -134,15 +107,13 @@ namespace LayoutManager.Tools {
             IRoutePlanningServices _tripPlanningServices = null;
 
             public ApplicableTripPlansData(XmlElement element) : base(element) {
-                tripPlansCatalog = LayoutModel.StateManager.TripPlansCatalog;
-
                 staticGrade = XmlConvert.ToBoolean(GetAttribute("StaticGrade", "true"));
             }
 
             public IRoutePlanningServices TripPlanningServices {
                 get {
                     if (_tripPlanningServices == null)
-                        _tripPlanningServices = (IRoutePlanningServices)EventManager.Event(new LayoutEvent(this, "get-route-planning-services"));
+                        _tripPlanningServices = (IRoutePlanningServices)EventManager.Event(new LayoutEvent("get-route-planning-services", this));
                     return _tripPlanningServices;
                 }
             }
@@ -329,7 +300,7 @@ namespace LayoutManager.Tools {
                     }
 
                     request = new TripBestRouteRequest(RouteOwner, wayPoints[i].Destination, sourceTrack, sourceFront, d.Get(wayPoints[i]), staticGrade);
-                    result = (TripBestRouteResult)EventManager.Event(new LayoutEvent(request, "find-best-route-request"));
+                    result = (TripBestRouteResult)EventManager.Event(new LayoutEvent("find-best-route-request", request));
 
                     if (result.BestRoute == null)
                         return result.Quality;
@@ -440,7 +411,7 @@ namespace LayoutManager.Tools {
                 if (e.HasOption("Front"))
                     oFront = LayoutComponentConnectionPoint.Parse(e.GetOption("Front"));
                 else
-                    oFront = EventManager.Event(new LayoutEvent(block.BlockDefinintion, "get-locomotive-front", null, ""));
+                    oFront = EventManager.Event(new LayoutEvent("get-locomotive-front", block.BlockDefinintion, ""));
 
                 if (oFront != null) {
                     LayoutComponentConnectionPoint front = (LayoutComponentConnectionPoint)oFront;
@@ -454,7 +425,7 @@ namespace LayoutManager.Tools {
                 }
             }
             else if (e.Sender is LayoutBlockDefinitionComponent)
-                e.Info = EventManager.Event(new LayoutEvent(((LayoutBlockDefinitionComponent)e.Sender).Block, "get-applicable-trip-plans-request", null, applicableTripPlansElement));
+                e.Info = EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", ((LayoutBlockDefinitionComponent)e.Sender).Block, applicableTripPlansElement, null));
         }
 
         #endregion
@@ -466,14 +437,14 @@ namespace LayoutManager.Tools {
         // this block is the only destination.
         private bool isBlockAfreeDestination(LayoutBlock block) {
             foreach (TrainLocationInfo trainLocation in block.Trains) {
-                TripPlanAssignmentInfo tripPlanAssignment = (TripPlanAssignmentInfo)EventManager.Event(new LayoutEvent(trainLocation.Train, "get-train-active-trip"));
+                TripPlanAssignmentInfo tripPlanAssignment = (TripPlanAssignmentInfo)EventManager.Event(new LayoutEvent("get-train-active-trip", trainLocation.Train));
 
                 if (tripPlanAssignment == null)
                     return false;           // This block has a train that is not engaged in active trip plan, so it is not free
             }
 
             // Check all active trip plans and ensure that non of them is destined to this block
-            TripPlanAssignmentInfo[] activeTrips = (TripPlanAssignmentInfo[])EventManager.Event(new LayoutEvent(this, "get-active-trips"));
+            TripPlanAssignmentInfo[] activeTrips = (TripPlanAssignmentInfo[])EventManager.Event(new LayoutEvent("get-active-trips", this));
 
             foreach (TripPlanAssignmentInfo trip in activeTrips) {
                 TripPlanInfo tripPlan = trip.TripPlan;
@@ -563,8 +534,6 @@ namespace LayoutManager.Tools {
             }
         }
 
-        readonly TestTripInfo testTrip = new TestTripInfo();
-
         static readonly LayoutTraceSwitch traceShowTrackDescription = new LayoutTraceSwitch("ShowTrackDescription", "Show track description menu");
 
         [LayoutEvent("add-component-operation-context-menu-entries", Order = 900, SenderType = typeof(LayoutTrackComponent))]
@@ -622,16 +591,6 @@ namespace LayoutManager.Tools {
 		}
 #endif
 
-        #endregion
-
-        #region Component Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            components = new Container();
-        }
         #endregion
     }
 }

@@ -83,7 +83,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
             workingDoc.AppendChild(applicableTripPlansElement);
 
-            LayoutEvent getApplicableTripPlansEvent = new LayoutEvent(block, "get-applicable-trip-plans-request", null, applicableTripPlansElement);
+            LayoutEvent getApplicableTripPlansEvent = new LayoutEvent("get-applicable-trip-plans-request", block, applicableTripPlansElement, null);
 
             if (front != LayoutComponentConnectionPoint.Empty)
                 getApplicableTripPlansEvent.SetOption("Front", front.ToString());

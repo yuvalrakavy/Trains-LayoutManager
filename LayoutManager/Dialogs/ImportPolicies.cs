@@ -102,7 +102,7 @@ namespace LayoutManager.Dialogs {
                         policy.GlobalPolicy = policyItem.Policy.GlobalPolicy;
                         policy.ShowInMenu = policyItem.Policy.ShowInMenu;
 
-                        EventManager.Event(new LayoutEvent(policy, "policy-updated", null, policyType.Policies));
+                        EventManager.Event(new LayoutEvent("policy-updated", policy, policyType.Policies, null));
                     }
                     else {
                         policy = policyItem.Policy;

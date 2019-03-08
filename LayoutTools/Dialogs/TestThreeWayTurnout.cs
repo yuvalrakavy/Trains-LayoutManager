@@ -133,7 +133,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void TestThreeWayTurnout_FormClosed(object sender, FormClosedEventArgs e) {
             LayoutController.Instance.EndDesignTimeActivation();
-            EventManager.Event(new LayoutEvent(this, "deselect-control-objects").SetFrameWindow(frameWindowId));
+            EventManager.Event(new LayoutEvent("deselect-control-objects", this).SetFrameWindow(frameWindowId));
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 
@@ -230,7 +230,7 @@ namespace LayoutManager.Tools.Dialogs {
                         delegate (object s, EventArgs ev) {
 
                             ControlConnectionPointDestination destination = new ControlConnectionPointDestination(turnout, desc);
-                            EventManager.Event(new LayoutEvent(destination, "request-component-to-control-connect"));
+                            EventManager.Event(new LayoutEvent("request-component-to-control-connect", destination));
                         });
                 }
             }

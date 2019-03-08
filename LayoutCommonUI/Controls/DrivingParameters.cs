@@ -77,7 +77,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public bool ValidateValues() {
-            LayoutModel model = (LayoutModel)EventManager.Event(new LayoutEvent(this, "get-model"));
+            LayoutModel model = (LayoutModel)EventManager.Event(new LayoutEvent("get-model", this));
 
             if (textBoxSpeedLimit.Text.Trim() != "") {
                 int speedLimit;

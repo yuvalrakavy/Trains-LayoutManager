@@ -18,7 +18,7 @@ namespace LayoutManager {
 
             foreach (ModelComponent component in LayoutController.UserSelection) {
                 deleteSelectionCommand.Add(new LayoutComponentDeselectCommand(LayoutController.UserSelection, component, "unselect"));
-                EventManager.Event(new LayoutEvent(component, "prepare-for-component-remove-command", null, deleteSelectionCommand));
+                EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, deleteSelectionCommand, null));
                 deleteSelectionCommand.Add(new LayoutComponentRemovalCommand(component, "delete"));
             }
 
@@ -69,7 +69,7 @@ namespace LayoutManager {
 
             foreach (ModelComponent component in LayoutController.UserSelection) {
                 deleteSelectionCommand.Add(new LayoutComponentDeselectCommand(LayoutController.UserSelection, component, "unselect"));
-                EventManager.Event(new LayoutEvent(component, "prepare-for-component-remove-command", null, deleteSelectionCommand));
+                EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, deleteSelectionCommand, null));
                 deleteSelectionCommand.Add(new LayoutComponentRemovalCommand(component, "delete"));
             }
 

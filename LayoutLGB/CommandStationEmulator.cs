@@ -24,9 +24,9 @@ namespace LayoutLGB {
             this.commandStationId = commandStation.Id;
             this.pipeName = pipeName;
 
-            layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent(this, "get-layout-emulation-services"));
+            layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
 
-            EventManager.Event(new LayoutEvent(null, "initialize-layout-emulation", null, emulationTickTime));
+            EventManager.Event(new LayoutEvent("initialize-layout-emulation", null, emulationTickTime, null));
 
             interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction)) {
                 Name = "Command station emulation for " + commandStation.Name
@@ -50,7 +50,7 @@ namespace LayoutLGB {
         private void InterfaceThreadFunction() {
             // Create the pipe for communication
 
-            commStream = (FileStream)EventManager.Event(new LayoutEvent(pipeName, "wait-named-pipe-request", null, true));
+            commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true, null));
             layoutEmulationServices.LocomotiveMoved += new EventHandler<LocomotiveMovedEventArgs>(layoutEmulationServices_LocomotiveMoved);
 
             try {

@@ -51,7 +51,7 @@ namespace LayoutManager {
 
         protected override void DefaultAction(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
             foreach (ModelComponent component in hitTestResult.Selection)
-                EventManager.Event(new LayoutEvent(component, "default-action-command", null, hitTestResult));
+                EventManager.Event(new LayoutEvent("default-action-command", component, hitTestResult, null));
         }
 
         private void InitializeComponent() {

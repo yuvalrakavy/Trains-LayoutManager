@@ -42,7 +42,7 @@ namespace LayoutManager {
         virtual protected void Generate(String messageType) {
             String messageEventName = "add-" + messageType;
 
-            EventManager.Event(new LayoutEvent(Subject, messageEventName, null, Message));
+            EventManager.Event(new LayoutEvent(messageEventName, Subject, Message));
         }
 
         /// <summary>

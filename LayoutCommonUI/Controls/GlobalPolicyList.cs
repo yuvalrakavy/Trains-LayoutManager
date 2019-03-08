@@ -82,7 +82,7 @@ namespace LayoutManager.CommonUI.Controls {
             PolicyList.PolicyItem selected = GetSelection();
 
             if (selected != null) {
-                LayoutEventScript runningScript = (LayoutEventScript)EventManager.Event(new LayoutEvent(selected.Policy.Id, "get-active-event-script"));
+                LayoutEventScript runningScript = (LayoutEventScript)EventManager.Event(new LayoutEvent("get-active-event-script", selected.Policy.Id));
 
                 if (runningScript != null)
                     runningScript.Dispose();

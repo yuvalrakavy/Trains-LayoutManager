@@ -940,7 +940,7 @@ namespace LayoutManager.View {
             }
         }
 
-        Bitmap allocateOffScreenBuffer(Graphics g, RectangleF clipBounds) => (Bitmap)EventManager.Event(new LayoutEvent(g, "allocate-offscreen-buffer", null, clipBounds));
+        Bitmap allocateOffScreenBuffer(Graphics g, RectangleF clipBounds) => (Bitmap)EventManager.Event(new LayoutEvent("allocate-offscreen-buffer", g, clipBounds, null));
 
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
@@ -1749,7 +1749,7 @@ namespace LayoutManager.View {
         readonly IList<ILayoutDrawingRegion> regions;
 
         public LayoutGetDrawingRegionsEvent(ModelComponent component, ILayoutView view, ViewDetailLevel detailLevel, Graphics g, IList<ILayoutDrawingRegion> drawingRegions) :
-            base(component, "get-model-component-drawing-regions", null, drawingRegions) {
+            base("get-model-component-drawing-regions", component, drawingRegions, null) {
             this.view = view;
             this.detailLevel = detailLevel;
             this.g = g;

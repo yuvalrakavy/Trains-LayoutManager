@@ -211,7 +211,7 @@ namespace LayoutManager.Tools.Dialogs {
                 return;
 
             ITripRouteValidationResult routeValidationResult = (ITripRouteValidationResult)EventManager.Event(
-                new LayoutEvent(tripPlan, "validate-trip-plan-route", null, train));
+                new LayoutEvent("validate-trip-plan-route", tripPlan, train, null));
 
             if (routeValidationResult.Actions.Count > 0) {
                 Dialogs.TripPlanRouteValidationResult d = new Dialogs.TripPlanRouteValidationResult(tripPlan, routeValidationResult, this);
@@ -230,7 +230,7 @@ namespace LayoutManager.Tools.Dialogs {
             try {
                 TripPlanAssignmentInfo tripPlanAssignment = new TripPlanAssignmentInfo(tripPlan, train);
 
-                if ((bool)EventManager.Event(new LayoutEvent(tripPlanAssignment, "execute-trip-plan", null, this)))
+                if ((bool)EventManager.Event(new LayoutEvent("execute-trip-plan", tripPlanAssignment, this, null)))
                     Close();
             }
             catch (LayoutException ex) {
@@ -239,7 +239,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonSaveTripPlan_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(tripPlanEditor1.TripPlan, "save-trip-plan"));
+            EventManager.Event(new LayoutEvent("save-trip-plan", tripPlanEditor1.TripPlan));
         }
 
         private void TripPlanEditor_Closing(object sender, System.ComponentModel.CancelEventArgs e) {

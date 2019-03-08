@@ -86,7 +86,7 @@ namespace LayoutManager.Dialogs {
 
                 List<DecoderTypeInfo> decoderTypes = new List<DecoderTypeInfo>();
 
-                EventManager.Event(new LayoutEvent(decoderTypes, "enum-decoder-types"));
+                EventManager.Event(new LayoutEvent("enum-decoder-types", decoderTypes));
 
                 comboBoxDecoderType.Items.Clear();
 

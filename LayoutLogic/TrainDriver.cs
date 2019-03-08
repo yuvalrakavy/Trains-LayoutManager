@@ -53,7 +53,7 @@ namespace LayoutManager.Logic {
         private void manualDriverAssignment(LayoutEvent e) {
             TrainCommonInfo train = (TrainCommonInfo)e.Sender;
 
-            EventManager.Event(new LayoutEvent(train, "show-locomotive-controller"));
+            EventManager.Event(new LayoutEvent("show-locomotive-controller", train));
             e.Info = true;
         }
 
@@ -122,7 +122,7 @@ namespace LayoutManager.Logic {
         private void automaticDriverEditDriverSetting(LayoutEvent e) {
             TrainCommonInfo train = (TrainCommonInfo)e.Info;
 
-            EventManager.Event(new LayoutEvent(train, "get-train-target-speed"));
+            EventManager.Event(new LayoutEvent("get-train-target-speed", train));
         }
 
         #region Event handlers for events taken care by the automatic driver

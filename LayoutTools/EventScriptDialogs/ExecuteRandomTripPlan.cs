@@ -72,7 +72,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             if (conditionElement == null || conditionElement.ChildNodes.Count < 1)
                 textBoxCondition.Text = "<No condition>";
             else
-                textBoxCondition.Text = (string)EventManager.Event(new LayoutEvent(conditionElement.ChildNodes[0], "get-event-script-description"));
+                textBoxCondition.Text = (string)EventManager.Event(new LayoutEvent("get-event-script-description", conditionElement.ChildNodes[0]));
         }
 
         /// <summary>

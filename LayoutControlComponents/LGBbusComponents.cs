@@ -18,7 +18,7 @@ namespace LayoutManager.ControlComponents {
             ControlModuleType moduleType = new ControlModuleType(parentElement, "LGB55070", "LGB Feedback Interface") {
                 AddressAlignment = 4
             };
-            EventManager.Event(new LayoutEvent(moduleType, "add-bus-connectable-to-module").SetOption("GenericBusType", "LGBBUS"));
+            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "LGBBUS"));
             moduleType.ConnectionPointsPerAddress = 2;
             moduleType.NumberOfAddresses = 4;
             moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryContact;
@@ -35,7 +35,7 @@ namespace LayoutManager.ControlComponents {
             ControlModuleType moduleType = new ControlModuleType(parentElement, "LGB55075", "LGB Train detection module") {
                 AddressAlignment = 4
             };
-            EventManager.Event(new LayoutEvent(moduleType, "add-bus-connectable-to-module").SetOption("GenericBusType", "LGBBUS"));
+            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "LGBBUS"));
             moduleType.ConnectionPointsPerAddress = 1;
             moduleType.NumberOfAddresses = 4;
             moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputCurrent;

@@ -8,6 +8,8 @@ using System.Linq;
 using System.Threading;
 using LayoutManager.Components;
 
+#pragma warning disable IDE0051, IDE0060
+
 namespace LayoutManager.Model {
 
     #region State Management Base classes
@@ -609,7 +611,7 @@ namespace LayoutManager.Model {
 
             set {
                 base.TargetSpeed = value;
-                EventManager.Event(new LayoutEvent(this, "train-target-speed-changed", null, value));
+                EventManager.Event(new LayoutEvent("train-target-speed-changed", this, value, null));
             }
         }
 
@@ -718,14 +720,14 @@ namespace LayoutManager.Model {
                 LocomotiveOrientation direction = MotionDirection;
 
                 if ((value > 0 && direction == LocomotiveOrientation.Backward) || (value < 0 && direction == LocomotiveOrientation.Forward))
-                    EventManager.Event(new LayoutEvent(this, "reverse-train-motion-direction-request"));
+                    EventManager.Event(new LayoutEvent("reverse-train-motion-direction-request", this));
 
                 if (value > 0)
                     MotionDirection = LocomotiveOrientation.Forward;
                 else if (value < 0)
                     MotionDirection = LocomotiveOrientation.Backward;
 
-                EventManager.Event(new LayoutEvent(this, "set-train-speed-request", null, value));
+                EventManager.Event(new LayoutEvent("set-train-speed-request", this, value, null));
             }
         }
 
@@ -785,7 +787,7 @@ namespace LayoutManager.Model {
             set {
                 if (NotManaged)
                     throw new LocomotiveNotManagedException(Locomotives[0].Locomotive);
-                EventManager.Event(new LayoutEvent(this, "set-train-lights-request", null, value));
+                EventManager.Event(new LayoutEvent("set-train-lights-request", this, value, null));
             }
         }
 
@@ -833,7 +835,7 @@ namespace LayoutManager.Model {
             get {
                 if (HasAttribute("InTrip")) {
                     if (trip == null) {
-                        trip = (TripPlanAssignmentInfo)EventManager.Event(new LayoutEvent(this, "get-train-active-trip"));
+                        trip = (TripPlanAssignmentInfo)EventManager.Event(new LayoutEvent("get-train-active-trip", this));
                         if (trip == null)
                             Element.RemoveAttribute("InTrip");
                     }
@@ -926,16 +928,16 @@ namespace LayoutManager.Model {
 
             if (block != null)
                 // Verify that indeed the locomotive can be added (exception is thrown if not)
-                result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(loco.Element, "can-locomotive-be-placed-on-track", null, block.BlockDefinintion));
+                result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed-on-track", loco.Element, block.BlockDefinintion, null));
             else
                 result = new CanPlaceTrainResult() { CanBeResolved = true, Status = CanPlaceTrainStatus.CanPlaceTrain };
 
             if (result.Status == CanPlaceTrainStatus.CanPlaceTrain) {
                 if (validateAddress) {
                     if (LocomotiveBlock == null)
-                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(loco.Element, "is-locomotive-address-valid", "<Orientation Value='" + orientation.ToString() + "' />", block));
+                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("is-locomotive-address-valid", loco.Element, block, "<Orientation Value='" + orientation.ToString() + "' />"));
                     else
-                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(loco.Element, "is-locomotive-address-valid", "<Orientation Value='" + orientation.ToString() + "' />", this));
+                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("is-locomotive-address-valid", loco.Element, this, "<Orientation Value='" + orientation.ToString() + "' />"));
                 }
 
                 if (LocomotiveBlock != null)
@@ -949,7 +951,7 @@ namespace LayoutManager.Model {
                     TrainLocomotiveInfo trainLocomotive = result.TrainLocomotive;
 
                     LayoutModel.StateManager.Trains.IdToTrainStateElement[loco.Id] = Element;
-                    EventManager.Event(new LayoutEvent(this, "locomotive-added-to-train", null, trainLocomotive));
+                    EventManager.Event(new LayoutEvent("locomotive-added-to-train", this, trainLocomotive, null));
                 }
             }
 
@@ -972,14 +974,14 @@ namespace LayoutManager.Model {
         #endregion
 
         public override void RemoveLocomotive(TrainLocomotiveInfo removedTrainLoco) {
-            EventManager.Event(new LayoutEvent(removedTrainLoco, "removing-locomotive-from-train", null, this));
+            EventManager.Event(new LayoutEvent("removing-locomotive-from-train", removedTrainLoco, this, null));
 
             LayoutModel.StateManager.Trains.IdToTrainStateElement.Remove(removedTrainLoco.Locomotive.Id);
             LayoutModel.StateManager.Trains.IdToTrainStateElement.Remove(removedTrainLoco.CollectionElementId);
 
             base.RemoveLocomotive(removedTrainLoco);
 
-            EventManager.Event(new LayoutEvent(this, "locomotive-removed-from-train"));
+            EventManager.Event(new LayoutEvent("locomotive-removed-from-train", this));
         }
 
         #endregion
@@ -1035,7 +1037,7 @@ namespace LayoutManager.Model {
             block.AddTrain(trainLocation);
 
             if (eventName != null)
-                EventManager.Event(new LayoutEvent(this, eventName, null, block));
+                EventManager.Event(new LayoutEvent(eventName, this, block, null));
 
             Redraw();
 
@@ -1057,7 +1059,7 @@ namespace LayoutManager.Model {
             block.RemoveTrain(trainLocation);
             LocationsElement.RemoveChild(trainLocation.Element);
             if (generateEvent)
-                EventManager.Event(new LayoutEvent(this, "train-leave-block", null, block));
+                EventManager.Event(new LayoutEvent("train-leave-block", this, block, null));
             Redraw();
         }
 
@@ -1093,7 +1095,7 @@ namespace LayoutManager.Model {
         public void SetSpeedValue(int speedInSteps) {
             if (speedInSteps != this.SpeedInSteps) {
                 SetAttribute("Speed", XmlConvert.ToString(speedInSteps));
-                EventManager.Event(new LayoutEvent(this, "train-speed-changed", null, speedInSteps));
+                EventManager.Event(new LayoutEvent("train-speed-changed", this, speedInSteps, null));
             }
         }
 
@@ -1106,7 +1108,7 @@ namespace LayoutManager.Model {
         public void SetLightsValue(bool lights) {
             if (lights != Lights) {
                 SetAttribute("Lights", XmlConvert.ToString(lights));
-                EventManager.Event(new LayoutEvent(this, "train-lights-changed", null, lights));
+                EventManager.Event(new LayoutEvent("train-lights-changed", this, lights, null));
             }
         }
 
@@ -1184,8 +1186,8 @@ namespace LayoutManager.Model {
             LocomotiveFunctionInfo function = FindFunctionState(functionName, locomotiveId, true);
 
             function.State = state;
-            EventManager.Event(new LayoutEvent(this, "locomotive-function-state-changed",
-                getFunctionXml(functionName, locomotiveId), state));
+            EventManager.Event(new LayoutEvent("locomotive-function-state-changed", this,
+                state, getFunctionXml(functionName, locomotiveId)));
         }
 
         [LayoutEventDef("locomotive-function-state-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
@@ -1195,8 +1197,8 @@ namespace LayoutManager.Model {
             if (function != null) {
                 function.State = state;
 
-                EventManager.Event(new LayoutEvent(this, "locomotive-function-state-changed",
-                    getFunctionXml(function.Name, locomotiveId), state));
+                EventManager.Event(new LayoutEvent("locomotive-function-state-changed", this,
+                    state, getFunctionXml(function.Name, locomotiveId)));
             }
         }
 
@@ -1207,8 +1209,8 @@ namespace LayoutManager.Model {
         /// <param name="locoIndex">which locomotive (relevant if locomotive set), -1 set the state for all locomotives in the set</param>
         /// <param name="state">The state (true = on, false = off)</param>
         public void SetLocomotiveFunctionState(String functionName, Guid locomotiveId, bool state) {
-            EventManager.Event(new LayoutEvent(this, "set-locomotive-function-state-request",
-                getFunctionXml(functionName, locomotiveId), state));
+            EventManager.Event(new LayoutEvent("set-locomotive-function-state-request", this,
+                state, getFunctionXml(functionName, locomotiveId)));
         }
 
         /// <summary>
@@ -1217,8 +1219,8 @@ namespace LayoutManager.Model {
         /// <param name="functionName">The function name</param>
         /// <param name="locoIndex">which locomotive (relevant if locomotive set), -1 set the state for all locomotives in the set</param>
         public void TriggerLocomotiveFunction(String functionName, Guid locomotiveId) {
-            EventManager.Event(new LayoutEvent(this, "trigger-locomotive-function-request",
-                getFunctionXml(functionName, locomotiveId)));
+            EventManager.Event(new LayoutEvent("trigger-locomotive-function-request", sender: this,
+                xmlDocument: getFunctionXml(functionName, locomotiveId)));
         }
 
         /// <summary>
@@ -1324,7 +1326,7 @@ namespace LayoutManager.Model {
 
             if (newCurrentSpeedLimit != CurrentSpeedLimit) {
                 CurrentSpeedLimit = newCurrentSpeedLimit;
-                EventManager.Event(new LayoutEvent(this, "train-speed-limit-changed", null, newCurrentSpeedLimit));
+                EventManager.Event(new LayoutEvent("train-speed-limit-changed", this, newCurrentSpeedLimit, null));
             }
 
             // Calculate slow down speed
@@ -1345,7 +1347,7 @@ namespace LayoutManager.Model {
 
             if (newCurrentSlowDownSpeed != CurrentSlowdownSpeed) {
                 CurrentSlowdownSpeed = newCurrentSlowDownSpeed;
-                EventManager.Event(new LayoutEvent(this, "train-slow-down-speed-changed", null, newCurrentSlowDownSpeed));
+                EventManager.Event(new LayoutEvent("train-slow-down-speed-changed", this, newCurrentSlowDownSpeed, null));
             }
         }
 
@@ -1354,8 +1356,8 @@ namespace LayoutManager.Model {
         }
 
         public void ChangeSpeed(int requestedSpeed, MotionRampInfo ramp) {
-            EventManager.Event(new LayoutEvent(this, "train-speed-change-request", null,
-                new TrainSpeedChangeParameters(requestedSpeed, ramp)));
+            EventManager.Event(new LayoutEvent("train-speed-change-request", this, new TrainSpeedChangeParameters(requestedSpeed, ramp),
+                null));
         }
 
         #endregion
@@ -1654,7 +1656,7 @@ namespace LayoutManager.Model {
         public void Remove(TrainStateInfo trainState) {
             EventManager.Event(new LayoutEvent<TrainStateInfo>("train-is-removed", trainState));
             RemoveTrainState(trainState);
-            EventManager.Event(new LayoutEvent(trainState, "train-removed"));
+            EventManager.Event(new LayoutEvent("train-removed", trainState));
         }
 
         /// <summary>
@@ -2014,9 +2016,9 @@ namespace LayoutManager.Model {
 
             set {
                 if (value == true && Active == false)
-                    EventManager.Event(new LayoutEvent(this, "request-manual-dispatch-lock"));
+                    EventManager.Event(new LayoutEvent("request-manual-dispatch-lock", this));
                 else if (value == false && Active == true) {
-                    EventManager.Event(new LayoutEvent(this, "free-manual-dispatch-lock", null, false));
+                    EventManager.Event(new LayoutEvent("free-manual-dispatch-lock", this, false, null));
                     SetActive(false);
                 }
             }
@@ -2038,7 +2040,7 @@ namespace LayoutManager.Model {
         /// <param name="active"></param>
         public void SetActive(bool active) {
             SetAttribute("Active", XmlConvert.ToString(active));
-            EventManager.Event(new LayoutEvent(this, "manual-dispatch-region-activation-changed", null, active));
+            EventManager.Event(new LayoutEvent("manual-dispatch-region-activation-changed", this, active, null));
         }
 
         public BlockIdCollection BlockIdList {
@@ -2228,7 +2230,7 @@ namespace LayoutManager.Model {
 
         public LayoutEventScript ActiveScript {
             get {
-                LayoutEventScript runningScript = (LayoutEventScript)EventManager.Event(new LayoutEvent(Id, "get-active-event-script"));
+                LayoutEventScript runningScript = (LayoutEventScript)EventManager.Event(new LayoutEvent("get-active-event-script", Id));
 
                 return runningScript;
             }
@@ -2319,7 +2321,7 @@ namespace LayoutManager.Model {
             get {
                 if (EventScriptElement == null)
                     return "(Policy not set)";
-                return (string)EventManager.Event(new LayoutEvent(EventScriptElement, "get-event-script-description"));
+                return (string)EventManager.Event(new LayoutEvent("get-event-script-description", EventScriptElement));
             }
         }
 
@@ -2338,12 +2340,10 @@ namespace LayoutManager.Model {
         readonly List<LayoutPolicyInfo> policies = new List<LayoutPolicyInfo>();
         readonly XmlElement globalPoliciesElement;
         readonly XmlElement policiesElement;
-        readonly string scope;
 
         public LayoutPoliciesCollection(XmlElement globalPoliciesElement, XmlElement policiesElement, string scope) {
             this.globalPoliciesElement = globalPoliciesElement;
             this.policiesElement = policiesElement;
-            this.scope = scope;
 
             string filter;
 
@@ -2384,7 +2384,7 @@ namespace LayoutManager.Model {
             if (policy.Element.OwnerDocument == globalPoliciesElement.OwnerDocument)
                 LayoutModel.WriteModelXmlInfo();
 
-            EventManager.Event(new LayoutEvent(this, "policy-added-to-policies-collection", null, policy));
+            EventManager.Event(new LayoutEvent("policy-added-to-policies-collection", this, policy, null));
         }
 
         public bool Remove(Guid policyId) {
@@ -2393,10 +2393,10 @@ namespace LayoutManager.Model {
             if (policyToRemove != null) {
                 bool save = (policyToRemove.Element.OwnerDocument == globalPoliciesElement.OwnerDocument);
 
-                EventManager.Event(new LayoutEvent(this, "policy-removed-from-policies-collection", null, policyToRemove));
+                EventManager.Event(new LayoutEvent("policy-removed-from-policies-collection", this, policyToRemove, null));
                 policies.Remove(policyToRemove);
 
-                EventManager.Event(new LayoutEvent(policyToRemove, "policy-removed", null, this));
+                EventManager.Event(new LayoutEvent("policy-removed", policyToRemove, this, null));
                 policyToRemove.Element.ParentNode.RemoveChild(policyToRemove.Element);
 
                 if (save)
@@ -2446,12 +2446,12 @@ namespace LayoutManager.Model {
                 policiesElement.AppendChild(policy.Element);
 
             policies.Add(policy);
-            EventManager.Event(new LayoutEvent(policy, "policy-added", null, this));
+            EventManager.Event(new LayoutEvent("policy-added", policy, this, null));
         }
 
         public void Clear() {
             foreach (LayoutPolicyInfo policy in policies) {
-                EventManager.Event(new LayoutEvent(policy, "policy-deleted", null, this));
+                EventManager.Event(new LayoutEvent("policy-deleted", policy, this, null));
                 if (policy.GlobalPolicy)
                     globalPoliciesElement.RemoveChild(policy.Element);
                 else
@@ -2695,7 +2695,7 @@ namespace LayoutManager.Model {
                     }
                     catch (LayoutException) {
                         allLayoutManualDispatch = null;
-                        EventManager.Event(new LayoutEvent(this, "all-layout-manual-dispatch-mode-status-changed", null, active));
+                        EventManager.Event(new LayoutEvent("all-layout-manual-dispatch-mode-status-changed", this, active, null));
                         throw;
                     }
 
@@ -2706,7 +2706,7 @@ namespace LayoutManager.Model {
                     Element.RemoveAttribute("AllLayoutManualDispatchRegion");
                 }
 
-                EventManager.Event(new LayoutEvent(this, "all-layout-manual-dispatch-mode-status-changed", null, active));
+                EventManager.Event(new LayoutEvent("all-layout-manual-dispatch-mode-status-changed", this, active, null));
             }
         }
 

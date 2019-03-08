@@ -14,7 +14,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public void Initialize() {
-            String defaultLengthUnit = (String)EventManager.Event(new LayoutEvent(Parent, "get-default-length-unit"));
+            String defaultLengthUnit = (String)EventManager.Event(new LayoutEvent("get-default-length-unit", Parent));
 
             if (defaultLengthUnit != null)
                 SelectUnit(defaultLengthUnit);

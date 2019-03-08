@@ -127,12 +127,12 @@ namespace LayoutManager.Tools {
             }
 
             public object Resolve(LayoutScriptContext context, string symbolName) {
-                TripPlanAssignmentInfo trip = (TripPlanAssignmentInfo)EventManager.Event(new LayoutEvent(train, "get-train-active-trip"));
+                TripPlanAssignmentInfo trip = (TripPlanAssignmentInfo)EventManager.Event(new LayoutEvent("get-train-active-trip", train));
 
                 if (trip == null)
                     return null;
 
-                EventManager.Event(new LayoutEvent(trip, "set-script-context", null, context));
+                EventManager.Event(new LayoutEvent("set-script-context", trip, context, null));
                 return context[symbolName];
             }
         }
@@ -183,10 +183,10 @@ namespace LayoutManager.Tools {
                 }
 
 
-                EventManager.Event(new LayoutEvent(trip.TripPlan, "set-script-context", null, context));
+                EventManager.Event(new LayoutEvent("set-script-context", trip.TripPlan, context, null));
 
                 if (!context.Contains("Train", trip.Train))
-                    EventManager.Event(new LayoutEvent(trip.Train, "set-script-context", null, context));
+                    EventManager.Event(new LayoutEvent("set-script-context", trip.Train, context, null));
             }
         }
 
@@ -210,7 +210,7 @@ namespace LayoutManager.Tools {
                 context["Block"] = block;
 
                 if (block.BlockDefinintion != null)
-                    EventManager.Event(new LayoutEvent(block.BlockDefinintion, "set-script-context", null, context));
+                    EventManager.Event(new LayoutEvent("set-script-context", block.BlockDefinintion, context, null));
             }
         }
 
@@ -237,13 +237,13 @@ namespace LayoutManager.Tools {
                 TrainStateInfo train = new TrainStateInfo(trainElement);
 
                 foreach (TrainLocationInfo trainLocation in train.Locations)
-                    subscription.EventHandler(new LayoutEvent(train, "train-in-block", null, trainLocation.Block));
+                    subscription.EventHandler(new LayoutEvent("train-in-block", train, trainLocation.Block, null));
             }
         }
 
         [LayoutEvent("train-enter-block")]
         private void trainEnterBlock(LayoutEvent e) {
-            EventManager.Event(new LayoutEvent(e.Sender, "train-in-block", null, e.Info));
+            EventManager.Event(new LayoutEvent("train-in-block", e.Sender, e.Info, null));
         }
 
         #endregion
@@ -454,7 +454,7 @@ namespace LayoutManager.Tools {
                 }
 
                 if (!Occurred) {
-                    eventScript = EventManager.EventScript(policy.Name, policy.EventScriptElement, ((LayoutEventScript)Script).ScopeIDs, new LayoutEvent(this, "run-policy-done"));
+                    eventScript = EventManager.EventScript(policy.Name, policy.EventScriptElement, ((LayoutEventScript)Script).ScopeIDs, new LayoutEvent("run-policy-done", this));
                     eventScript.ParentContext = Context;
 
                     eventScript.Reset();
@@ -597,12 +597,12 @@ namespace LayoutManager.Tools {
 
                 repeatedEvent.Context = new LayoutScriptContext("ForEachTrain", parentContext);
 
-                EventManager.Event(new LayoutEvent(train, "set-script-context", null, Context));
+                EventManager.Event(new LayoutEvent("set-script-context", train, Context, null));
 
-                TripPlanAssignmentInfo tripAssignment = (TripPlanAssignmentInfo)EventManager.Event(new LayoutEvent(train, "get-train-active-trip"));
+                TripPlanAssignmentInfo tripAssignment = (TripPlanAssignmentInfo)EventManager.Event(new LayoutEvent("get-train-active-trip", train));
 
                 if (tripAssignment != null)
-                    EventManager.Event(new LayoutEvent(tripAssignment, "set-script-context", null, Context));
+                    EventManager.Event(new LayoutEvent("set-script-context", tripAssignment, Context, null));
 
                 return true;
             }
@@ -1388,7 +1388,7 @@ namespace LayoutManager.Tools {
                     if (shouldReverse)
                         tripPlan.Reverse();
 
-                    EventManager.Event(new LayoutEvent(new TripPlanAssignmentInfo(tripPlan, train), "execute-trip-plan"));
+                    EventManager.Event(new LayoutEvent("execute-trip-plan", new TripPlanAssignmentInfo(tripPlan, train)));
                 }
             }
         }
@@ -1493,12 +1493,12 @@ namespace LayoutManager.Tools {
                 LayoutConditionScript filter = new LayoutConditionScript("Execute Random Tripplan Filter", Element["Filter"], true);
                 LayoutScriptContext scriptContext = filter.ScriptContext;
 
-                EventManager.Event(new LayoutEvent(train, "set-script-context", null, scriptContext));
+                EventManager.Event(new LayoutEvent("set-script-context", train, scriptContext, null));
 
                 workingDoc.AppendChild(applicableTripPlansElement);
                 applicableTripPlansElement.SetAttribute("StaticGrade", XmlConvert.ToString(false));
 
-                EventManager.Event(new LayoutEvent(train, "get-applicable-trip-plans-request", null, applicableTripPlansElement));
+                EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", train, applicableTripPlansElement, null));
 
                 if (traceRandomTripPlan.TraceVerbose) {
                     Trace.WriteLine("*** Execute Random trip plan ***");
@@ -1514,12 +1514,12 @@ namespace LayoutManager.Tools {
 
                     if (tripPlan != null && routeQuality.IsFree) {
                         if (!tripPlan.IsCircular || selectCircular) {
-                            EventManager.Event(new LayoutEvent(tripPlan, "set-script-context", null, scriptContext));
+                            EventManager.Event(new LayoutEvent("set-script-context", tripPlan, scriptContext, null));
 
                             Application.DoEvents();
 
                             if (filter.IsTrue) {
-                                bool destinationIsFree = (bool)EventManager.Event(new LayoutEvent(tripPlan, "check-trip-plan-destination-request"));
+                                bool destinationIsFree = (bool)EventManager.Event(new LayoutEvent("check-trip-plan-destination-request", tripPlan));
 
                                 if (XmlConvert.ToBoolean(applicableTripPlanElement.GetAttribute("ShouldReverse")) || !destinationIsFree)
                                     reversedTripPlanCandidates.Add(applicableTripPlanElement);
@@ -1551,7 +1551,7 @@ namespace LayoutManager.Tools {
 
 
                 if (upperLimit == 0)
-                    EventManager.Event(new LayoutEvent(train, "no-applicable-trip-plans-notification"));
+                    EventManager.Event(new LayoutEvent("no-applicable-trip-plans-notification", train));
                 else {
                     int index = new Random().Next(upperLimit);
                     XmlElement selectedApplicableTripPlanElement = null;
@@ -1583,7 +1583,7 @@ namespace LayoutManager.Tools {
                         if (shouldReverse)
                             tripPlan.Reverse();
 
-                        EventManager.Event(new LayoutEvent(new TripPlanAssignmentInfo(tripPlan, train), "execute-trip-plan"));
+                        EventManager.Event(new LayoutEvent("execute-trip-plan", new TripPlanAssignmentInfo(tripPlan, train)));
                     }
                 }
             }

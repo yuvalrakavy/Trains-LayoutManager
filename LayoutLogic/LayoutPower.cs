@@ -19,7 +19,7 @@ namespace LayoutManager.Logic {
         static ILayoutTopologyServices TopologyServices {
             get {
                 if (_topologyServices == null)
-                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent(null, "get-topology-services"));
+                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", null));
                 return _topologyServices;
             }
         }
@@ -44,7 +44,7 @@ namespace LayoutManager.Logic {
                 var component = LayoutModel.Component<ILayoutLockResource>(_pendingPowerConnectedLockReady[outletComponentId]);
 
                 if (component != null)
-                    EventManager.Event(new LayoutEvent(component, "layout-lock-resource-ready"));
+                    EventManager.Event(new LayoutEvent("layout-lock-resource-ready", component));
                 _pendingPowerConnectedLockReady.Remove(outletComponentId);
             }
         }

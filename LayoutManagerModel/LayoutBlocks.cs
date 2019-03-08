@@ -654,11 +654,11 @@ namespace LayoutManager.Model {
             foreach (TrainMotionListEntry motionListEntry in motions) {
                 LocomotiveTrackingResult trackingResult = motionListEntry.TrackingResult;
 
-                EventManager.Event(new LayoutEvent(trackingResult.Train, "train-enter-block", null, trackingResult.ToBlock));
-                EventManager.Event(new LayoutEvent(trackingResult.Train, "train-crossed-block", null, trackingResult.BlockEdge));
+                EventManager.Event(new LayoutEvent("train-enter-block", trackingResult.Train, trackingResult.ToBlock, null));
+                EventManager.Event(new LayoutEvent("train-crossed-block", trackingResult.Train, trackingResult.BlockEdge, null));
                 if (trackingResult.BlockEdge is LayoutBlockEdgeComponent) {
-                    EventManager.Event(new LayoutEvent((LayoutBlockEdgeComponent)trackingResult.BlockEdge,
-                        "occupancy-block-edge-crossed", null, trackingResult.Train));
+                    EventManager.Event(new LayoutEvent("occupancy-block-edge-crossed",
+                        (LayoutBlockEdgeComponent)trackingResult.BlockEdge, trackingResult.Train, null));
                 }
             }
         }

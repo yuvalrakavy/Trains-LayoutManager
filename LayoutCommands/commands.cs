@@ -206,7 +206,7 @@ namespace LayoutManager {
             component.OnXmlInfoChanged();
             component.Redraw();
 
-            EventManager.Event(new LayoutEvent(component, "component-configuration-changed"));
+            EventManager.Event(new LayoutEvent("component-configuration-changed", component));
         }
 
         public override void Undo() {
@@ -219,7 +219,7 @@ namespace LayoutManager {
             component.OnXmlInfoChanged();
             component.Redraw();
 
-            EventManager.Event(new LayoutEvent(component, "component-configuration-changed"));
+            EventManager.Event(new LayoutEvent("component-configuration-changed", component));
         }
 
         public override String ToString() => "Edit " + component.ToString() + " properties";
@@ -392,7 +392,7 @@ namespace LayoutManager {
             module.Module.Address = address;
             address = previousAddress;
 
-            EventManager.Event(new LayoutEvent(module.Module, "control-module-address-changed"));
+            EventManager.Event(new LayoutEvent("control-module-address-changed", module.Module));
         }
 
         public override void Undo() {
@@ -416,7 +416,7 @@ namespace LayoutManager {
 
             module.Module.LocationId = locationID;
             locationID = previousLocationID;
-            EventManager.Event(new LayoutEvent(module.Module, "control-module-location-changed"));
+            EventManager.Event(new LayoutEvent("control-module-location-changed", module.Module));
         }
 
         public override void Undo() {
@@ -531,7 +531,7 @@ namespace LayoutManager {
 
             this.otherBusProvider = current;
 
-            EventManager.Event(new LayoutEvent(bus, "control-bus-reconnected"));
+            EventManager.Event(new LayoutEvent("control-bus-reconnected", bus));
         }
 
         public override void Undo() {
@@ -566,7 +566,7 @@ namespace LayoutManager {
             this.address = address + delta;
             this.delta = -delta;
 
-            EventManager.Event(new LayoutEvent(thisModule, "control-module-address-changed"));
+            EventManager.Event(new LayoutEvent("control-module-address-changed", thisModule));
         }
 
         public override void Undo() {
@@ -592,7 +592,7 @@ namespace LayoutManager {
             moduleRef.Module.Label = label;
             label = previousLabel;
 
-            EventManager.Event(new LayoutEvent(module, "control-module-label-changed"));
+            EventManager.Event(new LayoutEvent("control-module-label-changed", module));
         }
 
         public override void Undo() {
@@ -638,7 +638,7 @@ namespace LayoutManager {
             subject.UserActionRequired = this.userActionRequired;
             this.userActionRequired = previousUserActionRequired;
 
-            EventManager.Event(new LayoutEvent(subject, "control-user-action-required-changed"));
+            EventManager.Event(new LayoutEvent("control-user-action-required-changed", subject));
         }
 
         public override void Undo() {
@@ -662,7 +662,7 @@ namespace LayoutManager {
 
             controlModule.AddressProgrammingRequired = this.addressProgrammingRequired;
             this.addressProgrammingRequired = previousValue;
-            EventManager.Event(new LayoutEvent(this.controlModule, "control-address-programming-required-changed"));
+            EventManager.Event(new LayoutEvent("control-address-programming-required-changed", this.controlModule));
         }
 
         public override void Undo() {

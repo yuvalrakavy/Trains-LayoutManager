@@ -47,7 +47,7 @@ namespace LayoutBaseServices {
 #pragma warning restore IDE0060 // Remove unused parameter
             Debug.Assert(relayThread != null);
 
-            QueueEvent(new LayoutEvent(this, "terminate-event-relay-thread"));
+            QueueEvent(new LayoutEvent("terminate-event-relay-thread", this));
 
             if (!terminatedEvent.WaitOne(1000, false))
                 relayThread?.Abort();

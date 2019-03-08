@@ -25,7 +25,9 @@ namespace LayoutManager.Tools.Dialogs {
         /// </summary>
         private readonly Container components = null;
 
+#pragma warning disable IDE0051 // Remove unused private members
         private void endOfDesignerVariables() { }
+#pragma warning restore IDE0051 // Remove unused private members
 
         readonly TrainCommonInfo train;
 
@@ -99,7 +101,7 @@ namespace LayoutManager.Tools.Dialogs {
                 inList.Add(loco.Id, loco);
 
                 if (train is TrainStateInfo) {
-                    CanPlaceTrainResult result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(loco.Element, "is-locomotive-address-valid", "<Orientation Value='" + orientation.ToString() + "' />", train));
+                    CanPlaceTrainResult result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("is-locomotive-address-valid", loco.Element, train, "<Orientation Value='" + orientation.ToString() + "' />"));
 
                     if (!result.CanBeResolved)
                         retainInList = false;
@@ -125,9 +127,10 @@ namespace LayoutManager.Tools.Dialogs {
                     if (train is TrainStateInfo) {
                         CanPlaceTrainResult result;
 
-                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(loco.Element, "can-locomotive-be-placed-on-track", (string)null, null));
+                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed-on-track", loco.Element));
                         if (result.Status == CanPlaceTrainStatus.CanPlaceTrain)
-                            result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(loco.Element, "is-locomotive-address-valid", "<Orientation Value='" + orientation.ToString() + "' />", train));
+                            result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(
+                                "is-locomotive-address-valid", loco.Element, train, xmlDocument: "<Orientation Value='" + orientation.ToString() + "' />"));
 
                         if (result.Status != CanPlaceTrainStatus.CanPlaceTrain)
                             validLoco = false;

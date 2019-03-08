@@ -89,7 +89,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             CommandStationInputEvent commandStationEvent = new CommandStationInputEvent((ModelComponent)commandStation, bus, address, index, state);
 
-            EventManager.Event(new LayoutEvent(this, "design-time-command-station-event", null, commandStationEvent));
+            EventManager.Event(new LayoutEvent("design-time-command-station-event", this, commandStationEvent, null));
 
             DialogResult = DialogResult.OK;
         }

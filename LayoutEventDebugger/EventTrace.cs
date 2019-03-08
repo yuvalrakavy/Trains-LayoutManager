@@ -155,7 +155,7 @@ namespace LayoutEventDebugger {
         private void EventTrace_Closed(object sender, System.EventArgs e) {
             EventManager.Instance.TraceEvents = false;
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
-            EventManager.Event(new LayoutEvent(this, "event-trace-closed"));
+            EventManager.Event(new LayoutEvent("event-trace-closed", this));
         }
 
         private void buttonTraceState_Click(object sender, System.EventArgs e) {

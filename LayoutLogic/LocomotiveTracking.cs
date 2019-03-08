@@ -20,7 +20,7 @@ namespace LayoutManager.Logic {
         protected ILayoutTopologyServices TopologyServices {
             get {
                 if (_topologyServices == null)
-                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent(this, "get-topology-services"));
+                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this));
                 return _topologyServices;
             }
         }
@@ -84,8 +84,8 @@ namespace LayoutManager.Logic {
                             removeTrainFromPhantomBlocks(trackContactPassingState.FromBlock, train);
                             train.LeaveBlock(trackContactPassingState.FromBlock);
                             trackContactPassingState.Remove();
-                            EventManager.Event(new LayoutEvent(trackContact, "train-leaving-block-details",
-                                null, new TrainChangingBlock(trackContact, train, trackContactPassingState.FromBlock, trackContactPassingState.ToBlock)));
+                            EventManager.Event(new LayoutEvent("train-leaving-block-details", trackContact,
+                                new TrainChangingBlock(trackContact, train, trackContactPassingState.FromBlock, trackContactPassingState.ToBlock), null));
                         }
                     }
                     else {
@@ -96,13 +96,13 @@ namespace LayoutManager.Logic {
                             removeTrainFromPhantomBlocks(trackContactPassingState.ToBlock, train);
                             train.LeaveBlock(trackContactPassingState.ToBlock);
                             trackContactPassingState.Remove();
-                            EventManager.Event(new LayoutEvent(trackContact, "train-leaving-block-details",
-                                null, new TrainChangingBlock(trackContact, train, trackContactPassingState.FromBlock, trackContactPassingState.ToBlock)));
+                            EventManager.Event(new LayoutEvent("train-leaving-block-details", trackContact,
+                                new TrainChangingBlock(trackContact, train, trackContactPassingState.FromBlock, trackContactPassingState.ToBlock), null));
                         }
                     }
                 }
                 else {
-                    LocomotiveTrackingResult trackingResult = (LocomotiveTrackingResult)EventManager.Event(new LayoutEvent(trackContact, "track-locomotive-position"));
+                    LocomotiveTrackingResult trackingResult = (LocomotiveTrackingResult)EventManager.Event(new LayoutEvent("track-locomotive-position", trackContact));
 
                     // If tracking result is null - crossing was within manual dispatch region, and is completly ignored
                     if (trackingResult != null) {
@@ -130,8 +130,8 @@ namespace LayoutManager.Logic {
                         else {
                             removeTrainFromPhantomBlocks(trackingResult.FromBlock, trackingResult.Train);
                             trackingResult.Train.LeaveBlock(trackingResult.FromBlock);
-                            EventManager.Event(new LayoutEvent(trackContact, "train-leaving-block-details", null,
-                                new TrainChangingBlock(trackContact, train, trackingResult.FromBlock, trackingResult.ToBlock)));
+                            EventManager.Event(new LayoutEvent("train-leaving-block-details", trackContact, new TrainChangingBlock(trackContact, train, trackingResult.FromBlock, trackingResult.ToBlock),
+                                null));
                         }
 
                         train.EnterBlock(fromLocationTrainPart,
@@ -140,8 +140,8 @@ namespace LayoutManager.Logic {
                     }
 
                     // For now only locomotive tracking is implemented
-                    EventManager.Event(new LayoutEvent(train, "train-crossed-block", null, trackContact));
-                    EventManager.Event(new LayoutEvent(trackContact, "track-contact-triggered", null, train));
+                    EventManager.Event(new LayoutEvent("train-crossed-block", train, trackContact, null));
+                    EventManager.Event(new LayoutEvent("track-contact-triggered", trackContact, train, null));
                 }
             }
             catch (LayoutException lex) {
@@ -171,8 +171,8 @@ namespace LayoutManager.Logic {
                             removeTrainFromPhantomBlocks(visitedBlocks, otherBlock, train);
 
                             train.LeaveBlock(otherBlock);
-                            EventManager.Event(new LayoutEvent(blockEdge, "train-leaving-block-details",
-                                null, new TrainChangingBlock(blockEdge, train, otherBlock, block)));
+                            EventManager.Event(new LayoutEvent("train-leaving-block-details", blockEdge,
+                                new TrainChangingBlock(blockEdge, train, otherBlock, block), null));
                         }
                     }
                 }
@@ -209,7 +209,7 @@ namespace LayoutManager.Logic {
             LayoutBlock extendedTrainBlock = IsExtendingTrain(occupancyBlock);
 
             if (extendedTrainBlock != null)
-                EventManager.Event(new LayoutEvent(extendedTrainBlock.Trains[0].Train, "request-auto-train-extend", null, extendedTrainBlock.BlockDefinintion));
+                EventManager.Event(new LayoutEvent("request-auto-train-extend", extendedTrainBlock.Trains[0].Train, extendedTrainBlock.BlockDefinintion, null));
             else {
                 try {
                     ArrayList trackingResults = new ArrayList();
@@ -270,10 +270,10 @@ namespace LayoutManager.Logic {
 
                         removePhantomTrainLocations(train, fromLocationTrainPart);
 
-                        EventManager.Event(new LayoutEvent(trackingResult.Train, "train-enter-block", null, trackingResult.ToBlock));
-                        EventManager.Event(new LayoutEvent(train, "train-crossed-block", null, trackingResult.BlockEdge));
-                        EventManager.Event(new LayoutEvent((LayoutBlockEdgeComponent)trackingResult.BlockEdge,
-                            "occupancy-block-edge-crossed", null, train));
+                        EventManager.Event(new LayoutEvent("train-enter-block", trackingResult.Train, trackingResult.ToBlock, null));
+                        EventManager.Event(new LayoutEvent("train-crossed-block", train, trackingResult.BlockEdge, null));
+                        EventManager.Event(new LayoutEvent("occupancy-block-edge-crossed",
+                            (LayoutBlockEdgeComponent)trackingResult.BlockEdge, train, null));
 
                     }
                     else if (trackingResults.Count == 0) {
@@ -357,12 +357,12 @@ namespace LayoutManager.Logic {
                     if (train.Speed > 0) {
                         // Stop the train, and abort any trip that this train belongs to
                         train.Speed = 0;
-                        EventManager.Event(new LayoutEvent(train, "abort-trip", null, true));
+                        EventManager.Event(new LayoutEvent("abort-trip", train, true, null));
 
-                        EventManager.Event(new LayoutEvent(train, "train-enter-block", null, block));
-                        EventManager.Event(new LayoutEvent(train, "train-crossed-block", null, blockEdge));
-                        EventManager.Event(new LayoutEvent((LayoutBlockEdgeComponent)blockEdge,
-                            "occupancy-block-edge-crossed", null, train));
+                        EventManager.Event(new LayoutEvent("train-enter-block", train, block, null));
+                        EventManager.Event(new LayoutEvent("train-crossed-block", train, blockEdge, null));
+                        EventManager.Event(new LayoutEvent("occupancy-block-edge-crossed",
+                            (LayoutBlockEdgeComponent)blockEdge, train, null));
 
                         if (train != null) {
                             IModelComponentIsMultiPath turnout = findFaultyTurnout(blockEdge.GetBlockTrackEdge(block), train);
@@ -450,8 +450,8 @@ namespace LayoutManager.Logic {
                             else
                                 toBlock = blockEdge.Track.GetBlock(blockEdge.Track.ConnectionPoints[0]);
 
-                            EventManager.Event(new LayoutEvent(blockEdge, "train-leaving-block-details", null,
-                                new TrainChangingBlock(blockEdge, train, block, toBlock)));
+                            EventManager.Event(new LayoutEvent("train-leaving-block-details", blockEdge, new TrainChangingBlock(blockEdge, train, block, toBlock),
+                                null));
                         }
 
                         bool trainLocationRemoved;

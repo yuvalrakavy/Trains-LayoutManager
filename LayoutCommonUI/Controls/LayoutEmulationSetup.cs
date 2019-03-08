@@ -41,7 +41,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public void Initialize() {
-            ILayoutEmulatorServices emulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent(this, "get-layout-emulation-services"));
+            ILayoutEmulatorServices emulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
 
             if (emulationServices != null) {
                 int tickTime = 200;

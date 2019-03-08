@@ -91,7 +91,7 @@ namespace LayoutManager.Tools.Dialogs {
                     if (LayoutModel.StateManager.Trains[element] == null) {     // Not already on track
                         CanPlaceTrainResult result;
 
-                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(element, "can-locomotive-be-placed", null, blockDefinition));
+                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed", element, blockDefinition, null));
 
                         if (result.CanBeResolved) {
                             LayoutNamedTrainObject namedObject = null;
@@ -195,12 +195,12 @@ namespace LayoutManager.Tools.Dialogs {
             ContextMenu m = new ContextMenu();
 
             m.MenuItems.Add("Locomotive...", delegate (object s, EventArgs a) {
-                EventManager.Event(new LayoutEvent(this, "add-new-locomotive-to-collection"));
+                EventManager.Event(new LayoutEvent("add-new-locomotive-to-collection", this));
                 ForceSearch();
             });
 
             m.MenuItems.Add("Train...", delegate (object s, EventArgs a) {
-                EventManager.Event(new LayoutEvent(this, "add-new-train-to-collection"));
+                EventManager.Event(new LayoutEvent("add-new-train-to-collection", this));
                 ForceSearch();
             });
 

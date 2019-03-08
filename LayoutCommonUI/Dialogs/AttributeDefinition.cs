@@ -335,7 +335,7 @@ namespace LayoutManager.CommonUI.Dialogs {
         private void comboBoxName_DropDown(object sender, System.EventArgs e) {
             if (attributesList == null) {
                 attributesList = new ArrayList();
-                EventManager.Event(new LayoutEvent(attributesSource, "get-object-attributes", null, attributesList));
+                EventManager.Event(new LayoutEvent("get-object-attributes", attributesSource, attributesList, null));
             }
 
             foreach (AttributesInfo attributes in attributesList) {

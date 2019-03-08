@@ -90,7 +90,7 @@ namespace LayoutManager.Components {
                             EventManager.Event(new LayoutEvent<TrainStateInfo, ILayoutPower>("change-train-power", train, power));
 
                         if (switchingCommands.Count > 0)
-                            EventManager.AsyncEvent(new LayoutEvent(this, "set-track-components-state", null, switchingCommands)
+                            EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands, null)
 #if NOTUSED
                                 .ContinueWith(
                                 (t) => {
@@ -115,7 +115,7 @@ namespace LayoutManager.Components {
                         EventManager.Event(new LayoutEvent<TrainStateInfo, ILayoutPower>("change-train-power", train, power));
 
                     if (switchingCommands.Count > 0)
-                        EventManager.AsyncEvent(new LayoutEvent(this, "set-track-components-state", null, switchingCommands));
+                        EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands, null));
                 }
             }
         }
@@ -837,7 +837,7 @@ namespace LayoutManager.Components {
         public override void OnRemovingFromModel() {
             LayoutImageInfo imageProvider = new LayoutImageInfo(Element);
 
-            EventManager.Event(new LayoutEvent(this, "remove-image-from-cache", imageProvider.ImageCacheEventXml, imageProvider.ImageFile));
+            EventManager.Event(new LayoutEvent("remove-image-from-cache", this, imageProvider.ImageFile, imageProvider.ImageCacheEventXml));
 
             base.OnRemovingFromModel();
         }
@@ -1006,7 +1006,7 @@ namespace LayoutManager.Components {
                 OnComponentChanged();
 
                 if (value == LayoutGateState.Open)
-                    EventManager.Event(new LayoutEvent(this, "layout-lock-resource-ready"));
+                    EventManager.Event(new LayoutEvent("layout-lock-resource-ready", this));
             }
         }
 
@@ -1048,12 +1048,12 @@ namespace LayoutManager.Components {
 
         public void MakeResourceReady() {
             if (GateState != LayoutGateState.Open)
-                EventManager.Event(new LayoutEvent(this, "open-gate-request"));
+                EventManager.Event(new LayoutEvent("open-gate-request", this));
         }
 
         public void FreeResource() {
             if (GateState != LayoutGateState.Close && GateState != LayoutGateState.Closing)
-                EventManager.Event(new LayoutEvent(this, "close-gate-request"));
+                EventManager.Event(new LayoutEvent("close-gate-request", this));
         }
 
         #endregion
@@ -1092,9 +1092,9 @@ namespace LayoutManager.Components {
                 StartGateMotion(gateComponent, directionState);
 
                 if (gateComponent.Info.FeedbackType == LayoutGateComponentInfo.FeedbackTypes.NoFeedback || LayoutController.IsOperationSimulationMode)
-                    EventManager.DelayedEvent(gateComponent.Info.MotionTime * 1000, new LayoutEvent(gateComponent, "gate-is-open"));
+                    EventManager.DelayedEvent(gateComponent.Info.MotionTime * 1000, new LayoutEvent("gate-is-open", gateComponent));
                 else
-                    pendingEvents.Add(gateComponent.Id, EventManager.DelayedEvent(gateComponent.Info.MotionTimeout * 1000, new LayoutEvent(gateComponent, "gate-open-timeout")));
+                    pendingEvents.Add(gateComponent.Id, EventManager.DelayedEvent(gateComponent.Info.MotionTimeout * 1000, new LayoutEvent("gate-open-timeout", gateComponent)));
             }
 
             gateComponent.GateState = LayoutGateState.Opening;
@@ -1116,9 +1116,9 @@ namespace LayoutManager.Components {
                 StartGateMotion(gateComponent, directionState);
 
                 if (gateComponent.Info.FeedbackType == LayoutGateComponentInfo.FeedbackTypes.NoFeedback || LayoutController.IsOperationSimulationMode)
-                    EventManager.DelayedEvent(gateComponent.Info.MotionTime * 1000, new LayoutEvent(gateComponent, "gate-is-closed"));
+                    EventManager.DelayedEvent(gateComponent.Info.MotionTime * 1000, new LayoutEvent("gate-is-closed", gateComponent));
                 else
-                    pendingEvents.Add(gateComponent.Id, EventManager.DelayedEvent(gateComponent.Info.MotionTimeout * 1000, new LayoutEvent(gateComponent, "gate-close-timeout")));
+                    pendingEvents.Add(gateComponent.Id, EventManager.DelayedEvent(gateComponent.Info.MotionTimeout * 1000, new LayoutEvent("gate-close-timeout", gateComponent)));
             }
 
             gateComponent.GateState = LayoutGateState.Closing;
@@ -1194,7 +1194,7 @@ namespace LayoutManager.Components {
             var gateComponent = (LayoutGateComponent)e.Sender;
 
             Error(gateComponent, "Timeout while waiting for gate to open");
-            EventManager.Event(new LayoutEvent(gateComponent, "gate-is-open"));
+            EventManager.Event(new LayoutEvent("gate-is-open", gateComponent));
         }
 
         [LayoutEvent("gate-close-timeout", SenderType = typeof(LayoutGateComponent))]
@@ -1202,7 +1202,7 @@ namespace LayoutManager.Components {
             var gateComponent = (LayoutGateComponent)e.Sender;
 
             Error(gateComponent, "Timeout while waiting for gate to close");
-            EventManager.Event(new LayoutEvent(gateComponent, "gate-is-closed"));
+            EventManager.Event(new LayoutEvent("gate-is-closed", gateComponent));
         }
 
         [LayoutEvent("control-connection-point-state-changed-notification")]
@@ -1215,16 +1215,16 @@ namespace LayoutManager.Components {
                 if (connectionPoint.Component is LayoutGateComponent component) {
                     if (component.Info.FeedbackType == LayoutGateComponentInfo.FeedbackTypes.TwoSensors) {
                         if (connectionPoint.Name == GateOpenConnectionPoint)
-                            EventManager.Event(new LayoutEvent(component, "gate-is-open"));
+                            EventManager.Event(new LayoutEvent("gate-is-open", component));
                         else if (connectionPoint.Name == GateCloseConnectionPoint)
-                            EventManager.Event(new LayoutEvent(component, "gate-is-closed"));
+                            EventManager.Event(new LayoutEvent("gate-is-closed", component));
                     }
                     else if (component.Info.FeedbackType == LayoutGateComponentInfo.FeedbackTypes.OneSensor) {
                         if (connectionPoint.Name == GateMotionDoneConnectionPoint) {
                             if (component.GateState == LayoutGateState.Closing)
-                                EventManager.Event(new LayoutEvent(component, "gate-is-closed"));
+                                EventManager.Event(new LayoutEvent("gate-is-closed", component));
                             else if (component.GateState == LayoutGateState.Opening)
-                                EventManager.Event(new LayoutEvent(component, "gate-is-open"));
+                                EventManager.Event(new LayoutEvent("gate-is-open", component));
                         }
                     }
                 }

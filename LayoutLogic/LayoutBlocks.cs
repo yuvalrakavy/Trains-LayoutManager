@@ -19,7 +19,7 @@ namespace LayoutManager.Logic {
         ILayoutTopologyServices TopologyServices {
             get {
                 if (_topologyServices == null)
-                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent(this, "get-topology-services"));
+                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this));
 
                 return _topologyServices;
             }
@@ -270,7 +270,7 @@ namespace LayoutManager.Logic {
         private void addBlockInfoBlockEdges(LayoutBlockDefinitionComponent blockInfo, int cpIndex) {
             Stack<TrackEdge> scanStack = new Stack<TrackEdge>();
             TrackEdgeDictionary scanned = new TrackEdgeDictionary();
-            LayoutTopologyServices ts = (LayoutTopologyServices)EventManager.Event(new LayoutEvent(this, "get-topology-services"));
+            LayoutTopologyServices ts = (LayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this));
 
             scanStack.Push(ts.FindTrackConnectingAt(new TrackEdge(blockInfo.Track, blockInfo.Track.ConnectionPoints[cpIndex])));
 
@@ -390,8 +390,8 @@ namespace LayoutManager.Logic {
 
                         LayoutScriptContext scriptContext = eventScript.ScriptContext;
 
-                        EventManager.Event(new LayoutEvent(train, "set-script-context", null, scriptContext));
-                        EventManager.Event(new LayoutEvent(block, "set-script-context", null, scriptContext));
+                        EventManager.Event(new LayoutEvent("set-script-context", train, scriptContext, null));
+                        EventManager.Event(new LayoutEvent("set-script-context", block, scriptContext, null));
 
                         eventScript.Reset();
                     }

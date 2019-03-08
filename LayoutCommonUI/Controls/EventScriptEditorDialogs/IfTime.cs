@@ -25,7 +25,9 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         /// </summary>
         private readonly Container components = null;
 
+#pragma warning disable IDE0051 // Remove unused private members
         private void endOfDesignerVariables() { }
+#pragma warning restore IDE0051 // Remove unused private members
 
         readonly XmlDocument workingDoc;
         readonly XmlElement element;
@@ -45,7 +47,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
             int i = 0;
             foreach (string timeConstraintName in new string[] { "Seconds", "Minutes", "Hours", "DayOfWeek" }) {
-                IIfTimeNode[] nodes = (IIfTimeNode[])EventManager.Event(new LayoutEvent(element, "parse-if-time-element", null, timeConstraintName));
+                IIfTimeNode[] nodes = (IIfTimeNode[])EventManager.Event(new LayoutEvent("parse-if-time-element", element, timeConstraintName));
 
                 if (nodes.Length > 0)
                     treeView.Nodes.Add(new TimeSectionTreeNode(new string[] { "Seconds", "Minutes", "Hours", "Day of week" }[i],
@@ -63,7 +65,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
         private void insert(string nodeElementName, string timeSectionTitle, Type treeNodeType) {
             XmlElement nodeElement = element.OwnerDocument.CreateElement(nodeElementName);
-            IIfTimeNode node = (IIfTimeNode)EventManager.Event(new LayoutEvent(nodeElement, "allocate-if-time-node"));
+            IIfTimeNode node = (IIfTimeNode)EventManager.Event(new LayoutEvent("allocate-if-time-node", nodeElement));
 
             node.Value = 0;
             TreeNodeBase treeNode = (TreeNodeBase)Activator.CreateInstance(treeNodeType, new object[] { node });

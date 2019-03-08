@@ -160,7 +160,7 @@ namespace LayoutManager.CommonUI.Controls {
                     break;
                 }
 
-            EventManager.Event(new LayoutEvent(this, "show-layout-control"));
+            EventManager.Event(new LayoutEvent("show-layout-control", this));
         }
 
         private void updateBusSelector() {
@@ -390,7 +390,7 @@ namespace LayoutManager.CommonUI.Controls {
         #endregion
 
         private void buttonClose_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent(this, "hide-layout-control"));
+            EventManager.Event(new LayoutEvent("hide-layout-control", this));
         }
 
         private void comboBoxBusProvider_SelectedIndexChanged(object sender, System.EventArgs e) {

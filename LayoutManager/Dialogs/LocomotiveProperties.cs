@@ -710,7 +710,7 @@ namespace LayoutManager.Dialogs {
 
             inLoco.Element = loco.Element;
 
-            EventManager.Event(new LayoutEvent(inLoco, "locomotive-configuration-changed"));
+            EventManager.Event(new LayoutEvent("locomotive-configuration-changed", inLoco));
 
             DialogResult = DialogResult.OK;
         }

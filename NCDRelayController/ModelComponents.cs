@@ -104,7 +104,7 @@ namespace NCDRelayController {
 
         void OpenCommunicationStream() {
             if (InterfaceType == InterfaceType.Serial)
-                commStream = (FileStream)EventManager.Event(new LayoutEvent(Element, "open-serial-communication-device-request"));
+                commStream = (FileStream)EventManager.Event(new LayoutEvent("open-serial-communication-device-request", Element));
             else {
                 string address = XmlInfo.DocumentElement.GetAttribute("Address");
                 int portIndex = address.IndexOf(':');
@@ -422,10 +422,10 @@ namespace NCDRelayController {
                             int isSet = (data & mask) != 0 ? 1 : 0;
 
                             if (LayoutController.IsOperationMode)
-                                events.Add(new LayoutEvent(new ControlConnectionPointReference(module.Bus, moduleNumber + 1, i), "control-connection-point-state-changed-notification", null, isSet));
+                                events.Add(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(module.Bus, moduleNumber + 1, i), isSet, null));
                             else if (LayoutController.IsDesignTimeActivation)
-                                events.Add(new LayoutEvent(busProvider, "design-time-command-station-event", null,
-                                    new CommandStationInputEvent((ModelComponent)busProvider, module.Bus, moduleNumber + 1, i, isSet)));
+                                events.Add(new LayoutEvent("design-time-command-station-event", busProvider, new CommandStationInputEvent((ModelComponent)busProvider, module.Bus, moduleNumber + 1, i, isSet),
+                                    null));
                         }
 
                         mask <<= 1;

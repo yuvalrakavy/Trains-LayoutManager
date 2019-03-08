@@ -109,7 +109,7 @@ namespace LayoutManager.Logic {
             generateRoutingTableThread.Name = "Generate routing table";
             generateRoutingTableThread.Start(phase);
 
-            EventManager.Event(new LayoutEvent(this, "show-routing-table-generation-dialog", null, multiPathTracks.Count()));
+            EventManager.Event(new LayoutEvent("show-routing-table-generation-dialog", this, multiPathTracks.Count(), null));
 
             return !aborted;
         }
@@ -201,10 +201,10 @@ namespace LayoutManager.Logic {
                     }
                 }
 
-                invoker.QueueEvent(new LayoutEvent(this, "routing-table-generation-progress"));
+                invoker.QueueEvent(new LayoutEvent("routing-table-generation-progress", this));
             }
 
-            invoker.QueueEvent(new LayoutEvent(this, "routing-table-generation-done"));
+            invoker.QueueEvent(new LayoutEvent("routing-table-generation-done", this));
         }
 
         class GetSplitsInfo {
@@ -777,9 +777,9 @@ namespace LayoutManager.Logic {
                 conditionScript.ScriptSubject = newBlock.BlockDefinintion;
 
                 if (bestRoute.Train != null)
-                    EventManager.Event(new LayoutEvent(bestRoute.Train, "set-script-context", null, context));
+                    EventManager.Event(new LayoutEvent("set-script-context", bestRoute.Train, context, null));
 
-                EventManager.Event(new LayoutEvent(newBlock, "set-script-context", null, context));
+                EventManager.Event(new LayoutEvent("set-script-context", newBlock, context, null));
 
                 context["PreviousBlock"] = lookupState.Block;
                 context["PreviousBlockInfo"] = lookupState.Block.BlockDefinintion;
