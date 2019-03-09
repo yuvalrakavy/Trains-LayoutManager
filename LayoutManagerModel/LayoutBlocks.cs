@@ -7,14 +7,15 @@ using System.Linq;
 using LayoutManager.Components;
 using System.Threading;
 
+#nullable enable
 namespace LayoutManager.Model {
 
     #region Block related classes
 
     public class LayoutBlockBase : IDisposable {
         readonly TrackEdgeCollection trackEdges = new TrackEdgeCollection();
-        List<LayoutBlockEdgeBase> blockEdges;
-        LayoutBlockDefinitionComponent blockInfo;
+        List<LayoutBlockEdgeBase>? blockEdges;
+        LayoutBlockDefinitionComponent? blockInfo;
         Guid id;
 
         public TrackEdgeCollection TrackEdges => trackEdges;
@@ -38,6 +39,7 @@ namespace LayoutManager.Model {
 
         public LayoutBlockDefinitionComponent BlockDefinintion {
             get {
+                Debug.Assert(blockInfo != null);
                 return blockInfo;
             }
 
@@ -86,12 +88,12 @@ namespace LayoutManager.Model {
     /// </summary>
     public class LayoutBlock : LayoutBlockBase {
         readonly List<TrainLocationInfo> trainsInBlock = new List<TrainLocationInfo>();
-        LayoutLockRequest lockRequest;
+        LayoutLockRequest? lockRequest;
         bool isLinear = true;
         bool isLinearCalculated;
         bool canTrainWaitDefault;
         bool canTrainWaitDefaultCalculated;
-        TrainStateInfo trainLeavingBlock;
+        TrainStateInfo? trainLeavingBlock;
         LayoutComponentConnectionPoint trainLeavingBlockFront;
         int whenTrainLeftBlock = 0;
 
@@ -102,9 +104,9 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The train occupancy detection block that this block is part of.
         /// </summary>
-        public LayoutOccupancyBlock OccupancyBlock { get; set; }
+        public LayoutOccupancyBlock? OccupancyBlock { get; set; }
 
-        public LayoutLockRequest LockRequest {
+        public LayoutLockRequest? LockRequest {
             get { return this.lockRequest; }
 
             set {
@@ -186,7 +188,7 @@ namespace LayoutManager.Model {
         /// block info component is one exists, or the power source for the first
         /// track edge in the block.
         /// </summary>
-        public ILayoutPower Power {
+        public ILayoutPower? Power {
             get {
                 if (BlockDefinintion != null)
                     return BlockDefinintion.Track.GetPower(BlockDefinintion.Track.ConnectionPoints[0]);
@@ -260,7 +262,7 @@ namespace LayoutManager.Model {
             if (BlockDefinintion != null)
                 BlockDefinintion.EraseImage();
 
-            TrainLocationInfo trainLocationToRemove = null;
+            TrainLocationInfo? trainLocationToRemove = null;
 
             foreach (TrainLocationInfo location in trainsInBlock) {
                 if (location.Element == trainLocation.Element) {
@@ -344,8 +346,8 @@ namespace LayoutManager.Model {
     /// example, the train detection block has a track contact, then the train occupancy block contains two logical block.
     /// </summary>
     public class LayoutOccupancyBlock : LayoutBlockBase {
-        List<LayoutBlock> containedBlocks;
-        LayoutBlock myBlock;
+        List<LayoutBlock>? containedBlocks;
+        LayoutBlock? myBlock;
 
         /// <summary>
         /// Add a logical block that is contained in the train occupancy block
@@ -361,10 +363,10 @@ namespace LayoutManager.Model {
             if (myBlock == null)
                 myBlock = block;
             else if (containedBlocks == null) {
-                containedBlocks = new List<LayoutBlock>(2);
-
-                containedBlocks.Add(myBlock);
-                containedBlocks.Add(block);
+                containedBlocks = new List<LayoutBlock>(2) {
+                    myBlock,
+                    block
+                };
             }
             else
                 containedBlocks.Add(block);
@@ -511,7 +513,7 @@ namespace LayoutManager.Model {
 
     public class LayoutLockRequest {
         readonly LayoutLockBlockEntryDictionary blockEntries = new LayoutLockBlockEntryDictionary();
-        IList<ILayoutLockResource> resources = null;
+        IList<ILayoutLockResource>? resources = null;
 
         public enum RequestStatus { NotRequested, NotGranted, Granted, PartiallyUnlocked };
 
@@ -539,17 +541,19 @@ namespace LayoutManager.Model {
         public LayoutLockType Type { get; set; }
         public RequestStatus Status { get; set; }
         public CancellationToken CancellationToken { get; set; }
-        public Action OnLockGranted { get; set; }
+        public Action? OnLockGranted { get; set; }
 
         public LayoutLockBlockEntryDictionary Blocks => blockEntries;
 
-        public IList<ILayoutLockResource> Resources {
+        public IList<ILayoutLockResource>? Resources {
             get { return resources; }
 
             set {
                 Trace.Assert(resources == null);
-                resources = value;
-                blockEntries.AddResources(resources);
+                if (value != null) {
+                    resources = value;
+                    blockEntries.AddResources(resources);
+                }
             }
         }
 
@@ -684,8 +688,8 @@ namespace LayoutManager.Model {
     }
 
     public class LocomotiveTrackingResult : LayoutObject {
-        TrainLocationInfo trainLocation;
-        TrainMotionListManager motionListManager;
+        TrainLocationInfo? trainLocation;
+        TrainMotionListManager? motionListManager;
 
         public LocomotiveTrackingResult(LayoutBlockEdgeBase blockEdge, TrainStateInfo trainState,
             TrainLocationInfo trainLocation, LayoutBlock fromBlock, LayoutBlock toBlock) {
@@ -698,7 +702,7 @@ namespace LayoutManager.Model {
         }
 
         private void initialize(LayoutBlockEdgeBase blockEdge, TrainStateInfo trainState,
-            TrainLocationInfo trainLocation, LayoutBlock fromBlock, LayoutBlock toBlock, TrainMotionListManager motionListManager) {
+            TrainLocationInfo trainLocation, LayoutBlock fromBlock, LayoutBlock toBlock, TrainMotionListManager? motionListManager) {
 
             XmlDocument.LoadXml("<TrackingResult />");
 
@@ -751,7 +755,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public TrainLocationInfo TrainLocation => trainLocation;
+        public TrainLocationInfo? TrainLocation => trainLocation;
 
         public Guid FromBlockId {
             get {
@@ -793,7 +797,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public TrainMotionListManager MotionListManager {
+        public TrainMotionListManager? MotionListManager {
             get {
                 return motionListManager;
             }
@@ -804,13 +808,11 @@ namespace LayoutManager.Model {
         }
 
         public void Commit() {
-            if (motionListManager != null)
-                motionListManager.Do();
+            motionListManager?.Do();
         }
 
         public void Rollback() {
-            if (motionListManager != null)
-                MotionListManager.Undo();
+            MotionListManager?.Undo();
         }
 
         public void Dump() {

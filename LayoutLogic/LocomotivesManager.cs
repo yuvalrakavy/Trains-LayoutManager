@@ -895,7 +895,7 @@ namespace LayoutManager.Logic {
             }
 
             // If block is locked to this train, but with a different lock request, release the old lock
-            if (programmingLocation.Block.LockRequest != lockRequest && programmingLocation.Block.LockRequest.OwnerId == train.Id)
+            if (programmingLocation.Block.LockRequest != null && programmingLocation.Block.LockRequest != lockRequest && programmingLocation.Block.LockRequest.OwnerId == train.Id)
                 EventManager.Event(new LayoutEventInfoValueType<object, Guid>("free-owned-layout-locks", null, train.Id).SetOption("ReleasePending", false));
 
             return lockTask;

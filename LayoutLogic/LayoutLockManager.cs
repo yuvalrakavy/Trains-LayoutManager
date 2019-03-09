@@ -724,7 +724,7 @@ namespace LayoutManager.Logic {
             LayoutBlock block2 = track.GetBlock(track.ConnectionPoints[1]);
 
             if (block1.IsLocked && block2.IsLocked) {
-                if (block1.LockRequest.OwnerId != block2.LockRequest.OwnerId ||
+                if (block1.LockRequest!.OwnerId != block2.LockRequest!.OwnerId ||
                     block1.LockRequest.Blocks[block1.Id].ForceRedSignal ||
                     block2.LockRequest.Blocks[block2.Id].ForceRedSignal)
                     blockEdge.SignalState = LayoutSignalState.Red;

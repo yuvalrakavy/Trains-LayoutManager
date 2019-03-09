@@ -331,7 +331,7 @@ namespace LayoutManager.Logic {
                         return null;
                     else if (otherBlock.Trains.Count == 1) {
                         var train = otherBlock.Trains[0].Train;
-                        var trainBeingExtended = blockWithExtendedTrain == null ? null : blockWithExtendedTrain.Trains[0].Train;
+                        var trainBeingExtended = blockWithExtendedTrain?.Trains[0].Train;
 
                         if (trainBeingExtended != null && trainBeingExtended.Id != train.Id)
                             return null;        // More than one, bail out
@@ -389,8 +389,10 @@ namespace LayoutManager.Logic {
 
                 do {
                     if (edge.Track.BlockDefinitionComponent != null) {
+                        var lockRequest = edge.Track.BlockDefinitionComponent.Block.LockRequest;
+
                         // If got to block not locked by the train, we are not on the way to the faulty turnout...
-                        if (edge.Track.BlockDefinitionComponent.Block.LockRequest == null || edge.Track.BlockDefinitionComponent.Block.LockRequest.OwnerId != train.Id)
+                        if (lockRequest == null || lockRequest.OwnerId != train.Id)
                             continueScan = false;
                         if (edge.Track.BlockDefinitionComponent.Block.IsTrainInBlock(train))
                             continueScan = false;
