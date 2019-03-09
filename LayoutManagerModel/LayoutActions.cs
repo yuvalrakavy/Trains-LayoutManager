@@ -102,7 +102,7 @@ namespace LayoutManager.Model {
             string actionType = actionElement.GetAttribute("Type");
 
             if (actionType != null)
-                action = EventManager.Event(new LayoutEvent("get-action", actionElement, Owner, null)) as LayoutAction;
+                action = EventManager.Event(new LayoutEvent("get-action", actionElement, Owner)) as LayoutAction;
 
             return action;
         }

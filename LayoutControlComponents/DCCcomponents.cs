@@ -3,18 +3,19 @@ using System.Xml;
 using System.Windows.Forms;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051
+#nullable enable
 namespace LayoutManager.ControlComponents {
     public class ControlComponents {
         public static string ControlComponentsVersion = "1.0";
     }
 
-    #pragma warning disable IDE0051
     [LayoutModule("DCC Control Components")]
     class DCCconrolComponents : LayoutModuleBase {
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='LGB55025']")]
         [LayoutEvent("enum-control-module-types")]
         private void get55025(LayoutEvent e) {
-            XmlElement parentElement = (XmlElement)e.Sender;
+            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
             ControlModuleType moduleType = new ControlModuleType(parentElement, "LGB55025", "LGB Switch Decoder") {
                 AddressAlignment = 4
@@ -29,7 +30,7 @@ namespace LayoutManager.ControlComponents {
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156001']")]
         [LayoutEvent("enum-control-module-types")]
         private void GetMassoth8156001(LayoutEvent e) {
-            XmlElement parentElement = (XmlElement)e.Sender;
+            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
             ControlModuleType moduleType = new ControlModuleType(parentElement, "Massoth8156001", "Massoth Switch Decoder");
 
@@ -45,7 +46,7 @@ namespace LayoutManager.ControlComponents {
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156001_AsFunctionDecoder']")]
         [LayoutEvent("enum-control-module-types")]
         private void GetMassoth8156001_AsFunctionDecoder(LayoutEvent e) {
-            XmlElement parentElement = (XmlElement)e.Sender;
+            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
             ControlModuleType moduleType = new ControlModuleType(parentElement, "Massoth8156001_AsFunctionDecoder", "Massoth Function Decoder");
 
@@ -64,7 +65,7 @@ namespace LayoutManager.ControlComponents {
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156501']")]
         [LayoutEvent("enum-control-module-types")]
         private void GetMassoth8156501(LayoutEvent e) {
-            XmlElement parentElement = (XmlElement)e.Sender;
+            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
             ControlModuleType moduleType = new ControlModuleType(parentElement, "Massoth8156501", "Massoth Single Switch Decoder");
 
@@ -147,10 +148,9 @@ namespace LayoutManager.ControlComponents {
 
         [LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[starts-with(@ModuleTypeName, 'Massoth8156')]")]
         private void getProgramMassothSwitchDecoderAddressAction(LayoutEvent e) {
-            var actionElement = e.Sender as XmlElement;
-            var module = e.Info as ControlModule;
+            var actionElement = Ensure.NotNull<XmlElement>(e.Sender, "actionElement");
 
-            if (e.Info != null)
+            if (e.Info is ControlModule module)
                 e.Info = new ProgramMassothSwitchDecoderAddress(actionElement, module);
         }
 
@@ -158,7 +158,7 @@ namespace LayoutManager.ControlComponents {
         [LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156001']")]
         [LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156501']")]
         private void canSwitchDecoderBeConnected(LayoutEvent e) {
-            ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)e.Sender;
+            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
             ControlModule module = LayoutModel.ControlManager.GetModule(XmlConvert.ToGuid(e.GetOption("ModuleID")));
 
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Solenoid")) {
@@ -172,7 +172,7 @@ namespace LayoutManager.ControlComponents {
 
         [LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156001_AsFunctionDecoder']")]
         private void canFunctionDecoderBeConnected(LayoutEvent e) {
-            ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)e.Sender;
+            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
             ControlModule module = LayoutModel.ControlManager.GetModule(XmlConvert.ToGuid(e.GetOption("ModuleID")));
 
             e.Info = false;
@@ -197,8 +197,8 @@ namespace LayoutManager.ControlComponents {
         /// <param name="e"></param>
         [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='DCC']")]
         private void recommendDCCcontrolModuleType(LayoutEvent e) {
-            ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)e.Sender;
-            IList<string> moduleTypeNames = (IList<string>)e.Info;
+            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
+            var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
 
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Control", "Solenoid")) {
                 moduleTypeNames.Add("Massoth8156001");          // 4 switch decoders
@@ -209,8 +209,8 @@ namespace LayoutManager.ControlComponents {
 
         [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='LocoBus']")]
         private void recommendLocoBuscontrolModuleType(LayoutEvent e) {
-            ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)e.Sender;
-            IList<string> moduleTypeNames = (IList<string>)e.Info;
+            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
+            var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
 
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Control", "Solenoid")) {
                 moduleTypeNames.Add("Massoth8156001_AsFunctionDecoder");
@@ -220,7 +220,7 @@ namespace LayoutManager.ControlComponents {
         [LayoutEvent("edit-action-settings", InfoType = typeof(IMassothIgnoreFeedback))]
         private void editMassothIgnoreFeedback(LayoutEvent e0) {
             var e = (LayoutEventResultValueType<object, ILayoutAction, bool>)e0;
-            var programmingAction = e.Info as ILayoutProgrammingAction;
+            var programmingAction = Ensure.NotNull<ILayoutProgrammingAction>(e.Info, "programmingAction");
 
             switch (MessageBox.Show(null, "Did you connect load (e.g. turnout) to SW1 output?", "Is load connected", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)) {
 

@@ -37,7 +37,7 @@ namespace LayoutManager.Tools.Dialogs {
             get {
                 SearchResultItem searchResult = (SearchResultItem)listBoxSearchResult.SelectedItem;
 
-                return searchResult != null ? searchResult.NamedObject : null;
+                return searchResult?.NamedObject;
             }
         }
 

@@ -331,7 +331,7 @@ namespace LayoutManager.Logic {
                         return null;
                     else if (otherBlock.Trains.Count == 1) {
                         var train = otherBlock.Trains[0].Train;
-                        var trainBeingExtended = blockWithExtendedTrain?.Trains[0].Train;
+                        var trainBeingExtended = blockWithExtendedTrain == null ? null : blockWithExtendedTrain.Trains[0].Train;
 
                         if (trainBeingExtended != null && trainBeingExtended.Id != train.Id)
                             return null;        // More than one, bail out
@@ -485,8 +485,8 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("track-locomotive-position")]
         private void trackLocomotivePosition(LayoutEvent e) {
-            var blockEdge = Ensure.NotNull<LayoutBlockEdgeBase>(e.Sender, "blockEdge");
-            LayoutStraightTrackComponent track = blockEdge.Track;
+            var trackContact = Ensure.NotNull<LayoutBlockEdgeBase>(e.Sender, "trackContact");
+            LayoutStraightTrackComponent track = trackContact.Track;
             LayoutBlock block1, block2;
             IList<TrainLocationInfo> trains1, trains2;
 
@@ -505,8 +505,8 @@ namespace LayoutManager.Logic {
 
                 if (trains1.Count == 0 && trains2.Count == 0) {
                     // A track contact was triggered, however, both surrounding blocks have no trains
-                    trains1 = getTrainInNoFeedbackBlock(block1, block2, getTrainLockingBlock(block2), blockEdge, motionListManager, new HashSet<Guid>());
-                    trains2 = getTrainInNoFeedbackBlock(block2, block1, getTrainLockingBlock(block1), blockEdge, motionListManager, new HashSet<Guid>());
+                    trains1 = getTrainInNoFeedbackBlock(block1, block2, getTrainLockingBlock(block2), trackContact, motionListManager, new HashSet<Guid>());
+                    trains2 = getTrainInNoFeedbackBlock(block2, block1, getTrainLockingBlock(block1), trackContact, motionListManager, new HashSet<Guid>());
                 }
 
                 // Figure out which case we are dealing with.
@@ -514,15 +514,15 @@ namespace LayoutManager.Logic {
                     LocomotiveTrackingResult? trackingResult = null;
 
                     if (trains1.Count == 0 && trains2.Count > 0) {
-                        trackingResult = movingFrom(blockEdge, block2, block1);
+                        trackingResult = movingFrom(trackContact, block2, block1);
                     }
                     else if (trains2.Count == 0 && trains1.Count > 0) {
-                        trackingResult = movingFrom(blockEdge, block1, block2);
+                        trackingResult = movingFrom(trackContact, block1, block2);
                     }
                     else if (trains1.Count > 0 && trains2.Count > 0)
-                        trackingResult = ambiguousMove(blockEdge, block1, block2);
+                        trackingResult = ambiguousMove(trackContact, block1, block2);
                     else
-                        throw new UnexpectedBlockCrossingException(blockEdge);
+                        throw new UnexpectedBlockCrossingException(trackContact);
 
                     e.Info = trackingResult;
 
@@ -534,7 +534,7 @@ namespace LayoutManager.Logic {
                 }
             }
             else if (!block1IsManualDispatch || !block2isManualDispatch)
-                throw new CrossingFromManualDispatchRegion(blockEdge);
+                throw new CrossingFromManualDispatchRegion(trackContact);
         }
 
         [LayoutEvent("train-enter-block", Order = -100)]

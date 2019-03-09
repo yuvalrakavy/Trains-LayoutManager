@@ -9,9 +9,9 @@ using System.Diagnostics;
 using LayoutManager;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060, IDE0052
 namespace NumatoController {
     public class NumatorEmulator : ILayoutCommandStationEmulator {
-        Guid numatoId;
         readonly string pipeName;
 
         FileStream commStream;
@@ -28,7 +28,6 @@ namespace NumatoController {
         static readonly LayoutTraceSwitch traceNumatoEmulator = new LayoutTraceSwitch("NumatoEmulator", "Trace Numato Relay Board emulation");
 
         public NumatorEmulator(IModelComponentIsBusProvider numatoComponent, string pipeName) {
-            this.numatoId = numatoComponent.Id;
             this.pipeName = pipeName;
             this.interThreadEventInvoker = (ILayoutInterThreadEventInvoker)EventManager.Event(new LayoutEvent("get-inter-thread-event-invoker", this));
 
