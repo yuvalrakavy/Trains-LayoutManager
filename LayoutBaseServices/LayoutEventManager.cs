@@ -1526,9 +1526,8 @@ namespace LayoutManager {
 
         public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
 
-        public static object? Event(object sender, string eventName) => Instance.Event(new LayoutEvent(eventName, sender));
-
-        public static object? Event(object sender, string eventName, object info) => Instance.Event(new LayoutEvent(eventName, sender, info, null));
+        public static object? Event(string eventName, object? sender = null, object? info = null, string? xmlDocument = null, Type? targetType = null, string? ifTarget = null) => 
+            Instance.Event(new LayoutEvent(eventName, sender, info, xmlDocument, targetType, ifTarget));
 
         public static TResult? Event<TSender, TInfo, TResult>(
             string eventName,
