@@ -122,6 +122,7 @@ namespace LayoutEventDebugger {
             {
                 TitleFormat.ShowEventName => new TreeNode($"Event: {(subscription.EventName ?? "<any>")}"),
                 TitleFormat.ShowHandlerObject => new TreeNode($"Instance of {(subscription.TargetObject?.GetType().FullName ?? "<static>")}"),
+                _ => throw new NotImplementedException()
             };
 
             parent.Nodes.Add(subscriptionNode);
