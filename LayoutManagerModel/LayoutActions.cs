@@ -519,6 +519,7 @@ namespace LayoutManager.Model {
             ProgrammingTarget.SpeedSteps = SpeedSteps;
 
             LayoutModel.LocomotiveCollection.Save();
+            EventManager.Event(new LayoutEventInfoValueType<LocomotiveInfo, int>("locomotive-address-changed", this.ProgrammingTarget, Address));
         }
     }
 }

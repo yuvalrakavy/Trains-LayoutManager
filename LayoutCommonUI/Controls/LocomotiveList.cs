@@ -235,6 +235,12 @@ namespace LayoutManager.CommonUI.Controls {
             Invalidate();
         }
 
+        [LayoutEvent("locomotive-address-changed")]
+        private void LocomotiveAddressChanged(LayoutEvent e0) {
+            UpdateElements();
+            Invalidate();
+        }
+
         #region Item classes
 
         class LocomotiveItem : IXmlQueryListBoxXmlElementItem {
