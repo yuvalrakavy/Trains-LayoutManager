@@ -91,7 +91,7 @@ namespace LayoutManager.Tools.Dialogs {
                     if (LayoutModel.StateManager.Trains[element] == null) {     // Not already on track
                         CanPlaceTrainResult result;
 
-                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed", element, blockDefinition, null));
+                        result = EventManager.Event<XmlElement, LayoutBlockDefinitionComponent, CanPlaceTrainResult>("can-locomotive-be-placed", element, blockDefinition)!;
 
                         if (result.CanBeResolved) {
                             LayoutNamedTrainObject namedObject = null;

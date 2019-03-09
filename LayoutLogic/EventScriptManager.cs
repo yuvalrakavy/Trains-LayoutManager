@@ -1,8 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
+using LayoutManager;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060
+#nullable enable
 namespace LayoutManager.Logic {
     /// <summary>
     /// Handle train motion issues, such as acceleration
@@ -13,7 +16,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("event-script-reset")]
         private void eventScriptReset(LayoutEvent e) {
-            LayoutEventScript script = (LayoutEventScript)e.Sender;
+            var script = Ensure.NotNull<LayoutEventScript>(e.Sender, "script");
 
             if (!activeScripts.Contains(script.Id))
                 activeScripts.Add(script.Id, script);
@@ -22,7 +25,7 @@ namespace LayoutManager.Logic {
         [LayoutEvent("event-script-dispose")]
         [LayoutEvent("event-script-terminated")]
         private void eventScriptDispose(LayoutEvent e) {
-            LayoutEventScript script = (LayoutEventScript)e.Sender;
+            var script = Ensure.NotNull<LayoutEventScript>(e.Sender, "script");
 
             activeScripts.Remove(script.Id);
         }
@@ -59,7 +62,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("exit-operation-mode", Order = -1000)]
         private void exitOperationalMode(LayoutEvent e) {
-            LayoutEventScript[] scripts = (LayoutEventScript[])EventManager.Event(new LayoutEvent("get-active-event-scripts", this));
+            LayoutEventScript[] scripts = (LayoutEventScript[])EventManager.Event(new LayoutEvent("get-active-event-scripts", this))!;
 
             foreach (LayoutEventScript script in scripts)
                 script.Dispose();

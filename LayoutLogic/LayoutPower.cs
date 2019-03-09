@@ -9,11 +9,10 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 #nullable enable
-
+#pragma warning disable IDE0051
 namespace LayoutManager.Logic {
 
     [LayoutModule("Layout Power Manager", UserControl = false)]
-    #pragma warning disable IDE0051
     class LayoutPowerManager : LayoutModuleBase {
         static ILayoutTopologyServices _topologyServices;
         readonly Dictionary<Guid, Guid> _pendingPowerConnectedLockReady = new Dictionary<Guid, Guid>();

@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using System.Threading;
 
 #nullable enable
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Logic {
-    #pragma warning disable IDE0051, IDE0060
     [LayoutModule("Trains Manager", UserControl = false)]
     class TrainsManager : LayoutModuleBase {
         #region Internal properties and helper functions
@@ -59,6 +59,7 @@ namespace LayoutManager.Logic {
             CanPlaceTrainResult result = new CanPlaceTrainResult();
             var power = e.Info switch
             {
+                ILayoutPower thePower => thePower,
                 LayoutBlock block => block.Power,
                 LayoutBlockDefinitionComponent blockDefinition => blockDefinition.Block.Power,
                 ILayoutPowerOutlet outlet => outlet.Power,

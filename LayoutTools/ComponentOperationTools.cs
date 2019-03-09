@@ -604,9 +604,7 @@ namespace LayoutManager.Tools {
                         TrainStateInfo train = LayoutModel.StateManager.Trains[element];
 
                         if (train == null) {        // Not already on track
-                            CanPlaceTrainResult result;
-
-                            result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed", element, blockDefinition, null));
+                            var result = EventManager.Event<XmlElement, LayoutBlockDefinitionComponent, CanPlaceTrainResult>("can-locomotive-be-placed", element, blockDefinition)!;
 
                             if (result.CanBeResolved)
                                 dragEvent.Effect = DragDropEffects.Link;

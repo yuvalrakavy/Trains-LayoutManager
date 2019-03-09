@@ -169,7 +169,7 @@ namespace LayoutManager.Model {
         protected static ILayoutLockManagerServices LockManagerServices {
             get {
                 if (_lockManagerServices == null)
-                    _lockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services", null));
+                    _lockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services"));
                 return _lockManagerServices;
             }
         }
@@ -273,7 +273,7 @@ namespace LayoutManager.Model {
     public class RouteTarget {
         readonly TripPlanDestinationEntryInfo destinationEntryInfo;   // The final train destination info
         readonly LayoutTrackComponent destinationTrack;     // The final train destination for this target
-        TrackEdge targetEdge;             // The destination to arrive (the split point)
+        readonly TrackEdge targetEdge;             // The destination to arrive (the split point)
         readonly int switchState;            // The switch state to set in this turnout
         readonly RouteQuality quality;              // The penalty involved in going from this target to the final destination
         bool arrived;

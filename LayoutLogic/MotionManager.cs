@@ -4,6 +4,8 @@ using System.Xml;
 using System.Diagnostics;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051,IDE0060
+#nullable enable
 namespace LayoutManager.Logic {
     /// <summary>
     /// Handle train motion issues, such as acceleration
@@ -11,14 +13,14 @@ namespace LayoutManager.Logic {
     [LayoutModule("Train Motion Manager", UserControl = false)]
     public class TrainMotionManager : LayoutModuleBase {
         readonly Dictionary<string, CommandStationCapabilitiesInfo> commandStationCapabiltiesMap = new Dictionary<string, CommandStationCapabilitiesInfo>();
-        string _commandStationName;
-        CommandStationCapabilitiesInfo _commandStationCapabilties;
+        string? _commandStationName;
+        CommandStationCapabilitiesInfo? _commandStationCapabilties;
         readonly Dictionary<Guid, SpeedChangeState> trainIDtoSpeedChangeState = new Dictionary<Guid, SpeedChangeState>();
 
         [LayoutEvent("train-speed-change-request")]
         private void trainSpeedChangeRequest(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)e.Sender;
-            TrainSpeedChangeParameters scp = (TrainSpeedChangeParameters)e.Info;
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+            var scp = Ensure.NotNull<TrainSpeedChangeParameters>(e.Info, "scp");
             MotionRampInfo ramp = scp.Ramp;
             int requestedSpeed = scp.RequestedSpeed;
 
@@ -99,7 +101,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("train-speed-change-abort")]
         private void trainSpeedChangeAbort(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)e.Sender;
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
 
             if (trainIDtoSpeedChangeState.TryGetValue(train.Id, out SpeedChangeState speedStateChange))
                 speedStateChange.Dispose();
@@ -108,7 +110,7 @@ namespace LayoutManager.Logic {
         [LayoutEvent("train-speed-change-done")]
         [LayoutEvent("train-speed-change-aborted")]
         private void removeSpeedChangeState(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)e.Sender;
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
 
             trainIDtoSpeedChangeState.Remove(train.Id);
         }
@@ -150,9 +152,8 @@ namespace LayoutManager.Logic {
                     _commandStationName = commandStationName;
 
                     if (!commandStationCapabiltiesMap.TryGetValue(commandStationName, out _commandStationCapabilties)) {
-                        XmlElement commandStationCapabilitiesElement = (XmlElement)EventManager.Event(new LayoutEvent("get-command-station-capabilities", null).SetCommandStation(train));
-
-                        Debug.Assert(commandStationCapabilitiesElement != null, "Command station " + commandStationName + " does not return capabilities information");
+                        var commandStationCapabilitiesElement = Ensure.NotNull<XmlElement>(EventManager.Event(new LayoutEvent("get-command-station-capabilities").SetCommandStation(train)),
+                            $"Command station {commandStationName} does not return capabilities information");
 
                         _commandStationCapabilties = new CommandStationCapabilitiesInfo(commandStationCapabilitiesElement);
                         commandStationCapabiltiesMap.Add(commandStationName, _commandStationCapabilties);
@@ -160,6 +161,7 @@ namespace LayoutManager.Logic {
                 }
             }
 
+            Debug.Assert(_commandStationCapabilties != null);
             return _commandStationCapabilties;
         }
 
@@ -179,7 +181,7 @@ namespace LayoutManager.Logic {
             double trainToLogicalSpeedStepsFactor;
 
             int tickCount;
-            LayoutDelayedEvent delayedEvent;
+            LayoutDelayedEvent? delayedEvent;
             int expectedSpeed;
             int nextSpeed;
 

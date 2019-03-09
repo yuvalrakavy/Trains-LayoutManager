@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 using System.Threading;
 
 #nullable enable
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Logic {
 
     [LayoutModule("Layout Lock Manager")]
-    #pragma warning disable IDE0051, IDE0060
 
     class LayoutLockManager : LayoutModuleBase, ILayoutLockManagerServices {
         static readonly LayoutTraceSwitch traceLockManager = new LayoutTraceSwitch("LockManager", "Layout Lock Manager");

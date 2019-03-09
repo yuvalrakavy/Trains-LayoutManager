@@ -2,6 +2,8 @@ using System;
 using System.Xml;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060
+#nullable enable
 namespace LayoutManager.Logic {
     /// <summary>
     /// Summary description for TripPlanner.
@@ -13,7 +15,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("enum-train-drivers")]
         private void enumTrainDrivers(LayoutEvent e) {
-            XmlElement driversElement = (XmlElement)e.Info;
+            XmlElement driversElement = Ensure.NotNull<XmlElement>(e.Info, "driversElement");
 
             XmlElement manualWithControllerElement = driversElement.OwnerDocument.CreateElement("Driver");
 
@@ -51,7 +53,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("driver-assignment", IfSender = "*[Driver/@Type='ManualOnScreen']")]
         private void manualDriverAssignment(LayoutEvent e) {
-            TrainCommonInfo train = (TrainCommonInfo)e.Sender;
+            var train = Ensure.NotNull<TrainCommonInfo>(e.Sender, "train"); ;
 
             EventManager.Event(new LayoutEvent("show-locomotive-controller", train));
             e.Info = true;
@@ -120,7 +122,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("edit-driver-setting", IfSender = "*[@Type='Automatic']")]
         private void automaticDriverEditDriverSetting(LayoutEvent e) {
-            TrainCommonInfo train = (TrainCommonInfo)e.Info;
+            var train = Ensure.NotNull<TrainCommonInfo>(e.Info, "train");
 
             EventManager.Event(new LayoutEvent("get-train-target-speed", train));
         }
@@ -129,25 +131,28 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("driver-emergency-stop", IfSender = "*[Driver/@Type='Automatic']")]
         private void autoDriverEmergencyStop(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)e.Sender;
-            TrainAutoDriverInfo driver = new TrainAutoDriverInfo(train) {
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+            var _ = new TrainAutoDriverInfo(train) {
                 State = AutoDriverState.Stop
             };
+
             train.Speed = 0;        // Stop at once!
         }
 
         [LayoutEvent("driver-stop", IfSender = "*[Driver/@Type='Automatic']")]
         private void autoDriverStop(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)e.Sender;
-            TrainAutoDriverInfo driver = new TrainAutoDriverInfo(train) {
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+            var _ = new TrainAutoDriverInfo(train) {
                 State = AutoDriverState.Stop
             };
+
             train.ChangeSpeed(0, train.StopRamp);
         }
 
         [LayoutEvent("driver-train-go", IfSender = "*[Driver/@Type='Automatic']")]
         private void autoDriverGo(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)e.Sender;
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+
             TrainAutoDriverInfo driver = new TrainAutoDriverInfo(train);
             LocomotiveOrientation direction = (LocomotiveOrientation)e.Info;
 
@@ -167,7 +172,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("driver-prepare-stop", IfSender = "*[Driver/@Type='Automatic']")]
         private void autoDriverPrepareStop(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)e.Sender;
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
             TrainAutoDriverInfo driver = new TrainAutoDriverInfo(train) {
                 State = AutoDriverState.SlowDown
             };
@@ -183,7 +188,7 @@ namespace LayoutManager.Logic {
         [LayoutEvent("driver-update-speed", IfSender = "*[Driver/@Type='Automatic']")]
         [LayoutEvent("driver-target-speed-changed", IfSender = "*[Driver/@Type='Automatic']")]
         private void autoDriverUpdateSpeed(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)e.Sender;
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
             TrainAutoDriverInfo driver = new TrainAutoDriverInfo(train);
 
             if (driver.State == AutoDriverState.Go) {

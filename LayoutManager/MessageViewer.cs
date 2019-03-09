@@ -540,7 +540,7 @@ namespace LayoutManager {
         }
 
         private void buttonClear_Click(object sender, EventArgs e) {
-            EventManager.Event(this, "clear-messages");
+            EventManager.Event("clear-messages", this);
         }
     }
 }

@@ -7,12 +7,11 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 #nullable enable
-
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Logic {
     /// <summary>
     /// Summary description for ComponentManager.
     /// </summary>
-    #pragma warning disable IDE0051, IDE0060
     [LayoutModule("Component Manager", UserControl = false)]
     public class ComponentManager : LayoutModuleBase {
 

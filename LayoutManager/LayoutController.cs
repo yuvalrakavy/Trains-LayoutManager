@@ -227,7 +227,7 @@ namespace LayoutManager {
                         SaveDisplayState(FrameWindows);
                         FrameWindows.Remove(actionTask.Result.FrameWindow);
 
-                        EventManager.Event(new LayoutEvent("close-all-frame-windows", null));
+                        EventManager.Event(new LayoutEvent("close-all-frame-windows"));
 
                         // Wait until all frame windows are closed
                         await Task.WhenAll(from frameWindow in FrameWindows select frameWindow.Task);

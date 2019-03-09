@@ -5,6 +5,8 @@ using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#pragma warning disable IDE0051,IDE0060
+#nullable enable
 namespace LayoutManager.Logic {
 
     public class ModelTopology {
@@ -182,7 +184,7 @@ namespace LayoutManager.Logic {
     }
 
     public class ModelTopologyConnectionEntry {
-        ModelTopologyEntry destinationTopologyEntry;    // the destination entry
+        ModelTopologyEntry? destinationTopologyEntry;    // the destination entry
         TrackEdgeId destination;                // Where this connects to
         readonly int penalty;                   // connection penalty
 
@@ -197,7 +199,7 @@ namespace LayoutManager.Logic {
 
         public bool IsEmpty => destination.IsEmpty;
 
-        public ModelTopologyEntry DestinationTopologyEntry {
+        public ModelTopologyEntry? DestinationTopologyEntry {
             get {
                 return destinationTopologyEntry;
             }

@@ -32,7 +32,7 @@ namespace LayoutManager.Tools {
         private void addPlacebleBlocksMenuEntries(LayoutEvent e) {
             XmlElement placedElement = (XmlElement)e.Sender;
             Menu m = (Menu)e.Info;
-            var result = EventManager.Event<XmlElement, object, CanPlaceTrainResult>("can-locomotive-be-placed-on-track", placedElement);
+            var result = EventManager.Event<XmlElement, object, CanPlaceTrainResult>("can-locomotive-be-placed-on-track", placedElement)!;
 
             if (result.Status != CanPlaceTrainStatus.CanPlaceTrain) {
                 MenuItem problemItem = new MenuItem(result.ToString()) {
@@ -48,7 +48,7 @@ namespace LayoutManager.Tools {
 
             foreach (LayoutBlockDefinitionComponent blockInfo in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases)) {
                 if (!blockInfo.Block.HasTrains && blockInfo.Info.SuggestForPlacement) {
-                    result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed", placedElement, blockInfo, null));
+                    result = EventManager.Event<XmlElement, LayoutBlockDefinitionComponent, CanPlaceTrainResult>("can-locomotive-be-placed", placedElement, blockInfo)!;
 
                     problem = PlacementProblem.NoProblem;
 
