@@ -52,9 +52,9 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonAllocateAddress_Click(object sender, EventArgs e) {
-            int address = (int)EventManager.Event(new LayoutEvent<object, LocomotiveInfo>("allocate-locomotive-address", null, Locomotive));
+            var address = EventManager.EventResultValueType<Components.LayoutBlockDefinitionComponent, LocomotiveInfo, int>("allocate-locomotive-address", null, Locomotive);
 
-            if (address != -1)
+            if (address.HasValue)
                 textBoxAddress.Text = address.ToString();
             else
                 MessageBox.Show(this, "Cannot allocate address", "It is not possible to allocate unused locomotive address", MessageBoxButtons.OK, MessageBoxIcon.Error);

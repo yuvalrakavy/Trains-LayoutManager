@@ -246,10 +246,7 @@ namespace LayoutManager.Components {
     /// Resource that is associated with the block
     /// </summary>
     public class ResourceInfo : LayoutXmlWrapper {
-        readonly LayoutBlockDefinitionComponentInfo blockDefinition;
-
-        public ResourceInfo(LayoutBlockDefinitionComponentInfo blockDefinition, XmlElement element) : base(element) {
-            this.blockDefinition = blockDefinition;
+        public ResourceInfo(XmlElement element) : base(element) {
         }
 
         public Guid ResourceId {
@@ -279,13 +276,13 @@ namespace LayoutManager.Components {
             throw new NotImplementedException();
         }
 
-        protected override ResourceInfo FromElement(XmlElement itemElement) => new ResourceInfo(blockDefinition, itemElement);
+        protected override ResourceInfo FromElement(XmlElement itemElement) => new ResourceInfo(itemElement);
 
         protected override Guid GetItemKey(ResourceInfo item) => item.ResourceId;
 
         public ResourceInfo Add(Guid resourceId) {
             XmlElement resourceElement = blockDefinition.Element.OwnerDocument.CreateElement("Resource");
-            ResourceInfo resourceInfo = new ResourceInfo(blockDefinition, resourceElement) {
+            ResourceInfo resourceInfo = new ResourceInfo(resourceElement) {
                 ResourceId = resourceId
             };
             Add(resourceInfo);
@@ -768,9 +765,6 @@ namespace LayoutManager.Components {
         /// <param name="blockEdge">The block edge</param>
         /// <returns>0 or 1</returns>
         public int GetConnectionPointIndex(LayoutBlockEdgeBase blockEdge) {
-            if (blockEdge == null)
-                throw new ArgumentNullException("Block edge is invalid");
-
             for (int cpIndex = 0; cpIndex < Track.ConnectionPoints.Count; cpIndex++)
                 if (ContainsBlockEdge(cpIndex, blockEdge))
                     return cpIndex;

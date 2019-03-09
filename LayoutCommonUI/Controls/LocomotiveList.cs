@@ -6,16 +6,18 @@ using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#nullable enable
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for LocomotiveList.
     /// </summary>
     public class LocomotiveList : XmlQueryListbox {
-        LocomotiveCatalogInfo catalog = null;
+        LocomotiveCatalogInfo? catalog = null;
         bool showOnlyLocomotives = false;
         bool operationMode = false;
         Rectangle dragSourceRect = Rectangle.Empty;
-        IXmlQueryListBoxXmlElementItem draggedItem = null;
+        IXmlQueryListBoxXmlElementItem? draggedItem = null;
 
         public LocomotiveList() {
             if (!DesignMode) {
@@ -42,7 +44,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public override IXmlQueryListboxItem CreateItem(QueryItem query, XmlElement itemElement) => new LocomotiveItem(this, query, itemElement);
 
-        public XmlElement SelectedXmlElement {
+        public XmlElement? SelectedXmlElement {
             get {
                 if (SelectedXmlItem != null)
                     return ((IXmlQueryListBoxXmlElementItem)SelectedXmlItem).Element;
@@ -82,7 +84,7 @@ namespace LayoutManager.CommonUI.Controls {
             if (!onTrack) {
                 // Try to check if the locomotive can be placed on a block
                 String reason = "No free blocks";
-                ILayoutPower power = null;
+                ILayoutPower? power = null;
                 CanPlaceTrainResolveMethod canPlaceOnTrack = CanPlaceTrainResolveMethod.NotPossible;
 
                 foreach (LayoutBlockDefinitionComponent blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases)) {
@@ -90,10 +92,9 @@ namespace LayoutManager.CommonUI.Controls {
                     if (!blockDefinition.Block.HasTrains && blockDefinition.Block.Power != power) {
                         power = blockDefinition.Block.Power;
 
-                        CanPlaceTrainResult result;
                         bool lookForMoreBlocks = true;
+                        var result = EventManager.Event<XmlElement, LayoutBlockDefinitionComponent, CanPlaceTrainResult>("can-locomotive-be-placed", element, blockDefinition)!;
 
-                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed", element, blockDefinition, null));
                         canPlaceOnTrack = result.ResolveMethod;
 
                         switch (result.Status) {
@@ -223,7 +224,9 @@ namespace LayoutManager.CommonUI.Controls {
         [LayoutEvent("train-speed-changed")]
         [LayoutEvent("train-enter-block")]
         private void needToUpdateLocomotiveItem(LayoutEvent e) {
-            InvalidateTrainState((TrainStateInfo)e.Sender);
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+
+            InvalidateTrainState(train);
         }
 
         [LayoutEvent("train-saved-in-collection")]
@@ -237,11 +240,9 @@ namespace LayoutManager.CommonUI.Controls {
         class LocomotiveItem : IXmlQueryListBoxXmlElementItem {
             readonly LocomotiveList list;
             readonly XmlElement element;
-            readonly QueryItem query;
 
             public LocomotiveItem(LocomotiveList list, QueryItem queryItem, XmlElement element) {
                 this.list = list;
-                this.query = queryItem;
                 this.element = element;
             }
 

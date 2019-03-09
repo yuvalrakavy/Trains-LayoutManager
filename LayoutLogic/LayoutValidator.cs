@@ -6,13 +6,15 @@ using System.Linq;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#pragma warning disable IDE0051,IDE0060
+#nullable enable
+
 namespace LayoutManager.Logic {
     /// <summary>
     /// Summary description for LayoutValidator.
     /// </summary>
     [LayoutModule("Layout Validator", UserControl = false)]
     public class LayoutValidator : LayoutModuleBase {
-        readonly IDictionary commandStationMap = new HybridDictionary();
 
         [LayoutEvent("check-layout", Order = 0)]
         void ValidateLayout(LayoutEvent e) {
@@ -73,7 +75,7 @@ namespace LayoutManager.Logic {
                             foreach (LayoutComponentConnectionPoint cp in track.ConnectionPoints) {
                                 System.Drawing.Point ml = spot.Location + LayoutTrackComponent.GetConnectionOffset(cp);
                                 LayoutModelSpotComponentCollection otherSpot = area[ml, phase];
-                                LayoutTrackComponent otherTrack = null;
+                                LayoutTrackComponent? otherTrack = null;
 
                                 if (otherSpot != null && (otherSpot.Phase & phase) != 0)
                                     otherTrack = otherSpot.Track;
@@ -113,7 +115,7 @@ namespace LayoutManager.Logic {
             foreach (LayoutComponentConnectionPoint cp in track.ConnectionPoints) {
                 System.Drawing.Point ml = track.Location + LayoutTrackComponent.GetConnectionOffset(cp);
                 LayoutModelSpotComponentCollection otherSpot = track.Spot.Area[ml, phase];
-                LayoutTrackComponent otherTrack = null;
+                LayoutTrackComponent? otherTrack = null;
 
                 if (otherSpot != null)
                     otherTrack = otherSpot.Track;
@@ -222,9 +224,9 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("perform-trains-analysis")]
         private void performTrainsAnalysis(LayoutEvent e) {
-            LayoutSelection phantomTrains = new LayoutSelection();
-            LayoutSelection unexpectedTrains = new LayoutSelection();
-            Dictionary<Guid, object> processedBlocks = new Dictionary<Guid, object>();
+            var phantomTrains = new LayoutSelection();
+            var unexpectedTrains = new LayoutSelection();
+            var processedBlocks = new Dictionary<Guid, object?>();
 
             foreach (LayoutBlock block in LayoutModel.Blocks) {
                 if (!processedBlocks.ContainsKey(block.Id)) {

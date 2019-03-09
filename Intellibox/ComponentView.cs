@@ -8,6 +8,8 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
 
+#pragma warning disable IDE0051, IDE0060
+
 namespace Intellibox {
     /// <summary>
     /// Summary description for ComponentView.
@@ -93,10 +95,7 @@ namespace Intellibox {
         }
 
         class DrawingRegionIntellibox : LayoutDrawingRegionGrid {
-            readonly IntelliboxComponent component;
-
             internal DrawingRegionIntellibox(ModelComponent component, ILayoutView view) : base(component, view) {
-                this.component = (IntelliboxComponent)component;
             }
 
             public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
@@ -117,10 +116,7 @@ namespace Intellibox {
         }
 
         class IntelliboxPainter {
-            Size componentSize;
-
             internal IntelliboxPainter(Size componentSize) {
-                this.componentSize = componentSize;
             }
 
             internal void Paint(Graphics g) {
@@ -191,7 +187,7 @@ namespace Intellibox {
         private void intelliboxNotifiyLocomotiveState(LayoutEvent e) {
             IntelliboxComponent component = (IntelliboxComponent)e.Sender;
             ExternalLocomotiveEventInfo info = (ExternalLocomotiveEventInfo)e.Info;
-            var addressMap = (OnTrackLocomotiveAddressMap)EventManager.Event(new LayoutEvent("get-on-track-locomotive-address-map", component));
+            var addressMap = EventManager.Event<object, object, OnTrackLocomotiveAddressMap>("get-on-track-locomotive-address-map", component);
             var addressMapEntry = addressMap[info.Unit];
 
             if (addressMapEntry == null)

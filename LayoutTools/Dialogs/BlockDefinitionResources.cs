@@ -54,7 +54,7 @@ namespace LayoutManager.Tools.Dialogs {
             XmlElement resourceElement = info.Element.OwnerDocument.CreateElement("Resource");
 
             ResourceInfo resourceInfo = new ResourceInfo(
-                new LayoutBlockDefinitionComponentInfo(info.BlockDefinition, info.Element), resourceElement) {
+                resourceElement) {
                 ResourceId = menuItem.Component.Id
             };
 

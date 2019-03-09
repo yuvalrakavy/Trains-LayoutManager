@@ -928,7 +928,7 @@ namespace LayoutManager.Model {
 
             if (block != null)
                 // Verify that indeed the locomotive can be added (exception is thrown if not)
-                result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed-on-track", loco.Element, block.BlockDefinintion, null));
+                result = EventManager.Event<XmlElement, LayoutBlockDefinitionComponent, CanPlaceTrainResult>("can-locomotive-be-placed-on-track", loco.Element, block.BlockDefinintion);
             else
                 result = new CanPlaceTrainResult() { CanBeResolved = true, Status = CanPlaceTrainStatus.CanPlaceTrain };
 

@@ -40,41 +40,14 @@ namespace LayoutManager.Tools {
     /// <summary>
     /// Summary description for ComponentTools.
     /// </summary>
+    #pragma warning disable IDE0051, IDE0060
     [LayoutModule("Components Editing Tools", UserControl = false)]
-    public class ComponentEditingTools : System.ComponentModel.Component, ILayoutModuleSetup {
+    public class ComponentEditingTools : ILayoutModuleSetup {
         public static String ComponentEditingToolsVersion = "1.0";
 
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
-
-        #region Constructors
-
-        public ComponentEditingTools(IContainer container) {
-            /// <summary>
-            /// Required for Windows.Forms Class Composition Designer support
-            /// </summary>
-            container.Add(this);
-            InitializeComponent();
-
-            //
-            // TODO: Add any constructor code after InitializeComponent call
-            //
-        }
-
-        public ComponentEditingTools() {
-            /// <summary>
-            /// Required for Windows.Forms Class Composition Designer support
-            /// </summary>
-            InitializeComponent();
-
-            //
-            // TODO: Add any constructor code after InitializeComponent call
-            //
-        }
-
-        #endregion
 
         [LayoutEvent("query-can-remove-model-component", SenderType = typeof(LayoutTrackComponent))]
         void QueryCanRemoveTrackComponent(LayoutEvent e) {
@@ -325,9 +298,9 @@ namespace LayoutManager.Tools {
             if (trackLinkProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 component.XmlInfo.XmlDocument = trackLinkProperties.XmlInfo.XmlDocument;
 
-                LayoutCompoundCommand addCommand = new LayoutCompoundCommand("Add track-link");
-
-                addCommand.Add(new LayoutComponentPlacmentCommand(area, placementProvider.Location, component, "Add track link", area.Phase(placementProvider.Location)));
+                LayoutCompoundCommand addCommand = new LayoutCompoundCommand("Add track-link") {
+                    new LayoutComponentPlacmentCommand(area, placementProvider.Location, component, "Add track link", area.Phase(placementProvider.Location))
+                };
 
                 if (trackLinkProperties.TrackLink != null) {
                     LayoutTrackLinkComponent destinationTrackLinkComponent = trackLinkProperties.TrackLink.ResolveLink();
@@ -393,7 +366,7 @@ namespace LayoutManager.Tools {
                                 blockDefinition => {
                                     LayoutXmlInfo xmlInfo = new LayoutXmlInfo(blockDefinition);
                                     var newBlockDefinitionInfo = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element);
-                                    command = command ?? new LayoutCompoundCommand("Assign power connector as resource");
+                                    command ??= new LayoutCompoundCommand("Assign power connector as resource");
 
                                     newBlockDefinitionInfo.Resources.Add(powerConnectorcomponent.Id);
                                     command.Add(new LayoutModifyComponentDocumentCommand(blockDefinition, xmlInfo));
@@ -1185,16 +1158,6 @@ namespace LayoutManager.Tools {
             EventManager.Event(new LayoutEvent("show-control-modules-location", component));
         }
 
-        #endregion
-
-        #region Component Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            components = new Container();
-        }
         #endregion
 
         #region Component independt handing of Details window

@@ -8,6 +8,8 @@ using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#nullable enable
+
 namespace LayoutManager.Logic {
 
     [LayoutModule("Layout Power Manager", UserControl = false)]
@@ -19,7 +21,7 @@ namespace LayoutManager.Logic {
         static ILayoutTopologyServices TopologyServices {
             get {
                 if (_topologyServices == null)
-                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", null));
+                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", sender: null))!;
                 return _topologyServices;
             }
         }
@@ -32,6 +34,8 @@ namespace LayoutManager.Logic {
         [LayoutEvent("power-outlet-changed-state-notification")]
         void PowerOutletChangedState(LayoutEvent e0) {
             var e = (LayoutEvent<ILayoutPowerOutlet, ILayoutPower>)e0;
+
+            Debug.Assert(e.Sender != null && e.Info != null);
 
             // Redraw all tracks
             foreach (LayoutTrackComponent track in LayoutModel.AllComponents<LayoutTrackComponent>(LayoutModel.ActivePhases))
@@ -52,10 +56,16 @@ namespace LayoutManager.Logic {
         [LayoutEvent("register-power-connected-lock")]
         private void registerPowerConnectedLock(LayoutEvent e0) {
             var e = (LayoutEvent<LayoutTrackPowerConnectorComponent>)e0;
-            var id = e.Sender.Info.Inlet.ConnectedOutlet.OutletComponent.Id;
+            var outletComponent = e.Sender?.Info?.Inlet?.ConnectedOutlet?.OutletComponent;
 
-            if (!_pendingPowerConnectedLockReady.ContainsKey(id))
-                _pendingPowerConnectedLockReady.Add(id, e.Sender.Id);
+            Debug.Assert(outletComponent != null);
+
+            if (outletComponent != null) {
+                var id = outletComponent.Id;
+
+                if (!_pendingPowerConnectedLockReady.ContainsKey(id))
+                    _pendingPowerConnectedLockReady.Add(id, e.Sender!.Id);
+            }
         }
 
         [LayoutEvent("check-layout", Order = 101)]
@@ -164,26 +174,19 @@ namespace LayoutManager.Logic {
             var e = (LayoutEvent<LayoutTrackPowerConnectorComponent, Action<LayoutBlockDefinitionComponent>>)e0;
             var powerConnector = e.Sender;
 
-            if (powerConnector.Inlet.IsConnected && powerConnector.Inlet.ConnectedOutlet.ObtainablePowers.Count() > 1) {
+            Debug.Assert(powerConnector != null);
+
+            if (powerConnector != null && powerConnector.Inlet.IsConnected && powerConnector.Inlet.ConnectedOutlet.ObtainablePowers.Count() > 1) {
                 foreach (var blockDefinition in powerConnector.BlockDefinitions) {
                     if (!blockDefinition.Info.Resources.Any(resourceInfo => resourceInfo.ResourceId == powerConnector.Id)) {
                         // This block does not have this power connector as a resource
                         Trace.WriteLine($"Will add {powerConnector.FullDescription} as resource to {blockDefinition.FullDescription}");
-                        e.Info(blockDefinition);
+                        Debug.Assert(e.Info != null);
+                        e.Info?.Invoke(blockDefinition);
                     }
                 }
             }
         }
-
-#if NOTYET
-        [LayoutEvent("add-all-power-connectors-as-resource")]
-        private void addAllPowerConnectorsAsResource(LayoutEvent e0) {
-            var e = (LayoutEvent<object, LayoutPhase>)e0;
-
-            foreach(var powerConnector in LayoutModel.Components<LayoutTrackPowerConnectorComponent>(e.Info))
-                addPowerConnectorAsResource(new LayoutEvent<LayoutTrackPowerConnectorComponent>("add-power-connector-as-resource", powerConnector));
-        }
-#endif
 
         [LayoutEvent("check-layout", Order = 100)]
         void AssignPowerSource(LayoutEvent e) {
@@ -368,18 +371,23 @@ namespace LayoutManager.Logic {
         private void changeTrainPower(LayoutEvent e0) {
             var e = (LayoutEvent<TrainStateInfo, ILayoutPower>)e0;
 
-            OnTrainPowerChanged(e.Sender, e.Info);
+            Debug.Assert(e.Sender != null && e.Info != null);
+            if(e.Sender != null && e.Info != null)
+                OnTrainPowerChanged(e.Sender, e.Info);
         }
 
         [LayoutAsyncEvent("set-power")]
         private async Task setPower(LayoutEvent e) {
+            Debug.Assert(e.Sender != null);
             LayoutTrackPowerConnectorComponent powerConnector = ExtractPowerConnector(e.Sender);
-            ILayoutPower power = null;
+            ILayoutPower power;
 
             if (e.Info is ILayoutPower)
                 power = (ILayoutPower)e.Info;
             else if (e.Info is LayoutPowerType)
                 power = (from p in powerConnector.Inlet.ConnectedOutlet.ObtainablePowers where p.Type == (LayoutPowerType)e.Info select p).FirstOrDefault();
+            else
+                throw new ArgumentException("Invalid power for set-power");
 
             bool isPossible = powerConnector.Inlet.ConnectedOutlet.ObtainablePowers.Any(p => p.Type == power.Type);
 
@@ -411,26 +419,30 @@ namespace LayoutManager.Logic {
                         // collision).
                         foreach (var trainLocation in powerConnector.TrainLocations) {
                             foreach (var trainLoco in trainLocation.Train.Locomotives) {
-                                var result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent<XmlElement, object>("is-locomotive-address-valid", trainLoco.Locomotive.Element, power));
+                                var result = (CanPlaceTrainResult?)EventManager.Event(new LayoutEvent<XmlElement, object>("is-locomotive-address-valid", trainLoco.Locomotive.Element, power));
 
-                                if (result.ResolveMethod == CanPlaceTrainResolveMethod.NotPossible)
-                                    throw new LayoutException(trainLocation.Train, "Cannot connect power to this train: " + result.ToString());
-                                else if (result.ResolveMethod == CanPlaceTrainResolveMethod.ReprogramAddress) {
-                                    // This can be done in place if there is only one locomotive in the power region, and this power region
-                                    // can be connected to programming power
-                                    if (!powerConnector.Inlet.ConnectedOutlet.ObtainablePowers.Any(p => p.Type == LayoutPowerType.Programmer))
-                                        throw new LayoutException(trainLocation.Train, "Locomotive has invalid address, cannot connect it to power without first assigning it with a new address");
+                                if (result != null) {
+                                    if (result.ResolveMethod == CanPlaceTrainResolveMethod.NotPossible)
+                                        throw new LayoutException(trainLocation.Train, "Cannot connect power to this train: " + result.ToString());
+                                    else if (result.ResolveMethod == CanPlaceTrainResolveMethod.ReprogramAddress) {
+                                        // This can be done in place if there is only one locomotive in the power region, and this power region
+                                        // can be connected to programming power
+                                        if (!powerConnector.Inlet.ConnectedOutlet.ObtainablePowers.Any(p => p.Type == LayoutPowerType.Programmer))
+                                            throw new LayoutException(trainLocation.Train, "Locomotive has invalid address, cannot connect it to power without first assigning it with a new address");
 
-                                    if (powerConnector.Locomotives.Count() > 1)
-                                        throw new LayoutException(trainLocation.Train, "Train locomotive has invalid address, a new address cannot reprogrammed since there are other locomotives in the power region");
+                                        if (powerConnector.Locomotives.Count() > 1)
+                                            throw new LayoutException(trainLocation.Train, "Train locomotive has invalid address, a new address cannot reprogrammed since there are other locomotives in the power region");
 
-                                    // There is only one locomotive on a region that can be connected to programming power
-                                    var programmingState = new PlacedLocomotiveProgrammingState(trainLocation.Train.Element, result.Locomotive, trainLocation.Block.BlockDefinintion);
+                                        // There is only one locomotive on a region that can be connected to programming power
+                                        var programmingState = new PlacedLocomotiveProgrammingState(trainLocation.Train.Element, result.Locomotive, trainLocation.Block.BlockDefinintion);
 
-                                    var programmedTrain = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent<PlacedLocomotiveProgrammingState>("placed-locomotive-address-programming", programmingState).CopyOperationContext(e));
+                                        var programmedTrain = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent<PlacedLocomotiveProgrammingState>("placed-locomotive-address-programming", programmingState).CopyOperationContext(e));
 
-                                    Debug.Assert(programmedTrain != null);
+                                        Debug.Assert(programmedTrain != null);
+                                    }
                                 }
+                                else
+                                    throw new LayoutException(trainLocation.Train, $"Unable to determine if locomotive {trainLoco.Name} has valid address");
                             }
                         }
                         break;
@@ -467,17 +479,23 @@ namespace LayoutManager.Logic {
             var e = (LayoutEvent<TrainStateInfo>)e0;
             var train = e.Sender;
 
-            OnTrainPowerChanged(train, train.LocomotiveBlock.BlockDefinintion.Power);
+            Debug.Assert(train != null);
+            if(train != null)
+                OnTrainPowerChanged(train, train.LocomotiveBlock.BlockDefinintion.Power);
         }
 
         [LayoutEvent("train-is-removed")]
         private void onCanRemoveTrain(LayoutEvent e0) {
             var e = (LayoutEvent<TrainStateInfo>)e0;
             var train = e.Sender;
-            var power = train.LocomotiveBlock.BlockDefinintion.Power;
-            var disconnectedPower = new LayoutPower(power.PowerOriginComponent, LayoutPowerType.Disconnected, power.DigitalFormats, "Disconnected");
+            var power = train?.LocomotiveBlock.BlockDefinintion.Power;
 
-            OnTrainPowerChanged(train, disconnectedPower);
+            Debug.Assert(train != null && power != null);
+            if (power != null) {
+                var disconnectedPower = new LayoutPower(power.PowerOriginComponent, LayoutPowerType.Disconnected, power.DigitalFormats, "Disconnected");
+
+                OnTrainPowerChanged(train, disconnectedPower);
+            }
         }
     }
 }

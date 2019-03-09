@@ -406,20 +406,18 @@ namespace LayoutManager.Tools {
             }
             else if (e.Sender is LayoutBlock block) {
                 ApplicableTripPlansData applicableTripPlans = new ApplicableTripPlansData(applicableTripPlansElement);
-                object oFront;
+                LayoutComponentConnectionPoint? front;
 
                 if (e.HasOption("Front"))
-                    oFront = LayoutComponentConnectionPoint.Parse(e.GetOption("Front"));
+                    front = LayoutComponentConnectionPoint.Parse(e.GetOption("Front"));
                 else
-                    oFront = EventManager.Event(new LayoutEvent("get-locomotive-front", block.BlockDefinintion, ""));
+                    front = EventManager.EventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>("get-locomotive-front", block.BlockDefinintion, "");
 
-                if (oFront != null) {
-                    LayoutComponentConnectionPoint front = (LayoutComponentConnectionPoint)oFront;
-
+                if (front.HasValue) {
                     applicableTripPlans.LocomotiveBlock = block;
                     applicableTripPlans.LastCarBlock = block;
-                    applicableTripPlans.LocomotiveFront = front;
-                    applicableTripPlans.LastCarFront = front;
+                    applicableTripPlans.LocomotiveFront = front.Value;
+                    applicableTripPlans.LastCarFront = front.Value;
                     applicableTripPlans.CalculatePenalty = e.GetBoolOption("CalculatePenalty", true);
                     applicableTripPlans.FindApplicableTripPlans();
                 }

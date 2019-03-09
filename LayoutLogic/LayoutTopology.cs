@@ -4,6 +4,8 @@ using System.Drawing;
 using LayoutManager.Components;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060
+#nullable enable
 namespace LayoutManager.Logic {
 
     [LayoutModule("Layout Topology Services", UserControl = false)]
@@ -25,13 +27,13 @@ namespace LayoutManager.Logic {
         /// <param name="trackEdge">The track edge for which a track connection is looked for</param>
         /// <param name="trackLinks">If true, track links are followed when looking for connection</param>
         public TrackEdge FindTrackConnectingAt(TrackEdge trackEdge, LayoutPhase phase, bool trackLinks) {
-            LayoutTrackLinkComponent trackLink = null;
+            LayoutTrackLinkComponent? trackLink = null;
 
             if (trackLinks)
                 trackLink = trackEdge.Track.Spot[ModelComponentKind.TrackLink] as LayoutTrackLinkComponent;
 
             if (trackLink == null) {
-                LayoutTrackComponent newTrack = null;
+                LayoutTrackComponent? newTrack = null;
                 Point newTrackLocation = trackEdge.Track.Location + LayoutTrackComponent.GetConnectionOffset(trackEdge.ConnectionPoint);
                 LayoutComponentConnectionPoint newTrackConnectionPoint = LayoutTrackComponent.GetPointConnectingTo(trackEdge.ConnectionPoint);
                 LayoutModelSpotComponentCollection spot = trackEdge.Track.Spot.Area[newTrackLocation, phase];

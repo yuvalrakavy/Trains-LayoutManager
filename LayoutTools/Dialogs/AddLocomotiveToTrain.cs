@@ -125,9 +125,8 @@ namespace LayoutManager.Tools.Dialogs {
 
                 if (!inList.Contains(loco.Id)) {
                     if (train is TrainStateInfo) {
-                        CanPlaceTrainResult result;
+                        var result = EventManager.Event<XmlElement, object, CanPlaceTrainResult>("can-locomotive-be-placed-on-track", loco.Element);
 
-                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed-on-track", loco.Element));
                         if (result.Status == CanPlaceTrainStatus.CanPlaceTrain)
                             result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(
                                 "is-locomotive-address-valid", loco.Element, train, xmlDocument: "<Orientation Value='" + orientation.ToString() + "' />"));

@@ -357,10 +357,10 @@ namespace MarklinDigital {
                 bool managed = train.Managed;
 
                 if (!managed) {
-                    LayoutComponentConnectionPoint front = (LayoutComponentConnectionPoint)EventManager.Event(new LayoutEvent("get-locomotive-front",
-                        train.LocomotiveBlock.BlockDefinintion, train.Element, null));
+                    var front = EventManager.EventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>("get-locomotive-front",
+                        train.LocomotiveBlock.BlockDefinintion, train.Element);
 
-                    train.LocationOfBlock(train.LocomotiveBlock).DisplayFront = front;
+                    train.LocationOfBlock(train.LocomotiveBlock).DisplayFront = front ?? train.LocomotiveBlock.TrackEdges[0].ConnectionPoint;
                 }
 
                 foreach (TrainLocomotiveInfo trainLoco in train.Locomotives)

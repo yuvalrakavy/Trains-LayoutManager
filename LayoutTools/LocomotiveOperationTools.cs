@@ -32,9 +32,7 @@ namespace LayoutManager.Tools {
         private void addPlacebleBlocksMenuEntries(LayoutEvent e) {
             XmlElement placedElement = (XmlElement)e.Sender;
             Menu m = (Menu)e.Info;
-            CanPlaceTrainResult result;
-
-            result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("can-locomotive-be-placed-on-track", placedElement));
+            var result = EventManager.Event<XmlElement, object, CanPlaceTrainResult>("can-locomotive-be-placed-on-track", placedElement);
 
             if (result.Status != CanPlaceTrainStatus.CanPlaceTrain) {
                 MenuItem problemItem = new MenuItem(result.ToString()) {
@@ -118,7 +116,7 @@ namespace LayoutManager.Tools {
 
         [LayoutEvent("show-locomotive-controller")]
         private void showLocomotiveController(LayoutEvent e) {
-            TrainStateInfo trainState = (TrainStateInfo)EventManager.Event(new LayoutEvent("extract-train-state", e.Sender));
+            TrainStateInfo trainState = EventManager.Event<object, object, TrainStateInfo>("extract-train-state", e.Sender)!;
 
             if (trainState.NotManaged)
                 throw new LocomotiveNotManagedException(trainState.Locomotives[0].Locomotive);
@@ -201,35 +199,34 @@ namespace LayoutManager.Tools {
             trainProperties.ShowDialog();
         }
 
+        private static string ExtractTrainDisplayName(object something) {
+            return something switch
+            {
+                XmlElement element => element.Name switch
+                {
+                    "Locomotive" => new LocomotiveInfo(element).DisplayName,
+                    "Train" => new TrainInCollectionInfo(element).DisplayName,
+                    "TrainState" => new TrainStateInfo(element).DisplayName,
+                    _ => throw new ArgumentException("Invalid placed element")
+                },
+                string displayName => displayName,
+                TrainStateInfo train => train.DisplayName,
+                _ => throw new ArgumentException("Invalid locomotive name")
+            };
+        }
+
         [LayoutEvent("get-locomotive-front")]
-        private void getLocomotiveFront(LayoutEvent e) {
-            LayoutBlockDefinitionComponent blockDefinition;
-            String name;
+        private void getLocomotiveFront(LayoutEvent e0) {
+            var e = (LayoutEventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>)e0;
+            var name = ExtractTrainDisplayName(e.Info);
 
-            blockDefinition = (LayoutBlockDefinitionComponent)e.Sender;
+            EventManager.Event(new LayoutEvent("ensure-component-visible", e.Sender, false, null));
 
-            EventManager.Event(new LayoutEvent("ensure-component-visible", blockDefinition, false, null));
-
-            if (e.Info is XmlElement placedElement) {
-                if (placedElement.Name == "Locomotive")
-                    name = new LocomotiveInfo(placedElement).DisplayName;
-                else if (placedElement.Name == "Train")
-                    name = new TrainInCollectionInfo(placedElement).DisplayName;
-                else if (placedElement.Name == "TrainState")
-                    name = new TrainStateInfo(placedElement).DisplayName;
-                else
-                    throw new ArgumentException("Invalid placed element");
-            }
-            else if (e.Info is string)
-                name = (string)e.Info;
-            else
-                throw new ArgumentException("Invalid locomotive name");
-
-            Dialogs.LocomotiveFront locoFront = new Dialogs.LocomotiveFront(blockDefinition, name);
+            Dialogs.LocomotiveFront locoFront = new Dialogs.LocomotiveFront(e.Sender, name);
             if (locoFront.ShowDialog() == DialogResult.OK)
-                e.Info = locoFront.Front;
+                e.Result = locoFront.Front;
             else
-                e.Info = null;
+                e.Result = null;
         }
 
         [LayoutEvent("get-waypoint-front")]
@@ -245,34 +242,17 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("get-train-front-and-length")]
-        private void getTrainFrontAndLength(LayoutEvent e) {
-            LayoutBlockDefinitionComponent blockInfo;
-            String name;
+        private void getTrainFrontAndLength(LayoutEvent e0) {
+            var e = (LayoutEvent<LayoutBlockDefinitionComponent, object, TrainFrontAndLength>)e0;
+            var name = ExtractTrainDisplayName(e.Info);
 
-            blockInfo = (LayoutBlockDefinitionComponent)e.Sender;
+            EventManager.Event(new LayoutEvent("ensure-component-visible", e.Sender, false, null));
 
-            EventManager.Event(new LayoutEvent("ensure-component-visible", blockInfo, false, null));
-
-            if (e.Info is XmlElement placedElement) {
-                if (placedElement.Name == "Locomotive")
-                    name = new LocomotiveInfo(placedElement).DisplayName;
-                else if (placedElement.Name == "Train")
-                    name = new TrainInCollectionInfo(placedElement).DisplayName;
-                else if (placedElement.Name == "TrainState")
-                    name = new TrainStateInfo(placedElement).DisplayName;
-                else
-                    throw new ArgumentException("Invalid placed element");
-            }
-            else if (e.Info is string)
-                name = (string)e.Info;
-            else
-                throw new ArgumentException("Invalid locomotive name");
-
-            Dialogs.TrainFrontAndLength trainFrontAndLength = new Dialogs.TrainFrontAndLength(blockInfo, name);
+            Dialogs.TrainFrontAndLength trainFrontAndLength = new Dialogs.TrainFrontAndLength(e.Sender, name);
             if (trainFrontAndLength.ShowDialog() == DialogResult.OK)
-                e.Info = new TrainFrontAndLength(trainFrontAndLength.Front, trainFrontAndLength.Length);
+                e.Result = new TrainFrontAndLength(trainFrontAndLength.Front, trainFrontAndLength.Length);
             else
-                e.Info = null;
+                e.Result = null;
         }
 
         [LayoutEvent("get-programming-location")]

@@ -441,6 +441,7 @@
     <Compile Include="EventScriptTools.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="LayoutControlTools.cs">
     </Compile>
     <Compile Include="LocomotiveOperationTools.cs">
