@@ -82,4 +82,12 @@ namespace LayoutManager {
         public FileParseException(string message) : base(message) {
         }
     }
+
+    public static class Ensure {
+        public static T NotNull<T>(object? v, string name) where T: class {
+            if (v == null)
+                throw new ArgumentNullException(name);
+            return (T)v;
+        }
+    }
 }

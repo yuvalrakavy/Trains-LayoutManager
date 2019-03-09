@@ -182,86 +182,88 @@ namespace LayoutManager {
 
             return true;
         }
+    }
 
-#region Methods to get/set event parameters
+    public static class LayoutEventExtensions {
+        #region Methods to get/set event parameters
 
-        public bool HasOption(string elementName, string optionName) {
-            XmlElement optionElement = Element[elementName];
+        public static bool HasOption<TEvent>(this TEvent e, string elementName, string optionName) where TEvent : LayoutEvent {
+            XmlElement optionElement = e.Element[elementName];
 
             if (optionElement != null)
                 return optionElement.HasAttribute(optionName);
             return false;
         }
 
-        public bool HasOption(string optionName) => HasOption("Options", optionName);
+        public static bool HasOption<TEvent>(this TEvent e, string optionName) where TEvent : LayoutEvent => e.HasOption("Options", optionName);
 
-        public string? GetOption(string optionName, string elementName = "Options", string? defaultValue = null) {
-            XmlElement optionElement = Element[elementName];
+        public static string? GetOption<TEvent>(this TEvent e, string optionName, string elementName = "Options", string? defaultValue = null) where TEvent : LayoutEvent {
+            XmlElement optionElement = e.Element[elementName];
 
             if (optionElement != null && optionElement.HasAttribute(optionName))
                 return optionElement.GetAttribute(optionName);
             return defaultValue;
         }
 
-        public LayoutEvent CopyOptions(LayoutEvent other, string elementName = "Options") {
+        public static TEvent CopyOptions<TEvent>(this TEvent e, LayoutEvent other, string elementName = "Options") where TEvent : LayoutEvent {
             XmlElement otherElement = other.Element[elementName];
 
             if (otherElement != null)
-                Element.AppendChild(Element.OwnerDocument.ImportNode(otherElement, true));
+                e.Element.AppendChild(e.Element.OwnerDocument.ImportNode(otherElement, true));
 
-            return this;
+            return e;
         }
 
-        public bool GetBoolOption(string elementName, string optionName, bool defaultValue) => XmlConvert.ToBoolean(GetOption(optionName, elementName, XmlConvert.ToString(defaultValue)));
+        public static bool GetBoolOption<TEvent>(this TEvent e, string elementName, string optionName, bool defaultValue) where TEvent: LayoutEvent => 
+            XmlConvert.ToBoolean(e.GetOption(optionName, elementName, XmlConvert.ToString(defaultValue)));
 
-        public bool GetBoolOption(string elementName, string optionName) => GetBoolOption(elementName, optionName, false);
+        public static bool GetBoolOption<TEvent>(this TEvent e, string elementName, string optionName) where TEvent : LayoutEvent => e.GetBoolOption(elementName, optionName, false);
 
-        public bool GetBoolOption(string optionName) => GetBoolOption("Options", optionName);
+        public static bool GetBoolOption<TEvent>(this TEvent e, string optionName) where TEvent: LayoutEvent => e.GetBoolOption("Options", optionName);
 
-        public bool GetBoolOption(string optionName, bool defaultValue) => GetBoolOption("Options", optionName, defaultValue);
+        public static bool GetBoolOption<TEvent>(this TEvent e, string optionName, bool defaultValue) where TEvent : LayoutEvent => e.GetBoolOption("Options", optionName, defaultValue);
 
-        public int GetIntOption(string elementName, string optionName, int defaultValue) => XmlConvert.ToInt32(GetOption(optionName, elementName, XmlConvert.ToString(defaultValue)));
+        public static int GetIntOption<TEvent>(this TEvent e, string elementName, string optionName, int defaultValue) where TEvent: LayoutEvent => XmlConvert.ToInt32(e.GetOption(optionName, elementName, XmlConvert.ToString(defaultValue)));
 
-        public int GetIntOption(string elementName, string optionName) => GetIntOption(elementName, optionName, -1);
+        public static int GetIntOption<TEvent>(this TEvent e, string elementName, string optionName) where TEvent : LayoutEvent => e.GetIntOption(elementName, optionName, -1);
 
-        public int GetIntOption(string optionName, int defaultValue) => GetIntOption("Options", optionName, defaultValue);
+        public static int GetIntOption<TEvent>(this TEvent e, string optionName, int defaultValue) where TEvent : LayoutEvent => e.GetIntOption("Options", optionName, defaultValue);
 
-        public int GetIntOption(string optionName) => GetIntOption("Options", optionName);
+        public static int GetIntOption<TEvent>(this TEvent e, string optionName) where TEvent : LayoutEvent => e.GetIntOption("Options", optionName);
 
-        public LayoutEvent SetOption(string elementName, string optionName, string value) {
-            XmlElement optionElement = Element[elementName];
+        public static TEvent SetOption<TEvent>(this TEvent e, string elementName, string optionName, string value) where TEvent : LayoutEvent {
+            XmlElement optionElement = e.Element[elementName];
 
             if (optionElement == null) {
-                optionElement = Element.OwnerDocument.CreateElement(elementName);
-                Element.AppendChild(optionElement);
+                optionElement = e.Element.OwnerDocument.CreateElement(elementName);
+                e.Element.AppendChild(optionElement);
             }
 
             optionElement.SetAttribute(optionName, value);
 
-            return this;
+            return e;
         }
 
-        public LayoutEvent SetOption(string optionName, string value) => SetOption("Options", optionName, value);
+        public static TEvent SetOption<TEvent>(this TEvent e, string optionName, string value) where TEvent : LayoutEvent => e.SetOption("Options", optionName, value);
 
-        public LayoutEvent SetOption(string elementName, string optionName, bool value) => SetOption(elementName, optionName, XmlConvert.ToString(value));
+        public static TEvent SetOption<TEvent>(this TEvent e, string elementName, string optionName, bool value) where TEvent : LayoutEvent => e.SetOption(elementName, optionName, XmlConvert.ToString(value));
 
-        public LayoutEvent SetOption(string optionName, bool value) => SetOption("Options", optionName, value);
+        public static TEvent SetOption<TEvent>(this TEvent e, string optionName, bool value) where TEvent : LayoutEvent => e.SetOption("Options", optionName, value);
 
-        public LayoutEvent SetOption(string elementName, string optionName, int value) => SetOption(elementName, optionName, XmlConvert.ToString(value));
+        public static TEvent SetOption<TEvent>(this TEvent e, string elementName, string optionName, int value) where TEvent : LayoutEvent => e.SetOption(elementName, optionName, XmlConvert.ToString(value));
 
-        public LayoutEvent SetOption(string optionName, int value) => SetOption("Options", optionName, value);
+        public static TEvent SetOption<TEvent>(this TEvent e, string optionName, int value) where TEvent : LayoutEvent => e.SetOption("Options", optionName, value);
 
-        public LayoutEvent SetOption(string elementName, string optionName, Guid id) => SetOption(elementName, optionName, XmlConvert.ToString(id));
+        public static TEvent SetOption<TEvent>(this TEvent e, string elementName, string optionName, Guid id) where TEvent : LayoutEvent => e.SetOption(elementName, optionName, XmlConvert.ToString(id));
 
-        public LayoutEvent SetOption(string optionName, Guid id) => SetOption("Options", optionName, id);
+        public static TEvent SetOption<TEvent>(this TEvent e, string optionName, Guid id) where TEvent : LayoutEvent => e.SetOption("Options", optionName, id);
 
-#endregion
-
+        #endregion
     }
 
     public class LayoutEvent<TSender, TInfo> : LayoutEvent where TSender : class where TInfo : class {
-        public LayoutEvent(string eventName, TSender? sender, TInfo? info = default)
-            : base(eventName, sender, info, null) {
+        public LayoutEvent(string eventName, TSender? sender, TInfo? info = default, string? xmlDocument = null, Type? targetType = null, string? ifTarget = null)
+            : base(eventName, sender, info, xmlDocument, targetType, ifTarget) {
         }
 
         public new TSender? Sender {
@@ -282,13 +284,14 @@ namespace LayoutManager {
     }
 
     public class LayoutEvent<TSender> : LayoutEvent<TSender, object> where TSender : class {
-        public LayoutEvent(string eventName, TSender sender)
-            : base(eventName, sender, default) {
+        public LayoutEvent(string eventName, TSender sender, string? xmlDocument = null, Type? targetType = null, string? ifTarget = null)
+            : base(eventName, sender, default, xmlDocument, targetType, ifTarget) {
         }
     }
 
     public class LayoutEventInfoValueType<TSender, TInfo> : LayoutEvent where TSender : class where TInfo : struct {
-        public LayoutEventInfoValueType(string eventName, TSender? sender, TInfo info) : base(eventName, sender, info, null) {
+        public LayoutEventInfoValueType(string eventName, TSender? sender, TInfo info, string? xmlDocument = null, Type? targetType = null, string? ifTarget = null) :
+            base(eventName, sender, info, xmlDocument, targetType, ifTarget) {
 
         }
         public new TSender? Sender {
@@ -309,8 +312,8 @@ namespace LayoutManager {
     }
 
     public class LayoutEvent<TSender, TInfo, TResult> : LayoutEvent<TSender, TInfo> where TSender : class where TInfo : class where TResult : class {
-        public LayoutEvent(string eventName, TSender sender, TInfo? info = default)
-            : base(eventName, sender, info) {
+        public LayoutEvent(string eventName, TSender? sender, TInfo? info = default, string? xmlDocument = null, Type? targetType = null, string? ifTarget = null)
+            : base(eventName, sender, info, xmlDocument, targetType, ifTarget) {
         }
 
         public TResult? Result {
@@ -325,8 +328,8 @@ namespace LayoutManager {
     }
 
     public class LayoutEventResultValueType<TSender, TInfo, TResult> : LayoutEvent<TSender, TInfo> where TSender : class where TInfo : class where TResult : struct {
-        public LayoutEventResultValueType(string eventName, TSender sender, TInfo info)
-            : base(eventName, sender, info) {
+        public LayoutEventResultValueType(string eventName, TSender? sender = null, TInfo? info = null, string? xmlDocument = null, Type? targetType = null, string? ifTarget = null)
+            : base(eventName, sender, info, xmlDocument, targetType, ifTarget) {
         }
 
         public TResult? Result {
@@ -341,8 +344,8 @@ namespace LayoutManager {
     }
 
     public class LayoutEventInfoResultValueType<TSender, TInfo, TResult> : LayoutEventInfoValueType<TSender, TInfo> where TSender : class where TInfo : struct where TResult : struct {
-        public LayoutEventInfoResultValueType(string eventName, TSender sender, TInfo info)
-            : base(eventName, sender, info) {
+        public LayoutEventInfoResultValueType(string eventName, TSender sender, TInfo info, string? xmlDocument = null, Type? targetType = null, string? ifTarget = null)
+            : base(eventName, sender, info, xmlDocument, targetType, ifTarget) {
         }
 
         public TResult? Result {
@@ -1478,6 +1481,11 @@ namespace LayoutManager {
         /// <returns>The value of the event class Info field</returns>
         public static object? Event(LayoutEvent e) => Instance.Event(e);
 
+        public static TEvent DoEvent<TEvent>(TEvent e) where TEvent : LayoutEvent {
+            Instance.Event(e);
+            return e;
+        }
+
         /// <summary>
         /// Invoke asynchronous event
         /// </summary>
@@ -1521,6 +1529,32 @@ namespace LayoutManager {
         public static object? Event(object sender, string eventName) => Instance.Event(new LayoutEvent(eventName, sender));
 
         public static object? Event(object sender, string eventName, object info) => Instance.Event(new LayoutEvent(eventName, sender, info, null));
+
+        public static TResult? Event<TSender, TInfo, TResult>(
+            string eventName,
+            TSender? sender = null,
+            TInfo? info = null,
+            string? xmlDocument = null,
+            Type? targetType = null,
+            string? ifTarget = null) where TSender : class where TInfo : class where TResult : class {
+            var theEvent = new LayoutEvent<TSender, TInfo, TResult>(eventName, sender, info, xmlDocument, targetType, ifTarget);
+            Instance.Event(theEvent);
+
+            return theEvent.Result;
+        }
+
+        public static TResult? EventResultValueType<TSender, TInfo, TResult>(
+            string eventName,
+            TSender? sender = null,
+            TInfo? info = null,
+            string? xmlDocument = null,
+            Type? targetType = null,
+            string? ifTarget = null) where TSender : class where TInfo : class where TResult : struct {
+            var theEvent = new LayoutEventResultValueType<TSender, TInfo, TResult>(eventName, sender, info, xmlDocument, targetType, ifTarget);
+            Instance.Event(theEvent);
+
+            return theEvent.Result;
+        }
     }
 
     /// <summary>
