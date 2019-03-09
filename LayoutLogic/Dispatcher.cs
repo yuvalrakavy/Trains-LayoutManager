@@ -1705,7 +1705,7 @@ namespace LayoutManager.Logic {
             blockUnlockingManager.RemoveByOwner(train.Id);
 
             // Free all locks or pending locks that are owned by this train
-            EventManager.Event(new LayoutEvent("free-owned-layout-locks", train.Id, true, null));
+            EventManager.Event(new LayoutEventInfoValueType<object, Guid>("free-owned-layout-locks", null, train.Id).SetOption("ReleasePending", true));
         }
 
         [LayoutEvent("train-enter-block", Order = 1000)]

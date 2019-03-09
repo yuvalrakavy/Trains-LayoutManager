@@ -202,7 +202,7 @@ namespace LayoutManager.Logic {
                 }
             }
 
-            EventManager.Event(new LayoutEvent("free-owned-layout-locks", manualDispatchRegion.Id, false, null));
+            EventManager.Event(new LayoutEventInfoValueType<object, Guid>("free-owned-layout-locks", null,manualDispatchRegion.Id).SetOption("ReleasePending", false));
         }
 
         /// <summary>
