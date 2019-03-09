@@ -33,7 +33,7 @@ namespace NumatoController {
             this.interThreadEventInvoker = (ILayoutInterThreadEventInvoker)EventManager.Event(new LayoutEvent("get-inter-thread-event-invoker", this));
 
             layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
-            EventManager.Event(new LayoutEvent("initialize-layout-emulation", null));
+            EventManager.Event(new LayoutEvent("initialize-layout-emulation"));
 
             interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction)) {
                 Name = "Command station emulation for " + numatoComponent.NameProvider.Name
