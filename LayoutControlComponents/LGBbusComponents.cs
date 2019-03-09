@@ -5,6 +5,8 @@ using System.Windows.Forms;
 using LayoutManager.Model;
 using LayoutManager.CommonUI;
 
+#pragma warning disable IDE0051
+#nullable enable
 namespace LayoutManager.ControlComponents {
 
     [LayoutModule("LGBBUS Control Components")]
@@ -13,7 +15,7 @@ namespace LayoutManager.ControlComponents {
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='LGB55070']")]
         [LayoutEvent("enum-control-module-types")]
         private void get55070(LayoutEvent e) {
-            XmlElement parentElement = (XmlElement)e.Sender;
+            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
             ControlModuleType moduleType = new ControlModuleType(parentElement, "LGB55070", "LGB Feedback Interface") {
                 AddressAlignment = 4
@@ -30,7 +32,7 @@ namespace LayoutManager.ControlComponents {
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='LGB55075']")]
         [LayoutEvent("enum-control-module-types")]
         private void get55075(LayoutEvent e) {
-            XmlElement parentElement = (XmlElement)e.Sender;
+            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
             ControlModuleType moduleType = new ControlModuleType(parentElement, "LGB55075", "LGB Train detection module") {
                 AddressAlignment = 4
@@ -45,8 +47,8 @@ namespace LayoutManager.ControlComponents {
 
         [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='LGBBUS']")]
         private void recommendLGBcompatibleBusControlModuleType(LayoutEvent e) {
-            ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)e.Sender;
-            IList<string> moduleTypeNames = (IList<string>)e.Info;
+            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
+            var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
 
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("CurrentSensor"))
                 moduleTypeNames.Add("LGB55075");
@@ -56,8 +58,8 @@ namespace LayoutManager.ControlComponents {
 
         [LayoutEvent("add-control-editing-context-menu-entries", Order = 100, SenderType = typeof(DrawControlModule))]
         private void addControlModuleEditingContextMenu(LayoutEvent e) {
-            DrawControlModule drawModule = (DrawControlModule)e.Sender;
-            Menu menu = (Menu)e.Info;
+            var drawModule = Ensure.NotNull<DrawControlModule>(e.Sender, "drawModule");
+            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
             ControlModuleType moduleType = drawModule.Module.ModuleType;
 
             if (moduleType.TypeName == "LGB55070" || moduleType.TypeName == "LGB55075") {
