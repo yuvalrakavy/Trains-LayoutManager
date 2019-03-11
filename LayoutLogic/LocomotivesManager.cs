@@ -375,7 +375,7 @@ namespace LayoutManager.Logic {
                 if (!addressMapCache.TryGetValue(commandStation, out addressMap)) {
                     addressMap = new OnTrackLocomotiveAddressMap();
 
-                    EventManager.Event(new LayoutEvent("add-on-powered-tracks-locomotives-to-address-map", commandStation, addressMap, null));
+                    EventManager.Event(new LayoutEvent("add-on-powered-tracks-locomotives-to-address-map", commandStation, addressMap));
                     addressMapCache.Add(commandStation, addressMap);
                 }
             }
@@ -459,10 +459,10 @@ namespace LayoutManager.Logic {
         }
 
         private static void BuildAddressMap(IModelComponentIsCommandStation commandStation, LocomotiveAddressMap addressMap) {
-            EventManager.Event(new LayoutEvent("add-on-powered-tracks-locomotives-to-address-map", commandStation, addressMap, null));
-            EventManager.Event(new LayoutEvent("add-command-station-loco-bus-to-address-map", commandStation, addressMap, null));
-            EventManager.Event(new LayoutEvent("add-on-non-powered-tracks-locomotives-to-adddress-map", commandStation, addressMap, null));
-            EventManager.Event(new LayoutEvent("add-on-shelf-locomotives-to-address-map", commandStation, addressMap, null));
+            EventManager.Event(new LayoutEvent("add-on-powered-tracks-locomotives-to-address-map", commandStation, addressMap));
+            EventManager.Event(new LayoutEvent("add-command-station-loco-bus-to-address-map", commandStation, addressMap));
+            EventManager.Event(new LayoutEvent("add-on-non-powered-tracks-locomotives-to-adddress-map", commandStation, addressMap));
+            EventManager.Event(new LayoutEvent("add-on-shelf-locomotives-to-address-map", commandStation, addressMap));
         }
 
         #region
@@ -759,7 +759,7 @@ namespace LayoutManager.Logic {
             }
 
             if (result.ResolveMethod == CanPlaceTrainResolveMethod.Resolved) {
-                train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent("place-train-request", blockDefinition, placedElement, null).CopyOptions(e, "Train").CopyOptions(e).CopyOperationContext(e));
+                train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent("place-train-request", blockDefinition, placedElement).CopyOptions(e, "Train").CopyOptions(e).CopyOperationContext(e));
 
                 EventManager.Event(new LayoutEvent("set-train-initial-motion-direction-request", train));
             }
@@ -811,7 +811,7 @@ namespace LayoutManager.Logic {
             TrainLocationInfo trainLocation = train.PlaceInBlock(blockDefinition.Block, front.Value);
 
             trainLocation.DisplayFront = front.Value;
-            EventManager.Event(new LayoutEvent("train-relocated", train, blockDefinition.Block, null));
+            EventManager.Event(new LayoutEvent("train-relocated", train, blockDefinition.Block));
 
             // Figure out a block edge which the train could have crossed.
             LayoutBlockEdgeBase[] origins = blockDefinition.GetBlockEdges(blockDefinition.GetOtherConnectionPointIndex(front.Value));
@@ -1230,7 +1230,7 @@ namespace LayoutManager.Logic {
                     train.SetLightsValue(lights);
 
                     if (loco.HasLights)
-                        EventManager.Event(new LayoutEvent("set-locomotive-lights-command", loco, lights, null).SetCommandStation(train));
+                        EventManager.Event(new LayoutEvent("set-locomotive-lights-command", loco, lights).SetCommandStation(train));
                 }
             }
         }
@@ -1564,7 +1564,7 @@ namespace LayoutManager.Logic {
 
                 if (component != null) {
                     foreach (XmlElement componentStateTopicElement in componentStateElement) {
-                        if ((bool)EventManager.Event(new LayoutEvent("verify-component-state-topic", componentStateTopicElement, true, null)) == false)
+                        if ((bool)EventManager.Event(new LayoutEvent("verify-component-state-topic", componentStateTopicElement, true)) == false)
                             topicRemoveList.Add(componentStateTopicElement);
                     }
 

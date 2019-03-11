@@ -45,7 +45,7 @@ namespace LayoutManager {
 
             if (e.HitTestResult != null) {
                 foreach (ModelComponent component in e.HitTestResult.Selection)
-                    EventManager.Event(new LayoutEvent(QueryDropEventName, component, e.DragEventArgs, null).SetFrameWindow(e.HitTestResult.FrameWindow));
+                    EventManager.Event(new LayoutEvent(QueryDropEventName, component, e.DragEventArgs).SetFrameWindow(e.HitTestResult.FrameWindow));
             }
         }
 
@@ -56,7 +56,7 @@ namespace LayoutManager {
         /// <param name="e">EventArgs including: Where the drop occurs and what type of operation is to take place</param>
         public void LayoutView_ModelComponentDrop(object sender, LayoutViewEventArgs e) {
             foreach (ModelComponent component in e.HitTestResult.Selection)
-                EventManager.Event(new LayoutEvent(DropEventName, component, e.DragEventArgs, null).SetFrameWindow(e.HitTestResult.FrameWindow));
+                EventManager.Event(new LayoutEvent(DropEventName, component, e.DragEventArgs).SetFrameWindow(e.HitTestResult.FrameWindow));
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace LayoutManager {
 
             if (e.HitTestResult != null) {
                 foreach (ModelComponent component in e.HitTestResult.Selection) {
-                    object info = EventManager.Event(new LayoutEvent(QueryDragEventName, component, e, null).SetFrameWindow(e.HitTestResult.FrameWindow));
+                    object info = EventManager.Event(new LayoutEvent(QueryDragEventName, component, e).SetFrameWindow(e.HitTestResult.FrameWindow));
 
                     if (info != e) {
                         draggedObject = info;
@@ -87,7 +87,7 @@ namespace LayoutManager {
 
                     DragDropEffects dropEffect = e.HitTestResult.View.DoDragDrop(draggedObject, allowedEffects);
 
-                    EventManager.Event(new LayoutEvent(DragDoneEventName, draggedObject, dropEffect, null).SetFrameWindow(e.HitTestResult.FrameWindow));
+                    EventManager.Event(new LayoutEvent(DragDoneEventName, draggedObject, dropEffect).SetFrameWindow(e.HitTestResult.FrameWindow));
                 }
             }
         }
@@ -227,7 +227,7 @@ namespace LayoutManager {
         protected virtual ContextMenu GetSelectionContextMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
             ContextMenu menu = new ContextMenu();
 
-            EventManager.Event(new LayoutEvent(ComponentContextMenuAddSelectionEntriesEventName, hitTestResult, menu, null).SetFrameWindow(hitTestResult.FrameWindow));
+            EventManager.Event(new LayoutEvent(ComponentContextMenuAddSelectionEntriesEventName, hitTestResult, menu).SetFrameWindow(hitTestResult.FrameWindow));
 
             if (menu.MenuItems.Count == 0)
                 return null;
@@ -244,7 +244,7 @@ namespace LayoutManager {
         protected virtual ContextMenu GetEmptySpotMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
             ContextMenu menu = new ContextMenu();
 
-            EventManager.Event(new LayoutEvent(ComponentContextMenuAddEmptySpotEntriesEventName, hitTestResult, menu, null).SetFrameWindow(hitTestResult.FrameWindow));
+            EventManager.Event(new LayoutEvent(ComponentContextMenuAddEmptySpotEntriesEventName, hitTestResult, menu).SetFrameWindow(hitTestResult.FrameWindow));
 
             if (menu.MenuItems.Count == 0)
                 return null;
@@ -351,9 +351,9 @@ namespace LayoutManager {
 
             foreach (ModelComponent component in hitTestResult.Selection) {
                 if (ComponentContextMenuAddTopEntriesEventName != null)
-                    EventManager.Event(new LayoutEvent(ComponentContextMenuAddTopEntriesEventName, component, menu, null));
+                    EventManager.Event(new LayoutEvent(ComponentContextMenuAddTopEntriesEventName, component, menu));
 
-                object queryResult = EventManager.Event(new LayoutEvent(ComponentContextMenuQueryEventName, component, false, null).SetFrameWindow(hitTestResult.FrameWindow));
+                object queryResult = EventManager.Event(new LayoutEvent(ComponentContextMenuQueryEventName, component, false).SetFrameWindow(hitTestResult.FrameWindow));
 
                 if (queryResult is bool) {
                     if ((bool)queryResult && !components.Contains(component))
@@ -370,13 +370,13 @@ namespace LayoutManager {
                 // Only one component contribute context menu, add as part of the context menu
                 foreach (ModelComponent component in hitTestResult.Selection) {
                     if (components.Contains(component))
-                        EventManager.Event(new LayoutEvent(ComponentContextMenuAddEntriesEventName, component, menu, null).SetFrameWindow(hitTestResult.FrameWindow));
+                        EventManager.Event(new LayoutEvent(ComponentContextMenuAddEntriesEventName, component, menu).SetFrameWindow(hitTestResult.FrameWindow));
 
                     bool componentCanBeRemoved = false;
 
                     if (ComponentContextMenuQueryCanRemoveEventName != null)
                         componentCanBeRemoved = (bool)EventManager.Event(
-                            new LayoutEvent(ComponentContextMenuQueryCanRemoveEventName, component, true, null).SetFrameWindow(hitTestResult.FrameWindow));
+                            new LayoutEvent(ComponentContextMenuQueryCanRemoveEventName, component, true).SetFrameWindow(hitTestResult.FrameWindow));
 
                     if (componentCanBeRemoved && hitTestResult.Selection.Count > 1) {
                         if (menu.MenuItems.Count > 0)
@@ -404,7 +404,7 @@ namespace LayoutManager {
 
                     if (ComponentContextMenuQueryCanRemoveEventName != null)
                         componentCanBeRemoved = (bool)EventManager.Event(
-                            new LayoutEvent(ComponentContextMenuQueryCanRemoveEventName, component, true, null).SetFrameWindow(hitTestResult.FrameWindow));
+                            new LayoutEvent(ComponentContextMenuQueryCanRemoveEventName, component, true).SetFrameWindow(hitTestResult.FrameWindow));
 
                     if (componentCanBeRemoved) {
                         if (componentContextMenu.MenuItems.Count > 0)
@@ -419,12 +419,12 @@ namespace LayoutManager {
 
             if (ComponentContextMenuAddBottomEntriesEventName != null) {
                 foreach (ModelComponent component in hitTestResult.Selection)
-                    EventManager.Event(new LayoutEvent(ComponentContextMenuAddBottomEntriesEventName, component, menu, null).SetFrameWindow(hitTestResult.FrameWindow));
+                    EventManager.Event(new LayoutEvent(ComponentContextMenuAddBottomEntriesEventName, component, menu).SetFrameWindow(hitTestResult.FrameWindow));
             }
 
             if (ComponentContextMenuAddCommonEntriesEventName != null)
                 EventManager.Event(
-                    new LayoutEvent(ComponentContextMenuAddCommonEntriesEventName, hitTestResult, menu, null).SetFrameWindow(hitTestResult.FrameWindow));
+                    new LayoutEvent(ComponentContextMenuAddCommonEntriesEventName, hitTestResult, menu).SetFrameWindow(hitTestResult.FrameWindow));
 
             return menu;
         }

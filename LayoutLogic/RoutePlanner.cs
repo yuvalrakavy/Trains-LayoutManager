@@ -111,7 +111,7 @@ namespace LayoutManager.Logic {
             generateRoutingTableThread.Name = "Generate routing table";
             generateRoutingTableThread.Start(phase);
 
-            EventManager.Event(new LayoutEvent("show-routing-table-generation-dialog", this, multiPathTracks.Count(), null));
+            EventManager.Event(new LayoutEvent("show-routing-table-generation-dialog", this, multiPathTracks.Count()));
 
             return !aborted;
         }
@@ -804,9 +804,9 @@ namespace LayoutManager.Logic {
                 conditionScript.ScriptSubject = newBlock.BlockDefinintion;
 
                 if (bestRoute.Train != null)
-                    EventManager.Event(new LayoutEvent("set-script-context", bestRoute.Train, context, null));
+                    EventManager.Event(new LayoutEvent("set-script-context", bestRoute.Train, context));
 
-                EventManager.Event(new LayoutEvent("set-script-context", newBlock, context, null));
+                EventManager.Event(new LayoutEvent("set-script-context", newBlock, context));
 
                 context["PreviousBlock"] = lookupState.Block;
                 context["PreviousBlockInfo"] = lookupState.Block.BlockDefinintion;

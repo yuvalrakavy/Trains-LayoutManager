@@ -454,7 +454,7 @@ namespace LayoutManager.Logic {
 
                 if (retryWaitingTrains) {
                     Trace.WriteLineIf(traceUnlockingManager.TraceInfo, $"UnlockingManager: Unlocked block with turnouts {block} retry routes for waiting trains");
-                    EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, (bool)false, null));
+                    EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, (bool)false));
                 }
             }
         }
@@ -591,7 +591,7 @@ namespace LayoutManager.Logic {
                         new Guid[] { newTrip.TrainId, newTrip.Id }, null);
 
                     activePolicy.ScriptSubject = newTrip.Train;
-                    EventManager.Event(new LayoutEvent("set-script-context", newTrip, activePolicy.ScriptContext, null));
+                    EventManager.Event(new LayoutEvent("set-script-context", newTrip, activePolicy.ScriptContext));
 
                     activePolicies[i++] = activePolicy;
                     activePolicy.Reset();
@@ -727,7 +727,7 @@ namespace LayoutManager.Logic {
                 if (trip == null)
                     train.SpeedInSteps = 0;
                 else
-                    EventManager.Event(new LayoutEvent("suspend-trip", trip.Train, true, null));
+                    EventManager.Event(new LayoutEvent("suspend-trip", trip.Train, true));
             }
 
             AllSuspended = true;
@@ -823,7 +823,7 @@ namespace LayoutManager.Logic {
             set {
                 if (value != allSuspended) {
                     allSuspended = value;
-                    EventManager.Event(new LayoutEvent("all-locomotives-suspended-status-changed", this, allSuspended, null));
+                    EventManager.Event(new LayoutEvent("all-locomotives-suspended-status-changed", this, allSuspended));
                 }
             }
         }
@@ -1303,7 +1303,7 @@ namespace LayoutManager.Logic {
                     EventManager.Event(new LayoutEvent("dump-locks", this));
 
                 if (trip.PendingLockRequest != null) {
-                    trip.PendingLockRequest.LockedEvent = new LayoutEvent("dispatcher-layout-lock-obtained", trip, tripBestRouteResult.BestRoute, null);
+                    trip.PendingLockRequest.LockedEvent = new LayoutEvent("dispatcher-layout-lock-obtained", trip, tripBestRouteResult.BestRoute);
 
                     if (nextBlockEntry != null) {
                         currentBlockEntry.AddAction(BlockAction.PrepareStop);
@@ -1323,7 +1323,7 @@ namespace LayoutManager.Logic {
             else {
                 if (tripBestRouteResult.BestRoute == null) {
                     Error(trip.Train, "No route can be found to " + trip.CurrentWaypoint.Destination.Name + " - trip aborted");
-                    EventManager.Event(new LayoutEvent("abort-trip", trip.Train, true, null));
+                    EventManager.Event(new LayoutEvent("abort-trip", trip.Train, true));
                 }
                 else {
                     Warning(trip.Train, "All possible routes are blocked, possible by non-movable trains. Try to fix this");
@@ -1403,7 +1403,7 @@ namespace LayoutManager.Logic {
                 }
 
                 if (switchingCommands.Count > 0)
-                    EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands, null));
+                    EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands));
             }
         }
 
@@ -1455,7 +1455,7 @@ namespace LayoutManager.Logic {
             }
 
             if (switchingCommands.Count > 0)
-                EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands, null));
+                EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands));
 
             e.Info = completed;
         }
@@ -1467,7 +1467,7 @@ namespace LayoutManager.Logic {
         /// <param name="trip"></param>
         /// <param name="route"></param>
         void setSwitchStateOnRoute(ActiveTripInfo trip, ITripRoute route) {
-            EventManager.Event(new LayoutEvent("dispatcher-set-switches", trip.TrainId, route, null));
+            EventManager.Event(new LayoutEvent("dispatcher-set-switches", trip.TrainId, route));
         }
 
         void retryTrip(ActiveTripInfo trip) {
@@ -1606,7 +1606,7 @@ namespace LayoutManager.Logic {
 
                         LayoutScriptContext context = trip.PendingStartCondition.ScriptContext;
 
-                        EventManager.Event(new LayoutEvent("set-script-context", trip, context, null));
+                        EventManager.Event(new LayoutEvent("set-script-context", trip, context));
                         trip.PendingStartCondition.Reset();
                     }
                     else {
@@ -1650,12 +1650,12 @@ namespace LayoutManager.Logic {
 
                 LayoutScriptContext context = trip.PendingDriverInstructions.ScriptContext;
 
-                EventManager.Event(new LayoutEvent("set-script-context", trip, context, null));
+                EventManager.Event(new LayoutEvent("set-script-context", trip, context));
                 trip.PendingDriverInstructions.Reset();
             }
 
             trip.Status = TripStatus.Go;
-            EventManager.Event(new LayoutEvent("driver-train-go", trip.Train, trip.CurrentWaypoint.Direction, null));
+            EventManager.Event(new LayoutEvent("driver-train-go", trip.Train, trip.CurrentWaypoint.Direction));
         }
 
         #endregion
@@ -1691,7 +1691,7 @@ namespace LayoutManager.Logic {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
 
             if (activeTrips.Contains(train.Id))
-                EventManager.Event(new LayoutEvent("abort-trip", train, true, null));
+                EventManager.Event(new LayoutEvent("abort-trip", train, true));
         }
 
         [LayoutEvent("train-is-removed")]
@@ -1700,7 +1700,7 @@ namespace LayoutManager.Logic {
             ActiveTripInfo? trip = activeTrips[train.Id];
 
             if (trip != null)
-                EventManager.Event(new LayoutEvent("abort-trip", train, true, null));
+                EventManager.Event(new LayoutEvent("abort-trip", train, true));
 
             blockUnlockingManager.RemoveByOwner(train.Id);
 
@@ -1891,14 +1891,14 @@ namespace LayoutManager.Logic {
 
             // If manual dispatch was freed, need to retry only waiting, if it was granted, recalc all trains, since it may
             // block a route which is already calculated
-            EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, (bool)active, null));
+            EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, (bool)active));
         }
 
         [LayoutEvent("train-detection-block-free")]
         private void trainDetectionBlockFree(LayoutEvent e) {
             Trace.WriteLineIf(traceDispatching.TraceInfo, "Occupancy block freed recalculate trips - retry waiting trains");
 
-            EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, false, null));
+            EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, false));
         }
 
         [LayoutEvent("train-detection-block-will-be-occupied")]
@@ -1907,7 +1907,7 @@ namespace LayoutManager.Logic {
 
             if (occupancyBlock.BlockDefinintion.Info.UnexpectedTrainDetected) {
                 Trace.WriteLineIf(traceDispatching.TraceInfo, "Unexpected train detected - recalculate all train trips");
-                EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, true, null));
+                EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, true));
             }
         }
 

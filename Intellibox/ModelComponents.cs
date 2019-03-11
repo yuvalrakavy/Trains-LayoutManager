@@ -271,7 +271,7 @@ namespace Intellibox {
             };
 
             if (OperationMode)
-                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state, null));
+                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state));
 
             return Task.WhenAll(tasks);
         }
@@ -295,7 +295,7 @@ namespace Intellibox {
                     for (int switchingCommandIndex = 0; switchingCommandIndex < count; switchingCommandIndex++) {
                         SwitchingCommand switchingCommand = switchingCommands[i + switchingCommandIndex];
 
-                        EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", switchingCommand.ControlPointReference, switchingCommand.SwitchState, null));
+                        EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", switchingCommand.ControlPointReference, switchingCommand.SwitchState));
                     }
                 }
             }
@@ -319,7 +319,7 @@ namespace Intellibox {
             commandStationManager.AddCommand(queueLayoutSwitchingCommands, new IntelliboxEndAccessoryCommand(this, address, v));
 
             if (OperationMode)
-                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state == LayoutSignalState.Green ? 1 : 0, null));
+                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state == LayoutSignalState.Green ? 1 : 0));
         }
 
         [LayoutEvent("locomotive-motion-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
@@ -351,7 +351,7 @@ namespace Intellibox {
             LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
             TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
 
-            EventManager.Event(new LayoutEvent("locomotive-motion-command", loco, train.SpeedInSteps, null).SetCommandStation(train));
+            EventManager.Event(new LayoutEvent("locomotive-motion-command", loco, train.SpeedInSteps).SetCommandStation(train));
         }
 
         private byte getFunctionMask(LocomotiveInfo loco) {
@@ -761,7 +761,7 @@ namespace Intellibox {
                     int state = ((addressHighAndMisc & 0x80) != 0) ? 1 : 0;
 
                     if (LayoutController.IsOperationMode)
-                        events.Add(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(MotorolaBus, address), state, null));
+                        events.Add(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(MotorolaBus, address), state));
                     else if (LayoutController.IsDesignTimeActivation)
                         events.Add(new LayoutEvent("design-time-command-station-event", CommandStation, new CommandStationInputEvent(CommandStation, MotorolaBus, address, state),
                             null));
@@ -856,7 +856,7 @@ namespace Intellibox {
             for (int i = 0; i < feedbackData.Count; i++)
                 feedbackData[i].Tick(CommandStation, i, events);
 
-            CommandStation.InterThreadEventInvoker.QueueEvent(new LayoutEvent("intellibox-invoke-events", CommandStation, events, null));
+            CommandStation.InterThreadEventInvoker.QueueEvent(new LayoutEvent("intellibox-invoke-events", CommandStation, events));
         }
 
         public override string ToString() => "Process Events";
@@ -876,7 +876,7 @@ namespace Intellibox {
                 for (int i = 0; i < 16; i++) {
                     if ((changedBits & 1) != 0) {
                         if (debounceCounters[i] > 0)
-                            commandStation.InterThreadEventInvoker.QueueEvent(new LayoutEvent("control-connection-point-state-unstable-notification", new ControlConnectionPointReference(commandStation.S88Bus, moduleNumber + 1, 15 - i), commandStation, null));
+                            commandStation.InterThreadEventInvoker.QueueEvent(new LayoutEvent("control-connection-point-state-unstable-notification", new ControlConnectionPointReference(commandStation.S88Bus, moduleNumber + 1, 15 - i), commandStation));
                         debounceCounters[i] = commandStation.OperationMode ? commandStation.CachedOperationModeDebounceCount : commandStation.CachedDesignTimeDebounceCount;            // Start counting
                     }
                     changedBits >>= 1;
@@ -899,7 +899,7 @@ namespace Intellibox {
                             bool isSet = (currentData & (1 << i)) != 0;
 
                             if (LayoutController.IsOperationMode)
-                                events.Add(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(commandStation.S88Bus, moduleNumber + 1, 15 - i), isSet ? 1 : 0, null));
+                                events.Add(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(commandStation.S88Bus, moduleNumber + 1, 15 - i), isSet ? 1 : 0));
                             else if (LayoutController.IsDesignTimeActivation)
                                 events.Add(new LayoutEvent("design-time-command-station-event", commandStation, new CommandStationInputEvent(commandStation, commandStation.S88Bus, moduleNumber + 1, 15 - i, isSet ? 1 : 0),
                                     null));

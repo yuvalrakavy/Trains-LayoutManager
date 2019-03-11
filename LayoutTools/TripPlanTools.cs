@@ -423,7 +423,7 @@ namespace LayoutManager.Tools {
                 }
             }
             else if (e.Sender is LayoutBlockDefinitionComponent)
-                e.Info = EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", ((LayoutBlockDefinitionComponent)e.Sender).Block, applicableTripPlansElement, null));
+                e.Info = EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", ((LayoutBlockDefinitionComponent)e.Sender).Block, applicableTripPlansElement));
         }
 
         #endregion

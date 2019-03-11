@@ -142,7 +142,7 @@ namespace LayoutManager {
             taskTerminated = false;
 
             try {
-                EventManager.Event(new LayoutEvent("event-script-task-reset", EventScript, this, null));
+                EventManager.Event(new LayoutEvent("event-script-task-reset", EventScript, this));
                 EventRoot.Reset();
             }
             catch (LayoutEventScriptException ex) {
@@ -173,7 +173,7 @@ namespace LayoutManager {
 
         public void Dispose() {
             try {
-                EventManager.Event(new LayoutEvent("event-script-task-dispose", EventScript, this, null));
+                EventManager.Event(new LayoutEvent("event-script-task-dispose", EventScript, this));
                 EventRoot.Dispose();
             }
             catch (LayoutEventScriptException ex) {
@@ -284,12 +284,12 @@ namespace LayoutManager {
             LayoutEventScriptTask task = new LayoutEventScriptTask(this, scriptElement, context);
 
             tasks.Add(task);
-            EventManager.Event(new LayoutEvent("event-script-task-created", this, task, null));
+            EventManager.Event(new LayoutEvent("event-script-task-created", this, task));
             return task;
         }
 
         internal void OnTaskTerminated(LayoutEventScriptTask task) {
-            EventManager.Event(new LayoutEvent("event-script-task-terminated", this, task, null));
+            EventManager.Event(new LayoutEvent("event-script-task-terminated", this, task));
 
             if (task == RootTask) {
                 EventManager.Event(new LayoutEvent("event-script-terminated", this));
@@ -309,7 +309,7 @@ namespace LayoutManager {
             tasks.Clear();
 
             tasks.Add(RootTask);
-            EventManager.Event(new LayoutEvent("event-script-reset", this, RootTask, null));
+            EventManager.Event(new LayoutEvent("event-script-reset", this, RootTask));
 
             RootTask.Reset();
 
@@ -519,7 +519,7 @@ namespace LayoutManager {
     #region Context
 
     public interface ILayoutScriptContextResolver {
-        object Resolve(LayoutScriptContext context, string symbolName);
+        object? Resolve(LayoutScriptContext context, string symbolName);
     }
 
     public class LayoutScriptContext : ICloneable {
@@ -1047,7 +1047,7 @@ namespace LayoutManager {
                     EventManager.Subscriptions.Add(subscription);
                 }
 
-                EventManager.Event(new LayoutEvent("event-script-wait-event-reset", this, subscription, null));
+                EventManager.Event(new LayoutEvent("event-script-wait-event-reset", this, subscription));
             }
             catch (Exception ex) {
                 throw new LayoutEventScriptException(this, LayoutEventScriptExecutionPhase.Reset, ex);
@@ -1096,9 +1096,9 @@ namespace LayoutManager {
 
                 if (relevantEvent) {
                     if (e.Sender != null)
-                        EventManager.Event(new LayoutEvent("set-script-context", e.Sender, Context, null));
+                        EventManager.Event(new LayoutEvent("set-script-context", e.Sender, Context));
                     if (e.Info != null)
-                        EventManager.Event(new LayoutEvent("set-script-context", e.Info, Context, null));
+                        EventManager.Event(new LayoutEvent("set-script-context", e.Info, Context));
 
                     if (IsConditionTrue) {
                         Cancel();
@@ -2321,7 +2321,7 @@ namespace LayoutManager {
             public override void Execute() {
                 var sender = GetArgument("Sender");
                 var info = GetArgument("Info");
-                LayoutEvent theEvent = new LayoutEvent(Element.GetAttribute("EventName"), sender, info, null);
+                LayoutEvent theEvent = new LayoutEvent(Element.GetAttribute("EventName"), sender, info);
 
                 XmlElement optionsElement = Element["Options"];
 

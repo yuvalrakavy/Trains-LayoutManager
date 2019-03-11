@@ -6,6 +6,7 @@ using System.Diagnostics;
 
 using LayoutManager.Components;
 
+#pragma warning disable IDE0051, IDE0052, IDE0060
 namespace LayoutManager.Model {
 
     /// <summary>
@@ -366,10 +367,10 @@ namespace LayoutManager.Model {
                 }
 
                 if (previousComponent != null)
-                    EventManager.Event(new LayoutEvent("component-disconnected-from-control-module", previousComponent, this, null));
+                    EventManager.Event(new LayoutEvent("component-disconnected-from-control-module", previousComponent, this));
 
                 if (value != null)
-                    EventManager.Event(new LayoutEvent("component-connected-to-control-module", value, this, null));
+                    EventManager.Event(new LayoutEvent("component-connected-to-control-module", value, this));
             }
         }
 
@@ -513,7 +514,7 @@ namespace LayoutManager.Model {
                 module.ControlManager.ConnectionPoints.Add(connectionPoint);
                 theComponent.Redraw();
 
-                EventManager.Event(new LayoutEvent("component-connected-to-control-module", connectionPoint.Component, connectionPoint, null));
+                EventManager.Event(new LayoutEvent("component-connected-to-control-module", connectionPoint.Component, connectionPoint));
             }
 
             module.OnConnectionChanged();
@@ -618,7 +619,7 @@ namespace LayoutManager.Model {
 
             if (moduleTypeFound)
                 // Check specifically if this connection point can be connected to this component
-                return (bool)EventManager.Event(new LayoutEvent("can-control-be-connected", connectionDestination, (bool)true, null).SetOption("ModuleTypeName", module.ModuleTypeName).SetOption("ModuleID", XmlConvert.ToString(module.Id)).SetOption("Index", XmlConvert.ToString(index)));
+                return (bool)EventManager.Event(new LayoutEvent("can-control-be-connected", connectionDestination, (bool)true).SetOption("ModuleTypeName", module.ModuleTypeName).SetOption("ModuleID", XmlConvert.ToString(module.Id)).SetOption("Index", XmlConvert.ToString(index)));
 
             return false;
         }
@@ -1312,7 +1313,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string GetConnectionPointAddressText(int baseAddress, int index, bool fullAddressPath) {
             ControlConnectionPointLabelFormatOptions format = ConnectionPointLabelFormat;
-            string result = "";
+            string result;
 
             if ((format & ControlConnectionPointLabelFormatOptions.Custom) != 0)
                 result = (string)EventManager.Event(new LayoutEvent("control-get-connection-point-label", this).SetOption("Address", baseAddress).SetOption("Index", index));
@@ -1854,7 +1855,7 @@ namespace LayoutManager.Model {
         public IList<string> GetConnectableControlModuleTypeNames(ControlConnectionPointDestination connectionDestination) {
             List<string> applicableModuleTypes = new List<string>();
 
-            EventManager.Event(new LayoutEvent("recommend-control-module-types", connectionDestination, applicableModuleTypes, null).SetOption("BusType", BusTypeName).SetOption("BusFamily", BusFamilyName));
+            EventManager.Event(new LayoutEvent("recommend-control-module-types", connectionDestination, applicableModuleTypes).SetOption("BusType", BusTypeName).SetOption("BusFamily", BusFamilyName));
 
             return applicableModuleTypes.AsReadOnly();
         }
@@ -1899,8 +1900,9 @@ namespace LayoutManager.Model {
         /// <param name="connectionPoint">The connection point</param>
         public void Add(ControlConnectionPoint connectionPoint) {
             if (connectionPoints == null) {
-                connectionPoints = new List<ControlConnectionPoint>();
-                connectionPoints.Add(this.connectionPoint);
+                connectionPoints = new List<ControlConnectionPoint> {
+                    this.connectionPoint
+                };
             }
 
             connectionPoints.Add(connectionPoint);
@@ -1939,9 +1941,9 @@ namespace LayoutManager.Model {
         public IList<ControlConnectionPoint> ConnectionPoints {
             get {
                 if (connectionPoints == null) {
-                    List<ControlConnectionPoint> theList = new List<ControlConnectionPoint>();
-
-                    theList.Add(connectionPoint);
+                    List<ControlConnectionPoint> theList = new List<ControlConnectionPoint> {
+                        connectionPoint
+                    };
                     return theList.AsReadOnly();
                 }
                 else
@@ -2151,7 +2153,6 @@ namespace LayoutManager.Model {
         /// <returns>An array of bus objects</returns>
         public IEnumerable<ControlBus> Buses(Guid busProviderId) {
             XmlNodeList busElements = Element.SelectNodes("Bus[@BusProviderID='" + busProviderId.ToString() + "']");
-            List<ControlBus> buses = new List<ControlBus>(busElements.Count);
 
             foreach (XmlElement busElement in busElements)
                 yield return FromElement(busElement);

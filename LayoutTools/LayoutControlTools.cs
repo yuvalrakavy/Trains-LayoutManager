@@ -506,7 +506,7 @@ namespace LayoutManager.Tools {
         }
 
         private void ensureVisible(ControlAutoConnectRequest request) {
-            EventManager.Event(new LayoutEvent("ensure-component-visible", (ModelComponent)request.Component, false, null));
+            EventManager.Event(new LayoutEvent("ensure-component-visible", (ModelComponent)request.Component, false));
         }
 
         private double distance(IModelComponent component1, IModelComponent component2) {
@@ -966,7 +966,7 @@ namespace LayoutManager.Tools {
 
                 if (!component.FullyConnected) {
                     List<IControlConnectionPointDestinationReceiverDialog> dialogs = new List<IControlConnectionPointDestinationReceiverDialog>();
-                    EventManager.Event(new LayoutEvent("query-learn-layout-pick-component-dialog", component, dialogs, null));
+                    EventManager.Event(new LayoutEvent("query-learn-layout-pick-component-dialog", component, dialogs));
 
                     if (dialogs.Count > 0) {
                         IControlConnectionPointDestinationReceiverDialog dialog = dialogs[0];
@@ -1110,7 +1110,7 @@ namespace LayoutManager.Tools {
 
             if (!connectableComponent.FullyConnected) {
                 List<IControlConnectionPointDestinationReceiverDialog> dialogs = new List<IControlConnectionPointDestinationReceiverDialog>();
-                EventManager.Event(new LayoutEvent("query-learn-layout-pick-component-dialog", connectableComponent, dialogs, null));
+                EventManager.Event(new LayoutEvent("query-learn-layout-pick-component-dialog", connectableComponent, dialogs));
 
                 if (dialogs.Count > 0)
                     e.Info = true;
@@ -1130,7 +1130,7 @@ namespace LayoutManager.Tools {
 
             if (feedbackConnection.HasValue) {
                 List<IControlConnectionPointDestinationReceiverDialog> dialogs = new List<IControlConnectionPointDestinationReceiverDialog>();
-                EventManager.Event(new LayoutEvent("query-learn-layout-pick-component-dialog", component, dialogs, null));
+                EventManager.Event(new LayoutEvent("query-learn-layout-pick-component-dialog", component, dialogs));
 
                 if (dialogs.Count > 0)
                     dialogs[0].AddControlConnectionPointDestination(new ControlConnectionPointDestination(component, feedbackConnection.Value));
@@ -1459,7 +1459,7 @@ namespace LayoutManager.Tools {
 
             menu.MenuItems.Add(new ClearAllUserActionRequiredMenuItem(drawObject));
 
-            EventManager.Event(new LayoutEvent("add-component-editing-context-menu-entries", drawObject.BusProvider, menu, null));
+            EventManager.Event(new LayoutEvent("add-component-editing-context-menu-entries", drawObject.BusProvider, menu));
         }
 
         #endregion

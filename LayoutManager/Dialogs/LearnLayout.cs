@@ -15,6 +15,7 @@ using System.Media;
 #endregion
 
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Dialogs {
     partial class LearnLayout : Form {
         static bool enableSound = false;
@@ -277,7 +278,7 @@ namespace LayoutManager.Dialogs {
 
                 new SemiModalDialog(this, pickDialog, delegate (Form dialog, object info) {
                     if (pickDialog.DialogResult == DialogResult.OK) {
-                        ControlConnectionPoint connectionPoint = (ControlConnectionPoint)EventManager.Event(new LayoutEvent("connect-component-to-control-module-address-request", pickDialog.ConnectionDestination, selected.CommandStationEvent, null));
+                        ControlConnectionPoint connectionPoint = (ControlConnectionPoint)EventManager.Event(new LayoutEvent("connect-component-to-control-module-address-request", pickDialog.ConnectionDestination, selected.CommandStationEvent));
 
                         if (connectionPoint != null)
                             EventManager.Event(new LayoutEvent("show-control-connection-point", new ControlConnectionPointReference(connectionPoint)).SetFrameWindow(frameWindowId));

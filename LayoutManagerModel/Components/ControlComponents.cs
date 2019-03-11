@@ -59,12 +59,12 @@ namespace LayoutManager.Components {
             LinkedSignalInfo newLinkedSignal = new LinkedSignalInfo(blockEdge.LinkedSignalsElement, signalComponent);
 
             Add(newLinkedSignal);
-            EventManager.Event(new LayoutEvent("signal-component-linked", blockEdge, signalComponent, null));
+            EventManager.Event(new LayoutEvent("signal-component-linked", blockEdge, signalComponent));
             return newLinkedSignal;
         }
 
         public void Remove(LayoutSignalComponent signalComponent) {
-            EventManager.Event(new LayoutEvent("signal-component-unlinked", blockEdge, signalComponent, null));
+            EventManager.Event(new LayoutEvent("signal-component-unlinked", blockEdge, signalComponent));
             Remove(signalComponent.Id);
         }
     }
@@ -108,7 +108,7 @@ namespace LayoutManager.Components {
             set {
                 LayoutModel.StateManager.Components.StateOf(this, "Signal").SetAttribute("State", value.ToString());
                 Redraw();
-                EventManager.Event(new LayoutEvent("logical-signal-state-changed", this, value, null));
+                EventManager.Event(new LayoutEvent("logical-signal-state-changed", this, value));
             }
         }
 
@@ -957,7 +957,7 @@ namespace LayoutManager.Components {
                 if (Info.ReverseLogic)
                     signalState = (signalState == LayoutSignalState.Green) ? LayoutSignalState.Red : LayoutSignalState.Green;
 
-                EventManager.Event(new LayoutEvent("change-signal-state-command", new ControlConnectionPointReference(connectionPoint), signalState, null).SetCommandStation(connectionPoint.Module.Bus));
+                EventManager.Event(new LayoutEvent("change-signal-state-command", new ControlConnectionPointReference(connectionPoint), signalState).SetCommandStation(connectionPoint.Module.Bus));
             }
         }
 

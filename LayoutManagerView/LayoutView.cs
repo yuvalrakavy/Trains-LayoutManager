@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.View {
     /// <summary>
     /// Summary description for LayoutView.
@@ -940,7 +941,7 @@ namespace LayoutManager.View {
             }
         }
 
-        Bitmap allocateOffScreenBuffer(Graphics g, RectangleF clipBounds) => (Bitmap)EventManager.Event(new LayoutEvent("allocate-offscreen-buffer", g, clipBounds, null));
+        Bitmap allocateOffScreenBuffer(Graphics g, RectangleF clipBounds) => (Bitmap)EventManager.Event(new LayoutEvent("allocate-offscreen-buffer", g, clipBounds));
 
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);

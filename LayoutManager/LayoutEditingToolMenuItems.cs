@@ -42,7 +42,7 @@ namespace LayoutManager {
             LayoutCompoundCommand deleteCommand = new LayoutCompoundCommand("delete");
 
             for (int i = components.Count - 1; i >= 0; i--) {
-                EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", components[i], deleteCommand, null));
+                EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", components[i], deleteCommand));
                 deleteCommand.Add(new LayoutComponentRemovalCommand(components[i], "Delete"));
             }
 
@@ -124,7 +124,6 @@ namespace LayoutManager {
 
             if (dataObj != null && dataObj.GetDataPresent(componentsFormat)) {
                 System.IO.MemoryStream ms = new System.IO.MemoryStream((byte[])dataObj.GetData(componentsFormat));
-                XmlDocument doc = new XmlDocument();
                 XmlTextReader r = new LayoutXmlTextReader(ms, LayoutReadXmlContext.PasteComponents);
                 LayoutCompoundCommand pasteCommand = new LayoutCompoundCommand("paste components");
 
@@ -132,7 +131,7 @@ namespace LayoutManager {
                 if (LayoutController.UserSelection.Count > 0) {
                     foreach (ModelComponent component in LayoutController.UserSelection) {
                         pasteCommand.Add(new LayoutComponentDeselectCommand(LayoutController.UserSelection, component, "unselect"));
-                        EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, pasteCommand, null));
+                        EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, pasteCommand));
                         pasteCommand.Add(new LayoutComponentRemovalCommand(component, "delete"));
                     }
                 }
@@ -182,7 +181,7 @@ namespace LayoutManager {
 
             LayoutCompoundCommand deleteCommand = new LayoutCompoundCommand("remove " + component.ToString());
 
-            EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, deleteCommand, null));
+            EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, deleteCommand));
             deleteCommand.Add(new LayoutComponentRemovalCommand(component, "remove " + component.ToString()));
             LayoutController.Do(deleteCommand);
         }

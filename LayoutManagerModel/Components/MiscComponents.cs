@@ -90,7 +90,7 @@ namespace LayoutManager.Components {
                             EventManager.Event(new LayoutEvent<TrainStateInfo, ILayoutPower>("change-train-power", train, power));
 
                         if (switchingCommands.Count > 0)
-                            EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands, null)
+                            EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands)
 #if NOTUSED
                                 .ContinueWith(
                                 (t) => {
@@ -115,7 +115,7 @@ namespace LayoutManager.Components {
                         EventManager.Event(new LayoutEvent<TrainStateInfo, ILayoutPower>("change-train-power", train, power));
 
                     if (switchingCommands.Count > 0)
-                        EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands, null));
+                        EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands));
                 }
             }
         }

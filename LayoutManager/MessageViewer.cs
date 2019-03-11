@@ -143,7 +143,7 @@ namespace LayoutManager {
         void setComponentSelection(ModelComponent component) {
             currentComponentSelection.Clear();
             currentComponentSelection.Add(component);
-            EventManager.Event(new LayoutEvent("ensure-component-visible", component, false, null));
+            EventManager.Event(new LayoutEvent("ensure-component-visible", component, false));
         }
 
         [LayoutEvent("messages-hidden")]

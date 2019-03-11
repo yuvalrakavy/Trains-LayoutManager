@@ -112,7 +112,7 @@ namespace LayoutManager {
         /// <returns>True if the module successfuly disabled, false if the module refused to be disabled</returns>
         protected bool DisableModule() {
             if (moduleInstance != null) {
-                LayoutEvent moduleDisableRequestEvent = new LayoutEvent("module-disable-request", moduleInstance, true, null);
+                LayoutEvent moduleDisableRequestEvent = new LayoutEvent("module-disable-request", moduleInstance, true);
 
                 EventManager.Event(moduleDisableRequestEvent);
                 if ((bool)moduleDisableRequestEvent.Info == false)

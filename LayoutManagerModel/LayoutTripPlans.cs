@@ -8,6 +8,7 @@ using System.IO;
 using LayoutManager.Components;
 using System.Collections.Generic;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Model {
 
     /// <summary>
@@ -609,7 +610,7 @@ namespace LayoutManager.Model {
                 TripStatus oldStatus = Status;
 
                 SetAttribute("Status", value.ToString());
-                EventManager.Event(new LayoutEvent("trip-status-changed", this, oldStatus, null));
+                EventManager.Event(new LayoutEvent("trip-status-changed", this, oldStatus));
                 Train.Redraw();
             }
         }
@@ -647,10 +648,7 @@ namespace LayoutManager.Model {
     /// Smart destination collection
     /// </summary>
     public class DestinationCollection : XmlIndexedCollection<TripPlanDestinationInfo, Guid> {
-        readonly TripPlanCatalogInfo tripPlanCatalog;
-
         internal DestinationCollection(TripPlanCatalogInfo tripPlanCatalog) : base(tripPlanCatalog.DestinationsElement) {
-            this.tripPlanCatalog = tripPlanCatalog;
         }
 
         protected override Guid GetItemKey(TripPlanDestinationInfo item) => item.Id;
@@ -675,10 +673,8 @@ namespace LayoutManager.Model {
     /// Trip plan in the catalog
     /// </summary>
     public class TripPlanCollection : XmlIndexedCollection<TripPlanInfo, Guid> {
-        readonly TripPlanCatalogInfo tripPlanCatalog;
 
         internal TripPlanCollection(TripPlanCatalogInfo tripPlanCatalog) : base(tripPlanCatalog.TripPlansElement) {
-            this.tripPlanCatalog = tripPlanCatalog;
         }
 
         protected override Guid GetItemKey(TripPlanInfo item) => item.Id;

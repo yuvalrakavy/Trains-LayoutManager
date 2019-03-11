@@ -7,6 +7,7 @@ using LayoutManager.CommonUI;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for TripPlanManageCommonDestinations.
@@ -107,7 +108,7 @@ namespace LayoutManager.Tools.Dialogs {
                     component = destinationSelection.Components.First();
 
                 if (component != null)
-                    EventManager.Event(new LayoutEvent("ensure-component-visible", component, false, null));
+                    EventManager.Event(new LayoutEvent("ensure-component-visible", component, false));
             }
         }
 

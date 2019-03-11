@@ -226,7 +226,7 @@ namespace MarklinDigital {
             };
 
             if (OperationMode)
-                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state, null));
+                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state));
 
             return Task.WhenAll(tasks);
         }
@@ -247,7 +247,7 @@ namespace MarklinDigital {
             commandStationManager.AddCommand(queueLayoutSwitchingCommands, new MarklinEndSwitchingProcedure(CommunicationStream));
 
             if (OperationMode)
-                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state == LayoutSignalState.Green ? 1 : 0, null));
+                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state == LayoutSignalState.Green ? 1 : 0));
         }
 
         [LayoutEvent("locomotive-reverse-motion-direction-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
@@ -279,7 +279,7 @@ namespace MarklinDigital {
             LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
             TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
 
-            EventManager.Event(new LayoutEvent("locomotive-motion-command", loco, train.SpeedInSteps, null).SetCommandStation(train));
+            EventManager.Event(new LayoutEvent("locomotive-motion-command", loco, train.SpeedInSteps).SetCommandStation(train));
         }
 
         private byte getFunctionMask(LocomotiveInfo loco) {

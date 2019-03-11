@@ -296,7 +296,7 @@ namespace LayoutManager.Tools.Dialogs {
 
                 new SemiModalDialog(this, pickDialog, delegate (Form dialog, object info) {
                     if (pickDialog.DialogResult == DialogResult.OK) {
-                        ControlConnectionPoint result = (ControlConnectionPoint)EventManager.Event(new LayoutEvent("connect-component-to-control-module-address-request", pickDialog.ConnectionDestination, csEvent, null));
+                        ControlConnectionPoint result = (ControlConnectionPoint)EventManager.Event(new LayoutEvent("connect-component-to-control-module-address-request", pickDialog.ConnectionDestination, csEvent));
 
                         EventManager.Event(new LayoutEvent("show-control-connection-point", connectionPointRef).SetFrameWindow(frameWindowId));
                         this.component = result.Component;

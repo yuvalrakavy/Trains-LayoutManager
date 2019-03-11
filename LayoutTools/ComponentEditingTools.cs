@@ -360,7 +360,7 @@ namespace LayoutManager.Tools {
                         case LayoutPhase.Planned: checkPhases = LayoutPhase.All; break;
                     }
 
-                    if ((bool)EventManager.Event(new LayoutEvent("check-layout", this, true, null).SetPhases(checkPhases))) {
+                    if ((bool)EventManager.Event(new LayoutEvent("check-layout", this, true).SetPhases(checkPhases))) {
                         EventManager.Event(
                             new LayoutEvent<LayoutTrackPowerConnectorComponent, Action<LayoutBlockDefinitionComponent>>("add-power-connector-as-resource", powerConnectorcomponent,
                                 blockDefinition => {
@@ -394,7 +394,7 @@ namespace LayoutManager.Tools {
             ModelComponent linkedComponent = trackLink.LinkedComponent;
 
             if (linkedComponent != null)
-                EventManager.Event(new LayoutEvent("ensure-component-visible", linkedComponent, true, null).SetFrameWindow(e));
+                EventManager.Event(new LayoutEvent("ensure-component-visible", linkedComponent, true).SetFrameWindow(e));
         }
 
         #region Track Link Menu item classes
@@ -458,7 +458,7 @@ namespace LayoutManager.Tools {
         class TrackLinkMenuItemViewLinkedComponent : MenuItem {
             internal TrackLinkMenuItemViewLinkedComponent(Guid frameWindowId, LayoutTrackLinkComponent trackLinkComponent)
                 : base("&Show other link", (s, ea) => {
-                    EventManager.Event(new LayoutEvent("ensure-component-visible", trackLinkComponent.LinkedComponent, true, null).SetFrameWindow(frameWindowId));
+                    EventManager.Event(new LayoutEvent("ensure-component-visible", trackLinkComponent.LinkedComponent, true).SetFrameWindow(frameWindowId));
                 }) {
 
                 if (trackLinkComponent.LinkedComponent == null)
@@ -484,8 +484,8 @@ namespace LayoutManager.Tools {
             ArrayList myBindDialog = new ArrayList();
             ArrayList allBindDialog = new ArrayList();
 
-            EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", component, myBindDialog, null));
-            EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", null, allBindDialog, null));
+            EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", component, myBindDialog));
+            EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", null, allBindDialog));
 
             MenuItem item = new BlockEdgeBindSignalMenuItem(component);
 
@@ -507,7 +507,7 @@ namespace LayoutManager.Tools {
             protected override void OnClick(EventArgs e) {
                 ArrayList myBindDialog = new ArrayList();
 
-                EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", blockEdge, myBindDialog, null));
+                EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", blockEdge, myBindDialog));
 
                 if (myBindDialog.Count > 0) {
                     Form f = (Form)myBindDialog[0];
@@ -537,7 +537,7 @@ namespace LayoutManager.Tools {
             LayoutSignalComponent component = (LayoutSignalComponent)e.Sender;
             ArrayList allBindDialog = new ArrayList();
 
-            EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", null, allBindDialog, null));
+            EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", null, allBindDialog));
 
             if (allBindDialog.Count > 0) {
                 MenuItem item = new SignalBindSignalMenuItem((IModelComponentReceiverDialog)allBindDialog[0], component);
@@ -731,7 +731,7 @@ namespace LayoutManager.Tools {
                                 Array.Sort(components, new ZorderSorter());     // Sort, so the first delete components will be those with higher Z order
 
                                 for (int i = components.Length - 1; i >= 0; i--) {
-                                    EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", components[i], shiftCommand, null));
+                                    EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", components[i], shiftCommand));
                                     shiftCommand.Add(new LayoutComponentRemovalCommand(components[i], "Delete"));
                                 }
                             }

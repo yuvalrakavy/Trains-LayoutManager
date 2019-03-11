@@ -278,7 +278,7 @@ namespace LayoutManager {
 
             EventManager.Event(new LayoutEvent("clear-messages", this));
 
-            if (!(bool)EventManager.Event(new LayoutEvent("check-layout", LayoutModel.Instance, true, null).SetPhases(settings.Phases))) {
+            if (!(bool)EventManager.Event(new LayoutEvent("check-layout", LayoutModel.Instance, true).SetPhases(settings.Phases))) {
                 MessageBox.Show(ActiveFrameWindow, "Problems were detected in the layout. Please fix those problems before entering operation mode", "Layout Check Results",
                     MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 switchMode = false;
@@ -300,7 +300,7 @@ namespace LayoutManager {
 
                     List<IModelComponentIsCommandStation> performTrainsAnalysis = new List<IModelComponentIsCommandStation>();
 
-                    EventManager.Event(new LayoutEvent("query-perform-trains-analysis", this, performTrainsAnalysis, null));
+                    EventManager.Event(new LayoutEvent("query-perform-trains-analysis", this, performTrainsAnalysis));
                     trainsAnalysisPhaseCount = performTrainsAnalysis.Count;
 
                     if (trainsAnalysisPhaseCount > 0)

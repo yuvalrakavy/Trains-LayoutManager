@@ -27,7 +27,7 @@ namespace MarklinDigital {
 
             layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
 
-            EventManager.Event(new LayoutEvent("initialize-layout-emulation", null, emulationTickTime, null));
+            EventManager.Event(new LayoutEvent("initialize-layout-emulation", null, emulationTickTime));
 
             interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction)) {
                 Name = "Command station emulation for " + commandStation.Name
@@ -54,7 +54,7 @@ namespace MarklinDigital {
         private void InterfaceThreadFunction() {
             // Create the pipe for communication
 
-            commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, false, null));
+            commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, false));
 
             try {
                 while (true) {

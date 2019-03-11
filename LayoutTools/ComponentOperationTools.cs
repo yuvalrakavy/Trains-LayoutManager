@@ -91,7 +91,7 @@ namespace LayoutManager.Tools {
             List<SwitchingCommand> switchingCommands = new List<SwitchingCommand>();
 
             component.AddSwitchingCommands(switchingCommands, switchState);
-            EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands, null));
+            EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands));
         }
 
         #endregion
@@ -274,7 +274,7 @@ namespace LayoutManager.Tools {
             // Check if there any dialog that could take a block info for a way point
             List<ITripPlanEditorDialog> tripPlanEditorDialogs = new List<ITripPlanEditorDialog>();
 
-            EventManager.Event(new LayoutEvent("query-edit-trip-plan-dialog", blockDefinition, tripPlanEditorDialogs, null));
+            EventManager.Event(new LayoutEvent("query-edit-trip-plan-dialog", blockDefinition, tripPlanEditorDialogs));
 
             if (tripPlanEditorDialogs.Count == 1) {
                 ITripPlanEditorDialog tripPlanEditorDialog = tripPlanEditorDialogs[0];
@@ -710,7 +710,7 @@ namespace LayoutManager.Tools {
 
             if (blockDefinition.Block.HasTrains)
                 foreach (TrainLocationInfo trainLocation in blockDefinition.Block.Trains)
-                    EventManager.Event(new LayoutEvent("add-train-details-window-section", trainLocation.Train, container, null));
+                    EventManager.Event(new LayoutEvent("add-train-details-window-section", trainLocation.Train, container));
             else {
                 var lockRequest = blockDefinition.Block.LockRequest;
 
@@ -729,7 +729,7 @@ namespace LayoutManager.Tools {
                         if (train != null) {
                             container.AddText("Block allocated to:");
 
-                            EventManager.Event(new LayoutEvent("add-train-details-window-section", train, container, null));
+                            EventManager.Event(new LayoutEvent("add-train-details-window-section", train, container));
                         }
                     }
                 }
@@ -945,7 +945,7 @@ namespace LayoutManager.Tools {
                 this.blockDefinition = blockDefinition;
                 this.tripPlanEditorDialog = tripPlanEditorDialog;
 
-                EventManager.Event(new LayoutEvent("get-block-smart-destination-list", blockDefinition, smartDestinations, null));
+                EventManager.Event(new LayoutEvent("get-block-smart-destination-list", blockDefinition, smartDestinations));
 
                 if (smartDestinations.Count > 0) {
                     MenuItems.Add("This specific block", delegate (object sender, EventArgs e) { tripPlanEditorDialog.AddWayPoint(blockDefinition); });
@@ -996,7 +996,7 @@ namespace LayoutManager.Tools {
             XmlElement applicableTripPlansElement = applicableTripPlansDoc.CreateElement("ApplicableTripPlans");
 
             applicableTripPlansDoc.AppendChild(applicableTripPlansElement);
-            EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", train, applicableTripPlansElement, null).SetOption("CalculatePenalty", false));
+            EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", train, applicableTripPlansElement).SetOption("CalculatePenalty", false));
 
             foreach (XmlElement applicableTripPlanElement in applicableTripPlansElement) {
                 TripPlanInfo tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[XmlConvert.ToGuid(applicableTripPlanElement.GetAttribute("TripPlanID"))];
@@ -1066,7 +1066,7 @@ namespace LayoutManager.Tools {
             }
 
             protected override void OnClick(EventArgs e) {
-                if ((bool)EventManager.Event(new LayoutEvent("show-saved-trip-plans-for-train", train, false, null)) == false) {
+                if ((bool)EventManager.Event(new LayoutEvent("show-saved-trip-plans-for-train", train, false)) == false) {
                     Dialogs.TripPlanCatalog tripPlanCatalog = new Dialogs.TripPlanCatalog(train);
 
                     tripPlanCatalog.Show();

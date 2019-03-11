@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for TripPlanEditor.
@@ -211,7 +212,7 @@ namespace LayoutManager.Tools.Dialogs {
                 return;
 
             ITripRouteValidationResult routeValidationResult = (ITripRouteValidationResult)EventManager.Event(
-                new LayoutEvent("validate-trip-plan-route", tripPlan, train, null));
+                new LayoutEvent("validate-trip-plan-route", tripPlan, train));
 
             if (routeValidationResult.Actions.Count > 0) {
                 Dialogs.TripPlanRouteValidationResult d = new Dialogs.TripPlanRouteValidationResult(tripPlan, routeValidationResult, this);
@@ -230,7 +231,7 @@ namespace LayoutManager.Tools.Dialogs {
             try {
                 TripPlanAssignmentInfo tripPlanAssignment = new TripPlanAssignmentInfo(tripPlan, train);
 
-                if ((bool)EventManager.Event(new LayoutEvent("execute-trip-plan", tripPlanAssignment, this, null)))
+                if ((bool)EventManager.Event(new LayoutEvent("execute-trip-plan", tripPlanAssignment, this)))
                     Close();
             }
             catch (LayoutException ex) {

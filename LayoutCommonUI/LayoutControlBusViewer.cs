@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0056     //TODO: Remove when .NET 4.8
 namespace LayoutManager.CommonUI {
     /// <summary>
     /// Summary description for LayoutControlBusViewer.
@@ -204,7 +206,7 @@ namespace LayoutManager.CommonUI {
                     break;
 
                 // Still cannot fit, adjust the zoom
-                zoom = zoom * 0.9F;
+                zoom *= 0.9F;
 
                 if (zoom < 0.2F)
                     break;
@@ -219,7 +221,7 @@ namespace LayoutManager.CommonUI {
         /// <returns>An image or null if no image</returns>
         internal Image GetConnectionPointImage(string connectionPointType, bool topRow) {
             string key = connectionPointType + "-" + topRow.ToString();
-            Image typeImage = null;
+            Image typeImage;
 
             if (!imageMap.Contains(key)) {
 
@@ -256,7 +258,7 @@ namespace LayoutManager.CommonUI {
 
             if (component != null) {
                 string key = component.GetType().Name + "-" + component.ToString() + topRow.ToString() + "_";
-                Image image = null;
+                Image image;
 
                 if (!imageMap.Contains(key)) {
                     image = (Image)EventManager.Event(
@@ -326,7 +328,7 @@ namespace LayoutManager.CommonUI {
 
                 if (component != null) {
                     selectedComponents.Add((ModelComponent)component);
-                    EventManager.Event(new LayoutEvent("ensure-component-visible", component, false, null).SetFrameWindow(FrameWindow));
+                    EventManager.Event(new LayoutEvent("ensure-component-visible", component, false).SetFrameWindow(FrameWindow));
                 }
             }
 
@@ -473,7 +475,7 @@ namespace LayoutManager.CommonUI {
                 return;
 
             RectangleF clipBounds = pe.Graphics.VisibleClipBounds;
-            Bitmap buffer = (Bitmap)EventManager.Event(new LayoutEvent("allocate-offscreen-buffer", pe.Graphics, clipBounds, null));
+            Bitmap buffer = (Bitmap)EventManager.Event(new LayoutEvent("allocate-offscreen-buffer", pe.Graphics, clipBounds));
 
             using (Graphics g = Graphics.FromImage(buffer)) {
                 // Translate so the top-left of the clip region is on the top/left (0,0)
@@ -597,10 +599,6 @@ namespace LayoutManager.CommonUI {
         }
 
         private void hScrollBar_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e) {
-            RectangleF bounds = DrawingBounds;
-            RectangleF clientBounds = RectangleF.FromLTRB(ClientRectangle.Left / zoom, ClientRectangle.Top / zoom,
-                ClientRectangle.Right / zoom, ClientRectangle.Bottom / zoom);
-
             switch (e.Type) {
 
                 case ScrollEventType.First:
@@ -642,10 +640,6 @@ namespace LayoutManager.CommonUI {
         }
 
         private void vScrollBar_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e) {
-            RectangleF bounds = DrawingBounds;
-            RectangleF clientBounds = RectangleF.FromLTRB(ClientRectangle.Left / zoom, ClientRectangle.Top / zoom,
-                ClientRectangle.Right / zoom, ClientRectangle.Bottom / zoom);
-
             switch (e.Type) {
                 case ScrollEventType.First:
                     origin.Y = 0;
@@ -801,8 +795,6 @@ namespace LayoutManager.CommonUI {
                 }
             }
             else if (e.Delta < 0) {
-                int delta = e.Delta;
-
                 if ((Control.ModifierKeys & Keys.Shift) != 0) {
                     for (int i = 0; i < 3; i++)
                         HorizontalScroll(ScrollEventType.SmallIncrement);
@@ -815,8 +807,6 @@ namespace LayoutManager.CommonUI {
                     for (int i = 0; i < 6; i++)
                         VerticalScroll(ScrollEventType.SmallIncrement);
                 }
-
-                delta += 120;
             }
         }
 
@@ -896,7 +886,7 @@ namespace LayoutManager.CommonUI {
         public abstract void Draw(Graphics g, PointF startingPoint);
 
         public DrawControlBase GetDrawObjectContainingPoint(PointF p) {
-            DrawControlBase hitDrawObject = null;
+            DrawControlBase hitDrawObject;
 
             // Check if a sub-object was hit
             foreach (DrawControlBase drawObject in DrawObjects)
@@ -916,7 +906,7 @@ namespace LayoutManager.CommonUI {
                     string eventName = "add-control-" + (Viewer.IsOperationMode ? "operation" : "editing") + "-context-menu-entries";
                     ContextMenu menu = new ContextMenu();
 
-                    EventManager.Event(new LayoutEvent(eventName, this, menu, null).SetFrameWindow(Viewer.FrameWindow));
+                    EventManager.Event(new LayoutEvent(eventName, this, menu).SetFrameWindow(Viewer.FrameWindow));
                     if (menu.MenuItems.Count > 0)
                         menu.Show(Viewer, Viewer.PointToClient(Control.MousePosition));
                 }
@@ -1580,7 +1570,7 @@ namespace LayoutManager.CommonUI {
             }
         }
 
-        private bool drawSelection => Selected || (drawModule.Selected && Module.ConnectionPoints.IsConnected(index));
+        private bool DrawSelection => Selected || (drawModule.Selected && Module.ConnectionPoints.IsConnected(index));
 
         public bool TopRow {
             get {
@@ -1617,7 +1607,7 @@ namespace LayoutManager.CommonUI {
                 statusRect = new RectangleF(new PointF(startingPoint.X, shapeRect.Bottom), new SizeF(shapeRect.Width, connectionPointStatusHeight));
             }
 
-            Color backColor = drawSelection ? Color.White : Viewer.BackColor;
+            Color backColor = DrawSelection ? Color.White : Viewer.BackColor;
 
             using (Brush backBrush = new SolidBrush(backColor)) {
                 g.FillRectangle(backBrush, shapeRect);
@@ -1630,7 +1620,7 @@ namespace LayoutManager.CommonUI {
 
                 g.DrawRectangle(Pens.Black, statusRect.Left, statusRect.Top, statusRect.Width, statusRect.Height);
 
-                if (drawSelection)
+                if (DrawSelection)
                     g.DrawRectangle(Pens.Red, shapeRect.Left + 1, shapeRect.Top + 1, shapeRect.Width - 2, shapeRect.Height - 2);
 
                 if (image != null)

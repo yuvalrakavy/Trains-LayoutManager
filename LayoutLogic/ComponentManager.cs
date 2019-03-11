@@ -31,11 +31,11 @@ namespace LayoutManager.Logic {
                         EventManager.Event(new LayoutEvent("track-contact-triggered-notification", component));
                 }
                 else if (component is LayoutBlockDefinitionComponent)
-                    EventManager.Event(new LayoutEvent("train-detection-state-changed-notification", component, state != 0 ? true : false, null));
+                    EventManager.Event(new LayoutEvent("train-detection-state-changed-notification", component, state != 0 ? true : false));
                 else if (component is IModelComponentHasSwitchingState)
-                    EventManager.Event(new LayoutEvent("track-component-state-changed-notification", connectionPoint, state, null));
+                    EventManager.Event(new LayoutEvent("track-component-state-changed-notification", connectionPoint, state));
                 else if (component is LayoutSignalComponent)
-                    EventManager.Event(new LayoutEvent("signal-state-changed-notification", component, state == 0 ? LayoutSignalState.Red : LayoutSignalState.Green, null));
+                    EventManager.Event(new LayoutEvent("signal-state-changed-notification", component, state == 0 ? LayoutSignalState.Red : LayoutSignalState.Green));
             }
         }
 
@@ -82,7 +82,7 @@ namespace LayoutManager.Logic {
 
                 foreach (KeyValuePair<IModelComponentIsBusProvider, List<SwitchingCommand>> commandStationAndSwitchCommands in commandStationIdToSwitchingCommands) {
                     if (commandStationAndSwitchCommands.Key.BatchMultipathSwitchingSupported) {
-                        tasks.Add(EventManager.AsyncEvent(new LayoutEvent("change-batch-of-track-component-state-command", this, commandStationAndSwitchCommands.Value, null).SetOption("CommandStationID", XmlConvert.ToString(commandStationAndSwitchCommands.Key.Id))));
+                        tasks.Add(EventManager.AsyncEvent(new LayoutEvent("change-batch-of-track-component-state-command", this, commandStationAndSwitchCommands.Value).SetOption("CommandStationID", XmlConvert.ToString(commandStationAndSwitchCommands.Key.Id))));
                     }
                     else {
                         foreach (SwitchingCommand switchingCommand in commandStationAndSwitchCommands.Value)
@@ -264,7 +264,7 @@ namespace LayoutManager.Logic {
                     LayoutSignalComponent signal = LayoutModel.Component<LayoutSignalComponent>(signalId, LayoutPhase.All);
 
                     if (signal != null)
-                        EventManager.Event(new LayoutEvent("signal-component-unlinked", removedBlockEdge, signal, null));
+                        EventManager.Event(new LayoutEvent("signal-component-unlinked", removedBlockEdge, signal));
                 });
             }
         }
@@ -283,12 +283,12 @@ namespace LayoutManager.Logic {
                 if (previousLinkedSignals.Contains(linkedSignalInfo.SignalId))
                     previousLinkedSignals.Remove(linkedSignalInfo.SignalId);
                 else
-                    EventManager.Event(new LayoutEvent("signal-component-linked", modifiedBlockEdge, LayoutModel.Component<LayoutSignalComponent>(linkedSignalInfo.SignalId, LayoutPhase.All), null));
+                    EventManager.Event(new LayoutEvent("signal-component-linked", modifiedBlockEdge, LayoutModel.Component<LayoutSignalComponent>(linkedSignalInfo.SignalId, LayoutPhase.All)));
             }
 
             // The signals that are left, are not linked now, so remove them from the map
             foreach (Guid signalId in previousLinkedSignals)
-                EventManager.Event(new LayoutEvent("signal-component-unlinked", modifiedBlockEdge, LayoutModel.Component<LayoutSignalComponent>(signalId, LayoutPhase.All), null));
+                EventManager.Event(new LayoutEvent("signal-component-unlinked", modifiedBlockEdge, LayoutModel.Component<LayoutSignalComponent>(signalId, LayoutPhase.All)));
         }
 
         #endregion

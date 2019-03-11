@@ -11,6 +11,7 @@ using LayoutManager.Components;
 using LayoutManager.CommonUI;
 using System.Collections.Generic;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Tools.Controls {
     /// <summary>
     /// Summary description for TripPlanEditor.
@@ -348,7 +349,7 @@ namespace LayoutManager.Tools.Controls {
                 int wayPointIndex = (trainTargetWayPoint < 0) ? 0 : trainTargetWayPoint;
                 WayPointItem wayPointItem = (WayPointItem)listViewWayPoints.Items[wayPointIndex];
                 TripPlanWaypointInfo wayPoint = wayPointItem.WayPoint;
-                TripBestRouteResult result = null;
+                TripBestRouteResult result;
                 Guid routeOwner = (train != null) ? Train.Id : Guid.Empty;
                 bool addMore;
                 int selectedIndex = listViewWayPoints.SelectedItems.Count > 0 ? listViewWayPoints.SelectedIndices[0] : -1;
@@ -937,7 +938,7 @@ namespace LayoutManager.Tools.Controls {
                 selectedWaypointSelection.Add(wayPointItem.WayPoint.Destination.Selection);
 
             if (selectedWaypointSelection.Count > 0)
-                EventManager.Event(new LayoutEvent("ensure-component-visible", selectedWaypointSelection.Components.First(), false, null).SetFrameWindow(LayoutController.ActiveFrameWindow));
+                EventManager.Event(new LayoutEvent("ensure-component-visible", selectedWaypointSelection.Components.First(), false).SetFrameWindow(LayoutController.ActiveFrameWindow));
 
             UpdateButtons(sender, e);
         }

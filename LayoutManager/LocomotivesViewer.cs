@@ -7,6 +7,7 @@ using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager {
     /// <summary>
     /// Summary description for LocomotivesViewer.
@@ -506,9 +507,9 @@ namespace LayoutManager {
                         ContextMenu m = new ContextMenu();
 
                         if (operationMode)
-                            EventManager.Event(new LayoutEvent("add-locomotive-collection-operation-context-menu-entries", clickedItem.Element, m, null));
+                            EventManager.Event(new LayoutEvent("add-locomotive-collection-operation-context-menu-entries", clickedItem.Element, m));
                         else
-                            EventManager.Event(new LayoutEvent("add-locomotive-collection-editing-context-menu-entries", clickedItem.Element, m, null));
+                            EventManager.Event(new LayoutEvent("add-locomotive-collection-editing-context-menu-entries", clickedItem.Element, m));
 
                         if (m.MenuItems.Count > 0) {
                             Rectangle itemRect = locomotiveList.GetItemRectangle(clickedIndex);

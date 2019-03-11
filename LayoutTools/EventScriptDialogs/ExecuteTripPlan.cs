@@ -6,6 +6,7 @@ using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Tools.EventScriptDialogs {
     /// <summary>
     /// Summary description for ExecuteTripPlan.
@@ -83,7 +84,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
             workingDoc.AppendChild(applicableTripPlansElement);
 
-            LayoutEvent getApplicableTripPlansEvent = new LayoutEvent("get-applicable-trip-plans-request", block, applicableTripPlansElement, null);
+            LayoutEvent getApplicableTripPlansEvent = new LayoutEvent("get-applicable-trip-plans-request", block, applicableTripPlansElement);
 
             if (front != LayoutComponentConnectionPoint.Empty)
                 getApplicableTripPlansEvent.SetOption("Front", front.ToString());

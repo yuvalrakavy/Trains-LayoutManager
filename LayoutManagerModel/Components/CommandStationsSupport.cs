@@ -141,7 +141,7 @@ namespace LayoutManager.Components {
 
                 commandStationEmulator = CreateCommandStationEmulator(pipeName);
 
-                commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-client-to-connect-request", handle, overlappedIO, null));
+                commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-client-to-connect-request", handle, overlappedIO));
             }
             else if (InterfaceType == CommunicationInterfaceType.Serial)
                 commStream = (FileStream)EventManager.Event(new LayoutEvent("open-serial-communication-device-request", Element));

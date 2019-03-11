@@ -144,7 +144,7 @@ namespace LayoutManager.Tools {
                 if (context == null) {
                     MenuItem placeOnTrack = new MenuItem("Place on track");
 
-                    EventManager.Event(new LayoutEvent("add-placeble-blocks-menu-entries", placedElement, placeOnTrack, null));
+                    EventManager.Event(new LayoutEvent("add-placeble-blocks-menu-entries", placedElement, placeOnTrack));
                     placeOnTrack.Enabled = placeOnTrack.MenuItems.Count > 0;
                     m.MenuItems.Add(placeOnTrack);
                 }
@@ -220,7 +220,7 @@ namespace LayoutManager.Tools {
             var e = (LayoutEventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>)e0;
             var name = ExtractTrainDisplayName(e.Info);
 
-            EventManager.Event(new LayoutEvent("ensure-component-visible", e.Sender, false, null));
+            EventManager.Event(new LayoutEvent("ensure-component-visible", e.Sender, false));
 
             Dialogs.LocomotiveFront locoFront = new Dialogs.LocomotiveFront(e.Sender, name);
             if (locoFront.ShowDialog() == DialogResult.OK)
@@ -246,7 +246,7 @@ namespace LayoutManager.Tools {
             var e = (LayoutEvent<LayoutBlockDefinitionComponent, object, TrainFrontAndLength>)e0;
             var name = ExtractTrainDisplayName(e.Info);
 
-            EventManager.Event(new LayoutEvent("ensure-component-visible", e.Sender, false, null));
+            EventManager.Event(new LayoutEvent("ensure-component-visible", e.Sender, false));
 
             Dialogs.TrainFrontAndLength trainFrontAndLength = new Dialogs.TrainFrontAndLength(e.Sender, name);
             if (trainFrontAndLength.ShowDialog() == DialogResult.OK)
@@ -337,7 +337,7 @@ namespace LayoutManager.Tools {
             protected override void OnClick(EventArgs e) {
                 base.OnClick(e);
 
-                EventManager.Event(new LayoutEvent("ensure-component-visible", blockInfo, true, null));
+                EventManager.Event(new LayoutEvent("ensure-component-visible", blockInfo, true));
             }
         }
 

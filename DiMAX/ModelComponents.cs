@@ -487,13 +487,13 @@ namespace DiMAX {
             if (OperationMode) {
                 var connectionPointRef = new ControlConnectionPointReference(DiMAXbus, address, state);
 
-                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, 1, null));
+                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, 1));
             }
         }
 
         private void DCCbusNotification(int address, int state) {
             if (OperationMode)
-                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(DCCbus, address), state, null));
+                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(DCCbus, address), state));
         }
 
         #endregion
@@ -537,7 +537,7 @@ namespace DiMAX {
                                 DiMAXlocoSpeedControlPacket p = new DiMAXlocoSpeedControlPacket(packet);
 
                                 EventManager.Event(
-                                    new LayoutEvent("locomotive-motion-notification", this, p.SpeedInSteps, null).SetOption("Address", "Unit", p.Unit));
+                                    new LayoutEvent("locomotive-motion-notification", this, p.SpeedInSteps).SetOption("Address", "Unit", p.Unit));
                             }
                         }
                         break;
@@ -547,10 +547,10 @@ namespace DiMAX {
                                 DiMAXlocoFunctionControlPacket p = new DiMAXlocoFunctionControlPacket(packet);
 
                                 if (p.FunctionNumber == 0)
-                                    EventManager.Event(new LayoutEvent("set-locomotive-lights-notification", this, p.Lights, null).SetOption("Address", "Unit", p.Unit));
+                                    EventManager.Event(new LayoutEvent("set-locomotive-lights-notification", this, p.Lights).SetOption("Address", "Unit", p.Unit));
                                 else
                                     EventManager.Event
-                                        (new LayoutEvent("set-locomotive-function-state-notification", this, p.FunctionActive, null).SetOption("Address", "Unit", p.Unit).SetOption("Function", "Number", p.FunctionNumber));
+                                        (new LayoutEvent("set-locomotive-function-state-notification", this, p.FunctionActive).SetOption("Address", "Unit", p.Unit).SetOption("Function", "Number", p.FunctionNumber));
                             }
                         }
                         break;
@@ -697,7 +697,7 @@ namespace DiMAX {
                             Trace.WriteLine("Ignored direct reply - no command requiring direct reply was sent");
                     }
                     else
-                        InterThreadEventInvoker.QueueEvent(new LayoutEvent("processes-DiMAX-packet", this, packet, null));
+                        InterThreadEventInvoker.QueueEvent(new LayoutEvent("processes-DiMAX-packet", this, packet));
 
                     CommunicationStream.BeginRead(lengthAndCommand, 0, lengthAndCommand.Length, new AsyncCallback(this.OnReadLengthAndCommandDone), null);
                 }

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for GenerateEventArgument.
@@ -65,7 +66,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             IDictionary symbolNameToTypeMap = new HybridDictionary();
 
-            EventManager.Event(new LayoutEvent("add-context-symbols-and-types", this, symbolNameToTypeMap, null));
+            EventManager.Event(new LayoutEvent("add-context-symbols-and-types", this, symbolNameToTypeMap));
 
             foreach (string n in symbolNameToTypeMap.Keys)
                 comboBoxReferencedObject.Items.Add(n);

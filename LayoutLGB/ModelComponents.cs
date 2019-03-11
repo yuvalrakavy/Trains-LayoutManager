@@ -234,14 +234,14 @@ namespace LayoutLGB {
                     else
                         connectionPointRef = new ControlConnectionPointReference(lgbBusModule, address - lgbBusModule.Address);
 
-                    EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state, null));
+                    EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state));
                 }
             }
         }
 
         private void DCCbusNotification(int address, int state) {
             if (OperationMode)
-                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(DCCbus, address), state, null));
+                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(DCCbus, address), state));
         }
 
         #endregion
@@ -317,7 +317,7 @@ namespace LayoutLGB {
                     }
 
                     for (int offset = 0; offset < count; offset += 4)
-                        InterThreadEventInvoker.QueueEvent(new LayoutEvent("parse-MTS-message", this, new MTSmessage(inputBuffer, offset), null));
+                        InterThreadEventInvoker.QueueEvent(new LayoutEvent("parse-MTS-message", this, new MTSmessage(inputBuffer, offset)));
 
                     // Start the next read
                     CommunicationStream.BeginRead(inputBuffer, 0, inputBuffer.Length, new AsyncCallback(this.OnReadDone), null);

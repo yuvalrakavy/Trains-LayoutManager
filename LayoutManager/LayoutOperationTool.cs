@@ -10,10 +10,8 @@ namespace LayoutManager {
     /// This tool is used for editing the layout
     /// </summary>
     public class LayoutOperationTool : LayoutTool {
-        private System.ComponentModel.IContainer components;
 
         public LayoutOperationTool() {
-            InitializeComponent();
             EventManager.AddObjectSubscriptions(this);
         }
 
@@ -51,11 +49,8 @@ namespace LayoutManager {
 
         protected override void DefaultAction(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
             foreach (ModelComponent component in hitTestResult.Selection)
-                EventManager.Event(new LayoutEvent("default-action-command", component, hitTestResult, null));
+                EventManager.Event(new LayoutEvent("default-action-command", component, hitTestResult));
         }
 
-        private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
-        }
     }
 }

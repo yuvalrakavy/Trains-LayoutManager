@@ -5,7 +5,9 @@ using System.Reflection;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
+using System.Collections.Generic;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for OperandValueOf.
@@ -152,7 +154,7 @@ namespace LayoutManager.CommonUI.Controls {
             if (symbolNameToTypeMap == null) {
                 symbolNameToTypeMap = new HybridDictionary();
 
-                EventManager.Event(new LayoutEvent("add-context-symbols-and-types", this, symbolNameToTypeMap, null));
+                EventManager.Event(new LayoutEvent("add-context-symbols-and-types", this, symbolNameToTypeMap));
 
                 comboBoxSymbol.Sorted = true;
                 foreach (string symbolName in symbolNameToTypeMap.Keys)
@@ -317,14 +319,14 @@ namespace LayoutManager.CommonUI.Controls {
                         }
                     }
                     else {          // Attribute
-                        ArrayList attributesList = new ArrayList();
-                        IDictionary attributesMap = new HybridDictionary();
+                        var attributesList = new List<AttributesInfo>();
+                        var attributesMap = new Dictionary<string, AttributeInfo>();
 
-                        EventManager.Event(new LayoutEvent("get-object-attributes", symbolType, attributesList, null));
+                        EventManager.Event(new LayoutEvent("get-object-attributes", symbolType, attributesList));
 
                         foreach (AttributesInfo attributes in attributesList) {
                             foreach (AttributeInfo attribute in attributes) {
-                                if (!attributesMap.Contains(attribute.Name) && isAllowedType(attribute.Value.GetType())) {
+                                if (!attributesMap.ContainsKey(attribute.Name) && isAllowedType(attribute.Value.GetType())) {
                                     attributesMap.Add(attribute.Name, attribute);
                                     comboBoxTag.Items.Add(new TagEntry(attribute.Name, attribute.AttributeType));
                                 }

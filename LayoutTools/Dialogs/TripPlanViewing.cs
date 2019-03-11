@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for TripPlanViewing.
@@ -125,7 +126,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonSave_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent("save-trip-plan", tripPlan, this, null));
+            EventManager.Event(new LayoutEvent("save-trip-plan", tripPlan, this));
         }
     }
 }

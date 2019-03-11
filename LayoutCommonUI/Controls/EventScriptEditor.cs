@@ -357,7 +357,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             if (selected != null && selected.AddNodeEventName != null) {
                 ContextMenu menu = new ContextMenu();
-                LayoutEvent addNodeEvent = new LayoutEvent(selected.AddNodeEventName, selected, menu, null);
+                LayoutEvent addNodeEvent = new LayoutEvent(selected.AddNodeEventName, selected, menu);
 
                 if (BlockDefinition != null)
                     addNodeEvent.SetOption("BlockDefinitionID", XmlConvert.ToString(BlockDefinition.Id));
@@ -373,7 +373,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             if (selected != null && selected.InsertNodeEventName != null) {
                 ContextMenu menu = new ContextMenu();
-                LayoutEvent insertNodeEvent = new LayoutEvent(selected.InsertNodeEventName, selected, menu, null);
+                LayoutEvent insertNodeEvent = new LayoutEvent(selected.InsertNodeEventName, selected, menu);
 
                 if (BlockDefinition != null)
                     insertNodeEvent.SetOption("BlockDefinitionID", XmlConvert.ToString(BlockDefinition.Id));
@@ -388,7 +388,7 @@ namespace LayoutManager.CommonUI.Controls {
             LayoutEventScriptEditorTreeNode selected = (LayoutEventScriptEditorTreeNode)treeViewConditions.SelectedNode;
 
             if (selected != null && !ViewOnly && selected.NodeToEdit != null)
-                EventManager.Event(new LayoutEvent("event-script-editor-edit-element", selected.NodeToEdit.Element, new EditSite(Form, BlockDefinition, selected), null));
+                EventManager.Event(new LayoutEvent("event-script-editor-edit-element", selected.NodeToEdit.Element, new EditSite(Form, BlockDefinition, selected)));
         }
 
         class EditSite : IEventScriptEditorSite {
@@ -502,7 +502,7 @@ namespace LayoutManager.CommonUI.Controls {
                 if (newNode.NodeToEdit == null)
                     site.EditingDone();
                 else
-                    EventManager.Event(new LayoutEvent("event-script-editor-edit-element", eventScriptElement, site, null));
+                    EventManager.Event(new LayoutEvent("event-script-editor-edit-element", eventScriptElement, site));
             }
         }
 
@@ -579,7 +579,7 @@ namespace LayoutManager.CommonUI.Controls {
                 if (newNode.NodeToEdit == null)
                     site.EditingDone();
                 else
-                    EventManager.Event(new LayoutEvent("event-script-editor-edit-element", eventScriptElement, site, null));
+                    EventManager.Event(new LayoutEvent("event-script-editor-edit-element", eventScriptElement, site));
             }
         }
 
@@ -689,7 +689,7 @@ namespace LayoutManager.CommonUI.Controls {
                 if (newNode.NodeToEdit == null)
                     site.EditingDone();
                 else
-                    EventManager.Event(new LayoutEvent("event-script-editor-edit-element", eventScriptElement, site, null));
+                    EventManager.Event(new LayoutEvent("event-script-editor-edit-element", eventScriptElement, site));
             }
         }
 

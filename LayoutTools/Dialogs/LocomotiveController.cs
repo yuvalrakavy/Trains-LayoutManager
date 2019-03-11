@@ -8,6 +8,7 @@ using System.Diagnostics;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for LocomotiveController.
@@ -229,7 +230,7 @@ namespace LayoutManager.Tools.Dialogs {
                         m.MenuItems.Add(new LocomotiveFunctionMenuItem(train, loco, functionName, true, train.Locomotives.Count > 1));
                     }
                     else {
-                        MenuItem functionItem = new MenuItem(getFunctionDescription((LocomotiveInfo)locos[0], functionName));
+                        MenuItem functionItem = new MenuItem(GetFunctionDescription((LocomotiveInfo)locos[0], functionName));
                         LocomotiveFunctionInfo function = null;
 
                         foreach (LocomotiveInfo loco in locos) {
@@ -265,7 +266,7 @@ namespace LayoutManager.Tools.Dialogs {
                         if (locos.Count == 1)
                             presetItem.MenuItems.Add(new LocomotiveFunctionPresetMenuItem(train, locos[0], functionName, true, train.Locomotives.Count > 1));
                         else {
-                            MenuItem functionItem = new MenuItem(getFunctionDescription(locos[0], functionName));
+                            MenuItem functionItem = new MenuItem(GetFunctionDescription(locos[0], functionName));
 
                             foreach (var loco in locos)
                                 functionItem.MenuItems.Add(new LocomotiveFunctionPresetMenuItem(train, loco, functionName, false, true));
@@ -311,7 +312,7 @@ namespace LayoutManager.Tools.Dialogs {
                 m.MenuItems.Add(new LocomotiveFunctionNumberMenuItem(train, loco, functionNumber, functionNumberSupportInfo.SetFunctionNumberSupport == SetFunctionNumberSupport.FunctionNumberAndBooleanState));
         }
 
-        protected static String getFunctionDescription(LocomotiveInfo loco, String functionName) {
+        protected static String GetFunctionDescription(LocomotiveInfo loco, String functionName) {
             LocomotiveFunctionInfo function = loco.GetFunctionByName(functionName);
 
             if (function.Description != null && function.Description != "")
@@ -335,7 +336,7 @@ namespace LayoutManager.Tools.Dialogs {
                 this.function = loco.GetFunctionByName(functionName);
 
                 if (showFunctionName)
-                    this.Text = LocomotiveController.getFunctionDescription(loco, functionName) + (addLocoName ? (" (" + loco.DisplayName + ")") : "");
+                    this.Text = LocomotiveController.GetFunctionDescription(loco, functionName) + (addLocoName ? (" (" + loco.DisplayName + ")") : "");
                 else
                     this.Text = loco.DisplayName;
 
@@ -376,11 +377,11 @@ namespace LayoutManager.Tools.Dialogs {
                 this.Text = $"Function {functionNumber}{(function != null ? $" ({function.ToString()})" : "")}";
 
                 if (canSetBooleanState) {
-                    this.MenuItems.Add(new MenuItem("On", (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber, null).SetCommandStation(train).SetOption("FunctionState", true))));
-                    this.MenuItems.Add(new MenuItem("Off", (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber, null).SetCommandStation(train).SetOption("FunctionState", false))));
+                    this.MenuItems.Add(new MenuItem("On", (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber).SetCommandStation(train).SetOption("FunctionState", true))));
+                    this.MenuItems.Add(new MenuItem("Off", (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber).SetCommandStation(train).SetOption("FunctionState", false))));
                 }
                 else
-                    this.Click += (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber, null).SetCommandStation(train));
+                    this.Click += (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber).SetCommandStation(train));
             }
         }
 
@@ -395,7 +396,7 @@ namespace LayoutManager.Tools.Dialogs {
                 this.function = loco.GetFunctionByName(functionName);
 
                 if (showFunctionName)
-                    this.Text = LocomotiveController.getFunctionDescription(loco, functionName) + (addLocoName ? (" (" + loco.DisplayName + ")") : "");
+                    this.Text = LocomotiveController.GetFunctionDescription(loco, functionName) + (addLocoName ? (" (" + loco.DisplayName + ")") : "");
                 else
                     this.Text = loco.DisplayName;
 
@@ -730,7 +731,7 @@ namespace LayoutManager.Tools.Dialogs {
                     locoLocation = train.LocomotiveBlock.TrackEdges[0].Track;
             }
 
-            EventManager.Event(new LayoutEvent("ensure-component-visible", locoLocation, true, null).SetFrameWindow(LayoutController.ActiveFrameWindow));
+            EventManager.Event(new LayoutEvent("ensure-component-visible", locoLocation, true).SetFrameWindow(LayoutController.ActiveFrameWindow));
         }
 
         private void buttonStop_Click(object sender, System.EventArgs e) {
@@ -748,7 +749,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonLight_Click(object sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent("set-train-lights-request", train, !train.Lights, null));
+            EventManager.Event(new LayoutEvent("set-train-lights-request", train, !train.Lights));
         }
 
         private void menuLightsOn_Click(object sender, System.EventArgs e) {
@@ -762,7 +763,7 @@ namespace LayoutManager.Tools.Dialogs {
         private void buttonFunction_Click(object sender, System.EventArgs e) {
             ContextMenu functionMenu = new ContextMenu();
 
-            EventManager.Event(new LayoutEvent("add-locomotive-controller-function-menu-entries", train, functionMenu, null));
+            EventManager.Event(new LayoutEvent("add-locomotive-controller-function-menu-entries", train, functionMenu));
 
             if (functionMenu.MenuItems.Count == 0) {
                 MenuItem noFunctions = new MenuItem("No functions") {

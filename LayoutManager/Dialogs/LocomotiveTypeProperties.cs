@@ -5,6 +5,7 @@ using System.Xml;
 
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Dialogs {
     /// <summary>
     /// Summary description for LocomotiveType.
@@ -599,7 +600,7 @@ namespace LayoutManager.Dialogs {
 
             inLocoType.Element = locoType.Element;
 
-            EventManager.Event(new LayoutEvent("locomotive-type-updated", locoType.Element, false, null));
+            EventManager.Event(new LayoutEvent("locomotive-type-updated", locoType.Element, false));
             DialogResult = DialogResult.OK;
         }
 

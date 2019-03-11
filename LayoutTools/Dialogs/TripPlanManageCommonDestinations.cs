@@ -94,7 +94,7 @@ namespace LayoutManager.Tools.Dialogs {
                     component = destinationSelection.Components.First();
 
                 if (component != null)
-                    EventManager.Event(new LayoutEvent("ensure-component-visible", component, false, null));
+                    EventManager.Event(new LayoutEvent("ensure-component-visible", component, false));
             }
         }
 

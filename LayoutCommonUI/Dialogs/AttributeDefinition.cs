@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -31,7 +32,7 @@ namespace LayoutManager.CommonUI.Dialogs {
         readonly string originalAttributeName;
         readonly Type attributesSource;
         readonly IDictionary attributesMap = new HybridDictionary();
-        ArrayList attributesList = null;
+        List<AttributesInfo> attributesList = null;
 
         public AttributeDefinition(Type attributeSource, Controls.ICheckIfNameUsed checkName, string attributeName, object attributeValue) {
             //
@@ -334,8 +335,8 @@ namespace LayoutManager.CommonUI.Dialogs {
 
         private void comboBoxName_DropDown(object sender, System.EventArgs e) {
             if (attributesList == null) {
-                attributesList = new ArrayList();
-                EventManager.Event(new LayoutEvent("get-object-attributes", attributesSource, attributesList, null));
+                attributesList = new List<AttributesInfo>();
+                EventManager.Event(new LayoutEvent("get-object-attributes", attributesSource, attributesList));
             }
 
             foreach (AttributesInfo attributes in attributesList) {

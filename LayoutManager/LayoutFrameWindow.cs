@@ -721,7 +721,7 @@ namespace LayoutManager {
         [LayoutEvent("show-marker")]
         private void showMarker(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
-                LayoutSelection markerSelection = null;
+                LayoutSelection markerSelection;
 
                 if (e.Sender is ModelComponent) {
                     markerSelection = new LayoutSelection {
@@ -1038,7 +1038,7 @@ namespace LayoutManager {
                         PopupWindowContainerSection container = new PopupWindowContainerSection(hitTestResult.View);
 
                         foreach (ModelComponent component in spot)
-                            EventManager.Event(new LayoutEvent("add-" + (LayoutController.IsOperationMode ? "operation" : "editing") + "-details-window-sections", component, container, null).SetFrameWindow(this));
+                            EventManager.Event(new LayoutEvent("add-" + (LayoutController.IsOperationMode ? "operation" : "editing") + "-details-window-sections", component, container).SetFrameWindow(this));
 
                         if (container.Count > 0) {
                             detailsPopupWindow = new DetailsPopupWindow(hitTestResult, container);
@@ -1239,7 +1239,7 @@ namespace LayoutManager {
         private void menuItemTools_Popup(object sender, System.EventArgs e) {
             menuItemTools.MenuItems.Clear();
 
-            EventManager.Event(new LayoutEvent("tools-menu-open-request", this, menuItemTools, null).SetFrameWindow(this));
+            EventManager.Event(new LayoutEvent("tools-menu-open-request", this, menuItemTools).SetFrameWindow(this));
 
             if (menuItemTools.MenuItems.Count == 0) {
                 MenuItem noTools = new MenuItem("No tools") {
@@ -1567,7 +1567,7 @@ namespace LayoutManager {
                     else
                         manualDispatchRegion.Active = true;
 
-                    EventManager.Event(new LayoutEvent("manual-dispatch-region-status-changed", manualDispatchRegion, manualDispatchRegion.Active, null));
+                    EventManager.Event(new LayoutEvent("manual-dispatch-region-status-changed", manualDispatchRegion, manualDispatchRegion.Active));
                 }
                 catch (LayoutException ex) {
                     MessageBox.Show("Could change manual dispatch mode because: " + ex.Message, "Unable to change Manual Dispatch Mode",
@@ -1677,7 +1677,7 @@ namespace LayoutManager {
 
         private void verify(LayoutPhase phases) {
             EventManager.Event(new LayoutEvent("clear-messages", this));
-            if ((bool)EventManager.Event(new LayoutEvent("check-layout", LayoutModel.Instance, true, null).SetPhases(phases)))
+            if ((bool)EventManager.Event(new LayoutEvent("check-layout", LayoutModel.Instance, true).SetPhases(phases)))
                 MessageBox.Show(this, "Layout checked, all seems to be OK", "Layout Check Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

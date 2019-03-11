@@ -670,8 +670,8 @@ namespace LayoutManager.Model {
             foreach (TrainMotionListEntry motionListEntry in motions) {
                 LocomotiveTrackingResult trackingResult = motionListEntry.TrackingResult;
 
-                EventManager.Event(new LayoutEvent("train-enter-block", trackingResult.Train, trackingResult.ToBlock, null));
-                EventManager.Event(new LayoutEvent("train-crossed-block", trackingResult.Train, trackingResult.BlockEdge, null));
+                EventManager.Event(new LayoutEvent("train-enter-block", trackingResult.Train, trackingResult.ToBlock));
+                EventManager.Event(new LayoutEvent("train-crossed-block", trackingResult.Train, trackingResult.BlockEdge));
                 if (trackingResult.BlockEdge is LayoutBlockEdgeComponent) {
                     EventManager.Event(new LayoutEvent("occupancy-block-edge-crossed",
                         (LayoutBlockEdgeComponent)trackingResult.BlockEdge, trackingResult.Train, null));

@@ -395,8 +395,8 @@ namespace LayoutManager.Logic {
 
                         LayoutScriptContext scriptContext = eventScript.ScriptContext;
 
-                        EventManager.Event(new LayoutEvent("set-script-context", train, scriptContext, null));
-                        EventManager.Event(new LayoutEvent("set-script-context", block, scriptContext, null));
+                        EventManager.Event(new LayoutEvent("set-script-context", train, scriptContext));
+                        EventManager.Event(new LayoutEvent("set-script-context", block, scriptContext));
 
                         eventScript.Reset();
                     }

@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
     /// <summary>
     /// Summary description for SetAttribute.
@@ -47,7 +49,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
             symbolNameToTypeMap = new HybridDictionary();
 
-            EventManager.Event(new LayoutEvent("add-context-symbols-and-types", this, symbolNameToTypeMap, null));
+            EventManager.Event(new LayoutEvent("add-context-symbols-and-types", this, symbolNameToTypeMap));
 
             comboBoxSymbol.Sorted = true;
             foreach (string symbolName in symbolNameToTypeMap.Keys)
@@ -372,14 +374,14 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             Type symbolType = (Type)symbolNameToTypeMap[comboBoxSymbol.Text];
 
             if (symbolType != null) {
-                ArrayList attributesList = new ArrayList();
-                IDictionary attributesMap = new HybridDictionary();
+                var attributesList = new List<AttributesInfo>();
+                var attributesMap = new Dictionary<string, AttributeInfo>();
 
-                EventManager.Event(new LayoutEvent("get-object-attributes", symbolType, attributesList, null));
+                EventManager.Event(new LayoutEvent("get-object-attributes", symbolType, attributesList));
 
-                foreach (AttributesInfo attributes in attributesList) {
-                    foreach (AttributeInfo attribute in attributes) {
-                        if (!attributesMap.Contains(attribute.Name)) {
+                foreach (var attributes in attributesList) {
+                    foreach (var attribute in attributes) {
+                        if (!attributesMap.ContainsKey(attribute.Name)) {
                             attributesMap.Add(attribute.Name, attribute);
                             comboBoxAttribute.Items.Add(attribute.Name);
                         }

@@ -177,7 +177,7 @@ namespace LayoutManager.CommonUI {
 
         public static string GetEventOrEventContainerDescription(LayoutEvent e, string prefix, string suffix) => GetEventOrEventContainerDescription((XmlElement)e.Sender, prefix, suffix);
 
-        public static string GetEventOrEventContainerDescription(LayoutEvent e, string prefix) => GetEventOrEventContainerDescription(e, prefix, null);
+        public static string GetEventOrEventContainerDescription(LayoutEvent e, string prefix) => GetEventOrEventContainerDescription(e, prefix);
 
         public static void GetConditionContainerDescription(LayoutEvent e, string containerName) {
             XmlElement containerElement = (XmlElement)e.Sender;

@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for TrainDriverComboBox.
@@ -62,7 +63,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             // enum the possible drivers, and build a menu
             driversDoc.LoadXml("<Drivers />");
-            EventManager.Event(new LayoutEvent("enum-train-drivers", train, driversDoc.DocumentElement, null));
+            EventManager.Event(new LayoutEvent("enum-train-drivers", train, driversDoc.DocumentElement));
 
             foreach (XmlElement driverElement in driversDoc.DocumentElement)
                 comboBoxDrivers.Items.Add(new DriverItem(driverElement));
@@ -90,9 +91,10 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private void setDriverSettingButtonState() {
-            DriverItem selected = (DriverItem)comboBoxDrivers.SelectedItem;
+            var selected = (DriverItem)comboBoxDrivers.SelectedItem;
 
-            buttonDriverSettings.Enabled = IsSelectedHasSettings();
+            if(selected != null)
+                buttonDriverSettings.Enabled = IsSelectedHasSettings();
         }
 
         /// <summary> 
@@ -161,7 +163,7 @@ namespace LayoutManager.CommonUI.Controls {
             DriverItem selected = (DriverItem)comboBoxDrivers.SelectedItem;
 
             if (selected != null)
-                EventManager.Event(new LayoutEvent("edit-driver-setting", selected.DriverElement, train, null));
+                EventManager.Event(new LayoutEvent("edit-driver-setting", selected.DriverElement, train));
         }
 
         class DriverItem {

@@ -2,6 +2,7 @@ using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for TripPlanCatalog.
@@ -23,7 +24,6 @@ namespace LayoutManager.Tools.Dialogs {
 
         TrainStateInfo train;
         readonly XmlDocument workingDoc;
-        readonly TripPlanIconListInfo tripPlanIconList = null;
 
         public TripPlanCatalog(TrainStateInfo train) {
             //
@@ -35,8 +35,6 @@ namespace LayoutManager.Tools.Dialogs {
             Owner = LayoutController.ActiveFrameWindow as Form;
 
             tripPlanViewer.ViewOnly = true;
-
-            tripPlanIconList = LayoutModel.Instance.TripPlanIconList;
 
             workingDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
@@ -66,7 +64,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             trainDriverComboBox.Train = train;
 
-            EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", train, applicableTripPlansElement, null).SetOption("CalculatePenalty", false));
+            EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", train, applicableTripPlansElement).SetOption("CalculatePenalty", false));
 
             tripPlanList.ApplicableTripPlansElement = applicableTripPlansElement;
             updateButtons();

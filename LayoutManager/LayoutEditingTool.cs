@@ -136,14 +136,14 @@ namespace LayoutManager {
                 oldTrack = spot.Track;
 
                 foreach (ModelComponent c in components)
-                    if ((bool)EventManager.Event(new LayoutEvent("query-editing-default-action", c, (bool)false, null).SetFrameWindow(hitTestResult.FrameWindow))) {
+                    if ((bool)EventManager.Event(new LayoutEvent("query-editing-default-action", c, (bool)false).SetFrameWindow(hitTestResult.FrameWindow))) {
                         componentWithDefaultEditingAction = c;
                         break;
                     }
 
                 if (componentWithDefaultEditingAction != null) {
                     showComponentsMenu = false;
-                    EventManager.Event(new LayoutEvent("editing-default-action-command", componentWithDefaultEditingAction, hitTestResult, null).SetFrameWindow(hitTestResult.FrameWindow));
+                    EventManager.Event(new LayoutEvent("editing-default-action-command", componentWithDefaultEditingAction, hitTestResult).SetFrameWindow(hitTestResult.FrameWindow));
                 }
             }
 
@@ -309,7 +309,7 @@ namespace LayoutManager {
         }
 
         protected override void Paint(Graphics g) {
-            EventManager.Event(new LayoutEvent("paint-image-menu-category", categoryElement, g, null));
+            EventManager.Event(new LayoutEvent("paint-image-menu-category", categoryElement, g));
         }
     }
 
@@ -323,7 +323,7 @@ namespace LayoutManager {
         }
 
         protected override void Paint(Graphics g) {
-            EventManager.Event(new LayoutEvent("paint-image-menu-item", itemElement, g, null));
+            EventManager.Event(new LayoutEvent("paint-image-menu-item", itemElement, g));
         }
 
         public ModelComponent CreateComponent(ModelComponent old) {

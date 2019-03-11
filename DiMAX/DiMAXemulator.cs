@@ -29,7 +29,7 @@ namespace DiMAX {
             traceDiMAXemulator.Level = TraceLevel.Off;      // Until it seems to work
 
             layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
-            EventManager.Event(new LayoutEvent("initialize-layout-emulation", null, emulationTickTime, null));
+            EventManager.Event(new LayoutEvent("initialize-layout-emulation", null, emulationTickTime));
 
             interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction)) {
                 Name = "Command station emulation for " + commandStation.Name
@@ -48,7 +48,7 @@ namespace DiMAX {
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void InterfaceThreadFunction() {
-            commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true, null));
+            commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true));
             layoutEmulationServices.LocomotiveMoved += new EventHandler<LocomotiveMovedEventArgs>(layoutEmulationServices_LocomotiveMoved);
             layoutEmulationServices.LocomotiveFallFromTrack += (s, ea) => InterfaceThreadError(ea.Location.Track, "Locomotive (address " + ea.Unit + ") fall from track");
 
