@@ -9,6 +9,8 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#nullable enable
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutEmulation {
 
     #region Interfaces
@@ -66,10 +68,9 @@ namespace LayoutEmulation {
 
     [LayoutModule("Layout Emulator")]
     public class LayoutEmulator : LayoutModuleBase, ILayoutEmulationEnvironment, ILayoutEmulatorServices {
-        ILayoutTopologyServices _topologyServices;
+        ILayoutTopologyServices? _topologyServices;
         readonly Dictionary<Guid, CommandStationObjects> commandStations = new Dictionary<Guid, CommandStationObjects>();
-        readonly IDictionary turnouts = new Hashtable();                        // Map from turnout ID to turnout state
-        Timer emulationTimer = null;
+        Timer? emulationTimer = null;
         int operationNesting = 0;
         int tickTime = 200;
 
@@ -85,7 +86,7 @@ namespace LayoutEmulation {
         public ILayoutTopologyServices TopologyServices {
             get {
                 if (_topologyServices == null)
-                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this));
+                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!;
                 return _topologyServices;
             }
         }
@@ -168,7 +169,7 @@ namespace LayoutEmulation {
         public void StopEmulation() {
             lock (Sync) {
                 if (--operationNesting == 0) {
-                    emulationTimer.Dispose();
+                    emulationTimer?.Dispose();
                     emulationTimer = null;
                 }
             }
@@ -176,7 +177,7 @@ namespace LayoutEmulation {
 
         public void SetLocomotiveSpeed(Guid commandStationId, int unit, int speed) {
             lock (Sync) {
-                LocomotiveState locomotive = GetLocomotive(commandStationId, unit);
+                var locomotive = GetLocomotive(commandStationId, unit);
 
                 if (locomotive != null)
                     locomotive.Speed = speed;
@@ -185,7 +186,7 @@ namespace LayoutEmulation {
 
         public void SetLocomotiveDirection(Guid commandStationId, int unit, LocomotiveOrientation direction) {
             lock (Sync) {
-                LocomotiveState locomotive = GetLocomotive(commandStationId, unit);
+                var locomotive = GetLocomotive(commandStationId, unit);
 
                 if (locomotive != null)
                     locomotive.Direction = direction;
@@ -194,9 +195,10 @@ namespace LayoutEmulation {
 
         public void ToggleLocomotiveDirection(Guid commandStationId, int unit) {
             lock (Sync) {
-                LocomotiveState locomotive = GetLocomotive(commandStationId, unit);
+                var locomotive = GetLocomotive(commandStationId, unit);
 
-                locomotive.Direction = (locomotive.Direction == LocomotiveOrientation.Forward) ? LocomotiveOrientation.Backward : LocomotiveOrientation.Forward;
+                if(locomotive != null)
+                    locomotive.Direction = (locomotive.Direction == LocomotiveOrientation.Forward) ? LocomotiveOrientation.Backward : LocomotiveOrientation.Forward;
             }
         }
 
@@ -223,7 +225,7 @@ namespace LayoutEmulation {
 
         public ILocomotiveLocation GetLocomotiveLocation(Guid commandStationId, int unit) {
             lock (Sync) {
-                LocomotiveState locomotive = GetLocomotive(commandStationId, unit);
+                var locomotive = GetLocomotive(commandStationId, unit);
 
                 if (locomotive == null) {
                     var commandStation = LayoutModel.Component<IModelComponentIsCommandStation>(commandStationId, LayoutModel.ActivePhases);
@@ -261,8 +263,8 @@ namespace LayoutEmulation {
             return commandStationObjects.AddLocomotive(unit, location);
         }
 
-        public LocomotiveState GetLocomotive(Guid commandStationId, int unit) {
-            LocomotiveState locomotive = null;
+        public LocomotiveState? GetLocomotive(Guid commandStationId, int unit) {
+            LocomotiveState? locomotive = null;
 
             var commandStationObjects = commandStations[commandStationId];
 
@@ -359,7 +361,7 @@ namespace LayoutEmulation {
 
         [LayoutEvent("train-created")]
         private void trainCreated(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)e.Sender;
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
 
             lock (Sync) {
                 if (train.CommandStation != null) {
@@ -377,14 +379,14 @@ namespace LayoutEmulation {
 
         [LayoutEvent("train-relocated")]
         private void trainRelocated(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)e.Sender;
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
 
             lock (Sync) {
                 if (train.CommandStation != null) {
                     var commandStationId = train.CommandStation.Id;
 
                     foreach (TrainLocomotiveInfo trainLocomotive in train.Locomotives) {
-                        LocomotiveState locomotive = GetLocomotive(commandStationId, trainLocomotive.Locomotive.AddressProvider.Unit);
+                        var locomotive = GetLocomotive(commandStationId, trainLocomotive.Locomotive.AddressProvider.Unit);
 
                         if (locomotive != null)
                             locomotive.Location = new LocomotiveLocation(new TrackEdge(train.LocomotiveBlock.BlockDefinintion.Track, train.LocomotiveLocation.DisplayFront));
@@ -395,7 +397,7 @@ namespace LayoutEmulation {
 
         [LayoutEvent("train-is-removed")]
         private void trainRemoved(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)e.Sender;
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
 
             lock (Sync) {
                 if (train.CommandStation != null) {
@@ -440,7 +442,7 @@ namespace LayoutEmulation {
             return locomotive;
         }
 
-        public LocomotiveState GetLocomotive(int unit) {
+        public LocomotiveState? GetLocomotive(int unit) {
 
             if (!locomotives.TryGetValue(unit, out LocomotiveState loco))
                 return null;

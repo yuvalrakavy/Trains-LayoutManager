@@ -37,6 +37,9 @@ namespace LayoutManager.Model {
             }
         }
 
+        /// <summary>
+        /// Use this if you are sure that block definition is defined
+        /// </summary>
         public LayoutBlockDefinitionComponent BlockDefinintion {
             get {
                 Debug.Assert(blockInfo != null);
@@ -46,6 +49,13 @@ namespace LayoutManager.Model {
             set {
                 blockInfo = value;
             }
+        }
+
+        /// <summary>
+        /// This may be used if block definition can be null (was not yet set)
+        /// </summary>
+        public LayoutBlockDefinitionComponent? MaybeBlockDefinition {
+            get { return blockInfo;  }
         }
 
         public Guid Id {
@@ -61,14 +71,16 @@ namespace LayoutManager.Model {
         }
 
         public LayoutBlock OtherBlock(LayoutBlockEdgeBase blockEdge) {
-            LayoutStraightTrackComponent track = blockEdge.Track;
+            var track = blockEdge.Track;
 
-            if (track.GetBlock(track.ConnectionPoints[0]).Id == Id)
-                return track.GetBlock(track.ConnectionPoints[1]);
-            else if (track.GetBlock(track.ConnectionPoints[1]).Id == Id)
-                return track.GetBlock(track.ConnectionPoints[0]);
-            else
-                throw new ArgumentException("Block edge " + blockEdge.FullDescription + " does not bound block " + BlockDefinintion.FullDescription);
+            if (track != null) {
+                if (track.GetBlock(track.ConnectionPoints[0]).Id == Id)
+                    return track.GetBlock(track.ConnectionPoints[1]);
+                else if (track.GetBlock(track.ConnectionPoints[1]).Id == Id)
+                    return track.GetBlock(track.ConnectionPoints[0]);
+            }
+
+            throw new ArgumentException("Block edge " + blockEdge.FullDescription + " does not bound block " + BlockDefinintion.FullDescription);
         }
 
         public virtual void Dispose() {

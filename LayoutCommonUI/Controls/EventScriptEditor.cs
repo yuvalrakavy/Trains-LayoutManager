@@ -574,7 +574,7 @@ namespace LayoutManager.CommonUI.Controls {
                 new LayoutEvent("get-event-script-editor-tree-node", eventScriptElement));
 
             if (newNode != null) {
-                IEventScriptEditorSite site = new EventScriptEditorSite(eventScriptEditor.Form, eventScriptEditor.BlockDefinition, node, newNode, eventScriptElement, eventScriptElementName);
+                IEventScriptEditorSite site = new EventScriptEditorSite(eventScriptEditor.Form, eventScriptEditor.BlockDefinition, node, newNode, eventScriptElement);
 
                 if (newNode.NodeToEdit == null)
                     site.EditingDone();
@@ -588,16 +588,14 @@ namespace LayoutManager.CommonUI.Controls {
             readonly LayoutEventScriptEditorTreeNode node;
             readonly LayoutEventScriptEditorTreeNode newNode;
             readonly XmlElement eventScriptElement;
-            readonly string eventScriptElementName;
             readonly LayoutBlockDefinitionComponent blockDefinition;
 
-            public EventScriptEditorSite(Form form, LayoutBlockDefinitionComponent blockDefinition, LayoutEventScriptEditorTreeNode node, LayoutEventScriptEditorTreeNode newNode, XmlElement eventScriptElement, string eventScriptElementName) {
+            public EventScriptEditorSite(Form form, LayoutBlockDefinitionComponent blockDefinition, LayoutEventScriptEditorTreeNode node, LayoutEventScriptEditorTreeNode newNode, XmlElement eventScriptElement) {
                 this.form = form;
                 this.blockDefinition = blockDefinition;
                 this.node = node;
                 this.newNode = newNode;
                 this.eventScriptElement = eventScriptElement;
-                this.eventScriptElementName = eventScriptElementName;
             }
 
             public Form Form => form;
@@ -686,7 +684,7 @@ namespace LayoutManager.CommonUI.Controls {
                 new LayoutEvent("get-event-script-editor-tree-node", eventScriptElement));
 
             if (newNode != null) {
-                IEventScriptEditorSite site = new EventScriptEditorSite(eventScriptEditor.Form, eventScriptEditor.BlockDefinition, node, newNode, eventScriptElement, eventScriptElementName);
+                IEventScriptEditorSite site = new EventScriptEditorSite(eventScriptEditor.Form, eventScriptEditor.BlockDefinition, node, newNode, eventScriptElement);
 
                 if (newNode.NodeToEdit == null)
                     site.EditingDone();
@@ -700,16 +698,14 @@ namespace LayoutManager.CommonUI.Controls {
             readonly LayoutEventScriptEditorTreeNode node;
             readonly LayoutEventScriptEditorTreeNode newNode;
             readonly XmlElement eventScriptElement;
-            readonly string eventScriptElementName;
             readonly LayoutBlockDefinitionComponent blockDefinition;
 
-            public EventScriptEditorSite(Form form, LayoutBlockDefinitionComponent blockDefinition, LayoutEventScriptEditorTreeNode node, LayoutEventScriptEditorTreeNode newNode, XmlElement eventScriptElement, string eventScriptElementName) {
+            public EventScriptEditorSite(Form form, LayoutBlockDefinitionComponent blockDefinition, LayoutEventScriptEditorTreeNode node, LayoutEventScriptEditorTreeNode newNode, XmlElement eventScriptElement) {
                 this.form = form;
                 this.blockDefinition = blockDefinition;
                 this.node = node;
                 this.newNode = newNode;
                 this.eventScriptElement = eventScriptElement;
-                this.eventScriptElementName = eventScriptElementName;
             }
 
             public Form Form => form;

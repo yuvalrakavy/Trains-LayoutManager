@@ -55,29 +55,31 @@ namespace LayoutManager.Logic {
             }
 
             foreach (LayoutBlockEdgeBase blockEdge in blockEdges) {
-                LayoutTrackComponent track = blockEdge.Track;
+                var track = blockEdge.Track;
                 TrackEdge scanFrom;
 
-                scanFrom = new TrackEdge(track, track.ConnectionPoints[0]);
-                if (!scannedBlockBoundries.ContainsKey(scanFrom)) {
-                    var block = scanBlock(scannedBlockBoundries, scanFrom, null);
+                if (track != null) {
+                    scanFrom = new TrackEdge(track, track.ConnectionPoints[0]);
+                    if (!scannedBlockBoundries.ContainsKey(scanFrom)) {
+                        var block = scanBlock(scannedBlockBoundries, scanFrom, null);
 
-                    if (block == null || !checkBlockForBlockInfo(block))
-                        e.Info = false;
+                        if (block == null || !checkBlockForBlockInfo(block))
+                            e.Info = false;
 
-                    if (!scannedBlockBoundries.ContainsKey(scanFrom))
-                        scannedBlockBoundries.Add(scanFrom, scanFrom);
-                }
+                        if (!scannedBlockBoundries.ContainsKey(scanFrom))
+                            scannedBlockBoundries.Add(scanFrom, scanFrom);
+                    }
 
-                scanFrom = new TrackEdge(track, track.ConnectionPoints[1]);
-                if (!scannedBlockBoundries.ContainsKey(scanFrom)) {
-                    var block = scanBlock(scannedBlockBoundries, scanFrom, null);
+                    scanFrom = new TrackEdge(track, track.ConnectionPoints[1]);
+                    if (!scannedBlockBoundries.ContainsKey(scanFrom)) {
+                        var block = scanBlock(scannedBlockBoundries, scanFrom, null);
 
-                    if (block == null || !checkBlockForBlockInfo(block))
-                        e.Info = false;
+                        if (block == null || !checkBlockForBlockInfo(block))
+                            e.Info = false;
 
-                    if (!scannedBlockBoundries.ContainsKey(scanFrom))
-                        scannedBlockBoundries.Add(scanFrom, scanFrom);
+                        if (!scannedBlockBoundries.ContainsKey(scanFrom))
+                            scannedBlockBoundries.Add(scanFrom, scanFrom);
+                    }
                 }
             }
 
@@ -181,7 +183,7 @@ namespace LayoutManager.Logic {
         private static void checkIfBlockDefinitionTrack(LayoutBlock block, TrackEdge edge) {
 
             if (edge.Track.Spot[ModelComponentKind.BlockInfo] is LayoutBlockDefinitionComponent blockInfo) {
-                if (block.BlockDefinintion != null && block.BlockDefinintion.Id != blockInfo.Id)
+                if (block.MaybeBlockDefinition != null && block.BlockDefinintion.Id != blockInfo.Id)
                     Error(blockInfo, "Block contains more than one block definition component");
                 else {
                     if (!LayoutModel.Blocks.ContainsKey(blockInfo.Id)) {

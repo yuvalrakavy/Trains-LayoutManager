@@ -222,12 +222,12 @@ namespace LayoutManager.Logic {
                         doFreeResource(blockEntry.Block.Id, freedLockedResourceEntry);
                     break;
 
-                case LayoutBlock[] blocks:
+                case IList<LayoutBlock> blocks:
                     foreach (var block in blocks)
                         doFreeResource(block.Id, freedLockedResourceEntry);
                     break;
 
-                case Guid[] freeList:
+                case IList<Guid> freeList:
                     foreach (var resourceID in freeList)
                         doFreeResource(resourceID, freedLockedResourceEntry);
                     break;
@@ -719,22 +719,25 @@ namespace LayoutManager.Logic {
         }
 
         private void updateBlockEdgeSignalState(LayoutBlockEdgeBase blockEdge) {
-            LayoutTrackComponent track = blockEdge.Track;
-            LayoutBlock block1 = track.GetBlock(track.ConnectionPoints[0]);
-            LayoutBlock block2 = track.GetBlock(track.ConnectionPoints[1]);
+            var track = blockEdge.Track;
 
-            if (block1.IsLocked && block2.IsLocked) {
-                if (block1.LockRequest!.OwnerId != block2.LockRequest!.OwnerId ||
-                    block1.LockRequest.Blocks[block1.Id].ForceRedSignal ||
-                    block2.LockRequest.Blocks[block2.Id].ForceRedSignal)
+            if (track != null) {
+                LayoutBlock block1 = track.GetBlock(track.ConnectionPoints[0]);
+                LayoutBlock block2 = track.GetBlock(track.ConnectionPoints[1]);
+
+                if (block1.IsLocked && block2.IsLocked) {
+                    if (block1.LockRequest!.OwnerId != block2.LockRequest!.OwnerId ||
+                        block1.LockRequest.Blocks[block1.Id].ForceRedSignal ||
+                        block2.LockRequest.Blocks[block2.Id].ForceRedSignal)
+                        blockEdge.SignalState = LayoutSignalState.Red;
+                    else
+                        blockEdge.SignalState = LayoutSignalState.Green;
+                }
+                else if (block1.IsLocked || block2.IsLocked)
                     blockEdge.SignalState = LayoutSignalState.Red;
                 else
-                    blockEdge.SignalState = LayoutSignalState.Green;
+                    blockEdge.RemoveSignalState();
             }
-            else if (block1.IsLocked || block2.IsLocked)
-                blockEdge.SignalState = LayoutSignalState.Red;
-            else
-                blockEdge.RemoveSignalState();
         }
 
         private void updateBlockSignals(LayoutBlock block) {

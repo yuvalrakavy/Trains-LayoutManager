@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Tools.Dialogs {
     public partial class CommandStationStopped : Form {
         readonly IModelComponentIsCommandStation _commandStation;

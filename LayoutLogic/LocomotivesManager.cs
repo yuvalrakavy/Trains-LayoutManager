@@ -787,22 +787,25 @@ namespace LayoutManager.Logic {
 
             train.EraseImage();
 
-            IList<TrainLocationInfo> oldLocations = new List<TrainLocationInfo>(train.Locations);
-            LayoutBlock[] blocksToUnlock = new LayoutBlock[oldLocations.Count];
+            var oldLocations = new List<TrainLocationInfo>(train.Locations);
+            var blocksToUnlock = new List<LayoutBlock>(oldLocations.Count);
 
-            int i = 0;
             foreach (TrainLocationInfo oldTrainLocation in oldLocations) {
-                blocksToUnlock[i++] = oldTrainLocation.Block;
+                if(oldTrainLocation.Block.LockRequest != null && !oldTrainLocation.Block.LockRequest.IsManualDispatchLock)
+                    blocksToUnlock.Add(oldTrainLocation.Block);
                 train.LeaveBlock(oldTrainLocation.Block, false);
             }
 
-            EventManager.Event(new LayoutEvent("free-layout-lock", blocksToUnlock));
+            if(blocksToUnlock.Count > 0)
+                EventManager.Event(new LayoutEvent("free-layout-lock", blocksToUnlock));
 
             // Get lock on the block that the train is about to be placed
             LayoutLockRequest lockRequest = new LayoutLockRequest(train.Id);
 
-            lockRequest.Blocks.Add(blockDefinition.Block);
-            EventManager.Event(new LayoutEvent("request-layout-lock", lockRequest));
+            if (blockDefinition.Block.LockRequest == null || !blockDefinition.Block.LockRequest.IsManualDispatchLock) {
+                lockRequest.Blocks.Add(blockDefinition.Block);
+                EventManager.Event(new LayoutEvent("request-layout-lock", lockRequest));
+            }
 
             // Create the new location for the train
             TrainLocationInfo trainLocation = train.PlaceInBlock(blockDefinition.Block, front.Value);

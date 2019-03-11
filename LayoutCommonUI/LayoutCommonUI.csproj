@@ -355,6 +355,7 @@
     <Compile Include="EventScriptUImanager.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="LayoutControlBusViewer.cs">
       <SubType>Component</SubType>
     </Compile>
