@@ -4,6 +4,7 @@ using System.Xml;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Components {
 
     [LayoutModule("Layout I/O Services")]
@@ -50,11 +51,11 @@ namespace LayoutManager.Components {
             String port = setupElement.GetAttribute("Port");
             bool overlappedIO = GetBool(setupElement, "OverlappedIO");
             Win32createFileFlags createFlags = 0;
-            FileStream commStream = null;
+            FileStream commStream;
             int error;
 
             if (overlappedIO)
-                createFlags = createFlags | Win32createFileFlags.Overlapped;
+                createFlags |= Win32createFileFlags.Overlapped;
 
             // Convert COMx to \\.\COMx in order to support COM10 and above
             if (port.StartsWith(("COM"), StringComparison.InvariantCultureIgnoreCase))
@@ -104,8 +105,8 @@ namespace LayoutManager.Components {
 
         [LayoutEvent("create-named-pipe-request")]
         private void createNamedPipeRequest(LayoutEvent e) {
-            string pipeName = (string)e.Sender;
-            bool overlappedIO = (bool)e.Info;
+            var pipeName = Ensure.NotNull<string>(e.Sender, "pipeName");
+            var overlappedIO = (bool)e.Info;
             PipeOpenModes pipeOpenMode = PipeOpenModes.AccessDuplex;
 
             if (overlappedIO)
@@ -122,7 +123,7 @@ namespace LayoutManager.Components {
 
         [LayoutEvent("wait-named-pipe-client-to-connect-request")]
         private void waitNamedPipeClientToConnectRequest(LayoutEvent e) {
-            SafeFileHandle safeHandle = (SafeFileHandle)e.Sender;
+            var safeHandle = Ensure.NotNull<SafeFileHandle>(e.Sender, "safeHandle");
             bool overlappedIO = (bool)e.Info;
 
             // Wait for the client to connect
@@ -137,7 +138,7 @@ namespace LayoutManager.Components {
 
             if (e.Sender is SafeFileHandle)
                 handle = ((SafeFileHandle)e.Sender).DangerousGetHandle();
-            if (e.Sender is IntPtr)
+            else if (e.Sender is IntPtr)
                 handle = (IntPtr)e.Sender;
             else if (e.Sender is FileStream)
                 handle = ((FileStream)e.Sender).SafeFileHandle.DangerousGetHandle();

@@ -11,6 +11,8 @@ using Microsoft.Win32.SafeHandles;
 using LayoutManager.Model;
 using System.Net.Sockets;
 
+#pragma warning disable IDE0051, IDE0060
+#nullable enable
 namespace LayoutManager {
     public enum CommunicationInterfaceType {
         Serial,
@@ -63,10 +65,9 @@ namespace LayoutManager.Components {
     #region Base class for command station components
 
     public abstract class LayoutBusProviderSupport : ModelComponent, IModelComponentIsBusProvider {
-        ILayoutEmulatorServices _layoutEmulationServices;
-        Stream commStream;
-        ILayoutCommandStationEmulator commandStationEmulator;
-        ILayoutInterThreadEventInvoker invoker;
+        ILayoutEmulatorServices? _layoutEmulationServices;
+        Stream? commStream;
+        ILayoutCommandStationEmulator? commandStationEmulator;
         bool operationMode;
 
         public const string InterfaceTypeAttribute = "InterfaceType";
@@ -89,7 +90,7 @@ namespace LayoutManager.Components {
         public ILayoutEmulatorServices LayoutEmulationServices {
             get {
                 if (_layoutEmulationServices == null)
-                    _layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
+                    _layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this))!;
                 return _layoutEmulationServices;
             }
         }
@@ -104,9 +105,9 @@ namespace LayoutManager.Components {
 
         #region Properties accessible from derived concrete command station component classes
 
-        public Stream CommunicationStream => commStream;
+        public Stream? CommunicationStream => commStream;
 
-        public ILayoutInterThreadEventInvoker InterThreadEventInvoker => invoker;
+        public ILayoutInterThreadEventInvoker InterThreadEventInvoker => EventManager.Instance.InterThreadEventInvoker;
 
         public bool OperationMode => operationMode;
 
@@ -137,14 +138,14 @@ namespace LayoutManager.Components {
                 bool overlappedIO = GetBool("OverlappedIO");
 
                 SafeFileHandle handle = (SafeFileHandle)EventManager.Event(new LayoutEvent("create-named-pipe-request", pipeName,
-                    overlappedIO, null));
+                    overlappedIO, null))!;
 
                 commandStationEmulator = CreateCommandStationEmulator(pipeName);
 
-                commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-client-to-connect-request", handle, overlappedIO));
+                commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-client-to-connect-request", handle, overlappedIO))!;
             }
             else if (InterfaceType == CommunicationInterfaceType.Serial)
-                commStream = (FileStream)EventManager.Event(new LayoutEvent("open-serial-communication-device-request", Element));
+                commStream = (FileStream)EventManager.Event(new LayoutEvent("open-serial-communication-device-request", Element))!;
             else if (InterfaceType == CommunicationInterfaceType.TCP)
                 commStream = new TcpClient(IPaddress, 23).GetStream();
         }
@@ -158,16 +159,16 @@ namespace LayoutManager.Components {
             }
 
             if (commStream != null) {
-                FileStream fileCommStream = commStream as FileStream;
-                SafeFileHandle safeHandle = fileCommStream?.SafeFileHandle;
+                var fileCommStream = commStream as FileStream;
+                var safeHandle = fileCommStream?.SafeFileHandle;
 
                 if (fileCommStream != null)
-                    safeHandle.Close();
+                    safeHandle?.Close();
 
-                CommunicationStream.Close();
+                CommunicationStream?.Close();
                 System.GC.Collect();
 
-                if (fileCommStream != null && !safeHandle.IsClosed)
+                if (fileCommStream != null && safeHandle != null && !safeHandle.IsClosed)
                     Trace.WriteLine("Warning: PORT WAS NOT CLOSED");
 
                 commStream = null;
@@ -178,7 +179,6 @@ namespace LayoutManager.Components {
             base.OnAddedToModel();
 
             LayoutModel.ControlManager.Buses.AddBusProvider(this);
-            invoker = EventManager.Instance.InterThreadEventInvoker;
         }
 
         public override void OnRemovingFromModel() {
@@ -257,10 +257,8 @@ namespace LayoutManager.Components {
         // Event handlers
 
         [LayoutEvent("enter-operation-mode")]
-        protected virtual void EnterOperationMode(LayoutEvent e0) {
-            var e = (LayoutEvent<OperationModeParameters>)e0;
-
-            EmulateLayout = e.Sender.Simulation;
+        protected virtual void EnterOperationMode(LayoutEvent e) {
+            EmulateLayout = Ensure.NotNull<OperationModeParameters>(e.Sender, "EmulatedLayout").Simulation;
 
             OnCommunicationSetup();
             OpenCommunicationStream();
@@ -312,10 +310,10 @@ namespace LayoutManager.Components {
     ///Thus making it simpler to implement those components.
     /// </summary>
     public abstract class LayoutCommandStationComponent : LayoutBusProviderSupport, IModelComponentIsCommandStation, IDisposable, ILayoutLockResource {
-        LayoutPowerOutlet trackPowerOutlet;
-        LayoutPowerOutlet programmingPowerOutlet;
-        System.Threading.Timer animatedTrainsTimer;
-        LayoutSelection animatedTrainsSelection;
+        LayoutPowerOutlet? trackPowerOutlet;
+        LayoutPowerOutlet? programmingPowerOutlet;
+        System.Threading.Timer? animatedTrainsTimer;
+        LayoutSelection? animatedTrainsSelection;
 
         #region Public component properties & methods
 
@@ -325,10 +323,14 @@ namespace LayoutManager.Components {
 
         public IList<ILayoutPowerOutlet> PowerOutlets {
             get {
-                if (this is IModelComponentCanProgramLocomotives)
+                if (this is IModelComponentCanProgramLocomotives) {
+                    Debug.Assert(trackPowerOutlet != null && programmingPowerOutlet != null);
                     return Array.AsReadOnly<ILayoutPowerOutlet>(new ILayoutPowerOutlet[] { trackPowerOutlet, programmingPowerOutlet });
-                else
-                    return Array.AsReadOnly<ILayoutPowerOutlet>(new ILayoutPowerOutlet[] { trackPowerOutlet }); ;
+                }
+                else {
+                    Debug.Assert(trackPowerOutlet != null);
+                    return Array.AsReadOnly<ILayoutPowerOutlet>(new ILayoutPowerOutlet[] { trackPowerOutlet });
+                }
             }
         }
 
@@ -381,28 +383,37 @@ namespace LayoutManager.Components {
 
         protected void PowerOn() {
             if (OperationMode) {
+                Debug.Assert(trackPowerOutlet != null);
                 trackPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Digital, this.SupportedDigitalPowerFormats, Name);
 
-                if (this is IModelComponentCanProgramLocomotives)
+                if (this is IModelComponentCanProgramLocomotives) {
+                    Debug.Assert(programmingPowerOutlet != null);
                     programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, Name);
+                }
             }
             EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation>("command-station-power-on-notification", this));
         }
 
         protected void PowerOff() {
-            if (OperationMode)
+            if (OperationMode) {
+                Debug.Assert(trackPowerOutlet != null);
                 trackPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Disconnected, DigitalPowerFormats.None, Name);
+            }
             EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation>("command-station-power-off-notification", this));
         }
 
         protected void ProgrammingPowerOn() {
-            if (OperationMode)
+            if (OperationMode) {
+                Debug.Assert(programmingPowerOutlet != null);
                 programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, Name + "_programming");
+            }
         }
 
         protected void ProgrammingPowerOff() {
-            if (OperationMode)
+            if (OperationMode) {
+                Debug.Assert(programmingPowerOutlet != null);
                 programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Disconnected, DigitalPowerFormats.None, Name + "_programming");
+            }
         }
 
         #region Animate Train (when using emulation)
@@ -478,7 +489,7 @@ namespace LayoutManager.Components {
         [LayoutEvent("query-perform-trains-analysis")]
         protected virtual void QueryPerformLayoutAnalysis(LayoutEvent e) {
             if (TrainsAnalysisSupported) {
-                List<IModelComponentIsCommandStation> needAnalysis = (List<IModelComponentIsCommandStation>)e.Info;
+                var needAnalysis = Ensure.NotNull<List<IModelComponentIsCommandStation>>(e.Info, "needAnalysis");
 
                 needAnalysis.Add(this);
             }
@@ -607,7 +618,7 @@ namespace LayoutManager.Components {
 
         public int State => state;
 
-        ControlConnectionPointReference FindConnectionPointRef(ControlBus bus) {
+        ControlConnectionPointReference? FindConnectionPointRef(ControlBus bus) {
             ControlModule module = bus.GetModuleUsingAddress(address);
 
             if (module == null)
@@ -632,11 +643,11 @@ namespace LayoutManager.Components {
             }
         }
 
-        public ControlConnectionPointReference ConnectionPointRef => FindConnectionPointRef(bus);
+        public ControlConnectionPointReference? ConnectionPointRef => FindConnectionPointRef(bus);
 
-        public ModelComponent ConnectedComponent {
+        public ModelComponent? ConnectedComponent {
             get {
-                ControlConnectionPointReference cpr = ConnectionPointRef;
+                var cpr = ConnectionPointRef;
 
                 if (cpr != null && cpr.IsConnected)
                     return (ModelComponent)cpr.ConnectionPoint.Component;
@@ -736,7 +747,7 @@ namespace LayoutManager.Components {
                     return index - other.index;
             }
             else {
-                ControlConnectionPointReference cpr = ConnectionPointRef;
+                var cpr = ConnectionPointRef;
 
                 if (cpr == null || cpr.Module.ModuleType.ConnectionPointsPerAddress > 1) {
                     if (state != other.state)
@@ -774,7 +785,7 @@ namespace LayoutManager.Components {
         /// Called when the command is completed
         /// </summary>
         /// <param name="reply"></param>
-        void Completed(object result);
+        void Completed(object? result);
     }
 
     public interface IOutputCommandWithReply : IOutputCommand {
@@ -799,7 +810,7 @@ namespace LayoutManager.Components {
 
     public abstract class OutputCommandBase : IOutputCommand {
         int _waitPeriod;
-        protected TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+        protected TaskCompletionSource<object?> tcs = new TaskCompletionSource<object?>();
 
         /// <summary>
         /// Execute the action associated with the command
@@ -822,7 +833,7 @@ namespace LayoutManager.Components {
 
         public Task Task => tcs.Task;
 
-        public void Completed(object result = null) {
+        public void Completed(object? result = null) {
             tcs.TrySetResult(result);
         }
     }
@@ -888,9 +899,9 @@ namespace LayoutManager.Components {
         readonly ManualResetEvent waitToGetReply = new ManualResetEvent(false);
         readonly CommandManagerQueue idleCommands;
         bool doIdleCommands = true;
-        Thread commandManagerThread;
+        Thread? commandManagerThread;
         static readonly LayoutTraceSwitch traceOutputManager = new LayoutTraceSwitch("OutputManager", "Output Manager");
-        IOutputCommandWithReply pendingCommandWithReply = null;
+        IOutputCommandWithReply? pendingCommandWithReply = null;
 
 
         public OutputManager(string name, int numberOfQueues) {
@@ -1040,7 +1051,7 @@ namespace LayoutManager.Components {
 
             try {
                 while (true) {
-                    IOutputCommand command = null;
+                    IOutputCommand? command = null;
 
                     //Trace.WriteLineIf(traceCommandStationManager.TraceVerbose, " CommandManagerThread: Wait for work to do");
                     workToDo.WaitOne();
@@ -1085,12 +1096,12 @@ namespace LayoutManager.Components {
                     }
 
                     if (command != null) {
-                        IOutputIdlecommand idleCommand = command as IOutputIdlecommand;
+                        var idleCommand = command as IOutputIdlecommand;
 
                         if (idleCommand == null || traceOutputManager.TraceVerbose)
                             Trace.WriteLineIf(traceOutputManager.TraceInfo, " CommandManagerThread: execute command " + command.GetType().Name + ": " + command.ToString());
 
-                        IOutputCommandWithReply commandWithReply = command as IOutputCommandWithReply;
+                        var commandWithReply = command as IOutputCommandWithReply;
 
                         if (commandWithReply != null)
                             pendingCommandWithReply = commandWithReply;
@@ -1127,7 +1138,7 @@ namespace LayoutManager.Components {
 
         class CommandManagerQueue : Queue<IOutputCommand> {
             readonly ManualResetEvent workToDo;
-            Timer queueSuspendedTimer;
+            Timer? queueSuspendedTimer;
             readonly object sync;
 
             public CommandManagerQueue(ManualResetEvent workToDo, object sync) {
@@ -1137,8 +1148,8 @@ namespace LayoutManager.Components {
 
             public bool IsCommandReady => queueSuspendedTimer == null && Count > 0;
 
-            public IOutputCommand GetCommand() {
-                IOutputCommand command = null;
+            public IOutputCommand? GetCommand() {
+                IOutputCommand? command = null;
 
                 if (!IsCommandReady)
                     return null;
@@ -1199,7 +1210,7 @@ namespace LayoutManager.Components {
         public int SwitchState => switchState;
 
 
-        public IModelComponentIsMultiPath Turnout => controlPointReference.ConnectionPoint.Component as IModelComponentIsMultiPath;
+        public IModelComponentIsMultiPath? Turnout => controlPointReference.ConnectionPoint.Component as IModelComponentIsMultiPath;
 
         /// <summary>
         /// The command station controlling the turnout

@@ -1,6 +1,7 @@
 using System;
 using System.Xml;
 
+#nullable enable
 namespace LayoutManager.Model {
     #region Address format
 
