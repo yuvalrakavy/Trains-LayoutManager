@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using LayoutManager.Model;
 using LayoutManager.Components;
+using System.Linq;
 
 #pragma warning disable IDE0051,IDE0060
 #nullable enable
@@ -221,29 +222,32 @@ namespace LayoutManager.Logic {
                     foreach (LayoutBlockEdgeComponent blockEdge in occupancyBlock.BlockEdges) {
                         try {
                             var track = blockEdge.Track;
-                            var destinationBlock = blockEdge.Track.GetBlock(track.ConnectionPoints[0]);
 
-                            if (destinationBlock.OccupancyBlock == null || destinationBlock.OccupancyBlock.Id != occupancyBlock.Id)
-                                destinationBlock = blockEdge.Track.GetBlock(track.ConnectionPoints[1]);
+                            if (track != null) {
+                                var destinationBlock = track.GetBlock(track.ConnectionPoints[0]);
 
-                            var trainLockingDestination = getTrainLockingBlock(destinationBlock);
+                                if (destinationBlock.OccupancyBlock == null || destinationBlock.OccupancyBlock.Id != occupancyBlock.Id)
+                                    destinationBlock = track.GetBlock(track.ConnectionPoints[1]);
 
-                            Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, ">>> Checking if train crossed " + blockEdge.FullDescription + " to get to occupancy block " + occupancyBlock.BlockDefinintion.FullDescription);
-                            LocomotiveTrackingResult trackingResult = trackTrainMovingTo(destinationBlock, trainLockingDestination, blockEdge);
+                                var trainLockingDestination = GetTrainLockingBlock(destinationBlock);
 
-                            if (trackingResult != null) {
-                                if (trainLockingDestination != null && trackingResult.Train.Id == trainLockingDestination.Id) {
-                                    Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, ">>> Found tracking result for the train locking destination, use only this one!");
+                                Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, ">>> Checking if train crossed " + blockEdge.FullDescription + " to get to occupancy block " + occupancyBlock.BlockDefinintion.FullDescription);
+                                LocomotiveTrackingResult trackingResult = TrackTrainMovingTo(destinationBlock, trainLockingDestination, blockEdge);
 
-                                    foreach (LocomotiveTrackingResult removedResult in trackingResults)
-                                        removedResult.Rollback();
-                                    trackingResults.Clear();
-                                    trackingResults.Add(trackingResult);
-                                    break;
-                                }
-                                else {
-                                    Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, ">>> It is possible");
-                                    trackingResults.Add(trackingResult);
+                                if (trackingResult != null) {
+                                    if (trainLockingDestination != null && trackingResult.Train.Id == trainLockingDestination.Id) {
+                                        Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, ">>> Found tracking result for the train locking destination, use only this one!");
+
+                                        foreach (LocomotiveTrackingResult removedResult in trackingResults)
+                                            removedResult.Rollback();
+                                        trackingResults.Clear();
+                                        trackingResults.Add(trackingResult);
+                                        break;
+                                    }
+                                    else {
+                                        Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, ">>> It is possible");
+                                        trackingResults.Add(trackingResult);
+                                    }
                                 }
                             }
 
@@ -447,7 +451,7 @@ namespace LayoutManager.Logic {
                         Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, " Removing train " + train.DisplayName + " because block is free: " + trainLocation.Block.BlockDefinintion.FullDescription);
                         train.LeaveBlock(block);
 
-                        if (blockEdge != null) {
+                        if (blockEdge != null && blockEdge.Track != null) {
                             if (blockEdge.Track.GetBlock(blockEdge.Track.ConnectionPoints[0]).Id == block.Id)
                                 toBlock = blockEdge.Track.GetBlock(blockEdge.Track.ConnectionPoints[1]);
                             else
@@ -485,17 +489,86 @@ namespace LayoutManager.Logic {
 
         #region Tracking Logic
 
+        IEnumerable<(LayoutBlock block, int distance, LayoutBlockEdgeBase blockEdge)> EnumBlocksByDistance(LayoutBlock block, LayoutBlockEdgeBase originBlockEdge, int distance = 0) {
+            yield return (block, distance, originBlockEdge);
+            foreach(var blockEdge in block.BlockEdges.Where(edge => edge != originBlockEdge)) {
+                var otherBlock = blockEdge.GetNeighboringBlock(block);
+
+                foreach (var result in EnumBlocksByDistance(otherBlock, blockEdge, distance + 1))
+                    yield return result;
+            }
+        }
+
+        /// <summary>
+        /// No train was actually found in any linked block (blocks around the trigged track contact). However a train was found in a nearby block,
+        /// In order for the tracking to work correctly this train needs to be relocated to the linked block (with correct orientation i.e. front pointing to the
+        /// correct edge). 
+        /// </summary>
+        /// <param name="linkedBlock">The linked block in which the train should be</param>
+        /// <param name="linkedBlockedEdge">The block edge from which the train was found</param>
+        /// <param name="blockWithTrain">The block in which the train was actually found</param>
+        /// <param name="distance">How many block away (from the linked block) the train was found</param>
+        void RelocateTrainToLinkedBlock(LayoutBlock linkedBlock, LayoutBlockEdgeBase trackContact, LayoutBlock blockWithTrain, int distance) {
+            Debug.Assert(blockWithTrain.HasTrains);
+            var trainLocationInfo = blockWithTrain.Trains.First();
+            var pathFromTrain = (from b in EnumBlocksByDistance(linkedBlock, trackContact) select b).Take(distance + 1).Reverse().ToArray();
+
+            Debug.Assert(pathFromTrain.Length > 0 && pathFromTrain[0].block.HasTrains);
+
+            var blockDefWithTrain = pathFromTrain[0].block.BlockDefinintion;
+            var trackEdge = new TrackEdge(blockDefWithTrain.Track,
+                blockDefWithTrain.Track.ConnectionPoints[blockDefWithTrain.GetConnectionPointIndex(pathFromTrain[0].blockEdge)]);
+            var forwardOrientation = trackEdge.ConnectionPoint == blockWithTrain.Trains[0].DisplayFront;
+            var destinationTrack = linkedBlock.BlockDefinintion.Track;
+            var front = blockWithTrain.Trains[0].DisplayFront;
+            int blockDefinitionsCount = 0;
+
+            while (trackEdge.Track != destinationTrack) {
+                var nextTrackEdge = TopologyServices.FindTrackConnectingAt(trackEdge);
+
+                if(nextTrackEdge.Track.BlockDefinitionComponent != null) {
+                    blockDefinitionsCount++;
+                    Debug.Assert(blockDefinitionsCount <= distance);
+                }
+
+                nextTrackEdge = new TrackEdge(nextTrackEdge.Track, nextTrackEdge.OtherConnectionPoint);
+                front = forwardOrientation ? nextTrackEdge.ConnectionPoint : nextTrackEdge.OtherConnectionPoint;
+                trackEdge = nextTrackEdge;
+            }
+
+            Debug.Assert(trackEdge.Track.BlockDefinitionComponent.Id == linkedBlock.BlockDefinintion.Id);
+
+            EventManager.Event(new LayoutEvent("relocate-train-request", trainLocationInfo.Train, linkedBlock.BlockDefinintion).SetOption("Train", "Front", front.ToString()));
+        }
+
         [LayoutEvent("track-locomotive-position")]
         private void trackLocomotivePosition(LayoutEvent e) {
             var trackContact = Ensure.NotNull<LayoutBlockEdgeBase>(e.Sender, "trackContact");
-            LayoutStraightTrackComponent track = trackContact.Track;
-            LayoutBlock block1, block2;
+            var track = trackContact.Track;
             IList<TrainLocationInfo> trains1, trains2;
+
+            Debug.Assert(track != null);
 
             TrainMotionListManager motionListManager = new TrainMotionListManager();
 
-            block1 = track.GetBlock(track.ConnectionPoints[0]);
-            block2 = track.GetBlock(track.ConnectionPoints[1]);
+            var linkedBlock1 = track.GetBlock(track.ConnectionPoints[0]);
+            var linkedBlock2 = track.GetBlock(track.ConnectionPoints[1]);
+
+            int maxDistance = 2;
+
+            var (block1, distance1, _) = (from b in EnumBlocksByDistance(linkedBlock1, trackContact).TakeWhile(b => b.distance < maxDistance) where b.block.HasTrains select b).FirstOrDefault();
+            var (block2, distance2, _) = (from b in EnumBlocksByDistance(linkedBlock2, trackContact).TakeWhile(b => b.distance < maxDistance) where b.block.HasTrains select b).FirstOrDefault();
+
+            if ((block1 == null || block2 == null) && (distance1 > 0 || distance2 > 0)) {
+                Trace.WriteLineIf(traceLocomotiveTracking.TraceInfo, $"Found train in only in block with distance {(distance1 < 0 ? distance1 : distance2)}");
+                RelocateTrainToLinkedBlock(linkedBlock: distance1 > 0 ? linkedBlock1 : linkedBlock2,
+                                           trackContact: trackContact,
+                                           blockWithTrain: distance1 > 0 ? block1 : block2,
+                                           distance: distance1 > 0 ? distance1 : distance2);
+            }
+
+            block1 ??= linkedBlock1;
+            block2 ??= linkedBlock2;
 
             var block1IsManualDispatch = block1.LockRequest?.IsManualDispatchLock ?? false || LayoutModel.StateManager.AllLayoutManualDispatch;
             var block2isManualDispatch = block2.LockRequest?.IsManualDispatchLock ?? false || LayoutModel.StateManager.AllLayoutManualDispatch;
@@ -507,8 +580,8 @@ namespace LayoutManager.Logic {
 
                 if (trains1.Count == 0 && trains2.Count == 0) {
                     // A track contact was triggered, however, both surrounding blocks have no trains
-                    trains1 = getTrainInNoFeedbackBlock(block1, block2, getTrainLockingBlock(block2), trackContact, motionListManager, new HashSet<Guid>());
-                    trains2 = getTrainInNoFeedbackBlock(block2, block1, getTrainLockingBlock(block1), trackContact, motionListManager, new HashSet<Guid>());
+                    trains1 = getTrainInNoFeedbackBlock(block1, block2, GetTrainLockingBlock(block2), trackContact, motionListManager, new HashSet<Guid>());
+                    trains2 = getTrainInNoFeedbackBlock(block2, block1, GetTrainLockingBlock(block1), trackContact, motionListManager, new HashSet<Guid>());
                 }
 
                 // Figure out which case we are dealing with.
@@ -547,10 +620,12 @@ namespace LayoutManager.Logic {
             train.RefreshSpeedLimit();
         }
 
-        private LocomotiveTrackingResult trackTrainMovingTo(LayoutBlock destinationBlock, TrainStateInfo? trainLockingDestination, LayoutBlockEdgeBase blockEdge) {
-            LayoutStraightTrackComponent track = blockEdge.Track;
+        private LocomotiveTrackingResult TrackTrainMovingTo(LayoutBlock destinationBlock, TrainStateInfo? trainLockingDestination, LayoutBlockEdgeBase blockEdge) {
+            var track = blockEdge.Track;
             LayoutBlock sourceBlock;
             IList<TrainLocationInfo> trains;
+
+            Debug.Assert(track != null);
 
             TrainMotionListManager motionListManager = new TrainMotionListManager();
 
@@ -579,7 +654,7 @@ namespace LayoutManager.Logic {
             }
         }
 
-        private TrainStateInfo? getTrainLockingBlock(LayoutBlock block) {
+        private TrainStateInfo? GetTrainLockingBlock(LayoutBlock block) {
             TrainStateInfo? trainLockingBlock = null;
 
             // Figure out which train (if any) locks the destination block
@@ -665,7 +740,7 @@ namespace LayoutManager.Logic {
                         if (blockEdge.IsTrackContact())
                             continue;				// The train could not cross track contact without being detected
 
-                        LayoutTrackComponent track = blockEdge.Track;
+                        var track = blockEdge.Track!;
                         LayoutBlock otherBlock = track.GetBlock(track.ConnectionPoints[0]);
 
                         if (otherBlock.Id == noFeedbackBlock.Id)
@@ -901,6 +976,8 @@ namespace LayoutManager.Logic {
         /// <returns>True: it could be that locomotive that triggerd this track contact</returns>
         private bool canLocomotiveCrossBlockEdge(TrainLocationInfo trainLocation, LayoutBlockEdgeBase blockEdge) {
             bool result;
+
+            Debug.Assert(blockEdge.Track != null);
 
             TrainStateInfo trainState = new TrainStateInfo(trainLocation.LocomotiveStateElement);
 
