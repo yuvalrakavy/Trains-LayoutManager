@@ -156,7 +156,7 @@ namespace LayoutManager.Logic {
                 throw new LayoutException(partialTrains, ((partialTrains.Count == 1) ? "Train is " : "Trains are ") + "only partially in the request manual dispatch region - cannot lock region");
 
             // At that stage there are no active lock request
-            foreach (LayoutLockBlockEntry blockEntry in manualDispatchRegionLockRequest.Blocks) {
+            foreach (var blockEntry in manualDispatchRegionLockRequest.Blocks) {
                 var block = blockEntry.Block;
 
                 if (!lockedResourceMap.TryGetValue(block.Id, out LockedResourceEntry lockedResourceEntry)) {
@@ -168,6 +168,9 @@ namespace LayoutManager.Logic {
 
                 block.LockRequest = manualDispatchRegionLockRequest;
             }
+
+            foreach (var blockEntry in manualDispatchRegionLockRequest.Blocks)
+                updateBlockSignals(blockEntry.Block);
 
             manualDispatchRegion.SetActive(true);
         }
