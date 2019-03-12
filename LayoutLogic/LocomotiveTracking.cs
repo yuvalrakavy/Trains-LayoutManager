@@ -107,7 +107,7 @@ namespace LayoutManager.Logic {
                     }
                 }
                 else {
-                    var trackingResult = (LocomotiveTrackingResult?)EventManager.Event(new LayoutEvent("track-locomotive-position", trackContact));
+                    var trackingResult = (LocomotiveTrackingResult?)EventManager.Event(new LayoutEvent("track-locomotive-position", trackContact, false));
 
                     // If tracking result is null - crossing was within manual dispatch region, and is completly ignored
                     if (trackingResult != null) {
@@ -540,12 +540,15 @@ namespace LayoutManager.Logic {
 
             Debug.Assert(trackEdge.Track.BlockDefinitionComponent != null && trackEdge.Track.BlockDefinitionComponent!.Id == linkedBlock.BlockDefinintion.Id);
 
+            Trace.WriteLineIf(traceLocomotiveTracking.TraceInfo,
+                $"No train was foun in blocks around {trackContact.FullDescription} however a train was found in {trainLocationInfo.Block.FullDescription} (distance {distance}), relocating it to {linkedBlock.FullDescription}");
             EventManager.Event(new LayoutEvent("relocate-train-request", trainLocationInfo.Train, linkedBlock.BlockDefinintion).SetOption("Train", "Front", front.ToString()));
         }
 
         [LayoutEvent("track-locomotive-position")]
         private void trackLocomotivePosition(LayoutEvent e) {
             var trackContact = Ensure.NotNull<LayoutBlockEdgeBase>(e.Sender, "trackContact");
+            var enableFuzzyTracking = (bool)e.Info;
             var track = trackContact.Track;
             IList<TrainLocationInfo> trains1, trains2;
 
@@ -553,24 +556,29 @@ namespace LayoutManager.Logic {
 
             TrainMotionListManager motionListManager = new TrainMotionListManager();
 
-            var linkedBlock1 = track.GetBlock(track.ConnectionPoints[0]);
-            var linkedBlock2 = track.GetBlock(track.ConnectionPoints[1]);
+            var block1 = track.GetBlock(track.ConnectionPoints[0]);
+            var block2 = track.GetBlock(track.ConnectionPoints[1]);
 
-            int maxDistance = 2;
 
-            var (block1, distance1, _) = (from b in EnumBlocksByDistance(linkedBlock1, trackContact).TakeWhile(b => b.distance < maxDistance) where b.block.HasTrains select b).FirstOrDefault();
-            var (block2, distance2, _) = (from b in EnumBlocksByDistance(linkedBlock2, trackContact).TakeWhile(b => b.distance < maxDistance) where b.block.HasTrains select b).FirstOrDefault();
+            if (enableFuzzyTracking && block1.Trains.Count == 0 && block2.Trains.Count == 0) {
+                Trace.WriteLineIf(traceLocomotiveTracking.TraceInfo, $"No trains found around {trackContact.FullDescription} looking for trains in nearby region, assuming train position was not correct");
 
-            if ((block1 == null || block2 == null) && (distance1 > 0 || distance2 > 0)) {
-                Trace.WriteLineIf(traceLocomotiveTracking.TraceInfo, $"Found train in only in block with distance {(distance1 < 0 ? distance1 : distance2)}");
-                RelocateTrainToLinkedBlock(linkedBlock: distance1 > 0 ? linkedBlock1 : linkedBlock2,
-                                           trackContact: trackContact,
-                                           blockWithTrain: distance1 > 0 ? block1 : block2,
-                                           distance: distance1 > 0 ? distance1 : distance2);
+                int maxDistance = 2;
+
+                var (fuzzyBlock1, distance1, _) = (from b in EnumBlocksByDistance(block1, trackContact).TakeWhile(b => b.distance < maxDistance) where b.block.HasTrains select b).FirstOrDefault();
+                var (fuzzyBlock2, distance2, _) = (from b in EnumBlocksByDistance(block2, trackContact).TakeWhile(b => b.distance < maxDistance) where b.block.HasTrains select b).FirstOrDefault();
+
+                if ((fuzzyBlock1 == null || fuzzyBlock2 == null) && (distance1 > 0 || distance2 > 0)) {
+
+                    RelocateTrainToLinkedBlock(linkedBlock: distance1 > 0 ? block1 : block2,
+                                               trackContact: trackContact,
+                                               blockWithTrain: distance1 > 0 ? fuzzyBlock1 : fuzzyBlock2,
+                                               distance: distance1 > 0 ? distance1 : distance2);
+                }
+
+                block1 ??= fuzzyBlock1;
+                block2 ??= fuzzyBlock2;
             }
-
-            block1 ??= linkedBlock1;
-            block2 ??= linkedBlock2;
 
             var block1IsManualDispatch = block1.LockRequest?.IsManualDispatchLock ?? false || LayoutModel.StateManager.AllLayoutManualDispatch;
             var block2isManualDispatch = block2.LockRequest?.IsManualDispatchLock ?? false || LayoutModel.StateManager.AllLayoutManualDispatch;
@@ -598,8 +606,14 @@ namespace LayoutManager.Logic {
                     }
                     else if (trains1.Count > 0 && trains2.Count > 0)
                         trackingResult = ambiguousMove(trackContact, block1, block2);
-                    else
-                        throw new UnexpectedBlockCrossingException(trackContact);
+                    else {
+                        if (enableFuzzyTracking)        // Fuzzy tracking was enabled and yet no locomotive could be found
+                            throw new UnexpectedBlockCrossingException(trackContact);
+                        else {
+                            Trace.WriteLineIf(traceLocomotiveTracking.TraceInfo, $"Could not identify which train crossed track contact {trackContact.FullDescription} - try again with fuzzy tracking enabled");
+                            trackingResult = (LocomotiveTrackingResult?)EventManager.Event(new LayoutEvent("track-locomotive-position", trackContact, true));
+                        }
+                    }
 
                     e.Info = trackingResult;
 
@@ -732,7 +746,7 @@ namespace LayoutManager.Logic {
             try {
                 Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, "-- getting train in no feedback block " + noFeedbackBlock.Name + " for finding train in " + destinationBlock.Name + " crossing " + noFeedbackBlockEdge.FullDescription);
 
-                if (noFeedbackBlock.Trains.Count == 0) {
+                 if (noFeedbackBlock.Trains.Count == 0) {
                     var trackingResults = new List<LocomotiveTrackingResult>();
                     int cpIndex = noFeedbackBlock.BlockDefinintion.GetOtherConnectionPointIndex(noFeedbackBlockEdge);
                     LayoutBlockEdgeBase[] blockEdges = noFeedbackBlock.BlockDefinintion.GetBlockEdges(cpIndex);
