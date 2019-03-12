@@ -2,14 +2,16 @@
 using LayoutManager;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060
+#nullable enable
 namespace DiMAX {
 
     [LayoutModule("DiMAX Bus Definitions")]
     class DiMAXControlComponents : LayoutModuleBase {
 
-        ControlBusType dccBus = null;
-        ControlBusType dimaxBus = null;
-        ControlBusType locoBus = null;
+        ControlBusType? dccBus = null;
+        ControlBusType? dimaxBus = null;
+        ControlBusType? locoBus = null;
 
         [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='DiMAXDCC']")]
         private void getDCCbusType(LayoutEvent e) {
@@ -66,21 +68,21 @@ namespace DiMAX {
 
         [LayoutEvent("add-bus-connectable-to-module", IfEvent = "LayoutEvent[Options/@GenericBusType='DCC']")]
         private void AddDiMAXDCCbusToDCCcompatibleModule(LayoutEvent e) {
-            ControlModuleType moduleType = (ControlModuleType)e.Sender;
+            var moduleType = Ensure.NotNull<ControlModuleType>(e.Sender, "moduleType");
 
             moduleType.BusTypeNames.Add("DiMAXDCC");
         }
 
         [LayoutEvent("add-bus-connectable-to-module", IfEvent = "LayoutEvent[Options/@GenericBusType='DiMAXBus']")]
         private void AddDiMAXBUStoLGBBUScompatibleModule(LayoutEvent e) {
-            ControlModuleType moduleType = (ControlModuleType)e.Sender;
+            var moduleType = Ensure.NotNull<ControlModuleType>(e.Sender, "moduleType");
 
             moduleType.BusTypeNames.Add("DiMAXBUS");
         }
 
         [LayoutEvent("add-bus-connectable-to-module", IfEvent = "LayoutEvent[Options/@GenericBusType='LocoBus']")]
         private void AddDiMAXLocoBustoLGBBUScompatibleModule(LayoutEvent e) {
-            ControlModuleType moduleType = (ControlModuleType)e.Sender;
+            var moduleType = Ensure.NotNull<ControlModuleType>(e.Sender, "moduleType");
 
             moduleType.BusTypeNames.Add("DiMAXLocoBus");
         }
