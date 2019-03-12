@@ -6,6 +6,7 @@ using System.Linq;
 using LayoutManager.Model;
 using System.Collections.Generic;
 
+#nullable enable
 namespace LayoutManager.Components {
     /// <summary>
     /// Implement a connection of track to power source (command station, programming controller etc.)
@@ -208,8 +209,8 @@ namespace LayoutManager.Components {
         public const string PowerSelector2ConnectionPoint = "PowerControl2";
         public const string PowerOnOffConnectionPoint = "PowerOnOff";
 
-        ILayoutPowerInlet _inlet1;
-        ILayoutPowerInlet _inlet2;
+        ILayoutPowerInlet? _inlet1;
+        ILayoutPowerInlet? _inlet2;
 
         public LayoutPowerSelectorComponent() {
             XmlDocument.LoadXml("<PowerSelector />");
@@ -292,7 +293,7 @@ namespace LayoutManager.Components {
                 return hasPower;
             }
         }
-        public ILayoutPowerInlet CurrentSelectedInlet {
+        public ILayoutPowerInlet? CurrentSelectedInlet {
             get {
                 if (IsSwitch) {
                     if (IsPowerConnected)
@@ -633,7 +634,7 @@ namespace LayoutManager.Components {
 
     public class LayoutTrackLinkComponent : ModelComponent, IModelComponentHasId {
         Guid trackLinkGuid;
-        LayoutTrackLink link;
+        LayoutTrackLink? link;
 
         public LayoutTrackLinkComponent() {
             trackLinkGuid = Guid.NewGuid();
@@ -647,7 +648,7 @@ namespace LayoutManager.Components {
         public override bool DrawOutOfGrid => true;
 
 
-        public LayoutTrackLinkComponent LinkedComponent {
+        public LayoutTrackLinkComponent? LinkedComponent {
             get {
                 if (link == null)
                     return null;        // Not linked
@@ -656,9 +657,9 @@ namespace LayoutManager.Components {
             }
         }
 
-        public LayoutTrackComponent LinkedTrack {
+        public LayoutTrackComponent? LinkedTrack {
             get {
-                LayoutTrackLinkComponent trackLink = LinkedComponent;
+                var trackLink = LinkedComponent;
 
                 if (trackLink != null)
                     return trackLink.Spot.Track;
@@ -677,7 +678,7 @@ namespace LayoutManager.Components {
         /// Return the LayoutTrackLink of the component that this component is linked to.
         /// If set, link this component to another one, the other component is linked to this one.
         /// </summary>
-        public LayoutTrackLink Link {
+        public LayoutTrackLink? Link {
             get {
                 return link;
             }
@@ -695,7 +696,7 @@ namespace LayoutManager.Components {
             Spot.Area.TrackLinks.Add(this);
 
             if (!LayoutModel.Instance.ModelIsLoading) {
-                LayoutTrackLinkComponent linkedComponent = LinkedComponent;
+                var linkedComponent = LinkedComponent;
 
                 // If this component was linked to another one, and the other component was not linked
                 // to another component, recreate the bidirectional link.
@@ -712,7 +713,7 @@ namespace LayoutManager.Components {
         public override void OnRemovingFromModel() {
             base.OnRemovingFromModel();
 
-            LayoutTrackLinkComponent linkedComponent = LinkedComponent;
+            var linkedComponent = LinkedComponent;
 
             if (linkedComponent != null)
                 linkedComponent.EraseImage();
@@ -863,7 +864,7 @@ namespace LayoutManager.Components {
     }
 
     public abstract class LayoutTrackAnnotationComponent : ModelComponent {
-        public LayoutStraightTrackComponent Track => Spot.Track as LayoutStraightTrackComponent;
+        public LayoutStraightTrackComponent? Track => Spot.Track as LayoutStraightTrackComponent;
     }
 
     public class LayoutBridgeComponent : LayoutTrackAnnotationComponent {
@@ -1079,7 +1080,7 @@ namespace LayoutManager.Components {
 
         [LayoutEvent("open-gate-request", SenderType = typeof(LayoutGateComponent))]
         private void openGateRequest(LayoutEvent e) {
-            LayoutGateComponent gateComponent = (LayoutGateComponent)e.Sender;
+            var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
 
             if (pendingEvents.TryGetValue(gateComponent.Id, out LayoutDelayedEvent pendingEvent)) {
                 pendingEvent.Cancel();
@@ -1103,7 +1104,7 @@ namespace LayoutManager.Components {
 
         [LayoutEvent("close-gate-request", SenderType = typeof(LayoutGateComponent))]
         private void closeGateRequest(LayoutEvent e) {
-            LayoutGateComponent gateComponent = (LayoutGateComponent)e.Sender;
+            var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
 
             if (pendingEvents.TryGetValue(gateComponent.Id, out LayoutDelayedEvent pendingEvent)) {
                 pendingEvent.Cancel();
@@ -1163,7 +1164,7 @@ namespace LayoutManager.Components {
 
         [LayoutEvent("gate-is-open", SenderType = typeof(LayoutGateComponent))]
         private void gateIsOpen(LayoutEvent e) {
-            LayoutGateComponent gateComponent = (LayoutGateComponent)e.Sender;
+            var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
 
             StopGateMotion(gateComponent);
 
@@ -1177,7 +1178,7 @@ namespace LayoutManager.Components {
 
         [LayoutEvent("gate-is-closed", SenderType = typeof(LayoutGateComponent))]
         private void gateIsClosed(LayoutEvent e) {
-            LayoutGateComponent gateComponent = (LayoutGateComponent)e.Sender;
+            var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
 
             StopGateMotion(gateComponent);
 
@@ -1191,7 +1192,7 @@ namespace LayoutManager.Components {
 
         [LayoutEvent("gate-open-timeout", SenderType = typeof(LayoutGateComponent))]
         private void gateOpenTimeout(LayoutEvent e) {
-            var gateComponent = (LayoutGateComponent)e.Sender;
+            var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
 
             Error(gateComponent, "Timeout while waiting for gate to open");
             EventManager.Event(new LayoutEvent("gate-is-open", gateComponent));
@@ -1199,7 +1200,7 @@ namespace LayoutManager.Components {
 
         [LayoutEvent("gate-close-timeout", SenderType = typeof(LayoutGateComponent))]
         private void gateCloseTimeout(LayoutEvent e) {
-            var gateComponent = (LayoutGateComponent)e.Sender;
+            var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
 
             Error(gateComponent, "Timeout while waiting for gate to close");
             EventManager.Event(new LayoutEvent("gate-is-closed", gateComponent));
@@ -1207,7 +1208,7 @@ namespace LayoutManager.Components {
 
         [LayoutEvent("control-connection-point-state-changed-notification")]
         private void controlConnectionPointStateChangedNotification(LayoutEvent e) {
-            var connectionPointRef = (ControlConnectionPointReference)e.Sender;
+            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
 
             if (connectionPointRef.IsConnected) {
                 ControlConnectionPoint connectionPoint = connectionPointRef.ConnectionPoint;

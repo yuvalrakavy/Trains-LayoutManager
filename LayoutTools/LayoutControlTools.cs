@@ -1329,12 +1329,12 @@ namespace LayoutManager.Tools {
 
             if (LayoutAction.HasAction("set-address", module)) {
                 list.Add(new ControlProgrammingAction("Program address", (aProgrammer, aModule) => {
-                    var programmingState = new ControlModuleProgrammingState(aModule) {
+                    var programmingState = new ControlModuleProgrammingState(aModule, aProgrammer) {
                         ProgrammingActions = new LayoutActionContainer<ControlModule>(aModule)
                     };
+
                     ILayoutAction setAddressAction = programmingState.ProgrammingActions.Add("set-address");
 
-                    programmingState.Programmer = aProgrammer;
                     Debug.Assert(programmingState.ProgrammingActions.Count() == 1);
 
                     // Note: If there is no edit-action-settings, then the result will not be bool.

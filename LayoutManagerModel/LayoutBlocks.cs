@@ -28,9 +28,12 @@ namespace LayoutManager.Model {
                 if (blockEdges == null) {
                     blockEdges = new List<LayoutBlockEdgeBase>();
 
-                    foreach (TrackEdge edge in TrackEdges)
-                        if (edge.Track.BlockEdgeBase != null)
-                            blockEdges.Add(edge.Track.BlockEdgeBase);
+                    foreach (TrackEdge edge in TrackEdges) {
+                        var blockEdge = edge.Track.BlockEdgeBase;
+
+                        if (blockEdge != null)
+                            blockEdges.Add(blockEdge);
+                    }
                 }
 
                 return blockEdges;
@@ -241,6 +244,7 @@ namespace LayoutManager.Model {
                 LayoutComponentConnectionPoint cpEntry;
 
                 try {
+                    Debug.Assert(trainLocation.BlockEdge != null);
                     cpEntry = BlockDefinintion.Track.ConnectionPoints[BlockDefinintion.GetConnectionPointIndex(trainLocation.BlockEdge)];
                 }
                 catch (ArgumentException) {
@@ -260,7 +264,7 @@ namespace LayoutManager.Model {
                             if (BlockDefinintion.Track is IModelComponentIsMultiPath multiPath)
                                 trainLocation.DisplayFront = multiPath.ConnectTo(cpEntry, multiPath.CurrentSwitchState);
                             else
-                                trainLocation.DisplayFront = BlockDefinintion.Track.ConnectTo(cpEntry, LayoutComponentConnectionType.Passage)[0];
+                                trainLocation.DisplayFront = BlockDefinintion.Track.ConnectTo(cpEntry, LayoutComponentConnectionType.Passage)![0];
                         }
                     }
                 }
@@ -590,7 +594,7 @@ namespace LayoutManager.Model {
 
             Trace.Write("== BEGIN Lock Request (" + Status.ToString() + "), owner: ");
 
-            TrainStateInfo train = LayoutModel.StateManager.Trains[OwnerId];
+            var train = LayoutModel.StateManager.Trains[OwnerId];
 
             if (train != null)
                 Trace.Write("train " + train.DisplayName);
@@ -661,7 +665,7 @@ namespace LayoutManager.Model {
             if (train.Managed)
                 train.LastBlockEdgeCrossingSpeed = train.Speed;
 
-            TrainPart fromLocationTrainPart = train.LocationOfBlock(trackingResult.FromBlock).TrainPart;
+            var fromLocationTrainPart = train.LocationOfBlock(trackingResult.FromBlock)!.TrainPart;
 
             train.EnterBlock(fromLocationTrainPart, trackingResult.ToBlock, trackingResult.BlockEdge, null);
         }
@@ -691,7 +695,7 @@ namespace LayoutManager.Model {
             foreach (KeyValuePair<Guid, int> d in trainSpeeds) {
                 Guid trainID = d.Key;
                 int speed = d.Value;
-                TrainStateInfo train = LayoutModel.StateManager.Trains[trainID];
+                var train = LayoutModel.StateManager.Trains[trainID];
 
                 if (train != null)
                     train.LastBlockEdgeCrossingSpeed = speed;
@@ -759,7 +763,7 @@ namespace LayoutManager.Model {
 
         public TrainStateInfo Train {
             get {
-                return LayoutModel.StateManager.Trains[TrainId];
+                return LayoutModel.StateManager.Trains[TrainId]!;
             }
 
             set {

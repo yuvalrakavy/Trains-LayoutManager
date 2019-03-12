@@ -170,10 +170,10 @@ namespace LayoutManager.Logic {
                     }
                 }
                 else {
-                    LayoutBlockDefinitionComponent blockInfo = edge.Track.BlockDefinitionComponent;
+                    var blockDefinition = edge.Track.BlockDefinitionComponent;
 
-                    if (blockInfo != null)
-                        penalty += blockInfo.Info.LengthInCM;
+                    if (blockDefinition != null)
+                        penalty += blockDefinition.Info.LengthInCM;
 
                     edge = edge.Track.GetConnectedComponentEdge(edge.OtherConnectionPoint);
                 }

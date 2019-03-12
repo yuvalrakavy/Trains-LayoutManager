@@ -735,11 +735,23 @@ namespace LayoutManager.Components {
 
         public LayoutBlock Block => Track.GetBlock(Track.ConnectionPoints[0]);
 
-        public LayoutTrackPowerConnectorComponent PowerConnector => Track.GetPowerConnector(Track.ConnectionPoints[0]);
+        public LayoutTrackPowerConnectorComponent PowerConnector {
+            get {
+                var powerConnector = Track.GetPowerConnector(Track.ConnectionPoints[0]);
+
+                Debug.Assert(powerConnector != null);
+                return powerConnector;
+            }
+        }
 
         public ILayoutPower Power => Track.GetPower(Track.ConnectionPoints[0]);
 
-        public TrackGauges Guage => PowerConnector.Info.TrackGauge;
+        public TrackGauges Guage {
+            get {
+                Debug.Assert(PowerConnector != null);
+                return PowerConnector.Info.TrackGauge;
+            }
+        }
 
         public void ClearBlockEdges() {
             if (blockEdges.Length != Track.ConnectionPoints.Count) {

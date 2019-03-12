@@ -56,159 +56,170 @@ namespace LayoutManager.Logic {
         private void isLocomotiveAddressValid(LayoutEvent e) {
             var placeableElement = Ensure.NotNull<XmlElement>(e.Sender, "placeableElement");
             TrainStateInfo? train = null;
-            CanPlaceTrainResult result = new CanPlaceTrainResult();
+
             var power = e.Info switch
             {
                 ILayoutPower thePower => thePower,
                 LayoutBlock block => block.Power,
                 LayoutBlockDefinitionComponent blockDefinition => blockDefinition.Block.Power,
                 ILayoutPowerOutlet outlet => outlet.Power,
-                TrainStateInfo aTrain => aTrain.LocomotiveBlock.Power,
+                TrainStateInfo aTrain => aTrain.LocomotiveBlock?.Power,
                 _ => throw new ArgumentException("Invalid power argument")
             };
 
-            try {
-                if (power.Type == LayoutPowerType.Digital) {
-                    //
-                    // Locomotive-Set address checks (applied only if the placed object is a locomotive set)
-                    //
-                    // a) If there is more than one member assigned to an address, and not all the members
-                    //    that are assigned to a given address are in the same orientation, generate
-                    //    an error event.
-                    // b) (TODO) Check that all members have identical decoder setting.
-                    //
-                    if (placeableElement.Name == "Train") {
-                        TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(placeableElement);
-                        IList<TrainLocomotiveInfo> locomotives = trainInCollection.Locomotives;
+            if (power.Type == LayoutPowerType.Digital) {
+                //
+                // Locomotive-Set address checks (applied only if the placed object is a locomotive set)
+                //
+                // a) If there is more than one member assigned to an address, and not all the members
+                //    that are assigned to a given address are in the same orientation, generate
+                //    an error event.
+                // b) (TODO) Check that all members have identical decoder setting.
+                //
+                if (placeableElement.Name == "Train") {
+                    TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(placeableElement);
+                    IList<TrainLocomotiveInfo> locomotives = trainInCollection.Locomotives;
 
-                        for (int i = 0; i < locomotives.Count; i++) {
-                            LocomotiveInfo loco1 = locomotives[i].Locomotive;
+                    for (int i = 0; i < locomotives.Count; i++) {
+                        LocomotiveInfo loco1 = locomotives[i].Locomotive;
 
-                            if (loco1.AddressProvider.Element == null) {
-                                result.Status = CanPlaceTrainStatus.LocomotiveHasNoAddress;
-                                result.Locomotive = loco1;
-                                result.CanBeResolved = true;
-                                result.ResolveMethod = CanPlaceTrainResolveMethod.ReprogramAddress;
-                                return;
-                            }
+                        if (loco1.AddressProvider.Element == null) {
+                            e.Info = new CanPlaceTrainResult {
+                                Status = CanPlaceTrainStatus.LocomotiveHasNoAddress,
+                                Locomotive = loco1,
+                                CanBeResolved = true,
+                                ResolveMethod = CanPlaceTrainResolveMethod.ReprogramAddress
+                            };
+                            return;
+                        }
 
-                            if ((loco1.DecoderType.SupportedDigitalPowerFormats & power.DigitalFormats) == 0) {
-                                result.Locomotive = loco1;
-                                result.Status = CanPlaceTrainStatus.LocomotiveDigitalFormatNotCompatible;
-                                result.CanBeResolved = false;
-                                result.ResolveMethod = CanPlaceTrainResolveMethod.NotPossible;
-                                return;
-                            }
+                        if ((loco1.DecoderType.SupportedDigitalPowerFormats & power.DigitalFormats) == 0) {
+                            e.Info = new CanPlaceTrainResult {
+                                Locomotive = loco1,
+                                Status = CanPlaceTrainStatus.LocomotiveDigitalFormatNotCompatible,
+                                CanBeResolved = false,
+                                ResolveMethod = CanPlaceTrainResolveMethod.NotPossible
+                            };
+                            return;
+                        }
 
-                            if (loco1.Kind == LocomotiveKind.SoundUnit)
+                        if (loco1.Kind == LocomotiveKind.SoundUnit)
+                            continue;
+
+                        for (int j = i + 1; j < locomotives.Count; j++) {
+                            LocomotiveInfo loco2 = locomotives[j].Locomotive;
+
+                            if (loco2.Kind == LocomotiveKind.SoundUnit)
                                 continue;
 
-                            for (int j = i + 1; j < locomotives.Count; j++) {
-                                LocomotiveInfo loco2 = locomotives[j].Locomotive;
-
-                                if (loco2.Kind == LocomotiveKind.SoundUnit)
-                                    continue;
-
-                                if (loco1.AddressProvider.Unit == loco2.AddressProvider.Unit && locomotives[i].Orientation != locomotives[j].Orientation) {
-                                    result.Status = CanPlaceTrainStatus.LocomotiveDuplicateAddress;
-                                    result.Loco1 = loco1;
-                                    result.Loco2 = loco2;
-
-                                    result.CanBeResolved = true;        // Can be resolved if loco1 address is changed
-                                    result.ResolveMethod = CanPlaceTrainResolveMethod.ReprogramAddress;
-                                    return;
-                                }
-                            }
-                        }
-
-                        // Got to this point, each member has a unit address, and no invalid duplicates
-                        // within the locomotive set
-                        var addressMap = EventManager.Event<object, object, OnTrackLocomotiveAddressMap>("get-on-track-locomotive-address-map", power)!;
-
-                        foreach (TrainLocomotiveInfo trainLocomotive in locomotives) {
-                            OnTrackLocomotiveAddressMapEntry addressMapEntry = addressMap[trainLocomotive.Locomotive.AddressProvider.Unit];
-
-                            if (addressMapEntry != null) {
-                                result.Status = CanPlaceTrainStatus.LocomotiveAddressAlreadyUsed;
-                                result.Loco1 = addressMapEntry.Locomotive;
-                                result.Train = addressMapEntry.Train;
-
-                                result.CanBeResolved = true;
-                                result.ResolveMethod = CanPlaceTrainResolveMethod.ReprogramAddress;
+                            if (loco1.AddressProvider.Unit == loco2.AddressProvider.Unit && locomotives[i].Orientation != locomotives[j].Orientation) {
+                                e.Info = new CanPlaceTrainResult() {
+                                    Status = CanPlaceTrainStatus.LocomotiveDuplicateAddress,
+                                    Loco1 = loco1,
+                                    Loco2 = loco2,
+                                    CanBeResolved = true,
+                                    ResolveMethod = CanPlaceTrainResolveMethod.ReprogramAddress
+                                };
                                 return;
                             }
                         }
                     }
-                    else if (placeableElement.Name == "Locomotive") {
-                        LocomotiveInfo loco = new LocomotiveInfo(placeableElement);
 
-                        if (!loco.NotManaged) {
-                            if (loco.AddressProvider.Element == null || loco.AddressProvider.Unit <= 0) {
-                                result.Status = CanPlaceTrainStatus.LocomotiveHasNoAddress;
-                                result.Locomotive = loco;
-                                result.CanBeResolved = true;
-                                result.ResolveMethod = CanPlaceTrainResolveMethod.ReprogramAddress;
-                                return;
-                            }
+                    // Got to this point, each member has a unit address, and no invalid duplicates
+                    // within the locomotive set
+                    var addressMap = EventManager.Event<object, object, OnTrackLocomotiveAddressMap>("get-on-track-locomotive-address-map", power)!;
 
-                            int locoAddress = e.HasOption("LocoAddress") ? e.GetIntOption("LocoAddress") : loco.AddressProvider.Unit;
-                            var addressMap = EventManager.Event<object, object, OnTrackLocomotiveAddressMap>("get-on-track-locomotive-address-map", power)!;
-                            var addressMapEntry = addressMap[locoAddress];
+                    foreach (TrainLocomotiveInfo trainLocomotive in locomotives) {
+                        var addressMapEntry = addressMap[trainLocomotive.Locomotive.AddressProvider.Unit];
 
-                            // Check that the address is not already used.
-                            if (addressMapEntry != null) {
-                                bool validDuplicate = false;
+                        if (addressMapEntry != null) {
+                            e.Info = new CanPlaceTrainResult() {
+                                Status = CanPlaceTrainStatus.LocomotiveAddressAlreadyUsed,
+                                Loco1 = addressMapEntry.Locomotive,
+                                Train = addressMapEntry.Train,
+                                CanBeResolved = true,
+                                ResolveMethod = CanPlaceTrainResolveMethod.ReprogramAddress
+                            };
+                            return;
+                        }
+                    }
+                }
+                else if (placeableElement.Name == "Locomotive") {
+                    LocomotiveInfo loco = new LocomotiveInfo(placeableElement);
 
-                                if (train != null && addressMapEntry.Train.Id == train.Id) {
-                                    // Check that the locomotive in the train that uses the same address has the
-                                    // same orientation as the placed locomotive
-                                    if (loco.Kind != LocomotiveKind.SoundUnit) {
-                                        LocomotiveOrientation orientation = LocomotiveOrientation.Forward;
-                                        XmlElement orientationElement = e.Element["Orientation"];
+                    if (!loco.NotManaged) {
+                        if (loco.AddressProvider.Element == null || loco.AddressProvider.Unit <= 0) {
+                            e.Info = new CanPlaceTrainResult() {
+                                Status = CanPlaceTrainStatus.LocomotiveHasNoAddress,
+                                Locomotive = loco,
+                                CanBeResolved = true,
+                                ResolveMethod = CanPlaceTrainResolveMethod.ReprogramAddress
+                            };
+                            return;
+                        }
 
-                                        if (orientationElement != null)
-                                            orientation = (LocomotiveOrientation)Enum.Parse(typeof(LocomotiveOrientation), orientationElement.GetAttribute("Value"));
+                        int locoAddress = e.HasOption("LocoAddress") ? e.GetIntOption("LocoAddress") : loco.AddressProvider.Unit;
+                        var addressMap = EventManager.Event<object, object, OnTrackLocomotiveAddressMap>("get-on-track-locomotive-address-map", power)!;
+                        var addressMapEntry = addressMap[locoAddress];
 
-                                        // Look for the locomotive having the same unit address
-                                        foreach (TrainLocomotiveInfo trainLoco in train.Locomotives) {
-                                            if (trainLoco.Locomotive.Id == loco.Id) {
-                                                validDuplicate = false;
-                                                break;
-                                            }
+                        // Check that the address is not already used.
+                        if (addressMapEntry != null) {
+                            bool validDuplicate = false;
 
-                                            if (trainLoco.Locomotive.AddressProvider.Unit == loco.AddressProvider.Unit) {
-                                                if (trainLoco.Orientation == orientation)
-                                                    // It is valid to have two locomotive with the same address
-                                                    // as long as they have the same orientation
-                                                    validDuplicate = true;
-                                                if (trainLoco.Locomotive.Kind == LocomotiveKind.SoundUnit)
-                                                    validDuplicate = true;
-                                            }
+                            if (train != null && addressMapEntry.Train.Id == train.Id) {
+                                // Check that the locomotive in the train that uses the same address has the
+                                // same orientation as the placed locomotive
+                                if (loco.Kind != LocomotiveKind.SoundUnit) {
+                                    LocomotiveOrientation orientation = LocomotiveOrientation.Forward;
+                                    XmlElement orientationElement = e.Element["Orientation"];
+
+                                    if (orientationElement != null)
+                                        orientation = (LocomotiveOrientation)Enum.Parse(typeof(LocomotiveOrientation), orientationElement.GetAttribute("Value"));
+
+                                    // Look for the locomotive having the same unit address
+                                    foreach (TrainLocomotiveInfo trainLoco in train.Locomotives) {
+                                        if (trainLoco.Locomotive.Id == loco.Id) {
+                                            validDuplicate = false;
+                                            break;
                                         }
 
+                                        if (trainLoco.Locomotive.AddressProvider.Unit == loco.AddressProvider.Unit) {
+                                            if (trainLoco.Orientation == orientation)
+                                                // It is valid to have two locomotive with the same address
+                                                // as long as they have the same orientation
+                                                validDuplicate = true;
+                                            if (trainLoco.Locomotive.Kind == LocomotiveKind.SoundUnit)
+                                                validDuplicate = true;
+                                        }
                                     }
-                                    else
-                                        validDuplicate = true;
-                                }
 
-                                if (!validDuplicate) {
-                                    result.Status = CanPlaceTrainStatus.LocomotiveAddressAlreadyUsed;
-                                    result.Loco1 = loco;
-                                    result.Train = addressMapEntry.Train;
-                                    result.CanBeResolved = true;
-                                    result.ResolveMethod = CanPlaceTrainResolveMethod.ReprogramAddress;
-                                    return;
                                 }
+                                else
+                                    validDuplicate = true;
+                            }
+
+                            if (!validDuplicate) {
+                                e.Info = new CanPlaceTrainResult() {
+                                    Status = CanPlaceTrainStatus.LocomotiveAddressAlreadyUsed,
+                                    Loco1 = loco,
+                                    Train = addressMapEntry.Train,
+                                    CanBeResolved = true,
+                                    ResolveMethod = CanPlaceTrainResolveMethod.ReprogramAddress
+                                };
+                                return;
                             }
                         }
                     }
-                    else
-                        throw new ArgumentException("Invalid placeable element");
-                }   // Block power is digital
-            }
-            finally {
-                e.Info = result;
-            }
+                }
+                else
+                    throw new ArgumentException("Invalid placeable element");
+            }   // Block power is digital
+
+            e.Info = new CanPlaceTrainResult() {
+                Status = CanPlaceTrainStatus.CanPlaceTrain,
+                ResolveMethod = CanPlaceTrainResolveMethod.Resolved,
+                CanBeResolved = true
+            };
         }
 
         /// <summary>
@@ -226,7 +237,7 @@ namespace LayoutManager.Logic {
 
             if (placeableElement.Name == "Train") {
                 TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(placeableElement);
-                TrainStateInfo oldTrainState = LayoutModel.StateManager.Trains[trainInCollection.Id];
+                var oldTrainState = LayoutModel.StateManager.Trains[trainInCollection.Id];
 
                 if (oldTrainState != null)
                     result.Train = oldTrainState;
@@ -235,7 +246,7 @@ namespace LayoutManager.Logic {
                     // Also verify that all members have the same number of speed steps
                     foreach (TrainLocomotiveInfo trainLocomotive in trainInCollection.Locomotives) {
                         LocomotiveInfo loco = trainLocomotive.Locomotive;
-                        TrainStateInfo memberTrainState = LayoutModel.StateManager.Trains[trainLocomotive.LocomotiveId];
+                        var memberTrainState = LayoutModel.StateManager.Trains[trainLocomotive.LocomotiveId];
 
                         if (blockDefinition != null && (loco.Guage & blockDefinition.Guage) == 0) {
                             result.Status = CanPlaceTrainStatus.LocomotiveGuageNotCompatibleWithTrack;
@@ -256,7 +267,7 @@ namespace LayoutManager.Logic {
             }
             else if (placeableElement.Name == "Locomotive") {
                 Guid id = LayoutModel.LocomotiveCollection.GetElementId(placeableElement);
-                TrainStateInfo oldTrainState = LayoutModel.StateManager.Trains[id];
+                var oldTrainState = LayoutModel.StateManager.Trains[id];
                 LocomotiveInfo loco = new LocomotiveInfo(placeableElement);
 
                 if (oldTrainState != null) {
@@ -533,8 +544,10 @@ namespace LayoutManager.Logic {
             if (ballonText != null) {
                 var ballon = new LayoutBlockBallon() { Text = ballonText, RemoveOnClick = true, CancellationToken = e.GetCancellationToken() };
 
-                LayoutBlockBallon.Show(trainState.LocomotiveBlock.BlockDefinintion, ballon);
-                await ballon.Task;
+                if (trainState.LocomotiveBlock != null) {
+                    LayoutBlockBallon.Show(trainState.LocomotiveBlock.BlockDefinintion, ballon);
+                    await ballon.Task;
+                }
             }
 
             LayoutModel.StateManager.Trains.Remove(trainState);
@@ -561,7 +574,7 @@ namespace LayoutManager.Logic {
                 await placeTrainBallon.Task;
             }
             catch (OperationCanceledException) {
-                TrainStateInfo train = LayoutModel.StateManager.Trains[trainId];
+                var train = LayoutModel.StateManager.Trains[trainId];
 
                 if (train != null)
                     LayoutModel.StateManager.Trains.RemoveTrainState(train);
@@ -811,6 +824,8 @@ namespace LayoutManager.Logic {
             TrainLocationInfo trainLocation = train.PlaceInBlock(blockDefinition.Block, front.Value);
 
             trainLocation.DisplayFront = front.Value;
+            train.LastCrossedBlockEdge = null;
+
             EventManager.Event(new LayoutEvent("train-relocated", train, blockDefinition.Block));
 
             // Figure out a block edge which the train could have crossed.
@@ -868,7 +883,7 @@ namespace LayoutManager.Logic {
             No, Yes, YesButHasOtherTrains
         }
 
-        private CanUseForProgrammingResult CanUseForProgramming(LayoutBlockDefinitionComponent blockDefinition, LocomotiveInfo? targetLocomotive = null) {
+        private CanUseForProgrammingResult CanUseForProgramming(LayoutBlockDefinitionComponent? blockDefinition, LocomotiveInfo? targetLocomotive = null) {
             if (blockDefinition != null && blockDefinition.PowerConnector.Inlet.ConnectedOutlet.ObtainablePowers.Any(p => p.Type == LayoutPowerType.Programmer)) {
                 if (blockDefinition.PowerConnector.Locomotives.Any()) {
                     // Region connected to the power has locomotives, if it has only one and this is the one about to get programmed that ok,
@@ -945,7 +960,7 @@ namespace LayoutManager.Logic {
                 LayoutBlockDefinitionComponent programmingLocation = programmingState.ProgrammingLocation;
                 ILayoutPower originalPower = programmingLocation.Power;
 
-                if (train != null && programmingLocation.Block.Id != train.LocomotiveBlock.Id) {
+                if (train != null && (train.LocomotiveBlock == null || programmingLocation.Block.Id != train.LocomotiveBlock.Id)) {
                     await EventManager.AsyncEvent(new LayoutEvent<object, string>("remove-from-track-request", train, "Remove locomotive to be programmed from track (and place it on programming track)").CopyOperationContext(e));
                     train = null;
                 }
@@ -962,7 +977,7 @@ namespace LayoutManager.Logic {
                             createTrainEvent.SetOption(elementName: "Train", optionName: "Front", value: programmingLocation.Track.ConnectionPoints[0].ToString());
                             createTrainEvent.SetOption(elementName: "Train", optionName: "Length", value: TrainLength.LocomotiveOnly.ToString());
 
-                            e.GetOperationContext().AddPariticpant(programmingLocation);
+                            e.GetOperationContext()?.AddPariticpant(programmingLocation);
                         }
 
                         train = EventManager.DoEvent(createTrainEvent).Result!;
@@ -1006,7 +1021,7 @@ namespace LayoutManager.Logic {
                     EventManager.Event(new LayoutEvent("free-layout-lock", GetProgrammingTracksLock(Guid.Empty, programmingLocation, CancellationToken.None)));
 
                     if (programmingState.PlacementLocation == null || programmingLocation.Id != programmingState.PlacementLocation.Id)
-                        e.GetOperationContext().RemoveParticipant(programmingLocation);
+                        e.GetOperationContext()?.RemoveParticipant(programmingLocation);
                 }
             }
             else {
@@ -1040,44 +1055,47 @@ namespace LayoutManager.Logic {
 
                 Debug.Assert(granted);
 
-                TrainLocationInfo oldTrainLocation = train.LocationOfBlock(oldBlock);
-                TrainLocationInfo newTrainLocation;
+                var oldTrainLocation = train.LocationOfBlock(oldBlock);
 
-                train.LastBlockEdgeCrossingSpeed = 1;
+                if (oldTrainLocation != null) {
+                    TrainLocationInfo newTrainLocation;
 
-                if (oldBlock.BlockDefinintion.ContainsBlockEdge(oldTrainLocation.DisplayFront, blockEdge)) {
-                    newTrainLocation = train.EnterBlock(TrainPart.Locomotive, newBlock, blockEdge, "train-extended");
+                    train.LastBlockEdgeCrossingSpeed = 1;
 
-                    train.LastCrossedBlockEdge = blockEdge;
+                    if (oldBlock.BlockDefinintion.ContainsBlockEdge(oldTrainLocation.DisplayFront, blockEdge)) {
+                        newTrainLocation = train.EnterBlock(TrainPart.Locomotive, newBlock, blockEdge, "train-extended");
 
-                    // Extended train location front should point to the direction opposite to the one of the block edge
-                    // and direction should be Backward
-                    if (newBlock.BlockDefinintion.ContainsBlockEdge(0, blockEdge))
-                        newTrainLocation.DisplayFront = newBlock.BlockDefinintion.Track.ConnectionPoints[1];
-                    else
-                        newTrainLocation.DisplayFront = newBlock.BlockDefinintion.Track.ConnectionPoints[0];
+                        train.LastCrossedBlockEdge = blockEdge;
+
+                        // Extended train location front should point to the direction opposite to the one of the block edge
+                        // and direction should be Backward
+                        if (newBlock.BlockDefinintion.ContainsBlockEdge(0, blockEdge))
+                            newTrainLocation.DisplayFront = newBlock.BlockDefinintion.Track.ConnectionPoints[1];
+                        else
+                            newTrainLocation.DisplayFront = newBlock.BlockDefinintion.Track.ConnectionPoints[0];
+                    }
+                    else {
+                        newTrainLocation = train.EnterBlock(TrainPart.LastCar, newBlock, blockEdge, "train-extended");
+
+                        // Extended train location front should point to the track contact direction and the track contact
+                        // state direction should be forward
+                        if (newBlock.BlockDefinintion.ContainsBlockEdge(0, blockEdge))
+                            newTrainLocation.DisplayFront = newBlock.BlockDefinintion.Track.ConnectionPoints[0];
+                        else
+                            newTrainLocation.DisplayFront = newBlock.BlockDefinintion.Track.ConnectionPoints[1];
+
+                        int iCpIndex = newBlock.BlockDefinintion.GetConnectionPointIndex(newTrainLocation.DisplayFront);
+                        LayoutBlockEdgeBase[] otherBlockEdges = newBlock.BlockDefinintion.GetBlockEdges(1 - iCpIndex);
+
+                        if (otherBlockEdges == null)
+                            newTrainLocation.BlockEdge = null;
+                        else
+                            newTrainLocation.BlockEdge = otherBlockEdges[0];
+                    }
+
+                    foreach (LayoutBlockEdgeBase newBlockEdge in newBlock.BlockEdges)
+                        AutoExtendTrain(train, newBlock, newBlockEdge);
                 }
-                else {
-                    newTrainLocation = train.EnterBlock(TrainPart.LastCar, newBlock, blockEdge, "train-extended");
-
-                    // Extended train location front should point to the track contact direction and the track contact
-                    // state direction should be forward
-                    if (newBlock.BlockDefinintion.ContainsBlockEdge(0, blockEdge))
-                        newTrainLocation.DisplayFront = newBlock.BlockDefinintion.Track.ConnectionPoints[0];
-                    else
-                        newTrainLocation.DisplayFront = newBlock.BlockDefinintion.Track.ConnectionPoints[1];
-
-                    int iCpIndex = newBlock.BlockDefinintion.GetConnectionPointIndex(newTrainLocation.DisplayFront);
-                    LayoutBlockEdgeBase[] otherBlockEdges = newBlock.BlockDefinintion.GetBlockEdges(1 - iCpIndex);
-
-                    if (otherBlockEdges == null)
-                        newTrainLocation.BlockEdge = null;
-                    else
-                        newTrainLocation.BlockEdge = otherBlockEdges[0];
-                }
-
-                foreach (LayoutBlockEdgeBase newBlockEdge in newBlock.BlockEdges)
-                    AutoExtendTrain(train, newBlock, newBlockEdge);
             }
         }
 

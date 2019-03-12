@@ -293,27 +293,32 @@ namespace LayoutEmulation {
                 commandStations.Clear();
 
                 foreach (XmlElement trainStateElement in LayoutModel.StateManager.Trains.Element) {
-                    TrainStateInfo train = new TrainStateInfo(trainStateElement);
-                    Guid commandStationId = train.CommandStation.Id;
+                    var train = new TrainStateInfo(trainStateElement);
 
-                    foreach (TrainLocomotiveInfo trainLocomotive in train.Locomotives) {
-                        LocomotiveInfo loco = trainLocomotive.Locomotive;
+                    if (train.CommandStation != null) {
+                        Guid commandStationId = train.CommandStation.Id;
 
-                        if (loco != null) {
-                            LayoutTrackComponent locoTrack = train.LocomotiveLocation.Block.BlockDefinintion.Track;
-                            ILayoutPower locoPower = locoTrack.GetPower(locoTrack.ConnectionPoints[0]);
+                        foreach (TrainLocomotiveInfo trainLocomotive in train.Locomotives) {
+                            var loco = trainLocomotive.Locomotive;
+                            var locoLocation = train.LocomotiveLocation;
+                            var locoBlock = train.LocomotiveBlock;
 
-                            LocomotiveState locomotive = AddLocomotive(commandStationId, loco.AddressProvider.Unit,
-                                new TrackEdge(train.LocomotiveBlock.BlockDefinintion.Track, train.LocomotiveLocation.DisplayFront));
+                            if (loco != null && locoLocation != null && locoBlock != null) {
+                                LayoutTrackComponent locoTrack = locoLocation.Block.BlockDefinintion.Track;
+                                ILayoutPower locoPower = locoTrack.GetPower(locoTrack.ConnectionPoints[0]);
 
-                            locomotive.Direction = train.MotionDirection;
-                            if (trainLocomotive.Orientation == LocomotiveOrientation.Backward)
-                                locomotive.Direction = (locomotive.Direction == LocomotiveOrientation.Forward ? LocomotiveOrientation.Backward :
-                                    LocomotiveOrientation.Forward);
+                                LocomotiveState locomotive = AddLocomotive(commandStationId, loco.AddressProvider.Unit,
+                                    new TrackEdge(locoBlock.BlockDefinintion.Track, locoLocation.DisplayFront));
+
+                                locomotive.Direction = train.MotionDirection;
+                                if (trainLocomotive.Orientation == LocomotiveOrientation.Backward)
+                                    locomotive.Direction = (locomotive.Direction == LocomotiveOrientation.Forward ? LocomotiveOrientation.Backward :
+                                        LocomotiveOrientation.Forward);
+                            }
+                            else
+                                Warning($"A previouslly used locomotive is no longer defined");
+
                         }
-                        else
-                            Warning($"A previouslly used locomotive is no longer defined");
-
                     }
                 }
 
@@ -368,28 +373,13 @@ namespace LayoutEmulation {
                     Guid commandStationId = train.CommandStation.Id;
 
                     foreach (TrainLocomotiveInfo trainLocomotive in train.Locomotives) {
-                        LocomotiveInfo loco = trainLocomotive.Locomotive;
+                        var loco = trainLocomotive.Locomotive;
+                        var locoBlock = train.LocomotiveBlock;
+                        var locoLocation = train.LocomotiveLocation;
 
-                        AddLocomotive(commandStationId, loco.AddressProvider.Unit, new TrackEdge(train.LocomotiveBlock.BlockDefinintion.Track,
-                            train.LocomotiveLocation.DisplayFront));
-                    }
-                }
-            }
-        }
-
-        [LayoutEvent("train-relocated")]
-        private void trainRelocated(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-
-            lock (Sync) {
-                if (train.CommandStation != null) {
-                    var commandStationId = train.CommandStation.Id;
-
-                    foreach (TrainLocomotiveInfo trainLocomotive in train.Locomotives) {
-                        var locomotive = GetLocomotive(commandStationId, trainLocomotive.Locomotive.AddressProvider.Unit);
-
-                        if (locomotive != null)
-                            locomotive.Location = new LocomotiveLocation(new TrackEdge(train.LocomotiveBlock.BlockDefinintion.Track, train.LocomotiveLocation.DisplayFront));
+                        Debug.Assert(locoBlock != null && locoLocation != null);
+                        AddLocomotive(commandStationId, loco.AddressProvider.Unit, new TrackEdge(locoBlock.BlockDefinintion.Track,
+                            locoLocation.DisplayFront));
                     }
                 }
             }
@@ -410,6 +400,28 @@ namespace LayoutEmulation {
                     }
                 }
             }
+        }
+
+        [LayoutEvent("train-relocated")]
+        private void trainRelocated(LayoutEvent e) {
+            //var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+
+            trainRemoved(e);
+            trainCreated(e);
+#if NO
+            lock (Sync) {
+                if (train.CommandStation != null) {
+                    var commandStationId = train.CommandStation.Id;
+
+                    foreach (TrainLocomotiveInfo trainLocomotive in train.Locomotives) {
+                        var locomotive = GetLocomotive(commandStationId, trainLocomotive.Locomotive.AddressProvider.Unit);
+
+                        if (locomotive != null)
+                            locomotive.Location = new LocomotiveLocation(new TrackEdge(train.LocomotiveBlock.BlockDefinintion.Track, train.LocomotiveLocation.DisplayFront));
+                    }
+                }
+            }
+#endif
         }
 
         #endregion
@@ -627,6 +639,6 @@ namespace LayoutEmulation {
         }
     }
 
-    #endregion
+#endregion
 
 }

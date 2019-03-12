@@ -78,6 +78,7 @@ namespace LayoutManager.Logic {
                     // The same logic but reversing the "to" and "from" is applied if the train moves in an opposite direction
                     train = trackContactPassingState.Train;
 
+                    Debug.Assert(train != null);
                     LocomotiveOrientation direction = (train.Speed >= 0) ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
 
                     if (direction == trackContactPassingState.Direction) {
@@ -116,7 +117,7 @@ namespace LayoutManager.Logic {
                         if (train.Managed)
                             train.LastBlockEdgeCrossingSpeed = train.Speed;
 
-                        TrainPart fromLocationTrainPart = train.LocationOfBlock(trackingResult.FromBlock).TrainPart;
+                        var fromLocationTrainPart = train.LocationOfBlock(trackingResult.FromBlock)!.TrainPart;
 
                         // If the train has more than one contact then create a new track contact state to track the passage of the
                         // train on top of the contact. Otherwise, since there is only one contact trigger, the trigger of a contact
@@ -268,7 +269,7 @@ namespace LayoutManager.Logic {
                         if (train.Managed)
                             train.LastBlockEdgeCrossingSpeed = train.Speed;
 
-                        TrainPart fromLocationTrainPart = train.LocationOfBlock(trackingResult.FromBlock).TrainPart;
+                        TrainPart fromLocationTrainPart = train.LocationOfBlock(trackingResult.FromBlock)!.TrainPart;
 
                         train.EnterBlock(fromLocationTrainPart,
                             trackingResult.ToBlock, trackingResult.BlockEdge, null);
@@ -357,9 +358,9 @@ namespace LayoutManager.Logic {
                 LayoutBlock otherBlock = blockEdge.GetNeighboringBlock(block);
 
                 if (otherBlock.LockRequest != null && !otherBlock.LockRequest.IsManualDispatchLock) {
-                    TrainStateInfo train = LayoutModel.StateManager.Trains[otherBlock.LockRequest.OwnerId];
+                    var train = LayoutModel.StateManager.Trains[otherBlock.LockRequest.OwnerId];
 
-                    if (train.Speed > 0) {
+                    if (train != null && train.Speed > 0) {
                         // Stop the train, and abort any trip that this train belongs to
                         train.Speed = 0;
                         EventManager.Event(new LayoutEvent("abort-trip", train, true));
@@ -392,17 +393,18 @@ namespace LayoutManager.Logic {
                 bool continueScan = true;
 
                 do {
-                    if (edge.Track.BlockDefinitionComponent != null) {
-                        var lockRequest = edge.Track.BlockDefinitionComponent.Block.LockRequest;
+                    var blockDefinition = edge.Track.BlockDefinitionComponent;
+
+                    if (blockDefinition != null) {
+                        var lockRequest = blockDefinition.Block.LockRequest;
 
                         // If got to block not locked by the train, we are not on the way to the faulty turnout...
                         if (lockRequest == null || lockRequest.OwnerId != train.Id)
                             continueScan = false;
-                        if (edge.Track.BlockDefinitionComponent.Block.IsTrainInBlock(train))
+                        if (blockDefinition.Block.IsTrainInBlock(train))
                             continueScan = false;
                     }
                     else {
-
                         if (edge.Track is IModelComponentIsMultiPath turnout) {
                             // Since this is merge point in a block locked by the train, it had to be set correctly
                             // if arrived to this from the wrong block, its setting was incorrect
@@ -445,7 +447,7 @@ namespace LayoutManager.Logic {
                     // The train is removed from the block as long as it will not cause it to be removed
                     // completely
                     if (train.Locations.Count > 1) {
-                        LayoutBlockEdgeBase blockEdge = train.LastCrossedBlockEdge;
+                        var blockEdge = train.LastCrossedBlockEdge;
                         LayoutBlock toBlock;
 
                         Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, " Removing train " + train.DisplayName + " because block is free: " + trainLocation.Block.BlockDefinintion.FullDescription);
@@ -536,7 +538,7 @@ namespace LayoutManager.Logic {
                 trackEdge = nextTrackEdge;
             }
 
-            Debug.Assert(trackEdge.Track.BlockDefinitionComponent.Id == linkedBlock.BlockDefinintion.Id);
+            Debug.Assert(trackEdge.Track.BlockDefinitionComponent != null && trackEdge.Track.BlockDefinitionComponent!.Id == linkedBlock.BlockDefinintion.Id);
 
             EventManager.Event(new LayoutEvent("relocate-train-request", trainLocationInfo.Train, linkedBlock.BlockDefinintion).SetOption("Train", "Front", front.ToString()));
         }
@@ -811,7 +813,7 @@ namespace LayoutManager.Logic {
 
             if (trackingResult.Train.Speed != 0) {
                 ILayoutTopologyServices ts = TopologyServices;
-                TrackEdge edge = new TrackEdge(trackingResult.FromBlock.BlockDefinintion.Track, trackingResult.Train.LocationOfBlock(trackingResult.FromBlock).DisplayFront);
+                TrackEdge edge = new TrackEdge(trackingResult.FromBlock.BlockDefinintion.Track, trackingResult.Train.LocationOfBlock(trackingResult.FromBlock)!.DisplayFront);
 
                 //				trackingResult.Dump();
 
@@ -829,8 +831,12 @@ namespace LayoutManager.Logic {
                         edge = ts.FindTrackConnectingAt(new TrackEdge(edge.Track, edge.Track.ConnectTo(edge.ConnectionPoint, LayoutComponentConnectionType.Passage)[0]));
                 }
 
-                if (edge != TrackEdge.Empty && edge.Track.BlockEdgeBase.Id != trackingResult.BlockEdgeId)
-                    return false;
+                if (edge != TrackEdge.Empty) {
+                    var blockEdge = edge.Track.BlockEdgeBase;
+
+                    if (blockEdge != null && blockEdge.Id != trackingResult.BlockEdgeId)
+                        return false;
+                }
             }
 
             return true;

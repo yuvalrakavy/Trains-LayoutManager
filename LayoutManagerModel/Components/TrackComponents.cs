@@ -6,6 +6,7 @@ using System.Diagnostics;
 
 using LayoutManager.Model;
 
+#nullable enable
 namespace LayoutManager.Components {
     /// <summary>
     /// Generic location on the grid and a connection point in this grid. A component can
@@ -107,7 +108,7 @@ namespace LayoutManager.Components {
         /// Only cross and parallel diagnonal components can be part of two blocks. Therefore
         /// the connection point is required to indicate which block
         /// </remarks>
-        void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock block);
+        void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock? block);
 
         /// <summary>
         /// Check if the component connects to the given connection point
@@ -142,8 +143,8 @@ namespace LayoutManager.Components {
     /// interface.
     /// </summary>
     public abstract class LayoutTrackComponent : ModelComponent, ILayoutConnectableComponent {
-        ModelComponent trackAnnotation; // A component such as track contact, block edge etc. that is on this track			
-        TrackEdge[] connectedEdges;     // The components connected to this one indexed by the connection point
+        ModelComponent? trackAnnotation; // A component such as track contact, block edge etc. that is on this track			
+        TrackEdge[]? connectedEdges;     // The components connected to this one indexed by the connection point
 
         public override ModelComponentKind Kind => ModelComponentKind.Track;
 
@@ -153,20 +154,33 @@ namespace LayoutManager.Components {
 
         public abstract LayoutComponentConnectionPoint[] ConnectTo(LayoutComponentConnectionPoint from, LayoutComponentConnectionType type);
 
-        public abstract LayoutBlock GetBlock(LayoutComponentConnectionPoint cp);
 
-        public abstract void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock block);
+        public abstract LayoutBlock? GetBlockNullable(LayoutComponentConnectionPoint cp);
 
-        public abstract LayoutTrackPowerConnectorComponent GetPowerConnector(LayoutComponentConnectionPoint cp);
+        public LayoutBlock GetBlock(LayoutComponentConnectionPoint cp) {
+            var block = GetBlockNullable(cp);
 
-        public abstract void SetPowerConnector(LayoutComponentConnectionPoint cp, LayoutTrackPowerConnectorComponent powerConnectorComponent);
+            Debug.Assert(block != null);
+            return block;
+        }
+
+        public abstract void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock? block);
+
+        public abstract LayoutTrackPowerConnectorComponent? GetPowerConnector(LayoutComponentConnectionPoint cp);
+
+        public abstract void SetPowerConnector(LayoutComponentConnectionPoint cp, LayoutTrackPowerConnectorComponent? powerConnectorComponent);
 
         public virtual int GetSwitchState(LayoutComponentConnectionPoint cpSource, LayoutComponentConnectionPoint cpDestination) {
             Debug.Assert(false, "Component is not multi-path component");
             return 0;
         }
 
-        public ILayoutPower GetPower(LayoutComponentConnectionPoint cp) => GetPowerConnector(cp).Inlet.ConnectedOutlet.Power;
+        public ILayoutPower GetPower(LayoutComponentConnectionPoint cp) {
+            var powerConnector = GetPowerConnector(cp);
+
+            Debug.Assert(powerConnector != null);
+            return powerConnector.Inlet.ConnectedOutlet.Power;
+        }
 
         /// <summary>
         /// Given a connection point, returns the offset to get to the component that
@@ -297,7 +311,7 @@ namespace LayoutManager.Components {
             connectedEdges[cp] = edge;
         }
 
-        public TrackEdge GetConnectedComponentEdge(LayoutComponentConnectionPoint cp) => connectedEdges[cp];
+        public TrackEdge GetConnectedComponentEdge(LayoutComponentConnectionPoint cp) => connectedEdges![cp];
 
         public override bool DrawOutOfGrid => false;
 
@@ -319,7 +333,7 @@ namespace LayoutManager.Components {
                 trackAnnotation = this;
         }
 
-        public ModelComponent TrackAnnotation {
+        public ModelComponent? TrackAnnotation {
             get {
                 if (trackAnnotation == this)
                     return null;
@@ -335,17 +349,17 @@ namespace LayoutManager.Components {
             }
         }
 
-        public LayoutBlockEdgeBase BlockEdgeBase => trackAnnotation as LayoutBlockEdgeBase;
+        public LayoutBlockEdgeBase? BlockEdgeBase => trackAnnotation as LayoutBlockEdgeBase;
 
-        public LayoutBlockEdgeComponent BlockEdgeComponent => trackAnnotation as LayoutBlockEdgeComponent;
+        public LayoutBlockEdgeComponent? BlockEdgeComponent => trackAnnotation as LayoutBlockEdgeComponent;
 
-        public LayoutTrackContactComponent TrackContactComponent => trackAnnotation as LayoutTrackContactComponent;
+        public LayoutTrackContactComponent? TrackContactComponent => trackAnnotation as LayoutTrackContactComponent;
 
-        public LayoutBlockDefinitionComponent BlockDefinitionComponent => trackAnnotation as LayoutBlockDefinitionComponent;
+        public LayoutBlockDefinitionComponent? BlockDefinitionComponent => trackAnnotation as LayoutBlockDefinitionComponent;
 
-        public LayoutTrackIsolationComponent TrackIsolationComponent => trackAnnotation as LayoutTrackIsolationComponent;
+        public LayoutTrackIsolationComponent? TrackIsolationComponent => trackAnnotation as LayoutTrackIsolationComponent;
 
-        public LayoutTrackLinkComponent TrackLinkComponent => trackAnnotation as LayoutTrackLinkComponent;
+        public LayoutTrackLinkComponent? TrackLinkComponent => trackAnnotation as LayoutTrackLinkComponent;
 
         #endregion
     }
@@ -358,11 +372,11 @@ namespace LayoutManager.Components {
     public class LayoutStraightTrackComponent : LayoutTrackComponent {
         LayoutComponentConnectionPoint cp1, cp2;
 
-        LayoutBlock block;
-        LayoutBlock optionalContactBlock;
+        LayoutBlock? block;
+        LayoutBlock? optionalContactBlock;
 
-        LayoutTrackPowerConnectorComponent powerConnector;
-        LayoutTrackPowerConnectorComponent optionalPowerConnector;
+        LayoutTrackPowerConnectorComponent? powerConnector;
+        LayoutTrackPowerConnectorComponent? optionalPowerConnector;
 
         public LayoutStraightTrackComponent(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
             this.cp1 = cp1;
@@ -386,7 +400,7 @@ namespace LayoutManager.Components {
                 else if (from == cp2)
                     return new LayoutComponentConnectionPoint[] { cp1 };
                 else
-                    return null;
+                    return new LayoutComponentConnectionPoint[] { };
             }
         }
 
@@ -400,20 +414,22 @@ namespace LayoutManager.Components {
         /// If the track is associated with a BLOCK_EDGE, then it separate two blocks. One if found in cp1, and the
         /// other in cp2.
         /// </remarks>
-        public override LayoutBlock GetBlock(LayoutComponentConnectionPoint cp) {
+        public override LayoutBlock? GetBlockNullable(LayoutComponentConnectionPoint cp) {
             if (BlockEdgeBase != null) {
+                Debug.Assert(block != null && optionalContactBlock != null);
                 if (cp == cp1)
                     return block;
                 else if (cp == cp2)
                     return optionalContactBlock;
             }
-            else if (cp == cp1 || cp == cp2)
+            else if (cp == cp1 || cp == cp2) {
                 return block;
+            }
 
             throw new ArgumentException("Track does not have this connection point", nameof(cp));
         }
 
-        public override void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock block) {
+        public override void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock? block) {
             if (BlockEdgeBase != null) {
                 if (cp == cp1)
                     this.block = block;
@@ -436,12 +452,15 @@ namespace LayoutManager.Components {
         /// In this case, the track has two power sources, one for the first connection point and another
         /// for the second one
         /// </remarks>
-        public override LayoutTrackPowerConnectorComponent GetPowerConnector(LayoutComponentConnectionPoint cp) {
+        public override LayoutTrackPowerConnectorComponent? GetPowerConnector(LayoutComponentConnectionPoint cp) {
             if (LayoutTrackIsolationComponent.Is(Spot)) {
-                if (cp == cp1)
+                if (cp == cp1) {
                     return powerConnector;
-                else if (cp == cp2)
+                }
+                else if (cp == cp2) {
+                    Debug.Assert(optionalPowerConnector != null);
                     return optionalPowerConnector;
+                }
             }
             else if (cp == cp1 || cp == cp2)
                 return powerConnector;
@@ -449,7 +468,7 @@ namespace LayoutManager.Components {
             throw new ArgumentException("Track does not have this connection point", nameof(cp));
         }
 
-        public override void SetPowerConnector(LayoutComponentConnectionPoint cp, LayoutTrackPowerConnectorComponent powerConnectorComponent) {
+        public override void SetPowerConnector(LayoutComponentConnectionPoint cp, LayoutTrackPowerConnectorComponent? powerConnectorComponent) {
             if (TrackIsolationComponent != null) {
                 if (cp == cp1)
                     this.powerConnector = powerConnectorComponent;
@@ -494,11 +513,11 @@ namespace LayoutManager.Components {
     /// </summary>
     public class LayoutDoubleTrackComponent : LayoutTrackComponent {
         LayoutComponentConnectionPoint cp1, cp2;
-        LayoutBlock cp12block;
-        LayoutTrackPowerConnectorComponent cp12powerConnector;
+        LayoutBlock? cp12block;
+        LayoutTrackPowerConnectorComponent? cp12powerConnector;
         LayoutComponentConnectionPoint cp3, cp4;
-        LayoutBlock cp34block;
-        LayoutTrackPowerConnectorComponent cp34powerConnector;
+        LayoutBlock? cp34block;
+        LayoutTrackPowerConnectorComponent? cp34powerConnector;
         bool isCross;
 
         public LayoutDoubleTrackComponent(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
@@ -539,7 +558,7 @@ namespace LayoutManager.Components {
         // Implement ILayoutConnectableComponent
         public override IList<LayoutComponentConnectionPoint> ConnectionPoints => Array.AsReadOnly<LayoutComponentConnectionPoint>(new LayoutComponentConnectionPoint[] { cp1, cp2, cp3, cp4 });
 
-        public LayoutComponentConnectionPoint[] GetTrackPath(int n) {
+        public LayoutComponentConnectionPoint[]? GetTrackPath(int n) {
             if (n == 0)
                 return new LayoutComponentConnectionPoint[] { cp1, cp2 };
             else if (n == 1)
@@ -557,19 +576,19 @@ namespace LayoutManager.Components {
                 return new LayoutComponentConnectionPoint[] { cp4 };
             else if (from == cp4)
                 return new LayoutComponentConnectionPoint[] { cp3 };
-            else
-                return null;
+
+            throw new NotImplementedException();
         }
 
-        public override LayoutBlock GetBlock(LayoutComponentConnectionPoint cp) {
+        public override LayoutBlock? GetBlockNullable(LayoutComponentConnectionPoint cp) {
             if (cp == cp1 || cp == cp2)
-                return cp12block;
+                return cp12block!;
             else if (cp == cp3 || cp == cp4)
-                return cp34block;
+                return cp34block!;
             throw new ArgumentException("Track does not have this connection point", nameof(cp));
         }
 
-        public override void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock block) {
+        public override void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock? block) {
             if (cp == cp1 || cp == cp2)
                 cp12block = block;
             else if (cp == cp3 || cp == cp4)
@@ -580,13 +599,13 @@ namespace LayoutManager.Components {
 
         public LayoutBlock GetOtherBlock(LayoutComponentConnectionPoint cp) {
             if (cp == cp1 || cp == cp2)
-                return cp34block;
+                return cp34block!;
             else if (cp == cp3 || cp == cp4)
-                return cp12block;
+                return cp12block!;
             throw new ArgumentException("Track does not have this connection point", nameof(cp));
         }
 
-        public override LayoutTrackPowerConnectorComponent GetPowerConnector(LayoutComponentConnectionPoint cp) {
+        public override LayoutTrackPowerConnectorComponent? GetPowerConnector(LayoutComponentConnectionPoint cp) {
             if (cp == cp1 || cp == cp2)
                 return cp12powerConnector;
             else if (cp == cp3 || cp == cp4)
@@ -594,7 +613,7 @@ namespace LayoutManager.Components {
             throw new ArgumentException("Track does not have this connection point", nameof(cp));
         }
 
-        public override void SetPowerConnector(LayoutComponentConnectionPoint cp, LayoutTrackPowerConnectorComponent powerConnectorComponent) {
+        public override void SetPowerConnector(LayoutComponentConnectionPoint cp, LayoutTrackPowerConnectorComponent? powerConnectorComponent) {
             if (cp == cp1 || cp == cp2)
                 cp12powerConnector = powerConnectorComponent;
             else if (cp == cp3 || cp == cp4)
@@ -641,8 +660,8 @@ namespace LayoutManager.Components {
     /// Base class for components that are multi-path (e.g. turnout, double-slip)
     /// </summary>
     public abstract class LayoutMultiPathTrackComponent : LayoutTrackComponent, IModelComponentHasSwitchingState, IModelComponentHasId {
-        LayoutBlock block;
-        LayoutTrackPowerConnectorComponent powerConnector;
+        LayoutBlock? block;
+        LayoutTrackPowerConnectorComponent? powerConnector;
         readonly SwitchingStateSupport switchingStateSupport;
 
         public LayoutMultiPathTrackComponent() {
@@ -672,24 +691,26 @@ namespace LayoutManager.Components {
         }
 
 
-        public override LayoutBlock GetBlock(LayoutComponentConnectionPoint cp) {
+        public override LayoutBlock? GetBlockNullable(LayoutComponentConnectionPoint cp) {
             if (HasConnectionPoint(cp))
                 return block;
             throw new ArgumentException("Track does not have this connection point", nameof(cp));
         }
 
-        public override void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock block) {
+        public override void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock? block) {
             if (HasConnectionPoint(cp))
                 this.block = block;
         }
 
-        public override LayoutTrackPowerConnectorComponent GetPowerConnector(LayoutComponentConnectionPoint cp) {
-            if (HasConnectionPoint(cp))
+        public override LayoutTrackPowerConnectorComponent? GetPowerConnector(LayoutComponentConnectionPoint cp) {
+            if (HasConnectionPoint(cp)) {
+                Debug.Assert(powerConnector != null);
                 return powerConnector;
+            }
             throw new ArgumentException("Track does not have this connection point", nameof(cp));
         }
 
-        public override void SetPowerConnector(LayoutComponentConnectionPoint cp, LayoutTrackPowerConnectorComponent powerConnectorComponent) {
+        public override void SetPowerConnector(LayoutComponentConnectionPoint cp, LayoutTrackPowerConnectorComponent? powerConnectorComponent) {
             if (HasConnectionPoint(cp))
                 this.powerConnector = powerConnectorComponent;
             else
@@ -746,7 +767,7 @@ namespace LayoutManager.Components {
             }
         }
 
-        public override string RequiredControlModuleTypeName {
+        public override string? RequiredControlModuleTypeName {
             get {
                 if (Element.HasAttribute("BuiltinDecoderTypeName"))
                     return Element.GetAttribute("BuiltinDecoderTypeName");
@@ -803,7 +824,7 @@ namespace LayoutManager.Components {
                 else if (from == straight || from == branch)
                     return new LayoutComponentConnectionPoint[] { tip };
                 else
-                    return null;
+                    return new LayoutComponentConnectionPoint[] { };
             }
             else {
                 if (from == tip)
@@ -813,7 +834,7 @@ namespace LayoutManager.Components {
                 else if (from == branch)
                     return new LayoutComponentConnectionPoint[] { straight, tip };
                 else
-                    return null;
+                    return new LayoutComponentConnectionPoint[] { };
             }
         }
 
@@ -1093,14 +1114,13 @@ namespace LayoutManager.Components {
                         return new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.B,
                             DiagonalConnectionPoints(LayoutComponentConnectionPoint.T)[diagonalIndex] };
 
-
                     case LayoutComponentConnectionPoint.B:
                         return new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T,
                             DiagonalConnectionPoints(LayoutComponentConnectionPoint.T)[1-diagonalIndex] };
 
                 }
 
-                return null;
+                throw new NotImplementedException();
             }
             else {
                 LayoutComponentConnectionPoint[] result = new LayoutComponentConnectionPoint[3];

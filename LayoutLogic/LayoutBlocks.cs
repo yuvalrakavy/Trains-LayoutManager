@@ -93,7 +93,7 @@ namespace LayoutManager.Logic {
                         if (track != null) {
                             if (spot[ModelComponentKind.TrackLink] == null) {
                                 foreach (LayoutComponentConnectionPoint cp in track.ConnectionPoints) {
-                                    if (track.GetBlock(cp) == null) {
+                                    if (track.GetBlockNullable(cp) == null) {
                                         LayoutBlock? block = null;
 
                                         foreach (LayoutComponentConnectionPoint scanCp in track.ConnectionPoints) {
@@ -223,7 +223,7 @@ namespace LayoutManager.Logic {
                 LayoutSelection ambiguousBlockEdges = new LayoutSelection();
 
                 foreach (TrackEdge edge in blockDefinition.Block.TrackEdges) {
-                    LayoutBlockEdgeBase blockEdge = edge.Track.BlockEdgeBase;
+                    var blockEdge = edge.Track.BlockEdgeBase;
 
                     if (blockEdge != null) {
                         bool reachable = false;
@@ -283,7 +283,7 @@ namespace LayoutManager.Logic {
                 TrackEdge edge = scanStack.Pop();
 
                 if (edge != TrackEdge.Empty) {
-                    LayoutBlockEdgeBase blockEdge = edge.Track.BlockEdgeBase;
+                    var blockEdge = edge.Track.BlockEdgeBase;
 
                     if (blockEdge != null)
                         blockInfo.AddBlockEdge(cpIndex, blockEdge);
@@ -385,7 +385,7 @@ namespace LayoutManager.Logic {
 
             if (block.BlockDefinintion != null) {
                 foreach (Guid policyID in block.BlockDefinintion.Info.Policies) {
-                    LayoutPolicyInfo policy = LayoutModel.StateManager.BlockInfoPolicies[policyID];
+                    var policy = LayoutModel.StateManager.BlockInfoPolicies[policyID];
 
                     if (policy != null) {
                         LayoutEventScript eventScript;

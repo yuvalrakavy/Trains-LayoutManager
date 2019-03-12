@@ -28,7 +28,10 @@ namespace LayoutManager {
         /// <param name="theEvent"></param>
         /// <param name="commandStation"></param>
         /// <returns></returns>
-        public static LayoutEvent SetCommandStation(this LayoutEvent theEvent, IModelComponentHasNameAndId commandStation) => theEvent.SetOption(elementName: "CommandStation", optionName: "ID", id: commandStation.Id).SetOption(elementName: "CommandStation", optionName: "Name", value: commandStation.NameProvider.Name);
+        public static LayoutEvent SetCommandStation(this LayoutEvent theEvent, IModelComponentHasNameAndId? commandStation) {
+            Debug.Assert(commandStation != null);
+            return theEvent.SetOption(elementName: "CommandStation", optionName: "ID", id: commandStation.Id).SetOption(elementName: "CommandStation", optionName: "Name", value: commandStation.NameProvider.Name);
+        }
 
         /// <summary>
         /// Add command station information based on a command station controlling a train
@@ -243,7 +246,7 @@ namespace LayoutManager.Components {
         /// Default implementation is returning a completed task that does noting
         /// </summary>
         protected virtual Task OnTerminateCommunication() {
-            var tcs = new TaskCompletionSource<object>();
+            var tcs = new TaskCompletionSource<object?>();
 
             tcs.SetResult(null);
             return tcs.Task;
@@ -849,7 +852,7 @@ namespace LayoutManager.Components {
         public virtual int Timeout => 2000;
 
         public virtual void OnTimeout() {
-            EventManager.Instance.InterThreadEventInvoker.QueueEvent(new LayoutEvent(null, "add-error", null, "Reply was not received on time for " + this.GetType().Name + " command"));
+            EventManager.Instance.InterThreadEventInvoker.QueueEvent(new LayoutEvent("add-error", null, "Reply was not received on time for " + this.GetType().Name + " command"));
         }
 
         public abstract void OnReply(object replyPacket);

@@ -51,7 +51,7 @@ namespace LayoutManager.Logic {
         [LayoutEvent("enter-operation-mode", Order = 1000)]
         private void enterOperationMode(LayoutEvent e) {
             foreach (LayoutPolicyInfo policy in LayoutModel.StateManager.LayoutPolicies) {
-                if (policy.Apply) {
+                if (policy.Apply && policy.EventScriptElement != null) {
                     LayoutEventScript runningScript = EventManager.EventScript("Global policy " + policy.Name, policy.EventScriptElement, new Guid[] { }, null);
 
                     runningScript.Id = policy.Id;

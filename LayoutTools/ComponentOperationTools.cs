@@ -572,7 +572,7 @@ namespace LayoutManager.Tools {
             if (dragEvent.Data.GetData(typeof(XmlElement)) is XmlElement element) {
                 if (element.Name == "Locomotive" || element.Name == "Train") {
                     if (!blockDefinition.Block.HasTrains) {
-                        TrainStateInfo train = LayoutModel.StateManager.Trains[element];
+                        var train = LayoutModel.StateManager.Trains[element];
 
                         if (train == null) {        // Not already on track
                             var result = EventManager.Event<XmlElement, LayoutBlockDefinitionComponent, CanPlaceTrainResult>("can-locomotive-be-placed", element, blockDefinition)!;
@@ -634,7 +634,7 @@ namespace LayoutManager.Tools {
             if (dragEvent.Data.GetData(typeof(XmlElement)) is XmlElement element) {
                 if (element.Name == "Locomotive" || element.Name == "Train") {
                     if (!blockDefinition.Block.HasTrains) {
-                        TrainStateInfo train = LayoutModel.StateManager.Trains[element];
+                        var train = LayoutModel.StateManager.Trains[element];
 
                         // Check that train is not already on track and that there are not other pending placement operation on this loco/train or block
                         if (train == null &&
@@ -724,7 +724,7 @@ namespace LayoutManager.Tools {
                             container.AddText("Part of manual dispatch region");
                     }
                     else {
-                        TrainStateInfo train = LayoutModel.StateManager.Trains[lockRequest.OwnerId];
+                        var train = LayoutModel.StateManager.Trains[lockRequest.OwnerId];
 
                         if (train != null) {
                             container.AddText("Block allocated to:");
@@ -1499,7 +1499,11 @@ namespace LayoutManager.Tools {
 
             public ExtendableTrainInfo(TrainStateInfo train, TrackEdge edge, LayoutBlock otherBlock) {
                 this.Train = train;
-                this.blockEdge = (LayoutBlockEdgeBase)edge.Track.BlockEdgeBase;
+
+                var blockEdge = edge.Track.BlockEdgeBase;
+                Debug.Assert(blockEdge != null);
+
+                this.blockEdge = blockEdge;
                 this.Block = otherBlock;
             }
         }
@@ -1518,7 +1522,9 @@ namespace LayoutManager.Tools {
             protected override void OnClick(EventArgs e) {
                 int fromCount = 1, toCount = 1;
 
-                if (extendableTrainInfo.blockEdge.IsTrackContact() && extendableTrainInfo.Train.TrackContactTriggerCount > 2) {
+                if (extendableTrainInfo.blockEdge != null
+                    && extendableTrainInfo.blockEdge.IsTrackContact()
+                    && extendableTrainInfo.Train.TrackContactTriggerCount > 2) {
                     Dialogs.ExtendTrainSettings extendTrainSettings = new Dialogs.ExtendTrainSettings(extendableTrainInfo.Train);
 
                     if (extendTrainSettings.ShowDialog() != DialogResult.OK)
@@ -1536,7 +1542,7 @@ namespace LayoutManager.Tools {
 
                 TrackContactPassingStateInfo? trackContactPassingState = null;
 
-                if (extendableTrainInfo.blockEdge.IsTrackContact()) {
+                if (extendableTrainInfo.blockEdge != null && extendableTrainInfo.blockEdge.IsTrackContact()) {
                     trackContactPassingState = new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(extendableTrainInfo.blockEdge, "TrainPassing")) {
                         Train = extendableTrainInfo.Train,
                         FromBlock = block,
@@ -1547,12 +1553,12 @@ namespace LayoutManager.Tools {
                     };
                 }
 
-                TrainLocationInfo extendedTrainLocation = extendableTrainInfo.Train.LocationOfBlock(extendableTrainInfo.Block);
+                var extendedTrainLocation = extendableTrainInfo.Train.LocationOfBlock(extendableTrainInfo.Block);
                 TrainLocationInfo newTrainLocation;
 
                 extendableTrainInfo.Train.LastBlockEdgeCrossingSpeed = 1;
 
-                if (extendableTrainInfo.Block.BlockDefinintion.ContainsBlockEdge(extendedTrainLocation.DisplayFront, extendableTrainInfo.blockEdge)) {
+                if (extendedTrainLocation != null && extendableTrainInfo.Block.BlockDefinintion.ContainsBlockEdge(extendedTrainLocation.DisplayFront, extendableTrainInfo.blockEdge)) {
                     newTrainLocation = extendableTrainInfo.Train.EnterBlock(TrainPart.Locomotive, block, extendableTrainInfo.blockEdge, "train-extended");
 
                     extendableTrainInfo.Train.LastCrossedBlockEdge = extendableTrainInfo.blockEdge;

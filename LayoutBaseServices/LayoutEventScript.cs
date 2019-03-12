@@ -93,11 +93,11 @@ namespace LayoutManager {
         readonly ILayoutScript script;
         bool taskTerminated;
 
-        public LayoutEventScriptTask(ILayoutScript eventScript, XmlElement scriptElement, LayoutScriptContext context) {
+        public LayoutEventScriptTask(ILayoutScript eventScript, XmlElement? scriptElement, LayoutScriptContext context) {
             this.script = eventScript;
-            this.scriptElement = scriptElement;
+            this.scriptElement = scriptElement ?? throw new ArgumentNullException("Invali script element");
 
-            root = Parse(scriptElement, context);
+            root = Parse(this.scriptElement, context);
         }
 
         public LayoutEventScriptNode Parse(XmlElement elementToParse, LayoutScriptContext context) {
@@ -190,7 +190,7 @@ namespace LayoutManager {
     public class LayoutEventScript : ILayoutScript, IDisposable, IObjectHasId {
         readonly LayoutEvent? scriptDoneEvent;
         readonly LayoutEvent? errorOccurredEvent;
-        readonly XmlElement scriptElement;
+        readonly XmlElement? scriptElement;
         readonly ICollection<Guid> scopeIDs;
         Guid scriptID;
         readonly string name;
@@ -200,7 +200,7 @@ namespace LayoutManager {
         readonly List<LayoutEventScriptTask> tasks = new List<LayoutEventScriptTask>();
         LayoutEventScriptTask? rootTask;
 
-        public LayoutEventScript(string scriptName, XmlElement scriptElement,
+        public LayoutEventScript(string scriptName, XmlElement? scriptElement,
             ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent, LayoutEvent? errorOccurredEvent) {
             this.name = scriptName;
             this.scriptElement = scriptElement;
@@ -280,7 +280,7 @@ namespace LayoutManager {
         /// </summary>
         public string Name => name;
 
-        public LayoutEventScriptTask AddTask(XmlElement scriptElement, LayoutScriptContext context) {
+        public LayoutEventScriptTask AddTask(XmlElement? scriptElement, LayoutScriptContext context) {
             LayoutEventScriptTask task = new LayoutEventScriptTask(this, scriptElement, context);
 
             tasks.Add(task);

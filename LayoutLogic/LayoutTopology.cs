@@ -52,7 +52,7 @@ namespace LayoutManager.Logic {
                     return new TrackEdge(newTrack, newTrackConnectionPoint);
             }
             else {
-                LayoutTrackComponent linkedTrack = trackLink.LinkedTrack;
+                var linkedTrack = trackLink.LinkedTrack;
 
                 if (linkedTrack != null) {
                     // The linked was indeed linked to another track.

@@ -130,7 +130,7 @@ namespace LayoutManager.Logic {
 
             foreach (var split in LayoutModel.Components<IModelComponentIsMultiPath>(phase)) {
                 // If this split was not scanned, scan from it
-                LayoutTrackPowerConnectorComponent powerConnector = ((LayoutTrackComponent)split).GetPowerConnector(split.ConnectionPoints[0]);
+                var powerConnector = ((LayoutTrackComponent)split).GetPowerConnector(split.ConnectionPoints[0]);
                 var splits = new HashSet<IModelComponentIsMultiPath>();
 
                 if (powerConnector == null || powerConnector.Info.CheckReverseLoops) {
@@ -260,7 +260,7 @@ namespace LayoutManager.Logic {
                     // Check that programming power can be obtained for all blocks that are marked as Suggest for programming
                     var invalidProgrammingBlocks = new LayoutSelection(from blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(phase)
                                                                        where blockDefinition.Info.SuggestForProgramming &&
-                                                                       !blockDefinition.Track.GetPowerConnector(blockDefinition.Track.ConnectionPoints[0]).Inlet.ConnectedOutlet.ObtainablePowers.Any(p => p.Type == LayoutPowerType.Programmer)
+                                                                       !blockDefinition.Track.GetPowerConnector(blockDefinition.Track.ConnectionPoints[0])!.Inlet.ConnectedOutlet.ObtainablePowers.Any(p => p.Type == LayoutPowerType.Programmer)
                                                                        select blockDefinition);
 
                     if (invalidProgrammingBlocks.Any()) {
@@ -346,14 +346,16 @@ namespace LayoutManager.Logic {
         }
 
         private LayoutTrackPowerConnectorComponent ExtractPowerConnector(object powerRegionObject) {
-            if (powerRegionObject is TrainStateInfo)
-                return ((TrainStateInfo)powerRegionObject).LocomotiveBlock.BlockDefinintion.PowerConnector;
-            else if (powerRegionObject is LayoutBlockDefinitionComponent)
-                return ((LayoutBlockDefinitionComponent)powerRegionObject).PowerConnector;
-            else if (powerRegionObject is LayoutTrackPowerConnectorComponent)
-                return (LayoutTrackPowerConnectorComponent)powerRegionObject;
-            else
-                throw new ArgumentException("Invalid power region");
+            var powerConnector = powerRegionObject switch
+            {
+                TrainStateInfo train => train?.LocomotiveBlock?.BlockDefinintion.PowerConnector,
+                LayoutBlockDefinitionComponent blockDefinition => blockDefinition.PowerConnector,
+                LayoutTrackPowerConnectorComponent connector => connector,
+                _ => throw new ArgumentException("Invalid power region")
+            };
+
+            Debug.Assert(powerConnector != null);
+            return powerConnector;
         }
 
         [LayoutEventDef("train-power-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(ILayoutPower))]
@@ -479,7 +481,7 @@ namespace LayoutManager.Logic {
             var train = e.Sender;
 
             Debug.Assert(train != null);
-            if(train != null)
+            if(train != null && train.LocomotiveBlock != null)
                 OnTrainPowerChanged(train, train.LocomotiveBlock.BlockDefinintion.Power);
         }
 
@@ -487,7 +489,7 @@ namespace LayoutManager.Logic {
         private void onCanRemoveTrain(LayoutEvent e0) {
             var e = (LayoutEvent<TrainStateInfo>)e0;
             var train = e.Sender;
-            var power = train?.LocomotiveBlock.BlockDefinintion.Power;
+            var power = train?.LocomotiveBlock?.BlockDefinintion.Power;
 
             Debug.Assert(train != null && power != null);
             if (power != null) {

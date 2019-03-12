@@ -210,7 +210,7 @@ namespace LayoutManager.Logic {
             }
 
             public BlockEntry(TrainStateInfo train) {
-                this.block = train.LocomotiveBlock;
+                this.block = train.LocomotiveBlock!;
                 this.action = BlockAction.Go;
                 this.waitable = false;
                 if (train.LocomotiveLocation != null)
@@ -935,15 +935,15 @@ namespace LayoutManager.Logic {
             TrackEdge trainEdge = route.SourceEdge;
 
             while (true) {
-                if (trainEdge.Track.BlockDefinitionComponent != null) {
-                    LayoutBlockDefinitionComponent blockInfo = trainEdge.Track.BlockDefinitionComponent;
+                var blockDefinition = trainEdge.Track.BlockDefinitionComponent;
 
-                    if (canStartSectionID == Guid.Empty || blockInfo.Block.Id == canStartSectionID)
+                if (blockDefinition != null) {
+                    if (canStartSectionID == Guid.Empty || blockDefinition.Block.Id == canStartSectionID)
                         canStartSection = true;
 
                     bool blockHasTrain = false;
 
-                    foreach (TrainLocationInfo trainLocation in blockInfo.Block.Trains)
+                    foreach (TrainLocationInfo trainLocation in blockDefinition.Block.Trains)
                         if (trainLocation.Train.Id == trip.Train.Id &&
                             ((route.Direction == LocomotiveOrientation.Forward && trainLocation.DisplayFront == trainEdge.OtherConnectionPoint) ||
                             (route.Direction == LocomotiveOrientation.Backward && trainLocation.DisplayFront == trainEdge.ConnectionPoint))) {
@@ -952,7 +952,7 @@ namespace LayoutManager.Logic {
                         }
 
                     if (blockHasTrain)
-                        startSectionBlockID = blockInfo.Block.Id;
+                        startSectionBlockID = blockDefinition.Block.Id;
 
                     if (canStartSection && !blockHasTrain) {
                         Trace.WriteLineIf(traceDispatching.TraceInfo, $"-- Section will start in: {LayoutModel.Blocks[startSectionBlockID]}");
@@ -991,9 +991,11 @@ namespace LayoutManager.Logic {
                 LayoutBlock newBlock = edge.Track.GetBlock(edge.ConnectionPoint);
                 bool newBlockEdgeIsDetectable = false;
 
-                if (edge.Track.BlockEdgeBase != null) {
+                var blockEdge = edge.Track.BlockEdgeBase;
+
+                if (blockEdge != null) {
                     newBlock = edge.Track.GetBlock(edge.Track.ConnectTo(edge.ConnectionPoint, LayoutComponentConnectionType.Passage)[0]);
-                    newBlockEdgeIsDetectable = edge.Track.BlockEdgeBase.IsTrackContact();
+                    newBlockEdgeIsDetectable = blockEdge.IsTrackContact();
                 }
 
                 // Check if a new block starts
@@ -1063,7 +1065,9 @@ namespace LayoutManager.Logic {
                 else
                     front = edge.Track.ConnectTo(edge.ConnectionPoint, LayoutComponentConnectionType.Passage)[0];
 
-                if (edge.Track.BlockDefinitionComponent != null) {
+                var blockDefinition = edge.Track.BlockDefinitionComponent;
+
+                if (blockDefinition != null) {
                     if (route.Direction == LocomotiveOrientation.Backward)
                         blockInfoFront = edge.Track.ConnectTo(front, LayoutComponentConnectionType.Passage)[0];
                     else
@@ -1071,7 +1075,7 @@ namespace LayoutManager.Logic {
 
                     if (blockEntries.Count > 0) {
                         // Check if the block definition defines trip section boundry for this train
-                        LayoutBlockDefinitionComponentInfo info = edge.Track.BlockDefinitionComponent.Info;
+                        LayoutBlockDefinitionComponentInfo info = blockDefinition.Info;
 
                         if ((info.IsTripSectionBoundry(0) && edge.Track.ConnectionPoints[0] == edge.ConnectionPoint) ||
                             (info.IsTripSectionBoundry(1) && edge.Track.ConnectionPoints[1] == edge.ConnectionPoint))
@@ -1360,7 +1364,7 @@ namespace LayoutManager.Logic {
                     LayoutBlock block = edge.Track.GetBlock(edge.ConnectionPoint);
 
                     // Power connector are lock resources. Blocks that reside in a switchable power region should specify the power connector as a locked resource
-                    // When the block will be locked ppower will be connected (and when the block will be unlocked, power will be disconnected)
+                    // When the block will be locked power will be connected (and when the block will be unlocked, power will be disconnected)
                     //
                     // However this code ensure that power is connected to any block that is in the dispatch region to ensure that the train is not sent to tracks without power...
                     //
@@ -1534,7 +1538,11 @@ namespace LayoutManager.Logic {
         /// <param name="trip">The trip</param>
         /// <returns>True - the trip should be retried</returns>
         bool shouldRetryTrip(ActiveTripInfo trip) {
-            TripBestRouteResult tripBestRouteResult = findBestRoute(trip, trip.Train.LocomotiveBlock.BlockDefinintion, trip.Train.LocomotiveLocation.DisplayFront);
+            var locoBlock = trip.Train.LocomotiveBlock;
+            var locoLocation = trip.Train.LocomotiveLocation;
+
+            Debug.Assert(locoBlock != null && locoLocation != null);
+            TripBestRouteResult tripBestRouteResult = findBestRoute(trip, locoBlock.BlockDefinintion, locoLocation.DisplayFront);
 
             Trace.WriteLineIf(traceDispatching.TraceVerbose, $" Check if should retry planning for train {trip.Train.DisplayName}");
 
@@ -1779,7 +1787,7 @@ namespace LayoutManager.Logic {
                         if (block.LockRequest.IsManualDispatchLock)
                             Error(block, $"Train {train.DisplayName} entered block which is part of a manual dispatch region");
                         else {
-                            TrainStateInfo otherTrain = LayoutModel.StateManager.Trains[block.LockRequest.OwnerId];
+                            var otherTrain = LayoutModel.StateManager.Trains[block.LockRequest.OwnerId];
 
                             if (train.Managed)
                                 train.Speed = 0;            // Stop the train at once
@@ -1813,7 +1821,7 @@ namespace LayoutManager.Logic {
                 }
                 else {
                     if (!block.LockRequest.IsManualDispatchLock) {
-                        TrainStateInfo otherTrain = LayoutModel.StateManager.Trains[block.LockRequest.OwnerId];
+                        var otherTrain = LayoutModel.StateManager.Trains[block.LockRequest.OwnerId];
 
                         if (otherTrain != null) {
                             if (otherTrain.Id != train.Id) {
@@ -2032,7 +2040,11 @@ namespace LayoutManager.Logic {
             List<ITripRouteValidationAction> actions = new List<ITripRouteValidationAction>();
             bool canBeFixed = true;
 
-            sourceEdges.Add(new TrackEdge(train.LocomotiveBlock.BlockDefinintion.Track, train.LocomotiveLocation.DisplayFront));
+            var locoBlock = train.LocomotiveBlock;
+            var locoLocation = train.LocomotiveLocation;
+
+            Debug.Assert(locoBlock != null && locoLocation != null);
+            sourceEdges.Add(new TrackEdge(locoBlock.BlockDefinintion.Track, locoLocation.DisplayFront));
 
             for (int wayPointIndex = 0; wayPointIndex < tripPlan.Waypoints.Count; wayPointIndex++) {
                 TripPlanWaypointInfo wayPoint = tripPlan.Waypoints[wayPointIndex];
@@ -2067,7 +2079,7 @@ namespace LayoutManager.Logic {
 
                     if (wayPointIndex > 0) {
                         foreach (TrackEdge edge in result.InvalidSourceEdges) {
-                            LayoutBlockDefinitionComponent blockInfo = edge.Track.BlockDefinitionComponent;
+                            var blockInfo = edge.Track.BlockDefinitionComponent;
 
                             Debug.Assert(blockInfo != null);
                             actions.Add(new RouteValidationActionRemoveLocation(wayPointIndex - 1, blockInfo));

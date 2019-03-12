@@ -288,7 +288,7 @@ namespace LayoutManager.Tools {
             protected override void OnClick(EventArgs e) {
                 base.OnClick(e);
 
-                LayoutEventScript activeScript = policy.ActiveScript;
+                var activeScript = policy.ActiveScript;
 
                 if (activeScript != null)
                     activeScript.Dispose();
@@ -438,7 +438,7 @@ namespace LayoutManager.Tools {
         }
 
         class LayoutEventScriptNodeEventRunPolicy : LayoutEventScriptNodeEvent {
-            readonly LayoutPolicyInfo policy;
+            readonly LayoutPolicyInfo? policy;
             LayoutEventScript? eventScript;
 
             public LayoutEventScriptNodeEventRunPolicy(LayoutEvent e) : base(e) {
@@ -459,7 +459,7 @@ namespace LayoutManager.Tools {
                     eventScript = null;
                 }
 
-                if (!Occurred) {
+                if (!Occurred && policy != null) {
                     eventScript = EventManager.EventScript(policy.Name, policy.EventScriptElement, ((LayoutEventScript)Script).ScopeIDs, new LayoutEvent("run-policy-done", this));
                     eventScript.ParentContext = Context;
 
@@ -526,7 +526,7 @@ namespace LayoutManager.Tools {
             }
 
             public static string GetDescription(XmlElement element) {
-                LayoutPolicyInfo policy = LayoutModel.StateManager.Policies(null)[XmlConvert.ToGuid(element.GetAttribute("PolicyID"))];
+                var policy = LayoutModel.StateManager.Policies(null)[XmlConvert.ToGuid(element.GetAttribute("PolicyID"))];
                 string policyName;
 
                 if (policy == null)

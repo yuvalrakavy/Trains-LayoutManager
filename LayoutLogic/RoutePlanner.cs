@@ -470,8 +470,12 @@ namespace LayoutManager.Logic {
 
                     if (edge == TrackEdge.Empty)
                         result = SortTargetsResult.NoPath;
-                    else if (edge.Track.BlockDefinitionComponent != null)
-                        penaltyToTarget += edge.Track.BlockDefinitionComponent.Info.LengthInCM;
+                    else {
+                        var blockDefinition = edge.Track.BlockDefinitionComponent;
+
+                        if (blockDefinition != null)
+                            penaltyToTarget += blockDefinition.Info.LengthInCM;
+                    }
                 }
             }
 
@@ -535,13 +539,13 @@ namespace LayoutManager.Logic {
             BestRoute bestRoute = new BestRoute(sourceComponent, front, direction, routeOwner);
 
             if (traceRoutePlanning.TraceInfo) {
-                TrainStateInfo train = LayoutModel.StateManager.Trains[routeOwner];
+                var train = LayoutModel.StateManager.Trains[routeOwner];
 
                 Trace.Write("Find route to destination component ");
                 if (train != null)
                     Trace.Write("from " + sourceComponent.FullDescription + " ");
 
-                LayoutBlockDefinitionComponent blockInfo = BestRoute.TrackOf(destinationComponent).BlockDefinitionComponent;
+                var blockInfo = BestRoute.TrackOf(destinationComponent).BlockDefinitionComponent;
 
                 if (blockInfo != null)
                     Trace.WriteLine(" to " + blockInfo.Name + " direction " + direction.ToString());
@@ -564,7 +568,7 @@ namespace LayoutManager.Logic {
             const int penaltyForDestinationRank = 200;
             const int penaltyForLengthDifference = 100;
             const int penaltyForLengthLimitViolation = 100000;
-            TrainStateInfo train = LayoutModel.StateManager.Trains[routeOwner];
+            var train = LayoutModel.StateManager.Trains[routeOwner];
             BestRoute bestRoute = new BestRoute(sourceComponent, front, direction, routeOwner);
             LayoutTrackComponent sourceTrack;
 

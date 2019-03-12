@@ -44,7 +44,7 @@ namespace LayoutManager.Logic {
                 // Check if this request should be granted because it will "help" in clearing the way for granting high priority request
                 // this will be the case, if the owner of this request is a train that is locking resource that is needed by this "high
                 // priority" (oldest) request
-                TrainStateInfo train = LayoutModel.StateManager.Trains[lockRequest.OwnerId];
+                var train = LayoutModel.StateManager.Trains[lockRequest.OwnerId];
 
                 if (train != null) {
                     foreach (TrainLocationInfo trainLocation in train.Locations) {
@@ -368,7 +368,7 @@ namespace LayoutManager.Logic {
         private void dumpLockRequest(LayoutLockRequest request, int indentation) {
             Trace.Write(new string(' ', indentation));
 
-            TrainStateInfo train = LayoutModel.StateManager.Trains[request.OwnerId];
+            var train = LayoutModel.StateManager.Trains[request.OwnerId];
 
             if (train != null)
                 Trace.Write("Train " + train.DisplayName);

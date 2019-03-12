@@ -67,7 +67,7 @@ namespace LayoutManager.CommonUI.Controls {
             Guid id = XmlConvert.ToGuid(element.GetAttribute("ID"));
             bool onTrack;
 
-            TrainStateInfo trainState = LayoutModel.StateManager.Trains[id];
+            var trainState = LayoutModel.StateManager.Trains[id];
 
             if (trainState == null)
                 onTrack = false;
