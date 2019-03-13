@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using LayoutManager.Model;
+using LayoutManager.Logic;
 
 #pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Tools.Dialogs {
@@ -15,6 +16,9 @@ namespace LayoutManager.Tools.Dialogs {
 
             if (reason != null)
                 labelReason.Text = reason;
+
+            bool hasActiveTrips = (bool)EventManager.Event("any-active-trip-plan");
+            buttonAbortTrips.Visible = hasActiveTrips;
 
             EventManager.AddObjectSubscriptions(this);
         }

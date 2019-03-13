@@ -784,7 +784,13 @@ namespace LayoutManager.Logic {
             e.Info = AllSuspended;
         }
 
+        [LayoutEvent("any-active-trip-plan")]
+        private void AnyActiveTripPlan(LayoutEvent e) {
+            e.Info = activeTrips.Count > 0;
+        }
+
         #endregion
+
 
         #region Services getter properties
 

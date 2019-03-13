@@ -135,6 +135,10 @@
       <Project>{C314F674-90C0-4216-901E-3F411C3F3406}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
+    <ProjectReference Include="..\LayoutLogic\LayoutLogic.csproj">
+      <Project>{0c05cfa4-aeb1-4798-9236-6bfb75d299c5}</Project>
+      <Name>LayoutLogic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LayoutManagerModel\LayoutManagerModel.csproj">
       <Name>LayoutManagerModel</Name>
       <Project>{BD926873-4803-4036-868A-9EA11A1AE227}</Project>
