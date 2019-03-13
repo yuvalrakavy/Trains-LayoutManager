@@ -1208,6 +1208,7 @@ namespace LayoutManager.Logic {
                     block.BlockDefinintion.OnComponentChanged();
             }
 
+#if NO
             if (trainState.SpeedInSteps == 0) {
                 var edgeCrossingTime = new DateTime(trainState.LastBlockEdgeCrossingTime);
                 var timeSinceEdgeCrossing = DateTime.Now - edgeCrossingTime;
@@ -1229,11 +1230,12 @@ namespace LayoutManager.Logic {
                     }
                 }
             }
+#endif
         }
 
-        #endregion
+#endregion
 
-        #region Lights & Functions
+#region Lights & Functions
 
         [LayoutEventDef("set-train-lights-request", Role = LayoutEventRole.Request, SenderType = typeof(TrainStateInfo), InfoType = typeof(bool))]
         [LayoutEvent("set-train-lights-request", Role = LayoutEventRole.Request, InfoType = typeof(bool), SenderType = typeof(TrainStateInfo))]
@@ -1365,9 +1367,9 @@ namespace LayoutManager.Logic {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Speed limit
+#region Speed limit
 
         [LayoutEvent("locomotive-configuration-changed")]
         private void locomotiveConfigurationChanged(LayoutEvent e) {
@@ -1395,9 +1397,9 @@ namespace LayoutManager.Logic {
         }
 
 
-        #endregion
+#endregion
 
-        #region Train controller handling
+#region Train controller handling
 
         [LayoutEvent("train-controller-activated")]
         private void trainControllerActivated(LayoutEvent e0) {
@@ -1417,9 +1419,9 @@ namespace LayoutManager.Logic {
                 EventManager.Event(new LayoutEvent<TrainLocomotiveInfo, TrainStateInfo>("locomotive-controller-deactivated", trainLoco, train));
         }
 
-        #endregion
+#endregion
 
-        #region State reconstuction operations
+#region State reconstuction operations
 
         class TrackContactCrossTimeSorter : IComparer {
 
@@ -1661,6 +1663,6 @@ namespace LayoutManager.Logic {
             LayoutModel.StateManager.DocumentElement.RemoveAll();
         }
 
-        #endregion
+#endregion
     }
 }
