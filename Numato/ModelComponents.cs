@@ -60,58 +60,58 @@ namespace NumatoController {
 
 
         string Password {
-            get { return Element.GetAttribute(passwordAttribute);  }
+            get { return Element.GetAttribute(passwordAttribute); }
             set { Element.SetAttribute(passwordAttribute, value); }
         }
 
         #region Communication init/cleanup
 
         override protected void OnInitialize() {
-			_relayBus = null;
+            _relayBus = null;
 
-			OutputManager = new OutputManager(NameProvider.Name, 1);
-			OutputManager.Start();
+            OutputManager = new OutputManager(NameProvider.Name, 1);
+            OutputManager.Start();
 
             if (InterfaceType == CommunicationInterfaceType.TCP)
                 OutputManager.AddCommand(new LoginCommand(this, User, Password));
             else
                 OutputManager.AddCommand(new EmptyCommand(this));
-		}
+        }
 
-		override protected void OnCommunicationSetup() {
-			if(!Element.HasAttribute("OverlappedIO"))
-				Element.SetAttribute("OverlappedIO", XmlConvert.ToString(true));
-			if(!Element.HasAttribute("ReadIntervalTimeout"))
-				Element.SetAttribute("ReadIntervalTimeout", XmlConvert.ToString(3500));
-			if(!Element.HasAttribute("ReadTotalTimeoutConstant"))
-				Element.SetAttribute("ReadTotalTimeoutConstant", XmlConvert.ToString(6000));
-			if(!Element.HasAttribute("WriteTotalTimeoutConstant"))
-				Element.SetAttribute("WriteTotalTimeoutConstant", XmlConvert.ToString(6000));
-		}
+        override protected void OnCommunicationSetup() {
+            if (!Element.HasAttribute("OverlappedIO"))
+                Element.SetAttribute("OverlappedIO", XmlConvert.ToString(true));
+            if (!Element.HasAttribute("ReadIntervalTimeout"))
+                Element.SetAttribute("ReadIntervalTimeout", XmlConvert.ToString(3500));
+            if (!Element.HasAttribute("ReadTotalTimeoutConstant"))
+                Element.SetAttribute("ReadTotalTimeoutConstant", XmlConvert.ToString(6000));
+            if (!Element.HasAttribute("WriteTotalTimeoutConstant"))
+                Element.SetAttribute("WriteTotalTimeoutConstant", XmlConvert.ToString(6000));
+        }
 
-		override protected async Task OnTerminateCommunication() {
-			if(OutputManager != null) {
-				await OutputManager.WaitForIdle();
-				OutputManager.Terminate();
-				OutputManager = null;
-			}
-		}
+        override protected async Task OnTerminateCommunication() {
+            if (OutputManager != null) {
+                await OutputManager.WaitForIdle();
+                OutputManager.Terminate();
+                OutputManager = null;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Model Component overrides
+        #region Model Component overrides
 
-		public override void OnAddedToModel() {
-			base.OnAddedToModel();
+        public override void OnAddedToModel() {
+            base.OnAddedToModel();
 
-			LayoutModel.ControlManager.Buses.AddBusProvider(this);
-		}
+            LayoutModel.ControlManager.Buses.AddBusProvider(this);
+        }
 
-		public override void OnRemovingFromModel() {
-			base.OnRemovingFromModel();
+        public override void OnRemovingFromModel() {
+            base.OnRemovingFromModel();
 
-			LayoutModel.ControlManager.Buses.RemoveBusProvider(this);
-		}
+            LayoutModel.ControlManager.Buses.RemoveBusProvider(this);
+        }
 
         public override ModelComponentKind Kind => ModelComponentKind.ControlComponent;
 
@@ -130,60 +130,60 @@ namespace NumatoController {
         #endregion
 
         #region Event Handlers
+        #pragma warning disable IDE0051, IDE0060
+
+        [LayoutEvent("begin-design-time-layout-activation")]
+        private void beginDesignTimeLayoutActivation(LayoutEvent e) {
+            OnCommunicationSetup();
+            OpenCommunicationStream();
+            OnInitialize();
+            e.Info = true;
+        }
+
+        [LayoutEvent("end-design-time-layout-activation")]
+        private void EndDesignTimeLayoutActivation(LayoutEvent e) {
+            OnCleanup();
+
+            OnTerminateCommunication().Wait(100);
+            CloseCommunicationStream();
+            e.Info = true;
+        }
 
 
-		[LayoutEvent("begin-design-time-layout-activation")]
-		private void beginDesignTimeLayoutActivation(LayoutEvent e) {
-			OnCommunicationSetup();
-			OpenCommunicationStream();
-			OnInitialize();
-			e.Info = true;
-		}
-
-		[LayoutEvent("end-design-time-layout-activation")]
-		private void EndDesignTimeLayoutActivation(LayoutEvent e) {
-			OnCleanup();
-
-			OnTerminateCommunication().Wait(100);
-			CloseCommunicationStream();
-			e.Info = true;
-		}
-
-
-		[LayoutAsyncEvent("change-track-component-state-command", IfEvent="*[CommandStation/@ID='`string(@ID)`']")]
-		private Task changeTrackComponentStateCommand(LayoutEvent e0) {
-            var e = (LayoutEvent<ControlConnectionPointReference, int>)e0;
+        [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
+        private Task changeTrackComponentStateCommand(LayoutEvent e0) {
+            var e = (LayoutEventInfoValueType<ControlConnectionPointReference, int>)e0;
             var connectionPointRef = e.Sender;
 
             int iRelay = connectionPointRef.Module.Address + connectionPointRef.Index;
             bool on = e.Info != 0;
 
             return OutputManager.AddCommand(new SetRelayCommand(this, iRelay, on));
-		}
+        }
 
-		[LayoutEvent("numato-invoke-events", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-		private void numatoInvokeEvents(LayoutEvent e0) {
-			var e = (LayoutEvent<IList<LayoutEvent>>)e0;
+        [LayoutEvent("numato-invoke-events", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
+        private void numatoInvokeEvents(LayoutEvent e0) {
+            var e = (LayoutEvent<IList<LayoutEvent>>)e0;
 
-			foreach(var anEvent in e.Sender)
-				EventManager.Event(anEvent);
-		}
+            foreach (var anEvent in e.Sender)
+                EventManager.Event(anEvent);
+        }
 
-		#endregion
+        #endregion
 
-		#region Command classes
+        #region Command classes
 
-		public abstract class NumatoCommandBase : OutputSynchronousCommandBase {
-			protected NumatoController RelayController { get; }
+        public abstract class NumatoCommandBase : OutputSynchronousCommandBase {
+            protected NumatoController RelayController { get; }
 
-			public NumatoCommandBase(NumatoController relayController) {
-				this.RelayController = relayController;
-			}
+            public NumatoCommandBase(NumatoController relayController) {
+                this.RelayController = relayController;
+            }
 
-			public override void OnReply(object reply) {
-			}
+            public override void OnReply(object reply) {
+            }
 
-			protected virtual string Command { get;  } = "";
+            protected virtual string Command { get; } = "";
 
             protected void Send(byte[] command) {
                 Trace.WriteLineIf(TraceNumato.TraceInfo, $"NumatoRelayController: Sending: {Encoding.UTF8.GetString(command)}");
@@ -196,8 +196,8 @@ namespace NumatoController {
 
             protected void SendCommand() => Send(this.Command);
 
-			protected virtual void OnReply(byte[] replyBuffer) {
-			}
+            protected virtual void OnReply(byte[] replyBuffer) {
+            }
 
             const int maxReplySize = 1024;
 
@@ -216,7 +216,7 @@ namespace NumatoController {
 
             protected string CollectReply(byte[] expectToGet) {
                 byte[] reply = new byte[maxReplySize];
-                var expectLength = expectToGet.Length;
+                var _ = expectToGet.Length; // expectLength
                 var index = 0;
 
                 do {
@@ -236,11 +236,11 @@ namespace NumatoController {
 
             protected string CollectReply(string expectToGet) => CollectReply(Encoding.UTF8.GetBytes(expectToGet));
 
-			public override void Do() {
-				SendCommand();
+            public override void Do() {
+                SendCommand();
                 RelayController.OutputManager.SetReply(CollectReply(">"));
-			}
-		}
+            }
+        }
 
         class EmptyCommand : NumatoCommandBase {
             public EmptyCommand(NumatoController relayController) : base(relayController) { }
@@ -280,13 +280,13 @@ namespace NumatoController {
         }
 
         class SetRelayCommand : NumatoCommandBase {
-			int iRelay;
-			bool on;
+            readonly int iRelay;
+            readonly bool on;
 
-			public SetRelayCommand(NumatoController relayController, int iRelay, bool on) : base(relayController) {
-				this.iRelay = iRelay;
-				this.on = on;
-			}
+            public SetRelayCommand(NumatoController relayController, int iRelay, bool on) : base(relayController) {
+                this.iRelay = iRelay;
+                this.on = on;
+            }
 
 
             private static char RelayNumberCharacter(int iRelay) => (char)(iRelay < 10 ? iRelay + '0' : ((iRelay - 10) + 'A'));
@@ -298,12 +298,12 @@ namespace NumatoController {
                 base.OnReply(reply);
 
                 EventManager.Instance.InterThreadEventInvoker.QueueEvent(new LayoutEvent<IList<LayoutEvent>>("numato-invoke-events", new LayoutEvent[] {
-                    new LayoutEvent<ControlConnectionPointReference, int>("control-connection-point-state-changed-notification", new ControlConnectionPointReference(RelayController.RelayBus, iRelay), on ? 1 : 0)
+                    new LayoutEventInfoValueType<ControlConnectionPointReference, int>("control-connection-point-state-changed-notification", new ControlConnectionPointReference(RelayController.RelayBus, iRelay), on ? 1 : 0)
                 }).SetCommandStation(RelayController));
             }
         }
 
 
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -12,75 +12,70 @@ namespace MarklinDigital.Dialogs {
     /// Summary description for MarklinDigitalProperties.
     /// </summary>
     public class MarklinDigitalProperties : Form {
-		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
-		private ComboBox comboBoxPort;
-		private Label label1;
-		private Button buttonOK;
-		private Button buttonCancel;
-		private Label label2;
-		private NumericUpDown numericUpDownFeedbackPolling;
-		private Label label3;
-		private LayoutManager.CommonUI.Controls.LayoutEmulationSetup layoutEmulationSetup;
-		private Button buttonCOMsettings;
+        private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
+        private ComboBox comboBoxPort;
+        private Label label1;
+        private Button buttonOK;
+        private Button buttonCancel;
+        private Label label2;
+        private NumericUpDown numericUpDownFeedbackPolling;
+        private Label label3;
+        private LayoutManager.CommonUI.Controls.LayoutEmulationSetup layoutEmulationSetup;
+        private Button buttonCOMsettings;
 
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private Container components = null;
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private readonly Container components = null;
 
-		private void endOfDesignerVariables() { }
+        private void endOfDesignerVariables() { }
 
-		MarklinDigitalCentralStation	component;
-		LayoutXmlInfo					xmlInfo;
+        readonly MarklinDigitalCentralStation component;
+        readonly LayoutXmlInfo xmlInfo;
 
-		public MarklinDigitalProperties(MarklinDigitalCentralStation component)
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+        public MarklinDigitalProperties(MarklinDigitalCentralStation component) {
+            //
+            // Required for Windows Form Designer support
+            //
+            InitializeComponent();
 
-			this.component = component;
-			this.xmlInfo = new LayoutXmlInfo(component);
+            this.component = component;
+            this.xmlInfo = new LayoutXmlInfo(component);
 
-			nameDefinition.XmlInfo = this.xmlInfo;
+            nameDefinition.XmlInfo = this.xmlInfo;
 
-			layoutEmulationSetup.Element = xmlInfo.DocumentElement;
+            layoutEmulationSetup.Element = xmlInfo.DocumentElement;
 
-			comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute("Port");
-			if(xmlInfo.DocumentElement.HasAttribute("FeedbackPolling"))
-				numericUpDownFeedbackPolling.Value = XmlConvert.ToDecimal(xmlInfo.DocumentElement.GetAttribute("FeedbackPolling"));
+            comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute("Port");
+            if (xmlInfo.DocumentElement.HasAttribute("FeedbackPolling"))
+                numericUpDownFeedbackPolling.Value = XmlConvert.ToDecimal(xmlInfo.DocumentElement.GetAttribute("FeedbackPolling"));
 
-			updateButtons(null, null);
-		}
+            updateButtons(null, null);
+        }
 
         public LayoutXmlInfo XmlInfo => xmlInfo;
 
         private void updateButtons(object sender, EventArgs e) {
-		}
+        }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                if (components != null) {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent() {
             this.nameDefinition = new LayoutManager.CommonUI.Controls.NameDefinition();
             this.comboBoxPort = new ComboBox();
             this.label1 = new Label();
@@ -230,48 +225,47 @@ namespace MarklinDigital.Dialogs {
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFeedbackPolling)).EndInit();
             this.ResumeLayout(false);
 
-		}
-		#endregion
+        }
+        #endregion
 
-		private void buttonOK_Click(object sender, System.EventArgs e) {
-			// Validate
+        private void buttonOK_Click(object sender, System.EventArgs e) {
+            // Validate
 
-			if(nameDefinition.Commit()) {
-				LayoutTextInfo						myName = new LayoutTextInfo(xmlInfo.DocumentElement, "Name");
-				IEnumerable<IModelComponentIsCommandStation> commandStations = LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All);
+            if (nameDefinition.Commit()) {
+                LayoutTextInfo myName = new LayoutTextInfo(xmlInfo.DocumentElement, "Name");
+                IEnumerable<IModelComponentIsCommandStation> commandStations = LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All);
 
-				foreach(IModelComponentIsCommandStation otherCommandStation in commandStations) {
-					if(otherCommandStation.NameProvider.Name == myName.Name && otherCommandStation.Id != component.Id) {
-						MessageBox.Show(this, "The name " + myName.Text + " is already used", "Invalid name", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						nameDefinition.Focus();
-						return;
-					}
-				}
-			}
-			else
-				return;
+                foreach (IModelComponentIsCommandStation otherCommandStation in commandStations) {
+                    if (otherCommandStation.NameProvider.Name == myName.Name && otherCommandStation.Id != component.Id) {
+                        MessageBox.Show(this, "The name " + myName.Text + " is already used", "Invalid name", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        nameDefinition.Focus();
+                        return;
+                    }
+                }
+            }
+            else
+                return;
 
-			if(!layoutEmulationSetup.ValidateInput())
-				return;
+            if (!layoutEmulationSetup.ValidateInput())
+                return;
 
-			// Commit
+            // Commit
 
-			xmlInfo.DocumentElement.SetAttribute("Port", comboBoxPort.Text);
-			xmlInfo.DocumentElement.SetAttribute("FeedbackPolling", XmlConvert.ToString(numericUpDownFeedbackPolling.Value));
-			layoutEmulationSetup.Commit();
+            xmlInfo.DocumentElement.SetAttribute("Port", comboBoxPort.Text);
+            xmlInfo.DocumentElement.SetAttribute("FeedbackPolling", XmlConvert.ToString(numericUpDownFeedbackPolling.Value));
+            layoutEmulationSetup.Commit();
 
-			DialogResult = DialogResult.OK;
-		}
+            DialogResult = DialogResult.OK;
+        }
 
-		private void buttonCOMsettings_Click(object sender, EventArgs e)
-		{
-			string modeString = xmlInfo.DocumentElement["ModeString"].InnerText;
+        private void buttonCOMsettings_Click(object sender, EventArgs e) {
+            string modeString = xmlInfo.DocumentElement["ModeString"].InnerText;
 
-			LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
+            LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
 
-			if(d.ShowDialog(this) == DialogResult.OK)
-				xmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
+            if (d.ShowDialog(this) == DialogResult.OK)
+                xmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
 
         }
-	}
+    }
 }

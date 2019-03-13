@@ -16,7 +16,7 @@ namespace LayoutManager.CommonUI.Dialogs {
         /// The input image to be trimmed
         /// </summary>
         public Image InputImage { get; private set; }
-        
+
         /// <summary>
         /// The required size of the timmed image
         /// </summary>
@@ -138,7 +138,7 @@ namespace LayoutManager.CommonUI.Dialogs {
         private Rectangle initClipFrame() {
             Size clipFrameSize;
             Point clipFrameOrigin;
-              if(RequiredSize.Width > RequiredSize.Height) {
+            if (RequiredSize.Width > RequiredSize.Height) {
                 clipFrameSize = new Size(InputImage.Width, InputImage.Width * RequiredSize.Height / RequiredSize.Width);
                 clipFrameOrigin = new Point(0, (InputImage.Height - clipFrameSize.Height) / 2);
             }
@@ -200,7 +200,7 @@ namespace LayoutManager.CommonUI.Dialogs {
         private void buttonOK_Click(object sender, EventArgs e) {
             var result = new Bitmap(RequiredSize.Width, RequiredSize.Height);
 
-            using(Graphics g = Graphics.FromImage(result)) {
+            using (Graphics g = Graphics.FromImage(result)) {
                 g.DrawImage(InputImage, new Rectangle(new Point(0, 0), result.Size), _clipFrame.X, _clipFrame.Y, _clipFrame.Width, _clipFrame.Height, GraphicsUnit.Pixel);
             }
 

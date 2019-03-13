@@ -9,337 +9,330 @@ using System.Linq;
 
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060
+
 namespace LayoutManager {
     /// <summary>
     /// Summary description for MessageViewer.
     /// </summary>
-    public class MessageViewer : System.Windows.Forms.UserControl
-	{
-		ListViewItem		lastMessageMarker = null;
+    public class MessageViewer : System.Windows.Forms.UserControl {
+        readonly ListViewItem lastMessageMarker = null;
 
-		LayoutSelection		currentMessageSelection = null;
-		LayoutSelection		currentComponentSelection = null;
-		bool				clearOnNewMessage = false;
+        LayoutSelection currentMessageSelection = null;
+        LayoutSelection currentComponentSelection = null;
+        bool clearOnNewMessage = false;
 
-		static LayoutTraceSwitch	traceMessages = new LayoutTraceSwitch("Messages", "Trace errors, warning etc.");
+        static readonly LayoutTraceSwitch traceMessages = new LayoutTraceSwitch("Messages", "Trace errors, warning etc.");
 
-		private ListView listViewMessages;
-		private ColumnHeader columnHeaderMessage;
-		private ColumnHeader columnHeaderArea;
-		private Button buttonClose;
-		private Button buttonPrevMessage;
-		private Button buttonNextMessage;
-		private Button buttonPreviousComponent;
-		private Button buttonNextComponent;
-		private ImageList imageListSeverity;
+        private ListView listViewMessages;
+        private ColumnHeader columnHeaderMessage;
+        private ColumnHeader columnHeaderArea;
+        private Button buttonClose;
+        private Button buttonPrevMessage;
+        private Button buttonNextMessage;
+        private Button buttonPreviousComponent;
+        private Button buttonNextComponent;
+        private ImageList imageListSeverity;
         private Button buttonClear;
         private IContainer components;
 
-		public MessageViewer()
-		{
-			// This call is required by the Windows.Forms Form Designer.
-			InitializeComponent();
+        public MessageViewer() {
+            // This call is required by the Windows.Forms Form Designer.
+            InitializeComponent();
 
-			// TODO: Add any initialization after the InitForm call
-			lastMessageMarker = new ListViewItem();
-			listViewMessages.Items.Add(lastMessageMarker);
-		}
+            // TODO: Add any initialization after the InitForm call
+            lastMessageMarker = new ListViewItem();
+            listViewMessages.Items.Add(lastMessageMarker);
+        }
 
-		public void Initialize() {
-			EventManager.AddObjectSubscriptions(this);
-		}
+        public void Initialize() {
+            EventManager.AddObjectSubscriptions(this);
+        }
 
-		[LayoutEvent("add-message")]
-		void AddMessage(LayoutEvent e) {
-			AddMessageItem(new MessageItem(MessageSeverity.Message, e.Sender, (String)e.Info));
-			columnHeaderArea.Width = -1;
-		}
+        [LayoutEvent("add-message")]
+        void AddMessage(LayoutEvent e) {
+            AddMessageItem(new MessageItem(MessageSeverity.Message, e.Sender, (String)e.Info));
+            columnHeaderArea.Width = -1;
+        }
 
-		[LayoutEvent("add-warning")]
-		void AddWarning(LayoutEvent e) {
-			AddMessageItem(new MessageItem(MessageSeverity.Warning, e.Sender, (String)e.Info));
-			columnHeaderArea.Width = -1;
-		}
+        [LayoutEvent("add-warning")]
+        void AddWarning(LayoutEvent e) {
+            AddMessageItem(new MessageItem(MessageSeverity.Warning, e.Sender, (String)e.Info));
+            columnHeaderArea.Width = -1;
+        }
 
-		[LayoutEvent("add-error")]
-		void AddError(LayoutEvent e) {
-			AddMessageItem(new MessageItem(MessageSeverity.Error, e.Sender, (String)e.Info));
-		}
+        [LayoutEvent("add-error")]
+        void AddError(LayoutEvent e) {
+            AddMessageItem(new MessageItem(MessageSeverity.Error, e.Sender, (String)e.Info));
+        }
 
-		void AddMessageItem(MessageItem item) {
-			item.TraceMessage();
+        void AddMessageItem(MessageItem item) {
+            item.TraceMessage();
 
-			if(clearOnNewMessage) {
-				EventManager.Event(new LayoutEvent(this, "clear-messages"));
-				clearOnNewMessage = false;
-			}
+            if (clearOnNewMessage) {
+                EventManager.Event(new LayoutEvent("clear-messages", this));
+                clearOnNewMessage = false;
+            }
 
-			listViewMessages.Items.Insert(listViewMessages.Items.Count-1, item);
-			columnHeaderArea.Width = -1;
+            listViewMessages.Items.Insert(listViewMessages.Items.Count - 1, item);
+            columnHeaderArea.Width = -1;
 
-			if(item.Severity != MessageSeverity.Message)
-				EventManager.Event(new LayoutEvent(this, "show-messages"));
+            if (item.Severity != MessageSeverity.Message)
+                EventManager.Event(new LayoutEvent("show-messages", this));
 
-			if(listViewMessages.SelectedItems.Count == 1 && listViewMessages.SelectedItems[0] == lastMessageMarker)
-				listViewMessages.EnsureVisible(lastMessageMarker.Index);
+            if (listViewMessages.SelectedItems.Count == 1 && listViewMessages.SelectedItems[0] == lastMessageMarker)
+                listViewMessages.EnsureVisible(lastMessageMarker.Index);
 
-			UpdateButtons();
-		}
+            UpdateButtons();
+        }
 
-		protected void UpdateButtons() {
-			if(listViewMessages.SelectedIndices.Count == 0) {
-				buttonPrevMessage.Enabled = false;
-				buttonNextMessage.Enabled = false;
-			}
-			else {
-				int	selectedIndex = listViewMessages.SelectedIndices[0];
+        protected void UpdateButtons() {
+            if (listViewMessages.SelectedIndices.Count == 0) {
+                buttonPrevMessage.Enabled = false;
+                buttonNextMessage.Enabled = false;
+            }
+            else {
+                int selectedIndex = listViewMessages.SelectedIndices[0];
 
-				buttonPrevMessage.Enabled = selectedIndex > 0;
-				buttonNextMessage.Enabled = selectedIndex < listViewMessages.Items.Count-1;
-			}
+                buttonPrevMessage.Enabled = selectedIndex > 0;
+                buttonNextMessage.Enabled = selectedIndex < listViewMessages.Items.Count - 1;
+            }
 
-			if(currentMessageSelection != null && currentMessageSelection.Count > 1) {
-				buttonNextComponent.Visible = true;
-				buttonPreviousComponent.Visible = true;
-			}
-			else {
-				buttonNextComponent.Visible = false;
-				buttonPreviousComponent.Visible = false;
-			}
-		}
+            if (currentMessageSelection != null && currentMessageSelection.Count > 1) {
+                buttonNextComponent.Visible = true;
+                buttonPreviousComponent.Visible = true;
+            }
+            else {
+                buttonNextComponent.Visible = false;
+                buttonPreviousComponent.Visible = false;
+            }
+        }
 
-		protected void HideSelections() {
-			if(currentMessageSelection != null) {
-				currentMessageSelection.Hide();
-				currentMessageSelection = null;
-			}
+        protected void HideSelections() {
+            if (currentMessageSelection != null) {
+                currentMessageSelection.Hide();
+                currentMessageSelection = null;
+            }
 
-			if(currentComponentSelection != null) {
-				currentComponentSelection.Hide();
-				currentComponentSelection = null;
-			}
-		}
+            if (currentComponentSelection != null) {
+                currentComponentSelection.Hide();
+                currentComponentSelection = null;
+            }
+        }
 
-		protected void UpdateSelections() {
-			HideSelections();
+        protected void UpdateSelections() {
+            HideSelections();
 
-			MessageItem	item = null;
-			if(listViewMessages.SelectedItems.Count > 0)
-				item = listViewMessages.SelectedItems[0] as MessageItem;
+            MessageItem item = null;
+            if (listViewMessages.SelectedItems.Count > 0)
+                item = listViewMessages.SelectedItems[0] as MessageItem;
 
-			if(item != null && item.Selection != null) {
-				currentMessageSelection = item.Selection;
+            if (item != null && item.Selection != null) {
+                currentMessageSelection = item.Selection;
 
-				currentMessageSelection.Display(new LayoutSelectionLook(Color.LightPink));
+                currentMessageSelection.Display(new LayoutSelectionLook(Color.LightPink));
 
-				if(currentMessageSelection.Count > 0) {
-					currentComponentSelection = new LayoutSelection();
-					setComponentSelection(currentMessageSelection.Components.First());
-					currentComponentSelection.Display(new LayoutSelectionLook(Color.DarkRed));
-				}
-			}
-		}
+                if (currentMessageSelection.Count > 0) {
+                    currentComponentSelection = new LayoutSelection();
+                    setComponentSelection(currentMessageSelection.Components.First());
+                    currentComponentSelection.Display(new LayoutSelectionLook(Color.DarkRed));
+                }
+            }
+        }
 
-		void setComponentSelection(ModelComponent component) {
-			currentComponentSelection.Clear();
-			currentComponentSelection.Add(component);
-			EventManager.Event(new LayoutEvent(component, "ensure-component-visible", null, false));
-		}
+        void setComponentSelection(ModelComponent component) {
+            currentComponentSelection.Clear();
+            currentComponentSelection.Add(component);
+            EventManager.Event(new LayoutEvent("ensure-component-visible", component, false));
+        }
 
-		[LayoutEvent("messages-hidden")]
-		void MessagesHidden(LayoutEvent e) {
-			clearOnNewMessage = true;
-			HideSelections();
-		}
+        [LayoutEvent("messages-hidden")]
+        void MessagesHidden(LayoutEvent e) {
+            clearOnNewMessage = true;
+            HideSelections();
+        }
 
-		[LayoutEvent("messages-shown")]
-		void MessagesShown(LayoutEvent e) {
-			UpdateSelections();
-		}
+        [LayoutEvent("messages-shown")]
+        void MessagesShown(LayoutEvent e) {
+            UpdateSelections();
+        }
 
-		[LayoutEvent("clear-messages")]
-		void ClearMessages(LayoutEvent e) {
-			listViewMessages.Items.Clear();
-			listViewMessages.Items.Add(lastMessageMarker);
+        [LayoutEvent("clear-messages")]
+        void ClearMessages(LayoutEvent e) {
+            listViewMessages.Items.Clear();
+            listViewMessages.Items.Add(lastMessageMarker);
 
-			UpdateSelections();
-			UpdateButtons();
-		}
+            UpdateSelections();
+            UpdateButtons();
+        }
 
-		#region Class that represent a message item
+        #region Class that represent a message item
 
-		enum MessageSeverity {
-			Message,
-			Warning,
-			Error
-		};
+        enum MessageSeverity {
+            Message,
+            Warning,
+            Error
+        };
 
-		class MessageItem : ListViewItem {
-			MessageSeverity		severity;
-			LayoutSelection		selection;
+        class MessageItem : ListViewItem {
+            readonly MessageSeverity severity;
+            LayoutSelection selection;
 
-			public MessageItem(MessageSeverity severity, Object messageSubject, String message) {
-				String	areaNames = "";
+            public MessageItem(MessageSeverity severity, Object messageSubject, String message) {
+                String areaNames = "";
 
-				this.Text = message;
-				this.severity = severity;
+                this.Text = message;
+                this.severity = severity;
 
-				if(messageSubject != null) {
-					selectMessageSubject(messageSubject);
+                if (messageSubject != null) {
+                    selectMessageSubject(messageSubject);
 
-					// Create areas string
-					Hashtable	areas = new Hashtable();
+                    // Create areas string
+                    Hashtable areas = new Hashtable();
 
-					foreach(ModelComponent component in selection)
-						if(!areas.Contains(component.Spot.Area))
-							areas.Add(component.Spot.Area, component);
+                    foreach (ModelComponent component in selection)
+                        if (!areas.Contains(component.Spot.Area))
+                            areas.Add(component.Spot.Area, component);
 
-					foreach(LayoutModelArea area in areas.Keys) {
-						if(areaNames.Length > 0)
-							areaNames += ", ";
-						areaNames += area.Name;
-					}
+                    foreach (LayoutModelArea area in areas.Keys) {
+                        if (areaNames.Length > 0)
+                            areaNames += ", ";
+                        areaNames += area.Name;
+                    }
 
-					if(selection.Count > 1)
-						areaNames = selection.Count + " components in " + areaNames;
-				}
+                    if (selection.Count > 1)
+                        areaNames = selection.Count + " components in " + areaNames;
+                }
 
-				this.SubItems.Add(areaNames);
+                this.SubItems.Add(areaNames);
 
-				switch(severity) {
-					case MessageSeverity.Message:
-						this.ImageIndex = 0;
-						break;
+                switch (severity) {
+                    case MessageSeverity.Message:
+                        this.ImageIndex = 0;
+                        break;
 
-					case MessageSeverity.Warning:
-						this.ImageIndex = 1;
-						break;
+                    case MessageSeverity.Warning:
+                        this.ImageIndex = 1;
+                        break;
 
-					case MessageSeverity.Error:
-						this.ImageIndex = 2;
-						break;
-				}
-			}
+                    case MessageSeverity.Error:
+                        this.ImageIndex = 2;
+                        break;
+                }
+            }
 
-			private void selectMessageSubject(object messageSubject) {
-				if(messageSubject is LayoutSelection)
-					this.selection = (LayoutSelection)messageSubject;
-				else if(messageSubject is ModelComponent) {
-					ModelComponent		component = (ModelComponent)messageSubject;
+            private void selectMessageSubject(object messageSubject) {
+                if (messageSubject is LayoutSelection)
+                    this.selection = (LayoutSelection)messageSubject;
+                else if (messageSubject is ModelComponent) {
+                    ModelComponent component = (ModelComponent)messageSubject;
 
-					selection = new LayoutSelection(new ModelComponent[] { component });
-				}
-				else if(messageSubject is TrainStateInfo) {
-					TrainStateInfo	train = (TrainStateInfo)messageSubject;
-					
-					selection = new LayoutSelection();
-					selection.Add(train);
-				}
-				else if(messageSubject is LayoutBlock) {
-					LayoutBlock	block = (LayoutBlock)messageSubject;
+                    selection = new LayoutSelection(new ModelComponent[] { component });
+                }
+                else if (messageSubject is TrainStateInfo) {
+                    TrainStateInfo train = (TrainStateInfo)messageSubject;
 
-					if(block.BlockDefinintion != null)
-						selection = new LayoutSelection(new ModelComponent[] { block.BlockDefinintion });
-					else {
-						selection = new LayoutSelection();
+                    selection = new LayoutSelection {
+                        train
+                    };
+                }
+                else if (messageSubject is LayoutBlock) {
+                    LayoutBlock block = (LayoutBlock)messageSubject;
 
-						foreach(TrackEdge edge in block.TrackEdges)
-							selection.Add(edge.Track);
-					}
-				}
-				else if(messageSubject is LayoutOccupancyBlock) {
-					selection = new LayoutSelection();
+                    if (block.BlockDefinintion != null)
+                        selection = new LayoutSelection(new ModelComponent[] { block.BlockDefinintion });
+                    else {
+                        selection = new LayoutSelection();
 
-					foreach(TrackEdge edge in ((LayoutOccupancyBlock)messageSubject).TrackEdges)
-						selection.Add(edge.Track);
-				}
-				else if(messageSubject is TrainStateInfo[]) {
-					TrainStateInfo[]			trains = (TrainStateInfo[] )messageSubject;
-					ArrayList					blockInfos = new ArrayList();
+                        foreach (TrackEdge edge in block.TrackEdges)
+                            selection.Add(edge.Track);
+                    }
+                }
+                else if (messageSubject is LayoutOccupancyBlock) {
+                    selection = new LayoutSelection();
 
-					selection = new LayoutSelection();
+                    foreach (TrackEdge edge in ((LayoutOccupancyBlock)messageSubject).TrackEdges)
+                        selection.Add(edge.Track);
+                }
+                else if (messageSubject is TrainStateInfo[] trains) {
+                    selection = new LayoutSelection();
 
-					foreach(TrainStateInfo train in trains)
-						selection.Add(train);
-				}
-				else if(messageSubject is Guid) {
-					Guid			id = (Guid)messageSubject;
-					var				component = LayoutModel.Component<ModelComponent>(id, LayoutPhase.All);
+                    foreach (TrainStateInfo train in trains)
+                        selection.Add(train);
+                }
+                else if (messageSubject is Guid id) {
+                    var component = LayoutModel.Component<ModelComponent>(id, LayoutPhase.All);
 
-					if(component != null)
-						selectMessageSubject(component);
-					else {
-						LayoutBlock	block = LayoutModel.Blocks[id];
+                    if (component != null)
+                        selectMessageSubject(component);
+                    else {
+                        LayoutBlock block = LayoutModel.Blocks[id];
 
-						if(block != null)
-							selectMessageSubject(block);
-						else {
-							TrainStateInfo	train = LayoutModel.StateManager.Trains[id];
+                        if (block != null)
+                            selectMessageSubject(block);
+                        else {
+                            TrainStateInfo train = LayoutModel.StateManager.Trains[id];
 
-							if(train != null)
-								selectMessageSubject(train);
-							else
-								throw new ArgumentException("The ID " + id.ToString() + " given as message subject can not be associated with an object");
-						}
-					}
-				}
-				else
-					throw new ArgumentException("Invalid messageSubject - can be either selection or component", messageSubject.ToString());
-			}
+                            if (train != null)
+                                selectMessageSubject(train);
+                            else
+                                throw new ArgumentException("The ID " + id.ToString() + " given as message subject can not be associated with an object");
+                        }
+                    }
+                }
+                else
+                    throw new ArgumentException("Invalid messageSubject - can be either selection or component", messageSubject.ToString());
+            }
 
             public LayoutSelection Selection => selection;
 
             public MessageSeverity Severity => severity;
 
             public void TraceMessage() {
-				bool	show = false;
+                bool show = false;
 
-				if(Severity == MessageSeverity.Error && traceMessages.TraceError)
-					show = true;
-				else if(Severity == MessageSeverity.Warning && traceMessages.TraceWarning)
-					show = true;
-				else if(Severity == MessageSeverity.Message && traceMessages.TraceInfo)
-					show = true;
+                if (Severity == MessageSeverity.Error && traceMessages.TraceError)
+                    show = true;
+                else if (Severity == MessageSeverity.Warning && traceMessages.TraceWarning)
+                    show = true;
+                else if (Severity == MessageSeverity.Message && traceMessages.TraceInfo)
+                    show = true;
 
-				if(show) {
-					bool	first = true;
+                if (show) {
+                    bool first = true;
 
-					Trace.WriteLine("*** " + Severity.ToString() + " -- " + Text);
-					Trace.Write("    at: ");
+                    Trace.WriteLine("*** " + Severity.ToString() + " -- " + Text);
+                    Trace.Write("    at: ");
 
-					if(Selection != null) {
-						foreach(ModelComponent component in Selection)
-							Trace.Write((first ? "" : ", ") + component.FullDescription);
-					}
-					Trace.WriteLine("");
-				}
-			}
-		}
+                    if (Selection != null) {
+                        foreach (ModelComponent component in Selection)
+                            Trace.Write((first ? "" : ", ") + component.FullDescription);
+                    }
+                    Trace.WriteLine("");
+                }
+            }
+        }
 
-		#endregion
+        #endregion
 
-		/// <summary> 
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                if (components != null) {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Component Designer generated code
-		/// <summary> 
-		/// Required method for Designer support - do not modify 
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Component Designer generated code
+        /// <summary> 
+        /// Required method for Designer support - do not modify 
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MessageViewer));
             this.listViewMessages = new System.Windows.Forms.ListView();
@@ -356,8 +349,8 @@ namespace LayoutManager {
             // 
             // listViewMessages
             // 
-            this.listViewMessages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.listViewMessages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listViewMessages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderMessage,
@@ -464,90 +457,90 @@ namespace LayoutManager {
             this.Size = new System.Drawing.Size(680, 112);
             this.ResumeLayout(false);
 
-		}
-		#endregion
+        }
+        #endregion
 
 
-		private void buttonClose_Click(object sender, System.EventArgs e) {
-			EventManager.Event(new LayoutEvent(this, "hide-messages"));
-		}
+        private void buttonClose_Click(object sender, System.EventArgs e) {
+            EventManager.Event(new LayoutEvent("hide-messages", this));
+        }
 
-		private void listViewMessages_SelectedIndexChanged(object sender, System.EventArgs e) {
-			UpdateSelections();
-			UpdateButtons();
-		}
+        private void listViewMessages_SelectedIndexChanged(object sender, System.EventArgs e) {
+            UpdateSelections();
+            UpdateButtons();
+        }
 
-		private void buttonNextComponent_Click(object sender, System.EventArgs e) {
-			if(currentComponentSelection != null) {
-				IList<ModelComponent>	messageComponents = currentMessageSelection.Components.ToList();
-				ModelComponent			currentComponent = currentComponentSelection.Components.FirstOrDefault() ?? messageComponents[0];
-				int						currentComponentIndex = -1;
+        private void buttonNextComponent_Click(object sender, System.EventArgs e) {
+            if (currentComponentSelection != null) {
+                IList<ModelComponent> messageComponents = currentMessageSelection.Components.ToList();
+                ModelComponent currentComponent = currentComponentSelection.Components.FirstOrDefault() ?? messageComponents[0];
+                int currentComponentIndex = -1;
 
-				for(int i = 0; i < messageComponents.Count; i++)
-					if(messageComponents[i] == currentComponent) {
-						currentComponentIndex = i;
-						break;
-					}
+                for (int i = 0; i < messageComponents.Count; i++)
+                    if (messageComponents[i] == currentComponent) {
+                        currentComponentIndex = i;
+                        break;
+                    }
 
-				if(currentComponentIndex >= 0) {
-					if(++currentComponentIndex == messageComponents.Count)
-						currentComponentIndex = 0;
+                if (currentComponentIndex >= 0) {
+                    if (++currentComponentIndex == messageComponents.Count)
+                        currentComponentIndex = 0;
 
-					setComponentSelection(messageComponents[currentComponentIndex]);
-				}
-			}
-		}
+                    setComponentSelection(messageComponents[currentComponentIndex]);
+                }
+            }
+        }
 
-		private void buttonPreviousComponent_Click(object sender, System.EventArgs e) {
-			if(currentComponentSelection != null) {
-				IList<ModelComponent> messageComponents = currentMessageSelection.Components.ToList();
-				ModelComponent currentComponent = currentComponentSelection.Components.FirstOrDefault() ?? messageComponents[0];
-				int currentComponentIndex = -1;
+        private void buttonPreviousComponent_Click(object sender, System.EventArgs e) {
+            if (currentComponentSelection != null) {
+                IList<ModelComponent> messageComponents = currentMessageSelection.Components.ToList();
+                ModelComponent currentComponent = currentComponentSelection.Components.FirstOrDefault() ?? messageComponents[0];
+                int currentComponentIndex = -1;
 
-				for(int i = 0; i < messageComponents.Count; i++)
-					if(messageComponents[i] == currentComponent) {
-						currentComponentIndex = i;
-						break;
-					}
+                for (int i = 0; i < messageComponents.Count; i++)
+                    if (messageComponents[i] == currentComponent) {
+                        currentComponentIndex = i;
+                        break;
+                    }
 
-				if(currentComponentIndex >= 0) {
-					if(currentComponentIndex-- == 0)
-						currentComponentIndex = messageComponents.Count-1;
+                if (currentComponentIndex >= 0) {
+                    if (currentComponentIndex-- == 0)
+                        currentComponentIndex = messageComponents.Count - 1;
 
-					setComponentSelection(messageComponents[currentComponentIndex]);
-				}
-			}
-		}
+                    setComponentSelection(messageComponents[currentComponentIndex]);
+                }
+            }
+        }
 
-		private void buttonNextMessage_Click(object sender, System.EventArgs e) {
-			if(listViewMessages.SelectedItems.Count > 0) {
-				int		i;
+        private void buttonNextMessage_Click(object sender, System.EventArgs e) {
+            if (listViewMessages.SelectedItems.Count > 0) {
+                int i;
 
-				i = listViewMessages.SelectedIndices[0];
+                i = listViewMessages.SelectedIndices[0];
 
-				if(++i < listViewMessages.Items.Count) {
-					listViewMessages.SelectedItems[0].Selected = false;
-					listViewMessages.Items[i].Selected = true;
-				}
-			}
-		}
+                if (++i < listViewMessages.Items.Count) {
+                    listViewMessages.SelectedItems[0].Selected = false;
+                    listViewMessages.Items[i].Selected = true;
+                }
+            }
+        }
 
-		private void buttonPrevMessage_Click(object sender, System.EventArgs e) {
-			if(listViewMessages.SelectedItems.Count > 0) {
-				int		i;
+        private void buttonPrevMessage_Click(object sender, System.EventArgs e) {
+            if (listViewMessages.SelectedItems.Count > 0) {
+                int i;
 
-				i = listViewMessages.SelectedIndices[0];
+                i = listViewMessages.SelectedIndices[0];
 
-				if(i > 0) {
-					i--;
-					listViewMessages.SelectedItems[0].Selected = false;
-					listViewMessages.Items[i].Selected = true;
-				}
-			}
-		}
+                if (i > 0) {
+                    i--;
+                    listViewMessages.SelectedItems[0].Selected = false;
+                    listViewMessages.Items[i].Selected = true;
+                }
+            }
+        }
 
         private void buttonClear_Click(object sender, EventArgs e) {
-            EventManager.Event("clear-messages");
+            EventManager.Event("clear-messages", this);
         }
     }
 }

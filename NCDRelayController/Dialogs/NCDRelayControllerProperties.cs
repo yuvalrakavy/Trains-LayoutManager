@@ -12,20 +12,19 @@ namespace NCDRelayController.Dialogs {
     /// Summary description for CentralStationProperties.
     /// </summary>
     public class NCDRelayControllerProperties : Form {
-		private ComboBox comboBoxPort;
-		private Label label1;
-		private Button buttonOK;
-		private Button buttonCancel;
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private Container components = null;
-
-		NCDRelayController component;
-		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
-		private Button buttonCOMsettings;
-		private Label label2;
-		private TextBox textBoxPollingPeriod;
+        private ComboBox comboBoxPort;
+        private Label label1;
+        private Button buttonOK;
+        private Button buttonCancel;
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private readonly Container components = null;
+        readonly NCDRelayController component;
+        private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
+        private Button buttonCOMsettings;
+        private Label label2;
+        private TextBox textBoxPollingPeriod;
         private GroupBox groupBox1;
         private TextBox textBoxAddress;
         private RadioButton radioButtonTCP;
@@ -33,20 +32,19 @@ namespace NCDRelayController.Dialogs {
         private Label label3;
         private Button buttonIpSettings;
         private Button buttonBrowseForDigiDevices;
-		LayoutXmlInfo		xmlInfo;
+        readonly LayoutXmlInfo xmlInfo;
 
-		public NCDRelayControllerProperties(NCDRelayController component)
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+        public NCDRelayControllerProperties(NCDRelayController component) {
+            //
+            // Required for Windows Form Designer support
+            //
+            InitializeComponent();
 
-			foreach(var port in SerialPort.GetPortNames())
-				comboBoxPort.Items.Add(port);
+            foreach (var port in SerialPort.GetPortNames())
+                comboBoxPort.Items.Add(port);
 
-			this.component = component;
-			this.xmlInfo = new LayoutXmlInfo(component);
+            this.component = component;
+            this.xmlInfo = new LayoutXmlInfo(component);
 
             InterfaceType interfaceType = InterfaceType.Serial;
 
@@ -58,42 +56,38 @@ namespace NCDRelayController.Dialogs {
             else
                 radioButtonTCP.Checked = true;
 
-			nameDefinition.XmlInfo = this.xmlInfo;
-			comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute("Port");
+            nameDefinition.XmlInfo = this.xmlInfo;
+            comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute("Port");
 
-            if(xmlInfo.DocumentElement.HasAttribute("Address"))
+            if (xmlInfo.DocumentElement.HasAttribute("Address"))
                 textBoxAddress.Text = xmlInfo.DocumentElement.GetAttribute("Address");
 
-			if(xmlInfo.DocumentElement.HasAttribute("PollingPeriod"))
-				textBoxPollingPeriod.Text = xmlInfo.DocumentElement.GetAttribute("PollingPeriod");
+            if (xmlInfo.DocumentElement.HasAttribute("PollingPeriod"))
+                textBoxPollingPeriod.Text = xmlInfo.DocumentElement.GetAttribute("PollingPeriod");
 
             radioButtonInterfaceType_CheckedChanged(null, new EventArgs());
-		}
+        }
 
         public LayoutXmlInfo XmlInfo => xmlInfo;
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                if (components != null) {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent() {
             this.comboBoxPort = new ComboBox();
             this.label1 = new Label();
             this.buttonOK = new Button();
@@ -282,33 +276,32 @@ namespace NCDRelayController.Dialogs {
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
-		#endregion
+        }
+        #endregion
 
-		private void buttonOK_Click(object sender, System.EventArgs e) {
-			if(nameDefinition.Commit()) {
-				LayoutTextInfo			myName = new LayoutTextInfo(xmlInfo.DocumentElement, "Name");
+        private void buttonOK_Click(object sender, System.EventArgs e) {
+            if (nameDefinition.Commit()) {
+                LayoutTextInfo myName = new LayoutTextInfo(xmlInfo.DocumentElement, "Name");
 
-				foreach(IModelComponentIsCommandStation otherCommandStation in LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All)) {
-					if(otherCommandStation.NameProvider.Name == myName.Name && otherCommandStation.Id != component.Id) {
-						MessageBox.Show(this, "The name " + myName.Text + " is already used", "Invalid name", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						nameDefinition.Focus();
-						return;
-					}
-				}
-			}
-			else
-				return;
+                foreach (IModelComponentIsCommandStation otherCommandStation in LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All)) {
+                    if (otherCommandStation.NameProvider.Name == myName.Name && otherCommandStation.Id != component.Id) {
+                        MessageBox.Show(this, "The name " + myName.Text + " is already used", "Invalid name", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        nameDefinition.Focus();
+                        return;
+                    }
+                }
+            }
+            else
+                return;
 
-			int pollingPeriod;
 
-			if(!int.TryParse(textBoxPollingPeriod.Text, out pollingPeriod)) {
-				MessageBox.Show(this, "Invalid contact closure polling period", "Invalid input", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				textBoxPollingPeriod.Focus();
-				return;
-			}
+            if (!int.TryParse(textBoxPollingPeriod.Text, out int pollingPeriod)) {
+                MessageBox.Show(this, "Invalid contact closure polling period", "Invalid input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBoxPollingPeriod.Focus();
+                return;
+            }
 
-			// Commit
+            // Commit
 
             if (radioButtonSerial.Checked) {
                 xmlInfo.DocumentElement.SetAttribute("InterfaceType", InterfaceType.Serial.ToString());
@@ -319,20 +312,19 @@ namespace NCDRelayController.Dialogs {
                 xmlInfo.DocumentElement.SetAttribute("Address", textBoxAddress.Text);
             }
 
-			xmlInfo.DocumentElement.SetAttribute("PollingPeriod", XmlConvert.ToString(pollingPeriod));
-			DialogResult = DialogResult.OK;
-		}
+            xmlInfo.DocumentElement.SetAttribute("PollingPeriod", XmlConvert.ToString(pollingPeriod));
+            DialogResult = DialogResult.OK;
+        }
 
-		private void buttonCOMsettings_Click(object sender, EventArgs e)
-		{
-			string modeString = xmlInfo.DocumentElement["ModeString"].InnerText;
+        private void buttonCOMsettings_Click(object sender, EventArgs e) {
+            string modeString = xmlInfo.DocumentElement["ModeString"].InnerText;
 
-			LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
+            LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
 
-			if(d.ShowDialog(this) == DialogResult.OK)
-				xmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
+            if (d.ShowDialog(this) == DialogResult.OK)
+                xmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
 
-		}
+        }
 
         private void radioButtonInterfaceType_CheckedChanged(object sender, EventArgs e) {
             if (radioButtonSerial.Checked) {
@@ -368,5 +360,5 @@ namespace NCDRelayController.Dialogs {
             if (d.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
                 textBoxAddress.Text = d.SelectedAddress;
         }
-	}
+    }
 }

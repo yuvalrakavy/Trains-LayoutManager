@@ -12,108 +12,102 @@ namespace LayoutEventDebugger {
     /// Summary description for TraceManager.
     /// </summary>
     public class TraceManager : Form {
-		private RadioButton radioButtonTraceNone;
-		private RadioButton radioButtonTraceError;
-		private RadioButton radioButtonTraceInfo;
-		private ListView listViewSwitches;
-		private RadioButton radioButtonTraceVerbose;
-		private ColumnHeader columnHeaderSwtchName;
-		private ColumnHeader columnHeaderSwitchSetting;
-		private Button buttonClose;
-		private RadioButton radioButtonWarnings;
-		private RadioButton radioButtonBooleanOff;
-		private RadioButton radioButtonBooleanOn;
-		private GroupBox groupBoxSwitchValue;
-		private ColumnHeader columnHeaderDescription;
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private Container components = null;
-		private GroupBox groupBox1;
-		private RadioButton radioButtonAllSwitches;
-		private RadioButton radioButtonApplicationSwitches;
+        private RadioButton radioButtonTraceNone;
+        private RadioButton radioButtonTraceError;
+        private RadioButton radioButtonTraceInfo;
+        private ListView listViewSwitches;
+        private RadioButton radioButtonTraceVerbose;
+        private ColumnHeader columnHeaderSwtchName;
+        private ColumnHeader columnHeaderSwitchSetting;
+        private Button buttonClose;
+        private RadioButton radioButtonWarnings;
+        private RadioButton radioButtonBooleanOff;
+        private RadioButton radioButtonBooleanOn;
+        private GroupBox groupBoxSwitchValue;
+        private ColumnHeader columnHeaderDescription;
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private readonly Container components = null;
+        private GroupBox groupBox1;
+        private RadioButton radioButtonAllSwitches;
+        private RadioButton radioButtonApplicationSwitches;
+        readonly ListViewStringColumnsSorter sorter;
 
-		ListViewStringColumnsSorter	sorter;
+        public TraceManager() {
+            //
+            // Required for Windows Form Designer support
+            //
+            InitializeComponent();
 
-		public TraceManager()
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+            fillList();
+            sorter = new ListViewStringColumnsSorter(listViewSwitches);
 
-			fillList();
-			sorter = new ListViewStringColumnsSorter(listViewSwitches);
+            setRadioButtonLayout();
+        }
 
-			setRadioButtonLayout();
-		}
+        private void fillList() {
+            Cursor previousCursor = Cursor;
 
-		private void fillList() {
-			Cursor previousCursor = Cursor;
+            Cursor = Cursors.WaitCursor;
 
-			Cursor = Cursors.WaitCursor;
+            listViewSwitches.Items.Clear();
+            listViewSwitches.BeginUpdate();
 
-			listViewSwitches.Items.Clear();
-			listViewSwitches.BeginUpdate();
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (Assembly assembly in assemblies) {
+                Type[] assemblyTypes = assembly.GetTypes();
 
-			foreach(Assembly assembly in assemblies) {
-				Type[] assemblyTypes = assembly.GetTypes();
+                foreach (Type assemblyType in assemblyTypes) {
+                    lookForSwitchObjects(assemblyType, radioButtonApplicationSwitches.Checked ? typeof(ILayoutSwitch) : typeof(Switch));
+                    Application.DoEvents();
+                }
+            }
 
-				foreach(Type assemblyType in assemblyTypes) {
-					lookForSwitchObjects(assemblyType, radioButtonApplicationSwitches.Checked ? typeof(ILayoutSwitch) : typeof(Switch));
-					Application.DoEvents();
-				}
-			}
-
-			Cursor = previousCursor;
+            Cursor = previousCursor;
 
 
-			listViewSwitches.EndUpdate();
-		}
+            listViewSwitches.EndUpdate();
+        }
 
-		private void lookForSwitchObjects(Type type, Type switchType) {
-			FieldInfo[]	fields = type.GetFields(BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Static);
+        private void lookForSwitchObjects(Type type, Type switchType) {
+            FieldInfo[] fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 
-			foreach(FieldInfo field in fields) {
-				if((field.FieldType.GetInterface(switchType.Name) != null || field.FieldType.IsSubclassOf(switchType)) && field.IsStatic) {
-					Switch	theSwitch = (Switch)field.GetValue(null);
+            foreach (FieldInfo field in fields) {
+                if ((field.FieldType.GetInterface(switchType.Name) != null || field.FieldType.IsSubclassOf(switchType)) && field.IsStatic) {
+                    Switch theSwitch = (Switch)field.GetValue(null);
 
-					if(theSwitch != null)
-						listViewSwitches.Items.Add(new SwitchItem(theSwitch));
-				}
-			}
+                    if (theSwitch != null)
+                        listViewSwitches.Items.Add(new SwitchItem(theSwitch));
+                }
+            }
 
-			Type[]	nestedTypes = type.GetNestedTypes(BindingFlags.Public|BindingFlags.NonPublic);
+            Type[] nestedTypes = type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic);
 
-			foreach(Type nestedType in nestedTypes)
-				lookForSwitchObjects(nestedType, switchType);
+            foreach (Type nestedType in nestedTypes)
+                lookForSwitchObjects(nestedType, switchType);
 
-		}
+        }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                if (components != null) {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent() {
             this.listViewSwitches = new ListView();
             this.columnHeaderSwtchName = ((ColumnHeader)(new ColumnHeader()));
             this.columnHeaderDescription = ((ColumnHeader)(new ColumnHeader()));
@@ -136,8 +130,8 @@ namespace LayoutEventDebugger {
             // 
             // listViewSwitches
             // 
-            this.listViewSwitches.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.listViewSwitches.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listViewSwitches.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderSwtchName,
@@ -313,37 +307,37 @@ namespace LayoutEventDebugger {
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
-		}
-		#endregion
+        }
+        #endregion
 
-		private void setRadioButtonLayout() {
-			Switch	selectedSwitch = getSelected();
+        private void setRadioButtonLayout() {
+            Switch selectedSwitch = getSelected();
 
-			foreach(Control c in groupBoxSwitchValue.Controls) {
-				if(c is RadioButton)
-					((RadioButton)c).Visible = false;
-			}
+            foreach (Control c in groupBoxSwitchValue.Controls) {
+                if (c is RadioButton)
+                    ((RadioButton)c).Visible = false;
+            }
 
-			if(selectedSwitch is TraceSwitch) {
-				foreach(RadioButton rb in new RadioButton[] { radioButtonTraceNone, radioButtonTraceError, radioButtonWarnings, radioButtonTraceInfo, radioButtonTraceVerbose })
-					rb.Visible = true;
-			}
-			else {
-				SuspendLayout();
-				radioButtonBooleanOff.Location = radioButtonTraceNone.Location;
-				radioButtonBooleanOff.Visible = true;
-				radioButtonBooleanOn.Location = radioButtonTraceError.Location;
-				radioButtonBooleanOn.Visible = true;
-				ResumeLayout();
-			}
-		}
+            if (selectedSwitch is TraceSwitch) {
+                foreach (RadioButton rb in new RadioButton[] { radioButtonTraceNone, radioButtonTraceError, radioButtonWarnings, radioButtonTraceInfo, radioButtonTraceVerbose })
+                    rb.Visible = true;
+            }
+            else {
+                SuspendLayout();
+                radioButtonBooleanOff.Location = radioButtonTraceNone.Location;
+                radioButtonBooleanOff.Visible = true;
+                radioButtonBooleanOn.Location = radioButtonTraceError.Location;
+                radioButtonBooleanOn.Visible = true;
+                ResumeLayout();
+            }
+        }
 
 
-		private Switch getSelected() {
-			if(listViewSwitches.SelectedItems.Count > 0)
-				return ((SwitchItem)listViewSwitches.SelectedItems[0]).Switch;
-			return null;
-		}
+        private Switch getSelected() {
+            if (listViewSwitches.SelectedItems.Count > 0)
+                return ((SwitchItem)listViewSwitches.SelectedItems[0]).Switch;
+            return null;
+        }
 
         private void updateSelected() {
             var selection = listViewSwitches.SelectedItems[0] as SwitchItem;
@@ -351,172 +345,165 @@ namespace LayoutEventDebugger {
             selection.Update();
         }
 
-		private void listViewSwitches_SelectedIndexChanged(object sender, System.EventArgs e) {
-			Switch	selectedSwitch = getSelected();
+        private void listViewSwitches_SelectedIndexChanged(object sender, System.EventArgs e) {
+            Switch selectedSwitch = getSelected();
 
-			setRadioButtonLayout();
+            setRadioButtonLayout();
 
-			if(selectedSwitch != null) {
-				if(selectedSwitch is TraceSwitch) {
-					switch(((TraceSwitch)selectedSwitch).Level) {
+            if (selectedSwitch != null) {
+                if (selectedSwitch is TraceSwitch) {
+                    switch (((TraceSwitch)selectedSwitch).Level) {
 
-						case TraceLevel.Error:
-							radioButtonTraceError.Checked = true;
-							break;
+                        case TraceLevel.Error:
+                            radioButtonTraceError.Checked = true;
+                            break;
 
-						case TraceLevel.Warning:
-							radioButtonWarnings.Checked = true;
-							break;
+                        case TraceLevel.Warning:
+                            radioButtonWarnings.Checked = true;
+                            break;
 
-						case TraceLevel.Info:
-							radioButtonTraceInfo.Checked = true;
-							break;
+                        case TraceLevel.Info:
+                            radioButtonTraceInfo.Checked = true;
+                            break;
 
-						case TraceLevel.Verbose:
-							radioButtonTraceVerbose.Checked = true;
-							break;
+                        case TraceLevel.Verbose:
+                            radioButtonTraceVerbose.Checked = true;
+                            break;
 
-						default:
-							radioButtonTraceNone.Checked = true;
-							break;
-					}
-				}
-				else if(selectedSwitch is BooleanSwitch) {
-					if(((BooleanSwitch)selectedSwitch).Enabled)
-						radioButtonBooleanOn.Checked = true;
-					else
-						radioButtonBooleanOff.Checked = true;
-				}
-			}
-		}
+                        default:
+                            radioButtonTraceNone.Checked = true;
+                            break;
+                    }
+                }
+                else if (selectedSwitch is BooleanSwitch) {
+                    if (((BooleanSwitch)selectedSwitch).Enabled)
+                        radioButtonBooleanOn.Checked = true;
+                    else
+                        radioButtonBooleanOff.Checked = true;
+                }
+            }
+        }
 
-		private void radioButtonTraceNone_CheckedChanged(object sender, System.EventArgs e) {
-			TraceSwitch	selectedSwitch = getSelected() as TraceSwitch;
+        private void radioButtonTraceNone_CheckedChanged(object sender, System.EventArgs e) {
 
-			if(selectedSwitch != null)
-				selectedSwitch.Level = TraceLevel.Off;
+            if (getSelected() is TraceSwitch selectedSwitch)
+                selectedSwitch.Level = TraceLevel.Off;
 
-            updateSelected();
-		}
-
-		private void radioButtonTraceError_CheckedChanged(object sender, System.EventArgs e) {
-			TraceSwitch	selectedSwitch = getSelected() as TraceSwitch;
-
-			if(selectedSwitch != null)
-				selectedSwitch.Level = TraceLevel.Error;
             updateSelected();
         }
 
-		private void radioButtonWarnings_CheckedChanged(object sender, System.EventArgs e) {
-			TraceSwitch	selectedSwitch = getSelected() as TraceSwitch;
+        private void radioButtonTraceError_CheckedChanged(object sender, System.EventArgs e) {
 
-			if(selectedSwitch != null)
-				selectedSwitch.Level = TraceLevel.Warning;
+            if (getSelected() is TraceSwitch selectedSwitch)
+                selectedSwitch.Level = TraceLevel.Error;
             updateSelected();
         }
 
-		private void radioButtonTraceInfo_CheckedChanged(object sender, System.EventArgs e) {
-			TraceSwitch	selectedSwitch = getSelected() as TraceSwitch;
+        private void radioButtonWarnings_CheckedChanged(object sender, System.EventArgs e) {
 
-			if(selectedSwitch != null)
-				selectedSwitch.Level = TraceLevel.Info;
+            if (getSelected() is TraceSwitch selectedSwitch)
+                selectedSwitch.Level = TraceLevel.Warning;
             updateSelected();
         }
 
-		private void radioButtonTraceVerbose_CheckedChanged(object sender, System.EventArgs e) {
-			TraceSwitch	selectedSwitch = getSelected() as TraceSwitch;
+        private void radioButtonTraceInfo_CheckedChanged(object sender, System.EventArgs e) {
 
-			if(selectedSwitch != null)
-				selectedSwitch.Level = TraceLevel.Verbose;
+            if (getSelected() is TraceSwitch selectedSwitch)
+                selectedSwitch.Level = TraceLevel.Info;
             updateSelected();
         }
 
-		private void radioButtonBooleanOff_CheckedChanged(object sender, System.EventArgs e) {
-			BooleanSwitch	selectedSwitch = getSelected() as BooleanSwitch;
+        private void radioButtonTraceVerbose_CheckedChanged(object sender, System.EventArgs e) {
 
-			if(selectedSwitch != null)
-				selectedSwitch.Enabled = false;
+            if (getSelected() is TraceSwitch selectedSwitch)
+                selectedSwitch.Level = TraceLevel.Verbose;
             updateSelected();
         }
 
-		private void radioButtonBooleanOn_CheckedChanged(object sender, System.EventArgs e) {
-			BooleanSwitch	selectedSwitch = getSelected() as BooleanSwitch;
+        private void radioButtonBooleanOff_CheckedChanged(object sender, System.EventArgs e) {
 
-			if(selectedSwitch != null)
-				selectedSwitch.Enabled = true;
+            if (getSelected() is BooleanSwitch selectedSwitch)
+                selectedSwitch.Enabled = false;
             updateSelected();
         }
 
-		private void switchTypeChanged(object sender, EventArgs e) {
-			fillList();
-		}
+        private void radioButtonBooleanOn_CheckedChanged(object sender, System.EventArgs e) {
 
-		class SwitchItem : ListViewItem {
-			Switch			theSwitch;
+            if (getSelected() is BooleanSwitch selectedSwitch)
+                selectedSwitch.Enabled = true;
+            updateSelected();
+        }
 
-			public SwitchItem(Switch theSwitch) {
-				this.theSwitch = theSwitch;
-				Text = theSwitch.DisplayName;
-				SubItems.Add(theSwitch.Description);
-				SubItems.Add("");
-				Update();
-			}
+        private void switchTypeChanged(object sender, EventArgs e) {
+            fillList();
+        }
 
-			public void Update() {
-				if(theSwitch is TraceSwitch) {
-					switch(((TraceSwitch)theSwitch).Level) {
+        class SwitchItem : ListViewItem {
+            readonly Switch theSwitch;
 
-						case TraceLevel.Off:
-							SubItems[2].Text = "";
-							break;
+            public SwitchItem(Switch theSwitch) {
+                this.theSwitch = theSwitch;
+                Text = theSwitch.DisplayName;
+                SubItems.Add(theSwitch.Description);
+                SubItems.Add("");
+                Update();
+            }
 
-						case TraceLevel.Error:
-							SubItems[2].Text = "Errors";
-							break;
+            public void Update() {
+                if (theSwitch is TraceSwitch) {
+                    switch (((TraceSwitch)theSwitch).Level) {
 
-						case TraceLevel.Warning:
-							SubItems[2].Text = "Warnings";
-							break;
+                        case TraceLevel.Off:
+                            SubItems[2].Text = "";
+                            break;
 
-						case TraceLevel.Info:
-							SubItems[2].Text = "Info";
-							break;
+                        case TraceLevel.Error:
+                            SubItems[2].Text = "Errors";
+                            break;
 
-						case TraceLevel.Verbose:
-							SubItems[2].Text = "Verbose";
-							break;
+                        case TraceLevel.Warning:
+                            SubItems[2].Text = "Warnings";
+                            break;
 
-						default:
-							SubItems[2].Text = "Other - " + ((TraceSwitch)theSwitch).Level;
-							break;
-					}
-				}
-				else if(theSwitch is BooleanSwitch) {
-					if(((BooleanSwitch)theSwitch).Enabled)
-						SubItems[2].Text = "On";
-					else
-						SubItems[2].Text = "";
-				}
-			}
+                        case TraceLevel.Info:
+                            SubItems[2].Text = "Info";
+                            break;
+
+                        case TraceLevel.Verbose:
+                            SubItems[2].Text = "Verbose";
+                            break;
+
+                        default:
+                            SubItems[2].Text = "Other - " + ((TraceSwitch)theSwitch).Level;
+                            break;
+                    }
+                }
+                else if (theSwitch is BooleanSwitch) {
+                    if (((BooleanSwitch)theSwitch).Enabled)
+                        SubItems[2].Text = "On";
+                    else
+                        SubItems[2].Text = "";
+                }
+            }
 
             public Switch Switch => theSwitch;
         }
-	}
+    }
 
-	[LayoutModule("Trace Manager")]
-	class TraceManagerModule : LayoutModuleBase {
+    [LayoutModule("Trace Manager")]
+    class TraceManagerModule : LayoutModuleBase {
 
-		[LayoutEvent("tools-menu-open-request")]
-		private void OnToolsMenuOpenRequest(LayoutEvent e) {
-			Menu toolsMenu = (Menu)e.Info;
+        [LayoutEvent("tools-menu-open-request")]
+        private void OnToolsMenuOpenRequest(LayoutEvent e) {
+            Menu toolsMenu = (Menu)e.Info;
 
-			toolsMenu.MenuItems.Add("&Trace switches", new EventHandler(this.onSetTraceSwitches));
-		}
+            toolsMenu.MenuItems.Add("&Trace switches", new EventHandler(this.onSetTraceSwitches));
+        }
 
-		private void onSetTraceSwitches(object sender, EventArgs e) {
-			TraceManager	traceManager = new TraceManager();
+        private void onSetTraceSwitches(object sender, EventArgs e) {
+            TraceManager traceManager = new TraceManager();
 
-			traceManager.ShowDialog();
-		}
-	}
+            traceManager.ShowDialog();
+        }
+    }
 }

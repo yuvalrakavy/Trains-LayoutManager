@@ -9,14 +9,11 @@ namespace LayoutManager {
     /// <summary>
     /// This tool is used for editing the layout
     /// </summary>
-    public class LayoutOperationTool : LayoutTool
-	{
-		private System.ComponentModel.IContainer components;
+    public class LayoutOperationTool : LayoutTool {
 
-		public LayoutOperationTool() {
-			InitializeComponent();
-			EventManager.AddObjectSubscriptions(this);
-		}
+        public LayoutOperationTool() {
+            EventManager.AddObjectSubscriptions(this);
+        }
 
         protected override ContextMenu GetEmptySpotMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) => null;
 
@@ -51,12 +48,9 @@ namespace LayoutManager {
         #endregion
 
         protected override void DefaultAction(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
-			foreach(ModelComponent component in hitTestResult.Selection)
-				EventManager.Event(new LayoutEvent(component, "default-action-command", null, hitTestResult));
-		}
+            foreach (ModelComponent component in hitTestResult.Selection)
+                EventManager.Event(new LayoutEvent("default-action-command", component, hitTestResult));
+        }
 
-		private void InitializeComponent() {
-			this.components = new System.ComponentModel.Container();
-		}
-	}
+    }
 }

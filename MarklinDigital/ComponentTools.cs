@@ -8,102 +8,98 @@ namespace MarklinDigital {
     /// <summary>
     /// Summary description for ComponentTool.
     /// </summary>
-    [LayoutModule("Marklin Digital Component Editing Tool", UserControl=false)]
-	public class ComponentTool : System.ComponentModel.Component, ILayoutModuleSetup
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private Container components = null;
+    [LayoutModule("Marklin Digital Component Editing Tool", UserControl = false)]
+    public class ComponentTool : System.ComponentModel.Component, ILayoutModuleSetup {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private Container components = null;
 
-		#region Constructors
+        #region Constructors
 
-		public ComponentTool(IContainer container)
-		{
-			/// <summary>
-			/// Required for Windows.Forms Class Composition Designer support
-			/// </summary>
-			container.Add(this);
-			InitializeComponent();
+        public ComponentTool(IContainer container) {
+            /// <summary>
+            /// Required for Windows.Forms Class Composition Designer support
+            /// </summary>
+            container.Add(this);
+            InitializeComponent();
 
-			//
-			// TODO: Add any constructor code after InitializeComponent call
-			//
-		}
+            //
+            // TODO: Add any constructor code after InitializeComponent call
+            //
+        }
 
-		public ComponentTool()
-		{
-			/// <summary>
-			/// Required for Windows.Forms Class Composition Designer support
-			/// </summary>
-			InitializeComponent();
+        public ComponentTool() {
+            /// <summary>
+            /// Required for Windows.Forms Class Composition Designer support
+            /// </summary>
+            InitializeComponent();
 
-			//
-			// TODO: Add any constructor code after InitializeComponent call
-			//
-		}
+            //
+            // TODO: Add any constructor code after InitializeComponent call
+            //
+        }
 
-		#endregion
+        #endregion
 
-		[LayoutEvent("model-component-placement-request", SenderType=typeof(MarklinDigitalCentralStation))]
-		void PlaceTrackContactRequest(LayoutEvent e) {
-			MarklinDigitalCentralStation		component = (MarklinDigitalCentralStation)e.Sender;
-			Dialogs.MarklinDigitalProperties	csProperties = new Dialogs.MarklinDigitalProperties(component);
+        [LayoutEvent("model-component-placement-request", SenderType = typeof(MarklinDigitalCentralStation))]
+        void PlaceTrackContactRequest(LayoutEvent e) {
+            MarklinDigitalCentralStation component = (MarklinDigitalCentralStation)e.Sender;
+            Dialogs.MarklinDigitalProperties csProperties = new Dialogs.MarklinDigitalProperties(component);
 
-			if(csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-				component.XmlInfo.XmlDocument = csProperties.XmlInfo.XmlDocument;
-				e.Info = true;		// Place component
-			}
-			else
-				e.Info = false;		// Do not place component
-		}
+            if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                component.XmlInfo.XmlDocument = csProperties.XmlInfo.XmlDocument;
+                e.Info = true;      // Place component
+            }
+            else
+                e.Info = false;     // Do not place component
+        }
 
-		[LayoutEvent("query-component-editing-context-menu", SenderType=typeof(MarklinDigitalCentralStation))]
-		void QueryMarklinDigitalMenu(LayoutEvent e) {
-			e.Info = true;
-		}
+        [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(MarklinDigitalCentralStation))]
+        void QueryMarklinDigitalMenu(LayoutEvent e) {
+            e.Info = true;
+        }
 
-		[LayoutEvent("add-component-editing-context-menu-entries", SenderType=typeof(MarklinDigitalCentralStation))]
-		void AddMarklinDigitalContextMenuEntries(LayoutEvent e) {
-			Menu							menu = (Menu)e.Info;
-			MarklinDigitalCentralStation	component = (MarklinDigitalCentralStation)e.Sender;
+        [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(MarklinDigitalCentralStation))]
+        void AddMarklinDigitalContextMenuEntries(LayoutEvent e) {
+            Menu menu = (Menu)e.Info;
+            MarklinDigitalCentralStation component = (MarklinDigitalCentralStation)e.Sender;
 
-			menu.MenuItems.Add(new MarklinDigitalMenuItemProperties(component));
-		}
+            menu.MenuItems.Add(new MarklinDigitalMenuItemProperties(component));
+        }
 
-		#region Markin Digital Menu Item Classes
+        #region Markin Digital Menu Item Classes
 
-		class MarklinDigitalMenuItemProperties : MenuItem {
-			MarklinDigitalCentralStation	component;
+        class MarklinDigitalMenuItemProperties : MenuItem {
+            readonly MarklinDigitalCentralStation component;
 
-			internal MarklinDigitalMenuItemProperties(MarklinDigitalCentralStation component) {
-				this.component = component;
-				this.Text = "&Properties";
-			}
+            internal MarklinDigitalMenuItemProperties(MarklinDigitalCentralStation component) {
+                this.component = component;
+                this.Text = "&Properties";
+            }
 
-			protected override void OnClick(EventArgs e) {
-				Dialogs.MarklinDigitalProperties	csProperties = new Dialogs.MarklinDigitalProperties(component);
+            protected override void OnClick(EventArgs e) {
+                Dialogs.MarklinDigitalProperties csProperties = new Dialogs.MarklinDigitalProperties(component);
 
-				if(csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-					LayoutModifyComponentDocumentCommand	modifyComponentDocumentCommand = 
-						new LayoutModifyComponentDocumentCommand(component, csProperties.XmlInfo);
+                if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                    LayoutModifyComponentDocumentCommand modifyComponentDocumentCommand =
+                        new LayoutModifyComponentDocumentCommand(component, csProperties.XmlInfo);
 
-					LayoutController.Do(modifyComponentDocumentCommand);
-				}
-			}
-		}
+                    LayoutController.Do(modifyComponentDocumentCommand);
+                }
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Component Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-			components = new Container();
-		}
-		#endregion
-	}
+        #region Component Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent() {
+            components = new Container();
+        }
+        #endregion
+    }
 }

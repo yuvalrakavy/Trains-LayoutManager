@@ -9,121 +9,116 @@ namespace LayoutManager.Dialogs {
     /// <summary>
     /// Summary description for LocomotiveType.
     /// </summary>
-    public class LocomotiveProperties : LocomotiveBasePropertiesForm
-	{
-		private TabControl tabControl1;
-		private Button buttonCancel;
-		private Button buttonOk;
-		private Label label1;
-		private TextBox textBoxName;
-		private ColumnHeader columnHeaderFunctionNumber;
-		private ColumnHeader columnHeaderFunctionDescription;
-		private Button buttonFunctionAdd;
-		private Button buttonFunctionEdit;
-		private Button buttonFunctionRemove;
-		private CheckBox checkBoxHasLights;
-		private TabPage tabPageGeneral;
-		private TabPage tabPageFunctions;
-		private ListView listViewFunctions;
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private Container components = null;
+    public class LocomotiveProperties : LocomotiveBasePropertiesForm {
+        private TabControl tabControl1;
+        private Button buttonCancel;
+        private Button buttonOk;
+        private Label label1;
+        private TextBox textBoxName;
+        private ColumnHeader columnHeaderFunctionNumber;
+        private ColumnHeader columnHeaderFunctionDescription;
+        private Button buttonFunctionAdd;
+        private Button buttonFunctionEdit;
+        private Button buttonFunctionRemove;
+        private CheckBox checkBoxHasLights;
+        private TabPage tabPageGeneral;
+        private TabPage tabPageFunctions;
+        private ListView listViewFunctions;
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private readonly Container components = null;
 
-		private Button buttonCopyFrom;
-		private GroupBox groupBoxOrigin;
-		private RadioButton radioButtonOriginUS;
-		private RadioButton radioButtonOriginEurope;
-		private GroupBox groupBoxKind;
-		private RadioButton radioButtonKindSoundUnit;
-		private RadioButton radioButtonKindElectric;
-		private RadioButton radioButtonKindDiesel;
-		private RadioButton radioButtonKindSteam;
-		private GroupBox groupBox1;
-		private GroupBox groupBox2;
-		private System.Windows.Forms.LinkLabel linkLabelTypeName;
-		private Button buttonSelectType;
-		private CheckBox checkBoxLinkedToType;
-		private ComboBox comboBoxStore;
-		private ColumnHeader columnHeaderName;
-		private ColumnHeader columnHeaderType;
-		private LayoutManager.CommonUI.Controls.LengthInput lengthInput;
-		private Label label4;
-		private CheckBox checkBoxTriggerTrackContact;
-		private TextBox textBoxCollectionID;
-		private Label label2;
-		private TabPage tabPageProperties;
-		private TabPage tabPageAttributes;
-		private LayoutManager.CommonUI.Controls.AttributesEditor attributesEditor;
-		private Label label5;
-		private TextBox textBoxSpeedLimit;
-		private Label label6;
-		private CommonUI.Controls.TrackGuageSelector trackGuageSelector;
-		private TabPage tabPageDecoder;
-		private TabPage tabPageLog;
-		private ComboBox comboBoxDecoderType;
-		private Label label7;
+        private Button buttonCopyFrom;
+        private GroupBox groupBoxOrigin;
+        private RadioButton radioButtonOriginUS;
+        private RadioButton radioButtonOriginEurope;
+        private GroupBox groupBoxKind;
+        private RadioButton radioButtonKindSoundUnit;
+        private RadioButton radioButtonKindElectric;
+        private RadioButton radioButtonKindDiesel;
+        private RadioButton radioButtonKindSteam;
+        private GroupBox groupBox1;
+        private GroupBox groupBox2;
+        private System.Windows.Forms.LinkLabel linkLabelTypeName;
+        private Button buttonSelectType;
+        private CheckBox checkBoxLinkedToType;
+        private ComboBox comboBoxStore;
+        private ColumnHeader columnHeaderName;
+        private ColumnHeader columnHeaderType;
+        private LayoutManager.CommonUI.Controls.LengthInput lengthInput;
+        private Label label4;
+        private CheckBox checkBoxTriggerTrackContact;
+        private TextBox textBoxCollectionID;
+        private Label label2;
+        private TabPage tabPageProperties;
+        private TabPage tabPageAttributes;
+        private LayoutManager.CommonUI.Controls.AttributesEditor attributesEditor;
+        private Label label5;
+        private TextBox textBoxSpeedLimit;
+        private Label label6;
+        private CommonUI.Controls.TrackGuageSelector trackGuageSelector;
+        private TabPage tabPageDecoder;
+        private TabPage tabPageLog;
+        private ComboBox comboBoxDecoderType;
+        private Label label7;
         private Label label3;
         private CommonUI.Controls.ImageGetter imageGetter;
 
-		private void EndOfDesignerVariables() { }
+        private void EndOfDesignerVariables() { }
 
-		LocomotiveInfo			inLoco;
-		LocomotiveInfo			loco;
+        readonly LocomotiveInfo inLoco;
+        readonly LocomotiveInfo loco;
 
-		public LocomotiveProperties(LocomotiveInfo inLoco) : base() {
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+        public LocomotiveProperties(LocomotiveInfo inLoco) : base() {
+            //
+            // Required for Windows Form Designer support
+            //
+            InitializeComponent();
 
-			this.inLoco = inLoco;
+            this.inLoco = inLoco;
 
-			// Make a copy for editing
-			loco = new LocomotiveInfo((XmlElement)inLoco.Element.CloneNode(true));
+            // Make a copy for editing
+            loco = new LocomotiveInfo((XmlElement)inLoco.Element.CloneNode(true));
 
-			textBoxName.Text = loco.Name;
+            textBoxName.Text = loco.Name;
 
-			lengthInput.Initialize();
-			InitializeControls(loco.Element, LocomotiveCollection.Element["Stores"]);
+            lengthInput.Initialize();
+            InitializeControls(loco.Element, LocomotiveCollection.Element["Stores"]);
 
-			if(loco.TypeName != "")
-				linkLabelTypeName.Text = loco.TypeName;
-			else
-				linkLabelTypeName.Enabled = false;
+            if (loco.TypeName != "")
+                linkLabelTypeName.Text = loco.TypeName;
+            else
+                linkLabelTypeName.Enabled = false;
 
-			checkBoxLinkedToType.Checked = loco.LinkedToType;
-			checkBoxTriggerTrackContact.Checked = loco.CanTriggerTrackContact;
+            checkBoxLinkedToType.Checked = loco.LinkedToType;
+            checkBoxTriggerTrackContact.Checked = loco.CanTriggerTrackContact;
 
-			textBoxCollectionID.Text = loco.CollectionId;
+            textBoxCollectionID.Text = loco.CollectionId;
 
-			UpdateButtons();
-		}
+            UpdateButtons();
+        }
 
         protected LocomotiveCollectionInfo LocomotiveCollection => LayoutModel.LocomotiveCollection;
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                if (components != null) {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent() {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageGeneral = new System.Windows.Forms.TabPage();
             this.textBoxCollectionID = new System.Windows.Forms.TextBox();
@@ -187,8 +182,8 @@ namespace LayoutManager.Dialogs {
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPageGeneral);
             this.tabControl1.Controls.Add(this.tabPageProperties);
@@ -678,85 +673,84 @@ namespace LayoutManager.Dialogs {
             this.tabPageAttributes.ResumeLayout(false);
             this.ResumeLayout(false);
 
-		}
-		#endregion
+        }
+        #endregion
 
-		[LayoutEventDef("locomotive-configuration-changed", Role=LayoutEventRole.Notification, SenderType=typeof(LocomotiveInfo))]
-		private void buttonOk_Click(object sender, System.EventArgs e) {
-			if(textBoxName.Text.Trim() == "") {
-				tabControl1.SelectedTab = tabPageGeneral;
-				MessageBox.Show(this, "You must enter a name", "Input error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				textBoxName.Focus();
-				return;
-			}
+        [LayoutEventDef("locomotive-configuration-changed", Role = LayoutEventRole.Notification, SenderType = typeof(LocomotiveInfo))]
+        private void buttonOk_Click(object sender, System.EventArgs e) {
+            if (textBoxName.Text.Trim() == "") {
+                tabControl1.SelectedTab = tabPageGeneral;
+                MessageBox.Show(this, "You must enter a name", "Input error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBoxName.Focus();
+                return;
+            }
 
-			if(comboBoxDecoderType.SelectedItem == null) {
-				tabControl1.SelectedTab = tabPageDecoder;
-				MessageBox.Show(this, "You must specify the type of decoder that is install in this locomotive", "Missing decoder type", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				comboBoxDecoderType.Focus();
-				return;
-			}
+            if (comboBoxDecoderType.SelectedItem == null) {
+                tabControl1.SelectedTab = tabPageDecoder;
+                MessageBox.Show(this, "You must specify the type of decoder that is install in this locomotive", "Missing decoder type", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                comboBoxDecoderType.Focus();
+                return;
+            }
 
-			if(!GetLocomotiveTypeFields())
-				return;
+            if (!GetLocomotiveTypeFields())
+                return;
 
-			loco.DecoderTypeName = ((DecoderTypeItem)comboBoxDecoderType.SelectedItem).DecoderType.TypeName;
+            loco.DecoderTypeName = ((DecoderTypeItem)comboBoxDecoderType.SelectedItem).DecoderType.TypeName;
 
-			loco.Name = textBoxName.Text;
-			loco.CollectionId = textBoxCollectionID.Text;
+            loco.Name = textBoxName.Text;
+            loco.CollectionId = textBoxCollectionID.Text;
 
-			loco.LinkedToType = checkBoxLinkedToType.Checked;
-			loco.CanTriggerTrackContact = checkBoxTriggerTrackContact.Checked;
+            loco.LinkedToType = checkBoxLinkedToType.Checked;
+            loco.CanTriggerTrackContact = checkBoxTriggerTrackContact.Checked;
 
-			if(inLoco.Element.ParentNode != null) {
-				// Replace the input with copy made for editing
-				inLoco.Element.ParentNode.ReplaceChild(loco.Element, inLoco.Element);
-			}
+            if (inLoco.Element.ParentNode != null) {
+                // Replace the input with copy made for editing
+                inLoco.Element.ParentNode.ReplaceChild(loco.Element, inLoco.Element);
+            }
 
-			inLoco.Element = loco.Element;
+            inLoco.Element = loco.Element;
 
-			EventManager.Event(new LayoutEvent(inLoco, "locomotive-configuration-changed"));
+            EventManager.Event(new LayoutEvent("locomotive-configuration-changed", inLoco));
 
-			DialogResult = DialogResult.OK;
-		}
+            DialogResult = DialogResult.OK;
+        }
 
-		private void buttonSelectType_Click(object sender, System.EventArgs e) {
-			Dialogs.SelectLocomotiveType	selectType = new Dialogs.SelectLocomotiveType();
+        private void buttonSelectType_Click(object sender, System.EventArgs e) {
+            Dialogs.SelectLocomotiveType selectType = new Dialogs.SelectLocomotiveType();
 
-			if(selectType.ShowDialog(this) == DialogResult.OK) {
-				if(selectType.SelectedLocomotiveType != null) {
-					loco.UpdateFromLocomotiveType(selectType.SelectedLocomotiveType);
-					SetLocomotiveTypeFields();
-					linkLabelTypeName.Text = loco.TypeName;
-					linkLabelTypeName.Enabled = true;
-				}
-			}
+            if (selectType.ShowDialog(this) == DialogResult.OK) {
+                if (selectType.SelectedLocomotiveType != null) {
+                    loco.UpdateFromLocomotiveType(selectType.SelectedLocomotiveType);
+                    SetLocomotiveTypeFields();
+                    linkLabelTypeName.Text = loco.TypeName;
+                    linkLabelTypeName.Enabled = true;
+                }
+            }
 
-			selectType.Dispose();
-		}
+            selectType.Dispose();
+        }
 
-		private void buttonFunctionAdd_Click_1(object sender, EventArgs e) {
-			buttonFunctionAdd_Click(sender, e);
-		}
+        private void buttonFunctionAdd_Click_1(object sender, EventArgs e) {
+            buttonFunctionAdd_Click(sender, e);
+        }
 
-		private void buttonFunctionEdit_Click_1(object sender, EventArgs e) {
-			buttonFunctionEdit_Click(sender, e);
-		}
+        private void buttonFunctionEdit_Click_1(object sender, EventArgs e) {
+            buttonFunctionEdit_Click(sender, e);
+        }
 
-		private void buttonFunctionRemove_Click_1(object sender, EventArgs e) {
-			buttonFunctionRemove_Click(sender, e);
-		}
+        private void buttonFunctionRemove_Click_1(object sender, EventArgs e) {
+            buttonFunctionRemove_Click(sender, e);
+        }
 
-		private void buttonCopyFrom_Click_1(object sender, EventArgs e) {
-			buttonCopyFrom_Click(sender, e);
-		}
+        private void buttonCopyFrom_Click_1(object sender, EventArgs e) {
+            buttonCopyFrom_Click(sender, e);
+        }
 
-		private void listViewFunctions_SelectedIndexChanged_1(object sender, EventArgs e) {
-			listViewFunctions_SelectedIndexChanged(sender, e);
-		}
+        private void listViewFunctions_SelectedIndexChanged_1(object sender, EventArgs e) {
+            listViewFunctions_SelectedIndexChanged(sender, e);
+        }
 
-        private void trackGuageSelector_SelectedIndexChanged_1(object sender, EventArgs e)
-        {
+        private void trackGuageSelector_SelectedIndexChanged_1(object sender, EventArgs e) {
             trackGuageSelector_SelectedIndexChanged(sender, e);
         }
     }

@@ -6,51 +6,50 @@ using LayoutManager.Model;
 
 namespace LayoutManager.Components {
     public class SwitchingStateSupport {
-		public string StateTopic { get; }
+        public string StateTopic { get; }
         public IModelComponentHasSwitchingState Component { get; }
         public virtual int SwitchStateCount { get; }
 
         public SwitchingStateSupport(IModelComponentHasSwitchingState component, string stateTopic = "SwitchState", int switchStateCount = 2) {
-			this.Component = component;
-			this.StateTopic = stateTopic;
-			this.SwitchStateCount = switchStateCount;
-		}
+            this.Component = component;
+            this.StateTopic = stateTopic;
+            this.SwitchStateCount = switchStateCount;
+        }
 
         public string DefaultConnectionPointName {
             get {
-                var c = Component as IModelComponentConnectToControl;
 
-                if (c != null && c.ControlConnectionDescriptions.Count > 0)
+                if (Component is IModelComponentConnectToControl c && c.ControlConnectionDescriptions.Count > 0)
                     return c.ControlConnectionDescriptions[0].Name;
 
                 throw new ApplicationException($"Cannot get default connection point name for {Component} - no connection points are defined");
             }
         }
-		public virtual int CurrentSwitchState => GetSwitchState(DefaultConnectionPointName);
+        public virtual int CurrentSwitchState => GetSwitchState(DefaultConnectionPointName);
 
-		public virtual void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string connectionPointName = null) {
-			if(switchingState != 0 && switchingState != 1)
-				throw new LayoutException(this, "Invalid switch state: " + switchingState);
+        public virtual void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string connectionPointName = null) {
+            if (switchingState != 0 && switchingState != 1)
+                throw new LayoutException(this, "Invalid switch state: " + switchingState);
 
-			int state = switchingState;
+            int state = switchingState;
 
-			if(ReverseLogic && connectionPointName == null)
-				state = 1 - state;
+            if (ReverseLogic && connectionPointName == null)
+                state = 1 - state;
 
-			ControlConnectionPoint connectionPoint = LayoutModel.ControlManager.ConnectionPoints[Component.Id, connectionPointName];
+            ControlConnectionPoint connectionPoint = LayoutModel.ControlManager.ConnectionPoints[Component.Id, connectionPointName];
 
-			switchingCommands.Add(new SwitchingCommand(new ControlConnectionPointReference(connectionPoint), state));
-		}
+            switchingCommands.Add(new SwitchingCommand(new ControlConnectionPointReference(connectionPoint), state));
+        }
 
-		/// <summary>
-		/// This method actually change the run-time state. It should be called only from the state changed
-		/// notification handler, and not directly.
-		/// </summary>
-		/// <param name="switchState">The new switch state</param>
-		public virtual void SetSwitchState(ControlConnectionPoint controlConnectionPoint, int switchState, string connectionPointName = null) {
-			LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic).SetAttribute($"Value{connectionPointName ?? ""}", XmlConvert.ToString(switchState));
+        /// <summary>
+        /// This method actually change the run-time state. It should be called only from the state changed
+        /// notification handler, and not directly.
+        /// </summary>
+        /// <param name="switchState">The new switch state</param>
+        public virtual void SetSwitchState(ControlConnectionPoint controlConnectionPoint, int switchState, string connectionPointName = null) {
+            LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic).SetAttribute($"Value{connectionPointName ?? ""}", XmlConvert.ToString(switchState));
             Component.OnComponentChanged();
-		}
+        }
 
         /// <summary>
         /// Get switch state of a given connection point
@@ -69,23 +68,22 @@ namespace LayoutManager.Components {
         }
 
         public bool ReverseLogic {
-			get {
-				IModelComponentHasReverseLogic componentWithReverseLogic = Component as IModelComponentHasReverseLogic;
+            get {
 
-				if(componentWithReverseLogic != null)
-					return componentWithReverseLogic.ReverseLogic;
-				else
-					return false;
-			}
-		}
-	}
+                if (Component is IModelComponentHasReverseLogic componentWithReverseLogic)
+                    return componentWithReverseLogic.ReverseLogic;
+                else
+                    return false;
+            }
+        }
+    }
 
-	public abstract class ModelComponentWithSwitchingState : ModelComponent, IModelComponentHasSwitchingState {
-		SwitchingStateSupport switchingStateSupport;
+    public abstract class ModelComponentWithSwitchingState : ModelComponent, IModelComponentHasSwitchingState {
+        readonly SwitchingStateSupport switchingStateSupport;
 
-		public ModelComponentWithSwitchingState() {
-			switchingStateSupport = GetSwitchingStateSupporter();
-		}
+        public ModelComponentWithSwitchingState() {
+            switchingStateSupport = GetSwitchingStateSupporter();
+        }
 
         protected virtual SwitchingStateSupport GetSwitchingStateSupporter() => new SwitchingStateSupport(this);
 
@@ -94,33 +92,33 @@ namespace LayoutManager.Components {
         public int CurrentSwitchState => switchingStateSupport.CurrentSwitchState;
 
         public void SetSwitchState(ControlConnectionPoint connectionPoint, int switchState, string connectionPointName = null) {
-			switchingStateSupport.SetSwitchState(connectionPoint, switchState, connectionPointName);
-		}
+            switchingStateSupport.SetSwitchState(connectionPoint, switchState, connectionPointName);
+        }
 
         public int GetSwitchState(string connectionPointName = null) => switchingStateSupport.GetSwitchState(connectionPointName);
 
         public int SwitchStateCount => switchingStateSupport.SwitchStateCount;
 
         public void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string connectionPointName = null) {
-			switchingStateSupport.AddSwitchingCommands(switchingCommands, switchingState, connectionPointName);
-		}
+            switchingStateSupport.AddSwitchingCommands(switchingCommands, switchingState, connectionPointName);
+        }
 
-		#endregion
+        #endregion
 
-		#region IModelComponentHasReverseLogic Members
+        #region IModelComponentHasReverseLogic Members
 
-		public bool ReverseLogic {
-			get {
-				if(Element.HasAttribute("ReverseLogic"))
-					return XmlConvert.ToBoolean(Element.GetAttribute("ReverseLogic"));
-				return false;
-			}
+        public bool ReverseLogic {
+            get {
+                if (Element.HasAttribute("ReverseLogic"))
+                    return XmlConvert.ToBoolean(Element.GetAttribute("ReverseLogic"));
+                return false;
+            }
 
-			set {
-				Element.SetAttribute("ReverseLogic", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                Element.SetAttribute("ReverseLogic", XmlConvert.ToString(value));
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -10,76 +10,71 @@ namespace LayoutManager.Dialogs {
     /// Summary description for LocomotiveFunction.
     /// </summary>
     public class LocomotiveFunction : Form {
-		private Label label1;
-		private Label label2;
-		private NumericUpDown numericUpDownFunctionNumber;
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private Container components = null;
-		private Button buttonOk;
-		private Button buttonCancel;
-		private ComboBox comboBoxFunctionName;
-		private Label label3;
-		private Label label4;
-		private TextBox textBoxFunctionDescription;
-		private ComboBox comboBoxFunctionType;
+        private Label label1;
+        private Label label2;
+        private NumericUpDown numericUpDownFunctionNumber;
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private readonly Container components = null;
+        private Button buttonOk;
+        private Button buttonCancel;
+        private ComboBox comboBoxFunctionName;
+        private Label label3;
+        private Label label4;
+        private TextBox textBoxFunctionDescription;
+        private ComboBox comboBoxFunctionType;
 
-		private void endOfDesignerVariables() { }
+        private void endOfDesignerVariables() { }
 
-		LocomotiveCatalogInfo	catalog;
-		XmlElement					functionsElement;
-		XmlElement					functionElement;
-		bool						typeChanged = false;
-		bool						descriptionChanged = false;
+        readonly LocomotiveCatalogInfo catalog;
+        readonly XmlElement functionsElement;
+        readonly XmlElement functionElement;
+        bool typeChanged = false;
+        bool descriptionChanged = false;
 
-		public LocomotiveFunction(LocomotiveCatalogInfo catalog, XmlElement functionsElement, XmlElement functionElement)
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+        public LocomotiveFunction(LocomotiveCatalogInfo catalog, XmlElement functionsElement, XmlElement functionElement) {
+            //
+            // Required for Windows Form Designer support
+            //
+            InitializeComponent();
 
-			this.catalog = catalog;
-			this.functionsElement = functionsElement;
-			this.functionElement = functionElement;
+            this.catalog = catalog;
+            this.functionsElement = functionsElement;
+            this.functionElement = functionElement;
 
-			LocomotiveFunctionInfo	function = new LocomotiveFunctionInfo(functionElement);
+            LocomotiveFunctionInfo function = new LocomotiveFunctionInfo(functionElement);
 
-			numericUpDownFunctionNumber.Value = function.Number;
-			comboBoxFunctionName.Text = function.Name;
-			textBoxFunctionDescription.Text = function.Description;
-			comboBoxFunctionType.SelectedIndex = (int)function.Type;
+            numericUpDownFunctionNumber.Value = function.Number;
+            comboBoxFunctionName.Text = function.Name;
+            textBoxFunctionDescription.Text = function.Description;
+            comboBoxFunctionType.SelectedIndex = (int)function.Type;
 
-			foreach(XmlElement f in catalog.LocomotiveFunctionNames)
-				comboBoxFunctionName.Items.Add(f.GetAttribute("Name"));
+            foreach (XmlElement f in catalog.LocomotiveFunctionNames)
+                comboBoxFunctionName.Items.Add(f.GetAttribute("Name"));
 
-			typeChanged = false;
-			descriptionChanged = false;
-		}
+            typeChanged = false;
+            descriptionChanged = false;
+        }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                if (components != null) {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent() {
             this.label1 = new System.Windows.Forms.Label();
             this.numericUpDownFunctionNumber = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
@@ -206,67 +201,67 @@ namespace LayoutManager.Dialogs {
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
-		#endregion
+        }
+        #endregion
 
-		private void buttonOk_Click(object sender, System.EventArgs e) {
-			foreach(XmlElement fElement in functionsElement) {
-				LocomotiveFunctionInfo	f = new LocomotiveFunctionInfo(fElement);
+        private void buttonOk_Click(object sender, System.EventArgs e) {
+            foreach (XmlElement fElement in functionsElement) {
+                LocomotiveFunctionInfo f = new LocomotiveFunctionInfo(fElement);
 
-				if(fElement != functionElement && f.Number == numericUpDownFunctionNumber.Value) {
-					MessageBox.Show(this, "Function number " + numericUpDownFunctionNumber.Value + " is already used", "Duplicate function number",
-						MessageBoxButtons.OK, MessageBoxIcon.Error);
-					numericUpDownFunctionNumber.Focus();
-					return;
-				}
+                if (fElement != functionElement && f.Number == numericUpDownFunctionNumber.Value) {
+                    MessageBox.Show(this, "Function number " + numericUpDownFunctionNumber.Value + " is already used", "Duplicate function number",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    numericUpDownFunctionNumber.Focus();
+                    return;
+                }
 
-				if(fElement != functionElement && f.Name == comboBoxFunctionName.Text) {
-					MessageBox.Show(this, "Function name '" + comboBoxFunctionName.Text + "' is already used", "Duplicate function name",
-						MessageBoxButtons.OK, MessageBoxIcon.Error);
-					comboBoxFunctionName.Focus();
-					return;
-				}
-			}
+                if (fElement != functionElement && f.Name == comboBoxFunctionName.Text) {
+                    MessageBox.Show(this, "Function name '" + comboBoxFunctionName.Text + "' is already used", "Duplicate function name",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    comboBoxFunctionName.Focus();
+                    return;
+                }
+            }
 
-			LocomotiveFunctionInfo	function = new LocomotiveFunctionInfo(functionElement);
+            LocomotiveFunctionInfo function = new LocomotiveFunctionInfo(functionElement) {
+                Number = (int)numericUpDownFunctionNumber.Value,
+                Type = (LocomotiveFunctionType)comboBoxFunctionType.SelectedIndex,
+                Name = comboBoxFunctionName.Text,
+                Description = textBoxFunctionDescription.Text
+            };
 
-			function.Number = (int)numericUpDownFunctionNumber.Value;
-			function.Type = (LocomotiveFunctionType)comboBoxFunctionType.SelectedIndex;
-			function.Name = comboBoxFunctionName.Text;
-			function.Description = textBoxFunctionDescription.Text;
+            if (comboBoxFunctionName.FindStringExact(comboBoxFunctionName.Text) < 0) {
+                XmlElement element = catalog.Element.OwnerDocument.CreateElement("Function");
 
-			if(comboBoxFunctionName.FindStringExact(comboBoxFunctionName.Text) < 0) {
-				XmlElement	element = catalog.Element.OwnerDocument.CreateElement("Function");
+                element.SetAttribute("Name", comboBoxFunctionName.Text);
+                element.SetAttribute("Description", textBoxFunctionDescription.Text);
+                element.SetAttribute("Type", ((LocomotiveFunctionType)comboBoxFunctionType.SelectedIndex).ToString());
+                catalog.LocomotiveFunctionNames.AppendChild(element);
+            }
 
-				element.SetAttribute("Name", comboBoxFunctionName.Text);
-				element.SetAttribute("Description", textBoxFunctionDescription.Text);
-				element.SetAttribute("Type", ((LocomotiveFunctionType)comboBoxFunctionType.SelectedIndex).ToString());
-				catalog.LocomotiveFunctionNames.AppendChild(element);
-			}
+            DialogResult = DialogResult.OK;
+        }
 
-			DialogResult = DialogResult.OK;
-		}
+        private void comboBoxFunctionType_SelectedIndexChanged(object sender, System.EventArgs e) {
+            typeChanged = true;
+        }
 
-		private void comboBoxFunctionType_SelectedIndexChanged(object sender, System.EventArgs e) {
-			typeChanged = true;
-		}
+        private void textBoxFunctionDescription_TextChanged(object sender, System.EventArgs e) {
+            descriptionChanged = true;
+        }
 
-		private void textBoxFunctionDescription_TextChanged(object sender, System.EventArgs e) {
-			descriptionChanged = true;
-		}
+        private void comboBoxFunctionName_SelectionChangeCommitted(object sender, System.EventArgs e) {
+            XmlElement functionInfoElement = (XmlElement)catalog.LocomotiveFunctionNames.GetElementsByTagName("Function")[comboBoxFunctionName.SelectedIndex];
 
-		private void comboBoxFunctionName_SelectionChangeCommitted(object sender, System.EventArgs e) {
-			XmlElement	functionInfoElement = (XmlElement)catalog.LocomotiveFunctionNames.GetElementsByTagName("Function")[comboBoxFunctionName.SelectedIndex];
+            if (!typeChanged) {
+                comboBoxFunctionType.SelectedIndex = (int)Enum.Parse(typeof(LocomotiveFunctionType), functionInfoElement.GetAttribute("Type"));
+                typeChanged = false;
+            }
 
-			if(!typeChanged) {
-				comboBoxFunctionType.SelectedIndex = (int)Enum.Parse(typeof(LocomotiveFunctionType), functionInfoElement.GetAttribute("Type"));
-				typeChanged = false;
-			}
-
-			if(!descriptionChanged) {
-				textBoxFunctionDescription.Text = functionInfoElement.GetAttribute("Description");
-				descriptionChanged = false;
-			}
-		}
-	}
+            if (!descriptionChanged) {
+                textBoxFunctionDescription.Text = functionInfoElement.GetAttribute("Description");
+                descriptionChanged = false;
+            }
+        }
+    }
 }

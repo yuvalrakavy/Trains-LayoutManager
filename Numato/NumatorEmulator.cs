@@ -9,15 +9,15 @@ using System.Diagnostics;
 using LayoutManager;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060, IDE0052
 namespace NumatoController {
     public class NumatorEmulator : ILayoutCommandStationEmulator {
-        Guid numatoId;
-        string pipeName;
+        readonly string pipeName;
 
         FileStream commStream;
-        ILayoutEmulatorServices layoutEmulationServices;
+        readonly ILayoutEmulatorServices layoutEmulationServices;
         Thread interfaceThread = null;
-        ILayoutInterThreadEventInvoker interThreadEventInvoker;
+        readonly ILayoutInterThreadEventInvoker interThreadEventInvoker;
 
         enum NumatoState {
             GetUser, GetPassword, GetCommand
@@ -25,36 +25,36 @@ namespace NumatoController {
 
         NumatoState state;
 
-        static LayoutTraceSwitch traceNumatoEmulator = new LayoutTraceSwitch("NumatoEmulator", "Trace Numato Relay Board emulation");
+        static readonly LayoutTraceSwitch traceNumatoEmulator = new LayoutTraceSwitch("NumatoEmulator", "Trace Numato Relay Board emulation");
 
         public NumatorEmulator(IModelComponentIsBusProvider numatoComponent, string pipeName) {
-            this.numatoId = numatoComponent.Id;
             this.pipeName = pipeName;
-            this.interThreadEventInvoker = (ILayoutInterThreadEventInvoker)EventManager.Event(new LayoutEvent(this, "get-inter-thread-event-invoker"));
+            this.interThreadEventInvoker = (ILayoutInterThreadEventInvoker)EventManager.Event(new LayoutEvent("get-inter-thread-event-invoker", this));
 
-            layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent(this, "get-layout-emulation-services"));
-            EventManager.Event(new LayoutEvent(null, "initialize-layout-emulation"));
+            layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
+            EventManager.Event(new LayoutEvent("initialize-layout-emulation"));
 
-            interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction));
-            interfaceThread.Name = "Command station emulation for " + numatoComponent.NameProvider.Name;
+            interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction)) {
+                Name = "Command station emulation for " + numatoComponent.NameProvider.Name
+            };
             interfaceThread.Start();
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void InterfaceThreadFunction() {
-            commStream = (FileStream)EventManager.Event(new LayoutEvent(pipeName, "wait-named-pipe-request", null, true));
+            commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true));
 
             state = NumatoState.GetUser;
 
 
             try {
-                while(true) {
+                while (true) {
                     byte[] prompt = null;
 
-                    switch(state) {
+                    switch (state) {
                         case NumatoState.GetUser: prompt = Encoding.UTF8.GetBytes("Numato Lab 32 Channel Ethernet Relay Module\r\nUser Name: "); break;
                         case NumatoState.GetPassword: prompt = Encoding.UTF8.GetBytes("Password: ").Concat(new byte[] { 0xff, 0xfd, 0x2d }).ToArray(); break;
-                        case NumatoState.GetCommand: prompt =Encoding.UTF8.GetBytes(">"); break;
+                        case NumatoState.GetCommand: prompt = Encoding.UTF8.GetBytes(">"); break;
                     }
 
                     Trace.WriteLineIf(traceNumatoEmulator.TraceVerbose, $"Numato emulator prompt with {Encoding.UTF8.GetString(prompt)}");
@@ -72,12 +72,12 @@ namespace NumatoController {
 
                     byte[] reply = null;
 
-                    switch(state) {
+                    switch (state) {
                         case NumatoState.GetUser: state = NumatoState.GetPassword; break;
                         case NumatoState.GetPassword: state = NumatoState.GetCommand; break;
                     }
 
-                    if(reply != null)
+                    if (reply != null)
                         commStream.Write(reply, 0, reply.Length);
                 }
             }

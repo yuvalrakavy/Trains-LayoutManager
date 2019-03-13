@@ -14,38 +14,38 @@ namespace LayoutManager.Model {
     /// Base class for information providers. Information providers wrap XML element and add symantics to them.
     /// </summary>
     public class LayoutInfo : LayoutXmlWrapper {
-		bool					elementInComponentDocument;
-		XmlElement				container;
-		ModelComponent			component;
+        bool elementInComponentDocument;
+        XmlElement container;
+        ModelComponent component;
 
-		[System.ComponentModel.Browsable(false)]
-		public String ElementPath {
-			get {
-				if(Ref != null)
-					return "//" + Element.Name + "[@Ref=\"" + Ref + "\"]";
-				return "//" + Element.Name + "[@ID=\"" + GetAttribute("ID") + "\"]";
-			}
-		}
+        [System.ComponentModel.Browsable(false)]
+        public String ElementPath {
+            get {
+                if (Ref != null)
+                    return "//" + Element.Name + "[@Ref=\"" + Ref + "\"]";
+                return "//" + Element.Name + "[@ID=\"" + GetAttribute("ID") + "\"]";
+            }
+        }
 
-		public ModelComponent Component {
-			get {
-				return component;
-			}
+        public ModelComponent Component {
+            get {
+                return component;
+            }
 
-			set {
-				component = value;
-			}
-		}
+            set {
+                component = value;
+            }
+        }
 
-		public XmlElement ContainerElement {
-			get {
-				return container;
-			}
+        public XmlElement ContainerElement {
+            get {
+                return container;
+            }
 
-			set {
-				container = value;
-			}
-		}
+            set {
+                container = value;
+            }
+        }
 
         /// <summary>
         /// True if the provider element was found in the component document, false otherwise.
@@ -61,68 +61,68 @@ namespace LayoutManager.Model {
         /// <param name="xmlInfo">The component XML document in which the provider is searched</param>
         /// <param name="elementName">The element</param>
         public LayoutInfo(IObjectHasXml container, string elementPath) {
-			SearchProviderElement(container.Element, elementPath);
-		}
+            SearchProviderElement(container.Element, elementPath);
+        }
 
-		public LayoutInfo(XmlElement container, string elementPath) {
-			SearchProviderElement(container, elementPath);
-		}
+        public LayoutInfo(XmlElement container, string elementPath) {
+            SearchProviderElement(container, elementPath);
+        }
 
-		public LayoutInfo(ModelComponent component, String elementPath) {
-			this.Component = component;
-			SearchProviderElement(component.Element, elementPath);
-		}
+        public LayoutInfo(ModelComponent component, String elementPath) {
+            this.Component = component;
+            SearchProviderElement(component.Element, elementPath);
+        }
 
-		public void SearchProviderElement(XmlElement container, String elementPath) {
-			if(container != null) {
-				XmlNodeList	elements = container.SelectNodes(elementPath);
+        public void SearchProviderElement(XmlElement container, String elementPath) {
+            if (container != null) {
+                XmlNodeList elements = container.SelectNodes(elementPath);
 
-				Element = null;
-				this.container = container;
+                Element = null;
+                this.container = container;
 
-				if(elements.Count == 1) {
-					Element = (XmlElement)elements[0];
-					elementInComponentDocument = true;
-				}
-				else if(elements.Count > 1)
-					throw new ArgumentException("More than one provider element found in component");
+                if (elements.Count == 1) {
+                    Element = (XmlElement)elements[0];
+                    elementInComponentDocument = true;
+                }
+                else if (elements.Count > 1)
+                    throw new ArgumentException("More than one provider element found in component");
 
-				// If the element was not found in the component XML document, search the model document
-				if(Element == null) {
-					elements = LayoutModel.Instance.XmlInfo.DocumentElement.SelectNodes(elementPath);
+                // If the element was not found in the component XML document, search the model document
+                if (Element == null) {
+                    elements = LayoutModel.Instance.XmlInfo.DocumentElement.SelectNodes(elementPath);
 
-					if(elements.Count == 1) {
-						Element = (XmlElement)elements[0];
-						elementInComponentDocument = false;
-					}
-					else if(elements.Count > 1)
-						throw new ArgumentException("More than one provider element found in model document");
-				}
-			}
-		}
+                    if (elements.Count == 1) {
+                        Element = (XmlElement)elements[0];
+                        elementInComponentDocument = false;
+                    }
+                    else if (elements.Count > 1)
+                        throw new ArgumentException("More than one provider element found in model document");
+                }
+            }
+        }
 
-		/// <summary>
-		/// Initialize the Info provider based on a given element
-		/// </summary>
-		/// <param name="element"></param>
-		public LayoutInfo(XmlElement element) : base(element) {
-		}
+        /// <summary>
+        /// Initialize the Info provider based on a given element
+        /// </summary>
+        /// <param name="element"></param>
+        public LayoutInfo(XmlElement element) : base(element) {
+        }
 
-		/// <summary>
-		/// Initialize an empty info provider. You should probably call CreateComponentElement
-		/// or CreateModelElement to initialize the provider
-		/// </summary>
-		public LayoutInfo() {
-			Element = null;
-		}
+        /// <summary>
+        /// Initialize an empty info provider. You should probably call CreateComponentElement
+        /// or CreateModelElement to initialize the provider
+        /// </summary>
+        public LayoutInfo() {
+            Element = null;
+        }
 
-		private static void attachNewElement(XmlElement container, String parentPath, XmlElement element) {
-			XmlElement	parentElement = container;
+        private static void attachNewElement(XmlElement container, String parentPath, XmlElement element) {
+            XmlElement parentElement = container;
 
-			element.SetAttribute("ID", XmlConvert.ToString(Guid.NewGuid()));
+            element.SetAttribute("ID", XmlConvert.ToString(Guid.NewGuid()));
 
-			if(parentPath != null) {
-				XmlNodeList	parentNodes = container.SelectNodes(parentPath);
+            if (parentPath != null) {
+                XmlNodeList parentNodes = container.SelectNodes(parentPath);
 
                 if (parentNodes.Count > 0)
                     parentElement = (XmlElement)parentNodes[0];
@@ -145,24 +145,24 @@ namespace LayoutManager.Model {
                         attachNewElement(parentElement, tail, element);
                         return;
                     }
-                }                    
-			}
+                }
+            }
 
-			parentElement.AppendChild(element);
-		}
+            parentElement.AppendChild(element);
+        }
 
-		/// <summary>
-		/// Create a new element for the component. The provider is based on this element
-		/// </summary>
-		/// <param name="xmlInfo">The XML document in which to create the provider</param>
-		/// <param name="parentPath">The XPath to the new provider's element parent</param>
-		/// <param name="elementName">The provider's element name</param>
-		public static XmlElement CreateProviderElement(XmlElement container, string elementName, string parentPath = null) {
-			XmlElement	element = container.OwnerDocument.CreateElement(elementName);
+        /// <summary>
+        /// Create a new element for the component. The provider is based on this element
+        /// </summary>
+        /// <param name="xmlInfo">The XML document in which to create the provider</param>
+        /// <param name="parentPath">The XPath to the new provider's element parent</param>
+        /// <param name="elementName">The provider's element name</param>
+        public static XmlElement CreateProviderElement(XmlElement container, string elementName, string parentPath = null) {
+            XmlElement element = container.OwnerDocument.CreateElement(elementName);
 
-			attachNewElement(container, parentPath, element);
-			return element;
-		}
+            attachNewElement(container, parentPath, element);
+            return element;
+        }
 
         public static XmlElement CreateProviderElement(LayoutXmlInfo xmlInfo, string elementName, string parentPath = null) => CreateProviderElement(xmlInfo.DocumentElement, elementName, parentPath);
 
@@ -172,187 +172,187 @@ namespace LayoutManager.Model {
         /// Set/Get well known reference to this provider
         /// </summary>
         public string Ref {
-			get {
-				return GetAttribute("Ref");
-			}
+            get {
+                return GetAttribute("Ref");
+            }
 
-			set {
+            set {
                 SetAttribute("Ref", value, removeIf: null);
-			}
-		}
-	}
+            }
+        }
+    }
 
-	/// <summary>
-	/// Represent a XML element that provide information about a font
-	/// </summary>
-	public class LayoutFontInfo : LayoutInfo {
-		public LayoutFontInfo(ModelComponent component, String elementName) : base(component, elementName) {
-		}
+    /// <summary>
+    /// Represent a XML element that provide information about a font
+    /// </summary>
+    public class LayoutFontInfo : LayoutInfo {
+        public LayoutFontInfo(ModelComponent component, String elementName) : base(component, elementName) {
+        }
 
-		public LayoutFontInfo(XmlElement containerElement, String elementPath) : base(containerElement, elementPath) {
-		}
+        public LayoutFontInfo(XmlElement containerElement, String elementPath) : base(containerElement, elementPath) {
+        }
 
-		public LayoutFontInfo(XmlElement element) {
-			this.Element = element;
-		}
+        public LayoutFontInfo(XmlElement element) {
+            this.Element = element;
+        }
 
-		public LayoutFontInfo() {
-		}
+        public LayoutFontInfo() {
+        }
 
-		public FontStyle Style {
-			get {
-				String	v = GetAttribute("Style");
+        public FontStyle Style {
+            get {
+                String v = GetAttribute("Style");
 
-				if(v == null)
-					return FontStyle.Regular;
-				else
-					return (FontStyle)Enum.Parse(typeof(FontStyle), v);
-			}
+                if (v == null)
+                    return FontStyle.Regular;
+                else
+                    return (FontStyle)Enum.Parse(typeof(FontStyle), v);
+            }
 
-			set {
-				SetAttribute("Style", value.ToString());
-			}
-		}
+            set {
+                SetAttribute("Style", value.ToString());
+            }
+        }
 
-		public String Name {
-			get {
-				return GetAttribute("Name", "Arial");
-			}
+        public String Name {
+            get {
+                return GetAttribute("Name", "Arial");
+            }
 
-			set {
-				SetAttribute("Name", value);
-			}
-		}
+            set {
+                SetAttribute("Name", value);
+            }
+        }
 
-		public float Size {
-			get {
-				return (float)XmlConvert.ToDouble(GetAttribute("Size", "8"));
-			}
+        public float Size {
+            get {
+                return (float)XmlConvert.ToDouble(GetAttribute("Size", "8"));
+            }
 
-			set {
-				SetAttribute("Size", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                SetAttribute("Size", XmlConvert.ToString(value));
+            }
+        }
 
-		public Font Font {
-			get {
-				return new Font(this.Name, this.Size, this.Style, GraphicsUnit.World);
-			}
+        public Font Font {
+            get {
+                return new Font(this.Name, this.Size, this.Style, GraphicsUnit.World);
+            }
 
-			set {
-				this.Name = value.Name;
-				this.Size = value.Size;
-				this.Style = value.Style;
-			}
-		}
+            set {
+                this.Name = value.Name;
+                this.Size = value.Size;
+                this.Style = value.Style;
+            }
+        }
 
-		public String Description {
-			get {
-				Font	f = this.Font;
-				String	d = f.Name + " " + f.Size;
+        public String Description {
+            get {
+                Font f = this.Font;
+                String d = f.Name + " " + f.Size;
 
-				if(f.Bold)
-					d += ", Bold";
-				if(f.Italic)
-					d += ", Italic";
-				if(f.Underline)
-					d += ", Underline";
+                if (f.Bold)
+                    d += ", Bold";
+                if (f.Italic)
+                    d += ", Italic";
+                if (f.Underline)
+                    d += ", Underline";
 
-				if(this.Color != Color.Black)
-					d += " (" + this.Color.Name + ")";
+                if (this.Color != Color.Black)
+                    d += " (" + this.Color.Name + ")";
 
-				return d;
-			}
-		}
+                return d;
+            }
+        }
 
-		public Color Color {
-			get {
-				String	colorName = GetAttribute("Color");
+        public Color Color {
+            get {
+                String colorName = GetAttribute("Color");
 
-				if(colorName == null)
-					return Color.Black;
-				else
-					return Color.FromName(colorName);
-			}
+                if (colorName == null)
+                    return Color.Black;
+                else
+                    return Color.FromName(colorName);
+            }
 
-			set {
-				SetAttribute("Color", value.Name);
-			}
-		}
+            set {
+                SetAttribute("Color", value.Name);
+            }
+        }
 
-		public override String ToString() {
-			String	title = GetAttribute("Title");
-			
-			if(title == null)
-				return Description;
-			else
-				return title + " (" + Description + ")";
-		}
-	}
+        public override String ToString() {
+            String title = GetAttribute("Title");
 
-	public enum LayoutDrawingAnchorPoint {
-		Left, Right, Center
-	};
+            if (title == null)
+                return Description;
+            else
+                return title + " (" + Description + ")";
+        }
+    }
 
-	public enum LayoutDrawingSide {
-		Top, Bottom, Left, Right, Center
-	};
+    public enum LayoutDrawingAnchorPoint {
+        Left, Right, Center
+    };
 
-	/// <summary>
-	/// Represents an element containing relative drawing position.
-	/// </summary>
-	public class LayoutPositionInfo : LayoutInfo {
-		public LayoutPositionInfo(ModelComponent component, String elementPath) : base(component, elementPath) {
-		}
+    public enum LayoutDrawingSide {
+        Top, Bottom, Left, Right, Center
+    };
 
-		public LayoutPositionInfo(XmlElement containerElement ,String elementPath) : base(containerElement, elementPath) {
-		}
+    /// <summary>
+    /// Represents an element containing relative drawing position.
+    /// </summary>
+    public class LayoutPositionInfo : LayoutInfo {
+        public LayoutPositionInfo(ModelComponent component, String elementPath) : base(component, elementPath) {
+        }
 
-		public LayoutPositionInfo(XmlElement element) : base(element) {
-		}
+        public LayoutPositionInfo(XmlElement containerElement, String elementPath) : base(containerElement, elementPath) {
+        }
 
-		public LayoutPositionInfo() {
-		}
+        public LayoutPositionInfo(XmlElement element) : base(element) {
+        }
 
-		public int Distance {
-			get {
-				return XmlConvert.ToInt32(GetAttribute("Distance", "8"));
-			}
+        public LayoutPositionInfo() {
+        }
 
-			set {
-				SetAttribute("Distance", XmlConvert.ToString(value));
-			}
-		}
+        public int Distance {
+            get {
+                return XmlConvert.ToInt32(GetAttribute("Distance", "8"));
+            }
 
-		public int Width {
-			get {
-				return XmlConvert.ToInt32(GetAttribute("Width", "0"));
-			}
+            set {
+                SetAttribute("Distance", XmlConvert.ToString(value));
+            }
+        }
 
-			set {
-				SetAttribute("Width", XmlConvert.ToString(value));
-			}
-		}
+        public int Width {
+            get {
+                return XmlConvert.ToInt32(GetAttribute("Width", "0"));
+            }
 
-			public LayoutDrawingAnchorPoint AnchorPoint {
-			get {
-				return (LayoutDrawingAnchorPoint)Enum.Parse(typeof(LayoutDrawingAnchorPoint), GetAttribute("Anchor", "Center"));
-			}
+            set {
+                SetAttribute("Width", XmlConvert.ToString(value));
+            }
+        }
 
-			set {
-				SetAttribute("Anchor", value.ToString());
-			}
-		}
+        public LayoutDrawingAnchorPoint AnchorPoint {
+            get {
+                return (LayoutDrawingAnchorPoint)Enum.Parse(typeof(LayoutDrawingAnchorPoint), GetAttribute("Anchor", "Center"));
+            }
 
-		public LayoutDrawingSide Side {
-			get {
-				return (LayoutDrawingSide)Enum.Parse(typeof(LayoutDrawingSide), GetAttribute("Side", "Bottom"));
-			}
+            set {
+                SetAttribute("Anchor", value.ToString());
+            }
+        }
 
-			set {
-				SetAttribute("Side", value.ToString());
-			}
-		}
+        public LayoutDrawingSide Side {
+            get {
+                return (LayoutDrawingSide)Enum.Parse(typeof(LayoutDrawingSide), GetAttribute("Side", "Bottom"));
+            }
+
+            set {
+                SetAttribute("Side", value.ToString());
+            }
+        }
 
         public override String ToString() => GetAttribute("Title", "No title");
 
@@ -362,283 +362,281 @@ namespace LayoutManager.Model {
         /// <param name="side"></param>
         /// <returns>The other side</returns>
         static public LayoutDrawingSide GetAlternateLayoutDrawingSide(LayoutDrawingSide side) {
-			switch(side) {
-				case LayoutDrawingSide.Left:
-					return LayoutDrawingSide.Right;
+            switch (side) {
+                case LayoutDrawingSide.Left:
+                    return LayoutDrawingSide.Right;
 
-				case LayoutDrawingSide.Right:
-					return LayoutDrawingSide.Left;
+                case LayoutDrawingSide.Right:
+                    return LayoutDrawingSide.Left;
 
-				case LayoutDrawingSide.Top:
-					return LayoutDrawingSide.Bottom;
+                case LayoutDrawingSide.Top:
+                    return LayoutDrawingSide.Bottom;
 
-				case LayoutDrawingSide.Bottom:
-					return LayoutDrawingSide.Top;
+                case LayoutDrawingSide.Bottom:
+                    return LayoutDrawingSide.Top;
 
-				default:
-					throw new ArgumentException("Invalid relative position");
-			}
-		}
+                default:
+                    throw new ArgumentException("Invalid relative position");
+            }
+        }
 
-		/// <summary>
-		/// Get the path for a default position definition based on a side
-		/// </summary>
-		/// <param name="side">A side</param>
-		/// <returns>A XPath to a position element for this side</returns>
-		static public String GetElementPathPositionPath(LayoutDrawingSide side) {
-			String	positionStyleName = "Bottom";
+        /// <summary>
+        /// Get the path for a default position definition based on a side
+        /// </summary>
+        /// <param name="side">A side</param>
+        /// <returns>A XPath to a position element for this side</returns>
+        static public String GetElementPathPositionPath(LayoutDrawingSide side) {
+            String positionStyleName = "Bottom";
 
-			switch(side) {
-				case LayoutDrawingSide.Bottom:
-					positionStyleName = "Bottom";
-					break;
+            switch (side) {
+                case LayoutDrawingSide.Bottom:
+                    positionStyleName = "Bottom";
+                    break;
 
-				case LayoutDrawingSide.Top:
-					positionStyleName = "Top";
-					break;
+                case LayoutDrawingSide.Top:
+                    positionStyleName = "Top";
+                    break;
 
-				case LayoutDrawingSide.Left:
-					positionStyleName = "Left";
-					break;
+                case LayoutDrawingSide.Left:
+                    positionStyleName = "Left";
+                    break;
 
-				case LayoutDrawingSide.Right:
-					positionStyleName = "Right";
-					break;
-			}
+                case LayoutDrawingSide.Right:
+                    positionStyleName = "Right";
+                    break;
+            }
 
-			return "//Position[@Ref=\"" + positionStyleName + "\"]";
-		}
+            return "//Position[@Ref=\"" + positionStyleName + "\"]";
+        }
 
-	}
+    }
 
-	public class LayoutTextInfo : LayoutInfo {
-		LayoutPositionInfo	positionProvider;
-		LayoutFontInfo		fontProvider;
+    public class LayoutTextInfo : LayoutInfo {
+        LayoutPositionInfo positionProvider;
+        LayoutFontInfo fontProvider;
 
-		public LayoutTextInfo(ModelComponent component, String elementName) : base(component, elementName) {
-		}
+        public LayoutTextInfo(ModelComponent component, String elementName) : base(component, elementName) {
+        }
 
-		public LayoutTextInfo(ModelComponent component) : base(component, "Name") {
-		}
+        public LayoutTextInfo(ModelComponent component) : base(component, "Name") {
+        }
 
-		public LayoutTextInfo(XmlElement containerElement, String elementName) : base(containerElement, elementName) {
-		}
+        public LayoutTextInfo(XmlElement containerElement, String elementName) : base(containerElement, elementName) {
+        }
 
-		public LayoutTextInfo(XmlElement containerElement) : base(containerElement, "Name") {
-		}
+        public LayoutTextInfo(XmlElement containerElement) : base(containerElement, "Name") {
+        }
 
-		public virtual String Name {
-			get {
-				if(Element == null || Element.ChildNodes.Count == 0)
-					return "";
-				return Element.FirstChild.Value;
-			}
+        public virtual String Name {
+            get {
+                if (Element == null || Element.ChildNodes.Count == 0)
+                    return "";
+                return Element.FirstChild.Value;
+            }
 
-			set {
-				XmlText	textNode = Element.OwnerDocument.CreateTextNode(value);
+            set {
+                XmlText textNode = Element.OwnerDocument.CreateTextNode(value);
 
-				if(Element.ChildNodes.Count > 0)
-					Element.ReplaceChild(textNode, Element.FirstChild);
-				else
-					Element.AppendChild(textNode);
-			}
-		}
+                if (Element.ChildNodes.Count > 0)
+                    Element.ReplaceChild(textNode, Element.FirstChild);
+                else
+                    Element.AppendChild(textNode);
+            }
+        }
 
-		public virtual String Text {
-			get {
-				return this.Name;
-			}
+        public virtual String Text {
+            get {
+                return this.Name;
+            }
 
-			set {
-				this.Name = value;
-			}
-		}
+            set {
+                this.Name = value;
+            }
+        }
 
-		public bool Visible {
-			get {
-				return XmlConvert.ToBoolean(GetAttribute("Visible", "0"));
-			}
+        public bool Visible {
+            get {
+                return XmlConvert.ToBoolean(GetAttribute("Visible", "0"));
+            }
 
-			set {
-				SetAttribute("Visible", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                SetAttribute("Visible", XmlConvert.ToString(value));
+            }
+        }
 
-		public virtual String FontElementPath {
-			get {
-				return GetAttribute("Font", "//Font[@Ref=\"Default\"]");
-			}
+        public virtual String FontElementPath {
+            get {
+                return GetAttribute("Font", "//Font[@Ref=\"Default\"]");
+            }
 
-			set {
-				SetAttribute("Font", value);
-				fontProvider = null;
-			}
-		}
+            set {
+                SetAttribute("Font", value);
+                fontProvider = null;
+            }
+        }
 
-		public LayoutDrawingSide DefaultLayoutDrawingSide {
-			get {
-				LayoutDrawingSide	result = LayoutDrawingSide.Bottom;
+        public LayoutDrawingSide DefaultLayoutDrawingSide {
+            get {
+                LayoutDrawingSide result = LayoutDrawingSide.Bottom;
 
-				if(Component != null) {
-					LayoutTrackComponent	track = null;
+                if (Component != null) {
+                    LayoutTrackComponent track = null;
 
-					if(Component.Spot != null)
-						track = Component.Spot.Track;
+                    if (Component.Spot != null)
+                        track = Component.Spot.Track;
 
-					if(track != null) {
-						if(track is LayoutStraightTrackComponent) {
-							if(LayoutTrackComponent.IsDiagonal(track.ConnectionPoints[0], track.ConnectionPoints[1])) {
-								LayoutComponentConnectionPoint	vertical = LayoutTrackComponent.IsVertical(track.ConnectionPoints[0]) ? track.ConnectionPoints[0] : track.ConnectionPoints[1];
+                    if (track != null) {
+                        if (track is LayoutStraightTrackComponent) {
+                            if (LayoutTrackComponent.IsDiagonal(track.ConnectionPoints[0], track.ConnectionPoints[1])) {
+                                LayoutComponentConnectionPoint vertical = LayoutTrackComponent.IsVertical(track.ConnectionPoints[0]) ? track.ConnectionPoints[0] : track.ConnectionPoints[1];
 
-								if(vertical == LayoutComponentConnectionPoint.T)
-									result = LayoutDrawingSide.Top;
-								else
-									result = LayoutDrawingSide.Bottom;
-							}
-							else {
-								if(LayoutTrackComponent.IsHorizontal(track.ConnectionPoints[0]))
-									result = LayoutDrawingSide.Bottom;
-								else
-									result = LayoutDrawingSide.Left;
-							}
-						}
-						else {
-							LayoutTurnoutTrackComponent	t = track as LayoutTurnoutTrackComponent;
+                                if (vertical == LayoutComponentConnectionPoint.T)
+                                    result = LayoutDrawingSide.Top;
+                                else
+                                    result = LayoutDrawingSide.Bottom;
+                            }
+                            else {
+                                if (LayoutTrackComponent.IsHorizontal(track.ConnectionPoints[0]))
+                                    result = LayoutDrawingSide.Bottom;
+                                else
+                                    result = LayoutDrawingSide.Left;
+                            }
+                        }
+                        else {
 
-							if(t != null) {
-								switch(t.Branch) {
-									case LayoutComponentConnectionPoint.B:
-										result = LayoutDrawingSide.Bottom;
-										break;
+                            if (track is LayoutTurnoutTrackComponent t) {
+                                switch (t.Branch) {
+                                    case LayoutComponentConnectionPoint.B:
+                                        result = LayoutDrawingSide.Bottom;
+                                        break;
 
-									case LayoutComponentConnectionPoint.T:
-										result = LayoutDrawingSide.Top;
-										break;
+                                    case LayoutComponentConnectionPoint.T:
+                                        result = LayoutDrawingSide.Top;
+                                        break;
 
-									case LayoutComponentConnectionPoint.L:
-										result = LayoutDrawingSide.Left;
-										break;
+                                    case LayoutComponentConnectionPoint.L:
+                                        result = LayoutDrawingSide.Left;
+                                        break;
 
-									case LayoutComponentConnectionPoint.R:
-										result = LayoutDrawingSide.Right;
-										break;
-								}
-							}
-						}
-					}
-				}
+                                    case LayoutComponentConnectionPoint.R:
+                                        result = LayoutDrawingSide.Right;
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
 
-				return result;
-			}
-		}
+                return result;
+            }
+        }
 
-		public virtual String PositionElementPath {
-			get {
-				return GetAttribute("Position", LayoutPositionInfo.GetElementPathPositionPath(DefaultLayoutDrawingSide));
-			}
+        public virtual String PositionElementPath {
+            get {
+                return GetAttribute("Position", LayoutPositionInfo.GetElementPathPositionPath(DefaultLayoutDrawingSide));
+            }
 
-			set {
-				SetAttribute("Position", value);
-				positionProvider = null;
-			}
-		}
+            set {
+                SetAttribute("Position", value);
+                positionProvider = null;
+            }
+        }
 
-		public LayoutFontInfo FontProvider {
-			get {
-				if(fontProvider == null) {
-					if(Component != null)
-						fontProvider = new LayoutFontInfo(Component, FontElementPath);
-					else
-						fontProvider = new LayoutFontInfo(ContainerElement, FontElementPath);
-				}
-			
-				return fontProvider;
-			}
-		}
+        public LayoutFontInfo FontProvider {
+            get {
+                if (fontProvider == null) {
+                    if (Component != null)
+                        fontProvider = new LayoutFontInfo(Component, FontElementPath);
+                    else
+                        fontProvider = new LayoutFontInfo(ContainerElement, FontElementPath);
+                }
 
-		public LayoutPositionInfo PositionProvider {
-			get {
-				if(positionProvider == null) {
-					if(Component != null)
-						positionProvider = new LayoutPositionInfo(Component, PositionElementPath);
-					else
-						positionProvider = new LayoutPositionInfo(ContainerElement, PositionElementPath);
-				}
+                return fontProvider;
+            }
+        }
 
-				return positionProvider;
-			}
-		}
-	}
+        public LayoutPositionInfo PositionProvider {
+            get {
+                if (positionProvider == null) {
+                    if (Component != null)
+                        positionProvider = new LayoutPositionInfo(Component, PositionElementPath);
+                    else
+                        positionProvider = new LayoutPositionInfo(ContainerElement, PositionElementPath);
+                }
 
-	public class LayoutBlockBallon : IOperationState  {
-		public enum TerminationReason {
-			Hidden, AnotherBallon, Clicked, TrainDetected, Canceled,
-		}
+                return positionProvider;
+            }
+        }
+    }
 
-		TaskCompletionSource<TerminationReason> tcs = new TaskCompletionSource<TerminationReason>();
+    public class LayoutBlockBallon : IOperationState {
+        public enum TerminationReason {
+            Hidden, AnotherBallon, Clicked, TrainDetected, Canceled,
+        }
 
-		public LayoutBlockBallon() {
-			FillColor = Color.LightYellow;
-			TextColor = Color.Black;
-			RemoveOnClick = false;
-			RemoveOnTrainDetected = false;
-			FontSize = 13;
-			CancellationToken = CancellationToken.None;
-		}
+        readonly TaskCompletionSource<TerminationReason> tcs = new TaskCompletionSource<TerminationReason>();
 
-		public LayoutBlockBallon(string text)
-			: this() {
-			Text = text;
-		}
+        public LayoutBlockBallon() {
+            FillColor = Color.LightYellow;
+            TextColor = Color.Black;
+            RemoveOnClick = false;
+            RemoveOnTrainDetected = false;
+            FontSize = 13;
+            CancellationToken = CancellationToken.None;
+        }
 
-		internal void Remove(TerminationReason terminationReason) {
-			if(terminationReason == TerminationReason.Canceled)
-				tcs.TrySetCanceled();
-			else
-				tcs.TrySetResult(terminationReason);
-		}
+        public LayoutBlockBallon(string text)
+            : this() {
+            Text = text;
+        }
+
+        internal void Remove(TerminationReason terminationReason) {
+            if (terminationReason == TerminationReason.Canceled)
+                tcs.TrySetCanceled();
+            else
+                tcs.TrySetResult(terminationReason);
+        }
 
         public static bool IsDisplayed(LayoutBlockDefinitionComponent blockDefinition) => LayoutModel.StateManager.OperationStates["SimpleBallon"].HasState(blockDefinition.Id);
 
         public static LayoutBlockBallon Get(LayoutBlockDefinitionComponent blockDefinition) => LayoutModel.StateManager.OperationStates["SimpleBallon"].Get<LayoutBlockBallon>(blockDefinition.Id);
 
         public static void Remove(LayoutBlockDefinitionComponent blockDefinition, TerminationReason terminationReason) {
-			LayoutBlockBallon ballon = Get(blockDefinition);
+            LayoutBlockBallon ballon = Get(blockDefinition);
 
-			if(ballon != null) {
-				blockDefinition.EraseImage();
-				ballon.Remove(terminationReason);
-				LayoutModel.StateManager.OperationStates["SimpleBallon"].Remove(blockDefinition.Id);
-				blockDefinition.Redraw();
-			}
-		}
+            if (ballon != null) {
+                blockDefinition.EraseImage();
+                ballon.Remove(terminationReason);
+                LayoutModel.StateManager.OperationStates["SimpleBallon"].Remove(blockDefinition.Id);
+                blockDefinition.Redraw();
+            }
+        }
 
-		public static void Show(LayoutBlockDefinitionComponent blockDefinition, LayoutBlockBallon ballon) {
-			PerOperationStates simpleBallons = LayoutModel.StateManager.OperationStates["SimpleBallon"];
+        public static void Show(LayoutBlockDefinitionComponent blockDefinition, LayoutBlockBallon ballon) {
+            PerOperationStates simpleBallons = LayoutModel.StateManager.OperationStates["SimpleBallon"];
 
-			if(simpleBallons.HasState(blockDefinition.Id))
-				Remove(blockDefinition, TerminationReason.AnotherBallon);
+            if (simpleBallons.HasState(blockDefinition.Id))
+                Remove(blockDefinition, TerminationReason.AnotherBallon);
 
-			if(ballon.CancellationToken.CanBeCanceled)
-				ballon.CancellationToken.Register(
-					() =>
-					{
-						if(LayoutBlockBallon.IsDisplayed(blockDefinition) && LayoutBlockBallon.Get(blockDefinition) == ballon)
-							LayoutBlockBallon.Remove(blockDefinition, TerminationReason.Canceled);
-					}
-				);
+            if (ballon.CancellationToken.CanBeCanceled)
+                ballon.CancellationToken.Register(
+                    () => {
+                        if (LayoutBlockBallon.IsDisplayed(blockDefinition) && LayoutBlockBallon.Get(blockDefinition) == ballon)
+                            LayoutBlockBallon.Remove(blockDefinition, TerminationReason.Canceled);
+                    }
+                );
 
-			simpleBallons.Set(blockDefinition.Id, ballon);
-			blockDefinition.Redraw();
-		}
+            simpleBallons.Set(blockDefinition.Id, ballon);
+            blockDefinition.Redraw();
+        }
 
-		public string Text { get; set; }
-		public Color FillColor { get; set; }
-		public Color TextColor { get; set; }
-		public bool RemoveOnClick { get; set; }
-		public bool RemoveOnTrainDetected { get; set; }
-		public float FontSize { get; set; }
-		public CancellationToken CancellationToken { get; set; }
+        public string Text { get; set; }
+        public Color FillColor { get; set; }
+        public Color TextColor { get; set; }
+        public bool RemoveOnClick { get; set; }
+        public bool RemoveOnTrainDetected { get; set; }
+        public float FontSize { get; set; }
+        public CancellationToken CancellationToken { get; set; }
 
         public Task<TerminationReason> Task => tcs.Task;
 
@@ -650,285 +648,285 @@ namespace LayoutManager.Model {
         public static implicit operator Task<TerminationReason>(LayoutBlockBallon ballon) => ballon.Task;
     }
 
-	public class LayoutAddressInfo : LayoutTextInfo {
-		public LayoutAddressInfo(ModelComponent component, String elementName) : base(component, elementName) {
-		}
+    public class LayoutAddressInfo : LayoutTextInfo {
+        public LayoutAddressInfo(ModelComponent component, String elementName) : base(component, elementName) {
+        }
 
-		public LayoutAddressInfo(ModelComponent component) : base(component, "Address") {
-		}
+        public LayoutAddressInfo(ModelComponent component) : base(component, "Address") {
+        }
 
-		public LayoutAddressInfo(XmlElement containerElement, String elementName) : base(containerElement, elementName) {
-		}
+        public LayoutAddressInfo(XmlElement containerElement, String elementName) : base(containerElement, elementName) {
+        }
 
-		public LayoutAddressInfo(XmlElement containerElement) : base(containerElement, "Address") {
-		}
+        public LayoutAddressInfo(XmlElement containerElement) : base(containerElement, "Address") {
+        }
 
-		public int Unit {
-			get {
-				return XmlConvert.ToInt32(GetAttribute("Unit", "0"));
-			}
+        public int Unit {
+            get {
+                return XmlConvert.ToInt32(GetAttribute("Unit", "0"));
+            }
 
-			set {
-				SetAttribute("Unit", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                SetAttribute("Unit", XmlConvert.ToString(value));
+            }
+        }
 
-		public int Subunit {
-			get {
-				return XmlConvert.ToInt32(GetAttribute("Subunit", "0"));
-			}
+        public int Subunit {
+            get {
+                return XmlConvert.ToInt32(GetAttribute("Subunit", "0"));
+            }
 
-			set {
-				SetAttribute("Subunit", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                SetAttribute("Subunit", XmlConvert.ToString(value));
+            }
+        }
 
-		public bool HasSubunit {
-			get {
-				return Element.HasAttribute("Subunit");
-			}
+        public bool HasSubunit {
+            get {
+                return Element.HasAttribute("Subunit");
+            }
 
-			set {
-				if(value == false)
-					Element.RemoveAttribute("Subunit");
-				else {
-					if(!Element.HasAttribute("Subunit"))
-						SetAttribute("Subunit", "0");
-				}
-			}
-		}
+            set {
+                if (value == false)
+                    Element.RemoveAttribute("Subunit");
+                else {
+                    if (!Element.HasAttribute("Subunit"))
+                        SetAttribute("Subunit", "0");
+                }
+            }
+        }
 
-		public override string Text {
-			get {
-				return GetAttribute("Text", "***");
-			}
+        public override string Text {
+            get {
+                return GetAttribute("Text", "***");
+            }
 
-			set {
-				SetAttribute("Text", value);
-			}
-		}
+            set {
+                SetAttribute("Text", value);
+            }
+        }
 
-		/// <summary>
-		/// The position element path for the address, by default it is the alternate
-		/// position for a possible name element
-		/// </summary>
-		public override String PositionElementPath {
-			get {
-				if(Element.HasAttribute("Position"))
-					return base.PositionElementPath;
-				else {
-					LayoutDrawingSide	usedSide;
+        /// <summary>
+        /// The position element path for the address, by default it is the alternate
+        /// position for a possible name element
+        /// </summary>
+        public override String PositionElementPath {
+            get {
+                if (Element.HasAttribute("Position"))
+                    return base.PositionElementPath;
+                else {
+                    LayoutDrawingSide usedSide;
 
-					if(Element.HasAttribute("ImageSide"))
-						usedSide = (LayoutDrawingSide)Enum.Parse(typeof(LayoutDrawingSide), Element.GetAttribute("ImageSide"));
-					else {
-						// Check if this component has a 'Name' element. If it does,
-						// position the address in a different position
-						LayoutTextInfo		nameProvider;
+                    if (Element.HasAttribute("ImageSide"))
+                        usedSide = (LayoutDrawingSide)Enum.Parse(typeof(LayoutDrawingSide), Element.GetAttribute("ImageSide"));
+                    else {
+                        // Check if this component has a 'Name' element. If it does,
+                        // position the address in a different position
+                        LayoutTextInfo nameProvider;
 
-						if(Component != null)
-							nameProvider = new LayoutTextInfo(Component, "Name");
-						else
-							nameProvider = new LayoutTextInfo(ContainerElement, "Name");
+                        if (Component != null)
+                            nameProvider = new LayoutTextInfo(Component, "Name");
+                        else
+                            nameProvider = new LayoutTextInfo(ContainerElement, "Name");
 
-						LayoutPositionInfo	namePositionProvider = nameProvider.PositionProvider;
-					
-						usedSide = namePositionProvider.Side;
-					}
+                        LayoutPositionInfo namePositionProvider = nameProvider.PositionProvider;
 
-					return LayoutPositionInfo.GetElementPathPositionPath(LayoutPositionInfo.GetAlternateLayoutDrawingSide(usedSide));
-				}
-			}
+                        usedSide = namePositionProvider.Side;
+                    }
 
-			set {
-				base.PositionElementPath = value;
-			}
-		}
+                    return LayoutPositionInfo.GetElementPathPositionPath(LayoutPositionInfo.GetAlternateLayoutDrawingSide(usedSide));
+                }
+            }
 
-		public override String FontElementPath {
-			get {
-				if(Element.HasAttribute("Font"))
-					return base.FontElementPath;
-				else
-					return "//Font[@Ref=\"AddressFont\"]";
-			}
+            set {
+                base.PositionElementPath = value;
+            }
+        }
 
-			set {
-				base.FontElementPath = value;
-			}
-		}
+        public override String FontElementPath {
+            get {
+                if (Element.HasAttribute("Font"))
+                    return base.FontElementPath;
+                else
+                    return "//Font[@Ref=\"AddressFont\"]";
+            }
 
-	}
+            set {
+                base.FontElementPath = value;
+            }
+        }
 
-	public class LayoutImageInfo : LayoutInfo {
-		public LayoutImageInfo(ModelComponent component, String elementPath) : base(component, elementPath) {
-		}
+    }
 
-		public LayoutImageInfo(ModelComponent component) : base(component, "Image") {
-		}
+    public class LayoutImageInfo : LayoutInfo {
+        public LayoutImageInfo(ModelComponent component, String elementPath) : base(component, elementPath) {
+        }
 
-		public LayoutImageInfo(XmlElement containerElement, String elementPath) : base(containerElement, elementPath) {
-		}
+        public LayoutImageInfo(ModelComponent component) : base(component, "Image") {
+        }
 
-		public LayoutImageInfo(XmlElement element) : base(element) {
-		}
+        public LayoutImageInfo(XmlElement containerElement, String elementPath) : base(containerElement, elementPath) {
+        }
 
-		public enum ImageSizeUnit {
-			Pixels,
-			GridUnits
-		}
+        public LayoutImageInfo(XmlElement element) : base(element) {
+        }
 
-		public enum ImageOriginMethod {
-			Center,
-			TopLeft
-		}
+        public enum ImageSizeUnit {
+            Pixels,
+            GridUnits
+        }
 
-		public enum ImageFillEffect {
-			Stretch,
-			Tile
-		}
+        public enum ImageOriginMethod {
+            Center,
+            TopLeft
+        }
 
-		public enum ImageHorizontalAlignment {
-			Left, Center, Right
-		}
+        public enum ImageFillEffect {
+            Stretch,
+            Tile
+        }
 
-		public enum ImageVerticalAlignment {
-			Top, Middle, Bottom
-		}
+        public enum ImageHorizontalAlignment {
+            Left, Center, Right
+        }
 
-		public String ImageFile {
-			get {
-				return GetAttribute("ImageFile");
-			}
+        public enum ImageVerticalAlignment {
+            Top, Middle, Bottom
+        }
 
-			set {
-				SetAttribute("ImageFile", value);
-			}
-		}
+        public String ImageFile {
+            get {
+                return GetAttribute("ImageFile");
+            }
 
-		public Size Size {
-			get {
-				Size	result = new Size();
+            set {
+                SetAttribute("ImageFile", value);
+            }
+        }
 
-				result.Width = XmlConvert.ToInt32(GetAttribute("Width", "-1"));
-				result.Height = XmlConvert.ToInt32(GetAttribute("Height", "-1"));
+        public Size Size {
+            get {
+                Size result = new Size {
+                    Width = XmlConvert.ToInt32(GetAttribute("Width", "-1")),
+                    Height = XmlConvert.ToInt32(GetAttribute("Height", "-1"))
+                };
 
-				return result;
-			}
+                return result;
+            }
 
-			set {
-				if(value.Width < 0)
-					Element.RemoveAttribute("Width");
-				else
-					SetAttribute("Width", XmlConvert.ToString(value.Width));
+            set {
+                if (value.Width < 0)
+                    Element.RemoveAttribute("Width");
+                else
+                    SetAttribute("Width", XmlConvert.ToString(value.Width));
 
-				if(value.Height < 0)
-					Element.RemoveAttribute("Height");
-				else
-					SetAttribute("Height", XmlConvert.ToString(value.Height));
-			}
-		}
+                if (value.Height < 0)
+                    Element.RemoveAttribute("Height");
+                else
+                    SetAttribute("Height", XmlConvert.ToString(value.Height));
+            }
+        }
 
-		public ImageSizeUnit WidthSizeUnit {
-			get {
-				return (ImageSizeUnit)Enum.Parse(typeof(ImageSizeUnit), GetAttribute("WidthSizeUnit", "GridUnits"));
-			}
+        public ImageSizeUnit WidthSizeUnit {
+            get {
+                return (ImageSizeUnit)Enum.Parse(typeof(ImageSizeUnit), GetAttribute("WidthSizeUnit", "GridUnits"));
+            }
 
-			set {
-				SetAttribute("WidthSizeUnit", value.ToString());
-			}
-		}
+            set {
+                SetAttribute("WidthSizeUnit", value.ToString());
+            }
+        }
 
-		public ImageSizeUnit HeightSizeUnit {
-			get {
-				return (ImageSizeUnit)Enum.Parse(typeof(ImageSizeUnit), GetAttribute("HeightSizeUnit", "GridUnits"));
-			}
+        public ImageSizeUnit HeightSizeUnit {
+            get {
+                return (ImageSizeUnit)Enum.Parse(typeof(ImageSizeUnit), GetAttribute("HeightSizeUnit", "GridUnits"));
+            }
 
-			set {
-				SetAttribute("HeightSizeUnit", value.ToString());
-			}
-		}
+            set {
+                SetAttribute("HeightSizeUnit", value.ToString());
+            }
+        }
 
-		public Size Offset {
-			get {
-				return new Size(XmlConvert.ToInt32(GetAttribute("OffsetWidth", "0")),
-					XmlConvert.ToInt32(GetAttribute("OffsetHeight", "0")));
-			}
+        public Size Offset {
+            get {
+                return new Size(XmlConvert.ToInt32(GetAttribute("OffsetWidth", "0")),
+                    XmlConvert.ToInt32(GetAttribute("OffsetHeight", "0")));
+            }
 
-			set {
-				SetAttribute("OffsetWidth", XmlConvert.ToString(value.Width));
-				SetAttribute("OffsetHeight", XmlConvert.ToString(value.Height));
-			}
-		}
+            set {
+                SetAttribute("OffsetWidth", XmlConvert.ToString(value.Width));
+                SetAttribute("OffsetHeight", XmlConvert.ToString(value.Height));
+            }
+        }
 
-		public ImageOriginMethod OriginMethod {
-			get {
-				return (ImageOriginMethod)Enum.Parse(typeof(ImageOriginMethod), GetAttribute("OriginMethod", "TopLeft"));
-			}
+        public ImageOriginMethod OriginMethod {
+            get {
+                return (ImageOriginMethod)Enum.Parse(typeof(ImageOriginMethod), GetAttribute("OriginMethod", "TopLeft"));
+            }
 
-			set {
-				SetAttribute("OriginMethod", value.ToString());
-			}
-		}
+            set {
+                SetAttribute("OriginMethod", value.ToString());
+            }
+        }
 
-		public ImageHorizontalAlignment HorizontalAlignment {
-			get {
-				return (ImageHorizontalAlignment)Enum.Parse(typeof(ImageHorizontalAlignment), GetAttribute("HorizontalAlignment", "Left"));
-			}
-			
-			set {
-				SetAttribute("HorizontalAlignment", value.ToString());
-			}
-		}
+        public ImageHorizontalAlignment HorizontalAlignment {
+            get {
+                return (ImageHorizontalAlignment)Enum.Parse(typeof(ImageHorizontalAlignment), GetAttribute("HorizontalAlignment", "Left"));
+            }
 
-		public ImageVerticalAlignment VerticalAlignment {
-			get {
-				return (ImageVerticalAlignment)Enum.Parse(typeof(ImageVerticalAlignment), GetAttribute("VerticalAlignment", "Top"));
-			}
-			
-			set {
-				SetAttribute("VerticalAlignment", value.ToString());
-			}
-		}
+            set {
+                SetAttribute("HorizontalAlignment", value.ToString());
+            }
+        }
 
-		public ImageFillEffect FillEffect {
-			get {
-				if(Element.HasAttribute("ImageFillEffect"))
-					return (ImageFillEffect)Enum.Parse(typeof(ImageFillEffect), GetAttribute("ImageFillEffect"));
-				else
-					return ImageFillEffect.Stretch;
-			}
+        public ImageVerticalAlignment VerticalAlignment {
+            get {
+                return (ImageVerticalAlignment)Enum.Parse(typeof(ImageVerticalAlignment), GetAttribute("VerticalAlignment", "Top"));
+            }
 
-			set {
-				SetAttribute("ImageFillEffect", value.ToString());
-			}
-		}
+            set {
+                SetAttribute("VerticalAlignment", value.ToString());
+            }
+        }
 
-		public RotateFlipType RotateFlipEffect {
-			get {
-				if(Element.HasAttribute("RotateFlipEffect"))
-					return (RotateFlipType)Enum.Parse(typeof(RotateFlipType), GetAttribute("RotateFlipEffect", "RotateNoneFlipNone"));
-				else
-					return RotateFlipType.RotateNoneFlipNone;
-			}
+        public ImageFillEffect FillEffect {
+            get {
+                if (Element.HasAttribute("ImageFillEffect"))
+                    return (ImageFillEffect)Enum.Parse(typeof(ImageFillEffect), GetAttribute("ImageFillEffect"));
+                else
+                    return ImageFillEffect.Stretch;
+            }
 
-			set {
-				SetAttribute("RotateFlipEffect", value.ToString());
-			}
-		}
+            set {
+                SetAttribute("ImageFillEffect", value.ToString());
+            }
+        }
+
+        public RotateFlipType RotateFlipEffect {
+            get {
+                if (Element.HasAttribute("RotateFlipEffect"))
+                    return (RotateFlipType)Enum.Parse(typeof(RotateFlipType), GetAttribute("RotateFlipEffect", "RotateNoneFlipNone"));
+                else
+                    return RotateFlipType.RotateNoneFlipNone;
+            }
+
+            set {
+                SetAttribute("RotateFlipEffect", value.ToString());
+            }
+        }
 
         public String ImageCacheEventXml => "<Effect Type='" + RotateFlipEffect.ToString() + "' />";
 
         public bool ImageError {
-			get {
-				return XmlConvert.ToBoolean(GetAttribute("ImageError", "false"));
-			}
+            get {
+                return XmlConvert.ToBoolean(GetAttribute("ImageError", "false"));
+            }
 
-			set {
+            set {
                 SetAttribute("ImageError", value, removeIf: false);
-			}
-		}
-	}
+            }
+        }
+    }
 
 }
 

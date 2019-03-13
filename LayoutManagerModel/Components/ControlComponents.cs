@@ -6,148 +6,153 @@ using System.Xml;
 
 using LayoutManager.Model;
 
+#nullable enable
 namespace LayoutManager.Components {
 
     #region Block Edge base classes
 
     public enum LayoutSignalState {
-		Red, Yellow, Green
-	};
+        Red, Yellow, Green
+    };
 
-	/// <summary>
-	/// Signal that is linked to block edge
-	/// </summary>
-	public class LinkedSignalInfo : LayoutInfo {
-		internal LinkedSignalInfo(XmlElement element) : base(element) {
-		}
+    /// <summary>
+    /// Signal that is linked to block edge
+    /// </summary>
+    public class LinkedSignalInfo : LayoutInfo {
+        internal LinkedSignalInfo(XmlElement element) : base(element) {
+        }
 
-		internal LinkedSignalInfo(XmlElement linkedSignalsElement, LayoutSignalComponent signalComponent) : base(linkedSignalsElement.OwnerDocument.CreateElement("LinkedSignal")) {
-			SignalId = signalComponent.Id;
-		}
+        internal LinkedSignalInfo(XmlElement linkedSignalsElement, LayoutSignalComponent signalComponent) : base(linkedSignalsElement.OwnerDocument.CreateElement("LinkedSignal")) {
+            SignalId = signalComponent.Id;
+        }
 
-		public Guid SignalId {
-			get {
-				return XmlConvert.ToGuid(Element.GetAttribute("SignalID"));
-			}
+        public Guid SignalId {
+            get {
+                return XmlConvert.ToGuid(Element.GetAttribute("SignalID"));
+            }
 
-			set {
-				SetAttribute("SignalID", XmlConvert.ToString(value));
-			}
-		}
-	}
+            set {
+                SetAttribute("SignalID", XmlConvert.ToString(value));
+            }
+        }
+    }
 
-	/// <summary>
-	/// Collection of all signals that are linked to a block edge
-	/// </summary>
-	public class LinkedSignalsCollection : XmlIndexedCollection<LinkedSignalInfo, Guid>, ICollection<LinkedSignalInfo> {
-		LayoutBlockEdgeBase blockEdge;
+    /// <summary>
+    /// Collection of all signals that are linked to a block edge
+    /// </summary>
+    public class LinkedSignalsCollection : XmlIndexedCollection<LinkedSignalInfo, Guid>, ICollection<LinkedSignalInfo> {
+        readonly LayoutBlockEdgeBase blockEdge;
 
-		public LinkedSignalsCollection(LayoutBlockEdgeBase blockEdge) : base(blockEdge.LinkedSignalsElement) {
-			this.blockEdge = blockEdge;
-		}
+        public LinkedSignalsCollection(LayoutBlockEdgeBase blockEdge) : base(blockEdge.LinkedSignalsElement) {
+            this.blockEdge = blockEdge;
+        }
 
         protected override Guid GetItemKey(LinkedSignalInfo item) => item.SignalId;
 
         protected override XmlElement CreateElement(LinkedSignalInfo item) {
-			throw new NotImplementedException();
-		}
+            throw new NotImplementedException();
+        }
 
         protected override LinkedSignalInfo FromElement(XmlElement itemElement) => new LinkedSignalInfo(itemElement);
 
         public LinkedSignalInfo Add(LayoutSignalComponent signalComponent) {
-			LinkedSignalInfo newLinkedSignal = new LinkedSignalInfo(blockEdge.LinkedSignalsElement, signalComponent);
+            LinkedSignalInfo newLinkedSignal = new LinkedSignalInfo(blockEdge.LinkedSignalsElement, signalComponent);
 
-			Add(newLinkedSignal);
-			EventManager.Event(new LayoutEvent(blockEdge, "signal-component-linked", null, signalComponent));
-			return newLinkedSignal;
-		}
+            Add(newLinkedSignal);
+            EventManager.Event(new LayoutEvent("signal-component-linked", blockEdge, signalComponent));
+            return newLinkedSignal;
+        }
 
-		public void Remove(LayoutSignalComponent signalComponent) {
-			EventManager.Event(new LayoutEvent(blockEdge, "signal-component-unlinked", null, signalComponent));
-			Remove(signalComponent.Id);
-		}
-	}
+        public void Remove(LayoutSignalComponent signalComponent) {
+            EventManager.Event(new LayoutEvent("signal-component-unlinked", blockEdge, signalComponent));
+            Remove(signalComponent.Id);
+        }
+    }
 
-	/// <summary>
-	/// Abstract base class for components that act as boundries to blocks. A block boundry function as logical signal
-	/// for trains that specify whether the train can move between the two blocks. The logical signal can optionally be
-	/// linked with a physical signal component
-	/// </summary>
-	public abstract class LayoutBlockEdgeBase : ModelComponent, IModelComponentHasId, IModelComponentHasAttributes {
+    /// <summary>
+    /// Abstract base class for components that act as boundries to blocks. A block boundry function as logical signal
+    /// for trains that specify whether the train can move between the two blocks. The logical signal can optionally be
+    /// linked with a physical signal component
+    /// </summary>
+    public abstract class LayoutBlockEdgeBase : ModelComponent, IModelComponentHasId, IModelComponentHasAttributes {
         public override ModelComponentKind Kind => ModelComponentKind.BlockEdge;
 
-        public LayoutStraightTrackComponent Track => this.Spot.Track as LayoutStraightTrackComponent;
+        public LayoutStraightTrackComponent? Track => this.Spot.Track as LayoutStraightTrackComponent;
 
         public XmlElement LinkedSignalsElement {
-			get {
-				XmlElement	linkedSignalsElement = Element["LinkedSignals"];
+            get {
+                XmlElement linkedSignalsElement = Element["LinkedSignals"];
 
-				if(linkedSignalsElement == null) {
-					linkedSignalsElement = Element.OwnerDocument.CreateElement("LinkedSignals");
-					Element.AppendChild(linkedSignalsElement);
-				}
+                if (linkedSignalsElement == null) {
+                    linkedSignalsElement = Element.OwnerDocument.CreateElement("LinkedSignals");
+                    Element.AppendChild(linkedSignalsElement);
+                }
 
-				return linkedSignalsElement;
-			}
-		}
+                return linkedSignalsElement;
+            }
+        }
 
         public LinkedSignalsCollection LinkedSignals => new LinkedSignalsCollection(this);
 
         public LayoutSignalState SignalState {
-			get {
-				if(LayoutModel.StateManager.Components.Contains(this, "Signal")) {
-					return (LayoutSignalState)Enum.Parse(typeof(LayoutSignalState),
-						LayoutModel.StateManager.Components.StateOf(this.Id, "Signal").GetAttribute("State"));
-				}
-				else
-					return LayoutSignalState.Yellow;
-			}
+            get {
+                if (LayoutModel.StateManager.Components.Contains(this, "Signal")) {
+                    return (LayoutSignalState)Enum.Parse(typeof(LayoutSignalState),
+                        LayoutModel.StateManager.Components.StateOf(this.Id, "Signal").GetAttribute("State"));
+                }
+                else
+                    return LayoutSignalState.Yellow;
+            }
 
-			[LayoutEventDef("logical-signal-state-changed", Role=LayoutEventRole.Notification, SenderType=typeof(LayoutTrackContactComponent), InfoType=typeof(LayoutSignalState))]
-			set {
-				LayoutModel.StateManager.Components.StateOf(this, "Signal").SetAttribute("State", value.ToString());
-				Redraw();
-				EventManager.Event(new LayoutEvent(this, "logical-signal-state-changed", null, value));
-			}
-		}
+            [LayoutEventDef("logical-signal-state-changed", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutTrackContactComponent), InfoType = typeof(LayoutSignalState))]
+            set {
+                LayoutModel.StateManager.Components.StateOf(this, "Signal").SetAttribute("State", value.ToString());
+                Redraw();
+                EventManager.Event(new LayoutEvent("logical-signal-state-changed", this, value));
+            }
+        }
 
-		public void RemoveSignalState() {
-			LayoutModel.StateManager.Components.Remove(this.Id, "Signal");
-			Redraw();
-			EventManager.Event(new LayoutEvent(this, "signal-state-removed"));
-		}
+        public void RemoveSignalState() {
+            LayoutModel.StateManager.Components.Remove(this.Id, "Signal");
+            Redraw();
+            EventManager.Event(new LayoutEvent("signal-state-removed", this));
+        }
 
-		/// <summary>
-		/// Get the block that is the neighbor of a given block
-		/// </summary>
-		/// <param name="block">The block for which you want to get the neighbor block</param>
-		/// <returns>The neighbor block</returns>
-		public LayoutBlock GetNeighboringBlock(LayoutBlock block) {
-			LayoutTrackComponent track = this.Track;
+        /// <summary>
+        /// Get the block that is the neighbor of a given block
+        /// </summary>
+        /// <param name="block">The block for which you want to get the neighbor block</param>
+        /// <returns>The neighbor block</returns>
+        public LayoutBlock GetNeighboringBlock(LayoutBlock block) {
+            var track = this.Track;
 
-			if(track.GetBlock(track.ConnectionPoints[0]) == block)
-				return track.GetBlock(track.ConnectionPoints[1]);
-			else if(track.GetBlock(track.ConnectionPoints[1]) == block)
-				return track.GetBlock(track.ConnectionPoints[0]);
-			else
-				throw new ArgumentException(FullDescription + " is not boundry of block " + block.BlockDefinintion.FullDescription);
-		}
+            if (track != null) {
+                if (track.GetBlock(track.ConnectionPoints[0]) == block)
+                    return track.GetBlock(track.ConnectionPoints[1]);
+                else if (track.GetBlock(track.ConnectionPoints[1]) == block)
+                    return track.GetBlock(track.ConnectionPoints[0]);
+            }
 
-		/// <summary>
-		/// Get the track edge for a given block
-		/// </summary>
-		/// <param name="block">The block for which to get the track edge</param>
-		/// <returns>The track edge</returns>
-		public TrackEdge GetBlockTrackEdge(LayoutBlock block) {
-			LayoutTrackComponent track = this.Track;
+            throw new ArgumentException(FullDescription + " is not boundry of block " + block.BlockDefinintion.FullDescription);
+        }
 
-			if(track.GetBlock(track.ConnectionPoints[0]) == block)
-				return new TrackEdge(Track, track.ConnectionPoints[0]);
-			else if(track.GetBlock(track.ConnectionPoints[1]) == block)
-				return new TrackEdge(Track, track.ConnectionPoints[1]);
-			else
-				throw new ArgumentException(FullDescription + " is not boundry of block " + block.BlockDefinintion.FullDescription);
-		}
+        /// <summary>
+        /// Get the track edge for a given block
+        /// </summary>
+        /// <param name="block">The block for which to get the track edge</param>
+        /// <returns>The track edge</returns>
+        public TrackEdge GetBlockTrackEdge(LayoutBlock block) {
+            var track = this.Track;
+
+            if (track != null) {
+                if (track.GetBlock(track.ConnectionPoints[0]) == block)
+                    return new TrackEdge(Track, track.ConnectionPoints[0]);
+                else if (track.GetBlock(track.ConnectionPoints[1]) == block)
+                    return new TrackEdge(Track, track.ConnectionPoints[1]);
+            }
+
+            throw new ArgumentException(FullDescription + " is not boundry of block " + block.BlockDefinintion.FullDescription);
+        }
 
         /// <summary>
         /// Return true if this block edge is a track contact, which is connected to control module (i.e. it will be triggered)
@@ -156,23 +161,23 @@ namespace LayoutManager.Components {
         public virtual bool IsTrackContact() => false;
     }
 
-	#endregion
+    #endregion
 
-	#region Track Contact component
+    #region Track Contact component
 
-	/// <summary>
-	/// Track contact component is a component that is triggered when a locomotive (or car)
-	/// equiped with a track magnet passes over it
-	/// </summary>
-	public class LayoutTrackContactComponent : LayoutBlockEdgeBase, IModelComponentHasName, IModelComponentConnectToControl {
-		bool		trackContactIsTriggered;
+    /// <summary>
+    /// Track contact component is a component that is triggered when a locomotive (or car)
+    /// equiped with a track magnet passes over it
+    /// </summary>
+    public class LayoutTrackContactComponent : LayoutBlockEdgeBase, IModelComponentHasName, IModelComponentConnectToControl {
+        bool trackContactIsTriggered;
 
-		static IList<ModelComponentControlConnectionDescription> controlConnections = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
-			new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription("DryContact", "TrackContact", "track contact feedback") });
+        static readonly IList<ModelComponentControlConnectionDescription> controlConnections = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
+            new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription("DryContact", "TrackContact", "track contact feedback") });
 
-		public LayoutTrackContactComponent() {
-			this.XmlInfo.XmlDocument.LoadXml("<TrackContact/>");
-		}
+        public LayoutTrackContactComponent() {
+            this.XmlInfo.XmlDocument.LoadXml("<TrackContact/>");
+        }
 
         public override String ToString() => IsEmergencyContact ? "emergency track contact" : "track contact";
 
@@ -181,12 +186,12 @@ namespace LayoutManager.Components {
         public LayoutAddressInfo AddressProvider => new LayoutAddressInfo(this);
 
         public override bool DrawOutOfGrid {
-			get {
-				LayoutTextInfo	text = new LayoutTextInfo(this);
+            get {
+                LayoutTextInfo text = new LayoutTextInfo(this);
 
-				return text.Element != null;
-			}
-		}
+                return text.Element != null;
+            }
+        }
 
         public const string EmergencyContactAttribute = "EmergencyContact";
 
@@ -201,16 +206,16 @@ namespace LayoutManager.Components {
             }
         }
 
-		public bool IsTriggered {
-			get {
-				return trackContactIsTriggered;
-			}
+        public bool IsTriggered {
+            get {
+                return trackContactIsTriggered;
+            }
 
-			set {
-				trackContactIsTriggered = value;
-				OnComponentChanged();
-			}
-		}
+            set {
+                trackContactIsTriggered = value;
+                OnComponentChanged();
+            }
+        }
 
         public override bool IsTrackContact() => FullyConnected;
 
@@ -226,9 +231,9 @@ namespace LayoutManager.Components {
     #region Block Edge component
 
     public class LayoutBlockEdgeComponent : LayoutBlockEdgeBase, IObjectHasId {
-		public LayoutBlockEdgeComponent() {
-			XmlInfo.XmlDocument.LoadXml("<OccupancyDetectionBlockEdge />");
-		}
+        public LayoutBlockEdgeComponent() {
+            XmlInfo.XmlDocument.LoadXml("<OccupancyDetectionBlockEdge />");
+        }
 
         public override String ToString() => "edge of a block";
 
@@ -236,451 +241,461 @@ namespace LayoutManager.Components {
 
     }
 
-	#endregion
+    #endregion
 
-	#region Block definition component
+    #region Block definition component
 
-	#region Property type classes (ResourceInfo and ResourceCollection)
+    #region Property type classes (ResourceInfo and ResourceCollection)
 
-	/// <summary>
-	/// Resource that is associated with the block
-	/// </summary>
-	public class ResourceInfo : LayoutXmlWrapper {
-		LayoutBlockDefinitionComponentInfo blockDefinition;
+    /// <summary>
+    /// Resource that is associated with the block
+    /// </summary>
+    public class ResourceInfo : LayoutXmlWrapper {
+        public ResourceInfo(XmlElement element) : base(element) {
+        }
 
-		public ResourceInfo(LayoutBlockDefinitionComponentInfo blockDefinition, XmlElement element) : base(element) {
-			this.blockDefinition = blockDefinition;
-		}
+        public Guid ResourceId {
+            get {
+                return XmlConvert.ToGuid(GetAttribute("ResourceID"));
+            }
 
-		public Guid ResourceId {
-			get {
-				return XmlConvert.ToGuid(GetAttribute("ResourceID"));
-			}
-
-			set {
-				SetAttribute("ResourceID", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                SetAttribute("ResourceID", XmlConvert.ToString(value));
+            }
+        }
 
         public IModelComponentLayoutLockResource GetResource(LayoutPhase phase) => LayoutModel.Component<IModelComponentLayoutLockResource>(ResourceId, phase);
     }
 
-	/// <summary>
-	/// Collection of all resources associated with block
-	/// </summary>
-	public class ResourceCollection : XmlIndexedCollection<ResourceInfo, Guid>, ICollection<ResourceInfo> {
-		LayoutBlockDefinitionComponentInfo blockDefinition;
+    /// <summary>
+    /// Collection of all resources associated with block
+    /// </summary>
+    public class ResourceCollection : XmlIndexedCollection<ResourceInfo, Guid>, ICollection<ResourceInfo> {
+        readonly LayoutBlockDefinitionComponentInfo blockDefinition;
 
-		public ResourceCollection(LayoutBlockDefinitionComponentInfo blockDefinition) : base(blockDefinition.ResourcesElement) {
-			this.blockDefinition = blockDefinition;
-		}
+        public ResourceCollection(LayoutBlockDefinitionComponentInfo blockDefinition) : base(blockDefinition.ResourcesElement) {
+            this.blockDefinition = blockDefinition;
+        }
 
-		protected override XmlElement CreateElement(ResourceInfo item) {
-			throw new NotImplementedException();
-		}
+        protected override XmlElement CreateElement(ResourceInfo item) {
+            throw new NotImplementedException();
+        }
 
-        protected override ResourceInfo FromElement(XmlElement itemElement) => new ResourceInfo(blockDefinition, itemElement);
+        protected override ResourceInfo FromElement(XmlElement itemElement) => new ResourceInfo(itemElement);
 
         protected override Guid GetItemKey(ResourceInfo item) => item.ResourceId;
 
         public ResourceInfo Add(Guid resourceId) {
-			XmlElement resourceElement = blockDefinition.Element.OwnerDocument.CreateElement("Resource");
-			ResourceInfo resourceInfo = new ResourceInfo(blockDefinition, resourceElement);
+            XmlElement resourceElement = blockDefinition.Element.OwnerDocument.CreateElement("Resource");
+            ResourceInfo resourceInfo = new ResourceInfo(resourceElement) {
+                ResourceId = resourceId
+            };
+            Add(resourceInfo);
 
-			resourceInfo.ResourceId = resourceId;
-			Add(resourceInfo);
-
-			return resourceInfo;
-		}
+            return resourceInfo;
+        }
 
         public ResourceInfo Add(ILayoutLockResource resource) => Add(resource.Id);
 
         public bool CheckIntegrity(LayoutModuleBase moduleBase, LayoutPhase phase) {
-			bool ok = true;
-			ArrayList removeList = new ArrayList();
+            bool ok = true;
+            ArrayList removeList = new ArrayList();
 
-			foreach(ResourceInfo resourceInfo in this) {
-				if(resourceInfo.GetResource(phase) == null) {
-					if(resourceInfo.GetResource(LayoutPhase.All) == null) {
-						LayoutModuleBase.Warning(blockDefinition.BlockDefinition, "Resource of this block cannot be found - resource removed");
-						removeList.Add(resourceInfo);
-					}
-					else
-						LayoutModuleBase.Error(blockDefinition.BlockDefinition, "Resource required by this block is marked either as 'Planned' or 'In constuction' phase");
+            foreach (ResourceInfo resourceInfo in this) {
+                if (resourceInfo.GetResource(phase) == null) {
+                    if (resourceInfo.GetResource(LayoutPhase.All) == null) {
+                        LayoutModuleBase.Warning(blockDefinition.BlockDefinition, "Resource of this block cannot be found - resource removed");
+                        removeList.Add(resourceInfo);
+                    }
+                    else
+                        LayoutModuleBase.Error(blockDefinition.BlockDefinition, "Resource required by this block is marked either as 'Planned' or 'In constuction' phase");
 
-					ok = false;
-				}
-			}
+                    ok = false;
+                }
+            }
 
-			foreach(ResourceInfo resourceInfo in removeList)
-				Remove(resourceInfo.ResourceId);
+            foreach (ResourceInfo resourceInfo in removeList)
+                Remove(resourceInfo.ResourceId);
 
-			return ok;
-		}
-	}
+            return ok;
+        }
+    }
 
-	#endregion
+    #endregion
 
-	public class LayoutBlockDefinitionComponentInfo : LayoutInfo {
-		LayoutBlockDefinitionComponent	blockDefinition;
+    public class LayoutBlockDefinitionComponentInfo : LayoutInfo {
+        readonly LayoutBlockDefinitionComponent blockDefinition;
 
-		public LayoutBlockDefinitionComponentInfo(LayoutBlockDefinitionComponent blockDefinition, XmlElement element) : base(element) {
-			this.blockDefinition = blockDefinition;
-		}
+        public LayoutBlockDefinitionComponentInfo(LayoutBlockDefinitionComponent blockDefinition, XmlElement element) : base(element) {
+            this.blockDefinition = blockDefinition;
+        }
 
         public LayoutBlockDefinitionComponent BlockDefinition => blockDefinition;
 
         public bool SuggestForPlacement {
-			get {
-				if(Element.HasAttribute("SuggestForPlacement"))
-					return XmlConvert.ToBoolean(GetAttribute("SuggestForPlacement"));
-				else
-					return false;
-			}
+            get {
+                if (Element.HasAttribute("SuggestForPlacement"))
+                    return XmlConvert.ToBoolean(GetAttribute("SuggestForPlacement"));
+                else
+                    return false;
+            }
 
-			set {
-				SetAttribute("SuggestForPlacement", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                SetAttribute("SuggestForPlacement", XmlConvert.ToString(value));
+            }
+        }
 
-		public bool SuggestForDestination {
-			get {
-				if(Element.HasAttribute("SuggestForDestination"))
-					return XmlConvert.ToBoolean(GetAttribute("SuggestForDestination"));
-				else
-					return false;
-			}
+        public bool SuggestForDestination {
+            get {
+                if (Element.HasAttribute("SuggestForDestination"))
+                    return XmlConvert.ToBoolean(GetAttribute("SuggestForDestination"));
+                else
+                    return false;
+            }
 
-			set {
-				SetAttribute("SuggestForDestination", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                SetAttribute("SuggestForDestination", XmlConvert.ToString(value));
+            }
+        }
 
-		public bool SuggestForProgramming {
-			get {
-				if(Element.HasAttribute("SuggestForProgramming"))
-					return XmlConvert.ToBoolean(GetAttribute("SuggestForProgramming"));
-				else
-					return false;
-			}
+        public bool SuggestForProgramming {
+            get {
+                if (Element.HasAttribute("SuggestForProgramming"))
+                    return XmlConvert.ToBoolean(GetAttribute("SuggestForProgramming"));
+                else
+                    return false;
+            }
 
-			set {
-				SetAttribute("SuggestForProgramming", value, removeIf:false);
-			}
-		}
+            set {
+                SetAttribute("SuggestForProgramming", value, removeIf: false);
+            }
+        }
 
-		public TrainLength TrainLengthLimit {
-			get {
-				if(HasAttribute("TrainLengthLimit"))
-					return TrainLength.Parse(GetAttribute("TrainLengthLimit"));
-				else
-					return TrainLength.VeryLong;
-			}
+        public TrainLength TrainLengthLimit {
+            get {
+                if (HasAttribute("TrainLengthLimit"))
+                    return TrainLength.Parse(GetAttribute("TrainLengthLimit"));
+                else
+                    return TrainLength.VeryLong;
+            }
 
-			set {
-				if(value == TrainLength.VeryLong)
-					Element.RemoveAttribute("TrainLengthLimit");
-				else
-					SetAttribute("TrainLengthLimit", value.ToString());
-			}
-		}
+            set {
+                if (value == TrainLength.VeryLong)
+                    Element.RemoveAttribute("TrainLengthLimit");
+                else
+                    SetAttribute("TrainLengthLimit", value.ToString());
+            }
+        }
 
-		public bool NoFeedback {
-			get {
-				return XmlConvert.ToBoolean(GetAttribute("NoFeedback", "false"));
-			}
+        public bool NoFeedback {
+            get {
+                return XmlConvert.ToBoolean(GetAttribute("NoFeedback", "false"));
+            }
 
-			set {
-				SetAttribute("NoFeedback", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                SetAttribute("NoFeedback", XmlConvert.ToString(value));
+            }
+        }
 
-		public bool IsSlowdownRegion {
-			get {
-				return XmlConvert.ToBoolean(GetAttribute("SlowDownRegion", "false"));
-			}
+        public bool IsSlowdownRegion {
+            get {
+                return XmlConvert.ToBoolean(GetAttribute("SlowDownRegion", "false"));
+            }
 
-			set {
-                SetAttribute("SlowDownRegion", value, removeIf:false);
-			}
-		}
+            set {
+                SetAttribute("SlowDownRegion", value, removeIf: false);
+            }
+        }
 
-		public bool UseDefaultCanTrainWait {
-			get {
-				if(Element.HasAttribute("IsWaitable"))
-					return false;
-				return true;
-			}
+        public bool UseDefaultCanTrainWait {
+            get {
+                if (Element.HasAttribute("IsWaitable"))
+                    return false;
+                return true;
+            }
 
-			set {
-				if(value)
-					Element.RemoveAttribute("IsWaitable");
-				else {
+            set {
+                if (value)
+                    Element.RemoveAttribute("IsWaitable");
+                else {
                     if (blockDefinition.Block != null)
                         Element.SetAttribute("IsWaitable", XmlConvert.ToString(blockDefinition.Block.CanTrainWaitDefault));
                     else
                         Element.SetAttribute("IsWaitable", XmlConvert.ToString(value));
                 }
             }
-		}
+        }
 
-		public bool CanTrainWait {
-			get {
-				if(Element.HasAttribute("IsWaitable"))
-					return XmlConvert.ToBoolean(Element.GetAttribute("IsWaitable"));
-				else
-					return blockDefinition.Block.CanTrainWaitDefault;
-			}
+        public bool CanTrainWait {
+            get {
+                if (Element.HasAttribute("IsWaitable"))
+                    return XmlConvert.ToBoolean(Element.GetAttribute("IsWaitable"));
+                else
+                    return blockDefinition.Block.CanTrainWaitDefault;
+            }
 
-			set {
-				Element.SetAttribute("IsWaitable", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                Element.SetAttribute("IsWaitable", XmlConvert.ToString(value));
+            }
+        }
 
-		public bool IsOccupancyDetectionBlock {
-			get {
-				return XmlConvert.ToBoolean(GetAttribute("OccupancyDetectionBlock", "false"));
-			}
+        public bool IsOccupancyDetectionBlock {
+            get {
+                return XmlConvert.ToBoolean(GetAttribute("OccupancyDetectionBlock", "false"));
+            }
 
-			set {
-				SetAttribute("OccupancyDetectionBlock", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                SetAttribute("OccupancyDetectionBlock", XmlConvert.ToString(value));
+            }
+        }
 
-		public LayoutAddressInfo AddressProvider {
-			get {
-				if(Element["Address"] != null)
-					return new LayoutAddressInfo(blockDefinition);
-				return null;
-			}
-		}
+        public LayoutAddressInfo? AddressProvider {
+            get {
+                if (Element["Address"] != null)
+                    return new LayoutAddressInfo(blockDefinition);
+                return null;
+            }
+        }
 
-		public double Length {
-			get {
-				if(Element.HasAttribute("Length"))
-					return XmlConvert.ToDouble(Element.GetAttribute("Length"));
-				else
-					return 100.0;		// Default length is 1 meter
-			}
+        public double Length {
+            get {
+                if (Element.HasAttribute("Length"))
+                    return XmlConvert.ToDouble(Element.GetAttribute("Length"));
+                else
+                    return 100.0;       // Default length is 1 meter
+            }
 
-			set {
-				Element.SetAttribute("Length", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                Element.SetAttribute("Length", XmlConvert.ToString(value));
+            }
+        }
 
         public int LengthInCM => (int)Length;
 
         public int SpeedLimit {
-			get {
-				return XmlConvert.ToInt32(GetAttribute("SpeedLimit", "0"));
-			}
+            get {
+                return XmlConvert.ToInt32(GetAttribute("SpeedLimit", "0"));
+            }
 
-			set {
+            set {
                 SetAttribute("SpeedLimit", value, removeIf: 0);
-				RefreshSpeedLimit();
-			}
-		}
+                RefreshSpeedLimit();
+            }
+        }
 
-		public int SlowdownSpeed {
-			get {
-				return XmlConvert.ToInt32(GetAttribute("SlowDownSpeed", "0"));
-			}
+        public int SlowdownSpeed {
+            get {
+                return XmlConvert.ToInt32(GetAttribute("SlowDownSpeed", "0"));
+            }
 
-			set {
+            set {
                 SetAttribute("SlowDownSpeed", value, removeIf: 0);
-				RefreshSpeedLimit();
-			}
-		}
+                RefreshSpeedLimit();
+            }
+        }
 
-		public void RefreshSpeedLimit() {
-			if(blockDefinition != null && blockDefinition.Block != null) {
-				foreach(TrainLocationInfo trainLocation in blockDefinition.Block.Trains)
-					trainLocation.Train.RefreshSpeedLimit();
-			}
-		}
+        public void RefreshSpeedLimit() {
+            if (blockDefinition != null && blockDefinition.Block != null) {
+                foreach (TrainLocationInfo trainLocation in blockDefinition.Block.Trains)
+                    trainLocation.Train.RefreshSpeedLimit();
+            }
+        }
 
-		public XmlElement ResourcesElement {
-			get {
-				XmlElement	resourcesElement = Element["Resources"];
+        public XmlElement ResourcesElement {
+            get {
+                XmlElement resourcesElement = Element["Resources"];
 
-				if(resourcesElement == null) {
-					resourcesElement = Element.OwnerDocument.CreateElement("Resources");
-					Element.AppendChild(resourcesElement);
-				}
+                if (resourcesElement == null) {
+                    resourcesElement = Element.OwnerDocument.CreateElement("Resources");
+                    Element.AppendChild(resourcesElement);
+                }
 
-				return resourcesElement;
-			}
-		}
+                return resourcesElement;
+            }
+        }
 
-		public XmlElement PoliciesElement {
-			get {
-				XmlElement	policiesElement = Element["Policies"];
+        public XmlElement PoliciesElement {
+            get {
+                XmlElement policiesElement = Element["Policies"];
 
-				if(policiesElement == null) {
-					policiesElement = Element.OwnerDocument.CreateElement("Policies");
-					Element.AppendChild(policiesElement);
-				}
+                if (policiesElement == null) {
+                    policiesElement = Element.OwnerDocument.CreateElement("Policies");
+                    Element.AppendChild(policiesElement);
+                }
 
-				return policiesElement;
-			}
-		}
+                return policiesElement;
+            }
+        }
 
-		public bool IsTripSectionBoundry(int cpIndex) {
-			string a = "TripSectonBoundry" + cpIndex;
+        public bool IsTripSectionBoundry(int cpIndex) {
+            string a = "TripSectonBoundry" + cpIndex;
 
-			if(HasAttribute(a))
-				return XmlConvert.ToBoolean(GetAttribute(a));
-			return false;
-		}
+            if (HasAttribute(a))
+                return XmlConvert.ToBoolean(GetAttribute(a));
+            return false;
+        }
 
-		public void SetTripSectionBoundry(int cpIndex, bool isBoundry) {
-			string a = "TripSectonBoundry" + cpIndex;
+        public void SetTripSectionBoundry(int cpIndex, bool isBoundry) {
+            string a = "TripSectonBoundry" + cpIndex;
 
             SetAttribute(a, isBoundry, removeIf: false);
-		}
+        }
 
-		/// <summary>
-		/// Set the state of the train detected state. Please note that this method just set the attribute
-		/// it does not generate events.
-		/// </summary>
-		/// <param name="detected">Train detection status</param>
-		public void SetTrainDetected(bool detected) {
-			XmlElement trainDetectionElement = LayoutModel.StateManager.Components.StateOf(blockDefinition, "TrainDetection");
+        /// <summary>
+        /// Set the state of the train detected state. Please note that this method just set the attribute
+        /// it does not generate events.
+        /// </summary>
+        /// <param name="detected">Train detection status</param>
+        public void SetTrainDetected(bool detected) {
+            XmlElement trainDetectionElement = LayoutModel.StateManager.Components.StateOf(blockDefinition, "TrainDetection");
 
-			trainDetectionElement.SetAttribute("TrainDetected", XmlConvert.ToString(detected));
-		}
+            trainDetectionElement.SetAttribute("TrainDetected", XmlConvert.ToString(detected));
+        }
 
-		public void SetTrainWillBeDetected(bool detected) {
-			XmlElement trainDetectionElement = LayoutModel.StateManager.Components.StateOf(blockDefinition, "TrainDetection");
+        public void SetTrainWillBeDetected(bool detected) {
+            XmlElement trainDetectionElement = LayoutModel.StateManager.Components.StateOf(blockDefinition, "TrainDetection");
 
-			trainDetectionElement.SetAttribute("TrainWillBeDetected", XmlConvert.ToString(detected));
-		}
+            trainDetectionElement.SetAttribute("TrainWillBeDetected", XmlConvert.ToString(detected));
+        }
 
-		public bool TrainWillBeDetected {
-			get {
-				if(IsOccupancyDetectionBlock) {
-					XmlElement trainDetectionElement = LayoutModel.StateManager.Components.StateOf(blockDefinition.Id, "TrainDetection");
+        public bool TrainWillBeDetected {
+            get {
+                if (IsOccupancyDetectionBlock) {
+                    XmlElement trainDetectionElement = LayoutModel.StateManager.Components.StateOf(blockDefinition.Id, "TrainDetection");
 
-					if(trainDetectionElement.HasAttribute("TrainWillBeDetected"))
-						return XmlConvert.ToBoolean(trainDetectionElement.GetAttribute("TrainWillBeDetected"));
-					else
-						return false;
-				}
-				else {
-					LayoutBlock block = BlockDefinition.Block;
+                    if (trainDetectionElement.HasAttribute("TrainWillBeDetected"))
+                        return XmlConvert.ToBoolean(trainDetectionElement.GetAttribute("TrainWillBeDetected"));
+                    else
+                        return false;
+                }
+                else {
+                    LayoutBlock block = BlockDefinition.Block;
 
-					if(block.OccupancyBlock == null)
-						return block.HasTrains;
-					else {
-						LayoutBlockDefinitionComponent occupancyBlockInfo = block.OccupancyBlock.BlockDefinintion;
+                    if (block.OccupancyBlock == null)
+                        return block.HasTrains;
+                    else {
+                        LayoutBlockDefinitionComponent occupancyBlockInfo = block.OccupancyBlock.BlockDefinintion;
 
-						Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock == true);
-						return occupancyBlockInfo.Info.TrainWillBeDetected;
-					}
-				}
-			}
+                        Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock == true);
+                        return occupancyBlockInfo.Info.TrainWillBeDetected;
+                    }
+                }
+            }
 
-			set {
-				if(IsOccupancyDetectionBlock) {
-					if(value != TrainWillBeDetected) {
-						LayoutOccupancyBlock occupancyBlock = blockDefinition.Block.OccupancyBlock;
+            set {
+                if (IsOccupancyDetectionBlock) {
+                    if (value != TrainWillBeDetected) {
+                        var occupancyBlock = blockDefinition.Block.OccupancyBlock;
 
-						SetTrainWillBeDetected(value);
+                        if (occupancyBlock != null) {
+                            SetTrainWillBeDetected(value);
 
-						if(!LayoutController.TrainsAnalysisPhase) {
-							if(value)
-								EventManager.Event(new LayoutEvent(occupancyBlock, "train-detection-block-will-be-occupied"));
-							else
-								EventManager.Event(new LayoutEvent(occupancyBlock, "train-detection-block-will-be-free"));
-						}
-					}
-				}
-				else {
-					LayoutBlockDefinitionComponent occupancyBlockInfo = BlockDefinition.Block.OccupancyBlock.BlockDefinintion;
+                            if (!LayoutController.TrainsAnalysisPhase) {
+                                if (value)
+                                    EventManager.Event(new LayoutEvent("train-detection-block-will-be-occupied", occupancyBlock));
+                                else
+                                    EventManager.Event(new LayoutEvent("train-detection-block-will-be-free", occupancyBlock));
+                            }
+                        }
+                    }
+                }
+                else {
+                    var occupancyBlock = blockDefinition.Block.OccupancyBlock;
 
-					Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock == true);
-					occupancyBlockInfo.Info.TrainWillBeDetected = value;
-				}
-			}
-		}
+                    if (occupancyBlock != null) {
+                        LayoutBlockDefinitionComponent occupancyBlockInfo = occupancyBlock.BlockDefinintion;
+
+                        Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock == true);
+                        occupancyBlockInfo.Info.TrainWillBeDetected = value;
+                    }
+                }
+            }
+        }
 
 
-		/// <summary>
-		/// Return true if a train is detected in this block. This is valid only if the block is or part of train occupancy
-		/// detection block.
-		/// </summary>
-		public bool TrainDetected {
-			get {
-				if(IsOccupancyDetectionBlock) {
-					XmlElement	trainDetectionElement = LayoutModel.StateManager.Components.StateOf(blockDefinition.Id, "TrainDetection");
+        /// <summary>
+        /// Return true if a train is detected in this block. This is valid only if the block is or part of train occupancy
+        /// detection block.
+        /// </summary>
+        public bool TrainDetected {
+            get {
+                if (IsOccupancyDetectionBlock) {
+                    XmlElement trainDetectionElement = LayoutModel.StateManager.Components.StateOf(blockDefinition.Id, "TrainDetection");
 
-					if(trainDetectionElement.HasAttribute("TrainDetected"))
-						return XmlConvert.ToBoolean(trainDetectionElement.GetAttribute("TrainDetected"));
-					else
-						return false;
-				}
-				else {
-					LayoutBlock	block = BlockDefinition.Block;
+                    if (trainDetectionElement.HasAttribute("TrainDetected"))
+                        return XmlConvert.ToBoolean(trainDetectionElement.GetAttribute("TrainDetected"));
+                    else
+                        return false;
+                }
+                else {
+                    LayoutBlock block = BlockDefinition.Block;
 
-					if(block.OccupancyBlock == null)
-						return block.HasTrains;
-					else {
-						LayoutBlockDefinitionComponent	occupancyBlockInfo = block.OccupancyBlock.BlockDefinintion;
+                    if (block.OccupancyBlock == null)
+                        return block.HasTrains;
+                    else {
+                        LayoutBlockDefinitionComponent occupancyBlockInfo = block.OccupancyBlock.BlockDefinintion;
 
-						Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock == true);
-						return occupancyBlockInfo.Info.TrainDetected;
-					}
-				}
-			}
+                        Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock == true);
+                        return occupancyBlockInfo.Info.TrainDetected;
+                    }
+                }
+            }
 
-			[LayoutEventDef("train-detection-block-occupied", Role=LayoutEventRole.Notification, SenderType=typeof(LayoutOccupancyBlock))]
-			[LayoutEventDef("train-detection-block-free", Role=LayoutEventRole.Notification, SenderType=typeof(LayoutOccupancyBlock))]
-			[LayoutEventDef("train-detection-block-will-be-occupied", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutOccupancyBlock))]
-			[LayoutEventDef("train-detection-block-will-be-free", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutOccupancyBlock))]
-			set {
-				blockDefinition.EraseImage();
+            [LayoutEventDef("train-detection-block-occupied", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutOccupancyBlock))]
+            [LayoutEventDef("train-detection-block-free", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutOccupancyBlock))]
+            [LayoutEventDef("train-detection-block-will-be-occupied", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutOccupancyBlock))]
+            [LayoutEventDef("train-detection-block-will-be-free", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutOccupancyBlock))]
+            set {
+                blockDefinition.EraseImage();
 
-				if(IsOccupancyDetectionBlock) {
-					if(value != TrainDetected) {
-						LayoutOccupancyBlock	occupancyBlock = blockDefinition.Block.OccupancyBlock;
+                if (IsOccupancyDetectionBlock) {
+                    if (value != TrainDetected) {
+                        var occupancyBlock = blockDefinition.Block.OccupancyBlock;
 
-						TrainWillBeDetected = value;
+                        Debug.Assert(occupancyBlock != null);
+                        TrainWillBeDetected = value;
 
-						SetTrainDetected(value);
+                        SetTrainDetected(value);
 
-						if(!LayoutController.TrainsAnalysisPhase) {
-							if(value)
-								EventManager.Event(new LayoutEvent(occupancyBlock, "train-detection-block-occupied"));
-							else
-								EventManager.Event(new LayoutEvent(occupancyBlock, "train-detection-block-free"));
-						}
-					}
-				}
-				else {
-					LayoutBlockDefinitionComponent	occupancyBlockInfo = BlockDefinition.Block.OccupancyBlock.BlockDefinintion;
+                        if (!LayoutController.TrainsAnalysisPhase) {
+                            if (value)
+                                EventManager.Event(new LayoutEvent("train-detection-block-occupied", occupancyBlock));
+                            else
+                                EventManager.Event(new LayoutEvent("train-detection-block-free", occupancyBlock));
+                        }
+                    }
+                }
+                else {
+                    var occupancyBlock = BlockDefinition.Block.OccupancyBlock;
 
-					Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock == true);
-					occupancyBlockInfo.Info.TrainDetected = value;
-				}
+                    if (occupancyBlock != null) {
+                        LayoutBlockDefinitionComponent occupancyBlockInfo = occupancyBlock.BlockDefinintion;
 
-				blockDefinition.Redraw();
-			}
-		}
+                        Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock == true);
+                        occupancyBlockInfo.Info.TrainDetected = value;
+                    }
+                }
 
-		public bool UnexpectedTrainDetected {
-			get {
-				if(!IsOccupancyDetectionBlock || !TrainDetected)
-					return false;
-				else {
-					// This is a train occupancy block and a train is detected.
-					// if all logical blocks do not contain any train, then this train is unexpected
-					foreach(LayoutBlock block in BlockDefinition.Block.OccupancyBlock.ContainedBlocks)
-						if(block.HasTrains)
-							return false;
-					return true;
-				}
-			}
-		}
+                blockDefinition.Redraw();
+            }
+        }
+
+        public bool UnexpectedTrainDetected {
+            get {
+                if (!IsOccupancyDetectionBlock || !TrainDetected)
+                    return false;
+                else {
+                    if (BlockDefinition.Block.OccupancyBlock != null) {
+                        // This is a train occupancy block and a train is detected.
+                        // if all logical blocks do not contain any train, then this train is unexpected
+                        foreach (LayoutBlock block in BlockDefinition.Block.OccupancyBlock.ContainedBlocks)
+                            if (block.HasTrains)
+                                return false;
+                    }
+                    return true;
+                }
+            }
+        }
 
         public ResourceCollection Resources => new ResourceCollection(this);
 
@@ -691,19 +706,20 @@ namespace LayoutManager.Components {
         public TripPlanTrainConditionInfo TrainStopCondition => new TripPlanTrainConditionInfo(Element, "TrainStopCondition");
     }
 
-	public class LayoutBlockDefinitionComponent : ModelComponent, IObjectHasId, IModelComponentHasName, IObjectHasAttributes, IModelComponentConnectToControl {
-		List<LayoutBlockEdgeBase>[] blockEdges;
+    public class LayoutBlockDefinitionComponent : ModelComponent, IObjectHasId, IModelComponentHasName, IObjectHasAttributes, IModelComponentConnectToControl {
+        List<LayoutBlockEdgeBase>[] blockEdges;
 
-		static IList<ModelComponentControlConnectionDescription> controlConnectionsOfOccupancyBlock = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
-		  new ModelComponentControlConnectionDescription[] {
-			new ModelComponentControlConnectionDescription("DryContact,CurrentSensor", "FeedbackBlock", "block occupied feedback")
-		});
+        static readonly IList<ModelComponentControlConnectionDescription> controlConnectionsOfOccupancyBlock = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
+          new ModelComponentControlConnectionDescription[] {
+            new ModelComponentControlConnectionDescription("DryContact,CurrentSensor", "FeedbackBlock", "block occupied feedback")
+        });
 
-		static IList<ModelComponentControlConnectionDescription> controlConnectionsOfNormalBlock = new List<ModelComponentControlConnectionDescription>().AsReadOnly();
+        static readonly IList<ModelComponentControlConnectionDescription> controlConnectionsOfNormalBlock = new List<ModelComponentControlConnectionDescription>().AsReadOnly();
 
-		public LayoutBlockDefinitionComponent() {
-			XmlDocument.LoadXml("<BlockInfo />");
-		}
+        public LayoutBlockDefinitionComponent() {
+            blockEdges = new List<LayoutBlockEdgeBase>[0];
+            XmlDocument.LoadXml("<BlockInfo />");
+        }
 
         public override ModelComponentKind Kind => ModelComponentKind.BlockInfo;
 
@@ -719,29 +735,43 @@ namespace LayoutManager.Components {
 
         public LayoutBlock Block => Track.GetBlock(Track.ConnectionPoints[0]);
 
-        public LayoutTrackPowerConnectorComponent PowerConnector => Track.GetPowerConnector(Track.ConnectionPoints[0]);
+        public LayoutTrackPowerConnectorComponent PowerConnector {
+            get {
+                var powerConnector = Track.GetPowerConnector(Track.ConnectionPoints[0]);
+
+                Debug.Assert(powerConnector != null);
+                return powerConnector;
+            }
+        }
 
         public ILayoutPower Power => Track.GetPower(Track.ConnectionPoints[0]);
 
-        public TrackGauges Guage => PowerConnector.Info.TrackGauge;
+        public TrackGauges Guage {
+            get {
+                Debug.Assert(PowerConnector != null);
+                return PowerConnector.Info.TrackGauge;
+            }
+        }
 
         public void ClearBlockEdges() {
-			if(blockEdges == null || blockEdges.Length != Track.ConnectionPoints.Count) {
-				blockEdges = new List<LayoutBlockEdgeBase>[Track.ConnectionPoints.Count];
+            if (blockEdges.Length != Track.ConnectionPoints.Count) {
+                blockEdges = new List<LayoutBlockEdgeBase>[Track.ConnectionPoints.Count];
 
-				for(int i = 0; i < blockEdges.Length; i++)
-					blockEdges[i] = new List<LayoutBlockEdgeBase>();
-			}
+                for (int i = 0; i < blockEdges.Length; i++)
+                    blockEdges[i] = new List<LayoutBlockEdgeBase>();
+            }
 
-			for(int cpIndex = 0; cpIndex < blockEdges.Length; cpIndex++)
-				blockEdges[cpIndex].Clear();
-		}
+            for (int cpIndex = 0; cpIndex < blockEdges.Length; cpIndex++)
+                blockEdges[cpIndex].Clear();
+        }
 
-		public void AddBlockEdge(int reachableFromConnectionPointIndex, LayoutBlockEdgeBase blockEdge) {
-			if(reachableFromConnectionPointIndex < 0 || reachableFromConnectionPointIndex >= blockEdges.Length)
-				throw new ArgumentException("Invalid value for reachableFromConnectionPointIndex");
-			blockEdges[reachableFromConnectionPointIndex].Add(blockEdge);
-		}
+        public void AddBlockEdge(int reachableFromConnectionPointIndex, LayoutBlockEdgeBase blockEdge) {
+            Debug.Assert(blockEdges != null);
+
+            if (reachableFromConnectionPointIndex < 0 || reachableFromConnectionPointIndex >= blockEdges.Length)
+                throw new ArgumentException("Invalid value for reachableFromConnectionPointIndex");
+            blockEdges[reachableFromConnectionPointIndex].Add(blockEdge);
+        }
 
         public LayoutBlockEdgeBase[] GetBlockEdges(int reachableFromConnectionPointIndex) => blockEdges[reachableFromConnectionPointIndex].ToArray();
 
@@ -754,37 +784,34 @@ namespace LayoutManager.Components {
         /// <param name="cp">The connection point</param>
         /// <returns>0 or 1 based on side of the block info that is described by the connection point</returns>
         public int GetConnectionPointIndex(LayoutComponentConnectionPoint cp) {
-			for(int cpIndex = 0; cpIndex < Track.ConnectionPoints.Count; cpIndex++)
-				if(Track.ConnectionPoints[cpIndex] == cp)
-					return cpIndex;
+            for (int cpIndex = 0; cpIndex < Track.ConnectionPoints.Count; cpIndex++)
+                if (Track.ConnectionPoints[cpIndex] == cp)
+                    return cpIndex;
 
-			throw new ArgumentException("BlockInfo " + FullDescription + " does not have the given connection point: " + cp.ToString());
-		}
+            throw new ArgumentException("BlockInfo " + FullDescription + " does not have the given connection point: " + cp.ToString());
+        }
 
-		/// <summary>
-		/// Given a block edge, return the connection index (0, 1) of this edge. This is the "side" of the block to which this block edge
-		/// borders
-		/// </summary>
-		/// <param name="blockEdge">The block edge</param>
-		/// <returns>0 or 1</returns>
-		public int GetConnectionPointIndex(LayoutBlockEdgeBase blockEdge) {
-			if(blockEdge == null)
-				throw new ArgumentNullException("Block edge is invalid");
+        /// <summary>
+        /// Given a block edge, return the connection index (0, 1) of this edge. This is the "side" of the block to which this block edge
+        /// borders
+        /// </summary>
+        /// <param name="blockEdge">The block edge</param>
+        /// <returns>0 or 1</returns>
+        public int GetConnectionPointIndex(LayoutBlockEdgeBase blockEdge) {
+            for (int cpIndex = 0; cpIndex < Track.ConnectionPoints.Count; cpIndex++)
+                if (ContainsBlockEdge(cpIndex, blockEdge))
+                    return cpIndex;
 
-			for(int cpIndex = 0; cpIndex < Track.ConnectionPoints.Count; cpIndex++)
-				if(ContainsBlockEdge(cpIndex, blockEdge))
-					return cpIndex;
-
-			throw new ArgumentException("Block edge " + blockEdge.FullDescription + " does not border block " + FullDescription);
-		}
+            throw new ArgumentException("Block edge " + blockEdge.FullDescription + " does not border block " + FullDescription);
+        }
 
         public int GetOtherConnectionPointIndex(LayoutComponentConnectionPoint cp) => GetOtherConnectionPointIndex(GetConnectionPointIndex(cp));
 
         public int GetOtherConnectionPointIndex(int cpIndex) {
-			TrackEdge edge = new TrackEdge(Track, Track.ConnectionPoints[cpIndex]);
+            TrackEdge edge = new TrackEdge(Track, Track.ConnectionPoints[cpIndex]);
 
-			return GetConnectionPointIndex(edge.OtherConnectionPoint);
-		}
+            return GetConnectionPointIndex(edge.OtherConnectionPoint);
+        }
 
         public int GetOtherConnectionPointIndex(LayoutBlockEdgeBase blockEdge) => GetOtherConnectionPointIndex(GetConnectionPointIndex(blockEdge));
 
@@ -793,45 +820,45 @@ namespace LayoutManager.Components {
         public override String ToString() => "Block information";
 
         protected void DoRedraw() {
-			base.Redraw();
-		}
+            base.Redraw();
+        }
 
-		protected void DoEraseImage() {
-			base.EraseImage();
-		}
+        protected void DoEraseImage() {
+            base.EraseImage();
+        }
 
-		public override void Redraw() {
+        public override void Redraw() {
 
-			if(!LayoutController.IsOperationMode)
-				base.Redraw();
-			else {
-				LayoutBlock block = Block;
+            if (!LayoutController.IsOperationMode)
+                base.Redraw();
+            else {
+                LayoutBlock block = Block;
 
-				if(block.OccupancyBlock == null)
-					base.Redraw();
-				else {
-					foreach(LayoutBlock containedBlock in block.OccupancyBlock.ContainedBlocks)
-						if(containedBlock.BlockDefinintion != null)
-							containedBlock.BlockDefinintion.DoRedraw();
-				}
-			}
-		}
+                if (block.OccupancyBlock == null)
+                    base.Redraw();
+                else {
+                    foreach (LayoutBlock containedBlock in block.OccupancyBlock.ContainedBlocks)
+                        if (containedBlock.BlockDefinintion != null)
+                            containedBlock.BlockDefinintion.DoRedraw();
+                }
+            }
+        }
 
-		public override void EraseImage() {
-			if(!LayoutController.IsOperationMode)
-				base.EraseImage();
-			else {
-				LayoutBlock block = Block;
+        public override void EraseImage() {
+            if (!LayoutController.IsOperationMode)
+                base.EraseImage();
+            else {
+                LayoutBlock block = Block;
 
-				if(block.OccupancyBlock == null)
-					base.Redraw();
-				else {
-					foreach(LayoutBlock containedBlock in block.OccupancyBlock.ContainedBlocks)
-						if(containedBlock.BlockDefinintion != null)
-							containedBlock.BlockDefinintion.DoEraseImage();
-				}
-			}
-		}
+                if (block.OccupancyBlock == null)
+                    base.Redraw();
+                else {
+                    foreach (LayoutBlock containedBlock in block.OccupancyBlock.ContainedBlocks)
+                        if (containedBlock.BlockDefinintion != null)
+                            containedBlock.BlockDefinintion.DoEraseImage();
+                }
+            }
+        }
 
         #region IModelComponentConnectToControl Members
 
@@ -841,56 +868,56 @@ namespace LayoutManager.Components {
 
     }
 
-	#endregion
+    #endregion
 
-	#region Signal Component
+    #region Signal Component
 
-	public enum LayoutSignalType {
-		Lights, Semaphore, Distance
-	};
+    public enum LayoutSignalType {
+        Lights, Semaphore, Distance
+    };
 
-	public class LayoutReverseLogicInfo : LayoutInfo {
-		public LayoutReverseLogicInfo(XmlElement element)
-			: base(element) {
-		}
+    public class LayoutReverseLogicInfo : LayoutInfo {
+        public LayoutReverseLogicInfo(XmlElement element)
+            : base(element) {
+        }
 
-		public bool ReverseLogic {
-			get {
-				if(HasAttribute("ReverseLogic"))
-					return XmlConvert.ToBoolean(GetAttribute("ReverseLogic"));
-				return false;
-			}
+        public bool ReverseLogic {
+            get {
+                if (HasAttribute("ReverseLogic"))
+                    return XmlConvert.ToBoolean(GetAttribute("ReverseLogic"));
+                return false;
+            }
 
-			set {
+            set {
                 SetAttribute("ReverseLogic", value, removeIf: false);
-			}
-		}
-	}
+            }
+        }
+    }
 
-	public class LayoutSignalComponentInfo : LayoutReverseLogicInfo {
+    public class LayoutSignalComponentInfo : LayoutReverseLogicInfo {
 
-		public LayoutSignalComponentInfo(XmlElement element) : base(element) {
-		}
+        public LayoutSignalComponentInfo(XmlElement element) : base(element) {
+        }
 
-		public LayoutSignalType SignalType {
-			get {
-				if(Element.HasAttribute("SignalType"))
-					return (LayoutSignalType)Enum.Parse(typeof(LayoutSignalType), Element.GetAttribute("SignalType"));
-				else
-					return LayoutSignalType.Lights;
-			}
+        public LayoutSignalType SignalType {
+            get {
+                if (Element.HasAttribute("SignalType"))
+                    return (LayoutSignalType)Enum.Parse(typeof(LayoutSignalType), Element.GetAttribute("SignalType"));
+                else
+                    return LayoutSignalType.Lights;
+            }
 
-			set {
-				Element.SetAttribute("SignalType", value.ToString());
-			}
-		}
-	}
+            set {
+                Element.SetAttribute("SignalType", value.ToString());
+            }
+        }
+    }
 
-	public class LayoutSignalComponent : ModelComponent, IModelComponentHasReverseLogic, IModelComponentConnectToControl {
+    public class LayoutSignalComponent : ModelComponent, IModelComponentHasReverseLogic, IModelComponentConnectToControl {
 
-		public LayoutSignalComponent() {
-			XmlDocument.LoadXml("<Signal />");
-		}
+        public LayoutSignalComponent() {
+            XmlDocument.LoadXml("<Signal />");
+        }
 
         public override ModelComponentKind Kind => ModelComponentKind.Signal;
 
@@ -899,16 +926,16 @@ namespace LayoutManager.Components {
         public LayoutSignalComponentInfo Info => new LayoutSignalComponentInfo(Element);
 
         public bool ReverseLogic {
-			get {
-				return Info.ReverseLogic;
-			}
+            get {
+                return Info.ReverseLogic;
+            }
 
-			set {
-				Info.ReverseLogic = value;
-			}
-		}
+            set {
+                Info.ReverseLogic = value;
+            }
+        }
 
-        public LayoutStraightTrackComponent Track => Spot.Track as LayoutStraightTrackComponent;
+        public LayoutStraightTrackComponent? Track => Spot.Track as LayoutStraightTrackComponent;
 
         public override bool DrawOutOfGrid => true;
 
@@ -917,84 +944,80 @@ namespace LayoutManager.Components {
         /// Get or set the signal state
         /// </summary>
         public LayoutSignalState SignalState {
-			get {
-				if(LayoutModel.StateManager.Components.Contains(this, "SignalState")) {
-					XmlElement	stateElement = LayoutModel.StateManager.Components.StateOf(this, "SignalState");
-					string		v = stateElement.GetAttribute("Value");
+            get {
+                if (LayoutModel.StateManager.Components.Contains(this, "SignalState")) {
+                    XmlElement stateElement = LayoutModel.StateManager.Components.StateOf(this, "SignalState");
+                    string v = stateElement.GetAttribute("Value");
 
-					if(char.IsDigit(v, 0)) {		// This If should be removed, it is for backward compatability only...
-						int	state = XmlConvert.ToInt32(v);
+                    if (char.IsDigit(v, 0)) {       // This If should be removed, it is for backward compatability only...
+                        int state = XmlConvert.ToInt32(v);
 
-						return state == 0 ? LayoutSignalState.Red : LayoutSignalState.Green;
-					}
-					else
-						return (LayoutSignalState)Enum.Parse(typeof(LayoutSignalState), v);
-				}
-				else
-					return LayoutSignalState.Yellow;
-			}
+                        return state == 0 ? LayoutSignalState.Red : LayoutSignalState.Green;
+                    }
+                    else
+                        return (LayoutSignalState)Enum.Parse(typeof(LayoutSignalState), v);
+                }
+                else
+                    return LayoutSignalState.Yellow;
+            }
 
-			set {
-				ControlConnectionPoint	connectionPoint = LayoutModel.ControlManager.ConnectionPoints[this][0];
+            set {
+                ControlConnectionPoint connectionPoint = LayoutModel.ControlManager.ConnectionPoints[this][0];
 
-				LayoutSignalState signalState = value;
+                LayoutSignalState signalState = value;
 
-				if(Info.ReverseLogic)
-					signalState = (signalState == LayoutSignalState.Green) ? LayoutSignalState.Red : LayoutSignalState.Green;
-				
-				EventManager.Event(new LayoutEvent(new ControlConnectionPointReference(connectionPoint), "change-signal-state-command", null, signalState).SetCommandStation(connectionPoint.Module.Bus));
-			}
-		}
+                if (Info.ReverseLogic)
+                    signalState = (signalState == LayoutSignalState.Green) ? LayoutSignalState.Red : LayoutSignalState.Green;
 
-		/// <summary>
-		/// This method actually change the turnout run-time state. It should be called only from the turnout state changed
-		/// notification handler, and not directly.
-		/// </summary>
-		/// <param name="switchState">The new switch state</param>
-		public void SetSignalState(LayoutSignalState state) {
-			// TODO: Complaint if a switch state is changed not either when there is no lock, or not by lock owner.
-			LayoutModel.StateManager.Components.StateOf(this, "SignalState").SetAttribute("Value", state.ToString());
-			OnComponentChanged();
-		}
+                EventManager.Event(new LayoutEvent("change-signal-state-command", new ControlConnectionPointReference(connectionPoint), signalState).SetCommandStation(connectionPoint.Module.Bus));
+            }
+        }
+
+        /// <summary>
+        /// This method actually change the turnout run-time state. It should be called only from the turnout state changed
+        /// notification handler, and not directly.
+        /// </summary>
+        /// <param name="switchState">The new switch state</param>
+        public void SetSignalState(LayoutSignalState state) {
+            // TODO: Complaint if a switch state is changed not either when there is no lock, or not by lock owner.
+            LayoutModel.StateManager.Components.StateOf(this, "SignalState").SetAttribute("Value", state.ToString());
+            OnComponentChanged();
+        }
 
         public override string ToString() => "Signal";
 
         #region IModelComponentConnectToControl Members
 
         public IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions {
-			get {
-				string friendlyName = null;
+            get {
+                string friendlyName = Info.SignalType switch
+                {
+                    LayoutSignalType.Distance => "distance signal control",
+                    LayoutSignalType.Lights => "signal control",
+                    LayoutSignalType.Semaphore => "semaphore",
+                    _ =>throw new NotImplementedException("Invalid signal type")
+                };
 
-				switch(Info.SignalType) {
-
-					case LayoutSignalType.Distance: friendlyName = "distance signal control"; break;
-					case LayoutSignalType.Lights: friendlyName = "signal control"; break;
-					case LayoutSignalType.Semaphore: friendlyName = "semaphore"; break;
-					default:
-						Debug.Assert(false, "Invalid signal type");
-						break;
-				}
-
-				return Array.AsReadOnly<ModelComponentControlConnectionDescription>(new ModelComponentControlConnectionDescription[] {
-					new ModelComponentControlConnectionDescription("Solenoid,Relay,OnOff", "Signal", friendlyName)
-				});
-			}
-		}
+                return Array.AsReadOnly<ModelComponentControlConnectionDescription>(new ModelComponentControlConnectionDescription[] {
+                    new ModelComponentControlConnectionDescription("Solenoid,Relay,OnOff", "Signal", friendlyName)
+                });
+            }
+        }
 
 
-		#endregion
-	}
+        #endregion
+    }
 
-	#endregion
+    #endregion
 
-	#region Control Module Location component
+    #region Control Module Location component
 
-	public class LayoutControlModuleLocationComponentInfo : LayoutInfo {
-		LayoutControlModuleLocationComponent	controlModuleLocation;
+    public class LayoutControlModuleLocationComponentInfo : LayoutInfo {
+        readonly LayoutControlModuleLocationComponent controlModuleLocation;
 
-		public LayoutControlModuleLocationComponentInfo(LayoutControlModuleLocationComponent controlModuleLocation, XmlElement element) : base(element) {
-			this.controlModuleLocation = controlModuleLocation;
-		}
+        public LayoutControlModuleLocationComponentInfo(LayoutControlModuleLocationComponent controlModuleLocation, XmlElement element) : base(element) {
+            this.controlModuleLocation = controlModuleLocation;
+        }
 
         public LayoutControlModuleLocationComponent ControlModuleLocation => controlModuleLocation;
 
@@ -1002,52 +1025,46 @@ namespace LayoutManager.Components {
         /// Element containing defaults for each bus at this location
         /// </summary>
         public XmlElement DefaultsElement {
-			get {
-				XmlElement defaultsElement = Element["Defaults"];
+            get {
+                XmlElement defaultsElement = Element["Defaults"];
 
-				if(defaultsElement == null) {
-					defaultsElement = Element.OwnerDocument.CreateElement("Defaults");
-					Element.AppendChild(defaultsElement);
-				}
+                if (defaultsElement == null) {
+                    defaultsElement = Element.OwnerDocument.CreateElement("Defaults");
+                    Element.AppendChild(defaultsElement);
+                }
 
-				return defaultsElement;
-			}
-		}
+                return defaultsElement;
+            }
+        }
 
         public ControlModuleLocationBusDefaultSettingCollection Defaults => new ControlModuleLocationBusDefaultSettingCollection(DefaultsElement);
 
         public Guid CommandStationId {
-			get {
-				if(HasAttribute("CommandStationID"))
-					return XmlConvert.ToGuid(GetAttribute("CommandStationID"));
-				else
-					return Guid.Empty;
-			}
+            get {
+                if (HasAttribute("CommandStationID"))
+                    return XmlConvert.ToGuid(GetAttribute("CommandStationID"));
+                else
+                    return Guid.Empty;
+            }
 
-			set {
-				if(value == Guid.Empty)
-					Element.RemoveAttribute("CommandStationID");
-				else
-					SetAttribute("CommandStationID", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                if (value == Guid.Empty)
+                    Element.RemoveAttribute("CommandStationID");
+                else
+                    SetAttribute("CommandStationID", XmlConvert.ToString(value));
+            }
+        }
 
-		public IModelComponentIsCommandStation CommandStation {
-			get {
-				if(CommandStationId == Guid.Empty)
-					return null;
-				return LayoutModel.Component<IModelComponentIsCommandStation>(CommandStationId, LayoutModel.ActivePhases);
-			}
+        public IModelComponentIsCommandStation? CommandStation {
+            get => CommandStationId != Guid.Empty ? LayoutModel.Component<IModelComponentIsCommandStation>(CommandStationId, LayoutModel.ActivePhases) : null;
 
-			set {
-				CommandStationId = value.Id;
-			}
-		}
-	}
+            set => CommandStationId = value != null ? value.Id : Guid.Empty;
+        }
+    }
 
-	public class ControlModuleLocationBusDefaultSettingCollection : XmlIndexedCollection<ControlModuleLocationBusDefaultInfo, Guid> {
-		public ControlModuleLocationBusDefaultSettingCollection(XmlElement element) : base(element) {
-		}
+    public class ControlModuleLocationBusDefaultSettingCollection : XmlIndexedCollection<ControlModuleLocationBusDefaultInfo, Guid> {
+        public ControlModuleLocationBusDefaultSettingCollection(XmlElement element) : base(element) {
+        }
 
         protected override XmlElement CreateElement(ControlModuleLocationBusDefaultInfo item) => Element.OwnerDocument.CreateElement("BusDefault");
 
@@ -1057,48 +1074,48 @@ namespace LayoutManager.Components {
         protected override Guid GetItemKey(ControlModuleLocationBusDefaultInfo item) => item.BusId;
 
         public ControlModuleLocationBusDefaultInfo Add(Guid busId, string defaultModuleTypeName, int defaultStartAddress) {
-			XmlElement	busDefaultElement = Element.OwnerDocument.CreateElement("BusDefault");
+            XmlElement busDefaultElement = Element.OwnerDocument.CreateElement("BusDefault");
 
-			
-			ControlModuleLocationBusDefaultInfo	busDefault = new ControlModuleLocationBusDefaultInfo(busDefaultElement);
 
-			busDefault.BusId = busId;
-			busDefault.DefaultModuleTypeName = defaultModuleTypeName;
-			busDefault.DefaultStartAddress = defaultStartAddress;
+            ControlModuleLocationBusDefaultInfo busDefault = new ControlModuleLocationBusDefaultInfo(busDefaultElement) {
+                BusId = busId,
+                DefaultModuleTypeName = defaultModuleTypeName,
+                DefaultStartAddress = defaultStartAddress
+            };
 
-			Add(busDefault);
-			return busDefault;
-		}
+            Add(busDefault);
+            return busDefault;
+        }
 
         public ControlModuleLocationBusDefaultInfo Add(ControlBus bus, ControlModuleType defaultType, int defaultStartAddress) => Add(bus.Id, defaultType.TypeName, defaultStartAddress);
 
         public void Remove(ControlBus bus) {
-			Remove(bus.Id);
-		}
+            Remove(bus.Id);
+        }
 
-	}
-	#endregion
+    }
+    #endregion
 
 
-	/// <summary>
-	/// Provide defaults for a given bus at a given control module location
-	/// </summary>
-	public class ControlModuleLocationBusDefaultInfo : LayoutXmlWrapper {
-		public ControlModuleLocationBusDefaultInfo(XmlElement element) : base(element) {
-		}
+    /// <summary>
+    /// Provide defaults for a given bus at a given control module location
+    /// </summary>
+    public class ControlModuleLocationBusDefaultInfo : LayoutXmlWrapper {
+        public ControlModuleLocationBusDefaultInfo(XmlElement element) : base(element) {
+        }
 
-		/// <summary>
-		/// The ID of the bus
-		/// </summary>
-		public Guid BusId {
-			get {
-				return XmlConvert.ToGuid(GetAttribute("BusID"));
-			}
+        /// <summary>
+        /// The ID of the bus
+        /// </summary>
+        public Guid BusId {
+            get {
+                return XmlConvert.ToGuid(GetAttribute("BusID"));
+            }
 
-			set {
-				SetAttribute("BusID", XmlConvert.ToString(value));
-			}
-		}
+            set {
+                SetAttribute("BusID", XmlConvert.ToString(value));
+            }
+        }
 
         public ControlBus Bus => LayoutModel.ControlManager.Buses[BusId];
 
@@ -1106,17 +1123,17 @@ namespace LayoutManager.Components {
         /// The component type name of the default component to add this bus when new module is needed to be added to this location
         /// </summary>
         public string DefaultModuleTypeName {
-			get {
-				return GetAttribute("DefaultModuleTypeName");
-			}
+            get {
+                return GetAttribute("DefaultModuleTypeName");
+            }
 
-			set {
-				if(string.IsNullOrEmpty(value))
-					Element.RemoveAttribute("DefaultModuleTypeName");
-				else
-					SetAttribute("DefaultModuleTypeName", value);
-			}
-		}
+            set {
+                if (string.IsNullOrEmpty(value))
+                    Element.RemoveAttribute("DefaultModuleTypeName");
+                else
+                    SetAttribute("DefaultModuleTypeName", value);
+            }
+        }
 
         public ControlModuleType DefaultModuleType => LayoutModel.ControlManager.GetModuleType(DefaultModuleTypeName);
 
@@ -1124,25 +1141,25 @@ namespace LayoutManager.Components {
         /// Start allocating address from this number when adding components at this location
         /// </summary>
         public int DefaultStartAddress {
-			get {
-				return XmlConvert.ToInt32(GetAttribute("DefaultStartAddress", "-1"));
-			}
+            get {
+                return XmlConvert.ToInt32(GetAttribute("DefaultStartAddress", "-1"));
+            }
 
-			set {
-				if(value < 0)
-					Element.RemoveAttribute("DefaultStartAddress");
-				else
-					SetAttribute("DefaultStartAddress", XmlConvert.ToString(value));
-			}
-		}
-	}
+            set {
+                if (value < 0)
+                    Element.RemoveAttribute("DefaultStartAddress");
+                else
+                    SetAttribute("DefaultStartAddress", XmlConvert.ToString(value));
+            }
+        }
+    }
 
-	public class LayoutControlModuleLocationComponent : ModelComponent, IModelComponentHasId, IModelComponentHasName {
-		LayoutControlModuleLocationComponentInfo	_info;
+    public class LayoutControlModuleLocationComponent : ModelComponent, IModelComponentHasId, IModelComponentHasName {
+        LayoutControlModuleLocationComponentInfo? _info;
 
-		public LayoutControlModuleLocationComponent() {
-			XmlDocument.LoadXml("<ControlModuleLocation />");
-		}
+        public LayoutControlModuleLocationComponent() {
+            XmlDocument.LoadXml("<ControlModuleLocation />");
+        }
 
         public override ModelComponentKind Kind => ModelComponentKind.ControlComponent;
 
@@ -1153,11 +1170,11 @@ namespace LayoutManager.Components {
         public override bool DrawOutOfGrid => NameProvider.Element != null;
 
         public LayoutControlModuleLocationComponentInfo Info {
-			get {
-				if(_info == null)
-					_info = new LayoutControlModuleLocationComponentInfo(this, Element);
-				return _info;
-			}
-		}
-	}
+            get {
+                if (_info == null)
+                    _info = new LayoutControlModuleLocationComponentInfo(this, Element);
+                return _info;
+            }
+        }
+    }
 }

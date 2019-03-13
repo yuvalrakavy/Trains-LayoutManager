@@ -5,29 +5,27 @@ using LayoutManager;
 
 namespace DiMAX.Dialogs {
     public partial class TestLocoDrive : Form {
-		DiMAXcommandStation commandStation;
+        readonly DiMAXcommandStation commandStation;
 
-		public TestLocoDrive (DiMAXcommandStation commandStation) {
-			InitializeComponent();
+        public TestLocoDrive(DiMAXcommandStation commandStation) {
+            InitializeComponent();
 
-			this.commandStation = commandStation;
+            this.commandStation = commandStation;
         }
 
         private void buttonOK_Click(object sender, EventArgs e) {
-            int address;
-            int speed;
 
-            if (!int.TryParse(textBoxLocoAddress.Text, out address)) {
+            if (!int.TryParse(textBoxLocoAddress.Text, out int address)) {
                 MessageBox.Show(this, "Invalid loco address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if(!int.TryParse(textBoxSpeed.Text, out speed)) {
+            if (!int.TryParse(textBoxSpeed.Text, out int speed)) {
                 MessageBox.Show("Invalid speed");
                 return;
             }
 
-            EventManager.AsyncEvent(new LayoutEvent(this, "test-loco-speed").SetOption("Address", address).SetOption("Speed", speed).SetCommandStation(commandStation));
+            EventManager.AsyncEvent(new LayoutEvent("test-loco-speed", this).SetOption("Address", address).SetOption("Speed", speed).SetCommandStation(commandStation));
         }
     }
 }

@@ -9,78 +9,78 @@ using LayoutManager.Model;
 namespace LayoutManager {
     public class MenuItemDeleteSelection : MenuItem {
 
-		public MenuItemDeleteSelection() {
-			this.Text = "&Delete";
-		}
+        public MenuItemDeleteSelection() {
+            this.Text = "&Delete";
+        }
 
-		protected override void OnClick(EventArgs e) {
-			LayoutCompoundCommand	deleteSelectionCommand = new LayoutCompoundCommand("delete selection");
+        protected override void OnClick(EventArgs e) {
+            LayoutCompoundCommand deleteSelectionCommand = new LayoutCompoundCommand("delete selection");
 
-			foreach(ModelComponent component in LayoutController.UserSelection) {
-				deleteSelectionCommand.Add(new LayoutComponentDeselectCommand(LayoutController.UserSelection, component, "unselect"));
-				EventManager.Event(new LayoutEvent(component, "prepare-for-component-remove-command", null, deleteSelectionCommand));
-				deleteSelectionCommand.Add(new LayoutComponentRemovalCommand(component, "delete"));
-			}
+            foreach (ModelComponent component in LayoutController.UserSelection) {
+                deleteSelectionCommand.Add(new LayoutComponentDeselectCommand(LayoutController.UserSelection, component, "unselect"));
+                EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, deleteSelectionCommand));
+                deleteSelectionCommand.Add(new LayoutComponentRemovalCommand(component, "delete"));
+            }
 
-			LayoutController.Do(deleteSelectionCommand);
-		}
-	}
+            LayoutController.Do(deleteSelectionCommand);
+        }
+    }
 
-	public class MenuItemCopySelection : MenuItem {
-		Point				location;
+    public class MenuItemCopySelection : MenuItem {
+        Point location;
 
-		public MenuItemCopySelection(Point location) {
-			this.location = location;
+        public MenuItemCopySelection(Point location) {
+            this.location = location;
 
-			this.Text = "&Copy";
+            this.Text = "&Copy";
 
 
-			if(LayoutController.UserSelection.Count == 0)
-				this.Enabled = false;
-		}
+            if (LayoutController.UserSelection.Count == 0)
+                this.Enabled = false;
+        }
 
-		public void Copy() {
+        public void Copy() {
 
-			Clipboard.SetDataObject(LayoutController.UserSelection.GetDataObject(location));
-		}
+            Clipboard.SetDataObject(LayoutController.UserSelection.GetDataObject(location));
+        }
 
-		protected override void OnClick(EventArgs e) {
-			base.OnClick(e);
-			Copy();
-		}
-	}
+        protected override void OnClick(EventArgs e) {
+            base.OnClick(e);
+            Copy();
+        }
+    }
 
-	public class MenuItemCutSelection : MenuItem {
-		Point				location;
+    public class MenuItemCutSelection : MenuItem {
+        Point location;
 
-		public MenuItemCutSelection(Point location) {
-			this.location = location;
+        public MenuItemCutSelection(Point location) {
+            this.location = location;
 
-			this.Text = "Cu&t";
+            this.Text = "Cu&t";
 
-			if(LayoutController.UserSelection.Count == 0)
-				this.Enabled = false;
-		}
+            if (LayoutController.UserSelection.Count == 0)
+                this.Enabled = false;
+        }
 
-		public void Cut() {
-			Clipboard.SetDataObject(LayoutController.UserSelection.GetDataObject(location));
+        public void Cut() {
+            Clipboard.SetDataObject(LayoutController.UserSelection.GetDataObject(location));
 
-			LayoutCompoundCommand	deleteSelectionCommand = new LayoutCompoundCommand("Cut selection");
+            LayoutCompoundCommand deleteSelectionCommand = new LayoutCompoundCommand("Cut selection");
 
-			foreach(ModelComponent component in LayoutController.UserSelection) {
-				deleteSelectionCommand.Add(new LayoutComponentDeselectCommand(LayoutController.UserSelection, component, "unselect"));
-				EventManager.Event(new LayoutEvent(component, "prepare-for-component-remove-command", null, deleteSelectionCommand));
-				deleteSelectionCommand.Add(new LayoutComponentRemovalCommand(component, "delete"));
-			}
+            foreach (ModelComponent component in LayoutController.UserSelection) {
+                deleteSelectionCommand.Add(new LayoutComponentDeselectCommand(LayoutController.UserSelection, component, "unselect"));
+                EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, deleteSelectionCommand));
+                deleteSelectionCommand.Add(new LayoutComponentRemovalCommand(component, "delete"));
+            }
 
-			LayoutController.Do(deleteSelectionCommand);
-		}
+            LayoutController.Do(deleteSelectionCommand);
+        }
 
-		protected override void OnClick(EventArgs e) {
-			base.OnClick(e);
-			Cut();
-		}
-	}
+        protected override void OnClick(EventArgs e) {
+            base.OnClick(e);
+            Cut();
+        }
+    }
 }
 
 

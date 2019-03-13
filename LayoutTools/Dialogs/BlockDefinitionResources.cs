@@ -9,100 +9,100 @@ using LayoutManager.CommonUI;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class BlockDefinitionResources : Form {
-		LayoutBlockDefinitionComponentInfo info;
+        readonly LayoutBlockDefinitionComponentInfo info;
 
-		public BlockDefinitionResources(LayoutBlockDefinitionComponentInfo info) {
-			InitializeComponent();
+        public BlockDefinitionResources(LayoutBlockDefinitionComponentInfo info) {
+            InitializeComponent();
 
-			this.info = info;
-			info.Resources.CheckIntegrity(new LayoutModuleBase(), LayoutPhase.All);
+            this.info = info;
+            info.Resources.CheckIntegrity(new LayoutModuleBase(), LayoutPhase.All);
 
-			foreach(ResourceInfo resourceInfo in info.Resources)
-				listBoxResources.Items.Add(new ResourceItem(resourceInfo));
+            foreach (ResourceInfo resourceInfo in info.Resources)
+                listBoxResources.Items.Add(new ResourceItem(resourceInfo));
 
-			updateButtons(null, null);
-		}
+            updateButtons(null, null);
+        }
 
-		private void updateButtons(object sender, EventArgs e) {
-			if(listBoxResources.SelectedItem == null)
-				buttonResourceRemove.Enabled = false;
-			else
-				buttonResourceRemove.Enabled = true;
-		}
+        private void updateButtons(object sender, EventArgs e) {
+            if (listBoxResources.SelectedItem == null)
+                buttonResourceRemove.Enabled = false;
+            else
+                buttonResourceRemove.Enabled = true;
+        }
 
-		private void buttonResourceAdd_Click(object sender, System.EventArgs e) {
-			ContextMenu menu = new ContextMenu();
+        private void buttonResourceAdd_Click(object sender, System.EventArgs e) {
+            ContextMenu menu = new ContextMenu();
 
-			new BuildComponentsMenu<IModelComponentLayoutLockResource>(LayoutModel.ActivePhases, new BuildComponentsMenuComponentFilter<IModelComponentLayoutLockResource>(this.addResourceFilter), 
-				new EventHandler(onAddResourceComponent)).AddComponentMenuItems(menu);
+            new BuildComponentsMenu<IModelComponentLayoutLockResource>(LayoutModel.ActivePhases, new BuildComponentsMenuComponentFilter<IModelComponentLayoutLockResource>(this.addResourceFilter),
+                new EventHandler(onAddResourceComponent)).AddComponentMenuItems(menu);
 
-			if(menu.MenuItems.Count > 0)
-				menu.Show(buttonResourceAdd.Parent, new Point(buttonResourceAdd.Left, buttonResourceAdd.Bottom));
-		}
+            if (menu.MenuItems.Count > 0)
+                menu.Show(buttonResourceAdd.Parent, new Point(buttonResourceAdd.Left, buttonResourceAdd.Bottom));
+        }
 
-		private bool addResourceFilter(IModelComponentLayoutLockResource component) {
-			foreach(ResourceItem resourceItem in listBoxResources.Items) {
-				if(resourceItem.ResourceInfo.ResourceId == component.Id)
-					return false;
-			}
+        private bool addResourceFilter(IModelComponentLayoutLockResource component) {
+            foreach (ResourceItem resourceItem in listBoxResources.Items) {
+                if (resourceItem.ResourceInfo.ResourceId == component.Id)
+                    return false;
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		private void onAddResourceComponent(object sender, EventArgs e) {
-			ModelComponentMenuItemBase<IModelComponentLayoutLockResource> menuItem = (ModelComponentMenuItemBase<IModelComponentLayoutLockResource>)sender;
-			XmlElement resourceElement = info.Element.OwnerDocument.CreateElement("Resource");
+        private void onAddResourceComponent(object sender, EventArgs e) {
+            ModelComponentMenuItemBase<IModelComponentLayoutLockResource> menuItem = (ModelComponentMenuItemBase<IModelComponentLayoutLockResource>)sender;
+            XmlElement resourceElement = info.Element.OwnerDocument.CreateElement("Resource");
 
-			ResourceInfo resourceInfo = new ResourceInfo(
-				new LayoutBlockDefinitionComponentInfo(info.BlockDefinition, info.Element), resourceElement);
+            ResourceInfo resourceInfo = new ResourceInfo(
+                resourceElement) {
+                ResourceId = menuItem.Component.Id
+            };
 
-			resourceInfo.ResourceId = menuItem.Component.Id;
+            listBoxResources.Items.Add(new ResourceItem(resourceInfo));
+        }
 
-			listBoxResources.Items.Add(new ResourceItem(resourceInfo));
-		}
+        private void buttonResourceRemove_Click(object sender, System.EventArgs e) {
+            ResourceItem selected = (ResourceItem)listBoxResources.SelectedItem;
 
-		private void buttonResourceRemove_Click(object sender, System.EventArgs e) {
-			ResourceItem selected = (ResourceItem)listBoxResources.SelectedItem;
+            if (selected != null)
+                listBoxResources.Items.Remove(selected);
+            updateButtons(null, null);
+        }
 
-			if(selected != null)
-				listBoxResources.Items.Remove(selected);
-			updateButtons(null, null);
-		}
+        private void buttonOK_Click(object sender, EventArgs e) {
+            ResourceCollection resourceCollection = info.Resources;
 
-		private void buttonOK_Click(object sender, EventArgs e) {
-			ResourceCollection resourceCollection = info.Resources;
+            resourceCollection.Clear();
 
-			resourceCollection.Clear();
-
-			foreach(ResourceItem resourceItem in listBoxResources.Items)
-				resourceCollection.Add(resourceItem.ResourceInfo.ResourceId);
+            foreach (ResourceItem resourceItem in listBoxResources.Items)
+                resourceCollection.Add(resourceItem.ResourceInfo.ResourceId);
             Close();
-		}
+        }
 
-		class ResourceItem {
-			ResourceInfo resourceInfo;
+        class ResourceItem {
+            readonly ResourceInfo resourceInfo;
 
-			public ResourceItem(ResourceInfo resourceInfo) {
-				this.resourceInfo = resourceInfo;
-			}
+            public ResourceItem(ResourceInfo resourceInfo) {
+                this.resourceInfo = resourceInfo;
+            }
 
             public ResourceInfo ResourceInfo => resourceInfo;
 
             public override string ToString() {
-				string result;
-				ILayoutLockResource resource = resourceInfo.GetResource(LayoutPhase.All);
+                string result;
+                ILayoutLockResource resource = resourceInfo.GetResource(LayoutPhase.All);
 
-				if(resource is ModelComponent) {
-					result = ((ModelComponent)resource).ToString();
+                if (resource is ModelComponent) {
+                    result = ((ModelComponent)resource).ToString();
 
-					if(resource is IModelComponentHasName)
-						result += ": " + ((IModelComponentHasName)resource).NameProvider.Text;
-				}
-				else
-					result = "Unknown resource type";
+                    if (resource is IModelComponentHasName)
+                        result += ": " + ((IModelComponentHasName)resource).NameProvider.Text;
+                }
+                else
+                    result = "Unknown resource type";
 
-				return result;
-			}
-		}
-	}
+                return result;
+            }
+        }
+    }
 }

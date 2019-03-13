@@ -10,22 +10,22 @@ namespace LayoutManager {
     /// Hold the results of a hit test.
     /// </summary>
     public class LayoutHitTestResult {
-		LayoutModelArea					area;
-		LayoutView						view;
-		Point							clientLocation;
-		Point							modelLocation;
-		LayoutSelection					selection;
-		IList<ILayoutDrawingRegion>		regions;
+        readonly LayoutModelArea area;
+        readonly LayoutView view;
+        Point clientLocation;
+        Point modelLocation;
+        readonly LayoutSelection selection;
+        readonly IList<ILayoutDrawingRegion> regions;
 
-		internal LayoutHitTestResult(LayoutModelArea area, LayoutView view, Point clientLocation, Point modelLocation, LayoutSelection selection, 
-		  IList<ILayoutDrawingRegion> regions) {
-			this.area = area;
-			this.view = view;
-			this.clientLocation = clientLocation;
-			this.modelLocation = modelLocation;
-			this.selection = selection;
-			this.regions = regions;
-		}
+        internal LayoutHitTestResult(LayoutModelArea area, LayoutView view, Point clientLocation, Point modelLocation, LayoutSelection selection,
+          IList<ILayoutDrawingRegion> regions) {
+            this.area = area;
+            this.view = view;
+            this.clientLocation = clientLocation;
+            this.modelLocation = modelLocation;
+            this.selection = selection;
+            this.regions = regions;
+        }
 
         /// <summary>
         /// The area that was "hit"
@@ -60,14 +60,14 @@ namespace LayoutManager {
         public IList<ILayoutDrawingRegion> Regions => regions;
     }
 
-	public class LayoutDraggedObject {
-		public object DraggedObject;
-		public DragDropEffects AllowedEffects;
+    public class LayoutDraggedObject {
+        public object DraggedObject;
+        public DragDropEffects AllowedEffects;
 
-		public LayoutDraggedObject(object draggedObject, DragDropEffects allowedEffects) {
-			this.DraggedObject = draggedObject;
-			this.AllowedEffects = allowedEffects;
-		}
-	}
+        public LayoutDraggedObject(object draggedObject, DragDropEffects allowedEffects) {
+            this.DraggedObject = draggedObject;
+            this.AllowedEffects = allowedEffects;
+        }
+    }
 }
 

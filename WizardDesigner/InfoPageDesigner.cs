@@ -6,8 +6,7 @@ namespace Gui.Wizard {
     /// <summary>
     /// 
     /// </summary>
-    public class InfoPageDesigner : ParentControlDesigner
-	{
+    public class InfoPageDesigner : ParentControlDesigner {
 
         /// <summary>
         /// Prevents the grid from being drawn on the Wizard
@@ -18,12 +17,11 @@ namespace Gui.Wizard {
         /// Drops the BackgroundImage property
         /// </summary>
         /// <param name="properties">properties to remove BackGroundImage from</param>
-        protected override void PreFilterProperties(System.Collections.IDictionary properties)
-		{
-			base.PreFilterProperties (properties);
-			if (properties.Contains("BackgroundImage") == true)
-				properties.Remove("BackgroundImage");
-		}
+        protected override void PreFilterProperties(System.Collections.IDictionary properties) {
+            base.PreFilterProperties(properties);
+            if (properties.Contains("BackgroundImage") == true)
+                properties.Remove("BackgroundImage");
+        }
 
-	}
+    }
 }

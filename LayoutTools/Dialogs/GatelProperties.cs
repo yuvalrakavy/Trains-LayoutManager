@@ -11,31 +11,30 @@ namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for TrackContactProperties.
     /// </summary>
-    public class GateProperties : Form, ILayoutComponentPropertiesDialog
-	{
-		private TabPage tabPageGeneral;
-		private TabControl tabControl;
-		private Button buttonOK;
-		private Button buttonCancel;
+    public class GateProperties : Form, ILayoutComponentPropertiesDialog {
+        private TabPage tabPageGeneral;
+        private TabControl tabControl;
+        private Button buttonOK;
+        private Button buttonCancel;
 
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private Container components = null;
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private readonly Container components = null;
 
-		private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
-		private GroupBox groupBox1;
-		private Panel panelGatePreview;
-		private RadioButton radioButtonOpenUp;
-		private RadioButton radioButtonOpenDown;
-		private RadioButton radioButtonOpenRight;
-		private RadioButton radioButtonOpenLeft;
-		LayoutGateComponent component;
-		LayoutXmlInfo xmlInfo;
-		private TabPage tabPageFeedback;
-		private Label label3;
-		private TextBox textBoxOpenCloseTimeout;
-		private Label label2;
+        private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
+        private GroupBox groupBox1;
+        private Panel panelGatePreview;
+        private RadioButton radioButtonOpenUp;
+        private RadioButton radioButtonOpenDown;
+        private RadioButton radioButtonOpenRight;
+        private RadioButton radioButtonOpenLeft;
+        readonly LayoutGateComponent component;
+        readonly LayoutXmlInfo xmlInfo;
+        private TabPage tabPageFeedback;
+        private Label label3;
+        private TextBox textBoxOpenCloseTimeout;
+        private Label label2;
         private TabPage tabPageMotion;
         private GroupBox groupBox2;
         private CheckBox checkBoxReverseDirection;
@@ -50,59 +49,58 @@ namespace LayoutManager.Tools.Dialogs {
         private TextBox textBoxGateMotionTime;
         private Label label1;
         private RadioButton radioButtonNoFeedback;
-        bool isVertical;
+        readonly bool isVertical;
 
-		class DriverEntry {
-			XmlElement driverElement;
+        class DriverEntry {
+            readonly XmlElement driverElement;
 
-			public DriverEntry(XmlElement driverElement) {
-				this.driverElement = driverElement;
-			}
+            public DriverEntry(XmlElement driverElement) {
+                this.driverElement = driverElement;
+            }
 
             public string DriverName => driverElement.GetAttribute("Name");
 
             public override string ToString() => driverElement.GetAttribute("Description");
         }
 
-		public GateProperties(ModelComponent component, PlacementInfo placementInfo)
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+        public GateProperties(ModelComponent component, PlacementInfo placementInfo) {
+            //
+            // Required for Windows Form Designer support
+            //
+            InitializeComponent();
 
-			this.component = (LayoutGateComponent)component;
-			this.xmlInfo = new LayoutXmlInfo(component);
+            this.component = (LayoutGateComponent)component;
+            this.xmlInfo = new LayoutXmlInfo(component);
 
-			nameDefinition.XmlInfo = xmlInfo;
-			nameDefinition.Component = component;
+            nameDefinition.XmlInfo = xmlInfo;
+            nameDefinition.Component = component;
 
-			LayoutGateComponentInfo info = new LayoutGateComponentInfo(this.component, xmlInfo.Element);
-			XmlDocument driversDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
+            LayoutGateComponentInfo info = new LayoutGateComponentInfo(xmlInfo.Element);
+            XmlDocument driversDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
-			isVertical = LayoutTrackComponent.IsVertical(placementInfo.Track);
+            isVertical = LayoutTrackComponent.IsVertical(placementInfo.Track);
 
-			if(isVertical) {
-				radioButtonOpenLeft.Visible = false;
-				radioButtonOpenRight.Visible = false;
+            if (isVertical) {
+                radioButtonOpenLeft.Visible = false;
+                radioButtonOpenRight.Visible = false;
 
-				if(info.OpenUpOrLeft)
-					radioButtonOpenUp.Checked = true;
-				else
-					radioButtonOpenDown.Checked = true;
-			}
-			else {
-				radioButtonOpenUp.Visible = false;
-				radioButtonOpenDown.Visible = false;
+                if (info.OpenUpOrLeft)
+                    radioButtonOpenUp.Checked = true;
+                else
+                    radioButtonOpenDown.Checked = true;
+            }
+            else {
+                radioButtonOpenUp.Visible = false;
+                radioButtonOpenDown.Visible = false;
 
-				if(info.OpenUpOrLeft)
-					radioButtonOpenLeft.Checked = true;
-				else
-					radioButtonOpenRight.Checked = true;
-			}
+                if (info.OpenUpOrLeft)
+                    radioButtonOpenLeft.Checked = true;
+                else
+                    radioButtonOpenRight.Checked = true;
+            }
 
-			textBoxOpenCloseTimeout.Text = info.MotionTimeout.ToString();
-			checkBoxReverseDirection.Checked = info.ReverseDirection;
+            textBoxOpenCloseTimeout.Text = info.MotionTimeout.ToString();
+            checkBoxReverseDirection.Checked = info.ReverseDirection;
             checkBoxRevreseMotion.Checked = info.ReverseMotion;
 
             if (info.TwoDirectionRelays)
@@ -114,7 +112,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             panelGateMotionTime.Enabled = false;
 
-            switch(info.FeedbackType) {
+            switch (info.FeedbackType) {
                 case LayoutGateComponentInfo.FeedbackTypes.NoFeedback:
                     radioButtonNoFeedback.Checked = true;
                     panelGateMotionTime.Enabled = true;
@@ -129,38 +127,34 @@ namespace LayoutManager.Tools.Dialogs {
                     break;
             }
 
-			panelGatePreview.Invalidate();
+            panelGatePreview.Invalidate();
             UpdateControls();
-		}
+        }
 
         public LayoutXmlInfo XmlInfo => xmlInfo;
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                if (components != null) {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
         void UpdateControls() {
             groupBoxMotionControl.Enabled = radioButtonSingleRelay.Checked;
         }
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent() {
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOK = new System.Windows.Forms.Button();
             this.tabControl = new System.Windows.Forms.TabControl();
@@ -532,27 +526,25 @@ namespace LayoutManager.Tools.Dialogs {
             this.panelGateMotionTime.PerformLayout();
             this.ResumeLayout(false);
 
-		}
-		#endregion
+        }
+        #endregion
 
-		private void buttonOK_Click(object sender, System.EventArgs e) {
-			LayoutGateComponentInfo info = new LayoutGateComponentInfo(component, xmlInfo.Element);
+        private void buttonOK_Click(object sender, System.EventArgs e) {
+            LayoutGateComponentInfo info = new LayoutGateComponentInfo(xmlInfo.Element);
 
-			if(!nameDefinition.Commit())
-				return;
+            if (!nameDefinition.Commit())
+                return;
 
-			int timeout;
 
-			if(!int.TryParse(textBoxOpenCloseTimeout.Text, out timeout)) {
-				MessageBox.Show("Invalid timeout value");
-				textBoxOpenCloseTimeout.Focus();
-				return;
-			}
+            if (!int.TryParse(textBoxOpenCloseTimeout.Text, out int timeout)) {
+                MessageBox.Show("Invalid timeout value");
+                textBoxOpenCloseTimeout.Focus();
+                return;
+            }
 
-            if(radioButtonNoFeedback.Checked) {
-                int motionTime;
+            if (radioButtonNoFeedback.Checked) {
 
-                if(!int.TryParse(textBoxGateMotionTime.Text, out motionTime)) {
+                if (!int.TryParse(textBoxGateMotionTime.Text, out int motionTime)) {
                     MessageBox.Show("Invalid gate motion time value");
                     textBoxGateMotionTime.Focus();
                     return;
@@ -562,47 +554,47 @@ namespace LayoutManager.Tools.Dialogs {
                 info.FeedbackType = LayoutGateComponentInfo.FeedbackTypes.NoFeedback;
             }
 
-            if(radioButtonOneSensor.Checked)
+            if (radioButtonOneSensor.Checked)
                 info.FeedbackType = LayoutGateComponentInfo.FeedbackTypes.OneSensor;
 
             if (radioButtonTwoSensors.Checked)
                 info.FeedbackType = LayoutGateComponentInfo.FeedbackTypes.TwoSensors;
 
             info.OpenUpOrLeft = radioButtonOpenUp.Checked || radioButtonOpenLeft.Checked;
-			info.ReverseDirection = checkBoxReverseDirection.Checked;
+            info.ReverseDirection = checkBoxReverseDirection.Checked;
             info.ReverseMotion = checkBoxRevreseMotion.Checked;
-			info.MotionTimeout = timeout;
+            info.MotionTimeout = timeout;
 
             info.TwoDirectionRelays = radioButtonTwoRelays.Checked;
 
-			this.DialogResult = DialogResult.OK;
-			Close();
-		}
+            this.DialogResult = DialogResult.OK;
+            Close();
+        }
 
-		private void panelGatePreview_Paint(object sender, PaintEventArgs e) {
-			e.Graphics.FillRectangle(Brushes.White, 3, 3, 64, 64);
-			e.Graphics.DrawRectangle(Pens.Black, 3, 3, 64, 64);
-			e.Graphics.TranslateTransform(3, 3);
+        private void panelGatePreview_Paint(object sender, PaintEventArgs e) {
+            e.Graphics.FillRectangle(Brushes.White, 3, 3, 64, 64);
+            e.Graphics.DrawRectangle(Pens.Black, 3, 3, 64, 64);
+            e.Graphics.TranslateTransform(3, 3);
 
-			LayoutComponentConnectionPoint[] cps;
+            LayoutComponentConnectionPoint[] cps;
 
-			if(isVertical)
-				cps = new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B };
-			else
-				cps = new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.L, LayoutComponentConnectionPoint.R };
+            if (isVertical)
+                cps = new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B };
+            else
+                cps = new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.L, LayoutComponentConnectionPoint.R };
 
-			LayoutStraightTrackPainter trackPainter = new LayoutStraightTrackPainter(new Size(64, 64), cps);
+            LayoutStraightTrackPainter trackPainter = new LayoutStraightTrackPainter(new Size(64, 64), cps);
 
-			trackPainter.Paint(e.Graphics);
+            trackPainter.Paint(e.Graphics);
 
-			LayoutGatePainter gatePainter = new LayoutGatePainter(new Size(64, 64), isVertical, radioButtonOpenUp.Checked || radioButtonOpenLeft.Checked, 60);
+            LayoutGatePainter gatePainter = new LayoutGatePainter(new Size(64, 64), isVertical, radioButtonOpenUp.Checked || radioButtonOpenLeft.Checked, 60);
 
-			gatePainter.Paint(e.Graphics);
-		}
+            gatePainter.Paint(e.Graphics);
+        }
 
-		private void gateOpenDirectionChanged(object sender, EventArgs e) {
-			panelGatePreview.Invalidate();
-		}
+        private void gateOpenDirectionChanged(object sender, EventArgs e) {
+            panelGatePreview.Invalidate();
+        }
 
         private void radioButtonFeedback_CheckedChanged(object sender, EventArgs e) {
             panelGateMotionTime.Enabled = radioButtonNoFeedback.Checked;

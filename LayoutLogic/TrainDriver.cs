@@ -2,228 +2,233 @@ using System;
 using System.Xml;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0060
+#nullable enable
 namespace LayoutManager.Logic {
     /// <summary>
     /// Summary description for TripPlanner.
     /// </summary>
     [LayoutModule("Standard Train Drivers")]
-	class TrainDrivers : LayoutModuleBase {
+    class TrainDrivers : LayoutModuleBase {
 
-		#region Code common to all driver types
+        #region Code common to all driver types
 
-		[LayoutEvent("enum-train-drivers")]
-		private void enumTrainDrivers(LayoutEvent e) {
-			XmlElement	driversElement = (XmlElement)e.Info;
+        [LayoutEvent("enum-train-drivers")]
+        private void enumTrainDrivers(LayoutEvent e) {
+            XmlElement driversElement = Ensure.NotNull<XmlElement>(e.Info, "driversElement");
 
-			XmlElement manualWithControllerElement = driversElement.OwnerDocument.CreateElement("Driver");
+            XmlElement manualWithControllerElement = driversElement.OwnerDocument.CreateElement("Driver");
 
-			manualWithControllerElement.SetAttribute("TypeName", "Manual (via extrnal controller)");
-			manualWithControllerElement.SetAttribute("ComputerDriven", XmlConvert.ToString(false));
-			manualWithControllerElement.SetAttribute("Type", "ManualController");
+            manualWithControllerElement.SetAttribute("TypeName", "Manual (via extrnal controller)");
+            manualWithControllerElement.SetAttribute("ComputerDriven", XmlConvert.ToString(false));
+            manualWithControllerElement.SetAttribute("Type", "ManualController");
 
-			driversElement.AppendChild(manualWithControllerElement);
+            driversElement.AppendChild(manualWithControllerElement);
 
-			XmlElement	manuaOnScreenlDriverElement = driversElement.OwnerDocument.CreateElement("Driver");
+            XmlElement manuaOnScreenlDriverElement = driversElement.OwnerDocument.CreateElement("Driver");
 
-			manuaOnScreenlDriverElement.SetAttribute("TypeName", "Manual (via on-screen dialog)");
-			manuaOnScreenlDriverElement.SetAttribute("ComputerDriven", XmlConvert.ToString(true));
-			manuaOnScreenlDriverElement.SetAttribute("Type", "ManualOnScreen");
+            manuaOnScreenlDriverElement.SetAttribute("TypeName", "Manual (via on-screen dialog)");
+            manuaOnScreenlDriverElement.SetAttribute("ComputerDriven", XmlConvert.ToString(true));
+            manuaOnScreenlDriverElement.SetAttribute("Type", "ManualOnScreen");
 
-			driversElement.AppendChild(manuaOnScreenlDriverElement);
+            driversElement.AppendChild(manuaOnScreenlDriverElement);
 
-			XmlElement	autoDriverElement = driversElement.OwnerDocument.CreateElement("Driver");
+            XmlElement autoDriverElement = driversElement.OwnerDocument.CreateElement("Driver");
 
-			autoDriverElement.SetAttribute("TypeName", "Automatic (by the computer)");
-			autoDriverElement.SetAttribute("ComputerDriven", XmlConvert.ToString(true));
-			autoDriverElement.SetAttribute("Type", "Automatic");
-			
-			driversElement.AppendChild(autoDriverElement);
+            autoDriverElement.SetAttribute("TypeName", "Automatic (by the computer)");
+            autoDriverElement.SetAttribute("ComputerDriven", XmlConvert.ToString(true));
+            autoDriverElement.SetAttribute("Type", "Automatic");
 
-		}
+            driversElement.AppendChild(autoDriverElement);
 
-		#region Common Object (model)
+        }
 
-		#endregion
+        #region Common Object (model)
 
-		#endregion
+        #endregion
 
-		#region On screen manual driver
+        #endregion
 
-		[LayoutEvent("driver-assignment", IfSender="*[Driver/@Type='ManualOnScreen']")]
-		private void manualDriverAssignment(LayoutEvent e) {
-			TrainCommonInfo	train = (TrainCommonInfo)e.Sender;
+        #region On screen manual driver
 
-			EventManager.Event(new LayoutEvent(train, "show-locomotive-controller"));
-			e.Info = true;
-		}
+        [LayoutEvent("driver-assignment", IfSender = "*[Driver/@Type='ManualOnScreen']")]
+        private void manualDriverAssignment(LayoutEvent e) {
+            var train = Ensure.NotNull<TrainCommonInfo>(e.Sender, "train"); ;
 
-		#endregion
+            EventManager.Event(new LayoutEvent("show-locomotive-controller", train));
+            e.Info = true;
+        }
 
-		#region Manual controller
+        #endregion
 
-		[LayoutEvent("driver-assignment", IfSender = "*[Driver/@Type='ManualController']")]
-		private void manualControllerDriverAssignment(LayoutEvent e) {
-			e.Info = true;
-		}
+        #region Manual controller
 
-		#endregion
+        [LayoutEvent("driver-assignment", IfSender = "*[Driver/@Type='ManualController']")]
+        private void manualControllerDriverAssignment(LayoutEvent e) {
+            e.Info = true;
+        }
 
-		#region Automatic Driver
+        #endregion
 
-		#region Data structures
+        #region Automatic Driver
 
-		enum AutoDriverState {
-			Stop,					// Train is stopped
-			Go,						// Train is moving
-			SlowDown				// Train is slowing down (prepare to stop)
-		}
+        #region Data structures
 
-		class TrainAutoDriverInfo : TrainDriverInfo {
-			public TrainAutoDriverInfo(XmlElement element) : base(element) {
-			}
+        enum AutoDriverState {
+            Stop,                   // Train is stopped
+            Go,                     // Train is moving
+            SlowDown                // Train is slowing down (prepare to stop)
+        }
 
-			public TrainAutoDriverInfo(TrainCommonInfo train) : base(train) {
-			}
+        class TrainAutoDriverInfo : TrainDriverInfo {
+            public TrainAutoDriverInfo(XmlElement element) : base(element) {
+            }
 
-			public AutoDriverState State {
-				get {
-					return (AutoDriverState)Enum.Parse(typeof(AutoDriverState), GetAttribute("AutoDriverState", "Stop"));
-				}
+            public TrainAutoDriverInfo(TrainCommonInfo train) : base(train) {
+            }
 
-				set {
-					SetAttribute("AutoDriverState", value.ToString());
-				}
-			}
+            public AutoDriverState State {
+                get {
+                    return (AutoDriverState)Enum.Parse(typeof(AutoDriverState), GetAttribute("AutoDriverState", "Stop"));
+                }
 
-			public LocomotiveOrientation Direction {
-				get {
-					return (LocomotiveOrientation)Enum.Parse(typeof(LocomotiveOrientation), GetAttribute("Direction", "Forward"));
-				}
+                set {
+                    SetAttribute("AutoDriverState", value.ToString());
+                }
+            }
 
-				set {
-					SetAttribute("Direction", value.ToString());
-				}
-			}
-		}
+            public LocomotiveOrientation Direction {
+                get {
+                    return (LocomotiveOrientation)Enum.Parse(typeof(LocomotiveOrientation), GetAttribute("Direction", "Forward"));
+                }
 
-		#endregion
+                set {
+                    SetAttribute("Direction", value.ToString());
+                }
+            }
+        }
 
-		[LayoutEvent("driver-assignment", IfSender="*[Driver/@Type='Automatic']")]
-		private void automaticDriverAssignment(LayoutEvent e) {
-			e.Info = true;
-		}
+        #endregion
 
-		[LayoutEvent("query-driver-setting-dialog", IfSender="*[@Type='Automatic']")]
-		private void automaticDriverQueryDriverSettingDialog(LayoutEvent e) {
-			e.Info = true;
-		}
+        [LayoutEvent("driver-assignment", IfSender = "*[Driver/@Type='Automatic']")]
+        private void automaticDriverAssignment(LayoutEvent e) {
+            e.Info = true;
+        }
 
-		[LayoutEvent("edit-driver-setting", IfSender="*[@Type='Automatic']")]
-		private void automaticDriverEditDriverSetting(LayoutEvent e) {
-			TrainCommonInfo	train = (TrainCommonInfo)e.Info;
+        [LayoutEvent("query-driver-setting-dialog", IfSender = "*[@Type='Automatic']")]
+        private void automaticDriverQueryDriverSettingDialog(LayoutEvent e) {
+            e.Info = true;
+        }
 
-			EventManager.Event(new LayoutEvent(train, "get-train-target-speed"));
-		}
+        [LayoutEvent("edit-driver-setting", IfSender = "*[@Type='Automatic']")]
+        private void automaticDriverEditDriverSetting(LayoutEvent e) {
+            var train = Ensure.NotNull<TrainCommonInfo>(e.Info, "train");
 
-		#region Event handlers for events taken care by the automatic driver
+            EventManager.Event(new LayoutEvent("get-train-target-speed", train));
+        }
 
-		[LayoutEvent("driver-emergency-stop", IfSender="*[Driver/@Type='Automatic']")]
-		private void autoDriverEmergencyStop(LayoutEvent e) {
-			TrainStateInfo			train = (TrainStateInfo)e.Sender;
-			TrainAutoDriverInfo		driver = new TrainAutoDriverInfo(train);
+        #region Event handlers for events taken care by the automatic driver
 
-			driver.State = AutoDriverState.Stop;
-			train.Speed = 0;		// Stop at once!
-		}
+        [LayoutEvent("driver-emergency-stop", IfSender = "*[Driver/@Type='Automatic']")]
+        private void autoDriverEmergencyStop(LayoutEvent e) {
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+            var _ = new TrainAutoDriverInfo(train) {
+                State = AutoDriverState.Stop
+            };
 
-		[LayoutEvent("driver-stop", IfSender="*[Driver/@Type='Automatic']")]
-		private void autoDriverStop(LayoutEvent e) {
-			TrainStateInfo			train = (TrainStateInfo)e.Sender;
-			TrainAutoDriverInfo		driver = new TrainAutoDriverInfo(train);
+            train.Speed = 0;        // Stop at once!
+        }
 
-			driver.State = AutoDriverState.Stop;
-			train.ChangeSpeed(0, train.StopRamp);
-		}
+        [LayoutEvent("driver-stop", IfSender = "*[Driver/@Type='Automatic']")]
+        private void autoDriverStop(LayoutEvent e) {
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+            var _ = new TrainAutoDriverInfo(train) {
+                State = AutoDriverState.Stop
+            };
 
-		[LayoutEvent("driver-train-go", IfSender="*[Driver/@Type='Automatic']")]
-		private void autoDriverGo(LayoutEvent e) {
-			TrainStateInfo			train = (TrainStateInfo)e.Sender;
-			TrainAutoDriverInfo		driver = new TrainAutoDriverInfo(train);
-			LocomotiveOrientation	direction = (LocomotiveOrientation)e.Info;
+            train.ChangeSpeed(0, train.StopRamp);
+        }
 
-			driver.State = AutoDriverState.Go;
-			driver.Direction = direction;
+        [LayoutEvent("driver-train-go", IfSender = "*[Driver/@Type='Automatic']")]
+        private void autoDriverGo(LayoutEvent e) {
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
 
-			int		effectiveSpeed = CalculateEffectiveTargetSpeed(train);
+            TrainAutoDriverInfo driver = new TrainAutoDriverInfo(train);
+            LocomotiveOrientation direction = (LocomotiveOrientation)e.Info;
 
-			if(direction == LocomotiveOrientation.Backward)
-				effectiveSpeed = -effectiveSpeed;
+            driver.State = AutoDriverState.Go;
+            driver.Direction = direction;
 
-			if(effectiveSpeed < train.Speed)
-				train.ChangeSpeed(effectiveSpeed, train.DecelerationRamp);
-			else
-				train.ChangeSpeed(effectiveSpeed, train.AccelerationRamp);
-		}
+            int effectiveSpeed = CalculateEffectiveTargetSpeed(train);
 
-		[LayoutEvent("driver-prepare-stop", IfSender="*[Driver/@Type='Automatic']")]
-		private void autoDriverPrepareStop(LayoutEvent e) {
-			TrainStateInfo			train = (TrainStateInfo)e.Sender;
-			TrainAutoDriverInfo		driver = new TrainAutoDriverInfo(train);
+            if (direction == LocomotiveOrientation.Backward)
+                effectiveSpeed = -effectiveSpeed;
 
-			driver.State = AutoDriverState.SlowDown;
+            if (effectiveSpeed < train.Speed)
+                train.ChangeSpeed(effectiveSpeed, train.DecelerationRamp);
+            else
+                train.ChangeSpeed(effectiveSpeed, train.AccelerationRamp);
+        }
 
-			int		effectiveSpeed = CalculateEffectiveTargetSpeed(train);
+        [LayoutEvent("driver-prepare-stop", IfSender = "*[Driver/@Type='Automatic']")]
+        private void autoDriverPrepareStop(LayoutEvent e) {
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+            TrainAutoDriverInfo driver = new TrainAutoDriverInfo(train) {
+                State = AutoDriverState.SlowDown
+            };
 
-			if(driver.Direction == LocomotiveOrientation.Backward)
-				effectiveSpeed = -effectiveSpeed;
+            int effectiveSpeed = CalculateEffectiveTargetSpeed(train);
 
-			train.ChangeSpeed(effectiveSpeed, train.SlowdownRamp);
-		}
+            if (driver.Direction == LocomotiveOrientation.Backward)
+                effectiveSpeed = -effectiveSpeed;
 
-		[LayoutEvent("driver-update-speed", IfSender="*[Driver/@Type='Automatic']")]
-		[LayoutEvent("driver-target-speed-changed", IfSender="*[Driver/@Type='Automatic']")]
-		private void autoDriverUpdateSpeed(LayoutEvent e) {
-			TrainStateInfo			train = (TrainStateInfo)e.Sender;
-			TrainAutoDriverInfo		driver = new TrainAutoDriverInfo(train);
+            train.ChangeSpeed(effectiveSpeed, train.SlowdownRamp);
+        }
 
-			if(driver.State == AutoDriverState.Go) {
-				int		effectiveSpeed = CalculateEffectiveTargetSpeed(train);
+        [LayoutEvent("driver-update-speed", IfSender = "*[Driver/@Type='Automatic']")]
+        [LayoutEvent("driver-target-speed-changed", IfSender = "*[Driver/@Type='Automatic']")]
+        private void autoDriverUpdateSpeed(LayoutEvent e) {
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+            TrainAutoDriverInfo driver = new TrainAutoDriverInfo(train);
 
-				if(driver.Direction == LocomotiveOrientation.Backward)
-					effectiveSpeed = -effectiveSpeed;
+            if (driver.State == AutoDriverState.Go) {
+                int effectiveSpeed = CalculateEffectiveTargetSpeed(train);
 
-				if(effectiveSpeed < train.Speed)
-					train.ChangeSpeed(effectiveSpeed, train.DecelerationRamp);
-				else
-					train.ChangeSpeed(effectiveSpeed, train.AccelerationRamp);
-			}
-		}
+                if (driver.Direction == LocomotiveOrientation.Backward)
+                    effectiveSpeed = -effectiveSpeed;
 
-		#endregion
+                if (effectiveSpeed < train.Speed)
+                    train.ChangeSpeed(effectiveSpeed, train.DecelerationRamp);
+                else
+                    train.ChangeSpeed(effectiveSpeed, train.AccelerationRamp);
+            }
+        }
 
-		#region Utility methods
+        #endregion
 
-		static int CalculateEffectiveTargetSpeed(TrainStateInfo train) {
-			int						effectiveSpeed;
-			TrainAutoDriverInfo		driver = new TrainAutoDriverInfo(train);
+        #region Utility methods
 
-			if(driver.State == AutoDriverState.SlowDown)
-				effectiveSpeed = train.CurrentSlowdownSpeed;
-			else if(driver.State == AutoDriverState.Stop)
-				effectiveSpeed = 0;
-			else
-				effectiveSpeed = train.TargetSpeed;
+        static int CalculateEffectiveTargetSpeed(TrainStateInfo train) {
+            int effectiveSpeed;
+            TrainAutoDriverInfo driver = new TrainAutoDriverInfo(train);
 
-			if(effectiveSpeed > train.CurrentSpeedLimit)
-				effectiveSpeed = train.CurrentSpeedLimit;
+            if (driver.State == AutoDriverState.SlowDown)
+                effectiveSpeed = train.CurrentSlowdownSpeed;
+            else if (driver.State == AutoDriverState.Stop)
+                effectiveSpeed = 0;
+            else
+                effectiveSpeed = train.TargetSpeed;
 
-			return effectiveSpeed;
-		}
+            if (effectiveSpeed > train.CurrentSpeedLimit)
+                effectiveSpeed = train.CurrentSpeedLimit;
 
-		#endregion
+            return effectiveSpeed;
+        }
 
-		#endregion
+        #endregion
 
-	}
+        #endregion
+
+    }
 }
 
