@@ -106,8 +106,8 @@ namespace LayoutEmulation {
             int switchState = 0;
 
             if (turnout is LayoutThreeWayTurnoutComponent) {
-                int stateRight = GetConnectionPointSwitchState(LayoutModel.ControlManager.ConnectionPoints[turnout, "ControlRight"]);
-                int stateLeft = GetConnectionPointSwitchState(LayoutModel.ControlManager.ConnectionPoints[turnout, "ControlLeft"]);
+                int stateRight = GetConnectionPointSwitchState(Ensure.NotNull<ControlConnectionPoint>(LayoutModel.ControlManager.ConnectionPoints[turnout, "ControlRight"], "controlRight"));
+                int stateLeft = GetConnectionPointSwitchState(Ensure.NotNull<ControlConnectionPoint>(LayoutModel.ControlManager.ConnectionPoints[turnout, "ControlLeft"], "controlLeft"));
 
                 if (stateRight == 0 && stateLeft == 0)
                     switchState = 0;
@@ -117,9 +117,10 @@ namespace LayoutEmulation {
                     switchState = 2;
             }
             else {
-                ControlConnectionPoint connectionPoint = LayoutModel.ControlManager.ConnectionPoints[turnout][0];
+                var connectionPoint = LayoutModel.ControlManager.ConnectionPoints[turnout]?[0];
 
-                switchState = GetConnectionPointSwitchState(connectionPoint);
+                if(connectionPoint != null)
+                    switchState = GetConnectionPointSwitchState(connectionPoint);
             }
 
             if (switchState < 0)
@@ -324,7 +325,7 @@ namespace LayoutEmulation {
 
                 foreach (IModelComponentIsMultiPath turnout in LayoutModel.Components<IModelComponentIsMultiPath>(LayoutModel.ActivePhases)) {
                     if (LayoutModel.StateManager.Components.Contains(turnout.Id, "SwitchState")) {
-                        ControlConnectionPoint connectionPoint = LayoutModel.ControlManager.ConnectionPoints[turnout][0];
+                        var connectionPoint = Ensure.NotNull<ControlConnectionPoint>(LayoutModel.ControlManager.ConnectionPoints[turnout]?[0], "turnout[0]");
                         int address = connectionPoint.Module.Address + connectionPoint.Index;
 
                         SetTurnoutState(connectionPoint.Module.Bus.BusProviderId, address, turnout.CurrentSwitchState);

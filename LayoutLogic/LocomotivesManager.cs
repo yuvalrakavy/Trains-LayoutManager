@@ -863,13 +863,17 @@ namespace LayoutManager.Logic {
             if (address.HasValue) {
                 programmingState.ProgrammingActions = new LayoutActionContainer<LocomotiveInfo>(programmingState.Locomotive);
 
-                var changeAddressAction = (ILayoutLocomotiveAddressChangeAction)programmingState.ProgrammingActions.Add("set-address");
+                var changeAddressAction = (ILayoutLocomotiveAddressChangeAction?)programmingState.ProgrammingActions.Add("set-address");
 
-                changeAddressAction.Address = address.Value;
-                changeAddressAction.SpeedSteps = programmingState.Locomotive.SpeedSteps;
-                var train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent("program-locomotive", programmingState).CopyOptions(e, "Train").CopyOperationContext(e));
+                if (changeAddressAction != null) {
+                    changeAddressAction.Address = address.Value;
+                    changeAddressAction.SpeedSteps = programmingState.Locomotive.SpeedSteps;
+                    var train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent("program-locomotive", programmingState).CopyOptions(e, "Train").CopyOperationContext(e));
 
-                return train;
+                    return train;
+                }
+                else
+                    throw new LayoutException("Unable to obtain locomotive programming action");
             }
             else
                 throw new LayoutException("Unable to find a valid new address for locomotive '" + programmingState.Locomotive.Name);

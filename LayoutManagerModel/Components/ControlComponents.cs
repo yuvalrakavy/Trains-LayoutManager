@@ -946,8 +946,8 @@ namespace LayoutManager.Components {
         public LayoutSignalState SignalState {
             get {
                 if (LayoutModel.StateManager.Components.Contains(this, "SignalState")) {
-                    XmlElement stateElement = LayoutModel.StateManager.Components.StateOf(this, "SignalState");
-                    string v = stateElement.GetAttribute("Value");
+                    var stateElement = LayoutModel.StateManager.Components.StateOf(this, "SignalState");
+                    var v = stateElement.GetAttribute("Value");
 
                     if (char.IsDigit(v, 0)) {       // This If should be removed, it is for backward compatability only...
                         int state = XmlConvert.ToInt32(v);
@@ -962,14 +962,14 @@ namespace LayoutManager.Components {
             }
 
             set {
-                ControlConnectionPoint connectionPoint = LayoutModel.ControlManager.ConnectionPoints[this][0];
-
-                LayoutSignalState signalState = value;
+                var connectionPoint = LayoutModel.ControlManager.ConnectionPoints[this]?[0];
+                var signalState = value;
 
                 if (Info.ReverseLogic)
                     signalState = (signalState == LayoutSignalState.Green) ? LayoutSignalState.Red : LayoutSignalState.Green;
 
-                EventManager.Event(new LayoutEvent("change-signal-state-command", new ControlConnectionPointReference(connectionPoint), signalState).SetCommandStation(connectionPoint.Module.Bus));
+                if(connectionPoint != null)
+                    EventManager.Event(new LayoutEvent("change-signal-state-command", new ControlConnectionPointReference(connectionPoint), signalState).SetCommandStation(connectionPoint.Module.Bus));
             }
         }
 

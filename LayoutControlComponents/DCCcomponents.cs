@@ -159,9 +159,9 @@ namespace LayoutManager.ControlComponents {
         [LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156501']")]
         private void canSwitchDecoderBeConnected(LayoutEvent e) {
             var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
-            ControlModule module = LayoutModel.ControlManager.GetModule(XmlConvert.ToGuid(e.GetOption("ModuleID")));
+            var module = LayoutModel.ControlManager.GetModule(XmlConvert.ToGuid(e.GetOption("ModuleID")));
 
-            if (connectionDestination.ConnectionDescription.IsCompatibleWith("Solenoid")) {
+            if (module != null && connectionDestination.ConnectionDescription.IsCompatibleWith("Solenoid")) {
                 int index = XmlConvert.ToInt32(e.GetOption("Index"));
 
                 e.Info = module.ConnectionPoints.GetConnectionPointType(index) == ControlConnectionPointTypes.OutputSolenoid;
@@ -173,11 +173,11 @@ namespace LayoutManager.ControlComponents {
         [LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156001_AsFunctionDecoder']")]
         private void canFunctionDecoderBeConnected(LayoutEvent e) {
             var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
-            ControlModule module = LayoutModel.ControlManager.GetModule(XmlConvert.ToGuid(e.GetOption("ModuleID")));
+            var module = LayoutModel.ControlManager.GetModule(XmlConvert.ToGuid(e.GetOption("ModuleID")));
 
             e.Info = false;
 
-            if (connectionDestination.ConnectionDescription.IsCompatibleWith("Solenoid", "OnOff")) {
+            if (module != null && connectionDestination.ConnectionDescription.IsCompatibleWith("Solenoid", "OnOff")) {
                 int index = XmlConvert.ToInt32(e.GetOption("Index"));
 
                 switch (module.ConnectionPoints.GetConnectionPointType(index)) {

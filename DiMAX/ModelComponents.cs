@@ -65,24 +65,31 @@ namespace DiMAX {
 
         public ControlBus DiMAXbus {
             get {
-                if (_DiMAXbus == null)
+                if (_DiMAXbus == null) {
                     _DiMAXbus = LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXBUS");
+                    Debug.Assert(_DiMAXbus != null);
+                }
+
                 return _DiMAXbus;
             }
         }
 
         public ControlBus DCCbus {
             get {
-                if (_DCCbus == null)
+                if (_DCCbus == null) {
                     _DCCbus = LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXDCC");
+                    Debug.Assert(_DCCbus != null);
+                }
                 return _DCCbus;
             }
         }
 
         public ControlBus LocoBus {
             get {
-                if (_locoBus == null)
+                if (_locoBus == null) {
                     _locoBus = LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXLocoBus");
+                    Debug.Assert(_locoBus != null);
+                }
                 return _locoBus;
             }
         }
@@ -206,8 +213,9 @@ namespace DiMAX {
         [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
         Task ChangeTurnoutState(LayoutEvent e) {
             var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
+            var module = Ensure.NotNull<ControlModule>(connectionPointRef.Module, "module");
             int state = (int)e.Info;
-            int address = connectionPointRef.Module.Address + connectionPointRef.Index;
+            int address = module.Address + connectionPointRef.Index;
 
             var task = OutputManager.AddCommand(new DiMAXchangeAccessoryState(this, address, state));
             DCCbusNotification(address, state);

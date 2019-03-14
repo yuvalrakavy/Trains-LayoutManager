@@ -963,8 +963,8 @@ namespace LayoutManager.Components {
                     throw new LayoutException(this, "Invalid switch state: " + switchingState);
 
                 Trace.WriteLine("CurrentSwitchState <- " + switchingState);
-                ControlConnectionPoint connectionPointRight = LayoutModel.ControlManager.ConnectionPoints[Component.Id, "ControlRight"];
-                ControlConnectionPoint connectionPointLeft = LayoutModel.ControlManager.ConnectionPoints[Component.Id, "ControlLeft"];
+                var connectionPointRight = LayoutModel.ControlManager.ConnectionPoints[Component.Id, "ControlRight"];
+                var connectionPointLeft = LayoutModel.ControlManager.ConnectionPoints[Component.Id, "ControlLeft"];
                 int rightState = 0;
                 int leftState = 0;
 
@@ -973,8 +973,10 @@ namespace LayoutManager.Components {
                 else if (switchingState == 2) // Turn left
                     leftState = 1;
 
-                switchingCommands.Add(new SwitchingCommand(new ControlConnectionPointReference(connectionPointRight), rightState));
-                switchingCommands.Add(new SwitchingCommand(new ControlConnectionPointReference(connectionPointLeft), leftState));
+                if(connectionPointRight != null)
+                    switchingCommands.Add(new SwitchingCommand(new ControlConnectionPointReference(connectionPointRight), rightState));
+                if(connectionPointLeft != null)
+                    switchingCommands.Add(new SwitchingCommand(new ControlConnectionPointReference(connectionPointLeft), leftState));
             }
 
             public override void SetSwitchState(ControlConnectionPoint connectionPoint, int switchState, string connectionPointName) {

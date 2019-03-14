@@ -59,7 +59,8 @@ namespace LayoutManager {
         /// <param name="theEvent"></param>
         /// <param name="connectionPointRef"></param>
         /// <returns></returns>
-        public static LayoutEvent SetCommandStation(this LayoutEvent theEvent, ControlConnectionPointReference connectionPointRef) => SetCommandStation(theEvent, connectionPointRef.Module.Bus);
+        public static LayoutEvent SetCommandStation(this LayoutEvent theEvent, ControlConnectionPointReference connectionPointRef) => SetCommandStation(theEvent, 
+            Ensure.NotNull<ControlModule>(connectionPointRef.Module, "module").Bus);
     }
 }
 
@@ -653,7 +654,7 @@ namespace LayoutManager.Components {
                 var cpr = ConnectionPointRef;
 
                 if (cpr != null && cpr.IsConnected)
-                    return (ModelComponent)cpr.ConnectionPoint.Component;
+                    return (ModelComponent?)cpr.ConnectionPoint?.Component;
                 else
                     return null;
             }
@@ -696,7 +697,7 @@ namespace LayoutManager.Components {
                 foreach (string moduleTypeName in moduleTypeNames)
                     moduleTypes.Add(LayoutModel.ControlManager.GetModuleType(moduleTypeName));
             }
-            else
+            else if(ConnectionPointRef.Module != null)
                 moduleTypes.Add(ConnectionPointRef.Module.ModuleType);
 
             return GetAddressTextForModuleTypes(moduleTypes);
@@ -706,7 +707,7 @@ namespace LayoutManager.Components {
             get {
                 List<ControlModuleType> moduleTypes = new List<ControlModuleType>();
 
-                if (ConnectionPointRef != null)
+                if (ConnectionPointRef != null && ConnectionPointRef.Module != null)
                     moduleTypes.Add(ConnectionPointRef.Module.ModuleType);
                 else {
                     foreach (ControlModuleType moduleType in bus.BusType.ModuleTypes)
@@ -752,7 +753,7 @@ namespace LayoutManager.Components {
             else {
                 var cpr = ConnectionPointRef;
 
-                if (cpr == null || cpr.Module.ModuleType.ConnectionPointsPerAddress > 1) {
+                if (cpr == null || (cpr.Module != null && cpr.Module.ModuleType.ConnectionPointsPerAddress > 1)) {
                     if (state != other.state)
                         return state - other.state;
                 }
@@ -1213,17 +1214,17 @@ namespace LayoutManager.Components {
         public int SwitchState => switchState;
 
 
-        public IModelComponentIsMultiPath? Turnout => controlPointReference.ConnectionPoint.Component as IModelComponentIsMultiPath;
+        public IModelComponentIsMultiPath? Turnout => controlPointReference.ConnectionPoint?.Component as IModelComponentIsMultiPath;
 
         /// <summary>
         /// The command station controlling the turnout
         /// </summary>
-        public IModelComponentIsBusProvider BusProvider => controlPointReference.Module.Bus.BusProvider;
+        public IModelComponentIsBusProvider? BusProvider => controlPointReference.Module?.Bus.BusProvider;
 
         /// <summary>
         /// The ID of the command station associated with this command station
         /// </summary>
-        public Guid CommandStationId => controlPointReference.Module.Bus.BusProviderId;
+        public Guid CommandStationId => controlPointReference.Module?.Bus.BusProviderId ?? Guid.Empty;
     }
 
     #endregion

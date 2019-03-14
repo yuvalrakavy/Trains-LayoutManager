@@ -6,16 +6,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
 
-namespace LayoutManager.Model {
 #pragma warning disable IDE0051
+#nullable enable
+namespace LayoutManager.Model {
     [LayoutModule("Programming Operations Manager", UserControl = false)]
     class ActionManager : LayoutModuleBase {
 
         [LayoutAsyncEvent("do-command-station-actions")]
-        private async Task<object> doProgrammingActions(LayoutEvent e0) {
-            var e = (LayoutEvent<ILayoutActionContainer, IModelComponentCanProgramLocomotives>)e0;
-            var actions = e.Sender;
-            var commandStation = e.Info;
+        private async Task<object?> doProgrammingActions(LayoutEvent e) {
+            var actions = Ensure.NotNull<ILayoutActionContainer>(e.Sender, "actions");
+            var commandStation = Ensure.NotNull<IModelComponentCanProgramLocomotives>(e.Info, "commandStation");
 
             actions.PrepareForProgramming();        // Ensure that actions are prepared for programming
 
@@ -47,7 +47,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="actionType">The action type to add</param>
         /// <returns>The added action</returns>
-        ILayoutAction Add(string actionType);
+        ILayoutAction? Add(string actionType);
 
         /// <summary>
         /// Remove an action (usually after it has been commited)
@@ -97,9 +97,9 @@ namespace LayoutManager.Model {
 
         }
 
-        ILayoutAction GetAction(XmlElement actionElement) {
-            LayoutAction action = null;
-            string actionType = actionElement.GetAttribute("Type");
+        ILayoutAction? GetAction(XmlElement actionElement) {
+            LayoutAction? action = null;
+            var actionType = actionElement.GetAttribute("Type");
 
             if (actionType != null)
                 action = EventManager.Event(new LayoutEvent("get-action", actionElement, Owner)) as LayoutAction;
@@ -107,7 +107,7 @@ namespace LayoutManager.Model {
             return action;
         }
 
-        public ILayoutAction Add(string actionType) {
+        public ILayoutAction? Add(string actionType) {
             if (preparedForProgramming)
                 throw new ApplicationException("Trying to add action after preparing for programming");
 
@@ -158,10 +158,10 @@ namespace LayoutManager.Model {
         public IEnumerator<LayoutAction> GetEnumerator() {
             // Pass on a static list so it would be possible to delete action during the loop
             foreach (XmlElement actionElement in Element) {
-                LayoutAction action = (LayoutAction)GetAction(actionElement);
+                var action = GetAction(actionElement);
 
                 if (action != null)
-                    yield return action;
+                    yield return (LayoutAction)action;
             }
         }
 

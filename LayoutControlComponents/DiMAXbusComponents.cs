@@ -125,25 +125,27 @@ namespace LayoutManager.ControlComponents {
         /// <param name="commandStation"></param>
         /// <returns></returns>
         public static int AllocateDiMAX_BusID(IModelComponentIsBusProvider commandStation) {
-            ControlBus bus = LayoutModel.ControlManager.Buses.GetBus(commandStation, "DiMAXBUS");
-            var masterFeedbackModules = from module in bus.Modules where module.ModuleTypeName == "Massoth8170001" && new MassothFeedbackModule(module).DiMAX_BusConnectionMethod == MassothFeedbackDecoderBusConnectionMethod.Master select new MassothFeedbackModule(module);
+            var bus = LayoutModel.ControlManager.Buses.GetBus(commandStation, "DiMAXBUS");
 
-            for (int busId = 11; busId <= 20; busId++)
-                if (!masterFeedbackModules.Any(m => m.DiMAX_BusId == busId))
-                    return busId;
+            if (bus != null) {
+                var masterFeedbackModules = from module in bus.Modules where module.ModuleTypeName == "Massoth8170001" && new MassothFeedbackModule(module).DiMAX_BusConnectionMethod == MassothFeedbackDecoderBusConnectionMethod.Master select new MassothFeedbackModule(module);
+
+                for (int busId = 11; busId <= 20; busId++)
+                    if (!masterFeedbackModules.Any(m => m.DiMAX_BusId == busId))
+                        return busId;
+            }
 
             return -1;
         }
 
         public static MassothFeedbackModule GetMasterUsingBusId(IModelComponentIsBusProvider commandStation, int busId) {
-            ControlBus bus = LayoutModel.ControlManager.Buses.GetBus(commandStation, "DiMAXBUS");
-            return (from module in bus.Modules
-                    where
-module.ModuleTypeName == "Massoth8170001" &&
-new MassothFeedbackModule(module).DiMAX_BusConnectionMethod == MassothFeedbackDecoderBusConnectionMethod.Master &&
-new MassothFeedbackModule(module).DiMAX_BusId == busId
-                    select new MassothFeedbackModule(module)).FirstOrDefault();
+            var bus = Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(commandStation, "DiMAXBUS"), "DiMAXBUS");
 
+                return (from module in bus.Modules
+                        where module.ModuleTypeName == "Massoth8170001" &&
+                        new MassothFeedbackModule(module).DiMAX_BusConnectionMethod == MassothFeedbackDecoderBusConnectionMethod.Master &&
+                        new MassothFeedbackModule(module).DiMAX_BusId == busId
+                        select new MassothFeedbackModule(module)).FirstOrDefault();
         }
     }
 

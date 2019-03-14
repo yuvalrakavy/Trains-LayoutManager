@@ -23,8 +23,8 @@ namespace LayoutManager.Logic {
             int state = (int)e.Info;
 
             if (connectionPointRef.IsConnected) {
-                ControlConnectionPoint connectionPoint = connectionPointRef.ConnectionPoint;
-                ModelComponent component = (ModelComponent)connectionPoint.Component;
+                var connectionPoint = connectionPointRef.ConnectionPoint;
+                var component = (ModelComponent?)connectionPoint?.Component;
 
                 if (component is LayoutTrackContactComponent) {
                     if (state == 1)
@@ -43,7 +43,7 @@ namespace LayoutManager.Logic {
         private void controlConnectionPointStateUnstable(LayoutEvent e) {
             var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
 
-            Message(connectionPointRef.ConnectionPoint.Component, "Intermittent (very short) state change - you should check your hardware");
+            Message(connectionPointRef?.ConnectionPoint?.Component, "Intermittent (very short) state change - you should check your hardware");
         }
 
         #endregion
@@ -60,20 +60,24 @@ namespace LayoutManager.Logic {
                 Guid defaultCommandStationId = switchingCommands[0].CommandStationId;
                 List<SwitchingCommand> movedSwitchingCommands = new List<SwitchingCommand>();
 
-                commandStationIdToSwitchingCommands.Add(switchingCommands[0].BusProvider, switchingCommands);
+                var busProvider = switchingCommands[0].BusProvider;
+                if (busProvider != null)
+                    commandStationIdToSwitchingCommands.Add(busProvider, switchingCommands);
 
                 // Split the batch of switching commands to groups of switching commands based on the command station that handles them.
                 // Optimize for the (very) common case that all of the switching commands are handled by the same command station.
                 foreach (SwitchingCommand switchingCommand in switchingCommands) {
                     if (switchingCommand.CommandStationId != defaultCommandStationId) {
 
-                        if (!commandStationIdToSwitchingCommands.TryGetValue(switchingCommand.BusProvider, out List<SwitchingCommand> commandStationSwitchingCommands)) {
-                            commandStationSwitchingCommands = new List<SwitchingCommand>();
-                            commandStationIdToSwitchingCommands.Add(switchingCommand.BusProvider, commandStationSwitchingCommands);
-                        }
+                        if (switchingCommand.BusProvider != null) {
+                            if (!commandStationIdToSwitchingCommands.TryGetValue(switchingCommand.BusProvider, out List<SwitchingCommand> commandStationSwitchingCommands)) {
+                                commandStationSwitchingCommands = new List<SwitchingCommand>();
+                                commandStationIdToSwitchingCommands.Add(switchingCommand.BusProvider, commandStationSwitchingCommands);
+                            }
 
-                        commandStationSwitchingCommands.Add(switchingCommand);
-                        movedSwitchingCommands.Add(switchingCommand);
+                            commandStationSwitchingCommands.Add(switchingCommand);
+                            movedSwitchingCommands.Add(switchingCommand);
+                        }
                     }
                 }
 
