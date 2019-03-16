@@ -788,9 +788,13 @@ namespace LayoutManager.Logic {
 
                     if (traceRoutePlanning.TraceInfo) {
                         Trace.Write("Found route: ");
-                        foreach (int switchState in bestRoute.SwitchStates)
-                            Trace.Write(" " + switchState);
-                        Trace.WriteLine("");
+                        if (bestRoute.SwitchStates != null) {
+                            foreach (int switchState in bestRoute.SwitchStates)
+                                Trace.Write(" " + switchState);
+                            Trace.WriteLine("");
+                        }
+                        else
+                            Trace.WriteLine("Route with empty (null) switch states list");
                     }
                 }
                 else

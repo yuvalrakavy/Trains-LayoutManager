@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using LayoutManager.Components;
 
+#nullable enable
 namespace LayoutManager.Model {
 
     /// <summary>
@@ -102,7 +103,7 @@ namespace LayoutManager.Model {
         Guid routeOwner = Guid.Empty;
 
         static int willBeFreeClearancePenaltyFactor = 20;
-        static ILayoutLockManagerServices _lockManagerServices = null;
+        static ILayoutLockManagerServices? _lockManagerServices = null;
 
         public RouteQuality(Guid routeOwner, RouteClearanceQuality clearanceQuality, int penalty) {
             initialize(routeOwner);
@@ -169,7 +170,7 @@ namespace LayoutManager.Model {
         protected static ILayoutLockManagerServices LockManagerServices {
             get {
                 if (_lockManagerServices == null)
-                    _lockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services"));
+                    _lockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services"))!;
                 return _lockManagerServices;
             }
         }
@@ -271,7 +272,7 @@ namespace LayoutManager.Model {
     }
 
     public class RouteTarget {
-        readonly TripPlanDestinationEntryInfo destinationEntryInfo;   // The final train destination info
+        readonly TripPlanDestinationEntryInfo? destinationEntryInfo;   // The final train destination info
         readonly LayoutTrackComponent destinationTrack;     // The final train destination for this target
         readonly TrackEdge targetEdge;             // The destination to arrive (the split point)
         readonly int switchState;            // The switch state to set in this turnout
@@ -280,7 +281,7 @@ namespace LayoutManager.Model {
         readonly LayoutComponentConnectionPoint front;
         readonly LocomotiveOrientation direction;
 
-        public RouteTarget(TripPlanDestinationEntryInfo destinationEntryInfo, LayoutTrackComponent destinationTrack, TrackEdge targetEdge, int switchState,
+        public RouteTarget(TripPlanDestinationEntryInfo? destinationEntryInfo, LayoutTrackComponent destinationTrack, TrackEdge targetEdge, int switchState,
             LayoutComponentConnectionPoint front, LocomotiveOrientation direction, RouteQuality quality) {
             this.destinationEntryInfo = destinationEntryInfo;
             this.destinationTrack = destinationTrack;
@@ -291,7 +292,7 @@ namespace LayoutManager.Model {
             this.quality = new RouteQuality(quality);
         }
 
-        public TripPlanDestinationEntryInfo DestinationEntryInfo => destinationEntryInfo;
+        public TripPlanDestinationEntryInfo? DestinationEntryInfo => destinationEntryInfo;
 
         public LayoutTrackComponent DestinationTrack => destinationTrack;
 
@@ -331,15 +332,15 @@ namespace LayoutManager.Model {
 
     public class BestRoute : ITripRoute {
         readonly ModelComponent sourceComponent;
-        RouteTarget destinationTarget;
+        RouteTarget? destinationTarget;
         readonly LayoutComponentConnectionPoint sourceFront;
         LayoutComponentConnectionPoint destinationFront;
         readonly LocomotiveOrientation direction;
         Guid routeOwner;
         RouteQuality quality;
         readonly List<RouteTarget> targets = new List<RouteTarget>();
-        List<int> switchStates;
-        TrainStateInfo train;
+        List<int>? switchStates;
+        TrainStateInfo?train;
 
         public BestRoute(ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, Guid routeOwner) {
             this.sourceComponent = sourceComponent;
@@ -357,7 +358,7 @@ namespace LayoutManager.Model {
 
         public LayoutComponentConnectionPoint SourceFront => sourceFront;
 
-        public LayoutTrackComponent DestinationTrack {
+        public LayoutTrackComponent? DestinationTrack {
             get {
                 if (destinationTarget == null)
                     return null;
@@ -365,7 +366,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public RouteTarget DestinationTarget {
+        public RouteTarget? DestinationTarget {
             get {
                 return destinationTarget;
             }
@@ -412,19 +413,19 @@ namespace LayoutManager.Model {
 
         public IList<RouteTarget> Targets => targets;
 
-        public IList<int> SwitchStates => switchStates.AsReadOnly();
+        public IList<int>? SwitchStates => switchStates?.AsReadOnly();
 
         public void SetSwitchStates(IList<int> switchStates) {
             this.switchStates = new List<int>(switchStates);
         }
 
-        public int Count => SwitchStates.Count;
+        public int Count => Ensure.NotNull<IList<int>>(SwitchStates, "switchState").Count;
 
         public IList<TrackEdge> TrackEdges {
             get {
                 List<TrackEdge> edges = new List<TrackEdge>();
                 TrackEdge edge = SourceEdge;
-                IList<int> switchStates = SwitchStates;
+                var switchStates = Ensure.NotNull<IList<int>>(SwitchStates, "switchState");
                 int switchStateIndex = 0;
                 bool continueScanning = true;
 
@@ -465,7 +466,7 @@ namespace LayoutManager.Model {
                 List<LayoutBlock> blocks = new List<LayoutBlock>();
 
                 foreach (TrackEdge edge in TrackEdges) {
-                    LayoutBlockDefinitionComponent blockInfo = edge.Track.BlockDefinitionComponent;
+                    var blockInfo = edge.Track.BlockDefinitionComponent;
 
                     if (blockInfo != null)
                         blocks.Add(blockInfo.Block);
@@ -480,7 +481,7 @@ namespace LayoutManager.Model {
                 List<LayoutBlockEdgeBase> blockEdges = new List<LayoutBlockEdgeBase>();
 
                 foreach (TrackEdge edge in TrackEdges) {
-                    LayoutBlockEdgeBase blockEdge = edge.Track.BlockEdgeBase;
+                    var blockEdge = edge.Track.BlockEdgeBase;
 
                     if (blockEdge != null)
                         blockEdges.Add(blockEdge);
@@ -495,7 +496,7 @@ namespace LayoutManager.Model {
         /// that the route is not calculated for a specific train (e.g. in a manual dispatch resgion).
         /// In this case null is returned
         /// </summary>
-        public TrainStateInfo Train {
+        public TrainStateInfo? Train {
             get {
                 if (train == null)
                     train = LayoutModel.StateManager.Trains[routeOwner] as TrainStateInfo;
