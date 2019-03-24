@@ -415,7 +415,7 @@ namespace LayoutManager.View {
             Color resultColor = Color.Black;
 
             if (LayoutController.IsOperationMode) {
-                LayoutBlock block = edge.Track.GetBlock(edge.ConnectionPoint);
+                LayoutBlock block = edge.Track.GetMaybeBlock(edge.ConnectionPoint);
 
                 if (block == null) {
                     resultColor = Color.LightGray;

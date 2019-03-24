@@ -735,6 +735,8 @@ namespace LayoutManager.Components {
 
         public LayoutBlock Block => Track.GetBlock(Track.ConnectionPoints[0]);
 
+        public LayoutBlock? MaybeBlock => Track.GetMaybeBlock(Track.ConnectionPoints[0]);
+
         public LayoutTrackPowerConnectorComponent PowerConnector {
             get {
                 var powerConnector = Track.GetPowerConnector(Track.ConnectionPoints[0]);

@@ -155,10 +155,10 @@ namespace LayoutManager.Components {
         public abstract LayoutComponentConnectionPoint[] ConnectTo(LayoutComponentConnectionPoint from, LayoutComponentConnectionType type);
 
 
-        public abstract LayoutBlock? GetBlockNullable(LayoutComponentConnectionPoint cp);
+        public abstract LayoutBlock? GetMaybeBlock(LayoutComponentConnectionPoint cp);
 
         public LayoutBlock GetBlock(LayoutComponentConnectionPoint cp) {
-            var block = GetBlockNullable(cp);
+            var block = GetMaybeBlock(cp);
 
             Debug.Assert(block != null);
             return block;
@@ -414,9 +414,8 @@ namespace LayoutManager.Components {
         /// If the track is associated with a BLOCK_EDGE, then it separate two blocks. One if found in cp1, and the
         /// other in cp2.
         /// </remarks>
-        public override LayoutBlock? GetBlockNullable(LayoutComponentConnectionPoint cp) {
+        public override LayoutBlock? GetMaybeBlock(LayoutComponentConnectionPoint cp) {
             if (BlockEdgeBase != null) {
-                Debug.Assert(block != null && optionalContactBlock != null);
                 if (cp == cp1)
                     return block;
                 else if (cp == cp2)
@@ -580,7 +579,7 @@ namespace LayoutManager.Components {
             throw new NotImplementedException();
         }
 
-        public override LayoutBlock? GetBlockNullable(LayoutComponentConnectionPoint cp) {
+        public override LayoutBlock? GetMaybeBlock(LayoutComponentConnectionPoint cp) {
             if (cp == cp1 || cp == cp2)
                 return cp12block!;
             else if (cp == cp3 || cp == cp4)
@@ -691,7 +690,7 @@ namespace LayoutManager.Components {
         }
 
 
-        public override LayoutBlock? GetBlockNullable(LayoutComponentConnectionPoint cp) {
+        public override LayoutBlock? GetMaybeBlock(LayoutComponentConnectionPoint cp) {
             if (HasConnectionPoint(cp))
                 return block;
             throw new ArgumentException("Track does not have this connection point", nameof(cp));

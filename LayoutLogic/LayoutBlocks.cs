@@ -93,7 +93,7 @@ namespace LayoutManager.Logic {
                         if (track != null) {
                             if (spot[ModelComponentKind.TrackLink] == null) {
                                 foreach (LayoutComponentConnectionPoint cp in track.ConnectionPoints) {
-                                    if (track.GetBlockNullable(cp) == null) {
+                                    if (track.GetMaybeBlock(cp) == null) {
                                         LayoutBlock? block = null;
 
                                         foreach (LayoutComponentConnectionPoint scanCp in track.ConnectionPoints) {

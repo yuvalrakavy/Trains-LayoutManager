@@ -453,7 +453,7 @@ namespace LayoutManager.View {
             if (LayoutBlockBallon.IsDisplayed(blockDefinition))
                 e.AddRegion(new LayoutDrawingRegionBallonInfo(e.Component, e.View, e.Graphics, LayoutBlockBallon.Get(blockDefinition)));
 
-            if (LayoutController.IsOperationMode && blockDefinition.Block != null && blockDefinition.Block.HasTrains) {
+            if (LayoutController.IsOperationMode && blockDefinition.MaybeBlock != null && blockDefinition.MaybeBlock.HasTrains) {
                 IList<TrainLocationInfo> trainLocations = blockDefinition.Block.Trains;
                 TrainLocationPainter[] painters = new TrainLocationPainter[trainLocations.Count];
                 int i;
