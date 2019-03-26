@@ -18,7 +18,7 @@ namespace LayoutManager.ControlComponents {
         private void getMassoth8170001(LayoutEvent e) {
             var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
-            ControlModuleType moduleType = new ControlModuleType(parentElement, "Massoth8170001", "Massoth Feedback Interface") {
+            ControlModuleType moduleType = new ControlModuleType(parentElement, "Massoth8170001", "Massoth Trigger Feedback Interface") {
                 AddressAlignment = 4
             };
             EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DiMAXBus"));
@@ -31,6 +31,24 @@ namespace LayoutManager.ControlComponents {
             moduleType.DecoderTypeName = "GenericDCC";
         }
 
+        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8170001level']")]
+        [LayoutEvent("enum-control-module-types")]
+        private void getMassoth8170001level(LayoutEvent e) {
+            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
+
+            ControlModuleType moduleType = new ControlModuleType(parentElement, "Massoth8170001level", "Massoth Level Feedback Interface") {
+                AddressAlignment = 4
+            };
+            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DiMAXBus"));
+            moduleType.ConnectionPointsPerAddress = 1;
+            moduleType.NumberOfAddresses = 8;
+            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputLevel;
+            moduleType.ConnectionPointIndexBase = 0;
+            moduleType.ConnectionPointLabelFormat = 0;
+            moduleType.LastAddress = 2048;
+            moduleType.DecoderTypeName = "GenericDCC";
+        }
+
         [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='DiMAXBus']")]
         private void recommendLGBcompatibleBusControlModuleType(LayoutEvent e) {
             var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
@@ -38,22 +56,35 @@ namespace LayoutManager.ControlComponents {
 
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "DryContact"))
                 moduleTypeNames.Add("Massoth8170001");
+            if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "Level"))
+                moduleTypeNames.Add("Massoth8170001level");
+
         }
 
         [LayoutEvent("query-action", IfEvent = "LayoutEvent[Options/@Action='set-address']", SenderType = typeof(ControlModule), IfSender = "*[@ModuleTypeName='Massoth8170001']")]
-        private void querySetMassothSwitchDecoderAddress(LayoutEvent e0) {
+        [LayoutEvent("query-action", IfEvent = "LayoutEvent[Options/@Action='set-address']", SenderType = typeof(ControlModule), IfSender = "*[@ModuleTypeName='Massoth8170001level']")]
+        private void querySetMassothFeedbackDecoderAddress(LayoutEvent e0) {
             var e = (LayoutEventInfoResultValueType<IHasDecoder, bool, bool>)e0;
 
             e.Result = true;
         }
 
         [LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[@ModuleTypeName='Massoth8170001']")]
-        private void getProgramMassothSwitchDecoderAddressAction(LayoutEvent e) {
+        private void getProgramMassothTriggerFeedbackDecoderAddressAction(LayoutEvent e) {
             var actionElement = Ensure.NotNull<XmlElement>(e.Sender, "actionElement");
             var module = Ensure.NotNull<ControlModule>(e.Info, "module");
 
             if (e.Info != null)
-                e.Info = new ProgramMassothFeedbackDecoderAddress(actionElement, module);
+                e.Info = new ProgramMassothTriggerFeedbackDecoderAddress(actionElement, module);
+        }
+
+        [LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[@ModuleTypeName='Massoth8170001level']")]
+        private void getProgramMassothLevelFeedbackDecoderAddressAction(LayoutEvent e) {
+            var actionElement = Ensure.NotNull<XmlElement>(e.Sender, "actionElement");
+            var module = Ensure.NotNull<ControlModule>(e.Info, "module");
+
+            if (e.Info != null)
+                e.Info = new ProgramMassothLevelFeedbackDecoderAddress(actionElement, module);
         }
 
         [LayoutEvent("edit-action-settings", InfoType = typeof(IMassothFeedbackDecoderSetAddress))]
@@ -149,8 +180,8 @@ namespace LayoutManager.ControlComponents {
         }
     }
 
-    class ProgramMassothFeedbackDecoderAddress : ProgramMassothFeedbackDecoder, IMassothFeedbackDecoderSetAddress {
-        public ProgramMassothFeedbackDecoderAddress(XmlElement actionElement, ControlModule feedbackModule)
+    class ProgramMassothTriggerFeedbackDecoderAddress : ProgramMassothFeedbackDecoder, IMassothFeedbackDecoderSetAddress {
+        public ProgramMassothTriggerFeedbackDecoderAddress(XmlElement actionElement, ControlModule feedbackModule)
             : base(actionElement, feedbackModule) {
         }
 
@@ -166,6 +197,7 @@ namespace LayoutManager.ControlComponents {
             for (int i = 0; i < 4; i++) {
                 SetCV(51 + i * 10, (byte)(address >> 8));
                 SetCV(51 + i * 10 + 1, (byte)(address & 0xff));
+                SetCV(55 + i * 10, 0);      // Feedback command - trigger
                 address++;
             }
         }
@@ -218,5 +250,77 @@ namespace LayoutManager.ControlComponents {
 
         #endregion
     }
+
+    class ProgramMassothLevelFeedbackDecoderAddress : ProgramMassothFeedbackDecoder, IMassothFeedbackDecoderSetAddress {
+        public ProgramMassothLevelFeedbackDecoderAddress(XmlElement actionElement, ControlModule feedbackModule)
+            : base(actionElement, feedbackModule) {
+        }
+
+        public override void PrepareProgramming() {
+            SetCV(1, 0);        // DiMAX mode
+
+            if (BusConnectionMethod == MassothFeedbackDecoderBusConnectionMethod.Master)
+                SetCV(2, (byte)BusId);
+
+            SetCV(3, (byte)(BusConnectionMethod == MassothFeedbackDecoderBusConnectionMethod.Master ? 1 : 2));
+
+            int address = ProgrammingTarget.Address;
+            for (int i = 0; i < 4; i++) {
+                SetCV(51 + i * 10, (byte)(address >> 8));
+                SetCV(51 + i * 10 + 1, (byte)(address & 0xff));
+                SetCV(55 + i * 10, 2);      // Feedback command - level
+                address += 2;
+            }
+        }
+
+        public override void Commit() {
+            var module = new MassothFeedbackModule(ProgrammingTarget) {
+                DiMAX_BusConnectionMethod = BusConnectionMethod
+            };
+
+            string label = module.Label ?? "";
+            label = Regex.Replace(label, "\\[.*\\]", "");
+
+            if (label.Length > 0)
+                label += " ";
+
+            if (BusConnectionMethod == MassothFeedbackDecoderBusConnectionMethod.Slave)
+                label += "[Slave]";
+            else
+                label += $"[Master ID: {module.DiMAX_BusId}]";
+
+            module.Label = label;
+            module.AddressProgrammingRequired = false;
+        }
+
+        public override string Description => "Set feedback module address to " + ProgrammingTarget.Address + " to " + (ProgrammingTarget.Address + ProgrammingTarget.ModuleType.NumberOfAddresses - 1);
+
+        #region IMassothFeedbackDecoderSetAddress Members
+        const string BusConnectionAttribute = "BusConnectionMethod";
+
+
+        public MassothFeedbackDecoderBusConnectionMethod BusConnectionMethod {
+            get {
+                return Element.HasAttribute(BusConnectionAttribute) ? (MassothFeedbackDecoderBusConnectionMethod)Enum.Parse(typeof(MassothFeedbackDecoderBusConnectionMethod), Element.GetAttribute(BusConnectionAttribute)) : MassothFeedbackDecoderBusConnectionMethod.Slave;
+            }
+
+            set {
+                Element.SetAttribute("BusConnectionMethod", value.ToString());
+            }
+        }
+
+        public int BusId {
+            get {
+                return int.Parse(Element.GetAttribute("BusID"));
+            }
+
+            set {
+                Element.SetAttribute("BusID", value.ToString());
+            }
+        }
+
+        #endregion
+    }
+
 
 }

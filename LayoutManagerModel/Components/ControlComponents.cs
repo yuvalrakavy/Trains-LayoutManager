@@ -263,7 +263,7 @@ namespace LayoutManager.Components {
     /// </summary>
     public class LayoutProximitySensorComponent : LayoutTriggerableBlockEdgeBase {
         static readonly IList<ModelComponentControlConnectionDescription> controlConnections = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
-            new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription("DryContact", "ProximitySensor", "proximity sensor feedback") });
+            new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription("Level", "ProximitySensor", "proximity sensor feedback") });
 
         public LayoutProximitySensorComponent() {
             this.XmlInfo.XmlDocument.LoadXml("<ProximitySensor/>");
