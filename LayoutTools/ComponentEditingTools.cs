@@ -88,7 +88,8 @@ namespace LayoutManager.Tools {
         readonly PropertiesDialogMapEntry[] propertiesDialogMap =
             new PropertiesDialogMapEntry[] {
                                                new PropertiesDialogMapEntry(typeof(LayoutTextComponent), typeof(Dialogs.TextProperties), PropertyDialogOptions.AlsoOperationalMode),
-                                               new PropertiesDialogMapEntry(typeof(LayoutTrackContactComponent), typeof(Dialogs.TrackContactProperties), PropertyDialogOptions.NotOpenOnPlacement),
+                                               new PropertiesDialogMapEntry(typeof(LayoutTrackContactComponent), typeof(Dialogs.TriggerableBlockEdgeProperties), PropertyDialogOptions.NotOpenOnPlacement),
+                                               new PropertiesDialogMapEntry(typeof(LayoutProximitySensorComponent), typeof(Dialogs.TriggerableBlockEdgeProperties), PropertyDialogOptions.NotOpenOnPlacement),
                                                new PropertiesDialogMapEntry(typeof(LayoutTurnoutTrackComponent), typeof(Dialogs.TurnoutProperties), PropertyDialogOptions.AlsoOperationalMode|PropertyDialogOptions.NotOpenOnPlacement),
                                                new PropertiesDialogMapEntry(typeof(LayoutDoubleSlipTrackComponent), typeof(Dialogs.TurnoutProperties), PropertyDialogOptions.AlsoOperationalMode|PropertyDialogOptions.NotOpenOnPlacement),
                                                new PropertiesDialogMapEntry(typeof(LayoutTrackPowerConnectorComponent), typeof(Dialogs.TrackPowerConnectorProperties)),

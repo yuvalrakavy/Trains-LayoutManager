@@ -41,7 +41,7 @@ namespace LayoutManager.Logic {
         private void anonymousTrackContactTriggered(LayoutEvent e) {
             var trackContact = Ensure.NotNull<LayoutTrackContactComponent>(e.Sender, "trackContact");
 
-            if (trackContact.IsEmergencyContact)
+            if (trackContact.IsEmergencySensor)
                 HandleEmergencyTrackContactTrigger(trackContact);
             else
                 HandleTrackContactTriggering(trackContact);

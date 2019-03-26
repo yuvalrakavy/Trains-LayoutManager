@@ -30,6 +30,9 @@ namespace LayoutManager.Logic {
                     if (state == 1)
                         EventManager.Event(new LayoutEvent("track-contact-triggered-notification", component));
                 }
+                else if(component is LayoutProximitySensorComponent) {
+                    throw new NotImplementedException("PROXIMITY");
+                }
                 else if (component is LayoutBlockDefinitionComponent)
                     EventManager.Event(new LayoutEvent("train-detection-state-changed-notification", component, state != 0 ? true : false));
                 else if (component is IModelComponentHasSwitchingState)
@@ -118,7 +121,7 @@ namespace LayoutManager.Logic {
         #region Track Contact Component
 
         [LayoutEvent("track-contact-triggered-notification", SenderType = typeof(LayoutTrackContactComponent))]
-        private void trackContactComponentTurnoutStateChanged(LayoutEvent e) {
+        private void trackContactComponentStateChanged(LayoutEvent e) {
             var trackContact = Ensure.NotNull<LayoutTrackContactComponent>(e.Sender, "connectionPoint");
 
             if (!trackContact.IsTriggered) {

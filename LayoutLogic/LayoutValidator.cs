@@ -195,26 +195,26 @@ namespace LayoutManager.Logic {
         private bool checkSignalLinks(LayoutPhase phase) {
             bool ok = true;
 
-            foreach (LayoutTrackContactComponent trackContact in LayoutModel.Components<LayoutTrackContactComponent>(phase)) {
-                ArrayList removeList = new ArrayList();
+            foreach (var blockEdge in LayoutModel.Components<LayoutBlockEdgeBase>(phase)) {
+                var removeList = new List<LinkedSignalInfo>();
 
-                foreach (LinkedSignalInfo linkedSignal in trackContact.LinkedSignals) {
+                foreach (LinkedSignalInfo linkedSignal in blockEdge.LinkedSignals) {
                     if (LayoutModel.Component<ModelComponent>(linkedSignal.SignalId, phase) == null) {
 
                         // If the signal cannot be found at all on the layout (not just on the given phase), remove the link
                         if (LayoutModel.Component<ModelComponent>(linkedSignal.SignalId, LayoutPhase.All) == null) {
-                            Warning(trackContact, "A signal that was linked to this track contact cannot be found in the layout");
+                            Warning(blockEdge, $"A signal that was linked to this {blockEdge.ToString()} cannot be found in the layout");
                             removeList.Add(linkedSignal);
                         }
                         else
-                            Error(trackContact, "The signal linked to this track contact is marked either as Planned or In construction phase");
+                            Error(blockEdge, $"The signal linked to this {blockEdge.ToString()} is marked either as Planned or In construction phase");
 
                         ok = false;
                     }
                 }
 
-                foreach (LinkedSignalInfo linkedSignal in removeList)
-                    trackContact.LinkedSignals.Remove(linkedSignal.SignalId);
+                foreach (var linkedSignal in removeList)
+                    blockEdge.LinkedSignals.Remove(linkedSignal.SignalId);
             }
 
             return ok;

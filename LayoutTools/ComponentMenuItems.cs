@@ -5,6 +5,7 @@ using System.Drawing;
 using LayoutManager.Components;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051
 namespace LayoutManager.Tools {
     /// <summary>
     /// Summary description for ComponentMenuItems.
@@ -356,7 +357,7 @@ namespace LayoutManager.Tools {
             Graphics g = (Graphics)e.Info;
 
             LayoutComponentConnectionPoint trackCp1 = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute("TrackCp1"));
-            LayoutComponentConnectionPoint trackCp2 = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute("TrackCp2"));
+            //LayoutComponentConnectionPoint trackCp2 = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute("TrackCp2"));
             int diagonalIndex = XmlConvert.ToInt32(itemElement.GetAttribute("DiagonalIndex"));
 
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
@@ -459,7 +460,10 @@ namespace LayoutManager.Tools {
             LayoutTrackComponent old = (LayoutTrackComponent)e.Info;
 
             if (CanComposeBlockEdge(old))
-                AddChild(categoryElement, "<Item Name='track-contact' Tooltip='Track contact (BLOCK_EDGE)' />");
+                AddChild(categoryElement, "<Item Name='track-contact' Tooltip='Track contact (block edge)' />");
+
+            if (CanComposeBlockEdge(old))
+                AddChild(categoryElement, "<Item Name='proximity-sensor' Tooltip='Proximity sensor (block edge)' />");
 
             if (CanComposeBlockEdge(old))
                 AddChild(categoryElement, "<Item Name='block-edge' Tooltip='Block Edge' />");
@@ -508,8 +512,8 @@ namespace LayoutManager.Tools {
             };
             trackPainter.Paint(g);
 
-            using (LayoutTrackContactPainter contactPainter = new LayoutTrackContactPainter(new Size(32, 32),
-                      new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B })) {
+            using (LayoutTriggerableBlockEdgePainter contactPainter = new LayoutTriggerableBlockEdgePainter(componentType: LayoutTriggerableBlockEdgePainter.ComponentType.TrackContact,
+                componentSize: new Size(32, 32), cp: new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B })) {
                 contactPainter.ContactSize = new Size(6, 6);
                 contactPainter.Paint(g);
             }
@@ -518,6 +522,35 @@ namespace LayoutManager.Tools {
         [LayoutEvent("create-model-component", IfSender = "Item[@Name='track-contact']")]
         void CreateTrackContactComponent(LayoutEvent e) {
             e.Info = new LayoutTrackContactComponent();
+        }
+
+        //----
+        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='proximity-sensor']")]
+        void PaintProximitySensorItem(LayoutEvent e) {
+            Graphics g = (Graphics)e.Info;
+
+            g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
+            g.FillRectangle(Brushes.White, 5, 5, 31, 31);
+
+            g.TranslateTransform(4, 4);
+
+            LayoutStraightTrackPainter trackPainter = new LayoutStraightTrackPainter(new Size(32, 32),
+                LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B) {
+                TrackColor = Color.Gray,
+                TrackColor2 = Color.Gray
+            };
+            trackPainter.Paint(g);
+
+            using (LayoutTriggerableBlockEdgePainter sensorPainter = new LayoutTriggerableBlockEdgePainter(componentType: LayoutTriggerableBlockEdgePainter.ComponentType.ProximitySensor,
+                componentSize: new Size(32, 32), cp: new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B })) {
+                sensorPainter.ContactSize = new Size(6, 6);
+                sensorPainter.Paint(g);
+            }
+        }
+
+        [LayoutEvent("create-model-component", IfSender = "Item[@Name='proximity-sensor']")]
+        void CreateProximitySensorComponent(LayoutEvent e) {
+            e.Info = new LayoutProximitySensorComponent();
         }
 
         //----

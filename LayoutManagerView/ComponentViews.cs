@@ -298,19 +298,21 @@ namespace LayoutManager.View {
 
         #endregion
 
-        #region Track Contact Component
+        #region TriggerableBlockEdgeComponent (track contact/proximity sensor)
 
         [LayoutEvent("get-connection-point-component-image", SenderType = typeof(LayoutTrackContactComponent))]
+        [LayoutEvent("get-connection-point-component-image", SenderType = typeof(LayoutProximitySensorComponent))]
         private void getTrackContactConnectionPointImage(LayoutEvent e) {
             e.Info = imageListConnectionPointImages.Images[1];
         }
 
         [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutTrackContactComponent))]
-        void GetTrackContactDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
+        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutProximitySensorComponent))]
+        void GetTriggerableBlockEdgeDrawingRegions(LayoutEvent eBase) {
+            var e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
 
             if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionTrackContact(e.Component, e.View));
+                e.AddRegion(new LayoutDrawingRegionTriggerableBlockEdge(e.Component, e.View));
 
             LayoutTextInfo nameProvider = new LayoutTextInfo(e.Component);
 
@@ -320,20 +322,29 @@ namespace LayoutManager.View {
             e.AddRegion(new LayoutDrawingRegionNotConnected(e.Component, e.View));
         }
 
-        class LayoutDrawingRegionTrackContact : LayoutDrawingRegionGrid {
-            readonly LayoutTrackContactComponent component;
+        class LayoutDrawingRegionTriggerableBlockEdge : LayoutDrawingRegionGrid {
+            readonly LayoutTriggerableBlockEdgeBase component;
 
-            public LayoutDrawingRegionTrackContact(ModelComponent component, ILayoutView view) : base(component, view) {
-                this.component = (LayoutTrackContactComponent)component;
+            public LayoutDrawingRegionTriggerableBlockEdge(ModelComponent component, ILayoutView view) : base(component, view) {
+                this.component = (LayoutTriggerableBlockEdgeBase)component;
+            }
+
+            public LayoutTriggerableBlockEdgePainter.ComponentType PainterComponentType {
+                get => this.component switch
+                {
+                    LayoutTrackContactComponent _ => LayoutTriggerableBlockEdgePainter.ComponentType.TrackContact,
+                    LayoutProximitySensorComponent _ => LayoutTriggerableBlockEdgePainter.ComponentType.ProximitySensor,
+                    _ => throw new NotImplementedException()
+                };
             }
 
             public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
                 bool disposeFill = true;
 
                 if (component.Track != null) {
-                    LayoutTrackContactPainter painter = new LayoutTrackContactPainter(view.GridSizeInModelCoordinates, component.Track.ConnectionPoints);
+                    var painter = new LayoutTriggerableBlockEdgePainter(componentType: PainterComponentType, componentSize: view.GridSizeInModelCoordinates, cp: component.Track.ConnectionPoints);
 
-                    if (component.IsEmergencyContact) {
+                    if (component.IsEmergencySensor) {
                         painter.Fill = new SolidBrush(Color.DarkRed);
                         painter.ContactSize = component.IsTriggered ? new Size(13, 13) : new Size(11, 11);
                     }
@@ -369,8 +380,8 @@ namespace LayoutManager.View {
                 else {
                     // If there is no track, paint a large contact in the middle of the component. This case should
                     // not really happend
-                    using (LayoutTrackContactPainter painter = new LayoutTrackContactPainter(view.GridSizeInModelCoordinates,
-                              new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B })) {
+                    using (LayoutTriggerableBlockEdgePainter painter = new LayoutTriggerableBlockEdgePainter(componentType: PainterComponentType, componentSize: view.GridSizeInModelCoordinates,
+                        cp: new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B })) {
 
                         painter.ContactSize = new Size(12, 12);
                         painter.Paint(g);

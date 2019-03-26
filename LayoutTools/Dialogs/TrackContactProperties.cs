@@ -9,7 +9,7 @@ namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for TrackContactProperties.
     /// </summary>
-    public class TrackContactProperties : Form, ILayoutComponentPropertiesDialog {
+    public class TriggerableBlockEdgeProperties : Form, ILayoutComponentPropertiesDialog {
         private TabPage tabPageAddress;
         private TabControl tabControl;
         private Button buttonOK;
@@ -26,11 +26,14 @@ namespace LayoutManager.Tools.Dialogs {
         private CheckBox checkBoxEmergencyContact;
         readonly LayoutXmlInfo xmlInfo;
 
-        public TrackContactProperties(ModelComponent component) {
+        public TriggerableBlockEdgeProperties(ModelComponent component) {
             //
             // Required for Windows Form Designer support
             //
             InitializeComponent();
+
+            var t = component.ToString();
+            this.Text = $"{char.ToUpper(t[0]) + t.Substring(1)} properties";
 
             this.xmlInfo = new LayoutXmlInfo(component);
 
@@ -40,18 +43,18 @@ namespace LayoutManager.Tools.Dialogs {
 
             checkBoxEmergencyContact.Checked = IsEmergencyContact;
 
-            attributesEditor.AttributesSource = typeof(LayoutTrackContactComponent);
+            attributesEditor.AttributesSource = typeof(LayoutTriggerableBlockEdgeBase);
             attributesEditor.AttributesOwner = new AttributesOwner(xmlInfo.Element);
         }
 
         bool IsEmergencyContact {
-            get { return xmlInfo.Element.HasAttribute(LayoutTrackContactComponent.EmergencyContactAttribute) ? XmlConvert.ToBoolean(xmlInfo.Element.GetAttribute(LayoutTrackContactComponent.EmergencyContactAttribute)) : false; }
+            get { return xmlInfo.Element.HasAttribute(LayoutTriggerableBlockEdgeBase.EmergencyContactAttribute) ? XmlConvert.ToBoolean(xmlInfo.Element.GetAttribute(LayoutTriggerableBlockEdgeBase.EmergencyContactAttribute)) : false; }
 
             set {
                 if (value == false)
-                    XmlInfo.Element.RemoveAttribute(LayoutTrackContactComponent.EmergencyContactAttribute);
+                    XmlInfo.Element.RemoveAttribute(LayoutTriggerableBlockEdgeBase.EmergencyContactAttribute);
                 else
-                    XmlInfo.Element.SetAttribute(LayoutTrackContactComponent.EmergencyContactAttribute, XmlConvert.ToString(value));
+                    XmlInfo.Element.SetAttribute(LayoutTriggerableBlockEdgeBase.EmergencyContactAttribute, XmlConvert.ToString(value));
             }
         }
 
@@ -79,11 +82,11 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK = new System.Windows.Forms.Button();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageAddress = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.checkBoxEmergencyContact = new System.Windows.Forms.CheckBox();
             this.nameDefinition = new LayoutManager.CommonUI.Controls.NameDefinition();
             this.tabPageAttributes = new System.Windows.Forms.TabPage();
             this.attributesEditor = new LayoutManager.CommonUI.Controls.AttributesEditor();
-            this.checkBoxEmergencyContact = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabPageAddress.SuspendLayout();
             this.tabPageAttributes.SuspendLayout();
@@ -130,6 +133,25 @@ namespace LayoutManager.Tools.Dialogs {
             this.tabPageAddress.TabIndex = 0;
             this.tabPageAddress.Text = "General";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(8, 98);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(264, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = " (triggering this contact  will power off the whole layout)";
+            // 
+            // checkBoxEmergencyContact
+            // 
+            this.checkBoxEmergencyContact.AutoSize = true;
+            this.checkBoxEmergencyContact.Location = new System.Drawing.Point(8, 78);
+            this.checkBoxEmergencyContact.Name = "checkBoxEmergencyContact";
+            this.checkBoxEmergencyContact.Size = new System.Drawing.Size(118, 17);
+            this.checkBoxEmergencyContact.TabIndex = 1;
+            this.checkBoxEmergencyContact.Text = "Emergency contact";
+            this.checkBoxEmergencyContact.UseVisualStyleBackColor = true;
+            // 
             // nameDefinition
             // 
             this.nameDefinition.Component = null;
@@ -161,25 +183,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.attributesEditor.TabIndex = 0;
             this.attributesEditor.ViewOnly = false;
             // 
-            // checkBoxEmergencyContact
-            // 
-            this.checkBoxEmergencyContact.AutoSize = true;
-            this.checkBoxEmergencyContact.Location = new System.Drawing.Point(8, 78);
-            this.checkBoxEmergencyContact.Name = "checkBoxEmergencyContact";
-            this.checkBoxEmergencyContact.Size = new System.Drawing.Size(118, 17);
-            this.checkBoxEmergencyContact.TabIndex = 1;
-            this.checkBoxEmergencyContact.Text = "Emergency contact";
-            this.checkBoxEmergencyContact.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 98);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(264, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = " (triggering this contact  will power off the whole layout)";
-            // 
             // TrackContactProperties
             // 
             this.AcceptButton = this.buttonOK;
@@ -192,7 +195,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "TrackContactProperties";
             this.ShowInTaskbar = false;
-            this.Text = "Track Contact Properties";
+            this.Text = "{Contact/Proximity) Properties";
             this.tabControl.ResumeLayout(false);
             this.tabPageAddress.ResumeLayout(false);
             this.tabPageAddress.PerformLayout();

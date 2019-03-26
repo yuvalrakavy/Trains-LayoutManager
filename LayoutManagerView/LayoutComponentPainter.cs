@@ -259,7 +259,6 @@ namespace LayoutManager.Components {
         }
 
         public void Paint(Graphics g) {
-            Point tipPosition = GetConnectionPointPosition(tip, componentSize);
             Point[] segmentPositions = new Point[4];
 
             segmentPositions[0] = GetConnectionPointPosition(tip, componentSize);
@@ -389,54 +388,44 @@ namespace LayoutManager.Components {
     /// <summary>
     /// Paint a track contact. The track contact is painted as an outlined filled circle on the middle of the track
     /// </summary>
-    public class LayoutTrackContactPainter : LayoutTrackOverlayPainter, IDisposable {
-        Brush fill;
-        Pen outline;
-        Size contactSize = new Size(9, 9);
+    public class LayoutTriggerableBlockEdgePainter : LayoutTrackOverlayPainter, IDisposable {
+        public enum ComponentType {
+            TrackContact,
+            ProximitySensor
+        };
 
-        public LayoutTrackContactPainter(Size componentSize,
-            IList<LayoutComponentConnectionPoint> cp) : base(componentSize, cp) {
-            fill = Brushes.Orange;
-            outline = Pens.Black;
+        readonly ComponentType componentType;
+
+
+        public LayoutTriggerableBlockEdgePainter(ComponentType componentType,
+            Size componentSize, IList<LayoutComponentConnectionPoint> cp) : base(componentSize, cp) {
+            this.componentType = componentType;
+            Fill = Brushes.Orange;
+            Outline = Pens.Black;
+            ContactSize = new Size(9, 9);
         }
 
-        public Brush Fill {
-            set {
-                fill = value;
-            }
+        public Brush Fill { set; get; }
 
-            get {
-                return fill;
-            }
-        }
+        public Pen Outline { set; get; }
 
-        public Pen Outline {
-            set {
-                outline = value;
-            }
-
-            get {
-                return outline;
-            }
-        }
-
-        public Size ContactSize {
-            set {
-                contactSize = value;
-            }
-
-            get {
-                return contactSize;
-            }
-        }
+        public Size ContactSize { set; get; }
 
         public virtual void Paint(Graphics g) {
             Point centerPoint = CenterPoint;
             Rectangle contactBbox;
+            var adjustedSize = new Size((ContactSize.Width + 1) / 2 * 2, (ContactSize.Height + 1) / 2 * 2); // Make sure width/height are even so it will look nice and centered
 
-            contactBbox = new Rectangle(new Point(centerPoint.X - contactSize.Width / 2, centerPoint.Y - contactSize.Height / 2), contactSize);
-            g.FillEllipse(fill, contactBbox);
-            g.DrawEllipse(outline, contactBbox);
+            contactBbox = new Rectangle(new Point(centerPoint.X - adjustedSize.Width / 2, centerPoint.Y - adjustedSize.Height / 2), adjustedSize);
+            g.FillEllipse(Fill, contactBbox);
+            g.DrawEllipse(Outline, contactBbox);
+
+            if(componentType == ComponentType.ProximitySensor) {
+                var proximitySize = new Size((adjustedSize.Width * 6 / 4 + 1) / 2 * 2, (adjustedSize.Height * 6 / 4 + 1) / 2 * 2);
+                var proximityBox = new Rectangle(new Point(centerPoint.X - proximitySize.Width / 2, centerPoint.Y - proximitySize.Height / 2), proximitySize);
+
+                g.DrawEllipse(Outline, proximityBox);
+            }
         }
 
         #region IDisposable Members
@@ -447,11 +436,11 @@ namespace LayoutManager.Components {
         #endregion
     }
 
-    public class LayoutBlockEdgePainter : LayoutTrackContactPainter {
+    public class LayoutBlockEdgePainter : LayoutTriggerableBlockEdgePainter {
         const int crossingLineExtra = 4;
 
         public LayoutBlockEdgePainter(Size componentSize,
-            IList<LayoutComponentConnectionPoint> cp) : base(componentSize, cp) {
+            IList<LayoutComponentConnectionPoint> cp) : base(componentType: ComponentType.TrackContact, componentSize: componentSize, cp: cp) {
         }
 
         public override void Paint(Graphics g) {

@@ -355,6 +355,8 @@ namespace LayoutManager.Components {
 
         public LayoutTrackContactComponent? TrackContactComponent => trackAnnotation as LayoutTrackContactComponent;
 
+        public LayoutProximitySensorComponent? ProximitySensorComponent => trackAnnotation as LayoutProximitySensorComponent;
+
         public LayoutBlockDefinitionComponent? BlockDefinitionComponent => trackAnnotation as LayoutBlockDefinitionComponent;
 
         public LayoutTrackIsolationComponent? TrackIsolationComponent => trackAnnotation as LayoutTrackIsolationComponent;

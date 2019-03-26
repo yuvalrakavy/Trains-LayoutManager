@@ -15,6 +15,7 @@ namespace LayoutManager.Components {
         Red, Yellow, Green
     };
 
+
     /// <summary>
     /// Signal that is linked to block edge
     /// </summary>
@@ -104,7 +105,7 @@ namespace LayoutManager.Components {
                     return LayoutSignalState.Yellow;
             }
 
-            [LayoutEventDef("logical-signal-state-changed", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutTrackContactComponent), InfoType = typeof(LayoutSignalState))]
+            [LayoutEventDef("logical-signal-state-changed", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutBlockEdgeBase), InfoType = typeof(LayoutSignalState))]
             set {
                 LayoutModel.StateManager.Components.StateOf(this, "Signal").SetAttribute("State", value.ToString());
                 Redraw();
@@ -163,25 +164,14 @@ namespace LayoutManager.Components {
 
     #endregion
 
-    #region Track Contact component
+    #region LayoutTriggerableBlockEdgeBase
 
-    /// <summary>
-    /// Track contact component is a component that is triggered when a locomotive (or car)
-    /// equiped with a track magnet passes over it
-    /// </summary>
-    public class LayoutTrackContactComponent : LayoutBlockEdgeBase, IModelComponentHasName, IModelComponentConnectToControl {
-        bool trackContactIsTriggered;
-
-        static readonly IList<ModelComponentControlConnectionDescription> controlConnections = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
-            new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription("DryContact", "TrackContact", "track contact feedback") });
-
-        public LayoutTrackContactComponent() {
-            this.XmlInfo.XmlDocument.LoadXml("<TrackContact/>");
-        }
-
-        public override String ToString() => IsEmergencyContact ? "emergency track contact" : "track contact";
+    public abstract class LayoutTriggerableBlockEdgeBase : LayoutBlockEdgeBase, IModelComponentHasName, IModelComponentConnectToControl {
+        const string TriggeredStateTopic = "Triggered";
 
         public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
+
+        public abstract IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions { get; }
 
         public LayoutAddressInfo AddressProvider => new LayoutAddressInfo(this);
 
@@ -195,7 +185,7 @@ namespace LayoutManager.Components {
 
         public const string EmergencyContactAttribute = "EmergencyContact";
 
-        public bool IsEmergencyContact {
+        public bool IsEmergencySensor {
             get { return Element.HasAttribute(EmergencyContactAttribute) ? XmlConvert.ToBoolean(Element.GetAttribute(EmergencyContactAttribute)) : false; }
 
             set {
@@ -208,22 +198,44 @@ namespace LayoutManager.Components {
 
         public bool IsTriggered {
             get {
-                return trackContactIsTriggered;
+                return LayoutModel.StateManager.Components.Contains(this, TriggeredStateTopic);
             }
 
             set {
-                trackContactIsTriggered = value;
-                OnComponentChanged();
+                if (value != IsTriggered) {
+                    if (value)
+                        LayoutModel.StateManager.Components.StateOf(this, TriggeredStateTopic).SetAttribute("Value", "True");
+                    else
+                        LayoutModel.StateManager.Components.Remove(this, TriggeredStateTopic);
+                    OnComponentChanged();
+                }
             }
         }
 
+    }
+
+    #endregion
+
+    #region Track Contact component
+
+    /// <summary>
+    /// Track contact component is a component that is triggered when a locomotive (or car)
+    /// equiped with a track magnet passes over it
+    /// </summary>
+    public class LayoutTrackContactComponent : LayoutTriggerableBlockEdgeBase {
+        static readonly IList<ModelComponentControlConnectionDescription> controlConnections = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
+            new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription("DryContact", "TrackContact", "track contact feedback") });
+
+        public LayoutTrackContactComponent() {
+            this.XmlInfo.XmlDocument.LoadXml("<TrackContact/>");
+        }
+
+        public override String ToString() => IsEmergencySensor ? "emergency track contact" : "track contact";
+
+
         public override bool IsTrackContact() => FullyConnected;
 
-        #region IModelComponentConnectToControl Members
-
-        public IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions => controlConnections;
-
-        #endregion
+        public override IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions => controlConnections;
     }
 
     #endregion
@@ -239,6 +251,29 @@ namespace LayoutManager.Components {
 
         public override bool DrawOutOfGrid => false;
 
+    }
+
+    #endregion
+
+    #region LayoutProximitySensorComponent
+
+    /// <summary>
+    /// Track contact component is a component that is triggered when a locomotive (or car)
+    /// equiped with a track magnet passes over it
+    /// </summary>
+    public class LayoutProximitySensorComponent : LayoutTriggerableBlockEdgeBase {
+        static readonly IList<ModelComponentControlConnectionDescription> controlConnections = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
+            new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription("DryContact", "ProximitySensor", "proximity sensor feedback") });
+
+        public LayoutProximitySensorComponent() {
+            this.XmlInfo.XmlDocument.LoadXml("<ProximitySensor/>");
+        }
+
+        public override String ToString() => IsEmergencySensor ? "emergency proximity sensor" : "proximity sensor";
+
+        public override bool IsTrackContact() => FullyConnected;
+
+        public override IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions => controlConnections;
     }
 
     #endregion
