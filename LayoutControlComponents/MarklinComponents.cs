@@ -86,7 +86,7 @@ namespace LayoutManager.ControlComponents {
             moduleType.BusTypeNames.Add("S88BUS");
             moduleType.ConnectionPointsPerAddress = 16;
             moduleType.ConnectionPointIndexBase = 1;
-            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryContact;
+            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryTrigger;
             moduleType.NumberOfAddresses = 1;
             moduleType.ConnectionPointLabelFormat = ControlConnectionPointLabelFormatOptions.NoAttachedAddress;
             moduleType.ConnectionPointArrangement = ControlModuleConnectionPointArrangementOptions.BothRows | ControlModuleConnectionPointArrangementOptions.TopRightToLeft;

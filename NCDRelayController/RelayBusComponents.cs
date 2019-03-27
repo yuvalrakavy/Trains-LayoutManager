@@ -66,7 +66,7 @@ namespace LayoutManager.ControlComponents {
             IList<string> moduleTypeNames = (IList<string>)e.Info;
             string connectionName = connectionDestination.ConnectionDescription.Name;
 
-            if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "DryContact")) {
+            if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", ControlConnectionPointTypes.InputDryTrigger)) {
                 moduleTypeNames.Add("16_NCDContactsClosure");
                 moduleTypeNames.Add("32_NCDContactsClosure");
                 moduleTypeNames.Add("48_NCDContactsClosure");
@@ -114,7 +114,7 @@ namespace LayoutManager.ControlComponents {
             var moduleType = new ControlModuleType(parentElement, nContacts.ToString() + "_NCDContactsClosure", nContacts.ToString() + " Contacts Closure Module") {
                 ConnectionPointsPerAddress = 1,
                 ConnectionPointIndexBase = 0,
-                DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryContact,
+                DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryTrigger,
                 NumberOfAddresses = nContacts,
                 ConnectionPointLabelFormat = ControlConnectionPointLabelFormatOptions.ConnectionPointIndex,
                 ConnectionPointArrangement = ControlModuleConnectionPointArrangementOptions.BothRows

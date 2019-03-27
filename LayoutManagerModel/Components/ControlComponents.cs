@@ -746,7 +746,7 @@ namespace LayoutManager.Components {
 
         static readonly IList<ModelComponentControlConnectionDescription> controlConnectionsOfOccupancyBlock = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
           new ModelComponentControlConnectionDescription[] {
-            new ModelComponentControlConnectionDescription("DryContact,CurrentSensor", "FeedbackBlock", "block occupied feedback")
+            new ModelComponentControlConnectionDescription("DryLevel,CurrentSensor", "FeedbackBlock", "block occupied feedback")
         });
 
         static readonly IList<ModelComponentControlConnectionDescription> controlConnectionsOfNormalBlock = new List<ModelComponentControlConnectionDescription>().AsReadOnly();

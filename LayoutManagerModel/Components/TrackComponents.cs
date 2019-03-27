@@ -791,9 +791,9 @@ namespace LayoutManager.Components {
 
         static readonly IList<ModelComponentControlConnectionDescription> controlConnectionsWithFeedback = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
             new ModelComponentControlConnectionDescription[] {
-                new ModelComponentControlConnectionDescription("Solenoid", "Turnout", "turnout control"),
-                new ModelComponentControlConnectionDescription("DryContact", "TurnoutStraight", "turnout straight feedback"),
-                new ModelComponentControlConnectionDescription("DryContact", "TurnoutDivert", "turnout divert feedback"),
+                new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.OutputSolenoid, "Turnout", "turnout control"),
+                new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.Input, "TurnoutStraight", "turnout straight feedback"),
+                new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.Input, "TurnoutDivert", "turnout divert feedback"),
             });
 
         public LayoutTurnoutTrackComponent(LayoutComponentConnectionPoint tip,
@@ -1067,8 +1067,8 @@ namespace LayoutManager.Components {
         #region IModelComponentConnectToControl Members
 
         public IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions => Array.AsReadOnly<ModelComponentControlConnectionDescription>(new ModelComponentControlConnectionDescription[] {
-                    new ModelComponentControlConnectionDescription("Solenoid", "Right", "Control Straight/right"),
-                    new ModelComponentControlConnectionDescription("Solenoid", "Left", "Control Straight/left"),
+                    new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.OutputSolenoid, "Right", "Control Straight/right"),
+                    new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.OutputSolenoid, "Left", "Control Straight/left"),
                 });
 
         #endregion
@@ -1082,7 +1082,7 @@ namespace LayoutManager.Components {
         int diagonalIndex;
 
         static readonly IList<ModelComponentControlConnectionDescription> controlConnections = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
-            new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription("Solenoid", "Doubleslip", "double-slip control") });
+            new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.OutputSolenoid, "Doubleslip", "double-slip control") });
 
         public LayoutDoubleSlipTrackComponent(int diagonalIndex) {
             XmlDocument.LoadXml("<DoubleSlip />");

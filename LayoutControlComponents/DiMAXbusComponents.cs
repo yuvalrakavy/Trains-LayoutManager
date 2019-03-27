@@ -24,7 +24,7 @@ namespace LayoutManager.ControlComponents {
             EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DiMAXBus"));
             moduleType.ConnectionPointsPerAddress = 2;
             moduleType.NumberOfAddresses = 4;
-            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryContact;
+            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryTrigger;
             moduleType.ConnectionPointIndexBase = 0;
             moduleType.ConnectionPointLabelFormat = ControlConnectionPointLabelFormatOptions.Alpha | ControlConnectionPointLabelFormatOptions.AlphaLowercase | ControlConnectionPointLabelFormatOptions.AttachAddress;
             moduleType.LastAddress = 2048;
@@ -42,7 +42,7 @@ namespace LayoutManager.ControlComponents {
             EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DiMAXBus"));
             moduleType.ConnectionPointsPerAddress = 1;
             moduleType.NumberOfAddresses = 8;
-            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputLevel;
+            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryLevel;
             moduleType.ConnectionPointIndexBase = 0;
             moduleType.ConnectionPointLabelFormat = 0;
             moduleType.LastAddress = 2048;

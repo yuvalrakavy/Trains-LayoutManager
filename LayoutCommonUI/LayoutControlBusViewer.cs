@@ -227,7 +227,7 @@ namespace LayoutManager.CommonUI {
 
                 if (connectionPointType == ControlConnectionPointTypes.OutputSolenoid)
                     typeImage = imageListConnectionPointTypes.Images[0];
-                else if (connectionPointType == ControlConnectionPointTypes.InputDryContact) {
+                else if (connectionPointType == ControlConnectionPointTypes.InputDryTrigger) {
                     if (topRow)
                         typeImage = imageListConnectionPointTypes.Images[1];
                     else

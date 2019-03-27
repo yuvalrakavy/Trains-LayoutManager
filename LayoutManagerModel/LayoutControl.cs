@@ -15,14 +15,25 @@ namespace LayoutManager.Model {
     /// to what type of connection point it may be connected
     /// </summary>
     public class ControlConnectionPointTypes {
-        public const string OutputOnOff = "OnOff";
-        public const string OutputSolenoid = "Solenoid";
-        public const string OutputRelay = "Relay";
-        public const string OutputFlashing = "Flashing";
+        public const string Output = "Output;";
+        public const string OutputOnOff = Output + "OnOff";
+        public const string OutputSolenoid = Output + "Solenoid";
+        public const string OutputRelay = Output + "Relay";
+        public const string OutputFlashing = Output + "Flashing";
 
-        public const string InputDryContact = "DryContact";
-        public const string InputLevel = "Level";
-        public const string InputCurrent = "Current";
+        public const string Input = "Input";
+        public const string InputDry = Input +"Dry";
+        public const string InputVoltage = Input + "Voltage";
+        public const string InputCurrent = Input + "Current";
+
+        public const string Trigger = "Trigger";
+        public const string Level = "Level";
+
+        public const string InputDryTrigger = InputDry + Trigger;
+        public const string InputDryLevel = InputDry + Level;
+        public const string InputVoltageTrigger = InputVoltage + Trigger;
+        public const string InputVoltageLevel = InputVoltage + Level;
+        public const string InputCurrentLevel = InputCurrent + Level;
     }
 
     public enum ControlConnectionPointUsage {

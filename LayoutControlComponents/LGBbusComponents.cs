@@ -23,7 +23,7 @@ namespace LayoutManager.ControlComponents {
             EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "LGBBUS"));
             moduleType.ConnectionPointsPerAddress = 2;
             moduleType.NumberOfAddresses = 4;
-            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryContact;
+            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryTrigger;
             moduleType.ConnectionPointIndexBase = 0;
             moduleType.ConnectionPointLabelFormat = ControlConnectionPointLabelFormatOptions.Alpha | ControlConnectionPointLabelFormatOptions.AlphaLowercase | ControlConnectionPointLabelFormatOptions.AttachAddress;
             moduleType.LastAddress = 256;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class CountComponents : Form {
@@ -9,9 +10,9 @@ namespace LayoutManager.Tools.Dialogs {
 
             Dictionary<string, string> typeNames = new Dictionary<string, string>();
 
-            typeNames.Add("DryContact", "Input (e.g. contact)");
-            typeNames.Add("Solenoid", "Output (e.g. Turnout)");
-            typeNames.Add("Relay", "Relay");
+            typeNames.Add(ControlConnectionPointTypes.Input, "Input (e.g. contact)");
+            typeNames.Add(ControlConnectionPointTypes.OutputRelay, "Relay");
+            typeNames.Add(ControlConnectionPointTypes.Output, "Output (e.g. Turnout)");
 
             foreach (var p in counts) {
                 var typeName = typeNames.ContainsKey(p.Key) ? typeNames[p.Key] : p.Key;
