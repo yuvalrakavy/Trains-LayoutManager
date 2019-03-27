@@ -1104,23 +1104,39 @@ namespace DiMAX {
     }
 
     class DiMAXchangeAccessoryState : DiMAXcommandBase {
+        string description;
+
         public DiMAXchangeAccessoryState(DiMAXcommandStation commandStation, int unit, int state)
             : base(commandStation, new DiMAXpacket(DiMAXcommandCode.TurnoutControl, new byte[] { (byte)(unit >> 6), (byte)(((unit & 0x3f) << 2) | 2 | state) })) {
+
+            description = $"Set accessory {unit} state to {state}";
         }
+
+        public override string ToString() => description;
     }
 
     class DiMAXlocomotiveMotion : DiMAXcommandBase {
+        string description;
+
         public DiMAXlocomotiveMotion(DiMAXcommandStation commandStation, int unit, int speed)
             : base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoSpeedControl,
             new byte[] { (byte)(unit >> 8), (byte)(unit & 0xff), (byte)((speed >= 0 ? 0x80 : 0x00) | Math.Abs(speed)) })) {
+            description = $"Locomotive {unit} set speed to {speed}";
         }
+
+        public override string ToString() => description;
     }
 
     class DiMAXlocomotiveFunction : DiMAXcommandBase {
+        string description;
+
         public DiMAXlocomotiveFunction(DiMAXcommandStation commandStation, int unit, int functionNumber, bool functionState, bool lightsOn) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoFunctionControl,
             new byte[] { (byte)(unit >> 8), (byte)(unit & 0xff), (byte)((lightsOn ? 0x80 : 0) | (functionState ? 0x20 : 0) | (functionNumber & 0x1f)) })) {
+            description = $"Loco function, unit {unit} func# {functionNumber} state: {functionState} lights: {lightsOn}";
         }
+
+        public override string ToString() => description;
     }
 
     class DiMAXprogrammingCommandBase : DiMAXsynchronousCommandBase {
@@ -1150,52 +1166,78 @@ namespace DiMAX {
 
 
     class DiMAXprogramRegister : DiMAXprogrammingCommandBase {
+        string description;
+
         public DiMAXprogramRegister(DiMAXcommandStation commandStation, byte registerNumber, byte value) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.ProgrammingRegister, new byte[] { (byte)(registerNumber - 1), value })) {
+            description = $"Program register {registerNumber} value {value}";
         }
+
+        public override string ToString() => description;
     }
 
     class DiMAXprogramCV : DiMAXprogrammingCommandBase {
+        string description;
+
         public DiMAXprogramCV(DiMAXcommandStation commandStation, int cvNumber, byte data)
             : base(commandStation, new DiMAXpacket(DiMAXcommandCode.ProgrammingCV, new byte[] { (byte)((cvNumber - 1) >> 8), (byte)((cvNumber - 1) & 0xff), data })) {
+            description = $"Program CV {cvNumber} data {data}";
         }
 
+        public override string ToString() => description;
     }
 
     class DiMAXprogramCVonTrack : DiMAXprogrammingCommandBase {
+        string description;
+
         public DiMAXprogramCVonTrack(DiMAXcommandStation commandStation, int address, int cvNumber, byte data) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.ProgrammingCVPOM, new byte[] { (byte)((cvNumber - 1) >> 8), (byte)((cvNumber - 1) & 0xff), data, (byte)(address >> 8), (byte)(address & 0xff) })) {
+            description = $"Program address {address} CV {cvNumber} data {data}";
         }
+
+        public override string ToString() => description;
     }
 
     class DiMAXreadCV : DiMAXprogrammingCommandBase {
+        string description;
+
         public DiMAXreadCV(DiMAXcommandStation commandStation, int cvNumber, Action<LayoutActionResult, int, byte> doneCallback) : base(commandStation, new DiMAXpacket(DiMAXcommandCode.ReadCV, new byte[] { (byte)((cvNumber - 1) >> 8), (byte)((cvNumber - 1) & 0xff) })) {
+            description = $"Read cv {cvNumber}";
         }
 
         public override void OnReplyPacket(DiMAXpacket replyPacket) {
             Completed(new ReadCVresult(GetProgrammingResult(replyPacket), ((replyPacket.Parameters[0] & 3) << 8) | replyPacket.Parameters[1], replyPacket.Parameters[2]));
         }
+
+        public override string ToString() => description;
     }
 
     class DiMAXlocomotiveSelection : DiMAXsynchronousCommandBase {
+        string description;
+
         public DiMAXlocomotiveSelection(DiMAXcommandStation commandStation, int address, bool select, bool deselectActive, bool unconditional) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoSelection, new byte[] { (byte)(address >> 8), (byte)(address & 0xff),
                 (byte)((unconditional ? 0x80 : 0) | (deselectActive ? 0x40 : 0)  | (select ? 0x10 : 0)) })) {
+            description = $"select locomotive {address} select {select} deselect-active {deselectActive} unconditional {unconditional}";
         }
 
         public override void OnReplyPacket(DiMAXpacket replyPacket) {
-            replyPacket.Dump("Select Loco reply");
             base.OnReplyPacket(replyPacket);
         }
+
+        public override string ToString() => description;
     }
 
     class DiMAXlocomotiveRegistration : DiMAXcommandBase {
+        string description;
+
         public DiMAXlocomotiveRegistration(DiMAXcommandStation commandStation, int address, bool storeInNonVolatile = false, bool addressIsMotorola = false, bool parallelFunctions = true, int speedSteps = 28, int image = 0) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoConfig, new byte[] {
                 (byte)((address & 0x3f00) >> 8), (byte)(address & 0xff),
                 (byte)((storeInNonVolatile ? 0x80 : 0) | (addressIsMotorola ? 0x08 : 0) | (parallelFunctions ? 0x04 : 0) | GetSpeedStepsMask(speedSteps)),
                 (byte)image
             })) {
+            description = $"Register locomotive - address {address} storeInNonVolatile {storeInNonVolatile} addressIsMotorola {addressIsMotorola} parallelFunctions {parallelFunctions} speedSteps {speedSteps} image {image}";
         }
 
         static byte GetSpeedStepsMask(int speedSteps) {
@@ -1206,12 +1248,19 @@ namespace DiMAX {
                 default: throw new ArgumentException("Invalid speed steps value (can be 14, 28 or 128)");
             }
         }
+
+        public override string ToString() => description;
     }
 
     class DiMAXlocomotiveUnregister : DiMAXcommandBase {
+        string description;
+
         public DiMAXlocomotiveUnregister(DiMAXcommandStation commandStation, int address) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoConfig, new byte[] { (byte)((address & 0x3f00) >> 8), (byte)(address & 0xff) })) {
+            description = $"Unregister locomotive {address}";
         }
+
+        public override string ToString() => description;
     }
 
     #endregion

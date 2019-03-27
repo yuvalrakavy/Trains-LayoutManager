@@ -947,7 +947,7 @@ namespace LayoutManager.Components {
             if (queueNumber < 0 || queueNumber >= queues.Length)
                 throw new ArgumentException("Invalid queue index: " + queueNumber);
 
-            Trace.WriteLineIf(traceOutputManager.TraceInfo, "Add command " + command.GetType().Name);
+            Trace.WriteLineIf(traceOutputManager.TraceInfo, $"Add command {command.GetType().Name} - {command.ToString()}");
 
             lock (queues) {
                 queues[queueNumber].Enqueue(command);
