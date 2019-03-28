@@ -91,7 +91,7 @@ namespace LayoutManager.CommonUI.Controls {
             LayoutTextInfo textProvider = getTextProvider(false);
 
             textBoxName.Text = textProvider.Text;
-            if (textProvider.Element == null)
+            if (textProvider.OptionalElement == null)
                 checkBoxVisible.Checked = defaultIsVisible;
             else
                 checkBoxVisible.Checked = textProvider.Visible;
@@ -111,7 +111,7 @@ namespace LayoutManager.CommonUI.Controls {
             if (component != null)
                 textProvider.Component = component;
 
-            if (textProvider.Element == null && create)
+            if (textProvider.OptionalElement == null && create)
                 textProvider.Element = LayoutInfo.CreateProviderElement(xmlInfo, elementName, null);
 
             return textProvider;

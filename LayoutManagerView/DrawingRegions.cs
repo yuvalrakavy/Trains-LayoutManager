@@ -175,7 +175,7 @@ namespace LayoutManager.View {
         SizeF ballonContentSize;
         readonly float hangSize = 0.25f;
 
-        protected LayoutDrawingRegionBallon(ModelComponent component, ILayoutView view, Graphics g, SizeF ballonContentSize) : base(component) {
+        protected LayoutDrawingRegionBallon(ModelComponent component, ILayoutView view, SizeF ballonContentSize) : base(component) {
             this.ballonContentSize = ballonContentSize;
 
             bool horizontal = true;
@@ -299,7 +299,7 @@ namespace LayoutManager.View {
         readonly Font font;
         Brush brush = Brushes.Black;
 
-        public LayoutDrawingRegionBallonText(ModelComponent component, ILayoutView view, Graphics g, string text, Font font) : base(component, view, g, GetBallonContentSize(g, text, font)) {
+        public LayoutDrawingRegionBallonText(ModelComponent component, ILayoutView view, Graphics g, string text, Font font) : base(component, view, GetBallonContentSize(g, text, font)) {
             this.text = text;
             this.font = font;
         }
@@ -363,7 +363,7 @@ namespace LayoutManager.View {
     public class LayoutDrawingRegionPopupBallon : LayoutDrawingRegionBallon {
         readonly Ballon ballon;
 
-        public LayoutDrawingRegionPopupBallon(ModelComponent component, ILayoutView view, Graphics g, Ballon ballon) : base(component, view, g, ballon.Content.GetSize(g)) {
+        public LayoutDrawingRegionPopupBallon(ModelComponent component, ILayoutView view, Graphics g, Ballon ballon) : base(component, view, ballon.Content.GetSize(g)) {
             this.ballon = ballon;
         }
 

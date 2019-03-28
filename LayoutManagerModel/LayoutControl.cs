@@ -22,7 +22,7 @@ namespace LayoutManager.Model {
         public const string OutputFlashing = Output + "Flashing";
 
         public const string Input = "Input";
-        public const string InputDry = Input +"Dry";
+        public const string InputDry = Input + "Dry";
         public const string InputVoltage = Input + "Voltage";
         public const string InputCurrent = Input + "Current";
 

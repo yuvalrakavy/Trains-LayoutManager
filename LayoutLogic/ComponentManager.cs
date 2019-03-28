@@ -110,7 +110,7 @@ namespace LayoutManager.Logic {
 
                 if (connectionPoint.Component is IModelComponentHasReverseLogic)
                     reverseLogic = ((IModelComponentHasReverseLogic)connectionPoint.Component).ReverseLogic;
-
+                
                 componentWithSwitchingState.SetSwitchState(connectionPoint, reverseLogic ? 1 - state : state, connectionPoint.Name);
             }
         }
