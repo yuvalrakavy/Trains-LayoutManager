@@ -215,6 +215,7 @@ namespace LayoutManager.Components {
         }
 
     }
+            new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.InputDryTrigger, "TrackContact", "track contact feedback") });
 
     #endregion
 
