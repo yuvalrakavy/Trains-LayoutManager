@@ -376,7 +376,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public TrackEdge DestinationEdge => new TrackEdge(DestinationTrack, DestinationFront).OtherSide;
+        public TrackEdge DestinationEdge => new TrackEdge(Ensure.NotNull<LayoutTrackComponent>(DestinationTrack, nameof(DestinationTrack)), DestinationFront).OtherSide;
 
         public TrackEdge SourceEdge {
             get {

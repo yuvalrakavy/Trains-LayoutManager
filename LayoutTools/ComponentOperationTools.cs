@@ -792,21 +792,23 @@ namespace LayoutManager.Tools {
         }
 
         private void addLocomotiveDetailsPopupSections(PopupWindowContainerSection locoContainer, TrainLocomotiveInfo trainLocomotive) {
-            Image locoImage = trainLocomotive.Locomotive.Image;
+            var locoImage = trainLocomotive.Locomotive.Image;
 
             if (locoImage == null)
                 locoImage = LayoutModel.LocomotiveCatalog.GetStandardImage(trainLocomotive.Locomotive.Kind, trainLocomotive.Locomotive.Origin);
 
-            if (trainLocomotive.Orientation == LocomotiveOrientation.Backward)
-                locoImage.RotateFlip(RotateFlipType.RotateNoneFlipX);
+            if (locoImage != null) {
+                if (trainLocomotive.Orientation == LocomotiveOrientation.Backward)
+                    locoImage.RotateFlip(RotateFlipType.RotateNoneFlipX);
 
-            PopupWindowContainerSection locoImageContainer = locoContainer.CreateContainer();
+                PopupWindowContainerSection locoImageContainer = locoContainer.CreateContainer();
 
-            locoImageContainer.BorderPen = Pens.Black;
-            locoImageContainer.OuterMargins = new Size(0, 0);
-            locoImageContainer.InnerMargins = new Size(1, 1);
-            locoImageContainer.AddVerticalSection(new PopupWindowImageSection(locoImage));
-            locoContainer.AddVerticalSection(locoImageContainer);
+                locoImageContainer.BorderPen = Pens.Black;
+                locoImageContainer.OuterMargins = new Size(0, 0);
+                locoImageContainer.InnerMargins = new Size(1, 1);
+                locoImageContainer.AddVerticalSection(new PopupWindowImageSection(locoImage));
+                locoContainer.AddVerticalSection(locoImageContainer);
+            }
         }
 
 #region Find route on manual dispatch region
@@ -1598,7 +1600,7 @@ namespace LayoutManager.Tools {
 
 #endregion
 
-#region Track contact component
+        #region Track contact component
 
         [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(LayoutTrackContactComponent))]
         void QueryTrackContactContextMenu(LayoutEvent e) {
@@ -1607,22 +1609,34 @@ namespace LayoutManager.Tools {
 
         [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutTrackContactComponent))]
         void AddTrackContactContextMenu(LayoutEvent e) {
-            var component = Ensure.NotNull<ModelComponent>(e.Sender, "component");
+            var trackContact = Ensure.NotNull<LayoutTrackContactComponent>(e.Sender, "component");
             var menu = Ensure.NotNull<Menu>(e.Info, "menu");
-            MenuItem item = new LayoutComponentMenuItem(component, "&Trigger contact", new EventHandler(this.onTriggetTrackContact));
 
-            menu.MenuItems.Add(item);
+            menu.MenuItems.Add(new LayoutComponentMenuItem(trackContact, "&Trigger contact", (s, e) => EventManager.Event("track-contact-triggered-notification", trackContact)));
         }
 
-        private void onTriggetTrackContact(Object sender, EventArgs e) {
-            LayoutTrackContactComponent trackContact = (LayoutTrackContactComponent)((LayoutComponentMenuItem)sender).Component;
+        #endregion
 
-            EventManager.Event(new LayoutEvent("track-contact-triggered-notification", trackContact));
+        #region Proximity Sensor component
+
+        [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(LayoutProximitySensorComponent))]
+        void QueryProximitySensorContextMenu(LayoutEvent e) {
+            e.Info = e.Sender;
         }
 
-#endregion
+        [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutProximitySensorComponent))]
+        void AddProximitySensorContextMenu(LayoutEvent e) {
+            var component = Ensure.NotNull<LayoutProximitySensorComponent>(e.Sender, "component");
+            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
 
-#region Gate component
+            menu.MenuItems.Add(new LayoutComponentMenuItem(component, "&Proximiy sensor active", (s, e) => EventManager.Event("proximity-sensor-state-changed-notification", component, !component.IsTriggered)) {
+                Checked = component.IsTriggered
+            });
+        }
+
+        #endregion
+
+        #region Gate component
 
         [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(LayoutGateComponent))]
         void QueryGateContextMenu(LayoutEvent e) {

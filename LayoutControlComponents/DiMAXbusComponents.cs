@@ -130,7 +130,7 @@ namespace LayoutManager.ControlComponents {
 
         public MassothFeedbackDecoderBusConnectionMethod DiMAX_BusConnectionMethod {
             get {
-                return (MassothFeedbackDecoderBusConnectionMethod)Enum.Parse(typeof(MassothFeedbackDecoderBusConnectionMethod), GetAttribute("DiMAXBusConnectionMethod", "Slave"));
+                return (MassothFeedbackDecoderBusConnectionMethod)Enum.Parse(typeof(MassothFeedbackDecoderBusConnectionMethod), GetOptionalAttribute("DiMAXBusConnectionMethod") ??  "Slave");
             }
 
             set {
@@ -142,7 +142,7 @@ namespace LayoutManager.ControlComponents {
 
         public int DiMAX_BusId {
             get {
-                return XmlConvert.ToInt32(GetAttribute("DiMAXBusID", "12"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("DiMAXBusID") ??  "12");
             }
 
             set {

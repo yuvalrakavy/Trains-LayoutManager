@@ -78,7 +78,9 @@ namespace LayoutManager.Components {
     public abstract class LayoutBlockEdgeBase : ModelComponent, IModelComponentHasId, IModelComponentHasAttributes {
         public override ModelComponentKind Kind => ModelComponentKind.BlockEdge;
 
-        public LayoutStraightTrackComponent? Track => this.Spot.Track as LayoutStraightTrackComponent;
+        public LayoutStraightTrackComponent? OptionalTrack => this.Spot.Track as LayoutStraightTrackComponent;
+
+        public LayoutStraightTrackComponent Track => Ensure.NotNull<LayoutStraightTrackComponent>(OptionalTrack, "track");
 
         public XmlElement LinkedSignalsElement {
             get {
@@ -179,7 +181,7 @@ namespace LayoutManager.Components {
             get {
                 LayoutTextInfo text = new LayoutTextInfo(this);
 
-                return text.Element != null;
+                return text.OptionalElement != null;
             }
         }
 
@@ -224,7 +226,7 @@ namespace LayoutManager.Components {
     /// </summary>
     public class LayoutTrackContactComponent : LayoutTriggerableBlockEdgeBase {
         static readonly IList<ModelComponentControlConnectionDescription> controlConnections = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
-            new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription("DryContact", "TrackContact", "track contact feedback") });
+            new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.InputDryTrigger, "TrackContact", "track contact feedback") });
 
         public LayoutTrackContactComponent() {
             this.XmlInfo.XmlDocument.LoadXml("<TrackContact/>");
@@ -299,7 +301,7 @@ namespace LayoutManager.Components {
             }
         }
 
-        public IModelComponentLayoutLockResource GetResource(LayoutPhase phase) => LayoutModel.Component<IModelComponentLayoutLockResource>(ResourceId, phase);
+        public IModelComponentLayoutLockResource? GetResource(LayoutPhase phase) => LayoutModel.Component<IModelComponentLayoutLockResource>(ResourceId, phase);
     }
 
     /// <summary>
@@ -424,7 +426,7 @@ namespace LayoutManager.Components {
 
         public bool NoFeedback {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("NoFeedback", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("NoFeedback") ?? "false");
             }
 
             set {
@@ -434,7 +436,7 @@ namespace LayoutManager.Components {
 
         public bool IsSlowdownRegion {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("SlowDownRegion", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("SlowDownRegion") ?? "false");
             }
 
             set {
@@ -476,7 +478,7 @@ namespace LayoutManager.Components {
 
         public bool IsOccupancyDetectionBlock {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("OccupancyDetectionBlock", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("OccupancyDetectionBlock") ?? "false");
             }
 
             set {
@@ -509,7 +511,7 @@ namespace LayoutManager.Components {
 
         public int SpeedLimit {
             get {
-                return XmlConvert.ToInt32(GetAttribute("SpeedLimit", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("SpeedLimit") ?? "0");
             }
 
             set {
@@ -520,7 +522,7 @@ namespace LayoutManager.Components {
 
         public int SlowdownSpeed {
             get {
-                return XmlConvert.ToInt32(GetAttribute("SlowDownSpeed", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("SlowDownSpeed") ?? "0");
             }
 
             set {
@@ -746,7 +748,7 @@ namespace LayoutManager.Components {
 
         static readonly IList<ModelComponentControlConnectionDescription> controlConnectionsOfOccupancyBlock = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
           new ModelComponentControlConnectionDescription[] {
-            new ModelComponentControlConnectionDescription("DryLevel,CurrentSensor", "FeedbackBlock", "block occupied feedback")
+            new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.Level, "FeedbackBlock", "block occupied feedback")
         });
 
         static readonly IList<ModelComponentControlConnectionDescription> controlConnectionsOfNormalBlock = new List<ModelComponentControlConnectionDescription>().AsReadOnly();
@@ -770,7 +772,7 @@ namespace LayoutManager.Components {
 
         public LayoutBlock Block => Track.GetBlock(Track.ConnectionPoints[0]);
 
-        public LayoutBlock? MaybeBlock => Track.GetMaybeBlock(Track.ConnectionPoints[0]);
+        public LayoutBlock? OptionalBlock => Track.GetOptionalBlock(Track.ConnectionPoints[0]);
 
         public LayoutTrackPowerConnectorComponent PowerConnector {
             get {
@@ -1036,7 +1038,7 @@ namespace LayoutManager.Components {
                 };
 
                 return Array.AsReadOnly<ModelComponentControlConnectionDescription>(new ModelComponentControlConnectionDescription[] {
-                    new ModelComponentControlConnectionDescription("Solenoid,Relay,OnOff", "Signal", friendlyName)
+                    new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.Output, "Signal", friendlyName)
                 });
             }
         }
@@ -1179,7 +1181,7 @@ namespace LayoutManager.Components {
         /// </summary>
         public int DefaultStartAddress {
             get {
-                return XmlConvert.ToInt32(GetAttribute("DefaultStartAddress", "-1"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("DefaultStartAddress") ?? "-1");
             }
 
             set {

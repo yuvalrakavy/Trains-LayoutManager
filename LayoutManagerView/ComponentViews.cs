@@ -316,7 +316,7 @@ namespace LayoutManager.View {
 
             LayoutTextInfo nameProvider = new LayoutTextInfo(e.Component);
 
-            if (nameProvider.Element != null && nameProvider.Visible)
+            if (nameProvider.OptionalElement != null && nameProvider.Visible)
                 e.AddRegion(new LayoutDrawingRegionText(e, nameProvider));
 
             e.AddRegion(new LayoutDrawingRegionNotConnected(e.Component, e.View));
@@ -341,7 +341,7 @@ namespace LayoutManager.View {
             public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
                 bool disposeFill = true;
 
-                if (component.Track != null) {
+                if (component.OptionalTrack != null) {
                     var painter = new LayoutTriggerableBlockEdgePainter(componentType: PainterComponentType, componentSize: view.GridSizeInModelCoordinates, cp: component.Track.ConnectionPoints);
 
                     if (component.IsEmergencySensor) {
@@ -411,7 +411,7 @@ namespace LayoutManager.View {
             }
 
             public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
-                if (component.Track != null) {
+                if (component.OptionalTrack != null) {
                     using (LayoutBlockEdgePainter painter = new LayoutBlockEdgePainter(view.GridSizeInModelCoordinates, component.Track.ConnectionPoints)) {
 
                         if (LayoutController.IsOperationMode) {
@@ -467,7 +467,7 @@ namespace LayoutManager.View {
             if (LayoutBlockBallon.IsDisplayed(blockDefinition))
                 e.AddRegion(new LayoutDrawingRegionBallonInfo(e.Component, e.View, e.Graphics, LayoutBlockBallon.Get(blockDefinition)));
 
-            if (LayoutController.IsOperationMode && blockDefinition.MaybeBlock != null && blockDefinition.MaybeBlock.HasTrains) {
+            if (LayoutController.IsOperationMode && blockDefinition.OptionalBlock != null && blockDefinition.OptionalBlock.HasTrains) {
                 IList<TrainLocationInfo> trainLocations = blockDefinition.Block.Trains;
                 TrainLocationPainter[] painters = new TrainLocationPainter[trainLocations.Count];
                 int i;

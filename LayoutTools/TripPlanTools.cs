@@ -107,7 +107,7 @@ namespace LayoutManager.Tools {
             IRoutePlanningServices _tripPlanningServices = null;
 
             public ApplicableTripPlansData(XmlElement element) : base(element) {
-                staticGrade = XmlConvert.ToBoolean(GetAttribute("StaticGrade", "true"));
+                staticGrade = XmlConvert.ToBoolean(GetOptionalAttribute("StaticGrade") ??  "true");
             }
 
             public IRoutePlanningServices TripPlanningServices {

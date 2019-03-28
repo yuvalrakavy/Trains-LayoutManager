@@ -198,8 +198,6 @@ namespace LayoutManager.Logic {
                 e.Info = false;
             }
             else {
-                ILayoutPower invalidPower = new LayoutPower(null, LayoutPowerType.Disconnected, DigitalPowerFormats.None, "INVALID");
-
                 resetPowerConnectors();
 
                 foreach (LayoutTrackPowerConnectorComponent powerConnector in powerConnectors) {

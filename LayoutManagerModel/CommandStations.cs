@@ -48,7 +48,7 @@ namespace LayoutManager.Model {
 
         public string Namespace {
             get {
-                return GetAttribute("Namespace", "Default");
+                return GetOptionalAttribute("Namespace") ??  "Default";
             }
 
             set {
@@ -58,7 +58,7 @@ namespace LayoutManager.Model {
 
         public int UnitMin {
             get {
-                return XmlConvert.ToInt32(GetAttribute("UnitMin", "1"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("UnitMin") ??  "1");
             }
 
             set {
@@ -68,7 +68,7 @@ namespace LayoutManager.Model {
 
         public int UnitMax {
             get {
-                return XmlConvert.ToInt32(GetAttribute("UnitMax", "256"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("UnitMax") ??  "256");
             }
 
             set {
@@ -78,7 +78,7 @@ namespace LayoutManager.Model {
 
         public bool ShowSubunit {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("ShowSubunit", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("ShowSubunit") ??  "false");
             }
 
             set {
@@ -93,7 +93,7 @@ namespace LayoutManager.Model {
 
         public SubunitFormatValue SubunitFormat {
             get {
-                return (SubunitFormatValue)Enum.Parse(typeof(SubunitFormatValue), GetAttribute("SubunitFormat", "Number"));
+                return (SubunitFormatValue)Enum.Parse(typeof(SubunitFormatValue), GetOptionalAttribute("SubunitFormat") ??  "Number");
             }
 
             set {
@@ -102,7 +102,7 @@ namespace LayoutManager.Model {
         }
         public int SubunitMin {
             get {
-                return XmlConvert.ToInt32(GetAttribute("SubunitMin", "1"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("SubunitMin") ??  "1");
             }
 
             set {
@@ -112,7 +112,7 @@ namespace LayoutManager.Model {
 
         public int SubunitMax {
             get {
-                return XmlConvert.ToInt32(GetAttribute("SubunitMax", "256"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("SubunitMax") ??  "256");
             }
 
             set {

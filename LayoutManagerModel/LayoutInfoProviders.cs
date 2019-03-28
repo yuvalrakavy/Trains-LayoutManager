@@ -4,19 +4,21 @@ using System.Xml;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 //using LayoutManager.Components;
 
 using LayoutManager.Components;
 
+#nullable enable
 namespace LayoutManager.Model {
     /// <summary>
     /// Base class for information providers. Information providers wrap XML element and add symantics to them.
     /// </summary>
     public class LayoutInfo : LayoutXmlWrapper {
         bool elementInComponentDocument;
-        XmlElement container;
-        ModelComponent component;
+        XmlElement? container;
+        ModelComponent? component;
 
         [System.ComponentModel.Browsable(false)]
         public String ElementPath {
@@ -27,10 +29,12 @@ namespace LayoutManager.Model {
             }
         }
 
+        public ModelComponent? OptionalComponent {
+            get => component;
+        }
+
         public ModelComponent Component {
-            get {
-                return component;
-            }
+            get => Ensure.NotNull<ModelComponent>(OptionalComponent, "component");
 
             set {
                 component = value;
@@ -39,6 +43,7 @@ namespace LayoutManager.Model {
 
         public XmlElement ContainerElement {
             get {
+                Debug.Assert(container != null);
                 return container;
             }
 
@@ -77,7 +82,7 @@ namespace LayoutManager.Model {
             if (container != null) {
                 XmlNodeList elements = container.SelectNodes(elementPath);
 
-                Element = null;
+                OptionalElement = null;
                 this.container = container;
 
                 if (elements.Count == 1) {
@@ -88,7 +93,7 @@ namespace LayoutManager.Model {
                     throw new ArgumentException("More than one provider element found in component");
 
                 // If the element was not found in the component XML document, search the model document
-                if (Element == null) {
+                if (OptionalElement == null) {
                     elements = LayoutModel.Instance.XmlInfo.DocumentElement.SelectNodes(elementPath);
 
                     if (elements.Count == 1) {
@@ -113,10 +118,10 @@ namespace LayoutManager.Model {
         /// or CreateModelElement to initialize the provider
         /// </summary>
         public LayoutInfo() {
-            Element = null;
+            OptionalElement = null;
         }
 
-        private static void attachNewElement(XmlElement container, String parentPath, XmlElement element) {
+        private static void attachNewElement(XmlElement container, String? parentPath, XmlElement element) {
             XmlElement parentElement = container;
 
             element.SetAttribute("ID", XmlConvert.ToString(Guid.NewGuid()));
@@ -129,7 +134,7 @@ namespace LayoutManager.Model {
                 else {
                     int index = parentPath.IndexOf('/');
                     string parentName;
-                    string tail = null;
+                    string? tail = null;
 
                     if (index < 0)
                         parentName = parentPath;
@@ -157,16 +162,16 @@ namespace LayoutManager.Model {
         /// <param name="xmlInfo">The XML document in which to create the provider</param>
         /// <param name="parentPath">The XPath to the new provider's element parent</param>
         /// <param name="elementName">The provider's element name</param>
-        public static XmlElement CreateProviderElement(XmlElement container, string elementName, string parentPath = null) {
+        public static XmlElement CreateProviderElement(XmlElement container, string elementName, string? parentPath = null) {
             XmlElement element = container.OwnerDocument.CreateElement(elementName);
 
             attachNewElement(container, parentPath, element);
             return element;
         }
 
-        public static XmlElement CreateProviderElement(LayoutXmlInfo xmlInfo, string elementName, string parentPath = null) => CreateProviderElement(xmlInfo.DocumentElement, elementName, parentPath);
+        public static XmlElement CreateProviderElement(LayoutXmlInfo xmlInfo, string elementName, string? parentPath = null) => CreateProviderElement(xmlInfo.DocumentElement, elementName, parentPath);
 
-        public static XmlElement CreateProviderElement(ModelComponent component, string elementName, string parentPath = null) => CreateProviderElement(component.Element, elementName, parentPath);
+        public static XmlElement CreateProviderElement(ModelComponent component, string elementName, string? parentPath = null) => CreateProviderElement(component.Element, elementName, parentPath);
 
         /// <summary>
         /// Set/Get well known reference to this provider
@@ -201,7 +206,7 @@ namespace LayoutManager.Model {
 
         public FontStyle Style {
             get {
-                String v = GetAttribute("Style");
+                var v = GetOptionalAttribute("Style");
 
                 if (v == null)
                     return FontStyle.Regular;
@@ -216,7 +221,7 @@ namespace LayoutManager.Model {
 
         public String Name {
             get {
-                return GetAttribute("Name", "Arial");
+                return GetOptionalAttribute("Name") ??  "Arial";
             }
 
             set {
@@ -226,7 +231,7 @@ namespace LayoutManager.Model {
 
         public float Size {
             get {
-                return (float)XmlConvert.ToDouble(GetAttribute("Size", "8"));
+                return (float)XmlConvert.ToDouble(GetOptionalAttribute("Size") ??  "8");
             }
 
             set {
@@ -267,7 +272,7 @@ namespace LayoutManager.Model {
 
         public Color Color {
             get {
-                String colorName = GetAttribute("Color");
+                var colorName = GetOptionalAttribute("Color");
 
                 if (colorName == null)
                     return Color.Black;
@@ -316,7 +321,7 @@ namespace LayoutManager.Model {
 
         public int Distance {
             get {
-                return XmlConvert.ToInt32(GetAttribute("Distance", "8"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("Distance") ??  "8");
             }
 
             set {
@@ -326,7 +331,7 @@ namespace LayoutManager.Model {
 
         public int Width {
             get {
-                return XmlConvert.ToInt32(GetAttribute("Width", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("Width") ??  "0");
             }
 
             set {
@@ -336,7 +341,7 @@ namespace LayoutManager.Model {
 
         public LayoutDrawingAnchorPoint AnchorPoint {
             get {
-                return (LayoutDrawingAnchorPoint)Enum.Parse(typeof(LayoutDrawingAnchorPoint), GetAttribute("Anchor", "Center"));
+                return (LayoutDrawingAnchorPoint)Enum.Parse(typeof(LayoutDrawingAnchorPoint), GetOptionalAttribute("Anchor") ??  "Center");
             }
 
             set {
@@ -346,7 +351,7 @@ namespace LayoutManager.Model {
 
         public LayoutDrawingSide Side {
             get {
-                return (LayoutDrawingSide)Enum.Parse(typeof(LayoutDrawingSide), GetAttribute("Side", "Bottom"));
+                return (LayoutDrawingSide)Enum.Parse(typeof(LayoutDrawingSide), GetOptionalAttribute("Side") ??  "Bottom");
             }
 
             set {
@@ -354,7 +359,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public override String ToString() => GetAttribute("Title", "No title");
+        public override String ToString() => GetOptionalAttribute("Title") ??  "No title";
 
         /// <summary>
         /// Get the other "side" of a given side.
@@ -412,8 +417,8 @@ namespace LayoutManager.Model {
     }
 
     public class LayoutTextInfo : LayoutInfo {
-        LayoutPositionInfo positionProvider;
-        LayoutFontInfo fontProvider;
+        LayoutPositionInfo? positionProvider;
+        LayoutFontInfo? fontProvider;
 
         public LayoutTextInfo(ModelComponent component, String elementName) : base(component, elementName) {
         }
@@ -429,7 +434,7 @@ namespace LayoutManager.Model {
 
         public virtual String Name {
             get {
-                if (Element == null || Element.ChildNodes.Count == 0)
+                if (OptionalElement == null || Element.ChildNodes.Count == 0)
                     return "";
                 return Element.FirstChild.Value;
             }
@@ -456,7 +461,7 @@ namespace LayoutManager.Model {
 
         public bool Visible {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("Visible", "0"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("Visible") ??  "0");
             }
 
             set {
@@ -466,7 +471,7 @@ namespace LayoutManager.Model {
 
         public virtual String FontElementPath {
             get {
-                return GetAttribute("Font", "//Font[@Ref=\"Default\"]");
+                return GetOptionalAttribute("Font") ??  "//Font[@Ref=\"Default\"]";
             }
 
             set {
@@ -479,10 +484,10 @@ namespace LayoutManager.Model {
             get {
                 LayoutDrawingSide result = LayoutDrawingSide.Bottom;
 
-                if (Component != null) {
-                    LayoutTrackComponent track = null;
+                if (OptionalComponent != null) {
+                    LayoutTrackComponent? track = null;
 
-                    if (Component.Spot != null)
+                    if (Component.OptionalSpot != null)
                         track = Component.Spot.Track;
 
                     if (track != null) {
@@ -533,7 +538,7 @@ namespace LayoutManager.Model {
 
         public virtual String PositionElementPath {
             get {
-                return GetAttribute("Position", LayoutPositionInfo.GetElementPathPositionPath(DefaultLayoutDrawingSide));
+                return GetOptionalAttribute("Position") ??  LayoutPositionInfo.GetElementPathPositionPath(DefaultLayoutDrawingSide);
             }
 
             set {
@@ -583,6 +588,7 @@ namespace LayoutManager.Model {
             RemoveOnTrainDetected = false;
             FontSize = 13;
             CancellationToken = CancellationToken.None;
+            Text = "(None)";
         }
 
         public LayoutBlockBallon(string text)
@@ -599,7 +605,8 @@ namespace LayoutManager.Model {
 
         public static bool IsDisplayed(LayoutBlockDefinitionComponent blockDefinition) => LayoutModel.StateManager.OperationStates["SimpleBallon"].HasState(blockDefinition.Id);
 
-        public static LayoutBlockBallon Get(LayoutBlockDefinitionComponent blockDefinition) => LayoutModel.StateManager.OperationStates["SimpleBallon"].Get<LayoutBlockBallon>(blockDefinition.Id);
+        public static LayoutBlockBallon Get(LayoutBlockDefinitionComponent blockDefinition) =>
+            Ensure.NotNull<LayoutBlockBallon>(LayoutModel.StateManager.OperationStates["SimpleBallon"].Get<LayoutBlockBallon>(blockDefinition.Id), "BlockBallon");
 
         public static void Remove(LayoutBlockDefinitionComponent blockDefinition, TerminationReason terminationReason) {
             LayoutBlockBallon ballon = Get(blockDefinition);
@@ -663,7 +670,7 @@ namespace LayoutManager.Model {
 
         public int Unit {
             get {
-                return XmlConvert.ToInt32(GetAttribute("Unit", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("Unit") ??  "0");
             }
 
             set {
@@ -673,7 +680,7 @@ namespace LayoutManager.Model {
 
         public int Subunit {
             get {
-                return XmlConvert.ToInt32(GetAttribute("Subunit", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("Subunit") ??  "0");
             }
 
             set {
@@ -698,7 +705,7 @@ namespace LayoutManager.Model {
 
         public override string Text {
             get {
-                return GetAttribute("Text", "***");
+                return GetOptionalAttribute("Text") ??  "***";
             }
 
             set {
@@ -807,8 +814,8 @@ namespace LayoutManager.Model {
         public Size Size {
             get {
                 Size result = new Size {
-                    Width = XmlConvert.ToInt32(GetAttribute("Width", "-1")),
-                    Height = XmlConvert.ToInt32(GetAttribute("Height", "-1"))
+                    Width = XmlConvert.ToInt32(GetOptionalAttribute("Width") ??  "-1"),
+                    Height = XmlConvert.ToInt32(GetOptionalAttribute("Height") ??  "-1")
                 };
 
                 return result;
@@ -829,7 +836,7 @@ namespace LayoutManager.Model {
 
         public ImageSizeUnit WidthSizeUnit {
             get {
-                return (ImageSizeUnit)Enum.Parse(typeof(ImageSizeUnit), GetAttribute("WidthSizeUnit", "GridUnits"));
+                return (ImageSizeUnit)Enum.Parse(typeof(ImageSizeUnit), GetOptionalAttribute("WidthSizeUnit") ??  "GridUnits");
             }
 
             set {
@@ -839,7 +846,7 @@ namespace LayoutManager.Model {
 
         public ImageSizeUnit HeightSizeUnit {
             get {
-                return (ImageSizeUnit)Enum.Parse(typeof(ImageSizeUnit), GetAttribute("HeightSizeUnit", "GridUnits"));
+                return (ImageSizeUnit)Enum.Parse(typeof(ImageSizeUnit), GetOptionalAttribute("HeightSizeUnit") ??  "GridUnits");
             }
 
             set {
@@ -849,8 +856,8 @@ namespace LayoutManager.Model {
 
         public Size Offset {
             get {
-                return new Size(XmlConvert.ToInt32(GetAttribute("OffsetWidth", "0")),
-                    XmlConvert.ToInt32(GetAttribute("OffsetHeight", "0")));
+                return new Size(XmlConvert.ToInt32(GetOptionalAttribute("OffsetWidth") ??  "0"),
+                    XmlConvert.ToInt32(GetOptionalAttribute("OffsetHeight") ??  "0"));
             }
 
             set {
@@ -861,7 +868,7 @@ namespace LayoutManager.Model {
 
         public ImageOriginMethod OriginMethod {
             get {
-                return (ImageOriginMethod)Enum.Parse(typeof(ImageOriginMethod), GetAttribute("OriginMethod", "TopLeft"));
+                return (ImageOriginMethod)Enum.Parse(typeof(ImageOriginMethod), GetOptionalAttribute("OriginMethod") ??  "TopLeft");
             }
 
             set {
@@ -871,7 +878,7 @@ namespace LayoutManager.Model {
 
         public ImageHorizontalAlignment HorizontalAlignment {
             get {
-                return (ImageHorizontalAlignment)Enum.Parse(typeof(ImageHorizontalAlignment), GetAttribute("HorizontalAlignment", "Left"));
+                return (ImageHorizontalAlignment)Enum.Parse(typeof(ImageHorizontalAlignment), GetOptionalAttribute("HorizontalAlignment") ??  "Left");
             }
 
             set {
@@ -881,7 +888,7 @@ namespace LayoutManager.Model {
 
         public ImageVerticalAlignment VerticalAlignment {
             get {
-                return (ImageVerticalAlignment)Enum.Parse(typeof(ImageVerticalAlignment), GetAttribute("VerticalAlignment", "Top"));
+                return (ImageVerticalAlignment)Enum.Parse(typeof(ImageVerticalAlignment), GetOptionalAttribute("VerticalAlignment") ??  "Top");
             }
 
             set {
@@ -905,7 +912,7 @@ namespace LayoutManager.Model {
         public RotateFlipType RotateFlipEffect {
             get {
                 if (Element.HasAttribute("RotateFlipEffect"))
-                    return (RotateFlipType)Enum.Parse(typeof(RotateFlipType), GetAttribute("RotateFlipEffect", "RotateNoneFlipNone"));
+                    return (RotateFlipType)Enum.Parse(typeof(RotateFlipType), GetOptionalAttribute("RotateFlipEffect") ??  "RotateNoneFlipNone");
                 else
                     return RotateFlipType.RotateNoneFlipNone;
             }
@@ -919,7 +926,7 @@ namespace LayoutManager.Model {
 
         public bool ImageError {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("ImageError", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("ImageError") ??  "false");
             }
 
             set {

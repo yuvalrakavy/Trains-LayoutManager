@@ -453,7 +453,7 @@ namespace LayoutManager.Logic {
                         Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, " Removing train " + train.DisplayName + " because block is free: " + trainLocation.Block.BlockDefinintion.FullDescription);
                         train.LeaveBlock(block);
 
-                        if (blockEdge != null && blockEdge.Track != null) {
+                        if (blockEdge != null && blockEdge.OptionalTrack != null) {
                             if (blockEdge.Track.GetBlock(blockEdge.Track.ConnectionPoints[0]).Id == block.Id)
                                 toBlock = blockEdge.Track.GetBlock(blockEdge.Track.ConnectionPoints[1]);
                             else
@@ -996,8 +996,6 @@ namespace LayoutManager.Logic {
         /// <returns>True: it could be that locomotive that triggerd this track contact</returns>
         private bool canLocomotiveCrossBlockEdge(TrainLocationInfo trainLocation, LayoutBlockEdgeBase blockEdge) {
             bool result;
-
-            Debug.Assert(blockEdge.Track != null);
 
             TrainStateInfo trainState = new TrainStateInfo(trainLocation.LocomotiveStateElement);
 

@@ -30,9 +30,8 @@ namespace LayoutManager.Logic {
                     if (state == 1)
                         EventManager.Event(new LayoutEvent("track-contact-triggered-notification", component));
                 }
-                else if(component is LayoutProximitySensorComponent) {
-                    throw new NotImplementedException("PROXIMITY");
-                }
+                else if(component is LayoutProximitySensorComponent)
+                    EventManager.Event(new LayoutEvent("proximity-sensor-state-changed-notification", component, state != 0 ? true : false));
                 else if (component is LayoutBlockDefinitionComponent)
                     EventManager.Event(new LayoutEvent("train-detection-state-changed-notification", component, state != 0 ? true : false));
                 else if (component is IModelComponentHasSwitchingState)
@@ -180,7 +179,7 @@ namespace LayoutManager.Logic {
                 LayoutSignalState signalState = (LayoutSignalState)e.Info;
 
                 foreach (LinkedSignalInfo linkedSignal in blockEdge.LinkedSignals) {
-                    LayoutSignalComponent signalComponent = LayoutModel.Component<LayoutSignalComponent>(linkedSignal.SignalId, LayoutModel.ActivePhases);
+                    var signalComponent = LayoutModel.Component<LayoutSignalComponent>(linkedSignal.SignalId, LayoutModel.ActivePhases);
 
                     if (signalComponent != null)
                         signalComponent.SignalState = signalState;
@@ -194,7 +193,7 @@ namespace LayoutManager.Logic {
                 LayoutSignalState signalState = blockEdge.SignalState;
 
                 foreach (LinkedSignalInfo linkedSignal in blockEdge.LinkedSignals) {
-                    LayoutSignalComponent signalComponent = LayoutModel.Component<LayoutSignalComponent>(linkedSignal.SignalId, LayoutModel.ActivePhases);
+                    var signalComponent = LayoutModel.Component<LayoutSignalComponent>(linkedSignal.SignalId, LayoutModel.ActivePhases);
 
                     if (signalComponent != null)
                         signalComponent.SignalState = signalState;
@@ -268,7 +267,7 @@ namespace LayoutManager.Logic {
                         removeList.Add(signalIdBlockEdgePair.Key);
 
                 removeList.ForEach(delegate (Guid signalId) {
-                    LayoutSignalComponent signal = LayoutModel.Component<LayoutSignalComponent>(signalId, LayoutPhase.All);
+                    var signal = LayoutModel.Component<LayoutSignalComponent>(signalId, LayoutPhase.All);
 
                     if (signal != null)
                         EventManager.Event(new LayoutEvent("signal-component-unlinked", removedBlockEdge, signal));

@@ -301,7 +301,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool IgnoreNoResponseResult {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("IgnoreNoResponse", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("IgnoreNoResponse") ?? "false");
             }
 
             set {
@@ -361,7 +361,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int ProgrammingTargetAddress {
             get {
-                return XmlConvert.ToInt32(GetAttribute("ProgrammingTargetAddress", "-1"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("ProgrammingTargetAddress") ?? "-1");
             }
 
             set {

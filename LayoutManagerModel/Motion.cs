@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 
+#nullable enable
 namespace LayoutManager.Model {
 
     public enum MotionRampType {
@@ -37,7 +38,7 @@ namespace LayoutManager.Model {
 
         public string Name {
             get {
-                return GetAttribute("Name", "");
+                return GetOptionalAttribute("Name") ??  "";
             }
 
             set {
@@ -45,9 +46,9 @@ namespace LayoutManager.Model {
             }
         }
 
-        public string Role {
+        public string? Role {
             get {
-                return GetAttribute("Role", null);
+                return GetOptionalAttribute("Role");
             }
 
             set {
@@ -57,7 +58,7 @@ namespace LayoutManager.Model {
 
         public bool UseInTrainControllerDialog {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("UseInTrainController", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("UseInTrainController") ??  "false");
             }
 
             set {
@@ -80,7 +81,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int MotionTime {
             get {
-                return XmlConvert.ToInt32(GetAttribute("MotionTime", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("MotionTime") ??  "0");
             }
 
             set {
@@ -91,7 +92,7 @@ namespace LayoutManager.Model {
 
         public int SpeedChangeRate {
             get {
-                return XmlConvert.ToInt32(GetAttribute("SpeedChangeRate", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("SpeedChangeRate") ??  "0");
             }
 
             set {
@@ -201,7 +202,7 @@ namespace LayoutManager.Model {
     /// </summary>
     public class DefaultDriverParametersInfo : LayoutStateInfoBase {
 
-        public DefaultDriverParametersInfo(LayoutStateManager stateManager, XmlElement element) : base(element) {
+        public DefaultDriverParametersInfo(XmlElement element) : base(element) {
             if (element.ChildNodes.Count == 0)
                 initialize();
         }
@@ -228,7 +229,7 @@ namespace LayoutManager.Model {
 
         public int SpeedLimit {
             get {
-                return XmlConvert.ToInt32(GetAttribute("SpeedLimit", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("SpeedLimit") ??  "0");
             }
 
             set {
@@ -238,7 +239,7 @@ namespace LayoutManager.Model {
 
         public int SlowdownSpeed {
             get {
-                return XmlConvert.ToInt32(GetAttribute("SlowDownSpeed", "1"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("SlowDownSpeed") ??  "1");
             }
 
             set {
@@ -246,7 +247,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        private MotionRampInfo getRamp(string role) {
+        private MotionRampInfo? getRamp(string role) {
             XmlElement rampElement = (XmlElement)Element.SelectSingleNode("Ramp[@Role='" + role + "']");
 
             if (rampElement == null)
@@ -255,12 +256,12 @@ namespace LayoutManager.Model {
                 return new MotionRampInfo(rampElement);
         }
 
-        public MotionRampInfo AccelerationProfile => getRamp("Acceleration");
+        public MotionRampInfo? AccelerationProfile => getRamp("Acceleration");
 
-        public MotionRampInfo DecelerationProfile => getRamp("Deceleration");
+        public MotionRampInfo? DecelerationProfile => getRamp("Deceleration");
 
-        public MotionRampInfo SlowdownProfile => getRamp("SlowDown");
+        public MotionRampInfo? SlowdownProfile => getRamp("SlowDown");
 
-        public MotionRampInfo StopProfile => getRamp("Stop");
+        public MotionRampInfo? StopProfile => getRamp("Stop");
     }
 }

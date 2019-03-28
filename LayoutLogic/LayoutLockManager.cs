@@ -300,7 +300,8 @@ namespace LayoutManager.Logic {
                     lockedResourceEntry.RemoveRequest(lockRequest);
 
                     if (lockedResourceEntry.Request == null && lockedResourceEntry.PendingRequests.Length == 0) {
-                        Trace.WriteLineIf(traceLockManager.TraceInfo, "LockManager: Removing entry for canceled not-ready block resource " + LayoutModel.Component<ModelComponent>(resourceId).FullDescription);
+                        Trace.WriteLineIf(traceLockManager.TraceInfo, 
+                            "LockManager: Removing entry for canceled not-ready block resource " + LayoutModel.Component<ModelComponent>(resourceId)?.FullDescription ?? $"Missing component {resourceId}");
 
                         lockedResourceMap.Remove(resourceId);
                     }
@@ -365,7 +366,7 @@ namespace LayoutManager.Logic {
             if (LayoutModel.Blocks.TryGetValue(resourceID, out LayoutBlock block))
                 Trace.Write(block.BlockDefinintion.FullDescription);
             else
-                Trace.Write(LayoutModel.Component<ModelComponent>(resourceID, LayoutPhase.All).FullDescription);
+                Trace.Write(LayoutModel.Component<ModelComponent>(resourceID, LayoutPhase.All)?.FullDescription ?? $"Missing resource component {resourceID}");
         }
 
         private void dumpLockRequest(LayoutLockRequest request, int indentation) {
@@ -448,7 +449,15 @@ namespace LayoutManager.Logic {
 
             // Check that all resources are ready
             if (canGrant)
-                canGrant = request.ResourceUseCount.Keys.All(resourceId => canGrantLockFor(request, resourceId) && LayoutModel.Component<ILayoutLockResource>(resourceId, LayoutPhase.All).IsResourceReady());
+                canGrant = request.ResourceUseCount.Keys.All(resourceId => {
+                    bool IsResourceReady(Guid id) {
+                        var resource = LayoutModel.Component<ILayoutLockResource>(resourceId, LayoutPhase.All);
+
+                        return resource != null ? resource.IsResourceReady() : false;
+                    }
+
+                    return canGrantLockFor(request, resourceId) && IsResourceReady(resourceId);
+                });
 
             if (!canGrant) {
                 foreach (LayoutLockBlockEntry blockEntry in request.Blocks) {
@@ -470,7 +479,7 @@ namespace LayoutManager.Logic {
                     foreach (var resourceInfo in blockEntry.Block.BlockDefinintion.Info.Resources) {
                         var resource = LayoutModel.Component<ILayoutLockResource>(resourceInfo.ResourceId, LayoutPhase.All);
 
-                        if (!resource.IsResourceReady())
+                        if (resource != null && !resource.IsResourceReady())
                             resource.MakeResourceReady();
                     }
                 }

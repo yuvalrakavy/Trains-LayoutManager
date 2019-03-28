@@ -239,7 +239,7 @@ namespace LayoutManager {
                 else if (messageSubject is LayoutBlock) {
                     LayoutBlock block = (LayoutBlock)messageSubject;
 
-                    if (block.BlockDefinintion != null)
+                    if (block.OptionalBlockDefinition != null)
                         selection = new LayoutSelection(new ModelComponent[] { block.BlockDefinintion });
                     else {
                         selection = new LayoutSelection();

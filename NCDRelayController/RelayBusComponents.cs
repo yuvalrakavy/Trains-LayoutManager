@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051
 namespace LayoutManager.ControlComponents {
 
     [LayoutModule("NCD Relay Components")]
@@ -50,7 +51,6 @@ namespace LayoutManager.ControlComponents {
         private void recommendRelayBusControlModuleTypes(LayoutEvent e) {
             ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)e.Sender;
             IList<string> moduleTypeNames = (IList<string>)e.Info;
-            string connectionName = connectionDestination.ConnectionDescription.Name;
 
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Relay")) {
                 moduleTypeNames.Add("8_NCDRelays");
@@ -64,7 +64,6 @@ namespace LayoutManager.ControlComponents {
         private void recommendInputBusControlModuleTypes(LayoutEvent e) {
             ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)e.Sender;
             IList<string> moduleTypeNames = (IList<string>)e.Info;
-            string connectionName = connectionDestination.ConnectionDescription.Name;
 
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", ControlConnectionPointTypes.InputDryTrigger)) {
                 moduleTypeNames.Add("16_NCDContactsClosure");

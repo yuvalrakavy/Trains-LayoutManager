@@ -553,7 +553,7 @@ namespace LayoutManager.Logic {
 
             addTargets(
                 bestRoute: bestRoute,
-                sourceEdge: new TrackEdge(sourceComponent as LayoutTrackComponent, front),
+                sourceEdge: new TrackEdge((LayoutTrackComponent)sourceComponent, front),
                 destinationEntryInfo: null,
                 destinationComponent: destinationComponent,
                 initialPenatly: 0,
@@ -1169,7 +1169,10 @@ namespace LayoutManager.Logic {
                                 TrackEdgeId destEdgeID = splitPair.Key;
                                 var component = LayoutModel.Component<ModelComponent>(destEdgeID.TrackId, LayoutPhase.All);
 
-                                Debug.Write("X=" + component.Location.X + ",Y=" + component.Location.Y + "/" + destEdgeID.ConnectionPoint.ToString() + " (" + splitPair.Value + ") ");
+                                if (component != null)
+                                    Debug.Write("X=" + component.Location.X + ",Y=" + component.Location.Y + "/" + destEdgeID.ConnectionPoint.ToString() + " (" + splitPair.Value + ") ");
+                                else
+                                    Debug.Write($"MISSING component for id {destEdgeID}");
                             }
                         }
                         Debug.WriteLine("");

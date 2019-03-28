@@ -10,6 +10,7 @@ using System.Linq;
 
 using LayoutManager.Components;
 
+#nullable enable
 namespace LayoutManager.Model {
 
     public enum ModelComponentKind {
@@ -87,7 +88,6 @@ namespace LayoutManager.Model {
     /// All model components should be derived from this class.
     /// </summary>
     public abstract class ModelComponent : LayoutObject, IComparable<ModelComponent>, IModelComponent {
-        LayoutModelSpotComponentCollection _spot;
 
         /// <summary>
         /// Return the kind of this component. Each layer in a given spot may
@@ -97,26 +97,20 @@ namespace LayoutManager.Model {
             get;
         }
 
+        public LayoutModelSpotComponentCollection? OptionalSpot { get; set; }
+
         /// <summary>
         /// The in which this component is located on the layout model grid.
         /// Using the spot, you can gain access to other components which are
         /// located in other layers or of another kind in this location
         /// </summary>
-        public LayoutModelSpotComponentCollection Spot {        // Implemented by ModelComponentBase
-            internal set {
-                _spot = value;
-            }
-
-            get {
-                return _spot;
-            }
-        }
+        public LayoutModelSpotComponentCollection Spot => Ensure.NotNull<LayoutModelSpotComponentCollection>(OptionalSpot, "OptionalSpot");
 
         /// <summary>
         /// The location (x, y) in which this component is located in the model
         /// grid.
         /// </summary>
-        public Point Location => _spot.Location;
+        public Point Location => Spot.Location;
 
         /// <summary>
         /// Return the Z order of this component. When presented, components with smaller Z order
@@ -138,7 +132,7 @@ namespace LayoutManager.Model {
         /// Fire an event to indicate that this component was changed
         /// </summary>
         public virtual void OnComponentChanged() {
-            _spot.Area.OnComponentChanged(this);
+            Spot.Area.OnComponentChanged(this);
         }
 
         /// <summary>
@@ -183,7 +177,7 @@ namespace LayoutManager.Model {
         /// Cause the component to redraw itself (send event to all views)
         /// </summary>
         public virtual void Redraw() {
-            if (_spot != null)
+            if (OptionalSpot != null)
                 OnComponentChanged();
         }
 
@@ -192,7 +186,7 @@ namespace LayoutManager.Model {
         /// grid location, and the image will be modified.
         /// </summary>
         public virtual void EraseImage() {
-            _spot.Area.OnEraseComponentImage(this);
+            Spot.Area.OnEraseComponentImage(this);
         }
 
         #region Support for connected components
@@ -211,7 +205,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// No specific control module is requried
         /// </summary>
-        public virtual string RequiredControlModuleTypeName => null;
+        public virtual string? RequiredControlModuleTypeName => null;
 
         #endregion
 
@@ -431,10 +425,10 @@ namespace LayoutManager.Model {
     /// </summary>
     [System.ComponentModel.TypeConverter(typeof(TrackEdgeConverter))]
     public struct TrackEdge : IComparable<TrackEdge> {
-        readonly LayoutTrackComponent track;
+        readonly LayoutTrackComponent? track;
         readonly LayoutComponentConnectionPoint cp;
 
-        public static readonly TrackEdge Empty = new TrackEdge((LayoutTrackComponent)null, 0);
+        public static readonly TrackEdge Empty = new TrackEdge();
 
         public TrackEdge(LayoutTrackComponent track, LayoutComponentConnectionPoint cp) {
             this.track = track;
@@ -445,7 +439,7 @@ namespace LayoutManager.Model {
             : this((LayoutTrackComponent)track, cp) {
         }
 
-        public LayoutTrackComponent Track => track;
+        public LayoutTrackComponent Track => Ensure.NotNull<LayoutTrackComponent>(track, "track");
 
         public IModelComponentIsMultiPath Split => (IModelComponentIsMultiPath)Track;
 
@@ -468,9 +462,9 @@ namespace LayoutManager.Model {
             return false;
         }
 
-        public override int GetHashCode() => ((ModelComponent)track).GetHashCode();
+        public override int GetHashCode() => Track.GetHashCode();
 
-        public override String ToString() => ((LayoutTrackComponent)Track).FullDescription + " (" + cp + ")";
+        public override String ToString() => Track.FullDescription + " (" + cp + ")";
 
         public LayoutComponentConnectionPoint OtherConnectionPoint {
             get {
@@ -497,6 +491,8 @@ namespace LayoutManager.Model {
             if (other.track == track)
                 return ConnectionPoint - other.ConnectionPoint;
             else {
+                Debug.Assert(track != null && other.track != null);
+
                 if (track.Location.X == other.track.Location.X)
                     return track.Location.Y - other.track.Location.Y;
                 return track.Location.X - other.track.Location.X;
@@ -553,14 +549,14 @@ namespace LayoutManager.Model {
 
         public static bool operator !=(TrackEdgeId edge1, TrackEdgeId edge2) => !edge1.Equals(edge2);
 
-        public TrackEdge ToTrackEdge() => new TrackEdge(LayoutModel.Component<LayoutTrackComponent>(trackId, LayoutModel.ActivePhases), cp);
+        public TrackEdge ToTrackEdge() => new TrackEdge(Ensure.NotNull<LayoutTrackComponent>(LayoutModel.Component<LayoutTrackComponent>(trackId, LayoutModel.ActivePhases), $"track for id {trackId}"), cp);
 
         public new string ToString() => ToTrackEdge().ToString();
 
         public override int GetHashCode() => TrackId.GetHashCode() ^ cp.GetHashCode();
     }
 
-    public class TrackEdgeDictionary : Dictionary<TrackEdge, object>, IEnumerable<TrackEdge> {
+    public class TrackEdgeDictionary : Dictionary<TrackEdge, object?>, IEnumerable<TrackEdge> {
 
         public void Add(TrackEdge edge) {
             Add(edge, null);
@@ -640,7 +636,7 @@ namespace LayoutManager.Model {
     }
 
     public class LayoutPowerOutlet : LayoutInfo, ILayoutPowerOutlet {
-        ILayoutPower power;
+        ILayoutPower? power;
 
         public IEnumerable<ILayoutPower> ObtainablePowers { get; }
 
@@ -672,9 +668,7 @@ namespace LayoutManager.Model {
         }
 
         public ILayoutPower Power {
-            get {
-                return power;
-            }
+            get => Ensure.NotNull<ILayoutPower>(power, nameof(power));
 
             set {
                 power = value;
@@ -740,7 +734,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The component to which this inlet is connected (null if inlet is not connected)
         /// </summary>
-        public IModelComponentHasPowerOutlets GetOutletComponent(LayoutPhase phase) {
+        public IModelComponentHasPowerOutlets? GetOutletComponent(LayoutPhase phase) {
             if (OutletComponentId == Guid.Empty)
                 return null;
             else
@@ -750,7 +744,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The component to which this inlet is connected (null if inlet is not connected)
         /// </summary>
-        public IModelComponentHasPowerOutlets OutletComponent {
+        public IModelComponentHasPowerOutlets? OutletComponent {
             get {
                 if (OutletComponentId == Guid.Empty)
                     return null;
@@ -785,10 +779,10 @@ namespace LayoutManager.Model {
         /// </summary>
         public ILayoutPowerOutlet ConnectedOutlet {
             get {
-                IModelComponentHasPowerOutlets componentWithPowerOutlets = OutletComponent;
+                var componentWithPowerOutlets = OutletComponent;
 
                 if (componentWithPowerOutlets == null)
-                    return null;
+                    throw new LayoutException("Nothing is connected to this inlet");
                 else
                     return componentWithPowerOutlets.PowerOutlets[OutletIndex];
             }
@@ -800,7 +794,7 @@ namespace LayoutManager.Model {
         public bool IsConnected => OutletComponent != null;
 
         public override string ToString() {
-            if (IsConnected) {
+            if (OutletComponent != null) {
                 if (OutletComponent.PowerOutlets.Count == 1)
                     return OutletComponent.NameProvider.Name;
                 else // More than one outlet, show return the outlet name
@@ -888,7 +882,7 @@ namespace LayoutManager.Model {
                 Remove(old);
             }
 
-            c.Spot = this;
+            c.OptionalSpot = this;
             spotComponents.Add(c);
             sorted = false;
 
@@ -1017,6 +1011,7 @@ namespace LayoutManager.Model {
 
         public LayoutModelArea() {
             id = Guid.NewGuid();
+            name = "";
         }
 
         #region Property accessors
@@ -1061,10 +1056,10 @@ namespace LayoutManager.Model {
         /// Return a layout spot (all components in a given location, regardless of layer
         /// or their kind)
         /// </summary>
-        public LayoutModelSpotComponentCollection this[Point p, LayoutPhase phase] {
+        public LayoutModelSpotComponentCollection? this[Point p, LayoutPhase phase] {
             get {
 
-                grid.TryGetValue(p, out LayoutModelSpotComponentCollection spot);
+                grid.TryGetValue(p, out LayoutModelSpotComponentCollection? spot);
 
                 Debug.Assert(spot == null || spot.Location == p, "Spot location != grid location");
 
@@ -1087,10 +1082,9 @@ namespace LayoutManager.Model {
         /// <param name="p">Location</param>
         /// <returns>Phase of this location</returns>
         public LayoutPhase Phase(Point p) {
-            if (grid.ContainsKey(p))
-                return this[p, LayoutPhase.All].Phase;
-            else
-                return LayoutModel.Instance.DefaultPhase;
+            var spot = this[p, LayoutPhase.All];
+
+            return spot != null ? spot.Phase : LayoutModel.Instance.DefaultPhase;
         }
 
         /// <summary>
@@ -1342,7 +1336,7 @@ namespace LayoutManager.Model {
                         if (componentTypeName == "LayoutManager.Components.LayoutBlockInfoComponent")
                             componentTypeName = "LayoutManager.Components.LayoutBlockDefinitionComponent";
 
-                        ModelComponent component = LayoutModel.CreateModelComponent(componentTypeName);
+                        var component = LayoutModel.CreateModelComponent(componentTypeName);
 
                         if (component != null) {
                             if (!r.IsEmptyElement)
@@ -1492,15 +1486,15 @@ namespace LayoutManager.Model {
         readonly LayoutModelAreaDictionary areas;
         readonly LayoutModelBlockDictionary blocks = new LayoutModelBlockDictionary();
         readonly LayoutXmlInfo modelXmlInfo = new LayoutXmlInfo();
-        String modelXmlInfoFilename;
+        string? modelXmlInfoFilename;
         bool modelIsLoading;
         readonly Hashtable componentReferences = new Hashtable();       // Component ID to component
-        LayoutModule module;
-        LocomotiveCollectionInfo locomotiveCollection;
+        LayoutModule? module;
+        LocomotiveCollectionInfo? locomotiveCollection;
         static LayoutModel instance;
         static LayoutStateManager stateManager;
-        LayoutControlManager controlManager;
-        MotionRampCollection ramps;
+        LayoutControlManager? controlManager;
+        MotionRampCollection? ramps;
         int drawLevel;
 
         // Events that can be fired by the model
@@ -1566,7 +1560,7 @@ namespace LayoutManager.Model {
 
         #region Implementation of ILayoutModuleSetup
 
-        public LayoutModule Module {
+        public LayoutModule? Module {
             set {
                 module = value;
             }
@@ -1628,7 +1622,7 @@ namespace LayoutManager.Model {
 
         public static LocomotiveCollectionInfo LocomotiveCollection => Instance.MyLocomotiveCollection;
 
-        protected LayoutControlManager MyControlManager => controlManager;
+        protected LayoutControlManager MyControlManager => Ensure.NotNull<LayoutControlManager>(controlManager, "MyControlManager");
 
         public static LayoutControlManager ControlManager => Instance.MyControlManager;
 
@@ -1729,9 +1723,9 @@ namespace LayoutManager.Model {
             componentReferences.Remove(id);
         }
 
-        public TComponentType GetComponentById<TComponentType>(Guid id, LayoutPhase phase) where TComponentType : class, IModelComponent {
+        public TComponentType? GetComponentById<TComponentType>(Guid id, LayoutPhase phase) where TComponentType : class, IModelComponent {
             //			TComponentType component = (TComponentType)componentReferences[id];
-            TComponentType component = componentReferences[id] as TComponentType;
+            var component = componentReferences[id] as TComponentType;
 
             if (component != null && (component.Spot.Phase & phase) == 0)
                 component = default;
@@ -1739,9 +1733,9 @@ namespace LayoutManager.Model {
             return component;
         }
 
-        public ModelComponent this[Guid id, LayoutPhase phase] => GetComponentById<ModelComponent>(id, phase);
+        public ModelComponent? this[Guid id, LayoutPhase phase] => GetComponentById<ModelComponent>(id, phase);
 
-        public static TComponentType Component<TComponentType>(Guid id, LayoutPhase phases = LayoutPhase.All) where TComponentType : class, IModelComponent => Instance.GetComponentById<TComponentType>(id, phases);
+        public static TComponentType? Component<TComponentType>(Guid id, LayoutPhase phases = LayoutPhase.All) where TComponentType : class, IModelComponent => Instance.GetComponentById<TComponentType>(id, phases);
 
         /// <summary>
         /// Return a list of all component of a given type or that implement a given interface
@@ -1764,7 +1758,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        protected IEnumerable<ComponentType> AllMyComponents<ComponentType>(LayoutPhase phases, Predicate<ComponentType> filter = null) where ComponentType : class, IModelComponent {
+        protected IEnumerable<ComponentType> AllMyComponents<ComponentType>(LayoutPhase phases, Predicate<ComponentType>? filter = null) where ComponentType : class, IModelComponent {
             foreach (var area in Areas) {
                 foreach (var spot in area.Grid.Values) {
                     if ((spot.Phase & phases) != 0) {
@@ -1794,7 +1788,7 @@ namespace LayoutManager.Model {
 
         public static IEnumerable<ComponentType> Components<ComponentType>(LayoutPhase phases, Predicate<ComponentType> filter) where ComponentType : class, IModelComponentHasId => Instance.MyComponents<ComponentType>(filter, phases);
 
-        public static IEnumerable<ComponentType> AllComponents<ComponentType>(LayoutPhase phases, Predicate<ComponentType> filter = null) where ComponentType : class, IModelComponent => Instance.AllMyComponents<ComponentType>(phases, filter);
+        public static IEnumerable<ComponentType> AllComponents<ComponentType>(LayoutPhase phases, Predicate<ComponentType>? filter = null) where ComponentType : class, IModelComponent => Instance.AllMyComponents<ComponentType>(phases, filter);
 
         public static IEnumerable<LayoutModelSpotComponentCollection> Spots => Instance.MySpots;
 
@@ -1821,7 +1815,7 @@ namespace LayoutManager.Model {
             w.WriteStartElement("LayoutModel");
             w.WriteAttributeString("DefaultPhase", DefaultPhase.ToString());
             writeXmlAreas(w);
-            controlManager.WriteXml(w);
+            controlManager?.WriteXml(w);
             w.WriteEndElement();
         }
 
@@ -1953,9 +1947,9 @@ namespace LayoutManager.Model {
 
         #endregion
 
-        public static ModelComponent CreateModelComponent(String componentTypeName) {
+        public static ModelComponent? CreateModelComponent(String componentTypeName) {
             Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-            ModelComponent component = null;
+            ModelComponent? component = null;
 
             foreach (Assembly a in loadedAssemblies) {
                 component = (ModelComponent)a.CreateInstance(componentTypeName);

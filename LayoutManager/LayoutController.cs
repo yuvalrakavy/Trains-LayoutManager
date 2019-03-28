@@ -731,7 +731,7 @@ namespace LayoutManager {
                 if (mode == "Design")
                     return null;
                 else {
-                    var phases = (LayoutPhase)Enum.Parse(typeof(LayoutPhase), GetAttribute("Phases", "Operational"));
+                    var phases = (LayoutPhase)Enum.Parse(typeof(LayoutPhase), GetOptionalAttribute("Phases") ??  "Operational");
 
                     return new OperationModeParameters() { Simulation = (mode == "Simulation"), Phases = phases };
                 }
@@ -754,7 +754,7 @@ namespace LayoutManager {
         }
 
         public int ActiveWindowIndex {
-            get { return XmlConvert.ToInt32(GetAttribute("ActiveWindowIndex", "-1")); }
+            get { return XmlConvert.ToInt32(GetOptionalAttribute("ActiveWindowIndex") ??  "-1"); }
             set { SetAttribute("ActiveWindowIndex", XmlConvert.ToString(value)); }
         }
 

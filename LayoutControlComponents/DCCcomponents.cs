@@ -161,7 +161,7 @@ namespace LayoutManager.ControlComponents {
             var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
             var module = LayoutModel.ControlManager.GetModule(XmlConvert.ToGuid(e.GetOption("ModuleID")));
 
-            if (module != null && connectionDestination.ConnectionDescription.IsCompatibleWith("Solenoid")) {
+            if (module != null && connectionDestination.ConnectionDescription.IsCompatibleWith(ControlConnectionPointTypes.OutputSolenoid)) {
                 int index = XmlConvert.ToInt32(e.GetOption("Index"));
 
                 e.Info = module.ConnectionPoints.GetConnectionPointType(index) == ControlConnectionPointTypes.OutputSolenoid;
@@ -177,7 +177,7 @@ namespace LayoutManager.ControlComponents {
 
             e.Info = false;
 
-            if (module != null && connectionDestination.ConnectionDescription.IsCompatibleWith("Solenoid", "OnOff")) {
+            if (module != null && connectionDestination.ConnectionDescription.IsCompatibleWith(ControlConnectionPointTypes.OutputSolenoid, ControlConnectionPointTypes.OutputOnOff)) {
                 int index = XmlConvert.ToInt32(e.GetOption("Index"));
 
                 switch (module.ConnectionPoints.GetConnectionPointType(index)) {
@@ -200,7 +200,7 @@ namespace LayoutManager.ControlComponents {
             var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
             var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
 
-            if (connectionDestination.ConnectionDescription.IsCompatibleWith("Control", "Solenoid")) {
+            if (connectionDestination.ConnectionDescription.IsCompatibleWith("Control", ControlConnectionPointTypes.OutputSolenoid)) {
                 moduleTypeNames.Add("Massoth8156001");          // 4 switch decoders
                 moduleTypeNames.Add("Massoth8156501");          // single switch decoder
                 moduleTypeNames.Add("LGB55025");
@@ -212,7 +212,7 @@ namespace LayoutManager.ControlComponents {
             var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
             var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
 
-            if (connectionDestination.ConnectionDescription.IsCompatibleWith("Control", "Solenoid")) {
+            if (connectionDestination.ConnectionDescription.IsCompatibleWith("Control", ControlConnectionPointTypes.OutputSolenoid)) {
                 moduleTypeNames.Add("Massoth8156001_AsFunctionDecoder");
             }
         }

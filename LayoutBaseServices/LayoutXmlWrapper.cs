@@ -2,9 +2,10 @@ using System;
 using System.Diagnostics;
 using System.Xml;
 
+#nullable enable
 namespace LayoutManager {
     public class LayoutXmlWrapper : IObjectHasXml {
-        private XmlElement _element;
+        private XmlElement? _element;
 
         public LayoutXmlWrapper() {
         }
@@ -43,9 +44,17 @@ namespace LayoutManager {
 
         public XmlElement Element {
             get {
+                Debug.Assert(_element != null);
                 return _element;
             }
 
+            set {
+                _element = value;
+            }
+        }
+
+        public XmlElement? OptionalElement {
+            get => _element;
             set {
                 _element = value;
             }
@@ -68,28 +77,30 @@ namespace LayoutManager {
             }
         }
 
-        public String GetAttribute(string name, string defaultValue) {
+        public String? GetOptionalAttribute(string name) {
             if (_element == null)
-                return defaultValue;
+                return null;
             else {
                 if (_element.Attributes[name] == null)
-                    return defaultValue;
+                    return null;
                 else
                     return _element.GetAttribute(name);
             }
         }
 
-        public String GetAttribute(string name) => GetAttribute(name, null);
+        public string GetAttribute(string name) => Ensure.NotNull<string>(GetOptionalAttribute(name), $"Xml Attribute {name}");
 
 
-        public void SetAttribute(string name, string v) {
+        public void SetAttribute(string name, string? v) {
+            Debug.Assert(_element != null);
             if (v == null)
                 _element.RemoveAttribute(name);
             else
                 _element.SetAttribute(name, v);
         }
 
-        public void SetAttribute(string name, string v, string removeIf) {
+        public void SetAttribute(string name, string? v, string? removeIf) {
+            Debug.Assert(_element != null);
             if (v == null || v == removeIf)
                 _element.RemoveAttribute(name);
             else
@@ -97,6 +108,7 @@ namespace LayoutManager {
         }
 
         public void SetAttribute(string name, int v, int removeIf) {
+            Debug.Assert(_element != null);
             if (v == removeIf)
                 _element.RemoveAttribute(name);
             else
@@ -104,14 +116,17 @@ namespace LayoutManager {
         }
 
         public void SetAttribute(string name, int v) {
+            Debug.Assert(_element != null);
             _element.SetAttribute(name, XmlConvert.ToString(v));
         }
 
         public void SetAttribute(string name, Guid v) {
+            Debug.Assert(_element != null);
             _element.SetAttribute(name, XmlConvert.ToString(v));
         }
 
         public void SetAttribute(string name, Guid v, Guid removeIf) {
+            Debug.Assert(_element != null);
             if (v == removeIf)
                 _element.RemoveAttribute(name);
             else
@@ -119,10 +134,12 @@ namespace LayoutManager {
         }
 
         public void SetAttribute(string name, bool v) {
+            Debug.Assert(_element != null);
             _element.SetAttribute(name, XmlConvert.ToString(v));
         }
 
         public void SetAttribute(string name, bool v, bool removeIf) {
+            Debug.Assert(_element != null);
             if (v == removeIf)
                 _element.RemoveAttribute(name);
             else

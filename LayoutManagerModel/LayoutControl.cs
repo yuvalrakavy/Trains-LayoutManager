@@ -396,7 +396,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int Index {
             get {
-                return XmlConvert.ToInt32(GetAttribute("Index", "-1"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("Index") ?? "-1");
             }
 
             set {
@@ -409,7 +409,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string Type {
             get {
-                return GetAttribute("Type", Module.DefaultControlConnectionPointType);
+                return GetOptionalAttribute("Type") ?? Module.DefaultControlConnectionPointType;
             }
 
             set {
@@ -458,7 +458,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool UserActionRequired {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("UserActionRequired", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("UserActionRequired") ?? "false");
             }
 
             set {
@@ -910,7 +910,7 @@ namespace LayoutManager.Model {
 
         public string DefaultControlConnectionPointType {
             get {
-                return GetAttribute("DefaultConnectionPointType", ModuleType.DefaultControlConnectionPointType);
+                return GetOptionalAttribute("DefaultConnectionPointType") ?? ModuleType.DefaultControlConnectionPointType;
             }
 
             set {
@@ -923,7 +923,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int Address {
             get {
-                return XmlConvert.ToInt32(GetAttribute("Address", "-1"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("Address") ?? "-1");
             }
 
             set {
@@ -962,9 +962,9 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The module label
         /// </summary>
-        public string Label {
+        public string? Label {
             get {
-                return GetAttribute("Label", null);
+                return GetOptionalAttribute("Label");
             }
 
             set {
@@ -977,7 +977,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool UserActionRequired {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("UserActionRequired", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("UserActionRequired") ?? "false");
             }
 
             set {
@@ -990,7 +990,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool AddressProgrammingRequired {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("AddressProgrammingRequired", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("AddressProgrammingRequired") ?? "false");
             }
 
             set {
@@ -1140,7 +1140,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string DefaultControlConnectionPointType {
             get {
-                return GetAttribute("DefaultConnectionPointType", ControlConnectionPointTypes.OutputSolenoid);
+                return GetOptionalAttribute("DefaultConnectionPointType") ?? ControlConnectionPointTypes.OutputSolenoid;
             }
 
             set {
@@ -1155,7 +1155,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int NumberOfAddresses {
             get {
-                return XmlConvert.ToInt32(GetAttribute("NumberOfAddresses", "1"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("NumberOfAddresses") ?? "1");
             }
 
             set {
@@ -1184,7 +1184,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int ConnectionPointsPerAddress {
             get {
-                return XmlConvert.ToInt32(GetAttribute("ConnectionPointsPerAddress", "1"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("ConnectionPointsPerAddress") ?? "1");
             }
 
             set {
@@ -1213,7 +1213,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public ControlModuleConnectionPointArrangementOptions ConnectionPointArrangement {
             get {
-                int v = XmlConvert.ToInt32(GetAttribute("ConnectionPointArrangement", "6"));
+                int v = XmlConvert.ToInt32(GetOptionalAttribute("ConnectionPointArrangement") ?? "6");
 
                 return (ControlModuleConnectionPointArrangementOptions)v;
             }
@@ -1230,7 +1230,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public ControlConnectionPointLabelFormatOptions ConnectionPointLabelFormat {
             get {
-                int v = XmlConvert.ToInt32(GetAttribute("ConnectionPointLabelFormat", "0"));
+                int v = XmlConvert.ToInt32(GetOptionalAttribute("ConnectionPointLabelFormat") ?? "0");
 
                 return (ControlConnectionPointLabelFormatOptions)v;
             }
@@ -1247,7 +1247,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int ConnectionPointIndexBase {
             get {
-                return XmlConvert.ToInt32(GetAttribute("ConnectionPointIndexBase", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("ConnectionPointIndexBase") ?? "0");
             }
 
             set {
@@ -1296,7 +1296,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool BuiltIn {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("BuiltIn", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("BuiltIn") ?? "false");
             }
 
             set {
@@ -1309,7 +1309,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string DecoderTypeName {
             get {
-                return GetAttribute("DecoderType", null);
+                return GetAttribute("DecoderType");
             }
 
             set {
@@ -1410,7 +1410,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public IModelComponentIsBusProvider BusProvider {
             get {
-                return LayoutModel.Component<IModelComponentIsBusProvider>(BusProviderId, LayoutModel.ActivePhases);
+                return Ensure.NotNull<IModelComponentIsBusProvider>(LayoutModel.Component<IModelComponentIsBusProvider>(BusProviderId, LayoutModel.ActivePhases), "BusProvider");
             }
 
             set {
@@ -1781,7 +1781,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int FirstAddress {
             get {
-                return XmlConvert.ToInt32(GetAttribute("FirstAddress", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("FirstAddress") ?? "0");
             }
 
             set {
@@ -1794,7 +1794,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int LastAddress {
             get {
-                return XmlConvert.ToInt32(GetAttribute("LastAddress", "255"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("LastAddress") ?? "255");
             }
 
             set {

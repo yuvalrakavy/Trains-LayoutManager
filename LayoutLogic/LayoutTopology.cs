@@ -36,7 +36,7 @@ namespace LayoutManager.Logic {
                 LayoutTrackComponent? newTrack = null;
                 Point newTrackLocation = trackEdge.Track.Location + LayoutTrackComponent.GetConnectionOffset(trackEdge.ConnectionPoint);
                 LayoutComponentConnectionPoint newTrackConnectionPoint = LayoutTrackComponent.GetPointConnectingTo(trackEdge.ConnectionPoint);
-                LayoutModelSpotComponentCollection spot = trackEdge.Track.Spot.Area[newTrackLocation, phase];
+                var spot = trackEdge.Track.Spot.Area[newTrackLocation, phase];
 
                 if (spot != null && (spot.Phase & phase) != 0) {
                     // See if there is a connecting track in the current track layer

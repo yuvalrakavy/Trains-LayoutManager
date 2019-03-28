@@ -554,10 +554,9 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutAsyncEvent("wait-for-locomotive-placement")]
-        private async Task waitForPlacement(LayoutEvent e0) {
-            var e = (LayoutEvent<LayoutBlockDefinitionComponent, string>)e0;
-            var blockDefinition = e.Sender;
-            var message = e.Info;
+        private async Task waitForPlacement(LayoutEvent e) {
+            var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockDefinition");
+            var message = Ensure.NotNull<string>(e.Info, "message");
             var trainId = XmlConvert.ToGuid(e.GetOption("TrainID"));
 
             var placeTrainBallon = new LayoutBlockBallon {
@@ -602,12 +601,12 @@ namespace LayoutManager.Logic {
             e.Info = null;
 
             if (e.HasOption("Train", "Length"))
-                trainLength = TrainLength.Parse(e.GetOption(elementName: "Train", optionName: "Length"));
+                trainLength = TrainLength.Parse(e.GetOption(elementName: "Train", optionName: "Length")!);
             else
                 trainLength = TrainLength.Standard;
 
             if (e.HasOption("Train", "Front"))
-                front = LayoutComponentConnectionPoint.Parse(e.GetOption(elementName: "Train", optionName: "Front"));
+                front = LayoutComponentConnectionPoint.Parse(e.GetOption(elementName: "Train", optionName: "Front")!);
             else {
                 if (collectionElement.Name == "Train") {
                     front = EventManager.EventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>("get-locomotive-front", blockDefinition, collectionElement);
@@ -669,7 +668,7 @@ namespace LayoutManager.Logic {
             var e = (LayoutEvent<TrainStateInfo, LayoutBlockDefinitionComponent>)e0;
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
             var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Info, "blockDefinition");
-            var front = LayoutComponentConnectionPoint.Parse(e.GetOption(elementName: "Train", optionName: "Front"));
+            var front = LayoutComponentConnectionPoint.Parse(Ensure.NotNull<string>(e.GetOption(elementName: "Train", optionName: "Front"), "option Train/Front"));
 
             TrainLocationInfo trainLocation = train.PlaceInBlock(blockDefinition.Block, front);
 
@@ -790,7 +789,7 @@ namespace LayoutManager.Logic {
             LayoutComponentConnectionPoint? front;
 
             if (e.HasOption("Train", "Front"))
-                front = LayoutComponentConnectionPoint.Parse(e.GetOption("Front", "Train"));
+                front = LayoutComponentConnectionPoint.Parse(e.GetOption("Front", "Train")!);
             else {
                 front = EventManager.EventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>("get-locomotive-front", blockDefinition, train);
 

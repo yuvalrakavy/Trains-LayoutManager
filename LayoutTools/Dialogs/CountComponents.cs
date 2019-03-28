@@ -8,11 +8,11 @@ namespace LayoutManager.Tools.Dialogs {
         public CountComponents(Dictionary<string, int[]> counts) {
             InitializeComponent();
 
-            Dictionary<string, string> typeNames = new Dictionary<string, string>();
-
-            typeNames.Add(ControlConnectionPointTypes.Input, "Input (e.g. contact)");
-            typeNames.Add(ControlConnectionPointTypes.OutputRelay, "Relay");
-            typeNames.Add(ControlConnectionPointTypes.Output, "Output (e.g. Turnout)");
+            Dictionary<string, string> typeNames = new Dictionary<string, string> {
+                { ControlConnectionPointTypes.Input, "Input (e.g. contact)" },
+                { ControlConnectionPointTypes.OutputRelay, "Relay" },
+                { ControlConnectionPointTypes.Output, "Output (e.g. Turnout)" }
+            };
 
             foreach (var p in counts) {
                 var typeName = typeNames.ContainsKey(p.Key) ? typeNames[p.Key] : p.Key;

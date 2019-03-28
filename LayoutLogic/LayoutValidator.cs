@@ -74,7 +74,7 @@ namespace LayoutManager.Logic {
                         if (track != null) {
                             foreach (LayoutComponentConnectionPoint cp in track.ConnectionPoints) {
                                 System.Drawing.Point ml = spot.Location + LayoutTrackComponent.GetConnectionOffset(cp);
-                                LayoutModelSpotComponentCollection otherSpot = area[ml, phase];
+                                var otherSpot = area[ml, phase];
                                 LayoutTrackComponent? otherTrack = null;
 
                                 if (otherSpot != null && (otherSpot.Phase & phase) != 0)
@@ -114,7 +114,7 @@ namespace LayoutManager.Logic {
 
             foreach (LayoutComponentConnectionPoint cp in track.ConnectionPoints) {
                 System.Drawing.Point ml = track.Location + LayoutTrackComponent.GetConnectionOffset(cp);
-                LayoutModelSpotComponentCollection otherSpot = track.Spot.Area[ml, phase];
+                var otherSpot = track.Spot.Area[ml, phase];
                 LayoutTrackComponent? otherTrack = null;
 
                 if (otherSpot != null)

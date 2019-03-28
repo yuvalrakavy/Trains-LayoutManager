@@ -474,7 +474,7 @@ namespace LayoutManager.Model {
 
         public bool IsCircular {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("IsCircular", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("IsCircular") ??  "false");
             }
 
             set {
@@ -484,7 +484,7 @@ namespace LayoutManager.Model {
 
         public string Name {
             get {
-                return GetAttribute("Name", null);
+                return GetAttribute("Name");
             }
 
             set {
@@ -507,7 +507,7 @@ namespace LayoutManager.Model {
 
         public bool FromCatalog {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("FromCatalog", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("FromCatalog") ??  "false");
             }
 
             set {
@@ -602,7 +602,7 @@ namespace LayoutManager.Model {
 
         public TripStatus Status {
             get {
-                return (TripStatus)Enum.Parse(typeof(TripStatus), GetAttribute("Status", "NotSubmitted"));
+                return (TripStatus)Enum.Parse(typeof(TripStatus), GetOptionalAttribute("Status") ??  "NotSubmitted");
             }
 
             [LayoutEventDef("trip-status-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TripPlanAssignmentInfo), InfoType = typeof(TripStatus))]

@@ -627,7 +627,7 @@ namespace LayoutManager.Model {
 
         public int CurrentSpeedLimit {
             get {
-                return XmlConvert.ToInt32(GetAttribute("CurrentSpeedLimit", "0")); ;
+                return XmlConvert.ToInt32(GetOptionalAttribute("CurrentSpeedLimit") ?? "0"); ;
             }
 
             set {
@@ -637,7 +637,7 @@ namespace LayoutManager.Model {
 
         public int CurrentSlowdownSpeed {
             get {
-                return XmlConvert.ToInt32(GetAttribute("CurrentSlowDownSpeed", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("CurrentSlowDownSpeed") ?? "0");
             }
 
             set {
@@ -647,7 +647,7 @@ namespace LayoutManager.Model {
 
         protected int RequestedSpeedLimit {
             get {
-                return XmlConvert.ToInt32(GetAttribute("_RequestedSpeedLimit", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("_RequestedSpeedLimit") ?? "0");
             }
 
             set {
@@ -657,7 +657,7 @@ namespace LayoutManager.Model {
 
         public LocomotiveOrientation MotionDirection {
             get {
-                return (LocomotiveOrientation)Enum.Parse(typeof(LocomotiveOrientation), GetAttribute("MotionDirection", "Forward"));
+                return (LocomotiveOrientation)Enum.Parse(typeof(LocomotiveOrientation), GetOptionalAttribute("MotionDirection") ?? "Forward");
             }
 
             set {
@@ -705,7 +705,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int FinalSpeed {
             get {
-                return XmlConvert.ToInt32(GetAttribute("FinalSpeed", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("FinalSpeed") ?? "0");
             }
 
             set {
@@ -720,7 +720,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int SpeedInSteps {
             get {
-                return XmlConvert.ToInt32(GetAttribute("Speed", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("Speed") ?? "0");
             }
 
             set {
@@ -792,7 +792,7 @@ namespace LayoutManager.Model {
         public bool Lights {
             get {
                 if (Element.HasAttribute("Lights"))
-                    return XmlConvert.ToBoolean(GetAttribute("Lights", "False"));
+                    return XmlConvert.ToBoolean(GetOptionalAttribute("Lights") ?? "False");
                 return false;
             }
 
@@ -933,7 +933,7 @@ namespace LayoutManager.Model {
 
         #region Add Locomotive
 
-        public override CanPlaceTrainResult AddLocomotive(LocomotiveInfo loco, LocomotiveOrientation orientation, LayoutBlock block, bool validateAddress) {
+        public override CanPlaceTrainResult AddLocomotive(LocomotiveInfo loco, LocomotiveOrientation orientation, LayoutBlock? block, bool validateAddress) {
             CanPlaceTrainResult result;
 
             if (block != null)
@@ -1413,7 +1413,7 @@ namespace LayoutManager.Model {
 
         public int LastBlockEdgeCrossingSpeed {
             get {
-                return XmlConvert.ToInt32(GetAttribute("LastBlockEdgeCrossingSpeed", "0"));
+                return XmlConvert.ToInt32(GetOptionalAttribute("LastBlockEdgeCrossingSpeed") ?? "0");
             }
 
             set {
@@ -1423,7 +1423,7 @@ namespace LayoutManager.Model {
 
         public bool TrainStoppedOnBlockEdgeCrossing {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("StoppedOnBlockCrossing", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("StoppedOnBlockCrossing") ?? "false");
             }
 
             set {
@@ -1857,6 +1857,16 @@ namespace LayoutManager.Model {
             Element.RemoveAll();
         }
 
+        /// <summary>
+        /// Remove state of components with no topics
+        /// </summary>
+        public void RemoveEmpty() {
+            var removeList = (from XmlElement e in this.Element where e.ChildNodes.Count == 0 select e).ToList();
+
+            foreach(var componentStateElement in removeList)
+                Remove(XmlConvert.ToGuid(componentStateElement.GetAttribute("ID")));
+        }
+
         #endregion
     }
 
@@ -1871,7 +1881,7 @@ namespace LayoutManager.Model {
 
         public Guid TrackContactId => ComponentId;
 
-        public LayoutTrackContactComponent TrackContact => LayoutModel.Component<LayoutTrackContactComponent>(ComponentId, LayoutModel.ActivePhases);
+        public LayoutTrackContactComponent TrackContact => Ensure.NotNull<LayoutTrackContactComponent>(LayoutModel.Component<LayoutTrackContactComponent>(ComponentId, LayoutModel.ActivePhases), "TrackContact");
 
         public Guid TrainId {
             get {
@@ -2023,7 +2033,7 @@ namespace LayoutManager.Model {
 
         public string Name {
             get {
-                return GetAttribute("Name", "");
+                return GetOptionalAttribute("Name") ?? "";
             }
 
             set {
@@ -2033,7 +2043,7 @@ namespace LayoutManager.Model {
 
         public bool Active {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("Active", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("Active") ?? "false");
             }
 
             set {
@@ -2181,7 +2191,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool IgnoreNotConnectedFeedbacks {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("IgnoreNotConnectedFeedbacks", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("IgnoreNotConnectedFeedbacks") ?? "false");
             }
 
             set {
@@ -2194,7 +2204,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool IgnoreNotConnectedPowerComponents {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("IgnoreNotPowerComponents", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("IgnoreNotPowerComponents") ?? "false");
             }
 
             set {
@@ -2212,6 +2222,8 @@ namespace LayoutManager.Model {
 
     public class TrainTrackingOptions : LayoutStateInfoBase {
         const string InManualDispatchRegionAttribute = "InManualDispatchRegion";
+        const string ProximitySensorSensitivityDelayAttribute = "ProximitySensorSensitivity";
+        const int ProxmitySensorSensitivityDefault = 400;
 
         public TrainTrackingOptions(XmlElement element) : base(element) {
         }
@@ -2224,6 +2236,20 @@ namespace LayoutManager.Model {
 
             set {
                 SetAttribute(InManualDispatchRegionAttribute, value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Time (in milliseconds) in which proxmity sensor need to remain in the same state for the state to acknoledge
+        /// </summary>
+        public int ProximitySensorSensitivityDelay {
+            get => XmlConvert.ToInt32(GetOptionalAttribute(ProximitySensorSensitivityDelayAttribute) ?? XmlConvert.ToString(ProxmitySensorSensitivityDefault));
+
+            set {
+                if (value == ProxmitySensorSensitivityDefault)
+                    Element.RemoveAttribute(ProximitySensorSensitivityDelayAttribute);
+                else
+                    SetAttribute(ProximitySensorSensitivityDelayAttribute, value);
             }
         }
     }
@@ -2269,7 +2295,7 @@ namespace LayoutManager.Model {
 
         public string Scope {
             get {
-                return GetAttribute("Scope", "TripPlan");
+                return GetOptionalAttribute("Scope") ?? "TripPlan";
             }
 
             set {
@@ -2283,7 +2309,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool GlobalPolicy {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("Global", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("Global") ?? "false");
             }
 
             set {
@@ -2293,7 +2319,7 @@ namespace LayoutManager.Model {
 
         public bool ShowInMenu {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("ShowInMenu", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("ShowInMenu") ?? "false");
             }
 
             set {
@@ -2350,7 +2376,7 @@ namespace LayoutManager.Model {
 
         public bool Apply {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("Apply", "false"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("Apply") ?? "false");
             }
 
             set {
@@ -2562,7 +2588,7 @@ namespace LayoutManager.Model {
             componentsState = new ComponentsStateInfo(getElement("Components"));
             tripPlansCatalog = new TripPlanCatalogInfo(getElement("TripPlansCatalog"));
             manualDispatchRegions = new ManualDispatchRegionCollection(getElement("ManualDispatchRegions"));
-            defaultDriverParameters = new DefaultDriverParametersInfo(this, getElement("DefaultDriverParameters"));
+            defaultDriverParameters = new DefaultDriverParametersInfo(getElement("DefaultDriverParameters"));
             layoutVerificationOptions = new LayoutVerificationOptions(getElement("LayoutVerificiationOptions"));
             trainTrackingOptions = new TrainTrackingOptions(getElement("TrainTracking"));
 
@@ -2682,6 +2708,7 @@ namespace LayoutManager.Model {
         }
 
         public void Save() {
+            Components.RemoveEmpty();
             XmlDocument.Save(LayoutController.LayoutRuntimeStateFilename);
         }
 

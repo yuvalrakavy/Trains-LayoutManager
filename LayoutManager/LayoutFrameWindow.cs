@@ -2062,7 +2062,7 @@ namespace LayoutManager {
 
         public FormWindowState WindowState {
             get {
-                return (FormWindowState)Enum.Parse(typeof(FormWindowState), GetAttribute("WindowState", "Normal"));
+                return (FormWindowState)Enum.Parse(typeof(FormWindowState), GetOptionalAttribute("WindowState") ??  "Normal");
             }
 
             set {
@@ -2095,27 +2095,27 @@ namespace LayoutManager {
         }
 
         public int ActiveAreaIndex {
-            get { return XmlConvert.ToInt32(GetAttribute("ActiveAreaIndex", "0")); }
+            get { return XmlConvert.ToInt32(GetOptionalAttribute("ActiveAreaIndex") ??  "0"); }
             set { SetAttribute("ActiveAreaIndex", XmlConvert.ToString(value)); }
         }
 
         public int ControlViewerWidth {
-            get { return XmlConvert.ToInt32(GetAttribute("ControlViewerWidth", "0")); }
+            get { return XmlConvert.ToInt32(GetOptionalAttribute("ControlViewerWidth") ??  "0"); }
             set { SetAttribute("ControlViewerWidth", XmlConvert.ToString(value)); }
         }
 
         public int LocomotiveViewerWidth {
-            get { return XmlConvert.ToInt32(GetAttribute("LocomotiveViewerWidth", "0")); }
+            get { return XmlConvert.ToInt32(GetOptionalAttribute("LocomotiveViewerWidth") ??  "0"); }
             set { SetAttribute("LocomotiveViewerWidth", XmlConvert.ToString(value)); }
         }
 
         public int TripsViewerHeight {
-            get { return XmlConvert.ToInt32(GetAttribute("TripsViewerHeight", "0")); }
+            get { return XmlConvert.ToInt32(GetOptionalAttribute("TripsViewerHeight") ??  "0"); }
             set { SetAttribute("TripsViewerHeight", XmlConvert.ToString(value)); }
         }
 
         public int MessagesViewerHeight {
-            get { return XmlConvert.ToInt32(GetAttribute("MessagesViewerHeight", "0")); }
+            get { return XmlConvert.ToInt32(GetOptionalAttribute("MessagesViewerHeight") ??  "0"); }
             set { SetAttribute("MessagesViewerHeight", XmlConvert.ToString(value)); }
         }
     }
@@ -2168,7 +2168,7 @@ namespace LayoutManager {
         }
 
         public int ActiveViewIndex {
-            get { return XmlConvert.ToInt32(GetAttribute("ActiveViewIndex", "0")); }
+            get { return XmlConvert.ToInt32(GetOptionalAttribute("ActiveViewIndex") ??  "0"); }
             set { SetAttribute("ActiveViewIndex", XmlConvert.ToString(value)); }
         }
 
@@ -2212,17 +2212,17 @@ namespace LayoutManager {
         }
 
         public float Zoom {
-            get { return (float)XmlConvert.ToDouble(GetAttribute("Zoom", "1.0")); }
+            get { return (float)XmlConvert.ToDouble(GetOptionalAttribute("Zoom") ??  "1.0"); }
             set { SetAttribute("Zoom", XmlConvert.ToString(value)); }
         }
 
         public float DefaultZoom {
-            get { return (float)XmlConvert.ToDouble(GetAttribute("DefaultZoom", "1.0")); }
+            get { return (float)XmlConvert.ToDouble(GetOptionalAttribute("DefaultZoom") ??  "1.0"); }
             set { SetAttribute("DefaultZoom", XmlConvert.ToString(value)); }
         }
 
         public Point Origin {
-            get { return new Point(XmlConvert.ToInt32(GetAttribute("OriginX", "0")), XmlConvert.ToInt32(GetAttribute("OriginY", "0"))); }
+            get { return new Point(XmlConvert.ToInt32(GetOptionalAttribute("OriginX") ?? "0"), XmlConvert.ToInt32(GetOptionalAttribute("OriginY") ??  "0")); }
             set {
                 SetAttribute("OriginX", XmlConvert.ToString(value.X));
                 SetAttribute("OriginY", XmlConvert.ToString(value.Y));
@@ -2230,7 +2230,7 @@ namespace LayoutManager {
         }
 
         public Point DefaultOrigin {
-            get { return new Point(XmlConvert.ToInt32(GetAttribute("DefaultOriginX", "0")), XmlConvert.ToInt32(GetAttribute("DefaultOriginY", "0"))); }
+            get { return new Point(XmlConvert.ToInt32(GetOptionalAttribute("DefaultOriginX") ?? "0"), XmlConvert.ToInt32(GetOptionalAttribute("DefaultOriginY") ??  "0")); }
             set {
                 SetAttribute("DefaultOriginX", XmlConvert.ToString(value.X));
                 SetAttribute("DefaultOriginY", XmlConvert.ToString(value.Y));
@@ -2238,17 +2238,17 @@ namespace LayoutManager {
         }
 
         public ShowGridLinesOption Grid {
-            get { return (ShowGridLinesOption)Enum.Parse(typeof(ShowGridLinesOption), GetAttribute("Grid", "Hide")); }
+            get { return (ShowGridLinesOption)Enum.Parse(typeof(ShowGridLinesOption), GetOptionalAttribute("Grid") ??  "Hide"); }
             set { SetAttribute("Grid", value.ToString()); }
         }
 
         public bool ShowCoordinates {
-            get { return XmlConvert.ToBoolean(GetAttribute("ShowCoordinates", "false")); }
+            get { return XmlConvert.ToBoolean(GetOptionalAttribute("ShowCoordinates") ??  "false"); }
             set { SetAttribute("ShowCoordinates", XmlConvert.ToString(value)); }
         }
 
         public bool ShowActivePhases {
-            get { return XmlConvert.ToBoolean(GetAttribute("ShowActivePhases", "false")); }
+            get { return XmlConvert.ToBoolean(GetOptionalAttribute("ShowActivePhases") ??  "false"); }
             set { SetAttribute("ShowActivePhases", XmlConvert.ToString(value)); }
         }
 

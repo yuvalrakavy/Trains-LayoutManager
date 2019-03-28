@@ -49,15 +49,13 @@ namespace LayoutManager.Model {
                 return blockInfo;
             }
 
-            set {
-                blockInfo = value;
-            }
+            set => blockInfo = value;
         }
 
         /// <summary>
         /// This may be used if block definition can be null (was not yet set)
         /// </summary>
-        public LayoutBlockDefinitionComponent? MaybeBlockDefinition {
+        public LayoutBlockDefinitionComponent? OptionalBlockDefinition {
             get { return blockInfo;  }
         }
 
@@ -122,7 +120,7 @@ namespace LayoutManager.Model {
         public LayoutOccupancyBlock? OccupancyBlock { get; set; }
 
         public LayoutLockRequest? LockRequest {
-            get { return this.lockRequest; }
+            get => this.lockRequest;
 
             set {
                 this.lockRequest = value;
@@ -449,9 +447,7 @@ namespace LayoutManager.Model {
         public LockBlockOptions Options => options;
 
         public bool ForceRedSignal {
-            get {
-                return (options & LockBlockOptions.ForceRedSignal) != 0;
-            }
+            get => (options & LockBlockOptions.ForceRedSignal) != 0;
 
             set {
                 if (value)
@@ -562,7 +558,7 @@ namespace LayoutManager.Model {
         public LayoutLockBlockEntryDictionary Blocks => blockEntries;
 
         public IList<ILayoutLockResource>? Resources {
-            get { return resources; }
+            get => resources;
 
             set {
                 Trace.Assert(resources == null);
@@ -578,9 +574,7 @@ namespace LayoutManager.Model {
         public int UnlockedBlocksCount { get; set; }
 
         public LayoutEvent LockedEvent {
-            set {
-                OnLockGranted = () => EventManager.Event(value);
-            }
+            set => OnLockGranted = () => EventManager.Event(value);
         }
 
         public bool IsManualDispatchLock => Type == LayoutLockType.ManualDispatch;
@@ -623,7 +617,7 @@ namespace LayoutManager.Model {
                 first = true;
 
                 foreach (var resourceId in ResourceUseCount.Keys) {
-                    Trace.Write($"{(first ? "" : ", ")} {LayoutModel.Component<ModelComponent>(resourceId, LayoutPhase.All).FullDescription}={ResourceUseCount[resourceId]}");
+                    Trace.Write($"{(first ? "" : ", ")} {LayoutModel.Component<ModelComponent>(resourceId, LayoutPhase.All)?.FullDescription ?? "(null)"}={ResourceUseCount[resourceId]}");
                     first = false;
                 }
 
@@ -732,95 +726,59 @@ namespace LayoutManager.Model {
         }
 
         public Guid BlockEdgeId {
-            get {
-                return XmlConvert.ToGuid(Element.GetAttribute("BlockEdgeID"));
-            }
+            get => XmlConvert.ToGuid(Element.GetAttribute("BlockEdgeID"));
 
-            set {
-                Element.SetAttribute("BlockEdgeID", XmlConvert.ToString(value));
-            }
+            set => Element.SetAttribute("BlockEdgeID", XmlConvert.ToString(value));
         }
 
         public LayoutBlockEdgeBase BlockEdge {
-            get {
-                return LayoutModel.Component<LayoutBlockEdgeBase>(BlockEdgeId, LayoutModel.ActivePhases);
-            }
+            get => Ensure.NotNull<LayoutBlockEdgeBase>(LayoutModel.Component<LayoutBlockEdgeBase>(BlockEdgeId, LayoutModel.ActivePhases), $"BlockEdge of id {BlockEdgeId}");
 
-            set {
-                BlockEdgeId = value.Id;
-            }
+            set => BlockEdgeId = value.Id;
         }
 
         public Guid TrainId {
-            get {
-                return XmlConvert.ToGuid(Element.GetAttribute("TrainID"));
-            }
+            get => XmlConvert.ToGuid(Element.GetAttribute("TrainID"));
 
-            set {
-                Element.SetAttribute("TrainID", XmlConvert.ToString(value));
-            }
+            set => Element.SetAttribute("TrainID", XmlConvert.ToString(value));
         }
 
         public TrainStateInfo Train {
-            get {
-                return LayoutModel.StateManager.Trains[TrainId]!;
-            }
+            get => LayoutModel.StateManager.Trains[TrainId]!;
 
-            set {
-                TrainId = value.Id;
-            }
+            set => TrainId = value.Id;
         }
 
         public TrainLocationInfo? TrainLocation => trainLocation;
 
         public Guid FromBlockId {
-            get {
-                return XmlConvert.ToGuid(Element.GetAttribute("FromBlockID"));
-            }
+            get => XmlConvert.ToGuid(Element.GetAttribute("FromBlockID"));
 
-            set {
-                Element.SetAttribute("FromBlockID", XmlConvert.ToString(value));
-            }
+            set => Element.SetAttribute("FromBlockID", XmlConvert.ToString(value));
         }
 
         public LayoutBlock FromBlock {
-            get {
-                return LayoutModel.Blocks[FromBlockId];
-            }
+            get => LayoutModel.Blocks[FromBlockId];
 
-            set {
-                FromBlockId = value.Id;
-            }
+            set => FromBlockId = value.Id;
         }
 
         public Guid ToBlockId {
-            get {
-                return XmlConvert.ToGuid(Element.GetAttribute("ToBlockID"));
-            }
+            get => XmlConvert.ToGuid(Element.GetAttribute("ToBlockID"));
 
-            set {
-                Element.SetAttribute("ToBlockID", XmlConvert.ToString(value));
-            }
+            set => Element.SetAttribute("ToBlockID", XmlConvert.ToString(value));
         }
 
         public LayoutBlock ToBlock {
-            get {
-                return LayoutModel.Blocks[ToBlockId];
-            }
+            get => LayoutModel.Blocks[ToBlockId];
 
-            set {
-                ToBlockId = value.Id;
-            }
+            set => ToBlockId = value.Id;
         }
 
         public TrainMotionListManager? MotionListManager {
-            get {
-                return motionListManager;
-            }
+            get => motionListManager;
 
-            set {
-                motionListManager = value;
-            }
+            set => motionListManager = value;
         }
 
         public void Commit() {

@@ -190,7 +190,7 @@ namespace LayoutManager.Components {
 
         public bool CheckReverseLoops {
             get {
-                return XmlConvert.ToBoolean(GetAttribute("CheckReverseLoops", "true"));
+                return XmlConvert.ToBoolean(GetOptionalAttribute("CheckReverseLoops") ?? "true");
             }
 
             set {
@@ -931,7 +931,7 @@ namespace LayoutManager.Components {
         private const string MotionTimeAttribute = "MotionTime";
 
         public bool TwoDirectionRelays {
-            get { return XmlConvert.ToBoolean(GetAttribute(TwoDirectionRelaysAttribute, "false")); }
+            get { return XmlConvert.ToBoolean(GetOptionalAttribute(TwoDirectionRelaysAttribute) ?? "false"); }
             set { SetAttribute(TwoDirectionRelaysAttribute, value); }
         }
 
@@ -941,12 +941,12 @@ namespace LayoutManager.Components {
         }
 
         public bool ReverseDirection {
-            get { return XmlConvert.ToBoolean(GetAttribute(ReverseDirectionAttribute, "false")); }
+            get { return XmlConvert.ToBoolean(GetOptionalAttribute(ReverseDirectionAttribute) ?? "false"); }
             set { SetAttribute(ReverseDirectionAttribute, value); }
         }
 
         public bool ReverseMotion {
-            get { return XmlConvert.ToBoolean(GetAttribute(ReverseMotionAttribute, "false")); }
+            get { return XmlConvert.ToBoolean(GetOptionalAttribute(ReverseMotionAttribute) ?? "false"); }
             set { SetAttribute(ReverseMotionAttribute, value); }
         }
 
@@ -957,7 +957,7 @@ namespace LayoutManager.Components {
         /// Time to wait for feedback sensor to report that the gate motion is done
         /// </remarks>
         public int MotionTimeout {
-            get { return XmlConvert.ToInt32(GetAttribute(MotionTimeoutAttribute, "10")); }
+            get { return XmlConvert.ToInt32(GetOptionalAttribute(MotionTimeoutAttribute) ?? "10"); }
             set { SetAttribute(MotionTimeoutAttribute, value); }
         }
 
@@ -965,7 +965,7 @@ namespace LayoutManager.Components {
         /// Gate motion time if the gate has no motion done feedback
         /// </summary>
         public int MotionTime {
-            get { return XmlConvert.ToInt32(GetAttribute(MotionTimeAttribute, "10")); }
+            get { return XmlConvert.ToInt32(GetOptionalAttribute(MotionTimeAttribute) ?? "10"); }
             set { SetAttribute(MotionTimeAttribute, value); }
         }
 
@@ -1022,20 +1022,20 @@ namespace LayoutManager.Components {
 
 
                 if (Info.TwoDirectionRelays) {
-                    list.Add(new ModelComponentControlConnectionDescription("Relay,Solenoid", StandardGateDrivers.Direction1ConnectionPoint, "Gate control 1"));
-                    list.Add(new ModelComponentControlConnectionDescription("Relay,Solenoid", StandardGateDrivers.Direction2ConnectionPoint, "Gate control 2"));
+                    list.Add(new ModelComponentControlConnectionDescription($"{ControlConnectionPointTypes.OutputSolenoid},{ControlConnectionPointTypes.OutputRelay}", StandardGateDrivers.Direction1ConnectionPoint, "Gate control 1"));
+                    list.Add(new ModelComponentControlConnectionDescription($"{ControlConnectionPointTypes.OutputSolenoid},{ControlConnectionPointTypes.OutputRelay}", StandardGateDrivers.Direction2ConnectionPoint, "Gate control 2"));
                 }
                 else {
-                    list.Add(new ModelComponentControlConnectionDescription("Relay,Solenoid", StandardGateDrivers.Direction1ConnectionPoint, "Gate direction control (open/close)"));
-                    list.Add(new ModelComponentControlConnectionDescription("Relay,Soleniod", StandardGateDrivers.MotionConnectionPoint, "Gate motion control"));
+                    list.Add(new ModelComponentControlConnectionDescription($"{ControlConnectionPointTypes.OutputSolenoid},{ControlConnectionPointTypes.OutputRelay}", StandardGateDrivers.Direction1ConnectionPoint, "Gate direction control (open/close)"));
+                    list.Add(new ModelComponentControlConnectionDescription($"{ControlConnectionPointTypes.OutputSolenoid},{ControlConnectionPointTypes.OutputRelay}", StandardGateDrivers.MotionConnectionPoint, "Gate motion control"));
                 }
 
                 if (Info.FeedbackType == LayoutGateComponentInfo.FeedbackTypes.TwoSensors) {
-                    list.Add(new ModelComponentControlConnectionDescription("DryContact", StandardGateDrivers.GateOpenConnectionPoint, "Gate open sensor"));
-                    list.Add(new ModelComponentControlConnectionDescription("DryContact", StandardGateDrivers.GateCloseConnectionPoint, "Gate closed sensor"));
+                    list.Add(new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.Input, StandardGateDrivers.GateOpenConnectionPoint, "Gate open sensor"));
+                    list.Add(new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.Input, StandardGateDrivers.GateCloseConnectionPoint, "Gate closed sensor"));
                 }
                 else if (Info.FeedbackType == LayoutGateComponentInfo.FeedbackTypes.OneSensor)
-                    list.Add(new ModelComponentControlConnectionDescription("DryContact", StandardGateDrivers.GateMotionDoneConnectionPoint, "Gate motion done sensor"));
+                    list.Add(new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.Input, StandardGateDrivers.GateMotionDoneConnectionPoint, "Gate motion done sensor"));
 
                 return list;
             }

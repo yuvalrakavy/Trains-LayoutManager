@@ -262,10 +262,10 @@ namespace DiMAX {
         private void setLocomotiveFunctionStateCommand(LayoutEvent e) {
             var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender, "loco");
             var functionName = Ensure.NotNull<String>(e.Info, "functionName");
-            LocomotiveFunctionInfo function = loco.GetFunctionByName(functionName);
+            var function = loco.GetFunctionByName(functionName);
             var train = LayoutModel.StateManager.Trains[loco.Id];
 
-            if (train != null) {
+            if (train != null && function != null) {
                 if (loco.DecoderType is DccDecoderTypeInfo decoder) {
                     if (decoder.ParallelFunctionSupport)
                         OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, function.Number, e.GetBoolOption("FunctionState"), train.Lights));
@@ -1104,7 +1104,7 @@ namespace DiMAX {
     }
 
     class DiMAXchangeAccessoryState : DiMAXcommandBase {
-        string description;
+        readonly string description;
 
         public DiMAXchangeAccessoryState(DiMAXcommandStation commandStation, int unit, int state)
             : base(commandStation, new DiMAXpacket(DiMAXcommandCode.TurnoutControl, new byte[] { (byte)(unit >> 6), (byte)(((unit & 0x3f) << 2) | 2 | state) })) {
@@ -1116,7 +1116,7 @@ namespace DiMAX {
     }
 
     class DiMAXlocomotiveMotion : DiMAXcommandBase {
-        string description;
+        readonly string description;
 
         public DiMAXlocomotiveMotion(DiMAXcommandStation commandStation, int unit, int speed)
             : base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoSpeedControl,
@@ -1128,7 +1128,7 @@ namespace DiMAX {
     }
 
     class DiMAXlocomotiveFunction : DiMAXcommandBase {
-        string description;
+        readonly string description;
 
         public DiMAXlocomotiveFunction(DiMAXcommandStation commandStation, int unit, int functionNumber, bool functionState, bool lightsOn) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoFunctionControl,
@@ -1166,7 +1166,7 @@ namespace DiMAX {
 
 
     class DiMAXprogramRegister : DiMAXprogrammingCommandBase {
-        string description;
+        readonly string description;
 
         public DiMAXprogramRegister(DiMAXcommandStation commandStation, byte registerNumber, byte value) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.ProgrammingRegister, new byte[] { (byte)(registerNumber - 1), value })) {
@@ -1177,7 +1177,7 @@ namespace DiMAX {
     }
 
     class DiMAXprogramCV : DiMAXprogrammingCommandBase {
-        string description;
+        readonly string description;
 
         public DiMAXprogramCV(DiMAXcommandStation commandStation, int cvNumber, byte data)
             : base(commandStation, new DiMAXpacket(DiMAXcommandCode.ProgrammingCV, new byte[] { (byte)((cvNumber - 1) >> 8), (byte)((cvNumber - 1) & 0xff), data })) {
@@ -1188,7 +1188,7 @@ namespace DiMAX {
     }
 
     class DiMAXprogramCVonTrack : DiMAXprogrammingCommandBase {
-        string description;
+        readonly string description;
 
         public DiMAXprogramCVonTrack(DiMAXcommandStation commandStation, int address, int cvNumber, byte data) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.ProgrammingCVPOM, new byte[] { (byte)((cvNumber - 1) >> 8), (byte)((cvNumber - 1) & 0xff), data, (byte)(address >> 8), (byte)(address & 0xff) })) {
@@ -1199,7 +1199,7 @@ namespace DiMAX {
     }
 
     class DiMAXreadCV : DiMAXprogrammingCommandBase {
-        string description;
+        readonly string description;
 
         public DiMAXreadCV(DiMAXcommandStation commandStation, int cvNumber, Action<LayoutActionResult, int, byte> doneCallback) : base(commandStation, new DiMAXpacket(DiMAXcommandCode.ReadCV, new byte[] { (byte)((cvNumber - 1) >> 8), (byte)((cvNumber - 1) & 0xff) })) {
             description = $"Read cv {cvNumber}";
@@ -1213,7 +1213,7 @@ namespace DiMAX {
     }
 
     class DiMAXlocomotiveSelection : DiMAXsynchronousCommandBase {
-        string description;
+        readonly string description;
 
         public DiMAXlocomotiveSelection(DiMAXcommandStation commandStation, int address, bool select, bool deselectActive, bool unconditional) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoSelection, new byte[] { (byte)(address >> 8), (byte)(address & 0xff),
@@ -1229,7 +1229,7 @@ namespace DiMAX {
     }
 
     class DiMAXlocomotiveRegistration : DiMAXcommandBase {
-        string description;
+        readonly string description;
 
         public DiMAXlocomotiveRegistration(DiMAXcommandStation commandStation, int address, bool storeInNonVolatile = false, bool addressIsMotorola = false, bool parallelFunctions = true, int speedSteps = 28, int image = 0) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoConfig, new byte[] {
@@ -1253,7 +1253,7 @@ namespace DiMAX {
     }
 
     class DiMAXlocomotiveUnregister : DiMAXcommandBase {
-        string description;
+        readonly string description;
 
         public DiMAXlocomotiveUnregister(DiMAXcommandStation commandStation, int address) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoConfig, new byte[] { (byte)((address & 0x3f00) >> 8), (byte)(address & 0xff) })) {

@@ -93,7 +93,7 @@ namespace LayoutManager.Logic {
                         if (track != null) {
                             if (spot[ModelComponentKind.TrackLink] == null) {
                                 foreach (LayoutComponentConnectionPoint cp in track.ConnectionPoints) {
-                                    if (track.GetMaybeBlock(cp) == null) {
+                                    if (track.GetOptionalBlock(cp) == null) {
                                         LayoutBlock? block = null;
 
                                         foreach (LayoutComponentConnectionPoint scanCp in track.ConnectionPoints) {
@@ -119,7 +119,7 @@ namespace LayoutManager.Logic {
         }
 
         private bool checkBlockForBlockInfo(LayoutBlock block) {
-            if (block.BlockDefinintion == null) {
+            if (block.OptionalBlockDefinition == null) {
                 Error(block, "This block does not contain any block definition component");
                 return false;
             }
@@ -183,7 +183,7 @@ namespace LayoutManager.Logic {
         private static void checkIfBlockDefinitionTrack(LayoutBlock block, TrackEdge edge) {
 
             if (edge.Track.Spot[ModelComponentKind.BlockInfo] is LayoutBlockDefinitionComponent blockInfo) {
-                if (block.MaybeBlockDefinition != null && block.BlockDefinintion.Id != blockInfo.Id)
+                if (block.OptionalBlockDefinition != null && block.BlockDefinintion.Id != blockInfo.Id)
                     Error(blockInfo, "Block contains more than one block definition component");
                 else {
                     if (!LayoutModel.Blocks.ContainsKey(blockInfo.Id)) {
