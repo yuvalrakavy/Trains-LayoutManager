@@ -1086,6 +1086,8 @@ namespace LayoutManager {
             DoDelay(delayTime, cancellationTokenSource.Token);
         }
 
+        public LayoutEvent Event => theEvent;
+
         async void DoDelay(int delayTime, CancellationToken cancellationToken) {
             try {
                 var tcs = new TaskCompletionSource<object>();
