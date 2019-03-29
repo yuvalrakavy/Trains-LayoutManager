@@ -30,7 +30,7 @@ namespace LayoutManager.Logic {
                     if (state == 1)
                         EventManager.Event(new LayoutEvent("track-contact-triggered-notification", component));
                 }
-                else if(component is LayoutProximitySensorComponent)
+                else if (component is LayoutProximitySensorComponent)
                     EventManager.Event(new LayoutEvent("proximity-sensor-state-changed-notification", component, state != 0 ? true : false));
                 else if (component is LayoutBlockDefinitionComponent)
                     EventManager.Event(new LayoutEvent("train-detection-state-changed-notification", component, state != 0 ? true : false));
@@ -110,7 +110,7 @@ namespace LayoutManager.Logic {
 
                 if (connectionPoint.Component is IModelComponentHasReverseLogic)
                     reverseLogic = ((IModelComponentHasReverseLogic)connectionPoint.Component).ReverseLogic;
-                
+
                 componentWithSwitchingState.SetSwitchState(connectionPoint, reverseLogic ? 1 - state : state, connectionPoint.Name);
             }
         }
@@ -138,6 +138,50 @@ namespace LayoutManager.Logic {
             var trackContact = Ensure.NotNull<LayoutTrackContactComponent>(e.Sender, "connectionPoint");
 
             trackContact.IsTriggered = false;
+        }
+
+        #endregion
+
+        #region Proximity sensor component
+
+        int _proximitySensorSensitivityDelay = -1;
+
+        private int ProximitySensorSensitivityDelay {
+            get {
+                if (_proximitySensorSensitivityDelay < 0)
+                    _proximitySensorSensitivityDelay = LayoutModel.StateManager.TrainTrackingOptions.ProximitySensorSensitivityDelay;
+                return _proximitySensorSensitivityDelay;
+            }
+        }
+
+        [LayoutEvent("proximity-sensitivity-delay-changed")]
+        private void proximitySensorSensitivityDelayChanged(LayoutEvent e) {
+            _proximitySensorSensitivityDelay = -1;
+        }
+
+        readonly Dictionary<Guid, LayoutDelayedEvent> _changingProximitySensors = new Dictionary<Guid, LayoutDelayedEvent>();
+
+        [LayoutEvent("proximity-sensor-state-changed-notification", SenderType = typeof(LayoutProximitySensorComponent))]
+        private void proximitySensorComponentStateChanged(LayoutEvent e) {
+            var component = Ensure.NotNull<LayoutProximitySensorComponent>(e.Sender, "component");
+            bool state = (bool)e.Info;
+
+            if (_changingProximitySensors.TryGetValue(component.Id, out var delayedEvent)) {
+                delayedEvent.Cancel();
+                _changingProximitySensors.Remove(component.Id);
+            }
+
+            _changingProximitySensors.Add(component.Id,
+                    EventManager.DelayedEvent(ProximitySensorSensitivityDelay, new LayoutEvent("proximity-sensor-change-stable", component, state)));
+        }
+
+        [LayoutEvent("proximity-sensor-change-stable")]
+        private void proximitySensorChangeStable(LayoutEvent e) {
+            var component = Ensure.NotNull<LayoutProximitySensorComponent>(e.Sender, "component");
+            bool state = (bool)e.Info;
+
+            _changingProximitySensors.Remove(component.Id);
+            component.IsTriggered = state;
         }
 
         #endregion

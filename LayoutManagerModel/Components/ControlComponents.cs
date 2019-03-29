@@ -209,6 +209,8 @@ namespace LayoutManager.Components {
                         LayoutModel.StateManager.Components.StateOf(this, TriggeredStateTopic).SetAttribute("Value", "True");
                     else
                         LayoutModel.StateManager.Components.Remove(this, TriggeredStateTopic);
+
+                    EventManager.Event("proximity-sensor-changed", this, value);
                     OnComponentChanged();
                 }
             }

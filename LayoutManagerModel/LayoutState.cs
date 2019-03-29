@@ -2250,6 +2250,7 @@ namespace LayoutManager.Model {
                     Element.RemoveAttribute(ProximitySensorSensitivityDelayAttribute);
                 else
                     SetAttribute(ProximitySensorSensitivityDelayAttribute, value);
+                EventManager.Event("proximity-sensitivity-delay-changed");
             }
         }
     }

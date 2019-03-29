@@ -391,7 +391,8 @@ namespace LayoutManager.Components {
     public class LayoutTriggerableBlockEdgePainter : LayoutTrackOverlayPainter, IDisposable {
         public enum ComponentType {
             TrackContact,
-            ProximitySensor
+            ProximitySensor,
+            ActiveProximitySensor,
         };
 
         readonly ComponentType componentType;
@@ -420,8 +421,9 @@ namespace LayoutManager.Components {
             g.FillEllipse(Fill, contactBbox);
             g.DrawEllipse(Outline, contactBbox);
 
-            if(componentType == ComponentType.ProximitySensor) {
-                var proximitySize = new Size((adjustedSize.Width * 6 / 4 + 1) / 2 * 2, (adjustedSize.Height * 6 / 4 + 1) / 2 * 2);
+            if(componentType == ComponentType.ProximitySensor || componentType == ComponentType.ActiveProximitySensor) {
+                var proximitySize = new Size(
+                    componentType == ComponentType.ActiveProximitySensor ? adjustedSize.Width : (adjustedSize.Width * 6 / 4 + 1) / 2 * 2, (adjustedSize.Height * 6 / 4 + 1) / 2 * 2);
                 var proximityBox = new Rectangle(new Point(centerPoint.X - proximitySize.Width / 2, centerPoint.Y - proximitySize.Height / 2), proximitySize);
 
                 g.DrawEllipse(Outline, proximityBox);

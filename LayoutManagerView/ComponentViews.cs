@@ -333,7 +333,8 @@ namespace LayoutManager.View {
                 get => this.component switch
                 {
                     LayoutTrackContactComponent _ => LayoutTriggerableBlockEdgePainter.ComponentType.TrackContact,
-                    LayoutProximitySensorComponent _ => LayoutTriggerableBlockEdgePainter.ComponentType.ProximitySensor,
+                    LayoutProximitySensorComponent sensor when !sensor.IsTriggered => LayoutTriggerableBlockEdgePainter.ComponentType.ProximitySensor,
+                    LayoutProximitySensorComponent sensor when sensor.IsTriggered => LayoutTriggerableBlockEdgePainter.ComponentType.ActiveProximitySensor,
                     _ => throw new NotImplementedException()
                 };
             }
