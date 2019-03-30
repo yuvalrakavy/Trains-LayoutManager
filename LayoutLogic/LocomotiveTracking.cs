@@ -67,7 +67,7 @@ namespace LayoutManager.Logic {
 
                 if (LayoutModel.StateManager.Components.Contains(trackContact.Id, "TrainPassing")) {
                     TrackContactPassingStateInfo trackContactPassingState =
-                        new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(trackContact.Id, "TrainPassing"));
+                        new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(trackContact.Id, "TrainPassing", create: true));
 
                     // Track contact has state. This means that a train with multiple triggers is passing on top of this contact
                     // If the train continue to move in the same direction, one less triggers is expected to come for the train
@@ -123,7 +123,7 @@ namespace LayoutManager.Logic {
                         // train on top of the contact. Otherwise, since there is only one contact trigger, the trigger of a contact
                         // implies that the train had left the "from" block
                         if (train.TrackContactTriggerCount > 1) {
-                            TrackContactPassingStateInfo trackContactPassingState = new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(trackingResult.BlockEdge, "TrainPassing")) {
+                            TrackContactPassingStateInfo trackContactPassingState = new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(trackingResult.BlockEdge, "TrainPassing", create: true)) {
                                 TrainId = trackingResult.TrainId,
                                 FromBlockId = trackingResult.FromBlockId,
                                 FromBlockTriggerCount = trackingResult.Train.TrackContactTriggerCount - 1,

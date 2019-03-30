@@ -652,6 +652,8 @@ namespace LayoutManager.View {
         }
 
         public void ReadXml(XmlReader r) {
+            ConvertableString GetAttribute(string name) => new ConvertableString(r.GetAttribute(name), name);
+
             if (r.IsEmptyElement)
                 r.Read();
             else {
@@ -663,15 +665,15 @@ namespace LayoutManager.View {
                         r.Skip();
                     }
                     else if (r.Name == "Zoom") {
-                        this.DefaultZoom = XmlConvert.ToSingle(r.GetAttribute("factor"));
+                        this.DefaultZoom = (float)GetAttribute("factor");
                         r.Skip();
                     }
                     else if (r.Name == "Grid") {
-                        this.GridLineColor = Color.FromName(r.GetAttribute("color"));
-                        this.ShowGrid = (ShowGridLinesOption)Enum.Parse(typeof(ShowGridLinesOption), r.GetAttribute("visible"));
+                        this.GridLineColor = Color.FromName((string)GetAttribute("color"));
+                        this.ShowGrid = GetAttribute("visible").Enum<ShowGridLinesOption>() ?? ShowGridLinesOption.AutoHide;
 
                         if (r.GetAttribute("ShowCoordinates") != null)
-                            this.ShowCoordinates = XmlConvert.ToBoolean(r.GetAttribute("ShowCoordinates"));
+                            this.ShowCoordinates = (bool)GetAttribute("ShowCoordinates");
 
                         r.Skip();
                     }

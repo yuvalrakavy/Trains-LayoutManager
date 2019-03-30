@@ -1,7 +1,9 @@
 using System;
 using System.Xml;
 using System.Collections.Generic;
+using System.Diagnostics;
 
+#nullable enable
 namespace LayoutManager {
 
     /// <summary>
@@ -55,7 +57,7 @@ namespace LayoutManager {
         /// <param name="item">The item to be added</param>
         /// <returns>Xml element of the added item</returns>
         protected XmlElement AddItem(T item) {
-            XmlElement itemElement = item as XmlElement;
+            var itemElement = item as XmlElement;
 
             if (itemElement == null) {
 
@@ -83,6 +85,7 @@ namespace LayoutManager {
         /// </summary>
         /// <value></value>
         public XmlElement Element => element;
+        public XmlElement? OptionalElement => element;
 
         #endregion
 
@@ -106,11 +109,13 @@ namespace LayoutManager {
         /// <summary>
         /// Check if the collection contains a given item
         /// </summary>
-        /// <param name="item">The item to check</param>
+        /// <param name="possibleItem">The item to check</param>
         /// <returns>True if the collection contains this item</returns>
-        virtual public bool Contains(T item) {
+        virtual public bool Contains(T possibleItem) {
             foreach (XmlElement itemElement in Element) {
-                if (FromElement(itemElement).Equals(item))
+                var item = FromElement(itemElement);
+
+                if (item != null && item.Equals(possibleItem))
                     return true;
             }
 
@@ -142,11 +147,13 @@ namespace LayoutManager {
         /// <summary>
         /// Remove the first instance of a given item from the collection
         /// </summary>
-        /// <param name="item">The item to be removed</param>
+        /// <param name="itemToRemove">The item to be removed</param>
         /// <returns>True if item was removed, false if item was not found</returns>
-        virtual public bool Remove(T item) {
+        virtual public bool Remove(T itemToRemove) {
             foreach (XmlElement itemElement in Element) {
-                if (FromElement(itemElement).Equals(item)) {
+                var item = FromElement(itemElement);
+
+                if (item != null && item.Equals(itemToRemove)) {
                     Element.RemoveChild(itemElement);
                     return true;
                 }
@@ -183,9 +190,9 @@ namespace LayoutManager {
     /// </summary>
     /// <typeparam name="T">The type of items in the collection</typeparam>
     /// <typeparam name="KeyT">The type of the key used to index the collection</typeparam>
-    public abstract class XmlIndexedCollection<T, KeyT> : XmlCollection<T>, ICollection<T> {
-        Dictionary<KeyT, XmlElement> index;
-        List<KeyValuePair<KeyT, XmlElement>> sorted = null;
+    public abstract class XmlIndexedCollection<T, KeyT> : XmlCollection<T>, ICollection<T> where T: class {
+        Dictionary<KeyT, XmlElement>? index;
+        List<KeyValuePair<KeyT, XmlElement>>? sorted = null;
 
         /// <summary>
         /// Construct a collection whose items are child items of a given XML element
@@ -220,6 +227,7 @@ namespace LayoutManager {
         public IDictionary<KeyT, XmlElement> ItemsDictionary {
             get {
                 CreateIndex();
+                Debug.Assert(index != null);
                 return index;
             }
         }
@@ -241,9 +249,9 @@ namespace LayoutManager {
         /// <param name="item">Item to be added</param>
         public override void Add(T item) {
             CreateIndex();
+            Debug.Assert(index != null);
 
-            XmlElement itemElement = AddItem(item);
-
+            var itemElement = AddItem(item);
             index.Add(GetItemKey(item), itemElement);
             sorted = null;
         }
@@ -306,10 +314,11 @@ namespace LayoutManager {
         /// </summary>
         /// <param name="key">The key associated with the item</param>
         /// <returns>The collection's item associated with the key</returns>
-        public T this[KeyT key] {
+        public T? this[KeyT key] {
             get {
 
                 CreateIndex();
+                Debug.Assert(index != null);
 
                 if (index.TryGetValue(key, out XmlElement itemElement))
                     return FromElement(itemElement);
@@ -318,6 +327,10 @@ namespace LayoutManager {
             }
 
             set {
+                if (value == null)
+                    throw new ArgumentException("Cannot set Xml collection element to null");
+
+                Debug.Assert(index != null);
                 XmlElement oldItemElement = index[key];
                 XmlElement newItemElement = CreateElement(value);
 
@@ -334,6 +347,7 @@ namespace LayoutManager {
         /// Initialize the index with based on the collection XML data
         /// </summary>
         protected virtual void InitializeIndex() {
+            Debug.Assert(index != null);
             foreach (XmlElement itemElement in Element)
                 index.Add(GetElementKey(itemElement), itemElement);
             sorted = null;

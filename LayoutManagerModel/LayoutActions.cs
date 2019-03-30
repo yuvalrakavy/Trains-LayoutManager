@@ -25,7 +25,7 @@ namespace LayoutManager.Model {
                 action.Status = ActionStatus.InProgress;
 
                 if (action is ILayoutDccProgrammingAction)
-                    result = await ((ILayoutDccProgrammingAction)action).Execute(commandStation, e.GetBoolOption("UsePOM"));
+                    result = await ((ILayoutDccProgrammingAction)action).Execute(commandStation, (bool?)e.GetOption("UsePOM") ?? false);
 
                 if (result != LayoutActionResult.Ok) {
                     action.Status = ActionStatus.Failed;
@@ -243,6 +243,8 @@ namespace LayoutManager.Model {
     }
 
     public abstract class LayoutAction : LayoutXmlWrapper, ILayoutAction {
+        private const string A_Status = "Status";
+
         public LayoutAction(XmlElement actionElement)
             : base(actionElement) {
             Status = ActionStatus.Pending;
@@ -251,12 +253,10 @@ namespace LayoutManager.Model {
         public virtual string Description => "Action: " + GetType().Name;
 
         public ActionStatus Status {
-            get {
-                return (ActionStatus)Enum.Parse(typeof(ActionStatus), GetAttribute("Status"));
-            }
+            get => AttributeValue(A_Status).Enum<ActionStatus>() ?? ActionStatus.Pending;
 
             set {
-                SetAttribute("Status", value.ToString());
+                SetAttribute(A_Status, value.ToString());
                 if (value != ActionStatus.Pending)
                     EventManager.Event(new LayoutEventInfoValueType<ILayoutAction, ActionStatus>("action-status-changed", this, value));
             }
@@ -281,6 +281,8 @@ namespace LayoutManager.Model {
     }
 
     public abstract class LayoutProgrammingAction : LayoutAction, ILayoutProgrammingAction {
+        private const string IgnoreNoResponseAttribute = "IgnoreNoResponse";
+
         public LayoutProgrammingAction(XmlElement actionElement)
             : base(actionElement) {
         }
@@ -300,13 +302,8 @@ namespace LayoutManager.Model {
         /// (If true) Treat NoResponse result as Ok
         /// </summary>
         public bool IgnoreNoResponseResult {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("IgnoreNoResponse") ?? "false");
-            }
-
-            set {
-                SetAttribute("IgnoreNoResponse", value, removeIf: false);
-            }
+            get => (bool?)AttributeValue(IgnoreNoResponseAttribute) ?? false;
+            set => SetAttribute(IgnoreNoResponseAttribute, value, removeIf: false);
         }
     }
 
@@ -324,29 +321,23 @@ namespace LayoutManager.Model {
         }
 
         public int Number {
-            get {
-                return XmlConvert.ToInt32(GetAttribute("Number"));
-            }
+            get => XmlConvert.ToInt32(GetAttribute("Number"));
 
-            set {
-                SetAttribute("Number", XmlConvert.ToString(value));
-            }
+            set => SetAttribute("Number", XmlConvert.ToString(value));
         }
 
         public byte Value {
-            get {
-                return XmlConvert.ToByte(GetAttribute("Value"));
-            }
+            get => XmlConvert.ToByte(GetAttribute("Value"));
 
-            set {
-                SetAttribute("Value", XmlConvert.ToString(value));
-            }
+            set => SetAttribute("Value", XmlConvert.ToString(value));
         }
     }
 
     #endregion
 
     public class LayoutDccProgrammingAction<TProgrammingTargetType> : LayoutProgrammingAction, ILayoutDccProgrammingAction where TProgrammingTargetType : IHasDecoder {
+        private const string ProgrammingTargetAddressAttribute = "ProgrammingTargetAddress";
+
         public LayoutDccProgrammingAction(XmlElement actionElement, TProgrammingTargetType programmingTarget) : base(actionElement) {
             this.ProgrammingTarget = programmingTarget;
         }
@@ -360,13 +351,8 @@ namespace LayoutManager.Model {
         /// Address to use if using Programming on Main (POM). If not set then POM will not be possible
         /// </summary>
         public int ProgrammingTargetAddress {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("ProgrammingTargetAddress") ?? "-1");
-            }
-
-            set {
-                SetAttribute("ProgrammingTargetAddress", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(LayoutDccProgrammingAction<TProgrammingTargetType>.ProgrammingTargetAddressAttribute) ?? -1;
+            set => SetAttribute(LayoutDccProgrammingAction<TProgrammingTargetType>.ProgrammingTargetAddressAttribute, value);
         }
 
         /// <summary>
@@ -454,13 +440,9 @@ namespace LayoutManager.Model {
         }
 
         public int Address {
-            get {
-                return XmlConvert.ToInt32(GetAttribute("Address"));
-            }
+            get => XmlConvert.ToInt32(GetAttribute("Address"));
 
-            set {
-                SetAttribute("Address", XmlConvert.ToString(value));
-            }
+            set => SetAttribute("Address", XmlConvert.ToString(value));
         }
 
         public int SpeedSteps {
@@ -471,9 +453,7 @@ namespace LayoutManager.Model {
                     return 28;
             }
 
-            set {
-                SetAttribute("SpeedSteps", XmlConvert.ToString(value));
-            }
+            set => SetAttribute("SpeedSteps", XmlConvert.ToString(value));
         }
 
         public bool ReverseDirection {
@@ -484,9 +464,7 @@ namespace LayoutManager.Model {
                     return false;
             }
 
-            set {
-                SetAttribute("ReverseDirection", XmlConvert.ToString(value));
-            }
+            set => SetAttribute("ReverseDirection", XmlConvert.ToString(value));
         }
 
         public override string Description => "Set address to " + Address + ", " + SpeedSteps + " speed steps" + (ReverseDirection ? ", reverse direction" : "");

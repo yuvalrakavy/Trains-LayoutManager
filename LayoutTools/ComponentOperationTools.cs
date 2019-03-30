@@ -716,7 +716,7 @@ namespace LayoutManager.Tools {
 
                 if (lockRequest != null) {
                     if (lockRequest.IsManualDispatchLock) {
-                        ManualDispatchRegionInfo manualDispatchRegion = LayoutModel.StateManager.ManualDispatchRegions[lockRequest.OwnerId];
+                        var manualDispatchRegion = LayoutModel.StateManager.ManualDispatchRegions[lockRequest.OwnerId];
 
                         if (manualDispatchRegion != null)
                             container.AddText("Part of manual dispatch region: " + manualDispatchRegion.Name);
@@ -1001,10 +1001,11 @@ namespace LayoutManager.Tools {
             EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", train, applicableTripPlansElement).SetOption("CalculatePenalty", false));
 
             foreach (XmlElement applicableTripPlanElement in applicableTripPlansElement) {
-                TripPlanInfo tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[XmlConvert.ToGuid(applicableTripPlanElement.GetAttribute("TripPlanID"))];
+                var tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[XmlConvert.ToGuid(applicableTripPlanElement.GetAttribute("TripPlanID"))];
                 bool shouldReverse = XmlConvert.ToBoolean(applicableTripPlanElement.GetAttribute("ShouldReverse"));
 
-                tripPlansAtOrigin.Add(new UseExistingTripPlanMenuItem(tripPlan, shouldReverse, train));
+                if(tripPlan != null)
+                    tripPlansAtOrigin.Add(new UseExistingTripPlanMenuItem(tripPlan, shouldReverse, train));
             }
 
             MenuItem tripPlanCatalog = new TripPlanCatalogMenuItem("&Saved Trip-plans...", train);
@@ -1545,7 +1546,7 @@ namespace LayoutManager.Tools {
                 TrackContactPassingStateInfo? trackContactPassingState = null;
 
                 if (extendableTrainInfo.blockEdge != null && extendableTrainInfo.blockEdge.IsTrackContact()) {
-                    trackContactPassingState = new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(extendableTrainInfo.blockEdge, "TrainPassing")) {
+                    trackContactPassingState = new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(extendableTrainInfo.blockEdge, "TrainPassing", create: true)) {
                         Train = extendableTrainInfo.Train,
                         FromBlock = block,
                         ToBlock = extendableTrainInfo.Block,

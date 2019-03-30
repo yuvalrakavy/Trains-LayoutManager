@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 
+#nullable enable
 namespace LayoutManager.Dialogs {
     /// <summary>
     /// Dialog box for creating/editing locomotive function template
@@ -21,40 +22,23 @@ namespace LayoutManager.Dialogs {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private readonly Container components = null;
-        readonly XmlElement functionInfoElement;
+        readonly XmlElementWrapper functionInfoElement;
 
-        public StandardFunction(XmlElement functionInfoElement) {
+        #pragma warning disable nullable
+        public StandardFunction(XmlElement rawFunctionInfoElement) {
             //
             // Required for Windows Form Designer support
             //
             InitializeComponent();
 
-            this.functionInfoElement = functionInfoElement;
+            this.functionInfoElement = new XmlElementWrapper(rawFunctionInfoElement);
 
-            if (functionInfoElement.HasAttribute("Type"))
-                comboBoxFunctionType.SelectedIndex = (int)Enum.Parse(typeof(LocomotiveFunctionType), functionInfoElement.GetAttribute("Type"));
-            else
-                comboBoxFunctionType.SelectedIndex = 0;
-
-            if (functionInfoElement.HasAttribute("Name"))
-                textBoxFunctionName.Text = functionInfoElement.GetAttribute("Name");
-
-            if (functionInfoElement.HasAttribute("Description"))
-                textBoxDescription.Text = functionInfoElement.GetAttribute("Description");
+            comboBoxFunctionType.SelectedIndex = (int)(functionInfoElement.AttributeValue("Type").Enum<LocomotiveFunctionType>() ?? LocomotiveFunctionType.Trigger);
+            textBoxFunctionName.Text = (string?)functionInfoElement.AttributeValue("Name") ?? "";
+            textBoxDescription.Text = (string?)functionInfoElement.AttributeValue("Description") ?? "";
         }
+        #pragma warning restore nullable
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose(bool disposing) {
-            if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
-            }
-            base.Dispose(disposing);
-        }
 
         #region Windows Form Designer generated code
         /// <summary>

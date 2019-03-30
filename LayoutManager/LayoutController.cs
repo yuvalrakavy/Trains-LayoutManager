@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using LayoutManager.Model;
 
 #pragma warning disable IDE0051, IDE0060
+#nullable enable
 namespace LayoutManager {
 
     /// <summary>
@@ -35,7 +36,7 @@ namespace LayoutManager {
     }
 
     public class LayoutControllerImplementation : ApplicationContext, ILayoutController, ILayoutSelectionManager {
-        string layoutFilename;
+        string? layoutFilename;
         readonly LayoutCommandManager commandManager;
         readonly List<LayoutSelection> displayedSelections = new List<LayoutSelection>();
         readonly LayoutSelectionWithUndo userSelection;
@@ -44,6 +45,8 @@ namespace LayoutManager {
         int trainsAnalysisPhaseCount = 0;       // How many command stations perform layout analysis phase
         int layoutDesignTimeActivationNesting = 0;
         bool showConnectTrackPowerWarning = true;
+        private ILayoutFrameWindow? _activeFrameWindow;
+        private List<LayoutFrameWindow>? _frameWindows;
 
         /// <summary>
         /// The main entry point for the application.
@@ -69,6 +72,10 @@ namespace LayoutManager {
 
             userSelection = new LayoutSelectionWithUndo();
             userSelection.Display(new LayoutSelectionLook(System.Drawing.Color.Blue));
+
+            LayoutDisplayStateFilename = "";
+            LayoutRuntimeStateFilename = "";
+            LayoutRoutingFilename = "";
 
             #region Modules Initialization
 
@@ -324,7 +331,7 @@ namespace LayoutManager {
 
                 }
                 catch (Exception ex) {
-                    EventManager.Event(new LayoutEvent(null, "add-error", null, "Could not enter operational mode - " + ex.Message));
+                    EventManager.Event(new LayoutEvent("add-error", null, "Could not enter operational mode - " + ex.Message));
 
                     ExitOperationModeRequest().Wait();
                     EnterDesignModeRequest().Wait();
@@ -372,7 +379,7 @@ namespace LayoutManager {
             OperationModeSettings = null;
             LayoutModel.ActivePhases = LayoutPhase.All;
 
-            EventManager.Event(new LayoutEvent<OperationModeParameters>("enter-design-mode", null));
+            EventManager.Event(new LayoutEvent("enter-design-mode"));
             LayoutModel.Instance.Redraw();
         }
 
@@ -406,7 +413,7 @@ namespace LayoutManager {
                 }
 
                 if (doit) {
-                    object result = EventManager.Event(new LayoutEvent("begin-design-time-layout-activation", this));
+                    var result = EventManager.Event(new LayoutEvent("begin-design-time-layout-activation", this));
 
                     if (result == null || !(result is bool))
                         ok = false;
@@ -469,7 +476,7 @@ namespace LayoutManager {
 
         public string LayoutFilename {
             get {
-                return layoutFilename;
+                return Ensure.NotNull<string>(layoutFilename, nameof(layoutFilename));
             }
 
             private set {
@@ -486,8 +493,8 @@ namespace LayoutManager {
         /// The currently active frame window
         /// </summary>
         public ILayoutFrameWindow ActiveFrameWindow {
-            get;
-            set;
+            get => Ensure.NotNull<ILayoutFrameWindow>(_activeFrameWindow, nameof(_activeFrameWindow));
+            set => _activeFrameWindow = value;
         }
 
         /// <summary>
@@ -498,7 +505,7 @@ namespace LayoutManager {
         /// <summary>
         /// Operation mode settings, Null if in design mode
         /// </summary>
-        public OperationModeParameters OperationModeSettings {
+        public OperationModeParameters? OperationModeSettings {
             get;
             private set;
         }
@@ -507,8 +514,8 @@ namespace LayoutManager {
         /// Currently open frame windows
         /// </summary>
         public List<LayoutFrameWindow> FrameWindows {
-            get;
-            private set;
+            get => Ensure.NotNull<List<LayoutFrameWindow>>(_frameWindows, nameof(_frameWindows));
+            private set => _frameWindows = value;
         }
 
         /// <summary>
@@ -536,7 +543,7 @@ namespace LayoutManager {
 
             LayoutFilename = layoutFilename;
             commandManager.ChangeLevel = 0;
-            EventManager.Event(new LayoutEvent(null, "new-layout-document", null, layoutFilename));
+            EventManager.Event(new LayoutEvent("new-layout-document", null, layoutFilename));
         }
 
         /// <summary>
@@ -549,7 +556,7 @@ namespace LayoutManager {
             LayoutFilename = layoutFilename;
 
             LayoutModel.StateManager.Load();
-            EventManager.Event(new LayoutEvent(null, "new-layout-document", null, layoutFilename));
+            EventManager.Event(new LayoutEvent("new-layout-document", null, layoutFilename));
         }
 
         void ReadModelXmlDocument(string filename) {
@@ -724,16 +731,14 @@ namespace LayoutManager {
             Element.OwnerDocument.Save(displayStateFilename);
         }
 
-        public OperationModeParameters OperationModeSettings {
+        public OperationModeParameters? OperationModeSettings {
             get {
                 string mode = GetAttribute("Mode");
 
                 if (mode == "Design")
                     return null;
                 else {
-                    var phases = (LayoutPhase)Enum.Parse(typeof(LayoutPhase), GetOptionalAttribute("Phases") ??  "Operational");
-
-                    return new OperationModeParameters() { Simulation = (mode == "Simulation"), Phases = phases };
+                    return new OperationModeParameters() { Simulation = (mode == "Simulation"), Phases = AttributeValue("Phases").Enum<LayoutPhase>() ?? LayoutPhase.Operational };
                 }
             }
 
@@ -754,7 +759,7 @@ namespace LayoutManager {
         }
 
         public int ActiveWindowIndex {
-            get { return XmlConvert.ToInt32(GetOptionalAttribute("ActiveWindowIndex") ??  "-1"); }
+            get { return (int?)AttributeValue("ActiveWindowIndex") ??  -1; }
             set { SetAttribute("ActiveWindowIndex", XmlConvert.ToString(value)); }
         }
 

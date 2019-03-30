@@ -9,6 +9,7 @@ using System.Linq;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
+#pragma warning disable IDE0051
 namespace LayoutManager.Dialogs {
     /// <summary>
     /// Base form for the locomotive & locomotive type properties
@@ -63,7 +64,7 @@ namespace LayoutManager.Dialogs {
             SetRadio("Kind", "Steam");
             SetRadio("Origin", "Europe");
             SetLength("lengthInput", "Length");
-            SetSpeedLimit("textBoxSpeedLimit", "SpeedLimit");
+            SetSpeedLimit("textBoxSpeedLimit");
 
             SetImage();
             SetFunctions();
@@ -109,14 +110,13 @@ namespace LayoutManager.Dialogs {
             GetGuage();
 
             if (imageGetter.ImageModified) {
-                LocomotiveTypeInfo locoType = new LocomotiveTypeInfo(element) {
+                var _ = new LocomotiveTypeInfo(element) {
                     Image = imageGetter.HasImage ? imageGetter.Image : null
                 };
             }
 
             CheckBox checkBoxHasLights = (CheckBox)nameToControlMap["checkBoxHasLights"];
             ComboBox comboBoxStore = (ComboBox)nameToControlMap["comboBoxStore"];
-            LengthInput length = (LengthInput)nameToControlMap["lengthInput"];
 
             element["Functions"].SetAttribute("Light", XmlConvert.ToString(checkBoxHasLights.Checked));
 
@@ -177,14 +177,10 @@ namespace LayoutManager.Dialogs {
             TrackGuageSelector trackGuageSelector = (TrackGuageSelector)nameToControlMap["trackGuageSelector"];
 
             trackGuageSelector.Init();
-
-            if (element.HasAttribute("Guage"))
-                trackGuageSelector.Value = (TrackGauges)Enum.Parse(typeof(TrackGauges), element.GetAttribute("Guage"));
-            else
-                trackGuageSelector.Value = TrackGauges.HO;
+            trackGuageSelector.Value = new XmlElementWrapper(element).AttributeValue("Guage").Enum<TrackGauges>() ?? TrackGauges.HO;
         }
 
-        protected void SetSpeedLimit(String controlName, string a) {
+        protected void SetSpeedLimit(String controlName) {
             TextBox textBoxSpeedLimit = (TextBox)nameToControlMap[controlName];
             int limit = 0;
 
@@ -337,7 +333,7 @@ namespace LayoutManager.Dialogs {
 
         #region Default event handler implementations
 
-        protected void buttonFunctionAdd_Click(object sender, System.EventArgs e) {
+        protected void ButtonFunctionAdd_Click(object sender, System.EventArgs e) {
             XmlElement functionElement = element.OwnerDocument.CreateElement("Function");
             FunctionItem item = new FunctionItem(functionElement);
 
@@ -369,7 +365,7 @@ namespace LayoutManager.Dialogs {
             UpdateButtons();
         }
 
-        protected void buttonFunctionEdit_Click(object sender, System.EventArgs e) {
+        protected void ButtonFunctionEdit_Click(object sender, System.EventArgs e) {
             if (listViewFunctions.SelectedItems.Count > 0) {
                 FunctionItem selected = (FunctionItem)listViewFunctions.SelectedItems[0];
                 XmlElement functionsElement = element["Functions"];
@@ -378,7 +374,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        protected void buttonFunctionRemove_Click(object sender, System.EventArgs e) {
+        protected void ButtonFunctionRemove_Click(object sender, System.EventArgs e) {
             if (listViewFunctions.SelectedItems.Count > 0) {
                 FunctionItem selected = (FunctionItem)listViewFunctions.SelectedItems[0];
 
@@ -388,12 +384,12 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        protected void trackGuageSelector_SelectedIndexChanged(object sender, System.EventArgs e) {
+        protected void TrackGuageSelector_SelectedIndexChanged(object sender, System.EventArgs e) {
             InitDecoderTypeComboBox();
         }
 
 
-        protected void listViewFunctions_SelectedIndexChanged(object sender, System.EventArgs e) {
+        protected void ListViewFunctions_SelectedIndexChanged(object sender, System.EventArgs e) {
             UpdateButtons();
         }
 
@@ -401,7 +397,7 @@ namespace LayoutManager.Dialogs {
             imageGetter.DefaultImage = Catalog.GetStandardImage(CurrentKind, CurrentOrigin);
         }
 
-        protected void buttonCopyFrom_Click(object sender, System.EventArgs e) {
+        protected void ButtonCopyFrom_Click(object sender, System.EventArgs e) {
             LocomotiveCatalogInfo catalog = Catalog;
 
             catalog.Load();

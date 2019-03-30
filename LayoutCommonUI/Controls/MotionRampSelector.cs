@@ -4,6 +4,7 @@ using System.Xml;
 using System.Diagnostics;
 using LayoutManager.Model;
 
+#nullable enable
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for MotionRampSelector.
@@ -16,18 +17,17 @@ namespace LayoutManager.CommonUI.Controls {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private readonly Container components = null;
 
-        private void endOfDesignerVariables() { }
+        XmlElement? element = null;
+        string role;
+        MotionRampInfo? ramp = null;
 
-        XmlElement element = null;
-        string role = null;
-        MotionRampInfo ramp = null;
-
+        #pragma warning disable nullable
         public MotionRampSelector() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
         }
+        #pragma warning restore nullable
 
         public string Role {
             get {
@@ -40,6 +40,11 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public XmlElement Element {
+            get => Ensure.NotNull<XmlElement>(OptionalElement, "Element");
+            set => OptionalElement = value;
+        }
+
+        public XmlElement? OptionalElement {
             get {
                 return element;
             }
@@ -112,18 +117,6 @@ namespace LayoutManager.CommonUI.Controls {
                 ramp = new MotionRampInfo(rampElement);
                 labelRampDescription.Text = ramp.Description;
             }
-        }
-
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose(bool disposing) {
-            if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
-            }
-            base.Dispose(disposing);
         }
 
         #region Component Designer generated code

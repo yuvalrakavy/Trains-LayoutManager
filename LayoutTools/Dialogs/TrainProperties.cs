@@ -8,7 +8,7 @@ using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
 #pragma warning disable IDE0051, IDE0060
-
+#nullable enable
 namespace LayoutManager.Tools.Dialogs {
 
     /// <summary>
@@ -52,12 +52,11 @@ namespace LayoutManager.Tools.Dialogs {
         private GroupBox groupBox1;
         private IContainer components;
 
-        private void endOfDesignerVariables() { }
-
         readonly TrainCommonInfo train;
         readonly ArrayList locomotiveCancelList = new ArrayList();
         bool locomotiveEdited = false;
 
+        #pragma warning disable nullable
         public TrainProperties(TrainCommonInfo train) {
             //
             // Required for Windows Form Designer support
@@ -90,8 +89,10 @@ namespace LayoutManager.Tools.Dialogs {
 
             EventManager.AddObjectSubscriptions(this);
         }
+        #pragma warning restore nullable
 
         public XmlElement Element => train.Element;
+        public XmlElement? OptionalElement => Element;
 
         private void updateControls(Object sender, EventArgs e) {
             updateControls();

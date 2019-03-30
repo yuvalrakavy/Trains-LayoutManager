@@ -35,6 +35,14 @@ namespace LayoutManager.Model {
     /// for the requirment for a specific command station
     /// </summary>
     public class AddressFormatInfo : LayoutInfo {
+        private const string E_AddressFormat = "AddressFormat";
+        private const string A_Namespace = "Namespace";
+        private const string A_UnitMin = "UnitMin";
+        private const string A_UnitMax = "UnitMax";
+        private const string A_ShowSubunit = "ShowSubunit";
+        private const string A_SubunitFormat = "SubunitFormat";
+        private const string A_SubunitMin = "SubunitMin";
+        private const string A_SubunitMax = "SubunitMax";
 
         public AddressFormatInfo(XmlElement element) : base(element) {
         }
@@ -42,48 +50,28 @@ namespace LayoutManager.Model {
         public AddressFormatInfo() {
             XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
-            Element = doc.CreateElement("AddressFormat");
+            Element = doc.CreateElement(E_AddressFormat);
             doc.AppendChild(Element);
         }
 
         public string Namespace {
-            get {
-                return GetOptionalAttribute("Namespace") ??  "Default";
-            }
-
-            set {
-                SetAttribute("Namespace", value);
-            }
+            get => GetOptionalAttribute(A_Namespace) ?? "Default";
+            set => SetAttribute(A_Namespace, value);
         }
 
         public int UnitMin {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("UnitMin") ??  "1");
-            }
-
-            set {
-                SetAttribute("UnitMin", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_UnitMin) ?? 1;
+            set => SetAttribute(A_UnitMin, value);
         }
 
         public int UnitMax {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("UnitMax") ??  "256");
-            }
-
-            set {
-                SetAttribute("UnitMax", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_UnitMax) ?? 256;
+            set => SetAttribute(A_UnitMax, value);
         }
 
         public bool ShowSubunit {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("ShowSubunit") ??  "false");
-            }
-
-            set {
-                SetAttribute("ShowSubunit", XmlConvert.ToString(value));
-            }
+            get => (bool?)AttributeValue(A_ShowSubunit) ?? false;
+            set => SetAttribute(A_ShowSubunit, value);
         }
 
         public enum SubunitFormatValue {
@@ -92,32 +80,17 @@ namespace LayoutManager.Model {
         }
 
         public SubunitFormatValue SubunitFormat {
-            get {
-                return (SubunitFormatValue)Enum.Parse(typeof(SubunitFormatValue), GetOptionalAttribute("SubunitFormat") ??  "Number");
-            }
-
-            set {
-                SetAttribute("SubunitFormat", value.ToString());
-            }
+            get => AttributeValue(A_SubunitFormat).Enum<SubunitFormatValue>() ?? SubunitFormatValue.Number;
+            set => SetAttribute(A_SubunitFormat, value.ToString());
         }
         public int SubunitMin {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("SubunitMin") ??  "1");
-            }
-
-            set {
-                SetAttribute("SubunitMin", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_SubunitMin) ?? 1;
+            set => SetAttribute(A_SubunitMin, value);
         }
 
         public int SubunitMax {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("SubunitMax") ??  "256");
-            }
-
-            set {
-                SetAttribute("SubunitMax", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_SubunitMax) ?? 256;
+            set => SetAttribute(A_SubunitMax, value);
         }
     }
 

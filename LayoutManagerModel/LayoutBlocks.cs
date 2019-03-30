@@ -593,7 +593,7 @@ namespace LayoutManager.Model {
             if (train != null)
                 Trace.Write("train " + train.DisplayName);
             else {
-                ManualDispatchRegionInfo manualDispatchRegion = LayoutModel.StateManager.ManualDispatchRegions[OwnerId];
+                var manualDispatchRegion = LayoutModel.StateManager.ManualDispatchRegions[OwnerId];
 
                 if (manualDispatchRegion != null)
                     Trace.Write("manual dispatch region " + manualDispatchRegion.Name);

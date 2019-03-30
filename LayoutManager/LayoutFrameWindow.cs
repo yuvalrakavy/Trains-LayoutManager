@@ -2010,9 +2010,7 @@ namespace LayoutManager {
         public bool GridLines => printDialog.GridLines;
 
         public int AreaIndex {
-            get {
-                return areaIndex;
-            }
+            get => areaIndex;
 
             set {
                 areaIndex = value;
@@ -2021,13 +2019,9 @@ namespace LayoutManager {
         }
 
         public int ViewIndex {
-            get {
-                return viewIndex;
-            }
+            get => viewIndex;
 
-            set {
-                viewIndex = value;
-            }
+            set => viewIndex = value;
         }
     }
 
@@ -2061,26 +2055,19 @@ namespace LayoutManager {
         }
 
         public FormWindowState WindowState {
-            get {
-                return (FormWindowState)Enum.Parse(typeof(FormWindowState), GetOptionalAttribute("WindowState") ??  "Normal");
-            }
+            get => AttributeValue("WindowState").Enum<FormWindowState>() ?? FormWindowState.Normal;
 
-            set {
-                SetAttribute("WindowState", value.ToString());
-            }
+            set => SetAttribute("WindowState", value.ToString());
         }
 
         public Rectangle Bounds {
-            get {
-                return new Rectangle(XmlConvert.ToInt32(GetAttribute("Left")), XmlConvert.ToInt32(GetAttribute("Top")),
-                    XmlConvert.ToInt32(GetAttribute("Width")), XmlConvert.ToInt32(GetAttribute("Height")));
-            }
+            get => new Rectangle((int)AttributeValue("Left"), (int)AttributeValue("Top"), (int)AttributeValue("Width"), (int)AttributeValue("Height"));
 
             set {
-                SetAttribute("Left", XmlConvert.ToString(value.Left));
-                SetAttribute("Top", XmlConvert.ToString(value.Top));
-                SetAttribute("Width", XmlConvert.ToString(value.Width));
-                SetAttribute("Height", XmlConvert.ToString(value.Height));
+                SetAttribute("Left", value.Left);
+                SetAttribute("Top", value.Top);
+                SetAttribute("Width", value.Width);
+                SetAttribute("Height", value.Height);
             }
         }
 
@@ -2095,28 +2082,28 @@ namespace LayoutManager {
         }
 
         public int ActiveAreaIndex {
-            get { return XmlConvert.ToInt32(GetOptionalAttribute("ActiveAreaIndex") ??  "0"); }
-            set { SetAttribute("ActiveAreaIndex", XmlConvert.ToString(value)); }
+            get => (int?)AttributeValue("ActiveAreaIndex") ?? 0;
+            set => SetAttribute("ActiveAreaIndex", value);
         }
 
         public int ControlViewerWidth {
-            get { return XmlConvert.ToInt32(GetOptionalAttribute("ControlViewerWidth") ??  "0"); }
-            set { SetAttribute("ControlViewerWidth", XmlConvert.ToString(value)); }
+            get => (int?)AttributeValue("ControlViewerWidth") ?? 0;
+            set => SetAttribute("ControlViewerWidth", value);
         }
 
         public int LocomotiveViewerWidth {
-            get { return XmlConvert.ToInt32(GetOptionalAttribute("LocomotiveViewerWidth") ??  "0"); }
-            set { SetAttribute("LocomotiveViewerWidth", XmlConvert.ToString(value)); }
+            get => (int?)AttributeValue("LocomotiveViewerWidth") ?? 0;
+            set => SetAttribute("LocomotiveViewerWidth", value);
         }
 
         public int TripsViewerHeight {
-            get { return XmlConvert.ToInt32(GetOptionalAttribute("TripsViewerHeight") ??  "0"); }
-            set { SetAttribute("TripsViewerHeight", XmlConvert.ToString(value)); }
+            get => (int?)AttributeValue("TripsViewerHeight") ?? 0;
+            set => SetAttribute("TripsViewerHeight", value);
         }
 
         public int MessagesViewerHeight {
-            get { return XmlConvert.ToInt32(GetOptionalAttribute("MessagesViewerHeight") ??  "0"); }
-            set { SetAttribute("MessagesViewerHeight", XmlConvert.ToString(value)); }
+            get => (int?)AttributeValue("MessagesViewerHeight") ?? 0;
+            set => SetAttribute("MessagesViewerHeight", value);
         }
     }
 
@@ -2153,8 +2140,8 @@ namespace LayoutManager {
         }
 
         public Guid AreaId {
-            get { return XmlConvert.ToGuid(GetAttribute("ID")); }
-            set { SetAttribute("ID", XmlConvert.ToString(value)); }
+            get => (Guid)AttributeValue("ID");
+            set => SetAttribute("ID", value);
         }
 
         public IEnumerable<FrameWindowViewState> ViewStates {
@@ -2168,8 +2155,8 @@ namespace LayoutManager {
         }
 
         public int ActiveViewIndex {
-            get { return XmlConvert.ToInt32(GetOptionalAttribute("ActiveViewIndex") ??  "0"); }
-            set { SetAttribute("ActiveViewIndex", XmlConvert.ToString(value)); }
+            get => (int?)AttributeValue("ActiveViewIndex") ?? 0;
+            set => SetAttribute("ActiveViewIndex", value);
         }
 
     }
@@ -2207,49 +2194,49 @@ namespace LayoutManager {
         }
 
         public string Name {
-            get { return GetAttribute("Name"); }
-            set { SetAttribute("Name", value); }
+            get => GetAttribute("Name");
+            set => SetAttribute("Name", value);
         }
 
         public float Zoom {
-            get { return (float)XmlConvert.ToDouble(GetOptionalAttribute("Zoom") ??  "1.0"); }
-            set { SetAttribute("Zoom", XmlConvert.ToString(value)); }
+            get => (float?)AttributeValue("Zoom") ?? 1.0f;
+            set => SetAttribute("Zoom", XmlConvert.ToString(value));
         }
 
         public float DefaultZoom {
-            get { return (float)XmlConvert.ToDouble(GetOptionalAttribute("DefaultZoom") ??  "1.0"); }
-            set { SetAttribute("DefaultZoom", XmlConvert.ToString(value)); }
+            get => (float?)AttributeValue("DefaultZoom") ?? 1.0f;
+            set => SetAttribute("DefaultZoom", XmlConvert.ToString(value));
         }
 
         public Point Origin {
-            get { return new Point(XmlConvert.ToInt32(GetOptionalAttribute("OriginX") ?? "0"), XmlConvert.ToInt32(GetOptionalAttribute("OriginY") ??  "0")); }
+            get => new Point((int?)AttributeValue("OriginX") ?? 0, (int?)AttributeValue("OriginY") ?? 0);
             set {
-                SetAttribute("OriginX", XmlConvert.ToString(value.X));
-                SetAttribute("OriginY", XmlConvert.ToString(value.Y));
+                SetAttribute("OriginX", value.X);
+                SetAttribute("OriginY", value.Y);
             }
         }
 
         public Point DefaultOrigin {
-            get { return new Point(XmlConvert.ToInt32(GetOptionalAttribute("DefaultOriginX") ?? "0"), XmlConvert.ToInt32(GetOptionalAttribute("DefaultOriginY") ??  "0")); }
+            get => new Point((int?)AttributeValue("DefaultOriginX") ?? 0, (int?)AttributeValue("DefaultOriginY") ?? 0);
             set {
-                SetAttribute("DefaultOriginX", XmlConvert.ToString(value.X));
-                SetAttribute("DefaultOriginY", XmlConvert.ToString(value.Y));
+                SetAttribute("DefaultOriginX", value.X);
+                SetAttribute("DefaultOriginY", value.Y);
             }
         }
 
         public ShowGridLinesOption Grid {
-            get { return (ShowGridLinesOption)Enum.Parse(typeof(ShowGridLinesOption), GetOptionalAttribute("Grid") ??  "Hide"); }
-            set { SetAttribute("Grid", value.ToString()); }
+            get => AttributeValue("Grid").Enum<ShowGridLinesOption>() ?? ShowGridLinesOption.Hide;
+            set => SetAttribute("Grid", value.ToString());
         }
 
         public bool ShowCoordinates {
-            get { return XmlConvert.ToBoolean(GetOptionalAttribute("ShowCoordinates") ??  "false"); }
-            set { SetAttribute("ShowCoordinates", XmlConvert.ToString(value)); }
+            get => (bool?)AttributeValue("ShowCoordinates") ?? false;
+            set => SetAttribute("ShowCoordinates", XmlConvert.ToString(value));
         }
 
         public bool ShowActivePhases {
-            get { return XmlConvert.ToBoolean(GetOptionalAttribute("ShowActivePhases") ??  "false"); }
-            set { SetAttribute("ShowActivePhases", XmlConvert.ToString(value)); }
+            get => (bool?)AttributeValue("ShowActivePhases") ?? false;
+            set => SetAttribute("ShowActivePhases", XmlConvert.ToString(value));
         }
 
     }

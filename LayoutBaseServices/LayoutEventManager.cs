@@ -197,12 +197,10 @@ namespace LayoutManager {
 
         public static bool HasOption<TEvent>(this TEvent e, string optionName) where TEvent : LayoutEvent => e.HasOption("Options", optionName);
 
-        public static string? GetOption<TEvent>(this TEvent e, string optionName, string elementName = "Options", string? defaultValue = null) where TEvent : LayoutEvent {
-            XmlElement optionElement = e.Element[elementName];
+        public static ConvertableString GetOption<TEvent>(this TEvent e, string optionName, string elementName = "Options") where TEvent : LayoutEvent {
+            var optionElement = e.Element[elementName];
 
-            if (optionElement != null && optionElement.HasAttribute(optionName))
-                return optionElement.GetAttribute(optionName);
-            return defaultValue;
+            return new XmlElementWrapper(optionElement).AttributeValue(optionName);
         }
 
         public static TEvent CopyOptions<TEvent>(this TEvent e, LayoutEvent other, string elementName = "Options") where TEvent : LayoutEvent {
@@ -214,6 +212,7 @@ namespace LayoutManager {
             return e;
         }
 
+#if NOTNEEDED
         public static bool GetBoolOption<TEvent>(this TEvent e, string elementName, string optionName, bool defaultValue) where TEvent: LayoutEvent => 
             XmlConvert.ToBoolean(e.GetOption(optionName, elementName, XmlConvert.ToString(defaultValue)));
 
@@ -230,6 +229,7 @@ namespace LayoutManager {
         public static int GetIntOption<TEvent>(this TEvent e, string optionName, int defaultValue) where TEvent : LayoutEvent => e.GetIntOption("Options", optionName, defaultValue);
 
         public static int GetIntOption<TEvent>(this TEvent e, string optionName) where TEvent : LayoutEvent => e.GetIntOption("Options", optionName);
+#endif
 
         public static TEvent SetOption<TEvent>(this TEvent e, string elementName, string optionName, string value) where TEvent : LayoutEvent {
             XmlElement optionElement = e.Element[elementName];
@@ -258,7 +258,7 @@ namespace LayoutManager {
 
         public static TEvent SetOption<TEvent>(this TEvent e, string optionName, Guid id) where TEvent : LayoutEvent => e.SetOption("Options", optionName, id);
 
-        #endregion
+#endregion
     }
 
     public class LayoutEvent<TSender, TInfo> : LayoutEvent where TSender : class where TInfo : class {

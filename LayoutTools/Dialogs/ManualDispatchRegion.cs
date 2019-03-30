@@ -9,6 +9,8 @@ using LayoutManager.CommonUI;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#nullable enable
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for ManualDispatchRegion.
@@ -24,14 +26,12 @@ namespace LayoutManager.Tools.Dialogs {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private readonly Container components = null;
-
-        private void endOfDesignerVariables() { }
 
         readonly ManualDispatchRegionInfo manualDispatchRegion;
         readonly LayoutSelection regionSelection;
         readonly LayoutSelection selectedBlockSelection;
 
+        #pragma warning disable nullable
         public ManualDispatchRegion(ManualDispatchRegionInfo manualDispatchRegion) {
             //
             // Required for Windows Form Designer support
@@ -61,8 +61,10 @@ namespace LayoutManager.Tools.Dialogs {
 
             EventManager.AddObjectSubscriptions(this);
         }
+        #pragma warning restore nullable
 
         public XmlElement Element => manualDispatchRegion.Element;
+        public XmlElement? OptionalElement => Element;
 
         private void updateButtons(object sender, EventArgs e) {
             LayoutBlock selectedBlock = (LayoutBlock)listBoxBlocks.SelectedItem;
@@ -121,17 +123,6 @@ namespace LayoutManager.Tools.Dialogs {
             updateButtons(null, null);
         }
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose(bool disposing) {
-            if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
-            }
-            base.Dispose(disposing);
-        }
 
         #region Windows Form Designer generated code
         /// <summary>

@@ -129,25 +129,17 @@ namespace LayoutManager.ControlComponents {
         public bool HasDiMAX_BusConnectionMethod => HasAttribute("DiMAXBusConnectionMethod");
 
         public MassothFeedbackDecoderBusConnectionMethod DiMAX_BusConnectionMethod {
-            get {
-                return (MassothFeedbackDecoderBusConnectionMethod)Enum.Parse(typeof(MassothFeedbackDecoderBusConnectionMethod), GetOptionalAttribute("DiMAXBusConnectionMethod") ??  "Slave");
-            }
+            get => AttributeValue("DiMAXBusConnectionMethod").Enum<MassothFeedbackDecoderBusConnectionMethod>() ?? MassothFeedbackDecoderBusConnectionMethod.Slave;
 
-            set {
-                SetAttribute("DiMAXBusConnectionMethod", value.ToString());
-            }
+            set => SetAttribute("DiMAXBusConnectionMethod", value.ToString());
         }
 
         public bool HasDiMAX_BusId => HasAttribute("DiMAXBusID");
 
         public int DiMAX_BusId {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("DiMAXBusID") ??  "12");
-            }
+            get => (int?)AttributeValue("DiMAXBusID") ?? 12;
 
-            set {
-                SetAttribute("DiMAXBusID", XmlConvert.ToString(value));
-            }
+            set => SetAttribute("DiMAXBusID", XmlConvert.ToString(value));
         }
 
         /// <summary>
@@ -222,30 +214,20 @@ namespace LayoutManager.ControlComponents {
             module.AddressProgrammingRequired = false;
         }
 
-        public override string Description => "Set feedback module address to " + ProgrammingTarget.Address + " to " + (ProgrammingTarget.Address + ProgrammingTarget.ModuleType.NumberOfAddresses - 1);
+        public override string Description => $"Set feedback module address to {ProgrammingTarget.Address} to {(ProgrammingTarget.Address + ProgrammingTarget.ModuleType.NumberOfAddresses - 1)}";
 
         #region IMassothFeedbackDecoderSetAddress Members
-        const string BusConnectionAttribute = "BusConnectionMethod";
-
+        private const string A_BusConnection = "BusConnectionMethod";
+        private const string A_BusId = "BusID";
 
         public MassothFeedbackDecoderBusConnectionMethod BusConnectionMethod {
-            get {
-                return Element.HasAttribute(BusConnectionAttribute) ? (MassothFeedbackDecoderBusConnectionMethod)Enum.Parse(typeof(MassothFeedbackDecoderBusConnectionMethod), Element.GetAttribute(BusConnectionAttribute)) : MassothFeedbackDecoderBusConnectionMethod.Slave;
-            }
-
-            set {
-                Element.SetAttribute("BusConnectionMethod", value.ToString());
-            }
+            get => AttributeValue(A_BusConnection).Enum<MassothFeedbackDecoderBusConnectionMethod>() ?? MassothFeedbackDecoderBusConnectionMethod.Slave;
+            set => SetAttribute(A_BusConnection, value.ToString());
         }
 
         public int BusId {
-            get {
-                return int.Parse(Element.GetAttribute("BusID"));
-            }
-
-            set {
-                Element.SetAttribute("BusID", value.ToString());
-            }
+            get => (int)AttributeValue(A_BusId);
+            set => SetAttribute(A_BusId, value);
         }
 
         #endregion
@@ -296,31 +278,19 @@ namespace LayoutManager.ControlComponents {
         public override string Description => "Set feedback module address to " + ProgrammingTarget.Address + " to " + (ProgrammingTarget.Address + ProgrammingTarget.ModuleType.NumberOfAddresses - 1);
 
         #region IMassothFeedbackDecoderSetAddress Members
-        const string BusConnectionAttribute = "BusConnectionMethod";
-
+        const string A_BusConnection = "BusConnectionMethod";
+        private const string A_BusId = "BusID";
 
         public MassothFeedbackDecoderBusConnectionMethod BusConnectionMethod {
-            get {
-                return Element.HasAttribute(BusConnectionAttribute) ? (MassothFeedbackDecoderBusConnectionMethod)Enum.Parse(typeof(MassothFeedbackDecoderBusConnectionMethod), Element.GetAttribute(BusConnectionAttribute)) : MassothFeedbackDecoderBusConnectionMethod.Slave;
-            }
-
-            set {
-                Element.SetAttribute("BusConnectionMethod", value.ToString());
-            }
+            get => AttributeValue(A_BusConnection).Enum<MassothFeedbackDecoderBusConnectionMethod>() ?? MassothFeedbackDecoderBusConnectionMethod.Slave;
+            set => Element.SetAttribute(A_BusConnection, value.ToString());
         }
 
         public int BusId {
-            get {
-                return int.Parse(Element.GetAttribute("BusID"));
-            }
-
-            set {
-                Element.SetAttribute("BusID", value.ToString());
-            }
+            get => (int)AttributeValue(A_BusId);
+            set => SetAttribute(A_BusId, value);
         }
 
         #endregion
     }
-
-
 }

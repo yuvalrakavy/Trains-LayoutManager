@@ -101,8 +101,7 @@ namespace LayoutManager.ControlComponents {
                     GetRelayModule(parentElement, nRelays);
             }
             else {
-                var moduleTypeName = e.GetOption("ModuleTypeName");
-
+                var moduleTypeName = (string)e.GetOption("ModuleTypeName");
                 int nRelay = Convert.ToInt32(moduleTypeName.Substring(0, moduleTypeName.IndexOf('_')));
 
                 GetRelayModule(parentElement, nRelay);
@@ -136,7 +135,7 @@ namespace LayoutManager.ControlComponents {
                     GetContactClosureModule(parentElement, nContacts);
             }
             else {
-                var moduleTypeName = e.GetOption("ModuleTypeName");
+                var moduleTypeName = (string)e.GetOption("ModuleTypeName");
 
                 int nContacts = Convert.ToInt32(moduleTypeName.Substring(0, moduleTypeName.IndexOf('_')));
 

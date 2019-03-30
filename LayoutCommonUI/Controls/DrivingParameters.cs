@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 
+#nullable enable
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for DrivingParameters.
@@ -22,18 +23,17 @@ namespace LayoutManager.CommonUI.Controls {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private readonly Container components = null;
-
-        private void endOfDesignerVariables() { }
 
         XmlElement element;
 
+        #pragma warning disable nullable
         public DrivingParameters() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
         }
+        #pragma warning restore nullable
 
-        public XmlElement Element {
+        public XmlElement? OptionalElement {
             get {
                 return element;
             }
@@ -44,6 +44,11 @@ namespace LayoutManager.CommonUI.Controls {
                 if (element != null)
                     initialize();
             }
+        }
+
+        public XmlElement Element {
+            get => Ensure.NotNull<XmlElement>(OptionalElement, "Element");
+            set => OptionalElement = value;
         }
 
         private void initialize() {
@@ -153,18 +158,6 @@ namespace LayoutManager.CommonUI.Controls {
             motionRampSelectorSlowdown.Commit();
 
             return true;
-        }
-
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose(bool disposing) {
-            if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
-            }
-            base.Dispose(disposing);
         }
 
         #region Component Designer generated code

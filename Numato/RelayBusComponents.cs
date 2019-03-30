@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051
 namespace LayoutManager.ControlComponents {
 
     [LayoutModule("Numato Relay Components")]
@@ -31,7 +32,6 @@ namespace LayoutManager.ControlComponents {
         private void recommendRelayBusControlModuleTypes(LayoutEvent e) {
             ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)e.Sender;
             IList<string> moduleTypeNames = (IList<string>)e.Info;
-            string connectionName = connectionDestination.ConnectionDescription.Name;
 
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Relay")) {
                 moduleTypeNames.Add("2_NumatoRelays");
@@ -72,7 +72,7 @@ namespace LayoutManager.ControlComponents {
                     GetRelayModuleType(parentElement, nRelays);
             }
             else {
-                var moduleTypeName = e.GetOption("ModuleTypeName");
+                var moduleTypeName = (string)e.GetOption("ModuleTypeName");
 
                 int nRelay = Convert.ToInt32(moduleTypeName.Substring(0, moduleTypeName.IndexOf('_')));
 

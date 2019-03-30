@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Components;
 
+#nullable enable
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for EventScriptEditor.
@@ -22,13 +23,13 @@ namespace LayoutManager.CommonUI.Controls {
         private Button buttonInsert;
         private IContainer components;
 
-        private void endOfDesignerVariables() { }
 
-        DialogEditing changeToViewonly = null;
+        DialogEditing changeToViewonly;
 
         // Editing context
         LayoutBlockDefinitionComponent blockDefinition;
 
+        #pragma warning disable nullable
         public EventScriptEditor() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
@@ -36,6 +37,7 @@ namespace LayoutManager.CommonUI.Controls {
             // TODO: Add any initialization after the InitForm call
 
         }
+        #pragma warning restore nullable
 
         #region Public properties/Methods
 
@@ -769,8 +771,9 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public XmlElement Element => eventScriptElement;
+        public XmlElement? OptionalElement => Element;
 
-        static public string GetOperandDescription(XmlElement element, string suffix, Type type) {
+        static public string GetOperandDescription(XmlElement element, string suffix, Type? type) {
             string symbolAccess = element.GetAttribute("Symbol" + suffix + "Access");
 
             if (symbolAccess == "Value") {
@@ -875,7 +878,7 @@ namespace LayoutManager.CommonUI.Controls {
         /// <summary>
         /// The node to be edited when edit command is given. The default is to edit the current node
         /// </summary>
-        public virtual LayoutEventScriptEditorTreeNode NodeToEdit => this;
+        public virtual LayoutEventScriptEditorTreeNode? NodeToEdit => this;
 
         /// <summary>
         /// Return true if the node can be deleted.
@@ -984,7 +987,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public override string InsertNodeEventName => "get-event-script-editor-insert-event-container-menu";
 
-        public override LayoutEventScriptEditorTreeNode NodeToEdit => null;		// Composite rules can not be edited
+        public override LayoutEventScriptEditorTreeNode? NodeToEdit => null;		// Composite rules can not be edited
 
         protected override int IconIndex => (Element.HasAttribute("LimitToScope") && XmlConvert.ToBoolean("LimitToScope") == false) ? 4 : 3;
     }
@@ -995,7 +998,7 @@ namespace LayoutManager.CommonUI.Controls {
             AddChildEventScriptTreeNodes();
         }
 
-        public override LayoutEventScriptEditorTreeNode NodeToEdit => null;     // Event section cannot be edited
+        public override LayoutEventScriptEditorTreeNode? NodeToEdit => null;     // Event section cannot be edited
 
         public override bool CanReorder => true;
     }
@@ -1021,7 +1024,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public override string InsertNodeEventName => "get-event-script-editor-insert-condition-container-menu";
 
-        public override LayoutEventScriptEditorTreeNode NodeToEdit => null;     // Condition container cannot be edited
+        public override LayoutEventScriptEditorTreeNode? NodeToEdit => null;     // Condition container cannot be edited
 
         public override bool CanReorder => true;		// Conditions within the container can be reordered
 

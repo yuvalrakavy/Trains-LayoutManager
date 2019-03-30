@@ -78,8 +78,8 @@ namespace LayoutManager.Model {
         public LocomotiveInfo Loco2 { get => Ensure.NotNull<LocomotiveInfo>(loco2, "Loco2"); set => loco2 = value; }
 
         public LocomotiveInfo Locomotive {
-            set { Loco1 = value; }
-            get { return Loco1; }
+            set => Loco1 = value;
+            get => Loco1;
         }
 
         public LayoutBlockDefinitionComponent BlockDefinition { get => Ensure.NotNull<LayoutBlockDefinitionComponent>(blockDefinition, "BlockDefinition"); set => blockDefinition = value; }
@@ -603,9 +603,7 @@ namespace LayoutManager.Model {
         }
 
         public override int SpeedLimit {
-            get {
-                return base.SpeedLimit;
-            }
+            get => base.SpeedLimit;
 
             set {
                 base.SpeedLimit = value;
@@ -615,9 +613,7 @@ namespace LayoutManager.Model {
         }
 
         public override int TargetSpeed {
-            get {
-                return base.TargetSpeed;
-            }
+            get => base.TargetSpeed;
 
             set {
                 base.TargetSpeed = value;
@@ -625,44 +621,32 @@ namespace LayoutManager.Model {
             }
         }
 
-        public int CurrentSpeedLimit {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("CurrentSpeedLimit") ?? "0"); ;
-            }
+        private const string A_CurrentSpeedLimit = "CurrentSpeedLimit";
 
-            set {
-                SetAttribute("CurrentSpeedLimit", XmlConvert.ToString(value));
-            }
+        public int CurrentSpeedLimit {
+            get => (int?)AttributeValue(A_CurrentSpeedLimit) ?? 0;
+            set => SetAttribute(A_CurrentSpeedLimit, value);
         }
+
+        private const string A_CurrentSlowDownSpeed = "CurrentSlowDownSpeed";
 
         public int CurrentSlowdownSpeed {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("CurrentSlowDownSpeed") ?? "0");
-            }
-
-            set {
-                SetAttribute("CurrentSlowDownSpeed", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_CurrentSlowDownSpeed) ?? 0;
+            set => SetAttribute(A_CurrentSlowDownSpeed, value);
         }
+
+        private const string A__RequestedSpeedLimit = "_RequestedSpeedLimit";
 
         protected int RequestedSpeedLimit {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("_RequestedSpeedLimit") ?? "0");
-            }
-
-            set {
-                SetAttribute("_RequestedSpeedLimit", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A__RequestedSpeedLimit) ?? 0;
+            set => SetAttribute(A__RequestedSpeedLimit, value);
         }
 
-        public LocomotiveOrientation MotionDirection {
-            get {
-                return (LocomotiveOrientation)Enum.Parse(typeof(LocomotiveOrientation), GetOptionalAttribute("MotionDirection") ?? "Forward");
-            }
+        private const string A_MotionDirection = "MotionDirection";
 
-            set {
-                SetAttribute("MotionDirection", value.ToString());
-            }
+        public LocomotiveOrientation MotionDirection {
+            get => AttributeValue(A_MotionDirection).Enum<LocomotiveOrientation>() ?? LocomotiveOrientation.Forward;
+            set => SetAttribute(A_MotionDirection, value.ToString());
         }
 
         /// <summary>
@@ -700,18 +684,17 @@ namespace LayoutManager.Model {
             }
         }
 
+        private const string A_FinalSpeed = "FinalSpeed";
+
         /// <summary>
         /// The speed to which the train is set. After acceleration or deceleration is done, Speed will be equal to FinalSpeed
         /// </summary>
         public int FinalSpeed {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("FinalSpeed") ?? "0");
-            }
-
-            set {
-                SetAttribute("FinalSpeed", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_FinalSpeed) ?? 0;
+            set => SetAttribute(A_FinalSpeed, value);
         }
+
+        private const string A_Speed = "Speed";
 
 
         /// <summary>
@@ -719,9 +702,7 @@ namespace LayoutManager.Model {
         /// Negative value of speed indicated a backward motion, positive number indicates forward motion.
         /// </summary>
         public int SpeedInSteps {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("Speed") ?? "0");
-            }
+            get => (int?)AttributeValue(A_Speed) ?? 0;
 
             set {
                 if (NotManaged)
@@ -786,15 +767,13 @@ namespace LayoutManager.Model {
         /// </summary>
         public MotionRampInfo StopRamp => SearchRamp("Stop");
 
+        private const string A_Lights = "Lights";
+
         /// <summary>
         /// Get or set the locomotive light state
         /// </summary>
         public bool Lights {
-            get {
-                if (Element.HasAttribute("Lights"))
-                    return XmlConvert.ToBoolean(GetOptionalAttribute("Lights") ?? "False");
-                return false;
-            }
+            get => (bool?)AttributeValue(A_Lights) ?? false;
 
             set {
                 if (NotManaged)
@@ -839,17 +818,19 @@ namespace LayoutManager.Model {
             }
         }
 
+        private const string A_InTrip = "InTrip";
+
         /// <summary>
         /// Return the trip that controls this trin, or null if this train is not currently
         /// controled by a trip
         /// </summary>
         public TripPlanAssignmentInfo? Trip {
             get {
-                if (HasAttribute("InTrip")) {
+                if (HasAttribute(A_InTrip)) {
                     if (trip == null) {
                         trip = (TripPlanAssignmentInfo?)EventManager.Event(new LayoutEvent("get-train-active-trip", this));
                         if (trip == null)
-                            Element.RemoveAttribute("InTrip");
+                            Element.RemoveAttribute(A_InTrip);
                     }
                     return trip;
                 }
@@ -859,11 +840,11 @@ namespace LayoutManager.Model {
 
             set {
                 if (value == null) {
-                    Element.RemoveAttribute("InTrip");
+                    Element.RemoveAttribute(A_InTrip);
                     trip = null;
                 }
                 else {
-                    Element.SetAttribute("InTrip", "true");
+                    Element.SetAttribute(A_InTrip, "true");
                     trip = value;
                 }
             }
@@ -1104,7 +1085,7 @@ namespace LayoutManager.Model {
         [LayoutEventDef("train-speed-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
         public void SetSpeedValue(int speedInSteps) {
             if (speedInSteps != this.SpeedInSteps) {
-                SetAttribute("Speed", XmlConvert.ToString(speedInSteps));
+                SetAttribute(A_Speed, speedInSteps);
                 EventManager.Event(new LayoutEvent("train-speed-changed", this, speedInSteps));
             }
         }
@@ -1117,10 +1098,13 @@ namespace LayoutManager.Model {
         [LayoutEventDef("train-lights-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(bool))]
         public void SetLightsValue(bool lights) {
             if (lights != Lights) {
-                SetAttribute("Lights", XmlConvert.ToString(lights));
+                SetAttribute(A_Lights, lights);
                 EventManager.Event(new LayoutEvent("train-lights-changed", this, lights));
             }
         }
+
+        private const string A_Name = "Name";
+        private const string A_LocomotiveId = "LocomotiveID";
 
         #endregion
 
@@ -1139,14 +1123,14 @@ namespace LayoutManager.Model {
             if (locomotiveId == Guid.Empty)
                 resultElement = (XmlElement)FunctionStatesElement.SelectSingleNode("FunctionState[@Name='" + functionName + "']");
             else
-                resultElement = (XmlElement)FunctionStatesElement.SelectSingleNode("FunctionState[@Name='" + functionName + "' and @LocomotiveID='" + XmlConvert.ToString(locomotiveId) + "']");
+                resultElement = (XmlElement)FunctionStatesElement.SelectSingleNode("FunctionState[@Name='" + functionName + "' and @LocomotiveID='" + locomotiveId + "']");
 
             if (resultElement == null && create) {
                 resultElement = FunctionStatesElement.OwnerDocument.CreateElement("FunctionState");
 
-                resultElement.SetAttribute("Name", functionName);
+                resultElement.SetAttribute(A_Name, functionName);
                 if (locomotiveId != Guid.Empty)
-                    resultElement.SetAttribute("LocomotiveID", XmlConvert.ToString(locomotiveId));
+                    resultElement.SetAttribute(A_LocomotiveId, XmlConvert.ToString(locomotiveId));
 
                 FunctionStatesElement.AppendChild(resultElement);
             }
@@ -1171,12 +1155,14 @@ namespace LayoutManager.Model {
                 return null;
         }
 
+        private const string E_FunctionStates = "FunctionStates";
+
         public XmlElement FunctionStatesElement {
             get {
-                XmlElement functionStates = Element["FunctionStates"];
+                XmlElement functionStates = Element[E_FunctionStates];
 
                 if (functionStates == null) {
-                    functionStates = Element.OwnerDocument.CreateElement("FunctionStates");
+                    functionStates = Element.OwnerDocument.CreateElement(E_FunctionStates);
 
                     Element.AppendChild(functionStates);
                 }
@@ -1235,6 +1221,8 @@ namespace LayoutManager.Model {
                 xmlDocument: getFunctionXml(functionName, locomotiveId)));
         }
 
+        private const string A_State = "State";
+
         /// <summary>
         /// Get the state of a given locomotive function
         /// </summary>
@@ -1245,7 +1233,7 @@ namespace LayoutManager.Model {
         public bool GetFunctionState(String functionName, Guid locomotiveId, bool defaultValue = false) {
             var function = FindFunctionState(functionName, locomotiveId, false);
 
-            if (function == null || !function.Element.HasAttribute("State"))
+            if (function == null || !function.Element.HasAttribute(A_State))
                 return defaultValue;
             else
                 return function.State;
@@ -1261,7 +1249,7 @@ namespace LayoutManager.Model {
         public bool GetFunctionState(int functionNumber, Guid locomotiveId, bool defaultValue = false) {
             var function = FindFunctionState(functionNumber, locomotiveId);
 
-            if (function == null || !function.Element.HasAttribute("State"))
+            if (function == null || !function.Element.HasAttribute(A_State))
                 return defaultValue;
             else
                 return function.State;
@@ -1279,7 +1267,7 @@ namespace LayoutManager.Model {
                 elements = FunctionStatesElement.SelectNodes("FunctionState[@LocomotiveID='" + XmlConvert.ToString(locomotiveId) + "']");
 
             foreach (XmlElement functionStateElement in elements) {
-                if (functionStateElement.HasAttribute("State") && XmlConvert.ToBoolean(functionStateElement.GetAttribute("State")))
+                if (functionStateElement.HasAttribute(A_State) && XmlConvert.ToBoolean(functionStateElement.GetAttribute(A_State)))
                     return true;
             }
 
@@ -1372,8 +1360,10 @@ namespace LayoutManager.Model {
                 null));
         }
 
-        private const string LastCrossedBlockEdgeAttribute = "LastCrossedBlockEdge";
-        private const string LastBlockEdgeCrossingTimeAttribute = "LastBlockEdgeCrossingTime";
+        private const string A_LastCrossedBlockEdge = "LastCrossedBlockEdge";
+        private const string A_LastBlockEdgeCrossingTime = "LastBlockEdgeCrossingTime";
+        private const string A_LastBlockEdgeCrossingSpeed = "LastBlockEdgeCrossingSpeed";
+        private const string A_StoppedOnBlockCrossing = "StoppedOnBlockCrossing";
 
         #endregion
 
@@ -1381,8 +1371,8 @@ namespace LayoutManager.Model {
 
         public LayoutBlockEdgeBase? LastCrossedBlockEdge {
             get {
-                if (Element.HasAttribute(LastCrossedBlockEdgeAttribute)) {
-                    Guid blockEdgeId = XmlConvert.ToGuid(GetAttribute(LastCrossedBlockEdgeAttribute));
+                if (Element.HasAttribute(A_LastCrossedBlockEdge)) {
+                    Guid blockEdgeId = XmlConvert.ToGuid(GetAttribute(A_LastCrossedBlockEdge));
 
                     return LayoutModel.Component<LayoutBlockEdgeBase>(blockEdgeId, LayoutModel.ActivePhases);
                 }
@@ -1391,44 +1381,36 @@ namespace LayoutManager.Model {
 
             set {
                 if (value == null) {
-                    Element.RemoveAttribute(LastCrossedBlockEdgeAttribute);
-                    Element.RemoveAttribute(LastBlockEdgeCrossingTimeAttribute);
+                    Element.RemoveAttribute(A_LastCrossedBlockEdge);
+                    Element.RemoveAttribute(A_LastBlockEdgeCrossingTime);
                 }
                 else {
-                    SetAttribute(LastCrossedBlockEdgeAttribute, XmlConvert.ToString(value.Id));
-                    SetAttribute(LastBlockEdgeCrossingTimeAttribute, XmlConvert.ToString(DateTime.Now.Ticks));
+                    SetAttribute(A_LastCrossedBlockEdge, value.Id);
+                    SetAttribute(A_LastBlockEdgeCrossingTime, DateTime.Now.Ticks);
                 }
             }
         }
 
         public Int64 LastBlockEdgeCrossingTime {
             get {
-                if (Element.HasAttribute(LastBlockEdgeCrossingTimeAttribute))
-                    return XmlConvert.ToInt64(GetAttribute(LastBlockEdgeCrossingTimeAttribute));
+                if (Element.HasAttribute(A_LastBlockEdgeCrossingTime))
+                    return XmlConvert.ToInt64(GetAttribute(A_LastBlockEdgeCrossingTime));
                 return 0;
             }
         }
 
-        public bool IsLastBlockEdgeCrossingSpeedKnown => Element.HasAttribute("LastBlockEdgeCrossingSpeed");
+        public bool IsLastBlockEdgeCrossingSpeedKnown => Element.HasAttribute(A_LastBlockEdgeCrossingSpeed);
 
         public int LastBlockEdgeCrossingSpeed {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("LastBlockEdgeCrossingSpeed") ?? "0");
-            }
+            get => (int?)AttributeValue(A_LastBlockEdgeCrossingSpeed) ?? 0;
 
-            set {
-                SetAttribute("LastBlockEdgeCrossingSpeed", XmlConvert.ToString(value));
-            }
+            set => SetAttribute(A_LastBlockEdgeCrossingSpeed, value);
         }
 
         public bool TrainStoppedOnBlockEdgeCrossing {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("StoppedOnBlockCrossing") ?? "false");
-            }
+            get => (bool?)AttributeValue(A_StoppedOnBlockCrossing) ?? false;
 
-            set {
-                SetAttribute("StoppedOnBlockCrossing", value, removeIf: false);
-            }
+            set => SetAttribute(A_StoppedOnBlockCrossing, value, removeIf: false);
         }
 
         #region IEqualityComparer<TrainStateInfo> Members
@@ -1445,6 +1427,11 @@ namespace LayoutManager.Model {
     /// Wrapper for element providing information on train location
     /// </summary>
     public class TrainLocationInfo : LayoutInfo {
+        private const string A_BlockId = "BlockID";
+        private const string A_BlockEdgeId = "BlockEdgeID";
+        private const string A_BlockEdgeCrossingTime = "BlockEdgeCrossingTime";
+        private const string E_Locations = "Locations";
+        private const string A_DisplayFront = "DisplayFront";
         readonly TrainStateInfo trainState;
 
         internal TrainLocationInfo(TrainStateInfo trainState, XmlElement element)
@@ -1458,13 +1445,9 @@ namespace LayoutManager.Model {
         /// The BlockID of the block in which the train is located
         /// </summary>
         public Guid BlockId {
-            get {
-                return XmlConvert.ToGuid(GetAttribute("BlockID"));
-            }
+            get => XmlConvert.ToGuid(GetAttribute(A_BlockId));
 
-            set {
-                SetAttribute("BlockID", XmlConvert.ToString(value));
-            }
+            set => SetAttribute(A_BlockId, value);
         }
 
         /// <summary>
@@ -1478,9 +1461,7 @@ namespace LayoutManager.Model {
                 return block;
             }
 
-            set {
-                BlockId = value.Id;
-            }
+            set => BlockId = value.Id;
         }
 
         /// <summary>
@@ -1488,28 +1469,26 @@ namespace LayoutManager.Model {
         /// </summary>m 
         public Guid BlockEdgeId {
             get {
-                if (!Element.HasAttribute("BlockEdgeID"))
+                if (!Element.HasAttribute(A_BlockEdgeId))
                     return Guid.Empty;
                 else
-                    return XmlConvert.ToGuid(GetAttribute("BlockEdgeID"));
+                    return XmlConvert.ToGuid(GetAttribute(A_BlockEdgeId));
             }
 
             set {
                 if (value != Guid.Empty) {
-                    SetAttribute("BlockEdgeID", XmlConvert.ToString(value));
-                    SetAttribute("BlockEdgeCrossingTime", XmlConvert.ToString(DateTime.Now.Ticks));
+                    SetAttribute(A_BlockEdgeId, value);
+                    SetAttribute(A_BlockEdgeCrossingTime, XmlConvert.ToString(DateTime.Now.Ticks));
                 }
                 else {
-                    Element.RemoveAttribute("BlockEdgeID");
-                    Element.RemoveAttribute("BlockEdgeCrossingTime");
+                    Element.RemoveAttribute(A_BlockEdgeId);
+                    Element.RemoveAttribute(A_BlockEdgeCrossingTime);
                 }
             }
         }
 
         public LayoutBlockEdgeBase? BlockEdge {
-            get {
-                return LayoutModel.Component<LayoutBlockEdgeBase>(BlockEdgeId, LayoutModel.ActivePhases);
-            }
+            get => LayoutModel.Component<LayoutBlockEdgeBase>(BlockEdgeId, LayoutModel.ActivePhases);
 
             set {
                 if (value == null)
@@ -1522,13 +1501,13 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The time in which the train had crossed the track contact which caused it to enter this block
         /// </summary>
-        public long BlockEdgeCrossingTime => XmlConvert.ToInt64(GetAttribute("BlockEdgeCrossingTime"));
+        public long BlockEdgeCrossingTime => XmlConvert.ToInt64(GetAttribute(A_BlockEdgeCrossingTime));
 
         public XmlElement LocomotiveStateElement => (XmlElement)Element.ParentNode.ParentNode;
 
         public TrainPart TrainPart {
             get {
-                XmlElement locationsElement = (XmlElement)LocomotiveStateElement["Locations"];
+                XmlElement locationsElement = (XmlElement)LocomotiveStateElement[E_Locations];
 
                 if (Element == locationsElement.FirstChild)
                     return TrainPart.Locomotive;
@@ -1543,24 +1522,22 @@ namespace LayoutManager.Model {
             }
         }
 
-        public bool IsDisplayFrontKnown => Element.HasAttribute("DisplayFront");
+        public bool IsDisplayFrontKnown => Element.HasAttribute(A_DisplayFront);
 
         public void SetDisplayFrontToUnknown() {
-            Element.RemoveAttribute("DisplayFront");
+            Element.RemoveAttribute(A_DisplayFront);
         }
 
         public LayoutComponentConnectionPoint DisplayFront {
-            get {
-                return LayoutComponentConnectionPoint.Parse(GetAttribute("DisplayFront"));
-            }
+            get => LayoutComponentConnectionPoint.Parse(GetAttribute(A_DisplayFront));
 
-            set {
-                SetAttribute("DisplayFront", value.ToString());
-            }
+            set => SetAttribute(A_DisplayFront, value.ToString());
         }
     }
 
     public class TrainsStateInfo : LayoutStateInfoBase, IEnumerable<TrainStateInfo> {
+        private const string E_Locomotive = "Locomotive";
+        private const string E_Train = "Train";
         readonly Dictionary<Guid, XmlElement> _IDtoTrainStateElement = new Dictionary<Guid, XmlElement>();
 
         internal TrainsStateInfo(XmlElement trainsStateElement)
@@ -1605,12 +1582,12 @@ namespace LayoutManager.Model {
 
         public TrainStateInfo? this[XmlElement element] {
             get {
-                if (element.Name == "Locomotive") {
+                if (element.Name == E_Locomotive) {
                     LocomotiveInfo loco = new LocomotiveInfo(element);
 
                     return this[loco.Id];
                 }
-                else if (element.Name == "Train") {
+                else if (element.Name == E_Train) {
                     TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(element);
 
                     return this[trainInCollection.Id];
@@ -1756,20 +1733,20 @@ namespace LayoutManager.Model {
         /// <param name="componentId">The component name</param>
         /// <param name="topicName">The topic name</param>
         /// <returns>The component topic runtime state XML element</returns>
-        public XmlElement StateOf(Guid componentId, string topicName) {
+        public XmlElementWrapper StateOf(Guid componentId, string topicName, bool create = false) {
             XmlElement componentStateElement = GetComponentStateElement(componentId);
             XmlElement componentStateTopicElement = componentStateElement[topicName];
 
-            if (componentStateTopicElement == null) {
+            if (create && componentStateTopicElement == null) {
                 componentStateTopicElement = Element.OwnerDocument.CreateElement(topicName);
 
                 componentStateElement.AppendChild(componentStateTopicElement);
             }
 
-            return componentStateTopicElement;
+            return new XmlElementWrapper(componentStateTopicElement);
         }
 
-        public XmlElement StateOf(IModelComponentHasId component, string topicName) => StateOf(component.Id, topicName);
+        public XmlElementWrapper StateOf(IModelComponentHasId component, string topicName, bool create = false) => StateOf(component.Id, topicName, create);
 
         #endregion
 
@@ -1875,6 +1852,13 @@ namespace LayoutManager.Model {
     #region Track Contact State
 
     public class TrackContactPassingStateInfo : LayoutStateTopicBase {
+        private const string A_TrainId = "TrainID";
+        private const string A_FromBlockID = "FromBlockID";
+        private const string A_FromBlockTriggerCount = "FromBlockTriggerCount";
+        private const string A_ToBlockID = "ToBlockID";
+        private const string A_ToBlockTriggerCount = "ToBlockTriggerCount";
+        private const string A_Direction = "Direction";
+
         public TrackContactPassingStateInfo(XmlElement element)
             : base(element) {
         }
@@ -1884,19 +1868,13 @@ namespace LayoutManager.Model {
         public LayoutTrackContactComponent TrackContact => Ensure.NotNull<LayoutTrackContactComponent>(LayoutModel.Component<LayoutTrackContactComponent>(ComponentId, LayoutModel.ActivePhases), "TrackContact");
 
         public Guid TrainId {
-            get {
-                return XmlConvert.ToGuid(GetAttribute("TrainID"));
-            }
+            get => XmlConvert.ToGuid(GetAttribute(A_TrainId));
 
-            set {
-                SetAttribute("TrainID", XmlConvert.ToString(value));
-            }
+            set => SetAttribute(A_TrainId, value);
         }
 
         public TrainStateInfo? Train {
-            get {
-                return LayoutModel.StateManager.Trains[TrainId];
-            }
+            get => LayoutModel.StateManager.Trains[TrainId];
 
             set {
                 Debug.Assert(value != null);
@@ -1905,73 +1883,44 @@ namespace LayoutManager.Model {
         }
 
         public Guid FromBlockId {
-            get {
-                return XmlConvert.ToGuid(GetAttribute("FromBlockID"));
-            }
+            get => XmlConvert.ToGuid(GetAttribute(A_FromBlockID));
 
-            set {
-                SetAttribute("FromBlockID", XmlConvert.ToString(value));
-            }
+            set => SetAttribute(A_FromBlockID, value);
         }
 
         public LayoutBlock FromBlock {
-            get {
-                return LayoutModel.Blocks[FromBlockId];
-            }
+            get => LayoutModel.Blocks[FromBlockId];
 
-            set {
-                FromBlockId = value.Id;
-            }
+            set => FromBlockId = value.Id;
         }
 
         public int FromBlockTriggerCount {
-            get {
-                return XmlConvert.ToInt32(GetAttribute("FromBlockTriggerCount"));
-            }
+            get => XmlConvert.ToInt32(GetAttribute(A_FromBlockTriggerCount));
 
-            set {
-                SetAttribute("FromBlockTriggerCount", XmlConvert.ToString(value));
-            }
+            set => SetAttribute(A_FromBlockTriggerCount, value);
         }
 
         public Guid ToBlockId {
-            get {
-                return XmlConvert.ToGuid(GetAttribute("ToBlockID"));
-            }
+            get => XmlConvert.ToGuid(GetAttribute(A_ToBlockID));
 
-            set {
-                SetAttribute("ToBlockID", XmlConvert.ToString(value));
-            }
+            set => SetAttribute(A_ToBlockID, value);
         }
 
         public LayoutBlock ToBlock {
-            get {
-                return LayoutModel.Blocks[ToBlockId];
-            }
+            get => LayoutModel.Blocks[ToBlockId];
 
-            set {
-                ToBlockId = value.Id;
-            }
+            set => ToBlockId = value.Id;
         }
 
         public int ToBlockTriggerCount {
-            get {
-                return XmlConvert.ToInt32(GetAttribute("ToBlockTriggerCount"));
-            }
+            get => XmlConvert.ToInt32(GetAttribute(A_ToBlockTriggerCount));
 
-            set {
-                SetAttribute("ToBlockTriggerCount", XmlConvert.ToString(value));
-            }
+            set => SetAttribute(A_ToBlockTriggerCount, value);
         }
 
         public LocomotiveOrientation Direction {
-            get {
-                return (LocomotiveOrientation)Enum.Parse(typeof(LocomotiveOrientation), GetAttribute("Direction"));
-            }
-
-            set {
-                SetAttribute("Direction", value.ToString());
-            }
+            get => AttributeValue(A_Direction).Enum<LocomotiveOrientation>() ?? throw new ArgumentNullException(A_Direction);
+            set => SetAttribute(A_Direction, value.ToString());
         }
 
         public void Remove() {
@@ -2012,6 +1961,9 @@ namespace LayoutManager.Model {
     #endregion
 
     public class ManualDispatchRegionInfo : LayoutStateInfoBase, IObjectHasId {
+        private const string E_Blocks = "Blocks";
+        private const string A_Active = "Active";
+        private const string A_Name = "Name";
         BlockIdCollection? blockIdCollection;
 
         public ManualDispatchRegionInfo(XmlElement element)
@@ -2020,10 +1972,10 @@ namespace LayoutManager.Model {
 
         public XmlElement BlocksElement {
             get {
-                XmlElement blocksElement = Element["Blocks"];
+                XmlElement blocksElement = Element[E_Blocks];
 
                 if (blocksElement == null) {
-                    blocksElement = Element.OwnerDocument.CreateElement("Blocks");
+                    blocksElement = Element.OwnerDocument.CreateElement(E_Blocks);
                     Element.AppendChild(blocksElement);
                 }
 
@@ -2032,19 +1984,12 @@ namespace LayoutManager.Model {
         }
 
         public string Name {
-            get {
-                return GetOptionalAttribute("Name") ?? "";
-            }
-
-            set {
-                SetAttribute("Name", value);
-            }
+            get => GetOptionalAttribute(A_Name) ?? "";
+            set => SetAttribute(A_Name, value);
         }
 
         public bool Active {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("Active") ?? "false");
-            }
+            get => (bool?)AttributeValue(A_Active) ?? false;
 
             set {
                 if (value == true && Active == false)
@@ -2071,7 +2016,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="active"></param>
         public void SetActive(bool active) {
-            SetAttribute("Active", XmlConvert.ToString(active));
+            SetAttribute(A_Active, active);
             EventManager.Event(new LayoutEvent("manual-dispatch-region-activation-changed", this, active));
         }
 
@@ -2182,6 +2127,9 @@ namespace LayoutManager.Model {
     #region Layout Verification options
 
     public class LayoutVerificationOptions : LayoutStateInfoBase {
+        private const string A_IgnoreNotConnectedFeedbacks = "IgnoreNotConnectedFeedbacks";
+        private const string A_IgnoreNotPowerComponents = "IgnoreNotPowerComponents";
+
         public LayoutVerificationOptions(XmlElement element)
             : base(element) {
         }
@@ -2190,26 +2138,18 @@ namespace LayoutManager.Model {
         /// Ignore feedback (track contacts, block occupancy detectors) components that are not connected
         /// </summary>
         public bool IgnoreNotConnectedFeedbacks {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("IgnoreNotConnectedFeedbacks") ?? "false");
-            }
+            get => (bool?)AttributeValue(A_IgnoreNotConnectedFeedbacks) ?? false;
 
-            set {
-                SetAttribute("IgnoreNotConnectedFeedbacks", XmlConvert.ToString(value));
-            }
+            set => SetAttribute(A_IgnoreNotConnectedFeedbacks, value);
         }
 
         /// <summary>
         /// Ignore not connected power components
         /// </summary>
         public bool IgnoreNotConnectedPowerComponents {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("IgnoreNotPowerComponents") ?? "false");
-            }
+            get => (bool?)AttributeValue(A_IgnoreNotPowerComponents) ?? false;
 
-            set {
-                SetAttribute("IgnoreNotPowerComponents", XmlConvert.ToString(value));
-            }
+            set => SetAttribute(A_IgnoreNotPowerComponents, value);
         }
     }
 
@@ -2221,35 +2161,25 @@ namespace LayoutManager.Model {
     }
 
     public class TrainTrackingOptions : LayoutStateInfoBase {
-        const string InManualDispatchRegionAttribute = "InManualDispatchRegion";
-        const string ProximitySensorSensitivityDelayAttribute = "ProximitySensorSensitivity";
+        const string A_InManualDispatchRegion = "InManualDispatchRegion";
+        const string A_ProximitySensorSensitivityDelay = "ProximitySensorSensitivity";
         const int ProxmitySensorSensitivityDefault = 400;
 
         public TrainTrackingOptions(XmlElement element) : base(element) {
         }
 
         public TrainTrackingInManualDispatchRegion TrainTrackingInManualDispatchRegion {
-            get {
-
-                return Enum.TryParse(GetAttribute(InManualDispatchRegionAttribute), out TrainTrackingInManualDispatchRegion result) ? result : TrainTrackingInManualDispatchRegion.Normal;
-            }
-
-            set {
-                SetAttribute(InManualDispatchRegionAttribute, value.ToString());
-            }
+            get => AttributeValue(A_InManualDispatchRegion).Enum<TrainTrackingInManualDispatchRegion>() ?? TrainTrackingInManualDispatchRegion.Normal;
+            set => SetAttribute(A_InManualDispatchRegion, value.ToString());
         }
 
         /// <summary>
         /// Time (in milliseconds) in which proxmity sensor need to remain in the same state for the state to acknoledge
         /// </summary>
         public int ProximitySensorSensitivityDelay {
-            get => XmlConvert.ToInt32(GetOptionalAttribute(ProximitySensorSensitivityDelayAttribute) ?? XmlConvert.ToString(ProxmitySensorSensitivityDefault));
-
+            get => (int?)AttributeValue(A_ProximitySensorSensitivityDelay) ?? ProxmitySensorSensitivityDefault;
             set {
-                if (value == ProxmitySensorSensitivityDefault)
-                    Element.RemoveAttribute(ProximitySensorSensitivityDelayAttribute);
-                else
-                    SetAttribute(ProximitySensorSensitivityDelayAttribute, value);
+                SetAttribute(A_ProximitySensorSensitivityDelay, value, removeIf: ProxmitySensorSensitivityDefault);
                 EventManager.Event("proximity-sensitivity-delay-changed");
             }
         }
@@ -2261,12 +2191,20 @@ namespace LayoutManager.Model {
     #region Policy
 
     public class LayoutPolicyInfo : LayoutXmlWrapper, IObjectHasId {
+        private const string E_Policy = "Policy";
+        private const string E_EventScript = "EventScript";
+        private const string A_Global = "Global";
+        private const string A_Name = "Name";
+        private const string A_Scope = "Scope";
+        private const string A_ShowInMenu = "ShowInMenu";
+        private const string A_Apply = "Apply";
+
         public LayoutPolicyInfo(XmlElement element)
             : base(element) {
         }
 
         public LayoutPolicyInfo(XmlElement parent, string name, XmlElement eventScriptElement, string scope, bool globalPolicy, bool apply) {
-            Element = parent.OwnerDocument.CreateElement("Policy");
+            Element = parent.OwnerDocument.CreateElement(E_Policy);
 
             if (name != null)
                 Name = name;
@@ -2277,7 +2215,7 @@ namespace LayoutManager.Model {
             Scope = scope;
             Apply = apply;
 
-            SetAttribute("Global", XmlConvert.ToString(globalPolicy));
+            SetAttribute(A_Global, globalPolicy);
         }
 
         public LayoutEventScript? ActiveScript => (LayoutEventScript?)EventManager.Event(new LayoutEvent("get-active-event-script", Id));
@@ -2285,23 +2223,15 @@ namespace LayoutManager.Model {
         public bool IsActive => ActiveScript != null;
 
         public string Name {
-            get {
-                return GetAttribute("Name");
-            }
+            get => GetAttribute(A_Name);
 
-            set {
-                SetAttribute("Name", value);
-            }
+            set => SetAttribute(A_Name, value);
         }
 
         public string Scope {
-            get {
-                return GetOptionalAttribute("Scope") ?? "TripPlan";
-            }
+            get => GetOptionalAttribute(A_Scope) ?? "TripPlan";
 
-            set {
-                SetAttribute("Scope", value);
-            }
+            set => SetAttribute(A_Scope, value);
         }
 
         /// <summary>
@@ -2309,28 +2239,20 @@ namespace LayoutManager.Model {
         /// current layout)
         /// </summary>
         public bool GlobalPolicy {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("Global") ?? "false");
-            }
+            get => (bool?)AttributeValue(A_Global) ?? false;
 
-            set {
-                SetAttribute("Global", XmlConvert.ToString(value));
-            }
+            set => SetAttribute(A_Global, value);
         }
 
         public bool ShowInMenu {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("ShowInMenu") ?? "false");
-            }
+            get => (bool?)AttributeValue(A_ShowInMenu) ?? false;
 
-            set {
-                SetAttribute("ShowInMenu", XmlConvert.ToString(value));
-            }
+            set => SetAttribute(A_ShowInMenu, value);
         }
 
         public XmlElement? EventScriptElement {
             get {
-                XmlElement eventScriptElement = Element["EventScript"];
+                XmlElement eventScriptElement = Element[E_EventScript];
 
                 if (eventScriptElement != null) {
                     Debug.Assert(eventScriptElement.ChildNodes.Count == 1);
@@ -2346,11 +2268,11 @@ namespace LayoutManager.Model {
 
                 Ensure.NotNull<XmlElement>(value, "EventScriptElement");
 
-                XmlElement eventScriptElement = Element["EventScript"];
+                XmlElement eventScriptElement = Element[E_EventScript];
                 XmlElement theScriptElement;
 
                 if (eventScriptElement == null) {
-                    eventScriptElement = Element.OwnerDocument.CreateElement("EventScript");
+                    eventScriptElement = Element.OwnerDocument.CreateElement(E_EventScript);
                     Element.AppendChild(eventScriptElement);
                 }
 
@@ -2376,13 +2298,8 @@ namespace LayoutManager.Model {
         }
 
         public bool Apply {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("Apply") ?? "false");
-            }
-
-            set {
-                SetAttribute("Apply", XmlConvert.ToString(value));
-            }
+            get => (bool?)AttributeValue(A_Apply) ?? false;
+            set => SetAttribute(A_Apply, value);
         }
     }
 

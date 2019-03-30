@@ -1398,7 +1398,7 @@ namespace LayoutManager.Tools {
                     throw new ArgumentException("Symbol " + symbolName + " is not a reference to a valid train object");
 
                 TrainStateInfo train = (TrainStateInfo)oTrain;
-                TripPlanInfo catalogTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[tripPlanID];
+                var catalogTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[tripPlanID];
 
                 if (catalogTripPlan == null)
                     throw new LayoutEventScriptException(this, "The trip plan to execute cannot be found. It was probably erased");
@@ -1464,7 +1464,7 @@ namespace LayoutManager.Tools {
                 bool shouldReverse = XmlConvert.ToBoolean(element.GetAttribute("ShouldReverse"));
                 string tripPlanName = "[Error: UNKNOWN]";
 
-                TripPlanInfo tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[tripPlanID];
+                var tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[tripPlanID];
 
                 if (tripPlan != null)
                     tripPlanName = tripPlan.Name;
@@ -1533,7 +1533,7 @@ namespace LayoutManager.Tools {
                 }
 
                 foreach (XmlElement applicableTripPlanElement in applicableTripPlansElement) {
-                    TripPlanInfo tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[XmlConvert.ToGuid(applicableTripPlanElement.GetAttribute("TripPlanID"))];
+                    var tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[XmlConvert.ToGuid(applicableTripPlanElement.GetAttribute("TripPlanID"))];
                     int penalty = XmlConvert.ToInt32(applicableTripPlanElement.GetAttribute("Penalty"));
                     RouteClearanceQuality clearanceQuality = (RouteClearanceQuality)Enum.Parse(typeof(RouteClearanceQuality), applicableTripPlanElement.GetAttribute("ClearanceQuality"));
                     RouteQuality routeQuality = new RouteQuality(train.Id, clearanceQuality, penalty);
@@ -1591,25 +1591,27 @@ namespace LayoutManager.Tools {
                         selectedApplicableTripPlanElement = (XmlElement)tripPlanCanidates[index];
 
                     if (selectedApplicableTripPlanElement != null) {
-                        TripPlanInfo selectedTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[XmlConvert.ToGuid(selectedApplicableTripPlanElement.GetAttribute("TripPlanID"))];
+                        var selectedTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[XmlConvert.ToGuid(selectedApplicableTripPlanElement.GetAttribute("TripPlanID"))];
                         bool shouldReverse = XmlConvert.ToBoolean(selectedApplicableTripPlanElement.GetAttribute("ShouldReverse"));
 
-                        if (traceRandomTripPlan.TraceInfo) {
-                            Trace.WriteLine("*** Selected trip: " + selectedApplicableTripPlanElement.OuterXml);
-                            selectedTripPlan.Dump();
+                        if (selectedTripPlan != null) {
+                            if (traceRandomTripPlan.TraceInfo) {
+                                Trace.WriteLine("*** Selected trip: " + selectedApplicableTripPlanElement.OuterXml);
+                                selectedTripPlan.Dump();
+                            }
+
+                            // Now submit the trip plan
+                            XmlDocument tripPlanDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
+                            XmlElement tripPlanElement = (XmlElement)tripPlanDoc.ImportNode(selectedTripPlan.Element, true);
+
+                            tripPlanDoc.AppendChild(tripPlanElement);
+                            TripPlanInfo tripPlan = new TripPlanInfo(tripPlanElement);
+
+                            if (shouldReverse)
+                                tripPlan.Reverse();
+
+                            EventManager.Event(new LayoutEvent("execute-trip-plan", new TripPlanAssignmentInfo(tripPlan, train)));
                         }
-
-                        // Now submit the trip plan
-                        XmlDocument tripPlanDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
-                        XmlElement tripPlanElement = (XmlElement)tripPlanDoc.ImportNode(selectedTripPlan.Element, true);
-
-                        tripPlanDoc.AppendChild(tripPlanElement);
-                        TripPlanInfo tripPlan = new TripPlanInfo(tripPlanElement);
-
-                        if (shouldReverse)
-                            tripPlan.Reverse();
-
-                        EventManager.Event(new LayoutEvent("execute-trip-plan", new TripPlanAssignmentInfo(tripPlan, train)));
                     }
                 }
             }

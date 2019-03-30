@@ -998,7 +998,7 @@ namespace LayoutManager.Components {
                     realSwitchState = 2;
 
                 if (realSwitchState >= 0) {
-                    LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic).SetAttribute("Value", XmlConvert.ToString(realSwitchState));
+                    LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic, create: true).SetAttribute("Value", XmlConvert.ToString(realSwitchState));
                     Component.OnComponentChanged();
                 }
             }

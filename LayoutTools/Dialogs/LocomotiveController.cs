@@ -9,6 +9,7 @@ using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
 #pragma warning disable IDE0051, IDE0060
+#nullable enable
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for LocomotiveController.
@@ -37,10 +38,9 @@ namespace LayoutManager.Tools.Dialogs {
         private Button buttonForwardMenu;
         private IContainer components;
 
-        private void EndOfDesignerVariables() { }
-
         readonly TrainStateInfo train;
 
+        #pragma warning disable nullable
         public LocomotiveController(TrainStateInfo train) {
             //
             // Required for Windows Form Designer support
@@ -65,6 +65,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             EventManager.Event(new LayoutEvent<TrainStateInfo>("train-controller-activated", train));
         }
+        #pragma warning restore nullable
 
         protected override void OnFormClosing(FormClosingEventArgs e) {
             base.OnFormClosing(e);
@@ -86,6 +87,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         public XmlElement Element => train.Element;
+        public XmlElement? OptionalElement => Element;
 
         #region Layout Event Handlers
 

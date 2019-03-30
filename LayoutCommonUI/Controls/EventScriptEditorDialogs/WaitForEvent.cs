@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
+#nullable enable
 namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
     /// <summary>
     /// Summary description for WaitForEvent.
@@ -14,10 +15,10 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private readonly Container components = null;
         readonly XmlElement element;
         private CheckBox checkBoxLimitedToScope;
 
+        #pragma warning disable nullable
         public WaitForEvent(XmlElement element) {
             //
             // Required for Windows Form Designer support
@@ -38,20 +39,10 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             foreach (LayoutEventDefAttribute eventDef in EventManager.Instance.GetEventDefinitions(LayoutEventRole.Notification))
                 comboBoxEvent.Items.Add(eventDef.Name);
         }
+        #pragma warning restore nullable
 
         public XmlElement Element => element;
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose(bool disposing) {
-            if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
-            }
-            base.Dispose(disposing);
-        }
+        public XmlElement? OptionalElement => Element;
 
         #region Windows Form Designer generated code
         /// <summary>

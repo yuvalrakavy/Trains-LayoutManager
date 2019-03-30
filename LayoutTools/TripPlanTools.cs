@@ -107,7 +107,7 @@ namespace LayoutManager.Tools {
             IRoutePlanningServices _tripPlanningServices = null;
 
             public ApplicableTripPlansData(XmlElement element) : base(element) {
-                staticGrade = XmlConvert.ToBoolean(GetOptionalAttribute("StaticGrade") ??  "true");
+                staticGrade = (bool?)AttributeValue("StaticGrade") ??  true;
             }
 
             public IRoutePlanningServices TripPlanningServices {
@@ -393,14 +393,14 @@ namespace LayoutManager.Tools {
             if (e.Sender == null) {
                 ApplicableTripPlansData applicableTripPlans = new ApplicableTripPlansData(applicableTripPlansElement) {
                     AllTripPlans = true,
-                    CalculatePenalty = e.GetBoolOption("CalculatePenalty", true)
+                    CalculatePenalty = (bool?)e.GetOption("CalculatePenalty") ?? true
                 };
                 applicableTripPlans.FindApplicableTripPlans();
             }
             else if (e.Sender is TrainStateInfo train) {
                 ApplicableTripPlansData applicableTripPlans = new ApplicableTripPlansData(applicableTripPlansElement) {
                     Train = train,
-                    CalculatePenalty = e.GetBoolOption("CalculatePenalty", true)
+                    CalculatePenalty = (bool?)e.GetOption("CalculatePenalty") ?? true
                 };
                 applicableTripPlans.FindApplicableTripPlans();
             }
@@ -418,7 +418,7 @@ namespace LayoutManager.Tools {
                     applicableTripPlans.LastCarBlock = block;
                     applicableTripPlans.LocomotiveFront = front.Value;
                     applicableTripPlans.LastCarFront = front.Value;
-                    applicableTripPlans.CalculatePenalty = e.GetBoolOption("CalculatePenalty", true);
+                    applicableTripPlans.CalculatePenalty = (bool ?)e.GetOption("CalculatePenalty") ?? true;
                     applicableTripPlans.FindApplicableTripPlans();
                 }
             }

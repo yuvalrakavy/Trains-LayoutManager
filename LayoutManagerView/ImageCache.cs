@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
+#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.View {
 
     [LayoutModule("Image Cache Manager", UserControl = false)]
@@ -55,9 +56,8 @@ namespace LayoutManager.View {
         [LayoutEvent("remove-image-from-cache")]
         private void removeImageFromCache(LayoutEvent e) {
             String imageCacheKey = getImageCacheKey(e);
-            Image image = (Image)imageHashtable[imageCacheKey];
 
-            if (imageHashtable.TryGetValue(imageCacheKey, out image)) {
+            if (imageHashtable.TryGetValue(imageCacheKey, out var image)) {
                 image.Dispose();
                 imageHashtable.Remove(imageCacheKey);
             }

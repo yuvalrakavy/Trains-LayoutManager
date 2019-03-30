@@ -23,6 +23,14 @@ namespace LayoutManager.Model {
     }
 
     public class MotionRampInfo : LayoutInfo {
+        private const string A_Name = "Name";
+        private const string A_Role = "Role";
+        private const string A_UseInTrainController = "UseInTrainController";
+        private const string A_RampType = "RampType";
+        private const string A_MotionTime = "MotionTime";
+        private const string A_SpeedChangeRate = "SpeedChangeRate";
+        private const string E_Ramp = "Ramp";
+
         public MotionRampInfo(XmlElement element) : base(element) {
         }
 
@@ -37,72 +45,42 @@ namespace LayoutManager.Model {
         }
 
         public string Name {
-            get {
-                return GetOptionalAttribute("Name") ??  "";
-            }
-
-            set {
-                SetAttribute("Name", value);
-            }
+            get => GetOptionalAttribute(A_Name) ?? "";
+            set => SetAttribute(A_Name, value);
         }
 
         public string? Role {
-            get {
-                return GetOptionalAttribute("Role");
-            }
-
-            set {
-                SetAttribute("Role", value, removeIf: null);
-            }
+            get => GetOptionalAttribute(A_Role);
+            set => SetAttribute(A_Role, value, removeIf: null);
         }
 
         public bool UseInTrainControllerDialog {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("UseInTrainController") ??  "false");
-            }
-
-            set {
-                SetAttribute("UseInTrainController", value, removeIf: false);
-            }
+            get => (bool?)AttributeValue(A_UseInTrainController) ?? false;
+            set => SetAttribute(A_UseInTrainController, value, removeIf: false);
         }
 
         public MotionRampType RampType {
-            get {
-                return (MotionRampType)Enum.Parse(typeof(MotionRampType), GetAttribute("RampType"));
-            }
-
-            set {
-                SetAttribute("RampType", value.ToString());
-            }
+            get => AttributeValue(A_RampType).Enum<MotionRampType>() ?? MotionRampType.RateFixed;
+            set => SetAttribute(A_RampType, value.ToString());
         }
 
         /// <summary>
         /// The total time of the speed change, the value is given in milli-seconds
         /// </summary>
         public int MotionTime {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("MotionTime") ??  "0");
-            }
-
-            set {
-                SetAttribute("MotionTime", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_MotionTime) ?? 0;
+            set => SetAttribute(A_MotionTime, value);
         }
 
 
         public int SpeedChangeRate {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("SpeedChangeRate") ??  "0");
-            }
-
-            set {
-                SetAttribute("SpeedChangeRate", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_SpeedChangeRate) ?? 0;
+            set => SetAttribute(A_SpeedChangeRate, value);
         }
 
         public string Description {
             get {
-                if (Element.HasAttribute("Name"))
+                if (Element.HasAttribute(A_Name))
                     return Name + " (" + GetRampDescription() + ")";
                 else
                     return GetRampDescription();
@@ -128,7 +106,7 @@ namespace LayoutManager.Model {
             if (!(parent is XmlDocument doc))
                 doc = parent.OwnerDocument;
 
-            Element = doc.CreateElement("Ramp");
+            Element = doc.CreateElement(E_Ramp);
 
             RampType = rampType;
             if (rampType == MotionRampType.TimeFixed)
@@ -172,6 +150,9 @@ namespace LayoutManager.Model {
     /// This structure is returned by command station in response to get-command-station-capabilities event
     /// </summary>
     public class CommandStationCapabilitiesInfo : LayoutInfo {
+        private const string E_CommandStationCapabilities = "CommandStationCapabilities";
+        private const string A_MinTimeBetweenSpeedSteps = "MinTimeBetweenSpeedSteps";
+
         public CommandStationCapabilitiesInfo(XmlElement element) : base(element) {
         }
 
@@ -182,18 +163,13 @@ namespace LayoutManager.Model {
         protected void CreateDocument() {
             XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
-            Element = doc.CreateElement("CommandStationCapabilities");
+            Element = doc.CreateElement(E_CommandStationCapabilities);
             doc.AppendChild(Element);
         }
 
         public int MinTimeBetweenSpeedSteps {
-            get {
-                return XmlConvert.ToInt32(Element.GetAttribute("MinTimeBetweenSpeedSteps"));
-            }
-
-            set {
-                SetAttribute("MinTimeBetweenSpeedSteps", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 0;
+            set => SetAttribute(A_MinTimeBetweenSpeedSteps, value);
         }
     }
 
@@ -201,6 +177,8 @@ namespace LayoutManager.Model {
     /// Holds the various defaults for driver parameters
     /// </summary>
     public class DefaultDriverParametersInfo : LayoutStateInfoBase {
+        private const string A_SpeedLimit = "SpeedLimit";
+        private const string A_SlowDownSpeed = "SlowDownSpeed";
 
         public DefaultDriverParametersInfo(XmlElement element) : base(element) {
             if (element.ChildNodes.Count == 0)
@@ -228,32 +206,19 @@ namespace LayoutManager.Model {
         }
 
         public int SpeedLimit {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("SpeedLimit") ??  "0");
-            }
-
-            set {
-                SetAttribute("SpeedLimit", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_SpeedLimit) ?? 0;
+            set => SetAttribute(A_SpeedLimit, value);
         }
 
         public int SlowdownSpeed {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("SlowDownSpeed") ??  "1");
-            }
-
-            set {
-                SetAttribute("SlowDownSpeed", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_SlowDownSpeed) ?? 1;
+            set => SetAttribute(A_SlowDownSpeed, value);
         }
 
         private MotionRampInfo? getRamp(string role) {
             XmlElement rampElement = (XmlElement)Element.SelectSingleNode("Ramp[@Role='" + role + "']");
 
-            if (rampElement == null)
-                return null;
-            else
-                return new MotionRampInfo(rampElement);
+            return rampElement == null ? null : new MotionRampInfo(rampElement);
         }
 
         public MotionRampInfo? AccelerationProfile => getRamp("Acceleration");

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
+#nullable enable
 namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
     /// <summary>
     /// Summary description for IfTime.
@@ -23,16 +24,12 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private readonly Container components = null;
-
-#pragma warning disable IDE0051 // Remove unused private members
-        private void endOfDesignerVariables() { }
-#pragma warning restore IDE0051 // Remove unused private members
 
         readonly XmlDocument workingDoc;
         readonly XmlElement element;
         readonly XmlElement inElement;
 
+#pragma warning disable nullable
         public IfTime(XmlElement inElement) {
             //
             // Required for Windows Form Designer support
@@ -55,6 +52,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
                 i++;
             }
         }
+#pragma warning restore nullable
 
         private TimeSectionTreeNode findTimeSection(Type treeNodeType) {
             foreach (TimeSectionTreeNode timeSection in treeView.Nodes)
@@ -93,18 +91,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
                 buttonEdit.Enabled = true;
 
             buttonDelete.Enabled = treeView.SelectedNode != null;
-        }
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose(bool disposing) {
-            if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
-            }
-            base.Dispose(disposing);
         }
 
         #region Windows Form Designer generated code
@@ -349,6 +335,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             }
 
             public XmlElement Element => node.Element;
+            public XmlElement? OptionalElement => Element;
 
             public IIfTimeNode Node => node;
 

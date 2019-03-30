@@ -150,16 +150,20 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutTrackPowerConnectorInfo : LayoutTextInfo {
+        private const string CheckReverseLoopsAttribute = "CheckReverseLoops";
+        private const string TrackPowerConnectorElementName = "TrackPowerConnector";
+        private const string GaugeAttribute = "Gauge";
+
         public LayoutTrackPowerConnectorInfo(ModelComponent component, String elementName)
             : base(component, elementName) {
         }
 
         public LayoutTrackPowerConnectorInfo(ModelComponent component)
-            : base(component, "TrackPowerConnector") {
+            : base(component, TrackPowerConnectorElementName) {
         }
 
         public LayoutTrackPowerConnectorInfo(XmlElement containerElement)
-            : base(containerElement, "TrackPowerConnector") {
+            : base(containerElement, TrackPowerConnectorElementName) {
         }
 
 
@@ -176,26 +180,13 @@ namespace LayoutManager.Components {
         public LayoutPowerInlet Inlet => new LayoutPowerInlet(Element, "PowerInlet");
 
         public TrackGauges TrackGauge {
-            get {
-                if (!Element.HasAttribute("Gauge"))
-                    return TrackGauges.HO;
-                else
-                    return (TrackGauges)Enum.Parse(typeof(TrackGauges), Element.GetAttribute("Gauge"));
-            }
-
-            set {
-                Element.SetAttribute("Gauge", value.ToString());
-            }
+            get => AttributeValue(GaugeAttribute).Enum<TrackGauges>() ?? TrackGauges.HO;
+            set => Element.SetAttribute(GaugeAttribute, value.ToString());
         }
 
         public bool CheckReverseLoops {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("CheckReverseLoops") ?? "true");
-            }
-
-            set {
-                SetAttribute("CheckReverseLoops", value, removeIf: true);
-            }
+            get => (bool?)AttributeValue(CheckReverseLoopsAttribute) ?? true;
+            set => SetAttribute(CheckReverseLoopsAttribute, value, removeIf: true);
         }
     }
 
@@ -232,33 +223,18 @@ namespace LayoutManager.Components {
         public enum RelaySwitchingMethod { DPDSrelay, TwoSPDSrelays };
 
         public RelaySwitchingMethod SwitchingMethod {
-            get {
-                return Element.HasAttribute(SwitchingMethodAttribute) ? (RelaySwitchingMethod)Enum.Parse(typeof(RelaySwitchingMethod), Element.GetAttribute(SwitchingMethodAttribute)) : RelaySwitchingMethod.DPDSrelay;
-            }
-
-            set {
-                Element.SetAttribute(SwitchingMethodAttribute, value.ToString());
-            }
+            get => this.AttributeValue(SwitchingMethodAttribute).Enum<RelaySwitchingMethod>() ?? RelaySwitchingMethod.DPDSrelay;
+            set => this.SetAttribute(SwitchingMethodAttribute, value.ToString());
         }
 
         public bool HasOnOffRelay {
-            get {
-                return Element.HasAttribute(HasOnOffRelayAttribute) ? XmlConvert.ToBoolean(Element.GetAttribute(HasOnOffRelayAttribute)) : false;
-            }
-
-            set {
-                Element.SetAttribute(HasOnOffRelayAttribute, XmlConvert.ToString(value));
-            }
+            get => (bool?)this.AttributeValue(HasOnOffRelayAttribute) ?? false;
+            set => this.SetAttribute(HasOnOffRelayAttribute, value);
         }
 
         public bool RevereseOnOffRelay {
-            get {
-                return Element.HasAttribute(ReverseOnOffRelayAttribute) ? XmlConvert.ToBoolean(Element.GetAttribute(ReverseOnOffRelayAttribute)) : false;
-            }
-
-            set {
-                Element.SetAttribute(ReverseOnOffRelayAttribute, XmlConvert.ToString(value));
-            }
+            get => (bool?)this.AttributeValue(ReverseOnOffRelayAttribute) ?? false;
+            set => this.SetAttribute(ReverseOnOffRelayAttribute, value);
         }
 
         protected override SwitchingStateSupport GetSwitchingStateSupporter() => new LayoutPowerSelectorSwitchingStateSupporter(this);
@@ -648,24 +624,9 @@ namespace LayoutManager.Components {
         public override bool DrawOutOfGrid => true;
 
 
-        public LayoutTrackLinkComponent? LinkedComponent {
-            get {
-                if (link == null)
-                    return null;        // Not linked
-                else
-                    return link.ResolveLink();
-            }
-        }
+        public LayoutTrackLinkComponent? LinkedComponent => link?.ResolveLink();
 
-        public LayoutTrackComponent? LinkedTrack {
-            get {
-                var trackLink = LinkedComponent;
-
-                if (trackLink != null)
-                    return trackLink.Spot.Track;
-                return null;
-            }
-        }
+        public LayoutTrackComponent? LinkedTrack => LinkedComponent?.Spot.Track;
 
         public LayoutTrackComponent Track => Spot.Track;
 
@@ -679,13 +640,8 @@ namespace LayoutManager.Components {
         /// If set, link this component to another one, the other component is linked to this one.
         /// </summary>
         public LayoutTrackLink? Link {
-            get {
-                return link;
-            }
-
-            set {
-                link = value;
-            }
+            get => link;
+            set => link = value;
         }
 
         public override String ToString() => "track link";
@@ -931,23 +887,23 @@ namespace LayoutManager.Components {
         private const string MotionTimeAttribute = "MotionTime";
 
         public bool TwoDirectionRelays {
-            get { return XmlConvert.ToBoolean(GetOptionalAttribute(TwoDirectionRelaysAttribute) ?? "false"); }
-            set { SetAttribute(TwoDirectionRelaysAttribute, value); }
+            get => (bool?)AttributeValue(TwoDirectionRelaysAttribute) ?? false;
+            set => SetAttribute(TwoDirectionRelaysAttribute, value);
         }
 
         public FeedbackTypes FeedbackType {
-            get { return HasAttribute(FeedbackTypeAttribute) ? (FeedbackTypes)Enum.Parse(typeof(FeedbackTypes), GetAttribute(FeedbackTypeAttribute)) : FeedbackTypes.NoFeedback; }
-            set { SetAttribute(FeedbackTypeAttribute, value.ToString()); }
+            get => AttributeValue(FeedbackTypeAttribute).Enum<FeedbackTypes>() ?? FeedbackTypes.NoFeedback;
+            set => SetAttribute(FeedbackTypeAttribute, value.ToString());
         }
 
         public bool ReverseDirection {
-            get { return XmlConvert.ToBoolean(GetOptionalAttribute(ReverseDirectionAttribute) ?? "false"); }
-            set { SetAttribute(ReverseDirectionAttribute, value); }
+            get => (bool?)AttributeValue(ReverseDirectionAttribute) ?? false;
+            set => SetAttribute(ReverseDirectionAttribute, value);
         }
 
         public bool ReverseMotion {
-            get { return XmlConvert.ToBoolean(GetOptionalAttribute(ReverseMotionAttribute) ?? "false"); }
-            set { SetAttribute(ReverseMotionAttribute, value); }
+            get => (bool?)AttributeValue(ReverseMotionAttribute) ?? false;
+            set => SetAttribute(ReverseMotionAttribute, value);
         }
 
         /// <summary>
@@ -957,24 +913,24 @@ namespace LayoutManager.Components {
         /// Time to wait for feedback sensor to report that the gate motion is done
         /// </remarks>
         public int MotionTimeout {
-            get { return XmlConvert.ToInt32(GetOptionalAttribute(MotionTimeoutAttribute) ?? "10"); }
-            set { SetAttribute(MotionTimeoutAttribute, value); }
+            get => (int?)AttributeValue(MotionTimeoutAttribute) ?? 10;
+            set => SetAttribute(MotionTimeoutAttribute, value);
         }
 
         /// <summary>
         /// Gate motion time if the gate has no motion done feedback
         /// </summary>
         public int MotionTime {
-            get { return XmlConvert.ToInt32(GetOptionalAttribute(MotionTimeAttribute) ?? "10"); }
-            set { SetAttribute(MotionTimeAttribute, value); }
+            get => (int?)AttributeValue(MotionTimeAttribute) ?? 10;
+            set => SetAttribute(MotionTimeAttribute, value);
         }
 
         /// <summary>
         /// Gate orientation
         /// </summary>
         public bool OpenUpOrLeft {
-            get { return XmlConvert.ToBoolean(GetAttribute(OpenUpOrLeftAttribute)); }
-            set { SetAttribute(OpenUpOrLeftAttribute, XmlConvert.ToString(value)); }
+            get => (bool?)AttributeValue(OpenUpOrLeftAttribute) ?? false;
+            set => SetAttribute(OpenUpOrLeftAttribute, value);
         }
     }
 
@@ -995,15 +951,10 @@ namespace LayoutManager.Components {
         /// The gate open/close (or transition state)
         /// </summary>
         public LayoutGateState GateState {
-            get {
-                if (LayoutModel.StateManager.Components.Contains(Id))
-                    return (LayoutGateState)Enum.Parse(typeof(LayoutGateState), LayoutModel.StateManager.Components.StateOf(Id, GateStateTopic).GetAttribute("State"));
-
-                return LayoutGateState.Close;
-            }
+            get => LayoutModel.StateManager.Components.StateOf(Id, GateStateTopic).AttributeValue("State").Enum<LayoutGateState>() ?? LayoutGateState.Close;
 
             set {
-                LayoutModel.StateManager.Components.StateOf(Id, GateStateTopic).SetAttribute("State", value.ToString());
+                LayoutModel.StateManager.Components.StateOf(Id, GateStateTopic, create: true).SetAttribute("State", value.ToString());
                 OnComponentChanged();
 
                 if (value == LayoutGateState.Open)

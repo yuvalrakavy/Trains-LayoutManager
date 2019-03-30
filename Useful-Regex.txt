@@ -1,0 +1,6 @@
+Add Ensure.NotNull to declrations
+
+Replace:
+^(\s*)(\S*)\s+?(\S*?) = \((\S*?)\)(\S*);
+With:
+$1var $3 = Ensure.NotNull<$4>($5, "$3");

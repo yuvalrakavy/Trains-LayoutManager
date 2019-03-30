@@ -1361,6 +1361,7 @@ namespace LayoutManager.Model {
 
         // On entry <Grid> on exit </Grid>
         void parseGrid(XmlReader r) {
+            ConvertableString GetAttribute(string name) => new ConvertableString(r.GetAttribute(name), name);
             grid.Clear();
 
             if (r.IsEmptyElement)
@@ -1370,10 +1371,10 @@ namespace LayoutManager.Model {
 
                 while (r.NodeType == XmlNodeType.Element) {
                     if (r.Name == "Location") {
-                        string phaseAttributeValue = r.GetAttribute("Phase");
-                        LayoutPhase phase = phaseAttributeValue == null ? LayoutPhase.Operational : (LayoutPhase)Enum.Parse(typeof(LayoutPhase), phaseAttributeValue);
+                        var phaseAttributeValue = GetAttribute("Phase");
+                        var phase = phaseAttributeValue.Enum<LayoutPhase>() ?? LayoutPhase.Operational;
 
-                        parseLocation(r, new Point(XmlConvert.ToInt32(r.GetAttribute("x")), XmlConvert.ToInt32(r.GetAttribute("y"))), phase);
+                        parseLocation(r, new Point((int)GetAttribute("x"), (int)GetAttribute("y")), phase);
                     }
                     else
                         r.Skip();
@@ -1597,6 +1598,7 @@ namespace LayoutManager.Model {
         public LayoutXmlInfo XmlInfo => modelXmlInfo;
 
         public XmlElement Element => modelXmlInfo.Element;
+        public XmlElement? OptionalElement => Element;
 
         /// <summary>
         /// The locomotive catalog. This is a catalog of available locomotive types
@@ -1869,11 +1871,10 @@ namespace LayoutManager.Model {
 
         // On entry reader is on <LayoutModel> on exit it is on </LayoutModel>
         public void ReadXml(XmlReader r) {
-
+            ConvertableString GetAttribute(string name) => new ConvertableString(r.GetAttribute(name), name);
             modelIsLoading = true;
 
-            string defaultPhase = r.GetAttribute("DefaultPhase");
-            DefaultPhase = defaultPhase == null ? LayoutPhase.Operational : (LayoutPhase)Enum.Parse(typeof(LayoutPhase), defaultPhase);
+            DefaultPhase = GetAttribute("DefaultPhase").Enum<LayoutPhase>() ?? LayoutPhase.Operational;
 
             if (r.IsEmptyElement)
                 r.Read();
@@ -1971,16 +1972,11 @@ namespace LayoutManager.Model {
     }
 
     public static class PhaseLayoutEventExtender {
-        public static LayoutEvent SetPhases(this LayoutEvent theEvent, LayoutPhase phase) {
-            theEvent.SetOption("Phases", phase.ToString());
-            return theEvent;
-        }
+        private const string Option_Phases = "Phases";
 
-        public static LayoutPhase GetPhases(this LayoutEvent theEvent) {
-            var phase = (LayoutPhase)Enum.Parse(typeof(LayoutPhase), theEvent.GetOption("Phases", defaultValue: LayoutModel.ActivePhases.ToString()));
+        public static LayoutEvent SetPhases(this LayoutEvent theEvent, LayoutPhase phase) => theEvent.SetOption(Option_Phases, phase.ToString());
 
-            return phase;
-        }
+        public static LayoutPhase GetPhases(this LayoutEvent theEvent) => theEvent.GetOption(Option_Phases).Enum<LayoutPhase>() ?? LayoutModel.ActivePhases;
     }
 
     public class LayoutXmlTextReader : XmlTextReader, ILayoutXmlContext {

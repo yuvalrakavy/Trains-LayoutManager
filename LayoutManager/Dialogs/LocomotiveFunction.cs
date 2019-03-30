@@ -25,8 +25,6 @@ namespace LayoutManager.Dialogs {
         private TextBox textBoxFunctionDescription;
         private ComboBox comboBoxFunctionType;
 
-        private void endOfDesignerVariables() { }
-
         readonly LocomotiveCatalogInfo catalog;
         readonly XmlElement functionsElement;
         readonly XmlElement functionElement;
@@ -223,7 +221,7 @@ namespace LayoutManager.Dialogs {
                 }
             }
 
-            LocomotiveFunctionInfo function = new LocomotiveFunctionInfo(functionElement) {
+            LocomotiveFunctionInfo _ = new LocomotiveFunctionInfo(functionElement) {
                 Number = (int)numericUpDownFunctionNumber.Value,
                 Type = (LocomotiveFunctionType)comboBoxFunctionType.SelectedIndex,
                 Name = comboBoxFunctionName.Text,
@@ -251,15 +249,15 @@ namespace LayoutManager.Dialogs {
         }
 
         private void comboBoxFunctionName_SelectionChangeCommitted(object sender, System.EventArgs e) {
-            XmlElement functionInfoElement = (XmlElement)catalog.LocomotiveFunctionNames.GetElementsByTagName("Function")[comboBoxFunctionName.SelectedIndex];
+            var functionInfoElement = new XmlElementWrapper((XmlElement)catalog.LocomotiveFunctionNames.GetElementsByTagName("Function")[comboBoxFunctionName.SelectedIndex]);
 
             if (!typeChanged) {
-                comboBoxFunctionType.SelectedIndex = (int)Enum.Parse(typeof(LocomotiveFunctionType), functionInfoElement.GetAttribute("Type"));
+                comboBoxFunctionType.SelectedIndex = (int)(functionInfoElement.AttributeValue("Type").Enum<LocomotiveFunctionType>() ?? LocomotiveFunctionType.OnOff);
                 typeChanged = false;
             }
 
             if (!descriptionChanged) {
-                textBoxFunctionDescription.Text = functionInfoElement.GetAttribute("Description");
+                textBoxFunctionDescription.Text = (string)functionInfoElement.AttributeValue("Description");
                 descriptionChanged = false;
             }
         }

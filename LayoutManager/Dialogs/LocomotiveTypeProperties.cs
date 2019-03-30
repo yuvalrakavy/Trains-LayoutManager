@@ -210,7 +210,7 @@ namespace LayoutManager.Dialogs {
             this.trackGuageSelector.Size = new System.Drawing.Size(100, 21);
             this.trackGuageSelector.TabIndex = 19;
             this.trackGuageSelector.Value = LayoutManager.Model.TrackGauges.HO;
-            this.trackGuageSelector.SelectedIndexChanged += new System.EventHandler(this.trackGuageSelector_SelectedIndexChanged);
+            this.trackGuageSelector.SelectedIndexChanged += new System.EventHandler(this.TrackGuageSelector_SelectedIndexChanged);
             // 
             // textBoxSpeedLimit
             // 
@@ -613,27 +613,27 @@ namespace LayoutManager.Dialogs {
         }
 
         private void buttonFunctionAdd_Click_1(object sender, EventArgs e) {
-            buttonFunctionAdd_Click(sender, e);
+            ButtonFunctionAdd_Click(sender, e);
         }
 
         private void buttonFunctionEdit_Click_1(object sender, EventArgs e) {
-            buttonFunctionEdit_Click(sender, e);
+            ButtonFunctionEdit_Click(sender, e);
         }
 
         private void buttonFunctionRemove_Click_1(object sender, EventArgs e) {
-            buttonFunctionRemove_Click(sender, e);
+            ButtonFunctionRemove_Click(sender, e);
         }
 
         private void buttonCopyFrom_Click_1(object sender, EventArgs e) {
-            buttonCopyFrom_Click(sender, e);
+            ButtonCopyFrom_Click(sender, e);
         }
 
         private void listViewFunctions_SelectedIndexChanged_1(object sender, EventArgs e) {
-            listViewFunctions_SelectedIndexChanged(sender, e);
+            ListViewFunctions_SelectedIndexChanged(sender, e);
         }
 
         private void trackGuageSelector_SelectedIndexChanged_1(object sender, EventArgs e) {
-            trackGuageSelector_SelectedIndexChanged(sender, e);
+            TrackGuageSelector_SelectedIndexChanged(sender, e);
         }
     }
 }

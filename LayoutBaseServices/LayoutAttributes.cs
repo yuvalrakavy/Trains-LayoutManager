@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Xml;
+using LayoutManager;
 
 #nullable enable
 namespace LayoutManager {
@@ -18,6 +19,9 @@ namespace LayoutManager {
     }
 
     public class AttributeInfo : IObjectHasXml {
+        private const string A_Name = "Name";
+        private const string A_Type = "Type";
+        private const string A_Value = "Value";
         readonly XmlElement element;
 
         public AttributeInfo(XmlElement element) {
@@ -25,75 +29,40 @@ namespace LayoutManager {
         }
 
         public XmlElement Element => element;
+        public XmlElement? OptionalElement => Element;
 
         public string Name {
-            get {
-                return Element.GetAttribute("Name");
-            }
-
-            set {
-                Element.SetAttribute("Name", value);
-            }
+            get => Element.GetAttribute(A_Name);
+            set => Element.SetAttribute(A_Name, value);
         }
 
         public AttributeType AttributeType {
-            get {
-                return (AttributeType)Enum.Parse(typeof(AttributeType), Element.GetAttribute("Type"));
-            }
-
-            set {
-                Element.SetAttribute("Type", value.ToString());
-            }
+            get => this.AttributeValue(A_Type).Enum<AttributeType>() ?? AttributeType.String;
+            set => Element.SetAttribute(A_Type, value.ToString());
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
         public object Value {
-            get {
-                string v = Element.GetAttribute("Value");
-
-                switch (AttributeType) {
-                    case AttributeType.String:
-                        return v;
-
-                    case AttributeType.Number:
-                        return XmlConvert.ToInt32(v);
-
-                    case AttributeType.Boolean:
-                        return XmlConvert.ToBoolean(v);
-
-                    default:
-                        throw new ArgumentException("Invalid attribute type " + AttributeType);
-                }
-            }
+            get => AttributeType switch
+            {
+                AttributeType.String => (object)this.AttributeValue(A_Value),
+                AttributeType.Number => (object)((int?)this.AttributeValue(A_Value) ?? 0),
+                AttributeType.Boolean => (object)((bool?)this.AttributeValue(A_Value) ?? false),
+                _ => new ArgumentException("Invalid attribute type " + AttributeType)
+            };
 
             set {
-                string v;
-                Type type = value.GetType();
-
-                if (type == typeof(int)) {
-                    AttributeType = AttributeType.Number;
-                    v = XmlConvert.ToString((int)value);
-                }
-                else if (type == typeof(Enum)) {
-                    AttributeType = AttributeType.String;
-                    v = value.ToString();
-                }
-                else if (type == typeof(string)) {
-                    AttributeType = AttributeType.String;
-                    v = (string)value;
-                }
-                else if (type == typeof(bool)) {
-                    AttributeType = AttributeType.Boolean;
-                    v = XmlConvert.ToString((bool)value);
-                }
-                else
-                    throw new ArgumentException("Unsupported type for an attribute: " + value.GetType().Name);
-
-                Element.SetAttribute("Value", v);
+                switch(value) {
+                    case int v: this.SetAttribute(A_Value, v); break;
+                    case Enum e: this.SetAttribute(A_Value, e.ToString()); break;
+                    case string s: this.SetAttribute(A_Value, s); break;
+                    case bool b: this.SetAttribute(A_Value, b); break;
+                    default: throw new ArgumentException("Unsupported type for an attribute: " + value.GetType().Name);
+                };
             }
         }
 
-        public string ValueAsString => Element.GetAttribute("Value");
+        public string ValueAsString => Element.GetAttribute(A_Value);
     }
 
     public class AttributesInfo : XmlIndexedCollection<AttributeInfo, string> {
@@ -112,7 +81,7 @@ namespace LayoutManager {
 
         public new object? this[string name] {
             get {
-                AttributeInfo attribute = base[name];
+                var attribute = base[name];
 
                 if (attribute == null)
                     return null;
@@ -121,7 +90,7 @@ namespace LayoutManager {
             }
 
             set {
-                AttributeInfo attribute = base[name];
+                var attribute = base[name];
 
                 if (value != null) {
                     if (attribute == null) {
@@ -148,6 +117,7 @@ namespace LayoutManager {
         }
 
         public XmlElement Element => element;
+        public XmlElement? OptionalElement => Element;
 
         public bool HasAttributes => Element["Attributes"] != null;
 

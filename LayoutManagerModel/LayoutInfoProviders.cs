@@ -36,9 +36,7 @@ namespace LayoutManager.Model {
         public ModelComponent Component {
             get => Ensure.NotNull<ModelComponent>(OptionalComponent, "component");
 
-            set {
-                component = value;
-            }
+            set => component = value;
         }
 
         public XmlElement ContainerElement {
@@ -47,9 +45,7 @@ namespace LayoutManager.Model {
                 return container;
             }
 
-            set {
-                container = value;
-            }
+            set => container = value;
         }
 
         /// <summary>
@@ -177,13 +173,9 @@ namespace LayoutManager.Model {
         /// Set/Get well known reference to this provider
         /// </summary>
         public string Ref {
-            get {
-                return GetAttribute("Ref");
-            }
+            get => GetAttribute("Ref");
 
-            set {
-                SetAttribute("Ref", value, removeIf: null);
-            }
+            set => SetAttribute("Ref", value, removeIf: null);
         }
     }
 
@@ -191,6 +183,12 @@ namespace LayoutManager.Model {
     /// Represent a XML element that provide information about a font
     /// </summary>
     public class LayoutFontInfo : LayoutInfo {
+        private const string A_Style = "Style";
+        private const string A_Name = "Name";
+        private const string A_Size = "Size";
+        private const string A_Color = "Color";
+        private const string A_Title = "Title";
+
         public LayoutFontInfo(ModelComponent component, String elementName) : base(component, elementName) {
         }
 
@@ -205,44 +203,22 @@ namespace LayoutManager.Model {
         }
 
         public FontStyle Style {
-            get {
-                var v = GetOptionalAttribute("Style");
-
-                if (v == null)
-                    return FontStyle.Regular;
-                else
-                    return (FontStyle)Enum.Parse(typeof(FontStyle), v);
-            }
-
-            set {
-                SetAttribute("Style", value.ToString());
-            }
+            get => AttributeValue(A_Style).Enum<FontStyle>() ?? FontStyle.Regular;
+            set => SetAttribute(A_Style, value.ToString());
         }
 
         public String Name {
-            get {
-                return GetOptionalAttribute("Name") ??  "Arial";
-            }
-
-            set {
-                SetAttribute("Name", value);
-            }
+            get => GetOptionalAttribute(A_Name) ?? "Arial";
+            set => SetAttribute(A_Name, value);
         }
 
         public float Size {
-            get {
-                return (float)XmlConvert.ToDouble(GetOptionalAttribute("Size") ??  "8");
-            }
-
-            set {
-                SetAttribute("Size", XmlConvert.ToString(value));
-            }
+            get => (float?)AttributeValue(A_Size) ?? 8;
+            set => SetAttribute(A_Size, value);
         }
 
         public Font Font {
-            get {
-                return new Font(this.Name, this.Size, this.Style, GraphicsUnit.World);
-            }
+            get => new Font(this.Name, this.Size, this.Style, GraphicsUnit.World);
 
             set {
                 this.Name = value.Name;
@@ -272,21 +248,15 @@ namespace LayoutManager.Model {
 
         public Color Color {
             get {
-                var colorName = GetOptionalAttribute("Color");
-
-                if (colorName == null)
-                    return Color.Black;
-                else
-                    return Color.FromName(colorName);
+                var colorName = GetOptionalAttribute(A_Color);
+                return colorName == null ? Color.Black : Color.FromName(colorName);
             }
 
-            set {
-                SetAttribute("Color", value.Name);
-            }
+            set => SetAttribute(A_Color, value.Name);
         }
 
         public override String ToString() {
-            String title = GetAttribute("Title");
+            String title = GetAttribute(A_Title);
 
             if (title == null)
                 return Description;
@@ -307,6 +277,12 @@ namespace LayoutManager.Model {
     /// Represents an element containing relative drawing position.
     /// </summary>
     public class LayoutPositionInfo : LayoutInfo {
+        private const string A_Distance = "Distance";
+        private const string A_Width = "Width";
+        private const string A_Anchor = "Anchor";
+        private const string A_Side = "Side";
+        private const string A_Title = "Title";
+
         public LayoutPositionInfo(ModelComponent component, String elementPath) : base(component, elementPath) {
         }
 
@@ -320,70 +296,40 @@ namespace LayoutManager.Model {
         }
 
         public int Distance {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("Distance") ??  "8");
-            }
-
-            set {
-                SetAttribute("Distance", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_Distance) ?? 8;
+            set => SetAttribute(A_Distance, value);
         }
 
         public int Width {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("Width") ??  "0");
-            }
-
-            set {
-                SetAttribute("Width", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_Width) ?? 0;
+            set => SetAttribute(A_Width, value);
         }
 
         public LayoutDrawingAnchorPoint AnchorPoint {
-            get {
-                return (LayoutDrawingAnchorPoint)Enum.Parse(typeof(LayoutDrawingAnchorPoint), GetOptionalAttribute("Anchor") ??  "Center");
-            }
-
-            set {
-                SetAttribute("Anchor", value.ToString());
-            }
+            get => AttributeValue(A_Anchor).Enum<LayoutDrawingAnchorPoint>() ?? LayoutDrawingAnchorPoint.Center;
+            set => SetAttribute(A_Anchor, value.ToString());
         }
 
         public LayoutDrawingSide Side {
-            get {
-                return (LayoutDrawingSide)Enum.Parse(typeof(LayoutDrawingSide), GetOptionalAttribute("Side") ??  "Bottom");
-            }
-
-            set {
-                SetAttribute("Side", value.ToString());
-            }
+            get => AttributeValue(A_Side).Enum<LayoutDrawingSide>() ?? LayoutDrawingSide.Bottom;
+            set => SetAttribute(A_Side, value.ToString());
         }
 
-        public override String ToString() => GetOptionalAttribute("Title") ??  "No title";
+        public override String ToString() => GetOptionalAttribute(A_Title) ??  "No title";
 
         /// <summary>
         /// Get the other "side" of a given side.
         /// </summary>
         /// <param name="side"></param>
         /// <returns>The other side</returns>
-        static public LayoutDrawingSide GetAlternateLayoutDrawingSide(LayoutDrawingSide side) {
-            switch (side) {
-                case LayoutDrawingSide.Left:
-                    return LayoutDrawingSide.Right;
-
-                case LayoutDrawingSide.Right:
-                    return LayoutDrawingSide.Left;
-
-                case LayoutDrawingSide.Top:
-                    return LayoutDrawingSide.Bottom;
-
-                case LayoutDrawingSide.Bottom:
-                    return LayoutDrawingSide.Top;
-
-                default:
-                    throw new ArgumentException("Invalid relative position");
-            }
-        }
+        static public LayoutDrawingSide GetAlternateLayoutDrawingSide(LayoutDrawingSide side) => side switch
+        {
+            LayoutDrawingSide.Left => LayoutDrawingSide.Right,
+            LayoutDrawingSide.Right => LayoutDrawingSide.Left,
+            LayoutDrawingSide.Top => LayoutDrawingSide.Bottom,
+            LayoutDrawingSide.Bottom => LayoutDrawingSide.Top,
+            _ => throw new ArgumentException("Invalid relative position")
+        };
 
         /// <summary>
         /// Get the path for a default position definition based on a side
@@ -391,25 +337,13 @@ namespace LayoutManager.Model {
         /// <param name="side">A side</param>
         /// <returns>A XPath to a position element for this side</returns>
         static public String GetElementPathPositionPath(LayoutDrawingSide side) {
-            String positionStyleName = "Bottom";
-
-            switch (side) {
-                case LayoutDrawingSide.Bottom:
-                    positionStyleName = "Bottom";
-                    break;
-
-                case LayoutDrawingSide.Top:
-                    positionStyleName = "Top";
-                    break;
-
-                case LayoutDrawingSide.Left:
-                    positionStyleName = "Left";
-                    break;
-
-                case LayoutDrawingSide.Right:
-                    positionStyleName = "Right";
-                    break;
-            }
+            var positionStyleName = side switch
+            {
+                LayoutDrawingSide.Top => "Top",
+                LayoutDrawingSide.Left => "Left",
+                LayoutDrawingSide.Right => "Right",
+                _ => "Bottom",
+            };
 
             return "//Position[@Ref=\"" + positionStyleName + "\"]";
         }
@@ -417,6 +351,7 @@ namespace LayoutManager.Model {
     }
 
     public class LayoutTextInfo : LayoutInfo {
+        private const string VisibleAttribute = "Visible";
         LayoutPositionInfo? positionProvider;
         LayoutFontInfo? fontProvider;
 
@@ -450,29 +385,18 @@ namespace LayoutManager.Model {
         }
 
         public virtual String Text {
-            get {
-                return this.Name;
-            }
+            get => this.Name;
 
-            set {
-                this.Name = value;
-            }
+            set => this.Name = value;
         }
 
         public bool Visible {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("Visible") ??  "0");
-            }
-
-            set {
-                SetAttribute("Visible", XmlConvert.ToString(value));
-            }
+            get => (bool?)AttributeValue(VisibleAttribute) ?? false;
+            set => SetAttribute(VisibleAttribute, value);
         }
 
         public virtual String FontElementPath {
-            get {
-                return GetOptionalAttribute("Font") ??  "//Font[@Ref=\"Default\"]";
-            }
+            get => GetOptionalAttribute("Font") ?? "//Font[@Ref=\"Default\"]";
 
             set {
                 SetAttribute("Font", value);
@@ -536,10 +460,8 @@ namespace LayoutManager.Model {
             }
         }
 
-        public virtual String PositionElementPath {
-            get {
-                return GetOptionalAttribute("Position") ??  LayoutPositionInfo.GetElementPathPositionPath(DefaultLayoutDrawingSide);
-            }
+        public virtual string PositionElementPath {
+            get => GetOptionalAttribute("Position") ?? LayoutPositionInfo.GetElementPathPositionPath(DefaultLayoutDrawingSide);
 
             set {
                 SetAttribute("Position", value);
@@ -656,61 +578,51 @@ namespace LayoutManager.Model {
     }
 
     public class LayoutAddressInfo : LayoutTextInfo {
+        private const string E_Address = "Address";
+        private const string A_Unit = "Unit";
+        private const string A_Subunit = "Subunit";
+        private const string A_Text = "Text";
+        private const string A_Position = "Position";
+        private const string A_ImageSide = "ImageSide";
+
         public LayoutAddressInfo(ModelComponent component, String elementName) : base(component, elementName) {
         }
 
-        public LayoutAddressInfo(ModelComponent component) : base(component, "Address") {
+        public LayoutAddressInfo(ModelComponent component) : base(component, E_Address) {
         }
 
         public LayoutAddressInfo(XmlElement containerElement, String elementName) : base(containerElement, elementName) {
         }
 
-        public LayoutAddressInfo(XmlElement containerElement) : base(containerElement, "Address") {
+        public LayoutAddressInfo(XmlElement containerElement) : base(containerElement, E_Address) {
         }
 
         public int Unit {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("Unit") ??  "0");
-            }
-
-            set {
-                SetAttribute("Unit", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_Unit) ?? 0;
+            set => SetAttribute(A_Unit, value);
         }
 
         public int Subunit {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("Subunit") ??  "0");
-            }
-
-            set {
-                SetAttribute("Subunit", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_Subunit) ?? 0;
+            set => SetAttribute(A_Subunit, value);
         }
 
         public bool HasSubunit {
-            get {
-                return Element.HasAttribute("Subunit");
-            }
+            get => Element.HasAttribute(A_Subunit);
 
             set {
                 if (value == false)
-                    Element.RemoveAttribute("Subunit");
+                    Element.RemoveAttribute(A_Subunit);
                 else {
-                    if (!Element.HasAttribute("Subunit"))
-                        SetAttribute("Subunit", "0");
+                    if (!Element.HasAttribute(A_Subunit))
+                        SetAttribute(A_Subunit, 0);
                 }
             }
         }
 
         public override string Text {
-            get {
-                return GetOptionalAttribute("Text") ??  "***";
-            }
-
-            set {
-                SetAttribute("Text", value);
-            }
+            get => GetOptionalAttribute(A_Text) ?? "***";
+            set => SetAttribute(A_Text, value);
         }
 
         /// <summary>
@@ -719,35 +631,23 @@ namespace LayoutManager.Model {
         /// </summary>
         public override String PositionElementPath {
             get {
-                if (Element.HasAttribute("Position"))
+                if (Element.HasAttribute(A_Position))
                     return base.PositionElementPath;
                 else {
-                    LayoutDrawingSide usedSide;
-
-                    if (Element.HasAttribute("ImageSide"))
-                        usedSide = (LayoutDrawingSide)Enum.Parse(typeof(LayoutDrawingSide), Element.GetAttribute("ImageSide"));
-                    else {
+                    LayoutDrawingSide GetDefaultSide() {
                         // Check if this component has a 'Name' element. If it does,
                         // position the address in a different position
-                        LayoutTextInfo nameProvider;
+                        var nameProvider = Component != null ? new LayoutTextInfo(Component, "Name") : new LayoutTextInfo(ContainerElement, "Name");
 
-                        if (Component != null)
-                            nameProvider = new LayoutTextInfo(Component, "Name");
-                        else
-                            nameProvider = new LayoutTextInfo(ContainerElement, "Name");
+                        return nameProvider.PositionProvider.Side;
+                    };
 
-                        LayoutPositionInfo namePositionProvider = nameProvider.PositionProvider;
-
-                        usedSide = namePositionProvider.Side;
-                    }
-
+                    LayoutDrawingSide usedSide = AttributeValue(A_ImageSide).Enum<LayoutDrawingSide>() ?? GetDefaultSide();
                     return LayoutPositionInfo.GetElementPathPositionPath(LayoutPositionInfo.GetAlternateLayoutDrawingSide(usedSide));
                 }
             }
 
-            set {
-                base.PositionElementPath = value;
-            }
+            set => base.PositionElementPath = value;
         }
 
         public override String FontElementPath {
@@ -758,18 +658,31 @@ namespace LayoutManager.Model {
                     return "//Font[@Ref=\"AddressFont\"]";
             }
 
-            set {
-                base.FontElementPath = value;
-            }
+            set => base.FontElementPath = value;
         }
 
     }
 
     public class LayoutImageInfo : LayoutInfo {
+        private const string E_Image = "Image";
+        private const string A_ImageFile = "ImageFile";
+        private const string A_Width = "Width";
+        private const string A_Height = "Height";
+        private const string A_WidthSizeUnit = "WidthSizeUnit";
+        private const string A_HeightSideUnit = "HeightSizeUnit";
+        private const string A_OffsetWidth = "OffsetWidth";
+        private const string A_OffsetHeight = "OffsetHeight";
+        private const string A_OriginMethod = "OriginMethod";
+        private const string A_HorizontalAlignment = "HorizontalAlignment";
+        private const string A_VerticalAlignment = "VerticalAlignment";
+        private const string A_ImageFillEffect = "ImageFillEffect";
+        private const string A_RotateFlipEffect = "RotateFlipEffect";
+        private const string A_ImageError = "ImageError";
+
         public LayoutImageInfo(ModelComponent component, String elementPath) : base(component, elementPath) {
         }
 
-        public LayoutImageInfo(ModelComponent component) : base(component, "Image") {
+        public LayoutImageInfo(ModelComponent component) : base(component, E_Image) {
         }
 
         public LayoutImageInfo(XmlElement containerElement, String elementPath) : base(containerElement, elementPath) {
@@ -802,136 +715,72 @@ namespace LayoutManager.Model {
         }
 
         public String ImageFile {
-            get {
-                return GetAttribute("ImageFile");
-            }
-
-            set {
-                SetAttribute("ImageFile", value);
-            }
+            get => GetAttribute(A_ImageFile);
+            set => SetAttribute(A_ImageFile, value);
         }
 
         public Size Size {
-            get {
-                Size result = new Size {
-                    Width = XmlConvert.ToInt32(GetOptionalAttribute("Width") ??  "-1"),
-                    Height = XmlConvert.ToInt32(GetOptionalAttribute("Height") ??  "-1")
-                };
-
-                return result;
-            }
+            get => new Size {
+                Width = (int?)AttributeValue(A_Width) ?? -1,
+                Height = (int?)AttributeValue(A_Height) ?? -1
+            };
 
             set {
-                if (value.Width < 0)
-                    Element.RemoveAttribute("Width");
-                else
-                    SetAttribute("Width", XmlConvert.ToString(value.Width));
-
-                if (value.Height < 0)
-                    Element.RemoveAttribute("Height");
-                else
-                    SetAttribute("Height", XmlConvert.ToString(value.Height));
+                SetAttribute(A_Width, value.Width, removeIf: -1);
+                SetAttribute(A_Height, value.Height, removeIf: -1);
             }
         }
 
         public ImageSizeUnit WidthSizeUnit {
-            get {
-                return (ImageSizeUnit)Enum.Parse(typeof(ImageSizeUnit), GetOptionalAttribute("WidthSizeUnit") ??  "GridUnits");
-            }
-
-            set {
-                SetAttribute("WidthSizeUnit", value.ToString());
-            }
+            get => AttributeValue(A_WidthSizeUnit).Enum<ImageSizeUnit>() ?? ImageSizeUnit.GridUnits;
+            set => SetAttribute(A_WidthSizeUnit, value.ToString());
         }
 
         public ImageSizeUnit HeightSizeUnit {
-            get {
-                return (ImageSizeUnit)Enum.Parse(typeof(ImageSizeUnit), GetOptionalAttribute("HeightSizeUnit") ??  "GridUnits");
-            }
-
-            set {
-                SetAttribute("HeightSizeUnit", value.ToString());
-            }
+            get => AttributeValue(A_HeightSideUnit).Enum<ImageSizeUnit>() ?? ImageSizeUnit.GridUnits;
+            set => SetAttribute(A_HeightSideUnit, value.ToString());
         }
 
         public Size Offset {
-            get {
-                return new Size(XmlConvert.ToInt32(GetOptionalAttribute("OffsetWidth") ??  "0"),
-                    XmlConvert.ToInt32(GetOptionalAttribute("OffsetHeight") ??  "0"));
-            }
+            get => new Size((int?)AttributeValue(A_OffsetWidth) ?? 0, (int?)AttributeValue(A_OffsetHeight) ?? 0);
 
             set {
-                SetAttribute("OffsetWidth", XmlConvert.ToString(value.Width));
-                SetAttribute("OffsetHeight", XmlConvert.ToString(value.Height));
+                SetAttribute(A_OffsetWidth, value.Width);
+                SetAttribute(A_OffsetHeight,value.Height);
             }
         }
 
         public ImageOriginMethod OriginMethod {
-            get {
-                return (ImageOriginMethod)Enum.Parse(typeof(ImageOriginMethod), GetOptionalAttribute("OriginMethod") ??  "TopLeft");
-            }
-
-            set {
-                SetAttribute("OriginMethod", value.ToString());
-            }
+            get => AttributeValue(A_OriginMethod).Enum<ImageOriginMethod>() ?? ImageOriginMethod.TopLeft;
+            set => SetAttribute(A_OriginMethod, value.ToString());
         }
 
         public ImageHorizontalAlignment HorizontalAlignment {
-            get {
-                return (ImageHorizontalAlignment)Enum.Parse(typeof(ImageHorizontalAlignment), GetOptionalAttribute("HorizontalAlignment") ??  "Left");
-            }
-
-            set {
-                SetAttribute("HorizontalAlignment", value.ToString());
-            }
+            get => AttributeValue(A_HorizontalAlignment).Enum<ImageHorizontalAlignment>() ?? ImageHorizontalAlignment.Left;
+            set => SetAttribute(A_HorizontalAlignment, value.ToString());
         }
 
         public ImageVerticalAlignment VerticalAlignment {
-            get {
-                return (ImageVerticalAlignment)Enum.Parse(typeof(ImageVerticalAlignment), GetOptionalAttribute("VerticalAlignment") ??  "Top");
-            }
-
-            set {
-                SetAttribute("VerticalAlignment", value.ToString());
-            }
+            get => AttributeValue(A_VerticalAlignment).Enum<ImageVerticalAlignment>() ?? ImageVerticalAlignment.Top;
+            set => SetAttribute(A_VerticalAlignment, value.ToString());
         }
 
         public ImageFillEffect FillEffect {
-            get {
-                if (Element.HasAttribute("ImageFillEffect"))
-                    return (ImageFillEffect)Enum.Parse(typeof(ImageFillEffect), GetAttribute("ImageFillEffect"));
-                else
-                    return ImageFillEffect.Stretch;
-            }
-
-            set {
-                SetAttribute("ImageFillEffect", value.ToString());
-            }
+            get => AttributeValue(A_ImageFillEffect).Enum<ImageFillEffect>() ?? ImageFillEffect.Stretch;
+            set => SetAttribute(A_ImageFillEffect, value.ToString());
         }
 
         public RotateFlipType RotateFlipEffect {
-            get {
-                if (Element.HasAttribute("RotateFlipEffect"))
-                    return (RotateFlipType)Enum.Parse(typeof(RotateFlipType), GetOptionalAttribute("RotateFlipEffect") ??  "RotateNoneFlipNone");
-                else
-                    return RotateFlipType.RotateNoneFlipNone;
-            }
-
-            set {
-                SetAttribute("RotateFlipEffect", value.ToString());
-            }
+            get => AttributeValue(A_RotateFlipEffect).Enum<RotateFlipType>() ?? RotateFlipType.RotateNoneFlipNone;
+            set => SetAttribute(A_RotateFlipEffect, value.ToString());
         }
 
         public String ImageCacheEventXml => "<Effect Type='" + RotateFlipEffect.ToString() + "' />";
 
         public bool ImageError {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("ImageError") ??  "false");
-            }
+            get => XmlConvert.ToBoolean(GetOptionalAttribute(A_ImageError) ?? "false");
 
-            set {
-                SetAttribute("ImageError", value, removeIf: false);
-            }
+            set => SetAttribute(A_ImageError, value, removeIf: false);
         }
     }
 

@@ -62,31 +62,30 @@ namespace LayoutManager.Model {
     /// by the user.
     /// </summary>
     public class LocomotiveStorageInfo : LayoutInfo {
+        private const string A_Name = "Name";
+        private const string A_File = "File";
+
         public LocomotiveStorageInfo(XmlElement element) : base(element) {
         }
 
         public String StorageName {
-            get {
-                return Element.GetAttribute("Name");
-            }
-
-            set {
-                Element.SetAttribute("Name", value);
-            }
+            get => Element.GetAttribute(A_Name);
+            set => Element.SetAttribute(A_Name, value);
         }
 
         public String Filename {
-            get {
-                return Element.GetAttribute("File");
-            }
-
-            set {
-                Element.SetAttribute("File", value);
-            }
+            get => Element.GetAttribute(A_File);
+            set => Element.SetAttribute(A_File, value);
         }
     }
 
     public abstract class LocomotiveCollectionBaseInfo : LayoutInfo {
+        private const string E_Stores = "Stores";
+        private const string A_DefaultStore = "DefaultStore";
+        private const string A_File = "File";
+        private const string A_Name = "Name";
+        private const string A_Store = "Store";
+        private const string A_Id = "ID";
         LayoutXmlInfo? collection;
         bool modified;
         int loadCount;
@@ -132,7 +131,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The default storage to which new locomotive type elements are added
         /// </summary>
-        public int DefaultStore => XmlConvert.ToInt32(Element["Stores"].GetAttribute("DefaultStore"));
+        public int DefaultStore => XmlConvert.ToInt32(Element[E_Stores].GetAttribute(A_DefaultStore));
 
         public void Load() {
             if (collection == null) {
@@ -143,10 +142,10 @@ namespace LayoutManager.Model {
                 // Load the catalog from its stores
                 int iStore = 0;
 
-                foreach (XmlElement storeElement in Element["Stores"]) {
-                    string filename = LayoutAssembly.ValueToFilePath(storeElement.GetAttribute("File"), DefaultStoreDirectory);
+                foreach (XmlElement storeElement in Element[E_Stores]) {
+                    string filename = LayoutAssembly.ValueToFilePath(storeElement.GetAttribute(A_File), DefaultStoreDirectory);
 
-                    Debug.WriteLine("-Loading collection from store: '" + storeElement.GetAttribute("Name") + "' from file: " + storeElement.GetAttribute("File"));
+                    Debug.WriteLine("-Loading collection from store: '" + storeElement.GetAttribute(A_Name) + "' from file: " + storeElement.GetAttribute(A_File));
 
                     try {
                         XmlTextReader r = new XmlTextReader(filename) {
@@ -161,7 +160,7 @@ namespace LayoutManager.Model {
 
                         while (r.NodeType == XmlNodeType.Element) {
                             XmlElement newNode = (XmlElement)CollectionDocument.ReadNode(r);
-                            newNode.SetAttribute("Store", XmlConvert.ToString(iStore));
+                            newNode.SetAttribute(A_Store, XmlConvert.ToString(iStore));
 
                             CollectionElement.AppendChild(newNode);
                         }
@@ -170,7 +169,7 @@ namespace LayoutManager.Model {
                         r.Close();
                     }
                     catch (IOException ex) {
-                        EventManager.Event(new LayoutEvent("add-error", null, "Unable to load " + CollectionName + " file: " + filename + " - " + ex.Message));
+                        EventManager.Event(new LayoutEvent("add-error", null, $"Unable to load {CollectionName} file: {filename} - {ex.Message}"));
                     }
                 }
 
@@ -197,13 +196,13 @@ namespace LayoutManager.Model {
 
             // TODO: Save only stores which are actually modified
 
-            foreach (XmlElement storeElement in Element["Stores"]) {
-                Debug.WriteLine("-Saving collection in store: '" + storeElement.GetAttribute("Name") + "' to file: " + storeElement.GetAttribute("File"));
+            foreach (XmlElement storeElement in Element[E_Stores]) {
+                Debug.WriteLine("-Saving collection in store: '" + storeElement.GetAttribute(A_Name) + "' to file: " + storeElement.GetAttribute(A_File));
 
                 XmlNodeList elementsInStore = CollectionElement.SelectNodes("*[@Store='" + iStore + "']");
 
                 try {
-                    string filename = LayoutAssembly.ValueToFilePath(storeElement.GetAttribute("File"), DefaultStoreDirectory);
+                    string filename = LayoutAssembly.ValueToFilePath(storeElement.GetAttribute(A_File), DefaultStoreDirectory);
                     XmlTextWriter w = new XmlTextWriter(filename, new System.Text.UTF8Encoding());
 
                     w.WriteStartDocument();
@@ -219,7 +218,7 @@ namespace LayoutManager.Model {
                 }
                 catch (IOException ex) {
                     EventManager.Event(new LayoutEvent("add-error", null,
-                        "Cannot store locomotives store '" + storeElement.GetAttribute("Name") + "' in file: " + storeElement.GetAttribute("File") +
+                        "Cannot store locomotives store '" + storeElement.GetAttribute(A_Name) + "' in file: " + storeElement.GetAttribute(A_File) +
                         " - " + ex.Message));
                 }
 
@@ -243,8 +242,8 @@ namespace LayoutManager.Model {
 
             XmlElement collectionElement = CollectionDocument.CreateElement(CollectionElementName);
 
-            collectionElement.SetAttribute("Store", XmlConvert.ToString(DefaultStore));
-            collectionElement.SetAttribute("ID", XmlConvert.ToString(Guid.NewGuid()));
+            collectionElement.SetAttribute(A_Store, XmlConvert.ToString(DefaultStore));
+            collectionElement.SetAttribute(A_Id, XmlConvert.ToString(Guid.NewGuid()));
             return collectionElement;
         }
 
@@ -262,9 +261,16 @@ namespace LayoutManager.Model {
     /// It is loaded only when locomotive type elements need to be accessed.
     /// </remarks>
     public class LocomotiveCatalogInfo : LocomotiveCollectionBaseInfo {
-        public LocomotiveCatalogInfo() : base(LayoutModel.Instance.XmlInfo.DocumentElement["LocomotiveCatalog"]) {
+        private const string E_LocomotiveCatalog = "LocomotiveCatalog";
+        private const string E_CommonFunctionNames = "CommonFunctionNames";
+        private const string E_Images = "Images";
+        private const string E_Image = "Image";
+        private const string A_Kind = "Kind";
+        private const string A_Origin = "Origin";
+
+        public LocomotiveCatalogInfo() : base(LayoutModel.Instance.XmlInfo.DocumentElement[E_LocomotiveCatalog]) {
             if (Element == null) {
-                Element = LayoutInfo.CreateProviderElement(LayoutModel.Instance.XmlInfo, "LocomotiveCatalog", null);
+                Element = LayoutInfo.CreateProviderElement(LayoutModel.Instance.XmlInfo, E_LocomotiveCatalog, null);
 
                 Element.InnerXml = "<Stores DefaultStore='0'><Store Name='Standard Locomotives' File='" +
                     Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData) +
@@ -284,10 +290,10 @@ namespace LayoutManager.Model {
         /// </summary>
         public XmlElement LocomotiveFunctionNames {
             get {
-                XmlElement e = Element["CommonFunctionNames"];
+                XmlElement e = Element[E_CommonFunctionNames];
 
                 if (e == null) {
-                    e = Element.OwnerDocument.CreateElement("CommonFunctionNames");
+                    e = Element.OwnerDocument.CreateElement(E_CommonFunctionNames);
                     Element.AppendChild(e);
                 }
 
@@ -303,7 +309,7 @@ namespace LayoutManager.Model {
         /// <param name="origin">Locomotive origin</param>
         /// <returns>The image to display</returns>
         public override Image? GetStandardImage(LocomotiveKind kind, LocomotiveOrigin origin) {
-            XmlElement imagesElement = Element["Images"];
+            XmlElement imagesElement = Element[E_Images];
             XmlElement imageElement = (XmlElement)imagesElement.SelectSingleNode("Image[@Kind='" + kind.ToString() + "' and @Origin='" + origin.ToString() + "']");
 
             if (imageElement != null)
@@ -313,14 +319,14 @@ namespace LayoutManager.Model {
         }
 
         public void SetStandardImage(LocomotiveKind kind, LocomotiveOrigin origin, Image image) {
-            XmlElement imagesElement = Element["Images"];
+            XmlElement imagesElement = Element[E_Images];
             XmlElement imageElement = (XmlElement)imagesElement.SelectSingleNode("Image[@Kind='" + kind.ToString() + "' and @Origin='" + origin.ToString() + "']");
 
             if (image != null) {
                 if (imageElement == null) {
-                    imageElement = Element.OwnerDocument.CreateElement("Image");
-                    imageElement.SetAttribute("Kind", kind.ToString());
-                    imageElement.SetAttribute("Origin", origin.ToString());
+                    imageElement = Element.OwnerDocument.CreateElement(E_Image);
+                    imageElement.SetAttribute(A_Kind, kind.ToString());
+                    imageElement.SetAttribute(A_Origin, origin.ToString());
                     imagesElement.AppendChild(imageElement);
                 }
 
@@ -340,6 +346,9 @@ namespace LayoutManager.Model {
     /// Represent the locomotive collection in the model document
     /// </summary>
     public class LocomotiveCollectionInfo : LocomotiveCollectionBaseInfo {
+        private const string E_Locomotive = "Locomotive";
+        private const string E_Train = "Train";
+
         public LocomotiveCollectionInfo() : base(LayoutModel.Instance.XmlInfo.DocumentElement["LocomotiveCollection"]) {
             if (Element == null) {
                 Element = LayoutInfo.CreateProviderElement(LayoutModel.Instance.XmlInfo, "LocomotiveCollection", null);
@@ -393,11 +402,11 @@ namespace LayoutManager.Model {
         /// <param name="eventManager"></param>
         public bool EnsureReferentialIntegrity() {
             bool modified = false;
-            ArrayList trainsToRemove = new ArrayList();
+            var trainsToRemove = new List<TrainInCollectionInfo>();
 
-            foreach (XmlElement trainElement in CollectionElement.GetElementsByTagName("Train")) {
+            foreach (XmlElement trainElement in CollectionElement.GetElementsByTagName(E_Train)) {
                 TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(trainElement);
-                ArrayList membersToRemove = new ArrayList();
+                var membersToRemove = new List<TrainLocomotiveInfo>();
 
                 foreach (TrainLocomotiveInfo trainLocomotive in trainInCollection.Locomotives) {
                     if (this[trainLocomotive.LocomotiveId] == null) {
@@ -435,12 +444,12 @@ namespace LayoutManager.Model {
         /// <param name="element">Locomotive or Locomotive set element</param>
         /// <returns>The element GUID</returns>
         public Guid GetElementId(XmlElement element) {
-            if (element.Name == "Locomotive") {
+            if (element.Name == E_Locomotive) {
                 LocomotiveInfo loco = new LocomotiveInfo(element);
 
                 return loco.Id;
             }
-            else if (element.Name == "Train") {
+            else if (element.Name == E_Train) {
                 TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(element);
 
                 return trainInCollection.Id;
@@ -474,74 +483,62 @@ namespace LayoutManager.Model {
     /// Represent a locomotive type as stored in the locomotive catalog
     /// </summary>
     public class LocomotiveTypeInfo : LayoutNamedTrainObject, IObjectHasName, IObjectHasAttributes, IHasDecoder {
+        private const string E_TypeName = "TypeName";
+        private const string E_Attributes = "Attributes";
+        private const string E_Image = "Image";
+        private const string E_Functions = "Functions";
+        private const string A_Kind = "Kind";
+        private const string A_Length = "Length";
+        private const string A_Guage = "Guage";
+        private const string A_SpeedLimit = "SpeedLimit";
+        private const string A_Origin = "Origin";
+        private const string A_Store = "Store";
+        private const string A_Light = "Light";
+        private const string A_DecoderType = "DecoderType";
+
         public LocomotiveTypeInfo(XmlElement element) : base(element) {
         }
 
         public String TypeName {
-            get {
-                if (Element["TypeName"] != null)
-                    return Element["TypeName"].InnerText;
-                return "";
-            }
+            get => Element[E_TypeName] != null ? Element[E_TypeName].InnerText : "";
 
             set {
-                if (Element["TypeName"] == null)
-                    Element.AppendChild(Element.OwnerDocument.CreateElement("TypeName"));
-                Element["TypeName"].InnerText = value;
+                if (Element[E_TypeName] == null)
+                    Element.AppendChild(Element.OwnerDocument.CreateElement(E_TypeName));
+                Element[E_TypeName].InnerText = value;
             }
         }
 
-        public LayoutTextInfo NameProvider => new LayoutTextInfo(Element, "TypeName");
+        public LayoutTextInfo NameProvider => new LayoutTextInfo(Element, E_TypeName);
 
         public override string GetDisplayName(TrainObjectDisplayNameFormat format) => NameProvider.Name;
 
         public LocomotiveKind Kind {
-            get {
-                if (Element.HasAttribute("Kind"))
-                    return (LocomotiveKind)Enum.Parse(typeof(LocomotiveKind), Element.GetAttribute("Kind"));
-                else
-                    return LocomotiveKind.Steam;
-            }
-
-            set {
-                Element.SetAttribute("Kind", value.ToString());
-            }
+            get => AttributeValue(A_Kind).Enum<LocomotiveKind>() ?? LocomotiveKind.Steam;
+            set => Element.SetAttribute(A_Kind, value.ToString());
         }
 
         public double Length {
-            get {
-                return XmlConvert.ToDouble(GetOptionalAttribute("Length") ??  "60");
-            }
-
-            set {
-                SetAttribute("Length", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_Length) ?? 60;
+            set => SetAttribute(A_Length, value);
         }
 
         public TrackGauges Guage {
-            get {
-                if (HasAttribute("Guage"))
-                    return (TrackGauges)Enum.Parse(typeof(TrackGauges), GetAttribute("Guage"));
-                else
-                    return TrackGauges.HO;
-            }
-
-            set {
-                SetAttribute("Guage", value.ToString());
-            }
+            get => AttributeValue(A_Guage).Enum<TrackGauges>() ?? TrackGauges.HO;
+            set => SetAttribute(A_Guage, value.ToString());
         }
 
-        public bool HasAttributes => Element["Attributes"] != null;
+        public bool HasAttributes => Element[E_Attributes] != null;
 
         /// <summary>
         /// User attributes associated with this locomotive type
         /// </summary>
         public AttributesInfo Attributes {
             get {
-                XmlElement attributesElement = Element["Attributes"];
+                XmlElement attributesElement = Element[E_Attributes];
 
                 if (attributesElement == null) {
-                    attributesElement = Element.OwnerDocument.CreateElement("Attributes");
+                    attributesElement = Element.OwnerDocument.CreateElement(E_Attributes);
 
                     Element.AppendChild(attributesElement);
                 }
@@ -551,32 +548,19 @@ namespace LayoutManager.Model {
         }
 
         public int SpeedLimit {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("SpeedLimit") ??  "0");
-            }
-
-            set {
-                SetAttribute("SpeedLimit", value, removeIf: 0);
-            }
+            get => (int?)AttributeValue(A_SpeedLimit) ?? 0;
+            set => SetAttribute(A_SpeedLimit, value, removeIf: 0);
         }
 
         public LocomotiveOrigin Origin {
-            get {
-                if (Element.HasAttribute("Origin"))
-                    return (LocomotiveOrigin)Enum.Parse(typeof(LocomotiveOrigin), Element.GetAttribute("Origin"));
-                else
-                    return LocomotiveOrigin.Europe;
-            }
-
-            set {
-                Element.SetAttribute("Origin", value.ToString());
-            }
+            get => AttributeValue(A_Origin).Enum<LocomotiveOrigin>() ?? LocomotiveOrigin.Europe;
+            set => Element.SetAttribute(A_Origin, value.ToString());
         }
 
         public Image? Image {
             set {
                 if (value == null) {
-                    XmlNode imageNode = Element["Image"];
+                    XmlNode imageNode = Element[E_Image];
 
                     if (imageNode != null)
                         Element.RemoveChild(imageNode);
@@ -585,36 +569,29 @@ namespace LayoutManager.Model {
                     using (MemoryStream s = new MemoryStream()) {
                         value.Save(s, System.Drawing.Imaging.ImageFormat.Bmp);
 
-                        if (Element["Image"] == null)
-                            Element.AppendChild(Element.OwnerDocument.CreateElement("Image"));
-                        Element["Image"].InnerText = Convert.ToBase64String(s.GetBuffer());
+                        if (Element[E_Image] == null)
+                            Element.AppendChild(Element.OwnerDocument.CreateElement(E_Image));
+                        Element[E_Image].InnerText = Convert.ToBase64String(s.GetBuffer());
                     }
                 }
             }
 
             get {
-                if (Element["Image"] == null)
+                if (Element[E_Image] == null)
                     return null;
                 else {
-                    MemoryStream s = new MemoryStream(Convert.FromBase64String(Element["Image"].InnerText));
+                    MemoryStream s = new MemoryStream(Convert.FromBase64String(Element[E_Image].InnerText));
                     return Image.FromStream(s);
                 }
             }
         }
 
         public int Store {
-            get {
-                if (Element.HasAttribute("Store"))
-                    return XmlConvert.ToInt32(Element.GetAttribute("Store"));
-                return 0;
-            }
-
-            set {
-                Element.SetAttribute("Store", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_Store) ?? 0;
+            set => SetAttribute(A_Store, value);
         }
 
-        public XmlElement Functions => Element["Functions"];
+        public XmlElement Functions => Element[E_Functions];
 
         public LocomotiveFunctionInfo? GetFunctionByName(String functionName) {
             if (Functions != null) {
@@ -642,32 +619,20 @@ namespace LayoutManager.Model {
                 return null;
         }
 
-        public bool HasLights {
-            get {
-                if (Functions.HasAttribute("Light"))
-                    return XmlConvert.ToBoolean(Functions.GetAttribute("Light"));
-                else
-                    return false;
-            }
-        }
+        public bool HasLights => (bool?)AttributeValue(A_Light) ?? false;
 
         /// <summary>
         /// Does this locomotive type has a built-in decoder. If it does, then decoder type name is the
         /// type of the built in decoder.
         /// </summary>
-        public bool HasBuiltInDecoder => HasAttribute("DecoderType");
+        public bool HasBuiltInDecoder => HasAttribute(A_DecoderType);
 
         /// <summary>
         /// Decoder type name (if locomotive has built in decoder) or default decoder type for this type of locomotive
         /// </summary>
         public string? DecoderTypeName {
-            get {
-                return GetOptionalAttribute("DecoderType");       // TODO: Get default decoder type from the catalog
-            }
-
-            set {
-                SetAttribute("DecoderType", value, removeIf: null);
-            }
+            get => GetOptionalAttribute(A_DecoderType);       // TODO: Get default decoder type from the catalog
+            set => SetAttribute(A_DecoderType, value, removeIf: null);
         }
 
         /// <summary>
@@ -682,57 +647,38 @@ namespace LayoutManager.Model {
     };
 
     public class LocomotiveFunctionInfo : LayoutInfo {
+        private const string A_Number = "Number";
+        private const string A_Type = "Type";
+        private const string A_Name = "Name";
+        private const string A_Description = "Description";
+        private const string A_State = "State";
+
         public LocomotiveFunctionInfo(XmlElement element) : base(element) {
         }
 
         public int Number {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("Number") ??  "1");
-            }
-
-            set {
-                SetAttribute("Number", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_Number) ?? 1;
+            set => SetAttribute(A_Number, value);
         }
 
         public LocomotiveFunctionType Type {
-            get {
-                return (LocomotiveFunctionType)Enum.Parse(typeof(LocomotiveFunctionType), GetOptionalAttribute("Type") ??  "Trigger");
-            }
-
-            set {
-                SetAttribute("Type", value.ToString());
-            }
+            get => AttributeValue(A_Type).Enum<LocomotiveFunctionType>() ?? LocomotiveFunctionType.Trigger;
+            set => SetAttribute(A_Type, value.ToString());
         }
 
         public String Name {
-            get {
-                return GetOptionalAttribute("Name") ?? "";
-            }
-
-            set {
-                SetAttribute("Name", value);
-            }
+            get => GetOptionalAttribute(A_Name) ?? "";
+            set => SetAttribute(A_Name, value);
         }
 
         public String? Description {
-            get {
-                return GetOptionalAttribute("Description");
-            }
-
-            set {
-                SetAttribute("Description", value);
-            }
+            get => GetOptionalAttribute(A_Description);
+            set => SetAttribute(A_Description, value);
         }
 
         public bool State {
-            get {
-                return XmlConvert.ToBoolean(GetAttribute("State"));
-            }
-
-            set {
-                SetAttribute("State", XmlConvert.ToString(value));
-            }
+            get => (bool?)AttributeValue(A_State) ?? false;
+            set => SetAttribute(A_State, value);
         }
 
         public override string ToString() {
@@ -749,6 +695,17 @@ namespace LayoutManager.Model {
     /// Represent a locomotive in the locomotive collection. 
     /// </summary>
     public class LocomotiveInfo : LocomotiveTypeInfo, IObjectHasName, IObjectHasAddress {
+        private const string E_Name = "Name";
+        private const string E_TypeName = "TypeName";
+        private const string A_TypeId = "TypeID";
+        private const string A_LinkedToType = "LinkedToType";
+        private const string A_CollectionId = "CollectionID";
+        private const string A_SpeedSteps = "SpeedSteps";
+        private const string A_NotManaged = "NotManaged";
+        private const string A_CanTriggerTrackContact = "CanTriggerTrackContact";
+        private const string E_Locomotive = "Locomotive";
+        private const string E_Train = "Train";
+        private const string A_Id = "ID";
 
         public LocomotiveInfo(XmlElement element) : base(element) {
         }
@@ -757,13 +714,8 @@ namespace LayoutManager.Model {
         /// The locomotive type from which this locomotive definition originates
         /// </summary>
         public Guid TypeId {
-            get {
-                return XmlConvert.ToGuid(GetAttribute("TypeID"));
-            }
-
-            set {
-                SetAttribute("TypeID", XmlConvert.ToString(value));
-            }
+            get => (Guid)AttributeValue(A_TypeId);
+            set => SetAttribute(A_TypeId, value);
         }
 
         /// <summary>
@@ -771,18 +723,13 @@ namespace LayoutManager.Model {
         /// type on which it is based is updated
         /// </summary>
         public bool LinkedToType {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("LinkedToType") ??  "true");
-            }
-
-            set {
-                SetAttribute("LinkedToType", XmlConvert.ToString(value));
-            }
+            get => (bool?)AttributeValue(A_LinkedToType) ?? true;
+            set => SetAttribute(A_LinkedToType, value);
         }
 
         public string Name {
             get {
-                XmlElement nameElement = Element["Name"];
+                XmlElement nameElement = Element[E_Name];
 
                 if (nameElement != null)
                     return nameElement.InnerText;
@@ -790,10 +737,10 @@ namespace LayoutManager.Model {
             }
 
             set {
-                XmlElement nameElement = Element["Name"];
+                XmlElement nameElement = Element[E_Name];
 
                 if (nameElement == null) {
-                    nameElement = Element.OwnerDocument.CreateElement("Name");
+                    nameElement = Element.OwnerDocument.CreateElement(E_Name);
                     Element.AppendChild(nameElement);
                 }
                 nameElement.InnerText = value;
@@ -812,30 +759,20 @@ namespace LayoutManager.Model {
             return name;
         }
 
-        public new LayoutTextInfo NameProvider => new LayoutTextInfo(Element, "Name");
+        public new LayoutTextInfo NameProvider => new LayoutTextInfo(Element, E_Name);
 
-        public LayoutTextInfo TypeNameProvider => new LayoutTextInfo(Element, "TypeName");
+        public LayoutTextInfo TypeNameProvider => new LayoutTextInfo(Element, E_TypeName);
 
         public LayoutAddressInfo AddressProvider => new LayoutAddressInfo(Element);
 
-        public String CollectionId {
-            get {
-                return GetOptionalAttribute("CollectionID") ??  "";
-            }
-
-            set {
-                SetAttribute("CollectionID", value);
-            }
+        public string CollectionId {
+            get => GetOptionalAttribute(A_CollectionId) ?? "";
+            set => SetAttribute(A_CollectionId, value);
         }
 
         public int SpeedSteps {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("SpeedSteps") ??  "28");
-            }
-
-            set {
-                SetAttribute("SpeedSteps", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_SpeedSteps) ?? 28;
+            set => SetAttribute(A_SpeedSteps, value);
         }
 
         /// <summary>
@@ -845,26 +782,16 @@ namespace LayoutManager.Model {
         /// can still track its location.
         /// </summary>
         public bool NotManaged {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("NotManaged") ??  "false");
-            }
-
-            set {
-                SetAttribute("NotManaged", value, removeIf: false);
-            }
+            get => (bool?)AttributeValue(A_NotManaged) ?? false;
+            set => SetAttribute(A_NotManaged, value, removeIf: false);
         }
 
         /// <summary>
         /// Return true is this locomotive can trigger track contact (i.e. it has a track magnet)
         /// </summary>
         public bool CanTriggerTrackContact {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("CanTriggerTrackContact") ??  (Kind != LocomotiveKind.SoundUnit ? "true" : "false"));
-            }
-
-            set {
-                SetAttribute("CanTriggerTrackContact", XmlConvert.ToString(value));
-            }
+            get => (bool?)AttributeValue(A_CanTriggerTrackContact) ?? Kind != LocomotiveKind.SoundUnit;
+            set => SetAttribute(A_CanTriggerTrackContact, value);
         }
 
         public LayoutActionContainer<LocomotiveInfo> Actions => new LayoutActionContainer<LocomotiveInfo>(Element, this);
@@ -877,12 +804,12 @@ namespace LayoutManager.Model {
         /// <param name="element"></param>
         /// <returns></returns>
         public bool IsCompatibleOperationCharacteristics(XmlElement element) {
-            if (element.Name == "Locomotive") {
+            if (element.Name == E_Locomotive) {
                 LocomotiveInfo otherLoco = new LocomotiveInfo(element);
 
                 return SpeedSteps == otherLoco.SpeedSteps && Guage == otherLoco.Guage;
             }
-            else if (element.Name == "Train") {
+            else if (element.Name == E_Train) {
                 TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(element);
 
                 foreach (TrainLocomotiveInfo trainLocomotive in trainInCollection.Locomotives) {
@@ -911,8 +838,8 @@ namespace LayoutManager.Model {
             foreach (XmlAttribute a in locoType.Element.Attributes) {
                 String name = a.Name;
 
-                if (name == "ID")
-                    name = "TypeID";
+                if (name == A_Id)
+                    name = A_TypeId;
 
                 if (Element.HasAttribute(name))
                     Element.RemoveAttribute(name);
@@ -963,6 +890,10 @@ namespace LayoutManager.Model {
     #region Objects referenced by train. Locomotivs & Cars
 
     public class TrainLocomotiveInfo : LayoutInfo {
+        private const string A_LocomotiveID = "LocomotiveID";
+        private const string A_Orientation = "Orientation";
+        private const string A_CollectionElementId = "CollectionElementID";
+
         public TrainCommonInfo Train { get; }
 
         internal TrainLocomotiveInfo(TrainCommonInfo train, XmlElement element) : base(element) {
@@ -970,23 +901,15 @@ namespace LayoutManager.Model {
         }
 
         public Guid LocomotiveId {
-            get {
-                return XmlConvert.ToGuid(GetAttribute("LocomotiveID"));
-            }
-
-            set {
-                SetAttribute("LocomotiveID", XmlConvert.ToString(value));
-            }
+            get => (Guid)AttributeValue(A_LocomotiveID);
+            set => SetAttribute(A_LocomotiveID, value);
         }
 
         public LocomotiveInfo? OptionalLocomotive {
             get {
                 XmlElement element = LayoutModel.LocomotiveCollection[LocomotiveId];
 
-                if (element == null)
-                    return null;
-                else
-                    return new LocomotiveInfo(element);
+                return element == null ? null : new LocomotiveInfo(element);
             }
         }
 
@@ -995,26 +918,13 @@ namespace LayoutManager.Model {
         }
 
         public LocomotiveOrientation Orientation {
-            get {
-                return (LocomotiveOrientation)Enum.Parse(typeof(LocomotiveOrientation), GetOptionalAttribute("Orientation") ??  "Forward");
-            }
-
-            set {
-                SetAttribute("Orientation", value.ToString());
-            }
+            get => AttributeValue(A_Orientation).Enum<LocomotiveOrientation>() ?? LocomotiveOrientation.Forward;
+            set => SetAttribute(A_Orientation, value.ToString());
         }
 
         public Guid CollectionElementId {
-            get {
-                if (Element.HasAttribute("CollectionElementID"))
-                    return XmlConvert.ToGuid(GetAttribute("CollectionElementID"));
-                else
-                    return LocomotiveId;
-            }
-
-            set {
-                SetAttribute("CollectionElementID", value.ToString());
-            }
+            get => (Guid?)AttributeValue(A_CollectionElementId) ?? LocomotiveId;
+            set => SetAttribute(A_CollectionElementId, value);
         }
 
         // The following properties are for allowing easy access from event scripts
@@ -1026,6 +936,9 @@ namespace LayoutManager.Model {
     }
 
     public class TrainCarsInfo : LayoutInfo {
+        private const string A_Count = "Count";
+        private const string A_Description = "Description";
+        private const string A_CarLength = "CarLength";
         readonly TrainCommonInfo train;
 
         public TrainCarsInfo(TrainCommonInfo train, XmlElement element) : base(element) {
@@ -1033,33 +946,18 @@ namespace LayoutManager.Model {
         }
 
         public int Count {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("Count") ??  "1");
-            }
-
-            set {
-                SetAttribute("Count", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_Count) ?? 1;
+            set => SetAttribute(A_Count, value);
         }
 
         public string Description {
-            get {
-                return GetOptionalAttribute("Description") ??  "";
-            }
-
-            set {
-                SetAttribute("Description", value);
-            }
+            get => GetOptionalAttribute(A_Description) ?? "";
+            set => SetAttribute(A_Description, value);
         }
 
         public double CarLength {
-            get {
-                return XmlConvert.ToDouble(GetOptionalAttribute("CarLength") ??  "46");
-            }
-
-            set {
-                SetAttribute("CarLength", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_CarLength) ?? 46;
+            set => SetAttribute(A_CarLength, value);
         }
 
         public double Length => Count * CarLength;
@@ -1068,30 +966,30 @@ namespace LayoutManager.Model {
     }
 
     public class TrainDriverInfo : LayoutInfo {
+        private const string A_Type = "Type";
+        private const string A_TypeName = "TypeName";
+        private const string A_DriverId = "DriverID";
+        private const string A_ComputerDriven = "ComputerDriven";
+
         public TrainDriverInfo(XmlElement element) : base(element) {
         }
 
         public TrainDriverInfo(TrainCommonInfo train) : base(train.DriverElement) {
         }
 
-        public string Type => GetOptionalAttribute("Type") ??  "Automatic";
+        public string Type => GetOptionalAttribute(A_Type) ??  "Automatic";
 
-        public string TypeName => GetAttribute("TypeName");
+        public string TypeName => GetAttribute(A_TypeName);
 
         public string? DriverId {
-            get {
-                return GetOptionalAttribute("DriverID");
-            }
-
-            set {
-                SetAttribute("DriverID", value, removeIf: null);
-            }
+            get => GetOptionalAttribute(A_DriverId);
+            set => SetAttribute(A_DriverId, value, removeIf: null);
         }
 
         /// <summary>
         /// Return true if locomotive is driven by the computer (true), or by external mean
         /// </summary>
-        public bool ComputerDriven => XmlConvert.ToBoolean(GetOptionalAttribute("ComputerDriven") ??  "true");
+        public bool ComputerDriven => (bool?)AttributeValue(A_ComputerDriven) ??  true;
     }
 
     #endregion
@@ -1155,17 +1053,16 @@ namespace LayoutManager.Model {
 
         public override int GetHashCode() => base.GetHashCode();
 
-        public override string ToString() {
-            switch (length) {
-                case KnownTrainLength.LocomotiveOnly: return "LocomotiveOnly";
-                case KnownTrainLength.VeryShort: return "VeryShort";
-                case KnownTrainLength.Short: return "Short";
-                case KnownTrainLength.Standard: return "Standard";
-                case KnownTrainLength.Long: return "Long";
-                case KnownTrainLength.VeryLong: return "VeryLong";
-                default: return "Unknown";
-            }
-        }
+        public override string ToString() => length switch
+        {
+            KnownTrainLength.LocomotiveOnly => "LocomotiveOnly",
+            KnownTrainLength.VeryShort => "VeryShort",
+            KnownTrainLength.Short => "Short",
+            KnownTrainLength.Standard => "Standard",
+            KnownTrainLength.Long => "Long",
+            KnownTrainLength.VeryLong => "VeryLong",
+            _ => "Unknown"
+        };
 
         public static bool TryParse(string t, out TrainLength length) {
             bool result = true;
@@ -1206,10 +1103,19 @@ namespace LayoutManager.Model {
                 case KnownTrainLength.VeryLong: t = "Very long"; break;
             }
 
-            return lowerCase ? t.Substring(0, 1).ToLower() + t.Substring(1) : t;
+            return lowerCase ? $"{t.Substring(0, 1).ToLower()}{t.Substring(1)}" : t;
         }
 
         public string ToDisplayString() => ToDisplayString(false);
+    }
+
+    public static class ConvertableStringExtension {
+        public static TrainLength? ToTrainLength(this ConvertableString s) {
+            if ((string?)s != null)
+                return TrainLength.Parse(s.ValidString());
+            else
+                return null;
+        }
     }
 
     /// <summary>
@@ -1232,6 +1138,23 @@ namespace LayoutManager.Model {
     }
 
     public class TrainCommonInfo : LayoutNamedTrainObject, IObjectHasId, IObjectHasAttributes {
+        private const string E_Attributes = "Attributes";
+        private const string E_Name = "Name";
+        private const string A__TriggerCount = "_TriggerCount";
+        private const string A_LastCarTriggerBlockEdge = "LastCarTriggerBlockEdge";
+        private const string A_LastCarDetected = "LastCarDetected";
+        private const string A_Length = "Length";
+        private const string A__LocomotivesSpeedLimit = "_LocomotivesSpeedLimit";
+        private const string A_SpeedLimit = "SpeedLimit";
+        private const string A_SlowDownSpeed = "SlowDownSpeed";
+        private const string A_TargetSpeed = "TargetSpeed";
+        private const string E_Driver = "Driver";
+        private const string E_Locomotives = "Locomotives";
+        private const string E_Locomotive = "Locomotive";
+        private const string A_Id = "ID";
+        private const string A_Store = "Store";
+        private const string E_Cars = "Cars";
+        private const string E_CarsInfo = "CarsInfo";
         #region Properties
 
         public TrainCommonInfo(XmlElement element)
@@ -1252,17 +1175,17 @@ namespace LayoutManager.Model {
             }
         }
 
-        public bool HasAttributes => Element["Attributes"] != null;
+        public bool HasAttributes => Element[E_Attributes] != null;
 
         /// <summary>
         /// User attributes associated with this train
         /// </summary>
         public AttributesInfo Attributes {
             get {
-                XmlElement attributesElement = Element["Attributes"];
+                XmlElement attributesElement = Element[E_Attributes];
 
                 if (attributesElement == null) {
-                    attributesElement = Element.OwnerDocument.CreateElement("Attributes");
+                    attributesElement = Element.OwnerDocument.CreateElement(E_Attributes);
 
                     Element.AppendChild(attributesElement);
                 }
@@ -1276,7 +1199,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public String Name {
             get {
-                XmlElement nameElement = Element["Name"];
+                XmlElement nameElement = Element[E_Name];
 
                 if (nameElement != null)
                     return nameElement.InnerText;
@@ -1284,12 +1207,12 @@ namespace LayoutManager.Model {
             }
 
             set {
-                XmlElement nameElement = Element["Name"];
+                XmlElement nameElement = Element[E_Name];
 
                 EraseImage();
 
                 if (nameElement == null) {
-                    nameElement = Element.OwnerDocument.CreateElement("Name");
+                    nameElement = Element.OwnerDocument.CreateElement(E_Name);
                     Element.AppendChild(nameElement);
                 }
                 nameElement.InnerText = value;
@@ -1320,7 +1243,7 @@ namespace LayoutManager.Model {
                 return "";
         }
 
-        public LayoutTextInfo NameProvider => new LayoutTextInfo(Element, "Name");
+        public LayoutTextInfo NameProvider => new LayoutTextInfo(Element, E_Name);
 
         /// <summary>
         /// The train is not managed. There is no information about the train motion direction or speed
@@ -1351,7 +1274,7 @@ namespace LayoutManager.Model {
         /// </remarks>
         public int TrackContactTriggerCount {
             get {
-                if (!Element.HasAttribute("_TriggerCount")) {
+                if (!Element.HasAttribute(A__TriggerCount)) {
                     int triggerCount = 0;
 
                     foreach (TrainLocomotiveInfo trainLocomotive in Locomotives)
@@ -1361,46 +1284,34 @@ namespace LayoutManager.Model {
                     if (LastCarTriggerBlockEdge)
                         triggerCount++;
 
-                    SetAttribute("_TriggerCount", XmlConvert.ToString(triggerCount));
+                    SetAttribute(A__TriggerCount, XmlConvert.ToString(triggerCount));
                 }
 
-                return XmlConvert.ToInt32(GetAttribute("_TriggerCount"));
+                return XmlConvert.ToInt32(GetAttribute(A__TriggerCount));
             }
         }
 
         public bool LastCarTriggerBlockEdge {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("LastCarTriggerBlockEdge") ??  "false");
-            }
+            get => (bool?)AttributeValue(A_LastCarTriggerBlockEdge) ?? false;
 
             set {
-                SetAttribute("LastCarTriggerBlockEdge", XmlConvert.ToString(value));
+                SetAttribute(A_LastCarTriggerBlockEdge, value);
                 FlushCachedValues();
             }
         }
 
         public bool LastCarDetectedByOccupancyBlock {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("LastCarDetected") ??  "false");
-            }
+            get => (bool?)AttributeValue(A_LastCarDetected) ?? false;
 
             set {
-                SetAttribute("LastCarDetected", XmlConvert.ToString(value));
+                SetAttribute(A_LastCarDetected, XmlConvert.ToString(value));
                 FlushCachedValues();
             }
         }
 
         public TrainLength Length {
-            get {
-                if (HasAttribute("Length"))
-                    return TrainLength.Parse(GetAttribute("Length"));
-                else
-                    return TrainLength.Standard;
-            }
-
-            set {
-                SetAttribute("Length", value.ToString());
-            }
+            get => AttributeValue(A_Length).ToTrainLength() ?? TrainLength.Standard;
+            set => SetAttribute(A_Length, value.ToString());
         }
 
         public bool HasLights {
@@ -1430,7 +1341,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int LocomotivesSpeedLimit {
             get {
-                if (!Element.HasAttribute("_LocomotivesSpeedLimit")) {
+                if (!Element.HasAttribute(A__LocomotivesSpeedLimit)) {
                     int speedLimit = 0;
 
                     foreach (TrainLocomotiveInfo trainLocomotive in Locomotives) {
@@ -1446,31 +1357,21 @@ namespace LayoutManager.Model {
                         }
                     }
 
-                    SetAttribute("_LocomotivesSpeedLimit", XmlConvert.ToString(speedLimit));
+                    SetAttribute(A__LocomotivesSpeedLimit, speedLimit);
                 }
 
-                return XmlConvert.ToInt32(GetAttribute("_LocomotivesSpeedLimit"));
+                return XmlConvert.ToInt32(GetAttribute(A__LocomotivesSpeedLimit));
             }
         }
 
         public virtual int SpeedLimit {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("SpeedLimit") ??  "0");
-            }
-
-            set {
-                SetAttribute("SpeedLimit", value, removeIf: 0);
-            }
+            get => (int?)AttributeValue(A_SpeedLimit) ?? 0;
+            set => SetAttribute(A_SpeedLimit, value, removeIf: 0);
         }
 
         public int SlowdownSpeed {
-            get {
-                return XmlConvert.ToInt32(GetOptionalAttribute("SlowDownSpeed") ??  "0");
-            }
-
-            set {
-                SetAttribute("SlowDownSpeed", value, removeIf: 0);
-            }
+            get => (int?)AttributeValue(A_SlowDownSpeed) ?? 0;
+            set => SetAttribute(A_SlowDownSpeed, value, removeIf: 0);
         }
 
         /// <summary>
@@ -1478,16 +1379,8 @@ namespace LayoutManager.Model {
         /// speed limit, slowing down, or stopped
         /// </summary>
         public virtual int TargetSpeed {
-            get {
-                if (!HasAttribute("TargetSpeed"))
-                    return LayoutModel.Instance.LogicalSpeedSteps / 2;
-
-                return XmlConvert.ToInt32(GetAttribute("TargetSpeed"));
-            }
-
-            set {
-                SetAttribute("TargetSpeed", XmlConvert.ToString(value));
-            }
+            get => (int?)AttributeValue(A_TargetSpeed) ?? LayoutModel.Instance.LogicalSpeedSteps / 2; 
+            set => SetAttribute(A_TargetSpeed, XmlConvert.ToString(value));
         }
 
 
@@ -1496,10 +1389,10 @@ namespace LayoutManager.Model {
 
         public XmlElement DriverElement {
             get {
-                XmlElement driverElement = Element["Driver"];
+                XmlElement driverElement = Element[E_Driver];
 
                 if (driverElement == null) {
-                    driverElement = Element.OwnerDocument.CreateElement("Driver");
+                    driverElement = Element.OwnerDocument.CreateElement(E_Driver);
 
                     Element.AppendChild(driverElement);
                 }
@@ -1508,7 +1401,7 @@ namespace LayoutManager.Model {
             }
 
             set {
-                XmlElement driverElement = Element["Driver"];
+                XmlElement driverElement = Element[E_Driver];
 
                 if (driverElement != null)
                     Element.RemoveChild(driverElement);
@@ -1528,10 +1421,10 @@ namespace LayoutManager.Model {
 
         internal XmlElement LocomotivesElement {
             get {
-                XmlElement locomotivesElement = Element["Locomotives"];
+                XmlElement locomotivesElement = Element[E_Locomotives];
 
                 if (locomotivesElement == null) {
-                    locomotivesElement = Element.OwnerDocument.CreateElement("Locomotives");
+                    locomotivesElement = Element.OwnerDocument.CreateElement(E_Locomotives);
                     Element.AppendChild(locomotivesElement);
                 }
 
@@ -1559,7 +1452,7 @@ namespace LayoutManager.Model {
                 result.Train = this;
             }
             else {
-                XmlElement trainLocomotiveElement = Element.OwnerDocument.CreateElement("Locomotive");
+                XmlElement trainLocomotiveElement = Element.OwnerDocument.CreateElement(E_Locomotive);
                 TrainLocomotiveInfo trainLocomotive = new TrainLocomotiveInfo(this, trainLocomotiveElement) {
                     LocomotiveId = loco.Id,
                     Orientation = orientation
@@ -1583,8 +1476,8 @@ namespace LayoutManager.Model {
         }
 
         public void Initialize() {
-            Element.SetAttribute("ID", XmlConvert.ToString(Guid.NewGuid()));
-            Element.SetAttribute("Store", XmlConvert.ToString(LayoutModel.LocomotiveCollection.DefaultStore));
+            Element.SetAttribute(A_Id, XmlConvert.ToString(Guid.NewGuid()));
+            Element.SetAttribute(A_Store, XmlConvert.ToString(LayoutModel.LocomotiveCollection.DefaultStore));
         }
 
         public virtual void CopyFrom(TrainCommonInfo otherTrain, LayoutBlock? block, bool validateAddress) {
@@ -1597,11 +1490,11 @@ namespace LayoutManager.Model {
             this.LastCarTriggerBlockEdge = otherTrain.LastCarTriggerBlockEdge;
 
             // Copy user attributes
-            if (otherTrain.Element["Attributes"] != null) {
-                XmlElement attributesElement = (XmlElement)Element.OwnerDocument.ImportNode(otherTrain.Element["Attributes"], true);
+            if (otherTrain.Element[E_Attributes] != null) {
+                XmlElement attributesElement = (XmlElement)Element.OwnerDocument.ImportNode(otherTrain.Element[E_Attributes], true);
 
-                if (Element["Attributes"] != null)
-                    Element.RemoveChild(Element["Attributes"]);
+                if (Element[E_Attributes] != null)
+                    Element.RemoveChild(Element[E_Attributes]);
                 Element.AppendChild(attributesElement);
             }
 
@@ -1629,10 +1522,10 @@ namespace LayoutManager.Model {
 
         public XmlElement CarsElement {
             get {
-                XmlElement carsElement = Element["Cars"];
+                XmlElement carsElement = Element[E_Cars];
 
                 if (carsElement == null) {
-                    carsElement = Element.OwnerDocument.CreateElement("Cars");
+                    carsElement = Element.OwnerDocument.CreateElement(E_Cars);
 
                     Element.AppendChild(carsElement);
                 }
@@ -1642,7 +1535,7 @@ namespace LayoutManager.Model {
         }
 
         public TrainCarsInfo AddCars() {
-            XmlElement carsInfoElement = Element.OwnerDocument.CreateElement("CarsInfo");
+            XmlElement carsInfoElement = Element.OwnerDocument.CreateElement(E_CarsInfo);
 
             CarsElement.AppendChild(carsInfoElement);
             return new TrainCarsInfo(this, carsInfoElement);
@@ -1666,55 +1559,6 @@ namespace LayoutManager.Model {
 
         #endregion
 
-#if old
-        #region Train Length
-
-		public bool CalculateLength {
-			get {
-				return XmlConvert.ToBoolean(GetOptionalAttribute("CalculateLength") ??  "true");
-			}
-
-			set {
-				SetAttribute("CalculateLength", XmlConvert.ToString(value));
-			}
-		}
-
-		public double Length {
-			get {
-				if(CalculateLength) {
-					double	result = 0.0;
-
-					if(Element.HasAttribute("_Length"))
-						result = XmlConvert.ToDouble(GetAttribute("_Length"));
-					else {
-
-						foreach(TrainLocomotiveInfo trainLoco in Locomotives)
-							result += trainLoco.Locomotive.Length;
-
-						foreach(TrainCarsInfo trainCars in Cars)
-							result += trainCars.Length;
-
-						SetAttribute("_Length", XmlConvert.ToString(result));
-					}
-
-					return result;
-				}
-				else
-					return XmlConvert.ToDouble(GetOptionalAttribute("Length") ??  "0");
-			}
-
-			set {
-				if(CalculateLength)
-					throw new ArgumentException("Cannot set train length, it is automatically calculated");
-				else
-					SetAttribute("Length", XmlConvert.ToString(value));
-			}
-		}
-
-        #endregion
-#endif
-
-
         public virtual void EraseImage() {
         }
 
@@ -1726,8 +1570,8 @@ namespace LayoutManager.Model {
         /// </summary>
         public virtual void FlushCachedValues() {
             Element.RemoveAttribute("_Length");
-            Element.RemoveAttribute("_TriggerCount");
-            Element.RemoveAttribute("_LocomotivesSpeedLimit");
+            Element.RemoveAttribute(A__TriggerCount);
+            Element.RemoveAttribute(A__LocomotivesSpeedLimit);
         }
 
         #endregion

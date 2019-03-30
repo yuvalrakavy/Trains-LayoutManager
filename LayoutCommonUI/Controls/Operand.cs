@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
+#nullable enable
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for Operand.
@@ -16,19 +17,19 @@ namespace LayoutManager.CommonUI.Controls {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private readonly Container components = null;
 
-        private void endOfDesignerVariables() { }
 
         string suffix = "";
-        XmlElement element = null;
+        XmlElement element;
         string defaultAccess = "Property";
-        Type[] allowedTypes = null;
+        Type[] allowedTypes;
 
+        #pragma warning disable nullable
         public Operand() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
         }
+        #pragma warning restore nullable
 
         #region Properties
 
@@ -51,6 +52,8 @@ namespace LayoutManager.CommonUI.Controls {
                 element = value;
             }
         }
+
+        public XmlElement? OptionalElement => Element;
 
         public string DefaultAccess {
             get {
@@ -154,18 +157,6 @@ namespace LayoutManager.CommonUI.Controls {
                 operandValueOf.Commit();
 
             return ok;
-        }
-
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose(bool disposing) {
-            if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
-            }
-            base.Dispose(disposing);
         }
 
         #region Component Designer generated code

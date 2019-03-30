@@ -253,7 +253,7 @@ namespace LayoutManager.Logic {
         void freeOwnedLocks(LayoutEvent e0) {
             var e = (LayoutEventInfoValueType<object, Guid>)e0;
             Guid ownerID = e.Info;
-            bool releasePending = e.GetBoolOption("ReleasePending");
+            var releasePending = (bool)e.GetOption("ReleasePending");
             List<Guid> resourceIDsToFree = new List<Guid>();
 
             foreach (KeyValuePair<Guid, LockedResourceEntry> d in lockedResourceMap) {
@@ -377,7 +377,7 @@ namespace LayoutManager.Logic {
             if (train != null)
                 Trace.Write("Train " + train.DisplayName);
             else {
-                ManualDispatchRegionInfo manualDispatchRegion = LayoutModel.StateManager.ManualDispatchRegions[request.OwnerId];
+                var manualDispatchRegion = LayoutModel.StateManager.ManualDispatchRegions[request.OwnerId];
 
                 if (manualDispatchRegion != null)
                     Trace.Write("Manual region " + manualDispatchRegion.Name);

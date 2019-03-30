@@ -88,23 +88,15 @@ namespace LayoutManager.Logic {
             }
 
             public AutoDriverState State {
-                get {
-                    return (AutoDriverState)Enum.Parse(typeof(AutoDriverState), GetOptionalAttribute("AutoDriverState") ??  "Stop");
-                }
+                get => AttributeValue("AutoDriverState").Enum<AutoDriverState>() ?? AutoDriverState.Stop;
 
-                set {
-                    SetAttribute("AutoDriverState", value.ToString());
-                }
+                set => SetAttribute("AutoDriverState", value.ToString());
             }
 
             public LocomotiveOrientation Direction {
-                get {
-                    return (LocomotiveOrientation)Enum.Parse(typeof(LocomotiveOrientation), GetOptionalAttribute("Direction") ??  "Forward");
-                }
+                get => AttributeValue("Direction").Enum<LocomotiveOrientation>() ?? LocomotiveOrientation.Forward;
 
-                set {
-                    SetAttribute("Direction", value.ToString());
-                }
+                set => SetAttribute("Direction", value.ToString());
             }
         }
 

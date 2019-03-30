@@ -108,7 +108,7 @@ namespace LayoutManager {
 
         public static Guid GetFrameWindowId(this LayoutEvent e) {
             if (e.HasOption(elementName: "FrameWindow", optionName: "ID"))
-                return XmlConvert.ToGuid(e.GetOption(elementName: "FrameWindow", optionName: "ID", defaultValue: XmlConvert.ToString(Guid.Empty)));
+                return (Guid?)e.GetOption(elementName: "FrameWindow", optionName: "ID") ?? Guid.Empty;
             else if (LayoutController.ActiveFrameWindow != null)
                 return LayoutController.ActiveFrameWindow.Id;
             else

@@ -77,92 +77,49 @@ namespace LayoutManager {
             }
         }
 
-        public String? GetOptionalAttribute(string name) {
-            if (_element == null)
-                return null;
-            else {
-                if (_element.Attributes[name] == null)
-                    return null;
-                else
-                    return _element.GetAttribute(name);
-            }
-        }
+        public ConvertableString AttributeValue(string name) => ((IObjectHasXml)this).AttributeValue(name);
 
-        public string GetAttribute(string name) => Ensure.NotNull<string>(GetOptionalAttribute(name), $"Xml Attribute {name}");
+        public String? GetOptionalAttribute(string name) => (string?)AttributeValue(name);
 
+        public string GetAttribute(string name) => AttributeValue(name).ValidString();
 
-        public void SetAttribute(string name, string? v) {
-            Debug.Assert(_element != null);
-            if (v == null)
-                _element.RemoveAttribute(name);
-            else
-                _element.SetAttribute(name, v);
-        }
+        public void SetAttribute(string name, string? v) => ((IObjectHasXml)this).SetAttribute(name, v);
 
-        public void SetAttribute(string name, string? v, string? removeIf) {
-            Debug.Assert(_element != null);
-            if (v == null || v == removeIf)
-                _element.RemoveAttribute(name);
-            else
-                _element.SetAttribute(name, v);
-        }
+        public void SetAttribute(string name, string? v, string? removeIf) => ((IObjectHasXml)this).SetAttribute(name, v, removeIf);
 
-        public void SetAttribute(string name, int v, int removeIf) {
-            Debug.Assert(_element != null);
-            if (v == removeIf)
-                _element.RemoveAttribute(name);
-            else
-                _element.SetAttribute(name, XmlConvert.ToString(v));
-        }
+        public void SetAttribute(string name, int v, int removeIf) => ((IObjectHasXml)this).SetAttribute(name, v, removeIf);
 
-        public void SetAttribute(string name, int v) {
-            Debug.Assert(_element != null);
-            _element.SetAttribute(name, XmlConvert.ToString(v));
-        }
+        public void SetAttribute(string name, int v) => ((IObjectHasXml)this).SetAttribute(name, v);
 
-        public void SetAttribute(string name, Guid v) {
-            Debug.Assert(_element != null);
-            _element.SetAttribute(name, XmlConvert.ToString(v));
-        }
+        public void SetAttribute(string name, double v) => ((IObjectHasXml)this).SetAttribute(name, v);
 
-        public void SetAttribute(string name, Guid v, Guid removeIf) {
-            Debug.Assert(_element != null);
-            if (v == removeIf)
-                _element.RemoveAttribute(name);
-            else
-                _element.SetAttribute(name, XmlConvert.ToString(v));
-        }
+        public void SetAttribute(string name, Guid v) => ((IObjectHasXml)this).SetAttribute(name, v);
 
-        public void SetAttribute(string name, bool v) {
-            Debug.Assert(_element != null);
-            _element.SetAttribute(name, XmlConvert.ToString(v));
-        }
+        public void SetAttribute(string name, Guid v, Guid removeIf) => ((IObjectHasXml)this).SetAttribute(name, v, removeIf);
 
-        public void SetAttribute(string name, bool v, bool removeIf) {
-            Debug.Assert(_element != null);
-            if (v == removeIf)
-                _element.RemoveAttribute(name);
-            else
-                _element.SetAttribute(name, XmlConvert.ToString(v));
-        }
+        public void SetAttribute(string name, bool v) => ((IObjectHasXml)this).SetAttribute(name, v);
 
-        public bool HasAttribute(string name) => Element.HasAttribute(name);
+        public void SetAttribute(string name, bool v, bool removeIf) => ((IObjectHasXml)this).SetAttribute(name, v, removeIf);
+
+        public bool HasAttribute(string name) => ((IObjectHasXml)this).HasAttribute(name);
 
         public Guid Id {
             get {
-                if (HasAttribute("ID"))
-                    return XmlConvert.ToGuid(GetAttribute("ID"));
-                else {
-                    Guid id = Guid.NewGuid();
+                var id = (Guid?)this.AttributeValue("ID");
 
-                    SetAttribute("ID", XmlConvert.ToString(id));
-                    return id;
+                if (!id.HasValue) {
+                    Guid newId = Guid.NewGuid();
+
+                    this.SetAttribute("ID", newId);
+                    return newId;
                 }
+                else
+                    return id.Value;
             }
 
             set {
-                Debug.Assert(!HasAttribute("ID"));
-                SetAttribute("ID", XmlConvert.ToString(value));
+                Debug.Assert(!this.HasAttribute("ID"));
+                this.SetAttribute("ID", value);
             }
         }
     }
@@ -172,4 +129,5 @@ namespace LayoutManager {
             : base(element) {
         }
     }
+
 }

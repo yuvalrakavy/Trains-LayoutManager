@@ -268,7 +268,7 @@ namespace DiMAX {
             if (train != null && function != null) {
                 if (loco.DecoderType is DccDecoderTypeInfo decoder) {
                     if (decoder.ParallelFunctionSupport)
-                        OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, function.Number, e.GetBoolOption("FunctionState"), train.Lights));
+                        OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, function.Number, (bool)e.GetOption("FunctionState"), train.Lights));
                     else
                         generateSerialFunctionCommands(train, loco, function.Number);
                 }
@@ -283,7 +283,7 @@ namespace DiMAX {
                 if (train != null) {
                     if (loco.DecoderType is DccDecoderTypeInfo decoder) {
                         if (decoder.ParallelFunctionSupport)
-                            OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, functionNumber, e.GetBoolOption("FunctionState"), train.Lights));
+                            OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, functionNumber, (bool)e.GetOption("FunctionState"), train.Lights));
                         else
                             generateSerialFunctionCommands(train, loco, functionNumber);
                     }
@@ -358,7 +358,7 @@ namespace DiMAX {
         private async Task<Object> programCVPOMrequest(LayoutEvent e) {
             var cv = Ensure.NotNull<DccProgrammingCV>(e.Sender, "cv");
 
-            return await (Task<object>)OutputManager.AddCommand(new DiMAXprogramCVonTrack(this, e.GetIntOption("Address"), cv.Number, cv.Value));
+            return await (Task<object>)OutputManager.AddCommand(new DiMAXprogramCVonTrack(this, (int)e.GetOption("Address"), cv.Number, cv.Value));
         }
 
         [LayoutEvent("locomotive-power-changed")]
@@ -478,10 +478,10 @@ namespace DiMAX {
         private Task testLocoSelect(LayoutEvent e0) {
             var e = e0;
 
-            int address = e.GetIntOption("Address");
-            bool select = e.GetBoolOption("Select");
-            bool active = e.GetBoolOption("Active");
-            bool unconditional = e.GetBoolOption("Unconditional");
+            int address = (int)e.GetOption("Address");
+            bool select = (bool)e.GetOption("Select");
+            bool active = (bool)e.GetOption("Active");
+            bool unconditional = (bool)e.GetOption("Unconditional");
 
             return OutputManager.AddCommand(new DiMAXlocomotiveSelection(this, address, select, active, unconditional));
         }
@@ -490,8 +490,8 @@ namespace DiMAX {
         private Task testLocoSpeed(LayoutEvent e0) {
             var e = e0;
 
-            int address = e.GetIntOption("Address");
-            int speed = e.GetIntOption("Speed");
+            int address = (int)e.GetOption("Address");
+            int speed = (int)e.GetOption("Speed");
 
             return OutputManager.AddCommand(new DiMAXlocomotiveMotion(this, address, speed));
         }

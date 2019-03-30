@@ -36,15 +36,8 @@ namespace LayoutManager.Model {
         }
 
         public TripPlanTrainConditionScope ConditionScope {
-            get {
-                if (HasAttribute("Scope"))
-                    return (TripPlanTrainConditionScope)Enum.Parse(typeof(TripPlanTrainConditionScope), GetAttribute("Scope"));
-                return TripPlanTrainConditionScope.AllowIfTrue;
-            }
-
-            set {
-                SetAttribute("Scope", value.ToString());
-            }
+            get => AttributeValue("Scope").Enum<TripPlanTrainConditionScope>() ?? TripPlanTrainConditionScope.AllowIfTrue;
+            set => SetAttribute("Scope", value.ToString());
         }
 
         public bool IsConditionEmpty => Element.ChildNodes.Count == 0;
@@ -83,13 +76,9 @@ namespace LayoutManager.Model {
         }
 
         public Guid BlockId {
-            get {
-                return XmlConvert.ToGuid(GetAttribute("BlockID"));
-            }
+            get => XmlConvert.ToGuid(GetAttribute("BlockID"));
 
-            set {
-                SetAttribute("BlockID", XmlConvert.ToString(value));
-            }
+            set => SetAttribute("BlockID", XmlConvert.ToString(value));
         }
 
         public override string GetDescription() {
@@ -110,6 +99,8 @@ namespace LayoutManager.Model {
     /// Wrapper for way point destination element, or for stored destinations.
     /// </summary>
     public class TripPlanDestinationInfo : LayoutInfo, IObjectHasId {
+        private const string A_Name = "Name";
+        private const string A_SelectionMethod = "SelectionMethod";
         List<TripPlanDestinationEntryInfo> entries;
 
         public TripPlanDestinationInfo(XmlElement element) : base(element) {
@@ -218,8 +209,8 @@ namespace LayoutManager.Model {
 
         public string Name {
             get {
-                if (Element.HasAttribute("Name"))
-                    return Element.GetAttribute("Name");
+                if (Element.HasAttribute(A_Name))
+                    return Element.GetAttribute(A_Name);
                 else {
                     if (Count > 0) {
                         if (BlockInfoList.Count > 0) {
@@ -240,20 +231,20 @@ namespace LayoutManager.Model {
 
             set {
                 if (Count == 0 || value != BlockInfoList[0].Name)
-                    Element.SetAttribute("Name", value);
+                    Element.SetAttribute(A_Name, value);
             }
         }
 
         public bool HasName {
             get {
-                if (Element.HasAttribute("Name"))
+                if (Element.HasAttribute(A_Name))
                     return true;
                 return false;
             }
 
             set {
                 if (value == false)
-                    Element.RemoveAttribute("Name");
+                    Element.RemoveAttribute(A_Name);
             }
         }
 
@@ -262,41 +253,38 @@ namespace LayoutManager.Model {
         }
 
         public TripPlanLocationSelectionMethod SelectionMethod {
-            get {
-                if (Element.HasAttribute("SelectionMethod"))
-                    return (TripPlanLocationSelectionMethod)Enum.Parse(typeof(TripPlanLocationSelectionMethod),
-                        Element.GetAttribute("SelectionMethod"));
-                else
-                    return TripPlanLocationSelectionMethod.ListOrder;
-            }
-
-            set {
-                Element.SetAttribute("SelectionMethod", value.ToString());
-            }
+            get => AttributeValue(A_SelectionMethod).Enum<TripPlanLocationSelectionMethod>() ?? TripPlanLocationSelectionMethod.ListOrder;
+            set => Element.SetAttribute(A_SelectionMethod, value.ToString());
         }
     }
 
     public class TripPlanWaypointInfo : LayoutInfo {
+        private const string E_WayPoint = "WayPoint";
+        private const string E_Destination = "Destination";
+        private const string E_StartCondition = "StartCondition";
+        private const string E_DriverInstructions = "DriverInstructions";
+        private const string A_Direction = "Direction";
+
         public TripPlanWaypointInfo(XmlElement element) : base(element) {
         }
 
         public TripPlanWaypointInfo(TripPlanInfo tripPlan, LayoutBlockDefinitionComponent blockInfo) {
-            Element = tripPlan.Element.OwnerDocument.CreateElement("WayPoint");
+            Element = tripPlan.Element.OwnerDocument.CreateElement(E_WayPoint);
 
             // This added new destination to the destination list
             new TripPlanDestinationInfo(this, blockInfo);
         }
 
         public TripPlanWaypointInfo(TripPlanInfo tripPlan) {
-            Element = tripPlan.Element.OwnerDocument.CreateElement("WayPoint");
+            Element = tripPlan.Element.OwnerDocument.CreateElement(E_WayPoint);
         }
 
         public TripPlanDestinationInfo Destination {
             get {
-                XmlElement destinationElement = Element["Destination"];
+                XmlElement destinationElement = Element[E_Destination];
 
                 if (destinationElement == null) {
-                    destinationElement = Element.OwnerDocument.CreateElement("Destination");
+                    destinationElement = Element.OwnerDocument.CreateElement(E_Destination);
                     Element.AppendChild(destinationElement);
                 }
 
@@ -304,7 +292,7 @@ namespace LayoutManager.Model {
             }
 
             set {
-                XmlElement destinationElement = Element["Destination"];
+                XmlElement destinationElement = Element[E_Destination];
 
                 if (destinationElement != null)
                     Element.RemoveChild(destinationElement);
@@ -318,7 +306,7 @@ namespace LayoutManager.Model {
 
         public XmlElement StartCondition {
             get {
-                XmlElement startConditionElement = Element["StartCondition"];
+                XmlElement startConditionElement = Element[E_StartCondition];
 
                 if (startConditionElement != null && startConditionElement.ChildNodes.Count > 0)
                     return (XmlElement)startConditionElement.ChildNodes[0];
@@ -326,7 +314,7 @@ namespace LayoutManager.Model {
             }
 
             set {
-                XmlElement startConditionElement = Element["StartCondition"];
+                XmlElement startConditionElement = Element[E_StartCondition];
 
                 if (value == null) {
                     if (startConditionElement != null)
@@ -334,7 +322,7 @@ namespace LayoutManager.Model {
                 }
                 else {
                     if (startConditionElement == null) {
-                        startConditionElement = Element.OwnerDocument.CreateElement("StartCondition");
+                        startConditionElement = Element.OwnerDocument.CreateElement(E_StartCondition);
                         Element.AppendChild(startConditionElement);
                     }
 
@@ -371,7 +359,7 @@ namespace LayoutManager.Model {
 
         public XmlElement DriverInstructions {
             get {
-                XmlElement driverInstructionsElement = Element["DriverInstructions"];
+                XmlElement driverInstructionsElement = Element[E_DriverInstructions];
 
                 if (driverInstructionsElement != null && driverInstructionsElement.ChildNodes.Count > 0)
                     return (XmlElement)driverInstructionsElement.ChildNodes[0];
@@ -379,7 +367,7 @@ namespace LayoutManager.Model {
             }
 
             set {
-                XmlElement driverInstructionsElement = Element["DriverInstructions"];
+                XmlElement driverInstructionsElement = Element[E_DriverInstructions];
 
                 if (value == null) {
                     if (driverInstructionsElement != null)
@@ -387,7 +375,7 @@ namespace LayoutManager.Model {
                 }
                 else {
                     if (driverInstructionsElement == null) {
-                        driverInstructionsElement = Element.OwnerDocument.CreateElement("DriverInstructions");
+                        driverInstructionsElement = Element.OwnerDocument.CreateElement(E_DriverInstructions);
                         Element.AppendChild(driverInstructionsElement);
                     }
 
@@ -407,20 +395,17 @@ namespace LayoutManager.Model {
         }
 
         public LocomotiveOrientation Direction {
-            get {
-                if (Element.HasAttribute("Direction"))
-                    return (LocomotiveOrientation)Enum.Parse(typeof(LocomotiveOrientation), Element.GetAttribute("Direction"));
-                else
-                    return LocomotiveOrientation.Forward;
-            }
-
-            set {
-                Element.SetAttribute("Direction", value.ToString());
-            }
+            get => AttributeValue(A_Direction).Enum<LocomotiveOrientation>() ?? LocomotiveOrientation.Forward;
+            set => Element.SetAttribute(A_Direction, value.ToString());
         }
     }
 
     public class TripPlanInfo : LayoutInfo, IObjectHasId, IObjectHasAttributes {
+        private const string A_IsCircular = "IsCircular";
+        private const string A_Name = "Name";
+        private const string A_IconId = "IconID";
+        private const string A_FromCatalog = "FromCatalog";
+
         public TripPlanInfo(XmlElement element) : base(element) {
         }
 
@@ -473,46 +458,23 @@ namespace LayoutManager.Model {
         }
 
         public bool IsCircular {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("IsCircular") ??  "false");
-            }
-
-            set {
-                SetAttribute("IsCircular", value, removeIf: false);
-            }
+            get => (bool?)AttributeValue(A_IsCircular) ?? false;
+            set => SetAttribute(A_IsCircular, value, removeIf: false);
         }
 
         public string Name {
-            get {
-                return GetAttribute("Name");
-            }
-
-            set {
-                SetAttribute("Name", value, removeIf: null);
-            }
+            get => GetAttribute(A_Name);
+            set => SetAttribute(A_Name, value, removeIf: null);
         }
 
         public Guid IconId {
-            get {
-                if (HasAttribute("IconID"))
-                    return XmlConvert.ToGuid(GetAttribute("IconID"));
-                else
-                    return Guid.Empty;
-            }
-
-            set {
-                SetAttribute("IconID", XmlConvert.ToString(value));
-            }
+            get => (Guid?)AttributeValue(A_IconId) ?? Guid.Empty;
+            set => SetAttribute(A_IconId, value);
         }
 
         public bool FromCatalog {
-            get {
-                return XmlConvert.ToBoolean(GetOptionalAttribute("FromCatalog") ??  "false");
-            }
-
-            set {
-                SetAttribute("FromCatalog", value, removeIf: false);
-            }
+            get => (bool?)AttributeValue(A_FromCatalog) ?? false;
+            set => SetAttribute(A_FromCatalog, value, removeIf: false);
         }
 
         public LayoutSelection Selection {
@@ -570,6 +532,9 @@ namespace LayoutManager.Model {
     /// Warpper to document describing assignment of trip plan to train and a train driver
     /// </summary>
     public class TripPlanAssignmentInfo : LayoutXmlWrapper {
+        private const string E_TripPlan = "TripPlan";
+        private const string A_TrainId = "TrainID";
+        private const string A_Status = "Status";
         TrainStateInfo train;
         int currentWaypointIndex;
 
@@ -580,16 +545,16 @@ namespace LayoutManager.Model {
             Element = doc.DocumentElement;
 
             Element.AppendChild(doc.ImportNode(tripPlan.Element, true));
-            Element.SetAttribute("TrainID", XmlConvert.ToString(train.Id));
+            SetAttribute(A_TrainId, train.Id);
             Status = TripStatus.NotSubmitted;
         }
 
         public TripPlanAssignmentInfo(XmlElement element) : base(element) {
         }
 
-        public TripPlanInfo TripPlan => new TripPlanInfo(Element["TripPlan"]);
+        public TripPlanInfo TripPlan => new TripPlanInfo(Element[E_TripPlan]);
 
-        public Guid TrainId => XmlConvert.ToGuid(Element.GetAttribute("TrainID"));
+        public Guid TrainId => (Guid)AttributeValue(A_TrainId);
 
         public TrainStateInfo Train {
             get {
@@ -601,28 +566,22 @@ namespace LayoutManager.Model {
         }
 
         public TripStatus Status {
-            get {
-                return (TripStatus)Enum.Parse(typeof(TripStatus), GetOptionalAttribute("Status") ??  "NotSubmitted");
-            }
+            get => AttributeValue(A_Status).Enum<TripStatus>() ?? TripStatus.NotSubmitted;
 
             [LayoutEventDef("trip-status-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TripPlanAssignmentInfo), InfoType = typeof(TripStatus))]
             set {
                 TripStatus oldStatus = Status;
 
-                SetAttribute("Status", value.ToString());
+                SetAttribute(A_Status, value.ToString());
                 EventManager.Event(new LayoutEvent("trip-status-changed", this, oldStatus));
                 Train.Redraw();
             }
         }
 
         public int CurrentWaypointIndex {
-            get {
-                return currentWaypointIndex;
-            }
+            get => currentWaypointIndex;
 
-            set {
-                currentWaypointIndex = value;
-            }
+            set => currentWaypointIndex = value;
         }
 
         public TripPlanWaypointInfo CurrentWaypoint {
@@ -697,6 +656,8 @@ namespace LayoutManager.Model {
     /// Represent the catalog of trip plans
     /// </summary>
     public class TripPlanCatalogInfo : LayoutInfo {
+        private const string E_TripPlans = "TripPlans";
+        private const string E_Destinations = "Destinations";
         readonly TripPlanCollection tripPlans;
         readonly DestinationCollection destinations;
 
@@ -707,10 +668,10 @@ namespace LayoutManager.Model {
 
         public XmlElement TripPlansElement {
             get {
-                XmlElement tripPlansElement = Element["TripPlans"];
+                XmlElement tripPlansElement = Element[E_TripPlans];
 
                 if (tripPlansElement == null) {
-                    tripPlansElement = Element.OwnerDocument.CreateElement("TripPlans");
+                    tripPlansElement = Element.OwnerDocument.CreateElement(E_TripPlans);
                     Element.AppendChild(tripPlansElement);
                 }
 
@@ -720,10 +681,10 @@ namespace LayoutManager.Model {
 
         public XmlElement DestinationsElement {
             get {
-                XmlElement destinationsElement = Element["Destinations"];
+                XmlElement destinationsElement = Element[E_Destinations];
 
                 if (destinationsElement == null) {
-                    destinationsElement = Element.OwnerDocument.CreateElement("Destinations");
+                    destinationsElement = Element.OwnerDocument.CreateElement(E_Destinations);
                     Element.AppendChild(destinationsElement);
                 }
 
@@ -766,19 +727,13 @@ namespace LayoutManager.Model {
             }
 
             public TripPlanInfo TripPlan {
-                get {
-                    return tripPlan;
-                }
+                get => tripPlan;
 
-                set {
-                    tripPlan = value;
-                }
+                set => tripPlan = value;
             }
 
             public TripPlanWaypointInfo Waypoint {
-                get {
-                    return waypoint;
-                }
+                get => waypoint;
 
                 set {
                     waypoint = value;
@@ -791,13 +746,9 @@ namespace LayoutManager.Model {
             }
 
             public TripPlanDestinationInfo Destination {
-                get {
-                    return destination;
-                }
+                get => destination;
 
-                set {
-                    destination = value;
-                }
+                set => destination = value;
             }
         }
 
@@ -911,13 +862,9 @@ namespace LayoutManager.Model {
         public LayoutComponentConnectionPoint Front => _front;
 
         public LocomotiveOrientation Direction {
-            get {
-                return _direction;
-            }
+            get => _direction;
 
-            set {
-                _direction = value;
-            }
+            set => _direction = value;
         }
 
         public bool TrainStopping => _trainStopping;
@@ -939,13 +886,9 @@ namespace LayoutManager.Model {
         public RouteQuality Quality => _quality;
 
         public bool ShouldReverse {
-            get {
-                return _shouldReverse;
-            }
+            get => _shouldReverse;
 
-            set {
-                _shouldReverse = value;
-            }
+            set => _shouldReverse = value;
         }
     }
 
@@ -1080,13 +1023,9 @@ namespace LayoutManager.Model {
         /// return true if the icon list was modified and should be saved
         /// </summary>
         public bool IconListModified {
-            get {
-                return iconListModified;
-            }
+            get => iconListModified;
 
-            set {
-                iconListModified = value;
-            }
+            set => iconListModified = value;
         }
     }
     #endregion

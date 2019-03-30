@@ -484,6 +484,7 @@ namespace LayoutManager {
         /// The XML element representing the condition
         /// </summary>
         public XmlElement Element => element;
+        public XmlElement? OptionalElement => Element;
 
         /// <summary>
         /// Return the context associated with this node
@@ -735,6 +736,7 @@ namespace LayoutManager {
         }
 
         public XmlElement Element => parseEventInfo.Element;
+        public XmlElement? OptionalElement => Element;
 
         public ILayoutScript Script => parseEventInfo.Script;
 
@@ -2015,6 +2017,7 @@ namespace LayoutManager {
                 }
 
                 public XmlElement Element => element;
+                public XmlElement? OptionalElement => Element;
 
                 public bool IsRange => element.HasAttribute("From");
 
