@@ -87,6 +87,26 @@ namespace LayoutManager.Components {
                 g.RotateTransform(90.0F);
         }
 
+        public enum TrackOrientation {
+            Horizontal,
+            Vertical,
+            Diagonal,
+            Other
+        }
+
+        public TrackOrientation Orientation {
+            get {
+                if (cp.Count > 2)
+                    return TrackOrientation.Other;
+                else if (cp[0].IsHorizontal && cp[1].IsHorizontal)
+                    return TrackOrientation.Horizontal;
+                else if (cp[0].IsVertical && cp[1].IsVertical)
+                    return TrackOrientation.Vertical;
+                else
+                    return TrackOrientation.Diagonal;
+            }
+        }
+
         /// <summary>
         /// Return the center point between the two connection points
         /// </summary>
@@ -422,8 +442,9 @@ namespace LayoutManager.Components {
             g.DrawEllipse(Outline, contactBbox);
 
             if(componentType == ComponentType.ProximitySensor || componentType == ComponentType.ActiveProximitySensor) {
-                var proximitySize = new Size(
-                    componentType == ComponentType.ActiveProximitySensor ? adjustedSize.Width : (adjustedSize.Width * 6 / 4 + 1) / 2 * 2, (adjustedSize.Height * 6 / 4 + 1) / 2 * 2);
+                int w = (componentType == ComponentType.ActiveProximitySensor && Orientation != TrackOrientation.Vertical) ? adjustedSize.Width : (adjustedSize.Width * 6 / 4 + 1) / 2 * 2;
+                int h = (componentType == ComponentType.ActiveProximitySensor && Orientation == TrackOrientation.Vertical) ? adjustedSize.Height : (adjustedSize.Height * 6 / 4 + 1) / 2 * 2;
+                var proximitySize = new Size(w, h);
                 var proximityBox = new Rectangle(new Point(centerPoint.X - proximitySize.Width / 2, centerPoint.Y - proximitySize.Height / 2), proximitySize);
 
                 g.DrawEllipse(Outline, proximityBox);
