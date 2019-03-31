@@ -612,7 +612,7 @@ namespace LayoutManager.Logic {
                 trainLength = TrainLength.Standard;
 
             if (e.HasOption(E_Train, "Front"))
-                front = LayoutComponentConnectionPoint.Parse(e.GetOption(elementName: E_Train, optionName: "Front")!);
+                front = e.GetOption(elementName: E_Train, optionName: "Front").ToComponentConnectionPoint()!;
             else {
                 if (collectionElement.Name == E_Train) {
                     front = EventManager.EventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>("get-locomotive-front", blockDefinition, collectionElement);
@@ -674,7 +674,7 @@ namespace LayoutManager.Logic {
             var e = (LayoutEvent<TrainStateInfo, LayoutBlockDefinitionComponent>)e0;
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
             var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Info, "blockDefinition");
-            var front = LayoutComponentConnectionPoint.Parse(Ensure.NotNull<string>(e.GetOption(elementName: E_Train, optionName: "Front"), "option Train/Front"));
+            var front = e.GetOption(elementName: E_Train, optionName: "Front").ToComponentConnectionPoint() ?? blockDefinition.Track.ConnectionPoints[0];
 
             TrainLocationInfo trainLocation = train.PlaceInBlock(blockDefinition.Block, front);
 
@@ -795,7 +795,7 @@ namespace LayoutManager.Logic {
             LayoutComponentConnectionPoint? front;
 
             if (e.HasOption(E_Train, "Front"))
-                front = LayoutComponentConnectionPoint.Parse(e.GetOption("Front", E_Train)!);
+                front = e.GetOption("Front", E_Train).ToComponentConnectionPoint()!;
             else {
                 front = EventManager.EventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>("get-locomotive-front", blockDefinition, train);
 

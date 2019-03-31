@@ -1028,14 +1028,16 @@ namespace LayoutManager.Logic {
             /// <remarks>Reader current element is "RoutingTable"</remarks>
             /// <param name="r"></param>
             public RoutingTable(XmlReader r) {
+                ConvertableString GetAttribute(string name) => new ConvertableString(r.GetAttribute(name), $"Attribute {name}");
+
                 if (!r.IsEmptyElement) {
                     r.Read();
 
                     do {
                         if (r.NodeType == XmlNodeType.Element && r.Name == "Entry") {
-                            int nStates = XmlConvert.ToInt32(r.GetAttribute("States"));
-                            Guid id = XmlConvert.ToGuid(r.GetAttribute("ID"));
-                            LayoutComponentConnectionPoint cp = LayoutComponentConnectionPoint.Parse(r.GetAttribute("Cp"));
+                            var nStates = (int)GetAttribute("States");
+                            var id = (Guid)GetAttribute("ID");
+                            var cp = GetAttribute("Cp").ToComponentConnectionPoint() ?? throw new ArgumentNullException("cp");
 
                             RoutingTableEntry entry = new RoutingTableEntry(nStates);
 
@@ -1044,7 +1046,7 @@ namespace LayoutManager.Logic {
 
                                 do {
                                     if (r.NodeType == XmlNodeType.Element && r.Name == "State") {
-                                        int index = XmlConvert.ToInt32(r.GetAttribute("Index"));
+                                        var index = (int)GetAttribute("Index");
 
                                         if (!r.IsEmptyElement) {
                                             entry[index] = new Dictionary<TrackEdgeId, int>();
@@ -1053,9 +1055,9 @@ namespace LayoutManager.Logic {
 
                                             do {
                                                 if (r.NodeType == XmlNodeType.Element && r.Name == "Route") {
-                                                    Guid destinationId = XmlConvert.ToGuid(r.GetAttribute("DestID"));
-                                                    LayoutComponentConnectionPoint destinationCp = LayoutComponentConnectionPoint.Parse(r.GetAttribute("DestCp"));
-                                                    int penalty = XmlConvert.ToInt32(r.GetAttribute("Penalty"));
+                                                    var destinationId = (Guid)GetAttribute("DestID");
+                                                    var destinationCp = GetAttribute("DestCp").ToComponentConnectionPoint() ?? throw new ArgumentNullException("DestCp");
+                                                    var penalty = (int)GetAttribute("Penalty");
 
                                                     entry[index].Add(new TrackEdgeId(destinationId, destinationCp), penalty);
                                                 }

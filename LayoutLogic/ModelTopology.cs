@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.Components;
+using LayoutManager;
 
 #pragma warning disable IDE0051,IDE0060
 #nullable enable
@@ -38,25 +39,28 @@ namespace LayoutManager.Logic {
         /// <remarks>Assume current element is "Topology"</remarks>
         /// <param name="r"></param>
         public ModelTopology(XmlReader r) {
+            ConvertableString GetAttribute(string name) => new ConvertableString(r.GetAttribute(name), $"Attribute {name}");
+
+
             if (!r.IsEmptyElement) {
                 r.Read();
 
                 do {
                     if (r.NodeType == XmlNodeType.Element && r.Name == "Component") {
-                        Guid id = XmlConvert.ToGuid(r.GetAttribute("TrackID"));
-                        LayoutComponentConnectionPoint cp = LayoutComponentConnectionPoint.Parse(r.GetAttribute("Cp"));
-                        int states = XmlConvert.ToInt32(r.GetAttribute("States"));
-                        ModelTopologyEntry entry = new ModelTopologyEntry(states);
+                        var id = (Guid)GetAttribute("TrackID");
+                        var cp = GetAttribute("Cp").ToComponentConnectionPoint() ?? throw new ArgumentNullException("cp");
+                        var states = (int)GetAttribute("States");
+                        var entry = new ModelTopologyEntry(states);
 
                         if (!r.IsEmptyElement) {
                             do {
                                 r.Read();
 
                                 if (r.NodeType == XmlNodeType.Element && r.Name == "ConnectTo") {
-                                    int state = XmlConvert.ToInt32(r.GetAttribute("State"));
-                                    Guid destinationID = XmlConvert.ToGuid(r.GetAttribute("TrackID"));
-                                    LayoutComponentConnectionPoint destinationCp = LayoutComponentConnectionPoint.Parse(r.GetAttribute("Cp"));
-                                    int penalty = XmlConvert.ToInt32(r.GetAttribute("Penalty"));
+                                    var state = (int)GetAttribute("State");
+                                    var destinationID = (Guid)GetAttribute("TrackID");
+                                    var destinationCp = LayoutComponentConnectionPoint.Parse(r.GetAttribute("Cp"));
+                                    var penalty = (int)GetAttribute("Penalty");
 
                                     entry[state] = new ModelTopologyConnectionEntry(new TrackEdgeId(destinationID, destinationCp), penalty);
 

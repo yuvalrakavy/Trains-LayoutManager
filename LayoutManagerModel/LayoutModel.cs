@@ -381,6 +381,8 @@ namespace LayoutManager.Model {
             }
         }
 
+        public bool IsHorizontal => cp == L || cp == R;
+        public bool IsVertical => cp == T || cp == B;
 
         public override bool Equals(object obj) {
             if (obj != null) {
@@ -404,6 +406,15 @@ namespace LayoutManager.Model {
         public bool Equals(LayoutComponentConnectionPoint other) => cp == other.cp;
 
         #endregion
+    }
+
+    public static class LayoutComponentConnectionPointExtensions {
+        public static LayoutComponentConnectionPoint? ToComponentConnectionPoint(this ConvertableString s) {
+            if ((string?)s != null)
+                return LayoutComponentConnectionPoint.Parse(s.ValidString());
+            else
+                return null;
+        }
     }
 
     public class LayoutComponentConnectionPointConverter : System.ComponentModel.TypeConverter {
