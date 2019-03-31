@@ -27,9 +27,9 @@ namespace LayoutManager.Model {
         }
 
         public TripPlanTrainConditionInfo(XmlElement parentElement, string elementName) {
-            Element = parentElement[elementName];
+            OptionalElement = parentElement[elementName];
 
-            if (Element == null) {
+            if (OptionalElement == null) {
                 Element = parentElement.OwnerDocument.CreateElement(elementName);
                 parentElement.AppendChild(Element);
             }
