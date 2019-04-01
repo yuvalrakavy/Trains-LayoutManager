@@ -14,7 +14,7 @@ namespace LayoutManager.CommonUI.Controls {
     public class LocomotiveFront : System.Windows.Forms.Control {
         IList<LayoutComponentConnectionPoint> connectionPoints = null;
         LayoutComponentConnectionPoint front = LayoutComponentConnectionPoint.Empty;
-        String locomotiveName = null;
+        string locomotiveName = null;
         Cursor saveCursor = null;
         const int inMargin = 8;
         const int edgeSize = 6;
@@ -51,7 +51,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public String LocomotiveName {
+        public string LocomotiveName {
             get {
                 return locomotiveName;
             }

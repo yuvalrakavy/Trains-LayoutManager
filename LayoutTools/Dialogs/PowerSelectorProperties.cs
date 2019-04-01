@@ -31,18 +31,18 @@ namespace LayoutManager.Tools.Dialogs {
             else
                 checkBoxReverseLogic.Checked = false;
 
-            if (!XmlInfo.Element.HasAttribute(LayoutPowerSelectorComponent.SwitchingMethodAttribute) ||
-                (LayoutPowerSelectorComponent.RelaySwitchingMethod)Enum.Parse(typeof(LayoutPowerSelectorComponent.RelaySwitchingMethod), XmlInfo.Element.GetAttribute(LayoutPowerSelectorComponent.SwitchingMethodAttribute)) == LayoutPowerSelectorComponent.RelaySwitchingMethod.DPDSrelay)
+            if (!XmlInfo.Element.HasAttribute(LayoutPowerSelectorComponent.A_SwitchingMethod) ||
+                (LayoutPowerSelectorComponent.RelaySwitchingMethod)Enum.Parse(typeof(LayoutPowerSelectorComponent.RelaySwitchingMethod), XmlInfo.Element.GetAttribute(LayoutPowerSelectorComponent.A_SwitchingMethod)) == LayoutPowerSelectorComponent.RelaySwitchingMethod.DPDSrelay)
                 radioButtonDTDPrelay.Checked = true;
             else {
                 radioButtonSTDP.Checked = true;
 
-                if (XmlInfo.Element.HasAttribute(LayoutPowerSelectorComponent.HasOnOffRelayAttribute) && XmlConvert.ToBoolean(XmlInfo.Element.GetAttribute(LayoutPowerSelectorComponent.HasOnOffRelayAttribute)))
+                if (XmlInfo.Element.HasAttribute(LayoutPowerSelectorComponent.A_HasOnOffRelay) && XmlConvert.ToBoolean(XmlInfo.Element.GetAttribute(LayoutPowerSelectorComponent.A_HasOnOffRelay)))
                     checkBoxHasOnOffRelay.Checked = true;
                 else
                     checkBoxHasOnOffRelay.Checked = false;
 
-                if (XmlInfo.Element.HasAttribute(LayoutPowerSelectorComponent.ReverseOnOffRelayAttribute) && XmlConvert.ToBoolean(XmlInfo.Element.GetAttribute(LayoutPowerSelectorComponent.ReverseOnOffRelayAttribute)))
+                if (XmlInfo.Element.HasAttribute(LayoutPowerSelectorComponent.A_ReverseOnOffRelay) && XmlConvert.ToBoolean(XmlInfo.Element.GetAttribute(LayoutPowerSelectorComponent.A_ReverseOnOffRelay)))
                     checkBoxReverseOnOffRelay.Checked = true;
                 else
                     checkBoxReverseOnOffRelay.Checked = false;
@@ -137,11 +137,11 @@ namespace LayoutManager.Tools.Dialogs {
             powerSelectorNameInfo.Visible = checkBoxDisplayPowerSelectorName.Checked;
             XmlInfo.Element.SetAttribute("ReverseLogic", XmlConvert.ToString(checkBoxReverseLogic.Checked));
 
-            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.SwitchingMethodAttribute,
+            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.A_SwitchingMethod,
                 (radioButtonDTDPrelay.Checked ? LayoutPowerSelectorComponent.RelaySwitchingMethod.DPDSrelay : LayoutPowerSelectorComponent.RelaySwitchingMethod.TwoSPDSrelays).ToString());
 
-            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.HasOnOffRelayAttribute, XmlConvert.ToString(checkBoxHasOnOffRelay.Checked));
-            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.ReverseOnOffRelayAttribute, XmlConvert.ToString(checkBoxReverseOnOffRelay.Checked));
+            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.A_HasOnOffRelay, XmlConvert.ToString(checkBoxHasOnOffRelay.Checked));
+            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.A_ReverseOnOffRelay, XmlConvert.ToString(checkBoxReverseOnOffRelay.Checked));
 
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }

@@ -1170,7 +1170,7 @@ namespace LayoutManager.Tools {
                 SizeF textSize;
                 int imageWidth;
                 int textShift = 0;
-                String name;
+                string name;
 
                 base.OnMeasureItem(e);
                 e.ItemHeight = 50;
@@ -1212,7 +1212,7 @@ namespace LayoutManager.Tools {
                 // for locomotive and one for locomotive set
                 int xText;
                 float yText;
-                String name;
+                string name;
 
                 if (placedElement.Name == "Locomotive") {
                     LocomotiveInfo loco = new LocomotiveInfo(placedElement);

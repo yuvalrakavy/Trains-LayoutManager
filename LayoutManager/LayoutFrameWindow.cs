@@ -419,7 +419,7 @@ namespace LayoutManager {
         /// <param name="area">The area to which to assign the view</param>
         /// <param name="name">The view's name</param>
         /// <param name="view">The view object</param>
-        public LayoutFrameWindowAreaViewTabPage AddViewToArea(LayoutFrameWindowAreaTabPage areaTabPage, String name, LayoutView view) {
+        public LayoutFrameWindowAreaViewTabPage AddViewToArea(LayoutFrameWindowAreaTabPage areaTabPage, string name, LayoutView view) {
             view.Area = areaTabPage.Area;
 
             // Wire events in order to reflect them to the current tool
@@ -438,7 +438,7 @@ namespace LayoutManager {
             return viewTabPage;
         }
 
-        public LayoutFrameWindowAreaViewTabPage AddViewToArea(LayoutFrameWindowAreaTabPage areaPage, String name) => AddViewToArea(areaPage, name, new LayoutView());
+        public LayoutFrameWindowAreaViewTabPage AddViewToArea(LayoutFrameWindowAreaTabPage areaPage, string name) => AddViewToArea(areaPage, name, new LayoutView());
 
         void ChangeAllViewsPhases(LayoutPhase phases) {
             foreach (LayoutFrameWindowAreaTabPage atp in tabAreas.TabPages) {

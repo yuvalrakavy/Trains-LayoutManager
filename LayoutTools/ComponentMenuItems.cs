@@ -49,7 +49,7 @@ namespace LayoutManager.Tools {
         /// </summary>
         /// <param name="element"></param>
         /// <param name="xmlText"></param>
-        void AddChild(XmlElement element, String xmlText) {
+        void AddChild(XmlElement element, string xmlText) {
             XmlDocument doc = new XmlDocument();
 
             doc.LoadXml(xmlText);
@@ -125,7 +125,7 @@ namespace LayoutManager.Tools {
 
         #region Track category components
 
-        private String getTooltip(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
+        private string getTooltip(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
             if (LayoutTrackComponent.IsDiagonal(cp1, cp2))
                 return "Diagonal track";
             else {

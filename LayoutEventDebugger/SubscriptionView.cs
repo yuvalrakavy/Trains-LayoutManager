@@ -52,7 +52,7 @@ namespace LayoutEventDebugger {
             treeViewSubscriptions.Nodes.Clear();
 
             foreach (LayoutEventSubscriptionBase subscription in EventManager.Subscriptions) {
-                String eventName = (subscription.EventName == null) ? "<Any>" : subscription.EventName;
+                string eventName = (subscription.EventName == null) ? "<Any>" : subscription.EventName;
                 ArrayList entry = (ArrayList)byName[eventName];
 
                 if (entry == null) {
@@ -78,7 +78,7 @@ namespace LayoutEventDebugger {
             treeViewSubscriptions.Nodes.Clear();
 
             foreach (LayoutEventSubscriptionBase subscription in EventManager.Subscriptions) {
-                String objectName = subscription.TargetObject.GetType().FullName;
+                string objectName = subscription.TargetObject.GetType().FullName;
                 ArrayList entry = (ArrayList)byObject[objectName];
 
                 if (entry == null) {

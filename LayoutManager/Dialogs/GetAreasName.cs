@@ -16,7 +16,7 @@ namespace LayoutManager.Dialogs {
         /// </summary>
         private readonly Container components = null;
 
-        public String AreaName {
+        public string AreaName {
             get {
                 return textBoxAreaName.Text;
             }

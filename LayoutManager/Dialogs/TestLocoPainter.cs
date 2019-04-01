@@ -42,7 +42,7 @@ namespace LayoutManager.Dialogs {
             radioButtonOrientationForward.Checked = true;
         }
 
-        RadioButton findRadioButton(Control where, String name) {
+        RadioButton findRadioButton(Control where, string name) {
             if (where.Controls.Count == 0)
                 return null;
 

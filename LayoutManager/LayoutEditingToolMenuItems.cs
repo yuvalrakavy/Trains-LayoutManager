@@ -92,7 +92,7 @@ namespace LayoutManager {
 
     class MenuItemPasteComponents : MenuItem {
         readonly LayoutHitTestResult hitTestResult;
-        readonly String componentsFormat = "LayoutManagerComponents";
+        readonly string componentsFormat = "LayoutManagerComponents";
 
         public MenuItemPasteComponents(LayoutHitTestResult hitTestResult) {
             this.hitTestResult = hitTestResult;
@@ -150,7 +150,7 @@ namespace LayoutManager {
                     clearLocation(pasteCommand, hitTestResult.Area, ml);
 
                     // Create the component
-                    String className = r.GetAttribute("Class");
+                    string className = r.GetAttribute("Class");
                     ModelComponent component = LayoutModel.CreateModelComponent(className);
 
                     if (component != null) {

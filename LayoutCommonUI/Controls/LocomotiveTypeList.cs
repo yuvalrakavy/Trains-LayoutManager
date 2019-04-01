@@ -122,7 +122,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         class ListLayoutByOrigin : ListLayout {
 
-            public override String LayoutName => "Locomotive origin";
+            public override string LayoutName => "Locomotive origin";
 
             public override void ApplyLayout(XmlQueryListbox list) {
                 QueryItem q;
@@ -142,7 +142,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         class ListLayoutByKind : ListLayout {
-            public override String LayoutName => "Locomotive type";
+            public override string LayoutName => "Locomotive type";
 
             public override void ApplyLayout(XmlQueryListbox list) {
                 QueryItem q;
@@ -166,7 +166,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         class ListLayoutByStorage : ListLayout {
-            public override String LayoutName => "By locomotive type storage file";
+            public override string LayoutName => "By locomotive type storage file";
 
             public override void ApplyLayout(XmlQueryListbox list) {
                 LocomotiveCatalogInfo catalog = LayoutModel.LocomotiveCatalog;

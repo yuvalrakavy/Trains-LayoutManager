@@ -479,7 +479,7 @@ namespace LayoutManager {
         /// Undo ... menu entries
         /// </summary>
         /// <returns></returns>
-        String ToString();
+        string ToString();
 
         /// <summary>
         /// True if this command returned the model to its presistent state
@@ -583,7 +583,7 @@ namespace LayoutManager {
             get;
         }
 
-        String Name {
+        string Name {
             get;
         }
 

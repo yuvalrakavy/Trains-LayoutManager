@@ -11,7 +11,7 @@ namespace LayoutManager.View {
         readonly Dictionary<string, Image> imageHashtable = new Dictionary<string, Image>();
         string layoutFileDirectory;
 
-        String LayoutFileDirectory {
+        string LayoutFileDirectory {
             get {
                 if (layoutFileDirectory == null)
                     layoutFileDirectory = Path.GetDirectoryName(LayoutController.LayoutFilename);
@@ -19,22 +19,22 @@ namespace LayoutManager.View {
             }
         }
 
-        private String getImageFilename(LayoutEvent e) {
-            String imageFilename = (String)e.Info;
+        private string getImageFilename(LayoutEvent e) {
+            string imageFilename = (String)e.Info;
 
             if (!Path.IsPathRooted(imageFilename) && LayoutFileDirectory != null)
                 imageFilename = Path.Combine(LayoutFileDirectory, imageFilename);
             return imageFilename;
         }
 
-        private String getEffectName(LayoutEvent e) => e.GetOption("Type", "Effect");
+        private string getEffectName(LayoutEvent e) => e.GetOption("Type", "Effect");
 
-        private String getImageCacheKey(LayoutEvent e) => getEffectName(e) + "|" + getImageFilename(e);
+        private string getImageCacheKey(LayoutEvent e) => getEffectName(e) + "|" + getImageFilename(e);
 
 
         [LayoutEvent("get-image-from-cache")]
         private void getImageFromCache(LayoutEvent e) {
-            String imageCacheKey = getImageCacheKey(e);
+            string imageCacheKey = getImageCacheKey(e);
 
             if (!imageHashtable.TryGetValue(imageCacheKey, out Image image)) {
                 try {
@@ -55,7 +55,7 @@ namespace LayoutManager.View {
 
         [LayoutEvent("remove-image-from-cache")]
         private void removeImageFromCache(LayoutEvent e) {
-            String imageCacheKey = getImageCacheKey(e);
+            string imageCacheKey = getImageCacheKey(e);
 
             if (imageHashtable.TryGetValue(imageCacheKey, out var image)) {
                 image.Dispose();

@@ -48,7 +48,7 @@ namespace LayoutManager.Components {
         [LayoutEvent("open-serial-communication-device-request")]
         private void openSerialCommunicationDeviceRequest(LayoutEvent e) {
             XmlElement setupElement = (XmlElement)e.Sender;
-            String port = setupElement.GetAttribute("Port");
+            string port = setupElement.GetAttribute("Port");
             bool overlappedIO = GetBool(setupElement, "OverlappedIO");
             Win32createFileFlags createFlags = 0;
             FileStream commStream;
@@ -307,7 +307,7 @@ namespace LayoutManager.Components {
 
             [DllImport("KERNEL32.DLL", EntryPoint = "BuildCommDCBW", SetLastError = true,
                  PreserveSig = true, CallingConvention = CallingConvention.Winapi)]
-            static internal extern bool BuildCommDCB([MarshalAs(UnmanagedType.LPWStr)] String src, DCB dcb);
+            static internal extern bool BuildCommDCB([MarshalAs(UnmanagedType.LPWStr)] string src, DCB dcb);
 
             [DllImport("KERNEL32.DLL", EntryPoint = "SetCommState", SetLastError = true,
                  PreserveSig = true, CallingConvention = CallingConvention.Winapi)]
@@ -337,7 +337,7 @@ namespace LayoutManager.Components {
             [DllImport("KERNEL32.DLL", EntryPoint = "CreateFileW", SetLastError = true,
                  PreserveSig = true, CallingConvention = CallingConvention.Winapi)]
             static internal extern System.IntPtr CreateFile(
-                [MarshalAs(UnmanagedType.LPWStr)] String filename,
+                [MarshalAs(UnmanagedType.LPWStr)] string filename,
                 Win32accessModes desiredAccess,
                 System.UInt32 shareMode,
                 System.UInt32 mbzSecurity,
@@ -352,7 +352,7 @@ namespace LayoutManager.Components {
             [DllImport("KERNEL32.DLL", EntryPoint = "CreateNamedPipeW", SetLastError = true,
                  PreserveSig = true, CallingConvention = CallingConvention.Winapi)]
             static internal extern System.IntPtr CreateNamedPipe(
-                [MarshalAs(UnmanagedType.LPWStr)] String pipeName,
+                [MarshalAs(UnmanagedType.LPWStr)] string pipeName,
                 PipeOpenModes openMode,
                 PipeModes pipeMode,
                 System.UInt32 nMaxInstances,
@@ -372,7 +372,7 @@ namespace LayoutManager.Components {
             [DllImport("KERNEL32.DLL", EntryPoint = "WaitNamedPipeW", SetLastError = true,
                  PreserveSig = true, CallingConvention = CallingConvention.Winapi)]
             static internal extern bool WaitNamedPipe(
-                [MarshalAs(UnmanagedType.LPWStr)] String pipeName,
+                [MarshalAs(UnmanagedType.LPWStr)] string pipeName,
                 System.UInt32 timeout);
         }
 

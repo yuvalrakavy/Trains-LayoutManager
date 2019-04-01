@@ -83,7 +83,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             if (!onTrack) {
                 // Try to check if the locomotive can be placed on a block
-                String reason = "No free blocks";
+                string reason = "No free blocks";
                 ILayoutPower? power = null;
                 CanPlaceTrainResolveMethod canPlaceOnTrack = CanPlaceTrainResolveMethod.NotPossible;
 
@@ -282,7 +282,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         class ListLayoutSimple : ListLayout {
 
-            public override String LayoutName => "Simple";
+            public override string LayoutName => "Simple";
 
             public override void ApplyLayout(XmlQueryListbox list) {
                 list.AddQuery("Locomotives", "Locomotive").Expand();
@@ -292,7 +292,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         class ListLayoutByOrigin : ListLayout {
 
-            public override String LayoutName => "Locomotive origin";
+            public override string LayoutName => "Locomotive origin";
 
             public override void ApplyLayout(XmlQueryListbox list) {
                 list.AddQuery("European", "Locomotive[@Origin='Europe']");
@@ -303,7 +303,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         class ListLayoutByType : ListLayout {
 
-            public override String LayoutName => "Locomotive type";
+            public override string LayoutName => "Locomotive type";
 
             public override void ApplyLayout(XmlQueryListbox list) {
                 list.AddQuery("Steam", "Locomotive[@Kind='Steam']");
@@ -315,7 +315,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         class ListLayoutByStorage : ListLayout {
-            public override String LayoutName => "By locomotive storage file";
+            public override string LayoutName => "By locomotive storage file";
 
             public override void ApplyLayout(XmlQueryListbox list) {
                 LocomotiveCollectionInfo collection = LayoutModel.LocomotiveCollection;

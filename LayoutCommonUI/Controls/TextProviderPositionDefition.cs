@@ -21,7 +21,7 @@ namespace LayoutManager.CommonUI.Controls {
         /// </summary>
         private readonly Container components = null;
 
-        String customPositionElementName = "Position";
+        string customPositionElementName = "Position";
         LayoutXmlInfo xmlInfo;
 
         public LayoutXmlInfo XmlInfo {
@@ -39,7 +39,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public String CustomPositionElementName {
+        public string CustomPositionElementName {
             get {
                 return customPositionElementName;
             }

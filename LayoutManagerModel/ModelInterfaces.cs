@@ -24,12 +24,12 @@ namespace LayoutManager.Model {
         /// Generate error message in the messages window
         /// </summary>
         void Error(String message);
-        void Error(Object subject, String message);
+        void Error(Object subject, string message);
 
         /// <summary>
         /// Return a full description text for this component, useful for debugging output
         /// </summary>
-        String FullDescription { get; }
+        string FullDescription { get; }
 
         /// <summary>
         /// Return whether this component has associated attributes
@@ -70,7 +70,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="subject"></param>
         /// <param name="message"></param>
-        void Warning(Object subject, String message);
+        void Warning(Object subject, string message);
         void Warning(String message);
 
         /// <summary>

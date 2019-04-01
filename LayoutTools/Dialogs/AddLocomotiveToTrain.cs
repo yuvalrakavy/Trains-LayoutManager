@@ -294,7 +294,7 @@ namespace LayoutManager.Tools.Dialogs {
 
                 if (loco.TypeName != null) {
                     using (Font typeFont = new Font("Arial", 7, FontStyle.Regular)) {
-                        String typeText = " (" + loco.TypeName + ")";
+                        string typeText = " (" + loco.TypeName + ")";
                         SizeF typeSize = e.Graphics.MeasureString(typeText, typeFont);
 
                         e.Graphics.DrawString(loco.TypeName, typeFont, textBrush, new PointF(xText, yText));

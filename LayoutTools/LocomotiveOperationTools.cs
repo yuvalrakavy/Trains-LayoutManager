@@ -43,7 +43,7 @@ namespace LayoutManager.Tools {
             }
 
             PlacementProblem problem = PlacementProblem.NoProblem;
-            String errorMessage = null;
+            string errorMessage = null;
             var areaToBlockList = new Dictionary<LayoutModelArea, List<LayoutBlockDefinitionComponent>>();
 
             foreach (LayoutBlockDefinitionComponent blockInfo in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases)) {

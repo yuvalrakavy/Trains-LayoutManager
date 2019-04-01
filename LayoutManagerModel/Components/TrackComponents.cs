@@ -484,7 +484,7 @@ namespace LayoutManager.Components {
 
         public bool IsDiagonal() => IsDiagonal(cp1, cp2);
 
-        public override String ToString() => "track";
+        public override string ToString() => "track";
 
         public override void WriteXmlFields(XmlWriter w) {
             w.WriteStartElement("Connections");
@@ -623,7 +623,7 @@ namespace LayoutManager.Components {
                 throw new ArgumentException("Track does not have this connection point", nameof(cp));
         }
 
-        public override String ToString() {
+        public override string ToString() {
             if (isCross)
                 return "cross";
             else
@@ -856,7 +856,7 @@ namespace LayoutManager.Components {
             return LayoutComponentConnectionPoint.Empty;
         }
 
-        public override String ToString() => "turnout";
+        public override string ToString() => "turnout";
 
         public bool HasFeedback {
             get {
@@ -1046,7 +1046,7 @@ namespace LayoutManager.Components {
 
         public override int CurrentSwitchState => base.CurrentSwitchState;
 
-        public override String ToString() => "Three way turnout";
+        public override string ToString() => "Three way turnout";
 
         public override void WriteXmlFields(XmlWriter w) {
             w.WriteStartElement("Connections");
@@ -1146,7 +1146,7 @@ namespace LayoutManager.Components {
         }
 
 
-        public override String ToString() => "double slip";
+        public override string ToString() => "double slip";
 
         public override void WriteXmlFields(XmlWriter w) {
             w.WriteStartElement("Connections");

@@ -280,7 +280,7 @@ namespace LayoutManager.CommonUI.Controls {
             ElementTreeNode treeNode = (ElementTreeNode)treeViewElements.SelectedNode;
 
             if (treeNode != null) {
-                String newName = Dialogs.InputBox.Show("Edit node", treeNode.IsTextNode ? "Enter node text" : "Enter node name");
+                string newName = Dialogs.InputBox.Show("Edit node", treeNode.IsTextNode ? "Enter node text" : "Enter node name");
                 if (newName != null)
                     treeNode.Text = newName;
             }
@@ -290,7 +290,7 @@ namespace LayoutManager.CommonUI.Controls {
             ElementTreeNode selected = (ElementTreeNode)treeViewElements.SelectedNode;
 
             if (selected != null) {
-                String name = Dialogs.InputBox.Show("Add Element", "Enter new element name:");
+                string name = Dialogs.InputBox.Show("Add Element", "Enter new element name:");
 
                 if (name != null) {
                     XmlElement element = selected.XmlNode.OwnerDocument.CreateElement(name);
@@ -306,7 +306,7 @@ namespace LayoutManager.CommonUI.Controls {
             ElementTreeNode selected = (ElementTreeNode)treeViewElements.SelectedNode;
 
             if (selected != null) {
-                String text = Dialogs.InputBox.Show("Add Text", "Enter new text:");
+                string text = Dialogs.InputBox.Show("Add Text", "Enter new text:");
 
                 if (text != null) {
                     XmlText textElement = selected.XmlNode.OwnerDocument.CreateTextNode(text);
@@ -402,7 +402,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             public XmlNode XmlNode => node;
 
-            public new String Text {
+            public new string Text {
                 get {
                     if (node.NodeType == XmlNodeType.Text)
                         return node.Value;
@@ -468,7 +468,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             public XmlAttribute XmlAttribute => attribute;
 
-            public String AttributeName {
+            public string AttributeName {
                 get {
                     return attribute.Name;
                 }
@@ -488,7 +488,7 @@ namespace LayoutManager.CommonUI.Controls {
                 }
             }
 
-            public String AttributeValue {
+            public string AttributeValue {
                 get {
                     return attribute.Value;
                 }

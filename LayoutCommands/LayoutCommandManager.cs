@@ -25,7 +25,7 @@ namespace LayoutManager {
         /// Undo ... menu entries
         /// </summary>
         /// <returns></returns>
-        public abstract override String ToString();
+        public abstract override string ToString();
 
         /// <summary>
         /// True if this command returned the model to its presistent state
@@ -194,7 +194,7 @@ namespace LayoutManager {
     /// </summary>
     public class LayoutCompoundCommand : LayoutCommand, ILayoutCompoundCommand, IEnumerable {
         readonly ArrayList commands = new ArrayList();
-        String description;
+        string description;
         bool executeAtOnce = false;
 
         public LayoutCompoundCommand(String description) {
@@ -206,7 +206,7 @@ namespace LayoutManager {
             this.executeAtOnce = executeAtOnce;
         }
 
-        public String Description {
+        public string Description {
             set {
                 description = value;
             }
@@ -243,7 +243,7 @@ namespace LayoutManager {
             executeAtOnce = false;      // So Do (which now really means redo, will execute the commands)
         }
 
-        public override String ToString() => description;
+        public override string ToString() => description;
 
         #region IEnumerable Members
 

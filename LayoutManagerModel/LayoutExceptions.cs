@@ -9,7 +9,7 @@ namespace LayoutManager {
     public class LayoutLocomotiveException : LayoutException {
         readonly LocomotiveInfo loco;
 
-        public LayoutLocomotiveException(LocomotiveInfo loco, String message) : base(message) {
+        public LayoutLocomotiveException(LocomotiveInfo loco, string message) : base(message) {
             this.loco = loco;
         }
 
@@ -84,7 +84,7 @@ namespace LayoutManager {
     public abstract class ElementNotOnTrackException : LayoutException {
         readonly XmlElement _element;
 
-        protected ElementNotOnTrackException(XmlElement element, String message) : base(message) {
+        protected ElementNotOnTrackException(XmlElement element, string message) : base(message) {
             this._element = element;
         }
 
@@ -147,7 +147,7 @@ namespace LayoutManager {
     public class BlockEdgeCrossingException : LayoutException {
         LayoutBlockEdgeBase _blockEdge;
 
-        protected BlockEdgeCrossingException(LayoutBlockEdgeBase blockEdge, String message) :
+        protected BlockEdgeCrossingException(LayoutBlockEdgeBase blockEdge, string message) :
             base(blockEdge, message) {
             this._blockEdge = blockEdge;
         }
@@ -172,7 +172,7 @@ namespace LayoutManager {
             base(blockEdge, "Unexpected block crossing. No locomotives in surrounding blocks") {
         }
 
-        public override String DefaultMessageType => "warning";
+        public override string DefaultMessageType => "warning";
 
     }
 
@@ -293,14 +293,14 @@ namespace LayoutManager {
     #region Image related rexception
 
     public class ImageLoadException : LayoutException {
-        readonly String imageFilename;
+        readonly string imageFilename;
 
         public ImageLoadException(String imageFilename, object subject, Exception ex) :
           base(subject, "Loading image from " + imageFilename + " - " + ex.Message, ex) {
             this.imageFilename = imageFilename;
         }
 
-        public String ImageFilename => imageFilename;
+        public string ImageFilename => imageFilename;
     }
 
     #endregion

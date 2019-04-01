@@ -21,7 +21,7 @@ namespace LayoutManager.Model {
         ModelComponent? component;
 
         [System.ComponentModel.Browsable(false)]
-        public String ElementPath {
+        public string ElementPath {
             get {
                 if (Ref != null)
                     return "//" + Element.Name + "[@Ref=\"" + Ref + "\"]";
@@ -69,12 +69,12 @@ namespace LayoutManager.Model {
             SearchProviderElement(container, elementPath);
         }
 
-        public LayoutInfo(ModelComponent component, String elementPath) {
+        public LayoutInfo(ModelComponent component, string elementPath) {
             this.Component = component;
             SearchProviderElement(component.Element, elementPath);
         }
 
-        public void SearchProviderElement(XmlElement container, String elementPath) {
+        public void SearchProviderElement(XmlElement container, string elementPath) {
             if (container != null) {
                 XmlNodeList elements = container.SelectNodes(elementPath);
 
@@ -189,10 +189,10 @@ namespace LayoutManager.Model {
         private const string A_Color = "Color";
         private const string A_Title = "Title";
 
-        public LayoutFontInfo(ModelComponent component, String elementName) : base(component, elementName) {
+        public LayoutFontInfo(ModelComponent component, string elementName) : base(component, elementName) {
         }
 
-        public LayoutFontInfo(XmlElement containerElement, String elementPath) : base(containerElement, elementPath) {
+        public LayoutFontInfo(XmlElement containerElement, string elementPath) : base(containerElement, elementPath) {
         }
 
         public LayoutFontInfo(XmlElement element) {
@@ -207,7 +207,7 @@ namespace LayoutManager.Model {
             set => SetAttribute(A_Style, value.ToString());
         }
 
-        public String Name {
+        public string Name {
             get => GetOptionalAttribute(A_Name) ?? "Arial";
             set => SetAttribute(A_Name, value);
         }
@@ -227,10 +227,10 @@ namespace LayoutManager.Model {
             }
         }
 
-        public String Description {
+        public string Description {
             get {
                 Font f = this.Font;
-                String d = f.Name + " " + f.Size;
+                string d = f.Name + " " + f.Size;
 
                 if (f.Bold)
                     d += ", Bold";
@@ -255,8 +255,8 @@ namespace LayoutManager.Model {
             set => SetAttribute(A_Color, value.Name);
         }
 
-        public override String ToString() {
-            String title = GetAttribute(A_Title);
+        public override string ToString() {
+            string title = GetAttribute(A_Title);
 
             if (title == null)
                 return Description;
@@ -283,10 +283,10 @@ namespace LayoutManager.Model {
         private const string A_Side = "Side";
         private const string A_Title = "Title";
 
-        public LayoutPositionInfo(ModelComponent component, String elementPath) : base(component, elementPath) {
+        public LayoutPositionInfo(ModelComponent component, string elementPath) : base(component, elementPath) {
         }
 
-        public LayoutPositionInfo(XmlElement containerElement, String elementPath) : base(containerElement, elementPath) {
+        public LayoutPositionInfo(XmlElement containerElement, string elementPath) : base(containerElement, elementPath) {
         }
 
         public LayoutPositionInfo(XmlElement element) : base(element) {
@@ -315,7 +315,7 @@ namespace LayoutManager.Model {
             set => SetAttribute(A_Side, value.ToString());
         }
 
-        public override String ToString() => GetOptionalAttribute(A_Title) ??  "No title";
+        public override string ToString() => GetOptionalAttribute(A_Title) ??  "No title";
 
         /// <summary>
         /// Get the other "side" of a given side.
@@ -336,7 +336,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="side">A side</param>
         /// <returns>A XPath to a position element for this side</returns>
-        static public String GetElementPathPositionPath(LayoutDrawingSide side) {
+        static public string GetElementPathPositionPath(LayoutDrawingSide side) {
             var positionStyleName = side switch
             {
                 LayoutDrawingSide.Top => "Top",
@@ -351,23 +351,23 @@ namespace LayoutManager.Model {
     }
 
     public class LayoutTextInfo : LayoutInfo {
-        private const string VisibleAttribute = "Visible";
+        private const string A_Visible = "Visible";
         LayoutPositionInfo? positionProvider;
         LayoutFontInfo? fontProvider;
 
-        public LayoutTextInfo(ModelComponent component, String elementName) : base(component, elementName) {
+        public LayoutTextInfo(ModelComponent component, string elementName) : base(component, elementName) {
         }
 
         public LayoutTextInfo(ModelComponent component) : base(component, "Name") {
         }
 
-        public LayoutTextInfo(XmlElement containerElement, String elementName) : base(containerElement, elementName) {
+        public LayoutTextInfo(XmlElement containerElement, string elementName) : base(containerElement, elementName) {
         }
 
         public LayoutTextInfo(XmlElement containerElement) : base(containerElement, "Name") {
         }
 
-        public virtual String Name {
+        public virtual string Name {
             get {
                 if (OptionalElement == null || Element.ChildNodes.Count == 0)
                     return "";
@@ -384,18 +384,18 @@ namespace LayoutManager.Model {
             }
         }
 
-        public virtual String Text {
+        public virtual string Text {
             get => this.Name;
 
             set => this.Name = value;
         }
 
         public bool Visible {
-            get => (bool?)AttributeValue(VisibleAttribute) ?? false;
-            set => SetAttribute(VisibleAttribute, value);
+            get => (bool?)AttributeValue(A_Visible) ?? false;
+            set => SetAttribute(A_Visible, value);
         }
 
-        public virtual String FontElementPath {
+        public virtual string FontElementPath {
             get => GetOptionalAttribute("Font") ?? "//Font[@Ref=\"Default\"]";
 
             set {
@@ -585,13 +585,13 @@ namespace LayoutManager.Model {
         private const string A_Position = "Position";
         private const string A_ImageSide = "ImageSide";
 
-        public LayoutAddressInfo(ModelComponent component, String elementName) : base(component, elementName) {
+        public LayoutAddressInfo(ModelComponent component, string elementName) : base(component, elementName) {
         }
 
         public LayoutAddressInfo(ModelComponent component) : base(component, E_Address) {
         }
 
-        public LayoutAddressInfo(XmlElement containerElement, String elementName) : base(containerElement, elementName) {
+        public LayoutAddressInfo(XmlElement containerElement, string elementName) : base(containerElement, elementName) {
         }
 
         public LayoutAddressInfo(XmlElement containerElement) : base(containerElement, E_Address) {
@@ -629,7 +629,7 @@ namespace LayoutManager.Model {
         /// The position element path for the address, by default it is the alternate
         /// position for a possible name element
         /// </summary>
-        public override String PositionElementPath {
+        public override string PositionElementPath {
             get {
                 if (Element.HasAttribute(A_Position))
                     return base.PositionElementPath;
@@ -650,7 +650,7 @@ namespace LayoutManager.Model {
             set => base.PositionElementPath = value;
         }
 
-        public override String FontElementPath {
+        public override string FontElementPath {
             get {
                 if (Element.HasAttribute("Font"))
                     return base.FontElementPath;
@@ -679,13 +679,13 @@ namespace LayoutManager.Model {
         private const string A_RotateFlipEffect = "RotateFlipEffect";
         private const string A_ImageError = "ImageError";
 
-        public LayoutImageInfo(ModelComponent component, String elementPath) : base(component, elementPath) {
+        public LayoutImageInfo(ModelComponent component, string elementPath) : base(component, elementPath) {
         }
 
         public LayoutImageInfo(ModelComponent component) : base(component, E_Image) {
         }
 
-        public LayoutImageInfo(XmlElement containerElement, String elementPath) : base(containerElement, elementPath) {
+        public LayoutImageInfo(XmlElement containerElement, string elementPath) : base(containerElement, elementPath) {
         }
 
         public LayoutImageInfo(XmlElement element) : base(element) {
@@ -714,7 +714,7 @@ namespace LayoutManager.Model {
             Top, Middle, Bottom
         }
 
-        public String ImageFile {
+        public string ImageFile {
             get => GetAttribute(A_ImageFile);
             set => SetAttribute(A_ImageFile, value);
         }
@@ -775,7 +775,7 @@ namespace LayoutManager.Model {
             set => SetAttribute(A_RotateFlipEffect, value.ToString());
         }
 
-        public String ImageCacheEventXml => "<Effect Type='" + RotateFlipEffect.ToString() + "' />";
+        public string ImageCacheEventXml => "<Effect Type='" + RotateFlipEffect.ToString() + "' />";
 
         public bool ImageError {
             get => XmlConvert.ToBoolean(GetOptionalAttribute(A_ImageError) ?? "false");

@@ -89,7 +89,7 @@ namespace LayoutManager {
             // those assemblies are not automatically referenced and the user will have to use the file/modules
             // menu to add them.
             //
-            String s;
+            string s;
 
             s = LayoutManager.Logic.LayoutTopologyServices.TopologyServicesVersion;
             s = LayoutManager.Tools.ComponentEditingTools.ComponentEditingToolsVersion;

@@ -233,7 +233,7 @@ namespace LayoutManager.Dialogs {
                 }
             }
 
-            private String getTypeString() {
+            private string getTypeString() {
                 if (element.HasAttribute("Type")) {
                     LocomotiveFunctionType type = (LocomotiveFunctionType)Enum.Parse(typeof(LocomotiveFunctionType), element.GetAttribute("Type"));
 

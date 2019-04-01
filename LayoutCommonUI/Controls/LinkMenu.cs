@@ -64,7 +64,7 @@ namespace LayoutManager.CommonUI.Controls {
         class LinkMenuItem : MenuItem {
             readonly LinkMenu linkMenu;
 
-            public LinkMenuItem(LinkMenu linkMenu, String text) {
+            public LinkMenuItem(LinkMenu linkMenu, string text) {
                 this.linkMenu = linkMenu;
                 this.Text = text;
             }

@@ -785,10 +785,10 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Return human readable status
         /// </summary>
-        public String StatusText {
+        public string StatusText {
             get {
                 if (NotManaged) {
-                    String location = "in layout";
+                    string location = "in layout";
 
                     if (LocomotiveBlock?.BlockDefinintion != null) {
                         if (LocomotiveBlock.BlockDefinintion.NameProvider.Element != null)
@@ -798,8 +798,8 @@ namespace LayoutManager.Model {
                     return "Not managed - " + location;
                 }
                 else {
-                    String motion;
-                    String location = "";
+                    string motion;
+                    string location = "";
 
                     if (Speed == 0)
                         motion = "Standing";

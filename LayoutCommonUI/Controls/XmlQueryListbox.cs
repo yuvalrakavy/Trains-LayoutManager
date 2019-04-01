@@ -69,7 +69,7 @@ namespace LayoutManager.CommonUI.Controls {
         XmlElement containerElement;
         XPathNavigator containerNavigator;
         readonly QueryItem root = null;
-        String defaultSortField;
+        string defaultSortField;
         readonly ArrayList layouts = new ArrayList();
         ListLayout currentLayout;
         int canUpdateNesting;
@@ -161,7 +161,7 @@ namespace LayoutManager.CommonUI.Controls {
         /// A reference to the query item. This reference can be used for
         /// adding subnodes.
         /// </returns>
-        public QueryItem AddQuery(String name, String query) {
+        public QueryItem AddQuery(String name, string query) {
             QueryItem q;
 
             q = root.Add(name, query);
@@ -174,7 +174,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public QueryItem Root => root;
 
-        public String DefaultSortField {
+        public string DefaultSortField {
             get {
                 return defaultSortField;
             }
@@ -417,12 +417,12 @@ namespace LayoutManager.CommonUI.Controls {
             protected int level;
             protected bool expanded = false;
             protected XmlQueryListbox list;
-            protected String query = null;
+            protected string query = null;
             protected XPathExpression compiledQuery = null;
             protected ArrayList items = new ArrayList();
             protected QueryItem parent = null;
-            protected String name = null;
-            protected String sortField = null;
+            protected string name = null;
+            protected string sortField = null;
 
             /// <summary>
             /// Add a subquery. The added query will not have any items. It may have
@@ -438,7 +438,7 @@ namespace LayoutManager.CommonUI.Controls {
                 return q;
             }
 
-            public String Query {
+            public string Query {
                 get {
                     return query;
                 }
@@ -458,7 +458,7 @@ namespace LayoutManager.CommonUI.Controls {
             /// XPath query defining the items to display when query node is expanded
             /// </param>
             /// <returns>The added query item object</returns>
-            public QueryItem Add(String name, String query) {
+            public QueryItem Add(String name, string query) {
                 QueryItem q = list.CreateQueryItem();
 
                 q.Initialize(list, name, query, level + 1, this);
@@ -492,7 +492,7 @@ namespace LayoutManager.CommonUI.Controls {
             /// </summary>
             public int Level => level;
 
-            public String SortField {
+            public string SortField {
                 get {
                     return sortField;
                 }
@@ -573,7 +573,7 @@ namespace LayoutManager.CommonUI.Controls {
             /// <param name="query">The XPath query for getting items to be displayed</param>
             /// <param name="level">The nesting level of this item</param>
             /// <param name="parent">The query item under which this item is inserted</param>
-            protected void Initialize(XmlQueryListbox list, String name, String query, int level, QueryItem parent) {
+            protected void Initialize(XmlQueryListbox list, string name, string query, int level, QueryItem parent) {
                 this.list = list;
                 this.name = name;
                 this.query = query;
@@ -678,7 +678,7 @@ namespace LayoutManager.CommonUI.Controls {
             /// <summary>
             /// Return a display name for the layout. For example: "Locomotive by Origin"
             /// </summary>
-            public abstract String LayoutName {
+            public abstract string LayoutName {
                 get;
             }
 

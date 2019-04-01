@@ -189,7 +189,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public String Name => BlockDefinintion?.Name;
+        public string Name => BlockDefinintion?.Name;
 
         public string FullDescription => BlockDefinintion?.FullDescription;
 

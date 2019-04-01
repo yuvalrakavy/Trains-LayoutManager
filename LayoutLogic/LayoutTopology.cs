@@ -11,7 +11,7 @@ namespace LayoutManager.Logic {
     [LayoutModule("Layout Topology Services", UserControl = false)]
     public class LayoutTopologyServices : LayoutModuleBase, ILayoutTopologyServices {
 
-        public static String TopologyServicesVersion = "1.0";
+        public static string TopologyServicesVersion = "1.0";
 
         [LayoutEvent("get-topology-services")]
         void GetTopologyServices(LayoutEvent e) {

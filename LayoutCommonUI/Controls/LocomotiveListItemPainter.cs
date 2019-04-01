@@ -72,8 +72,8 @@ namespace LayoutManager.CommonUI.Controls {
                 // for locomotive and one for locomotive set
                 int xText;
                 float yText;
-                String name;
-                String typeName = null;
+                string name;
+                string typeName = null;
 
                 if (element.Name == "Locomotive") {
                     LocomotiveInfo loco = new LocomotiveInfo(element);
@@ -126,7 +126,7 @@ namespace LayoutManager.CommonUI.Controls {
 
                 if (typeName != null) {
                     using (Font typeFont = new Font("Arial", 7, FontStyle.Regular)) {
-                        String typeText = " (" + typeName + ")";
+                        string typeText = " (" + typeName + ")";
                         SizeF typeSize = e.Graphics.MeasureString(typeText, typeFont);
 
                         e.Graphics.DrawString(typeText, typeFont, textBrush,
@@ -137,7 +137,7 @@ namespace LayoutManager.CommonUI.Controls {
                 yText += textSize.Height;
 
                 if (annotateForOperationMode) {
-                    String status;
+                    string status;
                     TrainStateInfo train = LayoutModel.StateManager.Trains[element];
 
                     if (onTrack && train != null)

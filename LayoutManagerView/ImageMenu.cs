@@ -10,10 +10,10 @@ namespace LayoutManager.UIGadgets {
     /// Base class for ImageMenuItem or ImageMenuCategory
     /// </summary>
     public abstract class ImageMenuEntry {
-        String tooltip;
+        string tooltip;
         Rectangle bounds;
 
-        public String Tooltip {
+        public string Tooltip {
             get {
                 return tooltip;
             }
@@ -51,7 +51,7 @@ namespace LayoutManager.UIGadgets {
     public abstract class ImageMenuCategory : ImageMenuEntry {
         ImageMenu menu;           // The menu to which this category belongs
         readonly ImageMenuItemCollection items = new ImageMenuItemCollection();
-        String name;
+        string name;
 
         public ImageMenuItemCollection Items => items;
 
@@ -65,7 +65,7 @@ namespace LayoutManager.UIGadgets {
             }
         }
 
-        public String Name {
+        public string Name {
             get {
                 return name;
             }
@@ -151,7 +151,7 @@ namespace LayoutManager.UIGadgets {
     /// Control that implement tooltip window for image menu objects
     /// </summary>
     internal class TipWindow : Control {
-        String tipText;
+        string tipText;
         readonly Font tipFont = new Font("Arial", 8);
 
         internal TipWindow(Control parent) {
@@ -164,7 +164,7 @@ namespace LayoutManager.UIGadgets {
         /// <summary>
         /// The tooltip text to show
         /// </summary>
-        internal String TipText {
+        internal string TipText {
             set {
                 tipText = value;
             }
@@ -319,7 +319,7 @@ namespace LayoutManager.UIGadgets {
         /// <summary>
         /// The initial category to select
         /// </summary>
-        public String InitialCategoryName {
+        public string InitialCategoryName {
             get {
                 if (initialCategory != null)
                     return initialCategory.Name;

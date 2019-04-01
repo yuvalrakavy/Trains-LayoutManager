@@ -22,7 +22,7 @@ namespace LayoutManager.Dialogs {
         private readonly Container components = null;
         private Button buttonSetAsDefault;
         readonly XmlElement storesElement;
-        readonly String storesName;
+        readonly string storesName;
         readonly string collectionDescription;
         readonly string defaultDirectory;
         readonly string defaultExtension;

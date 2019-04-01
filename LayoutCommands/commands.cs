@@ -18,10 +18,10 @@ namespace LayoutManager {
         readonly ModelComponent component;
         ModelComponent previousComponent;
         LayoutPhase previousPhase;
-        readonly String description;
+        readonly string description;
         readonly LayoutPhase phase;
 
-        public LayoutComponentPlacmentCommand(LayoutModelArea area, Point ml, ModelComponent c, String description, LayoutPhase phase) {
+        public LayoutComponentPlacmentCommand(LayoutModelArea area, Point ml, ModelComponent c, string description, LayoutPhase phase) {
             this.area = area;
             this.areaLocation = ml;
             this.component = c;
@@ -51,13 +51,13 @@ namespace LayoutManager {
                 area.RemoveSpot(component.Spot);
         }
 
-        override public String ToString() => description;
+        override public string ToString() => description;
     }
 
     public class LayoutComponentRemovalCommand : LayoutCommand {
         readonly LayoutComponentPlacmentCommand placementCommand;
 
-        public LayoutComponentRemovalCommand(ModelComponent component, String description) {
+        public LayoutComponentRemovalCommand(ModelComponent component, string description) {
             placementCommand = new LayoutComponentPlacmentCommand(component.Spot.Area, component.Location, component, description, component.Spot.Phase);
         }
 
@@ -69,15 +69,15 @@ namespace LayoutManager {
             placementCommand.Do();
         }
 
-        public override String ToString() => placementCommand.ToString();
+        public override string ToString() => placementCommand.ToString();
     }
 
     public class LayoutComponentSelectCommand : LayoutCommand {
         readonly ModelComponent component;
         readonly LayoutSelection selection;
-        readonly String description;
+        readonly string description;
 
-        public LayoutComponentSelectCommand(LayoutSelection selection, ModelComponent component, String description) {
+        public LayoutComponentSelectCommand(LayoutSelection selection, ModelComponent component, string description) {
             this.component = component;
             this.selection = selection;
             this.description = description;
@@ -91,13 +91,13 @@ namespace LayoutManager {
             selection.Remove(component);
         }
 
-        public override String ToString() => description;
+        public override string ToString() => description;
     }
 
     public class LayoutComponentDeselectCommand : LayoutCommand {
         readonly LayoutComponentSelectCommand selectCommand;
 
-        public LayoutComponentDeselectCommand(LayoutSelection selection, ModelComponent component, String description) {
+        public LayoutComponentDeselectCommand(LayoutSelection selection, ModelComponent component, string description) {
             selectCommand = new LayoutComponentSelectCommand(selection, component, description);
         }
 
@@ -109,7 +109,7 @@ namespace LayoutManager {
             selectCommand.Do();
         }
 
-        public override String ToString() => selectCommand.ToString();
+        public override string ToString() => selectCommand.ToString();
     }
 
     public class LayoutComponentLinkCommand : LayoutCommand {
@@ -146,7 +146,7 @@ namespace LayoutManager {
             unlinkCommand.Do();
         }
 
-        public override String ToString() => "link track";
+        public override string ToString() => "link track";
     }
 
     public class LayoutComponentUnlinkCommand : LayoutCommand {
@@ -182,7 +182,7 @@ namespace LayoutManager {
             }
         }
 
-        public override String ToString() => "unlink Track";
+        public override string ToString() => "unlink Track";
     }
 
     public class LayoutModifyComponentDocumentCommand : LayoutCommand {
@@ -222,7 +222,7 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEvent("component-configuration-changed", component));
         }
 
-        public override String ToString() => "Edit " + component.ToString() + " properties";
+        public override string ToString() => "Edit " + component.ToString() + " properties";
     }
 
     public class LayoutMoveModelSpotCommand : LayoutCommand {

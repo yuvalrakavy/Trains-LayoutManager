@@ -18,7 +18,7 @@ namespace LayoutManager.Tools.Dialogs {
         /// </summary>
         private readonly Container components = null;
 
-        public TrainFront(LayoutBlockDefinitionComponent blockInfo, String name) {
+        public TrainFront(LayoutBlockDefinitionComponent blockInfo, string name) {
             //
             // Required for Windows Form Designer support
             //
@@ -29,7 +29,7 @@ namespace LayoutManager.Tools.Dialogs {
             labelBlockName.Text = blockInfo.NameProvider.Name;
         }
 
-        public TrainFront(LayoutStraightTrackComponent track, String locoName, String trackName) {
+        public TrainFront(LayoutStraightTrackComponent track, string locoName, string trackName) {
             InitializeComponent();
 
             locomotiveFrontControl.ConnectionPoints = track.ConnectionPoints;

@@ -8,7 +8,7 @@ namespace LayoutManager.Tools {
     public class LayoutComponentMenuItem : MenuItem {
         readonly ModelComponent component;
 
-        public LayoutComponentMenuItem(ModelComponent component, String name, EventHandler onClick) : base(name, onClick) {
+        public LayoutComponentMenuItem(ModelComponent component, string name, EventHandler onClick) : base(name, onClick) {
             this.component = component;
         }
 

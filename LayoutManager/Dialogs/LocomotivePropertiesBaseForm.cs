@@ -136,7 +136,7 @@ namespace LayoutManager.Dialogs {
                 imageGetter.Image = locoType.Image;
         }
 
-        protected void SetCheckbox(String controlName, XmlElement e, String a, bool defaultValue) {
+        protected void SetCheckbox(String controlName, XmlElement e, string a, bool defaultValue) {
             CheckBox checkbox = (CheckBox)nameToControlMap[controlName];
 
             if (e.HasAttribute(a))
@@ -145,26 +145,26 @@ namespace LayoutManager.Dialogs {
                 checkbox.Checked = defaultValue;
         }
 
-        protected void SetCheckbox(String controlName, String a) {
+        protected void SetCheckbox(String controlName, string a) {
             SetCheckbox(controlName, element, a, false);
         }
 
 
-        protected void SetRadio(XmlElement e, String a, String defaultValue) {
-            String v = defaultValue;
+        protected void SetRadio(XmlElement e, string a, string defaultValue) {
+            string v = defaultValue;
 
             if (e.HasAttribute(a))
                 v = e.GetAttribute(a);
 
-            String controlName = "radioButton" + a + v;
+            string controlName = "radioButton" + a + v;
             ((RadioButton)nameToControlMap[controlName]).Checked = true;
         }
 
-        protected void SetRadio(String a, String defaultValue) {
+        protected void SetRadio(String a, string defaultValue) {
             SetRadio(element, a, defaultValue);
         }
 
-        protected void SetLength(String controlName, String a) {
+        protected void SetLength(String controlName, string a) {
             LengthInput c = (LengthInput)nameToControlMap[controlName];
 
             if (element.HasAttribute(a))
@@ -206,11 +206,11 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        protected String GetRadioValue(Enum e, String a) {
+        protected string GetRadioValue(Enum e, string a) {
             String[] names = Enum.GetNames(e.GetType());
 
             foreach (String n in names) {
-                String controlName = "radioButton" + a + n;
+                string controlName = "radioButton" + a + n;
                 RadioButton rb = (RadioButton)nameToControlMap[controlName];
 
                 if (rb != null && rb.Checked)
@@ -220,7 +220,7 @@ namespace LayoutManager.Dialogs {
             return null;
         }
 
-        protected void GetRadio(XmlElement element, String a, Enum e) {
+        protected void GetRadio(XmlElement element, string a, Enum e) {
             element.SetAttribute(a, GetRadioValue(e, a));
         }
 
@@ -228,7 +228,7 @@ namespace LayoutManager.Dialogs {
             GetRadio(element, a, e);
         }
 
-        protected void GetLength(String controlName, String a) {
+        protected void GetLength(String controlName, string a) {
             LengthInput c = (LengthInput)nameToControlMap[controlName];
 
             if (!c.IsEmpty)

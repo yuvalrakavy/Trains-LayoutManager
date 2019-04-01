@@ -36,9 +36,9 @@ namespace LayoutManager.CommonUI.Controls.XmlInfoEditorForms {
             textBoxValue.Text = a.Value;
         }
 
-        public String AttributeName => textBoxName.Text;
+        public string AttributeName => textBoxName.Text;
 
-        public String AttributeValue => textBoxValue.Text;
+        public string AttributeValue => textBoxValue.Text;
 
         /// <summary>
         /// Clean up any resources being used.

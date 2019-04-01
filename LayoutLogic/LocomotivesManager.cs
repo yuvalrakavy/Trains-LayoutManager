@@ -1310,7 +1310,7 @@ namespace LayoutManager.Logic {
             var train = TrainsManager.ExtractTrainState(e.Sender);
             bool state = (bool)e.Info;
             XmlElement functionElement = e.Element["Function"];
-            String functionName = functionElement.GetAttribute("Name");
+            string functionName = functionElement.GetAttribute("Name");
             Guid locomotiveId = Guid.Empty;
 
             if (functionElement.HasAttribute("LocomotiveID"))
@@ -1335,7 +1335,7 @@ namespace LayoutManager.Logic {
         private void triggerLocomotiveFunctionRequest(LayoutEvent e) {
             var train = TrainsManager.ExtractTrainState(e.Sender);
             XmlElement functionElement = e.Element["Function"];
-            String functionName = functionElement.GetAttribute("Name");
+            string functionName = functionElement.GetAttribute("Name");
             Guid locomotiveId = Guid.Empty;
 
             if (functionElement.HasAttribute("LocomotiveID"))

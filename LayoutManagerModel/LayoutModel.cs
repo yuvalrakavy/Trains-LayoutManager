@@ -285,7 +285,7 @@ namespace LayoutManager.Model {
         /// <returns>True if the field was parsed</returns>
         protected virtual bool ReadXmlField(XmlReader r) => false;
 
-        public virtual void Error(Object subject, String message) {
+        public virtual void Error(Object subject, string message) {
             EventManager.Event(new LayoutEvent("add-error", subject, message));
         }
 
@@ -293,7 +293,7 @@ namespace LayoutManager.Model {
             Error(this, message);
         }
 
-        public virtual void Warning(Object subject, String message) {
+        public virtual void Warning(Object subject, string message) {
             EventManager.Event(new LayoutEvent("add-warning", subject, message));
         }
 
@@ -301,7 +301,7 @@ namespace LayoutManager.Model {
             Warning(this, message);
         }
 
-        public String FullDescription {
+        public string FullDescription {
             get {
                 string location = (Spot == null) ? "Not placed" : "at " + Spot.Area.Name + ": " + Spot.Location;
                 string phaseName = Spot == null ? LayoutModel.Instance.DefaultPhase.ToString() : Spot.Phase.ToString();
@@ -317,7 +317,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public override String ToString() => FullDescription;
+        public override string ToString() => FullDescription;
 
         public abstract bool DrawOutOfGrid {
             get;
@@ -475,7 +475,7 @@ namespace LayoutManager.Model {
 
         public override int GetHashCode() => Track.GetHashCode();
 
-        public override String ToString() => Track.FullDescription + " (" + cp + ")";
+        public override string ToString() => Track.FullDescription + " (" + cp + ")";
 
         public LayoutComponentConnectionPoint OtherConnectionPoint {
             get {
@@ -612,7 +612,7 @@ namespace LayoutManager.Model {
     /// Standard implementation of power class
     /// </summary>
     public class LayoutPower : ILayoutPower {
-        public LayoutPower(IModelComponentHasPowerOutlets originComponent, LayoutPowerType type, DigitalPowerFormats digitalFormats, String name) {
+        public LayoutPower(IModelComponentHasPowerOutlets originComponent, LayoutPowerType type, DigitalPowerFormats digitalFormats, string name) {
             this.PowerOriginComponent = originComponent;
             this.Type = type;
             this.DigitalFormats = digitalFormats;
@@ -631,7 +631,7 @@ namespace LayoutManager.Model {
 
         }
 
-        public String Name {
+        public string Name {
             get;
 
         }
@@ -1002,7 +1002,7 @@ namespace LayoutManager.Model {
     }
 
     public class LayoutModelArea {
-        String name;                           // The area's name
+        string name;                           // The area's name
         readonly Dictionary<Point, LayoutModelSpotComponentCollection> grid = new Dictionary<Point, LayoutModelSpotComponentCollection>();              // grid of spots
         Rectangle mlBounds = new Rectangle();       // Model bounds
         bool recalcBounds = true;            // need to recalculate bounds
@@ -1027,7 +1027,7 @@ namespace LayoutManager.Model {
 
         #region Property accessors
 
-        public String Name {
+        public string Name {
             get {
                 return name;
             }
@@ -1341,7 +1341,7 @@ namespace LayoutManager.Model {
 
                 while (r.NodeType == XmlNodeType.Element) {
                     if (r.Name == "Component") {
-                        String componentTypeName = XmlConvert.DecodeName(r.GetAttribute("Class"));
+                        string componentTypeName = XmlConvert.DecodeName(r.GetAttribute("Class"));
 
                         // Patch for backward compatability
                         if (componentTypeName == "LayoutManager.Components.LayoutBlockInfoComponent")
@@ -1939,7 +1939,7 @@ namespace LayoutManager.Model {
         /// </summary>
         protected void MyWriteModelXmlInfo() {
             if (modelXmlInfo.XmlDocument != null) {
-                String backupModelXmlInfoFilename = modelXmlInfoFilename + ".backup";
+                string backupModelXmlInfoFilename = modelXmlInfoFilename + ".backup";
                 FileInfo modelXmlInfoFileInfo = new FileInfo(modelXmlInfoFilename);
 
                 new FileInfo(backupModelXmlInfoFilename).Delete();

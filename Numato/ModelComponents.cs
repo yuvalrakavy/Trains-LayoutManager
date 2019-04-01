@@ -19,9 +19,9 @@ namespace NumatoController {
 
     public class NumatoController : LayoutBusProviderSupport, IModelComponentIsBusProvider {
 
-        internal const string relaysCountAttribute = "Relays";
-        internal const string userAttribute = "User";
-        internal const string passwordAttribute = "Password";
+        internal const string A_Relays = "Relays";
+        internal const string A_User = "User";
+        internal const string A_Password = "Password";
 
         public static LayoutTraceSwitch TraceNumato = new LayoutTraceSwitch("NumatoController", "Numato Relay controller");
 
@@ -29,7 +29,7 @@ namespace NumatoController {
 
         public NumatoController() {
             this.XmlDocument.LoadXml(
-                $"<NumatoController {InterfaceTypeAttribute}=\"TCP\" {AddressAttribute}=\"169.254.1.1\" {userAttribute}=\"admin\" {passwordAttribute}=\"admin\">" +
+                $"<NumatoController {A_InterfaceType}=\"TCP\" {A_Address}=\"169.254.1.1\" {A_User}=\"admin\" {A_Password}=\"admin\">" +
                 "<ModeString>baud=115200 parity=N data=8</ModeString>" +
                 "</NumatoController>"
                 );
@@ -51,17 +51,17 @@ namespace NumatoController {
 
         OutputManager OutputManager { get; set; }
 
-        public int RelaysCount => XmlConvert.ToInt32(Element.GetAttribute(relaysCountAttribute));
+        public int RelaysCount => XmlConvert.ToInt32(Element.GetAttribute(A_Relays));
 
         string User {
-            get { return Element.GetAttribute(userAttribute); }
-            set { Element.SetAttribute(userAttribute, value); }
+            get { return Element.GetAttribute(A_User); }
+            set { Element.SetAttribute(A_User, value); }
         }
 
 
         string Password {
-            get { return Element.GetAttribute(passwordAttribute); }
-            set { Element.SetAttribute(passwordAttribute, value); }
+            get { return Element.GetAttribute(A_Password); }
+            set { Element.SetAttribute(A_Password, value); }
         }
 
         #region Communication init/cleanup

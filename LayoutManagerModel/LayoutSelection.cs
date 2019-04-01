@@ -306,7 +306,7 @@ namespace LayoutManager.Model {
             DataObject dataObj = new DataObject();
 
             dataObj.SetData("LayoutManagerComponents", ms.GetBuffer());
-            String xml = new System.Text.UTF8Encoding().GetString(ms.GetBuffer());
+            string xml = new System.Text.UTF8Encoding().GetString(ms.GetBuffer());
 
             dataObj.SetData(DataFormats.Text, xml);
 

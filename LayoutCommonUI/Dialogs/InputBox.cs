@@ -23,7 +23,7 @@ namespace LayoutManager.CommonUI.Dialogs {
 
         private InputBoxValidationOptions validationOptions = 0;
 
-        public InputBox(String caption, String prompt) {
+        public InputBox(String caption, string prompt) {
             //
             // Required for Windows Form Designer support
             //
@@ -33,7 +33,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.labelPrompt.Text = prompt;
         }
 
-        public String Input {
+        public string Input {
             get {
                 return textBox.Text;
             }
@@ -53,7 +53,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             }
         }
 
-        public static String Show(String caption, String prompt, InputBoxValidationOptions validationOptions) {
+        public static string Show(String caption, string prompt, InputBoxValidationOptions validationOptions) {
             InputBox inputBox = new InputBox(caption, prompt) {
                 ValidationOptions = validationOptions
             };
@@ -63,7 +63,7 @@ namespace LayoutManager.CommonUI.Dialogs {
                 return null;
         }
 
-        public static string Show(String caption, String prompt) => InputBox.Show(caption, prompt, 0);
+        public static string Show(String caption, string prompt) => InputBox.Show(caption, prompt, 0);
 
         public static string Show(String prompt) => InputBox.Show("", prompt);
 

@@ -314,7 +314,7 @@ namespace LayoutManager.Tools.Dialogs {
                 m.MenuItems.Add(new LocomotiveFunctionNumberMenuItem(train, loco, functionNumber, functionNumberSupportInfo.SetFunctionNumberSupport == SetFunctionNumberSupport.FunctionNumberAndBooleanState));
         }
 
-        protected static String GetFunctionDescription(LocomotiveInfo loco, String functionName) {
+        protected static string GetFunctionDescription(LocomotiveInfo loco, string functionName) {
             LocomotiveFunctionInfo function = loco.GetFunctionByName(functionName);
 
             if (function.Description != null && function.Description != "")
@@ -331,7 +331,7 @@ namespace LayoutManager.Tools.Dialogs {
             readonly LocomotiveInfo loco;
             Guid id;
 
-            public LocomotiveFunctionMenuItem(TrainStateInfo trainState, LocomotiveInfo loco, String functionName, bool showFunctionName, bool addLocoName) {
+            public LocomotiveFunctionMenuItem(TrainStateInfo trainState, LocomotiveInfo loco, string functionName, bool showFunctionName, bool addLocoName) {
                 this.trainState = trainState;
                 this.loco = loco;
                 this.id = loco.Id;
@@ -392,7 +392,7 @@ namespace LayoutManager.Tools.Dialogs {
             readonly TrainStateInfo trainState;
             readonly LocomotiveInfo loco;
 
-            public LocomotiveFunctionPresetMenuItem(TrainStateInfo trainState, LocomotiveInfo loco, String functionName, bool showFunctionName, bool addLocoName) {
+            public LocomotiveFunctionPresetMenuItem(TrainStateInfo trainState, LocomotiveInfo loco, string functionName, bool showFunctionName, bool addLocoName) {
                 this.trainState = trainState;
                 this.loco = loco;
                 this.function = loco.GetFunctionByName(functionName);
@@ -708,7 +708,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             using (Brush textBrush = new SolidBrush(SystemColors.WindowText)) {
                 SizeF textSize;
-                String status = train.StatusText;
+                string status = train.StatusText;
 
                 using (Font statusFont = new Font("Arial", 8, FontStyle.Regular)) {
                     textSize = e.Graphics.MeasureString(status, statusFont);

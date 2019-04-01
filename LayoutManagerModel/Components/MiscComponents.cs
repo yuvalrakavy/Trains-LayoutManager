@@ -21,7 +21,7 @@ namespace LayoutManager.Components {
 
         public override ModelComponentKind Kind => ModelComponentKind.PowerConnector;
 
-        public override String ToString() => "track power connector";
+        public override string ToString() => "track power connector";
 
         public LayoutTrackPowerConnectorInfo Info => new LayoutTrackPowerConnectorInfo(this);
 
@@ -126,7 +126,7 @@ namespace LayoutManager.Components {
         public class LayoutTrackPowerConnectorNameInfo : LayoutTextInfo {
             const string ElementName = "PowerConnectorName";
 
-            public LayoutTrackPowerConnectorNameInfo(ModelComponent component, String elementName)
+            public LayoutTrackPowerConnectorNameInfo(ModelComponent component, string elementName)
                 : base(component, elementName) {
             }
 
@@ -150,24 +150,24 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutTrackPowerConnectorInfo : LayoutTextInfo {
-        private const string CheckReverseLoopsAttribute = "CheckReverseLoops";
-        private const string TrackPowerConnectorElementName = "TrackPowerConnector";
-        private const string GaugeAttribute = "Gauge";
+        private const string A_CheckReverseLoops = "CheckReverseLoops";
+        private const string E_TrackPowerConnectorElementName = "TrackPowerConnector";
+        private const string A_Gauge = "Gauge";
 
-        public LayoutTrackPowerConnectorInfo(ModelComponent component, String elementName)
+        public LayoutTrackPowerConnectorInfo(ModelComponent component, string elementName)
             : base(component, elementName) {
         }
 
         public LayoutTrackPowerConnectorInfo(ModelComponent component)
-            : base(component, TrackPowerConnectorElementName) {
+            : base(component, E_TrackPowerConnectorElementName) {
         }
 
         public LayoutTrackPowerConnectorInfo(XmlElement containerElement)
-            : base(containerElement, TrackPowerConnectorElementName) {
+            : base(containerElement, E_TrackPowerConnectorElementName) {
         }
 
 
-        public override String Name {
+        public override string Name {
             get {
                 LayoutTrackPowerConnectorComponent powerConnectorComponent = (LayoutTrackPowerConnectorComponent)Component;
 
@@ -175,26 +175,26 @@ namespace LayoutManager.Components {
             }
         }
 
-        public override String Text => Name;
+        public override string Text => Name;
 
         public LayoutPowerInlet Inlet => new LayoutPowerInlet(Element, "PowerInlet");
 
         public TrackGauges TrackGauge {
-            get => AttributeValue(GaugeAttribute).Enum<TrackGauges>() ?? TrackGauges.HO;
-            set => Element.SetAttribute(GaugeAttribute, value.ToString());
+            get => AttributeValue(A_Gauge).Enum<TrackGauges>() ?? TrackGauges.HO;
+            set => Element.SetAttribute(A_Gauge, value.ToString());
         }
 
         public bool CheckReverseLoops {
-            get => (bool?)AttributeValue(CheckReverseLoopsAttribute) ?? true;
-            set => SetAttribute(CheckReverseLoopsAttribute, value, removeIf: true);
+            get => (bool?)AttributeValue(A_CheckReverseLoops) ?? true;
+            set => SetAttribute(A_CheckReverseLoops, value, removeIf: true);
         }
     }
 
     public class LayoutPowerSelectorComponent : ModelComponentWithSwitchingState, IModelComponentHasPowerOutlets,
       IModelComponentHasReverseLogic, IModelComponentConnectToControl, IModelComponentHasName {
-        public const string SwitchingMethodAttribute = "SwitchingMethod";
-        public const string HasOnOffRelayAttribute = "OnOffRelay";
-        public const string ReverseOnOffRelayAttribute = "RevereseOnOffRelay";
+        public const string A_SwitchingMethod = "SwitchingMethod";
+        public const string A_HasOnOffRelay = "OnOffRelay";
+        public const string A_ReverseOnOffRelay = "RevereseOnOffRelay";
 
         public const string PowerSelector1ConnectionPoint = "PowerControl1";
         public const string PowerSelector2ConnectionPoint = "PowerControl2";
@@ -223,18 +223,18 @@ namespace LayoutManager.Components {
         public enum RelaySwitchingMethod { DPDSrelay, TwoSPDSrelays };
 
         public RelaySwitchingMethod SwitchingMethod {
-            get => this.AttributeValue(SwitchingMethodAttribute).Enum<RelaySwitchingMethod>() ?? RelaySwitchingMethod.DPDSrelay;
-            set => this.SetAttribute(SwitchingMethodAttribute, value.ToString());
+            get => this.AttributeValue(A_SwitchingMethod).Enum<RelaySwitchingMethod>() ?? RelaySwitchingMethod.DPDSrelay;
+            set => this.SetAttribute(A_SwitchingMethod, value.ToString());
         }
 
         public bool HasOnOffRelay {
-            get => (bool?)this.AttributeValue(HasOnOffRelayAttribute) ?? false;
-            set => this.SetAttribute(HasOnOffRelayAttribute, value);
+            get => (bool?)this.AttributeValue(A_HasOnOffRelay) ?? false;
+            set => this.SetAttribute(A_HasOnOffRelay, value);
         }
 
         public bool RevereseOnOffRelay {
-            get => (bool?)this.AttributeValue(ReverseOnOffRelayAttribute) ?? false;
-            set => this.SetAttribute(ReverseOnOffRelayAttribute, value);
+            get => (bool?)this.AttributeValue(A_ReverseOnOffRelay) ?? false;
+            set => this.SetAttribute(A_ReverseOnOffRelay, value);
         }
 
         protected override SwitchingStateSupport GetSwitchingStateSupporter() => new LayoutPowerSelectorSwitchingStateSupporter(this);
@@ -486,7 +486,7 @@ namespace LayoutManager.Components {
         }
 
         public class LayoutPowerSelectorNameInfo : LayoutTextInfo {
-            public LayoutPowerSelectorNameInfo(ModelComponent component, String elementName)
+            public LayoutPowerSelectorNameInfo(ModelComponent component, string elementName)
                 : base(component, elementName) {
             }
 
@@ -533,7 +533,7 @@ namespace LayoutManager.Components {
 
         public override bool DrawOutOfGrid => false;
 
-        public override String ToString() => "track power isolation";
+        public override string ToString() => "track power isolation";
     }
 
     public class LayoutTrackReverseLoopModule : ModelComponent {
@@ -548,7 +548,7 @@ namespace LayoutManager.Components {
 
         public override bool DrawOutOfGrid => false;
 
-        public override String ToString() => "track reverse loop module";
+        public override string ToString() => "track reverse loop module";
     }
 
     public class LayoutTrackLink : IComparable<LayoutTrackLink> {
@@ -644,7 +644,7 @@ namespace LayoutManager.Components {
             set => link = value;
         }
 
-        public override String ToString() => "track link";
+        public override string ToString() => "track link";
 
         public override void OnAddedToModel() {
             base.OnAddedToModel();
@@ -742,20 +742,20 @@ namespace LayoutManager.Components {
     public class LayoutTrackLinkTextInfo : LayoutTextInfo {
         readonly LayoutTrackLinkComponent trackLinkComponent;
 
-        public LayoutTrackLinkTextInfo(ModelComponent component, String elementPath)
+        public LayoutTrackLinkTextInfo(ModelComponent component, string elementPath)
             : base(component, elementPath) {
             this.trackLinkComponent = (LayoutTrackLinkComponent)component;
         }
 
-        public override String Text {
+        public override string Text {
             get {
                 if (trackLinkComponent.Link == null || trackLinkComponent.LinkedComponent == null)
                     return base.Text;
                 else {
-                    String name = base.Text;
+                    string name = base.Text;
                     LayoutTrackLinkComponent destinationTrackLinkComponent = trackLinkComponent.LinkedComponent;
                     LayoutTextInfo destinationTextProvider = new LayoutTextInfo(destinationTrackLinkComponent);
-                    String destinationName = destinationTextProvider.Text;
+                    string destinationName = destinationTextProvider.Text;
 
                     if (trackLinkComponent.ThisLink.AreaGuid == destinationTrackLinkComponent.ThisLink.AreaGuid)
                         return name + " (to " + destinationName + ")";
@@ -778,7 +778,7 @@ namespace LayoutManager.Components {
 
         public LayoutTextInfo TextProvider => new LayoutTextInfo(this, "Text");
 
-        public override String ToString() => "text: " + TextProvider.Text;
+        public override string ToString() => "text: " + TextProvider.Text;
 
         public override bool DrawOutOfGrid => true;
 
@@ -816,7 +816,7 @@ namespace LayoutManager.Components {
         public override bool DrawOutOfGrid => true;
 
 
-        public override String ToString() => "Image";
+        public override string ToString() => "Image";
     }
 
     public abstract class LayoutTrackAnnotationComponent : ModelComponent {
@@ -878,32 +878,32 @@ namespace LayoutManager.Components {
 
         public enum FeedbackTypes { NoFeedback, OneSensor, TwoSensors };
 
-        private const string TwoDirectionRelaysAttribute = "TwoDirectionRelays";
-        private const string FeedbackTypeAttribute = "FeedbackType";
-        private const string ReverseDirectionAttribute = "ReverseDirection";
-        private const string ReverseMotionAttribute = "ReverseMotion";
-        private const string MotionTimeoutAttribute = "MotionTimeout";
-        private const string OpenUpOrLeftAttribute = "OpenUpOrLeft";
-        private const string MotionTimeAttribute = "MotionTime";
+        private const string A_TwoDirectionRelays = "TwoDirectionRelays";
+        private const string A_FeedbackType = "FeedbackType";
+        private const string A_ReverseDirection = "ReverseDirection";
+        private const string A_ReverseMotion = "ReverseMotion";
+        private const string A_MotionTimeout = "MotionTimeout";
+        private const string A_OpenUpOrLeft = "OpenUpOrLeft";
+        private const string A_MotionTime = "MotionTime";
 
         public bool TwoDirectionRelays {
-            get => (bool?)AttributeValue(TwoDirectionRelaysAttribute) ?? false;
-            set => SetAttribute(TwoDirectionRelaysAttribute, value);
+            get => (bool?)AttributeValue(A_TwoDirectionRelays) ?? false;
+            set => SetAttribute(A_TwoDirectionRelays, value);
         }
 
         public FeedbackTypes FeedbackType {
-            get => AttributeValue(FeedbackTypeAttribute).Enum<FeedbackTypes>() ?? FeedbackTypes.NoFeedback;
-            set => SetAttribute(FeedbackTypeAttribute, value.ToString());
+            get => AttributeValue(A_FeedbackType).Enum<FeedbackTypes>() ?? FeedbackTypes.NoFeedback;
+            set => SetAttribute(A_FeedbackType, value.ToString());
         }
 
         public bool ReverseDirection {
-            get => (bool?)AttributeValue(ReverseDirectionAttribute) ?? false;
-            set => SetAttribute(ReverseDirectionAttribute, value);
+            get => (bool?)AttributeValue(A_ReverseDirection) ?? false;
+            set => SetAttribute(A_ReverseDirection, value);
         }
 
         public bool ReverseMotion {
-            get => (bool?)AttributeValue(ReverseMotionAttribute) ?? false;
-            set => SetAttribute(ReverseMotionAttribute, value);
+            get => (bool?)AttributeValue(A_ReverseMotion) ?? false;
+            set => SetAttribute(A_ReverseMotion, value);
         }
 
         /// <summary>
@@ -913,24 +913,24 @@ namespace LayoutManager.Components {
         /// Time to wait for feedback sensor to report that the gate motion is done
         /// </remarks>
         public int MotionTimeout {
-            get => (int?)AttributeValue(MotionTimeoutAttribute) ?? 10;
-            set => SetAttribute(MotionTimeoutAttribute, value);
+            get => (int?)AttributeValue(A_MotionTimeout) ?? 10;
+            set => SetAttribute(A_MotionTimeout, value);
         }
 
         /// <summary>
         /// Gate motion time if the gate has no motion done feedback
         /// </summary>
         public int MotionTime {
-            get => (int?)AttributeValue(MotionTimeAttribute) ?? 10;
-            set => SetAttribute(MotionTimeAttribute, value);
+            get => (int?)AttributeValue(A_MotionTime) ?? 10;
+            set => SetAttribute(A_MotionTime, value);
         }
 
         /// <summary>
         /// Gate orientation
         /// </summary>
         public bool OpenUpOrLeft {
-            get => (bool?)AttributeValue(OpenUpOrLeftAttribute) ?? false;
-            set => SetAttribute(OpenUpOrLeftAttribute, value);
+            get => (bool?)AttributeValue(A_OpenUpOrLeft) ?? false;
+            set => SetAttribute(A_OpenUpOrLeft, value);
         }
     }
 

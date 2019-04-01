@@ -22,7 +22,7 @@ namespace LayoutManager.CommonUI.Controls {
         private LayoutManager.CommonUI.Controls.LayoutInfosComboBox layoutInfosComboBoxFonts;
         private System.Windows.Forms.FontDialog fontDialogCustomSetting;
 
-        String customFontElementName = "Font";
+        string customFontElementName = "Font";
         LayoutXmlInfo xmlInfo;
 
         public TextProviderFontDefinition() {
@@ -50,7 +50,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public String CustomFontElementName {
+        public string CustomFontElementName {
             get {
                 return customFontElementName;
             }

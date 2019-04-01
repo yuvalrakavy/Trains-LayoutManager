@@ -204,7 +204,7 @@ namespace LayoutLGB {
         [LayoutEvent("trigger-locomotive-function-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private void setLocomotiveFunctionStateCommand(LayoutEvent e) {
             LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
-            String functionName = (String)e.Info;
+            string functionName = (String)e.Info;
             LocomotiveFunctionInfo function = loco.GetFunctionByName(functionName);
 
             commandStationManager.AddCommand(new MTSlocomotiveFunction(CommunicationStream, loco.AddressProvider.Unit, function.Number));
@@ -541,7 +541,7 @@ namespace LayoutLGB {
 
         public byte[] Buffer => message;
 
-        public override String ToString() {
+        public override string ToString() {
             MTScommand cmd = (MTScommand)message[0];
 
             return String.Format("MTS command: {0} {1:x} {2:x} (Checksum {3:x})", cmd, message[1], message[2], message[3]);

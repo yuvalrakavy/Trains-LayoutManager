@@ -9,8 +9,8 @@ namespace LayoutManager.CommonUI.Controls {
     /// </summary>
     public class XmlQueryCombobox : ComboBox {
         XmlElement container;
-        String query = "*[contains(Name, '<TEXT>')]";
-        String extract = "string(Name)";
+        string query = "*[contains(Name, '<TEXT>')]";
+        string extract = "string(Name)";
 
         public XmlQueryCombobox() {
         }
@@ -25,7 +25,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public String Query {
+        public string Query {
             get {
                 return query;
             }
@@ -35,7 +35,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public String Extract {
+        public string Extract {
             get {
                 return extract;
             }
@@ -66,7 +66,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private XmlNodeList getElements() {
-            String q = "*";
+            string q = "*";
 
             if (Text.Trim() != "")
                 q = Regex.Replace(query, "<TEXT>", Text);
@@ -78,7 +78,7 @@ namespace LayoutManager.CommonUI.Controls {
         protected override void OnDropDown(EventArgs e) {
             base.OnDropDown(e);
 
-            String ext = extract;
+            string ext = extract;
             if (ext == null)
                 ext = "string(Name)";
 

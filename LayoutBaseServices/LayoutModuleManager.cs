@@ -34,7 +34,7 @@ namespace LayoutManager {
         /// <summary>
         /// The module name
         /// </summary>
-        public String ModuleName {
+        public string ModuleName {
             get {
                 return XmlInfo.DocumentElement.GetAttribute("ModuleName");
             }
@@ -146,7 +146,7 @@ namespace LayoutManager {
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public sealed class LayoutModuleAttribute : System.Attribute {
-        readonly String moduleName;
+        readonly string moduleName;
         bool userControl = true;
         bool enabled = true;
 
@@ -164,7 +164,7 @@ namespace LayoutManager {
         /// <summary>
         /// The module name (as shown to the user)
         /// </summary>
-        public String ModuleName => moduleName;
+        public string ModuleName => moduleName;
 
         /// <summary>
         /// If true, the user can enable/disable the module via the UI
@@ -314,7 +314,7 @@ namespace LayoutManager {
         /// <summary>
         /// Get the file name containing the assembly
         /// </summary>
-        public String AssemblyFilename {
+        public string AssemblyFilename {
             get {
                 return ValueToFilePath(Element.GetAttribute("AssemblyFilename"), ModulesDirectory);
             }
@@ -528,7 +528,7 @@ namespace LayoutManager {
         /// <summary>
         /// The file name of the document used to save the state of the module manager.
         /// </summary>
-        public String DocumentFilename {
+        public string DocumentFilename {
             get {
                 return documentFilename;
             }
@@ -580,7 +580,7 @@ namespace LayoutManager {
             if (documentFilename == null)
                 throw new ArgumentException("No document name was set");
 
-            String backupFilename = documentFilename + ".backup";
+            string backupFilename = documentFilename + ".backup";
             FileInfo fileInfo = new FileInfo(documentFilename);
 
             new FileInfo(backupFilename).Delete();
@@ -624,7 +624,7 @@ namespace LayoutManager {
     /// A convinence class for defining modules. It implements ILayoutModuleSetup.
     /// </summary>
     public class LayoutModuleBase : ILayoutModuleSetup {
-        public static void Error(Object subject, String message) {
+        public static void Error(Object subject, string message) {
             EventManager.Event(new LayoutEvent("add-error", subject, message));
         }
 
@@ -632,7 +632,7 @@ namespace LayoutManager {
             Error(null, message);
         }
 
-        public static void Warning(Object subject, String message) {
+        public static void Warning(Object subject, string message) {
             EventManager.Event(new LayoutEvent("add-warning", subject, message));
         }
 
@@ -640,7 +640,7 @@ namespace LayoutManager {
             Warning(null, message);
         }
 
-        public static void Message(Object subject, String messageText) {
+        public static void Message(Object subject, string messageText) {
             EventManager.Event(new LayoutEvent("add-message", subject, messageText));
         }
 

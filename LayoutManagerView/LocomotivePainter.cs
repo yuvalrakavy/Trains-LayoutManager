@@ -16,7 +16,7 @@ namespace LayoutManager.View {
         /// </summary>
         private Container components;
 
-        String label = "";
+        string label = "";
         bool frontDefined;
         bool drawFront;
         bool drawLabel = true;
@@ -85,7 +85,7 @@ namespace LayoutManager.View {
 
         #region Properties
 
-        public String Label {
+        public string Label {
             set {
                 label = value;
             }

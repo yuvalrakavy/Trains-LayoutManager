@@ -281,7 +281,7 @@ namespace LayoutManager.Model {
     }
 
     public abstract class LayoutProgrammingAction : LayoutAction, ILayoutProgrammingAction {
-        private const string IgnoreNoResponseAttribute = "IgnoreNoResponse";
+        private const string A_IgnoreNoResponse = "IgnoreNoResponse";
 
         public LayoutProgrammingAction(XmlElement actionElement)
             : base(actionElement) {
@@ -302,8 +302,8 @@ namespace LayoutManager.Model {
         /// (If true) Treat NoResponse result as Ok
         /// </summary>
         public bool IgnoreNoResponseResult {
-            get => (bool?)AttributeValue(IgnoreNoResponseAttribute) ?? false;
-            set => SetAttribute(IgnoreNoResponseAttribute, value, removeIf: false);
+            get => (bool?)AttributeValue(A_IgnoreNoResponse) ?? false;
+            set => SetAttribute(A_IgnoreNoResponse, value, removeIf: false);
         }
     }
 
@@ -336,7 +336,7 @@ namespace LayoutManager.Model {
     #endregion
 
     public class LayoutDccProgrammingAction<TProgrammingTargetType> : LayoutProgrammingAction, ILayoutDccProgrammingAction where TProgrammingTargetType : IHasDecoder {
-        private const string ProgrammingTargetAddressAttribute = "ProgrammingTargetAddress";
+        private const string A_ProgrammingTargetAddress = "ProgrammingTargetAddress";
 
         public LayoutDccProgrammingAction(XmlElement actionElement, TProgrammingTargetType programmingTarget) : base(actionElement) {
             this.ProgrammingTarget = programmingTarget;
@@ -351,8 +351,8 @@ namespace LayoutManager.Model {
         /// Address to use if using Programming on Main (POM). If not set then POM will not be possible
         /// </summary>
         public int ProgrammingTargetAddress {
-            get => (int?)AttributeValue(LayoutDccProgrammingAction<TProgrammingTargetType>.ProgrammingTargetAddressAttribute) ?? -1;
-            set => SetAttribute(LayoutDccProgrammingAction<TProgrammingTargetType>.ProgrammingTargetAddressAttribute, value);
+            get => (int?)AttributeValue(LayoutDccProgrammingAction<TProgrammingTargetType>.A_ProgrammingTargetAddress) ?? -1;
+            set => SetAttribute(LayoutDccProgrammingAction<TProgrammingTargetType>.A_ProgrammingTargetAddress, value);
         }
 
         /// <summary>

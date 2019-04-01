@@ -19,7 +19,7 @@ namespace LayoutManager.CommonUI.Controls {
         /// </summary>
         private readonly Container components = null;
 
-        String elementName = "Name";
+        string elementName = "Name";
         LayoutXmlInfo xmlInfo;
         ModelComponent component = null;
         bool isOptional = false;
@@ -33,7 +33,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         }
 
-        public String ElementName {
+        public string ElementName {
             get {
                 return elementName;
             }

@@ -48,13 +48,13 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         bool IsEmergencyContact {
-            get { return xmlInfo.Element.HasAttribute(LayoutTriggerableBlockEdgeBase.EmergencyContactAttribute) ? XmlConvert.ToBoolean(xmlInfo.Element.GetAttribute(LayoutTriggerableBlockEdgeBase.EmergencyContactAttribute)) : false; }
+            get { return xmlInfo.Element.HasAttribute(LayoutTriggerableBlockEdgeBase.A_EmergencyContact) ? XmlConvert.ToBoolean(xmlInfo.Element.GetAttribute(LayoutTriggerableBlockEdgeBase.A_EmergencyContact)) : false; }
 
             set {
                 if (value == false)
-                    XmlInfo.Element.RemoveAttribute(LayoutTriggerableBlockEdgeBase.EmergencyContactAttribute);
+                    XmlInfo.Element.RemoveAttribute(LayoutTriggerableBlockEdgeBase.A_EmergencyContact);
                 else
-                    XmlInfo.Element.SetAttribute(LayoutTriggerableBlockEdgeBase.EmergencyContactAttribute, XmlConvert.ToString(value));
+                    XmlInfo.Element.SetAttribute(LayoutTriggerableBlockEdgeBase.A_EmergencyContact, XmlConvert.ToString(value));
             }
         }
 

@@ -64,7 +64,7 @@ namespace LayoutManager.CommonUI.Controls {
             internal TrackLinkTreeNode(LayoutTrackLinkComponent trackLink) {
                 thisLink = trackLink.ThisLink;
 
-                String text = new LayoutTextInfo(trackLink).Text;
+                string text = new LayoutTextInfo(trackLink).Text;
 
                 if (trackLink.Link != null) {
                     LayoutTextInfo linkedName = new LayoutTextInfo(trackLink.LinkedComponent, "Name");

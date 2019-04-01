@@ -158,7 +158,7 @@ namespace LayoutManager.Components {
     #region LayoutTriggerableBlockEdgeBase
 
     public abstract class LayoutTriggerableBlockEdgeBase : LayoutBlockEdgeBase, IModelComponentHasName, IModelComponentConnectToControl {
-        const string TriggeredStateTopic = "Triggered";
+        const string Topic_TriggeredState = "Triggered";
 
         public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
 
@@ -174,28 +174,28 @@ namespace LayoutManager.Components {
             }
         }
 
-        public const string EmergencyContactAttribute = "EmergencyContact";
+        public const string A_EmergencyContact = "EmergencyContact";
 
         public bool IsEmergencySensor {
-            get => Element.HasAttribute(EmergencyContactAttribute) ? XmlConvert.ToBoolean(Element.GetAttribute(EmergencyContactAttribute)) : false;
+            get => Element.HasAttribute(A_EmergencyContact) ? XmlConvert.ToBoolean(Element.GetAttribute(A_EmergencyContact)) : false;
 
             set {
                 if (value == false)
-                    Element.RemoveAttribute(EmergencyContactAttribute);
+                    Element.RemoveAttribute(A_EmergencyContact);
                 else
-                    Element.SetAttribute(EmergencyContactAttribute, XmlConvert.ToString(value));
+                    Element.SetAttribute(A_EmergencyContact, XmlConvert.ToString(value));
             }
         }
 
         public bool IsTriggered {
-            get => LayoutModel.StateManager.Components.Contains(this, TriggeredStateTopic);
+            get => LayoutModel.StateManager.Components.Contains(this, Topic_TriggeredState);
 
             set {
                 if (value != IsTriggered) {
                     if (value)
-                        LayoutModel.StateManager.Components.StateOf(this, TriggeredStateTopic, create: true).SetAttribute("Value", "True");
+                        LayoutModel.StateManager.Components.StateOf(this, Topic_TriggeredState, create: true).SetAttribute("Value", "True");
                     else
-                        LayoutModel.StateManager.Components.Remove(this, TriggeredStateTopic);
+                        LayoutModel.StateManager.Components.Remove(this, Topic_TriggeredState);
 
                     EventManager.Event("proximity-sensor-changed", this, value);
                     OnComponentChanged();
@@ -221,7 +221,7 @@ namespace LayoutManager.Components {
             this.XmlInfo.XmlDocument.LoadXml("<TrackContact/>");
         }
 
-        public override String ToString() => IsEmergencySensor ? "emergency track contact" : "track contact";
+        public override string ToString() => IsEmergencySensor ? "emergency track contact" : "track contact";
 
 
         public override bool IsTrackContact() => FullyConnected;
@@ -238,7 +238,7 @@ namespace LayoutManager.Components {
             XmlInfo.XmlDocument.LoadXml("<OccupancyDetectionBlockEdge />");
         }
 
-        public override String ToString() => "edge of a block";
+        public override string ToString() => "edge of a block";
 
         public override bool DrawOutOfGrid => false;
 
@@ -260,7 +260,7 @@ namespace LayoutManager.Components {
             this.XmlInfo.XmlDocument.LoadXml("<ProximitySensor/>");
         }
 
-        public override String ToString() => IsEmergencySensor ? "emergency proximity sensor" : "proximity sensor";
+        public override string ToString() => IsEmergencySensor ? "emergency proximity sensor" : "proximity sensor";
 
         public override bool IsTrackContact() => FullyConnected;
 
@@ -747,7 +747,7 @@ namespace LayoutManager.Components {
 
         public bool ContainsBlockEdge(LayoutComponentConnectionPoint cp, LayoutBlockEdgeBase blockEdge) => ContainsBlockEdge(GetConnectionPointIndex(cp), blockEdge);
 
-        public override String ToString() => "Block information";
+        public override string ToString() => "Block information";
 
         protected void DoRedraw() {
             base.Redraw();

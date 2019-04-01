@@ -291,13 +291,13 @@ namespace LayoutManager.Model {
     /// representing the wiring from a control module connection point to the component.
     /// </summary>
     public class ControlConnectionPoint : LayoutXmlWrapper, IControlSupportUserAction {
-        private const string IndexAttribute = "Index";
-        private const string ComponentIdAttribute = "ComponentID";
-        private const string DisplayNameAttribute = "DisplayName";
-        private const string NameAttribute = "Name";
-        private const string TypeAttribute = "Type";
-        private const string UsageAttribute = "Usage";
-        private const string UserActionRequiredAttribute = "UserActionRequired";
+        private const string A_Index = "Index";
+        private const string A_ComponentId = "ComponentID";
+        private const string A_DisplayName = "DisplayName";
+        private const string A_Name = "Name";
+        private const string A_Type = "Type";
+        private const string A_Usage = "Usage";
+        private const string A_UserActionRequired = "UserActionRequired";
         readonly ControlModule module;
 
         public ControlConnectionPoint(ControlModule module, XmlElement connectionPointElement) : base(connectionPointElement) {
@@ -308,7 +308,7 @@ namespace LayoutManager.Model {
 		/// The ID of the component that this connection point is connected to, or Guid.Empty if this connection
 		/// point is not connected.
 		/// </summary>
-		public Guid ComponentId => (Guid?)AttributeValue(ComponentIdAttribute) ?? Guid.Empty;
+		public Guid ComponentId => (Guid?)AttributeValue(A_ComponentId) ?? Guid.Empty;
 
         /// <summary>
         /// The connection name to which this control module connect to
@@ -317,19 +317,19 @@ namespace LayoutManager.Model {
         public string? Name {
             get {
                 if (Component != null) {
-                    if (!HasAttribute(DisplayNameAttribute)) {     // Convert old connection to newer format
+                    if (!HasAttribute(A_DisplayName)) {     // Convert old connection to newer format
                         Debug.Assert(Component.ControlConnectionDescriptions.Count > 0);
-                        SetAttribute(NameAttribute, Component.ControlConnectionDescriptions[0].Name);
-                        SetAttribute(DisplayNameAttribute, Component.ControlConnectionDescriptions[0].DisplayName);
+                        SetAttribute(A_Name, Component.ControlConnectionDescriptions[0].Name);
+                        SetAttribute(A_DisplayName, Component.ControlConnectionDescriptions[0].DisplayName);
                     }
                 }
 
-                if (HasAttribute(NameAttribute))
-                    return GetAttribute(NameAttribute);
+                if (HasAttribute(A_Name))
+                    return GetAttribute(A_Name);
                 return null;
             }
 
-            set => SetAttribute(NameAttribute, value, removeIf: null);
+            set => SetAttribute(A_Name, value, removeIf: null);
         }
 
         /// <summary>
@@ -350,7 +350,7 @@ namespace LayoutManager.Model {
 
                 module.OnConnectionChanged();
 
-                if (HasAttribute(ComponentIdAttribute)) {
+                if (HasAttribute(A_ComponentId)) {
                     previousComponent = LayoutModel.Component<ModelComponent>(ComponentId, LayoutModel.ActivePhases);
 
                     if (previousComponent != null)
@@ -363,14 +363,14 @@ namespace LayoutManager.Model {
                 }
 
                 if (value == null) {
-                    Element.RemoveAttribute(ComponentIdAttribute);
+                    Element.RemoveAttribute(A_ComponentId);
                 }
                 else {
                     ModelComponent theComponent = (ModelComponent)value;
 
                     theComponent.EraseImage();
 
-                    SetAttribute(ComponentIdAttribute, XmlConvert.ToString(value.Id));
+                    SetAttribute(A_ComponentId, XmlConvert.ToString(value.Id));
                     Module.ControlManager.ConnectionPoints.Add(this);
 
                     theComponent.Redraw();
@@ -384,23 +384,23 @@ namespace LayoutManager.Model {
             }
         }
 
-        public bool IsConnected => HasAttribute(ComponentIdAttribute);
+        public bool IsConnected => HasAttribute(A_ComponentId);
 
         /// <summary>
         /// The index of this connection point relative to the control module. Index = 0 means the first connection
         /// point that is supported by the module
         /// </summary>
         public int Index {
-            get => (int?)AttributeValue(IndexAttribute) ?? -1;
-            set => SetAttribute(IndexAttribute, value);
+            get => (int?)AttributeValue(A_Index) ?? -1;
+            set => SetAttribute(A_Index, value);
         }
 
         /// <summary>
         /// The connection point output or input type
         /// </summary>
         public string Type {
-            get => GetOptionalAttribute(TypeAttribute) ?? Module.DefaultControlConnectionPointType;
-            set => SetAttribute(TypeAttribute, value, removeIf: Module.DefaultControlConnectionPointType);
+            get => GetOptionalAttribute(A_Type) ?? Module.DefaultControlConnectionPointType;
+            set => SetAttribute(A_Type, value, removeIf: Module.DefaultControlConnectionPointType);
         }
 
         public ControlConnectionPointUsage Usage {
@@ -415,10 +415,10 @@ namespace LayoutManager.Model {
                     return busUsage;
                 };
 
-                return AttributeValue(UsageAttribute).Enum<ControlConnectionPointUsage>() ?? GetBusTypeUsage();
+                return AttributeValue(A_Usage).Enum<ControlConnectionPointUsage>() ?? GetBusTypeUsage();
             }
 
-            set => SetAttribute(UsageAttribute, value.ToString());
+            set => SetAttribute(A_Usage, value.ToString());
         }
 
         /// <summary>
@@ -427,24 +427,24 @@ namespace LayoutManager.Model {
         /// <value></value>
         public string DisplayName {
             get {
-                if (!HasAttribute(DisplayNameAttribute) && Component != null) {     // Convert old connection to newer format
+                if (!HasAttribute(A_DisplayName) && Component != null) {     // Convert old connection to newer format
                     Debug.Assert(Component.ControlConnectionDescriptions.Count > 0);
-                    SetAttribute(NameAttribute, Component.ControlConnectionDescriptions[0].Name);
-                    SetAttribute(DisplayNameAttribute, Component.ControlConnectionDescriptions[0].DisplayName);
+                    SetAttribute(A_Name, Component.ControlConnectionDescriptions[0].Name);
+                    SetAttribute(A_DisplayName, Component.ControlConnectionDescriptions[0].DisplayName);
                 }
 
-                return GetAttribute(DisplayNameAttribute);
+                return GetAttribute(A_DisplayName);
             }
 
-            set => SetAttribute(DisplayNameAttribute, value);
+            set => SetAttribute(A_DisplayName, value);
         }
 
         /// <summary>
         /// Some action is required on this connection point, for example, wiring
         /// </summary>
         public bool UserActionRequired {
-            get => (bool?)AttributeValue(UserActionRequiredAttribute) ?? false;
-            set => SetAttribute(UserActionRequiredAttribute, value, removeIf: false);
+            get => (bool?)AttributeValue(A_UserActionRequired) ?? false;
+            set => SetAttribute(A_UserActionRequired, value, removeIf: false);
         }
 
     }
@@ -802,11 +802,11 @@ namespace LayoutManager.Model {
     /// a conrolled component.
     /// </summary>
     public class ControlModule : LayoutXmlWrapper, IComparable<ControlModule>, IControlSupportUserAction, IHasDecoder {
-        private const string DefaultConnectionPointTypeAttribute = "DefaultConnectionPointType";
-        private const string AddressAttribute = "Address";
-        private const string LabelAttribute = "Label";
-        private const string UserActionRequiredAttribute = "UserActionRequired";
-        private const string AddressProgrammingRequiredAttribute = "AddressProgrammingRequired";
+        private const string A_DefaultConnectionPointType = "DefaultConnectionPointType";
+        private const string A_Address = "Address";
+        private const string A_Label = "Label";
+        private const string A_UserActionRequired = "UserActionRequired";
+        private const string A_AddressProgrammingRequired = "AddressProgrammingRequired";
         readonly LayoutControlManager controlManager;
         ControlModuleType? moduleType;
         LayoutPhase _phase = LayoutPhase.None;
@@ -880,16 +880,16 @@ namespace LayoutManager.Model {
         public ControlConnectionPointCollection ConnectionPoints => new ControlConnectionPointCollection(this);
 
         public string DefaultControlConnectionPointType {
-            get => GetOptionalAttribute(DefaultConnectionPointTypeAttribute) ?? ModuleType.DefaultControlConnectionPointType;
-            set => SetAttribute(DefaultConnectionPointTypeAttribute, value, removeIf: ModuleType.DefaultControlConnectionPointType);
+            get => GetOptionalAttribute(A_DefaultConnectionPointType) ?? ModuleType.DefaultControlConnectionPointType;
+            set => SetAttribute(A_DefaultConnectionPointType, value, removeIf: ModuleType.DefaultControlConnectionPointType);
         }
 
         /// <summary>
         /// The control module address (in many cases this is the address of the first connection point)
         /// </summary>
         public int Address {
-            get => (int?)AttributeValue(AddressAttribute) ?? -1;
-            set => SetAttribute(AddressAttribute, value);
+            get => (int?)AttributeValue(A_Address) ?? -1;
+            set => SetAttribute(A_Address, value);
         }
 
         /// <summary>
@@ -922,24 +922,24 @@ namespace LayoutManager.Model {
         /// The module label
         /// </summary>
         public string? Label {
-            get => GetOptionalAttribute(LabelAttribute);
-            set => SetAttribute(LabelAttribute, value, removeIf: null);
+            get => GetOptionalAttribute(A_Label);
+            set => SetAttribute(A_Label, value, removeIf: null);
         }
 
         /// <summary>
         /// Some user action is required on this module (for example, wiring it.)
         /// </summary>
         public bool UserActionRequired {
-            get => (bool?)AttributeValue(UserActionRequiredAttribute) ?? false;
-            set => SetAttribute(UserActionRequiredAttribute, value, removeIf: false);
+            get => (bool?)AttributeValue(A_UserActionRequired) ?? false;
+            set => SetAttribute(A_UserActionRequired, value, removeIf: false);
         }
 
         /// <summary>
         /// Address programming is required for this module
         /// </summary>
         public bool AddressProgrammingRequired {
-            get => (bool?)AttributeValue(AddressProgrammingRequiredAttribute) ?? false;
-            set => SetAttribute(AddressProgrammingRequiredAttribute, value, removeIf: false);
+            get => (bool?)AttributeValue(A_AddressProgrammingRequired) ?? false;
+            set => SetAttribute(A_AddressProgrammingRequired, value, removeIf: false);
         }
 
         /// <summary>
@@ -1035,20 +1035,20 @@ namespace LayoutManager.Model {
     /// handler to describe that control module.
     /// </summary>
     public class ControlModuleType : LayoutXmlWrapper {
-        private const string TypeNameAttribute = "TypeName";
-        private const string ModuleTypeElementName = "ModuleType";
-        private const string NameAttribute = "Name";
-        private const string DefaultConnectionPointTypeAttribute = "DefaultConnectionPointType";
-        private const string NumberOfAddressesAttribute = "NumberOfAddresses";
-        private const string AddressAlignmentAttribute = "AddressAlignment";
-        private const string ConnectionPointsPerAddressAttribute = "ConnectionPointsPerAddress";
-        private const string NumberOfConnectionPointsAttribute = "NumberOfConnectionPoints";
-        private const string ConnectionPointArrangementAttribute = "ConnectionPointArrangement";
-        private const string ConnectionPointLabelFormatAttribute = "ConnectionPointLabelFormat";
-        private const string ConnectionPointIndexBaseAttribute = "ConnectionPointIndexBase";
-        private const string FirstAddressAttribute = "FirstAddress";
-        private const string LastAddressAttribute = "LastAddress";
-        private const string BuiltInAttribute = "BuiltIn";
+        private const string A_TypeName = "TypeName";
+        private const string E_ModuleType = "ModuleType";
+        private const string A_Name = "Name";
+        private const string A_DefaultConnectionPointType = "DefaultConnectionPointType";
+        private const string A_NumberOfAddresses = "NumberOfAddresses";
+        private const string A_AddressAlignment = "AddressAlignment";
+        private const string A_ConnectionPointsPerAddress = "ConnectionPointsPerAddress";
+        private const string A_NumberOfConnectionPoints = "NumberOfConnectionPoints";
+        private const string A_ConnectionPointArrangement = "ConnectionPointArrangement";
+        private const string A_ConnectionPointLabelFormat = "ConnectionPointLabelFormat";
+        private const string A_ConnectionPointIndexBase = "ConnectionPointIndexBase";
+        private const string A_FirstAddress = "FirstAddress";
+        private const string A_LastAddress = "LastAddress";
+        private const string A_BuiltIn = "BuiltIn";
 
         public ControlModuleType(XmlElement element) : base(element) {
         }
@@ -1060,7 +1060,7 @@ namespace LayoutManager.Model {
         /// <param name="typeName">The module type name</param>
         /// <param name="name">User friendly module name</param>
         public ControlModuleType(XmlElement parent, string typeName, string name) {
-            Element = parent.OwnerDocument.CreateElement(ModuleTypeElementName);
+            Element = parent.OwnerDocument.CreateElement(E_ModuleType);
 
             parent.AppendChild(Element);
             TypeName = typeName;
@@ -1071,24 +1071,24 @@ namespace LayoutManager.Model {
         /// Internal type name, used as a key by the control module to select this type
         /// </summary>
         public string TypeName {
-            get => GetAttribute(TypeNameAttribute);
-            set => SetAttribute(TypeNameAttribute, value);
+            get => GetAttribute(A_TypeName);
+            set => SetAttribute(A_TypeName, value);
         }
 
         /// <summary>
         /// Human readable type name
         /// </summary>
         public string Name {
-            get => GetAttribute(NameAttribute);
-            set => SetAttribute(NameAttribute, value);
+            get => GetAttribute(A_Name);
+            set => SetAttribute(A_Name, value);
         }
 
         /// <summary>
         /// The default of each connection point for modules in this type
         /// </summary>
         public string DefaultControlConnectionPointType {
-            get => GetOptionalAttribute(DefaultConnectionPointTypeAttribute) ?? ControlConnectionPointTypes.OutputSolenoid;
-            set => SetAttribute(DefaultConnectionPointTypeAttribute, value);
+            get => GetOptionalAttribute(A_DefaultConnectionPointType) ?? ControlConnectionPointTypes.OutputSolenoid;
+            set => SetAttribute(A_DefaultConnectionPointType, value);
         }
 
         /// <summary>
@@ -1097,8 +1097,8 @@ namespace LayoutManager.Model {
         /// supports 4 turnouts, the value is 4
         /// </summary>
         public int NumberOfAddresses {
-            get => (int?)AttributeValue(NumberOfAddressesAttribute) ?? 1;
-            set => SetAttribute(NumberOfAddressesAttribute, value);
+            get => (int?)AttributeValue(A_NumberOfAddresses) ?? 1;
+            set => SetAttribute(A_NumberOfAddresses, value);
         }
 
         /// <summary>
@@ -1106,48 +1106,48 @@ namespace LayoutManager.Model {
         /// the address alignment is 4 than the module address must divide by 4 (0, 4, 8 etc.)
         /// </summary>
         public int AddressAlignment {
-            get => (int?)AttributeValue(AddressAlignmentAttribute) ?? NumberOfAddresses;
-            set => SetAttribute(AddressAlignmentAttribute, XmlConvert.ToString(value));
+            get => (int?)AttributeValue(A_AddressAlignment) ?? NumberOfAddresses;
+            set => SetAttribute(A_AddressAlignment, XmlConvert.ToString(value));
         }
 
         /// <summary>
         /// The number of connection points for each address on the bus.
         /// </summary>
         public int ConnectionPointsPerAddress {
-            get => (int?)AttributeValue(ConnectionPointsPerAddressAttribute) ?? 1;
-            set => SetAttribute(ConnectionPointsPerAddressAttribute, value);
+            get => (int?)AttributeValue(A_ConnectionPointsPerAddress) ?? 1;
+            set => SetAttribute(A_ConnectionPointsPerAddress, value);
         }
 
         /// <summary>
         /// The total number of connection points
         /// </summary>
         public int NumberOfConnectionPoints {
-            get => (int?)AttributeValue(NumberOfConnectionPointsAttribute) ?? NumberOfAddresses * ConnectionPointsPerAddress;
-            set => SetAttribute(NumberOfConnectionPointsAttribute, XmlConvert.ToString(value));
+            get => (int?)AttributeValue(A_NumberOfConnectionPoints) ?? NumberOfAddresses * ConnectionPointsPerAddress;
+            set => SetAttribute(A_NumberOfConnectionPoints, XmlConvert.ToString(value));
         }
 
         /// <summary>
         /// Provide information how a connection point label is to be displayed
         /// </summary>
         public ControlModuleConnectionPointArrangementOptions ConnectionPointArrangement {
-            get => (ControlModuleConnectionPointArrangementOptions)((int?)AttributeValue(ConnectionPointArrangementAttribute) ?? 6);
-            set => SetAttribute(ConnectionPointArrangementAttribute, (int)value);
+            get => (ControlModuleConnectionPointArrangementOptions)((int?)AttributeValue(A_ConnectionPointArrangement) ?? 6);
+            set => SetAttribute(A_ConnectionPointArrangement, (int)value);
         }
 
         /// <summary>
         /// Provide information how a connection point label is to be displayed
         /// </summary>
         public ControlConnectionPointLabelFormatOptions ConnectionPointLabelFormat {
-            get => (ControlConnectionPointLabelFormatOptions)((int?)AttributeValue(ConnectionPointLabelFormatAttribute) ?? 0);
-            set => SetAttribute(ConnectionPointLabelFormatAttribute, (int)value);
+            get => (ControlConnectionPointLabelFormatOptions)((int?)AttributeValue(A_ConnectionPointLabelFormat) ?? 0);
+            set => SetAttribute(A_ConnectionPointLabelFormat, (int)value);
         }
 
         /// <summary>
         /// The origin of connection point index, usually it will be either 0, or 1
         /// </summary>
         public int ConnectionPointIndexBase {
-            get => (int?)AttributeValue(ConnectionPointIndexBaseAttribute) ?? 0;
-            set => SetAttribute(ConnectionPointIndexBaseAttribute, value);
+            get => (int?)AttributeValue(A_ConnectionPointIndexBase) ?? 0;
+            set => SetAttribute(A_ConnectionPointIndexBase, value);
         }
 
         /// <summary>
@@ -1159,16 +1159,16 @@ namespace LayoutManager.Model {
         /// Return minimum address allowed for this module (if any or -1 if use the default bus addressing limits)
         /// </summary>
         public int FirstAddress {
-            get => (int?)AttributeValue(FirstAddressAttribute) ?? -1;
-            set => SetAttribute(FirstAddressAttribute, value);
+            get => (int?)AttributeValue(A_FirstAddress) ?? -1;
+            set => SetAttribute(A_FirstAddress, value);
         }
 
         /// <summary>
         /// Return maximum address allowed for this module (if any or -1 if use the default bus addressing limits)
         /// </summary>
         public int LastAddress {
-            get => (int?)AttributeValue(LastAddressAttribute) ?? -1;
-            set => SetAttribute(LastAddressAttribute, value);
+            get => (int?)AttributeValue(A_LastAddress) ?? -1;
+            set => SetAttribute(A_LastAddress, value);
         }
 
         /// <summary>
@@ -1176,8 +1176,8 @@ namespace LayoutManager.Model {
         /// (e.g. Marklin C-track turnouts).
         /// </summary>
         public bool BuiltIn {
-            get => (bool?)AttributeValue(BuiltInAttribute) ?? false;
-            set => SetAttribute(BuiltInAttribute, value);
+            get => (bool?)AttributeValue(A_BuiltIn) ?? false;
+            set => SetAttribute(A_BuiltIn, value);
         }
 
         /// <summary>
@@ -1244,9 +1244,9 @@ namespace LayoutManager.Model {
     /// Bus object. A bus is connected to one or more control modules. Each bus is connected to a command station
     /// </summary>
     public class ControlBus : LayoutXmlWrapper {
-        private const string CommandStationIdAttribute = "CommandStationID";
-        private const string BusProviderIdAttribute = "BusProviderID";
-        private const string BusTypeNameAttribute = "BusTypeName";
+        private const string A_CommandStationId = "CommandStationID";
+        private const string A_BusProviderId = "BusProviderID";
+        private const string A_BusTypeName = "BusTypeName";
         readonly LayoutControlManager controlManager;
         ControlBusType? busType;
         Dictionary<int, ControlModule>? addressModuleMap;
@@ -1263,17 +1263,17 @@ namespace LayoutManager.Model {
         public Guid BusProviderId {
             get {
                 Guid? DefaultBusProviderId() {
-                    var id = (Guid?)AttributeValue(CommandStationIdAttribute);
+                    var id = (Guid?)AttributeValue(A_CommandStationId);
 
                     if (id.HasValue)
                         BusProviderId = id.Value;
                     return id;
                 };
 
-                return (Guid?)AttributeValue(BusProviderIdAttribute) ?? DefaultBusProviderId() ?? Guid.Empty;
+                return (Guid?)AttributeValue(A_BusProviderId) ?? DefaultBusProviderId() ?? Guid.Empty;
             }
 
-            set => SetAttribute(BusProviderIdAttribute, value);
+            set => SetAttribute(A_BusProviderId, value);
         }
 
         /// <summary>
@@ -1288,8 +1288,8 @@ namespace LayoutManager.Model {
         /// The bus type name of this bus
         /// </summary>
         public string BusTypeName {
-            get => GetAttribute(BusTypeNameAttribute);
-            set => SetAttribute(BusTypeNameAttribute, value);
+            get => GetAttribute(A_BusTypeName);
+            set => SetAttribute(A_BusTypeName, value);
         }
 
         /// <summary>
@@ -1564,15 +1564,15 @@ namespace LayoutManager.Model {
     /// This object represent a bus type.
     /// </summary>
     public class ControlBusType : LayoutXmlWrapper {
-        private const string BusFamilyNameAttribute = "BusFamilyName";
-        private const string BusTypeNameAttribute = "BusTypeName";
-        private const string NameAttribute = "Name";
-        private const string TopologyAttribute = "Topology";
-        private const string AddressingMethodAttribute = "AddressingMethod";
-        private const string FirstAddressAttribute = "FirstAddress";
-        private const string LastAddressAttribute = "LastAddress";
-        private const string RecommendedStartAddressAttribute = "RecommendedStartAddress";
-        private const string UsageAttribute = "Usage";
+        private const string A_BusFamilyName = "BusFamilyName";
+        private const string A_BusTypeName = "BusTypeName";
+        private const string A_Name = "Name";
+        private const string A_Topology = "Topology";
+        private const string A_AddressingMethod = "AddressingMethod";
+        private const string A_FirstAddress = "FirstAddress";
+        private const string A_LastAddress = "LastAddress";
+        private const string A_RecommendedStartAddress = "RecommendedStartAddress";
+        private const string A_Usage = "Usage";
 
         public ControlBusType() {
             XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
@@ -1585,63 +1585,63 @@ namespace LayoutManager.Model {
         /// Generic bus type - for example DCC or MotorolaDCC
         /// </summary>
         public string BusFamilyName {
-            get => GetAttribute(BusFamilyNameAttribute);
-            set => SetAttribute(BusFamilyNameAttribute, value);
+            get => GetAttribute(A_BusFamilyName);
+            set => SetAttribute(A_BusFamilyName, value);
         }
 
         /// <summary>
         /// Bus type name is used as a key for bus objects to get their bus type information
         /// </summary>
         public string BusTypeName {
-            get => GetAttribute(BusTypeNameAttribute);
-            set => SetAttribute(BusTypeNameAttribute, value);
+            get => GetAttribute(A_BusTypeName);
+            set => SetAttribute(A_BusTypeName, value);
         }
 
         /// <summary>
         /// User friendly name for this bus
         /// </summary>
         public string Name {
-            get => GetAttribute(NameAttribute);
-            set => SetAttribute(NameAttribute, value);
+            get => GetAttribute(A_Name);
+            set => SetAttribute(A_Name, value);
         }
 
         /// <summary>
         /// The addressing method for this bus
         /// </summary>
         public ControlBusTopology Topology {
-            get => AttributeValue(TopologyAttribute).Enum<ControlBusTopology>() ?? ControlBusTopology.RandomAddressing;
-            set => SetAttribute(TopologyAttribute, value.ToString());
+            get => AttributeValue(A_Topology).Enum<ControlBusTopology>() ?? ControlBusTopology.RandomAddressing;
+            set => SetAttribute(A_Topology, value.ToString());
         }
 
         public ControlAddressingMethod AddressingMethod {
-            get => AttributeValue(AddressingMethodAttribute).Enum<ControlAddressingMethod>() ?? ControlAddressingMethod.DirectConnectionPointAddressing;
-            set => SetAttribute(AddressingMethodAttribute, value.ToString());
+            get => AttributeValue(A_AddressingMethod).Enum<ControlAddressingMethod>() ?? ControlAddressingMethod.DirectConnectionPointAddressing;
+            set => SetAttribute(A_AddressingMethod, value.ToString());
         }
 
         /// <summary>
         /// First valid address on the bus
         /// </summary>
         public int FirstAddress {
-            get => (int?)AttributeValue(FirstAddressAttribute) ?? 0;
-            set => SetAttribute(FirstAddressAttribute, value);
+            get => (int?)AttributeValue(A_FirstAddress) ?? 0;
+            set => SetAttribute(A_FirstAddress, value);
         }
 
         /// <summary>
         /// The last valid address on the bus
         /// </summary>
         public int LastAddress {
-            get => (int?)AttributeValue(LastAddressAttribute) ?? 255;
-            set => SetAttribute(LastAddressAttribute, value);
+            get => (int?)AttributeValue(A_LastAddress) ?? 255;
+            set => SetAttribute(A_LastAddress, value);
         }
 
         public int RecommendedStartAddress {
-            get => (int?)AttributeValue(RecommendedStartAddressAttribute) ?? FirstAddress;
-            set => SetAttribute(RecommendedStartAddressAttribute, value);
+            get => (int?)AttributeValue(A_RecommendedStartAddress) ?? FirstAddress;
+            set => SetAttribute(A_RecommendedStartAddress, value);
         }
 
         public ControlConnectionPointUsage Usage {
-            get => AttributeValue(UsageAttribute).Enum<ControlConnectionPointUsage>() ?? ControlConnectionPointUsage.Both;
-            set => SetAttribute(UsageAttribute, value.ToString());
+            get => AttributeValue(A_Usage).Enum<ControlConnectionPointUsage>() ?? ControlConnectionPointUsage.Both;
+            set => SetAttribute(A_Usage, value.ToString());
         }
 
         /// <summary>

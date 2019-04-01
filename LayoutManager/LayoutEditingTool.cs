@@ -16,7 +16,7 @@ namespace LayoutManager {
 
     public class LayoutEditingTool : LayoutTool {
         LayoutStraightTrackComponent lastTrack = null;
-        String lastCategoryName = null;
+        string lastCategoryName = null;
 
         public LayoutEditingTool() {
             InitializeComponent();

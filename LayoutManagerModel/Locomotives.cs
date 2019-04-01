@@ -68,12 +68,12 @@ namespace LayoutManager.Model {
         public LocomotiveStorageInfo(XmlElement element) : base(element) {
         }
 
-        public String StorageName {
+        public string StorageName {
             get => Element.GetAttribute(A_Name);
             set => Element.SetAttribute(A_Name, value);
         }
 
-        public String Filename {
+        public string Filename {
             get => Element.GetAttribute(A_File);
             set => Element.SetAttribute(A_File, value);
         }
@@ -279,9 +279,9 @@ namespace LayoutManager.Model {
             }
         }
 
-        public override String CollectionElementName => "LocomotiveTypes";
+        public override string CollectionElementName => "LocomotiveTypes";
 
-        public override String CollectionName => "Locomotive Catalog";
+        public override string CollectionName => "Locomotive Catalog";
 
         public override string DefaultStoreDirectory => GetDataSubdirectoryPath("Catalog");
 
@@ -360,9 +360,9 @@ namespace LayoutManager.Model {
             }
         }
 
-        public override String CollectionElementName => "Locomotives";
+        public override string CollectionElementName => "Locomotives";
 
-        public override String CollectionName => "Locomotive Collection";
+        public override string CollectionName => "Locomotive Collection";
 
         public override string DefaultStoreDirectory => GetDataSubdirectoryPath("Collection");
 
@@ -499,7 +499,7 @@ namespace LayoutManager.Model {
         public LocomotiveTypeInfo(XmlElement element) : base(element) {
         }
 
-        public String TypeName {
+        public string TypeName {
             get => Element[E_TypeName] != null ? Element[E_TypeName].InnerText : "";
 
             set {
@@ -666,7 +666,7 @@ namespace LayoutManager.Model {
             set => SetAttribute(A_Type, value.ToString());
         }
 
-        public String Name {
+        public string Name {
             get => GetOptionalAttribute(A_Name) ?? "";
             set => SetAttribute(A_Name, value);
         }
@@ -836,7 +836,7 @@ namespace LayoutManager.Model {
             }
 
             foreach (XmlAttribute a in locoType.Element.Attributes) {
-                String name = a.Name;
+                string name = a.Name;
 
                 if (name == A_Id)
                     name = A_TypeId;
@@ -1197,7 +1197,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The train name
         /// </summary>
-        public String Name {
+        public string Name {
             get {
                 XmlElement nameElement = Element[E_Name];
 

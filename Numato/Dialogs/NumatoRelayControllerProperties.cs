@@ -51,8 +51,8 @@ namespace NumatoController.Dialogs {
             this.component = component;
             this.xmlInfo = new LayoutXmlInfo(component);
 
-            if (xmlInfo.DocumentElement.HasAttribute(NumatoController.relaysCountAttribute)) {
-                var nRelays = xmlInfo.DocumentElement.GetAttribute(NumatoController.relaysCountAttribute);
+            if (xmlInfo.DocumentElement.HasAttribute(NumatoController.A_Relays)) {
+                var nRelays = xmlInfo.DocumentElement.GetAttribute(NumatoController.A_Relays);
 
                 foreach (var item in comboBoxRelays.Items)
                     if ((string)item == nRelays) {
@@ -66,8 +66,8 @@ namespace NumatoController.Dialogs {
 
             InterfaceType interfaceType = InterfaceType.Serial;
 
-            if (xmlInfo.DocumentElement.HasAttribute(LayoutBusProviderSupport.InterfaceTypeAttribute))
-                interfaceType = (InterfaceType)Enum.Parse(typeof(InterfaceType), xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.InterfaceTypeAttribute));
+            if (xmlInfo.DocumentElement.HasAttribute(LayoutBusProviderSupport.A_InterfaceType))
+                interfaceType = (InterfaceType)Enum.Parse(typeof(InterfaceType), xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.A_InterfaceType));
 
             if (interfaceType == InterfaceType.Serial)
                 radioButtonSerial.Checked = true;
@@ -75,16 +75,16 @@ namespace NumatoController.Dialogs {
                 radioButtonTCP.Checked = true;
 
             nameDefinition.XmlInfo = this.xmlInfo;
-            comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.PortAttribute);
+            comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.A_Port);
 
-            if (xmlInfo.DocumentElement.HasAttribute(LayoutBusProviderSupport.AddressAttribute))
-                textBoxAddress.Text = xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.AddressAttribute);
+            if (xmlInfo.DocumentElement.HasAttribute(LayoutBusProviderSupport.A_Address))
+                textBoxAddress.Text = xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.A_Address);
 
-            if (xmlInfo.DocumentElement.HasAttribute(NumatoController.userAttribute))
-                textBoxUser.Text = xmlInfo.DocumentElement.GetAttribute(NumatoController.userAttribute);
+            if (xmlInfo.DocumentElement.HasAttribute(NumatoController.A_User))
+                textBoxUser.Text = xmlInfo.DocumentElement.GetAttribute(NumatoController.A_User);
 
-            if (xmlInfo.DocumentElement.HasAttribute(NumatoController.passwordAttribute))
-                textBoxPassword.Text = xmlInfo.DocumentElement.GetAttribute(NumatoController.passwordAttribute);
+            if (xmlInfo.DocumentElement.HasAttribute(NumatoController.A_Password))
+                textBoxPassword.Text = xmlInfo.DocumentElement.GetAttribute(NumatoController.A_Password);
 
             radioButtonInterfaceType_CheckedChanged(null, new EventArgs());
         }
@@ -380,7 +380,7 @@ namespace NumatoController.Dialogs {
                 return;
             }
 
-            xmlInfo.DocumentElement.SetAttribute(NumatoController.relaysCountAttribute, XmlConvert.ToString(relayCount));
+            xmlInfo.DocumentElement.SetAttribute(NumatoController.A_Relays, XmlConvert.ToString(relayCount));
 
             if (radioButtonSerial.Checked) {
                 xmlInfo.DocumentElement.SetAttribute("InterfaceType", InterfaceType.Serial.ToString());
@@ -397,7 +397,7 @@ namespace NumatoController.Dialogs {
                 return;
             }
 
-            xmlInfo.DocumentElement.SetAttribute(NumatoController.userAttribute, textBoxUser.Text);
+            xmlInfo.DocumentElement.SetAttribute(NumatoController.A_User, textBoxUser.Text);
 
             if (string.IsNullOrWhiteSpace(textBoxPassword.Text)) {
                 MessageBox.Show(this, "Missing password", "Missing password", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -405,7 +405,7 @@ namespace NumatoController.Dialogs {
                 return;
             }
 
-            xmlInfo.DocumentElement.SetAttribute(NumatoController.passwordAttribute, textBoxPassword.Text);
+            xmlInfo.DocumentElement.SetAttribute(NumatoController.A_Password, textBoxPassword.Text);
 
             DialogResult = DialogResult.OK;
         }

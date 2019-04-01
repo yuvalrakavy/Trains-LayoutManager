@@ -12,11 +12,11 @@ namespace LayoutManager {
         public LayoutException(String message) : base(message) {
         }
 
-        public LayoutException(object subject, String message) : base(message) {
+        public LayoutException(object subject, string message) : base(message) {
             this.subject = subject;
         }
 
-        public LayoutException(object subject, String message, Exception inner) : base(message, inner) {
+        public LayoutException(object subject, string message, Exception inner) : base(message, inner) {
             this.subject = subject;
         }
 
@@ -37,10 +37,10 @@ namespace LayoutManager {
         /// The event to generate for reporting this exception. The default is add-error, but it can
         /// also be add-warning or add-message
         /// </summary>
-        public virtual String DefaultMessageType => "error";
+        public virtual string DefaultMessageType => "error";
 
         virtual protected void Generate(String messageType) {
-            String messageEventName = "add-" + messageType;
+            string messageEventName = "add-" + messageType;
 
             EventManager.Event(new LayoutEvent(messageEventName, Subject, Message));
         }

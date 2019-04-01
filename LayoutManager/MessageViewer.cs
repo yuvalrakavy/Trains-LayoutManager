@@ -178,8 +178,8 @@ namespace LayoutManager {
             readonly MessageSeverity severity;
             LayoutSelection selection;
 
-            public MessageItem(MessageSeverity severity, Object messageSubject, String message) {
-                String areaNames = "";
+            public MessageItem(MessageSeverity severity, Object messageSubject, string message) {
+                string areaNames = "";
 
                 this.Text = message;
                 this.severity = severity;

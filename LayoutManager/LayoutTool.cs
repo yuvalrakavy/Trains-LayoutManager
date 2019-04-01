@@ -387,7 +387,7 @@ namespace LayoutManager {
             }
             else {
                 foreach (ModelComponent component in hitTestResult.Selection) {
-                    String componentMenuName;
+                    string componentMenuName;
 
                     if (ComponentContextMenuQueryNameEventName != null)
                         componentMenuName = (String)EventManager.Event(

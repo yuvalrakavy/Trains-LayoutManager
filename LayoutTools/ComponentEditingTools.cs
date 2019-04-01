@@ -43,7 +43,7 @@ namespace LayoutManager.Tools {
     #pragma warning disable IDE0051, IDE0060
     [LayoutModule("Components Editing Tools", UserControl = false)]
     public class ComponentEditingTools : ILayoutModuleSetup {
-        public static String ComponentEditingToolsVersion = "1.0";
+        public static string ComponentEditingToolsVersion = "1.0";
 
         /// <summary>
         /// Required designer variable.

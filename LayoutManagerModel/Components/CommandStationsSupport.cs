@@ -74,9 +74,9 @@ namespace LayoutManager.Components {
         ILayoutCommandStationEmulator? commandStationEmulator;
         bool operationMode;
 
-        public const string InterfaceTypeAttribute = "InterfaceType";
-        public const string PortAttribute = "Port";
-        public const string AddressAttribute = "Address";
+        public const string A_InterfaceType = "InterfaceType";
+        public const string A_Port = "Port";
+        public const string A_Address = "Address";
 
         public override ModelComponentKind Kind => ModelComponentKind.ControlComponent;
 
@@ -117,20 +117,20 @@ namespace LayoutManager.Components {
 
         public CommunicationInterfaceType InterfaceType {
             get {
-                if (Element.HasAttribute(InterfaceTypeAttribute))
-                    return (CommunicationInterfaceType)Enum.Parse(typeof(CommunicationInterfaceType), Element.GetAttribute(InterfaceTypeAttribute));
+                if (Element.HasAttribute(A_InterfaceType))
+                    return (CommunicationInterfaceType)Enum.Parse(typeof(CommunicationInterfaceType), Element.GetAttribute(A_InterfaceType));
                 else
                     return CommunicationInterfaceType.Serial;
             }
 
             set {
-                Element.SetAttribute(InterfaceTypeAttribute, value.ToString());
+                Element.SetAttribute(A_InterfaceType, value.ToString());
             }
         }
 
         public string IPaddress {
-            get { return Element.GetAttribute(AddressAttribute); }
-            set { Element.SetAttribute(AddressAttribute, value); }
+            get { return Element.GetAttribute(A_Address); }
+            set { Element.SetAttribute(A_Address, value); }
         }
 
 
