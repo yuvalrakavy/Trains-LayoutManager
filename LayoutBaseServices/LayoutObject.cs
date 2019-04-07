@@ -21,15 +21,7 @@ namespace LayoutManager {
     }
 
     public static class IObjectHasXmlExtensions {
-        public static ConvertableString AttributeValue(this IObjectHasXml xmlObject, string name) {
-            if (xmlObject.OptionalElement == null)
-                return new ConvertableString(null, name, xmlObject.OptionalElement);
-
-            if (xmlObject.OptionalElement.Attributes[name] == null)
-                return new ConvertableString(null, name, xmlObject.OptionalElement);
-            return new ConvertableString(xmlObject.OptionalElement.GetAttribute(name), name, xmlObject.Element);
-        }
-
+        public static ConvertableString AttributeValue(this IObjectHasXml xmlObject, string name) => xmlObject.OptionalElement.AttributeValue(name);
 
         public static void SetAttribute(this IObjectHasXml xmlObject, string name, string? v) {
             Debug.Assert(xmlObject.OptionalElement != null);
@@ -39,59 +31,84 @@ namespace LayoutManager {
                 xmlObject.OptionalElement.SetAttribute(name, v);
         }
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, string? v, string? removeIf) {
-            Debug.Assert(xmlObject.OptionalElement != null);
-            if (v == null || v == removeIf)
-                xmlObject.OptionalElement.RemoveAttribute(name);
-            else
-                xmlObject.OptionalElement.SetAttribute(name, v);
-        }
+        public static void SetAttribute(this IObjectHasXml xmlObject, string name, string? v, string? removeIf) => xmlObject.Element.SetAttribute(name, v, removeIf);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, int v, int removeIf) {
-            Debug.Assert(xmlObject.OptionalElement != null);
-            if (v == removeIf)
-                xmlObject.OptionalElement.RemoveAttribute(name);
-            else
-                xmlObject.OptionalElement.SetAttribute(name, XmlConvert.ToString(v));
-        }
+        public static void SetAttribute(this IObjectHasXml xmlObject, string name, int v, int removeIf) => xmlObject.Element.SetAttribute(name, v, removeIf);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, int v) {
-            Debug.Assert(xmlObject.OptionalElement != null);
-            xmlObject.OptionalElement.SetAttribute(name, XmlConvert.ToString(v));
-        }
+        public static void SetAttribute(this IObjectHasXml xmlObject, string name, int v) => xmlObject.Element.SetAttribute(name, v);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, double v) {
-            Debug.Assert(xmlObject.OptionalElement != null);
-            xmlObject.OptionalElement.SetAttribute(name, XmlConvert.ToString(v));
-        }
+        public static void SetAttribute(this IObjectHasXml xmlObject, string name, double v) => xmlObject.Element.SetAttribute(name, v);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, Guid v) {
-            Debug.Assert(xmlObject.OptionalElement != null);
-            xmlObject.OptionalElement.SetAttribute(name, XmlConvert.ToString(v));
-        }
+        public static void SetAttribute(this IObjectHasXml xmlObject, string name, Guid v) => xmlObject.Element.SetAttribute(name, v);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, Guid v, Guid removeIf) {
-            Debug.Assert(xmlObject.OptionalElement != null);
-            if (v == removeIf)
-                xmlObject.OptionalElement.RemoveAttribute(name);
-            else
-                xmlObject.OptionalElement.SetAttribute(name, XmlConvert.ToString(v));
-        }
+        public static void SetAttribute(this IObjectHasXml xmlObject, string name, Guid v, Guid removeIf) => xmlObject.Element.SetAttribute(name, v, removeIf);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, bool v) {
-            Debug.Assert(xmlObject.OptionalElement != null);
-            xmlObject.OptionalElement.SetAttribute(name, XmlConvert.ToString(v));
-        }
+        public static void SetAttribute(this IObjectHasXml xmlObject, string name, bool v) => xmlObject.Element.SetAttribute(name, v);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, bool v, bool removeIf) {
-            Debug.Assert(xmlObject.OptionalElement != null);
-            if (v == removeIf)
-                xmlObject.OptionalElement.RemoveAttribute(name);
-            else
-                xmlObject.OptionalElement.SetAttribute(name, XmlConvert.ToString(v));
-        }
+        public static void SetAttribute(this IObjectHasXml xmlObject, string name, bool v, bool removeIf) => xmlObject.Element.SetAttribute(name, v, removeIf);
+
+        public static void SetAttribute(this IObjectHasXml xmlObject, string name, Enum e) => xmlObject.Element.SetAttribute(name, e);
+        public static void SetAttribute(this IObjectHasXml xmlObject, string name, Enum e, Enum removeIf) => xmlObject.Element.SetAttribute(name, e, removeIf);
+
 
         public static bool HasAttribute(this IObjectHasXml xmlObject, string name) => xmlObject.Element.HasAttribute(name);
+    }
+
+    public static class XmlElementExtensions {
+        public static ConvertableString AttributeValue(this XmlElement? e, string name) {
+            if (e == null || e.Attributes[name] == null)
+                return new ConvertableString(null, name, e);
+
+            return new ConvertableString(e.GetAttribute(name), name, e);
+        }
+
+
+        public static void SetAttribute(this XmlElement e, string name, string? v, string? removeIf) {
+            if (v == null || v == removeIf)
+                e.RemoveAttribute(name);
+            else
+                e.SetAttribute(name, v);
+        }
+
+        public static void SetAttribute(this XmlElement e, string name, int v, int removeIf) {
+            if (v == removeIf)
+                e.RemoveAttribute(name);
+            else
+                e.SetAttribute(name, XmlConvert.ToString(v));
+        }
+
+        public static void SetAttribute(this XmlElement e, string name, int v) => e.SetAttribute(name, XmlConvert.ToString(v));
+
+        public static void SetAttribute(this XmlElement e, string name, byte v) => e.SetAttribute(name, XmlConvert.ToString(v));
+
+        public static void SetAttribute(this XmlElement e, string name, double v) => e.SetAttribute(name, XmlConvert.ToString(v));
+
+        public static void SetAttribute(this XmlElement e, string name, Guid v) => e.SetAttribute(name, XmlConvert.ToString(v));
+
+        public static void SetAttribute(this XmlElement e, string name, Guid v, Guid removeIf) {
+            if (v == removeIf)
+                e.RemoveAttribute(name);
+            else
+                e.SetAttribute(name, XmlConvert.ToString(v));
+        }
+
+        public static void SetAttribute(this XmlElement e, string name, bool v) => e.SetAttribute(name, XmlConvert.ToString(v));
+
+        public static void SetAttribute(this XmlElement e, string name, bool v, bool removeIf) {
+            if (v == removeIf)
+                e.RemoveAttribute(name);
+            else
+                e.SetAttribute(name, XmlConvert.ToString(v));
+        }
+
+        public static void SetAttribute(this XmlElement e, string name, Enum v) => e.SetAttribute(name, v.ToString());
+
+        public static void SetAttribute(this XmlElement e, string name, Enum v, Enum removeIf) {
+            if (v == removeIf)
+                e.RemoveAttribute(name);
+            else
+                e.SetAttribute(name, v.ToString());
+        }
     }
 
     public struct ConvertableString {
@@ -150,6 +167,13 @@ namespace LayoutManager {
                 return null;
 
             return XmlConvert.ToInt32(s.v);
+        }
+
+        public static explicit operator byte? (ConvertableString s) {
+            if (s.v == null)
+                return null;
+
+            return XmlConvert.ToByte(s.v);
         }
 
         public static explicit operator bool? (ConvertableString s) {

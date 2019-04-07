@@ -19,6 +19,11 @@ namespace Intellibox {
     }
 
     public class IntelliboxComponentInfo : LayoutInfo {
+        private const string A_Port = "Port";
+        private const string A_PollingPeriod = "PollingPeriod";
+        private const string A_AccessorySwitchingTime = "AccessorySwitchingTime";
+        private const string A_OperationModeDebounceCount = "OperationModeDebounceCount";
+        private const string A_DesignTimeDebounceCount = "DesignTimeDebounceCount";
         readonly IntelliboxComponent _commandStation;
 
         public IntelliboxComponentInfo(IntelliboxComponent commandStation, XmlElement element) : base(element) {
@@ -28,64 +33,28 @@ namespace Intellibox {
         public IntelliboxComponent CommandStation => _commandStation;
 
         public string Port {
-            get {
-                return Element.GetAttribute("Port");
-            }
-
-            set {
-                Element.SetAttribute("Port", value);
-            }
+            get => Element.GetAttribute(A_Port);
+            set => Element.SetAttribute(A_Port, value);
         }
 
         public int PollingPeriod {
-            get {
-                if (Element.HasAttribute("PollingPeriod"))
-                    return XmlConvert.ToInt32(Element.GetAttribute("PollingPeriod"));
-                else
-                    return 20;
-            }
-
-            set {
-                Element.SetAttribute("PollingPeriod", XmlConvert.ToString(value));
-            }
+            get => (int?)Element.AttributeValue(A_PollingPeriod) ?? 20;
+            set => Element.SetAttribute(A_PollingPeriod, value);
         }
 
         public int AccessoryCommandTime {
-            get {
-                if (Element.HasAttribute("AccessorySwitchingTime"))
-                    return XmlConvert.ToInt32(Element.GetAttribute("AccessorySwitchingTime"));
-                return 100;     // Default
-            }
-
-            set {
-                Element.SetAttribute("AccessorySwitchingTime", XmlConvert.ToString(value));
-            }
+            get => (int?)Element.AttributeValue(A_AccessorySwitchingTime) ?? 100;
+            set => Element.SetAttribute(A_AccessorySwitchingTime, value);
         }
 
         public byte OperationModeDebounceCount {
-            get {
-                if (Element.HasAttribute("OperationModeDebounceCount"))
-                    return XmlConvert.ToByte(Element.GetAttribute("OperationModeDebounceCount"));
-                else
-                    return 1;
-            }
-
-            set {
-                Element.SetAttribute("OperationModeDebounceCount", XmlConvert.ToString(value));
-            }
+            get => (byte?)Element.AttributeValue(A_OperationModeDebounceCount) ?? 1;
+            set => Element.SetAttribute(A_OperationModeDebounceCount, value);
         }
 
         public byte DesignTimeDebounceCount {
-            get {
-                if (Element.HasAttribute("DesignTimeDebounceCount"))
-                    return XmlConvert.ToByte(Element.GetAttribute("DesignTimeDebounceCount"));
-                else
-                    return 1;
-            }
-
-            set {
-                Element.SetAttribute("DesignTimeDebounceCount", XmlConvert.ToString(value));
-            }
+            get => (byte?)Element.AttributeValue(A_DesignTimeDebounceCount) ?? 1;
+            set => Element.SetAttribute(A_DesignTimeDebounceCount, value);
         }
     }
 
@@ -107,6 +76,9 @@ namespace Intellibox {
         const int queueLocoCommands = 2;                // Queue for locomotive control commands
 
         const int switchBatchSize = 10;             // Change the state of upto 10 solenoids
+        private const string A_ReadIntervalTimeout = "ReadIntervalTimeout";
+        private const string A_ReadTotalTimeoutConstant = "ReadTotalTimeoutConstant";
+        private const string A_BufferSize = "BufferSize";
 
         public IntelliboxComponent() {
             this.XmlDocument.LoadXml(
@@ -137,23 +109,15 @@ namespace Intellibox {
         }
 
         internal byte CachedOperationModeDebounceCount {
-            get {
-                return _operationModeDebounceCount;
-            }
+            get => _operationModeDebounceCount;
 
-            set {
-                _operationModeDebounceCount = value;
-            }
+            set => _operationModeDebounceCount = value;
         }
 
         internal byte CachedDesignTimeDebounceCount {
-            get {
-                return _designTimeDebounceCount;
-            }
+            get => _designTimeDebounceCount;
 
-            set {
-                _designTimeDebounceCount = value;
-            }
+            set => _designTimeDebounceCount = value;
         }
 
 
@@ -170,12 +134,12 @@ namespace Intellibox {
             CachedOperationModeDebounceCount = Info.OperationModeDebounceCount;
             CachedDesignTimeDebounceCount = Info.DesignTimeDebounceCount;
 
-            if (!Element.HasAttribute("ReadIntervalTimeout"))
-                Element.SetAttribute("ReadIntervalTimeout", XmlConvert.ToString(100));
-            if (!Element.HasAttribute("ReadTotalTimeoutConstant"))
-                Element.SetAttribute("ReadTotalTimeoutConstant", XmlConvert.ToString(5000));
-            if (!Element.HasAttribute("BufferSize"))
-                Element.SetAttribute("BufferSize", XmlConvert.ToString(1));
+            if (!Element.HasAttribute(A_ReadIntervalTimeout))
+                Element.SetAttribute(A_ReadIntervalTimeout, 100);
+            if (!Element.HasAttribute(A_ReadTotalTimeoutConstant))
+                Element.SetAttribute(A_ReadTotalTimeoutConstant, 5000);
+            if (!Element.HasAttribute(A_BufferSize))
+                Element.SetAttribute(A_BufferSize, 1);
         }
 
         protected override void OnInitialize() {
@@ -184,7 +148,7 @@ namespace Intellibox {
             _motorolaBus = null;
             _S88bus = null;
 
-            commandStationManager = new OutputManager(Name, 3);
+            commandStationManager = new OutputManager(A_ReadIntervalTimeout, 3);
             commandStationManager.Start();
 
             commandStationManager.AddIdleCommand(new InterlliboxProcessEventsCommand(this, Info.PollingPeriod));
@@ -392,6 +356,10 @@ namespace Intellibox {
     #region SO and SO collection classes
 
     public class SOinfo : LayoutXmlWrapper {
+        private const string A_Number = "Number";
+        private const string A_Value = "Value";
+        private const string A_Description = "Description";
+
         public SOinfo(XmlElement element)
             : base(element) {
         }
@@ -401,33 +369,18 @@ namespace Intellibox {
         }
 
         public int Number {
-            get {
-                return XmlConvert.ToInt32(GetAttribute("Number"));
-            }
-
-            set {
-                SetAttribute("Number", XmlConvert.ToString(value));
-            }
+            get => (int)AttributeValue(A_Number);
+            set => SetAttribute(A_Number, value);
         }
 
         public int Value {
-            get {
-                return XmlConvert.ToInt32(GetAttribute("Value"));
-            }
-
-            set {
-                SetAttribute("Value", XmlConvert.ToString(value));
-            }
+            get => (int)AttributeValue(A_Value);
+            set => SetAttribute(A_Value, value);
         }
 
         public string Description {
-            get {
-                return GetAttribute("Description");
-            }
-
-            set {
-                SetAttribute("Description", value);
-            }
+            get => GetAttribute(A_Description);
+            set => SetAttribute(A_Description, value);
         }
     }
 

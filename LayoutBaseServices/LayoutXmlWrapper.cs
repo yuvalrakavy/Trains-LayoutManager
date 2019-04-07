@@ -101,6 +101,10 @@ namespace LayoutManager {
 
         public void SetAttribute(string name, bool v, bool removeIf) => ((IObjectHasXml)this).SetAttribute(name, v, removeIf);
 
+        public void SetAttribute(string name, Enum e) => ((IObjectHasXml)this).SetAttribute(name, e);
+
+        public void SetAttribute(string name, Enum e, Enum removeIf) => ((IObjectHasXml)this).SetAttribute(name, e, removeIf);
+
         public bool HasAttribute(string name) => ((IObjectHasXml)this).HasAttribute(name);
 
         public Guid Id {

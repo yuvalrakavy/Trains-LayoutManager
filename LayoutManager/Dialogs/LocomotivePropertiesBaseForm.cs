@@ -120,7 +120,7 @@ namespace LayoutManager.Dialogs {
 
             element["Functions"].SetAttribute("Light", XmlConvert.ToString(checkBoxHasLights.Checked));
 
-            element.SetAttribute("Store", XmlConvert.ToString(comboBoxStore.SelectedIndex));
+            element.SetAttribute("Store", comboBoxStore.SelectedIndex);
 
             attributesEditor.Commit();
 
@@ -269,7 +269,7 @@ namespace LayoutManager.Dialogs {
         protected void GetGuage() {
             TrackGuageSelector trackGuageSelector = (TrackGuageSelector)nameToControlMap["trackGuageSelector"];
 
-            element.SetAttribute("Guage", trackGuageSelector.Value.ToString());
+            element.SetAttribute("Guage", trackGuageSelector.Value);
         }
 
         #endregion

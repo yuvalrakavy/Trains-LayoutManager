@@ -516,17 +516,12 @@ namespace LayoutManager {
         /// Set/Get event role (is it a request or notification)
         /// </summary>
         public LayoutEventRole Role {
-            get {
-                return role;
-            }
+            get => role;
 
             set {
                 role = value;
 
-                if (value == LayoutEventRole.Unspecified)
-                    DocumentElement.RemoveAttribute("Role");
-                else
-                    DocumentElement.SetAttribute("Role", value.ToString());
+                DocumentElement.SetAttribute("Role", value, removeIf: LayoutEventRole.Unspecified);
             }
         }
 
@@ -650,7 +645,7 @@ namespace LayoutManager {
 
             set {
                 order = value;
-                DocumentElement.SetAttribute("Order", XmlConvert.ToString(value));
+                DocumentElement.SetAttribute("Order", value);
             }
         }
 
