@@ -38,7 +38,7 @@ namespace LayoutManager {
 
         public AttributeType AttributeType {
             get => this.AttributeValue(A_Type).Enum<AttributeType>() ?? AttributeType.String;
-            set => Element.SetAttribute(A_Type, value.ToString());
+            set => Element.SetAttribute(A_Type, value);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
@@ -54,7 +54,7 @@ namespace LayoutManager {
             set {
                 switch(value) {
                     case int v: this.SetAttribute(A_Value, v); break;
-                    case Enum e: this.SetAttribute(A_Value, e.ToString()); break;
+                    case Enum e: this.SetAttribute(A_Value, e); break;
                     case string s: this.SetAttribute(A_Value, s); break;
                     case bool b: this.SetAttribute(A_Value, b); break;
                     default: throw new ArgumentException("Unsupported type for an attribute: " + value.GetType().Name);
