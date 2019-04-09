@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace LayoutManager.CommonUI.Controls {
-
     public interface ICheckIfNameUsed {
         bool IsUsed(string name);
     }
@@ -20,17 +19,17 @@ namespace LayoutManager.CommonUI.Controls {
         private ColumnHeader columnHeaderName;
         private ColumnHeader columnHeaderType;
         private ColumnHeader columnHeaderValue;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
 
-        void endOfDesignerVariables() { }
+        private void endOfDesignerVariables() { }
 
-        IObjectHasAttributes attributesOwner = null;
-        Type attributesSource = null;
-        readonly ListViewStringColumnsSorter sorter;
-        bool viewOnly = false;
+        private IObjectHasAttributes attributesOwner = null;
+        private readonly ListViewStringColumnsSorter sorter;
+        private bool viewOnly = false;
 
         public AttributesEditor() {
             // This call is required by the Windows.Forms Form Designer.
@@ -39,15 +38,7 @@ namespace LayoutManager.CommonUI.Controls {
             sorter = new ListViewStringColumnsSorter(listViewAttributes);
         }
 
-        public Type AttributesSource {
-            get {
-                return attributesSource;
-            }
-
-            set {
-                attributesSource = value;
-            }
-        }
+        public Type AttributesSource { get; set; } = null;
 
         public IObjectHasAttributes AttributesOwner {
             get {
@@ -72,7 +63,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
 
             set {
-                if (value == true && viewOnly)
+                if (value && viewOnly)
                     throw new ArgumentException("Cannot change from view only to not view only");
 
                 viewOnly = value;
@@ -137,7 +128,7 @@ namespace LayoutManager.CommonUI.Controls {
             return false;
         }
 
-        AttributeItem getSelected() {
+        private AttributeItem getSelected() {
             if (listViewAttributes.SelectedItems.Count == 0)
                 return null;
             else
@@ -248,12 +239,11 @@ namespace LayoutManager.CommonUI.Controls {
             this.Name = "AttributesEditor";
             this.Size = new System.Drawing.Size(256, 200);
             this.ResumeLayout(false);
-
         }
         #endregion
 
         private void buttonAdd_Click(object sender, System.EventArgs e) {
-            Dialogs.AttributeDefinition d = new Dialogs.AttributeDefinition(attributesSource, this, null, null);
+            Dialogs.AttributeDefinition d = new Dialogs.AttributeDefinition(AttributesSource, this, null, null);
 
             if (d.ShowDialog(this) == DialogResult.OK) {
                 listViewAttributes.Items.Add(new AttributeItem(d.AttributeName, d.Value));
@@ -265,7 +255,7 @@ namespace LayoutManager.CommonUI.Controls {
             AttributeItem selected = getSelected();
 
             if (selected != null && !viewOnly) {
-                Dialogs.AttributeDefinition d = new Dialogs.AttributeDefinition(attributesSource, this, selected.AttributeName, selected.Value);
+                Dialogs.AttributeDefinition d = new Dialogs.AttributeDefinition(AttributesSource, this, selected.AttributeName, selected.Value);
 
                 if (d.ShowDialog(this) == DialogResult.OK) {
                     selected.AttributeName = d.AttributeName;
@@ -273,8 +263,6 @@ namespace LayoutManager.CommonUI.Controls {
                 }
                 updateButtons(null, null);
             }
-
-
         }
 
         private void buttonRemove_Click(object sender, System.EventArgs e) {
@@ -288,8 +276,8 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region Item class
 
-        class AttributeItem : ListViewItem {
-            object attributeValue;
+        private class AttributeItem : ListViewItem {
+            private object attributeValue;
 
             public AttributeItem(string name, object attributeValue) {
                 Text = name;

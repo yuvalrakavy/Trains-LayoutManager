@@ -10,8 +10,7 @@ using System.Text;
 #nullable enable
 namespace LayoutManager.Model {
     [LayoutModule("Programming Operations Manager", UserControl = false)]
-    class ActionManager : LayoutModuleBase {
-
+    internal class ActionManager : LayoutModuleBase {
         [LayoutAsyncEvent("do-command-station-actions")]
         private async Task<object?> doProgrammingActions(LayoutEvent e) {
             var actions = Ensure.NotNull<ILayoutActionContainer>(e.Sender, "actions");
@@ -80,7 +79,7 @@ namespace LayoutManager.Model {
     }
 
     public class LayoutActionContainer<ActionsOwnerType> : LayoutXmlWrapper, ILayoutActionContainer {
-        bool preparedForProgramming = false;
+        private bool preparedForProgramming = false;
 
         public LayoutActionContainer(ActionsOwnerType actionsOwner)
             : base("Actions") {
@@ -94,10 +93,9 @@ namespace LayoutManager.Model {
 
         public ActionsOwnerType Owner {
             get;
-
         }
 
-        ILayoutAction? GetAction(XmlElement actionElement) {
+        private ILayoutAction? GetAction(XmlElement actionElement) {
             LayoutAction? action = null;
             var actionType = actionElement.GetAttribute("Type");
 
@@ -119,11 +117,7 @@ namespace LayoutManager.Model {
             return GetAction(actionElement);
         }
 
-        public void Remove(ILayoutAction theAction) {
-            LayoutAction action = (LayoutAction)theAction;
-
-            Element.RemoveChild(action.Element);
-        }
+        public void Remove(ILayoutAction action) => Element.RemoveChild(action.Element);
 
         public void Commit() {
             foreach (var action in this)
@@ -245,7 +239,7 @@ namespace LayoutManager.Model {
     public abstract class LayoutAction : LayoutXmlWrapper, ILayoutAction {
         private const string A_Status = "Status";
 
-        public LayoutAction(XmlElement actionElement)
+        protected LayoutAction(XmlElement actionElement)
             : base(actionElement) {
             Status = ActionStatus.Pending;
         }
@@ -256,7 +250,7 @@ namespace LayoutManager.Model {
             get => AttributeValue(A_Status).Enum<ActionStatus>() ?? ActionStatus.Pending;
 
             set {
-                SetAttribute(A_Status, value.ToString());
+                SetAttribute(A_Status, value);
                 if (value != ActionStatus.Pending)
                     EventManager.Event(new LayoutEventInfoValueType<ILayoutAction, ActionStatus>("action-status-changed", this, value));
             }
@@ -266,7 +260,6 @@ namespace LayoutManager.Model {
         /// Called after applying the action to commit it (for example to change locomotive address after address is programmed)
         /// </summary>
         public virtual void Commit() {
-
         }
 
         public override string ToString() => Description ?? "Action: " + this.GetType().Name;
@@ -283,7 +276,7 @@ namespace LayoutManager.Model {
     public abstract class LayoutProgrammingAction : LayoutAction, ILayoutProgrammingAction {
         private const string A_IgnoreNoResponse = "IgnoreNoResponse";
 
-        public LayoutProgrammingAction(XmlElement actionElement)
+        protected LayoutProgrammingAction(XmlElement actionElement)
             : base(actionElement) {
         }
 
@@ -310,6 +303,9 @@ namespace LayoutManager.Model {
     #region CV (DCC control values) handling class
 
     public class DccProgrammingCV : LayoutXmlWrapper {
+        private const string A_Number = "Number";
+        private const string A_Value = "Value";
+
         public DccProgrammingCV(XmlElement element)
             : base(element) {
         }
@@ -321,15 +317,13 @@ namespace LayoutManager.Model {
         }
 
         public int Number {
-            get => XmlConvert.ToInt32(GetAttribute("Number"));
-
-            set => SetAttribute("Number", XmlConvert.ToString(value));
+            get => (int)AttributeValue(A_Number);
+            set => SetAttribute(A_Number, value);
         }
 
         public byte Value {
-            get => XmlConvert.ToByte(GetAttribute("Value"));
-
-            set => SetAttribute("Value", XmlConvert.ToString(value));
+            get => (byte)AttributeValue(A_Value);
+            set => SetAttribute(A_Value, value);
         }
     }
 
@@ -344,7 +338,6 @@ namespace LayoutManager.Model {
 
         public TProgrammingTargetType ProgrammingTarget {
             get;
-
         }
 
         /// <summary>
@@ -434,37 +427,27 @@ namespace LayoutManager.Model {
     }
 
     public class LayoutDccChangeLocomotiveAddressAction : LayoutDccLocomotiveProgrammingAction, ILayoutLocomotiveAddressChangeAction {
+        private const string A_Address = "Address";
+        private const string A_SpeedSteps = "SpeedSteps";
+        private const string A_ReverseDirection = "ReverseDirection";
+
         public LayoutDccChangeLocomotiveAddressAction(XmlElement actionElement, LocomotiveInfo locomotive)
             : base(actionElement, locomotive) {
-
         }
 
         public int Address {
-            get => XmlConvert.ToInt32(GetAttribute("Address"));
-
-            set => SetAttribute("Address", XmlConvert.ToString(value));
+            get => (int)AttributeValue(A_Address);
+            set => SetAttribute(A_Address, value);
         }
 
         public int SpeedSteps {
-            get {
-                if (HasAttribute("SpeedSteps"))
-                    return XmlConvert.ToInt32(GetAttribute("SpeedSteps"));
-                else
-                    return 28;
-            }
-
-            set => SetAttribute("SpeedSteps", XmlConvert.ToString(value));
+            get => (int?)AttributeValue(A_SpeedSteps) ?? 28;
+            set => SetAttribute(A_SpeedSteps, value);
         }
 
         public bool ReverseDirection {
-            get {
-                if (HasAttribute("ReverseDirection"))
-                    return XmlConvert.ToBoolean(GetAttribute("ReverseDirection"));
-                else
-                    return false;
-            }
-
-            set => SetAttribute("ReverseDirection", XmlConvert.ToString(value));
+            get => (bool?)AttributeValue(A_ReverseDirection) ?? false;
+            set => SetAttribute(A_ReverseDirection, value, removeIf: false);
         }
 
         public override string Description => "Set address to " + Address + ", " + SpeedSteps + " speed steps" + (ReverseDirection ? ", reverse direction" : "");
@@ -491,7 +474,7 @@ namespace LayoutManager.Model {
 
         public override void Commit() {
             if (ProgrammingTarget.AddressProvider.Element == null)
-                ProgrammingTarget.AddressProvider.Element = LayoutInfo.CreateProviderElement(ProgrammingTarget.Element, "Address", null);
+                ProgrammingTarget.AddressProvider.Element = LayoutInfo.CreateProviderElement(ProgrammingTarget.Element, A_Address, null);
 
             ProgrammingTarget.AddressProvider.Unit = Address;
             ProgrammingTarget.SpeedSteps = SpeedSteps;

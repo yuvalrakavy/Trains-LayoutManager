@@ -14,15 +14,12 @@ namespace LayoutEventDebugger {
         ShowHandlerObject
     };
 
-
     /// <summary>
     /// Facilities to debug events. Subscription and event excerciser, subscrition view, event trace
     /// </summary>
     /// 
     [LayoutModule("Event Debugger")]
     public class EventDebugger : LayoutObject, ILayoutModuleSetup {
-        LayoutModule? module;
-
         public LayoutEventSubscription? ActiveSubscription;
         public string FiredEventName = "debug-event";
         public LayoutObject Sender = new LayoutObject();
@@ -37,15 +34,7 @@ namespace LayoutEventDebugger {
             Sender.XmlInfo.XmlDocument.LoadXml("<EventSender />");
         }
 
-        public LayoutModule? Module {
-            set {
-                module = value;
-            }
-
-            get {
-                return module;
-            }
-        }
+        public LayoutModule? Module { set; get; }
 
         public void CancelActiveSubscription() {
             if (ActiveSubscription != null)
@@ -78,23 +67,22 @@ namespace LayoutEventDebugger {
             toolsMenu.MenuItems.Add(new MenuItem("&Trace events", new EventHandler(this.OnEventTraceClick)));
         }
 
-        void OnEventDebuggerClick(Object sender, EventArgs e) {
+        private void OnEventDebuggerClick(Object sender, EventArgs e) {
             EventDebuggerDialog eventDebuggerDialog = new EventDebuggerDialog(this);
 
             eventDebuggerDialog.ShowDialog();
         }
 
-        void OnViewSubscriptionsClick(Object sender, EventArgs e) {
+        private void OnViewSubscriptionsClick(Object sender, EventArgs e) {
             if (subscriptionView == null) {
                 subscriptionView = new SubscriptionView();
                 subscriptionView.Show();
             }
             else
                 subscriptionView.Activate();
-
         }
 
-        void OnEventTraceClick(Object sender, EventArgs e) {
+        private void OnEventTraceClick(Object sender, EventArgs e) {
             if (eventTrace == null) {
                 eventTrace = new EventTrace();
                 eventTrace.Show();
@@ -104,16 +92,16 @@ namespace LayoutEventDebugger {
         }
 
         [LayoutEvent("subscription-view-closed")]
-        void SubscriptionViewClosed(LayoutEvent e) {
+        private void SubscriptionViewClosed(LayoutEvent e) {
             subscriptionView = null;
         }
 
         [LayoutEvent("event-trace-closed")]
-        void EventTraceClosed(LayoutEvent e) {
+        private void EventTraceClosed(LayoutEvent e) {
             eventTrace = null;
         }
 
-        void OnDebuggedEvent(LayoutEvent e) {
+        private void OnDebuggedEvent(LayoutEvent e) {
             MessageBox.Show("Event was intercepted by event debugger subscription", "Event Debugger", MessageBoxButtons.OK);
         }
 

@@ -34,7 +34,7 @@ namespace NCDRelayController {
         #region Component menu Item
 
         [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
-        void AddRelayControllerItem(LayoutEvent e) {
+        private void AddRelayControllerItem(LayoutEvent e) {
             XmlElement categoryElement = (XmlElement)e.Sender;
             ModelComponent old = (ModelComponent)e.Info;
 
@@ -43,7 +43,7 @@ namespace NCDRelayController {
         }
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='NCDRelayController']")]
-        void PaintCentralStationItem(LayoutEvent e) {
+        private void PaintCentralStationItem(LayoutEvent e) {
             Graphics g = (Graphics)e.Info;
 
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
@@ -57,7 +57,7 @@ namespace NCDRelayController {
         }
 
         [LayoutEvent("create-model-component", IfSender = "Item[@Name='NCDRelayController']")]
-        void CreateCentralStationComponent(LayoutEvent e) {
+        private void CreateCentralStationComponent(LayoutEvent e) {
             e.Info = new NCDRelayController();
         }
 
@@ -66,7 +66,7 @@ namespace NCDRelayController {
         #region Component view
 
         [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(NCDRelayController))]
-        void GetDiMAXcommandStationDrawingRegions(LayoutEvent eBase) {
+        private void GetDiMAXcommandStationDrawingRegions(LayoutEvent eBase) {
             LayoutGetDrawingRegionsEvent e = (LayoutGetDrawingRegionsEvent)eBase;
 
             if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
@@ -76,11 +76,10 @@ namespace NCDRelayController {
 
             if (textProvider.Element != null)
                 e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
-
         }
 
-        class DrawingRegionNCDRelayController : LayoutDrawingRegionGrid {
-            readonly NCDRelayController component;
+        private class DrawingRegionNCDRelayController : LayoutDrawingRegionGrid {
+            private readonly NCDRelayController component;
 
             internal DrawingRegionNCDRelayController(ModelComponent component, ILayoutView view) : base(component, view) {
                 this.component = (NCDRelayController)component;
@@ -99,12 +98,12 @@ namespace NCDRelayController {
         #region Component Painter
 
         [LayoutEvent("get-image", SenderType = typeof(NCDRelayControllerPainter))]
-        void GetCentralStationImage(LayoutEvent e) {
+        private void GetCentralStationImage(LayoutEvent e) {
             e.Info = imageListComponents.Images[0];
         }
 
-        class NCDRelayControllerPainter {
-            Size componentSize;
+        private class NCDRelayControllerPainter {
+            private Size componentSize;
 
             internal NCDRelayControllerPainter(Size componentSize) {
                 this.componentSize = componentSize;
@@ -181,7 +180,6 @@ namespace NCDRelayController {
                 TransparentColor = System.Drawing.Color.Lime
             };
             this.imageListComponents.Images.SetKeyName(0, "NCDrelayController.bmp");
-
         }
         #endregion
 

@@ -27,15 +27,14 @@ namespace LayoutManager.CommonUI.Dialogs {
         /// </summary>
         public Image Image { get; private set; }
 
-
         public Size Insets = new Size(10, 10);
 
-        Rectangle _clipFrame;
+        private Rectangle _clipFrame;
 
-        Rectangle _startDragClipFrame;
-        Point _startDragLocation;
+        private Rectangle _startDragClipFrame;
+        private Point _startDragLocation;
 
-        enum Dragging {
+        private enum Dragging {
             None = -1,
             CornerNW = 0,
             CornerNE = 1,
@@ -45,7 +44,7 @@ namespace LayoutManager.CommonUI.Dialogs {
         };
 
         // Can be NotDragging, 0..3 dragging a corner or DraggingClipRect
-        Dragging _dragging = Dragging.None;
+        private Dragging _dragging = Dragging.None;
 
         public ImageTrim(Image inputImage, Size requiredSize) {
             InitializeComponent();
@@ -65,7 +64,6 @@ namespace LayoutManager.CommonUI.Dialogs {
                 _startDragLocation = e.Location;
                 _dragging = getDragRegion(e.Location);
             };
-
         }
 
         private (int, int) adjustForCornerDragging(int dx, int dy) => (dx, dx * RequiredSize.Height / RequiredSize.Width);
@@ -125,7 +123,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             }
         }
 
-        Dragging getDragRegion(Point pt) {
+        private Dragging getDragRegion(Point pt) {
             Size cornerHotZone = new Size(20, 20);
 
             foreach (var corner in Enumerable.Range(0, 4))
@@ -190,7 +188,7 @@ namespace LayoutManager.CommonUI.Dialogs {
                 g.FillRectangle(Brushes.Black, getClipFrameCornerRect(corner, cornerSize));
         }
 
-        Rectangle getClipFrameCornerRect(int corner, Size cornerSize) {
+        private Rectangle getClipFrameCornerRect(int corner, Size cornerSize) {
             return new Rectangle(new Point(
                 (corner & 1) == 0 ? _clipFrame.X : _clipFrame.X + _clipFrame.Width - cornerSize.Width,
                 (corner & 2) == 0 ? _clipFrame.Y : _clipFrame.Y + _clipFrame.Height - cornerSize.Height),

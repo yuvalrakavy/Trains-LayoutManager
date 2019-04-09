@@ -16,6 +16,7 @@ namespace LayoutEventDebugger {
         private RadioButton radioButtonByEventHandlerObject;
         private Button buttonClose;
         private Button buttonRefresh;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -46,7 +47,7 @@ namespace LayoutEventDebugger {
             base.Dispose(disposing);
         }
 
-        void ViewByEventName() {
+        private void ViewByEventName() {
             SortedList byName = new SortedList();
 
             treeViewSubscriptions.Nodes.Clear();
@@ -72,7 +73,7 @@ namespace LayoutEventDebugger {
             }
         }
 
-        void ViewByHandlerObject() {
+        private void ViewByHandlerObject() {
             SortedList byObject = new SortedList();
 
             treeViewSubscriptions.Nodes.Clear();
@@ -97,7 +98,6 @@ namespace LayoutEventDebugger {
                     EventDebugger.AddSubscription(n, subscription, TitleFormat.ShowEventName);
             }
         }
-
 
         #region Windows Form Designer generated code
         /// <summary>
@@ -193,7 +193,6 @@ namespace LayoutEventDebugger {
             this.Closed += new System.EventHandler(this.SubscriptionView_Closed);
             this.groupBoxViewBy.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

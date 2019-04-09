@@ -11,20 +11,20 @@ namespace LayoutManager.ControlComponents.Dialogs {
         /// </summary>
         private readonly System.ComponentModel.Container components = null;
 
-        LayoutManager.CommonUI.Controls.DIPswitch diPswitchSettings;
-        Label label1;
-        Label label2;
-        Label label3;
-        Label label4;
-        LayoutManager.CommonUI.Controls.DIPswitch diPswitch2;
-        Label label5;
-        Label label6;
-        Label label7;
-        Label label8;
-        Label label9;
-        Label label10;
-        CheckBox checkBoxClearUserActionFlag;
-        Button buttonClose;
+        private LayoutManager.CommonUI.Controls.DIPswitch diPswitchSettings;
+        private Label label1;
+        private Label label2;
+        private Label label3;
+        private Label label4;
+        private LayoutManager.CommonUI.Controls.DIPswitch diPswitch2;
+        private Label label5;
+        private Label label6;
+        private Label label7;
+        private Label label8;
+        private Label label9;
+        private Label label10;
+        private CheckBox checkBoxClearUserActionFlag;
+        private Button buttonClose;
 
         public LGBbusDIPswitchSetting(string moduleName, int address, bool userActionRequiredFlag) {
             //
@@ -235,7 +235,6 @@ namespace LayoutManager.ControlComponents.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "MODULENAME Settings";
             this.ResumeLayout(false);
-
         }
         #endregion
     }

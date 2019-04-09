@@ -13,6 +13,7 @@ namespace LayoutManager.Tools.Dialogs {
         private ColumnHeader columnHeaderAction;
         private Button buttonFixTripPlan;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -20,7 +21,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly Dialogs.TripPlanEditor tripPlanEditor;
+        private readonly Dialogs.TripPlanEditor tripPlanEditor;
 
         public TripPlanRouteValidationResult(TripPlanInfo tripPlan, ITripRouteValidationResult routeValidationResult, Dialogs.TripPlanEditor tripPlanEditor) {
             //
@@ -142,7 +143,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "TripPlanRouteValidationResult";
             this.Text = "Trip Plan Validation Result";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -164,17 +164,15 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        class RouteValidationActionItem : ListViewItem {
-            readonly ITripRouteValidationAction action;
-
+        private class RouteValidationActionItem : ListViewItem {
             public RouteValidationActionItem(TripPlanInfo tripPlan, ITripRouteValidationAction action) {
-                this.action = action;
+                this.Action = action;
 
                 this.Text = tripPlan.Waypoints[action.WaypointIndex].Destination.Name;
                 this.SubItems.Add(action.Description);
             }
 
-            public ITripRouteValidationAction Action => action;
+            public ITripRouteValidationAction Action { get; }
         }
     }
 }

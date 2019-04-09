@@ -7,17 +7,19 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
     /// Summary description for RepeatCondition.
     /// </summary>
     public class RepeatCondition : Form {
+        private const string A_Count = "Count";
         private Label label2;
         private NumericUpDown numericUpDownCount;
         private Button buttonOk;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
         private RadioButton radioButtonRepeatForever;
         private RadioButton radioButtonRepeatCount;
-        readonly XmlElement element;
+        private readonly XmlElement element;
 
         public RepeatCondition(XmlElement element) {
             //
@@ -27,11 +29,11 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
             this.element = element;
 
-            int count = element.HasAttribute("Count") ? XmlConvert.ToInt32(element.GetAttribute("Count")) : -1;
+            int count = (int?)element.AttributeValue(A_Count) ?? -1;
 
             if (count >= 0) {
                 radioButtonRepeatCount.Checked = true;
-                numericUpDownCount.Value = XmlConvert.ToInt32(element.GetAttribute("Count"));
+                numericUpDownCount.Value = count;
             }
             else {
                 radioButtonRepeatForever.Checked = true;
@@ -150,21 +152,16 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.Text = "Repeat";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCount)).EndInit();
             this.ResumeLayout(false);
-
         }
         #endregion
 
         private void buttonOk_Click(object sender, System.EventArgs e) {
-            if (radioButtonRepeatForever.Checked)
-                element.SetAttribute("Count", XmlConvert.ToString(-1));
-            else
-                element.SetAttribute("Count", XmlConvert.ToString(numericUpDownCount.Value));
+            element.SetAttribute(A_Count, radioButtonRepeatForever.Checked ? -1 : (int)numericUpDownCount.Value);
             DialogResult = DialogResult.OK;
         }
 
         private void numericUpDownCount_Enter(object sender, System.EventArgs e) {
             radioButtonRepeatCount.Checked = true;
         }
-
     }
 }

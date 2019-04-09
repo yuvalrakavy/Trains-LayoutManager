@@ -1,7 +1,6 @@
 using System.Diagnostics;
 
 namespace LayoutManager {
-
     public interface ILayoutSwitch {
     };
 
@@ -32,7 +31,7 @@ namespace LayoutManager {
     /// Trace switch that can be either set by itself, or follow the setting of a subsystem wide trace switch
     /// </summary>
     public class LayoutTraceSubsystem : LayoutTraceSwitch {
-        readonly LayoutTraceSwitch master;
+        private readonly LayoutTraceSwitch master;
 
         public LayoutTraceSubsystem(LayoutTraceSwitch master, string displayName, string description)
             : base(displayName, description) {
@@ -47,6 +46,4 @@ namespace LayoutManager {
 
         public new bool TraceVerbose => master.TraceVerbose || base.TraceVerbose;
     }
-
-
 }

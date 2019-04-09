@@ -18,11 +18,11 @@ namespace LayoutManager.Tools.Dialogs {
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly TripPlanWaypointInfo wayPoint;
-        readonly XmlElement startConditionElement;
-        readonly XmlDocument tempDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
+        private readonly TripPlanWaypointInfo wayPoint;
+        private readonly XmlElement startConditionElement;
+        private readonly XmlDocument tempDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
         private Button buttonSave;
-        DialogEditing changeToViewonly = null;
+        private DialogEditing changeToViewonly = null;
 
         public TripPlanWaypointStartCondition(TripPlanWaypointInfo wayPoint) {
             //
@@ -64,7 +64,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
 
             set {
-                if (value == true && !ViewOnly) {
+                if (value && !ViewOnly) {
                     changeToViewonly = new DialogEditing(this,
                         new DialogEditingCommandBase[] {
                                                            new DialogEditingRemoveControl(buttonOk),
@@ -153,7 +153,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "Waypoint Start Condition";
             this.Click += new System.EventHandler(this.radioButtonStartOnCondition_Click);
             this.ResumeLayout(false);
-
         }
         #endregion
 

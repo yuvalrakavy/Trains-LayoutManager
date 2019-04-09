@@ -2,9 +2,8 @@
 using LayoutManager.Model;
 
 namespace LayoutManager.Decoders {
-
     [LayoutModule("Generic decoders")]
-    class GenericDecoders : LayoutModuleBase {
+    internal class GenericDecoders : LayoutModuleBase {
         public static string GenericDecodersVersion = "1.0";
 
         [LayoutEvent("enum-decoder-types")]

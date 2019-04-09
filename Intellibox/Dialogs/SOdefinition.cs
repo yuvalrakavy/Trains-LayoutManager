@@ -16,7 +16,6 @@ namespace Intellibox.Dialogs {
         }
 
         private void textBoxNumber_Validated(object sender, EventArgs e) {
-
             errorProvider.SetError(textBoxNumber, "");
 
             if (textBoxNumber.Text.Trim().Length == 0)
@@ -26,7 +25,6 @@ namespace Intellibox.Dialogs {
         }
 
         private void textBoxValue_TextChanged(object sender, EventArgs e) {
-
             errorProvider.SetError(textBoxValue, "");
 
             if (textBoxValue.Text.Trim().Length == 0)

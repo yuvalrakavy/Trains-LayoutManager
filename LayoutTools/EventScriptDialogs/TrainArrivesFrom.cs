@@ -8,7 +8,6 @@ using LayoutManager.Components;
 
 namespace LayoutManager.Tools.EventScriptDialogs {
     public partial class TrainArrivesFrom : Form {
-
         public TrainArrivesFrom(LayoutBlockDefinitionComponent blockDefinition, XmlElement element) {
             LayoutComponentConnectionPoint from = LayoutComponentConnectionPoint.Empty;
 

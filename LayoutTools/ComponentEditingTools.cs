@@ -13,22 +13,25 @@ using LayoutManager.View;
 
 namespace LayoutManager.Tools {
     public class PlacementInfo {
-        readonly LayoutModelArea area;
-        Point location;
+        private const string E_PlacementInfo = "PlacementInfo";
+        private const string A_AreaID = "AreaID";
+        private const string A_x = "X";
+        private const string A_y = "Y";
+        private Point location;
 
         public PlacementInfo(LayoutEvent e) {
-            XmlElement placementInfoElement = e.XmlInfo.DocumentElement["PlacementInfo"];
+            XmlElement placementInfoElement = e.XmlInfo.DocumentElement[E_PlacementInfo];
 
-            area = LayoutModel.Areas[XmlConvert.ToGuid(placementInfoElement.GetAttribute("AreaID"))];
-            location = new Point(XmlConvert.ToInt32(placementInfoElement.GetAttribute("X")), XmlConvert.ToInt32(placementInfoElement.GetAttribute("Y")));
+            Area = LayoutModel.Areas[(Guid)placementInfoElement.AttributeValue(A_AreaID)];
+            location = new Point((int)placementInfoElement.AttributeValue(A_x), (int)placementInfoElement.AttributeValue(A_y));
         }
 
         public PlacementInfo(ModelComponent component) {
-            area = component.Spot.Area;
+            Area = component.Spot.Area;
             location = component.Location;
         }
 
-        public LayoutModelArea Area => area;
+        public LayoutModelArea Area { get; }
 
         public Point Location => location;
 
@@ -50,19 +53,19 @@ namespace LayoutManager.Tools {
         /// </summary>
 
         [LayoutEvent("query-can-remove-model-component", SenderType = typeof(LayoutTrackComponent))]
-        void QueryCanRemoveTrackComponent(LayoutEvent e) {
+        private void QueryCanRemoveTrackComponent(LayoutEvent e) {
             e.Info = false;     // Tracks cannot be removed by itself
         }
 
         [Flags]
-        enum PropertyDialogOptions {
+        private enum PropertyDialogOptions {
             None = 0,
             AlsoOperationalMode = 0x0001,
             Modeless = 0x0002,
             NotOpenOnPlacement = 0x0004,        // Do not open when placeing new component
         }
 
-        class PropertiesDialogMapEntry {
+        private class PropertiesDialogMapEntry {
             internal Type componentType;
             internal Type propertiesDialogType;
             internal PropertyDialogOptions options = PropertyDialogOptions.None;
@@ -85,7 +88,7 @@ namespace LayoutManager.Tools {
         /// all you need to do in order to implement showing a property sheet when the component is placed, and
         /// adding a properites context menu item is to add the appropriate entry to this map.
         /// </summary>
-        readonly PropertiesDialogMapEntry[] propertiesDialogMap =
+        private readonly PropertiesDialogMapEntry[] propertiesDialogMap =
             new PropertiesDialogMapEntry[] {
                                                new PropertiesDialogMapEntry(typeof(LayoutTextComponent), typeof(Dialogs.TextProperties), PropertyDialogOptions.AlsoOperationalMode),
                                                new PropertiesDialogMapEntry(typeof(LayoutTrackContactComponent), typeof(Dialogs.TriggerableBlockEdgeProperties), PropertyDialogOptions.NotOpenOnPlacement),
@@ -104,7 +107,7 @@ namespace LayoutManager.Tools {
         #region Generic event handlers for component that appear in the 'propertiesDialogMap'
 
         [LayoutEvent("model-component-placement-request")]
-        void PlaceComponent(LayoutEvent e) {
+        private void PlaceComponent(LayoutEvent e) {
             ModelComponent component = (ModelComponent)e.Sender;
 
             foreach (PropertiesDialogMapEntry entry in propertiesDialogMap) {
@@ -143,7 +146,7 @@ namespace LayoutManager.Tools {
 
         [LayoutEvent("add-component-editing-context-menu-entries")]
         [LayoutEvent("add-component-operation-context-menu-entries", Order = 500)]
-        void AddContextMenuPropertiesEntry(LayoutEvent e) {
+        private void AddContextMenuPropertiesEntry(LayoutEvent e) {
             ModelComponent component = (ModelComponent)e.Sender;
 
             foreach (PropertiesDialogMapEntry entry in propertiesDialogMap) {
@@ -160,7 +163,7 @@ namespace LayoutManager.Tools {
 
         [LayoutEvent("query-component-editing-context-menu")]
         [LayoutEvent("query-component-operation-context-menu")]
-        void QueryTrackContactMenu(LayoutEvent e) {
+        private void QueryTrackContactMenu(LayoutEvent e) {
             ModelComponent component = (ModelComponent)e.Sender;
 
             foreach (PropertiesDialogMapEntry entry in propertiesDialogMap) {
@@ -178,7 +181,6 @@ namespace LayoutManager.Tools {
         #region Testing component
 
         private bool canTestComponent(ModelComponent component) {
-
             if (component is IModelComponentConnectToControl connectableComponent && connectableComponent.FullyConnected) {
                 IList<ControlConnectionPoint> connectionPoints = LayoutModel.ControlManager.ConnectionPoints[component.Id];
 
@@ -265,7 +267,6 @@ namespace LayoutManager.Tools {
             }
         }
 
-
         #endregion
 
         #region Track Link Component
@@ -290,7 +291,7 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("model-component-placement-request", SenderType = typeof(LayoutTrackLinkComponent))]
-        void PlaceTrackLinkRequest(LayoutEvent e) {
+        private void PlaceTrackLinkRequest(LayoutEvent e) {
             LayoutTrackLinkComponent component = (LayoutTrackLinkComponent)e.Sender;
             PlacementInfo placementProvider = new PlacementInfo(e);
             LayoutModelArea area = placementProvider.Area;
@@ -313,19 +314,18 @@ namespace LayoutManager.Tools {
                 }
 
                 LayoutController.Do(addCommand);
-
             }
 
             e.Info = false;         // Do not place component, it is already placed
         }
 
         [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(LayoutTrackLinkComponent))]
-        void QueryTrackLinkContextMenu(LayoutEvent e) {
+        private void QueryTrackLinkContextMenu(LayoutEvent e) {
             e.Info = e.Sender;
         }
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(LayoutTrackLinkComponent))]
-        void AddTrackLinkConextMenuEntries(LayoutEvent e) {
+        private void AddTrackLinkConextMenuEntries(LayoutEvent e) {
             Menu menu = (Menu)e.Info;
             LayoutTrackLinkComponent component = (LayoutTrackLinkComponent)e.Sender;
 
@@ -334,7 +334,7 @@ namespace LayoutManager.Tools {
 
         [LayoutEvent("add-component-editing-context-menu-top-entries", SenderType = typeof(LayoutTrackLinkComponent))]
         [LayoutEvent("add-component-operation-context-menu-top-entries", SenderType = typeof(LayoutTrackLinkComponent))]
-        void AddTrackLinkTopContextMenuEntries(LayoutEvent e) {
+        private void AddTrackLinkTopContextMenuEntries(LayoutEvent e) {
             Menu menu = (Menu)e.Info;
             LayoutTrackLinkComponent component = (LayoutTrackLinkComponent)e.Sender;
 
@@ -346,7 +346,7 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("add-component-editing-context-menu-top-entries", SenderType = typeof(LayoutTrackPowerConnectorComponent))]
-        void addPowerConnectorContextMenuEntries(LayoutEvent e) {
+        private void addPowerConnectorContextMenuEntries(LayoutEvent e) {
             Menu menu = (Menu)e.Info;
             var powerConnectorcomponent = (LayoutTrackPowerConnectorComponent)e.Sender;
 
@@ -400,8 +400,8 @@ namespace LayoutManager.Tools {
 
         #region Track Link Menu item classes
 
-        class TrackLinkMenuItemProperties : MenuItem {
-            readonly LayoutTrackLinkComponent trackLinkComponent;
+        private class TrackLinkMenuItemProperties : MenuItem {
+            private readonly LayoutTrackLinkComponent trackLinkComponent;
 
             internal TrackLinkMenuItemProperties(LayoutTrackLinkComponent trackLinkComponent) {
                 this.trackLinkComponent = trackLinkComponent;
@@ -456,12 +456,11 @@ namespace LayoutManager.Tools {
             }
         }
 
-        class TrackLinkMenuItemViewLinkedComponent : MenuItem {
+        private class TrackLinkMenuItemViewLinkedComponent : MenuItem {
             internal TrackLinkMenuItemViewLinkedComponent(Guid frameWindowId, LayoutTrackLinkComponent trackLinkComponent)
                 : base("&Show other link", (s, ea) => {
                     EventManager.Event(new LayoutEvent("ensure-component-visible", trackLinkComponent.LinkedComponent, true).SetFrameWindow(frameWindowId));
                 }) {
-
                 if (trackLinkComponent.LinkedComponent == null)
                     this.Enabled = false;
             }
@@ -474,12 +473,12 @@ namespace LayoutManager.Tools {
         #region Block Edge component
 
         [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(LayoutBlockEdgeBase))]
-        void QueryBlockEdgeContextMenu(LayoutEvent e) {
+        private void QueryBlockEdgeContextMenu(LayoutEvent e) {
             e.Info = e.Sender;
         }
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(LayoutBlockEdgeBase))]
-        void AddBlockEdgeConextMenuEntries(LayoutEvent e) {
+        private void AddBlockEdgeConextMenuEntries(LayoutEvent e) {
             Menu menu = (Menu)e.Info;
             LayoutBlockEdgeBase component = (LayoutBlockEdgeBase)e.Sender;
             ArrayList myBindDialog = new ArrayList();
@@ -497,7 +496,7 @@ namespace LayoutManager.Tools {
         }
 
         public class BlockEdgeBindSignalMenuItem : MenuItem {
-            readonly LayoutBlockEdgeBase blockEdge;
+            private readonly LayoutBlockEdgeBase blockEdge;
 
             public BlockEdgeBindSignalMenuItem(LayoutBlockEdgeBase blockEdge) {
                 this.blockEdge = blockEdge;
@@ -528,12 +527,12 @@ namespace LayoutManager.Tools {
         #region Signal component
 
         [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(LayoutSignalComponent))]
-        void QuerySignalContextMenu(LayoutEvent e) {
+        private void QuerySignalContextMenu(LayoutEvent e) {
             e.Info = e.Sender;
         }
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(LayoutSignalComponent))]
-        void AddSignalConextMenuEntries(LayoutEvent e) {
+        private void AddSignalConextMenuEntries(LayoutEvent e) {
             Menu menu = (Menu)e.Info;
             LayoutSignalComponent component = (LayoutSignalComponent)e.Sender;
             ArrayList allBindDialog = new ArrayList();
@@ -547,8 +546,8 @@ namespace LayoutManager.Tools {
         }
 
         public class SignalBindSignalMenuItem : MenuItem {
-            readonly LayoutSignalComponent signal;
-            readonly IModelComponentReceiverDialog dialog;
+            private readonly LayoutSignalComponent signal;
+            private readonly IModelComponentReceiverDialog dialog;
 
             public SignalBindSignalMenuItem(IModelComponentReceiverDialog dialog, LayoutSignalComponent signal) {
                 this.dialog = dialog;
@@ -564,12 +563,11 @@ namespace LayoutManager.Tools {
 
         #endregion
 
-
         #region Shift components
 
         #region Base class
 
-        class ShiftLimit {
+        private class ShiftLimit {
             public int From;
             public int To;
 
@@ -581,59 +579,36 @@ namespace LayoutManager.Tools {
             public bool Contains(int v) => From <= v && v <= To;
         }
 
-        class ShiftComponentsMenuEntryBase : MenuItem {
-            readonly LayoutHitTestResult hitTestResult = null;
-
+        private class ShiftComponentsMenuEntryBase : MenuItem {
             protected enum OperationType {
                 ShiftAreaComponents, MoveSelection
             };
 
-            readonly OperationType operation = OperationType.ShiftAreaComponents;
-            readonly string directionText;
-            ChangeCoordinate changeWhat;
-            CompareValue.Order sortOrder;
-            int delta;
-            bool fillGaps = true;
+            private readonly string directionText;
 
             protected ShiftComponentsMenuEntryBase(OperationType operation, LayoutHitTestResult hitTestResult, string directionText, ChangeCoordinate changeWhat, CompareValue.Order sortOrder) {
-                this.operation = operation;
-                this.hitTestResult = hitTestResult;
+                this.Operation = operation;
+                this.HitTestResult = hitTestResult;
                 this.directionText = directionText;
-                this.changeWhat = changeWhat;
-                this.sortOrder = sortOrder;
+                this.ChangeWhat = changeWhat;
+                this.SortOrder = sortOrder;
 
                 Text = directionText;
             }
 
             protected ShiftComponentsMenuEntryBase(OperationType operation, LayoutHitTestResult hitTestResult, string text) {
-                this.operation = operation;
-                this.hitTestResult = hitTestResult;
-                this.changeWhat = ChangeCoordinate.Prompt;
-                this.sortOrder = CompareValue.Order.Ascending;
+                this.Operation = operation;
+                this.HitTestResult = hitTestResult;
+                this.ChangeWhat = ChangeCoordinate.Prompt;
+                this.SortOrder = CompareValue.Order.Ascending;
                 this.Text = text;
             }
 
-            protected OperationType Operation => operation;
+            protected OperationType Operation { get; } = OperationType.ShiftAreaComponents;
 
-            protected ChangeCoordinate ChangeWhat {
-                get {
-                    return changeWhat;
-                }
+            protected ChangeCoordinate ChangeWhat { get; set; }
 
-                set {
-                    changeWhat = value;
-                }
-            }
-
-            protected CompareValue.Order SortOrder {
-                get {
-                    return sortOrder;
-                }
-
-                set {
-                    sortOrder = value;
-                }
-            }
+            protected CompareValue.Order SortOrder { get; set; }
 
             protected string OperationText {
                 get {
@@ -644,34 +619,18 @@ namespace LayoutManager.Tools {
                 }
             }
 
-            public LayoutHitTestResult HitTestResult => hitTestResult;
+            public LayoutHitTestResult HitTestResult { get; } = null;
 
-            public int Delta {
-                get {
-                    return delta;
-                }
+            public int Delta { get; protected set; }
 
-                protected set {
-                    delta = value;
-                }
-            }
-
-            public bool FillGaps {
-                get {
-                    return fillGaps;
-                }
-
-                set {
-                    fillGaps = value;
-                }
-            }
+            public bool FillGaps { get; set; } = true;
 
             protected class CompareValue : IComparer<int> {
                 public enum Order {
                     Ascending, Decending
                 }
 
-                readonly Order compareOrder;
+                private readonly Order compareOrder;
 
                 public CompareValue(Order compareOrder) {
                     this.compareOrder = compareOrder;
@@ -679,20 +638,19 @@ namespace LayoutManager.Tools {
 
                 #region IComparer<int> Members
 
-                public int Compare(int v1, int v2) {
+                public int Compare(int x, int y) {
                     if (compareOrder == Order.Ascending)
-                        return v1 - v2;
+                        return x - y;
                     else
-                        return v2 - v1;
+                        return y - x;
                 }
 
                 #endregion
             }
 
-            class ZorderSorter : IComparer {
-                public int Compare(Object o1, Object o2) => ((ModelComponent)o2).ZOrder - ((ModelComponent)o1).ZOrder;
+            private class ZorderSorter : IComparer {
+                public int Compare(Object x, Object y) => ((ModelComponent)y).ZOrder - ((ModelComponent)x).ZOrder;
             }
-
 
             protected enum ChangeCoordinate {
                 Prompt, ChangeX, ChangeY
@@ -718,7 +676,6 @@ namespace LayoutManager.Tools {
                             // Check this spot was moved, if so, do not delete it because it will not be there when command is
                             // executed
                             foreach (LayoutCommand command in shiftCommand) {
-
                                 if (command is LayoutMoveModelSpotCommand moveSpotCommand && moveSpotCommand.Spot == existingSpot) {
                                     deleteIt = false;
                                     break;
@@ -761,7 +718,6 @@ namespace LayoutManager.Tools {
                             majorAxisIndex = component.Location.Y;
                             minorAxisIndex = component.Location.X;
                         }
-
 
                         if (!majorAxis.TryGetValue(majorAxisIndex, out SortedList<int, LayoutModelSpotComponentCollection> minorAxis)) {
                             minorAxis = new SortedList<int, LayoutModelSpotComponentCollection>(new CompareValue(sortOrder));
@@ -832,12 +788,10 @@ namespace LayoutManager.Tools {
 
                                     shiftCommand.Add(new LayoutComponentPlacmentCommand(area, new Point(movedSpot.Location.X, y), newTrack, "track", movedSpot.Phase));
 
-
                                     if (movedTrack.TrackBackground is LayoutBridgeComponent bridge) {
                                         bridge = new LayoutBridgeComponent();
                                         shiftCommand.Add(new LayoutComponentPlacmentCommand(area, new Point(movedSpot.Location.X, y), bridge, "bridge", movedSpot.Phase));
                                     }
-
 
                                     if (movedTrack.TrackBackground is LayoutTunnelComponent tunnel) {
                                         tunnel = new LayoutTunnelComponent();
@@ -872,7 +826,6 @@ namespace LayoutManager.Tools {
 
                     movedSpot = area.Grid[new Point(movedSpotX, y)];
 
-
                     if (area.Grid.TryGetValue(new Point(fixedSpotX, movedSpot.Location.Y), out LayoutModelSpotComponentCollection fixedSpot)) {
                         // Check that the track layer of the moved spot has a R connection point and that the 
                         // track layer of the fixed spot has a L connection point. If this is the case,
@@ -890,12 +843,10 @@ namespace LayoutManager.Tools {
 
                                     shiftCommand.Add(new LayoutComponentPlacmentCommand(area, new Point(x, movedSpot.Location.Y), newTrack, "track", movedSpot.Phase));
 
-
                                     if (movedTrack.TrackBackground is LayoutBridgeComponent bridge) {
                                         bridge = new LayoutBridgeComponent();
                                         shiftCommand.Add(new LayoutComponentPlacmentCommand(area, new Point(x, movedSpot.Location.Y), bridge, "bridge", movedSpot.Phase));
                                     }
-
 
                                     if (movedTrack.TrackBackground is LayoutTunnelComponent tunnel) {
                                         tunnel = new LayoutTunnelComponent();
@@ -932,13 +883,13 @@ namespace LayoutManager.Tools {
                 Delta = SortOrder == CompareValue.Order.Ascending ? -moveBy : moveBy;
 
                 LayoutSelection selection = (Operation == OperationType.ShiftAreaComponents) ? GetAreaSelection() : LayoutController.UserSelection;
-                SortedList<int, SortedList<int, LayoutModelSpotComponentCollection>> majorAxis = GetSelectionSpotList(selection, changeWhat, sortOrder);
-                LayoutCompoundCommand shiftCommand = DoShift(majorAxis, OperationText, changeWhat);
+                SortedList<int, SortedList<int, LayoutModelSpotComponentCollection>> majorAxis = GetSelectionSpotList(selection, ChangeWhat, SortOrder);
+                LayoutCompoundCommand shiftCommand = DoShift(majorAxis, OperationText, ChangeWhat);
 
                 if (FillGaps) {
                     IDictionary<int, int> bounderies = FindBoundries(selection);
 
-                    if (changeWhat == ChangeCoordinate.ChangeY)
+                    if (ChangeWhat == ChangeCoordinate.ChangeY)
                         FillHorizontalGap(bounderies, shiftCommand);
                     else
                         FillVerticalGap(bounderies, shiftCommand);
@@ -949,7 +900,7 @@ namespace LayoutManager.Tools {
             }
 
             protected override void OnClick(EventArgs e) {
-                if (changeWhat == ChangeCoordinate.Prompt) {
+                if (ChangeWhat == ChangeCoordinate.Prompt) {
                     Dialogs.ShiftOrMove d = new LayoutManager.Tools.Dialogs.ShiftOrMove {
                         Text = (Operation == OperationType.MoveSelection) ? "Move Selection" : "Shift Components"
                     };
@@ -972,68 +923,67 @@ namespace LayoutManager.Tools {
                 else
                     DoOperation(1, true);
             }
-
         }
 
         #endregion
 
         #region Shift command menu entries
 
-        class ShiftComponentsUpMenuEntry : ShiftComponentsMenuEntryBase {
+        private class ShiftComponentsUpMenuEntry : ShiftComponentsMenuEntryBase {
             public ShiftComponentsUpMenuEntry(LayoutHitTestResult hitTestResult) :
                 base(OperationType.ShiftAreaComponents, hitTestResult, "up", ChangeCoordinate.ChangeY, CompareValue.Order.Ascending) {
             }
         }
 
-        class ShiftComponentsDownMenuEntry : ShiftComponentsMenuEntryBase {
+        private class ShiftComponentsDownMenuEntry : ShiftComponentsMenuEntryBase {
             public ShiftComponentsDownMenuEntry(LayoutHitTestResult hitTestResult) :
                 base(OperationType.ShiftAreaComponents, hitTestResult, "down", ChangeCoordinate.ChangeY, CompareValue.Order.Decending) {
             }
         }
 
-        class ShiftComponentsLeftMenuEntry : ShiftComponentsMenuEntryBase {
+        private class ShiftComponentsLeftMenuEntry : ShiftComponentsMenuEntryBase {
             public ShiftComponentsLeftMenuEntry(LayoutHitTestResult hitTestResult) :
                 base(OperationType.ShiftAreaComponents, hitTestResult, "left", ChangeCoordinate.ChangeX, CompareValue.Order.Ascending) {
             }
         }
 
-        class ShiftComponentsRightMenuEntry : ShiftComponentsMenuEntryBase {
+        private class ShiftComponentsRightMenuEntry : ShiftComponentsMenuEntryBase {
             public ShiftComponentsRightMenuEntry(LayoutHitTestResult hitTestResult) :
                 base(OperationType.ShiftAreaComponents, hitTestResult, "right", ChangeCoordinate.ChangeX, CompareValue.Order.Decending) {
             }
         }
 
-        class ShiftComponentsByMenuEntry : ShiftComponentsMenuEntryBase {
+        private class ShiftComponentsByMenuEntry : ShiftComponentsMenuEntryBase {
             public ShiftComponentsByMenuEntry(LayoutHitTestResult hitTestResult) :
                 base(OperationType.ShiftAreaComponents, hitTestResult, "By...") {
             }
         }
 
-        class MoveSelectionUpMenuEntry : ShiftComponentsMenuEntryBase {
+        private class MoveSelectionUpMenuEntry : ShiftComponentsMenuEntryBase {
             public MoveSelectionUpMenuEntry(LayoutHitTestResult hitTestResult) :
                 base(OperationType.MoveSelection, hitTestResult, "up", ChangeCoordinate.ChangeY, CompareValue.Order.Ascending) {
             }
         }
 
-        class MoveSelectionDownMenuEntry : ShiftComponentsMenuEntryBase {
+        private class MoveSelectionDownMenuEntry : ShiftComponentsMenuEntryBase {
             public MoveSelectionDownMenuEntry(LayoutHitTestResult hitTestResult) :
                 base(OperationType.MoveSelection, hitTestResult, "down", ChangeCoordinate.ChangeY, CompareValue.Order.Decending) {
             }
         }
 
-        class MoveSelectionLeftMenuEntry : ShiftComponentsMenuEntryBase {
+        private class MoveSelectionLeftMenuEntry : ShiftComponentsMenuEntryBase {
             public MoveSelectionLeftMenuEntry(LayoutHitTestResult hitTestResult) :
                 base(OperationType.MoveSelection, hitTestResult, "left", ChangeCoordinate.ChangeX, CompareValue.Order.Ascending) {
             }
         }
 
-        class MoveSelectionRightMenuEntry : ShiftComponentsMenuEntryBase {
+        private class MoveSelectionRightMenuEntry : ShiftComponentsMenuEntryBase {
             public MoveSelectionRightMenuEntry(LayoutHitTestResult hitTestResult) :
                 base(OperationType.MoveSelection, hitTestResult, "right", ChangeCoordinate.ChangeX, CompareValue.Order.Decending) {
             }
         }
 
-        class MoveComponentsByMenuEntry : ShiftComponentsMenuEntryBase {
+        private class MoveComponentsByMenuEntry : ShiftComponentsMenuEntryBase {
             public MoveComponentsByMenuEntry(LayoutHitTestResult hitTestResult) :
                 base(OperationType.MoveSelection, hitTestResult, "By...") {
             }
@@ -1116,21 +1066,21 @@ namespace LayoutManager.Tools {
         #region Module Location Component
 
         [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(LayoutControlModuleLocationComponent))]
-        void QueryControlModuleLocationContextMenu(LayoutEvent e) {
+        private void QueryControlModuleLocationContextMenu(LayoutEvent e) {
             e.Info = e.Sender;
         }
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(LayoutControlModuleLocationComponent))]
         [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutControlModuleLocationComponent))]
-        void AddControlModuleLocationConextMenuEntries(LayoutEvent e) {
+        private void AddControlModuleLocationConextMenuEntries(LayoutEvent e) {
             Menu menu = (Menu)e.Info;
             LayoutControlModuleLocationComponent component = (LayoutControlModuleLocationComponent)e.Sender;
 
             menu.MenuItems.Add(new ShowControlModuleLocationMenuItem(component));
         }
 
-        class ShowControlModuleLocationMenuItem : MenuItem {
-            readonly LayoutControlModuleLocationComponent component;
+        private class ShowControlModuleLocationMenuItem : MenuItem {
+            private readonly LayoutControlModuleLocationComponent component;
 
             public ShowControlModuleLocationMenuItem(LayoutControlModuleLocationComponent component) {
                 this.component = component;

@@ -10,6 +10,8 @@ namespace LayoutManager.CommonUI.Controls {
     /// Summary description for DrivingParameters.
     /// </summary>
     public class DrivingParameters : System.Windows.Forms.UserControl, IObjectHasXml {
+        private const string A_SpeedLimit = "SpeedLimit";
+        private const string A_SlowDownSpeed = "SlowDownSpeed";
         private Label label1;
         private Label label2;
         private TextBox textBoxSpeedLimit;
@@ -20,11 +22,12 @@ namespace LayoutManager.CommonUI.Controls {
         private LayoutManager.CommonUI.Controls.MotionRampSelector motionRampSelectorSlowdown;
         private Label labelSlowDownSpeedValues;
         private LayoutManager.CommonUI.Controls.MotionRampSelector motionRampSelectorStop;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
 
-        XmlElement element;
+        private XmlElement element;
 
         #pragma warning disable nullable
         public DrivingParameters() {
@@ -52,8 +55,8 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private void initialize() {
-            if (Element.HasAttribute("SpeedLimit"))
-                textBoxSpeedLimit.Text = Element.GetAttribute("SpeedLimit");
+            if (Element.HasAttribute(A_SpeedLimit))
+                textBoxSpeedLimit.Text = Element.GetAttribute(A_SpeedLimit);
             labelSpeedLimitValues.Text = "(1-" + LayoutModel.Instance.LogicalSpeedSteps + ", empty for default)";
 
             motionRampSelectorAcceleration.Title = "Acceleration Profile:";
@@ -64,8 +67,8 @@ namespace LayoutManager.CommonUI.Controls {
             motionRampSelectorDeceleration.Role = "Deaceleration";
             motionRampSelectorDeceleration.Element = Element;
 
-            if (Element.HasAttribute("SlowDownSpeed"))
-                textBoxSlowDownSpeed.Text = Element.GetAttribute("SlowDownSpeed");
+            if (Element.HasAttribute(A_SlowDownSpeed))
+                textBoxSlowDownSpeed.Text = Element.GetAttribute(A_SlowDownSpeed);
             labelSlowDownSpeedValues.Text = "(1-" + LayoutModel.Instance.LogicalSpeedSteps + ")";
 
             motionRampSelectorSlowdown.Title = "Slow-down Profile:";
@@ -119,7 +122,6 @@ namespace LayoutManager.CommonUI.Controls {
                     return false;
                 }
 
-
                 if (slowDownSpeed < 1 || slowDownSpeed > model.LogicalSpeedSteps) {
                     invalidSpeedValue("slow-down speed");
                     textBoxSlowDownSpeed.Focus();
@@ -140,18 +142,18 @@ namespace LayoutManager.CommonUI.Controls {
             if (textBoxSpeedLimit.Text.Trim() != "") {
                 int speedLimit = int.Parse(textBoxSpeedLimit.Text);
 
-                Element.SetAttribute("SpeedLimit", XmlConvert.ToString(speedLimit));
+                Element.SetAttribute(A_SpeedLimit, speedLimit);
             }
             else
-                Element.RemoveAttribute("SpeedLimit");
+                Element.RemoveAttribute(A_SpeedLimit);
 
             if (textBoxSlowDownSpeed.Text.Trim() != "") {
                 int slowDownSpeed = int.Parse(textBoxSlowDownSpeed.Text);
 
-                Element.SetAttribute("SlowDownSpeed", XmlConvert.ToString(slowDownSpeed));
+                Element.SetAttribute(A_SlowDownSpeed, slowDownSpeed);
             }
             else
-                Element.RemoveAttribute("SlowDownSpeed");
+                Element.RemoveAttribute(A_SlowDownSpeed);
 
             motionRampSelectorAcceleration.Commit();
             motionRampSelectorDeceleration.Commit();
@@ -286,7 +288,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Name = "DrivingParameters";
             this.Size = new System.Drawing.Size(280, 246);
             this.ResumeLayout(false);
-
         }
         #endregion
     }

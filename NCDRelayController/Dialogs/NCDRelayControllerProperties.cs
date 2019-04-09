@@ -12,15 +12,21 @@ namespace NCDRelayController.Dialogs {
     /// Summary description for CentralStationProperties.
     /// </summary>
     public class NCDRelayControllerProperties : Form {
+        private const string A_InterfaceType = "InterfaceType";
+        private const string A_Port = "Port";
+        private const string A_Address = "Address";
+        private const string A_PollingPeriod = "PollingPeriod";
+        private const string E_ModeString = "ModeString";
         private ComboBox comboBoxPort;
         private Label label1;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly NCDRelayController component;
+        private readonly NCDRelayController component;
         private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
         private Button buttonCOMsettings;
         private Label label2;
@@ -32,7 +38,6 @@ namespace NCDRelayController.Dialogs {
         private Label label3;
         private Button buttonIpSettings;
         private Button buttonBrowseForDigiDevices;
-        readonly LayoutXmlInfo xmlInfo;
 
         public NCDRelayControllerProperties(NCDRelayController component) {
             //
@@ -44,31 +49,28 @@ namespace NCDRelayController.Dialogs {
                 comboBoxPort.Items.Add(port);
 
             this.component = component;
-            this.xmlInfo = new LayoutXmlInfo(component);
+            this.XmlInfo = new LayoutXmlInfo(component);
 
-            InterfaceType interfaceType = InterfaceType.Serial;
-
-            if (xmlInfo.DocumentElement.HasAttribute("InterfaceType"))
-                interfaceType = (InterfaceType)Enum.Parse(typeof(InterfaceType), xmlInfo.DocumentElement.GetAttribute("InterfaceType"));
+            var interfaceType = XmlInfo.DocumentElement.AttributeValue(A_InterfaceType).Enum<InterfaceType>() ?? InterfaceType.Serial;
 
             if (interfaceType == InterfaceType.Serial)
                 radioButtonSerial.Checked = true;
             else
                 radioButtonTCP.Checked = true;
 
-            nameDefinition.XmlInfo = this.xmlInfo;
-            comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute("Port");
+            nameDefinition.XmlInfo = this.XmlInfo;
+            comboBoxPort.Text = XmlInfo.DocumentElement.GetAttribute(A_Port);
 
-            if (xmlInfo.DocumentElement.HasAttribute("Address"))
-                textBoxAddress.Text = xmlInfo.DocumentElement.GetAttribute("Address");
+            if (XmlInfo.DocumentElement.HasAttribute(A_Address))
+                textBoxAddress.Text = XmlInfo.DocumentElement.GetAttribute(A_Address);
 
-            if (xmlInfo.DocumentElement.HasAttribute("PollingPeriod"))
-                textBoxPollingPeriod.Text = xmlInfo.DocumentElement.GetAttribute("PollingPeriod");
+            if (XmlInfo.DocumentElement.HasAttribute(A_PollingPeriod))
+                textBoxPollingPeriod.Text = XmlInfo.DocumentElement.GetAttribute(A_PollingPeriod);
 
             radioButtonInterfaceType_CheckedChanged(null, new EventArgs());
         }
 
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         /// <summary>
         /// Clean up any resources being used.
@@ -275,13 +277,12 @@ namespace NCDRelayController.Dialogs {
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
         #endregion
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
             if (nameDefinition.Commit()) {
-                LayoutTextInfo myName = new LayoutTextInfo(xmlInfo.DocumentElement, "Name");
+                LayoutTextInfo myName = new LayoutTextInfo(XmlInfo.DocumentElement, "Name");
 
                 foreach (IModelComponentIsCommandStation otherCommandStation in LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All)) {
                     if (otherCommandStation.NameProvider.Name == myName.Name && otherCommandStation.Id != component.Id) {
@@ -294,7 +295,6 @@ namespace NCDRelayController.Dialogs {
             else
                 return;
 
-
             if (!int.TryParse(textBoxPollingPeriod.Text, out int pollingPeriod)) {
                 MessageBox.Show(this, "Invalid contact closure polling period", "Invalid input", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxPollingPeriod.Focus();
@@ -304,26 +304,25 @@ namespace NCDRelayController.Dialogs {
             // Commit
 
             if (radioButtonSerial.Checked) {
-                xmlInfo.DocumentElement.SetAttribute("InterfaceType", InterfaceType.Serial.ToString());
-                xmlInfo.DocumentElement.SetAttribute("Port", comboBoxPort.Text);
+                XmlInfo.DocumentElement.SetAttribute(A_InterfaceType, InterfaceType.Serial);
+                XmlInfo.DocumentElement.SetAttribute(A_Port, comboBoxPort.Text);
             }
             else {
-                xmlInfo.DocumentElement.SetAttribute("InterfaceType", InterfaceType.TCP.ToString());
-                xmlInfo.DocumentElement.SetAttribute("Address", textBoxAddress.Text);
+                XmlInfo.DocumentElement.SetAttribute(A_InterfaceType, InterfaceType.TCP);
+                XmlInfo.DocumentElement.SetAttribute(A_Address, textBoxAddress.Text);
             }
 
-            xmlInfo.DocumentElement.SetAttribute("PollingPeriod", XmlConvert.ToString(pollingPeriod));
+            XmlInfo.DocumentElement.SetAttribute(A_PollingPeriod, pollingPeriod);
             DialogResult = DialogResult.OK;
         }
 
         private void buttonCOMsettings_Click(object sender, EventArgs e) {
-            string modeString = xmlInfo.DocumentElement["ModeString"].InnerText;
+            string modeString = XmlInfo.DocumentElement[E_ModeString].InnerText;
 
             LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
 
             if (d.ShowDialog(this) == DialogResult.OK)
-                xmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
-
+                XmlInfo.DocumentElement[E_ModeString].InnerText = d.ModeString;
         }
 
         private void radioButtonInterfaceType_CheckedChanged(object sender, EventArgs e) {
@@ -341,7 +340,6 @@ namespace NCDRelayController.Dialogs {
                 buttonBrowseForDigiDevices.Enabled = true;
                 buttonIpSettings.Enabled = true;
             }
-
         }
 
         private void buttonIpSettings_Click(object sender, EventArgs e) {

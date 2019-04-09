@@ -24,9 +24,9 @@ namespace DigiFinder {
     }
 
     public class DigiFinder {
-        readonly IPAddress DigiMulticastGroup = IPAddress.Parse("224.0.5.128");
-        readonly int DigiMulticastPort = 2362;
-        readonly byte[] replyBuffer = new byte[512];
+        private readonly IPAddress DigiMulticastGroup = IPAddress.Parse("224.0.5.128");
+        private readonly int DigiMulticastPort = 2362;
+        private readonly byte[] replyBuffer = new byte[512];
 
         public async Task DiscoverDigiDevices(ICollection<DigiDevice> devices, int timeout = 4000) {
             using (var discoverySocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp)) {
@@ -81,14 +81,13 @@ namespace DigiFinder {
 
                 discoverySocket.SendTo(buffer, digiEndpoint);
 
-
                 await Task.Delay(timeout);
             }
         }
     }
 
-    class DigiRequestPacket {
-        readonly MemoryStream packetStream;
+    internal class DigiRequestPacket {
+        private readonly MemoryStream packetStream;
 
         public DigiRequestPacket(int packetType) {
             this.packetStream = new MemoryStream();
@@ -130,7 +129,7 @@ namespace DigiFinder {
         }
     }
 
-    class DiscoveryDigiPacket : DigiRequestPacket {
+    internal class DiscoveryDigiPacket : DigiRequestPacket {
         public DiscoveryDigiPacket(byte[] specificTargetMac = null)
             : base(1) {
             byte[] mac = specificTargetMac ?? new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
@@ -142,7 +141,7 @@ namespace DigiFinder {
         }
     }
 
-    enum DigiReplyFieldType : byte {
+    internal enum DigiReplyFieldType : byte {
         MacAddress = 0x01,
         IpAddress = 0x02,
         NetMask = 0x03,
@@ -162,9 +161,9 @@ namespace DigiFinder {
         EncryptedRealPortNumber = 0x13
     }
 
-    class DigiReplyPacket {
-        readonly byte[] buffer;
-        readonly MemoryStream packetStream;
+    internal class DigiReplyPacket {
+        private readonly byte[] buffer;
+        private readonly MemoryStream packetStream;
 
         public int PacketType { get; }
         public int PayloadLength { get; }
@@ -183,7 +182,7 @@ namespace DigiFinder {
             this.PayloadLength = GetShort();
         }
 
-        Int16 GetShort() {
+        private Int16 GetShort() {
             int h = packetStream.ReadByte();
             int l = packetStream.ReadByte();
 

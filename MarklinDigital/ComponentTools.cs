@@ -43,7 +43,7 @@ namespace MarklinDigital {
         #endregion
 
         [LayoutEvent("model-component-placement-request", SenderType = typeof(MarklinDigitalCentralStation))]
-        void PlaceTrackContactRequest(LayoutEvent e) {
+        private void PlaceTrackContactRequest(LayoutEvent e) {
             MarklinDigitalCentralStation component = (MarklinDigitalCentralStation)e.Sender;
             Dialogs.MarklinDigitalProperties csProperties = new Dialogs.MarklinDigitalProperties(component);
 
@@ -56,12 +56,12 @@ namespace MarklinDigital {
         }
 
         [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(MarklinDigitalCentralStation))]
-        void QueryMarklinDigitalMenu(LayoutEvent e) {
+        private void QueryMarklinDigitalMenu(LayoutEvent e) {
             e.Info = true;
         }
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(MarklinDigitalCentralStation))]
-        void AddMarklinDigitalContextMenuEntries(LayoutEvent e) {
+        private void AddMarklinDigitalContextMenuEntries(LayoutEvent e) {
             Menu menu = (Menu)e.Info;
             MarklinDigitalCentralStation component = (MarklinDigitalCentralStation)e.Sender;
 
@@ -70,8 +70,8 @@ namespace MarklinDigital {
 
         #region Markin Digital Menu Item Classes
 
-        class MarklinDigitalMenuItemProperties : MenuItem {
-            readonly MarklinDigitalCentralStation component;
+        private class MarklinDigitalMenuItemProperties : MenuItem {
+            private readonly MarklinDigitalCentralStation component;
 
             internal MarklinDigitalMenuItemProperties(MarklinDigitalCentralStation component) {
                 this.component = component;

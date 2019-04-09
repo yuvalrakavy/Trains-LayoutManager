@@ -9,13 +9,8 @@ namespace LayoutManager.CommonUI.Controls {
     /// Draw locomotive image
     /// </summary>
     public class LocomotiveImagePainter : IDisposable {
-        LocomotiveCatalogInfo catalog = null;
-        Image image = null;
-        bool flipImage = false;
-        Pen framePen = new Pen(Color.Black, 1.0F);
-        int frameMargin = 2;
-        Size frameSize = new Size(100, 50);
-        Point origin = new Point(0, 0);
+        private LocomotiveCatalogInfo catalog = null;
+        private Pen framePen = new Pen(Color.Black, 1.0F);
 
         public LocomotiveImagePainter() {
         }
@@ -39,32 +34,21 @@ namespace LayoutManager.CommonUI.Controls {
             }
 
             get {
-                if (catalog == null)
-                    catalog = LayoutModel.LocomotiveCatalog;
-
-                return catalog;
+                return catalog ?? (catalog = LayoutModel.LocomotiveCatalog);
             }
         }
 
         public XmlElement LocomotiveElement {
             set {
                 LocomotiveTypeInfo locoType = new LocomotiveTypeInfo(value);
-                image = locoType.Image;
+                Image = locoType.Image;
 
-                if (image == null)
-                    image = Catalog.GetStandardImage(locoType.Kind, locoType.Origin);
+                if (Image == null)
+                    Image = Catalog.GetStandardImage(locoType.Kind, locoType.Origin);
             }
         }
 
-        public Image Image {
-            get {
-                return image;
-            }
-
-            set {
-                image = value;
-            }
-        }
+        public Image Image { get; set; } = null;
 
         public Pen FramePen {
             get {
@@ -78,45 +62,13 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public Size FrameSize {
-            get {
-                return frameSize;
-            }
+        public Size FrameSize { get; set; } = new Size(100, 50);
 
-            set {
-                frameSize = value;
-            }
-        }
+        public int FrameMargin { get; set; } = 2;
 
-        public int FrameMargin {
-            get {
-                return frameMargin;
-            }
+        public bool FlipImage { get; set; } = false;
 
-            set {
-                frameMargin = value;
-            }
-        }
-
-        public bool FlipImage {
-            get {
-                return flipImage;
-            }
-
-            set {
-                flipImage = value;
-            }
-        }
-
-        public Point Origin {
-            get {
-                return origin;
-            }
-
-            set {
-                origin = value;
-            }
-        }
+        public Point Origin { get; set; } = new Point(0, 0);
 
         public void Dispose() {
             if (framePen != null)
@@ -130,7 +82,7 @@ namespace LayoutManager.CommonUI.Controls {
             if (Image != null) {
                 SizeF drawnImageSize;
                 RectangleF drawnImageRectangle;
-                double aspectRatio = (double)image.Width / (double)image.Height;
+                double aspectRatio = (double)Image.Width / (double)Image.Height;
                 int w = FrameSize.Width - 2 * FrameMargin;
                 int h = FrameSize.Height - 2 * FrameMargin;
 
@@ -143,8 +95,8 @@ namespace LayoutManager.CommonUI.Controls {
                     drawnImageSize = new SizeF(w, (float)(w / aspectRatio));
 
                 drawnImageRectangle = new RectangleF(new PointF(
-                    origin.X + (FrameSize.Width - drawnImageSize.Width) / 2.0F,
-                    origin.Y + (FrameSize.Height - drawnImageSize.Height) / 2.0F),
+                    Origin.X + (FrameSize.Width - drawnImageSize.Width) / 2.0F,
+                    Origin.Y + (FrameSize.Height - drawnImageSize.Height) / 2.0F),
                     drawnImageSize);
 
                 g.DrawImage(this.Image, drawnImageRectangle);

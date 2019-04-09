@@ -26,13 +26,13 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly TripPlanCatalogInfo tripPlanCatalog;
-        readonly LayoutSelection destinationSelection;
-        readonly ILayoutSelectionLook destinationSelectionLook = new LayoutSelectionLook(Color.Orange);
-        readonly LayoutSelection selectedLocationSelection;
-        readonly ILayoutSelectionLook selectedLocationSelectionLook = new LayoutSelectionLook(Color.OrangeRed);
-        DestinationNode editedDestinationNode = null;
-        XmlDocument destinationDoc = null;
+        private readonly TripPlanCatalogInfo tripPlanCatalog;
+        private readonly LayoutSelection destinationSelection;
+        private readonly ILayoutSelectionLook destinationSelectionLook = new LayoutSelectionLook(Color.Orange);
+        private readonly LayoutSelection selectedLocationSelection;
+        private readonly ILayoutSelectionLook selectedLocationSelectionLook = new LayoutSelectionLook(Color.OrangeRed);
+        private DestinationNode editedDestinationNode = null;
+        private XmlDocument destinationDoc = null;
 
         public TripPlanCommonDestinations() {
             //
@@ -249,7 +249,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "\"Smart\" Destinations";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.TripPlanCommonDestinations_Closing);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -323,8 +322,8 @@ namespace LayoutManager.Tools.Dialogs {
                 Owner.Activate();
         }
 
-        class DestinationNode : TreeNode {
-            TripPlanDestinationInfo destination;
+        private class DestinationNode : TreeNode {
+            private TripPlanDestinationInfo destination;
 
             public DestinationNode(TripPlanDestinationInfo destination) {
                 this.destination = destination;
@@ -353,11 +352,9 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        class DestinationEntryNode : TreeNode {
-            readonly TripPlanDestinationEntryInfo entry;
-
+        private class DestinationEntryNode : TreeNode {
             public DestinationEntryNode(TripPlanDestinationEntryInfo entry) {
-                this.entry = entry;
+                this.Entry = entry;
 
                 LayoutBlock block = LayoutModel.Blocks[entry.BlockId];
                 string condition = "";
@@ -371,11 +368,11 @@ namespace LayoutManager.Tools.Dialogs {
                     Text = "*UNKNOWN*" + condition;
             }
 
-            public TripPlanDestinationEntryInfo Entry => entry;
+            public TripPlanDestinationEntryInfo Entry { get; }
 
             public LayoutBlockDefinitionComponent BlockInfo {
                 get {
-                    LayoutBlock block = LayoutModel.Blocks[entry.BlockId];
+                    LayoutBlock block = LayoutModel.Blocks[Entry.BlockId];
 
                     if (block != null)
                         return block.BlockDefinintion;
@@ -384,5 +381,4 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
     }
-
 }

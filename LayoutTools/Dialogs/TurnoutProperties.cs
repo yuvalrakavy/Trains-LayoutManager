@@ -12,6 +12,9 @@ namespace LayoutManager.Tools.Dialogs {
     /// Summary description for TrackContactProperties.
     /// </summary>
     public class TurnoutProperties : Form, ILayoutComponentPropertiesDialog {
+        private const string A_ReverseLogic = "ReverseLogic";
+        private const string A_HasFeedback = "HasFeedback";
+        private const string A_BuiltinDecoderTypeName = "BuiltinDecoderTypeName";
         private TabPage tabPageAddress;
         private TabControl tabControl;
         private Button buttonOK;
@@ -26,12 +29,10 @@ namespace LayoutManager.Tools.Dialogs {
         private CheckBox checkBoxHasBuiltinDecoder;
         private ComboBox comboBoxBuiltinDecoders;
         private CheckBox checkBoxHasFeedback;
-        readonly LayoutXmlInfo xmlInfo;
 
         private void FixLabel(Control c, string componentName) {
             c.Text = Regex.Replace(c.Text, "COMPONENT", componentName);
         }
-
 
         public TurnoutProperties(ModelComponent component) {
             //
@@ -47,17 +48,10 @@ namespace LayoutManager.Tools.Dialogs {
             FixLabel(checkBoxReverseLogic, componentName);
             FixLabel(checkBoxHasFeedback, componentName);
 
-            this.xmlInfo = new LayoutXmlInfo(component);
+            this.XmlInfo = new LayoutXmlInfo(component);
 
-            if (xmlInfo.Element.HasAttribute("ReverseLogic"))
-                checkBoxReverseLogic.Checked = XmlConvert.ToBoolean(xmlInfo.Element.GetAttribute("ReverseLogic"));
-            else
-                checkBoxReverseLogic.Checked = false;
-
-            if (xmlInfo.Element.HasAttribute("HasFeedback"))
-                checkBoxHasFeedback.Checked = XmlConvert.ToBoolean(xmlInfo.Element.GetAttribute("HasFeedback"));
-            else
-                checkBoxHasFeedback.Checked = false;
+            checkBoxReverseLogic.Checked = (bool?)XmlInfo.Element.AttributeValue(A_ReverseLogic) ?? false;
+            checkBoxHasFeedback.Checked = (bool?)XmlInfo.Element.AttributeValue(A_HasFeedback) ?? false;
 
             IEnumerable<IModelComponentIsCommandStation> commandStations = LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All);
 
@@ -83,8 +77,8 @@ namespace LayoutManager.Tools.Dialogs {
             else {
                 comboBoxBuiltinDecoders.SelectedIndex = 0;
 
-                if (xmlInfo.Element.HasAttribute("BuiltinDecoderTypeName")) {
-                    string typeName = xmlInfo.Element.GetAttribute("BuiltinDecoderTypeName");
+                if (XmlInfo.Element.HasAttribute(A_BuiltinDecoderTypeName)) {
+                    string typeName = XmlInfo.Element.GetAttribute(A_BuiltinDecoderTypeName);
 
                     foreach (Item item in comboBoxBuiltinDecoders.Items)
                         if (item.ModuleType.TypeName == typeName) {
@@ -102,7 +96,7 @@ namespace LayoutManager.Tools.Dialogs {
             comboBoxBuiltinDecoders.Enabled = checkBoxHasBuiltinDecoder.Checked;
         }
 
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         /// <summary>
         /// Clean up any resources being used.
@@ -226,18 +220,17 @@ namespace LayoutManager.Tools.Dialogs {
             this.tabPageAddress.ResumeLayout(false);
             this.tabPageAddress.PerformLayout();
             this.ResumeLayout(false);
-
         }
         #endregion
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
-            xmlInfo.DocumentElement.SetAttribute("ReverseLogic", XmlConvert.ToString(checkBoxReverseLogic.Checked));
-            xmlInfo.DocumentElement.SetAttribute("HasFeedback", XmlConvert.ToString(checkBoxHasFeedback.Checked));
+            XmlInfo.DocumentElement.SetAttribute(A_ReverseLogic, checkBoxReverseLogic.Checked);
+            XmlInfo.DocumentElement.SetAttribute(A_HasFeedback, checkBoxHasFeedback.Checked);
 
             if (checkBoxHasBuiltinDecoder.Checked)
-                xmlInfo.Element.SetAttribute("BuiltinDecoderTypeName", ((Item)comboBoxBuiltinDecoders.SelectedItem).ModuleType.TypeName);
+                XmlInfo.Element.SetAttribute(A_BuiltinDecoderTypeName, ((Item)comboBoxBuiltinDecoders.SelectedItem).ModuleType.TypeName);
             else
-                xmlInfo.Element.RemoveAttribute("BuiltinDecoderTypeName");
+                XmlInfo.Element.RemoveAttribute(A_BuiltinDecoderTypeName);
 
             this.DialogResult = DialogResult.OK;
             Close();
@@ -247,16 +240,14 @@ namespace LayoutManager.Tools.Dialogs {
             updateButtons();
         }
 
-        class Item {
-            readonly ControlModuleType moduleType;
-
+        private class Item {
             public Item(ControlModuleType moduleType) {
-                this.moduleType = moduleType;
+                this.ModuleType = moduleType;
             }
 
-            public ControlModuleType ModuleType => moduleType;
+            public ControlModuleType ModuleType { get; }
 
-            public override string ToString() => moduleType.Name;
+            public override string ToString() => ModuleType.Name;
         }
     }
 }

@@ -6,7 +6,7 @@ using LayoutManager.Logic;
 #pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Tools.Dialogs {
     public partial class CommandStationStopped : Form {
-        readonly IModelComponentIsCommandStation _commandStation;
+        private readonly IModelComponentIsCommandStation _commandStation;
 
         public CommandStationStopped(IModelComponentIsCommandStation commandStation, string reason) {
             InitializeComponent();
@@ -41,7 +41,6 @@ namespace LayoutManager.Tools.Dialogs {
             if (e.Sender == _commandStation)
                 Close();
         }
-
 
         private void CommandStationStopped_FormClosing(object sender, FormClosingEventArgs e) {
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);

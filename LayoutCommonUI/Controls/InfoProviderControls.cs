@@ -11,8 +11,8 @@ namespace LayoutManager.CommonUI.Controls {
     /// of standard fonts, standard positions etc.)
     /// </summary>
     public class LayoutInfosComboBox : ComboBox {
-        XmlElement container = null;
-        Type infoType = null;
+        private XmlElement container = null;
+        private Type infoType = null;
 
         public LayoutInfosComboBox() {
             this.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -74,7 +74,7 @@ namespace LayoutManager.CommonUI.Controls {
     /// Show values of an enumeration
     /// </summary>
     public class EnumComboBox : ComboBox {
-        Type enumType;
+        private Type enumType;
 
         public EnumComboBox() {
             this.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -109,12 +109,12 @@ namespace LayoutManager.CommonUI.Controls {
     }
 
     public class LayoutPositionInfoPreview : Control {
-        LayoutDrawingSide side = LayoutDrawingSide.Bottom;
-        LayoutDrawingAnchorPoint alignment = LayoutDrawingAnchorPoint.Center;
-        int distance = 0;
-        Size areaGridSize = new Size(32, 32);
-        Size previewGridSize = new Size(16, 16);
-        Size rectSize = new Size(30, 10);
+        private LayoutDrawingSide side = LayoutDrawingSide.Bottom;
+        private LayoutDrawingAnchorPoint alignment = LayoutDrawingAnchorPoint.Center;
+        private int distance = 0;
+        private Size areaGridSize = new Size(32, 32);
+        private Size previewGridSize = new Size(16, 16);
+        private Size rectSize = new Size(30, 10);
 
         public LayoutDrawingSide Side {
             set {
@@ -157,7 +157,6 @@ namespace LayoutManager.CommonUI.Controls {
                 Invalidate();
             }
         }
-
 
         private void drawBackground(Graphics g) {
             int x = 0;

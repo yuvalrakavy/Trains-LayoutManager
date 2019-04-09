@@ -5,13 +5,11 @@ using LayoutManager.Model;
 #pragma warning disable IDE0051, IDE0060
 #nullable enable
 namespace DiMAX {
-
     [LayoutModule("DiMAX Bus Definitions")]
-    class DiMAXControlComponents : LayoutModuleBase {
-
-        ControlBusType? dccBus = null;
-        ControlBusType? dimaxBus = null;
-        ControlBusType? locoBus = null;
+    internal class DiMAXControlComponents : LayoutModuleBase {
+        private ControlBusType? dccBus = null;
+        private ControlBusType? dimaxBus = null;
+        private ControlBusType? locoBus = null;
 
         [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='DiMAXDCC']")]
         private void getDCCbusType(LayoutEvent e) {

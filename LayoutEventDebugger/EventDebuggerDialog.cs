@@ -40,7 +40,7 @@ namespace LayoutEventDebugger {
         /// Required designer variable.
         /// </summary>
         private readonly Container? components = null;
-        readonly EventDebugger ed;
+        private readonly EventDebugger ed;
 
         public EventDebuggerDialog(EventDebugger ed) {
             this.ed = ed;
@@ -78,11 +78,11 @@ namespace LayoutEventDebugger {
             updateDialog();
         }
 
-        void updateDialog() {
+        private void updateDialog() {
             labelSubscriptionStatus!.Text = $"Subscription is {(ed.ActiveSubscription != null ? "active" : "not active")}";
         }
 
-        LayoutEventSubscription? GetUpdattedSubscription() {
+        private LayoutEventSubscription? GetUpdattedSubscription() {
             try {
                 Type? senderType;
                 Type? eventType;
@@ -126,7 +126,6 @@ namespace LayoutEventDebugger {
                 return null;
             }
         }
-
 
         /// <summary>
         /// Clean up any resources being used.
@@ -421,7 +420,6 @@ namespace LayoutEventDebugger {
             this.tabPageSubscription.ResumeLayout(false);
             this.tabPageSubscriber.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

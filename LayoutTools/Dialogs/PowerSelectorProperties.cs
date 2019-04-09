@@ -6,8 +6,9 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager.Tools.Dialogs {
-
     public partial class PowerSelectorProperties : Form, ILayoutComponentPropertiesDialog {
+        private const string A_ReverseLogic = "ReverseLogic";
+
         public PowerSelectorProperties(ModelComponent component) {
             InitializeComponent();
 
@@ -26,8 +27,8 @@ namespace LayoutManager.Tools.Dialogs {
             else
                 checkBoxDisplayPowerSelectorName.Checked = true;
 
-            if (XmlInfo.Element.HasAttribute("ReverseLogic"))
-                checkBoxReverseLogic.Checked = XmlConvert.ToBoolean(XmlInfo.Element.GetAttribute("ReverseLogic"));
+            if (XmlInfo.Element.HasAttribute(A_ReverseLogic))
+                checkBoxReverseLogic.Checked = (bool)XmlInfo.Element.AttributeValue(A_ReverseLogic);
             else
                 checkBoxReverseLogic.Checked = false;
 
@@ -37,15 +38,8 @@ namespace LayoutManager.Tools.Dialogs {
             else {
                 radioButtonSTDP.Checked = true;
 
-                if (XmlInfo.Element.HasAttribute(LayoutPowerSelectorComponent.A_HasOnOffRelay) && XmlConvert.ToBoolean(XmlInfo.Element.GetAttribute(LayoutPowerSelectorComponent.A_HasOnOffRelay)))
-                    checkBoxHasOnOffRelay.Checked = true;
-                else
-                    checkBoxHasOnOffRelay.Checked = false;
-
-                if (XmlInfo.Element.HasAttribute(LayoutPowerSelectorComponent.A_ReverseOnOffRelay) && XmlConvert.ToBoolean(XmlInfo.Element.GetAttribute(LayoutPowerSelectorComponent.A_ReverseOnOffRelay)))
-                    checkBoxReverseOnOffRelay.Checked = true;
-                else
-                    checkBoxReverseOnOffRelay.Checked = false;
+                checkBoxHasOnOffRelay.Checked = (bool?)XmlInfo.Element.AttributeValue(LayoutPowerSelectorComponent.A_HasOnOffRelay) ?? false;
+                checkBoxReverseOnOffRelay.Checked = (bool?)XmlInfo.Element.AttributeValue(LayoutPowerSelectorComponent.A_ReverseOnOffRelay) ?? false;
             }
 
             UpdateButtons();
@@ -75,7 +69,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         private bool IsPowerSelector() => radioButtonInput1connected.Checked && radioButtonInput2connected.Checked;
 
-        private void ApplyInletModification(ComboBox comboBox, RadioButton radioButtonConnected, RadioButton radioButtonNotConnected, ILayoutPowerInlet inlet) {
+        private void ApplyInletModification(ComboBox comboBox, RadioButton radioButtonNotConnected, ILayoutPowerInlet inlet) {
             if (radioButtonNotConnected.Checked || comboBox.SelectedItem == null)
                 inlet.OutletComponentId = Guid.Empty;
             else {
@@ -86,13 +80,12 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        LayoutPowerSelectorComponent Component { get; }
+        private LayoutPowerSelectorComponent Component { get; }
 
         #region ILayoutComponentPropertiesDialog Members
 
         public LayoutXmlInfo XmlInfo {
             get;
-
         }
 
         #endregion
@@ -125,8 +118,8 @@ namespace LayoutManager.Tools.Dialogs {
                 return;
             }
 
-            ApplyInletModification(comboBoxInput1, radioButtonInput1connected, radioButtonInput1disconnected, new LayoutPowerInlet(XmlInfo.Element, "Inlet1"));
-            ApplyInletModification(comboBoxInput2, radioButtonInput2connected, radioButtonInput2disconnected, new LayoutPowerInlet(XmlInfo.Element, "Inlet2"));
+            ApplyInletModification(comboBoxInput1, radioButtonInput1disconnected, new LayoutPowerInlet(XmlInfo.Element, "Inlet1"));
+            ApplyInletModification(comboBoxInput2, radioButtonInput2disconnected, new LayoutPowerInlet(XmlInfo.Element, "Inlet2"));
 
             var powerSelectorNameInfo = new LayoutPowerSelectorComponent.LayoutPowerSelectorNameInfo(XmlInfo.DocumentElement);
 
@@ -135,13 +128,13 @@ namespace LayoutManager.Tools.Dialogs {
 
             powerSelectorNameInfo.Name = textBoxName.Text;
             powerSelectorNameInfo.Visible = checkBoxDisplayPowerSelectorName.Checked;
-            XmlInfo.Element.SetAttribute("ReverseLogic", XmlConvert.ToString(checkBoxReverseLogic.Checked));
+            XmlInfo.Element.SetAttribute(A_ReverseLogic, checkBoxReverseLogic.Checked);
 
             XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.A_SwitchingMethod,
-                (radioButtonDTDPrelay.Checked ? LayoutPowerSelectorComponent.RelaySwitchingMethod.DPDSrelay : LayoutPowerSelectorComponent.RelaySwitchingMethod.TwoSPDSrelays).ToString());
+                radioButtonDTDPrelay.Checked ? LayoutPowerSelectorComponent.RelaySwitchingMethod.DPDSrelay : LayoutPowerSelectorComponent.RelaySwitchingMethod.TwoSPDSrelays);
 
-            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.A_HasOnOffRelay, XmlConvert.ToString(checkBoxHasOnOffRelay.Checked));
-            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.A_ReverseOnOffRelay, XmlConvert.ToString(checkBoxReverseOnOffRelay.Checked));
+            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.A_HasOnOffRelay, checkBoxHasOnOffRelay.Checked);
+            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.A_ReverseOnOffRelay, checkBoxReverseOnOffRelay.Checked);
 
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }

@@ -5,7 +5,6 @@ using System.Xml;
 
 namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
     public interface IIfConditionDialogCustomizer {
-
         string[] OperatorNames { get; }
         string[] OperatorDescriptions { get; }
         Type[] AllowedTypes { get; }
@@ -25,11 +24,12 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private ComboBox comboBoxOperation;
         private Button buttonOk;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly IIfConditionDialogCustomizer customizer;
+        private readonly IIfConditionDialogCustomizer customizer;
 
         public IfCondition(XmlElement conditionElement, IIfConditionDialogCustomizer customizer) {
             //
@@ -176,7 +176,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

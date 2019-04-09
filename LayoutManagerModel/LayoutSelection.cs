@@ -8,17 +8,20 @@ using System.Windows.Forms;
 using System.Linq;
 
 namespace LayoutManager.Model {
-
     /// <summary>
     /// Represent a selection of layout components. A selection is a collection of components. If a
     /// selection is displayed, then the component in the selection should be highlighted by the view
     /// </summary>
     public class LayoutSelection : IEnumerable<ModelComponent> {
-        readonly Dictionary<ModelComponent, object> selection = new Dictionary<ModelComponent, object>();
-        ILayoutSelectionLook selectionLook;
+        private readonly Dictionary<ModelComponent, object> selection = new Dictionary<ModelComponent, object>();
+        private ILayoutSelectionLook selectionLook;
 
         public const int ZOrderTopmost = 0;
         public const int ZOrderBottom = 1;
+        private const string E_Component = "Component";
+        private const string A_Class = "Class";
+        private const string A_X = "X";
+        private const string A_Y = "Y";
 
         public LayoutSelection() {
         }
@@ -138,7 +141,6 @@ namespace LayoutManager.Model {
             if (component != null)
                 Add(component);
             else {
-
                 if (LayoutModel.Blocks.TryGetValue(id, out LayoutBlock block))
                     Add(block);
                 else {
@@ -272,10 +274,10 @@ namespace LayoutManager.Model {
         private void AddComponentsToDataObject(XmlWriter w, Point mlOrigin, bool doTracks) {
             foreach (ModelComponent component in this) {
                 if ((doTracks && component.Kind == ModelComponentKind.Track) || (!doTracks && component.Kind != ModelComponentKind.Track)) {
-                    w.WriteStartElement("Component");
-                    w.WriteAttributeString("Class", component.GetType().FullName);
-                    w.WriteAttributeString("X", XmlConvert.ToString(component.Location.X - mlOrigin.X));
-                    w.WriteAttributeString("Y", XmlConvert.ToString(component.Location.Y - mlOrigin.Y));
+                    w.WriteStartElement(E_Component);
+                    w.WriteAttributeString(A_Class, component.GetType().FullName);
+                    w.WriteAttributeString(A_X, component.Location.X - mlOrigin.X);
+                    w.WriteAttributeString(A_Y, component.Location.Y - mlOrigin.Y);
                     component.WriteInnerXml(w);
                     w.WriteEndElement();
                 }
@@ -325,23 +327,19 @@ namespace LayoutManager.Model {
     /// color etc.
     /// </summary>
     public class LayoutSelectionLook : ILayoutSelectionLook {
-        readonly Color color;
-
         /// <summary>
         /// Create a selection color
         /// </summary>
         /// <param name="color">The selection visual indicator color</param>
         public LayoutSelectionLook(Color color) {
-            this.color = color;
+            this.Color = color;
         }
 
         /// <summary>
         /// The selection visual indicator color
         /// </summary>
-        public Color Color => color;
+        public Color Color { get; }
     }
-
-
 }
 
 

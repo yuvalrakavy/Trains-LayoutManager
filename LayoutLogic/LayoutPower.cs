@@ -11,17 +11,14 @@ using LayoutManager.Components;
 #nullable enable
 #pragma warning disable IDE0051
 namespace LayoutManager.Logic {
-
     [LayoutModule("Layout Power Manager", UserControl = false)]
-    class LayoutPowerManager : LayoutModuleBase {
-        static ILayoutTopologyServices _topologyServices;
-        readonly Dictionary<Guid, Guid> _pendingPowerConnectedLockReady = new Dictionary<Guid, Guid>();
+    internal class LayoutPowerManager : LayoutModuleBase {
+        private static ILayoutTopologyServices _topologyServices;
+        private readonly Dictionary<Guid, Guid> _pendingPowerConnectedLockReady = new Dictionary<Guid, Guid>();
 
-        static ILayoutTopologyServices TopologyServices {
+        private static ILayoutTopologyServices TopologyServices {
             get {
-                if (_topologyServices == null)
-                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", sender: null))!;
-                return _topologyServices;
+                return _topologyServices ?? (_topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", sender: null))!);
             }
         }
 
@@ -31,7 +28,7 @@ namespace LayoutManager.Logic {
         /// </summary>
         /// <param name="e"></param>
         [LayoutEvent("power-outlet-changed-state-notification")]
-        void PowerOutletChangedState(LayoutEvent e0) {
+        private void PowerOutletChangedState(LayoutEvent e0) {
             var e = (LayoutEvent<ILayoutPowerOutlet, ILayoutPower>)e0;
 
             Debug.Assert(e.Sender != null && e.Info != null);
@@ -68,14 +65,14 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEvent("check-layout", Order = 101)]
-        void CheckForReverseLoops(LayoutEvent e) {
+        private void CheckForReverseLoops(LayoutEvent e) {
             LayoutPhase phase = e.GetPhases();
 
             if (checkForReverseLoopsForPowerSection(phase))
                 e.Info = false;
         }
 
-        struct ReverseLoopStackEntry : IComparable<ReverseLoopStackEntry> {
+        private struct ReverseLoopStackEntry : IComparable<ReverseLoopStackEntry> {
             public TrackEdge Edge { get; }
             public bool FromSplit { get; }
 
@@ -102,8 +99,7 @@ namespace LayoutManager.Logic {
             #endregion
         }
 
-        class ReverseLoopScanStack : Stack<ReverseLoopStackEntry> {
-
+        private class ReverseLoopScanStack : Stack<ReverseLoopStackEntry> {
             public void Push(TrackEdge splitEdge, bool fromSplit) {
                 TrackEdge tipEdge;
 
@@ -122,7 +118,6 @@ namespace LayoutManager.Logic {
                 foreach (var cp in split.ConnectionPoints.Where(p => split.IsSplitPoint(p)))
                     Push(new TrackEdge(split, cp), fromSplit);
             }
-
         }
 
         private bool checkForReverseLoopsForPowerSection(LayoutPhase phase) {
@@ -188,7 +183,7 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEvent("check-layout", Order = 100)]
-        void AssignPowerSource(LayoutEvent e) {
+        private void AssignPowerSource(LayoutEvent e) {
             LayoutPhase phase = e.GetPhases();
             IEnumerable<LayoutTrackPowerConnectorComponent> powerConnectors = LayoutModel.Components<LayoutTrackPowerConnectorComponent>(phase);
             LayoutSelection duplicatedPowerConnectors = new LayoutSelection();
@@ -358,12 +353,11 @@ namespace LayoutManager.Logic {
 
         [LayoutEventDef("train-power-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(ILayoutPower))]
         [LayoutEventDef("locomotive-power-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainLocomotiveInfo), InfoType = typeof(ILayoutPower))]
-        void OnTrainPowerChanged(TrainStateInfo train, ILayoutPower power) {
+        private void OnTrainPowerChanged(TrainStateInfo train, ILayoutPower power) {
             EventManager.Event(new LayoutEvent<TrainStateInfo, ILayoutPower>("train-power-changed", train, power));
 
             foreach (var trainLoco in train.Locomotives)
                 EventManager.Event(new LayoutEvent<TrainLocomotiveInfo, ILayoutPower>("locomotive-power-changed", trainLoco, power));
-
         }
 
         [LayoutEvent("change-train-power")]
@@ -394,7 +388,6 @@ namespace LayoutManager.Logic {
                 throw new LayoutException(e.Sender, power.Type == LayoutPowerType.Disconnected ? "It is not possible to turn power off to this region" : "It is not possible to assign this power type to that region");
 
             if (powerConnector.Inlet.ConnectedOutlet.Power.Type != power.Type) {
-
                 // Validate that this type of power can be connected to that region
                 switch (power.Type) {
                     case LayoutPowerType.Disconnected:

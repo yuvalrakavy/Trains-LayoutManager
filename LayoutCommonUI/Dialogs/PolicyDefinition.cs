@@ -16,6 +16,7 @@ namespace LayoutManager.CommonUI.Dialogs {
         private CheckBox checkBoxApply;
         private CheckBox checkBoxGlobalPolicy;
         private CheckBox checkBoxShowInMenu;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -23,8 +24,8 @@ namespace LayoutManager.CommonUI.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly XmlElement scriptElement;
-        readonly LayoutPolicyInfo policy;
+        private readonly XmlElement scriptElement;
+        private readonly LayoutPolicyInfo policy;
 
         public PolicyDefinition(LayoutPolicyInfo policy) {
             //
@@ -181,7 +182,6 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Policy Definition";
             this.ResumeLayout(false);
-
         }
         #endregion
 

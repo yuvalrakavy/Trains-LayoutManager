@@ -34,7 +34,7 @@ namespace NumatoController {
         #region Component menu Item
 
         [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
-        void AddRelayControllerItem(LayoutEvent e) {
+        private void AddRelayControllerItem(LayoutEvent e) {
             XmlElement categoryElement = (XmlElement)e.Sender;
             ModelComponent old = (ModelComponent)e.Info;
 
@@ -43,7 +43,7 @@ namespace NumatoController {
         }
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='NumatoRelayController']")]
-        void PaintCentralStationItem(LayoutEvent e) {
+        private void PaintCentralStationItem(LayoutEvent e) {
             Graphics g = (Graphics)e.Info;
 
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
@@ -57,7 +57,7 @@ namespace NumatoController {
         }
 
         [LayoutEvent("create-model-component", IfSender = "Item[@Name='NumatoRelayController']")]
-        void CreateNumatoControllerComponent(LayoutEvent e) {
+        private void CreateNumatoControllerComponent(LayoutEvent e) {
             e.Info = new NumatoController();
         }
 
@@ -66,7 +66,7 @@ namespace NumatoController {
         #region Component view
 
         [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(NumatoController))]
-        void GetDiMAXcommandStationDrawingRegions(LayoutEvent eBase) {
+        private void GetDiMAXcommandStationDrawingRegions(LayoutEvent eBase) {
             LayoutGetDrawingRegionsEvent e = (LayoutGetDrawingRegionsEvent)eBase;
 
             if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
@@ -76,11 +76,10 @@ namespace NumatoController {
 
             if (textProvider.Element != null)
                 e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
-
         }
 
-        class DrawingRegionNumatoRelayController : LayoutDrawingRegionGrid {
-            readonly NumatoController component;
+        private class DrawingRegionNumatoRelayController : LayoutDrawingRegionGrid {
+            private readonly NumatoController component;
 
             internal DrawingRegionNumatoRelayController(ModelComponent component, ILayoutView view) : base(component, view) {
                 this.component = (NumatoController)component;
@@ -99,12 +98,12 @@ namespace NumatoController {
         #region Component Painter
 
         [LayoutEvent("get-image", SenderType = typeof(NumatoRelayControllerPainter))]
-        void GetCentralStationImage(LayoutEvent e) {
+        private void GetCentralStationImage(LayoutEvent e) {
             e.Info = imageListComponents.Images[0];
         }
 
-        class NumatoRelayControllerPainter {
-            Size componentSize;
+        private class NumatoRelayControllerPainter {
+            private Size componentSize;
 
             internal NumatoRelayControllerPainter(Size componentSize) {
                 this.componentSize = componentSize;
@@ -181,7 +180,6 @@ namespace NumatoController {
                 TransparentColor = System.Drawing.Color.Lime
             };
             this.imageListComponents.Images.SetKeyName(0, "Numto.png");
-
         }
         #endregion
 

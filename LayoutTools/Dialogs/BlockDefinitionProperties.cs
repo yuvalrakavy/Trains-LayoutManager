@@ -41,18 +41,15 @@ namespace LayoutManager.Tools.Dialogs {
         private CheckBox checkBoxSuggestForLocomotivePlacement;
         private CheckBox checkBoxSuggestForProgramming;
 
-
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
 
         private void EndOfDesignerVariables() { }
-
-        readonly LayoutXmlInfo xmlInfo;
-        readonly LayoutBlockDefinitionComponent blockDefinition;
-        static int nextBlockNumber = -1;
-        readonly PlacementInfo placementInfo;
+        private readonly LayoutBlockDefinitionComponent blockDefinition;
+        private static int nextBlockNumber = -1;
+        private readonly PlacementInfo placementInfo;
 
         public BlockInfoProperties(ModelComponent component, PlacementInfo placementInfo) {
             //
@@ -61,13 +58,13 @@ namespace LayoutManager.Tools.Dialogs {
             InitializeComponent();
 
             this.blockDefinition = (LayoutBlockDefinitionComponent)component;
-            this.xmlInfo = new LayoutXmlInfo(component);
+            this.XmlInfo = new LayoutXmlInfo(component);
             this.placementInfo = placementInfo;
 
-            nameDefinition.XmlInfo = xmlInfo;
+            nameDefinition.XmlInfo = XmlInfo;
             nameDefinition.Component = component;
 
-            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element);
+            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, XmlInfo.Element);
 
             checkBoxSuggestForLocomotivePlacement.Checked = info.SuggestForPlacement;
             checkBoxSuggestAsDestination.Checked = info.SuggestForDestination;
@@ -77,10 +74,10 @@ namespace LayoutManager.Tools.Dialogs {
             updateTrainPassCondition();
             updateTrainStopCondition();
 
-            drivingParameters.Element = xmlInfo.Element;
+            drivingParameters.Element = XmlInfo.Element;
 
             attributesEditor.AttributesSource = typeof(LayoutBlockDefinitionComponent);
-            attributesEditor.AttributesOwner = new AttributesOwner(xmlInfo.Element);
+            attributesEditor.AttributesOwner = new AttributesOwner(XmlInfo.Element);
 
             checkBoxOccupancyDetectionBlock.Checked = info.IsOccupancyDetectionBlock;
 
@@ -91,7 +88,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void updateTrainPassCondition() {
-            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element);
+            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, XmlInfo.Element);
             TripPlanTrainConditionInfo trainPassCondition = info.TrainPassCondition;
 
             if (trainPassCondition.IsConditionEmpty) {
@@ -110,7 +107,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void updateTrainStopCondition() {
-            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element);
+            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, XmlInfo.Element);
             TripPlanTrainConditionInfo trainStopCondition = info.TrainStopCondition;
 
             if (trainStopCondition.IsConditionEmpty) {
@@ -128,19 +125,18 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         // Implementation of IPolicyListCustomizer
 
         public bool IsPolicyChecked(LayoutPolicyInfo policy) {
-            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element);
+            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, XmlInfo.Element);
 
             return info.Policies.Contains(policy.Id);
         }
 
         public void SetPolicyChecked(LayoutPolicyInfo policy, bool checkValue) {
-            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element);
+            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, XmlInfo.Element);
 
             if (checkValue)
                 info.Policies.Add(policy.Id);
@@ -520,7 +516,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.groupBox2.PerformLayout();
             this.tabPagePolicies.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -541,7 +536,6 @@ namespace LayoutManager.Tools.Dialogs {
                 else {
                     if (nextBlockNumber == -1) {
                         foreach (LayoutBlockDefinitionComponent otherBlockInfo in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutPhase.All)) {
-
                             if (otherBlockInfo.Name.StartsWith("Block #") && int.TryParse(otherBlockInfo.Name.Substring(7), out int blockNumber)) {
                                 if (blockNumber > nextBlockNumber)
                                     nextBlockNumber = blockNumber + 1;
@@ -560,7 +554,7 @@ namespace LayoutManager.Tools.Dialogs {
             else if (!nameDefinition.Commit())
                 return;
 
-            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element) {
+            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, XmlInfo.Element) {
                 SuggestForPlacement = checkBoxSuggestForLocomotivePlacement.Checked,
                 SuggestForDestination = checkBoxSuggestAsDestination.Checked,
                 SuggestForProgramming = checkBoxSuggestForProgramming.Checked,
@@ -582,14 +576,14 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonAdvanced_Click(object sender, System.EventArgs e) {
-            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element);
+            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, XmlInfo.Element);
             Dialogs.AdvancedBlockInfoProperties advancedBlockInfo = new Dialogs.AdvancedBlockInfoProperties(info, placementInfo);
 
             advancedBlockInfo.ShowDialog(this);
         }
 
         private void buttonEditTrainPassCondition_Click(object sender, System.EventArgs e) {
-            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element);
+            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, XmlInfo.Element);
             TripPlanTrainConditionInfo passCondition = info.TrainPassCondition;
             CommonUI.Dialogs.TrainConditionDefinition d = new CommonUI.Dialogs.TrainConditionDefinition(blockDefinition, passCondition);
 
@@ -604,7 +598,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonEditTrainStopCondition_Click(object sender, System.EventArgs e) {
-            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element);
+            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, XmlInfo.Element);
             TripPlanTrainConditionInfo stopCondition = info.TrainStopCondition;
             CommonUI.Dialogs.TrainConditionDefinition d = new CommonUI.Dialogs.TrainConditionDefinition(blockDefinition, stopCondition);
 
@@ -619,7 +613,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonResources_Click(object sender, EventArgs e) {
-            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element);
+            LayoutBlockDefinitionComponentInfo info = new LayoutBlockDefinitionComponentInfo(blockDefinition, XmlInfo.Element);
             Dialogs.BlockDefinitionResources d = new BlockDefinitionResources(info);
 
             d.ShowDialog(this);

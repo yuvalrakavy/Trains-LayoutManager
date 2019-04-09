@@ -9,7 +9,11 @@ namespace LayoutManager.Logic {
     /// Summary description for TripPlanner.
     /// </summary>
     [LayoutModule("Standard Train Drivers")]
-    class TrainDrivers : LayoutModuleBase {
+    internal class TrainDrivers : LayoutModuleBase {
+        private const string A_TypeName = "TypeName";
+        private const string A_ComputerDriven = "ComputerDriven";
+        private const string A_Type = "Type";
+        private const string E_Driver = "Driver";
 
         #region Code common to all driver types
 
@@ -17,30 +21,29 @@ namespace LayoutManager.Logic {
         private void enumTrainDrivers(LayoutEvent e) {
             XmlElement driversElement = Ensure.NotNull<XmlElement>(e.Info, "driversElement");
 
-            XmlElement manualWithControllerElement = driversElement.OwnerDocument.CreateElement("Driver");
+            XmlElement manualWithControllerElement = driversElement.OwnerDocument.CreateElement(E_Driver);
 
-            manualWithControllerElement.SetAttribute("TypeName", "Manual (via extrnal controller)");
-            manualWithControllerElement.SetAttribute("ComputerDriven", XmlConvert.ToString(false));
-            manualWithControllerElement.SetAttribute("Type", "ManualController");
+            manualWithControllerElement.SetAttribute(A_TypeName, "Manual (via extrnal controller)");
+            manualWithControllerElement.SetAttribute(A_ComputerDriven, false);
+            manualWithControllerElement.SetAttribute(A_Type, "ManualController");
 
             driversElement.AppendChild(manualWithControllerElement);
 
-            XmlElement manuaOnScreenlDriverElement = driversElement.OwnerDocument.CreateElement("Driver");
+            XmlElement manuaOnScreenlDriverElement = driversElement.OwnerDocument.CreateElement(E_Driver);
 
-            manuaOnScreenlDriverElement.SetAttribute("TypeName", "Manual (via on-screen dialog)");
-            manuaOnScreenlDriverElement.SetAttribute("ComputerDriven", XmlConvert.ToString(true));
-            manuaOnScreenlDriverElement.SetAttribute("Type", "ManualOnScreen");
+            manuaOnScreenlDriverElement.SetAttribute(A_TypeName, "Manual (via on-screen dialog)");
+            manuaOnScreenlDriverElement.SetAttribute(A_ComputerDriven, true);
+            manuaOnScreenlDriverElement.SetAttribute(A_Type, "ManualOnScreen");
 
             driversElement.AppendChild(manuaOnScreenlDriverElement);
 
-            XmlElement autoDriverElement = driversElement.OwnerDocument.CreateElement("Driver");
+            XmlElement autoDriverElement = driversElement.OwnerDocument.CreateElement(E_Driver);
 
-            autoDriverElement.SetAttribute("TypeName", "Automatic (by the computer)");
-            autoDriverElement.SetAttribute("ComputerDriven", XmlConvert.ToString(true));
-            autoDriverElement.SetAttribute("Type", "Automatic");
+            autoDriverElement.SetAttribute(A_TypeName, "Automatic (by the computer)");
+            autoDriverElement.SetAttribute(A_ComputerDriven, true);
+            autoDriverElement.SetAttribute(A_Type, "Automatic");
 
             driversElement.AppendChild(autoDriverElement);
-
         }
 
         #region Common Object (model)
@@ -74,13 +77,13 @@ namespace LayoutManager.Logic {
 
         #region Data structures
 
-        enum AutoDriverState {
+        private enum AutoDriverState {
             Stop,                   // Train is stopped
             Go,                     // Train is moving
             SlowDown                // Train is slowing down (prepare to stop)
         }
 
-        class TrainAutoDriverInfo : TrainDriverInfo {
+        private class TrainAutoDriverInfo : TrainDriverInfo {
             public TrainAutoDriverInfo(XmlElement element) : base(element) {
             }
 
@@ -200,7 +203,7 @@ namespace LayoutManager.Logic {
 
         #region Utility methods
 
-        static int CalculateEffectiveTargetSpeed(TrainStateInfo train) {
+        private static int CalculateEffectiveTargetSpeed(TrainStateInfo train) {
             int effectiveSpeed;
             TrainAutoDriverInfo driver = new TrainAutoDriverInfo(train);
 

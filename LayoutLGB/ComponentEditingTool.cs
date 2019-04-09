@@ -14,19 +14,10 @@ namespace LayoutLGB {
         /// Required designer variable.
         /// </summary>
         private Container components = null;
-        LayoutModule _module;
 
         #region Implementation of ILayoutModuleSetup
 
-        public LayoutModule Module {
-            set {
-                _module = value;
-            }
-
-            get {
-                return _module;
-            }
-        }
+        public LayoutModule Module { set; get; }
 
         #endregion
 
@@ -58,7 +49,7 @@ namespace LayoutLGB {
         #endregion
 
         [LayoutEvent("model-component-placement-request", SenderType = typeof(MTScentralStation))]
-        void PlaceTrackContactRequest(LayoutEvent e) {
+        private void PlaceTrackContactRequest(LayoutEvent e) {
             MTScentralStation component = (MTScentralStation)e.Sender;
             Dialogs.CentralStationProperties csProperties = new Dialogs.CentralStationProperties(component);
 
@@ -71,12 +62,12 @@ namespace LayoutLGB {
         }
 
         [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(MTScentralStation))]
-        void QueryTrackContactMenu(LayoutEvent e) {
+        private void QueryTrackContactMenu(LayoutEvent e) {
             e.Info = e.Sender;
         }
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(MTScentralStation))]
-        void AddTrackContactContextMenuEntries(LayoutEvent e) {
+        private void AddTrackContactContextMenuEntries(LayoutEvent e) {
             Menu menu = (Menu)e.Info;
             MTScentralStation component = (MTScentralStation)e.Sender;
 
@@ -85,8 +76,8 @@ namespace LayoutLGB {
 
         #region MTS Central Station Menu Item Classes
 
-        class MTScentralStationMenuItemProperties : MenuItem {
-            readonly MTScentralStation component;
+        private class MTScentralStationMenuItemProperties : MenuItem {
+            private readonly MTScentralStation component;
 
             internal MTScentralStationMenuItemProperties(MTScentralStation component) {
                 this.component = component;

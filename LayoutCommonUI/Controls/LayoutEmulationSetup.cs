@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
+using LayoutManager.Components;
 using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI.Controls {
@@ -13,14 +14,13 @@ namespace LayoutManager.CommonUI.Controls {
         private CheckBox checkBoxAnimateTrainMotion;
         private TextBox textBoxEmulationTickTime;
         private Label labelEmulationTickTime;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
 
-        private void endOfDesignerVariables() { }
-
-        XmlElement element;
+        private XmlElement element;
 
         public LayoutEmulationSetup() {
             // This call is required by the Windows.Forms Form Designer.
@@ -44,19 +44,9 @@ namespace LayoutManager.CommonUI.Controls {
             ILayoutEmulatorServices emulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
 
             if (emulationServices != null) {
-                int tickTime = 200;
-
-                if (Element.HasAttribute("EmulationTickTime"))
-                    tickTime = XmlConvert.ToInt32(Element.GetAttribute("EmulationTickTime"));
-
+                int tickTime = (int?)Element.AttributeValue(LayoutCommandStationComponent.A_EmulationTickTime) ?? 200;
                 textBoxEmulationTickTime.Text = tickTime.ToString();
-
-                bool animateMotion = false;
-
-                if (Element.HasAttribute("AnimateTrainMotion"))
-                    animateMotion = XmlConvert.ToBoolean(Element.GetAttribute("AnimateTrainMotion"));
-
-                checkBoxAnimateTrainMotion.Checked = animateMotion;
+                checkBoxAnimateTrainMotion.Checked = (bool?)Element.AttributeValue(LayoutCommandStationComponent.A_AnimateTrainMotion) ?? false;
             }
             else
                 groupBoxEmulationServices.Visible = false;
@@ -79,8 +69,8 @@ namespace LayoutManager.CommonUI.Controls {
             if (!ValidateInput())
                 return false;
 
-            Element.SetAttribute("EmulationTickTime", XmlConvert.ToString(int.Parse(textBoxEmulationTickTime.Text)));
-            Element.SetAttribute("AnimateTrainMotion", XmlConvert.ToString(checkBoxAnimateTrainMotion.Checked));
+            Element.SetAttribute(LayoutCommandStationComponent.A_EmulationTickTime, int.Parse(textBoxEmulationTickTime.Text));
+            Element.SetAttribute(LayoutCommandStationComponent.A_AnimateTrainMotion, checkBoxAnimateTrainMotion.Checked);
 
             return true;
         }
@@ -155,7 +145,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.groupBoxEmulationServices.ResumeLayout(false);
             this.groupBoxEmulationServices.PerformLayout();
             this.ResumeLayout(false);
-
         }
         #endregion
     }

@@ -6,9 +6,9 @@ using LayoutManager.Model;
 namespace LayoutManager.Tools.Dialogs {
     #pragma warning disable IDE0051, IDE0060
     public partial class ControlModuleProgrammingProgressDialog : Form {
-        readonly Func<Task> doProgramming;
-        bool showingProgress = false;
-        bool programmingDone = false;
+        private readonly Func<Task> doProgramming;
+        private bool showingProgress = false;
+        private bool programmingDone = false;
 
         public ControlModuleProgrammingProgressDialog(ControlModuleProgrammingState programmingState, Func<Task> doProgramming) {
             InitializeComponent();
@@ -57,7 +57,6 @@ namespace LayoutManager.Tools.Dialogs {
                 await doProgramming();
                 buttonCancelOrClose.Enabled = true;
                 programmingDone = true;
-
             }
         }
 
@@ -73,7 +72,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
     }
 
-    class ActionItem : ListViewItem {
+    internal class ActionItem : ListViewItem {
         public Guid Id { get; }
         public string Description { get; }
         public string StatusText { get; private set; }

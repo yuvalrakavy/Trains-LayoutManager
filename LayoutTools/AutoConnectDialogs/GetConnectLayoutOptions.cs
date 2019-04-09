@@ -24,6 +24,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
         private GroupBox groupBox2;
         private GroupBox groupBox3;
         private CheckBox checkBoxSetProgrammingRequired;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -291,7 +292,6 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
-
         }
         #endregion
 

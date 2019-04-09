@@ -10,6 +10,7 @@ namespace LayoutManager.CommonUI.Dialogs {
         private LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor motionRampEditor;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -89,7 +90,6 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.Name = "EditMotionRamp";
             this.Text = "Edit Acceleration/Deceleration Profile";
             this.ResumeLayout(false);
-
         }
         #endregion
 

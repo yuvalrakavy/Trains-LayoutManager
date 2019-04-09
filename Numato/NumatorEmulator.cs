@@ -12,20 +12,20 @@ using LayoutManager.Model;
 #pragma warning disable IDE0051, IDE0060, IDE0052
 namespace NumatoController {
     public class NumatorEmulator : ILayoutCommandStationEmulator {
-        readonly string pipeName;
+        private readonly string pipeName;
 
-        FileStream commStream;
-        readonly ILayoutEmulatorServices layoutEmulationServices;
-        Thread interfaceThread = null;
-        readonly ILayoutInterThreadEventInvoker interThreadEventInvoker;
+        private FileStream commStream;
+        private readonly ILayoutEmulatorServices layoutEmulationServices;
+        private Thread interfaceThread = null;
+        private readonly ILayoutInterThreadEventInvoker interThreadEventInvoker;
 
-        enum NumatoState {
+        private enum NumatoState {
             GetUser, GetPassword, GetCommand
         }
 
-        NumatoState state;
+        private NumatoState state;
 
-        static readonly LayoutTraceSwitch traceNumatoEmulator = new LayoutTraceSwitch("NumatoEmulator", "Trace Numato Relay Board emulation");
+        private static readonly LayoutTraceSwitch traceNumatoEmulator = new LayoutTraceSwitch("NumatoEmulator", "Trace Numato Relay Board emulation");
 
         public NumatorEmulator(IModelComponentIsBusProvider numatoComponent, string pipeName) {
             this.pipeName = pipeName;
@@ -45,7 +45,6 @@ namespace NumatoController {
             commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true));
 
             state = NumatoState.GetUser;
-
 
             try {
                 while (true) {

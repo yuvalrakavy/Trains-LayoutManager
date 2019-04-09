@@ -7,26 +7,27 @@ using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#pragma warning disable IDE0051
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for BindBlockEdgeToSignals.
     /// </summary>
     public class BindBlockEdgeToSignals : Form, IModelComponentReceiverDialog {
+        private const string E_LinkedSignals = "LinkedSignals";
+        private const string E_LinkedSignal = "LinkedSignal";
+        private const string A_SignalId = "SignalID";
         private Label label1;
         private ListBox listBoxSignals;
         private Button buttonRemove;
         private Button buttonCancel;
         private Button buttonOk;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-
-        public void endOfDesignerVariables() { }
-
-        readonly LayoutBlockEdgeBase blockEdge;
-        readonly LayoutSelection blockEdgeSelection;
-        readonly LayoutSelection linkedSignalSelection;
+        private readonly LayoutSelection blockEdgeSelection;
+        private readonly LayoutSelection linkedSignalSelection;
 
         public BindBlockEdgeToSignals(LayoutBlockEdgeBase blockEdge) {
             //
@@ -34,7 +35,7 @@ namespace LayoutManager.Tools.Dialogs {
             //
             InitializeComponent();
 
-            this.blockEdge = blockEdge;
+            this.BlockEdge = blockEdge;
 
             this.Owner = LayoutController.ActiveFrameWindow as Form;
 
@@ -74,7 +75,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         public string DialogName(IModelComponent component) => "Link signals to track contact";
 
-        public LayoutBlockEdgeBase BlockEdge => blockEdge;
+        public LayoutBlockEdgeBase BlockEdge { get; }
 
         public void AddComponent(IModelComponent component) {
             LayoutSignalComponent signalComponent = (LayoutSignalComponent)component;
@@ -91,7 +92,7 @@ namespace LayoutManager.Tools.Dialogs {
             LayoutBlockEdgeBase queryBlockEdge = (LayoutBlockEdgeBase)e.Sender;
             ArrayList list = (ArrayList)e.Info;
 
-            if (queryBlockEdge == null || queryBlockEdge.Id == blockEdge.Id)
+            if (queryBlockEdge == null || queryBlockEdge.Id == BlockEdge.Id)
                 list.Add((IModelComponentReceiverDialog)this);
         }
 
@@ -99,7 +100,7 @@ namespace LayoutManager.Tools.Dialogs {
         private void removedFromModel(LayoutEvent e) {
             ModelComponent component = (ModelComponent)e.Sender;
 
-            if (component is LayoutBlockEdgeBase && component.Id == blockEdge.Id)
+            if (component is LayoutBlockEdgeBase && component.Id == BlockEdge.Id)
                 Close();
             else if (component is LayoutSignalComponent) {
                 foreach (LinkedSignalItem linkedSignalItem in listBoxSignals.Items)
@@ -206,7 +207,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Closing += new System.ComponentModel.CancelEventHandler(this.BindBlockEdgeToSignals_Closing);
             this.Closed += new System.EventHandler(this.BindBlockEdgeToSignals_Closed);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -225,11 +225,11 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonOk_Click(object sender, System.EventArgs e) {
-            LayoutXmlInfo xmlInfo = new LayoutXmlInfo(blockEdge);
-            XmlElement linkedSignalsElement = xmlInfo.Element["LinkedSignals"];
+            LayoutXmlInfo xmlInfo = new LayoutXmlInfo(BlockEdge);
+            XmlElement linkedSignalsElement = xmlInfo.Element[E_LinkedSignals];
 
             if (linkedSignalsElement == null) {
-                linkedSignalsElement = xmlInfo.XmlDocument.CreateElement("LinkedSignals");
+                linkedSignalsElement = xmlInfo.XmlDocument.CreateElement(E_LinkedSignals);
 
                 xmlInfo.Element.AppendChild(linkedSignalsElement);
             }
@@ -237,14 +237,14 @@ namespace LayoutManager.Tools.Dialogs {
             linkedSignalsElement.RemoveAll();
 
             foreach (LinkedSignalItem linkedSignalItem in listBoxSignals.Items) {
-                XmlElement linkedSignalElement = linkedSignalsElement.OwnerDocument.CreateElement("LinkedSignal");
+                XmlElement linkedSignalElement = linkedSignalsElement.OwnerDocument.CreateElement(E_LinkedSignal);
 
                 linkedSignalsElement.AppendChild(linkedSignalElement);
-                linkedSignalElement.SetAttribute("SignalID", XmlConvert.ToString(linkedSignalItem.SignalComponent.Id));
+                linkedSignalElement.SetAttribute(A_SignalId, linkedSignalItem.SignalComponent.Id);
             }
 
             LayoutModifyComponentDocumentCommand modifyComponentDocumentCommand =
-                new LayoutModifyComponentDocumentCommand(blockEdge, xmlInfo);
+                new LayoutModifyComponentDocumentCommand(BlockEdge, xmlInfo);
 
             LayoutController.Do(modifyComponentDocumentCommand);
 
@@ -260,23 +260,20 @@ namespace LayoutManager.Tools.Dialogs {
                 Owner.Activate();
         }
 
-        class LinkedSignalItem {
-            readonly LayoutSignalComponent signalComponent;
-
+        private class LinkedSignalItem {
             public LinkedSignalItem(BindBlockEdgeToSignals dialog, LinkedSignalInfo linkedSignal) {
                 if (LayoutModel.Component<LayoutSignalComponent>(linkedSignal.SignalId, LayoutModel.ActivePhases) == null)
                     throw new LayoutException(dialog.BlockEdge, "A signal linked to this track contact cannot be found");
             }
 
             public LinkedSignalItem(LayoutSignalComponent signalComponent) {
-                this.signalComponent = signalComponent;
+                this.SignalComponent = signalComponent;
             }
 
-            public LayoutSignalComponent SignalComponent => signalComponent;
+            public LayoutSignalComponent SignalComponent { get; }
 
             public override string ToString() {
-                switch (signalComponent.Info.SignalType) {
-
+                switch (SignalComponent.Info.SignalType) {
                     case LayoutSignalType.Lights:
                         return "Lights";
 

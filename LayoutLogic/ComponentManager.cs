@@ -14,7 +14,6 @@ namespace LayoutManager.Logic {
     /// </summary>
     [LayoutModule("Component Manager", UserControl = false)]
     public class ComponentManager : LayoutModuleBase {
-
         #region Handle control-connection-point-notification
 
         [LayoutEvent("control-connection-point-state-changed-notification")]
@@ -70,7 +69,6 @@ namespace LayoutManager.Logic {
                 // Optimize for the (very) common case that all of the switching commands are handled by the same command station.
                 foreach (SwitchingCommand switchingCommand in switchingCommands) {
                     if (switchingCommand.CommandStationId != defaultCommandStationId) {
-
                         if (switchingCommand.BusProvider != null) {
                             if (!commandStationIdToSwitchingCommands.TryGetValue(switchingCommand.BusProvider, out List<SwitchingCommand> commandStationSwitchingCommands)) {
                                 commandStationSwitchingCommands = new List<SwitchingCommand>();
@@ -87,9 +85,8 @@ namespace LayoutManager.Logic {
                     switchingCommands.Remove(movedSwitchingCommand);
 
                 foreach (KeyValuePair<IModelComponentIsBusProvider, List<SwitchingCommand>> commandStationAndSwitchCommands in commandStationIdToSwitchingCommands) {
-                    if (commandStationAndSwitchCommands.Key.BatchMultipathSwitchingSupported) {
-                        tasks.Add(EventManager.AsyncEvent(new LayoutEvent("change-batch-of-track-component-state-command", this, commandStationAndSwitchCommands.Value).SetOption("CommandStationID", XmlConvert.ToString(commandStationAndSwitchCommands.Key.Id))));
-                    }
+                    if (commandStationAndSwitchCommands.Key.BatchMultipathSwitchingSupported)
+                        tasks.Add(EventManager.AsyncEvent(new LayoutEvent("change-batch-of-track-component-state-command", this, commandStationAndSwitchCommands.Value).SetOption("CommandStationID", commandStationAndSwitchCommands.Key.Id)));
                     else {
                         foreach (SwitchingCommand switchingCommand in commandStationAndSwitchCommands.Value)
                             tasks.Add(EventManager.AsyncEvent(new LayoutEventInfoValueType<ControlConnectionPointReference, int>("change-track-component-state-command", switchingCommand.ControlPointReference, switchingCommand.SwitchState).SetCommandStation(commandStationAndSwitchCommands.Key)));
@@ -130,7 +127,6 @@ namespace LayoutManager.Logic {
             }
             else
                 Trace.WriteLine("Track contact " + trackContact.FullDescription + " triggered twice in 200 milli");
-
         }
 
         [LayoutEvent("exit-track-contact-triggered-state")]
@@ -144,7 +140,7 @@ namespace LayoutManager.Logic {
 
         #region Proximity sensor component
 
-        int _proximitySensorSensitivityDelay = -1;
+        private int _proximitySensorSensitivityDelay = -1;
 
         private int ProximitySensorSensitivityDelay {
             get {
@@ -159,7 +155,7 @@ namespace LayoutManager.Logic {
             _proximitySensorSensitivityDelay = -1;
         }
 
-        readonly Dictionary<Guid, LayoutDelayedEvent> _changingProximitySensors = new Dictionary<Guid, LayoutDelayedEvent>();
+        private readonly Dictionary<Guid, LayoutDelayedEvent> _changingProximitySensors = new Dictionary<Guid, LayoutDelayedEvent>();
 
         [LayoutEvent("proximity-sensor-state-changed-notification", SenderType = typeof(LayoutProximitySensorComponent))]
         private void proximitySensorComponentStateChanged(LayoutEvent e) {
@@ -247,7 +243,7 @@ namespace LayoutManager.Logic {
 
         #region Linked signal hash table, given a signal component it will return whether it is linked or not
 
-        Dictionary<Guid, LayoutBlockEdgeBase>? linkedSignalMap = null;
+        private Dictionary<Guid, LayoutBlockEdgeBase>? linkedSignalMap = null;
 
         protected Dictionary<Guid, LayoutBlockEdgeBase> LinkedSignalMap {
             get {

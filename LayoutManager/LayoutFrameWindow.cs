@@ -21,45 +21,45 @@ namespace LayoutManager {
     /// </summary>
     #pragma warning disable IDE0051, IDE0060
     public partial class LayoutFrameWindow : Form, ILayoutFrameWindow {
-        TaskCompletionSource<FrameWindowAction> tcs;
+        private TaskCompletionSource<FrameWindowAction> tcs;
 
-        LayoutTool designTool = null;
-        LayoutTool operationTool = null;
-        LayoutTool activeTool = null;
-        ZoomEntry[] zoomEntries;
+        private LayoutTool designTool = null;
+        private LayoutTool operationTool = null;
+        private LayoutTool activeTool = null;
+        private ZoomEntry[] zoomEntries;
 
-        bool layoutControlVisible = false;
-        bool tripsMonitorVisible = false;
-        bool messageViewVisible = false;
-        bool locomotiveViewVisible = false;
+        private bool layoutControlVisible = false;
+        private bool tripsMonitorVisible = false;
+        private bool messageViewVisible = false;
+        private bool locomotiveViewVisible = false;
 
-        int tripsMonitorHeightInOperationMode = 0;
-        int layoutControlWidth = 0;
+        private int tripsMonitorHeightInOperationMode = 0;
+        private int layoutControlWidth = 0;
 
-        PrintState printState = null;
+        private PrintState printState = null;
 
-        DetailsPopupWindow detailsPopupWindow;
-        LayoutView viewWithMouse;
+        private DetailsPopupWindow detailsPopupWindow;
+        private LayoutView viewWithMouse;
 
-        Point viewMouseLocation = new Point(0, 0);
-        Point detailsPopupLocationInModelPoints = new Point(0, 0);
+        private Point viewMouseLocation = new Point(0, 0);
+        private Point detailsPopupLocationInModelPoints = new Point(0, 0);
 
-        OperationModeParameters uiMode = null;
+        private OperationModeParameters uiMode = null;
 
         #region UI setting classes
 
-        enum UIitemSetting {
+        private enum UIitemSetting {
             Hidden,
             Disabled
         };
 
-        abstract class UIsettingEntry {
+        private abstract class UIsettingEntry {
             protected UIitemSetting setting;
 
             public UIitemSetting Setting => setting;
         }
 
-        class DoSettingEntry : UIsettingEntry {
+        private class DoSettingEntry : UIsettingEntry {
             public UIsettingEntry[] DoThis { get; }
 
             public DoSettingEntry(UIsettingEntry[] doThis) {
@@ -67,36 +67,32 @@ namespace LayoutManager {
             }
         }
 
-        class MenuSettingEntry : UIsettingEntry {
-            readonly MenuItem menuItem;
-
+        private class MenuSettingEntry : UIsettingEntry {
             public MenuSettingEntry(MenuItem menuItem, UIitemSetting setting) {
-                this.menuItem = menuItem;
+                this.MenuItem = menuItem;
                 this.setting = setting;
             }
 
-            public MenuItem MenuItem => menuItem;
+            public MenuItem MenuItem { get; }
         }
 
-        class ToolbarSettingEntry : UIsettingEntry {
-            readonly ToolBarButton button;
-
+        private class ToolbarSettingEntry : UIsettingEntry {
             public ToolbarSettingEntry(ToolBarButton button, UIitemSetting setting) {
-                this.button = button;
+                this.Button = button;
                 this.setting = setting;
             }
 
-            public ToolBarButton Button => button;
+            public ToolBarButton Button { get; }
         }
 
         #endregion
 
-        UIsettingEntry[] operationBaseUIsetting;
-        UIsettingEntry[] operationModeUIsetting;
-        UIsettingEntry[] simulationModeUIsetting;
+        private UIsettingEntry[] operationBaseUIsetting;
+        private UIsettingEntry[] operationModeUIsetting;
+        private UIsettingEntry[] simulationModeUIsetting;
 
-        UIsettingEntry[] designModeUIsetting;
-        UIsettingEntry[] activeUIsetting;
+        private UIsettingEntry[] designModeUIsetting;
+        private UIsettingEntry[] activeUIsetting;
 
         /// <summary>
         /// Initialize frame window with all areas in the model, and with one default view page in each area
@@ -314,9 +310,9 @@ namespace LayoutManager {
 
         #region active Area/View properties
 
-        LayoutFrameWindowAreaTabPage ActiveAreaPage => (LayoutFrameWindowAreaTabPage)tabAreas.SelectedTab;
+        private LayoutFrameWindowAreaTabPage ActiveAreaPage => (LayoutFrameWindowAreaTabPage)tabAreas.SelectedTab;
 
-        LayoutFrameWindowAreaViewTabPage ActiveViewPage {
+        private LayoutFrameWindowAreaViewTabPage ActiveViewPage {
             get {
                 if (ActiveAreaPage == null)
                     return null;
@@ -324,7 +320,7 @@ namespace LayoutManager {
             }
         }
 
-        LayoutView ActiveView {
+        private LayoutView ActiveView {
             get {
                 if (ActiveViewPage == null)
                     return null;
@@ -336,7 +332,7 @@ namespace LayoutManager {
 
         #region Setting UI for various mode (design/operational/simulation)
 
-        void ForceSetUserInterfaceMode(OperationModeParameters settings) {
+        private void ForceSetUserInterfaceMode(OperationModeParameters settings) {
             undoUIsetting();
 
             if (settings == null) {
@@ -406,7 +402,7 @@ namespace LayoutManager {
             uiMode = settings;
         }
 
-        void SetUserInterfaceMode(OperationModeParameters settings) {
+        private void SetUserInterfaceMode(OperationModeParameters settings) {
             if (settings != uiMode)
                 ForceSetUserInterfaceMode(settings);
         }
@@ -440,7 +436,7 @@ namespace LayoutManager {
 
         public LayoutFrameWindowAreaViewTabPage AddViewToArea(LayoutFrameWindowAreaTabPage areaPage, string name) => AddViewToArea(areaPage, name, new LayoutView());
 
-        void ChangeAllViewsPhases(LayoutPhase phases) {
+        private void ChangeAllViewsPhases(LayoutPhase phases) {
             foreach (LayoutFrameWindowAreaTabPage atp in tabAreas.TabPages) {
                 foreach (LayoutFrameWindowAreaViewTabPage vtp in atp.TabViews.TabPages) {
                     if (vtp.View.Phases != phases) {
@@ -451,7 +447,7 @@ namespace LayoutManager {
             }
         }
 
-        void AdjustAllViewsPhases() {
+        private void AdjustAllViewsPhases() {
             foreach (LayoutFrameWindowAreaTabPage atp in tabAreas.TabPages) {
                 foreach (LayoutFrameWindowAreaViewTabPage vtp in atp.TabViews.TabPages) {
                     LayoutPhase phases = vtp.ShowActivePhases ? LayoutModel.ActivePhases : LayoutPhase.All;
@@ -462,7 +458,6 @@ namespace LayoutManager {
                     }
                 }
             }
-
         }
 
         /// <summary>
@@ -616,7 +611,6 @@ namespace LayoutManager {
 
         #endregion
 
-
         #region Layout Event handlers
 
         [LayoutEvent("show-control-connection-point")]
@@ -739,13 +733,13 @@ namespace LayoutManager {
 
         #region Marker class
 
-        class MarkerLook : ILayoutSelectionLook {
+        private class MarkerLook : ILayoutSelectionLook {
             public Color Color => Color.IndianRed;
         }
 
-        class Marker {
-            Timer hideMarkerTimer;
-            readonly LayoutSelection markerSelection;
+        private class Marker {
+            private Timer hideMarkerTimer;
+            private readonly LayoutSelection markerSelection;
 
             public Marker(LayoutSelection markerSelection) {
                 this.markerSelection = markerSelection;
@@ -767,7 +761,7 @@ namespace LayoutManager {
 
         #endregion
 
-        void UpdateLayoutControlVisible() {
+        private void UpdateLayoutControlVisible() {
             bool previousState = layoutControlVisible;
 
             layoutControlVisible = layoutControlViewer.Width > 10;
@@ -775,7 +769,7 @@ namespace LayoutManager {
                 EventManager.Event(new LayoutEvent(layoutControlVisible ? "layout-control-shown" : "layout-control-hidden", this).SetFrameWindow(this));
         }
 
-        void UpdateTripsMonitorVisible() {
+        private void UpdateTripsMonitorVisible() {
             bool previousState = tripsMonitorVisible;
 
             tripsMonitorVisible = tripsMonitor.Height > 10;
@@ -783,7 +777,7 @@ namespace LayoutManager {
                 EventManager.Event(new LayoutEvent(tripsMonitorVisible ? "trips-monitor-shown" : "trips-monitor-hidden", this).SetFrameWindow(this));
         }
 
-        void UpdateMessageVisible() {
+        private void UpdateMessageVisible() {
             bool previousState = messageViewVisible;
 
             messageViewVisible = messageViewer.Height > 10;
@@ -791,7 +785,7 @@ namespace LayoutManager {
                 EventManager.Event(new LayoutEvent(messageViewVisible ? "messages-shown" : "messages-hidden", this).SetFrameWindow(this));
         }
 
-        void UpdateLocomotivesVisible() {
+        private void UpdateLocomotivesVisible() {
             bool previousState = locomotiveViewVisible;
 
             locomotiveViewVisible = locomotivesViewer.Width > 10;
@@ -800,16 +794,15 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("show-messages")]
-        void ShowMessages(LayoutEvent e) {
+        private void ShowMessages(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
                 messageViewer.Height = (ClientSize.Height * 25) / 100;
                 UpdateMessageVisible();
             }
-
         }
 
         [LayoutEvent("hide-messages")]
-        void HideMessages(LayoutEvent e) {
+        private void HideMessages(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
                 messageViewer.Height = 0;
                 UpdateMessageVisible();
@@ -817,7 +810,7 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("show-locomotives")]
-        void ShowLocomotives(LayoutEvent e) {
+        private void ShowLocomotives(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
                 locomotivesViewer.Width = 220;
                 UpdateLocomotivesVisible();
@@ -825,7 +818,7 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("hide-locomotives")]
-        void HideLocomotives(LayoutEvent e) {
+        private void HideLocomotives(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
                 locomotivesViewer.Width = 0;
                 UpdateLocomotivesVisible();
@@ -833,7 +826,7 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("show-layout-control")]
-        void ShowLayoutControl(LayoutEvent e) {
+        private void ShowLayoutControl(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
                 if (layoutControlViewer.Width < 20) {
                     if (layoutControlWidth > 20)
@@ -847,7 +840,7 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("hide-layout-control")]
-        void HideLayoutControl(LayoutEvent e) {
+        private void HideLayoutControl(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
                 layoutControlWidth = layoutControlViewer.Width;
                 layoutControlViewer.Width = 0;
@@ -855,9 +848,8 @@ namespace LayoutManager {
             }
         }
 
-
         [LayoutEvent("show-trips-monitor")]
-        void ShowTripsMonitor(LayoutEvent e) {
+        private void ShowTripsMonitor(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
                 tripsMonitor.Height = (ClientSize.Height * 12) / 100;
                 UpdateTripsMonitorVisible();
@@ -865,7 +857,7 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("hide-trips-monitor")]
-        void HideTripsMonitor(LayoutEvent e) {
+        private void HideTripsMonitor(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
                 tripsMonitor.Height = 0;
                 UpdateTripsMonitorVisible();
@@ -921,7 +913,6 @@ namespace LayoutManager {
         }
 
         #endregion
-
 
         [LayoutEvent("area-added")]
         private void areaAdded(LayoutEvent e0) {
@@ -1066,7 +1057,7 @@ namespace LayoutManager {
         private void menuItemNewLayout_Click(object sender, System.EventArgs e) {
         }
 
-        class ButtonToMenuMap {
+        private class ButtonToMenuMap {
             public ToolBarButton theButton;
             public EventHandler theEvent;
 
@@ -1300,7 +1291,6 @@ namespace LayoutManager {
             }
         }
 
-
         private void menuItemViewGrid_Click(object sender, System.EventArgs e) {
             if (ActiveView != null) {
                 if (ActiveView.ShowGrid != ShowGridLinesOption.Hide) {
@@ -1359,7 +1349,7 @@ namespace LayoutManager {
             }
         }
 
-        struct ZoomEntry {
+        private struct ZoomEntry {
             public int zoomFactor;
             public MenuItem menuItem;
 
@@ -1546,8 +1536,8 @@ namespace LayoutManager {
             d.Show();
         }
 
-        class ManualDispatchRegionItem : MenuItem {
-            readonly ManualDispatchRegionInfo manualDispatchRegion;
+        private class ManualDispatchRegionItem : MenuItem {
+            private readonly ManualDispatchRegionInfo manualDispatchRegion;
 
             public ManualDispatchRegionItem(ManualDispatchRegionInfo manualDispatchRegion) {
                 this.manualDispatchRegion = manualDispatchRegion;
@@ -1576,7 +1566,7 @@ namespace LayoutManager {
             }
         }
 
-        class AllLayoutManualDispatchItem : MenuItem {
+        private class AllLayoutManualDispatchItem : MenuItem {
             public AllLayoutManualDispatchItem() {
                 Text = "All layout";
 
@@ -1912,7 +1902,6 @@ namespace LayoutManager {
                 LayoutModuleBase.Warning("No reverse loop modules were found");
             else
                 LayoutModuleBase.Message(selection, "Reverse loop modules");
-
         }
 
         private void menuItemVerificationOptions_Click(object sender, EventArgs e) {
@@ -1944,12 +1933,10 @@ namespace LayoutManager {
 
         public LayoutModelArea Area {
             get;
-
         }
 
         public TabControl TabViews {
             get;
-
         }
 
         public LayoutFrameWindow FrameWindow => (LayoutFrameWindow)this.FindForm();
@@ -1959,24 +1946,21 @@ namespace LayoutManager {
                 TabViews.SelectedIndexChanged -= new EventHandler(tabViews_SelectedIndexChanged);
         }
 
-        void tabViews_SelectedIndexChanged(object sender, EventArgs e) {
+        private void tabViews_SelectedIndexChanged(object sender, EventArgs e) {
             FrameWindow.OnViewChanged();
         }
     }
 
-
     public class LayoutFrameWindowAreaViewTabPage : TabPage {
-        readonly LayoutView view;
-
         public LayoutFrameWindowAreaViewTabPage(LayoutView view) {
-            this.view = view;
+            this.View = view;
             view.Dock = DockStyle.Fill;
             Controls.Add(view);
             this.BorderStyle = BorderStyle.None;
             ShowActivePhases = false;
         }
 
-        public LayoutView View => view;
+        public LayoutView View { get; }
 
         public bool ShowActivePhases {
             get;
@@ -1985,7 +1969,7 @@ namespace LayoutManager {
 
         public void WriteXml(XmlWriter w) {
             w.WriteStartElement("View");
-            w.WriteAttributeString("AreaID", XmlConvert.EncodeName(view.Area.AreaGuid.ToString()));
+            w.WriteAttributeString("AreaID", XmlConvert.EncodeName(View.Area.AreaGuid.ToString()));
             w.WriteAttributeString("Name", XmlConvert.EncodeLocalName(this.Text));
             this.View.WriteXml(w);
             w.WriteEndElement();
@@ -1993,44 +1977,44 @@ namespace LayoutManager {
     }
 
     internal class PrintState {
-        readonly Dialogs.Print printDialog;
-        int areaIndex;
-        int viewIndex;
+        private int areaIndex;
 
         public PrintState(Dialogs.Print printDialog) {
-            this.printDialog = printDialog;
+            this.PrintDialog = printDialog;
         }
 
-        public Dialogs.Print PrintDialog => printDialog;
+        public Dialogs.Print PrintDialog { get; }
 
-        public bool AllAreas => printDialog.AllAreas;
+        public bool AllAreas => PrintDialog.AllAreas;
 
         public PrintViewScope PrintViewScope => PrintDialog.PrintViewScope;
 
-        public bool GridLines => printDialog.GridLines;
+        public bool GridLines => PrintDialog.GridLines;
 
         public int AreaIndex {
             get => areaIndex;
 
             set {
                 areaIndex = value;
-                viewIndex = 0;
+                ViewIndex = 0;
             }
         }
 
-        public int ViewIndex {
-            get => viewIndex;
-
-            set => viewIndex = value;
-        }
+        public int ViewIndex { get; set; }
     }
 
     public class FrameWindowState : LayoutXmlWrapper {
+        private const string A_WindowState = "WindowState";
+        private const string A_Left = "Left";
+        private const string A_Top = "Top";
+        private const string A_Width = "Width";
+        private const string A_Height = "Height";
+
         public FrameWindowState(XmlElement element)
             : base(element) {
         }
 
-        public FrameWindowState(XmlElement windowStatesElement, LayoutFrameWindow frameWindow) : base(windowStatesElement, "WindowState", alwaysAppend: true) {
+        public FrameWindowState(XmlElement windowStatesElement, LayoutFrameWindow frameWindow) : base(windowStatesElement, A_WindowState, alwaysAppend: true) {
             WindowState = frameWindow.WindowState;
             Bounds = frameWindow.Bounds;
 
@@ -2040,7 +2024,6 @@ namespace LayoutManager {
                 new FrameWindowAreaState(areaStatesElement, areaTab);
 
             this.ActiveAreaIndex = frameWindow.ActiveAreaIndex;
-
         }
 
         public void Restore(List<LayoutFrameWindow> frameWindows) {
@@ -2055,19 +2038,18 @@ namespace LayoutManager {
         }
 
         public FormWindowState WindowState {
-            get => AttributeValue("WindowState").Enum<FormWindowState>() ?? FormWindowState.Normal;
-
-            set => SetAttribute("WindowState", value.ToString());
+            get => AttributeValue(A_WindowState).Enum<FormWindowState>() ?? FormWindowState.Normal;
+            set => SetAttribute(A_WindowState, value);
         }
 
         public Rectangle Bounds {
-            get => new Rectangle((int)AttributeValue("Left"), (int)AttributeValue("Top"), (int)AttributeValue("Width"), (int)AttributeValue("Height"));
+            get => new Rectangle((int)AttributeValue(A_Left), (int)AttributeValue(A_Top), (int)AttributeValue(A_Width), (int)AttributeValue(A_Height));
 
             set {
-                SetAttribute("Left", value.Left);
-                SetAttribute("Top", value.Top);
-                SetAttribute("Width", value.Width);
-                SetAttribute("Height", value.Height);
+                SetAttribute(A_Left, value.Left);
+                SetAttribute(A_Top, value.Top);
+                SetAttribute(A_Width, value.Width);
+                SetAttribute(A_Height, value.Height);
             }
         }
 
@@ -2158,17 +2140,26 @@ namespace LayoutManager {
             get => (int?)AttributeValue("ActiveViewIndex") ?? 0;
             set => SetAttribute("ActiveViewIndex", value);
         }
-
     }
 
     public class FrameWindowViewState : LayoutXmlWrapper {
+        private const string A_Name = "Name";
+        private const string A_Zoom = "Zoom";
+        private const string A_DefaultZoom = "DefaultZoom";
+        private const string A_OriginX = "OriginX";
+        private const string A_OriginY = "OriginY";
+        private const string A_DefaultOriginX = "DefaultOriginX";
+        private const string A_DefaultOriginY = "DefaultOriginY";
+        private const string A_Grid = "Grid";
+        private const string A_ShowCoordinates = "ShowCoordinates";
+        private const string A_ShowActivePhases = "ShowActivePhases";
+
         public FrameWindowViewState(XmlElement element)
             : base(element) {
         }
 
         public FrameWindowViewState(XmlElement viewStatesElement, LayoutFrameWindowAreaViewTabPage viewPage)
          : base(viewStatesElement, "ViewState", alwaysAppend: true) {
-
             Name = viewPage.Text;
             Zoom = viewPage.View.Zoom;
             DefaultZoom = viewPage.View.DefaultZoom;
@@ -2194,51 +2185,49 @@ namespace LayoutManager {
         }
 
         public string Name {
-            get => GetAttribute("Name");
-            set => SetAttribute("Name", value);
+            get => GetAttribute(A_Name);
+            set => SetAttribute(A_Name, value);
         }
 
         public float Zoom {
-            get => (float?)AttributeValue("Zoom") ?? 1.0f;
-            set => SetAttribute("Zoom", XmlConvert.ToString(value));
+            get => (float?)AttributeValue(A_Zoom) ?? 1.0f;
+            set => SetAttribute(A_Zoom, value);
         }
 
         public float DefaultZoom {
-            get => (float?)AttributeValue("DefaultZoom") ?? 1.0f;
-            set => SetAttribute("DefaultZoom", XmlConvert.ToString(value));
+            get => (float?)AttributeValue(A_DefaultZoom) ?? 1.0f;
+            set => SetAttribute(A_DefaultZoom, value);
         }
 
         public Point Origin {
-            get => new Point((int?)AttributeValue("OriginX") ?? 0, (int?)AttributeValue("OriginY") ?? 0);
+            get => new Point((int?)AttributeValue(A_OriginX) ?? 0, (int?)AttributeValue(A_OriginY) ?? 0);
             set {
-                SetAttribute("OriginX", value.X);
-                SetAttribute("OriginY", value.Y);
+                SetAttribute(A_OriginX, value.X);
+                SetAttribute(A_OriginY, value.Y);
             }
         }
 
         public Point DefaultOrigin {
-            get => new Point((int?)AttributeValue("DefaultOriginX") ?? 0, (int?)AttributeValue("DefaultOriginY") ?? 0);
+            get => new Point((int?)AttributeValue(A_DefaultOriginX) ?? 0, (int?)AttributeValue(A_DefaultOriginY) ?? 0);
             set {
-                SetAttribute("DefaultOriginX", value.X);
-                SetAttribute("DefaultOriginY", value.Y);
+                SetAttribute(A_DefaultOriginX, value.X);
+                SetAttribute(A_DefaultOriginY, value.Y);
             }
         }
 
         public ShowGridLinesOption Grid {
-            get => AttributeValue("Grid").Enum<ShowGridLinesOption>() ?? ShowGridLinesOption.Hide;
-            set => SetAttribute("Grid", value.ToString());
+            get => AttributeValue(A_Grid).Enum<ShowGridLinesOption>() ?? ShowGridLinesOption.Hide;
+            set => SetAttribute(A_Grid, value);
         }
 
         public bool ShowCoordinates {
-            get => (bool?)AttributeValue("ShowCoordinates") ?? false;
-            set => SetAttribute("ShowCoordinates", XmlConvert.ToString(value));
+            get => (bool?)AttributeValue(A_ShowCoordinates) ?? false;
+            set => SetAttribute(A_ShowCoordinates, value);
         }
 
         public bool ShowActivePhases {
-            get => (bool?)AttributeValue("ShowActivePhases") ?? false;
-            set => SetAttribute("ShowActivePhases", XmlConvert.ToString(value));
+            get => (bool?)AttributeValue(A_ShowActivePhases) ?? false;
+            set => SetAttribute(A_ShowActivePhases, value);
         }
-
     }
-
 }

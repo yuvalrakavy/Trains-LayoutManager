@@ -14,19 +14,10 @@ namespace DiMAX {
         /// Required designer variable.
         /// </summary>
         private Container components = null;
-        LayoutModule _module;
 
         #region Implementation of ILayoutModuleSetup
 
-        public LayoutModule Module {
-            set {
-                _module = value;
-            }
-
-            get {
-                return _module;
-            }
-        }
+        public LayoutModule Module { set; get; }
 
         #endregion
 
@@ -58,7 +49,7 @@ namespace DiMAX {
         #endregion
 
         [LayoutEvent("model-component-placement-request", SenderType = typeof(DiMAXcommandStation))]
-        void PlaceTrackContactRequest(LayoutEvent e) {
+        private void PlaceTrackContactRequest(LayoutEvent e) {
             DiMAXcommandStation component = (DiMAXcommandStation)e.Sender;
             Dialogs.DiMAXcommandlStationProperties csProperties = new Dialogs.DiMAXcommandlStationProperties(component);
 
@@ -71,12 +62,12 @@ namespace DiMAX {
         }
 
         [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(DiMAXcommandStation))]
-        void QueryEditingMenu(LayoutEvent e) {
+        private void QueryEditingMenu(LayoutEvent e) {
             e.Info = e.Sender;
         }
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(DiMAXcommandStation))]
-        void AddEditingContextMenuEntries(LayoutEvent e) {
+        private void AddEditingContextMenuEntries(LayoutEvent e) {
             Menu menu = (Menu)e.Info;
             DiMAXcommandStation component = (DiMAXcommandStation)e.Sender;
 
@@ -85,8 +76,8 @@ namespace DiMAX {
 
         #region DiMAX Command Station Menu Item Classes
 
-        class DiMAXcommandStationMenuItemProperties : MenuItem {
-            readonly DiMAXcommandStation component;
+        private class DiMAXcommandStationMenuItemProperties : MenuItem {
+            private readonly DiMAXcommandStation component;
 
             internal DiMAXcommandStationMenuItemProperties(DiMAXcommandStation component) {
                 this.component = component;
@@ -108,12 +99,12 @@ namespace DiMAX {
         #endregion
 
         [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(DiMAXcommandStation))]
-        void QueryOperationalMenu(LayoutEvent e) {
+        private void QueryOperationalMenu(LayoutEvent e) {
             e.Info = e.Sender;
         }
 
         [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(DiMAXcommandStation))]
-        void AddOperationContextMenuEntries(LayoutEvent e) {
+        private void AddOperationContextMenuEntries(LayoutEvent e) {
             var commandStation = (DiMAXcommandStation)e.Sender;
             var m = (Menu)e.Info;
 

@@ -124,7 +124,7 @@ namespace LayoutManager.Components {
         public LayoutTextInfo NameProvider => new LayoutTrackPowerConnectorNameInfo(this);
 
         public class LayoutTrackPowerConnectorNameInfo : LayoutTextInfo {
-            const string ElementName = "PowerConnectorName";
+            private const string ElementName = "PowerConnectorName";
 
             public LayoutTrackPowerConnectorNameInfo(ModelComponent component, string elementName)
                 : base(component, elementName) {
@@ -146,7 +146,6 @@ namespace LayoutManager.Components {
 
             public override string Name => ((LayoutTrackPowerConnectorComponent)Component).Info.Name;
         }
-
     }
 
     public class LayoutTrackPowerConnectorInfo : LayoutTextInfo {
@@ -166,7 +165,6 @@ namespace LayoutManager.Components {
             : base(containerElement, E_TrackPowerConnectorElementName) {
         }
 
-
         public override string Name {
             get {
                 LayoutTrackPowerConnectorComponent powerConnectorComponent = (LayoutTrackPowerConnectorComponent)Component;
@@ -181,7 +179,7 @@ namespace LayoutManager.Components {
 
         public TrackGauges TrackGauge {
             get => AttributeValue(A_Gauge).Enum<TrackGauges>() ?? TrackGauges.HO;
-            set => Element.SetAttribute(A_Gauge, value.ToString());
+            set => Element.SetAttribute(A_Gauge, value);
         }
 
         public bool CheckReverseLoops {
@@ -200,8 +198,8 @@ namespace LayoutManager.Components {
         public const string PowerSelector2ConnectionPoint = "PowerControl2";
         public const string PowerOnOffConnectionPoint = "PowerOnOff";
 
-        ILayoutPowerInlet? _inlet1;
-        ILayoutPowerInlet? _inlet2;
+        private ILayoutPowerInlet? _inlet1;
+        private ILayoutPowerInlet? _inlet2;
 
         public LayoutPowerSelectorComponent() {
             XmlDocument.LoadXml("<PowerSelector />");
@@ -224,7 +222,7 @@ namespace LayoutManager.Components {
 
         public RelaySwitchingMethod SwitchingMethod {
             get => this.AttributeValue(A_SwitchingMethod).Enum<RelaySwitchingMethod>() ?? RelaySwitchingMethod.DPDSrelay;
-            set => this.SetAttribute(A_SwitchingMethod, value.ToString());
+            set => this.SetAttribute(A_SwitchingMethod, value);
         }
 
         public bool HasOnOffRelay {
@@ -241,17 +239,13 @@ namespace LayoutManager.Components {
 
         public ILayoutPowerInlet Inlet1 {
             get {
-                if (_inlet1 == null)
-                    _inlet1 = new LayoutPowerInlet(this, "Inlet1");
-                return _inlet1;
+                return _inlet1 ?? (_inlet1 = new LayoutPowerInlet(this, "Inlet1"));
             }
         }
 
         public ILayoutPowerInlet Inlet2 {
             get {
-                if (_inlet2 == null)
-                    _inlet2 = new LayoutPowerInlet(this, "Inlet2");
-                return _inlet2;
+                return _inlet2 ?? (_inlet2 = new LayoutPowerInlet(this, "Inlet2"));
             }
         }
 
@@ -269,6 +263,7 @@ namespace LayoutManager.Components {
                 return hasPower;
             }
         }
+
         public ILayoutPowerInlet? CurrentSelectedInlet {
             get {
                 if (IsSwitch) {
@@ -362,9 +357,9 @@ namespace LayoutManager.Components {
         }
 
         public class LayoutPowerSelectorSwitchOutlet : ILayoutPowerOutlet {
-            LayoutPowerSelectorComponent PowerSelectorComponent { get; }
+            private LayoutPowerSelectorComponent PowerSelectorComponent { get; }
 
-            readonly ILayoutPower NoPower;
+            private readonly ILayoutPower NoPower;
 
             public LayoutPowerSelectorSwitchOutlet(LayoutPowerSelectorComponent powerSelectorComponent) {
                 this.PowerSelectorComponent = powerSelectorComponent;
@@ -425,7 +420,6 @@ namespace LayoutManager.Components {
                         PowerSelectorComponent.AddSwitchingCommands(switchingCommands, PowerSelectorComponent.RevereseOnOffRelay ? 1 : 0, LayoutPowerSelectorComponent.PowerOnOffConnectionPoint);
                         ok = false;
                     }
-
                 }
                 else {
                     if (powerType == LayoutPowerType.Disconnected && PowerSelectorComponent.HasOnOffRelay) {
@@ -520,9 +514,7 @@ namespace LayoutManager.Components {
 
     }
 
-
     public class LayoutTrackIsolationComponent : ModelComponent {
-
         public LayoutTrackIsolationComponent() {
             XmlDocument.LoadXml("<TrackIsolation />");
         }
@@ -537,7 +529,6 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutTrackReverseLoopModule : ModelComponent {
-
         public LayoutTrackReverseLoopModule() {
             XmlDocument.LoadXml("<TractReverseLoopModule />");
         }
@@ -552,8 +543,11 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutTrackLink : IComparable<LayoutTrackLink> {
-        Guid areaGuid;
-        Guid trackLinkGuid;
+        private const string E_Link = "Link";
+        private const string A_AreaGuid = "AreaGuid";
+        private const string A_TrackLinkGuid = "TrackLinkGuid";
+        private Guid areaGuid;
+        private Guid trackLinkGuid;
 
         public LayoutTrackLink(XmlReader r) {
             ReadXml(r);
@@ -576,16 +570,16 @@ namespace LayoutManager.Components {
         }
 
         public void WriteXml(XmlWriter w) {
-            w.WriteStartElement("Link");
-            w.WriteAttributeString("AreaGuid", XmlConvert.EncodeName(areaGuid.ToString()));
-            w.WriteAttributeString("TrackLinkGuid", XmlConvert.EncodeName(trackLinkGuid.ToString()));
+            w.WriteStartElement(E_Link);
+            w.WriteAttributeString(A_AreaGuid, XmlConvert.EncodeName(areaGuid.ToString()));
+            w.WriteAttributeString(A_TrackLinkGuid, XmlConvert.EncodeName(trackLinkGuid.ToString()));
             w.WriteEndElement();
         }
 
         public void ReadXml(XmlReader r) {
-            if (r.Name == "Link") {
-                areaGuid = new Guid(XmlConvert.DecodeName(r.GetAttribute("AreaGuid")));
-                trackLinkGuid = new Guid(XmlConvert.DecodeName(r.GetAttribute("TrackLinkGuid")));
+            if (r.Name == E_Link) {
+                areaGuid = new Guid(XmlConvert.DecodeName(r.GetAttribute(A_AreaGuid)));
+                trackLinkGuid = new Guid(XmlConvert.DecodeName(r.GetAttribute(A_TrackLinkGuid)));
                 r.Read();
             }
             else
@@ -609,8 +603,9 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutTrackLinkComponent : ModelComponent, IModelComponentHasId {
-        Guid trackLinkGuid;
-        LayoutTrackLink? link;
+        private const string E_TrackLink = "TrackLink";
+        private const string A_Id = "ID";
+        private Guid trackLinkGuid;
 
         public LayoutTrackLinkComponent() {
             trackLinkGuid = Guid.NewGuid();
@@ -623,8 +618,7 @@ namespace LayoutManager.Components {
 
         public override bool DrawOutOfGrid => true;
 
-
-        public LayoutTrackLinkComponent? LinkedComponent => link?.ResolveLink();
+        public LayoutTrackLinkComponent? LinkedComponent => Link?.ResolveLink();
 
         public LayoutTrackComponent? LinkedTrack => LinkedComponent?.Spot.Track;
 
@@ -639,10 +633,7 @@ namespace LayoutManager.Components {
         /// Return the LayoutTrackLink of the component that this component is linked to.
         /// If set, link this component to another one, the other component is linked to this one.
         /// </summary>
-        public LayoutTrackLink? Link {
-            get => link;
-            set => link = value;
-        }
+        public LayoutTrackLink? Link { get; set; }
 
         public override string ToString() => "track link";
 
@@ -662,7 +653,7 @@ namespace LayoutManager.Components {
                     linkedComponent.Redraw();
                 }
                 else
-                    link = null;        // Otherwise, clear the link
+                    Link = null;        // Otherwise, clear the link
             }
         }
 
@@ -686,34 +677,34 @@ namespace LayoutManager.Components {
         }
 
         public override void WriteXmlFields(XmlWriter w) {
-            w.WriteStartElement("TrackLink");
-            w.WriteAttributeString("ID", XmlConvert.EncodeName(trackLinkGuid.ToString()));
+            w.WriteStartElement(E_TrackLink);
+            w.WriteAttributeString(A_Id, XmlConvert.EncodeName(trackLinkGuid.ToString()));
             w.WriteEndElement();
 
-            if (link != null)
-                link.WriteXml(w);
+            if (Link != null)
+                Link.WriteXml(w);
         }
 
         protected override bool ReadXmlField(XmlReader r) {
             ILayoutXmlContext context = (ILayoutXmlContext)r;
 
             if (r.Name == "Link") {
-                link = new LayoutTrackLink(r);
+                Link = new LayoutTrackLink(r);
 
                 if (context.ReadXmlContext == LayoutReadXmlContext.PasteComponents) {
                     // This is due to pasting component, check that the link can be resolved.
                     try {
-                        link.ResolveLink();
+                        Link.ResolveLink();
                     }
                     catch (ApplicationException) {
-                        link = null;        // Link could not be resolved, get rid of it
+                        Link = null;        // Link could not be resolved, get rid of it
                     }
                 }
 
                 return true;
             }
-            else if (r.Name == "TrackLink") {
-                Guid id = new Guid(XmlConvert.DecodeName(r.GetAttribute("ID")));
+            else if (r.Name == E_TrackLink) {
+                Guid id = new Guid(XmlConvert.DecodeName(r.GetAttribute(A_Id)));
 
                 if (context.ReadXmlContext == LayoutReadXmlContext.PasteComponents) {
                     bool idFound = false;
@@ -740,7 +731,7 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutTrackLinkTextInfo : LayoutTextInfo {
-        readonly LayoutTrackLinkComponent trackLinkComponent;
+        private readonly LayoutTrackLinkComponent trackLinkComponent;
 
         public LayoutTrackLinkTextInfo(ModelComponent component, string elementPath)
             : base(component, elementPath) {
@@ -781,7 +772,6 @@ namespace LayoutManager.Components {
         public override string ToString() => "text: " + TextProvider.Text;
 
         public override bool DrawOutOfGrid => true;
-
     }
 
     public class LayoutImageComponent : ModelComponent {
@@ -815,7 +805,6 @@ namespace LayoutManager.Components {
 
         public override bool DrawOutOfGrid => true;
 
-
         public override string ToString() => "Image";
     }
 
@@ -832,7 +821,6 @@ namespace LayoutManager.Components {
 
         public override bool DrawOutOfGrid => false;
 
-
         public override string ToString() => "bridge";
     }
 
@@ -844,7 +832,6 @@ namespace LayoutManager.Components {
         public override ModelComponentKind Kind => ModelComponentKind.Background;
 
         public override bool DrawOutOfGrid => false;
-
 
         public override string ToString() => "tunnel";
     }
@@ -893,7 +880,7 @@ namespace LayoutManager.Components {
 
         public FeedbackTypes FeedbackType {
             get => AttributeValue(A_FeedbackType).Enum<FeedbackTypes>() ?? FeedbackTypes.NoFeedback;
-            set => SetAttribute(A_FeedbackType, value.ToString());
+            set => SetAttribute(A_FeedbackType, value);
         }
 
         public bool ReverseDirection {
@@ -939,7 +926,8 @@ namespace LayoutManager.Components {
             XmlDocument.LoadXml("<Gate OpenUpOrLeft=\"false\"/>");
         }
 
-        const string GateStateTopic = "Gate";
+        private const string Topic_GateState = "Gate";
+        private const string A_State = "State";
 
         public override ModelComponentKind Kind => ModelComponentKind.Gate;
 
@@ -951,10 +939,10 @@ namespace LayoutManager.Components {
         /// The gate open/close (or transition state)
         /// </summary>
         public LayoutGateState GateState {
-            get => LayoutModel.StateManager.Components.StateOf(Id, GateStateTopic).AttributeValue("State").Enum<LayoutGateState>() ?? LayoutGateState.Close;
+            get => LayoutModel.StateManager.Components.StateOf(Id, Topic_GateState).AttributeValue(A_State).Enum<LayoutGateState>() ?? LayoutGateState.Close;
 
             set {
-                LayoutModel.StateManager.Components.StateOf(Id, GateStateTopic, create: true).SetAttribute("State", value.ToString());
+                LayoutModel.StateManager.Components.StateOf(Id, Topic_GateState, create: true).SetAttribute(A_State, value);
                 OnComponentChanged();
 
                 if (value == LayoutGateState.Open)
@@ -964,13 +952,11 @@ namespace LayoutManager.Components {
 
         public override string ToString() => "gate";
 
-
         #region IModelComponentConnectToControl Members
 
         public IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions {
             get {
                 var list = new List<ModelComponentControlConnectionDescription>();
-
 
                 if (Info.TwoDirectionRelays) {
                     list.Add(new ModelComponentControlConnectionDescription($"{ControlConnectionPointTypes.OutputSolenoid},{ControlConnectionPointTypes.OutputRelay}", StandardGateDrivers.Direction1ConnectionPoint, "Gate control 1"));
@@ -1019,8 +1005,8 @@ namespace LayoutManager.Components {
 
 #pragma warning disable IDE0051
     [LayoutModule("Standard Gate Drivers", UserControl = false)]
-    class StandardGateDrivers : LayoutModuleBase {
-        readonly Dictionary<Guid, LayoutDelayedEvent> pendingEvents = new Dictionary<Guid, LayoutDelayedEvent>();
+    internal class StandardGateDrivers : LayoutModuleBase {
+        private readonly Dictionary<Guid, LayoutDelayedEvent> pendingEvents = new Dictionary<Guid, LayoutDelayedEvent>();
 
         internal const string Direction1ConnectionPoint = "Direction1";
         internal const string Direction2ConnectionPoint = "Direction2";
@@ -1052,7 +1038,6 @@ namespace LayoutManager.Components {
             gateComponent.GateState = LayoutGateState.Opening;
         }
 
-
         [LayoutEvent("close-gate-request", SenderType = typeof(LayoutGateComponent))]
         private void closeGateRequest(LayoutEvent e) {
             var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
@@ -1061,7 +1046,6 @@ namespace LayoutManager.Components {
                 pendingEvent.Cancel();
                 pendingEvents.Remove(gateComponent.Id);
             }
-
             else if (LayoutController.IsOperationMode) {
                 int directionState = gateComponent.Info.ReverseDirection ? 1 : 0;
 

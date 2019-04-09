@@ -12,10 +12,10 @@ namespace LayoutManager.Logic {
     /// </summary>
     [LayoutModule("Train Motion Manager", UserControl = false)]
     public class TrainMotionManager : LayoutModuleBase {
-        readonly Dictionary<string, CommandStationCapabilitiesInfo> commandStationCapabiltiesMap = new Dictionary<string, CommandStationCapabilitiesInfo>();
-        string? _commandStationName;
-        CommandStationCapabilitiesInfo? _commandStationCapabilties;
-        readonly Dictionary<Guid, SpeedChangeState> trainIDtoSpeedChangeState = new Dictionary<Guid, SpeedChangeState>();
+        private readonly Dictionary<string, CommandStationCapabilitiesInfo> commandStationCapabiltiesMap = new Dictionary<string, CommandStationCapabilitiesInfo>();
+        private string? _commandStationName;
+        private CommandStationCapabilitiesInfo? _commandStationCapabilties;
+        private readonly Dictionary<Guid, SpeedChangeState> trainIDtoSpeedChangeState = new Dictionary<Guid, SpeedChangeState>();
 
         [LayoutEvent("train-speed-change-request")]
         private void trainSpeedChangeRequest(LayoutEvent e) {
@@ -143,7 +143,7 @@ namespace LayoutManager.Logic {
         /// <summary>
         /// Return the command station capabilties for a given train
         /// </summary>
-        CommandStationCapabilitiesInfo GetCommandStationCapabilities(TrainStateInfo train) {
+        private CommandStationCapabilitiesInfo GetCommandStationCapabilities(TrainStateInfo train) {
             if (train.CommandStation != null) {
                 string commandStationName = train.CommandStation.NameProvider.Name;
 
@@ -169,21 +169,14 @@ namespace LayoutManager.Logic {
 
         #region Data structures
 
-        struct SpeedChangeState : IDisposable {
-            readonly TrainStateInfo train;
+        private struct SpeedChangeState : IDisposable {
+            private readonly TrainStateInfo train;
+            private double logicalToTrainSpeedStepsFactor;
+            private double trainToLogicalSpeedStepsFactor;
 
-            int ticks;
-            int stepsPerTick;           // Number and direction of steps in each timer tick
-            int timePerTick;
-            int addStepTickCount;
-            int targetSpeedSteps;
-            double logicalToTrainSpeedStepsFactor;
-            double trainToLogicalSpeedStepsFactor;
-
-            int tickCount;
-            LayoutDelayedEvent? delayedEvent;
-            int expectedSpeed;
-            int nextSpeed;
+            private int tickCount;
+            private LayoutDelayedEvent? delayedEvent;
+            private int nextSpeed;
 
             public SpeedChangeState(TrainStateInfo train) {
                 this.train = train;
@@ -191,76 +184,28 @@ namespace LayoutManager.Logic {
                 delayedEvent = null;
                 logicalToTrainSpeedStepsFactor = 1.0;
                 trainToLogicalSpeedStepsFactor = 1.0;
-                timePerTick = 10;
-                stepsPerTick = 1;
-                ticks = 0;
-                addStepTickCount = 0;
-                expectedSpeed = 0;
+                TimePerTick = 10;
+                StepsPerTick = 1;
+                Ticks = 0;
+                AddStepTickCount = 0;
+                ExpectedSpeed = 0;
                 nextSpeed = 0;
-                targetSpeedSteps = 0;
+                TargetSpeedSteps = 0;
             }
 
             #region Properties
 
-            public int TargetSpeedSteps {
-                get {
-                    return targetSpeedSteps;
-                }
+            public int TargetSpeedSteps { get; set; }
 
-                set {
-                    targetSpeedSteps = value;
-                }
-            }
+            public int Ticks { get; set; }
 
-            public int Ticks {
-                get {
-                    return ticks;
-                }
+            public int TimePerTick { get; set; }
 
-                set {
-                    ticks = value;
-                }
-            }
+            public int StepsPerTick { get; set; }
 
-            public int TimePerTick {
-                get {
-                    return timePerTick;
-                }
+            public int AddStepTickCount { get; set; }
 
-                set {
-                    timePerTick = value;
-                }
-            }
-
-            public int StepsPerTick {
-                get {
-                    return stepsPerTick;
-                }
-
-                set {
-                    stepsPerTick = value;
-                }
-            }
-
-            public int AddStepTickCount {
-                get {
-                    return addStepTickCount;
-                }
-
-                set {
-                    addStepTickCount = value;
-                }
-            }
-
-            public int ExpectedSpeed {
-                get {
-                    return expectedSpeed;
-                }
-
-                set {
-                    expectedSpeed = value;
-                }
-            }
+            public int ExpectedSpeed { get; set; }
 
             public double LogicalToTrainSpeedStepsFactor {
                 get {
@@ -289,24 +234,24 @@ namespace LayoutManager.Logic {
             #region Operations
 
             public void Start() {
-                nextSpeed = expectedSpeed + stepsPerTick;
+                nextSpeed = ExpectedSpeed + StepsPerTick;
                 train.SpeedInSteps = nextSpeed;
-                expectedSpeed = nextSpeed;
+                ExpectedSpeed = nextSpeed;
                 setTimer();
             }
 
             private void setTimer() {
-                if (expectedSpeed != targetSpeedSteps) {
-                    if (Math.Abs(targetSpeedSteps - expectedSpeed) < Math.Abs(stepsPerTick))
-                        nextSpeed = targetSpeedSteps;
+                if (ExpectedSpeed != TargetSpeedSteps) {
+                    if (Math.Abs(TargetSpeedSteps - ExpectedSpeed) < Math.Abs(StepsPerTick))
+                        nextSpeed = TargetSpeedSteps;
                     else {
-                        nextSpeed = expectedSpeed + stepsPerTick;
+                        nextSpeed = ExpectedSpeed + StepsPerTick;
 
-                        if (addStepTickCount > 0 && ((tickCount % addStepTickCount) == 0))
-                            nextSpeed += (stepsPerTick > 0) ? 1 : -1;
+                        if (AddStepTickCount > 0 && ((tickCount % AddStepTickCount) == 0))
+                            nextSpeed += (StepsPerTick > 0) ? 1 : -1;
                     }
 
-                    delayedEvent = EventManager.DelayedEvent(timePerTick, new LayoutEvent("train-speed-change-timer", this));
+                    delayedEvent = EventManager.DelayedEvent(TimePerTick, new LayoutEvent("train-speed-change-timer", this));
                 }
                 else {
                     delayedEvent = null;
@@ -315,11 +260,11 @@ namespace LayoutManager.Logic {
             }
 
             public void OnTimer(LayoutEvent e) {
-                if (train.SpeedInSteps != expectedSpeed)
+                if (train.SpeedInSteps != ExpectedSpeed)
                     EventManager.Event(new LayoutEvent("train-speed-change-aborted", train));
                 else {
                     train.SpeedInSteps = nextSpeed;
-                    expectedSpeed = nextSpeed;
+                    ExpectedSpeed = nextSpeed;
 
                     tickCount++;
                     setTimer();     // This calculates the next speed

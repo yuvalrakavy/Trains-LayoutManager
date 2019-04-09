@@ -59,20 +59,19 @@ namespace LayoutManager {
         /// <param name="theEvent"></param>
         /// <param name="connectionPointRef"></param>
         /// <returns></returns>
-        public static LayoutEvent SetCommandStation(this LayoutEvent theEvent, ControlConnectionPointReference connectionPointRef) => SetCommandStation(theEvent, 
+        public static LayoutEvent SetCommandStation(this LayoutEvent theEvent, ControlConnectionPointReference connectionPointRef) => SetCommandStation(theEvent,
             Ensure.NotNull<ControlModule>(connectionPointRef.Module, "module").Bus);
     }
 }
 
 namespace LayoutManager.Components {
-
     #region Base class for command station components
 
     public abstract class LayoutBusProviderSupport : ModelComponent, IModelComponentIsBusProvider {
-        ILayoutEmulatorServices? _layoutEmulationServices;
-        Stream? commStream;
-        ILayoutCommandStationEmulator? commandStationEmulator;
-        bool operationMode;
+        private ILayoutEmulatorServices? _layoutEmulationServices;
+        private Stream? commStream;
+        private ILayoutCommandStationEmulator? commandStationEmulator;
+        private bool operationMode;
 
         public const string A_InterfaceType = "InterfaceType";
         public const string A_Port = "Port";
@@ -82,7 +81,7 @@ namespace LayoutManager.Components {
 
         public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
 
-        public override bool DrawOutOfGrid => NameProvider.Element != null && NameProvider.Visible == true;
+        public override bool DrawOutOfGrid => NameProvider.Element != null && NameProvider.Visible;
 
         public string Name => NameProvider.Name;
 
@@ -90,12 +89,9 @@ namespace LayoutManager.Components {
             get;
         }
 
-
         public ILayoutEmulatorServices LayoutEmulationServices {
             get {
-                if (_layoutEmulationServices == null)
-                    _layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this))!;
-                return _layoutEmulationServices;
+                return _layoutEmulationServices ?? (_layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this))!);
             }
         }
 
@@ -124,7 +120,7 @@ namespace LayoutManager.Components {
             }
 
             set {
-                Element.SetAttribute(A_InterfaceType, value.ToString());
+                Element.SetAttribute(A_InterfaceType, value);
             }
         }
 
@@ -133,13 +129,12 @@ namespace LayoutManager.Components {
             set { Element.SetAttribute(A_Address, value); }
         }
 
-
         #endregion
 
         protected virtual void OpenCommunicationStream() {
             if (EmulateLayout && LayoutEmulationSupported) {
                 string pipeName = @"\\.\pipe\CommandStationEmulationFor_" + Name;
-                bool overlappedIO = GetBool("OverlappedIO");
+                var overlappedIO = (bool)Element.AttributeValue("OverlappedIO");
 
                 SafeFileHandle handle = (SafeFileHandle)EventManager.Event(new LayoutEvent("create-named-pipe-request", pipeName,
                     overlappedIO, null))!;
@@ -294,19 +289,6 @@ namespace LayoutManager.Components {
                 operationMode = false;
             }
         }
-
-        #region Utility methods
-
-        bool GetBool(string name, bool defaultValue) {
-            if (Element.HasAttribute(name))
-                return XmlConvert.ToBoolean(Element.GetAttribute(name));
-            return defaultValue;
-        }
-
-        bool GetBool(string name) => GetBool(name, false);
-
-        #endregion
-
     }
 
     /// <summary>
@@ -314,16 +296,18 @@ namespace LayoutManager.Components {
     ///Thus making it simpler to implement those components.
     /// </summary>
     public abstract class LayoutCommandStationComponent : LayoutBusProviderSupport, IModelComponentIsCommandStation, IDisposable, ILayoutLockResource {
-        LayoutPowerOutlet? trackPowerOutlet;
-        LayoutPowerOutlet? programmingPowerOutlet;
-        System.Threading.Timer? animatedTrainsTimer;
-        LayoutSelection? animatedTrainsSelection;
+        public const string A_EmulationTickTime = "EmulationTickTime";
+        public const string A_AnimateTrainMotion = "AnimateTrainMotion";
+        private LayoutPowerOutlet? trackPowerOutlet;
+        private LayoutPowerOutlet? programmingPowerOutlet;
+        private System.Threading.Timer? animatedTrainsTimer;
+        private LayoutSelection? animatedTrainsSelection;
 
         #region Public component properties & methods
 
-        public int EmulationTickTime => XmlConvert.ToInt32(Element.GetAttribute("EmulationTickTime"));
+        public int EmulationTickTime => (int)Element.AttributeValue(A_EmulationTickTime);
 
-        public bool AnimateTrainMotion => XmlConvert.ToBoolean(Element.GetAttribute("AnimateTrainMotion"));
+        public bool AnimateTrainMotion => (bool)Element.AttributeValue(A_AnimateTrainMotion);
 
         public IList<ILayoutPowerOutlet> PowerOutlets {
             get {
@@ -388,11 +372,11 @@ namespace LayoutManager.Components {
         protected void PowerOn() {
             if (OperationMode) {
                 Debug.Assert(trackPowerOutlet != null);
-                trackPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Digital, this.SupportedDigitalPowerFormats, Name);
+                trackPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Digital, this.SupportedDigitalPowerFormats, A_EmulationTickTime);
 
                 if (this is IModelComponentCanProgramLocomotives) {
                     Debug.Assert(programmingPowerOutlet != null);
-                    programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, Name);
+                    programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, A_EmulationTickTime);
                 }
             }
             EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation>("command-station-power-on-notification", this));
@@ -401,7 +385,7 @@ namespace LayoutManager.Components {
         protected void PowerOff() {
             if (OperationMode) {
                 Debug.Assert(trackPowerOutlet != null);
-                trackPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Disconnected, DigitalPowerFormats.None, Name);
+                trackPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Disconnected, DigitalPowerFormats.None, A_EmulationTickTime);
             }
             EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation>("command-station-power-off-notification", this));
         }
@@ -409,20 +393,20 @@ namespace LayoutManager.Components {
         protected void ProgrammingPowerOn() {
             if (OperationMode) {
                 Debug.Assert(programmingPowerOutlet != null);
-                programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, Name + "_programming");
+                programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, A_EmulationTickTime + "_programming");
             }
         }
 
         protected void ProgrammingPowerOff() {
             if (OperationMode) {
                 Debug.Assert(programmingPowerOutlet != null);
-                programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Disconnected, DigitalPowerFormats.None, Name + "_programming");
+                programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Disconnected, DigitalPowerFormats.None, A_EmulationTickTime + "_programming");
             }
         }
 
         #region Animate Train (when using emulation)
 
-        readonly TrackEdgeDictionary currentShownTrainPositions = new TrackEdgeDictionary();
+        private readonly TrackEdgeDictionary currentShownTrainPositions = new TrackEdgeDictionary();
 
         [LayoutEvent("show-emulated-locomotive-locations")]
         protected virtual void ShowTrainPositions(LayoutEvent e) {
@@ -474,7 +458,6 @@ namespace LayoutManager.Components {
 
         #region Overridable methods
 
-
         public virtual int GetLowestLocomotiveAddress(DigitalPowerFormats format) => 1;
 
         public virtual int GetHighestLocomotiveAddress(DigitalPowerFormats format) {
@@ -508,7 +491,6 @@ namespace LayoutManager.Components {
                     OnInitialize();
 
                     EventManager.Event(new LayoutEvent("connect-track-power-request", this));
-
                 }
                 e.Info = true;
             }
@@ -585,45 +567,39 @@ namespace LayoutManager.Components {
     /// Information about input received from the layout when the in design time layout activation.
     /// </summary>
     public class CommandStationInputEvent : IComparable<CommandStationInputEvent> {
-        readonly ModelComponent commandStation;
-        readonly ControlBus bus;
-        readonly int address;
-        readonly int index = -1;
-        readonly int state;
-
         public CommandStationInputEvent(ModelComponent commandStation, ControlBus bus, int address) {
-            this.commandStation = commandStation;
-            this.bus = bus;
-            this.address = address;
+            this.CommandStation = commandStation;
+            this.Bus = bus;
+            this.Address = address;
         }
 
         public CommandStationInputEvent(ModelComponent commandStation, ControlBus bus, int address, int state) {
-            this.commandStation = commandStation;
-            this.bus = bus;
-            this.address = address;
-            this.state = state;
+            this.CommandStation = commandStation;
+            this.Bus = bus;
+            this.Address = address;
+            this.State = state;
         }
 
         public CommandStationInputEvent(ModelComponent commandStation, ControlBus bus, int address, int index, int state) {
-            this.commandStation = commandStation;
-            this.bus = bus;
-            this.address = address;
-            this.index = index;
-            this.state = state;
+            this.CommandStation = commandStation;
+            this.Bus = bus;
+            this.Address = address;
+            this.Index = index;
+            this.State = state;
         }
 
-        public ModelComponent CommandStation => commandStation;
+        public ModelComponent CommandStation { get; }
 
-        public ControlBus Bus => bus;
+        public ControlBus Bus { get; }
 
-        public int Address => address;
+        public int Address { get; }
 
-        public int Index => index;
+        public int Index { get; } = -1;
 
-        public int State => state;
+        public int State { get; }
 
-        ControlConnectionPointReference? FindConnectionPointRef(ControlBus bus) {
-            ControlModule module = bus.GetModuleUsingAddress(address);
+        private ControlConnectionPointReference? FindConnectionPointRef(ControlBus bus) {
+            ControlModule module = bus.GetModuleUsingAddress(Address);
 
             if (module == null)
                 return null;
@@ -631,10 +607,10 @@ namespace LayoutManager.Components {
                 int theIndex;
 
                 if (Bus.BusType.AddressingMethod == ControlAddressingMethod.DirectConnectionPointAddressing) {
-                    theIndex = address - module.Address;
+                    theIndex = Address - module.Address;
 
                     if (module.ModuleType.ConnectionPointsPerAddress > 1)
-                        theIndex = theIndex * module.ModuleType.ConnectionPointsPerAddress + state;
+                        theIndex = theIndex * module.ModuleType.ConnectionPointsPerAddress + State;
                 }
                 else {
                     if (Index < 0)
@@ -647,7 +623,7 @@ namespace LayoutManager.Components {
             }
         }
 
-        public ControlConnectionPointReference? ConnectionPointRef => FindConnectionPointRef(bus);
+        public ControlConnectionPointReference? ConnectionPointRef => FindConnectionPointRef(Bus);
 
         public ModelComponent? ConnectedComponent {
             get {
@@ -670,14 +646,14 @@ namespace LayoutManager.Components {
                 if (result.Length > 0)
                     result += ", ";
 
-                int baseAddress = (address / moduleType.AddressAlignment) * moduleType.AddressAlignment;
+                int baseAddress = (Address / moduleType.AddressAlignment) * moduleType.AddressAlignment;
                 int theIndex;
 
                 if (Bus.BusType.AddressingMethod == ControlAddressingMethod.DirectConnectionPointAddressing) {
-                    theIndex = (address % moduleType.NumberOfAddresses) * moduleType.ConnectionPointsPerAddress;
+                    theIndex = (Address % moduleType.NumberOfAddresses) * moduleType.ConnectionPointsPerAddress;
 
                     if (moduleType.ConnectionPointsPerAddress > 1)
-                        theIndex += state;
+                        theIndex += State;
                 }
                 else
                     theIndex = Index;
@@ -710,7 +686,7 @@ namespace LayoutManager.Components {
                 if (ConnectionPointRef != null && ConnectionPointRef.Module != null)
                     moduleTypes.Add(ConnectionPointRef.Module.ModuleType);
                 else {
-                    foreach (ControlModuleType moduleType in bus.BusType.ModuleTypes)
+                    foreach (ControlModuleType moduleType in Bus.BusType.ModuleTypes)
                         if (!moduleTypes.Exists(delegate (ControlModuleType moduleTypeToGetString) {
                             return moduleType.ConnectionPointLabelFormat == moduleTypeToGetString.ConnectionPointLabelFormat &&
                                 moduleType.AddressAlignment == moduleTypeToGetString.AddressAlignment &&
@@ -719,7 +695,6 @@ namespace LayoutManager.Components {
                                 moduleType.ConnectionPointsPerAddress == moduleTypeToGetString.ConnectionPointsPerAddress;
                         }))
                             moduleTypes.Add(moduleType);
-
                 }
 
                 return GetAddressTextForModuleTypes(moduleTypes);
@@ -736,26 +711,26 @@ namespace LayoutManager.Components {
                 return thisCommandStation.NameProvider.Name.CompareTo(otherCommandStation.NameProvider.Name);
             }
 
-            if (bus != other.bus) {
-                var busNameDiff = bus.Name.CompareTo(other.bus.Name);
+            if (Bus != other.Bus) {
+                var busNameDiff = Bus.Name.CompareTo(other.Bus.Name);
 
                 if (busNameDiff != 0)
                     return busNameDiff;
             }
 
-            if (address != other.address)
-                return address - other.address;
+            if (Address != other.Address)
+                return Address - other.Address;
 
-            if (bus.BusType.AddressingMethod == ControlAddressingMethod.ModuleConnectionPointAddressing) {
-                if (index != other.index)
-                    return index - other.index;
+            if (Bus.BusType.AddressingMethod == ControlAddressingMethod.ModuleConnectionPointAddressing) {
+                if (Index != other.Index)
+                    return Index - other.Index;
             }
             else {
                 var cpr = ConnectionPointRef;
 
                 if (cpr == null || (cpr.Module != null && cpr.Module.ModuleType.ConnectionPointsPerAddress > 1)) {
-                    if (state != other.state)
-                        return state - other.state;
+                    if (State != other.State)
+                        return State - other.State;
                 }
             }
 
@@ -813,7 +788,6 @@ namespace LayoutManager.Components {
     }
 
     public abstract class OutputCommandBase : IOutputCommand {
-        int _waitPeriod;
         protected TaskCompletionSource<object?> tcs = new TaskCompletionSource<object?>();
 
         /// <summary>
@@ -824,16 +798,13 @@ namespace LayoutManager.Components {
         /// <summary>
         /// The default time to wait after this command is executed before executing the next command
         /// </summary>
-        public int DefaultWaitPeriod {
-            get { return _waitPeriod; }
-            set { _waitPeriod = value; }
-        }
+        public int DefaultWaitPeriod { get; set; }
 
         /// <summary>
 		/// Number of milliseconds to wait after this command is executed before next command from this queue can execute. Default
 		/// is not to wait
 		/// </summary>
-		public virtual int WaitPeriod => _waitPeriod;
+		public virtual int WaitPeriod => DefaultWaitPeriod;
 
         public Task Task => tcs.Task;
 
@@ -846,7 +817,6 @@ namespace LayoutManager.Components {
     /// Base class for commands that need to get a reply before the next command can be sent.
     /// </summary>
     public abstract class OutputSynchronousCommandBase : OutputCommandBase, IOutputCommandWithReply {
-
         /// <summary>
         /// Timeout (in milliseconds) for waiting for the reply (default is 2 seconds)
         /// </summary>
@@ -860,8 +830,8 @@ namespace LayoutManager.Components {
     }
 
     public class EndTrainsAnalysisCommandStationCommand : OutputCommandBase, IOutputIdlecommand {
-        readonly IModelComponentIsCommandStation commandStation;
-        int passCount;
+        private readonly IModelComponentIsCommandStation commandStation;
+        private int passCount;
 
         public EndTrainsAnalysisCommandStationCommand(IModelComponentIsCommandStation commandStation, int passCount) {
             this.commandStation = commandStation;
@@ -890,23 +860,22 @@ namespace LayoutManager.Components {
         #endregion
     }
 
-
     public interface IOutputIdlecommand : IOutputCommand {
         bool RemoveFromQueue { get; }
     }
 
     public class OutputManager {
-        readonly string name;
-        readonly CommandManagerQueue[] queues;
-        readonly ManualResetEvent workToDo = new ManualResetEvent(false);
-        readonly ManualResetEvent nothingToDo = new ManualResetEvent(true);
-        readonly ManualResetEvent waitToGetReply = new ManualResetEvent(false);
-        readonly CommandManagerQueue idleCommands;
-        bool doIdleCommands = true;
-        Thread? commandManagerThread;
-        static readonly LayoutTraceSwitch traceOutputManager = new LayoutTraceSwitch("OutputManager", "Output Manager");
-        IOutputCommandWithReply? pendingCommandWithReply = null;
-
+        private readonly string name;
+        private readonly CommandManagerQueue[] queues;
+        private readonly ManualResetEvent workToDo = new ManualResetEvent(false);
+        private readonly ManualResetEvent nothingToDo = new ManualResetEvent(true);
+        private readonly ManualResetEvent waitToGetReply = new ManualResetEvent(false);
+        private readonly CommandManagerQueue idleCommands;
+        private bool doIdleCommands = true;
+        private Thread? commandManagerThread;
+        private static readonly LayoutTraceSwitch traceOutputManager = new LayoutTraceSwitch("OutputManager", "Output Manager");
+        private IOutputCommandWithReply? pendingCommandWithReply = null;
+        private readonly object _lockObject = new object();
 
         public OutputManager(string name, int numberOfQueues) {
             this.name = name;
@@ -978,7 +947,7 @@ namespace LayoutManager.Components {
         /// </summary>
         /// <param name="reply"></param>
         public void SetReply(object reply) {
-            lock (this) {
+            lock (_lockObject) {
                 pendingCommandWithReply?.OnReply(reply);
                 waitToGetReply.Set();       // Wait is done
             }
@@ -991,7 +960,7 @@ namespace LayoutManager.Components {
             get {
                 bool result = false;
 
-                lock (this)
+                lock (_lockObject)
                     result = pendingCommandWithReply != null;
 
                 return result;
@@ -1121,7 +1090,6 @@ namespace LayoutManager.Components {
 
                             if (timeout)
                                 commandWithReply.OnTimeout();
-
                         }
                         else if (idleCommand == null)
                             command.Completed(null);
@@ -1140,10 +1108,10 @@ namespace LayoutManager.Components {
 
         #endregion
 
-        class CommandManagerQueue : Queue<IOutputCommand> {
-            readonly ManualResetEvent workToDo;
-            Timer? queueSuspendedTimer;
-            readonly object sync;
+        private class CommandManagerQueue : Queue<IOutputCommand> {
+            private readonly ManualResetEvent workToDo;
+            private Timer? queueSuspendedTimer;
+            private readonly object sync;
 
             public CommandManagerQueue(ManualResetEvent workToDo, object sync) {
                 this.workToDo = workToDo;
@@ -1190,41 +1158,37 @@ namespace LayoutManager.Components {
     /// A structure holding a switching command for a multi-path component
     /// </summary>
     public class SwitchingCommand {
-        readonly ControlConnectionPointReference controlPointReference;
-        readonly int switchState;
-
         /// <summary>
         /// Initialize a new switching command structure
         /// </summary>
         /// <param name="controlPointReference">The control connection point to set</param>
         /// <param name="switchState">The switching state to set this connection point to</param>
         public SwitchingCommand(ControlConnectionPointReference controlPointReference, int switchState) {
-            this.controlPointReference = controlPointReference;
-            this.switchState = switchState;
+            this.ControlPointReference = controlPointReference;
+            this.SwitchState = switchState;
         }
 
         /// <summary>
         /// The switched turnout
         /// </summary>
-        public ControlConnectionPointReference ControlPointReference => controlPointReference;
+        public ControlConnectionPointReference ControlPointReference { get; }
 
         /// <summary>
         /// The required switch state
         /// </summary>
-        public int SwitchState => switchState;
+        public int SwitchState { get; }
 
-
-        public IModelComponentIsMultiPath? Turnout => controlPointReference.ConnectionPoint?.Component as IModelComponentIsMultiPath;
+        public IModelComponentIsMultiPath? Turnout => ControlPointReference.ConnectionPoint?.Component as IModelComponentIsMultiPath;
 
         /// <summary>
         /// The command station controlling the turnout
         /// </summary>
-        public IModelComponentIsBusProvider? BusProvider => controlPointReference.Module?.Bus.BusProvider;
+        public IModelComponentIsBusProvider? BusProvider => ControlPointReference.Module?.Bus.BusProvider;
 
         /// <summary>
         /// The ID of the command station associated with this command station
         /// </summary>
-        public Guid CommandStationId => controlPointReference.Module?.Bus.BusProviderId ?? Guid.Empty;
+        public Guid CommandStationId => ControlPointReference.Module?.Bus.BusProviderId ?? Guid.Empty;
     }
 
     #endregion

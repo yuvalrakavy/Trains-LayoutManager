@@ -8,7 +8,6 @@ using System.Windows.Forms;
 
 namespace LayoutManager.View {
     public interface IPopupWindowSection {
-
         /// <summary>
         /// Get the size of this section
         /// </summary>
@@ -24,12 +23,11 @@ namespace LayoutManager.View {
     }
 
     public class PopupWindowContainerSection : IPopupWindowSection {
-
         #region SectionEntry definition
 
-        struct SectionEntry {
-            readonly IPopupWindowSection section;
-            Point origin;
+        private struct SectionEntry {
+            private readonly IPopupWindowSection section;
+            private Point origin;
 
             public SectionEntry(Point origin, IPopupWindowSection section) {
                 this.origin = origin;
@@ -51,12 +49,10 @@ namespace LayoutManager.View {
 
         #endregion
 
-        readonly List<SectionEntry> sectionEntries = new List<SectionEntry>();
-        Point insertionPoint = new Point(0, 0);
-        int verticalHeight = 0;
-        Size innerMargins = new Size(0, 0);
-        Size outerMargins = new Size(3, 3);
-        Pen borderPen;
+        private readonly List<SectionEntry> sectionEntries = new List<SectionEntry>();
+        private Point insertionPoint = new Point(0, 0);
+        private int verticalHeight = 0;
+        private Pen borderPen;
 
         public PopupWindowContainerSection() {
             this.Parent = null;
@@ -82,29 +78,13 @@ namespace LayoutManager.View {
         /// Margins around the sections in the container, this margin is "before" an optional container 
         /// border line
         /// </summary>
-        public Size OuterMargins {
-            get {
-                return outerMargins;
-            }
-
-            set {
-                outerMargins = value;
-            }
-        }
+        public Size OuterMargins { get; set; } = new Size(3, 3);
 
         /// <summary>
         /// Margins around the sections in the container, this margin is inside an optional container
         /// border line
         /// </summary>
-        public Size InnerMargins {
-            get {
-                return innerMargins;
-            }
-
-            set {
-                innerMargins = value;
-            }
-        }
+        public Size InnerMargins { get; set; } = new Size(0, 0);
 
         /// <summary>
         /// Return the container size
@@ -210,7 +190,7 @@ namespace LayoutManager.View {
                     totalSize.Height = s.Height;
             }
 
-            return new Size(totalSize.Width + 2 * innerMargins.Width + 2 * outerMargins.Width, totalSize.Height + 2 * innerMargins.Height + 2 * outerMargins.Height);
+            return new Size(totalSize.Width + 2 * InnerMargins.Width + 2 * OuterMargins.Width, totalSize.Height + 2 * InnerMargins.Height + 2 * OuterMargins.Height);
         }
 
         public void Paint(Graphics g) {
@@ -219,9 +199,9 @@ namespace LayoutManager.View {
             Size mySize = GetSize(g);
 
             if (borderPen != null)
-                g.DrawRectangle(borderPen, outerMargins.Width, outerMargins.Height, mySize.Width - 2 * outerMargins.Width, mySize.Height - 2 * outerMargins.Height);
+                g.DrawRectangle(borderPen, OuterMargins.Width, OuterMargins.Height, mySize.Width - 2 * OuterMargins.Width, mySize.Height - 2 * OuterMargins.Height);
 
-            g.TranslateTransform(outerMargins.Width + innerMargins.Width, outerMargins.Height + innerMargins.Height);
+            g.TranslateTransform(OuterMargins.Width + InnerMargins.Width, OuterMargins.Height + InnerMargins.Height);
 
             foreach (SectionEntry entry in sectionEntries)
                 entry.Paint(g);
@@ -233,43 +213,25 @@ namespace LayoutManager.View {
     }
 
     public class PopupWindowTextSection : IPopupWindowSection, IDisposable {
-        string text;
-        Font font;
-        Brush brush;
+        private Brush brush;
 
         public PopupWindowTextSection() {
         }
 
         public PopupWindowTextSection(string text) {
-            this.text = text;
+            this.Text = text;
         }
 
         public PopupWindowTextSection(Font font, string text) {
-            this.font = font;
-            this.text = text;
+            this.Font = font;
+            this.Text = text;
         }
 
         #region Properties
 
-        public string Text {
-            get {
-                return text;
-            }
+        public string Text { get; set; }
 
-            set {
-                text = value;
-            }
-        }
-
-        public Font Font {
-            get {
-                return font;
-            }
-
-            set {
-                font = value;
-            }
-        }
+        public Font Font { get; set; }
 
         public Brush Brush {
             get {
@@ -286,14 +248,14 @@ namespace LayoutManager.View {
         #region IDetailsPopWindowSection Members
 
         public Size GetSize(Graphics g) {
-            if (font == null)
-                font = new Font("Arial", 8);
+            if (Font == null)
+                Font = new Font("Arial", 8);
 
-            return g.MeasureString(text, font).ToSize();
+            return g.MeasureString(Text, Font).ToSize();
         }
 
         public void Paint(Graphics g) {
-            g.DrawString(text, font, this.Brush, new Point(0, 0));
+            g.DrawString(Text, Font, this.Brush, new Point(0, 0));
         }
 
         #endregion
@@ -301,8 +263,8 @@ namespace LayoutManager.View {
         #region IDisposable Members
 
         public void Dispose() {
-            if (font != null)
-                font.Dispose();
+            if (Font != null)
+                Font.Dispose();
             if (brush != null)
                 brush.Dispose();
         }
@@ -311,8 +273,8 @@ namespace LayoutManager.View {
     }
 
     public class PopupWindowImageSection : IPopupWindowSection {
-        readonly Image image;
-        Size size = Size.Empty;
+        private readonly Image image;
+        private Size size = Size.Empty;
 
         public PopupWindowImageSection(Image image) {
             this.image = image;
@@ -343,7 +305,6 @@ namespace LayoutManager.View {
     }
 
     public class PopupWindowAttributesSection : PopupWindowTextSection {
-
         public PopupWindowAttributesSection(string prefix, IObjectHasAttributes objectWithAttributes) {
             string list = "";
 
@@ -359,7 +320,6 @@ namespace LayoutManager.View {
     }
 
     public class PopupWindowPoliciesSection : PopupWindowTextSection {
-
         public PopupWindowPoliciesSection(string prefix, LayoutPolicyIdCollection policyIds, LayoutPoliciesCollection policies) {
             string list = "";
 
@@ -379,9 +339,9 @@ namespace LayoutManager.View {
     }
 
     public class PopupWindowViewZoomSection : IPopupWindowSection {
-        readonly LayoutView view;
-        Point ml;
-        Size drawingSize;
+        private readonly LayoutView view;
+        private Point ml;
+        private Size drawingSize;
 
         public PopupWindowViewZoomSection(LayoutView view, Point ml, Size drawingSize) {
             this.view = view;
@@ -402,5 +362,4 @@ namespace LayoutManager.View {
 
         #endregion
     }
-
 }

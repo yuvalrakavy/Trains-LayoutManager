@@ -9,10 +9,16 @@ using LayoutManager;
 #pragma warning disable IDE0051,IDE0060
 #nullable enable
 namespace LayoutManager.Logic {
-
     public class ModelTopology {
-        readonly Dictionary<TrackEdgeId, ModelTopologyEntry> topology = new Dictionary<TrackEdgeId, ModelTopologyEntry>();
-        bool compiled;
+        private const string A_Cp = "Cp";
+        private const string A_Penalty = "Penalty";
+        private const string A_State = "State";
+        private const string A_States = "States";
+        private const string A_TrackId = "TrackID";
+        private const string E_Component = "Component";
+        private const string E_ConnectTo = "ConnectTo";
+        private readonly Dictionary<TrackEdgeId, ModelTopologyEntry> topology = new Dictionary<TrackEdgeId, ModelTopologyEntry>();
+        private bool compiled;
 
         /// <summary>
         /// Get the topology of the given model
@@ -41,26 +47,25 @@ namespace LayoutManager.Logic {
         public ModelTopology(XmlReader r) {
             ConvertableString GetAttribute(string name) => new ConvertableString(r.GetAttribute(name), $"Attribute {name}");
 
-
             if (!r.IsEmptyElement) {
                 r.Read();
 
                 do {
-                    if (r.NodeType == XmlNodeType.Element && r.Name == "Component") {
-                        var id = (Guid)GetAttribute("TrackID");
-                        var cp = GetAttribute("Cp").ToComponentConnectionPoint() ?? throw new ArgumentNullException("cp");
-                        var states = (int)GetAttribute("States");
+                    if (r.NodeType == XmlNodeType.Element && r.Name == E_Component) {
+                        var id = (Guid)GetAttribute(A_TrackId);
+                        var cp = GetAttribute(A_Cp).ToComponentConnectionPoint();
+                        var states = (int)GetAttribute(A_States);
                         var entry = new ModelTopologyEntry(states);
 
                         if (!r.IsEmptyElement) {
                             do {
                                 r.Read();
 
-                                if (r.NodeType == XmlNodeType.Element && r.Name == "ConnectTo") {
-                                    var state = (int)GetAttribute("State");
-                                    var destinationID = (Guid)GetAttribute("TrackID");
-                                    var destinationCp = LayoutComponentConnectionPoint.Parse(r.GetAttribute("Cp"));
-                                    var penalty = (int)GetAttribute("Penalty");
+                                if (r.NodeType == XmlNodeType.Element && r.Name == E_ConnectTo) {
+                                    var state = (int)GetAttribute(A_State);
+                                    var destinationID = (Guid)GetAttribute(A_TrackId);
+                                    var destinationCp = LayoutComponentConnectionPoint.Parse(r.GetAttribute(A_Cp));
+                                    var penalty = (int)GetAttribute(A_Penalty);
 
                                     entry[state] = new ModelTopologyConnectionEntry(new TrackEdgeId(destinationID, destinationCp), penalty);
 
@@ -104,7 +109,6 @@ namespace LayoutManager.Logic {
         /// <param name="obj">The other topology</param>
         /// <returns>True - the two topologies are the same</returns>
         public override bool Equals(object obj) {
-
             if (!(obj is ModelTopology other))
                 return false;
 
@@ -132,18 +136,18 @@ namespace LayoutManager.Logic {
                 TrackEdgeId edgeID = d.Key;
                 ModelTopologyEntry entry = d.Value;
 
-                w.WriteStartElement("Component");
-                w.WriteAttributeString("TrackID", XmlConvert.ToString(edgeID.TrackId));
-                w.WriteAttributeString("Cp", edgeID.ConnectionPoint.ToString());
-                w.WriteAttributeString("States", XmlConvert.ToString(entry.SwitchingStateCount));
+                w.WriteStartElement(E_Component);
+                w.WriteAttributeString(A_TrackId, edgeID.TrackId);
+                w.WriteAttributeString(A_Cp, edgeID.ConnectionPoint.ToString());
+                w.WriteAttributeString(A_States, entry.SwitchingStateCount);
 
                 for (int i = 0; i < entry.SwitchingStateCount; i++) {
                     if (entry[i].Destination != TrackEdgeId.Empty) {
-                        w.WriteStartElement("ConnectTo");
-                        w.WriteAttributeString("State", XmlConvert.ToString(i));
-                        w.WriteAttributeString("Cp", entry[i].Destination.ConnectionPoint.ToString());
-                        w.WriteAttributeString("TrackID", XmlConvert.ToString(entry[i].Destination.TrackId));
-                        w.WriteAttributeString("Penalty", XmlConvert.ToString(entry[i].Penalty));
+                        w.WriteStartElement(E_ConnectTo);
+                        w.WriteAttributeString(A_State, XmlConvert.ToString(i));
+                        w.WriteAttributeString(A_Cp, entry[i].Destination.ConnectionPoint.ToString());
+                        w.WriteAttributeString(A_TrackId, entry[i].Destination.TrackId);
+                        w.WriteAttributeString(A_Penalty, entry[i].Penalty);
                         w.WriteEndElement();
                     }
                 }
@@ -156,7 +160,7 @@ namespace LayoutManager.Logic {
 
         public override int GetHashCode() => base.GetHashCode();
 
-        static ModelTopologyConnectionEntry getConnectedSplit(TrackEdge edge) {
+        private static ModelTopologyConnectionEntry getConnectedSplit(TrackEdge edge) {
             TrackEdgeDictionary visitedMergePoints = new TrackEdgeDictionary();
             int penalty = 0;
 
@@ -188,66 +192,45 @@ namespace LayoutManager.Logic {
     }
 
     public class ModelTopologyConnectionEntry {
-        ModelTopologyEntry? destinationTopologyEntry;    // the destination entry
-        TrackEdgeId destination;                // Where this connects to
-        readonly int penalty;                   // connection penalty
+        private TrackEdgeId destination;                // Where this connects to
 
         public ModelTopologyConnectionEntry(TrackEdgeId destination, int penalty) {
             this.destination = destination;
-            this.penalty = penalty;
+            this.Penalty = penalty;
         }
 
         public TrackEdgeId Destination => destination;
 
-        public int Penalty => penalty;
+        public int Penalty { get; }
 
         public bool IsEmpty => destination.IsEmpty;
 
-        public ModelTopologyEntry? DestinationTopologyEntry {
-            get {
-                return destinationTopologyEntry;
-            }
-
-            set {
-                destinationTopologyEntry = value;
-            }
-        }
+        public ModelTopologyEntry? DestinationTopologyEntry { get; set; }
 
         public override bool Equals(object obj) {
             if (obj == null)
                 return destination == TrackEdgeId.Empty;
 
-
             if (!(obj is ModelTopologyConnectionEntry other))
                 return false;
 
-            return destination.Equals(other.destination) && penalty == other.penalty;
+            return destination.Equals(other.destination) && Penalty == other.Penalty;
         }
 
-        public override int GetHashCode() => destination.GetHashCode() ^ penalty;
+        public override int GetHashCode() => destination.GetHashCode() ^ Penalty;
     }
 
     public class ModelTopologyEntry {
-        readonly int nStates;
-        readonly ModelTopologyConnectionEntry[] connections;
-        bool visited;
+        private readonly ModelTopologyConnectionEntry[] connections;
 
         public ModelTopologyEntry(int stateCount) {
-            this.nStates = stateCount;
+            this.SwitchingStateCount = stateCount;
             connections = new ModelTopologyConnectionEntry[stateCount];
         }
 
-        public int SwitchingStateCount => nStates;
+        public int SwitchingStateCount { get; }
 
-        public bool Visited {
-            get {
-                return visited;
-            }
-
-            set {
-                visited = value;
-            }
-        }
+        public bool Visited { get; set; }
 
         public ModelTopologyConnectionEntry this[int switchState] {
             get {
@@ -260,14 +243,13 @@ namespace LayoutManager.Logic {
         }
 
         public override bool Equals(object obj) {
-
             if (!(obj is ModelTopologyEntry other))
                 return false;
 
-            if (nStates != other.SwitchingStateCount)
+            if (SwitchingStateCount != other.SwitchingStateCount)
                 return false;
 
-            for (int i = 0; i < nStates; i++)
+            for (int i = 0; i < SwitchingStateCount; i++)
                 if (!this[i].Equals(other[i]))
                     return false;
 

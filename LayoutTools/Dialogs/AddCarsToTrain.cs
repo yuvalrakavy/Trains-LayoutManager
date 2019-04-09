@@ -21,12 +21,13 @@ namespace LayoutManager.Tools.Dialogs {
         private LayoutManager.CommonUI.Controls.LengthInput lengthInput;
         private Button ButtonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
         private GroupBox groupBoxLength;
-        readonly TrainCarsInfo trainCars;
+        private readonly TrainCarsInfo trainCars;
 
         public AddCarsToTrain(TrainCarsInfo trainCars) {
             //
@@ -47,7 +48,6 @@ namespace LayoutManager.Tools.Dialogs {
             bool found = false;
 
             foreach (Control c in groupBoxLength.Controls) {
-
                 if (c is RadioButton rb) {
                     int underline = rb.Name.IndexOf('_');
 
@@ -74,7 +74,6 @@ namespace LayoutManager.Tools.Dialogs {
                 return lengthInput.NeutralValue;
             else {
                 foreach (Control c in groupBoxLength.Controls) {
-
                     if (c is RadioButton rb && rb.Checked) {
                         int underline = rb.Name.IndexOf('_');
 
@@ -275,7 +274,6 @@ namespace LayoutManager.Tools.Dialogs {
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCount)).EndInit();
             this.groupBoxLength.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -296,6 +294,5 @@ namespace LayoutManager.Tools.Dialogs {
 
             DialogResult = DialogResult.OK;
         }
-
     }
 }

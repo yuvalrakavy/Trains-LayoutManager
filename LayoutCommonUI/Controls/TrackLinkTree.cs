@@ -58,11 +58,9 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region Tree node that represents an area and a track link
 
-        class TrackLinkTreeNode : TreeNode {
-            readonly LayoutTrackLink thisLink;
-
+        private class TrackLinkTreeNode : TreeNode {
             internal TrackLinkTreeNode(LayoutTrackLinkComponent trackLink) {
-                thisLink = trackLink.ThisLink;
+                Link = trackLink.ThisLink;
 
                 string text = new LayoutTextInfo(trackLink).Text;
 
@@ -84,10 +82,10 @@ namespace LayoutManager.CommonUI.Controls {
                 }
             }
 
-            internal LayoutTrackLink Link => thisLink;
+            internal LayoutTrackLink Link { get; }
         }
 
-        class AreaTreeNode : TreeNode {
+        private class AreaTreeNode : TreeNode {
             internal AreaTreeNode(LayoutModelArea area) {
                 this.Text = area.Name;
                 this.ImageIndex = 0;
@@ -96,7 +94,6 @@ namespace LayoutManager.CommonUI.Controls {
                 foreach (LayoutTrackLinkComponent trackLink in area.TrackLinks)
                     this.Nodes.Add(new TrackLinkTreeNode(trackLink));
             }
-
         }
 
         #endregion
@@ -146,7 +143,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.ImageIndex = 0;
             this.ImageList = this.imageListTrackLinks;
             this.SelectedImageIndex = 0;
-
         }
         #endregion
 

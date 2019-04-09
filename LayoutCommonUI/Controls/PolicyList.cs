@@ -20,22 +20,16 @@ namespace LayoutManager.CommonUI.Controls {
         private Button buttonNew;
         private Button buttonRemove;
         private Button buttonEdit;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
 
         private void endOfDesignerVariables() { }
-
-        LayoutPoliciesCollection policies;
-        IPolicyListCustomizer customizer;
-        readonly CommonUI.ListViewStringColumnsSorter sorter;
-        bool viewOnly = false;
-        bool showIfRunning = false;
-        bool showPolicyDefinition = false;
-        int updateOnMouseUp = -1;
-        string scope = "TripPlan";
-        bool editingPolicy = false;
+        private readonly CommonUI.ListViewStringColumnsSorter sorter;
+        private int updateOnMouseUp = -1;
+        private bool editingPolicy = false;
 
         public PolicyList() {
             // This call is required by the Windows.Forms Form Designer.
@@ -45,86 +39,38 @@ namespace LayoutManager.CommonUI.Controls {
             Customizer = this;
         }
 
-        public string Scope {
-            get {
-                return scope;
-            }
+        public string Scope { get; set; } = "TripPlan";
 
-            set {
-                scope = value;
-            }
-        }
+        public LayoutPoliciesCollection Policies { get; set; }
 
-        public LayoutPoliciesCollection Policies {
-            get {
-                return policies;
-            }
+        public IPolicyListCustomizer Customizer { get; set; }
 
-            set {
-                policies = value;
-            }
-        }
+        public bool ViewOnly { get; set; } = false;
 
-        public IPolicyListCustomizer Customizer {
-            get {
-                return customizer;
-            }
+        public bool ShowIfRunning { get; set; } = false;
 
-            set {
-                customizer = value;
-            }
-        }
-
-        public bool ViewOnly {
-            get {
-                return viewOnly;
-            }
-
-            set {
-                viewOnly = value;
-            }
-        }
-
-        public bool ShowIfRunning {
-            get {
-                return showIfRunning;
-            }
-
-            set {
-                showIfRunning = value;
-            }
-        }
-
-        public bool ShowPolicyDefinition {
-            get {
-                return showPolicyDefinition;
-            }
-
-            set {
-                showPolicyDefinition = value;
-            }
-        }
+        public bool ShowPolicyDefinition { get; set; } = false;
 
         public virtual void Initialize() {
             listViewPolicies.Items.Clear();
 
-            if (showIfRunning)
+            if (ShowIfRunning)
                 listViewPolicies.Columns.Add("Status", 70, HorizontalAlignment.Left);
 
-            if (showPolicyDefinition)
+            if (ShowPolicyDefinition)
                 listViewPolicies.Columns.Add("Policy", listViewPolicies.Width - 200, HorizontalAlignment.Left);
 
-            if (!showIfRunning && !showPolicyDefinition)
+            if (!ShowIfRunning && !ShowPolicyDefinition)
                 listViewPolicies.Columns[0].Width = listViewPolicies.Width;
-            else if (showIfRunning)
+            else if (ShowIfRunning)
                 listViewPolicies.Columns[0].Width = listViewPolicies.Width - 74;
-            else if (showPolicyDefinition)
+            else if (ShowPolicyDefinition)
                 listViewPolicies.Columns[0].Width = listViewPolicies.Width - 204;
 
-            foreach (LayoutPolicyInfo policy in policies)
+            foreach (LayoutPolicyInfo policy in Policies)
                 listViewPolicies.Items.Add(new PolicyItem(this, policy));
 
-            if (customizer == null)
+            if (Customizer == null)
                 listViewPolicies.CheckBoxes = false;
 
             UpdateButtons(null, null);
@@ -247,12 +193,11 @@ namespace LayoutManager.CommonUI.Controls {
             this.Name = "PolicyList";
             this.Size = new System.Drawing.Size(384, 160);
             this.ResumeLayout(false);
-
         }
         #endregion
 
         private void listViewPolicies_ItemCheck(object sender, System.Windows.Forms.ItemCheckEventArgs e) {
-            if (!viewOnly) {
+            if (!ViewOnly) {
                 PolicyItem policyItem = (PolicyItem)listViewPolicies.Items[e.Index];
 
                 if (e.CurrentValue == CheckState.Checked)
@@ -279,7 +224,7 @@ namespace LayoutManager.CommonUI.Controls {
             if (dialog.DialogResult == DialogResult.OK) {
                 PolicyItem selectedItem = (PolicyItem)info;
 
-                policies.Update(selectedItem.Policy);
+                Policies.Update(selectedItem.Policy);
                 selectedItem.Update();
                 UpdateButtons(null, null);
             }
@@ -302,7 +247,7 @@ namespace LayoutManager.CommonUI.Controls {
             if (dialog.DialogResult == DialogResult.OK) {
                 LayoutPolicyInfo policy = (LayoutPolicyInfo)info;
 
-                policies.Update(policy);
+                Policies.Update(policy);
             }
         }
 
@@ -312,7 +257,7 @@ namespace LayoutManager.CommonUI.Controls {
                 LayoutPolicyInfo policy = (LayoutPolicyInfo)e.Sender;
                 LayoutPoliciesCollection policies = (LayoutPoliciesCollection)e.Info;
 
-                if (policies == this.policies) {
+                if (policies == this.Policies) {
                     PolicyItem policyItem = new PolicyItem(this, policy);
 
                     listViewPolicies.Items.Add(policyItem);
@@ -329,7 +274,7 @@ namespace LayoutManager.CommonUI.Controls {
             LayoutPolicyInfo policy = (LayoutPolicyInfo)e.Sender;
             LayoutPoliciesCollection policies = (LayoutPoliciesCollection)e.Info;
 
-            if (policies == this.policies) {
+            if (policies == this.Policies) {
                 foreach (PolicyItem policyItem in listViewPolicies.Items)
                     if (policyItem.Policy.Id == policy.Id) {
                         policyItem.Update();
@@ -352,7 +297,7 @@ namespace LayoutManager.CommonUI.Controls {
             PolicyItem selectedItem = GetSelection();
 
             if (selectedItem != null)
-                policies.Remove(selectedItem.Policy);
+                Policies.Remove(selectedItem.Policy);
         }
 
         [LayoutEvent("policy-removed")]
@@ -361,7 +306,7 @@ namespace LayoutManager.CommonUI.Controls {
                 LayoutPolicyInfo policy = (LayoutPolicyInfo)e.Sender;
                 LayoutPoliciesCollection policies = (LayoutPoliciesCollection)e.Info;
 
-                if (policies == this.policies) {
+                if (policies == this.Policies) {
                     PolicyItem policyItem = null;
 
                     foreach (PolicyItem p in listViewPolicies.Items)
@@ -386,12 +331,11 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public class PolicyItem : ListViewItem {
-            readonly LayoutPolicyInfo policy;
-            readonly PolicyList policyList;
+            private readonly PolicyList policyList;
 
             public PolicyItem(PolicyList policyList, LayoutPolicyInfo policy) {
                 this.policyList = policyList;
-                this.policy = policy;
+                this.Policy = policy;
 
                 if (policyList.ShowIfRunning)
                     this.SubItems.Add(" ");
@@ -400,24 +344,24 @@ namespace LayoutManager.CommonUI.Controls {
             }
 
             public void Update() {
-                Text = policy.Name;
+                Text = Policy.Name;
 
                 if (policyList.ShowIfRunning) {
-                    if (policy.IsActive)
+                    if (Policy.IsActive)
                         SubItems[1].Text = "Active";
                     else
                         SubItems[1].Text = "Not active";
 
-                    SubItems[2].Text = policy.Text;
+                    SubItems[2].Text = Policy.Text;
                 }
                 else
-                    SubItems[1].Text = policy.Text;
+                    SubItems[1].Text = Policy.Text;
 
                 if (policyList.Customizer != null)
-                    this.Checked = policyList.Customizer.IsPolicyChecked(policy);
+                    this.Checked = policyList.Customizer.IsPolicyChecked(Policy);
             }
 
-            public LayoutPolicyInfo Policy => policy;
+            public LayoutPolicyInfo Policy { get; }
         }
     }
 }

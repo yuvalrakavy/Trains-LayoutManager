@@ -9,17 +9,16 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace MarklinDigital {
-
     public class MarkliinCommandStationEmulator : ILayoutCommandStationEmulator {
-        Guid commandStationId;
-        readonly string pipeName;
+        private Guid commandStationId;
+        private readonly string pipeName;
 
-        FileStream commStream;
-        readonly ILayoutEmulatorServices layoutEmulationServices;
-        readonly Thread interfaceThread = null;
-        readonly UInt16[] feedbackDecoders = new UInt16[31];
-        bool resetMode = true;
-        Timer feedbackTimer = null;
+        private FileStream commStream;
+        private readonly ILayoutEmulatorServices layoutEmulationServices;
+        private readonly Thread interfaceThread = null;
+        private readonly UInt16[] feedbackDecoders = new UInt16[31];
+        private bool resetMode = true;
+        private Timer feedbackTimer = null;
 
         public MarkliinCommandStationEmulator(IModelComponentIsCommandStation commandStation, string pipeName, int emulationTickTime) {
             this.commandStationId = commandStation.Id;

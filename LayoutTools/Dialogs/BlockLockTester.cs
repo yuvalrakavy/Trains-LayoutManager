@@ -15,6 +15,7 @@ namespace LayoutManager.Tools.Dialogs {
         private Button buttonClose;
         private Button buttonUnlock;
         private Button buttonRemove;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -131,7 +132,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "BlockLockTester";
             this.Text = "Block Lock Testing";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -174,6 +174,4 @@ namespace LayoutManager.Tools.Dialogs {
             Close();
         }
     }
-
-
 }

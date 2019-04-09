@@ -7,9 +7,10 @@ using LayoutManager.CommonUI.Controls;
 #pragma warning disable IDE0051, IDE0060
 #nullable enable
 namespace LayoutManager.CommonUI {
-
     [LayoutModule("Event Script UI Manager", UserControl = false)]
     public class EventScriptUImanager : LayoutModuleBase {
+        private const string A_Choice = "Choice";
+        private const string A_Weight = "Weight";
 
         #region Methods to return add menus for various section (events, condition and actions)
 
@@ -76,7 +77,7 @@ namespace LayoutManager.CommonUI {
         private void addRandomChoiceMenu(LayoutEvent e) {
             var menu = Ensure.NotNull<Menu>(e.Info, "menu");
 
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Choice", "Choice"));
+            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, A_Choice, A_Choice));
         }
 
         [LayoutEvent("get-event-script-editor-condition-section-menu")]
@@ -110,7 +111,6 @@ namespace LayoutManager.CommonUI {
             menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Show message", "ShowMessage"));
             menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Set Attribute", "SetAttribute"));
         }
-
 
         #endregion
 
@@ -246,7 +246,7 @@ namespace LayoutManager.CommonUI {
             e.Info = GetEventOrEventContainerDescription(e, "Sequence");
         }
 
-        class LayoutEventScriptEditorTreeNodeSequence : LayoutEventScriptEditorTreeNodeEventContainer {
+        private class LayoutEventScriptEditorTreeNodeSequence : LayoutEventScriptEditorTreeNodeEventContainer {
             public LayoutEventScriptEditorTreeNodeSequence(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
@@ -276,7 +276,7 @@ namespace LayoutManager.CommonUI {
             e.Info = GetEventOrEventContainerDescription(e, "All");
         }
 
-        class LayoutEventScriptEditorTreeNodeAll : LayoutEventScriptEditorTreeNodeEventContainer {
+        private class LayoutEventScriptEditorTreeNodeAll : LayoutEventScriptEditorTreeNodeEventContainer {
             public LayoutEventScriptEditorTreeNodeAll(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
@@ -302,7 +302,7 @@ namespace LayoutManager.CommonUI {
             e.Info = GetEventOrEventContainerDescription(e, "Any");
         }
 
-        class LayoutEventScriptEditorTreeNodeAny : LayoutEventScriptEditorTreeNodeEventContainer {
+        private class LayoutEventScriptEditorTreeNodeAny : LayoutEventScriptEditorTreeNodeEventContainer {
             public LayoutEventScriptEditorTreeNodeAny(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
@@ -338,13 +338,13 @@ namespace LayoutManager.CommonUI {
         [LayoutEvent("get-event-script-description", IfSender = "Repeat")]
         private void getRepeatDescription(LayoutEvent e) {
             var conditionElement = Ensure.NotNull<XmlElement>(e.Sender, "conditionElement");
-            //XmlElement repeatedConditionElement = (XmlElement)conditionElement.ChildNodes[0];
-            //int count = XmlConvert.ToInt32(conditionElement.GetAttribute("Count"));
 
             e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeRepeat.GetDescription(conditionElement) + " { ", " } ");
         }
 
-        class LayoutEventScriptEditorTreeNodeRepeat : LayoutEventScriptEditorTreeNodeMayBeOptional {
+        private class LayoutEventScriptEditorTreeNodeRepeat : LayoutEventScriptEditorTreeNodeMayBeOptional {
+            private const string A_Count = "Count";
+
             public LayoutEventScriptEditorTreeNodeRepeat(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
@@ -355,16 +355,12 @@ namespace LayoutManager.CommonUI {
 
             protected override int IconIndex => IconEvent;
 
-            static public string GetDescription(XmlElement element) {
-                int count = XmlConvert.ToInt32(element.GetAttribute("Count"));
-
-                if (count < 0)
-                    return "Repeat";
-                else if (count == 1)
-                    return "Repeat once";
-                else
-                    return "Repeat " + count + " times";
-            }
+            static public string GetDescription(XmlElement element) => (int)element.AttributeValue(A_Count) switch
+            {
+                int c when c < 0 => "Repeat",
+                1 => "Repeat once",
+                int c => $"Repeat {c} time"
+            };
 
             protected override string Description => GetDescription(Element);
 
@@ -400,10 +396,8 @@ namespace LayoutManager.CommonUI {
                 "Random-Choice [ "
             };
 
-            foreach (XmlElement choiceElement in element.GetElementsByTagName("Choice")) {
-                int weight = XmlConvert.ToInt32(choiceElement.GetAttribute("Weight"));
-
-                substrings.Add("Choice (" + weight + "): { " + GetElementDescription((XmlElement)choiceElement.ChildNodes[0]) + " } ");
+            foreach (XmlElement choiceElement in element.GetElementsByTagName(A_Choice)) {
+                substrings.Add($"Choice ({(int)choiceElement.AttributeValue(A_Weight)}): {{ {GetElementDescription((XmlElement)choiceElement.ChildNodes[0])} }} ");
             }
 
             substrings.Add("] ");
@@ -411,7 +405,7 @@ namespace LayoutManager.CommonUI {
             e.Info = string.Concat(substrings);
         }
 
-        class LayoutEventScriptEditorTreeNodeRandomChoice : LayoutEventScriptEditorTreeNodeMayBeOptional {
+        private class LayoutEventScriptEditorTreeNodeRandomChoice : LayoutEventScriptEditorTreeNodeMayBeOptional {
             public LayoutEventScriptEditorTreeNodeRandomChoice(XmlElement element) : base(element) {
                 AddChildEventScriptTreeNodes();
             }
@@ -423,21 +417,20 @@ namespace LayoutManager.CommonUI {
             protected override int IconIndex => IconEvent;
 
             public override Controls.LayoutEventScriptEditorTreeNode? NodeToEdit => null;
-
         }
 
         #endregion
 
         #region Choice Entry
 
-        [LayoutEvent("get-event-script-editor-tree-node", IfSender = "Choice")]
+        [LayoutEvent("get-event-script-editor-tree-node", IfSender = A_Choice)]
         private void getRandomChoiceEntryTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
 
             e.Info = new LayoutEventScriptEditorTreeNodeRandomChoiceEntry(element);
         }
 
-        [LayoutEvent("event-script-editor-edit-element", IfSender = "Choice")]
+        [LayoutEvent("event-script-editor-edit-element", IfSender = A_Choice)]
         private void editRandomChoiceEntryTreeNode(LayoutEvent e) {
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
             string weightText = CommonUI.Dialogs.InputBox.Show("Choice Weight", "Please enter the weight (probability) for this choice", CommonUI.Dialogs.InputBoxValidationOptions.IntegerNumber);
@@ -447,19 +440,19 @@ namespace LayoutManager.CommonUI {
             else {
                 var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
 
-                element.SetAttribute("Weight", XmlConvert.ToString(int.Parse(weightText)));
+                element.SetAttribute(A_Weight, int.Parse(weightText));
                 site.EditingDone();
             }
         }
 
-        class LayoutEventScriptEditorTreeNodeRandomChoiceEntry : LayoutEventScriptEditorTreeNode {
+        private class LayoutEventScriptEditorTreeNodeRandomChoiceEntry : LayoutEventScriptEditorTreeNode {
             public LayoutEventScriptEditorTreeNodeRandomChoiceEntry(XmlElement element) : base(element) {
                 AddChildEventScriptTreeNodes();
             }
 
             public override string AddNodeEventName => "get-event-script-editor-events-section-menu";
 
-            protected override string Description => "Choice (" + Element.GetAttribute("Weight") + ")";
+            protected override string Description => "Choice (" + Element.GetAttribute(EventScriptUImanager.A_Weight) + ")";
 
             protected override int IconIndex => IconEvent;
 
@@ -501,7 +494,7 @@ namespace LayoutManager.CommonUI {
             e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeTask.GetDescription(taskElement) + " { ", " } ");
         }
 
-        class LayoutEventScriptEditorTreeNodeTask : LayoutEventScriptEditorTreeNode {
+        private class LayoutEventScriptEditorTreeNodeTask : LayoutEventScriptEditorTreeNode {
             public LayoutEventScriptEditorTreeNodeTask(XmlElement scriptElement) : base(scriptElement) {
                 AddChildEventScriptTreeNodes();
             }
@@ -564,7 +557,11 @@ namespace LayoutManager.CommonUI {
             e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeWait.GetWaitDescription(waitElement));
         }
 
-        class LayoutEventScriptEditorTreeNodeWait : Controls.LayoutEventScriptEditorTreeNodeEvent {
+        private class LayoutEventScriptEditorTreeNodeWait : Controls.LayoutEventScriptEditorTreeNodeEvent {
+            private const string A_RandomSeconds = "RandomSeconds";
+            private const string A_Minutes = "Minutes";
+            private const string A_Seconds = "Seconds";
+            private const string A_MilliSeconds = "MilliSeconds";
 
             public LayoutEventScriptEditorTreeNodeWait(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
@@ -572,7 +569,7 @@ namespace LayoutManager.CommonUI {
 
             private static void addWaitString(XmlElement conditionElement, List<string> list, string attrName, string unitSingle, string unitPlural) {
                 if (conditionElement.HasAttribute(attrName)) {
-                    int v = XmlConvert.ToInt32(conditionElement.GetAttribute(attrName));
+                    var v = (int)conditionElement.AttributeValue(attrName);
 
                     if (v != 0)
                         list.Add((list.Count != 0 ? ", " : "") + v.ToString() + " " + ((v == 1) ? unitSingle : unitPlural));
@@ -583,14 +580,14 @@ namespace LayoutManager.CommonUI {
                 var delayStrings = new List<string>();
                 string s;
 
-                addWaitString(conditionElement, delayStrings, "Minutes", "minute", "minutes");
-                addWaitString(conditionElement, delayStrings, "Seconds", "second", "seconds");
-                addWaitString(conditionElement, delayStrings, "MilliSeconds", "milli-second", "milli-seconds");
+                addWaitString(conditionElement, delayStrings, A_Minutes, "minute", "minutes");
+                addWaitString(conditionElement, delayStrings, A_Seconds, "second", "seconds");
+                addWaitString(conditionElement, delayStrings, A_MilliSeconds, "milli-second", "milli-seconds");
 
                 s = "Wait for " + String.Concat(delayStrings);
 
-                if (conditionElement.HasAttribute("RandomSeconds"))
-                    s += " plus random time upto " + XmlConvert.ToInt32(conditionElement.GetAttribute("RandomSeconds")) + " seconds";
+                if (conditionElement.HasAttribute(A_RandomSeconds))
+                    s += " plus random time upto " + (int)conditionElement.AttributeValue(A_RandomSeconds) + " seconds";
 
                 return s;
             }
@@ -616,8 +613,7 @@ namespace LayoutManager.CommonUI {
             e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeDoNow.GetDescription(element));
         }
 
-        class LayoutEventScriptEditorTreeNodeDoNow : Controls.LayoutEventScriptEditorTreeNodeEvent {
-
+        private class LayoutEventScriptEditorTreeNodeDoNow : Controls.LayoutEventScriptEditorTreeNodeEvent {
             public LayoutEventScriptEditorTreeNodeDoNow(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
@@ -659,8 +655,7 @@ namespace LayoutManager.CommonUI {
             e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeWaitForEvent.GetDescription(element));
         }
 
-        class LayoutEventScriptEditorTreeNodeWaitForEvent : Controls.LayoutEventScriptEditorTreeNodeEvent {
-
+        private class LayoutEventScriptEditorTreeNodeWaitForEvent : Controls.LayoutEventScriptEditorTreeNodeEvent {
             public LayoutEventScriptEditorTreeNodeWaitForEvent(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
@@ -694,11 +689,10 @@ namespace LayoutManager.CommonUI {
             GetConditionContainerDescription(e, "And");
         }
 
-        class LayoutEventScriptEditorTreeNodeAnd : LayoutEventScriptEditorTreeNodeConditionContainer {
+        private class LayoutEventScriptEditorTreeNodeAnd : LayoutEventScriptEditorTreeNodeConditionContainer {
             public LayoutEventScriptEditorTreeNodeAnd(XmlElement andElement) : base(andElement) {
                 AddChildEventScriptTreeNodes();
             }
-
 
             protected override string Description => "And";
         }
@@ -719,11 +713,10 @@ namespace LayoutManager.CommonUI {
             GetConditionContainerDescription(e, "Or");
         }
 
-        class LayoutEventScriptEditorTreeNodeOr : LayoutEventScriptEditorTreeNodeConditionContainer {
+        private class LayoutEventScriptEditorTreeNodeOr : LayoutEventScriptEditorTreeNodeConditionContainer {
             public LayoutEventScriptEditorTreeNodeOr(XmlElement orElement) : base(orElement) {
                 AddChildEventScriptTreeNodes();
             }
-
 
             protected override string Description => "Or";
         }
@@ -746,7 +739,7 @@ namespace LayoutManager.CommonUI {
             e.Info = "Not " + GetElementDescription((XmlElement)notElement.ChildNodes[0]);
         }
 
-        class LayoutEventScriptEditnotTreeNodeNot : LayoutEventScriptEditorTreeNodeConditionContainer {
+        private class LayoutEventScriptEditnotTreeNodeNot : LayoutEventScriptEditorTreeNodeConditionContainer {
             public LayoutEventScriptEditnotTreeNodeNot(XmlElement notElement) : base(notElement) {
                 AddChildEventScriptTreeNodes();
             }
@@ -765,7 +758,7 @@ namespace LayoutManager.CommonUI {
         #region Common tree node for If
 
         abstract public class LayoutEventScriptEditorTreeNodeIf : LayoutEventScriptEditorTreeNodeCondition {
-            public LayoutEventScriptEditorTreeNodeIf(XmlElement conditionElement) : base(conditionElement) {
+            protected LayoutEventScriptEditorTreeNodeIf(XmlElement conditionElement) : base(conditionElement) {
             }
         }
 
@@ -780,7 +773,7 @@ namespace LayoutManager.CommonUI {
             e.Info = new LayoutEventScriptEditorTreeNodeIfString(ifElement);
         }
 
-        class IfStringCustomizer : Controls.EventScriptEditorDialogs.IIfConditionDialogCustomizer {
+        private class IfStringCustomizer : Controls.EventScriptEditorDialogs.IIfConditionDialogCustomizer {
             public string Title => "If (string)";
 
             public string[] OperatorNames => new string[] { "Equal", "NotEqual", "Match" };
@@ -838,7 +831,7 @@ namespace LayoutManager.CommonUI {
             e.Info = new LayoutEventScriptEditorTreeNodeIfNumber(ifElement);
         }
 
-        class IfNumberCustomizer : Controls.EventScriptEditorDialogs.IIfConditionDialogCustomizer {
+        private class IfNumberCustomizer : Controls.EventScriptEditorDialogs.IIfConditionDialogCustomizer {
             public string Title => "If (number)";
 
             public string[] OperatorNames => new string[] { "eq", "ne", "gt", "ge", "le", "lt" };
@@ -895,7 +888,7 @@ namespace LayoutManager.CommonUI {
             e.Info = new LayoutEventScriptEditorTreeNodeIfBoolean(ifElement);
         }
 
-        class IfBooleanCustomizer : Controls.EventScriptEditorDialogs.IIfConditionDialogCustomizer {
+        private class IfBooleanCustomizer : Controls.EventScriptEditorDialogs.IIfConditionDialogCustomizer {
             public string Title => "If (Boolean)";
 
             public string[] OperatorNames => new string[] { "Equal", "NotEqual" };
@@ -1024,7 +1017,7 @@ namespace LayoutManager.CommonUI {
             public LayoutEventScriptEditorTreeNodeIfTime(XmlElement conditionElement) : base(conditionElement) {
             }
 
-            static string? getNodesDescription(XmlElement element, string nodeName, string title) {
+            private static string? getNodesDescription(XmlElement element, string nodeName, string title) {
                 var nodes = (IIfTimeNode[]?)EventManager.Event(new LayoutEvent("parse-if-time-element", element, nodeName));
                 string? d = null;
 
@@ -1096,7 +1089,7 @@ namespace LayoutManager.CommonUI {
             e.Info = LayoutEventScriptEditorTreeNodeShowMessage.GetDescription(element);
         }
 
-        class LayoutEventScriptEditorTreeNodeShowMessage : LayoutEventScriptEditorTreeNodeAction {
+        private class LayoutEventScriptEditorTreeNodeShowMessage : LayoutEventScriptEditorTreeNodeAction {
             public LayoutEventScriptEditorTreeNodeShowMessage(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
@@ -1117,7 +1110,6 @@ namespace LayoutManager.CommonUI {
                         messageType = "error";
                         break;
                 }
-
 
                 return "Show " + messageType + ": '" + element.GetAttribute("Message") + "'";
             }
@@ -1155,7 +1147,7 @@ namespace LayoutManager.CommonUI {
             e.Info = LayoutEventScriptEditorTreeNodeSetAttribute.GetDescription(element);
         }
 
-        class LayoutEventScriptEditorTreeNodeSetAttribute : LayoutEventScriptEditorTreeNodeAction {
+        private class LayoutEventScriptEditorTreeNodeSetAttribute : LayoutEventScriptEditorTreeNodeAction {
             public LayoutEventScriptEditorTreeNodeSetAttribute(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
@@ -1229,11 +1221,11 @@ namespace LayoutManager.CommonUI {
             e.Info = LayoutEventScriptEditorTreeNodeGenerateEvent.GetDescription(element);
         }
 
-        class LayoutEventScriptEditorTreeNodeGenerateEvent : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
+        private class LayoutEventScriptEditorTreeNodeGenerateEvent : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
             public LayoutEventScriptEditorTreeNodeGenerateEvent(XmlElement conditionElement) : base(conditionElement) {
             }
 
-            static string? getArgumentDescription(XmlElement element, string prefix) {
+            private static string? getArgumentDescription(XmlElement element, string prefix) {
                 string getValueOf(string constant) =>
                     element.GetAttribute($"Type{prefix}") switch
                 {
@@ -1247,7 +1239,7 @@ namespace LayoutManager.CommonUI {
                 return element.GetAttribute(prefix + "Type") switch
                 {
                     "Reference" => $"is {element.GetAttribute($"{prefix}SymbolName")}",
-                    "ValueOf" when (element.GetAttribute($"Symbol{prefix}Access") == "Value") => 
+                    "ValueOf" when (element.GetAttribute($"Symbol{prefix}Access") == "Value") =>
                       getValueOf(element.GetAttribute($"Value{prefix}")),
                     "ValueOf" => $"is {GetOperandDescription(element, prefix, null)}",
                     "Context" => "is context",

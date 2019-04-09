@@ -18,6 +18,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
         private Button buttonOK;
         private Button buttonCancel;
         private RadioButton radioButtonIncrease;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -25,7 +26,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly XmlElement element;
+        private readonly XmlElement element;
 
         public TrainTargetSpeedAction(XmlElement element) {
             //
@@ -204,7 +205,6 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

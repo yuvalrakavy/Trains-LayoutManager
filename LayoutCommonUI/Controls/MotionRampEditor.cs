@@ -15,13 +15,14 @@ namespace LayoutManager.CommonUI.Controls {
         private RadioButton radioButtonSpeedChangeRate;
         private TextBox textBoxSpeedChangeRate;
         private Label label2;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
 
         private RadioButton radioButtonLocomotiveHardware;
-        MotionRampInfo ramp;
+        private MotionRampInfo ramp;
 
         public MotionRampEditor() {
             // This call is required by the Windows.Forms Form Designer.
@@ -244,10 +245,8 @@ namespace LayoutManager.CommonUI.Controls {
             this.Size = new System.Drawing.Size(218, 98);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
-
 
         private void textBoxSpeedChangeLength_TextChanged(object sender, System.EventArgs e) {
             if (textBoxSpeedChangeLength.Text != "")
@@ -257,7 +256,6 @@ namespace LayoutManager.CommonUI.Controls {
         private void textBoxSpeedChangeRate_TextChanged(object sender, System.EventArgs e) {
             if (textBoxSpeedChangeRate.Text != "")
                 radioButtonSpeedChangeRate.Checked = true;
-
         }
 
         private void radioButtonSpeedChangeLength_CheckedChanged(object sender, System.EventArgs e) {

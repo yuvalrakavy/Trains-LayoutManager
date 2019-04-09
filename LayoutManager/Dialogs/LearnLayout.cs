@@ -14,14 +14,13 @@ using System.Media;
 
 #endregion
 
-
 #pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Dialogs {
-    partial class LearnLayout : Form {
-        static bool enableSound = false;
-        long lastSoundTime = 0;
-        const long soundGapThreshold = 4000 * TimeSpan.TicksPerMillisecond;
-        Guid frameWindowId;
+    internal partial class LearnLayout : Form {
+        private static bool enableSound = false;
+        private long lastSoundTime = 0;
+        private const long soundGapThreshold = 4000 * TimeSpan.TicksPerMillisecond;
+        private Guid frameWindowId;
 
         public LearnLayout(Guid frameWindowId) {
             InitializeComponent();
@@ -130,8 +129,8 @@ namespace LayoutManager.Dialogs {
             Connected
         };
 
-        class EventItem : ListViewItem {
-            CommandStationInputEvent csEvent;
+        private class EventItem : ListViewItem {
+            private CommandStationInputEvent csEvent;
 
             public EventItem(CommandStationInputEvent csEvent) {
                 this.csEvent = csEvent;
@@ -174,7 +173,6 @@ namespace LayoutManager.Dialogs {
             public string StatusText {
                 get {
                     switch (Status) {
-
                         case CommandStationEventStatus.Connected: return "Connected to component";
                         case CommandStationEventStatus.NotConnected: return "Not Connected to component";
                         default:
@@ -241,8 +239,8 @@ namespace LayoutManager.Dialogs {
 
         private void listViewEvents_SelectedIndexChanged(object sender, EventArgs e) {
             UpdateButtons();
-
         }
+
         private void UpdateButtons() {
             if (listViewEvents.SelectedItems.Count == 0) {
                 EventManager.Event(new LayoutEvent("deselect-control-objects", this).SetFrameWindow(frameWindowId));
@@ -252,7 +250,6 @@ namespace LayoutManager.Dialogs {
                 EventItem selected = (EventItem)listViewEvents.SelectedItems[0];
 
                 switch (selected.Status) {
-
                     case CommandStationEventStatus.Connected:
                         EventManager.Event(new LayoutEvent("show-control-connection-point", selected.CommandStationEvent.ConnectionPointRef).SetFrameWindow(frameWindowId));
                         buttonAction.Enabled = false;   // Already connected

@@ -22,10 +22,10 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly TripPlanWaypointInfo wayPoint;
-        readonly XmlElement driverInstructionsElement;
-        readonly XmlDocument tempDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
-        DialogEditing changeToViewonly = null;
+        private readonly TripPlanWaypointInfo wayPoint;
+        private readonly XmlElement driverInstructionsElement;
+        private readonly XmlDocument tempDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
+        private DialogEditing changeToViewonly = null;
 
         public TripPlanWayPointDriverInstructions(TripPlanWaypointInfo wayPoint) {
             //
@@ -67,7 +67,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
 
             set {
-                if (value == true && !ViewOnly) {
+                if (value && !ViewOnly) {
                     changeToViewonly = new DialogEditing(this,
                         new DialogEditingCommandBase[] {
                                                            new DialogEditingRemoveControl(buttonOk),
@@ -153,7 +153,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Waypoint Driver Instructions";
             this.ResumeLayout(false);
-
         }
         #endregion
 

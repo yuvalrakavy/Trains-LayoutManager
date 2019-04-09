@@ -17,11 +17,12 @@ namespace LayoutManager.Dialogs {
         private ColumnHeader columnHeaderType;
         private ColumnHeader columnHeaderName;
         private ColumnHeader columnHeaderDescription;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly XmlElement commonFunctionsElement;
+        private readonly XmlElement commonFunctionsElement;
 
         public StandardFunctions() {
             //
@@ -168,7 +169,6 @@ namespace LayoutManager.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Common Locomotive Functions";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -209,33 +209,31 @@ namespace LayoutManager.Dialogs {
             this.Close();
         }
 
-        class StandardFunctionItem : ListViewItem {
-            readonly XmlElement element;
-
+        private class StandardFunctionItem : ListViewItem {
 
             public StandardFunctionItem(XmlElement element) {
-                this.element = element;
+                this.Element = element;
 
                 this.Text = getTypeString();
                 this.SubItems.Add(element.GetAttribute("Name"));
                 this.SubItems.Add(element.GetAttribute("Description"));
             }
 
-            public XmlElement Element => element;
+            public XmlElement Element { get; }
 
             public void Edit() {
-                StandardFunction d = new StandardFunction(element);
+                StandardFunction d = new StandardFunction(Element);
 
                 if (d.ShowDialog(this.ListView.Parent) == DialogResult.OK) {
                     this.Text = getTypeString();
-                    this.SubItems[1].Text = element.GetAttribute("Name");
-                    this.SubItems[2].Text = element.GetAttribute("Description");
+                    this.SubItems[1].Text = Element.GetAttribute("Name");
+                    this.SubItems[2].Text = Element.GetAttribute("Description");
                 }
             }
 
             private string getTypeString() {
-                if (element.HasAttribute("Type")) {
-                    LocomotiveFunctionType type = (LocomotiveFunctionType)Enum.Parse(typeof(LocomotiveFunctionType), element.GetAttribute("Type"));
+                if (Element.HasAttribute("Type")) {
+                    LocomotiveFunctionType type = (LocomotiveFunctionType)Enum.Parse(typeof(LocomotiveFunctionType), Element.GetAttribute("Type"));
 
                     if (type == LocomotiveFunctionType.OnOff)
                         return "On/Off";

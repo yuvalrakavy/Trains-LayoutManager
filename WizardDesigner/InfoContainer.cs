@@ -10,6 +10,7 @@ namespace Gui.Wizard {
     public class InfoContainer : System.Windows.Forms.UserControl {
         private PictureBox picImage;
         private Label lblTitle;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -77,7 +78,6 @@ namespace Gui.Wizard {
             this.Size = new System.Drawing.Size(480, 388);
             this.Load += new System.EventHandler(this.InfoContainer_Load);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -100,7 +100,6 @@ namespace Gui.Wizard {
             }
         }
 
-
         /// <summary>
         /// Gets/Sets the Icon
         /// </summary>
@@ -113,7 +112,5 @@ namespace Gui.Wizard {
                 picImage.Image = value;
             }
         }
-
-
     }
 }

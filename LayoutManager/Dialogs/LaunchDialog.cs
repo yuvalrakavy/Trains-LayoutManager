@@ -5,7 +5,7 @@ using System.IO;
 
 namespace LayoutManager.Dialogs {
     public partial class LaunchDialog : Form {
-        readonly TaskCompletionSource<LaunchAction> tcs = new TaskCompletionSource<LaunchAction>();
+        private readonly TaskCompletionSource<LaunchAction> tcs = new TaskCompletionSource<LaunchAction>();
 
         public LaunchDialog(string lastLayoutFilename) {
             InitializeComponent();

@@ -15,8 +15,7 @@ namespace LayoutManager.Decoders {
     }
 
     [LayoutModule("LGB decoders")]
-    class LGBdecoders : LayoutModuleBase {
-
+    internal class LGBdecoders : LayoutModuleBase {
         [LayoutEvent("enum-decoder-types")]
         [LayoutEvent("get-decoder-type", IfEvent = "LayoutEvent[Options/@DecoderType='LGB55020']")]
         private void Get55020(LayoutEvent e) {
@@ -55,7 +54,6 @@ namespace LayoutManager.Decoders {
 
             list.Add(decoder);
         }
-
     }
 }
 

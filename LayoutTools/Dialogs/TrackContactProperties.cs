@@ -14,6 +14,7 @@ namespace LayoutManager.Tools.Dialogs {
         private TabControl tabControl;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -24,7 +25,6 @@ namespace LayoutManager.Tools.Dialogs {
         private LayoutManager.CommonUI.Controls.AttributesEditor attributesEditor;
         private Label label1;
         private CheckBox checkBoxEmergencyContact;
-        readonly LayoutXmlInfo xmlInfo;
 
         public TriggerableBlockEdgeProperties(ModelComponent component) {
             //
@@ -35,30 +35,24 @@ namespace LayoutManager.Tools.Dialogs {
             var t = component.ToString();
             this.Text = $"{char.ToUpper(t[0]) + t.Substring(1)} properties";
 
-            this.xmlInfo = new LayoutXmlInfo(component);
+            this.XmlInfo = new LayoutXmlInfo(component);
 
-            nameDefinition.XmlInfo = xmlInfo;
+            nameDefinition.XmlInfo = XmlInfo;
             nameDefinition.IsOptional = true;
             nameDefinition.Component = component;
 
             checkBoxEmergencyContact.Checked = IsEmergencyContact;
 
             attributesEditor.AttributesSource = typeof(LayoutTriggerableBlockEdgeBase);
-            attributesEditor.AttributesOwner = new AttributesOwner(xmlInfo.Element);
+            attributesEditor.AttributesOwner = new AttributesOwner(XmlInfo.Element);
         }
 
-        bool IsEmergencyContact {
-            get { return xmlInfo.Element.HasAttribute(LayoutTriggerableBlockEdgeBase.A_EmergencyContact) ? XmlConvert.ToBoolean(xmlInfo.Element.GetAttribute(LayoutTriggerableBlockEdgeBase.A_EmergencyContact)) : false; }
-
-            set {
-                if (value == false)
-                    XmlInfo.Element.RemoveAttribute(LayoutTriggerableBlockEdgeBase.A_EmergencyContact);
-                else
-                    XmlInfo.Element.SetAttribute(LayoutTriggerableBlockEdgeBase.A_EmergencyContact, XmlConvert.ToString(value));
-            }
+        private bool IsEmergencyContact {
+            get => (bool?)XmlInfo.Element.AttributeValue(LayoutTriggerableBlockEdgeBase.A_EmergencyContact) ?? false;
+            set => XmlInfo.Element.SetAttribute(LayoutTriggerableBlockEdgeBase.A_EmergencyContact, value, removeIf: false);
         }
 
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         /// <summary>
         /// Clean up any resources being used.
@@ -201,7 +195,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.tabPageAddress.PerformLayout();
             this.tabPageAttributes.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

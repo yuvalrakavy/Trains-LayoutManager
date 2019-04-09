@@ -10,7 +10,6 @@ namespace LayoutManager {
     /// This tool is used for editing the layout
     /// </summary>
     public class LayoutOperationTool : LayoutTool {
-
         public LayoutOperationTool() {
             EventManager.AddObjectSubscriptions(this);
         }
@@ -51,6 +50,5 @@ namespace LayoutManager {
             foreach (ModelComponent component in hitTestResult.Selection)
                 EventManager.Event(new LayoutEvent("default-action-command", component, hitTestResult));
         }
-
     }
 }

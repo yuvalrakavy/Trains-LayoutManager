@@ -24,15 +24,16 @@ namespace LayoutManager.CommonUI.Dialogs {
         private RadioButton radioButtonValueFalse;
         private Button buttonCancel;
         private Button buttonOK;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly Controls.ICheckIfNameUsed checkName;
-        readonly string originalAttributeName;
-        readonly Type attributesSource;
-        readonly IDictionary attributesMap = new HybridDictionary();
-        List<AttributesInfo> attributesList = null;
+        private readonly Controls.ICheckIfNameUsed checkName;
+        private readonly string originalAttributeName;
+        private readonly Type attributesSource;
+        private readonly IDictionary attributesMap = new HybridDictionary();
+        private List<AttributesInfo> attributesList = null;
 
         public AttributeDefinition(Type attributeSource, Controls.ICheckIfNameUsed checkName, string attributeName, object attributeValue) {
             //
@@ -296,7 +297,6 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.panelTextValue.ResumeLayout(false);
             this.groupBoxBooleanValue.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

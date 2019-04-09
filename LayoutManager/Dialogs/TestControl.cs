@@ -9,6 +9,7 @@ namespace LayoutManager.Dialogs {
     public class TestControl : Form {
         private Button buttonClose;
         private LayoutManager.CommonUI.Controls.SelectTripPlanIcon selectTripPlanIcon1;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -80,7 +81,6 @@ namespace LayoutManager.Dialogs {
             this.Name = "TestControl";
             this.Text = "Test Some Control...";
             this.ResumeLayout(false);
-
         }
         #endregion
 

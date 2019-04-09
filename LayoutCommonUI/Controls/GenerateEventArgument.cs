@@ -11,6 +11,9 @@ namespace LayoutManager.CommonUI.Controls {
     /// Summary description for GenerateEventArgument.
     /// </summary>
     public class GenerateEventArgument : System.Windows.Forms.UserControl {
+        private const string A_Value = "Value";
+        private const string A_ConstantType = "ConstantType";
+        private const string A_Type = "Type";
         private RadioButton radioButtonNull;
         private RadioButton radioButtonObjectReference;
         private ComboBox comboBoxReferencedObject;
@@ -21,6 +24,7 @@ namespace LayoutManager.CommonUI.Controls {
         private RadioButton radioButtonContext;
         private LayoutManager.CommonUI.Controls.OperandValueOf operandValueOf;
         private ComboBox comboBoxBooleanConstant;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -28,40 +32,21 @@ namespace LayoutManager.CommonUI.Controls {
 
         private void endOfDesignerVariables() { }
 
-        XmlElement element;
-        string prefix = "Arg";
-
         public GenerateEventArgument() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
         }
 
-        public XmlElement Element {
-            get {
-                return element;
-            }
+        public XmlElement Element { get; set; }
 
-            set {
-                element = value;
-            }
-        }
-
-        public string Prefix {
-            get {
-                return prefix;
-            }
-
-            set {
-                prefix = value;
-            }
-        }
+        public string Prefix { get; set; } = "Arg";
 
         public void Initialize() {
-            if (element == null)
+            if (Element == null)
                 throw new ArgumentException("Element property not set");
 
-            operandValueOf.Element = element;
-            operandValueOf.Suffix = prefix;
+            operandValueOf.Element = Element;
+            operandValueOf.Suffix = Prefix;
             operandValueOf.Initialize();
 
             IDictionary symbolNameToTypeMap = new HybridDictionary();
@@ -83,8 +68,7 @@ namespace LayoutManager.CommonUI.Controls {
                     }
             }
 
-            switch (GetAttribute("ConstantType", "String")) {
-
+            switch (GetAttribute(A_ConstantType, "String")) {
                 case "String":
                     linkMenuConstantType.SelectedIndex = 0;
                     break;
@@ -100,22 +84,20 @@ namespace LayoutManager.CommonUI.Controls {
                 case "Boolean":
                     linkMenuConstantType.SelectedIndex = 3;
                     break;
-
             }
 
-            string constant = element.GetAttribute("Value" + prefix);
+            string constant = Element.GetAttribute($"{A_Value}{Prefix}");
 
             comboBoxBooleanConstant.SelectedIndex = 0;
 
             if (constant != null) {
                 if (linkMenuConstantType.SelectedIndex == 3)
-                    comboBoxBooleanConstant.SelectedIndex = XmlConvert.ToBoolean(constant) == true ? 1 : 0;
+                    comboBoxBooleanConstant.SelectedIndex = bool.Parse(constant) ? 1 : 0;
                 else
                     textBoxConstantValue.Text = constant;
             }
 
-            switch (GetAttribute("Type", "Null")) {
-
+            switch (GetAttribute(A_Type, "Null")) {
                 case "Null":
                     radioButtonNull.Checked = true;
                     break;
@@ -185,34 +167,34 @@ namespace LayoutManager.CommonUI.Controls {
                 return false;
 
             if (radioButtonNull.Checked)
-                SetAttribute("Type", "Null");
+                SetAttribute(A_Type, "Null");
             else if (radioButtonObjectReference.Checked) {
-                SetAttribute("Type", "Reference");
+                SetAttribute(A_Type, "Reference");
                 SetAttribute("SymbolName", comboBoxReferencedObject.Text);
             }
             else if (radioButtonValueOf.Checked) {
-                SetAttribute("Type", "ValueOf");
+                SetAttribute(A_Type, "ValueOf");
                 operandValueOf.Commit();
             }
             else if (radioButtonConstant.Checked) {
-                SetAttribute("Type", "ValueOf");
-                element.SetAttribute("Symbol" + prefix + "Access", "Value");
+                SetAttribute(A_Type, "ValueOf");
+                Element.SetAttribute("Symbol" + Prefix + "Access", A_Value);
 
                 switch (linkMenuConstantType.SelectedIndex) {
                     case 0:
-                        element.SetAttribute("Type" + prefix, "String");
+                        Element.SetAttribute(A_Type + Prefix, "String");
                         break;
 
                     case 1:
-                        element.SetAttribute("Type" + prefix, "Integer");
+                        Element.SetAttribute(A_Type + Prefix, "Integer");
                         break;
 
                     case 2:
-                        element.SetAttribute("Type" + prefix, "Double");
+                        Element.SetAttribute(A_Type + Prefix, "Double");
                         break;
 
                     case 3:
-                        element.SetAttribute("Type" + prefix, "Boolean");
+                        Element.SetAttribute(A_Type + Prefix, "Boolean");
                         break;
 
                     default:
@@ -220,13 +202,12 @@ namespace LayoutManager.CommonUI.Controls {
                 }
 
                 if (linkMenuConstantType.SelectedIndex == 3)
-                    element.SetAttribute("Value" + prefix, XmlConvert.ToString(comboBoxBooleanConstant.SelectedIndex == 1));
+                    Element.SetAttribute(A_Value + Prefix, comboBoxBooleanConstant.SelectedIndex == 1);
                 else
-                    element.SetAttribute("Value" + prefix, textBoxConstantValue.Text);
-
+                    Element.SetAttribute(A_Value + Prefix, textBoxConstantValue.Text);
             }
             else if (radioButtonContext.Checked)
-                SetAttribute("Type", "Context");
+                SetAttribute(A_Type, "Context");
 
             return true;
         }
@@ -244,7 +225,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         protected string GetAttribute(string name, string defaultValue) {
-            string attributeName = prefix + name;
+            string attributeName = Prefix + name;
 
             if (!Element.HasAttribute(attributeName))
                 return defaultValue;
@@ -254,7 +235,7 @@ namespace LayoutManager.CommonUI.Controls {
         protected string GetAttribute(string name) => GetAttribute(name, null);
 
         protected void SetAttribute(string name, string value) {
-            element.SetAttribute(prefix + name, value);
+            Element.SetAttribute(Prefix + name, value);
         }
 
         /// <summary> 
@@ -398,7 +379,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Name = "GenerateEventArgument";
             this.Size = new System.Drawing.Size(264, 160);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -422,6 +402,5 @@ namespace LayoutManager.CommonUI.Controls {
         private void operandValueOf_ValueChanged(object sender, System.EventArgs e) {
             radioButtonValueOf.Checked = true;
         }
-
     }
 }

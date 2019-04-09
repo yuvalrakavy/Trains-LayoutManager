@@ -17,8 +17,8 @@ namespace LayoutManager.Dialogs {
         private Button buttonDelete;
         private Button buttonRename;
         private IContainer components;
-        readonly TabControl tabAreas;
-        bool rebuildTabs = false;
+        private readonly TabControl tabAreas;
+        private bool rebuildTabs = false;
 
         public ArrangeAreas(TabControl tabAreas) {
             this.tabAreas = tabAreas;
@@ -183,7 +183,6 @@ namespace LayoutManager.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Arrange Areas";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -275,5 +274,4 @@ namespace LayoutManager.Dialogs {
             }
         }
     }
-
 }

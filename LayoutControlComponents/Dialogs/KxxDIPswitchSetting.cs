@@ -12,10 +12,10 @@ namespace LayoutManager.ControlComponents.Dialogs {
         /// </summary>
         private readonly Container components = null;
 
-        LayoutManager.CommonUI.Controls.DIPswitch diPswitchSettings;
-        Label label2;
-        CheckBox checkBoxClearUserActionFlag;
-        Button buttonClose;
+        private LayoutManager.CommonUI.Controls.DIPswitch diPswitchSettings;
+        private Label label2;
+        private CheckBox checkBoxClearUserActionFlag;
+        private Button buttonClose;
 
         public static readonly int[] KxxDipSwitchSettings = new int[] {
                                                                 0x56, 0x54, 0x59, 0x5a, 0x58, 0x51, 0x52, 0x50,
@@ -122,7 +122,6 @@ namespace LayoutManager.ControlComponents.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "MODULENAME Settings";
             this.ResumeLayout(false);
-
         }
         #endregion
     }

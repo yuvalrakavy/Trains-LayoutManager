@@ -10,7 +10,6 @@ using System.Collections.Generic;
 
 #pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Model {
-
     /// <summary>
     /// How to select a location from destination with more than one location
     /// </summary>
@@ -23,6 +22,8 @@ namespace LayoutManager.Model {
     }
 
     public class TripPlanTrainConditionInfo : LayoutXmlWrapper {
+        private const string A_Scope = "Scope";
+
         public TripPlanTrainConditionInfo(XmlElement element) : base(element) {
         }
 
@@ -36,22 +37,15 @@ namespace LayoutManager.Model {
         }
 
         public TripPlanTrainConditionScope ConditionScope {
-            get => AttributeValue("Scope").Enum<TripPlanTrainConditionScope>() ?? TripPlanTrainConditionScope.AllowIfTrue;
-            set => SetAttribute("Scope", value.ToString());
+            get => AttributeValue(A_Scope).Enum<TripPlanTrainConditionScope>() ?? TripPlanTrainConditionScope.AllowIfTrue;
+            set => SetAttribute(A_Scope, value);
         }
 
         public bool IsConditionEmpty => Element.ChildNodes.Count == 0;
 
         public XmlElement ConditionElement => Element;
 
-        public XmlElement ConditionBodyElement {
-            get {
-                if (Element.ChildNodes.Count > 0)
-                    return (XmlElement)Element.ChildNodes[0];
-                else
-                    return null;
-            }
-        }
+        public XmlElement ConditionBodyElement => Element.ChildNodes.Count > 0 ? (XmlElement)Element.ChildNodes[0] : null;
 
         public virtual string GetDescription() {
             if (IsConditionEmpty)
@@ -65,6 +59,8 @@ namespace LayoutManager.Model {
     }
 
     public class TripPlanDestinationEntryInfo : TripPlanTrainConditionInfo {
+        private const string A_BlockId = "BlockID";
+
         public TripPlanDestinationEntryInfo(XmlElement element) : base(element) {
         }
 
@@ -76,9 +72,8 @@ namespace LayoutManager.Model {
         }
 
         public Guid BlockId {
-            get => XmlConvert.ToGuid(GetAttribute("BlockID"));
-
-            set => SetAttribute("BlockID", XmlConvert.ToString(value));
+            get => (Guid)AttributeValue(A_BlockId);
+            set => SetAttribute(A_BlockId, value);
         }
 
         public override string GetDescription() {
@@ -101,20 +96,22 @@ namespace LayoutManager.Model {
     public class TripPlanDestinationInfo : LayoutInfo, IObjectHasId {
         private const string A_Name = "Name";
         private const string A_SelectionMethod = "SelectionMethod";
-        List<TripPlanDestinationEntryInfo> entries;
+        private const string E_Destination = "Destination";
+        private const string E_Block = "Block";
+        private List<TripPlanDestinationEntryInfo> entries;
 
         public TripPlanDestinationInfo(XmlElement element) : base(element) {
         }
 
         public TripPlanDestinationInfo(TripPlanWaypointInfo waypoint, LayoutBlockDefinitionComponent blockInfo) {
-            Element = waypoint.Element.OwnerDocument.CreateElement("Destination");
+            Element = waypoint.Element.OwnerDocument.CreateElement(E_Destination);
             waypoint.Element.AppendChild(Element);
 
             Add(blockInfo);
         }
 
         public TripPlanDestinationEntryInfo Add(LayoutBlockDefinitionComponent blockInfo) {
-            XmlElement entryElement = Element.OwnerDocument.CreateElement("Block");
+            XmlElement entryElement = Element.OwnerDocument.CreateElement(E_Block);
 
             Element.AppendChild(entryElement);
             TripPlanDestinationEntryInfo entry = new TripPlanDestinationEntryInfo(entryElement) {
@@ -186,7 +183,6 @@ namespace LayoutManager.Model {
                 List<LayoutBlockDefinitionComponent> blockInfos = new List<LayoutBlockDefinitionComponent>(Entries.Count);
 
                 entries.ForEach(delegate (TripPlanDestinationEntryInfo entry) {
-
                     if (LayoutModel.Blocks.TryGetValue(entry.BlockId, out LayoutBlock block)) {
                         if (block.BlockDefinintion != null)
                             blockInfos.Add(block.BlockDefinintion);
@@ -196,7 +192,6 @@ namespace LayoutManager.Model {
                 return blockInfos;
             }
         }
-
 
         public LayoutSelection Selection {
             get {
@@ -535,8 +530,7 @@ namespace LayoutManager.Model {
         private const string E_TripPlan = "TripPlan";
         private const string A_TrainId = "TrainID";
         private const string A_Status = "Status";
-        TrainStateInfo train;
-        int currentWaypointIndex;
+        private TrainStateInfo train;
 
         public TripPlanAssignmentInfo(TripPlanInfo tripPlan, TrainStateInfo train) {
             XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
@@ -558,10 +552,7 @@ namespace LayoutManager.Model {
 
         public TrainStateInfo Train {
             get {
-                if (train == null)
-                    train = LayoutModel.StateManager.Trains[TrainId];
-
-                return train;
+                return train ?? (train = LayoutModel.StateManager.Trains[TrainId]);
             }
         }
 
@@ -578,11 +569,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public int CurrentWaypointIndex {
-            get => currentWaypointIndex;
-
-            set => currentWaypointIndex = value;
-        }
+        public int CurrentWaypointIndex { get; set; }
 
         public TripPlanWaypointInfo CurrentWaypoint {
             get {
@@ -632,7 +619,6 @@ namespace LayoutManager.Model {
     /// Trip plan in the catalog
     /// </summary>
     public class TripPlanCollection : XmlIndexedCollection<TripPlanInfo, Guid> {
-
         internal TripPlanCollection(TripPlanCatalogInfo tripPlanCatalog) : base(tripPlanCatalog.TripPlansElement) {
         }
 
@@ -658,12 +644,10 @@ namespace LayoutManager.Model {
     public class TripPlanCatalogInfo : LayoutInfo {
         private const string E_TripPlans = "TripPlans";
         private const string E_Destinations = "Destinations";
-        readonly TripPlanCollection tripPlans;
-        readonly DestinationCollection destinations;
 
         public TripPlanCatalogInfo(XmlElement element) : base(element) {
-            tripPlans = new TripPlanCollection(this);
-            destinations = new DestinationCollection(this);
+            TripPlans = new TripPlanCollection(this);
+            Destinations = new DestinationCollection(this);
         }
 
         public XmlElement TripPlansElement {
@@ -692,32 +676,30 @@ namespace LayoutManager.Model {
             }
         }
 
-        public TripPlanCollection TripPlans => tripPlans;
+        public TripPlanCollection TripPlans { get; }
 
-        public DestinationCollection Destinations => destinations;
+        public DestinationCollection Destinations { get; }
 
         public void Clear() {
-            tripPlans.Clear();
-            destinations.Clear();
+            TripPlans.Clear();
+            Destinations.Clear();
         }
 
         #region Integrity checking
 
         private class IntegrityContext {
-            TripPlanInfo tripPlan;
-            TripPlanWaypointInfo waypoint;
-            TripPlanDestinationInfo destination;
+            private TripPlanWaypointInfo waypoint;
 
             public void Message(string message) {
                 string s = "";
 
-                if (tripPlan != null)
-                    s = "Trip plan '" + tripPlan.Name + "'";
+                if (TripPlan != null)
+                    s = "Trip plan '" + TripPlan.Name + "'";
 
                 if (waypoint != null)
                     s += ", waypoint '" + waypoint.Destination.Name + "'";
-                else if (destination != null)
-                    s = "Destination '" + destination.Name + "'";
+                else if (Destination != null)
+                    s = "Destination '" + Destination.Name + "'";
 
                 if (!string.IsNullOrEmpty(s))
                     s += ": ";
@@ -726,11 +708,7 @@ namespace LayoutManager.Model {
                 LayoutModuleBase.Message(s);
             }
 
-            public TripPlanInfo TripPlan {
-                get => tripPlan;
-
-                set => tripPlan = value;
-            }
+            public TripPlanInfo TripPlan { get; set; }
 
             public TripPlanWaypointInfo Waypoint {
                 get => waypoint;
@@ -739,17 +717,13 @@ namespace LayoutManager.Model {
                     waypoint = value;
 
                     if (waypoint == null)
-                        destination = null;
+                        Destination = null;
                     else
-                        destination = value.Destination;
+                        Destination = value.Destination;
                 }
             }
 
-            public TripPlanDestinationInfo Destination {
-                get => destination;
-
-                set => destination = value;
-            }
+            public TripPlanDestinationInfo Destination { get; set; }
         }
 
         /// <summary>
@@ -837,59 +811,43 @@ namespace LayoutManager.Model {
     #region Classes for find-best-route-request event
 
     public class TripBestRouteRequest {
-        Guid _routeOwner;
-        readonly TripPlanDestinationInfo _destination;
-        readonly ModelComponent _source;
-        readonly LayoutComponentConnectionPoint _front;
-        LocomotiveOrientation _direction;
-        readonly bool _trainStopping;
+        private Guid _routeOwner;
+        private readonly bool _trainStopping;
 
         public TripBestRouteRequest(Guid routeOwner, TripPlanDestinationInfo destination, ModelComponent source, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, bool trainStopping) {
             _routeOwner = routeOwner;
-            _destination = destination;
-            _source = source;
-            _front = front;
-            _direction = direction;
+            Destination = destination;
+            Source = source;
+            Front = front;
+            Direction = direction;
             _trainStopping = trainStopping;
         }
 
         public Guid RouteOwner => _routeOwner;
 
-        public TripPlanDestinationInfo Destination => _destination;
+        public TripPlanDestinationInfo Destination { get; }
 
-        public ModelComponent Source => _source;
+        public ModelComponent Source { get; }
 
-        public LayoutComponentConnectionPoint Front => _front;
+        public LayoutComponentConnectionPoint Front { get; }
 
-        public LocomotiveOrientation Direction {
-            get => _direction;
-
-            set => _direction = value;
-        }
+        public LocomotiveOrientation Direction { get; set; }
 
         public bool TrainStopping => _trainStopping;
     }
 
     public class TripBestRouteResult {
-        readonly ITripRoute _bestRoute;
-        readonly RouteQuality _quality;
-        bool _shouldReverse;
-
         public TripBestRouteResult(ITripRoute bestRoute, RouteQuality quality, bool shouldReverse) {
-            _bestRoute = bestRoute;
-            _quality = quality;
-            _shouldReverse = shouldReverse;
+            BestRoute = bestRoute;
+            Quality = quality;
+            ShouldReverse = shouldReverse;
         }
 
-        public ITripRoute BestRoute => _bestRoute;
+        public ITripRoute BestRoute { get; }
 
-        public RouteQuality Quality => _quality;
+        public RouteQuality Quality { get; }
 
-        public bool ShouldReverse {
-            get => _shouldReverse;
-
-            set => _shouldReverse = value;
-        }
+        public bool ShouldReverse { get; set; }
     }
 
     #endregion
@@ -897,9 +855,10 @@ namespace LayoutManager.Model {
     #region Class representing image list (list of icons)
 
     public class TripPlanIconListInfo : LayoutInfo {
-        ImageList largeIconImageList;
-        Dictionary<Guid, int> iconIdMap;
-        bool iconListModified;
+        private const string E_Icon = "Icon";
+        private const string A_Id = "ID";
+        private ImageList largeIconImageList;
+        private Dictionary<Guid, int> iconIdMap;
 
         public TripPlanIconListInfo(XmlElement element) : base(element) {
         }
@@ -913,7 +872,7 @@ namespace LayoutManager.Model {
 
                 int iconIndex = 0;
                 foreach (XmlElement iconElement in Element)
-                    iconIdMap.Add(XmlConvert.ToGuid(iconElement.GetAttribute("ID")), iconIndex++);
+                    iconIdMap.Add((Guid)iconElement.AttributeValue(A_Id), iconIndex++);
             }
         }
 
@@ -945,9 +904,7 @@ namespace LayoutManager.Model {
 
         public ImageList LargeIconImageList {
             get {
-                if (largeIconImageList == null)
-                    largeIconImageList = createImageList(32, 32);
-                return largeIconImageList;
+                return largeIconImageList ?? (largeIconImageList = createImageList(32, 32));
             }
         }
 
@@ -956,7 +913,6 @@ namespace LayoutManager.Model {
         /// </summary>
         public int this[Guid iconId] {
             get {
-
                 CreateIconIdMap();
                 if (iconIdMap.TryGetValue(iconId, out int iconIndex))
                     return iconIndex;
@@ -967,7 +923,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Given an iconIndex, return its icon ID
         /// </summary>
-        public Guid this[int iconIndex] => XmlConvert.ToGuid(((XmlElement)Element.ChildNodes[iconIndex]).GetAttribute("ID"));
+        public Guid this[int iconIndex] => (Guid)((XmlElement)Element.ChildNodes[iconIndex]).AttributeValue(A_Id);
 
         /// <summary>
         /// Add Icon
@@ -975,10 +931,10 @@ namespace LayoutManager.Model {
         /// <param name="icon"></param>
         /// <returns>The new Icon ID</returns>
         public Guid Add(Icon icon) {
-            XmlElement iconElement = Element.OwnerDocument.CreateElement("Icon");
+            XmlElement iconElement = Element.OwnerDocument.CreateElement(E_Icon);
             Guid iconID = Guid.NewGuid();
 
-            iconElement.SetAttribute("ID", XmlConvert.ToString(iconID));
+            iconElement.SetAttribute(A_Id, iconID);
 
             using (MemoryStream s = new MemoryStream()) {
                 icon.Save(s);
@@ -991,7 +947,7 @@ namespace LayoutManager.Model {
 
             // Add to the image list(s)
             LargeIconImageList.Images.Add(icon);
-            iconListModified = true;
+            IconListModified = true;
 
             return iconID;
         }
@@ -1008,7 +964,7 @@ namespace LayoutManager.Model {
 
             // Remove from the image list(s)
             LargeIconImageList.Images.RemoveAt(iconIndex);
-            iconListModified = true;
+            IconListModified = true;
         }
 
         /// <summary>
@@ -1022,11 +978,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// return true if the icon list was modified and should be saved
         /// </summary>
-        public bool IconListModified {
-            get => iconListModified;
-
-            set => iconListModified = value;
-        }
+        public bool IconListModified { get; set; }
     }
     #endregion
 

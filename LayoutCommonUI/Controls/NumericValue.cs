@@ -10,12 +10,13 @@ namespace LayoutManager.CommonUI.Controls {
     public class NumericValue : System.Windows.Forms.UserControl {
         private LayoutManager.CommonUI.Controls.LinkMenu linkMenuOperation;
         private TextBox textBoxValue;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
 
-        XmlElement element;
+        private XmlElement element;
 
         public NumericValue() {
             // This call is required by the Windows.Forms Form Designer.
@@ -131,7 +132,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Name = "NumericValue";
             this.Size = new System.Drawing.Size(168, 27);
             this.ResumeLayout(false);
-
         }
         #endregion
     }

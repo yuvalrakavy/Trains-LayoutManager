@@ -8,18 +8,18 @@ using LayoutManager.Model;
 
 #nullable enable
 namespace LayoutManager.Components {
-
     #region Block Edge base classes
 
     public enum LayoutSignalState {
         Red, Yellow, Green
     };
 
-
     /// <summary>
     /// Signal that is linked to block edge
     /// </summary>
     public class LinkedSignalInfo : LayoutInfo {
+        private const string A_SignalId = "SignalID";
+
         internal LinkedSignalInfo(XmlElement element) : base(element) {
         }
 
@@ -28,9 +28,8 @@ namespace LayoutManager.Components {
         }
 
         public Guid SignalId {
-            get => XmlConvert.ToGuid(Element.GetAttribute("SignalID"));
-
-            set => SetAttribute("SignalID", XmlConvert.ToString(value));
+            get => (Guid)Element.AttributeValue(A_SignalId);
+            set => SetAttribute(A_SignalId, value);
         }
     }
 
@@ -38,7 +37,7 @@ namespace LayoutManager.Components {
     /// Collection of all signals that are linked to a block edge
     /// </summary>
     public class LinkedSignalsCollection : XmlIndexedCollection<LinkedSignalInfo, Guid>, ICollection<LinkedSignalInfo> {
-        readonly LayoutBlockEdgeBase blockEdge;
+        private readonly LayoutBlockEdgeBase blockEdge;
 
         public LinkedSignalsCollection(LayoutBlockEdgeBase blockEdge) : base(blockEdge.LinkedSignalsElement) {
             this.blockEdge = blockEdge;
@@ -72,6 +71,8 @@ namespace LayoutManager.Components {
     /// linked with a physical signal component
     /// </summary>
     public abstract class LayoutBlockEdgeBase : ModelComponent, IModelComponentHasId, IModelComponentHasAttributes {
+        private const string A_State = "State";
+
         public override ModelComponentKind Kind => ModelComponentKind.BlockEdge;
 
         public LayoutStraightTrackComponent? OptionalTrack => this.Spot.Track as LayoutStraightTrackComponent;
@@ -94,11 +95,11 @@ namespace LayoutManager.Components {
         public LinkedSignalsCollection LinkedSignals => new LinkedSignalsCollection(this);
 
         public LayoutSignalState SignalState {
-            get => LayoutModel.StateManager.Components.StateOf(this.Id, "Signal").AttributeValue("State").Enum<LayoutSignalState>() ?? LayoutSignalState.Yellow;
+            get => LayoutModel.StateManager.Components.StateOf(this.Id, "Signal").AttributeValue(A_State).Enum<LayoutSignalState>() ?? LayoutSignalState.Yellow;
 
             [LayoutEventDef("logical-signal-state-changed", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutBlockEdgeBase), InfoType = typeof(LayoutSignalState))]
             set {
-                LayoutModel.StateManager.Components.StateOf(this, "Signal", create: true).SetAttribute("State", value.ToString());
+                LayoutModel.StateManager.Components.StateOf(this, "Signal", create: true).SetAttribute(A_State, value);
                 Redraw();
                 EventManager.Event(new LayoutEvent("logical-signal-state-changed", this, value));
             }
@@ -158,7 +159,7 @@ namespace LayoutManager.Components {
     #region LayoutTriggerableBlockEdgeBase
 
     public abstract class LayoutTriggerableBlockEdgeBase : LayoutBlockEdgeBase, IModelComponentHasName, IModelComponentConnectToControl {
-        const string Topic_TriggeredState = "Triggered";
+        private const string Topic_TriggeredState = "Triggered";
 
         public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
 
@@ -177,14 +178,8 @@ namespace LayoutManager.Components {
         public const string A_EmergencyContact = "EmergencyContact";
 
         public bool IsEmergencySensor {
-            get => Element.HasAttribute(A_EmergencyContact) ? XmlConvert.ToBoolean(Element.GetAttribute(A_EmergencyContact)) : false;
-
-            set {
-                if (value == false)
-                    Element.RemoveAttribute(A_EmergencyContact);
-                else
-                    Element.SetAttribute(A_EmergencyContact, XmlConvert.ToString(value));
-            }
+            get => (bool?)Element.AttributeValue(A_EmergencyContact) ?? false;
+            set => Element.SetAttribute(A_EmergencyContact, value, removeIf: false);
         }
 
         public bool IsTriggered {
@@ -202,7 +197,6 @@ namespace LayoutManager.Components {
                 }
             }
         }
-
     }
 
     #endregion
@@ -214,7 +208,7 @@ namespace LayoutManager.Components {
     /// equiped with a track magnet passes over it
     /// </summary>
     public class LayoutTrackContactComponent : LayoutTriggerableBlockEdgeBase {
-        static readonly IList<ModelComponentControlConnectionDescription> controlConnections = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
+        private static readonly IList<ModelComponentControlConnectionDescription> controlConnections = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
             new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.InputDryTrigger, "TrackContact", "track contact feedback") });
 
         public LayoutTrackContactComponent() {
@@ -222,7 +216,6 @@ namespace LayoutManager.Components {
         }
 
         public override string ToString() => IsEmergencySensor ? "emergency track contact" : "track contact";
-
 
         public override bool IsTrackContact() => FullyConnected;
 
@@ -241,7 +234,6 @@ namespace LayoutManager.Components {
         public override string ToString() => "edge of a block";
 
         public override bool DrawOutOfGrid => false;
-
     }
 
     #endregion
@@ -253,7 +245,7 @@ namespace LayoutManager.Components {
     /// equiped with a track magnet passes over it
     /// </summary>
     public class LayoutProximitySensorComponent : LayoutTriggerableBlockEdgeBase {
-        static readonly IList<ModelComponentControlConnectionDescription> controlConnections = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
+        private static readonly IList<ModelComponentControlConnectionDescription> controlConnections = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
             new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription("Level", "ProximitySensor", "proximity sensor feedback") });
 
         public LayoutProximitySensorComponent() {
@@ -277,13 +269,14 @@ namespace LayoutManager.Components {
     /// Resource that is associated with the block
     /// </summary>
     public class ResourceInfo : LayoutXmlWrapper {
+        private const string A_ResourceID = "ResourceID";
+
         public ResourceInfo(XmlElement element) : base(element) {
         }
 
         public Guid ResourceId {
-            get => XmlConvert.ToGuid(GetAttribute("ResourceID"));
-
-            set => SetAttribute("ResourceID", XmlConvert.ToString(value));
+            get => (Guid)AttributeValue(A_ResourceID);
+            set => SetAttribute(A_ResourceID, value);
         }
 
         public IModelComponentLayoutLockResource? GetResource(LayoutPhase phase) => LayoutModel.Component<IModelComponentLayoutLockResource>(ResourceId, phase);
@@ -293,7 +286,7 @@ namespace LayoutManager.Components {
     /// Collection of all resources associated with block
     /// </summary>
     public class ResourceCollection : XmlIndexedCollection<ResourceInfo, Guid>, ICollection<ResourceInfo> {
-        readonly LayoutBlockDefinitionComponentInfo blockDefinition;
+        private readonly LayoutBlockDefinitionComponentInfo blockDefinition;
 
         public ResourceCollection(LayoutBlockDefinitionComponentInfo blockDefinition) : base(blockDefinition.ResourcesElement) {
             this.blockDefinition = blockDefinition;
@@ -346,107 +339,121 @@ namespace LayoutManager.Components {
     #endregion
 
     public class LayoutBlockDefinitionComponentInfo : LayoutInfo {
-        readonly LayoutBlockDefinitionComponent blockDefinition;
+        private const string A_SuggestForPlacement = "SuggestForPlacement";
+        private const string A_SuggestForDestination = "SuggestForDestination";
+        private const string A_SuggestForProgramming = "SuggestForProgramming";
+        private const string A_TrainLengthLimit = "TrainLengthLimit";
+        private const string A_NoFeedback = "NoFeedback";
+        private const string A_SlowDownRegion = "SlowDownRegion";
+        private const string A_IsWaitable = "IsWaitable";
+        private const string A_OccupancyDetectionBlock = "OccupancyDetectionBlock";
+        private const string A_Length = "Length";
+        private const string A_SpeedLimit = "SpeedLimit";
+        private const string A_SlowDownSpeed = "SlowDownSpeed";
+        private const string E_Resources = "Resources";
+        private const string E_Policies = "Policies";
+        private const string A_TrainDetected = "TrainDetected";
+        private const string A_TrainWillBeDetected = "TrainWillBeDetected";
 
         public LayoutBlockDefinitionComponentInfo(LayoutBlockDefinitionComponent blockDefinition, XmlElement element) : base(element) {
-            this.blockDefinition = blockDefinition;
+            this.BlockDefinition = blockDefinition;
         }
 
-        public LayoutBlockDefinitionComponent BlockDefinition => blockDefinition;
+        public LayoutBlockDefinitionComponent BlockDefinition { get; }
 
         public bool SuggestForPlacement {
-            get => (bool?)AttributeValue("SuggestForPlacement") ?? false;
-            set => SetAttribute("SuggestForPlacement", XmlConvert.ToString(value));
+            get => (bool?)AttributeValue(A_SuggestForPlacement) ?? false;
+            set => SetAttribute(A_SuggestForPlacement, value);
         }
 
         public bool SuggestForDestination {
-            get => (bool?)AttributeValue("SuggestForDestination") ?? false;
-            set => SetAttribute("SuggestForDestination", XmlConvert.ToString(value));
+            get => (bool?)AttributeValue(A_SuggestForDestination) ?? false;
+            set => SetAttribute(A_SuggestForDestination, value, removeIf: false);
         }
 
         public bool SuggestForProgramming {
-            get => (bool?)AttributeValue("SuggestForProgramming") ?? false;
-            set => SetAttribute("SuggestForProgramming", value, removeIf: false);
+            get => (bool?)AttributeValue(A_SuggestForProgramming) ?? false;
+            set => SetAttribute(A_SuggestForProgramming, value, removeIf: false);
         }
 
         public TrainLength TrainLengthLimit {
-            get => AttributeValue("TrainLengthLimit").ToTrainLength() ?? TrainLength.VeryLong;
-            set => SetAttribute("TrainLengthLimit", value.ToString(), removeIf: TrainLength.VeryLong.ToString());
+            get => AttributeValue(A_TrainLengthLimit).ToTrainLength() ?? TrainLength.VeryLong;
+            set => SetAttribute(A_TrainLengthLimit, value, removeIf: TrainLength.VeryLong);
         }
 
         public bool NoFeedback {
-            get => (bool?)AttributeValue("NoFeedback") ?? false;
-            set => SetAttribute("NoFeedback", value);
+            get => (bool?)AttributeValue(A_NoFeedback) ?? false;
+            set => SetAttribute(A_NoFeedback, value, removeIf: false);
         }
 
         public bool IsSlowdownRegion {
-            get => (bool?)AttributeValue("SlowDownRegion") ?? false;
-            set => SetAttribute("SlowDownRegion", value, removeIf: false);
+            get => (bool?)AttributeValue(A_SlowDownRegion) ?? false;
+            set => SetAttribute(A_SlowDownRegion, value, removeIf: false);
         }
 
         public bool UseDefaultCanTrainWait {
-            get => !Element.HasAttribute("IsWaitable");
+            get => !Element.HasAttribute(A_IsWaitable);
 
             set {
                 if (value)
-                    Element.RemoveAttribute("IsWaitable");
+                    Element.RemoveAttribute(A_IsWaitable);
                 else
-                    Element.SetAttribute("IsWaitable", XmlConvert.ToString(blockDefinition.Block != null ? blockDefinition.Block.CanTrainWaitDefault : value));
+                    Element.SetAttribute(A_IsWaitable, BlockDefinition.Block != null ? BlockDefinition.Block.CanTrainWaitDefault : value);
             }
         }
 
         public bool CanTrainWait {
-            get => (bool?)AttributeValue("IsWaitable") ?? blockDefinition.Block.CanTrainWaitDefault;
-            set => Element.SetAttribute("IsWaitable", XmlConvert.ToString(value));
+            get => (bool?)AttributeValue(A_IsWaitable) ?? BlockDefinition.Block.CanTrainWaitDefault;
+            set => Element.SetAttribute(A_IsWaitable, value);
         }
 
         public bool IsOccupancyDetectionBlock {
-            get => (bool?)AttributeValue("OccupancyDetectionBlock") ?? false;
-            set => SetAttribute("OccupancyDetectionBlock", XmlConvert.ToString(value));
+            get => (bool?)AttributeValue(A_OccupancyDetectionBlock) ?? false;
+            set => SetAttribute(A_OccupancyDetectionBlock, value);
         }
 
         public LayoutAddressInfo? AddressProvider {
-            get => Element["Address"] != null ? new LayoutAddressInfo(blockDefinition) : null;
+            get => Element["Address"] != null ? new LayoutAddressInfo(BlockDefinition) : null;
         }
 
         public double Length {
-            get => (double?)AttributeValue("Length") ?? 100.0;
-            set => SetAttribute("Length", value);
+            get => (double?)AttributeValue(A_Length) ?? 100.0;
+            set => SetAttribute(A_Length, value);
         }
 
         public int LengthInCM => (int)Length;
 
         public int SpeedLimit {
-            get => (int?)AttributeValue("SpeedLimit") ?? 0;
+            get => (int?)AttributeValue(A_SpeedLimit) ?? 0;
 
             set {
-                SetAttribute("SpeedLimit", value, removeIf: 0);
+                SetAttribute(A_SpeedLimit, value, removeIf: 0);
                 RefreshSpeedLimit();
             }
         }
 
         public int SlowdownSpeed {
-            get => (int?)AttributeValue("SlowDownSpeed") ?? 0;
+            get => (int?)AttributeValue(A_SlowDownSpeed) ?? 0;
 
             set {
-                SetAttribute("SlowDownSpeed", value, removeIf: 0);
+                SetAttribute(A_SlowDownSpeed, value, removeIf: 0);
                 RefreshSpeedLimit();
             }
         }
 
         public void RefreshSpeedLimit() {
-            if (blockDefinition != null && blockDefinition.Block != null) {
-                foreach (TrainLocationInfo trainLocation in blockDefinition.Block.Trains)
+            if (BlockDefinition != null && BlockDefinition.Block != null) {
+                foreach (TrainLocationInfo trainLocation in BlockDefinition.Block.Trains)
                     trainLocation.Train.RefreshSpeedLimit();
             }
         }
 
         public XmlElement ResourcesElement {
             get {
-                XmlElement resourcesElement = Element["Resources"];
+                XmlElement resourcesElement = Element[E_Resources];
 
                 if (resourcesElement == null) {
-                    resourcesElement = Element.OwnerDocument.CreateElement("Resources");
+                    resourcesElement = Element.OwnerDocument.CreateElement(E_Resources);
                     Element.AppendChild(resourcesElement);
                 }
 
@@ -456,10 +463,10 @@ namespace LayoutManager.Components {
 
         public XmlElement PoliciesElement {
             get {
-                XmlElement policiesElement = Element["Policies"];
+                XmlElement policiesElement = Element[E_Policies];
 
                 if (policiesElement == null) {
-                    policiesElement = Element.OwnerDocument.CreateElement("Policies");
+                    policiesElement = Element.OwnerDocument.CreateElement(E_Policies);
                     Element.AppendChild(policiesElement);
                 }
 
@@ -467,19 +474,9 @@ namespace LayoutManager.Components {
             }
         }
 
-        public bool IsTripSectionBoundry(int cpIndex) {
-            string a = "TripSectonBoundry" + cpIndex;
+        public bool IsTripSectionBoundry(int cpIndex) => (bool?)AttributeValue($"TripSectonBoundry{cpIndex}") ?? false;
 
-            if (HasAttribute(a))
-                return XmlConvert.ToBoolean(GetAttribute(a));
-            return false;
-        }
-
-        public void SetTripSectionBoundry(int cpIndex, bool isBoundry) {
-            string a = "TripSectonBoundry" + cpIndex;
-
-            SetAttribute(a, isBoundry, removeIf: false);
-        }
+        public void SetTripSectionBoundry(int cpIndex, bool isBoundry) => SetAttribute($"TripSectonBoundry{cpIndex}", isBoundry, removeIf: false);
 
         /// <summary>
         /// Set the state of the train detected state. Please note that this method just set the attribute
@@ -487,21 +484,21 @@ namespace LayoutManager.Components {
         /// </summary>
         /// <param name="detected">Train detection status</param>
         public void SetTrainDetected(bool detected) {
-            var trainDetectionElement = LayoutModel.StateManager.Components.StateOf(blockDefinition, "TrainDetection", create: true);
+            var trainDetectionElement = LayoutModel.StateManager.Components.StateOf(BlockDefinition, "TrainDetection", create: true);
 
-            trainDetectionElement.SetAttribute("TrainDetected", detected);
+            trainDetectionElement.SetAttribute(A_TrainDetected, detected);
         }
 
         public void SetTrainWillBeDetected(bool detected) {
-            var trainDetectionElement = LayoutModel.StateManager.Components.StateOf(blockDefinition, "TrainDetection", create: true);
+            var trainDetectionElement = LayoutModel.StateManager.Components.StateOf(BlockDefinition, "TrainDetection", create: true);
 
-            trainDetectionElement.SetAttribute("TrainWillBeDetected", detected);
+            trainDetectionElement.SetAttribute(A_TrainWillBeDetected, detected);
         }
 
         public bool TrainWillBeDetected {
             get {
                 if (IsOccupancyDetectionBlock)
-                    return (bool?)LayoutModel.StateManager.Components.StateOf(blockDefinition.Id, "TrainDetection").AttributeValue("TrainWillBeDetected") ?? false;
+                    return (bool?)LayoutModel.StateManager.Components.StateOf(BlockDefinition.Id, "TrainDetection").AttributeValue(A_TrainWillBeDetected) ?? false;
                 else {
                     LayoutBlock block = BlockDefinition.Block;
 
@@ -510,7 +507,7 @@ namespace LayoutManager.Components {
                     else {
                         LayoutBlockDefinitionComponent occupancyBlockInfo = block.OccupancyBlock.BlockDefinintion;
 
-                        Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock == true);
+                        Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock);
                         return occupancyBlockInfo.Info.TrainWillBeDetected;
                     }
                 }
@@ -519,7 +516,7 @@ namespace LayoutManager.Components {
             set {
                 if (IsOccupancyDetectionBlock) {
                     if (value != TrainWillBeDetected) {
-                        var occupancyBlock = blockDefinition.Block.OccupancyBlock;
+                        var occupancyBlock = BlockDefinition.Block.OccupancyBlock;
 
                         if (occupancyBlock != null) {
                             SetTrainWillBeDetected(value);
@@ -534,18 +531,17 @@ namespace LayoutManager.Components {
                     }
                 }
                 else {
-                    var occupancyBlock = blockDefinition.Block.OccupancyBlock;
+                    var occupancyBlock = BlockDefinition.Block.OccupancyBlock;
 
                     if (occupancyBlock != null) {
                         LayoutBlockDefinitionComponent occupancyBlockInfo = occupancyBlock.BlockDefinintion;
 
-                        Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock == true);
+                        Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock);
                         occupancyBlockInfo.Info.TrainWillBeDetected = value;
                     }
                 }
             }
         }
-
 
         /// <summary>
         /// Return true if a train is detected in this block. This is valid only if the block is or part of train occupancy
@@ -554,7 +550,7 @@ namespace LayoutManager.Components {
         public bool TrainDetected {
             get {
                 if (IsOccupancyDetectionBlock)
-                    return (bool?)LayoutModel.StateManager.Components.StateOf(blockDefinition.Id, "TrainDetection").AttributeValue("TrainDetected") ?? false;
+                    return (bool?)LayoutModel.StateManager.Components.StateOf(BlockDefinition.Id, "TrainDetection").AttributeValue(A_TrainDetected) ?? false;
                 else {
                     LayoutBlock block = BlockDefinition.Block;
 
@@ -563,7 +559,7 @@ namespace LayoutManager.Components {
                     else {
                         LayoutBlockDefinitionComponent occupancyBlockInfo = block.OccupancyBlock.BlockDefinintion;
 
-                        Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock == true);
+                        Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock);
                         return occupancyBlockInfo.Info.TrainDetected;
                     }
                 }
@@ -574,11 +570,11 @@ namespace LayoutManager.Components {
             [LayoutEventDef("train-detection-block-will-be-occupied", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutOccupancyBlock))]
             [LayoutEventDef("train-detection-block-will-be-free", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutOccupancyBlock))]
             set {
-                blockDefinition.EraseImage();
+                BlockDefinition.EraseImage();
 
                 if (IsOccupancyDetectionBlock) {
                     if (value != TrainDetected) {
-                        var occupancyBlock = blockDefinition.Block.OccupancyBlock;
+                        var occupancyBlock = BlockDefinition.Block.OccupancyBlock;
 
                         Debug.Assert(occupancyBlock != null);
                         TrainWillBeDetected = value;
@@ -599,12 +595,12 @@ namespace LayoutManager.Components {
                     if (occupancyBlock != null) {
                         LayoutBlockDefinitionComponent occupancyBlockInfo = occupancyBlock.BlockDefinintion;
 
-                        Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock == true);
+                        Debug.Assert(occupancyBlockInfo.Info.IsOccupancyDetectionBlock);
                         occupancyBlockInfo.Info.TrainDetected = value;
                     }
                 }
 
-                blockDefinition.Redraw();
+                BlockDefinition.Redraw();
             }
         }
 
@@ -635,14 +631,14 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutBlockDefinitionComponent : ModelComponent, IObjectHasId, IModelComponentHasName, IObjectHasAttributes, IModelComponentConnectToControl {
-        List<LayoutBlockEdgeBase>[] blockEdges;
+        private List<LayoutBlockEdgeBase>[] blockEdges;
 
-        static readonly IList<ModelComponentControlConnectionDescription> controlConnectionsOfOccupancyBlock = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
+        private static readonly IList<ModelComponentControlConnectionDescription> controlConnectionsOfOccupancyBlock = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
           new ModelComponentControlConnectionDescription[] {
             new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.Level, "FeedbackBlock", "block occupied feedback")
         });
 
-        static readonly IList<ModelComponentControlConnectionDescription> controlConnectionsOfNormalBlock = new List<ModelComponentControlConnectionDescription>().AsReadOnly();
+        private static readonly IList<ModelComponentControlConnectionDescription> controlConnectionsOfNormalBlock = new List<ModelComponentControlConnectionDescription>().AsReadOnly();
 
         public LayoutBlockDefinitionComponent() {
             blockEdges = new List<LayoutBlockEdgeBase>[0];
@@ -653,7 +649,7 @@ namespace LayoutManager.Components {
 
         public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
 
-        public override bool DrawOutOfGrid => NameProvider.Element != null && NameProvider.Visible == true;
+        public override bool DrawOutOfGrid => NameProvider.Element != null && NameProvider.Visible;
 
         public string Name => NameProvider.Name;
 
@@ -758,7 +754,6 @@ namespace LayoutManager.Components {
         }
 
         public override void Redraw() {
-
             if (!LayoutController.IsOperationMode)
                 base.Redraw();
             else {
@@ -807,18 +802,15 @@ namespace LayoutManager.Components {
     };
 
     public class LayoutReverseLogicInfo : LayoutInfo {
+        private const string A_ReverseLogic = "ReverseLogic";
+
         public LayoutReverseLogicInfo(XmlElement element)
             : base(element) {
         }
 
         public bool ReverseLogic {
-            get {
-                if (HasAttribute("ReverseLogic"))
-                    return XmlConvert.ToBoolean(GetAttribute("ReverseLogic"));
-                return false;
-            }
-
-            set => SetAttribute("ReverseLogic", value, removeIf: false);
+            get => (bool?)AttributeValue(A_ReverseLogic) ?? false;
+            set => SetAttribute(A_ReverseLogic, value, removeIf: false);
         }
     }
 
@@ -835,7 +827,6 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutSignalComponent : ModelComponent, IModelComponentHasReverseLogic, IModelComponentConnectToControl {
-
         public LayoutSignalComponent() {
             XmlDocument.LoadXml("<Signal />");
         }
@@ -855,7 +846,6 @@ namespace LayoutManager.Components {
         public LayoutStraightTrackComponent? Track => Spot.Track as LayoutStraightTrackComponent;
 
         public override bool DrawOutOfGrid => true;
-
 
         /// <summary>
         /// Get or set the signal state
@@ -897,7 +887,7 @@ namespace LayoutManager.Components {
                     LayoutSignalType.Distance => "distance signal control",
                     LayoutSignalType.Lights => "signal control",
                     LayoutSignalType.Semaphore => "semaphore",
-                    _ =>throw new NotImplementedException("Invalid signal type")
+                    _ =>throw new ArgumentException("Invalid signal type")
                 };
 
                 return Array.AsReadOnly<ModelComponentControlConnectionDescription>(new ModelComponentControlConnectionDescription[] {
@@ -905,7 +895,6 @@ namespace LayoutManager.Components {
                 });
             }
         }
-
 
         #endregion
     }
@@ -915,23 +904,24 @@ namespace LayoutManager.Components {
     #region Control Module Location component
 
     public class LayoutControlModuleLocationComponentInfo : LayoutInfo {
-        readonly LayoutControlModuleLocationComponent controlModuleLocation;
+        private const string E_Defaults = "Defaults";
+        private const string A_CommandStationId = "CommandStationID";
 
         public LayoutControlModuleLocationComponentInfo(LayoutControlModuleLocationComponent controlModuleLocation, XmlElement element) : base(element) {
-            this.controlModuleLocation = controlModuleLocation;
+            this.ControlModuleLocation = controlModuleLocation;
         }
 
-        public LayoutControlModuleLocationComponent ControlModuleLocation => controlModuleLocation;
+        public LayoutControlModuleLocationComponent ControlModuleLocation { get; }
 
         /// <summary>
         /// Element containing defaults for each bus at this location
         /// </summary>
         public XmlElement DefaultsElement {
             get {
-                XmlElement defaultsElement = Element["Defaults"];
+                XmlElement defaultsElement = Element[E_Defaults];
 
                 if (defaultsElement == null) {
-                    defaultsElement = Element.OwnerDocument.CreateElement("Defaults");
+                    defaultsElement = Element.OwnerDocument.CreateElement(E_Defaults);
                     Element.AppendChild(defaultsElement);
                 }
 
@@ -942,24 +932,12 @@ namespace LayoutManager.Components {
         public ControlModuleLocationBusDefaultSettingCollection Defaults => new ControlModuleLocationBusDefaultSettingCollection(DefaultsElement);
 
         public Guid CommandStationId {
-            get {
-                if (HasAttribute("CommandStationID"))
-                    return XmlConvert.ToGuid(GetAttribute("CommandStationID"));
-                else
-                    return Guid.Empty;
-            }
-
-            set {
-                if (value == Guid.Empty)
-                    Element.RemoveAttribute("CommandStationID");
-                else
-                    SetAttribute("CommandStationID", XmlConvert.ToString(value));
-            }
+            get => (Guid?)AttributeValue(A_CommandStationId) ?? Guid.Empty;
+            set => SetAttribute(A_CommandStationId, value, removeIf: Guid.Empty);
         }
 
         public IModelComponentIsCommandStation? CommandStation {
             get => CommandStationId != Guid.Empty ? LayoutModel.Component<IModelComponentIsCommandStation>(CommandStationId, LayoutModel.ActivePhases) : null;
-
             set => CommandStationId = value != null ? value.Id : Guid.Empty;
         }
     }
@@ -970,14 +948,12 @@ namespace LayoutManager.Components {
 
         protected override XmlElement CreateElement(ControlModuleLocationBusDefaultInfo item) => Element.OwnerDocument.CreateElement("BusDefault");
 
-
         protected override ControlModuleLocationBusDefaultInfo FromElement(XmlElement itemElement) => new ControlModuleLocationBusDefaultInfo(itemElement);
 
         protected override Guid GetItemKey(ControlModuleLocationBusDefaultInfo item) => item.BusId;
 
         public ControlModuleLocationBusDefaultInfo Add(Guid busId, string defaultModuleTypeName, int defaultStartAddress) {
             XmlElement busDefaultElement = Element.OwnerDocument.CreateElement("BusDefault");
-
 
             ControlModuleLocationBusDefaultInfo busDefault = new ControlModuleLocationBusDefaultInfo(busDefaultElement) {
                 BusId = busId,
@@ -994,15 +970,17 @@ namespace LayoutManager.Components {
         public void Remove(ControlBus bus) {
             Remove(bus.Id);
         }
-
     }
     #endregion
-
 
     /// <summary>
     /// Provide defaults for a given bus at a given control module location
     /// </summary>
     public class ControlModuleLocationBusDefaultInfo : LayoutXmlWrapper {
+        private const string A_BusId = "BusID";
+        private const string A_DefaultModuleTypeName = "DefaultModuleTypeName";
+        private const string A_DefaultStartAddress = "DefaultStartAddress";
+
         public ControlModuleLocationBusDefaultInfo(XmlElement element) : base(element) {
         }
 
@@ -1010,9 +988,8 @@ namespace LayoutManager.Components {
         /// The ID of the bus
         /// </summary>
         public Guid BusId {
-            get => XmlConvert.ToGuid(GetAttribute("BusID"));
-
-            set => SetAttribute("BusID", XmlConvert.ToString(value));
+            get => (Guid)AttributeValue(A_BusId);
+            set => SetAttribute(A_BusId, value);
         }
 
         public ControlBus? Bus => LayoutModel.ControlManager.Buses[BusId];
@@ -1021,13 +998,13 @@ namespace LayoutManager.Components {
         /// The component type name of the default component to add this bus when new module is needed to be added to this location
         /// </summary>
         public string DefaultModuleTypeName {
-            get => GetAttribute("DefaultModuleTypeName");
+            get => GetAttribute(A_DefaultModuleTypeName);
 
             set {
                 if (string.IsNullOrEmpty(value))
-                    Element.RemoveAttribute("DefaultModuleTypeName");
+                    Element.RemoveAttribute(A_DefaultModuleTypeName);
                 else
-                    SetAttribute("DefaultModuleTypeName", value);
+                    SetAttribute(A_DefaultModuleTypeName, value);
             }
         }
 
@@ -1037,13 +1014,13 @@ namespace LayoutManager.Components {
         /// Start allocating address from this number when adding components at this location
         /// </summary>
         public int DefaultStartAddress {
-            get => (int?)AttributeValue("DefaultStartAddress") ?? -1;
-            set => SetAttribute("DefaultStartAddress", value, removeIf: -1);
+            get => (int?)AttributeValue(A_DefaultStartAddress) ?? -1;
+            set => SetAttribute(A_DefaultStartAddress, value, removeIf: -1);
         }
     }
 
     public class LayoutControlModuleLocationComponent : ModelComponent, IModelComponentHasId, IModelComponentHasName {
-        LayoutControlModuleLocationComponentInfo? _info;
+        private LayoutControlModuleLocationComponentInfo? _info;
 
         public LayoutControlModuleLocationComponent() {
             XmlDocument.LoadXml("<ControlModuleLocation />");
@@ -1059,9 +1036,7 @@ namespace LayoutManager.Components {
 
         public LayoutControlModuleLocationComponentInfo Info {
             get {
-                if (_info == null)
-                    _info = new LayoutControlModuleLocationComponentInfo(this, Element);
-                return _info;
+                return _info ?? (_info = new LayoutControlModuleLocationComponentInfo(this, Element));
             }
         }
     }

@@ -11,17 +11,16 @@ using LayoutManager.CommonUI;
 
 #endregion
 
-
 namespace LayoutManager.Tools.Dialogs {
-
     #pragma warning disable IDE0051, IDE0060
-    partial class TestLayoutObject : Form {
-        ControlConnectionPointReference connectionPointRef;
-        IModelComponentConnectToControl component;
-        LayoutDelayedEvent toggleEvent = null;
-        Guid frameWindowId;
+    internal partial class TestLayoutObject : Form {
+        private const string A_ReverseLogic = "ReverseLogic";
+        private ControlConnectionPointReference connectionPointRef;
+        private IModelComponentConnectToControl component;
+        private LayoutDelayedEvent toggleEvent = null;
+        private Guid frameWindowId;
 
-        int state = -1;
+        private int state = -1;
 
         public TestLayoutObject(Guid frameWindowId, ControlConnectionPointReference connectionPointRef) {
             InitializeComponent();
@@ -65,7 +64,6 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void Initialize() {
-
             if (component is IModelComponentHasReverseLogic componentWithReverseLogic) {
                 checkBoxReverseLogic.Enabled = true;
                 checkBoxReverseLogic.Checked = componentWithReverseLogic.ReverseLogic;
@@ -108,7 +106,6 @@ namespace LayoutManager.Tools.Dialogs {
                         radioButtonOff.Checked = true;
                     else
                         radioButtonOn.Checked = true;
-
                 }
                 else {
                     radioButtonOff.Checked = false;
@@ -255,7 +252,7 @@ namespace LayoutManager.Tools.Dialogs {
             ModelComponent theComponent = (ModelComponent)component;
             LayoutXmlInfo xmlInfo = new LayoutXmlInfo(theComponent);
 
-            xmlInfo.DocumentElement.SetAttribute("ReverseLogic", XmlConvert.ToString(checkBoxReverseLogic.Checked));
+            xmlInfo.DocumentElement.SetAttribute(A_ReverseLogic, checkBoxReverseLogic.Checked);
 
             LayoutModifyComponentDocumentCommand modifyDocCommand = new LayoutModifyComponentDocumentCommand(theComponent, xmlInfo);
 
@@ -265,7 +262,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonPassed_Click(object sender, EventArgs e) {
-            if (connectionPointRef.IsDefined && connectionPointRef.ConnectionPoint.UserActionRequired == true) {
+            if (connectionPointRef.IsDefined && connectionPointRef.ConnectionPoint.UserActionRequired) {
                 SetControlUserActionRequiredCommand setCommand = new SetControlUserActionRequiredCommand(connectionPointRef.ConnectionPoint, false);
 
                 LayoutController.Do(setCommand);

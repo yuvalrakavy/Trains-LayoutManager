@@ -16,6 +16,7 @@ namespace LayoutManager.Tools.Dialogs {
         private GroupBox groupBox1;
         private GroupBox groupBox2;
         private LayoutManager.CommonUI.Controls.TrainLengthDiagram trainLengthDiagram;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -175,12 +176,10 @@ namespace LayoutManager.Tools.Dialogs {
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
         private void buttonOk_Click(object sender, System.EventArgs e) {
-
             DialogResult = DialogResult.OK;
             this.Close();
         }

@@ -15,8 +15,8 @@ namespace LayoutManager {
     #pragma warning disable IDE0051, IDE0060
 
     public class LayoutEditingTool : LayoutTool {
-        LayoutStraightTrackComponent lastTrack = null;
-        string lastCategoryName = null;
+        private LayoutStraightTrackComponent lastTrack = null;
+        private string lastCategoryName = null;
 
         public LayoutEditingTool() {
             InitializeComponent();
@@ -59,11 +59,10 @@ namespace LayoutManager {
 
         protected override string DropEventName => "do-editing-drop";
 
-
         #endregion
 
         [LayoutEvent("add-component-editing-context-menu-common-entries", Order = 0)]
-        void addContextMenuCommonEntries(LayoutEvent e) {
+        private void addContextMenuCommonEntries(LayoutEvent e) {
             Menu menu = (Menu)e.Info;
             LayoutHitTestResult hitTestResult = (LayoutHitTestResult)e.Sender;
 
@@ -195,7 +194,7 @@ namespace LayoutManager {
 
                 if (component != null) {
                     bool placeComponent;
-                    var placementXml = $"<PlacementInfo AreaID='{XmlConvert.ToString(area.AreaGuid)}' X='{ml.X}' Y='{ml.Y}' />";
+                    var placementXml = $"<PlacementInfo AreaID='{area.AreaGuid.ToString()}' X='{ml.X}' Y='{ml.Y}' />";
 
                     placeComponent = (bool)EventManager.Event(new LayoutEvent("model-component-placement-request", component,
                         true, placementXml));
@@ -295,8 +294,8 @@ namespace LayoutManager {
         }
     }
 
-    class LayoutImageMenuCategory : ImageMenuCategory {
-        readonly XmlElement categoryElement;
+    internal class LayoutImageMenuCategory : ImageMenuCategory {
+        private readonly XmlElement categoryElement;
 
         internal LayoutImageMenuCategory(XmlElement categoryElement) {
             this.categoryElement = categoryElement;
@@ -313,8 +312,8 @@ namespace LayoutManager {
         }
     }
 
-    class LayoutImageMenuItem : ImageMenuItem {
-        readonly XmlElement itemElement;
+    internal class LayoutImageMenuItem : ImageMenuItem {
+        private readonly XmlElement itemElement;
 
         internal LayoutImageMenuItem(XmlElement itemElement) {
             this.itemElement = itemElement;

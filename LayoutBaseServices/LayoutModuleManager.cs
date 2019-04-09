@@ -5,14 +5,15 @@ using System.Reflection;
 using System.IO;
 
 namespace LayoutManager {
-
     /// <summary>
     /// Layout module information
     /// </summary>
     public class LayoutModule : LayoutObject {
-        readonly Type moduleType;             // The type used to create an instance of the module
-        readonly LayoutAssembly layoutAssembly;         // The assembly in which the module is found
-        Object moduleInstance;          // The class instance associated with this module
+        private const string A_UserControl = "UserControl";
+        private const string A_Enabled = "Enabled";
+        private readonly Type moduleType;             // The type used to create an instance of the module
+        private readonly LayoutAssembly layoutAssembly;         // The assembly in which the module is found
+        private Object moduleInstance;          // The class instance associated with this module
 
         /// <summary>
         /// Construct a new layout module
@@ -35,26 +36,17 @@ namespace LayoutManager {
         /// The module name
         /// </summary>
         public string ModuleName {
-            get {
-                return XmlInfo.DocumentElement.GetAttribute("ModuleName");
-            }
+            get => XmlInfo.DocumentElement.GetAttribute("ModuleName");
 
-            set {
-                XmlInfo.DocumentElement.SetAttribute("ModuleName", value);
-            }
+            set => XmlInfo.DocumentElement.SetAttribute("ModuleName", value);
         }
 
         /// <summary>
         /// If true, the user can enable/disable the module
         /// </summary>
         public bool UserControl {
-            get {
-                return XmlConvert.ToBoolean(XmlInfo.DocumentElement.GetAttribute("UserControl"));
-            }
-
-            set {
-                XmlInfo.DocumentElement.SetAttribute("UserControl", XmlConvert.ToString(value));
-            }
+            get => (bool)XmlInfo.DocumentElement.AttributeValue(A_UserControl);
+            set => XmlInfo.DocumentElement.SetAttribute(A_UserControl, value);
         }
 
         /// <summary>
@@ -66,17 +58,12 @@ namespace LayoutManager {
         /// to false
         /// </remarks>
         public bool Enabled {
-            get {
-                if (XmlInfo.DocumentElement.HasAttribute("Enabled"))
-                    return XmlConvert.ToBoolean(XmlInfo.DocumentElement.GetAttribute("Enabled"));
-                else
-                    return true;        // By default the module is enabled
-            }
+            get => (bool?)XmlInfo.DocumentElement.AttributeValue(A_Enabled) ?? true;
 
             set {
                 bool ok = true;
 
-                if (value == true)
+                if (value)
                     EnableModule();
                 else {
                     if (!DisableModule())
@@ -84,7 +71,7 @@ namespace LayoutManager {
                 }
 
                 if (ok)
-                    XmlInfo.DocumentElement.SetAttribute("Enabled", XmlConvert.ToString(value));
+                    XmlInfo.DocumentElement.SetAttribute(A_Enabled, value);
             }
         }
 
@@ -128,7 +115,6 @@ namespace LayoutManager {
 
                 moduleInstance = null;
                 Enabled = false;
-
             }
             return true;
         }
@@ -146,16 +132,12 @@ namespace LayoutManager {
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public sealed class LayoutModuleAttribute : System.Attribute {
-        readonly string moduleName;
-        bool userControl = true;
-        bool enabled = true;
-
         /// <summary>
         /// Annotate class as a layout module providing its name
         /// </summary>
         /// <param name="moduleName"></param>
         public LayoutModuleAttribute(String moduleName) {
-            this.moduleName = moduleName;
+            this.ModuleName = moduleName;
         }
 
         public LayoutModuleAttribute() {
@@ -164,49 +146,32 @@ namespace LayoutManager {
         /// <summary>
         /// The module name (as shown to the user)
         /// </summary>
-        public string ModuleName => moduleName;
+        public string ModuleName { get; }
 
         /// <summary>
         /// If true, the user can enable/disable the module via the UI
         /// </summary>
-        public bool UserControl {
-            set {
-                userControl = value;
-            }
-
-            get {
-                return userControl;
-            }
-        }
+        public bool UserControl { set; get; } = true;
 
         /// <summary>
         /// The state of the module. If True, the module is initially enabled
         /// </summary>
-        public bool Enabled {
-            set {
-                enabled = value;
-            }
-
-            get {
-                return enabled;
-            }
-        }
+        public bool Enabled { set; get; } = true;
     }
 
     /// <summary>
     /// Represent an assembly that contains layout modules
     /// </summary>
     public class LayoutAssembly : LayoutObject, IDisposable {
-        Assembly assembly;
-        readonly List<LayoutModule> layoutModules = new List<LayoutModule>();
+        private const string A_Save = "Save";
+        private Assembly assembly;
+        private readonly List<LayoutModule> layoutModules = new List<LayoutModule>();
 
         public enum AssemblyOrigin {
             BuiltIn, InModulesDirectory, UserLoaded
         };
 
-        AssemblyOrigin _origin;
-
-        static string _modulesDirectory;
+        private static string _modulesDirectory;
 
         /// <summary>
         /// Define a new assembly
@@ -315,13 +280,9 @@ namespace LayoutManager {
         /// Get the file name containing the assembly
         /// </summary>
         public string AssemblyFilename {
-            get {
-                return ValueToFilePath(Element.GetAttribute("AssemblyFilename"), ModulesDirectory);
-            }
+            get => ValueToFilePath(Element.GetAttribute("AssemblyFilename"), ModulesDirectory);
 
-            set {
-                Element.SetAttribute("AssemblyFilename", FilePathToValue(value, ModulesDirectory));
-            }
+            set => Element.SetAttribute("AssemblyFilename", FilePathToValue(value, ModulesDirectory));
         }
 
         /// <summary>
@@ -329,30 +290,14 @@ namespace LayoutManager {
         /// </summary>
         public Assembly Assembly => assembly;
 
-        public AssemblyOrigin Origin {
-            get {
-                return _origin;
-            }
-
-            set {
-                _origin = value;
-            }
-        }
+        public AssemblyOrigin Origin { get; set; }
 
         /// <summary>
         /// If true, this a reference to this assembly will be saved, so it will be scanned next time
         /// </summary>
         public bool SaveAssemblyReference {
-            get {
-                if (XmlInfo.DocumentElement.HasAttribute("Save"))
-                    return XmlConvert.ToBoolean(XmlInfo.DocumentElement.GetAttribute("Save"));
-                else
-                    return false;
-            }
-
-            set {
-                XmlInfo.DocumentElement.SetAttribute("Save", XmlConvert.ToString(value));
-            }
+            get => (bool?)XmlInfo.DocumentElement.AttributeValue(A_Save) ?? false;
+            set => XmlInfo.DocumentElement.SetAttribute(A_Save, value);
         }
 
         /// <summary>
@@ -406,7 +351,6 @@ namespace LayoutManager {
     /// A collection of all assemblies which are currently active
     /// </summary>
     public class LayoutAssemblyCollection : List<LayoutAssembly> {
-
         /// <summary>
         /// Construct the collection
         /// </summary>
@@ -514,34 +458,23 @@ namespace LayoutManager {
     /// Manage assemblies with Layout modules
     /// </summary>
     public class LayoutModuleManager {
-        readonly LayoutAssemblyCollection layoutAssemblies;
-        string documentFilename;
-
         /// <summary>
         /// Construct a layout module manager
         /// </summary>
         /// 
         public LayoutModuleManager() {
-            layoutAssemblies = new LayoutAssemblyCollection();
+            LayoutAssemblies = new LayoutAssemblyCollection();
         }
 
         /// <summary>
         /// The file name of the document used to save the state of the module manager.
         /// </summary>
-        public string DocumentFilename {
-            get {
-                return documentFilename;
-            }
-
-            set {
-                documentFilename = value;
-            }
-        }
+        public string DocumentFilename { get; set; }
 
         /// <summary>
         /// A collection of all the referenced layout assemblies
         /// </summary>
-        public LayoutAssemblyCollection LayoutAssemblies => layoutAssemblies;
+        public LayoutAssemblyCollection LayoutAssemblies { get; }
 
         /// <summary>
         /// Store the layout module manager state on a XML document
@@ -549,7 +482,7 @@ namespace LayoutManager {
         /// <param name="w">XML document writer</param>
         public void WriteXml(XmlWriter w) {
             w.WriteStartElement("LayoutModuleManager");
-            layoutAssemblies.WriteXml(w);
+            LayoutAssemblies.WriteXml(w);
             w.WriteEndElement();
         }
 
@@ -564,7 +497,7 @@ namespace LayoutManager {
             while (r.NodeType == XmlNodeType.Element) {
                 if (r.Name == "LayoutAssemblies") {
                     if (!r.IsEmptyElement)
-                        layoutAssemblies.ReadXml(r);
+                        LayoutAssemblies.ReadXml(r);
                     else
                         break;
                 }
@@ -577,18 +510,18 @@ namespace LayoutManager {
         /// Save the module manager state (the old version is kept as backup)
         /// </summary>
         public void SaveState() {
-            if (documentFilename == null)
+            if (DocumentFilename == null)
                 throw new ArgumentException("No document name was set");
 
-            string backupFilename = documentFilename + ".backup";
-            FileInfo fileInfo = new FileInfo(documentFilename);
+            string backupFilename = DocumentFilename + ".backup";
+            FileInfo fileInfo = new FileInfo(DocumentFilename);
 
             new FileInfo(backupFilename).Delete();
 
             if (fileInfo.Exists)
                 fileInfo.MoveTo(backupFilename);
 
-            using (FileStream fileOut = new FileStream(documentFilename, FileMode.Create, FileAccess.Write)) {
+            using (FileStream fileOut = new FileStream(DocumentFilename, FileMode.Create, FileAccess.Write)) {
                 XmlTextWriter w = new XmlTextWriter(fileOut, System.Text.Encoding.UTF8);
                 w.WriteStartDocument();
                 WriteXml(w);
@@ -602,7 +535,7 @@ namespace LayoutManager {
         /// </summary>
         public void LoadState() {
             try {
-                using (FileStream fileIn = new FileStream(documentFilename, FileMode.Open, FileAccess.Read)) {
+                using (FileStream fileIn = new FileStream(DocumentFilename, FileMode.Open, FileAccess.Read)) {
                     XmlTextReader r = new XmlTextReader(fileIn) {
                         WhitespaceHandling = WhitespaceHandling.None
                     };
@@ -613,7 +546,7 @@ namespace LayoutManager {
                 }
             }
             catch (DirectoryNotFoundException) {
-                Directory.CreateDirectory(Path.GetDirectoryName(documentFilename));
+                Directory.CreateDirectory(Path.GetDirectoryName(DocumentFilename));
             }
             catch (FileNotFoundException) {
             }
@@ -647,7 +580,5 @@ namespace LayoutManager {
         public static void Message(String messageText) {
             Message(null, messageText);
         }
-
     }
-
 }

@@ -11,6 +11,7 @@ namespace LayoutManager.Dialogs {
         private Button buttonOK;
         private Button buttonCancel;
         private TextBox textBoxViewName;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -113,7 +114,6 @@ namespace LayoutManager.Dialogs {
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "New view name";
             this.ResumeLayout(false);
-
         }
         #endregion
 

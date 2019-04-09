@@ -23,7 +23,7 @@ namespace LayoutManager.Dialogs {
         // 3 - Enabled module
         private ImageList imageListTree;
 
-        bool needToSaveState = false;
+        private bool needToSaveState = false;
 
         public ModuleManagement() {
             //
@@ -37,7 +37,7 @@ namespace LayoutManager.Dialogs {
             updateButtons();
         }
 
-        void updateButtons() {
+        private void updateButtons() {
             TreeNode selected = treeViewAssemblies.SelectedNode;
 
             if (selected != null) {
@@ -185,7 +185,6 @@ namespace LayoutManager.Dialogs {
             this.Text = "Module Management";
             this.Closed += new System.EventHandler(this.ModuleManagement_Closed);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -244,11 +243,9 @@ namespace LayoutManager.Dialogs {
         }
     }
 
-    class AssemblyNode : TreeNode {
-        readonly LayoutAssembly layoutAssembly;
-
+    internal class AssemblyNode : TreeNode {
         internal AssemblyNode(LayoutAssembly layoutAssembly) {
-            this.layoutAssembly = layoutAssembly;
+            this.LayoutAssembly = layoutAssembly;
 
             setName();
 
@@ -256,20 +253,20 @@ namespace LayoutManager.Dialogs {
                 Nodes.Add(new ModuleNode(module));
         }
 
-        void setName() {
-            this.Text = Path.GetFileName(layoutAssembly.AssemblyFilename);
+        private void setName() {
+            this.Text = Path.GetFileName(LayoutAssembly.AssemblyFilename);
 
-            if (layoutAssembly.Origin == LayoutAssembly.AssemblyOrigin.BuiltIn) {
+            if (LayoutAssembly.Origin == LayoutAssembly.AssemblyOrigin.BuiltIn) {
                 this.Text += " (Builtin)";
                 this.ImageIndex = 0;
                 this.SelectedImageIndex = 0;
             }
-            else if (layoutAssembly.Origin == LayoutAssembly.AssemblyOrigin.InModulesDirectory) {
+            else if (LayoutAssembly.Origin == LayoutAssembly.AssemblyOrigin.InModulesDirectory) {
                 this.Text += " (Modules directory)";
                 this.ImageIndex = 0;
                 this.SelectedImageIndex = 0;
             }
-            else if (!layoutAssembly.SaveAssemblyReference) {
+            else if (!LayoutAssembly.SaveAssemblyReference) {
                 this.Text += " (Temporary)";
                 this.ImageIndex = 1;
                 this.SelectedImageIndex = 1;
@@ -280,27 +277,25 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        internal LayoutAssembly LayoutAssembly => layoutAssembly;
+        internal LayoutAssembly LayoutAssembly { get; }
 
         internal void ToggleSaveState() {
-            layoutAssembly.SaveAssemblyReference = !layoutAssembly.SaveAssemblyReference;
+            LayoutAssembly.SaveAssemblyReference = !LayoutAssembly.SaveAssemblyReference;
             setName();
         }
     }
 
-    class ModuleNode : TreeNode {
-        readonly LayoutModule module;
-
+    internal class ModuleNode : TreeNode {
         internal ModuleNode(LayoutModule module) {
-            this.module = module;
+            this.Module = module;
 
             setName();
         }
 
         private void setName() {
-            this.Text = module.ModuleName;
+            this.Text = Module.ModuleName;
 
-            if (!module.Enabled) {
+            if (!Module.Enabled) {
                 Text += " (Disabled)";
                 this.ImageIndex = 3;
                 this.SelectedImageIndex = 3;
@@ -311,10 +306,10 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        internal LayoutModule Module => module;
+        internal LayoutModule Module { get; }
 
         internal void ToggleEnableState() {
-            module.Enabled = !module.Enabled;
+            Module.Enabled = !Module.Enabled;
             setName();
         }
     }

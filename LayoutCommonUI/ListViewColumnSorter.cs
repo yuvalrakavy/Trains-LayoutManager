@@ -3,18 +3,17 @@ using System.Collections;
 using System.Windows.Forms;
 
 namespace LayoutManager.CommonUI {
-
     /// <summary>
     /// Use this to add functionallity of sorting columns by clicking on their headers
     /// To use simply declare: sorter = ListViewStringColumnSorter(theListToSort);
     /// </summary>
     public class ListViewStringColumnsSorter : IComparer {
-        enum SortOrder { Ascending, Decending };
+        private enum SortOrder { Ascending, Decending };
 
-        readonly ListView listView;
-        readonly SortOrder[] orders;
-        SortOrder sortOrder = SortOrder.Ascending;
-        int sortedColumn = 0;
+        private readonly ListView listView;
+        private readonly SortOrder[] orders;
+        private SortOrder sortOrder = SortOrder.Ascending;
+        private int sortedColumn = 0;
 
         public ListViewStringColumnsSorter(ListView listView) {
             this.listView = listView;

@@ -17,6 +17,7 @@ namespace LayoutManager.CommonUI.Controls {
         private LayoutManager.CommonUI.Controls.LayoutPositionInfoPreview layoutPositionInfoPreview1;
         private Label label1;
         private NumericUpDown numericUpDownWidth;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -176,7 +177,6 @@ namespace LayoutManager.CommonUI.Controls {
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDistance)).EndInit();
             this.ResumeLayout(false);
-
         }
         #endregion
 

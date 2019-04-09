@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using LayoutManager.Components;
 
 namespace LayoutManager.Model {
-
     public class LocomotiveMovedEventArgs : EventArgs {
         public Guid CommandStationId { get; }
         public int Unit { get; }

@@ -15,9 +15,8 @@ namespace LayoutManager.Logic {
     /// </summary>
     [LayoutModule("Layout Validator", UserControl = false)]
     public class LayoutValidator : LayoutModuleBase {
-
         [LayoutEvent("check-layout", Order = 0)]
-        void ValidateLayout(LayoutEvent e) {
+        private void ValidateLayout(LayoutEvent e) {
             bool stopProcessing = false;
             LayoutPhase phase = e.GetPhases();
 
@@ -57,7 +56,6 @@ namespace LayoutManager.Logic {
                     LayoutTrackComponent track = spot.Track;
 
                     if (track != null) {
-
                         if (track is LayoutStraightTrackComponent straightTrack)
                             straightTrack.SetTrackAnnotation();
                     }
@@ -200,7 +198,6 @@ namespace LayoutManager.Logic {
 
                 foreach (LinkedSignalInfo linkedSignal in blockEdge.LinkedSignals) {
                     if (LayoutModel.Component<ModelComponent>(linkedSignal.SignalId, phase) == null) {
-
                         // If the signal cannot be found at all on the layout (not just on the given phase), remove the link
                         if (LayoutModel.Component<ModelComponent>(linkedSignal.SignalId, LayoutPhase.All) == null) {
                             Warning(blockEdge, $"A signal that was linked to this {blockEdge.ToString()} cannot be found in the layout");

@@ -6,29 +6,16 @@ using Microsoft.Win32.SafeHandles;
 
 #pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Components {
-
     [LayoutModule("Layout I/O Services")]
     public class LayoutIOServices : LayoutModuleBase {
-
-        #region Attribute accessing shortcuts
-
-        bool GetBool(XmlElement element, string name, bool defaultValue) {
-            if (element.HasAttribute(name))
-                return XmlConvert.ToBoolean(element.GetAttribute(name));
-            return defaultValue;
-        }
-
-        bool GetBool(XmlElement element, string name) => GetBool(element, name, false);
-
-        uint GetNumber(XmlElement element, string name, uint defaultValue) {
-            if (element.HasAttribute(name))
-                return XmlConvert.ToUInt32(element.GetAttribute(name));
-            return defaultValue;
-        }
-
-        uint GetNumber(XmlElement element, string name) => GetNumber(element, name, 0);
-
-        #endregion
+        public const string A_Port = "Port";
+        public const string A_OverlappedIO = "OverlappedIO";
+        public const string A_BufferSize = "BufferSize";
+        public const string E_ModeString = "ModeString";
+        public const string A_ReadIntervalTimeout = "ReadIntervalTimeout";
+        public const string A_ReadTotalTimeoutConstant = "ReadTotalTimeoutConstant";
+        public const string A_ReadTotalTimeoutMultiplier = "ReadTotalTimeoutMultiplier";
+        public const string A_WriteTotalTimeoutMultiplier = "WriteTotalTimeoutMultiplier";
 
         /// <summary>
         /// Request opening of a serial communication device. The sender is an XML element providing details and setup information
@@ -48,8 +35,8 @@ namespace LayoutManager.Components {
         [LayoutEvent("open-serial-communication-device-request")]
         private void openSerialCommunicationDeviceRequest(LayoutEvent e) {
             XmlElement setupElement = (XmlElement)e.Sender;
-            string port = setupElement.GetAttribute("Port");
-            bool overlappedIO = GetBool(setupElement, "OverlappedIO");
+            string port = setupElement.GetAttribute(A_Port);
+            bool overlappedIO = (bool?)setupElement.AttributeValue(A_OverlappedIO) ?? false;
             Win32createFileFlags createFlags = 0;
             FileStream commStream;
             int error;
@@ -68,13 +55,11 @@ namespace LayoutManager.Components {
             if (commHandle.ToInt32() == -1)
                 throw new IOException("Could not open " + port + " (error " + String.Format("{0:x}", error) + ")");
 
-            int bufferSize = 4;
-            if (setupElement.HasAttribute("BufferSize"))
-                bufferSize = XmlConvert.ToInt32(setupElement.GetAttribute("BufferSize"));
+            int bufferSize = (int?)setupElement.AttributeValue(A_BufferSize) ?? 4;
 
             commStream = new FileStream(new SafeFileHandle(commHandle, true), FileAccess.ReadWrite, bufferSize, overlappedIO);
 
-            string modeString = setupElement["ModeString"].InnerText;
+            string modeString = setupElement[E_ModeString].InnerText;
             DCB dcb = new DCB();
 
             // Fix mode string (remove CR/LF etc.)
@@ -89,10 +74,10 @@ namespace LayoutManager.Components {
                 throw new IOException("Failed to set communication port " + port + " parameters");
 
             CommunicationTimeouts commTimeouts = new CommunicationTimeouts {
-                ReadIntervalTimeout = GetNumber(setupElement, "ReadInternalTimeout"),
-                ReadTotalTimeoutConstant = GetNumber(setupElement, "ReadTotalTimeoutConstant"),
-                ReadTotalTimeoutMultiplier = GetNumber(setupElement, "ReadTotalTimeoutMultiplier"),
-                WriteTotalTimeoutConstant = GetNumber(setupElement, "WriteTotalTimeoutMultiplier")
+                ReadIntervalTimeout = (uint?)setupElement.AttributeValue(A_ReadIntervalTimeout) ?? 0,
+                ReadTotalTimeoutConstant = (uint?)setupElement.AttributeValue(A_ReadTotalTimeoutConstant) ?? 0,
+                ReadTotalTimeoutMultiplier = (uint?)setupElement.AttributeValue(A_ReadTotalTimeoutMultiplier) ?? 0,
+                WriteTotalTimeoutConstant = (uint?)setupElement.AttributeValue(A_WriteTotalTimeoutMultiplier) ?? 0
             };
 
             if (!NativeMethods.SetCommTimeouts(commStream.SafeFileHandle.DangerousGetHandle(), commTimeouts)) {

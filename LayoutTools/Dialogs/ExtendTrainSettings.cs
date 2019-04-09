@@ -17,11 +17,12 @@ namespace LayoutManager.Tools.Dialogs {
         private Panel panel2;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly TrainStateInfo train;
+        private readonly TrainStateInfo train;
 
         public ExtendTrainSettings(TrainStateInfo train) {
             //
@@ -192,7 +193,6 @@ namespace LayoutManager.Tools.Dialogs {
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFrom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTo)).EndInit();
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -202,13 +202,10 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void numericUpDownTo_ValueChanged(object sender, System.EventArgs e) {
             numericUpDownFrom.Value = train.TrackContactTriggerCount - numericUpDownTo.Value;
-
         }
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
             DialogResult = DialogResult.OK;
         }
-
-
     }
 }

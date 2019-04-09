@@ -5,7 +5,6 @@ namespace Gui.Wizard {
     /// 
     /// </summary>
     public class HeaderDesigner : ParentControlDesigner {
-
         /// <summary>
         /// Prevents the grid from being drawn on the Wizard
         /// </summary>
@@ -17,11 +16,10 @@ namespace Gui.Wizard {
         /// <param name="properties">properties to remove BackGroundImage from</param>
         protected override void PreFilterProperties(System.Collections.IDictionary properties) {
             base.PreFilterProperties(properties);
-            if (properties.Contains("BackgroundImage") == true)
+            if (properties.Contains("BackgroundImage"))
                 properties.Remove("BackgroundImage");
-            if (properties.Contains("DrawGrid") == true)
+            if (properties.Contains("DrawGrid"))
                 properties.Remove("DrawGrid");
         }
-
     }
 }

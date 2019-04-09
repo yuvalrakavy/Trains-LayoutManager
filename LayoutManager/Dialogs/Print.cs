@@ -15,9 +15,9 @@ namespace LayoutManager {
 }
 
 namespace LayoutManager.Dialogs {
-    partial class Print : Form {
-        readonly PrintDocument printDoc;
-        readonly Dictionary<string, IntPtr> devModes = new Dictionary<string, IntPtr>();
+    internal partial class Print : Form {
+        private readonly PrintDocument printDoc;
+        private readonly Dictionary<string, IntPtr> devModes = new Dictionary<string, IntPtr>();
 
         public Print(PrintDocument printDoc) {
             InitializeComponent();

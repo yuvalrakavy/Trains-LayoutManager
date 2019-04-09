@@ -14,15 +14,15 @@ namespace DiMAX.Dialogs {
         private Label label1;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly DiMAXcommandStation component;
+        private readonly DiMAXcommandStation component;
         private LayoutManager.CommonUI.Controls.LayoutEmulationSetup layoutEmulationSetup;
         private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
         private Button buttonCOMsettings;
-        readonly LayoutXmlInfo xmlInfo;
 
         public DiMAXcommandlStationProperties(DiMAXcommandStation component) {
             //
@@ -31,20 +31,20 @@ namespace DiMAX.Dialogs {
             InitializeComponent();
 
             this.component = component;
-            this.xmlInfo = new LayoutXmlInfo(component);
+            this.XmlInfo = new LayoutXmlInfo(component);
 
-            nameDefinition.XmlInfo = this.xmlInfo;
+            nameDefinition.XmlInfo = this.XmlInfo;
 
             if (component.LayoutEmulationSupported)
-                layoutEmulationSetup.Element = xmlInfo.DocumentElement;
+                layoutEmulationSetup.Element = XmlInfo.DocumentElement;
             else
                 layoutEmulationSetup.Visible = false;
 
             this.comboBoxPort.SelectedIndex = -1;
-            this.comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute("Port");
+            this.comboBoxPort.Text = XmlInfo.DocumentElement.GetAttribute("Port");
         }
 
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         /// <summary>
         /// Clean up any resources being used.
@@ -160,13 +160,12 @@ namespace DiMAX.Dialogs {
             this.Name = "DiMAXcommandlStationProperties";
             this.Text = "Massoth DiMAX Command Station Properties";
             this.ResumeLayout(false);
-
         }
         #endregion
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
             if (nameDefinition.Commit()) {
-                LayoutTextInfo myName = new LayoutTextInfo(xmlInfo.DocumentElement, "Name");
+                LayoutTextInfo myName = new LayoutTextInfo(XmlInfo.DocumentElement, "Name");
 
                 foreach (IModelComponentIsCommandStation otherCommandStation in LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All)) {
                     if (otherCommandStation.NameProvider.Name == myName.Name && otherCommandStation.Id != component.Id) {
@@ -184,7 +183,7 @@ namespace DiMAX.Dialogs {
 
             // Commit
 
-            xmlInfo.DocumentElement.SetAttribute("Port", comboBoxPort.Text);
+            XmlInfo.DocumentElement.SetAttribute("Port", comboBoxPort.Text);
 
             if (component.LayoutEmulationSupported)
                 layoutEmulationSetup.Commit();
@@ -193,13 +192,12 @@ namespace DiMAX.Dialogs {
         }
 
         private void buttonCOMsettings_Click(object sender, EventArgs e) {
-            string modeString = xmlInfo.DocumentElement["ModeString"].InnerText;
+            string modeString = XmlInfo.DocumentElement["ModeString"].InnerText;
 
             LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
 
             if (d.ShowDialog(this) == DialogResult.OK)
-                xmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
-
+                XmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
         }
     }
 }

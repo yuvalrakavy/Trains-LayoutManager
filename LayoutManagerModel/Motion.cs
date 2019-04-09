@@ -4,7 +4,6 @@ using System.Xml;
 
 #nullable enable
 namespace LayoutManager.Model {
-
     public enum MotionRampType {
         /// <summary>
         /// The speed change will take this amount of time
@@ -61,7 +60,7 @@ namespace LayoutManager.Model {
 
         public MotionRampType RampType {
             get => AttributeValue(A_RampType).Enum<MotionRampType>() ?? MotionRampType.RateFixed;
-            set => SetAttribute(A_RampType, value.ToString());
+            set => SetAttribute(A_RampType, value);
         }
 
         /// <summary>
@@ -71,7 +70,6 @@ namespace LayoutManager.Model {
             get => (int?)AttributeValue(A_MotionTime) ?? 0;
             set => SetAttribute(A_MotionTime, value);
         }
-
 
         public int SpeedChangeRate {
             get => (int?)AttributeValue(A_SpeedChangeRate) ?? 0;
@@ -102,7 +100,6 @@ namespace LayoutManager.Model {
         }
 
         protected void Initialize(XmlNode parent, MotionRampType rampType, int parameter) {
-
             if (!(parent is XmlDocument doc))
                 doc = parent.OwnerDocument;
 
@@ -131,19 +128,15 @@ namespace LayoutManager.Model {
         protected override MotionRampInfo FromElement(XmlElement itemElement) => new MotionRampInfo(itemElement);
     }
 
-
     public class TrainSpeedChangeParameters {
-        readonly int requestedSpeed;
-        readonly MotionRampInfo ramp;
-
         public TrainSpeedChangeParameters(int requestedSpeed, MotionRampInfo ramp) {
-            this.requestedSpeed = requestedSpeed;
-            this.ramp = ramp;
+            this.RequestedSpeed = requestedSpeed;
+            this.Ramp = ramp;
         }
 
-        public int RequestedSpeed => requestedSpeed;
+        public int RequestedSpeed { get; }
 
-        public MotionRampInfo Ramp => ramp;
+        public MotionRampInfo Ramp { get; }
     }
 
     /// <summary>

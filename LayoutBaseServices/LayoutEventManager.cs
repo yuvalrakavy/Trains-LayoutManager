@@ -14,17 +14,13 @@ using System.Threading;
 
 #nullable enable
 namespace LayoutManager {
-
     /// <summary>
     /// A Layout Manager event
     /// </summary>
     public class LayoutEvent : LayoutObject {
-        object? sender;
         private string eventName;       // Cache the event name
-        bool continueProcessing = true;
-        object? info;           // Additional information for this event
-        string? ifTarget;
-        Type? targetType;
+        private string? ifTarget;
+        private Type? targetType;
 
         /// <summary>
         /// Constructs a new event with optional XML document and additional information, with constraint of the type
@@ -44,9 +40,9 @@ namespace LayoutManager {
             this.eventName = eventName;
             DocumentElement.SetAttribute("EventName", eventName);
 
-            this.sender = sender;
+            this.Sender = sender;
             this.ifTarget = ifTarget;
-            this.info = info;
+            this.Info = info;
 
             if (xmlDocument != null)
                 DocumentElement.InnerXml = xmlDocument;
@@ -67,52 +63,22 @@ namespace LayoutManager {
         /// <summary>
         /// The entity sending the event
         /// </summary>
-        public object? Sender {
-            get {
-                return sender;
-            }
-
-            set {
-                this.sender = value;
-            }
-        }
+        public object? Sender { get; set; }
 
         /// <summary>
         /// Optional additional information
         /// </summary>
-        public object? Info {
-            get {
-                return info;
-            }
-
-            set {
-                this.info = value;
-            }
-        }
+        public object? Info { get; set; }
 
         /// <summary>
         /// The event name
         /// </summary>
-        public string EventName {
-            get {
-                if (eventName == null)
-                    eventName = DocumentElement.GetAttribute("EventName");
-                return eventName;
-            }
-        }
+        public string EventName => eventName ?? (eventName = DocumentElement.GetAttribute("EventName"));
 
         /// <summary>
         /// Determine if more subscriptions should be checked for applicability to this event
         /// </summary>
-        public bool ContinueProcessing {
-            get {
-                return continueProcessing;
-            }
-
-            set {
-                continueProcessing = value;
-            }
-        }
+        public bool ContinueProcessing { get; set; } = true;
 
         /// <summary>
         /// Limit the objects that will receive the event based on their XML document
@@ -212,25 +178,6 @@ namespace LayoutManager {
             return e;
         }
 
-#if NOTNEEDED
-        public static bool GetBoolOption<TEvent>(this TEvent e, string elementName, string optionName, bool defaultValue) where TEvent: LayoutEvent => 
-            XmlConvert.ToBoolean(e.GetOption(optionName, elementName, XmlConvert.ToString(defaultValue)));
-
-        public static bool GetBoolOption<TEvent>(this TEvent e, string elementName, string optionName) where TEvent : LayoutEvent => e.GetBoolOption(elementName, optionName, false);
-
-        public static bool GetBoolOption<TEvent>(this TEvent e, string optionName) where TEvent: LayoutEvent => e.GetBoolOption("Options", optionName);
-
-        public static bool GetBoolOption<TEvent>(this TEvent e, string optionName, bool defaultValue) where TEvent : LayoutEvent => e.GetBoolOption("Options", optionName, defaultValue);
-
-        public static int GetIntOption<TEvent>(this TEvent e, string elementName, string optionName, int defaultValue) where TEvent: LayoutEvent => XmlConvert.ToInt32(e.GetOption(optionName, elementName, XmlConvert.ToString(defaultValue)));
-
-        public static int GetIntOption<TEvent>(this TEvent e, string elementName, string optionName) where TEvent : LayoutEvent => e.GetIntOption(elementName, optionName, -1);
-
-        public static int GetIntOption<TEvent>(this TEvent e, string optionName, int defaultValue) where TEvent : LayoutEvent => e.GetIntOption("Options", optionName, defaultValue);
-
-        public static int GetIntOption<TEvent>(this TEvent e, string optionName) where TEvent : LayoutEvent => e.GetIntOption("Options", optionName);
-#endif
-
         public static TEvent SetOption<TEvent>(this TEvent e, string elementName, string optionName, string value) where TEvent : LayoutEvent {
             XmlElement optionElement = e.Element[elementName];
 
@@ -292,8 +239,8 @@ namespace LayoutManager {
     public class LayoutEventInfoValueType<TSender, TInfo> : LayoutEvent where TSender : class where TInfo : struct {
         public LayoutEventInfoValueType(string eventName, TSender? sender, TInfo info, string? xmlDocument = null, Type? targetType = null, string? ifTarget = null) :
             base(eventName, sender, info, xmlDocument, targetType, ifTarget) {
-
         }
+
         public new TSender? Sender {
             get {
                 return base.Sender as TSender;
@@ -383,15 +330,16 @@ namespace LayoutManager {
     /// Base for subscription to receive a layout event.
     /// </summary>
     public abstract class LayoutEventSubscriptionBase : LayoutObject {
-        LayoutEventRole role = LayoutEventRole.Unspecified;
-        Type? senderType;
-        Type? eventType;
-        Type? infoType;
-        readonly string eventName;
-        string? ifSender;
-        string? ifEvent;
-        string? ifInfo;
-        int order;
+        private const string A_Order = "Order";
+        private const string A_Role = "Role";
+        private LayoutEventRole role = LayoutEventRole.Unspecified;
+        private Type? senderType;
+        private Type? eventType;
+        private Type? infoType;
+        private string? ifSender;
+        private string? ifEvent;
+        private string? ifInfo;
+        private int order;
 
 #if NOTDEF
         /// <summary>
@@ -405,9 +353,9 @@ namespace LayoutManager {
         /// Constuct a new event subscription, for a given event
         /// </summary>
         /// <param name="setupString">The setup string (see Parse)</param>
-        public LayoutEventSubscriptionBase(string eventName) {
+        protected LayoutEventSubscriptionBase(string eventName) {
             XmlDocument.LoadXml("<LayoutSubscription />");
-            this.eventName = eventName;
+            this.EventName = eventName;
             DocumentElement.SetAttribute("EventName", eventName);
         }
 
@@ -415,7 +363,7 @@ namespace LayoutManager {
         /// Construct a subscription using information extract from LayoutEvent attribute
         /// </summary>
         /// <param name="ea">The LayoutEvent attribute</param>
-        public LayoutEventSubscriptionBase(LayoutEventAttributeBase ea) : this(ea.EventName) {
+        protected LayoutEventSubscriptionBase(LayoutEventAttributeBase ea) : this(ea.EventName) {
             SetFromLayoutEventAttribute(ea);
         }
 
@@ -460,7 +408,7 @@ namespace LayoutManager {
             int pos = 0;
 
             for (int nextPos; (nextPos = xpath.IndexOf('`', pos)) >= 0; pos = nextPos) {
-                result.Append(xpath.Substring(pos, nextPos - pos));
+                result.Append(xpath, pos, nextPos - pos);
 
                 if (xpath[nextPos + 1] == '`') {
                     result.Append('`');     // `` is converted to a single `
@@ -483,7 +431,7 @@ namespace LayoutManager {
                 }
             }
 
-            result.Append(xpath.Substring(pos, xpath.Length - pos));
+            result.Append(xpath, pos, xpath.Length - pos);
 
             return result.ToString();
         }
@@ -506,11 +454,7 @@ namespace LayoutManager {
         /// <summary>
         /// Get/Set the event name for which this subscription is applicable.
         /// </summary>
-        public string EventName {
-            get {
-                return eventName;
-            }
-        }
+        public string EventName { get; }
 
         /// <summary>
         /// Set/Get event role (is it a request or notification)
@@ -521,7 +465,7 @@ namespace LayoutManager {
             set {
                 role = value;
 
-                DocumentElement.SetAttribute("Role", value, removeIf: LayoutEventRole.Unspecified);
+                DocumentElement.SetAttribute(A_Role, value, removeIf: LayoutEventRole.Unspecified);
             }
         }
 
@@ -645,7 +589,7 @@ namespace LayoutManager {
 
             set {
                 order = value;
-                DocumentElement.SetAttribute("Order", value);
+                DocumentElement.SetAttribute(A_Order, value);
             }
         }
 
@@ -750,7 +694,6 @@ namespace LayoutManager {
     }
 
     public class LayoutEventSubscription : LayoutEventSubscriptionBase {
-
         //		public LayoutEventSubscription() : base() { }
 
         public LayoutEventSubscription(string eventName)
@@ -785,8 +728,8 @@ namespace LayoutManager {
     }
 
     public class LayoutAsyncEventSubscription : LayoutEventSubscriptionBase {
-        LayoutVoidAsyncEventHandler? _voidEventHandler;
-        LayoutAsyncEventHandler? _eventHandler;
+        private LayoutVoidAsyncEventHandler? _voidEventHandler;
+        private LayoutAsyncEventHandler? _eventHandler;
 
 #if NOT
         public LayoutAsyncEventSubscription()
@@ -821,7 +764,6 @@ namespace LayoutManager {
             throw new ApplicationException("EventHandler and voidEventHandlers are null");
         }
 
-
         /// <summary>
         /// The object in which the event handler reside
         /// </summary>
@@ -851,7 +793,6 @@ namespace LayoutManager {
     /// </summary>
     /// TODO: Add SubscriptionType={Type} for creating custom subscription objects
     public abstract class LayoutEventAttributeBase : System.Attribute {
-
         /// <summary>
         /// The type of the subscription class to create. The type must be derived from LayoutSubscription
         /// </summary>
@@ -909,7 +850,7 @@ namespace LayoutManager {
         /// Construct an event subscription based on setup string
         /// </summary>
         /// <param name="setupString"></param>
-        public LayoutEventAttributeBase(string eventName) {
+        protected LayoutEventAttributeBase(string eventName) {
             this.EventName = eventName;
             this.Role = LayoutEventRole.Unspecified;
         }
@@ -930,6 +871,7 @@ namespace LayoutManager {
         public override LayoutEventSubscriptionBase CreateSubscription() => new LayoutEventSubscription(this.EventName);
     }
 
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class LayoutAsyncEventAttribute : LayoutEventAttributeBase {
 #if NOT
         public LayoutAsyncEventAttribute()
@@ -953,57 +895,19 @@ namespace LayoutManager {
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public sealed class LayoutEventDefAttribute : System.Attribute {
-        readonly string name;
-        LayoutEventRole role = LayoutEventRole.Notification;
-        Type? senderType;
-        Type? infoType;
-        LayoutEventScope scope = LayoutEventScope.MyProcess;
-
         public LayoutEventDefAttribute(string name) {
-            this.name = name;
+            this.Name = name;
         }
 
-        public LayoutEventRole Role {
-            get {
-                return role;
-            }
+        public LayoutEventRole Role { get; set; } = LayoutEventRole.Notification;
 
-            set {
-                role = value;
-            }
-        }
+        public Type? SenderType { get; set; }
 
-        public Type? SenderType {
-            get {
-                return senderType;
-            }
+        public Type? InfoType { get; set; }
 
-            set {
-                senderType = value;
-            }
-        }
+        public string Name { get; }
 
-        public Type? InfoType {
-            get {
-                return infoType;
-            }
-
-            set {
-                infoType = value;
-            }
-        }
-
-        public string Name => name;
-
-        public LayoutEventScope Scope {
-            get {
-                return scope;
-            }
-
-            set {
-                scope = value;
-            }
-        }
+        public LayoutEventScope Scope { get; set; } = LayoutEventScope.MyProcess;
     }
 
     /// <summary>
@@ -1068,22 +972,21 @@ namespace LayoutManager {
             Canceled,
         }
 
-        readonly LayoutEvent theEvent;
-        readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         public DelayedEventStatus Status { get; private set; }
         public Guid Id { get; }
 
         internal LayoutDelayedEvent(int delayTime, LayoutEvent theEvent) {
-            this.theEvent = theEvent;
+            this.Event = theEvent;
 
             Id = Guid.NewGuid();
             DoDelay(delayTime, cancellationTokenSource.Token);
         }
 
-        public LayoutEvent Event => theEvent;
+        public LayoutEvent Event { get; }
 
-        async void DoDelay(int delayTime, CancellationToken cancellationToken) {
+        private async void DoDelay(int delayTime, CancellationToken cancellationToken) {
             try {
                 var tcs = new TaskCompletionSource<object>();
 
@@ -1093,7 +996,7 @@ namespace LayoutManager {
                     Status = DelayedEventStatus.NotYetCalled;
                     await Task.WhenAny(Task.Delay(delayTime), tcs.Task);
                     Status = DelayedEventStatus.Called;
-                    EventManager.Instance.InterThreadEventInvoker.QueueEvent(theEvent);
+                    EventManager.Instance.InterThreadEventInvoker.QueueEvent(Event);
                 }
             }
             catch (OperationCanceledException) {
@@ -1103,7 +1006,6 @@ namespace LayoutManager {
                 EventManager.Instance.UnregisterDelayedEvent(this);
             }
         }
-
 
         public void Cancel() {
             if (Status != DelayedEventStatus.Called)
@@ -1115,35 +1017,25 @@ namespace LayoutManager {
     /// Manage events and subscriptions
     /// </summary>
     public class LayoutEventManager {
-        readonly ILayoutSubscriptionCollection subscriptions;
-        bool traceEvents;
-        ILayoutInterThreadEventInvoker? invoker;
-        readonly Dictionary<Guid, LayoutDelayedEvent> activeDelayedEvents = new Dictionary<Guid, LayoutDelayedEvent>();
-        LayoutEventDefAttribute[]? eventDefs;
+        private ILayoutInterThreadEventInvoker? invoker;
+        private readonly Dictionary<Guid, LayoutDelayedEvent> activeDelayedEvents = new Dictionary<Guid, LayoutDelayedEvent>();
+        private LayoutEventDefAttribute[]? eventDefs;
 
 #pragma warning disable IDE0060 // Remove unused parameter
         public LayoutEventManager(LayoutModuleManager moduleManager) {
 #pragma warning restore IDE0060 // Remove unused parameter
-            this.subscriptions = new LayoutSubscriptionHashtableByEventName();
+            this.Subscriptions = new LayoutSubscriptionHashtableByEventName();
         }
 
         /// <summary>
         /// A collection of active event subscriptions
         /// </summary>
-        public ILayoutSubscriptionCollection Subscriptions => subscriptions;
+        public ILayoutSubscriptionCollection Subscriptions { get; }
 
         /// <summary>
         /// If true, event tracing is enabled
         /// </summary>
-        public bool TraceEvents {
-            get {
-                return traceEvents;
-            }
-
-            set {
-                traceEvents = value;
-            }
-        }
+        public bool TraceEvents { get; set; }
 
         public ILayoutInterThreadEventInvoker InterThreadEventInvoker {
             get {
@@ -1164,7 +1056,7 @@ namespace LayoutManager {
         protected void GenerateEvent(LayoutEvent e, LayoutEventScope scope, LayoutEventTraceEvent? traceEvent) {
             List<LayoutEventSubscriptionBase> applicableSubscriptions = new List<LayoutEventSubscriptionBase>();
 
-            subscriptions.AddApplicableSubscriptions<LayoutEventSubscription>(applicableSubscriptions, e);
+            Subscriptions.AddApplicableSubscriptions<LayoutEventSubscription>(applicableSubscriptions, e);
             if (applicableSubscriptions.Count > 1)
                 applicableSubscriptions.Sort((s1, s2) => s1.Order - s2.Order);
 
@@ -1192,7 +1084,7 @@ namespace LayoutManager {
         public object? Event(LayoutEvent e, LayoutEventScope scope) {
             LayoutEventTraceEvent? traceEvent = null;
 
-            if (traceEvents)
+            if (TraceEvents)
                 traceEvent = new LayoutEventTraceEvent(e, "trace-event");
 
             GenerateEvent(e, scope, traceEvent);
@@ -1214,7 +1106,7 @@ namespace LayoutManager {
         protected List<Task> GenerateAsyncEvent(LayoutEvent e, LayoutEventScope scope, LayoutEventTraceEvent? traceEvent) {
             var applicableSubscriptions = new List<LayoutEventSubscriptionBase>();
 
-            subscriptions.AddApplicableSubscriptions<LayoutAsyncEventSubscription>(applicableSubscriptions, e);
+            Subscriptions.AddApplicableSubscriptions<LayoutAsyncEventSubscription>(applicableSubscriptions, e);
             if (applicableSubscriptions.Count > 1)
                 applicableSubscriptions.Sort((s1, s2) => s1.Order - s2.Order);
 
@@ -1238,11 +1130,10 @@ namespace LayoutManager {
             return eventTasks;
         }
 
-
         public Task AsyncEvent(LayoutEvent e, LayoutEventScope scope) {
             LayoutEventTraceEvent? traceEvent = null;
 
-            if (traceEvents)
+            if (TraceEvents)
                 traceEvent = new LayoutEventTraceEvent(e, "trace-event");
 
             List<Task> tasks = GenerateAsyncEvent(e, scope, traceEvent);
@@ -1258,7 +1149,7 @@ namespace LayoutManager {
         public Task[] AsyncEventBroadcast(LayoutEvent e, LayoutEventScope scope) {
             LayoutEventTraceEvent? traceEvent = null;
 
-            if (traceEvents)
+            if (TraceEvents)
                 traceEvent = new LayoutEventTraceEvent(e, "trace-event");
 
             return GenerateAsyncEvent(e, scope, traceEvent).ToArray();
@@ -1267,7 +1158,6 @@ namespace LayoutManager {
         public Task[] AsyncEventBroadcast(LayoutEvent e) => AsyncEventBroadcast(e, LayoutEventScope.MyProcess);
 
 #endregion
-
 
         public LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) => new LayoutDelayedEvent(delayTime, e);
 
@@ -1332,7 +1222,7 @@ namespace LayoutManager {
         public LayoutEventSubscriptionBase[] GetObjectSubscriptions(object instance) {
             ArrayList instanceSubscriptions = new ArrayList();
 
-            foreach (LayoutEventSubscriptionBase subscription in subscriptions)
+            foreach (LayoutEventSubscriptionBase subscription in Subscriptions)
                 if (subscription.TargetObject == instance)
                     instanceSubscriptions.Add(subscription);
 
@@ -1362,7 +1252,7 @@ namespace LayoutManager {
         /// </remarks>
         /// <param name="eventName">The event name to optimize</param>
         public void OptimizeForFilteringBySenderType(string eventName) {
-            ((LayoutSubscriptionHashtableByEventName)subscriptions).OptimizeForFilteringBySenderType(eventName);
+            ((LayoutSubscriptionHashtableByEventName)Subscriptions).OptimizeForFilteringBySenderType(eventName);
         }
 
         public LayoutEventDefAttribute[] GetEventDefinitions(LayoutEventRole requiredRole) {
@@ -1424,42 +1314,16 @@ namespace LayoutManager {
     /// </summary>
     public class LayoutEventTraceEvent : LayoutEvent {
         public LayoutEventTraceEvent(LayoutEvent theEvent, string traceEventName) : base(traceEventName, theEvent) {
-            _applicableSubscriptions = new List<LayoutEventSubscriptionBase>();
+            ApplicableSubscriptions = new List<LayoutEventSubscriptionBase>();
         }
 
-        /// <summary>
-        /// The subscriptions which are applicable for the traced event
-        /// </summary>
-        ICollection<LayoutEventSubscriptionBase> _applicableSubscriptions;
+        public ICollection<LayoutEventSubscriptionBase> ApplicableSubscriptions { get; set; }
 
-        /// <summary>
-        /// The scope in which the trace event was sent
-        /// </summary>
-        LayoutEventScope _scope;
-
-        public ICollection<LayoutEventSubscriptionBase> ApplicableSubscriptions {
-            get {
-                return _applicableSubscriptions;
-            }
-
-            set {
-                _applicableSubscriptions = value;
-            }
-        }
-
-        public LayoutEventScope Scope {
-            get {
-                return _scope;
-            }
-
-            set {
-                _scope = value;
-            }
-        }
+        public LayoutEventScope Scope { get; set; }
     }
 
     public static class EventManager {
-        static LayoutEventManager eventManager;
+        private static LayoutEventManager eventManager;
 
         public static LayoutEventManager Instance {
             get {
@@ -1523,7 +1387,7 @@ namespace LayoutManager {
 
         public static LayoutEventScript EventScript(string scriptName, XmlElement? conditionElement, ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
 
-        public static object? Event(string eventName, object? sender = null, object? info = null, string? xmlDocument = null, Type? targetType = null, string? ifTarget = null) => 
+        public static object? Event(string eventName, object? sender = null, object? info = null, string? xmlDocument = null, Type? targetType = null, string? ifTarget = null) =>
             Instance.Event(new LayoutEvent(eventName, sender, info, xmlDocument, targetType, ifTarget));
 
         public static TResult? Event<TSender, TInfo, TResult>(
@@ -1556,8 +1420,8 @@ namespace LayoutManager {
     /// <summary>
     /// A subscription collection implemented as an array. <see cref="ILayoutSubscriptionCollection"/>
     /// </summary>
-    class LayoutSubscriptionArray : ILayoutSubscriptionCollection {
-        readonly List<LayoutEventSubscriptionBase> subscriptions = new List<LayoutEventSubscriptionBase>();
+    internal class LayoutSubscriptionArray : ILayoutSubscriptionCollection {
+        private readonly List<LayoutEventSubscriptionBase> subscriptions = new List<LayoutEventSubscriptionBase>();
 
         public void Add(LayoutEventSubscriptionBase subscription) {
             subscriptions.Add(subscription);
@@ -1569,11 +1433,11 @@ namespace LayoutManager {
             // TODO: Generate an event that a subscription was removed
         }
 
-        public void RemoveObjectSubscriptions(object classInstance) {
+        public void RemoveObjectSubscriptions(object instance) {
             List<LayoutEventSubscriptionBase> subscriptionsToRemove = new List<LayoutEventSubscriptionBase>();
 
             foreach (LayoutEventSubscriptionBase subscription in subscriptions)
-                if (subscription.TargetObject == classInstance)
+                if (subscription.TargetObject == instance)
                     subscriptionsToRemove.Add(subscription);
 
             foreach (LayoutEventSubscriptionBase subscription in subscriptionsToRemove)
@@ -1599,9 +1463,9 @@ namespace LayoutManager {
     /// A subscription collection implemented as hash table for subscriptions which filter on a particular
     /// event name, all other subscriptions are stored in a array based subscription collection.
     /// </summary>
-    class LayoutSubscriptionHashtableByEventName : ILayoutSubscriptionCollection {
-        readonly Dictionary<string, ILayoutSubscriptionCollection> subscriptionByEventName = new Dictionary<string, ILayoutSubscriptionCollection>();
-        readonly LayoutSubscriptionArray noEventNameFilterSubscriptions = new LayoutSubscriptionArray();
+    internal class LayoutSubscriptionHashtableByEventName : ILayoutSubscriptionCollection {
+        private readonly Dictionary<string, ILayoutSubscriptionCollection> subscriptionByEventName = new Dictionary<string, ILayoutSubscriptionCollection>();
+        private readonly LayoutSubscriptionArray noEventNameFilterSubscriptions = new LayoutSubscriptionArray();
 
         private ILayoutSubscriptionCollection getSlot(LayoutEventSubscriptionBase subscription) {
             if (!string.IsNullOrEmpty(subscription.EventName)) {
@@ -1624,10 +1488,10 @@ namespace LayoutManager {
             getSlot(subscription).Remove(subscription);
         }
 
-        public void RemoveObjectSubscriptions(object classInstance) {
+        public void RemoveObjectSubscriptions(object instance) {
             foreach (ILayoutSubscriptionCollection hashEntry in subscriptionByEventName.Values)
-                hashEntry.RemoveObjectSubscriptions(classInstance);
-            noEventNameFilterSubscriptions.RemoveObjectSubscriptions(classInstance);
+                hashEntry.RemoveObjectSubscriptions(instance);
+            noEventNameFilterSubscriptions.RemoveObjectSubscriptions(instance);
         }
 
         public void AddApplicableSubscriptions<TSubscription>(ICollection<LayoutEventSubscriptionBase> applicableSubscriptions, LayoutEvent e) {
@@ -1675,13 +1539,12 @@ namespace LayoutManager {
     /// A subscription collection implemented as hash table for subscriptions which filter sender type,
     /// all other subscriptions are stored in a array based subscription collection.
     /// </summary>
-    class LayoutSubscriptionHashtableBySenderType : ILayoutSubscriptionCollection {
-        readonly Dictionary<Type, ILayoutSubscriptionCollection> subscriptionBySenderType = new Dictionary<Type, ILayoutSubscriptionCollection>();
-        readonly LayoutSubscriptionArray noSenderTypeSubscriptions = new LayoutSubscriptionArray();
+    internal class LayoutSubscriptionHashtableBySenderType : ILayoutSubscriptionCollection {
+        private readonly Dictionary<Type, ILayoutSubscriptionCollection> subscriptionBySenderType = new Dictionary<Type, ILayoutSubscriptionCollection>();
+        private readonly LayoutSubscriptionArray noSenderTypeSubscriptions = new LayoutSubscriptionArray();
 
         private ILayoutSubscriptionCollection getSlot(LayoutEventSubscriptionBase subscription) {
             if (subscription.SenderType != null) {
-
                 if (!subscriptionBySenderType.TryGetValue(subscription.SenderType, out ILayoutSubscriptionCollection hashEntry)) {
                     hashEntry = new LayoutSubscriptionArray();
                     subscriptionBySenderType[subscription.SenderType] = hashEntry;
@@ -1701,10 +1564,10 @@ namespace LayoutManager {
             getSlot(subscription).Remove(subscription);
         }
 
-        public void RemoveObjectSubscriptions(object classInstance) {
+        public void RemoveObjectSubscriptions(object instance) {
             foreach (ILayoutSubscriptionCollection hashEntry in subscriptionBySenderType.Values)
-                hashEntry.RemoveObjectSubscriptions(classInstance);
-            noSenderTypeSubscriptions.RemoveObjectSubscriptions(classInstance);
+                hashEntry.RemoveObjectSubscriptions(instance);
+            noSenderTypeSubscriptions.RemoveObjectSubscriptions(instance);
         }
 
         public void AddApplicableSubscriptions<TSubscription>(ICollection<LayoutEventSubscriptionBase> applicableSubscriptions, LayoutEvent e) {

@@ -45,7 +45,7 @@ namespace MarklinDigital {
         #region Component menu Item
 
         [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
-        void AddCentralStationItem(LayoutEvent e) {
+        private void AddCentralStationItem(LayoutEvent e) {
             XmlElement categoryElement = (XmlElement)e.Sender;
             ModelComponent old = (ModelComponent)e.Info;
 
@@ -54,7 +54,7 @@ namespace MarklinDigital {
         }
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='MarklinDigital']")]
-        void PaintCentralStationItem(LayoutEvent e) {
+        private void PaintCentralStationItem(LayoutEvent e) {
             Graphics g = (Graphics)e.Info;
 
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
@@ -68,7 +68,7 @@ namespace MarklinDigital {
         }
 
         [LayoutEvent("create-model-component", IfSender = "Item[@Name='MarklinDigital']")]
-        void CreateCentralStationComponent(LayoutEvent e) {
+        private void CreateCentralStationComponent(LayoutEvent e) {
             e.Info = new MarklinDigitalCentralStation();
         }
 
@@ -77,7 +77,7 @@ namespace MarklinDigital {
         #region Component view
 
         [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(MarklinDigitalCentralStation))]
-        void GetCentralStationDrawingRegions(LayoutEvent eBase) {
+        private void GetCentralStationDrawingRegions(LayoutEvent eBase) {
             LayoutGetDrawingRegionsEvent e = (LayoutGetDrawingRegionsEvent)eBase;
 
             if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
@@ -87,11 +87,10 @@ namespace MarklinDigital {
 
             if (textProvider.Element != null)
                 e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
-
         }
 
-        class DrawingRegionCentralStation : LayoutDrawingRegionGrid {
-            readonly MarklinDigitalCentralStation component;
+        private class DrawingRegionCentralStation : LayoutDrawingRegionGrid {
+            private readonly MarklinDigitalCentralStation component;
 
             internal DrawingRegionCentralStation(ModelComponent component, ILayoutView view) : base(component, view) {
                 this.component = (MarklinDigitalCentralStation)component;
@@ -110,12 +109,12 @@ namespace MarklinDigital {
         #region Component Painter
 
         [LayoutEvent("get-image", SenderType = typeof(MarklinDigitalPainter))]
-        void GetCentralStationImage(LayoutEvent e) {
+        private void GetCentralStationImage(LayoutEvent e) {
             e.Info = imageListComponents.Images[0];
         }
 
-        class MarklinDigitalPainter {
-            Size componentSize;
+        private class MarklinDigitalPainter {
+            private Size componentSize;
 
             internal MarklinDigitalPainter(Size componentSize) {
                 this.componentSize = componentSize;
@@ -188,7 +187,6 @@ namespace MarklinDigital {
                 ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListComponents.ImageStream"))),
                 TransparentColor = System.Drawing.Color.Transparent
             };
-
         }
         #endregion
 

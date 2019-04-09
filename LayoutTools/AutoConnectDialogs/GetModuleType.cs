@@ -13,6 +13,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
         private Button buttonCancel;
         private ComboBox comboBoxModuleTypes;
         private CheckBox checkBoxUseAsDefault;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -134,7 +135,6 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.Text = "Select Control Module Type to Add";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
         #endregion
 
@@ -142,16 +142,14 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             DialogResult = DialogResult.OK;
         }
 
-        class Item {
-            readonly ControlModuleType moduleType;
-
+        private class Item {
             public Item(ControlModuleType moduleType) {
-                this.moduleType = moduleType;
+                this.ModuleType = moduleType;
             }
 
-            public ControlModuleType ModuleType => moduleType;
+            public ControlModuleType ModuleType { get; }
 
-            public override string ToString() => moduleType.Name;
+            public override string ToString() => ModuleType.Name;
         }
     }
 }

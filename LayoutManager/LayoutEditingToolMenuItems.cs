@@ -7,11 +7,10 @@ using System.Xml;
 using LayoutManager.Model;
 
 namespace LayoutManager {
-
     #region Context Menu items
 
-    class MenuItemDeleteAllComponents : MenuItem {
-        readonly LayoutHitTestResult hitTestResult;
+    internal class MenuItemDeleteAllComponents : MenuItem {
+        private readonly LayoutHitTestResult hitTestResult;
 
         public MenuItemDeleteAllComponents(LayoutHitTestResult hitTestResult) {
             // TODO: Get strings for resource manager...
@@ -50,8 +49,8 @@ namespace LayoutManager {
         }
     }
 
-    class MenuItemCopyComponent : MenuItem {
-        readonly LayoutHitTestResult hitTestResult;
+    internal class MenuItemCopyComponent : MenuItem {
+        private readonly LayoutHitTestResult hitTestResult;
 
         public MenuItemCopyComponent(LayoutHitTestResult hitTestResult) {
             // TODO: Get strings for resource manager...
@@ -65,8 +64,8 @@ namespace LayoutManager {
         }
     }
 
-    class MenuItemCutComponent : MenuItem {
-        readonly LayoutHitTestResult hitTestResult;
+    internal class MenuItemCutComponent : MenuItem {
+        private readonly LayoutHitTestResult hitTestResult;
 
         public MenuItemCutComponent(LayoutHitTestResult hitTestResult) {
             // TODO: Get strings for resource manager...
@@ -90,9 +89,9 @@ namespace LayoutManager {
         }
     }
 
-    class MenuItemPasteComponents : MenuItem {
-        readonly LayoutHitTestResult hitTestResult;
-        readonly string componentsFormat = "LayoutManagerComponents";
+    internal class MenuItemPasteComponents : MenuItem {
+        private readonly LayoutHitTestResult hitTestResult;
+        private readonly string componentsFormat = "LayoutManagerComponents";
 
         public MenuItemPasteComponents(LayoutHitTestResult hitTestResult) {
             this.hitTestResult = hitTestResult;
@@ -106,7 +105,6 @@ namespace LayoutManager {
                     this.Enabled = true;
             }
         }
-
 
         private void clearLocation(LayoutCompoundCommand pasteCommand, LayoutModelArea area, Point ml) {
             LayoutModelSpotComponentCollection spot = area[ml, LayoutPhase.All];
@@ -125,6 +123,7 @@ namespace LayoutManager {
             if (dataObj != null && dataObj.GetDataPresent(componentsFormat)) {
                 System.IO.MemoryStream ms = new System.IO.MemoryStream((byte[])dataObj.GetData(componentsFormat));
                 XmlTextReader r = new LayoutXmlTextReader(ms, LayoutReadXmlContext.PasteComponents);
+                ConvertableString GetAttribute(string name) => new ConvertableString(r.GetAttribute(name), $"Attribute {name}");
                 LayoutCompoundCommand pasteCommand = new LayoutCompoundCommand("paste components");
 
                 // If there was a selection, then the pasted stuff replaces this selection
@@ -144,8 +143,8 @@ namespace LayoutManager {
                 r.Read();       // <Component>
 
                 while (r.NodeType == XmlNodeType.Element) {
-                    Point ml = new Point(XmlConvert.ToInt32(r.GetAttribute("X")) + hitTestResult.ModelLocation.X,
-                        XmlConvert.ToInt32(r.GetAttribute("Y")) + hitTestResult.ModelLocation.Y);
+                    Point ml = new Point((int)GetAttribute("X") + hitTestResult.ModelLocation.X,
+                        (int)GetAttribute("Y") + hitTestResult.ModelLocation.Y);
 
                     clearLocation(pasteCommand, hitTestResult.Area, ml);
 
@@ -168,8 +167,8 @@ namespace LayoutManager {
         }
     }
 
-    class MenuItemDeleteComponent : MenuItem {
-        readonly ModelComponent component;
+    internal class MenuItemDeleteComponent : MenuItem {
+        private readonly ModelComponent component;
 
         public MenuItemDeleteComponent(String text, ModelComponent component) {
             this.component = component;

@@ -11,7 +11,6 @@ using System.Diagnostics;
 
 #nullable enable
 namespace LayoutManager {
-
     #region Event Script Implementations
 
     #region Event script error handling
@@ -21,11 +20,9 @@ namespace LayoutManager {
     }
 
     public class LayoutEventScriptException : Exception {
-        readonly LayoutEventScriptExecutionPhase executionPhase = LayoutEventScriptExecutionPhase.Unknown;
-
         public LayoutEventScriptException(LayoutEventScriptNode node, LayoutEventScriptExecutionPhase executionPhase, Exception ex) : base("Event Script Exception", ex) {
             this.Node = node;
-            this.executionPhase = executionPhase;
+            this.ExecutionPhase = executionPhase;
         }
 
         public LayoutEventScriptException(LayoutEventScriptNode node, string message) : base(message) {
@@ -34,34 +31,27 @@ namespace LayoutManager {
 
         public LayoutEventScriptNode Node { get; }
 
-        public LayoutEventScriptExecutionPhase ExecutionPhase => executionPhase;
+        public LayoutEventScriptExecutionPhase ExecutionPhase { get; } = LayoutEventScriptExecutionPhase.Unknown;
     }
 
     public class LayoutEventScriptErrorInfo {
-        readonly ILayoutScript script;
-        readonly LayoutEventScriptTask task;
-        readonly Exception ex;
-        readonly LayoutEventScriptExecutionPhase executionPhase;
-        readonly LayoutEventScriptNode node;
-
-
         public LayoutEventScriptErrorInfo(ILayoutScript script, LayoutEventScriptTask task, LayoutEventScriptNode node, LayoutEventScriptExecutionPhase executionPhase, Exception ex) {
-            this.script = script;
-            this.task = task;
-            this.node = node;
-            this.executionPhase = executionPhase;
-            this.ex = ex;
+            this.Script = script;
+            this.Task = task;
+            this.Node = node;
+            this.ExecutionPhase = executionPhase;
+            this.Exception = ex;
         }
 
-        public ILayoutScript Script => script;
+        public ILayoutScript Script { get; }
 
-        public LayoutEventScriptTask Task => task;
+        public LayoutEventScriptTask Task { get; }
 
-        public LayoutEventScriptNode Node => node;
+        public LayoutEventScriptNode Node { get; }
 
-        public LayoutEventScriptExecutionPhase ExecutionPhase => executionPhase;
+        public LayoutEventScriptExecutionPhase ExecutionPhase { get; }
 
-        public Exception Exception => ex;
+        public Exception Exception { get; }
     }
 
     #endregion
@@ -88,16 +78,15 @@ namespace LayoutManager {
     }
 
     public class LayoutEventScriptTask : IDisposable {
-        readonly XmlElement scriptElement;
-        readonly LayoutEventScriptNode root;
-        readonly ILayoutScript script;
-        bool taskTerminated;
+        private readonly XmlElement scriptElement;
+        private readonly ILayoutScript script;
+        private bool taskTerminated;
 
         public LayoutEventScriptTask(ILayoutScript eventScript, XmlElement? scriptElement, LayoutScriptContext context) {
             this.script = eventScript;
             this.scriptElement = scriptElement ?? throw new ArgumentNullException("Invali script element");
 
-            root = Parse(this.scriptElement, context);
+            Root = Parse(this.scriptElement, context);
         }
 
         public LayoutEventScriptNode Parse(XmlElement elementToParse, LayoutScriptContext context) {
@@ -110,13 +99,13 @@ namespace LayoutManager {
             return node;
         }
 
-        public LayoutEventScriptNode Root => root;
+        public LayoutEventScriptNode Root { get; }
 
         public LayoutEventScriptNodeEventBase EventRoot => (LayoutEventScriptNodeEventBase)Root;
 
         public LayoutEventScriptNodeCondition ConditionRoot => (LayoutEventScriptNodeCondition)Root;
 
-        LayoutEventScript EventScript => (LayoutEventScript)script;
+        private LayoutEventScript EventScript => (LayoutEventScript)script;
 
         public void RecalculateTask() {
             try {
@@ -127,7 +116,7 @@ namespace LayoutManager {
                     null));
             }
             catch (Exception ex) {
-                EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, root, LayoutEventScriptExecutionPhase.Evaluation, ex),
+                EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, Root, LayoutEventScriptExecutionPhase.Evaluation, ex),
                     null));
             }
 
@@ -150,7 +139,7 @@ namespace LayoutManager {
                     null));
             }
             catch (Exception ex) {
-                EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, root, LayoutEventScriptExecutionPhase.Reset, ex),
+                EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, Root, LayoutEventScriptExecutionPhase.Reset, ex),
                     null));
             }
 
@@ -181,43 +170,38 @@ namespace LayoutManager {
                     null));
             }
             catch (Exception ex) {
-                EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, root, LayoutEventScriptExecutionPhase.Disposing, ex),
+                EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, Root, LayoutEventScriptExecutionPhase.Disposing, ex),
                     null));
             }
         }
     }
 
     public class LayoutEventScript : ILayoutScript, IDisposable, IObjectHasId {
-        readonly LayoutEvent? scriptDoneEvent;
-        readonly LayoutEvent? errorOccurredEvent;
-        readonly XmlElement? scriptElement;
-        readonly ICollection<Guid> scopeIDs;
-        Guid scriptID;
-        readonly string name;
-        object? scriptSubject;
-        LayoutScriptContext? scriptContext;
-        LayoutScriptContext? parentContext;
-        readonly List<LayoutEventScriptTask> tasks = new List<LayoutEventScriptTask>();
-        LayoutEventScriptTask? rootTask;
+        private readonly LayoutEvent? scriptDoneEvent;
+        private readonly LayoutEvent? errorOccurredEvent;
+        private readonly XmlElement? scriptElement;
+        private LayoutScriptContext? scriptContext;
+        private readonly List<LayoutEventScriptTask> tasks = new List<LayoutEventScriptTask>();
+        private LayoutEventScriptTask? rootTask;
 
         public LayoutEventScript(string scriptName, XmlElement? scriptElement,
             ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent, LayoutEvent? errorOccurredEvent) {
-            this.name = scriptName;
+            this.Name = scriptName;
             this.scriptElement = scriptElement;
-            this.scopeIDs = scopeIDs;
+            this.ScopeIDs = scopeIDs;
             this.scriptDoneEvent = scriptDoneEvent;
             this.errorOccurredEvent = errorOccurredEvent;
 
-            this.scriptID = Guid.NewGuid();
+            this.Id = Guid.NewGuid();
         }
 
         public LayoutScriptContext ScriptContext {
             get {
                 if (scriptContext == null) {
-                    if (parentContext == null)
-                        parentContext = (LayoutScriptContext?)EventManager.Event(new LayoutEvent("get-global-event-script-context", this));
+                    if (ParentContext == null)
+                        ParentContext = (LayoutScriptContext?)EventManager.Event(new LayoutEvent("get-global-event-script-context", this));
 
-                    scriptContext = new LayoutScriptContext("Script", parentContext) {
+                    scriptContext = new LayoutScriptContext("Script", ParentContext) {
                         CopyOnClone = false
                     };
                 }
@@ -225,60 +209,27 @@ namespace LayoutManager {
                 return scriptContext;
             }
 
-            set {
-                scriptContext = value;
-            }
+            set => scriptContext = value;
         }
 
-        public LayoutScriptContext? ParentContext {
-            get {
-                return parentContext;
-            }
+        public LayoutScriptContext? ParentContext { get; set; }
 
-            set {
-                parentContext = value;
-            }
-        }
+        public LayoutEventScriptTask RootTask => rootTask ?? (rootTask = AddTask(scriptElement, ScriptContext));
 
-        public LayoutEventScriptTask RootTask {
-            get {
-                if (rootTask == null)
-                    rootTask = AddTask(scriptElement, ScriptContext);
-
-                return rootTask;
-            }
-        }
-
-        public Guid Id {
-            get {
-                return scriptID;
-            }
-
-            set {
-                scriptID = value;
-            }
-        }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// The scope for which this event script belongs. This mean that unless otherwise specified, the script
         /// will process only events that are sent (or their info field) is an object with this ID.
         /// </summary>
-        public ICollection<Guid> ScopeIDs => scopeIDs;
+        public ICollection<Guid> ScopeIDs { get; }
 
-        public object? ScriptSubject {
-            get {
-                return scriptSubject;
-            }
-
-            set {
-                scriptSubject = value;
-            }
-        }
+        public object? ScriptSubject { get; set; }
 
         /// <summary>
         /// The script name, used for identification in scenarios such as debugging
         /// </summary>
-        public string Name => name;
+        public string Name { get; }
 
         public LayoutEventScriptTask AddTask(XmlElement? scriptElement, LayoutScriptContext context) {
             LayoutEventScriptTask task = new LayoutEventScriptTask(this, scriptElement, context);
@@ -312,7 +263,6 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEvent("event-script-reset", this, RootTask));
 
             RootTask.Reset();
-
         }
 
         public bool Occurred => RootTask.Occurred;
@@ -351,22 +301,20 @@ namespace LayoutManager {
     #region Layout Condition Script
 
     public class LayoutConditionScript : ILayoutScript {
-        readonly XmlElement element;
-        string name;
-        object? scriptSubject;
-        LayoutScriptContext? scriptContext;
-        readonly bool defaultValue = true;
+        private readonly XmlElement element;
+        private LayoutScriptContext? scriptContext;
+        private readonly bool defaultValue = true;
 
         public LayoutConditionScript(XmlElement element) {
             this.element = element;
-            this.name = "Condition";
+            this.Name = "Condition";
 
             initialize();
         }
 
         public LayoutConditionScript(XmlElement element, bool defaultValue) {
             this.element = element;
-            this.name = "Condition";
+            this.Name = "Condition";
             this.defaultValue = defaultValue;
 
             initialize();
@@ -374,14 +322,14 @@ namespace LayoutManager {
 
         public LayoutConditionScript(string name, XmlElement element) {
             this.element = element;
-            this.name = name;
+            this.Name = name;
 
             initialize();
         }
 
         public LayoutConditionScript(string name, XmlElement element, bool defaultValue) {
             this.element = element;
-            this.name = name;
+            this.Name = name;
             this.defaultValue = defaultValue;
 
             initialize();
@@ -403,15 +351,7 @@ namespace LayoutManager {
 
         #region ILayoutScript Members
 
-        public string Name {
-            get {
-                return name;
-            }
-
-            set {
-                name = value;
-            }
-        }
+        public string Name { get; set; }
 
         public LayoutScriptContext ScriptContext {
             get {
@@ -427,15 +367,7 @@ namespace LayoutManager {
             }
         }
 
-        public object? ScriptSubject {
-            get {
-                return scriptSubject;
-            }
-
-            set {
-                scriptSubject = value;
-            }
-        }
+        public object? ScriptSubject { get; set; }
 
         public string? Description {
             get {
@@ -458,61 +390,45 @@ namespace LayoutManager {
     /// event.
     /// </summary>
     public class LayoutParseEventScript : IObjectHasXml {
-        readonly ILayoutScript script;
-        readonly LayoutEventScriptTask eventScriptTask;
-        readonly XmlElement element;
-        LayoutScriptContext context;
-
         public LayoutParseEventScript(ILayoutScript script, LayoutEventScriptTask eventScriptTask, XmlElement element, LayoutScriptContext context) {
-            this.script = script;
-            this.eventScriptTask = eventScriptTask;
-            this.element = element;
-            this.context = context;
+            this.Script = script;
+            this.Task = eventScriptTask;
+            this.Element = element;
+            this.Context = context;
         }
 
         /// <summary>
         /// The conditonal event being built
         /// </summary>
-        public ILayoutScript Script => script;
+        public ILayoutScript Script { get; }
 
         /// <summary>
         /// Return the event script task for which this element is parsed
         /// </summary>
-        public LayoutEventScriptTask Task => eventScriptTask;
+        public LayoutEventScriptTask Task { get; }
 
         /// <summary>
         /// The XML element representing the condition
         /// </summary>
-        public XmlElement Element => element;
+        public XmlElement Element { get; }
         public XmlElement? OptionalElement => Element;
 
         /// <summary>
         /// Return the context associated with this node
         /// </summary>
-        public LayoutScriptContext Context {
-            get {
-                return context;
-            }
-
-            set {
-                context = value;
-            }
-        }
+        public LayoutScriptContext Context { get; set; }
     }
 
     public class LayoutEventScriptParseException : Exception {
-        readonly ILayoutScript script;
-        readonly XmlElement parsedNode;
-
         public LayoutEventScriptParseException(ILayoutScript script,
             XmlElement parsedNode, string message) : base(message) {
-            this.script = script;
-            this.parsedNode = parsedNode;
+            this.Script = script;
+            this.ParsedNode = parsedNode;
         }
 
-        public ILayoutScript Script => script;
+        public ILayoutScript Script { get; }
 
-        public XmlElement ParsedNode => parsedNode;
+        public XmlElement ParsedNode { get; }
     }
 
     #endregion
@@ -524,48 +440,35 @@ namespace LayoutManager {
     }
 
     public class LayoutScriptContext : ICloneable {
-        readonly string name;
-        readonly Dictionary<string, object?> symbols;
-        readonly LayoutScriptContext? parentContext;
-        bool copyOnClone = true;
+        private readonly Dictionary<string, object?> symbols;
 
         public LayoutScriptContext(string name, LayoutScriptContext? parentContext) {
-            this.name = name;
-            this.parentContext = parentContext;
+            this.Name = name;
+            this.ParentContext = parentContext;
             symbols = new Dictionary<string, object?>();
         }
 
         protected LayoutScriptContext(string name, LayoutScriptContext? parentContext, Dictionary<string, object?> symbols) {
-            this.name = name;
-            this.parentContext = parentContext;
+            this.Name = name;
+            this.ParentContext = parentContext;
             this.symbols = symbols;
         }
 
-        public string Name => name;
+        public string Name { get; }
 
-        public bool CopyOnClone {
-            get {
-                return copyOnClone;
-            }
+        public bool CopyOnClone { get; set; } = true;
 
-            set {
-                copyOnClone = value;
-            }
-        }
-
-        public LayoutScriptContext? ParentContext => parentContext;
+        public LayoutScriptContext? ParentContext { get; }
 
         public object? SearchSymbol(string symbolName) {
-
             symbols.TryGetValue(symbolName, out object? symbolValue);
             return symbolValue;
         }
 
-
         public LayoutScriptContext? SearchContext(string name) {
             if (name == "Parent") {
-                if (parentContext != null)
-                    return parentContext;
+                if (ParentContext != null)
+                    return ParentContext;
             }
             else if (name == "This")
                 return this;
@@ -637,13 +540,8 @@ namespace LayoutManager {
         /// <param name="symbolName">The symbol name to check</param>
         /// <param name="oSymbolValue">The symbol value</param>
         /// <returns></returns>
-        public bool Contains(string symbolName, object rawSymbolValue) {
-            if (rawSymbolValue is IObjectHasId symbolValue &&
-              symbols.TryGetValue(symbolName, out object? previousValueObject) && previousValueObject is IObjectHasId previousValue && previousValue.Id == symbolValue.Id)
-                return true;
-
-            return false;
-        }
+        public bool Contains(string symbolName, object rawSymbolValue) => rawSymbolValue is IObjectHasId symbolValue &&
+              symbols.TryGetValue(symbolName, out object? previousValueObject) && previousValueObject is IObjectHasId previousValue && previousValue.Id == symbolValue.Id;
 
         public object GetProperty(string symbolName, object symbolValue, string propertyName) {
             PropertyInfo propertyInfo = symbolValue.GetType().GetProperty(propertyName);
@@ -694,7 +592,7 @@ namespace LayoutManager {
         }
 
         public object Clone() {
-            if (!copyOnClone)
+            if (!CopyOnClone)
                 return this;
 
             var newSymbols = new Dictionary<string, object?>(symbols.Count);
@@ -702,7 +600,7 @@ namespace LayoutManager {
             foreach (KeyValuePair<string, object?> d in symbols)
                 newSymbols.Add(d.Key, d.Value);
 
-            return new LayoutScriptContext(name, (LayoutScriptContext?)parentContext?.Clone(), newSymbols);
+            return new LayoutScriptContext(Name, (LayoutScriptContext?)ParentContext?.Clone(), newSymbols);
         }
     }
 
@@ -728,7 +626,7 @@ namespace LayoutManager {
     /// Base class for all nodes
     /// </summary>
     public abstract class LayoutEventScriptNode : IObjectHasXml {
-        readonly LayoutParseEventScript parseEventInfo;
+        private readonly LayoutParseEventScript parseEventInfo;
 
         protected LayoutEventScriptNode(LayoutEvent e) {
             Debug.Assert(e.Sender != null);
@@ -743,13 +641,9 @@ namespace LayoutManager {
         public LayoutEventScriptTask Task => parseEventInfo.Task;
 
         public LayoutScriptContext Context {
-            get {
-                return parseEventInfo.Context;
-            }
+            get => parseEventInfo.Context;
 
-            set {
-                parseEventInfo.Context = value;
-            }
+            set => parseEventInfo.Context = value;
         }
 
         protected LayoutEventScriptNode? Parse(XmlElement elementToParse) => Task.Parse(elementToParse, Context);
@@ -775,21 +669,20 @@ namespace LayoutManager {
             string symbolAccess = element.GetAttribute("Symbol" + suffix + "Access");
 
             if (symbolAccess == "Value") {
-                string v = element.GetAttribute("Value" + suffix);
+                var v = element.AttributeValue($"Value{suffix}");
 
                 switch (element.GetAttribute("Type" + suffix)) {
-
                     case "Boolean":
-                        return XmlConvert.ToBoolean(v);
+                        return (bool)v;
 
                     case "Integer":
-                        return XmlConvert.ToInt32(v);
+                        return (int)v;
 
                     case "Double":
-                        return XmlConvert.ToDouble(v);
+                        return (double)v;
 
                     default:
-                        return v;
+                        return (string?)v ?? "";
                 }
             }
             else {
@@ -815,12 +708,12 @@ namespace LayoutManager {
     #region Events
 
     public abstract class LayoutEventScriptNodeEventBase : LayoutEventScriptNode, IDisposable {
-        bool _occurred;
-        bool _isErrorState;
-        bool _stateChanged;
-        bool _cancelActions;
-        LayoutEventScriptNodeCondition? condition;
-        LayoutEventScriptNodeActions? actions;
+        private const string A_Optional = "Optional";
+        private const string A_IsError = "IsError";
+        private bool _occurred;
+        private bool _isErrorState;
+        private LayoutEventScriptNodeCondition? condition;
+        private LayoutEventScriptNodeActions? actions;
 
         protected LayoutEventScriptNodeEventBase(LayoutEvent e) : base(e) {
             EventManager.AddObjectSubscriptions(this);
@@ -881,17 +774,15 @@ namespace LayoutManager {
         /// Get/Set whether the event occured
         /// </summary>
         public bool Occurred {
-            get {
-                return _occurred;
-            }
+            get => _occurred;
 
             set {
-                if (value == true && _occurred == false) {
-                    _stateChanged = true;
+                if (value && !_occurred) {
+                    StateChanged = true;
                     _occurred = true;
 
                     try {
-                        if (Actions != null && !_cancelActions)
+                        if (Actions != null && !CancelActions)
                             Actions.Execute();
                     }
                     catch (Exception ex) {
@@ -908,15 +799,7 @@ namespace LayoutManager {
         /// <summary>
         /// If set to true, actions will not be performed when the event occurs
         /// </summary>
-        public bool CancelActions {
-            get {
-                return _cancelActions;
-            }
-
-            set {
-                _cancelActions = value;
-            }
-        }
+        public bool CancelActions { get; set; }
 
         /// <summary>
         /// Check the condition. If the event is not associated with condition, the condition assumed to be true
@@ -924,7 +807,7 @@ namespace LayoutManager {
         protected bool IsConditionTrue {
             get {
                 try {
-                    if (Condition == null || Condition.IsTrue)
+                    if (Condition?.IsTrue != false)
                         return true;
                 }
                 catch (Exception ex) {
@@ -939,38 +822,22 @@ namespace LayoutManager {
         /// Get/Set whether the occurrence of this event signify an error state
         /// </summary>
         public bool IsErrorState {
-            get {
-                return _isErrorState;
-            }
+            get => _isErrorState;
 
             set {
-                if (value != _isErrorState && value != false)
-                    _stateChanged = true;
+                if (value != _isErrorState && value)
+                    StateChanged = true;
 
                 _isErrorState = value;
             }
         }
 
-        public bool IsOptional {
-            get {
-                if (Element.HasAttribute("Optional"))
-                    return XmlConvert.ToBoolean(Element.GetAttribute("Optional"));
-                return false;
-            }
-        }
+        public bool IsOptional => (bool?)Element.AttributeValue(A_Optional) ?? false;
 
         /// <summary>
         /// Get/Set whether the event state has changed (you should not normally set this directly)
         /// </summary>
-        protected bool StateChanged {
-            get {
-                return _stateChanged;
-            }
-
-            set {
-                _stateChanged = value;
-            }
-        }
+        protected bool StateChanged { get; set; }
 
         /// <summary>
         /// Reset the event
@@ -978,9 +845,7 @@ namespace LayoutManager {
         public virtual void Reset() {
             Occurred = false;
             CancelActions = false;
-
-            if (Element.HasAttribute("IsError"))
-                IsErrorState = XmlConvert.ToBoolean(Element.GetAttribute("IsError"));
+            IsErrorState = (bool?)Element.AttributeValue(A_IsError) ?? false;
         }
 
         /// <summary>
@@ -1010,24 +875,18 @@ namespace LayoutManager {
     /// Base class events (or event containers)
     /// </summary>
     public class LayoutEventScriptNodeEvent : LayoutEventScriptNodeEventBase {
-        readonly string? eventName;
-        LayoutEventSubscriptionBase? subscription;
+        private const string A_Name = "Name";
+        private const string A_LimitToScope = "LimitToScope";
+        private readonly string? eventName;
+        private LayoutEventSubscriptionBase? subscription;
 
         public LayoutEventScriptNodeEvent(LayoutEvent e) : base(e) {
-            if (Element.HasAttribute("Name"))
-                eventName = Element.GetAttribute("Name");
-
+            eventName = (string?)Element.AttributeValue(A_Name);
             ParseCondition(Element);
             ParseActions(Element);
         }
 
-        protected bool LimitToScope {
-            get {
-                if (Element.HasAttribute("LimitToScope"))
-                    return XmlConvert.ToBoolean(Element.GetAttribute("LimitToScope"));
-                return true;
-            }
-        }
+        protected bool LimitToScope => (bool?)Element.AttributeValue(A_LimitToScope) ?? true;
 
         /// <summary>
         /// You may override this with the event name to subscribe to
@@ -1071,7 +930,6 @@ namespace LayoutManager {
 
                 // Check if the event need to be limited to scope
                 if (LimitToScope && eventScript.ScopeIDs != null && eventScript.ScopeIDs.Count != 0) {
-
                     // Check that the sender or info ID is matching the scopeID. If this is not the case,
                     // the event is not relevant to the scope of the current event script
 
@@ -1120,7 +978,7 @@ namespace LayoutManager {
     }
 
     public abstract class LayoutEventScriptNodeEventContainer : LayoutEventScriptNodeEventBase {
-        readonly List<LayoutEventScriptNodeEventBase> events = new List<LayoutEventScriptNodeEventBase>();
+        private readonly List<LayoutEventScriptNodeEventBase> events = new List<LayoutEventScriptNodeEventBase>();
 
         protected LayoutEventScriptNodeEventContainer(LayoutEvent e) : base(e) {
             XmlElement eventsElement = Element["Events"];
@@ -1165,7 +1023,6 @@ namespace LayoutManager {
     #region Conditions
 
     public abstract class LayoutEventScriptNodeCondition : LayoutEventScriptNode {
-
         protected LayoutEventScriptNodeCondition(LayoutEvent e) : base(e) {
         }
 
@@ -1178,7 +1035,7 @@ namespace LayoutManager {
     }
 
     public abstract class LayoutEventScriptNodeConditionContainer : LayoutEventScriptNodeCondition {
-        readonly List<LayoutEventScriptNodeCondition> conditions = new List<LayoutEventScriptNodeCondition>();
+        private readonly List<LayoutEventScriptNodeCondition> conditions = new List<LayoutEventScriptNodeCondition>();
 
         protected LayoutEventScriptNodeConditionContainer(LayoutEvent e) : base(e) {
             foreach (XmlElement conditionElement in Element) {
@@ -1197,7 +1054,6 @@ namespace LayoutManager {
     #region Actions
 
     public abstract class LayoutEventScriptNodeAction : LayoutEventScriptNode {
-
         protected LayoutEventScriptNodeAction(LayoutEvent e) : base(e) {
         }
 
@@ -1208,7 +1064,7 @@ namespace LayoutManager {
     }
 
     public class LayoutEventScriptNodeActions : LayoutEventScriptNode {
-        readonly ArrayList actions = new ArrayList();
+        private readonly ArrayList actions = new ArrayList();
 
         public LayoutEventScriptNodeActions(LayoutEvent e) : base(e) {
             foreach (XmlElement elementAction in Element) {
@@ -1236,8 +1092,7 @@ namespace LayoutManager {
 
     [LayoutModule("Common Event Condition Handlers")]
 
-    class CommonEventConditionHandler : LayoutModuleBase {
-
+    internal class CommonEventConditionHandler : LayoutModuleBase {
         #region Event Containers
 
         #region Any - Any condition occured
@@ -1247,7 +1102,7 @@ namespace LayoutManager {
             e.Info = new LayoutEventScriptNodeEventContainerAny(e);
         }
 
-        class LayoutEventScriptNodeEventContainerAny : LayoutEventScriptNodeEventContainer {
+        private class LayoutEventScriptNodeEventContainerAny : LayoutEventScriptNodeEventContainer {
             public LayoutEventScriptNodeEventContainerAny(LayoutEvent e) : base(e) {
             }
 
@@ -1295,7 +1150,7 @@ namespace LayoutManager {
             e.Info = new LayoutEventScriptNodeEventContainerAll(e);
         }
 
-        class LayoutEventScriptNodeEventContainerAll : LayoutEventScriptNodeEventContainer {
+        private class LayoutEventScriptNodeEventContainerAll : LayoutEventScriptNodeEventContainer {
             public LayoutEventScriptNodeEventContainerAll(LayoutEvent e) : base(e) {
             }
 
@@ -1349,8 +1204,8 @@ namespace LayoutManager {
             e.Info = new LayoutEventScriptNodeEventContainerSequence(e);
         }
 
-        class LayoutEventScriptNodeEventContainerSequence : LayoutEventScriptNodeEventContainer {
-            int seqIndex;
+        private class LayoutEventScriptNodeEventContainerSequence : LayoutEventScriptNodeEventContainer {
+            private int seqIndex;
 
             public LayoutEventScriptNodeEventContainerSequence(LayoutEvent e) : base(e) {
             }
@@ -1408,16 +1263,17 @@ namespace LayoutManager {
             e.Info = new LayoutEventScriptNodeEventContainerRepeat(e);
         }
 
-        class LayoutEventScriptNodeEventContainerRepeat : LayoutEventScriptNodeEventContainer {
-            readonly int numberOfIterations;
-            int iterationCount;
-            readonly LayoutEventScriptNodeEventBase repeatedEvent;
+        private class LayoutEventScriptNodeEventContainerRepeat : LayoutEventScriptNodeEventContainer {
+            private const string A_Count = "Count";
+            private readonly int numberOfIterations;
+            private int iterationCount;
+            private readonly LayoutEventScriptNodeEventBase repeatedEvent;
 
             public LayoutEventScriptNodeEventContainerRepeat(LayoutEvent e) : base(e) {
-                if (!Element.HasAttribute("Count"))
+                if (!Element.HasAttribute(A_Count))
                     throw ParseErrorException("Missing iteration count in repeat (Count)");
 
-                numberOfIterations = XmlConvert.ToInt32(Element.GetAttribute("Count"));
+                numberOfIterations = (int)Element.AttributeValue(A_Count);
 
                 if (Element.ChildNodes.Count < 1)
                     throw ParseErrorException("Missing element to repeat");
@@ -1472,13 +1328,15 @@ namespace LayoutManager {
             e.Info = new LayoutEventScriptNodeEventContainerRandomChoice(e);
         }
 
-        class LayoutEventScriptNodeEventContainerRandomChoice : LayoutEventScriptNodeEventContainer {
-            readonly List<ChoiceEntry> choices = new List<ChoiceEntry>();
-            LayoutEventScriptNodeEventBase? chosenNode;
+        private class LayoutEventScriptNodeEventContainerRandomChoice : LayoutEventScriptNodeEventContainer {
+            private const string A_Choice = "Choice";
+            private const string A_Weight = "Weight";
+            private readonly List<ChoiceEntry> choices = new List<ChoiceEntry>();
+            private LayoutEventScriptNodeEventBase? chosenNode;
 
             public LayoutEventScriptNodeEventContainerRandomChoice(LayoutEvent e) : base(e) {
-                foreach (XmlElement choiceElement in Element.GetElementsByTagName("Choice")) {
-                    int weight = XmlConvert.ToInt32(choiceElement.GetAttribute("Weight"));
+                foreach (XmlElement choiceElement in Element.GetElementsByTagName(A_Choice)) {
+                    var weight = (int)choiceElement.AttributeValue(A_Weight);
                     var node = (LayoutEventScriptNodeEventBase?)Parse((XmlElement)choiceElement.ChildNodes[0]);
 
                     if (node != null)
@@ -1541,18 +1399,15 @@ namespace LayoutManager {
                 base.Dispose();
             }
 
-            class ChoiceEntry {
-                readonly int weight;
-                readonly LayoutEventScriptNodeEventBase node;
-
+            private class ChoiceEntry {
                 public ChoiceEntry(int weight, LayoutEventScriptNodeEventBase node) {
-                    this.weight = weight;
-                    this.node = node;
+                    this.Weight = weight;
+                    this.Node = node;
                 }
 
-                public int Weight => weight;
+                public int Weight { get; }
 
-                public LayoutEventScriptNodeEventBase Node => node;
+                public LayoutEventScriptNodeEventBase Node { get; }
             }
         }
 
@@ -1565,8 +1420,8 @@ namespace LayoutManager {
             e.Info = new LayoutEventScriptNodeEventContainerTask(e);
         }
 
-        class LayoutEventScriptNodeEventContainerTask : LayoutEventScriptNodeEventBase {
-            readonly XmlElement taskElement;
+        private class LayoutEventScriptNodeEventContainerTask : LayoutEventScriptNodeEventBase {
+            private readonly XmlElement taskElement;
 
             public LayoutEventScriptNodeEventContainerTask(LayoutEvent e) : base(e) {
                 if (Element.ChildNodes.Count < 1)
@@ -1595,7 +1450,6 @@ namespace LayoutManager {
                 base.Reset();
                 Recalculate();
             }
-
         }
 
         #endregion
@@ -1620,20 +1474,21 @@ namespace LayoutManager {
             e.Info = new LayoutEventScriptNodeEventWait(e);
         }
 
-        class LayoutEventScriptNodeEventWait : LayoutEventScriptNodeEvent {
-            readonly int delay;
-            LayoutDelayedEvent? delayedEvent;
+        private class LayoutEventScriptNodeEventWait : LayoutEventScriptNodeEvent {
+            private const string A_MilliSeconds = "MilliSeconds";
+            private const string A_Seconds = "Seconds";
+            private const string A_Minutes = "Minutes";
+            private const string A_RandomSeconds = "RandomSeconds";
+            private readonly int delay;
+            private LayoutDelayedEvent? delayedEvent;
 
             public LayoutEventScriptNodeEventWait(LayoutEvent e) : base(e) {
-                if (Element.HasAttribute("MilliSeconds"))
-                    delay += XmlConvert.ToInt32(Element.GetAttribute("MilliSeconds"));
-                if (Element.HasAttribute("Seconds"))
-                    delay += XmlConvert.ToInt32(Element.GetAttribute("Seconds")) * 1000;
-                if (Element.HasAttribute("Minutes"))
-                    delay += XmlConvert.ToInt32(Element.GetAttribute("Minutes")) * 1000 * 60;
+                delay = ((int?)Element.AttributeValue(A_MilliSeconds) ?? 0) +
+                    ((int?)Element.AttributeValue(A_Seconds) ?? 0) * 1000 +
+                    ((int?)Element.AttributeValue(A_Minutes) ?? 0) * 1000 * 60;
 
-                if (Element.HasAttribute("RandomSeconds"))
-                    delay += new Random().Next(XmlConvert.ToInt32(Element.GetAttribute("RandomSeconds")) * 1000);
+                if (Element.HasAttribute(A_RandomSeconds))
+                    delay += new Random().Next((int)Element.AttributeValue(A_RandomSeconds) * 1000);
             }
 
             public override void Reset() {
@@ -1695,7 +1550,7 @@ namespace LayoutManager {
             e.Info = new LayoutEventScriptNodeEventDoNow(e);
         }
 
-        class LayoutEventScriptNodeEventDoNow : LayoutEventScriptNodeEvent {
+        private class LayoutEventScriptNodeEventDoNow : LayoutEventScriptNodeEvent {
             public LayoutEventScriptNodeEventDoNow(LayoutEvent e) : base(e) {
             }
 
@@ -1721,7 +1576,6 @@ namespace LayoutManager {
         }
 
         public class LayoutEventScriptNodeConditionContainerAnd : LayoutEventScriptNodeConditionContainer {
-
             public LayoutEventScriptNodeConditionContainerAnd(LayoutEvent e) : base(e) {
             }
 
@@ -1741,7 +1595,6 @@ namespace LayoutManager {
         }
 
         public class LayoutEventScriptNodeConditionContainerOr : LayoutEventScriptNodeConditionContainer {
-
             public LayoutEventScriptNodeConditionContainerOr(LayoutEvent e) : base(e) {
             }
 
@@ -1761,7 +1614,6 @@ namespace LayoutManager {
         }
 
         public class LayoutEventScriptNodeConditionContainerNot : LayoutEventScriptNodeConditionContainer {
-
             public LayoutEventScriptNodeConditionContainerNot(LayoutEvent e) : base(e) {
                 if (Conditions.Count != 1)
                     throw ParseErrorException("Invalid number of sub-conditions for 'not'");
@@ -1777,7 +1629,7 @@ namespace LayoutManager {
         #region Base class for If conditions
 
         public abstract class LayoutEventScriptNodeIf : LayoutEventScriptNodeCondition {
-            public LayoutEventScriptNodeIf(LayoutEvent e) : base(e) {
+            protected LayoutEventScriptNodeIf(LayoutEvent e) : base(e) {
             }
 
             public override bool IsTrue {
@@ -1819,25 +1671,23 @@ namespace LayoutManager {
             e.Info = new LayoutEventScriptNodeIfString(e);
         }
 
-
         public class LayoutEventScriptNodeIfString : LayoutEventScriptNodeIf {
-
             public LayoutEventScriptNodeIfString(LayoutEvent e) : base(e) {
             }
 
-            protected override bool Compare(object? oOperand1, string compareOperation, object? oOperand2) {
-                if (oOperand1 == null || oOperand2 == null)
+            protected override bool Compare(object? operand1, string compareOperator, object? operand2) {
+                if (operand1 == null || operand2 == null)
                     return false;
 
-                var operand1 = oOperand1.ToString();
-                var operand2 = oOperand2.ToString();
+                var s1 = operand1.ToString();
+                var s2 = operand2.ToString();
 
-                return compareOperation switch
+                return compareOperator switch
                 {
-                    "Equal" => operand1 == operand2,
-                    "NotEqual" => operand1 != operand2,
-                    "Match" => System.Text.RegularExpressions.Regex.IsMatch(operand1, operand2),
-                    _ => throw new ArgumentException("Invalid compare operation: " + compareOperation)
+                    "Equal" => s1 == s2,
+                    "NotEqual" => s1 != s2,
+                    "Match" => System.Text.RegularExpressions.Regex.IsMatch(s1, s2),
+                    _ => throw new ArgumentException("Invalid compare operation: " + compareOperator)
                 };
             }
         }
@@ -1851,9 +1701,7 @@ namespace LayoutManager {
             e.Info = new LayoutEventScriptNodeIfNumber(e);
         }
 
-
         public class LayoutEventScriptNodeIfNumber : LayoutEventScriptNodeIf {
-
             public LayoutEventScriptNodeIfNumber(LayoutEvent e) : base(e) {
             }
 
@@ -1866,22 +1714,22 @@ namespace LayoutManager {
                     return (int)rawNumber;
             }
 
-            protected override bool Compare(object? rawOperand1, string compareOperation, object? rawOperand2) {
-                if (rawOperand1 == null || rawOperand2 == null)
+            protected override bool Compare(object? operand1, string compareOperator, object? operand2) {
+                if (operand1 == null || operand2 == null)
                     return false;
 
-                int operand1 = GetNumber(rawOperand1);
-                int operand2 = GetNumber(rawOperand2);
+                int i1 = GetNumber(operand1);
+                int i2 = GetNumber(operand2);
 
-                return compareOperation switch
+                return compareOperator switch
                 {
-                    "eq" => operand1 == operand2,
-                    "ne" => operand1 != operand2,
-                    "gt" => operand1 > operand2,
-                    "ge" => operand1 >= operand2,
-                    "le" => operand1 <= operand2,
-                    "lt" => operand1 < operand2,
-                    _ => throw new ArgumentException("Invalid compare operation: " + compareOperation)
+                    "eq" => i1 == i2,
+                    "ne" => i1 != i2,
+                    "gt" => i1 > i2,
+                    "ge" => i1 >= i2,
+                    "le" => i1 <= i2,
+                    "lt" => i1 < i2,
+                    _ => throw new ArgumentException("Invalid compare operation: " + compareOperator)
                 };
             }
         }
@@ -1895,9 +1743,7 @@ namespace LayoutManager {
             e.Info = new LayoutEventScriptNodeIfBoolean(e);
         }
 
-
         public class LayoutEventScriptNodeIfBoolean : LayoutEventScriptNodeIf {
-
             public LayoutEventScriptNodeIfBoolean(LayoutEvent e) : base(e) {
             }
 
@@ -1910,18 +1756,18 @@ namespace LayoutManager {
                 };
             }
 
-            protected override bool Compare(object? rawOperand1, string compareOperation, object? rawOperand2) {
-                if (rawOperand1 == null || rawOperand2 == null)
+            protected override bool Compare(object? operand1, string compareOperator, object? operand2) {
+                if (operand1 == null || operand2 == null)
                     return false;
 
-                bool operand1 = getValue(rawOperand1);
-                bool operand2 = getValue(rawOperand2);
+                bool v1 = getValue(operand1);
+                bool v2 = getValue(operand2);
 
-                return compareOperation switch
+                return compareOperator switch
                 {
-                    "Equal" => operand1 == operand2,
-                    "NotEqual" => operand1 != operand2,
-                    _ => throw new ArgumentException("Invalid compare operation: " + compareOperation)
+                    "Equal" => v1 == v2,
+                    "NotEqual" => v1 != v2,
+                    _ => throw new ArgumentException("Invalid compare operation: " + compareOperator)
                 };
             }
         }
@@ -1960,10 +1806,10 @@ namespace LayoutManager {
         }
 
         public class LayoutEventScriptNodeIfTime : LayoutEventScriptNodeCondition {
-            readonly IIfTimeNode[] seconds;
-            readonly IIfTimeNode[] minutes;
-            readonly IIfTimeNode[] hours;
-            readonly IIfTimeNode[] dayOfWeek;
+            private readonly IIfTimeNode[] seconds;
+            private readonly IIfTimeNode[] minutes;
+            private readonly IIfTimeNode[] hours;
+            private readonly IIfTimeNode[] dayOfWeek;
 
             public LayoutEventScriptNodeIfTime(LayoutEvent e) : base(e) {
                 seconds = ParseTimeConstraint(Element, "Seconds");
@@ -2009,66 +1855,41 @@ namespace LayoutManager {
                     return new IfTimeNode(e);
             }
 
-            class IfTimeNode : IIfTimeNode {
-                readonly XmlElement element;
+            private class IfTimeNode : IIfTimeNode {
+                private const string A_Value = "Value";
+                private const string A_From = "From";
+                private const string A_To = "To";
 
                 public IfTimeNode(XmlElement element) {
-                    this.element = element;
+                    this.Element = element;
                 }
 
-                public XmlElement Element => element;
+                public XmlElement Element { get; }
                 public XmlElement? OptionalElement => Element;
 
-                public bool IsRange => element.HasAttribute("From");
+                public bool IsRange => Element.HasAttribute(A_From);
 
                 public int Value {
-                    get {
-                        return XmlConvert.ToInt32(Element.GetAttribute("Value"));
-                    }
-
-                    set {
-                        Element.SetAttribute("Value", XmlConvert.ToString(value));
-                    }
+                    get => (int)Element.AttributeValue(A_Value);
+                    set => Element.SetAttribute(A_Value, value);
                 }
 
                 public int From {
-                    get {
-                        return XmlConvert.ToInt32(element.GetAttribute("From"));
-                    }
-
-                    set {
-                        element.SetAttribute("From", XmlConvert.ToString(value));
-                    }
+                    get => (int)Element.AttributeValue(A_From);
+                    set => Element.SetAttribute(A_From, value);
                 }
 
                 public int To {
-                    get {
-                        return XmlConvert.ToInt32(element.GetAttribute("To"));
-                    }
-
-                    set {
-                        element.SetAttribute("To", XmlConvert.ToString(value));
-                    }
+                    get => (int)Element.AttributeValue(A_To);
+                    set => Element.SetAttribute(A_To, value);
                 }
 
-                public bool InRange(int x) {
-                    if (IsRange)
-                        return From <= x && x <= To;
-                    else
-                        return x == Value;
-                }
+                public bool InRange(int v) => IsRange ? From <= v && v <= To : v == Value;
 
-                public virtual string Description {
-                    get {
-                        if (IsRange)
-                            return From.ToString() + "-" + To.ToString();
-                        else
-                            return Value.ToString();
-                    }
-                }
+                public virtual string Description => IsRange ? From.ToString() + "-" + To.ToString() : Value.ToString();
             }
 
-            class IfTimeDayOfWeekNode : IfTimeNode {
+            private class IfTimeDayOfWeekNode : IfTimeNode {
                 public IfTimeDayOfWeekNode(XmlElement element) : base(element) {
                 }
 
@@ -2106,16 +1927,11 @@ namespace LayoutManager {
                     if (symbolValue == null)
                         return false;
 
-                    if (Element.HasAttribute("Attribute")) {
-                        if (symbolValue is IObjectHasAttributes symbolWithAttributes && symbolWithAttributes.Attributes.ContainsKey(Element.GetAttribute("Attribute")))
-                            return true;
-                        return false;
-                    }
-                    else
-                        return true;
+                    return Element.HasAttribute("Attribute")
+                        ? symbolValue is IObjectHasAttributes symbolWithAttributes && symbolWithAttributes.Attributes.ContainsKey(Element.GetAttribute("Attribute"))
+                        : true;
                 }
             }
-
         }
 
         #endregion
@@ -2140,8 +1956,7 @@ namespace LayoutManager {
             e.Info = new LayoutEventScriptNodeActionShowMessage(e);
         }
 
-        class LayoutEventScriptNodeActionShowMessage : LayoutEventScriptNodeAction {
-
+        private class LayoutEventScriptNodeActionShowMessage : LayoutEventScriptNodeAction {
             public LayoutEventScriptNodeActionShowMessage(LayoutEvent e) : base(e) {
             }
 
@@ -2204,13 +2019,12 @@ namespace LayoutManager {
                 object? subject = Context["Train"];
 
                 switch (Element.GetAttribute("MessageType")) {
-
                     case "Error":
                         LayoutModuleBase.Error(subject, messageText);
                         break;
 
-                    default:
                     case "Message":
+                    default:
                         LayoutModuleBase.Message(subject, messageText);
                         break;
 
@@ -2230,14 +2044,18 @@ namespace LayoutManager {
             e.Info = new LayoutEventScriptNodeActionSetAttribute(e);
         }
 
-        class LayoutEventScriptNodeActionSetAttribute : LayoutEventScriptNodeAction {
+        private class LayoutEventScriptNodeActionSetAttribute : LayoutEventScriptNodeAction {
+            private const string A_SetTo = "SetTo";
+            private const string A_Value = "Value";
+            private const string A_Symbol = "Symbol";
+            private const string A_Attribute = "Attribute";
 
             public LayoutEventScriptNodeActionSetAttribute(LayoutEvent e) : base(e) {
             }
 
             public override void Execute() {
-                var symbol = Element.GetAttribute("Symbol");
-                var attribute = Element.GetAttribute("Attribute");
+                var symbol = Element.GetAttribute(A_Symbol);
+                var attribute = Element.GetAttribute(A_Attribute);
                 object? symbolValue = Context[symbol];
 
                 if (symbolValue == null)
@@ -2246,16 +2064,16 @@ namespace LayoutManager {
                 if (!(symbolValue is IObjectHasAttributes symbolWithAttributes))
                     throw new ArgumentException("The object named " + symbol + " does not support attributes");
 
-                string setTo = Element.GetAttribute("SetTo");
-                AttributesInfo attributes = symbolWithAttributes.Attributes;
+                var setTo = Element.GetAttribute(A_SetTo);
+                var attributes = symbolWithAttributes.Attributes;
 
                 switch (setTo) {
                     case "Text":
-                        attributes[attribute] = Element.GetAttribute("Value");
+                        attributes[attribute] = Element.GetAttribute(A_Value);
                         break;
 
                     case "Number":
-                        int number = XmlConvert.ToInt32(Element.GetAttribute("Value"));
+                        var number = (int)Element.AttributeValue(A_Value);
 
                         if (Element.GetAttribute("Op") == "Add") {
                             var oldValue = attributes[attribute];
@@ -2268,7 +2086,7 @@ namespace LayoutManager {
                         break;
 
                     case "Boolean":
-                        bool boolean = XmlConvert.ToBoolean(Element.GetAttribute("Value"));
+                        var boolean = (bool)Element.AttributeValue(A_Value);
 
                         attributes[attribute] = boolean;
                         break;
@@ -2307,8 +2125,7 @@ namespace LayoutManager {
             e.Info = new LayoutEventScriptNodeActionGenerateEvent(e);
         }
 
-        class LayoutEventScriptNodeActionGenerateEvent : LayoutEventScriptNodeAction {
-
+        private class LayoutEventScriptNodeActionGenerateEvent : LayoutEventScriptNodeAction {
             public LayoutEventScriptNodeActionGenerateEvent(LayoutEvent e) : base(e) {
             }
 

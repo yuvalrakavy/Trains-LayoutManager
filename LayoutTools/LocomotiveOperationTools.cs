@@ -17,8 +17,7 @@ namespace LayoutManager.Tools {
     /// </summary>
     [LayoutModule("Locomotive Operation Tools", UserControl = false)]
     public class LocomotiveOperationTools: ILayoutModuleSetup {
-
-        enum PlacementProblem {
+        private enum PlacementProblem {
             NoProblem, NoAddress, AddressAlreadyUsed, Unknown
         };
 
@@ -58,7 +57,6 @@ namespace LayoutManager.Tools {
                         break;
                     }
                     else {
-
                         if (!areaToBlockList.TryGetValue(blockInfo.Spot.Area, out List<LayoutBlockDefinitionComponent> blocksInArea)) {
                             blocksInArea = new List<LayoutBlockDefinitionComponent>();
                             areaToBlockList[blockInfo.Spot.Area] = blocksInArea;
@@ -178,7 +176,6 @@ namespace LayoutManager.Tools {
                 if (context != null)
                     m.MenuItems.Add("Cancel " + context.Description, (s, ea) => context.Cancel());
                 else {
-
                     var locomotiveProgrammingMenu = new MenuItem("&Program locomotive");
 
                     EventManager.Event(new LayoutEvent<LocomotiveInfo, Menu>("add-locomotive-programming-menu-entries", locomotive, locomotiveProgrammingMenu));
@@ -324,8 +321,8 @@ namespace LayoutManager.Tools {
 
         #region Locate Locomotive menu item
 
-        class LocateLocomotiveMenuItem : MenuItem {
-            readonly LayoutBlockDefinitionComponent blockInfo;
+        private class LocateLocomotiveMenuItem : MenuItem {
+            private readonly LayoutBlockDefinitionComponent blockInfo;
 
             public LocateLocomotiveMenuItem(LayoutBlockDefinitionComponent blockInfo) {
                 this.blockInfo = blockInfo;
@@ -348,9 +345,9 @@ namespace LayoutManager.Tools {
         /// <summary>
         /// Menu item for placing locomotive on track
         /// </summary>
-        class PlaceOnTrackMenuItem : MenuItem {
-            readonly XmlElement placedElement;
-            readonly LayoutBlockDefinitionComponent blockInfo;
+        private class PlaceOnTrackMenuItem : MenuItem {
+            private readonly XmlElement placedElement;
+            private readonly LayoutBlockDefinitionComponent blockInfo;
 
             public PlaceOnTrackMenuItem(XmlElement placedElement, LayoutBlockDefinitionComponent blockInfo) {
                 this.placedElement = placedElement;
@@ -371,7 +368,7 @@ namespace LayoutManager.Tools {
         #region Remove from track menu item
 
         public class RemoveFromTrackMenuItem : MenuItem {
-            readonly TrainStateInfo train;
+            private readonly TrainStateInfo train;
 
             public RemoveFromTrackMenuItem(TrainStateInfo train) {
                 this.train = train;
@@ -395,7 +392,7 @@ namespace LayoutManager.Tools {
         }
 
         public class CancelTrainRemovalMenuItem : MenuItem {
-            readonly TrainStateInfo train;
+            private readonly TrainStateInfo train;
 
             public CancelTrainRemovalMenuItem(TrainStateInfo train) {
                 this.train = train;
@@ -415,7 +412,7 @@ namespace LayoutManager.Tools {
         #region Train properties menu item
 
         public class TrainPropertiesMenuItem : MenuItem {
-            readonly TrainStateInfo train;
+            private readonly TrainStateInfo train;
 
             public TrainPropertiesMenuItem(TrainStateInfo train) {
                 this.train = train;
@@ -433,7 +430,7 @@ namespace LayoutManager.Tools {
         #region Show locomotive controller menu item
 
         public class ShowLocomotiveControllerMenuItem : MenuItem {
-            readonly TrainStateInfo state;
+            private readonly TrainStateInfo state;
 
             public ShowLocomotiveControllerMenuItem(TrainStateInfo state) {
                 this.state = state;
@@ -452,7 +449,6 @@ namespace LayoutManager.Tools {
                 }
             }
         }
-
 
         #endregion
 

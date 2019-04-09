@@ -8,14 +8,12 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
     /// Summary description for WaitForEvent.
     /// </summary>
     public class WaitForEvent : Form, IObjectHasXml {
+        private const string A_Name = "Name";
+        private const string A_LimitToScope = "LimitToScope";
         private Label label1;
         private ComboBox comboBoxEvent;
         private Button buttonOK;
         private Button buttonCancel;
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        readonly XmlElement element;
         private CheckBox checkBoxLimitedToScope;
 
         #pragma warning disable nullable
@@ -25,23 +23,18 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             //
             InitializeComponent();
 
-            this.element = element;
+            this.Element = element;
 
-            if (element.HasAttribute("Name"))
-                comboBoxEvent.Text = element.GetAttribute("Name");
-
-            if (element.HasAttribute("LimitToScope") && XmlConvert.ToBoolean(element.GetAttribute("LimitToScope")) == false)
-                checkBoxLimitedToScope.Checked = false;
-            else
-                checkBoxLimitedToScope.Checked = true;
+            comboBoxEvent.Text = (string?)element.AttributeValue(A_Name) ?? "";
+            checkBoxLimitedToScope.Checked = (bool?)element.AttributeValue(A_LimitToScope) ?? true;
 
             // Populate the combobox with possible event that have notification role
             foreach (LayoutEventDefAttribute eventDef in EventManager.Instance.GetEventDefinitions(LayoutEventRole.Notification))
                 comboBoxEvent.Items.Add(eventDef.Name);
         }
-        #pragma warning restore nullable
+#pragma warning restore nullable
 
-        public XmlElement Element => element;
+        public XmlElement Element { get; }
         public XmlElement? OptionalElement => Element;
 
         #region Windows Form Designer generated code
@@ -116,7 +109,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.ShowInTaskbar = false;
             this.Text = "Wait For Event";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -127,13 +119,8 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
                 return;
             }
 
-            Element.SetAttribute("Name", comboBoxEvent.Text);
-
-            if (!checkBoxLimitedToScope.Checked)
-                Element.SetAttribute("LimitToScope", XmlConvert.ToString(false));
-            else
-                Element.RemoveAttribute("LimitToScope");
-
+            Element.SetAttribute(A_Name, comboBoxEvent.Text);
+            Element.SetAttribute(A_LimitToScope, checkBoxLimitedToScope.Checked, removeIf: true);
             DialogResult = DialogResult.OK;
             Close();
         }

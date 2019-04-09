@@ -37,14 +37,13 @@ namespace Intellibox.Dialogs {
         private ColumnHeader columnHeaderSOnumber;
         private ColumnHeader columnHeaderSOvalue;
         private ColumnHeader columnHeaderSOdescription;
-        readonly IntelliboxComponent _component;
-        readonly LayoutXmlInfo _xmlInfo;
+        private readonly IntelliboxComponent _component;
         private GroupBox groupBox2;
         private Label label7;
         private TextBox textBoxOperationModeDebounceCount;
         private Label label6;
         private TextBox textBoxDesignTimeDebounceCount;
-        readonly SOcollection _SOcollection;
+        private readonly SOcollection _SOcollection;
 
         public CentralStationProperties(IntelliboxComponent component) {
             //
@@ -53,15 +52,15 @@ namespace Intellibox.Dialogs {
             InitializeComponent();
 
             this._component = component;
-            this._xmlInfo = new LayoutXmlInfo(component);
-            this._SOcollection = new SOcollection(_xmlInfo.Element);
+            this.XmlInfo = new LayoutXmlInfo(component);
+            this._SOcollection = new SOcollection(XmlInfo.Element);
 
-            IntelliboxComponentInfo Info = new IntelliboxComponentInfo(component, _xmlInfo.Element);
+            IntelliboxComponentInfo Info = new IntelliboxComponentInfo(component, XmlInfo.Element);
 
-            nameDefinition.XmlInfo = this._xmlInfo;
+            nameDefinition.XmlInfo = this.XmlInfo;
 
             if (component.LayoutEmulationSupported)
-                layoutEmulationSetup.Element = _xmlInfo.DocumentElement;
+                layoutEmulationSetup.Element = XmlInfo.DocumentElement;
             else
                 layoutEmulationSetup.Visible = false;
 
@@ -88,7 +87,7 @@ namespace Intellibox.Dialogs {
             }
         }
 
-        public LayoutXmlInfo XmlInfo => _xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         /// <summary>
         /// Clean up any resources being used.
@@ -461,13 +460,12 @@ namespace Intellibox.Dialogs {
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
-
         }
         #endregion
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
             if (nameDefinition.Commit()) {
-                LayoutTextInfo myName = new LayoutTextInfo(_xmlInfo.DocumentElement, "Name");
+                LayoutTextInfo myName = new LayoutTextInfo(XmlInfo.DocumentElement, "Name");
 
                 foreach (IModelComponentIsCommandStation otherCommandStation in LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All)) {
                     if (otherCommandStation.NameProvider.Name == myName.Name && otherCommandStation.Id != _component.Id) {
@@ -485,8 +483,7 @@ namespace Intellibox.Dialogs {
                     return;
             }
 
-            IntelliboxComponentInfo info = new IntelliboxComponentInfo(_component, _xmlInfo.Element);
-
+            IntelliboxComponentInfo info = new IntelliboxComponentInfo(_component, XmlInfo.Element);
 
             if (!int.TryParse(textBoxPollingPeriod.Text, out int pollingPeriod)) {
                 MessageBox.Show(this, "Invalid number", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -494,20 +491,17 @@ namespace Intellibox.Dialogs {
                 return;
             }
 
-
             if (!int.TryParse(textBoxSwitchingTime.Text, out int switchingTime)) {
                 MessageBox.Show(this, "Invalid number", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxSwitchingTime.Focus();
                 return;
             }
 
-
             if (!byte.TryParse(textBoxOperationModeDebounceCount.Text, out byte operationDebounceCount)) {
                 MessageBox.Show(this, "Invalid number", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxOperationModeDebounceCount.Focus();
                 return;
             }
-
 
             if (!byte.TryParse(textBoxDesignTimeDebounceCount.Text, out byte designTimeDebounceCount)) {
                 MessageBox.Show(this, "Invalid number", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -529,33 +523,31 @@ namespace Intellibox.Dialogs {
         }
 
         private void buttonSettings_Click(object sender, EventArgs e) {
-            string modeString = _xmlInfo.DocumentElement["ModeString"].InnerText;
+            string modeString = XmlInfo.DocumentElement["ModeString"].InnerText;
 
             using (LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString)) {
                 if (d.ShowDialog(this) == DialogResult.OK)
-                    _xmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
+                    XmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
             }
         }
 
         #region SOitem
 
-        class SOitem : ListViewItem {
-            readonly SOinfo _so;
-
+        private class SOitem : ListViewItem {
             public SOitem(SOinfo so) {
-                _so = so;
+                SOinfo = so;
                 SubItems.Add("");
                 SubItems.Add("");
                 Update();
             }
 
             public void Update() {
-                SubItems[0].Text = _so.Number.ToString();
-                SubItems[1].Text = _so.Value.ToString();
-                SubItems[2].Text = _so.Description;
+                SubItems[0].Text = SOinfo.Number.ToString();
+                SubItems[1].Text = SOinfo.Value.ToString();
+                SubItems[2].Text = SOinfo.Description;
             }
 
-            public SOinfo SOinfo => _so;
+            public SOinfo SOinfo { get; }
         }
 
         #endregion
@@ -613,6 +605,5 @@ namespace Intellibox.Dialogs {
         private void listViewSO_SelectedIndexChanged(object sender, EventArgs e) {
             UpdateButtons();
         }
-
     }
 }

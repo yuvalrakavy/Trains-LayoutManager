@@ -9,15 +9,13 @@ using LayoutManager.Components;
 using LayoutManager.CommonUI;
 
 namespace LayoutManager.Tools {
-
     #pragma warning disable IDE0051, IDE0060
     [LayoutModule("Layout Control Tools", UserControl = false)]
-    class LayoutControlTools : LayoutModuleBase {
-
+    internal class LayoutControlTools : LayoutModuleBase {
         #region Component/Control connection manager
 
-        ControlConnectionPointDestination componentToConnect = null;
-        ControlConnectionPointReference controlPointToConnect = null;
+        private ControlConnectionPointDestination componentToConnect = null;
+        private ControlConnectionPointReference controlPointToConnect = null;
 
         [LayoutEvent("request-component-to-control-connect")]
         private void requestComponentToControlConnect(LayoutEvent e) {
@@ -55,7 +53,7 @@ namespace LayoutManager.Tools {
 
         #region Data structures
 
-        class ControlAutoConnectRequest : ICloneable {
+        private class ControlAutoConnectRequest : ICloneable {
             public LayoutPhase Phase { get; set; }                                  // What is the scope of the connection
             public IModelComponentConnectToControl Component { get; set; }          // The component to be connected
             public IModelComponentIsCommandStation CommandStation { get; set; }     // default: If more than one, prompt
@@ -70,7 +68,7 @@ namespace LayoutManager.Tools {
             public LayoutControlModuleLocationComponent ModuleLocation { get; set; }// Find the nearest
             public ModelComponentControlConnectionDescription? ConnectionDescription { get; set; } // The connection's description
 
-            void SetDefaults() {
+            private void SetDefaults() {
                 PromptBeforeAddingModule = true;
                 SetUserActionRequired = true;
                 SetProgrammingRequired = true;
@@ -158,32 +156,29 @@ namespace LayoutManager.Tools {
             #endregion
         }
 
-        struct ModuleLocationDistance : IComparable<ModuleLocationDistance> {
-            readonly LayoutControlModuleLocationComponent _moduleLocation;
-            readonly double _distance;
-
+        private struct ModuleLocationDistance : IComparable<ModuleLocationDistance> {
             public ModuleLocationDistance(IModelComponentConnectToControl aComponent, LayoutControlModuleLocationComponent moduleLocation) {
                 ModelComponent component = (ModelComponent)aComponent;
 
                 Debug.Assert(component.Spot.Area == moduleLocation.Spot.Area);
 
-                this._moduleLocation = moduleLocation;
+                this.ModuleLocation = moduleLocation;
 
                 int dx = moduleLocation.Spot.Location.X - component.Spot.Location.X;
                 int dy = moduleLocation.Spot.Location.Y - component.Spot.Location.Y;
 
-                this._distance = Math.Sqrt(dx * dx + dy * dy);
+                this.Distance = Math.Sqrt(dx * dx + dy * dy);
             }
 
-            public LayoutControlModuleLocationComponent ModuleLocation => _moduleLocation;
+            public LayoutControlModuleLocationComponent ModuleLocation { get; }
 
-            public double Distance => _distance;
+            public double Distance { get; }
 
             #region IComparable<ModuleLocationDistance> Members
 
-            public int CompareTo(ModuleLocationDistance other) => (int)(_distance - other._distance);
+            public int CompareTo(ModuleLocationDistance other) => (int)(Distance - other.Distance);
 
-            public bool Equals(ModuleLocationDistance other) => _moduleLocation == other.ModuleLocation && _distance == other.Distance;
+            public bool Equals(ModuleLocationDistance other) => ModuleLocation == other.ModuleLocation && Distance == other.Distance;
 
             #endregion
         }
@@ -480,7 +475,6 @@ namespace LayoutManager.Tools {
                         }   // found suitable module types for this bus
                     }   // Command station bus scanning loop
 
-
                     connectionPointRef = findConnectionPoint(request);
                 }   // Creating new module
             }
@@ -522,7 +516,7 @@ namespace LayoutManager.Tools {
         /// </summary>
         /// <param name="component">The component</param>
         /// <returns>module location component or null</returns>
-        LayoutControlModuleLocationComponent findNearestModuleLocation(LayoutPhase phase, IModelComponentConnectToControl component) {
+        private LayoutControlModuleLocationComponent findNearestModuleLocation(LayoutPhase phase, IModelComponentConnectToControl component) {
             var areaModuleLocations = LayoutModel.Components<LayoutControlModuleLocationComponent>(phase, c => c.Spot.Area == component.Spot.Area);
 
             if (areaModuleLocations.Any())
@@ -530,7 +524,7 @@ namespace LayoutManager.Tools {
             return null;
         }
 
-        ControlConnectionPointReference findConnectionPoint(ControlAutoConnectRequest request) {
+        private ControlConnectionPointReference findConnectionPoint(ControlAutoConnectRequest request) {
             if (request.Address >= 0) {
                 if (request.Bus == null)
                     throw new LayoutException("Connection type (bus) must be provided when connecting to specific address");
@@ -590,12 +584,11 @@ namespace LayoutManager.Tools {
 
         #region Data structures
 
-        struct LayoutConnectEntry {
-            readonly LayoutControlModuleLocationComponent moduleLocation;
-            readonly List<IModelComponentConnectToControl> components;
+        private struct LayoutConnectEntry {
+            private readonly List<IModelComponentConnectToControl> components;
 
             public LayoutConnectEntry(LayoutControlModuleLocationComponent moduleLocation) {
-                this.moduleLocation = moduleLocation;
+                this.ModuleLocation = moduleLocation;
                 components = new List<IModelComponentConnectToControl>();
             }
 
@@ -636,8 +629,8 @@ namespace LayoutManager.Tools {
             }
 
             public void Sort() {
-                if (moduleLocation != null)
-                    swap(0, findIndexOfNearest(moduleLocation, 0));     // So first component is the closest to the module location
+                if (ModuleLocation != null)
+                    swap(0, findIndexOfNearest(ModuleLocation, 0));     // So first component is the closest to the module location
 
                 for (int i = 0; i < components.Count - 1; i++)
                     swap(i, findIndexOfNearest(components[i], i + 1));
@@ -668,10 +661,10 @@ namespace LayoutManager.Tools {
                     if (components.Count == 0)
                         return null;
 
-                    if (moduleLocation == null)
+                    if (ModuleLocation == null)
                         return GetConnectionPointDestinationRecommendation(components[0]);
                     else
-                        return GetConnectionPointDestinationRecommendation(components[findIndexOfNearest(moduleLocation, 0)]);
+                        return GetConnectionPointDestinationRecommendation(components[findIndexOfNearest(ModuleLocation, 0)]);
                 }
                 else {
                     // Check if the module that the previous component was connected to is full or not
@@ -725,7 +718,7 @@ namespace LayoutManager.Tools {
                     else if (nearestInBus != null)
                         return nearestInBus;
                     else {
-                        if (moduleLocation == null) {
+                        if (ModuleLocation == null) {
                             foreach (IModelComponentConnectToControl component in Components)
                                 if (!component.FullyConnected)
                                     return GetConnectionPointDestinationRecommendation(component);
@@ -739,7 +732,7 @@ namespace LayoutManager.Tools {
                                 if (!component.FullyConnected) {
                                     double distance;
 
-                                    distance = getDistance(moduleLocation, component);
+                                    distance = getDistance(ModuleLocation, component);
                                     if (nearestComponent == null || distance < nearestDistance) {
                                         nearestDistance = distance;
                                         nearestComponent = component;
@@ -756,7 +749,7 @@ namespace LayoutManager.Tools {
                 }
             }
 
-            public LayoutControlModuleLocationComponent ModuleLocation => moduleLocation;
+            public LayoutControlModuleLocationComponent ModuleLocation { get; }
 
             public IList<IModelComponentConnectToControl> Components => components.AsReadOnly();
         }
@@ -882,7 +875,6 @@ namespace LayoutManager.Tools {
 
         [LayoutEvent("tools-menu-open-request", Order = 1000)]
         private void AddCommandStationEventToToolsMenuOpenRequest(LayoutEvent e) {
-
             // Check if it make sense to add this menu entry
             if (LayoutController.IsDesignTimeActivation) {
                 if (LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All).Any(commandStation => commandStation.DesignTimeLayoutActivationSupported)) {
@@ -958,9 +950,7 @@ namespace LayoutManager.Tools {
             IModelComponentConnectToControl component = (IModelComponentConnectToControl)e.Sender;
             Menu menu = (Menu)e.Info;
 
-
             if (component.ControlConnectionDescriptions.Count > 0) {
-
                 if (menu.MenuItems.Count > 0)
                     menu.MenuItems.Add("-");
 
@@ -1002,7 +992,6 @@ namespace LayoutManager.Tools {
 
                             menu.MenuItems.Add(item);
                         }
-
                     }
 
                     ControlConnectionPointDestination pendingComponentConnect = (ControlConnectionPointDestination)EventManager.Event(new LayoutEvent("get-component-to-control-connect", this));
@@ -1151,7 +1140,6 @@ namespace LayoutManager.Tools {
             IModelComponentIsCommandStation thisCommandStation = (IModelComponentIsCommandStation)e.Sender;
             Menu menu = (Menu)e.Info;
 
-
             // Check if this command station can upgrade any other command station
             ArrayList replacableCommandStations = new ArrayList();
             foreach (IModelComponentIsCommandStation otherCommandStation in LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All)) {
@@ -1285,7 +1273,6 @@ namespace LayoutManager.Tools {
                         }
                     }
                 }
-
             }
 
             if (menu.MenuItems.Count > 0)
@@ -1481,9 +1468,9 @@ namespace LayoutManager.Tools {
         }
 
         private class AddControlModuleMenuItem : MenuItem {
-            Guid moduleLocationID;
-            readonly ControlBus bus;
-            readonly ControlModuleType moduleType;
+            private Guid moduleLocationID;
+            private readonly ControlBus bus;
+            private readonly ControlModuleType moduleType;
 
             public AddControlModuleMenuItem(Guid moduleLocationID, ControlBus bus, ControlModuleType moduleType) {
                 this.moduleLocationID = moduleLocationID;
@@ -1543,9 +1530,9 @@ namespace LayoutManager.Tools {
         }
 
         private class InsertControlModuleMenuItem : MenuItem {
-            Guid moduleLocationID;
-            readonly ControlModule insertBefore;
-            readonly ControlModuleType moduleType;
+            private Guid moduleLocationID;
+            private readonly ControlModule insertBefore;
+            private readonly ControlModuleType moduleType;
 
             public InsertControlModuleMenuItem(Guid moduleLocationID, ControlModule insertBefore) {
                 this.moduleLocationID = moduleLocationID;
@@ -1584,7 +1571,7 @@ namespace LayoutManager.Tools {
         }
 
         private class RemoveControlModuleMenuItem : MenuItem {
-            readonly ControlModule module;
+            private readonly ControlModule module;
 
             public RemoveControlModuleMenuItem(ControlModule module) {
                 this.module = module;
@@ -1623,9 +1610,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        class SetControlModuleAddressMenuItem : MenuItem {
-            Guid moduleLocationID;
-            readonly ControlModule module;
+        private class SetControlModuleAddressMenuItem : MenuItem {
+            private Guid moduleLocationID;
+            private readonly ControlModule module;
 
             public SetControlModuleAddressMenuItem(Guid moduleLocationID, ControlModule module) {
                 this.moduleLocationID = moduleLocationID;
@@ -1657,8 +1644,8 @@ namespace LayoutManager.Tools {
         }
 
         private class SetModuleLocationMenuItem : MenuItem {
-            readonly ControlModule module;
-            Guid controlModuleLocationId = Guid.Empty;
+            private readonly ControlModule module;
+            private Guid controlModuleLocationId = Guid.Empty;
 
             public SetModuleLocationMenuItem(bool showAll, ControlModule module) {
                 MenuItem item = new SetModuleLocationMenuItem(module, "(None)", Guid.Empty);
@@ -1705,7 +1692,6 @@ namespace LayoutManager.Tools {
                 Text = name;
             }
 
-
             protected override void OnClick(EventArgs e) {
                 base.OnClick(e);
 
@@ -1715,9 +1701,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        class ManualConnectComponentMenuItem : MenuItem {
-            readonly IModelComponentConnectToControl component;
-            readonly ModelComponentControlConnectionDescription connectionDescription;
+        private class ManualConnectComponentMenuItem : MenuItem {
+            private readonly IModelComponentConnectToControl component;
+            private readonly ModelComponentControlConnectionDescription connectionDescription;
 
             public ManualConnectComponentMenuItem(string text, IModelComponentConnectToControl component, ModelComponentControlConnectionDescription connectionDescription) {
                 this.component = component;
@@ -1729,12 +1715,11 @@ namespace LayoutManager.Tools {
                 EventManager.Event(new LayoutEvent("request-component-to-control-connect", new ControlConnectionPointDestination(component, connectionDescription)));
                 EventManager.Event(new LayoutEvent("show-layout-control", this));
             }
-
         }
 
-        class AutomaticConnectComponentMenuItem : MenuItem {
-            Guid frameWindowId;
-            ControlAutoConnectRequest request = null;
+        private class AutomaticConnectComponentMenuItem : MenuItem {
+            private Guid frameWindowId;
+            private ControlAutoConnectRequest request = null;
 
             public AutomaticConnectComponentMenuItem(Guid frameWindowId, string text, IModelComponentConnectToControl component, ModelComponentControlConnectionDescription connectionDescription) {
                 this.frameWindowId = frameWindowId;
@@ -1742,7 +1727,6 @@ namespace LayoutManager.Tools {
 
                 Initialize(component, connectionDescription);
             }
-
 
             public AutomaticConnectComponentMenuItem(Guid frameWindowId, string text, ControlAutoConnectRequest request) {
                 this.frameWindowId = frameWindowId;
@@ -1787,7 +1771,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-        class ShowConnectionPointMenuItem : MenuItem {
+        private class ShowConnectionPointMenuItem : MenuItem {
             public ShowConnectionPointMenuItem(Guid frameWindowId, string text, ControlConnectionPoint connectionPoint)
                 : base(text, (s, ea) => {
                     EventManager.Event(new LayoutEvent("show-control-connection-point", new ControlConnectionPointReference(connectionPoint)).SetFrameWindow(frameWindowId));
@@ -1795,8 +1779,8 @@ namespace LayoutManager.Tools {
             }
         }
 
-        class DisconnectConnectionPointMenuItem : MenuItem {
-            readonly ControlConnectionPoint connectionPoint;
+        private class DisconnectConnectionPointMenuItem : MenuItem {
+            private readonly ControlConnectionPoint connectionPoint;
 
             public DisconnectConnectionPointMenuItem(string text, ControlConnectionPoint connectionPoint) {
                 this.connectionPoint = connectionPoint;
@@ -1810,7 +1794,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-        class CancelPendingConnectMenuItem : MenuItem {
+        private class CancelPendingConnectMenuItem : MenuItem {
             public CancelPendingConnectMenuItem() {
                 Text = "Cancel component to control connect";
             }
@@ -1820,10 +1804,10 @@ namespace LayoutManager.Tools {
             }
         }
 
-        class ConnectControlConnectionPointMenuItem : MenuItem {
-            readonly ControlConnectionPointReference connectionPoint;
-            readonly IModelComponentConnectToControl component;
-            readonly ModelComponentControlConnectionDescription connectionDescription;
+        private class ConnectControlConnectionPointMenuItem : MenuItem {
+            private readonly ControlConnectionPointReference connectionPoint;
+            private readonly IModelComponentConnectToControl component;
+            private readonly ModelComponentControlConnectionDescription connectionDescription;
 
             public ConnectControlConnectionPointMenuItem(string text, ControlConnectionPointReference connectionPoint, IModelComponentConnectToControl component, ModelComponentControlConnectionDescription connectionDescription) {
                 this.connectionPoint = connectionPoint;
@@ -1845,7 +1829,7 @@ namespace LayoutManager.Tools {
         }
 
         public class DisconnectComponentMenuItem : MenuItem {
-            readonly ControlConnectionPoint connectionPoint;
+            private readonly ControlConnectionPoint connectionPoint;
 
             public DisconnectComponentMenuItem(ControlConnectionPoint connectionPoint) {
                 this.connectionPoint = connectionPoint;
@@ -1875,7 +1859,7 @@ namespace LayoutManager.Tools {
         }
 
         public class ConnectConnectionPointMenuItem : MenuItem {
-            readonly ControlConnectionPointReference connectionPoint;
+            private readonly ControlConnectionPointReference connectionPoint;
 
             public ConnectConnectionPointMenuItem(ControlConnectionPointReference connectionPoint) {
                 this.connectionPoint = connectionPoint;
@@ -1890,8 +1874,8 @@ namespace LayoutManager.Tools {
         }
 
         public class ConnectBusToAnotherCommandStation : MenuItem {
-            readonly ControlBus bus;
-            readonly IModelComponentIsCommandStation commandStation;
+            private readonly ControlBus bus;
+            private readonly IModelComponentIsCommandStation commandStation;
 
             public ConnectBusToAnotherCommandStation(ControlBus bus, IModelComponentIsCommandStation commandStation, string text) {
                 this.bus = bus;
@@ -1908,8 +1892,8 @@ namespace LayoutManager.Tools {
         }
 
         public class ReplaceCommandStationMenuItem : MenuItem {
-            readonly IModelComponentIsCommandStation thisCommandStation;
-            readonly IModelComponentIsCommandStation otherCommandStation;
+            private readonly IModelComponentIsCommandStation thisCommandStation;
+            private readonly IModelComponentIsCommandStation otherCommandStation;
 
             public ReplaceCommandStationMenuItem(IModelComponentIsCommandStation thisCommandStation, IModelComponentIsCommandStation otherCommandStation, string text) {
                 this.thisCommandStation = thisCommandStation;
@@ -1946,8 +1930,8 @@ namespace LayoutManager.Tools {
         }
 
         public class MoveControlModuleInDaisyChainMenuItem : MenuItem {
-            readonly ControlModule module;
-            readonly int delta;
+            private readonly ControlModule module;
+            private readonly int delta;
 
             public MoveControlModuleInDaisyChainMenuItem(ControlModule module, int delta, string text) {
                 this.module = module;
@@ -1967,7 +1951,7 @@ namespace LayoutManager.Tools {
         }
 
         public class SetModuleLabelMenuItem : MenuItem {
-            readonly ControlModule module;
+            private readonly ControlModule module;
 
             public SetModuleLabelMenuItem(ControlModule module) {
                 this.module = module;
@@ -1987,7 +1971,7 @@ namespace LayoutManager.Tools {
         }
 
         public class ToggleUserActionRequiredMenuItem : MenuItem {
-            readonly IControlSupportUserAction subject;
+            private readonly IControlSupportUserAction subject;
 
             public ToggleUserActionRequiredMenuItem(IControlSupportUserAction subject) {
                 this.subject = subject;
@@ -2023,7 +2007,7 @@ namespace LayoutManager.Tools {
         }
 
         public class ClearAllUserActionRequiredMenuItem : MenuItem {
-            readonly DrawControlBase drawObject;
+            private readonly DrawControlBase drawObject;
 
             public ClearAllUserActionRequiredMenuItem(DrawControlBase drawObject) {
                 this.drawObject = drawObject;

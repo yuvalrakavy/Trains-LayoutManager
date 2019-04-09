@@ -8,6 +8,10 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
     /// Summary description for WaitCondition.
     /// </summary>
     public class WaitCondition : Form {
+        private const string A_Minutes = "Minutes";
+        private const string A_Seconds = "Seconds";
+        private const string A_RandomSeconds = "RandomSeconds";
+        private const string A_IsError = "IsError";
         private Label label1;
         private Label label2;
         private Label label3;
@@ -19,11 +23,12 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private CheckBox checkBoxRadomWait;
         private NumericUpDown numericUpDownRandomSeconds;
         private CheckBox checkBoxErrorState;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly XmlElement conditionElement;
+        private readonly XmlElement conditionElement;
 
         public WaitCondition(XmlElement conditionElement) {
             //
@@ -33,23 +38,17 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
             this.conditionElement = conditionElement;
 
-            if (conditionElement.HasAttribute("Minutes"))
-                numericUpDownMinutes.Value = XmlConvert.ToDecimal(conditionElement.GetAttribute("Minutes"));
-            if (conditionElement.HasAttribute("Seconds"))
-                numericUpDownSeconds.Value = XmlConvert.ToDecimal(conditionElement.GetAttribute("Seconds"));
+            numericUpDownMinutes.Value = (decimal?)conditionElement.AttributeValue(A_Minutes) ?? 0;
+            numericUpDownSeconds.Value = (decimal?)conditionElement.AttributeValue(A_Seconds) ?? 0;
 
-            if (conditionElement.HasAttribute("RandomSeconds")) {
+            if (conditionElement.HasAttribute(A_RandomSeconds)) {
                 checkBoxRadomWait.Checked = true;
-                numericUpDownRandomSeconds.Value = XmlConvert.ToDecimal(conditionElement.GetAttribute("RandomSeconds"));
+                numericUpDownRandomSeconds.Value = (decimal?)conditionElement.AttributeValue(A_RandomSeconds) ?? 0;
             }
             else
                 checkBoxRadomWait.Checked = false;
 
-            if (conditionElement.HasAttribute("IsError"))
-                checkBoxErrorState.Checked = XmlConvert.ToBoolean(conditionElement.GetAttribute("IsError"));
-            else
-                checkBoxErrorState.Checked = false;
-
+            checkBoxErrorState.Checked = (bool?)conditionElement.AttributeValue(A_IsError) ?? false;
             updateButtons(null, null);
         }
 
@@ -224,7 +223,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSeconds)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRandomSeconds)).EndInit();
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -233,26 +231,16 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         }
 
         private void buttonOk_Click(object sender, System.EventArgs e) {
-            if (numericUpDownMinutes.Value != 0)
-                conditionElement.SetAttribute("Minutes", XmlConvert.ToString(numericUpDownMinutes.Value));
-            else
-                conditionElement.RemoveAttribute("Minutes");
-
-            if (numericUpDownSeconds.Value != 0)
-                conditionElement.SetAttribute("Seconds", XmlConvert.ToString(numericUpDownSeconds.Value));
-            else
-                conditionElement.RemoveAttribute("Seconds");
+            conditionElement.SetAttribute(A_Minutes, (int)numericUpDownMinutes.Value, removeIf: 0);
+            conditionElement.SetAttribute(A_Seconds, (int)numericUpDownRandomSeconds.Value, removeIf: 0);
+            conditionElement.SetAttribute(A_RandomSeconds, (int)numericUpDownRandomSeconds.Value);
 
             if (checkBoxRadomWait.Checked)
-                conditionElement.SetAttribute("RandomSeconds", XmlConvert.ToString(numericUpDownRandomSeconds.Value));
+                conditionElement.SetAttribute(A_RandomSeconds, (int)numericUpDownRandomSeconds.Value);
             else
-                conditionElement.RemoveAttribute("RandomSeconds");
+                conditionElement.RemoveAttribute(A_RandomSeconds);
 
-            if (checkBoxErrorState.Checked)
-                conditionElement.SetAttribute("IsError", XmlConvert.ToString(true));
-            else
-                conditionElement.RemoveAttribute("IsError");
-
+            conditionElement.SetAttribute(A_IsError, true, removeIf: !checkBoxErrorState.Checked);
             DialogResult = DialogResult.OK;
             Close();
         }

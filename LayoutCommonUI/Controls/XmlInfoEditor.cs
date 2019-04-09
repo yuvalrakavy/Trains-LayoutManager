@@ -27,7 +27,7 @@ namespace LayoutManager.CommonUI.Controls {
         private MenuItem menuItemText;
         private IContainer components;
 
-        LayoutXmlInfo xmlInfo = null;
+        private LayoutXmlInfo xmlInfo = null;
 
         public XmlInfoEditor() {
             // This call is required by the Windows.Forms Form Designer.
@@ -268,7 +268,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Name = "XmlInfoEditor";
             this.Size = new System.Drawing.Size(248, 212);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -380,7 +379,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        XmlNode SelectedNode {
+        private XmlNode SelectedNode {
             get {
                 ElementTreeNode selected = (ElementTreeNode)treeViewElements.SelectedNode;
 
@@ -391,8 +390,8 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        class ElementTreeNode : TreeNode {
-            XmlNode node;
+        private class ElementTreeNode : TreeNode {
+            private XmlNode node;
 
             internal ElementTreeNode(XmlNode node) {
                 this.node = node;
@@ -455,9 +454,8 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        class AttributeItem : ListViewItem {
-
-            XmlAttribute attribute;
+        private class AttributeItem : ListViewItem {
+            private XmlAttribute attribute;
 
             internal AttributeItem(XmlAttribute attribute) {
                 this.attribute = attribute;

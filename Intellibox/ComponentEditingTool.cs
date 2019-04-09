@@ -14,19 +14,10 @@ namespace Intellibox {
         /// Required designer variable.
         /// </summary>
         private Container components = null;
-        LayoutModule _module;
 
         #region Implementation of ILayoutModuleSetup
 
-        public LayoutModule Module {
-            set {
-                _module = value;
-            }
-
-            get {
-                return _module;
-            }
-        }
+        public LayoutModule Module { set; get; }
 
         #endregion
 
@@ -58,10 +49,9 @@ namespace Intellibox {
         #endregion
 
         [LayoutEvent("model-component-placement-request", SenderType = typeof(IntelliboxComponent))]
-        void PlaceTrackContactRequest(LayoutEvent e) {
+        private void PlaceTrackContactRequest(LayoutEvent e) {
             IntelliboxComponent component = (IntelliboxComponent)e.Sender;
             using (Dialogs.CentralStationProperties csProperties = new Dialogs.CentralStationProperties(component)) {
-
                 if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                     component.XmlInfo.XmlDocument = csProperties.XmlInfo.XmlDocument;
                     e.Info = true;		// Place component
@@ -72,12 +62,12 @@ namespace Intellibox {
         }
 
         [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(IntelliboxComponent))]
-        void QueryTrackContactMenu(LayoutEvent e) {
+        private void QueryTrackContactMenu(LayoutEvent e) {
             e.Info = e.Sender;
         }
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(IntelliboxComponent))]
-        void AddTrackContactContextMenuEntries(LayoutEvent e) {
+        private void AddTrackContactContextMenuEntries(LayoutEvent e) {
             Menu menu = (Menu)e.Info;
             IntelliboxComponent component = (IntelliboxComponent)e.Sender;
 
@@ -86,8 +76,8 @@ namespace Intellibox {
 
         #region Intellibox Menu Item Classes
 
-        class IntelliboxMenuItemProperties : MenuItem {
-            readonly IntelliboxComponent component;
+        private class IntelliboxMenuItemProperties : MenuItem {
+            private readonly IntelliboxComponent component;
 
             internal IntelliboxMenuItemProperties(IntelliboxComponent component) {
                 this.component = component;

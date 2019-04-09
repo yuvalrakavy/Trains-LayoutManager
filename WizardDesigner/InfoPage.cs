@@ -2,7 +2,6 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace Gui.Wizard {
-
     /// <summary>
     /// An inherited <see cref="InfoContainer"/> that contains a <see cref="Label"/> 
     /// with the description of the page.
@@ -61,7 +60,6 @@ namespace Gui.Wizard {
             this.Name = "InfoPage";
             this.Controls.SetChildIndex(this.lblDescription, 0);
             this.ResumeLayout(false);
-
         }
         #endregion
 

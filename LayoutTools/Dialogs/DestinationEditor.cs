@@ -36,12 +36,12 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly TripPlanDestinationInfo inDestination;
-        readonly string title;
-        readonly TripPlanDestinationInfo destination;
-        DialogEditing changeToViewonly = null;
-        readonly LayoutSelection destinationSelection = null;
-        readonly LayoutSelection selectedBlockInfoSelection = null;
+        private readonly TripPlanDestinationInfo inDestination;
+        private readonly string title;
+        private readonly TripPlanDestinationInfo destination;
+        private DialogEditing changeToViewonly = null;
+        private readonly LayoutSelection destinationSelection = null;
+        private readonly LayoutSelection selectedBlockInfoSelection = null;
 
         public DestinationEditor(TripPlanDestinationInfo inDestination, string title) {
             //
@@ -79,7 +79,6 @@ namespace LayoutManager.Tools.Dialogs {
             selectedBlockInfoSelection.Display(new LayoutSelectionLook(Color.OrangeRed));
         }
 
-
         private void updateButtons(object sender, EventArgs e) {
             selectedBlockInfoSelection.Clear();
 
@@ -106,7 +105,6 @@ namespace LayoutManager.Tools.Dialogs {
                 buttonMoveLocationUp.Enabled = false;
                 buttonMoveLocationDown.Enabled = false;
             }
-
         }
 
         /// <summary>
@@ -445,7 +443,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.groupBoxSelection.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
         #endregion
 
@@ -607,8 +604,8 @@ namespace LayoutManager.Tools.Dialogs {
             updateButtons(null, null);
         }
 
-        class LocationItem : ListViewItem {
-            TripPlanDestinationEntryInfo entry;
+        private class LocationItem : ListViewItem {
+            private TripPlanDestinationEntryInfo entry;
 
             public LocationItem(TripPlanDestinationEntryInfo entry) {
                 this.entry = entry;

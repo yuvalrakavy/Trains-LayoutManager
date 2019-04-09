@@ -20,7 +20,6 @@ namespace LayoutManager.Tools.Dialogs {
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly LayoutXmlInfo xmlInfo;
 
         public TrackLinkProperties(LayoutModelArea area, LayoutTrackLinkComponent trackLinkComponent) {
             //
@@ -29,11 +28,11 @@ namespace LayoutManager.Tools.Dialogs {
             InitializeComponent();
 
             // Set initial fields
-            xmlInfo = new LayoutXmlInfo(trackLinkComponent);
+            XmlInfo = new LayoutXmlInfo(trackLinkComponent);
             trackLinkTree.ThisComponentLink = new LayoutTrackLink(area.AreaGuid, trackLinkComponent.TrackLinkGuid);
 
             nameDefinition.DefaultIsVisible = true;
-            nameDefinition.XmlInfo = xmlInfo;
+            nameDefinition.XmlInfo = XmlInfo;
             nameDefinition.Component = trackLinkComponent;
 
             if (trackLinkComponent.Link != null) {
@@ -54,7 +53,7 @@ namespace LayoutManager.Tools.Dialogs {
             trackLinkTree.Enabled = radioButtonLinked.Checked;
         }
 
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         public LayoutTrackLink TrackLink {
             get {
@@ -161,7 +160,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Track Link Properties";
             this.ResumeLayout(false);
-
         }
         #endregion
 

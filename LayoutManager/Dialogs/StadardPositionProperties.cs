@@ -15,6 +15,7 @@ namespace LayoutManager.Dialogs {
         private Button buttonCancel;
         private Label label2;
         private TextBox textBoxRef;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -143,7 +144,6 @@ namespace LayoutManager.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Position Properties";
             this.ResumeLayout(false);
-
         }
         #endregion
 

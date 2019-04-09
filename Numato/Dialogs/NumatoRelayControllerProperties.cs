@@ -13,15 +13,19 @@ namespace NumatoController.Dialogs {
     /// Summary description for CentralStationProperties.
     /// </summary>
     public class NumatoControllerProperties : Form {
+        private const string A_InterfaceType = "InterfaceType";
+        private const string A_Port = "Port";
+        private const string A_Address = "Address";
         private ComboBox comboBoxPort;
         private Label label1;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly NumatoController component;
+        private readonly NumatoController component;
         private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
         private Button buttonCOMsettings;
         private GroupBox groupBox1;
@@ -37,7 +41,6 @@ namespace NumatoController.Dialogs {
         private Label label4;
         private Label labelRelaysCount;
         private ComboBox comboBoxRelays;
-        readonly LayoutXmlInfo xmlInfo;
 
         public NumatoControllerProperties(NumatoController component) {
             //
@@ -49,10 +52,10 @@ namespace NumatoController.Dialogs {
                 comboBoxPort.Items.Add(port);
 
             this.component = component;
-            this.xmlInfo = new LayoutXmlInfo(component);
+            this.XmlInfo = new LayoutXmlInfo(component);
 
-            if (xmlInfo.DocumentElement.HasAttribute(NumatoController.A_Relays)) {
-                var nRelays = xmlInfo.DocumentElement.GetAttribute(NumatoController.A_Relays);
+            if (XmlInfo.DocumentElement.HasAttribute(NumatoController.A_Relays)) {
+                var nRelays = XmlInfo.DocumentElement.GetAttribute(NumatoController.A_Relays);
 
                 foreach (var item in comboBoxRelays.Items)
                     if ((string)item == nRelays) {
@@ -66,30 +69,30 @@ namespace NumatoController.Dialogs {
 
             InterfaceType interfaceType = InterfaceType.Serial;
 
-            if (xmlInfo.DocumentElement.HasAttribute(LayoutBusProviderSupport.A_InterfaceType))
-                interfaceType = (InterfaceType)Enum.Parse(typeof(InterfaceType), xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.A_InterfaceType));
+            if (XmlInfo.DocumentElement.HasAttribute(LayoutBusProviderSupport.A_InterfaceType))
+                interfaceType = (InterfaceType)Enum.Parse(typeof(InterfaceType), XmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.A_InterfaceType));
 
             if (interfaceType == InterfaceType.Serial)
                 radioButtonSerial.Checked = true;
             else
                 radioButtonTCP.Checked = true;
 
-            nameDefinition.XmlInfo = this.xmlInfo;
-            comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.A_Port);
+            nameDefinition.XmlInfo = this.XmlInfo;
+            comboBoxPort.Text = XmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.A_Port);
 
-            if (xmlInfo.DocumentElement.HasAttribute(LayoutBusProviderSupport.A_Address))
-                textBoxAddress.Text = xmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.A_Address);
+            if (XmlInfo.DocumentElement.HasAttribute(LayoutBusProviderSupport.A_Address))
+                textBoxAddress.Text = XmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.A_Address);
 
-            if (xmlInfo.DocumentElement.HasAttribute(NumatoController.A_User))
-                textBoxUser.Text = xmlInfo.DocumentElement.GetAttribute(NumatoController.A_User);
+            if (XmlInfo.DocumentElement.HasAttribute(NumatoController.A_User))
+                textBoxUser.Text = XmlInfo.DocumentElement.GetAttribute(NumatoController.A_User);
 
-            if (xmlInfo.DocumentElement.HasAttribute(NumatoController.A_Password))
-                textBoxPassword.Text = xmlInfo.DocumentElement.GetAttribute(NumatoController.A_Password);
+            if (XmlInfo.DocumentElement.HasAttribute(NumatoController.A_Password))
+                textBoxPassword.Text = XmlInfo.DocumentElement.GetAttribute(NumatoController.A_Password);
 
             radioButtonInterfaceType_CheckedChanged(null, new EventArgs());
         }
 
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         /// <summary>
         /// Clean up any resources being used.
@@ -353,13 +356,12 @@ namespace NumatoController.Dialogs {
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
         #endregion
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
             if (nameDefinition.Commit()) {
-                LayoutTextInfo myName = new LayoutTextInfo(xmlInfo.DocumentElement, "Name");
+                LayoutTextInfo myName = new LayoutTextInfo(XmlInfo.DocumentElement, "Name");
 
                 foreach (IModelComponentIsCommandStation otherCommandStation in LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All)) {
                     if (otherCommandStation.NameProvider.Name == myName.Name && otherCommandStation.Id != component.Id) {
@@ -380,15 +382,15 @@ namespace NumatoController.Dialogs {
                 return;
             }
 
-            xmlInfo.DocumentElement.SetAttribute(NumatoController.A_Relays, XmlConvert.ToString(relayCount));
+            XmlInfo.DocumentElement.SetAttribute(NumatoController.A_Relays, relayCount);
 
             if (radioButtonSerial.Checked) {
-                xmlInfo.DocumentElement.SetAttribute("InterfaceType", InterfaceType.Serial.ToString());
-                xmlInfo.DocumentElement.SetAttribute("Port", comboBoxPort.Text);
+                XmlInfo.DocumentElement.SetAttribute(A_InterfaceType, InterfaceType.Serial);
+                XmlInfo.DocumentElement.SetAttribute(A_Port, comboBoxPort.Text);
             }
             else {
-                xmlInfo.DocumentElement.SetAttribute("InterfaceType", InterfaceType.TCP.ToString());
-                xmlInfo.DocumentElement.SetAttribute("Address", textBoxAddress.Text);
+                XmlInfo.DocumentElement.SetAttribute(A_InterfaceType, InterfaceType.TCP);
+                XmlInfo.DocumentElement.SetAttribute(A_Address, textBoxAddress.Text);
             }
 
             if (string.IsNullOrWhiteSpace(textBoxUser.Text)) {
@@ -397,7 +399,7 @@ namespace NumatoController.Dialogs {
                 return;
             }
 
-            xmlInfo.DocumentElement.SetAttribute(NumatoController.A_User, textBoxUser.Text);
+            XmlInfo.DocumentElement.SetAttribute(NumatoController.A_User, textBoxUser.Text);
 
             if (string.IsNullOrWhiteSpace(textBoxPassword.Text)) {
                 MessageBox.Show(this, "Missing password", "Missing password", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -405,19 +407,18 @@ namespace NumatoController.Dialogs {
                 return;
             }
 
-            xmlInfo.DocumentElement.SetAttribute(NumatoController.A_Password, textBoxPassword.Text);
+            XmlInfo.DocumentElement.SetAttribute(NumatoController.A_Password, textBoxPassword.Text);
 
             DialogResult = DialogResult.OK;
         }
 
         private void buttonCOMsettings_Click(object sender, EventArgs e) {
-            string modeString = xmlInfo.DocumentElement["ModeString"].InnerText;
+            string modeString = XmlInfo.DocumentElement["ModeString"].InnerText;
 
             LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
 
             if (d.ShowDialog(this) == DialogResult.OK)
-                xmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
-
+                XmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
         }
 
         private void radioButtonInterfaceType_CheckedChanged(object sender, EventArgs e) {
@@ -433,7 +434,6 @@ namespace NumatoController.Dialogs {
                 textBoxAddress.Enabled = true;
                 buttonIpSettings.Enabled = true;
             }
-
         }
 
         private void buttonIpSettings_Click(object sender, EventArgs e) {

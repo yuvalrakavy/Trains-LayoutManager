@@ -8,6 +8,7 @@ namespace LayoutManager.CommonUI.Controls {
     /// </summary>
     public class GlobalPolicyList : PolicyList {
         private Button buttonStartStop;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -74,7 +75,6 @@ namespace LayoutManager.CommonUI.Controls {
                                                                           this.buttonStartStop});
             this.Name = "GlobalPolicyList";
             this.ResumeLayout(false);
-
         }
         #endregion
 

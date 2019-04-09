@@ -3,20 +3,18 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace LayoutManager.CommonUI {
-
     public interface IControlSupportViewOnly {
-
         bool ViewOnly { get; set; }
     }
 
     public abstract class DialogEditingCommandBase {
         protected Control control;
 
-        public DialogEditingCommandBase() {
+        protected DialogEditingCommandBase() {
             this.control = null;
         }
 
-        public DialogEditingCommandBase(Control control) {
+        protected DialogEditingCommandBase(Control control) {
             this.control = control;
         }
 
@@ -52,7 +50,7 @@ namespace LayoutManager.CommonUI {
     }
 
     public class DialogEditingChangeText : DialogEditingCommandBase {
-        string text;
+        private string text;
 
         public DialogEditingChangeText(Control control, string newText) : base(control) {
             this.text = newText;
@@ -71,7 +69,7 @@ namespace LayoutManager.CommonUI {
     }
 
     public class DialogEditingMoveControl : DialogEditingCommandBase {
-        Point location;
+        private Point location;
 
         public DialogEditingMoveControl(Control control, Point newLocation) : base(control) {
             location = newLocation;
@@ -94,9 +92,9 @@ namespace LayoutManager.CommonUI {
     }
 
     public class DialogEditingRemoveMenuEntry : DialogEditingCommandBase {
-        readonly Menu menu;
-        readonly MenuItem item;
-        int index;
+        private readonly Menu menu;
+        private readonly MenuItem item;
+        private int index;
 
         public DialogEditingRemoveMenuEntry(Menu menu, MenuItem item) {
             this.menu = menu;
@@ -114,7 +112,7 @@ namespace LayoutManager.CommonUI {
     }
 
     public class DialogEditingResizeControl : DialogEditingCommandBase {
-        Size size;
+        private Size size;
 
         public DialogEditingResizeControl(Control control, Size newSize) : base(control) {
             this.size = newSize;
@@ -137,7 +135,7 @@ namespace LayoutManager.CommonUI {
     }
 
     public class CheckBoxWithViewOnly : CheckBox, IControlSupportViewOnly {
-        bool viewOnly = false;
+        private bool viewOnly = false;
 
         protected override void OnClick(EventArgs e) {
             if (!viewOnly)
@@ -152,7 +150,7 @@ namespace LayoutManager.CommonUI {
             }
 
             set {
-                if (value == true)
+                if (value)
                     SetStyle(ControlStyles.Selectable, false);
                 else
                     SetStyle(ControlStyles.Selectable, true);
@@ -162,7 +160,7 @@ namespace LayoutManager.CommonUI {
     }
 
     public class RadioButtonWithViewOnly : RadioButton, IControlSupportViewOnly {
-        bool viewOnly = false;
+        private bool viewOnly = false;
 
         protected override void OnClick(EventArgs e) {
             if (!viewOnly)
@@ -177,7 +175,7 @@ namespace LayoutManager.CommonUI {
             }
 
             set {
-                if (value == true)
+                if (value)
                     SetStyle(ControlStyles.Selectable, false);
                 else
                     SetStyle(ControlStyles.Selectable, true);
@@ -199,9 +197,9 @@ namespace LayoutManager.CommonUI {
     }
 
     public class DialogEditing : IControlSupportViewOnly {
-        readonly ContainerControl form;
-        readonly DialogEditingCommandBase[] editingCommands;
-        bool viewOnly = false;
+        private readonly ContainerControl form;
+        private readonly DialogEditingCommandBase[] editingCommands;
+        private bool viewOnly = false;
 
         public DialogEditing(ContainerControl form, DialogEditingCommandBase[] editingCommands) {
             this.form = form;

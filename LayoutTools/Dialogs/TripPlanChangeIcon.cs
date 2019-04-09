@@ -12,11 +12,12 @@ namespace LayoutManager.Tools.Dialogs {
         private LayoutManager.CommonUI.Controls.SelectTripPlanIcon selectTripPlanIcon;
         private Button ButtonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly TripPlanInfo tripPlan;
+        private readonly TripPlanInfo tripPlan;
 
         public TripPlanChangeIcon(TripPlanInfo tripPlan, TripPlanIconListInfo tripPlanIconList) {
             //
@@ -122,7 +123,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Change Trip-plan Icon";
             this.ResumeLayout(false);
-
         }
         #endregion
 

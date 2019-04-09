@@ -6,7 +6,7 @@ using System.Windows.Forms;
 #endregion
 
 namespace LayoutManager.CommonUI.Dialogs {
-    partial class SerialInterfaceParameters : Form {
+    public partial class SerialInterfaceParameters : Form {
         public SerialInterfaceParameters(string parametersString) {
             InitializeComponent();
 

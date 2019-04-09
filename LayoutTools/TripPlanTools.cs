@@ -9,7 +9,6 @@ using LayoutManager.Components;
 #pragma warning disable IDE0051, IDE0060
 
 namespace LayoutManager.Tools {
-
     [LayoutModule("Trip Planning Tools", UserControl = false)]
     public class TripPlanningTools : ILayoutModuleSetup {
         /// <summary>
@@ -95,16 +94,16 @@ namespace LayoutManager.Tools {
 
         #region Applicable Trip Plans
 
-        class ApplicableTripPlansData : LayoutXmlWrapper {
-            LayoutBlock locomotiveBlock;
-            LayoutComponentConnectionPoint locomotiveFront;
-            LayoutBlock lastCarBlock;
-            LayoutComponentConnectionPoint lastCarFront;
-            Guid routeOwner = Guid.Empty;
-            bool allTripPlans = false;
-            readonly bool staticGrade = false;
-            bool calculatePenalty = true;
-            IRoutePlanningServices _tripPlanningServices = null;
+        private class ApplicableTripPlansData : LayoutXmlWrapper {
+            private const string A_TripPlanID = "TripPlanID";
+            private const string A_ShouldReverse = "ShouldReverse";
+            private const string A_Penalty = "Penalty";
+            private const string A_ClearanceQuality = "ClearanceQuality";
+            private const string E_ApplicableTripPlan = "ApplicableTripPlan";
+            private const string A_LocomotiveBlockId = "LocomotiveBlockID";
+            private const string A_LocomotiveFront = "LocomotiveFront";
+            private readonly bool staticGrade = false;
+            private IRoutePlanningServices _tripPlanningServices = null;
 
             public ApplicableTripPlansData(XmlElement element) : base(element) {
                 staticGrade = (bool?)AttributeValue("StaticGrade") ??  true;
@@ -112,81 +111,23 @@ namespace LayoutManager.Tools {
 
             public IRoutePlanningServices TripPlanningServices {
                 get {
-                    if (_tripPlanningServices == null)
-                        _tripPlanningServices = (IRoutePlanningServices)EventManager.Event(new LayoutEvent("get-route-planning-services", this));
-                    return _tripPlanningServices;
+                    return _tripPlanningServices ?? (_tripPlanningServices = (IRoutePlanningServices)EventManager.Event(new LayoutEvent("get-route-planning-services", this)));
                 }
             }
 
-            public LayoutBlock LocomotiveBlock {
-                get {
-                    return locomotiveBlock;
-                }
+            public LayoutBlock LocomotiveBlock { get; set; }
 
-                set {
-                    locomotiveBlock = value;
-                }
-            }
+            public LayoutComponentConnectionPoint LocomotiveFront { get; set; }
 
-            public LayoutComponentConnectionPoint LocomotiveFront {
-                get {
-                    return locomotiveFront;
-                }
+            public LayoutBlock LastCarBlock { get; set; }
 
-                set {
-                    locomotiveFront = value;
-                }
-            }
+            public LayoutComponentConnectionPoint LastCarFront { get; set; }
 
-            public LayoutBlock LastCarBlock {
-                get {
-                    return lastCarBlock;
-                }
+            public Guid RouteOwner { get; set; } = Guid.Empty;
 
-                set {
-                    lastCarBlock = value;
-                }
-            }
+            public bool AllTripPlans { get; set; } = false;
 
-            public LayoutComponentConnectionPoint LastCarFront {
-                get {
-                    return lastCarFront;
-                }
-
-                set {
-                    lastCarFront = value;
-                }
-            }
-
-            public Guid RouteOwner {
-                get {
-                    return routeOwner;
-                }
-
-                set {
-                    routeOwner = value;
-                }
-            }
-
-            public bool AllTripPlans {
-                get {
-                    return allTripPlans;
-                }
-
-                set {
-                    allTripPlans = value;
-                }
-            }
-
-            public bool CalculatePenalty {
-                get {
-                    return calculatePenalty;
-                }
-
-                set {
-                    calculatePenalty = value;
-                }
-            }
+            public bool CalculatePenalty { get; set; } = true;
 
             public TrainStateInfo Train {
                 set {
@@ -204,14 +145,14 @@ namespace LayoutManager.Tools {
             // between the last car and locomotive blocks. So at the end, the train can always move forward from the locomotive block
             // and backward from the last car block.
             protected void LocateRealTrainFront(TrainStateInfo train) {
-                LayoutBlockDefinitionComponent locomotiveBlockInfo = locomotiveBlock.BlockDefinintion;
+                LayoutBlockDefinitionComponent locomotiveBlockInfo = LocomotiveBlock.BlockDefinintion;
 
                 LayoutBlockEdgeBase[] blockEdges = locomotiveBlockInfo.GetBlockEdges(locomotiveBlockInfo.GetConnectionPointIndex(LocomotiveFront));
 
                 bool switchFrontAndLastCar = false;
 
                 foreach (LayoutBlockEdgeBase blockEdge in blockEdges) {
-                    LayoutBlock otherBlock = locomotiveBlock.OtherBlock(blockEdge);
+                    LayoutBlock otherBlock = LocomotiveBlock.OtherBlock(blockEdge);
 
                     if (train.LocationOfBlock(otherBlock) != null) {
                         switchFrontAndLastCar = true;
@@ -220,20 +161,20 @@ namespace LayoutManager.Tools {
                 }
 
                 if (switchFrontAndLastCar) {
-                    LayoutBlock tBlock = locomotiveBlock;
+                    LayoutBlock tBlock = LocomotiveBlock;
 
-                    locomotiveBlock = lastCarBlock;
-                    lastCarBlock = tBlock;
+                    LocomotiveBlock = LastCarBlock;
+                    LastCarBlock = tBlock;
 
-                    LayoutComponentConnectionPoint tFront = locomotiveFront;
+                    LayoutComponentConnectionPoint tFront = LocomotiveFront;
 
-                    locomotiveFront = lastCarFront;
-                    lastCarFront = tFront;
+                    LocomotiveFront = LastCarFront;
+                    LastCarFront = tFront;
                 }
             }
 
-            class Direction {
-                readonly bool shouldReverse;
+            private class Direction {
+                private readonly bool shouldReverse;
 
                 public Direction(bool shouldReverse) {
                     this.shouldReverse = shouldReverse;
@@ -327,60 +268,60 @@ namespace LayoutManager.Tools {
                     RouteQuality quality = null;
 
                     foreach (TripPlanInfo tripPlan in LayoutModel.StateManager.TripPlansCatalog.TripPlans) {
-                        if (allTripPlans || (quality = VerifyTripPlan(tripPlan, false)).IsValidRoute) {
-                            XmlElement applicableTripPlanElement = Element.OwnerDocument.CreateElement("ApplicableTripPlan");
+                        if (AllTripPlans || (quality = VerifyTripPlan(tripPlan, false)).IsValidRoute) {
+                            XmlElement applicableTripPlanElement = Element.OwnerDocument.CreateElement(E_ApplicableTripPlan);
 
-                            applicableTripPlanElement.SetAttribute("TripPlanID", XmlConvert.ToString(tripPlan.Id));
-                            applicableTripPlanElement.SetAttribute("ShouldReverse", XmlConvert.ToString(false));
+                            applicableTripPlanElement.SetAttribute(A_TripPlanID, tripPlan.Id);
+                            applicableTripPlanElement.SetAttribute(A_ShouldReverse, false);
 
                             if (quality != null) {
-                                applicableTripPlanElement.SetAttribute("Penalty", XmlConvert.ToString(quality.Penalty));
-                                applicableTripPlanElement.SetAttribute("ClearanceQuality", quality.ClearanceQuality.ToString());
+                                applicableTripPlanElement.SetAttribute(A_Penalty, quality.Penalty);
+                                applicableTripPlanElement.SetAttribute(A_ClearanceQuality, quality.ClearanceQuality);
                             }
 
                             Element.AppendChild(applicableTripPlanElement);
                         }
                         else if ((quality = VerifyTripPlan(tripPlan, true)).IsValidRoute) {
-                            XmlElement applicableTripPlanElement = Element.OwnerDocument.CreateElement("ApplicableTripPlan");
+                            XmlElement applicableTripPlanElement = Element.OwnerDocument.CreateElement(E_ApplicableTripPlan);
 
-                            applicableTripPlanElement.SetAttribute("TripPlanID", XmlConvert.ToString(tripPlan.Id));
-                            applicableTripPlanElement.SetAttribute("ShouldReverse", XmlConvert.ToString(true));
-                            applicableTripPlanElement.SetAttribute("Penalty", XmlConvert.ToString(quality.Penalty));
-                            applicableTripPlanElement.SetAttribute("ClearanceQuality", quality.ClearanceQuality.ToString());
+                            applicableTripPlanElement.SetAttribute(A_TripPlanID, tripPlan.Id);
+                            applicableTripPlanElement.SetAttribute(A_ShouldReverse, true);
+                            applicableTripPlanElement.SetAttribute(A_Penalty, quality.Penalty);
+                            applicableTripPlanElement.SetAttribute(A_ClearanceQuality, quality.ClearanceQuality);
                             Element.AppendChild(applicableTripPlanElement);
                         }
 
                         Application.DoEvents();
                     }
 
-                    if (locomotiveBlock != null) {
-                        Element.SetAttribute("LocomotiveBlockID", XmlConvert.ToString(locomotiveBlock.Id));
-                        Element.SetAttribute("LocomotiveFront", LocomotiveFront.ToString());
+                    if (LocomotiveBlock != null) {
+                        Element.SetAttribute(A_LocomotiveBlockId, LocomotiveBlock.Id);
+                        Element.SetAttribute(A_LocomotiveFront, LocomotiveFront);
                     }
                 }
                 else {
                     foreach (TripPlanInfo tripPlan in LayoutModel.StateManager.TripPlansCatalog.TripPlans) {
-                        if (allTripPlans || IsTripPlanApplicable(tripPlan, false)) {
-                            XmlElement applicableTripPlanElement = Element.OwnerDocument.CreateElement("ApplicableTripPlan");
+                        if (AllTripPlans || IsTripPlanApplicable(tripPlan, false)) {
+                            var applicableTripPlanElement = Element.OwnerDocument.CreateElement(E_ApplicableTripPlan);
 
-                            applicableTripPlanElement.SetAttribute("TripPlanID", XmlConvert.ToString(tripPlan.Id));
-                            applicableTripPlanElement.SetAttribute("ShouldReverse", XmlConvert.ToString(false));
+                            applicableTripPlanElement.SetAttribute(A_TripPlanID, tripPlan.Id);
+                            applicableTripPlanElement.SetAttribute(A_ShouldReverse, false);
                             Element.AppendChild(applicableTripPlanElement);
                         }
                         else if (IsTripPlanApplicable(tripPlan, true)) {
-                            XmlElement applicableTripPlanElement = Element.OwnerDocument.CreateElement("ApplicableTripPlan");
+                            var applicableTripPlanElement = Element.OwnerDocument.CreateElement(E_ApplicableTripPlan);
 
-                            applicableTripPlanElement.SetAttribute("TripPlanID", XmlConvert.ToString(tripPlan.Id));
-                            applicableTripPlanElement.SetAttribute("ShouldReverse", XmlConvert.ToString(true));
+                            applicableTripPlanElement.SetAttribute(A_TripPlanID, tripPlan.Id);
+                            applicableTripPlanElement.SetAttribute(A_ShouldReverse, true);
                             Element.AppendChild(applicableTripPlanElement);
                         }
 
                         Application.DoEvents();
                     }
 
-                    if (locomotiveBlock != null) {
-                        Element.SetAttribute("LocomotiveBlockID", XmlConvert.ToString(locomotiveBlock.Id));
-                        Element.SetAttribute("LocomotiveFront", LocomotiveFront.ToString());
+                    if (LocomotiveBlock != null) {
+                        Element.SetAttribute(A_LocomotiveBlockId, LocomotiveBlock.Id);
+                        Element.SetAttribute(A_LocomotiveFront, LocomotiveFront);
                     }
                 }
             }
@@ -479,60 +420,22 @@ namespace LayoutManager.Tools {
             }
         }
 
-
         #endregion
 
         #region Trip planner debug code
         // DEBUG CODE
 
-        class TestTripInfo {
-            LayoutTrackComponent originTrack = null;
-            LayoutComponentConnectionPoint originFront;
-            LocomotiveOrientation direction = LocomotiveOrientation.Forward;
-            LayoutTrackComponent destinationTrack = null;
+        private class TestTripInfo {
+            public LayoutTrackComponent OriginTrack { get; set; } = null;
 
-            public LayoutTrackComponent OriginTrack {
-                get {
-                    return originTrack;
-                }
+            public LayoutComponentConnectionPoint OriginFront { get; set; }
 
-                set {
-                    originTrack = value;
-                }
-            }
+            public LocomotiveOrientation Direction { get; set; } = LocomotiveOrientation.Forward;
 
-            public LayoutComponentConnectionPoint OriginFront {
-                get {
-                    return originFront;
-                }
-
-                set {
-                    originFront = value;
-                }
-            }
-
-            public LocomotiveOrientation Direction {
-                get {
-                    return direction;
-                }
-
-                set {
-                    direction = value;
-                }
-            }
-
-            public LayoutTrackComponent DestinationTrack {
-                get {
-                    return destinationTrack;
-                }
-
-                set {
-                    destinationTrack = value;
-                }
-            }
+            public LayoutTrackComponent DestinationTrack { get; set; } = null;
         }
 
-        static readonly LayoutTraceSwitch traceShowTrackDescription = new LayoutTraceSwitch("ShowTrackDescription", "Show track description menu");
+        private static readonly LayoutTraceSwitch traceShowTrackDescription = new LayoutTraceSwitch("ShowTrackDescription", "Show track description menu");
 
         [LayoutEvent("add-component-operation-context-menu-entries", Order = 900, SenderType = typeof(LayoutTrackComponent))]
         private void addTrackDescription(LayoutEvent e) {

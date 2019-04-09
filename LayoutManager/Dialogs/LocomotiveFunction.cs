@@ -10,9 +10,13 @@ namespace LayoutManager.Dialogs {
     /// Summary description for LocomotiveFunction.
     /// </summary>
     public class LocomotiveFunction : Form {
+        private const string A_Name = "Name";
+        private const string A_Description = "Description";
+        private const string A_Type = "Type";
         private Label label1;
         private Label label2;
         private NumericUpDown numericUpDownFunctionNumber;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -25,11 +29,11 @@ namespace LayoutManager.Dialogs {
         private TextBox textBoxFunctionDescription;
         private ComboBox comboBoxFunctionType;
 
-        readonly LocomotiveCatalogInfo catalog;
-        readonly XmlElement functionsElement;
-        readonly XmlElement functionElement;
-        bool typeChanged = false;
-        bool descriptionChanged = false;
+        private readonly LocomotiveCatalogInfo catalog;
+        private readonly XmlElement functionsElement;
+        private readonly XmlElement functionElement;
+        private bool typeChanged = false;
+        private bool descriptionChanged = false;
 
         public LocomotiveFunction(LocomotiveCatalogInfo catalog, XmlElement functionsElement, XmlElement functionElement) {
             //
@@ -49,7 +53,7 @@ namespace LayoutManager.Dialogs {
             comboBoxFunctionType.SelectedIndex = (int)function.Type;
 
             foreach (XmlElement f in catalog.LocomotiveFunctionNames)
-                comboBoxFunctionName.Items.Add(f.GetAttribute("Name"));
+                comboBoxFunctionName.Items.Add(f.GetAttribute(A_Name));
 
             typeChanged = false;
             descriptionChanged = false;
@@ -198,7 +202,6 @@ namespace LayoutManager.Dialogs {
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFunctionNumber)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
         #endregion
 
@@ -231,9 +234,9 @@ namespace LayoutManager.Dialogs {
             if (comboBoxFunctionName.FindStringExact(comboBoxFunctionName.Text) < 0) {
                 XmlElement element = catalog.Element.OwnerDocument.CreateElement("Function");
 
-                element.SetAttribute("Name", comboBoxFunctionName.Text);
-                element.SetAttribute("Description", textBoxFunctionDescription.Text);
-                element.SetAttribute("Type", ((LocomotiveFunctionType)comboBoxFunctionType.SelectedIndex).ToString());
+                element.SetAttribute(A_Name, comboBoxFunctionName.Text);
+                element.SetAttribute(A_Description, textBoxFunctionDescription.Text);
+                element.SetAttribute(A_Type, (LocomotiveFunctionType)comboBoxFunctionType.SelectedIndex);
                 catalog.LocomotiveFunctionNames.AppendChild(element);
             }
 
@@ -252,12 +255,12 @@ namespace LayoutManager.Dialogs {
             var functionInfoElement = new XmlElementWrapper((XmlElement)catalog.LocomotiveFunctionNames.GetElementsByTagName("Function")[comboBoxFunctionName.SelectedIndex]);
 
             if (!typeChanged) {
-                comboBoxFunctionType.SelectedIndex = (int)(functionInfoElement.AttributeValue("Type").Enum<LocomotiveFunctionType>() ?? LocomotiveFunctionType.OnOff);
+                comboBoxFunctionType.SelectedIndex = (int)(functionInfoElement.AttributeValue(A_Type).Enum<LocomotiveFunctionType>() ?? LocomotiveFunctionType.OnOff);
                 typeChanged = false;
             }
 
             if (!descriptionChanged) {
-                textBoxFunctionDescription.Text = (string)functionInfoElement.AttributeValue("Description");
+                textBoxFunctionDescription.Text = (string)functionInfoElement.AttributeValue(A_Description);
                 descriptionChanged = false;
             }
         }

@@ -7,14 +7,12 @@ using LayoutManager.Model;
 #pragma warning disable IDE0051, IDE0060
 #nullable enable
 namespace LayoutManager.Logic {
-
     [LayoutModule("Layout Topology Services", UserControl = false)]
     public class LayoutTopologyServices : LayoutModuleBase, ILayoutTopologyServices {
-
         public static string TopologyServicesVersion = "1.0";
 
         [LayoutEvent("get-topology-services")]
-        void GetTopologyServices(LayoutEvent e) {
+        private void GetTopologyServices(LayoutEvent e) {
             e.Info = (ILayoutTopologyServices)this;
         }
 

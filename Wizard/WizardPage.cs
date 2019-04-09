@@ -8,21 +8,23 @@ namespace Gui.Wizard {
     /// </summary>
     [Designer("Gui.Wizard.WizardPageDesigner", "WizardDesigner.dll")]
     public class WizardPage : Panel {
-
         /// <summary>
         /// Event called before this page is closed when the back button is pressed. If you don't want to show pageIndex -1 then
         /// set page to be the new page that you wish to show
         /// </summary>
         public event PageEventHandler CloseFromBack;
+
         /// <summary>
         /// Event called before this page is closed when the next button is pressed. If you don't want to show pageIndex -1 then
         /// set page to be the new page that you wish to show 
         /// </summary>
         public event PageEventHandler CloseFromNext;
+
         /// <summary>
         /// Event called after this page is shown when the back button is pressed.
         /// </summary>
         public event EventHandler ShowFromBack;
+
         /// <summary>
         /// Event called after this page is shown when the next button is pressed. 
         /// </summary>
@@ -71,17 +73,8 @@ namespace Gui.Wizard {
             ShowFromNext?.Invoke(wiz, EventArgs.Empty);
         }
 
-
         [Category("Wizard")]
-        public bool IsFinishPage {
-            get {
-                return _IsFinishPage;
-            }
-            set {
-                _IsFinishPage = value;
-            }
-        }
-        private bool _IsFinishPage = false;
+        public bool IsFinishPage { get; set; } = false;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -118,6 +111,5 @@ namespace Gui.Wizard {
                 this.Focus();
             }
         }
-
     }
 }

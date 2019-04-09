@@ -8,18 +8,17 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager {
-
     /// <summary>
     /// Place a component in the model
     /// </summary>
     public class LayoutComponentPlacmentCommand : LayoutCommand {
-        readonly LayoutModelArea area;
-        Point areaLocation;
-        readonly ModelComponent component;
-        ModelComponent previousComponent;
-        LayoutPhase previousPhase;
-        readonly string description;
-        readonly LayoutPhase phase;
+        private readonly LayoutModelArea area;
+        private Point areaLocation;
+        private readonly ModelComponent component;
+        private ModelComponent previousComponent;
+        private LayoutPhase previousPhase;
+        private readonly string description;
+        private readonly LayoutPhase phase;
 
         public LayoutComponentPlacmentCommand(LayoutModelArea area, Point ml, ModelComponent c, string description, LayoutPhase phase) {
             this.area = area;
@@ -55,7 +54,7 @@ namespace LayoutManager {
     }
 
     public class LayoutComponentRemovalCommand : LayoutCommand {
-        readonly LayoutComponentPlacmentCommand placementCommand;
+        private readonly LayoutComponentPlacmentCommand placementCommand;
 
         public LayoutComponentRemovalCommand(ModelComponent component, string description) {
             placementCommand = new LayoutComponentPlacmentCommand(component.Spot.Area, component.Location, component, description, component.Spot.Phase);
@@ -73,9 +72,9 @@ namespace LayoutManager {
     }
 
     public class LayoutComponentSelectCommand : LayoutCommand {
-        readonly ModelComponent component;
-        readonly LayoutSelection selection;
-        readonly string description;
+        private readonly ModelComponent component;
+        private readonly LayoutSelection selection;
+        private readonly string description;
 
         public LayoutComponentSelectCommand(LayoutSelection selection, ModelComponent component, string description) {
             this.component = component;
@@ -95,7 +94,7 @@ namespace LayoutManager {
     }
 
     public class LayoutComponentDeselectCommand : LayoutCommand {
-        readonly LayoutComponentSelectCommand selectCommand;
+        private readonly LayoutComponentSelectCommand selectCommand;
 
         public LayoutComponentDeselectCommand(LayoutSelection selection, ModelComponent component, string description) {
             selectCommand = new LayoutComponentSelectCommand(selection, component, description);
@@ -113,8 +112,8 @@ namespace LayoutManager {
     }
 
     public class LayoutComponentLinkCommand : LayoutCommand {
-        readonly LayoutTrackLinkComponent trackLinkComponent;
-        readonly LayoutTrackLink destinationTrackLink;
+        private readonly LayoutTrackLinkComponent trackLinkComponent;
+        private readonly LayoutTrackLink destinationTrackLink;
 
         public LayoutComponentLinkCommand(LayoutTrackLinkComponent trackLinkComponent, LayoutTrackLink destinationTrackLink) {
             if (destinationTrackLink == null)
@@ -150,8 +149,8 @@ namespace LayoutManager {
     }
 
     public class LayoutComponentUnlinkCommand : LayoutCommand {
-        readonly LayoutTrackLinkComponent trackLinkComponent;
-        LayoutTrackLink savedLink = null;
+        private readonly LayoutTrackLinkComponent trackLinkComponent;
+        private LayoutTrackLink savedLink = null;
 
         public LayoutComponentUnlinkCommand(LayoutTrackLinkComponent trackLinkComponent) {
             this.trackLinkComponent = trackLinkComponent;
@@ -186,9 +185,9 @@ namespace LayoutManager {
     }
 
     public class LayoutModifyComponentDocumentCommand : LayoutCommand {
-        readonly ModelComponent component;
-        readonly LayoutXmlInfo newXmlInfo;
-        System.Xml.XmlDocument prevDocument = null;
+        private readonly ModelComponent component;
+        private readonly LayoutXmlInfo newXmlInfo;
+        private System.Xml.XmlDocument prevDocument = null;
 
         public LayoutModifyComponentDocumentCommand(ModelComponent component, LayoutXmlInfo newXmlInfo) {
             this.component = component;
@@ -226,23 +225,22 @@ namespace LayoutManager {
     }
 
     public class LayoutMoveModelSpotCommand : LayoutCommand {
-        readonly LayoutModelSpotComponentCollection spot;
-        Point location;
+        private Point location;
 
         public LayoutMoveModelSpotCommand(LayoutModelSpotComponentCollection spot, Point newLocation) {
-            this.spot = spot;
+            this.Spot = spot;
             this.location = newLocation;
         }
 
-        public LayoutModelSpotComponentCollection Spot => spot;
+        public LayoutModelSpotComponentCollection Spot { get; }
 
         public Point Location => location;
 
         public override void Do() {
             Point newLocation = this.location;
 
-            this.location = spot.Location;
-            spot.MoveTo(newLocation);
+            this.location = Spot.Location;
+            Spot.MoveTo(newLocation);
         }
 
         public override void Undo() {
@@ -253,7 +251,7 @@ namespace LayoutManager {
     }
 
     public class RedrawLayoutModelAreaCommand : LayoutCommand {
-        readonly LayoutModelArea area;
+        private readonly LayoutModelArea area;
 
         public RedrawLayoutModelAreaCommand(LayoutModelArea area) {
             this.area = area;
@@ -273,12 +271,12 @@ namespace LayoutManager {
     #region Layout Control Related commands
 
     public class AddControlModuleCommand : LayoutCommand {
-        readonly ControlBus bus;
-        readonly string moduleTypeName;
-        readonly int address = -1;
-        readonly ControlModuleReference insertBefore = null;
-        ControlModuleReference addedModule = null;
-        Guid moduleLocationID;
+        private readonly ControlBus bus;
+        private readonly string moduleTypeName;
+        private readonly int address = -1;
+        private readonly ControlModuleReference insertBefore = null;
+        private ControlModuleReference addedModule = null;
+        private Guid moduleLocationID;
 
         public AddControlModuleCommand(ControlBus bus, string moduleTypeName, Guid moduleLocationID) {
             this.bus = bus;
@@ -323,12 +321,12 @@ namespace LayoutManager {
     }
 
     public class RemoveControlModuleCommand : LayoutCommand {
-        readonly ControlModuleReference module;
-        readonly ControlBus bus;
-        readonly string moduleTypeName;
-        readonly ControlModuleReference insertBefore;
-        readonly int address;
-        Guid moduleLocationID;
+        private readonly ControlModuleReference module;
+        private readonly ControlBus bus;
+        private readonly string moduleTypeName;
+        private readonly ControlModuleReference insertBefore;
+        private readonly int address;
+        private Guid moduleLocationID;
 
         public RemoveControlModuleCommand(ControlModule module) {
             this.module = new ControlModuleReference(module);
@@ -378,8 +376,8 @@ namespace LayoutManager {
     }
 
     public class SetControlModuleAddressCommand : LayoutCommand {
-        readonly ControlModuleReference module;
-        int address;
+        private readonly ControlModuleReference module;
+        private int address;
 
         public SetControlModuleAddressCommand(ControlModule module, int address) {
             this.module = new ControlModuleReference(module);
@@ -403,8 +401,8 @@ namespace LayoutManager {
     }
 
     public class AssignControlModuleLocationCommand : LayoutCommand {
-        readonly ControlModuleReference module;
-        Guid locationID;
+        private readonly ControlModuleReference module;
+        private Guid locationID;
 
         public AssignControlModuleLocationCommand(ControlModule module, Guid locationID) {
             this.module = new ControlModuleReference(module);
@@ -427,12 +425,12 @@ namespace LayoutManager {
     }
 
     public class ConnectComponentToControlConnectionPointCommand : LayoutCommand {
-        readonly IModelComponentConnectToControl component;
-        readonly string name;
-        readonly string displayName;
-        readonly ControlModuleReference module;
-        readonly int index;
-        XmlElement connectionPointElement = null;
+        private readonly IModelComponentConnectToControl component;
+        private readonly string name;
+        private readonly string displayName;
+        private readonly ControlModuleReference module;
+        private readonly int index;
+        private XmlElement connectionPointElement = null;
 
         public ConnectComponentToControlConnectionPointCommand(ControlModule module, int index, IModelComponentConnectToControl component, string connectionName, string displayName) {
             this.module = new ControlModuleReference(module);
@@ -479,8 +477,8 @@ namespace LayoutManager {
     }
 
     public class DisconnectComponentFromConnectionPointCommand : LayoutCommand {
-        readonly ConnectComponentToControlConnectionPointCommand[] commands = null;
-        readonly bool disconnectComponent = false;
+        private readonly ConnectComponentToControlConnectionPointCommand[] commands = null;
+        private readonly bool disconnectComponent = false;
 
         public DisconnectComponentFromConnectionPointCommand(IModelComponentConnectToControl component) {
             IList<ControlConnectionPoint> connectionPoints = LayoutModel.ControlManager.ConnectionPoints[component];
@@ -514,8 +512,8 @@ namespace LayoutManager {
     }
 
     public class ReconnectBusToAnotherCommandBusProvider : LayoutCommand {
-        readonly ControlBus bus;
-        IModelComponentIsBusProvider otherBusProvider;
+        private readonly ControlBus bus;
+        private IModelComponentIsBusProvider otherBusProvider;
 
         public ReconnectBusToAnotherCommandBusProvider(ControlBus bus, IModelComponentIsBusProvider otherBusProvider) {
             this.bus = bus;
@@ -542,10 +540,10 @@ namespace LayoutManager {
     }
 
     public class MoveControlModuleInDaisyChainBusCommand : LayoutCommand {
-        readonly ControlBus bus;
-        int address;
-        int delta;
-        readonly string commandName;
+        private readonly ControlBus bus;
+        private int address;
+        private int delta;
+        private readonly string commandName;
 
         public MoveControlModuleInDaisyChainBusCommand(ControlModule module, int delta, string commandName) {
             this.bus = module.Bus;
@@ -577,8 +575,8 @@ namespace LayoutManager {
     }
 
     public class SetControlModuleLabelCommand : LayoutCommand {
-        readonly ControlModuleReference moduleRef;
-        string label;
+        private readonly ControlModuleReference moduleRef;
+        private string label;
 
         public SetControlModuleLabelCommand(ControlModule module, string label) {
             this.moduleRef = new ControlModuleReference(module);
@@ -603,9 +601,9 @@ namespace LayoutManager {
     }
 
     public class SetControlUserActionRequiredCommand : LayoutCommand {
-        readonly ControlModuleReference moduleRef = null;
-        readonly ControlConnectionPointReference connectionPointRef = null;
-        bool userActionRequired;
+        private readonly ControlModuleReference moduleRef = null;
+        private readonly ControlConnectionPointReference connectionPointRef = null;
+        private bool userActionRequired;
 
         public SetControlUserActionRequiredCommand(IControlSupportUserAction subject, bool userActionRequired) {
             if (subject is ControlConnectionPoint)
@@ -620,7 +618,7 @@ namespace LayoutManager {
             this.userActionRequired = userActionRequired;
         }
 
-        IControlSupportUserAction Subject {
+        private IControlSupportUserAction Subject {
             get {
                 if (moduleRef != null)
                     return moduleRef.Module;
@@ -649,8 +647,8 @@ namespace LayoutManager {
     }
 
     public class SetControlAddressProgrammingRequiredCommand : LayoutCommand {
-        bool addressProgrammingRequired;
-        readonly ControlModule controlModule;
+        private bool addressProgrammingRequired;
+        private readonly ControlModule controlModule;
 
         public SetControlAddressProgrammingRequiredCommand(ControlModule controlModule, bool addressProgrammingRequired) {
             this.controlModule = controlModule;
@@ -678,7 +676,7 @@ namespace LayoutManager {
     }
 
     public class ChangeDefaultPhaseCommand : LayoutCommand {
-        LayoutPhase phase;
+        private LayoutPhase phase;
 
         public ChangeDefaultPhaseCommand(LayoutPhase phase) {
             this.phase = phase;
@@ -706,8 +704,8 @@ namespace LayoutManager {
     }
 
     public class ChangePhaseCommand : LayoutCommand {
-        readonly LayoutModelSpotComponentCollection spot;
-        LayoutPhase phase;
+        private readonly LayoutModelSpotComponentCollection spot;
+        private LayoutPhase phase;
 
         public ChangePhaseCommand(LayoutModelSpotComponentCollection spot, LayoutPhase phase) {
             this.spot = spot;

@@ -10,6 +10,7 @@ namespace LayoutManager.CommonUI.Controls {
     /// </summary>
     public class MotionRampWithCopyEditor : MotionRampEditor {
         private Button buttonUsrExistingRamp;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -57,7 +58,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Name = "MotionRampWithCopyEditor";
             this.Size = new System.Drawing.Size(232, 128);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -70,9 +70,9 @@ namespace LayoutManager.CommonUI.Controls {
             menu.Show(this, new Point(buttonUsrExistingRamp.Left, buttonUsrExistingRamp.Bottom));
         }
 
-        class UseRampMenuItem : MenuItem {
-            readonly MotionRampWithCopyEditor rampEditor;
-            readonly MotionRampInfo ramp;
+        private class UseRampMenuItem : MenuItem {
+            private readonly MotionRampWithCopyEditor rampEditor;
+            private readonly MotionRampInfo ramp;
 
             public UseRampMenuItem(MotionRampWithCopyEditor rampEditor, MotionRampInfo ramp) {
                 this.rampEditor = rampEditor;

@@ -2,13 +2,13 @@
 
 namespace LayoutManager {
     public class PackedArray {
-        readonly ulong[] storage;
+        private readonly ulong[] storage;
 
         public int Length { get; }
         public int BitsPerElement { get; }
         public int ElementsPerStorageUnit { get; }
         public static readonly int BitsPerStorageUnit = sizeof(ulong) * 8;
-        readonly ulong elementMask;
+        private readonly ulong elementMask;
 
         public PackedArray(int length, int bitsPerElement = 1) {
             this.Length = length;
@@ -53,7 +53,7 @@ namespace LayoutManager {
     }
 
     public class EnumPackedArray<T> {
-        readonly PackedArray array;
+        private readonly PackedArray array;
 
         public EnumPackedArray(int length) {
             int bitsPerElement = 0;
@@ -86,6 +86,4 @@ namespace LayoutManager {
             }
         }
     }
-
-
 }

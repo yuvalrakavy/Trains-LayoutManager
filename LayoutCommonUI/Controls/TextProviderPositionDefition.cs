@@ -20,9 +20,7 @@ namespace LayoutManager.CommonUI.Controls {
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-
-        string customPositionElementName = "Position";
-        LayoutXmlInfo xmlInfo;
+        private LayoutXmlInfo xmlInfo;
 
         public LayoutXmlInfo XmlInfo {
             get {
@@ -39,15 +37,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public string CustomPositionElementName {
-            get {
-                return customPositionElementName;
-            }
-
-            set {
-                customPositionElementName = value;
-            }
-        }
+        public string CustomPositionElementName { get; set; } = "Position";
 
         public LayoutPositionInfo PositionProvider {
             get {
@@ -73,7 +63,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        void updateDependencies() {
+        private void updateDependencies() {
             if (radioButtonStandardPosition.Checked) {
                 layoutInfosComboBoxPositions.Enabled = true;
                 positionDefinition1.Enabled = false;
@@ -92,12 +82,12 @@ namespace LayoutManager.CommonUI.Controls {
 
         }
 
-        LayoutPositionInfo getCustomPosition() {
-            LayoutPositionInfo positionProvider = new LayoutPositionInfo(xmlInfo.DocumentElement, customPositionElementName);
+        private LayoutPositionInfo getCustomPosition() {
+            LayoutPositionInfo positionProvider = new LayoutPositionInfo(xmlInfo.DocumentElement, CustomPositionElementName);
 
             // If font element did not exist, create it
             if (positionProvider.Element == null)
-                positionProvider.Element = LayoutInfo.CreateProviderElement(xmlInfo.DocumentElement, customPositionElementName, null);
+                positionProvider.Element = LayoutInfo.CreateProviderElement(xmlInfo.DocumentElement, CustomPositionElementName, null);
 
             return positionProvider;
         }
@@ -184,7 +174,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Size = new System.Drawing.Size(320, 171);
             this.groupBoxPosition.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

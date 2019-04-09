@@ -38,12 +38,13 @@ namespace LayoutManager.Dialogs {
         private Button buttonSetUD;
         private Button buttonClearUE;
         private Button buttonSetUE;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
 
-        class ImageEntry {
+        private class ImageEntry {
             public PictureBox picBox;
             public Button setButton;
             public Button clearButton;
@@ -55,10 +56,10 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        readonly LocomotiveCatalogInfo catalog;
-        readonly ImageEntry[,] imageTable;
-        readonly LocomotiveOrigin[] origins = new LocomotiveOrigin[] { LocomotiveOrigin.Europe, LocomotiveOrigin.US };
-        readonly LocomotiveKind[] kinds = new LocomotiveKind[] { LocomotiveKind.Steam, LocomotiveKind.Diesel, LocomotiveKind.Electric, LocomotiveKind.SoundUnit };
+        private readonly LocomotiveCatalogInfo catalog;
+        private readonly ImageEntry[,] imageTable;
+        private readonly LocomotiveOrigin[] origins = new LocomotiveOrigin[] { LocomotiveOrigin.Europe, LocomotiveOrigin.US };
+        private readonly LocomotiveKind[] kinds = new LocomotiveKind[] { LocomotiveKind.Steam, LocomotiveKind.Diesel, LocomotiveKind.Electric, LocomotiveKind.SoundUnit };
         private Label label7;
         private Button buttonSetESU;
         private PictureBox pictureBoxESU;
@@ -67,7 +68,7 @@ namespace LayoutManager.Dialogs {
         private Label label8;
         private PictureBox pictureBoxUSU;
         private Button buttonClearUSU;
-        readonly bool[,] modified;
+        private readonly bool[,] modified;
 
         public LocomotiveCatalogStandardImages(LocomotiveCatalogInfo catalog) {
             //
@@ -529,7 +530,6 @@ namespace LayoutManager.Dialogs {
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

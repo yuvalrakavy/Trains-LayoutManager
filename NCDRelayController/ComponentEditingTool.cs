@@ -13,19 +13,10 @@ namespace NCDRelayController {
         /// Required designer variable.
         /// </summary>
         private Container components = null;
-        LayoutModule _module;
 
         #region Implementation of ILayoutModuleSetup
 
-        public LayoutModule Module {
-            set {
-                _module = value;
-            }
-
-            get {
-                return _module;
-            }
-        }
+        public LayoutModule Module { set; get; }
 
         #endregion
 
@@ -57,7 +48,7 @@ namespace NCDRelayController {
         #endregion
 
         [LayoutEvent("model-component-placement-request", SenderType = typeof(NCDRelayController))]
-        void PlaceTrackContactRequest(LayoutEvent e) {
+        private void PlaceTrackContactRequest(LayoutEvent e) {
             var component = (NCDRelayController)e.Sender;
             var csProperties = new Dialogs.NCDRelayControllerProperties(component);
 
@@ -70,12 +61,12 @@ namespace NCDRelayController {
         }
 
         [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(NCDRelayController))]
-        void QueryEditingMenu(LayoutEvent e) {
+        private void QueryEditingMenu(LayoutEvent e) {
             e.Info = e.Sender;
         }
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(NCDRelayController))]
-        void AddEditingContextMenuEntries(LayoutEvent e) {
+        private void AddEditingContextMenuEntries(LayoutEvent e) {
             var menu = (Menu)e.Info;
             var component = (NCDRelayController)e.Sender;
 

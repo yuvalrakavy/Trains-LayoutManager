@@ -14,6 +14,7 @@ namespace LayoutManager.Dialogs {
         private Button buttonEdit;
         private Button buttonDelete;
         private Button buttonClose;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -129,7 +130,6 @@ namespace LayoutManager.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Standard Positions";
             this.ResumeLayout(false);
-
         }
         #endregion
 

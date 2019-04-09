@@ -22,6 +22,7 @@ namespace LayoutManager.Dialogs {
         private LayoutManager.CommonUI.Controls.PolicyList policyListDriverInstructions;
         private Button buttonExport;
         private Button buttonImport;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -291,7 +292,6 @@ namespace LayoutManager.Dialogs {
             this.tabPageStartCondition.ResumeLayout(false);
             this.tabPageDriverInstructions.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

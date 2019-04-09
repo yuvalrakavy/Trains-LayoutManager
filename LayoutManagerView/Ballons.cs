@@ -1,7 +1,6 @@
 ﻿using System.Windows.Forms;
 
 namespace LayoutManager.View {
-
     public class Ballon {
         public PopupWindowContainerSection Content { get; }
 

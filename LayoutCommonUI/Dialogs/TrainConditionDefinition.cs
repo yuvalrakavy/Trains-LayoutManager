@@ -15,6 +15,7 @@ namespace LayoutManager.CommonUI.Dialogs {
         private RadioButton radioButtonNoCondition;
         private RadioButton radioButtonCondition;
         private LayoutManager.CommonUI.Controls.LinkMenu linkMenuConditionScope;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -22,7 +23,7 @@ namespace LayoutManager.CommonUI.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly TripPlanTrainConditionInfo trainCondition;
+        private readonly TripPlanTrainConditionInfo trainCondition;
 
         public TrainConditionDefinition(LayoutBlockDefinitionComponent blockDefinition, TripPlanTrainConditionInfo inTrainCondition) {
             //
@@ -178,7 +179,6 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Train Condition Definition";
             this.ResumeLayout(false);
-
         }
         #endregion
 

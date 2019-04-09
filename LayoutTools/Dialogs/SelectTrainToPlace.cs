@@ -10,11 +10,10 @@ using System.Diagnostics;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class SelectTrainToPlace : Form {
-        readonly LayoutBlockDefinitionComponent blockDefinition;
-        readonly LocomotiveCatalogInfo catalog;
+        private readonly LayoutBlockDefinitionComponent blockDefinition;
+        private readonly LocomotiveCatalogInfo catalog;
 
-        string lastSearch = "";
-
+        private string lastSearch = "";
 
         public SelectTrainToPlace(LayoutBlockDefinitionComponent blockDefinition) {
             InitializeComponent();
@@ -141,25 +140,14 @@ namespace LayoutManager.Tools.Dialogs {
             Search();
         }
 
-        class SearchResultItem {
-            readonly LayoutNamedTrainObject namedObject;
-            bool deleteMe;
-
+        private class SearchResultItem {
             public SearchResultItem(LayoutNamedTrainObject namedObject) {
-                this.namedObject = namedObject;
+                this.NamedObject = namedObject;
             }
 
-            public LayoutNamedTrainObject NamedObject => namedObject;
+            public LayoutNamedTrainObject NamedObject { get; }
 
-            public bool DeleteMe {
-                get {
-                    return deleteMe;
-                }
-
-                set {
-                    deleteMe = value;
-                }
-            }
+            public bool DeleteMe { get; set; }
 
             public override string ToString() => NamedObject.DisplayName;
         }

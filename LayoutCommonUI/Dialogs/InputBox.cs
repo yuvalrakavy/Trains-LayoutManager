@@ -16,12 +16,11 @@ namespace LayoutManager.CommonUI.Dialogs {
         private TextBox textBox;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-
-        private InputBoxValidationOptions validationOptions = 0;
 
         public InputBox(String caption, string prompt) {
             //
@@ -43,15 +42,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             }
         }
 
-        public InputBoxValidationOptions ValidationOptions {
-            get {
-                return validationOptions;
-            }
-
-            set {
-                validationOptions = value;
-            }
-        }
+        public InputBoxValidationOptions ValidationOptions { get; set; } = 0;
 
         public static string Show(String caption, string prompt, InputBoxValidationOptions validationOptions) {
             InputBox inputBox = new InputBox(caption, prompt) {
@@ -139,18 +130,17 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "InputBox";
             this.ResumeLayout(false);
-
         }
         #endregion
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
-            if ((validationOptions & InputBoxValidationOptions.AllowEmpty) == 0 && textBox.Text.Trim() == "") {
+            if ((ValidationOptions & InputBoxValidationOptions.AllowEmpty) == 0 && textBox.Text.Trim() == "") {
                 MessageBox.Show(this, "Value cannot be empty", "Input error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBox.Focus();
                 return;
             }
 
-            if ((validationOptions & InputBoxValidationOptions.IntegerNumber) != 0) {
+            if ((ValidationOptions & InputBoxValidationOptions.IntegerNumber) != 0) {
                 try {
                     int n = int.Parse(textBox.Text);
                 }

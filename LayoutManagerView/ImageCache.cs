@@ -5,17 +5,14 @@ using System.IO;
 
 #pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.View {
-
     [LayoutModule("Image Cache Manager", UserControl = false)]
-    class ImageCacheManager : LayoutModuleBase {
-        readonly Dictionary<string, Image> imageHashtable = new Dictionary<string, Image>();
-        string layoutFileDirectory;
+    internal class ImageCacheManager : LayoutModuleBase {
+        private readonly Dictionary<string, Image> imageHashtable = new Dictionary<string, Image>();
+        private string layoutFileDirectory;
 
-        string LayoutFileDirectory {
+        private string LayoutFileDirectory {
             get {
-                if (layoutFileDirectory == null)
-                    layoutFileDirectory = Path.GetDirectoryName(LayoutController.LayoutFilename);
-                return layoutFileDirectory;
+                return layoutFileDirectory ?? (layoutFileDirectory = Path.GetDirectoryName(LayoutController.LayoutFilename));
             }
         }
 
@@ -30,7 +27,6 @@ namespace LayoutManager.View {
         private string getEffectName(LayoutEvent e) => e.GetOption("Type", "Effect");
 
         private string getImageCacheKey(LayoutEvent e) => getEffectName(e) + "|" + getImageFilename(e);
-
 
         [LayoutEvent("get-image-from-cache")]
         private void getImageFromCache(LayoutEvent e) {

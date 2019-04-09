@@ -13,11 +13,14 @@ namespace LayoutManager.CommonUI.Controls {
     /// Summary description for LocomotiveList.
     /// </summary>
     public class LocomotiveList : XmlQueryListbox {
-        LocomotiveCatalogInfo? catalog = null;
-        bool showOnlyLocomotives = false;
-        bool operationMode = false;
-        Rectangle dragSourceRect = Rectangle.Empty;
-        IXmlQueryListBoxXmlElementItem? draggedItem = null;
+        private const string A_OnTrack = "OnTrack";
+        private const string A_Reason = "Reason";
+        private const string A_CanPlaceOnTrack = "CanPlaceOnTrack";
+        private const string A_Id = "ID";
+        private LocomotiveCatalogInfo? catalog = null;
+        private bool operationMode = false;
+        private Rectangle dragSourceRect = Rectangle.Empty;
+        private IXmlQueryListBoxXmlElementItem? draggedItem = null;
 
         public LocomotiveList() {
             if (!DesignMode) {
@@ -32,17 +35,9 @@ namespace LayoutManager.CommonUI.Controls {
             EventManager.AddObjectSubscriptions(this);
         }
 
-        public bool ShowOnlyLocomotives {
-            set {
-                showOnlyLocomotives = value;
-            }
+        public bool ShowOnlyLocomotives { set; get; } = false;
 
-            get {
-                return showOnlyLocomotives;
-            }
-        }
-
-        public override IXmlQueryListboxItem CreateItem(QueryItem query, XmlElement itemElement) => new LocomotiveItem(this, query, itemElement);
+        public override IXmlQueryListboxItem CreateItem(QueryItem queryItem, XmlElement itemElement) => new LocomotiveItem(this, queryItem, itemElement);
 
         public XmlElement? SelectedXmlElement {
             get {
@@ -54,17 +49,14 @@ namespace LayoutManager.CommonUI.Controls {
 
         protected LocomotiveCatalogInfo Catalog {
             get {
-                if (catalog == null)
-                    catalog = LayoutModel.LocomotiveCatalog;
-
-                return catalog;
+                return catalog ?? (catalog = LayoutModel.LocomotiveCatalog);
             }
         }
 
         protected bool OperationMode => operationMode;
 
         protected void UpdateElementState(XmlElement element) {
-            Guid id = XmlConvert.ToGuid(element.GetAttribute("ID"));
+            var id = (Guid)element.AttributeValue(A_Id);
             bool onTrack;
 
             var trainState = LayoutModel.StateManager.Trains[id];
@@ -73,13 +65,10 @@ namespace LayoutManager.CommonUI.Controls {
                 onTrack = false;
             else {
                 // TODO: This will not be correct if it would be possible to create on the fly trains (adding locos)
-                if (trainState.Locomotives.Count > 1 && element.Name == "Locomotive")
-                    onTrack = false;
-                else
-                    onTrack = true;
+                onTrack = trainState.Locomotives.Count <= 1 || element.Name != "Locomotive";
             }
 
-            element.SetAttribute("OnTrack", XmlConvert.ToString(onTrack));
+            element.SetAttribute(A_OnTrack, onTrack);
 
             if (!onTrack) {
                 // Try to check if the locomotive can be placed on a block
@@ -88,7 +77,6 @@ namespace LayoutManager.CommonUI.Controls {
                 CanPlaceTrainResolveMethod canPlaceOnTrack = CanPlaceTrainResolveMethod.NotPossible;
 
                 foreach (LayoutBlockDefinitionComponent blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases)) {
-
                     if (!blockDefinition.Block.HasTrains && blockDefinition.Block.Power != power) {
                         power = blockDefinition.Block.Power;
 
@@ -127,11 +115,11 @@ namespace LayoutManager.CommonUI.Controls {
                 }
 
                 if (canPlaceOnTrack == CanPlaceTrainResolveMethod.Resolved)
-                    element.RemoveAttribute("Reason");
+                    element.RemoveAttribute(A_Reason);
                 else
-                    element.SetAttribute("Reason", reason);
+                    element.SetAttribute(A_Reason, reason);
 
-                element.SetAttribute("CanPlaceOnTrack", canPlaceOnTrack.ToString());
+                element.SetAttribute(A_CanPlaceOnTrack, canPlaceOnTrack);
             }
         }
 
@@ -144,7 +132,6 @@ namespace LayoutManager.CommonUI.Controls {
 
         protected void InvalidateElement(XmlElement element) {
             for (int i = 0; i < Items.Count; i++) {
-
                 if (Items[i] is IXmlQueryListBoxXmlElementItem item && item.Element == element) {
                     Invalidate(GetItemRectangle(i));
                     break;
@@ -243,35 +230,34 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region Item classes
 
-        class LocomotiveItem : IXmlQueryListBoxXmlElementItem {
-            readonly LocomotiveList list;
-            readonly XmlElement element;
+        private class LocomotiveItem : IXmlQueryListBoxXmlElementItem {
+            private readonly LocomotiveList list;
 
             public LocomotiveItem(LocomotiveList list, QueryItem queryItem, XmlElement element) {
                 this.list = list;
-                this.element = element;
+                this.Element = element;
             }
 
-            public XmlElement Element => element;
+            public XmlElement Element { get; }
 
             public void Measure(MeasureItemEventArgs e) {
-                LocomotiveListItemPainter.Measure(e, element);
+                LocomotiveListItemPainter.Measure(e, Element);
             }
 
             public void Draw(DrawItemEventArgs e) {
                 if (list.OperationMode) {
-                    if (!element.HasAttribute("OnTrack"))
-                        list.UpdateElementState(element);
+                    if (!Element.HasAttribute(A_OnTrack))
+                        list.UpdateElementState(Element);
                 }
 
-                LocomotiveListItemPainter.Draw(e, element, list.Catalog, list.OperationMode);
+                LocomotiveListItemPainter.Draw(e, Element, list.Catalog, list.OperationMode);
             }
 
-            public object Bookmark => new LocomotiveInfo(element).Id.ToString();
+            public object Bookmark => new LocomotiveInfo(Element).Id.ToString();
 
             public bool IsBookmarkEqual(object bookmark) {
                 if (bookmark is String)
-                    return (String)bookmark == element.GetAttribute("ID");
+                    return (String)bookmark == Element.GetAttribute(A_Id);
                 return false;
             }
         }
@@ -280,8 +266,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region ListLayout classes
 
-        class ListLayoutSimple : ListLayout {
-
+        private class ListLayoutSimple : ListLayout {
             public override string LayoutName => "Simple";
 
             public override void ApplyLayout(XmlQueryListbox list) {
@@ -290,8 +275,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        class ListLayoutByOrigin : ListLayout {
-
+        private class ListLayoutByOrigin : ListLayout {
             public override string LayoutName => "Locomotive origin";
 
             public override void ApplyLayout(XmlQueryListbox list) {
@@ -301,8 +285,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        class ListLayoutByType : ListLayout {
-
+        private class ListLayoutByType : ListLayout {
             public override string LayoutName => "Locomotive type";
 
             public override void ApplyLayout(XmlQueryListbox list) {
@@ -314,7 +297,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        class ListLayoutByStorage : ListLayout {
+        private class ListLayoutByStorage : ListLayout {
             public override string LayoutName => "By locomotive storage file";
 
             public override void ApplyLayout(XmlQueryListbox list) {

@@ -26,9 +26,9 @@ namespace LayoutManager.CommonUI.Controls {
 
         private void endOfDesignerVariables() { }
 
-        readonly float[] zooms = new float[] { 0.2F, 0.5F, 0.75F, 1.0F, 1.5F, 2.0F, 4.0F };
-        int zoomIndex = 3;
-        readonly string notInLocationText = "(Not in any location)";
+        private readonly float[] zooms = new float[] { 0.2F, 0.5F, 0.75F, 1.0F, 1.5F, 2.0F, 4.0F };
+        private int zoomIndex = 3;
+        private readonly string notInLocationText = "(Not in any location)";
 
         public LayoutControlViewer() {
             // This call is required by the Windows.Forms Form Designer.
@@ -212,7 +212,6 @@ namespace LayoutManager.CommonUI.Controls {
         /// Clean up any resources being used.
         /// </summary>
         protected override void Dispose(bool disposing) {
-
             if (disposing) {
                 EventManager.Subscriptions.RemoveObjectSubscriptions(this);
                 if (components != null) {
@@ -385,7 +384,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Size = new System.Drawing.Size(200, 688);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -427,7 +425,7 @@ namespace LayoutManager.CommonUI.Controls {
                 layoutControlBusViewer.Zoom = zooms[--zoomIndex];
         }
 
-        struct Item {
+        private struct Item {
             public string Text;
             public Guid Id;
             public string Value;

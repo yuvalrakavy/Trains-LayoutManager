@@ -13,6 +13,7 @@ namespace LayoutManager.Tools.Dialogs {
         private Label labelAutoClear2;
         private Button buttonOk;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -160,7 +161,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "Trip Viewer Options";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAutoClearTimeout)).EndInit();
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -173,6 +173,5 @@ namespace LayoutManager.Tools.Dialogs {
             DialogResult = DialogResult.Cancel;
             Close();
         }
-
     }
 }

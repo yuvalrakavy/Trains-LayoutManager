@@ -15,15 +15,15 @@ namespace LayoutManager.Tools.Dialogs {
         private Button buttonCancel;
         private CheckBox checkBoxDisplayPowerSourceName;
         private Button buttonSettings;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly LayoutXmlInfo xmlInfo;
         private CommonUI.Controls.TrackGuageSelector trackGaugeSelector;
         private Label label2;
         private CheckBox checkBoxDetectReverseLoops;
-        readonly LayoutTrackPowerConnectorComponent component;
+        private readonly LayoutTrackPowerConnectorComponent component;
 
         public TrackPowerConnectorProperties(ModelComponent modelComponent) {
             //
@@ -32,12 +32,12 @@ namespace LayoutManager.Tools.Dialogs {
             InitializeComponent();
 
             this.component = (LayoutTrackPowerConnectorComponent)modelComponent;
-            xmlInfo = new LayoutXmlInfo(component);
+            XmlInfo = new LayoutXmlInfo(component);
 
-            var info = new LayoutTrackPowerConnectorInfo(xmlInfo.Element);
+            var info = new LayoutTrackPowerConnectorInfo(XmlInfo.Element);
 
             if (info.Element == null)
-                info.Element = LayoutInfo.CreateProviderElement(xmlInfo.Element, "TrackPowerConnector", null);
+                info.Element = LayoutInfo.CreateProviderElement(XmlInfo.Element, "TrackPowerConnector", null);
 
             foreach (IModelComponentHasPowerOutlets componentWithPowerSources in LayoutModel.Components<IModelComponentHasPowerOutlets>(LayoutPhase.All)) {
                 for (int outletIndex = 0; outletIndex < componentWithPowerSources.PowerOutlets.Count; outletIndex++)
@@ -71,7 +71,7 @@ namespace LayoutManager.Tools.Dialogs {
             buttonSettings.Enabled = checkBoxDisplayPowerSourceName.Checked;
         }
 
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         /// <summary>
         /// Clean up any resources being used.
@@ -206,7 +206,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "Track Power Connector";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
         #endregion
 
@@ -217,7 +216,7 @@ namespace LayoutManager.Tools.Dialogs {
                 return;
             }
 
-            LayoutTrackPowerConnectorInfo info = new LayoutTrackPowerConnectorInfo(xmlInfo.Element);
+            LayoutTrackPowerConnectorInfo info = new LayoutTrackPowerConnectorInfo(XmlInfo.Element);
 
             LayoutPowerInlet inlet = info.Inlet;
             var powerSourceItem = (LayoutComponentPowerOutletDescription)comboBoxPowerSources.SelectedItem;
@@ -238,14 +237,14 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonSettings_Click(object sender, System.EventArgs e) {
-            LayoutTrackPowerConnectorInfo powerSourceNameInfo = new LayoutTrackPowerConnectorInfo(xmlInfo.Element) {
+            LayoutTrackPowerConnectorInfo powerSourceNameInfo = new LayoutTrackPowerConnectorInfo(XmlInfo.Element) {
                 Component = component
             };
 
-            CommonUI.Dialogs.TextProviderSettings settings = new CommonUI.Dialogs.TextProviderSettings(xmlInfo, powerSourceNameInfo);
+            CommonUI.Dialogs.TextProviderSettings settings = new CommonUI.Dialogs.TextProviderSettings(XmlInfo, powerSourceNameInfo);
 
             if (powerSourceNameInfo.Element == null)
-                powerSourceNameInfo.Element = LayoutInfo.CreateProviderElement(xmlInfo.Element, "PowerSourceName", null);
+                powerSourceNameInfo.Element = LayoutInfo.CreateProviderElement(XmlInfo.Element, "PowerSourceName", null);
 
             settings.ShowDialog(this);
         }

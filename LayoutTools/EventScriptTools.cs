@@ -12,9 +12,12 @@ using System.Collections.Generic;
 #pragma warning disable IDE0051, IDE0060, IDE0052
 #nullable enable
 namespace LayoutManager.Tools {
-
     [LayoutModule("EventScript Tools", UserControl = false)]
-    class EventScriptTools : LayoutModuleBase {
+    internal class EventScriptTools : LayoutModuleBase {
+        private const string A_From = "From";
+        private const string A_TrainSymbol = "TrainSymbol";
+        private const string A_Length = "Length";
+        private const string A_Comparison = "Comparison";
 
         #region Symbol name to object type map
 
@@ -125,8 +128,8 @@ namespace LayoutManager.Tools {
 
         #region Context builders
 
-        class TrainToTripResolver : ILayoutScriptContextResolver {
-            readonly TrainStateInfo train;
+        private class TrainToTripResolver : ILayoutScriptContextResolver {
+            private readonly TrainStateInfo train;
 
             public TrainToTripResolver(TrainStateInfo train) {
                 this.train = train;
@@ -187,7 +190,6 @@ namespace LayoutManager.Tools {
                     context.Remove("CurrentWayPoint");
                     context.Remove("Destination");
                 }
-
 
                 EventManager.Event(new LayoutEvent("set-script-context", trip.TripPlan, context));
 
@@ -275,8 +277,8 @@ namespace LayoutManager.Tools {
             }
         }
 
-        class PolicyMenuItem : MenuItem {
-            readonly LayoutPolicyInfo policy;
+        private class PolicyMenuItem : MenuItem {
+            private readonly LayoutPolicyInfo policy;
 
             public PolicyMenuItem(LayoutPolicyInfo policy) {
                 this.policy = policy;
@@ -423,7 +425,6 @@ namespace LayoutManager.Tools {
             menu.MenuItems.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Train length", "IfTrainLength"));
         }
 
-
         #endregion
 
         #region Events
@@ -437,14 +438,15 @@ namespace LayoutManager.Tools {
             e.Info = new LayoutEventScriptNodeEventRunPolicy(e);
         }
 
-        class LayoutEventScriptNodeEventRunPolicy : LayoutEventScriptNodeEvent {
-            readonly LayoutPolicyInfo? policy;
-            LayoutEventScript? eventScript;
+        private class LayoutEventScriptNodeEventRunPolicy : LayoutEventScriptNodeEvent {
+            private const string A_PolicyId = "PolicyID";
+            private readonly LayoutPolicyInfo? policy;
+            private LayoutEventScript? eventScript;
 
             public LayoutEventScriptNodeEventRunPolicy(LayoutEvent e) : base(e) {
                 LayoutPoliciesCollection policies = new LayoutPoliciesCollection(LayoutModel.Instance.GlobalPoliciesElement, LayoutModel.StateManager.LayoutPoliciesElement, null);
 
-                policy = policies[XmlConvert.ToGuid(Element.GetAttribute("PolicyID"))];
+                policy = policies[(Guid)Element.AttributeValue(A_PolicyId)];
 
                 if (policy == null)
                     throw new LayoutEventScriptException(this, "The policy to run cannot be found. It was probably erased");
@@ -519,29 +521,24 @@ namespace LayoutManager.Tools {
                 site.EditingCancelled();
         }
 
-        class LayoutEventScriptEditorTreeNodeRunPolicy : CommonUI.Controls.LayoutEventScriptEditorTreeNodeEvent {
+        private class LayoutEventScriptEditorTreeNodeRunPolicy : CommonUI.Controls.LayoutEventScriptEditorTreeNodeEvent {
+            private const string A_PolicyId = "PolicyID";
 
             public LayoutEventScriptEditorTreeNodeRunPolicy(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
 
             public static string GetDescription(XmlElement element) {
-                var policy = LayoutModel.StateManager.Policies(null)[XmlConvert.ToGuid(element.GetAttribute("PolicyID"))];
-                string policyName;
-
-                if (policy == null)
-                    policyName = "[ERROR: Policy not found]";
-                else
-                    policyName = policy.Name;
-
-                return "Do " + policyName;
+                var policy = LayoutModel.StateManager.Policies(null)[(Guid)element.AttributeValue(A_PolicyId)];
+                var policyName = policy == null ? "[ERROR: Policy not found]" : policy.Name;
+                return $"Do {policyName}";
             }
 
             protected override string Description => GetDescription(Element);
 
             public override bool SupportedInGlobalPolicy {
                 get {
-                    Guid policyID = XmlConvert.ToGuid(Element.GetAttribute("PolicyID"));
+                    Guid policyID = (Guid)Element.AttributeValue(A_PolicyId);
                     LayoutPoliciesCollection policies = new LayoutPoliciesCollection(LayoutModel.Instance.GlobalPoliciesElement, null, null);
 
                     return policies[policyID] != null;
@@ -566,11 +563,11 @@ namespace LayoutManager.Tools {
             e.Info = new LayoutEventScriptNodeEventContainerForEachTrain(e);
         }
 
-        class LayoutEventScriptNodeEventContainerForEachTrain : LayoutEventScriptNodeEventBase {
-            Guid[]? trainIDs = null;
-            int index = 0;
-            readonly LayoutEventScriptNodeEventBase? repeatedEvent;
-            readonly LayoutScriptContext parentContext;
+        private class LayoutEventScriptNodeEventContainerForEachTrain : LayoutEventScriptNodeEventBase {
+            private Guid[]? trainIDs = null;
+            private int index = 0;
+            private readonly LayoutEventScriptNodeEventBase? repeatedEvent;
+            private readonly LayoutScriptContext parentContext;
 
             public LayoutEventScriptNodeEventContainerForEachTrain(LayoutEvent e) : base(e) {
                 if (Element.ChildNodes.Count < 1)
@@ -690,7 +687,7 @@ namespace LayoutManager.Tools {
             e.Info = LayoutManager.CommonUI.EventScriptUImanager.GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeForEachTrain.GetDescription(element) + " { ", " } ");
         }
 
-        class LayoutEventScriptEditorTreeNodeForEachTrain : CommonUI.Controls.LayoutEventScriptEditorTreeNodeMayBeOptional {
+        private class LayoutEventScriptEditorTreeNodeForEachTrain : CommonUI.Controls.LayoutEventScriptEditorTreeNodeMayBeOptional {
             public LayoutEventScriptEditorTreeNodeForEachTrain(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
@@ -751,7 +748,7 @@ namespace LayoutManager.Tools {
 
                         if (fromBlock != null) {
                             LayoutBlockDefinitionComponent blockDefinition = block.BlockDefinintion;
-                            LayoutComponentConnectionPoint from = LayoutComponentConnectionPoint.Parse(Element.GetAttribute("From"));
+                            LayoutComponentConnectionPoint from = LayoutComponentConnectionPoint.Parse(Element.GetAttribute(A_From));
                             int fromCpIndex = blockDefinition.GetConnectionPointIndex(from);
                             LayoutBlockEdgeBase[] fromBlockEdges = blockDefinition.GetBlockEdges(fromCpIndex);
 
@@ -787,7 +784,7 @@ namespace LayoutManager.Tools {
             EventScriptDialogs.TrainArrivesFrom d = new LayoutManager.Tools.EventScriptDialogs.TrainArrivesFrom(site.BlockDefinition, element);
 
             if (d.ShowDialog() == DialogResult.OK) {
-                element.SetAttribute("From", d.From.ToString());
+                element.SetAttribute(A_From, d.From.ToString());
                 site.EditingDone();
             }
             else
@@ -801,7 +798,6 @@ namespace LayoutManager.Tools {
             e.Info = LayoutEventScriptEditorTreeNodeIfTrainArrivesFrom.GetDescription(element);
         }
 
-
         public class LayoutEventScriptEditorTreeNodeIfTrainArrivesFrom : LayoutEventScriptEditorTreeNodeCondition {
             public LayoutEventScriptEditorTreeNodeIfTrainArrivesFrom(XmlElement conditionElement)
                 : base(conditionElement) {
@@ -811,7 +807,7 @@ namespace LayoutManager.Tools {
             protected override string Description => GetDescription(Element);
 
             internal static string GetDescription(XmlElement element) {
-                LayoutComponentConnectionPoint from = LayoutComponentConnectionPoint.Parse(element.GetAttribute("From"));
+                LayoutComponentConnectionPoint from = LayoutComponentConnectionPoint.Parse(element.GetAttribute(EventScriptTools.A_From));
                 string fromText;
 
                 switch (from) {
@@ -840,7 +836,6 @@ namespace LayoutManager.Tools {
             e.Info = new LayoutEventScriptNodeConditionIfTrainsLength(e);
         }
 
-
         public class LayoutEventScriptNodeConditionIfTrainsLength : LayoutEventScriptNodeCondition {
             public LayoutEventScriptNodeConditionIfTrainsLength(LayoutEvent e)
                 : base(e) {
@@ -852,13 +847,13 @@ namespace LayoutManager.Tools {
                     TrainLength length;
                     TrainLengthComparison comparison;
 
-                    if (Element.HasAttribute("TrainSymbol"))
-                        trainSymbol = Element.GetAttribute("TrainSymbol");
+                    if (Element.HasAttribute(A_TrainSymbol))
+                        trainSymbol = Element.GetAttribute(A_TrainSymbol);
                     else
                         trainSymbol = "Train";
 
-                    if (Element.HasAttribute("Length"))
-                        length = TrainLength.Parse(Element.GetAttribute("Length"));
+                    if (Element.HasAttribute(A_Length))
+                        length = TrainLength.Parse(Element.GetAttribute(A_Length));
                     else
                         length = TrainLength.VeryLong;
 
@@ -897,31 +892,16 @@ namespace LayoutManager.Tools {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
 
-            string trainSymbol;
-            TrainLength length;
-            TrainLengthComparison comparison;
-
-            if (element.HasAttribute("TrainSymbol"))
-                trainSymbol = element.GetAttribute("TrainSymbol");
-            else
-                trainSymbol = "Train";
-
-            if (element.HasAttribute("Length"))
-                length = TrainLength.Parse(element.GetAttribute("Length"));
-            else
-                length = TrainLength.VeryLong;
-
-            if (element.HasAttribute("Comparison"))
-                comparison = (TrainLengthComparison)Enum.Parse(typeof(TrainLengthComparison), element.GetAttribute("Comparison"));
-            else
-                comparison = TrainLengthComparison.NotLonger;
+            var trainSymbol = (string?)element.AttributeValue(A_TrainSymbol) ?? "Train";
+            var length = element.AttributeValue(A_Length).Enum<TrainLength>() ?? TrainLength.VeryLong;
+            var comparison = element.AttributeValue(A_Comparison).Enum<TrainLengthComparison>() ?? TrainLengthComparison.NotLonger;
 
             EventScriptDialogs.IfTrainLength d = new LayoutManager.Tools.EventScriptDialogs.IfTrainLength(trainSymbol, length, comparison);
 
             if (d.ShowDialog() == DialogResult.OK) {
-                element.SetAttribute("TrainSymbol", d.SymbolName);
-                element.SetAttribute("Length", d.Length.ToString());
-                element.SetAttribute("Comparison", d.Comparison.ToString());
+                element.SetAttribute(A_TrainSymbol, d.SymbolName);
+                element.SetAttribute(A_Length, d.Length);
+                element.SetAttribute(A_Comparison, d.Comparison);
                 site.EditingDone();
             }
             else
@@ -935,7 +915,6 @@ namespace LayoutManager.Tools {
             e.Info = LayoutEventScriptEditorTreeNodeIfTrainLength.GetDescription(element);
         }
 
-
         public class LayoutEventScriptEditorTreeNodeIfTrainLength : LayoutEventScriptEditorTreeNodeCondition {
             public LayoutEventScriptEditorTreeNodeIfTrainLength(XmlElement conditionElement)
                 : base(conditionElement) {
@@ -945,8 +924,8 @@ namespace LayoutManager.Tools {
             protected override string Description => GetDescription(Element);
 
             internal static string GetDescription(XmlElement element) {
-                string symbolName = element.GetAttribute("TrainSymbol");
-                TrainLength length = TrainLength.Parse(element.GetAttribute("Length"));
+                string symbolName = element.GetAttribute(EventScriptTools.A_TrainSymbol);
+                TrainLength length = TrainLength.Parse(element.GetAttribute(EventScriptTools.A_Length));
                 TrainLengthComparison comparison = (TrainLengthComparison)Enum.Parse(typeof(TrainLengthComparison), element.GetAttribute("Comparison"));
 
                 string c = "";
@@ -977,14 +956,13 @@ namespace LayoutManager.Tools {
             e.Info = new LayoutEventScriptNodeActionTriggerTrainFunction(e);
         }
 
-        class LayoutEventScriptNodeActionTriggerTrainFunction : LayoutEventScriptNodeAction {
-
+        private class LayoutEventScriptNodeActionTriggerTrainFunction : LayoutEventScriptNodeAction {
             public LayoutEventScriptNodeActionTriggerTrainFunction(LayoutEvent e) : base(e) {
             }
 
             public override void Execute() {
                 string functionName = Element.GetAttribute("FunctionName");
-                string symbolName = Element.GetAttribute("TrainSymbol");
+                string symbolName = Element.GetAttribute(A_TrainSymbol);
                 var oTrain = Context[symbolName];
 
                 if (!(oTrain is TrainStateInfo))
@@ -1025,14 +1003,14 @@ namespace LayoutManager.Tools {
             e.Info = LayoutEventScriptEditorTreeNodeTriggerTrainFunction.GetDescription(descriptionElement);
         }
 
-        class LayoutEventScriptEditorTreeNodeTriggerTrainFunction : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
+        private class LayoutEventScriptEditorTreeNodeTriggerTrainFunction : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
             public LayoutEventScriptEditorTreeNodeTriggerTrainFunction(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
 
             public static string GetDescription(XmlElement element) {
                 string functionName = element.GetAttribute("FunctionName");
-                string symbolName = element.GetAttribute("TrainSymbol");
+                string symbolName = element.GetAttribute(EventScriptTools.A_TrainSymbol);
 
                 return "Trigger function " + functionName + " of " + symbolName;
             }
@@ -1053,14 +1031,13 @@ namespace LayoutManager.Tools {
             e.Info = new LayoutEventScriptNodeActionSetTrainFunction(e);
         }
 
-        class LayoutEventScriptNodeActionSetTrainFunction : LayoutEventScriptNodeAction {
-
+        private class LayoutEventScriptNodeActionSetTrainFunction : LayoutEventScriptNodeAction {
             public LayoutEventScriptNodeActionSetTrainFunction(LayoutEvent e) : base(e) {
             }
 
             public override void Execute() {
                 string functionName = Element.GetAttribute("FunctionName");
-                string symbolName = Element.GetAttribute("TrainSymbol");
+                string symbolName = Element.GetAttribute(A_TrainSymbol);
                 string action = Element.GetAttribute("Action");
                 var oTrain = Context[symbolName];
 
@@ -1118,14 +1095,14 @@ namespace LayoutManager.Tools {
             e.Info = LayoutEventScriptEditorTreeNodeSetTrainFunction.GetDescription(element);
         }
 
-        class LayoutEventScriptEditorTreeNodeSetTrainFunction : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
+        private class LayoutEventScriptEditorTreeNodeSetTrainFunction : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
             public LayoutEventScriptEditorTreeNodeSetTrainFunction(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
 
             public static string GetDescription(XmlElement element) {
                 string functionName = element.GetAttribute("FunctionName");
-                string symbolName = element.GetAttribute("TrainSymbol");
+                string symbolName = element.GetAttribute(EventScriptTools.A_TrainSymbol);
                 string action = element.GetAttribute("Action");
                 string verb = "";
 
@@ -1154,13 +1131,12 @@ namespace LayoutManager.Tools {
             e.Info = new LayoutEventScriptNodeActionChangeTrainTargetSpeed(e);
         }
 
-        class LayoutEventScriptNodeActionChangeTrainTargetSpeed : LayoutEventScriptNodeAction {
-
+        private class LayoutEventScriptNodeActionChangeTrainTargetSpeed : LayoutEventScriptNodeAction {
             public LayoutEventScriptNodeActionChangeTrainTargetSpeed(LayoutEvent e) : base(e) {
             }
 
             public override void Execute() {
-                string symbolName = Element.GetAttribute("TrainSymbol");
+                string symbolName = Element.GetAttribute(A_TrainSymbol);
                 string action = Element.GetAttribute("Action");
                 var oTrain = Context[symbolName];
 
@@ -1238,13 +1214,13 @@ namespace LayoutManager.Tools {
             e.Info = LayoutEventScriptEditorTreeNodeChangeTrainTargetSpeed.GetDescription(element);
         }
 
-        class LayoutEventScriptEditorTreeNodeChangeTrainTargetSpeed : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
+        private class LayoutEventScriptEditorTreeNodeChangeTrainTargetSpeed : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
             public LayoutEventScriptEditorTreeNodeChangeTrainTargetSpeed(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
 
             public static string GetDescription(XmlElement element) {
-                string symbolName = element.GetAttribute("TrainSymbol");
+                string symbolName = element.GetAttribute(EventScriptTools.A_TrainSymbol);
                 string action = element.GetAttribute("Action");
                 string verb = "";
                 string relation = "to";
@@ -1274,13 +1250,12 @@ namespace LayoutManager.Tools {
             e.Info = new LayoutEventScriptNodeActionControlTrainLights(e);
         }
 
-        class LayoutEventScriptNodeActionControlTrainLights : LayoutEventScriptNodeAction {
-
+        private class LayoutEventScriptNodeActionControlTrainLights : LayoutEventScriptNodeAction {
             public LayoutEventScriptNodeActionControlTrainLights(LayoutEvent e) : base(e) {
             }
 
             public override void Execute() {
-                string symbolName = Element.GetAttribute("TrainSymbol");
+                string symbolName = Element.GetAttribute(A_TrainSymbol);
                 string action = Element.GetAttribute("Action");
                 var oTrain = Context[symbolName];
 
@@ -1341,14 +1316,13 @@ namespace LayoutManager.Tools {
             e.Info = LayoutEventScriptEditorTreeNodeControlTrainLights.GetDescription(element);
         }
 
-
-        class LayoutEventScriptEditorTreeNodeControlTrainLights : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
+        private class LayoutEventScriptEditorTreeNodeControlTrainLights : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
             public LayoutEventScriptEditorTreeNodeControlTrainLights(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
 
             public static string GetDescription(XmlElement element) {
-                string symbolName = element.GetAttribute("TrainSymbol");
+                string symbolName = element.GetAttribute(EventScriptTools.A_TrainSymbol);
                 string action = element.GetAttribute("Action");
                 string verb = "";
 
@@ -1359,9 +1333,9 @@ namespace LayoutManager.Tools {
 
                 var value = GetOperandDescription(element, "Value", typeof(bool));
 
-                if (value.ToLower() == "true")
+                if (string.Equals(value, "true", StringComparison.OrdinalIgnoreCase))
                     value = "On";
-                else if (value.ToLower() == "false")
+                else if (string.Equals(value, "false", StringComparison.OrdinalIgnoreCase))
                     value = "Off";
 
                 return $"Set lights of {symbolName} to{verb} {value}";
@@ -1383,21 +1357,23 @@ namespace LayoutManager.Tools {
             e.Info = new LayoutEventScriptNodeActionExecuteTripPlan(e);
         }
 
-        class LayoutEventScriptNodeActionExecuteTripPlan : LayoutEventScriptNodeAction {
+        private class LayoutEventScriptNodeActionExecuteTripPlan : LayoutEventScriptNodeAction {
+            private const string A_TripPlanId = "TripPlanID";
+            private const string A_ShouldReverse = "ShouldReverse";
 
             public LayoutEventScriptNodeActionExecuteTripPlan(LayoutEvent e) : base(e) {
             }
 
             public override void Execute() {
-                Guid tripPlanID = XmlConvert.ToGuid(Element.GetAttribute("TripPlanID"));
-                bool shouldReverse = XmlConvert.ToBoolean(Element.GetAttribute("ShouldReverse"));
-                string symbolName = Element.GetAttribute("TrainSymbol");
+                var tripPlanID = (Guid)Element.AttributeValue(A_TripPlanId);
+                var shouldReverse = (bool)Element.AttributeValue(A_ShouldReverse);
+                var symbolName = Element.GetAttribute(A_TrainSymbol);
                 var oTrain = Context[symbolName];
 
                 if (oTrain == null || !(oTrain is TrainStateInfo))
-                    throw new ArgumentException("Symbol " + symbolName + " is not a reference to a valid train object");
+                    throw new ArgumentException($"Symbol {symbolName} is not a reference to a valid train object");
 
-                TrainStateInfo train = (TrainStateInfo)oTrain;
+                var train = (TrainStateInfo)oTrain;
                 var catalogTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[tripPlanID];
 
                 if (catalogTripPlan == null)
@@ -1453,29 +1429,31 @@ namespace LayoutManager.Tools {
             e.Info = LayoutEventScriptEditorTreeNodeExecuteTripPlan.GetDescription(element);
         }
 
-        class LayoutEventScriptEditorTreeNodeExecuteTripPlan : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
+        private class LayoutEventScriptEditorTreeNodeExecuteTripPlan : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
+            private const string A_TripPlanId = "TripPlanID";
+            private const string A_ShouldReverse = "ShouldReverse";
+
             public LayoutEventScriptEditorTreeNodeExecuteTripPlan(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
 
             public static string GetDescription(XmlElement element) {
-                string symbolName = element.GetAttribute("TrainSymbol");
-                Guid tripPlanID = XmlConvert.ToGuid(element.GetAttribute("TripPlanID"));
-                bool shouldReverse = XmlConvert.ToBoolean(element.GetAttribute("ShouldReverse"));
-                string tripPlanName = "[Error: UNKNOWN]";
+                var symbolName = element.GetAttribute(EventScriptTools.A_TrainSymbol);
+                var tripPlanID = (Guid)element.AttributeValue(A_TripPlanId);
+                var shouldReverse = (bool)element.AttributeValue(A_ShouldReverse);
+                var tripPlanName = "[Error: UNKNOWN]";
 
                 var tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[tripPlanID];
 
                 if (tripPlan != null)
                     tripPlanName = tripPlan.Name;
 
-                return symbolName + " executes trip plan " + tripPlanName + (shouldReverse ? " (reversed)" : "");
+                return $"{symbolName} executes trip plan {tripPlanName}{(shouldReverse ? " (reversed)" : "")}";
             }
 
             protected override string Description => GetDescription(Element);
 
             public override bool SupportedInGlobalPolicy => false;
-
         }
 
         #endregion
@@ -1492,37 +1470,45 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEventDef("no-applicable-trip-plans-notification", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
-        class LayoutEventScriptNodeActionExecuteRandomTripPlan : LayoutEventScriptNodeAction {
-            static readonly LayoutTraceSwitch traceRandomTripPlan = new LayoutTraceSwitch("ExecuteRandomTripPlan", "Execute Random Trip-plan");
-            const int PenaltyThreashold = 1000;
-            readonly LayoutModuleBase mb;
+        private class LayoutEventScriptNodeActionExecuteRandomTripPlan : LayoutEventScriptNodeAction {
+            private static readonly LayoutTraceSwitch traceRandomTripPlan = new LayoutTraceSwitch("ExecuteRandomTripPlan", "Execute Random Trip-plan");
+            private const int PenaltyThreashold = 1000;
+            private const string A_StaticGrade = "StaticGrade";
+            private const string A_ShouldReverse = "ShouldReverse";
+            private const string A_Symbol = "Symbol";
+            private const string E_ApplicableTripPlans = "ApplicableTripPlans";
+            private const string A_SelectCircularTripPlans = "SelectCircularTripPlans";
+            private const string A_ReversedTripPlanSelection = "ReversedTripPlanSelection";
+            private const string A_Penalty = "Penalty";
+            private const string A_TripPlanId = "TripPlanID";
+            private const string A_ClearanceQuality = "ClearanceQuality";
+            private const string E_Filter = "Filter";
+            private readonly LayoutModuleBase mb;
 
             public LayoutEventScriptNodeActionExecuteRandomTripPlan(LayoutEvent e, LayoutModuleBase mb) : base(e) {
                 this.mb = mb;
             }
 
             public override void Execute() {
-                string symbol = Element.GetAttribute("Symbol");
-                var oTrain = Context[symbol];
+                var symbol = Element.GetAttribute(A_Symbol);
+                var train = Context[symbol] as TrainStateInfo;
 
-                if (oTrain == null || !(oTrain is TrainStateInfo))
-                    throw new ArgumentException("Symbol " + symbol + " is not a reference to a valid train object");
+                if (train == null)
+                    throw new ArgumentException($"Symbol {symbol} is not a reference to a valid train object");
 
-                TrainStateInfo train = (TrainStateInfo)oTrain;
-
-                XmlDocument workingDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
-                XmlElement applicableTripPlansElement = workingDoc.CreateElement("ApplicableTripPlans");
-                bool selectCircular = XmlConvert.ToBoolean(Element.GetAttribute("SelectCircularTripPlans"));
-                string selectReversedMethod = Element.GetAttribute("ReversedTripPlanSelection");
-                ArrayList tripPlanCanidates = new ArrayList();
-                ArrayList reversedTripPlanCandidates = new ArrayList();
-                LayoutConditionScript filter = new LayoutConditionScript("Execute Random Tripplan Filter", Element["Filter"], true);
-                LayoutScriptContext scriptContext = filter.ScriptContext;
+                var workingDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
+                var applicableTripPlansElement = workingDoc.CreateElement(E_ApplicableTripPlans);
+                var selectCircular = (bool)Element.AttributeValue(A_SelectCircularTripPlans);
+                string selectReversedMethod = Element.GetAttribute(A_ReversedTripPlanSelection);
+                var tripPlanCandidates = new List<XmlElement>();
+                var reversedTripPlanCandidates = new List<XmlElement>();
+                var filter = new LayoutConditionScript("Execute Random Tripplan Filter", Element[E_Filter], true);
+                var scriptContext = filter.ScriptContext;
 
                 EventManager.Event(new LayoutEvent("set-script-context", train, scriptContext));
 
                 workingDoc.AppendChild(applicableTripPlansElement);
-                applicableTripPlansElement.SetAttribute("StaticGrade", XmlConvert.ToString(false));
+                applicableTripPlansElement.SetAttribute(A_StaticGrade, false);
 
                 EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", train, applicableTripPlansElement));
 
@@ -1533,9 +1519,9 @@ namespace LayoutManager.Tools {
                 }
 
                 foreach (XmlElement applicableTripPlanElement in applicableTripPlansElement) {
-                    var tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[XmlConvert.ToGuid(applicableTripPlanElement.GetAttribute("TripPlanID"))];
-                    int penalty = XmlConvert.ToInt32(applicableTripPlanElement.GetAttribute("Penalty"));
-                    RouteClearanceQuality clearanceQuality = (RouteClearanceQuality)Enum.Parse(typeof(RouteClearanceQuality), applicableTripPlanElement.GetAttribute("ClearanceQuality"));
+                    var tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[(Guid)applicableTripPlanElement.AttributeValue(A_TripPlanId)];
+                    var penalty = (int)applicableTripPlanElement.AttributeValue(A_Penalty);
+                    var clearanceQuality = applicableTripPlanElement.AttributeValue(A_ClearanceQuality).Enum<RouteClearanceQuality>() ?? throw new NotImplementedException();
                     RouteQuality routeQuality = new RouteQuality(train.Id, clearanceQuality, penalty);
 
                     if (tripPlan != null && routeQuality.IsFree) {
@@ -1547,10 +1533,10 @@ namespace LayoutManager.Tools {
                             if (filter.IsTrue) {
                                 bool destinationIsFree = (bool)EventManager.Event(new LayoutEvent("check-trip-plan-destination-request", tripPlan));
 
-                                if (XmlConvert.ToBoolean(applicableTripPlanElement.GetAttribute("ShouldReverse")) || !destinationIsFree)
+                                if ((bool)applicableTripPlanElement.AttributeValue(A_ShouldReverse) || !destinationIsFree)
                                     reversedTripPlanCandidates.Add(applicableTripPlanElement);
                                 else
-                                    tripPlanCanidates.Add(applicableTripPlanElement);
+                                    tripPlanCandidates.Add(applicableTripPlanElement);
                             }
                         }
                     }
@@ -1560,21 +1546,20 @@ namespace LayoutManager.Tools {
 
                 switch (selectReversedMethod) {
                     case "Yes":
-                        upperLimit = tripPlanCanidates.Count + reversedTripPlanCandidates.Count;
+                        upperLimit = tripPlanCandidates.Count + reversedTripPlanCandidates.Count;
                         break;
 
                     case "No":
-                        upperLimit = tripPlanCanidates.Count;
+                        upperLimit = tripPlanCandidates.Count;
                         break;
 
                     case "IfNoAlternative":
-                        if (tripPlanCanidates.Count > 0)
-                            upperLimit = tripPlanCanidates.Count;
+                        if (tripPlanCandidates.Count > 0)
+                            upperLimit = tripPlanCandidates.Count;
                         else
                             upperLimit = reversedTripPlanCandidates.Count;
                         break;
                 }
-
 
                 if (upperLimit == 0)
                     EventManager.Event(new LayoutEvent("no-applicable-trip-plans-notification", train));
@@ -1582,17 +1567,17 @@ namespace LayoutManager.Tools {
                     int index = new Random().Next(upperLimit);
                     XmlElement? selectedApplicableTripPlanElement;
 
-                    if (tripPlanCanidates.Count == 0 && selectReversedMethod != "Yes")
+                    if (tripPlanCandidates.Count == 0 && selectReversedMethod != "Yes")
                         LayoutModuleBase.Message(train, "No optimal trip-plan are available for selection by 'execute random trip-plan'");
 
-                    if (index >= tripPlanCanidates.Count)
-                        selectedApplicableTripPlanElement = (XmlElement)reversedTripPlanCandidates[index - tripPlanCanidates.Count];
+                    if (index >= tripPlanCandidates.Count)
+                        selectedApplicableTripPlanElement = (XmlElement)reversedTripPlanCandidates[index - tripPlanCandidates.Count];
                     else
-                        selectedApplicableTripPlanElement = (XmlElement)tripPlanCanidates[index];
+                        selectedApplicableTripPlanElement = (XmlElement)tripPlanCandidates[index];
 
                     if (selectedApplicableTripPlanElement != null) {
-                        var selectedTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[XmlConvert.ToGuid(selectedApplicableTripPlanElement.GetAttribute("TripPlanID"))];
-                        bool shouldReverse = XmlConvert.ToBoolean(selectedApplicableTripPlanElement.GetAttribute("ShouldReverse"));
+                        var selectedTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[(Guid)selectedApplicableTripPlanElement.AttributeValue(A_TripPlanId)];
+                        var shouldReverse = (bool)selectedApplicableTripPlanElement.AttributeValue(A_ShouldReverse);
 
                         if (selectedTripPlan != null) {
                             if (traceRandomTripPlan.TraceInfo) {
@@ -1647,7 +1632,7 @@ namespace LayoutManager.Tools {
             e.Info = LayoutEventScriptEditorTreeNodeExecuteRandomTripPlan.GetDescription(element);
         }
 
-        class LayoutEventScriptEditorTreeNodeExecuteRandomTripPlan : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
+        private class LayoutEventScriptEditorTreeNodeExecuteRandomTripPlan : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
             public LayoutEventScriptEditorTreeNodeExecuteRandomTripPlan(XmlElement conditionElement) : base(conditionElement) {
             }
 

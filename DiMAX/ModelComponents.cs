@@ -13,7 +13,6 @@ using LayoutManager.Components;
 #pragma warning disable IDE0050, IE0060
 #nullable enable
 namespace DiMAX {
-
     /// <summary>
     /// Summary description for MTScomponents.
     /// </summary>
@@ -23,24 +22,24 @@ namespace DiMAX {
 
         // Mfg ID for this software (TODO: Ask Massoth for one)
         public const UInt16 MID_LayoutManager = 0x39f4;
+        private const string A_MinTimeBetweenSpeedSteps = "MinTimeBetweenSpeedSteps";
+        private OutputManager? outputManager;
+        private readonly byte[] lengthAndCommand = new byte[1];
+        private readonly byte[] directAnswerLength = new byte[2];
+        private byte[]? inputBuffer;
+        private readonly AutoResetEvent readAbortedEvent = new AutoResetEvent(false);
 
-        OutputManager? outputManager;
-        readonly byte[] lengthAndCommand = new byte[1];
-        readonly byte[] directAnswerLength = new byte[2];
-        byte[]? inputBuffer;
-        readonly AutoResetEvent readAbortedEvent = new AutoResetEvent(false);
+        private ControlBus? _DiMAXbus = null;
+        private ControlBus? _DCCbus = null;
+        private ControlBus? _locoBus = null;
+        private readonly DiMAXstatus dimaxStatus = new DiMAXstatus();
+        private readonly Dictionary<int, ActiveLocomotiveInfo> registeredLocomotives = new Dictionary<int, ActiveLocomotiveInfo>();
 
-        ControlBus? _DiMAXbus = null;
-        ControlBus? _DCCbus = null;
-        ControlBus? _locoBus = null;
-        readonly DiMAXstatus dimaxStatus = new DiMAXstatus();
-        readonly Dictionary<int, ActiveLocomotiveInfo> registeredLocomotives = new Dictionary<int, ActiveLocomotiveInfo>();
-
-        enum LocomotiveSelection {
+        private enum LocomotiveSelection {
             Selected, DeselectedActive, DeselectedPassive
         }
 
-        class ActiveLocomotiveInfo {
+        private class ActiveLocomotiveInfo {
             public LocomotiveInfo Locomotive { get; }
             public int SelectNesting { get; set; }
             public bool ActiveDeselection { get; set; }
@@ -94,7 +93,7 @@ namespace DiMAX {
             }
         }
 
-        OutputManager OutputManager {
+        private OutputManager OutputManager {
             get {
                 return Ensure.NotNull<OutputManager>(this.outputManager, "outputManager");
             }
@@ -141,7 +140,6 @@ namespace DiMAX {
             CommunicationStream?.BeginRead(lengthAndCommand, 0, lengthAndCommand.Length, new AsyncCallback(this.OnReadLengthAndCommandDone), null);
 
             OutputManager.AddCommand(new DiMAXinterfaceAnnouncement(this, false));
-
         }
 
         protected override async Task OnTerminateCommunication() {
@@ -174,20 +172,15 @@ namespace DiMAX {
         #pragma warning disable IDE0051, IDE0060
 
         [LayoutEvent("get-command-station-capabilities", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        void GetCommandStationCapabilities(LayoutEvent e) {
-            CommandStationCapabilitiesInfo cap = new CommandStationCapabilitiesInfo();
-            int minTimeBetweenSpeedSteps = 100;
-
-            if (Element.HasAttribute("MinTimeBetweenSpeedSteps"))
-                minTimeBetweenSpeedSteps = XmlConvert.ToInt32(Element.GetAttribute("MinTimeBetweenSpeedSteps"));
-
-            cap.MinTimeBetweenSpeedSteps = minTimeBetweenSpeedSteps;
-
+        private void GetCommandStationCapabilities(LayoutEvent e) {
+            CommandStationCapabilitiesInfo cap = new CommandStationCapabilitiesInfo {
+                MinTimeBetweenSpeedSteps = (int?)Element.AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 100
+            };
             e.Info = cap.Element;
         }
 
         [LayoutEvent("disconnect-power-request")]
-        void PowerDisconnectRequest(LayoutEvent e) {
+        private void PowerDisconnectRequest(LayoutEvent e) {
             if (e.Sender == null || e.Sender == this)
                 OutputManager.AddCommand(new DiMAXpowerDisconnect(this));
 
@@ -195,7 +188,7 @@ namespace DiMAX {
         }
 
         [LayoutEvent("connect-power-request")]
-        void PowerConnectRequest(LayoutEvent e) {
+        private void PowerConnectRequest(LayoutEvent e) {
             if (e.Sender == null || e.Sender == this)
                 OutputManager.AddCommand(new DiMAXpowerConnect(this));
 
@@ -211,7 +204,7 @@ namespace DiMAX {
 
         // Implement command events
         [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        Task ChangeTurnoutState(LayoutEvent e) {
+        private Task ChangeTurnoutState(LayoutEvent e) {
             var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
             var module = Ensure.NotNull<ControlModule>(connectionPointRef.Module, "module");
             int state = (int)e.Info;
@@ -369,7 +362,6 @@ namespace DiMAX {
             int address = locomotive.AddressProvider.Unit;
 
             if (power.Type != LayoutPowerType.Digital) {
-
                 if (registeredLocomotives.TryGetValue(address, out ActiveLocomotiveInfo activeLocomotive)) {
                     Debug.Assert(activeLocomotive.SelectNesting == 0);
 
@@ -385,7 +377,6 @@ namespace DiMAX {
         }
 
         private void RegisterLocomotive(LocomotiveInfo locomotive) {
-
             if (locomotive.DecoderType is DccDecoderTypeInfo decoder) {
                 int navigatorImage = 0;
 
@@ -420,7 +411,7 @@ namespace DiMAX {
         /// <summary>
         /// Check if a locomotive is completly inactive. 
         /// </summary>
-        bool IsLocomotiveActive(TrainStateInfo train, LocomotiveInfo locomotive) => train.Speed != 0 || train.Lights || train.HasActiveFunction(locomotive);
+        private bool IsLocomotiveActive(TrainStateInfo train, LocomotiveInfo locomotive) => train.Speed != 0 || train.Lights || train.HasActiveFunction(locomotive);
 
         private void DeselectLocomotive(TrainStateInfo train, LocomotiveInfo locomotive) {
             int address = locomotive.AddressProvider.Unit;
@@ -449,7 +440,6 @@ namespace DiMAX {
 
             DeselectLocomotive(train, locomotive);
         }
-
 
         [LayoutEvent("trip-added")]
         private void tripAdded(LayoutEvent e) {
@@ -526,7 +516,6 @@ namespace DiMAX {
                     packet.Dump("Processing DiMAX packet");
 
                 switch (packet.CommandCode) {
-
                     case DiMAXcommandCode.TurnoutControl: {
                             DiMAXturnoutOrFeedbackControlPacket p = new DiMAXturnoutOrFeedbackControlPacket(packet);
 
@@ -608,7 +597,6 @@ namespace DiMAX {
                 bool select = (packet.Parameters[2] & 0x10) != 0;
 
                 if (select) {
-
                     if (registeredLocomotives.TryGetValue(address, out ActiveLocomotiveInfo activeLocomotive)) {
                         var train = LayoutModel.StateManager.Trains[activeLocomotive.Locomotive.Id];
 
@@ -625,14 +613,13 @@ namespace DiMAX {
                         Warning("Locomotive with address: " + address + " was selected by external controller, locomotive with this address is not on the layout");
                 }
             }
-
         }
 
         /// <summary>
         /// Called when an asynchronous read is done
         /// </summary>
         /// <param name="asyncReadResult"></param>
-        void OnReadLengthAndCommandDone(IAsyncResult asyncReadResult) {
+        private void OnReadLengthAndCommandDone(IAsyncResult asyncReadResult) {
             if (CommunicationStream != null) {
                 try {
                     int count = CommunicationStream.EndRead(asyncReadResult);
@@ -665,7 +652,7 @@ namespace DiMAX {
             }
         }
 
-        void OnReadAnswerLengthDone(IAsyncResult asyncReadResult) {
+        private void OnReadAnswerLengthDone(IAsyncResult asyncReadResult) {
             if (CommunicationStream != null) {
                 try {
                     int count = CommunicationStream.EndRead(asyncReadResult);
@@ -684,7 +671,6 @@ namespace DiMAX {
                     }
                     else
                         throw new DiMAXException("directAnswerLength not 2 bytes");
-
                 }
                 catch (Exception ex) {
                     Trace.WriteLineIf(TraceDiMAX.TraceInfo, "Pending read aborted (" + ex.Message + ")");
@@ -693,7 +679,7 @@ namespace DiMAX {
             }
         }
 
-        void OnReadRestOfPacketDone(IAsyncResult asyncReadResult) {
+        private void OnReadRestOfPacketDone(IAsyncResult asyncReadResult) {
             if (CommunicationStream != null) {
                 try {
                     int count = CommunicationStream.EndRead(asyncReadResult);
@@ -750,7 +736,6 @@ namespace DiMAX {
         public bool UpdateMode { get; private set; }
         public bool SoftwareReset { get; private set; }
         public DiMAXcondition Condition { get; private set; }
-
 
         internal DiMAXstatus() {
             LastUpdate = DateTime.MinValue;
@@ -834,7 +819,6 @@ namespace DiMAX {
 
         AddressFeedback = 0x09,
 
-
         StatusBase = 0x100,             // Status messages are above this number 
 
         SystemStatus = 0x101,
@@ -847,14 +831,12 @@ namespace DiMAX {
     /// Encode DiMAX command/reply packet
     /// </summary>
     public class DiMAXpacket {
-        readonly DiMAXcommandCode commandCode;       // Command code
-        readonly byte parameterCount;                // Number of parameters (0..7)
-        readonly byte[] parameters;                 // The parameters
+        private readonly byte parameterCount;                // Number of parameters (0..7)
 
         public DiMAXpacket(DiMAXcommandCode commandCode) {
-            this.commandCode = commandCode;
+            this.CommandCode = commandCode;
             this.parameterCount = 0;
-            parameters = new byte[0];
+            Parameters = new byte[0];
         }
 
         public DiMAXpacket(DiMAXcommandCode commandCode, params byte[] parameters) {
@@ -862,9 +844,9 @@ namespace DiMAX {
                 throw new ArgumentException("Too many DiMAX command parameters");
 
             this.parameterCount = (byte)parameters.Length;
-            this.commandCode = commandCode;
-            this.parameters = new byte[this.parameterCount];
-            parameters.CopyTo(this.parameters, 0);
+            this.CommandCode = commandCode;
+            this.Parameters = new byte[this.parameterCount];
+            parameters.CopyTo(this.Parameters, 0);
         }
 
         public DiMAXpacket(DiMAXcommandCode commandCode, int parameterCount) {
@@ -872,11 +854,11 @@ namespace DiMAX {
                 throw new ArgumentException("Invalid number of DiMAX command parameters");
 
             this.parameterCount = (byte)parameterCount;
-            this.commandCode = commandCode;
-            this.parameters = new byte[parameterCount];
+            this.CommandCode = commandCode;
+            this.Parameters = new byte[parameterCount];
         }
 
-        static void CheckPacket(byte lengthAndCommandCode, byte[] buffer) {
+        private static void CheckPacket(byte lengthAndCommandCode, byte[] buffer) {
             byte x = lengthAndCommandCode;
             foreach (byte b in buffer)
                 x ^= b;
@@ -893,40 +875,40 @@ namespace DiMAX {
                 this.parameterCount = (byte)buffer[1];
 
                 if (parameterCount == 1)
-                    commandCode = (buffer[2] & 0xe0) == 0x80 ? DiMAXcommandCode.SystemStatus : DiMAXcommandCode.MessageSent;
+                    CommandCode = (buffer[2] & 0xe0) == 0x80 ? DiMAXcommandCode.SystemStatus : DiMAXcommandCode.MessageSent;
                 else
-                    commandCode = (DiMAXcommandCode)(parameterCount + DiMAXcommandCode.StatusBase);
+                    CommandCode = (DiMAXcommandCode)(parameterCount + DiMAXcommandCode.StatusBase);
 
-                this.parameters = new byte[parameterCount];
+                this.Parameters = new byte[parameterCount];
                 for (int i = 0; i < parameterCount; i++)
-                    parameters[i] = buffer[i + 2];
+                    Parameters[i] = buffer[i + 2];
             }
             else {
                 byte commandValue = (byte)(lengthAndCommandCode & 0x1f);
 
-                commandCode = (DiMAXcommandCode)commandValue;
+                CommandCode = (DiMAXcommandCode)commandValue;
 
-                if (commandCode != DiMAXcommandCode.DirectReply) {
+                if (CommandCode != DiMAXcommandCode.DirectReply) {
                     // Command packet
                     this.parameterCount = (byte)((lengthAndCommandCode >> 5) & 0x07);
 
                     if (buffer.Length != parameterCount + 1)
                         throw new DiMAXException("Buffer length mismatch");
 
-                    this.parameters = new byte[parameterCount];
+                    this.Parameters = new byte[parameterCount];
 
                     for (int i = 1; i < buffer.Length; i++)
-                        parameters[i - 1] = buffer[i];
+                        Parameters[i - 1] = buffer[i];
                 }
                 else {
                     // Direct reply packet
-                    commandCode = DiMAXcommandCode.DirectReply;
+                    CommandCode = DiMAXcommandCode.DirectReply;
 
                     this.parameterCount = (byte)buffer[1];
-                    this.parameters = new byte[parameterCount];
+                    this.Parameters = new byte[parameterCount];
 
                     for (int i = 0; i < parameterCount; i++)
-                        parameters[i] = buffer[i + 2];
+                        Parameters[i] = buffer[i + 2];
                 }
             }
         }
@@ -938,9 +920,9 @@ namespace DiMAX {
         public byte[] GetBuffer() {
             byte[] buffer = new byte[2 + parameterCount];
 
-            buffer[0] = (byte)(parameterCount << 5 | (byte)commandCode);
-            if (parameters != null)
-                parameters.CopyTo(buffer, 2);
+            buffer[0] = (byte)(parameterCount << 5 | (byte)CommandCode);
+            if (Parameters != null)
+                Parameters.CopyTo(buffer, 2);
 
             // Calculate Xor of all byte (command/length byte and parameter bytes)
             buffer[1] = buffer[0];
@@ -953,11 +935,11 @@ namespace DiMAX {
         /// <summary>
         /// The DiMAX command code of this packet
         /// </summary>
-        public DiMAXcommandCode CommandCode => commandCode;
+        public DiMAXcommandCode CommandCode { get; }
 
         public int ParameterCount => parameterCount;
 
-        public byte[] Parameters => parameters;
+        public byte[] Parameters { get; }
 
         internal void Dump(string textMessage) {
             Trace.Write(textMessage + ", type " + CommandCode.ToString() + " Parameters: ");
@@ -968,17 +950,14 @@ namespace DiMAX {
     }
 
     public class DiMAXencodedPacket {
-        readonly DiMAXpacket packet;
-
         public DiMAXencodedPacket(DiMAXpacket packet) {
-            this.packet = packet;
+            this.Packet = packet;
         }
 
-        public DiMAXpacket Packet => packet;
+        public DiMAXpacket Packet { get; }
     }
 
     public class DiMAXturnoutOrFeedbackControlPacket : DiMAXencodedPacket {
-
         public DiMAXturnoutOrFeedbackControlPacket(DiMAXpacket packet) : base(packet) {
         }
 
@@ -999,7 +978,6 @@ namespace DiMAX {
         public DiMAXlocoSpeedControlPacket(DiMAXpacket packet)
             : base(packet) {
         }
-
 
         public int SpeedInSteps {
             get {
@@ -1027,8 +1005,7 @@ namespace DiMAX {
 
     #region DiMAX Command Classes
 
-    class DiMAXcommandBase : OutputCommandBase {
-
+    internal class DiMAXcommandBase : OutputCommandBase {
         public DiMAXcommandBase(DiMAXcommandStation commandStation) {
             this.CommandStation = commandStation;
         }
@@ -1066,7 +1043,7 @@ namespace DiMAX {
         }
     }
 
-    class DiMAXsynchronousCommandBase : DiMAXcommandBase, IOutputCommandWithReply {
+    internal class DiMAXsynchronousCommandBase : DiMAXcommandBase, IOutputCommandWithReply {
         public DiMAXsynchronousCommandBase(DiMAXcommandStation commandStation, DiMAXpacket packet)
             : base(commandStation, packet) {
             DefaultWaitPeriod = 250;
@@ -1091,32 +1068,31 @@ namespace DiMAX {
         #endregion
     }
 
-    class DiMAXpowerDisconnect : DiMAXcommandBase {
+    internal class DiMAXpowerDisconnect : DiMAXcommandBase {
         public DiMAXpowerDisconnect(DiMAXcommandStation commandStation)
             : base(commandStation, new DiMAXpacket(DiMAXcommandCode.EmergencyStopBegin)) {
         }
     }
 
-    class DiMAXpowerConnect : DiMAXcommandBase {
+    internal class DiMAXpowerConnect : DiMAXcommandBase {
         public DiMAXpowerConnect(DiMAXcommandStation commandStation)
             : base(commandStation, new DiMAXpacket(DiMAXcommandCode.EmergencyStopFinish)) {
         }
     }
 
-    class DiMAXchangeAccessoryState : DiMAXcommandBase {
-        readonly string description;
+    internal class DiMAXchangeAccessoryState : DiMAXcommandBase {
+        private readonly string description;
 
         public DiMAXchangeAccessoryState(DiMAXcommandStation commandStation, int unit, int state)
             : base(commandStation, new DiMAXpacket(DiMAXcommandCode.TurnoutControl, new byte[] { (byte)(unit >> 6), (byte)(((unit & 0x3f) << 2) | 2 | state) })) {
-
             description = $"Set accessory {unit} state to {state}";
         }
 
         public override string ToString() => description;
     }
 
-    class DiMAXlocomotiveMotion : DiMAXcommandBase {
-        readonly string description;
+    internal class DiMAXlocomotiveMotion : DiMAXcommandBase {
+        private readonly string description;
 
         public DiMAXlocomotiveMotion(DiMAXcommandStation commandStation, int unit, int speed)
             : base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoSpeedControl,
@@ -1127,8 +1103,8 @@ namespace DiMAX {
         public override string ToString() => description;
     }
 
-    class DiMAXlocomotiveFunction : DiMAXcommandBase {
-        readonly string description;
+    internal class DiMAXlocomotiveFunction : DiMAXcommandBase {
+        private readonly string description;
 
         public DiMAXlocomotiveFunction(DiMAXcommandStation commandStation, int unit, int functionNumber, bool functionState, bool lightsOn) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoFunctionControl,
@@ -1139,7 +1115,7 @@ namespace DiMAX {
         public override string ToString() => description;
     }
 
-    class DiMAXprogrammingCommandBase : DiMAXsynchronousCommandBase {
+    internal class DiMAXprogrammingCommandBase : DiMAXsynchronousCommandBase {
         public DiMAXprogrammingCommandBase(DiMAXcommandStation commandStation, DiMAXpacket commandPacket) :
             base(commandStation, commandPacket) {
         }
@@ -1158,15 +1134,14 @@ namespace DiMAX {
         }
     }
 
-    class DiMAXinterfaceAnnouncement : DiMAXcommandBase {
+    internal class DiMAXinterfaceAnnouncement : DiMAXcommandBase {
         public DiMAXinterfaceAnnouncement(DiMAXcommandStation commandStation, bool enableStatusMessages) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.InterfaceAnnouncement, new byte[] { (byte)(enableStatusMessages ? 0x01 : 0x00), 0x00, 0x00, (byte)(DiMAXcommandStation.MID_LayoutManager >> 8), (byte)(DiMAXcommandStation.MID_LayoutManager & 0xff) })) {
         }
     }
 
-
-    class DiMAXprogramRegister : DiMAXprogrammingCommandBase {
-        readonly string description;
+    internal class DiMAXprogramRegister : DiMAXprogrammingCommandBase {
+        private readonly string description;
 
         public DiMAXprogramRegister(DiMAXcommandStation commandStation, byte registerNumber, byte value) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.ProgrammingRegister, new byte[] { (byte)(registerNumber - 1), value })) {
@@ -1176,8 +1151,8 @@ namespace DiMAX {
         public override string ToString() => description;
     }
 
-    class DiMAXprogramCV : DiMAXprogrammingCommandBase {
-        readonly string description;
+    internal class DiMAXprogramCV : DiMAXprogrammingCommandBase {
+        private readonly string description;
 
         public DiMAXprogramCV(DiMAXcommandStation commandStation, int cvNumber, byte data)
             : base(commandStation, new DiMAXpacket(DiMAXcommandCode.ProgrammingCV, new byte[] { (byte)((cvNumber - 1) >> 8), (byte)((cvNumber - 1) & 0xff), data })) {
@@ -1187,8 +1162,8 @@ namespace DiMAX {
         public override string ToString() => description;
     }
 
-    class DiMAXprogramCVonTrack : DiMAXprogrammingCommandBase {
-        readonly string description;
+    internal class DiMAXprogramCVonTrack : DiMAXprogrammingCommandBase {
+        private readonly string description;
 
         public DiMAXprogramCVonTrack(DiMAXcommandStation commandStation, int address, int cvNumber, byte data) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.ProgrammingCVPOM, new byte[] { (byte)((cvNumber - 1) >> 8), (byte)((cvNumber - 1) & 0xff), data, (byte)(address >> 8), (byte)(address & 0xff) })) {
@@ -1198,8 +1173,8 @@ namespace DiMAX {
         public override string ToString() => description;
     }
 
-    class DiMAXreadCV : DiMAXprogrammingCommandBase {
-        readonly string description;
+    internal class DiMAXreadCV : DiMAXprogrammingCommandBase {
+        private readonly string description;
 
         public DiMAXreadCV(DiMAXcommandStation commandStation, int cvNumber, Action<LayoutActionResult, int, byte> doneCallback) : base(commandStation, new DiMAXpacket(DiMAXcommandCode.ReadCV, new byte[] { (byte)((cvNumber - 1) >> 8), (byte)((cvNumber - 1) & 0xff) })) {
             description = $"Read cv {cvNumber}";
@@ -1212,8 +1187,8 @@ namespace DiMAX {
         public override string ToString() => description;
     }
 
-    class DiMAXlocomotiveSelection : DiMAXsynchronousCommandBase {
-        readonly string description;
+    internal class DiMAXlocomotiveSelection : DiMAXsynchronousCommandBase {
+        private readonly string description;
 
         public DiMAXlocomotiveSelection(DiMAXcommandStation commandStation, int address, bool select, bool deselectActive, bool unconditional) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoSelection, new byte[] { (byte)(address >> 8), (byte)(address & 0xff),
@@ -1228,8 +1203,8 @@ namespace DiMAX {
         public override string ToString() => description;
     }
 
-    class DiMAXlocomotiveRegistration : DiMAXcommandBase {
-        readonly string description;
+    internal class DiMAXlocomotiveRegistration : DiMAXcommandBase {
+        private readonly string description;
 
         public DiMAXlocomotiveRegistration(DiMAXcommandStation commandStation, int address, bool storeInNonVolatile = false, bool addressIsMotorola = false, bool parallelFunctions = true, int speedSteps = 28, int image = 0) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoConfig, new byte[] {
@@ -1240,7 +1215,7 @@ namespace DiMAX {
             description = $"Register locomotive - address {address} storeInNonVolatile {storeInNonVolatile} addressIsMotorola {addressIsMotorola} parallelFunctions {parallelFunctions} speedSteps {speedSteps} image {image}";
         }
 
-        static byte GetSpeedStepsMask(int speedSteps) {
+        private static byte GetSpeedStepsMask(int speedSteps) {
             switch (speedSteps) {
                 case 14: return 0x0;
                 case 28: return 0x1;
@@ -1252,8 +1227,8 @@ namespace DiMAX {
         public override string ToString() => description;
     }
 
-    class DiMAXlocomotiveUnregister : DiMAXcommandBase {
-        readonly string description;
+    internal class DiMAXlocomotiveUnregister : DiMAXcommandBase {
+        private readonly string description;
 
         public DiMAXlocomotiveUnregister(DiMAXcommandStation commandStation, int address) :
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoConfig, new byte[] { (byte)((address & 0x3f00) >> 8), (byte)(address & 0xff) })) {

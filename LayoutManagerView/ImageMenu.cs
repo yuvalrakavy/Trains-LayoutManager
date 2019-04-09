@@ -10,36 +10,17 @@ namespace LayoutManager.UIGadgets {
     /// Base class for ImageMenuItem or ImageMenuCategory
     /// </summary>
     public abstract class ImageMenuEntry {
-        string tooltip;
-        Rectangle bounds;
+        public string Tooltip { get; set; }
 
-        public string Tooltip {
-            get {
-                return tooltip;
-            }
-
-            set {
-                tooltip = value;
-            }
-        }
-
-        public Rectangle Bounds {
-            get {
-                return bounds;
-            }
-
-            set {
-                bounds = value;
-            }
-        }
+        public Rectangle Bounds { get; set; }
 
         protected abstract void Paint(Graphics g);
 
         public void PaintEntry(Graphics g) {
             GraphicsState gs = g.Save();
 
-            g.SetClip(bounds);
-            g.TranslateTransform(bounds.Location.X, bounds.Location.Y);
+            g.SetClip(Bounds);
+            g.TranslateTransform(Bounds.Location.X, Bounds.Location.Y);
             Paint(g);
             g.Restore(gs);
         }
@@ -49,31 +30,11 @@ namespace LayoutManager.UIGadgets {
     }
 
     public abstract class ImageMenuCategory : ImageMenuEntry {
-        ImageMenu menu;           // The menu to which this category belongs
-        readonly ImageMenuItemCollection items = new ImageMenuItemCollection();
-        string name;
+        public ImageMenuItemCollection Items { get; } = new ImageMenuItemCollection();
 
-        public ImageMenuItemCollection Items => items;
+        public ImageMenu Menu { get; set; }
 
-        public ImageMenu Menu {
-            get {
-                return menu;
-            }
-
-            set {
-                menu = value;
-            }
-        }
-
-        public string Name {
-            get {
-                return name;
-            }
-
-            set {
-                name = value;
-            }
-        }
+        public string Name { get; set; }
     }
 
     /// <summary>
@@ -97,13 +58,12 @@ namespace LayoutManager.UIGadgets {
         }
     }
 
-
     /// <summary>
     /// This utility control displays shadow for a given control. It can be useful for
     /// popup controls such as the image menu
     /// </summary>
     public class Shadow : Control {
-        readonly Control shadowOf;
+        private readonly Control shadowOf;
 
         /// <summary>
         /// Create the shadow for the provided control
@@ -133,7 +93,7 @@ namespace LayoutManager.UIGadgets {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void ShadowOf_Resize(Object sender, EventArgs e) {
+        private void ShadowOf_Resize(Object sender, EventArgs e) {
             Rectangle r = shadowOf.Bounds;
             r.Offset(4, 4);
             this.Bounds = r;
@@ -151,8 +111,7 @@ namespace LayoutManager.UIGadgets {
     /// Control that implement tooltip window for image menu objects
     /// </summary>
     internal class TipWindow : Control {
-        string tipText;
-        readonly Font tipFont = new Font("Arial", 8);
+        private readonly Font tipFont = new Font("Arial", 8);
 
         internal TipWindow(Control parent) {
             this.Parent = parent;
@@ -164,15 +123,7 @@ namespace LayoutManager.UIGadgets {
         /// <summary>
         /// The tooltip text to show
         /// </summary>
-        internal string TipText {
-            set {
-                tipText = value;
-            }
-
-            get {
-                return tipText;
-            }
-        }
+        internal string TipText { set; get; }
 
         /// <summary>
         /// Make sure that the tooltip text is not truncated
@@ -190,7 +141,7 @@ namespace LayoutManager.UIGadgets {
         /// <param name="p"></param>
         internal void ShowTip(Point p) {
             Graphics g = CreateGraphics();
-            SizeF tipSize = g.MeasureString(tipText, tipFont);
+            SizeF tipSize = g.MeasureString(TipText, tipFont);
 
             g.Dispose();
 
@@ -210,7 +161,7 @@ namespace LayoutManager.UIGadgets {
 
         protected override void OnPaint(PaintEventArgs e) {
             e.Graphics.DrawRectangle(Pens.Black, new Rectangle(0, 0, Width - 1, Height - 1));
-            e.Graphics.DrawString(tipText, tipFont, Brushes.Black, new Point(0, 0));
+            e.Graphics.DrawString(TipText, tipFont, Brushes.Black, new Point(0, 0));
         }
     }
 
@@ -218,39 +169,38 @@ namespace LayoutManager.UIGadgets {
     /// This class shows an horizontal menu of items that draw themself.
     /// </summary>
     public class ImageMenu : Control {
-        const int vMargin = 5;                  // Space from top and bottom of the menu
-        const int hMargin = 6;                  // Space from right and left of the menu
-        const int gap = 3;                      // Space between menu items
-        const int vGap = 3;                     // vertical gap (between categories)
-        const int itemsToCategoriesGap = 7;     // Space between items and categories
-        const int tipTime = 250;                // Show tooltip if no mouse motion in 250 milliseconds
-        Size itemSize = new Size(40, 40);
-        Size categorySize = new Size(18, 18);
-        readonly ImageMenuCategoryCollection categories = new ImageMenuCategoryCollection();
-        ImageMenuEntry hilightedEntry;
-        ImageMenuCategory selectedCategory;
-        ImageMenuCategory initialCategory;          // initial category to show
-        ImageMenuCategory shiftKeyCategory;
-        ImageMenuCategory beforeShiftCategory;
-        Shadow shadow;
-        readonly bool categoriesVisible = true;
-        ImageMenuItem resultItem;
-        TipWindow tipWindow;
-        Timer tipTimer;
-        ImageMenuEntry tippedEntry;
+        private const int vMargin = 5;                  // Space from top and bottom of the menu
+        private const int hMargin = 6;                  // Space from right and left of the menu
+        private const int gap = 3;                      // Space between menu items
+        private const int vGap = 3;                     // vertical gap (between categories)
+        private const int itemsToCategoriesGap = 7;     // Space between items and categories
+        private const int tipTime = 250;                // Show tooltip if no mouse motion in 250 milliseconds
+        private Size itemSize = new Size(40, 40);
+        private Size categorySize = new Size(18, 18);
+        private ImageMenuEntry hilightedEntry;
+        private ImageMenuCategory selectedCategory;
+        private ImageMenuCategory initialCategory;          // initial category to show
+        private ImageMenuCategory shiftKeyCategory;
+        private ImageMenuCategory beforeShiftCategory;
+        private Shadow shadow;
+        private readonly bool categoriesVisible = true;
+        private ImageMenuItem resultItem;
+        private TipWindow tipWindow;
+        private Timer tipTimer;
+        private ImageMenuEntry tippedEntry;
 
-        enum MenuState {
+        private enum MenuState {
             Open,               // Menu is open
             Closing,            // Menu is closing (mouse down outside the menu, mouse up should do nothing)
             Closed              // Menu is closed.
         };
 
-        MenuState menuState = new MenuState();
+        private MenuState menuState = new MenuState();
 
         /// <summary>
         /// Return a collection of items in the menu
         /// </summary>
-        public ImageMenuCategoryCollection Categories => categories;
+        public ImageMenuCategoryCollection Categories { get; } = new ImageMenuCategoryCollection();
 
         /// <summary>
         /// Make sure that the menu is shown in such a way that it is not truncated.
@@ -266,12 +216,12 @@ namespace LayoutManager.UIGadgets {
         /// Adjust the size of the menu based on the number of items in the currently selected
         /// category
         /// </summary>
-        void adjustSize() {
+        private void adjustSize() {
             int width = hMargin + selectedCategory.Items.Count * (itemSize.Width + gap) - gap + hMargin;
             int height = vMargin * 2 + Math.Max(itemSize.Height, categorySize.Height * 2 + gap);
 
             if (categoriesVisible)
-                width += itemsToCategoriesGap + ((categories.Count + 1) / 2) * (categorySize.Width + gap) - gap;
+                width += itemsToCategoriesGap + ((Categories.Count + 1) / 2) * (categorySize.Width + gap) - gap;
 
             this.Size = new Size(width, height);
         }
@@ -280,11 +230,10 @@ namespace LayoutManager.UIGadgets {
         /// Select a new category. The menu is reformatted to show the items in the new category
         /// </summary>
         /// <param name="newCategory">New category to select</param>
-        void selectCategory(ImageMenuCategory newCategory) {
+        private void selectCategory(ImageMenuCategory newCategory) {
             if (selectedCategory != newCategory) {
                 // TODO: For animation effect, may want to display just the categories, and then expand
                 // the menu with the new selection
-
 
                 selectedCategory = newCategory;
                 adjustSize();
@@ -301,8 +250,8 @@ namespace LayoutManager.UIGadgets {
                 if (categoriesVisible) {
                     x += itemsToCategoriesGap;
 
-                    for (int iCategory = 0; iCategory < categories.Count; iCategory++) {
-                        ImageMenuCategory category = categories[iCategory];
+                    for (int iCategory = 0; iCategory < Categories.Count; iCategory++) {
+                        ImageMenuCategory category = Categories[iCategory];
 
                         category.Bounds = new Rectangle(new Point(x, (iCategory & 1) == 0 ? vMargin : vMargin + categorySize.Height + vGap),
                             categorySize);
@@ -329,7 +278,7 @@ namespace LayoutManager.UIGadgets {
             set {
                 initialCategory = null;
 
-                foreach (ImageMenuCategory category in categories)
+                foreach (ImageMenuCategory category in Categories)
                     if (category.Name == value) {
                         initialCategory = category;
                         break;
@@ -347,7 +296,7 @@ namespace LayoutManager.UIGadgets {
             set {
                 shiftKeyCategory = null;
 
-                foreach (ImageMenuCategory category in categories)
+                foreach (ImageMenuCategory category in Categories)
                     if (category.Name == value) {
                         shiftKeyCategory = category;
                         break;
@@ -370,13 +319,13 @@ namespace LayoutManager.UIGadgets {
             this.Parent = parent;
             this.Location = p;      // TODO: Location should be much smarter (considering alighment) etc.
 
-            if (categories.Count == 0) {
+            if (Categories.Count == 0) {
                 Debug.Assert(false, "Image menu has no item categories");
                 return null;
             }
 
             if (initialCategory == null)
-                initialCategory = categories[0];
+                initialCategory = Categories[0];
 
             selectCategory(initialCategory);
             adjustLocation();
@@ -414,7 +363,7 @@ namespace LayoutManager.UIGadgets {
         /// Start counting tooltip time from the begining. THis function is called when the mouse
         /// point is moved.
         /// </summary>
-        void resetTipTimer() {
+        private void resetTipTimer() {
             if (!tipWindow.Visible) {
                 tipTimer.Stop();
                 tipTimer.Interval = tipTime;
@@ -450,7 +399,7 @@ namespace LayoutManager.UIGadgets {
                 item.PaintEntry(e.Graphics);
 
             if (categoriesVisible)
-                foreach (ImageMenuCategory category in categories)
+                foreach (ImageMenuCategory category in Categories)
                     category.PaintEntry(e.Graphics);
 
             // Highlight the selected category
@@ -471,12 +420,12 @@ namespace LayoutManager.UIGadgets {
         /// </summary>
         /// <param name="p">The mouse point</param>
         /// <returns>The ImageMenuEntry under the mouse or null if none found</returns>
-        ImageMenuEntry GetEntryAtPoint(Point p) {
+        private ImageMenuEntry GetEntryAtPoint(Point p) {
             foreach (ImageMenuItem item in selectedCategory.Items)
                 if (item.Bounds.Contains(p))
                     return item;
 
-            foreach (ImageMenuCategory category in categories)
+            foreach (ImageMenuCategory category in Categories)
                 if (category.Bounds.Contains(p))
                     return category;
 
@@ -488,7 +437,7 @@ namespace LayoutManager.UIGadgets {
         /// </summary>
         /// <param name="p">Mouse hit point</param>
         /// <param name="hideHighlightAllowed">What to do with the selection if the mouse if not on an item</param>
-        void updateSelection(Point p, bool hideHighlightAllowed) {
+        private void updateSelection(Point p, bool hideHighlightAllowed) {
             ImageMenuEntry hitEntry = GetEntryAtPoint(p);
 
             // If mouse moved from the item for which there is an open tooltip, close the tooltip.
@@ -578,7 +527,6 @@ namespace LayoutManager.UIGadgets {
                 ImageMenuEntry hitEntry = GetEntryAtPoint(new Point(e.X, e.Y));
 
                 if (hitEntry != null) {
-
                     if (hitEntry is ImageMenuItem hitMenuItem) {
                         resultItem = hitMenuItem;
                         shadow.Close();
@@ -586,7 +534,6 @@ namespace LayoutManager.UIGadgets {
                         menuState = MenuState.Closed;
                     }
                     else {
-
                         if (hitEntry is ImageMenuCategory hitCategory) {
                             selectCategory(hitCategory);
                             updateSelection(PointToClient(Control.MousePosition), true);
@@ -614,7 +561,6 @@ namespace LayoutManager.UIGadgets {
             base.OnKeyDown(e);
 
             switch (e.KeyCode) {
-
                 case Keys.ShiftKey:
                     if (shiftKeyCategory != null && SelectedCategory != shiftKeyCategory) {
                         beforeShiftCategory = SelectedCategory;
@@ -677,7 +623,6 @@ namespace LayoutManager.UIGadgets {
             }
         }
 
-
         protected override void OnMouseWheel(MouseEventArgs e) {
             this.Capture = true;
             shadow.Close();
@@ -685,7 +630,6 @@ namespace LayoutManager.UIGadgets {
             menuState = MenuState.Closed;
             base.OnMouseWheel(e);
         }
-
 
         protected override bool IsInputKey(Keys keyData) => true;
     }

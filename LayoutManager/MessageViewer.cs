@@ -16,13 +16,13 @@ namespace LayoutManager {
     /// Summary description for MessageViewer.
     /// </summary>
     public class MessageViewer : System.Windows.Forms.UserControl {
-        readonly ListViewItem lastMessageMarker = null;
+        private readonly ListViewItem lastMessageMarker = null;
 
-        LayoutSelection currentMessageSelection = null;
-        LayoutSelection currentComponentSelection = null;
-        bool clearOnNewMessage = false;
+        private LayoutSelection currentMessageSelection = null;
+        private LayoutSelection currentComponentSelection = null;
+        private bool clearOnNewMessage = false;
 
-        static readonly LayoutTraceSwitch traceMessages = new LayoutTraceSwitch("Messages", "Trace errors, warning etc.");
+        private static readonly LayoutTraceSwitch traceMessages = new LayoutTraceSwitch("Messages", "Trace errors, warning etc.");
 
         private ListView listViewMessages;
         private ColumnHeader columnHeaderMessage;
@@ -50,23 +50,23 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("add-message")]
-        void AddMessage(LayoutEvent e) {
+        private void AddMessage(LayoutEvent e) {
             AddMessageItem(new MessageItem(MessageSeverity.Message, e.Sender, (String)e.Info));
             columnHeaderArea.Width = -1;
         }
 
         [LayoutEvent("add-warning")]
-        void AddWarning(LayoutEvent e) {
+        private void AddWarning(LayoutEvent e) {
             AddMessageItem(new MessageItem(MessageSeverity.Warning, e.Sender, (String)e.Info));
             columnHeaderArea.Width = -1;
         }
 
         [LayoutEvent("add-error")]
-        void AddError(LayoutEvent e) {
+        private void AddError(LayoutEvent e) {
             AddMessageItem(new MessageItem(MessageSeverity.Error, e.Sender, (String)e.Info));
         }
 
-        void AddMessageItem(MessageItem item) {
+        private void AddMessageItem(MessageItem item) {
             item.TraceMessage();
 
             if (clearOnNewMessage) {
@@ -140,25 +140,25 @@ namespace LayoutManager {
             }
         }
 
-        void setComponentSelection(ModelComponent component) {
+        private void setComponentSelection(ModelComponent component) {
             currentComponentSelection.Clear();
             currentComponentSelection.Add(component);
             EventManager.Event(new LayoutEvent("ensure-component-visible", component, false));
         }
 
         [LayoutEvent("messages-hidden")]
-        void MessagesHidden(LayoutEvent e) {
+        private void MessagesHidden(LayoutEvent e) {
             clearOnNewMessage = true;
             HideSelections();
         }
 
         [LayoutEvent("messages-shown")]
-        void MessagesShown(LayoutEvent e) {
+        private void MessagesShown(LayoutEvent e) {
             UpdateSelections();
         }
 
         [LayoutEvent("clear-messages")]
-        void ClearMessages(LayoutEvent e) {
+        private void ClearMessages(LayoutEvent e) {
             listViewMessages.Items.Clear();
             listViewMessages.Items.Add(lastMessageMarker);
 
@@ -168,21 +168,20 @@ namespace LayoutManager {
 
         #region Class that represent a message item
 
-        enum MessageSeverity {
+        private enum MessageSeverity {
             Message,
             Warning,
             Error
         };
 
-        class MessageItem : ListViewItem {
-            readonly MessageSeverity severity;
-            LayoutSelection selection;
+        private class MessageItem : ListViewItem {
+            private LayoutSelection selection;
 
             public MessageItem(MessageSeverity severity, Object messageSubject, string message) {
                 string areaNames = "";
 
                 this.Text = message;
-                this.severity = severity;
+                this.Severity = severity;
 
                 if (messageSubject != null) {
                     selectMessageSubject(messageSubject);
@@ -286,7 +285,7 @@ namespace LayoutManager {
 
             public LayoutSelection Selection => selection;
 
-            public MessageSeverity Severity => severity;
+            public MessageSeverity Severity { get; }
 
             public void TraceMessage() {
                 bool show = false;
@@ -456,10 +455,8 @@ namespace LayoutManager {
             this.Name = "MessageViewer";
             this.Size = new System.Drawing.Size(680, 112);
             this.ResumeLayout(false);
-
         }
         #endregion
-
 
         private void buttonClose_Click(object sender, System.EventArgs e) {
             EventManager.Event(new LayoutEvent("hide-messages", this));

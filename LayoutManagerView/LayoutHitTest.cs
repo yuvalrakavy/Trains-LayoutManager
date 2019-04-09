@@ -10,37 +10,33 @@ namespace LayoutManager {
     /// Hold the results of a hit test.
     /// </summary>
     public class LayoutHitTestResult {
-        readonly LayoutModelArea area;
-        readonly LayoutView view;
-        Point clientLocation;
-        Point modelLocation;
-        readonly LayoutSelection selection;
-        readonly IList<ILayoutDrawingRegion> regions;
+        private Point clientLocation;
+        private Point modelLocation;
 
         internal LayoutHitTestResult(LayoutModelArea area, LayoutView view, Point clientLocation, Point modelLocation, LayoutSelection selection,
           IList<ILayoutDrawingRegion> regions) {
-            this.area = area;
-            this.view = view;
+            this.Area = area;
+            this.View = view;
             this.clientLocation = clientLocation;
             this.modelLocation = modelLocation;
-            this.selection = selection;
-            this.regions = regions;
+            this.Selection = selection;
+            this.Regions = regions;
         }
 
         /// <summary>
         /// The area that was "hit"
         /// </summary>
-        public LayoutModelArea Area => area;
+        public LayoutModelArea Area { get; }
 
         /// <summary>
         /// The view that the hit test was performed on
         /// </summary>
-        public LayoutView View => view;
+        public LayoutView View { get; }
 
         /// <summary>
         /// The frame window that the hit test was perform on
         /// </summary>
-        public ILayoutFrameWindow FrameWindow => view.FrameWindow;
+        public ILayoutFrameWindow FrameWindow => View.FrameWindow;
 
         /// <summary>
         /// Client coordinates for the view
@@ -55,9 +51,9 @@ namespace LayoutManager {
         /// <summary>
         /// Selection containing all the components that were "hit"
         /// </summary>
-        public LayoutSelection Selection => selection;
+        public LayoutSelection Selection { get; }
 
-        public IList<ILayoutDrawingRegion> Regions => regions;
+        public IList<ILayoutDrawingRegion> Regions { get; }
     }
 
     public class LayoutDraggedObject {

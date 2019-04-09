@@ -22,15 +22,14 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        TrainStateInfo train;
-        readonly XmlDocument workingDoc;
+        private TrainStateInfo train;
+        private readonly XmlDocument workingDoc;
 
         public TripPlanCatalog(TrainStateInfo train) {
             //
             // Required for Windows Form Designer support
             //
             InitializeComponent();
-
 
             Owner = LayoutController.ActiveFrameWindow as Form;
 
@@ -109,7 +108,6 @@ namespace LayoutManager.Tools.Dialogs {
         private void exitOperationMode(LayoutEvent e) {
             Close();
         }
-
 
         #region Windows Form Designer generated code
         /// <summary>
@@ -275,7 +273,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.panelTripPlanPreview.ResumeLayout(false);
             this.groupBoxTripPlanPreview.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

@@ -12,22 +12,26 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutLGB {
-
     /// <summary>
     /// Summary description for MTScomponents.
     /// </summary>
     public class MTScentralStation : LayoutCommandStationComponent {
-        static readonly LayoutTraceSwitch traceMTS = new LayoutTraceSwitch("LGBMTS", "LGB Multi-Train-System Central Station");
-        static readonly LayoutTraceSwitch traceRawInput = new LayoutTraceSwitch("MTSrawInput", "Trace raw MTS central station input");
-        OutputManager commandStationManager;
+        private const string A_OverlappedIO = "OverlappedIO";
+        private const string A_ReadIntervalTimeout = "ReadIntervalTimeout";
+        private const string A_ReadTotalTimeoutConstant = "ReadTotalTimeoutConstant";
+        private const string A_XbusId = "XbusID";
+        private const string A_MinTimeBetweenSpeedSteps = "MinTimeBetweenSpeedSteps";
+        private static readonly LayoutTraceSwitch traceMTS = new LayoutTraceSwitch("LGBMTS", "LGB Multi-Train-System Central Station");
+        private static readonly LayoutTraceSwitch traceRawInput = new LayoutTraceSwitch("MTSrawInput", "Trace raw MTS central station input");
+        private OutputManager commandStationManager;
 
-        readonly byte[] inputBuffer = new byte[4];
-        readonly AutoResetEvent readAbortedEvent = new AutoResetEvent(false);
+        private readonly byte[] inputBuffer = new byte[4];
+        private readonly AutoResetEvent readAbortedEvent = new AutoResetEvent(false);
 
-        delegate void messageParserDelegate(MTSmessage message);
+        private delegate void messageParserDelegate(MTSmessage message);
 
-        ControlBus _LGBbus = null;
-        ControlBus _DCCbus = null;
+        private ControlBus _LGBbus = null;
+        private ControlBus _DCCbus = null;
 
         public MTScentralStation() {
             this.XmlDocument.LoadXml(
@@ -37,27 +41,17 @@ namespace LayoutLGB {
                 );
         }
 
-        public int XbusID {
-            get {
-                if (Element.HasAttribute("XbusID"))
-                    return XmlConvert.ToInt32(Element.GetAttribute("XbusID"));
-                return 1;
-            }
-        }
+        public int XbusID => (int?)Element.AttributeValue(A_XbusId) ?? 1;
 
         public ControlBus LGBbus {
             get {
-                if (_LGBbus == null)
-                    _LGBbus = LayoutModel.ControlManager.Buses.GetBus(this, "LGBBUS");
-                return _LGBbus;
+                return _LGBbus ?? (_LGBbus = LayoutModel.ControlManager.Buses.GetBus(this, "LGBBUS"));
             }
         }
 
         public ControlBus DCCbus {
             get {
-                if (_DCCbus == null)
-                    _DCCbus = LayoutModel.ControlManager.Buses.GetBus(this, "DCC");
-                return _DCCbus;
+                return _DCCbus ?? (_DCCbus = LayoutModel.ControlManager.Buses.GetBus(this, "DCC"));
             }
         }
 
@@ -70,12 +64,12 @@ namespace LayoutLGB {
         protected override void OnCommunicationSetup() {
             base.OnCommunicationSetup();
 
-            if (!Element.HasAttribute("OverlappedIO"))
-                Element.SetAttribute("OverlappedIO", XmlConvert.ToString(true));
-            if (!Element.HasAttribute("ReadIntervalTimeout"))
-                Element.SetAttribute("ReadIntervalTimeout", XmlConvert.ToString(100));
-            if (!Element.HasAttribute("ReadTotalTimeoutConstant"))
-                Element.SetAttribute("ReadTotalTimeoutConstant", XmlConvert.ToString(5000));
+            if (!Element.HasAttribute(A_OverlappedIO))
+                Element.SetAttribute(A_OverlappedIO, true);
+            if (!Element.HasAttribute(A_ReadIntervalTimeout))
+                Element.SetAttribute(A_ReadIntervalTimeout, 100);
+            if (!Element.HasAttribute(A_ReadTotalTimeoutConstant))
+                Element.SetAttribute(A_ReadTotalTimeoutConstant, 5000);
         }
 
         protected override void OnInitialize() {
@@ -115,20 +109,15 @@ namespace LayoutLGB {
         #pragma warning disable IDE0051
 
         [LayoutEvent("get-command-station-capabilities", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        void GetCommandStationCapabilities(LayoutEvent e) {
+        private void GetCommandStationCapabilities(LayoutEvent e) {
             CommandStationCapabilitiesInfo cap = new CommandStationCapabilitiesInfo();
-            int minTimeBetweenSpeedSteps = 100;
 
-            if (Element.HasAttribute("MinTimeBetweenSpeedSteps"))
-                minTimeBetweenSpeedSteps = XmlConvert.ToInt32(Element.GetAttribute("MinTimeBetweenSpeedSteps"));
-
-            cap.MinTimeBetweenSpeedSteps = minTimeBetweenSpeedSteps;
-
+            cap.MinTimeBetweenSpeedSteps = (int?)Element.AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 100;
             e.Info = cap.Element;
         }
 
         [LayoutEvent("disconnect-power-request")]
-        void PowerDisconnectRequest(LayoutEvent e) {
+        private void PowerDisconnectRequest(LayoutEvent e) {
             if (e.Sender == null || e.Sender == this) {
                 commandStationManager.AddCommand(new MTSpowerDisconnect(CommunicationStream));
                 commandStationManager.AddCommand(new MTSresetStation(CommunicationStream));
@@ -138,7 +127,7 @@ namespace LayoutLGB {
         }
 
         [LayoutEvent("connect-power-request")]
-        void PowerConnectRequest(LayoutEvent e) {
+        private void PowerConnectRequest(LayoutEvent e) {
             if (e.Sender == null || e.Sender == this) {
                 commandStationManager.AddCommand(new MTSresetStation(CommunicationStream));
                 commandStationManager.AddCommand(new MTSpowerConnect(CommunicationStream, XbusID));
@@ -157,7 +146,7 @@ namespace LayoutLGB {
         #endregion
         // Implement command events
         [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        Task ChangeTurnoutState(LayoutEvent e0) {
+        private Task ChangeTurnoutState(LayoutEvent e0) {
             var e = (LayoutEventInfoValueType<ControlConnectionPointReference, int>)e0;
             ControlConnectionPointReference connectionPointRef = e.Sender;
             int state = e.Info;
@@ -254,7 +243,6 @@ namespace LayoutLGB {
                 MTSmessage message = (MTSmessage)e.Info;
 
                 switch (message.Command) {
-
                     case MTScommand.TurnoutControl:
                         if (OperationMode) {
                             if (message.Address <= 128)
@@ -304,7 +292,7 @@ namespace LayoutLGB {
         /// Called when an asynchronous read is done
         /// </summary>
         /// <param name="asyncReadResult"></param>
-        void OnReadDone(IAsyncResult asyncReadResult) {
+        private void OnReadDone(IAsyncResult asyncReadResult) {
             if (CommunicationStream != null) {
                 try {
                     int count = CommunicationStream.EndRead(asyncReadResult);
@@ -334,20 +322,19 @@ namespace LayoutLGB {
 
     #region MTS Command Classes
 
-    class MTScommandBase : OutputCommandBase {
-        readonly Stream stream;
-        readonly MTSmessage mtsMessage = null;
+    internal class MTScommandBase : OutputCommandBase {
+        private readonly MTSmessage mtsMessage = null;
 
         public MTScommandBase(Stream stream) {
-            this.stream = stream;
+            this.Stream = stream;
         }
 
         public MTScommandBase(Stream stream, MTSmessage mtsMessage) {
-            this.stream = stream;
+            this.Stream = stream;
             this.mtsMessage = mtsMessage;
         }
 
-        public Stream Stream => stream;
+        public Stream Stream { get; }
 
         public override void Do() {
             if (mtsMessage != null)
@@ -355,7 +342,7 @@ namespace LayoutLGB {
         }
     }
 
-    class MTSresetStation : MTScommandBase {
+    internal class MTSresetStation : MTScommandBase {
         public MTSresetStation(Stream stream) : base(stream) {
             DefaultWaitPeriod = 250;
         }
@@ -365,7 +352,7 @@ namespace LayoutLGB {
         }
     }
 
-    class MTSpowerDisconnect : MTScommandBase {
+    internal class MTSpowerDisconnect : MTScommandBase {
         public MTSpowerDisconnect(Stream stream) : base(stream) {
             DefaultWaitPeriod = 250;
         }
@@ -375,8 +362,8 @@ namespace LayoutLGB {
         }
     }
 
-    class MTSpowerConnect : MTScommandBase {
-        readonly int xbusID;
+    internal class MTSpowerConnect : MTScommandBase {
+        private readonly int xbusID;
 
         public MTSpowerConnect(Stream stream, int xbusID) : base(stream) {
             this.xbusID = xbusID;
@@ -387,9 +374,9 @@ namespace LayoutLGB {
         }
     }
 
-    class MTSchangeAccessoryState : MTScommandBase {
-        readonly int unit;
-        readonly int state;
+    internal class MTSchangeAccessoryState : MTScommandBase {
+        private readonly int unit;
+        private readonly int state;
 
         public MTSchangeAccessoryState(Stream stream, int unit, int state) : base(stream) {
             this.unit = unit;
@@ -401,9 +388,9 @@ namespace LayoutLGB {
         }
     }
 
-    class MTSlocomotiveMotion : MTScommandBase {
-        readonly byte unit;
-        readonly int speed;
+    internal class MTSlocomotiveMotion : MTScommandBase {
+        private readonly byte unit;
+        private readonly int speed;
 
         public MTSlocomotiveMotion(Stream stream, byte unit, int speed) : base(stream) {
             this.unit = unit;
@@ -429,9 +416,9 @@ namespace LayoutLGB {
         }
     }
 
-    class MTSlocomotiveFunction : MTScommandBase {
-        readonly byte unit;
-        readonly byte functionNumber;
+    internal class MTSlocomotiveFunction : MTScommandBase {
+        private readonly byte unit;
+        private readonly byte functionNumber;
 
         public MTSlocomotiveFunction(Stream stream, int unit, int functionNumber) : base(stream) {
             this.unit = (byte)unit;
@@ -464,8 +451,6 @@ namespace LayoutLGB {
     /// Encapsulate a message sent over the XBUS (LGB BUS)
     /// </summary>
     public class MTSmessage {
-        readonly byte[] message = new byte[4];
-
         public MTSmessage(MTScommand command, byte p1, byte p2) {
             buildMessage(command, p1, p2);
         }
@@ -479,9 +464,9 @@ namespace LayoutLGB {
         }
 
         private void buildMessage(MTScommand command, byte p1, byte p2) {
-            message[0] = (byte)command;
-            message[1] = p1;
-            message[2] = p2;
+            Buffer[0] = (byte)command;
+            Buffer[1] = p1;
+            Buffer[2] = p2;
             UpdateChecksum();
         }
 
@@ -490,61 +475,61 @@ namespace LayoutLGB {
                 throw new ArgumentOutOfRangeException("buffer/offset", "MTS message is at least four bytes");
 
             for (int i = 0; i < 4; i++)
-                message[i] = buffer[offset + i];
+                Buffer[i] = buffer[offset + i];
 
             // Verify that the checksum is correct
-            if ((message[0] ^ message[1] ^ message[2]) != message[3])
+            if ((Buffer[0] ^ Buffer[1] ^ Buffer[2]) != Buffer[3])
                 throw new ArgumentException("buffer", "MTS Message has bad checksum");
         }
 
         protected void UpdateChecksum() {
-            message[3] = (byte)(message[0] ^ message[1] ^ message[2]);
+            Buffer[3] = (byte)(Buffer[0] ^ Buffer[1] ^ Buffer[2]);
         }
 
         public void Send(Stream s) {
-            s.Write(message, 0, message.Length);
+            s.Write(Buffer, 0, Buffer.Length);
             s.Flush();
         }
 
         public MTScommand Command {
             get {
-                return (MTScommand)message[0];
+                return (MTScommand)Buffer[0];
             }
 
             set {
-                message[0] = (byte)value;
+                Buffer[0] = (byte)value;
                 UpdateChecksum();
             }
         }
 
         public byte Address {
             get {
-                return message[1];
+                return Buffer[1];
             }
 
             set {
-                message[1] = value;
+                Buffer[1] = value;
                 UpdateChecksum();
             }
         }
 
         public byte Value {
             get {
-                return message[2];
+                return Buffer[2];
             }
 
             set {
-                message[2] = value;
+                Buffer[2] = value;
                 UpdateChecksum();
             }
         }
 
-        public byte[] Buffer => message;
+        public byte[] Buffer { get; } = new byte[4];
 
         public override string ToString() {
-            MTScommand cmd = (MTScommand)message[0];
+            MTScommand cmd = (MTScommand)Buffer[0];
 
-            return String.Format("MTS command: {0} {1:x} {2:x} (Checksum {3:x})", cmd, message[1], message[2], message[3]);
+            return String.Format("MTS command: {0} {1:x} {2:x} (Checksum {3:x})", cmd, Buffer[1], Buffer[2], Buffer[3]);
         }
     }
 

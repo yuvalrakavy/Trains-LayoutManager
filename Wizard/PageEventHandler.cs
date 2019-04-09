@@ -14,6 +14,7 @@ namespace Gui.Wizard {
     public class PageEventArgs : EventArgs {
         private int vPage;
         private readonly PageCollection vPages;
+
         /// <summary>
         /// Constructs a new event
         /// </summary>
@@ -35,7 +36,7 @@ namespace Gui.Wizard {
                 return null;
             }
             set {
-                if (vPages.Contains(value) == true) {
+                if (vPages.Contains(value)) {
                     //If this is a valid page then set it
                     vPage = vPages.IndexOf(value);
                 }
@@ -45,11 +46,9 @@ namespace Gui.Wizard {
             }
         }
 
-
         /// <summary>
         /// Gets the index of the page 
         /// </summary>
         public int PageIndex => vPage;
-
     }
 }

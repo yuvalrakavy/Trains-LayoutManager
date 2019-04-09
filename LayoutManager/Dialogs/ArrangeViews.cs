@@ -17,9 +17,9 @@ namespace LayoutManager.Dialogs {
         private Button buttonRename;
         private IContainer components;
         private ListBox listBoxViews;
-        readonly LayoutFrameWindowAreaTabPage areaPage;
-        bool rebuildTabs = false;
-        readonly LayoutFrameWindow controller;
+        private readonly LayoutFrameWindowAreaTabPage areaPage;
+        private bool rebuildTabs = false;
+        private readonly LayoutFrameWindow controller;
 
         public ArrangeViews(LayoutFrameWindow controller, LayoutFrameWindowAreaTabPage areaPage) {
             this.controller = controller;
@@ -185,7 +185,6 @@ namespace LayoutManager.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Arrange Views";
             this.ResumeLayout(false);
-
         }
         #endregion
 

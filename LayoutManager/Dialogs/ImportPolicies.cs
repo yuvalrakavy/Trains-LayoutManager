@@ -7,7 +7,7 @@ using System.IO;
 
 namespace LayoutManager.Dialogs {
     public partial class ImportPolicies : Form {
-        readonly Font boldFont;
+        private readonly Font boldFont;
 
         public ImportPolicies() {
             InitializeComponent();
@@ -17,7 +17,7 @@ namespace LayoutManager.Dialogs {
             UpdateButtons();
         }
 
-        void UpdateButtons() {
+        private void UpdateButtons() {
             buttonViewScript.Enabled = listViewScripts.SelectedItems.Count > 0;
         }
 
@@ -34,7 +34,6 @@ namespace LayoutManager.Dialogs {
 
                 foreach (XmlElement policyElement in importedScriptsDoc.DocumentElement)
                     listViewScripts.Items.Add(new PolicyItem(listViewScripts, boldFont, policyElement));
-
             }
             catch (IOException ex) {
                 MessageBox.Show(this, textBoxFilename.Text + ": " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -46,25 +45,22 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        class PolicyItem : ListViewItem {
-            readonly LayoutPolicyInfo policy;
-
+        private class PolicyItem : ListViewItem {
             public PolicyItem(ListView listViewScripts, Font boldFont, XmlElement policyElement) {
-                policy = new LayoutPolicyInfo(policyElement);
+                Policy = new LayoutPolicyInfo(policyElement);
 
-                ListViewGroup group = listViewScripts.Groups[policy.Scope];
-                LayoutPolicyType policyType = LayoutModel.StateManager.PolicyTypes.Find(delegate (LayoutPolicyType pt) { return pt.ScopeName == policy.Scope; });
+                ListViewGroup group = listViewScripts.Groups[Policy.Scope];
+                LayoutPolicyType policyType = LayoutModel.StateManager.PolicyTypes.Find(delegate (LayoutPolicyType pt) { return pt.ScopeName == Policy.Scope; });
 
                 if (policyType != null) {
-
                     if (group == null) {
-                        group = new ListViewGroup(policy.Scope, policyType.DisplayName);
+                        group = new ListViewGroup(Policy.Scope, policyType.DisplayName);
                         listViewScripts.Groups.Add(group);
                     }
 
                     group.Items.Add(this);
 
-                    if (policyType.Policies[policy.Id] != null || policyType.Policies[policy.Name] != null)
+                    if (policyType.Policies[Policy.Id] != null || policyType.Policies[Policy.Name] != null)
                         Font = boldFont;
 
                     SubItems.Add("");
@@ -74,11 +70,11 @@ namespace LayoutManager.Dialogs {
             }
 
             public void Update() {
-                Text = policy.Name;
-                SubItems[1].Text = policy.Text;
+                Text = Policy.Name;
+                SubItems[1].Text = Policy.Text;
             }
 
-            public LayoutPolicyInfo Policy => policy;
+            public LayoutPolicyInfo Policy { get; }
         }
 
         private void ImportPolicies_FormClosed(object sender, FormClosedEventArgs e) {
@@ -126,6 +122,5 @@ namespace LayoutManager.Dialogs {
         private void listViewScripts_SelectedIndexChanged(object sender, EventArgs e) {
             UpdateButtons();
         }
-
     }
 }

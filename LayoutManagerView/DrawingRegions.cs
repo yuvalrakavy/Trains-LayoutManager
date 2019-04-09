@@ -6,7 +6,6 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager.View {
-
     #region Drawing Region interface and helper classes
 
     public interface ILayoutDrawingRegion {
@@ -78,7 +77,6 @@ namespace LayoutManager.View {
         }
     }
 
-
     /// <summary>
     /// Base class for drawing region class that draw in the grid. All the derived class has to do is to draw
     /// the grid.
@@ -101,7 +99,6 @@ namespace LayoutManager.View {
     /// Base class for drawing region that draws a rectangle whose relative to a grid location is provided
     /// </summary>
     public abstract class LayoutDrawingRegionRectangle : LayoutDrawingRegion {
-
         private float getAlignedValue(float v, float d, LayoutDrawingAnchorPoint a) {
             switch (a) {
                 case LayoutDrawingAnchorPoint.Center:
@@ -133,7 +130,6 @@ namespace LayoutManager.View {
             PointF origin = new PointF(ptTopLeft.X + view.GridSizeInModelCoordinates.Width / 2, ptTopLeft.Y + view.GridSizeInModelCoordinates.Height / 2);
 
             switch (positionProvider.Side) {
-
                 case LayoutDrawingSide.Top:
                     rcRegion = new RectangleF(
                         new PointF(getAlignedValue(origin.X, rectSize.Width, positionProvider.AnchorPoint),
@@ -171,9 +167,8 @@ namespace LayoutManager.View {
     }
 
     public abstract class LayoutDrawingRegionBallon : LayoutDrawingRegion, IDisposable {
-        readonly BallonPainter painter = new BallonPainter();
-        SizeF ballonContentSize;
-        readonly float hangSize = 0.25f;
+        private SizeF ballonContentSize;
+        private readonly float hangSize = 0.25f;
 
         protected LayoutDrawingRegionBallon(ModelComponent component, ILayoutView view, SizeF ballonContentSize) : base(component) {
             this.ballonContentSize = ballonContentSize;
@@ -198,15 +193,15 @@ namespace LayoutManager.View {
                 horizontal = false;
 
             if (horizontal) {
-                painter.Hotspot = new PointF(ptCenter.X, ptCenter.Y + (onTop ? -4 : 4));
+                Painter.Hotspot = new PointF(ptCenter.X, ptCenter.Y + (onTop ? -4 : 4));
 
                 if (onRight) {
                     xBallon = ptCenter.X - hangSize * totalContentSize.Width;
-                    painter.HotspotOrigin = onTop ? 5 : 0;
+                    Painter.HotspotOrigin = onTop ? 5 : 0;
                 }
                 else {
                     xBallon = ptCenter.X - (1 - hangSize) * totalContentSize.Width;
-                    painter.HotspotOrigin = onTop ? 4 : 1;
+                    Painter.HotspotOrigin = onTop ? 4 : 1;
                 }
 
                 if (onTop)
@@ -215,15 +210,15 @@ namespace LayoutManager.View {
                     yBallon = ptCenter.Y + 32;
             }
             else {
-                painter.Hotspot = new PointF(ptCenter.X + (onRight ? 4 : -4), ptCenter.Y);
+                Painter.Hotspot = new PointF(ptCenter.X + (onRight ? 4 : -4), ptCenter.Y);
 
                 if (onTop) {
                     yBallon = ptCenter.Y - hangSize * totalContentSize.Height;
-                    painter.HotspotOrigin = onRight ? 6 : 3;
+                    Painter.HotspotOrigin = onRight ? 6 : 3;
                 }
                 else {
                     yBallon = ptCenter.Y - (1 - hangSize) * totalContentSize.Height;
-                    painter.HotspotOrigin = onRight ? 7 : 2;
+                    Painter.HotspotOrigin = onRight ? 7 : 2;
                 }
 
                 if (onRight)
@@ -232,11 +227,11 @@ namespace LayoutManager.View {
                     xBallon = ptCenter.X - totalContentSize.Width - 32;
             }
 
-            painter.Bounds = new RectangleF(new PointF(xBallon, yBallon), totalContentSize);
+            Painter.Bounds = new RectangleF(new PointF(xBallon, yBallon), totalContentSize);
 
             PointF offsetAmount;
 
-            using (GraphicsPath p = painter.BallonGraphicPath) {
+            using (GraphicsPath p = Painter.BallonGraphicPath) {
                 RectangleF bounds = p.GetBounds();
 
                 bounds.Inflate(6, 6);
@@ -247,22 +242,22 @@ namespace LayoutManager.View {
                 offsetAmount.Y *= -1;
             }
 
-            RectangleF newBounds = painter.Bounds;
+            RectangleF newBounds = Painter.Bounds;
 
             newBounds.Offset(offsetAmount);
-            painter.Bounds = newBounds;
-            painter.Hotspot = new PointF(painter.Hotspot.X + offsetAmount.X, painter.Hotspot.Y + offsetAmount.Y);
+            Painter.Bounds = newBounds;
+            Painter.Hotspot = new PointF(Painter.Hotspot.X + offsetAmount.X, Painter.Hotspot.Y + offsetAmount.Y);
         }
 
         public override int ZOrder => 100;
 
-        protected BallonPainter Painter => painter;
+        protected BallonPainter Painter { get; } = new BallonPainter();
 
         public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
             GraphicsState gs = g.Save();
 
             g.TranslateTransform(3, 3);
-            painter.Paint(g);
+            Painter.Paint(g);
 
             g.TranslateTransform(Painter.Bounds.Location.X + Margins.Width, Painter.Bounds.Location.Y + Margins.Height);
             g.SetClip(new RectangleF(new PointF(0, 0), ballonContentSize));
@@ -287,21 +282,19 @@ namespace LayoutManager.View {
         #region IDisposable Members
 
         virtual public void Dispose() {
-            if (painter != null)
-                painter.Dispose();
+            if (Painter != null)
+                Painter.Dispose();
         }
 
         #endregion
     }
 
     public class LayoutDrawingRegionBallonText : LayoutDrawingRegionBallon {
-        readonly string text;
-        readonly Font font;
-        Brush brush = Brushes.Black;
+        private readonly string text;
 
         public LayoutDrawingRegionBallonText(ModelComponent component, ILayoutView view, Graphics g, string text, Font font) : base(component, view, GetBallonContentSize(g, text, font)) {
             this.text = text;
-            this.font = font;
+            this.Font = font;
         }
 
         static protected SizeF GetBallonContentSize(Graphics g, string text, Font font) {
@@ -314,24 +307,15 @@ namespace LayoutManager.View {
         }
 
         protected override void DrawBallonContent(Graphics g) {
-            g.DrawString(text, font, brush, Margins.Width, Margins.Height);
+            g.DrawString(text, Font, TextBrush, Margins.Width, Margins.Height);
         }
 
-        public Brush TextBrush {
-            get {
-                return brush;
-            }
+        public Brush TextBrush { get; set; } = Brushes.Black;
 
-            set {
-                brush = value;
-            }
-        }
-
-        protected Font Font => font;
+        protected Font Font { get; }
     }
 
     public class LayoutDrawingRegionBallonInfo : LayoutDrawingRegionBallonText, IDisposable {
-
         public LayoutDrawingRegionBallonInfo(ModelComponent component, ILayoutView view, Graphics g, LayoutBlockBallon ballonInfo) :
             base(component, view, g, ballonInfo.Text, new Font("Arial", ballonInfo.FontSize, GraphicsUnit.World)) {
             Painter.Fill = new SolidBrush(ballonInfo.FillColor);
@@ -361,7 +345,7 @@ namespace LayoutManager.View {
     }
 
     public class LayoutDrawingRegionPopupBallon : LayoutDrawingRegionBallon {
-        readonly Ballon ballon;
+        private readonly Ballon ballon;
 
         public LayoutDrawingRegionPopupBallon(ModelComponent component, ILayoutView view, Graphics g, Ballon ballon) : base(component, view, ballon.Content.GetSize(g)) {
             this.ballon = ballon;
@@ -376,18 +360,9 @@ namespace LayoutManager.View {
     /// Drawing region for drawing text
     /// </summary>
     public class LayoutDrawingRegionText : LayoutDrawingRegionRectangle {
-        readonly LayoutTextInfo textProvider;
-        bool forceDraw;
+        private readonly LayoutTextInfo textProvider;
 
-        public bool ForceDraw {
-            get {
-                return forceDraw;
-            }
-
-            set {
-                forceDraw = value;
-            }
-        }
+        public bool ForceDraw { get; set; }
 
         public LayoutDrawingRegionText(ModelComponent component, ILayoutView view, ViewDetailLevel detailLevel, Graphics g, LayoutTextInfo textProvider) :
             base(component, view, textProvider.PositionProvider, measureProviderString(g, detailLevel, textProvider)) {
@@ -405,7 +380,7 @@ namespace LayoutManager.View {
         public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
             base.Draw(view, detailLevel, selectionLook, g);
 
-            if (textProvider.Element != null && (textProvider.Visible || forceDraw)) {
+            if (textProvider.Element != null && (textProvider.Visible || ForceDraw)) {
                 int width = textProvider.PositionProvider.Width;
                 Color fontColor = textProvider.FontProvider.Color;
 
@@ -462,9 +437,9 @@ namespace LayoutManager.View {
     }
 
     public class LayoutDrawingRegionNotConnected : LayoutDrawingRegionGrid {
-        readonly IModelComponentHasId component;
-        readonly bool onTop;
-        readonly ImageList imageListComponents;
+        private readonly IModelComponentHasId component;
+        private readonly bool onTop;
+        private readonly ImageList imageListComponents;
 
         public LayoutDrawingRegionNotConnected(ModelComponent component, ILayoutView view, bool onTop) : base(component, view) {
             this.component = (IModelComponentHasId)component;

@@ -10,6 +10,7 @@ namespace LayoutManager.Tools.Dialogs {
         private TextBox textBoxLabel;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -108,7 +109,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Set Control Module Label";
             this.ResumeLayout(false);
-
         }
         #endregion
 

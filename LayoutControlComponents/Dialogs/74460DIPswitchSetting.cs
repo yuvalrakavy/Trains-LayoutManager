@@ -12,10 +12,10 @@ namespace LayoutManager.ControlComponents.Dialogs {
         /// </summary>
         private readonly Container components = null;
 
-        LayoutManager.CommonUI.Controls.DIPswitch diPswitchSettings;
-        Label label2;
-        CheckBox checkBoxClearUserActionFlag;
-        Button buttonClose;
+        private LayoutManager.CommonUI.Controls.DIPswitch diPswitchSettings;
+        private Label label2;
+        private CheckBox checkBoxClearUserActionFlag;
+        private Button buttonClose;
 
         public TurnoutDecoderDIPswitchSetting(string moduleName, int address, bool userActionRequiredFlag) {
             //
@@ -111,7 +111,6 @@ namespace LayoutManager.ControlComponents.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "MODULENAME Settings";
             this.ResumeLayout(false);
-
         }
         #endregion
     }

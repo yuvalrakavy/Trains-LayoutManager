@@ -14,6 +14,7 @@ namespace Gui.Wizard {
         private PictureBox picIcon;
         private Panel pnl3dDark;
         private Panel pnl3dBright;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -133,7 +134,6 @@ namespace Gui.Wizard {
             this.SizeChanged += new System.EventHandler(this.Header_SizeChanged);
             this.pnlDockPadding.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

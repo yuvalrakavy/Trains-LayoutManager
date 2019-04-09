@@ -6,7 +6,7 @@ using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class ChangeLocomotiveAddress : Form {
-        LocomotiveInfo Locomotive { get; }
+        private LocomotiveInfo Locomotive { get; }
         public IModelComponentIsCommandStation CommandStation { get; }
         public int Address { get; private set; }
         public bool ProgramLocomotive { get; private set; }
@@ -99,7 +99,6 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonSaveOnly_Click(object sender, EventArgs e) {
-
             if (radioButtonUnknownAddress.Checked || ValidateAddress(out int address)) {
                 ProgramLocomotive = false;
                 DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -108,7 +107,6 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonSaveAndProgram_Click(object sender, EventArgs e) {
-
             if (radioButtonUnknownAddress.Checked || ValidateAddress(out int address)) {
                 ProgramLocomotive = true;
                 DialogResult = System.Windows.Forms.DialogResult.OK;

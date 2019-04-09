@@ -27,7 +27,6 @@ namespace LayoutManager.Tools.Dialogs {
         private LayoutManager.CommonUI.Controls.PictureBoxWithTransparency pictureBoxWithTransparency2;
         private LayoutManager.CommonUI.Controls.PictureBoxWithTransparency pictureBoxWithTransparency3;
         private CheckBox checkBoxReverseLogic;
-        readonly LayoutXmlInfo xmlInfo;
 
         public SignalProperties(ModelComponent component) {
             //
@@ -35,9 +34,9 @@ namespace LayoutManager.Tools.Dialogs {
             //
             InitializeComponent();
 
-            this.xmlInfo = new LayoutXmlInfo(component);
+            this.XmlInfo = new LayoutXmlInfo(component);
 
-            LayoutSignalComponentInfo info = new LayoutSignalComponentInfo(xmlInfo.Element);
+            LayoutSignalComponentInfo info = new LayoutSignalComponentInfo(XmlInfo.Element);
 
             switch (info.SignalType) {
                 case LayoutSignalType.Distance:
@@ -54,10 +53,9 @@ namespace LayoutManager.Tools.Dialogs {
             }
 
             checkBoxReverseLogic.Checked = info.ReverseLogic;
-
         }
 
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         /// <summary>
         /// Clean up any resources being used.
@@ -232,12 +230,11 @@ namespace LayoutManager.Tools.Dialogs {
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWithTransparency2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWithTransparency3)).EndInit();
             this.ResumeLayout(false);
-
         }
         #endregion
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
-            LayoutSignalComponentInfo info = new LayoutSignalComponentInfo(xmlInfo.Element);
+            LayoutSignalComponentInfo info = new LayoutSignalComponentInfo(XmlInfo.Element);
 
             if (radioButtonSignalTypeDistance.Checked)
                 info.SignalType = LayoutSignalType.Distance;

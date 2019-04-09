@@ -18,6 +18,7 @@ namespace LayoutManager.Dialogs {
         private Button buttonEdit;
         private Button buttonDelete;
         private Button buttonClose;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -48,8 +49,8 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        class FontItem : ListViewItem {
-            readonly XmlElement fontElement;
+        private class FontItem : ListViewItem {
+            private readonly XmlElement fontElement;
 
             public FontItem(XmlElement fontElement) {
                 this.fontElement = fontElement;
@@ -81,8 +82,6 @@ namespace LayoutManager.Dialogs {
             }
             base.Dispose(disposing);
         }
-
-
 
         #region Windows Form Designer generated code
         /// <summary>
@@ -204,7 +203,6 @@ namespace LayoutManager.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Standard Fonts";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -266,7 +264,6 @@ namespace LayoutManager.Dialogs {
                     item.Update();
                 }
             }
-
         }
 
         private void menuItemFontID_Click(object sender, System.EventArgs e) {

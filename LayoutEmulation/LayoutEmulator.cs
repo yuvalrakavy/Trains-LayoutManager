@@ -12,7 +12,6 @@ using LayoutManager.Components;
 #nullable enable
 #pragma warning disable IDE0051, IDE0060
 namespace LayoutEmulation {
-
     #region Interfaces
 
     /// <summary>
@@ -68,16 +67,15 @@ namespace LayoutEmulation {
 
     [LayoutModule("Layout Emulator")]
     public class LayoutEmulator : LayoutModuleBase, ILayoutEmulationEnvironment, ILayoutEmulatorServices {
-        ILayoutTopologyServices? _topologyServices;
-        readonly Dictionary<Guid, CommandStationObjects> commandStations = new Dictionary<Guid, CommandStationObjects>();
-        Timer? emulationTimer = null;
-        int operationNesting = 0;
-        int tickTime = 200;
+        private ILayoutTopologyServices? _topologyServices;
+        private readonly Dictionary<Guid, CommandStationObjects> commandStations = new Dictionary<Guid, CommandStationObjects>();
+        private Timer? emulationTimer = null;
+        private int operationNesting = 0;
+        private int tickTime = 200;
 
         // The initialize method must run in the context of the main thread
-        void Initialize() {
+        private void Initialize() {
         }
-
 
         #region Implementation of ILayoutEmulationEnvironment
 
@@ -85,9 +83,7 @@ namespace LayoutEmulation {
 
         public ILayoutTopologyServices TopologyServices {
             get {
-                if (_topologyServices == null)
-                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!;
-                return _topologyServices;
+                return _topologyServices ?? (_topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!);
             }
         }
 
@@ -100,7 +96,6 @@ namespace LayoutEmulation {
         #endregion
 
         #region Operations
-
 
         public LayoutComponentConnectionPoint FindRouteThroughMultiPathComponent(IModelComponentIsMultiPath turnout, LayoutComponentConnectionPoint from) {
             int switchState = 0;
@@ -203,8 +198,7 @@ namespace LayoutEmulation {
             }
         }
 
-        CommandStationObjects GetCommandStationObjects(Guid commandStationId) {
-
+        private CommandStationObjects GetCommandStationObjects(Guid commandStationId) {
             commandStations.TryGetValue(commandStationId, out CommandStationObjects commandStationObjects);
 
             if (commandStationObjects == null) {
@@ -241,7 +235,6 @@ namespace LayoutEmulation {
 
         public IList<ILocomotiveLocation> GetLocomotiveLocations(Guid commandStationId) {
             lock (Sync) {
-
                 commandStations.TryGetValue(commandStationId, out CommandStationObjects commandStationObjects);
 
                 if (commandStationObjects == null)
@@ -276,7 +269,6 @@ namespace LayoutEmulation {
         }
 
         private void RemoveLocomotive(Guid commandStationId, int unit) {
-
             if (commandStations.TryGetValue(commandStationId, out CommandStationObjects commandStationObjects))
                 commandStationObjects.RemoveLocomotive(unit);
         }
@@ -318,7 +310,6 @@ namespace LayoutEmulation {
                             }
                             else
                                 Warning($"A previouslly used locomotive is no longer defined");
-
                         }
                     }
                 }
@@ -430,11 +421,11 @@ namespace LayoutEmulation {
 
     #region Data structures
 
-    class CommandStationObjects {
-        readonly ILayoutEmulationEnvironment environment;
-        Guid commandStationId;
-        readonly Dictionary<int, LocomotiveState> locomotives = new Dictionary<int, LocomotiveState>();
-        readonly Dictionary<int, int> turnouts = new Dictionary<int, int>();
+    internal class CommandStationObjects {
+        private readonly ILayoutEmulationEnvironment environment;
+        private Guid commandStationId;
+        private readonly Dictionary<int, LocomotiveState> locomotives = new Dictionary<int, LocomotiveState>();
+        private readonly Dictionary<int, int> turnouts = new Dictionary<int, int>();
 
         public CommandStationObjects(ILayoutEmulationEnvironment environment, Guid commandStationId) {
             this.environment = environment;
@@ -442,7 +433,6 @@ namespace LayoutEmulation {
         }
 
         public LocomotiveState AddLocomotive(int unit, TrackEdge location) {
-
             locomotives.TryGetValue(unit, out LocomotiveState locomotive);
 
             if (locomotive == null) {
@@ -456,7 +446,6 @@ namespace LayoutEmulation {
         }
 
         public LocomotiveState? GetLocomotive(int unit) {
-
             if (!locomotives.TryGetValue(unit, out LocomotiveState loco))
                 return null;
             return loco;
@@ -481,7 +470,6 @@ namespace LayoutEmulation {
         }
 
         public int GetTurnoutSwitchState(int unit) {
-
             if (turnouts.TryGetValue(unit, out int switchState))
                 return switchState;
             return -1;
@@ -495,47 +483,42 @@ namespace LayoutEmulation {
     }
 
     public class LocomotiveLocation : ILocomotiveLocation {
-        readonly LayoutTrackComponent _track;
-        readonly LayoutComponentConnectionPoint _front;
-        readonly LayoutComponentConnectionPoint _rear;
-
         public LocomotiveLocation(LayoutTrackComponent track, LayoutComponentConnectionPoint front, LayoutComponentConnectionPoint rear) {
-            _track = track;
-            _front = front;
-            _rear = rear;
+            Track = track;
+            Front = front;
+            Rear = rear;
         }
 
         public LocomotiveLocation(TrackEdge edge) {
-            _track = edge.Track;
-            _front = edge.ConnectionPoint;
-            _rear = _track.ConnectTo(_front, LayoutComponentConnectionType.Passage)[0];
+            Track = edge.Track;
+            Front = edge.ConnectionPoint;
+            Rear = Track.ConnectTo(Front, LayoutComponentConnectionType.Passage)[0];
         }
 
-        public LayoutTrackComponent Track => _track;
+        public LayoutTrackComponent Track { get; }
 
-        public LayoutComponentConnectionPoint Front => _front;
+        public LayoutComponentConnectionPoint Front { get; }
 
-        public LayoutComponentConnectionPoint Rear => _rear;
+        public LayoutComponentConnectionPoint Rear { get; }
 
-        public TrackEdge Edge => new TrackEdge(_track, _front);
+        public TrackEdge Edge => new TrackEdge(Track, Front);
     }
 
     public class LocomotiveState {
-        readonly ILayoutEmulationEnvironment _environment;
-        Guid _commandStationId;
-        readonly int _unit;
-        int _speed;             // the locomotive current speed (and direction)
-        LocomotiveLocation _location;           // Where the locomotive is on the layout (when there is support for longer trains, this will become an array)
+        private readonly ILayoutEmulationEnvironment _environment;
+        private Guid _commandStationId;
+        private int _speed;             // the locomotive current speed (and direction)
+        private LocomotiveLocation _location;           // Where the locomotive is on the layout (when there is support for longer trains, this will become an array)
                                                 //		LayoutComponentConnectionPoint	rear;				// Where is the rear of the train
-        LocomotiveOrientation _direction = LocomotiveOrientation.Forward;
+        private LocomotiveOrientation _direction = LocomotiveOrientation.Forward;
 
-        int ticksPerMotion;     // Number of timer ticks between each locomotive motion
-        int tickCount;          // Number of ticks remaining until the next locomotive motion
+        private int ticksPerMotion;     // Number of timer ticks between each locomotive motion
+        private int tickCount;          // Number of ticks remaining until the next locomotive motion
 
         public LocomotiveState(ILayoutEmulationEnvironment environment, Guid commandStationId, int unit, TrackEdge edge) {
             this._environment = environment;
             this._commandStationId = commandStationId;
-            this._unit = unit;
+            this.Unit = unit;
 
             _location = new LocomotiveLocation(edge);
             Speed = 0;
@@ -543,7 +526,7 @@ namespace LayoutEmulation {
 
         public Guid CommandStationId => _commandStationId;
 
-        public int Unit => _unit;
+        public int Unit { get; }
 
         public int Speed {
             get {

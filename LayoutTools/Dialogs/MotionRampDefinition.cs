@@ -14,14 +14,15 @@ namespace LayoutManager.Tools.Dialogs {
         private CheckBox checkBoxSHowInTrainControllerDialog;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
 
-        void endOfDesignerVariables() { }
+        private void endOfDesignerVariables() { }
 
-        readonly MotionRampInfo ramp;
+        private readonly MotionRampInfo ramp;
 
         public MotionRampDefinition(MotionRampInfo ramp) {
             //
@@ -147,7 +148,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "Acceleration/Deceleration Profile";
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

@@ -5,8 +5,6 @@ using System.Xml;
 #nullable enable
 namespace LayoutManager {
     public class LayoutXmlWrapper : IObjectHasXml {
-        private XmlElement? _element;
-
         public LayoutXmlWrapper() {
         }
 
@@ -15,16 +13,16 @@ namespace LayoutManager {
         }
 
         public LayoutXmlWrapper(XmlElement element) {
-            this._element = element;
+            this.OptionalElement = element;
         }
 
         public LayoutXmlWrapper(XmlElement parent, string elementName, bool alwaysAppend = false) {
-            this._element = parent[elementName];
+            this.OptionalElement = parent[elementName];
 
-            if (alwaysAppend || _element == null) {
-                this._element = parent.OwnerDocument.CreateElement(elementName);
+            if (alwaysAppend || OptionalElement == null) {
+                this.OptionalElement = parent.OwnerDocument.CreateElement(elementName);
 
-                parent.AppendChild(_element);
+                parent.AppendChild(OptionalElement);
             }
         }
 
@@ -39,26 +37,21 @@ namespace LayoutManager {
             XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
             doc.Load(filename);
-            _element = doc.DocumentElement;
+            OptionalElement = doc.DocumentElement;
         }
 
         public XmlElement Element {
             get {
-                Debug.Assert(_element != null);
-                return _element;
+                Debug.Assert(OptionalElement != null);
+                return OptionalElement;
             }
 
             set {
-                _element = value;
+                OptionalElement = value;
             }
         }
 
-        public XmlElement? OptionalElement {
-            get => _element;
-            set {
-                _element = value;
-            }
-        }
+        public XmlElement? OptionalElement { get; set; }
 
         public XmlElement CreateChildElement(string elementName) {
             XmlElement childElement = Element.OwnerDocument.CreateElement(elementName);
@@ -133,5 +126,4 @@ namespace LayoutManager {
             : base(element) {
         }
     }
-
 }

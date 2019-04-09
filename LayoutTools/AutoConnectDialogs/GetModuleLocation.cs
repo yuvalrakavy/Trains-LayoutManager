@@ -16,6 +16,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
         private ComboBox comboBoxModuleLocation;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -161,7 +162,6 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.ShowInTaskbar = false;
             this.Text = "Select Control Module Location";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -169,24 +169,22 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             DialogResult = DialogResult.OK;
         }
 
-        class Item {
-            readonly LayoutControlModuleLocationComponent moduleLocation;
-            readonly string text;
+        private class Item {
+            private readonly string text;
 
             public Item(LayoutControlModuleLocationComponent moduleLocation) {
-                this.moduleLocation = moduleLocation;
+                this.ModuleLocation = moduleLocation;
                 text = moduleLocation.Name;
             }
 
             public Item(string text) {
-                this.moduleLocation = null;
+                this.ModuleLocation = null;
                 this.text = text;
             }
 
-            public LayoutControlModuleLocationComponent ModuleLocation => moduleLocation;
+            public LayoutControlModuleLocationComponent ModuleLocation { get; }
 
             public override string ToString() => text;
         }
-
     }
 }

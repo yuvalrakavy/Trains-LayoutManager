@@ -7,8 +7,8 @@ namespace LayoutManager.CommonUI.Controls {
     /// Summary description for LinkMenu.
     /// </summary>
     public class LinkMenu : System.Windows.Forms.LinkLabel {
-        readonly ContextMenu menu = new ContextMenu();
-        int selectedIndex = -1;
+        private readonly ContextMenu menu = new ContextMenu();
+        private int selectedIndex = -1;
         public event EventHandler ValueChanged;
 
         public LinkMenu() {
@@ -52,7 +52,6 @@ namespace LayoutManager.CommonUI.Controls {
         protected MenuItem SelectedItem {
             set {
                 SelectedIndex = menu.MenuItems.IndexOf(value);
-
             }
         }
 
@@ -61,8 +60,8 @@ namespace LayoutManager.CommonUI.Controls {
             menu.Show(Parent, new Point(Left, Bottom));
         }
 
-        class LinkMenuItem : MenuItem {
-            readonly LinkMenu linkMenu;
+        private class LinkMenuItem : MenuItem {
+            private readonly LinkMenu linkMenu;
 
             public LinkMenuItem(LinkMenu linkMenu, string text) {
                 this.linkMenu = linkMenu;

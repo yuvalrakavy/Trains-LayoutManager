@@ -45,7 +45,7 @@ namespace LayoutLGB {
         #region Component menu Item
 
         [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
-        void AddCentralStationItem(LayoutEvent e) {
+        private void AddCentralStationItem(LayoutEvent e) {
             XmlElement categoryElement = (XmlElement)e.Sender;
             ModelComponent old = (ModelComponent)e.Info;
 
@@ -54,7 +54,7 @@ namespace LayoutLGB {
         }
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='CentralStation']")]
-        void PaintCentralStationItem(LayoutEvent e) {
+        private void PaintCentralStationItem(LayoutEvent e) {
             Graphics g = (Graphics)e.Info;
 
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
@@ -68,7 +68,7 @@ namespace LayoutLGB {
         }
 
         [LayoutEvent("create-model-component", IfSender = "Item[@Name='CentralStation']")]
-        void CreateCentralStationComponent(LayoutEvent e) {
+        private void CreateCentralStationComponent(LayoutEvent e) {
             e.Info = new MTScentralStation();
         }
 
@@ -77,7 +77,7 @@ namespace LayoutLGB {
         #region Component view
 
         [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(MTScentralStation))]
-        void GetCentralStationDrawingRegions(LayoutEvent eBase) {
+        private void GetCentralStationDrawingRegions(LayoutEvent eBase) {
             LayoutGetDrawingRegionsEvent e = (LayoutGetDrawingRegionsEvent)eBase;
 
             if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
@@ -87,11 +87,10 @@ namespace LayoutLGB {
 
             if (textProvider.Element != null)
                 e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
-
         }
 
-        class DrawingRegionCentralStation : LayoutDrawingRegionGrid {
-            readonly MTScentralStation component;
+        private class DrawingRegionCentralStation : LayoutDrawingRegionGrid {
+            private readonly MTScentralStation component;
 
             internal DrawingRegionCentralStation(ModelComponent component, ILayoutView view) : base(component, view) {
                 this.component = (MTScentralStation)component;
@@ -110,12 +109,12 @@ namespace LayoutLGB {
         #region Component Painter
 
         [LayoutEvent("get-image", SenderType = typeof(CentralStationPainter))]
-        void GetCentralStationImage(LayoutEvent e) {
+        private void GetCentralStationImage(LayoutEvent e) {
             e.Info = imageListComponents.Images[0];
         }
 
-        class CentralStationPainter {
-            Size componentSize;
+        private class CentralStationPainter {
+            private Size componentSize;
 
             internal CentralStationPainter(Size componentSize) {
                 this.componentSize = componentSize;
@@ -193,7 +192,6 @@ namespace LayoutLGB {
                 ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListComponents.ImageStream"))),
                 TransparentColor = System.Drawing.Color.Transparent
             };
-
         }
         #endregion
     }

@@ -2,14 +2,11 @@ using System;
 using System.Windows.Forms.Design;
 using System.ComponentModel.Design;
 
-
 namespace Gui.Wizard {
     /// <summary>
     /// Summary description for WizardPageDesigner.
     /// </summary>
     public class WizardPageDesigner : ParentControlDesigner {
-
-
         public override DesignerVerbCollection Verbs {
             get {
                 DesignerVerbCollection verbs = new DesignerVerbCollection();
@@ -45,6 +42,5 @@ namespace Gui.Wizard {
             }
             dt.Commit();
         }
-
     }
 }

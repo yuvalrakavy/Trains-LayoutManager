@@ -12,20 +12,17 @@ namespace LayoutManager.Logic {
     /// Summary description for LayoutCompiler.
     /// </summary>
     [LayoutModule("Layout Block Manager", UserControl = false)]
-    class LayoutBlockManager : LayoutModuleBase {
+    internal class LayoutBlockManager : LayoutModuleBase {
 #pragma warning disable IDE0052
-        static readonly LayoutTraceSwitch traceBlocks = new LayoutTraceSwitch("BlockIdentification", "Block Identification");
-        static readonly LayoutTraceSwitch traceBlockInfo = new LayoutTraceSwitch("BlockInfo", "Block Info directions");
+        private static readonly LayoutTraceSwitch traceBlocks = new LayoutTraceSwitch("BlockIdentification", "Block Identification");
+        private static readonly LayoutTraceSwitch traceBlockInfo = new LayoutTraceSwitch("BlockInfo", "Block Info directions");
 #pragma warning restore IDE0052
 
-        ILayoutTopologyServices? _topologyServices;
+        private ILayoutTopologyServices? _topologyServices;
 
-        ILayoutTopologyServices TopologyServices {
+        private ILayoutTopologyServices TopologyServices {
             get {
-                if (_topologyServices == null)
-                    _topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!;
-
-                return _topologyServices;
+                return _topologyServices ?? (_topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!);
             }
         }
 
@@ -36,7 +33,7 @@ namespace LayoutManager.Logic {
         /// </summary>
         /// <returns>True if there are no fatal errors</returns>
         [LayoutEvent("check-layout", Order = 200)]
-        void LocateBlocks(LayoutEvent e) {
+        private void LocateBlocks(LayoutEvent e) {
             LayoutPhase phases = e.GetPhases();
             IEnumerable<LayoutBlockEdgeBase> blockEdges = LayoutModel.Components<LayoutBlockEdgeBase>(phases);
             TrackEdgeDictionary scannedBlockBoundries = new TrackEdgeDictionary();
@@ -181,7 +178,6 @@ namespace LayoutManager.Logic {
         }
 
         private static void checkIfBlockDefinitionTrack(LayoutBlock block, TrackEdge edge) {
-
             if (edge.Track.Spot[ModelComponentKind.BlockInfo] is LayoutBlockDefinitionComponent blockInfo) {
                 if (block.OptionalBlockDefinition != null && block.BlockDefinintion.Id != blockInfo.Id)
                     Error(blockInfo, "Block contains more than one block definition component");
@@ -199,7 +195,7 @@ namespace LayoutManager.Logic {
         #region Process block Info
 
         [LayoutEvent("check-layout", Order = 300)]
-        void ProcessBlockInfo(LayoutEvent e) {
+        private void ProcessBlockInfo(LayoutEvent e) {
             LayoutPhase phase = e.GetPhases();
 
             foreach (LayoutBlockDefinitionComponent blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(phase)) {
@@ -353,7 +349,6 @@ namespace LayoutManager.Logic {
 
                 if (!scannedEdges.ContainsKey(edge)) {
                     scannedEdges.Add(edge, null);
-
 
                     if (edge.Track.Spot[ModelComponentKind.BlockInfo] is LayoutBlockDefinitionComponent blockDefinition) {
                         occupancyBlock.AddBlock(blockDefinition.Block);

@@ -24,7 +24,7 @@ namespace LayoutManager.Dialogs {
             UpdateButtons(null, null);
         }
 
-        void UpdateButtons(object sender, EventArgs e) {
+        private void UpdateButtons(object sender, EventArgs e) {
             TreeNode selected = treeViewScripts.SelectedNode;
 
             buttonAdd.Enabled = selected != null;
@@ -74,7 +74,6 @@ namespace LayoutManager.Dialogs {
         }
 
         private void buttonAdd_Click(object sender, EventArgs e) {
-
             if (treeViewScripts.SelectedNode is PolicyTreeNode policyNode)
                 addScript(policyNode);
             else {
@@ -102,9 +101,7 @@ namespace LayoutManager.Dialogs {
                 treeViewExportedScripts.Nodes.Remove(policySectionNode);
         }
 
-
         private void buttonRemove_Click(object sender, EventArgs e) {
-
             if (treeViewExportedScripts.SelectedNode is PolicyTreeNode selectedPolicyNode)
                 removeScript(selectedPolicyNode, true);
             else {
@@ -161,36 +158,23 @@ namespace LayoutManager.Dialogs {
         }
     }
 
-    class PolicyTypeTreeNode : TreeNode {
-        readonly LayoutPolicyType policyType;
-
+    internal class PolicyTypeTreeNode : TreeNode {
         public PolicyTypeTreeNode(LayoutPolicyType policyType) {
-            this.policyType = policyType;
+            this.PolicyType = policyType;
             Text = policyType.DisplayName;
         }
 
-        public LayoutPolicyType PolicyType => policyType;
+        public LayoutPolicyType PolicyType { get; }
     }
 
-    class PolicyTreeNode : TreeNode {
-        readonly LayoutPolicyInfo policy;
-        bool exported;
-
+    internal class PolicyTreeNode : TreeNode {
         public PolicyTreeNode(LayoutPolicyInfo policy) {
-            this.policy = policy;
+            this.Policy = policy;
             this.Text = policy.Name;
         }
 
-        public LayoutPolicyInfo Policy => policy;
+        public LayoutPolicyInfo Policy { get; }
 
-        public bool Exported {
-            get {
-                return exported;
-            }
-
-            set {
-                exported = value;
-            }
-        }
+        public bool Exported { get; set; }
     }
 }

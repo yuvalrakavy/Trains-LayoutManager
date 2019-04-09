@@ -11,6 +11,7 @@ namespace LayoutManager.Tools.Dialogs {
         private NumericUpDown numericUpDownModuleCount;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -113,7 +114,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "Add MODULENAME";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownModuleCount)).EndInit();
             this.ResumeLayout(false);
-
         }
         #endregion
 

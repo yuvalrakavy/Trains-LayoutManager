@@ -11,7 +11,6 @@ using LayoutManager.Components;
 #pragma warning disable IDE0051, IDE0060
 #nullable enable
 namespace LayoutManager.Model {
-
     #region State Management Base classes
 
     public class LayoutStateInfoBase : LayoutInfo {
@@ -27,7 +26,7 @@ namespace LayoutManager.Model {
 
         public XmlElement ComponentStateElement => (XmlElement)Element.ParentNode;
 
-        public Guid ComponentId => XmlConvert.ToGuid(ComponentStateElement.GetAttribute("ID"));
+        public Guid ComponentId => (Guid)ComponentStateElement.AttributeValue("ID");
     }
 
     #endregion
@@ -86,7 +85,6 @@ namespace LayoutManager.Model {
 
         public override string ToString() {
             switch (Status) {
-
                 case CanPlaceTrainStatus.CanPlaceTrain:
                     return "Can place train";
 
@@ -127,7 +125,7 @@ namespace LayoutManager.Model {
     public abstract class LocomotiveAddressMapEntry : LocomotiveAddressMapEntryBase {
         public LocomotiveInfo Locomotive { get; }
 
-        public LocomotiveAddressMapEntry(LocomotiveInfo locomotive) {
+        protected LocomotiveAddressMapEntry(LocomotiveInfo locomotive) {
             this.Locomotive = locomotive;
         }
     }
@@ -135,7 +133,7 @@ namespace LayoutManager.Model {
     public abstract class OnTrackLocomotiveAddressMapEntry : LocomotiveAddressMapEntry {
         public TrainStateInfo Train { get; }
 
-        public OnTrackLocomotiveAddressMapEntry(LocomotiveInfo locomotive, TrainStateInfo train)
+        protected OnTrackLocomotiveAddressMapEntry(LocomotiveInfo locomotive, TrainStateInfo train)
             : base(locomotive) {
             this.Train = train;
         }
@@ -168,10 +166,8 @@ namespace LayoutManager.Model {
     }
 
     public class LocomotiveAddressMap : Dictionary<int, LocomotiveAddressMapEntryBase> {
-
         public new LocomotiveAddressMapEntryBase? this[int address] {
             get {
-
                 if (TryGetValue(address, out LocomotiveAddressMapEntryBase entry))
                     return entry;
                 return null;
@@ -191,7 +187,7 @@ namespace LayoutManager.Model {
     }
 
     public class PerOperationStates : IEnumerable<KeyValuePair<object, IOperationState>> {
-        readonly Dictionary<object, IOperationState> states = new Dictionary<object, IOperationState>();
+        private readonly Dictionary<object, IOperationState> states = new Dictionary<object, IOperationState>();
 
         public bool HasState(object key) => states.ContainsKey(key);
 
@@ -219,11 +215,10 @@ namespace LayoutManager.Model {
     }
 
     public class OperationStates {
-        readonly Dictionary<string, PerOperationStates> operationStates = new Dictionary<string, PerOperationStates>();
+        private readonly Dictionary<string, PerOperationStates> operationStates = new Dictionary<string, PerOperationStates>();
 
         public PerOperationStates this[string operationName] {
             get {
-
                 if (!operationStates.TryGetValue(operationName, out PerOperationStates perOperationStates)) {
                     perOperationStates = new PerOperationStates();
                     operationStates.Add(operationName, perOperationStates);
@@ -395,7 +390,6 @@ namespace LayoutManager.Model {
                 LayoutModel.StateManager.OperationStates[ContextSectionName].Set<LayoutOperationContext>(GetKey(OperationName, participant), this);
         }
 
-
         /// <summary>
         /// Remove a participant in an operation
         /// </summary>
@@ -412,7 +406,7 @@ namespace LayoutManager.Model {
     /// Extend layout event with 
     /// </summary>
     static public class LayoutEventOperationContextExtender {
-        const string elementName = "OperationContext";
+        private const string elementName = "OperationContext";
 
         /// <summary>
         /// Set the operation context for which an event is invoked
@@ -512,16 +506,16 @@ namespace LayoutManager.Model {
         // for the same train ID.
 
         // The following variables are used to accelerate the conversion between speed in speed steps and logical speed
-        double trainToLogicalSpeedFactor;
-        TripPlanAssignmentInfo? trip;
+        private double trainToLogicalSpeedFactor;
+        private TripPlanAssignmentInfo? trip;
 
-        enum SpeedConversionState {
+        private enum SpeedConversionState {
             NotSet,             // Conversion factor was not calculated
             NotNeeded,          // The number of speed steps for this train is the same as the number of steps for logical speed
             Set                 // The conversion factor was calculated
         };
 
-        SpeedConversionState speedConversionState = SpeedConversionState.NotSet;
+        private SpeedConversionState speedConversionState = SpeedConversionState.NotSet;
 
         public TrainStateInfo(XmlElement element)
             : base(element) {
@@ -646,7 +640,7 @@ namespace LayoutManager.Model {
 
         public LocomotiveOrientation MotionDirection {
             get => AttributeValue(A_MotionDirection).Enum<LocomotiveOrientation>() ?? LocomotiveOrientation.Forward;
-            set => SetAttribute(A_MotionDirection, value.ToString());
+            set => SetAttribute(A_MotionDirection, value);
         }
 
         /// <summary>
@@ -695,7 +689,6 @@ namespace LayoutManager.Model {
         }
 
         private const string A_Speed = "Speed";
-
 
         /// <summary>
         /// Get or set the train speed and direction. The speed is given speed steps unit (0..this.SpeedSteps)
@@ -869,7 +862,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        static bool HasPendingOperation(IObjectHasId participant) {
+        private static bool HasPendingOperation(IObjectHasId participant) {
             if (LayoutOperationContext.HasPendingOperation("TrainPlacement", participant))
                 return true;
             if (LayoutOperationContext.HasPendingOperation("TrainRemoval", participant))
@@ -1035,7 +1028,6 @@ namespace LayoutManager.Model {
             return trainLocation;
         }
 
-
         /// <summary>
         /// This method is called when the train leaves a block
         /// </summary>
@@ -1130,7 +1122,7 @@ namespace LayoutManager.Model {
 
                 resultElement.SetAttribute(A_Name, functionName);
                 if (locomotiveId != Guid.Empty)
-                    resultElement.SetAttribute(A_LocomotiveId, XmlConvert.ToString(locomotiveId));
+                    resultElement.SetAttribute(A_LocomotiveId, locomotiveId);
 
                 FunctionStatesElement.AppendChild(resultElement);
             }
@@ -1142,17 +1134,10 @@ namespace LayoutManager.Model {
         }
 
         protected LocomotiveFunctionInfo? FindFunctionState(int functionNumber, Guid locomotiveId) {
-            XmlElement resultElement;
-
-            if (locomotiveId == Guid.Empty)
-                resultElement = (XmlElement)FunctionStatesElement.SelectSingleNode("FunctionState[@Number='" + XmlConvert.ToString(functionNumber) + "']");
-            else
-                resultElement = (XmlElement)FunctionStatesElement.SelectSingleNode("FunctionState[@Number='" + XmlConvert.ToString(functionNumber) + "' and @LocomotiveID='" + XmlConvert.ToString(locomotiveId) + "']");
-
-            if (resultElement != null)
-                return new LocomotiveFunctionInfo(resultElement);
-            else
-                return null;
+            XmlElement resultElement = locomotiveId == Guid.Empty
+                ? (XmlElement)FunctionStatesElement.SelectSingleNode($"FunctionState[@Number='{functionNumber}']")
+                : (XmlElement)FunctionStatesElement.SelectSingleNode($"FunctionState[@Number='{functionNumber}' and @LocomotiveID='{locomotiveId}']");
+            return resultElement != null ? new LocomotiveFunctionInfo(resultElement) : null;
         }
 
         private const string E_FunctionStates = "FunctionStates";
@@ -1172,9 +1157,9 @@ namespace LayoutManager.Model {
 
         private string getFunctionXml(String functionName, Guid locomotiveId) {
             if (locomotiveId != Guid.Empty)
-                return "<Function Name='" + functionName + "' LocomotiveID='" + XmlConvert.ToString(locomotiveId) + "' />";
+                return $"<Function Name='{functionName}' LocomotiveID='{locomotiveId}' />";
             else
-                return "<Function Name='" + functionName + "' />";
+                return $"<Function Name='{functionName}' />";
         }
 
         [LayoutEventDef("locomotive-function-state-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
@@ -1264,10 +1249,10 @@ namespace LayoutManager.Model {
             if (locomotiveId == Guid.Empty)
                 elements = FunctionStatesElement.ChildNodes;
             else
-                elements = FunctionStatesElement.SelectNodes("FunctionState[@LocomotiveID='" + XmlConvert.ToString(locomotiveId) + "']");
+                elements = FunctionStatesElement.SelectNodes($"FunctionState[@LocomotiveID='{locomotiveId}']");
 
             foreach (XmlElement functionStateElement in elements) {
-                if (functionStateElement.HasAttribute(A_State) && XmlConvert.ToBoolean(functionStateElement.GetAttribute(A_State)))
+                if((bool?)functionStateElement.AttributeValue(A_State) ?? false)
                     return true;
             }
 
@@ -1372,7 +1357,7 @@ namespace LayoutManager.Model {
         public LayoutBlockEdgeBase? LastCrossedBlockEdge {
             get {
                 if (Element.HasAttribute(A_LastCrossedBlockEdge)) {
-                    Guid blockEdgeId = XmlConvert.ToGuid(GetAttribute(A_LastCrossedBlockEdge));
+                    var blockEdgeId = (Guid)AttributeValue(A_LastCrossedBlockEdge);
 
                     return LayoutModel.Component<LayoutBlockEdgeBase>(blockEdgeId, LayoutModel.ActivePhases);
                 }
@@ -1392,11 +1377,7 @@ namespace LayoutManager.Model {
         }
 
         public Int64 LastBlockEdgeCrossingTime {
-            get {
-                if (Element.HasAttribute(A_LastBlockEdgeCrossingTime))
-                    return XmlConvert.ToInt64(GetAttribute(A_LastBlockEdgeCrossingTime));
-                return 0;
-            }
+            get => (Int64?)Element.AttributeValue(A_LastBlockEdgeCrossingTime) ?? 0;
         }
 
         public bool IsLastBlockEdgeCrossingSpeedKnown => Element.HasAttribute(A_LastBlockEdgeCrossingSpeed);
@@ -1422,7 +1403,6 @@ namespace LayoutManager.Model {
         #endregion
     }
 
-
     /// <summary>
     /// Wrapper for element providing information on train location
     /// </summary>
@@ -1432,21 +1412,19 @@ namespace LayoutManager.Model {
         private const string A_BlockEdgeCrossingTime = "BlockEdgeCrossingTime";
         private const string E_Locations = "Locations";
         private const string A_DisplayFront = "DisplayFront";
-        readonly TrainStateInfo trainState;
 
         internal TrainLocationInfo(TrainStateInfo trainState, XmlElement element)
             : base(element) {
-            this.trainState = trainState;
+            this.Train = trainState;
         }
 
-        public TrainStateInfo Train => trainState;
+        public TrainStateInfo Train { get; }
 
         /// <summary>
         /// The BlockID of the block in which the train is located
         /// </summary>
         public Guid BlockId {
-            get => XmlConvert.ToGuid(GetAttribute(A_BlockId));
-
+            get => (Guid)AttributeValue(A_BlockId);
             set => SetAttribute(A_BlockId, value);
         }
 
@@ -1455,7 +1433,6 @@ namespace LayoutManager.Model {
         /// </summary>
         public LayoutBlock Block {
             get {
-
                 if (!LayoutModel.Blocks.TryGetValue(BlockId, out LayoutBlock block))
                     throw new LayoutException($"Location of train {Train.Name} could not found - (track was removed?)");
                 return block;
@@ -1468,17 +1445,12 @@ namespace LayoutManager.Model {
         /// The ID of the track contact that the train had crossed in order to enter this block
         /// </summary>m 
         public Guid BlockEdgeId {
-            get {
-                if (!Element.HasAttribute(A_BlockEdgeId))
-                    return Guid.Empty;
-                else
-                    return XmlConvert.ToGuid(GetAttribute(A_BlockEdgeId));
-            }
+            get => (Guid?)Element.AttributeValue(A_BlockEdgeId) ?? Guid.Empty;
 
             set {
                 if (value != Guid.Empty) {
                     SetAttribute(A_BlockEdgeId, value);
-                    SetAttribute(A_BlockEdgeCrossingTime, XmlConvert.ToString(DateTime.Now.Ticks));
+                    SetAttribute(A_BlockEdgeCrossingTime, $"{DateTime.Now.Ticks}");
                 }
                 else {
                     Element.RemoveAttribute(A_BlockEdgeId);
@@ -1501,7 +1473,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The time in which the train had crossed the track contact which caused it to enter this block
         /// </summary>
-        public long BlockEdgeCrossingTime => XmlConvert.ToInt64(GetAttribute(A_BlockEdgeCrossingTime));
+        public long BlockEdgeCrossingTime => (Int64)AttributeValue(A_BlockEdgeCrossingTime) ;
 
         public XmlElement LocomotiveStateElement => (XmlElement)Element.ParentNode.ParentNode;
 
@@ -1531,14 +1503,14 @@ namespace LayoutManager.Model {
         public LayoutComponentConnectionPoint DisplayFront {
             get => LayoutComponentConnectionPoint.Parse(GetAttribute(A_DisplayFront));
 
-            set => SetAttribute(A_DisplayFront, value.ToString());
+            set => SetAttribute(A_DisplayFront, value);
         }
     }
 
     public class TrainsStateInfo : LayoutStateInfoBase, IEnumerable<TrainStateInfo> {
         private const string E_Locomotive = "Locomotive";
         private const string E_Train = "Train";
-        readonly Dictionary<Guid, XmlElement> _IDtoTrainStateElement = new Dictionary<Guid, XmlElement>();
+        private const string A_Id = "ID";
 
         internal TrainsStateInfo(XmlElement trainsStateElement)
             : base(trainsStateElement) {
@@ -1573,7 +1545,6 @@ namespace LayoutManager.Model {
         /// </summary>
         public TrainStateInfo? this[Guid id] {
             get {
-
                 if (IdToTrainStateElement.TryGetValue(id, out XmlElement trainStateElement))
                     return new TrainStateInfo(trainStateElement);
                 return null;
@@ -1619,7 +1590,7 @@ namespace LayoutManager.Model {
             if (trainId == Guid.Empty)
                 trainId = Guid.NewGuid();
 
-            trainStateElement.SetAttribute("ID", XmlConvert.ToString(trainId));
+            trainStateElement.SetAttribute(A_Id, trainId);
             Element.AppendChild(trainStateElement);
 
             TrainStateInfo trainState = new TrainStateInfo(trainStateElement);
@@ -1631,7 +1602,7 @@ namespace LayoutManager.Model {
 
         public TrainStateInfo Add() => Add(Guid.Empty);
 
-        internal Dictionary<Guid, XmlElement> IdToTrainStateElement => _IDtoTrainStateElement;
+        internal Dictionary<Guid, XmlElement> IdToTrainStateElement { get; } = new Dictionary<Guid, XmlElement>();
 
         public void RemoveTrainState(TrainStateInfo trainState) {
             RemoveTrainFromTrack(trainState);
@@ -1700,7 +1671,9 @@ namespace LayoutManager.Model {
     #region Components State
 
     public class ComponentsStateInfo : LayoutStateInfoBase {
-        readonly Dictionary<Guid, XmlElement> _idToComponentStateElement = new Dictionary<Guid, XmlElement>();
+        private const string E_ComponentState = "ComponentState";
+        private const string A_Id = "ID";
+        private readonly Dictionary<Guid, XmlElement> _idToComponentStateElement = new Dictionary<Guid, XmlElement>();
 
         public ComponentsStateInfo(XmlElement element)
             : base(element) {
@@ -1714,11 +1687,10 @@ namespace LayoutManager.Model {
         /// <param name="componentId">The component ID</param>
         /// <returns>The component runtime state element</returns>
         private XmlElement GetComponentStateElement(Guid componentId) {
-
             if (!_idToComponentStateElement.TryGetValue(componentId, out XmlElement componentStateElement)) {
-                componentStateElement = Element.OwnerDocument.CreateElement("ComponentState");
+                componentStateElement = Element.OwnerDocument.CreateElement(E_ComponentState);
 
-                componentStateElement.SetAttribute("ID", XmlConvert.ToString(componentId));
+                componentStateElement.SetAttribute(A_Id, componentId);
                 Element.AppendChild(componentStateElement);
 
                 _idToComponentStateElement.Add(componentId, componentStateElement);
@@ -1815,12 +1787,12 @@ namespace LayoutManager.Model {
         /// <param name="trainID">The train ID</param>
         /// <param name="topicName">The topic name</param>
         public void RemoveForTrain(Guid trainId, string topicName) {
-            XmlNodeList elementsToRemove = Element.SelectNodes("ComponentState/" + topicName + "[@TrainID='" + XmlConvert.ToString(trainId) + "']");
+            XmlNodeList elementsToRemove = Element.SelectNodes($"ComponentState/{topicName}[@TrainID='{trainId}']");
             List<Guid> removeList = new List<Guid>();
 
             foreach (XmlElement componentStateTopicElement in elementsToRemove) {
-                XmlElement componentStateElement = (XmlElement)componentStateTopicElement.ParentNode;
-                Guid componentID = XmlConvert.ToGuid(componentStateElement.GetAttribute("ID"));
+                var componentStateElement = (XmlElement)componentStateTopicElement.ParentNode;
+                var componentID = (Guid)componentStateElement.AttributeValue(A_Id);
 
                 removeList.Add(componentID);
             }
@@ -1841,7 +1813,7 @@ namespace LayoutManager.Model {
             var removeList = (from XmlElement e in this.Element where e.ChildNodes.Count == 0 select e).ToList();
 
             foreach(var componentStateElement in removeList)
-                Remove(XmlConvert.ToGuid(componentStateElement.GetAttribute("ID")));
+                Remove((Guid)componentStateElement.AttributeValue(A_Id));
         }
 
         #endregion
@@ -1868,8 +1840,7 @@ namespace LayoutManager.Model {
         public LayoutTrackContactComponent TrackContact => Ensure.NotNull<LayoutTrackContactComponent>(LayoutModel.Component<LayoutTrackContactComponent>(ComponentId, LayoutModel.ActivePhases), "TrackContact");
 
         public Guid TrainId {
-            get => XmlConvert.ToGuid(GetAttribute(A_TrainId));
-
+            get => (Guid)AttributeValue(A_TrainId);
             set => SetAttribute(A_TrainId, value);
         }
 
@@ -1883,26 +1854,22 @@ namespace LayoutManager.Model {
         }
 
         public Guid FromBlockId {
-            get => XmlConvert.ToGuid(GetAttribute(A_FromBlockID));
-
+            get => (Guid)AttributeValue(A_FromBlockID);
             set => SetAttribute(A_FromBlockID, value);
         }
 
         public LayoutBlock FromBlock {
             get => LayoutModel.Blocks[FromBlockId];
-
             set => FromBlockId = value.Id;
         }
 
         public int FromBlockTriggerCount {
-            get => XmlConvert.ToInt32(GetAttribute(A_FromBlockTriggerCount));
-
+            get => (int)AttributeValue(A_FromBlockTriggerCount);
             set => SetAttribute(A_FromBlockTriggerCount, value);
         }
 
         public Guid ToBlockId {
-            get => XmlConvert.ToGuid(GetAttribute(A_ToBlockID));
-
+            get => (Guid)AttributeValue(A_ToBlockID);
             set => SetAttribute(A_ToBlockID, value);
         }
 
@@ -1913,20 +1880,18 @@ namespace LayoutManager.Model {
         }
 
         public int ToBlockTriggerCount {
-            get => XmlConvert.ToInt32(GetAttribute(A_ToBlockTriggerCount));
-
+            get => (int)AttributeValue(A_ToBlockTriggerCount);
             set => SetAttribute(A_ToBlockTriggerCount, value);
         }
 
         public LocomotiveOrientation Direction {
             get => AttributeValue(A_Direction).Enum<LocomotiveOrientation>() ?? throw new ArgumentNullException(A_Direction);
-            set => SetAttribute(A_Direction, value.ToString());
+            set => SetAttribute(A_Direction, value);
         }
 
         public void Remove() {
             LayoutModel.StateManager.Components.Remove(ComponentId, "TrainPassing");
         }
-
     }
 
     #endregion
@@ -1936,19 +1901,21 @@ namespace LayoutManager.Model {
     #region Block ID collection
 
     public class BlockIdCollection : XmlCollection<Guid>, ICollection<Guid> {
+        private const string E_Block = "Block";
+        private const string A_BlockId = "BlockID";
 
         internal BlockIdCollection(ManualDispatchRegionInfo manualDispatchRegion)
             : base(manualDispatchRegion.BlocksElement) {
         }
 
         protected override XmlElement CreateElement(Guid item) {
-            XmlElement itemElement = Element.OwnerDocument.CreateElement("Block");
+            XmlElement itemElement = Element.OwnerDocument.CreateElement(E_Block);
 
-            itemElement.SetAttribute("BlockID", XmlConvert.ToString(item));
+            itemElement.SetAttribute(A_BlockId, item);
             return itemElement;
         }
 
-        protected override Guid FromElement(XmlElement itemElement) => XmlConvert.ToGuid(itemElement.GetAttribute("BlockID"));
+        protected override Guid FromElement(XmlElement itemElement) => (Guid)itemElement.AttributeValue(A_BlockId);
 
         public override void Add(Guid blockId) {
             if (Contains(blockId))
@@ -1964,7 +1931,7 @@ namespace LayoutManager.Model {
         private const string E_Blocks = "Blocks";
         private const string A_Active = "Active";
         private const string A_Name = "Name";
-        BlockIdCollection? blockIdCollection;
+        private BlockIdCollection? blockIdCollection;
 
         public ManualDispatchRegionInfo(XmlElement element)
             : base(element) {
@@ -1992,15 +1959,14 @@ namespace LayoutManager.Model {
             get => (bool?)AttributeValue(A_Active) ?? false;
 
             set {
-                if (value == true && Active == false)
+                if (value && Active == false)
                     EventManager.Event(new LayoutEvent("request-manual-dispatch-lock", this));
-                else if (value == false && Active == true) {
+                else if (value == false && Active) {
                     EventManager.Event(new LayoutEvent("free-manual-dispatch-lock", this, false));
                     SetActive(false);
                 }
             }
         }
-
 
         public string NameAndStatus {
             get {
@@ -2022,9 +1988,7 @@ namespace LayoutManager.Model {
 
         public BlockIdCollection BlockIdList {
             get {
-                if (blockIdCollection == null)
-                    blockIdCollection = new BlockIdCollection(this);
-                return blockIdCollection;
+                return blockIdCollection ?? (blockIdCollection = new BlockIdCollection(this));
             }
         }
 
@@ -2049,7 +2013,6 @@ namespace LayoutManager.Model {
                 if (LayoutModel.Blocks[blockID] == null) {
                     LayoutModuleBase.Warning("Block in manual dispatch region " + Name + " not found - removed from region");
                     removeList.Add(blockID);
-
                 }
             }
 
@@ -2066,7 +2029,7 @@ namespace LayoutManager.Model {
                 BlockIdList.Add(block.Id);
         }
 
-        static XmlElement CreateElement() {
+        private static XmlElement CreateElement() {
             XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
             var element = doc.CreateElement("ManualDispatchRegion");
@@ -2082,7 +2045,6 @@ namespace LayoutManager.Model {
         }
 
         protected override Guid GetItemKey(ManualDispatchRegionInfo item) => item.Id;
-
 
         protected override ManualDispatchRegionInfo FromElement(XmlElement itemElement) => new ManualDispatchRegionInfo(itemElement);
 
@@ -2161,16 +2123,16 @@ namespace LayoutManager.Model {
     }
 
     public class TrainTrackingOptions : LayoutStateInfoBase {
-        const string A_InManualDispatchRegion = "InManualDispatchRegion";
-        const string A_ProximitySensorSensitivityDelay = "ProximitySensorSensitivity";
-        const int ProxmitySensorSensitivityDefault = 400;
+        private const string A_InManualDispatchRegion = "InManualDispatchRegion";
+        private const string A_ProximitySensorSensitivityDelay = "ProximitySensorSensitivity";
+        private const int ProxmitySensorSensitivityDefault = 400;
 
         public TrainTrackingOptions(XmlElement element) : base(element) {
         }
 
         public TrainTrackingInManualDispatchRegion TrainTrackingInManualDispatchRegion {
             get => AttributeValue(A_InManualDispatchRegion).Enum<TrainTrackingInManualDispatchRegion>() ?? TrainTrackingInManualDispatchRegion.Normal;
-            set => SetAttribute(A_InManualDispatchRegion, value.ToString());
+            set => SetAttribute(A_InManualDispatchRegion, value);
         }
 
         /// <summary>
@@ -2304,9 +2266,9 @@ namespace LayoutManager.Model {
     }
 
     public class LayoutPoliciesCollection : ICollection<LayoutPolicyInfo> {
-        readonly List<LayoutPolicyInfo> policies = new List<LayoutPolicyInfo>();
-        readonly XmlElement globalPoliciesElement;
-        readonly XmlElement? policiesElement;
+        private readonly List<LayoutPolicyInfo> policies = new List<LayoutPolicyInfo>();
+        private readonly XmlElement globalPoliciesElement;
+        private readonly XmlElement? policiesElement;
 
         public LayoutPoliciesCollection(XmlElement globalPoliciesElement, XmlElement? policiesElement, string? scope) {
             this.globalPoliciesElement = globalPoliciesElement;
@@ -2478,24 +2440,23 @@ namespace LayoutManager.Model {
     #endregion
 
     public class LayoutStateManager : LayoutObject {
-        TrainsStateInfo? trains;
-        ComponentsStateInfo? componentsState;
-        TripPlanCatalogInfo? tripPlansCatalog;
-        ManualDispatchRegionCollection? manualDispatchRegions;
-        DefaultDriverParametersInfo? defaultDriverParameters;
-        LayoutPoliciesCollection? tripPlanPolicies;
-        LayoutPoliciesCollection? blockInfoPolicies;
-        LayoutPoliciesCollection? layoutPolicies;
-        LayoutPoliciesCollection? rideStartPolicies;
-        LayoutPoliciesCollection? driverInstructionsPolicies;
-        AllLayoutManualDispatchRegion? allLayoutManualDispatch;
-        LayoutVerificationOptions? layoutVerificationOptions;
-        TrainTrackingOptions? trainTrackingOptions;
+        private const string A_AllLayoutManualDispatchRegion = "AllLayoutManualDispatchRegion";
+        private TrainsStateInfo? trains;
+        private ComponentsStateInfo? componentsState;
+        private TripPlanCatalogInfo? tripPlansCatalog;
+        private ManualDispatchRegionCollection? manualDispatchRegions;
+        private DefaultDriverParametersInfo? defaultDriverParameters;
+        private LayoutPoliciesCollection? tripPlanPolicies;
+        private LayoutPoliciesCollection? blockInfoPolicies;
+        private LayoutPoliciesCollection? layoutPolicies;
+        private LayoutPoliciesCollection? rideStartPolicies;
+        private LayoutPoliciesCollection? driverInstructionsPolicies;
+        private AllLayoutManualDispatchRegion? allLayoutManualDispatch;
+        private LayoutVerificationOptions? layoutVerificationOptions;
+        private TrainTrackingOptions? trainTrackingOptions;
 
-        List<LayoutPolicyType>? policyTypes;
-        OperationStates? operationStates;
-
-
+        private List<LayoutPolicyType>? policyTypes;
+        private OperationStates? operationStates;
 
         public LayoutStateManager() : base("<LayoutState><Trains /><Components /><TrackContacts /><TripPlansCatalog /></LayoutState>") {
             initialize();
@@ -2591,26 +2552,19 @@ namespace LayoutManager.Model {
 
         public List<LayoutPolicyType> PolicyTypes {
             get {
-                if (policyTypes == null) {
-                    policyTypes = new List<LayoutPolicyType>(new LayoutPolicyType[] {
+                return policyTypes ?? (policyTypes = new List<LayoutPolicyType>(new LayoutPolicyType[] {
                         new LayoutPolicyType("Global scripts", "Global", LayoutModel.StateManager.LayoutPolicies),
                         new LayoutPolicyType("Block scripts", "BlockInfo", LayoutModel.StateManager.BlockInfoPolicies),
                         new LayoutPolicyType("Trip plan scripts", "TripPlan", LayoutModel.StateManager.TripPlanPolicies),
                         new LayoutPolicyType("Before Trip Section Start scripts", "RideStart", LayoutModel.StateManager.RideStartPolicies),
                         new LayoutPolicyType("Driver Instructions scrtips", "DriverInstructions", LayoutModel.StateManager.DriverInstructionsPolicies)
-                    });
-                }
-
-                return policyTypes;
+                    }));
             }
         }
 
         public OperationStates OperationStates {
             get {
-                if (operationStates == null)
-                    operationStates = new OperationStates();
-
-                return operationStates;
+                return operationStates ?? (operationStates = new OperationStates());
             }
         }
 
@@ -2643,22 +2597,17 @@ namespace LayoutManager.Model {
         }
 
         public bool AllLayoutManualDispatch {
-            get {
-                if (Element.HasAttribute("AllLayoutManualDispatchRegion"))
-                    return XmlConvert.ToBoolean(Element.GetAttribute("AllLayoutManualDispatchRegion"));
-                return false;
-            }
+            get => (bool?)Element.AttributeValue(A_AllLayoutManualDispatchRegion) ?? false;
 
             set {
                 bool active = false;
 
-                if (value == true && allLayoutManualDispatch == null) {
-
+                if (value && allLayoutManualDispatch == null) {
                     allLayoutManualDispatch = new AllLayoutManualDispatchRegion();
 
                     try {
                         allLayoutManualDispatch.Active = true;
-                        Element.SetAttribute("AllLayoutManualDispatchRegion", "true");
+                        Element.SetAttribute(A_AllLayoutManualDispatchRegion, true);
                         active = true;
                     }
                     catch (LayoutException) {
@@ -2666,12 +2615,11 @@ namespace LayoutManager.Model {
                         EventManager.Event(new LayoutEvent("all-layout-manual-dispatch-mode-status-changed", this, active));
                         throw;
                     }
-
                 }
                 else if (value == false && allLayoutManualDispatch != null) {
                     allLayoutManualDispatch.Active = false;
                     allLayoutManualDispatch = null;
-                    Element.RemoveAttribute("AllLayoutManualDispatchRegion");
+                    Element.RemoveAttribute(A_AllLayoutManualDispatchRegion);
                 }
 
                 EventManager.Event(new LayoutEvent("all-layout-manual-dispatch-mode-status-changed", this, active));

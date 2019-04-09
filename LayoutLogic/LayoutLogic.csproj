@@ -68,8 +68,7 @@
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
-    <NoWarn>
-    </NoWarn>
+    <NoWarn>RCS1003, RCS1001</NoWarn>
     <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
@@ -148,6 +147,7 @@
     <Compile Include="EventScriptManager.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GlobalSuppressions2.cs" />
     <Compile Include="LayoutBlocks.cs">
       <SubType>Code</SubType>
     </Compile>

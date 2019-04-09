@@ -6,21 +6,19 @@ using LayoutManager.Model;
 
 namespace LayoutManager.Tools {
     public class LayoutComponentMenuItem : MenuItem {
-        readonly ModelComponent component;
-
         public LayoutComponentMenuItem(ModelComponent component, string name, EventHandler onClick) : base(name, onClick) {
-            this.component = component;
+            this.Component = component;
         }
 
-        public ModelComponent Component => component;
+        public ModelComponent Component { get; }
     }
 
     /// <summary>
     /// Implement a properties menu item. Invoke the given dialog type
     /// </summary>
     public class MenuItemProperties : MenuItem {
-        readonly Type dialogType;
-        readonly ModelComponent component;
+        private readonly Type dialogType;
+        private readonly ModelComponent component;
 
         public MenuItemProperties(ModelComponent component, Type dialogType) {
             this.component = component;

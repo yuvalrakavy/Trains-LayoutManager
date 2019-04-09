@@ -16,10 +16,10 @@ namespace LayoutManager.CommonUI {
     public class BuildComponentsMenu<ComponentType, MenuItemType>
         where ComponentType : IModelComponentHasName
         where MenuItemType : ModelComponentMenuItemBase<ComponentType>, new() {
-        readonly IEnumerable<ComponentType> components;
-        readonly string xPathFilter;
-        readonly EventHandler clickHandler;
-        readonly BuildComponentsMenuComponentFilter<ComponentType> filterHandler;
+        private readonly IEnumerable<ComponentType> components;
+        private readonly string xPathFilter;
+        private readonly EventHandler clickHandler;
+        private readonly BuildComponentsMenuComponentFilter<ComponentType> filterHandler;
 
         /// <summary>
         /// Constrcuct a component menu builder
@@ -44,7 +44,6 @@ namespace LayoutManager.CommonUI {
 
             foreach (ComponentType component in components) {
                 if (IncludeComponent(component)) {
-
                     if (!areas.TryGetValue(component.Spot.Area, out List<ComponentType> componentsForArea)) {
                         componentsForArea = new List<ComponentType>();
                         areas.Add(component.Spot.Area, componentsForArea);
@@ -157,36 +156,25 @@ namespace LayoutManager.CommonUI {
     }
 
     public class ModelComponentMenuItemBase<ComponentType> : MenuItem where ComponentType : IModelComponentHasName {
-        ComponentType component;
-
         public ModelComponentMenuItemBase() {
         }
 
         public ModelComponentMenuItemBase(ComponentType component) {
-            this.component = component;
+            this.Component = component;
             this.Text = component.NameProvider.Name;
         }
 
-        public ComponentType Component {
-            get {
-                return component;
-            }
-
-            set {
-                component = value;
-            }
-        }
+        public ComponentType Component { get; set; }
     }
 
     public delegate void SemiModalDialogClosedHandler(Form dialog, object info);
 
     public class SemiModalDialog {
-        readonly Form parent;
-        readonly Form dialog;
-        readonly SemiModalDialogClosedHandler onClose = null;
-        readonly object info = null;
-        bool enableAutoHide = true;
-        Timer autoHideTimer = null;
+        private readonly Form parent;
+        private readonly Form dialog;
+        private readonly SemiModalDialogClosedHandler onClose = null;
+        private readonly object info = null;
+        private Timer autoHideTimer = null;
 
         public SemiModalDialog(Form parent, Form dialog) {
             this.parent = parent;
@@ -208,7 +196,7 @@ namespace LayoutManager.CommonUI {
 
                 parent.Enabled = false;
 
-                if (enableAutoHide) {
+                if (AutoHideParent) {
                     autoHideTimer = new Timer {
                         Interval = 750
                     };
@@ -224,15 +212,7 @@ namespace LayoutManager.CommonUI {
             }
         }
 
-        public bool AutoHideParent {
-            get {
-                return enableAutoHide;
-            }
-
-            set {
-                enableAutoHide = value;
-            }
-        }
+        public bool AutoHideParent { get; set; } = true;
 
         private void onDialogClosing(object sender, CancelEventArgs e) {
             dialog.Closing -= new CancelEventHandler(onDialogClosing);

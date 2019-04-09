@@ -18,12 +18,7 @@ namespace LayoutManager.CommonUI.Controls {
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-
-        string elementName = "Name";
-        LayoutXmlInfo xmlInfo;
-        ModelComponent component = null;
-        bool isOptional = false;
-        bool defaultIsVisible = true;
+        private LayoutXmlInfo xmlInfo;
 
         public NameDefinition() {
             // This call is required by the Windows.Forms Form Designer.
@@ -33,37 +28,13 @@ namespace LayoutManager.CommonUI.Controls {
 
         }
 
-        public string ElementName {
-            get {
-                return elementName;
-            }
+        public string ElementName { get; set; } = "Name";
 
-            set {
-                elementName = value;
-            }
-        }
-
-        public bool IsOptional {
-            get {
-                return isOptional;
-            }
-
-            set {
-                isOptional = value;
-            }
-        }
+        public bool IsOptional { get; set; } = false;
 
         public bool IsEmptyName => textBoxName.Text.Trim() == "";
 
-        public bool DefaultIsVisible {
-            set {
-                defaultIsVisible = value;
-            }
-
-            get {
-                return defaultIsVisible;
-            }
-        }
+        public bool DefaultIsVisible { set; get; } = true;
 
         public LayoutXmlInfo XmlInfo {
             get {
@@ -77,48 +48,40 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public ModelComponent Component {
-            get {
-                return component;
-            }
+        public ModelComponent Component { get; set; } = null;
 
-            set {
-                component = value;
-            }
-        }
-
-        void initialize() {
+        private void initialize() {
             LayoutTextInfo textProvider = getTextProvider(false);
 
             textBoxName.Text = textProvider.Text;
             if (textProvider.OptionalElement == null)
-                checkBoxVisible.Checked = defaultIsVisible;
+                checkBoxVisible.Checked = DefaultIsVisible;
             else
                 checkBoxVisible.Checked = textProvider.Visible;
 
             updateDependencies();
         }
 
-        void updateDependencies() {
+        private void updateDependencies() {
             buttonSettings.Enabled = checkBoxVisible.Checked;
         }
 
-        LayoutTextInfo getTextProvider(bool create) {
+        private LayoutTextInfo getTextProvider(bool create) {
             LayoutTextInfo textProvider;
 
-            textProvider = new LayoutTextInfo(xmlInfo.DocumentElement, elementName);
+            textProvider = new LayoutTextInfo(xmlInfo.DocumentElement, ElementName);
 
-            if (component != null)
-                textProvider.Component = component;
+            if (Component != null)
+                textProvider.Component = Component;
 
             if (textProvider.OptionalElement == null && create)
-                textProvider.Element = LayoutInfo.CreateProviderElement(xmlInfo, elementName, null);
+                textProvider.Element = LayoutInfo.CreateProviderElement(xmlInfo, ElementName, null);
 
             return textProvider;
         }
 
         public bool Commit() {
-            if (textBoxName.Text.Trim() == "" && !isOptional) {
+            if (textBoxName.Text.Trim() == "" && !IsOptional) {
                 MessageBox.Show(this, "You must enter a value", "Input error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Focus();
                 return false;
@@ -211,7 +174,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Name = "NameDefinition";
             this.Size = new System.Drawing.Size(280, 53);
             this.ResumeLayout(false);
-
         }
         #endregion
 

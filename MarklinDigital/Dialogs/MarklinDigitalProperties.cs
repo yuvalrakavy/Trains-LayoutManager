@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager;
+using LayoutManager.Components;
 using LayoutManager.Model;
 
 namespace MarklinDigital.Dialogs {
@@ -12,6 +13,7 @@ namespace MarklinDigital.Dialogs {
     /// Summary description for MarklinDigitalProperties.
     /// </summary>
     public class MarklinDigitalProperties : Form {
+        private const string A_FeedbackPolling = "FeedbackPolling";
         private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
         private ComboBox comboBoxPort;
         private Label label1;
@@ -28,10 +30,7 @@ namespace MarklinDigital.Dialogs {
         /// </summary>
         private readonly Container components = null;
 
-        private void endOfDesignerVariables() { }
-
-        readonly MarklinDigitalCentralStation component;
-        readonly LayoutXmlInfo xmlInfo;
+        private readonly MarklinDigitalCentralStation component;
 
         public MarklinDigitalProperties(MarklinDigitalCentralStation component) {
             //
@@ -40,20 +39,20 @@ namespace MarklinDigital.Dialogs {
             InitializeComponent();
 
             this.component = component;
-            this.xmlInfo = new LayoutXmlInfo(component);
+            this.XmlInfo = new LayoutXmlInfo(component);
 
-            nameDefinition.XmlInfo = this.xmlInfo;
+            nameDefinition.XmlInfo = this.XmlInfo;
 
-            layoutEmulationSetup.Element = xmlInfo.DocumentElement;
+            layoutEmulationSetup.Element = XmlInfo.DocumentElement;
 
-            comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute("Port");
-            if (xmlInfo.DocumentElement.HasAttribute("FeedbackPolling"))
-                numericUpDownFeedbackPolling.Value = XmlConvert.ToDecimal(xmlInfo.DocumentElement.GetAttribute("FeedbackPolling"));
+            comboBoxPort.Text = XmlInfo.DocumentElement.GetAttribute(LayoutIOServices.A_Port);
+            if (XmlInfo.DocumentElement.HasAttribute(A_FeedbackPolling))
+                numericUpDownFeedbackPolling.Value = (int)XmlInfo.DocumentElement.AttributeValue(A_FeedbackPolling);
 
             updateButtons(null, null);
         }
 
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         private void updateButtons(object sender, EventArgs e) {
         }
@@ -224,7 +223,6 @@ namespace MarklinDigital.Dialogs {
             this.Text = "Marklin Digital Interface Properties";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFeedbackPolling)).EndInit();
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -232,7 +230,7 @@ namespace MarklinDigital.Dialogs {
             // Validate
 
             if (nameDefinition.Commit()) {
-                LayoutTextInfo myName = new LayoutTextInfo(xmlInfo.DocumentElement, "Name");
+                LayoutTextInfo myName = new LayoutTextInfo(XmlInfo.DocumentElement, "Name");
                 IEnumerable<IModelComponentIsCommandStation> commandStations = LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All);
 
                 foreach (IModelComponentIsCommandStation otherCommandStation in commandStations) {
@@ -251,21 +249,20 @@ namespace MarklinDigital.Dialogs {
 
             // Commit
 
-            xmlInfo.DocumentElement.SetAttribute("Port", comboBoxPort.Text);
-            xmlInfo.DocumentElement.SetAttribute("FeedbackPolling", XmlConvert.ToString(numericUpDownFeedbackPolling.Value));
+            XmlInfo.DocumentElement.SetAttribute(LayoutIOServices.A_Port, comboBoxPort.Text);
+            XmlInfo.DocumentElement.SetAttribute(A_FeedbackPolling, numericUpDownFeedbackPolling.Value);
             layoutEmulationSetup.Commit();
 
             DialogResult = DialogResult.OK;
         }
 
         private void buttonCOMsettings_Click(object sender, EventArgs e) {
-            string modeString = xmlInfo.DocumentElement["ModeString"].InnerText;
+            string modeString = XmlInfo.DocumentElement[LayoutIOServices.E_ModeString].InnerText;
 
             LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
 
             if (d.ShowDialog(this) == DialogResult.OK)
-                xmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
-
+                XmlInfo.DocumentElement[LayoutIOServices.E_ModeString].InnerText = d.ModeString;
         }
     }
 }

@@ -9,7 +9,6 @@ namespace LayoutManager {
     /// undo the command
     /// </summary>
     public abstract class LayoutCommand : ILayoutCommand {
-
         /// <summary>
         /// Preform the operation of this command 
         /// </summary>
@@ -37,9 +36,9 @@ namespace LayoutManager {
     /// Manage Undo/Redo queue for layout commands
     /// </summary>
     public class LayoutCommandManager : ILayoutCommandManager {
-        readonly ArrayList commands = new ArrayList(20);
-        int iCommand = 0;
-        int changeLevel = 0;
+        private readonly ArrayList commands = new ArrayList(20);
+        private int iCommand = 0;
+        private int changeLevel = 0;
 
         public int ChangeLevel {
             get {
@@ -193,28 +192,19 @@ namespace LayoutManager {
     /// the user this series of commands is presented as a single command.
     /// </summary>
     public class LayoutCompoundCommand : LayoutCommand, ILayoutCompoundCommand, IEnumerable {
-        readonly ArrayList commands = new ArrayList();
-        string description;
-        bool executeAtOnce = false;
+        private readonly ArrayList commands = new ArrayList();
+        private bool executeAtOnce = false;
 
         public LayoutCompoundCommand(String description) {
-            this.description = description;
+            this.Description = description;
         }
 
         public LayoutCompoundCommand(String description, bool executeAtOnce) {
-            this.description = description;
+            this.Description = description;
             this.executeAtOnce = executeAtOnce;
         }
 
-        public string Description {
-            set {
-                description = value;
-            }
-
-            get {
-                return description;
-            }
-        }
+        public string Description { set; get; }
 
         public void Add(ILayoutCommand command) {
             commands.Add(command);
@@ -243,7 +233,7 @@ namespace LayoutManager {
             executeAtOnce = false;      // So Do (which now really means redo, will execute the commands)
         }
 
-        public override string ToString() => description;
+        public override string ToString() => Description;
 
         #region IEnumerable Members
 
@@ -251,7 +241,6 @@ namespace LayoutManager {
 
         #endregion
     }
-
 
     public class LayoutCommandException : Exception {
         public LayoutCommandException(String message) : base(message) {

@@ -14,30 +14,21 @@ namespace LayoutManager.CommonUI.Controls {
         private Button buttonDelete;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.HScrollBar hScrollBar;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
 
         private void endOfDesignerVariables() { }
-
-        TripPlanIconListInfo iconList = null;
-        int selected = -1;
-        int leftIconIndex = 0;
-        bool initialized = false;
-        Bitmap frameBuffer = null;
+        private int selected = -1;
+        private int leftIconIndex = 0;
+        private bool initialized = false;
+        private Bitmap frameBuffer = null;
 
         #region Exposed Properties
 
-        public TripPlanIconListInfo IconList {
-            get {
-                return iconList;
-            }
-
-            set {
-                iconList = value;
-            }
-        }
+        public TripPlanIconListInfo IconList { get; set; } = null;
 
         public int SelectedIndex {
             get {
@@ -59,7 +50,7 @@ namespace LayoutManager.CommonUI.Controls {
         public Guid SelectedID {
             get {
                 if (selected >= 0)
-                    return iconList[selected];
+                    return IconList[selected];
                 return Guid.Empty;
             }
 
@@ -67,7 +58,7 @@ namespace LayoutManager.CommonUI.Controls {
                 if (value == Guid.Empty)
                     SelectedIndex = -1;
                 else
-                    SelectedIndex = iconList[value];
+                    SelectedIndex = IconList[value];
             }
         }
 
@@ -99,7 +90,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         private void setScrollBar() {
             int maxDisplayedIconCount = Width / 36;
-            int iconCount = iconList.LargeIconImageList.Images.Count;
+            int iconCount = IconList.LargeIconImageList.Images.Count;
 
             if (iconCount <= maxDisplayedIconCount)
                 hScrollBar.Enabled = false;
@@ -211,7 +202,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Size = new System.Drawing.Size(248, 86);
             this.panelIcons.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -226,8 +216,8 @@ namespace LayoutManager.CommonUI.Controls {
                 if (initialized) {
                     int x = 0;
 
-                    for (int iconIndex = leftIconIndex; iconIndex < iconList.LargeIconImageList.Images.Count; iconIndex++) {
-                        g.DrawImage(iconList.LargeIconImageList.Images[iconIndex], x + 6, 6);
+                    for (int iconIndex = leftIconIndex; iconIndex < IconList.LargeIconImageList.Images.Count; iconIndex++) {
+                        g.DrawImage(IconList.LargeIconImageList.Images[iconIndex], x + 6, 6);
 
                         if (iconIndex == selected) {
                             using (Pen p = new Pen(Color.Red, 2)) {
@@ -249,7 +239,7 @@ namespace LayoutManager.CommonUI.Controls {
                     try {
                         Icon icon = new Icon(filename);
 
-                        iconList.Add(icon);
+                        IconList.Add(icon);
                     }
                     catch (Exception ex) {
                         MessageBox.Show(this, "Error: " + ex.Message, "Error opening Icon file", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -265,7 +255,7 @@ namespace LayoutManager.CommonUI.Controls {
             int newSelection = -1;
             int x = 0;
 
-            for (int iconIndex = leftIconIndex; iconIndex < iconList.LargeIconImageList.Images.Count; iconIndex++) {
+            for (int iconIndex = leftIconIndex; iconIndex < IconList.LargeIconImageList.Images.Count; iconIndex++) {
                 if (new Rectangle(new Point(x, 0), new Size(36, 36)).Contains(e.X, e.Y)) {
                     newSelection = iconIndex;
                     break;
@@ -282,13 +272,12 @@ namespace LayoutManager.CommonUI.Controls {
             int oldValue = leftIconIndex;
 
             switch (e.Type) {
-
                 case ScrollEventType.First:
                     leftIconIndex = 0;
                     break;
 
                 case ScrollEventType.Last:
-                    leftIconIndex = iconList.LargeIconImageList.Images.Count - maxDisplayedIconCount;
+                    leftIconIndex = IconList.LargeIconImageList.Images.Count - maxDisplayedIconCount;
                     break;
 
                 case ScrollEventType.SmallIncrement:
@@ -313,7 +302,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
 
             if (leftIconIndex != oldValue) {
-                int maxValue = iconList.LargeIconImageList.Images.Count - maxDisplayedIconCount;
+                int maxValue = IconList.LargeIconImageList.Images.Count - maxDisplayedIconCount;
 
                 if (leftIconIndex < hScrollBar.Minimum)
                     leftIconIndex = hScrollBar.Minimum;
@@ -329,7 +318,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private void buttonDelete_Click(object sender, System.EventArgs e) {
-            int count = iconList.LargeIconImageList.Images.Count;
+            int count = IconList.LargeIconImageList.Images.Count;
             bool doit = true;
 
             if (count == 1)
@@ -337,7 +326,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             if (doit) {
                 if (SelectedIndex != -1) {
-                    iconList.Remove(SelectedIndex);
+                    IconList.Remove(SelectedIndex);
                     if (SelectedIndex >= count - 1)
                         SelectedIndex = count - 2;
 
@@ -347,8 +336,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        class NoBackgroundErasePanel : Panel {
-
+        private class NoBackgroundErasePanel : Panel {
             protected override void OnPaintBackground(PaintEventArgs pevent) {
                 // Avoid erasing background
             }

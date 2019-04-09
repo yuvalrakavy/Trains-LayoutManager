@@ -9,7 +9,7 @@ namespace LayoutManager.CommonUI.Controls {
     /// Summary description for LocomotiveTypeList.
     /// </summary>
     public class LocomotiveTypeList : XmlQueryListbox {
-        LocomotiveCatalogInfo catalog = null;
+        private LocomotiveCatalogInfo catalog = null;
 
         public LocomotiveTypeList() {
             if (!DesignMode) {
@@ -30,10 +30,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public LocomotiveCatalogInfo Catalog {
             get {
-                if (catalog == null)
-                    catalog = LayoutModel.LocomotiveCatalog;
-
-                return catalog;
+                return catalog ?? (catalog = LayoutModel.LocomotiveCatalog);
             }
         }
 
@@ -43,10 +40,10 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region Item classes
 
-        class LocoTypeItem : IXmlQueryListboxItem {
-            readonly XmlElement locoTypeElement;
-            readonly LocomotiveTypeList list;
-            readonly XmlQueryListbox.QueryItem queryItem;
+        private class LocoTypeItem : IXmlQueryListboxItem {
+            private readonly XmlElement locoTypeElement;
+            private readonly LocomotiveTypeList list;
+            private readonly XmlQueryListbox.QueryItem queryItem;
 
             public LocoTypeItem(LocomotiveTypeList list, XmlQueryListbox.QueryItem queryItem, XmlElement locoTypeElement) {
                 this.list = list;
@@ -120,8 +117,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region ListLayout classes
 
-        class ListLayoutByOrigin : ListLayout {
-
+        private class ListLayoutByOrigin : ListLayout {
             public override string LayoutName => "Locomotive origin";
 
             public override void ApplyLayout(XmlQueryListbox list) {
@@ -141,7 +137,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        class ListLayoutByKind : ListLayout {
+        private class ListLayoutByKind : ListLayout {
             public override string LayoutName => "Locomotive type";
 
             public override void ApplyLayout(XmlQueryListbox list) {
@@ -165,7 +161,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        class ListLayoutByStorage : ListLayout {
+        private class ListLayoutByStorage : ListLayout {
             public override string LayoutName => "By locomotive type storage file";
 
             public override void ApplyLayout(XmlQueryListbox list) {

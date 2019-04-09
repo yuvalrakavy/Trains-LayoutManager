@@ -10,7 +10,6 @@ using LayoutManager.CommonUI.Controls;
 #pragma warning disable IDE0051, IDE0060
 #nullable enable
 namespace LayoutManager.Tools.Dialogs {
-
     /// <summary>
     /// Summary description for TrainProperties.
     /// </summary>
@@ -52,9 +51,9 @@ namespace LayoutManager.Tools.Dialogs {
         private GroupBox groupBox1;
         private IContainer components;
 
-        readonly TrainCommonInfo train;
-        readonly ArrayList locomotiveCancelList = new ArrayList();
-        bool locomotiveEdited = false;
+        private readonly TrainCommonInfo train;
+        private readonly ArrayList locomotiveCancelList = new ArrayList();
+        private bool locomotiveEdited = false;
 
         #pragma warning disable nullable
         public TrainProperties(TrainCommonInfo train) {
@@ -533,7 +532,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.tabPageAttributes.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -743,13 +741,11 @@ namespace LayoutManager.Tools.Dialogs {
                 listViewLocomotives.Items[iImage].Selected = true;
         }
 
-        class TrainLocomotiveItem : ListViewItem {
-            readonly TrainLocomotiveInfo trainLocomotive;
-
+        private class TrainLocomotiveItem : ListViewItem {
             public TrainLocomotiveItem(TrainLocomotiveInfo trainLocomotive) {
                 LocomotiveInfo loco = trainLocomotive.Locomotive;
 
-                this.trainLocomotive = trainLocomotive;
+                this.TrainLocomotive = trainLocomotive;
 
                 Text = loco.DisplayName;
                 SubItems.Add(loco.AddressProvider.Unit.ToString());
@@ -758,18 +754,18 @@ namespace LayoutManager.Tools.Dialogs {
             }
 
             public void Update() {
-                LocomotiveInfo loco = trainLocomotive.Locomotive;
+                LocomotiveInfo loco = TrainLocomotive.Locomotive;
 
                 SubItems[0].Text = loco.DisplayName;
                 SubItems[1].Text = loco.AddressProvider.Unit.ToString();
-                SubItems[2].Text = trainLocomotive.Orientation.ToString();
+                SubItems[2].Text = TrainLocomotive.Orientation.ToString();
                 SubItems[3].Text = loco.TypeName;
             }
 
-            public TrainLocomotiveInfo TrainLocomotive => trainLocomotive;
+            public TrainLocomotiveInfo TrainLocomotive { get; }
         }
 
-        class TrainLocomotiveCancelInfo {
+        private class TrainLocomotiveCancelInfo {
             public Guid LocomotiveID;
             public LocomotiveOrientation Orientation;
 

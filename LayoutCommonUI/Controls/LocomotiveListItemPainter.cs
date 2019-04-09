@@ -8,6 +8,8 @@ using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI.Controls {
     public static class LocomotiveListItemPainter {
+        private const string A_OnTrack = "OnTrack";
+        private const string A_CanPlaceOnTrack = "CanPlaceOnTrack";
 
         public static void Measure(MeasureItemEventArgs e, XmlElement element) {
             if (element.Name == "Train")
@@ -21,9 +23,9 @@ namespace LayoutManager.CommonUI.Controls {
             CanPlaceTrainResolveMethod canPlaceOnTrack = CanPlaceTrainResolveMethod.Resolved;
 
             if (annotateForOperationMode) {
-                onTrack = XmlConvert.ToBoolean(element.GetAttribute("OnTrack"));
+                onTrack = (bool)element.AttributeValue(A_OnTrack);
                 if (!onTrack) {
-                    if (!Enum.TryParse<CanPlaceTrainResolveMethod>(element.GetAttribute("CanPlaceOnTrack"), out canPlaceOnTrack))
+                    if (!Enum.TryParse<CanPlaceTrainResolveMethod>(element.GetAttribute(A_CanPlaceOnTrack), out canPlaceOnTrack))
                         canPlaceOnTrack = CanPlaceTrainResolveMethod.NotPossible;
                 }
             }

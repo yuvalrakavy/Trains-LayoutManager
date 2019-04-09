@@ -7,8 +7,8 @@ namespace LayoutManager.CommonUI.Controls {
     /// Summary description for PictureBoxWithTransparency.
     /// </summary>
     public class PictureBoxWithTransparency : PictureBox {
-        Color transparentColor = Color.Empty;
-        bool isTransparent = false;
+        private Color transparentColor = Color.Empty;
+        private bool isTransparent = false;
 
         public PictureBoxWithTransparency() {
         }

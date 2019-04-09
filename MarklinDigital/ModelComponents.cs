@@ -12,22 +12,25 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace MarklinDigital {
-
     /// <summary>
     /// Summary description for MTScomponents.
     /// </summary>
     #pragma warning disable IDE0051, IDE0060, IDE0052
 
     public class MarklinDigitalCentralStation : LayoutCommandStationComponent {
-        static readonly LayoutTraceSwitch traceMarklinDigital = new LayoutTraceSwitch("MarkinDigital", "Marklin Digital Interface (P50)");
-        OutputManager commandStationManager;
+        private static readonly LayoutTraceSwitch traceMarklinDigital = new LayoutTraceSwitch("MarkinDigital", "Marklin Digital Interface (P50)");
+        private OutputManager commandStationManager;
 
-        ControlBus _S88bus = null;
+        private ControlBus _S88bus = null;
 
-        const int queuePowerCommands = 0;               // Queue for power on/off etc.
-        const int queueLayoutSwitchingCommands = 1; // Queue for turnout/lights control commands
-        const int queueLocoCommands = 2;                // Queue for locomotive control commands
-        const int feedbackUnitPollingTime = 20;     // time in milliseconds for polling feedback unit
+        private const int queuePowerCommands = 0;               // Queue for power on/off etc.
+        private const int queueLayoutSwitchingCommands = 1; // Queue for turnout/lights control commands
+        private const int queueLocoCommands = 2;                // Queue for locomotive control commands
+        private const int feedbackUnitPollingTime = 20;     // time in milliseconds for polling feedback unit
+        private const string A_ReadIntervalTimeout = "ReadIntervalTimeout";
+        private const string A_ReadTotalTimeoutConstant = "ReadTotalTimeoutConstant";
+        private const string A_FeedbackPolling = "FeedbackPolling";
+        private const string A_MinTimeBetweenSpeedSteps = "MinTimeBetweenSpeedSteps";
 
         public MarklinDigitalCentralStation() {
             this.XmlDocument.LoadXml(
@@ -37,13 +40,11 @@ namespace MarklinDigital {
                 );
         }
 
-        public int FeedbackPolling => XmlConvert.ToInt32(Element.GetAttribute("FeedbackPolling"));
+        public int FeedbackPolling => (int)Element.AttributeValue(A_FeedbackPolling);
 
         public ControlBus S88Bus {
             get {
-                if (_S88bus == null)
-                    _S88bus = LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS");
-                return _S88bus;
+                return _S88bus ?? (_S88bus = LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS"));
             }
         }
 
@@ -54,10 +55,10 @@ namespace MarklinDigital {
         protected override void OnCommunicationSetup() {
             base.OnCommunicationSetup();
 
-            if (!Element.HasAttribute("ReadIntervalTimeout"))
-                Element.SetAttribute("ReadIntervalTimeout", XmlConvert.ToString(20));
-            if (!Element.HasAttribute("ReadTotalTimeoutConstant"))
-                Element.SetAttribute("ReadTotalTimeoutConstant", XmlConvert.ToString(5000));
+            if (!Element.HasAttribute(A_ReadIntervalTimeout))
+                Element.SetAttribute(A_ReadIntervalTimeout, 20);
+            if (!Element.HasAttribute(A_ReadTotalTimeoutConstant))
+                Element.SetAttribute(A_ReadTotalTimeoutConstant, 5000);
         }
 
         public override DigitalPowerFormats SupportedDigitalPowerFormats => DigitalPowerFormats.Motorola;
@@ -77,7 +78,7 @@ namespace MarklinDigital {
 
             _S88bus = null;
 
-            commandStationManager = new OutputManager(Name, 3);
+            commandStationManager = new OutputManager(A_FeedbackPolling, 3);
 
             int feedbackUnits = getNumberOfFeedbackUnits();
 
@@ -91,7 +92,6 @@ namespace MarklinDigital {
 
                 for (int unit = 1; unit <= feedbackUnits; unit++)
                     commandStationManager.AddIdleCommand(new MarklinGetFeedback(this, InterThreadEventInvoker, unit, waitPeriod));
-
             }
 
             commandStationManager.AddIdleCommand(new EndTrainsAnalysisCommandStationCommand(this, 10));
@@ -185,7 +185,7 @@ namespace MarklinDigital {
         }
 
         [LayoutEvent("disconnect-power-request")]
-        void PowerDisconnectRequest(LayoutEvent e) {
+        private void PowerDisconnectRequest(LayoutEvent e) {
             if (e.Sender == null || e.Sender == this)
                 commandStationManager.AddCommand(queuePowerCommands, new MarklinStopCommand(CommunicationStream));
 
@@ -193,7 +193,7 @@ namespace MarklinDigital {
         }
 
         [LayoutEvent("connect-power-request")]
-        void PowerConnectRequest(LayoutEvent e) {
+        private void PowerConnectRequest(LayoutEvent e) {
             if (e.Sender == null || e.Sender == this)
                 commandStationManager.AddCommand(queuePowerCommands, new MarklinGoCommand(CommunicationStream));
 
@@ -201,21 +201,17 @@ namespace MarklinDigital {
         }
 
         [LayoutEvent("get-command-station-capabilities", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        void GetCommandStationCapabilities(LayoutEvent e) {
-            CommandStationCapabilitiesInfo cap = new CommandStationCapabilitiesInfo();
-            int minTimeBetweenSpeedSteps = 20;
-
-            if (Element.HasAttribute("MinTimeBetweenSpeedSteps"))
-                minTimeBetweenSpeedSteps = XmlConvert.ToInt32(Element.GetAttribute("MinTimeBetweenSpeedSteps"));
+        private void GetCommandStationCapabilities(LayoutEvent e) {
+            var cap = new CommandStationCapabilitiesInfo();
+            var minTimeBetweenSpeedSteps = (int?)Element.AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 20;
 
             cap.MinTimeBetweenSpeedSteps = minTimeBetweenSpeedSteps;
-
             e.Info = cap.Element;
         }
 
         // Implement command events
         [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        Task ChangeTurnoutState(LayoutEvent e0) {
+        private Task ChangeTurnoutState(LayoutEvent e0) {
             var e = (LayoutEventInfoValueType<ControlConnectionPointReference, int>)e0;
             ControlConnectionPointReference connectionPointRef = e.Sender;
             int state = e.Info;
@@ -328,8 +324,8 @@ namespace MarklinDigital {
 
         #region Menu Items
 
-        class ToggleLocoDirectionMenuItem : MenuItem {
-            readonly LocomotiveInfo loco;
+        private class ToggleLocoDirectionMenuItem : MenuItem {
+            private readonly LocomotiveInfo loco;
 
             public ToggleLocoDirectionMenuItem(LocomotiveInfo loco, string title) {
                 this.loco = loco;
@@ -341,8 +337,8 @@ namespace MarklinDigital {
             }
         }
 
-        class ToggleLocomotiveManagement : MenuItem {
-            readonly TrainStateInfo train;
+        private class ToggleLocomotiveManagement : MenuItem {
+            private readonly TrainStateInfo train;
 
             public ToggleLocomotiveManagement(TrainStateInfo train) {
                 this.train = train;
@@ -373,14 +369,12 @@ namespace MarklinDigital {
 
     #region Marklin Digial Command Classes
 
-    abstract class MarklinCommand : OutputCommandBase {
-        readonly Stream stream;
-
-        public MarklinCommand(Stream stream) {
-            this.stream = stream;
+    internal abstract class MarklinCommand : OutputCommandBase {
+        protected MarklinCommand(Stream stream) {
+            this.Stream = stream;
         }
 
-        public Stream Stream => stream;
+        public Stream Stream { get; }
 
         protected void Output(byte v) {
             Thread.Sleep(10);
@@ -389,7 +383,7 @@ namespace MarklinDigital {
         }
     }
 
-    class MarklinGoCommand : MarklinCommand {
+    internal class MarklinGoCommand : MarklinCommand {
         public MarklinGoCommand(Stream comm) : base(comm) {
         }
 
@@ -399,7 +393,7 @@ namespace MarklinDigital {
         }
     }
 
-    class MarklinStopCommand : MarklinCommand {
+    internal class MarklinStopCommand : MarklinCommand {
         public MarklinStopCommand(Stream comm) : base(comm) {
         }
 
@@ -409,9 +403,9 @@ namespace MarklinDigital {
         }
     }
 
-    class MarklinSwitchAccessoryCommand : MarklinCommand {
-        readonly int address;
-        readonly int state;
+    internal class MarklinSwitchAccessoryCommand : MarklinCommand {
+        private readonly int address;
+        private readonly int state;
 
         public MarklinSwitchAccessoryCommand(Stream comm, int address, int state) : base(comm) {
             this.address = address;
@@ -433,7 +427,7 @@ namespace MarklinDigital {
         public override int WaitPeriod => 100;
     }
 
-    class MarklinEndSwitchingProcedure : MarklinCommand {
+    internal class MarklinEndSwitchingProcedure : MarklinCommand {
         public MarklinEndSwitchingProcedure(Stream comm) : base(comm) {
         }
 
@@ -443,8 +437,8 @@ namespace MarklinDigital {
         }
     }
 
-    class MarklinReverseLocomotiveDirection : MarklinCommand {
-        readonly int address;
+    internal class MarklinReverseLocomotiveDirection : MarklinCommand {
+        private readonly int address;
 
         public MarklinReverseLocomotiveDirection(Stream comm, int address) : base(comm) {
             this.address = address;
@@ -457,10 +451,10 @@ namespace MarklinDigital {
         }
     }
 
-    class MarklinLocomotiveMotion : MarklinCommand {
-        readonly int address;
-        readonly byte speed;
-        readonly bool auxFunction;
+    internal class MarklinLocomotiveMotion : MarklinCommand {
+        private readonly int address;
+        private readonly byte speed;
+        private readonly bool auxFunction;
 
         public MarklinLocomotiveMotion(Stream comm, int address, int speed, bool auxFunction) : base(comm) {
             this.address = address;
@@ -484,9 +478,9 @@ namespace MarklinDigital {
         }
     }
 
-    class MarklinSetFunctions : MarklinCommand {
-        readonly int address;
-        readonly byte functionMask;
+    internal class MarklinSetFunctions : MarklinCommand {
+        private readonly int address;
+        private readonly byte functionMask;
 
         public MarklinSetFunctions(Stream comm, int address, byte functionMask) : base(comm) {
             this.address = address;
@@ -508,7 +502,7 @@ namespace MarklinDigital {
         }
     }
 
-    struct MarklinFeedbackContactResult {
+    internal struct MarklinFeedbackContactResult {
         public int ContactNo;
         public bool IsSet;
 
@@ -518,7 +512,7 @@ namespace MarklinDigital {
         }
     };
 
-    struct MarklinFeedbackResult {
+    internal struct MarklinFeedbackResult {
         public int Unit;
         public MarklinFeedbackContactResult[] Contacts;
 
@@ -528,13 +522,13 @@ namespace MarklinDigital {
         }
     }
 
-    delegate void MarklinFeedbackResultCallback(MarklinFeedbackResult feedbackResult);
+    internal delegate void MarklinFeedbackResultCallback(MarklinFeedbackResult feedbackResult);
 
-    class MarklinGetFeedback : MarklinCommand, IOutputIdlecommand {
-        readonly ILayoutInterThreadEventInvoker invoker;
-        readonly int unit;
-        int feedback = 0;
-        readonly MarklinDigitalCentralStation commandStation;
+    internal class MarklinGetFeedback : MarklinCommand, IOutputIdlecommand {
+        private readonly ILayoutInterThreadEventInvoker invoker;
+        private readonly int unit;
+        private int feedback = 0;
+        private readonly MarklinDigitalCentralStation commandStation;
 
         public MarklinGetFeedback(MarklinDigitalCentralStation commandStation, ILayoutInterThreadEventInvoker invoker, int unit, int waitPeriod) : base(commandStation.CommunicationStream) {
             this.commandStation = commandStation;
@@ -568,7 +562,6 @@ namespace MarklinDigital {
                 int newValue = (low << 8) | high;
 
                 if (newValue != feedback) {
-
                     MarklinFeedbackResult feedbackResult = new MarklinFeedbackResult(unit);
                     int changeIndex = 0;
 

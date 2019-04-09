@@ -8,7 +8,6 @@ using LayoutManager.Model;
 
 namespace LayoutManager {
     public class MenuItemDeleteSelection : MenuItem {
-
         public MenuItemDeleteSelection() {
             this.Text = "&Delete";
         }
@@ -27,20 +26,18 @@ namespace LayoutManager {
     }
 
     public class MenuItemCopySelection : MenuItem {
-        Point location;
+        private Point location;
 
         public MenuItemCopySelection(Point location) {
             this.location = location;
 
             this.Text = "&Copy";
 
-
             if (LayoutController.UserSelection.Count == 0)
                 this.Enabled = false;
         }
 
         public void Copy() {
-
             Clipboard.SetDataObject(LayoutController.UserSelection.GetDataObject(location));
         }
 
@@ -51,7 +48,7 @@ namespace LayoutManager {
     }
 
     public class MenuItemCutSelection : MenuItem {
-        Point location;
+        private Point location;
 
         public MenuItemCutSelection(Point location) {
             this.location = location;

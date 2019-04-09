@@ -1,7 +1,6 @@
 namespace LayoutManager {
-
     public class ApplicationStateInfo : LayoutXmlWrapper {
-        readonly string filename;
+        private readonly string filename;
 
         public enum LayoutState {
             Design, Operation, Simulation

@@ -12,6 +12,7 @@ namespace LayoutManager.CommonUI.Dialogs {
         private Button buttonCancel;
         private RadioButton radioButtonNoCondition;
         private RadioButton radioButtonCondition;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -19,7 +20,7 @@ namespace LayoutManager.CommonUI.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly XmlElement conditionElement;
+        private readonly XmlElement conditionElement;
 
         public ConditionDefinition(XmlElement inConditionElement) {
             //
@@ -157,7 +158,6 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Condition Definition";
             this.ResumeLayout(false);
-
         }
         #endregion
 

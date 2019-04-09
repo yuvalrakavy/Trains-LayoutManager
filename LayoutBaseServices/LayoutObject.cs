@@ -50,7 +50,6 @@ namespace LayoutManager {
         public static void SetAttribute(this IObjectHasXml xmlObject, string name, Enum e) => xmlObject.Element.SetAttribute(name, e);
         public static void SetAttribute(this IObjectHasXml xmlObject, string name, Enum e, Enum removeIf) => xmlObject.Element.SetAttribute(name, e, removeIf);
 
-
         public static bool HasAttribute(this IObjectHasXml xmlObject, string name) => xmlObject.Element.HasAttribute(name);
     }
 
@@ -61,7 +60,6 @@ namespace LayoutManager {
 
             return new ConvertableString(e.GetAttribute(name), name, e);
         }
-
 
         public static void SetAttribute(this XmlElement e, string name, string? v, string? removeIf) {
             if (v == null || v == removeIf)
@@ -82,6 +80,8 @@ namespace LayoutManager {
         public static void SetAttribute(this XmlElement e, string name, byte v) => e.SetAttribute(name, XmlConvert.ToString(v));
 
         public static void SetAttribute(this XmlElement e, string name, double v) => e.SetAttribute(name, XmlConvert.ToString(v));
+
+        public static void SetAttribute(this XmlElement e, string name, decimal v) => e.SetAttribute(name, XmlConvert.ToString(v));
 
         public static void SetAttribute(this XmlElement e, string name, Guid v) => e.SetAttribute(name, XmlConvert.ToString(v));
 
@@ -112,8 +112,8 @@ namespace LayoutManager {
     }
 
     public struct ConvertableString {
-        readonly string? v;
-        readonly Func<string> getDescription;
+        private readonly string? v;
+        private readonly Func<string> getDescription;
 
         public ConvertableString(string? v, string attributeName, XmlElement? element) {
             this.v = v;
@@ -129,7 +129,6 @@ namespace LayoutManager {
                 return $"Invalid or missing value for attribute {attributeName} for ({elementAsString})";
             };
         }
-
 
         public ConvertableString(string? v, string desciption) {
             this.v = v;
@@ -156,6 +155,9 @@ namespace LayoutManager {
 
 #pragma warning disable CS8629
         public static explicit operator int(ConvertableString s) => ((int?)s.MustExist()).Value;
+        public static explicit operator uint(ConvertableString s) => ((uint?)s.MustExist()).Value;
+        public static explicit operator Int64(ConvertableString s) => ((Int64?)s.MustExist()).Value;
+        public static explicit operator byte(ConvertableString s) => ((byte?)s.MustExist()).Value;
         public static explicit operator bool(ConvertableString s) => ((bool?)s.MustExist()).Value;
         public static explicit operator double(ConvertableString s) => ((double?)s.MustExist()).Value;
         public static explicit operator float(ConvertableString s) => ((float?)s.MustExist()).Value;
@@ -167,6 +169,20 @@ namespace LayoutManager {
                 return null;
 
             return XmlConvert.ToInt32(s.v);
+        }
+
+        public static explicit operator uint? (ConvertableString s) {
+            if (s.v == null)
+                return null;
+
+            return XmlConvert.ToUInt32(s.v);
+        }
+
+        public static explicit operator Int64? (ConvertableString s) {
+            if(s.v == null)
+                return null;
+
+            return XmlConvert.ToInt64(s.v);
         }
 
         public static explicit operator byte? (ConvertableString s) {
@@ -202,6 +218,13 @@ namespace LayoutManager {
                 return null;
 
             return XmlConvert.ToGuid(s.v);
+        }
+
+        public static explicit operator decimal? (ConvertableString s) {
+            if (s.v == null)
+                return null;
+
+            return XmlConvert.ToDecimal(s.v);
         }
 
         public T? Enum<T>() where T : struct {
@@ -281,17 +304,23 @@ namespace LayoutManager {
                 if (idAttribute == null) {
                     Guid id = Guid.NewGuid();
 
-                    DocumentElement.SetAttribute("ID", XmlConvert.ToString(id));
+                    DocumentElement.SetAttribute("ID", id);
                     return id;
                 }
                 else
                     return new Guid(idAttribute.Value);
             }
 
-            set {
-                DocumentElement.SetAttribute("ID", XmlConvert.ToString(value));
-            }
+            set => DocumentElement.SetAttribute("ID", value);
         }
+    }
+
+    public static class XmlWriterExtensions {
+        public static void WriteAttributeString(this XmlWriter w, string name, bool v) => w.WriteAttributeString(name, XmlConvert.ToString(v));
+        public static void WriteAttributeString(this XmlWriter w, string name, int v) => w.WriteAttributeString(name, XmlConvert.ToString(v));
+        public static void WriteAttributeString(this XmlWriter w, string name, float v) => w.WriteAttributeString(name, XmlConvert.ToString(v));
+        public static void WriteAttributeString(this XmlWriter w, string name, Guid v) => w.WriteAttributeString(name, XmlConvert.ToString(v));
+        public static void WriteAttributeString(this XmlWriter w, string name, Enum v) => w.WriteAttributeString(name, v.ToString());
     }
 
     /// <summary>
@@ -300,35 +329,22 @@ namespace LayoutManager {
     /// <remarks> This is the base class for many of the Layout Manager objects</remarks>
     public class LayoutObject : IObjectHasXml {
         /// <summary>
-        /// The Object's Xml document
-        /// </summary>
-        LayoutXmlInfo _xmlInfo = new LayoutXmlInfo();
-
-        /// <summary>
         /// The object's XML document
         /// </summary>
-        public LayoutXmlInfo XmlInfo {
-            get {
-                return _xmlInfo;
-            }
+        public LayoutXmlInfo XmlInfo { get; set; } = new LayoutXmlInfo();
 
-            set {
-                _xmlInfo = value;
-            }
-        }
+        public XmlDocument XmlDocument => XmlInfo.XmlDocument;
 
-        public XmlDocument XmlDocument => _xmlInfo.XmlDocument;
+        public XmlElement DocumentElement => XmlInfo.DocumentElement;
 
-        public XmlElement DocumentElement => _xmlInfo.DocumentElement;
-
-        public XmlElement Element => _xmlInfo.Element;
+        public XmlElement Element => XmlInfo.Element;
         public XmlElement? OptionalElement => Element;
 
         public LayoutObject() {
         }
 
         public LayoutObject(String xmlDocument) {
-            _xmlInfo.XmlDocument.LoadXml(xmlDocument);
+            XmlInfo.XmlDocument.LoadXml(xmlDocument);
         }
 
         /// <summary>
@@ -337,11 +353,11 @@ namespace LayoutManager {
         /// </summary>
         public Guid Id {
             get {
-                return _xmlInfo.Id;
+                return XmlInfo.Id;
             }
 
             set {
-                _xmlInfo.Id = value;
+                XmlInfo.Id = value;
             }
         }
     };

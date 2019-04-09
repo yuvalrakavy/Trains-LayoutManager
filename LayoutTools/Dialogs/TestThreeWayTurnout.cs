@@ -8,9 +8,9 @@ using LayoutManager.Components;
 namespace LayoutManager.Tools.Dialogs {
     #pragma warning disable IDE0051, IDE0060
     public partial class TestThreeWayTurnout : Form {
-        readonly LayoutThreeWayTurnoutComponent turnout;
-        int _state = -1;
-        Guid frameWindowId;
+        private readonly LayoutThreeWayTurnoutComponent turnout;
+        private int _state = -1;
+        private Guid frameWindowId;
 
         public TestThreeWayTurnout(Guid frameWindowId, LayoutThreeWayTurnoutComponent turnout) {
             InitializeComponent();
@@ -67,7 +67,6 @@ namespace LayoutManager.Tools.Dialogs {
                         ControlConnectionPointReference refLeft = new ControlConnectionPointReference(LayoutModel.ControlManager.ConnectionPoints[turnout.Id, "ControlLeft"]);
                         int stateRight = 0;
                         int stateLeft = 0;
-
 
                         if (_state == 1)
                             stateRight = 1;
@@ -163,7 +162,6 @@ namespace LayoutManager.Tools.Dialogs {
                 case LayoutComponentConnectionPoint.R: State = 2; break;
                 case LayoutComponentConnectionPoint.L: State = 1; break;
             }
-
         }
 
         private void radioButtonLeft_Clicked(object sender, EventArgs e) {
@@ -228,7 +226,6 @@ namespace LayoutManager.Tools.Dialogs {
 
                     m.MenuItems.Add(connectionDescription.DisplayName,
                         delegate (object s, EventArgs ev) {
-
                             ControlConnectionPointDestination destination = new ControlConnectionPointDestination(turnout, desc);
                             EventManager.Event(new LayoutEvent("request-component-to-control-connect", destination));
                         });

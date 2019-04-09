@@ -4,7 +4,6 @@ using LayoutManager.Components;
 
 #nullable enable
 namespace LayoutManager.Model {
-
     /// <summary>
     /// Route Clearance quality are numerically ordered from the best to the worst
     /// </summary>
@@ -98,17 +97,13 @@ namespace LayoutManager.Model {
     }
 
     public class RouteQuality : IComparable<RouteQuality>, ICloneable {
-        RouteClearanceQuality clearanceQuality = RouteClearanceQuality.FreeNow;
-        int penalty;
-        Guid routeOwner = Guid.Empty;
-
-        static int willBeFreeClearancePenaltyFactor = 20;
-        static ILayoutLockManagerServices? _lockManagerServices = null;
+        private Guid routeOwner = Guid.Empty;
+        private static ILayoutLockManagerServices? _lockManagerServices = null;
 
         public RouteQuality(Guid routeOwner, RouteClearanceQuality clearanceQuality, int penalty) {
             initialize(routeOwner);
-            this.clearanceQuality = clearanceQuality;
-            this.penalty = penalty;
+            this.ClearanceQuality = clearanceQuality;
+            this.Penalty = penalty;
         }
 
         public RouteQuality(Guid routeOwner) {
@@ -127,51 +122,25 @@ namespace LayoutManager.Model {
 
         public RouteQuality(RouteQuality copyFrom) {
             initialize(copyFrom.RouteOwner);
-            clearanceQuality = copyFrom.ClearanceQuality;
-            penalty = copyFrom.Penalty;
+            ClearanceQuality = copyFrom.ClearanceQuality;
+            Penalty = copyFrom.Penalty;
         }
 
         private void initialize(Guid routeOwner) {
             this.routeOwner = routeOwner;
         }
 
-        public RouteClearanceQuality ClearanceQuality {
-            get {
-                return clearanceQuality;
-            }
+        public RouteClearanceQuality ClearanceQuality { get; set; } = RouteClearanceQuality.FreeNow;
 
-            set {
-                clearanceQuality = value;
-            }
-        }
+        public int Penalty { get; set; }
 
-        public int Penalty {
-            get {
-                return penalty;
-            }
-
-            set {
-                penalty = value;
-            }
-        }
-
-        public static int WillBeFreeClearancePenaltyFactor {
-            get {
-                return willBeFreeClearancePenaltyFactor;
-            }
-
-            set {
-                willBeFreeClearancePenaltyFactor = value;
-            }
-        }
+        public static int WillBeFreeClearancePenaltyFactor { get; set; } = 20;
 
         public Guid RouteOwner => routeOwner;
 
         protected static ILayoutLockManagerServices LockManagerServices {
             get {
-                if (_lockManagerServices == null)
-                    _lockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services"))!;
-                return _lockManagerServices;
+                return _lockManagerServices ?? (_lockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services"))!);
             }
         }
 
@@ -194,7 +163,7 @@ namespace LayoutManager.Model {
 
         public void AddQuality(LayoutBlockDefinitionComponent blockInfo) {
             AddClearanceQuality(blockInfo);
-            this.penalty += blockInfo.Info.LengthInCM;
+            this.Penalty += blockInfo.Info.LengthInCM;
         }
 
         public static RouteClearanceQuality GetBlockClearanceQuality(Guid routeOwner, LayoutBlock block) => GetBlockClearanceQuality(routeOwner, block.BlockDefinintion);
@@ -242,7 +211,7 @@ namespace LayoutManager.Model {
 
         #endregion
 
-        public override string ToString() => "Clearance: " + clearanceQuality + " Penalty: " + penalty;
+        public override string ToString() => "Clearance: " + ClearanceQuality + " Penalty: " + Penalty;
 
         #region IComparable<RouteQuality> Members
 
@@ -254,9 +223,9 @@ namespace LayoutManager.Model {
                 int qPenalty = other.Penalty;
 
                 if (ClearanceQuality == RouteClearanceQuality.WillBeFree)
-                    myPenalty = ((100 + willBeFreeClearancePenaltyFactor) * Penalty) / 100;
+                    myPenalty = ((100 + WillBeFreeClearancePenaltyFactor) * Penalty) / 100;
                 if (other.ClearanceQuality == RouteClearanceQuality.WillBeFree)
-                    qPenalty = ((100 + willBeFreeClearancePenaltyFactor) * other.Penalty) / 100;
+                    qPenalty = ((100 + WillBeFreeClearancePenaltyFactor) * other.Penalty) / 100;
 
                 return myPenalty - qPenalty;
             }
@@ -266,115 +235,85 @@ namespace LayoutManager.Model {
                 return (int)ClearanceQuality - (int)other.ClearanceQuality;
         }
 
-        public bool Equals(RouteQuality other) => clearanceQuality == other.clearanceQuality && penalty == other.penalty && routeOwner == other.routeOwner;
+        public bool Equals(RouteQuality other) => ClearanceQuality == other.ClearanceQuality && Penalty == other.Penalty && routeOwner == other.routeOwner;
 
         #endregion
     }
 
     public class RouteTarget {
-        readonly TripPlanDestinationEntryInfo? destinationEntryInfo;   // The final train destination info
-        readonly LayoutTrackComponent destinationTrack;     // The final train destination for this target
-        readonly TrackEdge targetEdge;             // The destination to arrive (the split point)
-        readonly int switchState;            // The switch state to set in this turnout
-        readonly RouteQuality quality;              // The penalty involved in going from this target to the final destination
-        bool arrived;
-        readonly LayoutComponentConnectionPoint front;
-        readonly LocomotiveOrientation direction;
+        private readonly RouteQuality quality;              // The penalty involved in going from this target to the final destination
 
         public RouteTarget(TripPlanDestinationEntryInfo? destinationEntryInfo, LayoutTrackComponent destinationTrack, TrackEdge targetEdge, int switchState,
             LayoutComponentConnectionPoint front, LocomotiveOrientation direction, RouteQuality quality) {
-            this.destinationEntryInfo = destinationEntryInfo;
-            this.destinationTrack = destinationTrack;
-            this.targetEdge = targetEdge;
-            this.switchState = switchState;
-            this.front = front;
-            this.direction = direction;
+            this.DestinationEntryInfo = destinationEntryInfo;
+            this.DestinationTrack = destinationTrack;
+            this.TargetEdge = targetEdge;
+            this.SwitchState = switchState;
+            this.Front = front;
+            this.Direction = direction;
             this.quality = new RouteQuality(quality);
         }
 
-        public TripPlanDestinationEntryInfo? DestinationEntryInfo => destinationEntryInfo;
+        public TripPlanDestinationEntryInfo? DestinationEntryInfo { get; }
 
-        public LayoutTrackComponent DestinationTrack => destinationTrack;
+        public LayoutTrackComponent DestinationTrack { get; }
 
-        public TrackEdge DestinationEdge => new TrackEdge(DestinationTrack, front);
+        public TrackEdge DestinationEdge => new TrackEdge(DestinationTrack, Front);
 
-        public TrackEdge TargetEdge => targetEdge;
+        public TrackEdge TargetEdge { get; }
 
-        public TrackEdgeId TargetEdgeId => new TrackEdgeId(targetEdge);
+        public TrackEdgeId TargetEdgeId => new TrackEdgeId(TargetEdge);
 
-        public int SwitchState => switchState;
+        public int SwitchState { get; }
 
-        public LayoutComponentConnectionPoint Front => front;
+        public LayoutComponentConnectionPoint Front { get; }
 
-        public LocomotiveOrientation Direction => direction;
+        public LocomotiveOrientation Direction { get; }
 
         public RouteQuality Quality => quality;
 
         public override bool Equals(object o) {
-
             if (o is RouteTarget otherTarget)
-                return otherTarget.TargetEdge == TargetEdge && otherTarget.SwitchState == switchState;
+                return otherTarget.TargetEdge == TargetEdge && otherTarget.SwitchState == SwitchState;
             return false;
         }
 
-        public override int GetHashCode() => targetEdge.GetHashCode();
+        public override int GetHashCode() => TargetEdge.GetHashCode();
 
-        public bool Arrived {
-            get {
-                return arrived;
-            }
-
-            set {
-                arrived = value;
-            }
-        }
+        public bool Arrived { get; set; }
     }
 
     public class BestRoute : ITripRoute {
-        readonly ModelComponent sourceComponent;
-        RouteTarget? destinationTarget;
-        readonly LayoutComponentConnectionPoint sourceFront;
-        LayoutComponentConnectionPoint destinationFront;
-        readonly LocomotiveOrientation direction;
-        Guid routeOwner;
-        RouteQuality quality;
-        readonly List<RouteTarget> targets = new List<RouteTarget>();
-        List<int>? switchStates;
-        TrainStateInfo?train;
+        private Guid routeOwner;
+        private readonly List<RouteTarget> targets = new List<RouteTarget>();
+        private List<int>? switchStates;
+        private TrainStateInfo?train;
 
         public BestRoute(ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, Guid routeOwner) {
-            this.sourceComponent = sourceComponent;
-            this.sourceFront = front;
-            this.direction = direction;
+            this.SourceComponent = sourceComponent;
+            this.SourceFront = front;
+            this.Direction = direction;
             this.routeOwner = routeOwner;
-            this.quality = new RouteQuality(routeOwner);
+            this.Quality = new RouteQuality(routeOwner);
         }
 
         #region public Properties
 
-        public ModelComponent SourceComponent => sourceComponent;
+        public ModelComponent SourceComponent { get; }
 
-        public LayoutTrackComponent SourceTrack => TrackOf(sourceComponent);
+        public LayoutTrackComponent SourceTrack => TrackOf(SourceComponent);
 
-        public LayoutComponentConnectionPoint SourceFront => sourceFront;
+        public LayoutComponentConnectionPoint SourceFront { get; }
 
         public LayoutTrackComponent? DestinationTrack {
             get {
-                if (destinationTarget == null)
+                if (DestinationTarget == null)
                     return null;
-                return destinationTarget.DestinationTrack;
+                return DestinationTarget.DestinationTrack;
             }
         }
 
-        public RouteTarget? DestinationTarget {
-            get {
-                return destinationTarget;
-            }
-
-            set {
-                destinationTarget = value;
-            }
-        }
+        public RouteTarget? DestinationTarget { get; set; }
 
         public TrackEdge DestinationEdge => new TrackEdge(Ensure.NotNull<LayoutTrackComponent>(DestinationTrack, nameof(DestinationTrack)), DestinationFront).OtherSide;
 
@@ -387,29 +326,13 @@ namespace LayoutManager.Model {
             }
         }
 
-        public LayoutComponentConnectionPoint DestinationFront {
-            get {
-                return destinationFront;
-            }
+        public LayoutComponentConnectionPoint DestinationFront { get; set; }
 
-            set {
-                destinationFront = value;
-            }
-        }
-
-        public LocomotiveOrientation Direction => direction;
+        public LocomotiveOrientation Direction { get; }
 
         public Guid RouteOwner => routeOwner;
 
-        public RouteQuality Quality {
-            get {
-                return quality;
-            }
-
-            set {
-                quality = value;
-            }
-        }
+        public RouteQuality Quality { get; set; }
 
         public IList<RouteTarget> Targets => targets;
 
@@ -430,7 +353,6 @@ namespace LayoutManager.Model {
                 bool continueScanning = true;
 
                 do {
-
                     edges.Add(edge);
 
                     if (edge.Track == DestinationEdge.Track)
@@ -498,10 +420,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public TrainStateInfo? Train {
             get {
-                if (train == null)
-                    train = LayoutModel.StateManager.Trains[routeOwner] as TrainStateInfo;
-
-                return train;
+                return train ?? (train = LayoutModel.StateManager.Trains[routeOwner] as TrainStateInfo);
             }
         }
 

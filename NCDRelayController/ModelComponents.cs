@@ -19,14 +19,20 @@ namespace NCDRelayController {
 
     #pragma warning disable IDE0051, IDE0060, IDE0052
     public class NCDRelayController : ModelComponent, IModelComponentIsBusProvider {
+        private const string A_InterfaceType = "InterfaceType";
+        private const string A_OverlappedIO = "OverlappedIO";
+        private const string A_ReadIntervalTimeout = "ReadIntervalTimeout";
+        private const string A_ReadTotalTimeoutConstant = "ReadTotalTimeoutConstant";
+        private const string A_WriteTotalTimeoutConstant = "WriteTotalTimeoutConstant";
+        private const string A_PollingPeriod = "PollingPeriod";
         public static LayoutTraceSwitch TraceNCD = new LayoutTraceSwitch("NCDRelayController", "NCD Relay controller");
 
-        ControlBus _relayBus = null;
-        ControlBus _inputBus = null;
-        bool simulation;
-        bool operationMode;
-        Stream commStream;
-        OutputManager outputManager;
+        private ControlBus _relayBus = null;
+        private ControlBus _inputBus = null;
+        private bool simulation;
+        private bool operationMode;
+        private Stream commStream;
+        private OutputManager outputManager;
 
         public NCDRelayController() {
             this.XmlDocument.LoadXml(
@@ -40,40 +46,28 @@ namespace NCDRelayController {
 
         public ControlBus RelayBus {
             get {
-                if (_relayBus == null)
-                    _relayBus = LayoutModel.ControlManager.Buses.GetBus(this, "NCDRelayBus");
-                return _relayBus;
+                return _relayBus ?? (_relayBus = LayoutModel.ControlManager.Buses.GetBus(this, "NCDRelayBus"));
             }
         }
 
         public ControlBus InputBus {
             get {
-                if (_inputBus == null)
-                    _inputBus = LayoutModel.ControlManager.Buses.GetBus(this, "NCDInputBus");
-                return _inputBus;
+                return _inputBus ?? (_inputBus = LayoutModel.ControlManager.Buses.GetBus(this, "NCDInputBus"));
             }
         }
 
-        OutputManager OutputManager => outputManager;
+        private OutputManager OutputManager => outputManager;
 
-        InterfaceType InterfaceType {
-            get {
-                if (Element.HasAttribute("InterfaceType"))
-                    return (InterfaceType)Enum.Parse(typeof(InterfaceType), Element.GetAttribute("InterfaceType"));
-                else
-                    return InterfaceType.Serial;
-            }
-
-            set {
-                Element.SetAttribute("InterfaceType", value.ToString());
-            }
+        private InterfaceType InterfaceType {
+            get => Element.AttributeValue(A_InterfaceType).Enum<InterfaceType>() ?? InterfaceType.Serial;
+            set => Element.SetAttribute(A_InterfaceType, value);
         }
 
-        Stream CommStream => commStream;
+        private Stream CommStream => commStream;
 
         #region Communication init/cleanup
 
-        void OnInitialize() {
+        private void OnInitialize() {
             _relayBus = null;
             _inputBus = null;
 
@@ -85,24 +79,24 @@ namespace NCDRelayController {
             outputManager.AddCommand(new EnableReportingCommand(this));
 
             if (InputBus.Modules.Count > 0)
-                outputManager.AddIdleCommand(new PollContactClosuresCommand(this, XmlConvert.ToInt32(Element.GetAttribute("PollingPeriod"))));
+                outputManager.AddIdleCommand(new PollContactClosuresCommand(this, (int)Element.AttributeValue(A_PollingPeriod)));
         }
 
-        void OnCleanup() {
+        private void OnCleanup() {
         }
 
-        void OnCommunicationSetup() {
-            if (!Element.HasAttribute("OverlappedIO"))
-                Element.SetAttribute("OverlappedIO", XmlConvert.ToString(true));
-            if (!Element.HasAttribute("ReadIntervalTimeout"))
-                Element.SetAttribute("ReadIntervalTimeout", XmlConvert.ToString(3500));
-            if (!Element.HasAttribute("ReadTotalTimeoutConstant"))
-                Element.SetAttribute("ReadTotalTimeoutConstant", XmlConvert.ToString(6000));
-            if (!Element.HasAttribute("WriteTotalTimeoutConstant"))
-                Element.SetAttribute("WriteTotalTimeoutConstant", XmlConvert.ToString(6000));
+        private void OnCommunicationSetup() {
+            if (!Element.HasAttribute(A_OverlappedIO))
+                Element.SetAttribute(A_OverlappedIO, true);
+            if (!Element.HasAttribute(A_ReadIntervalTimeout))
+                Element.SetAttribute(A_ReadIntervalTimeout, 3500);
+            if (!Element.HasAttribute(A_ReadTotalTimeoutConstant))
+                Element.SetAttribute(A_ReadTotalTimeoutConstant, 6000);
+            if (!Element.HasAttribute(A_WriteTotalTimeoutConstant))
+                Element.SetAttribute(A_WriteTotalTimeoutConstant, 6000);
         }
 
-        void OpenCommunicationStream() {
+        private void OpenCommunicationStream() {
             if (InterfaceType == InterfaceType.Serial)
                 commStream = (FileStream)EventManager.Event(new LayoutEvent("open-serial-communication-device-request", Element));
             else {
@@ -123,12 +117,12 @@ namespace NCDRelayController {
             }
         }
 
-        void CloseCommunicationStream() {
+        private void CloseCommunicationStream() {
             commStream.Close();
             commStream = null;
         }
 
-        async Task OnTerminateCommunication() {
+        private async Task OnTerminateCommunication() {
             if (outputManager != null) {
                 await outputManager.WaitForIdle();
                 outputManager.Terminate();
@@ -154,7 +148,7 @@ namespace NCDRelayController {
 
         public override ModelComponentKind Kind => ModelComponentKind.ControlComponent;
 
-        public override bool DrawOutOfGrid => NameProvider.Element != null && NameProvider.Visible == true;
+        public override bool DrawOutOfGrid => NameProvider.Element != null && NameProvider.Visible;
 
         #endregion
 
@@ -217,7 +211,6 @@ namespace NCDRelayController {
             e.Info = true;
         }
 
-
         [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
         private Task changeTrackComponentStateCommand(LayoutEvent e0) {
             var e = (LayoutEventInfoValueType<ControlConnectionPointReference, int>)e0;
@@ -242,18 +235,17 @@ namespace NCDRelayController {
         #region Command classes
 
         public abstract class NCDcommandBase : OutputSynchronousCommandBase {
-            readonly byte[] replyBuffer;
+            private readonly byte[] replyBuffer;
 
             protected NCDRelayController RelayController { get; }
             protected int ReplySize { get; set; }
 
-            public NCDcommandBase(NCDRelayController relayController, int replySize = 1) {
+            protected NCDcommandBase(NCDRelayController relayController, int replySize = 1) {
                 this.RelayController = relayController;
                 this.ReplySize = replySize;
 
                 if (replySize > 0)
                     replyBuffer = new byte[replySize];
-
             }
 
             public override void OnReply(object replyPacket) {
@@ -303,17 +295,16 @@ namespace NCDRelayController {
             }
         }
 
-        class EnableReportingCommand : NCDcommandBase {
-
+        private class EnableReportingCommand : NCDcommandBase {
             public EnableReportingCommand(NCDRelayController relayController) : base(relayController) {
             }
 
             protected override byte[] Command => new byte[2] { 254, 27 };
         }
 
-        class SetRelayCommand : NCDcommandBase {
-            readonly int iRelay;
-            readonly bool on;
+        private class SetRelayCommand : NCDcommandBase {
+            private readonly int iRelay;
+            private readonly bool on;
 
             public SetRelayCommand(NCDRelayController relayController, int iRelay, bool on) : base(relayController) {
                 this.iRelay = iRelay;
@@ -329,7 +320,6 @@ namespace NCDRelayController {
                         command = (byte)(108 + (iRelay % 8));
                     else
                         command = (byte)(100 + (iRelay % 8));
-
 
                     byte[] outputBuffer = new byte[3];
                     outputBuffer[0] = 254;
@@ -349,15 +339,14 @@ namespace NCDRelayController {
                     new LayoutEvent[] {
                         new LayoutEventInfoValueType<ControlConnectionPointReference, int>("control-connection-point-state-changed-notification", new ControlConnectionPointReference(RelayController.RelayBus, iRelay), on ? 1 : 0)
                     }).SetCommandStation(RelayController));
-
             }
         }
 
-        class PollContactClosuresCommand : OutputSynchronousCommandBase, IOutputIdlecommand {
+        private class PollContactClosuresCommand : OutputSynchronousCommandBase, IOutputIdlecommand {
             protected NCDRelayController RelayController { get; }
 
-            readonly ContactClosureBankData[] contactClosureData;
-            readonly int pollingPeriod;
+            private readonly ContactClosureBankData[] contactClosureData;
+            private readonly int pollingPeriod;
 
             public PollContactClosuresCommand(NCDRelayController relayController, int pollingPeriod) {
                 this.RelayController = relayController;
@@ -409,8 +398,8 @@ namespace NCDRelayController {
 
             #endregion
 
-            struct ContactClosureBankData {
-                byte currentState;
+            private struct ContactClosureBankData {
+                private byte currentState;
 
                 public void NewData(IList<LayoutEvent> events, ControlModule module, int moduleNumber, int connectionPointIndex, byte data) {
                     byte changedBits = (byte)(currentState ^ data);

@@ -20,6 +20,7 @@ namespace LayoutManager.Tools.Dialogs {
         private RadioButton radioButtonOrientationBackward;
         private Button buttonAdd;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -29,7 +30,7 @@ namespace LayoutManager.Tools.Dialogs {
         private void endOfDesignerVariables() { }
 #pragma warning restore IDE0051 // Remove unused private members
 
-        readonly TrainCommonInfo train;
+        private readonly TrainCommonInfo train;
 
         public AddLocomotiveToTrain(TrainCommonInfo train) {
             //
@@ -252,7 +253,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "Add Locomotive";
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

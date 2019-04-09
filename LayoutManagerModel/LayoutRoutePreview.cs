@@ -6,15 +6,13 @@ using System.Diagnostics;
 using LayoutManager.Components;
 
 namespace LayoutManager.Model {
-
     public struct TrackSegment {
-        readonly LayoutTrackComponent track;
-        LayoutComponentConnectionPoint cp1, cp2;
+        private LayoutComponentConnectionPoint cp1, cp2;
 
         public static readonly TrackSegment Empty = new TrackSegment(null, 0, 0);
 
         public TrackSegment(LayoutTrackComponent track, LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
-            this.track = track;
+            this.Track = track;
             this.cp1 = cp1;
             this.cp2 = cp2;
             initalizeConnectionPoints(cp1, cp2);
@@ -24,7 +22,7 @@ namespace LayoutManager.Model {
             if (cps.Count != 2)
                 throw new ArgumentException("Track segment must be defined using two connection points");
 
-            this.track = track;
+            this.Track = track;
             this.cp1 = cps[0];
             this.cp2 = cps[1];
             initalizeConnectionPoints(cps[0], cps[1]);
@@ -34,7 +32,7 @@ namespace LayoutManager.Model {
         // If vertical then cp1=top cp2=bottom
         // If horizontal then cp1=left, cp2=right
         // If diagonal then cp1={horizontal} cp2={vertical}
-        void initalizeConnectionPoints(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
+        private void initalizeConnectionPoints(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
             if (LayoutTrackComponent.IsVertical(cp1, cp2)) {
                 if (cp1 == LayoutComponentConnectionPoint.B) {
                     this.cp1 = cp2;
@@ -55,7 +53,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public LayoutTrackComponent Track => track;
+        public LayoutTrackComponent Track { get; }
 
         public IList<LayoutComponentConnectionPoint> ConnectionPoints => Array.AsReadOnly<LayoutComponentConnectionPoint>(new LayoutComponentConnectionPoint[] { cp1, cp2 });
 
@@ -63,12 +61,11 @@ namespace LayoutManager.Model {
 
         public LayoutComponentConnectionPoint Cp2 => cp2;
 
-        public override string ToString() => track.FullDescription + " (" + cp1.ToString() + " to " + cp2.ToString() + ")";
-
+        public override string ToString() => Track.FullDescription + " (" + cp1.ToString() + " to " + cp2.ToString() + ")";
 
         public override bool Equals(object obj) {
             if (obj is TrackSegment other) {
-                return track == other.track && cp1 == other.cp1 && cp2 == other.cp2;
+                return Track == other.Track && cp1 == other.cp1 && cp2 == other.cp2;
             }
 
             return true;
@@ -78,54 +75,32 @@ namespace LayoutManager.Model {
 
         static public bool operator !=(TrackSegment s1, TrackSegment s2) => !s1.Equals(s2);
 
-        public override int GetHashCode() => track.GetHashCode() ^ cp1.GetHashCode() ^ cp2.GetHashCode();
+        public override int GetHashCode() => Track.GetHashCode() ^ cp1.GetHashCode() ^ cp2.GetHashCode();
     }
 
     /// <summary>
     /// Information needed to draw annotation on the preview route showing the locomotive orientation and motion direction.
     /// </summary>
     public class RoutePreviewAnnotation {
-        LayoutComponentConnectionPoint _front;
-        LocomotiveOrientation _direction;
-
         public RoutePreviewAnnotation(LayoutComponentConnectionPoint front, LocomotiveOrientation direction) {
-            _front = front;
-            _direction = direction;
+            Front = front;
+            Direction = direction;
         }
 
-        public LayoutComponentConnectionPoint Front {
-            get {
-                return _front;
-            }
+        public LayoutComponentConnectionPoint Front { get; set; }
 
-            set {
-                _front = value;
-            }
-        }
-
-        public LocomotiveOrientation Direction {
-            get {
-                return _direction;
-            }
-
-            set {
-                _direction = value;
-            }
-        }
+        public LocomotiveOrientation Direction { get; set; }
     }
 
     internal class TrackSegmentPreviewInfo {
-        readonly RoutePreviewRequest _request;
-        readonly RoutePreviewAnnotation _annotation;
-
         internal TrackSegmentPreviewInfo(RoutePreviewRequest request, RoutePreviewAnnotation annotation) {
-            _request = request;
-            _annotation = annotation;
+            Request = request;
+            Annotation = annotation;
         }
 
-        public RoutePreviewRequest Request => _request;
+        public RoutePreviewRequest Request { get; }
 
-        public RoutePreviewAnnotation Annotation => _annotation;
+        public RoutePreviewAnnotation Annotation { get; }
     }
 
     /// <summary>
@@ -133,49 +108,45 @@ namespace LayoutManager.Model {
     /// for a given track segment
     /// </summary>
     public class TrackSegmentPreviewResult {
-        readonly RoutePreviewRequest _request;
-        readonly RoutePreviewAnnotation[] _annotations;
+        private readonly RoutePreviewAnnotation[] _annotations;
 
         internal TrackSegmentPreviewResult(RoutePreviewRequest request, RoutePreviewAnnotation[] annotations) {
-            _request = request;
+            Request = request;
             _annotations = annotations;
         }
 
-        public RoutePreviewRequest Request => _request;
+        public RoutePreviewRequest Request { get; }
 
         public IList<RoutePreviewAnnotation> Annotations => _annotations;
     }
 
     internal struct PreviewRequestEntry {
-        TrackSegment _trackSegment;
-        readonly RoutePreviewAnnotation _previewAnnotation;
+        private TrackSegment _trackSegment;
 
         public PreviewRequestEntry(TrackSegment trackSegment) {
             _trackSegment = trackSegment;
-            _previewAnnotation = null;
+            PreviewAnnotation = null;
         }
 
         public PreviewRequestEntry(TrackSegment trackSegment, RoutePreviewAnnotation previewAnnotation) {
             _trackSegment = trackSegment;
-            _previewAnnotation = previewAnnotation;
+            PreviewAnnotation = previewAnnotation;
         }
 
         public TrackSegment TrackSegment => _trackSegment;
 
-        public RoutePreviewAnnotation PreviewAnnotation => _previewAnnotation;
+        public RoutePreviewAnnotation PreviewAnnotation { get; }
     }
 
     public class RoutePreviewRequest {
-        readonly List<PreviewRequestEntry> requestEntries = new List<PreviewRequestEntry>();
-        readonly Color color = Color.Green;
-        bool selected;
+        private readonly List<PreviewRequestEntry> requestEntries = new List<PreviewRequestEntry>();
 
         public RoutePreviewRequest(Color color) {
-            this.color = color;
+            this.Color = color;
         }
 
         public RoutePreviewRequest(Color color, ITripRoute route, int insertAnnotationEvery) {
-            this.color = color;
+            this.Color = color;
             Add(route, insertAnnotationEvery);
         }
 
@@ -197,7 +168,6 @@ namespace LayoutManager.Model {
             int insertCount = 0;
 
             do {
-
                 if (edge.Track == destinationEdge.Track)
                     continueScanning = false;
                 else {
@@ -238,17 +208,9 @@ namespace LayoutManager.Model {
 
         internal IList<PreviewRequestEntry> RequestEntries => requestEntries;
 
-        public Color Color => color;
+        public Color Color { get; } = Color.Green;
 
-        public bool Selected {
-            get {
-                return selected;
-            }
-
-            set {
-                selected = value;
-            }
-        }
+        public bool Selected { get; set; }
 
         public void Redraw() {
             foreach (PreviewRequestEntry requestEntry in RequestEntries)
@@ -266,11 +228,10 @@ namespace LayoutManager.Model {
     }
 
     public class PreviewRouteManager {
-        readonly Dictionary<TrackSegment, TrackSegmentMapEntry> trackSegmentMap = new Dictionary<TrackSegment, TrackSegmentMapEntry>();
+        private readonly Dictionary<TrackSegment, TrackSegmentMapEntry> trackSegmentMap = new Dictionary<TrackSegment, TrackSegmentMapEntry>();
 
         public void Add(RoutePreviewRequest previewRequest) {
             foreach (PreviewRequestEntry requestEntry in previewRequest.RequestEntries) {
-
                 if (!trackSegmentMap.TryGetValue(requestEntry.TrackSegment, out TrackSegmentMapEntry entry)) {
                     entry = new TrackSegmentMapEntry();
                     trackSegmentMap.Add(requestEntry.TrackSegment, entry);
@@ -301,7 +262,6 @@ namespace LayoutManager.Model {
 
         public TrackSegmentPreviewResult this[TrackSegment trackSegment] {
             get {
-
                 // TODO: May need to merge the preview annotation info from all preview requests that are displayed for this track segment
 
                 if (trackSegmentMap.TryGetValue(trackSegment, out TrackSegmentMapEntry entry))
@@ -323,10 +283,10 @@ namespace LayoutManager.Model {
             }
         }
 
-        class TrackSegmentMapEntry {
-            TrackSegmentPreviewInfo topPreviewInfo;
-            List<TrackSegmentPreviewInfo> otherPreviewInfos;
-            int annotationCount = -1;
+        private class TrackSegmentMapEntry {
+            private TrackSegmentPreviewInfo topPreviewInfo;
+            private List<TrackSegmentPreviewInfo> otherPreviewInfos;
+            private int annotationCount = -1;
 
             public void Add(TrackSegmentPreviewInfo previewInfo) {
                 annotationCount = -1;

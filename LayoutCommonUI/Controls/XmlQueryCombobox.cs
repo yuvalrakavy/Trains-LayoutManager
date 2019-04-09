@@ -8,42 +8,14 @@ namespace LayoutManager.CommonUI.Controls {
     /// Summary description for XmlQueryCombobox.
     /// </summary>
     public class XmlQueryCombobox : ComboBox {
-        XmlElement container;
-        string query = "*[contains(Name, '<TEXT>')]";
-        string extract = "string(Name)";
-
         public XmlQueryCombobox() {
         }
 
-        public XmlElement ContainerElement {
-            set {
-                container = value;
-            }
+        public XmlElement ContainerElement { set; get; }
 
-            get {
-                return container;
-            }
-        }
+        public string Query { get; set; } = "*[contains(Name, '<TEXT>')]";
 
-        public string Query {
-            get {
-                return query;
-            }
-
-            set {
-                query = value;
-            }
-        }
-
-        public string Extract {
-            get {
-                return extract;
-            }
-
-            set {
-                extract = value;
-            }
-        }
+        public string Extract { get; set; } = "string(Name)";
 
         public XmlElement SelectedElement {
             get {
@@ -69,16 +41,15 @@ namespace LayoutManager.CommonUI.Controls {
             string q = "*";
 
             if (Text.Trim() != "")
-                q = Regex.Replace(query, "<TEXT>", Text);
+                q = Regex.Replace(Query, "<TEXT>", Text);
 
-
-            return container.SelectNodes(q);
+            return ContainerElement.SelectNodes(q);
         }
 
         protected override void OnDropDown(EventArgs e) {
             base.OnDropDown(e);
 
-            string ext = extract;
+            string ext = Extract;
             if (ext == null)
                 ext = "string(Name)";
 

@@ -9,6 +9,7 @@ namespace LayoutManager.Dialogs {
     /// Summary description for LocomotiveCollectionStores.
     /// </summary>
     public class LocomotiveCollectionStores : Form {
+        private const string A_DefaultStore = "DefaultStore";
         private Button buttonClose;
         private ListView listViewStores;
         private Button buttonNew;
@@ -16,16 +17,17 @@ namespace LayoutManager.Dialogs {
         private Button buttonRemove;
         private ColumnHeader columnHeaderName;
         private ColumnHeader columnHeaderFile;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
         private Button buttonSetAsDefault;
-        readonly XmlElement storesElement;
-        readonly string storesName;
-        readonly string collectionDescription;
-        readonly string defaultDirectory;
-        readonly string defaultExtension;
+        private readonly XmlElement storesElement;
+        private readonly string storesName;
+        private readonly string collectionDescription;
+        private readonly string defaultDirectory;
+        private readonly string defaultExtension;
 
         public LocomotiveCollectionStores(string storesName, XmlElement storesElement, string collectionDescription, string defaultDirectory, string defaultExtension) {
             this.collectionDescription = collectionDescription;
@@ -44,8 +46,8 @@ namespace LayoutManager.Dialogs {
             foreach (XmlElement storeElement in storesElement)
                 listViewStores.Items.Add(new StoreItem(storeElement));
 
-            if (storesElement.HasAttribute("DefaultStore")) {
-                StoreItem defaultItem = (StoreItem)listViewStores.Items[XmlConvert.ToInt32(storesElement.GetAttribute("DefaultStore"))];
+            if (storesElement.HasAttribute(A_DefaultStore)) {
+                StoreItem defaultItem = (StoreItem)listViewStores.Items[(int)storesElement.AttributeValue(A_DefaultStore)];
 
                 defaultItem.IsDefault = true;
                 defaultItem.Update();
@@ -188,7 +190,6 @@ namespace LayoutManager.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Locomotive Catalog Storage";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -248,7 +249,7 @@ namespace LayoutManager.Dialogs {
 
             foreach (StoreItem item in listViewStores.Items) {
                 if (item.IsDefault) {
-                    storesElement.SetAttribute("DefaultStore", XmlConvert.ToString(defaultStoreIndex));
+                    storesElement.SetAttribute(A_DefaultStore, defaultStoreIndex);
                     defaultFound = true;
                     break;
                 }
@@ -264,7 +265,7 @@ namespace LayoutManager.Dialogs {
                         "No storage location specified", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else if (listViewStores.Items.Count == 1) {
-                    storesElement.SetAttribute("DefaultStore", XmlConvert.ToString(0));
+                    storesElement.SetAttribute(A_DefaultStore, 0);
                     errorCondition = false;
                 }
                 else {
@@ -281,39 +282,27 @@ namespace LayoutManager.Dialogs {
             DialogResult = DialogResult.OK;
         }
 
-        class StoreItem : ListViewItem {
-            readonly XmlElement storeElement;
-            bool isDefault = false;
-
+        private class StoreItem : ListViewItem {
             public StoreItem(XmlElement storeElement) {
-                this.storeElement = storeElement;
+                this.StoreElement = storeElement;
 
                 Text = storeElement.GetAttribute("Name");
                 SubItems.Add(storeElement.GetAttribute("File"));
             }
 
             public void Update() {
-                Text = storeElement.GetAttribute("Name");
-                SubItems[1].Text = storeElement.GetAttribute("File");
+                Text = StoreElement.GetAttribute("Name");
+                SubItems[1].Text = StoreElement.GetAttribute("File");
 
-                if (isDefault)
+                if (IsDefault)
                     Font = new Font(ListView.Font, ListView.Font.Style | FontStyle.Bold);
                 else
                     Font = ListView.Font;
             }
 
-            public XmlElement StoreElement => storeElement;
+            public XmlElement StoreElement { get; }
 
-            public bool IsDefault {
-                get {
-                    return isDefault;
-                }
-
-                set {
-                    isDefault = value;
-                }
-            }
-
+            public bool IsDefault { get; set; } = false;
         }
     }
 }

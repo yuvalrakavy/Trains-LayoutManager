@@ -13,14 +13,13 @@ namespace LayoutManager.CommonUI.Controls {
         /// </summary>
         private Container components = null;
 
-        int switchCount = 8;
-        int switchCountBase = 1;
-        long switchValue = 0;
-        bool lsbOnRight = false;
-        readonly int leftMargin = 20;
-        readonly int topMargin = 8;
-        readonly int bottomMargin = 14;
-        int xUnit;
+        private int switchCount = 8;
+        private long switchValue = 0;
+        private bool lsbOnRight = false;
+        private readonly int leftMargin = 20;
+        private readonly int topMargin = 8;
+        private readonly int bottomMargin = 14;
+        private int xUnit;
 
         public DIPswitch() {
             // This call is required by the Windows.Forms Form Designer.
@@ -54,15 +53,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         [Description("The number to show for bit 0")]
-        public int SwitchCountBase {
-            get {
-                return switchCountBase;
-            }
-
-            set {
-                switchCountBase = value;
-            }
-        }
+        public int SwitchCountBase { get; set; } = 1;
 
         public long Value {
             get {
@@ -135,7 +126,6 @@ namespace LayoutManager.CommonUI.Controls {
                 g.DrawString("Off", labelFont, Brushes.White, new RectangleF(new PointF(2, Height - 2 - labelSize.Height), labelSize));
             }
         }
-
 
         protected override void OnPaint(PaintEventArgs pe) {
             base.OnPaint(pe);

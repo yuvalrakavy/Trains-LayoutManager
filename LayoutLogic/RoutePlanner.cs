@@ -14,13 +14,13 @@ namespace LayoutManager.Logic {
     /// Summary description for TripPlanner.
     /// </summary>
     [LayoutModule("Route Planner")]
-    class RoutePlanner : LayoutModuleBase, IRoutePlanningServices {
-        static readonly LayoutTraceSwitch traceRoutePlanning = new LayoutTraceSwitch("RoutePlanning", "Route Planning");
-        static readonly LayoutTraceSwitch traceRoutingTable = new LayoutTraceSwitch("RoutingTable", "Routing table construction");
+    internal class RoutePlanner : LayoutModuleBase, IRoutePlanningServices {
+        private static readonly LayoutTraceSwitch traceRoutePlanning = new LayoutTraceSwitch("RoutePlanning", "Route Planning");
+        private static readonly LayoutTraceSwitch traceRoutingTable = new LayoutTraceSwitch("RoutingTable", "Routing table construction");
 
-        RoutingTable routingTable = new RoutingTable();
-        ModelTopology? routingTableTopology;
-        bool aborted;
+        private RoutingTable routingTable = new RoutingTable();
+        private ModelTopology? routingTableTopology;
+        private bool aborted;
 
         [LayoutEvent("get-route-planning-services")]
         private void getRoutePlanningServers(LayoutEvent e) {
@@ -59,7 +59,7 @@ namespace LayoutManager.Logic {
                 e.Info = true;
 
 #if DEBUG
-            if ((bool)e.Info == true)
+            if ((bool)e.Info)
                 traceRouteTableInfo(routingTable);
 #endif
         }
@@ -82,7 +82,6 @@ namespace LayoutManager.Logic {
                     r.Read();
 
                     do {
-
                         if (r.NodeType == XmlNodeType.Element) {
                             if (r.Name == "Topology")
                                 routingTableTopology = new ModelTopology(r);
@@ -172,7 +171,6 @@ namespace LayoutManager.Logic {
                 Trace.WriteLine("Routing for " + multiPathTracks.Count() + " multi-path tracks (turnouts)");
 
             foreach (IModelComponentIsMultiPath turnout in multiPathTracks) {
-
                 if (aborted)
                     break;
 
@@ -209,17 +207,14 @@ namespace LayoutManager.Logic {
             invoker.QueueEvent(new LayoutEvent("routing-table-generation-done", this));
         }
 
-        class GetSplitsInfo {
-            readonly Dictionary<TrackEdgeId, int> reachableSplits = new Dictionary<TrackEdgeId, int>();
-            readonly ModelTopology topology;
-
+        private class GetSplitsInfo {
             public GetSplitsInfo(ModelTopology topology) {
-                this.topology = topology;
+                this.Topology = topology;
             }
 
-            public Dictionary<TrackEdgeId, int> ReachableSplits => reachableSplits;
+            public Dictionary<TrackEdgeId, int> ReachableSplits { get; } = new Dictionary<TrackEdgeId, int>();
 
-            public ModelTopology Topology => topology;
+            public ModelTopology Topology { get; }
         }
 
         private void getReachableSplits(GetSplitsInfo si, TrackEdgeId splitEdgeID, int switchState, int penalty) {
@@ -241,7 +236,6 @@ namespace LayoutManager.Logic {
             TrackEdgeId destination = topologyConnectionEntry.Destination;
 
             penalty += topologyConnectionEntry.Penalty;
-
 
             if (si.ReachableSplits.TryGetValue(destination, out int bestPenalty)) {
                 if (penalty < bestPenalty) {
@@ -276,11 +270,11 @@ namespace LayoutManager.Logic {
 
         #region Figure out routing target
 
-        enum FirstBlockHandling {
+        private enum FirstBlockHandling {
             Ignore, AvoidIfNonWaitable, Processed
         }
 
-        class TargetScanEntry {
+        private class TargetScanEntry {
             public TrackEdge Edge;
             public RouteQuality Quality;
             public FirstBlockHandling FirstBlock;
@@ -318,7 +312,7 @@ namespace LayoutManager.Logic {
             }
         }
 
-        void addTargets(IList<RouteTarget> targets, TrackEdge sourceEdge, TripPlanDestinationEntryInfo? destinationEntryInfo, LayoutTrackComponent targetTrack, Guid routeOwner, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, int initalPenalty, bool trainStopping) {
+        private void addTargets(IList<RouteTarget> targets, TrackEdge sourceEdge, TripPlanDestinationEntryInfo? destinationEntryInfo, LayoutTrackComponent targetTrack, Guid routeOwner, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, int initalPenalty, bool trainStopping) {
             Stack<TargetScanEntry> scanStack = new Stack<TargetScanEntry>();
 
             if (targetTrack.ConnectTo(front, LayoutComponentConnectionType.Topology).Length == 0)
@@ -387,7 +381,7 @@ namespace LayoutManager.Logic {
             }
         }
 
-        void addTargets(BestRoute bestRoute, TrackEdge sourceEdge, TripPlanDestinationEntryInfo? destinationEntryInfo, ModelComponent destinationComponent, int initialPenatly, bool trainStopping) {
+        private void addTargets(BestRoute bestRoute, TrackEdge sourceEdge, TripPlanDestinationEntryInfo? destinationEntryInfo, ModelComponent destinationComponent, int initialPenatly, bool trainStopping) {
             LayoutTrackComponent destinationTrack = BestRoute.TrackOf(destinationComponent);
 
             addTargets(
@@ -413,12 +407,12 @@ namespace LayoutManager.Logic {
                 trainStopping: trainStopping);
         }
 
-        enum SortTargetsResult {
+        private enum SortTargetsResult {
             NoPath,                 // No path to any target
             FindRoute,              // Targets are sorted, look for route
         }
 
-        class TargetQualityComparer : IComparer<RouteTarget> {
+        private class TargetQualityComparer : IComparer<RouteTarget> {
             #region IComparer<RouteTarget> Members
 
             public int Compare(RouteTarget x, RouteTarget y) => x.Quality.CompareTo(y.Quality);
@@ -429,7 +423,6 @@ namespace LayoutManager.Logic {
 
             #endregion
         }
-
 
         private SortTargetsResult sortTargets(IList<RouteTarget> targets, ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction) {
             LayoutTrackComponent sourceTrack = trackOf(sourceComponent);
@@ -463,7 +456,6 @@ namespace LayoutManager.Logic {
                             if (turnout.IsSplitPoint(edge.ConnectionPoint))
                                 break;
                         }
-
                     }
 
                     edge = edge.Track.GetConnectedComponentEdge(edge.Track.ConnectTo(edge.ConnectionPoint, LayoutComponentConnectionType.Passage)[0]);
@@ -496,7 +488,6 @@ namespace LayoutManager.Logic {
                         minPenalty = 0;
                     else {
                         foreach (Dictionary<TrackEdgeId, int> reachableNodes in routingEntry) {
-
                             if (reachableNodes != null && reachableNodes.TryGetValue(target.TargetEdgeId, out int penalty)) {
                                 if (minPenalty == -1 || penalty < minPenalty)
                                     minPenalty = penalty;
@@ -579,7 +570,6 @@ namespace LayoutManager.Logic {
             else
                 throw new ArgumentException("Invalid sourceComponent type (not track or block definition)");
 
-
             int penaltyDelta = destination.SelectionMethod == TripPlanLocationSelectionMethod.ListOrder ? penaltyForDestinationRank : 0;
             int destinationRankPenalty = 0;
 
@@ -619,7 +609,7 @@ namespace LayoutManager.Logic {
             return bestRoute;
         }
 
-        void findBestRouteToTargets(BestRoute bestRoute, bool trainStopping) {
+        private void findBestRouteToTargets(BestRoute bestRoute, bool trainStopping) {
             SortTargetsResult sortResult = sortTargets(bestRoute.Targets, bestRoute.SourceComponent, bestRoute.SourceFront, bestRoute.Direction);
 
             if (traceRoutePlanning.TraceInfo) {
@@ -640,7 +630,7 @@ namespace LayoutManager.Logic {
             }
         }
 
-        void findBestRouteToTargets(BestRoute bestRoute, bool trainStopping, RouteClearanceQuality qualityThreshold) {
+        private void findBestRouteToTargets(BestRoute bestRoute, bool trainStopping, RouteClearanceQuality qualityThreshold) {
             foreach (RouteTarget target in bestRoute.Targets) {
                 if (target.Quality.IsBetterThan(qualityThreshold)) {
                     findBestRouteToTarget(bestRoute, target, trainStopping, qualityThreshold);
@@ -656,7 +646,7 @@ namespace LayoutManager.Logic {
                 bestRoute.Quality.ClearanceQuality = RouteClearanceQuality.NoPath;
         }
 
-        void findBestRouteToTarget(BestRoute bestRoute, RouteTarget target, bool trainStopping, RouteClearanceQuality qualityThreshold) {
+        private void findBestRouteToTarget(BestRoute bestRoute, RouteTarget target, bool trainStopping, RouteClearanceQuality qualityThreshold) {
             TrackEdge edge = new TrackEdge(bestRoute.SourceTrack,
                 (bestRoute.Direction == LocomotiveOrientation.Backward) ? bestRoute.SourceFront : bestRoute.SourceTrack.ConnectTo(bestRoute.SourceFront, LayoutComponentConnectionType.Passage)[0]);
             RouteLookupState? lookupState = new RouteLookupState(bestRoute.RouteOwner, edge);
@@ -680,7 +670,6 @@ namespace LayoutManager.Logic {
                             lookupState.GotToTarget = true;
 
                         if (newBlock != lookupState.Block) {
-
                             lookupState.Quality.AddQuality(newBlock);
 
                             Trace.WriteLineIf(traceRoutePlanning.TraceVerbose, "Block " + newBlock.BlockDefinintion.FullDescription + " accumulated quality " + lookupState.Quality.ToString());
@@ -690,7 +679,6 @@ namespace LayoutManager.Logic {
                                 deadEnd = true;
                             }
                             else {
-
                                 // Check block pass condition, if the train is not going to stop in this block
                                 if ((!isDestinationBlock || !trainStopping) && !CheckCondition(bestRoute, lookupState, newBlock, "Block pass", newBlock.BlockDefinintion.Info.TrainPassCondition)) {
                                     deadEnd = true;
@@ -717,7 +705,6 @@ namespace LayoutManager.Logic {
                                 }
                             }
 
-
                             lookupState.Block = newBlock;
                         }
 
@@ -736,7 +723,6 @@ namespace LayoutManager.Logic {
                             Trace.WriteLineIf(traceRoutePlanning.TraceInfo, "  Backtracking to " + lookupState.Edge.ToString());
                     }
                     else {
-
                         if (lookupState.Edge.Track is IModelComponentIsMultiPath turnout) {
                             if (lookupState.Edge == target.TargetEdge) {
                                 lookupState.SwitchStates.Add(target.SwitchState);
@@ -831,13 +817,12 @@ namespace LayoutManager.Logic {
             return result;
         }
 
-        RouteOption[] getRouteOptions(TrackEdge edge, RouteTarget target) {
+        private RouteOption[] getRouteOptions(TrackEdge edge, RouteTarget target) {
             List<RouteOption> routeOptions = new List<RouteOption>();
 
             RoutingTableEntry routingTableEntry = routingTable[edge];
 
             for (int switchState = 0; switchState < routingTableEntry.SwitchStateCount; switchState++) {
-
                 if (routingTableEntry[switchState] != null && routingTableEntry[switchState].TryGetValue(target.TargetEdgeId, out int penalty))
                     routeOptions.Add(new RouteOption(switchState, penalty));
             }
@@ -859,7 +844,7 @@ namespace LayoutManager.Logic {
 
         #region Helper classes
 
-        class RouteOption : IComparable {
+        private class RouteOption : IComparable {
             public int SwitchState;
             public int Penalty;
 
@@ -871,51 +856,31 @@ namespace LayoutManager.Logic {
             public int CompareTo(object oBacktrackOption) => Penalty - ((RouteOption)oBacktrackOption).Penalty;
         }
 
-        class RouteLookupState : ICloneable {
-            readonly List<int> switchStates = new List<int>();
-            readonly RouteQuality quality;
-            TrackEdge edge;
-            LayoutBlock block;
-            bool gotToTarget;
+        private class RouteLookupState : ICloneable {
+            private bool gotToTarget;
 
             public RouteLookupState(Guid routeOwner, TrackEdge edge) {
-                this.edge = edge;
-                this.quality = new RouteQuality(routeOwner);
-                this.block = edge.Track.GetBlock(edge.ConnectionPoint);
+                this.Edge = edge;
+                this.Quality = new RouteQuality(routeOwner);
+                this.Block = edge.Track.GetBlock(edge.ConnectionPoint);
                 this.gotToTarget = false;
             }
 
             protected RouteLookupState(RouteLookupState lookupState) {
-                this.edge = lookupState.Edge;
-                this.block = lookupState.Block;
-                this.quality = (RouteQuality)lookupState.Quality.Clone();
-                this.switchStates = new List<int>(lookupState.SwitchStates);
+                this.Edge = lookupState.Edge;
+                this.Block = lookupState.Block;
+                this.Quality = (RouteQuality)lookupState.Quality.Clone();
+                this.SwitchStates = new List<int>(lookupState.SwitchStates);
                 this.gotToTarget = lookupState.GotToTarget;
             }
 
-            public List<int> SwitchStates => switchStates;
+            public List<int> SwitchStates { get; } = new List<int>();
 
-            public RouteQuality Quality => quality;
+            public RouteQuality Quality { get; }
 
-            public TrackEdge Edge {
-                get {
-                    return edge;
-                }
+            public TrackEdge Edge { get; set; }
 
-                set {
-                    edge = value;
-                }
-            }
-
-            public LayoutBlock Block {
-                get {
-                    return block;
-                }
-
-                set {
-                    block = value;
-                }
-            }
+            public LayoutBlock Block { get; set; }
 
             public bool GotToTarget {
                 get {
@@ -930,10 +895,10 @@ namespace LayoutManager.Logic {
             public object Clone() => new RouteLookupState(this);
         }
 
-        class RouteBacktrackEntry {
-            int nextOption;
-            readonly RouteLookupState lookupState;
-            readonly RouteOption[] routeOptions;
+        private class RouteBacktrackEntry {
+            private int nextOption;
+            private readonly RouteLookupState lookupState;
+            private readonly RouteOption[] routeOptions;
 
             public RouteBacktrackEntry(RouteLookupState lookupState, RouteOption[] routeOptions) {
                 this.lookupState = (RouteLookupState)lookupState.Clone();
@@ -963,8 +928,8 @@ namespace LayoutManager.Logic {
             public bool IsValid => nextOption < routeOptions.Length;
         }
 
-        class RouteBacktrackManager {
-            readonly Dictionary<TrackEdge, RouteBacktrackEntry> backtrackEntries = new Dictionary<TrackEdge, RouteBacktrackEntry>();
+        private class RouteBacktrackManager {
+            private readonly Dictionary<TrackEdge, RouteBacktrackEntry> backtrackEntries = new Dictionary<TrackEdge, RouteBacktrackEntry>();
 
             public void AddBacktrackEntry(RouteLookupState lookupState, RouteOption[] routeOptions) {
                 if (!backtrackEntries.ContainsKey(lookupState.Edge))
@@ -1016,8 +981,19 @@ namespace LayoutManager.Logic {
 
         #region Data structures
 
-        class RoutingTable {
-            readonly Dictionary<TrackEdgeId, RoutingTableEntry> routingTable = new Dictionary<TrackEdgeId, RoutingTableEntry>();
+        private class RoutingTable {
+            private const string E_RoutingTable = "RoutingTable";
+            private const string E_Entry = "Entry";
+            private const string A_Id = "ID";
+            private const string A_Cp = "Cp";
+            private const string A_States = "States";
+            private const string E_State = "State";
+            private const string A_Index = "Index";
+            private const string E_Route = "Route";
+            private const string A_DestID = "DestID";
+            private const string A_DestCp = "DestCp";
+            private const string A_Penalty = "Penalty";
+            private readonly Dictionary<TrackEdgeId, RoutingTableEntry> routingTable = new Dictionary<TrackEdgeId, RoutingTableEntry>();
 
             public RoutingTable() {
             }
@@ -1034,10 +1010,10 @@ namespace LayoutManager.Logic {
                     r.Read();
 
                     do {
-                        if (r.NodeType == XmlNodeType.Element && r.Name == "Entry") {
-                            var nStates = (int)GetAttribute("States");
-                            var id = (Guid)GetAttribute("ID");
-                            var cp = GetAttribute("Cp").ToComponentConnectionPoint() ?? throw new ArgumentNullException("cp");
+                        if (r.NodeType == XmlNodeType.Element && r.Name == E_Entry) {
+                            var nStates = (int)GetAttribute(A_States);
+                            var id = (Guid)GetAttribute(A_Id);
+                            var cp = GetAttribute(A_Cp).ToComponentConnectionPoint();
 
                             RoutingTableEntry entry = new RoutingTableEntry(nStates);
 
@@ -1045,8 +1021,8 @@ namespace LayoutManager.Logic {
                                 r.Read();
 
                                 do {
-                                    if (r.NodeType == XmlNodeType.Element && r.Name == "State") {
-                                        var index = (int)GetAttribute("Index");
+                                    if (r.NodeType == XmlNodeType.Element && r.Name == E_State) {
+                                        var index = (int)GetAttribute(A_Index);
 
                                         if (!r.IsEmptyElement) {
                                             entry[index] = new Dictionary<TrackEdgeId, int>();
@@ -1054,10 +1030,10 @@ namespace LayoutManager.Logic {
                                             r.Read();
 
                                             do {
-                                                if (r.NodeType == XmlNodeType.Element && r.Name == "Route") {
-                                                    var destinationId = (Guid)GetAttribute("DestID");
-                                                    var destinationCp = GetAttribute("DestCp").ToComponentConnectionPoint() ?? throw new ArgumentNullException("DestCp");
-                                                    var penalty = (int)GetAttribute("Penalty");
+                                                if (r.NodeType == XmlNodeType.Element && r.Name == E_Route) {
+                                                    var destinationId = (Guid)GetAttribute(A_DestID);
+                                                    var destinationCp = GetAttribute(A_DestCp).ToComponentConnectionPoint();
+                                                    var penalty = (int)GetAttribute(A_Penalty);
 
                                                     entry[index].Add(new TrackEdgeId(destinationId, destinationCp), penalty);
                                                 }
@@ -1114,29 +1090,29 @@ namespace LayoutManager.Logic {
             }
 
             public void WriteXml(XmlWriter w) {
-                w.WriteStartElement("RoutingTable");
+                w.WriteStartElement(E_RoutingTable);
 
                 foreach (KeyValuePair<TrackEdgeId, RoutingTableEntry> d in routingTable) {
                     TrackEdgeId keyEdgeID = d.Key;
                     RoutingTableEntry entry = d.Value;
 
-                    w.WriteStartElement("Entry");
-                    w.WriteAttributeString("ID", XmlConvert.ToString(keyEdgeID.TrackId));
-                    w.WriteAttributeString("Cp", keyEdgeID.ConnectionPoint.ToString());
-                    w.WriteAttributeString("States", XmlConvert.ToString(entry.SwitchStateCount));
+                    w.WriteStartElement(E_Entry);
+                    w.WriteAttributeString(A_Id, keyEdgeID.TrackId);
+                    w.WriteAttributeString(A_Cp, keyEdgeID.ConnectionPoint.ToString());
+                    w.WriteAttributeString(A_States, entry.SwitchStateCount);
 
                     for (int iState = 0; iState < entry.SwitchStateCount; iState++) {
                         if (entry[iState] != null && entry[iState].Count > 0) {
-                            w.WriteStartElement("State");
-                            w.WriteAttributeString("Index", XmlConvert.ToString(iState));
+                            w.WriteStartElement(E_State);
+                            w.WriteAttributeString(A_Index, iState);
 
                             foreach (KeyValuePair<TrackEdgeId, int> dState in entry[iState]) {
                                 TrackEdgeId stateKeyEdgeID = dState.Key;
 
-                                w.WriteStartElement("Route");
-                                w.WriteAttributeString("DestID", XmlConvert.ToString(stateKeyEdgeID.TrackId));
-                                w.WriteAttributeString("DestCp", stateKeyEdgeID.ConnectionPoint.ToString());
-                                w.WriteAttributeString("Penalty", XmlConvert.ToString(dState.Value));
+                                w.WriteStartElement(E_Route);
+                                w.WriteAttributeString(A_DestID, stateKeyEdgeID.TrackId);
+                                w.WriteAttributeString(A_DestCp, stateKeyEdgeID.ConnectionPoint.ToString());
+                                w.WriteAttributeString(A_Penalty, dState.Value);
                                 w.WriteEndElement();
                             }
 
@@ -1183,12 +1159,11 @@ namespace LayoutManager.Logic {
             }
         }
 
-        struct RoutingTableEntry : IEnumerable<Dictionary<TrackEdgeId, int>> {
-            readonly int nSwitchingStates;
-            readonly Dictionary<TrackEdgeId, int>[] reachableNodes;
+        private struct RoutingTableEntry : IEnumerable<Dictionary<TrackEdgeId, int>> {
+            private readonly Dictionary<TrackEdgeId, int>[] reachableNodes;
 
             public RoutingTableEntry(int nSwitchingStates) {
-                this.nSwitchingStates = nSwitchingStates;
+                this.SwitchStateCount = nSwitchingStates;
                 this.reachableNodes = new Dictionary<TrackEdgeId, int>[nSwitchingStates];
             }
 
@@ -1202,7 +1177,7 @@ namespace LayoutManager.Logic {
                 }
             }
 
-            public int SwitchStateCount => nSwitchingStates;
+            public int SwitchStateCount { get; }
 
             #region IEnumerable< Dictionary<TrackEdgeID, int>> Members
 

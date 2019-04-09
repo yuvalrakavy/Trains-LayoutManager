@@ -21,13 +21,14 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private MenuItem menuItemHours;
         private MenuItem menuItemDayOfWeek;
         private ContextMenu contextMenuAdd;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
 
-        readonly XmlDocument workingDoc;
-        readonly XmlElement element;
-        readonly XmlElement inElement;
+        private readonly XmlDocument workingDoc;
+        private readonly XmlElement element;
+        private readonly XmlElement inElement;
 
 #pragma warning disable nullable
         public IfTime(XmlElement inElement) {
@@ -226,7 +227,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.ShowInTaskbar = false;
             this.Text = "If (Time)";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -269,7 +269,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         }
 
         private void buttonEdit_Click(object sender, System.EventArgs e) {
-
             if (treeView.SelectedNode is TreeNodeBase selected) {
                 if (selected.Edit())
                     selected.Text = selected.Node.Description;
@@ -306,7 +305,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             buttonEdit.PerformClick();
         }
 
-        class TimeSectionTreeNode : TreeNode {
+        private class TimeSectionTreeNode : TreeNode {
             public TimeSectionTreeNode(string title, Type treeNodeClass, IIfTimeNode[] nodes) {
                 Text = title;
 
@@ -326,23 +325,21 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             }
         }
 
-        abstract class TreeNodeBase : TreeNode, IObjectHasXml {
-            readonly IIfTimeNode node;
-
-            public TreeNodeBase(IIfTimeNode node) {
-                this.node = node;
+        private abstract class TreeNodeBase : TreeNode, IObjectHasXml {
+            protected TreeNodeBase(IIfTimeNode node) {
+                this.Node = node;
                 Text = node.Description;
             }
 
-            public XmlElement Element => node.Element;
+            public XmlElement Element => Node.Element;
             public XmlElement? OptionalElement => Element;
 
-            public IIfTimeNode Node => node;
+            public IIfTimeNode Node { get; }
 
             abstract public bool Edit();
         }
 
-        class SecondsTreeNode : TreeNodeBase {
+        private class SecondsTreeNode : TreeNodeBase {
             public SecondsTreeNode(IIfTimeNode node) : base(node) {
             }
 
@@ -353,10 +350,9 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
                     return true;
                 return false;
             }
-
         }
 
-        class MinutesTreeNode : TreeNodeBase {
+        private class MinutesTreeNode : TreeNodeBase {
             public MinutesTreeNode(IIfTimeNode node) : base(node) {
             }
 
@@ -367,10 +363,9 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
                     return true;
                 return false;
             }
-
         }
 
-        class HoursTreeNode : TreeNodeBase {
+        private class HoursTreeNode : TreeNodeBase {
             public HoursTreeNode(IIfTimeNode node) : base(node) {
             }
 
@@ -383,7 +378,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             }
         }
 
-        class DayOfWeekTreeNode : TreeNodeBase {
+        private class DayOfWeekTreeNode : TreeNodeBase {
             public DayOfWeekTreeNode(IIfTimeNode node) : base(node) {
             }
 

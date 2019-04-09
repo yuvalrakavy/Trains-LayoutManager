@@ -24,6 +24,7 @@ namespace LayoutManager.Dialogs {
         private TabPage tabPageGeneral;
         private TabPage tabPageFunctions;
         private ListView listViewFunctions;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -67,8 +68,8 @@ namespace LayoutManager.Dialogs {
 
         private void EndOfDesignerVariables() { }
 
-        readonly LocomotiveInfo inLoco;
-        readonly LocomotiveInfo loco;
+        private readonly LocomotiveInfo inLoco;
+        private readonly LocomotiveInfo loco;
 
         public LocomotiveProperties(LocomotiveInfo inLoco) : base() {
             //
@@ -672,7 +673,6 @@ namespace LayoutManager.Dialogs {
             this.tabPageDecoder.PerformLayout();
             this.tabPageAttributes.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

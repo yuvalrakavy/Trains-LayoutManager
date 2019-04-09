@@ -11,6 +11,7 @@ namespace LayoutManager.CommonUI.Controls {
     public class TrainDriverComboBox : System.Windows.Forms.UserControl {
         private ComboBox comboBoxDrivers;
         private Button buttonDriverSettings;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -18,7 +19,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         private void endOfDesignerVariables() { }
 
-        TrainCommonInfo train;
+        private TrainCommonInfo train;
 
         public TrainCommonInfo Train {
             set {
@@ -148,7 +149,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Name = "TrainDriverComboBox";
             this.Size = new System.Drawing.Size(144, 24);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -166,18 +166,16 @@ namespace LayoutManager.CommonUI.Controls {
                 EventManager.Event(new LayoutEvent("edit-driver-setting", selected.DriverElement, train));
         }
 
-        class DriverItem {
-            readonly XmlElement driverElement;
-
+        private class DriverItem {
             public DriverItem(XmlElement driverElement) {
-                this.driverElement = driverElement;
+                this.DriverElement = driverElement;
             }
 
-            public XmlElement DriverElement => driverElement;
+            public XmlElement DriverElement { get; }
 
-            public override string ToString() => driverElement.GetAttribute("TypeName");
+            public override string ToString() => DriverElement.GetAttribute("TypeName");
 
-            public string Type => driverElement.GetAttribute("Type");
+            public string Type => DriverElement.GetAttribute("Type");
         }
     }
 }

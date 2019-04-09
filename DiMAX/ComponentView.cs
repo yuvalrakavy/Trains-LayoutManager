@@ -34,7 +34,7 @@ namespace DiMAX {
         #region Component menu Item
 
         [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
-        void AddCentralStationItem(LayoutEvent e) {
+        private void AddCentralStationItem(LayoutEvent e) {
             XmlElement categoryElement = (XmlElement)e.Sender;
             ModelComponent old = (ModelComponent)e.Info;
 
@@ -43,7 +43,7 @@ namespace DiMAX {
         }
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='DiMAX']")]
-        void PaintCentralStationItem(LayoutEvent e) {
+        private void PaintCentralStationItem(LayoutEvent e) {
             Graphics g = (Graphics)e.Info;
 
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
@@ -57,7 +57,7 @@ namespace DiMAX {
         }
 
         [LayoutEvent("create-model-component", IfSender = "Item[@Name='DiMAX']")]
-        void CreateCentralStationComponent(LayoutEvent e) {
+        private void CreateCentralStationComponent(LayoutEvent e) {
             e.Info = new DiMAXcommandStation();
         }
 
@@ -66,7 +66,7 @@ namespace DiMAX {
         #region Component view
 
         [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(DiMAXcommandStation))]
-        void GetDiMAXcommandStationDrawingRegions(LayoutEvent eBase) {
+        private void GetDiMAXcommandStationDrawingRegions(LayoutEvent eBase) {
             LayoutGetDrawingRegionsEvent e = (LayoutGetDrawingRegionsEvent)eBase;
 
             if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
@@ -76,11 +76,10 @@ namespace DiMAX {
 
             if (textProvider.Element != null)
                 e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
-
         }
 
-        class DrawingRegionDiMAXcommandStation : LayoutDrawingRegionGrid {
-            readonly DiMAXcommandStation component;
+        private class DrawingRegionDiMAXcommandStation : LayoutDrawingRegionGrid {
+            private readonly DiMAXcommandStation component;
 
             internal DrawingRegionDiMAXcommandStation(ModelComponent component, ILayoutView view) : base(component, view) {
                 this.component = (DiMAXcommandStation)component;
@@ -99,12 +98,12 @@ namespace DiMAX {
         #region Component Painter
 
         [LayoutEvent("get-image", SenderType = typeof(DiMAXcommandStationPainter))]
-        void GetCentralStationImage(LayoutEvent e) {
+        private void GetCentralStationImage(LayoutEvent e) {
             e.Info = imageListComponents.Images[0];
         }
 
-        class DiMAXcommandStationPainter {
-            Size componentSize;
+        private class DiMAXcommandStationPainter {
+            private Size componentSize;
 
             internal DiMAXcommandStationPainter(Size componentSize) {
                 this.componentSize = componentSize;
@@ -165,8 +164,6 @@ namespace DiMAX {
 
         #endregion
 
-
-
         #region Component Designer generated code
         /// <summary>
         /// Required method for Designer support - do not modify
@@ -183,7 +180,6 @@ namespace DiMAX {
                 TransparentColor = System.Drawing.Color.Lime
             };
             this.imageListComponents.Images.SetKeyName(0, "dimax1200z30px.bmp");
-
         }
         #endregion
 

@@ -3,10 +3,9 @@ using System.Windows.Forms;
 using LayoutManager.View;
 
 namespace LayoutManager.CommonUI {
-
     public partial class DetailsPopupWindow : Form {
-        const int VerticalOffset = 20;
-        readonly PopupWindowContainerSection sectionsContainer;
+        private const int VerticalOffset = 20;
+        private readonly PopupWindowContainerSection sectionsContainer;
 
         public DetailsPopupWindow(LayoutHitTestResult hitTestResult, PopupWindowContainerSection sectionsContainer) {
             InitializeComponent();
@@ -38,5 +37,4 @@ namespace LayoutManager.CommonUI {
             sectionsContainer.Paint(e.Graphics);
         }
     }
-
 }

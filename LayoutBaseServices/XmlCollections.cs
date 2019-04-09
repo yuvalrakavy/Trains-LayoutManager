@@ -5,20 +5,17 @@ using System.Diagnostics;
 
 #nullable enable
 namespace LayoutManager {
-
     /// <summary>
     /// Base class for collections that store there data inside XML element
     /// </summary>
     /// <typeparam name="T">The collection item type</typeparam>
     public abstract class XmlCollection<T> : ICollection<T>, IObjectHasXml {
-        readonly XmlElement element;
-
         /// <summary>
         /// Construct a collection whose items are child items of a given XML element
         /// </summary>
         /// <param name="element">The element that contains the collection item elements</param>
         protected XmlCollection(XmlElement element) {
-            this.element = element;
+            this.Element = element;
         }
 
         /// <summary>
@@ -28,8 +25,8 @@ namespace LayoutManager {
         /// <param name="parentElement">Element containing the collection element</param>
         /// <param name="collectionElementName">The collection element name</param>
         protected XmlCollection(XmlElement parentElement, string collectionElementName) {
-            if ((this.element = parentElement[collectionElementName]) == null) {
-                this.element = parentElement.OwnerDocument.CreateElement(collectionElementName);
+            if ((this.Element = parentElement[collectionElementName]) == null) {
+                this.Element = parentElement.OwnerDocument.CreateElement(collectionElementName);
                 parentElement.AppendChild(this.Element);
             }
         }
@@ -60,7 +57,6 @@ namespace LayoutManager {
             var itemElement = item as XmlElement;
 
             if (itemElement == null) {
-
                 if (item is IObjectHasXml itemWithXml)
                     itemElement = itemWithXml.Element;
             }
@@ -84,8 +80,8 @@ namespace LayoutManager {
         /// The collection XML element. The child of this element are the collection items' elements
         /// </summary>
         /// <value></value>
-        public XmlElement Element => element;
-        public XmlElement? OptionalElement => element;
+        public XmlElement Element { get; }
+        public XmlElement? OptionalElement => Element;
 
         #endregion
 
@@ -191,8 +187,8 @@ namespace LayoutManager {
     /// <typeparam name="T">The type of items in the collection</typeparam>
     /// <typeparam name="KeyT">The type of the key used to index the collection</typeparam>
     public abstract class XmlIndexedCollection<T, KeyT> : XmlCollection<T>, ICollection<T> where T: class {
-        Dictionary<KeyT, XmlElement>? index;
-        List<KeyValuePair<KeyT, XmlElement>>? sorted = null;
+        private Dictionary<KeyT, XmlElement>? index;
+        private List<KeyValuePair<KeyT, XmlElement>>? sorted = null;
 
         /// <summary>
         /// Construct a collection whose items are child items of a given XML element
@@ -224,6 +220,7 @@ namespace LayoutManager {
                 InitializeIndex();
             }
         }
+
         public IDictionary<KeyT, XmlElement> ItemsDictionary {
             get {
                 CreateIndex();
@@ -296,7 +293,6 @@ namespace LayoutManager {
         /// <param name="key">The key associated with the item to be removed</param>
         /// <returns>True if item was removed, false if item was not found</returns>
         public bool Remove(KeyT key) {
-
             if (index != null) {
                 if (index.TryGetValue(key, out XmlElement itemElement)) {
                     ItemsDictionary.Remove(key);
@@ -316,7 +312,6 @@ namespace LayoutManager {
         /// <returns>The collection's item associated with the key</returns>
         public T? this[KeyT key] {
             get {
-
                 CreateIndex();
                 Debug.Assert(index != null);
 
@@ -370,9 +365,9 @@ namespace LayoutManager {
     }
 
     public class XmlAttributeListCollection : ICollection<string> {
-        readonly XmlElement element;
-        readonly string attributeName;
-        readonly List<string> items;
+        private readonly XmlElement element;
+        private readonly string attributeName;
+        private readonly List<string> items;
 
         public XmlAttributeListCollection(XmlElement element, string attributeName) {
             string[] itemsArray;
@@ -413,7 +408,6 @@ namespace LayoutManager {
         public int Count => items.Count;
 
         public bool IsReadOnly => false;
-
 
         public bool Remove(string item) {
             bool result = items.Remove(item);

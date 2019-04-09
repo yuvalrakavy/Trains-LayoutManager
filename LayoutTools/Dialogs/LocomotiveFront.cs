@@ -15,6 +15,7 @@ namespace LayoutManager.Tools.Dialogs {
         private Label labelBlockName;
         private Panel panel1;
         private LayoutManager.CommonUI.Controls.LocomotiveFront locomotiveFrontControl;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -148,12 +149,10 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "Specify Locomotive Front";
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
         private void buttonOk_Click(object sender, System.EventArgs e) {
-
             DialogResult = DialogResult.OK;
             this.Close();
         }

@@ -11,15 +11,15 @@ namespace LayoutBaseServices {
 #pragma warning disable IDE0051
 
     [LayoutModule("Interthreads Event Relay", Enabled = true, UserControl = false)]
-    class InterThreadsEvents : LayoutModuleBase, ILayoutInterThreadEventInvoker, IDisposable {
-        Control? controlInUIthread;
-        readonly Queue<LayoutEvent> eventQueue = new Queue<LayoutEvent>();
-        readonly ManualResetEvent eventInQueue = new ManualResetEvent(false);
-        readonly AutoResetEvent terminatedEvent = new AutoResetEvent(false);
-        Thread? relayThread = null;
-        readonly object queueLock = new object();
-        Form? uiThreadForm;
-        bool _disposed;
+    internal class InterThreadsEvents : LayoutModuleBase, ILayoutInterThreadEventInvoker, IDisposable {
+        private Control? controlInUIthread;
+        private readonly Queue<LayoutEvent> eventQueue = new Queue<LayoutEvent>();
+        private readonly ManualResetEvent eventInQueue = new ManualResetEvent(false);
+        private readonly AutoResetEvent terminatedEvent = new AutoResetEvent(false);
+        private Thread? relayThread = null;
+        private readonly object queueLock = new object();
+        private Form? uiThreadForm;
+        private bool _disposed;
 
         [LayoutEvent("initialize-event-interthread-relay")]
         private void InitializeEventInterthreadRelay(LayoutEvent e) {
@@ -57,7 +57,7 @@ namespace LayoutBaseServices {
         }
 
         [LayoutEvent("get-inter-thread-event-invoker")]
-        void GetInvoker(LayoutEvent e) {
+        private void GetInvoker(LayoutEvent e) {
             e.Info = (ILayoutInterThreadEventInvoker)this;
         }
 
@@ -107,7 +107,7 @@ namespace LayoutBaseServices {
 
         #endregion
 
-        void Dispose(bool disposing) {
+        private void Dispose(bool disposing) {
             if (!_disposed) {
                 if (disposing) {
                     uiThreadForm?.Dispose();

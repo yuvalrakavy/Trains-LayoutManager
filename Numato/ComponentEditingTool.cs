@@ -14,19 +14,10 @@ namespace NumatoController {
         /// Required designer variable.
         /// </summary>
         private Container components = null;
-        LayoutModule _module;
 
         #region Implementation of ILayoutModuleSetup
 
-        public LayoutModule Module {
-            set {
-                _module = value;
-            }
-
-            get {
-                return _module;
-            }
-        }
+        public LayoutModule Module { set; get; }
 
         #endregion
 
@@ -58,7 +49,7 @@ namespace NumatoController {
         #endregion
 
         [LayoutEvent("model-component-placement-request", SenderType = typeof(NumatoController))]
-        void PlaceNumatoRelayController(LayoutEvent e) {
+        private void PlaceNumatoRelayController(LayoutEvent e) {
             var component = (NumatoController)e.Sender;
             var csProperties = new Dialogs.NumatoControllerProperties(component);
 
@@ -71,7 +62,7 @@ namespace NumatoController {
         }
 
         [LayoutEvent("model-component-post-placement-request", SenderType = typeof(NumatoController))]
-        void PlaceNumatoRelayControllerRelayModule(LayoutEvent e) {
+        private void PlaceNumatoRelayControllerRelayModule(LayoutEvent e) {
             var component = (NumatoController)e.Sender;
             var command = (ILayoutCompoundCommand)e.Info;
 
@@ -84,12 +75,12 @@ namespace NumatoController {
         }
 
         [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(NumatoController))]
-        void QueryEditingMenu(LayoutEvent e) {
+        private void QueryEditingMenu(LayoutEvent e) {
             e.Info = e.Sender;
         }
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(NumatoController))]
-        void AddEditingContextMenuEntries(LayoutEvent e) {
+        private void AddEditingContextMenuEntries(LayoutEvent e) {
             var menu = (Menu)e.Info;
             var component = (NumatoController)e.Sender;
 

@@ -15,12 +15,18 @@ namespace LayoutManager.Dialogs {
     /// Base form for the locomotive & locomotive type properties
     /// </summary>
     public class LocomotiveBasePropertiesForm : Form {
-        readonly Dictionary<string, Control> nameToControlMap = new Dictionary<string, Control>();
+        private const string E_Functions = "Functions";
+        private const string A_Light = "Light";
+        private const string A_Store = "Store";
+        private const string A_Number = "Number";
+        private const string A_SpeedLimit = "SpeedLimit";
+        private const string A_Name = "Name";
+        private readonly Dictionary<string, Control> nameToControlMap = new Dictionary<string, Control>();
         protected XmlElement element;
-        CommonUI.Controls.ImageGetter imageGetter;
+        private CommonUI.Controls.ImageGetter imageGetter;
 
-        ListView listViewFunctions;
-        AttributesEditor attributesEditor;
+        private ListView listViewFunctions;
+        private AttributesEditor attributesEditor;
 
         public LocomotiveBasePropertiesForm() {
         }
@@ -74,8 +80,6 @@ namespace LayoutManager.Dialogs {
 
             if (element.HasAttribute("DecoderType"))
                 SetDecoderType("comboBoxDecoderType", element.GetAttribute("DecoderType"));
-
-
         }
 
         private void InitDecoderTypeComboBox() {
@@ -106,7 +110,7 @@ namespace LayoutManager.Dialogs {
             GetRadio("Kind", new LocomotiveKind());
             GetRadio("Origin", new LocomotiveOrigin());
             GetLength("lengthInput", "Length");
-            GetSpeedLimit("textBoxSpeedLimit", "SpeedLimit");
+            GetSpeedLimit("textBoxSpeedLimit", A_SpeedLimit);
             GetGuage();
 
             if (imageGetter.ImageModified) {
@@ -118,9 +122,8 @@ namespace LayoutManager.Dialogs {
             CheckBox checkBoxHasLights = (CheckBox)nameToControlMap["checkBoxHasLights"];
             ComboBox comboBoxStore = (ComboBox)nameToControlMap["comboBoxStore"];
 
-            element["Functions"].SetAttribute("Light", XmlConvert.ToString(checkBoxHasLights.Checked));
-
-            element.SetAttribute("Store", comboBoxStore.SelectedIndex);
+            element[E_Functions].SetAttribute(A_Light, checkBoxHasLights.Checked);
+            element.SetAttribute(A_Store, comboBoxStore.SelectedIndex);
 
             attributesEditor.Commit();
 
@@ -140,7 +143,7 @@ namespace LayoutManager.Dialogs {
             CheckBox checkbox = (CheckBox)nameToControlMap[controlName];
 
             if (e.HasAttribute(a))
-                checkbox.Checked = XmlConvert.ToBoolean(a);
+                checkbox.Checked = bool.Parse(a);
             else
                 checkbox.Checked = defaultValue;
         }
@@ -148,7 +151,6 @@ namespace LayoutManager.Dialogs {
         protected void SetCheckbox(String controlName, string a) {
             SetCheckbox(controlName, element, a, false);
         }
-
 
         protected void SetRadio(XmlElement e, string a, string defaultValue) {
             string v = defaultValue;
@@ -168,7 +170,7 @@ namespace LayoutManager.Dialogs {
             LengthInput c = (LengthInput)nameToControlMap[controlName];
 
             if (element.HasAttribute(a))
-                c.NeutralValue = XmlConvert.ToDouble(element.GetAttribute(a));
+                c.NeutralValue = (double)element.AttributeValue(a);
             else
                 c.IsEmpty = true;
         }
@@ -182,10 +184,7 @@ namespace LayoutManager.Dialogs {
 
         protected void SetSpeedLimit(String controlName) {
             TextBox textBoxSpeedLimit = (TextBox)nameToControlMap[controlName];
-            int limit = 0;
-
-            if (element.HasAttribute("SpeedLimit"))
-                limit = XmlConvert.ToInt32(element.GetAttribute("SpeedLimit"));
+            int limit = (int?)element.AttributeValue(A_SpeedLimit) ?? 0;
 
             if (limit == 0)
                 textBoxSpeedLimit.Text = "";
@@ -232,7 +231,7 @@ namespace LayoutManager.Dialogs {
             LengthInput c = (LengthInput)nameToControlMap[controlName];
 
             if (!c.IsEmpty)
-                element.SetAttribute(a, XmlConvert.ToString(c.NeutralValue));
+                element.SetAttribute(a, c.NeutralValue);
         }
 
         protected bool ValidateSpeedLimit(string controlName) {
@@ -247,7 +246,6 @@ namespace LayoutManager.Dialogs {
                     textBoxSpeedLimit.Focus();
                     return false;
                 }
-
             }
             return true;
         }
@@ -259,11 +257,10 @@ namespace LayoutManager.Dialogs {
             if (textBoxSpeedLimit.Text.Trim() != "")
                 limit = int.Parse(textBoxSpeedLimit.Text);
 
-
             if (limit == 0)
                 element.RemoveAttribute(a);
             else
-                element.SetAttribute(a, XmlConvert.ToString(limit));
+                element.SetAttribute(a, limit);
         }
 
         protected void GetGuage() {
@@ -278,26 +275,22 @@ namespace LayoutManager.Dialogs {
             ComboBox comboBoxStore = (ComboBox)nameToControlMap["comboBoxStore"];
 
             foreach (XmlElement storeElement in storesElement)
-                comboBoxStore.Items.Add(storeElement.GetAttribute("Name"));
+                comboBoxStore.Items.Add(storeElement.GetAttribute(A_Name));
 
-            comboBoxStore.SelectedIndex = XmlConvert.ToInt32(element.GetAttribute("Store"));
+            comboBoxStore.SelectedIndex = (int)element.AttributeValue(A_Store);
         }
 
         protected void SetFunctions() {
             CheckBox checkBoxHasLights = (CheckBox)nameToControlMap["checkBoxHasLights"];
 
-            XmlElement functionsElement = element["Functions"];
+            XmlElement functionsElement = element[E_Functions];
 
             if (functionsElement == null) {
-                functionsElement = element.OwnerDocument.CreateElement("Functions");
+                functionsElement = element.OwnerDocument.CreateElement(E_Functions);
                 element.AppendChild(functionsElement);
             }
 
-            if (functionsElement.HasAttribute("Light"))
-                checkBoxHasLights.Checked = XmlConvert.ToBoolean(functionsElement.GetAttribute("Light"));
-            else
-                checkBoxHasLights.Checked = true;
-
+            checkBoxHasLights.Checked = (bool?)functionsElement.AttributeValue(A_Light) ?? true;
             listViewFunctions.Items.Clear();
 
             foreach (XmlElement functionElement in functionsElement)
@@ -316,8 +309,6 @@ namespace LayoutManager.Dialogs {
                 buttonFunctionEdit.Enabled = false;
                 buttonFunctionRemove.Enabled = false;
             }
-
-
         }
 
         protected LocomotiveKind CurrentKind => (LocomotiveKind)Enum.Parse(typeof(LocomotiveKind), GetRadioValue(new LocomotiveKind(), "Kind"));
@@ -325,7 +316,7 @@ namespace LayoutManager.Dialogs {
         protected LocomotiveOrigin CurrentOrigin => (LocomotiveOrigin)Enum.Parse(typeof(LocomotiveOrigin), GetRadioValue(new LocomotiveOrigin(), "Origin"));
 
 #if DEBUG
-        void Dump() {
+        private void Dump() {
             foreach (String controlName in nameToControlMap.Keys)
                 Debug.WriteLine(controlName);
         }
@@ -340,21 +331,21 @@ namespace LayoutManager.Dialogs {
             // Allocate default function number
             int functionNumber = 0;
             bool functionNumberUsed;
-            XmlElement functionsElement = element["Functions"];
+            XmlElement functionsElement = element[E_Functions];
 
             do {
                 functionNumber++;
                 functionNumberUsed = false;
 
                 foreach (XmlElement f in functionsElement) {
-                    if (XmlConvert.ToInt32(f.GetAttribute("Number")) == functionNumber) {
+                    if ((int)f.AttributeValue(A_Number) == functionNumber) {
                         functionNumberUsed = true;
                         break;
                     }
                 }
             } while (functionNumberUsed);
 
-            functionElement.SetAttribute("Number", XmlConvert.ToString(functionNumber));
+            functionElement.SetAttribute(A_Number, functionNumber);
 
             if (item.Edit(this, Catalog, functionsElement) == DialogResult.OK) {
                 functionsElement.AppendChild(item.FunctionElement);
@@ -368,7 +359,7 @@ namespace LayoutManager.Dialogs {
         protected void ButtonFunctionEdit_Click(object sender, System.EventArgs e) {
             if (listViewFunctions.SelectedItems.Count > 0) {
                 FunctionItem selected = (FunctionItem)listViewFunctions.SelectedItems[0];
-                XmlElement functionsElement = element["Functions"];
+                XmlElement functionsElement = element[E_Functions];
 
                 selected.Edit(this, Catalog, functionsElement);
             }
@@ -388,7 +379,6 @@ namespace LayoutManager.Dialogs {
             InitDecoderTypeComboBox();
         }
 
-
         protected void ListViewFunctions_SelectedIndexChanged(object sender, System.EventArgs e) {
             UpdateButtons();
         }
@@ -404,8 +394,8 @@ namespace LayoutManager.Dialogs {
             Dialogs.LocomotiveFunctionsCopyFrom copyFromDialog = new Dialogs.LocomotiveFunctionsCopyFrom(catalog);
 
             if (copyFromDialog.ShowDialog(this) == DialogResult.OK) {
-                XmlElement functionsElement = element["Functions"];
-                XmlElement copyFunctionsElement = copyFromDialog.SelectedLocomotiveType.Element["Functions"];
+                XmlElement functionsElement = element[E_Functions];
+                XmlElement copyFunctionsElement = copyFromDialog.SelectedLocomotiveType.Element[E_Functions];
 
                 functionsElement.RemoveAll();
                 listViewFunctions.Items.Clear();
@@ -423,8 +413,8 @@ namespace LayoutManager.Dialogs {
                         listViewFunctions.Items.Add(new FunctionItem(fCopy));
                     }
 
-                    if (copyFunctionsElement.HasAttribute("Light"))
-                        functionsElement.SetAttribute("Light", copyFunctionsElement.GetAttribute("Light"));
+                    if (copyFunctionsElement.HasAttribute(A_Light))
+                        functionsElement.SetAttribute(A_Light, copyFunctionsElement.GetAttribute(A_Light));
                 }
             }
 
@@ -438,11 +428,9 @@ namespace LayoutManager.Dialogs {
     /// <summary>
     /// Represent an item in the function list
     /// </summary>
-    class FunctionItem : ListViewItem {
-        readonly XmlElement functionElement;
-
+    internal class FunctionItem : ListViewItem {
         public FunctionItem(XmlElement functionElement) {
-            this.functionElement = functionElement;
+            this.FunctionElement = functionElement;
 
             LocomotiveFunctionInfo function = new LocomotiveFunctionInfo(functionElement);
 
@@ -452,10 +440,10 @@ namespace LayoutManager.Dialogs {
             this.SubItems.Add(function.Description);
         }
 
-        public XmlElement FunctionElement => functionElement;
+        public XmlElement FunctionElement { get; }
 
         public void Update() {
-            LocomotiveFunctionInfo function = new LocomotiveFunctionInfo(functionElement);
+            LocomotiveFunctionInfo function = new LocomotiveFunctionInfo(FunctionElement);
 
             this.Text = function.Number.ToString();
             this.SubItems[1].Text = function.Type == LocomotiveFunctionType.OnOff ? "On/Off" : function.Type.ToString();
@@ -464,7 +452,7 @@ namespace LayoutManager.Dialogs {
         }
 
         public DialogResult Edit(Control parent, LocomotiveCatalogInfo catalog, XmlElement functionsElement) {
-            Dialogs.LocomotiveFunction locoFunction = new Dialogs.LocomotiveFunction(catalog, functionsElement, functionElement);
+            Dialogs.LocomotiveFunction locoFunction = new Dialogs.LocomotiveFunction(catalog, functionsElement, FunctionElement);
 
             DialogResult r = locoFunction.ShowDialog(parent);
             Update();
@@ -473,14 +461,12 @@ namespace LayoutManager.Dialogs {
         }
     }
 
-    class DecoderTypeItem {
-        readonly DecoderTypeInfo decoderType;
-
+    internal class DecoderTypeItem {
         public DecoderTypeItem(DecoderTypeInfo decoderType) {
-            this.decoderType = decoderType;
+            this.DecoderType = decoderType;
         }
 
-        public DecoderTypeInfo DecoderType => this.decoderType;
+        public DecoderTypeInfo DecoderType { get; }
 
         public override string ToString() => DecoderType.Manufacturer + " " + DecoderType.Name + (DecoderType.Description != null ? " (" + DecoderType.Description + ")" : "");
     }

@@ -24,6 +24,7 @@ namespace LayoutManager.Tools.Dialogs {
         private Button buttonCancel;
         private GroupBox groupBox4;
         private LayoutManager.CommonUI.Controls.MotionRampWithCopyEditor motionRampWithCopyEditorStop;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -266,7 +267,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.groupBox3.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

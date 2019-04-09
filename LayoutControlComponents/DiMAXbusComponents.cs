@@ -9,10 +9,8 @@ using LayoutManager.Model;
 #pragma warning disable IDE0051
 #nullable enable
 namespace LayoutManager.ControlComponents {
-
     [LayoutModule("DiMAX Bus Control Components")]
-    class DiMAXBusComponents : LayoutModuleBase {
-
+    internal class DiMAXBusComponents : LayoutModuleBase {
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8170001']")]
         [LayoutEvent("enum-control-module-types")]
         private void getMassoth8170001(LayoutEvent e) {
@@ -58,7 +56,6 @@ namespace LayoutManager.ControlComponents {
                 moduleTypeNames.Add("Massoth8170001");
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "Level"))
                 moduleTypeNames.Add("Massoth8170001level");
-
         }
 
         [LayoutEvent("query-action", IfEvent = "LayoutEvent[Options/@Action='set-address']", SenderType = typeof(ControlModule), IfSender = "*[@ModuleTypeName='Massoth8170001']")]
@@ -102,7 +99,7 @@ namespace LayoutManager.ControlComponents {
         }
     }
 
-    class ProgramMassothFeedbackDecoder : LayoutDccProgrammingAction<ControlModule> {
+    internal class ProgramMassothFeedbackDecoder : LayoutDccProgrammingAction<ControlModule> {
         public ProgramMassothFeedbackDecoder(XmlElement actionElement, ControlModule feedbackDecoder)
             : base(actionElement, feedbackDecoder) {
         }
@@ -122,24 +119,25 @@ namespace LayoutManager.ControlComponents {
     }
 
     public class MassothFeedbackModule : ControlModule {
+        private const string A_DiMAXBusConnectionMethod = "DiMAXBusConnectionMethod";
+        private const string A_DiMAXBusID = "DiMAXBusID";
+
         public MassothFeedbackModule(ControlModule module)
             : base(module.ControlManager, module.Element) {
         }
 
-        public bool HasDiMAX_BusConnectionMethod => HasAttribute("DiMAXBusConnectionMethod");
+        public bool HasDiMAX_BusConnectionMethod => HasAttribute(A_DiMAXBusConnectionMethod);
 
         public MassothFeedbackDecoderBusConnectionMethod DiMAX_BusConnectionMethod {
-            get => AttributeValue("DiMAXBusConnectionMethod").Enum<MassothFeedbackDecoderBusConnectionMethod>() ?? MassothFeedbackDecoderBusConnectionMethod.Slave;
-
-            set => SetAttribute("DiMAXBusConnectionMethod", value.ToString());
+            get => AttributeValue(A_DiMAXBusConnectionMethod).Enum<MassothFeedbackDecoderBusConnectionMethod>() ?? MassothFeedbackDecoderBusConnectionMethod.Slave;
+            set => SetAttribute(A_DiMAXBusConnectionMethod, value);
         }
 
-        public bool HasDiMAX_BusId => HasAttribute("DiMAXBusID");
+        public bool HasDiMAX_BusId => HasAttribute(A_DiMAXBusID);
 
         public int DiMAX_BusId {
-            get => (int?)AttributeValue("DiMAXBusID") ?? 12;
-
-            set => SetAttribute("DiMAXBusID", XmlConvert.ToString(value));
+            get => (int?)AttributeValue(A_DiMAXBusID) ?? 12;
+            set => SetAttribute(A_DiMAXBusID, value);
         }
 
         /// <summary>
@@ -172,7 +170,7 @@ namespace LayoutManager.ControlComponents {
         }
     }
 
-    class ProgramMassothTriggerFeedbackDecoderAddress : ProgramMassothFeedbackDecoder, IMassothFeedbackDecoderSetAddress {
+    internal class ProgramMassothTriggerFeedbackDecoderAddress : ProgramMassothFeedbackDecoder, IMassothFeedbackDecoderSetAddress {
         public ProgramMassothTriggerFeedbackDecoderAddress(XmlElement actionElement, ControlModule feedbackModule)
             : base(actionElement, feedbackModule) {
         }
@@ -222,7 +220,7 @@ namespace LayoutManager.ControlComponents {
 
         public MassothFeedbackDecoderBusConnectionMethod BusConnectionMethod {
             get => AttributeValue(A_BusConnection).Enum<MassothFeedbackDecoderBusConnectionMethod>() ?? MassothFeedbackDecoderBusConnectionMethod.Slave;
-            set => SetAttribute(A_BusConnection, value.ToString());
+            set => SetAttribute(A_BusConnection, value);
         }
 
         public int BusId {
@@ -233,7 +231,7 @@ namespace LayoutManager.ControlComponents {
         #endregion
     }
 
-    class ProgramMassothLevelFeedbackDecoderAddress : ProgramMassothFeedbackDecoder, IMassothFeedbackDecoderSetAddress {
+    internal class ProgramMassothLevelFeedbackDecoderAddress : ProgramMassothFeedbackDecoder, IMassothFeedbackDecoderSetAddress {
         public ProgramMassothLevelFeedbackDecoderAddress(XmlElement actionElement, ControlModule feedbackModule)
             : base(actionElement, feedbackModule) {
         }
@@ -278,12 +276,12 @@ namespace LayoutManager.ControlComponents {
         public override string Description => "Set feedback module address to " + ProgrammingTarget.Address + " to " + (ProgrammingTarget.Address + ProgrammingTarget.ModuleType.NumberOfAddresses - 1);
 
         #region IMassothFeedbackDecoderSetAddress Members
-        const string A_BusConnection = "BusConnectionMethod";
+        private const string A_BusConnection = "BusConnectionMethod";
         private const string A_BusId = "BusID";
 
         public MassothFeedbackDecoderBusConnectionMethod BusConnectionMethod {
             get => AttributeValue(A_BusConnection).Enum<MassothFeedbackDecoderBusConnectionMethod>() ?? MassothFeedbackDecoderBusConnectionMethod.Slave;
-            set => Element.SetAttribute(A_BusConnection, value.ToString());
+            set => Element.SetAttribute(A_BusConnection, value);
         }
 
         public int BusId {

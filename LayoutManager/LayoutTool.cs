@@ -11,15 +11,13 @@ namespace LayoutManager {
     /// Base class for design tools (such as Selection, Track tools)
     /// </summary>
     public abstract class LayoutTool : Component {
-        Point selectionCorner = Point.Empty;
-        LayoutModelArea selectionCornerArea = null;
-        LayoutSelectionWithUndo _userSelection = null;
+        private Point selectionCorner = Point.Empty;
+        private LayoutModelArea selectionCornerArea = null;
+        private LayoutSelectionWithUndo _userSelection = null;
 
         public LayoutSelectionWithUndo UserSelection {
             get {
-                if (_userSelection == null)
-                    _userSelection = (LayoutSelectionWithUndo)LayoutController.UserSelection;
-                return _userSelection;
+                return _userSelection ?? (_userSelection = (LayoutSelectionWithUndo)LayoutController.UserSelection);
             }
         }
 
@@ -79,7 +77,6 @@ namespace LayoutManager {
                 }
 
                 if (draggedObject != null) {
-
                     if (draggedObject is LayoutDraggedObject draggedObjectDetails) {
                         draggedObject = draggedObjectDetails.DraggedObject;
                         allowedEffects = draggedObjectDetails.AllowedEffects;
@@ -179,7 +176,6 @@ namespace LayoutManager {
                 bool hitSelectionShown = false;
 
                 if ((Control.ModifierKeys & Keys.Control) != 0) {
-
                     if (selectionCorner != Point.Empty && selectionCornerArea == area) {
                         UserSelection.Add(LayoutPhase.All, area, e.HitTestResult.ModelLocation, selectionCorner);
                         selectionCorner = Point.Empty;

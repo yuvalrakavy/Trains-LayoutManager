@@ -21,6 +21,7 @@ namespace Gui.Wizard {
         public Button btnBack;
         public Button btnNext;
         private Button btnCancel;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -31,7 +32,7 @@ namespace Gui.Wizard {
         /// </summary>
         public Wizard() {
             //Empty collection of Pages
-            vPages = new PageCollection(this);
+            Pages = new PageCollection(this);
 
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
@@ -58,7 +59,6 @@ namespace Gui.Wizard {
             }
             base.Dispose(disposing);
         }
-
 
         #region Component Designer generated code
         /// <summary> 
@@ -147,39 +147,38 @@ namespace Gui.Wizard {
             this.Load += new System.EventHandler(this.Wizard_Load);
             this.pnlButtons.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
-        #endregion
 
-        private readonly PageCollection vPages;
+        #endregion
         /// <summary>
         /// Returns the collection of Pages in the wizard
         /// </summary>
         [Category("Wizard")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public PageCollection Pages => vPages;
+        public PageCollection Pages { get; }
 
         private WizardPage vActivePage = null;
+
         /// <summary>
         /// Gets/Sets the activePage in the wizard
         /// </summary>
         [Category("Wizard")]
         internal int PageIndex {
             get {
-                return vPages.IndexOf(vActivePage);
+                return Pages.IndexOf(vActivePage);
             }
             set {
                 //Do I have any pages?
-                if (vPages.Count == 0) {
+                if (Pages.Count == 0) {
                     //No then show nothing
                     ActivatePage(-1);
                     return;
                 }
                 // Validate the page asked for
-                if (value < -1 || value >= vPages.Count) {
+                if (value < -1 || value >= Pages.Count) {
                     throw new ArgumentOutOfRangeException("PageIndex",
                         value,
-                        "The page index must be between 0 and " + Convert.ToString(vPages.Count - 1)
+                        "The page index must be between 0 and " + Convert.ToString(Pages.Count - 1)
                         );
                 }
                 //Select the new page
@@ -192,19 +191,17 @@ namespace Gui.Wizard {
         /// </summary>
         public WizardPage Page => vActivePage;
 
-
         protected void ActivatePage(int index) {
             //If the new page is invalid
-            if (index < 0 || index >= vPages.Count) {
+            if (index < 0 || index >= Pages.Count) {
                 btnNext.Enabled = false;
                 btnBack.Enabled = false;
 
                 return;
             }
 
-
             //Change to the new Page
-            WizardPage tWizPage = ((WizardPage)vPages[index]);
+            WizardPage tWizPage = ((WizardPage)Pages[index]);
 
             //Really activate the page
             ActivatePage(tWizPage);
@@ -215,7 +212,6 @@ namespace Gui.Wizard {
             if (vActivePage != null) {
                 vActivePage.Visible = false;
             }
-
 
             //Activate the new page
             vActivePage = page;
@@ -242,7 +238,7 @@ namespace Gui.Wizard {
             }
 
             //What should the Next button say
-            if (vPages.IndexOf(vActivePage) < vPages.Count - 1
+            if (Pages.IndexOf(vActivePage) < Pages.Count - 1
                 && vActivePage.IsFinishPage == false) {
                 btnNext.Text = "&Next >";
                 btnNext.Enabled = true;
@@ -252,8 +248,8 @@ namespace Gui.Wizard {
             else {
                 btnNext.Text = "Fi&nish";
                 //Dont allow a finish in designer
-                if (DesignMode == true
-                    && vPages.IndexOf(vActivePage) == vPages.Count - 1) {
+                if (DesignMode
+                    && Pages.IndexOf(vActivePage) == Pages.Count - 1) {
                     btnNext.Enabled = false;
                 }
                 else {
@@ -270,13 +266,12 @@ namespace Gui.Wizard {
                 this.Invalidate();
         }
 
-
         private void btnNext_Click(object sender, System.EventArgs e) {
             Next();
         }
 
         private void btnNext_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
-            if (DesignMode == true)
+            if (DesignMode)
                 Next();
         }
 
@@ -285,7 +280,7 @@ namespace Gui.Wizard {
         }
 
         private void btnBack_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
-            if (DesignMode == true)
+            if (DesignMode)
                 Back();
         }
 
@@ -314,6 +309,7 @@ namespace Gui.Wizard {
                 btnNext.Enabled = value;
             }
         }
+
         /// <summary>
         /// Gets/Sets the enabled state of the back button. 
         /// </summary>
@@ -327,6 +323,7 @@ namespace Gui.Wizard {
                 btnBack.Enabled = value;
             }
         }
+
         /// <summary>
         /// Gets/Sets the enabled state of the cancel button. 
         /// </summary>
@@ -337,18 +334,15 @@ namespace Gui.Wizard {
                 return btnCancel.Enabled;
             }
             set {
-
                 btnCancel.Enabled = value;
             }
         }
-
 
         /// <summary>
         /// Called when the cancel button is pressed, before the form is closed. Set e.Cancel to true if 
         /// you do not wish the cancel to close the wizard.
         /// </summary>
         public event CancelEventHandler CloseFromCancel;
-
 
         /// <summary>
         /// Closes the current page after a <see cref="WizardPage.CloseFromNext"/>, then moves to 
@@ -360,17 +354,17 @@ namespace Gui.Wizard {
             int newPage = vActivePage.OnCloseFromNext(this);
 
             //Did I just press Finish instead of Next
-            if (this.PageIndex < vPages.Count - 1
-                && (vActivePage.IsFinishPage == false || DesignMode == true)) {
+            if (this.PageIndex < Pages.Count - 1
+                && (vActivePage.IsFinishPage == false || DesignMode)) {
                 //No still going
                 ActivatePage(newPage);
                 //Tell the application, I have just shown a page
                 vActivePage.OnShowFromNext(this);
             }
             else {
-                Debug.Assert(this.PageIndex < vPages.Count, "Error I've just gone past the finish",
+                Debug.Assert(this.PageIndex < Pages.Count, "Error I've just gone past the finish",
                     "btnNext_Click tried to go to page " + Convert.ToString(this.PageIndex + 1)
-                    + ", but I only have " + Convert.ToString(vPages.Count));
+                    + ", but I only have " + Convert.ToString(Pages.Count));
                 //yep Finish was pressed
                 if (DesignMode == false)
                     this.ParentForm.Close();
@@ -394,9 +388,9 @@ namespace Gui.Wizard {
         /// the previous page and calls <see cref="WizardPage.ShowFromBack"/>
         /// </summary>
         public void Back() {
-            Debug.Assert(this.PageIndex < vPages.Count, "Page Index was beyond Maximum pages");
+            Debug.Assert(this.PageIndex < Pages.Count, "Page Index was beyond Maximum pages");
             //Can I press back
-            Debug.Assert(this.PageIndex > 0 && this.PageIndex < vPages.Count, "Attempted to go back to a page that doesn't exist");
+            Debug.Assert(this.PageIndex > 0 && this.PageIndex < Pages.Count, "Attempted to go back to a page that doesn't exist");
             //Tell the application that I closed a page
             int newPage = vActivePage.OnCloseFromBack(this);
 
@@ -424,7 +418,6 @@ namespace Gui.Wizard {
             if (DesignMode) {
                 const string noPagesText = "No wizard pages inside the wizard.";
 
-
                 SizeF textSize = e.Graphics.MeasureString(noPagesText, this.Font);
                 RectangleF layout = new RectangleF((this.Width - textSize.Width) / 2,
                     (this.pnlButtons.Top - textSize.Height) / 2,
@@ -440,6 +433,7 @@ namespace Gui.Wizard {
                 e.Graphics.DrawString(noPagesText, this.Font, new SolidBrush(SystemColors.GrayText), layout);
             }
         }
+
         protected override void OnResize(EventArgs e) {
             base.OnResize(e);
 
@@ -449,7 +443,6 @@ namespace Gui.Wizard {
         }
 
 #endif
-
 
     }
 }

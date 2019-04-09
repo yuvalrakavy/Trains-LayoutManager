@@ -13,6 +13,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
         private Label labelModuleLocation;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -104,7 +105,6 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.ShowInTaskbar = false;
             this.Text = "Adding new Control Module";
             this.ResumeLayout(false);
-
         }
         #endregion
 

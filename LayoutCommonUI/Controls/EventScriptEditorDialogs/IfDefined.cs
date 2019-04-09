@@ -19,6 +19,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private ComboBox comboBoxAttribute;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -26,8 +27,8 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly XmlElement element;
-        readonly IDictionary symbolNameToTypeMap = new HybridDictionary();
+        private readonly XmlElement element;
+        private readonly IDictionary symbolNameToTypeMap = new HybridDictionary();
 
         public IfDefined(XmlElement element) {
             //
@@ -186,7 +187,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.Text = "If (Defined)";
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

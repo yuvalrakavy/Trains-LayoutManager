@@ -9,16 +9,15 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutLGB {
-
     public class MTScommandStationEmulator : ILayoutCommandStationEmulator {
-        static readonly LayoutTraceSwitch traceMTSemulator = new LayoutTraceSwitch("TraceMTSemulator", "Trace MTS command station emulation");
-        Guid commandStationId;
-        readonly string pipeName;
-        readonly Dictionary<int, PositionEntry> positions = new Dictionary<int, PositionEntry>();
+        private static readonly LayoutTraceSwitch traceMTSemulator = new LayoutTraceSwitch("TraceMTSemulator", "Trace MTS command station emulation");
+        private Guid commandStationId;
+        private readonly string pipeName;
+        private readonly Dictionary<int, PositionEntry> positions = new Dictionary<int, PositionEntry>();
 
-        volatile FileStream commStream;
-        readonly ILayoutEmulatorServices layoutEmulationServices;
-        Thread interfaceThread = null;
+        private volatile FileStream commStream;
+        private readonly ILayoutEmulatorServices layoutEmulationServices;
+        private Thread interfaceThread = null;
 
         public MTScommandStationEmulator(IModelComponentIsCommandStation commandStation, string pipeName, int emulationTickTime) {
             this.commandStationId = commandStation.Id;
@@ -64,7 +63,6 @@ namespace LayoutLGB {
                     Trace.WriteLineIf(traceMTSemulator.TraceInfo, "Command station emulator, got command: " + command.ToString());
 
                     switch (command.Command) {
-
                         case MTScommand.PowerStation:
                             layoutEmulationServices.StartEmulation();
                             break;
@@ -101,52 +99,23 @@ namespace LayoutLGB {
             }
         }
 
-        class PositionEntry {
-            TrackEdge _edge;
-            int _speed;
-            LocomotiveOrientation _direction;
+        private class PositionEntry {
+            public TrackEdge Edge { get; set; }
 
-            public TrackEdge Edge {
-                get {
-                    return _edge;
-                }
+            public int Speed { get; set; }
 
-                set {
-                    _edge = value;
-                }
-            }
-
-            public int Speed {
-                get {
-                    return _speed;
-                }
-
-                set {
-                    _speed = value;
-                }
-            }
-
-            public LocomotiveOrientation Direction {
-                get {
-                    return _direction;
-                }
-
-                set {
-                    _direction = value;
-                }
-            }
+            public LocomotiveOrientation Direction { get; set; }
 
             public PositionEntry(TrackEdge edge, LocomotiveOrientation direction, int speed) {
-                this._edge = edge;
-                this._speed = speed;
-                this._direction = direction;
+                this.Edge = edge;
+                this.Speed = speed;
+                this.Direction = direction;
             }
         }
 
         private void layoutEmulationServices_LocomotiveMoved(object sender, LocomotiveMovedEventArgs e) {
             if (e.CommandStationId == this.commandStationId) {
                 if (e.Location.Track.TrackContactComponent != null) {
-
                     positions.TryGetValue(e.Unit, out PositionEntry position);
 
                     if (position == null || e.Location.Edge != position.Edge || e.Direction != position.Direction) {

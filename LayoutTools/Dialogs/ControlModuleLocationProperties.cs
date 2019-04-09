@@ -25,6 +25,7 @@ namespace LayoutManager.Tools.Dialogs {
         private Button buttonRemove;
         private Label label1;
         private ComboBox comboBoxCommandStation;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -32,22 +33,19 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void EndOfDesignerVariables() { }
 
-        readonly LayoutXmlInfo xmlInfo;
-        readonly LayoutControlModuleLocationComponent controlModuleLocation;
-
         public ControlModuleLocationProperties(ModelComponent component) {
             //
             // Required for Windows Form Designer support
             //
             InitializeComponent();
 
-            this.controlModuleLocation = (LayoutControlModuleLocationComponent)component;
-            this.xmlInfo = new LayoutXmlInfo(component);
+            this.Component = (LayoutControlModuleLocationComponent)component;
+            this.XmlInfo = new LayoutXmlInfo(component);
 
-            nameDefinition.XmlInfo = xmlInfo;
+            nameDefinition.XmlInfo = XmlInfo;
             nameDefinition.Component = component;
 
-            LayoutControlModuleLocationComponentInfo info = new LayoutControlModuleLocationComponentInfo(controlModuleLocation, xmlInfo.Element);
+            LayoutControlModuleLocationComponentInfo info = new LayoutControlModuleLocationComponentInfo(Component, XmlInfo.Element);
 
             comboBoxCommandStation.Items.Add(new CommandStationItem("(Prompt)"));
 
@@ -66,9 +64,9 @@ namespace LayoutManager.Tools.Dialogs {
             updateButtons();
         }
 
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
-        public LayoutControlModuleLocationComponent Component => controlModuleLocation;
+        public LayoutControlModuleLocationComponent Component { get; }
 
         /// <summary>
         /// Clean up any resources being used.
@@ -254,7 +252,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "Control Modules Location Properties";
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -269,7 +266,7 @@ namespace LayoutManager.Tools.Dialogs {
             if (!nameDefinition.Commit())
                 return;
 
-            LayoutControlModuleLocationComponentInfo info = new LayoutControlModuleLocationComponentInfo(controlModuleLocation, xmlInfo.Element) {
+            LayoutControlModuleLocationComponentInfo info = new LayoutControlModuleLocationComponentInfo(Component, XmlInfo.Element) {
                 CommandStationId = ((CommandStationItem)comboBoxCommandStation.SelectedItem).ID
             };
 
@@ -321,7 +318,7 @@ namespace LayoutManager.Tools.Dialogs {
         private void buttonRemove_Click(object sender, System.EventArgs e) {
             if (listViewDefaults.SelectedItems.Count > 0) {
                 Item selected = (Item)listViewDefaults.SelectedItems[0];
-                LayoutControlModuleLocationComponentInfo info = new LayoutControlModuleLocationComponentInfo(controlModuleLocation, xmlInfo.Element);
+                LayoutControlModuleLocationComponentInfo info = new LayoutControlModuleLocationComponentInfo(Component, XmlInfo.Element);
 
                 info.Defaults.Remove(selected.BusDefault.BusId);
                 listViewDefaults.Items.Remove(selected);
@@ -333,11 +330,9 @@ namespace LayoutManager.Tools.Dialogs {
             updateButtons();
         }
 
-        class Item : ListViewItem {
-            readonly ControlModuleLocationBusDefaultInfo busDefault;
-
+        private class Item : ListViewItem {
             public Item(ControlModuleLocationBusDefaultInfo busDefault) {
-                this.busDefault = busDefault;
+                this.BusDefault = busDefault;
 
                 Text = busDefault.Bus.BusProvider.NameProvider.Name + " - " + busDefault.Bus.BusType.Name;
                 SubItems.Add("");
@@ -346,24 +341,24 @@ namespace LayoutManager.Tools.Dialogs {
                 Update();
             }
 
-            public ControlModuleLocationBusDefaultInfo BusDefault => busDefault;
+            public ControlModuleLocationBusDefaultInfo BusDefault { get; }
 
             public void Update() {
-                if (busDefault.DefaultModuleTypeName != null)
-                    SubItems[1].Text = busDefault.DefaultModuleType.Name;
+                if (BusDefault.DefaultModuleTypeName != null)
+                    SubItems[1].Text = BusDefault.DefaultModuleType.Name;
                 else
                     SubItems[1].Text = "";
 
-                if (busDefault.DefaultStartAddress < 0)
+                if (BusDefault.DefaultStartAddress < 0)
                     SubItems[2].Text = "";
                 else
-                    SubItems[2].Text = busDefault.DefaultStartAddress.ToString();
+                    SubItems[2].Text = BusDefault.DefaultStartAddress.ToString();
             }
         }
 
-        class AddDefaultMenuItem : MenuItem {
-            readonly ControlModuleLocationProperties dialog;
-            readonly ControlBus bus;
+        private class AddDefaultMenuItem : MenuItem {
+            private readonly ControlModuleLocationProperties dialog;
+            private readonly ControlBus bus;
 
             public AddDefaultMenuItem(ControlModuleLocationProperties dialog, ControlBus bus) {
                 this.dialog = dialog;
@@ -386,9 +381,9 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        class CommandStationItem {
-            Guid id;
-            readonly string text;
+        private class CommandStationItem {
+            private Guid id;
+            private readonly string text;
 
             public CommandStationItem(IModelComponentIsCommandStation commandStation) {
                 this.id = commandStation.Id;

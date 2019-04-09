@@ -22,6 +22,7 @@ namespace LayoutManager.Tools.Dialogs {
         private CheckBox checkBoxFromLeft;
         private CheckBox checkBoxFromBottom;
         private CheckBox checkBoxFromTop;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -29,8 +30,8 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void EndOfDesignerVariables() { }
 
-        readonly LayoutBlockDefinitionComponentInfo info;
-        readonly PlacementInfo placementInfo;
+        private readonly LayoutBlockDefinitionComponentInfo info;
+        private readonly PlacementInfo placementInfo;
 
         public AdvancedBlockInfoProperties(LayoutBlockDefinitionComponentInfo info, PlacementInfo placementInfo) {
             //
@@ -246,7 +247,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
-
         }
         #endregion
 

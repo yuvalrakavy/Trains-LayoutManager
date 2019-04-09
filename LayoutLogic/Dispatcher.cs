@@ -10,11 +10,11 @@ using LayoutManager.Components;
 #nullable enable
 namespace LayoutManager.Logic {
     [LayoutModule("Disptacher")]
-    class Dispatcher : LayoutModuleBase {
-        static readonly LayoutTraceSwitch traceDispatcher = new LayoutTraceSwitch("Dispatcher", "Master Dispatcher");
-        static readonly LayoutTraceSubsystem traceUnlockingManager = new LayoutTraceSubsystem(traceDispatcher, "DispatcherUnlockingManager", "Layout Block Unlock Manager");
-        static readonly LayoutTraceSubsystem traceDispatching = new LayoutTraceSubsystem(traceDispatcher, "Dispatching", "Displatching operation");
-        static readonly LayoutTraceSubsystem traceDeadlock = new LayoutTraceSubsystem(traceDispatcher, "DeadlockIdentification", "Deadlock identification");
+    internal class Dispatcher : LayoutModuleBase {
+        private static readonly LayoutTraceSwitch traceDispatcher = new LayoutTraceSwitch("Dispatcher", "Master Dispatcher");
+        private static readonly LayoutTraceSubsystem traceUnlockingManager = new LayoutTraceSubsystem(traceDispatcher, "DispatcherUnlockingManager", "Layout Block Unlock Manager");
+        private static readonly LayoutTraceSubsystem traceDispatching = new LayoutTraceSubsystem(traceDispatcher, "Dispatching", "Displatching operation");
+        private static readonly LayoutTraceSubsystem traceDeadlock = new LayoutTraceSubsystem(traceDispatcher, "DeadlockIdentification", "Deadlock identification");
 
         #region Definitions and Explanations
 
@@ -65,81 +65,26 @@ namespace LayoutManager.Logic {
 
         #region Data structures
 
-        class ActiveTripInfo : TripPlanAssignmentInfo {
-            readonly BlockEntryQueue blockEntryQueue;
-            LayoutEventScript? pendingStartCondition;
-            LayoutEventScript? pendingDriverInstructions;
-            LayoutLockRequest? pendingLockRequest;
-            Guid nextSectionStartBlockID = Guid.Empty;
-            TripStatus suspendedStatus = TripStatus.NotSubmitted;
-            LayoutEvent? suspendedEvent;
-            LayoutEventScript[]? activePolicies;
+        private class ActiveTripInfo : TripPlanAssignmentInfo {
+            private LayoutEventScript[]? activePolicies;
 
             public ActiveTripInfo(XmlElement element) : base(element) {
-                blockEntryQueue = new BlockEntryQueue(this);
+                Queue = new BlockEntryQueue(this);
             }
 
-            public BlockEntryQueue Queue => blockEntryQueue;
+            public BlockEntryQueue Queue { get; }
 
-            public LayoutEventScript? PendingStartCondition {
-                get {
-                    return pendingStartCondition;
-                }
+            public LayoutEventScript? PendingStartCondition { get; set; }
 
-                set {
-                    pendingStartCondition = value;
-                }
-            }
+            public LayoutEventScript? PendingDriverInstructions { get; set; }
 
-            public LayoutEventScript? PendingDriverInstructions {
-                get {
-                    return pendingDriverInstructions;
-                }
+            public LayoutLockRequest? PendingLockRequest { get; set; }
 
-                set {
-                    pendingDriverInstructions = value;
-                }
-            }
+            public Guid NextSectionStartBlockId { get; set; } = Guid.Empty;
 
-            public LayoutLockRequest? PendingLockRequest {
-                get {
-                    return pendingLockRequest;
-                }
+            internal TripStatus SuspendedStatus { get; set; } = TripStatus.NotSubmitted;
 
-                set {
-                    pendingLockRequest = value;
-                }
-            }
-
-            public Guid NextSectionStartBlockId {
-                get {
-                    return nextSectionStartBlockID;
-                }
-
-                set {
-                    nextSectionStartBlockID = value;
-                }
-            }
-
-            internal TripStatus SuspendedStatus {
-                get {
-                    return suspendedStatus;
-                }
-
-                set {
-                    suspendedStatus = value;
-                }
-            }
-
-            public LayoutEvent? SuspendedEvent {
-                get {
-                    return suspendedEvent;
-                }
-
-                set {
-                    suspendedEvent = value;
-                }
-            }
+            public LayoutEvent? SuspendedEvent { get; set; }
 
             public LayoutEventScript[]? ActivePolicies {
                 get {
@@ -175,12 +120,12 @@ namespace LayoutManager.Logic {
             }
         }
 
-        class ActiveTripsCollection : Hashtable {
+        private class ActiveTripsCollection : Hashtable {
             public ActiveTripInfo this[Guid trainID] => (ActiveTripInfo)base[trainID];
         }
 
         [Flags]
-        enum BlockAction {
+        private enum BlockAction {
             Go = 0x0000,                    // Just continue going
             Stop = 0x0001,                  // stop the train in this block
             PrepareStop = 0x0002,           // The train will be stopped on the next block
@@ -190,73 +135,52 @@ namespace LayoutManager.Logic {
             SuspendTrip = 0x0020,           // Suspend trip when arriving to this block
         }
 
-        class BlockEntry {
-            readonly LayoutBlock block;
-            BlockAction action;
-            readonly LayoutBlock[]? crossedBlocks;
-            readonly LayoutComponentConnectionPoint front;
-            bool hasMergePoint;
-            readonly bool waitable;
+        private class BlockEntry {
+            private readonly bool waitable;
 
             public BlockEntry(LayoutBlock block, List<LayoutBlock>? crossedBlocks, LayoutComponentConnectionPoint front, bool hasMergePoint, bool waitable) {
-                this.block = block;
-                this.action = BlockAction.Go;
-                this.front = front;
-                this.hasMergePoint = hasMergePoint;
+                this.Block = block;
+                this.Action = BlockAction.Go;
+                this.Front = front;
+                this.HasMergePoint = hasMergePoint;
                 this.waitable = waitable;
 
                 if (crossedBlocks != null && crossedBlocks.Count != 0)
-                    this.crossedBlocks = crossedBlocks.ToArray();
+                    this.CrossedBlocks = crossedBlocks.ToArray();
             }
 
             public BlockEntry(TrainStateInfo train) {
-                this.block = train.LocomotiveBlock!;
-                this.action = BlockAction.Go;
+                this.Block = train.LocomotiveBlock!;
+                this.Action = BlockAction.Go;
                 this.waitable = false;
                 if (train.LocomotiveLocation != null)
-                    this.front = train.LocomotiveLocation.DisplayFront;
+                    this.Front = train.LocomotiveLocation.DisplayFront;
             }
 
-            public LayoutBlock Block => block;
+            public LayoutBlock Block { get; }
 
-            public BlockAction Action {
-                get {
-                    return action;
-                }
+            public BlockAction Action { get; set; }
 
-                set {
-                    action = value;
-                }
-            }
+            public LayoutBlock[]? CrossedBlocks { get; }
 
-            public LayoutBlock[]? CrossedBlocks => crossedBlocks;
-
-            public LayoutComponentConnectionPoint Front => front;
+            public LayoutComponentConnectionPoint Front { get; }
 
             public void AddAction(BlockAction action) {
-                this.action |= action;
+                this.Action |= action;
             }
 
             public void RemoveAction(BlockAction action) {
-                this.action &= ~action;
+                this.Action &= ~action;
             }
 
-            public bool HasMergePoint {
-                get {
-                    return hasMergePoint;
-                }
-
-                set {
-                    hasMergePoint = value;
-                }
-            }
+            public bool HasMergePoint { get; set; }
 
             public bool Waitable => waitable;
         }
 
-        class BlockEntryQueue : Queue {
-            readonly IDictionary blockEntriesInQueue = new HybridDictionary();
-            readonly ActiveTripInfo trip;
+        private class BlockEntryQueue : Queue {
+            private readonly IDictionary blockEntriesInQueue = new HybridDictionary();
+            private readonly ActiveTripInfo trip;
 
             internal BlockEntryQueue(ActiveTripInfo trip) {
                 this.trip = trip;
@@ -320,12 +244,10 @@ namespace LayoutManager.Logic {
                     blockEntry.RemoveAction(BlockAction.PrepareStop);
                 }
             }
-
         }
 
-
-        class BlockUnlockingManager : Dictionary<Guid, LayoutDelayedEvent> {
-            bool operationMode;
+        private class BlockUnlockingManager : Dictionary<Guid, LayoutDelayedEvent> {
+            private bool operationMode;
 
             public BlockUnlockingManager() {
                 EventManager.AddObjectSubscriptions(this);
@@ -339,7 +261,6 @@ namespace LayoutManager.Logic {
             }
 
             public new void Remove(Guid blockID) {
-
                 if (TryGetValue(blockID, out LayoutDelayedEvent delayedEvent)) {
                     Trace.WriteLineIf(traceUnlockingManager.TraceInfo, $"UnlockingManager: Removing {LayoutModel.Blocks[blockID]}");
                     delayedEvent.Cancel();
@@ -463,32 +384,27 @@ namespace LayoutManager.Logic {
         /// Describe a trip section. A trip section is part of a trip upto the destination or a position where the train
         /// may have to wait because it may cross the path of another train
         /// </summary>
-        class TripSection {
-            readonly ActiveTripInfo trip;
-            readonly ITripRoute route;
-            readonly IList<BlockEntry> blockEntries;
-            readonly bool arrivedToDestination;
-
+        private class TripSection {
             internal TripSection(ActiveTripInfo trip, ITripRoute route, List<BlockEntry> blockEntries, bool arrivedToDestination) {
-                this.trip = trip;
-                this.route = route;
-                this.blockEntries = blockEntries;
-                this.arrivedToDestination = arrivedToDestination;
+                this.Trip = trip;
+                this.Route = route;
+                this.BlockEntries = blockEntries;
+                this.ArrivedToDestination = arrivedToDestination;
             }
 
-            public ActiveTripInfo Trip => trip;
+            public ActiveTripInfo Trip { get; }
 
-            public ITripRoute Route => route;
+            public ITripRoute Route { get; }
 
-            public IList<BlockEntry> BlockEntries => blockEntries;
+            public IList<BlockEntry> BlockEntries { get; }
 
-            public bool ArrivedToDestination => arrivedToDestination;
+            public bool ArrivedToDestination { get; }
 
             public LayoutLockRequest? RequestLayoutLock(ActiveTripInfo trip, BlockUnlockingManager blockUnlockingManager) {
                 LayoutLockRequest lockRequest = new LayoutLockRequest(trip.TrainId);
                 bool gotLock;
 
-                foreach (BlockEntry entry in blockEntries) {
+                foreach (BlockEntry entry in BlockEntries) {
                     lockRequest.Blocks.Add(entry.Block);
 
                     if (entry.CrossedBlocks != null)
@@ -533,12 +449,12 @@ namespace LayoutManager.Logic {
         /// <summary>
         /// activeTrips map from train ID to active trip
         /// </summary>
-        readonly ActiveTripsCollection activeTrips = new ActiveTripsCollection();
-        readonly BlockUnlockingManager blockUnlockingManager = new BlockUnlockingManager();
-        IRoutePlanningServices? _tripPlanningServices;
-        ILayoutLockManagerServices? _layoutLockManagerServices;
-        ILayoutTopologyServices? _layoutTopologyServices;
-        bool allSuspended;
+        private readonly ActiveTripsCollection activeTrips = new ActiveTripsCollection();
+        private readonly BlockUnlockingManager blockUnlockingManager = new BlockUnlockingManager();
+        private IRoutePlanningServices? _tripPlanningServices;
+        private ILayoutLockManagerServices? _layoutLockManagerServices;
+        private ILayoutTopologyServices? _layoutTopologyServices;
+        private bool allSuspended;
 
         #region External Interface Event Handlers
 
@@ -660,7 +576,6 @@ namespace LayoutManager.Logic {
             if (trip != null && !canClearTrip(trip) && trip.Status != TripStatus.Suspended) {
                 if (emergency) {
                     Trace.WriteLineIf(traceDispatching.TraceInfo, $"Trip for train {train.DisplayName} emergency suspend");
-
 
                     if (train.Managed) {
                         train.SpeedInSteps = 0;     // Stop the train at once
@@ -791,10 +706,9 @@ namespace LayoutManager.Logic {
 
         #endregion
 
-
         #region Services getter properties
 
-        IRoutePlanningServices TripPlanningServices {
+        private IRoutePlanningServices TripPlanningServices {
             get {
                 if (_tripPlanningServices == null) {
                     _tripPlanningServices = (IRoutePlanningServices)EventManager.Event(new LayoutEvent("get-route-planning-services", this))!;
@@ -805,23 +719,19 @@ namespace LayoutManager.Logic {
             }
         }
 
-        ILayoutLockManagerServices LayoutLockManagerServices {
+        private ILayoutLockManagerServices LayoutLockManagerServices {
             get {
-                if (_layoutLockManagerServices == null)
-                    _layoutLockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services", this))!;
-                return _layoutLockManagerServices;
+                return _layoutLockManagerServices ?? (_layoutLockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services", this))!);
             }
         }
 
-        ILayoutTopologyServices LayoutTopologyServices {
+        private ILayoutTopologyServices LayoutTopologyServices {
             get {
-                if (_layoutTopologyServices == null)
-                    _layoutTopologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!;
-                return _layoutTopologyServices;
+                return _layoutTopologyServices ?? (_layoutTopologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!);
             }
         }
 
-        bool AllSuspended {
+        private bool AllSuspended {
             get {
                 return allSuspended;
             }
@@ -848,13 +758,13 @@ namespace LayoutManager.Logic {
         /// <summary>
         /// Return the best route from a given position (and orientation) to the current destination.
         /// </summary>
-        TripBestRouteResult findBestRoute(Guid routeOwner, TripPlanDestinationInfo destination, ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, bool trainStopping) {
+        private TripBestRouteResult findBestRoute(Guid routeOwner, TripPlanDestinationInfo destination, ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, bool trainStopping) {
             BestRoute bestRoute = TripPlanningServices.FindBestRoute(sourceComponent, front, direction, destination, routeOwner, trainStopping);
 
             return new TripBestRouteResult(bestRoute.DestinationTarget == null ? null : bestRoute, bestRoute.Quality, false);
         }
 
-        TripBestRouteResult findBestRoute(ActiveTripInfo trip, ModelComponent sourceComponent, LayoutComponentConnectionPoint front) => findBestRoute(trip.TrainId, trip.CurrentWaypoint.Destination, sourceComponent, front, trip.CurrentWaypoint.Direction, trip.CurrentWaypoint.TrainStopping);
+        private TripBestRouteResult findBestRoute(ActiveTripInfo trip, ModelComponent sourceComponent, LayoutComponentConnectionPoint front) => findBestRoute(trip.TrainId, trip.CurrentWaypoint.Destination, sourceComponent, front, trip.CurrentWaypoint.Direction, trip.CurrentWaypoint.TrainStopping);
 
         [LayoutEvent("find-best-route-request")]
         private void findBestRouteRequest(LayoutEvent e) {
@@ -914,7 +824,7 @@ namespace LayoutManager.Logic {
         /// </summary>
         /// <param name="trip">The trip for which the lock request is needed</param>
         /// <param name="route">The route which the train is about to make</param>
-        TripSection getTripSection(ActiveTripInfo trip, ITripRoute route, Guid startSectionBlockID) {
+        private TripSection getTripSection(ActiveTripInfo trip, ITripRoute route, Guid startSectionBlockID) {
             List<BlockEntry> blockEntries = new List<BlockEntry>();
             List<LayoutBlock> crossedBlocks = new List<LayoutBlock>();  // Blocks that are crossed by the current route
             TrackEdge edge = route.SourceEdge;
@@ -1057,7 +967,6 @@ namespace LayoutManager.Logic {
                     currentBlockHasMergePoint = true;
                 }
                 else {
-
                     if (edge.Track is LayoutDoubleTrackComponent doubleTrack && doubleTrack.IsCross) {
                         crossing = true;
                         crossedBlocks.Add(((LayoutDoubleTrackComponent)edge.Track).GetOtherBlock(edge.ConnectionPoint));
@@ -1134,7 +1043,6 @@ namespace LayoutManager.Logic {
 
                     LayoutComponentConnectionPoint front;
 
-
                     if (edge.Track is IModelComponentIsMultiPath turnout) {
                         if (turnout.IsMergePoint(edge.ConnectionPoint)) {
                             Trace.WriteLineIf(traceDeadlock.TraceInfo, $"-Found merge point at {edge.Track.FullDescription} not a deadlock");
@@ -1163,8 +1071,6 @@ namespace LayoutManager.Logic {
                 }
             }
 
-
-
             // If waitable block was found, trim blocks from the end until the last one is waitable
             for (int i = blockEntries.Count - 1; i >= 0; i--) {
                 if (!blockEntries[i].Waitable)
@@ -1172,7 +1078,6 @@ namespace LayoutManager.Logic {
                 else
                     break;
             }
-
 
             if (traceDispatching.TraceVerbose) {
                 Trace.WriteLine("Next trip section contains blocks: ");
@@ -1184,7 +1089,7 @@ namespace LayoutManager.Logic {
             return new TripSection(trip, route, blockEntries, reachedDestination);
         }
 
-        static int getNextWaypointIndex(ActiveTripInfo trip) {
+        private static int getNextWaypointIndex(ActiveTripInfo trip) {
             int nextWayPointIndex = trip.CurrentWaypointIndex;
 
             if (++nextWayPointIndex == trip.TripPlan.Waypoints.Count) {
@@ -1197,7 +1102,7 @@ namespace LayoutManager.Logic {
             return nextWayPointIndex;
         }
 
-        static TripPlanWaypointInfo? getNextWaypoint(ActiveTripInfo trip) {
+        private static TripPlanWaypointInfo? getNextWaypoint(ActiveTripInfo trip) {
             int n = getNextWaypointIndex(trip);
 
             if (n < 0)
@@ -1227,7 +1132,7 @@ namespace LayoutManager.Logic {
         /// <param name="currentBlockEntry">The block entry that was flagged with BlockAction.PrepareNextSection</param>
         /// <param name="nextBlockEntry">(optional)The next block entry</param>
         /// <returns>True if the train can move, false if waiting for lock</returns>
-        bool prepareNextTripSection(ActiveTripInfo trip, BlockEntry currentBlockEntry, BlockEntry? nextBlockEntry) {
+        private bool prepareNextTripSection(ActiveTripInfo trip, BlockEntry currentBlockEntry, BlockEntry? nextBlockEntry) {
             bool trainCanMove = false;
             TripBestRouteResult tripBestRouteResult;
             ;
@@ -1328,7 +1233,6 @@ namespace LayoutManager.Logic {
                     setSwitchesForTripSection(trip, tripBestRouteResult.BestRoute);
                     trainCanMove = true;
                 }
-
             }
             else {
                 if (tripBestRouteResult.BestRoute == null) {
@@ -1395,7 +1299,6 @@ namespace LayoutManager.Logic {
                         Debug.Assert(block.LockRequest != null && block.LockRequest.OwnerId == trip.TrainId);
                     }
 
-
                     if (edge.Track is IModelComponentIsMultiPath multipath) {
                         // Change 13-Feb: Change switch state only on Split point. Do not change switch on merge point
                         // this avoid possible derailments on reverse loop
@@ -1433,7 +1336,6 @@ namespace LayoutManager.Logic {
             while (edge.Track != destinationEdge.Track) {
                 LayoutBlock block = edge.Track.GetBlock(edge.ConnectionPoint);
 
-
                 if (block.LockRequest == null || block.LockRequest.OwnerId != ownerID) {
                     completed = false;
                     break;
@@ -1446,7 +1348,6 @@ namespace LayoutManager.Logic {
                     powerConnectors.Add(powerConnector.Id, powerConnector);
                     powerConnector.Inlet.ConnectedOutlet.SelectPower(LayoutPowerType.Digital, switchingCommands);
                 }
-
 
                 if (edge.Track is IModelComponentIsMultiPath multipath) {
                     // 13-Feb: Change, change switch only if Split point, this avoid derailment because of changing
@@ -1476,11 +1377,11 @@ namespace LayoutManager.Logic {
         /// </summary>
         /// <param name="trip"></param>
         /// <param name="route"></param>
-        void setSwitchStateOnRoute(ActiveTripInfo trip, ITripRoute route) {
+        private void setSwitchStateOnRoute(ActiveTripInfo trip, ITripRoute route) {
             EventManager.Event(new LayoutEvent("dispatcher-set-switches", trip.TrainId, route));
         }
 
-        void retryTrip(ActiveTripInfo trip) {
+        private void retryTrip(ActiveTripInfo trip) {
             if (trip.Status != TripStatus.Done && trip.Status != TripStatus.Aborted) {
                 Trace.WriteLineIf(traceDispatching.TraceInfo, $"-- retry to find route for train {trip.Train.DisplayName}");
 
@@ -1517,7 +1418,6 @@ namespace LayoutManager.Logic {
                             blockIDtoUnlock.Add(blockEntry.Block.Id);
                         }
                     }
-
                 }
 
                 if (unlockingBlocks)
@@ -1543,7 +1443,7 @@ namespace LayoutManager.Logic {
         /// </summary>
         /// <param name="trip">The trip</param>
         /// <returns>True - the trip should be retried</returns>
-        bool shouldRetryTrip(ActiveTripInfo trip) {
+        private bool shouldRetryTrip(ActiveTripInfo trip) {
             var locoBlock = trip.Train.LocomotiveBlock;
             var locoLocation = trip.Train.LocomotiveLocation;
 
@@ -1586,7 +1486,7 @@ namespace LayoutManager.Logic {
             return true;
         }
 
-        void retryTripsWaitingForLocks(bool retryAllTrains) {
+        private void retryTripsWaitingForLocks(bool retryAllTrains) {
             Trace.WriteLineIf(traceDispatching.TraceInfo, $"-Retry trips for {(retryAllTrains ? "all trains" : "waiting trains")}");
 
             foreach (ActiveTripInfo trip in activeTrips.Values) {
@@ -1597,7 +1497,7 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEventDef("trip-done", Role = LayoutEventRole.Notification, SenderType = typeof(TripPlanAssignmentInfo))]
-        void trainStopped(ActiveTripInfo trip, bool atWayPoint) {
+        private void trainStopped(ActiveTripInfo trip, bool atWayPoint) {
             trip.Status = TripStatus.Stopped;
 
             EventManager.Event(new LayoutEvent("driver-stop", trip.Train));
@@ -1643,8 +1543,7 @@ namespace LayoutManager.Logic {
             }
         }
 
-        void trainPrepareStart(ActiveTripInfo trip) {
-
+        private void trainPrepareStart(ActiveTripInfo trip) {
             Trace.WriteLineIf(traceDispatching.TraceInfo, $"Train {trip.Train.DisplayName} Prepare Start - calling prepareNextTripSection");
             if (prepareNextTripSection(trip, new BlockEntry(trip.Train), null))
                 trainStart(trip);           // If train can move right away, start
@@ -1653,7 +1552,7 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEventDef("driver-train-go", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(LocomotiveOrientation))]
-        void trainStart(ActiveTripInfo trip) {
+        private void trainStart(ActiveTripInfo trip) {
             Trace.WriteLineIf(traceDispatching.TraceInfo, $"Start moving - trip of train {trip.Train.DisplayName}");
 
             if (trip.CurrentWaypoint.DriverInstructions != null) {
@@ -1777,7 +1676,6 @@ namespace LayoutManager.Logic {
 
                     if (trip.Status == TripStatus.Go || trip.Status == TripStatus.Done)
                         EventManager.Event(new LayoutEvent("driver-update-speed", trip.Train));
-
                 }
                 else {
                     Trace.WriteLineIf(traceDispatching.TraceInfo, $"Train {trip.Train.DisplayName} entered unexpected block: {block}");
@@ -1785,7 +1683,6 @@ namespace LayoutManager.Logic {
                         Trace.WriteLineIf(traceDispatching.TraceInfo, "  The trip queue is empty");
                     else
                         Trace.WriteLineIf(traceDispatching.TraceInfo, $"  The expected block is: {(trip.Queue.Peek()!).Block}");
-
 
                     if (block.LockRequest == null)
                         Error(block, $"Train {train.DisplayName} entered to an block that was not allocated to any train");
@@ -2004,7 +1901,7 @@ namespace LayoutManager.Logic {
 
         #region Validate trip route
 
-        class CheckRoutesResult {
+        private class CheckRoutesResult {
             public IDictionary<Guid, TrackEdge> ReachableDestinationEdges = new Dictionary<Guid, TrackEdge>();
             public List<TrackEdge> ValidSourceEdges = new List<TrackEdge>();
             public List<TrackEdge> InvalidSourceEdges = new List<TrackEdge>();
@@ -2099,7 +1996,6 @@ namespace LayoutManager.Logic {
 
                 // Recommend removing from the trip plan, any destination that could not be reached
                 foreach (LayoutBlockDefinitionComponent blockInfo in wayPoint.Destination.BlockInfoList) {
-
                     if (result.ReachableDestinationEdges.ContainsKey(blockInfo.Id))
                         sourceEdges.Add(result.ReachableDestinationEdges[blockInfo.Id]);
                     else
@@ -2112,21 +2008,18 @@ namespace LayoutManager.Logic {
 
         #region Trip route validation action classes
 
-        class RouteValidationResult : ITripRouteValidationResult {
-            readonly bool canBeFixed;
-            readonly IList<ITripRouteValidationAction> actions;
-
+        private class RouteValidationResult : ITripRouteValidationResult {
             public RouteValidationResult(bool canBeFixed, List<ITripRouteValidationAction> actions) {
-                this.canBeFixed = canBeFixed;
-                this.actions = actions.AsReadOnly();
+                this.CanBeFixed = canBeFixed;
+                this.Actions = actions.AsReadOnly();
             }
 
-            public bool CanBeFixed => canBeFixed;
+            public bool CanBeFixed { get; }
 
-            public IList<ITripRouteValidationAction> Actions => actions;
+            public IList<ITripRouteValidationAction> Actions { get; }
         }
 
-        class RouteValidationActionBase {
+        private class RouteValidationActionBase {
             protected int waypointIndex;
 
             public RouteValidationActionBase(int wayPointIndex) {
@@ -2136,8 +2029,7 @@ namespace LayoutManager.Logic {
             public int WaypointIndex => waypointIndex;
         }
 
-        class RouteValidationActionNoPath : RouteValidationActionBase, ITripRouteValidationAction {
-
+        private class RouteValidationActionNoPath : RouteValidationActionBase, ITripRouteValidationAction {
             public RouteValidationActionNoPath(int wayPointIndex) : base(wayPointIndex) {
             }
 
@@ -2148,8 +2040,8 @@ namespace LayoutManager.Logic {
             }
         }
 
-        class RouteValidationActionSwitchDirection : RouteValidationActionBase, ITripRouteValidationAction {
-            readonly LocomotiveOrientation direction;
+        private class RouteValidationActionSwitchDirection : RouteValidationActionBase, ITripRouteValidationAction {
+            private readonly LocomotiveOrientation direction;
 
             public RouteValidationActionSwitchDirection(int wayPointIndex, LocomotiveOrientation direction) : base(wayPointIndex) {
                 this.direction = direction;
@@ -2163,8 +2055,8 @@ namespace LayoutManager.Logic {
             }
         }
 
-        class RouteValidationActionRemoveLocation : RouteValidationActionBase, ITripRouteValidationAction {
-            readonly LayoutBlockDefinitionComponent blockInfo;
+        private class RouteValidationActionRemoveLocation : RouteValidationActionBase, ITripRouteValidationAction {
+            private readonly LayoutBlockDefinitionComponent blockInfo;
 
             public RouteValidationActionRemoveLocation(int wayPointIndex, LayoutBlockDefinitionComponent blockInfo) : base(wayPointIndex) {
                 this.blockInfo = blockInfo;

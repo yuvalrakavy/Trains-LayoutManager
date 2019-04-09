@@ -7,7 +7,6 @@ using System.Drawing.Drawing2D;
 using LayoutManager.Model;
 
 namespace LayoutManager.Components {
-
     /// <summary>
     /// This is the base class for all "painters". A painter is a class that does the actual painting
     /// of a given component. Painters exist to seperate the painting from the model/controller/view model
@@ -35,45 +34,24 @@ namespace LayoutManager.Components {
     /// 
     /// </summary>
     public class LayoutTrackPainter : LayoutComponentPainter {
-        Color trackColor = Color.Black;
-        int trackWidth = 6;
+        public Color TrackColor { get; set; } = Color.Black;
 
-        public Color TrackColor {
-            get {
-                return trackColor;
-            }
-
-            set {
-                trackColor = value;
-            }
-        }
-
-        public int TrackWidth {
-            get {
-                return trackWidth;
-            }
-
-            set {
-                trackWidth = value;
-            }
-        }
-
+        public int TrackWidth { get; set; } = 6;
     }
 
     public class LayoutTrackOverlayPainter : LayoutComponentPainter {
-        readonly IList<LayoutComponentConnectionPoint> cp;
-        Size componentSize;
+        private Size componentSize;
 
         public LayoutTrackOverlayPainter(Size componentSize, IList<LayoutComponentConnectionPoint> cp) {
             Debug.Assert(cp.Count >= 2);
 
-            this.cp = cp;
+            this.ConnectionPoints = cp;
             this.componentSize = componentSize;
         }
 
         protected Size ComponentSize => componentSize;
 
-        protected IList<LayoutComponentConnectionPoint> ConnectionPoints => cp;
+        protected IList<LayoutComponentConnectionPoint> ConnectionPoints { get; }
 
         /// <summary>
         /// Center the origin to the middle of the component grid. If the component is vertical, a rotate
@@ -83,7 +61,7 @@ namespace LayoutManager.Components {
         protected void CenterOrigin(Graphics g) {
             g.TranslateTransform(componentSize.Width / 2.0F, componentSize.Height / 2.0F);
 
-            if (LayoutTrackComponent.IsVertical(cp[0]))
+            if (LayoutTrackComponent.IsVertical(ConnectionPoints[0]))
                 g.RotateTransform(90.0F);
         }
 
@@ -96,11 +74,11 @@ namespace LayoutManager.Components {
 
         public TrackOrientation Orientation {
             get {
-                if (cp.Count > 2)
+                if (ConnectionPoints.Count > 2)
                     return TrackOrientation.Other;
-                else if (cp[0].IsHorizontal && cp[1].IsHorizontal)
+                else if (ConnectionPoints[0].IsHorizontal && ConnectionPoints[1].IsHorizontal)
                     return TrackOrientation.Horizontal;
-                else if (cp[0].IsVertical && cp[1].IsVertical)
+                else if (ConnectionPoints[0].IsVertical && ConnectionPoints[1].IsVertical)
                     return TrackOrientation.Vertical;
                 else
                     return TrackOrientation.Diagonal;
@@ -112,11 +90,11 @@ namespace LayoutManager.Components {
         /// </summary>
         protected Point CenterPoint {
             get {
-                LayoutComponentConnectionPoint oppositeCp = LayoutTrackComponent.OppositeConnectPoint(cp[0]);
-                LayoutComponentConnectionPoint otherCp = cp[1];
+                LayoutComponentConnectionPoint oppositeCp = LayoutTrackComponent.OppositeConnectPoint(ConnectionPoints[0]);
+                LayoutComponentConnectionPoint otherCp = ConnectionPoints[1];
 
-                if (cp.Count > 2) {
-                    foreach (LayoutComponentConnectionPoint cpLookup in cp) {
+                if (ConnectionPoints.Count > 2) {
+                    foreach (LayoutComponentConnectionPoint cpLookup in ConnectionPoints) {
                         if (cpLookup == oppositeCp) {
                             otherCp = oppositeCp;
                             break;
@@ -124,7 +102,7 @@ namespace LayoutManager.Components {
                     }
                 }
 
-                return Midpoint(LayoutComponentPainter.GetConnectionPointPosition(cp[0], componentSize),
+                return Midpoint(LayoutComponentPainter.GetConnectionPointPosition(ConnectionPoints[0], componentSize),
                     LayoutComponentPainter.GetConnectionPointPosition(otherCp, componentSize));
             }
         }
@@ -134,9 +112,8 @@ namespace LayoutManager.Components {
     /// Handle drawing of straight tracks
     /// </summary>
     public class LayoutStraightTrackPainter : LayoutTrackPainter {
-        readonly LayoutComponentConnectionPoint cp1, cp2;
-        Size componentSize;
-        Color trackColor2 = Color.Black;
+        private readonly LayoutComponentConnectionPoint cp1, cp2;
+        private Size componentSize;
 
         public LayoutStraightTrackPainter(
             Size componentSize,
@@ -154,15 +131,7 @@ namespace LayoutManager.Components {
             this.componentSize = componentSize;
         }
 
-        public Color TrackColor2 {
-            set {
-                trackColor2 = value;
-            }
-
-            get {
-                return trackColor2;
-            }
-        }
+        public Color TrackColor2 { set; get; } = Color.Black;
 
         public void Paint(Graphics g) {
             Point cp1Position = GetConnectionPointPosition(cp1, componentSize);
@@ -184,12 +153,11 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutTurnoutTrackPainter : LayoutTrackPainter {
-        Size componentSize;
-        readonly LayoutComponentConnectionPoint tip;
-        readonly LayoutComponentConnectionPoint straight;
-        readonly LayoutComponentConnectionPoint branch;
-        readonly LayoutComponentConnectionPoint switchPosition;
-        Color branchColor = Color.Black;
+        private Size componentSize;
+        private readonly LayoutComponentConnectionPoint tip;
+        private readonly LayoutComponentConnectionPoint straight;
+        private readonly LayoutComponentConnectionPoint branch;
+        private readonly LayoutComponentConnectionPoint switchPosition;
 
         public LayoutTurnoutTrackPainter(
             Size componentSize,
@@ -197,7 +165,6 @@ namespace LayoutManager.Components {
             LayoutComponentConnectionPoint straight,
             LayoutComponentConnectionPoint branch,
             LayoutComponentConnectionPoint switchPosition) {
-
             this.componentSize = componentSize;
             this.tip = tip;
             this.straight = straight;
@@ -208,21 +175,12 @@ namespace LayoutManager.Components {
                 throw new ArgumentException("Invalid switch position");
         }
 
-        public Color BranchColor {
-            get {
-                return branchColor;
-            }
-
-            set {
-                branchColor = value;
-            }
-        }
+        public Color BranchColor { get; set; } = Color.Black;
 
         public void Paint(Graphics g) {
             Point tipPosition = GetConnectionPointPosition(tip, componentSize);
             Point straightPosition = GetConnectionPointPosition(straight, componentSize);
             Point branchPosition = GetConnectionPointPosition(branch, componentSize);
-
 
             if (switchPosition == straight) {
                 using (Pen penSwitched = new Pen(TrackColor, TrackWidth), penNotSwitch = new Pen(BranchColor, TrackWidth)) {
@@ -251,16 +209,15 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutThreeWayTurnoutPainter : LayoutTrackPainter {
-        Size componentSize;
-        readonly LayoutComponentConnectionPoint tip;
-        readonly int switchState;
-        Color[] segmentColors = new Color[] { Color.Black, Color.Black, Color.Black };
+        private Size componentSize;
+        private readonly LayoutComponentConnectionPoint tip;
+        private readonly int switchState;
+        private Color[] segmentColors = new Color[] { Color.Black, Color.Black, Color.Black };
 
         public LayoutThreeWayTurnoutPainter(
             Size componentSize,
             LayoutComponentConnectionPoint tip,
             int switchState) {
-
             this.componentSize = componentSize;
             this.tip = tip;
             this.switchState = switchState;
@@ -330,13 +287,9 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutDoubleSlipPainter : LayoutTrackPainter {
-        Size componentSize;
-        readonly int diagonalIndex;
-        readonly int switchState;
-        Color horizontalTrackColor = Color.Black;
-        Color verticalTrackColor = Color.Black;
-        Color leftBranchColor = Color.Black;
-        Color rightBranchColor = Color.Black;
+        private Size componentSize;
+        private readonly int diagonalIndex;
+        private readonly int switchState;
 
         public LayoutDoubleSlipPainter(Size componentSize, int diagonalIndex, int switchState) {
             this.componentSize = componentSize;
@@ -344,25 +297,13 @@ namespace LayoutManager.Components {
             this.switchState = switchState;
         }
 
-        public Color HorizontalTrackColor {
-            get { return horizontalTrackColor; }
-            set { horizontalTrackColor = value; }
-        }
+        public Color HorizontalTrackColor { get; set; } = Color.Black;
 
-        public Color VerticalTrackColor {
-            get { return verticalTrackColor; }
-            set { verticalTrackColor = value; }
-        }
+        public Color VerticalTrackColor { get; set; } = Color.Black;
 
-        public Color LeftBranchColor {
-            get { return leftBranchColor; }
-            set { leftBranchColor = value; }
-        }
+        public Color LeftBranchColor { get; set; } = Color.Black;
 
-        public Color RightBranchColor {
-            get { return rightBranchColor; }
-            set { rightBranchColor = value; }
-        }
+        public Color RightBranchColor { get; set; } = Color.Black;
 
         public void Paint(Graphics g) {
             using (Pen p = new Pen(VerticalTrackColor, TrackWidth)) {
@@ -415,8 +356,7 @@ namespace LayoutManager.Components {
             ActiveProximitySensor,
         };
 
-        readonly ComponentType componentType;
-
+        private readonly ComponentType componentType;
 
         public LayoutTriggerableBlockEdgePainter(ComponentType componentType,
             Size componentSize, IList<LayoutComponentConnectionPoint> cp) : base(componentSize, cp) {
@@ -460,7 +400,7 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutBlockEdgePainter : LayoutTriggerableBlockEdgePainter {
-        const int crossingLineExtra = 4;
+        private const int crossingLineExtra = 4;
 
         public LayoutBlockEdgePainter(Size componentSize,
             IList<LayoutComponentConnectionPoint> cp) : base(componentType: ComponentType.TrackContact, componentSize: componentSize, cp: cp) {
@@ -479,32 +419,13 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutTrackLinkPainter : LayoutTrackOverlayPainter, IDisposable {
-        Brush fill = Brushes.Black;
-        Pen outline = Pens.Black;
-
         public LayoutTrackLinkPainter(Size componentSize,
             IList<LayoutComponentConnectionPoint> cp) : base(componentSize, cp) {
         }
 
-        public Brush Fill {
-            get {
-                return fill;
-            }
+        public Brush Fill { get; set; } = Brushes.Black;
 
-            set {
-                fill = value;
-            }
-        }
-
-        public Pen OutlinePen {
-            get {
-                return outline;
-            }
-
-            set {
-                outline = value;
-            }
-        }
+        public Pen OutlinePen { get; set; } = Pens.Black;
 
         public void Paint(Graphics g) {
             int u = ComponentSize.Width / 6;
@@ -520,8 +441,8 @@ namespace LayoutManager.Components {
             GraphicsState gs = g.Save();
 
             CenterOrigin(g);
-            g.FillPolygon(fill, points);
-            g.DrawPolygon(outline, points);
+            g.FillPolygon(Fill, points);
+            g.DrawPolygon(OutlinePen, points);
             g.Restore(gs);
         }
 
@@ -534,23 +455,14 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutPowerConnectorPainter : LayoutTrackOverlayPainter, IDisposable {
-        readonly Pen linePen = new Pen(Color.Black, 2.0F);
-        readonly Pen circlePen = new Pen(Color.Black, 1.0F);
-        Brush circleFill = new SolidBrush(Color.Black);
+        private readonly Pen linePen = new Pen(Color.Black, 2.0F);
+        private readonly Pen circlePen = new Pen(Color.Black, 1.0F);
 
         public LayoutPowerConnectorPainter(Size componentSize,
             IList<LayoutComponentConnectionPoint> cp) : base(componentSize, cp) {
         }
 
-        public Brush CircleFill {
-            get {
-                return circleFill;
-            }
-
-            set {
-                circleFill = value;
-            }
-        }
+        public Brush CircleFill { get; set; } = new SolidBrush(Color.Black);
 
         public void Paint(Graphics g) {
             GraphicsState gs = g.Save();
@@ -563,7 +475,7 @@ namespace LayoutManager.Components {
             float x = -circleSize / 2.0F;
             float y = lineLength - circleSize / 2.0F;
 
-            g.FillEllipse(circleFill, x, y, circleSize, circleSize);
+            g.FillEllipse(CircleFill, x, y, circleSize, circleSize);
             g.DrawEllipse(circlePen, x, y, circleSize, circleSize);
 
             g.Restore(gs);
@@ -572,12 +484,11 @@ namespace LayoutManager.Components {
         public void Dispose() {
             linePen.Dispose();
             circlePen.Dispose();
-            circleFill.Dispose();
+            CircleFill.Dispose();
         }
     }
 
     public class LayoutTrackIsolationPainter : LayoutTrackOverlayPainter {
-
         public LayoutTrackIsolationPainter(Size componentSize,
             IList<LayoutComponentConnectionPoint> cp) : base(componentSize, cp) {
         }
@@ -588,7 +499,6 @@ namespace LayoutManager.Components {
 
             using (Pen trackPen = new Pen(Color.Black, u)) {
                 using (Brush backgroundBrush = new SolidBrush(Color.White)) {
-
                     CenterOrigin(g);
                     g.FillRectangle(backgroundBrush, -u, -u, 2 * u, 2 * u);
                     g.DrawLine(trackPen, -u, -2 * u, -u, 2 * u);
@@ -600,14 +510,12 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutTrackReverseLoopModulePainter : LayoutTrackOverlayPainter {
-
         public LayoutTrackReverseLoopModulePainter(Size componentSize,
             IList<LayoutComponentConnectionPoint> cp)
             : base(componentSize, cp) {
         }
 
-        void DrawArrow(Graphics g, Pen p, PointF tail, PointF head, float headSize) {
-
+        private void DrawArrow(Graphics g, Pen p, PointF tail, PointF head, float headSize) {
             g.DrawLine(p, tail, head);
 
             if (tail.X < head.X)
@@ -623,7 +531,6 @@ namespace LayoutManager.Components {
 
             using (Pen trackPen = new Pen(Color.Black, u)) {
                 using (Brush backgroundBrush = new SolidBrush(Color.White)) {
-
                     CenterOrigin(g);
                     g.FillRectangle(backgroundBrush, -u, -u, 2 * u, 2 * u);
                     g.DrawLine(trackPen, -u, -2 * u, -u, 2 * u);
@@ -642,70 +549,33 @@ namespace LayoutManager.Components {
     /// Paint a Block information
     /// </summary>
     public class LayoutBlockInfoPainter : LayoutTrackOverlayPainter, IDisposable {
-        Brush fill = Brushes.LightSkyBlue;
-        Pen outline = Pens.Black;
-        Size infoBoxSize = new Size(6, 6);
-        bool occupancyDetectionBlock;
-
         public LayoutBlockInfoPainter(Size componentSize,
             IList<LayoutComponentConnectionPoint> cp) : base(componentSize, cp) {
         }
 
-        public Brush Fill {
-            set {
-                fill = value;
-            }
+        public Brush Fill { set; get; } = Brushes.LightSkyBlue;
 
-            get {
-                return fill;
-            }
-        }
+        public Pen Outline { set; get; } = Pens.Black;
 
-        public Pen Outline {
-            set {
-                outline = value;
-            }
+        public Size InfoBoxSize { set; get; } = new Size(6, 6);
 
-            get {
-                return outline;
-            }
-        }
-
-        public Size InfoBoxSize {
-            set {
-                infoBoxSize = value;
-            }
-
-            get {
-                return infoBoxSize;
-            }
-        }
-
-        public bool OccupancyDetectionBlock {
-            get {
-                return occupancyDetectionBlock;
-            }
-
-            set {
-                occupancyDetectionBlock = value;
-            }
-        }
+        public bool OccupancyDetectionBlock { get; set; }
 
         public void Paint(Graphics g) {
             Rectangle info;
             Point centerPoint = CenterPoint;
 
             info = new Rectangle(
-                new Point(centerPoint.X - infoBoxSize.Width / 2, centerPoint.Y - infoBoxSize.Height / 2), infoBoxSize);
+                new Point(centerPoint.X - InfoBoxSize.Width / 2, centerPoint.Y - InfoBoxSize.Height / 2), InfoBoxSize);
 
-            g.FillRectangle(fill, info);
-            g.DrawRectangle(outline, info);
+            g.FillRectangle(Fill, info);
+            g.DrawRectangle(Outline, info);
 
-            if (occupancyDetectionBlock) {
+            if (OccupancyDetectionBlock) {
                 if (LayoutTrackComponent.IsHorizontal(ConnectionPoints))
-                    g.DrawLine(Pens.Black, centerPoint.X, centerPoint.Y - (infoBoxSize.Height / 2 + 3), centerPoint.X, centerPoint.Y + (infoBoxSize.Height / 2 + 3));
+                    g.DrawLine(Pens.Black, centerPoint.X, centerPoint.Y - (InfoBoxSize.Height / 2 + 3), centerPoint.X, centerPoint.Y + (InfoBoxSize.Height / 2 + 3));
                 else
-                    g.DrawLine(Pens.Black, centerPoint.X - (infoBoxSize.Width / 2 + 3), centerPoint.Y, centerPoint.X + (infoBoxSize.Width / 2 + 3), centerPoint.X);
+                    g.DrawLine(Pens.Black, centerPoint.X - (InfoBoxSize.Width / 2 + 3), centerPoint.Y, centerPoint.X + (InfoBoxSize.Width / 2 + 3), centerPoint.X);
             }
         }
 
@@ -714,35 +584,25 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutTrackAnnotationPainter : LayoutTrackOverlayPainter {
-        int offset = 6;
-
         public LayoutTrackAnnotationPainter(Size componentSize, IList<LayoutComponentConnectionPoint> cps) : base(componentSize, cps) {
         }
 
-        public int Offset {
-            get {
-                return offset;
-            }
-
-            set {
-                offset = value;
-            }
-        }
+        public int Offset { get; set; } = 6;
 
         protected Point GetEdgePoint(LayoutComponentConnectionPoint cp, bool rightSide) {
             Point pt = LayoutComponentPainter.GetConnectionPointPosition(cp, ComponentSize);
 
             if (LayoutTrackComponent.IsVertical(cp)) {
                 if (rightSide)
-                    return new Point(pt.X + offset, pt.Y);
+                    return new Point(pt.X + Offset, pt.Y);
                 else
-                    return new Point(pt.X - offset, pt.Y);
+                    return new Point(pt.X - Offset, pt.Y);
             }
             else {
                 if (rightSide)
-                    return new Point(pt.X, pt.Y + offset);
+                    return new Point(pt.X, pt.Y + Offset);
                 else
-                    return new Point(pt.X, pt.Y - offset);
+                    return new Point(pt.X, pt.Y - Offset);
             }
         }
 
@@ -789,7 +649,6 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutBridgePainter : LayoutTrackAnnotationPainter {
-
         public LayoutBridgePainter(Size componentSize, IList<LayoutComponentConnectionPoint> cps) : base(componentSize, cps) {
         }
 
@@ -813,7 +672,7 @@ namespace LayoutManager.Components {
     }
 
     public class LayoutTunnelPainter : LayoutTrackAnnotationPainter {
-        readonly Color tunnelColor;
+        private readonly Color tunnelColor;
 
         public LayoutTunnelPainter(Size componentSize, IList<LayoutComponentConnectionPoint> cps) : base(componentSize, cps) {
             tunnelColor = Color.FromArgb(192, Color.Gray);
@@ -831,35 +690,13 @@ namespace LayoutManager.Components {
     }
 
     public class BallonPainter : IDisposable {
-        RectangleF bbox = new Rectangle(new Point(0, 0), new Size(180, 100));
-        PointF hotspot = new Point(20, 150);
-        SizeF cornerSize = new SizeF(10, 10);
-        SizeF arrowSize = new SizeF(8, 6);
-        Pen outline = new Pen(Brushes.Black, 2);
-        Brush fill = Brushes.Yellow;
-        int hotspotOrigin = 5;
+        private int hotspotOrigin = 5;
 
         #region Properties
 
-        public RectangleF Bounds {
-            get {
-                return bbox;
-            }
+        public RectangleF Bounds { get; set; } = new Rectangle(new Point(0, 0), new Size(180, 100));
 
-            set {
-                bbox = value;
-            }
-        }
-
-        public PointF Hotspot {
-            get {
-                return hotspot;
-            }
-
-            set {
-                hotspot = value;
-            }
-        }
+        public PointF Hotspot { get; set; } = new Point(20, 150);
 
         public int HotspotOrigin {
             get {
@@ -873,54 +710,22 @@ namespace LayoutManager.Components {
             }
         }
 
-        public SizeF CornerSize {
-            get {
-                return cornerSize;
-            }
+        public SizeF CornerSize { get; set; } = new SizeF(10, 10);
 
-            set {
-                cornerSize = value;
-            }
-        }
+        public SizeF ArrowSize { get; set; } = new SizeF(8, 6);
 
-        public SizeF ArrowSize {
-            get {
-                return arrowSize;
-            }
+        public Pen Outline { get; set; } = new Pen(Brushes.Black, 2);
 
-            set {
-                arrowSize = value;
-            }
-        }
-
-        public Pen Outline {
-            get {
-                return outline;
-            }
-
-            set {
-                outline = value;
-            }
-        }
-
-        public Brush Fill {
-            get {
-                return fill;
-            }
-
-            set {
-                fill = value;
-            }
-        }
+        public Brush Fill { get; set; } = Brushes.Yellow;
 
         #endregion
 
         #region LastPoint class 
 
-        class LastPoint {
-            readonly GraphicsPath p;
-            PointF cp;
-            int lastPointCount;
+        private class LastPoint {
+            private readonly GraphicsPath p;
+            private PointF cp;
+            private int lastPointCount;
 
             public LastPoint(GraphicsPath p, PointF cp) {
                 this.p = p;
@@ -950,72 +755,72 @@ namespace LayoutManager.Components {
         public GraphicsPath BallonGraphicPath {
             get {
                 GraphicsPath p = new GraphicsPath();
-                LastPoint lp = new LastPoint(p, new PointF(bbox.Left + cornerSize.Width, bbox.Top));
+                LastPoint lp = new LastPoint(p, new PointF(Bounds.Left + CornerSize.Width, Bounds.Top));
                 PointF cornerOrigin;
 
-                cornerOrigin = new PointF(bbox.Right - cornerSize.Width, lp.Y);
+                cornerOrigin = new PointF(Bounds.Right - CornerSize.Width, lp.Y);
 
                 if (hotspotOrigin == 0) {
-                    PointF np = new PointF(lp.X + arrowSize.Width, lp.Y);
+                    PointF np = new PointF(lp.X + ArrowSize.Width, lp.Y);
 
-                    p.AddLine(lp, hotspot);
+                    p.AddLine(lp, Hotspot);
                     p.AddLine(lp, np);
                 }
                 else if (hotspotOrigin == 1) {
-                    p.AddLine(lp, new PointF(bbox.Right - cornerSize.Width - arrowSize.Width, lp.Y));
-                    p.AddLine(lp, hotspot);
+                    p.AddLine(lp, new PointF(Bounds.Right - CornerSize.Width - ArrowSize.Width, lp.Y));
+                    p.AddLine(lp, Hotspot);
                 }
 
                 p.AddLine(lp, cornerOrigin);
-                p.AddArc(new RectangleF(cornerOrigin, cornerSize), 270, 90);
+                p.AddArc(new RectangleF(cornerOrigin, CornerSize), 270, 90);
 
-                cornerOrigin = new PointF(bbox.Right, bbox.Bottom - cornerSize.Height);
+                cornerOrigin = new PointF(Bounds.Right, Bounds.Bottom - CornerSize.Height);
 
                 if (hotspotOrigin == 2) {
-                    PointF np = new PointF(bbox.Right, bbox.Top + cornerSize.Height + arrowSize.Height);
+                    PointF np = new PointF(Bounds.Right, Bounds.Top + CornerSize.Height + ArrowSize.Height);
 
-                    p.AddLine(lp, hotspot);
+                    p.AddLine(lp, Hotspot);
                     p.AddLine(lp, np);
                 }
                 else if (hotspotOrigin == 3) {
-                    p.AddLine(lp, new PointF(bbox.Right, bbox.Bottom - cornerSize.Height - arrowSize.Height));
-                    p.AddLine(lp, hotspot);
+                    p.AddLine(lp, new PointF(Bounds.Right, Bounds.Bottom - CornerSize.Height - ArrowSize.Height));
+                    p.AddLine(lp, Hotspot);
                 }
 
                 p.AddLine(lp, cornerOrigin);
-                p.AddArc(new RectangleF(new PointF(cornerOrigin.X - cornerSize.Width, cornerOrigin.Y), cornerSize), 0, 90);
+                p.AddArc(new RectangleF(new PointF(cornerOrigin.X - CornerSize.Width, cornerOrigin.Y), CornerSize), 0, 90);
 
-                cornerOrigin = new PointF(bbox.Left + cornerSize.Width, bbox.Bottom);
+                cornerOrigin = new PointF(Bounds.Left + CornerSize.Width, Bounds.Bottom);
 
                 if (hotspotOrigin == 4) {
-                    PointF np = new PointF(bbox.Right - cornerSize.Width - arrowSize.Width, bbox.Bottom);
+                    PointF np = new PointF(Bounds.Right - CornerSize.Width - ArrowSize.Width, Bounds.Bottom);
 
-                    p.AddLine(lp, hotspot);
+                    p.AddLine(lp, Hotspot);
                     p.AddLine(lp, np);
                 }
                 else if (hotspotOrigin == 5) {
-                    p.AddLine(lp, new PointF(bbox.Left + cornerSize.Width + arrowSize.Width, bbox.Bottom));
-                    p.AddLine(lp, hotspot);
+                    p.AddLine(lp, new PointF(Bounds.Left + CornerSize.Width + ArrowSize.Width, Bounds.Bottom));
+                    p.AddLine(lp, Hotspot);
                 }
 
                 p.AddLine(lp, cornerOrigin);
-                p.AddArc(new RectangleF(new PointF(bbox.Left, cornerOrigin.Y - cornerSize.Height), cornerSize), 90, 90);
+                p.AddArc(new RectangleF(new PointF(Bounds.Left, cornerOrigin.Y - CornerSize.Height), CornerSize), 90, 90);
 
-                cornerOrigin = new PointF(bbox.Left, bbox.Top + cornerSize.Height);
+                cornerOrigin = new PointF(Bounds.Left, Bounds.Top + CornerSize.Height);
 
                 if (hotspotOrigin == 6) {
-                    PointF np = new PointF(bbox.Left, bbox.Bottom - cornerSize.Height - arrowSize.Height);
+                    PointF np = new PointF(Bounds.Left, Bounds.Bottom - CornerSize.Height - ArrowSize.Height);
 
-                    p.AddLine(lp, hotspot);
+                    p.AddLine(lp, Hotspot);
                     p.AddLine(lp, np);
                 }
                 else if (hotspotOrigin == 7) {
-                    p.AddLine(lp, new PointF(bbox.Left, bbox.Top + cornerSize.Height + arrowSize.Height));
-                    p.AddLine(lp, hotspot);
+                    p.AddLine(lp, new PointF(Bounds.Left, Bounds.Top + CornerSize.Height + ArrowSize.Height));
+                    p.AddLine(lp, Hotspot);
                 }
 
                 p.AddLine(lp, cornerOrigin);
-                p.AddArc(new RectangleF(new PointF(bbox.Left, bbox.Top), cornerSize), 180, 90);
+                p.AddArc(new RectangleF(new PointF(Bounds.Left, Bounds.Top), CornerSize), 180, 90);
 
                 p.CloseFigure();
 
@@ -1025,50 +830,38 @@ namespace LayoutManager.Components {
 
         public void Paint(Graphics g) {
             using (GraphicsPath p = BallonGraphicPath) {
-                g.FillPath(fill, p);
-                g.DrawPath(outline, p);
+                g.FillPath(Fill, p);
+                g.DrawPath(Outline, p);
             }
         }
 
         #region IDisposable Members
 
         public void Dispose() {
-            if (outline != null)
-                outline.Dispose();
+            if (Outline != null)
+                Outline.Dispose();
         }
 
         #endregion
     }
 
     public class LayoutGatePainter : IDisposable {
-        Size componentSize;
-        readonly bool isVertical;
-        readonly bool openUpOrLeft;
-        Color gateColor = Color.DarkGoldenrod;
-        Color columnsColor = Color.DarkGray;
-        int openingClearance;
+        private Size componentSize;
+        private readonly bool isVertical;
+        private readonly bool openUpOrLeft;
 
         public LayoutGatePainter(Size componentSize, bool isVertical, bool openUpOrLeft, int openingClearance) {
             this.componentSize = componentSize;
             this.isVertical = isVertical;
             this.openUpOrLeft = openUpOrLeft;
-            this.openingClearance = openingClearance;
+            this.OpeningClearance = openingClearance;
         }
 
-        public Color GateColor {
-            get { return gateColor; }
-            set { gateColor = value; }
-        }
+        public Color GateColor { get; set; } = Color.DarkGoldenrod;
 
-        public Color ColumnsColor {
-            get { return columnsColor; }
-            set { columnsColor = value; }
-        }
+        public Color ColumnsColor { get; set; } = Color.DarkGray;
 
-        public int OpeningClearance {
-            get { return openingClearance; }
-            set { openingClearance = value; }
-        }
+        public int OpeningClearance { get; set; }
 
         public void Paint(Graphics g) {
             GraphicsState gs = g.Save();
@@ -1083,8 +876,8 @@ namespace LayoutManager.Components {
 
             float gateSize = componentSize.Height / 2.0f - 2;
 
-            float gateEdgeX = (float)Math.Sin(2 * Math.PI / 400 * openingClearance) * gateSize;
-            float gateEdgeY = gateSize - (float)Math.Cos(2 * Math.PI / 400 * openingClearance) * gateSize;
+            float gateEdgeX = (float)Math.Sin(2 * Math.PI / 400 * OpeningClearance) * gateSize;
+            float gateEdgeY = gateSize - (float)Math.Cos(2 * Math.PI / 400 * OpeningClearance) * gateSize;
 
             using (Pen gatePen = new Pen(GateColor, 2.0f)) {
                 g.DrawLine(gatePen, 0, gateSize, gateEdgeX, gateEdgeY);

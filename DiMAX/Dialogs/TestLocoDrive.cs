@@ -5,7 +5,7 @@ using LayoutManager;
 
 namespace DiMAX.Dialogs {
     public partial class TestLocoDrive : Form {
-        readonly DiMAXcommandStation commandStation;
+        private readonly DiMAXcommandStation commandStation;
 
         public TestLocoDrive(DiMAXcommandStation commandStation) {
             InitializeComponent();
@@ -14,7 +14,6 @@ namespace DiMAX.Dialogs {
         }
 
         private void buttonOK_Click(object sender, EventArgs e) {
-
             if (!int.TryParse(textBoxLocoAddress.Text, out int address)) {
                 MessageBox.Show(this, "Invalid loco address", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

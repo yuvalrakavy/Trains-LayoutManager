@@ -12,6 +12,11 @@ namespace LayoutManager.Tools.EventScriptDialogs {
     /// Summary description for ExecuteTripPlan.
     /// </summary>
     public class ExecuteTripPlan : Form, IModelComponentReceiverDialog {
+        private const string A_TripPlanID = "TripPlanID";
+        private const string A_ShouldReverse = "ShouldReverse";
+        private const string A_TrainSymbol = "TrainSymbol";
+        private const string A_LocomotiveBlockId = "LocomotiveBlockID";
+        private const string A_LocomotiveFront = "LocomotiveFront";
         private LayoutManager.CommonUI.Controls.TripPlanList tripPlanList;
         private Splitter splitter1;
         private Panel panel1;
@@ -21,6 +26,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
         private Button buttonCancel;
         private GroupBox groupBox1;
         private LayoutManager.Tools.Controls.TripPlanEditor tripPlanEditor;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -28,10 +34,10 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
         private void EndOfDesignerVariables() { }
 
-        readonly XmlElement element;
+        private readonly XmlElement element;
 
-        LayoutBlock locomotiveBlock = null;
-        LayoutComponentConnectionPoint locomotiveFront = LayoutComponentConnectionPoint.Empty;
+        private LayoutBlock locomotiveBlock = null;
+        private LayoutComponentConnectionPoint locomotiveFront = LayoutComponentConnectionPoint.Empty;
 
         public ExecuteTripPlan(XmlElement element) {
             //
@@ -50,20 +56,20 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
             TripPlanInfo selectedTripPlan = null;
 
-            if (element.HasAttribute("TripPlanID")) {
-                Guid tripPlanID = XmlConvert.ToGuid(element.GetAttribute("TripPlanID"));
+            if (element.HasAttribute(A_TripPlanID)) {
+                Guid tripPlanID = (Guid)element.AttributeValue(A_TripPlanID);
 
                 selectedTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[tripPlanID];
             }
 
-            if (element.HasAttribute("TrainSymbol"))
-                comboBoxTrainSymbol.Text = element.GetAttribute("TrainSymbol");
+            if (element.HasAttribute(A_TrainSymbol))
+                comboBoxTrainSymbol.Text = element.GetAttribute(A_TrainSymbol);
 
-            if (element.HasAttribute("LocomotiveBlockID")) {
-                Guid locomotiveBlockID = XmlConvert.ToGuid(element.GetAttribute("LocomotiveBlockID"));
+            if (element.HasAttribute(A_LocomotiveBlockId)) {
+                Guid locomotiveBlockID = (Guid)element.AttributeValue(A_LocomotiveBlockId);
 
                 locomotiveBlock = LayoutModel.Blocks[locomotiveBlockID];
-                locomotiveFront = LayoutComponentConnectionPoint.Parse(element.GetAttribute("LocomotiveFront"));
+                locomotiveFront = element.AttributeValue(A_LocomotiveFront).Enum<LayoutComponentConnectionPoint>() ?? locomotiveBlock.BlockDefinintion.Track.ConnectionPoints[0];
             }
 
             fillList(locomotiveBlock, locomotiveFront);
@@ -91,13 +97,12 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
             EventManager.Event(getApplicableTripPlansEvent);
 
-            if (applicableTripPlansElement.HasAttribute("LocomotiveBlockID")) {
-                locomotiveBlock = LayoutModel.Blocks[XmlConvert.ToGuid(applicableTripPlansElement.GetAttribute("LocomotiveBlockID"))];
-                locomotiveFront = LayoutComponentConnectionPoint.Parse(applicableTripPlansElement.GetAttribute("LocomotiveFront"));
+            if (applicableTripPlansElement.HasAttribute(A_LocomotiveBlockId)) {
+                locomotiveBlock = LayoutModel.Blocks[(Guid)applicableTripPlansElement.AttributeValue(A_LocomotiveBlockId)];
+                locomotiveFront = applicableTripPlansElement.AttributeValue(A_LocomotiveFront).ToComponentConnectionPoint();
             }
 
             tripPlanList.ApplicableTripPlansElement = applicableTripPlansElement;
-
         }
 
         /// <summary>
@@ -249,7 +254,6 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -273,13 +277,13 @@ namespace LayoutManager.Tools.EventScriptDialogs {
                 return;
             }
 
-            element.SetAttribute("TripPlanID", XmlConvert.ToString(tripPlan.Id));
-            element.SetAttribute("ShouldReverse", XmlConvert.ToString(tripPlanList.ShouldReverseSelectedTripPlan));
-            element.SetAttribute("TrainSymbol", comboBoxTrainSymbol.Text);
+            element.SetAttribute(A_TripPlanID, tripPlan.Id);
+            element.SetAttribute(A_ShouldReverse, tripPlanList.ShouldReverseSelectedTripPlan);
+            element.SetAttribute(A_TrainSymbol, comboBoxTrainSymbol.Text);
 
             if (locomotiveBlock != null) {
-                element.SetAttribute("LocomotiveBlockID", XmlConvert.ToString(locomotiveBlock.Id));
-                element.SetAttribute("LocomotiveFront", locomotiveFront.ToString());
+                element.SetAttribute(A_LocomotiveBlockId, locomotiveBlock.Id);
+                element.SetAttribute(A_LocomotiveFront, locomotiveFront);
             }
 
             DialogResult = DialogResult.OK;
@@ -325,7 +329,6 @@ namespace LayoutManager.Tools.EventScriptDialogs {
         #endregion
 
         private void tripPlanList_Load(object sender, System.EventArgs e) {
-
         }
     }
 }

@@ -15,14 +15,15 @@ namespace LayoutManager.Dialogs {
         private Button buttonBrowse;
         private Button buttonOk;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly XmlElement storeElement;
-        readonly string defaultExtension;
-        readonly string collectionDescription;
-        readonly string defaultDirectory;
+        private readonly XmlElement storeElement;
+        private readonly string defaultExtension;
+        private readonly string collectionDescription;
+        private readonly string defaultDirectory;
 
         public LocomotiveCollectionStore(String storesName, XmlElement storeElement, string collectionDescription, string defaultDirectory, string defaultExtension) {
             //
@@ -146,7 +147,6 @@ namespace LayoutManager.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Locomotive Catalog Storage Definition";
             this.ResumeLayout(false);
-
         }
         #endregion
 

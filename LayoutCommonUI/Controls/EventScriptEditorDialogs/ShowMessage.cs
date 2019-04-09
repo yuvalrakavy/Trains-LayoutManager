@@ -14,13 +14,14 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private RadioButton radioButtonWanrning;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
         private RadioButton radioButtonError;
         private Label label2;
-        readonly XmlElement element;
+        private readonly XmlElement element;
 
         public ShowMessage(XmlElement element) {
             //
@@ -35,7 +36,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
             if (element.HasAttribute("MessageType")) {
                 switch (element.GetAttribute("MessageType")) {
-
                     case "Message":
                         radioButtonMessage.Checked = true;
                         break;
@@ -184,7 +184,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.Text = "Show Message";
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -201,6 +200,5 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             DialogResult = DialogResult.OK;
             Close();
         }
-
     }
 }

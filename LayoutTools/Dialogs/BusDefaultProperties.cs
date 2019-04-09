@@ -18,6 +18,7 @@ namespace LayoutManager.Tools.Dialogs {
         private Label labelStartAddress1;
         private Label labelStartAddress2;
         private Label labelStartAddress3;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -25,9 +26,8 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly ControlBus bus;
-        readonly ControlModuleType defaultModuleType;
-
+        private readonly ControlBus bus;
+        private readonly ControlModuleType defaultModuleType;
 
         public BusDefaultProperties(ControlBus bus, string moduleTypeName, int startingAddress) {
             //
@@ -225,7 +225,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "Adding Modules Defaults";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
         #endregion
 
@@ -263,23 +262,19 @@ namespace LayoutManager.Tools.Dialogs {
             DialogResult = DialogResult.OK;
         }
 
-        class ModuleTypeItem {
-            readonly ControlModuleType moduleType;
-
+        private class ModuleTypeItem {
             public ModuleTypeItem(ControlModuleType moduleType) {
-                this.moduleType = moduleType;
+                this.ModuleType = moduleType;
             }
 
-            public ControlModuleType ModuleType => moduleType;
+            public ControlModuleType ModuleType { get; }
 
             public override string ToString() {
-                if (moduleType == null)
+                if (ModuleType == null)
                     return "(Prompt)";
                 else
-                    return moduleType.Name;
+                    return ModuleType.Name;
             }
         }
-
-
     }
 }

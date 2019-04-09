@@ -9,6 +9,7 @@ namespace LayoutManager.Dialogs {
         private Label label1;
         private System.Windows.Forms.ProgressBar progressBar;
         private Button buttonAbort;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -87,7 +88,6 @@ namespace LayoutManager.Dialogs {
             this.Text = "Generating Routing Tables...";
             this.Closed += new System.EventHandler(this.RoutingTableCalcProgress_Closed);
             this.ResumeLayout(false);
-
         }
         #endregion
 

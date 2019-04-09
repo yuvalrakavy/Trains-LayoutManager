@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 
 namespace LayoutManager.Model {
-
     public abstract class DecoderTypeInfo {
-
         public string Name {
             get;
             set;

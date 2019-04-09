@@ -8,7 +8,7 @@ using LayoutManager.Components;
 #endregion
 
 namespace LayoutManager.Tools.Dialogs {
-    partial class SimulateCommandStationInputEvent : Form {
+    internal partial class SimulateCommandStationInputEvent : Form {
         public SimulateCommandStationInputEvent() {
             InitializeComponent();
 

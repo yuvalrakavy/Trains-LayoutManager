@@ -5,10 +5,9 @@ using LayoutManager.Model;
 
 #pragma warning disable IDE0051
 namespace LayoutManager.ControlComponents {
-
     [LayoutModule("Numato Relay Components")]
-    class NumatoControlComponents : LayoutModuleBase {
-        ControlBusType relayBus = null;
+    internal class NumatoControlComponents : LayoutModuleBase {
+        private ControlBusType relayBus = null;
 
         [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='NumatoRelayBus']")]
         private void getRelayBusBusType(LayoutEvent e) {
@@ -41,7 +40,6 @@ namespace LayoutManager.ControlComponents {
                 moduleTypeNames.Add("32_NumatoRelays");
             }
         }
-
 
         private ControlModuleType GetRelayModuleType(XmlElement parentElement, int nRelays) {
             var moduleType = new ControlModuleType(parentElement, nRelays.ToString() + "_NumatoRelays", nRelays.ToString() + " Relays Module") {

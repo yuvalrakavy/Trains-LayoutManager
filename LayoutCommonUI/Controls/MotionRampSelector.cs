@@ -14,30 +14,22 @@ namespace LayoutManager.CommonUI.Controls {
         private Label labelRampDescription;
         private Button buttonOverrideDefault;
         private CheckBox checkBoxOverrideDefault;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
 
-        XmlElement? element = null;
-        string role;
-        MotionRampInfo? ramp = null;
+        private XmlElement? element = null;
+        private MotionRampInfo? ramp = null;
 
         #pragma warning disable nullable
         public MotionRampSelector() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
         }
-        #pragma warning restore nullable
+#pragma warning restore nullable
 
-        public string Role {
-            get {
-                return role;
-            }
-
-            set {
-                role = value;
-            }
-        }
+        public string Role { get; set; }
 
         public XmlElement Element {
             get => Ensure.NotNull<XmlElement>(OptionalElement, "Element");
@@ -177,7 +169,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Size = new System.Drawing.Size(272, 41);
             this.groupBoxRampSelector.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

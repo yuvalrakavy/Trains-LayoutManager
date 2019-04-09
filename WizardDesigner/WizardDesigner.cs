@@ -58,7 +58,6 @@ namespace Gui.Wizard {
         //			}
         //		}
 
-
         /// <summary>
         /// Simple way to ensure <see cref="WizardPage"/>s only contained here
         /// </summary>
@@ -69,12 +68,12 @@ namespace Gui.Wizard {
                 return true;
             return false;
         }
+
         public override bool CanParent(ControlDesigner controlDesigner) {
             if (controlDesigner is WizardPageDesigner)
                 return true;
             return false;
         }
-
 
         protected override bool GetHitTest(Point point) {
             Wizard wiz = this.Control as Wizard;
@@ -137,6 +136,5 @@ namespace Gui.Wizard {
             //				pe.Graphics.FillRectangle(brush,wiz.Width-8,0,8,wiz.pnlButtons.Top);
             //			}		
         }
-
     }
 }

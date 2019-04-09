@@ -14,12 +14,13 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private Button buttonOK;
         private Button buttonCancel;
         private LayoutManager.CommonUI.Controls.Operand operand;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly XmlElement optionsElement;
-        readonly XmlElement element;
+        private readonly XmlElement optionsElement;
+        private readonly XmlElement element;
 
         public GenerateEventOption(XmlElement element, XmlElement optionsElement) {
             //
@@ -140,7 +141,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.Text = "Generate Event Option";
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

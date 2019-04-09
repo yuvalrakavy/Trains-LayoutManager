@@ -11,6 +11,7 @@ namespace LayoutEventDebugger {
         private TreeView treeViewEventTrace;
         private Button buttonTraceState;
         private Button buttonClose;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -26,18 +27,18 @@ namespace LayoutEventDebugger {
             EventManager.AddObjectSubscriptions(this);
         }
 
-        void StartTrace() {
+        private void StartTrace() {
             buttonTraceState.Text = "Stop trace";
             EventManager.Instance.TraceEvents = true;
         }
 
-        void EndTrace() {
+        private void EndTrace() {
             buttonTraceState.Text = "Start trace";
             EventManager.Instance.TraceEvents = false;
         }
 
         [LayoutEvent("trace-event")]
-        void TraceEvent(LayoutEvent eBase) {
+        private void TraceEvent(LayoutEvent eBase) {
             LayoutEventTraceEvent e = (LayoutEventTraceEvent)eBase;
             LayoutEvent theEvent = (LayoutEvent)e.Sender;
 
@@ -148,7 +149,6 @@ namespace LayoutEventDebugger {
             this.Text = "Event Trace";
             this.Closed += new System.EventHandler(this.EventTrace_Closed);
             this.ResumeLayout(false);
-
         }
         #endregion
 

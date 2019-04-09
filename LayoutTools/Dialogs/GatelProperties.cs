@@ -29,8 +29,7 @@ namespace LayoutManager.Tools.Dialogs {
         private RadioButton radioButtonOpenDown;
         private RadioButton radioButtonOpenRight;
         private RadioButton radioButtonOpenLeft;
-        readonly LayoutGateComponent component;
-        readonly LayoutXmlInfo xmlInfo;
+        private readonly LayoutGateComponent component;
         private TabPage tabPageFeedback;
         private Label label3;
         private TextBox textBoxOpenCloseTimeout;
@@ -49,10 +48,10 @@ namespace LayoutManager.Tools.Dialogs {
         private TextBox textBoxGateMotionTime;
         private Label label1;
         private RadioButton radioButtonNoFeedback;
-        readonly bool isVertical;
+        private readonly bool isVertical;
 
-        class DriverEntry {
-            readonly XmlElement driverElement;
+        private class DriverEntry {
+            private readonly XmlElement driverElement;
 
             public DriverEntry(XmlElement driverElement) {
                 this.driverElement = driverElement;
@@ -70,12 +69,12 @@ namespace LayoutManager.Tools.Dialogs {
             InitializeComponent();
 
             this.component = (LayoutGateComponent)component;
-            this.xmlInfo = new LayoutXmlInfo(component);
+            this.XmlInfo = new LayoutXmlInfo(component);
 
-            nameDefinition.XmlInfo = xmlInfo;
+            nameDefinition.XmlInfo = XmlInfo;
             nameDefinition.Component = component;
 
-            LayoutGateComponentInfo info = new LayoutGateComponentInfo(xmlInfo.Element);
+            LayoutGateComponentInfo info = new LayoutGateComponentInfo(XmlInfo.Element);
             XmlDocument driversDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
             isVertical = LayoutTrackComponent.IsVertical(placementInfo.Track);
@@ -131,7 +130,7 @@ namespace LayoutManager.Tools.Dialogs {
             UpdateControls();
         }
 
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         /// <summary>
         /// Clean up any resources being used.
@@ -145,7 +144,7 @@ namespace LayoutManager.Tools.Dialogs {
             base.Dispose(disposing);
         }
 
-        void UpdateControls() {
+        private void UpdateControls() {
             groupBoxMotionControl.Enabled = radioButtonSingleRelay.Checked;
         }
 
@@ -525,16 +524,14 @@ namespace LayoutManager.Tools.Dialogs {
             this.panelGateMotionTime.ResumeLayout(false);
             this.panelGateMotionTime.PerformLayout();
             this.ResumeLayout(false);
-
         }
         #endregion
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
-            LayoutGateComponentInfo info = new LayoutGateComponentInfo(xmlInfo.Element);
+            LayoutGateComponentInfo info = new LayoutGateComponentInfo(XmlInfo.Element);
 
             if (!nameDefinition.Commit())
                 return;
-
 
             if (!int.TryParse(textBoxOpenCloseTimeout.Text, out int timeout)) {
                 MessageBox.Show("Invalid timeout value");
@@ -543,7 +540,6 @@ namespace LayoutManager.Tools.Dialogs {
             }
 
             if (radioButtonNoFeedback.Checked) {
-
                 if (!int.TryParse(textBoxGateMotionTime.Text, out int motionTime)) {
                     MessageBox.Show("Invalid gate motion time value");
                     textBoxGateMotionTime.Focus();

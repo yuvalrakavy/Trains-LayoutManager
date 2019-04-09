@@ -17,70 +17,33 @@ namespace LayoutManager.CommonUI.Controls {
         private ComboBox comboBoxSymbol;
         private LayoutManager.CommonUI.Controls.LinkMenu linkMenuPropertyOrAttribute;
         private Label label1;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
 
         private void endOfDesignerVariables() { }
-
-        string suffix = "";
-        XmlElement element = null;
-        string defaultAccess = "Property";
-        IDictionary symbolNameToTypeMap = null;
-        string propertiesOfSymbol = "";
-        Type[] allowedTypes = null;
-        bool propertyOrAttributeChanged = false;
+        private IDictionary symbolNameToTypeMap = null;
+        private string propertiesOfSymbol = "";
+        private bool propertyOrAttributeChanged = false;
 
         public event EventHandler ValueChanged;
 
         public OperandValueOf() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
-
         }
 
         #region Properties
 
-        public string Suffix {
-            get {
-                return suffix;
-            }
+        public string Suffix { get; set; } = "";
 
-            set {
-                suffix = value;
-            }
-        }
+        public XmlElement Element { get; set; } = null;
 
-        public XmlElement Element {
-            get {
-                return element;
-            }
+        public string DefaultAccess { get; set; } = "Property";
 
-            set {
-                element = value;
-            }
-        }
-
-        public string DefaultAccess {
-            get {
-                return defaultAccess;
-            }
-
-            set {
-                defaultAccess = value;
-            }
-        }
-
-        public Type[] AllowedTypes {
-            get {
-                return allowedTypes;
-            }
-
-            set {
-                allowedTypes = value;
-            }
-        }
+        public Type[] AllowedTypes { get; set; } = null;
 
         #endregion
 
@@ -88,15 +51,15 @@ namespace LayoutManager.CommonUI.Controls {
             if (Element == null)
                 throw new ArgumentException("Element not set");
 
-            string symbolAccess = Element.GetAttribute("Symbol" + suffix + "Access");
+            string symbolAccess = Element.GetAttribute("Symbol" + Suffix + "Access");
 
             if (symbolAccess == null || symbolAccess == "")
-                symbolAccess = defaultAccess;
+                symbolAccess = DefaultAccess;
 
             InitializePropertyOrAttributeSelector();
 
-            comboBoxSymbol.Text = Element.GetAttribute("Symbol" + suffix);
-            comboBoxTag.Text = Element.GetAttribute("Name" + suffix);
+            comboBoxSymbol.Text = Element.GetAttribute("Symbol" + Suffix);
+            comboBoxTag.Text = Element.GetAttribute("Name" + Suffix);
 
             if (symbolAccess == "Property")
                 linkMenuPropertyOrAttribute.SelectedIndex = 0;
@@ -121,7 +84,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public bool Commit() {
-            string accessAttribute = "Symbol" + suffix + "Access";
+            string accessAttribute = "Symbol" + Suffix + "Access";
             bool ok = true;
 
             if (!ValidateInput())
@@ -141,11 +104,11 @@ namespace LayoutManager.CommonUI.Controls {
                 }
             }
 
-            Element.SetAttribute("Symbol" + suffix, comboBoxSymbol.Text);
-            Element.SetAttribute("Name" + suffix, comboBoxTag.Text);
+            Element.SetAttribute("Symbol" + Suffix, comboBoxSymbol.Text);
+            Element.SetAttribute("Name" + Suffix, comboBoxTag.Text);
 
             if (comboBoxTag.SelectedItem != null)
-                Element.SetAttribute("Type" + suffix, ((TagEntry)comboBoxTag.SelectedItem).TypeName);
+                Element.SetAttribute("Type" + Suffix, ((TagEntry)comboBoxTag.SelectedItem).TypeName);
 
             return ok;
         }
@@ -161,7 +124,6 @@ namespace LayoutManager.CommonUI.Controls {
                     comboBoxSymbol.Items.Add(symbolName);
             }
         }
-
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -240,7 +202,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Name = "OperandValueOf";
             this.Size = new System.Drawing.Size(176, 64);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -251,10 +212,10 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private bool isAllowedType(Type typeToCheck) {
-            if (allowedTypes == null)
+            if (AllowedTypes == null)
                 return true;
             else {
-                foreach (Type type in allowedTypes)
+                foreach (Type type in AllowedTypes)
                     if (typeToCheck.IsSubclassOf(type) || typeToCheck == type)
                         return true;
 
@@ -273,7 +234,6 @@ namespace LayoutManager.CommonUI.Controls {
 
                 if (symbolType != null) {
                     if (linkMenuPropertyOrAttribute.SelectedIndex == 0) {   // Property
-
                         PropertyInfo[] properties = symbolType.GetProperties();
 
                         comboBoxTag.Sorted = true;
@@ -343,7 +303,7 @@ namespace LayoutManager.CommonUI.Controls {
             ValueChanged?.Invoke(this, null);
         }
 
-        class TagEntry {
+        private class TagEntry {
             public string Name;
             public Type Type;
 
@@ -356,7 +316,6 @@ namespace LayoutManager.CommonUI.Controls {
                 this.Name = name;
 
                 switch (attributeType) {
-
                     case AttributeType.Boolean:
                         Type = typeof(bool);
                         break;

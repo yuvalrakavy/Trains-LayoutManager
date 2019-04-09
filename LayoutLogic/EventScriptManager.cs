@@ -12,7 +12,7 @@ namespace LayoutManager.Logic {
     /// </summary>
     [LayoutModule("Event Script Manager", UserControl = false)]
     public class EventScriptManagerManager : LayoutModuleBase {
-        readonly IDictionary activeScripts = new HybridDictionary();
+        private readonly IDictionary activeScripts = new HybridDictionary();
 
         [LayoutEvent("event-script-reset")]
         private void eventScriptReset(LayoutEvent e) {

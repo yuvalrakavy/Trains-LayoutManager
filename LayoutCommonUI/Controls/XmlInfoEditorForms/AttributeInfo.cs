@@ -14,6 +14,7 @@ namespace LayoutManager.CommonUI.Controls.XmlInfoEditorForms {
         private Label labelName;
         private TextBox textBoxName;
         private Label labelValue;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -133,10 +134,8 @@ namespace LayoutManager.CommonUI.Controls.XmlInfoEditorForms {
             this.ShowInTaskbar = false;
             this.Text = "Attribute Information";
             this.ResumeLayout(false);
-
         }
         #endregion
-
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
             if (textBoxName.Text.Trim() == "") {
@@ -147,6 +146,5 @@ namespace LayoutManager.CommonUI.Controls.XmlInfoEditorForms {
 
             DialogResult = DialogResult.OK;
         }
-
     }
 }

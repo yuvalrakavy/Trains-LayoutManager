@@ -14,6 +14,7 @@ namespace LayoutManager.Tools.Dialogs {
         private Button buttonCancel;
         private ComboBox comboBoxAddress;
         private CheckBox checkBoxSetUserActionRequired;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -21,13 +22,13 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly ControlBus bus;
-        readonly ControlModuleType moduleType;
-        readonly ControlModule module;
+        private readonly ControlBus bus;
+        private readonly ControlModuleType moduleType;
+        private readonly ControlModule module;
 
-        const int possibleAddressLimit = 70;     // If possible address is above this limit, use text box and not combo box
-        readonly bool useTextBox = false;
-        int address = -1;
+        private const int possibleAddressLimit = 70;     // If possible address is above this limit, use text box and not combo box
+        private readonly bool useTextBox = false;
+        private int address = -1;
 
         public SetControlModuleAddress(ControlBus bus, ControlModuleType moduleType, Guid controlModuleLocationId, ControlModule module) {
             //
@@ -203,7 +204,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "SetControlModuleAddress";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -252,24 +252,23 @@ namespace LayoutManager.Tools.Dialogs {
             Close();
         }
 
-        class AddressEntry {
-            readonly int address;
-            readonly int numberOfAddress;
+        private class AddressEntry {
+            private readonly int numberOfAddress;
 
             public AddressEntry(int address, int numberOfAddress) {
-                this.address = address;
+                this.Address = address;
                 this.numberOfAddress = numberOfAddress;
             }
 
-            public int Address => address;
+            public int Address { get; }
 
             public override string ToString() {
                 if (numberOfAddress == 1)
-                    return address.ToString();
+                    return Address.ToString();
                 else {
-                    int lastAddress = address + numberOfAddress - 1;
+                    int lastAddress = Address + numberOfAddress - 1;
 
-                    return address.ToString() + " - " + lastAddress.ToString();
+                    return Address.ToString() + " - " + lastAddress.ToString();
                 }
             }
         }

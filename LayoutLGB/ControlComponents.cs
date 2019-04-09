@@ -3,12 +3,10 @@ using LayoutManager;
 using LayoutManager.Model;
 
 namespace LayoutLGB {
-
     [LayoutModule("LGB MTS Bus Definitions")]
-    class LGBcontrolComponents : LayoutModuleBase {
-
-        ControlBusType dccBus = null;
-        ControlBusType lgbBus = null;
+    internal class LGBcontrolComponents : LayoutModuleBase {
+        private ControlBusType dccBus = null;
+        private ControlBusType lgbBus = null;
 
         [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='LGBDCC']")]
         private void getLGBDCCbusType(LayoutEvent e) {

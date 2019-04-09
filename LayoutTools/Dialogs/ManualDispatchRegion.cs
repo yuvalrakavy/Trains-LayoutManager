@@ -23,13 +23,14 @@ namespace LayoutManager.Tools.Dialogs {
         private TextBox textBoxName;
         private Button buttonOk;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
 
-        readonly ManualDispatchRegionInfo manualDispatchRegion;
-        readonly LayoutSelection regionSelection;
-        readonly LayoutSelection selectedBlockSelection;
+        private readonly ManualDispatchRegionInfo manualDispatchRegion;
+        private readonly LayoutSelection regionSelection;
+        private readonly LayoutSelection selectedBlockSelection;
 
         #pragma warning disable nullable
         public ManualDispatchRegion(ManualDispatchRegionInfo manualDispatchRegion) {
@@ -79,7 +80,7 @@ namespace LayoutManager.Tools.Dialogs {
                 buttonRemoveBlock.Enabled = false;
         }
 
-        void setDialogName() {
+        private void setDialogName() {
             this.Text = "Manual Dispatch Region - " + textBoxName.Text;
         }
 
@@ -122,7 +123,6 @@ namespace LayoutManager.Tools.Dialogs {
 
             updateButtons(null, null);
         }
-
 
         #region Windows Form Designer generated code
         /// <summary>
@@ -232,7 +232,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Closing += new System.ComponentModel.CancelEventHandler(this.ManualDispatchRegion_Closing);
             this.Closed += new System.EventHandler(this.ManualDispatchRegion_Closed);
             this.ResumeLayout(false);
-
         }
         #endregion
 

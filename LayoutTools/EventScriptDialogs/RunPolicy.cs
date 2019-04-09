@@ -10,24 +10,17 @@ namespace LayoutManager.Tools.EventScriptDialogs {
     /// Summary description for RunPolicy.
     /// </summary>
     public class RunPolicy : Form {
+        private const string A_PolicyID = "PolicyID";
         private Label label1;
         private Button buttonOK;
         private Button buttonCancel;
         private ComboBox comboBoxPolicy;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-
-        private void endOfDesignerVariables() { }
-
-        readonly Font globalOrLayoutFont = new Font("Arial", 10F);
-        readonly Font policyUsageFont = new Font("Arial", 9F);
-        readonly Pen globalOrLayoutUnderlinePen = new Pen(Brushes.DarkCyan, 2F);
-        readonly Pen policyUsageUnderlinePen = new Pen(Brushes.Blue, 1F);
-        readonly Brush globalOrLayoutBackBrush = Brushes.Khaki;
-        readonly Brush policyUsageBackBrush = Brushes.LemonChiffon;
-        readonly XmlElement element;
+        private readonly XmlElement element;
 
         public RunPolicy(XmlElement element) {
             //
@@ -49,8 +42,8 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             addPoliciesOfScope(LayoutModel.StateManager.LayoutPoliciesElement, "TripPlan", "Trip plan policies");
             addPoliciesOfScope(LayoutModel.StateManager.LayoutPoliciesElement, "Block", "Block policies");
 
-            if (element.HasAttribute("PolicyID")) {
-                Guid policyID = XmlConvert.ToGuid(element.GetAttribute("PolicyID"));
+            if (element.HasAttribute(A_PolicyID)) {
+                var policyID = (Guid)element.AttributeValue(A_PolicyID);
 
                 foreach (PolicyEntryBase entry in comboBoxPolicy.Items) {
                     if (entry is PolicyEntry && ((PolicyEntry)entry).Policy.Id == policyID) {
@@ -72,19 +65,19 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             }
         }
 
-        Font PolicyNameFont => comboBoxPolicy.Font;
+        private Font PolicyNameFont => comboBoxPolicy.Font;
 
-        Font GlobalOrLayoutFont => globalOrLayoutFont;
+        private Font GlobalOrLayoutFont { get; } = new Font("Arial", 10F);
 
-        Font PolicyUsageFont => policyUsageFont;
+        private Font PolicyUsageFont { get; } = new Font("Arial", 9F);
 
-        Pen GlobalOrLayoutUnderlinePen => globalOrLayoutUnderlinePen;
+        private Pen GlobalOrLayoutUnderlinePen { get; } = new Pen(Brushes.DarkCyan, 2F);
 
-        Pen PolicyUsageUnderlinePen => policyUsageUnderlinePen;
+        private Pen PolicyUsageUnderlinePen { get; } = new Pen(Brushes.Blue, 1F);
 
-        Brush GlobalOrLayoutBackBrush => globalOrLayoutBackBrush;
+        private Brush GlobalOrLayoutBackBrush { get; } = Brushes.Khaki;
 
-        Brush PolicyUsageBackBrush => policyUsageBackBrush;
+        private Brush PolicyUsageBackBrush { get; } = Brushes.LemonChiffon;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -92,8 +85,8 @@ namespace LayoutManager.Tools.EventScriptDialogs {
         protected override void Dispose(bool disposing) {
             if (disposing) {
                 if (components != null) {
-                    globalOrLayoutFont.Dispose();
-                    policyUsageFont.Dispose();
+                    GlobalOrLayoutFont.Dispose();
+                    PolicyUsageFont.Dispose();
                     components.Dispose();
                 }
             }
@@ -168,7 +161,6 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.ShowInTaskbar = false;
             this.Text = "Run Policy";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -191,30 +183,25 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
             if (comboBoxPolicy.SelectedItem is PolicyEntry selected) {
-                element.SetAttribute("PolicyID", XmlConvert.ToString(selected.Policy.Id));
+                element.SetAttribute(A_PolicyID, selected.Policy.Id);
             }
 
             DialogResult = DialogResult.OK;
         }
 
         private void comboBoxPolicy_SelectedIndexChanged(object sender, System.EventArgs e) {
-            if (comboBoxPolicy.SelectedItem == null || !(comboBoxPolicy.SelectedItem is PolicyEntry))
-                buttonOK.Enabled = false;
-            else
-                buttonOK.Enabled = true;
+            buttonOK.Enabled = comboBoxPolicy.SelectedItem != null && comboBoxPolicy.SelectedItem is PolicyEntry;
 
             if (!(comboBoxPolicy.SelectedItem is PolicyEntry))
                 comboBoxPolicy.SelectedItem = null;
         }
 
-        abstract class PolicyEntryBase {
-            readonly RunPolicy form;
-
-            public PolicyEntryBase(RunPolicy form) {
-                this.form = form;
+        private abstract class PolicyEntryBase {
+            protected PolicyEntryBase(RunPolicy form) {
+                this.RunPolicy = form;
             }
 
-            protected RunPolicy RunPolicy => form;
+            protected RunPolicy RunPolicy { get; }
 
             public virtual void MeasureItem(MeasureItemEventArgs e) {
                 SizeF titleSize = e.Graphics.MeasureString(ToString(), Font);
@@ -267,14 +254,12 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             protected virtual Pen UnderlinePen => null;
         }
 
-        class PolicyEntry : PolicyEntryBase {
-            readonly LayoutPolicyInfo policy;
-
+        private class PolicyEntry : PolicyEntryBase {
             public PolicyEntry(RunPolicy form, LayoutPolicyInfo policy) : base(form) {
-                this.policy = policy;
+                this.Policy = policy;
             }
 
-            public LayoutPolicyInfo Policy => policy;
+            public LayoutPolicyInfo Policy { get; }
 
             protected override int Indent => 16;
 
@@ -282,11 +267,11 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
             protected override int VerticalMargins => 2;
 
-            public override string ToString() => policy.Name;
+            public override string ToString() => Policy.Name;
         }
 
-        class GlobalOrLayoutEntry : PolicyEntryBase {
-            readonly string title;
+        private class GlobalOrLayoutEntry : PolicyEntryBase {
+            private readonly string title;
 
             public GlobalOrLayoutEntry(RunPolicy form, string title) : base(form) {
                 this.title = title;
@@ -305,12 +290,10 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             public override string ToString() => title;
 
             protected override Brush BackBrush => RunPolicy.GlobalOrLayoutBackBrush;
-
-
         }
 
-        class PolicyUsageEntry : PolicyEntryBase {
-            readonly string title;
+        private class PolicyUsageEntry : PolicyEntryBase {
+            private readonly string title;
 
             public PolicyUsageEntry(RunPolicy form, string title) : base(form) {
                 this.title = title;

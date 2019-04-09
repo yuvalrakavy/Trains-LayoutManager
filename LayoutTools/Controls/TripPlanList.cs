@@ -10,6 +10,8 @@ namespace LayoutManager.CommonUI.Controls {
     /// Summary description for TripPlanList.
     /// </summary>
     public class TripPlanList : System.Windows.Forms.UserControl {
+        private const string A_TripPlanID = "TripPlanID";
+        private const string A_ShouldReverse = "ShouldReverse";
         private Button buttonChangeIcon;
         private Button buttonDelete;
         private ListView listViewTripPlans;
@@ -20,10 +22,10 @@ namespace LayoutManager.CommonUI.Controls {
 
         private void endOfDesignerVariables() { }
 
-        bool initialized = false;
-        XmlElement applicableTripPlansElement = null;
-        TripPlanInfo tripPlanToSelect = null;
-        TripPlanIconListInfo tripPlanIconList = null;
+        private bool initialized = false;
+        private XmlElement applicableTripPlansElement = null;
+        private TripPlanInfo tripPlanToSelect = null;
+        private TripPlanIconListInfo tripPlanIconList = null;
 
         public event EventHandler SelectedTripPlanChanged = null;
 
@@ -118,9 +120,9 @@ namespace LayoutManager.CommonUI.Controls {
             listViewTripPlans.Items.Clear();
 
             foreach (XmlElement applicableTripPlanElement in applicableTripPlansElement) {
-                TripPlanInfo originalTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[XmlConvert.ToGuid(applicableTripPlanElement.GetAttribute("TripPlanID"))];
-                bool shouldReverse = XmlConvert.ToBoolean(applicableTripPlanElement.GetAttribute("ShouldReverse"));
-                TripPlanInfo tripPlan = originalTripPlan;
+                var originalTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[(Guid)applicableTripPlanElement.AttributeValue(A_TripPlanID)];
+                var shouldReverse = (bool)applicableTripPlanElement.AttributeValue(A_ShouldReverse);
+                var tripPlan = originalTripPlan;
 
                 listViewTripPlans.Items.Add(new TripPlanItem(tripPlan, shouldReverse, tripPlanIconList));
             }
@@ -249,7 +251,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Name = "TripPlanList";
             this.Size = new System.Drawing.Size(536, 192);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -344,14 +345,12 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region TripPlanItem class
 
-        class TripPlanItem : ListViewItem {
-            readonly TripPlanInfo tripPlan;
-            readonly TripPlanIconListInfo tripPlanIconList;
-            readonly bool reversed;
+        private class TripPlanItem : ListViewItem {
+            private readonly TripPlanIconListInfo tripPlanIconList;
 
             public TripPlanItem(TripPlanInfo tripPlan, bool reversed, TripPlanIconListInfo tripPlanIconList) {
-                this.tripPlan = tripPlan;
-                this.reversed = reversed;
+                this.TripPlan = tripPlan;
+                this.Reversed = reversed;
                 this.tripPlanIconList = tripPlanIconList;
 
                 Text = tripPlan.Name;
@@ -365,13 +364,13 @@ namespace LayoutManager.CommonUI.Controls {
             }
 
             public void Update() {
-                Text = tripPlan.Name;
-                ImageIndex = tripPlanIconList[tripPlan.IconId];
+                Text = TripPlan.Name;
+                ImageIndex = tripPlanIconList[TripPlan.IconId];
             }
 
-            public TripPlanInfo TripPlan => tripPlan;
+            public TripPlanInfo TripPlan { get; }
 
-            public bool Reversed => reversed;
+            public bool Reversed { get; }
         }
 
         #endregion

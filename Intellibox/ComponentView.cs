@@ -49,7 +49,7 @@ namespace Intellibox {
         #region Component menu Item
 
         [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
-        void AddCentralStationItem(LayoutEvent e) {
+        private void AddCentralStationItem(LayoutEvent e) {
             XmlElement categoryElement = (XmlElement)e.Sender;
             ModelComponent old = (ModelComponent)e.Info;
 
@@ -58,7 +58,7 @@ namespace Intellibox {
         }
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='Intellibox']")]
-        void PaintCentralStationItem(LayoutEvent e) {
+        private void PaintCentralStationItem(LayoutEvent e) {
             Graphics g = (Graphics)e.Info;
 
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
@@ -72,7 +72,7 @@ namespace Intellibox {
         }
 
         [LayoutEvent("create-model-component", IfSender = "Item[@Name='Intellibox']")]
-        void CreateCentralStationComponent(LayoutEvent e) {
+        private void CreateCentralStationComponent(LayoutEvent e) {
             e.Info = new IntelliboxComponent();
         }
 
@@ -81,7 +81,7 @@ namespace Intellibox {
         #region Component view
 
         [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(IntelliboxComponent))]
-        void GetCentralStationDrawingRegions(LayoutEvent eBase) {
+        private void GetCentralStationDrawingRegions(LayoutEvent eBase) {
             LayoutGetDrawingRegionsEvent e = (LayoutGetDrawingRegionsEvent)eBase;
 
             if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
@@ -91,10 +91,9 @@ namespace Intellibox {
 
             if (textProvider.Element != null)
                 e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
-
         }
 
-        class DrawingRegionIntellibox : LayoutDrawingRegionGrid {
+        private class DrawingRegionIntellibox : LayoutDrawingRegionGrid {
             internal DrawingRegionIntellibox(ModelComponent component, ILayoutView view) : base(component, view) {
             }
 
@@ -111,11 +110,11 @@ namespace Intellibox {
         #region Component Painter
 
         [LayoutEvent("get-image", SenderType = typeof(IntelliboxPainter))]
-        void GetCentralStationImage(LayoutEvent e) {
+        private void GetCentralStationImage(LayoutEvent e) {
             e.Info = imageListComponents.Images[0];
         }
 
-        class IntelliboxPainter {
+        private class IntelliboxPainter {
             internal IntelliboxPainter(Size componentSize) {
             }
 
@@ -220,10 +219,6 @@ namespace Intellibox {
             }
         }
 
-
-
-
-
         #endregion
 
         #region Component Designer generated code
@@ -242,7 +237,6 @@ namespace Intellibox {
                 ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListComponents.ImageStream"))),
                 TransparentColor = System.Drawing.Color.Transparent
             };
-
         }
         #endregion
 

@@ -11,8 +11,8 @@ using LayoutManager.Components;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class PickComponentToConnectToAddress : Form, IControlConnectionPointDestinationReceiverDialog {
-        readonly CommandStationInputEvent csEvent;
-        ControlConnectionPointDestination selectedDestination = null;
+        private readonly CommandStationInputEvent csEvent;
+        private ControlConnectionPointDestination selectedDestination = null;
 
         public PickComponentToConnectToAddress(CommandStationInputEvent csEvent) {
             InitializeComponent();
@@ -48,7 +48,6 @@ namespace LayoutManager.Tools.Dialogs {
         public string DialogName(ControlConnectionPointDestination connectionDestination) => csEvent.Bus.Name + ": " + csEvent.GetAddressTextForComponent(connectionDestination);
 
         public ControlBus Bus => csEvent.Bus;
-
 
         public void AddControlConnectionPointDestination(ControlConnectionPointDestination connectionDestination) {
             selectedDestination = connectionDestination;

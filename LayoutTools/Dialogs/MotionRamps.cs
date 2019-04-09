@@ -23,7 +23,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly MotionRampCollection ramps;
+        private readonly MotionRampCollection ramps;
 
         public MotionRamps(MotionRampCollection ramps) {
             //
@@ -210,7 +210,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "MotionRamps";
             this.Text = "Acceleration/Deceleration Profiles";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -293,29 +292,26 @@ namespace LayoutManager.Tools.Dialogs {
                     listViewRamps.Items.Insert(selectedIndex + 1, selected);
                 }
             }
-
         }
 
-        class RampItem : ListViewItem {
-            readonly MotionRampInfo ramp;
-
+        private class RampItem : ListViewItem {
             public RampItem(MotionRampInfo ramp) {
-                this.ramp = ramp;
+                this.Ramp = ramp;
 
                 SubItems.Add("");
                 Update();
             }
 
             public void Update() {
-                Text = ramp.Description;
+                Text = Ramp.Description;
 
-                if (ramp.UseInTrainControllerDialog)
+                if (Ramp.UseInTrainControllerDialog)
                     SubItems[1].Text = "Train Controller";
                 else
                     SubItems[1].Text = "";
             }
 
-            public MotionRampInfo Ramp => ramp;
+            public MotionRampInfo Ramp { get; }
         }
     }
 }

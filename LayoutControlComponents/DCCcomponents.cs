@@ -2,16 +2,17 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Windows.Forms;
 using LayoutManager.Model;
+using System;
 
 #pragma warning disable IDE0051
 #nullable enable
 namespace LayoutManager.ControlComponents {
-    public class ControlComponents {
+    public static class ControlComponents {
         public static string ControlComponentsVersion = "1.0";
     }
 
     [LayoutModule("DCC Control Components")]
-    class DCCconrolComponents : LayoutModuleBase {
+    internal class DCCconrolComponents : LayoutModuleBase {
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='LGB55025']")]
         [LayoutEvent("enum-control-module-types")]
         private void get55025(LayoutEvent e) {
@@ -78,16 +79,16 @@ namespace LayoutManager.ControlComponents {
             moduleType.DecoderTypeName = "GenericDCC";
         }
 
-        class ProgramMassothSwitchDecoder : LayoutDccProgrammingAction<ControlModule> {
+        private class ProgramMassothSwitchDecoder : LayoutDccProgrammingAction<ControlModule> {
             public ProgramMassothSwitchDecoder(XmlElement actionElement, ControlModule switchDecoder)
                 : base(actionElement, switchDecoder) {
             }
         }
 
-        interface IMassothIgnoreFeedback {
+        private interface IMassothIgnoreFeedback {
         }
 
-        class ProgramMassothSwitchDecoderAddress : ProgramMassothSwitchDecoder, IMassothIgnoreFeedback {
+        private class ProgramMassothSwitchDecoderAddress : ProgramMassothSwitchDecoder, IMassothIgnoreFeedback {
             public ProgramMassothSwitchDecoderAddress(XmlElement actionElement, ControlModule switchDecoder)
                 : base(actionElement, switchDecoder) {
             }
@@ -159,10 +160,10 @@ namespace LayoutManager.ControlComponents {
         [LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156501']")]
         private void canSwitchDecoderBeConnected(LayoutEvent e) {
             var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
-            var module = LayoutModel.ControlManager.GetModule(XmlConvert.ToGuid(e.GetOption("ModuleID")));
+            var module = LayoutModel.ControlManager.GetModule((Guid)e.GetOption("ModuleID"));
 
             if (module != null && connectionDestination.ConnectionDescription.IsCompatibleWith(ControlConnectionPointTypes.OutputSolenoid)) {
-                int index = XmlConvert.ToInt32(e.GetOption("Index"));
+                int index = (int)e.GetOption("Index");
 
                 e.Info = module.ConnectionPoints.GetConnectionPointType(index) == ControlConnectionPointTypes.OutputSolenoid;
             }
@@ -173,12 +174,12 @@ namespace LayoutManager.ControlComponents {
         [LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156001_AsFunctionDecoder']")]
         private void canFunctionDecoderBeConnected(LayoutEvent e) {
             var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
-            var module = LayoutModel.ControlManager.GetModule(XmlConvert.ToGuid(e.GetOption("ModuleID")));
+            var module = LayoutModel.ControlManager.GetModule((Guid)e.GetOption("ModuleID"));
 
             e.Info = false;
 
             if (module != null && connectionDestination.ConnectionDescription.IsCompatibleWith(ControlConnectionPointTypes.OutputSolenoid, ControlConnectionPointTypes.OutputOnOff)) {
-                int index = XmlConvert.ToInt32(e.GetOption("Index"));
+                int index = (int)e.GetOption("Index");
 
                 switch (module.ConnectionPoints.GetConnectionPointType(index)) {
                     case ControlConnectionPointTypes.OutputSolenoid:
@@ -186,7 +187,6 @@ namespace LayoutManager.ControlComponents {
                     case ControlConnectionPointTypes.OutputRelay:
                         e.Info = true;
                         break;
-
                 }
             }
         }
@@ -223,7 +223,6 @@ namespace LayoutManager.ControlComponents {
             var programmingAction = Ensure.NotNull<ILayoutProgrammingAction>(e.Info, "programmingAction");
 
             switch (MessageBox.Show(null, "Did you connect load (e.g. turnout) to SW1 output?", "Is load connected", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)) {
-
                 case DialogResult.Cancel:
                     e.Result = false;
                     break;

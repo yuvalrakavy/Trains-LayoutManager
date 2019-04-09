@@ -14,11 +14,11 @@ namespace LayoutManager.Tools.Dialogs {
         private LayoutManager.CommonUI.Controls.TextProviderPositionDefinition textProviderPositionDefinition;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly LayoutXmlInfo xmlInfo;
 
         public TextProperties(ModelComponent component) {
             //
@@ -26,21 +26,21 @@ namespace LayoutManager.Tools.Dialogs {
             //
             InitializeComponent();
 
-            xmlInfo = new LayoutXmlInfo(component);
+            XmlInfo = new LayoutXmlInfo(component);
 
-            LayoutTextInfo textProvider = new LayoutTextInfo(xmlInfo.DocumentElement, "Text") {
+            LayoutTextInfo textProvider = new LayoutTextInfo(XmlInfo.DocumentElement, "Text") {
                 Component = component
             };
             textBoxText.Text = textProvider.Text;
 
-            textProviderFontDefinition.XmlInfo = xmlInfo;
+            textProviderFontDefinition.XmlInfo = XmlInfo;
             textProviderFontDefinition.FontProvider = textProvider.FontProvider;
 
-            textProviderPositionDefinition.XmlInfo = xmlInfo;
+            textProviderPositionDefinition.XmlInfo = XmlInfo;
             textProviderPositionDefinition.PositionProvider = textProvider.PositionProvider;
         }
 
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         /// <summary>
         /// Clean up any resources being used.
@@ -140,7 +140,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Text Properties";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -151,9 +150,9 @@ namespace LayoutManager.Tools.Dialogs {
                 return;
             }
 
-            LayoutTextInfo textProvider = new LayoutTextInfo(xmlInfo.DocumentElement, "Text");
+            LayoutTextInfo textProvider = new LayoutTextInfo(XmlInfo.DocumentElement, "Text");
             if (textProvider.Element == null)
-                textProvider.Element = LayoutInfo.CreateProviderElement(xmlInfo.DocumentElement, "Text", null);
+                textProvider.Element = LayoutInfo.CreateProviderElement(XmlInfo.DocumentElement, "Text", null);
 
             textProvider.Text = textBoxText.Text;
             textProvider.FontElementPath = textProviderFontDefinition.FontProvider.ElementPath;

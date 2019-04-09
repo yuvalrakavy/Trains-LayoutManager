@@ -8,10 +8,8 @@ using LayoutManager.CommonUI;
 #pragma warning disable IDE0051
 #nullable enable
 namespace LayoutManager.ControlComponents {
-
     [LayoutModule("LGBBUS Control Components")]
-    class LGBBUScomponents : LayoutModuleBase {
-
+    internal class LGBBUScomponents : LayoutModuleBase {
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='LGB55070']")]
         [LayoutEvent("enum-control-module-types")]
         private void get55070(LayoutEvent e) {
@@ -69,8 +67,8 @@ namespace LayoutManager.ControlComponents {
             }
         }
 
-        class LGBmoduleSettingMenuItem : MenuItem {
-            readonly ControlModule module;
+        private class LGBmoduleSettingMenuItem : MenuItem {
+            private readonly ControlModule module;
 
             public LGBmoduleSettingMenuItem(ControlModule module) {
                 this.module = module;

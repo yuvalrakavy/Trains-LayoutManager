@@ -4,8 +4,8 @@ using LayoutManager.Model;
 
 namespace LayoutManager.ControlComponents.Dialogs {
     public partial class MassothFeedbackDecoderAddressSettings : Form {
-        readonly IMassothFeedbackDecoderSetAddress action;
-        readonly MassothFeedbackModule feedbackModule;
+        private readonly IMassothFeedbackDecoderSetAddress action;
+        private readonly MassothFeedbackModule feedbackModule;
 
         public MassothFeedbackDecoderAddressSettings(IMassothFeedbackDecoderSetAddress action, ControlModule module) {
             var feedbackModule = new MassothFeedbackModule(module);
@@ -32,7 +32,7 @@ namespace LayoutManager.ControlComponents.Dialogs {
             UpdateForm();
         }
 
-        void UpdateForm() {
+        private void UpdateForm() {
             panelBusId.Enabled = radioButtonMaster.Checked;
         }
 
@@ -46,7 +46,6 @@ namespace LayoutManager.ControlComponents.Dialogs {
 
         private void buttonOK_Click(object sender, EventArgs e) {
             if (radioButtonMaster.Checked) {
-
                 if (!int.TryParse(textBoxBusId.Text, out int busId) || busId < 11 || busId > 20) {
                     MessageBox.Show(this, "Invalid Bus ID", "Bus ID should be a number between 11 and 20", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     textBoxBusId.Focus();

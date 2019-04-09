@@ -1,4 +1,4 @@
 ﻿namespace LayoutManager {
-    class TaskCompletionSource {
+    internal class TaskCompletionSource {
     }
 }

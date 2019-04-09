@@ -9,17 +9,16 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace DiMAX {
-
     public class DiMAXcommandStationEmulator : ILayoutCommandStationEmulator {
-        Guid commandStationId;
-        readonly string pipeName;
+        private Guid commandStationId;
+        private readonly string pipeName;
 
-        FileStream commStream;
-        readonly ILayoutEmulatorServices layoutEmulationServices;
-        Thread interfaceThread = null;
-        readonly ILayoutInterThreadEventInvoker interThreadEventInvoker;
-        readonly Dictionary<int, PositionEntry> positions = new Dictionary<int, PositionEntry>();
-        static readonly LayoutTraceSwitch traceDiMAXemulator = new LayoutTraceSwitch("TraceDiMAXemulator", "Trace DiMAX command station emulation");
+        private FileStream commStream;
+        private readonly ILayoutEmulatorServices layoutEmulationServices;
+        private Thread interfaceThread = null;
+        private readonly ILayoutInterThreadEventInvoker interThreadEventInvoker;
+        private readonly Dictionary<int, PositionEntry> positions = new Dictionary<int, PositionEntry>();
+        private static readonly LayoutTraceSwitch traceDiMAXemulator = new LayoutTraceSwitch("TraceDiMAXemulator", "Trace DiMAX command station emulation");
 
         public DiMAXcommandStationEmulator(IModelComponentIsCommandStation commandStation, string pipeName, int emulationTickTime) {
             this.commandStationId = commandStation.Id;
@@ -44,7 +43,6 @@ namespace DiMAX {
         public void InterfaceThreadWarning(object subject, string message) {
             interThreadEventInvoker.QueueEvent(new LayoutEvent("add-warning", subject, message));
         }
-
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void InterfaceThreadFunction() {
@@ -119,7 +117,7 @@ namespace DiMAX {
             }
         }
 
-        class PositionEntry {
+        private class PositionEntry {
             public TrackEdge Edge { get; set; }
             public int Speed { get; set; }
             public LocomotiveOrientation Direction { get; set; }
@@ -134,7 +132,6 @@ namespace DiMAX {
         private void layoutEmulationServices_LocomotiveMoved(object sender, LocomotiveMovedEventArgs e) {
             if (e.CommandStationId == this.commandStationId) {
                 if (e.Location.Track.TrackContactComponent != null) {
-
                     positions.TryGetValue(e.Unit, out PositionEntry position);
 
                     if (position == null || e.Location.Edge != position.Edge || e.Direction != position.Direction) {

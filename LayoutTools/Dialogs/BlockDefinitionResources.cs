@@ -9,7 +9,7 @@ using LayoutManager.CommonUI;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class BlockDefinitionResources : Form {
-        readonly LayoutBlockDefinitionComponentInfo info;
+        private readonly LayoutBlockDefinitionComponentInfo info;
 
         public BlockDefinitionResources(LayoutBlockDefinitionComponentInfo info) {
             InitializeComponent();
@@ -79,18 +79,16 @@ namespace LayoutManager.Tools.Dialogs {
             Close();
         }
 
-        class ResourceItem {
-            readonly ResourceInfo resourceInfo;
-
+        private class ResourceItem {
             public ResourceItem(ResourceInfo resourceInfo) {
-                this.resourceInfo = resourceInfo;
+                this.ResourceInfo = resourceInfo;
             }
 
-            public ResourceInfo ResourceInfo => resourceInfo;
+            public ResourceInfo ResourceInfo { get; }
 
             public override string ToString() {
                 string result;
-                ILayoutLockResource resource = resourceInfo.GetResource(LayoutPhase.All);
+                ILayoutLockResource resource = ResourceInfo.GetResource(LayoutPhase.All);
 
                 if (resource is ModelComponent) {
                     result = ((ModelComponent)resource).ToString();

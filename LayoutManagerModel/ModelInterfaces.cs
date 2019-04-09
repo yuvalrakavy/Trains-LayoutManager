@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using LayoutManager.Components;
 
 namespace LayoutManager.Model {
-
     public interface IModelComponent : IObjectHasXml {
         /// <summary>
         /// Find out if another component is "above" this component
@@ -181,7 +180,6 @@ namespace LayoutManager.Model {
     }
 
     public interface IModelComponentConnectToControl : IModelComponentHasId {
-
         /// <summary>
         /// Description of connections that are supported by this component
         /// </summary>

@@ -22,13 +22,12 @@ namespace LayoutManager {
         private const string A_Name = "Name";
         private const string A_Type = "Type";
         private const string A_Value = "Value";
-        readonly XmlElement element;
 
         public AttributeInfo(XmlElement element) {
-            this.element = element;
+            this.Element = element;
         }
 
-        public XmlElement Element => element;
+        public XmlElement Element { get; }
         public XmlElement? OptionalElement => Element;
 
         public string Name {
@@ -58,7 +57,7 @@ namespace LayoutManager {
                     case string s: this.SetAttribute(A_Value, s); break;
                     case bool b: this.SetAttribute(A_Value, b); break;
                     default: throw new ArgumentException("Unsupported type for an attribute: " + value.GetType().Name);
-                };
+                }
             }
         }
 
@@ -110,13 +109,11 @@ namespace LayoutManager {
     }
 
     public class AttributesOwner : IObjectHasXml, IObjectHasAttributes {
-        readonly XmlElement element;
-
         public AttributesOwner(XmlElement element) {
-            this.element = element;
+            this.Element = element;
         }
 
-        public XmlElement Element => element;
+        public XmlElement Element { get; }
         public XmlElement? OptionalElement => Element;
 
         public bool HasAttributes => Element["Attributes"] != null;

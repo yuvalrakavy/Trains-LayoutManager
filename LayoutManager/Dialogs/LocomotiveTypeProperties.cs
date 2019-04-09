@@ -26,6 +26,7 @@ namespace LayoutManager.Dialogs {
         private CheckBox checkBoxHasLights;
         private TabPage tabPageGeneral;
         private TabPage tabPageFunctions;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -58,9 +59,9 @@ namespace LayoutManager.Dialogs {
 
         private void EndOfDesignerVariables() { }
 
-        readonly LocomotiveTypeInfo inLocoType;
-        readonly LocomotiveTypeInfo locoType;
-        readonly LocomotiveCatalogInfo catalog;
+        private readonly LocomotiveTypeInfo inLocoType;
+        private readonly LocomotiveTypeInfo locoType;
+        private readonly LocomotiveCatalogInfo catalog;
 
         public LocomotiveTypeProperties(LocomotiveTypeInfo inLocoType) {
             //
@@ -564,7 +565,6 @@ namespace LayoutManager.Dialogs {
             this.tabPageDecoder.PerformLayout();
             this.tabPageAttributes.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -605,7 +605,6 @@ namespace LayoutManager.Dialogs {
         }
 
         private void lengthInput1_Load(object sender, System.EventArgs e) {
-
         }
 
         private void checkBoxHasBuiltinDecoder_CheckedChanged(object sender, EventArgs e) {

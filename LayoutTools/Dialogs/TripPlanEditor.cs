@@ -19,7 +19,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly TrainStateInfo train;
+        private readonly TrainStateInfo train;
 
         public TripPlanEditor(TripPlanInfo tripPlan, TrainStateInfo train) {
             //
@@ -190,7 +190,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Closed += new System.EventHandler(this.TripPlanEditor_Closed);
             this.Closing += new System.ComponentModel.CancelEventHandler(this.TripPlanEditor_Closing);
             this.ResumeLayout(false);
-
         }
         #endregion
 

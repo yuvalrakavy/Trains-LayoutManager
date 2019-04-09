@@ -13,6 +13,10 @@ namespace LayoutManager {
     /// Summary description for LocomotivesViewer.
     /// </summary>
     public class LocomotivesViewer : System.Windows.Forms.UserControl {
+        private const string E_Locomotive = "Locomotive";
+        private const string A_Id = "ID";
+        private const string A_Store = "Store";
+        private const string E_Train = "Train";
         private ContextMenu contextMenuAdd;
         private MenuItem menuItemAddLocomotive;
         private IContainer components;
@@ -32,9 +36,8 @@ namespace LayoutManager {
 
         private void EndOfDesignerVariables() { }
 
-        LocomotiveCollectionInfo locomotiveCollection;
-        bool operationMode = false;
-
+        private LocomotiveCollectionInfo locomotiveCollection;
+        private bool operationMode = false;
 
         public LocomotivesViewer() {
             // This call is required by the Windows.Forms Form Designer.
@@ -64,12 +67,12 @@ namespace LayoutManager {
             bool result = true;
 
             if (operationMode) {
-                if (selectedElement.Name == "Locomotive") {
+                if (selectedElement.Name == E_Locomotive) {
                     LocomotiveInfo loco = new LocomotiveInfo(selectedElement);
 
                     result = LayoutModel.StateManager.Trains[loco.Id] == null;
                 }
-                else if (selectedElement.Name == "Train") {
+                else if (selectedElement.Name == E_Train) {
                     TrainInCollectionInfo train = new TrainInCollectionInfo(selectedElement);
 
                     result = LayoutModel.StateManager.Trains[train.Id] == null;
@@ -147,10 +150,10 @@ namespace LayoutManager {
 
         [LayoutEvent("add-new-locomotive-to-collection")]
         private void addNewLocomotiveToCollection(LayoutEvent e) {
-            XmlElement locoElement = locomotiveCollection.CollectionDocument.CreateElement("Locomotive");
+            XmlElement locoElement = locomotiveCollection.CollectionDocument.CreateElement(E_Locomotive);
 
-            locoElement.SetAttribute("ID", XmlConvert.ToString(Guid.NewGuid()));
-            locoElement.SetAttribute("Store", XmlConvert.ToString(locomotiveCollection.DefaultStore));
+            locoElement.SetAttribute(A_Id, Guid.NewGuid());
+            locoElement.SetAttribute(A_Store, locomotiveCollection.DefaultStore);
 
             LocomotiveInfo loco = new LocomotiveInfo(locoElement);
             Dialogs.LocomotiveProperties locoProperties = new Dialogs.LocomotiveProperties(loco);
@@ -163,7 +166,7 @@ namespace LayoutManager {
 
         [LayoutEvent("add-new-train-to-collection")]
         private void addNewTrainToCollection(LayoutEvent e) {
-            XmlElement trainInCollectionElement = locomotiveCollection.CollectionDocument.CreateElement("Train");
+            XmlElement trainInCollectionElement = locomotiveCollection.CollectionDocument.CreateElement(E_Train);
             TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(trainInCollectionElement);
 
             trainInCollection.Initialize();
@@ -181,14 +184,14 @@ namespace LayoutManager {
             XmlElement selectedElement = (XmlElement)e.Sender;
 
             if (selectedElement != null) {
-                if (selectedElement.Name == "Locomotive") {
+                if (selectedElement.Name == E_Locomotive) {
                     LocomotiveInfo loco = new LocomotiveInfo(selectedElement);
                     Dialogs.LocomotiveProperties locoProperties = new Dialogs.LocomotiveProperties(loco);
 
                     if (locoProperties.ShowDialog(this) == DialogResult.OK)
                         locomotiveCollection.Save();
                 }
-                else if (selectedElement.Name == "Train") {
+                else if (selectedElement.Name == E_Train) {
                     Tools.Dialogs.TrainProperties trainDialog = new Tools.Dialogs.TrainProperties(new TrainInCollectionInfo(selectedElement));
 
                     if (trainDialog.ShowDialog(this) == DialogResult.OK)
@@ -228,7 +231,7 @@ namespace LayoutManager {
                 if (m.MenuItems.Count > 0)
                     m.MenuItems.Add("-");
 
-                if (clickedElement.Name == "Locomotive")
+                if (clickedElement.Name == E_Locomotive)
                     m.MenuItems.Add(new EditLocomotiveCollectionItemPropertiesMenuItem(clickedElement, "&Locomotive properties..."));
                 m.MenuItems.Add(new DeleteLocomotiveCollectionItemMenuItem(clickedElement, canDelete(clickedElement)));
             }
@@ -236,8 +239,8 @@ namespace LayoutManager {
 
         #region Context menu items
 
-        class EditLocomotiveCollectionItemPropertiesMenuItem : MenuItem {
-            readonly XmlElement element;
+        private class EditLocomotiveCollectionItemPropertiesMenuItem : MenuItem {
+            private readonly XmlElement element;
 
             public EditLocomotiveCollectionItemPropertiesMenuItem(XmlElement element, string menuText) {
                 this.element = element;
@@ -249,8 +252,8 @@ namespace LayoutManager {
             }
         }
 
-        class DeleteLocomotiveCollectionItemMenuItem : MenuItem {
-            readonly XmlElement element;
+        private class DeleteLocomotiveCollectionItemMenuItem : MenuItem {
+            private readonly XmlElement element;
 
             public DeleteLocomotiveCollectionItemMenuItem(XmlElement element, bool canDelete) {
                 this.element = element;
@@ -441,7 +444,6 @@ namespace LayoutManager {
             this.Size = new System.Drawing.Size(208, 512);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -502,7 +504,6 @@ namespace LayoutManager {
                 int clickedIndex = locomotiveList.IndexFromPoint(e.X, e.Y);
 
                 if (clickedIndex >= 0) {
-
                     if (locomotiveList.Items[clickedIndex] is IXmlQueryListBoxXmlElementItem clickedItem) {
                         ContextMenu m = new ContextMenu();
 

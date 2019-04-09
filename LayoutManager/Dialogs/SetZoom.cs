@@ -12,6 +12,7 @@ namespace LayoutManager.Dialogs {
         private Label label2;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -121,12 +122,10 @@ namespace LayoutManager.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Set Zoom";
             this.ResumeLayout(false);
-
         }
         #endregion
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
-
             try {
                 int zoomFactor = zoomFactor = System.Int32.Parse(textBoxZoomFactor.Text);
 

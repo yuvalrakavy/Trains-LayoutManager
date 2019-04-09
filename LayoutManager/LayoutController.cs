@@ -13,7 +13,6 @@ using LayoutManager.Model;
 #pragma warning disable IDE0051, IDE0060
 #nullable enable
 namespace LayoutManager {
-
     /// <summary>
     /// Actions that the user can perform in the launch dialog
     /// </summary>
@@ -36,15 +35,13 @@ namespace LayoutManager {
     }
 
     public class LayoutControllerImplementation : ApplicationContext, ILayoutController, ILayoutSelectionManager {
-        string? layoutFilename;
-        readonly LayoutCommandManager commandManager;
-        readonly List<LayoutSelection> displayedSelections = new List<LayoutSelection>();
-        readonly LayoutSelectionWithUndo userSelection;
-        readonly PreviewRouteManager previewRouteManager = new PreviewRouteManager();
-        readonly LayoutModuleManager moduleManager;
-        int trainsAnalysisPhaseCount = 0;       // How many command stations perform layout analysis phase
-        int layoutDesignTimeActivationNesting = 0;
-        bool showConnectTrackPowerWarning = true;
+        private string? layoutFilename;
+        private readonly LayoutCommandManager commandManager;
+        private readonly List<LayoutSelection> displayedSelections = new List<LayoutSelection>();
+        private readonly LayoutSelectionWithUndo userSelection;
+        private int trainsAnalysisPhaseCount = 0;       // How many command stations perform layout analysis phase
+        private int layoutDesignTimeActivationNesting = 0;
+        private bool showConnectTrackPowerWarning = true;
         private ILayoutFrameWindow? _activeFrameWindow;
         private List<LayoutFrameWindow>? _frameWindows;
 
@@ -52,7 +49,7 @@ namespace LayoutManager {
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main() {
+        private static void Main() {
             try {
                 Application.EnableVisualStyles();
                 Application.Run(new LayoutControllerImplementation());
@@ -66,8 +63,8 @@ namespace LayoutManager {
         public LayoutControllerImplementation() {
             LayoutController.Instance = this;
 
-            moduleManager = new LayoutModuleManager();
-            EventManager.Instance = new LayoutEventManager(moduleManager);
+            ModuleManager = new LayoutModuleManager();
+            EventManager.Instance = new LayoutEventManager(ModuleManager);
             commandManager = new LayoutCommandManager();
 
             userSelection = new LayoutSelectionWithUndo();
@@ -82,7 +79,7 @@ namespace LayoutManager {
             //
             // Initialize the module manager
             //
-            moduleManager.DocumentFilename = CommonDataFolderName + Path.DirectorySeparatorChar + "ModuleManager.xml";
+            ModuleManager.DocumentFilename = CommonDataFolderName + Path.DirectorySeparatorChar + "ModuleManager.xml";
 
             //
             // dummy references to assemblies that contains only layout modules. This is needed, otherwise
@@ -103,21 +100,21 @@ namespace LayoutManager {
             foreach (AssemblyName assemblyName in referenced) {
                 Assembly refAssembly = Assembly.Load(assemblyName);
 
-                moduleManager.LayoutAssemblies.Add(new LayoutAssembly(refAssembly));
+                ModuleManager.LayoutAssemblies.Add(new LayoutAssembly(refAssembly));
             }
 
-            moduleManager.LayoutAssemblies.Add(new LayoutAssembly(this.GetType().Assembly));
+            ModuleManager.LayoutAssemblies.Add(new LayoutAssembly(this.GetType().Assembly));
 
             // Add assemblies in the Modules directory
             string modulesDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules");
 
             foreach (string moduleFilename in Directory.GetFiles(modulesDirectory, "*.dll")) {
-                if (!moduleManager.LayoutAssemblies.IsDefined(moduleFilename))
-                    moduleManager.LayoutAssemblies.Add(new LayoutAssembly(moduleFilename, LayoutAssembly.AssemblyOrigin.InModulesDirectory));
+                if (!ModuleManager.LayoutAssemblies.IsDefined(moduleFilename))
+                    ModuleManager.LayoutAssemblies.Add(new LayoutAssembly(moduleFilename, LayoutAssembly.AssemblyOrigin.InModulesDirectory));
             }
 
             // Load assemblies that were defined by the user
-            moduleManager.LoadState();
+            ModuleManager.LoadState();
 
             EventManager.Instance.AddObjectSubscriptions(this);
             EventManager.Event(new LayoutEvent("modules-initialized", this));
@@ -152,7 +149,6 @@ namespace LayoutManager {
             var action = await launchDialog.Task;
 
             switch (action) {
-
                 case LaunchAction.Exit:
                     EventManager.Event(new LayoutEvent("terminate-event-interthread-relay", this));
                     ExitThreadCore();
@@ -214,7 +210,7 @@ namespace LayoutManager {
             ExitThread();
         }
 
-        void SaveDisplayState(IEnumerable<LayoutFrameWindow> frameWindows) {
+        private void SaveDisplayState(IEnumerable<LayoutFrameWindow> frameWindows) {
             var displayState = new LayoutDisplayState(frameWindows);
 
             displayState.Save(LayoutDisplayStateFilename);
@@ -328,7 +324,6 @@ namespace LayoutManager {
 
                     EventManager.Event(new LayoutEvent<OperationModeParameters>("enter-operation-mode", settings));
                     LayoutModel.Instance.Redraw();
-
                 }
                 catch (Exception ex) {
                     EventManager.Event(new LayoutEvent("add-error", null, "Could not enter operational mode - " + ex.Message));
@@ -532,10 +527,9 @@ namespace LayoutManager {
         /// <summary>
         /// Create a new layout, that is a new model, and one default view called overview
         /// </summary>
-        void CreateNewModel(string layoutFilename) {
+        private void CreateNewModel(string layoutFilename) {
             LayoutModel.Instance.Clear();
             LayoutModelArea area = new LayoutModelArea {
-
                 // Create the default area
                 Name = "Layout area"
             };
@@ -549,7 +543,7 @@ namespace LayoutManager {
         /// <summary>
         /// Load existing layout
         /// </summary>
-        void LoadModel(string layoutFilename) {
+        private void LoadModel(string layoutFilename) {
             LayoutModel.Instance.Clear();
             ReadModelXmlDocument(layoutFilename);
 
@@ -559,7 +553,7 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEvent("new-layout-document", null, layoutFilename));
         }
 
-        void ReadModelXmlDocument(string filename) {
+        private void ReadModelXmlDocument(string filename) {
             XmlTextReader r = new LayoutXmlTextReader(filename, LayoutReadXmlContext.LoadingModel) {
                 WhitespaceHandling = WhitespaceHandling.None
             };
@@ -589,7 +583,7 @@ namespace LayoutManager {
             commandManager.ChangeLevel = 0;             // Layout saved
         }
 
-        void WriteModelXmlDocument(string filename) {
+        private void WriteModelXmlDocument(string filename) {
             XmlTextWriter w = new XmlTextWriter(filename, new System.Text.UTF8Encoding());
 
             w.WriteStartDocument();
@@ -647,7 +641,7 @@ namespace LayoutManager {
             commandManager.Do(command);
         }
 
-        public LayoutModuleManager ModuleManager => moduleManager;
+        public LayoutModuleManager ModuleManager { get; }
 
         [LayoutEvent("get-module-manager")]
         private void getModuleManager(LayoutEvent e) {
@@ -658,7 +652,7 @@ namespace LayoutManager {
 
         public bool TrainsAnalysisPhase => trainsAnalysisPhaseCount > 0;
 
-        public PreviewRouteManager PreviewRouteManager => previewRouteManager;
+        public PreviewRouteManager PreviewRouteManager { get; } = new PreviewRouteManager();
 
         /// <summary>
         /// Called to mark the layout as modified
@@ -701,10 +695,15 @@ namespace LayoutManager {
     }
 
     public class LayoutDisplayState : LayoutXmlWrapper {
+        private const string A_Phases = "Phases";
+        private const string A_Mode = "Mode";
+        private const string A_ActiveWindowIndex = "ActiveWindowIndex";
+        private const string E_WindowStates = "WindowStates";
+
         public LayoutDisplayState(IEnumerable<LayoutFrameWindow> frameWindows) : base("DisplayState") {
             OperationModeSettings = LayoutController.OperationModeSettings;
 
-            XmlElement windowStatesElement = CreateChildElement("WindowStates");
+            XmlElement windowStatesElement = CreateChildElement(E_WindowStates);
 
             int windowIndex = 0;
 
@@ -733,12 +732,12 @@ namespace LayoutManager {
 
         public OperationModeParameters? OperationModeSettings {
             get {
-                string mode = GetAttribute("Mode");
+                string mode = GetAttribute(A_Mode);
 
                 if (mode == "Design")
                     return null;
                 else {
-                    return new OperationModeParameters() { Simulation = (mode == "Simulation"), Phases = AttributeValue("Phases").Enum<LayoutPhase>() ?? LayoutPhase.Operational };
+                    return new OperationModeParameters() { Simulation = (mode == "Simulation"), Phases = AttributeValue(A_Phases).Enum<LayoutPhase>() ?? LayoutPhase.Operational };
                 }
             }
 
@@ -751,27 +750,28 @@ namespace LayoutManager {
                     else
                         mode = "Operate";
 
-                    SetAttribute("Phases", value.Phases.ToString());
+                    SetAttribute(A_Phases, value.Phases);
                 }
 
-                SetAttribute("Mode", mode);
+                SetAttribute(A_Mode, mode);
             }
         }
 
         public int ActiveWindowIndex {
-            get { return (int?)AttributeValue("ActiveWindowIndex") ??  -1; }
-            set { SetAttribute("ActiveWindowIndex", XmlConvert.ToString(value)); }
+            get { return (int?)AttributeValue(A_ActiveWindowIndex) ??  -1; }
+            set { SetAttribute(A_ActiveWindowIndex, value); }
         }
 
         public IEnumerable<FrameWindowState> FrameWindowStates {
             get {
-                XmlElement windowStatesElement = Element["WindowStates"];
+                XmlElement windowStatesElement = Element[E_WindowStates];
 
                 if (windowStatesElement != null)
                     foreach (XmlElement windowStateElement in windowStatesElement)
                         yield return new FrameWindowState(windowStateElement);
             }
         }
+
         /// <summary>
         /// Return a list of frame windows. If display state is empty, the list consists of one default frame window
         /// </summary>

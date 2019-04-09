@@ -5,19 +5,18 @@ namespace Gui.Wizard {
     /// Summary description for PanelCollection.
     /// </summary>
     public class PageCollection : CollectionBase {
-        private readonly Wizard vParent;
         /// <summary>
         /// Constructor requires the  wizard that owns this collection
         /// </summary>
         /// <param name="parent">Wizard</param>
         public PageCollection(Wizard parent) : base() {
-            vParent = parent;
+            Parent = parent;
         }
 
         /// <summary>
         /// Returns the wizard that owns this collection
         /// </summary>
-        public Wizard Parent => vParent;
+        public Wizard Parent { get; }
 
         /// <summary>
         /// Finds the Page in the collection
@@ -31,7 +30,6 @@ namespace Gui.Wizard {
             }
         }
 
-
         /// <summary>
         /// Adds a WizardPage into the Collection
         /// </summary>
@@ -41,7 +39,6 @@ namespace Gui.Wizard {
             int result = List.Add(value);
             return result;
         }
-
 
         /// <summary>
         /// Adds an array of pages into the collection. Used by the Studio Designer generated coed
@@ -70,7 +67,6 @@ namespace Gui.Wizard {
             List.Insert(index, value);
         }
 
-
         /// <summary>
         /// Removes the given page from the collection
         /// </summary>
@@ -95,7 +91,7 @@ namespace Gui.Wizard {
         protected override void OnInsertComplete(int index, object value) {
             base.OnInsertComplete(index, value);
             //Showthe page added
-            vParent.PageIndex = index;
+            Parent.PageIndex = index;
         }
 
         /// <summary>
@@ -106,17 +102,16 @@ namespace Gui.Wizard {
         protected override void OnRemoveComplete(int index, object value) {
             base.OnRemoveComplete(index, value);
             //If the page that was added was the one that was visible
-            if (vParent.PageIndex == index) {
+            if (Parent.PageIndex == index) {
                 //Can I show the one after
                 if (index < InnerList.Count) {
-                    vParent.PageIndex = index;
+                    Parent.PageIndex = index;
                 }
                 else {
                     //Can I show the end one (if not -1 makes everythign disappear
-                    vParent.PageIndex = InnerList.Count - 1;
+                    Parent.PageIndex = InnerList.Count - 1;
                 }
             }
         }
-
     }
 }

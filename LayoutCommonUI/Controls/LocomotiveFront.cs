@@ -12,12 +12,11 @@ namespace LayoutManager.CommonUI.Controls {
     /// Summary description for LocomotiveFront.
     /// </summary>
     public class LocomotiveFront : System.Windows.Forms.Control {
-        IList<LayoutComponentConnectionPoint> connectionPoints = null;
-        LayoutComponentConnectionPoint front = LayoutComponentConnectionPoint.Empty;
-        string locomotiveName = null;
-        Cursor saveCursor = null;
-        const int inMargin = 8;
-        const int edgeSize = 6;
+        private IList<LayoutComponentConnectionPoint> connectionPoints = null;
+        private LayoutComponentConnectionPoint front = LayoutComponentConnectionPoint.Empty;
+        private Cursor saveCursor = null;
+        private const int inMargin = 8;
+        private const int edgeSize = 6;
 
         public LocomotiveFront() {
         }
@@ -51,15 +50,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public string LocomotiveName {
-            get {
-                return locomotiveName;
-            }
-
-            set {
-                locomotiveName = value;
-            }
-        }
+        public string LocomotiveName { get; set; } = null;
 
         private Point getEdgeLocation(LayoutComponentConnectionPoint cp, int margin) {
             Size offset = LayoutTrackComponent.GetConnectionOffset(cp);
@@ -115,8 +106,8 @@ namespace LayoutManager.CommonUI.Controls {
                 locoPainter.BackgroundBrush = Brushes.LightGray;
 
             locoPainter.Front = front;
-            if (locomotiveName != null)
-                locoPainter.Label = locomotiveName;
+            if (LocomotiveName != null)
+                locoPainter.Label = LocomotiveName;
             locoPainter.DrawFront = true;
 
             locoPainter.Draw(pe.Graphics);

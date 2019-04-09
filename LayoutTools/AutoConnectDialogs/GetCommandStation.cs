@@ -12,6 +12,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
         private Button buttonOK;
         private Button buttonCancel;
         private ComboBox comboBoxCommandStations;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -113,7 +114,6 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.ShowInTaskbar = false;
             this.Text = "Select Command Station";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -121,16 +121,14 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             DialogResult = DialogResult.OK;
         }
 
-        class Item {
-            readonly IModelComponentIsCommandStation commandStation;
-
+        private class Item {
             public Item(IModelComponentIsCommandStation commandStation) {
-                this.commandStation = commandStation;
+                this.CommandStation = commandStation;
             }
 
-            public IModelComponentIsCommandStation CommandStation => commandStation;
+            public IModelComponentIsCommandStation CommandStation { get; }
 
-            public override string ToString() => commandStation.NameProvider.Name.ToString();
+            public override string ToString() => CommandStation.NameProvider.Name.ToString();
         }
     }
 }

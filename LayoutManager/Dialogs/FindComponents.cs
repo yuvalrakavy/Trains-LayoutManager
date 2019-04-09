@@ -9,8 +9,8 @@ using System.Windows.Forms;
 using LayoutManager.Model;
 
 namespace LayoutManager.Dialogs {
-    partial class FindComponents : Form {
-        readonly LayoutModelArea activeArea;
+    internal partial class FindComponents : Form {
+        private readonly LayoutModelArea activeArea;
 
         public FindComponents(LayoutModelArea area) {
             InitializeComponent();
@@ -35,13 +35,11 @@ namespace LayoutManager.Dialogs {
                     bool found = false;
 
                     if (checkBoxScopeNames.Checked) {
-
                         if (component is IModelComponentHasName namedComponent && isMatch(namedComponent.NameProvider.Name, findWhat))
                             found = true;
                     }
 
                     if (!found && checkBoxScopeAttributes.Checked) {
-
                         if (component is IObjectHasAttributes attributedComponent && attributedComponent.HasAttributes) {
                             foreach (AttributeInfo attribute in attributedComponent.Attributes) {
                                 if (attribute.Name.Contains(findWhat) || isMatch(attribute.ValueAsString, findWhat)) {
@@ -53,7 +51,6 @@ namespace LayoutManager.Dialogs {
                     }
 
                     if (!found && checkBoxScopeAddresses.Checked) {
-
                         if (component is IModelComponentConnectToControl connectedComponent && connectedComponent.IsConnected) {
                             IList<ControlConnectionPoint> connections = LayoutModel.ControlManager.ConnectionPoints[connectedComponent];
 

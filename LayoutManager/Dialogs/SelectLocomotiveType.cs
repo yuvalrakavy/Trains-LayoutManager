@@ -11,13 +11,14 @@ namespace LayoutManager.Dialogs {
         private LayoutManager.CommonUI.Controls.LocomotiveTypeList locomotiveTypeList;
         private Button buttonSelect;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
 
         private Button buttonArrangeBy;
-        readonly LocomotiveCatalogInfo catalog;
+        private readonly LocomotiveCatalogInfo catalog;
 
         public SelectLocomotiveType() {
             //
@@ -130,7 +131,6 @@ namespace LayoutManager.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Select Locomotive Type";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -139,7 +139,6 @@ namespace LayoutManager.Dialogs {
         }
 
         private void buttonCancel_Click(object sender, System.EventArgs e) {
-
         }
 
         private void buttonSelect_Click(object sender, System.EventArgs e) {
@@ -152,6 +151,5 @@ namespace LayoutManager.Dialogs {
             locomotiveTypeList.AddLayoutMenuItems(m);
             m.Show(this, new Point(buttonArrangeBy.Left, buttonArrangeBy.Bottom));
         }
-
     }
 }

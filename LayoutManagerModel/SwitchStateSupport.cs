@@ -18,13 +18,13 @@ namespace LayoutManager.Components {
 
         public string DefaultConnectionPointName {
             get {
-
                 if (Component is IModelComponentConnectToControl c && c.ControlConnectionDescriptions.Count > 0)
                     return c.ControlConnectionDescriptions[0].Name;
 
                 throw new ApplicationException($"Cannot get default connection point name for {Component} - no connection points are defined");
             }
         }
+
         public virtual int CurrentSwitchState => GetSwitchState(DefaultConnectionPointName);
 
         public virtual void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string connectionPointName = null) {
@@ -47,7 +47,7 @@ namespace LayoutManager.Components {
         /// </summary>
         /// <param name="switchState">The new switch state</param>
         public virtual void SetSwitchState(ControlConnectionPoint controlConnectionPoint, int switchState, string connectionPointName = null) {
-            LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic, create: true).SetAttribute($"Value{connectionPointName ?? ""}", XmlConvert.ToString(switchState));
+            LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic, create: true).SetAttribute($"Value{connectionPointName ?? ""}", switchState);
             Component.OnComponentChanged();
         }
 
@@ -60,7 +60,6 @@ namespace LayoutManager.Components {
 
         public bool ReverseLogic {
             get {
-
                 if (Component is IModelComponentHasReverseLogic componentWithReverseLogic)
                     return componentWithReverseLogic.ReverseLogic;
                 else
@@ -70,9 +69,10 @@ namespace LayoutManager.Components {
     }
 
     public abstract class ModelComponentWithSwitchingState : ModelComponent, IModelComponentHasSwitchingState {
-        readonly SwitchingStateSupport switchingStateSupport;
+        private const string A_ReverseLogic = "ReverseLogic";
+        private readonly SwitchingStateSupport switchingStateSupport;
 
-        public ModelComponentWithSwitchingState() {
+        protected ModelComponentWithSwitchingState() {
             switchingStateSupport = GetSwitchingStateSupporter();
         }
 
@@ -99,15 +99,8 @@ namespace LayoutManager.Components {
         #region IModelComponentHasReverseLogic Members
 
         public bool ReverseLogic {
-            get {
-                if (Element.HasAttribute("ReverseLogic"))
-                    return XmlConvert.ToBoolean(Element.GetAttribute("ReverseLogic"));
-                return false;
-            }
-
-            set {
-                Element.SetAttribute("ReverseLogic", XmlConvert.ToString(value));
-            }
+            get => (bool?)Element.AttributeValue(A_ReverseLogic) ?? false;
+            set => Element.SetAttribute(A_ReverseLogic, value);
         }
 
         #endregion

@@ -17,6 +17,8 @@ namespace LayoutManager.Tools.Controls {
     /// Summary description for TripPlanEditor.
     /// </summary>
     public class TripPlanEditor : System.Windows.Forms.UserControl, ITripPlanEditorDialog, CommonUI.Controls.IPolicyListCustomizer {
+        private const string A_PolicyID = "PolicyID";
+        private const string E_RunPolicy = "RunPolicy";
         private MenuItem menuItemGoHumanDriver;
         private ContextMenu contextMenuEdit;
         private MenuItem menuItemEditDestination;
@@ -50,27 +52,22 @@ namespace LayoutManager.Tools.Controls {
 
         private void endOfDesignerVariables() { }
 
-        TripPlanInfo tripPlan = null;
-        TrainStateInfo train = null;
-        LayoutBlock locomotiveBlock = null;
-        LayoutComponentConnectionPoint front = LayoutComponentConnectionPoint.Empty;
-        bool initialized = false;
-        bool viewOnly = false;
-        bool enablePreview = true;
-        bool buildStartConditionMenu = true;
-        bool buildDriverInstructionsMenu = true;
-        int trainTargetWayPoint = -1;       // Train target first way point
-        string dialogName = null;
-        string tripPlanName = null;
-        Dialogs.DestinationEditor activeDestinationEditor = null;
-        readonly ArrayList previewRequests = new ArrayList();
-        IDictionary<Guid, string> displayedBallons = new Dictionary<Guid, string>();
+        private TripPlanInfo tripPlan = null;
+        private TrainStateInfo train = null;
+        private bool initialized = false;
+        private bool viewOnly = false;
+        private bool buildStartConditionMenu = true;
+        private bool buildDriverInstructionsMenu = true;
+        private string dialogName = null;
+        private Dialogs.DestinationEditor activeDestinationEditor = null;
+        private readonly ArrayList previewRequests = new ArrayList();
+        private IDictionary<Guid, string> displayedBallons = new Dictionary<Guid, string>();
 
         public event EventHandler WayPointCountChanged = null;
         private DialogEditing changeToViewOnly = null;
 
-        LayoutSelection tripPlanSelection;
-        LayoutSelection selectedWaypointSelection;
+        private LayoutSelection tripPlanSelection;
+        private LayoutSelection selectedWaypointSelection;
 
         public TripPlanEditor() {
             // This call is required by the Windows.Forms Form Designer.
@@ -83,26 +80,9 @@ namespace LayoutManager.Tools.Controls {
             EventManager.AddObjectSubscriptions(this);
         }
 
+        public LayoutBlock LocomotiveBlock { get; set; } = null;
 
-        public LayoutBlock LocomotiveBlock {
-            get {
-                return locomotiveBlock;
-            }
-
-            set {
-                locomotiveBlock = value;
-            }
-        }
-
-        public LayoutComponentConnectionPoint Front {
-            get {
-                return front;
-            }
-
-            set {
-                front = value;
-            }
-        }
+        public LayoutComponentConnectionPoint Front { get; set; } = LayoutComponentConnectionPoint.Empty;
 
         public TrainStateInfo Train {
             get {
@@ -118,25 +98,9 @@ namespace LayoutManager.Tools.Controls {
             }
         }
 
-        public bool EnablePreview {
-            get {
-                return enablePreview;
-            }
+        public bool EnablePreview { get; set; } = true;
 
-            set {
-                enablePreview = value;
-            }
-        }
-
-        public int TrainTargetWaypoint {
-            get {
-                return trainTargetWayPoint;
-            }
-
-            set {
-                trainTargetWayPoint = value;
-            }
-        }
+        public int TrainTargetWaypoint { get; set; } = -1;
 
         [Browsable(false)]
         public TripPlanInfo TripPlan {
@@ -310,7 +274,6 @@ namespace LayoutManager.Tools.Controls {
 
         private void updateBallons(IDictionary<Guid, string> newBallons) {
             foreach (var d in newBallons) {
-
                 displayedBallons.TryGetValue(d.Key, out string displayedBallonText);
 
                 if (displayedBallonText != d.Value) {
@@ -346,7 +309,7 @@ namespace LayoutManager.Tools.Controls {
             clearPreviewRequests();
 
             if (listViewWayPoints.Items.Count > 0 && EnablePreview) {
-                int wayPointIndex = (trainTargetWayPoint < 0) ? 0 : trainTargetWayPoint;
+                int wayPointIndex = (TrainTargetWaypoint < 0) ? 0 : TrainTargetWaypoint;
                 WayPointItem wayPointItem = (WayPointItem)listViewWayPoints.Items[wayPointIndex];
                 TripPlanWaypointInfo wayPoint = wayPointItem.WayPoint;
                 TripBestRouteResult result;
@@ -355,7 +318,7 @@ namespace LayoutManager.Tools.Controls {
                 int selectedIndex = listViewWayPoints.SelectedItems.Count > 0 ? listViewWayPoints.SelectedIndices[0] : -1;
                 var ballons = new Dictionary<Guid, string>();
 
-                if (locomotiveBlock != null) {
+                if (LocomotiveBlock != null) {
                     TripBestRouteRequest request = new TripBestRouteRequest(routeOwner, wayPoint.Destination, LocomotiveBlock.BlockDefinintion.Track,
                         Front, wayPoint.Direction, wayPoint.TrainStopping);
 
@@ -405,7 +368,7 @@ namespace LayoutManager.Tools.Controls {
                 for (int i = 0; i < listViewWayPoints.Items.Count; i++) {
                     WayPointItem item = (WayPointItem)listViewWayPoints.Items[i];
 
-                    item.TrainTarget = (i == trainTargetWayPoint);
+                    item.TrainTarget = (i == TrainTargetWaypoint);
                 }
 
                 listViewWayPoints.Invalidate();
@@ -462,15 +425,7 @@ namespace LayoutManager.Tools.Controls {
             this.dialogName = dialogName;
         }
 
-        public string TripPlanName {
-            get {
-                return tripPlanName;
-            }
-
-            set {
-                tripPlanName = value;
-            }
-        }
+        public string TripPlanName { get; set; } = null;
 
         public Form ActiveForm {
             get {
@@ -579,7 +534,6 @@ namespace LayoutManager.Tools.Controls {
         /// Clean up any resources being used.
         /// </summary>
         protected override void Dispose(bool disposing) {
-
             if (disposing) {
                 EventManager.Subscriptions.RemoveObjectSubscriptions(this);
 
@@ -925,7 +879,6 @@ namespace LayoutManager.Tools.Controls {
             this.tabPagePolicies.ResumeLayout(false);
             this.tabPageAttributes.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -1080,11 +1033,10 @@ namespace LayoutManager.Tools.Controls {
             m.MenuItems.Add("Edit...", menuItemEditStartCondition_Click);
         }
 
-        XmlElement GenerateUsePolicy(WayPointItem waypoint, LayoutPolicyInfo policy) {
-            XmlElement runPolicy = waypoint.WayPoint.Element.OwnerDocument.CreateElement("RunPolicy");
+        private XmlElement GenerateUsePolicy(WayPointItem waypoint, LayoutPolicyInfo policy) {
+            XmlElement runPolicy = waypoint.WayPoint.Element.OwnerDocument.CreateElement(E_RunPolicy);
 
-            runPolicy.SetAttribute("PolicyID", XmlConvert.ToString(policy.Id));
-
+            runPolicy.SetAttribute(A_PolicyID, policy.Id);
             return runPolicy;
         }
 
@@ -1131,7 +1083,6 @@ namespace LayoutManager.Tools.Controls {
             if (d.ShowDialog(this) == DialogResult.OK)
                 selected.Update();
         }
-
 
         private void menuItemEditDestination_Click(object sender, System.EventArgs e) {
             WayPointItem selected = (WayPointItem)listViewWayPoints.SelectedItems[0];
@@ -1195,9 +1146,9 @@ namespace LayoutManager.Tools.Controls {
             displaySelections();
         }
 
-        class AddSavedDestinationMenuItem : MenuItem {
-            readonly TripPlanEditor tripPlanEditor;
-            readonly TripPlanDestinationInfo destination;
+        private class AddSavedDestinationMenuItem : MenuItem {
+            private readonly TripPlanEditor tripPlanEditor;
+            private readonly TripPlanDestinationInfo destination;
 
             public AddSavedDestinationMenuItem(TripPlanEditor tripPlanEditor, TripPlanDestinationInfo destination) {
                 this.tripPlanEditor = tripPlanEditor;
@@ -1233,14 +1184,13 @@ namespace LayoutManager.Tools.Controls {
 
         #endregion
 
-        class WayPointItem : ListViewItem {
-            readonly TripPlanWaypointInfo wayPoint;
-            bool shouldReverese = false;
-            bool noPass = false;
-            bool trainTarget = false;
+        private class WayPointItem : ListViewItem {
+            private bool shouldReverese = false;
+            private bool noPass = false;
+            private bool trainTarget = false;
 
             public WayPointItem(TripPlanWaypointInfo wayPoint) {
-                this.wayPoint = wayPoint;
+                this.WayPoint = wayPoint;
 
                 this.Text = DestinationDescription;
                 this.SubItems.Add(wayPoint.Direction.ToString());
@@ -1250,9 +1200,9 @@ namespace LayoutManager.Tools.Controls {
 
             public void Update() {
                 this.SubItems[0].Text = DestinationDescription;
-                this.SubItems[1].Text = wayPoint.Direction.ToString();
-                this.SubItems[2].Text = wayPoint.StartConditionDescription;
-                this.SubItems[3].Text = wayPoint.DriverInstructionsDescription;
+                this.SubItems[1].Text = WayPoint.Direction.ToString();
+                this.SubItems[2].Text = WayPoint.StartConditionDescription;
+                this.SubItems[3].Text = WayPoint.DriverInstructionsDescription;
 
                 for (int i = 0; i < SubItems.Count; i++) {
                     if (noPass) {
@@ -1277,14 +1227,14 @@ namespace LayoutManager.Tools.Controls {
 
             protected string DestinationDescription {
                 get {
-                    if (wayPoint.Destination.Count > 1)
-                        return "{ " + wayPoint.Destination.Name + " }";
+                    if (WayPoint.Destination.Count > 1)
+                        return "{ " + WayPoint.Destination.Name + " }";
                     else
-                        return wayPoint.Destination.Name;
+                        return WayPoint.Destination.Name;
                 }
             }
 
-            public TripPlanWaypointInfo WayPoint => wayPoint;
+            public TripPlanWaypointInfo WayPoint { get; }
 
             public bool ShouldReverese {
                 get {
@@ -1323,22 +1273,22 @@ namespace LayoutManager.Tools.Controls {
 
             public XmlElement StartCondition {
                 get {
-                    return wayPoint.StartCondition;
+                    return WayPoint.StartCondition;
                 }
 
                 set {
-                    wayPoint.StartCondition = value;
+                    WayPoint.StartCondition = value;
                     Update();
                 }
             }
 
             public XmlElement DriverInstructions {
                 get {
-                    return wayPoint.DriverInstructions;
+                    return WayPoint.DriverInstructions;
                 }
 
                 set {
-                    wayPoint.DriverInstructions = value;
+                    WayPoint.DriverInstructions = value;
                     Update();
                 }
             }

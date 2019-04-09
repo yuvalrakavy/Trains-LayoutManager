@@ -26,7 +26,7 @@ namespace LayoutManager.Dialogs {
         private MenuItem menuItemStandardImages;
         private Button buttonOptions;
         private MenuItem menuItemStandardLocomotiveFunctions;
-        readonly LocomotiveCatalogInfo catalog;
+        private readonly LocomotiveCatalogInfo catalog;
 
         public LocomotiveCatalog() {
             catalog = LayoutModel.LocomotiveCatalog;
@@ -217,7 +217,6 @@ namespace LayoutManager.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Locomotive Catalog";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -286,6 +285,5 @@ namespace LayoutManager.Dialogs {
         private void menuItemStandardLocomotiveFunctions_Click(object sender, System.EventArgs e) {
             new Dialogs.StandardFunctions().ShowDialog(this);
         }
-
     }
 }

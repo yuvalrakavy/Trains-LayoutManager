@@ -7,7 +7,6 @@ using System.Xml;
 using System.Xml.XPath;
 
 namespace LayoutManager.CommonUI.Controls {
-
     /// <summary>
     /// An interface that must be implemented by a class that represents an item in
     /// a XmlQueryListbox
@@ -53,8 +52,6 @@ namespace LayoutManager.CommonUI.Controls {
         }
     }
 
-
-
     /// <summary>
     /// Base class for list box showing a tree-like representation of owner draw
     /// items. Each item is based on XML element. Each tree node is basically an XPath
@@ -66,24 +63,22 @@ namespace LayoutManager.CommonUI.Controls {
         private ImageList imageListArrows;
         private IContainer components;
 
-        XmlElement containerElement;
-        XPathNavigator containerNavigator;
-        readonly QueryItem root = null;
-        string defaultSortField;
-        readonly ArrayList layouts = new ArrayList();
-        ListLayout currentLayout;
-        int canUpdateNesting;
+        private XmlElement containerElement;
+        private XPathNavigator containerNavigator;
+        private readonly ArrayList layouts = new ArrayList();
+        private ListLayout currentLayout;
+        private int canUpdateNesting;
 
         #region Constructors
 
-        public XmlQueryListbox() {
+        protected XmlQueryListbox() {
             DrawMode = DrawMode.OwnerDrawVariable;
 
             InitializeComponent();
 
-            root = CreateQueryItem();
-            root.List = this;
-            root.Expand();
+            Root = CreateQueryItem();
+            Root.List = this;
+            Root.Expand();
         }
 
         #endregion
@@ -164,25 +159,17 @@ namespace LayoutManager.CommonUI.Controls {
         public QueryItem AddQuery(String name, string query) {
             QueryItem q;
 
-            q = root.Add(name, query);
-            if (defaultSortField != null)
-                q.SortField = defaultSortField;
+            q = Root.Add(name, query);
+            if (DefaultSortField != null)
+                q.SortField = DefaultSortField;
             UpdateList();
 
             return q;
         }
 
-        public QueryItem Root => root;
+        public QueryItem Root { get; } = null;
 
-        public string DefaultSortField {
-            get {
-                return defaultSortField;
-            }
-
-            set {
-                defaultSortField = value;
-            }
-        }
+        public string DefaultSortField { get; set; }
 
         /// <summary>
         /// A reference to the selected item. It will be null if no item is selected
@@ -246,7 +233,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             BeginUpdate();
             Items.Clear();
-            root.Expand();
+            Root.Expand();
 
             // Try to locate the selected item based on the bookmarks
             int parentIndex = locateBookmark(0, parentBookmark);
@@ -271,7 +258,6 @@ namespace LayoutManager.CommonUI.Controls {
         /// If selected node is not query node
         /// </exception>
         public void ToggleSelectedExpansion() {
-
             if (!(SelectedItem is QueryItem q))
                 throw new ApplicationException("Selected item must be a query node item");
 
@@ -313,7 +299,6 @@ namespace LayoutManager.CommonUI.Controls {
         /// Images for showing expand/collapse state of query items
         /// </summary>
         public virtual ImageList ArrowImageList => imageListArrows;
-
 
         /// <summary>
         /// Default double click behavior. If the selected item is a query item, toggle
@@ -391,7 +376,6 @@ namespace LayoutManager.CommonUI.Controls {
                 ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListArrows.ImageStream"))),
                 TransparentColor = System.Drawing.Color.Transparent
             };
-
         }
 
         private void onContainerDocumentChanged(object sender, XmlNodeChangedEventArgs e) {
@@ -464,7 +448,7 @@ namespace LayoutManager.CommonUI.Controls {
                 q.Initialize(list, name, query, level + 1, this);
 
                 if (list.DefaultSortField != null)
-                    q.SortField = list.defaultSortField;
+                    q.SortField = list.DefaultSortField;
 
                 items.Add(q);
                 return q;
@@ -609,7 +593,6 @@ namespace LayoutManager.CommonUI.Controls {
                 list.ArrowImageList.Draw(e.Graphics, x - 8, y + 1, IsExpanded ? 1 : 0);
             }
 
-
             public virtual void Draw(DrawItemEventArgs e) {
                 if ((e.State & DrawItemState.Selected) != 0)
                     e.DrawBackground();
@@ -649,7 +632,7 @@ namespace LayoutManager.CommonUI.Controls {
         public ListLayout[] Layouts => (ListLayout[])layouts.ToArray(typeof(ListLayout));
 
         protected void ApplyLayout(ListLayout layout) {
-            root.ClearItems();
+            Root.ClearItems();
             layout.ApplyLayout(this);
             UpdateList();
         }
@@ -668,7 +651,6 @@ namespace LayoutManager.CommonUI.Controls {
         /// define what and how items are shown in the list box.
         /// </summary>
         abstract public class ListLayout {
-
             /// <summary>
             /// Apply the layout on a given list
             /// </summary>
@@ -681,12 +663,11 @@ namespace LayoutManager.CommonUI.Controls {
             public abstract string LayoutName {
                 get;
             }
-
         }
 
-        class LayoutMenuItem : MenuItem {
-            readonly XmlQueryListbox list;
-            readonly ListLayout layout;
+        private class LayoutMenuItem : MenuItem {
+            private readonly XmlQueryListbox list;
+            private readonly ListLayout layout;
 
             public LayoutMenuItem(XmlQueryListbox list, ListLayout layout) {
                 this.list = list;
@@ -704,5 +685,4 @@ namespace LayoutManager.CommonUI.Controls {
 
         #endregion
     }
-
 }

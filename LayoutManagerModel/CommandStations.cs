@@ -81,8 +81,9 @@ namespace LayoutManager.Model {
 
         public SubunitFormatValue SubunitFormat {
             get => AttributeValue(A_SubunitFormat).Enum<SubunitFormatValue>() ?? SubunitFormatValue.Number;
-            set => SetAttribute(A_SubunitFormat, value.ToString());
+            set => SetAttribute(A_SubunitFormat, value);
         }
+
         public int SubunitMin {
             get => (int?)AttributeValue(A_SubunitMin) ?? 1;
             set => SetAttribute(A_SubunitMin, value);
@@ -95,7 +96,6 @@ namespace LayoutManager.Model {
     }
 
     public class CommandStationSetFunctionNumberSupportInfo {
-
         public SetFunctionNumberSupport SetFunctionNumberSupport { get; set; } = SetFunctionNumberSupport.None;
 
         public int MinFunctionNumber { get; set; } = 1;

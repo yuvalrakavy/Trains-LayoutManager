@@ -167,7 +167,7 @@ namespace LayoutManager.CommonUI.Controls {
         public bool AutoDiscovery {
             get { return this.mAutoDiscovery; }
             set {
-                if (!this.mAutoDiscovery && value == true) {
+                if (!this.mAutoDiscovery && value) {
                     this.mAutoDiscovery = value;
                     this.DoAutoDiscovery();
                     if (this.Items.Count == 0) this.Invalidate();
@@ -352,6 +352,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region DataBindThread Method
         private delegate void DataBindDlgt();
+
         private void DataBindThread() {
             lock (this) {
                 if (this.InvokeRequired) {
@@ -362,6 +363,7 @@ namespace LayoutManager.CommonUI.Controls {
                 }
             }
         }
+
         private void DataBinding() {
             if (bDisposing) return;
             base.Clear();
@@ -634,6 +636,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region ResizeColumnsThread Method - Public
         private delegate void ResizeColumnsDlgt();
+
         private void ResizeColumnsThread() {
             lock (this) {
                 if (this.InvokeRequired) {
@@ -644,6 +647,7 @@ namespace LayoutManager.CommonUI.Controls {
                 }
             }
         }
+
         private void ResizeCols() {
             Cursor current = this.Cursor;
             this.Cursor = Cursors.WaitCursor;
@@ -688,6 +692,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region SerializeToDisk Threading
         private delegate void SerializeToDiskDlgt(string FileName, bool Overwrite);
+
         private void SerializeToDiskThread() {
             lock (this) {
                 if (this.InvokeRequired) {
@@ -782,6 +787,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region DeSerializeFromDisk Threading
         private delegate void DeSerializeFromDiskDlgt(string FileName);
+
         private void DeSerializeFromDiskThread() {
             lock (this) {
                 if (this.InvokeRequired) {
@@ -861,11 +867,7 @@ namespace LayoutManager.CommonUI.Controls {
     #region DataColumnHeader Class
     [Serializable()]
     public class DataColumnHeader : ColumnHeader {
-        private string mField;
-        public string Field {
-            get { return this.mField; }
-            set { this.mField = value; }
-        }
+        public string Field { get; set; }
     }
     #endregion
 
@@ -896,6 +898,7 @@ namespace LayoutManager.CommonUI.Controls {
                 return null;
             }
         }
+
         public void Add(string Field) {
             DataColumnHeader col = new DataColumnHeader {
                 Text = Field,
@@ -903,6 +906,7 @@ namespace LayoutManager.CommonUI.Controls {
             };
             List.Add((DataColumnHeader)col);
         }
+
         public void Add(string Field, int Width) {
             DataColumnHeader col = new DataColumnHeader {
                 Text = Field,
@@ -911,6 +915,7 @@ namespace LayoutManager.CommonUI.Controls {
             };
             List.Add((DataColumnHeader)col);
         }
+
         public void Add(string Text, string Field) {
             DataColumnHeader col = new DataColumnHeader {
                 Text = Text,
@@ -918,6 +923,7 @@ namespace LayoutManager.CommonUI.Controls {
             };
             List.Add((DataColumnHeader)col);
         }
+
         public void Add(string Text, string Field, int Width) {
             DataColumnHeader col = new DataColumnHeader {
                 Text = Text,
@@ -926,18 +932,23 @@ namespace LayoutManager.CommonUI.Controls {
             };
             List.Add((DataColumnHeader)col);
         }
+
         public void Add(DataColumnHeader Item) {
             List.Add((DataColumnHeader)Item);
         }
+
         protected override void OnRemoveComplete(int index, object value) {
             this.OnInvalidate();
         }
+
         protected override void OnInsertComplete(int index, object value) {
             this.OnInvalidate();
         }
+
         protected override void OnSetComplete(int index, object oldValue, object newValue) {
             this.OnInvalidate();
         }
+
         protected override void OnClearComplete() {
             this.OnInvalidate();
         }
@@ -947,12 +958,7 @@ namespace LayoutManager.CommonUI.Controls {
     #region DataLstView Class
     [Serializable()]
     public class DataLstView {
-        #region Private Variables within this scope
-        private ListViewItem[] dlvItemsArr;
-        private string[] dlvColumnNames;
-        private byte[] dlvColumnAlignment;
-        private int[] dlvColumnWidth;
-        private object[] tagObjectArr;
+#region Private Variables within this scope
         #endregion
 
         #region DataLstView Constructor - Empty for Serialization
@@ -960,38 +966,23 @@ namespace LayoutManager.CommonUI.Controls {
         #endregion
 
         #region DataListViewItems Get/Set Accessor
-        public ListViewItem[] DataListViewItems {
-            get { return this.dlvItemsArr; }
-            set { this.dlvItemsArr = value; }
-        }
+        public ListViewItem[] DataListViewItems { get; set; }
         #endregion
 
         #region ColumnNames Get/Set Accessor
-        public string[] ColumnNames {
-            get { return this.dlvColumnNames; }
-            set { this.dlvColumnNames = value; }
-        }
+        public string[] ColumnNames { get; set; }
         #endregion
 
         #region ColumnAlignment Get/Set Accessor
-        public byte[] ColumnAlignment {
-            get { return this.dlvColumnAlignment; }
-            set { this.dlvColumnAlignment = value; }
-        }
+        public byte[] ColumnAlignment { get; set; }
         #endregion
 
         #region ColumnWidth Get/Set Accessor
-        public int[] ColumnWidth {
-            get { return this.dlvColumnWidth; }
-            set { this.dlvColumnWidth = value; }
-        }
+        public int[] ColumnWidth { get; set; }
         #endregion
 
         #region DataListViewTags Get/Set Accessor
-        public object[] DataListViewTags {
-            get { return this.tagObjectArr; }
-            set { this.tagObjectArr = value; }
-        }
+        public object[] DataListViewTags { get; set; }
         #endregion
     }
     #endregion

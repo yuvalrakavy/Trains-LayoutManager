@@ -13,6 +13,7 @@ namespace LayoutManager.Tools.Controls {
     /// Summary description for TripsMonitor.
     /// </summary>
     public class TripsMonitor : System.Windows.Forms.UserControl {
+        private const string A_TripsMonitorAutoClearTimeout = "TripsMonitorAutoClearTimeout";
         private ListView listViewTrips;
         private Button buttonAbort;
         private ColumnHeader columnHeaderTrain;
@@ -32,10 +33,10 @@ namespace LayoutManager.Tools.Controls {
 
         private void endOfDesignerVariables() { }
 
-        readonly IDictionary mapTrainToItem = new HybridDictionary();
-        int autoClearTimeout = 15;      // Clear completed trips after this amount of time
-        CommonUI.ListViewStringColumnsSorter columnSorter;
-        ILayoutFrameWindow frameWindow = null;
+        private readonly IDictionary mapTrainToItem = new HybridDictionary();
+        private int autoClearTimeout;      // Clear completed trips after this amount of time
+        private CommonUI.ListViewStringColumnsSorter columnSorter;
+        private ILayoutFrameWindow frameWindow = null;
 
         public TripsMonitor() {
             // This call is required by the Windows.Forms Form Designer.
@@ -45,9 +46,7 @@ namespace LayoutManager.Tools.Controls {
         public void Initialize() {
             EventManager.AddObjectSubscriptions(this);
 
-            if (LayoutModel.StateManager.Element.HasAttribute("TripsMonitorAutoClearTimeout"))
-                autoClearTimeout = XmlConvert.ToInt32(LayoutModel.StateManager.Element.GetAttribute("TripsMonitorAutoClearTimeout"));
-
+            autoClearTimeout = (int?)LayoutModel.StateManager.Element.AttributeValue(A_TripsMonitorAutoClearTimeout) ?? 15;
             columnSorter = new CommonUI.ListViewStringColumnsSorter(listViewTrips);
         }
 
@@ -55,9 +54,7 @@ namespace LayoutManager.Tools.Controls {
 
         public ILayoutFrameWindow FrameWindow {
             get {
-                if (frameWindow == null)
-                    frameWindow = (ILayoutFrameWindow)FindForm();
-                return frameWindow;
+                return frameWindow ?? (frameWindow = (ILayoutFrameWindow)FindForm());
             }
         }
 
@@ -144,7 +141,6 @@ namespace LayoutManager.Tools.Controls {
                 buttonSpeed.Enabled = false;
                 buttonSuspend.Text = "&Suspend";
                 buttonAbort.Text = "&Abort";
-
             }
         }
 
@@ -387,7 +383,6 @@ namespace LayoutManager.Tools.Controls {
             this.Name = "TripsMonitor";
             this.Size = new System.Drawing.Size(672, 160);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -438,11 +433,11 @@ namespace LayoutManager.Tools.Controls {
 
                 if (autoClearTimeout < 0) {
                     updateAutoClearTimers();
-                    LayoutModel.StateManager.Element.RemoveAttribute("TripsMonitorAutoClearTimeout");
+                    LayoutModel.StateManager.Element.RemoveAttribute(A_TripsMonitorAutoClearTimeout);
                 }
                 else {
                     updateAutoClearTimers();
-                    LayoutModel.StateManager.Element.SetAttribute("TripsMonitorAutoClearTimeout", XmlConvert.ToString(autoClearTimeout));
+                    LayoutModel.StateManager.Element.SetAttribute(A_TripsMonitorAutoClearTimeout, autoClearTimeout);
                 }
             }
         }
@@ -476,29 +471,27 @@ namespace LayoutManager.Tools.Controls {
                 EventManager.Event(new LayoutEvent("get-train-target-speed", selected.TripAssignment.Train, this));
         }
 
-        class TripAssignmentItem : ListViewItem, IDisposable {
-            readonly TripsMonitor tripsMonitor;
-            TripPlanAssignmentInfo tripAssignment;
-            readonly TrainStateInfo train;
-            LayoutDelayedEvent clearTripEvent = null;
-
+        private class TripAssignmentItem : ListViewItem, IDisposable {
+            private readonly TripsMonitor tripsMonitor;
+            private TripPlanAssignmentInfo tripAssignment;
+            private LayoutDelayedEvent clearTripEvent = null;
 
             public TripAssignmentItem(TripsMonitor tripsMonitor, TripPlanAssignmentInfo tripAssignment) {
                 this.tripsMonitor = tripsMonitor;
                 this.tripAssignment = tripAssignment;
-                this.train = tripAssignment.Train;
+                this.Train = tripAssignment.Train;
 
-                Text = train.DisplayName;
+                Text = Train.DisplayName;
                 ImageIndex = getStateImageIndex();
                 SubItems.Add(getDriverName());
-                SubItems.Add(train.StatusText);
+                SubItems.Add(Train.StatusText);
                 SubItems.Add(getDestination());
                 SubItems.Add(getTripState());
             }
 
             #region Properties
 
-            public TrainStateInfo Train => train;
+            public TrainStateInfo Train { get; }
 
             public TripPlanAssignmentInfo TripAssignment {
                 get {
@@ -506,7 +499,7 @@ namespace LayoutManager.Tools.Controls {
                 }
 
                 set {
-                    if (value.TrainId != train.Id)
+                    if (value.TrainId != Train.Id)
                         throw new ArgumentException("Can set trip assignment only to same train");
 
                     tripAssignment = value;
@@ -525,7 +518,7 @@ namespace LayoutManager.Tools.Controls {
             }
 
             public void UpdateTrainStatus() {
-                SubItems[2].Text = train.StatusText;
+                SubItems[2].Text = Train.StatusText;
             }
 
             public void UpdateDestination() {
@@ -545,7 +538,6 @@ namespace LayoutManager.Tools.Controls {
 
             private string getDriverName() {
                 switch (tripAssignment.Train.Driver.Type) {
-
                     case "ManualOnScreen":
                         return "Manual (Dialog)";
 
@@ -646,7 +638,7 @@ namespace LayoutManager.Tools.Controls {
 
                 if (tripAssignment.CanBeCleared) {
                     if (tripsMonitor.AutoClearTimeout > 0)
-                        clearTripEvent = EventManager.DelayedEvent(tripsMonitor.AutoClearTimeout * 1000, new LayoutEvent("clear-trip", train));
+                        clearTripEvent = EventManager.DelayedEvent(tripsMonitor.AutoClearTimeout * 1000, new LayoutEvent("clear-trip", Train));
                 }
             }
 

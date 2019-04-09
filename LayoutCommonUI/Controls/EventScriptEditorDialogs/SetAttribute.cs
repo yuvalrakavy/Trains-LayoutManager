@@ -12,6 +12,8 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
     /// Summary description for SetAttribute.
     /// </summary>
     public class SetAttribute : Form {
+        private const string A_Value = "Value";
+        private const string A_SetTo = "SetTo";
         private GroupBox groupBox1;
         private ComboBox comboBoxSymbol;
         private Label label1;
@@ -28,7 +30,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private LayoutManager.CommonUI.Controls.OperandValueOf operandValueOf;
         private LayoutManager.CommonUI.Controls.NumericValue numericValue;
 
-
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -36,8 +37,8 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly XmlElement element;
-        readonly IDictionary symbolNameToTypeMap = null;
+        private readonly XmlElement element;
+        private readonly IDictionary symbolNameToTypeMap = null;
 
         public SetAttribute(XmlElement element) {
             //
@@ -63,15 +64,14 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
             string setTo = "Text";
 
-            if (element.HasAttribute("SetTo"))
-                setTo = element.GetAttribute("SetTo");
+            if (element.HasAttribute(A_SetTo))
+                setTo = element.GetAttribute(A_SetTo);
 
             switch (setTo) {
-
                 case "Text":
                     linkMenuType.SelectedIndex = 0;
-                    if (element.HasAttribute("Value"))
-                        textBoxTextValue.Text = element.GetAttribute("Value");
+                    if (element.HasAttribute(A_Value))
+                        textBoxTextValue.Text = element.GetAttribute(A_Value);
                     break;
 
                 case "Number":
@@ -79,7 +79,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
                     break;
 
                 case "Boolean":
-                    if (XmlConvert.ToBoolean(element.GetAttribute("Value")))
+                    if ((bool)element.AttributeValue(A_Value))
                         radioButtonValueTrue.Checked = true;
                     else
                         radioButtonValueFalse.Checked = true;
@@ -106,9 +106,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         }
 
         private void updateControls() {
-
             switch (linkMenuType.SelectedIndex) {
-
                 case 0:     // Text
                     textBoxTextValue.Visible = true;
                     numericValue.Visible = false;
@@ -154,7 +152,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
                     groupBoxValueBoolean.Visible = false;
                     operandValueOf.Visible = false;
                     break;
-
             }
         }
 
@@ -360,7 +357,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.groupBox2.ResumeLayout(false);
             this.groupBoxValueBoolean.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -413,27 +409,27 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
             switch (linkMenuType.SelectedIndex) {
                 case 0:
-                    element.SetAttribute("SetTo", "Text");
-                    element.SetAttribute("Value", textBoxTextValue.Text);
+                    element.SetAttribute(A_SetTo, "Text");
+                    element.SetAttribute(A_Value, textBoxTextValue.Text);
                     break;
 
                 case 1:
-                    element.SetAttribute("SetTo", "Number");
+                    element.SetAttribute(A_SetTo, "Number");
                     numericValue.Commit();
                     break;
 
                 case 2:
-                    element.SetAttribute("SetTo", "Boolean");
-                    element.SetAttribute("Value", XmlConvert.ToString(radioButtonValueTrue.Checked));
+                    element.SetAttribute(A_SetTo, "Boolean");
+                    element.SetAttribute(A_Value, radioButtonValueTrue.Checked);
                     break;
 
                 case 3:
-                    element.SetAttribute("SetTo", "ValueOf");
+                    element.SetAttribute(A_SetTo, "ValueOf");
                     operandValueOf.Commit();
                     break;
 
                 case 4:
-                    element.SetAttribute("SetTo", "Remove");
+                    element.SetAttribute(A_SetTo, "Remove");
                     break;
             }
 

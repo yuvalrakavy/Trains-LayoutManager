@@ -14,66 +14,25 @@ namespace LayoutManager.CommonUI.Controls {
         private LayoutManager.CommonUI.Controls.LinkMenu linkMenu1Boolean;
         private RadioButton radioButtonPropertyOrAttribute;
         private LayoutManager.CommonUI.Controls.OperandValueOf operandValueOf;
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-
-
-        string suffix = "";
-        XmlElement element;
-        string defaultAccess = "Property";
-        Type[] allowedTypes;
 
         #pragma warning disable nullable
         public Operand() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
         }
-        #pragma warning restore nullable
+#pragma warning restore nullable
 
         #region Properties
 
-        public string Suffix {
-            get {
-                return suffix;
-            }
+        public string Suffix { get; set; } = "";
 
-            set {
-                suffix = value;
-            }
-        }
-
-        public XmlElement Element {
-            get {
-                return element;
-            }
-
-            set {
-                element = value;
-            }
-        }
+        public XmlElement Element { get; set; }
 
         public XmlElement? OptionalElement => Element;
 
-        public string DefaultAccess {
-            get {
-                return defaultAccess;
-            }
+        public string DefaultAccess { get; set; } = "Property";
 
-            set {
-                defaultAccess = value;
-            }
-        }
-
-        public Type[] AllowedTypes {
-            get {
-                return allowedTypes;
-            }
-
-            set {
-                allowedTypes = value;
-            }
-        }
+        public Type[] AllowedTypes { get; set; }
 
         public bool ValueIsBoolean { get; set; }
 
@@ -85,9 +44,9 @@ namespace LayoutManager.CommonUI.Controls {
             if (Element == null)
                 throw new ArgumentException("Element not set");
 
-            operandValueOf.Element = element;
-            operandValueOf.AllowedTypes = allowedTypes;
-            operandValueOf.Suffix = suffix;
+            operandValueOf.Element = Element;
+            operandValueOf.AllowedTypes = AllowedTypes;
+            operandValueOf.Suffix = Suffix;
             operandValueOf.Initialize();
 
             if (ValueIsBoolean) {
@@ -102,19 +61,19 @@ namespace LayoutManager.CommonUI.Controls {
             else
                 linkMenu1Boolean.Visible = false;
 
-            string symbolAccess = Element.GetAttribute("Symbol" + suffix + "Access");
+            var symbolAccess = Element.GetAttribute($"Symbol{Suffix}Access");
 
             if (symbolAccess == null || symbolAccess == "")
-                symbolAccess = defaultAccess;
+                symbolAccess = DefaultAccess;
 
             if (symbolAccess == "Value") {
                 radioButtonValue.Checked = true;
 
-                if (Element.HasAttribute("Value" + suffix)) {
+                if (Element.HasAttribute($"Value{Suffix}")) {
                     if (ValueIsBoolean)
-                        linkMenu1Boolean.SelectedIndex = (XmlConvert.ToBoolean(Element.GetAttribute("Value" + suffix)) ? 0 : 1);
+                        linkMenu1Boolean.SelectedIndex = ((bool)Element.AttributeValue($"Value{Suffix}") ? 0 : 1);
                     else
-                        textBoxValue.Text = Element.GetAttribute("Value" + suffix);
+                        textBoxValue.Text = Element.GetAttribute($"Value{Suffix}");
                 }
                 else
                     textBoxValue.Text = "";
@@ -136,22 +95,20 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public bool Commit() {
-            string accessAttribute = "Symbol" + suffix + "Access";
+            var accessAttribute = $"Symbol{Suffix}Access";
             bool ok = true;
 
             if (radioButtonValue.Checked) {
                 Element.SetAttribute(accessAttribute, "Value");
 
-                if (ValueIsBoolean)
-                    Element.SetAttribute("Value" + suffix, XmlConvert.ToString(linkMenu1Boolean.SelectedIndex == 0));
-                else
-                    Element.SetAttribute("Value" + suffix, textBoxValue.Text);
-
-                if (ValueIsBoolean)
-                    Element.SetAttribute("Type" + suffix, "Booelan");
-                else
-                    Element.SetAttribute("Type" + suffix, "String");
-
+                if (ValueIsBoolean) {
+                    Element.SetAttribute($"Value{Suffix}", linkMenu1Boolean.SelectedIndex == 0);
+                    Element.SetAttribute($"Type{Suffix}", "Booelan");
+                }
+                else {
+                    Element.SetAttribute($"Value{Suffix}", textBoxValue.Text);
+                    Element.SetAttribute($"Type{Suffix}", "String");
+                }
             }
             else
                 operandValueOf.Commit();
@@ -234,7 +191,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Name = "Operand";
             this.Size = new System.Drawing.Size(200, 96);
             this.ResumeLayout(false);
-
         }
         #endregion
 

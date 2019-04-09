@@ -16,6 +16,7 @@ namespace LayoutManager.Tools.Dialogs {
         private Button buttonDeleteRegion;
         private Button buttonToggleRegionActivation;
         private Button buttonClose;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -23,10 +24,10 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly LayoutSelection selectedRegionSelection;
-        readonly LayoutSelectionLook selectedRegionLook = new LayoutSelectionLook(Color.DarkCyan);
-        ManualDispatchRegionInfo editedRegion = null;
-        bool editingNewRegion = false;
+        private readonly LayoutSelection selectedRegionSelection;
+        private readonly LayoutSelectionLook selectedRegionLook = new LayoutSelectionLook(Color.DarkCyan);
+        private ManualDispatchRegionInfo editedRegion = null;
+        private bool editingNewRegion = false;
 
         public ManualDispatchRegions() {
             //
@@ -213,7 +214,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "Manual Dispatch Regions";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.ManualDispatchRegions_Closing);
             this.ResumeLayout(false);
-
         }
         #endregion
 

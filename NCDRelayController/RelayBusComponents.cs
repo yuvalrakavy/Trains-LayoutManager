@@ -5,11 +5,10 @@ using LayoutManager.Model;
 
 #pragma warning disable IDE0051
 namespace LayoutManager.ControlComponents {
-
     [LayoutModule("NCD Relay Components")]
-    class NCDControlComponents : LayoutModuleBase {
-        ControlBusType relayBus = null;
-        ControlBusType inputBus = null;
+    internal class NCDControlComponents : LayoutModuleBase {
+        private ControlBusType relayBus = null;
+        private ControlBusType inputBus = null;
 
         [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='NCDRelayBus']")]
         private void getRelayBusBusType(LayoutEvent e) {
@@ -71,7 +70,6 @@ namespace LayoutManager.ControlComponents {
                 moduleTypeNames.Add("48_NCDContactsClosure");
             }
         }
-
 
         private ControlModuleType GetRelayModule(XmlElement parentElement, int nRelays) {
             var moduleType = new ControlModuleType(parentElement, nRelays.ToString() + "_NCDRelays", nRelays.ToString() + " Relays Module") {

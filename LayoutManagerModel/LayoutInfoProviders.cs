@@ -16,16 +16,17 @@ namespace LayoutManager.Model {
     /// Base class for information providers. Information providers wrap XML element and add symantics to them.
     /// </summary>
     public class LayoutInfo : LayoutXmlWrapper {
-        bool elementInComponentDocument;
-        XmlElement? container;
-        ModelComponent? component;
+        private const string A_Id = "ID";
+        private bool elementInComponentDocument;
+        private XmlElement? container;
+        private ModelComponent? component;
 
         [System.ComponentModel.Browsable(false)]
         public string ElementPath {
             get {
                 if (Ref != null)
                     return "//" + Element.Name + "[@Ref=\"" + Ref + "\"]";
-                return "//" + Element.Name + "[@ID=\"" + GetAttribute("ID") + "\"]";
+                return "//" + Element.Name + "[@ID=\"" + GetAttribute(A_Id) + "\"]";
             }
         }
 
@@ -120,7 +121,7 @@ namespace LayoutManager.Model {
         private static void attachNewElement(XmlElement container, String? parentPath, XmlElement element) {
             XmlElement parentElement = container;
 
-            element.SetAttribute("ID", XmlConvert.ToString(Guid.NewGuid()));
+            element.SetAttribute(A_Id, Guid.NewGuid());
 
             if (parentPath != null) {
                 XmlNodeList parentNodes = container.SelectNodes(parentPath);
@@ -204,7 +205,7 @@ namespace LayoutManager.Model {
 
         public FontStyle Style {
             get => AttributeValue(A_Style).Enum<FontStyle>() ?? FontStyle.Regular;
-            set => SetAttribute(A_Style, value.ToString());
+            set => SetAttribute(A_Style, value);
         }
 
         public string Name {
@@ -307,12 +308,12 @@ namespace LayoutManager.Model {
 
         public LayoutDrawingAnchorPoint AnchorPoint {
             get => AttributeValue(A_Anchor).Enum<LayoutDrawingAnchorPoint>() ?? LayoutDrawingAnchorPoint.Center;
-            set => SetAttribute(A_Anchor, value.ToString());
+            set => SetAttribute(A_Anchor, value);
         }
 
         public LayoutDrawingSide Side {
             get => AttributeValue(A_Side).Enum<LayoutDrawingSide>() ?? LayoutDrawingSide.Bottom;
-            set => SetAttribute(A_Side, value.ToString());
+            set => SetAttribute(A_Side, value);
         }
 
         public override string ToString() => GetOptionalAttribute(A_Title) ??  "No title";
@@ -347,13 +348,12 @@ namespace LayoutManager.Model {
 
             return "//Position[@Ref=\"" + positionStyleName + "\"]";
         }
-
     }
 
     public class LayoutTextInfo : LayoutInfo {
         private const string A_Visible = "Visible";
-        LayoutPositionInfo? positionProvider;
-        LayoutFontInfo? fontProvider;
+        private LayoutPositionInfo? positionProvider;
+        private LayoutFontInfo? fontProvider;
 
         public LayoutTextInfo(ModelComponent component, string elementName) : base(component, elementName) {
         }
@@ -432,7 +432,6 @@ namespace LayoutManager.Model {
                             }
                         }
                         else {
-
                             if (track is LayoutTurnoutTrackComponent t) {
                                 switch (t.Branch) {
                                     case LayoutComponentConnectionPoint.B:
@@ -501,7 +500,7 @@ namespace LayoutManager.Model {
             Hidden, AnotherBallon, Clicked, TrainDetected, Canceled,
         }
 
-        readonly TaskCompletionSource<TerminationReason> tcs = new TaskCompletionSource<TerminationReason>();
+        private readonly TaskCompletionSource<TerminationReason> tcs = new TaskCompletionSource<TerminationReason>();
 
         public LayoutBlockBallon() {
             FillColor = Color.LightYellow;
@@ -660,7 +659,6 @@ namespace LayoutManager.Model {
 
             set => base.FontElementPath = value;
         }
-
     }
 
     public class LayoutImageInfo : LayoutInfo {
@@ -733,12 +731,12 @@ namespace LayoutManager.Model {
 
         public ImageSizeUnit WidthSizeUnit {
             get => AttributeValue(A_WidthSizeUnit).Enum<ImageSizeUnit>() ?? ImageSizeUnit.GridUnits;
-            set => SetAttribute(A_WidthSizeUnit, value.ToString());
+            set => SetAttribute(A_WidthSizeUnit, value);
         }
 
         public ImageSizeUnit HeightSizeUnit {
             get => AttributeValue(A_HeightSideUnit).Enum<ImageSizeUnit>() ?? ImageSizeUnit.GridUnits;
-            set => SetAttribute(A_HeightSideUnit, value.ToString());
+            set => SetAttribute(A_HeightSideUnit, value);
         }
 
         public Size Offset {
@@ -752,37 +750,35 @@ namespace LayoutManager.Model {
 
         public ImageOriginMethod OriginMethod {
             get => AttributeValue(A_OriginMethod).Enum<ImageOriginMethod>() ?? ImageOriginMethod.TopLeft;
-            set => SetAttribute(A_OriginMethod, value.ToString());
+            set => SetAttribute(A_OriginMethod, value);
         }
 
         public ImageHorizontalAlignment HorizontalAlignment {
             get => AttributeValue(A_HorizontalAlignment).Enum<ImageHorizontalAlignment>() ?? ImageHorizontalAlignment.Left;
-            set => SetAttribute(A_HorizontalAlignment, value.ToString());
+            set => SetAttribute(A_HorizontalAlignment, value);
         }
 
         public ImageVerticalAlignment VerticalAlignment {
             get => AttributeValue(A_VerticalAlignment).Enum<ImageVerticalAlignment>() ?? ImageVerticalAlignment.Top;
-            set => SetAttribute(A_VerticalAlignment, value.ToString());
+            set => SetAttribute(A_VerticalAlignment, value);
         }
 
         public ImageFillEffect FillEffect {
             get => AttributeValue(A_ImageFillEffect).Enum<ImageFillEffect>() ?? ImageFillEffect.Stretch;
-            set => SetAttribute(A_ImageFillEffect, value.ToString());
+            set => SetAttribute(A_ImageFillEffect, value);
         }
 
         public RotateFlipType RotateFlipEffect {
             get => AttributeValue(A_RotateFlipEffect).Enum<RotateFlipType>() ?? RotateFlipType.RotateNoneFlipNone;
-            set => SetAttribute(A_RotateFlipEffect, value.ToString());
+            set => SetAttribute(A_RotateFlipEffect, value);
         }
 
         public string ImageCacheEventXml => "<Effect Type='" + RotateFlipEffect.ToString() + "' />";
 
         public bool ImageError {
-            get => XmlConvert.ToBoolean(GetOptionalAttribute(A_ImageError) ?? "false");
-
+            get => (bool?)AttributeValue(A_ImageError) ?? false;
             set => SetAttribute(A_ImageError, value, removeIf: false);
         }
     }
-
 }
 

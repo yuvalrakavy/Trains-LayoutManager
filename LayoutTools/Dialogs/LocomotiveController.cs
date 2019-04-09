@@ -38,7 +38,7 @@ namespace LayoutManager.Tools.Dialogs {
         private Button buttonForwardMenu;
         private IContainer components;
 
-        readonly TrainStateInfo train;
+        private readonly TrainStateInfo train;
 
         #pragma warning disable nullable
         public LocomotiveController(TrainStateInfo train) {
@@ -194,7 +194,6 @@ namespace LayoutManager.Tools.Dialogs {
                     LocomotiveFunctionInfo function = new LocomotiveFunctionInfo(functionElement);
 
                     if (function.Type == LocomotiveFunctionType.OnOff) {
-
                         if (!functions.TryGetValue(function.Name, out List<LocomotiveInfo> locos)) {
                             locos = new List<LocomotiveInfo>();
                             functions.Add(function.Name, locos);
@@ -283,7 +282,6 @@ namespace LayoutManager.Tools.Dialogs {
 
             if (EventManager.Event(new LayoutEvent("get-command-station-set-function-number-support", train).SetCommandStation(train)) is CommandStationSetFunctionNumberSupportInfo functionNumberSupport &&
                 functionNumberSupport.SetFunctionNumberSupport != SetFunctionNumberSupport.None) {
-
                 if (m.MenuItems.Count == 0)
                     addTrainFunctionNumberItems(m, functionNumberSupport);
                 else {
@@ -325,11 +323,11 @@ namespace LayoutManager.Tools.Dialogs {
 
         #region Menu Items
 
-        class LocomotiveFunctionMenuItem : MenuItem {
-            readonly LocomotiveFunctionInfo function;
-            readonly TrainStateInfo trainState;
-            readonly LocomotiveInfo loco;
-            Guid id;
+        private class LocomotiveFunctionMenuItem : MenuItem {
+            private readonly LocomotiveFunctionInfo function;
+            private readonly TrainStateInfo trainState;
+            private readonly LocomotiveInfo loco;
+            private Guid id;
 
             public LocomotiveFunctionMenuItem(TrainStateInfo trainState, LocomotiveInfo loco, string functionName, bool showFunctionName, bool addLocoName) {
                 this.trainState = trainState;
@@ -341,7 +339,6 @@ namespace LayoutManager.Tools.Dialogs {
                     this.Text = LocomotiveController.GetFunctionDescription(loco, functionName) + (addLocoName ? (" (" + loco.DisplayName + ")") : "");
                 else
                     this.Text = loco.DisplayName;
-
 
                 if (function.Type == LocomotiveFunctionType.OnOff) {
                     bool state = trainState.GetFunctionState(functionName, loco.Id, false);
@@ -372,7 +369,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        class LocomotiveFunctionNumberMenuItem : MenuItem {
+        private class LocomotiveFunctionNumberMenuItem : MenuItem {
             public LocomotiveFunctionNumberMenuItem(TrainStateInfo train, LocomotiveInfo loco, int functionNumber, bool canSetBooleanState) {
                 var function = loco.GetFunctionByNumber(functionNumber);
 
@@ -387,10 +384,10 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        class LocomotiveFunctionPresetMenuItem : MenuItem {
-            readonly LocomotiveFunctionInfo function;
-            readonly TrainStateInfo trainState;
-            readonly LocomotiveInfo loco;
+        private class LocomotiveFunctionPresetMenuItem : MenuItem {
+            private readonly LocomotiveFunctionInfo function;
+            private readonly TrainStateInfo trainState;
+            private readonly LocomotiveInfo loco;
 
             public LocomotiveFunctionPresetMenuItem(TrainStateInfo trainState, LocomotiveInfo loco, string functionName, bool showFunctionName, bool addLocoName) {
                 this.trainState = trainState;
@@ -668,7 +665,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Closed += new System.EventHandler(this.LocomotiveController_Closed);
             this.panelSpeedLimit.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -851,10 +847,10 @@ namespace LayoutManager.Tools.Dialogs {
                 Owner.Activate();
         }
 
-        class SpeedChangeMenuItem : MenuItem {
-            readonly MotionRampInfo ramp;
-            readonly int speed;
-            readonly TrainStateInfo train;
+        private class SpeedChangeMenuItem : MenuItem {
+            private readonly MotionRampInfo ramp;
+            private readonly int speed;
+            private readonly TrainStateInfo train;
 
             public SpeedChangeMenuItem(TrainStateInfo train, int speed, MotionRampInfo ramp) {
                 this.train = train;

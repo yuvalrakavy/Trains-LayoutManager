@@ -8,7 +8,6 @@ using LayoutManager.CommonUI;
 #pragma warning disable IDE0051
 #nullable enable
 namespace LayoutManager.ControlComponents {
-
     public interface IMarklinControlModuleSettingDialog {
         bool ClearUserActionRequiredFlag { get; }
 
@@ -16,9 +15,9 @@ namespace LayoutManager.ControlComponents {
     }
 
     [LayoutModule("Marklin Control Components")]
-    class MarklinControlComponents : LayoutModuleBase {
-        ControlBusType? motorola = null;
-        ControlBusType? s88bus = null;
+    internal class MarklinControlComponents : LayoutModuleBase {
+        private ControlBusType? motorola = null;
+        private ControlBusType? s88bus = null;
 
         [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='Motorola']")]
         private void getMotorolaBusType(LayoutEvent e) {
@@ -158,8 +157,8 @@ namespace LayoutManager.ControlComponents {
             }
         }
 
-        class MarklinKxxModuleSettingMenuItem : MenuItem {
-            readonly ControlModule module;
+        private class MarklinKxxModuleSettingMenuItem : MenuItem {
+            private readonly ControlModule module;
 
             public MarklinKxxModuleSettingMenuItem(ControlModule module) {
                 this.module = module;
@@ -186,6 +185,5 @@ namespace LayoutManager.ControlComponents {
                 }
             }
         }
-
     }
 }

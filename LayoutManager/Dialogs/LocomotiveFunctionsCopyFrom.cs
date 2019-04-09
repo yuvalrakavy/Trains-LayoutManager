@@ -13,12 +13,13 @@ namespace LayoutManager.Dialogs {
         private Button buttonOK;
         private Button buttonCancel;
         private LayoutManager.CommonUI.Controls.XmlQueryCombobox xmlQueryComboboxCopyFrom;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
 
-        LocomotiveTypeInfo selection = null;
+        private LocomotiveTypeInfo selection = null;
 
         public LocomotiveFunctionsCopyFrom(LocomotiveCatalogInfo catalog) {
             //
@@ -111,7 +112,6 @@ namespace LayoutManager.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Copy functions from";
             this.ResumeLayout(false);
-
         }
         #endregion
 

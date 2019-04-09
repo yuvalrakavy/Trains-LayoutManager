@@ -14,6 +14,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private ComboBox comboBoxFrom;
         private ComboBox comboBoxTo;
         private ComboBox comboBoxValue;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -21,7 +22,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly IIfTimeNode node;
+        private readonly IIfTimeNode node;
 
         public IfTimeDayOfWeekNode(string title, IIfTimeNode node) {
             //
@@ -186,7 +187,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.ShowInTaskbar = false;
             this.Text = "IfDayOfWeekNode";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -220,7 +220,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
         private void comboBoxFromOrTo_Changed(object sender, System.EventArgs e) {
             radioButtonRange.Checked = true;
-
         }
     }
 }

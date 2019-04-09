@@ -5,15 +5,12 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager {
-
     public class LayoutLocomotiveException : LayoutException {
-        readonly LocomotiveInfo loco;
-
         public LayoutLocomotiveException(LocomotiveInfo loco, string message) : base(message) {
-            this.loco = loco;
+            this.Locomotive = loco;
         }
 
-        public LocomotiveInfo Locomotive => loco;
+        public LocomotiveInfo Locomotive { get; }
     }
 
     #region Locomotive Manager Exception classess
@@ -25,74 +22,61 @@ namespace LayoutManager {
     }
 
     public class LocomotiveAddressAlreadyUsedException : LayoutLocomotiveException {
-        readonly TrainStateInfo usedBy;
-
         public LocomotiveAddressAlreadyUsedException(LocomotiveInfo loco, TrainStateInfo usedBy) :
             base(loco, "Locomotive " + loco.DisplayName + " address is already used by another locomotive (" + usedBy.DisplayName + ")") {
-            this.usedBy = usedBy;
+            this.UsedBy = usedBy;
         }
 
-        public TrainStateInfo UsedBy => usedBy;
+        public TrainStateInfo UsedBy { get; }
     }
 
     public class TrainLocomotiveAlreadyUsedException : LayoutLocomotiveException {
-        readonly TrainInCollectionInfo trainInCollection;
-        readonly TrainStateInfo trainState;
-
         public TrainLocomotiveAlreadyUsedException(LocomotiveInfo loco, TrainInCollectionInfo trainInCollection, TrainStateInfo trainState) :
             base(loco, "Locomotive '" + loco.DisplayName + "' which is member of '" + trainInCollection.DisplayName + "' is already used in train '" + trainState.DisplayName + "'") {
-            this.trainInCollection = trainInCollection;
-            this.trainState = trainState;
+            this.TrainInCollection = trainInCollection;
+            this.Train = trainState;
         }
 
-        public TrainInCollectionInfo TrainInCollection => trainInCollection;
+        public TrainInCollectionInfo TrainInCollection { get; }
 
-        public TrainStateInfo Train => trainState;
+        public TrainStateInfo Train { get; }
     }
 
     public class LocomotiveAlreadyUsedException : LayoutLocomotiveException {
-        readonly TrainStateInfo trainState;
-
         public LocomotiveAlreadyUsedException(LocomotiveInfo loco, TrainStateInfo trainState) :
             base(loco, "Locomotive '" + loco.DisplayName + "' is already used in train '" + trainState.DisplayName + "'") {
-            this.trainState = trainState;
+            this.Train = trainState;
         }
 
-        public TrainStateInfo Train => trainState;
+        public TrainStateInfo Train { get; }
     }
 
     public class TrainLocomotiveDuplicateAddressException : LayoutException {
-        readonly TrainInCollectionInfo trainInCollection;
-        readonly LocomotiveInfo loco1;
-        readonly LocomotiveInfo loco2;
-
         public TrainLocomotiveDuplicateAddressException(
             TrainInCollectionInfo trainInCollection, LocomotiveInfo loco1, LocomotiveInfo loco2) :
             base("Train " + trainInCollection.DisplayName + " members: '" + loco1.DisplayName + "' and '" + loco2.DisplayName + "' have the same address") {
-            this.trainInCollection = trainInCollection;
-            this.loco1 = loco1;
-            this.loco2 = loco2;
+            this.Train = trainInCollection;
+            this.Locomotive1 = loco1;
+            this.Locomotive2 = loco2;
         }
 
-        public TrainInCollectionInfo Train => trainInCollection;
+        public TrainInCollectionInfo Train { get; }
 
-        public LocomotiveInfo Locomotive1 => loco1;
+        public LocomotiveInfo Locomotive1 { get; }
 
-        public LocomotiveInfo Locomotive2 => loco2;
+        public LocomotiveInfo Locomotive2 { get; }
     }
 
     public abstract class ElementNotOnTrackException : LayoutException {
-        readonly XmlElement _element;
-
         protected ElementNotOnTrackException(XmlElement element, string message) : base(message) {
-            this._element = element;
+            this.Element = element;
         }
 
-        public XmlElement Element => _element;
+        public XmlElement Element { get; }
 
-        public bool IsLocomotive => _element.Name == "Locomotive";
+        public bool IsLocomotive => Element.Name == "Locomotive";
 
-        public bool IsTrain => _element.Name == "Train";
+        public bool IsTrain => Element.Name == "Train";
     }
 
     public class LocomotiveNotOnTrackException : ElementNotOnTrackException {
@@ -124,14 +108,12 @@ namespace LayoutManager {
     }
 
     public class LocomotiveNotCompatibleException : LayoutLocomotiveException {
-        readonly TrainCommonInfo train;
-
         public LocomotiveNotCompatibleException(LocomotiveInfo loco, TrainCommonInfo train) :
             base(loco, "Locomotive " + loco.DisplayName + " is not compatible with locomotives in train '" + train.DisplayName + "' (e.g. # of speed steps)") {
-            this.train = train;
+            this.Train = train;
         }
 
-        public TrainCommonInfo Train => train;
+        public TrainCommonInfo Train { get; }
     }
 
     public class LocomotiveNotManagedException : LayoutLocomotiveException {
@@ -145,26 +127,16 @@ namespace LayoutManager {
     #region Locomotive tracking related exceptions
 
     public class BlockEdgeCrossingException : LayoutException {
-        LayoutBlockEdgeBase _blockEdge;
-
         protected BlockEdgeCrossingException(LayoutBlockEdgeBase blockEdge, string message) :
             base(blockEdge, message) {
-            this._blockEdge = blockEdge;
+            this.BlockEdge = blockEdge;
         }
 
         protected BlockEdgeCrossingException(String message) :
             base(message) {
         }
 
-        public LayoutBlockEdgeBase BlockEdge {
-            get {
-                return _blockEdge;
-            }
-
-            protected set {
-                _blockEdge = value;
-            }
-        }
+        public LayoutBlockEdgeBase BlockEdge { get; protected set; }
     }
 
     public class UnexpectedBlockCrossingException : BlockEdgeCrossingException {
@@ -173,7 +145,6 @@ namespace LayoutManager {
         }
 
         public override string DefaultMessageType => "warning";
-
     }
 
     public class AmbiguousBlockCrossingException : BlockEdgeCrossingException {
@@ -189,13 +160,11 @@ namespace LayoutManager {
     }
 
     public class InconsistentLocomotiveBlockCrossingException : BlockEdgeCrossingException {
-        readonly TrainStateInfo trainState;
-
         public InconsistentLocomotiveBlockCrossingException(LayoutBlockEdgeBase blockEdge, TrainStateInfo trainState) :
             base("Locomotive seems to cross between blocks, however this locomotive is either not moving or moving in the other direction") {
             LayoutSelection selection = new LayoutSelection();
 
-            this.trainState = trainState;
+            this.LocomotiveState = trainState;
             BlockEdge = blockEdge;
 
             selection.Add(blockEdge);
@@ -205,38 +174,31 @@ namespace LayoutManager {
             Subject = selection;
         }
 
-        public TrainStateInfo LocomotiveState => trainState;
+        public TrainStateInfo LocomotiveState { get; }
     }
 
     public class LocomotiveMotionNotConsistentWithTurnoutSettingException : BlockEdgeCrossingException {
-        readonly TrainStateInfo train;
-        readonly LayoutBlock fromBlock;
-        readonly LayoutBlock toBlock;
-
         public LocomotiveMotionNotConsistentWithTurnoutSettingException(LayoutBlockEdgeBase blockEdge, TrainStateInfo train, LayoutBlock fromBlock, LayoutBlock toBlock) :
             base(blockEdge, "Train " + train.DisplayName + " motion is not consistent with the turnout settings, moving from " + fromBlock.Name + " to " + toBlock.Name) {
-            this.train = train;
-            this.fromBlock = fromBlock;
-            this.toBlock = toBlock;
+            this.Train = train;
+            this.FromBlock = fromBlock;
+            this.ToBlock = toBlock;
         }
 
-        public TrainStateInfo Train => train;
+        public TrainStateInfo Train { get; }
 
-        public LayoutBlock FromBlock => fromBlock;
+        public LayoutBlock FromBlock { get; }
 
-        public LayoutBlock ToBlock => toBlock;
+        public LayoutBlock ToBlock { get; }
     }
 
-
     public class TrainDetectionException : LayoutException {
-        readonly LayoutOccupancyBlock occupancyBlock;
-
         public TrainDetectionException(LayoutOccupancyBlock occupancyBlock, string message) :
             base(occupancyBlock, message) {
-            this.occupancyBlock = occupancyBlock;
+            this.OccupancyBlock = occupancyBlock;
         }
 
-        public LayoutOccupancyBlock OccupancyBlock => occupancyBlock;
+        public LayoutOccupancyBlock OccupancyBlock { get; }
     }
 
     public class UnexpectedTrainDetectionException : TrainDetectionException {
@@ -260,32 +222,28 @@ namespace LayoutManager {
     }
 
     public class DetectedRunawayTrainException : TrainDetectionException {
-        readonly TrainStateInfo train;
-
         public DetectedRunawayTrainException(LayoutOccupancyBlock occupancyBlock, TrainStateInfo train, string message)
             : base(occupancyBlock, message) {
-            this.train = train;
+            this.Train = train;
         }
 
         public DetectedRunawayTrainException(LayoutOccupancyBlock occupancyBlock, TrainStateInfo train)
             : base(occupancyBlock, "Unexpected train " + train.DisplayName + " detected in this block") {
-            this.train = train;
+            this.Train = train;
         }
 
-        public TrainStateInfo Train => train;
+        public TrainStateInfo Train { get; }
     }
 
     public class DetectedRunawayTrainAndFaultyTurnout : DetectedRunawayTrainException {
-        readonly IModelComponentIsMultiPath turnout;
-
         public DetectedRunawayTrainAndFaultyTurnout(LayoutOccupancyBlock occupancyBlock, TrainStateInfo train, IModelComponentIsMultiPath turnout)
             :
             base(occupancyBlock, train, "A faulty turnout caused unexpected train " + train.DisplayName + " to be detected in this block, check turnout") {
-            this.turnout = turnout;
+            this.Turnout = turnout;
             Subject = new LayoutSelection(new ModelComponent[] { occupancyBlock.BlockDefinintion, (ModelComponent)turnout });
         }
 
-        public IModelComponentIsMultiPath Turnout => turnout;
+        public IModelComponentIsMultiPath Turnout { get; }
     }
 
     #endregion
@@ -293,14 +251,12 @@ namespace LayoutManager {
     #region Image related rexception
 
     public class ImageLoadException : LayoutException {
-        readonly string imageFilename;
-
         public ImageLoadException(String imageFilename, object subject, Exception ex) :
           base(subject, "Loading image from " + imageFilename + " - " + ex.Message, ex) {
-            this.imageFilename = imageFilename;
+            this.ImageFilename = imageFilename;
         }
 
-        public string ImageFilename => imageFilename;
+        public string ImageFilename { get; }
     }
 
     #endregion
@@ -308,15 +264,13 @@ namespace LayoutManager {
     #region Origin editing related exceptions
 
     public class LayoutNoPathFromOriginException : LayoutException {
-        readonly TripPlanInfo tripPlan;
-
         public LayoutNoPathFromOriginException(LayoutBlockDefinitionComponent blockInfo, TripPlanInfo tripPlan) : base(blockInfo, "No path exists between this location and the trip plan's first destination") {
-            this.tripPlan = tripPlan;
+            this.TripPlan = tripPlan;
         }
 
         public LayoutBlockDefinitionComponent BlockInfo => (LayoutBlockDefinitionComponent)Subject;
 
-        public TripPlanInfo TripPlan => tripPlan;
+        public TripPlanInfo TripPlan { get; }
     }
 
     #endregion

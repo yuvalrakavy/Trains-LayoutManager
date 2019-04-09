@@ -13,6 +13,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
         private Button buttonCancel;
         private RadioButton radioButtonAdd;
         private Label labelTitle;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -120,7 +121,6 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.ShowInTaskbar = false;
             this.Text = "Add Module to Daisy Chain Bus";
             this.ResumeLayout(false);
-
         }
         #endregion
 

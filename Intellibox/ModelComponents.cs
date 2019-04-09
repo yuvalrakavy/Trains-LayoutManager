@@ -11,30 +11,27 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace Intellibox {
-
-    interface ICommandStationServices {
+    internal interface ICommandStationServices {
         void Event(LayoutEvent e);
 
         void Error(string message);
     }
 
     public class IntelliboxComponentInfo : LayoutInfo {
-        private const string A_Port = "Port";
         private const string A_PollingPeriod = "PollingPeriod";
         private const string A_AccessorySwitchingTime = "AccessorySwitchingTime";
         private const string A_OperationModeDebounceCount = "OperationModeDebounceCount";
         private const string A_DesignTimeDebounceCount = "DesignTimeDebounceCount";
-        readonly IntelliboxComponent _commandStation;
 
         public IntelliboxComponentInfo(IntelliboxComponent commandStation, XmlElement element) : base(element) {
-            this._commandStation = commandStation;
+            this.CommandStation = commandStation;
         }
 
-        public IntelliboxComponent CommandStation => _commandStation;
+        public IntelliboxComponent CommandStation { get; }
 
         public string Port {
-            get => Element.GetAttribute(A_Port);
-            set => Element.SetAttribute(A_Port, value);
+            get => Element.GetAttribute(LayoutIOServices.A_Port);
+            set => Element.SetAttribute(LayoutIOServices.A_Port, value);
         }
 
         public int PollingPeriod {
@@ -63,22 +60,19 @@ namespace Intellibox {
     /// </summary>
     #pragma warning disable IDE0051, IDE0060, IDE0052
     public class IntelliboxComponent : LayoutCommandStationComponent {
-        static readonly LayoutTraceSwitch traceIntellibox = new LayoutTraceSwitch("Intellibox", "Intellibox Command Station");
-        OutputManager commandStationManager;
+        private const string A_MinTimeBetweenSpeedSteps = "MinTimeBetweenSpeedSteps";
+        private static readonly LayoutTraceSwitch traceIntellibox = new LayoutTraceSwitch("Intellibox", "Intellibox Command Station");
+        private OutputManager commandStationManager;
 
-        ControlBus _motorolaBus = null;
-        ControlBus _S88bus = null;
-        byte _operationModeDebounceCount;
-        byte _designTimeDebounceCount;
+        private ControlBus _motorolaBus = null;
+        private ControlBus _S88bus = null;
 
-        const int queuePowerCommands = 0;               // Queue for power on/off etc.
-        const int queueLayoutSwitchingCommands = 1; // Queue for turnout/lights control commands
-        const int queueLocoCommands = 2;                // Queue for locomotive control commands
+        private const int queuePowerCommands = 0;               // Queue for power on/off etc.
+        private const int queueLayoutSwitchingCommands = 1; // Queue for turnout/lights control commands
+        private const int queueLocoCommands = 2;                // Queue for locomotive control commands
 
-        const int switchBatchSize = 10;             // Change the state of upto 10 solenoids
+        private const int switchBatchSize = 10;             // Change the state of upto 10 solenoids
         private const string A_ReadIntervalTimeout = "ReadIntervalTimeout";
-        private const string A_ReadTotalTimeoutConstant = "ReadTotalTimeoutConstant";
-        private const string A_BufferSize = "BufferSize";
 
         public IntelliboxComponent() {
             this.XmlDocument.LoadXml(
@@ -94,32 +88,19 @@ namespace Intellibox {
 
         public ControlBus MotorolaBus {
             get {
-                if (_motorolaBus == null)
-                    _motorolaBus = LayoutModel.ControlManager.Buses.GetBus(this, "Motorola");
-                return _motorolaBus;
+                return _motorolaBus ?? (_motorolaBus = LayoutModel.ControlManager.Buses.GetBus(this, "Motorola"));
             }
         }
 
         public ControlBus S88Bus {
             get {
-                if (_S88bus == null)
-                    _S88bus = LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS");
-                return _S88bus;
+                return _S88bus ?? (_S88bus = LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS"));
             }
         }
 
-        internal byte CachedOperationModeDebounceCount {
-            get => _operationModeDebounceCount;
+        internal byte CachedOperationModeDebounceCount { get; set; }
 
-            set => _operationModeDebounceCount = value;
-        }
-
-        internal byte CachedDesignTimeDebounceCount {
-            get => _designTimeDebounceCount;
-
-            set => _designTimeDebounceCount = value;
-        }
-
+        internal byte CachedDesignTimeDebounceCount { get; set; }
 
         #region Specific implementation to base class overrideble methods and properties
 
@@ -134,12 +115,12 @@ namespace Intellibox {
             CachedOperationModeDebounceCount = Info.OperationModeDebounceCount;
             CachedDesignTimeDebounceCount = Info.DesignTimeDebounceCount;
 
-            if (!Element.HasAttribute(A_ReadIntervalTimeout))
-                Element.SetAttribute(A_ReadIntervalTimeout, 100);
-            if (!Element.HasAttribute(A_ReadTotalTimeoutConstant))
-                Element.SetAttribute(A_ReadTotalTimeoutConstant, 5000);
-            if (!Element.HasAttribute(A_BufferSize))
-                Element.SetAttribute(A_BufferSize, 1);
+            if (!Element.HasAttribute(LayoutIOServices.A_ReadIntervalTimeout))
+                Element.SetAttribute(LayoutIOServices.A_ReadIntervalTimeout, 100);
+            if (!Element.HasAttribute(LayoutIOServices.A_ReadTotalTimeoutConstant))
+                Element.SetAttribute(LayoutIOServices.A_ReadTotalTimeoutConstant, 5000);
+            if (!Element.HasAttribute(LayoutIOServices.A_BufferSize))
+                Element.SetAttribute(LayoutIOServices.A_BufferSize, 1);
         }
 
         protected override void OnInitialize() {
@@ -148,7 +129,7 @@ namespace Intellibox {
             _motorolaBus = null;
             _S88bus = null;
 
-            commandStationManager = new OutputManager(A_ReadIntervalTimeout, 3);
+            commandStationManager = new OutputManager(Name, 3);
             commandStationManager.Start();
 
             commandStationManager.AddIdleCommand(new InterlliboxProcessEventsCommand(this, Info.PollingPeriod));
@@ -186,20 +167,16 @@ namespace Intellibox {
         #region Request Event Handlers
 
         [LayoutEvent("get-command-station-capabilities", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        void GetCommandStationCapabilities(LayoutEvent e) {
-            CommandStationCapabilitiesInfo cap = new CommandStationCapabilitiesInfo();
-            int minTimeBetweenSpeedSteps = 100;
-
-            if (Element.HasAttribute("MinTimeBetweenSpeedSteps"))
-                minTimeBetweenSpeedSteps = XmlConvert.ToInt32(Element.GetAttribute("MinTimeBetweenSpeedSteps"));
-
-            cap.MinTimeBetweenSpeedSteps = minTimeBetweenSpeedSteps;
+        private void GetCommandStationCapabilities(LayoutEvent e) {
+            CommandStationCapabilitiesInfo cap = new CommandStationCapabilitiesInfo {
+                MinTimeBetweenSpeedSteps = (int?)Element.AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 100
+            };
 
             e.Info = cap.Element;
         }
 
         [LayoutEvent("disconnect-power-request")]
-        void PowerDisconnectRequest(LayoutEvent e) {
+        private void PowerDisconnectRequest(LayoutEvent e) {
             if (e.Sender == null || e.Sender == this)
                 commandStationManager.AddCommand(queuePowerCommands, new IntelliboxPowerOffCommand(this));
 
@@ -207,13 +184,12 @@ namespace Intellibox {
         }
 
         [LayoutEvent("connect-power-request")]
-        void PowerConnectRequest(LayoutEvent e) {
+        private void PowerConnectRequest(LayoutEvent e) {
             if (e.Sender == null || e.Sender == this)
                 commandStationManager.AddCommand(queuePowerCommands, new IntelliboxPowerOnCommand(this));
 
             PowerOn();
         }
-
 
         protected override void OnConnectTrackPower(LayoutEvent e) {
             if (e.Sender == this)
@@ -224,7 +200,7 @@ namespace Intellibox {
 
         // Implement command events
         [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        Task ChangeTurnoutState(LayoutEvent e0) {
+        private Task ChangeTurnoutState(LayoutEvent e0) {
             var e = (LayoutEventInfoValueType<ControlConnectionPointReference, int>)e0;
             ControlConnectionPointReference connectionPointRef = e.Sender;
             int state = e.Info;
@@ -426,7 +402,6 @@ namespace Intellibox {
                 return false;
         }
 
-
         #region IEnumerable Members
 
         public IEnumerator<SOinfo> GetEnumerator() {
@@ -443,19 +418,17 @@ namespace Intellibox {
 
     #region Intellibox Command Classes
 
-    abstract class IntelliboxCommand : OutputCommandBase {
-        readonly IntelliboxComponent commandStation;
-        readonly Stream stream;
+    internal abstract class IntelliboxCommand : OutputCommandBase {
         public static LayoutTraceSwitch traceIntelliboxRaw = new LayoutTraceSwitch("Intellibox Raw data", "Intellibox raw input/output");
 
-        public IntelliboxCommand(IntelliboxComponent commandStation) {
-            this.commandStation = commandStation;
-            this.stream = commandStation.CommunicationStream;
+        protected IntelliboxCommand(IntelliboxComponent commandStation) {
+            this.CommandStation = commandStation;
+            this.Stream = commandStation.CommunicationStream;
         }
 
-        protected IntelliboxComponent CommandStation => commandStation;
+        protected IntelliboxComponent CommandStation { get; }
 
-        protected Stream Stream => stream;
+        protected Stream Stream { get; }
 
         protected void BeginCommand() {
             Stream.WriteByte((byte)'x');
@@ -565,11 +538,11 @@ namespace Intellibox {
             }
 
             if (message != null)
-                commandStation.Error(this.CommandStation, "Command: [" + ToString() + "] - " + message);
+                CommandStation.Error(this.CommandStation, "Command: [" + ToString() + "] - " + message);
         }
     }
 
-    struct ExternalLocomotiveEventInfo {
+    internal struct ExternalLocomotiveEventInfo {
         public int Unit;
         public byte LogicalSpeed;
         public byte FunctionMask;
@@ -585,9 +558,9 @@ namespace Intellibox {
         }
     }
 
-    class IntelliboxSetSOcommand : IntelliboxCommand {
-        readonly int soNumber;
-        readonly int soValue;
+    internal class IntelliboxSetSOcommand : IntelliboxCommand {
+        private readonly int soNumber;
+        private readonly int soValue;
 
         public IntelliboxSetSOcommand(IntelliboxComponent commandStation, int soNumber, int soValue) : base(commandStation) {
             this.soNumber = soNumber;
@@ -608,8 +581,7 @@ namespace Intellibox {
         public override string ToString() => "Set SO#" + soNumber + " to " + soValue;
     }
 
-
-    class IntelliboxPowerOnCommand : IntelliboxCommand {
+    internal class IntelliboxPowerOnCommand : IntelliboxCommand {
         public IntelliboxPowerOnCommand(IntelliboxComponent commandStation) : base(commandStation) {
         }
 
@@ -620,7 +592,7 @@ namespace Intellibox {
         public override string ToString() => "Power On";
     }
 
-    class IntelliboxPowerOffCommand : IntelliboxCommand {
+    internal class IntelliboxPowerOffCommand : IntelliboxCommand {
         public IntelliboxPowerOffCommand(IntelliboxComponent commandStation) : base(commandStation) {
         }
 
@@ -631,10 +603,9 @@ namespace Intellibox {
         public override string ToString() => "Power off";
     }
 
-    class IntelliboxTrackPowerOnCommand : IntelliboxCommand {
+    internal class IntelliboxTrackPowerOnCommand : IntelliboxCommand {
         public IntelliboxTrackPowerOnCommand(IntelliboxComponent commandStation) : base(commandStation) {
         }
-
 
         public override void Do() {
             Command(0xa7);
@@ -647,7 +618,7 @@ namespace Intellibox {
     /// <summary>
     /// Force all sensors that are not off to report event. Used to set the initial state
     /// </summary>
-    class IntelliboxForceSensorEventCommand : IntelliboxCommand {
+    internal class IntelliboxForceSensorEventCommand : IntelliboxCommand {
         public IntelliboxForceSensorEventCommand(IntelliboxComponent commandStation) : base(commandStation) {
         }
 
@@ -662,11 +633,11 @@ namespace Intellibox {
     /// Send command for checking whether any event is reported. If events are reported, interrogate for the event details
     /// and report those events to the main thread. This command is sent as idle command.
     /// </summary>
-    class InterlliboxProcessEventsCommand : IntelliboxCommand, IOutputIdlecommand {
-        ControlBus _motorolaBus = null;
-        ControlBus _S88bus = null;
-        byte[] previousReply = null;
-        readonly List<FeedbackData> feedbackData = new List<FeedbackData>();
+    internal class InterlliboxProcessEventsCommand : IntelliboxCommand, IOutputIdlecommand {
+        private ControlBus _motorolaBus = null;
+        private ControlBus _S88bus = null;
+        private byte[] previousReply = null;
+        private readonly List<FeedbackData> feedbackData = new List<FeedbackData>();
 
         public InterlliboxProcessEventsCommand(IntelliboxComponent commandStation, int pollingPeriod) : base(commandStation) {
             DefaultWaitPeriod = pollingPeriod;
@@ -674,17 +645,13 @@ namespace Intellibox {
 
         protected ControlBus MotorolaBus {
             get {
-                if (_motorolaBus == null)
-                    _motorolaBus = LayoutModel.ControlManager.Buses.GetBus(CommandStation, "Motorola");
-                return _motorolaBus;
+                return _motorolaBus ?? (_motorolaBus = LayoutModel.ControlManager.Buses.GetBus(CommandStation, "Motorola"));
             }
         }
 
         protected ControlBus S88Bus {
             get {
-                if (_S88bus == null)
-                    _S88bus = LayoutModel.ControlManager.Buses.GetBus(CommandStation, "S88BUS");
-                return _S88bus;
+                return _S88bus ?? (_S88bus = LayoutModel.ControlManager.Buses.GetBus(CommandStation, "S88BUS"));
             }
         }
 
@@ -814,9 +781,9 @@ namespace Intellibox {
 
         public override string ToString() => "Process Events";
 
-        class FeedbackData {
-            UInt16 currentData = 0;
-            readonly byte[] debounceCounters = new byte[16];
+        private class FeedbackData {
+            private UInt16 currentData = 0;
+            private readonly byte[] debounceCounters = new byte[16];
 
             /// <summary>
             /// Called when new data is read for this feedback decoder. It will set the debouncing counter for each
@@ -869,14 +836,14 @@ namespace Intellibox {
         #endregion
     }
 
-    abstract class IntelliboxAccessoryCommandBase : IntelliboxCommand {
+    internal abstract class IntelliboxAccessoryCommandBase : IntelliboxCommand {
         protected List<KeyValuePair<int, int>> listOfunitAndState = new List<KeyValuePair<int, int>>();
 
-        public IntelliboxAccessoryCommandBase(IntelliboxComponent commandStation, int unit, int state) : base(commandStation) {
+        protected IntelliboxAccessoryCommandBase(IntelliboxComponent commandStation, int unit, int state) : base(commandStation) {
             listOfunitAndState.Add(new KeyValuePair<int, int>(unit, 1 - state));
         }
 
-        public IntelliboxAccessoryCommandBase(IntelliboxComponent commandStation, List<SwitchingCommand> switchingCommands, int startAt, int count) : base(commandStation) {
+        protected IntelliboxAccessoryCommandBase(IntelliboxComponent commandStation, List<SwitchingCommand> switchingCommands, int startAt, int count) : base(commandStation) {
             for (int i = 0; i < count; i++) {
                 SwitchingCommand switchingCommand = switchingCommands[startAt + i];
                 int unit = switchingCommand.ControlPointReference.Module.Address + switchingCommand.ControlPointReference.Index;
@@ -886,7 +853,7 @@ namespace Intellibox {
         }
     }
 
-    class IntelliboxAccessoryCommand : IntelliboxAccessoryCommandBase {
+    internal class IntelliboxAccessoryCommand : IntelliboxAccessoryCommandBase {
         public IntelliboxAccessoryCommand(IntelliboxComponent commandStation, int unit, int state)
             : base(commandStation, unit, state) {
         }
@@ -929,7 +896,7 @@ namespace Intellibox {
         }
     }
 
-    class IntelliboxEndAccessoryCommand : IntelliboxAccessoryCommandBase {
+    internal class IntelliboxEndAccessoryCommand : IntelliboxAccessoryCommandBase {
         public IntelliboxEndAccessoryCommand(IntelliboxComponent commandStation, int unit, int state)
             : base(commandStation, unit, state) {
         }
@@ -969,11 +936,11 @@ namespace Intellibox {
         }
     }
 
-    class IntelliboxLocomotiveCommand : IntelliboxCommand {
-        readonly int unit;
-        readonly byte speed;
-        readonly byte direction = 0;
-        readonly byte lights = 0;
+    internal class IntelliboxLocomotiveCommand : IntelliboxCommand {
+        private readonly int unit;
+        private readonly byte speed;
+        private readonly byte direction = 0;
+        private readonly byte lights = 0;
 
         public IntelliboxLocomotiveCommand(IntelliboxComponent commandStation, int unit, int logicalSpeed, LocomotiveOrientation direction, bool lights) : base(commandStation) {
             this.unit = unit;
@@ -1003,9 +970,9 @@ namespace Intellibox {
         public override string ToString() => "Locomotive: " + unit + " speed: " + speed + " direction: " + ((direction & 0x20) != 0 ? "forward" : "backward") + " lights: " + (lights != 0 ? "On" : "Off");
     }
 
-    class IntelliboxLocomotiveFunctionsCommand : IntelliboxCommand {
-        readonly int unit;
-        readonly byte functionMask;
+    internal class IntelliboxLocomotiveFunctionsCommand : IntelliboxCommand {
+        private readonly int unit;
+        private readonly byte functionMask;
 
         public IntelliboxLocomotiveFunctionsCommand(IntelliboxComponent commandStation, int unit, byte functionMask) : base(commandStation) {
             this.unit = unit;

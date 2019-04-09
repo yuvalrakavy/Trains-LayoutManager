@@ -25,11 +25,12 @@ namespace LayoutManager.Dialogs {
         private Panel panel;
         private Label label2;
         private NumericUpDown numericUpDownSpeed;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly LayoutManager.View.LocomotivePainter locoPainter = new LayoutManager.View.LocomotivePainter();
+        private readonly LayoutManager.View.LocomotivePainter locoPainter = new LayoutManager.View.LocomotivePainter();
 
         public TestLocoPainter() {
             //
@@ -42,7 +43,7 @@ namespace LayoutManager.Dialogs {
             radioButtonOrientationForward.Checked = true;
         }
 
-        RadioButton findRadioButton(Control where, string name) {
+        private RadioButton findRadioButton(Control where, string name) {
             if (where.Controls.Count == 0)
                 return null;
 
@@ -58,7 +59,7 @@ namespace LayoutManager.Dialogs {
             return null;
         }
 
-        object GetRadio(String genericName, Type enumType) {
+        private object GetRadio(String genericName, Type enumType) {
             String[] valueNames = Enum.GetNames(enumType);
             Array values = Enum.GetValues(enumType);
 
@@ -308,7 +309,6 @@ namespace LayoutManager.Dialogs {
             this.groupBox3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpeed)).EndInit();
             this.ResumeLayout(false);
-
         }
         #endregion
 

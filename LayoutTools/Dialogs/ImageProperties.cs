@@ -42,6 +42,7 @@ namespace LayoutManager.Tools.Dialogs {
         private LayoutManager.CommonUI.Controls.LinkMenu linkMenuHorizontalAlignment;
         private Label label8;
         private LayoutManager.CommonUI.Controls.LinkMenu linkMenuRotateFlip;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -49,17 +50,15 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void EndOfDesignerVariables() { }
 
-        readonly LayoutXmlInfo xmlInfo;
-
         public ImageProperties(ModelComponent component) {
             //
             // Required for Windows Form Designer support
             //
             InitializeComponent();
 
-            this.xmlInfo = new LayoutXmlInfo(component);
+            this.XmlInfo = new LayoutXmlInfo(component);
 
-            LayoutImageInfo image = new LayoutImageInfo(xmlInfo.Element);
+            LayoutImageInfo image = new LayoutImageInfo(XmlInfo.Element);
 
             textBoxImageFile.Text = image.ImageFile;
 
@@ -109,7 +108,7 @@ namespace LayoutManager.Tools.Dialogs {
             updateButtons();
         }
 
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         private void updateButtons() {
             radioButtonHeightOriginal.Text = "Maintain original image aspect ratio";
@@ -129,7 +128,6 @@ namespace LayoutManager.Tools.Dialogs {
                 radioButtonWidthOriginal.Text = "Original image width";
             }
         }
-
 
         /// <summary>
         /// Clean up any resources being used.
@@ -596,7 +594,6 @@ namespace LayoutManager.Tools.Dialogs {
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHorizontalOffset)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -607,7 +604,7 @@ namespace LayoutManager.Tools.Dialogs {
                 return;
             }
 
-            LayoutImageInfo image = new LayoutImageInfo(xmlInfo.Element) {
+            LayoutImageInfo image = new LayoutImageInfo(XmlInfo.Element) {
                 ImageFile = textBoxImageFile.Text
             };
 

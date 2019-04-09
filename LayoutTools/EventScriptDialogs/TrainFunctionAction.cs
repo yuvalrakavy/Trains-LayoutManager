@@ -18,6 +18,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
         private RadioButton radioButtonToggle;
         private RadioButton radioButtonOn;
         private RadioButton radioButtonOff;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -25,7 +26,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly XmlElement element;
+        private readonly XmlElement element;
 
         public TrainFunctionAction(XmlElement element) {
             //
@@ -213,7 +214,6 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.Text = "Train Function";
             this.groupBoxFunctionState.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 

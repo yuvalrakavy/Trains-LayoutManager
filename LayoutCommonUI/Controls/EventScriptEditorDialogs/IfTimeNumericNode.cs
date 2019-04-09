@@ -14,6 +14,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private NumericUpDown numericUpDownValue;
         private NumericUpDown numericUpDownFrom;
         private NumericUpDown numericUpDownTo;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -21,7 +22,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly IIfTimeNode node;
+        private readonly IIfTimeNode node;
 
         public IfTimeNumericNode(string title, IIfTimeNode node, int minValue, int maxValue) {
             //
@@ -175,7 +176,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFrom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTo)).EndInit();
             this.ResumeLayout(false);
-
         }
         #endregion
 

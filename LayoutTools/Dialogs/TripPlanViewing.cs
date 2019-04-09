@@ -11,6 +11,7 @@ namespace LayoutManager.Tools.Dialogs {
         private LayoutManager.Tools.Controls.TripPlanEditor tripPlanEditor;
         private Button buttonSave;
         private Button buttonClose;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -18,7 +19,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly TripPlanInfo tripPlan;
+        private readonly TripPlanInfo tripPlan;
 
         public TripPlanViewing(TrainStateInfo train, TripPlanInfo tripPlan, int trainTargetWaypointIndex) {
             //
@@ -112,7 +113,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "TripPlanViewing";
             this.Closed += new System.EventHandler(this.TripPlanViewing_Closed);
             this.ResumeLayout(false);
-
         }
         #endregion
 

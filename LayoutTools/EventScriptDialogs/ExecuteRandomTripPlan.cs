@@ -7,6 +7,10 @@ namespace LayoutManager.Tools.EventScriptDialogs {
     /// Summary description for ExecuteRandomTripPlan.
     /// </summary>
     public class ExecuteRandomTripPlan : Form {
+        private const string A_Symbol = "Symbol";
+        private const string A_SelectCircularTripPlans = "SelectCircularTripPlans";
+        private const string A_ReversedTripPlanSelection = "ReversedTripPlanSelection";
+        private const string E_Filter = "Filter";
         private TextBox textBoxCondition;
         private Button buttonConditionEdit;
         private Label label1;
@@ -19,17 +23,16 @@ namespace LayoutManager.Tools.EventScriptDialogs {
         private Button buttonOK;
         private Label label2;
         private ComboBox comboBoxSymbol;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
 
-        private void endOfDesignerVariables() { }
+        private readonly XmlElement element;
 
-        readonly XmlElement element;
-
-        XmlElement newFilterElement = null;
-        bool conditionEdited = false;
+        private XmlElement newFilterElement = null;
+        private bool conditionEdited = false;
 
         public ExecuteRandomTripPlan(XmlElement element) {
             //
@@ -39,15 +42,13 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
             this.element = element;
 
-            if (element.HasAttribute("Symbol"))
-                comboBoxSymbol.Text = element.GetAttribute("Symbol");
+            if (element.HasAttribute(A_Symbol))
+                comboBoxSymbol.Text = element.GetAttribute(A_Symbol);
 
-            if (element.HasAttribute("SelectCircularTripPlans"))
-                checkBoxCircularMayBeSelected.Checked = XmlConvert.ToBoolean(element.GetAttribute("SelectCircularTripPlans"));
+            checkBoxCircularMayBeSelected.Checked = (bool?)element.AttributeValue(A_SelectCircularTripPlans) ?? false;
 
-            if (element.HasAttribute("ReversedTripPlanSelection")) {
-                switch (element.GetAttribute("ReversedTripPlanSelection")) {
-
+            if (element.HasAttribute(A_ReversedTripPlanSelection)) {
+                switch (element.GetAttribute(A_ReversedTripPlanSelection)) {
                     case "Yes":
                         radioButtonReversedSelected.Checked = true;
                         break;
@@ -65,7 +66,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             else
                 radioButtonReversedMayBeSelected.Checked = true;
 
-            updateConditionDescription(element["Filter"]);
+            updateConditionDescription(element[E_Filter]);
         }
 
         private void updateConditionDescription(XmlElement conditionElement) {
@@ -239,7 +240,6 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.Text = "Execute Random Trip-plan";
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -251,7 +251,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             }
 
             if (conditionEdited) {
-                XmlElement filterElement = element["Filter"];
+                XmlElement filterElement = element[E_Filter];
 
                 if (filterElement != null)
                     element.RemoveChild(filterElement);
@@ -263,8 +263,8 @@ namespace LayoutManager.Tools.EventScriptDialogs {
                 }
             }
 
-            element.SetAttribute("Symbol", comboBoxSymbol.Text);
-            element.SetAttribute("SelectCircularTripPlans", XmlConvert.ToString(checkBoxCircularMayBeSelected.Checked));
+            element.SetAttribute(A_Symbol, comboBoxSymbol.Text);
+            element.SetAttribute(A_SelectCircularTripPlans, checkBoxCircularMayBeSelected.Checked);
 
             string v;
 
@@ -275,7 +275,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             else
                 v = "IfNoAlternative";
 
-            element.SetAttribute("ReversedTripPlanSelection", v);
+            element.SetAttribute(A_ReversedTripPlanSelection, v);
 
             DialogResult = DialogResult.OK;
             Close();
@@ -285,12 +285,12 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             XmlElement filterElement;
 
             if (newFilterElement == null) {
-                filterElement = element["Filter"];
+                filterElement = element[E_Filter];
 
                 if (filterElement == null) {
                     XmlDocument dummyDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
-                    filterElement = dummyDoc.CreateElement("Filter");
+                    filterElement = dummyDoc.CreateElement(E_Filter);
                     dummyDoc.AppendChild(filterElement);
                 }
             }

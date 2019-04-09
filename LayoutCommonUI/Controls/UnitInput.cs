@@ -10,6 +10,7 @@ namespace LayoutManager.CommonUI.Controls {
     public class UnitInput : System.Windows.Forms.UserControl {
         private TextBox textBoxValue;
         private LayoutManager.CommonUI.Controls.LinkMenu linkMenuUnits;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -17,9 +18,9 @@ namespace LayoutManager.CommonUI.Controls {
 
         private void endOfDesignerVariables() { }
 
-        readonly ArrayList units = new ArrayList();
-        Unit currentUnit = null;
-        bool unitDefinitionUpdated = false;
+        private readonly ArrayList units = new ArrayList();
+        private Unit currentUnit = null;
+        private bool unitDefinitionUpdated = false;
 
         public UnitInput() {
             // This call is required by the Windows.Forms Form Designer.
@@ -62,7 +63,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
 
             set {
-                if (value == true)
+                if (value)
                     textBoxValue.Text = "";
             }
         }
@@ -82,7 +83,7 @@ namespace LayoutManager.CommonUI.Controls {
             unitDefinitionUpdated = true;
         }
 
-        void SelectUnit(Unit u) {
+        private void SelectUnit(Unit u) {
             double v = 0;
 
             if (!IsEmpty)
@@ -180,7 +181,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Name = "UnitInput";
             this.Size = new System.Drawing.Size(104, 24);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -188,11 +188,9 @@ namespace LayoutManager.CommonUI.Controls {
             SelectUnit(linkMenuUnits.SelectedIndex);
         }
 
-        class Unit {
-            readonly string unitName;
-            readonly double factor;
-            readonly double offset;
-            readonly int index;
+        private class Unit {
+            private readonly double factor;
+            private readonly double offset;
 
             /// <summary>
             /// Declare a new unit
@@ -201,19 +199,19 @@ namespace LayoutManager.CommonUI.Controls {
             /// <param name="factor">factor for converting value in unit to neutral value</param>
             /// <param name="offset">offset fro converting value in unit to neutral value</param>
             public Unit(string unitName, double factor, double offset, int index) {
-                this.unitName = unitName;
+                this.UnitName = unitName;
                 this.factor = factor;
                 this.offset = offset;
-                this.index = index;
+                this.Index = index;
             }
 
             public double ToNeutralValue(double valueInUnit) => valueInUnit * factor + offset;
 
             public double ToUnitValue(double neutralValue) => (neutralValue - offset) / factor;
 
-            public string UnitName => unitName;
+            public string UnitName { get; }
 
-            public int Index => index;
+            public int Index { get; }
         }
     }
 }

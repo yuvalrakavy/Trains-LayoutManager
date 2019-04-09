@@ -17,7 +17,7 @@ namespace LayoutManager.CommonUI.Dialogs {
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly LayoutTextInfo textProvider;
+        private readonly LayoutTextInfo textProvider;
 
         public TextProviderSettings(LayoutXmlInfo xmlInfo, LayoutTextInfo textProvider) {
             //
@@ -116,7 +116,6 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Appearance";
             this.ResumeLayout(false);
-
         }
         #endregion
 

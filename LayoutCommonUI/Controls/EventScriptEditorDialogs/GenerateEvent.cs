@@ -22,6 +22,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private Button buttonDeleteOption;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -29,8 +30,8 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
         private void endOfDesignerVariables() { }
 
-        readonly XmlElement element;
-        readonly XmlElement optionsElement;
+        private readonly XmlElement element;
+        private readonly XmlElement optionsElement;
 
         public GenerateEvent(XmlElement element) {
             //
@@ -280,7 +281,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -354,21 +354,19 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             buttonEditOption.PerformClick();
         }
 
-        class OptionItem : ListViewItem {
-            readonly XmlElement optionElement;
-
+        private class OptionItem : ListViewItem {
             public OptionItem(XmlElement optionElement) {
-                this.optionElement = optionElement;
+                this.Element = optionElement;
                 SubItems.Add("");
                 Update();
             }
 
             public void Update() {
-                Text = optionElement.GetAttribute("Name");
-                SubItems[1].Text = LayoutEventScriptEditorTreeNode.GetOperandDescription(optionElement, "Option");
+                Text = Element.GetAttribute("Name");
+                SubItems[1].Text = LayoutEventScriptEditorTreeNode.GetOperandDescription(Element, "Option");
             }
 
-            public XmlElement Element => optionElement;
+            public XmlElement Element { get; }
         }
     }
 }

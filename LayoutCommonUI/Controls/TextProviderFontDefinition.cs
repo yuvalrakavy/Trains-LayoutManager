@@ -15,15 +15,14 @@ namespace LayoutManager.CommonUI.Controls {
         private RadioButton radioButtonStandardFont;
         private Label labelFontDescription;
         private Button buttonCustomFontSettings;
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
         private LayoutManager.CommonUI.Controls.LayoutInfosComboBox layoutInfosComboBoxFonts;
         private System.Windows.Forms.FontDialog fontDialogCustomSetting;
-
-        string customFontElementName = "Font";
-        LayoutXmlInfo xmlInfo;
+        private LayoutXmlInfo xmlInfo;
 
         public TextProviderFontDefinition() {
             // This call is required by the Windows.Forms Form Designer.
@@ -50,15 +49,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public string CustomFontElementName {
-            get {
-                return customFontElementName;
-            }
-
-            set {
-                customFontElementName = value;
-            }
-        }
+        public string CustomFontElementName { get; set; } = "Font";
 
         public LayoutFontInfo FontProvider {
             get {
@@ -82,12 +73,12 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        void updateDependencies() {
+        private void updateDependencies() {
             buttonCustomFontSettings.Enabled = radioButtonCustomFont.Checked;
             layoutInfosComboBoxFonts.Enabled = radioButtonStandardFont.Checked;
         }
 
-        LayoutFontInfo getCustomFont() {
+        private LayoutFontInfo getCustomFont() {
             LayoutFontInfo fontProvider = new LayoutFontInfo(xmlInfo.DocumentElement, CustomFontElementName);
 
             // If font element did not exist, create it
@@ -193,7 +184,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.Size = new System.Drawing.Size(320, 112);
             this.groupBoxFont.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -218,7 +208,5 @@ namespace LayoutManager.CommonUI.Controls {
         private void radioButtonCustomFont_CheckedChanged(object sender, System.EventArgs e) {
             updateDependencies();
         }
-
-
     }
 }

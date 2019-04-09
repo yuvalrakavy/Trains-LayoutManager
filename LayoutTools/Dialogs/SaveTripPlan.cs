@@ -14,6 +14,7 @@ namespace LayoutManager.Tools.Dialogs {
         private Label label2;
         private Button buttonSave;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -141,7 +142,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Save Trip-Plan";
             this.ResumeLayout(false);
-
         }
         #endregion
 

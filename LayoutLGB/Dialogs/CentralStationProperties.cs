@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager;
+using LayoutManager.Components;
 using LayoutManager.Model;
 
 namespace LayoutLGB.Dialogs {
@@ -12,21 +13,22 @@ namespace LayoutLGB.Dialogs {
     /// Summary description for CentralStationProperties.
     /// </summary>
     public class CentralStationProperties : Form {
+        private const string A_XbusId = "XbusID";
         private ComboBox comboBoxPort;
         private Label label1;
         private Label label2;
         private NumericUpDown numericUpDownXbusID;
         private Button buttonOK;
         private Button buttonCancel;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        readonly MTScentralStation component;
+        private readonly MTScentralStation component;
         private LayoutManager.CommonUI.Controls.LayoutEmulationSetup layoutEmulationSetup;
         private LayoutManager.CommonUI.Controls.NameDefinition nameDefinition;
         private Button buttonCOMsettings;
-        readonly LayoutXmlInfo xmlInfo;
 
         public CentralStationProperties(MTScentralStation component) {
             //
@@ -35,18 +37,17 @@ namespace LayoutLGB.Dialogs {
             InitializeComponent();
 
             this.component = component;
-            this.xmlInfo = new LayoutXmlInfo(component);
+            this.XmlInfo = new LayoutXmlInfo(component);
 
-            nameDefinition.XmlInfo = this.xmlInfo;
+            nameDefinition.XmlInfo = this.XmlInfo;
 
-            layoutEmulationSetup.Element = xmlInfo.DocumentElement;
+            layoutEmulationSetup.Element = XmlInfo.DocumentElement;
 
-            comboBoxPort.Text = xmlInfo.DocumentElement.GetAttribute("Port");
-            if (xmlInfo.DocumentElement.HasAttribute("XBusID"))
-                numericUpDownXbusID.Value = XmlConvert.ToDecimal(xmlInfo.DocumentElement.GetAttribute("XbusID"));
+            comboBoxPort.Text = XmlInfo.DocumentElement.GetAttribute(LayoutIOServices.A_Port);
+            numericUpDownXbusID.Value = (decimal?)XmlInfo.DocumentElement.AttributeValue(A_XbusId) ?? 0;
         }
 
-        public LayoutXmlInfo XmlInfo => xmlInfo;
+        public LayoutXmlInfo XmlInfo { get; }
 
         /// <summary>
         /// Clean up any resources being used.
@@ -196,13 +197,12 @@ namespace LayoutLGB.Dialogs {
             this.Text = "LGB Central Station Properties";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownXbusID)).EndInit();
             this.ResumeLayout(false);
-
         }
         #endregion
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
             if (nameDefinition.Commit()) {
-                LayoutTextInfo myName = new LayoutTextInfo(xmlInfo.DocumentElement, "Name");
+                LayoutTextInfo myName = new LayoutTextInfo(XmlInfo.DocumentElement, "Name");
 
                 IEnumerable<IModelComponentIsCommandStation> commandStations = LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All);
 
@@ -222,21 +222,20 @@ namespace LayoutLGB.Dialogs {
 
             // Commit
 
-            xmlInfo.DocumentElement.SetAttribute("Port", comboBoxPort.Text);
-            xmlInfo.DocumentElement.SetAttribute("XbusID", XmlConvert.ToString(numericUpDownXbusID.Value));
+            XmlInfo.DocumentElement.SetAttribute(LayoutIOServices.A_Port, comboBoxPort.Text);
+            XmlInfo.DocumentElement.SetAttribute(A_XbusId, (int)numericUpDownXbusID.Value);
             layoutEmulationSetup.Commit();
 
             DialogResult = DialogResult.OK;
         }
 
         private void buttonCOMsettings_Click(object sender, EventArgs e) {
-            string modeString = xmlInfo.DocumentElement["ModeString"].InnerText;
+            string modeString = XmlInfo.DocumentElement["ModeString"].InnerText;
 
             LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
 
             if (d.ShowDialog(this) == DialogResult.OK)
-                xmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
-
+                XmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
         }
     }
 }

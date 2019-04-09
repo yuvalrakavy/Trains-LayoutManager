@@ -13,7 +13,6 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager {
-
     #region Interfaces for various services
 
     public interface ILayoutController {
@@ -60,7 +59,6 @@ namespace LayoutManager {
     }
 
     public interface ILayoutFrameWindow : IWin32Window, IObjectHasId {
-
     }
 
     public static class LayoutController {
@@ -145,7 +143,6 @@ namespace LayoutManager {
     }
 
     public interface ILayoutTopologyServices {
-
         /// <summary>
         /// Find the TrackEdge (a combination of a track component and a connection point) that connects
         /// to a given track edge. First looking for track in the same layer. If one cannot be found, look
@@ -207,7 +204,6 @@ namespace LayoutManager {
         /// <param name="routeOwner">The train/manual dispatch region for which the route is calculated</param>
         /// <returns>BestRoute object describing the best route and its quality</returns>
         BestRoute FindBestRoute(ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, TripPlanDestinationInfo destination, Guid routeOwner, bool trainStopping);
-
     }
 
     #endregion
@@ -219,7 +215,6 @@ namespace LayoutManager {
     /// manager. For example, a block object
     /// </summary>
     public interface ILayoutLockResource : IModelComponentHasId {
-
         /// <summary>
         /// Return true if resource is ready to be locked.
         /// </summary>
@@ -345,7 +340,6 @@ namespace LayoutManager {
     /// Describe one possible route from an origin to a destination.
     /// </summary>
     public interface ITripRoute {
-
         /// <summary>
         /// Return the number switch states in the route.
         /// </summary>
@@ -463,7 +457,6 @@ namespace LayoutManager {
     /// undo the command
     /// </summary>
     public interface ILayoutCommand {
-
         /// <summary>
         /// Preform the operation of this command 
         /// </summary>
@@ -494,7 +487,6 @@ namespace LayoutManager {
     /// contained commands are done or undone in one operation
     /// </summary>
     public interface ILayoutCompoundCommand : ILayoutCommand {
-
         /// <summary>
         /// Add a command to the compund command
         /// </summary>

@@ -13,6 +13,7 @@ namespace LayoutManager.Tools.Dialogs {
         private NumericUpDown numericUpDownTargetSpeed;
         private Label labelLowerLimit;
         private Label labelUpperLimit;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -20,8 +21,8 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void endOfDesignerVariables() { }
 
-        int targetSpeed;
-        readonly TrainCommonInfo train;
+        private int targetSpeed;
+        private readonly TrainCommonInfo train;
 
         public GetTargetSpeed(TrainCommonInfo train) {
             //
@@ -144,7 +145,6 @@ namespace LayoutManager.Tools.Dialogs {
             ((System.ComponentModel.ISupportInitialize)(this.trackBarTargetSpeed)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTargetSpeed)).EndInit();
             this.ResumeLayout(false);
-
         }
         #endregion
 

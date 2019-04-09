@@ -5,9 +5,10 @@ using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI.Controls {
     public partial class TrainLengthDiagram : UserControl {
-        TrainLength _trainLength = TrainLength.Standard;
-        TrainLengthComparison _comparison = TrainLengthComparison.None;
-        readonly int[] divMarks = new int[] {
+        private TrainLength _trainLength = TrainLength.Standard;
+        private TrainLengthComparison _comparison = TrainLengthComparison.None;
+
+        private readonly int[] divMarks = new int[] {
             36, 37+27, 37+2*27, 37+3*27, 37+4*27
         };
 
@@ -93,7 +94,6 @@ namespace LayoutManager.CommonUI.Controls {
 
             PaintTrain(g, 8);
             PaintDividers(g);
-
         }
 
         private void PaintTrain(Graphics g, int horizontalMargin) {

@@ -10,6 +10,9 @@ namespace LayoutManager.Dialogs {
     /// Dialog box for creating/editing locomotive function template
     /// </summary>
     public class StandardFunction : Form {
+        private const string A_Type = "Type";
+        private const string A_Name = "Name";
+        private const string A_Description = "Description";
         private Label label1;
         private Label label2;
         private ComboBox comboBoxFunctionType;
@@ -22,7 +25,7 @@ namespace LayoutManager.Dialogs {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        readonly XmlElementWrapper functionInfoElement;
+        private readonly XmlElementWrapper functionInfoElement;
 
         #pragma warning disable nullable
         public StandardFunction(XmlElement rawFunctionInfoElement) {
@@ -33,12 +36,11 @@ namespace LayoutManager.Dialogs {
 
             this.functionInfoElement = new XmlElementWrapper(rawFunctionInfoElement);
 
-            comboBoxFunctionType.SelectedIndex = (int)(functionInfoElement.AttributeValue("Type").Enum<LocomotiveFunctionType>() ?? LocomotiveFunctionType.Trigger);
-            textBoxFunctionName.Text = (string?)functionInfoElement.AttributeValue("Name") ?? "";
-            textBoxDescription.Text = (string?)functionInfoElement.AttributeValue("Description") ?? "";
+            comboBoxFunctionType.SelectedIndex = (int)(functionInfoElement.AttributeValue(A_Type).Enum<LocomotiveFunctionType>() ?? LocomotiveFunctionType.Trigger);
+            textBoxFunctionName.Text = (string?)functionInfoElement.AttributeValue(A_Name) ?? "";
+            textBoxDescription.Text = (string?)functionInfoElement.AttributeValue(A_Description) ?? "";
         }
         #pragma warning restore nullable
-
 
         #region Windows Form Designer generated code
         /// <summary>
@@ -148,7 +150,6 @@ namespace LayoutManager.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Locomotive Function Template";
             this.ResumeLayout(false);
-
         }
         #endregion
 
@@ -159,9 +160,9 @@ namespace LayoutManager.Dialogs {
                 return;
             }
 
-            functionInfoElement.SetAttribute("Type", ((LocomotiveFunctionType)comboBoxFunctionType.SelectedIndex).ToString());
-            functionInfoElement.SetAttribute("Name", textBoxFunctionName.Text);
-            functionInfoElement.SetAttribute("Description", textBoxDescription.Text);
+            functionInfoElement.SetAttribute(A_Type, (LocomotiveFunctionType)comboBoxFunctionType.SelectedIndex);
+            functionInfoElement.SetAttribute(A_Name, textBoxFunctionName.Text);
+            functionInfoElement.SetAttribute(A_Description, textBoxDescription.Text);
 
             DialogResult = DialogResult.OK;
         }
