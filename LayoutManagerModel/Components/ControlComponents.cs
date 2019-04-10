@@ -7,6 +7,7 @@ using System.Xml;
 using LayoutManager.Model;
 
 #nullable enable
+#pragma warning disable RCS1163
 namespace LayoutManager.Components {
     #region Block Edge base classes
 
