@@ -20,7 +20,7 @@ namespace DiMAX {
         private readonly Dictionary<int, PositionEntry> positions = new Dictionary<int, PositionEntry>();
         private static readonly LayoutTraceSwitch traceDiMAXemulator = new LayoutTraceSwitch("TraceDiMAXemulator", "Trace DiMAX command station emulation");
 
-        public DiMAXcommandStationEmulator(IModelComponentIsCommandStation commandStation, string pipeName, int emulationTickTime) {
+        public DiMAXcommandStationEmulator(IModelComponentIsCommandStation commandStation, string pipeName) {
             this.commandStationId = commandStation.Id;
             this.pipeName = pipeName;
             this.interThreadEventInvoker = (ILayoutInterThreadEventInvoker)EventManager.Event(new LayoutEvent("get-inter-thread-event-invoker", this));
@@ -28,7 +28,10 @@ namespace DiMAX {
             traceDiMAXemulator.Level = TraceLevel.Off;      // Until it seems to work
 
             layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
-            EventManager.Event(new LayoutEvent("initialize-layout-emulation", null, emulationTickTime));
+            EventManager.Event(new LayoutEvent("initialize-layout-emulation", this)
+                .SetOption(LayoutCommandStationComponent.Option_EmulateTrainMotion, commandStation.EmulateTrainMotion)
+                .SetOption(LayoutCommandStationComponent.Option_EmulationTickTime, commandStation.EmulationTickTime)
+            );
 
             interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction)) {
                 Name = "Command station emulation for " + commandStation.Name
@@ -47,7 +50,7 @@ namespace DiMAX {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void InterfaceThreadFunction() {
             commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true));
-            layoutEmulationServices.LocomotiveMoved += new EventHandler<LocomotiveMovedEventArgs>(layoutEmulationServices_LocomotiveMoved);
+            layoutEmulationServices.LocomotiveMoved += layoutEmulationServices_LocomotiveMoved;
             layoutEmulationServices.LocomotiveFallFromTrack += (s, ea) => InterfaceThreadError(ea.Location.Track, "Locomotive (address " + ea.Unit + ") fall from track");
 
             try {

@@ -67,15 +67,13 @@ namespace LayoutEmulation {
 
     [LayoutModule("Layout Emulator")]
     public class LayoutEmulator : LayoutModuleBase, ILayoutEmulationEnvironment, ILayoutEmulatorServices {
+
         private ILayoutTopologyServices? _topologyServices;
         private readonly Dictionary<Guid, CommandStationObjects> commandStations = new Dictionary<Guid, CommandStationObjects>();
         private Timer? emulationTimer = null;
         private int operationNesting = 0;
         private int tickTime = 200;
-
-        // The initialize method must run in the context of the main thread
-        private void Initialize() {
-        }
+        private bool emulateTrainMotion = true;
 
         #region Implementation of ILayoutEmulationEnvironment
 
@@ -121,7 +119,7 @@ namespace LayoutEmulation {
             if (switchState < 0)
                 return turnout.ConnectTo(from, LayoutComponentConnectionType.Passage)[0];
             else {
-                if (turnout is IModelComponentHasReverseLogic && ((IModelComponentHasReverseLogic)turnout).ReverseLogic)
+                if (turnout is IModelComponentHasReverseLogic turnoutHasReverseLogic && turnoutHasReverseLogic.ReverseLogic)
                     switchState = 1 - switchState;
 
                 return turnout.ConnectTo(from, switchState);
@@ -155,7 +153,7 @@ namespace LayoutEmulation {
 
         public void StartEmulation() {
             lock (Sync) {
-                if (operationNesting == 0) {
+                if (operationNesting == 0 && emulateTrainMotion) {
                     emulationTimer = new Timer(new TimerCallback(this.onEmulationTick), null, 0, tickTime);
                     operationNesting++;
                 }
@@ -338,8 +336,9 @@ namespace LayoutEmulation {
 
         [LayoutEvent("initialize-layout-emulation")]
         private void startLayoutEmulation(LayoutEvent e) {
-            if (e.Info != null)
-                tickTime = (int)e.Info;
+            emulateTrainMotion = (bool?)e.GetOption(LayoutCommandStationComponent.Option_EmulateTrainMotion) ?? false;
+            if(emulateTrainMotion)
+                tickTime = (int)e.GetOption(LayoutCommandStationComponent.Option_EmulationTickTime);
         }
 
         [LayoutEvent("get-layout-emulation-services")]

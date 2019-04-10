@@ -298,6 +298,10 @@ namespace LayoutManager.Components {
     public abstract class LayoutCommandStationComponent : LayoutBusProviderSupport, IModelComponentIsCommandStation, IDisposable, ILayoutLockResource {
         public const string A_EmulationTickTime = "EmulationTickTime";
         public const string A_AnimateTrainMotion = "AnimateTrainMotion";
+        public const string A_EmulateTrainMotion = "EmulateTrainMotion";
+        public const string Option_EmulationTickTime = A_EmulationTickTime;
+        public const string Option_EmulateTrainMotion = A_EmulateTrainMotion;
+
         private LayoutPowerOutlet? trackPowerOutlet;
         private LayoutPowerOutlet? programmingPowerOutlet;
         private System.Threading.Timer? animatedTrainsTimer;
@@ -308,6 +312,8 @@ namespace LayoutManager.Components {
         public int EmulationTickTime => (int)Element.AttributeValue(A_EmulationTickTime);
 
         public bool AnimateTrainMotion => (bool)Element.AttributeValue(A_AnimateTrainMotion);
+
+        public bool EmulateTrainMotion => (bool?)Element.AttributeValue(A_EmulateTrainMotion) ?? true;
 
         public IList<ILayoutPowerOutlet> PowerOutlets {
             get {
@@ -610,7 +616,7 @@ namespace LayoutManager.Components {
                     theIndex = Address - module.Address;
 
                     if (module.ModuleType.ConnectionPointsPerAddress > 1)
-                        theIndex = theIndex * module.ModuleType.ConnectionPointsPerAddress + State;
+                        theIndex = (theIndex * module.ModuleType.ConnectionPointsPerAddress) + State;
                 }
                 else {
                     if (Index < 0)
@@ -687,7 +693,7 @@ namespace LayoutManager.Components {
                     moduleTypes.Add(ConnectionPointRef.Module.ModuleType);
                 else {
                     foreach (ControlModuleType moduleType in Bus.BusType.ModuleTypes)
-                        if (!moduleTypes.Exists(delegate (ControlModuleType moduleTypeToGetString) {
+                        if (!moduleTypes.Exists((ControlModuleType moduleTypeToGetString) => {
                             return moduleType.ConnectionPointLabelFormat == moduleTypeToGetString.ConnectionPointLabelFormat &&
                                 moduleType.AddressAlignment == moduleTypeToGetString.AddressAlignment &&
                                 moduleType.ConnectionPointArrangement == moduleTypeToGetString.ConnectionPointArrangement &&
@@ -916,7 +922,7 @@ namespace LayoutManager.Components {
             if (queueNumber < 0 || queueNumber >= queues.Length)
                 throw new ArgumentException("Invalid queue index: " + queueNumber);
 
-            Trace.WriteLineIf(traceOutputManager.TraceInfo, $"Add command {command.GetType().Name} - {command.ToString()}");
+            Trace.WriteLineIf(traceOutputManager.TraceInfo, $"Add command {command.GetType().Name} - {command}");
 
             lock (queues) {
                 queues[queueNumber].Enqueue(command);
@@ -1003,7 +1009,7 @@ namespace LayoutManager.Components {
 
                 var pendingCommandsTask = Task.WhenAll(pendingCommands);
 
-                if (await Task.WhenAny(pendingCommandsTask, Task.Delay(5000)) != pendingCommandsTask) {
+                if (await Task.WhenAny(pendingCommandsTask, Task.Delay(5000)).ConfigureAwait(true) != pendingCommandsTask) {
                     LayoutModuleBase.Warning("Unable to complete all command station's pending commands");
                     Trace.WriteLine("Wait for command station pending commands has timed out after 5 seconds");
                 }

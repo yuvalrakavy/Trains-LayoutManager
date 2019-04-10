@@ -144,7 +144,7 @@ namespace DiMAX {
 
         protected override async Task OnTerminateCommunication() {
             if (outputManager != null) {
-                await OutputManager.WaitForIdle();
+                await OutputManager.WaitForIdle().ConfigureAwait(true);
                 OutputManager.Terminate();
                 outputManager = null;
             }
@@ -154,7 +154,7 @@ namespace DiMAX {
 
         public override bool DesignTimeLayoutActivationSupported => true;
 
-        protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) => new DiMAXcommandStationEmulator(this, pipeName, EmulationTickTime);
+        protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) => new DiMAXcommandStationEmulator(this, pipeName);
 
         protected override void OnEnteredOperationMode() {
             base.OnEnteredOperationMode();
@@ -336,12 +336,12 @@ namespace DiMAX {
                 throw new ArgumentException("Invalid CV number: " + cv.Number);
 
             if (cv.Number <= 8)
-                return await SetRegister(cv.Number, cv.Value);
+                return await SetRegister(cv.Number, cv.Value).ConfigureAwait(false);
             else {
-                LayoutActionResult r = await SetRegister(6, (byte)cv.Number);
+                LayoutActionResult r = await SetRegister(6, (byte)cv.Number).ConfigureAwait(false);
 
                 if (r == LayoutActionResult.Ok)
-                    return await SetRegister(5, cv.Value);
+                    return await SetRegister(5, cv.Value).ConfigureAwait(false);
                 else
                     return r;
             }
@@ -383,10 +383,10 @@ namespace DiMAX {
                 if (locomotive.Attributes.ContainsKey("NavigatorImage")) {
                     object? value = locomotive.Attributes["NavigatorImage"];
 
-                    if (value is int)
-                        navigatorImage = (int)value;
-                    else if (value is string)
-                        int.TryParse((string)value, out navigatorImage);
+                    if (value is int i)
+                        navigatorImage = i;
+                    else if (value is string s)
+                        int.TryParse(s, out navigatorImage);
                 }
 
                 OutputManager.AddCommand(new DiMAXlocomotiveRegistration(this, locomotive.AddressProvider.Unit,
@@ -768,7 +768,7 @@ namespace DiMAX {
 
             CurrentLimit = statusPacket.Parameters[0] & 0x0f;
             CurrentLoad = (double)statusPacket.Parameters[1] * 0.1;
-            FirmwareVersion = ((statusPacket.Parameters[3] & 0xf0) >> 4) + (double)(statusPacket.Parameters[3] & 0x0f) / 10;
+            FirmwareVersion = ((statusPacket.Parameters[3] & 0xf0) >> 4) + ((double)(statusPacket.Parameters[3] & 0x0f) / 10);
             FreeLocomotiveSlots = statusPacket.Parameters[4] & 0x3f;
             LastUpdate = DateTime.Now;
 
@@ -794,37 +794,29 @@ namespace DiMAX {
     }
 
     public enum DiMAXcommandCode {
-        DirectReply = 0x00,         // Packet is direct reply of some command
-
+        DirectReply = 0x00,
         LocoSpeedControl = 0x01,
         LocoFunctionControl = 0x02,
         LocoSelection = 0x04,
         LocoConfig = 0x05,
-
+        AddressFeedback = 0x09,
         TurnoutControl = 0x0a,
         FeedbackControl = 0x0b,
-
         EmergencyStopFinish = 0x10,
         EmergencyStopBegin = 0x11,
         EmergencyStopWithTrackPower = 0x12,
-
-        SaveAllConfigInCommandStation = 0x1d,
-        InterfaceAnnouncement = 0x18,
-
         ProgrammingRegister = 0x14,
         ProgrammingCV = 0x15,
         ProgrammingCVPOM = 0x15,
         ReadCV = 0x16,
         ReadNewLocoData = 0x17,
-
-        AddressFeedback = 0x09,
-
-        StatusBase = 0x100,             // Status messages are above this number 
-
+        InterfaceAnnouncement = 0x18,
+        SaveAllConfigInCommandStation = 0x1d,
+        StatusBase = 0x100,
         SystemStatus = 0x101,
         UpdateMessage = 0x103,
-        MessageSent = 0x1ff,
         ExtendedSystemStatus = 0x105,
+        MessageSent = 0x1ff,
     }
 
     /// <summary>
@@ -998,7 +990,7 @@ namespace DiMAX {
 
         public bool FunctionActive => (Packet.Parameters[2] & 0x10) != 0;
 
-        public int FunctionNumber => (Packet.Parameters[2] & 0x0f);
+        public int FunctionNumber => Packet.Parameters[2] & 0x0f;
     }
 
     #endregion
@@ -1194,10 +1186,6 @@ namespace DiMAX {
             base(commandStation, new DiMAXpacket(DiMAXcommandCode.LocoSelection, new byte[] { (byte)(address >> 8), (byte)(address & 0xff),
                 (byte)((unconditional ? 0x80 : 0) | (deselectActive ? 0x40 : 0)  | (select ? 0x10 : 0)) })) {
             description = $"select locomotive {address} select {select} deselect-active {deselectActive} unconditional {unconditional}";
-        }
-
-        public override void OnReplyPacket(DiMAXpacket replyPacket) {
-            base.OnReplyPacket(replyPacket);
         }
 
         public override string ToString() => description;

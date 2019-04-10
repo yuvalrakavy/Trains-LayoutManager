@@ -26,7 +26,10 @@ namespace MarklinDigital {
 
             layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
 
-            EventManager.Event(new LayoutEvent("initialize-layout-emulation", null, emulationTickTime));
+            EventManager.Event(new LayoutEvent("initialize-layout-emulation", this)
+                .SetOption(LayoutCommandStationComponent.Option_EmulateTrainMotion, commandStation.EmulateTrainMotion)
+                .SetOption(LayoutCommandStationComponent.Option_EmulationTickTime, commandStation.EmulationTickTime)
+            );
 
             interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction)) {
                 Name = "Command station emulation for " + commandStation.Name

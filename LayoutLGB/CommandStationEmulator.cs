@@ -19,13 +19,16 @@ namespace LayoutLGB {
         private readonly ILayoutEmulatorServices layoutEmulationServices;
         private Thread interfaceThread = null;
 
-        public MTScommandStationEmulator(IModelComponentIsCommandStation commandStation, string pipeName, int emulationTickTime) {
+        public MTScommandStationEmulator(IModelComponentIsCommandStation commandStation, string pipeName) {
             this.commandStationId = commandStation.Id;
             this.pipeName = pipeName;
 
             layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
 
-            EventManager.Event(new LayoutEvent("initialize-layout-emulation", null, emulationTickTime));
+            EventManager.Event(new LayoutEvent("initialize-layout-emulation", this)
+                .SetOption(LayoutCommandStationComponent.Option_EmulateTrainMotion, commandStation.EmulateTrainMotion)
+                .SetOption(LayoutCommandStationComponent.Option_EmulationTickTime, commandStation.EmulationTickTime)
+            );
 
             interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction)) {
                 Name = "Command station emulation for " + commandStation.Name
@@ -34,7 +37,7 @@ namespace LayoutLGB {
         }
 
         public void Dispose() {
-            layoutEmulationServices.LocomotiveMoved -= new EventHandler<LocomotiveMovedEventArgs>(layoutEmulationServices_LocomotiveMoved);
+            layoutEmulationServices.LocomotiveMoved -= layoutEmulationServices_LocomotiveMoved;
 
             if (interfaceThread != null) {
                 if (interfaceThread.IsAlive)
@@ -50,7 +53,7 @@ namespace LayoutLGB {
             // Create the pipe for communication
 
             commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true));
-            layoutEmulationServices.LocomotiveMoved += new EventHandler<LocomotiveMovedEventArgs>(layoutEmulationServices_LocomotiveMoved);
+            layoutEmulationServices.LocomotiveMoved += layoutEmulationServices_LocomotiveMoved;
 
             try {
                 while (true) {

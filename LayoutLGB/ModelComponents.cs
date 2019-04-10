@@ -28,8 +28,6 @@ namespace LayoutLGB {
         private readonly byte[] inputBuffer = new byte[4];
         private readonly AutoResetEvent readAbortedEvent = new AutoResetEvent(false);
 
-        private delegate void messageParserDelegate(MTSmessage message);
-
         private ControlBus _LGBbus = null;
         private ControlBus _DCCbus = null;
 
@@ -101,7 +99,7 @@ namespace LayoutLGB {
 
         public override int GetHighestLocomotiveAddress(DigitalPowerFormats format) => 22;      // Poor thing...
 
-        protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) => new MTScommandStationEmulator(this, pipeName, EmulationTickTime);
+        protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) => new MTScommandStationEmulator(this, pipeName);
 
         #endregion
 

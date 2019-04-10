@@ -155,6 +155,21 @@ namespace LayoutManager.Model {
         /// Highest locomotive address supported by command station
         /// </summary>
         int GetHighestLocomotiveAddress(DigitalPowerFormats format);
+
+        /// <summary>
+        /// If true - emulate train motion of trains that are controlled by this command station
+        /// </summary>
+        bool EmulateTrainMotion { get; }
+
+        /// <summary>
+        /// What is the tick time (milliseconds) used for train motion emulation
+        /// </summary>
+        int EmulationTickTime { get; }
+
+        /// <summary>
+        /// Animate train motion (train motion emulation is enabled)
+        /// </summary>
+        bool AnimateTrainMotion { get; }
     }
 
     /// <summary>
