@@ -144,7 +144,7 @@ namespace LayoutManager.Logic {
                 for (int i = 0; i < entry.SwitchingStateCount; i++) {
                     if (entry[i].Destination != TrackEdgeId.Empty) {
                         w.WriteStartElement(E_ConnectTo);
-                        w.WriteAttributeString(A_State, XmlConvert.ToString(i));
+                        w.WriteAttributeString(A_State, i);
                         w.WriteAttributeString(A_Cp, entry[i].Destination.ConnectionPoint.ToString());
                         w.WriteAttributeString(A_TrackId, entry[i].Destination.TrackId);
                         w.WriteAttributeString(A_Penalty, entry[i].Penalty);
