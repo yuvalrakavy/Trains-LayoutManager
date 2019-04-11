@@ -82,12 +82,9 @@ namespace LayoutManager.Tools {
             TrainCommonInfo train = (TrainStateInfo)e.Sender;
             IWin32Window owner = (IWin32Window)e.Info;
 
-            Dialogs.GetTargetSpeed d = new Dialogs.GetTargetSpeed(train);
+            var d = new Dialogs.GetTargetSpeed(train);
 
-            if (d.ShowDialog(owner) == DialogResult.OK)
-                e.Info = true;
-            else
-                e.Info = false;
+            e.Info = d.ShowDialog(owner) == DialogResult.OK ? true : (object)false;
         }
 
         #endregion
@@ -347,12 +344,8 @@ namespace LayoutManager.Tools {
             }
             else if (e.Sender is LayoutBlock block) {
                 ApplicableTripPlansData applicableTripPlans = new ApplicableTripPlansData(applicableTripPlansElement);
-                LayoutComponentConnectionPoint? front;
-
-                if (e.HasOption("Front"))
-                    front = LayoutComponentConnectionPoint.Parse(e.GetOption("Front"));
-                else
-                    front = EventManager.EventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>("get-locomotive-front", block.BlockDefinintion, "");
+                LayoutComponentConnectionPoint? front = e.GetOption("Front").ToOptionalComponentConnectionPoint() ??
+                    EventManager.EventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>("get-locomotive-front", block.BlockDefinintion, "");
 
                 if (front.HasValue) {
                     applicableTripPlans.LocomotiveBlock = block;

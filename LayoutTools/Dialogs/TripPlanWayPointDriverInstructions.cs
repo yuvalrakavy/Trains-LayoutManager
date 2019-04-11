@@ -76,7 +76,7 @@ namespace LayoutManager.Tools.Dialogs {
                     changeToViewonly.Do();
                     changeToViewonly.ViewOnly = true;
                 }
-                else if (value == false && ViewOnly) {
+                else if (!value && ViewOnly) {
                     changeToViewonly.Undo();
                     changeToViewonly.ViewOnly = false;
                     changeToViewonly = null;

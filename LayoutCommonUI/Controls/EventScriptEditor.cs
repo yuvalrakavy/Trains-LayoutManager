@@ -79,7 +79,7 @@ namespace LayoutManager.CommonUI.Controls {
                     changeToViewonly.Do();
                     changeToViewonly.ViewOnly = true;
                 }
-                else if (value == false && ViewOnly) {
+                else if (!value && ViewOnly) {
                     changeToViewonly.Undo();
                     changeToViewonly.ViewOnly = false;
                     changeToViewonly = null;
@@ -959,7 +959,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public override LayoutEventScriptEditorTreeNode? NodeToEdit => null;		// Composite rules can not be edited
 
-        protected override int IconIndex => ((bool?)Element.AttributeValue(A_LimitToScope) ?? false) == false ? 4 : 3;
+        protected override int IconIndex => (!((bool?)Element.AttributeValue(A_LimitToScope) ?? false)) ? 4 : 3;
     }
 
     public abstract class LayoutEventScriptEditorTreeNodeEventSection : LayoutEventScriptEditorTreeNode {

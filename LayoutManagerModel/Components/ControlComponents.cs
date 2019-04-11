@@ -177,6 +177,7 @@ namespace LayoutManager.Components {
         }
 
         public const string A_EmergencyContact = "EmergencyContact";
+        private const string A_Value = "Value";
 
         public bool IsEmergencySensor {
             get => (bool?)Element.AttributeValue(A_EmergencyContact) ?? false;
@@ -189,11 +190,12 @@ namespace LayoutManager.Components {
             set {
                 if (value != IsTriggered) {
                     if (value)
-                        LayoutModel.StateManager.Components.StateOf(this, Topic_TriggeredState, create: true).SetAttribute("Value", "True");
+                        LayoutModel.StateManager.Components.StateOf(this, Topic_TriggeredState, create: true).SetAttribute(A_Value, "True");
                     else
                         LayoutModel.StateManager.Components.Remove(this, Topic_TriggeredState);
 
-                    EventManager.Event("proximity-sensor-changed", this, value);
+                    EventManager.Event("block-edge-sensor-changed", this, value);
+                    EventManager.Event(value ? "block-edge-sensor-active" : "block-edge-sensor-not-active", this);
                     OnComponentChanged();
                 }
             }

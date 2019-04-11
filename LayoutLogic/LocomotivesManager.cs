@@ -609,14 +609,10 @@ namespace LayoutManager.Logic {
             TrainLength trainLength;
 
             e.Info = null;
-
-            if (e.HasOption(E_Train, "Length"))
-                trainLength = TrainLength.Parse(e.GetOption(elementName: E_Train, optionName: "Length")!);
-            else
-                trainLength = TrainLength.Standard;
+            trainLength = e.GetOption(optionName: "Length", elementName: E_Train).ToTrainLength() ?? TrainLength.Standard;
 
             if (e.HasOption(E_Train, "Front"))
-                front = e.GetOption(elementName: E_Train, optionName: "Front").ToComponentConnectionPoint();
+                front = e.GetOption(optionName: "Front", elementName: E_Train).ToComponentConnectionPoint();
             else {
                 if (collectionElement.Name == E_Train) {
                     front = EventManager.EventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>("get-locomotive-front", blockDefinition, collectionElement);
@@ -642,7 +638,7 @@ namespace LayoutManager.Logic {
             }
 
             // Figure out the train name
-            trainName = (string?)e.GetOption(elementName: E_Train, optionName: A_Name) ?? trainName;
+            trainName = (string?)e.GetOption(optionName: A_Name, elementName: E_Train) ?? trainName;
 
             if (trainName == null) {
                 switch (collectionElement.Name) {
@@ -678,7 +674,7 @@ namespace LayoutManager.Logic {
             var e = (LayoutEvent<TrainStateInfo, LayoutBlockDefinitionComponent>)e0;
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
             var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Info, "blockDefinition");
-            var front = e.GetOption(elementName: E_Train, optionName: "Front").ToComponentConnectionPoint();
+            var front = e.GetOption(optionName: "Front", elementName: E_Train).ToComponentConnectionPoint();
 
             TrainLocationInfo trainLocation = train.PlaceInBlock(blockDefinition.Block, front);
 
@@ -1554,7 +1550,7 @@ namespace LayoutManager.Logic {
                 EventManager.Event(new LayoutEvent("request-layout-lock", lockRequest).SetOption("DoNotLockResources", true));
             }
 
-            return (invalidStateElements.Count == 0);   // Fail if any invaid element was found
+            return invalidStateElements.Count == 0;   // Fail if any invaid element was found
         }
 
         [LayoutEvent("enter-operation-mode", Order = 20000)]
@@ -1580,7 +1576,7 @@ namespace LayoutManager.Logic {
 
                 if (component != null) {
                     foreach (XmlElement componentStateTopicElement in componentStateElement) {
-                        if ((bool)EventManager.Event(new LayoutEvent("verify-component-state-topic", componentStateTopicElement, true)) == false)
+                        if (!(bool)EventManager.Event(new LayoutEvent("verify-component-state-topic", componentStateTopicElement, true)))
                             topicRemoveList.Add(componentStateTopicElement);
                     }
 

@@ -414,13 +414,13 @@ namespace LayoutManager.CommonUI {
                 else
                     vScrollBar.Visible = false;
 
-                if (hScrollBar.Visible == false) {
+                if (!hScrollBar.Visible) {
                     origin.X = 0;
                     hScrollBar.Value = 0;
                     needRedraw = true;
                 }
 
-                if (vScrollBar.Visible == false) {
+                if (!vScrollBar.Visible) {
                     origin.Y = 0;
                     vScrollBar.Value = 0;
                     needRedraw = true;

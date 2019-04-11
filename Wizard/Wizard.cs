@@ -44,7 +44,7 @@ namespace Gui.Wizard {
 
             //Can I add my self as default cancel button
             Form form = this.FindForm();
-            if (form != null && DesignMode == false)
+            if (form != null && !DesignMode)
                 form.CancelButton = btnCancel;
         }
 
@@ -219,7 +219,7 @@ namespace Gui.Wizard {
             if (vActivePage != null) {
                 //Ensure that this panel displays inside the wizard
                 vActivePage.Parent = this;
-                if (this.Contains(vActivePage) == false) {
+                if (!this.Contains(vActivePage)) {
                     this.Container.Add(vActivePage);
                 }
                 //Make it fill the space
@@ -239,7 +239,7 @@ namespace Gui.Wizard {
 
             //What should the Next button say
             if (Pages.IndexOf(vActivePage) < Pages.Count - 1
-                && vActivePage.IsFinishPage == false) {
+                && !vActivePage.IsFinishPage) {
                 btnNext.Text = "&Next >";
                 btnNext.Enabled = true;
                 //Don't close the wizard :)
@@ -290,7 +290,7 @@ namespace Gui.Wizard {
             //Throw the event out to subscribers
             CloseFromCancel?.Invoke(this, arg);
             //If nobody told me to cancel
-            if (arg.Cancel == false) {
+            if (!arg.Cancel) {
                 //Then we close the form
                 this.FindForm().Close();
             }
@@ -355,7 +355,7 @@ namespace Gui.Wizard {
 
             //Did I just press Finish instead of Next
             if (this.PageIndex < Pages.Count - 1
-                && (vActivePage.IsFinishPage == false || DesignMode)) {
+                && (!vActivePage.IsFinishPage || DesignMode)) {
                 //No still going
                 ActivatePage(newPage);
                 //Tell the application, I have just shown a page
@@ -366,7 +366,7 @@ namespace Gui.Wizard {
                     "btnNext_Click tried to go to page " + Convert.ToString(this.PageIndex + 1)
                     + ", but I only have " + Convert.ToString(Pages.Count));
                 //yep Finish was pressed
-                if (DesignMode == false)
+                if (!DesignMode)
                     this.ParentForm.Close();
             }
         }

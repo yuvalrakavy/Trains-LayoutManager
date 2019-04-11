@@ -184,7 +184,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private void checkBoxOverrideDefault_Click(object sender, System.EventArgs e) {
-            if (checkBoxOverrideDefault.Checked == false)
+            if (!checkBoxOverrideDefault.Checked)
                 labelRampDescription.Text = "";
             else {
                 if (ramp != null)

@@ -103,10 +103,10 @@ namespace LayoutManager.CommonUI {
             if (component.NameProvider.Name.Trim() == null)
                 return false;
 
-            if (filterHandler != null && filterHandler(component) == false)
+            if (filterHandler != null && !filterHandler(component))
                 return false;
 
-            if (xPathFilter != null && component.Element.CreateNavigator().Matches(xPathFilter) == false)
+            if (xPathFilter != null && !component.Element.CreateNavigator().Matches(xPathFilter))
                 return false;
 
             return true;

@@ -610,7 +610,7 @@ namespace LayoutManager.Model {
             get => Element.HasAttribute(A_Subunit);
 
             set {
-                if (value == false)
+                if (!value)
                     Element.RemoveAttribute(A_Subunit);
                 else {
                     if (!Element.HasAttribute(A_Subunit))

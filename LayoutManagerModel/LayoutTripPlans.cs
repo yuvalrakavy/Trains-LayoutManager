@@ -238,7 +238,7 @@ namespace LayoutManager.Model {
             }
 
             set {
-                if (value == false)
+                if (!value)
                     Element.RemoveAttribute(A_Name);
             }
         }

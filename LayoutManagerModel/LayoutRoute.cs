@@ -241,8 +241,6 @@ namespace LayoutManager.Model {
     }
 
     public class RouteTarget {
-        private readonly RouteQuality quality;              // The penalty involved in going from this target to the final destination
-
         public RouteTarget(TripPlanDestinationEntryInfo? destinationEntryInfo, LayoutTrackComponent destinationTrack, TrackEdge targetEdge, int switchState,
             LayoutComponentConnectionPoint front, LocomotiveOrientation direction, RouteQuality quality) {
             this.DestinationEntryInfo = destinationEntryInfo;
@@ -251,7 +249,7 @@ namespace LayoutManager.Model {
             this.SwitchState = switchState;
             this.Front = front;
             this.Direction = direction;
-            this.quality = new RouteQuality(quality);
+            this.Quality = new RouteQuality(quality);
         }
 
         public TripPlanDestinationEntryInfo? DestinationEntryInfo { get; }
@@ -270,10 +268,10 @@ namespace LayoutManager.Model {
 
         public LocomotiveOrientation Direction { get; }
 
-        public RouteQuality Quality => quality;
+        public RouteQuality Quality { get; }
 
-        public override bool Equals(object o) {
-            if (o is RouteTarget otherTarget)
+        public override bool Equals(object obj) {
+            if (obj is RouteTarget otherTarget)
                 return otherTarget.TargetEdge == TargetEdge && otherTarget.SwitchState == SwitchState;
             return false;
         }

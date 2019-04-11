@@ -242,7 +242,7 @@ namespace LayoutManager.CommonUI.Controls {
                             BrowsableAttribute[] browsables = (BrowsableAttribute[])property.GetCustomAttributes(typeof(BrowsableAttribute), true);
                             bool propertyAllowed = false;
 
-                            if (browsables.Length > 0 && browsables[0].Browsable == false)
+                            if (browsables.Length > 0 && !browsables[0].Browsable)
                                 propertyAllowed = false;
                             else
                                 propertyAllowed = isAllowedType(property.PropertyType);
@@ -260,7 +260,7 @@ namespace LayoutManager.CommonUI.Controls {
                                 BrowsableAttribute[] browsables = (BrowsableAttribute[])property.GetCustomAttributes(typeof(BrowsableAttribute), true);
                                 bool propertyAllowed = false;
 
-                                if (browsables.Length > 0 && browsables[0].Browsable == false)
+                                if (browsables.Length > 0 && !browsables[0].Browsable)
                                     propertyAllowed = false;
                                 else
                                     propertyAllowed = isAllowedType(property.PropertyType);

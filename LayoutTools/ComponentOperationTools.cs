@@ -1065,7 +1065,7 @@ namespace LayoutManager.Tools {
             }
 
             protected override void OnClick(EventArgs e) {
-                if ((bool)EventManager.Event(new LayoutEvent("show-saved-trip-plans-for-train", train, false)) == false) {
+                if (!(bool)EventManager.Event(new LayoutEvent("show-saved-trip-plans-for-train", train, false))) {
                     Dialogs.TripPlanCatalog tripPlanCatalog = new Dialogs.TripPlanCatalog(train);
 
                     tripPlanCatalog.Show();

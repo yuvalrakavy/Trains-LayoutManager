@@ -1769,7 +1769,7 @@ namespace LayoutManager.Logic {
                     int timeout = 12000;
 
                     if (block.BlockDefinintion.Info.IsOccupancyDetectionBlock) {
-                        if (block.BlockDefinintion.Info.TrainDetected == false) {
+                        if (!block.BlockDefinintion.Info.TrainDetected) {
                             if (train.LastCarDetectedByOccupancyBlock)
                                 timeout = 1000;
                         }

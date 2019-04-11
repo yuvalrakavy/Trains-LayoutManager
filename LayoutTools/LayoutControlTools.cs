@@ -1987,7 +1987,7 @@ namespace LayoutManager.Tools {
 
                 bool newValue = !subject.UserActionRequired;
 
-                if (newValue == false && subject is ControlModule) {
+                if (!newValue && subject is ControlModule) {
                     ControlModule module = (ControlModule)subject;
 
                     // Clear all connection point 

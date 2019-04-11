@@ -7,3 +7,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "RCS1168:Parameter name differs from base name.", Justification = "<Pending>", Scope = "member", Target = "~M:LayoutManager.Logic.TrainsManager.TrackContactCrossTimeSorter.Compare(System.Object,System.Object)~System.Int32")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "RCS1168:Parameter name differs from base name.", Justification = "<Pending>", Scope = "member", Target = "~M:LayoutManager.Logic.RoutePlanner.RouteOption.CompareTo(System.Object)~System.Int32")]
 
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "RCS1146:Use conditional access.", Justification = "<Pending>", Scope = "member", Target = "~M:LayoutManager.Logic.LocomotiveTracking.findRunawayTrain(LayoutManager.Model.LayoutBlock)")]

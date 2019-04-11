@@ -24,7 +24,7 @@ namespace LayoutManager.View {
             return imageFilename;
         }
 
-        private string getEffectName(LayoutEvent e) => e.GetOption("Type", "Effect");
+        private string getEffectName(LayoutEvent e) => e.GetOption("Type", "Effect").ValidString();
 
         private string getImageCacheKey(LayoutEvent e) => getEffectName(e) + "|" + getImageFilename(e);
 

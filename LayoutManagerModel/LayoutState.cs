@@ -433,7 +433,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <returns>Operation context or null if this event was not invoked under any operation context</returns>
         public static LayoutOperationContext? GetOperationContext(this LayoutEvent theEvent) {
-            var key = theEvent.GetOption(elementName: elementName, optionName: "Key");
+            var key = theEvent.GetOption(optionName: "Key", elementName: elementName).ValidString();
 
             return key != null
                 ? LayoutModel.StateManager.OperationStates[LayoutOperationContext.ContextSectionName].Get<LayoutOperationContext>(key)
@@ -537,12 +537,14 @@ namespace LayoutManager.Model {
             }
         }
 
+        private const string E_Locations = "Locations";
+
         public XmlElement LocationsElement {
             get {
-                XmlElement locationsElement = Element["Locations"];
+                XmlElement locationsElement = Element[E_Locations];
 
                 if (locationsElement == null) {
-                    locationsElement = Element.OwnerDocument.CreateElement("Locations");
+                    locationsElement = Element.OwnerDocument.CreateElement(E_Locations);
                     Element.AppendChild(locationsElement);
                 }
 
@@ -952,7 +954,7 @@ namespace LayoutManager.Model {
             else if (collectionElement.Name == "Train") // TODO: Check this code
                 AddTrainFromCollection(new TrainInCollectionInfo(collectionElement), block, validateAddress);
             else
-                Debug.Assert(false, "Invalid locomotive collection element");
+                Debug.Fail("Invalid locomotive collection element");
         }
 
         #endregion
@@ -1009,6 +1011,7 @@ namespace LayoutManager.Model {
             XmlElement locationsElement = LocationsElement;
 
             trainLocation.BlockId = block.Id;
+            LastEnteredBlock = block;
 
             if (blockEdge != null)
                 trainLocation.BlockEdgeId = blockEdge.Id;
@@ -1349,6 +1352,7 @@ namespace LayoutManager.Model {
         private const string A_LastBlockEdgeCrossingTime = "LastBlockEdgeCrossingTime";
         private const string A_LastBlockEdgeCrossingSpeed = "LastBlockEdgeCrossingSpeed";
         private const string A_StoppedOnBlockCrossing = "StoppedOnBlockCrossing";
+        private const string A_LastEnteredBlock = "LastEnteredBlock";
 
         #endregion
 
@@ -1386,6 +1390,16 @@ namespace LayoutManager.Model {
             get => (int?)AttributeValue(A_LastBlockEdgeCrossingSpeed) ?? 0;
 
             set => SetAttribute(A_LastBlockEdgeCrossingSpeed, value);
+        }
+
+        public Guid LastEnteredBlockId {
+            set => SetAttribute(A_LastEnteredBlock, value, removeIf: Guid.Empty);
+            get => (Guid?)AttributeValue(A_LastEnteredBlock) ?? Guid.Empty;
+        }
+
+        public LayoutBlock? LastEnteredBlock {
+            get => LastEnteredBlockId == Guid.Empty ? null : LayoutModel.Blocks[LastEnteredBlockId];
+            set => LastEnteredBlockId = value == null ? Guid.Empty : value.Id;
         }
 
         public bool TrainStoppedOnBlockEdgeCrossing {
@@ -1705,7 +1719,7 @@ namespace LayoutManager.Model {
         /// <param name="componentId">The component name</param>
         /// <param name="topicName">The topic name</param>
         /// <returns>The component topic runtime state XML element</returns>
-        public XmlElementWrapper StateOf(Guid componentId, string topicName, bool create = false) {
+        public XmlElement StateOf(Guid componentId, string topicName, bool create = false) {
             XmlElement componentStateElement = GetComponentStateElement(componentId);
             XmlElement componentStateTopicElement = componentStateElement[topicName];
 
@@ -1715,10 +1729,10 @@ namespace LayoutManager.Model {
                 componentStateElement.AppendChild(componentStateTopicElement);
             }
 
-            return new XmlElementWrapper(componentStateTopicElement);
+            return componentStateTopicElement;
         }
 
-        public XmlElementWrapper StateOf(IModelComponentHasId component, string topicName, bool create = false) => StateOf(component.Id, topicName, create);
+        public XmlElement StateOf(IModelComponentHasId component, string topicName, bool create = false) => StateOf(component.Id, topicName, create);
 
         #endregion
 
@@ -1959,9 +1973,9 @@ namespace LayoutManager.Model {
             get => (bool?)AttributeValue(A_Active) ?? false;
 
             set {
-                if (value && Active == false)
+                if (value && !Active)
                     EventManager.Event(new LayoutEvent("request-manual-dispatch-lock", this));
-                else if (value == false && Active) {
+                else if (!value && Active) {
                     EventManager.Event(new LayoutEvent("free-manual-dispatch-lock", this, false));
                     SetActive(false);
                 }
@@ -2616,7 +2630,7 @@ namespace LayoutManager.Model {
                         throw;
                     }
                 }
-                else if (value == false && allLayoutManualDispatch != null) {
+                else if (!value && allLayoutManualDispatch != null) {
                     allLayoutManualDispatch.Active = false;
                     allLayoutManualDispatch = null;
                     Element.RemoveAttribute(A_AllLayoutManualDispatchRegion);
