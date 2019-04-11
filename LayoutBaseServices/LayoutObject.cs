@@ -14,7 +14,7 @@ namespace LayoutManager {
             this.OptionalElement = element;
         }
 
-        public XmlElement? OptionalElement { get; private set; }
+        public XmlElement? OptionalElement { get; }
         public XmlElement Element => Ensure.NotNull<XmlElement>(OptionalElement, nameof(OptionalElement));
 
         public static implicit operator XmlElement(XmlElementWrapper e) => e.Element;
@@ -36,6 +36,8 @@ namespace LayoutManager {
         public static void SetAttribute(this IObjectHasXml xmlObject, string name, int v, int removeIf) => xmlObject.Element.SetAttribute(name, v, removeIf);
 
         public static void SetAttribute(this IObjectHasXml xmlObject, string name, int v) => xmlObject.Element.SetAttribute(name, v);
+
+        public static void SetAttribute(this IObjectHasXml xmlObject, string name, long v) => xmlObject.Element.SetAttribute(name, v);
 
         public static void SetAttribute(this IObjectHasXml xmlObject, string name, double v) => xmlObject.Element.SetAttribute(name, v);
 
@@ -76,6 +78,8 @@ namespace LayoutManager {
         }
 
         public static void SetAttribute(this XmlElement e, string name, int v) => e.SetAttribute(name, XmlConvert.ToString(v));
+
+        public static void SetAttribute(this XmlElement e, string name, long v) => e.SetAttribute(name, XmlConvert.ToString(v));
 
         public static void SetAttribute(this XmlElement e, string name, byte v) => e.SetAttribute(name, XmlConvert.ToString(v));
 
@@ -149,7 +153,7 @@ namespace LayoutManager {
             return v;
         }
 
-        public static implicit operator string? (ConvertableString s) {
+        public static explicit operator string? (ConvertableString s) {
             return s.v;
         }
 
