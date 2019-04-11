@@ -12,6 +12,9 @@ namespace LayoutManager.Model {
     #region Block related classes
 
     public class LayoutBlockBase : IDisposable {
+        protected const string State_TrainEntry = "TrainEntry";
+        protected const string A_Time = "Time";
+
         private List<LayoutBlockEdgeBase>? blockEdges;
         private LayoutBlockDefinitionComponent? blockInfo;
         private Guid id;
@@ -263,6 +266,8 @@ namespace LayoutManager.Model {
                 }
             }
 
+            LayoutModel.StateManager.Components.StateOf(BlockDefinintion, State_TrainEntry, create: true).SetAttribute(A_Time, DateTime.Now.Ticks);
+
             if (BlockDefinintion != null)
                 BlockDefinintion.OnComponentChanged();
         }
@@ -287,8 +292,14 @@ namespace LayoutManager.Model {
             trainLeavingBlockFront = trainLocationToRemove.DisplayFront;
             whenTrainLeftBlock = Environment.TickCount;
 
+            LayoutModel.StateManager.Components.Remove(BlockDefinintion, State_TrainEntry);
+
             if (BlockDefinintion != null)
                 BlockDefinintion.OnComponentChanged();
+        }
+
+        public long? TrainEntryTime {
+            get => (long?)LayoutModel.StateManager.Components.StateOf(BlockDefinintion, State_TrainEntry)?.AttributeValue(A_Time);
         }
 
         public void ClearTrains() {
@@ -386,16 +397,12 @@ namespace LayoutManager.Model {
         /// </summary>
         public IList<LayoutBlock> ContainedBlocks {
             get {
-                IList<LayoutBlock> result;
-
                 if (myBlock == null)
-                    result = Array.AsReadOnly<LayoutBlock>(new LayoutBlock[] { });
+                    return Array.AsReadOnly<LayoutBlock>(new LayoutBlock[] { });
                 else if (containedBlocks == null)
-                    result = Array.AsReadOnly<LayoutBlock>(new LayoutBlock[1] { myBlock });
+                    return Array.AsReadOnly<LayoutBlock>(new LayoutBlock[1] { myBlock });
                 else
-                    result = containedBlocks.AsReadOnly();
-
-                return result;
+                    return containedBlocks.AsReadOnly();
             }
         }
     }
@@ -657,7 +664,7 @@ namespace LayoutManager.Model {
                 LocomotiveTrackingResult trackingResult = motionListEntry.TrackingResult;
 
                 EventManager.Event(new LayoutEvent("train-enter-block", trackingResult.Train, trackingResult.ToBlock));
-                EventManager.Event(new LayoutEvent("train-crossed-block", trackingResult.Train, trackingResult.BlockEdge));
+                EventManager.Event(new LayoutEvent("train-crossed-block-edge", trackingResult.Train, trackingResult.BlockEdge));
                 if (trackingResult.BlockEdge is LayoutBlockEdgeComponent) {
                     EventManager.Event(new LayoutEvent("occupancy-block-edge-crossed",
                         (LayoutBlockEdgeComponent)trackingResult.BlockEdge, trackingResult.Train, null));
