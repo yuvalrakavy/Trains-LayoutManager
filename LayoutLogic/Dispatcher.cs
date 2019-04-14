@@ -66,8 +66,6 @@ namespace LayoutManager.Logic {
         #region Data structures
 
         private class ActiveTripInfo : TripPlanAssignmentInfo {
-            private LayoutEventScript[]? activePolicies;
-
             public ActiveTripInfo(XmlElement element) : base(element) {
                 Queue = new BlockEntryQueue(this);
             }
@@ -86,15 +84,7 @@ namespace LayoutManager.Logic {
 
             public LayoutEvent? SuspendedEvent { get; set; }
 
-            public LayoutEventScript[]? ActivePolicies {
-                get {
-                    return activePolicies;
-                }
-
-                set {
-                    activePolicies = value;
-                }
-            }
+            public LayoutEventScript[]? ActivePolicies { get; set; }
 
             /// <summary>
             /// Cancel a trip - drop all pending requests
@@ -136,14 +126,12 @@ namespace LayoutManager.Logic {
         }
 
         private class BlockEntry {
-            private readonly bool waitable;
-
             public BlockEntry(LayoutBlock block, List<LayoutBlock>? crossedBlocks, LayoutComponentConnectionPoint front, bool hasMergePoint, bool waitable) {
                 this.Block = block;
                 this.Action = BlockAction.Go;
                 this.Front = front;
                 this.HasMergePoint = hasMergePoint;
-                this.waitable = waitable;
+                this.Waitable = waitable;
 
                 if (crossedBlocks != null && crossedBlocks.Count != 0)
                     this.CrossedBlocks = crossedBlocks.ToArray();
@@ -152,7 +140,7 @@ namespace LayoutManager.Logic {
             public BlockEntry(TrainStateInfo train) {
                 this.Block = train.LocomotiveBlock!;
                 this.Action = BlockAction.Go;
-                this.waitable = false;
+                this.Waitable = false;
                 if (train.LocomotiveLocation != null)
                     this.Front = train.LocomotiveLocation.DisplayFront;
             }
@@ -175,7 +163,7 @@ namespace LayoutManager.Logic {
 
             public bool HasMergePoint { get; set; }
 
-            public bool Waitable => waitable;
+            public bool Waitable { get; }
         }
 
         private class BlockEntryQueue : Queue {
@@ -551,7 +539,7 @@ namespace LayoutManager.Logic {
                 }
                 else {
                     Trace.WriteLineIf(traceDispatching.TraceInfo, $"Trip for train {train.DisplayName} aborted");
-                    if ((train.Managed && train.Speed != 0) && (trip.Status == TripStatus.Go || trip.Status == TripStatus.PrepareStop))
+                    if (train.Managed && train.Speed != 0 && (trip.Status == TripStatus.Go || trip.Status == TripStatus.PrepareStop))
                         causeTrainToStop(trip, BlockAction.AbortTrip);
                     else {
                         EventManager.Event(new LayoutEvent("driver-stop", trip.Train));
@@ -587,7 +575,7 @@ namespace LayoutManager.Logic {
                     trip.SuspendedEvent = new LayoutEvent("dispatcher-resume-suspended", trip);
                 }
                 else {
-                    if ((train.Managed && train.Speed != 0) && (trip.Status == TripStatus.Go || trip.Status == TripStatus.PrepareStop))
+                    if (train.Managed && train.Speed != 0 && (trip.Status == TripStatus.Go || trip.Status == TripStatus.PrepareStop))
                         causeTrainToStop(trip, BlockAction.SuspendTrip);
                     else {
                         trip.SuspendedStatus = trip.Status;
@@ -665,10 +653,7 @@ namespace LayoutManager.Logic {
             if (trip == null || trip.Status == TripStatus.Aborted || trip.Status == TripStatus.Done)
                 e.Info = false;
             else {
-                if (trip.Status == TripStatus.Done)
-                    e.Info = false;
-                else
-                    e.Info = true;
+                e.Info = trip.Status == TripStatus.Done ? false : (object)true;
             }
         }
 
@@ -803,18 +788,7 @@ namespace LayoutManager.Logic {
                 trip.Queue.Enqueue(blockEntry);
         }
 
-        private static bool isManualDispatchBlock(LayoutBlock block) {
-            if (block.LockRequest != null && block.LockRequest.IsManualDispatchLock)
-                return true;
-            return false;
-        }
-
-        private static bool hasTrain(LayoutBlock block, TrainStateInfo train) {
-            foreach (TrainLocationInfo trainLocation in block.Trains)
-                if (trainLocation.Train.Id == train.Id)
-                    return true;
-            return false;
-        }
+        private static bool isManualDispatchBlock(LayoutBlock block) => block.LockRequest != null && block.LockRequest.IsManualDispatchLock;
 
         private static bool canClearTrip(ActiveTripInfo trip) => trip.Status == TripStatus.Done || trip.Status == TripStatus.Aborted;
 
@@ -1135,7 +1109,7 @@ namespace LayoutManager.Logic {
         private bool prepareNextTripSection(ActiveTripInfo trip, BlockEntry currentBlockEntry, BlockEntry? nextBlockEntry) {
             bool trainCanMove = false;
             TripBestRouteResult tripBestRouteResult;
-            ;
+
             Trace.WriteLineIf(traceDispatching.TraceInfo, $"Prepare Next Trip Section for train {trip.Train.DisplayName} Current way point is {trip.CurrentWaypointIndex} direction is {trip.CurrentWaypoint.Direction} current block is {currentBlockEntry.Block}");
 
             Debug.Assert(currentBlockEntry.Block.BlockDefinintion != null);
@@ -1369,16 +1343,6 @@ namespace LayoutManager.Logic {
                 EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands));
 
             e.Info = completed;
-        }
-
-        /// <summary>
-        /// Set the switch state of turnouts and other multi-path components along the trip. This is done as long as
-        /// the turnout is in a block locked by the given train
-        /// </summary>
-        /// <param name="trip"></param>
-        /// <param name="route"></param>
-        private void setSwitchStateOnRoute(ActiveTripInfo trip, ITripRoute route) {
-            EventManager.Event(new LayoutEvent("dispatcher-set-switches", trip.TrainId, route));
         }
 
         private void retryTrip(ActiveTripInfo trip) {
@@ -2036,7 +2000,7 @@ namespace LayoutManager.Logic {
             public string Description => "No path from previous way point to this one";
 
             public void Apply(TripPlanInfo tripPlan) {
-                Debug.Assert(false, "Cannot fix no path problem");
+                Debug.Fail("Cannot fix no path problem");
             }
         }
 
