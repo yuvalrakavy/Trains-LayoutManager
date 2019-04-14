@@ -151,6 +151,7 @@ namespace LayoutManager {
     }
 
     public static class LayoutEventExtensions {
+        private const string DefaultOptionsElementName = "Options";
         #region Methods to get/set event parameters
 
         public static bool HasOption<TEvent>(this TEvent e, string elementName, string optionName) where TEvent : LayoutEvent {
@@ -161,15 +162,15 @@ namespace LayoutManager {
             return false;
         }
 
-        public static bool HasOption<TEvent>(this TEvent e, string optionName) where TEvent : LayoutEvent => e.HasOption("Options", optionName);
+        public static bool HasOption<TEvent>(this TEvent e, string optionName) where TEvent : LayoutEvent => e.HasOption(DefaultOptionsElementName, optionName);
 
-        public static ConvertableString GetOption<TEvent>(this TEvent e, string optionName, string elementName = "Options") where TEvent : LayoutEvent {
+        public static ConvertableString GetOption<TEvent>(this TEvent e, string optionName, string elementName = DefaultOptionsElementName) where TEvent : LayoutEvent {
             var optionElement = e.Element[elementName];
 
             return new XmlElementWrapper(optionElement).AttributeValue(optionName);
         }
 
-        public static TEvent CopyOptions<TEvent>(this TEvent e, LayoutEvent other, string elementName = "Options") where TEvent : LayoutEvent {
+        public static TEvent CopyOptions<TEvent>(this TEvent e, LayoutEvent other, string elementName = DefaultOptionsElementName) where TEvent : LayoutEvent {
             XmlElement otherElement = other.Element[elementName];
 
             if (otherElement != null)
@@ -191,21 +192,25 @@ namespace LayoutManager {
             return e;
         }
 
-        public static TEvent SetOption<TEvent>(this TEvent e, string optionName, string value) where TEvent : LayoutEvent => e.SetOption("Options", optionName, value);
+        public static TEvent SetOption<TEvent>(this TEvent e, string optionName, string value) where TEvent : LayoutEvent => e.SetOption(DefaultOptionsElementName, optionName, value);
 
         public static TEvent SetOption<TEvent>(this TEvent e, string elementName, string optionName, bool value) where TEvent : LayoutEvent => e.SetOption(elementName, optionName, XmlConvert.ToString(value));
 
-        public static TEvent SetOption<TEvent>(this TEvent e, string optionName, bool value) where TEvent : LayoutEvent => e.SetOption("Options", optionName, value);
+        public static TEvent SetOption<TEvent>(this TEvent e, string optionName, bool value) where TEvent : LayoutEvent => e.SetOption(DefaultOptionsElementName, optionName, value);
 
         public static TEvent SetOption<TEvent>(this TEvent e, string elementName, string optionName, int value) where TEvent : LayoutEvent => e.SetOption(elementName, optionName, XmlConvert.ToString(value));
 
-        public static TEvent SetOption<TEvent>(this TEvent e, string optionName, int value) where TEvent : LayoutEvent => e.SetOption("Options", optionName, value);
+        public static TEvent SetOption<TEvent>(this TEvent e, string optionName, int value) where TEvent : LayoutEvent => e.SetOption(DefaultOptionsElementName, optionName, value);
 
         public static TEvent SetOption<TEvent>(this TEvent e, string elementName, string optionName, Guid id) where TEvent : LayoutEvent => e.SetOption(elementName, optionName, XmlConvert.ToString(id));
 
-        public static TEvent SetOption<TEvent>(this TEvent e, string optionName, Guid id) where TEvent : LayoutEvent => e.SetOption("Options", optionName, id);
+        public static TEvent SetOption<TEvent>(this TEvent e, string optionName, Guid id) where TEvent : LayoutEvent => e.SetOption(DefaultOptionsElementName, optionName, id);
 
-#endregion
+        public static TEvent SetOption<TEvent>(this TEvent e, string elementName, string optionName, Enum v) where TEvent : LayoutEvent => e.SetOption(elementName, optionName, v.ToString());
+
+        public static TEvent SetOption<TEvent>(this TEvent e, string optionName, Enum v) where TEvent : LayoutEvent => e.SetOption(DefaultOptionsElementName, optionName, v.ToString());
+
+        #endregion
     }
 
     public class LayoutEvent<TSender, TInfo> : LayoutEvent where TSender : class where TInfo : class {
