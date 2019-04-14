@@ -807,7 +807,7 @@ namespace DiMAX {
         EmergencyStopWithTrackPower = 0x12,
         ProgrammingRegister = 0x14,
         ProgrammingCV = 0x15,
-        ProgrammingCVPOM = 0x15,
+        ProgrammingCVPOM = ProgrammingCV,
         ReadCV = 0x16,
         ReadNewLocoData = 0x17,
         InterfaceAnnouncement = 0x18,

@@ -30,9 +30,9 @@ namespace LayoutManager.Logic {
                         EventManager.Event(new LayoutEvent("track-contact-triggered-notification", component));
                 }
                 else if (component is LayoutProximitySensorComponent)
-                    EventManager.Event(new LayoutEvent("proximity-sensor-state-changed-notification", component, state != 0 ? true : false));
+                    EventManager.Event(new LayoutEvent("proximity-sensor-state-changed-notification", component, state != 0));
                 else if (component is LayoutBlockDefinitionComponent)
-                    EventManager.Event(new LayoutEvent("train-detection-state-changed-notification", component, state != 0 ? true : false));
+                    EventManager.Event(new LayoutEvent("train-detection-state-changed-notification", component, state != 0));
                 else if (component is IModelComponentHasSwitchingState)
                     EventManager.Event(new LayoutEvent("track-component-state-changed-notification", connectionPoint, state));
                 else if (component is LayoutSignalComponent)
@@ -114,32 +114,6 @@ namespace LayoutManager.Logic {
 
         #endregion
 
-        #region Track Contact Component
-
-        [LayoutEvent("track-contact-triggered-notification", SenderType = typeof(LayoutTrackContactComponent))]
-        private void trackContactComponentStateChanged(LayoutEvent e) {
-            var trackContact = Ensure.NotNull<LayoutTrackContactComponent>(e.Sender, "connectionPoint");
-
-            if (!trackContact.IsTriggered) {
-                trackContact.IsTriggered = true;
-                EventManager.DelayedEvent(200, new LayoutEvent("exit-track-contact-triggered-state", trackContact));
-                EventManager.Event(new LayoutEvent("anonymous-track-contact-triggerd", trackContact));
-            }
-            else
-                Trace.WriteLine("Track contact " + trackContact.FullDescription + " triggered twice in 200 milli");
-        }
-
-        [LayoutEvent("exit-track-contact-triggered-state")]
-        private void exitTrackContactTriggeredState(LayoutEvent e) {
-            var trackContact = Ensure.NotNull<LayoutTrackContactComponent>(e.Sender, "connectionPoint");
-
-            trackContact.IsTriggered = false;
-        }
-
-        #endregion
-
-        #region Proximity sensor component
-
         private int _proximitySensorSensitivityDelay = -1;
 
         private int ProximitySensorSensitivityDelay {
@@ -179,8 +153,6 @@ namespace LayoutManager.Logic {
             _changingProximitySensors.Remove(component.Id);
             component.IsTriggered = state;
         }
-
-        #endregion
 
         #region Signal Component
 
@@ -277,7 +249,7 @@ namespace LayoutManager.Logic {
                 signalComponent.Redraw();
             }
             else
-                Debug.Assert(false);
+                Debug.Fail($"Signal component {signalComponent} not found not found in linked signal map");
         }
 
         [LayoutEvent("signal-component-unlinked")]
@@ -291,7 +263,7 @@ namespace LayoutManager.Logic {
                 signalComponent.Redraw();
             }
             else
-                Debug.Assert(false);
+                Debug.Fail($"Signal component {signalComponent} not found not found in linked signal map");
         }
 
         [LayoutEvent("removed-from-model", SenderType = typeof(LayoutBlockEdgeBase))]
@@ -306,7 +278,7 @@ namespace LayoutManager.Logic {
                     if (signalIdBlockEdgePair.Value == removedBlockEdge)
                         removeList.Add(signalIdBlockEdgePair.Key);
 
-                removeList.ForEach(delegate (Guid signalId) {
+                removeList.ForEach((Guid signalId) => {
                     var signal = LayoutModel.Component<LayoutSignalComponent>(signalId, LayoutPhase.All);
 
                     if (signal != null)
