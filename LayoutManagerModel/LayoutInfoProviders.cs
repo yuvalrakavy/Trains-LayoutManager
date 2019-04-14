@@ -156,9 +156,9 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Create a new element for the component. The provider is based on this element
         /// </summary>
-        /// <param name="xmlInfo">The XML document in which to create the provider</param>
-        /// <param name="parentPath">The XPath to the new provider's element parent</param>
+        /// <param name="container">The XML element in which to create the provider</param>
         /// <param name="elementName">The provider's element name</param>
+        /// <param name="parentPath">The XPath to the new provider's element parent</param>
         public static XmlElement CreateProviderElement(XmlElement container, string elementName, string? parentPath = null) {
             XmlElement element = container.OwnerDocument.CreateElement(elementName);
 
@@ -639,7 +639,7 @@ namespace LayoutManager.Model {
                         var nameProvider = Component != null ? new LayoutTextInfo(Component, "Name") : new LayoutTextInfo(ContainerElement, "Name");
 
                         return nameProvider.PositionProvider.Side;
-                    };
+                    }
 
                     LayoutDrawingSide usedSide = AttributeValue(A_ImageSide).Enum<LayoutDrawingSide>() ?? GetDefaultSide();
                     return LayoutPositionInfo.GetElementPathPositionPath(LayoutPositionInfo.GetAlternateLayoutDrawingSide(usedSide));
