@@ -42,7 +42,8 @@ namespace LayoutManager {
 
         public XmlElement Element {
             get {
-                Debug.Assert(OptionalElement != null);
+                if (OptionalElement == null)
+                    throw new ArgumentNullException("Element is (null)");
                 return OptionalElement;
             }
 

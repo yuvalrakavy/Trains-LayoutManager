@@ -116,11 +116,8 @@ namespace LayoutManager {
         private readonly LayoutTrackLink destinationTrackLink;
 
         public LayoutComponentLinkCommand(LayoutTrackLinkComponent trackLinkComponent, LayoutTrackLink destinationTrackLink) {
-            if (destinationTrackLink == null)
-                throw new ArgumentException("desintation TrackLink is null", nameof(destinationTrackLink));
-
             this.trackLinkComponent = trackLinkComponent;
-            this.destinationTrackLink = destinationTrackLink;
+            this.destinationTrackLink = destinationTrackLink ?? throw new ArgumentException("desintation TrackLink is null", nameof(destinationTrackLink));
         }
 
         public override void Do() {
@@ -299,16 +296,13 @@ namespace LayoutManager {
         }
 
         public override void Do() {
-            if (bus.BusType.Topology == ControlBusTopology.DaisyChain) {
-                if (insertBefore == null)
-                    addedModule = new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName));
-                else
-                    addedModule = new ControlModuleReference(bus.Insert(moduleLocationID, insertBefore, moduleTypeName));
-            }
-            else if (bus.BusType.Topology == ControlBusTopology.RandomAddressing || bus.BusType.Topology == ControlBusTopology.Fixed)
-                addedModule = new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName, address));
-            else
-                Debug.Assert(false);
+            addedModule = bus.BusType.Topology switch
+            {
+                ControlBusTopology.DaisyChain when insertBefore == null => new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName)),
+                ControlBusTopology.DaisyChain => new ControlModuleReference(bus.Insert(moduleLocationID, insertBefore, moduleTypeName)),
+                var t when t == ControlBusTopology.Fixed || t == ControlBusTopology.RandomAddressing => new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName, address)),
+                _ => throw new ArgumentException($"Unexpected bus topology: {bus.BusType.Topology}")
+            };
         }
 
         public ControlModuleReference AddModule => addedModule;
@@ -347,7 +341,7 @@ namespace LayoutManager {
             else if (bus.BusType.Topology == ControlBusTopology.RandomAddressing || bus.BusType.Topology == ControlBusTopology.Fixed)
                 address = module.Address;
             else
-                Debug.Assert(false);
+                Debug.Fail($"Unexpected bus topology {bus.BusType.Topology}");
 
             this.module = new ControlModuleReference(module);
         }
@@ -606,12 +600,12 @@ namespace LayoutManager {
         private bool userActionRequired;
 
         public SetControlUserActionRequiredCommand(IControlSupportUserAction subject, bool userActionRequired) {
-            if (subject is ControlConnectionPoint)
-                connectionPointRef = new ControlConnectionPointReference((ControlConnectionPoint)subject);
-            else if (subject is ControlConnectionPointReference)
-                connectionPointRef = (ControlConnectionPointReference)subject;
-            else if (subject is ControlModule)
-                moduleRef = new ControlModuleReference((ControlModule)subject);
+            if (subject is ControlConnectionPoint controlConnectionPoint)
+                connectionPointRef = new ControlConnectionPointReference(controlConnectionPoint);
+            else if (subject is ControlConnectionPointReference controlConnectionPointReference)
+                connectionPointRef = controlConnectionPointReference;
+            else if (subject is ControlModule controlModule)
+                moduleRef = new ControlModuleReference(controlModule);
             else
                 throw new ArgumentException("Subject is not supported");
 

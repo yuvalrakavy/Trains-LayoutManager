@@ -447,7 +447,7 @@ namespace LayoutManager.Components {
                                 PowerSelectorComponent.AddSwitchingCommands(switchingCommands, PowerSelectorComponent.RevereseOnOffRelay ? 0 : 1, LayoutPowerSelectorComponent.PowerOnOffConnectionPoint);
                             }
                             else
-                                Debug.Assert(false);
+                                Debug.Fail($"Unexpected power selector switching method: {PowerSelectorComponent.SwitchingMethod}");
                         }
                         else if (PowerSelectorComponent.Inlet2.IsConnected && PowerSelectorComponent.Inlet2.ConnectedOutlet.ObtainablePowers.Any(p => p.Type == powerType)) {
                             PowerSelectorComponent.Inlet2.ConnectedOutlet.SelectPower(powerType, switchingCommands);
@@ -466,7 +466,7 @@ namespace LayoutManager.Components {
                                 PowerSelectorComponent.AddSwitchingCommands(switchingCommands, PowerSelectorComponent.RevereseOnOffRelay ? 0 : 1, LayoutPowerSelectorComponent.PowerOnOffConnectionPoint);
                             }
                             else
-                                Debug.Assert(false);
+                                Debug.Fail($"Unexpected power selector switching method: {PowerSelectorComponent.SwitchingMethod}");
                         }
                         else
                             ok = false;

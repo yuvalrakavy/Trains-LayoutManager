@@ -257,7 +257,7 @@ namespace LayoutManager.Logic {
         }
 
         public override int GetHashCode() {
-            Debug.Assert(false);
+            Debug.Fail("Unexpected call to ModelTopologyEntry.GetHashCode()");
             return base.GetHashCode();
         }
     }

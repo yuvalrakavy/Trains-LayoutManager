@@ -24,7 +24,9 @@ namespace LayoutManager {
         public static ConvertableString AttributeValue(this IObjectHasXml xmlObject, string name) => xmlObject.OptionalElement.AttributeValue(name);
 
         public static void SetAttribute(this IObjectHasXml xmlObject, string name, string? v) {
-            Debug.Assert(xmlObject.OptionalElement != null);
+            if (xmlObject.OptionalElement == null)
+                throw new ArgumentNullException($"Trying to set attribute {name} to {v ?? "(null)"} for XmlElement which is null");
+
             if (v == null)
                 xmlObject.OptionalElement.RemoveAttribute(name);
             else

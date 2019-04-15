@@ -61,7 +61,7 @@ namespace Intellibox {
     #pragma warning disable IDE0051, IDE0060, IDE0052
     public class IntelliboxComponent : LayoutCommandStationComponent {
         private const string A_MinTimeBetweenSpeedSteps = "MinTimeBetweenSpeedSteps";
-        private static readonly LayoutTraceSwitch traceIntellibox = new LayoutTraceSwitch("Intellibox", "Intellibox Command Station");
+        //private static readonly LayoutTraceSwitch traceIntellibox = new LayoutTraceSwitch("Intellibox", "Intellibox Command Station");
         private OutputManager commandStationManager;
 
         private ControlBus _motorolaBus = null;
@@ -72,7 +72,6 @@ namespace Intellibox {
         private const int queueLocoCommands = 2;                // Queue for locomotive control commands
 
         private const int switchBatchSize = 10;             // Change the state of upto 10 solenoids
-        private const string A_ReadIntervalTimeout = "ReadIntervalTimeout";
 
         public IntelliboxComponent() {
             this.XmlDocument.LoadXml(
@@ -280,7 +279,7 @@ namespace Intellibox {
             else {
                 double factor = 126 / loco.SpeedSteps;
 
-                logicalSpeed = (int)(1 + speed * factor);
+                logicalSpeed = (int)(1 + (speed * factor));
             }
 
             commandStationManager.AddCommand(queueLocoCommands, new IntelliboxLocomotiveCommand(this, loco.AddressProvider.Unit, logicalSpeed, direction, train.Lights));
@@ -533,7 +532,7 @@ namespace Intellibox {
                     break;
 
                 default:
-                    message = "Unknown error 0x" + errorCode.ToString("x"); ;
+                    message = "Unknown error 0x" + errorCode.ToString("x");
                     break;
             }
 
@@ -692,9 +691,7 @@ namespace Intellibox {
                 byte moduleNo = Command(0xcb);
 
                 while (moduleNo > 0) {
-                    UInt16 mask;
-
-                    mask = GetResponse();
+                    UInt16 mask = GetResponse();
                     mask = (UInt16)((mask << 8) | GetResponse());
 
                     while (moduleNo > feedbackData.Count)

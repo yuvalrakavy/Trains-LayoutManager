@@ -1862,7 +1862,8 @@ namespace LayoutManager.Model {
             get => LayoutModel.StateManager.Trains[TrainId];
 
             set {
-                Debug.Assert(value != null);
+                if (value == null)
+                    throw new ArgumentNullException("Train property cannot be set to null");
                 TrainId = value.Id;
             }
         }
@@ -2240,9 +2241,8 @@ namespace LayoutManager.Model {
             }
 
             set {
-                Debug.Assert(value != null);
-
-                Ensure.NotNull<XmlElement>(value, "EventScriptElement");
+                if (value == null)
+                    throw new ArgumentNullException("EventScriptElement cannot be set to null");
 
                 XmlElement eventScriptElement = Element[E_EventScript];
                 XmlElement theScriptElement;

@@ -419,12 +419,12 @@ namespace LayoutManager {
             view.Area = areaTabPage.Area;
 
             // Wire events in order to reflect them to the current tool
-            view.MouseDown += new MouseEventHandler(this.LayoutView_MouseDown);
-            view.MouseMove += new MouseEventHandler(this.LayoutView_MouseMove);
-            view.ModelComponentClick += new EventHandler<LayoutViewEventArgs>(this.LayoutView_ModelComponentClick);
-            view.ModelComponentDragged += new EventHandler<LayoutViewEventArgs>(this.LayoutView_ModelComponentDragged);
-            view.ModelComponentQueryDrop += new EventHandler<LayoutViewEventArgs>(LayoutView_ModelComponentQueryDrop);
-            view.ModelComponentDrop += new EventHandler<LayoutViewEventArgs>(LayoutView_ModelComponentDrop);
+            view.MouseDown += this.LayoutView_MouseDown;
+            view.MouseMove += this.LayoutView_MouseMove;
+            view.ModelComponentClick += this.LayoutView_ModelComponentClick;
+            view.ModelComponentDragged += this.LayoutView_ModelComponentDragged;
+            view.ModelComponentQueryDrop += LayoutView_ModelComponentQueryDrop;
+            view.ModelComponentDrop += LayoutView_ModelComponentDrop;
 
             LayoutFrameWindowAreaViewTabPage viewTabPage = new LayoutFrameWindowAreaViewTabPage(view) {
                 Text = name
@@ -560,8 +560,8 @@ namespace LayoutManager {
         /// <param name="menuSetting">Instructions for the menu item setting</param>
         private void doUIsetting(UIsettingEntry[] uiSetting) {
             foreach (UIsettingEntry aEntry in uiSetting) {
-                if (aEntry is DoSettingEntry)
-                    doUIsetting(((DoSettingEntry)aEntry).DoThis);
+                if (aEntry is DoSettingEntry doSettingEntry)
+                    doUIsetting((doSettingEntry).DoThis);
                 else if (aEntry is MenuSettingEntry menuEntry) {
                     if (menuEntry.Setting == UIitemSetting.Hidden)
                         menuEntry.MenuItem.Visible = false;
@@ -585,8 +585,8 @@ namespace LayoutManager {
         /// <param name="menuSetting"0>Instructions for the menu item setting</param>
         private void undoUIsetting(UIsettingEntry[] uiSetting) {
             foreach (UIsettingEntry aEntry in uiSetting) {
-                if (aEntry is DoSettingEntry)
-                    undoUIsetting(((DoSettingEntry)aEntry).DoThis);
+                if (aEntry is DoSettingEntry doSettingEntry)
+                    undoUIsetting(doSettingEntry.DoThis);
                 else if (aEntry is MenuSettingEntry menuEntry) {
                     if (menuEntry.Setting == UIitemSetting.Hidden)
                         menuEntry.MenuItem.Visible = true;
@@ -748,7 +748,7 @@ namespace LayoutManager {
                 hideMarkerTimer = new Timer {
                     Interval = 500
                 };
-                hideMarkerTimer.Tick += new EventHandler(this.onHideMarker);
+                hideMarkerTimer.Tick += this.onHideMarker;
                 hideMarkerTimer.Start();
             }
 
@@ -1022,7 +1022,7 @@ namespace LayoutManager {
                 if (viewWithMouse != null) {
                     LayoutHitTestResult hitTestResult = viewWithMouse.HitTest(viewMouseLocation);
                     LayoutModelSpotComponentCollection spot = hitTestResult.Area[hitTestResult.ModelLocation, LayoutModel.ActivePhases];
-                    Rectangle bounds = new Rectangle(new Point(viewMouseLocation.X - SystemInformation.DragSize.Width / 2, viewMouseLocation.Y - SystemInformation.DragSize.Height / 2),
+                    Rectangle bounds = new Rectangle(new Point(viewMouseLocation.X - (SystemInformation.DragSize.Width / 2), viewMouseLocation.Y - (SystemInformation.DragSize.Height / 2)),
                         SystemInformation.DragSize);
 
                     if (spot != null && bounds.Contains(viewWithMouse.PointToClient(Control.MousePosition))) {
@@ -1095,7 +1095,7 @@ namespace LayoutManager {
                         var entries = GetPhasesEntries(simulate);
 
                         if (entries.Count == 1)
-                            entries[0].Item2(this, new EventArgs());
+                            entries[0].Item2(this, EventArgs.Empty);
                         else {
                             var menu = new ContextMenu();
 
@@ -1552,10 +1552,7 @@ namespace LayoutManager {
 
             protected override void OnClick(EventArgs e) {
                 try {
-                    if (manualDispatchRegion.Active)
-                        manualDispatchRegion.Active = false;
-                    else
-                        manualDispatchRegion.Active = true;
+                    manualDispatchRegion.Active = !manualDispatchRegion.Active;
 
                     EventManager.Event(new LayoutEvent("manual-dispatch-region-status-changed", manualDispatchRegion, manualDispatchRegion.Active));
                 }
@@ -1608,11 +1605,11 @@ namespace LayoutManager {
             var entries = new List<Tuple<string, EventHandler>>();
 
             if (LayoutModel.HasPhase(LayoutPhase.Operational))
-                entries.Add(new Tuple<string, EventHandler>("Operational region", (s, ea) => { doThis(LayoutPhase.Operational); }));
+                entries.Add(new Tuple<string, EventHandler>("Operational region", (s, ea) => doThis(LayoutPhase.Operational)));
             if (LayoutModel.HasPhase(LayoutPhase.Construction))
-                entries.Add(new Tuple<string, EventHandler>("In construction + Operational regions", (s, ea) => { doThis(LayoutPhase.NotPlanned); }));
+                entries.Add(new Tuple<string, EventHandler>("In construction + Operational regions", (s, ea) => doThis(LayoutPhase.NotPlanned)));
             if (LayoutModel.HasPhase(LayoutPhase.Planned))
-                entries.Add(new Tuple<string, EventHandler>("All diagram", (s, ea) => { doThis(LayoutPhase.All); }));
+                entries.Add(new Tuple<string, EventHandler>("All diagram", (s, ea) => doThis(LayoutPhase.All)));
 
             return entries;
         }
@@ -1925,7 +1922,7 @@ namespace LayoutManager {
                 Dock = DockStyle.Fill,
                 Alignment = TabAlignment.Bottom
             };
-            TabViews.SelectedIndexChanged += new EventHandler(tabViews_SelectedIndexChanged);
+            TabViews.SelectedIndexChanged += tabViews_SelectedIndexChanged;
 
             this.Text = Area.Name;
             this.Controls.Add(TabViews);
@@ -1943,7 +1940,7 @@ namespace LayoutManager {
 
         protected override void Dispose(bool disposing) {
             if (disposing)
-                TabViews.SelectedIndexChanged -= new EventHandler(tabViews_SelectedIndexChanged);
+                TabViews.SelectedIndexChanged -= tabViews_SelectedIndexChanged;
         }
 
         private void tabViews_SelectedIndexChanged(object sender, EventArgs e) {
