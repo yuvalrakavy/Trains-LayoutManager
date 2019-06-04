@@ -156,7 +156,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.radioButtonCustomPosition.Size = new System.Drawing.Size(132, 16);
             this.radioButtonCustomPosition.TabIndex = 3;
             this.radioButtonCustomPosition.Text = "Custom Position:";
-            this.radioButtonCustomPosition.CheckedChanged += new System.EventHandler(this.radioButtonCustomPosition_CheckedChanged);
+            this.radioButtonCustomPosition.CheckedChanged += this.radioButtonCustomPosition_CheckedChanged;
             // 
             // radioButtonStandardPosition
             // 
@@ -165,7 +165,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.radioButtonStandardPosition.Size = new System.Drawing.Size(116, 16);
             this.radioButtonStandardPosition.TabIndex = 3;
             this.radioButtonStandardPosition.Text = "Standard Position:";
-            this.radioButtonStandardPosition.CheckedChanged += new System.EventHandler(this.radioButtonStandardPosition_CheckedChanged);
+            this.radioButtonStandardPosition.CheckedChanged += this.radioButtonStandardPosition_CheckedChanged;
             // 
             // TextProviderPositionDefinition
             // 

@@ -254,10 +254,7 @@ namespace LayoutManager {
         /// <param name="root">Default directory for storing this kind of files</param>
         /// <returns>Path for the needed file</returns>
         public static string ValueToFilePath(string v, string root) {
-            if (Path.IsPathRooted(v))
-                return v;
-            else
-                return Path.Combine(root, v);
+            return Path.IsPathRooted(v) ? v : Path.Combine(root, v);
         }
 
         /// <summary>
@@ -361,7 +358,7 @@ namespace LayoutManager {
         public bool IsDefined(string filename) {
             string name = Path.GetFileName(filename);
 
-            return Exists(delegate (LayoutAssembly a) { return Path.GetFileName(a.AssemblyFilename).Equals(name, StringComparison.InvariantCultureIgnoreCase); });
+            return Exists((LayoutAssembly a) => Path.GetFileName(a.AssemblyFilename).Equals(name, StringComparison.InvariantCultureIgnoreCase));
         }
 
         /// <summary>
@@ -521,13 +518,12 @@ namespace LayoutManager {
             if (fileInfo.Exists)
                 fileInfo.MoveTo(backupFilename);
 
-            using (FileStream fileOut = new FileStream(DocumentFilename, FileMode.Create, FileAccess.Write)) {
-                XmlTextWriter w = new XmlTextWriter(fileOut, System.Text.Encoding.UTF8);
-                w.WriteStartDocument();
-                WriteXml(w);
-                w.WriteEndDocument();
-                w.Close();
-            }
+            using FileStream fileOut = new FileStream(DocumentFilename, FileMode.Create, FileAccess.Write);
+            XmlTextWriter w = new XmlTextWriter(fileOut, System.Text.Encoding.UTF8);
+            w.WriteStartDocument();
+            WriteXml(w);
+            w.WriteEndDocument();
+            w.Close();
         }
 
         /// <summary>
@@ -535,15 +531,14 @@ namespace LayoutManager {
         /// </summary>
         public void LoadState() {
             try {
-                using (FileStream fileIn = new FileStream(DocumentFilename, FileMode.Open, FileAccess.Read)) {
-                    XmlTextReader r = new XmlTextReader(fileIn) {
-                        WhitespaceHandling = WhitespaceHandling.None
-                    };
-                    r.Read();       // <?XML stuff >
+                using FileStream fileIn = new FileStream(DocumentFilename, FileMode.Open, FileAccess.Read);
+                XmlTextReader r = new XmlTextReader(fileIn) {
+                    WhitespaceHandling = WhitespaceHandling.None
+                };
+                r.Read();       // <?XML stuff >
 
-                    ReadXml(r);
-                    r.Close();
-                }
+                ReadXml(r);
+                r.Close();
             }
             catch (DirectoryNotFoundException) {
                 Directory.CreateDirectory(Path.GetDirectoryName(DocumentFilename));

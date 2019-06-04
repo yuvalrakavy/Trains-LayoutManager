@@ -49,7 +49,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonUsrExistingRamp.Size = new System.Drawing.Size(112, 22);
             this.buttonUsrExistingRamp.TabIndex = 1;
             this.buttonUsrExistingRamp.Text = "Use existing profile";
-            this.buttonUsrExistingRamp.Click += new System.EventHandler(this.buttonUsrExistingRamp_Click);
+            this.buttonUsrExistingRamp.Click += this.buttonUsrExistingRamp_Click;
             // 
             // MotionRampWithCopyEditor
             // 

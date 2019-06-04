@@ -93,7 +93,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         private void drawSwitch(Graphics g, int iSwitch, int switchIndex) {
             int switchHeight = Height - topMargin - bottomMargin;
-            Rectangle switchRect = new Rectangle(new Point(leftMargin + xUnit * 2 * iSwitch, topMargin), new Size(xUnit, switchHeight));
+            Rectangle switchRect = new Rectangle(new Point(leftMargin + (xUnit * 2 * iSwitch), topMargin), new Size(xUnit, switchHeight));
             bool thumbUp = (switchValue & (1 << switchIndex)) != 0;
             int thumbHeight = switchHeight / 3;
             int yThumb = thumbUp ? switchRect.Top + 1 : switchRect.Bottom - thumbHeight - 2;
@@ -107,24 +107,22 @@ namespace LayoutManager.CommonUI.Controls {
             g.DrawLines(Pens.White, new Point[] { new Point(thumbRect.Left, thumbRect.Bottom), new Point(thumbRect.Left, thumbRect.Top), new Point(thumbRect.Right, thumbRect.Top) });
             g.DrawLines(Pens.Gainsboro, new Point[] { new Point(thumbRect.Right, thumbRect.Top + 1), new Point(thumbRect.Right, thumbRect.Bottom), new Point(thumbRect.Left, thumbRect.Bottom) });
 
-            using (Font labelFont = new Font("Arial", 6.5F)) {
-                string label = ((int)(switchIndex + SwitchCountBase)).ToString();
-                SizeF labelSize = g.MeasureString(label, labelFont);
+            using Font labelFont = new Font("Arial", 6.5F);
+            string label = ((int)(switchIndex + SwitchCountBase)).ToString();
+            SizeF labelSize = g.MeasureString(label, labelFont);
 
-                g.DrawString(label, labelFont, Brushes.White, new RectangleF(new PointF(switchRect.Left + (switchRect.Width - labelSize.Width) / 2, switchRect.Bottom + 2), labelSize));
-            }
+            g.DrawString(label, labelFont, Brushes.White, new RectangleF(new PointF(switchRect.Left + ((switchRect.Width - labelSize.Width) / 2), switchRect.Bottom + 2), labelSize));
         }
 
         private void drawLabels(Graphics g) {
-            using (Font labelFont = new Font("Arial", 6.5F)) {
-                SizeF labelSize;
+            using Font labelFont = new Font("Arial", 6.5F);
+            SizeF labelSize;
 
-                labelSize = g.MeasureString("On", labelFont);
-                g.DrawString("On", labelFont, Brushes.White, new RectangleF(new PointF(2, 2), labelSize));
+            labelSize = g.MeasureString("On", labelFont);
+            g.DrawString("On", labelFont, Brushes.White, new RectangleF(new PointF(2, 2), labelSize));
 
-                labelSize = g.MeasureString("Off", labelFont);
-                g.DrawString("Off", labelFont, Brushes.White, new RectangleF(new PointF(2, Height - 2 - labelSize.Height), labelSize));
-            }
+            labelSize = g.MeasureString("Off", labelFont);
+            g.DrawString("Off", labelFont, Brushes.White, new RectangleF(new PointF(2, Height - 2 - labelSize.Height), labelSize));
         }
 
         protected override void OnPaint(PaintEventArgs pe) {

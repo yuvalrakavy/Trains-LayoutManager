@@ -150,7 +150,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.tripPlanList.SelectedTripPlan = null;
             this.tripPlanList.Size = new System.Drawing.Size(504, 192);
             this.tripPlanList.TabIndex = 0;
-            this.tripPlanList.SelectedTripPlanChanged += new System.EventHandler(this.tripPlanList_SelectedTripPlanChanged);
+            this.tripPlanList.SelectedTripPlanChanged += this.tripPlanList_SelectedTripPlanChanged;
             // 
             // splitter
             // 
@@ -203,7 +203,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(64, 22);
             this.buttonCancel.TabIndex = 4;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // groupBoxTripPlanPreview
             // 
@@ -244,7 +244,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonGo.Size = new System.Drawing.Size(64, 22);
             this.buttonGo.TabIndex = 3;
             this.buttonGo.Text = "Go!";
-            this.buttonGo.Click += new System.EventHandler(this.buttonGo_Click);
+            this.buttonGo.Click += this.buttonGo_Click;
             // 
             // buttonEdit
             // 
@@ -254,7 +254,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonEdit.Size = new System.Drawing.Size(64, 22);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "Edit..";
-            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
+            this.buttonEdit.Click += this.buttonEdit_Click;
             // 
             // TripPlanCatalog
             // 
@@ -266,9 +266,9 @@ namespace LayoutManager.Tools.Dialogs {
             this.Controls.Add(this.panelTripPlans);
             this.Name = "TripPlanCatalog";
             this.Text = "Saved Trip-plans";
-            this.Closed += new System.EventHandler(this.TripPlanCatalog_Closed);
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.TripPlanCatalog_Closing);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TripPlanCatalog_FormClosing);
+            this.Closed += this.TripPlanCatalog_Closed;
+            this.Closing += this.TripPlanCatalog_Closing;
+            this.FormClosing += this.TripPlanCatalog_FormClosing;
             this.panelTripPlans.ResumeLayout(false);
             this.panelTripPlanPreview.ResumeLayout(false);
             this.groupBoxTripPlanPreview.ResumeLayout(false);

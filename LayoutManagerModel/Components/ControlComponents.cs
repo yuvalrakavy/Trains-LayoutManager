@@ -890,7 +890,7 @@ namespace LayoutManager.Components {
                     LayoutSignalType.Distance => "distance signal control",
                     LayoutSignalType.Lights => "signal control",
                     LayoutSignalType.Semaphore => "semaphore",
-                    _ =>throw new ArgumentException("Invalid signal type")
+                    _ => throw new ArgumentException("Invalid signal type")
                 };
 
                 return Array.AsReadOnly<ModelComponentControlConnectionDescription>(new ModelComponentControlConnectionDescription[] {

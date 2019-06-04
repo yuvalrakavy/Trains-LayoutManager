@@ -133,10 +133,7 @@ namespace LayoutManager.Tools {
             if (LayoutTrackComponent.IsDiagonal(cp1, cp2))
                 return "Diagonal track";
             else {
-                if (LayoutTrackComponent.IsHorizontal(cp1))
-                    return "Horizontal track";
-                else
-                    return "Vertical track";
+                return LayoutTrackComponent.IsHorizontal(cp1) ? "Horizontal track" : "Vertical track";
             }
         }
 
@@ -433,10 +430,9 @@ namespace LayoutManager.Tools {
             };
             trackPainter.Paint(g);
 
-            using (LayoutTrackLinkPainter linkPainter = new LayoutTrackLinkPainter(new Size(32, 32),
-                      new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.L, LayoutComponentConnectionPoint.R })) {
-                linkPainter.Paint(g);
-            }
+            using LayoutTrackLinkPainter linkPainter = new LayoutTrackLinkPainter(new Size(32, 32),
+                      new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.L, LayoutComponentConnectionPoint.R });
+            linkPainter.Paint(g);
         }
 
         [LayoutEvent("create-model-component", IfSender = "Item[@Name='track-link']")]
@@ -505,11 +501,11 @@ namespace LayoutManager.Tools {
             };
             trackPainter.Paint(g);
 
-            using (LayoutTriggerableBlockEdgePainter contactPainter = new LayoutTriggerableBlockEdgePainter(componentType: LayoutTriggerableBlockEdgePainter.ComponentType.TrackContact,
-                componentSize: new Size(32, 32), cp: new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B })) {
-                contactPainter.ContactSize = new Size(6, 6);
-                contactPainter.Paint(g);
-            }
+            using LayoutTriggerableBlockEdgePainter contactPainter = new LayoutTriggerableBlockEdgePainter(componentType: LayoutTriggerableBlockEdgePainter.ComponentType.TrackContact,
+                componentSize: new Size(32, 32), cp: new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B }) {
+                ContactSize = new Size(6, 6)
+            };
+            contactPainter.Paint(g);
         }
 
         [LayoutEvent("create-model-component", IfSender = "Item[@Name='track-contact']")]
@@ -534,11 +530,11 @@ namespace LayoutManager.Tools {
             };
             trackPainter.Paint(g);
 
-            using (LayoutTriggerableBlockEdgePainter sensorPainter = new LayoutTriggerableBlockEdgePainter(componentType: LayoutTriggerableBlockEdgePainter.ComponentType.ProximitySensor,
-                componentSize: new Size(32, 32), cp: new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B })) {
-                sensorPainter.ContactSize = new Size(6, 6);
-                sensorPainter.Paint(g);
-            }
+            using LayoutTriggerableBlockEdgePainter sensorPainter = new LayoutTriggerableBlockEdgePainter(componentType: LayoutTriggerableBlockEdgePainter.ComponentType.ProximitySensor,
+                componentSize: new Size(32, 32), cp: new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B }) {
+                ContactSize = new Size(6, 6)
+            };
+            sensorPainter.Paint(g);
         }
 
         [LayoutEvent("create-model-component", IfSender = "Item[@Name='proximity-sensor']")]
@@ -564,11 +560,11 @@ namespace LayoutManager.Tools {
             };
             trackPainter.Paint(g);
 
-            using (LayoutBlockEdgePainter painter = new LayoutBlockEdgePainter(new Size(32, 32),
-                      new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B })) {
-                painter.ContactSize = new Size(6, 6);
-                painter.Paint(g);
-            }
+            using LayoutBlockEdgePainter painter = new LayoutBlockEdgePainter(new Size(32, 32),
+                      new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B }) {
+                ContactSize = new Size(6, 6)
+            };
+            painter.Paint(g);
         }
 
         [LayoutEvent("create-model-component", IfSender = "Item[@Name='block-edge']")]
@@ -609,11 +605,11 @@ namespace LayoutManager.Tools {
             };
             trackPainter.Paint(g);
 
-            using (LayoutBlockInfoPainter blockInfoPainter = new LayoutBlockInfoPainter(new Size(32, 32),
-                      new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B })) {
-                blockInfoPainter.InfoBoxSize = new Size(6, 6);
-                blockInfoPainter.Paint(g);
-            }
+            using LayoutBlockInfoPainter blockInfoPainter = new LayoutBlockInfoPainter(new Size(32, 32),
+                      new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B }) {
+                InfoBoxSize = new Size(6, 6)
+            };
+            blockInfoPainter.Paint(g);
         }
 
         [LayoutEvent("create-model-component", IfSender = "Item[@Name='block-info']")]
@@ -852,10 +848,9 @@ namespace LayoutManager.Tools {
             };
             trackPainter.Paint(g);
 
-            using (LayoutPowerConnectorPainter trackPowerPainter = new LayoutPowerConnectorPainter(new Size(32, 32),
-                      new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B })) {
-                trackPowerPainter.Paint(g);
-            }
+            using LayoutPowerConnectorPainter trackPowerPainter = new LayoutPowerConnectorPainter(new Size(32, 32),
+                      new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B });
+            trackPowerPainter.Paint(g);
         }
 
         [LayoutEvent("create-model-component", IfSender = "Item[@Name='track-power']")]

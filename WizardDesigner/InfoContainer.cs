@@ -29,9 +29,7 @@ namespace Gui.Wizard {
         /// </summary>
         protected override void Dispose(bool disposing) {
             if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -76,7 +74,7 @@ namespace Gui.Wizard {
             this.Controls.Add(this.picImage);
             this.Name = "InfoContainer";
             this.Size = new System.Drawing.Size(480, 388);
-            this.Load += new System.EventHandler(this.InfoContainer_Load);
+            this.Load += this.InfoContainer_Load;
             this.ResumeLayout(false);
         }
         #endregion

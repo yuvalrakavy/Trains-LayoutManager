@@ -53,9 +53,7 @@ namespace Gui.Wizard {
         /// </summary>
         protected override void Dispose(bool disposing) {
             if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -96,7 +94,7 @@ namespace Gui.Wizard {
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.TabIndex = 5;
             this.btnCancel.Text = "Cancel";
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            this.btnCancel.Click += this.btnCancel_Click;
             // 
             // btnNext
             // 
@@ -106,8 +104,8 @@ namespace Gui.Wizard {
             this.btnNext.Name = "btnNext";
             this.btnNext.TabIndex = 4;
             this.btnNext.Text = "&Next >";
-            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
-            this.btnNext.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnNext_MouseDown);
+            this.btnNext.Click += this.btnNext_Click;
+            this.btnNext.MouseDown += this.btnNext_MouseDown;
             // 
             // btnBack
             // 
@@ -117,8 +115,8 @@ namespace Gui.Wizard {
             this.btnBack.Name = "btnBack";
             this.btnBack.TabIndex = 3;
             this.btnBack.Text = "< &Back";
-            this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
-            this.btnBack.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnBack_MouseDown);
+            this.btnBack.Click += this.btnBack_Click;
+            this.btnBack.MouseDown += this.btnBack_MouseDown;
             // 
             // pnlButtonBright3d
             // 
@@ -144,7 +142,7 @@ namespace Gui.Wizard {
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
             this.Name = "Wizard";
             this.Size = new System.Drawing.Size(444, 272);
-            this.Load += new System.EventHandler(this.Wizard_Load);
+            this.Load += this.Wizard_Load;
             this.pnlButtons.ResumeLayout(false);
             this.ResumeLayout(false);
         }

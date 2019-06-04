@@ -44,10 +44,7 @@ namespace LayoutManager.Dialogs {
             get {
                 if (radioButtonBestFit.Checked)
                     return PrintViewScope.BestFit;
-                else if (radioButtonAllViews.Checked)
-                    return PrintViewScope.All;
-                else
-                    return PrintViewScope.Active;
+                else return radioButtonAllViews.Checked ? PrintViewScope.All : PrintViewScope.Active;
             }
         }
 

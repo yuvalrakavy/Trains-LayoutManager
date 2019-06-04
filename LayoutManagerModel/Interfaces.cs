@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#nullable enable
 namespace LayoutManager {
     #region Interfaces for various services
 
@@ -33,7 +34,7 @@ namespace LayoutManager {
 
         PreviewRouteManager PreviewRouteManager { get; }
         LayoutSelection UserSelection { get; }
-        OperationModeParameters OperationModeSettings { get; }
+        OperationModeParameters? OperationModeSettings { get; }
         ILayoutCommandManager CommandManager { get; }
 
         // Operations
@@ -74,12 +75,12 @@ namespace LayoutManager {
         public static bool IsDesignMode => !IsOperationMode;
         public static bool TrainsAnalysisPhase => Instance.TrainsAnalysisPhase;
         public static bool IsDesignTimeActivation => Instance.IsDesignTimeActivation;
-        public static bool IsOperationSimulationMode => IsOperationMode && OperationModeSettings.Simulation;
+        public static bool IsOperationSimulationMode => IsOperationMode && OperationModeSettings != null && OperationModeSettings.Simulation;
 
         public static PreviewRouteManager PreviewRouteManager => Instance.PreviewRouteManager;
         public static ILayoutSelectionManager SelectionManager => (ILayoutSelectionManager)Instance;
         public static LayoutSelection UserSelection => Instance.UserSelection;
-        public static OperationModeParameters OperationModeSettings => Instance.OperationModeSettings;
+        public static OperationModeParameters? OperationModeSettings => Instance.OperationModeSettings;
         public static ILayoutCommandManager CommandManager => Instance.CommandManager;
         public static LayoutModuleManager ModuleManager => Instance.ModuleManager;
 
@@ -107,10 +108,7 @@ namespace LayoutManager {
         public static Guid GetFrameWindowId(this LayoutEvent e) {
             if (e.HasOption(elementName: "FrameWindow", optionName: "ID"))
                 return (Guid?)e.GetOption(elementName: "FrameWindow", optionName: "ID") ?? Guid.Empty;
-            else if (LayoutController.ActiveFrameWindow != null)
-                return LayoutController.ActiveFrameWindow.Id;
-            else
-                return Guid.Empty;
+            else return LayoutController.ActiveFrameWindow != null ? LayoutController.ActiveFrameWindow.Id : Guid.Empty;
         }
 
         public static bool IsThisFrameWindow(this LayoutEvent e, ILayoutFrameWindow me) => me.Id == e.GetFrameWindowId();
@@ -410,7 +408,7 @@ namespace LayoutManager {
         /// <summary>
         /// The destination track
         /// </summary>
-        LayoutTrackComponent DestinationTrack { get; }
+        LayoutTrackComponent? DestinationTrack { get; }
 
         /// <summary>
         /// The direction in which the train has to move from the origin (source)
@@ -560,7 +558,7 @@ namespace LayoutManager {
         Motorola = 0x02,
 
         None = 0x00,
-        All = 0xff,
+        All = NRMA | Motorola,
     }
 
     /// <summary>
@@ -629,9 +627,6 @@ namespace LayoutManager {
         bool SelectPower(LayoutPowerType powerType, IList<SwitchingCommand> switchingCommands);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
     public interface ILayoutPowerInlet : IObjectHasXml {
         /// <summary>
         /// The component Id to which this inlet is connected. If this inlet is not connected then get/set ID to Guid.Empty
@@ -641,7 +636,7 @@ namespace LayoutManager {
         /// <summary>
         /// The component to which this inlet is connected (null if inlet is not connected)
         /// </summary>
-        IModelComponentHasPowerOutlets OutletComponent { get; set; }
+        IModelComponentHasPowerOutlets? OutletComponent { get; set; }
 
         /// <summary>
         /// A component with power outlets may have more than 1 outlet. This property contains the outlet index to which this inlet is connected

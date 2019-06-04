@@ -68,7 +68,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 7;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // TextProviderPositionDefinition1
             // 

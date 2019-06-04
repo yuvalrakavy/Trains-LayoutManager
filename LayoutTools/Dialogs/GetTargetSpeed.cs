@@ -78,7 +78,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.trackBarTargetSpeed.Name = "trackBarTargetSpeed";
             this.trackBarTargetSpeed.Size = new System.Drawing.Size(224, 45);
             this.trackBarTargetSpeed.TabIndex = 0;
-            this.trackBarTargetSpeed.Scroll += new System.EventHandler(this.trackBarTargetSpeed_Scroll);
+            this.trackBarTargetSpeed.Scroll += this.trackBarTargetSpeed_Scroll;
             // 
             // buttonOK
             // 
@@ -87,7 +87,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(56, 23);
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -97,7 +97,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(56, 23);
             this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // numericUpDownTargetSpeed
             // 
@@ -105,7 +105,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.numericUpDownTargetSpeed.Name = "numericUpDownTargetSpeed";
             this.numericUpDownTargetSpeed.Size = new System.Drawing.Size(48, 20);
             this.numericUpDownTargetSpeed.TabIndex = 3;
-            this.numericUpDownTargetSpeed.ValueChanged += new System.EventHandler(this.numericUpDownTargetSpeed_ValueChanged);
+            this.numericUpDownTargetSpeed.ValueChanged += this.numericUpDownTargetSpeed_ValueChanged;
             // 
             // labelLowerLimit
             // 

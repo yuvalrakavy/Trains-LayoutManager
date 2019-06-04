@@ -89,7 +89,7 @@ namespace NumatoController.Dialogs {
             if (XmlInfo.DocumentElement.HasAttribute(NumatoController.A_Password))
                 textBoxPassword.Text = XmlInfo.DocumentElement.GetAttribute(NumatoController.A_Password);
 
-            radioButtonInterfaceType_CheckedChanged(null, new EventArgs());
+            radioButtonInterfaceType_CheckedChanged(null, EventArgs.Empty);
         }
 
         public LayoutXmlInfo XmlInfo { get; }
@@ -99,9 +99,7 @@ namespace NumatoController.Dialogs {
         /// </summary>
         protected override void Dispose(bool disposing) {
             if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -161,7 +159,7 @@ namespace NumatoController.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(76, 28);
             this.buttonOK.TabIndex = 6;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -179,7 +177,7 @@ namespace NumatoController.Dialogs {
             this.buttonCOMsettings.Size = new System.Drawing.Size(75, 21);
             this.buttonCOMsettings.TabIndex = 9;
             this.buttonCOMsettings.Text = "Settings...";
-            this.buttonCOMsettings.Click += new System.EventHandler(this.buttonCOMsettings_Click);
+            this.buttonCOMsettings.Click += this.buttonCOMsettings_Click;
             // 
             // nameDefinition
             // 
@@ -217,7 +215,7 @@ namespace NumatoController.Dialogs {
             this.buttonIpSettings.Size = new System.Drawing.Size(75, 21);
             this.buttonIpSettings.TabIndex = 13;
             this.buttonIpSettings.Text = "Settings...";
-            this.buttonIpSettings.Click += new System.EventHandler(this.buttonIpSettings_Click);
+            this.buttonIpSettings.Click += this.buttonIpSettings_Click;
             // 
             // textBoxAddress
             // 
@@ -236,7 +234,7 @@ namespace NumatoController.Dialogs {
             this.radioButtonTCP.TabStop = true;
             this.radioButtonTCP.Text = "TCP/IP";
             this.radioButtonTCP.UseVisualStyleBackColor = true;
-            this.radioButtonTCP.CheckedChanged += new System.EventHandler(this.radioButtonInterfaceType_CheckedChanged);
+            this.radioButtonTCP.CheckedChanged += this.radioButtonInterfaceType_CheckedChanged;
             // 
             // radioButtonSerial
             // 
@@ -248,7 +246,7 @@ namespace NumatoController.Dialogs {
             this.radioButtonSerial.TabStop = true;
             this.radioButtonSerial.Text = "Serial (RS232, USB, Network using RealPort)";
             this.radioButtonSerial.UseVisualStyleBackColor = true;
-            this.radioButtonSerial.CheckedChanged += new System.EventHandler(this.radioButtonInterfaceType_CheckedChanged);
+            this.radioButtonSerial.CheckedChanged += this.radioButtonInterfaceType_CheckedChanged;
             // 
             // label3
             // 

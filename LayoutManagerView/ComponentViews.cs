@@ -22,7 +22,7 @@ namespace LayoutManager.View {
         private ImageList imageListConnectionPointImages;
 
         #region Constructors
-        #nullable disable
+#nullable disable
         public ComponentViews(IContainer container) {
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
@@ -45,7 +45,7 @@ namespace LayoutManager.View {
             // TODO: Add any constructor code after InitializeComponent call
             //
         }
-        #nullable enable
+#nullable enable
 
         #endregion
 
@@ -380,11 +380,11 @@ namespace LayoutManager.View {
                 else {
                     // If there is no track, paint a large contact in the middle of the component. This case should
                     // not really happend
-                    using (LayoutTriggerableBlockEdgePainter painter = new LayoutTriggerableBlockEdgePainter(componentType: PainterComponentType, componentSize: view.GridSizeInModelCoordinates,
-                        cp: new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B })) {
-                        painter.ContactSize = new Size(12, 12);
-                        painter.Paint(g);
-                    }
+                    using LayoutTriggerableBlockEdgePainter painter = new LayoutTriggerableBlockEdgePainter(componentType: PainterComponentType, componentSize: view.GridSizeInModelCoordinates,
+                        cp: new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B }) {
+                        ContactSize = new Size(12, 12)
+                    };
+                    painter.Paint(g);
                 }
                 base.Draw(view, detailLevel, selectionLook, g);
             }
@@ -411,36 +411,35 @@ namespace LayoutManager.View {
 
             public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
                 if (component.OptionalTrack != null) {
-                    using (LayoutBlockEdgePainter painter = new LayoutBlockEdgePainter(view.GridSizeInModelCoordinates, component.Track.ConnectionPoints)) {
-                        if (LayoutController.IsOperationMode) {
-                            switch (component.SignalState) {
-                                case LayoutSignalState.Red:
-                                    painter.Fill = new SolidBrush(Color.Red);
-                                    break;
+                    using LayoutBlockEdgePainter painter = new LayoutBlockEdgePainter(view.GridSizeInModelCoordinates, component.Track.ConnectionPoints);
+                    if (LayoutController.IsOperationMode) {
+                        switch (component.SignalState) {
+                            case LayoutSignalState.Red:
+                                painter.Fill = new SolidBrush(Color.Red);
+                                break;
 
-                                case LayoutSignalState.Yellow:
-                                    painter.Fill = new SolidBrush(Color.Yellow);
-                                    break;
+                            case LayoutSignalState.Yellow:
+                                painter.Fill = new SolidBrush(Color.Yellow);
+                                break;
 
-                                case LayoutSignalState.Green:
-                                    painter.Fill = new SolidBrush(Color.Green);
-                                    break;
-                            }
-                            painter.Paint(g);
-                            painter.Fill.Dispose();
+                            case LayoutSignalState.Green:
+                                painter.Fill = new SolidBrush(Color.Green);
+                                break;
                         }
-                        else
-                            painter.Paint(g);
+                        painter.Paint(g);
+                        painter.Fill.Dispose();
                     }
+                    else
+                        painter.Paint(g);
                 }
                 else {
                     // If there is no track, paint a large contact in the middle of the component. This case should
                     // not really happend
-                    using (LayoutBlockEdgePainter painter = new LayoutBlockEdgePainter(view.GridSizeInModelCoordinates,
-                              new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B })) {
-                        painter.ContactSize = new Size(12, 12);
-                        painter.Paint(g);
-                    }
+                    using LayoutBlockEdgePainter painter = new LayoutBlockEdgePainter(view.GridSizeInModelCoordinates,
+                              new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B }) {
+                        ContactSize = new Size(12, 12)
+                    };
+                    painter.Paint(g);
                 }
 
                 base.Draw(view, detailLevel, selectionLook, g);
@@ -530,8 +529,8 @@ namespace LayoutManager.View {
                 PointF gridLocation = e.View.ModelLocationInModelCoordinates(blockDefinition.Location);
 
                 if (vertical) {
-                    PointF origin = new PointF(gridLocation.X + e.View.GridSizeInModelCoordinates.Width / 2 - totalSize.Height / 2,
-                        gridLocation.Y + e.View.GridSizeInModelCoordinates.Height / 2 - totalSize.Height / 2 - totalSize.Width / 2);
+                    PointF origin = new PointF(gridLocation.X + (e.View.GridSizeInModelCoordinates.Width / 2) - (totalSize.Height / 2),
+                        gridLocation.Y + (e.View.GridSizeInModelCoordinates.Height / 2) - (totalSize.Height / 2) - (totalSize.Width / 2));
 
                     for (i = 0; i < painters.Length; i++) {
                         SizeF locoSize = painters[i].Measure(e.Graphics);
@@ -544,7 +543,7 @@ namespace LayoutManager.View {
                 }
                 else {  // Either horizontal or diagonal
                         // Start adding the regions
-                    PointF origin = new PointF(gridLocation.X + e.View.GridSizeInModelCoordinates.Width / 2 - totalSize.Width / 2, gridLocation.Y + e.View.GridSizeInModelCoordinates.Height / 2 - totalSize.Height / 2);
+                    PointF origin = new PointF(gridLocation.X + (e.View.GridSizeInModelCoordinates.Width / 2) - (totalSize.Width / 2), gridLocation.Y + (e.View.GridSizeInModelCoordinates.Height / 2) - (totalSize.Height / 2));
 
                     for (i = 0; i < painters.Length; i++) {
                         SizeF locoSize = painters[i].Measure(e.Graphics);
@@ -571,13 +570,13 @@ namespace LayoutManager.View {
                     PointF gridLocation = e.View.ModelLocationInModelCoordinates(blockDefinition.Location);
 
                     if (LayoutTrackComponent.IsVertical(blockDefinition.Track.ConnectionPoints[0])) {
-                        PointF origin = new PointF(gridLocation.X + e.View.GridSizeInModelCoordinates.Width / 2 - totalSize.Height / 2,
-                            gridLocation.Y + e.View.GridSizeInModelCoordinates.Height / 2 - totalSize.Height / 2 - totalSize.Width / 2);
+                        PointF origin = new PointF(gridLocation.X + (e.View.GridSizeInModelCoordinates.Width / 2) - (totalSize.Height / 2),
+                            gridLocation.Y + (e.View.GridSizeInModelCoordinates.Height / 2) - (totalSize.Height / 2) - (totalSize.Width / 2));
 
                         e.AddRegion(new LayoutDrawingRegionLocomotive(blockDefinition, origin, totalSize, true, locoPainter));
                     }
                     else {
-                        PointF origin = new PointF(gridLocation.X + e.View.GridSizeInModelCoordinates.Width / 2 - totalSize.Width / 2, gridLocation.Y + e.View.GridSizeInModelCoordinates.Height / 2 - totalSize.Height / 2);
+                        PointF origin = new PointF(gridLocation.X + (e.View.GridSizeInModelCoordinates.Width / 2) - (totalSize.Width / 2), gridLocation.Y + (e.View.GridSizeInModelCoordinates.Height / 2) - (totalSize.Height / 2));
 
                         e.AddRegion(new LayoutDrawingRegionLocomotive(blockDefinition, origin, totalSize, false, locoPainter));
                     }
@@ -635,35 +634,34 @@ namespace LayoutManager.View {
 
             public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
                 if (component.Track != null) {
-                    using (LayoutBlockInfoPainter painter = new LayoutBlockInfoPainter(view.GridSizeInModelCoordinates, component.Track.ConnectionPoints)) {
-                        if ((component.Spot.Phase & LayoutModel.ActivePhases) != 0) {
-                            if (LayoutController.IsOperationMode && !component.Info.CanTrainWait)
-                                painter.Fill = new SolidBrush(Color.Black);
-                            else if (component.Info.SuggestForPlacement || component.Info.SuggestForDestination)
-                                painter.Fill = new SolidBrush(Color.LightBlue);
-                            else
-                                painter.Fill = new SolidBrush(Color.Blue);
-
-                            if (!component.Info.TrainPassCondition.IsConditionEmpty || !component.Info.TrainStopCondition.IsConditionEmpty)
-                                painter.Outline = Pens.Red;
-                        }
-                        else
+                    using LayoutBlockInfoPainter painter = new LayoutBlockInfoPainter(view.GridSizeInModelCoordinates, component.Track.ConnectionPoints);
+                    if ((component.Spot.Phase & LayoutModel.ActivePhases) != 0) {
+                        if (LayoutController.IsOperationMode && !component.Info.CanTrainWait)
                             painter.Fill = new SolidBrush(Color.Black);
+                        else if (component.Info.SuggestForPlacement || component.Info.SuggestForDestination)
+                            painter.Fill = new SolidBrush(Color.LightBlue);
+                        else
+                            painter.Fill = new SolidBrush(Color.Blue);
 
-                        painter.OccupancyDetectionBlock = component.Info.IsOccupancyDetectionBlock;
-
-                        painter.Paint(g);
-                        painter.Fill.Dispose();
+                        if (!component.Info.TrainPassCondition.IsConditionEmpty || !component.Info.TrainStopCondition.IsConditionEmpty)
+                            painter.Outline = Pens.Red;
                     }
+                    else
+                        painter.Fill = new SolidBrush(Color.Black);
+
+                    painter.OccupancyDetectionBlock = component.Info.IsOccupancyDetectionBlock;
+
+                    painter.Paint(g);
+                    painter.Fill.Dispose();
                 }
                 else {
                     // If there is no track, paint a large contact in the middle of the component. This case should
                     // not really happend
-                    using (LayoutBlockInfoPainter painter = new LayoutBlockInfoPainter(view.GridSizeInModelCoordinates,
-                              new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B })) {
-                        painter.InfoBoxSize = new Size(12, 12);
-                        painter.Paint(g);
-                    }
+                    using LayoutBlockInfoPainter painter = new LayoutBlockInfoPainter(view.GridSizeInModelCoordinates,
+                              new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B }) {
+                        InfoBoxSize = new Size(12, 12)
+                    };
+                    painter.Paint(g);
                 }
                 base.Draw(view, detailLevel, selectionLook, g);
             }
@@ -886,9 +884,8 @@ namespace LayoutManager.View {
 
             public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
                 if (component.Spot.Track is LayoutStraightTrackComponent track) {
-                    using (LayoutPowerConnectorPainter painter = new LayoutPowerConnectorPainter(view.GridSizeInModelCoordinates, track.ConnectionPoints)) {
-                        painter.Paint(g);
-                    }
+                    using LayoutPowerConnectorPainter painter = new LayoutPowerConnectorPainter(view.GridSizeInModelCoordinates, track.ConnectionPoints);
+                    painter.Paint(g);
                 }
 
                 base.Draw(view, detailLevel, selectionLook, g);
@@ -983,19 +980,17 @@ namespace LayoutManager.View {
                 LayoutTrackComponent track = component.Spot.Track;
 
                 if (track != null) {
-                    using (LayoutTrackLinkPainter painter = new LayoutTrackLinkPainter(view.GridSizeInModelCoordinates, track.ConnectionPoints)) {
-                        if (component.Link == null)
-                            painter.Fill = Brushes.Red;
+                    using LayoutTrackLinkPainter painter = new LayoutTrackLinkPainter(view.GridSizeInModelCoordinates, track.ConnectionPoints);
+                    if (component.Link == null)
+                        painter.Fill = Brushes.Red;
 
-                        painter.Paint(g);
-                    }
+                    painter.Paint(g);
                 }
                 else {
                     // If there is no track, This case should not really happend
-                    using (LayoutTrackLinkPainter painter = new LayoutTrackLinkPainter(view.GridSizeInModelCoordinates,
-                              Array.AsReadOnly<LayoutComponentConnectionPoint>(new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B }))) {
-                        painter.Paint(g);
-                    }
+                    using LayoutTrackLinkPainter painter = new LayoutTrackLinkPainter(view.GridSizeInModelCoordinates,
+                              Array.AsReadOnly<LayoutComponentConnectionPoint>(new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B }));
+                    painter.Paint(g);
                 }
 
                 base.Draw(view, detailLevel, selectionLook, g);
@@ -1059,7 +1054,7 @@ namespace LayoutManager.View {
                     if (imageProvider.WidthSizeUnit == LayoutImageInfo.ImageSizeUnit.Pixels)
                         imageSize.Width = imageProvider.Size.Width;
                     else
-                        imageSize.Width = imageProvider.Size.Width * view.GridSizeInModelCoordinates.Width + (imageProvider.Size.Width - 1) * view.GridLineWidthInModelCoordinates;
+                        imageSize.Width = (imageProvider.Size.Width * view.GridSizeInModelCoordinates.Width) + ((imageProvider.Size.Width - 1) * view.GridLineWidthInModelCoordinates);
 
                     if (imageProvider.Size.Height < 0)
                         imageSize.Height = imageSize.Width * (float)image.Height / (float)image.Width;
@@ -1069,7 +1064,7 @@ namespace LayoutManager.View {
                     if (imageProvider.HeightSizeUnit == LayoutImageInfo.ImageSizeUnit.Pixels)
                         imageSize.Height = imageProvider.Size.Height;
                     else
-                        imageSize.Height = imageProvider.Size.Height * view.GridSizeInModelCoordinates.Height + (imageProvider.Size.Height - 1) * view.GridLineWidthInModelCoordinates;
+                        imageSize.Height = (imageProvider.Size.Height * view.GridSizeInModelCoordinates.Height) + ((imageProvider.Size.Height - 1) * view.GridLineWidthInModelCoordinates);
 
                     if (imageProvider.Size.Width < 0)
                         imageSize.Width = imageSize.Height * (float)image.Width / (float)image.Height;
@@ -1117,8 +1112,8 @@ namespace LayoutManager.View {
 
                             for (int iy = 0; iy < imageProvider.Size.Height; iy++) {
                                 for (int ix = 0; ix < imageProvider.Size.Width; ix++) {
-                                    g.DrawImage(scaledImage, ix * view.GridSizeInModelCoordinates.Width + (ix - 1) * view.GridLineWidthInModelCoordinates,
-                                        iy * view.GridSizeInModelCoordinates.Height + (iy - 1) * view.GridLineWidthInModelCoordinates);
+                                    g.DrawImage(scaledImage, (ix * view.GridSizeInModelCoordinates.Width) + ((ix - 1) * view.GridLineWidthInModelCoordinates),
+                                        (iy * view.GridSizeInModelCoordinates.Height) + ((iy - 1) * view.GridLineWidthInModelCoordinates));
                                 }
                             }
                         }

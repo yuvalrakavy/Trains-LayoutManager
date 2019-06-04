@@ -229,10 +229,7 @@ namespace LayoutManager.Model {
 
                 return myPenalty - qPenalty;
             }
-            else if (ClearanceQuality == other.ClearanceQuality)
-                return Penalty - other.Penalty;
-            else
-                return (int)ClearanceQuality - (int)other.ClearanceQuality;
+            else return ClearanceQuality == other.ClearanceQuality ? Penalty - other.Penalty : (int)ClearanceQuality - (int)other.ClearanceQuality;
         }
 
         public bool Equals(RouteQuality other) => ClearanceQuality == other.ClearanceQuality && Penalty == other.Penalty && routeOwner == other.routeOwner;
@@ -271,9 +268,7 @@ namespace LayoutManager.Model {
         public RouteQuality Quality { get; }
 
         public override bool Equals(object obj) {
-            if (obj is RouteTarget otherTarget)
-                return otherTarget.TargetEdge == TargetEdge && otherTarget.SwitchState == SwitchState;
-            return false;
+            return obj is RouteTarget otherTarget && otherTarget.TargetEdge == TargetEdge && otherTarget.SwitchState == SwitchState;
         }
 
         public override int GetHashCode() => TargetEdge.GetHashCode();
@@ -285,7 +280,7 @@ namespace LayoutManager.Model {
         private Guid routeOwner;
         private readonly List<RouteTarget> targets = new List<RouteTarget>();
         private List<int>? switchStates;
-        private TrainStateInfo?train;
+        private TrainStateInfo? train;
 
         public BestRoute(ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, Guid routeOwner) {
             this.SourceComponent = sourceComponent;
@@ -305,9 +300,7 @@ namespace LayoutManager.Model {
 
         public LayoutTrackComponent? DestinationTrack {
             get {
-                if (DestinationTarget == null)
-                    return null;
-                return DestinationTarget.DestinationTrack;
+                return DestinationTarget?.DestinationTrack;
             }
         }
 
@@ -317,10 +310,9 @@ namespace LayoutManager.Model {
 
         public TrackEdge SourceEdge {
             get {
-                if (Direction == LocomotiveOrientation.Forward)
-                    return new TrackEdge(SourceTrack, SourceFront).OtherSide;
-                else
-                    return new TrackEdge(SourceTrack, SourceFront);
+                return Direction == LocomotiveOrientation.Forward
+                    ? new TrackEdge(SourceTrack, SourceFront).OtherSide
+                    : new TrackEdge(SourceTrack, SourceFront);
             }
         }
 
@@ -334,7 +326,7 @@ namespace LayoutManager.Model {
 
         public IList<RouteTarget> Targets => targets;
 
-        public IList<int>? SwitchStates => switchStates?.AsReadOnly();
+        public IList<int> SwitchStates => switchStates ?? new List<int>();
 
         public void SetSwitchStates(IList<int> switchStates) {
             this.switchStates = new List<int>(switchStates);

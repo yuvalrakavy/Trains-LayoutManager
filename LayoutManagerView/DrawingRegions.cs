@@ -71,7 +71,7 @@ namespace LayoutManager.View {
                 Pen p = new Pen(selectionLook.Color, view.LineWidthInModelCoordinates) {
                     Alignment = System.Drawing.Drawing2D.PenAlignment.Center
                 };
-                g.DrawRectangle(p, view.LineWidthInModelCoordinates / 2.0F, view.LineWidthInModelCoordinates / 2.0F, rc.Width - 1.5F * view.LineWidthInModelCoordinates, rc.Height - 1.5F * view.LineWidthInModelCoordinates);
+                g.DrawRectangle(p, view.LineWidthInModelCoordinates / 2.0F, view.LineWidthInModelCoordinates / 2.0F, rc.Width - (1.5F * view.LineWidthInModelCoordinates), rc.Height - (1.5F * view.LineWidthInModelCoordinates));
                 p.Dispose();
             }
         }
@@ -127,7 +127,7 @@ namespace LayoutManager.View {
             LayoutPositionInfo positionProvider, SizeF rectSize) : base(component) {
             PointF ptTopLeft = view.ModelLocationInModelCoordinates(component.Location);
             RectangleF rcRegion;
-            PointF origin = new PointF(ptTopLeft.X + view.GridSizeInModelCoordinates.Width / 2, ptTopLeft.Y + view.GridSizeInModelCoordinates.Height / 2);
+            PointF origin = new PointF(ptTopLeft.X + (view.GridSizeInModelCoordinates.Width / 2), ptTopLeft.Y + (view.GridSizeInModelCoordinates.Height / 2));
 
             switch (positionProvider.Side) {
                 case LayoutDrawingSide.Top:
@@ -154,7 +154,7 @@ namespace LayoutManager.View {
                     break;
 
                 case LayoutDrawingSide.Center:
-                    rcRegion = new RectangleF(new PointF(origin.X - rectSize.Width / 2, origin.Y - rectSize.Height / 2),
+                    rcRegion = new RectangleF(new PointF(origin.X - (rectSize.Width / 2), origin.Y - (rectSize.Height / 2)),
                         rectSize);
                     break;
 
@@ -176,8 +176,8 @@ namespace LayoutManager.View {
             bool horizontal = true;
             LayoutTrackComponent track = component.Spot.Track;
             PointF ptTopLeft = view.ModelLocationInModelCoordinates(component.Location);
-            PointF ptCenter = new PointF(ptTopLeft.X + view.GridSizeInModelCoordinates.Width / 2, ptTopLeft.Y + view.GridSizeInModelCoordinates.Height / 2);
-            SizeF totalContentSize = new SizeF(ballonContentSize.Width + Margins.Width * 2, ballonContentSize.Height + Margins.Height * 2);
+            PointF ptCenter = new PointF(ptTopLeft.X + (view.GridSizeInModelCoordinates.Width / 2), ptTopLeft.Y + (view.GridSizeInModelCoordinates.Height / 2));
+            SizeF totalContentSize = new SizeF(ballonContentSize.Width + (Margins.Width * 2), ballonContentSize.Height + (Margins.Height * 2));
             bool onTop = true;
             bool onRight = true;
             float xBallon;
@@ -196,11 +196,11 @@ namespace LayoutManager.View {
                 Painter.Hotspot = new PointF(ptCenter.X, ptCenter.Y + (onTop ? -4 : 4));
 
                 if (onRight) {
-                    xBallon = ptCenter.X - hangSize * totalContentSize.Width;
+                    xBallon = ptCenter.X - (hangSize * totalContentSize.Width);
                     Painter.HotspotOrigin = onTop ? 5 : 0;
                 }
                 else {
-                    xBallon = ptCenter.X - (1 - hangSize) * totalContentSize.Width;
+                    xBallon = ptCenter.X - ((1 - hangSize) * totalContentSize.Width);
                     Painter.HotspotOrigin = onTop ? 4 : 1;
                 }
 
@@ -213,11 +213,11 @@ namespace LayoutManager.View {
                 Painter.Hotspot = new PointF(ptCenter.X + (onRight ? 4 : -4), ptCenter.Y);
 
                 if (onTop) {
-                    yBallon = ptCenter.Y - hangSize * totalContentSize.Height;
+                    yBallon = ptCenter.Y - (hangSize * totalContentSize.Height);
                     Painter.HotspotOrigin = onRight ? 6 : 3;
                 }
                 else {
-                    yBallon = ptCenter.Y - (1 - hangSize) * totalContentSize.Height;
+                    yBallon = ptCenter.Y - ((1 - hangSize) * totalContentSize.Height);
                     Painter.HotspotOrigin = onRight ? 7 : 2;
                 }
 
@@ -385,24 +385,23 @@ namespace LayoutManager.View {
                 Color fontColor = textProvider.FontProvider.Color;
 
                 if (detailLevel == ViewDetailLevel.High || textProvider.FontProvider.Font.Height > 14) {
-                    using (SolidBrush fontBrush = new SolidBrush(fontColor)) {
-                        if (width == 0)
-                            g.DrawString(textProvider.Text, textProvider.FontProvider.Font, fontBrush, new Point(0, 0));
-                        else
-                            g.DrawString(textProvider.Text, textProvider.FontProvider.Font, fontBrush,
-                                new RectangleF(new PointF(0, 0), new SizeF(width, 10000.0F)), new StringFormat());
-                    }
+                    using SolidBrush fontBrush = new SolidBrush(fontColor);
+                    if (width == 0)
+                        g.DrawString(textProvider.Text, textProvider.FontProvider.Font, fontBrush, new Point(0, 0));
+                    else
+                        g.DrawString(textProvider.Text, textProvider.FontProvider.Font, fontBrush,
+                            new RectangleF(new PointF(0, 0), new SizeF(width, 10000.0F)), new StringFormat());
                 }
                 else {
                     SizeF size = measureProviderString(g, detailLevel, textProvider);
                     RectangleF textArea = new RectangleF(new PointF(0, 0), size);
 
-                    using (Pen p = new Pen(fontColor, 3.0f)) {
-                        p.DashStyle = DashStyle.DashDotDot;
-                        float y = (float)((textArea.Bottom - textArea.Top) / 2.0);
+                    using Pen p = new Pen(fontColor, 3.0f) {
+                        DashStyle = DashStyle.DashDotDot
+                    };
+                    float y = (float)((textArea.Bottom - textArea.Top) / 2.0);
 
-                        g.DrawLine(p, new PointF(textArea.Left, y), new PointF(textArea.Right, y));
-                    }
+                    g.DrawLine(p, new PointF(textArea.Left, y), new PointF(textArea.Right, y));
                 }
             }
         }

@@ -616,10 +616,7 @@ namespace LayoutManager {
             get {
                 if (moduleRef != null)
                     return moduleRef.Module;
-                else if (connectionPointRef != null)
-                    return connectionPointRef.ConnectionPoint;
-                else
-                    return null;
+                else return connectionPointRef?.ConnectionPoint;
             }
         }
 
@@ -662,10 +659,7 @@ namespace LayoutManager {
         }
 
         public override string ToString() {
-            if (addressProgrammingRequired)
-                return "Set module address programming required";
-            else
-                return "Reset module address programming required";
+            return addressProgrammingRequired ? "Set module address programming required" : "Reset module address programming required";
         }
     }
 

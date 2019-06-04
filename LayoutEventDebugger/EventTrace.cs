@@ -76,9 +76,7 @@ namespace LayoutEventDebugger {
         /// </summary>
         protected override void Dispose(bool disposing) {
             if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -115,7 +113,7 @@ namespace LayoutEventDebugger {
             this.buttonTraceState.Size = new System.Drawing.Size(72, 24);
             this.buttonTraceState.TabIndex = 1;
             this.buttonTraceState.Text = "Start trace";
-            this.buttonTraceState.Click += new System.EventHandler(this.buttonTraceState_Click);
+            this.buttonTraceState.Click += this.buttonTraceState_Click;
             // 
             // buttonClose
             // 
@@ -124,7 +122,7 @@ namespace LayoutEventDebugger {
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.TabIndex = 3;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // buttonClear
             // 
@@ -134,7 +132,7 @@ namespace LayoutEventDebugger {
             this.buttonClear.Size = new System.Drawing.Size(75, 24);
             this.buttonClear.TabIndex = 2;
             this.buttonClear.Text = "Clear";
-            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+            this.buttonClear.Click += this.buttonClear_Click;
             // 
             // EventTrace
             // 
@@ -147,7 +145,7 @@ namespace LayoutEventDebugger {
                                                                           this.treeViewEventTrace});
             this.Name = "EventTrace";
             this.Text = "Event Trace";
-            this.Closed += new System.EventHandler(this.EventTrace_Closed);
+            this.Closed += this.EventTrace_Closed;
             this.ResumeLayout(false);
         }
         #endregion

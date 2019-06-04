@@ -96,7 +96,7 @@ namespace LayoutManager.Dialogs {
             this.listViewFunctionInfo.Size = new System.Drawing.Size(312, 176);
             this.listViewFunctionInfo.TabIndex = 0;
             this.listViewFunctionInfo.View = System.Windows.Forms.View.Details;
-            this.listViewFunctionInfo.SelectedIndexChanged += new System.EventHandler(this.listViewFunctionInfo_SelectedIndexChanged);
+            this.listViewFunctionInfo.SelectedIndexChanged += this.listViewFunctionInfo_SelectedIndexChanged;
             // 
             // buttonNew
             // 
@@ -106,7 +106,7 @@ namespace LayoutManager.Dialogs {
             this.buttonNew.Size = new System.Drawing.Size(70, 23);
             this.buttonNew.TabIndex = 1;
             this.buttonNew.Text = "&New";
-            this.buttonNew.Click += new System.EventHandler(this.buttonNew_Click);
+            this.buttonNew.Click += this.buttonNew_Click;
             // 
             // buttonEdit
             // 
@@ -116,7 +116,7 @@ namespace LayoutManager.Dialogs {
             this.buttonEdit.Size = new System.Drawing.Size(70, 23);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit";
-            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
+            this.buttonEdit.Click += this.buttonEdit_Click;
             // 
             // buttonDelete
             // 
@@ -126,7 +126,7 @@ namespace LayoutManager.Dialogs {
             this.buttonDelete.Size = new System.Drawing.Size(70, 23);
             this.buttonDelete.TabIndex = 3;
             this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            this.buttonDelete.Click += this.buttonDelete_Click;
             // 
             // buttonClose
             // 
@@ -136,7 +136,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(70, 23);
             this.buttonClose.TabIndex = 4;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // columnHeaderType
             // 
@@ -210,7 +210,6 @@ namespace LayoutManager.Dialogs {
         }
 
         private class StandardFunctionItem : ListViewItem {
-
             public StandardFunctionItem(XmlElement element) {
                 this.Element = element;
 
@@ -235,10 +234,7 @@ namespace LayoutManager.Dialogs {
                 if (Element.HasAttribute("Type")) {
                     LocomotiveFunctionType type = (LocomotiveFunctionType)Enum.Parse(typeof(LocomotiveFunctionType), Element.GetAttribute("Type"));
 
-                    if (type == LocomotiveFunctionType.OnOff)
-                        return "On/Off";
-                    else
-                        return type.ToString();
+                    return type == LocomotiveFunctionType.OnOff ? "On/Off" : type.ToString();
                 }
                 else
                     return "";

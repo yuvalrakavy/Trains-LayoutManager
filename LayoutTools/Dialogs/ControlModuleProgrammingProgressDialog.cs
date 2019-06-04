@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Dialogs {
-    #pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060
     public partial class ControlModuleProgrammingProgressDialog : Form {
         private readonly Func<Task> doProgramming;
         private bool showingProgress = false;

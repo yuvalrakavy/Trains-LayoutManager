@@ -26,14 +26,15 @@ namespace LayoutManager.Model {
         Gate,       // Gate or road block
     }
 
+    [Flags]
     public enum LayoutPhase {
         Planned = 0x0001,           // Component is planned
         Construction = 0x0002,      // Component is under construction
         Operational = 0x0004,       // Component is operationl
 
         None = 0x0000,
-        All = 0x0007,
-        NotPlanned = 0x0006,
+        All = Planned | Construction | Operational,
+        NotPlanned = Construction | Operational,
     }
 
     public enum LayoutReadXmlContext {
@@ -366,10 +367,7 @@ namespace LayoutManager.Model {
                 return B;
             else if (t == "R")
                 return R;
-            else if (t == "L")
-                return L;
-            else
-                return Int32.Parse(t);
+            else return t == "L" ? (LayoutComponentConnectionPoint)L : (LayoutComponentConnectionPoint)Int32.Parse(t);
         }
 
         public override string ToString() {
@@ -412,10 +410,7 @@ namespace LayoutManager.Model {
 
     public static class LayoutComponentConnectionPointExtensions {
         public static LayoutComponentConnectionPoint? ToOptionalComponentConnectionPoint(this ConvertableString s) {
-            if ((string?)s != null)
-                return LayoutComponentConnectionPoint.Parse(s.ValidString());
-            else
-                return null;
+            return (string?)s != null ? (LayoutComponentConnectionPoint?)LayoutComponentConnectionPoint.Parse(s.ValidString()) : null;
         }
 
         public static LayoutComponentConnectionPoint ToComponentConnectionPoint(this ConvertableString s) => s.ToOptionalComponentConnectionPoint() ?? throw new ArgumentNullException("ComponentConnectionPoint");
@@ -481,10 +476,9 @@ namespace LayoutManager.Model {
 
         public LayoutComponentConnectionPoint OtherConnectionPoint {
             get {
-                if (Track is IModelComponentIsMultiPath multiPath)
-                    return multiPath.ConnectTo(ConnectionPoint, multiPath.CurrentSwitchState);
-                else
-                    return Track.ConnectTo(ConnectionPoint, LayoutComponentConnectionType.Topology)[0];
+                return Track is IModelComponentIsMultiPath multiPath
+                    ? multiPath.ConnectTo(ConnectionPoint, multiPath.CurrentSwitchState)
+                    : Track.ConnectTo(ConnectionPoint, LayoutComponentConnectionType.Topology)[0];
             }
         }
 
@@ -505,9 +499,9 @@ namespace LayoutManager.Model {
             else {
                 Debug.Assert(track != null && other.track != null);
 
-                if (track.Location.X == other.track.Location.X)
-                    return track.Location.Y - other.track.Location.Y;
-                return track.Location.X - other.track.Location.X;
+                return track.Location.X == other.track.Location.X
+                    ? track.Location.Y - other.track.Location.Y
+                    : track.Location.X - other.track.Location.X;
             }
         }
 
@@ -583,9 +577,7 @@ namespace LayoutManager.Model {
 
     public class TrackEdgeConverter : System.ComponentModel.TypeConverter {
         public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, Type destinationType) {
-            if (destinationType == typeof(string))
-                return true;
-            return false;
+            return destinationType == typeof(string);
         }
 
         public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType) {
@@ -729,10 +721,7 @@ namespace LayoutManager.Model {
         /// The component to which this inlet is connected (null if inlet is not connected)
         /// </summary>
         public IModelComponentHasPowerOutlets? GetOutletComponent(LayoutPhase phase) {
-            if (OutletComponentId == Guid.Empty)
-                return null;
-            else
-                return LayoutModel.Component<IModelComponentHasPowerOutlets>(OutletComponentId, phase);
+            return OutletComponentId == Guid.Empty ? null : LayoutModel.Component<IModelComponentHasPowerOutlets>(OutletComponentId, phase);
         }
 
         /// <summary>
@@ -740,10 +729,9 @@ namespace LayoutManager.Model {
         /// </summary>
         public IModelComponentHasPowerOutlets? OutletComponent {
             get {
-                if (OutletComponentId == Guid.Empty)
-                    return null;
-                else
-                    return LayoutModel.Component<IModelComponentHasPowerOutlets>(OutletComponentId, LayoutModel.ActivePhases);
+                return OutletComponentId == Guid.Empty
+                    ? null
+                    : LayoutModel.Component<IModelComponentHasPowerOutlets>(OutletComponentId, LayoutModel.ActivePhases);
             }
 
             set {
@@ -787,10 +775,9 @@ namespace LayoutManager.Model {
 
         public override string ToString() {
             if (OutletComponent != null) {
-                if (OutletComponent.PowerOutlets.Count == 1)
-                    return OutletComponent.NameProvider.Name;
-                else // More than one outlet, show return the outlet name
-                    return OutletComponent.NameProvider.Name + " (" + ConnectedOutlet.OutletDescription + ")";
+                return OutletComponent.PowerOutlets.Count == 1
+                    ? OutletComponent.NameProvider.Name
+                    : OutletComponent.NameProvider.Name + " (" + ConnectedOutlet.OutletDescription + ")";
             }
             else
                 return "[Not connected]";
@@ -830,7 +817,7 @@ namespace LayoutManager.Model {
         /// Get the component of a given kind in a given layer
         /// </summary>
         /// <example>c = aSpot[ModelComponentKind.Track];</example>
-        public ModelComponent this[ModelComponentKind kind] => Components.Find(delegate (ModelComponent c) { return c.Kind == kind; });
+        public ModelComponent this[ModelComponentKind kind] => Components.Find((ModelComponent c) => c.Kind == kind);
 
         /// <summary>
         /// Get the track in the current spot
@@ -1244,7 +1231,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="c">The component that was changed</param>
         internal void OnComponentChanged(ModelComponent c) {
-            AreaChanged?.Invoke(c, new EventArgs());
+            AreaChanged?.Invoke(c, EventArgs.Empty);
 
             if (c.DrawOutOfGrid && !outOfGridSpots.Contains(c.Spot))
                 outOfGridSpots.Add(c.Spot);
@@ -1257,7 +1244,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="c">The component that was added</param>
         internal void OnComponentAdded(ModelComponent c) {
-            AreaChanged?.Invoke(c, new EventArgs());
+            AreaChanged?.Invoke(c, EventArgs.Empty);
 
             if (c.DrawOutOfGrid && !outOfGridSpots.Contains(c.Spot))
                 outOfGridSpots.Add(c.Spot);
@@ -1269,7 +1256,7 @@ namespace LayoutManager.Model {
         /// <param name="spot">The spot from which the component is deleted</param>
         /// <param name="component">The component that was deleted</param>
         internal void OnComponentDeleted(LayoutModelSpotComponentCollection spot, ModelComponent component) {
-            AreaChanged?.Invoke(spot, new EventArgs());
+            AreaChanged?.Invoke(spot, EventArgs.Empty);
 
             if (!spot.DrawOutOfGrid)
                 outOfGridSpots.Remove(spot);
@@ -1283,18 +1270,18 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="component"></param>
         internal void OnEraseComponentImage(ModelComponent component) {
-            EraseComponentImage?.Invoke(component, new EventArgs());
+            EraseComponentImage?.Invoke(component, EventArgs.Empty);
         }
 
         internal void OnAreaBoundsChanged() {
-            AreaBoundsChanged?.Invoke(this, new EventArgs());
+            AreaBoundsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
         /// Redraw the whole area
         /// </summary>
         public void Redraw() {
-            AreaChanged?.Invoke(this, new EventArgs());
+            AreaChanged?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
@@ -1395,7 +1382,7 @@ namespace LayoutManager.Model {
 
                 r.Read();   // </Area>
 
-                AreaChanged?.Invoke(this, new EventArgs());
+                AreaChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -1421,15 +1408,15 @@ namespace LayoutManager.Model {
         }
 
         protected void OnAreaAdded(LayoutModelArea area) {
-            AreaAdded?.Invoke(area, new EventArgs());
+            AreaAdded?.Invoke(area, EventArgs.Empty);
         }
 
         protected void OnAreaRemoved(LayoutModelArea area) {
-            AreaRemoved?.Invoke(area, new EventArgs());
+            AreaRemoved?.Invoke(area, EventArgs.Empty);
         }
 
         public void OnAreaRenamed(LayoutModelArea area) {
-            AreaRenamed?.Invoke(area, new EventArgs());
+            AreaRenamed?.Invoke(area, EventArgs.Empty);
         }
 
         public new IEnumerator<LayoutModelArea> GetEnumerator() => Values.GetEnumerator();
@@ -1902,9 +1889,8 @@ namespace LayoutManager.Model {
                 if (modelXmlInfoFileInfo.Exists)
                     modelXmlInfoFileInfo.MoveTo(backupModelXmlInfoFilename);
 
-                using (FileStream fileOut = new FileStream(modelXmlInfoFilename, FileMode.Create, FileAccess.Write)) {
-                    XmlInfo.XmlDocument.Save(fileOut);
-                }
+                using FileStream fileOut = new FileStream(modelXmlInfoFilename, FileMode.Create, FileAccess.Write);
+                XmlInfo.XmlDocument.Save(fileOut);
             }
         }
 

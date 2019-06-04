@@ -9,7 +9,7 @@ namespace LayoutManager.CommonUI.Controls {
         private TrainLengthComparison _comparison = TrainLengthComparison.None;
 
         private readonly int[] divMarks = new int[] {
-            36, 37+27, 37+2*27, 37+3*27, 37+4*27
+            36, 37+27, 37+(2*27), 37+(3*27), 37+(4*27)
         };
 
         public TrainLengthDiagram() {
@@ -37,7 +37,7 @@ namespace LayoutManager.CommonUI.Controls {
 
                     linkMenuTrainLength.SelectedIndex = (int)value;
 
-                    TrainLengthChanged?.Invoke(this, new EventArgs());
+                    TrainLengthChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -57,7 +57,7 @@ namespace LayoutManager.CommonUI.Controls {
                     FillMenu();
                     linkMenuTrainLength.SelectedIndex = (int)_trainLength;
 
-                    ComparisonChanged?.Invoke(this, new EventArgs());
+                    ComparisonChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -128,12 +128,12 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private void PaintDividers(Graphics g) {
-            using (Pen p = new Pen(Color.Black)) {
-                p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+            using Pen p = new Pen(Color.Black) {
+                DashStyle = System.Drawing.Drawing2D.DashStyle.Dot
+            };
 
-                foreach (int xDivider in divMarks)
-                    g.DrawLine(p, xDivider, 4, xDivider, 28);
-            }
+            foreach (int xDivider in divMarks)
+                g.DrawLine(p, xDivider, 4, xDivider, 28);
         }
 
         private void buttonNotLonger_Click(object sender, EventArgs e) {

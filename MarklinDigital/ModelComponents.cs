@@ -15,7 +15,7 @@ namespace MarklinDigital {
     /// <summary>
     /// Summary description for MTScomponents.
     /// </summary>
-    #pragma warning disable IDE0051, IDE0060, IDE0052
+#pragma warning disable IDE0051, IDE0060, IDE0052
 
     public class MarklinDigitalCentralStation : LayoutCommandStationComponent {
         private static readonly LayoutTraceSwitch traceMarklinDigital = new LayoutTraceSwitch("MarkinDigital", "Marklin Digital Interface (P50)");
@@ -83,7 +83,7 @@ namespace MarklinDigital {
             int feedbackUnits = getNumberOfFeedbackUnits();
 
             if (feedbackUnits > 0) {
-                int waitPeriod = (1000 - feedbackUnits * feedbackUnitPollingTime) / FeedbackPolling;
+                int waitPeriod = (1000 - (feedbackUnits * feedbackUnitPollingTime)) / FeedbackPolling;
 
                 if (waitPeriod < 0)
                     waitPeriod = 0;
@@ -262,7 +262,7 @@ namespace MarklinDigital {
 
             LocomotiveFunctionInfo locoAuxFunction = loco.GetFunctionByNumber(0);
 
-            if (locoAuxFunction != null && locoAuxFunction.Type == LocomotiveFunctionType.OnOff)
+            if (locoAuxFunction?.Type == LocomotiveFunctionType.OnOff)
                 auxFunction = train.GetFunctionState(locoAuxFunction.Name, loco.Id, false);
             else
                 auxFunction = loco.HasLights && train.Lights;
@@ -285,7 +285,7 @@ namespace MarklinDigital {
             for (int functionNumber = 0; functionNumber < 4; functionNumber++) {
                 LocomotiveFunctionInfo functionDef = loco.GetFunctionByNumber(functionNumber + 1);
 
-                if (functionDef != null && functionDef.Type == LocomotiveFunctionType.OnOff && train.GetFunctionState(functionDef.Name, loco.Id, false))
+                if (functionDef?.Type == LocomotiveFunctionType.OnOff && train.GetFunctionState(functionDef.Name, loco.Id, false))
                     functionMask |= (byte)(1 << functionNumber);
             }
 
@@ -544,7 +544,7 @@ namespace MarklinDigital {
                         new ControlConnectionPointReference(commandStation.S88Bus, feedbackResult.Unit, feedbackResult.Contacts[i].ContactNo - 1), feedbackResult.Contacts[i].IsSet ? 1 : 0, null));
                 else
                     invoker.QueueEvent(new LayoutEvent("design-time-command-station-event", this, new CommandStationInputEvent(commandStation, commandStation.S88Bus,
-                        feedbackResult.Unit * 16 + feedbackResult.Contacts[i].ContactNo - 1, feedbackResult.Contacts[i].IsSet ? 1 : 0),
+                        (feedbackResult.Unit * 16) + feedbackResult.Contacts[i].ContactNo - 1, feedbackResult.Contacts[i].IsSet ? 1 : 0),
                         null));
             }
         }

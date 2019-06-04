@@ -57,9 +57,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         public LayoutTrackLink TrackLink {
             get {
-                if (radioButtonLinked.Checked)
-                    return trackLinkTree.SelectedTrackLink;
-                return null;
+                return radioButtonLinked.Checked ? trackLinkTree.SelectedTrackLink : null;
             }
         }
 
@@ -95,7 +93,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonNotLinked.Name = "radioButtonNotLinked";
             this.radioButtonNotLinked.TabIndex = 4;
             this.radioButtonNotLinked.Text = "Not linked";
-            this.radioButtonNotLinked.CheckedChanged += new System.EventHandler(this.radioButtonNotLinked_CheckedChanged);
+            this.radioButtonNotLinked.CheckedChanged += this.radioButtonNotLinked_CheckedChanged;
             // 
             // radioButtonLinked
             // 
@@ -103,7 +101,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonLinked.Name = "radioButtonLinked";
             this.radioButtonLinked.TabIndex = 5;
             this.radioButtonLinked.Text = "Linked to:";
-            this.radioButtonLinked.CheckedChanged += new System.EventHandler(this.radioButtonLinked_CheckedChanged);
+            this.radioButtonLinked.CheckedChanged += this.radioButtonLinked_CheckedChanged;
             // 
             // buttonCancel
             // 
@@ -119,7 +117,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 7;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // trackLinkTree
             // 

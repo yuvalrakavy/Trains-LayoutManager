@@ -60,7 +60,7 @@ namespace LayoutManager.CommonUI {
                     componentsInArea = a;
 
                 Debug.Assert(componentsInArea != null);
-                componentsInArea.Sort(delegate (ComponentType c1, ComponentType c2) { return string.Compare(c1.NameProvider.Name, c2.NameProvider.Name); });
+                componentsInArea.Sort((ComponentType c1, ComponentType c2) => string.Compare(c1.NameProvider.Name, c2.NameProvider.Name));
 
                 foreach (ComponentType component in componentsInArea)
                     menu.MenuItems.Add(CreateMenuItem(component));
@@ -71,13 +71,13 @@ namespace LayoutManager.CommonUI {
                 foreach (LayoutModelArea area in areas.Keys)
                     areasList.Add(area);
 
-                areasList.Sort(delegate (LayoutModelArea a1, LayoutModelArea a2) { return string.Compare(a1.Name, a2.Name); });
+                areasList.Sort((LayoutModelArea a1, LayoutModelArea a2) => string.Compare(a1.Name, a2.Name));
 
                 foreach (LayoutModelArea area in areasList) {
                     MenuItem areaMenuItem = new MenuItem(area.Name);
                     List<ComponentType> componentsInArea = areas[area];
 
-                    componentsInArea.Sort(delegate (ComponentType c1, ComponentType c2) { return string.Compare(c1.NameProvider.Name, c2.NameProvider.Name); });
+                    componentsInArea.Sort((ComponentType c1, ComponentType c2) => string.Compare(c1.NameProvider.Name, c2.NameProvider.Name));
 
                     foreach (ComponentType component in componentsInArea)
                         areaMenuItem.MenuItems.Add(CreateMenuItem(component));
@@ -106,10 +106,7 @@ namespace LayoutManager.CommonUI {
             if (filterHandler != null && !filterHandler(component))
                 return false;
 
-            if (xPathFilter != null && !component.Element.CreateNavigator().Matches(xPathFilter))
-                return false;
-
-            return true;
+            return xPathFilter == null || component.Element.CreateNavigator().Matches(xPathFilter);
         }
     }
 
@@ -191,8 +188,8 @@ namespace LayoutManager.CommonUI {
         public void ShowDialog() {
             if (!parent.Modal) {
                 dialog.Owner = parent;
-                dialog.Closing += new CancelEventHandler(onDialogClosing);
-                dialog.Closed += new EventHandler(onDialogClosed);
+                dialog.Closing += onDialogClosing;
+                dialog.Closed += onDialogClosed;
 
                 parent.Enabled = false;
 
@@ -200,7 +197,7 @@ namespace LayoutManager.CommonUI {
                     autoHideTimer = new Timer {
                         Interval = 750
                     };
-                    autoHideTimer.Tick += new EventHandler(onAutoHideTimerTick);
+                    autoHideTimer.Tick += onAutoHideTimerTick;
                     autoHideTimer.Start();
                 }
 
@@ -215,7 +212,7 @@ namespace LayoutManager.CommonUI {
         public bool AutoHideParent { get; set; } = true;
 
         private void onDialogClosing(object sender, CancelEventArgs e) {
-            dialog.Closing -= new CancelEventHandler(onDialogClosing);
+            dialog.Closing -= onDialogClosing;
 
             if (autoHideTimer != null) {
                 autoHideTimer.Dispose();
@@ -229,7 +226,7 @@ namespace LayoutManager.CommonUI {
         }
 
         private void onDialogClosed(object sender, EventArgs e) {
-            dialog.Closed -= new EventHandler(onDialogClosed);
+            dialog.Closed -= onDialogClosed;
             onClose?.Invoke(dialog, info);
         }
 

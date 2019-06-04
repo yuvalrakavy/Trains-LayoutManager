@@ -50,7 +50,7 @@ namespace LayoutManager.Dialogs {
                 Policy = new LayoutPolicyInfo(policyElement);
 
                 ListViewGroup group = listViewScripts.Groups[Policy.Scope];
-                LayoutPolicyType policyType = LayoutModel.StateManager.PolicyTypes.Find(delegate (LayoutPolicyType pt) { return pt.ScopeName == Policy.Scope; });
+                LayoutPolicyType policyType = LayoutModel.StateManager.PolicyTypes.Find((LayoutPolicyType pt) => pt.ScopeName == Policy.Scope);
 
                 if (policyType != null) {
                     if (group == null) {
@@ -85,7 +85,7 @@ namespace LayoutManager.Dialogs {
             foreach (PolicyItem policyItem in listViewScripts.Items) {
                 if (policyItem.Checked) {
                     LayoutPolicyInfo policy;
-                    LayoutPolicyType policyType = LayoutModel.StateManager.PolicyTypes.Find(delegate (LayoutPolicyType pt) { return pt.ScopeName == policyItem.Group.Name; });
+                    LayoutPolicyType policyType = LayoutModel.StateManager.PolicyTypes.Find((LayoutPolicyType pt) => pt.ScopeName == policyItem.Group.Name);
 
                     policy = policyType.Policies[policyItem.Policy.Id];
                     if (policy == null)

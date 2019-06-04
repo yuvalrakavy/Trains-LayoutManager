@@ -82,10 +82,7 @@ namespace LayoutManager.Model {
             else {
                 string condition = base.GetDescription();
 
-                if (ConditionScope == TripPlanTrainConditionScope.AllowIfTrue)
-                    return "Allow " + condition;
-                else
-                    return "Disallow " + condition;
+                return ConditionScope == TripPlanTrainConditionScope.AllowIfTrue ? "Allow " + condition : "Disallow " + condition;
             }
         }
     }
@@ -164,7 +161,7 @@ namespace LayoutManager.Model {
             get {
                 List<Guid> blockIdList = new List<Guid>(Entries.Count);
 
-                entries.ForEach(delegate (TripPlanDestinationEntryInfo entry) { blockIdList.Add(entry.BlockId); });
+                entries.ForEach((TripPlanDestinationEntryInfo entry) => blockIdList.Add(entry.BlockId));
                 return blockIdList;
             }
         }
@@ -173,7 +170,7 @@ namespace LayoutManager.Model {
             get {
                 List<LayoutBlock> blocks = new List<LayoutBlock>(Entries.Count);
 
-                entries.ForEach(delegate (TripPlanDestinationEntryInfo entry) { blocks.Add(LayoutModel.Blocks[entry.BlockId]); });
+                entries.ForEach((TripPlanDestinationEntryInfo entry) => blocks.Add(LayoutModel.Blocks[entry.BlockId]));
                 return blocks;
             }
         }
@@ -182,7 +179,7 @@ namespace LayoutManager.Model {
             get {
                 List<LayoutBlockDefinitionComponent> blockInfos = new List<LayoutBlockDefinitionComponent>(Entries.Count);
 
-                entries.ForEach(delegate (TripPlanDestinationEntryInfo entry) {
+                entries.ForEach((TripPlanDestinationEntryInfo entry) => {
                     if (LayoutModel.Blocks.TryGetValue(entry.BlockId, out LayoutBlock block)) {
                         if (block.BlockDefinintion != null)
                             blockInfos.Add(block.BlockDefinintion);
@@ -209,12 +206,9 @@ namespace LayoutManager.Model {
                 else {
                     if (Count > 0) {
                         if (BlockInfoList.Count > 0) {
-                            LayoutBlockDefinitionComponent blockInfo = BlockInfoList[0]; ;
+                            LayoutBlockDefinitionComponent blockInfo = BlockInfoList[0];
 
-                            if (LayoutModel.Areas.Count > 1)
-                                return blockInfo.Spot.Area.Name + ": " + blockInfo.Name;
-                            else
-                                return blockInfo.Name;
+                            return LayoutModel.Areas.Count > 1 ? blockInfo.Spot.Area.Name + ": " + blockInfo.Name : blockInfo.Name;
                         }
                         else
                             return "Unknown block";
@@ -232,9 +226,7 @@ namespace LayoutManager.Model {
 
         public bool HasName {
             get {
-                if (Element.HasAttribute(A_Name))
-                    return true;
-                return false;
+                return Element.HasAttribute(A_Name);
             }
 
             set {
@@ -303,9 +295,9 @@ namespace LayoutManager.Model {
             get {
                 XmlElement startConditionElement = Element[E_StartCondition];
 
-                if (startConditionElement != null && startConditionElement.ChildNodes.Count > 0)
-                    return (XmlElement)startConditionElement.ChildNodes[0];
-                return null;
+                return startConditionElement != null && startConditionElement.ChildNodes.Count > 0
+                    ? (XmlElement)startConditionElement.ChildNodes[0]
+                    : null;
             }
 
             set {
@@ -345,10 +337,9 @@ namespace LayoutManager.Model {
 
         public string StartConditionDescription {
             get {
-                if (StartCondition == null)
-                    return "At once";
-                else
-                    return (string)EventManager.Event(new LayoutEvent("get-event-script-description", StartCondition));
+                return StartCondition == null
+                    ? "At once"
+                    : (string)EventManager.Event(new LayoutEvent("get-event-script-description", StartCondition));
             }
         }
 
@@ -356,9 +347,9 @@ namespace LayoutManager.Model {
             get {
                 XmlElement driverInstructionsElement = Element[E_DriverInstructions];
 
-                if (driverInstructionsElement != null && driverInstructionsElement.ChildNodes.Count > 0)
-                    return (XmlElement)driverInstructionsElement.ChildNodes[0];
-                return null;
+                return driverInstructionsElement != null && driverInstructionsElement.ChildNodes.Count > 0
+                    ? (XmlElement)driverInstructionsElement.ChildNodes[0]
+                    : null;
             }
 
             set {
@@ -382,10 +373,9 @@ namespace LayoutManager.Model {
 
         public string DriverInstructionsDescription {
             get {
-                if (DriverInstructions == null)
-                    return "";
-                else
-                    return (string)EventManager.Event(new LayoutEvent("get-event-script-description", DriverInstructions));
+                return DriverInstructions == null
+                    ? ""
+                    : (string)EventManager.Event(new LayoutEvent("get-event-script-description", DriverInstructions));
             }
         }
 
@@ -573,9 +563,7 @@ namespace LayoutManager.Model {
 
         public TripPlanWaypointInfo CurrentWaypoint {
             get {
-                if (CurrentWaypointIndex >= 0 && TripPlan.Waypoints.Count > 0)
-                    return TripPlan.Waypoints[CurrentWaypointIndex];
-                return null;
+                return CurrentWaypointIndex >= 0 && TripPlan.Waypoints.Count > 0 ? TripPlan.Waypoints[CurrentWaypointIndex] : null;
             }
         }
 
@@ -748,9 +736,7 @@ namespace LayoutManager.Model {
                 }
             }
 
-            if (destination.Count == 0)
-                return false;
-            return true;
+            return destination.Count != 0;
         }
 
         public void CheckIntegrity(LayoutModuleBase mb, LayoutPhase phase) {
@@ -914,9 +900,7 @@ namespace LayoutManager.Model {
         public int this[Guid iconId] {
             get {
                 CreateIconIdMap();
-                if (iconIdMap.TryGetValue(iconId, out int iconIndex))
-                    return iconIndex;
-                return 0;
+                return iconIdMap.TryGetValue(iconId, out int iconIndex) ? iconIndex : 0;
             }
         }
 

@@ -67,7 +67,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonStartStop.Size = new System.Drawing.Size(72, 23);
             this.buttonStartStop.TabIndex = 4;
             this.buttonStartStop.Text = "&Deactivate";
-            this.buttonStartStop.Click += new System.EventHandler(this.buttonStartStop_Click);
+            this.buttonStartStop.Click += this.buttonStartStop_Click;
             // 
             // GlobalPolicyList
             // 

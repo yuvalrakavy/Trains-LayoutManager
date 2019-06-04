@@ -371,10 +371,9 @@ namespace LayoutManager {
 
         public string? Description {
             get {
-                if (element == null || element.ChildNodes.Count < 1)
-                    return "";
-
-                return (string?)EventManager.Event(new LayoutEvent("get-event-script-description", element.ChildNodes[0]));
+                return element == null || element.ChildNodes.Count < 1
+                    ? ""
+                    : (string?)EventManager.Event(new LayoutEvent("get-event-script-description", element.ChildNodes[0]));
             }
         }
 
@@ -540,8 +539,8 @@ namespace LayoutManager {
         /// <param name="symbolName">The symbol name to check</param>
         /// <param name="oSymbolValue">The symbol value</param>
         /// <returns></returns>
-        public bool Contains(string symbolName, object rawSymbolValue) => rawSymbolValue is IObjectHasId symbolValue &&
-              symbols.TryGetValue(symbolName, out object? previousValueObject) && previousValueObject is IObjectHasId previousValue && previousValue.Id == symbolValue.Id;
+        public bool Contains(string symbolName, object rawSymbolValue) => rawSymbolValue is IObjectHasId symbolValue
+              && symbols.TryGetValue(symbolName, out object? previousValueObject) && previousValueObject is IObjectHasId previousValue && previousValue.Id == symbolValue.Id;
 
         public object GetProperty(string symbolName, object symbolValue, string propertyName) {
             PropertyInfo propertyInfo = symbolValue.GetType().GetProperty(propertyName);
@@ -692,10 +691,7 @@ namespace LayoutManager {
                 if (symbolValue == null)
                     return null;
                 else {
-                    if (symbolValue.GetType().IsArray)
-                        return symbolValue;
-                    else
-                        return GetOperand(element, symbolName, symbolValue, symbolAccess, suffix);
+                    return symbolValue.GetType().IsArray ? symbolValue : GetOperand(element, symbolName, symbolValue, symbolAccess, suffix);
                 }
             }
         }
@@ -1483,9 +1479,9 @@ namespace LayoutManager {
             private LayoutDelayedEvent? delayedEvent;
 
             public LayoutEventScriptNodeEventWait(LayoutEvent e) : base(e) {
-                delay = ((int?)Element.AttributeValue(A_MilliSeconds) ?? 0) +
-                    ((int?)Element.AttributeValue(A_Seconds) ?? 0) * 1000 +
-                    ((int?)Element.AttributeValue(A_Minutes) ?? 0) * 1000 * 60;
+                delay = ((int?)Element.AttributeValue(A_MilliSeconds) ?? 0)
+                    + (((int?)Element.AttributeValue(A_Seconds) ?? 0) * 1000)
+                    + (((int?)Element.AttributeValue(A_Minutes) ?? 0) * 1000 * 60);
 
                 if (Element.HasAttribute(A_RandomSeconds))
                     delay += new Random().Next((int)Element.AttributeValue(A_RandomSeconds) * 1000);
@@ -1638,10 +1634,10 @@ namespace LayoutManager {
                     var operand2 = GetOperand("2");
                     string compareOperator = Element.GetAttribute("Operation");
 
-                    if (operand2 != null && operand2.GetType().IsArray)
+                    if (operand2?.GetType().IsArray == true)
                         throw new ArgumentException("Operand2 cannot be array");
 
-                    if (operand1 != null && operand1.GetType().IsArray) {
+                    if (operand1?.GetType().IsArray == true) {
                         string symbolName = Element.GetAttribute("Symbol1");
                         string symbolAccess = Element.GetAttribute("Symbol1Access");
 
@@ -1708,10 +1704,7 @@ namespace LayoutManager {
             protected int GetNumber(object? rawNumber) {
                 if (rawNumber is string rawStringValue)
                     return int.Parse(rawStringValue);
-                else if (rawNumber == null)
-                    return 0;
-                else
-                    return (int)rawNumber;
+                else return rawNumber == null ? 0 : (int)rawNumber;
             }
 
             protected override bool Compare(object? operand1, string compareOperator, object? operand2) {
@@ -1820,10 +1813,10 @@ namespace LayoutManager {
 
             public override bool IsTrue {
                 get {
-                    DateTime dt = (DateTime)EventManager.Event(new LayoutEvent("get-current-date-time-request", this));
+                    DateTime dt = (DateTime)(EventManager.Event(new LayoutEvent("get-current-date-time-request", this)) ?? DateTime.Today);
 
-                    return checkTimeNodes(seconds, dt.Second) && checkTimeNodes(minutes, dt.Minute) && checkTimeNodes(hours, dt.Hour) &&
-                        checkTimeNodes(dayOfWeek, (int)dt.DayOfWeek);
+                    return checkTimeNodes(seconds, dt.Second) && checkTimeNodes(minutes, dt.Minute) && checkTimeNodes(hours, dt.Hour)
+                        && checkTimeNodes(dayOfWeek, (int)dt.DayOfWeek);
                 }
             }
 
@@ -1849,10 +1842,7 @@ namespace LayoutManager {
             }
 
             public static IIfTimeNode AllocateTimeNode(XmlElement e) {
-                if (e.Name == "DayOfWeek")
-                    return new IfTimeDayOfWeekNode(e);
-                else
-                    return new IfTimeNode(e);
+                return e.Name == "DayOfWeek" ? new IfTimeDayOfWeekNode(e) : new IfTimeNode(e);
             }
 
             private class IfTimeNode : IIfTimeNode {
@@ -1897,10 +1887,7 @@ namespace LayoutManager {
 
                 public override string Description {
                     get {
-                        if (IsRange)
-                            return ToDay(From) + "-" + ToDay(To);
-                        else
-                            return ToDay(Value);
+                        return IsRange ? ToDay(From) + "-" + ToDay(To) : ToDay(Value);
                     }
                 }
             }
@@ -1924,10 +1911,9 @@ namespace LayoutManager {
                     string symbol = Element.GetAttribute("Symbol");
                     var symbolValue = Context[symbol];
 
-                    if (symbolValue == null)
-                        return false;
-
-                    return Element.HasAttribute("Attribute")
+                    return symbolValue == null
+                        ? false
+                        : Element.HasAttribute("Attribute")
                         ? symbolValue is IObjectHasAttributes symbolWithAttributes && symbolWithAttributes.Attributes.ContainsKey(Element.GetAttribute("Attribute"))
                         : true;
                 }

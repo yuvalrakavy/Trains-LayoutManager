@@ -77,7 +77,7 @@ namespace LayoutManager.Dialogs {
             this.listBoxPositions.Name = "listBoxPositions";
             this.listBoxPositions.Size = new System.Drawing.Size(248, 238);
             this.listBoxPositions.TabIndex = 0;
-            this.listBoxPositions.DoubleClick += new System.EventHandler(this.buttonEdit_Click);
+            this.listBoxPositions.DoubleClick += this.buttonEdit_Click;
             // 
             // buttonNew
             // 
@@ -85,7 +85,7 @@ namespace LayoutManager.Dialogs {
             this.buttonNew.Name = "buttonNew";
             this.buttonNew.TabIndex = 1;
             this.buttonNew.Text = "&New";
-            this.buttonNew.Click += new System.EventHandler(this.buttonNew_Click);
+            this.buttonNew.Click += this.buttonNew_Click;
             // 
             // buttonDelete
             // 
@@ -93,7 +93,7 @@ namespace LayoutManager.Dialogs {
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.TabIndex = 3;
             this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            this.buttonDelete.Click += this.buttonDelete_Click;
             // 
             // buttonEdit
             // 
@@ -101,7 +101,7 @@ namespace LayoutManager.Dialogs {
             this.buttonEdit.Name = "buttonEdit";
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit";
-            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
+            this.buttonEdit.Click += this.buttonEdit_Click;
             // 
             // buttonClose
             // 
@@ -109,7 +109,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.TabIndex = 4;
             this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // StandardPositions
             // 

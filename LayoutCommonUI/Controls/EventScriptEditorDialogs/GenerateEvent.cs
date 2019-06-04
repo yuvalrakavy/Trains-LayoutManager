@@ -198,7 +198,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonDeleteOption.Size = new System.Drawing.Size(75, 20);
             this.buttonDeleteOption.TabIndex = 3;
             this.buttonDeleteOption.Text = "&Delete...";
-            this.buttonDeleteOption.Click += new System.EventHandler(this.buttonDeleteOption_Click);
+            this.buttonDeleteOption.Click += this.buttonDeleteOption_Click;
             // 
             // buttonEditOption
             // 
@@ -207,7 +207,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonEditOption.Size = new System.Drawing.Size(75, 20);
             this.buttonEditOption.TabIndex = 2;
             this.buttonEditOption.Text = "&Edit...";
-            this.buttonEditOption.Click += new System.EventHandler(this.buttonEditOption_Click);
+            this.buttonEditOption.Click += this.buttonEditOption_Click;
             // 
             // buttonAddOption
             // 
@@ -216,7 +216,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonAddOption.Size = new System.Drawing.Size(75, 20);
             this.buttonAddOption.TabIndex = 1;
             this.buttonAddOption.Text = "&Add...";
-            this.buttonAddOption.Click += new System.EventHandler(this.buttonAddOption_Click);
+            this.buttonAddOption.Click += this.buttonAddOption_Click;
             // 
             // listViewOptions
             // 
@@ -230,8 +230,8 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.listViewOptions.Size = new System.Drawing.Size(456, 104);
             this.listViewOptions.TabIndex = 0;
             this.listViewOptions.View = System.Windows.Forms.View.Details;
-            this.listViewOptions.DoubleClick += new System.EventHandler(this.listViewOptions_DoubleClick);
-            this.listViewOptions.SelectedIndexChanged += new System.EventHandler(this.listViewOptions_SelectedIndexChanged);
+            this.listViewOptions.DoubleClick += this.listViewOptions_DoubleClick;
+            this.listViewOptions.SelectedIndexChanged += this.listViewOptions_SelectedIndexChanged;
             // 
             // columnHeaderOptionName
             // 
@@ -249,7 +249,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 5;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 

@@ -31,9 +31,7 @@ namespace Gui.Wizard {
         public WizardPage Page {
             get {
                 //Is this a valid page
-                if (vPage >= 0 && vPage < vPages.Count)
-                    return vPages[vPage];
-                return null;
+                return vPage >= 0 && vPage < vPages.Count ? vPages[vPage] : null;
             }
             set {
                 if (vPages.Contains(value)) {

@@ -144,7 +144,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.listBoxRegions.Name = "listBoxRegions";
             this.listBoxRegions.Size = new System.Drawing.Size(234, 199);
             this.listBoxRegions.TabIndex = 0;
-            this.listBoxRegions.SelectedIndexChanged += new System.EventHandler(this.updateButtons);
+            this.listBoxRegions.SelectedIndexChanged += this.updateButtons;
             // 
             // buttonNewRegion
             // 
@@ -154,7 +154,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonNewRegion.Size = new System.Drawing.Size(48, 18);
             this.buttonNewRegion.TabIndex = 1;
             this.buttonNewRegion.Text = "&New";
-            this.buttonNewRegion.Click += new System.EventHandler(this.buttonNewRegion_Click);
+            this.buttonNewRegion.Click += this.buttonNewRegion_Click;
             // 
             // buttonEditRegion
             // 
@@ -164,7 +164,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonEditRegion.Size = new System.Drawing.Size(48, 18);
             this.buttonEditRegion.TabIndex = 1;
             this.buttonEditRegion.Text = "&Edit";
-            this.buttonEditRegion.Click += new System.EventHandler(this.buttonEditRegion_Click);
+            this.buttonEditRegion.Click += this.buttonEditRegion_Click;
             // 
             // buttonDeleteRegion
             // 
@@ -174,7 +174,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonDeleteRegion.Size = new System.Drawing.Size(48, 18);
             this.buttonDeleteRegion.TabIndex = 1;
             this.buttonDeleteRegion.Text = "&Delete";
-            this.buttonDeleteRegion.Click += new System.EventHandler(this.buttonDeleteRegion_Click);
+            this.buttonDeleteRegion.Click += this.buttonDeleteRegion_Click;
             // 
             // buttonToggleRegionActivation
             // 
@@ -184,7 +184,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonToggleRegionActivation.Size = new System.Drawing.Size(76, 18);
             this.buttonToggleRegionActivation.TabIndex = 1;
             this.buttonToggleRegionActivation.Text = "&Activate";
-            this.buttonToggleRegionActivation.Click += new System.EventHandler(this.buttonToggleRegionActivation_Click);
+            this.buttonToggleRegionActivation.Click += this.buttonToggleRegionActivation_Click;
             // 
             // buttonClose
             // 
@@ -194,7 +194,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(64, 23);
             this.buttonClose.TabIndex = 2;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // ManualDispatchRegions
             // 
@@ -212,7 +212,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "ManualDispatchRegions";
             this.ShowInTaskbar = false;
             this.Text = "Manual Dispatch Regions";
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.ManualDispatchRegions_Closing);
+            this.Closing += this.ManualDispatchRegions_Closing;
             this.ResumeLayout(false);
         }
         #endregion

@@ -162,11 +162,11 @@ namespace LayoutManager.ControlComponents {
         public static MassothFeedbackModule GetMasterUsingBusId(IModelComponentIsBusProvider commandStation, int busId) {
             var bus = Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(commandStation, "DiMAXBUS"), "DiMAXBUS");
 
-                return (from module in bus.Modules
-                        where module.ModuleTypeName == "Massoth8170001" &&
-                        new MassothFeedbackModule(module).DiMAX_BusConnectionMethod == MassothFeedbackDecoderBusConnectionMethod.Master &&
-                        new MassothFeedbackModule(module).DiMAX_BusId == busId
-                        select new MassothFeedbackModule(module)).FirstOrDefault();
+            return (from module in bus.Modules
+                    where module.ModuleTypeName == "Massoth8170001"
+                    && new MassothFeedbackModule(module).DiMAX_BusConnectionMethod == MassothFeedbackDecoderBusConnectionMethod.Master
+                    && new MassothFeedbackModule(module).DiMAX_BusId == busId
+                    select new MassothFeedbackModule(module)).FirstOrDefault();
         }
     }
 
@@ -185,9 +185,9 @@ namespace LayoutManager.ControlComponents {
 
             int address = ProgrammingTarget.Address;
             for (int i = 0; i < 4; i++) {
-                SetCV(51 + i * 10, (byte)(address >> 8));
-                SetCV(51 + i * 10 + 1, (byte)(address & 0xff));
-                SetCV(55 + i * 10, 0);      // Feedback command - trigger
+                SetCV(51 + (i * 10), (byte)(address >> 8));
+                SetCV(51 + (i * 10) + 1, (byte)(address & 0xff));
+                SetCV(55 + (i * 10), 0);      // Feedback command - trigger
                 address++;
             }
         }
@@ -246,9 +246,9 @@ namespace LayoutManager.ControlComponents {
 
             int address = ProgrammingTarget.Address;
             for (int i = 0; i < 4; i++) {
-                SetCV(51 + i * 10, (byte)(address >> 8));
-                SetCV(51 + i * 10 + 1, (byte)(address & 0xff));
-                SetCV(55 + i * 10, 2);      // Feedback command - level
+                SetCV(51 + (i * 10), (byte)(address >> 8));
+                SetCV(51 + (i * 10) + 1, (byte)(address & 0xff));
+                SetCV(55 + (i * 10), 2);      // Feedback command - level
                 address += 2;
             }
         }

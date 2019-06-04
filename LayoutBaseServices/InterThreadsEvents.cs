@@ -66,7 +66,7 @@ namespace LayoutBaseServices {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void eventRelayThreadFunction() {
             // Wait until control is created, so events can be delivered to it
-            while (controlInUIthread == null || !controlInUIthread.IsHandleCreated)
+            while (controlInUIthread?.IsHandleCreated != true)
                 Thread.Sleep(100);
 
             do {

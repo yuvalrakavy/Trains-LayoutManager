@@ -129,7 +129,7 @@ namespace NumatoController {
         #endregion
 
         #region Event Handlers
-        #pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060
 
         [LayoutEvent("begin-design-time-layout-activation")]
         private void beginDesignTimeLayoutActivation(LayoutEvent e) {

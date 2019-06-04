@@ -17,7 +17,7 @@ namespace NCDRelayController {
         TCP,
     };
 
-    #pragma warning disable IDE0051, IDE0060, IDE0052
+#pragma warning disable IDE0051, IDE0060, IDE0052
     public class NCDRelayController : ModelComponent, IModelComponentIsBusProvider {
         private const string A_InterfaceType = "InterfaceType";
         private const string A_OverlappedIO = "OverlappedIO";
@@ -167,7 +167,7 @@ namespace NCDRelayController {
         #endregion
 
         #region Event Handlers
-        #pragma warning disable IDE0051, IDE0060, IDE0052
+#pragma warning disable IDE0051, IDE0060, IDE0052
 
         [LayoutEvent("enter-operation-mode")]
         protected virtual void EnterOperationMode(LayoutEvent e0) {
@@ -313,7 +313,7 @@ namespace NCDRelayController {
 
             protected override byte[] Command {
                 get {
-                    byte bank = (byte)(iRelay / 8 + 1);
+                    byte bank = (byte)((iRelay / 8) + 1);
                     byte command;
 
                     if (on)

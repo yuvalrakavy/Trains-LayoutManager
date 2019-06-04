@@ -18,12 +18,12 @@ namespace LayoutManager.CommonUI {
 
             Point hitInScreenCoordinates = hitTestResult.View.PointToScreen(hitTestResult.ClientLocation);
 
-            if (hitTestResult.ClientLocation.X - Width / 2 < 10)
+            if (hitTestResult.ClientLocation.X - (Width / 2) < 10)
                 x = hitTestResult.View.PointToScreen(hitTestResult.View.Location).X + 10;
-            else if (hitTestResult.ClientLocation.X + Width / 2 > hitTestResult.View.Width - 40)
+            else if (hitTestResult.ClientLocation.X + (Width / 2) > hitTestResult.View.Width - 40)
                 x = hitTestResult.View.PointToScreen(hitTestResult.View.Location).X + hitTestResult.View.Width - Width - 40;
             else
-                x = hitInScreenCoordinates.X - Width / 2;
+                x = hitInScreenCoordinates.X - (Width / 2);
 
             if (hitTestResult.ClientLocation.Y + Height + VerticalOffset > hitTestResult.View.Height)
                 y = hitInScreenCoordinates.Y - VerticalOffset - Height;

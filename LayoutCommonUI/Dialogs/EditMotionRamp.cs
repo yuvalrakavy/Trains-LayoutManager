@@ -63,7 +63,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(56, 23);
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -73,7 +73,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(56, 23);
             this.buttonCancel.TabIndex = 2;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // EditMotionRamp
             // 

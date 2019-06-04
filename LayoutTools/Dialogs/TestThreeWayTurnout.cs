@@ -6,7 +6,7 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace LayoutManager.Tools.Dialogs {
-    #pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060
     public partial class TestThreeWayTurnout : Form {
         private readonly LayoutThreeWayTurnoutComponent turnout;
         private int _state = -1;
@@ -207,7 +207,7 @@ namespace LayoutManager.Tools.Dialogs {
                 ControlConnectionPoint connectionPoint = cp;
 
                 m.MenuItems.Add(cp.DisplayName + " (" + cp.Module.ConnectionPoints.GetLabel(cp.Index, true) + ")",
-                    delegate (object s, EventArgs ev) {
+                    (object s, EventArgs ev) => {
                         DisconnectComponentFromConnectionPointCommand disconnectCommand = new DisconnectComponentFromConnectionPointCommand(connectionPoint);
 
                         LayoutController.Do(disconnectCommand);
@@ -225,7 +225,7 @@ namespace LayoutManager.Tools.Dialogs {
                     ModelComponentControlConnectionDescription desc = connectionDescription;
 
                     m.MenuItems.Add(connectionDescription.DisplayName,
-                        delegate (object s, EventArgs ev) {
+                        (object s, EventArgs ev) => {
                             ControlConnectionPointDestination destination = new ControlConnectionPointDestination(turnout, desc);
                             EventManager.Event(new LayoutEvent("request-component-to-control-connect", destination));
                         });

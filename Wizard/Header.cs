@@ -33,9 +33,7 @@ namespace Gui.Wizard {
         /// </summary>
         protected override void Dispose(bool disposing) {
             if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -131,7 +129,7 @@ namespace Gui.Wizard {
             this.Controls.Add(this.pnlDockPadding);
             this.Name = "Header";
             this.Size = new System.Drawing.Size(324, 64);
-            this.SizeChanged += new System.EventHandler(this.Header_SizeChanged);
+            this.SizeChanged += this.Header_SizeChanged;
             this.pnlDockPadding.ResumeLayout(false);
             this.ResumeLayout(false);
         }

@@ -25,7 +25,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         private DialogEditing changeToViewonly;
 
-        #pragma warning disable nullable
+#pragma warning disable nullable
         public EventScriptEditor() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
@@ -33,7 +33,7 @@ namespace LayoutManager.CommonUI.Controls {
             // TODO: Add any initialization after the InitForm call
 
         }
-        #pragma warning restore nullable
+#pragma warning restore nullable
 
         #region Public properties/Methods
 
@@ -211,8 +211,8 @@ namespace LayoutManager.CommonUI.Controls {
             this.treeViewConditions.Name = "treeViewConditions";
             this.treeViewConditions.Size = new System.Drawing.Size(296, 192);
             this.treeViewConditions.TabIndex = 0;
-            this.treeViewConditions.DoubleClick += new System.EventHandler(this.buttonEditEventScript_Click);
-            this.treeViewConditions.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewConditions_AfterSelect);
+            this.treeViewConditions.DoubleClick += this.buttonEditEventScript_Click;
+            this.treeViewConditions.AfterSelect += this.treeViewConditions_AfterSelect;
             // 
             // imageListConditionTree
             // 
@@ -229,7 +229,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonAddCondition.Size = new System.Drawing.Size(54, 21);
             this.buttonAddCondition.TabIndex = 1;
             this.buttonAddCondition.Text = "&Add";
-            this.buttonAddCondition.Click += new System.EventHandler(this.buttonAddEventScript_Click);
+            this.buttonAddCondition.Click += this.buttonAddEventScript_Click;
             // 
             // buttonEditCondition
             // 
@@ -239,7 +239,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonEditCondition.Size = new System.Drawing.Size(54, 21);
             this.buttonEditCondition.TabIndex = 3;
             this.buttonEditCondition.Text = "&Edit";
-            this.buttonEditCondition.Click += new System.EventHandler(this.buttonEditEventScript_Click);
+            this.buttonEditCondition.Click += this.buttonEditEventScript_Click;
             // 
             // buttonDeleteCondition
             // 
@@ -249,7 +249,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonDeleteCondition.Size = new System.Drawing.Size(54, 21);
             this.buttonDeleteCondition.TabIndex = 5;
             this.buttonDeleteCondition.Text = "&Delete";
-            this.buttonDeleteCondition.Click += new System.EventHandler(this.buttonDeleteEventScript_Click);
+            this.buttonDeleteCondition.Click += this.buttonDeleteEventScript_Click;
             // 
             // buttonMoveConditionDown
             // 
@@ -261,7 +261,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonMoveConditionDown.Name = "buttonMoveConditionDown";
             this.buttonMoveConditionDown.Size = new System.Drawing.Size(24, 20);
             this.buttonMoveConditionDown.TabIndex = 7;
-            this.buttonMoveConditionDown.Click += new System.EventHandler(this.buttonMoveConditionDown_Click);
+            this.buttonMoveConditionDown.Click += this.buttonMoveConditionDown_Click;
             // 
             // imageListButttons
             // 
@@ -280,7 +280,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonMoveConditionUp.Name = "buttonMoveConditionUp";
             this.buttonMoveConditionUp.Size = new System.Drawing.Size(24, 20);
             this.buttonMoveConditionUp.TabIndex = 6;
-            this.buttonMoveConditionUp.Click += new System.EventHandler(this.buttonMoveConditionUp_Click);
+            this.buttonMoveConditionUp.Click += this.buttonMoveConditionUp_Click;
             // 
             // buttonOptions
             // 
@@ -290,7 +290,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonOptions.Size = new System.Drawing.Size(54, 21);
             this.buttonOptions.TabIndex = 4;
             this.buttonOptions.Text = "&Options";
-            this.buttonOptions.Click += new System.EventHandler(this.buttonOptions_Click);
+            this.buttonOptions.Click += this.buttonOptions_Click;
             // 
             // buttonInsert
             // 
@@ -300,7 +300,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonInsert.Size = new System.Drawing.Size(54, 21);
             this.buttonInsert.TabIndex = 2;
             this.buttonInsert.Text = "&Insert";
-            this.buttonInsert.Click += new System.EventHandler(this.buttonInsert_Click);
+            this.buttonInsert.Click += this.buttonInsert_Click;
             // 
             // EventScriptEditor
             // 
@@ -756,19 +756,13 @@ namespace LayoutManager.CommonUI.Controls {
 
                 if (type == typeof(string))
                     return $"'{symbolValue}'";
-                else if (type == typeof(bool))
-                    return bool.Parse(symbolValue) ? "True" : "False";
-                else
-                    return symbolValue;
+                else return type == typeof(bool) ? bool.Parse(symbolValue) ? "True" : "False" : symbolValue;
             }
             else {
                 var tagName = element.GetAttribute($"Name{suffix}");
                 var symbolName = element.GetAttribute($"Symbol{suffix}");
 
-                if (symbolAccess == "Property")
-                    return $"property {tagName} of {symbolName}";
-                else
-                    return $"attribute {tagName} of {symbolName}";
+                return symbolAccess == "Property" ? $"property {tagName} of {symbolName}" : $"attribute {tagName} of {symbolName}";
             }
         }
 
@@ -898,7 +892,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-#region menu item classes
+        #region menu item classes
 
         private class MandatoryMenuItem : MenuItem {
             private const string A_Optional = "Optional";
@@ -938,7 +932,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-#endregion
+        #endregion
     }
 
     public abstract class LayoutEventScriptEditorTreeNodeEventContainer : LayoutEventScriptEditorTreeNodeMayBeOptional {
@@ -1020,9 +1014,9 @@ namespace LayoutManager.CommonUI.Controls {
         protected override int IconIndex => IconAction;
     }
 
-#endregion
+    #endregion
 
-#region Classes for Events, Condition and Actions clauses for event container and events
+    #region Classes for Events, Condition and Actions clauses for event container and events
 
     public class LayoutEventScriptEditorTreeNodeEventsSection : LayoutEventScriptEditorTreeNodeEventSection {
         public LayoutEventScriptEditorTreeNodeEventsSection(XmlElement eventsElement) : base(eventsElement) {
@@ -1061,5 +1055,5 @@ namespace LayoutManager.CommonUI.Controls {
         protected override string Description => "Actions";
     }
 
-#endregion
+    #endregion
 }

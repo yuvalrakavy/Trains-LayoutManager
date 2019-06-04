@@ -160,9 +160,9 @@ namespace LayoutManager.Logic {
                     bool retainLatestBlockWithTrain = train.Locations.Count == blocksWithTrainToRemove.Count;
 
                     // Sort based on train entry time, so latest block is last
-                    blocksWithTrainToRemove.Sort((b1, b2) => (int)((b1.TrainEntryTime ?? 0) - (b2.TrainEntryTime ??0)));
+                    blocksWithTrainToRemove.Sort((b1, b2) => (int)((b1.TrainEntryTime ?? 0) - (b2.TrainEntryTime ?? 0)));
 
-                    if(retainLatestBlockWithTrain && traceLocomotiveTracking.TraceVerbose) {
+                    if (retainLatestBlockWithTrain && traceLocomotiveTracking.TraceVerbose) {
                         Trace.WriteLine("All blocks from which train should be removed");
                         foreach (var b in blocksWithTrainToRemove)
                             Trace.WriteLine($"   entry time {b.TrainEntryTime} block {b} ");
@@ -556,13 +556,13 @@ namespace LayoutManager.Logic {
             }
         }
 
-#endregion
+        #endregion
 
-#region Tracking Logic
+        #region Tracking Logic
 
         private IEnumerable<(LayoutBlock block, int distance, LayoutBlockEdgeBase blockEdge)> EnumBlocksByDistance(LayoutBlock block, LayoutBlockEdgeBase originBlockEdge, int distance = 0) {
             yield return (block, distance, originBlockEdge);
-            foreach(var blockEdge in block.BlockEdges.Where(edge => edge != originBlockEdge)) {
+            foreach (var blockEdge in block.BlockEdges.Where(edge => edge != originBlockEdge)) {
                 var otherBlock = blockEdge.GetNeighboringBlock(block);
 
                 foreach (var result in EnumBlocksByDistance(otherBlock, blockEdge, distance + 1))
@@ -597,7 +597,7 @@ namespace LayoutManager.Logic {
             while (trackEdge.Track != destinationTrack) {
                 var nextTrackEdge = TopologyServices.FindTrackConnectingAt(trackEdge);
 
-                if(nextTrackEdge.Track.BlockDefinitionComponent != null) {
+                if (nextTrackEdge.Track.BlockDefinitionComponent != null) {
                     blockDefinitionsCount++;
                     Debug.Assert(blockDefinitionsCount <= distance);
                 }
@@ -617,7 +617,7 @@ namespace LayoutManager.Logic {
         [LayoutEvent("track-locomotive-position")]
         private void trackLocomotivePosition(LayoutEvent e) {
             var trackContact = Ensure.NotNull<LayoutBlockEdgeBase>(e.Sender, "trackContact");
-            var enableFuzzyTracking = (bool)e.Info;
+            var enableFuzzyTracking = (bool)(e.Info ?? false);
             var track = trackContact.Track;
             IList<TrainLocationInfo> trains1, trains2;
 
@@ -625,27 +625,34 @@ namespace LayoutManager.Logic {
 
             TrainMotionListManager motionListManager = new TrainMotionListManager();
 
-            var block1 = track.GetBlock(track.ConnectionPoints[0]);
-            var block2 = track.GetBlock(track.ConnectionPoints[1]);
+            var block1 = track.GetOptionalBlock(track.ConnectionPoints[0]);
+            var block2 = track.GetOptionalBlock(track.ConnectionPoints[1]);
 
-            if (enableFuzzyTracking && block1.Trains.Count == 0 && block2.Trains.Count == 0) {
+            if (enableFuzzyTracking &&
+                (block1 == null || block1.Trains.Count == 0) && (block2 == null || block2.Trains.Count == 0)) {
                 Trace.WriteLineIf(traceLocomotiveTracking.TraceInfo, $"No trains found around {trackContact.FullDescription} looking for trains in nearby region, assuming train position was not correct");
 
                 const int maxDistance = 2;
 
-                var (fuzzyBlock1, distance1, _) = (from b in EnumBlocksByDistance(block1, trackContact).TakeWhile(b => b.distance < maxDistance) where b.block.HasTrains select b).FirstOrDefault();
-                var (fuzzyBlock2, distance2, _) = (from b in EnumBlocksByDistance(block2, trackContact).TakeWhile(b => b.distance < maxDistance) where b.block.HasTrains select b).FirstOrDefault();
+                var (fuzzyBlock1, distance1, _) = block1 != null ?
+                    (from b in EnumBlocksByDistance(block1, trackContact).TakeWhile(b => b.distance < maxDistance) where b.block.HasTrains select b).FirstOrDefault() :
+                    (null, 0, null);
+                var (fuzzyBlock2, distance2, _) = block2 != null ?
+                    (from b in EnumBlocksByDistance(block2, trackContact).TakeWhile(b => b.distance < maxDistance) where b.block.HasTrains select b).FirstOrDefault() :
+                    (null, 0, null);
 
-                if ((fuzzyBlock1 == null || fuzzyBlock2 == null) && (distance1 > 0 || distance2 > 0)) {
-                    RelocateTrainToLinkedBlock(linkedBlock: distance1 > 0 ? block1 : block2,
+                if ((fuzzyBlock1 != null || fuzzyBlock2 != null) && (distance1 > 0 || distance2 > 0)) {
+                    RelocateTrainToLinkedBlock(linkedBlock: distance1 > 0 ? block1! : block2!,
                                                trackContact: trackContact,
-                                               blockWithTrain: distance1 > 0 ? fuzzyBlock1 : fuzzyBlock2,
+                                               blockWithTrain: distance1 > 0 ? fuzzyBlock1! : fuzzyBlock2!,
                                                distance: distance1 > 0 ? distance1 : distance2);
                 }
 
                 block1 ??= fuzzyBlock1;
                 block2 ??= fuzzyBlock2;
             }
+
+            Debug.Assert(block1 != null && block2 != null);
 
             var block1IsManualDispatch = block1.LockRequest?.IsManualDispatchLock ?? LayoutModel.StateManager.AllLayoutManualDispatch;
             var block2isManualDispatch = block2.LockRequest?.IsManualDispatchLock ?? LayoutModel.StateManager.AllLayoutManualDispatch;
@@ -813,7 +820,7 @@ namespace LayoutManager.Logic {
             try {
                 Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, "-- getting train in no feedback block " + noFeedbackBlock.Name + " for finding train in " + destinationBlock.Name + " crossing " + noFeedbackBlockEdge.FullDescription);
 
-                 if (noFeedbackBlock.Trains.Count == 0) {
+                if (noFeedbackBlock.Trains.Count == 0) {
                     var trackingResults = new List<LocomotiveTrackingResult>();
                     int cpIndex = noFeedbackBlock.BlockDefinintion.GetOtherConnectionPointIndex(noFeedbackBlockEdge);
                     LayoutBlockEdgeBase[] blockEdges = noFeedbackBlock.BlockDefinintion.GetBlockEdges(cpIndex);

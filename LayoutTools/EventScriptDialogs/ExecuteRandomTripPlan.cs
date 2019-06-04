@@ -127,7 +127,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.buttonConditionEdit.Name = "buttonConditionEdit";
             this.buttonConditionEdit.TabIndex = 4;
             this.buttonConditionEdit.Text = "&Edit...";
-            this.buttonConditionEdit.Click += new System.EventHandler(this.buttonConditionEdit_Click);
+            this.buttonConditionEdit.Click += this.buttonConditionEdit_Click;
             // 
             // label1
             // 
@@ -197,7 +197,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 7;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // label2
             // 

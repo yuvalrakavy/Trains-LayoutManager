@@ -234,7 +234,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(56, 20);
             this.buttonCancel.TabIndex = 7;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // label1
             // 
@@ -279,7 +279,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCondition.Size = new System.Drawing.Size(73, 20);
             this.buttonCondition.TabIndex = 3;
             this.buttonCondition.Text = "Condition...";
-            this.buttonCondition.Click += new System.EventHandler(this.buttonCondition_Click);
+            this.buttonCondition.Click += this.buttonCondition_Click;
             // 
             // listViewLocations
             // 
@@ -299,7 +299,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.listViewLocations.TabIndex = 0;
             this.listViewLocations.UseCompatibleStateImageBehavior = false;
             this.listViewLocations.View = System.Windows.Forms.View.Details;
-            this.listViewLocations.SelectedIndexChanged += new System.EventHandler(this.listViewLocations_SelectedIndexChanged);
+            this.listViewLocations.SelectedIndexChanged += this.listViewLocations_SelectedIndexChanged;
             // 
             // columnHeaderLocation
             // 
@@ -319,7 +319,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonAddLocation.Size = new System.Drawing.Size(73, 20);
             this.buttonAddLocation.TabIndex = 1;
             this.buttonAddLocation.Text = "&Add";
-            this.buttonAddLocation.Click += new System.EventHandler(this.buttonAddLocation_Click);
+            this.buttonAddLocation.Click += this.buttonAddLocation_Click;
             // 
             // buttonRemoveLocation
             // 
@@ -329,7 +329,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonRemoveLocation.Size = new System.Drawing.Size(73, 20);
             this.buttonRemoveLocation.TabIndex = 2;
             this.buttonRemoveLocation.Text = "&Remove";
-            this.buttonRemoveLocation.Click += new System.EventHandler(this.buttonRemoveLocation_Click);
+            this.buttonRemoveLocation.Click += this.buttonRemoveLocation_Click;
             // 
             // buttonMoveLocationUp
             // 
@@ -340,7 +340,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonMoveLocationUp.Name = "buttonMoveLocationUp";
             this.buttonMoveLocationUp.Size = new System.Drawing.Size(24, 20);
             this.buttonMoveLocationUp.TabIndex = 4;
-            this.buttonMoveLocationUp.Click += new System.EventHandler(this.buttonMoveLocationUp_Click);
+            this.buttonMoveLocationUp.Click += this.buttonMoveLocationUp_Click;
             // 
             // imageListButttons
             // 
@@ -358,7 +358,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonMoveLocationDown.Name = "buttonMoveLocationDown";
             this.buttonMoveLocationDown.Size = new System.Drawing.Size(24, 20);
             this.buttonMoveLocationDown.TabIndex = 5;
-            this.buttonMoveLocationDown.Click += new System.EventHandler(this.buttonMoveLocationDown_Click);
+            this.buttonMoveLocationDown.Click += this.buttonMoveLocationDown_Click;
             // 
             // label2
             // 
@@ -408,7 +408,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(56, 20);
             this.buttonOk.TabIndex = 6;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+            this.buttonOk.Click += this.buttonOk_Click;
             // 
             // buttonSave
             // 
@@ -419,7 +419,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonSave.Size = new System.Drawing.Size(56, 20);
             this.buttonSave.TabIndex = 5;
             this.buttonSave.Text = "Save...";
-            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            this.buttonSave.Click += this.buttonSave_Click;
             // 
             // DestinationEditor
             // 
@@ -436,8 +436,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.Controls.Add(this.buttonSave);
             this.Name = "DestinationEditor";
             this.Text = "DestinationEditor";
-            this.Closed += new System.EventHandler(this.DestinationEditor_Closed);
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.DestinationEditor_Closing);
+            this.Closed += this.DestinationEditor_Closed;
+            this.Closing += this.DestinationEditor_Closing;
             this.groupBoxLocations.ResumeLayout(false);
             this.groupBoxSelection.ResumeLayout(false);
             this.groupBoxSelection.PerformLayout();
@@ -532,7 +532,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             new BuildComponentsMenu<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases, "*[@SuggestForDestination='true']",
                     new CommonUI.BuildComponentsMenuComponentFilter<LayoutBlockDefinitionComponent>(this.addMenuFilter),
-                    delegate (object s, EventArgs ea) { AddComponent(((ModelComponentMenuItemBase<LayoutBlockDefinitionComponent>)s).Component); }).AddComponentMenuItems(menu);
+                    (object s, EventArgs ea) => AddComponent(((ModelComponentMenuItemBase<LayoutBlockDefinitionComponent>)s).Component)).AddComponentMenuItems(menu);
 
             if (menu.MenuItems.Count > 0)
                 menu.Show(groupBoxLocations, new Point(buttonAddLocation.Left, buttonAddLocation.Bottom));
@@ -631,9 +631,7 @@ namespace LayoutManager.Tools.Dialogs {
                 get {
                     LayoutBlock block = LayoutModel.Blocks[entry.BlockId];
 
-                    if (block != null)
-                        return block.BlockDefinintion;
-                    return null;
+                    return block?.BlockDefinintion;
                 }
             }
 

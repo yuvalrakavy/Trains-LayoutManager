@@ -53,10 +53,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public LayoutFontInfo FontProvider {
             get {
-                if (radioButtonStandardFont.Checked)
-                    return (LayoutFontInfo)layoutInfosComboBoxFonts.SelectedItem;
-                else
-                    return getCustomFont();
+                return radioButtonStandardFont.Checked ? (LayoutFontInfo)layoutInfosComboBoxFonts.SelectedItem : getCustomFont();
             }
 
             set {
@@ -123,7 +120,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonCustomFontSettings.Size = new System.Drawing.Size(88, 23);
             this.buttonCustomFontSettings.TabIndex = 2;
             this.buttonCustomFontSettings.Text = "Font setting...";
-            this.buttonCustomFontSettings.Click += new System.EventHandler(this.buttonCustomFontSettings_Click);
+            this.buttonCustomFontSettings.Click += this.buttonCustomFontSettings_Click;
             // 
             // groupBoxFont
             // 
@@ -158,7 +155,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.radioButtonCustomFont.Size = new System.Drawing.Size(96, 17);
             this.radioButtonCustomFont.TabIndex = 1;
             this.radioButtonCustomFont.Text = "Custom font:";
-            this.radioButtonCustomFont.CheckedChanged += new System.EventHandler(this.radioButtonCustomFont_CheckedChanged);
+            this.radioButtonCustomFont.CheckedChanged += this.radioButtonCustomFont_CheckedChanged;
             // 
             // radioButtonStandardFont
             // 
@@ -167,7 +164,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.radioButtonStandardFont.Size = new System.Drawing.Size(96, 24);
             this.radioButtonStandardFont.TabIndex = 0;
             this.radioButtonStandardFont.Text = "Standard font:";
-            this.radioButtonStandardFont.CheckedChanged += new System.EventHandler(this.radioButtonStandardFont_CheckedChanged);
+            this.radioButtonStandardFont.CheckedChanged += this.radioButtonStandardFont_CheckedChanged;
             // 
             // labelFontDescription
             // 

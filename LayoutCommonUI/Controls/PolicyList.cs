@@ -78,9 +78,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         protected PolicyItem GetSelection() {
-            if (listViewPolicies.SelectedItems.Count == 0)
-                return null;
-            return (PolicyItem)listViewPolicies.SelectedItems[0];
+            return listViewPolicies.SelectedItems.Count == 0 ? null : (PolicyItem)listViewPolicies.SelectedItems[0];
         }
 
         protected virtual void UpdateButtons(object sender, EventArgs e) {
@@ -145,9 +143,9 @@ namespace LayoutManager.CommonUI.Controls {
             this.listViewPolicies.Size = new System.Drawing.Size(368, 112);
             this.listViewPolicies.TabIndex = 0;
             this.listViewPolicies.View = System.Windows.Forms.View.Details;
-            this.listViewPolicies.MouseUp += new System.Windows.Forms.MouseEventHandler(this.listViewPolicies_MouseUp);
-            this.listViewPolicies.SelectedIndexChanged += new System.EventHandler(this.UpdateButtons);
-            this.listViewPolicies.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listViewPolicies_ItemCheck);
+            this.listViewPolicies.MouseUp += this.listViewPolicies_MouseUp;
+            this.listViewPolicies.SelectedIndexChanged += this.UpdateButtons;
+            this.listViewPolicies.ItemCheck += this.listViewPolicies_ItemCheck;
             // 
             // columnHeaderName
             // 
@@ -162,7 +160,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonNew.Size = new System.Drawing.Size(72, 23);
             this.buttonNew.TabIndex = 1;
             this.buttonNew.Text = "&New...";
-            this.buttonNew.Click += new System.EventHandler(this.buttonNew_Click);
+            this.buttonNew.Click += this.buttonNew_Click;
             // 
             // buttonRemove
             // 
@@ -172,7 +170,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonRemove.Size = new System.Drawing.Size(72, 23);
             this.buttonRemove.TabIndex = 3;
             this.buttonRemove.Text = "&Remove";
-            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+            this.buttonRemove.Click += this.buttonRemove_Click;
             // 
             // buttonEdit
             // 
@@ -182,7 +180,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonEdit.Size = new System.Drawing.Size(72, 23);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit";
-            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
+            this.buttonEdit.Click += this.buttonEdit_Click;
             // 
             // PolicyList
             // 

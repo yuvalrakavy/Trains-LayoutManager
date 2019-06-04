@@ -102,7 +102,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.numericUpDownWidth.Name = "numericUpDownWidth";
             this.numericUpDownWidth.Size = new System.Drawing.Size(52, 20);
             this.numericUpDownWidth.TabIndex = 5;
-            this.numericUpDownWidth.ValueChanged += new System.EventHandler(this.numericUpDownWidth_ValueChanged);
+            this.numericUpDownWidth.ValueChanged += this.numericUpDownWidth_ValueChanged;
             // 
             // labelPosition
             // 
@@ -122,7 +122,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.enumComboBoxAlignment.Name = "enumComboBoxAlignment";
             this.enumComboBoxAlignment.Size = new System.Drawing.Size(84, 21);
             this.enumComboBoxAlignment.TabIndex = 7;
-            this.enumComboBoxAlignment.SelectedIndexChanged += new System.EventHandler(this.enumComboBoxAlignment_SelectedIndexChanged);
+            this.enumComboBoxAlignment.SelectedIndexChanged += this.enumComboBoxAlignment_SelectedIndexChanged;
             // 
             // enumComboBoxPosition
             // 
@@ -133,7 +133,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.enumComboBoxPosition.Name = "enumComboBoxPosition";
             this.enumComboBoxPosition.Size = new System.Drawing.Size(84, 21);
             this.enumComboBoxPosition.TabIndex = 6;
-            this.enumComboBoxPosition.SelectedIndexChanged += new System.EventHandler(this.enumComboBoxPosition_SelectedIndexChanged);
+            this.enumComboBoxPosition.SelectedIndexChanged += this.enumComboBoxPosition_SelectedIndexChanged;
             // 
             // label1
             // 
@@ -159,7 +159,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.numericUpDownDistance.Name = "numericUpDownDistance";
             this.numericUpDownDistance.Size = new System.Drawing.Size(52, 20);
             this.numericUpDownDistance.TabIndex = 5;
-            this.numericUpDownDistance.ValueChanged += new System.EventHandler(this.numericUpDownDistance_ValueChanged);
+            this.numericUpDownDistance.ValueChanged += this.numericUpDownDistance_ValueChanged;
             // 
             // PositionDefinition
             // 

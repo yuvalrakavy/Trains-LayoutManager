@@ -260,9 +260,7 @@ namespace LayoutManager.Model {
         /// otherwise an instance of a LayoutSelectionLook object.
         /// </returns>
         public ILayoutSelectionLook GetComponentSelectionLook(ModelComponent component) {
-            if (selection.ContainsKey(component))
-                return selectionLook;
-            return null;
+            return selection.ContainsKey(component) ? selectionLook : null;
         }
 
         /// <summary>

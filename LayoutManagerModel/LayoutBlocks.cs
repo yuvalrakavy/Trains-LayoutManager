@@ -45,11 +45,7 @@ namespace LayoutManager.Model {
         /// Use this if you are sure that block definition is defined
         /// </summary>
         public LayoutBlockDefinitionComponent BlockDefinintion {
-            get {
-                Debug.Assert(blockInfo != null);
-                return blockInfo;
-            }
-
+            get => blockInfo ?? throw new ArgumentNullException("block.BlockDefinition is null");
             set => blockInfo = value;
         }
 
@@ -57,7 +53,7 @@ namespace LayoutManager.Model {
         /// This may be used if block definition can be null (was not yet set)
         /// </summary>
         public LayoutBlockDefinitionComponent? OptionalBlockDefinition {
-            get { return blockInfo;  }
+            get { return blockInfo; }
         }
 
         public Guid Id {
@@ -182,16 +178,13 @@ namespace LayoutManager.Model {
 
         public bool CanTrainWait {
             get {
-                if (BlockDefinintion != null)
-                    return BlockDefinintion.Info.CanTrainWait;
-                else
-                    return CanTrainWaitDefault;
+                return BlockDefinintion != null ? BlockDefinintion.Info.CanTrainWait : CanTrainWaitDefault;
             }
         }
 
-        public string Name => BlockDefinintion?.Name;
+        public string Name => BlockDefinintion.Name;
 
-        public string FullDescription => BlockDefinintion?.FullDescription;
+        public string FullDescription => BlockDefinintion.FullDescription;
 
         public override string ToString() => FullDescription;
 
@@ -231,10 +224,9 @@ namespace LayoutManager.Model {
         }
 
         public void AddTrain(TrainLocationInfo trainLocation) {
-            if (BlockDefinintion != null)
-                BlockDefinintion.EraseImage();
+            BlockDefinintion.EraseImage();
 
-            if (trainLocation.BlockEdgeId == Guid.Empty || BlockDefinintion == null)
+            if (trainLocation.BlockEdgeId == Guid.Empty)
                 trainsInBlock.Add(trainLocation);
             else {
                 // Figure out where to add the train part so it will be drawn correctly on the block info
@@ -268,13 +260,11 @@ namespace LayoutManager.Model {
 
             LayoutModel.StateManager.Components.StateOf(BlockDefinintion, State_TrainEntry, create: true).SetAttribute(A_Time, DateTime.Now.Ticks);
 
-            if (BlockDefinintion != null)
-                BlockDefinintion.OnComponentChanged();
+            BlockDefinintion.OnComponentChanged();
         }
 
         public void RemoveTrain(TrainLocationInfo trainLocation) {
-            if (BlockDefinintion != null)
-                BlockDefinintion.EraseImage();
+            BlockDefinintion.EraseImage();
 
             TrainLocationInfo? trainLocationToRemove = null;
 
@@ -294,8 +284,7 @@ namespace LayoutManager.Model {
 
             LayoutModel.StateManager.Components.Remove(BlockDefinintion, State_TrainEntry);
 
-            if (BlockDefinintion != null)
-                BlockDefinintion.OnComponentChanged();
+            BlockDefinintion.OnComponentChanged();
         }
 
         public long? TrainEntryTime {
@@ -399,10 +388,7 @@ namespace LayoutManager.Model {
             get {
                 if (myBlock == null)
                     return Array.AsReadOnly<LayoutBlock>(new LayoutBlock[] { });
-                else if (containedBlocks == null)
-                    return Array.AsReadOnly<LayoutBlock>(new LayoutBlock[1] { myBlock });
-                else
-                    return containedBlocks.AsReadOnly();
+                else return containedBlocks == null ? Array.AsReadOnly<LayoutBlock>(new LayoutBlock[1] { myBlock }) : containedBlocks.AsReadOnly();
             }
         }
     }
@@ -464,10 +450,7 @@ namespace LayoutManager.Model {
             else {
                 var component = LayoutModel.Component<ModelComponent>(resourceId, LayoutModel.ActivePhases);
 
-                if (component != null)
-                    return "Component: " + component.FullDescription;
-                else
-                    return "<Unknown resource!!>";
+                return component != null ? "Component: " + component.FullDescription : "<Unknown resource!!>";
             }
         }
 

@@ -43,7 +43,7 @@ namespace LayoutManager.Tools {
     /// <summary>
     /// Summary description for ComponentTools.
     /// </summary>
-    #pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060
     [LayoutModule("Components Editing Tools", UserControl = false)]
     public class ComponentEditingTools : ILayoutModuleSetup {
         public static string ComponentEditingToolsVersion = "1.0";
@@ -201,9 +201,7 @@ namespace LayoutManager.Tools {
             Menu m = (Menu)e.Info;
 
             if (canTestComponent(component)) {
-                MenuItem item = new MenuItem("&Test", delegate (object sender, EventArgs ea) {
-                    EventManager.Event(new LayoutEvent("test-layout-object-request", component).SetFrameWindow(e));
-                });
+                MenuItem item = new MenuItem("&Test", (object sender, EventArgs ea) => EventManager.Event(new LayoutEvent("test-layout-object-request", component).SetFrameWindow(e)));
 
                 if (EventManager.Event(new LayoutEvent("query-test-layout-object", this).SetFrameWindow(e)) != null)
                     item.Enabled = false;
@@ -458,9 +456,7 @@ namespace LayoutManager.Tools {
 
         private class TrackLinkMenuItemViewLinkedComponent : MenuItem {
             internal TrackLinkMenuItemViewLinkedComponent(Guid frameWindowId, LayoutTrackLinkComponent trackLinkComponent)
-                : base("&Show other link", (s, ea) => {
-                    EventManager.Event(new LayoutEvent("ensure-component-visible", trackLinkComponent.LinkedComponent, true).SetFrameWindow(frameWindowId));
-                }) {
+                : base("&Show other link", (s, ea) => EventManager.Event(new LayoutEvent("ensure-component-visible", trackLinkComponent.LinkedComponent, true).SetFrameWindow(frameWindowId))) {
                 if (trackLinkComponent.LinkedComponent == null)
                     this.Enabled = false;
             }
@@ -612,10 +608,7 @@ namespace LayoutManager.Tools {
 
             protected string OperationText {
                 get {
-                    if (Operation == OperationType.MoveSelection)
-                        return "move selection " + directionText;
-                    else
-                        return "shift components " + directionText;
+                    return Operation == OperationType.MoveSelection ? "move selection " + directionText : "shift components " + directionText;
                 }
             }
 
@@ -639,10 +632,7 @@ namespace LayoutManager.Tools {
                 #region IComparer<int> Members
 
                 public int Compare(int x, int y) {
-                    if (compareOrder == Order.Ascending)
-                        return x - y;
-                    else
-                        return y - x;
+                    return compareOrder == Order.Ascending ? x - y : y - x;
                 }
 
                 #endregion

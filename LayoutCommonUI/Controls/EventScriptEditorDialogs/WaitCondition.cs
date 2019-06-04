@@ -168,7 +168,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.numericUpDownRandomSeconds.Name = "numericUpDownRandomSeconds";
             this.numericUpDownRandomSeconds.Size = new System.Drawing.Size(43, 20);
             this.numericUpDownRandomSeconds.TabIndex = 6;
-            this.numericUpDownRandomSeconds.Enter += new System.EventHandler(this.numericUpDownRandomSeconds_ValueChanged);
+            this.numericUpDownRandomSeconds.Enter += this.numericUpDownRandomSeconds_ValueChanged;
             // 
             // checkBoxErrorState
             // 
@@ -185,7 +185,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonOk.Size = new System.Drawing.Size(64, 23);
             this.buttonOk.TabIndex = 9;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+            this.buttonOk.Click += this.buttonOk_Click;
             // 
             // buttonCancel
             // 

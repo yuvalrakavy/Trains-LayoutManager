@@ -126,7 +126,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.radioButtonConnectNotConnected.Size = new System.Drawing.Size(272, 24);
             this.radioButtonConnectNotConnected.TabIndex = 0;
             this.radioButtonConnectNotConnected.Text = "Connect component which are not yet connected";
-            this.radioButtonConnectNotConnected.CheckedChanged += new System.EventHandler(this.radioButtonConnectNotConnected_CheckedChanged);
+            this.radioButtonConnectNotConnected.CheckedChanged += this.radioButtonConnectNotConnected_CheckedChanged;
             // 
             // radioButtonConnectAllLayout
             // 
@@ -135,7 +135,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.radioButtonConnectAllLayout.Size = new System.Drawing.Size(184, 24);
             this.radioButtonConnectAllLayout.TabIndex = 1;
             this.radioButtonConnectAllLayout.Text = "Reconnect all components";
-            this.radioButtonConnectAllLayout.CheckedChanged += new System.EventHandler(this.radioButtonConnectAllLayout_CheckedChanged);
+            this.radioButtonConnectAllLayout.CheckedChanged += this.radioButtonConnectAllLayout_CheckedChanged;
             // 
             // groupBoxWarning
             // 
@@ -169,7 +169,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "Continue";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -210,7 +210,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.radioButtonScopeOperational.TabStop = true;
             this.radioButtonScopeOperational.Text = "Only \'Operational\' components";
             this.radioButtonScopeOperational.UseVisualStyleBackColor = true;
-            this.radioButtonScopeOperational.CheckedChanged += new System.EventHandler(this.radioButtonScope_CheckedChanged);
+            this.radioButtonScopeOperational.CheckedChanged += this.radioButtonScope_CheckedChanged;
             // 
             // radioButtonScopNotPlanned
             // 
@@ -222,7 +222,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.radioButtonScopNotPlanned.TabStop = true;
             this.radioButtonScopNotPlanned.Text = "Only \'Operational\' or \'In construction\' components ";
             this.radioButtonScopNotPlanned.UseVisualStyleBackColor = true;
-            this.radioButtonScopNotPlanned.CheckedChanged += new System.EventHandler(this.radioButtonScope_CheckedChanged);
+            this.radioButtonScopNotPlanned.CheckedChanged += this.radioButtonScope_CheckedChanged;
             // 
             // radioButtonScopeAll
             // 
@@ -234,7 +234,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.radioButtonScopeAll.TabStop = true;
             this.radioButtonScopeAll.Text = "All components (\'Panned\', \'In construction\' and \'Operational\')";
             this.radioButtonScopeAll.UseVisualStyleBackColor = true;
-            this.radioButtonScopeAll.CheckedChanged += new System.EventHandler(this.radioButtonScope_CheckedChanged);
+            this.radioButtonScopeAll.CheckedChanged += this.radioButtonScope_CheckedChanged;
             // 
             // groupBox2
             // 

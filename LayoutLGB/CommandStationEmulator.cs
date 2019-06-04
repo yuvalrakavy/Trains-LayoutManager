@@ -124,7 +124,7 @@ namespace LayoutLGB {
                     if (position == null || e.Location.Edge != position.Edge || e.Direction != position.Direction) {
                         LayoutTrackContactComponent trackContact = e.Location.Track.TrackContactComponent;
                         ControlConnectionPoint connectionPoint = LayoutModel.ControlManager.ConnectionPoints[trackContact][0];
-                        int address = connectionPoint.Module.Address + connectionPoint.Index / 2;
+                        int address = connectionPoint.Module.Address + (connectionPoint.Index / 2);
 
                         MTSmessage triggerMessage = new MTSmessage(MTScommand.TurnoutControl, (byte)address, (byte)(connectionPoint.Index & 1));
 

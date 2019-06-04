@@ -117,7 +117,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(56, 21);
             this.buttonOk.TabIndex = 3;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+            this.buttonOk.Click += this.buttonOk_Click;
             // 
             // buttonCancel
             // 
@@ -137,7 +137,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonSave.TabIndex = 5;
             this.buttonSave.Text = "Save...";
             this.buttonSave.UseVisualStyleBackColor = true;
-            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            this.buttonSave.Click += this.buttonSave_Click;
             // 
             // TripPlanWayPointDriverInstructions
             // 

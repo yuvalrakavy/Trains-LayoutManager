@@ -56,7 +56,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("driver-assignment", IfSender = "*[Driver/@Type='ManualOnScreen']")]
         private void manualDriverAssignment(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainCommonInfo>(e.Sender, "train"); ;
+            var train = Ensure.NotNull<TrainCommonInfo>(e.Sender, "train");
 
             EventManager.Event(new LayoutEvent("show-locomotive-controller", train));
             e.Info = true;
@@ -148,8 +148,8 @@ namespace LayoutManager.Logic {
         private void autoDriverGo(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
 
-            TrainAutoDriverInfo driver = new TrainAutoDriverInfo(train);
-            LocomotiveOrientation direction = (LocomotiveOrientation)e.Info;
+            var driver = new TrainAutoDriverInfo(train);
+            var direction = Ensure.ValueNotNull<LocomotiveOrientation>(e.Info, "direction");
 
             driver.State = AutoDriverState.Go;
             driver.Direction = direction;

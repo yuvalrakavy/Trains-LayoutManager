@@ -32,7 +32,7 @@ namespace LayoutManager.Tools.Dialogs {
         private readonly LayoutSelection regionSelection;
         private readonly LayoutSelection selectedBlockSelection;
 
-        #pragma warning disable nullable
+#pragma warning disable nullable
         public ManualDispatchRegion(ManualDispatchRegionInfo manualDispatchRegion) {
             //
             // Required for Windows Form Designer support
@@ -62,7 +62,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             EventManager.AddObjectSubscriptions(this);
         }
-        #pragma warning restore nullable
+#pragma warning restore nullable
 
         public XmlElement Element => manualDispatchRegion.Element;
         public XmlElement? OptionalElement => Element;
@@ -149,7 +149,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.listBoxBlocks.Name = "listBoxBlocks";
             this.listBoxBlocks.Size = new System.Drawing.Size(216, 199);
             this.listBoxBlocks.TabIndex = 0;
-            this.listBoxBlocks.SelectedIndexChanged += new System.EventHandler(this.updateButtons);
+            this.listBoxBlocks.SelectedIndexChanged += this.updateButtons;
             // 
             // buttonAddBlock
             // 
@@ -159,7 +159,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonAddBlock.Size = new System.Drawing.Size(67, 22);
             this.buttonAddBlock.TabIndex = 1;
             this.buttonAddBlock.Text = "&Add";
-            this.buttonAddBlock.Click += new System.EventHandler(this.buttonAddBlock_Click);
+            this.buttonAddBlock.Click += this.buttonAddBlock_Click;
             // 
             // buttonRemoveBlock
             // 
@@ -169,7 +169,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonRemoveBlock.Size = new System.Drawing.Size(67, 22);
             this.buttonRemoveBlock.TabIndex = 2;
             this.buttonRemoveBlock.Text = "&Remove";
-            this.buttonRemoveBlock.Click += new System.EventHandler(this.buttonRemoveBlock_Click);
+            this.buttonRemoveBlock.Click += this.buttonRemoveBlock_Click;
             // 
             // buttonOk
             // 
@@ -179,7 +179,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(67, 22);
             this.buttonOk.TabIndex = 3;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+            this.buttonOk.Click += this.buttonOk_Click;
             // 
             // label1
             // 
@@ -198,7 +198,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.textBoxName.Size = new System.Drawing.Size(136, 20);
             this.textBoxName.TabIndex = 5;
             this.textBoxName.Text = "";
-            this.textBoxName.TextChanged += new System.EventHandler(this.textBoxName_TextChanged);
+            this.textBoxName.TextChanged += this.textBoxName_TextChanged;
             // 
             // buttonCancel
             // 
@@ -209,7 +209,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(67, 22);
             this.buttonCancel.TabIndex = 3;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // ManualDispatchRegion
             // 
@@ -229,8 +229,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "ManualDispatchRegion";
             this.ShowInTaskbar = false;
             this.Text = "Manual Dispatch Region";
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.ManualDispatchRegion_Closing);
-            this.Closed += new System.EventHandler(this.ManualDispatchRegion_Closed);
+            this.Closing += this.ManualDispatchRegion_Closing;
+            this.Closed += this.ManualDispatchRegion_Closed;
             this.ResumeLayout(false);
         }
         #endregion
@@ -254,8 +254,8 @@ namespace LayoutManager.Tools.Dialogs {
 
             new BuildComponentsMenu<LayoutBlockDefinitionComponent>(
                 LayoutModel.ActivePhases,
-                delegate (LayoutBlockDefinitionComponent c) { return !listBoxBlocks.Items.Contains(c.Block); },
-                delegate (object s, EventArgs ea) { AddComponent(((ModelComponentMenuItemBase<LayoutBlockDefinitionComponent>)s).Component); }).AddComponentMenuItems(menu);
+                (LayoutBlockDefinitionComponent c) => !listBoxBlocks.Items.Contains(c.Block),
+                (object s, EventArgs ea) => AddComponent(((ModelComponentMenuItemBase<LayoutBlockDefinitionComponent>)s).Component)).AddComponentMenuItems(menu);
 
             if (menu.MenuItems.Count > 0)
                 menu.Show(this, new Point(buttonAddBlock.Left, buttonAddBlock.Bottom));

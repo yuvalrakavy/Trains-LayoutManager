@@ -142,7 +142,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // tabControl
             // 
@@ -183,7 +183,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.checkBoxHasBuiltinDecoder.Size = new System.Drawing.Size(221, 24);
             this.checkBoxHasBuiltinDecoder.TabIndex = 2;
             this.checkBoxHasBuiltinDecoder.Text = "COMPONENT has builtin decoder";
-            this.checkBoxHasBuiltinDecoder.CheckedChanged += new System.EventHandler(this.checkBoxHasBuiltinDecoder_CheckedChanged);
+            this.checkBoxHasBuiltinDecoder.CheckedChanged += this.checkBoxHasBuiltinDecoder_CheckedChanged;
             // 
             // checkBoxReverseLogic
             // 

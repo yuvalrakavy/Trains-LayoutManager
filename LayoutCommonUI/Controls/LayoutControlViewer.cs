@@ -272,7 +272,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(16, 16);
             this.buttonClose.TabIndex = 0;
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // layoutControlBusViewer
             // 
@@ -307,7 +307,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.comboBoxBusProvider.Name = "comboBoxBusProvider";
             this.comboBoxBusProvider.Size = new System.Drawing.Size(144, 21);
             this.comboBoxBusProvider.TabIndex = 1;
-            this.comboBoxBusProvider.SelectedIndexChanged += new System.EventHandler(this.comboBoxBusProvider_SelectedIndexChanged);
+            this.comboBoxBusProvider.SelectedIndexChanged += this.comboBoxBusProvider_SelectedIndexChanged;
             // 
             // label2
             // 
@@ -325,7 +325,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.comboBoxBus.Name = "comboBoxBus";
             this.comboBoxBus.Size = new System.Drawing.Size(144, 21);
             this.comboBoxBus.TabIndex = 3;
-            this.comboBoxBus.SelectedIndexChanged += new System.EventHandler(this.comboBoxBus_SelectedIndexChanged);
+            this.comboBoxBus.SelectedIndexChanged += this.comboBoxBus_SelectedIndexChanged;
             // 
             // label3
             // 
@@ -342,7 +342,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.comboBoxLocation.Name = "comboBoxLocation";
             this.comboBoxLocation.Size = new System.Drawing.Size(144, 21);
             this.comboBoxLocation.TabIndex = 5;
-            this.comboBoxLocation.SelectedIndexChanged += new System.EventHandler(this.comboBoxLocation_SelectedIndexChanged);
+            this.comboBoxLocation.SelectedIndexChanged += this.comboBoxLocation_SelectedIndexChanged;
             // 
             // buttonZoomIn
             // 
@@ -354,7 +354,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonZoomIn.Size = new System.Drawing.Size(16, 16);
             this.buttonZoomIn.TabIndex = 7;
             this.buttonZoomIn.UseVisualStyleBackColor = false;
-            this.buttonZoomIn.Click += new System.EventHandler(this.buttonZoomIn_Click);
+            this.buttonZoomIn.Click += this.buttonZoomIn_Click;
             // 
             // buttonZoomOut
             // 
@@ -366,7 +366,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonZoomOut.Size = new System.Drawing.Size(16, 16);
             this.buttonZoomOut.TabIndex = 6;
             this.buttonZoomOut.UseVisualStyleBackColor = false;
-            this.buttonZoomOut.Click += new System.EventHandler(this.buttonZoomOut_Click);
+            this.buttonZoomOut.Click += this.buttonZoomOut_Click;
             // 
             // LayoutControlViewer
             // 

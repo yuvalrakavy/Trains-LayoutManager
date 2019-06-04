@@ -190,7 +190,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.textBoxSpeedChangeLength.Size = new System.Drawing.Size(48, 20);
             this.textBoxSpeedChangeLength.TabIndex = 1;
             this.textBoxSpeedChangeLength.Text = "";
-            this.textBoxSpeedChangeLength.TextChanged += new System.EventHandler(this.textBoxSpeedChangeLength_TextChanged);
+            this.textBoxSpeedChangeLength.TextChanged += this.textBoxSpeedChangeLength_TextChanged;
             // 
             // radioButtonSpeedChangeLength
             // 
@@ -199,7 +199,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.radioButtonSpeedChangeLength.Size = new System.Drawing.Size(61, 20);
             this.radioButtonSpeedChangeLength.TabIndex = 0;
             this.radioButtonSpeedChangeLength.Text = "Length:";
-            this.radioButtonSpeedChangeLength.CheckedChanged += new System.EventHandler(this.radioButtonSpeedChangeLength_CheckedChanged);
+            this.radioButtonSpeedChangeLength.CheckedChanged += this.radioButtonSpeedChangeLength_CheckedChanged;
             // 
             // radioButtonSpeedChangeRate
             // 
@@ -208,7 +208,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.radioButtonSpeedChangeRate.Size = new System.Drawing.Size(61, 20);
             this.radioButtonSpeedChangeRate.TabIndex = 3;
             this.radioButtonSpeedChangeRate.Text = "Rate:";
-            this.radioButtonSpeedChangeRate.CheckedChanged += new System.EventHandler(this.radioButtonSpeedChangeRate_CheckedChanged);
+            this.radioButtonSpeedChangeRate.CheckedChanged += this.radioButtonSpeedChangeRate_CheckedChanged;
             // 
             // textBoxSpeedChangeRate
             // 
@@ -217,7 +217,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.textBoxSpeedChangeRate.Size = new System.Drawing.Size(48, 20);
             this.textBoxSpeedChangeRate.TabIndex = 4;
             this.textBoxSpeedChangeRate.Text = "";
-            this.textBoxSpeedChangeRate.TextChanged += new System.EventHandler(this.textBoxSpeedChangeRate_TextChanged);
+            this.textBoxSpeedChangeRate.TextChanged += this.textBoxSpeedChangeRate_TextChanged;
             // 
             // label2
             // 
@@ -235,7 +235,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.radioButtonLocomotiveHardware.Size = new System.Drawing.Size(152, 20);
             this.radioButtonLocomotiveHardware.TabIndex = 6;
             this.radioButtonLocomotiveHardware.Text = "Locomotive own settings";
-            this.radioButtonLocomotiveHardware.CheckedChanged += new System.EventHandler(this.radioButtonLocomotiveHardware_CheckedChanged);
+            this.radioButtonLocomotiveHardware.CheckedChanged += this.radioButtonLocomotiveHardware_CheckedChanged;
             // 
             // MotionRampEditor
             // 

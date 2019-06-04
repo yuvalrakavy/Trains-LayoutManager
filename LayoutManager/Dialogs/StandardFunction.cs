@@ -27,7 +27,7 @@ namespace LayoutManager.Dialogs {
         /// </summary>
         private readonly XmlElementWrapper functionInfoElement;
 
-        #pragma warning disable nullable
+#pragma warning disable nullable
         public StandardFunction(XmlElement rawFunctionInfoElement) {
             //
             // Required for Windows Form Designer support
@@ -40,7 +40,7 @@ namespace LayoutManager.Dialogs {
             textBoxFunctionName.Text = (string?)functionInfoElement.AttributeValue(A_Name) ?? "";
             textBoxDescription.Text = (string?)functionInfoElement.AttributeValue(A_Description) ?? "";
         }
-        #pragma warning restore nullable
+#pragma warning restore nullable
 
         #region Windows Form Designer generated code
         /// <summary>
@@ -118,7 +118,7 @@ namespace LayoutManager.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(64, 23);
             this.buttonOk.TabIndex = 3;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+            this.buttonOk.Click += this.buttonOk_Click;
             // 
             // buttonCancel
             // 

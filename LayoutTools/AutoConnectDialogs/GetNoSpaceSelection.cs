@@ -53,9 +53,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
 
         public LayoutControlModuleLocationComponent ModuleLocation {
             get {
-                if (comboBoxModuleLocation.SelectedItem == null)
-                    return null;
-                return ((Item)comboBoxModuleLocation.SelectedItem).ModuleLocation;
+                return comboBoxModuleLocation.SelectedItem == null ? null : ((Item)comboBoxModuleLocation.SelectedItem).ModuleLocation;
             }
         }
 
@@ -120,7 +118,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.radioButtonUseModuleLocation.Size = new System.Drawing.Size(256, 32);
             this.radioButtonUseModuleLocation.TabIndex = 1;
             this.radioButtonUseModuleLocation.Text = "Connect the component to a control module in control module location:";
-            this.radioButtonUseModuleLocation.CheckedChanged += new System.EventHandler(this.radioButtonUseModuleLocation_CheckedChanged);
+            this.radioButtonUseModuleLocation.CheckedChanged += this.radioButtonUseModuleLocation_CheckedChanged;
             // 
             // comboBoxModuleLocation
             // 
@@ -137,7 +135,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 7;
             this.buttonOK.Text = "Continue";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -154,7 +152,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.radioButtonAddNewModule.Size = new System.Drawing.Size(152, 24);
             this.radioButtonAddNewModule.TabIndex = 9;
             this.radioButtonAddNewModule.Text = "Add new control module";
-            this.radioButtonAddNewModule.CheckedChanged += new System.EventHandler(this.radioButtonAddNewModule_CheckedChanged);
+            this.radioButtonAddNewModule.CheckedChanged += this.radioButtonAddNewModule_CheckedChanged;
             // 
             // GetNoSpaceSelection
             // 

@@ -104,13 +104,13 @@ namespace LayoutLGB {
         #endregion
 
         #region Request Event Handlers
-        #pragma warning disable IDE0051
+#pragma warning disable IDE0051
 
         [LayoutEvent("get-command-station-capabilities", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private void GetCommandStationCapabilities(LayoutEvent e) {
-            CommandStationCapabilitiesInfo cap = new CommandStationCapabilitiesInfo();
-
-            cap.MinTimeBetweenSpeedSteps = (int?)Element.AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 100;
+            CommandStationCapabilitiesInfo cap = new CommandStationCapabilitiesInfo {
+                MinTimeBetweenSpeedSteps = (int?)Element.AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 100
+            };
             e.Info = cap.Element;
         }
 
@@ -215,7 +215,7 @@ namespace LayoutLGB {
 
                 if (lgbBusModule != null) {
                     if (lgbBusModule.ModuleTypeName == "LGB55070") {            // Feedback module
-                        connectionPointRef = new ControlConnectionPointReference(lgbBusModule, (address - lgbBusModule.Address) * 2 + state);
+                        connectionPointRef = new ControlConnectionPointReference(lgbBusModule, ((address - lgbBusModule.Address) * 2) + state);
                         state = 1;
                     }
                     else
@@ -335,8 +335,7 @@ namespace LayoutLGB {
         public Stream Stream { get; }
 
         public override void Do() {
-            if (mtsMessage != null)
-                mtsMessage.Send(Stream);
+            mtsMessage?.Send(Stream);
         }
     }
 

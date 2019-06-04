@@ -146,7 +146,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.checkBoxOverrideWaitable.Size = new System.Drawing.Size(225, 24);
             this.checkBoxOverrideWaitable.TabIndex = 0;
             this.checkBoxOverrideWaitable.Text = "Override default value";
-            this.checkBoxOverrideWaitable.CheckedChanged += new System.EventHandler(this.checkBoxOverrideWaitable_CheckedChanged);
+            this.checkBoxOverrideWaitable.CheckedChanged += this.checkBoxOverrideWaitable_CheckedChanged;
             // 
             // buttonCancel
             // 
@@ -156,7 +156,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // buttonOK
             // 
@@ -165,7 +165,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // checkBoxSlowDownRegion
             // 
@@ -227,7 +227,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.panelTripSectonBoundry.Name = "panelTripSectonBoundry";
             this.panelTripSectonBoundry.Size = new System.Drawing.Size(70, 70);
             this.panelTripSectonBoundry.TabIndex = 0;
-            this.panelTripSectonBoundry.Paint += new System.Windows.Forms.PaintEventHandler(this.panelTripSectonBoundry_Paint);
+            this.panelTripSectonBoundry.Paint += this.panelTripSectonBoundry_Paint;
             // 
             // AdvancedBlockInfoProperties
             // 

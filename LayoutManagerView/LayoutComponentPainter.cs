@@ -30,9 +30,6 @@ namespace LayoutManager.Components {
         protected static Point Midpoint(Point p1, Point p2) => new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
     public class LayoutTrackPainter : LayoutComponentPainter {
         public Color TrackColor { get; set; } = Color.Black;
 
@@ -78,10 +75,7 @@ namespace LayoutManager.Components {
                     return TrackOrientation.Other;
                 else if (ConnectionPoints[0].IsHorizontal && ConnectionPoints[1].IsHorizontal)
                     return TrackOrientation.Horizontal;
-                else if (ConnectionPoints[0].IsVertical && ConnectionPoints[1].IsVertical)
-                    return TrackOrientation.Vertical;
-                else
-                    return TrackOrientation.Diagonal;
+                else return ConnectionPoints[0].IsVertical && ConnectionPoints[1].IsVertical ? TrackOrientation.Vertical : TrackOrientation.Diagonal;
             }
         }
 
@@ -137,17 +131,15 @@ namespace LayoutManager.Components {
             Point cp1Position = GetConnectionPointPosition(cp1, componentSize);
             Point cp2Position = GetConnectionPointPosition(cp2, componentSize);
 
-            using (Pen p = new Pen(TrackColor, TrackWidth)) {
-                if (TrackColor == TrackColor2)
-                    g.DrawLine(p, cp1Position, cp2Position);
-                else {
-                    Point cpMiddlePosition = Midpoint(cp1Position, cp2Position);
+            using Pen p = new Pen(TrackColor, TrackWidth);
+            if (TrackColor == TrackColor2)
+                g.DrawLine(p, cp1Position, cp2Position);
+            else {
+                Point cpMiddlePosition = Midpoint(cp1Position, cp2Position);
 
-                    using (Pen p2 = new Pen(TrackColor2, TrackWidth)) {
-                        g.DrawLine(p, cp1Position, cpMiddlePosition);
-                        g.DrawLine(p2, cpMiddlePosition, cp2Position);
-                    }
-                }
+                using Pen p2 = new Pen(TrackColor2, TrackWidth);
+                g.DrawLine(p, cp1Position, cpMiddlePosition);
+                g.DrawLine(p2, cpMiddlePosition, cp2Position);
             }
         }
     }
@@ -183,27 +175,25 @@ namespace LayoutManager.Components {
             Point branchPosition = GetConnectionPointPosition(branch, componentSize);
 
             if (switchPosition == straight) {
-                using (Pen penSwitched = new Pen(TrackColor, TrackWidth), penNotSwitch = new Pen(BranchColor, TrackWidth)) {
-                    penNotSwitch.DashStyle = DashStyle.Dot;
-                    g.DrawLine(penNotSwitch, tipPosition, branchPosition);
-                    g.DrawLine(penSwitched, tipPosition, straightPosition);
-                }
+                using Pen penSwitched = new Pen(TrackColor, TrackWidth), penNotSwitch = new Pen(BranchColor, TrackWidth) {
+                    DashStyle = DashStyle.Dot
+                };
+                g.DrawLine(penNotSwitch, tipPosition, branchPosition);
+                g.DrawLine(penSwitched, tipPosition, straightPosition);
             }
             else if (switchPosition == branch) {
-                using (Pen penSwitched = new Pen(BranchColor, TrackWidth), penNotSwitch1 = new Pen(TrackColor, TrackWidth), penNotSwitch2 = new Pen(TrackColor, TrackWidth)) {
-                    Point middle = new Point((tipPosition.X + straightPosition.X) / 2, (tipPosition.Y + straightPosition.Y) / 2);
+                using Pen penSwitched = new Pen(BranchColor, TrackWidth), penNotSwitch1 = new Pen(TrackColor, TrackWidth), penNotSwitch2 = new Pen(TrackColor, TrackWidth);
+                Point middle = new Point((tipPosition.X + straightPosition.X) / 2, (tipPosition.Y + straightPosition.Y) / 2);
 
-                    penNotSwitch1.DashStyle = DashStyle.Dot;
-                    g.DrawLine(penNotSwitch1, tipPosition, middle);
-                    g.DrawLine(penNotSwitch2, middle, straightPosition);
-                    g.DrawLine(penSwitched, tipPosition, branchPosition);
-                }
+                penNotSwitch1.DashStyle = DashStyle.Dot;
+                g.DrawLine(penNotSwitch1, tipPosition, middle);
+                g.DrawLine(penNotSwitch2, middle, straightPosition);
+                g.DrawLine(penSwitched, tipPosition, branchPosition);
             }
             else {
-                using (Pen p = new Pen(TrackColor, TrackWidth)) {
-                    g.DrawLine(p, tipPosition, branchPosition);
-                    g.DrawLine(p, tipPosition, straightPosition);
-                }
+                using Pen p = new Pen(TrackColor, TrackWidth);
+                g.DrawLine(p, tipPosition, branchPosition);
+                g.DrawLine(p, tipPosition, straightPosition);
             }
         }
     }
@@ -268,19 +258,18 @@ namespace LayoutManager.Components {
                 if (segment == 0 && (switchState != 0 && switchState >= 0)) {
                     Point middle = new Point((segmentPositions[0].X + segmentPositions[1].X) / 2, (segmentPositions[0].Y + segmentPositions[1].Y) / 2);
 
-                    using (Pen penNotSwitch1 = new Pen(segmentColors[0], TrackWidth), penNotSwitch2 = new Pen(segmentColors[0], TrackWidth)) {
-                        penNotSwitch1.DashStyle = DashStyle.Dot;
-                        g.DrawLine(penNotSwitch1, segmentPositions[0], middle);
-                        g.DrawLine(penNotSwitch2, middle, segmentPositions[1]);
-                    }
+                    using Pen penNotSwitch1 = new Pen(segmentColors[0], TrackWidth) {
+                        DashStyle = DashStyle.Dot
+                    }, penNotSwitch2 = new Pen(segmentColors[0], TrackWidth);
+                    g.DrawLine(penNotSwitch1, segmentPositions[0], middle);
+                    g.DrawLine(penNotSwitch2, middle, segmentPositions[1]);
                 }
                 else {
-                    using (Pen p = new Pen(segmentColors[segment], TrackWidth)) {
-                        if (switchState >= 0 && switchState != segment)
-                            p.DashStyle = DashStyle.Dot;
+                    using Pen p = new Pen(segmentColors[segment], TrackWidth);
+                    if (switchState >= 0 && switchState != segment)
+                        p.DashStyle = DashStyle.Dot;
 
-                        g.DrawLine(p, segmentPositions[0], segmentPositions[1 + segment]);
-                    }
+                    g.DrawLine(p, segmentPositions[0], segmentPositions[1 + segment]);
                 }
             }
         }
@@ -306,43 +295,42 @@ namespace LayoutManager.Components {
         public Color RightBranchColor { get; set; } = Color.Black;
 
         public void Paint(Graphics g) {
-            using (Pen p = new Pen(VerticalTrackColor, TrackWidth)) {
+            using (Pen penVerticalTrack = new Pen(VerticalTrackColor, TrackWidth)) {
                 Point p1 = GetConnectionPointPosition(LayoutComponentConnectionPoint.T, componentSize);
                 Point p2 = GetConnectionPointPosition(LayoutComponentConnectionPoint.B, componentSize);
 
                 if (switchState == 1)
-                    p.DashStyle = DashStyle.Dot;
-                g.DrawLine(p, p1, p2);
+                    penVerticalTrack.DashStyle = DashStyle.Dot;
+                g.DrawLine(penVerticalTrack, p1, p2);
             }
 
-            using (Pen p = new Pen(HorizontalTrackColor, TrackWidth)) {
+            using (Pen penHorizontalTrack = new Pen(HorizontalTrackColor, TrackWidth)) {
                 Point p1 = GetConnectionPointPosition(LayoutComponentConnectionPoint.L, componentSize);
                 Point p2 = GetConnectionPointPosition(LayoutComponentConnectionPoint.R, componentSize);
 
                 if (switchState == 1)
-                    p.DashStyle = DashStyle.Dot;
-                g.DrawLine(p, p1, p2);
+                    penHorizontalTrack.DashStyle = DashStyle.Dot;
+                g.DrawLine(penHorizontalTrack, p1, p2);
             }
 
-            using (Pen p = new Pen(LeftBranchColor, TrackWidth)) {
+            using (Pen penLeftBranch = new Pen(LeftBranchColor, TrackWidth)) {
                 if (switchState == 0)
-                    p.DashStyle = DashStyle.Dot;
+                    penLeftBranch.DashStyle = DashStyle.Dot;
 
                 if (diagonalIndex == 0)
-                    g.DrawArc(p, new Rectangle(new Point(-componentSize.Width / 2, -componentSize.Height / 2), componentSize), 90, -90);
+                    g.DrawArc(penLeftBranch, new Rectangle(new Point(-componentSize.Width / 2, -componentSize.Height / 2), componentSize), 90, -90);
                 else
-                    g.DrawArc(p, new Rectangle(new Point(-componentSize.Width / 2, componentSize.Height / 2), componentSize), -90, 90);
+                    g.DrawArc(penLeftBranch, new Rectangle(new Point(-componentSize.Width / 2, componentSize.Height / 2), componentSize), -90, 90);
             }
 
-            using (Pen p = new Pen(RightBranchColor, TrackWidth)) {
-                if (switchState == 0)
-                    p.DashStyle = DashStyle.Dot;
+            using Pen penRightBranch = new Pen(RightBranchColor, TrackWidth);
+            if (switchState == 0)
+                penRightBranch.DashStyle = DashStyle.Dot;
 
-                if (diagonalIndex == 0)
-                    g.DrawArc(p, new Rectangle(new Point(componentSize.Width / 2, componentSize.Height / 2), componentSize), 180, 90);
-                else
-                    g.DrawArc(p, new Rectangle(new Point(componentSize.Width / 2, -componentSize.Height / 2), componentSize), 180, -90);
-            }
+            if (diagonalIndex == 0)
+                g.DrawArc(penRightBranch, new Rectangle(new Point(componentSize.Width / 2, componentSize.Height / 2), componentSize), 180, 90);
+            else
+                g.DrawArc(penRightBranch, new Rectangle(new Point(componentSize.Width / 2, -componentSize.Height / 2), componentSize), 180, -90);
         }
     }
 
@@ -377,15 +365,15 @@ namespace LayoutManager.Components {
             Rectangle contactBbox;
             var adjustedSize = new Size((ContactSize.Width + 1) / 2 * 2, (ContactSize.Height + 1) / 2 * 2); // Make sure width/height are even so it will look nice and centered
 
-            contactBbox = new Rectangle(new Point(centerPoint.X - adjustedSize.Width / 2, centerPoint.Y - adjustedSize.Height / 2), adjustedSize);
+            contactBbox = new Rectangle(new Point(centerPoint.X - (adjustedSize.Width / 2), centerPoint.Y - (adjustedSize.Height / 2)), adjustedSize);
             g.FillEllipse(Fill, contactBbox);
             g.DrawEllipse(Outline, contactBbox);
 
-            if(componentType == ComponentType.ProximitySensor || componentType == ComponentType.ActiveProximitySensor) {
-                int w = (componentType == ComponentType.ActiveProximitySensor && Orientation != TrackOrientation.Vertical) ? adjustedSize.Width : (adjustedSize.Width * 6 / 4 + 1) / 2 * 2;
-                int h = (componentType == ComponentType.ActiveProximitySensor && Orientation == TrackOrientation.Vertical) ? adjustedSize.Height : (adjustedSize.Height * 6 / 4 + 1) / 2 * 2;
+            if (componentType == ComponentType.ProximitySensor || componentType == ComponentType.ActiveProximitySensor) {
+                int w = (componentType == ComponentType.ActiveProximitySensor && Orientation != TrackOrientation.Vertical) ? adjustedSize.Width : ((adjustedSize.Width * 6 / 4) + 1) / 2 * 2;
+                int h = (componentType == ComponentType.ActiveProximitySensor && Orientation == TrackOrientation.Vertical) ? adjustedSize.Height : ((adjustedSize.Height * 6 / 4) + 1) / 2 * 2;
                 var proximitySize = new Size(w, h);
-                var proximityBox = new Rectangle(new Point(centerPoint.X - proximitySize.Width / 2, centerPoint.Y - proximitySize.Height / 2), proximitySize);
+                var proximityBox = new Rectangle(new Point(centerPoint.X - (proximitySize.Width / 2), centerPoint.Y - (proximitySize.Height / 2)), proximitySize);
 
                 g.DrawEllipse(Outline, proximityBox);
             }
@@ -412,9 +400,9 @@ namespace LayoutManager.Components {
             Point centerPoint = CenterPoint;
 
             if (LayoutTrackComponent.IsHorizontal(ConnectionPoints))
-                g.DrawLine(Pens.Black, centerPoint.X, centerPoint.Y - (ContactSize.Height / 2 + crossingLineExtra), centerPoint.X, centerPoint.Y + (ContactSize.Height / 2 + crossingLineExtra));
+                g.DrawLine(Pens.Black, centerPoint.X, centerPoint.Y - ((ContactSize.Height / 2) + crossingLineExtra), centerPoint.X, centerPoint.Y + ((ContactSize.Height / 2) + crossingLineExtra));
             else
-                g.DrawLine(Pens.Black, centerPoint.X - (ContactSize.Width / 2 + crossingLineExtra), centerPoint.Y, centerPoint.X + (ContactSize.Width / 2 + crossingLineExtra), centerPoint.Y);
+                g.DrawLine(Pens.Black, centerPoint.X - ((ContactSize.Width / 2) + crossingLineExtra), centerPoint.Y, centerPoint.X + ((ContactSize.Width / 2) + crossingLineExtra), centerPoint.Y);
         }
     }
 
@@ -473,7 +461,7 @@ namespace LayoutManager.Components {
             g.DrawLine(linePen, 0, 0, 0, lineLength);
 
             float x = -circleSize / 2.0F;
-            float y = lineLength - circleSize / 2.0F;
+            float y = lineLength - (circleSize / 2.0F);
 
             g.FillEllipse(CircleFill, x, y, circleSize, circleSize);
             g.DrawEllipse(circlePen, x, y, circleSize, circleSize);
@@ -497,15 +485,13 @@ namespace LayoutManager.Components {
             GraphicsState gs = g.Save();
             float u = ComponentSize.Height / 16.0F;
 
-            using (Pen trackPen = new Pen(Color.Black, u)) {
-                using (Brush backgroundBrush = new SolidBrush(Color.White)) {
-                    CenterOrigin(g);
-                    g.FillRectangle(backgroundBrush, -u, -u, 2 * u, 2 * u);
-                    g.DrawLine(trackPen, -u, -2 * u, -u, 2 * u);
-                    g.DrawLine(trackPen, u, -2 * u, u, 2 * u);
-                    g.Restore(gs);
-                }
-            }
+            using Pen trackPen = new Pen(Color.Black, u);
+            using Brush backgroundBrush = new SolidBrush(Color.White);
+            CenterOrigin(g);
+            g.FillRectangle(backgroundBrush, -u, -u, 2 * u, 2 * u);
+            g.DrawLine(trackPen, -u, -2 * u, -u, 2 * u);
+            g.DrawLine(trackPen, u, -2 * u, u, 2 * u);
+            g.Restore(gs);
         }
     }
 
@@ -529,19 +515,17 @@ namespace LayoutManager.Components {
             GraphicsState gs = g.Save();
             float u = ComponentSize.Height / 16.0F;
 
-            using (Pen trackPen = new Pen(Color.Black, u)) {
-                using (Brush backgroundBrush = new SolidBrush(Color.White)) {
-                    CenterOrigin(g);
-                    g.FillRectangle(backgroundBrush, -u, -u, 2 * u, 2 * u);
-                    g.DrawLine(trackPen, -u, -2 * u, -u, 2 * u);
-                    g.DrawLine(trackPen, u, -2 * u, u, 2 * u);
+            using Pen trackPen = new Pen(Color.Black, u);
+            using Brush backgroundBrush = new SolidBrush(Color.White);
+            CenterOrigin(g);
+            g.FillRectangle(backgroundBrush, -u, -u, 2 * u, 2 * u);
+            g.DrawLine(trackPen, -u, -2 * u, -u, 2 * u);
+            g.DrawLine(trackPen, u, -2 * u, u, 2 * u);
 
-                    DrawArrow(g, trackPen, new PointF(-3 * u, 5 * u), new PointF(3 * u, 5 * u), 2 * u);
-                    DrawArrow(g, trackPen, new PointF(3 * u, -5 * u), new PointF(-3 * u, -5 * u), 2 * u);
+            DrawArrow(g, trackPen, new PointF(-3 * u, 5 * u), new PointF(3 * u, 5 * u), 2 * u);
+            DrawArrow(g, trackPen, new PointF(3 * u, -5 * u), new PointF(-3 * u, -5 * u), 2 * u);
 
-                    g.Restore(gs);
-                }
-            }
+            g.Restore(gs);
         }
     }
 
@@ -566,16 +550,16 @@ namespace LayoutManager.Components {
             Point centerPoint = CenterPoint;
 
             info = new Rectangle(
-                new Point(centerPoint.X - InfoBoxSize.Width / 2, centerPoint.Y - InfoBoxSize.Height / 2), InfoBoxSize);
+                new Point(centerPoint.X - (InfoBoxSize.Width / 2), centerPoint.Y - (InfoBoxSize.Height / 2)), InfoBoxSize);
 
             g.FillRectangle(Fill, info);
             g.DrawRectangle(Outline, info);
 
             if (OccupancyDetectionBlock) {
                 if (LayoutTrackComponent.IsHorizontal(ConnectionPoints))
-                    g.DrawLine(Pens.Black, centerPoint.X, centerPoint.Y - (InfoBoxSize.Height / 2 + 3), centerPoint.X, centerPoint.Y + (InfoBoxSize.Height / 2 + 3));
+                    g.DrawLine(Pens.Black, centerPoint.X, centerPoint.Y - ((InfoBoxSize.Height / 2) + 3), centerPoint.X, centerPoint.Y + ((InfoBoxSize.Height / 2) + 3));
                 else
-                    g.DrawLine(Pens.Black, centerPoint.X - (InfoBoxSize.Width / 2 + 3), centerPoint.Y, centerPoint.X + (InfoBoxSize.Width / 2 + 3), centerPoint.X);
+                    g.DrawLine(Pens.Black, centerPoint.X - ((InfoBoxSize.Width / 2) + 3), centerPoint.Y, centerPoint.X + ((InfoBoxSize.Width / 2) + 3), centerPoint.X);
             }
         }
 
@@ -593,16 +577,10 @@ namespace LayoutManager.Components {
             Point pt = LayoutComponentPainter.GetConnectionPointPosition(cp, ComponentSize);
 
             if (LayoutTrackComponent.IsVertical(cp)) {
-                if (rightSide)
-                    return new Point(pt.X + Offset, pt.Y);
-                else
-                    return new Point(pt.X - Offset, pt.Y);
+                return rightSide ? new Point(pt.X + Offset, pt.Y) : new Point(pt.X - Offset, pt.Y);
             }
             else {
-                if (rightSide)
-                    return new Point(pt.X, pt.Y + Offset);
-                else
-                    return new Point(pt.X, pt.Y - Offset);
+                return rightSide ? new Point(pt.X, pt.Y + Offset) : new Point(pt.X, pt.Y - Offset);
             }
         }
 
@@ -683,9 +661,8 @@ namespace LayoutManager.Components {
 
             // TODO: Support tunnel portals...
 
-            using (Brush br = new SolidBrush(tunnelColor)) {
-                g.FillPolygon(br, pts);
-            }
+            using Brush br = new SolidBrush(tunnelColor);
+            g.FillPolygon(br, pts);
         }
     }
 
@@ -756,9 +733,7 @@ namespace LayoutManager.Components {
             get {
                 GraphicsPath p = new GraphicsPath();
                 LastPoint lp = new LastPoint(p, new PointF(Bounds.Left + CornerSize.Width, Bounds.Top));
-                PointF cornerOrigin;
-
-                cornerOrigin = new PointF(Bounds.Right - CornerSize.Width, lp.Y);
+                PointF cornerOrigin = new PointF(Bounds.Right - CornerSize.Width, lp.Y);
 
                 if (hotspotOrigin == 0) {
                     PointF np = new PointF(lp.X + ArrowSize.Width, lp.Y);
@@ -829,10 +804,9 @@ namespace LayoutManager.Components {
         }
 
         public void Paint(Graphics g) {
-            using (GraphicsPath p = BallonGraphicPath) {
-                g.FillPath(Fill, p);
-                g.DrawPath(Outline, p);
-            }
+            using GraphicsPath p = BallonGraphicPath;
+            g.FillPath(Fill, p);
+            g.DrawPath(Outline, p);
         }
 
         #region IDisposable Members
@@ -874,19 +848,18 @@ namespace LayoutManager.Components {
             if (openUpOrLeft)
                 g.RotateTransform(180);
 
-            float gateSize = componentSize.Height / 2.0f - 2;
+            float gateSize = (componentSize.Height / 2.0f) - 2;
 
             float gateEdgeX = (float)Math.Sin(2 * Math.PI / 400 * OpeningClearance) * gateSize;
-            float gateEdgeY = gateSize - (float)Math.Cos(2 * Math.PI / 400 * OpeningClearance) * gateSize;
+            float gateEdgeY = gateSize - ((float)Math.Cos(2 * Math.PI / 400 * OpeningClearance) * gateSize);
 
             using (Pen gatePen = new Pen(GateColor, 2.0f)) {
                 g.DrawLine(gatePen, 0, gateSize, gateEdgeX, gateEdgeY);
                 g.DrawLine(gatePen, 0, -gateSize + 1, gateEdgeX, -gateEdgeY + 1);
 
-                using (Brush columnBrush = new SolidBrush(ColumnsColor)) {
-                    g.FillEllipse(columnBrush, -3, componentSize.Height / 2 - 6, 6, 6);
-                    g.FillEllipse(columnBrush, -3, -(componentSize.Height / 2), 6, 6);
-                }
+                using Brush columnBrush = new SolidBrush(ColumnsColor);
+                g.FillEllipse(columnBrush, -3, (componentSize.Height / 2) - 6, 6, 6);
+                g.FillEllipse(columnBrush, -3, -(componentSize.Height / 2), 6, 6);
             }
 
             g.Restore(gs);
@@ -946,8 +919,8 @@ namespace LayoutManager.Components {
             g.DrawLine(Pens.Blue, new PointF(ContactOffset, ComponentSize.Height / 2.0f), side0);
             g.DrawLine(Pens.Blue, side1, new PointF(ComponentSize.Width - ContactOffset, ComponentSize.Height / 2.0f));
 
-            g.FillEllipse(Brushes.Black, new RectangleF(new PointF(ContactOffset, ComponentSize.Height / 2.0f - ContactSize.Height / 2.0f), ContactSize));
-            g.FillEllipse(Brushes.Black, new RectangleF(new PointF(ComponentSize.Width - ContactOffset - ContactSize.Width, ComponentSize.Height / 2.0f - ContactSize.Height / 2.0f), ContactSize));
+            g.FillEllipse(Brushes.Black, new RectangleF(new PointF(ContactOffset, (ComponentSize.Height / 2.0f) - (ContactSize.Height / 2.0f)), ContactSize));
+            g.FillEllipse(Brushes.Black, new RectangleF(new PointF(ComponentSize.Width - ContactOffset - ContactSize.Width, (ComponentSize.Height / 2.0f) - (ContactSize.Height / 2.0f)), ContactSize));
 
             if (IsSwitch)
                 g.DrawLine(SwitchPen, side0, SwitchState != 0 ? side1 : new PointF(side1.X, side1.Y - (side1.X - side0.X)));
@@ -957,7 +930,7 @@ namespace LayoutManager.Components {
 
                 g.DrawLine(SwitchPen, switchTipBottom, switchTip);
                 g.DrawLine(SwitchPen, switchTip, stateToPoint[SwitchState + 1]);
-                g.FillEllipse(Brushes.Black, new RectangleF(new PointF(switchTipBottom.X - ContactSize.Width / 2.0f, switchTipBottom.Y - ContactSize.Height / 2.0f), ContactSize));
+                g.FillEllipse(Brushes.Black, new RectangleF(new PointF(switchTipBottom.X - (ContactSize.Width / 2.0f), switchTipBottom.Y - (ContactSize.Height / 2.0f)), ContactSize));
             }
         }
     }

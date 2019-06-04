@@ -111,7 +111,7 @@ namespace LayoutManager.Logic {
                 }
             }
 
-            if (!(bool)e.Info)
+            if (!(bool)(e.Info ?? false))
                 e.ContinueProcessing = false;
         }
 
@@ -171,10 +171,7 @@ namespace LayoutManager.Logic {
                 }
             }
 
-            if (!ok)
-                return null;
-
-            return block;
+            return !ok ? null : block;
         }
 
         private static void checkIfBlockDefinitionTrack(LayoutBlock block, TrackEdge edge) {

@@ -61,7 +61,7 @@ namespace LayoutManager.Model {
     public enum ControlModuleConnectionPointArrangementOptions {
         TopRow = 0x00000001,    // Top row has connection points
         BottomRow = 0x00000002, // Bottom Row has connection points
-        BothRows = 0x00000003,              // Both rows have connection points
+        BothRows = TopRow | BottomRow,              // Both rows have connection points
 
         StartOnTop = 0x00000000,    // First connection point on top row
         StartOnBottom = 0x00000004, // First connection point on bottom row
@@ -258,7 +258,7 @@ namespace LayoutManager.Model {
             this.Component = component;
             this.ConnectionDescription = connectionDescription;
 
-            Debug.Assert(new List<ModelComponentControlConnectionDescription>(component.ControlConnectionDescriptions).Exists(delegate (ModelComponentControlConnectionDescription cd) { return cd.Name == connectionDescription.Name; }), "Unsupported connection for this component");
+            Debug.Assert(new List<ModelComponentControlConnectionDescription>(component.ControlConnectionDescriptions).Exists((ModelComponentControlConnectionDescription cd) => cd.Name == connectionDescription.Name), "Unsupported connection for this component");
         }
 
         /// <summary>
@@ -311,9 +311,7 @@ namespace LayoutManager.Model {
                     }
                 }
 
-                if (HasAttribute(A_Name))
-                    return GetAttribute(A_Name);
-                return null;
+                return HasAttribute(A_Name) ? GetAttribute(A_Name) : null;
             }
 
             set => SetAttribute(A_Name, value, removeIf: null);
@@ -400,7 +398,7 @@ namespace LayoutManager.Model {
                     if (busUsage == ControlConnectionPointUsage.Both)
                         throw new ArgumentException("Unable to determine connection point usage");
                     return busUsage;
-                };
+                }
 
                 return AttributeValue(A_Usage).Enum<ControlConnectionPointUsage>() ?? GetBusTypeUsage();
             }
@@ -525,7 +523,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public void DisconnectAll() {
             foreach (var connectionPoint in this)
-                if(connectionPoint != null)
+                if (connectionPoint != null)
                     connectionPoint.Component = null;
 
             Clear();
@@ -566,10 +564,7 @@ namespace LayoutManager.Model {
         /// <param name="index">The connection point index</param>
         /// <returns>The connection point type</returns>
         public string GetConnectionPointType(int index) {
-            if (IsDefined(index))
-                return this[index].Type;
-            else
-                return module.DefaultControlConnectionPointType;
+            return IsDefined(index) ? this[index].Type : module.DefaultControlConnectionPointType;
         }
 
         /// <summary>
@@ -601,7 +596,8 @@ namespace LayoutManager.Model {
 
             if (moduleTypeFound)
                 // Check specifically if this connection point can be connected to this component
-                return (bool)EventManager.Event(new LayoutEvent("can-control-be-connected", connectionDestination, (bool)true).SetOption("ModuleTypeName", module.ModuleTypeName).SetOption("ModuleID", XmlConvert.ToString(module.Id)).SetOption("Index", index));
+                return (bool)
+                    (EventManager.Event(new LayoutEvent("can-control-be-connected", connectionDestination, (bool)true).SetOption("ModuleTypeName", module.ModuleTypeName).SetOption("ModuleID", XmlConvert.ToString(module.Id)).SetOption("Index", index)) ?? false);
 
             return false;
         }
@@ -623,17 +619,14 @@ namespace LayoutManager.Model {
         }
 
         public ControlConnectionPointUsage Usage(int index) {
-            if (IsDefined(index))
-                return this[index].Usage;
-            else
-                return module.Bus.BusType.Usage;
+            return IsDefined(index) ? this[index].Usage : module.Bus.BusType.Usage;
         }
 
         /// <summary>
         /// Get enumerator for the connection points sorted by index
         /// </summary>
         /// <returns>Enumerator for conection point sorted by ascending index</returns>
-        public new IEnumerator<ControlConnectionPoint?> GetEnumerator() => GetSortedIterator(delegate (KeyValuePair<int, XmlElement> pair1, KeyValuePair<int, XmlElement> pair2) { return pair1.Key - pair2.Key; });
+        public new IEnumerator<ControlConnectionPoint?> GetEnumerator() => GetSortedIterator((KeyValuePair<int, XmlElement> pair1, KeyValuePair<int, XmlElement> pair2) => pair1.Key - pair2.Key);
     }
 
     /// <summary>
@@ -688,44 +681,21 @@ namespace LayoutManager.Model {
 
         public ControlModule? Module {
             get {
-                if (moduleID == Guid.Empty)
-                    return null;
-                return ControlManager.GetModule(moduleID);
+                return moduleID == Guid.Empty ? null : ControlManager.GetModule(moduleID);
             }
         }
 
         public ControlModuleReference ModuleReference => new ControlModuleReference(ControlManager, moduleID);
 
-        public ControlConnectionPoint? ConnectionPoint {
-            get {
-                var module = Module;
+        public ControlConnectionPoint? ConnectionPoint => Module?.ConnectionPoints[Index];
 
-                if (module == null)
-                    return null;
-
-                return module.ConnectionPoints[Index];
-            }
-        }
-
-        public bool IsConnected {
-            get {
-                var module = Module;
-
-                if (module == null)
-                    return false;
-
-                return module.ConnectionPoints.IsConnected(Index);
-            }
-        }
+        public bool IsConnected => Module?.ConnectionPoints.IsConnected(Index) ?? false;
 
         public bool IsDefined {
             get {
                 var module = Module;
 
-                if (module == null)
-                    return false;
-
-                return module.ConnectionPoints.IsDefined(Index);
+                return module?.ConnectionPoints.IsDefined(Index) ?? false;
             }
         }
 
@@ -740,10 +710,7 @@ namespace LayoutManager.Model {
         public bool CanBeConnected(ControlConnectionPointDestination connectionDestination) {
             var module = Module;
 
-            if (module == null)
-                return false;
-
-            return module.ConnectionPoints.CanBeConnected(connectionDestination, Index);
+            return module?.ConnectionPoints.CanBeConnected(connectionDestination, Index) ?? false;
         }
 
         /// <summary>
@@ -755,10 +722,7 @@ namespace LayoutManager.Model {
         public IList<ModelComponentControlConnectionDescription>? GetPossibleConnectionDescriptions(IModelComponentConnectToControl component, int index) {
             var module = Module;
 
-            if (module == null)
-                return null;
-
-            return module.ConnectionPoints.GetPossibleConnectionDescriptions(component, index);
+            return module?.ConnectionPoints.GetPossibleConnectionDescriptions(component, index);
         }
 
         /// <summary>
@@ -777,11 +741,14 @@ namespace LayoutManager.Model {
     }
 
     /// <summary>
+    /// <para>
     /// A control module is a device that control one or more controlled components. Examples of control
     /// modules are accessories decoders, and feedback units.
-    /// 
+    /// </para>
+    /// <para>
     /// Each conrol module supports one or more connection points. A connection point may be "wired" to
     /// a conrolled component.
+    /// </para>
     /// </summary>
     public class ControlModule : LayoutXmlWrapper, IComparable<ControlModule>, IControlSupportUserAction, IHasDecoder {
         private const string A_DefaultConnectionPointType = "DefaultConnectionPointType";
@@ -880,10 +847,9 @@ namespace LayoutManager.Model {
         /// </summary>
         public LayoutControlModuleLocationComponent? Location {
             get {
-                if (LocationId == Guid.Empty)
-                    return null;
-                else
-                    return LayoutModel.Component<LayoutControlModuleLocationComponent>(LocationId, LayoutModel.ActivePhases);
+                return LocationId == Guid.Empty
+                    ? null
+                    : LayoutModel.Component<LayoutControlModuleLocationComponent>(LocationId, LayoutModel.ActivePhases);
             }
         }
 
@@ -1171,7 +1137,7 @@ namespace LayoutManager.Model {
             if ((format & ControlConnectionPointLabelFormatOptions.Custom) != 0)
                 result = Ensure.NotNull<string>(EventManager.Event(new LayoutEvent("control-get-connection-point-label", this).SetOption("Address", baseAddress).SetOption("Index", index)), "result");
             else {
-                int address = baseAddress + index / ConnectionPointsPerAddress;
+                int address = baseAddress + (index / ConnectionPointsPerAddress);
                 string addressText;
 
                 if ((format & ControlConnectionPointLabelFormatOptions.ConnectionPointIndex) != 0)
@@ -1186,10 +1152,10 @@ namespace LayoutManager.Model {
                     string sep = "";
 
                     if ((format & ControlConnectionPointLabelFormatOptions.Alpha) != 0)
-                        indexText = new string(Convert.ToChar(index % ConnectionPointsPerAddress +
+                        indexText = new string(Convert.ToChar((index % ConnectionPointsPerAddress) +
                             (((format & ControlConnectionPointLabelFormatOptions.AlphaUppercase) != 0) ? 'A' : 'a')), 1);
                     else {
-                        int v = index % ConnectionPointsPerAddress + ConnectionPointIndexBase;
+                        int v = (index % ConnectionPointsPerAddress) + ConnectionPointIndexBase;
 
                         indexText = v.ToString();
                         sep = "/";
@@ -1235,7 +1201,7 @@ namespace LayoutManager.Model {
                     if (id.HasValue)
                         BusProviderId = id.Value;
                     return id;
-                };
+                }
 
                 return (Guid?)AttributeValue(A_BusProviderId) ?? DefaultBusProviderId() ?? Guid.Empty;
             }
@@ -1661,7 +1627,7 @@ namespace LayoutManager.Model {
         public int GetAlignedAddress(ControlModuleType moduleType, int address) {
             int a = address - FirstAddress + moduleType.AddressAlignment - 1;
 
-            return (a - a % moduleType.AddressAlignment) + FirstAddress;
+            return (a - (a % moduleType.AddressAlignment)) + FirstAddress;
         }
 
         /// <summary>
@@ -1709,7 +1675,7 @@ namespace LayoutManager.Model {
         /// <returns>True - the entry is empty and should be removed from the map</returns>
         public bool Remove(Guid connectionPointID) {
             if (connectionPoints != null) {
-                connectionPoints.RemoveAll(delegate (ControlConnectionPoint cp) { return cp.Id == connectionPointID; });
+                connectionPoints.RemoveAll((ControlConnectionPoint cp) => cp.Id == connectionPointID);
 
                 if (connectionPoints.Count == 1) {
                     this.connectionPoint = (ControlConnectionPoint)connectionPoints[0];
@@ -1720,10 +1686,7 @@ namespace LayoutManager.Model {
             }
             else {
                 Debug.Assert(this.connectionPoint != null);
-                if (this.connectionPoint.Id == connectionPointID)
-                    return true;
-
-                return false;
+                return this.connectionPoint.Id == connectionPointID;
             }
         }
 
@@ -1784,10 +1747,9 @@ namespace LayoutManager.Model {
         /// <returns>A list of all control connection points that are connected to the component</returns>
         public IList<ControlConnectionPoint>? this[Guid componentId] {
             get {
-                if (idMap.TryGetValue(componentId, out ControlConnectionPointMapEntry entry))
-                    return (IList<ControlConnectionPoint>)entry.ConnectionPoints;
-
-                return null;
+                return idMap.TryGetValue(componentId, out ControlConnectionPointMapEntry entry)
+                    ? (IList<ControlConnectionPoint>)entry.ConnectionPoints
+                    : null;
             }
         }
 
@@ -1879,10 +1841,8 @@ namespace LayoutManager.Model {
         /// <param name="componentId">The component ID</param>
         /// <returns>True: all connections are connected; false: At least one connection has not been defined</returns>
         public bool IsFullyConnected(Guid componentId) {
-            if (LayoutModel.Component<ModelComponent>(componentId, LayoutModel.ActivePhases) is IModelComponentConnectToControl component)
-                return IsFullyConnected(component);
-            else
-                return false;
+            return LayoutModel.Component<ModelComponent>(componentId, LayoutModel.ActivePhases) is IModelComponentConnectToControl component
+                && IsFullyConnected(component);
         }
 
         /// <summary>
@@ -1965,10 +1925,7 @@ namespace LayoutManager.Model {
         public ControlBus? GetBus(Guid busProviderId, string busTypeName) {
             XmlElement busElement = (XmlElement)Element.SelectSingleNode("Bus[@BusProviderID='" + busProviderId.ToString() + "' and @BusTypeName='" + busTypeName + "']");
 
-            if (busElement == null)
-                return null;
-            else
-                return FromElement(busElement);
+            return busElement == null ? null : FromElement(busElement);
         }
 
         public ControlBus? GetBus(IModelComponentIsBusProvider busProvider, string busTypeName) => GetBus(busProvider.Id, busTypeName);
@@ -2164,10 +2121,7 @@ namespace LayoutManager.Model {
         public ControlModule? GetModule(Guid moduleId) {
             XmlElement moduleElement = (XmlElement)ModulesElement.SelectSingleNode("Module[@ID='" + moduleId.ToString() + "']");
 
-            if (moduleElement == null)
-                return null;
-
-            return new ControlModule(this, moduleElement);
+            return moduleElement == null ? null : new ControlModule(this, moduleElement);
         }
     }
 }

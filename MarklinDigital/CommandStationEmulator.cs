@@ -118,7 +118,7 @@ namespace MarklinDigital {
                 foreach (ILocomotiveLocation location in locomotiveLocations) {
                     LayoutBlockDefinitionComponent blockInfo = location.Track.GetBlock(location.Front).BlockDefinintion;
 
-                    if (blockInfo != null && blockInfo.Info.IsOccupancyDetectionBlock) {
+                    if (blockInfo?.Info.IsOccupancyDetectionBlock == true) {
                         ControlConnectionPoint connectionPoint = LayoutModel.ControlManager.ConnectionPoints[blockInfo][0];
 
                         int decoderIndex = connectionPoint.Module.Address - 1;

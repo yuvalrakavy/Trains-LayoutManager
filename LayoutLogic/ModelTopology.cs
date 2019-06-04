@@ -211,10 +211,7 @@ namespace LayoutManager.Logic {
             if (obj == null)
                 return destination == TrackEdgeId.Empty;
 
-            if (!(obj is ModelTopologyConnectionEntry other))
-                return false;
-
-            return destination.Equals(other.destination) && Penalty == other.Penalty;
+            return !(obj is ModelTopologyConnectionEntry other) ? false : destination.Equals(other.destination) && Penalty == other.Penalty;
         }
 
         public override int GetHashCode() => destination.GetHashCode() ^ Penalty;

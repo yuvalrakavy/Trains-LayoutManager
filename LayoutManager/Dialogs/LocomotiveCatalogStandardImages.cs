@@ -272,7 +272,7 @@ namespace LayoutManager.Dialogs {
             this.buttonSetES.Size = new System.Drawing.Size(48, 19);
             this.buttonSetES.TabIndex = 2;
             this.buttonSetES.Text = "Set";
-            this.buttonSetES.Click += new System.EventHandler(this.buttonSet_click);
+            this.buttonSetES.Click += this.buttonSet_click;
             // 
             // buttonClearES
             // 
@@ -281,7 +281,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClearES.Size = new System.Drawing.Size(48, 19);
             this.buttonClearES.TabIndex = 2;
             this.buttonClearES.Text = "Clear";
-            this.buttonClearES.Click += new System.EventHandler(this.buttonClear_click);
+            this.buttonClearES.Click += this.buttonClear_click;
             // 
             // buttonClearED
             // 
@@ -290,7 +290,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClearED.Size = new System.Drawing.Size(48, 19);
             this.buttonClearED.TabIndex = 2;
             this.buttonClearED.Text = "Clear";
-            this.buttonClearED.Click += new System.EventHandler(this.buttonClear_click);
+            this.buttonClearED.Click += this.buttonClear_click;
             // 
             // buttonSetED
             // 
@@ -299,7 +299,7 @@ namespace LayoutManager.Dialogs {
             this.buttonSetED.Size = new System.Drawing.Size(48, 19);
             this.buttonSetED.TabIndex = 2;
             this.buttonSetED.Text = "Set";
-            this.buttonSetED.Click += new System.EventHandler(this.buttonSet_click);
+            this.buttonSetED.Click += this.buttonSet_click;
             // 
             // buttonClearEE
             // 
@@ -308,7 +308,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClearEE.Size = new System.Drawing.Size(48, 19);
             this.buttonClearEE.TabIndex = 2;
             this.buttonClearEE.Text = "Clear";
-            this.buttonClearEE.Click += new System.EventHandler(this.buttonClear_click);
+            this.buttonClearEE.Click += this.buttonClear_click;
             // 
             // buttonSetEE
             // 
@@ -317,7 +317,7 @@ namespace LayoutManager.Dialogs {
             this.buttonSetEE.Size = new System.Drawing.Size(48, 19);
             this.buttonSetEE.TabIndex = 2;
             this.buttonSetEE.Text = "Set";
-            this.buttonSetEE.Click += new System.EventHandler(this.buttonSet_click);
+            this.buttonSetEE.Click += this.buttonSet_click;
             // 
             // buttonSetUS
             // 
@@ -326,7 +326,7 @@ namespace LayoutManager.Dialogs {
             this.buttonSetUS.Size = new System.Drawing.Size(48, 19);
             this.buttonSetUS.TabIndex = 12;
             this.buttonSetUS.Text = "Set";
-            this.buttonSetUS.Click += new System.EventHandler(this.buttonSet_click);
+            this.buttonSetUS.Click += this.buttonSet_click;
             // 
             // label4
             // 
@@ -389,7 +389,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClearUS.Size = new System.Drawing.Size(48, 19);
             this.buttonClearUS.TabIndex = 13;
             this.buttonClearUS.Text = "Clear";
-            this.buttonClearUS.Click += new System.EventHandler(this.buttonClear_click);
+            this.buttonClearUS.Click += this.buttonClear_click;
             // 
             // buttonClearUD
             // 
@@ -398,7 +398,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClearUD.Size = new System.Drawing.Size(48, 19);
             this.buttonClearUD.TabIndex = 14;
             this.buttonClearUD.Text = "Clear";
-            this.buttonClearUD.Click += new System.EventHandler(this.buttonClear_click);
+            this.buttonClearUD.Click += this.buttonClear_click;
             // 
             // buttonSetUD
             // 
@@ -407,7 +407,7 @@ namespace LayoutManager.Dialogs {
             this.buttonSetUD.Size = new System.Drawing.Size(48, 19);
             this.buttonSetUD.TabIndex = 9;
             this.buttonSetUD.Text = "Set";
-            this.buttonSetUD.Click += new System.EventHandler(this.buttonSet_click);
+            this.buttonSetUD.Click += this.buttonSet_click;
             // 
             // buttonClearUE
             // 
@@ -416,7 +416,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClearUE.Size = new System.Drawing.Size(48, 19);
             this.buttonClearUE.TabIndex = 10;
             this.buttonClearUE.Text = "Clear";
-            this.buttonClearUE.Click += new System.EventHandler(this.buttonClear_click);
+            this.buttonClearUE.Click += this.buttonClear_click;
             // 
             // buttonSetUE
             // 
@@ -425,7 +425,7 @@ namespace LayoutManager.Dialogs {
             this.buttonSetUE.Size = new System.Drawing.Size(48, 19);
             this.buttonSetUE.TabIndex = 11;
             this.buttonSetUE.Text = "Set";
-            this.buttonSetUE.Click += new System.EventHandler(this.buttonSet_click);
+            this.buttonSetUE.Click += this.buttonSet_click;
             // 
             // buttonOK
             // 
@@ -433,7 +433,7 @@ namespace LayoutManager.Dialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 

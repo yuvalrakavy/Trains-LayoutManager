@@ -171,7 +171,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.linkMenuUnits.Size = new System.Drawing.Size(40, 20);
             this.linkMenuUnits.TabIndex = 1;
             this.linkMenuUnits.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkMenuUnits.ValueChanged += new System.EventHandler(this.linkMenuUnits_ValueChanged);
+            this.linkMenuUnits.ValueChanged += this.linkMenuUnits_ValueChanged;
             // 
             // UnitInput
             // 
@@ -205,7 +205,7 @@ namespace LayoutManager.CommonUI.Controls {
                 this.Index = index;
             }
 
-            public double ToNeutralValue(double valueInUnit) => valueInUnit * factor + offset;
+            public double ToNeutralValue(double valueInUnit) => (valueInUnit * factor) + offset;
 
             public double ToUnitValue(double neutralValue) => (neutralValue - offset) / factor;
 

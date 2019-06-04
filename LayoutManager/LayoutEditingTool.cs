@@ -12,7 +12,7 @@ namespace LayoutManager {
     /// <summary>
     /// This tool is used for editing the layout
     /// </summary>
-    #pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060
 
     public class LayoutEditingTool : LayoutTool {
         private LayoutStraightTrackComponent lastTrack = null;
@@ -329,9 +329,7 @@ namespace LayoutManager {
             ModelComponent newComponent = (ModelComponent)EventManager.Event(new LayoutEvent("create-model-component",
                 itemElement, old, null));
 
-            if (newComponent != old)
-                return newComponent;
-            return null;
+            return newComponent != old ? newComponent : null;
         }
     }
 }

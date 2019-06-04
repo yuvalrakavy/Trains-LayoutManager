@@ -237,7 +237,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.comboBoxAttribute.Name = "comboBoxAttribute";
             this.comboBoxAttribute.Size = new System.Drawing.Size(139, 21);
             this.comboBoxAttribute.TabIndex = 0;
-            this.comboBoxAttribute.DropDown += new System.EventHandler(this.comboBoxAttribute_DropDown);
+            this.comboBoxAttribute.DropDown += this.comboBoxAttribute_DropDown;
             // 
             // groupBox2
             // 
@@ -312,7 +312,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.linkMenuType.TabStop = true;
             this.linkMenuType.Text = "Text";
             this.linkMenuType.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkMenuType.ValueChanged += new System.EventHandler(this.linkMenuType_ValueChanged);
+            this.linkMenuType.ValueChanged += this.linkMenuType_ValueChanged;
             // 
             // buttonOK
             // 
@@ -320,7 +320,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 2;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 

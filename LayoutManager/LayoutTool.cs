@@ -225,10 +225,7 @@ namespace LayoutManager {
 
             EventManager.Event(new LayoutEvent(ComponentContextMenuAddSelectionEntriesEventName, hitTestResult, menu).SetFrameWindow(hitTestResult.FrameWindow));
 
-            if (menu.MenuItems.Count == 0)
-                return null;
-            else
-                return menu;
+            return menu.MenuItems.Count == 0 ? null : menu;
         }
 
         /// <summary>
@@ -242,10 +239,7 @@ namespace LayoutManager {
 
             EventManager.Event(new LayoutEvent(ComponentContextMenuAddEmptySpotEntriesEventName, hitTestResult, menu).SetFrameWindow(hitTestResult.FrameWindow));
 
-            if (menu.MenuItems.Count == 0)
-                return null;
-            else
-                return menu;
+            return menu.MenuItems.Count == 0 ? null : menu;
         }
 
         protected abstract string ComponentContextMenuAddEmptySpotEntriesEventName {

@@ -64,11 +64,7 @@ namespace LayoutManager.Model {
         public override string ToString() => Track.FullDescription + " (" + cp1.ToString() + " to " + cp2.ToString() + ")";
 
         public override bool Equals(object obj) {
-            if (obj is TrackSegment other) {
-                return Track == other.Track && cp1 == other.cp1 && cp2 == other.cp2;
-            }
-
-            return true;
+            return obj is TrackSegment other ? Track == other.Track && cp1 == other.cp1 && cp2 == other.cp2 : true;
         }
 
         static public bool operator ==(TrackSegment s1, TrackSegment s2) => s1.Equals(s2);
@@ -264,9 +260,9 @@ namespace LayoutManager.Model {
             get {
                 // TODO: May need to merge the preview annotation info from all preview requests that are displayed for this track segment
 
-                if (trackSegmentMap.TryGetValue(trackSegment, out TrackSegmentMapEntry entry))
-                    return new TrackSegmentPreviewResult(entry.TopPreviewInfo.Request, entry.Annotations);
-                return null;
+                return trackSegmentMap.TryGetValue(trackSegment, out TrackSegmentMapEntry entry)
+                    ? new TrackSegmentPreviewResult(entry.TopPreviewInfo.Request, entry.Annotations)
+                    : null;
             }
         }
 

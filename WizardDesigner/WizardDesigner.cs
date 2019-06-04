@@ -64,27 +64,23 @@ namespace Gui.Wizard {
         /// <param name="control"></param>
         /// <returns></returns>
         public override bool CanParent(Control control) {
-            if (control is WizardPage)
-                return true;
-            return false;
+            return control is WizardPage;
         }
 
         public override bool CanParent(ControlDesigner controlDesigner) {
-            if (controlDesigner is WizardPageDesigner)
-                return true;
-            return false;
+            return controlDesigner is WizardPageDesigner;
         }
 
         protected override bool GetHitTest(Point point) {
             Wizard wiz = this.Control as Wizard;
 
-            if (wiz.btnNext.Enabled &&
-                wiz.btnNext.ClientRectangle.Contains(wiz.btnNext.PointToClient(point))) {
+            if (wiz.btnNext.Enabled
+                && wiz.btnNext.ClientRectangle.Contains(wiz.btnNext.PointToClient(point))) {
                 //Next can handle that
                 return true;
             }
-            if (wiz.btnBack.Enabled &&
-                wiz.btnBack.ClientRectangle.Contains(wiz.btnBack.PointToClient(point))) {
+            if (wiz.btnBack.Enabled
+                && wiz.btnBack.ClientRectangle.Contains(wiz.btnBack.PointToClient(point))) {
                 //Back can handle that
                 return true;
             }

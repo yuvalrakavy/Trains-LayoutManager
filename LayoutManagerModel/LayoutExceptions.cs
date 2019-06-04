@@ -86,9 +86,7 @@ namespace LayoutManager {
 
         public LocomotiveInfo Locomotive {
             get {
-                if (IsLocomotive)
-                    return new LocomotiveInfo(Element);
-                return null;
+                return IsLocomotive ? new LocomotiveInfo(Element) : null;
             }
         }
     }
@@ -100,9 +98,7 @@ namespace LayoutManager {
 
         public TrainInCollectionInfo Train {
             get {
-                if (IsTrain)
-                    return new TrainInCollectionInfo(Element);
-                return null;
+                return IsTrain ? new TrainInCollectionInfo(Element) : null;
             }
         }
     }

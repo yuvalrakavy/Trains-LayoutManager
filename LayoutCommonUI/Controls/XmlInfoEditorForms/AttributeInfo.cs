@@ -105,7 +105,7 @@ namespace LayoutManager.CommonUI.Controls.XmlInfoEditorForms {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 

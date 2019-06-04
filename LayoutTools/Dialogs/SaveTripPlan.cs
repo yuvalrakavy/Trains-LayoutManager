@@ -113,7 +113,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.TabIndex = 4;
             this.buttonSave.Text = "Save";
-            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            this.buttonSave.Click += this.buttonSave_Click;
             // 
             // buttonCancel
             // 
@@ -123,7 +123,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // SaveTripPlan
             // 

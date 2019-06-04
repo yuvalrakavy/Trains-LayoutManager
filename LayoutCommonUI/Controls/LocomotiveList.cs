@@ -41,9 +41,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public XmlElement? SelectedXmlElement {
             get {
-                if (SelectedXmlItem != null)
-                    return ((IXmlQueryListBoxXmlElementItem)SelectedXmlItem).Element;
-                return null;
+                return SelectedXmlItem != null ? ((IXmlQueryListBoxXmlElementItem)SelectedXmlItem).Element : null;
             }
         }
 
@@ -157,7 +155,7 @@ namespace LayoutManager.CommonUI.Controls {
                 if (draggedItem != null) {
                     Size dragAreaSize = SystemInformation.DragSize;
 
-                    dragSourceRect = new Rectangle(new Point(e.X - dragAreaSize.Width / 2, e.Y - dragAreaSize.Height / 2), dragAreaSize);
+                    dragSourceRect = new Rectangle(new Point(e.X - (dragAreaSize.Width / 2), e.Y - (dragAreaSize.Height / 2)), dragAreaSize);
                 }
             }
         }
@@ -256,9 +254,7 @@ namespace LayoutManager.CommonUI.Controls {
             public object Bookmark => new LocomotiveInfo(Element).Id.ToString();
 
             public bool IsBookmarkEqual(object bookmark) {
-                if (bookmark is String)
-                    return (String)bookmark == Element.GetAttribute(A_Id);
-                return false;
+                return bookmark is String ? (String)bookmark == Element.GetAttribute(A_Id) : false;
             }
         }
 

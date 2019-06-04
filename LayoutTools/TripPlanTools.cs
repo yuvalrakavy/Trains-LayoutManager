@@ -103,7 +103,7 @@ namespace LayoutManager.Tools {
             private IRoutePlanningServices _tripPlanningServices = null;
 
             public ApplicableTripPlansData(XmlElement element) : base(element) {
-                staticGrade = (bool?)AttributeValue("StaticGrade") ??  true;
+                staticGrade = (bool?)AttributeValue("StaticGrade") ?? true;
             }
 
             public IRoutePlanningServices TripPlanningServices {
@@ -178,10 +178,9 @@ namespace LayoutManager.Tools {
                 }
 
                 public LocomotiveOrientation Get(LocomotiveOrientation direction) {
-                    if (shouldReverse)
-                        return direction == LocomotiveOrientation.Forward ? LocomotiveOrientation.Backward : LocomotiveOrientation.Forward;
-                    else
-                        return direction;
+                    return shouldReverse
+                        ? direction == LocomotiveOrientation.Forward ? LocomotiveOrientation.Backward : LocomotiveOrientation.Forward
+                        : direction;
                 }
 
                 public LocomotiveOrientation Get(TripPlanWaypointInfo wayPoint) => Get(wayPoint.Direction);
@@ -352,7 +351,7 @@ namespace LayoutManager.Tools {
                     applicableTripPlans.LastCarBlock = block;
                     applicableTripPlans.LocomotiveFront = front.Value;
                     applicableTripPlans.LastCarFront = front.Value;
-                    applicableTripPlans.CalculatePenalty = (bool ?)e.GetOption("CalculatePenalty") ?? true;
+                    applicableTripPlans.CalculatePenalty = (bool?)e.GetOption("CalculatePenalty") ?? true;
                     applicableTripPlans.FindApplicableTripPlans();
                 }
             }

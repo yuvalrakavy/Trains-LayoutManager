@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace LayoutManager {
     public interface IObjectHasXml {
         XmlElement Element { get; }
-        XmlElement? OptionalElement { get;  }
+        XmlElement? OptionalElement { get; }
     }
 
     public struct XmlElementWrapper : IObjectHasXml {
@@ -59,10 +59,9 @@ namespace LayoutManager {
 
     public static class XmlElementExtensions {
         public static ConvertableString AttributeValue(this XmlElement? e, string name) {
-            if (e == null || e.Attributes[name] == null)
-                return new ConvertableString(null, name, e);
-
-            return new ConvertableString(e.GetAttribute(name), name, e);
+            return e == null || e.Attributes[name] == null
+                ? new ConvertableString(null, name, e)
+                : new ConvertableString(e.GetAttribute(name), name, e);
         }
 
         public static void SetAttribute(this XmlElement e, string name, string? v, string? removeIf) {
@@ -155,7 +154,7 @@ namespace LayoutManager {
             return v;
         }
 
-        public static explicit operator string? (ConvertableString s) {
+        public static explicit operator string?(ConvertableString s) {
             return s.v;
         }
 
@@ -170,74 +169,44 @@ namespace LayoutManager {
         public static explicit operator Guid(ConvertableString s) => ((Guid?)s.MustExist()).Value;
 #pragma warning restore CS8629
 
-        public static explicit operator int? (ConvertableString s) {
-            if (s.v == null)
-                return null;
-
-            return XmlConvert.ToInt32(s.v);
+        public static explicit operator int?(ConvertableString s) {
+            return s.v == null ? null : (int?)XmlConvert.ToInt32(s.v);
         }
 
-        public static explicit operator uint? (ConvertableString s) {
-            if (s.v == null)
-                return null;
-
-            return XmlConvert.ToUInt32(s.v);
+        public static explicit operator uint?(ConvertableString s) {
+            return s.v == null ? null : (uint?)XmlConvert.ToUInt32(s.v);
         }
 
-        public static explicit operator Int64? (ConvertableString s) {
-            if(s.v == null)
-                return null;
-
-            return XmlConvert.ToInt64(s.v);
+        public static explicit operator Int64?(ConvertableString s) {
+            return s.v == null ? null : (long?)XmlConvert.ToInt64(s.v);
         }
 
-        public static explicit operator byte? (ConvertableString s) {
-            if (s.v == null)
-                return null;
-
-            return XmlConvert.ToByte(s.v);
+        public static explicit operator byte?(ConvertableString s) {
+            return s.v == null ? null : (byte?)XmlConvert.ToByte(s.v);
         }
 
-        public static explicit operator bool? (ConvertableString s) {
-            if (s.v == null)
-                return null;
-
-            return XmlConvert.ToBoolean(s.v);
+        public static explicit operator bool?(ConvertableString s) {
+            return s.v == null ? null : (bool?)XmlConvert.ToBoolean(s.v);
         }
 
-        public static explicit operator double? (ConvertableString s) {
-            if (s.v == null)
-                return null;
-
-            return XmlConvert.ToDouble(s.v);
+        public static explicit operator double?(ConvertableString s) {
+            return s.v == null ? null : (double?)XmlConvert.ToDouble(s.v);
         }
 
-        public static explicit operator float? (ConvertableString s) {
-            if (s.v == null)
-                return null;
-
-            return (float)XmlConvert.ToDouble(s.v);
+        public static explicit operator float?(ConvertableString s) {
+            return s.v == null ? null : (float?)(float)XmlConvert.ToDouble(s.v);
         }
 
-        public static explicit operator Guid? (ConvertableString s) {
-            if (s.v == null)
-                return null;
-
-            return XmlConvert.ToGuid(s.v);
+        public static explicit operator Guid?(ConvertableString s) {
+            return s.v == null ? null : (Guid?)XmlConvert.ToGuid(s.v);
         }
 
-        public static explicit operator decimal? (ConvertableString s) {
-            if (s.v == null)
-                return null;
-
-            return XmlConvert.ToDecimal(s.v);
+        public static explicit operator decimal?(ConvertableString s) {
+            return s.v == null ? null : (decimal?)XmlConvert.ToDecimal(s.v);
         }
 
         public T? Enum<T>() where T : struct {
-            if (v == null)
-                return null;
-            else
-                return (T)System.Enum.Parse(typeof(T), v);
+            return v == null ? null : (T?)(T)System.Enum.Parse(typeof(T), v);
         }
     }
 

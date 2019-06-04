@@ -122,7 +122,7 @@ namespace LayoutManager.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 8;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+            this.buttonOk.Click += this.buttonOk_Click;
             // 
             // buttonCancel
             // 
@@ -139,7 +139,7 @@ namespace LayoutManager.Dialogs {
             this.comboBoxFunctionName.Name = "comboBoxFunctionName";
             this.comboBoxFunctionName.Size = new System.Drawing.Size(160, 21);
             this.comboBoxFunctionName.TabIndex = 5;
-            this.comboBoxFunctionName.SelectionChangeCommitted += new System.EventHandler(this.comboBoxFunctionName_SelectionChangeCommitted);
+            this.comboBoxFunctionName.SelectionChangeCommitted += this.comboBoxFunctionName_SelectionChangeCommitted;
             // 
             // label3
             // 
@@ -160,7 +160,7 @@ namespace LayoutManager.Dialogs {
             this.comboBoxFunctionType.Name = "comboBoxFunctionType";
             this.comboBoxFunctionType.Size = new System.Drawing.Size(78, 21);
             this.comboBoxFunctionType.TabIndex = 3;
-            this.comboBoxFunctionType.SelectedIndexChanged += new System.EventHandler(this.comboBoxFunctionType_SelectedIndexChanged);
+            this.comboBoxFunctionType.SelectedIndexChanged += this.comboBoxFunctionType_SelectedIndexChanged;
             // 
             // label4
             // 
@@ -177,7 +177,7 @@ namespace LayoutManager.Dialogs {
             this.textBoxFunctionDescription.Name = "textBoxFunctionDescription";
             this.textBoxFunctionDescription.Size = new System.Drawing.Size(192, 20);
             this.textBoxFunctionDescription.TabIndex = 7;
-            this.textBoxFunctionDescription.TextChanged += new System.EventHandler(this.textBoxFunctionDescription_TextChanged);
+            this.textBoxFunctionDescription.TextChanged += this.textBoxFunctionDescription_TextChanged;
             // 
             // LocomotiveFunction
             // 

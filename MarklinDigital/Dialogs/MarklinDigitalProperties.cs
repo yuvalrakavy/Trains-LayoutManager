@@ -62,9 +62,7 @@ namespace MarklinDigital.Dialogs {
         /// </summary>
         protected override void Dispose(bool disposing) {
             if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -134,7 +132,7 @@ namespace MarklinDigital.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 6;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -200,7 +198,7 @@ namespace MarklinDigital.Dialogs {
             this.buttonCOMsettings.Size = new System.Drawing.Size(75, 21);
             this.buttonCOMsettings.TabIndex = 11;
             this.buttonCOMsettings.Text = "Settings...";
-            this.buttonCOMsettings.Click += new System.EventHandler(this.buttonCOMsettings_Click);
+            this.buttonCOMsettings.Click += this.buttonCOMsettings_Click;
             // 
             // MarklinDigitalProperties
             // 

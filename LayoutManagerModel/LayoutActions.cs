@@ -270,7 +270,8 @@ namespace LayoutManager.Model {
         /// <param name="actionName">Action name (e.g. set-address)</param>
         /// <param name="target">The object on which the action should be done</param>
         /// <returns>True - action is defined, false action is not defined</returns>
-        public static bool HasAction(string actionName, IHasDecoder target) => (bool)EventManager.Event(new LayoutEventInfoResultValueType<IHasDecoder, bool, bool>("query-action", target, false).SetOption("Action", actionName));
+        public static bool HasAction(string actionName, IHasDecoder target) =>
+            (bool)(EventManager.Event(new LayoutEventInfoResultValueType<IHasDecoder, bool, bool>("query-action", target, false).SetOption("Action", actionName)) ?? false);
     }
 
     public abstract class LayoutProgrammingAction : LayoutAction, ILayoutProgrammingAction {

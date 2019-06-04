@@ -19,7 +19,7 @@ namespace LayoutManager {
     /// <summary>
     /// Summary description for Form1.
     /// </summary>
-    #pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060
     public partial class LayoutFrameWindow : Form, ILayoutFrameWindow {
         private TaskCompletionSource<FrameWindowAction> tcs;
 
@@ -314,17 +314,13 @@ namespace LayoutManager {
 
         private LayoutFrameWindowAreaViewTabPage ActiveViewPage {
             get {
-                if (ActiveAreaPage == null)
-                    return null;
-                return (LayoutFrameWindowAreaViewTabPage)ActiveAreaPage.TabViews.SelectedTab;
+                return ActiveAreaPage == null ? null : (LayoutFrameWindowAreaViewTabPage)ActiveAreaPage.TabViews.SelectedTab;
             }
         }
 
         private LayoutView ActiveView {
             get {
-                if (ActiveViewPage == null)
-                    return null;
-                return ActiveViewPage.View;
+                return ActiveViewPage?.View;
             }
         }
 

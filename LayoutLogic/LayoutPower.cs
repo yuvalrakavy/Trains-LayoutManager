@@ -87,10 +87,7 @@ namespace LayoutManager.Logic {
                 int i = Edge.CompareTo(other.Edge);
 
                 if (i == 0) {
-                    if (FromSplit == other.FromSplit)
-                        return 0;
-                    else
-                        return FromSplit ? 1 : -1;
+                    return FromSplit == other.FromSplit ? 0 : FromSplit ? 1 : -1;
                 }
                 else
                     return i;
@@ -249,7 +246,7 @@ namespace LayoutManager.Logic {
                     Error(tracksWithNoPower, "Those tracks are not powered - use power connector component to supply power");
                     e.Info = false;
                 }
-                else if ((bool)e.Info) {
+                else if ((bool)(e.Info ?? false)) {
                     // Check that programming power can be obtained for all blocks that are marked as Suggest for programming
                     var invalidProgrammingBlocks = new LayoutSelection(from blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(phase)
                                                                        where blockDefinition.Info.SuggestForProgramming &&
@@ -365,7 +362,7 @@ namespace LayoutManager.Logic {
             var e = (LayoutEvent<TrainStateInfo, ILayoutPower>)e0;
 
             Debug.Assert(e.Sender != null && e.Info != null);
-            if(e.Sender != null && e.Info != null)
+            if (e.Sender != null && e.Info != null)
                 OnTrainPowerChanged(e.Sender, e.Info);
         }
 
@@ -455,9 +452,8 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEvent("command-station-power-on-notification")]
-        private void onCommandStationPowerOn(LayoutEvent e0) {
-            var e = (LayoutEvent<IModelComponentIsCommandStation>)e0;
-            var commandStation = e.Sender;
+        private void onCommandStationPowerOn(LayoutEvent e) {
+            var commandStation = Ensure.NotNull<IModelComponentIsCommandStation>(e.Sender, "commandStation");
 
             if (LayoutController.IsOperationMode) {
                 foreach (var powerConnector in (from p in LayoutModel.Components<LayoutTrackPowerConnectorComponent>(LayoutModel.ActivePhases) where p.Inlet.ConnectedOutlet.Power.PowerOriginComponentId == commandStation.Id select p))
@@ -472,7 +468,7 @@ namespace LayoutManager.Logic {
             var train = e.Sender;
 
             Debug.Assert(train != null);
-            if(train != null && train.LocomotiveBlock != null)
+            if (train != null && train.LocomotiveBlock != null)
                 OnTrainPowerChanged(train, train.LocomotiveBlock.BlockDefinintion.Power);
         }
 

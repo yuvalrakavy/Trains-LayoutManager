@@ -602,7 +602,7 @@ namespace LayoutManager.Tools {
 
                 // Set the context with the new train information
 
-                if(repeatedEvent != null)
+                if (repeatedEvent != null)
                     repeatedEvent.Context = new LayoutScriptContext("ForEachTrain", parentContext);
 
                 EventManager.Event(new LayoutEvent("set-script-context", train, Context));
@@ -868,10 +868,7 @@ namespace LayoutManager.Tools {
                         throw new ArgumentException("Symbol " + trainSymbol + " is not a reference to a valid train object");
                     TrainStateInfo train = (TrainStateInfo)oTrain;
 
-                    if (comparison == TrainLengthComparison.NotLonger)
-                        return train.Length <= length;
-                    else
-                        return train.Length > length;
+                    return comparison == TrainLengthComparison.NotLonger ? train.Length <= length : train.Length > length;
                 }
             }
         }
@@ -1531,7 +1528,7 @@ namespace LayoutManager.Tools {
                             Application.DoEvents();
 
                             if (filter.IsTrue) {
-                                bool destinationIsFree = (bool)EventManager.Event(new LayoutEvent("check-trip-plan-destination-request", tripPlan));
+                                bool destinationIsFree = (bool)(EventManager.Event(new LayoutEvent("check-trip-plan-destination-request", tripPlan)) ?? false);
 
                                 if ((bool)applicableTripPlanElement.AttributeValue(A_ShouldReverse) || !destinationIsFree)
                                     reversedTripPlanCandidates.Add(applicableTripPlanElement);

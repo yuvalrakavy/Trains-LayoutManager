@@ -63,7 +63,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public bool ValidateInput() {
             try {
-                if(checkBoxEmulateTrainMotion.Checked)
+                if (checkBoxEmulateTrainMotion.Checked)
                     int.Parse(textBoxEmulationTickTime.Text);
             }
             catch (FormatException) {
@@ -130,7 +130,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.checkBoxEmulateTrainMotion.Size = new System.Drawing.Size(144, 16);
             this.checkBoxEmulateTrainMotion.TabIndex = 4;
             this.checkBoxEmulateTrainMotion.Text = "Emulate train motion";
-            this.checkBoxEmulateTrainMotion.CheckedChanged += new System.EventHandler(this.CheckBoxEmulateTrainMotion_CheckedChanged);
+            this.checkBoxEmulateTrainMotion.CheckedChanged += this.CheckBoxEmulateTrainMotion_CheckedChanged;
             // 
             // checkBoxAnimateTrainMotion
             // 

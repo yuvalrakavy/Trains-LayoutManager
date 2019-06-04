@@ -88,7 +88,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
                                                                              0,
                                                                              0,
                                                                              0});
-            this.numericUpDownCount.Enter += new System.EventHandler(this.numericUpDownCount_Enter);
+            this.numericUpDownCount.Enter += this.numericUpDownCount_Enter;
             // 
             // label2
             // 
@@ -106,7 +106,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonOk.Size = new System.Drawing.Size(64, 23);
             this.buttonOk.TabIndex = 4;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+            this.buttonOk.Click += this.buttonOk_Click;
             // 
             // buttonCancel
             // 

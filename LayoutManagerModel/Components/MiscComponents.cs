@@ -267,10 +267,7 @@ namespace LayoutManager.Components {
         public ILayoutPowerInlet? CurrentSelectedInlet {
             get {
                 if (IsSwitch) {
-                    if (IsPowerConnected)
-                        return Inlet1.IsConnected ? Inlet1 : Inlet2;
-                    else
-                        return null;
+                    return IsPowerConnected ? Inlet1.IsConnected ? Inlet1 : Inlet2 : null;
                 }
                 else {
                     bool hasPower = true;
@@ -279,10 +276,7 @@ namespace LayoutManager.Components {
                         hasPower = IsPowerConnected;
 
                     if (hasPower) {
-                        if (GetSwitchState(PowerSelector1ConnectionPoint) == 0 && !ReverseLogic)
-                            return Inlet1;
-                        else
-                            return Inlet2;
+                        return GetSwitchState(PowerSelector1ConnectionPoint) == 0 && !ReverseLogic ? Inlet1 : Inlet2;
                     }
                     else
                         return null;
@@ -500,10 +494,9 @@ namespace LayoutManager.Components {
                 get {
                     LayoutPowerSelectorComponent powerSelectorComponent = (LayoutPowerSelectorComponent)Component;
 
-                    if (powerSelectorComponent.IsSwitch)
-                        return Name + " (On/Off switch of " + powerSelectorComponent.SwitchedInlet.ToString() + ")";
-                    else
-                        return Name + " (Select between:" + powerSelectorComponent.Inlet1.ToString() + " or " + powerSelectorComponent.Inlet2.ToString() + ")";
+                    return powerSelectorComponent.IsSwitch
+                        ? Name + " (On/Off switch of " + powerSelectorComponent.SwitchedInlet.ToString() + ")"
+                        : Name + " (Select between:" + powerSelectorComponent.Inlet1.ToString() + " or " + powerSelectorComponent.Inlet2.ToString() + ")";
                 }
             }
 
@@ -591,10 +584,7 @@ namespace LayoutManager.Components {
         #region IComparable<LayoutTrackLink> Members
 
         public int CompareTo(LayoutTrackLink other) {
-            if (Equals(other))
-                return 0;
-            else
-                return GetHashCode() - other.GetHashCode();
+            return Equals(other) ? 0 : GetHashCode() - other.GetHashCode();
         }
 
         public bool Equals(LayoutTrackLink other) => areaGuid == other.areaGuid && trackLinkGuid == other.trackLinkGuid;
@@ -748,10 +738,9 @@ namespace LayoutManager.Components {
                     LayoutTextInfo destinationTextProvider = new LayoutTextInfo(destinationTrackLinkComponent);
                     string destinationName = destinationTextProvider.Text;
 
-                    if (trackLinkComponent.ThisLink.AreaGuid == destinationTrackLinkComponent.ThisLink.AreaGuid)
-                        return name + " (to " + destinationName + ")";
-                    else
-                        return name + " (to " + LayoutModel.Areas[destinationTrackLinkComponent.ThisLink.AreaGuid].Name + ":" + destinationName + ")";
+                    return trackLinkComponent.ThisLink.AreaGuid == destinationTrackLinkComponent.ThisLink.AreaGuid
+                        ? name + " (to " + destinationName + ")"
+                        : name + " (to " + LayoutModel.Areas[destinationTrackLinkComponent.ThisLink.AreaGuid].Name + ":" + destinationName + ")";
                 }
             }
         }

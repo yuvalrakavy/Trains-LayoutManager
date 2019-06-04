@@ -16,7 +16,7 @@ namespace LayoutManager.Tools {
     /// Summary description for LocomotiveTools.
     /// </summary>
     [LayoutModule("Locomotive Operation Tools", UserControl = false)]
-    public class LocomotiveOperationTools: ILayoutModuleSetup {
+    public class LocomotiveOperationTools : ILayoutModuleSetup {
         private enum PlacementProblem {
             NoProblem, NoAddress, AddressAlreadyUsed, Unknown
         };
@@ -304,9 +304,8 @@ namespace LayoutManager.Tools {
 
                 if (d.ProgramLocomotive) {
                     try {
-                        using (var context = new LayoutOperationContext("LocomotiveProgramming", "set locomotive address", locomotive)) {
-                            var train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent("program-locomotive", programmingState).SetOperationContext(context));
-                        }
+                        using var context = new LayoutOperationContext("LocomotiveProgramming", "set locomotive address", locomotive);
+                        var train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent("program-locomotive", programmingState).SetOperationContext(context));
                     }
                     catch (LayoutException) { }
                 }
@@ -378,9 +377,8 @@ namespace LayoutManager.Tools {
 
             protected override async void OnClick(EventArgs e) {
                 try {
-                    using (var context = new LayoutOperationContext("TrainRemoval", "removal of " + train.Name + " from track", train)) {
-                        await EventManager.AsyncEvent(new LayoutEvent<object, string>("remove-from-track-request", train, "Remove train from track").SetOperationContext(context));
-                    }
+                    using var context = new LayoutOperationContext("TrainRemoval", "removal of " + train.Name + " from track", train);
+                    await EventManager.AsyncEvent(new LayoutEvent<object, string>("remove-from-track-request", train, "Remove train from track").SetOperationContext(context));
                 }
                 catch (LayoutException lex) {
                     lex.Report();

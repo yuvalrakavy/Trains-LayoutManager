@@ -158,7 +158,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.listBoxSignals.Name = "listBoxSignals";
             this.listBoxSignals.Size = new System.Drawing.Size(170, 108);
             this.listBoxSignals.TabIndex = 1;
-            this.listBoxSignals.SelectedIndexChanged += new System.EventHandler(this.updateButtons);
+            this.listBoxSignals.SelectedIndexChanged += this.updateButtons;
             // 
             // buttonRemove
             // 
@@ -168,7 +168,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonRemove.Size = new System.Drawing.Size(56, 21);
             this.buttonRemove.TabIndex = 2;
             this.buttonRemove.Text = "&Remove";
-            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+            this.buttonRemove.Click += this.buttonRemove_Click;
             // 
             // buttonCancel
             // 
@@ -178,7 +178,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(56, 23);
             this.buttonCancel.TabIndex = 2;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // buttonOk
             // 
@@ -188,7 +188,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(56, 23);
             this.buttonOk.TabIndex = 2;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+            this.buttonOk.Click += this.buttonOk_Click;
             // 
             // BindBlockEdgeToSignals
             // 
@@ -204,8 +204,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "BindBlockEdgeToSignals";
             this.ShowInTaskbar = false;
             this.Text = "Link Signals to Track Contact";
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.BindBlockEdgeToSignals_Closing);
-            this.Closed += new System.EventHandler(this.BindBlockEdgeToSignals_Closed);
+            this.Closing += this.BindBlockEdgeToSignals_Closing;
+            this.Closed += this.BindBlockEdgeToSignals_Closed;
             this.ResumeLayout(false);
         }
         #endregion

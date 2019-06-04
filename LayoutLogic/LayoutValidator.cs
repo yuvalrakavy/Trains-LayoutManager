@@ -143,7 +143,7 @@ namespace LayoutManager.Logic {
                     else {
                         var otherTrack = trackLink.LinkedTrack;
 
-                        if (otherTrack == null ||(otherTrack.Spot.Phase & phase) == 0)
+                        if (otherTrack == null || (otherTrack.Spot.Phase & phase) == 0)
                             invalidLinks.Add(trackLink);
                         else {
                             LayoutComponentConnectionPoint otherCp = getLinkedConnectionPoint(otherTrack, phase);

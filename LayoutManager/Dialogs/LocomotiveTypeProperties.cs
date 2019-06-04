@@ -211,7 +211,7 @@ namespace LayoutManager.Dialogs {
             this.trackGuageSelector.Size = new System.Drawing.Size(100, 21);
             this.trackGuageSelector.TabIndex = 19;
             this.trackGuageSelector.Value = LayoutManager.Model.TrackGauges.HO;
-            this.trackGuageSelector.SelectedIndexChanged += new System.EventHandler(this.TrackGuageSelector_SelectedIndexChanged);
+            this.trackGuageSelector.SelectedIndexChanged += this.TrackGuageSelector_SelectedIndexChanged;
             // 
             // textBoxSpeedLimit
             // 
@@ -239,7 +239,7 @@ namespace LayoutManager.Dialogs {
             this.lengthInput.Size = new System.Drawing.Size(95, 24);
             this.lengthInput.TabIndex = 16;
             this.lengthInput.UnitValue = 0D;
-            this.lengthInput.Load += new System.EventHandler(this.lengthInput1_Load);
+            this.lengthInput.Load += this.lengthInput1_Load;
             // 
             // label3
             // 
@@ -405,7 +405,7 @@ namespace LayoutManager.Dialogs {
             this.listViewFunctions.TabIndex = 6;
             this.listViewFunctions.UseCompatibleStateImageBehavior = false;
             this.listViewFunctions.View = System.Windows.Forms.View.Details;
-            this.listViewFunctions.SelectedIndexChanged += new System.EventHandler(this.listViewFunctions_SelectedIndexChanged_1);
+            this.listViewFunctions.SelectedIndexChanged += this.listViewFunctions_SelectedIndexChanged_1;
             // 
             // columnHeaderFunctionNumber
             // 
@@ -434,7 +434,7 @@ namespace LayoutManager.Dialogs {
             this.buttonCopyFrom.Size = new System.Drawing.Size(75, 23);
             this.buttonCopyFrom.TabIndex = 5;
             this.buttonCopyFrom.Text = "&Copy from...";
-            this.buttonCopyFrom.Click += new System.EventHandler(this.buttonCopyFrom_Click_1);
+            this.buttonCopyFrom.Click += this.buttonCopyFrom_Click_1;
             // 
             // checkBoxHasLights
             // 
@@ -451,7 +451,7 @@ namespace LayoutManager.Dialogs {
             this.buttonFunctionAdd.Size = new System.Drawing.Size(72, 24);
             this.buttonFunctionAdd.TabIndex = 1;
             this.buttonFunctionAdd.Text = "&Add...";
-            this.buttonFunctionAdd.Click += new System.EventHandler(this.buttonFunctionAdd_Click_1);
+            this.buttonFunctionAdd.Click += this.buttonFunctionAdd_Click_1;
             // 
             // buttonFunctionEdit
             // 
@@ -460,7 +460,7 @@ namespace LayoutManager.Dialogs {
             this.buttonFunctionEdit.Size = new System.Drawing.Size(72, 24);
             this.buttonFunctionEdit.TabIndex = 2;
             this.buttonFunctionEdit.Text = "&Edit...";
-            this.buttonFunctionEdit.Click += new System.EventHandler(this.buttonFunctionEdit_Click_1);
+            this.buttonFunctionEdit.Click += this.buttonFunctionEdit_Click_1;
             // 
             // buttonFunctionRemove
             // 
@@ -469,7 +469,7 @@ namespace LayoutManager.Dialogs {
             this.buttonFunctionRemove.Size = new System.Drawing.Size(72, 24);
             this.buttonFunctionRemove.TabIndex = 3;
             this.buttonFunctionRemove.Text = "&Remove...";
-            this.buttonFunctionRemove.Click += new System.EventHandler(this.buttonFunctionRemove_Click_1);
+            this.buttonFunctionRemove.Click += this.buttonFunctionRemove_Click_1;
             // 
             // tabPageDecoder
             // 
@@ -491,7 +491,7 @@ namespace LayoutManager.Dialogs {
             this.checkBoxHasBuiltinDecoder.TabIndex = 4;
             this.checkBoxHasBuiltinDecoder.Text = "Has built in decoder";
             this.checkBoxHasBuiltinDecoder.UseVisualStyleBackColor = true;
-            this.checkBoxHasBuiltinDecoder.CheckedChanged += new System.EventHandler(this.checkBoxHasBuiltinDecoder_CheckedChanged);
+            this.checkBoxHasBuiltinDecoder.CheckedChanged += this.checkBoxHasBuiltinDecoder_CheckedChanged;
             // 
             // comboBoxDecoderType
             // 
@@ -539,7 +539,7 @@ namespace LayoutManager.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 1;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+            this.buttonOk.Click += this.buttonOk_Click;
             // 
             // LocomotiveTypeProperties
             // 

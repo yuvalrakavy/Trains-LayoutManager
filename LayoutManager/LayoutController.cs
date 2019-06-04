@@ -127,9 +127,9 @@ namespace LayoutManager {
             }
 
             // Wire areas collection events
-            LayoutModel.Areas.AreaAdded += new EventHandler(Area_Added);
-            LayoutModel.Areas.AreaRemoved += new EventHandler(Area_Removed);
-            LayoutModel.Areas.AreaRenamed += new EventHandler(Area_Renamed);
+            LayoutModel.Areas.AreaAdded += Area_Added;
+            LayoutModel.Areas.AreaRemoved += Area_Removed;
+            LayoutModel.Areas.AreaRenamed += Area_Renamed;
 
             EventManager.Event(new LayoutEvent("initialize-event-interthread-relay", this));
 
@@ -167,7 +167,7 @@ namespace LayoutManager {
                     if (launchDialog.UseLastOpenLayout)
                         forceDesignMode = false;
                     break;
-            };
+            }
 
             LayoutDisplayState displayState;
 
@@ -281,7 +281,7 @@ namespace LayoutManager {
 
             EventManager.Event(new LayoutEvent("clear-messages", this));
 
-            if (!(bool)EventManager.Event(new LayoutEvent("check-layout", LayoutModel.Instance, true).SetPhases(settings.Phases))) {
+            if (!(bool)(EventManager.Event(new LayoutEvent("check-layout", LayoutModel.Instance, true).SetPhases(settings.Phases)) ?? false)) {
                 MessageBox.Show(ActiveFrameWindow, "Problems were detected in the layout. Please fix those problems before entering operation mode", "Layout Check Results",
                     MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 switchMode = false;
@@ -314,7 +314,7 @@ namespace LayoutManager {
 
                     EventManager.Event(new LayoutEvent<OperationModeParameters>("prepare-enter-operation-mode", settings));
 
-                    if (!(bool)EventManager.Event(new LayoutEvent("rebuild-layout-state", LayoutModel.Instance).SetPhases(settings.Phases))) {
+                    if (!(bool)(EventManager.Event(new LayoutEvent("rebuild-layout-state", LayoutModel.Instance).SetPhases(settings.Phases)) ?? false)) {
                         if (MessageBox.Show(ActiveFrameWindow, "The layout design or locomotive collection were modified. The previous state could not be fully restored.\n\n" +
                             "Would you like to continue with the partially restored state?\n\nSelecting \"No\" will clear the state. In this case, you will " +
                             "have to indicate the locomotive positions again", "Locomotive state cannot be restored",
@@ -338,7 +338,7 @@ namespace LayoutManager {
         }
 
         public async Task ExitOperationModeRequest() {
-            bool simulation = LayoutController.OperationModeSettings.Simulation;
+            bool simulation = LayoutController.IsOperationSimulationMode;
 
             EventManager.Event(new LayoutEvent("exit-operation-mode", this));
             Trace.WriteLine("Before invoking exit-operation-mode-async");
@@ -734,11 +734,9 @@ namespace LayoutManager {
             get {
                 string mode = GetAttribute(A_Mode);
 
-                if (mode == "Design")
-                    return null;
-                else {
-                    return new OperationModeParameters() { Simulation = (mode == "Simulation"), Phases = AttributeValue(A_Phases).Enum<LayoutPhase>() ?? LayoutPhase.Operational };
-                }
+                return mode == "Design"
+                    ? null
+                    : new OperationModeParameters() { Simulation = (mode == "Simulation"), Phases = AttributeValue(A_Phases).Enum<LayoutPhase>() ?? LayoutPhase.Operational };
             }
 
             set {
@@ -758,7 +756,7 @@ namespace LayoutManager {
         }
 
         public int ActiveWindowIndex {
-            get { return (int?)AttributeValue(A_ActiveWindowIndex) ??  -1; }
+            get { return (int?)AttributeValue(A_ActiveWindowIndex) ?? -1; }
             set { SetAttribute(A_ActiveWindowIndex, value); }
         }
 

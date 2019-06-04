@@ -145,7 +145,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonEdit.Size = new System.Drawing.Size(75, 20);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit";
-            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
+            this.buttonEdit.Click += this.buttonEdit_Click;
             // 
             // buttonAdd
             // 
@@ -155,7 +155,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonAdd.Size = new System.Drawing.Size(75, 20);
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "&Add";
-            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            this.buttonAdd.Click += this.buttonAdd_Click;
             // 
             // listViewDefaults
             // 
@@ -174,7 +174,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.listViewDefaults.Size = new System.Drawing.Size(352, 144);
             this.listViewDefaults.TabIndex = 0;
             this.listViewDefaults.View = System.Windows.Forms.View.Details;
-            this.listViewDefaults.SelectedIndexChanged += new System.EventHandler(this.listViewDefaults_SelectedIndexChanged);
+            this.listViewDefaults.SelectedIndexChanged += this.listViewDefaults_SelectedIndexChanged;
             // 
             // columnHeaderBusName
             // 
@@ -199,7 +199,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonRemove.Size = new System.Drawing.Size(75, 20);
             this.buttonRemove.TabIndex = 3;
             this.buttonRemove.Text = "&Remove";
-            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+            this.buttonRemove.Click += this.buttonRemove_Click;
             // 
             // buttonCancel
             // 
@@ -215,7 +215,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // label1
             // 

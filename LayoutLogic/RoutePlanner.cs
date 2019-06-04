@@ -325,7 +325,7 @@ namespace LayoutManager.Logic {
             scanStack.Push(scanFromEntry);
 
             while (scanStack.Count > 0) {
-                bool isTarget= false;
+                bool isTarget = false;
 
                 TargetScanEntry entry = scanStack.Pop();
 
@@ -476,7 +476,7 @@ namespace LayoutManager.Logic {
             else if (result == SortTargetsResult.FindRoute) {
                 // At this point edge (and turnout) are on split point. For each target check what is the route with the best penalty
 
-                if(turnout != null)
+                if (turnout != null)
                     Trace.WriteLineIf(traceRoutePlanning.TraceVerbose, " Sorting tagets relative to " + ((ModelComponent)turnout).FullDescription);
 
                 foreach (RouteTarget target in targets) {
@@ -561,14 +561,12 @@ namespace LayoutManager.Logic {
             const int penaltyForLengthLimitViolation = 100000;
             var train = LayoutModel.StateManager.Trains[routeOwner];
             BestRoute bestRoute = new BestRoute(sourceComponent, front, direction, routeOwner);
-            LayoutTrackComponent sourceTrack;
-
-            if (sourceComponent is LayoutBlockDefinitionComponent)
-                sourceTrack = ((LayoutBlockDefinitionComponent)sourceComponent).Track;
-            else if (sourceComponent is LayoutTrackComponent)
-                sourceTrack = (LayoutTrackComponent)sourceComponent;
-            else
-                throw new ArgumentException("Invalid sourceComponent type (not track or block definition)");
+            var sourceTrack = sourceComponent switch
+            {
+                LayoutBlockDefinitionComponent blockDefinition => blockDefinition.Track,
+                LayoutTrackComponent track => track,
+                _ => throw new ArgumentException("Invalid sourceComponent type (not track or block definition)")
+            };
 
             int penaltyDelta = destination.SelectionMethod == TripPlanLocationSelectionMethod.ListOrder ? penaltyForDestinationRank : 0;
             int destinationRankPenalty = 0;
@@ -770,7 +768,7 @@ namespace LayoutManager.Logic {
                         bestRoute.DestinationFront = target.DestinationEdge.OtherConnectionPoint;
 
                     bestRoute.Quality = lookupState.Quality;
-                    bestRoute.SetSwitchStates(lookupState.SwitchStates); ;
+                    bestRoute.SetSwitchStates(lookupState.SwitchStates);
 
                     if (traceRoutePlanning.TraceInfo) {
                         Trace.Write("Found route: ");
@@ -857,13 +855,11 @@ namespace LayoutManager.Logic {
         }
 
         private class RouteLookupState : ICloneable {
-            private bool gotToTarget;
-
             public RouteLookupState(Guid routeOwner, TrackEdge edge) {
                 this.Edge = edge;
                 this.Quality = new RouteQuality(routeOwner);
                 this.Block = edge.Track.GetBlock(edge.ConnectionPoint);
-                this.gotToTarget = false;
+                this.GotToTarget = false;
             }
 
             protected RouteLookupState(RouteLookupState lookupState) {
@@ -871,7 +867,7 @@ namespace LayoutManager.Logic {
                 this.Block = lookupState.Block;
                 this.Quality = (RouteQuality)lookupState.Quality.Clone();
                 this.SwitchStates = new List<int>(lookupState.SwitchStates);
-                this.gotToTarget = lookupState.GotToTarget;
+                this.GotToTarget = lookupState.GotToTarget;
             }
 
             public List<int> SwitchStates { get; } = new List<int>();
@@ -882,15 +878,7 @@ namespace LayoutManager.Logic {
 
             public LayoutBlock Block { get; set; }
 
-            public bool GotToTarget {
-                get {
-                    return gotToTarget;
-                }
-
-                set {
-                    gotToTarget = value;
-                }
-            }
+            public bool GotToTarget { get; set; }
 
             public object Clone() => new RouteLookupState(this);
         }
@@ -959,9 +947,7 @@ namespace LayoutManager.Logic {
                 get {
                     var bestEntry = BestBacktrackEntry;
 
-                    if (bestEntry != null)
-                        return bestEntry.LookupState;
-                    return null;
+                    return bestEntry?.LookupState;
                 }
             }
         }

@@ -67,7 +67,6 @@ namespace LayoutEmulation {
 
     [LayoutModule("Layout Emulator")]
     public class LayoutEmulator : LayoutModuleBase, ILayoutEmulationEnvironment, ILayoutEmulatorServices {
-
         private ILayoutTopologyServices? _topologyServices;
         private readonly Dictionary<Guid, CommandStationObjects> commandStations = new Dictionary<Guid, CommandStationObjects>();
         private Timer? emulationTimer = null;
@@ -112,7 +111,7 @@ namespace LayoutEmulation {
             else {
                 var connectionPoint = LayoutModel.ControlManager.ConnectionPoints[turnout]?[0];
 
-                if(connectionPoint != null)
+                if (connectionPoint != null)
                     switchState = GetConnectionPointSwitchState(connectionPoint);
             }
 
@@ -191,7 +190,7 @@ namespace LayoutEmulation {
             lock (Sync) {
                 var locomotive = GetLocomotive(commandStationId, unit);
 
-                if(locomotive != null)
+                if (locomotive != null)
                     locomotive.Direction = (locomotive.Direction == LocomotiveOrientation.Forward) ? LocomotiveOrientation.Backward : LocomotiveOrientation.Forward;
             }
         }
@@ -235,10 +234,9 @@ namespace LayoutEmulation {
             lock (Sync) {
                 commandStations.TryGetValue(commandStationId, out CommandStationObjects commandStationObjects);
 
-                if (commandStationObjects == null)
-                    return Array.AsReadOnly<ILocomotiveLocation>(new LocomotiveLocation[0]);
-                else
-                    return commandStationObjects.GetLocomotiveLocations();
+                return commandStationObjects == null
+                    ? Array.AsReadOnly<ILocomotiveLocation>(new LocomotiveLocation[0])
+                    : commandStationObjects.GetLocomotiveLocations();
             }
         }
 
@@ -274,9 +272,7 @@ namespace LayoutEmulation {
         private int GetTurnoutSwitchState(Guid commandStationId, int unit) {
             var commandStationObjects = commandStations[commandStationId];
 
-            if (commandStationObjects != null)
-                return commandStationObjects.GetTurnoutSwitchState(unit);
-            return -1;
+            return commandStationObjects != null ? commandStationObjects.GetTurnoutSwitchState(unit) : -1;
         }
 
         private void ResetEmulator() {
@@ -337,7 +333,7 @@ namespace LayoutEmulation {
         [LayoutEvent("initialize-layout-emulation")]
         private void startLayoutEmulation(LayoutEvent e) {
             emulateTrainMotion = (bool?)e.GetOption(LayoutCommandStationComponent.Option_EmulateTrainMotion) ?? false;
-            if(emulateTrainMotion)
+            if (emulateTrainMotion)
                 tickTime = (int)e.GetOption(LayoutCommandStationComponent.Option_EmulationTickTime);
         }
 
@@ -445,9 +441,7 @@ namespace LayoutEmulation {
         }
 
         public LocomotiveState? GetLocomotive(int unit) {
-            if (!locomotives.TryGetValue(unit, out LocomotiveState loco))
-                return null;
-            return loco;
+            return !locomotives.TryGetValue(unit, out LocomotiveState loco) ? null : loco;
         }
 
         public void RemoveLocomotive(int unit) {
@@ -469,9 +463,7 @@ namespace LayoutEmulation {
         }
 
         public int GetTurnoutSwitchState(int unit) {
-            if (turnouts.TryGetValue(unit, out int switchState))
-                return switchState;
-            return -1;
+            return turnouts.TryGetValue(unit, out int switchState) ? switchState : -1;
         }
 
         // Apply emulation "tick" on each locomotive
@@ -508,7 +500,7 @@ namespace LayoutEmulation {
         private Guid _commandStationId;
         private int _speed;             // the locomotive current speed (and direction)
         private LocomotiveLocation _location;           // Where the locomotive is on the layout (when there is support for longer trains, this will become an array)
-                                                //		LayoutComponentConnectionPoint	rear;				// Where is the rear of the train
+                                                        //		LayoutComponentConnectionPoint	rear;				// Where is the rear of the train
         private LocomotiveOrientation _direction = LocomotiveOrientation.Forward;
 
         private int ticksPerMotion;     // Number of timer ticks between each locomotive motion
@@ -622,6 +614,6 @@ namespace LayoutEmulation {
         }
     }
 
-#endregion
+    #endregion
 
 }

@@ -114,7 +114,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(56, 21);
             this.buttonOk.TabIndex = 3;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+            this.buttonOk.Click += this.buttonOk_Click;
             // 
             // buttonCancel
             // 
@@ -125,7 +125,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(56, 21);
             this.buttonCancel.TabIndex = 4;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // buttonSave
             // 
@@ -136,7 +136,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonSave.TabIndex = 5;
             this.buttonSave.Text = "Save...";
             this.buttonSave.UseVisualStyleBackColor = true;
-            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            this.buttonSave.Click += this.buttonSave_Click;
             // 
             // TripPlanWaypointStartCondition
             // 
@@ -151,7 +151,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "TripPlanWaypointStartCondition";
             this.ShowInTaskbar = false;
             this.Text = "Waypoint Start Condition";
-            this.Click += new System.EventHandler(this.radioButtonStartOnCondition_Click);
+            this.Click += this.radioButtonStartOnCondition_Click;
             this.ResumeLayout(false);
         }
         #endregion

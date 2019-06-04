@@ -66,7 +66,7 @@ namespace LayoutManager.Logic {
                         motionTime = speedChangeState.Ticks * speedChangeState.TimePerTick;
                     }
                     else {
-                        Debug.Assert(false, "Unknown ramp type: " + ramp.RampType);
+                        Debug.Fail("Unknown ramp type: " + ramp.RampType);
                         return;
                     }
 
@@ -117,7 +117,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("train-speed-change-timer")]
         private void trainSpeedChnageTimer(LayoutEvent e) {
-            SpeedChangeState speedChangeState = (SpeedChangeState)e.Sender;
+            var speedChangeState = Ensure.ValueNotNull<SpeedChangeState>(e.Sender, "SpeedChangeState");
 
             speedChangeState.OnTimer(e);
         }

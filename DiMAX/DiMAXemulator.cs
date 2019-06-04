@@ -142,7 +142,7 @@ namespace DiMAX {
                         ControlConnectionPoint connectionPoint = LayoutModel.ControlManager.ConnectionPoints[trackContact][0];
 
                         var connectionPointPerAddress = connectionPoint.Module.ModuleType.ConnectionPointsPerAddress;
-                        int address = connectionPoint.Module.Address + connectionPoint.Index / connectionPointPerAddress;
+                        int address = connectionPoint.Module.Address + (connectionPoint.Index / connectionPointPerAddress);
 
                         var triggerMessage = new DiMAXpacket(DiMAXcommandCode.FeedbackControl, new byte[] {
                                               (byte)((address >> 6) & 0x3f), (byte)(((address & 0x3f) << 2) | ((byte)(connectionPoint.Index % connectionPointPerAddress)))
@@ -170,7 +170,7 @@ namespace DiMAX {
                 interfaceThread = null;
             }
 
-            layoutEmulationServices.LocomotiveMoved -= new EventHandler<LocomotiveMovedEventArgs>(layoutEmulationServices_LocomotiveMoved);
+            layoutEmulationServices.LocomotiveMoved -= layoutEmulationServices_LocomotiveMoved;
 
             commStream.Close();
             commStream = null;

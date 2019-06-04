@@ -49,9 +49,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public Guid SelectedID {
             get {
-                if (selected >= 0)
-                    return IconList[selected];
-                return Guid.Empty;
+                return selected >= 0 ? IconList[selected] : Guid.Empty;
             }
 
             set {
@@ -156,9 +154,9 @@ namespace LayoutManager.CommonUI.Controls {
             this.panelIcons.Name = "panelIcons";
             this.panelIcons.Size = new System.Drawing.Size(244, 60);
             this.panelIcons.TabIndex = 0;
-            this.panelIcons.Resize += new System.EventHandler(this.panelIcons_Resize);
-            this.panelIcons.Paint += new System.Windows.Forms.PaintEventHandler(this.panelIcons_Paint);
-            this.panelIcons.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelIcons_MouseDown);
+            this.panelIcons.Resize += this.panelIcons_Resize;
+            this.panelIcons.Paint += this.panelIcons_Paint;
+            this.panelIcons.MouseDown += this.panelIcons_MouseDown;
             // 
             // hScrollBar
             // 
@@ -167,7 +165,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.hScrollBar.Name = "hScrollBar";
             this.hScrollBar.Size = new System.Drawing.Size(242, 12);
             this.hScrollBar.TabIndex = 0;
-            this.hScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar_Scroll);
+            this.hScrollBar.Scroll += this.hScrollBar_Scroll;
             // 
             // buttonAdd
             // 
@@ -176,7 +174,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonAdd.Size = new System.Drawing.Size(53, 17);
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "Add...";
-            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            this.buttonAdd.Click += this.buttonAdd_Click;
             // 
             // buttonDelete
             // 
@@ -185,7 +183,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonDelete.Size = new System.Drawing.Size(53, 17);
             this.buttonDelete.TabIndex = 1;
             this.buttonDelete.Text = "Delete";
-            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            this.buttonDelete.Click += this.buttonDelete_Click;
             // 
             // openFileDialog
             // 
@@ -220,9 +218,8 @@ namespace LayoutManager.CommonUI.Controls {
                         g.DrawImage(IconList.LargeIconImageList.Images[iconIndex], x + 6, 6);
 
                         if (iconIndex == selected) {
-                            using (Pen p = new Pen(Color.Red, 2)) {
-                                g.DrawRectangle(p, x + 2, 2, 32 + 8, 32 + 8);
-                            }
+                            using Pen p = new Pen(Color.Red, 2);
+                            g.DrawRectangle(p, x + 2, 2, 32 + 8, 32 + 8);
                         }
 
                         x += 36;

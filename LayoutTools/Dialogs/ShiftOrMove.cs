@@ -11,10 +11,7 @@ namespace LayoutManager.Tools.Dialogs {
             get {
                 if (radioButtonLeft.Checked)
                     return (int)-numericUpDownComponents.Value;
-                else if (radioButtonRight.Checked)
-                    return (int)numericUpDownComponents.Value;
-                else
-                    return 0;
+                else return radioButtonRight.Checked ? (int)numericUpDownComponents.Value : 0;
             }
         }
 
@@ -22,10 +19,7 @@ namespace LayoutManager.Tools.Dialogs {
             get {
                 if (radioButtonUp.Checked)
                     return (int)-numericUpDownComponents.Value;
-                else if (radioButtonDown.Checked)
-                    return (int)numericUpDownComponents.Value;
-                else
-                    return 0;
+                else return radioButtonDown.Checked ? (int)numericUpDownComponents.Value : 0;
             }
         }
 

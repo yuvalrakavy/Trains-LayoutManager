@@ -88,7 +88,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonSave.Size = new System.Drawing.Size(75, 23);
             this.buttonSave.TabIndex = 3;
             this.buttonSave.Text = "&Save...";
-            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            this.buttonSave.Click += this.buttonSave_Click;
             // 
             // buttonClose
             // 
@@ -99,7 +99,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(75, 23);
             this.buttonClose.TabIndex = 2;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // TripPlanViewing
             // 
@@ -111,7 +111,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "TripPlanViewing";
             this.ShowInTaskbar = false;
             this.Text = "TripPlanViewing";
-            this.Closed += new System.EventHandler(this.TripPlanViewing_Closed);
+            this.Closed += this.TripPlanViewing_Closed;
             this.ResumeLayout(false);
         }
         #endregion

@@ -22,7 +22,7 @@ namespace LayoutManager.CommonUI.Controls {
         private XmlElement? element = null;
         private MotionRampInfo? ramp = null;
 
-        #pragma warning disable nullable
+#pragma warning disable nullable
         public MotionRampSelector() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
@@ -143,7 +143,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.checkBoxOverrideDefault.Name = "checkBoxOverrideDefault";
             this.checkBoxOverrideDefault.Size = new System.Drawing.Size(16, 16);
             this.checkBoxOverrideDefault.TabIndex = 4;
-            this.checkBoxOverrideDefault.Click += new System.EventHandler(this.checkBoxOverrideDefault_Click);
+            this.checkBoxOverrideDefault.Click += this.checkBoxOverrideDefault_Click;
             // 
             // buttonOverrideDefault
             // 
@@ -152,7 +152,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonOverrideDefault.Size = new System.Drawing.Size(97, 20);
             this.buttonOverrideDefault.TabIndex = 3;
             this.buttonOverrideDefault.Text = "&Override Default";
-            this.buttonOverrideDefault.Click += new System.EventHandler(this.buttonOverrideDefault_Click);
+            this.buttonOverrideDefault.Click += this.buttonOverrideDefault_Click;
             // 
             // labelRampDescription
             // 

@@ -48,10 +48,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         public LocomotiveOrientation Orientation {
             get {
-                if (radioButtonOrientationForward.Checked)
-                    return LocomotiveOrientation.Forward;
-                else
-                    return LocomotiveOrientation.Backward;
+                return radioButtonOrientationForward.Checked ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
             }
         }
 
@@ -184,8 +181,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.listBoxLocomotives.Name = "listBoxLocomotives";
             this.listBoxLocomotives.Size = new System.Drawing.Size(152, 234);
             this.listBoxLocomotives.TabIndex = 0;
-            this.listBoxLocomotives.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxLocomotives_DrawItem);
-            this.listBoxLocomotives.SelectedIndexChanged += new System.EventHandler(this.updateButtons);
+            this.listBoxLocomotives.DrawItem += this.listBoxLocomotives_DrawItem;
+            this.listBoxLocomotives.SelectedIndexChanged += this.updateButtons;
             // 
             // groupBox1
             // 
@@ -207,7 +204,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonOrientationForward.Size = new System.Drawing.Size(80, 16);
             this.radioButtonOrientationForward.TabIndex = 0;
             this.radioButtonOrientationForward.Text = "Forward";
-            this.radioButtonOrientationForward.CheckedChanged += new System.EventHandler(this.updateLocomotiveList);
+            this.radioButtonOrientationForward.CheckedChanged += this.updateLocomotiveList;
             // 
             // radioButtonOrientationBackward
             // 
@@ -216,7 +213,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonOrientationBackward.Size = new System.Drawing.Size(80, 16);
             this.radioButtonOrientationBackward.TabIndex = 1;
             this.radioButtonOrientationBackward.Text = "Backward";
-            this.radioButtonOrientationBackward.CheckedChanged += new System.EventHandler(this.updateLocomotiveList);
+            this.radioButtonOrientationBackward.CheckedChanged += this.updateLocomotiveList;
             // 
             // buttonAdd
             // 
@@ -225,7 +222,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.TabIndex = 2;
             this.buttonAdd.Text = "&Add";
-            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            this.buttonAdd.Click += this.buttonAdd_Click;
             // 
             // buttonCancel
             // 
@@ -278,7 +275,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             using (LocomotiveImagePainter locoPainter = new LocomotiveImagePainter(LayoutModel.LocomotiveCatalog)) {
                 locoPainter.Draw(e.Graphics, new Point(2, 2), new Size(50, 36), loco.Element);
-            };
+            }
 
             yText = 2;
             xText = 55;
@@ -293,12 +290,11 @@ namespace LayoutManager.Tools.Dialogs {
                 }
 
                 if (loco.TypeName != null) {
-                    using (Font typeFont = new Font("Arial", 7, FontStyle.Regular)) {
-                        string typeText = " (" + loco.TypeName + ")";
-                        SizeF typeSize = e.Graphics.MeasureString(typeText, typeFont);
+                    using Font typeFont = new Font("Arial", 7, FontStyle.Regular);
+                    string typeText = " (" + loco.TypeName + ")";
+                    SizeF typeSize = e.Graphics.MeasureString(typeText, typeFont);
 
-                        e.Graphics.DrawString(loco.TypeName, typeFont, textBrush, new PointF(xText, yText));
-                    }
+                    e.Graphics.DrawString(loco.TypeName, typeFont, textBrush, new PointF(xText, yText));
                 }
             }
 

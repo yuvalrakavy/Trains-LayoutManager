@@ -79,7 +79,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.listBoxBlockInfo.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxBlockInfo.Size = new System.Drawing.Size(144, 173);
             this.listBoxBlockInfo.TabIndex = 0;
-            this.listBoxBlockInfo.SelectedIndexChanged += new System.EventHandler(this.listBoxBlockInfo_SelectedIndexChanged);
+            this.listBoxBlockInfo.SelectedIndexChanged += this.listBoxBlockInfo_SelectedIndexChanged;
             // 
             // buttonLock
             // 
@@ -88,7 +88,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLock.Size = new System.Drawing.Size(64, 24);
             this.buttonLock.TabIndex = 3;
             this.buttonLock.Text = "Lock";
-            this.buttonLock.Click += new System.EventHandler(this.buttonLock_Click);
+            this.buttonLock.Click += this.buttonLock_Click;
             // 
             // buttonClose
             // 
@@ -98,7 +98,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(64, 24);
             this.buttonClose.TabIndex = 4;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // buttonUnlock
             // 
@@ -107,7 +107,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonUnlock.Size = new System.Drawing.Size(64, 24);
             this.buttonUnlock.TabIndex = 2;
             this.buttonUnlock.Text = "Unlock";
-            this.buttonUnlock.Click += new System.EventHandler(this.buttonUnlock_Click);
+            this.buttonUnlock.Click += this.buttonUnlock_Click;
             // 
             // buttonRemove
             // 
@@ -116,7 +116,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonRemove.Size = new System.Drawing.Size(64, 24);
             this.buttonRemove.TabIndex = 1;
             this.buttonRemove.Text = "Remove";
-            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+            this.buttonRemove.Click += this.buttonRemove_Click;
             // 
             // BlockLockTester
             // 

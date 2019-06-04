@@ -135,7 +135,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.checkBoxVisible.Size = new System.Drawing.Size(64, 24);
             this.checkBoxVisible.TabIndex = 2;
             this.checkBoxVisible.Text = "Visible";
-            this.checkBoxVisible.CheckedChanged += new System.EventHandler(this.checkBoxVisible_CheckedChanged);
+            this.checkBoxVisible.CheckedChanged += this.checkBoxVisible_CheckedChanged;
             // 
             // textBoxName
             // 
@@ -153,7 +153,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonSettings.Name = "buttonSettings";
             this.buttonSettings.TabIndex = 3;
             this.buttonSettings.Text = "Settings...";
-            this.buttonSettings.Click += new System.EventHandler(this.buttonSettings_Click);
+            this.buttonSettings.Click += this.buttonSettings_Click;
             // 
             // labelName
             // 

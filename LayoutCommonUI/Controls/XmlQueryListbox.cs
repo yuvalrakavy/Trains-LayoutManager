@@ -105,8 +105,8 @@ namespace LayoutManager.CommonUI.Controls {
                 containerElement = value;
                 if (containerElement != null) {
                     containerNavigator = containerElement.CreateNavigator();
-                    containerElement.OwnerDocument.NodeInserted += new XmlNodeChangedEventHandler(this.onContainerDocumentChanged);
-                    containerElement.OwnerDocument.NodeRemoved += new XmlNodeChangedEventHandler(this.onContainerDocumentChanged);
+                    containerElement.OwnerDocument.NodeInserted += this.onContainerDocumentChanged;
+                    containerElement.OwnerDocument.NodeRemoved += this.onContainerDocumentChanged;
 
                     if (needToUpdate) {
                         UpdateList();
@@ -179,10 +179,7 @@ namespace LayoutManager.CommonUI.Controls {
         /// </summary>
         public Object SelectedXmlItem {
             get {
-                if (!(SelectedItem is QueryItem))
-                    return SelectedItem;
-                else
-                    return null;
+                return !(SelectedItem is QueryItem) ? SelectedItem : null;
             }
         }
 
@@ -577,18 +574,17 @@ namespace LayoutManager.CommonUI.Controls {
             }
 
             public virtual void DrawLevelLines(DrawItemEventArgs e) {
-                using (Pen p = new Pen(Brushes.DarkCyan, 2)) {
-                    for (int l = 0; l < level; l++) {
-                        int x = e.Bounds.Left + 11 + 16 * l;
+                using Pen p = new Pen(Brushes.DarkCyan, 2);
+                for (int l = 0; l < level; l++) {
+                    int x = e.Bounds.Left + 11 + (16 * l);
 
-                        e.Graphics.DrawLine(p, x, e.Bounds.Top, x, e.Bounds.Bottom);
-                    }
+                    e.Graphics.DrawLine(p, x, e.Bounds.Top, x, e.Bounds.Bottom);
                 }
             }
 
             public virtual void DrawExpandCollapse(DrawItemEventArgs e) {
-                int x = e.Bounds.Left + 11 + 16 * (level - 1);
-                int y = e.Bounds.Top + (e.Bounds.Height - 16) / 2 - 2;
+                int x = e.Bounds.Left + 11 + (16 * (level - 1));
+                int y = e.Bounds.Top + ((e.Bounds.Height - 16) / 2) - 2;
 
                 list.ArrowImageList.Draw(e.Graphics, x - 8, y + 1, IsExpanded ? 1 : 0);
             }
@@ -602,18 +598,16 @@ namespace LayoutManager.CommonUI.Controls {
                 DrawLevelLines(e);
                 DrawExpandCollapse(e);
 
-                using (Brush textBrush = new SolidBrush((e.State & DrawItemState.Selected) != 0 ? SystemColors.HighlightText : SystemColors.WindowText)) {
-                    using (Font font = new Font("Arial", 10, FontStyle.Bold)) {
-                        SizeF textSize = e.Graphics.MeasureString(name, font);
+                using Brush textBrush = new SolidBrush((e.State & DrawItemState.Selected) != 0 ? SystemColors.HighlightText : SystemColors.WindowText);
+                using Font font = new Font("Arial", 10, FontStyle.Bold);
+                SizeF textSize = e.Graphics.MeasureString(name, font);
 
-                        StringFormat format = new StringFormat();
-                        int leftMargin = e.Bounds.Left + 4 + 16 * level + 1;
-                        Rectangle textRect = new Rectangle(new Point(leftMargin, e.Bounds.Top), new Size(e.Bounds.Width - leftMargin, e.Bounds.Height));
+                StringFormat format = new StringFormat();
+                int leftMargin = e.Bounds.Left + 4 + (16 * level) + 1;
+                Rectangle textRect = new Rectangle(new Point(leftMargin, e.Bounds.Top), new Size(e.Bounds.Width - leftMargin, e.Bounds.Height));
 
-                        format.LineAlignment = StringAlignment.Center;
-                        e.Graphics.DrawString(name, font, textBrush, textRect, format);
-                    }
-                }
+                format.LineAlignment = StringAlignment.Center;
+                e.Graphics.DrawString(name, font, textBrush, textRect, format);
             }
 
             public object Bookmark => this;

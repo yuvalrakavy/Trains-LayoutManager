@@ -188,10 +188,7 @@ namespace LayoutManager.Logic {
             }
 
             public new BlockEntry? Peek() {
-                if (base.Count == 0)
-                    return null;
-                else
-                    return (BlockEntry)base.Peek();
+                return base.Count == 0 ? null : (BlockEntry)base.Peek();
             }
 
             public bool Contains(Guid blockID) => blockEntriesInQueue.Contains(blockID);
@@ -283,7 +280,7 @@ namespace LayoutManager.Logic {
                     Remove(blockID);
             }
 
-            #pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060
 
             [LayoutEvent("exit-operation-mode")]
             private void exitOperationMode(LayoutEvent e) {
@@ -415,7 +412,7 @@ namespace LayoutManager.Logic {
                     lockRequest.Dump();
                 }
 
-                gotLock = (bool)EventManager.Event(new LayoutEvent("request-layout-lock", lockRequest));
+                gotLock = (bool)(EventManager.Event(new LayoutEvent("request-layout-lock", lockRequest)) ?? false);
 
                 if (!gotLock) {
                     Trace.WriteLineIf(traceDispatching.TraceInfo, " Pending - event is sent when lock is obtained");
@@ -460,7 +457,7 @@ namespace LayoutManager.Logic {
             }
 
             // Assign driver to the trip.
-            if (!(bool)EventManager.Event(new LayoutEvent("driver-assignment", newTrip.Train, form))) {
+            if (!(bool)(EventManager.Event(new LayoutEvent("driver-assignment", newTrip.Train, form)) ?? false)) {
                 e.Info = false;
                 return;
             }
@@ -522,8 +519,8 @@ namespace LayoutManager.Logic {
         [LayoutEventDef("trip-aborted", Role = LayoutEventRole.Notification, SenderType = typeof(TripPlanAssignmentInfo))]
         private void abortTrip(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-            bool emergency = (bool)e.Info;
-            ActiveTripInfo trip = activeTrips[train.Id];
+            var emergency = Ensure.ValueNotNull<bool>(e.Info, "emergency");
+            var trip = activeTrips[train.Id];
 
             if (trip != null) {
                 if (emergency) {
@@ -558,7 +555,7 @@ namespace LayoutManager.Logic {
         [LayoutEvent("suspend-trip")]
         private void suspendTrip(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-            bool emergency = (bool)e.Info;
+            var emergency = Ensure.ValueNotNull<bool>(e.Info, "emergency");
             ActiveTripInfo? trip = activeTrips[train.Id];
 
             if (trip != null && !canClearTrip(trip) && trip.Status != TripStatus.Suspended) {
@@ -803,7 +800,7 @@ namespace LayoutManager.Logic {
             List<LayoutBlock> crossedBlocks = new List<LayoutBlock>();  // Blocks that are crossed by the current route
             TrackEdge edge = route.SourceEdge;
             TrackEdge destinationEdge = route.DestinationEdge;
-            IList<int> switchStates = route.SwitchStates;
+            var switchStates = route.SwitchStates;
             int switchStateIndex = 0;
             bool waitableBlockFound = false;
             LayoutBlock? currentBlock = null;
@@ -1079,10 +1076,7 @@ namespace LayoutManager.Logic {
         private static TripPlanWaypointInfo? getNextWaypoint(ActiveTripInfo trip) {
             int n = getNextWaypointIndex(trip);
 
-            if (n < 0)
-                return null;
-            else
-                return trip.TripPlan.Waypoints[n];
+            return n < 0 ? null : trip.TripPlan.Waypoints[n];
         }
 
         private static bool isTrainInWaypoint(ActiveTripInfo trip, int wayPointIndex) {
@@ -1241,18 +1235,18 @@ namespace LayoutManager.Logic {
 
                 trip.Queue.CopyTo(queue, 0);
 
-                LayoutBlock firstBlockInQueue = queue[0].Block;
+                var firstBlockInQueue = queue[0].Block;
                 bool processingQueue = false;
 
                 while (edge.Track != destinationEdge.Track) {
-                    LayoutBlock block = edge.Track.GetBlock(edge.ConnectionPoint);
+                    var block = edge.Track.GetBlock(edge.ConnectionPoint);
 
                     // Power connector are lock resources. Blocks that reside in a switchable power region should specify the power connector as a locked resource
                     // When the block will be locked power will be connected (and when the block will be unlocked, power will be disconnected)
                     //
                     // However this code ensure that power is connected to any block that is in the dispatch region to ensure that the train is not sent to tracks without power...
                     //
-                    var powerConnector = block?.BlockDefinintion?.PowerConnector;
+                    var powerConnector = block.BlockDefinintion.PowerConnector;
 
                     // Make sure that tracks are connected to digital power
                     if (powerConnector != null && !powerConnectors.ContainsKey(powerConnector.Id)) {
@@ -1296,11 +1290,12 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("dispatcher-set-switches")]
         private void dispatcherSetSwitches(LayoutEvent e) {
-            var ownerID = (Guid)e.Sender;
+            var ownerID = Ensure.ValueNotNull<Guid>(e.Sender, "ownerId");
             var route = Ensure.NotNull<ITripRoute>(e.Info, "route");
-            TrackEdge edge = route.SourceEdge;
-            TrackEdge destinationEdge = new TrackEdge(route.DestinationTrack, route.DestinationFront);
-            IList<int> switchStates = route.SwitchStates;
+            var destinationTrack = Ensure.NotNull<LayoutTrackComponent>(route.DestinationTrack, "destinationTrack");
+            var edge = route.SourceEdge;
+            var destinationEdge = new TrackEdge(destinationTrack, route.DestinationFront);
+            var switchStates = route.SwitchStates;
             //			Dictionary<Guid, object> alreadySwitched = new Dictionary<Guid, object>(switchStates.Count);
             int switchStateIndex = 0;
             bool completed = true;
@@ -1760,7 +1755,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("manual-dispatch-region-activation-changed")]
         private void manualDisptachRegionActivationChanged(LayoutEvent e) {
-            bool active = (bool)e.Info;
+            var active = Ensure.ValueNotNull<bool>(e.Info, "active");
 
             Trace.WriteLineIf(traceDispatching.TraceInfo, $"Manual dispatch region was {(active ? "granted" : "freed")} recalculate trips");
 
@@ -1903,7 +1898,7 @@ namespace LayoutManager.Logic {
         private void validateTripPlanRoute(LayoutEvent e) {
             var tripPlan = Ensure.NotNull<TripPlanInfo>(e.Sender, "tripPlan");
             var train = Ensure.NotNull<TrainStateInfo>(e.Info, "train");
-            List <TrackEdge> sourceEdges = new List<TrackEdge>();
+            List<TrackEdge> sourceEdges = new List<TrackEdge>();
             List<ITripRouteValidationAction> actions = new List<ITripRouteValidationAction>();
             bool canBeFixed = true;
 

@@ -84,7 +84,7 @@ namespace LayoutManager.Logic {
             if (lockRequest.CancellationToken.IsCancellationRequested)
                 tcs.TrySetCanceled();
             else {
-                lockRequest.OnLockGranted = () => { tcs.TrySetResult(false); };
+                lockRequest.OnLockGranted = () => tcs.TrySetResult(false);
 
                 if (lockRequest.CancellationToken.CanBeCanceled) {
                     lockRequest.CancellationToken.Register(
@@ -98,7 +98,7 @@ namespace LayoutManager.Logic {
 
                 requestLayoutLock(e);
 
-                if ((bool)e.Info)       // Lock was granted immediately
+                if ((bool)(e.Info ?? false))       // Lock was granted immediately
                     tcs.TrySetResult(true);
             }
 
@@ -107,7 +107,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("request-manual-dispatch-lock")]
         private void requestManualDispatchLock(LayoutEvent e) {
-            var manualDispatchRegion = Ensure.NotNull<ManualDispatchRegionInfo>(e.Sender, "manualDispatchRegion"); ;
+            var manualDispatchRegion = Ensure.NotNull<ManualDispatchRegionInfo>(e.Sender, "manualDispatchRegion");
             LayoutSelection activeTrains = new LayoutSelection();
             LayoutSelection alreadyManualDispatch = new LayoutSelection();
             LayoutSelection partialTrains = new LayoutSelection();
@@ -126,7 +126,7 @@ namespace LayoutManager.Logic {
                     alreadyManualDispatch.Add(block);
 
                 foreach (TrainLocationInfo trainLocation in block.Trains) {
-                    if ((bool)EventManager.Event(new LayoutEvent("is-train-in-active-trip", trainLocation.Train))) {
+                    if ((bool)(EventManager.Event(new LayoutEvent("is-train-in-active-trip", trainLocation.Train)) ?? false)) {
                         if (!reportedTrains.Contains(trainLocation.Train.Id)) {
                             activeTrains.Add(trainLocation.Train);
                             reportedTrains.Add(trainLocation.Train.Id, trainLocation.Train);
@@ -174,7 +174,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("free-manual-dispatch-lock")]
         private void freeManualDispatchLock(LayoutEvent e) {
-            var manualDispatchRegion = Ensure.NotNull<ManualDispatchRegionInfo>(e.Sender, "manualDispatchRegion"); ;
+            var manualDispatchRegion = Ensure.NotNull<ManualDispatchRegionInfo>(e.Sender, "manualDispatchRegion");
             IDictionary lockedTrains = new HybridDictionary();
 
             foreach (Guid blockID in manualDispatchRegion.BlockIdList) {
@@ -202,7 +202,7 @@ namespace LayoutManager.Logic {
                 }
             }
 
-            EventManager.Event(new LayoutEventInfoValueType<object, Guid>("free-owned-layout-locks", null,manualDispatchRegion.Id).SetOption("ReleasePending", false));
+            EventManager.Event(new LayoutEventInfoValueType<object, Guid>("free-owned-layout-locks", null, manualDispatchRegion.Id).SetOption("ReleasePending", false));
         }
 
         /// <summary>
@@ -444,7 +444,7 @@ namespace LayoutManager.Logic {
                     bool IsResourceReady(Guid id) {
                         var resource = LayoutModel.Component<ILayoutLockResource>(resourceId, LayoutPhase.All);
 
-                        return resource != null ? resource.IsResourceReady() : false;
+                        return resource?.IsResourceReady() ?? false;
                     }
 
                     return canGrantLockFor(request, resourceId) && IsResourceReady(resourceId);
@@ -779,10 +779,7 @@ namespace LayoutManager.Logic {
 
             public LayoutLockRequest[] PendingRequests {
                 get {
-                    if (pendingRequests == null)
-                        return new LayoutLockRequest[0];
-                    else
-                        return pendingRequests.ToArray();
+                    return pendingRequests == null ? (new LayoutLockRequest[0]) : pendingRequests.ToArray();
                 }
             }
 

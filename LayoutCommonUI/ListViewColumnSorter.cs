@@ -23,7 +23,7 @@ namespace LayoutManager.CommonUI {
                 orders[i] = SortOrder.Ascending;
 
             listView.ListViewItemSorter = this;
-            listView.ColumnClick += new ColumnClickEventHandler(this.listView_ColumnClick);
+            listView.ColumnClick += this.listView_ColumnClick;
         }
 
         private void listView_ColumnClick(object sender, ColumnClickEventArgs e) {

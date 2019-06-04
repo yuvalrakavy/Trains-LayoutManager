@@ -126,7 +126,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -144,7 +144,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.checkBoxDisplayPowerSourceName.Size = new System.Drawing.Size(168, 24);
             this.checkBoxDisplayPowerSourceName.TabIndex = 2;
             this.checkBoxDisplayPowerSourceName.Text = "Display power source name";
-            this.checkBoxDisplayPowerSourceName.CheckedChanged += new System.EventHandler(this.checkBoxDisplayPowerSourceName_CheckedChanged);
+            this.checkBoxDisplayPowerSourceName.CheckedChanged += this.checkBoxDisplayPowerSourceName_CheckedChanged;
             // 
             // buttonSettings
             // 
@@ -153,7 +153,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonSettings.Size = new System.Drawing.Size(75, 23);
             this.buttonSettings.TabIndex = 3;
             this.buttonSettings.Text = "Settings...";
-            this.buttonSettings.Click += new System.EventHandler(this.buttonSettings_Click);
+            this.buttonSettings.Click += this.buttonSettings_Click;
             // 
             // trackGaugeSelector
             // 

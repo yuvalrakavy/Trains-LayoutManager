@@ -177,7 +177,7 @@ namespace LayoutManager.CommonUI {
         public static string GetEventOrEventContainerDescription(XmlElement element, string prefix) => GetEventOrEventContainerDescription(element, prefix, null);
 
         public static string GetEventOrEventContainerDescription(LayoutEvent e, string prefix, string suffix) =>
-            GetEventOrEventContainerDescription(Ensure.NotNull<XmlElement>(e.Sender,"element"), prefix, suffix);
+            GetEventOrEventContainerDescription(Ensure.NotNull<XmlElement>(e.Sender, "element"), prefix, suffix);
 
         public static string GetEventOrEventContainerDescription(LayoutEvent e, string prefix) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
@@ -254,9 +254,7 @@ namespace LayoutManager.CommonUI {
             protected override string Description => "Sequence";
 
             public override bool ShouldInsertAsFirst(XmlElement elementToInsert) {
-                if (elementToInsert.Name == "Condition")
-                    return true;
-                return false;
+                return elementToInsert.Name == "Condition";
             }
         }
 
@@ -372,9 +370,7 @@ namespace LayoutManager.CommonUI {
             public override Controls.LayoutEventScriptEditorTreeNode? NodeToEdit => this;        // repeat rule can be edited (changing the count)
 
             public override bool ShouldInsertAsFirst(XmlElement elementToInsert) {
-                if (elementToInsert.Name == "Condition")
-                    return true;
-                return false;
+                return elementToInsert.Name == "Condition";
             }
         }
 
@@ -517,9 +513,7 @@ namespace LayoutManager.CommonUI {
             public override Controls.LayoutEventScriptEditorTreeNode? NodeToEdit => this;        // repeat rule can be edited (changing the count)
 
             public override bool ShouldInsertAsFirst(XmlElement elementToInsert) {
-                if (elementToInsert.Name == "Condition")
-                    return true;
-                return false;
+                return elementToInsert.Name == "Condition";
             }
         }
 
@@ -1021,7 +1015,7 @@ namespace LayoutManager.CommonUI {
                 var nodes = (IIfTimeNode[]?)EventManager.Event(new LayoutEvent("parse-if-time-element", element, nodeName));
                 string? d = null;
 
-                if (nodes !=null && nodes.Length > 0) {
+                if (nodes != null && nodes.Length > 0) {
                     bool first = true;
 
                     d = title + " ";
@@ -1165,20 +1159,18 @@ namespace LayoutManager.CommonUI {
                         return setPrefix + element.GetAttribute("Value");
 
                     case "Number":
-                        if (element.GetAttribute("Op") == "Add")
-                            return "Add " + element.GetAttribute("Value") + " to the value of attribute " + attribute + " of symbol " + symbol;
-                        else
-                            return setPrefix + element.GetAttribute("Value");
+                        return element.GetAttribute("Op") == "Add"
+                            ? "Add " + element.GetAttribute("Value") + " to the value of attribute " + attribute + " of symbol " + symbol
+                            : setPrefix + element.GetAttribute("Value");
 
                     case "ValueOf":
                         string access = element.GetAttribute("SymbolToAccess");
                         string valueOfSymbol = element.GetAttribute("SymbolTo");
                         string valueOfName = element.GetAttribute("NameTo");
 
-                        if (access == "Property")
-                            return setPrefix + "value of property " + valueOfName + " of symbol " + valueOfSymbol;
-                        else
-                            return setPrefix + "value of attribute " + valueOfName + " of symbol " + valueOfSymbol;
+                        return access == "Property"
+                            ? setPrefix + "value of property " + valueOfName + " of symbol " + valueOfSymbol
+                            : setPrefix + "value of attribute " + valueOfName + " of symbol " + valueOfSymbol;
 
                     case "Remove":
                         return "Remove attribute " + attribute + " of symbol " + symbol;
@@ -1228,13 +1220,13 @@ namespace LayoutManager.CommonUI {
             private static string? getArgumentDescription(XmlElement element, string prefix) {
                 string getValueOf(string constant) =>
                     element.GetAttribute($"Type{prefix}") switch
-                {
-                    "Boolean" => $"is boolean {constant}",
-                    "String" => $"is string \"{constant}\"",
-                    "Integer" => $"is integer {constant}",
-                    "Double" => $"is double {constant}",
-                    _ => $"is unkown type {constant}"
-                };
+                    {
+                        "Boolean" => $"is boolean {constant}",
+                        "String" => $"is string \"{constant}\"",
+                        "Integer" => $"is integer {constant}",
+                        "Double" => $"is double {constant}",
+                        _ => $"is unkown type {constant}"
+                    };
 
                 return element.GetAttribute(prefix + "Type") switch
                 {

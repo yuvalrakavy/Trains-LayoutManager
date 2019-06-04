@@ -9,7 +9,7 @@ using LayoutManager.Components;
 using LayoutManager.CommonUI;
 
 namespace LayoutManager.Tools {
-    #pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060
     [LayoutModule("Layout Control Tools", UserControl = false)]
     internal class LayoutControlTools : LayoutModuleBase {
         #region Component/Control connection manager
@@ -167,7 +167,7 @@ namespace LayoutManager.Tools {
                 int dx = moduleLocation.Spot.Location.X - component.Spot.Location.X;
                 int dy = moduleLocation.Spot.Location.Y - component.Spot.Location.Y;
 
-                this.Distance = Math.Sqrt(dx * dx + dy * dy);
+                this.Distance = Math.Sqrt((dx * dx) + (dy * dy));
             }
 
             public LayoutControlModuleLocationComponent ModuleLocation { get; }
@@ -454,7 +454,7 @@ namespace LayoutManager.Tools {
                                     addCommand = new AddControlModuleCommand(bus, moduleTypeName, moduleLocationID);
                                 }
                                 else {
-                                    int moduleAddress = request.Address - (request.Address - bus.BusType.FirstAddress) % moduleType.AddressAlignment;
+                                    int moduleAddress = request.Address - ((request.Address - bus.BusType.FirstAddress) % moduleType.AddressAlignment);
 
                                     addCommand = new AddControlModuleCommand(bus, moduleTypeName, moduleLocationID, moduleAddress);
                                 }
@@ -507,7 +507,7 @@ namespace LayoutManager.Tools {
             double dx = component1.Spot.Location.X - component2.Spot.Location.X;
             double dy = component1.Spot.Location.Y - component2.Spot.Location.Y;
 
-            return Math.Sqrt(dx * dx + dy * dy);
+            return Math.Sqrt((dx * dx) + (dy * dy));
         }
 
         /// <summary>
@@ -519,9 +519,9 @@ namespace LayoutManager.Tools {
         private LayoutControlModuleLocationComponent findNearestModuleLocation(LayoutPhase phase, IModelComponentConnectToControl component) {
             var areaModuleLocations = LayoutModel.Components<LayoutControlModuleLocationComponent>(phase, c => c.Spot.Area == component.Spot.Area);
 
-            if (areaModuleLocations.Any())
-                return areaModuleLocations.Aggregate((nearest, moduleLocation) => distance(moduleLocation, component) < distance(nearest, component) ? moduleLocation : nearest);
-            return null;
+            return areaModuleLocations.Any()
+                ? areaModuleLocations.Aggregate((nearest, moduleLocation) => distance(moduleLocation, component) < distance(nearest, component) ? moduleLocation : nearest)
+                : null;
         }
 
         private ControlConnectionPointReference findConnectionPoint(ControlAutoConnectRequest request) {
@@ -539,7 +539,7 @@ namespace LayoutManager.Tools {
                 if (request.Bus.BusType.AddressingMethod == ControlAddressingMethod.DirectConnectionPointAddressing) {
                     index = request.Address - module.Address;
                     if (module.ModuleType.ConnectionPointsPerAddress > 1)
-                        index = index * module.ModuleType.ConnectionPointsPerAddress + request.State;
+                        index = (index * module.ModuleType.ConnectionPointsPerAddress) + request.State;
                 }
                 else
                     index = request.Index;
@@ -600,7 +600,7 @@ namespace LayoutManager.Tools {
                 int dx = component1.Location.X - component2.Location.X;
                 int dy = component1.Location.Y - component2.Location.Y;
 
-                return Math.Sqrt(dx * dx + dy * dy);
+                return Math.Sqrt((dx * dx) + (dy * dy));
             }
 
             private int findIndexOfNearest(IModelComponent aComponent, int startIndex) {
@@ -661,10 +661,9 @@ namespace LayoutManager.Tools {
                     if (components.Count == 0)
                         return null;
 
-                    if (ModuleLocation == null)
-                        return GetConnectionPointDestinationRecommendation(components[0]);
-                    else
-                        return GetConnectionPointDestinationRecommendation(components[findIndexOfNearest(ModuleLocation, 0)]);
+                    return ModuleLocation == null
+                        ? GetConnectionPointDestinationRecommendation(components[0])
+                        : GetConnectionPointDestinationRecommendation(components[findIndexOfNearest(ModuleLocation, 0)]);
                 }
                 else {
                     // Check if the module that the previous component was connected to is full or not
@@ -740,10 +739,7 @@ namespace LayoutManager.Tools {
                                 }
                             }
 
-                            if (nearestComponent != null)
-                                return GetConnectionPointDestinationRecommendation(nearestComponent);
-                            else
-                                return null;
+                            return nearestComponent != null ? GetConnectionPointDestinationRecommendation(nearestComponent) : null;
                         }
                     }
                 }
@@ -881,9 +877,7 @@ namespace LayoutManager.Tools {
                     Menu toolsMenu = (Menu)e.Info;
 
                     toolsMenu.MenuItems.Add("Emulate &Command station Event...",
-                        delegate (object sender, EventArgs ea) {
-                            new Dialogs.SimulateCommandStationInputEvent().ShowDialog(LayoutController.ActiveFrameWindow);
-                        });
+                        (object sender, EventArgs ea) => new Dialogs.SimulateCommandStationInputEvent().ShowDialog(LayoutController.ActiveFrameWindow));
                 }
             }
         }
@@ -971,9 +965,7 @@ namespace LayoutManager.Tools {
                             ControlConnectionPointDestination connectionDestination = new ControlConnectionPointDestination(component, applicableConnectionDescriptions[0]);
 
                             MenuItem item = new MenuItem("Connect " + applicableConnectionDescriptions[0].DisplayName + " to address " + dialog.DialogName(connectionDestination),
-                                delegate (object sender, EventArgs eArgs) {
-                                    dialog.AddControlConnectionPointDestination(connectionDestination);
-                                }) {
+                                (object sender, EventArgs eArgs) => dialog.AddControlConnectionPointDestination(connectionDestination)) {
                                 DefaultItem = true
                             };
                             menu.MenuItems.Add(item);
@@ -985,9 +977,7 @@ namespace LayoutManager.Tools {
                                 ControlConnectionPointDestination connectionDestination = new ControlConnectionPointDestination(component, connectionDescription);
 
                                 item.MenuItems.Add(new MenuItem(connectionDescription.DisplayName + " to address " + dialog.DialogName(connectionDestination),
-                                delegate (object sender, EventArgs eArgs) {
-                                    dialog.AddControlConnectionPointDestination(connectionDestination);
-                                }));
+                                (object sender, EventArgs eArgs) => dialog.AddControlConnectionPointDestination(connectionDestination)));
                             }
 
                             menu.MenuItems.Add(item);
@@ -1393,9 +1383,7 @@ namespace LayoutManager.Tools {
             }
 
             if (drawObject.Module.ConnectionPoints.Usage(drawObject.Index) == ControlConnectionPointUsage.Output)
-                menu.MenuItems.Add("&Test", delegate (object sender, EventArgs ea) {
-                    EventManager.Event(new LayoutEvent("test-layout-object-request", new ControlConnectionPointReference(drawObject.Module, drawObject.Index)).SetFrameWindow(e));
-                });
+                menu.MenuItems.Add("&Test", (object sender, EventArgs ea) => EventManager.Event(new LayoutEvent("test-layout-object-request", new ControlConnectionPointReference(drawObject.Module, drawObject.Index)).SetFrameWindow(e)));
 
             menu.MenuItems.Add(new ToggleUserActionRequiredMenuItem(new ControlConnectionPointReference(drawObject.Module, drawObject.Index)));
         }
@@ -1773,9 +1761,7 @@ namespace LayoutManager.Tools {
 
         private class ShowConnectionPointMenuItem : MenuItem {
             public ShowConnectionPointMenuItem(Guid frameWindowId, string text, ControlConnectionPoint connectionPoint)
-                : base(text, (s, ea) => {
-                    EventManager.Event(new LayoutEvent("show-control-connection-point", new ControlConnectionPointReference(connectionPoint)).SetFrameWindow(frameWindowId));
-                }) {
+                : base(text, (s, ea) => EventManager.Event(new LayoutEvent("show-control-connection-point", new ControlConnectionPointReference(connectionPoint)).SetFrameWindow(frameWindowId))) {
             }
         }
 

@@ -48,10 +48,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             InputBox inputBox = new InputBox(caption, prompt) {
                 ValidationOptions = validationOptions
             };
-            if (inputBox.ShowDialog() == DialogResult.OK)
-                return inputBox.Input;
-            else
-                return null;
+            return inputBox.ShowDialog() == DialogResult.OK ? inputBox.Input : null;
         }
 
         public static string Show(String caption, string prompt) => InputBox.Show(caption, prompt, 0);
@@ -112,7 +109,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 2;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // InputBox
             // 

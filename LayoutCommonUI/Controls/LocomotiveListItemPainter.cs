@@ -69,101 +69,99 @@ namespace LayoutManager.CommonUI.Controls {
                 }
             }
 
-            using (Brush textBrush = new SolidBrush(textColor)) {
-                // Draw the locomotive image and name. There are two possible layouts one
-                // for locomotive and one for locomotive set
-                int xText;
-                float yText;
-                string name;
-                string typeName = null;
+            using Brush textBrush = new SolidBrush(textColor);
+            // Draw the locomotive image and name. There are two possible layouts one
+            // for locomotive and one for locomotive set
+            int xText;
+            float yText;
+            string name;
+            string typeName = null;
 
-                if (element.Name == "Locomotive") {
-                    LocomotiveInfo loco = new LocomotiveInfo(element);
+            if (element.Name == "Locomotive") {
+                LocomotiveInfo loco = new LocomotiveInfo(element);
 
-                    using (LocomotiveImagePainter locoPainter = new LocomotiveImagePainter(catalog)) {
-                        locoPainter.FlipImage = true;   //DEBUG
-                        locoPainter.Draw(e.Graphics, new Point(2, 2), new Size(50, 36), loco.Element);
-                    };
-
-                    yText = 2;
-                    xText = 55;
-                    name = loco.DisplayName;
-
-                    typeName = loco.TypeName;
+                using (LocomotiveImagePainter locoPainter = new LocomotiveImagePainter(catalog)) {
+                    locoPainter.FlipImage = true;   //DEBUG
+                    locoPainter.Draw(e.Graphics, new Point(2, 2), new Size(50, 36), loco.Element);
                 }
-                else if (element.Name == "Train") {
-                    TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(element);
 
-                    using (LocomotiveImagePainter locoPainter = new LocomotiveImagePainter(catalog)) {
-                        int x = 2;
+                yText = 2;
+                xText = 55;
+                name = loco.DisplayName;
 
-                        locoPainter.FrameSize = new Size(28, 20);
+                typeName = loco.TypeName;
+            }
+            else if (element.Name == "Train") {
+                TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(element);
 
-                        foreach (TrainLocomotiveInfo trainLocomotive in trainInCollection.Locomotives) {
-                            locoPainter.LocomotiveElement = trainLocomotive.Locomotive.Element;
-                            locoPainter.FlipImage = (trainLocomotive.Orientation == LocomotiveOrientation.Backward);
-                            locoPainter.Origin = new Point(x, 2);
-                            locoPainter.Draw(e.Graphics);
+                using (LocomotiveImagePainter locoPainter = new LocomotiveImagePainter(catalog)) {
+                    int x = 2;
 
-                            x += locoPainter.FrameSize.Width + 2;
-                        }
+                    locoPainter.FrameSize = new Size(28, 20);
 
-                        using (Font f = new Font("Arial", 8))
-                            e.Graphics.DrawString("(" + trainInCollection.Length.ToDisplayString(true) + ")", f, textBrush, new Point(x, 4));
+                    foreach (TrainLocomotiveInfo trainLocomotive in trainInCollection.Locomotives) {
+                        locoPainter.LocomotiveElement = trainLocomotive.Locomotive.Element;
+                        locoPainter.FlipImage = (trainLocomotive.Orientation == LocomotiveOrientation.Backward);
+                        locoPainter.Origin = new Point(x, 2);
+                        locoPainter.Draw(e.Graphics);
+
+                        x += locoPainter.FrameSize.Width + 2;
                     }
 
-                    xText = 2;
-                    yText = 22;
-                    name = trainInCollection.DisplayName;
-                }
-                else
-                    throw new ApplicationException("Invalid element");
-
-                SizeF textSize;
-
-                using (Font titleFont = new Font("Arial", 8, FontStyle.Bold)) {
-                    textSize = e.Graphics.MeasureString(name, titleFont);
-                    e.Graphics.DrawString(name, titleFont, textBrush, new PointF(xText, yText));
+                    using Font f = new Font("Arial", 8);
+                    e.Graphics.DrawString("(" + trainInCollection.Length.ToDisplayString(true) + ")", f, textBrush, new Point(x, 4));
                 }
 
-                if (typeName != null) {
-                    using (Font typeFont = new Font("Arial", 7, FontStyle.Regular)) {
-                        string typeText = " (" + typeName + ")";
-                        SizeF typeSize = e.Graphics.MeasureString(typeText, typeFont);
+                xText = 2;
+                yText = 22;
+                name = trainInCollection.DisplayName;
+            }
+            else
+                throw new ApplicationException("Invalid element");
 
-                        e.Graphics.DrawString(typeText, typeFont, textBrush,
-                            new PointF(xText + textSize.Width, yText + textSize.Height - typeSize.Height));
-                    }
+            SizeF textSize;
+
+            using (Font titleFont = new Font("Arial", 8, FontStyle.Bold)) {
+                textSize = e.Graphics.MeasureString(name, titleFont);
+                e.Graphics.DrawString(name, titleFont, textBrush, new PointF(xText, yText));
+            }
+
+            if (typeName != null) {
+                using Font typeFont = new Font("Arial", 7, FontStyle.Regular);
+                string typeText = " (" + typeName + ")";
+                SizeF typeSize = e.Graphics.MeasureString(typeText, typeFont);
+
+                e.Graphics.DrawString(typeText, typeFont, textBrush,
+                    new PointF(xText + textSize.Width, yText + textSize.Height - typeSize.Height));
+            }
+
+            yText += textSize.Height;
+
+            if (annotateForOperationMode) {
+                string status;
+                TrainStateInfo train = LayoutModel.StateManager.Trains[element];
+
+                if (onTrack && train != null)
+                    status = train.StatusText;
+                else {
+                    if (canPlaceOnTrack == CanPlaceTrainResolveMethod.Resolved)
+                        status = "Can be placed on track";
+                    else
+                        status = element.GetAttribute("Reason");
+                }
+
+                using (Font typeFont = new Font("Arial", 6.5F, FontStyle.Regular)) {
+                    textSize = e.Graphics.MeasureString(status, typeFont);
+                    e.Graphics.DrawString(status, typeFont, textBrush, new PointF(xText, yText));
                 }
 
                 yText += textSize.Height;
-
-                if (annotateForOperationMode) {
-                    string status;
-                    TrainStateInfo train = LayoutModel.StateManager.Trains[element];
-
-                    if (onTrack && train != null)
-                        status = train.StatusText;
-                    else {
-                        if (canPlaceOnTrack == CanPlaceTrainResolveMethod.Resolved)
-                            status = "Can be placed on track";
-                        else
-                            status = element.GetAttribute("Reason");
-                    }
-
-                    using (Font typeFont = new Font("Arial", 6.5F, FontStyle.Regular)) {
-                        textSize = e.Graphics.MeasureString(status, typeFont);
-                        e.Graphics.DrawString(status, typeFont, textBrush, new PointF(xText, yText));
-                    }
-
-                    yText += textSize.Height;
-                }
-
-                e.Graphics.Restore(gs);
-
-                using (Pen p = new Pen(Color.Black, 2.0F))
-                    e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Bottom, e.Bounds.Right, e.Bounds.Bottom);
             }
+
+            e.Graphics.Restore(gs);
+
+            using Pen p = new Pen(Color.Black, 2.0F);
+            e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Bottom, e.Bounds.Right, e.Bounds.Bottom);
         }
     }
 }

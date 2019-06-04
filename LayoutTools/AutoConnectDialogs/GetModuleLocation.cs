@@ -39,9 +39,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
 
         public LayoutControlModuleLocationComponent ModuleLocation {
             get {
-                if (comboBoxModuleLocation.SelectedItem == null)
-                    return null;
-                return ((Item)comboBoxModuleLocation.SelectedItem).ModuleLocation;
+                return comboBoxModuleLocation.SelectedItem == null ? null : ((Item)comboBoxModuleLocation.SelectedItem).ModuleLocation;
             }
         }
 
@@ -132,7 +130,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 5;
             this.buttonOK.Text = "Continue";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 

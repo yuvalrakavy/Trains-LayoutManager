@@ -179,7 +179,7 @@ namespace Intellibox {
         private void intelliboxInvokeEvents(LayoutEvent e) {
             List<LayoutEvent> events = (List<LayoutEvent>)e.Info;
 
-            events.ForEach(delegate (LayoutEvent ev) { EventManager.Event(ev); });
+            events.ForEach((LayoutEvent ev) => EventManager.Event(ev));
         }
 
         [LayoutEvent("intellibox-notify-locomotive-state")]

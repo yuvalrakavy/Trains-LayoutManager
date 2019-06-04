@@ -94,7 +94,7 @@ namespace LayoutManager.CommonUI.Controls {
         private void setDriverSettingButtonState() {
             var selected = (DriverItem)comboBoxDrivers.SelectedItem;
 
-            if(selected != null)
+            if (selected != null)
                 buttonDriverSettings.Enabled = IsSelectedHasSettings();
         }
 
@@ -129,7 +129,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.comboBoxDrivers.Name = "comboBoxDrivers";
             this.comboBoxDrivers.Size = new System.Drawing.Size(121, 21);
             this.comboBoxDrivers.TabIndex = 0;
-            this.comboBoxDrivers.SelectedIndexChanged += new System.EventHandler(this.comboBoxDrivers_SelectedIndexChanged);
+            this.comboBoxDrivers.SelectedIndexChanged += this.comboBoxDrivers_SelectedIndexChanged;
             // 
             // buttonDriverSettings
             // 
@@ -140,7 +140,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonDriverSettings.Size = new System.Drawing.Size(24, 21);
             this.buttonDriverSettings.TabIndex = 1;
             this.buttonDriverSettings.Text = "...";
-            this.buttonDriverSettings.Click += new System.EventHandler(this.buttonDriverSettings_Click);
+            this.buttonDriverSettings.Click += this.buttonDriverSettings_Click;
             // 
             // TrainDriverComboBox
             // 

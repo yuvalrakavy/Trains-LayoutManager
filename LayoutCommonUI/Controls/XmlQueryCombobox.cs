@@ -21,9 +21,7 @@ namespace LayoutManager.CommonUI.Controls {
             get {
                 XmlNodeList l = getElements();
 
-                if (l.Count > 0)
-                    return (XmlElement)l[0];
-                return null;
+                return l.Count > 0 ? (XmlElement)l[0] : null;
             }
         }
 
@@ -31,9 +29,7 @@ namespace LayoutManager.CommonUI.Controls {
             get {
                 XmlNodeList l = getElements();
 
-                if (l.Count > 1)
-                    return true;
-                return false;
+                return l.Count > 1;
             }
         }
 

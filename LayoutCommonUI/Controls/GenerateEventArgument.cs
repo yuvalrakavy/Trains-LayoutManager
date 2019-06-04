@@ -227,9 +227,7 @@ namespace LayoutManager.CommonUI.Controls {
         protected string GetAttribute(string name, string defaultValue) {
             string attributeName = Prefix + name;
 
-            if (!Element.HasAttribute(attributeName))
-                return defaultValue;
-            return Element.GetAttribute(attributeName);
+            return !Element.HasAttribute(attributeName) ? defaultValue : Element.GetAttribute(attributeName);
         }
 
         protected string GetAttribute(string name) => GetAttribute(name, null);
@@ -290,8 +288,8 @@ namespace LayoutManager.CommonUI.Controls {
             this.comboBoxReferencedObject.Size = new System.Drawing.Size(121, 21);
             this.comboBoxReferencedObject.Sorted = true;
             this.comboBoxReferencedObject.TabIndex = 2;
-            this.comboBoxReferencedObject.TextChanged += new System.EventHandler(this.comboBoxReferencedObject_TextChanged);
-            this.comboBoxReferencedObject.SelectedIndexChanged += new System.EventHandler(this.comboBoxReferencedObject_SelectedIndexChanged);
+            this.comboBoxReferencedObject.TextChanged += this.comboBoxReferencedObject_TextChanged;
+            this.comboBoxReferencedObject.SelectedIndexChanged += this.comboBoxReferencedObject_SelectedIndexChanged;
             // 
             // operandValueOf
             // 
@@ -303,7 +301,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.operandValueOf.Size = new System.Drawing.Size(176, 64);
             this.operandValueOf.Suffix = "";
             this.operandValueOf.TabIndex = 4;
-            this.operandValueOf.ValueChanged += new System.EventHandler(this.operandValueOf_ValueChanged);
+            this.operandValueOf.ValueChanged += this.operandValueOf_ValueChanged;
             // 
             // radioButtonValueOf
             // 
@@ -334,7 +332,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.linkMenuConstantType.TabStop = true;
             this.linkMenuConstantType.Text = "String";
             this.linkMenuConstantType.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkMenuConstantType.ValueChanged += new System.EventHandler(this.linkMenuConstantType_ValueChanged);
+            this.linkMenuConstantType.ValueChanged += this.linkMenuConstantType_ValueChanged;
             // 
             // textBoxConstantValue
             // 
@@ -343,7 +341,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.textBoxConstantValue.Size = new System.Drawing.Size(178, 20);
             this.textBoxConstantValue.TabIndex = 7;
             this.textBoxConstantValue.Text = "";
-            this.textBoxConstantValue.TextChanged += new System.EventHandler(this.textBoxConstantValue_TextChanged);
+            this.textBoxConstantValue.TextChanged += this.textBoxConstantValue_TextChanged;
             // 
             // radioButtonContext
             // 

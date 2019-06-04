@@ -58,7 +58,7 @@ namespace Intellibox {
     /// <summary>
     /// Implementation of Intellibox interface
     /// </summary>
-    #pragma warning disable IDE0051, IDE0060, IDE0052
+#pragma warning disable IDE0051, IDE0060, IDE0052
     public class IntelliboxComponent : LayoutCommandStationComponent {
         private const string A_MinTimeBetweenSpeedSteps = "MinTimeBetweenSpeedSteps";
         //private static readonly LayoutTraceSwitch traceIntellibox = new LayoutTraceSwitch("Intellibox", "Intellibox Command Station");

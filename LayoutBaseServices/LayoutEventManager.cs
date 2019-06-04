@@ -143,10 +143,7 @@ namespace LayoutManager {
             if (target == null || (TargetType != null && !TargetType.IsInstanceOfType(target)))
                 return false;
 
-            if (IfTarget != null && target is IObjectHasXml targetXml && !Matches(targetXml.Element, IfTarget))
-                return false;
-
-            return true;
+            return IfTarget == null || !(target is IObjectHasXml targetXml) || Matches(targetXml.Element, IfTarget);
         }
     }
 
@@ -157,9 +154,7 @@ namespace LayoutManager {
         public static bool HasOption<TEvent>(this TEvent e, string elementName, string optionName) where TEvent : LayoutEvent {
             XmlElement optionElement = e.Element[elementName];
 
-            if (optionElement != null)
-                return optionElement.HasAttribute(optionName);
-            return false;
+            return optionElement?.HasAttribute(optionName) ?? false;
         }
 
         public static bool HasOption<TEvent>(this TEvent e, string optionName) where TEvent : LayoutEvent => e.HasOption(DefaultOptionsElementName, optionName);
@@ -253,9 +248,7 @@ namespace LayoutManager {
         }
 
         public new TInfo Info {
-            get {
-                return (TInfo)base.Info;
-            }
+            get => (TInfo?)(base.Info) ?? default;
 
             set {
                 base.Info = value;
@@ -1050,7 +1043,7 @@ namespace LayoutManager {
             }
         }
 
-#region Synchronous (normal) events
+        #region Synchronous (normal) events
 
         /// <summary>
         /// Internal method for generating event
@@ -1098,9 +1091,9 @@ namespace LayoutManager {
 
         public object? Event(LayoutEvent e) => Event(e, LayoutEventScope.MyProcess);
 
-#endregion
+        #endregion
 
-#region Async events
+        #region Async events
 
         /// <summary>
         /// Internal method for generating async event
@@ -1162,7 +1155,7 @@ namespace LayoutManager {
 
         public Task[] AsyncEventBroadcast(LayoutEvent e) => AsyncEventBroadcast(e, LayoutEventScope.MyProcess);
 
-#endregion
+        #endregion
 
         public LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) => new LayoutDelayedEvent(delayTime, e);
 
@@ -1284,7 +1277,7 @@ namespace LayoutManager {
             eventDefs = null;
         }
 
-#region Helper methods for getting event attributes
+        #region Helper methods for getting event attributes
 
         private void addEventDefs(LayoutEventDefAttribute[] eventDefsToAdd, LayoutEventRole requiredRole, List<LayoutEventDefAttribute> eventDefs) {
             foreach (LayoutEventDefAttribute eventDef in eventDefsToAdd) {
@@ -1311,7 +1304,7 @@ namespace LayoutManager {
             }
         }
 
-#endregion
+        #endregion
     }
 
     /// <summary>
@@ -1457,11 +1450,11 @@ namespace LayoutManager {
 
         public IEnumerator<LayoutEventSubscriptionBase> GetEnumerator() => subscriptions.GetEnumerator();
 
-#region IEnumerable Members
+        #region IEnumerable Members
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-#endregion
+        #endregion
     }
 
     /// <summary>
@@ -1533,11 +1526,11 @@ namespace LayoutManager {
             }
         }
 
-#region IEnumerable Members
+        #region IEnumerable Members
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-#endregion
+        #endregion
     }
 
     /// <summary>
@@ -1596,11 +1589,11 @@ namespace LayoutManager {
             return allSubscriptions.GetEnumerator();
         }
 
-#region IEnumerable Members
+        #region IEnumerable Members
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-#endregion
+        #endregion
 
     }
 

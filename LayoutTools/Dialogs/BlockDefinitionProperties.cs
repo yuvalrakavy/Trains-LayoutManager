@@ -294,7 +294,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonResources.TabIndex = 5;
             this.buttonResources.Text = "&Resources...";
             this.buttonResources.UseVisualStyleBackColor = true;
-            this.buttonResources.Click += new System.EventHandler(this.buttonResources_Click);
+            this.buttonResources.Click += this.buttonResources_Click;
             // 
             // checkBoxOccupancyDetectionBlock
             // 
@@ -311,7 +311,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonAdvanced.Size = new System.Drawing.Size(75, 23);
             this.buttonAdvanced.TabIndex = 4;
             this.buttonAdvanced.Text = "&Advanced...";
-            this.buttonAdvanced.Click += new System.EventHandler(this.buttonAdvanced_Click);
+            this.buttonAdvanced.Click += this.buttonAdvanced_Click;
             // 
             // nameDefinition
             // 
@@ -391,7 +391,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonEditingTrainStopCondition.Size = new System.Drawing.Size(75, 20);
             this.buttonEditingTrainStopCondition.TabIndex = 2;
             this.buttonEditingTrainStopCondition.Text = "&Edit...";
-            this.buttonEditingTrainStopCondition.Click += new System.EventHandler(this.buttonEditTrainStopCondition_Click);
+            this.buttonEditingTrainStopCondition.Click += this.buttonEditTrainStopCondition_Click;
             // 
             // textBoxTrainStopCondition
             // 
@@ -429,7 +429,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonEditingTrainPassCondition.Size = new System.Drawing.Size(75, 20);
             this.buttonEditingTrainPassCondition.TabIndex = 2;
             this.buttonEditingTrainPassCondition.Text = "&Edit...";
-            this.buttonEditingTrainPassCondition.Click += new System.EventHandler(this.buttonEditTrainPassCondition_Click);
+            this.buttonEditingTrainPassCondition.Click += this.buttonEditTrainPassCondition_Click;
             // 
             // textBoxTrainPassCondition
             // 
@@ -487,7 +487,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // BlockInfoProperties
             // 

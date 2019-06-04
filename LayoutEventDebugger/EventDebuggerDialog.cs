@@ -132,9 +132,7 @@ namespace LayoutEventDebugger {
         /// </summary>
         protected override void Dispose(bool disposing) {
             if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -265,7 +263,7 @@ namespace LayoutEventDebugger {
             this.buttonSendEvent.Size = new System.Drawing.Size(80, 23);
             this.buttonSendEvent.TabIndex = 13;
             this.buttonSendEvent.Text = "Send &Event";
-            this.buttonSendEvent.Click += new System.EventHandler(this.buttonSendEvent_Click);
+            this.buttonSendEvent.Click += this.buttonSendEvent_Click;
             // 
             // tabPageEvent
             // 
@@ -294,7 +292,7 @@ namespace LayoutEventDebugger {
             this.buttonUnsubscribe.Size = new System.Drawing.Size(80, 23);
             this.buttonUnsubscribe.TabIndex = 11;
             this.buttonUnsubscribe.Text = "&Unsubscribe";
-            this.buttonUnsubscribe.Click += new System.EventHandler(this.buttonUnsubscribe_Click);
+            this.buttonUnsubscribe.Click += this.buttonUnsubscribe_Click;
             // 
             // buttonSubscribe
             // 
@@ -303,7 +301,7 @@ namespace LayoutEventDebugger {
             this.buttonSubscribe.Size = new System.Drawing.Size(80, 23);
             this.buttonSubscribe.TabIndex = 10;
             this.buttonSubscribe.Text = "&Subscribe";
-            this.buttonSubscribe.Click += new System.EventHandler(this.buttonSubscribe_Click);
+            this.buttonSubscribe.Click += this.buttonSubscribe_Click;
             // 
             // labelSubscriptionStatus
             // 

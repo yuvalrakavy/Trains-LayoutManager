@@ -91,8 +91,8 @@ namespace LayoutManager.View {
         /// </summary>
         public Size Size {
             get {
-                using (Graphics g = Parent.CreateGraphics())
-                    return GetSize(g);
+                using Graphics g = Parent.CreateGraphics();
+                return GetSize(g);
             }
         }
 
@@ -190,7 +190,7 @@ namespace LayoutManager.View {
                     totalSize.Height = s.Height;
             }
 
-            return new Size(totalSize.Width + 2 * InnerMargins.Width + 2 * OuterMargins.Width, totalSize.Height + 2 * InnerMargins.Height + 2 * OuterMargins.Height);
+            return new Size(totalSize.Width + (2 * InnerMargins.Width) + (2 * OuterMargins.Width), totalSize.Height + (2 * InnerMargins.Height) + (2 * OuterMargins.Height));
         }
 
         public void Paint(Graphics g) {
@@ -199,7 +199,7 @@ namespace LayoutManager.View {
             Size mySize = GetSize(g);
 
             if (borderPen != null)
-                g.DrawRectangle(borderPen, OuterMargins.Width, OuterMargins.Height, mySize.Width - 2 * OuterMargins.Width, mySize.Height - 2 * OuterMargins.Height);
+                g.DrawRectangle(borderPen, OuterMargins.Width, OuterMargins.Height, mySize.Width - (2 * OuterMargins.Width), mySize.Height - (2 * OuterMargins.Height));
 
             g.TranslateTransform(OuterMargins.Width + InnerMargins.Width, OuterMargins.Height + InnerMargins.Height);
 
@@ -288,10 +288,7 @@ namespace LayoutManager.View {
         #region IDetailsPopWindowSection Members
 
         public Size GetSize(Graphics g) {
-            if (size == Size.Empty)
-                return image.Size;
-            else
-                return size;
+            return size == Size.Empty ? image.Size : size;
         }
 
         public void Paint(Graphics g) {

@@ -55,7 +55,7 @@ namespace LayoutManager.Tools.Dialogs {
         private readonly ArrayList locomotiveCancelList = new ArrayList();
         private bool locomotiveEdited = false;
 
-        #pragma warning disable nullable
+#pragma warning disable nullable
         public TrainProperties(TrainCommonInfo train) {
             //
             // Required for Windows Form Designer support
@@ -88,7 +88,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             EventManager.AddObjectSubscriptions(this);
         }
-        #pragma warning restore nullable
+#pragma warning restore nullable
 
         public XmlElement Element => train.Element;
         public XmlElement? OptionalElement => Element;
@@ -289,8 +289,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.panelLocoImages.Name = "panelLocoImages";
             this.panelLocoImages.Size = new System.Drawing.Size(272, 42);
             this.panelLocoImages.TabIndex = 5;
-            this.panelLocoImages.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelLocoImages_MouseDown);
-            this.panelLocoImages.Paint += new System.Windows.Forms.PaintEventHandler(this.panelLocoImages_Paint);
+            this.panelLocoImages.MouseDown += this.panelLocoImages_MouseDown;
+            this.panelLocoImages.Paint += this.panelLocoImages_Paint;
             // 
             // buttonLocoMoveDown
             // 
@@ -301,7 +301,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLocoMoveDown.Name = "buttonLocoMoveDown";
             this.buttonLocoMoveDown.Size = new System.Drawing.Size(29, 21);
             this.buttonLocoMoveDown.TabIndex = 4;
-            this.buttonLocoMoveDown.Click += new System.EventHandler(this.buttonLocoMoveDown_Click);
+            this.buttonLocoMoveDown.Click += this.buttonLocoMoveDown_Click;
             // 
             // imageListButttons
             // 
@@ -318,7 +318,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLocoAdd.Size = new System.Drawing.Size(64, 21);
             this.buttonLocoAdd.TabIndex = 1;
             this.buttonLocoAdd.Text = "&Add...";
-            this.buttonLocoAdd.Click += new System.EventHandler(this.buttonLocoAdd_Click);
+            this.buttonLocoAdd.Click += this.buttonLocoAdd_Click;
             // 
             // listViewLocomotives
             // 
@@ -340,7 +340,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.listViewLocomotives.TabIndex = 0;
             this.listViewLocomotives.UseCompatibleStateImageBehavior = false;
             this.listViewLocomotives.View = System.Windows.Forms.View.Details;
-            this.listViewLocomotives.SelectedIndexChanged += new System.EventHandler(this.updateControls);
+            this.listViewLocomotives.SelectedIndexChanged += this.updateControls;
             // 
             // columnHeaderLocoName
             // 
@@ -370,7 +370,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLocoRemove.Size = new System.Drawing.Size(64, 21);
             this.buttonLocoRemove.TabIndex = 2;
             this.buttonLocoRemove.Text = "&Remove";
-            this.buttonLocoRemove.Click += new System.EventHandler(this.buttonLocoRemove_Click);
+            this.buttonLocoRemove.Click += this.buttonLocoRemove_Click;
             // 
             // buttonLocoEdit
             // 
@@ -380,7 +380,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLocoEdit.Size = new System.Drawing.Size(64, 21);
             this.buttonLocoEdit.TabIndex = 3;
             this.buttonLocoEdit.Text = "&Edit...";
-            this.buttonLocoEdit.Click += new System.EventHandler(this.buttonLocoEdit_Click);
+            this.buttonLocoEdit.Click += this.buttonLocoEdit_Click;
             // 
             // buttonLocoMoveUp
             // 
@@ -391,7 +391,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLocoMoveUp.Name = "buttonLocoMoveUp";
             this.buttonLocoMoveUp.Size = new System.Drawing.Size(29, 21);
             this.buttonLocoMoveUp.TabIndex = 4;
-            this.buttonLocoMoveUp.Click += new System.EventHandler(this.buttonLocoMoveUp_Click);
+            this.buttonLocoMoveUp.Click += this.buttonLocoMoveUp_Click;
             // 
             // tabPageDriver
             // 
@@ -419,7 +419,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 21);
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -430,7 +430,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(75, 21);
             this.buttonCancel.TabIndex = 2;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // contextMenuEditLocomotive
             // 
@@ -450,19 +450,19 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             this.menuItemLocoOrientationForward.Index = 0;
             this.menuItemLocoOrientationForward.Text = "Forward";
-            this.menuItemLocoOrientationForward.Click += new System.EventHandler(this.menuItemLocoOrientationForward_Click);
+            this.menuItemLocoOrientationForward.Click += this.menuItemLocoOrientationForward_Click;
             // 
             // menuItemLocoOrientationBackward
             // 
             this.menuItemLocoOrientationBackward.Index = 1;
             this.menuItemLocoOrientationBackward.Text = "Backward";
-            this.menuItemLocoOrientationBackward.Click += new System.EventHandler(this.menuItemLocoOrientationBackward_Click);
+            this.menuItemLocoOrientationBackward.Click += this.menuItemLocoOrientationBackward_Click;
             // 
             // menuItemEditLocoDefinition
             // 
             this.menuItemEditLocoDefinition.Index = 1;
             this.menuItemEditLocoDefinition.Text = "Definition...";
-            this.menuItemEditLocoDefinition.Click += new System.EventHandler(this.menuItemEditLocoDefinition_Click);
+            this.menuItemEditLocoDefinition.Click += this.menuItemEditLocoDefinition_Click;
             // 
             // groupBox1
             // 
@@ -522,7 +522,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "TrainProperties";
             this.ShowInTaskbar = false;
             this.Text = "Train Properties";
-            this.Closed += new System.EventHandler(this.TrainProperties_Closed);
+            this.Closed += this.TrainProperties_Closed;
             this.tabControl1.ResumeLayout(false);
             this.tabPageGeneral.ResumeLayout(false);
             this.tabPageGeneral.PerformLayout();

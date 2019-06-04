@@ -50,10 +50,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             if (selected is DestinationNode)
                 return (DestinationNode)selected;
-            else if (selected is DestinationEntryNode)
-                return (DestinationNode)selected.Parent;
-            else
-                return null;
+            else return selected is DestinationEntryNode ? (DestinationNode)selected.Parent : null;
         }
 
         private void updateButtons() {
@@ -136,7 +133,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.treeViewDestinations.ShowLines = false;
             this.treeViewDestinations.Size = new System.Drawing.Size(216, 208);
             this.treeViewDestinations.TabIndex = 0;
-            this.treeViewDestinations.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewDestinations_AfterSelect);
+            this.treeViewDestinations.AfterSelect += this.treeViewDestinations_AfterSelect;
             // 
             // buttonDelete
             // 
@@ -146,7 +143,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonDelete.Size = new System.Drawing.Size(56, 19);
             this.buttonDelete.TabIndex = 1;
             this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            this.buttonDelete.Click += this.buttonDelete_Click;
             // 
             // buttonRename
             // 
@@ -156,7 +153,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonRename.Size = new System.Drawing.Size(56, 19);
             this.buttonRename.TabIndex = 1;
             this.buttonRename.Text = "&Rename";
-            this.buttonRename.Click += new System.EventHandler(this.buttonRename_Click);
+            this.buttonRename.Click += this.buttonRename_Click;
             // 
             // buttonClose
             // 
@@ -166,7 +163,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(56, 19);
             this.buttonClose.TabIndex = 1;
             this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // TripPlanManageCommonDestinations
             // 
@@ -279,9 +276,7 @@ namespace LayoutManager.Tools.Dialogs {
                 get {
                     LayoutBlock block = LayoutModel.Blocks[Entry.BlockId];
 
-                    if (block != null)
-                        return block.BlockDefinintion;
-                    return null;
+                    return block?.BlockDefinintion;
                 }
             }
         }

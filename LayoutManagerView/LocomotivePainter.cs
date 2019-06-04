@@ -132,7 +132,7 @@ namespace LayoutManager.View {
         protected SizeF GetLocoRectSize(Graphics g) {
             SizeF labelSize = GetLabelSize(g);
 
-            return new SizeF(labelSize.Width + 2 * HorizontalMargin, labelSize.Height + 2 * verticalMargin);
+            return new SizeF(labelSize.Width + (2 * HorizontalMargin), labelSize.Height + (2 * verticalMargin));
         }
 
         public SizeF GetDirectionalLocoSize(Graphics g) {
@@ -199,7 +199,7 @@ namespace LayoutManager.View {
             g.DrawPolygon(FramePen, locoShape);
 
             if (DrawExtensionMark) {
-                RectangleF extensionRect = new RectangleF(new PointF((float)(locoRectSize.Width * -0.5 - extensionMarkSize), (float)(0 - extensionMarkSize * 0.5)),
+                RectangleF extensionRect = new RectangleF(new PointF((float)((locoRectSize.Width * -0.5) - extensionMarkSize), (float)(0 - (extensionMarkSize * 0.5))),
                     new SizeF(extensionMarkSize, extensionMarkSize));
 
                 g.FillEllipse(BackgroundBrush, extensionRect);
@@ -209,9 +209,9 @@ namespace LayoutManager.View {
             if (Speed != 0) {
                 PointF[] triangle = new PointF[3];
                 float d = (Direction == LocomotiveOrientation.Forward) ? 1.0F : -1.0F;
-                float xTip = (locoRectSize.Width * 0.5F - motionTriangleGap);
+                float xTip = ((locoRectSize.Width * 0.5F) - motionTriangleGap);
                 float xBase = (xTip - motionTriangleHeight);
-                float y = 0.5F * locoRectSize.Height - verticalMargin;
+                float y = (0.5F * locoRectSize.Height) - verticalMargin;
 
                 if (Orientation == LocomotiveOrientation.Backward)
                     d = -d;
@@ -314,10 +314,7 @@ namespace LayoutManager.View {
         private Pen getFramePen() {
             Color penColor = Color.Black;
 
-            if (LocomotiveState.Locomotives.Count > 1)
-                return new Pen(penColor, 2.0F);
-            else
-                return new Pen(penColor);
+            return LocomotiveState.Locomotives.Count > 1 ? new Pen(penColor, 2.0F) : new Pen(penColor);
         }
 
         private string GetLocoLabel(LocomotiveInfo loco) {
@@ -325,10 +322,7 @@ namespace LayoutManager.View {
                 return loco.DisplayName;
             else if (!string.IsNullOrEmpty(loco.CollectionId))
                 return loco.CollectionId;
-            else if (loco.AddressProvider.Element != null)
-                return loco.AddressProvider.Unit.ToString();
-            else
-                return loco.DisplayName;
+            else return loco.AddressProvider.Element != null ? loco.AddressProvider.Unit.ToString() : loco.DisplayName;
         }
 
         private string GetTrainLabel(TrainStateInfo train) {
@@ -354,10 +348,9 @@ namespace LayoutManager.View {
         }
 
         private Font GetLabelFont() {
-            if (detailLevel == ViewDetailLevel.High)
-                return new Font("Arial", 9.0F, GraphicsUnit.World);
-            else
-                return new Font("Arial", 16.0F, FontStyle.Bold, GraphicsUnit.World);
+            return detailLevel == ViewDetailLevel.High
+                ? new Font("Arial", 9.0F, GraphicsUnit.World)
+                : new Font("Arial", 16.0F, FontStyle.Bold, GraphicsUnit.World);
         }
 
         private SizeF GetTrainSize(Graphics g, IList<TrainLocomotiveInfo> trainLocos) {
@@ -389,7 +382,7 @@ namespace LayoutManager.View {
 
             x -= gap;
 
-            return new SizeF(x + 2 * horizontalMargin, y + 2 * verticalMargin);
+            return new SizeF(x + (2 * horizontalMargin), y + (2 * verticalMargin));
         }
 
         public SizeF Measure(Graphics g) {
@@ -455,7 +448,7 @@ namespace LayoutManager.View {
                 // Draw the set members
 
                 SizeF locoSetSize = GetTrainSize(g, LocomotiveState.Locomotives);
-                float x = -locoSetSize.Width / 2 + horizontalMargin;
+                float x = (-locoSetSize.Width / 2) + horizontalMargin;
 
                 foreach (TrainLocomotiveInfo trainLoco in LocomotiveState.Locomotives) {
                     LocomotiveInfo loco = trainLoco.Locomotive;
@@ -480,9 +473,9 @@ namespace LayoutManager.View {
                     GraphicsState gs = g.Save();
 
                     if (vertical)
-                        g.TranslateTransform(0, x + locoSize.Width / 2);
+                        g.TranslateTransform(0, x + (locoSize.Width / 2));
                     else
-                        g.TranslateTransform(x + locoSize.Width / 2, 0);
+                        g.TranslateTransform(x + (locoSize.Width / 2), 0);
 
                     locoPainter.Draw(g);
                     g.Restore(gs);

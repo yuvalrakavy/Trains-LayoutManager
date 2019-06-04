@@ -51,7 +51,7 @@ namespace LayoutManager {
             };
 
             set {
-                switch(value) {
+                switch (value) {
                     case int v: this.SetAttribute(A_Value, v); break;
                     case Enum e: this.SetAttribute(A_Value, e); break;
                     case string s: this.SetAttribute(A_Value, s); break;
@@ -82,10 +82,7 @@ namespace LayoutManager {
             get {
                 var attribute = base[name];
 
-                if (attribute == null)
-                    return null;
-
-                return attribute.Value;
+                return attribute?.Value;
             }
 
             set {

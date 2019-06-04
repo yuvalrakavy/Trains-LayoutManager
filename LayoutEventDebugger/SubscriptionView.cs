@@ -40,9 +40,7 @@ namespace LayoutEventDebugger {
         /// </summary>
         protected override void Dispose(bool disposing) {
             if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -146,7 +144,7 @@ namespace LayoutEventDebugger {
             this.radioButtonByEventHandlerObject.Size = new System.Drawing.Size(128, 17);
             this.radioButtonByEventHandlerObject.TabIndex = 1;
             this.radioButtonByEventHandlerObject.Text = "Event handler object";
-            this.radioButtonByEventHandlerObject.CheckedChanged += new System.EventHandler(this.radioButtonByEventHandlerObject_CheckedChanged);
+            this.radioButtonByEventHandlerObject.CheckedChanged += this.radioButtonByEventHandlerObject_CheckedChanged;
             // 
             // radioButtonViewByEventName
             // 
@@ -154,7 +152,7 @@ namespace LayoutEventDebugger {
             this.radioButtonViewByEventName.Name = "radioButtonViewByEventName";
             this.radioButtonViewByEventName.TabIndex = 0;
             this.radioButtonViewByEventName.Text = "Event name";
-            this.radioButtonViewByEventName.CheckedChanged += new System.EventHandler(this.radioButtonViewByEventName_CheckedChanged);
+            this.radioButtonViewByEventName.CheckedChanged += this.radioButtonViewByEventName_CheckedChanged;
             // 
             // buttonClose
             // 
@@ -165,7 +163,7 @@ namespace LayoutEventDebugger {
             this.buttonClose.Size = new System.Drawing.Size(80, 24);
             this.buttonClose.TabIndex = 3;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // buttonRefresh
             // 
@@ -175,7 +173,7 @@ namespace LayoutEventDebugger {
             this.buttonRefresh.Size = new System.Drawing.Size(80, 24);
             this.buttonRefresh.TabIndex = 2;
             this.buttonRefresh.Text = "Refresh";
-            this.buttonRefresh.Click += new System.EventHandler(this.buttonRefresh_Click);
+            this.buttonRefresh.Click += this.buttonRefresh_Click;
             // 
             // SubscriptionView
             // 
@@ -190,7 +188,7 @@ namespace LayoutEventDebugger {
             this.MinimumSize = new System.Drawing.Size(370, 0);
             this.Name = "SubscriptionView";
             this.Text = "Event Subscription View";
-            this.Closed += new System.EventHandler(this.SubscriptionView_Closed);
+            this.Closed += this.SubscriptionView_Closed;
             this.groupBoxViewBy.ResumeLayout(false);
             this.ResumeLayout(false);
         }

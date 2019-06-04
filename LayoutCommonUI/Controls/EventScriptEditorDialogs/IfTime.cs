@@ -124,8 +124,8 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.treeView.SelectedImageIndex = -1;
             this.treeView.Size = new System.Drawing.Size(200, 200);
             this.treeView.TabIndex = 0;
-            this.treeView.DoubleClick += new System.EventHandler(this.treeView_DoubleClick);
-            this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_AfterSelect);
+            this.treeView.DoubleClick += this.treeView_DoubleClick;
+            this.treeView.AfterSelect += this.treeView_AfterSelect;
             // 
             // buttonAdd
             // 
@@ -135,7 +135,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonAdd.Size = new System.Drawing.Size(61, 19);
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "&Add";
-            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            this.buttonAdd.Click += this.buttonAdd_Click;
             // 
             // buttonEdit
             // 
@@ -145,7 +145,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonEdit.Size = new System.Drawing.Size(61, 19);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit...";
-            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
+            this.buttonEdit.Click += this.buttonEdit_Click;
             // 
             // buttonDelete
             // 
@@ -155,7 +155,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonDelete.Size = new System.Drawing.Size(61, 19);
             this.buttonDelete.TabIndex = 3;
             this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            this.buttonDelete.Click += this.buttonDelete_Click;
             // 
             // buttonOK
             // 
@@ -165,7 +165,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonOK.Size = new System.Drawing.Size(64, 23);
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -176,7 +176,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonCancel.Size = new System.Drawing.Size(64, 23);
             this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // contextMenuAdd
             // 
@@ -190,25 +190,25 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             // 
             this.menuItemSeconds.Index = 0;
             this.menuItemSeconds.Text = "Seconds...";
-            this.menuItemSeconds.Click += new System.EventHandler(this.menuItemSeconds_Click);
+            this.menuItemSeconds.Click += this.menuItemSeconds_Click;
             // 
             // menuItemMinutes
             // 
             this.menuItemMinutes.Index = 1;
             this.menuItemMinutes.Text = "Minutes...";
-            this.menuItemMinutes.Click += new System.EventHandler(this.menuItemMinutes_Click);
+            this.menuItemMinutes.Click += this.menuItemMinutes_Click;
             // 
             // menuItemHours
             // 
             this.menuItemHours.Index = 2;
             this.menuItemHours.Text = "Hours...";
-            this.menuItemHours.Click += new System.EventHandler(this.menuItemHours_Click);
+            this.menuItemHours.Click += this.menuItemHours_Click;
             // 
             // menuItemDayOfWeek
             // 
             this.menuItemDayOfWeek.Index = 3;
             this.menuItemDayOfWeek.Text = "Day of week...";
-            this.menuItemDayOfWeek.Click += new System.EventHandler(this.menuItemDayOfWeek_Click);
+            this.menuItemDayOfWeek.Click += this.menuItemDayOfWeek_Click;
             // 
             // IfTime
             // 
@@ -346,9 +346,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             public override bool Edit() {
                 IfTimeNumericNode d = new IfTimeNumericNode("Seconds", Node, 0, 59);
 
-                if (d.ShowDialog() == DialogResult.OK)
-                    return true;
-                return false;
+                return d.ShowDialog() == DialogResult.OK;
             }
         }
 
@@ -359,9 +357,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             public override bool Edit() {
                 IfTimeNumericNode d = new IfTimeNumericNode("Minutes", Node, 0, 59);
 
-                if (d.ShowDialog() == DialogResult.OK)
-                    return true;
-                return false;
+                return d.ShowDialog() == DialogResult.OK;
             }
         }
 
@@ -372,9 +368,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             public override bool Edit() {
                 IfTimeNumericNode d = new IfTimeNumericNode("Hours", Node, 0, 23);
 
-                if (d.ShowDialog() == DialogResult.OK)
-                    return true;
-                return false;
+                return d.ShowDialog() == DialogResult.OK;
             }
         }
 
@@ -385,9 +379,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             public override bool Edit() {
                 IfTimeDayOfWeekNode d = new IfTimeDayOfWeekNode("Day Of Week", Node);
 
-                if (d.ShowDialog() == DialogResult.OK)
-                    return true;
-                return false;
+                return d.ShowDialog() == DialogResult.OK;
             }
         }
     }

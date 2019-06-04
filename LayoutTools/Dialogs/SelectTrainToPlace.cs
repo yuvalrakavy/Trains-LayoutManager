@@ -182,12 +182,12 @@ namespace LayoutManager.Tools.Dialogs {
         private void buttonNew_Click(object sender, EventArgs e) {
             ContextMenu m = new ContextMenu();
 
-            m.MenuItems.Add("Locomotive...", delegate (object s, EventArgs a) {
+            m.MenuItems.Add("Locomotive...", (object s, EventArgs a) => {
                 EventManager.Event(new LayoutEvent("add-new-locomotive-to-collection", this));
                 ForceSearch();
             });
 
-            m.MenuItems.Add("Train...", delegate (object s, EventArgs a) {
+            m.MenuItems.Add("Train...", (object s, EventArgs a) => {
                 EventManager.Event(new LayoutEvent("add-new-train-to-collection", this));
                 ForceSearch();
             });

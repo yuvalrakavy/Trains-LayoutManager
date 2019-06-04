@@ -100,8 +100,8 @@ namespace LayoutManager.ControlComponents {
 
                     int address = ProgrammingTarget.Address;
                     for (int n = 0; n < ProgrammingTarget.ModuleType.NumberOfAddresses; n++) {
-                        SetCV(31 + n * 2, (byte)((address >> 8) & 0xff));
-                        SetCV(31 + n * 2 + 1, (byte)(address & 0xff));
+                        SetCV(31 + (n * 2), (byte)((address >> 8) & 0xff));
+                        SetCV(31 + (n * 2) + 1, (byte)(address & 0xff));
 
                         address++;
                     }
@@ -129,10 +129,9 @@ namespace LayoutManager.ControlComponents {
             public override string Description {
                 get {
                     if (ProgrammingTarget.Bus.BusType.BusFamilyName == "DCC") {
-                        if (ProgrammingTarget.ModuleType.NumberOfAddresses > 1)
-                            return "Set address to switch address range " + ProgrammingTarget.Address + " to " + (ProgrammingTarget.Address + ProgrammingTarget.ModuleType.NumberOfAddresses - 1).ToString();
-                        else
-                            return "Set address to switch address " + ProgrammingTarget.Address;
+                        return ProgrammingTarget.ModuleType.NumberOfAddresses > 1
+                            ? "Set address to switch address range " + ProgrammingTarget.Address + " to " + (ProgrammingTarget.Address + ProgrammingTarget.ModuleType.NumberOfAddresses - 1).ToString()
+                            : "Set address to switch address " + ProgrammingTarget.Address;
                     }
                     else
                         return "Set address to locomotive bus address " + ProgrammingTarget.Address;

@@ -50,8 +50,8 @@ namespace LayoutManager.CommonUI.Controls {
             this.mColumns = new DataColumnHeaderCollection();
             //this.mColumns.Invalidate += new nsListViewEx.DataColumnHeaderCollection.InvalidateEventHandler(mColumns_Invalidate);
             SetStyle(ControlStyles.ResizeRedraw, true);
-            this.BackColorChanged += new EventHandler(DataListView_BackColorChanged);
-            this.ForeColorChanged += new EventHandler(DataListView_ForeColorChanged);
+            this.BackColorChanged += DataListView_BackColorChanged;
+            this.ForeColorChanged += DataListView_ForeColorChanged;
         }
         #endregion
 
@@ -72,7 +72,7 @@ namespace LayoutManager.CommonUI.Controls {
                     this.Items.Clear();
                 }
                 if (this.mBindingList != null) {
-                    this.mBindingList.ListChanged -= new ListChangedEventHandler(mBindingList_ListChanged);
+                    this.mBindingList.ListChanged -= mBindingList_ListChanged;
                     this.mBindingList = null;
                 }
                 if (this.mColumns != null) {
@@ -98,17 +98,16 @@ namespace LayoutManager.CommonUI.Controls {
                     if (this.mGridLines) {
                         base.GridLines = false;
                     }
-                    using (Graphics g = this.CreateGraphics()) {
-                        using (StringFormat sf = new StringFormat()) {
-                            sf.Alignment = StringAlignment.Center;
-                            int w = (this.Width - g.MeasureString(this.mNoDataMessage, this.Font).ToSize().Width) / 2;
-                            Rectangle rc = new Rectangle(0, (int)(this.Font.Height * 1.5), w, this.Height);
-                            //g.FillRectangle(SystemBrushes.Window, 0, 0, this.Width, this.Height);
-                            g.FillRectangle(this.mSbBackColor, 0, 0, this.Width, this.Height);
-                            //g.DrawString(this.mNoDataMessage, this.Font, SystemBrushes.ControlText, w, 30);
-                            g.DrawString(this.mNoDataMessage, this.Font, this.mSbForeColor, w, 30);
-                        }
-                    }
+                    using Graphics g = this.CreateGraphics();
+                    using StringFormat sf = new StringFormat {
+                        Alignment = StringAlignment.Center
+                    };
+                    int w = (this.Width - g.MeasureString(this.mNoDataMessage, this.Font).ToSize().Width) / 2;
+                    Rectangle rc = new Rectangle(0, (int)(this.Font.Height * 1.5), w, this.Height);
+                    //g.FillRectangle(SystemBrushes.Window, 0, 0, this.Width, this.Height);
+                    g.FillRectangle(this.mSbBackColor, 0, 0, this.Width, this.Height);
+                    //g.DrawString(this.mNoDataMessage, this.Font, SystemBrushes.ControlText, w, 30);
+                    g.DrawString(this.mNoDataMessage, this.Font, this.mSbForeColor, w, 30);
                 }
                 else {
                     base.GridLines = this.mGridLines;
@@ -395,20 +394,12 @@ namespace LayoutManager.CommonUI.Controls {
         #region InnerDataSource Function - Private
         private IList InnerDataSource() {
             if (this.mDataSource is DataSet) {
-                if (this.mDataMember.Length > 0) {
-                    return ((IListSource)((DataSet)this.mDataSource).Tables[this.mDataMember]).GetList();
-                }
-                else {
-                    return ((IListSource)((DataSet)this.mDataSource).Tables[0]).GetList();
-                }
+                return this.mDataMember.Length > 0
+                    ? ((IListSource)((DataSet)this.mDataSource).Tables[this.mDataMember]).GetList()
+                    : ((IListSource)((DataSet)this.mDataSource).Tables[0]).GetList();
             }
             else {
-                if (this.mDataSource is IListSource) {
-                    return ((IListSource)this.mDataSource).GetList();
-                }
-                else {
-                    return ((IList)this.mDataSource);
-                }
+                return this.mDataSource is IListSource ? ((IListSource)this.mDataSource).GetList() : (IList)this.mDataSource;
             }
         }
         #endregion
@@ -418,7 +409,7 @@ namespace LayoutManager.CommonUI.Controls {
             IList InnerSource = this.InnerDataSource();
             if (InnerSource is IBindingList) {
                 this.mBindingList = (IBindingList)InnerSource;
-                this.mBindingList.ListChanged += new ListChangedEventHandler(mBindingList_ListChanged);
+                this.mBindingList.ListChanged += mBindingList_ListChanged;
             }
             else {
                 this.mBindingList = null;
@@ -532,12 +523,7 @@ namespace LayoutManager.CommonUI.Controls {
                             PropertyInfo prop = obj.GetType().GetProperty(FieldName);
                             if (prop == null || !prop.CanRead) {
                                 FieldInfo field = SourceType.GetField(FieldName);
-                                if (field == null) {
-                                    return "(null)";
-                                }
-                                else {
-                                    return field.GetValue(obj).ToString();
-                                }
+                                return field == null ? "(null)" : field.GetValue(obj).ToString();
                             }
                             else {
                                 return prop.GetValue(obj, null).ToString();
@@ -584,22 +570,21 @@ namespace LayoutManager.CommonUI.Controls {
             ListViewItem lvi = null;
             if (this.Items.Count >= 1) {
                 if (colNumber >= 0 && colNumber < this.mColumns.Count) {
-                    using (Graphics g = this.CreateGraphics()) {
-                        int newWidth = -1;
-                        for (int nLoopCnt = 0; nLoopCnt < this.Items.Count; nLoopCnt++) {
-                            lvi = (ListViewItem)this.Items[nLoopCnt] as ListViewItem;
-                            if (lvi != null) {
-                                newWidth = (int)g.MeasureString(lvi.SubItems[colNumber].Text, this.Font).Width;
-                            }
-                            else {
-                                newWidth = 0;
-                            }
-                            if (newWidth > maxLen) {
-                                maxLen = newWidth;
-                            }
+                    using Graphics g = this.CreateGraphics();
+                    int newWidth = -1;
+                    for (int nLoopCnt = 0; nLoopCnt < this.Items.Count; nLoopCnt++) {
+                        lvi = (ListViewItem)this.Items[nLoopCnt] as ListViewItem;
+                        if (lvi != null) {
+                            newWidth = (int)g.MeasureString(lvi.SubItems[colNumber].Text, this.Font).Width;
                         }
-                        g.Dispose();
+                        else {
+                            newWidth = 0;
+                        }
+                        if (newWidth > maxLen) {
+                            maxLen = newWidth;
+                        }
                     }
+                    g.Dispose();
                 }
             }
             largestWidth = maxLen;
@@ -610,10 +595,9 @@ namespace LayoutManager.CommonUI.Controls {
         private void GetLargestColHdrTextExtent(DataListView dlv, int colNumber, ref int largestWidth) {
             if (this.Items.Count >= 1) {
                 if (colNumber >= 0 && colNumber < this.mColumns.Count) {
-                    using (Graphics g = this.CreateGraphics()) {
-                        largestWidth = (int)g.MeasureString(this.mColumns[colNumber].Text, this.Font).Width;
-                        g.Dispose();
-                    }
+                    using Graphics g = this.CreateGraphics();
+                    largestWidth = (int)g.MeasureString(this.mColumns[colNumber].Text, this.Font).Width;
+                    g.Dispose();
                 }
             }
         }
@@ -894,8 +878,7 @@ namespace LayoutManager.CommonUI.Controls {
                     bError = true;
                     throw new System.ArgumentOutOfRangeException(nameof(Index), (int)Index, "There is no such index value in this collection\nSource: ExtListView:nsListViewEx.DataColumnHeaderCollection");
                 }
-                if (bError) return null;
-                return null;
+                return bError ? null : (DataColumnHeader)null;
             }
         }
 
@@ -958,7 +941,7 @@ namespace LayoutManager.CommonUI.Controls {
     #region DataLstView Class
     [Serializable()]
     public class DataLstView {
-#region Private Variables within this scope
+        #region Private Variables within this scope
         #endregion
 
         #region DataLstView Constructor - Empty for Serialization

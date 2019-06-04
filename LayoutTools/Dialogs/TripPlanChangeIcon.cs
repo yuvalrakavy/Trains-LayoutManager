@@ -97,7 +97,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.ButtonOK.Size = new System.Drawing.Size(64, 24);
             this.ButtonOK.TabIndex = 3;
             this.ButtonOK.Text = "OK";
-            this.ButtonOK.Click += new System.EventHandler(this.ButtonOK_Click);
+            this.ButtonOK.Click += this.ButtonOK_Click;
             // 
             // buttonCancel
             // 
@@ -107,7 +107,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(64, 24);
             this.buttonCancel.TabIndex = 3;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // TripPlanChangeIcon
             // 

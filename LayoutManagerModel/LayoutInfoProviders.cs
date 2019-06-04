@@ -24,9 +24,7 @@ namespace LayoutManager.Model {
         [System.ComponentModel.Browsable(false)]
         public string ElementPath {
             get {
-                if (Ref != null)
-                    return "//" + Element.Name + "[@Ref=\"" + Ref + "\"]";
-                return "//" + Element.Name + "[@ID=\"" + GetAttribute(A_Id) + "\"]";
+                return Ref != null ? "//" + Element.Name + "[@Ref=\"" + Ref + "\"]" : "//" + Element.Name + "[@ID=\"" + GetAttribute(A_Id) + "\"]";
             }
         }
 
@@ -259,10 +257,7 @@ namespace LayoutManager.Model {
         public override string ToString() {
             string title = GetAttribute(A_Title);
 
-            if (title == null)
-                return Description;
-            else
-                return title + " (" + Description + ")";
+            return title == null ? Description : title + " (" + Description + ")";
         }
     }
 
@@ -316,7 +311,7 @@ namespace LayoutManager.Model {
             set => SetAttribute(A_Side, value);
         }
 
-        public override string ToString() => GetOptionalAttribute(A_Title) ??  "No title";
+        public override string ToString() => GetOptionalAttribute(A_Title) ?? "No title";
 
         /// <summary>
         /// Get the other "side" of a given side.
@@ -369,9 +364,7 @@ namespace LayoutManager.Model {
 
         public virtual string Name {
             get {
-                if (OptionalElement == null || Element.ChildNodes.Count == 0)
-                    return "";
-                return Element.FirstChild.Value;
+                return OptionalElement == null || Element.ChildNodes.Count == 0 ? "" : Element.FirstChild.Value;
             }
 
             set {
@@ -651,10 +644,7 @@ namespace LayoutManager.Model {
 
         public override string FontElementPath {
             get {
-                if (Element.HasAttribute("Font"))
-                    return base.FontElementPath;
-                else
-                    return "//Font[@Ref=\"AddressFont\"]";
+                return Element.HasAttribute("Font") ? base.FontElementPath : "//Font[@Ref=\"AddressFont\"]";
             }
 
             set => base.FontElementPath = value;
@@ -744,7 +734,7 @@ namespace LayoutManager.Model {
 
             set {
                 SetAttribute(A_OffsetWidth, value.Width);
-                SetAttribute(A_OffsetHeight,value.Height);
+                SetAttribute(A_OffsetHeight, value.Height);
             }
         }
 

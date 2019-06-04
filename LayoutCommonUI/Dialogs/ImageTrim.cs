@@ -161,10 +161,10 @@ namespace LayoutManager.CommonUI.Dialogs {
 
         private Matrix getTransformMatrix() {
             var m = new Matrix();
-            var displayRect = new Rectangle(0, 0, panelImage.Width - Insets.Width * 2, panelImage.Height - Insets.Height * 2);
+            var displayRect = new Rectangle(0, 0, panelImage.Width - (Insets.Width * 2), panelImage.Height - (Insets.Height * 2));
             float scale = Math.Min((float)displayRect.Height / InputImage.Height, (float)displayRect.Width / InputImage.Width);
-            float xOffset = (displayRect.Width - InputImage.Width * scale) / 2.0f;
-            float yOffset = (displayRect.Height - InputImage.Height * scale) / 2.0f;
+            float xOffset = (displayRect.Width - (InputImage.Width * scale)) / 2.0f;
+            float yOffset = (displayRect.Height - (InputImage.Height * scale)) / 2.0f;
 
             m.Translate(xOffset + Insets.Width, yOffset + Insets.Height);
             m.Scale(scale, scale);

@@ -115,7 +115,7 @@ namespace LayoutManager.Dialogs {
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.TabIndex = 5;
             this.buttonRemove.Text = "&Remove";
-            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+            this.buttonRemove.Click += this.buttonRemove_Click;
             // 
             // buttonChangeStatus
             // 
@@ -124,7 +124,7 @@ namespace LayoutManager.Dialogs {
             this.buttonChangeStatus.Size = new System.Drawing.Size(80, 23);
             this.buttonChangeStatus.TabIndex = 1;
             this.buttonChangeStatus.Text = "Op";
-            this.buttonChangeStatus.Click += new System.EventHandler(this.buttonChangeStatus_Click);
+            this.buttonChangeStatus.Click += this.buttonChangeStatus_Click;
             // 
             // treeViewAssemblies
             // 
@@ -134,7 +134,7 @@ namespace LayoutManager.Dialogs {
             this.treeViewAssemblies.Name = "treeViewAssemblies";
             this.treeViewAssemblies.Size = new System.Drawing.Size(232, 240);
             this.treeViewAssemblies.TabIndex = 4;
-            this.treeViewAssemblies.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewAssemblies_AfterSelect);
+            this.treeViewAssemblies.AfterSelect += this.treeViewAssemblies_AfterSelect;
             // 
             // imageListTree
             // 
@@ -157,7 +157,7 @@ namespace LayoutManager.Dialogs {
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.TabIndex = 2;
             this.buttonAdd.Text = "&Add...";
-            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            this.buttonAdd.Click += this.buttonAdd_Click;
             // 
             // openFileDialogAssembly
             // 
@@ -183,7 +183,7 @@ namespace LayoutManager.Dialogs {
             this.Name = "ModuleManagement";
             this.ShowInTaskbar = false;
             this.Text = "Module Management";
-            this.Closed += new System.EventHandler(this.ModuleManagement_Closed);
+            this.Closed += this.ModuleManagement_Closed;
             this.ResumeLayout(false);
         }
         #endregion

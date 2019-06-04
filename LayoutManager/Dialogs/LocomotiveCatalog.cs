@@ -115,7 +115,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.TabIndex = 6;
             this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // buttonAdd
             // 
@@ -124,7 +124,7 @@ namespace LayoutManager.Dialogs {
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "&Add...";
-            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            this.buttonAdd.Click += this.buttonAdd_Click;
             // 
             // buttonEdit
             // 
@@ -133,7 +133,7 @@ namespace LayoutManager.Dialogs {
             this.buttonEdit.Name = "buttonEdit";
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit...";
-            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
+            this.buttonEdit.Click += this.buttonEdit_Click;
             // 
             // buttonRemove
             // 
@@ -142,7 +142,7 @@ namespace LayoutManager.Dialogs {
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.TabIndex = 3;
             this.buttonRemove.Text = "&Remove";
-            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+            this.buttonRemove.Click += this.buttonRemove_Click;
             // 
             // locomotiveTypeList
             // 
@@ -158,8 +158,8 @@ namespace LayoutManager.Dialogs {
             this.locomotiveTypeList.Name = "locomotiveTypeList";
             this.locomotiveTypeList.Size = new System.Drawing.Size(464, 408);
             this.locomotiveTypeList.TabIndex = 0;
-            this.locomotiveTypeList.DoubleClick += new System.EventHandler(this.locomotiveTypeList_DoubleClick);
-            this.locomotiveTypeList.SelectedIndexChanged += new System.EventHandler(this.locomotiveTypeList_SelectedIndexChanged);
+            this.locomotiveTypeList.DoubleClick += this.locomotiveTypeList_DoubleClick;
+            this.locomotiveTypeList.SelectedIndexChanged += this.locomotiveTypeList_SelectedIndexChanged;
             // 
             // contextMenuOptions
             // 
@@ -178,13 +178,13 @@ namespace LayoutManager.Dialogs {
             // 
             this.menuItemStorage.Index = 1;
             this.menuItemStorage.Text = "Storage...";
-            this.menuItemStorage.Click += new System.EventHandler(this.menuItemStorage_Click);
+            this.menuItemStorage.Click += this.menuItemStorage_Click;
             // 
             // menuItemStandardImages
             // 
             this.menuItemStandardImages.Index = 2;
             this.menuItemStandardImages.Text = "Standard images...";
-            this.menuItemStandardImages.Click += new System.EventHandler(this.menuItemStandardImages_Click);
+            this.menuItemStandardImages.Click += this.menuItemStandardImages_Click;
             // 
             // buttonOptions
             // 
@@ -192,13 +192,13 @@ namespace LayoutManager.Dialogs {
             this.buttonOptions.Name = "buttonOptions";
             this.buttonOptions.TabIndex = 7;
             this.buttonOptions.Text = "&Options";
-            this.buttonOptions.Click += new System.EventHandler(this.buttonOptions_Click);
+            this.buttonOptions.Click += this.buttonOptions_Click;
             // 
             // menuItemStandardLocomotiveFunctions
             // 
             this.menuItemStandardLocomotiveFunctions.Index = 3;
             this.menuItemStandardLocomotiveFunctions.Text = "Standard Locomotive Functions...";
-            this.menuItemStandardLocomotiveFunctions.Click += new System.EventHandler(this.menuItemStandardLocomotiveFunctions_Click);
+            this.menuItemStandardLocomotiveFunctions.Click += this.menuItemStandardLocomotiveFunctions_Click;
             // 
             // LocomotiveCatalog
             // 

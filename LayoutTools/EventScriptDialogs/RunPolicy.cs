@@ -116,9 +116,9 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.comboBoxPolicy.Name = "comboBoxPolicy";
             this.comboBoxPolicy.Size = new System.Drawing.Size(272, 21);
             this.comboBoxPolicy.TabIndex = 0;
-            this.comboBoxPolicy.SelectedIndexChanged += new System.EventHandler(this.comboBoxPolicy_SelectedIndexChanged);
-            this.comboBoxPolicy.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.comboBoxPolicy_MeasureItem);
-            this.comboBoxPolicy.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBoxPolicy_DrawItem);
+            this.comboBoxPolicy.SelectedIndexChanged += this.comboBoxPolicy_SelectedIndexChanged;
+            this.comboBoxPolicy.MeasureItem += this.comboBoxPolicy_MeasureItem;
+            this.comboBoxPolicy.DrawItem += this.comboBoxPolicy_DrawItem;
             // 
             // label1
             // 
@@ -135,7 +135,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 2;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -233,7 +233,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
                 Pen underlinePen = UnderlinePen;
 
                 if (underlinePen != null)
-                    e.Graphics.DrawLine(underlinePen, new PointF(e.Bounds.Left, e.Bounds.Bottom - underlinePen.Width / 2), new PointF(e.Bounds.Right, e.Bounds.Bottom - underlinePen.Width / 2));
+                    e.Graphics.DrawLine(underlinePen, new PointF(e.Bounds.Left, e.Bounds.Bottom - (underlinePen.Width / 2)), new PointF(e.Bounds.Right, e.Bounds.Bottom - (underlinePen.Width / 2)));
 
                 if (!IsTitle)
                     e.DrawFocusRectangle();

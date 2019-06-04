@@ -83,8 +83,8 @@ namespace LayoutManager.CommonUI.Controls {
                 SizeF drawnImageSize;
                 RectangleF drawnImageRectangle;
                 double aspectRatio = (double)Image.Width / (double)Image.Height;
-                int w = FrameSize.Width - 2 * FrameMargin;
-                int h = FrameSize.Height - 2 * FrameMargin;
+                int w = FrameSize.Width - (2 * FrameMargin);
+                int h = FrameSize.Height - (2 * FrameMargin);
 
                 if (FlipImage)
                     this.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
@@ -95,8 +95,8 @@ namespace LayoutManager.CommonUI.Controls {
                     drawnImageSize = new SizeF(w, (float)(w / aspectRatio));
 
                 drawnImageRectangle = new RectangleF(new PointF(
-                    Origin.X + (FrameSize.Width - drawnImageSize.Width) / 2.0F,
-                    Origin.Y + (FrameSize.Height - drawnImageSize.Height) / 2.0F),
+                    Origin.X + ((FrameSize.Width - drawnImageSize.Width) / 2.0F),
+                    Origin.Y + ((FrameSize.Height - drawnImageSize.Height) / 2.0F)),
                     drawnImageSize);
 
                 g.DrawImage(this.Image, drawnImageRectangle);

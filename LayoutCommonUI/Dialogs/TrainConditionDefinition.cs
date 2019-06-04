@@ -120,7 +120,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(56, 23);
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -131,7 +131,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(56, 23);
             this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // radioButtonNoCondition
             // 
@@ -139,7 +139,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.radioButtonNoCondition.Name = "radioButtonNoCondition";
             this.radioButtonNoCondition.TabIndex = 6;
             this.radioButtonNoCondition.Text = "No condition";
-            this.radioButtonNoCondition.CheckedChanged += new System.EventHandler(this.radioButtonNoCondition_CheckedChanged);
+            this.radioButtonNoCondition.CheckedChanged += this.radioButtonNoCondition_CheckedChanged;
             // 
             // radioButtonCondition
             // 
@@ -147,7 +147,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.radioButtonCondition.Name = "radioButtonCondition";
             this.radioButtonCondition.Size = new System.Drawing.Size(16, 24);
             this.radioButtonCondition.TabIndex = 7;
-            this.radioButtonCondition.CheckedChanged += new System.EventHandler(this.radioButtonCondition_CheckedChanged);
+            this.radioButtonCondition.CheckedChanged += this.radioButtonCondition_CheckedChanged;
             // 
             // linkMenuConditionScope
             // 

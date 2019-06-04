@@ -21,6 +21,7 @@ namespace LayoutManager.Model {
 
     [Flags]
     public enum TrackGauges {
+        Unknown = 0,
         G = 0x0001,
         I = 0x0002,
         O = 0x0004,
@@ -32,7 +33,7 @@ namespace LayoutManager.Model {
         N = 0x0100,
         Z = 0x0200,
 
-        G_or_I = 0x0003,
+        G_or_I = G | I,
     }
 
     /// <summary>
@@ -176,7 +177,7 @@ namespace LayoutManager.Model {
                 // by locomotives that are on the layout
 
                 // Catch event of modifying the catalog, this will cause the catalog to be saved if it is modified
-                CollectionDocument.NodeChanged += new XmlNodeChangedEventHandler(this.OnCollectionNodeChanged);
+                CollectionDocument.NodeChanged += this.OnCollectionNodeChanged;
                 modified = false;
             }
 
@@ -309,10 +310,7 @@ namespace LayoutManager.Model {
             XmlElement imagesElement = Element[E_Images];
             XmlElement imageElement = (XmlElement)imagesElement.SelectSingleNode("Image[@Kind='" + kind.ToString() + "' and @Origin='" + origin.ToString() + "']");
 
-            if (imageElement != null)
-                return Image.FromStream(new MemoryStream(Convert.FromBase64String(imageElement.InnerText)));
-            else
-                return null;
+            return imageElement != null ? Image.FromStream(new MemoryStream(Convert.FromBase64String(imageElement.InnerText))) : null;
         }
 
         public void SetStandardImage(LocomotiveKind kind, LocomotiveOrigin origin, Image image) {
@@ -327,10 +325,9 @@ namespace LayoutManager.Model {
                     imagesElement.AppendChild(imageElement);
                 }
 
-                using (MemoryStream s = new MemoryStream()) {
-                    image.Save(s, image.RawFormat);
-                    imageElement.InnerText = Convert.ToBase64String(s.GetBuffer());
-                }
+                using MemoryStream s = new MemoryStream();
+                image.Save(s, image.RawFormat);
+                imageElement.InnerText = Convert.ToBase64String(s.GetBuffer());
             }
             else {
                 if (imageElement != null)
@@ -387,7 +384,7 @@ namespace LayoutManager.Model {
                 }
             }
 
-            if ((bool)e.Info)
+            if ((bool)(e.Info ?? false))
                 Save();
         }
 
@@ -563,13 +560,12 @@ namespace LayoutManager.Model {
                         Element.RemoveChild(imageNode);
                 }
                 else {
-                    using (MemoryStream s = new MemoryStream()) {
-                        value.Save(s, System.Drawing.Imaging.ImageFormat.Bmp);
+                    using MemoryStream s = new MemoryStream();
+                    value.Save(s, System.Drawing.Imaging.ImageFormat.Bmp);
 
-                        if (Element[E_Image] == null)
-                            Element.AppendChild(Element.OwnerDocument.CreateElement(E_Image));
-                        Element[E_Image].InnerText = Convert.ToBase64String(s.GetBuffer());
-                    }
+                    if (Element[E_Image] == null)
+                        Element.AppendChild(Element.OwnerDocument.CreateElement(E_Image));
+                    Element[E_Image].InnerText = Convert.ToBase64String(s.GetBuffer());
                 }
             }
 
@@ -594,10 +590,7 @@ namespace LayoutManager.Model {
             if (Functions != null) {
                 XmlElement functionElement = (XmlElement)Functions.SelectSingleNode("Function[@Name = '" + functionName + "' ]");
 
-                if (functionElement == null)
-                    return null;
-                else
-                    return new LocomotiveFunctionInfo(functionElement);
+                return functionElement == null ? null : new LocomotiveFunctionInfo(functionElement);
             }
             else
                 return null;
@@ -607,10 +600,7 @@ namespace LayoutManager.Model {
             if (Functions != null) {
                 XmlElement functionElement = (XmlElement)Functions.SelectSingleNode("Function[@Number = " + functionNumber + "]");
 
-                if (functionElement == null)
-                    return null;
-                else
-                    return new LocomotiveFunctionInfo(functionElement);
+                return functionElement == null ? null : new LocomotiveFunctionInfo(functionElement);
             }
             else
                 return null;
@@ -728,9 +718,7 @@ namespace LayoutManager.Model {
             get {
                 XmlElement nameElement = Element[E_Name];
 
-                if (nameElement != null)
-                    return nameElement.InnerText;
-                return "";
+                return nameElement != null ? nameElement.InnerText : "";
             }
 
             set {
@@ -852,10 +840,9 @@ namespace LayoutManager.Model {
         /// <returns>Lowest locomotive address</returns>
         public int GetLowestAddress(IModelComponentIsCommandStation commandStation) {
             if (DecoderType is DecoderWithNumericAddressTypeInfo decoderType) {
-                if (commandStation == null)
-                    return decoderType.LowestAddress;
-                else
-                    return Math.Max(decoderType.LowestAddress, commandStation.GetLowestLocomotiveAddress(decoderType.SupportedDigitalPowerFormats));
+                return commandStation == null
+                    ? decoderType.LowestAddress
+                    : Math.Max(decoderType.LowestAddress, commandStation.GetLowestLocomotiveAddress(decoderType.SupportedDigitalPowerFormats));
             }
             else
                 return -1;
@@ -868,10 +855,9 @@ namespace LayoutManager.Model {
         /// <returns>Highest locomotive address</returns>
         public int GetHighestAddress(IModelComponentIsCommandStation commandStation) {
             if (DecoderType is DecoderWithNumericAddressTypeInfo decoderType) {
-                if (commandStation == null)
-                    return decoderType.HighestAddress;
-                else
-                    return Math.Min(commandStation.GetHighestLocomotiveAddress(decoderType.SupportedDigitalPowerFormats), decoderType.HighestAddress);
+                return commandStation == null
+                    ? decoderType.HighestAddress
+                    : Math.Min(commandStation.GetHighestLocomotiveAddress(decoderType.SupportedDigitalPowerFormats), decoderType.HighestAddress);
             }
             else
                 return -1;
@@ -971,7 +957,7 @@ namespace LayoutManager.Model {
         public TrainDriverInfo(TrainCommonInfo train) : base(train.DriverElement) {
         }
 
-        public string Type => GetOptionalAttribute(A_Type) ??  "Automatic";
+        public string Type => GetOptionalAttribute(A_Type) ?? "Automatic";
 
         public string TypeName => GetAttribute(A_TypeName);
 
@@ -983,7 +969,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Return true if locomotive is driven by the computer (true), or by external mean
         /// </summary>
-        public bool ComputerDriven => (bool?)AttributeValue(A_ComputerDriven) ??  true;
+        public bool ComputerDriven => (bool?)AttributeValue(A_ComputerDriven) ?? true;
     }
 
     #endregion
@@ -1039,13 +1025,10 @@ namespace LayoutManager.Model {
         public static bool operator <=(TrainLength l1, TrainLength l2) => l1 < l2 || l1 == l2;
 
         public override bool Equals(object obj) {
-            if (obj == null || !(obj is TrainLength))
-                return false;
-            else
-                return ((TrainLength)obj).length == length;
+            return obj == null || !(obj is TrainLength) ? false : ((TrainLength)obj).length == length;
         }
 
-        public override int GetHashCode() => base.GetHashCode();
+        public override int GetHashCode() => length.GetHashCode();
 
         public override string ToString() => length switch
         {
@@ -1104,10 +1087,7 @@ namespace LayoutManager.Model {
 
     public static class ConvertableStringExtension {
         public static TrainLength? ToTrainLength(this ConvertableString s) {
-            if ((string?)s != null)
-                return TrainLength.Parse(s.ValidString());
-            else
-                return null;
+            return (string?)s != null ? (TrainLength?)TrainLength.Parse(s.ValidString()) : null;
         }
     }
 
@@ -1194,9 +1174,7 @@ namespace LayoutManager.Model {
             get {
                 XmlElement nameElement = Element[E_Name];
 
-                if (nameElement != null)
-                    return nameElement.InnerText;
-                return "";
+                return nameElement != null ? nameElement.InnerText : "";
             }
 
             set {
@@ -1321,7 +1299,7 @@ namespace LayoutManager.Model {
                 if (Locomotives.Count > 0) {
                     var firstLoco = Locomotives[0].Locomotive;
 
-                    return firstLoco != null ? firstLoco.SpeedSteps : 0;
+                    return firstLoco?.SpeedSteps ?? 0;
                 }
                 else
                     return 0;

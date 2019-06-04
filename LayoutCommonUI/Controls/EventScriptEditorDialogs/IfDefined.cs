@@ -145,7 +145,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.checkBoxAttribute.Size = new System.Drawing.Size(72, 16);
             this.checkBoxAttribute.TabIndex = 2;
             this.checkBoxAttribute.Text = "Attribute:";
-            this.checkBoxAttribute.CheckedChanged += new System.EventHandler(this.checkBoxAttribute_CheckedChanged);
+            this.checkBoxAttribute.CheckedChanged += this.checkBoxAttribute_CheckedChanged;
             // 
             // comboBoxAttribute
             // 
@@ -153,7 +153,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.comboBoxAttribute.Name = "comboBoxAttribute";
             this.comboBoxAttribute.Size = new System.Drawing.Size(118, 21);
             this.comboBoxAttribute.TabIndex = 3;
-            this.comboBoxAttribute.DropDown += new System.EventHandler(this.comboBoxAttribute_DropDown);
+            this.comboBoxAttribute.DropDown += this.comboBoxAttribute_DropDown;
             // 
             // buttonOK
             // 
@@ -161,7 +161,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 

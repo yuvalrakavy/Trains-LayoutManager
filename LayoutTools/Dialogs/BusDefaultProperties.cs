@@ -71,19 +71,13 @@ namespace LayoutManager.Tools.Dialogs {
             get {
                 ModuleTypeItem selected = (ModuleTypeItem)comboBoxModuleType.SelectedItem;
 
-                if (selected.ModuleType == null)
-                    return null;
-                else
-                    return selected.ModuleType.TypeName;
+                return selected.ModuleType?.TypeName;
             }
         }
 
         public int StartingAddress {
             get {
-                if (textBoxStartAddress.Text.Trim() == "")
-                    return -1;
-
-                return int.Parse(textBoxStartAddress.Text);
+                return textBoxStartAddress.Text.Trim() == "" ? -1 : int.Parse(textBoxStartAddress.Text);
             }
         }
 
@@ -192,7 +186,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 8;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -270,10 +264,7 @@ namespace LayoutManager.Tools.Dialogs {
             public ControlModuleType ModuleType { get; }
 
             public override string ToString() {
-                if (ModuleType == null)
-                    return "(Prompt)";
-                else
-                    return ModuleType.Name;
+                return ModuleType == null ? "(Prompt)" : ModuleType.Name;
             }
         }
     }

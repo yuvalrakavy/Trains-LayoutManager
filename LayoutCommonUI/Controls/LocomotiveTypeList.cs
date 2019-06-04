@@ -20,9 +20,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public LocomotiveTypeInfo SelectedLocomotiveType {
             get {
-                if (SelectedXmlItem != null)
-                    return ((LocoTypeItem)SelectedXmlItem).LocomotiveType;
-                return null;
+                return SelectedXmlItem != null ? ((LocoTypeItem)SelectedXmlItem).LocomotiveType : null;
             }
         }
 
@@ -56,9 +54,7 @@ namespace LayoutManager.CommonUI.Controls {
             public Object Bookmark => locoTypeElement.GetAttribute("ID");
 
             public bool IsBookmarkEqual(object bookmark) {
-                if (bookmark is String)
-                    return (String)bookmark == locoTypeElement.GetAttribute("ID");
-                return false;
+                return bookmark is String ? (String)bookmark == locoTypeElement.GetAttribute("ID") : false;
             }
 
             public void Measure(MeasureItemEventArgs e) {
@@ -78,7 +74,7 @@ namespace LayoutManager.CommonUI.Controls {
 
                 queryItem.DrawLevelLines(e);
 
-                int leftMargin = e.Bounds.Left + 4 + 16 * queryItem.Level;
+                int leftMargin = e.Bounds.Left + 4 + (16 * queryItem.Level);
 
                 Rectangle imageRect = new Rectangle(new Point(leftMargin, e.Bounds.Top + 4), new Size(100, 50));
 
@@ -88,7 +84,7 @@ namespace LayoutManager.CommonUI.Controls {
                 if (image != null) {
                     Size imageSize = new Size(image.Width < 98 ? image.Width : 98,
                         image.Height < 48 ? image.Height : 48);
-                    Point imageOrigin = new Point(imageRect.Left + (100 - imageSize.Width) / 2, imageRect.Top + (50 - imageSize.Height) / 2);
+                    Point imageOrigin = new Point(imageRect.Left + ((100 - imageSize.Width) / 2), imageRect.Top + ((50 - imageSize.Height) / 2));
 
                     e.Graphics.DrawImage(image, new Rectangle(imageOrigin, imageSize));
                 }
@@ -108,8 +104,8 @@ namespace LayoutManager.CommonUI.Controls {
                     yText += titleSize.Height;
                 }
 
-                using (Pen p = new Pen(Color.Black, 2.0F))
-                    e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Bottom, e.Bounds.Right, e.Bounds.Bottom);
+                using Pen p = new Pen(Color.Black, 2.0F);
+                e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Bottom, e.Bounds.Right, e.Bounds.Bottom);
             }
         }
 

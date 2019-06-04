@@ -104,7 +104,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 6;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -113,7 +113,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.TabIndex = 7;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // comboBoxValue
             // 
@@ -130,8 +130,8 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.comboBoxValue.Name = "comboBoxValue";
             this.comboBoxValue.Size = new System.Drawing.Size(64, 21);
             this.comboBoxValue.TabIndex = 8;
-            this.comboBoxValue.DropDown += new System.EventHandler(this.comboBoxValue_Changed);
-            this.comboBoxValue.SelectedIndexChanged += new System.EventHandler(this.comboBoxValue_Changed);
+            this.comboBoxValue.DropDown += this.comboBoxValue_Changed;
+            this.comboBoxValue.SelectedIndexChanged += this.comboBoxValue_Changed;
             // 
             // comboBoxFrom
             // 
@@ -148,7 +148,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.comboBoxFrom.Name = "comboBoxFrom";
             this.comboBoxFrom.Size = new System.Drawing.Size(64, 21);
             this.comboBoxFrom.TabIndex = 8;
-            this.comboBoxFrom.SelectedIndexChanged += new System.EventHandler(this.comboBoxFromOrTo_Changed);
+            this.comboBoxFrom.SelectedIndexChanged += this.comboBoxFromOrTo_Changed;
             // 
             // comboBoxTo
             // 
@@ -165,7 +165,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.comboBoxTo.Name = "comboBoxTo";
             this.comboBoxTo.Size = new System.Drawing.Size(64, 21);
             this.comboBoxTo.TabIndex = 8;
-            this.comboBoxTo.SelectedIndexChanged += new System.EventHandler(this.comboBoxFromOrTo_Changed);
+            this.comboBoxTo.SelectedIndexChanged += this.comboBoxFromOrTo_Changed;
             // 
             // IfTimeDayOfWeekNode
             // 

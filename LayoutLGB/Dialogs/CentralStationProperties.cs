@@ -54,9 +54,7 @@ namespace LayoutLGB.Dialogs {
         /// </summary>
         protected override void Dispose(bool disposing) {
             if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -139,7 +137,7 @@ namespace LayoutLGB.Dialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 6;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -176,7 +174,7 @@ namespace LayoutLGB.Dialogs {
             this.buttonCOMsettings.Size = new System.Drawing.Size(75, 21);
             this.buttonCOMsettings.TabIndex = 9;
             this.buttonCOMsettings.Text = "Settings...";
-            this.buttonCOMsettings.Click += new System.EventHandler(this.buttonCOMsettings_Click);
+            this.buttonCOMsettings.Click += this.buttonCOMsettings_Click;
             // 
             // CentralStationProperties
             // 

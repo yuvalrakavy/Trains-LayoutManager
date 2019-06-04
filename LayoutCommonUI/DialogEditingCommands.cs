@@ -144,9 +144,7 @@ namespace LayoutManager.CommonUI {
 
         public bool ViewOnly {
             get {
-                if (GetStyle(ControlStyles.Selectable))
-                    return false;
-                return true;
+                return !GetStyle(ControlStyles.Selectable);
             }
 
             set {
@@ -169,9 +167,7 @@ namespace LayoutManager.CommonUI {
 
         public bool ViewOnly {
             get {
-                if (GetStyle(ControlStyles.Selectable))
-                    return false;
-                return true;
+                return !GetStyle(ControlStyles.Selectable);
             }
 
             set {

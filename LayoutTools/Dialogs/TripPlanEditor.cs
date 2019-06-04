@@ -111,7 +111,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonSaveTripPlan.Size = new System.Drawing.Size(56, 20);
             this.buttonSaveTripPlan.TabIndex = 3;
             this.buttonSaveTripPlan.Text = "&Save";
-            this.buttonSaveTripPlan.Click += new System.EventHandler(this.buttonSaveTripPlan_Click);
+            this.buttonSaveTripPlan.Click += this.buttonSaveTripPlan_Click;
             // 
             // buttonGo
             // 
@@ -121,7 +121,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonGo.Size = new System.Drawing.Size(32, 20);
             this.buttonGo.TabIndex = 4;
             this.buttonGo.Text = "&Go";
-            this.buttonGo.Click += new System.EventHandler(this.buttonGo_Click);
+            this.buttonGo.Click += this.buttonGo_Click;
             // 
             // buttonCancel
             // 
@@ -132,7 +132,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(48, 20);
             this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // tripPlanEditor1
             // 
@@ -150,7 +150,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.tripPlanEditor1.TripPlan = null;
             this.tripPlanEditor1.TripPlanName = null;
             this.tripPlanEditor1.ViewOnly = false;
-            this.tripPlanEditor1.WayPointCountChanged += new System.EventHandler(this.UpdateButtons);
+            this.tripPlanEditor1.WayPointCountChanged += this.UpdateButtons;
             // 
             // trainDriverComboBox
             // 
@@ -187,8 +187,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.MinimumSize = new System.Drawing.Size(296, 184);
             this.Name = "TripPlanEditor";
             this.Text = "TripPlanEditor";
-            this.Closed += new System.EventHandler(this.TripPlanEditor_Closed);
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.TripPlanEditor_Closing);
+            this.Closed += this.TripPlanEditor_Closed;
+            this.Closing += this.TripPlanEditor_Closing;
             this.ResumeLayout(false);
         }
         #endregion

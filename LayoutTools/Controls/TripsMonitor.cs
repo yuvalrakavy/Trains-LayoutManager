@@ -254,8 +254,8 @@ namespace LayoutManager.Tools.Controls {
             this.listViewTrips.SmallImageList = this.imageListTripState;
             this.listViewTrips.TabIndex = 0;
             this.listViewTrips.View = System.Windows.Forms.View.Details;
-            this.listViewTrips.Click += new System.EventHandler(this.listViewTrips_Click);
-            this.listViewTrips.SelectedIndexChanged += new System.EventHandler(this.updateButtons);
+            this.listViewTrips.Click += this.listViewTrips_Click;
+            this.listViewTrips.SelectedIndexChanged += this.updateButtons;
             // 
             // columnHeaderTrain
             // 
@@ -297,7 +297,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonAbort.Size = new System.Drawing.Size(75, 19);
             this.buttonAbort.TabIndex = 1;
             this.buttonAbort.Text = "&Abort";
-            this.buttonAbort.Click += new System.EventHandler(this.buttonAbort_Click);
+            this.buttonAbort.Click += this.buttonAbort_Click;
             // 
             // buttonClose
             // 
@@ -307,7 +307,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonClose.Size = new System.Drawing.Size(75, 19);
             this.buttonClose.TabIndex = 8;
             this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // buttonView
             // 
@@ -317,7 +317,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonView.Size = new System.Drawing.Size(75, 19);
             this.buttonView.TabIndex = 3;
             this.buttonView.Text = "&View...";
-            this.buttonView.Click += new System.EventHandler(this.buttonView_Click);
+            this.buttonView.Click += this.buttonView_Click;
             // 
             // buttonSave
             // 
@@ -327,7 +327,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonSave.Size = new System.Drawing.Size(75, 19);
             this.buttonSave.TabIndex = 4;
             this.buttonSave.Text = "&Save...";
-            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            this.buttonSave.Click += this.buttonSave_Click;
             // 
             // buttonTalk
             // 
@@ -346,7 +346,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonOptions.Size = new System.Drawing.Size(75, 19);
             this.buttonOptions.TabIndex = 7;
             this.buttonOptions.Text = "&Options...";
-            this.buttonOptions.Click += new System.EventHandler(this.buttonOptions_Click);
+            this.buttonOptions.Click += this.buttonOptions_Click;
             // 
             // buttonSpeed
             // 
@@ -356,7 +356,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonSpeed.Size = new System.Drawing.Size(75, 19);
             this.buttonSpeed.TabIndex = 6;
             this.buttonSpeed.Text = "S&peed...";
-            this.buttonSpeed.Click += new System.EventHandler(this.buttonSpeed_Click);
+            this.buttonSpeed.Click += this.buttonSpeed_Click;
             // 
             // buttonSuspend
             // 
@@ -366,7 +366,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonSuspend.Size = new System.Drawing.Size(75, 19);
             this.buttonSuspend.TabIndex = 2;
             this.buttonSuspend.Text = "&Suspend";
-            this.buttonSuspend.Click += new System.EventHandler(this.buttonSuspend_Click);
+            this.buttonSuspend.Click += this.buttonSuspend_Click;
             // 
             // TripsMonitor
             // 
@@ -405,7 +405,7 @@ namespace LayoutManager.Tools.Controls {
             if (selected != null) {
                 Dialogs.TripPlanViewing tripPlanView = new Dialogs.TripPlanViewing(selected.Train, selected.TripAssignment.TripPlan, selected.TripAssignment.CurrentWaypointIndex);
 
-                tripPlanView.FormClosed += delegate (object s1, FormClosedEventArgs e1) { selected.UpdateAutoClearTimer(); };
+                tripPlanView.FormClosed += (object s1, FormClosedEventArgs e1) => selected.UpdateAutoClearTimer();
                 tripPlanView.Show(FindForm());
             }
         }
@@ -549,9 +549,7 @@ namespace LayoutManager.Tools.Controls {
             private string getDestination() {
                 IList<TripPlanWaypointInfo> wayPoints = tripAssignment.TripPlan.Waypoints;
 
-                if (wayPoints.Count < 1)
-                    return "<Empty>";
-                return wayPoints[wayPoints.Count - 1].Destination.Name;
+                return wayPoints.Count < 1 ? "<Empty>" : wayPoints[wayPoints.Count - 1].Destination.Name;
             }
 
             private string getTripState() {

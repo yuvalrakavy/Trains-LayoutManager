@@ -16,7 +16,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private Button buttonCancel;
         private CheckBox checkBoxLimitedToScope;
 
-        #pragma warning disable nullable
+#pragma warning disable nullable
         public WaitForEvent(XmlElement element) {
             //
             // Required for Windows Form Designer support
@@ -81,7 +81,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 3;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -89,7 +89,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.TabIndex = 4;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // WaitForEvent
             // 

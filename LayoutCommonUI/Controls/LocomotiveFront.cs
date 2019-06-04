@@ -24,9 +24,9 @@ namespace LayoutManager.CommonUI.Controls {
         [Browsable(false)]
         public IList<LayoutComponentConnectionPoint> ConnectionPoints {
             get {
-                if (connectionPoints == null)
-                    return Array.AsReadOnly<LayoutComponentConnectionPoint>(new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.L, LayoutComponentConnectionPoint.R });
-                return connectionPoints;
+                return connectionPoints == null
+                    ? Array.AsReadOnly<LayoutComponentConnectionPoint>(new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.L, LayoutComponentConnectionPoint.R })
+                    : connectionPoints;
             }
 
             set {
@@ -55,8 +55,8 @@ namespace LayoutManager.CommonUI.Controls {
         private Point getEdgeLocation(LayoutComponentConnectionPoint cp, int margin) {
             Size offset = LayoutTrackComponent.GetConnectionOffset(cp);
             Point result = new Point(0, 0) {
-                X = offset.Width * (ClientSize.Width / 2 - margin),
-                Y = offset.Height * (ClientSize.Height / 2 - margin)
+                X = offset.Width * ((ClientSize.Width / 2) - margin),
+                Y = offset.Height * ((ClientSize.Height / 2) - margin)
             };
 
             return result;
@@ -121,8 +121,8 @@ namespace LayoutManager.CommonUI.Controls {
         private Rectangle getEdgeHitRectangle(int iPoint) {
             Point edgeCenter = getEdgeLocation(ConnectionPoints[iPoint], inMargin);
 
-            edgeCenter.X += ClientSize.Width / 2 - edgeSize / 2 - 6;
-            edgeCenter.Y += ClientSize.Height / 2 - edgeSize / 2 - 6;
+            edgeCenter.X += (ClientSize.Width / 2) - (edgeSize / 2) - 6;
+            edgeCenter.Y += (ClientSize.Height / 2) - (edgeSize / 2) - 6;
 
             return new Rectangle(edgeCenter, new Size(edgeSize + 12, edgeSize + 12));
         }

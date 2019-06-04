@@ -155,12 +155,7 @@ namespace LayoutManager.Components {
 
         public abstract LayoutBlock? GetOptionalBlock(LayoutComponentConnectionPoint cp);
 
-        public LayoutBlock GetBlock(LayoutComponentConnectionPoint cp) {
-            var block = GetOptionalBlock(cp);
-
-            Debug.Assert(block != null);
-            return block;
-        }
+        public LayoutBlock GetBlock(LayoutComponentConnectionPoint cp) => GetOptionalBlock(cp) ?? throw new ArgumentNullException("GetBlock called when block is null");
 
         public abstract void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock? block);
 
@@ -169,7 +164,7 @@ namespace LayoutManager.Components {
         public abstract void SetPowerConnector(LayoutComponentConnectionPoint cp, LayoutTrackPowerConnectorComponent? powerConnectorComponent);
 
         public virtual int GetSwitchState(LayoutComponentConnectionPoint cpSource, LayoutComponentConnectionPoint cpDestination) {
-            Debug.Assert(false, "Component is not multi-path component");
+            Debug.Fail("Component is not multi-path component");
             return 0;
         }
 
@@ -217,21 +212,13 @@ namespace LayoutManager.Components {
             return true;
         }
 
-        public static bool IsHorizontal(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
-            if (IsHorizontal(cp1) && IsHorizontal(cp2))
-                return true;
-            return false;
-        }
+        public static bool IsHorizontal(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) => IsHorizontal(cp1) && IsHorizontal(cp2);
 
         public static bool IsHorizontal(LayoutTrackComponent component) => IsHorizontal(component.ConnectionPoints);
 
         public static bool IsVertical(LayoutComponentConnectionPoint cp) => cp == LayoutComponentConnectionPoint.T || cp == LayoutComponentConnectionPoint.B;
 
-        public static bool IsVertical(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
-            if (IsVertical(cp1) && IsVertical(cp2))
-                return true;
-            return false;
-        }
+        public static bool IsVertical(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) => IsVertical(cp1) && IsVertical(cp2);
 
         public static bool IsVertical(IList<LayoutComponentConnectionPoint> cps) {
             foreach (LayoutComponentConnectionPoint cp in cps)
@@ -331,9 +318,7 @@ namespace LayoutManager.Components {
 
         public ModelComponent? TrackAnnotation {
             get {
-                if (trackAnnotation == this)
-                    return null;
-                return trackAnnotation;
+                return trackAnnotation == this ? null : trackAnnotation;
             }
         }
 
@@ -387,15 +372,12 @@ namespace LayoutManager.Components {
 
         public override LayoutComponentConnectionPoint[] ConnectTo(LayoutComponentConnectionPoint from, LayoutComponentConnectionType type) {
             // For topology type connection, track with track contacts are disconnection points
-            if (type == LayoutComponentConnectionType.Electrical && LayoutTrackIsolationComponent.Is(Spot) || (type == LayoutComponentConnectionType.ReverseLoop && LayoutTrackReverseLoopModule.Is(Spot)))
+            if ((type == LayoutComponentConnectionType.Electrical && LayoutTrackIsolationComponent.Is(Spot)) || (type == LayoutComponentConnectionType.ReverseLoop && LayoutTrackReverseLoopModule.Is(Spot)))
                 return new LayoutComponentConnectionPoint[] { };
             else {
                 if (from == cp1)
                     return new LayoutComponentConnectionPoint[] { cp2 };
-                else if (from == cp2)
-                    return new LayoutComponentConnectionPoint[] { cp1 };
-                else
-                    return new LayoutComponentConnectionPoint[] { };
+                else return from == cp2 ? (new LayoutComponentConnectionPoint[] { cp1 }) : (new LayoutComponentConnectionPoint[] { });
             }
         }
 
@@ -553,10 +535,7 @@ namespace LayoutManager.Components {
         public LayoutComponentConnectionPoint[]? GetTrackPath(int n) {
             if (n == 0)
                 return new LayoutComponentConnectionPoint[] { cp1, cp2 };
-            else if (n == 1)
-                return new LayoutComponentConnectionPoint[] { cp3, cp4 };
-            else
-                return null;
+            else return n == 1 ? (new LayoutComponentConnectionPoint[] { cp3, cp4 }) : null;
         }
 
         public override LayoutComponentConnectionPoint[] ConnectTo(LayoutComponentConnectionPoint from, LayoutComponentConnectionType type) {
@@ -615,10 +594,7 @@ namespace LayoutManager.Components {
         }
 
         public override string ToString() {
-            if (isCross)
-                return "cross";
-            else
-                return "track";
+            return isCross ? "cross" : "track";
         }
 
         public override void WriteXmlFields(XmlWriter w) {
@@ -723,10 +699,7 @@ namespace LayoutManager.Components {
         public bool IsSplitPoint(LayoutComponentConnectionPoint cp) {
             LayoutComponentConnectionPoint[] connectTo = ConnectTo(cp, LayoutComponentConnectionType.Passage);
 
-            if (connectTo != null && connectTo.Length > 1)
-                return true;
-
-            return false;
+            return connectTo != null && connectTo.Length > 1;
         }
 
         /// <summary>
@@ -807,20 +780,14 @@ namespace LayoutManager.Components {
             if (type == LayoutComponentConnectionType.Passage || type == LayoutComponentConnectionType.ReverseLoop) {
                 if (from == tip)
                     return new LayoutComponentConnectionPoint[] { straight, branch };
-                else if (from == straight || from == branch)
-                    return new LayoutComponentConnectionPoint[] { tip };
-                else
-                    return new LayoutComponentConnectionPoint[] { };
+                else return from == straight || from == branch ? (new LayoutComponentConnectionPoint[] { tip }) : (new LayoutComponentConnectionPoint[] { });
             }
             else {
                 if (from == tip)
                     return new LayoutComponentConnectionPoint[] { straight, branch };
                 else if (from == straight)
                     return new LayoutComponentConnectionPoint[] { tip, branch };
-                else if (from == branch)
-                    return new LayoutComponentConnectionPoint[] { straight, tip };
-                else
-                    return new LayoutComponentConnectionPoint[] { };
+                else return from == branch ? (new LayoutComponentConnectionPoint[] { straight, tip }) : (new LayoutComponentConnectionPoint[] { });
             }
         }
 
@@ -954,9 +921,9 @@ namespace LayoutManager.Components {
                 else if (switchingState == 2) // Turn left
                     leftState = 1;
 
-                if(connectionPointRight != null)
+                if (connectionPointRight != null)
                     switchingCommands.Add(new SwitchingCommand(new ControlConnectionPointReference(connectionPointRight), rightState));
-                if(connectionPointLeft != null)
+                if (connectionPointLeft != null)
                     switchingCommands.Add(new SwitchingCommand(new ControlConnectionPointReference(connectionPointLeft), leftState));
             }
 

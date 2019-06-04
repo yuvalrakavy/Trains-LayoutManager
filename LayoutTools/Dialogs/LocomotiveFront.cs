@@ -92,7 +92,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.TabIndex = 2;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+            this.buttonOk.Click += this.buttonOk_Click;
             // 
             // buttonCancel
             // 

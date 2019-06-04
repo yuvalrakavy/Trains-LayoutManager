@@ -34,10 +34,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
 
             get {
-                if (SelectedItem == null)
-                    return TrackGauges.HO;
-                else
-                    return (TrackGauges)SelectedItem;
+                return SelectedItem == null ? TrackGauges.HO : (TrackGauges)SelectedItem;
             }
         }
 
@@ -51,10 +48,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             while (mask != 0) {
                 if ((v & mask) != 0) {
-                    if ((v & mask) != v)
-                        return true;
-                    else
-                        return false;
+                    return (v & mask) != v;
                 }
 
                 mask <<= 1;

@@ -160,7 +160,7 @@ namespace DiMAX {
             base.OnEnteredOperationMode();
 
             foreach (var train in LayoutModel.StateManager.Trains) {
-                if (train.CommandStation!= null && train.CommandStation.Id == Id && train.IsPowered) {
+                if (train.CommandStation != null && train.CommandStation.Id == Id && train.IsPowered) {
                     foreach (var trainLoco in train.Locomotives)
                         if (trainLoco.Locomotive != null)
                             RegisterLocomotive(trainLoco.Locomotive);
@@ -169,7 +169,7 @@ namespace DiMAX {
         }
 
         #region Request Event Handlers
-        #pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060
 
         [LayoutEvent("get-command-station-capabilities", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private void GetCommandStationCapabilities(LayoutEvent e) {
@@ -207,7 +207,7 @@ namespace DiMAX {
         private Task ChangeTurnoutState(LayoutEvent e) {
             var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
             var module = Ensure.NotNull<ControlModule>(connectionPointRef.Module, "module");
-            int state = (int)e.Info;
+            var state = Ensure.ValueNotNull<int>(e.Info, "state");
             int address = module.Address + connectionPointRef.Index;
 
             var task = OutputManager.AddCommand(new DiMAXchangeAccessoryState(this, address, state));
@@ -219,7 +219,7 @@ namespace DiMAX {
         [LayoutEvent("change-signal-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
         private void changeSignalStateCommand(LayoutEvent e) {
             var connectionPoint = Ensure.NotNull<ControlConnectionPoint>(e.Sender, "connectionPoint");
-            var state = (LayoutSignalState)e.Info;
+            var state = Ensure.ValueNotNull<LayoutSignalState>(e.Info, "state");
             int address = connectionPoint.Module.Address + connectionPoint.Index;
             int v;
 
@@ -235,7 +235,7 @@ namespace DiMAX {
         [LayoutEvent("locomotive-motion-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private void locomotiveMotionCommand(LayoutEvent e) {
             var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender, "loco");
-            int speedInSteps = (int)e.Info;
+            var speedInSteps = Ensure.ValueNotNull<int>(e.Info, "speedInSteps");
 
             OutputManager.AddCommand(new DiMAXlocomotiveMotion(this, loco.AddressProvider.Unit, speedInSteps));
         }
@@ -243,7 +243,7 @@ namespace DiMAX {
         [LayoutEvent("set-locomotive-lights-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private void setLocomotiveLightsCommand(LayoutEvent e) {
             var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender, "loco");
-            var lights = (bool)e.Info;
+            var lights = Ensure.ValueNotNull<bool>(e.Info, "lights");
 
             OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, 0, false, lights));
             if (loco.DecoderType is DccDecoderTypeInfo decoder && !decoder.ParallelFunctionSupport)
@@ -340,10 +340,7 @@ namespace DiMAX {
             else {
                 LayoutActionResult r = await SetRegister(6, (byte)cv.Number).ConfigureAwait(false);
 
-                if (r == LayoutActionResult.Ok)
-                    return await SetRegister(5, cv.Value).ConfigureAwait(false);
-                else
-                    return r;
+                return r == LayoutActionResult.Ok ? await SetRegister(5, cv.Value).ConfigureAwait(false) : (object)r;
             }
         }
 
@@ -973,10 +970,7 @@ namespace DiMAX {
 
         public int SpeedInSteps {
             get {
-                if ((Packet.Parameters[2] & 0x80) == 0)
-                    return -(int)(Packet.Parameters[2] & 0x7f);
-                else
-                    return Packet.Parameters[2] & 0x7f;
+                return (Packet.Parameters[2] & 0x80) == 0 ? -(int)(Packet.Parameters[2] & 0x7f) : Packet.Parameters[2] & 0x7f;
             }
         }
     }

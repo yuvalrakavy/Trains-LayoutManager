@@ -61,10 +61,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             if (selected is DestinationNode)
                 return (DestinationNode)selected;
-            else if (selected is DestinationEntryNode)
-                return (DestinationNode)selected.Parent;
-            else
-                return null;
+            else return selected is DestinationEntryNode ? (DestinationNode)selected.Parent : null;
         }
 
         private void updateButtons() {
@@ -192,7 +189,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.treeViewDestinations.ShowLines = false;
             this.treeViewDestinations.Size = new System.Drawing.Size(320, 208);
             this.treeViewDestinations.TabIndex = 0;
-            this.treeViewDestinations.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewDestinations_AfterSelect);
+            this.treeViewDestinations.AfterSelect += this.treeViewDestinations_AfterSelect;
             // 
             // buttonDelete
             // 
@@ -202,7 +199,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonDelete.Size = new System.Drawing.Size(56, 19);
             this.buttonDelete.TabIndex = 3;
             this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            this.buttonDelete.Click += this.buttonDelete_Click;
             // 
             // buttonEdit
             // 
@@ -212,7 +209,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonEdit.Size = new System.Drawing.Size(56, 19);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit...";
-            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
+            this.buttonEdit.Click += this.buttonEdit_Click;
             // 
             // buttonClose
             // 
@@ -222,7 +219,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(56, 19);
             this.buttonClose.TabIndex = 4;
             this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // buttonAdd
             // 
@@ -232,7 +229,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonAdd.Size = new System.Drawing.Size(56, 19);
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "&Add...";
-            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            this.buttonAdd.Click += this.buttonAdd_Click;
             // 
             // TripPlanCommonDestinations
             // 
@@ -247,7 +244,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "TripPlanCommonDestinations";
             this.ShowInTaskbar = false;
             this.Text = "\"Smart\" Destinations";
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.TripPlanCommonDestinations_Closing);
+            this.Closing += this.TripPlanCommonDestinations_Closing;
             this.ResumeLayout(false);
         }
         #endregion
@@ -374,9 +371,7 @@ namespace LayoutManager.Tools.Dialogs {
                 get {
                     LayoutBlock block = LayoutModel.Blocks[Entry.BlockId];
 
-                    if (block != null)
-                        return block.BlockDefinintion;
-                    return null;
+                    return block?.BlockDefinintion;
                 }
             }
         }

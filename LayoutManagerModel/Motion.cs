@@ -78,10 +78,7 @@ namespace LayoutManager.Model {
 
         public string Description {
             get {
-                if (Element.HasAttribute(A_Name))
-                    return Name + " (" + GetRampDescription() + ")";
-                else
-                    return GetRampDescription();
+                return Element.HasAttribute(A_Name) ? Name + " (" + GetRampDescription() + ")" : GetRampDescription();
             }
         }
 
@@ -93,10 +90,7 @@ namespace LayoutManager.Model {
 
                 return "Length " + t.ToString() + " seconds";
             }
-            else if (RampType == MotionRampType.LocomotiveHardware)
-                return "locomotive native value";
-            else
-                return "*Unknown Ramp Type*";
+            else return RampType == MotionRampType.LocomotiveHardware ? "locomotive native value" : "*Unknown Ramp Type*";
         }
 
         protected void Initialize(XmlNode parent, MotionRampType rampType, int parameter) {

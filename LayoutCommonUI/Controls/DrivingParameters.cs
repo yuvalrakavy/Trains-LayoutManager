@@ -29,12 +29,12 @@ namespace LayoutManager.CommonUI.Controls {
 
         private XmlElement element;
 
-        #pragma warning disable nullable
+#pragma warning disable nullable
         public DrivingParameters() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
         }
-        #pragma warning restore nullable
+#pragma warning restore nullable
 
         public XmlElement? OptionalElement {
             get {
@@ -129,10 +129,7 @@ namespace LayoutManager.CommonUI.Controls {
                 }
             }
 
-            if (!motionRampSelectorSlowdown.ValidateValues())
-                return false;
-
-            return true;
+            return motionRampSelectorSlowdown.ValidateValues();
         }
 
         public bool Commit() {

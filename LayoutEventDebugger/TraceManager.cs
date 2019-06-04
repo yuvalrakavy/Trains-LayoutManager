@@ -94,9 +94,7 @@ namespace LayoutEventDebugger {
         /// </summary>
         protected override void Dispose(bool disposing) {
             if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -145,7 +143,7 @@ namespace LayoutEventDebugger {
             this.listViewSwitches.TabIndex = 0;
             this.listViewSwitches.UseCompatibleStateImageBehavior = false;
             this.listViewSwitches.View = System.Windows.Forms.View.Details;
-            this.listViewSwitches.SelectedIndexChanged += new System.EventHandler(this.listViewSwitches_SelectedIndexChanged);
+            this.listViewSwitches.SelectedIndexChanged += this.listViewSwitches_SelectedIndexChanged;
             // 
             // columnHeaderSwtchName
             // 
@@ -186,7 +184,7 @@ namespace LayoutEventDebugger {
             this.radioButtonBooleanOff.Size = new System.Drawing.Size(104, 16);
             this.radioButtonBooleanOff.TabIndex = 4;
             this.radioButtonBooleanOff.Text = "Off";
-            this.radioButtonBooleanOff.CheckedChanged += new System.EventHandler(this.radioButtonBooleanOff_CheckedChanged);
+            this.radioButtonBooleanOff.CheckedChanged += this.radioButtonBooleanOff_CheckedChanged;
             // 
             // radioButtonTraceNone
             // 
@@ -195,7 +193,7 @@ namespace LayoutEventDebugger {
             this.radioButtonTraceNone.Size = new System.Drawing.Size(104, 16);
             this.radioButtonTraceNone.TabIndex = 0;
             this.radioButtonTraceNone.Text = "None";
-            this.radioButtonTraceNone.CheckedChanged += new System.EventHandler(this.radioButtonTraceNone_CheckedChanged);
+            this.radioButtonTraceNone.CheckedChanged += this.radioButtonTraceNone_CheckedChanged;
             // 
             // radioButtonTraceError
             // 
@@ -204,7 +202,7 @@ namespace LayoutEventDebugger {
             this.radioButtonTraceError.Size = new System.Drawing.Size(104, 16);
             this.radioButtonTraceError.TabIndex = 1;
             this.radioButtonTraceError.Text = "Errors";
-            this.radioButtonTraceError.CheckedChanged += new System.EventHandler(this.radioButtonTraceError_CheckedChanged);
+            this.radioButtonTraceError.CheckedChanged += this.radioButtonTraceError_CheckedChanged;
             // 
             // radioButtonTraceInfo
             // 
@@ -213,7 +211,7 @@ namespace LayoutEventDebugger {
             this.radioButtonTraceInfo.Size = new System.Drawing.Size(104, 16);
             this.radioButtonTraceInfo.TabIndex = 2;
             this.radioButtonTraceInfo.Text = "Info";
-            this.radioButtonTraceInfo.CheckedChanged += new System.EventHandler(this.radioButtonTraceInfo_CheckedChanged);
+            this.radioButtonTraceInfo.CheckedChanged += this.radioButtonTraceInfo_CheckedChanged;
             // 
             // radioButtonTraceVerbose
             // 
@@ -222,7 +220,7 @@ namespace LayoutEventDebugger {
             this.radioButtonTraceVerbose.Size = new System.Drawing.Size(104, 16);
             this.radioButtonTraceVerbose.TabIndex = 3;
             this.radioButtonTraceVerbose.Text = "Verbose";
-            this.radioButtonTraceVerbose.CheckedChanged += new System.EventHandler(this.radioButtonTraceVerbose_CheckedChanged);
+            this.radioButtonTraceVerbose.CheckedChanged += this.radioButtonTraceVerbose_CheckedChanged;
             // 
             // radioButtonWarnings
             // 
@@ -231,7 +229,7 @@ namespace LayoutEventDebugger {
             this.radioButtonWarnings.Size = new System.Drawing.Size(104, 16);
             this.radioButtonWarnings.TabIndex = 1;
             this.radioButtonWarnings.Text = "Warnings";
-            this.radioButtonWarnings.CheckedChanged += new System.EventHandler(this.radioButtonWarnings_CheckedChanged);
+            this.radioButtonWarnings.CheckedChanged += this.radioButtonWarnings_CheckedChanged;
             // 
             // radioButtonBooleanOn
             // 
@@ -240,7 +238,7 @@ namespace LayoutEventDebugger {
             this.radioButtonBooleanOn.Size = new System.Drawing.Size(104, 16);
             this.radioButtonBooleanOn.TabIndex = 4;
             this.radioButtonBooleanOn.Text = "On";
-            this.radioButtonBooleanOn.CheckedChanged += new System.EventHandler(this.radioButtonBooleanOn_CheckedChanged);
+            this.radioButtonBooleanOn.CheckedChanged += this.radioButtonBooleanOn_CheckedChanged;
             // 
             // buttonClose
             // 
@@ -273,7 +271,7 @@ namespace LayoutEventDebugger {
             this.radioButtonAllSwitches.TabIndex = 1;
             this.radioButtonAllSwitches.Text = "All switches";
             this.radioButtonAllSwitches.UseVisualStyleBackColor = true;
-            this.radioButtonAllSwitches.CheckedChanged += new System.EventHandler(this.switchTypeChanged);
+            this.radioButtonAllSwitches.CheckedChanged += this.switchTypeChanged;
             // 
             // radioButtonApplicationSwitches
             // 
@@ -286,7 +284,7 @@ namespace LayoutEventDebugger {
             this.radioButtonApplicationSwitches.TabStop = true;
             this.radioButtonApplicationSwitches.Text = "Only this application switches";
             this.radioButtonApplicationSwitches.UseVisualStyleBackColor = true;
-            this.radioButtonApplicationSwitches.CheckedChanged += new System.EventHandler(this.switchTypeChanged);
+            this.radioButtonApplicationSwitches.CheckedChanged += this.switchTypeChanged;
             // 
             // TraceManager
             // 
@@ -331,9 +329,7 @@ namespace LayoutEventDebugger {
         }
 
         private Switch getSelected() {
-            if (listViewSwitches.SelectedItems.Count > 0)
-                return ((SwitchItem)listViewSwitches.SelectedItems[0]).Switch;
-            return null;
+            return listViewSwitches.SelectedItems.Count > 0 ? ((SwitchItem)listViewSwitches.SelectedItems[0]).Switch : null;
         }
 
         private void updateSelected() {

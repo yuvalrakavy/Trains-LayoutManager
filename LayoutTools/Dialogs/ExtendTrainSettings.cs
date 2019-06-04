@@ -124,7 +124,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.numericUpDownFrom.Name = "numericUpDownFrom";
             this.numericUpDownFrom.Size = new System.Drawing.Size(56, 20);
             this.numericUpDownFrom.TabIndex = 3;
-            this.numericUpDownFrom.ValueChanged += new System.EventHandler(this.numericUpDownFrom_ValueChanged);
+            this.numericUpDownFrom.ValueChanged += this.numericUpDownFrom_ValueChanged;
             // 
             // panel1
             // 
@@ -140,7 +140,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.numericUpDownTo.Name = "numericUpDownTo";
             this.numericUpDownTo.Size = new System.Drawing.Size(56, 20);
             this.numericUpDownTo.TabIndex = 3;
-            this.numericUpDownTo.ValueChanged += new System.EventHandler(this.numericUpDownTo_ValueChanged);
+            this.numericUpDownTo.ValueChanged += this.numericUpDownTo_ValueChanged;
             // 
             // panel2
             // 
@@ -157,7 +157,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(64, 23);
             this.buttonOK.TabIndex = 5;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 

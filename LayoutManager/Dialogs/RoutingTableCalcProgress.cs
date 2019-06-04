@@ -72,7 +72,7 @@ namespace LayoutManager.Dialogs {
             this.buttonAbort.Name = "buttonAbort";
             this.buttonAbort.TabIndex = 2;
             this.buttonAbort.Text = "&Abort";
-            this.buttonAbort.Click += new System.EventHandler(this.buttonAbort_Click);
+            this.buttonAbort.Click += this.buttonAbort_Click;
             // 
             // RoutingTableCalcProgress
             // 
@@ -86,7 +86,7 @@ namespace LayoutManager.Dialogs {
             this.Name = "RoutingTableCalcProgress";
             this.ShowInTaskbar = false;
             this.Text = "Generating Routing Tables...";
-            this.Closed += new System.EventHandler(this.RoutingTableCalcProgress_Closed);
+            this.Closed += this.RoutingTableCalcProgress_Closed;
             this.ResumeLayout(false);
         }
         #endregion

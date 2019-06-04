@@ -112,7 +112,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(75, 23);
             this.buttonClose.TabIndex = 2;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // tabControlStartCondition
             // 
@@ -190,7 +190,7 @@ namespace LayoutManager.Dialogs {
             this.buttonExport.TabIndex = 1;
             this.buttonExport.Text = "Export...";
             this.buttonExport.UseVisualStyleBackColor = true;
-            this.buttonExport.Click += new System.EventHandler(this.buttonExport_Click);
+            this.buttonExport.Click += this.buttonExport_Click;
             // 
             // globalPolicyListGlobal
             // 
@@ -270,7 +270,7 @@ namespace LayoutManager.Dialogs {
             this.buttonImport.TabIndex = 3;
             this.buttonImport.Text = "Import...";
             this.buttonImport.UseVisualStyleBackColor = true;
-            this.buttonImport.Click += new System.EventHandler(this.buttonImport_Click);
+            this.buttonImport.Click += this.buttonImport_Click;
             // 
             // PoliciesDefinition
             // 
@@ -283,8 +283,8 @@ namespace LayoutManager.Dialogs {
             this.Name = "PoliciesDefinition";
             this.ShowInTaskbar = false;
             this.Text = "Script Definitions";
-            this.Closed += new System.EventHandler(this.PoliciesDefinition_Closed);
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.PoliciesDefinition_Closing);
+            this.Closed += this.PoliciesDefinition_Closed;
+            this.Closing += this.PoliciesDefinition_Closing;
             this.tabControlStartCondition.ResumeLayout(false);
             this.tabPageGlobal.ResumeLayout(false);
             this.tabPageBlock.ResumeLayout(false);

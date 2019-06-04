@@ -60,10 +60,7 @@ namespace LayoutManager.Components {
 
         public bool ReverseLogic {
             get {
-                if (Component is IModelComponentHasReverseLogic componentWithReverseLogic)
-                    return componentWithReverseLogic.ReverseLogic;
-                else
-                    return false;
+                return Component is IModelComponentHasReverseLogic componentWithReverseLogic ? componentWithReverseLogic.ReverseLogic : false;
             }
         }
     }

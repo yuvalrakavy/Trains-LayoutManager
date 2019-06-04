@@ -84,10 +84,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             get {
                 if (radioButtonTypeBoolean.Checked)
                     return (bool)radioButtonValueTrue.Checked;
-                else if (radioButtonTypeNumber.Checked)
-                    return int.Parse(textBoxValue.Text);
-                else
-                    return (string)textBoxValue.Text;
+                else return radioButtonTypeNumber.Checked ? int.Parse(textBoxValue.Text) : (object)(string)textBoxValue.Text;
             }
         }
 
@@ -157,8 +154,8 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.comboBoxName.Size = new System.Drawing.Size(160, 21);
             this.comboBoxName.Sorted = true;
             this.comboBoxName.TabIndex = 1;
-            this.comboBoxName.DropDown += new System.EventHandler(this.comboBoxName_DropDown);
-            this.comboBoxName.SelectionChangeCommitted += new System.EventHandler(this.comboBoxName_SelectionChangeCommitted);
+            this.comboBoxName.DropDown += this.comboBoxName_DropDown;
+            this.comboBoxName.SelectionChangeCommitted += this.comboBoxName_SelectionChangeCommitted;
             // 
             // groupBox1
             // 
@@ -180,7 +177,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.radioButtonTypeString.Size = new System.Drawing.Size(104, 20);
             this.radioButtonTypeString.TabIndex = 0;
             this.radioButtonTypeString.Text = "Text (string)";
-            this.radioButtonTypeString.CheckedChanged += new System.EventHandler(this.updateButtons);
+            this.radioButtonTypeString.CheckedChanged += this.updateButtons;
             // 
             // radioButtonTypeNumber
             // 
@@ -189,7 +186,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.radioButtonTypeNumber.Size = new System.Drawing.Size(112, 20);
             this.radioButtonTypeNumber.TabIndex = 0;
             this.radioButtonTypeNumber.Text = "Number (integer)";
-            this.radioButtonTypeNumber.CheckedChanged += new System.EventHandler(this.updateButtons);
+            this.radioButtonTypeNumber.CheckedChanged += this.updateButtons;
             // 
             // radioButtonTypeBoolean
             // 
@@ -198,7 +195,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.radioButtonTypeBoolean.Size = new System.Drawing.Size(136, 20);
             this.radioButtonTypeBoolean.TabIndex = 0;
             this.radioButtonTypeBoolean.Text = "Boolean (True/False)";
-            this.radioButtonTypeBoolean.CheckedChanged += new System.EventHandler(this.updateButtons);
+            this.radioButtonTypeBoolean.CheckedChanged += this.updateButtons;
             // 
             // panelTextValue
             // 
@@ -264,7 +261,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(56, 23);
             this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // buttonOK
             // 
@@ -273,7 +270,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(56, 23);
             this.buttonOK.TabIndex = 5;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // AttributeDefinition
             // 

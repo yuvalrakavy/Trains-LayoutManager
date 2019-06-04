@@ -317,13 +317,13 @@ namespace LayoutManager {
             // 
             this.menuItemAddLocomotive.Index = 0;
             this.menuItemAddLocomotive.Text = "&Locomotive...";
-            this.menuItemAddLocomotive.Click += new System.EventHandler(this.menuItemAddLocomotive_Click);
+            this.menuItemAddLocomotive.Click += this.menuItemAddLocomotive_Click;
             // 
             // menuItemAddTrain
             // 
             this.menuItemAddTrain.Index = 1;
             this.menuItemAddTrain.Text = "&Train...";
-            this.menuItemAddTrain.Click += new System.EventHandler(this.menuItemAddTrain_Click);
+            this.menuItemAddTrain.Click += this.menuItemAddTrain_Click;
             // 
             // contextMenuOptions
             // 
@@ -340,7 +340,7 @@ namespace LayoutManager {
             // 
             this.menuItemStorage.Index = 1;
             this.menuItemStorage.Text = "Storage...";
-            this.menuItemStorage.Click += new System.EventHandler(this.menuItemStorage_Click);
+            this.menuItemStorage.Click += this.menuItemStorage_Click;
             // 
             // buttonAdd
             // 
@@ -350,7 +350,7 @@ namespace LayoutManager {
             this.buttonAdd.Size = new System.Drawing.Size(56, 20);
             this.buttonAdd.TabIndex = 5;
             this.buttonAdd.Text = "&Add";
-            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            this.buttonAdd.Click += this.buttonAdd_Click;
             // 
             // buttonEdit
             // 
@@ -360,7 +360,7 @@ namespace LayoutManager {
             this.buttonEdit.Size = new System.Drawing.Size(56, 20);
             this.buttonEdit.TabIndex = 6;
             this.buttonEdit.Text = "&Edit...";
-            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
+            this.buttonEdit.Click += this.buttonEdit_Click;
             // 
             // buttonDelete
             // 
@@ -370,7 +370,7 @@ namespace LayoutManager {
             this.buttonDelete.Size = new System.Drawing.Size(56, 20);
             this.buttonDelete.TabIndex = 3;
             this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            this.buttonDelete.Click += this.buttonDelete_Click;
             // 
             // buttonOptions
             // 
@@ -380,7 +380,7 @@ namespace LayoutManager {
             this.buttonOptions.Size = new System.Drawing.Size(62, 20);
             this.buttonOptions.TabIndex = 4;
             this.buttonOptions.Text = "&Options...";
-            this.buttonOptions.Click += new System.EventHandler(this.buttonOptions_Click);
+            this.buttonOptions.Click += this.buttonOptions_Click;
             // 
             // panel1
             // 
@@ -404,7 +404,7 @@ namespace LayoutManager {
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(16, 16);
             this.buttonClose.TabIndex = 0;
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // imageListCloseButton
             // 
@@ -428,8 +428,8 @@ namespace LayoutManager {
             this.locomotiveList.ShowOnlyLocomotives = false;
             this.locomotiveList.Size = new System.Drawing.Size(196, 432);
             this.locomotiveList.TabIndex = 8;
-            this.locomotiveList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.locomotiveList_MouseDown);
-            this.locomotiveList.SelectedIndexChanged += new System.EventHandler(this.locomotiveList_SelectedIndexChanged);
+            this.locomotiveList.MouseDown += this.locomotiveList_MouseDown;
+            this.locomotiveList.SelectedIndexChanged += this.locomotiveList_SelectedIndexChanged;
             // 
             // LocomotivesViewer
             // 

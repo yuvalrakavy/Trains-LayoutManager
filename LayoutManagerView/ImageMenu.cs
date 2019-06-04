@@ -83,7 +83,7 @@ namespace LayoutManager.UIGadgets {
             this.BackColor = Color.FromArgb(50, 0, 0, 0);
             this.Visible = true;
 
-            shadowOf.Resize += new EventHandler(ShadowOf_Resize);
+            shadowOf.Resize += ShadowOf_Resize;
 
             CreateControl();
         }
@@ -217,11 +217,11 @@ namespace LayoutManager.UIGadgets {
         /// category
         /// </summary>
         private void adjustSize() {
-            int width = hMargin + selectedCategory.Items.Count * (itemSize.Width + gap) - gap + hMargin;
-            int height = vMargin * 2 + Math.Max(itemSize.Height, categorySize.Height * 2 + gap);
+            int width = hMargin + (selectedCategory.Items.Count * (itemSize.Width + gap)) - gap + hMargin;
+            int height = (vMargin * 2) + Math.Max(itemSize.Height, (categorySize.Height * 2) + gap);
 
             if (categoriesVisible)
-                width += itemsToCategoriesGap + ((Categories.Count + 1) / 2) * (categorySize.Width + gap) - gap;
+                width += itemsToCategoriesGap + (((Categories.Count + 1) / 2) * (categorySize.Width + gap)) - gap;
 
             this.Size = new Size(width, height);
         }
@@ -270,9 +270,7 @@ namespace LayoutManager.UIGadgets {
         /// </summary>
         public string InitialCategoryName {
             get {
-                if (initialCategory != null)
-                    return initialCategory.Name;
-                return null;
+                return initialCategory?.Name;
             }
 
             set {
@@ -288,9 +286,7 @@ namespace LayoutManager.UIGadgets {
 
         public string ShiftKeyCategory {
             get {
-                if (ShiftKeyCategory != null)
-                    return shiftKeyCategory.Name;
-                return null;
+                return ShiftKeyCategory != null ? shiftKeyCategory.Name : null;
             }
 
             set {
@@ -320,7 +316,7 @@ namespace LayoutManager.UIGadgets {
             this.Location = p;      // TODO: Location should be much smarter (considering alighment) etc.
 
             if (Categories.Count == 0) {
-                Debug.Assert(false, "Image menu has no item categories");
+                Debug.Fail("Image menu has no item categories");
                 return null;
             }
 
@@ -337,7 +333,7 @@ namespace LayoutManager.UIGadgets {
             tipTimer = new Timer {
                 Interval = tipTime
             };
-            tipTimer.Tick += new EventHandler(tipTimer_tick);
+            tipTimer.Tick += tipTimer_tick;
 
             this.CreateControl();
             this.Capture = true;

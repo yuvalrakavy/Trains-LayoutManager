@@ -15,7 +15,7 @@ namespace LayoutManager.CommonUI.Controls {
         private RadioButton radioButtonPropertyOrAttribute;
         private LayoutManager.CommonUI.Controls.OperandValueOf operandValueOf;
 
-        #pragma warning disable nullable
+#pragma warning disable nullable
         public Operand() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
@@ -136,7 +136,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.radioButtonValue.Size = new System.Drawing.Size(56, 24);
             this.radioButtonValue.TabIndex = 0;
             this.radioButtonValue.Text = "Value:";
-            this.radioButtonValue.CheckedChanged += new System.EventHandler(this.radioButtonValue_CheckedChanged);
+            this.radioButtonValue.CheckedChanged += this.radioButtonValue_CheckedChanged;
             // 
             // textBoxValue
             // 
@@ -145,7 +145,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.textBoxValue.Size = new System.Drawing.Size(80, 20);
             this.textBoxValue.TabIndex = 4;
             this.textBoxValue.Text = "";
-            this.textBoxValue.TextChanged += new System.EventHandler(this.textBoxValue_TextChanged);
+            this.textBoxValue.TextChanged += this.textBoxValue_TextChanged;
             // 
             // linkMenu1Boolean
             // 
@@ -179,7 +179,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.operandValueOf.Size = new System.Drawing.Size(176, 64);
             this.operandValueOf.Suffix = "";
             this.operandValueOf.TabIndex = 7;
-            this.operandValueOf.ValueChanged += new System.EventHandler(this.operandValueOf_ValueChanged);
+            this.operandValueOf.ValueChanged += this.operandValueOf_ValueChanged;
             // 
             // Operand
             // 

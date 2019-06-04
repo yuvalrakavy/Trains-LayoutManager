@@ -21,10 +21,7 @@ namespace LayoutManager.Dialogs {
         public LayoutModelArea ActiveArea => activeArea;
 
         private bool isMatch(string text, string findWhat) {
-            if (checkBoxExactMatch.Checked)
-                return text.ToLower() == findWhat;
-            else
-                return text.ToLower().Contains(findWhat);
+            return checkBoxExactMatch.Checked ? text.ToLower() == findWhat : text.ToLower().Contains(findWhat);
         }
 
         private void searchArea(LayoutModelArea area, LayoutSelection results) {

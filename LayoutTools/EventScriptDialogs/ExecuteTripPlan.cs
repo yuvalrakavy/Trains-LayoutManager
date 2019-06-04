@@ -145,8 +145,8 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.tripPlanList.SelectedTripPlan = null;
             this.tripPlanList.Size = new System.Drawing.Size(632, 216);
             this.tripPlanList.TabIndex = 0;
-            this.tripPlanList.Load += new System.EventHandler(this.tripPlanList_Load);
-            this.tripPlanList.SelectedTripPlanChanged += new System.EventHandler(this.tripPlanList_SelectedTripPlanChanged);
+            this.tripPlanList.Load += this.tripPlanList_Load;
+            this.tripPlanList.SelectedTripPlanChanged += this.tripPlanList_SelectedTripPlanChanged;
             // 
             // splitter1
             // 
@@ -205,7 +205,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 3;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // comboBoxTrainSymbol
             // 
@@ -237,7 +237,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.TabIndex = 4;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // ExecuteTripPlan
             // 
@@ -250,7 +250,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.Controls.Add(this.tripPlanList);
             this.Name = "ExecuteTripPlan";
             this.Text = "Execute Trip-plan";
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.ExecuteTripPlan_Closing);
+            this.Closing += this.ExecuteTripPlan_Closing;
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);

@@ -114,7 +114,7 @@ namespace LayoutManager.Dialogs {
             this.buttonDelete.Size = new System.Drawing.Size(72, 23);
             this.buttonDelete.TabIndex = 4;
             this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            this.buttonDelete.Click += this.buttonDelete_Click;
             // 
             // buttonEdit
             // 
@@ -123,7 +123,7 @@ namespace LayoutManager.Dialogs {
             this.buttonEdit.Size = new System.Drawing.Size(72, 23);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit";
-            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
+            this.buttonEdit.Click += this.buttonEdit_Click;
             // 
             // buttonClose
             // 
@@ -132,7 +132,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(72, 23);
             this.buttonClose.TabIndex = 5;
             this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // buttonAdd
             // 
@@ -141,7 +141,7 @@ namespace LayoutManager.Dialogs {
             this.buttonAdd.Size = new System.Drawing.Size(72, 23);
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "&New";
-            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            this.buttonAdd.Click += this.buttonAdd_Click;
             // 
             // listViewFonts
             // 
@@ -155,8 +155,8 @@ namespace LayoutManager.Dialogs {
             this.listViewFonts.Size = new System.Drawing.Size(240, 200);
             this.listViewFonts.TabIndex = 0;
             this.listViewFonts.View = System.Windows.Forms.View.Details;
-            this.listViewFonts.DoubleClick += new System.EventHandler(this.buttonEdit_Click);
-            this.listViewFonts.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.listViewFonts_AfterLabelEdit);
+            this.listViewFonts.DoubleClick += this.buttonEdit_Click;
+            this.listViewFonts.AfterLabelEdit += this.listViewFonts_AfterLabelEdit;
             // 
             // columnHeaderDescription
             // 
@@ -174,19 +174,19 @@ namespace LayoutManager.Dialogs {
             // 
             this.menuItemEditSettings.Index = 0;
             this.menuItemEditSettings.Text = "Settings...";
-            this.menuItemEditSettings.Click += new System.EventHandler(this.menuItemEditSettings_Click);
+            this.menuItemEditSettings.Click += this.menuItemEditSettings_Click;
             // 
             // menuItemEditTitle
             // 
             this.menuItemEditTitle.Index = 1;
             this.menuItemEditTitle.Text = "Title...";
-            this.menuItemEditTitle.Click += new System.EventHandler(this.menuItemEditTitle_Click);
+            this.menuItemEditTitle.Click += this.menuItemEditTitle_Click;
             // 
             // menuItemFontID
             // 
             this.menuItemFontID.Index = 2;
             this.menuItemFontID.Text = "Font Ref...";
-            this.menuItemFontID.Click += new System.EventHandler(this.menuItemFontID_Click);
+            this.menuItemFontID.Click += this.menuItemFontID_Click;
             // 
             // StadardFonts
             // 

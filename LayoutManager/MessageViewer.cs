@@ -365,7 +365,7 @@ namespace LayoutManager {
             this.listViewMessages.TabIndex = 5;
             this.listViewMessages.UseCompatibleStateImageBehavior = false;
             this.listViewMessages.View = System.Windows.Forms.View.Details;
-            this.listViewMessages.SelectedIndexChanged += new System.EventHandler(this.listViewMessages_SelectedIndexChanged);
+            this.listViewMessages.SelectedIndexChanged += this.listViewMessages_SelectedIndexChanged;
             // 
             // columnHeaderMessage
             // 
@@ -393,7 +393,7 @@ namespace LayoutManager {
             this.buttonClose.Size = new System.Drawing.Size(75, 22);
             this.buttonClose.TabIndex = 4;
             this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // buttonNextMessage
             // 
@@ -403,7 +403,7 @@ namespace LayoutManager {
             this.buttonNextMessage.Size = new System.Drawing.Size(74, 22);
             this.buttonNextMessage.TabIndex = 2;
             this.buttonNextMessage.Text = "↓ message";
-            this.buttonNextMessage.Click += new System.EventHandler(this.buttonNextMessage_Click);
+            this.buttonNextMessage.Click += this.buttonNextMessage_Click;
             // 
             // buttonPrevMessage
             // 
@@ -413,7 +413,7 @@ namespace LayoutManager {
             this.buttonPrevMessage.Size = new System.Drawing.Size(74, 22);
             this.buttonPrevMessage.TabIndex = 3;
             this.buttonPrevMessage.Text = "↑ message";
-            this.buttonPrevMessage.Click += new System.EventHandler(this.buttonPrevMessage_Click);
+            this.buttonPrevMessage.Click += this.buttonPrevMessage_Click;
             // 
             // buttonNextComponent
             // 
@@ -422,7 +422,7 @@ namespace LayoutManager {
             this.buttonNextComponent.Size = new System.Drawing.Size(91, 22);
             this.buttonNextComponent.TabIndex = 0;
             this.buttonNextComponent.Text = "→ component";
-            this.buttonNextComponent.Click += new System.EventHandler(this.buttonNextComponent_Click);
+            this.buttonNextComponent.Click += this.buttonNextComponent_Click;
             // 
             // buttonPreviousComponent
             // 
@@ -431,7 +431,7 @@ namespace LayoutManager {
             this.buttonPreviousComponent.Size = new System.Drawing.Size(91, 22);
             this.buttonPreviousComponent.TabIndex = 1;
             this.buttonPreviousComponent.Text = "← component";
-            this.buttonPreviousComponent.Click += new System.EventHandler(this.buttonPreviousComponent_Click);
+            this.buttonPreviousComponent.Click += this.buttonPreviousComponent_Click;
             // 
             // buttonClear
             // 
@@ -441,7 +441,7 @@ namespace LayoutManager {
             this.buttonClear.Size = new System.Drawing.Size(74, 22);
             this.buttonClear.TabIndex = 6;
             this.buttonClear.Text = "Clear";
-            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+            this.buttonClear.Click += this.buttonClear_Click;
             // 
             // MessageViewer
             // 

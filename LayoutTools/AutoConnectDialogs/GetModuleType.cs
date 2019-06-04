@@ -38,10 +38,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
 
         public ControlModuleType ModuleType {
             get {
-                if (comboBoxModuleTypes.SelectedItem == null)
-                    return null;
-
-                return ((Item)comboBoxModuleTypes.SelectedItem).ModuleType;
+                return comboBoxModuleTypes.SelectedItem == null ? null : ((Item)comboBoxModuleTypes.SelectedItem).ModuleType;
             }
         }
 
@@ -97,7 +94,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 2;
             this.buttonOK.Text = "Continue";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 

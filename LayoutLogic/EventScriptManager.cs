@@ -32,7 +32,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("get-active-event-script")]
         private void isEventScriptActive(LayoutEvent e) {
-            Guid scriptID = (Guid)e.Sender;
+            var scriptID = (Guid)(e.Sender ?? Guid.Empty);
 
             e.Info = activeScripts[scriptID];
         }

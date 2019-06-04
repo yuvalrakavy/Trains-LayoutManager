@@ -113,10 +113,9 @@ namespace LayoutManager.Components {
 
         public CommunicationInterfaceType InterfaceType {
             get {
-                if (Element.HasAttribute(A_InterfaceType))
-                    return (CommunicationInterfaceType)Enum.Parse(typeof(CommunicationInterfaceType), Element.GetAttribute(A_InterfaceType));
-                else
-                    return CommunicationInterfaceType.Serial;
+                return Element.HasAttribute(A_InterfaceType)
+                    ? (CommunicationInterfaceType)Enum.Parse(typeof(CommunicationInterfaceType), Element.GetAttribute(A_InterfaceType))
+                    : CommunicationInterfaceType.Serial;
             }
 
             set {
@@ -635,10 +634,7 @@ namespace LayoutManager.Components {
             get {
                 var cpr = ConnectionPointRef;
 
-                if (cpr != null && cpr.IsConnected)
-                    return (ModelComponent?)cpr.ConnectionPoint?.Component;
-                else
-                    return null;
+                return cpr != null && cpr.IsConnected ? (ModelComponent?)cpr.ConnectionPoint?.Component : null;
             }
         }
 
@@ -679,7 +675,7 @@ namespace LayoutManager.Components {
                 foreach (string moduleTypeName in moduleTypeNames)
                     moduleTypes.Add(LayoutModel.ControlManager.GetModuleType(moduleTypeName));
             }
-            else if(ConnectionPointRef.Module != null)
+            else if (ConnectionPointRef.Module != null)
                 moduleTypes.Add(ConnectionPointRef.Module.ModuleType);
 
             return GetAddressTextForModuleTypes(moduleTypes);

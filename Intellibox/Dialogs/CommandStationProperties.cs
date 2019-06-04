@@ -190,7 +190,7 @@ namespace Intellibox.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 8;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -208,7 +208,7 @@ namespace Intellibox.Dialogs {
             this.buttonSettings.Size = new System.Drawing.Size(75, 21);
             this.buttonSettings.TabIndex = 3;
             this.buttonSettings.Text = "Settings...";
-            this.buttonSettings.Click += new System.EventHandler(this.buttonSettings_Click);
+            this.buttonSettings.Click += this.buttonSettings_Click;
             // 
             // tabControl1
             // 
@@ -303,8 +303,8 @@ namespace Intellibox.Dialogs {
             this.listViewSO.TabIndex = 3;
             this.listViewSO.UseCompatibleStateImageBehavior = false;
             this.listViewSO.View = System.Windows.Forms.View.Details;
-            this.listViewSO.DoubleClick += new System.EventHandler(this.listViewSO_DoubleClick);
-            this.listViewSO.SelectedIndexChanged += new System.EventHandler(this.listViewSO_SelectedIndexChanged);
+            this.listViewSO.DoubleClick += this.listViewSO_DoubleClick;
+            this.listViewSO.SelectedIndexChanged += this.listViewSO_SelectedIndexChanged;
             // 
             // buttonSOdelete
             // 
@@ -315,7 +315,7 @@ namespace Intellibox.Dialogs {
             this.buttonSOdelete.TabIndex = 2;
             this.buttonSOdelete.Text = "&Delete";
             this.buttonSOdelete.UseVisualStyleBackColor = true;
-            this.buttonSOdelete.Click += new System.EventHandler(this.buttonSOdelete_Click);
+            this.buttonSOdelete.Click += this.buttonSOdelete_Click;
             // 
             // buttonSOedit
             // 
@@ -326,7 +326,7 @@ namespace Intellibox.Dialogs {
             this.buttonSOedit.TabIndex = 1;
             this.buttonSOedit.Text = "&Edit...";
             this.buttonSOedit.UseVisualStyleBackColor = true;
-            this.buttonSOedit.Click += new System.EventHandler(this.buttonSOedit_Click);
+            this.buttonSOedit.Click += this.buttonSOedit_Click;
             // 
             // buttonSOadd
             // 
@@ -337,7 +337,7 @@ namespace Intellibox.Dialogs {
             this.buttonSOadd.TabIndex = 0;
             this.buttonSOadd.Text = "&Add...";
             this.buttonSOadd.UseVisualStyleBackColor = true;
-            this.buttonSOadd.Click += new System.EventHandler(this.buttonSOadd_Click);
+            this.buttonSOadd.Click += this.buttonSOadd_Click;
             // 
             // label5
             // 
@@ -525,10 +525,9 @@ namespace Intellibox.Dialogs {
         private void buttonSettings_Click(object sender, EventArgs e) {
             string modeString = XmlInfo.DocumentElement["ModeString"].InnerText;
 
-            using (LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString)) {
-                if (d.ShowDialog(this) == DialogResult.OK)
-                    XmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
-            }
+            using LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
+            if (d.ShowDialog(this) == DialogResult.OK)
+                XmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
         }
 
         #region SOitem
@@ -555,11 +554,10 @@ namespace Intellibox.Dialogs {
         private void buttonSOadd_Click(object sender, EventArgs e) {
             SOinfo so = new SOinfo();
 
-            using (Dialogs.SOdefinition d = new SOdefinition(so)) {
-                if (d.ShowDialog(this) == DialogResult.OK)
-                    listViewSO.Items.Add(new SOitem(_SOcollection.Add(so)));
-                UpdateButtons();
-            }
+            using Dialogs.SOdefinition d = new SOdefinition(so);
+            if (d.ShowDialog(this) == DialogResult.OK)
+                listViewSO.Items.Add(new SOitem(_SOcollection.Add(so)));
+            UpdateButtons();
         }
 
         private void buttonSOedit_Click(object sender, EventArgs e) {
@@ -572,14 +570,13 @@ namespace Intellibox.Dialogs {
 
                 SOinfo tempSOinfo = new SOinfo(doc.DocumentElement);
 
-                using (var d = new Dialogs.SOdefinition(tempSOinfo)) {
-                    if (d.ShowDialog(this) == DialogResult.OK) {
-                        XmlElement oldElement = item.SOinfo.Element;
+                using var d = new Dialogs.SOdefinition(tempSOinfo);
+                if (d.ShowDialog(this) == DialogResult.OK) {
+                    XmlElement oldElement = item.SOinfo.Element;
 
-                        item.SOinfo.Element = (XmlElement)oldElement.OwnerDocument.ImportNode(tempSOinfo.Element, true);
-                        oldElement.ParentNode.ReplaceChild(item.SOinfo.Element, oldElement);
-                        item.Update();
-                    }
+                    item.SOinfo.Element = (XmlElement)oldElement.OwnerDocument.ImportNode(tempSOinfo.Element, true);
+                    oldElement.ParentNode.ReplaceChild(item.SOinfo.Element, oldElement);
+                    item.Update();
                 }
             }
             UpdateButtons();

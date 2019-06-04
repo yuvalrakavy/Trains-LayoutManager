@@ -113,7 +113,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonDeleteElement.Size = new System.Drawing.Size(24, 24);
             this.buttonDeleteElement.TabIndex = 3;
             this.toolTips.SetToolTip(this.buttonDeleteElement, "Delete element");
-            this.buttonDeleteElement.Click += new System.EventHandler(this.buttonDeleteElement_Click);
+            this.buttonDeleteElement.Click += this.buttonDeleteElement_Click;
             // 
             // imageListButtons
             // 
@@ -142,7 +142,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.listViewAttributes.Size = new System.Drawing.Size(110, 136);
             this.listViewAttributes.TabIndex = 5;
             this.listViewAttributes.View = System.Windows.Forms.View.Details;
-            this.listViewAttributes.DoubleClick += new System.EventHandler(this.buttonEditAttribute_Click);
+            this.listViewAttributes.DoubleClick += this.buttonEditAttribute_Click;
             // 
             // columnHeaderAttributeName
             // 
@@ -160,7 +160,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonEditAttribute.Size = new System.Drawing.Size(24, 24);
             this.buttonEditAttribute.TabIndex = 7;
             this.toolTips.SetToolTip(this.buttonEditAttribute, "Edit attribute value");
-            this.buttonEditAttribute.Click += new System.EventHandler(this.buttonEditAttribute_Click);
+            this.buttonEditAttribute.Click += this.buttonEditAttribute_Click;
             // 
             // buttonNewElement
             // 
@@ -173,7 +173,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonNewElement.Size = new System.Drawing.Size(24, 24);
             this.buttonNewElement.TabIndex = 1;
             this.toolTips.SetToolTip(this.buttonNewElement, "Add element");
-            this.buttonNewElement.Click += new System.EventHandler(this.buttonNewElement_Click);
+            this.buttonNewElement.Click += this.buttonNewElement_Click;
             // 
             // buttonEditElement
             // 
@@ -186,7 +186,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonEditElement.Size = new System.Drawing.Size(24, 24);
             this.buttonEditElement.TabIndex = 2;
             this.toolTips.SetToolTip(this.buttonEditElement, "Edit element value");
-            this.buttonEditElement.Click += new System.EventHandler(this.buttonEditElement_Click);
+            this.buttonEditElement.Click += this.buttonEditElement_Click;
             // 
             // buttonNewAttribute
             // 
@@ -199,7 +199,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonNewAttribute.Size = new System.Drawing.Size(24, 24);
             this.buttonNewAttribute.TabIndex = 6;
             this.toolTips.SetToolTip(this.buttonNewAttribute, "Add new attribute");
-            this.buttonNewAttribute.Click += new System.EventHandler(this.buttonNewAttribute_Click);
+            this.buttonNewAttribute.Click += this.buttonNewAttribute_Click;
             // 
             // buttonDeleteAttribute
             // 
@@ -212,7 +212,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonDeleteAttribute.Size = new System.Drawing.Size(24, 24);
             this.buttonDeleteAttribute.TabIndex = 8;
             this.toolTips.SetToolTip(this.buttonDeleteAttribute, "Delete attribute");
-            this.buttonDeleteAttribute.Click += new System.EventHandler(this.buttonDeleteAttribute_Click);
+            this.buttonDeleteAttribute.Click += this.buttonDeleteAttribute_Click;
             // 
             // treeViewElements
             // 
@@ -224,14 +224,14 @@ namespace LayoutManager.CommonUI.Controls {
             this.treeViewElements.SelectedImageIndex = -1;
             this.treeViewElements.Size = new System.Drawing.Size(116, 164);
             this.treeViewElements.TabIndex = 0;
-            this.treeViewElements.DoubleClick += new System.EventHandler(this.buttonEditElement_Click);
-            this.treeViewElements.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewElements_AfterSelect);
+            this.treeViewElements.DoubleClick += this.buttonEditElement_Click;
+            this.treeViewElements.AfterSelect += this.treeViewElements_AfterSelect;
             // 
             // menuItemText
             // 
             this.menuItemText.Index = 1;
             this.menuItemText.Text = "Text";
-            this.menuItemText.Click += new System.EventHandler(this.menuItemText_Click);
+            this.menuItemText.Click += this.menuItemText_Click;
             // 
             // contextMenuAddElement
             // 
@@ -243,7 +243,7 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             this.menuItemAddElement.Index = 0;
             this.menuItemAddElement.Text = "Element";
-            this.menuItemAddElement.Click += new System.EventHandler(this.menuItemAddElement_Click);
+            this.menuItemAddElement.Click += this.menuItemAddElement_Click;
             // 
             // labelElementAttributes
             // 
@@ -383,10 +383,7 @@ namespace LayoutManager.CommonUI.Controls {
             get {
                 ElementTreeNode selected = (ElementTreeNode)treeViewElements.SelectedNode;
 
-                if (selected != null)
-                    return selected.XmlNode;
-                else
-                    return null;
+                return selected?.XmlNode;
             }
         }
 
@@ -403,10 +400,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             public new string Text {
                 get {
-                    if (node.NodeType == XmlNodeType.Text)
-                        return node.Value;
-                    else
-                        return node.Name;
+                    return node.NodeType == XmlNodeType.Text ? node.Value : node.Name;
                 }
 
                 set {

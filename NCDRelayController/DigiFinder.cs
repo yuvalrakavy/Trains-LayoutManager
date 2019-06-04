@@ -29,60 +29,59 @@ namespace DigiFinder {
         private readonly byte[] replyBuffer = new byte[512];
 
         public async Task DiscoverDigiDevices(ICollection<DigiDevice> devices, int timeout = 4000) {
-            using (var discoverySocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp)) {
-                var endPoint = new IPEndPoint(IPAddress.Any, 0);
+            using var discoverySocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            var endPoint = new IPEndPoint(IPAddress.Any, 0);
 
-                discoverySocket.Bind(endPoint);
+            discoverySocket.Bind(endPoint);
 
-                // Listen to responses
-                EndPoint remoteEndPoint = new IPEndPoint(0, 0);
-                AsyncCallback onReply = null;
+            // Listen to responses
+            EndPoint remoteEndPoint = new IPEndPoint(0, 0);
+            AsyncCallback onReply = null;
 
-                onReply = (IAsyncResult ia) => {
-                    try {
-                        var count = discoverySocket.EndReceiveFrom(ia, ref remoteEndPoint);
+            onReply = (IAsyncResult ia) => {
+                try {
+                    var count = discoverySocket.EndReceiveFrom(ia, ref remoteEndPoint);
 
-                        // Parse reply and build a new DigiDevice entry
-                        DigiReplyPacket replyPacket = new DigiReplyPacket(replyBuffer);
-                        byte[] fieldData;
-                        DigiDevice device = new DigiDevice();
+                    // Parse reply and build a new DigiDevice entry
+                    DigiReplyPacket replyPacket = new DigiReplyPacket(replyBuffer);
+                    byte[] fieldData;
+                    DigiDevice device = new DigiDevice();
 
-                        while ((fieldData = replyPacket.GetField(out DigiReplyFieldType fieldType)) != null) {
-                            System.Diagnostics.Trace.WriteLine("Got field: " + fieldType.ToString());
+                    while ((fieldData = replyPacket.GetField(out DigiReplyFieldType fieldType)) != null) {
+                        System.Diagnostics.Trace.WriteLine("Got field: " + fieldType.ToString());
 
-                            switch (fieldType) {
-                                case DigiReplyFieldType.DeviceName: device.DeviceName = DigiReplyPacket.GetString(fieldData); break;
-                                case DigiReplyFieldType.DhcpEnabled: device.DhcpEnabled = fieldData[0] != 0; break;
-                                case DigiReplyFieldType.EncryptedRealPortNumber: device.EncryptedRealPortNumber = DigiReplyPacket.GetInt32(fieldData); break;
-                                case DigiReplyFieldType.FirmwareDescription: device.FirmwareDescription = DigiReplyPacket.GetString(fieldData); break;
-                                case DigiReplyFieldType.IpAddress: device.IpAddress = DigiReplyPacket.GetIpAddress(fieldData); break;
-                                case DigiReplyFieldType.IpGateway: device.GatewayAddress = DigiReplyPacket.GetIpAddress(fieldData); break;
-                                case DigiReplyFieldType.MacAddress: device.MacAddress = fieldData; break;
-                                case DigiReplyFieldType.NetMask: device.NetMask = DigiReplyPacket.GetIpAddress(fieldData); break;
-                                case DigiReplyFieldType.RealPortNumber: device.RealPortNumber = DigiReplyPacket.GetInt32(fieldData); break;
-                                case DigiReplyFieldType.SerialPortCount: device.PortCount = fieldData[0]; break;
-                            }
+                        switch (fieldType) {
+                            case DigiReplyFieldType.DeviceName: device.DeviceName = DigiReplyPacket.GetString(fieldData); break;
+                            case DigiReplyFieldType.DhcpEnabled: device.DhcpEnabled = fieldData[0] != 0; break;
+                            case DigiReplyFieldType.EncryptedRealPortNumber: device.EncryptedRealPortNumber = DigiReplyPacket.GetInt32(fieldData); break;
+                            case DigiReplyFieldType.FirmwareDescription: device.FirmwareDescription = DigiReplyPacket.GetString(fieldData); break;
+                            case DigiReplyFieldType.IpAddress: device.IpAddress = DigiReplyPacket.GetIpAddress(fieldData); break;
+                            case DigiReplyFieldType.IpGateway: device.GatewayAddress = DigiReplyPacket.GetIpAddress(fieldData); break;
+                            case DigiReplyFieldType.MacAddress: device.MacAddress = fieldData; break;
+                            case DigiReplyFieldType.NetMask: device.NetMask = DigiReplyPacket.GetIpAddress(fieldData); break;
+                            case DigiReplyFieldType.RealPortNumber: device.RealPortNumber = DigiReplyPacket.GetInt32(fieldData); break;
+                            case DigiReplyFieldType.SerialPortCount: device.PortCount = fieldData[0]; break;
                         }
-
-                        devices.Add(device);
-
-                        // Start to get the next response
-                        discoverySocket.BeginReceiveFrom(replyBuffer, 0, replyBuffer.Length, SocketFlags.None, ref remoteEndPoint, onReply, null);
                     }
-                    catch (ObjectDisposedException) {
-                    }
-                };
 
-                discoverySocket.BeginReceiveFrom(replyBuffer, 0, replyBuffer.Length, SocketFlags.None, ref remoteEndPoint, onReply, null);
+                    devices.Add(device);
 
-                // Send the request
-                var digiEndpoint = new IPEndPoint(DigiMulticastGroup, DigiMulticastPort);
-                byte[] buffer = new DiscoveryDigiPacket().GetBuffer();
+                    // Start to get the next response
+                    discoverySocket.BeginReceiveFrom(replyBuffer, 0, replyBuffer.Length, SocketFlags.None, ref remoteEndPoint, onReply, null);
+                }
+                catch (ObjectDisposedException) {
+                }
+            };
 
-                discoverySocket.SendTo(buffer, digiEndpoint);
+            discoverySocket.BeginReceiveFrom(replyBuffer, 0, replyBuffer.Length, SocketFlags.None, ref remoteEndPoint, onReply, null);
 
-                await Task.Delay(timeout);
-            }
+            // Send the request
+            var digiEndpoint = new IPEndPoint(DigiMulticastGroup, DigiMulticastPort);
+            byte[] buffer = new DiscoveryDigiPacket().GetBuffer();
+
+            discoverySocket.SendTo(buffer, digiEndpoint);
+
+            await Task.Delay(timeout);
         }
     }
 

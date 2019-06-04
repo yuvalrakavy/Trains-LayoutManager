@@ -168,9 +168,7 @@ namespace LayoutManager.Model {
     public class LocomotiveAddressMap : Dictionary<int, LocomotiveAddressMapEntryBase> {
         public new LocomotiveAddressMapEntryBase? this[int address] {
             get {
-                if (TryGetValue(address, out LocomotiveAddressMapEntryBase entry))
-                    return entry;
-                return null;
+                return TryGetValue(address, out LocomotiveAddressMapEntryBase entry) ? entry : null;
             }
         }
     }
@@ -375,10 +373,7 @@ namespace LayoutManager.Model {
             var operationContexts = LayoutModel.StateManager.OperationStates[ContextSectionName];
             string key = GetKey(operationName, participant);
 
-            if (operationContexts.HasState(key))
-                return operationContexts.Get<LayoutOperationContext>(key);
-            else
-                return null;
+            return operationContexts.HasState(key) ? operationContexts.Get<LayoutOperationContext>(key) : null;
         }
 
         /// <summary>
@@ -447,10 +442,7 @@ namespace LayoutManager.Model {
         public static CancellationToken GetCancellationToken(this LayoutEvent theEvent) {
             var context = GetOperationContext(theEvent);
 
-            if (context != null)
-                return context.CancelationToken;
-            else
-                return System.Threading.CancellationToken.None;
+            return context != null ? context.CancelationToken : System.Threading.CancellationToken.None;
         }
     }
 
@@ -557,10 +549,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public TrainLocationInfo? LocomotiveLocation {
             get {
-                if (LocationsElement.HasChildNodes)
-                    return new TrainLocationInfo(this, (XmlElement)LocationsElement.FirstChild);
-                else
-                    return null;
+                return LocationsElement.HasChildNodes ? new TrainLocationInfo(this, (XmlElement)LocationsElement.FirstChild) : null;
             }
         }
 
@@ -571,19 +560,13 @@ namespace LayoutManager.Model {
             get {
                 var locomotiveLocation = LocomotiveLocation;
 
-                if (locomotiveLocation != null)
-                    return LayoutModel.Blocks[locomotiveLocation.BlockId];
-                else
-                    return null;
+                return locomotiveLocation != null ? LayoutModel.Blocks[locomotiveLocation.BlockId] : null;
             }
         }
 
         public TrainLocationInfo? LastCarLocation {
             get {
-                if (LocationsElement.HasChildNodes)
-                    return new TrainLocationInfo(this, (XmlElement)LocationsElement.LastChild);
-                else
-                    return null;
+                return LocationsElement.HasChildNodes ? new TrainLocationInfo(this, (XmlElement)LocationsElement.LastChild) : null;
             }
         }
 
@@ -591,10 +574,7 @@ namespace LayoutManager.Model {
             get {
                 var lastCarLocation = LastCarLocation;
 
-                if (lastCarLocation != null)
-                    return LayoutModel.Blocks[lastCarLocation.BlockId];
-                else
-                    return null;
+                return lastCarLocation != null ? LayoutModel.Blocks[lastCarLocation.BlockId] : null;
             }
         }
 
@@ -660,10 +640,9 @@ namespace LayoutManager.Model {
                     }
                 }
 
-                if (speedConversionState == SpeedConversionState.NotNeeded)
-                    return SpeedInSteps;
-                else
-                    return (int)Math.Round(SpeedInSteps * trainToLogicalSpeedFactor);
+                return speedConversionState == SpeedConversionState.NotNeeded
+                    ? SpeedInSteps
+                    : (int)Math.Round(SpeedInSteps * trainToLogicalSpeedFactor);
             }
 
             set {
@@ -867,9 +846,7 @@ namespace LayoutManager.Model {
         private static bool HasPendingOperation(IObjectHasId participant) {
             if (LayoutOperationContext.HasPendingOperation("TrainPlacement", participant))
                 return true;
-            if (LayoutOperationContext.HasPendingOperation("TrainRemoval", participant))
-                return true;
-            return false;
+            return LayoutOperationContext.HasPendingOperation("TrainRemoval", participant);
         }
 
         /// <summary>
@@ -882,10 +859,7 @@ namespace LayoutManager.Model {
                     return false;
                 if (HasPendingOperation(this))
                     return false;
-                if ((from trainLoco in Locomotives select trainLoco.Locomotive).Any(l => HasPendingOperation(l)))
-                    return false;
-
-                return true;
+                return !(from trainLoco in Locomotives select trainLoco.Locomotive).Any(l => HasPendingOperation(l));
             }
         }
 
@@ -894,10 +868,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool IsPowered {
             get {
-                if (Power == null)
-                    return false;
-                else
-                    return Power.Type == LayoutPowerType.Digital;
+                return Power == null ? false : Power.Type == LayoutPowerType.Digital;
             }
         }
 
@@ -1130,10 +1101,7 @@ namespace LayoutManager.Model {
                 FunctionStatesElement.AppendChild(resultElement);
             }
 
-            if (resultElement != null)
-                return new LocomotiveFunctionInfo(resultElement);
-            else
-                return null;
+            return resultElement != null ? new LocomotiveFunctionInfo(resultElement) : null;
         }
 
         protected LocomotiveFunctionInfo? FindFunctionState(int functionNumber, Guid locomotiveId) {
@@ -1159,10 +1127,9 @@ namespace LayoutManager.Model {
         }
 
         private string getFunctionXml(String functionName, Guid locomotiveId) {
-            if (locomotiveId != Guid.Empty)
-                return $"<Function Name='{functionName}' LocomotiveID='{locomotiveId}' />";
-            else
-                return $"<Function Name='{functionName}' />";
+            return locomotiveId != Guid.Empty
+                ? $"<Function Name='{functionName}' LocomotiveID='{locomotiveId}' />"
+                : $"<Function Name='{functionName}' />";
         }
 
         [LayoutEventDef("locomotive-function-state-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
@@ -1221,10 +1188,7 @@ namespace LayoutManager.Model {
         public bool GetFunctionState(String functionName, Guid locomotiveId, bool defaultValue = false) {
             var function = FindFunctionState(functionName, locomotiveId, false);
 
-            if (function == null || !function.Element.HasAttribute(A_State))
-                return defaultValue;
-            else
-                return function.State;
+            return function == null || !function.Element.HasAttribute(A_State) ? defaultValue : function.State;
         }
 
         /// <summary>
@@ -1237,10 +1201,7 @@ namespace LayoutManager.Model {
         public bool GetFunctionState(int functionNumber, Guid locomotiveId, bool defaultValue = false) {
             var function = FindFunctionState(functionNumber, locomotiveId);
 
-            if (function == null || !function.Element.HasAttribute(A_State))
-                return defaultValue;
-            else
-                return function.State;
+            return function == null || !function.Element.HasAttribute(A_State) ? defaultValue : function.State;
         }
 
         /// <summary>
@@ -1255,7 +1216,7 @@ namespace LayoutManager.Model {
                 elements = FunctionStatesElement.SelectNodes($"FunctionState[@LocomotiveID='{locomotiveId}']");
 
             foreach (XmlElement functionStateElement in elements) {
-                if((bool?)functionStateElement.AttributeValue(A_State) ?? false)
+                if ((bool?)functionStateElement.AttributeValue(A_State) ?? false)
                     return true;
             }
 
@@ -1487,7 +1448,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The time in which the train had crossed the track contact which caused it to enter this block
         /// </summary>
-        public long BlockEdgeCrossingTime => (Int64)AttributeValue(A_BlockEdgeCrossingTime) ;
+        public long BlockEdgeCrossingTime => (Int64)AttributeValue(A_BlockEdgeCrossingTime);
 
         public XmlElement LocomotiveStateElement => (XmlElement)Element.ParentNode.ParentNode;
 
@@ -1559,9 +1520,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public TrainStateInfo? this[Guid id] {
             get {
-                if (IdToTrainStateElement.TryGetValue(id, out XmlElement trainStateElement))
-                    return new TrainStateInfo(trainStateElement);
-                return null;
+                return IdToTrainStateElement.TryGetValue(id, out XmlElement trainStateElement) ? new TrainStateInfo(trainStateElement) : null;
             }
         }
 
@@ -1751,9 +1710,7 @@ namespace LayoutManager.Model {
         public bool Contains(Guid componentId, string topicName) {
             XmlElement stateElement = GetComponentStateElement(componentId);
 
-            if (stateElement != null)
-                return stateElement[topicName] != null;
-            return false;
+            return stateElement != null ? stateElement[topicName] != null : false;
         }
 
         public bool Contains(ModelComponent component, string topicName) => Contains(component.Id, topicName);
@@ -1826,7 +1783,7 @@ namespace LayoutManager.Model {
         public void RemoveEmpty() {
             var removeList = (from XmlElement e in this.Element where e.ChildNodes.Count == 0 select e).ToList();
 
-            foreach(var componentStateElement in removeList)
+            foreach (var componentStateElement in removeList)
                 Remove((Guid)componentStateElement.AttributeValue(A_Id));
         }
 
@@ -1985,10 +1942,7 @@ namespace LayoutManager.Model {
 
         public string NameAndStatus {
             get {
-                if (Active)
-                    return Name + " (Active)";
-                else
-                    return Name;
+                return Active ? Name + " (Active)" : Name;
             }
         }
 
@@ -2267,9 +2221,9 @@ namespace LayoutManager.Model {
         /// </summary>
         public string Text {
             get {
-                if (EventScriptElement == null)
-                    return "(Policy not set)";
-                return (string)EventManager.Event(new LayoutEvent("get-event-script-description", EventScriptElement))!;
+                return EventScriptElement == null
+                    ? "(Policy not set)"
+                    : (string)EventManager.Event(new LayoutEvent("get-event-script-description", EventScriptElement))!;
             }
         }
 
@@ -2385,7 +2339,7 @@ namespace LayoutManager.Model {
         public void Add(LayoutPolicyInfo policy) {
             if (policy.GlobalPolicy)
                 globalPoliciesElement.AppendChild(policy.Element);
-            else if(policiesElement != null)
+            else if (policiesElement != null)
                 policiesElement.AppendChild(policy.Element);
 
             policies.Add(policy);
@@ -2397,7 +2351,7 @@ namespace LayoutManager.Model {
                 EventManager.Event(new LayoutEvent("policy-deleted", policy, this));
                 if (policy.GlobalPolicy)
                     globalPoliciesElement.RemoveChild(policy.Element);
-                else if(policiesElement != null)
+                else if (policiesElement != null)
                     policiesElement.RemoveChild(policy.Element);
             }
 
@@ -2543,10 +2497,7 @@ namespace LayoutManager.Model {
         public static MotionRampInfo? GetRamp(XmlElement element, string role) {
             XmlElement rampElement = (XmlElement)element.SelectSingleNode("Ramp[@Role='" + role + "']");
 
-            if (rampElement == null)
-                return null;
-            else
-                return new MotionRampInfo(rampElement);
+            return rampElement == null ? null : new MotionRampInfo(rampElement);
         }
 
         /// <summary>

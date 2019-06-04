@@ -37,10 +37,7 @@ namespace LayoutManager.CommonUI.Controls {
             get {
                 Object selectedObj = base.SelectedNode;
 
-                if (selectedObj is TrackLinkTreeNode)
-                    return ((TrackLinkTreeNode)selectedObj).Link;
-
-                return null;
+                return selectedObj is TrackLinkTreeNode ? ((TrackLinkTreeNode)selectedObj).Link : null;
             }
 
             set {

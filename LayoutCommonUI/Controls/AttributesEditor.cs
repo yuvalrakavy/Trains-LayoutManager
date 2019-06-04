@@ -129,10 +129,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private AttributeItem getSelected() {
-            if (listViewAttributes.SelectedItems.Count == 0)
-                return null;
-            else
-                return (AttributeItem)listViewAttributes.SelectedItems[0];
+            return listViewAttributes.SelectedItems.Count == 0 ? null : (AttributeItem)listViewAttributes.SelectedItems[0];
         }
 
         #endregion
@@ -181,8 +178,8 @@ namespace LayoutManager.CommonUI.Controls {
             this.listViewAttributes.Size = new System.Drawing.Size(240, 160);
             this.listViewAttributes.TabIndex = 0;
             this.listViewAttributes.View = System.Windows.Forms.View.Details;
-            this.listViewAttributes.DoubleClick += new System.EventHandler(this.buttonEdit_Click);
-            this.listViewAttributes.SelectedIndexChanged += new System.EventHandler(this.updateButtons);
+            this.listViewAttributes.DoubleClick += this.buttonEdit_Click;
+            this.listViewAttributes.SelectedIndexChanged += this.updateButtons;
             // 
             // columnHeaderName
             // 
@@ -207,7 +204,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonAdd.Size = new System.Drawing.Size(56, 20);
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "&Add";
-            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            this.buttonAdd.Click += this.buttonAdd_Click;
             // 
             // buttonEdit
             // 
@@ -217,7 +214,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonEdit.Size = new System.Drawing.Size(56, 20);
             this.buttonEdit.TabIndex = 1;
             this.buttonEdit.Text = "&Edit";
-            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
+            this.buttonEdit.Click += this.buttonEdit_Click;
             // 
             // buttonRemove
             // 
@@ -227,7 +224,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonRemove.Size = new System.Drawing.Size(56, 20);
             this.buttonRemove.TabIndex = 1;
             this.buttonRemove.Text = "&Remove";
-            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+            this.buttonRemove.Click += this.buttonRemove_Click;
             // 
             // AttributesEditor
             // 

@@ -110,7 +110,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.listViewRamps.Size = new System.Drawing.Size(288, 184);
             this.listViewRamps.TabIndex = 0;
             this.listViewRamps.View = System.Windows.Forms.View.Details;
-            this.listViewRamps.SelectedIndexChanged += new System.EventHandler(this.updateButtons);
+            this.listViewRamps.SelectedIndexChanged += this.updateButtons;
             // 
             // buttonAdd
             // 
@@ -120,7 +120,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonAdd.Size = new System.Drawing.Size(67, 23);
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "&Add...";
-            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            this.buttonAdd.Click += this.buttonAdd_Click;
             // 
             // buttonEdit
             // 
@@ -130,7 +130,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonEdit.Size = new System.Drawing.Size(67, 23);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit...";
-            this.buttonEdit.Click += new System.EventHandler(this.buttonEdit_Click);
+            this.buttonEdit.Click += this.buttonEdit_Click;
             // 
             // buttonRemove
             // 
@@ -140,7 +140,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonRemove.Size = new System.Drawing.Size(67, 23);
             this.buttonRemove.TabIndex = 3;
             this.buttonRemove.Text = "&Remove";
-            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+            this.buttonRemove.Click += this.buttonRemove_Click;
             // 
             // buttonMoveDown
             // 
@@ -152,7 +152,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonMoveDown.Name = "buttonMoveDown";
             this.buttonMoveDown.Size = new System.Drawing.Size(24, 20);
             this.buttonMoveDown.TabIndex = 6;
-            this.buttonMoveDown.Click += new System.EventHandler(this.buttonMoveDown_Click);
+            this.buttonMoveDown.Click += this.buttonMoveDown_Click;
             // 
             // imageListButttons
             // 
@@ -171,7 +171,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonMoveUp.Name = "buttonMoveUp";
             this.buttonMoveUp.Size = new System.Drawing.Size(24, 20);
             this.buttonMoveUp.TabIndex = 5;
-            this.buttonMoveUp.Click += new System.EventHandler(this.buttonMoveUp_Click);
+            this.buttonMoveUp.Click += this.buttonMoveUp_Click;
             // 
             // buttonClose
             // 
@@ -181,7 +181,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(67, 23);
             this.buttonClose.TabIndex = 4;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.Click += this.buttonClose_Click;
             // 
             // columnHeaderName
             // 
@@ -225,9 +225,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private RampItem getSelected() {
-            if (listViewRamps.SelectedItems.Count == 0)
-                return null;
-            return (RampItem)listViewRamps.SelectedItems[0];
+            return listViewRamps.SelectedItems.Count == 0 ? null : (RampItem)listViewRamps.SelectedItems[0];
         }
 
         private void buttonEdit_Click(object sender, System.EventArgs e) {

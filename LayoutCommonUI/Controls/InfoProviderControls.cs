@@ -168,8 +168,8 @@ namespace LayoutManager.CommonUI.Controls {
                     if (Enabled)
                         g.FillRectangle(Brushes.WhiteSmoke, x, y, previewGridSize.Width, previewGridSize.Height);
                     else {
-                        using (Brush b = new SolidBrush(Parent.BackColor))
-                            g.FillRectangle(b, x, y, previewGridSize.Width, previewGridSize.Height);
+                        using Brush b = new SolidBrush(Parent.BackColor);
+                        g.FillRectangle(b, x, y, previewGridSize.Width, previewGridSize.Height);
                     }
 
                     g.DrawLine(Pens.DarkGray, x + previewGridSize.Width, y, x + previewGridSize.Width, y + previewGridSize.Height);
@@ -189,7 +189,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         private Rectangle drawSampleComponent(Graphics g) {
             Point ml = new Point((ClientSize.Width / 2) / (previewGridSize.Width + 1), (ClientSize.Height / 2) / (previewGridSize.Height + 1));
-            Rectangle r = new Rectangle(ml.X * previewGridSize.Width + ml.X - 1, ml.Y * previewGridSize.Height + ml.Y - 1,
+            Rectangle r = new Rectangle((ml.X * previewGridSize.Width) + ml.X - 1, (ml.Y * previewGridSize.Height) + ml.Y - 1,
                 previewGridSize.Width + 1, previewGridSize.Height + 1);
 
             using (Pen p = new Pen(Brushes.Black, 2)) {
@@ -218,7 +218,7 @@ namespace LayoutManager.CommonUI.Controls {
         private void drawPositionedRect(Graphics g, Rectangle rectComponent) {
             int d = distance * previewGridSize.Width / areaGridSize.Width;
             RectangleF rcRegion;
-            PointF origin = new PointF(rectComponent.Left + previewGridSize.Width / 2, rectComponent.Top + previewGridSize.Height / 2);
+            PointF origin = new PointF(rectComponent.Left + (previewGridSize.Width / 2), rectComponent.Top + (previewGridSize.Height / 2));
 
             switch (side) {
                 case LayoutDrawingSide.Top:
@@ -245,7 +245,7 @@ namespace LayoutManager.CommonUI.Controls {
                     break;
 
                 case LayoutDrawingSide.Center:
-                    rcRegion = new RectangleF(new PointF(origin.X - rectSize.Width / 2, origin.Y - rectSize.Height / 2),
+                    rcRegion = new RectangleF(new PointF(origin.X - (rectSize.Width / 2), origin.Y - (rectSize.Height / 2)),
                         rectSize);
                     break;
 
@@ -253,9 +253,8 @@ namespace LayoutManager.CommonUI.Controls {
                     throw new ArgumentException("Invalid LayoutDrawingSide value");
             }
 
-            using (Pen p = new Pen(Brushes.BlueViolet, 2)) {
-                g.DrawRectangle(p, Rectangle.Ceiling(rcRegion));
-            }
+            using Pen p = new Pen(Brushes.BlueViolet, 2);
+            g.DrawRectangle(p, Rectangle.Ceiling(rcRegion));
         }
 
         protected override void OnPaintBackground(PaintEventArgs e) {

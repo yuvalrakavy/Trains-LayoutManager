@@ -62,10 +62,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
                     return LayoutComponentConnectionPoint.L;
                 else if (radioButtonTop.Checked)
                     return LayoutComponentConnectionPoint.T;
-                else if (radioButtonBottom.Checked)
-                    return LayoutComponentConnectionPoint.B;
-                else
-                    return LayoutComponentConnectionPoint.Empty;
+                else return radioButtonBottom.Checked ? (LayoutComponentConnectionPoint)LayoutComponentConnectionPoint.B : (LayoutComponentConnectionPoint)LayoutComponentConnectionPoint.Empty;
             }
         }
 
@@ -90,14 +87,13 @@ namespace LayoutManager.Tools.EventScriptDialogs {
                 case LayoutComponentConnectionPoint.B: g.RotateTransform(90); break;
             }
 
-            using (Brush b = new LinearGradientBrush(new Point(-8, 0), new Point(30, 0), Color.DarkBlue, Color.Cyan)) {
-                Point[] arrow = new Point[] {
+            using Brush b = new LinearGradientBrush(new Point(-8, 0), new Point(30, 0), Color.DarkBlue, Color.Cyan);
+            Point[] arrow = new Point[] {
                     new Point(-8, 0), new Point(0, 10), new Point(0, 4), new Point(30, 4),
                     new Point(30, -4), new Point(0, -4), new Point(0, -10) };
 
-                g.FillPolygon(b, arrow);
-                g.DrawPolygon(Pens.Black, arrow);
-            }
+            g.FillPolygon(b, arrow);
+            g.DrawPolygon(Pens.Black, arrow);
         }
 
         private void panelArrow_MouseClick(object sender, MouseEventArgs e) {

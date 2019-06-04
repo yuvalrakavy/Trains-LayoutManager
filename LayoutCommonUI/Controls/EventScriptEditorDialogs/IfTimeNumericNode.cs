@@ -98,8 +98,8 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.numericUpDownValue.Name = "numericUpDownValue";
             this.numericUpDownValue.Size = new System.Drawing.Size(48, 20);
             this.numericUpDownValue.TabIndex = 1;
-            this.numericUpDownValue.KeyDown += new System.Windows.Forms.KeyEventHandler(this.numericUpDownValue_KeyDown);
-            this.numericUpDownValue.ValueChanged += new System.EventHandler(this.numericUpDownValue_ValueChanged);
+            this.numericUpDownValue.KeyDown += this.numericUpDownValue_KeyDown;
+            this.numericUpDownValue.ValueChanged += this.numericUpDownValue_ValueChanged;
             // 
             // radioButtonRange
             // 
@@ -115,8 +115,8 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.numericUpDownFrom.Name = "numericUpDownFrom";
             this.numericUpDownFrom.Size = new System.Drawing.Size(48, 20);
             this.numericUpDownFrom.TabIndex = 3;
-            this.numericUpDownFrom.KeyDown += new System.Windows.Forms.KeyEventHandler(this.numericUpDownFromOrTo_KeyDown);
-            this.numericUpDownFrom.ValueChanged += new System.EventHandler(this.numericUpDownFromOrTo_ValueChanged);
+            this.numericUpDownFrom.KeyDown += this.numericUpDownFromOrTo_KeyDown;
+            this.numericUpDownFrom.ValueChanged += this.numericUpDownFromOrTo_ValueChanged;
             // 
             // label1
             // 
@@ -133,8 +133,8 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.numericUpDownTo.Name = "numericUpDownTo";
             this.numericUpDownTo.Size = new System.Drawing.Size(48, 20);
             this.numericUpDownTo.TabIndex = 5;
-            this.numericUpDownTo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.numericUpDownFromOrTo_KeyDown);
-            this.numericUpDownTo.ValueChanged += new System.EventHandler(this.numericUpDownFromOrTo_ValueChanged);
+            this.numericUpDownTo.KeyDown += this.numericUpDownFromOrTo_KeyDown;
+            this.numericUpDownTo.ValueChanged += this.numericUpDownFromOrTo_ValueChanged;
             // 
             // buttonOK
             // 
@@ -142,7 +142,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 6;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 
@@ -151,7 +151,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.TabIndex = 7;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // IfTimeNumericNode
             // 

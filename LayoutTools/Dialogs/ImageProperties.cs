@@ -213,7 +213,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonBrowse.Size = new System.Drawing.Size(64, 20);
             this.buttonBrowse.TabIndex = 2;
             this.buttonBrowse.Text = "&Browse...";
-            this.buttonBrowse.Click += new System.EventHandler(this.buttonBrowse_Click);
+            this.buttonBrowse.Click += this.buttonBrowse_Click;
             // 
             // groupBox1
             // 
@@ -242,7 +242,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.linkMenuHorizontalUnits.TabStop = true;
             this.linkMenuHorizontalUnits.Text = "pixels";
             this.linkMenuHorizontalUnits.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkMenuHorizontalUnits.Click += new System.EventHandler(this.linkMenuHorizontalUnits_Click);
+            this.linkMenuHorizontalUnits.Click += this.linkMenuHorizontalUnits_Click;
             // 
             // numericUpDownWidth
             // 
@@ -265,7 +265,7 @@ namespace LayoutManager.Tools.Dialogs {
                                                                              0,
                                                                              0,
                                                                              0});
-            this.numericUpDownWidth.Enter += new System.EventHandler(this.numericUpDownWidth_Enter);
+            this.numericUpDownWidth.Enter += this.numericUpDownWidth_Enter;
             // 
             // radioButtonWidthSet
             // 
@@ -274,7 +274,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonWidthSet.Size = new System.Drawing.Size(89, 16);
             this.radioButtonWidthSet.TabIndex = 1;
             this.radioButtonWidthSet.Text = "Set width to:";
-            this.radioButtonWidthSet.CheckedChanged += new System.EventHandler(this.onUpdateButtons);
+            this.radioButtonWidthSet.CheckedChanged += this.onUpdateButtons;
             // 
             // radioButtonWidthOriginal
             // 
@@ -283,7 +283,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonWidthOriginal.Size = new System.Drawing.Size(287, 16);
             this.radioButtonWidthOriginal.TabIndex = 0;
             this.radioButtonWidthOriginal.Text = "Keep original width";
-            this.radioButtonWidthOriginal.CheckedChanged += new System.EventHandler(this.onUpdateButtons);
+            this.radioButtonWidthOriginal.CheckedChanged += this.onUpdateButtons;
             // 
             // groupBox2
             // 
@@ -312,7 +312,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.linkMenuVerticalUnits.TabStop = true;
             this.linkMenuVerticalUnits.Text = "pixels";
             this.linkMenuVerticalUnits.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkMenuVerticalUnits.Click += new System.EventHandler(this.linkMenuVerticalUnits_Click);
+            this.linkMenuVerticalUnits.Click += this.linkMenuVerticalUnits_Click;
             // 
             // numericUpDownHeight
             // 
@@ -335,7 +335,7 @@ namespace LayoutManager.Tools.Dialogs {
                                                                               0,
                                                                               0,
                                                                               0});
-            this.numericUpDownHeight.Enter += new System.EventHandler(this.numericUpDownHeight_Enter);
+            this.numericUpDownHeight.Enter += this.numericUpDownHeight_Enter;
             // 
             // radioButtonHeightSet
             // 
@@ -344,7 +344,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonHeightSet.Size = new System.Drawing.Size(89, 16);
             this.radioButtonHeightSet.TabIndex = 1;
             this.radioButtonHeightSet.Text = "Set height to:";
-            this.radioButtonHeightSet.CheckedChanged += new System.EventHandler(this.onUpdateButtons);
+            this.radioButtonHeightSet.CheckedChanged += this.onUpdateButtons;
             // 
             // radioButtonHeightOriginal
             // 
@@ -353,7 +353,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonHeightOriginal.Size = new System.Drawing.Size(295, 16);
             this.radioButtonHeightOriginal.TabIndex = 0;
             this.radioButtonHeightOriginal.Text = "Keep original height";
-            this.radioButtonHeightOriginal.CheckedChanged += new System.EventHandler(this.onUpdateButtons);
+            this.radioButtonHeightOriginal.CheckedChanged += this.onUpdateButtons;
             // 
             // groupBox3
             // 
@@ -534,7 +534,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 9;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += this.buttonOK_Click;
             // 
             // buttonCancel
             // 

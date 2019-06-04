@@ -12,7 +12,7 @@ using LayoutManager.CommonUI;
 #endregion
 
 namespace LayoutManager.Tools.Dialogs {
-    #pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060
     internal partial class TestLayoutObject : Form {
         private const string A_ReverseLogic = "ReverseLogic";
         private ControlConnectionPointReference connectionPointRef;
@@ -77,10 +77,10 @@ namespace LayoutManager.Tools.Dialogs {
                 buttonConnect.Text = "&Disconnect";
 
             if (component == null)
-				Text = connectionPointRef.Module.ConnectionPoints.GetLabel(connectionPointRef.Index, true) +
+                Text = connectionPointRef.Module.ConnectionPoints.GetLabel(connectionPointRef.Index, true) +
                     " on " + connectionPointRef.Module.Bus.Name;
             else {
-				Text = connectionPointRef.ConnectionPoint.DisplayName + " at " +
+                Text = connectionPointRef.ConnectionPoint.DisplayName + " at " +
                 connectionPointRef.Module.ModuleType.GetConnectionPointAddressText(connectionPointRef.Module.Address, connectionPointRef.Index, true);
                 EventManager.Event(new LayoutEvent("show-control-connection-point", connectionPointRef).SetFrameWindow(frameWindowId));
             }
@@ -204,8 +204,8 @@ namespace LayoutManager.Tools.Dialogs {
                     int lightSize = 14;
                     Size signalFrameSize = new Size(30, 46);
                     Rectangle signalFrame = new Rectangle(new Point((panelIllustration.Width - signalFrameSize.Width) / 2, topMargin), signalFrameSize);
-                    Rectangle redLightBbox = new Rectangle(new Point((panelIllustration.Width - lightSize) / 2, topMargin + signalFrameSize.Height / 4 - lightSize / 2), new Size(lightSize, lightSize));
-                    Rectangle greenLightBbox = new Rectangle(new Point((panelIllustration.Width - lightSize) / 2, topMargin + 3 * signalFrameSize.Height / 4 - lightSize / 2), new Size(lightSize, lightSize));
+                    Rectangle redLightBbox = new Rectangle(new Point((panelIllustration.Width - lightSize) / 2, topMargin + (signalFrameSize.Height / 4) - (lightSize / 2)), new Size(lightSize, lightSize));
+                    Rectangle greenLightBbox = new Rectangle(new Point((panelIllustration.Width - lightSize) / 2, topMargin + (3 * signalFrameSize.Height / 4) - (lightSize / 2)), new Size(lightSize, lightSize));
 
                     using (Pen pollPen = new Pen(Color.Black, 6))
                         g.DrawLine(pollPen, new Point(panelIllustration.Width / 2, topMargin + signalFrameSize.Height), new Point(panelIllustration.Width / 2, panelIllustration.Height));
@@ -291,7 +291,7 @@ namespace LayoutManager.Tools.Dialogs {
 
                 PickComponentToConnectToAddress pickDialog = new PickComponentToConnectToAddress(csEvent);
 
-                new SemiModalDialog(this, pickDialog, delegate (Form dialog, object info) {
+                new SemiModalDialog(this, pickDialog, (Form dialog, object info) => {
                     if (pickDialog.DialogResult == DialogResult.OK) {
                         ControlConnectionPoint result = (ControlConnectionPoint)EventManager.Event(new LayoutEvent("connect-component-to-control-module-address-request", pickDialog.ConnectionDestination, csEvent));
 

@@ -83,7 +83,7 @@ namespace LayoutManager.Dialogs {
             this.locomotiveTypeList.Name = "locomotiveTypeList";
             this.locomotiveTypeList.Size = new System.Drawing.Size(376, 376);
             this.locomotiveTypeList.TabIndex = 0;
-            this.locomotiveTypeList.SelectedIndexChanged += new System.EventHandler(this.locomotiveTypeList_SelectedIndexChanged);
+            this.locomotiveTypeList.SelectedIndexChanged += this.locomotiveTypeList_SelectedIndexChanged;
             // 
             // buttonSelect
             // 
@@ -93,7 +93,7 @@ namespace LayoutManager.Dialogs {
             this.buttonSelect.Size = new System.Drawing.Size(64, 23);
             this.buttonSelect.TabIndex = 2;
             this.buttonSelect.Text = "&Select";
-            this.buttonSelect.Click += new System.EventHandler(this.buttonSelect_Click);
+            this.buttonSelect.Click += this.buttonSelect_Click;
             // 
             // buttonCancel
             // 
@@ -104,7 +104,7 @@ namespace LayoutManager.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(64, 23);
             this.buttonCancel.TabIndex = 3;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += this.buttonCancel_Click;
             // 
             // buttonArrangeBy
             // 
@@ -113,7 +113,7 @@ namespace LayoutManager.Dialogs {
             this.buttonArrangeBy.Name = "buttonArrangeBy";
             this.buttonArrangeBy.TabIndex = 1;
             this.buttonArrangeBy.Text = "&Arrange by";
-            this.buttonArrangeBy.Click += new System.EventHandler(this.buttonArrangeBy_Click);
+            this.buttonArrangeBy.Click += this.buttonArrangeBy_Click;
             // 
             // SelectLocomotiveType
             // 

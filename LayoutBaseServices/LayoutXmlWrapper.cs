@@ -61,7 +61,7 @@ namespace LayoutManager {
             return childElement;
         }
 
-        public XmlElement this[string elementName, bool createIfNotFound = false] {
+        public XmlElement? this[string elementName, bool createIfNotFound = false] {
             get {
                 XmlElement childElement = Element[elementName];
 

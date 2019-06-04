@@ -186,7 +186,7 @@ namespace LayoutManager {
     /// </summary>
     /// <typeparam name="T">The type of items in the collection</typeparam>
     /// <typeparam name="KeyT">The type of the key used to index the collection</typeparam>
-    public abstract class XmlIndexedCollection<T, KeyT> : XmlCollection<T>, ICollection<T> where T: class {
+    public abstract class XmlIndexedCollection<T, KeyT> : XmlCollection<T>, ICollection<T> where T : class {
         private Dictionary<KeyT, XmlElement>? index;
         private List<KeyValuePair<KeyT, XmlElement>>? sorted = null;
 
@@ -315,10 +315,7 @@ namespace LayoutManager {
                 CreateIndex();
                 Debug.Assert(index != null);
 
-                if (index.TryGetValue(key, out XmlElement itemElement))
-                    return FromElement(itemElement);
-                else
-                    return default;
+                return index.TryGetValue(key, out XmlElement itemElement) ? FromElement(itemElement) : (default);
             }
 
             set {

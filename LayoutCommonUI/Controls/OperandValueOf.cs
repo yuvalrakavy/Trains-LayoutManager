@@ -157,7 +157,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.comboBoxTag.Name = "comboBoxTag";
             this.comboBoxTag.Size = new System.Drawing.Size(100, 21);
             this.comboBoxTag.TabIndex = 6;
-            this.comboBoxTag.DropDown += new System.EventHandler(this.comboBoxTag_DropDown);
+            this.comboBoxTag.DropDown += this.comboBoxTag_DropDown;
             // 
             // comboBoxSymbol
             // 
@@ -167,7 +167,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.comboBoxSymbol.Name = "comboBoxSymbol";
             this.comboBoxSymbol.Size = new System.Drawing.Size(100, 21);
             this.comboBoxSymbol.TabIndex = 5;
-            this.comboBoxSymbol.SelectedIndexChanged += new System.EventHandler(this.comboBoxSymbol_SelectedIndexChanged);
+            this.comboBoxSymbol.SelectedIndexChanged += this.comboBoxSymbol_SelectedIndexChanged;
             // 
             // linkMenuPropertyOrAttribute
             // 
@@ -182,7 +182,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.linkMenuPropertyOrAttribute.TabStop = true;
             this.linkMenuPropertyOrAttribute.Text = "property";
             this.linkMenuPropertyOrAttribute.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkMenuPropertyOrAttribute.ValueChanged += new System.EventHandler(this.linkMenuPropertyOrAttribute_ValueChanged);
+            this.linkMenuPropertyOrAttribute.ValueChanged += this.linkMenuPropertyOrAttribute_ValueChanged;
             // 
             // label1
             // 
@@ -339,10 +339,7 @@ namespace LayoutManager.CommonUI.Controls {
                         return "Integer";
                     else if (Type == typeof(double))
                         return "Double";
-                    else if (Type == typeof(string))
-                        return "String";
-                    else
-                        return Type.Name;
+                    else return Type == typeof(string) ? "String" : Type.Name;
                 }
             }
 

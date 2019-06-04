@@ -163,10 +163,7 @@ namespace LayoutManager.Dialogs {
 
                     if (cpr == null || !cpr.IsModuleDefined())
                         return CommandStationEventStatus.NoControlModule;
-                    else if (cpr.IsConnected)
-                        return CommandStationEventStatus.Connected;
-                    else
-                        return CommandStationEventStatus.NotConnected;
+                    else return cpr.IsConnected ? CommandStationEventStatus.Connected : CommandStationEventStatus.NotConnected;
                 }
             }
 
@@ -273,7 +270,7 @@ namespace LayoutManager.Dialogs {
                 EventItem selected = (EventItem)listViewEvents.SelectedItems[0];
                 Tools.Dialogs.PickComponentToConnectToAddress pickDialog = new Tools.Dialogs.PickComponentToConnectToAddress(selected.CommandStationEvent);
 
-                new SemiModalDialog(this, pickDialog, delegate (Form dialog, object info) {
+                new SemiModalDialog(this, pickDialog, (Form dialog, object info) => {
                     if (pickDialog.DialogResult == DialogResult.OK) {
                         ControlConnectionPoint connectionPoint = (ControlConnectionPoint)EventManager.Event(new LayoutEvent("connect-component-to-control-module-address-request", pickDialog.ConnectionDestination, selected.CommandStationEvent));
 
