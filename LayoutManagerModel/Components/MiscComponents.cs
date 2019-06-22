@@ -370,6 +370,8 @@ namespace LayoutManager.Components {
 
             public ILayoutPower Power => PowerSelectorComponent.CurrentSelectedInlet?.ConnectedOutlet.Power ?? NoPower;
 
+            public ILayoutPower? OptionalPower => this.Power;
+
             /// <summary>
             /// The power that can be obtained from this component, this is the union of the one obtainable from inlet1 and from inlet2
             /// </summary>

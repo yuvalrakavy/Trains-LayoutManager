@@ -613,6 +613,8 @@ namespace LayoutManager {
             get;
         }
 
+        ILayoutPower? OptionalPower { get; }
+
         /// <summary>
         /// The powers that can be obtained obtained from this outlet. For example, The outlet of a power selector component can contain
         /// each of the power type that are connected to its inlet

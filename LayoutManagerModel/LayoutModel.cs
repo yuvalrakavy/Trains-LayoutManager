@@ -662,13 +662,18 @@ namespace LayoutManager.Model {
             }
         }
 
-        public ILayoutPower Power {
-            get => Ensure.NotNull<ILayoutPower>(power, nameof(power));
+        public ILayoutPower? OptionalPower {
+            get => power;
 
             set {
                 power = value;
                 EventManager.Event(new LayoutEvent<ILayoutPowerOutlet, ILayoutPower>("power-outlet-changed-state-notification", this, power));
             }
+        }
+
+        public ILayoutPower Power {
+            get => Ensure.NotNull<ILayoutPower>(OptionalPower, "Power");
+            set => OptionalPower = value;
         }
 
         public bool SelectPower(LayoutPowerType powerType, IList<SwitchingCommand> switchingCommands) => Power != null && powerType == Power.Type;

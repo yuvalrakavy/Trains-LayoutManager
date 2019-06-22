@@ -404,7 +404,7 @@ namespace LayoutManager.View {
                     if (block.IsLocked) {
                         switch (block.LockRequest.Type) {
                             case LayoutLockType.ManualDispatch: {
-                                    ILayoutPower power = edge.Track.GetPower(edge.ConnectionPoint);
+                                    var power = edge.Track.GetOptionalPower(edge.ConnectionPoint);
 
                                     if (power != null) {
                                         switch (power.Type) {

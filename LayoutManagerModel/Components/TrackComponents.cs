@@ -168,12 +168,14 @@ namespace LayoutManager.Components {
             return 0;
         }
 
-        public ILayoutPower GetPower(LayoutComponentConnectionPoint cp) {
+        public ILayoutPower? GetOptionalPower(LayoutComponentConnectionPoint cp) {
             var powerConnector = GetPowerConnector(cp);
 
             Debug.Assert(powerConnector != null);
-            return powerConnector.Inlet.ConnectedOutlet.Power;
+            return powerConnector.Inlet.ConnectedOutlet.OptionalPower;
         }
+
+        public ILayoutPower GetPower(LayoutComponentConnectionPoint cp) => Ensure.NotNull<ILayoutPower>(GetOptionalPower(cp), "GetOptionalPower");
 
         /// <summary>
         /// Given a connection point, returns the offset to get to the component that
