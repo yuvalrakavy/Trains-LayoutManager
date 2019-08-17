@@ -183,7 +183,7 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonChangeIcon
             // 
-            this.buttonChangeIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonChangeIcon.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonChangeIcon.Location = new System.Drawing.Point(158, 169);
             this.buttonChangeIcon.Name = "buttonChangeIcon";
             this.buttonChangeIcon.Size = new System.Drawing.Size(93, 20);
@@ -193,7 +193,7 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonDelete.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonDelete.Location = new System.Drawing.Point(4, 169);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(71, 20);
@@ -203,9 +203,9 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // listViewTripPlans
             // 
-            this.listViewTripPlans.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.listViewTripPlans.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right);
             this.listViewTripPlans.HideSelection = false;
             this.listViewTripPlans.LabelEdit = true;
             this.listViewTripPlans.Location = new System.Drawing.Point(4, 4);
@@ -217,7 +217,7 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonRename
             // 
-            this.buttonRename.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonRename.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonRename.Location = new System.Drawing.Point(81, 169);
             this.buttonRename.Name = "buttonRename";
             this.buttonRename.Size = new System.Drawing.Size(71, 20);
@@ -227,7 +227,7 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonDuplicate
             // 
-            this.buttonDuplicate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonDuplicate.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonDuplicate.Location = new System.Drawing.Point(256, 169);
             this.buttonDuplicate.Name = "buttonDuplicate";
             this.buttonDuplicate.Size = new System.Drawing.Size(64, 20);
@@ -238,7 +238,7 @@ namespace LayoutManager.CommonUI.Controls {
             // imageListState
             // 
             this.imageListState.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListState.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListState.ImageStream")));
+            this.imageListState.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListState.ImageStream");
             this.imageListState.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // TripPlanList

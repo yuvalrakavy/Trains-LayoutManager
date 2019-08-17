@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Components;
 
+#pragma warning disable IDE0069
 #nullable enable
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
@@ -23,9 +24,9 @@ namespace LayoutManager.CommonUI.Controls {
         private Button buttonInsert;
         private IContainer components;
 
-        private DialogEditing changeToViewonly;
+        private DialogEditing? changeToViewonly;
 
-#pragma warning disable nullable
+#nullable disable
         public EventScriptEditor() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
@@ -33,11 +34,11 @@ namespace LayoutManager.CommonUI.Controls {
             // TODO: Add any initialization after the InitForm call
 
         }
-#pragma warning restore nullable
+#nullable enable
 
         #region Public properties/Methods
 
-        public XmlElement EventScriptElement {
+        public XmlElement? EventScriptElement {
             get {
                 if (treeViewConditions.Nodes.Count == 0)
                     return null;
@@ -80,9 +81,11 @@ namespace LayoutManager.CommonUI.Controls {
                     changeToViewonly.ViewOnly = true;
                 }
                 else if (!value && ViewOnly) {
-                    changeToViewonly.Undo();
-                    changeToViewonly.ViewOnly = false;
-                    changeToViewonly = null;
+                    if (changeToViewonly != null) {
+                        changeToViewonly.Undo();
+                        changeToViewonly.ViewOnly = false;
+                        changeToViewonly = null;
+                    }
                 }
             }
         }
@@ -124,7 +127,7 @@ namespace LayoutManager.CommonUI.Controls {
         #endregion
 
         protected void Initialize(XmlElement eventScriptElement) {
-            LayoutEventScriptEditorTreeNode root = (LayoutEventScriptEditorTreeNode)EventManager.Event(new LayoutEvent("get-event-script-editor-tree-node", eventScriptElement));
+            var root = (LayoutEventScriptEditorTreeNode?)EventManager.Event(new LayoutEvent("get-event-script-editor-tree-node", eventScriptElement));
 
             if (root == null)
                 throw new ApplicationException("No suitable event script tree node was found");
@@ -133,10 +136,10 @@ namespace LayoutManager.CommonUI.Controls {
             root.UpdateNode();
             root.ExpandAll();
             treeViewConditions.SelectedNode = root;
-            updateButtons(null, null);
+            updateButtons();
         }
 
-        private void updateButtons(object sender, EventArgs e) {
+        private void updateButtons() {
             LayoutEventScriptEditorTreeNode selected = (LayoutEventScriptEditorTreeNode)treeViewConditions.SelectedNode;
 
             if (selected == null) {
@@ -145,10 +148,10 @@ namespace LayoutManager.CommonUI.Controls {
                 buttonDeleteCondition.Enabled = false;
             }
             else {
-                buttonAddCondition.Enabled = ((selected.AddNodeEventName != null) &&
-                    (selected.MaxSubNodes < 0 || selected.Nodes.Count < selected.MaxSubNodes));
-                buttonInsert.Enabled = (selected.InsertNodeEventName != null);
-                buttonEditCondition.Enabled = (selected.NodeToEdit != null);
+                buttonAddCondition.Enabled = (selected.AddNodeEventName != null) &&
+                    (selected.MaxSubNodes < 0 || selected.Nodes.Count < selected.MaxSubNodes);
+                buttonInsert.Enabled = selected.InsertNodeEventName != null;
+                buttonEditCondition.Enabled = selected.NodeToEdit != null;
 
                 if (selected.Parent != null)
                     buttonDeleteCondition.Enabled = selected.CanDeleteNode;
@@ -156,8 +159,8 @@ namespace LayoutManager.CommonUI.Controls {
                     buttonDeleteCondition.Enabled = false;
 
                 if (selected.Parent != null && ((LayoutEventScriptEditorTreeNode)selected.Parent).CanReorder) {
-                    buttonMoveConditionUp.Enabled = (selected.Index > 0);
-                    buttonMoveConditionDown.Enabled = (selected.Index < selected.Parent.Nodes.Count - 1);
+                    buttonMoveConditionUp.Enabled = selected.Index > 0;
+                    buttonMoveConditionDown.Enabled = selected.Index < selected.Parent.Nodes.Count - 1;
                 }
                 else {
                     buttonMoveConditionUp.Enabled = false;
@@ -202,9 +205,9 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // treeViewConditions
             // 
-            this.treeViewConditions.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.treeViewConditions.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.treeViewConditions.HideSelection = false;
             this.treeViewConditions.ImageList = this.imageListConditionTree;
             this.treeViewConditions.Location = new System.Drawing.Point(8, 8);
@@ -218,12 +221,12 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             this.imageListConditionTree.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
             this.imageListConditionTree.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListConditionTree.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListConditionTree.ImageStream")));
+            this.imageListConditionTree.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListConditionTree.ImageStream");
             this.imageListConditionTree.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // buttonAddCondition
             // 
-            this.buttonAddCondition.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonAddCondition.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonAddCondition.Location = new System.Drawing.Point(8, 207);
             this.buttonAddCondition.Name = "buttonAddCondition";
             this.buttonAddCondition.Size = new System.Drawing.Size(54, 21);
@@ -233,7 +236,7 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonEditCondition
             // 
-            this.buttonEditCondition.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonEditCondition.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonEditCondition.Location = new System.Drawing.Point(128, 207);
             this.buttonEditCondition.Name = "buttonEditCondition";
             this.buttonEditCondition.Size = new System.Drawing.Size(54, 21);
@@ -243,7 +246,7 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonDeleteCondition
             // 
-            this.buttonDeleteCondition.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonDeleteCondition.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonDeleteCondition.Location = new System.Drawing.Point(248, 207);
             this.buttonDeleteCondition.Name = "buttonDeleteCondition";
             this.buttonDeleteCondition.Size = new System.Drawing.Size(54, 21);
@@ -253,8 +256,8 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonMoveConditionDown
             // 
-            this.buttonMoveConditionDown.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonMoveConditionDown.Image = ((System.Drawing.Bitmap)(resources.GetObject("buttonMoveConditionDown.Image")));
+            this.buttonMoveConditionDown.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.buttonMoveConditionDown.Image = (System.Drawing.Bitmap)resources.GetObject("buttonMoveConditionDown.Image");
             this.buttonMoveConditionDown.ImageIndex = 0;
             this.buttonMoveConditionDown.ImageList = this.imageListButttons;
             this.buttonMoveConditionDown.Location = new System.Drawing.Point(308, 32);
@@ -267,13 +270,13 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             this.imageListButttons.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
             this.imageListButttons.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListButttons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListButttons.ImageStream")));
+            this.imageListButttons.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListButttons.ImageStream");
             this.imageListButttons.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // buttonMoveConditionUp
             // 
-            this.buttonMoveConditionUp.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonMoveConditionUp.Image = ((System.Drawing.Bitmap)(resources.GetObject("buttonMoveConditionUp.Image")));
+            this.buttonMoveConditionUp.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.buttonMoveConditionUp.Image = (System.Drawing.Bitmap)resources.GetObject("buttonMoveConditionUp.Image");
             this.buttonMoveConditionUp.ImageIndex = 1;
             this.buttonMoveConditionUp.ImageList = this.imageListButttons;
             this.buttonMoveConditionUp.Location = new System.Drawing.Point(308, 8);
@@ -284,7 +287,7 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonOptions
             // 
-            this.buttonOptions.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonOptions.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonOptions.Location = new System.Drawing.Point(188, 207);
             this.buttonOptions.Name = "buttonOptions";
             this.buttonOptions.Size = new System.Drawing.Size(54, 21);
@@ -294,7 +297,7 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonInsert
             // 
-            this.buttonInsert.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonInsert.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonInsert.Location = new System.Drawing.Point(68, 207);
             this.buttonInsert.Name = "buttonInsert";
             this.buttonInsert.Size = new System.Drawing.Size(54, 21);
@@ -327,7 +330,7 @@ namespace LayoutManager.CommonUI.Controls {
                 if (selected.Parent != null)
                     treeViewConditions.SelectedNode = selected.Parent;
                 selected.Remove();
-                updateButtons(null, null);
+                updateButtons();
             }
         }
 
@@ -393,7 +396,7 @@ namespace LayoutManager.CommonUI.Controls {
             public LayoutBlockDefinitionComponent BlockDefinition { get; }
 
             public void EditingDone() {
-                node.NodeToEdit.UpdateNode();
+                node.NodeToEdit?.UpdateNode();
             }
 
             public void EditingCancelled() {
@@ -401,7 +404,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private void treeViewConditions_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e) {
-            updateButtons(null, null);
+            updateButtons();
         }
 
         private void buttonMoveConditionUp_Click(object sender, System.EventArgs e) {
@@ -419,7 +422,7 @@ namespace LayoutManager.CommonUI.Controls {
                 parent.Nodes.Insert(index - 1, selected);
                 treeViewConditions.SelectedNode = selected;
                 selected.ExpandAll();
-                updateButtons(null, null);
+                updateButtons();
             }
         }
 
@@ -438,7 +441,7 @@ namespace LayoutManager.CommonUI.Controls {
                 parent.Nodes.Insert(index + 1, selected);
                 treeViewConditions.SelectedNode = selected;
                 selected.ExpandAll();
-                updateButtons(null, null);
+                updateButtons();
             }
         }
 
@@ -457,12 +460,12 @@ namespace LayoutManager.CommonUI.Controls {
     public class EventScriptEditorAddMenuItem : MenuItem, IEventScriptEditorMenuEntry {
         private readonly string eventScriptElementName;
         private readonly LayoutEventScriptEditorTreeNode parentNode;
-        private IEventScriptEditor _eventScriptEditor = null;
+        private IEventScriptEditor? _eventScriptEditor = null;
 
         public EventScriptEditorAddMenuItem(LayoutEvent e, string title, string eventScriptElementName) {
             Text = title;
             this.eventScriptElementName = eventScriptElementName;
-            this.parentNode = (LayoutEventScriptEditorTreeNode)e.Sender;
+            this.parentNode = Ensure.NotNull<LayoutEventScriptEditorTreeNode>(e.Sender, "parent");
         }
 
         public void SetEventScriptEditor(IEventScriptEditor eventScriptEditor) {
@@ -478,10 +481,10 @@ namespace LayoutManager.CommonUI.Controls {
             else
                 parentNode.Element.AppendChild(eventScriptElement);
 
-            LayoutEventScriptEditorTreeNode newNode = (LayoutEventScriptEditorTreeNode)EventManager.Event(
+            var newNode = (LayoutEventScriptEditorTreeNode?)EventManager.Event(
                 new LayoutEvent("get-event-script-editor-tree-node", eventScriptElement));
 
-            if (newNode != null) {
+            if (newNode != null && _eventScriptEditor != null) {
                 IEventScriptEditorSite site = new EventScriptEditorSite(_eventScriptEditor.Form, _eventScriptEditor.BlockDefinition, parentNode, newNode, eventScriptElement);
 
                 if (newNode.NodeToEdit == null)
@@ -534,10 +537,10 @@ namespace LayoutManager.CommonUI.Controls {
     public class EventScriptEditorInsertEventContainerMenuItem : MenuItem, IEventScriptEditorMenuEntry {
         private readonly string eventScriptElementName;
         private readonly LayoutEventScriptEditorTreeNode node;
-        private IEventScriptEditor eventScriptEditor = null;
+        private IEventScriptEditor? eventScriptEditor = null;
 
         public EventScriptEditorInsertEventContainerMenuItem(LayoutEvent e, string title, string eventScriptElementName) {
-            node = (LayoutEventScriptEditorTreeNode)e.Sender;
+            node = Ensure.NotNull<LayoutEventScriptEditorTreeNode>(e.Sender, "node");
             Text = title;
 
             this.eventScriptElementName = eventScriptElementName;
@@ -553,10 +556,10 @@ namespace LayoutManager.CommonUI.Controls {
             // eventScriptElement must be parented for XPath to work!!
             node.Element.AppendChild(eventScriptElement);
 
-            LayoutEventScriptEditorTreeNode newNode = (LayoutEventScriptEditorTreeNode)EventManager.Event(
+            var newNode = (LayoutEventScriptEditorTreeNode?)EventManager.Event(
                 new LayoutEvent("get-event-script-editor-tree-node", eventScriptElement));
 
-            if (newNode != null) {
+            if (newNode != null && eventScriptEditor != null) {
                 IEventScriptEditorSite site = new EventScriptEditorSite(eventScriptEditor.Form, eventScriptEditor.BlockDefinition, node, newNode, eventScriptElement);
 
                 if (newNode.NodeToEdit == null)
@@ -595,10 +598,7 @@ namespace LayoutManager.CommonUI.Controls {
                     nodeParentElement.ReplaceChild(newNode.Element, node.Element);
                 }
 
-                XmlElement newNodeEventsSectionElement = newNode.Element["Events"];
-
-                if (newNodeEventsSectionElement == null)
-                    newNodeEventsSectionElement = newNode.Element;
+                XmlElement newNodeEventsSectionElement = newNode.Element["Events"] ?? newNode.Element;
                 newNodeEventsSectionElement.AppendChild(node.Element);
 
                 // Now do the same on the tree control
@@ -642,10 +642,10 @@ namespace LayoutManager.CommonUI.Controls {
     public class EventScriptEditorInsertConditionContainerMenuItem : MenuItem, IEventScriptEditorMenuEntry {
         private readonly string eventScriptElementName;
         private readonly LayoutEventScriptEditorTreeNode node;
-        private IEventScriptEditor eventScriptEditor = null;
+        private IEventScriptEditor? eventScriptEditor = null;
 
         public EventScriptEditorInsertConditionContainerMenuItem(LayoutEvent e, string title, string eventScriptElementName) {
-            node = (LayoutEventScriptEditorTreeNode)e.Sender;
+            node = Ensure.NotNull<LayoutEventScriptEditorTreeNode>(e.Sender, "node");
             Text = title;
 
             this.eventScriptElementName = eventScriptElementName;
@@ -661,10 +661,10 @@ namespace LayoutManager.CommonUI.Controls {
             // eventScriptElement must be parented for XPath to work!!
             node.Element.AppendChild(eventScriptElement);
 
-            LayoutEventScriptEditorTreeNode newNode = (LayoutEventScriptEditorTreeNode)EventManager.Event(
+            var newNode = (LayoutEventScriptEditorTreeNode?)EventManager.Event(
                 new LayoutEvent("get-event-script-editor-tree-node", eventScriptElement));
 
-            if (newNode != null) {
+            if (newNode != null && eventScriptEditor != null) {
                 IEventScriptEditorSite site = new EventScriptEditorSite(eventScriptEditor.Form, eventScriptEditor.BlockDefinition, node, newNode, eventScriptElement);
 
                 if (newNode.NodeToEdit == null)
@@ -794,7 +794,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         protected void AddChildEventScriptTreeNodes(XmlElement element) {
             foreach (XmlElement childEventScriptElement in element) {
-                LayoutEventScriptEditorTreeNode node = (LayoutEventScriptEditorTreeNode)EventManager.Event(new LayoutEvent("get-event-script-editor-tree-node", childEventScriptElement));
+                var node = (LayoutEventScriptEditorTreeNode?)EventManager.Event(new LayoutEvent("get-event-script-editor-tree-node", childEventScriptElement));
 
                 if (node == null)
                     throw new ApplicationException("No suitable condition tree node was found");
@@ -824,18 +824,18 @@ namespace LayoutManager.CommonUI.Controls {
         /// <summary>
         /// Optional options menu
         /// </summary>
-        public virtual ContextMenu OptionsMenu => null;
+        public virtual ContextMenu? OptionsMenu => null;
 
         /// <summary>
         /// The event name that is used for building the Add button menu. The default implementation returns
         /// null, so the add button is disabled
         /// </summary>
-        public virtual string AddNodeEventName => null;
+        public virtual string? AddNodeEventName => null;
 
         /// <summary>
         /// The event name that is used for building the insert button menu.
         /// </summary>
-        public virtual string InsertNodeEventName => null;
+        public virtual string? InsertNodeEventName => null;
 
         /// <summary>
         /// The node to be edited when edit command is given. The default is to edit the current node
@@ -874,9 +874,9 @@ namespace LayoutManager.CommonUI.Controls {
         protected LayoutEventScriptEditorTreeNodeMayBeOptional(XmlElement eventElement) : base(eventElement) {
         }
 
-        public override ContextMenu OptionsMenu {
+        public override ContextMenu? OptionsMenu {
             get {
-                ContextMenu menu = null;
+                ContextMenu? menu = null;
 
                 if (Parent != null) {
                     LayoutEventScriptEditorTreeNode container = (LayoutEventScriptEditorTreeNode)Parent.Parent;

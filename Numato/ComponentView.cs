@@ -176,7 +176,7 @@ namespace NumatoController {
                 // 
                 // imageListComponents
                 // 
-                ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListComponents.ImageStream"))),
+                ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListComponents.ImageStream"),
                 TransparentColor = System.Drawing.Color.Lime
             };
             this.imageListComponents.Images.SetKeyName(0, "Numto.png");

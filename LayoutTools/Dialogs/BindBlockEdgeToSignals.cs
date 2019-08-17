@@ -140,8 +140,8 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.label1.Location = new System.Drawing.Point(8, 8);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(176, 56);
@@ -151,9 +151,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // listBoxSignals
             // 
-            this.listBoxSignals.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.listBoxSignals.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.listBoxSignals.Location = new System.Drawing.Point(12, 72);
             this.listBoxSignals.Name = "listBoxSignals";
             this.listBoxSignals.Size = new System.Drawing.Size(170, 108);
@@ -162,7 +162,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonRemove
             // 
-            this.buttonRemove.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonRemove.Location = new System.Drawing.Point(12, 186);
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.Size = new System.Drawing.Size(56, 21);
@@ -172,7 +172,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonCancel.Location = new System.Drawing.Point(128, 216);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(56, 23);
@@ -182,7 +182,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonOk
             // 
-            this.buttonOk.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonOk.Location = new System.Drawing.Point(64, 216);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(56, 23);

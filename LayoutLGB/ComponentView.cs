@@ -189,7 +189,7 @@ namespace LayoutLGB {
                 // 
                 ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit,
                 ImageSize = new System.Drawing.Size(30, 30),
-                ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListComponents.ImageStream"))),
+                ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListComponents.ImageStream"),
                 TransparentColor = System.Drawing.Color.Transparent
             };
         }

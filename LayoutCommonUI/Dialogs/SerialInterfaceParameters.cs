@@ -70,19 +70,19 @@ namespace LayoutManager.CommonUI.Dialogs {
                         break;
 
                     case "to":
-                        checkBoxNoTimeout.Checked = (value == "on");
+                        checkBoxNoTimeout.Checked = value == "on";
                         break;
 
                     case "xon":
-                        checkBoxXonXoff.Checked = (value == "on");
+                        checkBoxXonXoff.Checked = value == "on";
                         break;
 
                     case "odsr":
-                        checkBoxDSRhandshake.Checked = (value == "on");
+                        checkBoxDSRhandshake.Checked = value == "on";
                         break;
 
                     case "octs":
-                        checkBoxCTShandshake.Checked = (value == "on");
+                        checkBoxCTShandshake.Checked = value == "on";
                         break;
 
                     case "dtr":
@@ -103,7 +103,7 @@ namespace LayoutManager.CommonUI.Dialogs {
                         break;
 
                     case "idsr":
-                        checkBoxDSR.Checked = (value == "on");
+                        checkBoxDSR.Checked = value == "on";
                         break;
                 }
             }

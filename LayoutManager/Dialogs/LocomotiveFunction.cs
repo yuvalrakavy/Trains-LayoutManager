@@ -87,7 +87,7 @@ namespace LayoutManager.Dialogs {
             this.comboBoxFunctionType = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.textBoxFunctionDescription = new System.Windows.Forms.TextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFunctionNumber)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownFunctionNumber).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -199,7 +199,7 @@ namespace LayoutManager.Dialogs {
             this.Name = "LocomotiveFunction";
             this.ShowInTaskbar = false;
             this.Text = "Locomotive Function";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFunctionNumber)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownFunctionNumber).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
         }

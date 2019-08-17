@@ -221,7 +221,7 @@ namespace LayoutManager.UIGadgets {
             int height = (vMargin * 2) + Math.Max(itemSize.Height, (categorySize.Height * 2) + gap);
 
             if (categoriesVisible)
-                width += itemsToCategoriesGap + (((Categories.Count + 1) / 2) * (categorySize.Width + gap)) - gap;
+                width += itemsToCategoriesGap + ((Categories.Count + 1) / 2 * (categorySize.Width + gap)) - gap;
 
             this.Size = new Size(width, height);
         }
@@ -242,7 +242,7 @@ namespace LayoutManager.UIGadgets {
 
                 foreach (ImageMenuItem item in selectedCategory.Items) {
                     item.Bounds = new Rectangle(new Point(x, vMargin), itemSize);
-                    x += (itemSize.Width + gap);
+                    x += itemSize.Width + gap;
                 }
 
                 x -= gap;       // Compensate for the one extra gap that added

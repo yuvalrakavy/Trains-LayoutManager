@@ -13,10 +13,10 @@ namespace LayoutManager.Logic {
     /// </summary>
     [LayoutModule("Layout Block Manager", UserControl = false)]
     internal class LayoutBlockManager : LayoutModuleBase {
-#pragma warning disable IDE0052
+#pragma warning disable IDE0052, RCS1213
         private static readonly LayoutTraceSwitch traceBlocks = new LayoutTraceSwitch("BlockIdentification", "Block Identification");
         private static readonly LayoutTraceSwitch traceBlockInfo = new LayoutTraceSwitch("BlockInfo", "Block Info directions");
-#pragma warning restore IDE0052
+#pragma warning restore IDE0052, RCS1213
 
         private ILayoutTopologyServices? _topologyServices;
 
@@ -127,12 +127,9 @@ namespace LayoutManager.Logic {
         private LayoutBlock? scanBlock(TrackEdgeDictionary scannedBlockBoundres, TrackEdge scanFrom, LayoutBlock? block) {
             TrackEdgeDictionary scannedEdges = new TrackEdgeDictionary();
             Stack<TrackEdge> scanStack = new Stack<TrackEdge>();
-            bool ok = true;
+            const bool ok = true;
 
-            if (block == null)
-                block = new LayoutBlock();
-
-            block.Add(scanFrom);
+            (block ?? (block = new LayoutBlock())).Add(scanFrom);
             checkIfBlockDefinitionTrack(block, scanFrom);
 
             TrackEdge startFrom = TopologyServices.FindTrackConnectingAt(scanFrom);
@@ -380,9 +377,7 @@ namespace LayoutManager.Logic {
                     var policy = LayoutModel.StateManager.BlockInfoPolicies[policyID];
 
                     if (policy != null) {
-                        LayoutEventScript eventScript;
-
-                        eventScript = EventManager.EventScript("Policy " + policy.Name + " activated by train " + train.DisplayName + " entering block " + block.BlockDefinintion.Name,
+                        LayoutEventScript eventScript = EventManager.EventScript("Policy " + policy.Name + " activated by train " + train.DisplayName + " entering block " + block.BlockDefinintion.Name,
                             policy.EventScriptElement, new Guid[] { block.Id, train.Id }, null);
 
                         LayoutScriptContext scriptContext = eventScript.ScriptContext;

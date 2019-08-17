@@ -335,8 +335,8 @@ namespace LayoutManager {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MessageViewer));
             this.listViewMessages = new System.Windows.Forms.ListView();
-            this.columnHeaderMessage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderArea = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderMessage = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderArea = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
             this.imageListSeverity = new System.Windows.Forms.ImageList(this.components);
             this.buttonClose = new System.Windows.Forms.Button();
             this.buttonNextMessage = new System.Windows.Forms.Button();
@@ -348,9 +348,9 @@ namespace LayoutManager {
             // 
             // listViewMessages
             // 
-            this.listViewMessages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listViewMessages.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+            | System.Windows.Forms.AnchorStyles.Left
+            | System.Windows.Forms.AnchorStyles.Right);
             this.listViewMessages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeaderMessage,
             this.columnHeaderArea});
@@ -379,7 +379,7 @@ namespace LayoutManager {
             // 
             // imageListSeverity
             // 
-            this.imageListSeverity.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListSeverity.ImageStream")));
+            this.imageListSeverity.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListSeverity.ImageStream");
             this.imageListSeverity.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListSeverity.Images.SetKeyName(0, "");
             this.imageListSeverity.Images.SetKeyName(1, "");
@@ -387,7 +387,7 @@ namespace LayoutManager {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.buttonClose.Location = new System.Drawing.Point(598, 4);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(75, 22);
@@ -397,7 +397,7 @@ namespace LayoutManager {
             // 
             // buttonNextMessage
             // 
-            this.buttonNextMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonNextMessage.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.buttonNextMessage.Location = new System.Drawing.Point(419, 4);
             this.buttonNextMessage.Name = "buttonNextMessage";
             this.buttonNextMessage.Size = new System.Drawing.Size(74, 22);
@@ -407,7 +407,7 @@ namespace LayoutManager {
             // 
             // buttonPrevMessage
             // 
-            this.buttonPrevMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonPrevMessage.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.buttonPrevMessage.Location = new System.Drawing.Point(499, 4);
             this.buttonPrevMessage.Name = "buttonPrevMessage";
             this.buttonPrevMessage.Size = new System.Drawing.Size(74, 22);
@@ -435,7 +435,7 @@ namespace LayoutManager {
             // 
             // buttonClear
             // 
-            this.buttonClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClear.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.buttonClear.Location = new System.Drawing.Point(324, 4);
             this.buttonClear.Name = "buttonClear";
             this.buttonClear.Size = new System.Drawing.Size(74, 22);

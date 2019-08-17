@@ -74,7 +74,7 @@ namespace LayoutLGB.Dialogs {
             this.layoutEmulationSetup = new LayoutManager.CommonUI.Controls.LayoutEmulationSetup();
             this.nameDefinition = new LayoutManager.CommonUI.Controls.NameDefinition();
             this.buttonCOMsettings = new Button();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownXbusID)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownXbusID).BeginInit();
             this.SuspendLayout();
             // 
             // comboBoxPort
@@ -193,7 +193,7 @@ namespace LayoutLGB.Dialogs {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "CentralStationProperties";
             this.Text = "LGB Central Station Properties";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownXbusID)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownXbusID).EndInit();
             this.ResumeLayout(false);
         }
         #endregion

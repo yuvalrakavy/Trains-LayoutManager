@@ -78,8 +78,8 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // textBoxName
             // 
-            this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxName.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right);
             this.textBoxName.Location = new System.Drawing.Point(96, 16);
             this.textBoxName.Name = "textBoxName";
             this.textBoxName.Size = new System.Drawing.Size(184, 20);
@@ -88,8 +88,8 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // selectTripPlanIcon
             // 
-            this.selectTripPlanIcon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.selectTripPlanIcon.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right);
             this.selectTripPlanIcon.IconList = null;
             this.selectTripPlanIcon.Location = new System.Drawing.Point(8, 64);
             this.selectTripPlanIcon.Name = "selectTripPlanIcon";
@@ -108,7 +108,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonSave
             // 
-            this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonSave.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonSave.Location = new System.Drawing.Point(120, 160);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.TabIndex = 4;
@@ -117,7 +117,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(205, 160);
             this.buttonCancel.Name = "buttonCancel";

@@ -32,12 +32,12 @@ namespace LayoutManager.Tools.Dialogs {
         private readonly LayoutSelection regionSelection;
         private readonly LayoutSelection selectedBlockSelection;
 
-#pragma warning disable nullable
+#nullable disable
         public ManualDispatchRegion(ManualDispatchRegionInfo manualDispatchRegion) {
-            //
-            // Required for Windows Form Designer support
-            //
-            InitializeComponent();
+        //
+        // Required for Windows Form Designer support
+        //
+        InitializeComponent();
 
             this.manualDispatchRegion = manualDispatchRegion;
 
@@ -55,19 +55,20 @@ namespace LayoutManager.Tools.Dialogs {
                 regionSelection.Add(block.GetSelection());
             }
 
-            updateButtons(null, null);
+            updateButtons();
 
             regionSelection.Display(new LayoutSelectionLook(Color.DarkCyan));
             selectedBlockSelection.Display(new LayoutSelectionLook(Color.DarkMagenta));
 
             EventManager.AddObjectSubscriptions(this);
         }
-#pragma warning restore nullable
+
+#nullable enable
 
         public XmlElement Element => manualDispatchRegion.Element;
         public XmlElement? OptionalElement => Element;
 
-        private void updateButtons(object sender, EventArgs e) {
+        private void updateButtons() {
             LayoutBlock selectedBlock = (LayoutBlock)listBoxBlocks.SelectedItem;
 
             selectedBlockSelection.Clear();
@@ -85,10 +86,10 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [LayoutEvent("query-edit-manual-dispatch-region-dialog")]
-        private void queryEditManualDispatchRegionDialog(LayoutEvent e0) {
-            var e = (LayoutEvent<LayoutBlockDefinitionComponent, List<IModelComponentReceiverDialog>>)e0;
+        private void queryEditManualDispatchRegionDialog(LayoutEvent e) {
+            var componentReceiverDialogs = Ensure.NotNull<List <IModelComponentReceiverDialog>>(e.Info, "receiverDialogs");
 
-            e.Info.Add((IModelComponentReceiverDialog)this);
+            componentReceiverDialogs.Add((IModelComponentReceiverDialog)this);
         }
 
         [LayoutEvent("manual-dispatch-region-activation-changed", IfSender = "*[@ID='`string(@ID)`']")]
@@ -121,7 +122,11 @@ namespace LayoutManager.Tools.Dialogs {
                 regionSelection.Add(addedBlock.GetSelection());
             }
 
-            updateButtons(null, null);
+            updateButtons();
+        }
+
+        private void selectedIndexChanged(object sender, EventArgs e) {
+            updateButtons();
         }
 
         #region Windows Form Designer generated code
@@ -141,19 +146,19 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // listBoxBlocks
             // 
-            this.listBoxBlocks.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.listBoxBlocks.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.listBoxBlocks.DisplayMember = "Name";
             this.listBoxBlocks.Location = new System.Drawing.Point(8, 32);
             this.listBoxBlocks.Name = "listBoxBlocks";
             this.listBoxBlocks.Size = new System.Drawing.Size(216, 199);
             this.listBoxBlocks.TabIndex = 0;
-            this.listBoxBlocks.SelectedIndexChanged += this.updateButtons;
+            this.listBoxBlocks.SelectedIndexChanged += this.selectedIndexChanged;
             // 
             // buttonAddBlock
             // 
-            this.buttonAddBlock.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonAddBlock.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonAddBlock.Location = new System.Drawing.Point(8, 240);
             this.buttonAddBlock.Name = "buttonAddBlock";
             this.buttonAddBlock.Size = new System.Drawing.Size(67, 22);
@@ -163,7 +168,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonRemoveBlock
             // 
-            this.buttonRemoveBlock.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonRemoveBlock.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonRemoveBlock.Location = new System.Drawing.Point(80, 240);
             this.buttonRemoveBlock.Name = "buttonRemoveBlock";
             this.buttonRemoveBlock.Size = new System.Drawing.Size(67, 22);
@@ -173,7 +178,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonOk
             // 
-            this.buttonOk.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonOk.Location = new System.Drawing.Point(88, 274);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(67, 22);
@@ -192,7 +197,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // textBoxName
             // 
-            this.textBoxName.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
+            this.textBoxName.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             this.textBoxName.Location = new System.Drawing.Point(88, 8);
             this.textBoxName.Name = "textBoxName";
             this.textBoxName.Size = new System.Drawing.Size(136, 20);
@@ -202,7 +207,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(160, 274);
             this.buttonCancel.Name = "buttonCancel";
@@ -241,7 +246,7 @@ namespace LayoutManager.Tools.Dialogs {
             if (selectedBlock != null) {
                 listBoxBlocks.Items.Remove(selectedBlock);
                 regionSelection.Remove(selectedBlock.GetSelection());
-                updateButtons(null, null);
+                updateButtons();
             }
         }
 
@@ -264,7 +269,7 @@ namespace LayoutManager.Tools.Dialogs {
         private void buttonOk_Click(object sender, System.EventArgs e) {
             manualDispatchRegion.BlockIdList.Clear();
 
-            if (textBoxName.Text.Trim() == "") {
+            if (textBoxName.Text.Trim()?.Length == 0) {
                 MessageBox.Show(this, "You did not provide name for the region", "Missing Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxName.Focus();
                 return;

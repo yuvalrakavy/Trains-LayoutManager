@@ -75,7 +75,7 @@ namespace LayoutManager.Tools.Dialogs {
             else {
                 buttonDelete.Enabled = false;
                 buttonEdit.Enabled = false;
-                buttonAdd.Enabled = (selected == null);
+                buttonAdd.Enabled = selected == null;
             }
 
             destinationSelection.Clear();
@@ -178,9 +178,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // treeViewDestinations
             // 
-            this.treeViewDestinations.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeViewDestinations.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right);
             this.treeViewDestinations.HideSelection = false;
             this.treeViewDestinations.ImageIndex = -1;
             this.treeViewDestinations.Location = new System.Drawing.Point(8, 8);
@@ -193,7 +193,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonDelete.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonDelete.Location = new System.Drawing.Point(136, 224);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(56, 19);
@@ -203,7 +203,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonEdit
             // 
-            this.buttonEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonEdit.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonEdit.Location = new System.Drawing.Point(72, 224);
             this.buttonEdit.Name = "buttonEdit";
             this.buttonEdit.Size = new System.Drawing.Size(56, 19);
@@ -213,7 +213,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonClose.Location = new System.Drawing.Point(272, 224);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(56, 19);
@@ -223,7 +223,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonAdd
             // 
-            this.buttonAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonAdd.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonAdd.Location = new System.Drawing.Point(8, 224);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Size = new System.Drawing.Size(56, 19);

@@ -118,7 +118,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonOther = new RadioButton();
             this.ButtonOK = new Button();
             this.buttonCancel = new Button();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCount)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownCount).BeginInit();
             this.groupBoxLength.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -271,7 +271,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "AddCarsToTrain";
             this.ShowInTaskbar = false;
             this.Text = "Train Cars";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCount)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownCount).EndInit();
             this.groupBoxLength.ResumeLayout(false);
             this.ResumeLayout(false);
         }

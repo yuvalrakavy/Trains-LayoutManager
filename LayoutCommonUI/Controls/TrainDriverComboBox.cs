@@ -122,8 +122,8 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // comboBoxDrivers
             // 
-            this.comboBoxDrivers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxDrivers.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right);
             this.comboBoxDrivers.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDrivers.Location = new System.Drawing.Point(0, 0);
             this.comboBoxDrivers.Name = "comboBoxDrivers";
@@ -133,8 +133,8 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonDriverSettings
             // 
-            this.buttonDriverSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonDriverSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(177)));
+            this.buttonDriverSettings.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonDriverSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (System.Byte)177);
             this.buttonDriverSettings.Location = new System.Drawing.Point(120, 0);
             this.buttonDriverSettings.Name = "buttonDriverSettings";
             this.buttonDriverSettings.Size = new System.Drawing.Size(24, 21);

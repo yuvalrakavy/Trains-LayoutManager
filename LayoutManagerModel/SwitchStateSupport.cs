@@ -56,7 +56,7 @@ namespace LayoutManager.Components {
         /// </summary>
         /// <param name="connectionPointName">Connection point name or null for the default connection point</param>
         /// <returns>Connection point state</returns>
-        public virtual int GetSwitchState(string connectionPointName) => (int?)LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic).AttributeValue(($"Value{connectionPointName}")) ?? 0;
+        public virtual int GetSwitchState(string connectionPointName) => (int?)LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic).AttributeValue($"Value{connectionPointName}") ?? 0;
 
         public bool ReverseLogic {
             get {

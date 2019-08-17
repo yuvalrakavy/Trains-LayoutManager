@@ -107,8 +107,8 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             // 
             // comboBoxPolicy
             // 
-            this.comboBoxPolicy.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxPolicy.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right);
             this.comboBoxPolicy.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
             this.comboBoxPolicy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxPolicy.Location = new System.Drawing.Point(8, 26);
@@ -130,7 +130,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             // 
             // buttonOK
             // 
-            this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOK.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonOK.Location = new System.Drawing.Point(128, 58);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 2;
@@ -139,7 +139,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(208, 58);
             this.buttonCancel.Name = "buttonCancel";

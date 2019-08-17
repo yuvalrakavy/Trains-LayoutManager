@@ -16,7 +16,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private Button buttonCancel;
         private CheckBox checkBoxLimitedToScope;
 
-#pragma warning disable nullable
+#nullable disable
         public WaitForEvent(XmlElement element) {
             //
             // Required for Windows Form Designer support
@@ -25,18 +25,19 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
             this.Element = element;
 
-            comboBoxEvent.Text = (string?)element.AttributeValue(A_Name) ?? "";
+            comboBoxEvent.Text = (string)element.AttributeValue(A_Name) ?? "";
             checkBoxLimitedToScope.Checked = (bool?)element.AttributeValue(A_LimitToScope) ?? true;
 
             // Populate the combobox with possible event that have notification role
             foreach (LayoutEventDefAttribute eventDef in EventManager.Instance.GetEventDefinitions(LayoutEventRole.Notification))
                 comboBoxEvent.Items.Add(eventDef.Name);
         }
-#pragma warning restore nullable
+#nullable enable
 
         public XmlElement Element { get; }
         public XmlElement? OptionalElement => Element;
 
+#nullable disable
         #region Windows Form Designer generated code
         /// <summary>
         /// Required method for Designer support - do not modify
@@ -111,9 +112,10 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.ResumeLayout(false);
         }
         #endregion
+#nullable enable
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
-            if (comboBoxEvent.Text.Trim() == "") {
+            if (comboBoxEvent.Text.Trim()?.Length == 0) {
                 MessageBox.Show(this, "You must specify event name", "Missing Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 comboBoxEvent.Focus();
                 return;

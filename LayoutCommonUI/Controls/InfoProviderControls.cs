@@ -188,7 +188,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private Rectangle drawSampleComponent(Graphics g) {
-            Point ml = new Point((ClientSize.Width / 2) / (previewGridSize.Width + 1), (ClientSize.Height / 2) / (previewGridSize.Height + 1));
+            Point ml = new Point(ClientSize.Width / 2 / (previewGridSize.Width + 1), ClientSize.Height / 2 / (previewGridSize.Height + 1));
             Rectangle r = new Rectangle((ml.X * previewGridSize.Width) + ml.X - 1, (ml.Y * previewGridSize.Height) + ml.Y - 1,
                 previewGridSize.Width + 1, previewGridSize.Height + 1);
 

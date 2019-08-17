@@ -155,10 +155,10 @@ namespace LayoutManager.Dialogs {
             this.checkBoxHasLights = new System.Windows.Forms.CheckBox();
             this.buttonFunctionAdd = new System.Windows.Forms.Button();
             this.listViewFunctions = new System.Windows.Forms.ListView();
-            this.columnHeaderFunctionNumber = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderFunctionDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderFunctionNumber = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderType = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderName = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderFunctionDescription = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
             this.buttonFunctionEdit = new System.Windows.Forms.Button();
             this.buttonFunctionRemove = new System.Windows.Forms.Button();
             this.tabPageDecoder = new System.Windows.Forms.TabPage();
@@ -183,9 +183,9 @@ namespace LayoutManager.Dialogs {
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+            | System.Windows.Forms.AnchorStyles.Left
+            | System.Windows.Forms.AnchorStyles.Right);
             this.tabControl1.Controls.Add(this.tabPageGeneral);
             this.tabControl1.Controls.Add(this.tabPageProperties);
             this.tabControl1.Controls.Add(this.tabPageFunctions);

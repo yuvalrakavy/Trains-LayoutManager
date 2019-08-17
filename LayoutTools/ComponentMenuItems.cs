@@ -971,7 +971,7 @@ namespace LayoutManager.Tools {
             // imageListCategories
             // 
             this.imageListCategories.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListCategories.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListCategories.ImageStream")));
+            this.imageListCategories.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListCategories.ImageStream");
             this.imageListCategories.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListCategories.Images.SetKeyName(0, "BitMapTrackCategory.bmp");
             this.imageListCategories.Images.SetKeyName(1, "");
@@ -982,7 +982,7 @@ namespace LayoutManager.Tools {
             // imageListComponents
             // 
             this.imageListComponents.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListComponents.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListComponents.ImageStream")));
+            this.imageListComponents.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListComponents.ImageStream");
             this.imageListComponents.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListComponents.Images.SetKeyName(0, "");
             this.imageListComponents.Images.SetKeyName(1, "");
@@ -990,7 +990,7 @@ namespace LayoutManager.Tools {
             // imageListComponentsLarge
             // 
             this.imageListComponentsLarge.ImageSize = new System.Drawing.Size(32, 32);
-            this.imageListComponentsLarge.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListComponentsLarge.ImageStream")));
+            this.imageListComponentsLarge.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListComponentsLarge.ImageStream");
             this.imageListComponentsLarge.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListComponentsLarge.Images.SetKeyName(0, "");
         }

@@ -255,7 +255,7 @@ namespace LayoutManager.Components {
 
             for (int segment = 0; segment < 3; segment++) {
                 // Special case for straight line (segment==0) if not switched, dotted line is only to the mid point
-                if (segment == 0 && (switchState != 0 && switchState >= 0)) {
+                if (segment == 0 && switchState != 0 && switchState >= 0) {
                     Point middle = new Point((segmentPositions[0].X + segmentPositions[1].X) / 2, (segmentPositions[0].Y + segmentPositions[1].Y) / 2);
 
                     using Pen penNotSwitch1 = new Pen(segmentColors[0], TrackWidth) {
@@ -400,9 +400,9 @@ namespace LayoutManager.Components {
             Point centerPoint = CenterPoint;
 
             if (LayoutTrackComponent.IsHorizontal(ConnectionPoints))
-                g.DrawLine(Pens.Black, centerPoint.X, centerPoint.Y - ((ContactSize.Height / 2) + crossingLineExtra), centerPoint.X, centerPoint.Y + ((ContactSize.Height / 2) + crossingLineExtra));
+                g.DrawLine(Pens.Black, centerPoint.X, centerPoint.Y - ((ContactSize.Height / 2) + crossingLineExtra), centerPoint.X, centerPoint.Y + (ContactSize.Height / 2) + crossingLineExtra);
             else
-                g.DrawLine(Pens.Black, centerPoint.X - ((ContactSize.Width / 2) + crossingLineExtra), centerPoint.Y, centerPoint.X + ((ContactSize.Width / 2) + crossingLineExtra), centerPoint.Y);
+                g.DrawLine(Pens.Black, centerPoint.X - ((ContactSize.Width / 2) + crossingLineExtra), centerPoint.Y, centerPoint.X + (ContactSize.Width / 2) + crossingLineExtra, centerPoint.Y);
         }
     }
 
@@ -557,9 +557,9 @@ namespace LayoutManager.Components {
 
             if (OccupancyDetectionBlock) {
                 if (LayoutTrackComponent.IsHorizontal(ConnectionPoints))
-                    g.DrawLine(Pens.Black, centerPoint.X, centerPoint.Y - ((InfoBoxSize.Height / 2) + 3), centerPoint.X, centerPoint.Y + ((InfoBoxSize.Height / 2) + 3));
+                    g.DrawLine(Pens.Black, centerPoint.X, centerPoint.Y - ((InfoBoxSize.Height / 2) + 3), centerPoint.X, centerPoint.Y + (InfoBoxSize.Height / 2) + 3);
                 else
-                    g.DrawLine(Pens.Black, centerPoint.X - ((InfoBoxSize.Width / 2) + 3), centerPoint.Y, centerPoint.X + ((InfoBoxSize.Width / 2) + 3), centerPoint.X);
+                    g.DrawLine(Pens.Black, centerPoint.X - ((InfoBoxSize.Width / 2) + 3), centerPoint.Y, centerPoint.X + (InfoBoxSize.Width / 2) + 3, centerPoint.X);
             }
         }
 

@@ -648,11 +648,11 @@ namespace LayoutManager.Components {
                 if (result.Length > 0)
                     result += ", ";
 
-                int baseAddress = (Address / moduleType.AddressAlignment) * moduleType.AddressAlignment;
+                int baseAddress = Address / moduleType.AddressAlignment * moduleType.AddressAlignment;
                 int theIndex;
 
                 if (Bus.BusType.AddressingMethod == ControlAddressingMethod.DirectConnectionPointAddressing) {
-                    theIndex = (Address % moduleType.NumberOfAddresses) * moduleType.ConnectionPointsPerAddress;
+                    theIndex = Address % moduleType.NumberOfAddresses * moduleType.ConnectionPointsPerAddress;
 
                     if (moduleType.ConnectionPointsPerAddress > 1)
                         theIndex += State;

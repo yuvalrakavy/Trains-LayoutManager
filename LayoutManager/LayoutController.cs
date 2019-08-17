@@ -736,7 +736,7 @@ namespace LayoutManager {
 
                 return mode == "Design"
                     ? null
-                    : new OperationModeParameters() { Simulation = (mode == "Simulation"), Phases = AttributeValue(A_Phases).Enum<LayoutPhase>() ?? LayoutPhase.Operational };
+                    : new OperationModeParameters() { Simulation = mode == "Simulation", Phases = AttributeValue(A_Phases).Enum<LayoutPhase>() ?? LayoutPhase.Operational };
             }
 
             set {

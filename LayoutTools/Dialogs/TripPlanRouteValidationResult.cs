@@ -68,8 +68,8 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // labelDescription
             // 
-            this.labelDescription.Anchor = ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.labelDescription.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.labelDescription.Location = new System.Drawing.Point(8, 8);
             this.labelDescription.Name = "labelDescription";
             this.labelDescription.Size = new System.Drawing.Size(388, 56);
@@ -80,9 +80,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // listViewActions
             // 
-            this.listViewActions.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.listViewActions.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.listViewActions.Columns.AddRange(new ColumnHeader[] {
                                                                                               this.columnHeaderWayPointDestination,
                                                                                               this.columnHeaderAction});
@@ -109,7 +109,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonFixTripPlan
             // 
-            this.buttonFixTripPlan.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonFixTripPlan.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonFixTripPlan.Location = new System.Drawing.Point(220, 184);
             this.buttonFixTripPlan.Name = "buttonFixTripPlan";
             this.buttonFixTripPlan.Size = new System.Drawing.Size(80, 23);
@@ -119,7 +119,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(308, 184);
             this.buttonCancel.Name = "buttonCancel";

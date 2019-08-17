@@ -111,8 +111,8 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             // 
             // textBoxCondition
             // 
-            this.textBoxCondition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxCondition.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right);
             this.textBoxCondition.Location = new System.Drawing.Point(8, 60);
             this.textBoxCondition.Multiline = true;
             this.textBoxCondition.Name = "textBoxCondition";
@@ -183,7 +183,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(432, 233);
             this.buttonCancel.Name = "buttonCancel";
@@ -192,7 +192,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             // 
             // buttonOK
             // 
-            this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOK.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.buttonOK.Location = new System.Drawing.Point(432, 202);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 7;

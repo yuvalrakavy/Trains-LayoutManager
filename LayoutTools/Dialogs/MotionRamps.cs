@@ -95,9 +95,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // listViewRamps
             // 
-            this.listViewRamps.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.listViewRamps.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.listViewRamps.Columns.AddRange(new ColumnHeader[] {
                                                                                             this.columnHeaderName,
                                                                                             this.columnHeaderUsage});
@@ -114,7 +114,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonAdd
             // 
-            this.buttonAdd.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonAdd.Location = new System.Drawing.Point(8, 200);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Size = new System.Drawing.Size(67, 23);
@@ -124,7 +124,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonEdit
             // 
-            this.buttonEdit.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonEdit.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonEdit.Location = new System.Drawing.Point(80, 200);
             this.buttonEdit.Name = "buttonEdit";
             this.buttonEdit.Size = new System.Drawing.Size(67, 23);
@@ -134,7 +134,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonRemove
             // 
-            this.buttonRemove.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonRemove.Location = new System.Drawing.Point(152, 200);
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.Size = new System.Drawing.Size(67, 23);
@@ -144,8 +144,8 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonMoveDown
             // 
-            this.buttonMoveDown.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonMoveDown.Image = ((System.Drawing.Bitmap)(resources.GetObject("buttonMoveDown.Image")));
+            this.buttonMoveDown.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.buttonMoveDown.Image = (System.Drawing.Bitmap)resources.GetObject("buttonMoveDown.Image");
             this.buttonMoveDown.ImageIndex = 0;
             this.buttonMoveDown.ImageList = this.imageListButttons;
             this.buttonMoveDown.Location = new System.Drawing.Point(304, 32);
@@ -158,13 +158,13 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             this.imageListButttons.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
             this.imageListButttons.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListButttons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListButttons.ImageStream")));
+            this.imageListButttons.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListButttons.ImageStream");
             this.imageListButttons.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // buttonMoveUp
             // 
-            this.buttonMoveUp.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonMoveUp.Image = ((System.Drawing.Bitmap)(resources.GetObject("buttonMoveUp.Image")));
+            this.buttonMoveUp.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.buttonMoveUp.Image = (System.Drawing.Bitmap)resources.GetObject("buttonMoveUp.Image");
             this.buttonMoveUp.ImageIndex = 1;
             this.buttonMoveUp.ImageList = this.imageListButttons;
             this.buttonMoveUp.Location = new System.Drawing.Point(304, 8);
@@ -175,7 +175,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonClose.Location = new System.Drawing.Point(264, 200);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(67, 23);

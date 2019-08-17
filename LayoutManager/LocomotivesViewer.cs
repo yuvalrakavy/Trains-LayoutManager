@@ -344,7 +344,7 @@ namespace LayoutManager {
             // 
             // buttonAdd
             // 
-            this.buttonAdd.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonAdd.Location = new System.Drawing.Point(12, 464);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Size = new System.Drawing.Size(56, 20);
@@ -354,7 +354,7 @@ namespace LayoutManager {
             // 
             // buttonEdit
             // 
-            this.buttonEdit.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonEdit.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonEdit.Location = new System.Drawing.Point(76, 464);
             this.buttonEdit.Name = "buttonEdit";
             this.buttonEdit.Size = new System.Drawing.Size(56, 20);
@@ -364,7 +364,7 @@ namespace LayoutManager {
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonDelete.Location = new System.Drawing.Point(140, 464);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(56, 20);
@@ -374,7 +374,7 @@ namespace LayoutManager {
             // 
             // buttonOptions
             // 
-            this.buttonOptions.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonOptions.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonOptions.Location = new System.Drawing.Point(134, 488);
             this.buttonOptions.Name = "buttonOptions";
             this.buttonOptions.Size = new System.Drawing.Size(62, 20);
@@ -384,8 +384,8 @@ namespace LayoutManager {
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.panel1.Controls.AddRange(new System.Windows.Forms.Control[] {
                                                                                  this.buttonClose});
@@ -395,9 +395,9 @@ namespace LayoutManager {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             this.buttonClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonClose.Image = ((System.Drawing.Bitmap)(resources.GetObject("buttonClose.Image")));
+            this.buttonClose.Image = (System.Drawing.Bitmap)resources.GetObject("buttonClose.Image");
             this.buttonClose.ImageIndex = 0;
             this.buttonClose.ImageList = this.imageListCloseButton;
             this.buttonClose.Location = new System.Drawing.Point(186, 1);
@@ -410,14 +410,14 @@ namespace LayoutManager {
             // 
             this.imageListCloseButton.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
             this.imageListCloseButton.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListCloseButton.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListCloseButton.ImageStream")));
+            this.imageListCloseButton.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListCloseButton.ImageStream");
             this.imageListCloseButton.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // locomotiveList
             // 
-            this.locomotiveList.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.locomotiveList.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.locomotiveList.ContainerElement = null;
             this.locomotiveList.CurrentListLayout = null;
             this.locomotiveList.CurrentListLayoutIndex = -1;

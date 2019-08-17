@@ -1961,7 +1961,7 @@ namespace LayoutManager {
                         break;
                     else {      // Expand reference
                         bool expandProperty = text[e] == '[';
-                        char closingDelimiter = (expandProperty ? ']' : '>');
+                        char closingDelimiter = expandProperty ? ']' : '>';
                         object? obj;
 
                         s = e + 1;

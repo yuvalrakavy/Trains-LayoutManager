@@ -284,7 +284,7 @@ namespace NumatoController {
                 this.on = on;
             }
 
-            private static char RelayNumberCharacter(int iRelay) => (char)(iRelay < 10 ? iRelay + '0' : ((iRelay - 10) + 'A'));
+            private static char RelayNumberCharacter(int iRelay) => (char)(iRelay < 10 ? iRelay + '0' : (iRelay - 10 + 'A'));
             protected override string Command => $"relay {(on ? "on" : "off")} {RelayNumberCharacter(iRelay)}\r\n";
 
             public override string ToString() => $"Set relay {iRelay} to {(on ? "ON" : "OFF")}";

@@ -64,11 +64,11 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // tripPlanEditor
             // 
-            this.tripPlanEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tripPlanEditor.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                        | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.tripPlanEditor.EnablePreview = true;
-            this.tripPlanEditor.Front = ((LayoutManager.Model.LayoutComponentConnectionPoint)(resources.GetObject("tripPlanEditor.Front")));
+            this.tripPlanEditor.Front = (LayoutManager.Model.LayoutComponentConnectionPoint)resources.GetObject("tripPlanEditor.Front");
             this.tripPlanEditor.Location = new System.Drawing.Point(3, 8);
             this.tripPlanEditor.LocomotiveBlock = null;
             this.tripPlanEditor.Name = "tripPlanEditor";
@@ -82,7 +82,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonSave
             // 
-            this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonSave.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonSave.Location = new System.Drawing.Point(3, 286);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(75, 23);
@@ -92,7 +92,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonClose.Location = new System.Drawing.Point(403, 286);
             this.buttonClose.Name = "buttonClose";

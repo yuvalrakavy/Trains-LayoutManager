@@ -71,9 +71,9 @@ namespace LayoutManager.Dialogs {
             // 
             // locomotiveTypeList
             // 
-            this.locomotiveTypeList.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.locomotiveTypeList.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.locomotiveTypeList.ContainerElement = null;
             this.locomotiveTypeList.CurrentListLayout = null;
             this.locomotiveTypeList.CurrentListLayoutIndex = -1;
@@ -87,7 +87,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonSelect
             // 
-            this.buttonSelect.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonSelect.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonSelect.Location = new System.Drawing.Point(252, 392);
             this.buttonSelect.Name = "buttonSelect";
             this.buttonSelect.Size = new System.Drawing.Size(64, 23);
@@ -97,7 +97,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(320, 392);
             this.buttonCancel.Name = "buttonCancel";
@@ -108,7 +108,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonArrangeBy
             // 
-            this.buttonArrangeBy.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonArrangeBy.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonArrangeBy.Location = new System.Drawing.Point(8, 392);
             this.buttonArrangeBy.Name = "buttonArrangeBy";
             this.buttonArrangeBy.TabIndex = 1;

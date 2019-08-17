@@ -101,7 +101,7 @@ namespace LayoutManager.CommonUI.Controls {
 
                     foreach (TrainLocomotiveInfo trainLocomotive in trainInCollection.Locomotives) {
                         locoPainter.LocomotiveElement = trainLocomotive.Locomotive.Element;
-                        locoPainter.FlipImage = (trainLocomotive.Orientation == LocomotiveOrientation.Backward);
+                        locoPainter.FlipImage = trainLocomotive.Orientation == LocomotiveOrientation.Backward;
                         locoPainter.Origin = new Point(x, 2);
                         locoPainter.Draw(e.Graphics);
 

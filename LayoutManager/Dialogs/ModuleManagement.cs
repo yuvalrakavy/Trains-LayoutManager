@@ -140,7 +140,7 @@ namespace LayoutManager.Dialogs {
             // 
             this.imageListTree.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
             this.imageListTree.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListTree.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListTree.ImageStream")));
+            this.imageListTree.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListTree.ImageStream");
             this.imageListTree.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // buttonClose

@@ -121,7 +121,7 @@ namespace LayoutManager.Dialogs {
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownSpeed).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -307,7 +307,7 @@ namespace LayoutManager.Dialogs {
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownSpeed).EndInit();
             this.ResumeLayout(false);
         }
         #endregion

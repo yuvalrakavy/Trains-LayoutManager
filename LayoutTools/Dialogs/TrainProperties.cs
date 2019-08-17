@@ -7,13 +7,14 @@ using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
-#pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060, IDE0069
 #nullable enable
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for TrainProperties.
     /// </summary>
     public class TrainProperties : Form, IObjectHasXml {
+#nullable disable
         private TabControl tabControl1;
         private Button buttonOK;
         private Button buttonCancel;
@@ -55,7 +56,6 @@ namespace LayoutManager.Tools.Dialogs {
         private readonly ArrayList locomotiveCancelList = new ArrayList();
         private bool locomotiveEdited = false;
 
-#pragma warning disable nullable
         public TrainProperties(TrainCommonInfo train) {
             //
             // Required for Windows Form Designer support
@@ -88,7 +88,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             EventManager.AddObjectSubscriptions(this);
         }
-#pragma warning restore nullable
+#nullable enable
 
         public XmlElement Element => train.Element;
         public XmlElement? OptionalElement => Element;
@@ -101,8 +101,8 @@ namespace LayoutManager.Tools.Dialogs {
             if (listViewLocomotives.SelectedItems.Count != 0) {
                 buttonLocoEdit.Enabled = true;
                 buttonLocoRemove.Enabled = true;
-                buttonLocoMoveUp.Enabled = (listViewLocomotives.SelectedIndices[0] > 0);
-                buttonLocoMoveDown.Enabled = (listViewLocomotives.SelectedIndices[0] < listViewLocomotives.Items.Count - 1);
+                buttonLocoMoveUp.Enabled = listViewLocomotives.SelectedIndices[0] > 0;
+                buttonLocoMoveDown.Enabled = listViewLocomotives.SelectedIndices[0] < listViewLocomotives.Items.Count - 1;
             }
             else {
                 buttonLocoEdit.Enabled = false;
@@ -135,6 +135,7 @@ namespace LayoutManager.Tools.Dialogs {
             base.Dispose(disposing);
         }
 
+#nullable disable
         #region Windows Form Designer generated code
         /// <summary>
         /// Required method for Designer support - do not modify
@@ -189,9 +190,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                        | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.tabControl1.Controls.Add(this.tabPageGeneral);
             this.tabControl1.Controls.Add(this.tabPageLocomotives);
             this.tabControl1.Controls.Add(this.tabPageDriver);
@@ -283,8 +284,8 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // panelLocoImages
             // 
-            this.panelLocoImages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelLocoImages.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.panelLocoImages.Location = new System.Drawing.Point(8, 6);
             this.panelLocoImages.Name = "panelLocoImages";
             this.panelLocoImages.Size = new System.Drawing.Size(272, 42);
@@ -294,7 +295,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonLocoMoveDown
             // 
-            this.buttonLocoMoveDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonLocoMoveDown.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonLocoMoveDown.ImageIndex = 0;
             this.buttonLocoMoveDown.ImageList = this.imageListButttons;
             this.buttonLocoMoveDown.Location = new System.Drawing.Point(222, 222);
@@ -305,14 +306,14 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // imageListButttons
             // 
-            this.imageListButttons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListButttons.ImageStream")));
+            this.imageListButttons.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListButttons.ImageStream");
             this.imageListButttons.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListButttons.Images.SetKeyName(0, "");
             this.imageListButttons.Images.SetKeyName(1, "");
             // 
             // buttonLocoAdd
             // 
-            this.buttonLocoAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonLocoAdd.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonLocoAdd.Location = new System.Drawing.Point(8, 222);
             this.buttonLocoAdd.Name = "buttonLocoAdd";
             this.buttonLocoAdd.Size = new System.Drawing.Size(64, 21);
@@ -322,9 +323,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // listViewLocomotives
             // 
-            this.listViewLocomotives.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.listViewLocomotives.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                        | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.listViewLocomotives.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderLocoName,
             this.columnAddress,
@@ -364,7 +365,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonLocoRemove
             // 
-            this.buttonLocoRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonLocoRemove.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonLocoRemove.Location = new System.Drawing.Point(80, 222);
             this.buttonLocoRemove.Name = "buttonLocoRemove";
             this.buttonLocoRemove.Size = new System.Drawing.Size(64, 21);
@@ -374,7 +375,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonLocoEdit
             // 
-            this.buttonLocoEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonLocoEdit.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonLocoEdit.Location = new System.Drawing.Point(152, 222);
             this.buttonLocoEdit.Name = "buttonLocoEdit";
             this.buttonLocoEdit.Size = new System.Drawing.Size(64, 21);
@@ -384,7 +385,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonLocoMoveUp
             // 
-            this.buttonLocoMoveUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonLocoMoveUp.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonLocoMoveUp.ImageIndex = 1;
             this.buttonLocoMoveUp.ImageList = this.imageListButttons;
             this.buttonLocoMoveUp.Location = new System.Drawing.Point(251, 222);
@@ -413,7 +414,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonOK
             // 
-            this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOK.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonOK.Location = new System.Drawing.Point(111, 280);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 21);
@@ -423,7 +424,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(191, 280);
             this.buttonCancel.Name = "buttonCancel";
@@ -534,12 +535,13 @@ namespace LayoutManager.Tools.Dialogs {
             this.ResumeLayout(false);
         }
         #endregion
+#nullable enable
 
         [LayoutEventDef("train-configuration-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(string))]
         private void buttonOK_Click(object sender, System.EventArgs e) {
             // Validate
 
-            if (textBoxName.Text.Trim() == "") {
+            if (textBoxName.Text.Trim()?.Length == 0) {
                 tabControl1.SelectedTab = tabPageGeneral;
                 MessageBox.Show(this, "Train name cannot be empty", "Missing value", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxName.Focus();
@@ -603,7 +605,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void setLocomotiveOrientation(LocomotiveOrientation orientation) {
-            TrainLocomotiveItem selected = ((TrainLocomotiveItem)listViewLocomotives.SelectedItems[0]);
+            TrainLocomotiveItem selected = (TrainLocomotiveItem)listViewLocomotives.SelectedItems[0];
             TrainLocomotiveInfo selectedTrainLoco = selected.TrainLocomotive;
 
             // Verify that it is a valid setting
@@ -633,7 +635,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void menuItemEditLocoDefinition_Click(object sender, System.EventArgs e) {
-            TrainLocomotiveItem selected = ((TrainLocomotiveItem)listViewLocomotives.SelectedItems[0]);
+            TrainLocomotiveItem selected = (TrainLocomotiveItem)listViewLocomotives.SelectedItems[0];
             TrainLocomotiveInfo trainLoco = selected.TrainLocomotive;
 
             EventManager.Event(new LayoutEvent("edit-locomotive-properties", trainLoco.Locomotive));
@@ -644,7 +646,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonLocoRemove_Click(object sender, System.EventArgs e) {
-            TrainLocomotiveItem selected = ((TrainLocomotiveItem)listViewLocomotives.SelectedItems[0]);
+            TrainLocomotiveItem selected = (TrainLocomotiveItem)listViewLocomotives.SelectedItems[0];
             TrainLocomotiveInfo trainLoco = selected.TrainLocomotive;
 
             train.RemoveLocomotive(trainLoco);
@@ -653,7 +655,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonLocoAdd_Click(object sender, System.EventArgs e) {
-            Dialogs.AddLocomotiveToTrain addLoco = new Dialogs.AddLocomotiveToTrain(train);
+            using var addLoco = new Dialogs.AddLocomotiveToTrain(train);
 
             if (addLoco.ShowDialog() == DialogResult.OK) {
                 CanPlaceTrainResult result = train.AddLocomotive(addLoco.Locomotive, addLoco.Orientation, null, true);
@@ -672,7 +674,7 @@ namespace LayoutManager.Tools.Dialogs {
             int selectedIndex = listViewLocomotives.SelectedIndices[0];
 
             if (selectedIndex < listViewLocomotives.Items.Count - 1) {
-                TrainLocomotiveItem selected = ((TrainLocomotiveItem)listViewLocomotives.SelectedItems[0]);
+                TrainLocomotiveItem selected = (TrainLocomotiveItem)listViewLocomotives.SelectedItems[0];
                 TrainLocomotiveInfo trainLoco = selected.TrainLocomotive;
 
                 XmlNode nextElement = trainLoco.Element.NextSibling;
@@ -689,7 +691,7 @@ namespace LayoutManager.Tools.Dialogs {
             int selectedIndex = listViewLocomotives.SelectedIndices[0];
 
             if (selectedIndex > 0) {
-                TrainLocomotiveItem selected = ((TrainLocomotiveItem)listViewLocomotives.SelectedItems[0]);
+                TrainLocomotiveItem selected = (TrainLocomotiveItem)listViewLocomotives.SelectedItems[0];
                 TrainLocomotiveInfo trainLoco = selected.TrainLocomotive;
 
                 XmlNode previousElement = trainLoco.Element.PreviousSibling;
@@ -702,7 +704,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        private int ImageWidth => ((panelLocoImages.Height - 8) * 50) / 36;
+        private int ImageWidth => (panelLocoImages.Height - 8) * 50 / 36;
 
         private void panelLocoImages_Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
             int x = 2;
@@ -717,10 +719,7 @@ namespace LayoutManager.Tools.Dialogs {
                 locoPainter.Origin = new Point(x, 2);
                 locoPainter.LocomotiveElement = trainLoco.Locomotive.Element;
 
-                if (trainLoco.Orientation == LocomotiveOrientation.Backward)
-                    locoPainter.FlipImage = true;
-                else
-                    locoPainter.FlipImage = false;
+                locoPainter.FlipImage = trainLoco.Orientation == LocomotiveOrientation.Backward;
 
                 if (item.Selected)
                     locoPainter.FramePen = new Pen(Color.Red, 2.0F);

@@ -48,7 +48,7 @@ namespace Gui.Wizard {
             // picImage
             // 
             this.picImage.Dock = System.Windows.Forms.DockStyle.Left;
-            this.picImage.Image = ((System.Drawing.Image)(resources.GetObject("picImage.Image")));
+            this.picImage.Image = (System.Drawing.Image)resources.GetObject("picImage.Image");
             this.picImage.Location = new System.Drawing.Point(0, 0);
             this.picImage.Name = "picImage";
             this.picImage.Size = new System.Drawing.Size(164, 388);
@@ -57,10 +57,10 @@ namespace Gui.Wizard {
             // 
             // lblTitle
             // 
-            this.lblTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTitle.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right);
             this.lblTitle.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.lblTitle.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+            this.lblTitle.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (System.Byte)0);
             this.lblTitle.Location = new System.Drawing.Point(172, 4);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(304, 48);
@@ -82,7 +82,7 @@ namespace Gui.Wizard {
         private void InfoContainer_Load(object sender, System.EventArgs e) {
             //Handle really irating resize that doesn't take account of Anchor
             lblTitle.Left = picImage.Width + 8;
-            lblTitle.Width = (this.Width - 4) - lblTitle.Left;
+            lblTitle.Width = this.Width - 4 - lblTitle.Left;
         }
 
         /// <summary>

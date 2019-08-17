@@ -27,7 +27,7 @@ namespace LayoutManager.Dialogs {
         /// </summary>
         private readonly XmlElementWrapper functionInfoElement;
 
-#pragma warning disable nullable
+#nullable disable
         public StandardFunction(XmlElement rawFunctionInfoElement) {
             //
             // Required for Windows Form Designer support
@@ -37,10 +37,10 @@ namespace LayoutManager.Dialogs {
             this.functionInfoElement = new XmlElementWrapper(rawFunctionInfoElement);
 
             comboBoxFunctionType.SelectedIndex = (int)(functionInfoElement.AttributeValue(A_Type).Enum<LocomotiveFunctionType>() ?? LocomotiveFunctionType.Trigger);
-            textBoxFunctionName.Text = (string?)functionInfoElement.AttributeValue(A_Name) ?? "";
-            textBoxDescription.Text = (string?)functionInfoElement.AttributeValue(A_Description) ?? "";
+            textBoxFunctionName.Text = (string)functionInfoElement.AttributeValue(A_Name) ?? "";
+            textBoxDescription.Text = (string)functionInfoElement.AttributeValue(A_Description) ?? "";
         }
-#pragma warning restore nullable
+#nullable enable
 
         #region Windows Form Designer generated code
         /// <summary>
@@ -154,7 +154,7 @@ namespace LayoutManager.Dialogs {
         #endregion
 
         private void buttonOk_Click(object sender, System.EventArgs e) {
-            if (textBoxFunctionName.Text.Trim() == "") {
+            if (textBoxFunctionName.Text.Trim()?.Length == 0) {
                 MessageBox.Show(this, "Missing value", "You have to specifiy function name", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxFunctionName.Focus();
                 return;

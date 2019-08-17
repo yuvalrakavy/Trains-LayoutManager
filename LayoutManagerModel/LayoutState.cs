@@ -2288,7 +2288,7 @@ namespace LayoutManager.Model {
             var policyToRemove = this[policyId];
 
             if (policyToRemove != null) {
-                bool save = (policyToRemove.Element.OwnerDocument == globalPoliciesElement.OwnerDocument);
+                bool save = policyToRemove.Element.OwnerDocument == globalPoliciesElement.OwnerDocument;
 
                 EventManager.Event(new LayoutEvent("policy-removed-from-policies-collection", this, policyToRemove));
                 policies.Remove(policyToRemove);

@@ -23,7 +23,7 @@ namespace Gui.Wizard {
         /// </summary>
         public WizardPage this[int index] {
             get {
-                return ((WizardPage)List[index]);
+                return (WizardPage)List[index];
             }
             set {
                 List[index] = value;
@@ -56,7 +56,7 @@ namespace Gui.Wizard {
         /// </summary>
         /// <param name="value">Page to find position of</param>
         /// <returns>Index of Page in collection</returns>
-        public int IndexOf(WizardPage value) => (List.IndexOf(value));
+        public int IndexOf(WizardPage value) => List.IndexOf(value);
 
         /// <summary>
         /// Adds a new page at a particular position in the Collection
@@ -81,7 +81,7 @@ namespace Gui.Wizard {
         /// </summary>
         /// <param name="value">Page to find</param>
         /// <returns></returns>
-        public bool Contains(WizardPage value) => (List.Contains(value));
+        public bool Contains(WizardPage value) => List.Contains(value);
 
         /// <summary>
         /// Propgate when a external designer modifies the pages

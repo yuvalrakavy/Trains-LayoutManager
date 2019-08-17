@@ -53,7 +53,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.numericUpDownModuleCount = new NumericUpDown();
             this.buttonOK = new Button();
             this.buttonCancel = new Button();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownModuleCount)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownModuleCount).BeginInit();
             this.SuspendLayout();
             // 
             // labelQuestion
@@ -112,7 +112,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "GetNumberOfModules";
             this.Text = "Add MODULENAME";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownModuleCount)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownModuleCount).EndInit();
             this.ResumeLayout(false);
         }
         #endregion

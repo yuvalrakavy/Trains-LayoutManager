@@ -105,7 +105,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonClose.Location = new System.Drawing.Point(312, 240);
             this.buttonClose.Name = "buttonClose";
@@ -116,9 +116,9 @@ namespace LayoutManager.Dialogs {
             // 
             // tabControlStartCondition
             // 
-            this.tabControlStartCondition.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControlStartCondition.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                        | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.tabControlStartCondition.Controls.Add(this.tabPageGlobal);
             this.tabControlStartCondition.Controls.Add(this.tabPageBlock);
             this.tabControlStartCondition.Controls.Add(this.tabPageTripPlan);

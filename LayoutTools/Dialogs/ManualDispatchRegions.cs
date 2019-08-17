@@ -136,9 +136,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // listBoxRegions
             // 
-            this.listBoxRegions.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.listBoxRegions.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.listBoxRegions.DisplayMember = "NameAndStatus";
             this.listBoxRegions.Location = new System.Drawing.Point(6, 8);
             this.listBoxRegions.Name = "listBoxRegions";
@@ -148,7 +148,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonNewRegion
             // 
-            this.buttonNewRegion.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonNewRegion.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonNewRegion.Location = new System.Drawing.Point(6, 216);
             this.buttonNewRegion.Name = "buttonNewRegion";
             this.buttonNewRegion.Size = new System.Drawing.Size(48, 18);
@@ -158,7 +158,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonEditRegion
             // 
-            this.buttonEditRegion.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonEditRegion.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonEditRegion.Location = new System.Drawing.Point(58, 216);
             this.buttonEditRegion.Name = "buttonEditRegion";
             this.buttonEditRegion.Size = new System.Drawing.Size(48, 18);
@@ -168,7 +168,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonDeleteRegion
             // 
-            this.buttonDeleteRegion.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonDeleteRegion.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonDeleteRegion.Location = new System.Drawing.Point(111, 216);
             this.buttonDeleteRegion.Name = "buttonDeleteRegion";
             this.buttonDeleteRegion.Size = new System.Drawing.Size(48, 18);
@@ -178,7 +178,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonToggleRegionActivation
             // 
-            this.buttonToggleRegionActivation.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonToggleRegionActivation.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonToggleRegionActivation.Location = new System.Drawing.Point(164, 216);
             this.buttonToggleRegionActivation.Name = "buttonToggleRegionActivation";
             this.buttonToggleRegionActivation.Size = new System.Drawing.Size(76, 18);
@@ -188,7 +188,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonClose.Location = new System.Drawing.Point(178, 245);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(64, 23);

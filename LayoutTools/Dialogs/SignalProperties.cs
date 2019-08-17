@@ -91,9 +91,9 @@ namespace LayoutManager.Tools.Dialogs {
             this.tabControl.SuspendLayout();
             this.tabPageAddress.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWithTransparency1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWithTransparency2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWithTransparency3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.pictureBoxWithTransparency1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.pictureBoxWithTransparency2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.pictureBoxWithTransparency3).BeginInit();
             this.SuspendLayout();
             // 
             // buttonCancel
@@ -182,7 +182,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // pictureBoxWithTransparency1
             // 
-            this.pictureBoxWithTransparency1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxWithTransparency1.Image")));
+            this.pictureBoxWithTransparency1.Image = (System.Drawing.Image)resources.GetObject("pictureBoxWithTransparency1.Image");
             this.pictureBoxWithTransparency1.Location = new System.Drawing.Point(17, 21);
             this.pictureBoxWithTransparency1.Name = "pictureBoxWithTransparency1";
             this.pictureBoxWithTransparency1.Size = new System.Drawing.Size(23, 19);
@@ -192,7 +192,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // pictureBoxWithTransparency2
             // 
-            this.pictureBoxWithTransparency2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxWithTransparency2.Image")));
+            this.pictureBoxWithTransparency2.Image = (System.Drawing.Image)resources.GetObject("pictureBoxWithTransparency2.Image");
             this.pictureBoxWithTransparency2.Location = new System.Drawing.Point(17, 48);
             this.pictureBoxWithTransparency2.Name = "pictureBoxWithTransparency2";
             this.pictureBoxWithTransparency2.Size = new System.Drawing.Size(23, 19);
@@ -202,7 +202,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // pictureBoxWithTransparency3
             // 
-            this.pictureBoxWithTransparency3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxWithTransparency3.Image")));
+            this.pictureBoxWithTransparency3.Image = (System.Drawing.Image)resources.GetObject("pictureBoxWithTransparency3.Image");
             this.pictureBoxWithTransparency3.Location = new System.Drawing.Point(17, 80);
             this.pictureBoxWithTransparency3.Name = "pictureBoxWithTransparency3";
             this.pictureBoxWithTransparency3.Size = new System.Drawing.Size(23, 19);
@@ -226,9 +226,9 @@ namespace LayoutManager.Tools.Dialogs {
             this.tabPageAddress.ResumeLayout(false);
             this.tabPageAddress.PerformLayout();
             this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWithTransparency1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWithTransparency2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWithTransparency3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.pictureBoxWithTransparency1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.pictureBoxWithTransparency2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.pictureBoxWithTransparency3).EndInit();
             this.ResumeLayout(false);
         }
         #endregion

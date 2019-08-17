@@ -146,8 +146,8 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // panelIcons
             // 
-            this.panelIcons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelIcons.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right);
             this.panelIcons.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelIcons.Controls.Add(this.hScrollBar);
             this.panelIcons.Location = new System.Drawing.Point(2, 2);

@@ -87,7 +87,7 @@ namespace LayoutManager.ControlComponents.Dialogs {
             this.diPswitchSettings.SwitchCountBase = 1;
             this.diPswitchSettings.TabIndex = 0;
             this.diPswitchSettings.Text = "diPswitch1";
-            this.diPswitchSettings.Value = ((long)(1));
+            this.diPswitchSettings.Value = (long)1;
             // 
             // label1
             // 
@@ -132,7 +132,7 @@ namespace LayoutManager.ControlComponents.Dialogs {
             this.diPswitch2.SwitchCountBase = 1;
             this.diPswitch2.TabIndex = 0;
             this.diPswitch2.Text = "diPswitch1";
-            this.diPswitch2.Value = ((long)(0));
+            this.diPswitch2.Value = (long)0;
             // 
             // label5
             // 
@@ -144,7 +144,7 @@ namespace LayoutManager.ControlComponents.Dialogs {
             // 
             // label6
             // 
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(177)));
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (System.Byte)177);
             this.label6.Location = new System.Drawing.Point(16, 16);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(24, 23);
@@ -154,7 +154,7 @@ namespace LayoutManager.ControlComponents.Dialogs {
             // 
             // label7
             // 
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(177)));
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (System.Byte)177);
             this.label7.Location = new System.Drawing.Point(16, 56);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(24, 23);
@@ -164,7 +164,7 @@ namespace LayoutManager.ControlComponents.Dialogs {
             // 
             // label8
             // 
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(177)));
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (System.Byte)177);
             this.label8.Location = new System.Drawing.Point(16, 120);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(24, 23);
@@ -174,7 +174,7 @@ namespace LayoutManager.ControlComponents.Dialogs {
             // 
             // label9
             // 
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(177)));
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (System.Byte)177);
             this.label9.Location = new System.Drawing.Point(16, 152);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(24, 23);
@@ -184,7 +184,7 @@ namespace LayoutManager.ControlComponents.Dialogs {
             // 
             // label10
             // 
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(177)));
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (System.Byte)177);
             this.label10.Location = new System.Drawing.Point(16, 232);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(24, 23);

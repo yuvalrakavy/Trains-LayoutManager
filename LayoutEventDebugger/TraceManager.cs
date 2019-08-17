@@ -106,9 +106,9 @@ namespace LayoutEventDebugger {
         /// </summary>
         private void InitializeComponent() {
             this.listViewSwitches = new ListView();
-            this.columnHeaderSwtchName = ((ColumnHeader)(new ColumnHeader()));
-            this.columnHeaderDescription = ((ColumnHeader)(new ColumnHeader()));
-            this.columnHeaderSwitchSetting = ((ColumnHeader)(new ColumnHeader()));
+            this.columnHeaderSwtchName = (ColumnHeader)new ColumnHeader();
+            this.columnHeaderDescription = (ColumnHeader)new ColumnHeader();
+            this.columnHeaderSwitchSetting = (ColumnHeader)new ColumnHeader();
             this.groupBoxSwitchValue = new GroupBox();
             this.radioButtonBooleanOff = new RadioButton();
             this.radioButtonTraceNone = new RadioButton();
@@ -127,9 +127,9 @@ namespace LayoutEventDebugger {
             // 
             // listViewSwitches
             // 
-            this.listViewSwitches.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listViewSwitches.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+            | System.Windows.Forms.AnchorStyles.Left
+            | System.Windows.Forms.AnchorStyles.Right);
             this.listViewSwitches.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderSwtchName,
             this.columnHeaderDescription,
@@ -162,7 +162,7 @@ namespace LayoutEventDebugger {
             // 
             // groupBoxSwitchValue
             // 
-            this.groupBoxSwitchValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBoxSwitchValue.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.groupBoxSwitchValue.Controls.Add(this.radioButtonBooleanOff);
             this.groupBoxSwitchValue.Controls.Add(this.radioButtonTraceNone);
             this.groupBoxSwitchValue.Controls.Add(this.radioButtonTraceError);
@@ -242,7 +242,7 @@ namespace LayoutEventDebugger {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonClose.Location = new System.Drawing.Point(468, 272);
             this.buttonClose.Name = "buttonClose";
@@ -252,7 +252,7 @@ namespace LayoutEventDebugger {
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox1.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.groupBox1.Controls.Add(this.radioButtonAllSwitches);
             this.groupBox1.Controls.Add(this.radioButtonApplicationSwitches);
             this.groupBox1.Location = new System.Drawing.Point(183, 176);

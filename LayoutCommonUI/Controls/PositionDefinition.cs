@@ -72,8 +72,8 @@ namespace LayoutManager.CommonUI.Controls {
             this.label1 = new Label();
             this.labelDistance = new Label();
             this.numericUpDownDistance = new NumericUpDown();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownWidth)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDistance)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownWidth).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownDistance).BeginInit();
             this.SuspendLayout();
             // 
             // layoutPositionInfoPreview1
@@ -174,8 +174,8 @@ namespace LayoutManager.CommonUI.Controls {
             this.Controls.Add(this.labelPosition);
             this.Name = "PositionDefinition";
             this.Size = new System.Drawing.Size(272, 104);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownWidth)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDistance)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownWidth).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownDistance).EndInit();
             this.ResumeLayout(false);
         }
         #endregion

@@ -95,9 +95,9 @@ namespace LayoutEventDebugger {
             // 
             // treeViewEventTrace
             // 
-            this.treeViewEventTrace.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.treeViewEventTrace.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.treeViewEventTrace.ImageIndex = -1;
             this.treeViewEventTrace.Location = new System.Drawing.Point(8, 8);
             this.treeViewEventTrace.Name = "treeViewEventTrace";
@@ -107,7 +107,7 @@ namespace LayoutEventDebugger {
             // 
             // buttonTraceState
             // 
-            this.buttonTraceState.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonTraceState.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonTraceState.Location = new System.Drawing.Point(8, 360);
             this.buttonTraceState.Name = "buttonTraceState";
             this.buttonTraceState.Size = new System.Drawing.Size(72, 24);
@@ -117,7 +117,7 @@ namespace LayoutEventDebugger {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonClose.Location = new System.Drawing.Point(216, 360);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.TabIndex = 3;
@@ -126,7 +126,7 @@ namespace LayoutEventDebugger {
             // 
             // buttonClear
             // 
-            this.buttonClear.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonClear.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonClear.Location = new System.Drawing.Point(88, 360);
             this.buttonClear.Name = "buttonClear";
             this.buttonClear.Size = new System.Drawing.Size(75, 24);

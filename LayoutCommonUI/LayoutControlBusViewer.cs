@@ -352,7 +352,7 @@ namespace LayoutManager.CommonUI {
             // 
             // imageListConnectionPointTypes
             // 
-            this.imageListConnectionPointTypes.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListConnectionPointTypes.ImageStream")));
+            this.imageListConnectionPointTypes.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListConnectionPointTypes.ImageStream");
             this.imageListConnectionPointTypes.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListConnectionPointTypes.Images.SetKeyName(0, "");
             this.imageListConnectionPointTypes.Images.SetKeyName(1, "");
@@ -482,7 +482,7 @@ namespace LayoutManager.CommonUI {
             DrawControlBase result = null;
 
             // Convert from client coordinate to world coordinates
-            PointF p = new PointF((hitPoint.X / zoom) + origin.X, ((hitPoint.Y) / zoom) + origin.Y);
+            PointF p = new PointF((hitPoint.X / zoom) + origin.X, (hitPoint.Y / zoom) + origin.Y);
 
             if (drawRoot != null)
                 result = drawRoot.GetDrawObjectContainingPoint(p);

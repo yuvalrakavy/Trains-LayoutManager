@@ -566,7 +566,7 @@ namespace MarklinDigital {
                     int changeIndex = 0;
 
                     for (int contactNo = 1; contactNo <= 16; contactNo++) {
-                        int mask = (1 << (16 - contactNo));
+                        int mask = 1 << (16 - contactNo);
 
                         if ((feedback & mask) != (newValue & mask))
                             feedbackResult.Contacts[changeIndex++] = new MarklinFeedbackContactResult(contactNo, (newValue & mask) != 0);

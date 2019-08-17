@@ -68,8 +68,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.numericUpDownTargetSpeed = new NumericUpDown();
             this.labelLowerLimit = new Label();
             this.labelUpperLimit = new Label();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarTargetSpeed)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTargetSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.trackBarTargetSpeed).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownTargetSpeed).BeginInit();
             this.SuspendLayout();
             // 
             // trackBarTargetSpeed
@@ -142,8 +142,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "GetTargetSpeed";
             this.Text = "Set Train Target Speed";
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarTargetSpeed)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTargetSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.trackBarTargetSpeed).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownTargetSpeed).EndInit();
             this.ResumeLayout(false);
         }
         #endregion

@@ -114,9 +114,9 @@ namespace LayoutEventDebugger {
             // 
             // treeViewSubscriptions
             // 
-            this.treeViewSubscriptions.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.treeViewSubscriptions.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.treeViewSubscriptions.ImageIndex = -1;
             this.treeViewSubscriptions.Location = new System.Drawing.Point(8, 8);
             this.treeViewSubscriptions.Name = "treeViewSubscriptions";
@@ -126,7 +126,7 @@ namespace LayoutEventDebugger {
             // 
             // groupBoxViewBy
             // 
-            this.groupBoxViewBy.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.groupBoxViewBy.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.groupBoxViewBy.Controls.AddRange(new System.Windows.Forms.Control[] {
                                                                                          this.radioButtonByEventHandlerObject,
                                                                                          this.radioButtonViewByEventName});
@@ -156,7 +156,7 @@ namespace LayoutEventDebugger {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonClose.Location = new System.Drawing.Point(280, 320);
             this.buttonClose.Name = "buttonClose";
@@ -167,7 +167,7 @@ namespace LayoutEventDebugger {
             // 
             // buttonRefresh
             // 
-            this.buttonRefresh.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonRefresh.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonRefresh.Location = new System.Drawing.Point(184, 320);
             this.buttonRefresh.Name = "buttonRefresh";
             this.buttonRefresh.Size = new System.Drawing.Size(80, 24);

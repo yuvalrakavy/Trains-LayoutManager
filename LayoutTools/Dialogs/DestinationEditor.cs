@@ -94,8 +94,8 @@ namespace LayoutManager.Tools.Dialogs {
 
                 int selectedIndex = listViewLocations.SelectedIndices[0];
 
-                buttonMoveLocationUp.Enabled = (selectedIndex > 0);
-                buttonMoveLocationDown.Enabled = (selectedIndex < listViewLocations.Items.Count - 1);
+                buttonMoveLocationUp.Enabled = selectedIndex > 0;
+                buttonMoveLocationDown.Enabled = selectedIndex < listViewLocations.Items.Count - 1;
                 buttonCondition.Enabled = true;
             }
             else {
@@ -227,7 +227,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(232, 276);
             this.buttonCancel.Name = "buttonCancel";
@@ -255,9 +255,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // groupBoxLocations
             // 
-            this.groupBoxLocations.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxLocations.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                        | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.groupBoxLocations.Controls.Add(this.buttonCondition);
             this.groupBoxLocations.Controls.Add(this.listViewLocations);
             this.groupBoxLocations.Controls.Add(this.buttonAddLocation);
@@ -273,7 +273,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonCondition
             // 
-            this.buttonCondition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonCondition.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonCondition.Location = new System.Drawing.Point(168, 133);
             this.buttonCondition.Name = "buttonCondition";
             this.buttonCondition.Size = new System.Drawing.Size(73, 20);
@@ -283,9 +283,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // listViewLocations
             // 
-            this.listViewLocations.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.listViewLocations.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                        | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.listViewLocations.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderLocation,
             this.columnHeaderCondition});
@@ -313,7 +313,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonAddLocation
             // 
-            this.buttonAddLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonAddLocation.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonAddLocation.Location = new System.Drawing.Point(8, 133);
             this.buttonAddLocation.Name = "buttonAddLocation";
             this.buttonAddLocation.Size = new System.Drawing.Size(73, 20);
@@ -323,7 +323,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonRemoveLocation
             // 
-            this.buttonRemoveLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonRemoveLocation.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonRemoveLocation.Location = new System.Drawing.Point(88, 133);
             this.buttonRemoveLocation.Name = "buttonRemoveLocation";
             this.buttonRemoveLocation.Size = new System.Drawing.Size(73, 20);
@@ -333,7 +333,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonMoveLocationUp
             // 
-            this.buttonMoveLocationUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonMoveLocationUp.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.buttonMoveLocationUp.ImageIndex = 1;
             this.buttonMoveLocationUp.ImageList = this.imageListButttons;
             this.buttonMoveLocationUp.Location = new System.Drawing.Point(251, 17);
@@ -344,14 +344,14 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // imageListButttons
             // 
-            this.imageListButttons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListButttons.ImageStream")));
+            this.imageListButttons.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListButttons.ImageStream");
             this.imageListButttons.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListButttons.Images.SetKeyName(0, "");
             this.imageListButttons.Images.SetKeyName(1, "");
             // 
             // buttonMoveLocationDown
             // 
-            this.buttonMoveLocationDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonMoveLocationDown.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.buttonMoveLocationDown.ImageIndex = 0;
             this.buttonMoveLocationDown.ImageList = this.imageListButttons;
             this.buttonMoveLocationDown.Location = new System.Drawing.Point(251, 40);
@@ -370,8 +370,8 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // groupBoxSelection
             // 
-            this.groupBoxSelection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxSelection.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.groupBoxSelection.Controls.Add(this.radioButtonSelectionListOrder);
             this.groupBoxSelection.Controls.Add(this.radioButtonSelectionRandom);
             this.groupBoxSelection.Location = new System.Drawing.Point(8, 48);
@@ -402,7 +402,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonOk
             // 
-            this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOk.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonOk.Location = new System.Drawing.Point(168, 276);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(56, 20);
@@ -412,7 +412,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonSave
             // 
-            this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonSave.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonSave.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonSave.Location = new System.Drawing.Point(8, 276);
             this.buttonSave.Name = "buttonSave";

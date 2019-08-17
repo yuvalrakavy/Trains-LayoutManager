@@ -236,9 +236,9 @@ namespace LayoutManager.Tools.Controls {
             // listViewTrips
             // 
             this.listViewTrips.AllowColumnReorder = true;
-            this.listViewTrips.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.listViewTrips.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.listViewTrips.Columns.AddRange(new ColumnHeader[] {
                                                                                             this.columnHeaderTrain,
                                                                                             this.columnHeaderDriver,
@@ -286,12 +286,12 @@ namespace LayoutManager.Tools.Controls {
             // 
             this.imageListTripState.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
             this.imageListTripState.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListTripState.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListTripState.ImageStream")));
+            this.imageListTripState.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListTripState.ImageStream");
             this.imageListTripState.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // buttonAbort
             // 
-            this.buttonAbort.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonAbort.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonAbort.Location = new System.Drawing.Point(8, 136);
             this.buttonAbort.Name = "buttonAbort";
             this.buttonAbort.Size = new System.Drawing.Size(75, 19);
@@ -301,7 +301,7 @@ namespace LayoutManager.Tools.Controls {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonClose.Location = new System.Drawing.Point(589, 136);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(75, 19);
@@ -311,7 +311,7 @@ namespace LayoutManager.Tools.Controls {
             // 
             // buttonView
             // 
-            this.buttonView.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonView.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonView.Location = new System.Drawing.Point(168, 136);
             this.buttonView.Name = "buttonView";
             this.buttonView.Size = new System.Drawing.Size(75, 19);
@@ -321,7 +321,7 @@ namespace LayoutManager.Tools.Controls {
             // 
             // buttonSave
             // 
-            this.buttonSave.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonSave.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonSave.Location = new System.Drawing.Point(248, 136);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(75, 19);
@@ -331,7 +331,7 @@ namespace LayoutManager.Tools.Controls {
             // 
             // buttonTalk
             // 
-            this.buttonTalk.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonTalk.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonTalk.Location = new System.Drawing.Point(328, 136);
             this.buttonTalk.Name = "buttonTalk";
             this.buttonTalk.Size = new System.Drawing.Size(75, 19);
@@ -340,7 +340,7 @@ namespace LayoutManager.Tools.Controls {
             // 
             // buttonOptions
             // 
-            this.buttonOptions.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonOptions.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonOptions.Location = new System.Drawing.Point(488, 136);
             this.buttonOptions.Name = "buttonOptions";
             this.buttonOptions.Size = new System.Drawing.Size(75, 19);
@@ -350,7 +350,7 @@ namespace LayoutManager.Tools.Controls {
             // 
             // buttonSpeed
             // 
-            this.buttonSpeed.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonSpeed.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonSpeed.Location = new System.Drawing.Point(408, 136);
             this.buttonSpeed.Name = "buttonSpeed";
             this.buttonSpeed.Size = new System.Drawing.Size(75, 19);
@@ -360,7 +360,7 @@ namespace LayoutManager.Tools.Controls {
             // 
             // buttonSuspend
             // 
-            this.buttonSuspend.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonSuspend.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonSuspend.Location = new System.Drawing.Point(88, 136);
             this.buttonSuspend.Name = "buttonSuspend";
             this.buttonSuspend.Size = new System.Drawing.Size(75, 19);

@@ -1326,7 +1326,7 @@ namespace LayoutManager.View {
             // 
             // imageListComponents
             // 
-            this.imageListComponents.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListComponents.ImageStream")));
+            this.imageListComponents.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListComponents.ImageStream");
             this.imageListComponents.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListComponents.Images.SetKeyName(0, "");
             this.imageListComponents.Images.SetKeyName(1, "");
@@ -1334,7 +1334,7 @@ namespace LayoutManager.View {
             // 
             // imageListSignals
             // 
-            this.imageListSignals.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListSignals.ImageStream")));
+            this.imageListSignals.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListSignals.ImageStream");
             this.imageListSignals.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListSignals.Images.SetKeyName(0, "");
             this.imageListSignals.Images.SetKeyName(1, "");
@@ -1345,7 +1345,7 @@ namespace LayoutManager.View {
             // 
             // imageListConnectionPointImages
             // 
-            this.imageListConnectionPointImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListConnectionPointImages.ImageStream")));
+            this.imageListConnectionPointImages.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListConnectionPointImages.ImageStream");
             this.imageListConnectionPointImages.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListConnectionPointImages.Images.SetKeyName(0, "");
             this.imageListConnectionPointImages.Images.SetKeyName(1, "");

@@ -68,7 +68,7 @@ namespace LayoutManager.ControlComponents.Dialogs {
             this.diPswitchSettings.SwitchCountBase = 1;
             this.diPswitchSettings.TabIndex = 0;
             this.diPswitchSettings.Text = "diPswitch1";
-            this.diPswitchSettings.Value = ((long)(1));
+            this.diPswitchSettings.Value = (long)1;
             // 
             // label2
             // 

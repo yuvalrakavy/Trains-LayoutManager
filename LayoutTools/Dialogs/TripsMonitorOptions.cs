@@ -80,7 +80,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.labelAutoClear2 = new Label();
             this.buttonOk = new Button();
             this.buttonCancel = new Button();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAutoClearTimeout)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownAutoClearTimeout).BeginInit();
             this.SuspendLayout();
             // 
             // checkBoxEnableAutoClear
@@ -156,7 +156,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "TripsMonitorOptions";
             this.ShowInTaskbar = false;
             this.Text = "Trip Viewer Options";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAutoClearTimeout)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownAutoClearTimeout).EndInit();
             this.ResumeLayout(false);
         }
         #endregion

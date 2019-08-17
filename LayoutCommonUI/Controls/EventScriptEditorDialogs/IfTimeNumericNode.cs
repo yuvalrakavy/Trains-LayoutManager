@@ -79,9 +79,9 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.numericUpDownTo = new NumericUpDown();
             this.buttonOK = new Button();
             this.buttonCancel = new Button();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownValue)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFrom)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTo)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownValue).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownFrom).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownTo).BeginInit();
             this.SuspendLayout();
             // 
             // radioButtonValue
@@ -172,9 +172,9 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.Name = "IfTimeNumericNode";
             this.ShowInTaskbar = false;
             this.Text = "IfTimeNumericNode";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownValue)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFrom)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTo)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownValue).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownFrom).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownTo).EndInit();
             this.ResumeLayout(false);
         }
         #endregion

@@ -84,9 +84,9 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.checkBoxErrorState = new CheckBox();
             this.buttonOk = new Button();
             this.buttonCancel = new Button();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMinutes)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSeconds)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRandomSeconds)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownMinutes).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownSeconds).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownRandomSeconds).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -219,9 +219,9 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.Name = "WaitCondition";
             this.ShowInTaskbar = false;
             this.Text = "Wait";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMinutes)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSeconds)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRandomSeconds)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownMinutes).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownSeconds).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownRandomSeconds).EndInit();
             this.ResumeLayout(false);
         }
         #endregion

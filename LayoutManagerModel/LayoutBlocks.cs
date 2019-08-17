@@ -11,7 +11,7 @@ using System.Threading;
 namespace LayoutManager.Model {
     #region Block related classes
 
-    public class LayoutBlockBase : IDisposable {
+    public class LayoutBlockBase {
         protected const string State_TrainEntry = "TrainEntry";
         protected const string A_Time = "Time";
 
@@ -79,12 +79,6 @@ namespace LayoutManager.Model {
             }
 
             throw new ArgumentException("Block edge " + blockEdge.FullDescription + " does not bound block " + BlockDefinintion.FullDescription);
-        }
-
-        public virtual void Dispose() {
-            TrackEdges.Clear();
-            blockEdges = null;
-            blockInfo = null;
         }
     }
 
@@ -325,15 +319,7 @@ namespace LayoutManager.Model {
             return selection;
         }
 
-        public override void Dispose() {
-            base.Dispose();
-
-            trainsInBlock.Clear();
-            isLinearCalculated = false;
-            canTrainWaitDefaultCalculated = false;
-        }
-
-        public bool CheckForTrainRedetection() {
+       public bool CheckForTrainRedetection() {
             if (!BlockDefinintion.Info.IsOccupancyDetectionBlock)
                 return false;
 
@@ -393,15 +379,9 @@ namespace LayoutManager.Model {
         }
     }
 
-    public class LayoutModelBlockDictionary : Dictionary<Guid, LayoutBlock>, IEnumerable<LayoutBlock>, IDisposable {
+    public class LayoutModelBlockDictionary : Dictionary<Guid, LayoutBlock>, IEnumerable<LayoutBlock> {
         public void Add(LayoutBlock block) {
             Add(block.Id, block);
-        }
-
-        public void Dispose() {
-            foreach (LayoutBlock block in Values)
-                block.Dispose();
-            this.Clear();
         }
 
         public new IEnumerator<LayoutBlock> GetEnumerator() => Values.GetEnumerator();

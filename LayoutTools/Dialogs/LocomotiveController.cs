@@ -8,7 +8,7 @@ using System.Diagnostics;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
-#pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060, IDE0069
 #nullable enable
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -40,7 +40,11 @@ namespace LayoutManager.Tools.Dialogs {
 
         private readonly TrainStateInfo train;
 
-#pragma warning disable nullable
+        public XmlElement Element => train.Element;
+        public XmlElement? OptionalElement => Element;
+
+#nullable disable
+
         public LocomotiveController(TrainStateInfo train) {
             //
             // Required for Windows Form Designer support
@@ -65,7 +69,8 @@ namespace LayoutManager.Tools.Dialogs {
 
             EventManager.Event(new LayoutEvent<TrainStateInfo>("train-controller-activated", train));
         }
-#pragma warning restore nullable
+
+#nullable restore
 
         protected override void OnFormClosing(FormClosingEventArgs e) {
             base.OnFormClosing(e);
@@ -86,9 +91,6 @@ namespace LayoutManager.Tools.Dialogs {
                 this.Text = train.DisplayName;
         }
 
-        public XmlElement Element => train.Element;
-        public XmlElement? OptionalElement => Element;
-
         #region Layout Event Handlers
 
         [LayoutEvent("activate-locomotive-controller", IfSender = "*[@ID='`string(@ID)`']")]
@@ -103,10 +105,11 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [LayoutEvent("train-power-changed", IfSender = "*[@ID='`string(@ID)`']", Order = 10)]
-        private void onTrainPowerChanged(LayoutEvent e0) {
-            var e = (LayoutEvent<TrainStateInfo, ILayoutPower>)e0;
+        private void onTrainPowerChanged(LayoutEvent e) {
+            var _ = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+            var power = Ensure.NotNull<ILayoutPower>(e.Info, "power");
 
-            if (e.Info.Type != LayoutPowerType.Digital)
+            if (power.Type != LayoutPowerType.Digital)
                 this.Close();
         }
 
@@ -315,7 +318,7 @@ namespace LayoutManager.Tools.Dialogs {
         protected static string GetFunctionDescription(LocomotiveInfo loco, string functionName) {
             LocomotiveFunctionInfo function = loco.GetFunctionByName(functionName);
 
-            return function.Description != null && function.Description != "" ? function.Description : function.Name;
+            return !string.IsNullOrEmpty(function.Description) ? function.Description : function.Name;
         }
 
         #region Menu Items
@@ -370,7 +373,7 @@ namespace LayoutManager.Tools.Dialogs {
             public LocomotiveFunctionNumberMenuItem(TrainStateInfo train, LocomotiveInfo loco, int functionNumber, bool canSetBooleanState) {
                 var function = loco.GetFunctionByNumber(functionNumber);
 
-                this.Text = $"Function {functionNumber}{(function != null ? $" ({function.ToString()})" : "")}";
+                this.Text = $"Function {functionNumber}{(function != null ? $" ({function})" : "")}";
 
                 if (canSetBooleanState) {
                     this.MenuItems.Add(new MenuItem("On", (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber).SetCommandStation(train).SetOption("FunctionState", true))));
@@ -457,8 +460,8 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // panelInfo
             // 
-            this.panelInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelInfo.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+            | System.Windows.Forms.AnchorStyles.Right);
             this.panelInfo.Location = new System.Drawing.Point(3, 1);
             this.panelInfo.Name = "panelInfo";
             this.panelInfo.Size = new System.Drawing.Size(188, 56);
@@ -467,7 +470,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // imageListMotionButtons
             // 
-            this.imageListMotionButtons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListMotionButtons.ImageStream")));
+            this.imageListMotionButtons.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListMotionButtons.ImageStream");
             this.imageListMotionButtons.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListMotionButtons.Images.SetKeyName(0, "");
             this.imageListMotionButtons.Images.SetKeyName(1, "");
@@ -478,7 +481,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonBackward
             // 
-            this.buttonBackward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonBackward.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonBackward.ImageIndex = 0;
             this.buttonBackward.ImageList = this.imageListMotionButtons;
             this.buttonBackward.Location = new System.Drawing.Point(5, 64);
@@ -490,7 +493,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonStop
             // 
-            this.buttonStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonStop.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonStop.ImageIndex = 1;
             this.buttonStop.ImageList = this.imageListMotionButtons;
             this.buttonStop.Location = new System.Drawing.Point(40, 64);
@@ -502,7 +505,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonForward
             // 
-            this.buttonForward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonForward.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonForward.ImageIndex = 2;
             this.buttonForward.ImageList = this.imageListMotionButtons;
             this.buttonForward.Location = new System.Drawing.Point(76, 64);
@@ -514,7 +517,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonFunction
             // 
-            this.buttonFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonFunction.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonFunction.Location = new System.Drawing.Point(165, 64);
             this.buttonFunction.Name = "buttonFunction";
             this.buttonFunction.Size = new System.Drawing.Size(56, 23);
@@ -524,7 +527,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonLight
             // 
-            this.buttonLight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonLight.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonLight.ContextMenu = this.contextMenuLights;
             this.buttonLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonLight.ImageIndex = 3;
@@ -556,7 +559,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonLocate
             // 
-            this.buttonLocate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonLocate.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.buttonLocate.ImageIndex = 4;
             this.buttonLocate.ImageList = this.imageListMotionButtons;
             this.buttonLocate.Location = new System.Drawing.Point(193, 27);
@@ -568,7 +571,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonProperties
             // 
-            this.buttonProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonProperties.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.buttonProperties.ImageIndex = 5;
             this.buttonProperties.ImageList = this.imageListMotionButtons;
             this.buttonProperties.Location = new System.Drawing.Point(193, 1);
@@ -580,9 +583,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // labelDriverInstructions
             // 
-            this.labelDriverInstructions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelDriverInstructions.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+            | System.Windows.Forms.AnchorStyles.Left
+            | System.Windows.Forms.AnchorStyles.Right);
             this.labelDriverInstructions.BackColor = System.Drawing.SystemColors.Control;
             this.labelDriverInstructions.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.labelDriverInstructions.Location = new System.Drawing.Point(5, 104);
@@ -593,7 +596,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // panelSpeedLimit
             // 
-            this.panelSpeedLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelSpeedLimit.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.panelSpeedLimit.Controls.Add(this.labelSpeedLimit);
             this.panelSpeedLimit.Location = new System.Drawing.Point(185, 94);
             this.panelSpeedLimit.Name = "panelSpeedLimit";
@@ -604,7 +607,7 @@ namespace LayoutManager.Tools.Dialogs {
             // labelSpeedLimit
             // 
             this.labelSpeedLimit.BackColor = System.Drawing.Color.Transparent;
-            this.labelSpeedLimit.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.labelSpeedLimit.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (byte)177);
             this.labelSpeedLimit.Location = new System.Drawing.Point(2, 7);
             this.labelSpeedLimit.Name = "labelSpeedLimit";
             this.labelSpeedLimit.Size = new System.Drawing.Size(30, 20);
@@ -613,7 +616,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonBackwardMenu
             // 
-            this.buttonBackwardMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonBackwardMenu.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonBackwardMenu.Location = new System.Drawing.Point(5, 87);
             this.buttonBackwardMenu.Name = "buttonBackwardMenu";
             this.buttonBackwardMenu.Size = new System.Drawing.Size(32, 10);
@@ -622,7 +625,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonStopMenu
             // 
-            this.buttonStopMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonStopMenu.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonStopMenu.Location = new System.Drawing.Point(40, 87);
             this.buttonStopMenu.Name = "buttonStopMenu";
             this.buttonStopMenu.Size = new System.Drawing.Size(32, 10);
@@ -631,7 +634,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonForwardMenu
             // 
-            this.buttonForwardMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonForwardMenu.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonForwardMenu.Location = new System.Drawing.Point(76, 87);
             this.buttonForwardMenu.Name = "buttonForwardMenu";
             this.buttonForwardMenu.Size = new System.Drawing.Size(32, 10);
@@ -687,7 +690,7 @@ namespace LayoutManager.Tools.Dialogs {
 
                 foreach (TrainLocomotiveInfo trainLoco in train.Locomotives) {
                     locoPainter.LocomotiveElement = trainLoco.Locomotive.Element;
-                    locoPainter.FlipImage = (trainLoco.Orientation == LocomotiveOrientation.Backward);
+                    locoPainter.FlipImage = trainLoco.Orientation == LocomotiveOrientation.Backward;
                     locoPainter.Origin = new Point(x, 2);
                     locoPainter.Draw(e.Graphics);
 
@@ -808,7 +811,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonStopMenu_Click(object sender, System.EventArgs e) {
-            ContextMenu menu = new ContextMenu();
+            using var menu = new ContextMenu();
 
             addAccelerationMenuEntries(menu, 0);
 
@@ -819,14 +822,14 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonBackwardMenu_Click(object sender, System.EventArgs e) {
-            ContextMenu menu = new ContextMenu();
+            using var menu = new ContextMenu();
 
             addSpeedMenuEntries(menu, LocomotiveOrientation.Backward);
             menu.Show(this, new Point(buttonBackwardMenu.Left, buttonBackwardMenu.Bottom));
         }
 
         private void buttonForwardMenu_Click(object sender, System.EventArgs e) {
-            ContextMenu menu = new ContextMenu();
+            using var menu = new ContextMenu();
 
             addSpeedMenuEntries(menu, LocomotiveOrientation.Forward);
             menu.Show(this, new Point(buttonForwardMenu.Left, buttonForwardMenu.Bottom));

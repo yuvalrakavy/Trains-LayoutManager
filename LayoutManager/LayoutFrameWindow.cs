@@ -557,7 +557,7 @@ namespace LayoutManager {
         private void doUIsetting(UIsettingEntry[] uiSetting) {
             foreach (UIsettingEntry aEntry in uiSetting) {
                 if (aEntry is DoSettingEntry doSettingEntry)
-                    doUIsetting((doSettingEntry).DoThis);
+                    doUIsetting(doSettingEntry.DoThis);
                 else if (aEntry is MenuSettingEntry menuEntry) {
                     if (menuEntry.Setting == UIitemSetting.Hidden)
                         menuEntry.MenuItem.Visible = false;
@@ -792,7 +792,7 @@ namespace LayoutManager {
         [LayoutEvent("show-messages")]
         private void ShowMessages(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
-                messageViewer.Height = (ClientSize.Height * 25) / 100;
+                messageViewer.Height = ClientSize.Height * 25 / 100;
                 UpdateMessageVisible();
             }
         }
@@ -847,7 +847,7 @@ namespace LayoutManager {
         [LayoutEvent("show-trips-monitor")]
         private void ShowTripsMonitor(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
-                tripsMonitor.Height = (ClientSize.Height * 12) / 100;
+                tripsMonitor.Height = ClientSize.Height * 12 / 100;
                 UpdateTripsMonitorVisible();
             }
         }
@@ -1361,7 +1361,7 @@ namespace LayoutManager {
                 bool presetZoomFound = false;
 
                 foreach (ZoomEntry zoomEntry in zoomEntries) {
-                    zoomEntry.menuItem.Checked = (zoomEntry.zoomFactor == currentZoom);
+                    zoomEntry.menuItem.Checked = zoomEntry.zoomFactor == currentZoom;
                     if (zoomEntry.menuItem.Checked)
                         presetZoomFound = true;
                 }

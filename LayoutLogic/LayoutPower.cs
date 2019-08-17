@@ -456,7 +456,7 @@ namespace LayoutManager.Logic {
             var commandStation = Ensure.NotNull<IModelComponentIsCommandStation>(e.Sender, "commandStation");
 
             if (LayoutController.IsOperationMode) {
-                foreach (var powerConnector in (from p in LayoutModel.Components<LayoutTrackPowerConnectorComponent>(LayoutModel.ActivePhases) where p.Inlet.ConnectedOutlet.Power.PowerOriginComponentId == commandStation.Id select p))
+                foreach (var powerConnector in from p in LayoutModel.Components<LayoutTrackPowerConnectorComponent>(LayoutModel.ActivePhases) where p.Inlet.ConnectedOutlet.Power.PowerOriginComponentId == commandStation.Id select p)
                     foreach (var train in powerConnector.Trains)
                         OnTrainPowerChanged(train, powerConnector.Inlet.ConnectedOutlet.Power);
             }

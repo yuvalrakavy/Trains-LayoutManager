@@ -45,7 +45,7 @@ namespace LayoutManager.Components {
                 createFlags |= Win32createFileFlags.Overlapped;
 
             // Convert COMx to \\.\COMx in order to support COM10 and above
-            if (port.StartsWith(("COM"), StringComparison.InvariantCultureIgnoreCase))
+            if (port.StartsWith("COM", StringComparison.InvariantCultureIgnoreCase))
                 port = "\\\\.\\" + port;
 
             IntPtr commHandle = NativeMethods.CreateFile(port, Win32accessModes.GenericRead | Win32accessModes.GenericWrite, 0, 0,

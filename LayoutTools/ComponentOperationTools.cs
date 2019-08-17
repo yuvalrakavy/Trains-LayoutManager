@@ -59,11 +59,11 @@ namespace LayoutManager.Tools {
             else {
                 ILayoutFrameWindow frameWindow = LayoutController.ActiveFrameWindow;
 
-                activeNotification = new Dialogs.CommandStationStopped(commandStation, (string?)e.Info) {
+                using (activeNotification = new Dialogs.CommandStationStopped(commandStation, (string?)e.Info) {
                     Owner = frameWindow as Form
-                };
-
-                activeNotification.Show(LayoutController.ActiveFrameWindow);
+                }) {
+                    activeNotification.Show(LayoutController.ActiveFrameWindow);
+                }
             }
         }
 
@@ -396,8 +396,7 @@ namespace LayoutManager.Tools {
                     m.MenuItems.Add("Cancel " + context.Description, (s, ea) => context.Cancel());
 
                 if (blockDefinition.Info.UnexpectedTrainDetected) {
-                    MenuItem identifyTrainMenuItem = getRelocateTrainMenuItem(blockDefinition);
-
+                    using MenuItem identifyTrainMenuItem = getRelocateTrainMenuItem(blockDefinition);
                     if (identifyTrainMenuItem.MenuItems.Count > 0)
                         m.MenuItems.Add(identifyTrainMenuItem);
                 }
@@ -650,7 +649,7 @@ namespace LayoutManager.Tools {
 
                         tripPlan.Add(blockDefinition);
 
-                        Dialogs.TripPlanEditor tripPlanEditor = new Dialogs.TripPlanEditor(tripPlan, train);
+                        using Dialogs.TripPlanEditor tripPlanEditor = new Dialogs.TripPlanEditor(tripPlan, train);
 
                         tripPlanEditor.Show();
                     }
@@ -1044,7 +1043,7 @@ namespace LayoutManager.Tools {
                 else {
                     TripPlanInfo tripPlan = new TripPlanInfo();
 
-                    Dialogs.TripPlanEditor tripPlanEditor = new Dialogs.TripPlanEditor(tripPlan, train);
+                    using var tripPlanEditor = new Dialogs.TripPlanEditor(tripPlan, train);
 
                     tripPlanEditor.Show();
                 }
@@ -1064,7 +1063,7 @@ namespace LayoutManager.Tools {
 
             protected override void OnClick(EventArgs e) {
                 if (!(bool)(EventManager.Event(new LayoutEvent("show-saved-trip-plans-for-train", train, false)) ?? false)) {
-                    Dialogs.TripPlanCatalog tripPlanCatalog = new Dialogs.TripPlanCatalog(train);
+                    using var tripPlanCatalog = new Dialogs.TripPlanCatalog(train);
 
                     tripPlanCatalog.Show();
                 }
@@ -1099,7 +1098,7 @@ namespace LayoutManager.Tools {
 
                 newTripPlan.FromCatalog = true;
 
-                Dialogs.TripPlanEditor tripPlanEditor = new Dialogs.TripPlanEditor(newTripPlan, train);
+                using Dialogs.TripPlanEditor tripPlanEditor = new Dialogs.TripPlanEditor(newTripPlan, train);
 
                 tripPlanEditor.Show();
             }
@@ -1226,7 +1225,7 @@ namespace LayoutManager.Tools {
 
                         foreach (TrainLocomotiveInfo trainLocomotive in train.Locomotives) {
                             locoPainter.LocomotiveElement = trainLocomotive.Locomotive.Element;
-                            locoPainter.FlipImage = (trainLocomotive.Orientation == LocomotiveOrientation.Backward);
+                            locoPainter.FlipImage = trainLocomotive.Orientation == LocomotiveOrientation.Backward;
                             locoPainter.Origin = new Point(x, 2);
                             locoPainter.Draw(e.Graphics);
 
@@ -1375,8 +1374,7 @@ namespace LayoutManager.Tools {
                     trains.Add(trainLocation.Train);
             }
 
-            ContextMenu m = new ContextMenu();
-
+            using ContextMenu m = new ContextMenu();
             addBlockInfoMenuEntries(m, blockInfo, trains.ToArray());
 
             foreach (MenuItem item in m.MenuItems) {
@@ -1401,7 +1399,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-#region Track Power Connector component
+        #region Track Power Connector component
 
         [LayoutEvent("add-operation-details-window-sections", SenderType = typeof(LayoutTrackPowerConnectorComponent), Order = 1000)]
         private void addTrackPowerConnectorDetailsWindowSection(LayoutEvent e) {
@@ -1515,8 +1513,7 @@ namespace LayoutManager.Tools {
                 int fromCount = 1, toCount = 1;
 
                 if (extendableTrainInfo.blockEdge.IsTrackContact() && extendableTrainInfo.Train.TrackContactTriggerCount > 2) {
-                    Dialogs.ExtendTrainSettings extendTrainSettings = new Dialogs.ExtendTrainSettings(extendableTrainInfo.Train);
-
+                    using var extendTrainSettings = new Dialogs.ExtendTrainSettings(extendableTrainInfo.Train);
                     if (extendTrainSettings.ShowDialog() != DialogResult.OK)
                         return;
 

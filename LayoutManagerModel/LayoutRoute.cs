@@ -223,9 +223,9 @@ namespace LayoutManager.Model {
                 int qPenalty = other.Penalty;
 
                 if (ClearanceQuality == RouteClearanceQuality.WillBeFree)
-                    myPenalty = ((100 + WillBeFreeClearancePenaltyFactor) * Penalty) / 100;
+                    myPenalty = (100 + WillBeFreeClearancePenaltyFactor) * Penalty / 100;
                 if (other.ClearanceQuality == RouteClearanceQuality.WillBeFree)
-                    qPenalty = ((100 + WillBeFreeClearancePenaltyFactor) * other.Penalty) / 100;
+                    qPenalty = (100 + WillBeFreeClearancePenaltyFactor) * other.Penalty / 100;
 
                 return myPenalty - qPenalty;
             }

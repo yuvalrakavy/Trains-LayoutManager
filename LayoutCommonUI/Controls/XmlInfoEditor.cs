@@ -104,8 +104,8 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonDeleteElement
             // 
-            this.buttonDeleteElement.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonDeleteElement.Image = ((System.Drawing.Bitmap)(resources.GetObject("buttonDeleteElement.Image")));
+            this.buttonDeleteElement.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.buttonDeleteElement.Image = (System.Drawing.Bitmap)resources.GetObject("buttonDeleteElement.Image");
             this.buttonDeleteElement.ImageIndex = 2;
             this.buttonDeleteElement.ImageList = this.imageListButtons;
             this.buttonDeleteElement.Location = new System.Drawing.Point(64, 180);
@@ -119,7 +119,7 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             this.imageListButtons.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
             this.imageListButtons.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListButtons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListButtons.ImageStream")));
+            this.imageListButtons.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListButtons.ImageStream");
             this.imageListButtons.TransparentColor = System.Drawing.Color.Silver;
             // 
             // columnHeaderAttributeValue
@@ -129,9 +129,9 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // listViewAttributes
             // 
-            this.listViewAttributes.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.listViewAttributes.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.listViewAttributes.Columns.AddRange(new ColumnHeader[] {
                                                                                                  this.columnHeaderAttributeName,
                                                                                                  this.columnHeaderAttributeValue});
@@ -151,8 +151,8 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonEditAttribute
             // 
-            this.buttonEditAttribute.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonEditAttribute.Image = ((System.Drawing.Bitmap)(resources.GetObject("buttonEditAttribute.Image")));
+            this.buttonEditAttribute.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.buttonEditAttribute.Image = (System.Drawing.Bitmap)resources.GetObject("buttonEditAttribute.Image");
             this.buttonEditAttribute.ImageIndex = 1;
             this.buttonEditAttribute.ImageList = this.imageListButtons;
             this.buttonEditAttribute.Location = new System.Drawing.Point(160, 180);
@@ -164,8 +164,8 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonNewElement
             // 
-            this.buttonNewElement.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonNewElement.Image = ((System.Drawing.Bitmap)(resources.GetObject("buttonNewElement.Image")));
+            this.buttonNewElement.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.buttonNewElement.Image = (System.Drawing.Bitmap)resources.GetObject("buttonNewElement.Image");
             this.buttonNewElement.ImageIndex = 0;
             this.buttonNewElement.ImageList = this.imageListButtons;
             this.buttonNewElement.Location = new System.Drawing.Point(8, 180);
@@ -177,8 +177,8 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonEditElement
             // 
-            this.buttonEditElement.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonEditElement.Image = ((System.Drawing.Bitmap)(resources.GetObject("buttonEditElement.Image")));
+            this.buttonEditElement.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.buttonEditElement.Image = (System.Drawing.Bitmap)resources.GetObject("buttonEditElement.Image");
             this.buttonEditElement.ImageIndex = 1;
             this.buttonEditElement.ImageList = this.imageListButtons;
             this.buttonEditElement.Location = new System.Drawing.Point(36, 180);
@@ -190,8 +190,8 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonNewAttribute
             // 
-            this.buttonNewAttribute.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonNewAttribute.Image = ((System.Drawing.Bitmap)(resources.GetObject("buttonNewAttribute.Image")));
+            this.buttonNewAttribute.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.buttonNewAttribute.Image = (System.Drawing.Bitmap)resources.GetObject("buttonNewAttribute.Image");
             this.buttonNewAttribute.ImageIndex = 0;
             this.buttonNewAttribute.ImageList = this.imageListButtons;
             this.buttonNewAttribute.Location = new System.Drawing.Point(132, 180);
@@ -203,8 +203,8 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonDeleteAttribute
             // 
-            this.buttonDeleteAttribute.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonDeleteAttribute.Image = ((System.Drawing.Bitmap)(resources.GetObject("buttonDeleteAttribute.Image")));
+            this.buttonDeleteAttribute.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.buttonDeleteAttribute.Image = (System.Drawing.Bitmap)resources.GetObject("buttonDeleteAttribute.Image");
             this.buttonDeleteAttribute.ImageIndex = 2;
             this.buttonDeleteAttribute.ImageList = this.imageListButtons;
             this.buttonDeleteAttribute.Location = new System.Drawing.Point(188, 180);
@@ -216,8 +216,8 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // treeViewElements
             // 
-            this.treeViewElements.Anchor = ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left);
+            this.treeViewElements.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left;
             this.treeViewElements.ImageIndex = -1;
             this.treeViewElements.Location = new System.Drawing.Point(8, 8);
             this.treeViewElements.Name = "treeViewElements";

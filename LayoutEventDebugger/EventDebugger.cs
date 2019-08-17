@@ -108,8 +108,8 @@ namespace LayoutEventDebugger {
         static public void AddSubscription(TreeNode parent, LayoutEventSubscriptionBase subscription, TitleFormat titleFormat) {
             var subscriptionNode = titleFormat switch
             {
-                TitleFormat.ShowEventName => new TreeNode($"Event: {(subscription.EventName ?? "<any>")}"),
-                TitleFormat.ShowHandlerObject => new TreeNode($"Instance of {(subscription.TargetObject?.GetType().FullName ?? "<static>")}"),
+                TitleFormat.ShowEventName => new TreeNode($"Event: {subscription.EventName ?? "<any>"}"),
+                TitleFormat.ShowHandlerObject => new TreeNode($"Instance of {subscription.TargetObject?.GetType().FullName ?? "<static>"}"),
                 _ => throw new NotImplementedException()
             };
 

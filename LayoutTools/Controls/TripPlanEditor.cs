@@ -368,7 +368,7 @@ namespace LayoutManager.Tools.Controls {
                 for (int i = 0; i < listViewWayPoints.Items.Count; i++) {
                     WayPointItem item = (WayPointItem)listViewWayPoints.Items[i];
 
-                    item.TrainTarget = (i == TrainTargetWaypoint);
+                    item.TrainTarget = i == TrainTargetWaypoint;
                 }
 
                 listViewWayPoints.Invalidate();
@@ -662,7 +662,7 @@ namespace LayoutManager.Tools.Controls {
             // 
             // imageListButttons
             // 
-            this.imageListButttons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListButttons.ImageStream")));
+            this.imageListButttons.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListButttons.ImageStream");
             this.imageListButttons.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListButttons.Images.SetKeyName(0, "");
             this.imageListButttons.Images.SetKeyName(1, "");
@@ -679,9 +679,9 @@ namespace LayoutManager.Tools.Controls {
             // 
             // groupBoxWayPoints
             // 
-            this.groupBoxWayPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxWayPoints.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                        | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.groupBoxWayPoints.Controls.Add(this.buttonWayPointMoveDown);
             this.groupBoxWayPoints.Controls.Add(this.buttonWayPointMoveUp);
             this.groupBoxWayPoints.Controls.Add(this.buttonAddWaypoint);
@@ -697,7 +697,7 @@ namespace LayoutManager.Tools.Controls {
             // 
             // buttonWayPointMoveDown
             // 
-            this.buttonWayPointMoveDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonWayPointMoveDown.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonWayPointMoveDown.ImageIndex = 0;
             this.buttonWayPointMoveDown.ImageList = this.imageListButttons;
             this.buttonWayPointMoveDown.Location = new System.Drawing.Point(251, 133);
@@ -708,7 +708,7 @@ namespace LayoutManager.Tools.Controls {
             // 
             // buttonWayPointMoveUp
             // 
-            this.buttonWayPointMoveUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonWayPointMoveUp.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonWayPointMoveUp.ImageIndex = 1;
             this.buttonWayPointMoveUp.ImageList = this.imageListButttons;
             this.buttonWayPointMoveUp.Location = new System.Drawing.Point(280, 133);
@@ -719,7 +719,7 @@ namespace LayoutManager.Tools.Controls {
             // 
             // buttonAddWaypoint
             // 
-            this.buttonAddWaypoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonAddWaypoint.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonAddWaypoint.Location = new System.Drawing.Point(8, 133);
             this.buttonAddWaypoint.Name = "buttonAddWaypoint";
             this.buttonAddWaypoint.Size = new System.Drawing.Size(56, 20);
@@ -729,7 +729,7 @@ namespace LayoutManager.Tools.Controls {
             // 
             // buttonEditWaypoint
             // 
-            this.buttonEditWaypoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonEditWaypoint.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonEditWaypoint.Location = new System.Drawing.Point(72, 133);
             this.buttonEditWaypoint.Name = "buttonEditWaypoint";
             this.buttonEditWaypoint.Size = new System.Drawing.Size(56, 20);
@@ -739,7 +739,7 @@ namespace LayoutManager.Tools.Controls {
             // 
             // buttonRemoveWaypoint
             // 
-            this.buttonRemoveWaypoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonRemoveWaypoint.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonRemoveWaypoint.Location = new System.Drawing.Point(136, 133);
             this.buttonRemoveWaypoint.Name = "buttonRemoveWaypoint";
             this.buttonRemoveWaypoint.Size = new System.Drawing.Size(56, 20);
@@ -749,9 +749,9 @@ namespace LayoutManager.Tools.Controls {
             // 
             // listViewWayPoints
             // 
-            this.listViewWayPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.listViewWayPoints.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                        | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.listViewWayPoints.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderName,
             this.columnHeaderDirection,
@@ -793,7 +793,7 @@ namespace LayoutManager.Tools.Controls {
             // 
             // imageListWayPointStatus
             // 
-            this.imageListWayPointStatus.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListWayPointStatus.ImageStream")));
+            this.imageListWayPointStatus.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListWayPointStatus.ImageStream");
             this.imageListWayPointStatus.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListWayPointStatus.Images.SetKeyName(0, "");
             this.imageListWayPointStatus.Images.SetKeyName(1, "");

@@ -316,7 +316,7 @@ namespace LayoutManager.Model {
                 if (typeName.EndsWith(E_Component))
                     typeName = typeName.Remove(typeName.Length - E_Component.Length);
 
-                return $"{typeName} {location} {(phaseName != "Operational" ? ($"[{phaseName}]") : "")}{(!string.IsNullOrWhiteSpace(nameProvider.Name) ? ($" ({nameProvider.Name})") : "")}";
+                return $"{typeName} {location} {(phaseName != "Operational" ? $"[{phaseName}]" : "")}{(!string.IsNullOrWhiteSpace(nameProvider.Name) ? $" ({nameProvider.Name})" : "")}";
             }
         }
 
@@ -371,14 +371,15 @@ namespace LayoutManager.Model {
         }
 
         public override string ToString() {
-            switch (cp) {
-                case -1: return "Empty";
-                case 0: return "T";
-                case 1: return "B";
-                case 2: return "R";
-                case 3: return "L";
-                default: return cp.ToString();
-            }
+            return cp switch
+            {
+                -1 => "Empty",
+                0 => "T",
+                1 => "B",
+                2 => "R",
+                3 => "L",
+                _ => cp.ToString(),
+            };
         }
 
         public bool IsHorizontal => cp == L || cp == R;
@@ -1467,7 +1468,7 @@ namespace LayoutManager.Model {
     /// </summary>
 #pragma warning disable IDE0051
     [LayoutModule("Layout Model", UserControl = false)]
-    public class LayoutModel : ILayoutModuleSetup, IObjectHasXml, IDisposable {
+    public class LayoutModel : ILayoutModuleSetup, IObjectHasXml {
         private string? modelXmlInfoFilename;
         private bool modelIsLoading;
         private readonly Hashtable componentReferences = new Hashtable();       // Component ID to component
@@ -1918,14 +1919,6 @@ namespace LayoutManager.Model {
 
             return component;
         }
-
-        #region IDisposable Members
-
-        public void Dispose() {
-            MyBlocks.Dispose();
-        }
-
-        #endregion
     }
 
     public static class PhaseLayoutEventExtender {

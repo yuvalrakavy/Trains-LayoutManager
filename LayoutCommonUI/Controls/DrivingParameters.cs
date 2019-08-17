@@ -27,14 +27,14 @@ namespace LayoutManager.CommonUI.Controls {
         /// Required designer variable.
         /// </summary>
 
-        private XmlElement element;
+        private XmlElement? element;
 
-#pragma warning disable nullable
+#nullable disable
         public DrivingParameters() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
         }
-#pragma warning restore nullable
+#nullable enable
 
         public XmlElement? OptionalElement {
             get {
@@ -85,8 +85,6 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public bool ValidateValues() {
-            LayoutModel model = (LayoutModel)EventManager.Event(new LayoutEvent("get-model", this));
-
             if (textBoxSpeedLimit.Text.Trim() != "") {
                 int speedLimit;
 
@@ -99,7 +97,7 @@ namespace LayoutManager.CommonUI.Controls {
                     return false;
                 }
 
-                if (speedLimit < 1 || speedLimit > model.LogicalSpeedSteps) {
+                if (speedLimit < 1 || speedLimit > LayoutModel.Instance.LogicalSpeedSteps) {
                     invalidSpeedValue("speed limit");
                     textBoxSpeedLimit.Focus();
                     return false;
@@ -122,7 +120,7 @@ namespace LayoutManager.CommonUI.Controls {
                     return false;
                 }
 
-                if (slowDownSpeed < 1 || slowDownSpeed > model.LogicalSpeedSteps) {
+                if (slowDownSpeed < 1 || slowDownSpeed > LayoutModel.Instance.LogicalSpeedSteps) {
                     invalidSpeedValue("slow-down speed");
                     textBoxSlowDownSpeed.Focus();
                     return false;
@@ -159,6 +157,7 @@ namespace LayoutManager.CommonUI.Controls {
             return true;
         }
 
+#nullable disable
         #region Component Designer generated code
         /// <summary> 
         /// Required method for Designer support - do not modify 
@@ -287,5 +286,6 @@ namespace LayoutManager.CommonUI.Controls {
             this.ResumeLayout(false);
         }
         #endregion
+#nullable enable
     }
 }

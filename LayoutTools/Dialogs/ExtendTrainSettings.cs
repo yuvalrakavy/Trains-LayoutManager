@@ -78,8 +78,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.panel2 = new Panel();
             this.buttonOK = new Button();
             this.buttonCancel = new Button();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFrom)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTo)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownFrom).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownTo).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -111,7 +111,7 @@ namespace LayoutManager.Tools.Dialogs {
             // pictureBox1
             // 
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Image = ((System.Drawing.Bitmap)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Image = (System.Drawing.Bitmap)resources.GetObject("pictureBox1.Image");
             this.pictureBox1.Location = new System.Drawing.Point(168, 184);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(104, 72);
@@ -190,8 +190,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "ExtendTrainSettings";
             this.ShowInTaskbar = false;
             this.Text = "Extend Train Settings";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFrom)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTo)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownFrom).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownTo).EndInit();
             this.ResumeLayout(false);
         }
         #endregion

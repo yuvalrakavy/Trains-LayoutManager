@@ -65,7 +65,7 @@ namespace Gui.Wizard {
             this.pnlDockPadding.DockPadding.Left = 8;
             this.pnlDockPadding.DockPadding.Right = 4;
             this.pnlDockPadding.DockPadding.Top = 6;
-            this.pnlDockPadding.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+            this.pnlDockPadding.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, (System.Byte)0);
             this.pnlDockPadding.Location = new System.Drawing.Point(0, 0);
             this.pnlDockPadding.Name = "pnlDockPadding";
             this.pnlDockPadding.Size = new System.Drawing.Size(324, 64);
@@ -85,7 +85,7 @@ namespace Gui.Wizard {
             // 
             this.lblTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblTitle.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.lblTitle.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+            this.lblTitle.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (System.Byte)0);
             this.lblTitle.Location = new System.Drawing.Point(8, 6);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(260, 16);
@@ -95,7 +95,7 @@ namespace Gui.Wizard {
             // picIcon
             // 
             this.picIcon.Dock = System.Windows.Forms.DockStyle.Right;
-            this.picIcon.Image = ((System.Drawing.Image)(resources.GetObject("picIcon.Image")));
+            this.picIcon.Image = (System.Drawing.Image)resources.GetObject("picIcon.Image");
             this.picIcon.Location = new System.Drawing.Point(268, 6);
             this.picIcon.Name = "picIcon";
             this.picIcon.Size = new System.Drawing.Size(52, 54);

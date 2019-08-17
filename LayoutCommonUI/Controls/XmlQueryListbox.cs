@@ -370,7 +370,7 @@ namespace LayoutManager.CommonUI.Controls {
                 // 
                 ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit,
                 ImageSize = new System.Drawing.Size(16, 16),
-                ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListArrows.ImageStream"))),
+                ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListArrows.ImageStream"),
                 TransparentColor = System.Drawing.Color.Transparent
             };
         }

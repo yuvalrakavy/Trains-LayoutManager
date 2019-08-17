@@ -299,8 +299,8 @@ namespace LayoutEmulation {
 
                                 locomotive.Direction = train.MotionDirection;
                                 if (trainLocomotive.Orientation == LocomotiveOrientation.Backward)
-                                    locomotive.Direction = (locomotive.Direction == LocomotiveOrientation.Forward ? LocomotiveOrientation.Backward :
-                                        LocomotiveOrientation.Forward);
+                                    locomotive.Direction = locomotive.Direction == LocomotiveOrientation.Forward ? LocomotiveOrientation.Backward :
+                                        LocomotiveOrientation.Forward;
                             }
                             else
                                 Warning($"A previouslly used locomotive is no longer defined");

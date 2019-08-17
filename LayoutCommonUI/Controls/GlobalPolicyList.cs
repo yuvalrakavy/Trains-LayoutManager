@@ -61,7 +61,7 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonStartStop
             // 
-            this.buttonStartStop.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonStartStop.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonStartStop.Location = new System.Drawing.Point(248, 128);
             this.buttonStartStop.Name = "buttonStartStop";
             this.buttonStartStop.Size = new System.Drawing.Size(72, 23);

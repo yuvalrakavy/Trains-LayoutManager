@@ -779,7 +779,7 @@ namespace LayoutManager.Logic {
             if (i > 0)
                 ((BlockEntry)blockEntries[i - 1]).Action = BlockAction.PrepareStop;
 
-            ((BlockEntry)blockEntries[i]).Action = (BlockAction.Stop | actionWhenStopped);
+            ((BlockEntry)blockEntries[i]).Action = BlockAction.Stop | actionWhenStopped;
 
             foreach (BlockEntry blockEntry in blockEntries)
                 trip.Queue.Enqueue(blockEntry);

@@ -60,8 +60,8 @@ namespace LayoutManager.Dialogs {
             // 
             // selectTripPlanIcon1
             // 
-            this.selectTripPlanIcon1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.selectTripPlanIcon1.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right);
             this.selectTripPlanIcon1.IconList = null;
             this.selectTripPlanIcon1.Location = new System.Drawing.Point(16, 16);
             this.selectTripPlanIcon1.Name = "selectTripPlanIcon1";

@@ -93,7 +93,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // labelBlockName
             // 
-            this.labelBlockName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.labelBlockName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (byte)177);
             this.labelBlockName.Location = new System.Drawing.Point(57, 185);
             this.labelBlockName.Name = "labelBlockName";
             this.labelBlockName.Size = new System.Drawing.Size(176, 16);
@@ -102,8 +102,8 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // locomotiveFrontControl
             // 
-            this.locomotiveFrontControl.ConnectionPoints = ((System.Collections.Generic.IList<LayoutManager.Model.LayoutComponentConnectionPoint>)(resources.GetObject("locomotiveFrontControl.ConnectionPoints")));
-            this.locomotiveFrontControl.Front = ((LayoutManager.Model.LayoutComponentConnectionPoint)(resources.GetObject("locomotiveFrontControl.Front")));
+            this.locomotiveFrontControl.ConnectionPoints = (System.Collections.Generic.IList<LayoutManager.Model.LayoutComponentConnectionPoint>)resources.GetObject("locomotiveFrontControl.ConnectionPoints");
+            this.locomotiveFrontControl.Front = (LayoutManager.Model.LayoutComponentConnectionPoint)resources.GetObject("locomotiveFrontControl.Front");
             this.locomotiveFrontControl.Location = new System.Drawing.Point(26, 25);
             this.locomotiveFrontControl.LocomotiveName = null;
             this.locomotiveFrontControl.Name = "locomotiveFrontControl";

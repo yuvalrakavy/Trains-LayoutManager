@@ -178,7 +178,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.label1.Location = new System.Drawing.Point(8, 244);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(72, 14);
@@ -187,7 +187,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // trainDriverComboBox
             // 
-            this.trainDriverComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.trainDriverComboBox.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.trainDriverComboBox.Location = new System.Drawing.Point(80, 239);
             this.trainDriverComboBox.Name = "trainDriverComboBox";
             this.trainDriverComboBox.Size = new System.Drawing.Size(192, 24);
@@ -196,7 +196,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(432, 240);
             this.buttonCancel.Name = "buttonCancel";
@@ -207,9 +207,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // groupBoxTripPlanPreview
             // 
-            this.groupBoxTripPlanPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxTripPlanPreview.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                        | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.groupBoxTripPlanPreview.Controls.Add(this.tripPlanViewer);
             this.groupBoxTripPlanPreview.Location = new System.Drawing.Point(4, 8);
             this.groupBoxTripPlanPreview.Name = "groupBoxTripPlanPreview";
@@ -220,11 +220,11 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // tripPlanViewer
             // 
-            this.tripPlanViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tripPlanViewer.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                        | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.tripPlanViewer.EnablePreview = true;
-            this.tripPlanViewer.Front = ((LayoutManager.Model.LayoutComponentConnectionPoint)(resources.GetObject("tripPlanViewer.Front")));
+            this.tripPlanViewer.Front = (LayoutManager.Model.LayoutComponentConnectionPoint)resources.GetObject("tripPlanViewer.Front");
             this.tripPlanViewer.Location = new System.Drawing.Point(8, 16);
             this.tripPlanViewer.LocomotiveBlock = null;
             this.tripPlanViewer.Name = "tripPlanViewer";
@@ -238,7 +238,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonGo
             // 
-            this.buttonGo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonGo.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonGo.Location = new System.Drawing.Point(360, 240);
             this.buttonGo.Name = "buttonGo";
             this.buttonGo.Size = new System.Drawing.Size(64, 22);
@@ -248,7 +248,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonEdit
             // 
-            this.buttonEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonEdit.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonEdit.Location = new System.Drawing.Point(288, 240);
             this.buttonEdit.Name = "buttonEdit";
             this.buttonEdit.Size = new System.Drawing.Size(64, 22);

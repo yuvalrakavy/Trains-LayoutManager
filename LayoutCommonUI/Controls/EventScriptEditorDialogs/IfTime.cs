@@ -30,7 +30,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private readonly XmlElement element;
         private readonly XmlElement inElement;
 
-#pragma warning disable nullable
+#nullable disable
         public IfTime(XmlElement inElement) {
             //
             // Required for Windows Form Designer support
@@ -53,9 +53,9 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
                 i++;
             }
         }
-#pragma warning restore nullable
+#nullable enable
 
-        private TimeSectionTreeNode findTimeSection(Type treeNodeType) {
+        private TimeSectionTreeNode? findTimeSection(Type treeNodeType) {
             foreach (TimeSectionTreeNode timeSection in treeView.Nodes)
                 if (treeNodeType.IsInstanceOfType(timeSection.Nodes[0]))
                     return timeSection;
@@ -64,13 +64,13 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
         private void insert(string nodeElementName, string timeSectionTitle, Type treeNodeType) {
             XmlElement nodeElement = element.OwnerDocument.CreateElement(nodeElementName);
-            IIfTimeNode node = (IIfTimeNode)EventManager.Event(new LayoutEvent("allocate-if-time-node", nodeElement));
+            var node = Ensure.NotNull<IIfTimeNode>(EventManager.Event(new LayoutEvent("allocate-if-time-node", nodeElement)), "node");
 
             node.Value = 0;
             TreeNodeBase treeNode = (TreeNodeBase)Activator.CreateInstance(treeNodeType, new object[] { node });
 
             if (treeNode.Edit()) {
-                TimeSectionTreeNode timeSection = findTimeSection(treeNodeType);
+                var timeSection = findTimeSection(treeNodeType);
 
                 element.AppendChild(nodeElement);
                 treeNode.Text = node.Description;
@@ -115,9 +115,9 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             // 
             // treeView
             // 
-            this.treeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeView.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right);
             this.treeView.ImageIndex = -1;
             this.treeView.Location = new System.Drawing.Point(8, 8);
             this.treeView.Name = "treeView";
@@ -129,7 +129,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             // 
             // buttonAdd
             // 
-            this.buttonAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonAdd.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonAdd.Location = new System.Drawing.Point(8, 212);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Size = new System.Drawing.Size(61, 19);
@@ -139,7 +139,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             // 
             // buttonEdit
             // 
-            this.buttonEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonEdit.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonEdit.Location = new System.Drawing.Point(72, 212);
             this.buttonEdit.Name = "buttonEdit";
             this.buttonEdit.Size = new System.Drawing.Size(61, 19);
@@ -149,7 +149,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonDelete.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonDelete.Location = new System.Drawing.Point(136, 212);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(61, 19);
@@ -159,7 +159,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             // 
             // buttonOK
             // 
-            this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOK.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonOK.Location = new System.Drawing.Point(73, 250);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(64, 23);
@@ -169,7 +169,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(145, 250);
             this.buttonCancel.Name = "buttonCancel";
@@ -344,7 +344,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             }
 
             public override bool Edit() {
-                IfTimeNumericNode d = new IfTimeNumericNode("Seconds", Node, 0, 59);
+                using var d = new IfTimeNumericNode("Seconds", Node, 0, 59);
 
                 return d.ShowDialog() == DialogResult.OK;
             }
@@ -355,7 +355,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             }
 
             public override bool Edit() {
-                IfTimeNumericNode d = new IfTimeNumericNode("Minutes", Node, 0, 59);
+                using var d = new IfTimeNumericNode("Minutes", Node, 0, 59);
 
                 return d.ShowDialog() == DialogResult.OK;
             }
@@ -366,7 +366,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             }
 
             public override bool Edit() {
-                IfTimeNumericNode d = new IfTimeNumericNode("Hours", Node, 0, 23);
+                using var d = new IfTimeNumericNode("Hours", Node, 0, 23);
 
                 return d.ShowDialog() == DialogResult.OK;
             }
@@ -377,7 +377,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             }
 
             public override bool Edit() {
-                IfTimeDayOfWeekNode d = new IfTimeDayOfWeekNode("Day Of Week", Node);
+                using var d = new IfTimeDayOfWeekNode("Day Of Week", Node);
 
                 return d.ShowDialog() == DialogResult.OK;
             }

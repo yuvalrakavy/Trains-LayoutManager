@@ -64,7 +64,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.buttonCancel = new Button();
             this.radioButtonRepeatForever = new RadioButton();
             this.radioButtonRepeatCount = new RadioButton();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCount)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownCount).BeginInit();
             this.SuspendLayout();
             // 
             // numericUpDownCount
@@ -150,7 +150,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             this.Name = "RepeatCondition";
             this.ShowInTaskbar = false;
             this.Text = "Repeat";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCount)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownCount).EndInit();
             this.ResumeLayout(false);
         }
         #endregion

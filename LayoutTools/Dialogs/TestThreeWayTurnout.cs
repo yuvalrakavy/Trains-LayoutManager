@@ -102,7 +102,7 @@ namespace LayoutManager.Tools.Dialogs {
                     checkedRadioButton = checkRadioButtonTable[tipIndex][_state];
 
                 foreach (RadioButton r in new RadioButton[] { radioButtonTop, radioButtonRight, radioButtonBottom, radioButtonLeft })
-                    r.Checked = (r == checkedRadioButton);
+                    r.Checked = r == checkedRadioButton;
 
                 panelIllustration.Invalidate();
             }

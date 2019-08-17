@@ -172,9 +172,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // listBoxLocomotives
             // 
-            this.listBoxLocomotives.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.listBoxLocomotives.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.listBoxLocomotives.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.listBoxLocomotives.ItemHeight = 46;
             this.listBoxLocomotives.Location = new System.Drawing.Point(8, 8);
@@ -186,7 +186,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
+            this.groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             this.groupBox1.Controls.AddRange(new System.Windows.Forms.Control[] {
                                                                                     this.radioButtonOrientationForward,
                                                                                     this.radioButtonOrientationBackward});
@@ -217,7 +217,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonAdd
             // 
-            this.buttonAdd.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonAdd.Location = new System.Drawing.Point(195, 192);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.TabIndex = 2;
@@ -226,7 +226,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(195, 224);
             this.buttonCancel.Name = "buttonCancel";

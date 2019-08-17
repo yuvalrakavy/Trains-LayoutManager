@@ -248,7 +248,7 @@ namespace LayoutManager {
         }
 
         public new TInfo Info {
-            get => (TInfo?)(base.Info) ?? default;
+            get => (TInfo?)base.Info ?? default;
 
             set {
                 base.Info = value;

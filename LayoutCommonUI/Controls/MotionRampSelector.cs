@@ -22,12 +22,12 @@ namespace LayoutManager.CommonUI.Controls {
         private XmlElement? element = null;
         private MotionRampInfo? ramp = null;
 
-#pragma warning disable nullable
+#nullable disable
         public MotionRampSelector() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
         }
-#pragma warning restore nullable
+#nullable enable
 
         public string Role { get; set; }
 
@@ -83,7 +83,7 @@ namespace LayoutManager.CommonUI.Controls {
             if (rampElement != null)
                 Element.RemoveChild(rampElement);
 
-            if (checkBoxOverrideDefault.Checked) {
+            if (checkBoxOverrideDefault.Checked && ramp != null) {
                 ramp.Role = Role;
 
                 rampElement = (XmlElement)Element.OwnerDocument.ImportNode(ramp.Element, true);
@@ -94,7 +94,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private void initialize() {
-            XmlElement rampElement = (XmlElement)Element.SelectSingleNode("Ramp[@Role='" + Role + "']");
+            var rampElement = (XmlElement?)Element.SelectSingleNode("Ramp[@Role='" + Role + "']");
 
             if (rampElement == null)
                 checkBoxOverrideDefault.Checked = false;
@@ -175,7 +175,7 @@ namespace LayoutManager.CommonUI.Controls {
         private void buttonOverrideDefault_Click(object sender, System.EventArgs e) {
             ramp = new MotionRampInfo(MotionRampType.RateFixed, LayoutModel.Instance.LogicalSpeedSteps / 2);
 
-            Dialogs.EditMotionRamp d = new Dialogs.EditMotionRamp(ramp);
+            using var d = new Dialogs.EditMotionRamp(ramp);
 
             if (d.ShowDialog(this) == DialogResult.OK) {
                 checkBoxOverrideDefault.Checked = true;

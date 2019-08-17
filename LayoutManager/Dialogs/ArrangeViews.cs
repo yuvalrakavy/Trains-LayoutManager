@@ -86,9 +86,9 @@ namespace LayoutManager.Dialogs {
             // 
             // listBoxViews
             // 
-            this.listBoxViews.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.listBoxViews.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.listBoxViews.DisplayMember = "Text";
             this.listBoxViews.Location = new System.Drawing.Point(8, 16);
             this.listBoxViews.Name = "listBoxViews";
@@ -98,8 +98,8 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonMoveDown
             // 
-            this.buttonMoveDown.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonMoveDown.Image = ((System.Drawing.Bitmap)(resources.GetObject("buttonMoveDown.Image")));
+            this.buttonMoveDown.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.buttonMoveDown.Image = (System.Drawing.Bitmap)resources.GetObject("buttonMoveDown.Image");
             this.buttonMoveDown.ImageIndex = 1;
             this.buttonMoveDown.ImageList = this.imageListButtons;
             this.buttonMoveDown.Location = new System.Drawing.Point(230, 48);
@@ -112,13 +112,13 @@ namespace LayoutManager.Dialogs {
             // 
             this.imageListButtons.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
             this.imageListButtons.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListButtons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListButtons.ImageStream")));
+            this.imageListButtons.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListButtons.ImageStream");
             this.imageListButtons.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // buttonMoveUp
             // 
-            this.buttonMoveUp.Anchor = (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonMoveUp.Image = ((System.Drawing.Bitmap)(resources.GetObject("buttonMoveUp.Image")));
+            this.buttonMoveUp.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.buttonMoveUp.Image = (System.Drawing.Bitmap)resources.GetObject("buttonMoveUp.Image");
             this.buttonMoveUp.ImageIndex = 0;
             this.buttonMoveUp.ImageList = this.imageListButtons;
             this.buttonMoveUp.Location = new System.Drawing.Point(230, 16);
@@ -129,7 +129,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonClose.Location = new System.Drawing.Point(152, 272);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(72, 23);
@@ -139,7 +139,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonNew
             // 
-            this.buttonNew.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonNew.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonNew.Location = new System.Drawing.Point(8, 240);
             this.buttonNew.Name = "buttonNew";
             this.buttonNew.Size = new System.Drawing.Size(72, 24);
@@ -149,7 +149,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonDelete.Location = new System.Drawing.Point(80, 240);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(72, 24);
@@ -159,7 +159,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonRename
             // 
-            this.buttonRename.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonRename.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonRename.Location = new System.Drawing.Point(152, 240);
             this.buttonRename.Name = "buttonRename";
             this.buttonRename.Size = new System.Drawing.Size(72, 24);

@@ -15,12 +15,12 @@ namespace LayoutManager.CommonUI.Controls {
         private RadioButton radioButtonPropertyOrAttribute;
         private LayoutManager.CommonUI.Controls.OperandValueOf operandValueOf;
 
-#pragma warning disable nullable
+#nullable disable
         public Operand() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
         }
-#pragma warning restore nullable
+#nullable enable
 
         #region Properties
 
@@ -63,7 +63,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             var symbolAccess = Element.GetAttribute($"Symbol{Suffix}Access");
 
-            if (symbolAccess == null || symbolAccess == "")
+            if (string.IsNullOrEmpty(symbolAccess))
                 symbolAccess = DefaultAccess;
 
             if (symbolAccess == "Value") {
@@ -71,7 +71,7 @@ namespace LayoutManager.CommonUI.Controls {
 
                 if (Element.HasAttribute($"Value{Suffix}")) {
                     if (ValueIsBoolean)
-                        linkMenu1Boolean.SelectedIndex = ((bool)Element.AttributeValue($"Value{Suffix}") ? 0 : 1);
+                        linkMenu1Boolean.SelectedIndex = (bool)Element.AttributeValue($"Value{Suffix}") ? 0 : 1;
                     else
                         textBoxValue.Text = Element.GetAttribute($"Value{Suffix}");
                 }
@@ -96,7 +96,6 @@ namespace LayoutManager.CommonUI.Controls {
 
         public bool Commit() {
             var accessAttribute = $"Symbol{Suffix}Access";
-            bool ok = true;
 
             if (radioButtonValue.Checked) {
                 Element.SetAttribute(accessAttribute, "Value");
@@ -113,7 +112,7 @@ namespace LayoutManager.CommonUI.Controls {
             else
                 operandValueOf.Commit();
 
-            return ok;
+            return true;
         }
 
         #region Component Designer generated code
@@ -201,18 +200,6 @@ namespace LayoutManager.CommonUI.Controls {
 			comboBoxSymbol.Enabled = false;
 			comboBoxTag.Enabled = false;
 			linkMenuPropertyOrAttribute.Enabled = false;
-#endif
-        }
-
-        private void radioButtonPropertyOrAttribute_CheckedChanged(object sender, System.EventArgs e) {
-#if OLD
-			InitializePropertyOrAttributeSelector();
-		
-			linkMenu1Boolean.Enabled = false;
-			textBoxValue.Enabled = false;
-			comboBoxSymbol.Enabled = true;
-			comboBoxTag.Enabled = true;
-			linkMenuPropertyOrAttribute.Enabled = true;
 #endif
         }
 

@@ -1627,7 +1627,7 @@ namespace LayoutManager.Model {
         public int GetAlignedAddress(ControlModuleType moduleType, int address) {
             int a = address - FirstAddress + moduleType.AddressAlignment - 1;
 
-            return (a - (a % moduleType.AddressAlignment)) + FirstAddress;
+            return a - (a % moduleType.AddressAlignment) + FirstAddress;
         }
 
         /// <summary>

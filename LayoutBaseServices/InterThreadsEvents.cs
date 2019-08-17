@@ -8,7 +8,7 @@ using LayoutManager;
 
 #nullable enable
 namespace LayoutBaseServices {
-#pragma warning disable IDE0051
+#pragma warning disable IDE0051, RCS1163
 
     [LayoutModule("Interthreads Event Relay", Enabled = true, UserControl = false)]
     internal class InterThreadsEvents : LayoutModuleBase, ILayoutInterThreadEventInvoker, IDisposable {
@@ -61,7 +61,7 @@ namespace LayoutBaseServices {
             e.Info = (ILayoutInterThreadEventInvoker)this;
         }
 
-        private delegate object LayoutEventCaller(LayoutEvent e);
+        private delegate object? LayoutEventCaller(LayoutEvent e);
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void eventRelayThreadFunction() {
@@ -69,7 +69,7 @@ namespace LayoutBaseServices {
             while (controlInUIthread?.IsHandleCreated != true)
                 Thread.Sleep(100);
 
-            do {
+            while (true) {
                 LayoutEvent e;
 
                 eventInQueue.WaitOne();
@@ -91,7 +91,7 @@ namespace LayoutBaseServices {
                 }
                 else
                     break;
-            } while (true);
+            }
 
             terminatedEvent.Set();
         }
@@ -110,6 +110,7 @@ namespace LayoutBaseServices {
         private void Dispose(bool disposing) {
             if (!_disposed) {
                 if (disposing) {
+                    controlInUIthread?.Dispose();
                     uiThreadForm?.Dispose();
                     eventInQueue.Dispose();
                     terminatedEvent.Dispose();

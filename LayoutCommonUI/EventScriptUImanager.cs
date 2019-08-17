@@ -1231,7 +1231,7 @@ namespace LayoutManager.CommonUI {
                 return element.GetAttribute(prefix + "Type") switch
                 {
                     "Reference" => $"is {element.GetAttribute($"{prefix}SymbolName")}",
-                    "ValueOf" when (element.GetAttribute($"Symbol{prefix}Access") == "Value") =>
+                    "ValueOf" when element.GetAttribute($"Symbol{prefix}Access") == "Value" =>
                       getValueOf(element.GetAttribute($"Value{prefix}")),
                     "ValueOf" => $"is {GetOperandDescription(element, prefix, null)}",
                     "Context" => "is context",

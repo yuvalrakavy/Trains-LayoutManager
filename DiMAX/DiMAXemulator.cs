@@ -56,7 +56,7 @@ namespace DiMAX {
             try {
                 while (true) {
                     byte commandAndLength = (byte)commStream.ReadByte();
-                    int length = ((commandAndLength & 0xe0) >> 5);
+                    int length = (commandAndLength & 0xe0) >> 5;
                     byte[] buffer = new byte[length + 1];       // 1 more byte for the xor byte
 
                     for (int i = 0; i < buffer.Length;)

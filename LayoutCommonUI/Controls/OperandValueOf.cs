@@ -151,8 +151,8 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // comboBoxTag
             // 
-            this.comboBoxTag.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxTag.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right);
             this.comboBoxTag.Location = new System.Drawing.Point(70, 35);
             this.comboBoxTag.Name = "comboBoxTag";
             this.comboBoxTag.Size = new System.Drawing.Size(100, 21);
@@ -161,8 +161,8 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // comboBoxSymbol
             // 
-            this.comboBoxSymbol.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxSymbol.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right);
             this.comboBoxSymbol.Location = new System.Drawing.Point(70, 10);
             this.comboBoxSymbol.Name = "comboBoxSymbol";
             this.comboBoxSymbol.Size = new System.Drawing.Size(100, 21);

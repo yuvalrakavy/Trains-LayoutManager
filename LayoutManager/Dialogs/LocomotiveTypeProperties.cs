@@ -131,10 +131,10 @@ namespace LayoutManager.Dialogs {
             this.label1 = new System.Windows.Forms.Label();
             this.tabPageFunctions = new System.Windows.Forms.TabPage();
             this.listViewFunctions = new System.Windows.Forms.ListView();
-            this.columnHeaderFunctionNumber = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderFunctionDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderFunctionNumber = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderType = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderName = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
+            this.columnHeaderFunctionDescription = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
             this.buttonCopyFrom = new System.Windows.Forms.Button();
             this.checkBoxHasLights = new System.Windows.Forms.CheckBox();
             this.buttonFunctionAdd = new System.Windows.Forms.Button();
@@ -159,9 +159,9 @@ namespace LayoutManager.Dialogs {
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+            | System.Windows.Forms.AnchorStyles.Left
+            | System.Windows.Forms.AnchorStyles.Right);
             this.tabControl1.Controls.Add(this.tabPageGeneral);
             this.tabControl1.Controls.Add(this.tabPageFunctions);
             this.tabControl1.Controls.Add(this.tabPageDecoder);
@@ -523,7 +523,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(254, 270);
             this.buttonCancel.Name = "buttonCancel";
@@ -533,7 +533,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonOk
             // 
-            this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOk.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonOk.Location = new System.Drawing.Point(174, 270);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);

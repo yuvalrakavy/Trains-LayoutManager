@@ -507,7 +507,7 @@ namespace LayoutManager.CommonUI.Controls {
         #region GetField Function - Private
         private string GetField(object obj, string FieldName) {
             if (obj is DataRowView) {
-                return (((DataRowView)obj)[FieldName].ToString());
+                return ((DataRowView)obj)[FieldName].ToString();
             }
             else {
                 if (obj is ValueType && obj.GetType().IsPrimitive) {

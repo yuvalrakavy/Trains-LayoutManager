@@ -288,9 +288,9 @@ namespace Intellibox.Dialogs {
             // 
             // listViewSO
             // 
-            this.listViewSO.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.listViewSO.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                        | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.listViewSO.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderSOnumber,
             this.columnHeaderSOvalue,
@@ -308,7 +308,7 @@ namespace Intellibox.Dialogs {
             // 
             // buttonSOdelete
             // 
-            this.buttonSOdelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonSOdelete.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonSOdelete.Location = new System.Drawing.Point(169, 127);
             this.buttonSOdelete.Name = "buttonSOdelete";
             this.buttonSOdelete.Size = new System.Drawing.Size(75, 23);
@@ -319,7 +319,7 @@ namespace Intellibox.Dialogs {
             // 
             // buttonSOedit
             // 
-            this.buttonSOedit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonSOedit.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonSOedit.Location = new System.Drawing.Point(88, 127);
             this.buttonSOedit.Name = "buttonSOedit";
             this.buttonSOedit.Size = new System.Drawing.Size(75, 23);
@@ -330,7 +330,7 @@ namespace Intellibox.Dialogs {
             // 
             // buttonSOadd
             // 
-            this.buttonSOadd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonSOadd.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonSOadd.Location = new System.Drawing.Point(7, 127);
             this.buttonSOadd.Name = "buttonSOadd";
             this.buttonSOadd.Size = new System.Drawing.Size(75, 23);

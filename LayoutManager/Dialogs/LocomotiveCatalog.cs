@@ -109,7 +109,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonClose.Location = new System.Drawing.Point(392, 464);
             this.buttonClose.Name = "buttonClose";
@@ -119,7 +119,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonAdd
             // 
-            this.buttonAdd.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonAdd.Location = new System.Drawing.Point(8, 424);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.TabIndex = 1;
@@ -128,7 +128,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonEdit
             // 
-            this.buttonEdit.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonEdit.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonEdit.Location = new System.Drawing.Point(88, 424);
             this.buttonEdit.Name = "buttonEdit";
             this.buttonEdit.TabIndex = 2;
@@ -137,7 +137,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonRemove
             // 
-            this.buttonRemove.Anchor = (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
+            this.buttonRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.buttonRemove.Location = new System.Drawing.Point(168, 424);
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.TabIndex = 3;
@@ -146,9 +146,9 @@ namespace LayoutManager.Dialogs {
             // 
             // locomotiveTypeList
             // 
-            this.locomotiveTypeList.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.locomotiveTypeList.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.locomotiveTypeList.ContainerElement = null;
             this.locomotiveTypeList.CurrentListLayout = null;
             this.locomotiveTypeList.CurrentListLayoutIndex = -1;

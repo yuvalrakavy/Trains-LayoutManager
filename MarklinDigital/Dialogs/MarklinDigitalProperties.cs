@@ -83,7 +83,7 @@ namespace MarklinDigital.Dialogs {
             this.label3 = new Label();
             this.layoutEmulationSetup = new LayoutManager.CommonUI.Controls.LayoutEmulationSetup();
             this.buttonCOMsettings = new Button();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFeedbackPolling)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownFeedbackPolling).BeginInit();
             this.SuspendLayout();
             // 
             // nameDefinition
@@ -219,7 +219,7 @@ namespace MarklinDigital.Dialogs {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "MarklinDigitalProperties";
             this.Text = "Marklin Digital Interface Properties";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFeedbackPolling)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownFeedbackPolling).EndInit();
             this.ResumeLayout(false);
         }
         #endregion

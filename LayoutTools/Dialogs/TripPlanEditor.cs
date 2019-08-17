@@ -105,7 +105,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonSaveTripPlan
             // 
-            this.buttonSaveTripPlan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonSaveTripPlan.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.buttonSaveTripPlan.Location = new System.Drawing.Point(8, 222);
             this.buttonSaveTripPlan.Name = "buttonSaveTripPlan";
             this.buttonSaveTripPlan.Size = new System.Drawing.Size(56, 20);
@@ -115,7 +115,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonGo
             // 
-            this.buttonGo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonGo.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonGo.Location = new System.Drawing.Point(386, 222);
             this.buttonGo.Name = "buttonGo";
             this.buttonGo.Size = new System.Drawing.Size(32, 20);
@@ -125,7 +125,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(424, 222);
             this.buttonCancel.Name = "buttonCancel";
@@ -136,9 +136,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // tripPlanEditor1
             // 
-            this.tripPlanEditor1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tripPlanEditor1.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                        | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.tripPlanEditor1.EnablePreview = true;
             this.tripPlanEditor1.Location = new System.Drawing.Point(0, 0);
             this.tripPlanEditor1.LocomotiveBlock = null;
@@ -154,8 +154,8 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // trainDriverComboBox
             // 
-            this.trainDriverComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.trainDriverComboBox.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left
+                        | System.Windows.Forms.AnchorStyles.Right);
             this.trainDriverComboBox.Location = new System.Drawing.Point(153, 222);
             this.trainDriverComboBox.Name = "trainDriverComboBox";
             this.trainDriverComboBox.Size = new System.Drawing.Size(215, 20);
@@ -164,7 +164,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
             this.label1.Location = new System.Drawing.Point(73, 222);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(72, 20);

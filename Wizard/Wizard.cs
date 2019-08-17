@@ -88,7 +88,7 @@ namespace Gui.Wizard {
             // 
             // btnCancel
             // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnCancel.Location = new System.Drawing.Point(356, 12);
             this.btnCancel.Name = "btnCancel";
@@ -98,7 +98,7 @@ namespace Gui.Wizard {
             // 
             // btnNext
             // 
-            this.btnNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnNext.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.btnNext.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnNext.Location = new System.Drawing.Point(272, 12);
             this.btnNext.Name = "btnNext";
@@ -109,7 +109,7 @@ namespace Gui.Wizard {
             // 
             // btnBack
             // 
-            this.btnBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBack.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnBack.Location = new System.Drawing.Point(196, 12);
             this.btnBack.Name = "btnBack";
@@ -139,7 +139,7 @@ namespace Gui.Wizard {
             // Wizard
             // 
             this.Controls.Add(this.pnlButtons);
-            this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+            this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, (System.Byte)0);
             this.Name = "Wizard";
             this.Size = new System.Drawing.Size(444, 272);
             this.Load += this.Wizard_Load;
@@ -199,7 +199,7 @@ namespace Gui.Wizard {
             }
 
             //Change to the new Page
-            WizardPage tWizPage = ((WizardPage)Pages[index]);
+            WizardPage tWizPage = (WizardPage)Pages[index];
 
             //Really activate the page
             ActivatePage(tWizPage);

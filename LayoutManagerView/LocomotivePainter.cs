@@ -209,8 +209,8 @@ namespace LayoutManager.View {
             if (Speed != 0) {
                 PointF[] triangle = new PointF[3];
                 float d = (Direction == LocomotiveOrientation.Forward) ? 1.0F : -1.0F;
-                float xTip = ((locoRectSize.Width * 0.5F) - motionTriangleGap);
-                float xBase = (xTip - motionTriangleHeight);
+                float xTip = (locoRectSize.Width * 0.5F) - motionTriangleGap;
+                float xBase = xTip - motionTriangleHeight;
                 float y = (0.5F * locoRectSize.Height) - verticalMargin;
 
                 if (Orientation == LocomotiveOrientation.Backward)

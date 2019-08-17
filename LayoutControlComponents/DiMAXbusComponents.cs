@@ -212,7 +212,7 @@ namespace LayoutManager.ControlComponents {
             module.AddressProgrammingRequired = false;
         }
 
-        public override string Description => $"Set feedback module address to {ProgrammingTarget.Address} to {(ProgrammingTarget.Address + ProgrammingTarget.ModuleType.NumberOfAddresses - 1)}";
+        public override string Description => $"Set feedback module address to {ProgrammingTarget.Address} to {ProgrammingTarget.Address + ProgrammingTarget.ModuleType.NumberOfAddresses - 1}";
 
         #region IMassothFeedbackDecoderSetAddress Members
         private const string A_BusConnection = "BusConnectionMethod";

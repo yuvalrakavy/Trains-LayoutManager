@@ -151,9 +151,9 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // textBoxValue
             // 
-            this.textBoxValue.Anchor = (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.textBoxValue.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Left
+                | System.Windows.Forms.AnchorStyles.Right;
             this.textBoxValue.Location = new System.Drawing.Point(7, 2);
             this.textBoxValue.Name = "textBoxValue";
             this.textBoxValue.Size = new System.Drawing.Size(48, 20);
@@ -162,8 +162,8 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // linkMenuUnits
             // 
-            this.linkMenuUnits.Anchor = ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Right);
+            this.linkMenuUnits.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+                | System.Windows.Forms.AnchorStyles.Right;
             this.linkMenuUnits.Location = new System.Drawing.Point(60, 2);
             this.linkMenuUnits.Name = "linkMenuUnits";
             this.linkMenuUnits.Options = new string[0];

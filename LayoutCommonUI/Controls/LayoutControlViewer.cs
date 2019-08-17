@@ -246,7 +246,7 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // imageListCloseButton
             // 
-            this.imageListCloseButton.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListCloseButton.ImageStream")));
+            this.imageListCloseButton.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListCloseButton.ImageStream");
             this.imageListCloseButton.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListCloseButton.Images.SetKeyName(0, "");
             this.imageListCloseButton.Images.SetKeyName(1, "");
@@ -264,7 +264,7 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
             this.buttonClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonClose.ImageIndex = 0;
             this.buttonClose.ImageList = this.imageListCloseButton;
@@ -276,9 +276,9 @@ namespace LayoutManager.CommonUI.Controls {
             // 
             // layoutControlBusViewer
             // 
-            this.layoutControlBusViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.layoutControlBusViewer.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+            | System.Windows.Forms.AnchorStyles.Left
+            | System.Windows.Forms.AnchorStyles.Right);
             this.layoutControlBusViewer.BusProviderId = new System.Guid("00000000-0000-0000-0000-000000000000");
             this.layoutControlBusViewer.BusTypeName = null;
             this.layoutControlBusViewer.Location = new System.Drawing.Point(0, 168);
@@ -286,7 +286,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.layoutControlBusViewer.Name = "layoutControlBusViewer";
             this.layoutControlBusViewer.ShowOnlyNotInLocation = false;
             this.layoutControlBusViewer.Size = new System.Drawing.Size(200, 523);
-            this.layoutControlBusViewer.StartingPoint = ((System.Drawing.PointF)(resources.GetObject("layoutControlBusViewer.StartingPoint")));
+            this.layoutControlBusViewer.StartingPoint = (System.Drawing.PointF)resources.GetObject("layoutControlBusViewer.StartingPoint");
             this.layoutControlBusViewer.TabIndex = 8;
             this.layoutControlBusViewer.Text = "layoutControlBusViewer1";
             this.layoutControlBusViewer.Zoom = 1F;

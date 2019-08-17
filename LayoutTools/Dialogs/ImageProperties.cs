@@ -180,12 +180,12 @@ namespace LayoutManager.Tools.Dialogs {
             this.label8 = new Label();
             this.linkMenuRotateFlip = new LayoutManager.CommonUI.Controls.LinkMenu();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownWidth)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownWidth).BeginInit();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHeight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownHeight).BeginInit();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownVerticalOffset)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHorizontalOffset)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownVerticalOffset).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownHorizontalOffset).BeginInit();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -586,12 +586,12 @@ namespace LayoutManager.Tools.Dialogs {
             this.ShowInTaskbar = false;
             this.Text = "Image Properties";
             this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownWidth)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownWidth).EndInit();
             this.groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHeight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownHeight).EndInit();
             this.groupBox3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownVerticalOffset)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHorizontalOffset)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownVerticalOffset).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.numericUpDownHorizontalOffset).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.ResumeLayout(false);
         }

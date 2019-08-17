@@ -141,7 +141,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             // 
             this.groupBoxWarning.BackColor = System.Drawing.Color.Firebrick;
             this.groupBoxWarning.Controls.Add(this.label2);
-            this.groupBoxWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.groupBoxWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (byte)177);
             this.groupBoxWarning.ForeColor = System.Drawing.Color.Yellow;
             this.groupBoxWarning.Location = new System.Drawing.Point(23, 55);
             this.groupBoxWarning.Name = "groupBoxWarning";

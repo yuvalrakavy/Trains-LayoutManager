@@ -104,7 +104,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // labelBlockName
             // 
-            this.labelBlockName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(177)));
+            this.labelBlockName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (System.Byte)177);
             this.labelBlockName.Location = new System.Drawing.Point(57, 185);
             this.labelBlockName.Name = "labelBlockName";
             this.labelBlockName.Size = new System.Drawing.Size(176, 16);
