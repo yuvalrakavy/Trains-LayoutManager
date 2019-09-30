@@ -52,9 +52,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// This may be used if block definition can be null (was not yet set)
         /// </summary>
-        public LayoutBlockDefinitionComponent? OptionalBlockDefinition {
-            get { return blockInfo; }
-        }
+        public LayoutBlockDefinitionComponent? OptionalBlockDefinition => blockInfo;
 
         public Guid Id {
             get {
@@ -170,11 +168,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public bool CanTrainWait {
-            get {
-                return BlockDefinintion != null ? BlockDefinintion.Info.CanTrainWait : CanTrainWaitDefault;
-            }
-        }
+        public bool CanTrainWait => BlockDefinintion != null ? BlockDefinintion.Info.CanTrainWait : CanTrainWaitDefault;
 
         public string Name => BlockDefinintion.Name;
 
@@ -227,8 +221,10 @@ namespace LayoutManager.Model {
                 LayoutComponentConnectionPoint cpEntry;
 
                 try {
-                    Debug.Assert(trainLocation.BlockEdge != null);
-                    cpEntry = BlockDefinintion.Track.ConnectionPoints[BlockDefinintion.GetConnectionPointIndex(trainLocation.BlockEdge)];
+                    if (trainLocation.BlockEdge != null)
+                        cpEntry = BlockDefinintion.Track.ConnectionPoints[BlockDefinintion.GetConnectionPointIndex(trainLocation.BlockEdge)];
+                    else
+                        cpEntry = 0;
                 }
                 catch (ArgumentException) {
                     cpEntry = 0;
@@ -270,20 +266,21 @@ namespace LayoutManager.Model {
             }
 
             Debug.Assert(trainLocationToRemove != null);
-            trainsInBlock.Remove(trainLocationToRemove);
 
-            trainLeavingBlock = trainLocationToRemove.Train;
-            trainLeavingBlockFront = trainLocationToRemove.DisplayFront;
-            whenTrainLeftBlock = Environment.TickCount;
+            if (trainLocationToRemove != null) {
+                trainsInBlock.Remove(trainLocationToRemove);
 
-            LayoutModel.StateManager.Components.Remove(BlockDefinintion, State_TrainEntry);
+                trainLeavingBlock = trainLocationToRemove.Train;
+                trainLeavingBlockFront = trainLocationToRemove.DisplayFront;
+                whenTrainLeftBlock = Environment.TickCount;
 
-            BlockDefinintion.OnComponentChanged();
+                LayoutModel.StateManager.Components.Remove(BlockDefinintion, State_TrainEntry);
+
+                BlockDefinintion.OnComponentChanged();
+            }
         }
 
-        public long? TrainEntryTime {
-            get => (long?)LayoutModel.StateManager.Components.StateOf(BlockDefinintion, State_TrainEntry)?.AttributeValue(A_Time);
-        }
+        public long? TrainEntryTime => (long?)LayoutModel.StateManager.Components.StateOf(BlockDefinintion, State_TrainEntry)?.AttributeValue(A_Time);
 
         public void ClearTrains() {
             trainsInBlock.Clear();

@@ -8,7 +8,7 @@ using System.Diagnostics;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
-#pragma warning disable IDE0051, IDE0060, IDE0069
+#pragma warning disable IDE0051, IDE0060, IDE0069, IDE0067
 #nullable enable
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -811,7 +811,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonStopMenu_Click(object sender, System.EventArgs e) {
-            using var menu = new ContextMenu();
+            var menu = new ContextMenu();
 
             addAccelerationMenuEntries(menu, 0);
 
@@ -822,14 +822,14 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonBackwardMenu_Click(object sender, System.EventArgs e) {
-            using var menu = new ContextMenu();
+            var menu = new ContextMenu();
 
             addSpeedMenuEntries(menu, LocomotiveOrientation.Backward);
             menu.Show(this, new Point(buttonBackwardMenu.Left, buttonBackwardMenu.Bottom));
         }
 
         private void buttonForwardMenu_Click(object sender, System.EventArgs e) {
-            using var menu = new ContextMenu();
+            var menu = new ContextMenu();
 
             addSpeedMenuEntries(menu, LocomotiveOrientation.Forward);
             menu.Show(this, new Point(buttonForwardMenu.Left, buttonForwardMenu.Bottom));

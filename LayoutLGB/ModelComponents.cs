@@ -11,6 +11,7 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#pragma warning disable 
 namespace LayoutLGB {
     /// <summary>
     /// Summary description for MTScomponents.
@@ -41,17 +42,9 @@ namespace LayoutLGB {
 
         public int XbusID => (int?)Element.AttributeValue(A_XbusId) ?? 1;
 
-        public ControlBus LGBbus {
-            get {
-                return _LGBbus ?? (_LGBbus = LayoutModel.ControlManager.Buses.GetBus(this, "LGBBUS"));
-            }
-        }
+        public ControlBus LGBbus => _LGBbus ?? (_LGBbus = LayoutModel.ControlManager.Buses.GetBus(this, "LGBBUS"));
 
-        public ControlBus DCCbus {
-            get {
-                return _DCCbus ?? (_DCCbus = LayoutModel.ControlManager.Buses.GetBus(this, "DCC"));
-            }
-        }
+        public ControlBus DCCbus => _DCCbus ?? (_DCCbus = LayoutModel.ControlManager.Buses.GetBus(this, "DCC"));
 
         #region Specific implementation to base class overrideble methods and properties
 

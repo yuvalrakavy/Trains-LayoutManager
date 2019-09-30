@@ -39,17 +39,9 @@ namespace LayoutManager.CommonUI.Controls {
 
         public override IXmlQueryListboxItem CreateItem(QueryItem queryItem, XmlElement itemElement) => new LocomotiveItem(this, queryItem, itemElement);
 
-        public XmlElement? SelectedXmlElement {
-            get {
-                return SelectedXmlItem != null ? ((IXmlQueryListBoxXmlElementItem)SelectedXmlItem).Element : null;
-            }
-        }
+        public XmlElement? SelectedXmlElement => SelectedXmlItem != null ? ((IXmlQueryListBoxXmlElementItem)SelectedXmlItem).Element : null;
 
-        protected LocomotiveCatalogInfo Catalog {
-            get {
-                return catalog ?? (catalog = LayoutModel.LocomotiveCatalog);
-            }
-        }
+        protected LocomotiveCatalogInfo Catalog => catalog ?? (catalog = LayoutModel.LocomotiveCatalog);
 
         protected bool OperationMode => operationMode;
 

@@ -894,9 +894,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public LocomotiveInfo Locomotive {
-            get => Ensure.NotNull<LocomotiveInfo>(OptionalLocomotive, nameof(OptionalLocomotive));
-        }
+        public LocomotiveInfo Locomotive => Ensure.NotNull<LocomotiveInfo>(OptionalLocomotive, nameof(OptionalLocomotive));
 
         public LocomotiveOrientation Orientation {
             get => AttributeValue(A_Orientation).Enum<LocomotiveOrientation>() ?? LocomotiveOrientation.Forward;

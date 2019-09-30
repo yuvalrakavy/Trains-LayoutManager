@@ -193,9 +193,7 @@ namespace LayoutManager.Logic {
                         foreach (TrainLocationInfo lockedTrainLocation in trainLocation.Train.Locations) {
                             LockedResourceEntry lockedResourceEntry = (LockedResourceEntry)lockedResourceMap[lockedTrainLocation.BlockId];
 
-                            Debug.Assert(lockedResourceEntry != null);      // must exist since part of a locked manual dispatch region
                             trainLockRequest.Blocks.Add(lockedTrainLocation.Block);
-
                             lockedResourceEntry.InsertRequest(trainLockRequest);
                         }
                     }
@@ -575,8 +573,6 @@ namespace LayoutManager.Logic {
                 if (LayoutModel.Blocks.TryGetValue(blockOrResourceId, out LayoutBlock block)) {
                     var lockedBlockEntry = lockedBlockOrResourceEntry;      // Just for clarity
 
-                    Debug.Assert(lockedBlockEntry != null);
-
                     if (lockedBlockEntry.Request != null) {
                         foreach (var resourceInfo in block.BlockDefinintion.Info.Resources) {
                             var resourceId = resourceInfo.ResourceId;
@@ -585,7 +581,6 @@ namespace LayoutManager.Logic {
                             // if so, the resource can also be unlocked
                             //
                             if (lockedResourceMap.TryGetValue(resourceId, out LockedResourceEntry lockedResourceEntry) && lockedResourceEntry.Request == lockedBlockEntry.Request) {
-                                Debug.Assert(lockedBlockEntry != null);
                                 if (--lockedBlockEntry.Request.ResourceUseCount[resourceId] == 0) {
                                     doFreeResource(resourceId, freedLockBlockOrResourceEntries);
                                     lockedBlockEntry.Request.ResourceUseCount.Remove(resourceId);
@@ -777,11 +772,7 @@ namespace LayoutManager.Logic {
 
             public LayoutLockRequest? Request { get; set; }
 
-            public LayoutLockRequest[] PendingRequests {
-                get {
-                    return pendingRequests == null ? (new LayoutLockRequest[0]) : pendingRequests.ToArray();
-                }
-            }
+            public LayoutLockRequest[] PendingRequests => pendingRequests == null ? (new LayoutLockRequest[0]) : pendingRequests.ToArray();
 
             #endregion
 

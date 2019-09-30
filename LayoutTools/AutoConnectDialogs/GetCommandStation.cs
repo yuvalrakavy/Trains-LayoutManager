@@ -33,11 +33,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
                 comboBoxCommandStations.SelectedIndex = 0;
         }
 
-        public IModelComponentIsCommandStation CommandStation {
-            get {
-                return comboBoxCommandStations.SelectedItem == null ? null : ((Item)comboBoxCommandStations.SelectedItem).CommandStation;
-            }
-        }
+        public IModelComponentIsCommandStation CommandStation => comboBoxCommandStations.SelectedItem == null ? null : ((Item)comboBoxCommandStations.SelectedItem).CommandStation;
 
         /// <summary>
         /// Clean up any resources being used.

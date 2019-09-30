@@ -10,11 +10,7 @@ namespace LayoutManager.View {
         private readonly Dictionary<string, Image> imageHashtable = new Dictionary<string, Image>();
         private string layoutFileDirectory;
 
-        private string LayoutFileDirectory {
-            get {
-                return layoutFileDirectory ?? (layoutFileDirectory = Path.GetDirectoryName(LayoutController.LayoutFilename));
-            }
-        }
+        private string LayoutFileDirectory => layoutFileDirectory ?? (layoutFileDirectory = Path.GetDirectoryName(LayoutController.LayoutFilename));
 
         private string getImageFilename(LayoutEvent e) {
             string imageFilename = (String)e.Info;

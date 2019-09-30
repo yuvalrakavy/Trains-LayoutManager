@@ -14,7 +14,7 @@ using LayoutManager.Components;
 using LayoutManager.CommonUI.Controls;
 using LayoutManager.View;
 
-#pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060, IDE0067
 #nullable enable
 namespace LayoutManager.Tools {
     /// <summary>
@@ -1043,7 +1043,7 @@ namespace LayoutManager.Tools {
                 else {
                     TripPlanInfo tripPlan = new TripPlanInfo();
 
-                    using var tripPlanEditor = new Dialogs.TripPlanEditor(tripPlan, train);
+                    var tripPlanEditor = new Dialogs.TripPlanEditor(tripPlan, train);
 
                     tripPlanEditor.Show();
                 }
@@ -1063,7 +1063,7 @@ namespace LayoutManager.Tools {
 
             protected override void OnClick(EventArgs e) {
                 if (!(bool)(EventManager.Event(new LayoutEvent("show-saved-trip-plans-for-train", train, false)) ?? false)) {
-                    using var tripPlanCatalog = new Dialogs.TripPlanCatalog(train);
+                    var tripPlanCatalog = new Dialogs.TripPlanCatalog(train);
 
                     tripPlanCatalog.Show();
                 }
@@ -1513,7 +1513,7 @@ namespace LayoutManager.Tools {
                 int fromCount = 1, toCount = 1;
 
                 if (extendableTrainInfo.blockEdge.IsTrackContact() && extendableTrainInfo.Train.TrackContactTriggerCount > 2) {
-                    using var extendTrainSettings = new Dialogs.ExtendTrainSettings(extendableTrainInfo.Train);
+                    var extendTrainSettings = new Dialogs.ExtendTrainSettings(extendableTrainInfo.Train);
                     if (extendTrainSettings.ShowDialog() != DialogResult.OK)
                         return;
 

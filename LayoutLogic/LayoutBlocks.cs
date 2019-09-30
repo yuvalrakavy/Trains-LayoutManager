@@ -20,11 +20,7 @@ namespace LayoutManager.Logic {
 
         private ILayoutTopologyServices? _topologyServices;
 
-        private ILayoutTopologyServices TopologyServices {
-            get {
-                return _topologyServices ?? (_topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!);
-            }
-        }
+        private ILayoutTopologyServices TopologyServices => _topologyServices ?? (_topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!);
 
         #region Build block graph
 

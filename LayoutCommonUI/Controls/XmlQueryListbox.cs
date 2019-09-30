@@ -177,11 +177,7 @@ namespace LayoutManager.CommonUI.Controls {
         /// by checking whether this.SelectedItem is null (no item is selected) or not
         /// (in which case, the selected item is a query node).
         /// </summary>
-        public Object SelectedXmlItem {
-            get {
-                return !(SelectedItem is QueryItem) ? SelectedItem : null;
-            }
-        }
+        public Object SelectedXmlItem => !(SelectedItem is QueryItem) ? SelectedItem : null;
 
         /// <summary>
         /// Check if the currently selected tree node is expanded or not

@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-#pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060, IDE0067
 
 namespace LayoutManager.Tools {
     [LayoutModule("Trip Planning Tools", UserControl = false)]
@@ -21,7 +21,7 @@ namespace LayoutManager.Tools {
         private void saveTripPlan(LayoutEvent e) {
             TripPlanInfo tripPlan = (TripPlanInfo)e.Sender;
             Form parentForm = (Form)e.Info;
-            Dialogs.SaveTripPlan saveTripPlan = new Dialogs.SaveTripPlan();
+            using Dialogs.SaveTripPlan saveTripPlan = new Dialogs.SaveTripPlan();
 
             Guid editedTripPlanID = Guid.Empty;
 
@@ -106,11 +106,7 @@ namespace LayoutManager.Tools {
                 staticGrade = (bool?)AttributeValue("StaticGrade") ?? true;
             }
 
-            public IRoutePlanningServices TripPlanningServices {
-                get {
-                    return _tripPlanningServices ?? (_tripPlanningServices = (IRoutePlanningServices)EventManager.Event(new LayoutEvent("get-route-planning-services", this)));
-                }
-            }
+            public IRoutePlanningServices TripPlanningServices => _tripPlanningServices ?? (_tripPlanningServices = (IRoutePlanningServices)EventManager.Event(new LayoutEvent("get-route-planning-services", this)));
 
             public LayoutBlock LocomotiveBlock { get; set; }
 

@@ -7,6 +7,7 @@ using System.Net;
 
 using System.IO;
 
+#pragma warning disable RCS1090
 namespace DigiFinder {
     public class DigiDevice {
         public byte[] MacAddress { get; internal set; }
@@ -36,9 +37,7 @@ namespace DigiFinder {
 
             // Listen to responses
             EndPoint remoteEndPoint = new IPEndPoint(0, 0);
-            AsyncCallback onReply = null;
-
-            onReply = (IAsyncResult ia) => {
+            void onReply(IAsyncResult ia) {
                 try {
                     var count = discoverySocket.EndReceiveFrom(ia, ref remoteEndPoint);
 
@@ -71,7 +70,7 @@ namespace DigiFinder {
                 }
                 catch (ObjectDisposedException) {
                 }
-            };
+            }
 
             discoverySocket.BeginReceiveFrom(replyBuffer, 0, replyBuffer.Length, SocketFlags.None, ref remoteEndPoint, onReply, null);
 
@@ -161,14 +160,12 @@ namespace DigiFinder {
     }
 
     internal class DigiReplyPacket {
-        private readonly byte[] buffer;
         private readonly MemoryStream packetStream;
 
         public int PacketType { get; }
         public int PayloadLength { get; }
 
         public DigiReplyPacket(byte[] buffer) {
-            this.buffer = buffer;
             packetStream = new MemoryStream(buffer);
 
             byte[] magic = new byte[4];

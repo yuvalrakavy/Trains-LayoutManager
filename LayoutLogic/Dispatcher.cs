@@ -592,7 +592,8 @@ namespace LayoutManager.Logic {
                 if (trip.Status == TripStatus.Suspended) {
                     Debug.Assert(trip.SuspendedEvent != null);
                     trip.Status = trip.SuspendedStatus;
-                    EventManager.Event(trip.SuspendedEvent);
+                    if(trip.SuspendedEvent != null)
+                        EventManager.Event(trip.SuspendedEvent);
                     trip.SuspendedEvent = null;
                     AllSuspended = false;
                 }
@@ -690,28 +691,11 @@ namespace LayoutManager.Logic {
 
         #region Services getter properties
 
-        private IRoutePlanningServices TripPlanningServices {
-            get {
-                if (_tripPlanningServices == null) {
-                    _tripPlanningServices = (IRoutePlanningServices)EventManager.Event(new LayoutEvent("get-route-planning-services", this))!;
-                    Debug.Assert(_tripPlanningServices != null);
-                }
+        private IRoutePlanningServices TripPlanningServices => _tripPlanningServices ?? (_tripPlanningServices = (IRoutePlanningServices)EventManager.Event(new LayoutEvent("get-route-planning-services", this))!);
 
-                return _tripPlanningServices;
-            }
-        }
+        private ILayoutLockManagerServices LayoutLockManagerServices => _layoutLockManagerServices ?? (_layoutLockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services", this))!);
 
-        private ILayoutLockManagerServices LayoutLockManagerServices {
-            get {
-                return _layoutLockManagerServices ?? (_layoutLockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services", this))!);
-            }
-        }
-
-        private ILayoutTopologyServices LayoutTopologyServices {
-            get {
-                return _layoutTopologyServices ?? (_layoutTopologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!);
-            }
-        }
+        private ILayoutTopologyServices LayoutTopologyServices => _layoutTopologyServices ?? (_layoutTopologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!);
 
         private bool AllSuspended {
             get {
@@ -1106,12 +1090,9 @@ namespace LayoutManager.Logic {
 
             Trace.WriteLineIf(traceDispatching.TraceInfo, $"Prepare Next Trip Section for train {trip.Train.DisplayName} Current way point is {trip.CurrentWaypointIndex} direction is {trip.CurrentWaypoint.Direction} current block is {currentBlockEntry.Block}");
 
-            Debug.Assert(currentBlockEntry.Block.BlockDefinintion != null);
-
-            if (nextBlockEntry != null)
-                tripBestRouteResult = findBestRoute(trip, nextBlockEntry.Block.BlockDefinintion, nextBlockEntry.Front);
-            else
-                tripBestRouteResult = findBestRoute(trip, currentBlockEntry.Block.BlockDefinintion, currentBlockEntry.Front);
+            tripBestRouteResult = nextBlockEntry != null
+                ? findBestRoute(trip, nextBlockEntry.Block.BlockDefinintion, nextBlockEntry.Front)
+                : findBestRoute(trip, currentBlockEntry.Block.BlockDefinintion, currentBlockEntry.Front);
 
             if (tripBestRouteResult.BestRoute != null && tripBestRouteResult.Quality.IsValidRoute) {
                 bool stopAtEnd = false;
@@ -1406,7 +1387,9 @@ namespace LayoutManager.Logic {
             var locoBlock = trip.Train.LocomotiveBlock;
             var locoLocation = trip.Train.LocomotiveLocation;
 
-            Debug.Assert(locoBlock != null && locoLocation != null);
+            if (locoBlock == null || locoLocation == null)
+                return false;
+
             TripBestRouteResult tripBestRouteResult = findBestRoute(trip, locoBlock.BlockDefinintion, locoLocation.DisplayFront);
 
             Trace.WriteLineIf(traceDispatching.TraceVerbose, $" Check if should retry planning for train {trip.Train.DisplayName}");
@@ -1905,7 +1888,9 @@ namespace LayoutManager.Logic {
             var locoBlock = train.LocomotiveBlock;
             var locoLocation = train.LocomotiveLocation;
 
-            Debug.Assert(locoBlock != null && locoLocation != null);
+            if (locoBlock == null || locoLocation == null)
+                throw new LayoutException($"Validate trip plan route - cannot locate locomotive for train {train.Name}");
+
             sourceEdges.Add(new TrackEdge(locoBlock.BlockDefinintion.Track, locoLocation.DisplayFront));
 
             for (int wayPointIndex = 0; wayPointIndex < tripPlan.Waypoints.Count; wayPointIndex++) {
@@ -1943,8 +1928,8 @@ namespace LayoutManager.Logic {
                         foreach (TrackEdge edge in result.InvalidSourceEdges) {
                             var blockInfo = edge.Track.BlockDefinitionComponent;
 
-                            Debug.Assert(blockInfo != null);
-                            actions.Add(new RouteValidationActionRemoveLocation(wayPointIndex - 1, blockInfo));
+                            if(blockInfo != null)
+                                actions.Add(new RouteValidationActionRemoveLocation(wayPointIndex - 1, blockInfo));
                         }
 
                         Debug.Assert(tripPlan.Waypoints[wayPointIndex - 1].Destination.Count != 0);

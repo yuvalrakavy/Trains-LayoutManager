@@ -606,11 +606,7 @@ namespace LayoutManager.Tools {
 
             protected CompareValue.Order SortOrder { get; set; }
 
-            protected string OperationText {
-                get {
-                    return Operation == OperationType.MoveSelection ? "move selection " + directionText : "shift components " + directionText;
-                }
-            }
+            protected string OperationText => Operation == OperationType.MoveSelection ? "move selection " + directionText : "shift components " + directionText;
 
             public LayoutHitTestResult HitTestResult { get; } = null;
 

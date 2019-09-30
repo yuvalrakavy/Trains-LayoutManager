@@ -9,7 +9,7 @@ using LayoutManager.CommonUI;
 using LayoutManager.CommonUI.Controls;
 using System.Collections.Generic;
 
-#pragma warning disable IDE0051, IDE0060, IDE0052
+#pragma warning disable IDE0051, IDE0060, IDE0052, IDE0067
 #nullable enable
 namespace LayoutManager.Tools {
     [LayoutModule("EventScript Tools", UserControl = false)]
@@ -513,7 +513,7 @@ namespace LayoutManager.Tools {
         private void editRunPolicyTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            EventScriptDialogs.RunPolicy d = new EventScriptDialogs.RunPolicy(element);
+            var d = new EventScriptDialogs.RunPolicy(element);
 
             if (d.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -781,7 +781,7 @@ namespace LayoutManager.Tools {
         private void editIfTrainsArriveFromTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            EventScriptDialogs.TrainArrivesFrom d = new LayoutManager.Tools.EventScriptDialogs.TrainArrivesFrom(site.BlockDefinition, element);
+            var d = new LayoutManager.Tools.EventScriptDialogs.TrainArrivesFrom(site.BlockDefinition, element);
 
             if (d.ShowDialog() == DialogResult.OK) {
                 element.SetAttribute(A_From, d.From.ToString());
@@ -808,17 +808,15 @@ namespace LayoutManager.Tools {
 
             internal static string GetDescription(XmlElement element) {
                 LayoutComponentConnectionPoint from = LayoutComponentConnectionPoint.Parse(element.GetAttribute(EventScriptTools.A_From));
-                string fromText;
 
-                switch (from) {
-                    case LayoutComponentConnectionPoint.B: fromText = "bottom"; break;
-                    case LayoutComponentConnectionPoint.T: fromText = "top"; break;
-                    case LayoutComponentConnectionPoint.L: fromText = "left"; break;
-                    case LayoutComponentConnectionPoint.R: fromText = "right"; break;
-
-                    default: fromText = "{UNKNOWN}"; break;
-                }
-
+                var fromText = (int)from switch
+                {
+                    LayoutComponentConnectionPoint.B => "bottom",
+                    LayoutComponentConnectionPoint.T => "top",
+                    LayoutComponentConnectionPoint.L => "left",
+                    LayoutComponentConnectionPoint.R => "right",
+                    _ => "{UNKNOWN}",
+                };
                 return "If train arrives from " + fromText;
             }
         }
@@ -893,7 +891,7 @@ namespace LayoutManager.Tools {
             var length = element.AttributeValue(A_Length).Enum<TrainLength>() ?? TrainLength.VeryLong;
             var comparison = element.AttributeValue(A_Comparison).Enum<TrainLengthComparison>() ?? TrainLengthComparison.NotLonger;
 
-            EventScriptDialogs.IfTrainLength d = new LayoutManager.Tools.EventScriptDialogs.IfTrainLength(trainSymbol, length, comparison);
+            using EventScriptDialogs.IfTrainLength d = new LayoutManager.Tools.EventScriptDialogs.IfTrainLength(trainSymbol, length, comparison);
 
             if (d.ShowDialog() == DialogResult.OK) {
                 element.SetAttribute(A_TrainSymbol, d.SymbolName);
@@ -985,7 +983,7 @@ namespace LayoutManager.Tools {
         private void editTriggerTrainFunctionTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            EventScriptDialogs.TrainFunctionAction d = new EventScriptDialogs.TrainFunctionAction(element);
+            var d = new EventScriptDialogs.TrainFunctionAction(element);
 
             if (d.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -1076,8 +1074,7 @@ namespace LayoutManager.Tools {
         private void editSetTrainFunctionTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-
-            EventScriptDialogs.TrainFunctionAction d = new EventScriptDialogs.TrainFunctionAction(element);
+            var d = new EventScriptDialogs.TrainFunctionAction(element);
 
             if (d.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -1142,14 +1139,12 @@ namespace LayoutManager.Tools {
                 TrainStateInfo train = (TrainStateInfo)oTrain;
 
                 var oSpeed = GetOperand("Value");
-                int speed;
-
-                if (oSpeed is string)
-                    speed = int.Parse((string)oSpeed);
-                else if (oSpeed is int)
-                    speed = (int)oSpeed;
-                else
-                    throw new ArgumentException("Invalid target speed value");
+                int speed = oSpeed switch
+                {
+                    string speedText => int.Parse(speedText),
+                    int speedValue => speedValue,
+                    _ => throw new ArgumentException("Invalid target speed value")
+                };
 
                 switch (action) {
                     case "Set":
@@ -1196,7 +1191,7 @@ namespace LayoutManager.Tools {
         private void editChangeTrainTargetSpeedTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            EventScriptDialogs.TrainLightsAction d = new EventScriptDialogs.TrainLightsAction(element);
+            var d = new EventScriptDialogs.TrainLightsAction(element);
 
             if (d.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -1262,14 +1257,12 @@ namespace LayoutManager.Tools {
                 TrainStateInfo train = (TrainStateInfo)oTrain;
 
                 var oState = GetOperand("Value");
-                bool state;
-
-                if (oState is string)
-                    state = bool.Parse((string)oState);
-                else if (oState is bool)
-                    state = (bool)oState;
-                else
-                    throw new ArgumentException("Invalid lights state value");
+                bool state = oState switch
+                {
+                    string stateText => bool.Parse(stateText),
+                    bool stateValue => stateValue,
+                    _ => throw new ArgumentException("Invalid lights state value")
+                };
 
                 switch (action) {
                     case "Set":
@@ -1469,7 +1462,6 @@ namespace LayoutManager.Tools {
         [LayoutEventDef("no-applicable-trip-plans-notification", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
         private class LayoutEventScriptNodeActionExecuteRandomTripPlan : LayoutEventScriptNodeAction {
             private static readonly LayoutTraceSwitch traceRandomTripPlan = new LayoutTraceSwitch("ExecuteRandomTripPlan", "Execute Random Trip-plan");
-            private const int PenaltyThreashold = 1000;
             private const string A_StaticGrade = "StaticGrade";
             private const string A_ShouldReverse = "ShouldReverse";
             private const string A_Symbol = "Symbol";
@@ -1488,9 +1480,7 @@ namespace LayoutManager.Tools {
 
             public override void Execute() {
                 var symbol = Element.GetAttribute(A_Symbol);
-                var train = Context[symbol] as TrainStateInfo;
-
-                if (train == null)
+                if (!(Context[symbol] is TrainStateInfo train))
                     throw new ArgumentException($"Symbol {symbol} is not a reference to a valid train object");
 
                 var workingDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
@@ -1518,7 +1508,7 @@ namespace LayoutManager.Tools {
                 foreach (XmlElement applicableTripPlanElement in applicableTripPlansElement) {
                     var tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[(Guid)applicableTripPlanElement.AttributeValue(A_TripPlanId)];
                     var penalty = (int)applicableTripPlanElement.AttributeValue(A_Penalty);
-                    var clearanceQuality = applicableTripPlanElement.AttributeValue(A_ClearanceQuality).Enum<RouteClearanceQuality>() ?? throw new NotImplementedException();
+                    var clearanceQuality = applicableTripPlanElement.AttributeValue(A_ClearanceQuality).Enum<RouteClearanceQuality>() ?? throw new ArgumentException("clearanceQuality");
                     RouteQuality routeQuality = new RouteQuality(train.Id, clearanceQuality, penalty);
 
                     if (tripPlan != null && routeQuality.IsFree) {
@@ -1614,7 +1604,7 @@ namespace LayoutManager.Tools {
         private void editExecuteRandomTripPlanTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            EventScriptDialogs.ExecuteRandomTripPlan d = new EventScriptDialogs.ExecuteRandomTripPlan(element);
+            var d = new EventScriptDialogs.ExecuteRandomTripPlan(element);
 
             if (d.ShowDialog() == DialogResult.OK)
                 site.EditingDone();

@@ -62,42 +62,13 @@ namespace DiMAX {
                 );
         }
 
-        public ControlBus DiMAXbus {
-            get {
-                if (_DiMAXbus == null) {
-                    _DiMAXbus = LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXBUS");
-                    Debug.Assert(_DiMAXbus != null);
-                }
+        public ControlBus DiMAXbus => _DiMAXbus ?? (_DiMAXbus = Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXBUS"), "DiMAXbus"));
 
-                return _DiMAXbus;
-            }
-        }
+        public ControlBus DCCbus => _DCCbus ?? (_DCCbus = Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXDCC"), "DCCbus"));
 
-        public ControlBus DCCbus {
-            get {
-                if (_DCCbus == null) {
-                    _DCCbus = LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXDCC");
-                    Debug.Assert(_DCCbus != null);
-                }
-                return _DCCbus;
-            }
-        }
+        public ControlBus LocoBus => _locoBus ?? (_locoBus = Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXLocoBus"), "DiMAXlocoBus"));
 
-        public ControlBus LocoBus {
-            get {
-                if (_locoBus == null) {
-                    _locoBus = LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXLocoBus");
-                    Debug.Assert(_locoBus != null);
-                }
-                return _locoBus;
-            }
-        }
-
-        private OutputManager OutputManager {
-            get {
-                return Ensure.NotNull<OutputManager>(this.outputManager, "outputManager");
-            }
-        }
+        private OutputManager OutputManager => Ensure.NotNull<OutputManager>(this.outputManager, "outputManager");
 
         #region Specific implementation to base class overrideble methods and properties
 
@@ -681,7 +652,8 @@ namespace DiMAX {
                 try {
                     int count = CommunicationStream.EndRead(asyncReadResult);
 
-                    Debug.Assert(inputBuffer != null);
+                    if (inputBuffer == null)
+                        throw new NullReferenceException("Internal: DiMax input packet - inputBuffer is null when trying to read packet body");
 
                     if (TraceRawData.TraceInfo) {
                         Trace.Write("Received DiMAX packet - XOR byte: " + inputBuffer[0].ToString("x2") + " Parameters:");
@@ -746,23 +718,23 @@ namespace DiMAX {
             UpdateMode = (s & 0x08) != 0;
             SoftwareReset = (s & 0x04) != 0;
 
-            switch (s & 0x03) {
-                case 0: Condition = DiMAXcondition.Normal; break;
-                case 1: Condition = DiMAXcondition.EmergencryStop; break;
-                case 2: Condition = DiMAXcondition.Reset; break;
-                default: Condition = DiMAXcondition.Unknown; break;
-            }
-
+            Condition = (s & 0x03) switch
+            {
+                0 => DiMAXcondition.Normal,
+                1 => DiMAXcondition.EmergencryStop,
+                2 => DiMAXcondition.Reset,
+                _ => DiMAXcondition.Unknown,
+            };
             EventManager.Event(new LayoutEvent<DiMAXcommandStation, DiMAXstatus>("DiMAX-status-updated", commandStation, this).SetCommandStation(commandStation));
         }
 
         internal void ExtendedStatusUpdate(DiMAXcommandStation commandStation, DiMAXpacket statusPacket) {
-            switch (statusPacket.Parameters[2] & 0x3f) {
-                case 0x01: CommandStationType = "DiMAX 1200Z"; break;
-                case 0x02: CommandStationType = "DiMAX 800Z"; break;
-                default: CommandStationType = "Unknown type"; break;
-            }
-
+            CommandStationType = (statusPacket.Parameters[2] & 0x3f) switch
+            {
+                0x01 => "DiMAX 1200Z",
+                0x02 => "DiMAX 800Z",
+                _ => "Unknown type",
+            };
             CurrentLimit = statusPacket.Parameters[0] & 0x0f;
             CurrentLoad = (double)statusPacket.Parameters[1] * 0.1;
             FirmwareVersion = ((statusPacket.Parameters[3] & 0xf0) >> 4) + ((double)(statusPacket.Parameters[3] & 0x0f) / 10);
@@ -968,11 +940,7 @@ namespace DiMAX {
             : base(packet) {
         }
 
-        public int SpeedInSteps {
-            get {
-                return (Packet.Parameters[2] & 0x80) == 0 ? -(int)(Packet.Parameters[2] & 0x7f) : Packet.Parameters[2] & 0x7f;
-            }
-        }
+        public int SpeedInSteps => (Packet.Parameters[2] & 0x80) == 0 ? -(int)(Packet.Parameters[2] & 0x7f) : Packet.Parameters[2] & 0x7f;
     }
 
     public class DiMAXlocoFunctionControlPacket : DiMAXlocoControlPacket {
@@ -1111,12 +1079,13 @@ namespace DiMAX {
         }
 
         protected static LayoutActionResult GetProgrammingResult(DiMAXpacket replyPacket) {
-            switch ((replyPacket.Parameters[0] & 0x1c) >> 2) {
-                case 0: return LayoutActionResult.NoResponse;
-                case 1: return LayoutActionResult.Overload;
-                case 4: return LayoutActionResult.Ok;
-                default: return LayoutActionResult.UnexpectedReply;
-            }
+            return ((replyPacket.Parameters[0] & 0x1c) >> 2) switch
+            {
+                0 => LayoutActionResult.NoResponse,
+                1 => LayoutActionResult.Overload,
+                4 => LayoutActionResult.Ok,
+                _ => LayoutActionResult.UnexpectedReply,
+            };
         }
     }
 
@@ -1198,12 +1167,13 @@ namespace DiMAX {
         }
 
         private static byte GetSpeedStepsMask(int speedSteps) {
-            switch (speedSteps) {
-                case 14: return 0x0;
-                case 28: return 0x1;
-                case 128: return 0x2;
-                default: throw new ArgumentException("Invalid speed steps value (can be 14, 28 or 128)");
-            }
+            return speedSteps switch
+            {
+                14 => 0x0,
+                28 => 0x1,
+                128 => 0x2,
+                _ => throw new ArgumentException("Invalid speed steps value (can be 14, 28 or 128)"),
+            };
         }
 
         public override string ToString() => description;

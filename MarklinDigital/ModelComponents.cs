@@ -42,11 +42,7 @@ namespace MarklinDigital {
 
         public int FeedbackPolling => (int)Element.AttributeValue(A_FeedbackPolling);
 
-        public ControlBus S88Bus {
-            get {
-                return _S88bus ?? (_S88bus = LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS"));
-            }
-        }
+        public ControlBus S88Bus => _S88bus ?? (_S88bus = LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS"));
 
         #region Specific implementation to base class overrideble methods and properties
 

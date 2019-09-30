@@ -36,11 +36,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             checkBoxUseAsDefault.Checked = true;
         }
 
-        public ControlModuleType ModuleType {
-            get {
-                return comboBoxModuleTypes.SelectedItem == null ? null : ((Item)comboBoxModuleTypes.SelectedItem).ModuleType;
-            }
-        }
+        public ControlModuleType ModuleType => comboBoxModuleTypes.SelectedItem == null ? null : ((Item)comboBoxModuleTypes.SelectedItem).ModuleType;
 
         public bool UseAsDefault => checkBoxUseAsDefault.Checked;
 

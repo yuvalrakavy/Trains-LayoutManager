@@ -6,6 +6,8 @@ using System.Xml;
 using LayoutManager;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0067, IDE0069
+
 namespace Intellibox.Dialogs {
     /// <summary>
     /// Summary description for CentralStationProperties.
@@ -570,7 +572,7 @@ namespace Intellibox.Dialogs {
 
                 SOinfo tempSOinfo = new SOinfo(doc.DocumentElement);
 
-                using var d = new Dialogs.SOdefinition(tempSOinfo);
+                var d = new Dialogs.SOdefinition(tempSOinfo);
                 if (d.ShowDialog(this) == DialogResult.OK) {
                     XmlElement oldElement = item.SOinfo.Element;
 

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060, IDE0067, RCS1090
 #nullable enable
 namespace LayoutManager {
     /// <summary>
@@ -86,11 +86,9 @@ namespace LayoutManager {
             // those assemblies are not automatically referenced and the user will have to use the file/modules
             // menu to add them.
             //
-            string s;
-
-            s = LayoutManager.Logic.LayoutTopologyServices.TopologyServicesVersion;
-            s = LayoutManager.Tools.ComponentEditingTools.ComponentEditingToolsVersion;
-            s = LayoutManager.ControlComponents.ControlComponents.ControlComponentsVersion;
+            _ = LayoutManager.Logic.LayoutTopologyServices.TopologyServicesVersion;
+            _ = LayoutManager.Tools.ComponentEditingTools.ComponentEditingToolsVersion;
+            _ = LayoutManager.ControlComponents.ControlComponents.ControlComponentsVersion;
 
             // Initialize built in modules
 

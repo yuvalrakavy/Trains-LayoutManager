@@ -641,12 +641,12 @@ namespace LayoutManager.Logic {
             trainName = (string?)e.GetOption(optionName: A_Name, elementName: E_Train) ?? trainName;
 
             if (trainName == null) {
-                switch (collectionElement.Name) {
-                    case E_Locomotive: trainName = new LocomotiveInfo(collectionElement).Name; break;
-                    case E_Train: trainName = new TrainInCollectionInfo(collectionElement).Name; break;
-                    default:
-                        throw new LayoutException(EventManager.Instance, "No name was given to the new train");
-                }
+                trainName = collectionElement.Name switch
+                {
+                    E_Locomotive => new LocomotiveInfo(collectionElement).Name,
+                    E_Train => new TrainInCollectionInfo(collectionElement).Name,
+                    _ => throw new LayoutException(EventManager.Instance, "No name was given to the new train"),
+                };
             }
 
             Guid trainID = Guid.Empty;
@@ -933,9 +933,8 @@ namespace LayoutManager.Logic {
             };
             lockRequest.Blocks.Add(programmingLocation.PowerConnector.Blocks);
 
-            var commandStationResource = (from power in programmingLocation.PowerConnector.Inlet.ConnectedOutlet.ObtainablePowers where power.Type == LayoutPowerType.Programmer select power.PowerOriginComponent).FirstOrDefault() as ILayoutLockResource;
-
-            Debug.Assert(commandStationResource != null);
+            if (!((from power in programmingLocation.PowerConnector.Inlet.ConnectedOutlet.ObtainablePowers where power.Type == LayoutPowerType.Programmer select power.PowerOriginComponent).FirstOrDefault() is ILayoutLockResource commandStationResource))
+                throw new LayoutException($"GetProgrammingTrackLock for {programmingLocation.FullDescription} - command station is null");
 
             lockRequest.Resources = new ILayoutLockResource[] { commandStationResource };
             return lockRequest;

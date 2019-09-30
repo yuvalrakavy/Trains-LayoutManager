@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
+#pragma warning disable IDE0067, IDE0069
 namespace LayoutManager.Tools.EventScriptDialogs {
     /// <summary>
     /// Summary description for ExecuteRandomTripPlan.

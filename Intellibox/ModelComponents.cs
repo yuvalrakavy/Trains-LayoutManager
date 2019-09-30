@@ -85,17 +85,9 @@ namespace Intellibox {
 
         public IntelliboxComponentInfo Info => new IntelliboxComponentInfo(this, Element);
 
-        public ControlBus MotorolaBus {
-            get {
-                return _motorolaBus ?? (_motorolaBus = LayoutModel.ControlManager.Buses.GetBus(this, "Motorola"));
-            }
-        }
+        public ControlBus MotorolaBus => _motorolaBus ?? (_motorolaBus = LayoutModel.ControlManager.Buses.GetBus(this, "Motorola"));
 
-        public ControlBus S88Bus {
-            get {
-                return _S88bus ?? (_S88bus = LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS"));
-            }
-        }
+        public ControlBus S88Bus => _S88bus ?? (_S88bus = LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS"));
 
         internal byte CachedOperationModeDebounceCount { get; set; }
 
@@ -480,42 +472,17 @@ namespace Intellibox {
         protected void ReportError(byte errorCode) {
             string message = null;
 
-            switch (errorCode) {
-                case 0x02:
-                    message = "Bad parameter value";
-                    break;
-
-                case 0x06:
-                    message = "Command station power is off";
-                    break;
-
-                case 0x08:
-                    message = "Locomotive command buffer out of space";
-                    break;
-
-                case 0x09:
-                    message = "Turnout FIFO is full";
-                    break;
-
-                case 0x0b:
-                    message = "No locomotive slot is available";
-                    break;
-
-                case 0x0c:
-                    message = "Invalid locomotive address";
-                    break;
-
-                case 0x0d:
-                    message = "Locomotive already controlled by another device";
-                    break;
-
-                case 0x0e:
-                    message = "Illegal turnout address";
-                    break;
-
-                case 0x10:
-                    message = "I2C FIFO is full";
-                    break;
+            message = errorCode switch
+            {
+                0x02 => "Bad parameter value",
+                0x06 => "Command station power is off",
+                0x08 => "Locomotive command buffer out of space",
+                0x09 => "Turnout FIFO is full",
+                0x0b => "No locomotive slot is available",
+                0x0c => "Invalid locomotive address",
+                0x0d => "Locomotive already controlled by another device",
+                0x0e => "Illegal turnout address",
+                0x10 => "I2C FIFO is full",
 
 #if WARN_FIFI_75_FULL
 				case 0x40:
@@ -523,18 +490,10 @@ namespace Intellibox {
 					break;
 #endif
 
-                case 0x41:
-                    message = "Intellibox is in 'Halt' mode";
-                    break;
-
-                case 0x42:
-                    message = "Intellibox is powered off";
-                    break;
-
-                default:
-                    message = "Unknown error 0x" + errorCode.ToString("x");
-                    break;
-            }
+                0x41 => "Intellibox is in 'Halt' mode",
+                0x42 => "Intellibox is powered off",
+                _ => "Unknown error 0x" + errorCode.ToString("x"),
+            };
 
             if (message != null)
                 CommandStation.Error(this.CommandStation, "Command: [" + ToString() + "] - " + message);
@@ -642,17 +601,9 @@ namespace Intellibox {
             DefaultWaitPeriod = pollingPeriod;
         }
 
-        protected ControlBus MotorolaBus {
-            get {
-                return _motorolaBus ?? (_motorolaBus = LayoutModel.ControlManager.Buses.GetBus(CommandStation, "Motorola"));
-            }
-        }
+        protected ControlBus MotorolaBus => _motorolaBus ?? (_motorolaBus = LayoutModel.ControlManager.Buses.GetBus(CommandStation, "Motorola"));
 
-        protected ControlBus S88Bus {
-            get {
-                return _S88bus ?? (_S88bus = LayoutModel.ControlManager.Buses.GetBus(CommandStation, "S88BUS"));
-            }
-        }
+        protected ControlBus S88Bus => _S88bus ?? (_S88bus = LayoutModel.ControlManager.Buses.GetBus(CommandStation, "S88BUS"));
 
         public override void Do() {
             List<LayoutEvent> events = new List<LayoutEvent>();

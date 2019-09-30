@@ -36,6 +36,7 @@ namespace LayoutManager {
         /// </summary>
         /// <param name="item">The item for which the element need to be created</param>
         /// <returns>XML element to store the item in</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("General", "RCS1079:Throwing of new NotImplementedException.", Justification = "<Pending>")]
         virtual protected XmlElement CreateElement(T item) {
             throw new NotImplementedException();
         }
@@ -187,14 +188,20 @@ namespace LayoutManager {
     /// <typeparam name="T">The type of items in the collection</typeparam>
     /// <typeparam name="KeyT">The type of the key used to index the collection</typeparam>
     public abstract class XmlIndexedCollection<T, KeyT> : XmlCollection<T>, ICollection<T> where T : class {
-        private Dictionary<KeyT, XmlElement>? index;
+        private Dictionary<KeyT, XmlElement>? _index;
         private List<KeyValuePair<KeyT, XmlElement>>? sorted = null;
+
+        private Dictionary<KeyT, XmlElement> Index {
+            get => _index ?? (_index = CreateAndInitializeIndex());
+        }
 
         /// <summary>
         /// Construct a collection whose items are child items of a given XML element
         /// </summary>
         /// <param name="element">The element that contains the collection item elements</param>
         protected XmlIndexedCollection(XmlElement element) : base(element) {
+            _ = Index;          //Force creation
+            sorted = null;
         }
 
         /// <summary>
@@ -204,7 +211,17 @@ namespace LayoutManager {
         /// <param name="parentElement">Element containing the collection element</param>
         /// <param name="collectionElementName">The collection element name</param>
         protected XmlIndexedCollection(XmlElement parentElement, string collectionElementName) : base(parentElement, collectionElementName) {
-            InitializeIndex();
+            _ = Index;          //Force creation
+            sorted = null;
+        }
+
+        protected Dictionary<KeyT, XmlElement> CreateAndInitializeIndex() {
+            var anIndex = new Dictionary<KeyT, XmlElement>();
+
+            foreach (XmlElement itemElement in Element)
+                anIndex.Add(GetElementKey(itemElement), itemElement);
+
+            return anIndex;
         }
 
         /// <summary>
@@ -214,20 +231,7 @@ namespace LayoutManager {
         /// <returns>The key associated with this item</returns>
         abstract protected KeyT GetItemKey(T item);
 
-        protected void CreateIndex() {
-            if (index == null) {
-                index = new Dictionary<KeyT, XmlElement>();
-                InitializeIndex();
-            }
-        }
-
-        public IDictionary<KeyT, XmlElement> ItemsDictionary {
-            get {
-                CreateIndex();
-                Debug.Assert(index != null);
-                return index;
-            }
-        }
+        public IDictionary<KeyT, XmlElement> ItemsDictionary => Index;
 
         /// <summary>
         /// Get the key associated with a given item XML element.
@@ -245,11 +249,8 @@ namespace LayoutManager {
         /// </summary>
         /// <param name="item">Item to be added</param>
         public override void Add(T item) {
-            CreateIndex();
-            Debug.Assert(index != null);
-
             var itemElement = AddItem(item);
-            index.Add(GetItemKey(item), itemElement);
+            Index.Add(GetItemKey(item), itemElement);
             sorted = null;
         }
 
@@ -293,8 +294,8 @@ namespace LayoutManager {
         /// <param name="key">The key associated with the item to be removed</param>
         /// <returns>True if item was removed, false if item was not found</returns>
         public bool Remove(KeyT key) {
-            if (index != null) {
-                if (index.TryGetValue(key, out XmlElement itemElement)) {
+            if (Index != null) {
+                if (Index.TryGetValue(key, out XmlElement itemElement)) {
                     ItemsDictionary.Remove(key);
                     sorted = null;
                     Element.RemoveChild(itemElement);
@@ -311,20 +312,14 @@ namespace LayoutManager {
         /// <param name="key">The key associated with the item</param>
         /// <returns>The collection's item associated with the key</returns>
         public T? this[KeyT key] {
-            get {
-                CreateIndex();
-                Debug.Assert(index != null);
-
-                return index.TryGetValue(key, out XmlElement itemElement) ? FromElement(itemElement) : (default);
-            }
+            get => Index.TryGetValue(key, out XmlElement itemElement) ? FromElement(itemElement) : (default);
 
             set {
                 if (value == null)
                     throw new ArgumentException("Cannot set Xml collection element to null");
 
-                Debug.Assert(index != null);
-                XmlElement oldItemElement = index[key];
-                XmlElement newItemElement = CreateElement(value);
+                var oldItemElement = Index[key];
+                var newItemElement = CreateElement(value);
 
                 if (oldItemElement != null)
                     Element.ReplaceChild(newItemElement, oldItemElement);
@@ -333,16 +328,6 @@ namespace LayoutManager {
 
                 ItemsDictionary[key] = newItemElement;
             }
-        }
-
-        /// <summary>
-        /// Initialize the index with based on the collection XML data
-        /// </summary>
-        protected virtual void InitializeIndex() {
-            Debug.Assert(index != null);
-            foreach (XmlElement itemElement in Element)
-                index.Add(GetElementKey(itemElement), itemElement);
-            sorted = null;
         }
 
         /// <summary>

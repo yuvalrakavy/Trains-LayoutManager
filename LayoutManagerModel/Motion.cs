@@ -76,11 +76,7 @@ namespace LayoutManager.Model {
             set => SetAttribute(A_SpeedChangeRate, value);
         }
 
-        public string Description {
-            get {
-                return Element.HasAttribute(A_Name) ? Name + " (" + GetRampDescription() + ")" : GetRampDescription();
-            }
-        }
+        public string Description => Element.HasAttribute(A_Name) ? Name + " (" + GetRampDescription() + ")" : GetRampDescription();
 
         private string GetRampDescription() {
             if (RampType == MotionRampType.RateFixed)

@@ -63,8 +63,13 @@ namespace LayoutManager {
     }
 
     public static class LayoutController {
+        private static ILayoutController? _instance;
+
         // Properties
-        public static ILayoutController Instance { get; set; }
+        public static ILayoutController Instance {
+            get => _instance ?? throw new NullReferenceException("Getting LayoutController.Instance before it has been set");
+            set { _instance = value; }
+        }
 
         public static string LayoutFilename => Instance.LayoutFilename;
         public static string LayoutRuntimeStateFilename => Instance.LayoutRuntimeStateFilename;

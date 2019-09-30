@@ -16,16 +16,14 @@ namespace LayoutManager.Components {
         protected LayoutComponentPainter() {
         }
 
-        protected static Point GetConnectionPointPosition(LayoutComponentConnectionPoint p, Size boundingBox) {
-            switch (p) {
-                case LayoutComponentConnectionPoint.T: return new Point(boundingBox.Width / 2, 0);
-                case LayoutComponentConnectionPoint.B: return new Point(boundingBox.Width / 2, boundingBox.Height);
-                case LayoutComponentConnectionPoint.R: return new Point(boundingBox.Width, boundingBox.Height / 2);
-                case LayoutComponentConnectionPoint.L: return new Point(0, boundingBox.Height / 2);
-                default:
-                    throw new ArgumentException("Invalid track connection point");
-            }
-        }
+        protected static Point GetConnectionPointPosition(LayoutComponentConnectionPoint p, Size boundingBox) => (int)p switch
+        {
+            LayoutComponentConnectionPoint.T => new Point(boundingBox.Width / 2, 0),
+            LayoutComponentConnectionPoint.B => new Point(boundingBox.Width / 2, boundingBox.Height),
+            LayoutComponentConnectionPoint.R => new Point(boundingBox.Width, boundingBox.Height / 2),
+            LayoutComponentConnectionPoint.L => new Point(0, boundingBox.Height / 2),
+            _ => throw new ArgumentException("Invalid track connection point"),
+        };
 
         protected static Point Midpoint(Point p1, Point p2) => new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
     }

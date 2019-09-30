@@ -415,9 +415,7 @@ namespace LayoutManager.Components {
             set => SetAttribute(A_OccupancyDetectionBlock, value);
         }
 
-        public LayoutAddressInfo? AddressProvider {
-            get => Element["Address"] != null ? new LayoutAddressInfo(BlockDefinition) : null;
-        }
+        public LayoutAddressInfo? AddressProvider => Element["Address"] != null ? new LayoutAddressInfo(BlockDefinition) : null;
 
         public double Length {
             get => (double?)AttributeValue(A_Length) ?? 100.0;
@@ -668,19 +666,13 @@ namespace LayoutManager.Components {
             get {
                 var powerConnector = Track.GetPowerConnector(Track.ConnectionPoints[0]);
 
-                Debug.Assert(powerConnector != null);
-                return powerConnector;
+                return powerConnector ?? throw new LayoutException($"Block {FullDescription} has no power connector");
             }
         }
 
         public ILayoutPower Power => Track.GetPower(Track.ConnectionPoints[0]);
 
-        public TrackGauges Guage {
-            get {
-                Debug.Assert(PowerConnector != null);
-                return PowerConnector.Info.TrackGauge;
-            }
-        }
+        public TrackGauges Guage => PowerConnector.Info.TrackGauge;
 
         public void ClearBlockEdges() {
             if (blockEdges.Length != Track.ConnectionPoints.Count) {
@@ -695,8 +687,6 @@ namespace LayoutManager.Components {
         }
 
         public void AddBlockEdge(int reachableFromConnectionPointIndex, LayoutBlockEdgeBase blockEdge) {
-            Debug.Assert(blockEdges != null);
-
             if (reachableFromConnectionPointIndex < 0 || reachableFromConnectionPointIndex >= blockEdges.Length)
                 throw new ArgumentException("Invalid value for reachableFromConnectionPointIndex");
             blockEdges[reachableFromConnectionPointIndex].Add(blockEdge);
@@ -1037,10 +1027,6 @@ namespace LayoutManager.Components {
 
         public override bool DrawOutOfGrid => NameProvider.Element != null;
 
-        public LayoutControlModuleLocationComponentInfo Info {
-            get {
-                return _info ?? (_info = new LayoutControlModuleLocationComponentInfo(this, Element));
-            }
-        }
+        public LayoutControlModuleLocationComponentInfo Info => _info ?? (_info = new LayoutControlModuleLocationComponentInfo(this, Element));
     }
 }

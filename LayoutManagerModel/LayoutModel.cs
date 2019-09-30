@@ -475,13 +475,9 @@ namespace LayoutManager.Model {
 
         public override string ToString() => Track.FullDescription + " (" + ConnectionPoint + ")";
 
-        public LayoutComponentConnectionPoint OtherConnectionPoint {
-            get {
-                return Track is IModelComponentIsMultiPath multiPath
+        public LayoutComponentConnectionPoint OtherConnectionPoint => Track is IModelComponentIsMultiPath multiPath
                     ? multiPath.ConnectTo(ConnectionPoint, multiPath.CurrentSwitchState)
                     : Track.ConnectTo(ConnectionPoint, LayoutComponentConnectionType.Topology)[0];
-            }
-        }
 
         public TrackEdge OtherSide => new TrackEdge(Track, OtherConnectionPoint);
 
@@ -497,13 +493,13 @@ namespace LayoutManager.Model {
         public int CompareTo(TrackEdge other) {
             if (other.track == track)
                 return ConnectionPoint - other.ConnectionPoint;
-            else {
-                Debug.Assert(track != null && other.track != null);
 
-                return track.Location.X == other.track.Location.X
-                    ? track.Location.Y - other.track.Location.Y
-                    : track.Location.X - other.track.Location.X;
-            }
+            if (track == null || other.track == null)
+                throw new LayoutException("TrackEdge compare - operand is null");
+
+            return track.Location.X == other.track.Location.X
+                ? track.Location.Y - other.track.Location.Y
+                : track.Location.X - other.track.Location.X;
         }
 
         public bool Equals(TrackEdge other) => track == other.track && ConnectionPoint == other.ConnectionPoint;
@@ -998,9 +994,9 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Event that is fired when a compomnent changes
         /// </summary>
-        public event EventHandler AreaChanged;
-        public event EventHandler EraseComponentImage;
-        public event EventHandler AreaBoundsChanged;
+        public event EventHandler? AreaChanged;
+        public event EventHandler? EraseComponentImage;
+        public event EventHandler? AreaBoundsChanged;
 
         public LayoutModelArea() {
             id = Guid.NewGuid();
@@ -1396,9 +1392,9 @@ namespace LayoutManager.Model {
     }
 
     public class LayoutModelAreaDictionary : Dictionary<Guid, LayoutModelArea>, IEnumerable<LayoutModelArea> {
-        public event EventHandler AreaAdded;
-        public event EventHandler AreaRemoved;
-        public event EventHandler AreaRenamed;
+        public event EventHandler? AreaAdded;
+        public event EventHandler? AreaRemoved;
+        public event EventHandler? AreaRenamed;
 
         public LayoutModelAreaDictionary() {
         }
@@ -1473,8 +1469,8 @@ namespace LayoutManager.Model {
         private bool modelIsLoading;
         private readonly Hashtable componentReferences = new Hashtable();       // Component ID to component
         private LocomotiveCollectionInfo? locomotiveCollection;
-        private static LayoutModel instance;
-        private static LayoutStateManager stateManager;
+        private static LayoutModel? instance;
+        private static LayoutStateManager? stateManager;
         private LayoutControlManager? controlManager;
         private MotionRampCollection? ramps;
 
@@ -1492,7 +1488,7 @@ namespace LayoutManager.Model {
             e.Info = this;
         }
 
-        public static LayoutModel Instance => instance;
+        public static LayoutModel Instance => instance ?? throw new NullReferenceException("Using LayoutModel.Instance before initialization");
 
         public static LayoutStateManager StateManager {
             get {

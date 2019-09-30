@@ -237,17 +237,9 @@ namespace LayoutManager.Components {
 
         protected override SwitchingStateSupport GetSwitchingStateSupporter() => new LayoutPowerSelectorSwitchingStateSupporter(this);
 
-        public ILayoutPowerInlet Inlet1 {
-            get {
-                return _inlet1 ?? (_inlet1 = new LayoutPowerInlet(this, "Inlet1"));
-            }
-        }
+        public ILayoutPowerInlet Inlet1 => _inlet1 ?? (_inlet1 = new LayoutPowerInlet(this, "Inlet1"));
 
-        public ILayoutPowerInlet Inlet2 {
-            get {
-                return _inlet2 ?? (_inlet2 = new LayoutPowerInlet(this, "Inlet2"));
-            }
-        }
+        public ILayoutPowerInlet Inlet2 => _inlet2 ?? (_inlet2 = new LayoutPowerInlet(this, "Inlet2"));
 
         public bool IsSwitch => !Inlet1.IsConnected ^ !Inlet2.IsConnected;
 
@@ -560,8 +552,10 @@ namespace LayoutManager.Components {
         public LayoutTrackLinkComponent ResolveLink() {
             LayoutModelArea area = LayoutModel.Areas[AreaGuid];
 
-            Debug.Assert(area != null, "Cannot resolve track link");
-            return area.TrackLinks[TrackLinkGuid];
+            if (area != null)
+                return area.TrackLinks[TrackLinkGuid];
+            else
+                throw new LayoutControlException("ResolveLink: area is null");
         }
 
         public void WriteXml(XmlWriter w) {

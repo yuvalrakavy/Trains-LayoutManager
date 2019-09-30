@@ -681,14 +681,13 @@ namespace LayoutManager {
             Do();
         }
 
-        public override string ToString() {
-            switch (phase) {
-                case LayoutPhase.Planned: return "Set default phase to 'Planned'";
-                case LayoutPhase.Construction: return "Set default phase to 'In construction'";
-                case LayoutPhase.Operational: return "Set default phase to 'Operational'";
-                default: return "Set default phase to ***UNKNOWN***";
-            }
-        }
+        public override string ToString() => phase switch
+        {
+            LayoutPhase.Planned => "Set default phase to 'Planned'",
+            LayoutPhase.Construction => "Set default phase to 'In construction'",
+            LayoutPhase.Operational => "Set default phase to 'Operational'",
+            _ => "Set default phase to ***UNKNOWN***",
+        };
     }
 
     public class ChangePhaseCommand : LayoutCommand {

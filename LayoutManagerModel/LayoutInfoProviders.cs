@@ -22,15 +22,9 @@ namespace LayoutManager.Model {
         private ModelComponent? component;
 
         [System.ComponentModel.Browsable(false)]
-        public string ElementPath {
-            get {
-                return Ref != null ? "//" + Element.Name + "[@Ref=\"" + Ref + "\"]" : "//" + Element.Name + "[@ID=\"" + GetAttribute(A_Id) + "\"]";
-            }
-        }
+        public string ElementPath => Ref != null ? "//" + Element.Name + "[@Ref=\"" + Ref + "\"]" : "//" + Element.Name + "[@ID=\"" + GetAttribute(A_Id) + "\"]";
 
-        public ModelComponent? OptionalComponent {
-            get => component;
-        }
+        public ModelComponent? OptionalComponent => component;
 
         public ModelComponent Component {
             get => Ensure.NotNull<ModelComponent>(OptionalComponent, "component");
@@ -39,11 +33,7 @@ namespace LayoutManager.Model {
         }
 
         public XmlElement ContainerElement {
-            get {
-                Debug.Assert(container != null);
-                return container;
-            }
-
+            get => container ?? throw new LayoutException("LayoutInfo - container is null");
             set => container = value;
         }
 

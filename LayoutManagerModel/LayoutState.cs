@@ -83,36 +83,18 @@ namespace LayoutManager.Model {
 
         public LayoutBlockDefinitionComponent BlockDefinition { get => Ensure.NotNull<LayoutBlockDefinitionComponent>(blockDefinition, "BlockDefinition"); set => blockDefinition = value; }
 
-        public override string ToString() {
-            switch (Status) {
-                case CanPlaceTrainStatus.CanPlaceTrain:
-                    return "Can place train";
-
-                case CanPlaceTrainStatus.LocomotiveAddressAlreadyUsed:
-                    return "Locomotive " + Loco1.DisplayName + " address is already used by another locomotive (" + Train.DisplayName + ")";
-
-                case CanPlaceTrainStatus.LocomotiveDuplicateAddress:
-                    return "Train " + Train.DisplayName + " members: '" + Loco1.DisplayName + "' and '" + Loco2.DisplayName + "' have the same address";
-
-                case CanPlaceTrainStatus.LocomotiveHasNoAddress:
-                    return "Locomotive " + Locomotive.DisplayName + " has no assigned address";
-
-                case CanPlaceTrainStatus.TrainLocomotiveAlreadyUsed:
-                    return "Locomotive " + Locomotive.DisplayName + " address is already used by another locomotive (" + Train.DisplayName + ")";
-
-                case CanPlaceTrainStatus.LocomotiveNotCompatible:
-                    return "Locomotive " + Locomotive.DisplayName + " is not compatible with locomotives in train '" + Train.DisplayName + "' (e.g. # of speed steps)";
-
-                case CanPlaceTrainStatus.LocomotiveGuageNotCompatibleWithTrack:
-                    return "Locomotive " + Locomotive.DisplayName + " guage (" + Locomotive.Guage.ToString() + ") not compatible with track guage (" + BlockDefinition.Guage.ToString() + ")";
-
-                case CanPlaceTrainStatus.LocomotiveDigitalFormatNotCompatible:
-                    return "Locomotive " + Locomotive.DisplayName + " decoder is not supported by command station";
-
-                default:
-                    return "*No error text is defined for: " + Status.ToString();
-            }
-        }
+        public override string ToString() => Status switch
+        {
+            CanPlaceTrainStatus.CanPlaceTrain => "Can place train",
+            CanPlaceTrainStatus.LocomotiveAddressAlreadyUsed => "Locomotive " + Loco1.DisplayName + " address is already used by another locomotive (" + Train.DisplayName + ")",
+            CanPlaceTrainStatus.LocomotiveDuplicateAddress => "Train " + Train.DisplayName + " members: '" + Loco1.DisplayName + "' and '" + Loco2.DisplayName + "' have the same address",
+            CanPlaceTrainStatus.LocomotiveHasNoAddress => "Locomotive " + Locomotive.DisplayName + " has no assigned address",
+            CanPlaceTrainStatus.TrainLocomotiveAlreadyUsed => "Locomotive " + Locomotive.DisplayName + " address is already used by another locomotive (" + Train.DisplayName + ")",
+            CanPlaceTrainStatus.LocomotiveNotCompatible => "Locomotive " + Locomotive.DisplayName + " is not compatible with locomotives in train '" + Train.DisplayName + "' (e.g. # of speed steps)",
+            CanPlaceTrainStatus.LocomotiveGuageNotCompatibleWithTrack => "Locomotive " + Locomotive.DisplayName + " guage (" + Locomotive.Guage.ToString() + ") not compatible with track guage (" + BlockDefinition.Guage.ToString() + ")",
+            CanPlaceTrainStatus.LocomotiveDigitalFormatNotCompatible => "Locomotive " + Locomotive.DisplayName + " decoder is not supported by command station",
+            _ => "*No error text is defined for: " + Status.ToString(),
+        };
     }
 
     #endregion
@@ -547,11 +529,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Return the location element for the frontmost train location (usually the locomotive)
         /// </summary>
-        public TrainLocationInfo? LocomotiveLocation {
-            get {
-                return LocationsElement.HasChildNodes ? new TrainLocationInfo(this, (XmlElement)LocationsElement.FirstChild) : null;
-            }
-        }
+        public TrainLocationInfo? LocomotiveLocation => LocationsElement.HasChildNodes ? new TrainLocationInfo(this, (XmlElement)LocationsElement.FirstChild) : null;
 
         /// <summary>
         /// The block on which the frontmost train element is located (usually it will be a locomotive)
@@ -564,11 +542,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public TrainLocationInfo? LastCarLocation {
-            get {
-                return LocationsElement.HasChildNodes ? new TrainLocationInfo(this, (XmlElement)LocationsElement.LastChild) : null;
-            }
-        }
+        public TrainLocationInfo? LastCarLocation => LocationsElement.HasChildNodes ? new TrainLocationInfo(this, (XmlElement)LocationsElement.LastChild) : null;
 
         public LayoutBlock? LastCarBlock {
             get {
@@ -707,6 +681,8 @@ namespace LayoutManager.Model {
             MotionRampInfo? ramp = null;
 
             Debug.Assert(LocomotiveBlock != null);
+            if (LocomotiveBlock == null)
+                throw new LayoutException("Internal: LocomotiveBlock null");
 
             if (LocomotiveBlock.BlockDefinintion != null)
                 ramp = LayoutStateManager.GetRamp(LocomotiveBlock.BlockDefinintion.Element, role);
@@ -718,7 +694,7 @@ namespace LayoutManager.Model {
                 ramp = LayoutModel.StateManager.GetDefaultRamp(role);
 
             Debug.Assert(ramp != null);
-            return ramp;
+            return ramp!;
         }
 
         /// <summary>
@@ -866,11 +842,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// True if train is powered (connected to digital command station)
         /// </summary>
-        public bool IsPowered {
-            get {
-                return Power == null ? false : Power.Type == LayoutPowerType.Digital;
-            }
-        }
+        public bool IsPowered => Power == null ? false : Power.Type == LayoutPowerType.Digital;
 
         #endregion
 
@@ -1341,9 +1313,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public Int64 LastBlockEdgeCrossingTime {
-            get => (Int64?)Element.AttributeValue(A_LastBlockEdgeCrossingTime) ?? 0;
-        }
+        public Int64 LastBlockEdgeCrossingTime => (Int64?)Element.AttributeValue(A_LastBlockEdgeCrossingTime) ?? 0;
 
         public bool IsLastBlockEdgeCrossingSpeedKnown => Element.HasAttribute(A_LastBlockEdgeCrossingSpeed);
 
@@ -1710,7 +1680,7 @@ namespace LayoutManager.Model {
         public bool Contains(Guid componentId, string topicName) {
             XmlElement stateElement = GetComponentStateElement(componentId);
 
-            return stateElement != null ? stateElement[topicName] != null : false;
+            return stateElement != null && stateElement[topicName] != null;
         }
 
         public bool Contains(ModelComponent component, string topicName) => Contains(component.Id, topicName);
@@ -1734,9 +1704,6 @@ namespace LayoutManager.Model {
             if (Contains(componentId, topicName)) {
                 XmlElement componentStateElement = GetComponentStateElement(componentId);
                 XmlElement componentStateTopicElement = componentStateElement[topicName];
-
-                Debug.Assert(componentStateElement != null);
-                Debug.Assert(componentStateTopicElement != null);
 
                 componentStateElement.RemoveChild(componentStateTopicElement);
 
@@ -1815,14 +1782,9 @@ namespace LayoutManager.Model {
             set => SetAttribute(A_TrainId, value);
         }
 
-        public TrainStateInfo? Train {
-            get => LayoutModel.StateManager.Trains[TrainId];
-
-            set {
-                if (value == null)
-                    throw new ArgumentNullException("Train property cannot be set to null");
-                TrainId = value.Id;
-            }
+        public TrainStateInfo Train {
+            get => LayoutModel.StateManager.Trains[TrainId] ?? throw new LayoutException("Track Contact has state of a train that is no longer on track");
+            set => TrainId = value.Id;
         }
 
         public Guid FromBlockId {
@@ -1940,11 +1902,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public string NameAndStatus {
-            get {
-                return Active ? Name + " (Active)" : Name;
-            }
-        }
+        public string NameAndStatus => Active ? Name + " (Active)" : Name;
 
         /// <summary>
         /// Set whether this manual dispatch region is active or not. Should not be called directly
@@ -1955,11 +1913,7 @@ namespace LayoutManager.Model {
             EventManager.Event(new LayoutEvent("manual-dispatch-region-activation-changed", this, active));
         }
 
-        public BlockIdCollection BlockIdList {
-            get {
-                return blockIdCollection ?? (blockIdCollection = new BlockIdCollection(this));
-            }
-        }
+        public BlockIdCollection BlockIdList => blockIdCollection ?? (blockIdCollection = new BlockIdCollection(this));
 
         public LayoutSelection Selection {
             get {
@@ -2219,13 +2173,9 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Get text representation for the policy
         /// </summary>
-        public string Text {
-            get {
-                return EventScriptElement == null
+        public string Text => EventScriptElement == null
                     ? "(Policy not set)"
                     : (string)EventManager.Event(new LayoutEvent("get-event-script-description", EventScriptElement))!;
-            }
-        }
 
         public bool Apply {
             get => (bool?)AttributeValue(A_Apply) ?? false;
@@ -2515,23 +2465,15 @@ namespace LayoutManager.Model {
 
         public MotionRampInfo? DefaultStopRamp => GetDefaultRamp("Stop");
 
-        public List<LayoutPolicyType> PolicyTypes {
-            get {
-                return policyTypes ?? (policyTypes = new List<LayoutPolicyType>(new LayoutPolicyType[] {
+        public List<LayoutPolicyType> PolicyTypes => policyTypes ?? (policyTypes = new List<LayoutPolicyType>(new LayoutPolicyType[] {
                         new LayoutPolicyType("Global scripts", "Global", LayoutModel.StateManager.LayoutPolicies),
                         new LayoutPolicyType("Block scripts", "BlockInfo", LayoutModel.StateManager.BlockInfoPolicies),
                         new LayoutPolicyType("Trip plan scripts", "TripPlan", LayoutModel.StateManager.TripPlanPolicies),
                         new LayoutPolicyType("Before Trip Section Start scripts", "RideStart", LayoutModel.StateManager.RideStartPolicies),
                         new LayoutPolicyType("Driver Instructions scrtips", "DriverInstructions", LayoutModel.StateManager.DriverInstructionsPolicies)
                     }));
-            }
-        }
 
-        public OperationStates OperationStates {
-            get {
-                return operationStates ?? (operationStates = new OperationStates());
-            }
-        }
+        public OperationStates OperationStates => operationStates ?? (operationStates = new OperationStates());
 
         /// <summary>
         /// Remove all state information

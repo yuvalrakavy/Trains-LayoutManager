@@ -24,11 +24,7 @@ namespace LayoutManager.Logic {
 
         #region Common properties
 
-        protected ILayoutTopologyServices TopologyServices {
-            get {
-                return _topologyServices ?? (_topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!);
-            }
-        }
+        protected ILayoutTopologyServices TopologyServices => _topologyServices ?? (_topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!);
 
         #endregion
 
@@ -110,7 +106,7 @@ namespace LayoutManager.Logic {
             // If block's edge is not trigerrable (logical block edge), the test is extended to the edges of the neighboring edge (as if
             // the logical block edge is ignored and the two blocks are treated as one larger block)
             //
-            bool GetBlocksWithTraintoRemove(LayoutBlock block, LayoutBlockEdgeBase originEdge, TrainStateInfo train, List<LayoutBlock> blocksWithTrainToRemove) {
+            static bool GetBlocksWithTraintoRemove(LayoutBlock block, LayoutBlockEdgeBase originEdge, TrainStateInfo train, List<LayoutBlock> blocksWithTrainToRemove) {
                 if (block.HasTrains && block.Trains[0].Train.Id == train.Id) {
                     bool hasTriggedEdge = false;
 
@@ -204,7 +200,6 @@ namespace LayoutManager.Logic {
                 // The same logic but reversing the "to" and "from" is applied if the train moves in an opposite direction
                 var train = trackContactPassingState.Train;
 
-                Debug.Assert(train != null);
                 Debug.Assert(trackContact.IsTriggered);
 
                 LocomotiveOrientation direction = (train.Speed >= 0) ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
@@ -621,8 +616,6 @@ namespace LayoutManager.Logic {
             var track = trackContact.Track;
             IList<TrainLocationInfo> trains1, trains2;
 
-            Debug.Assert(track != null);
-
             TrainMotionListManager motionListManager = new TrainMotionListManager();
 
             var block1 = track.GetOptionalBlock(track.ConnectionPoints[0]);
@@ -653,6 +646,8 @@ namespace LayoutManager.Logic {
             }
 
             Debug.Assert(block1 != null && block2 != null);
+            if (block1 == null || block2 == null)
+                throw new NullReferenceException("internal: trackLocmotivePosition block1 or block2 are null");
 
             var block1IsManualDispatch = block1.LockRequest?.IsManualDispatchLock ?? LayoutModel.StateManager.AllLayoutManualDispatch;
             var block2isManualDispatch = block2.LockRequest?.IsManualDispatchLock ?? LayoutModel.StateManager.AllLayoutManualDispatch;
@@ -714,8 +709,6 @@ namespace LayoutManager.Logic {
             var track = blockEdge.Track;
             LayoutBlock sourceBlock;
             IList<TrainLocationInfo> trains;
-
-            Debug.Assert(track != null);
 
             TrainMotionListManager motionListManager = new TrainMotionListManager();
 
@@ -990,7 +983,9 @@ namespace LayoutManager.Logic {
                         }
                     }
 
-                    Debug.Assert(bestCandidate != null);
+                    if (bestCandidate == null)
+                        throw new LayoutException("Internal: movingFrom could not find what to move");
+
                     TrainStateInfo bestCandidateLocoState = new TrainStateInfo(bestCandidate.LocomotiveStateElement);
 
                     if (canLocomotiveCrossBlockEdge(bestCandidate, blockEdge)) {

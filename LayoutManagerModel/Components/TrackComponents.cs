@@ -171,8 +171,9 @@ namespace LayoutManager.Components {
         public ILayoutPower? GetOptionalPower(LayoutComponentConnectionPoint cp) {
             var powerConnector = GetPowerConnector(cp);
 
-            Debug.Assert(powerConnector != null);
-            return powerConnector.Inlet.ConnectedOutlet.OptionalPower;
+            if(powerConnector != null)
+                return powerConnector.Inlet.ConnectedOutlet.OptionalPower;
+            return null;
         }
 
         public ILayoutPower GetPower(LayoutComponentConnectionPoint cp) => Ensure.NotNull<ILayoutPower>(GetOptionalPower(cp), "GetOptionalPower");
@@ -183,27 +184,23 @@ namespace LayoutManager.Components {
         /// </summary>
         /// <param name="point">The connection point</param>
         /// <returns>The offset</returns>
-        public static Size GetConnectionOffset(LayoutComponentConnectionPoint point) {
-            switch (point) {
-                case LayoutComponentConnectionPoint.T: return new Size(0, -1);
-                case LayoutComponentConnectionPoint.B: return new Size(0, 1);
-                case LayoutComponentConnectionPoint.R: return new Size(1, 0);
-                case LayoutComponentConnectionPoint.L: return new Size(-1, 0);
-                default:
-                    throw new ArgumentException("Invalid track connection point");
-            }
-        }
+        public static Size GetConnectionOffset(LayoutComponentConnectionPoint point) => (int)point switch
+        {
+            LayoutComponentConnectionPoint.T => new Size(0, -1),
+            LayoutComponentConnectionPoint.B => new Size(0, 1),
+            LayoutComponentConnectionPoint.R => new Size(1, 0),
+            LayoutComponentConnectionPoint.L => new Size(-1, 0),
+            _ => throw new ArgumentException("Invalid track connection point"),
+        };
 
-        public static LayoutComponentConnectionPoint GetPointConnectingTo(LayoutComponentConnectionPoint cp) {
-            switch (cp) {
-                case LayoutComponentConnectionPoint.T: return LayoutComponentConnectionPoint.B;
-                case LayoutComponentConnectionPoint.B: return LayoutComponentConnectionPoint.T;
-                case LayoutComponentConnectionPoint.R: return LayoutComponentConnectionPoint.L;
-                case LayoutComponentConnectionPoint.L: return LayoutComponentConnectionPoint.R;
-                default:
-                    throw new ArgumentException("Invalid track connection point");
-            }
-        }
+        public static LayoutComponentConnectionPoint GetPointConnectingTo(LayoutComponentConnectionPoint cp) => (int)cp switch
+        {
+            LayoutComponentConnectionPoint.T => LayoutComponentConnectionPoint.B,
+            LayoutComponentConnectionPoint.B => LayoutComponentConnectionPoint.T,
+            LayoutComponentConnectionPoint.R => LayoutComponentConnectionPoint.L,
+            LayoutComponentConnectionPoint.L => LayoutComponentConnectionPoint.R,
+            _ => throw new ArgumentException("Invalid track connection point"),
+        };
 
         public static bool IsHorizontal(LayoutComponentConnectionPoint cp) => cp == LayoutComponentConnectionPoint.L || cp == LayoutComponentConnectionPoint.R;
 
@@ -240,17 +237,15 @@ namespace LayoutManager.Components {
 
         public static bool IsDiagonal(LayoutTrackComponent component) => IsDiagonal(component.ConnectionPoints);
 
-        public static LayoutComponentConnectionPoint OppositeConnectPoint(LayoutComponentConnectionPoint cp) {
-            switch (cp) {
-                case LayoutComponentConnectionPoint.B: return LayoutComponentConnectionPoint.T;
-                case LayoutComponentConnectionPoint.T: return LayoutComponentConnectionPoint.B;
-                case LayoutComponentConnectionPoint.L: return LayoutComponentConnectionPoint.R;
-                case LayoutComponentConnectionPoint.R: return LayoutComponentConnectionPoint.L;
+        public static LayoutComponentConnectionPoint OppositeConnectPoint(LayoutComponentConnectionPoint cp) => (int)cp switch
+        {
+            LayoutComponentConnectionPoint.B => LayoutComponentConnectionPoint.T,
+            LayoutComponentConnectionPoint.T => LayoutComponentConnectionPoint.B,
+            LayoutComponentConnectionPoint.L => LayoutComponentConnectionPoint.R,
+            LayoutComponentConnectionPoint.R => LayoutComponentConnectionPoint.L,
 
-                default:
-                    throw new ArgumentException("No opposite connection point is defined for " + cp.ToString());
-            }
-        }
+            _ => throw new ArgumentException("No opposite connection point is defined for " + cp.ToString()),
+        };
 
         public static LayoutComponentConnectionPoint[] DiagonalConnectionPoints(LayoutComponentConnectionPoint cp) {
             switch (cp) {
@@ -302,27 +297,10 @@ namespace LayoutManager.Components {
 
         #region Track Annoation methods and properties
 
-        public void SetTrackAnnotation() {
-            trackAnnotation = Spot[ModelComponentKind.BlockEdge];
+        public void SetTrackAnnotation() =>
+            trackAnnotation = (((Spot[ModelComponentKind.BlockEdge] ?? Spot[ModelComponentKind.BlockInfo]) ?? Spot[ModelComponentKind.TrackIsolation]) ?? Spot[ModelComponentKind.TrackLink]) ?? (this);
 
-            if (trackAnnotation == null)
-                trackAnnotation = Spot[ModelComponentKind.BlockInfo];
-
-            if (trackAnnotation == null)
-                trackAnnotation = Spot[ModelComponentKind.TrackIsolation];
-
-            if (trackAnnotation == null)
-                trackAnnotation = Spot[ModelComponentKind.TrackLink];
-
-            if (trackAnnotation == null)
-                trackAnnotation = this;
-        }
-
-        public ModelComponent? TrackAnnotation {
-            get {
-                return trackAnnotation == this ? null : trackAnnotation;
-            }
-        }
+        public ModelComponent? TrackAnnotation => trackAnnotation == this ? null : trackAnnotation;
 
         public ModelComponent TrackBackground {
             get {
@@ -550,7 +528,7 @@ namespace LayoutManager.Components {
             else if (from == cp4)
                 return new LayoutComponentConnectionPoint[] { cp3 };
 
-            throw new NotImplementedException();
+            throw new LayoutException("Invalid source connection point");
         }
 
         public override LayoutBlock? GetOptionalBlock(LayoutComponentConnectionPoint cp) {
@@ -728,9 +706,7 @@ namespace LayoutManager.Components {
             set => Element.SetAttribute(A_ReverseLogic, value);
         }
 
-        public override string? RequiredControlModuleTypeName {
-            get => (string?)Element.AttributeValue(A_BuiltinDecoderTypeName) ?? null;
-        }
+        public override string? RequiredControlModuleTypeName => (string?)Element.AttributeValue(A_BuiltinDecoderTypeName) ?? null;
     }
 
     /// <summary>
@@ -1053,25 +1029,22 @@ namespace LayoutManager.Components {
 
         public override LayoutComponentConnectionPoint[] ConnectTo(LayoutComponentConnectionPoint from, LayoutComponentConnectionType type) {
             if (type == LayoutComponentConnectionType.Passage || type == LayoutComponentConnectionType.ReverseLoop) {
-                switch (from) {
-                    case LayoutComponentConnectionPoint.L:
-                        return new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.R,
-                            DiagonalConnectionPoints(LayoutComponentConnectionPoint.L)[diagonalIndex] };
+                return (int)from switch
+                {
+                    LayoutComponentConnectionPoint.L => new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.R,
+                            DiagonalConnectionPoints(LayoutComponentConnectionPoint.L)[diagonalIndex] },
 
-                    case LayoutComponentConnectionPoint.R:
-                        return new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.L,
-                            DiagonalConnectionPoints(LayoutComponentConnectionPoint.L)[1-diagonalIndex] };
+                    LayoutComponentConnectionPoint.R => new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.L,
+                            DiagonalConnectionPoints(LayoutComponentConnectionPoint.L)[1-diagonalIndex] },
 
-                    case LayoutComponentConnectionPoint.T:
-                        return new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.B,
-                            DiagonalConnectionPoints(LayoutComponentConnectionPoint.T)[diagonalIndex] };
+                    LayoutComponentConnectionPoint.T => new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.B,
+                            DiagonalConnectionPoints(LayoutComponentConnectionPoint.T)[diagonalIndex] },
 
-                    case LayoutComponentConnectionPoint.B:
-                        return new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T,
-                            DiagonalConnectionPoints(LayoutComponentConnectionPoint.T)[1-diagonalIndex] };
-                }
+                    LayoutComponentConnectionPoint.B => new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.T,
+                            DiagonalConnectionPoints(LayoutComponentConnectionPoint.T)[1-diagonalIndex] },
 
-                throw new NotImplementedException();
+                    _ => throw new LayoutException($"Invalid source connection point {from}")
+                };
             }
             else {
                 LayoutComponentConnectionPoint[] result = new LayoutComponentConnectionPoint[3];

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
+#pragma warning disable IDE0067
 #nullable enable
 namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
     /// <summary>
@@ -344,7 +345,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             }
 
             public override bool Edit() {
-                using var d = new IfTimeNumericNode("Seconds", Node, 0, 59);
+                var d = new IfTimeNumericNode("Seconds", Node, 0, 59);
 
                 return d.ShowDialog() == DialogResult.OK;
             }
@@ -355,7 +356,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             }
 
             public override bool Edit() {
-                using var d = new IfTimeNumericNode("Minutes", Node, 0, 59);
+                var d = new IfTimeNumericNode("Minutes", Node, 0, 59);
 
                 return d.ShowDialog() == DialogResult.OK;
             }
@@ -366,7 +367,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             }
 
             public override bool Edit() {
-                using var d = new IfTimeNumericNode("Hours", Node, 0, 23);
+                var d = new IfTimeNumericNode("Hours", Node, 0, 23);
 
                 return d.ShowDialog() == DialogResult.OK;
             }
@@ -377,7 +378,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             }
 
             public override bool Edit() {
-                using var d = new IfTimeDayOfWeekNode("Day Of Week", Node);
+                var d = new IfTimeDayOfWeekNode("Day Of Week", Node);
 
                 return d.ShowDialog() == DialogResult.OK;
             }

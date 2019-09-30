@@ -17,7 +17,7 @@ namespace NCDRelayController {
         TCP,
     };
 
-#pragma warning disable IDE0051, IDE0060, IDE0052
+#pragma warning disable IDE0051, IDE0060, IDE0052, RCS1003, RCS1090
     public class NCDRelayController : ModelComponent, IModelComponentIsBusProvider {
         private const string A_InterfaceType = "InterfaceType";
         private const string A_OverlappedIO = "OverlappedIO";
@@ -44,17 +44,9 @@ namespace NCDRelayController {
 
         public bool LayoutEmulationSupported => false;
 
-        public ControlBus RelayBus {
-            get {
-                return _relayBus ?? (_relayBus = LayoutModel.ControlManager.Buses.GetBus(this, "NCDRelayBus"));
-            }
-        }
+        public ControlBus RelayBus => _relayBus ?? (_relayBus = LayoutModel.ControlManager.Buses.GetBus(this, "NCDRelayBus"));
 
-        public ControlBus InputBus {
-            get {
-                return _inputBus ?? (_inputBus = LayoutModel.ControlManager.Buses.GetBus(this, "NCDInputBus"));
-            }
-        }
+        public ControlBus InputBus => _inputBus ?? (_inputBus = LayoutModel.ControlManager.Buses.GetBus(this, "NCDInputBus"));
 
         private OutputManager OutputManager => outputManager;
 
@@ -97,8 +89,9 @@ namespace NCDRelayController {
         }
 
         private void OpenCommunicationStream() {
-            if (InterfaceType == InterfaceType.Serial)
+            if (InterfaceType == InterfaceType.Serial) {
                 commStream = (FileStream)EventManager.Event(new LayoutEvent("open-serial-communication-device-request", Element));
+            }
             else {
                 string address = XmlInfo.DocumentElement.GetAttribute("Address");
                 int portIndex = address.IndexOf(':');
@@ -111,7 +104,7 @@ namespace NCDRelayController {
                     address = address.Substring(0, portIndex);
                 }
 
-                TcpClient tcpClient = new TcpClient(address, port);
+                using TcpClient tcpClient = new TcpClient(address, port);
 
                 commStream = tcpClient.GetStream();
             }
@@ -365,7 +358,7 @@ namespace NCDRelayController {
 
                     for (int connectionPointIndex = 0; connectionPointIndex < module.ModuleType.NumberOfConnectionPoints; connectionPointIndex += 8) {
                         //TODO: Poll bank if not in operation mode (design mode learn) or if operation mode and at least one connection point is actually connected 
-                        PollContactClosureBank(events, module, moduleNumber, bank, connectionPointIndex);
+                        PollContactClosureBank(events, module, moduleNumber, bank);
                         bank++;
                     }
 
@@ -378,7 +371,7 @@ namespace NCDRelayController {
                 RelayController.OutputManager.SetReply(null);
             }
 
-            private void PollContactClosureBank(IList<LayoutEvent> events, ControlModule module, int moduleNumber, int bank, int connectionPointIndex) {
+            private void PollContactClosureBank(IList<LayoutEvent> events, ControlModule module, int moduleNumber, int bank) {
                 byte[] command = new byte[] { 254, 175, (byte)bank };
                 byte[] reply = new byte[1];
 
@@ -386,7 +379,7 @@ namespace NCDRelayController {
                 RelayController.CommStream.Read(reply, 0, reply.Length);
 
                 Trace.WriteLineIf(TraceNCD.TraceVerbose, "Bank " + bank + " value: " + reply[0].ToString("x"));
-                contactClosureData[bank].NewData(events, module, moduleNumber, connectionPointIndex, reply[0]);
+                contactClosureData[bank].NewData(events, module, moduleNumber, reply[0]);
             }
 
             public override void OnReply(object replyPacket) {
@@ -401,7 +394,7 @@ namespace NCDRelayController {
             private struct ContactClosureBankData {
                 private byte currentState;
 
-                public void NewData(IList<LayoutEvent> events, ControlModule module, int moduleNumber, int connectionPointIndex, byte data) {
+                public void NewData(IList<LayoutEvent> events, ControlModule module, int moduleNumber, byte data) {
                     byte changedBits = (byte)(currentState ^ data);
                     byte mask = 1;
                     IModelComponentIsBusProvider busProvider = module.Bus.BusProvider;

@@ -15,11 +15,7 @@ namespace LayoutManager {
         private LayoutModelArea selectionCornerArea = null;
         private LayoutSelectionWithUndo _userSelection = null;
 
-        public LayoutSelectionWithUndo UserSelection {
-            get {
-                return _userSelection ?? (_userSelection = (LayoutSelectionWithUndo)LayoutController.UserSelection);
-            }
-        }
+        public LayoutSelectionWithUndo UserSelection => _userSelection ?? (_userSelection = (LayoutSelectionWithUndo)LayoutController.UserSelection);
 
         /// <summary>
         /// Called when the user clicks on the view while using this tool. The default

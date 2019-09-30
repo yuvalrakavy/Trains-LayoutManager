@@ -9,8 +9,7 @@ using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051, IDE0060
-#pragma warning disable IDE0056     //TODO: Remove when .NET 4.8
+#pragma warning disable IDE0051, IDE0060, IDE0067, IDE0069, RCS1163
 namespace LayoutManager.CommonUI {
     /// <summary>
     /// Summary description for LayoutControlBusViewer.
@@ -20,8 +19,6 @@ namespace LayoutManager.CommonUI {
         private System.Windows.Forms.HScrollBar hScrollBar;
         private ImageList imageListConnectionPointTypes;
         private System.Windows.Forms.VScrollBar vScrollBar;
-
-        private void endOfDesignerVariables() { }
 
         private ILayoutFrameWindow frameWindow = null;
 
@@ -52,11 +49,7 @@ namespace LayoutManager.CommonUI {
 
         #region Public Properties
 
-        public ILayoutFrameWindow FrameWindow {
-            get {
-                return frameWindow ?? (frameWindow = (ILayoutFrameWindow)FindForm());
-            }
-        }
+        public ILayoutFrameWindow FrameWindow => frameWindow ?? (frameWindow = (ILayoutFrameWindow)FindForm());
 
         public float Zoom {
             get {
@@ -734,7 +727,7 @@ namespace LayoutManager.CommonUI {
                 int delta = e.Delta;
 
                 while (delta > 0) {
-                    if ((Control.ModifierKeys & Keys.Shift) != 0) {
+                    if ((Control.ModifierKeys & (Keys.Shift|Keys.Alt)) != 0) {
                         for (int i = 0; i < 3; i++)
                             HorizontalScroll(ScrollEventType.SmallDecrement);
                     }
@@ -751,7 +744,7 @@ namespace LayoutManager.CommonUI {
                 }
             }
             else if (e.Delta < 0) {
-                if ((Control.ModifierKeys & Keys.Shift) != 0) {
+                if ((Control.ModifierKeys & (Keys.Shift|Keys.Alt)) != 0) {
                     for (int i = 0; i < 3; i++)
                         HorizontalScroll(ScrollEventType.SmallIncrement);
                 }
@@ -1315,10 +1308,10 @@ namespace LayoutManager.CommonUI {
 
         private string getModulePhaseText() {
             switch (Module.Phase) {
-                default:
-                case LayoutPhase.Operational: return null;
                 case LayoutPhase.Construction: return "(In construction)";
                 case LayoutPhase.Planned: return "(Planned)";
+                case LayoutPhase.Operational:
+                default: return null;
             }
         }
 

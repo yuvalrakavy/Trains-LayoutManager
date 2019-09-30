@@ -78,11 +78,7 @@ namespace LayoutEmulation {
 
         #region Properties
 
-        public ILayoutTopologyServices TopologyServices {
-            get {
-                return _topologyServices ?? (_topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!);
-            }
-        }
+        public ILayoutTopologyServices TopologyServices => _topologyServices ?? (_topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!);
 
         public int SpeedSteps => 15;            // 0 - 14
 
@@ -240,8 +236,8 @@ namespace LayoutEmulation {
             }
         }
 
-        public event EventHandler<LocomotiveMovedEventArgs> LocomotiveMoved;
-        public event EventHandler<LocomotiveMovedEventArgs> LocomotiveFallFromTrack;
+        public event EventHandler<LocomotiveMovedEventArgs>? LocomotiveMoved;
+        public event EventHandler<LocomotiveMovedEventArgs>? LocomotiveFallFromTrack;
 
         #endregion
 
@@ -364,7 +360,9 @@ namespace LayoutEmulation {
                         var locoBlock = train.LocomotiveBlock;
                         var locoLocation = train.LocomotiveLocation;
 
-                        Debug.Assert(locoBlock != null && locoLocation != null);
+                        if (locoBlock == null || locoLocation == null)
+                            throw new LayoutException($"Cannot locate locomotive for train {train.Name}");
+
                         AddLocomotive(commandStationId, loco.AddressProvider.Unit, new TrackEdge(locoBlock.BlockDefinintion.Track,
                             locoLocation.DisplayFront));
                     }

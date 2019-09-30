@@ -138,11 +138,7 @@ namespace LayoutManager.Model {
 
         public Guid RouteOwner => routeOwner;
 
-        protected static ILayoutLockManagerServices LockManagerServices {
-            get {
-                return _lockManagerServices ?? (_lockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services"))!);
-            }
-        }
+        protected static ILayoutLockManagerServices LockManagerServices => _lockManagerServices ?? (_lockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services"))!);
 
         public void AddClearanceQuality(RouteClearanceQuality q) {
             if ((int)q > (int)ClearanceQuality)
@@ -298,23 +294,15 @@ namespace LayoutManager.Model {
 
         public LayoutComponentConnectionPoint SourceFront { get; }
 
-        public LayoutTrackComponent? DestinationTrack {
-            get {
-                return DestinationTarget?.DestinationTrack;
-            }
-        }
+        public LayoutTrackComponent? DestinationTrack => DestinationTarget?.DestinationTrack;
 
         public RouteTarget? DestinationTarget { get; set; }
 
         public TrackEdge DestinationEdge => new TrackEdge(Ensure.NotNull<LayoutTrackComponent>(DestinationTrack, nameof(DestinationTrack)), DestinationFront).OtherSide;
 
-        public TrackEdge SourceEdge {
-            get {
-                return Direction == LocomotiveOrientation.Forward
+        public TrackEdge SourceEdge => Direction == LocomotiveOrientation.Forward
                     ? new TrackEdge(SourceTrack, SourceFront).OtherSide
                     : new TrackEdge(SourceTrack, SourceFront);
-            }
-        }
 
         public LayoutComponentConnectionPoint DestinationFront { get; set; }
 
@@ -408,11 +396,7 @@ namespace LayoutManager.Model {
         /// that the route is not calculated for a specific train (e.g. in a manual dispatch resgion).
         /// In this case null is returned
         /// </summary>
-        public TrainStateInfo? Train {
-            get {
-                return train ?? (train = LayoutModel.StateManager.Trains[routeOwner] as TrainStateInfo);
-            }
-        }
+        public TrainStateInfo? Train => train ?? (train = LayoutModel.StateManager.Trains[routeOwner] as TrainStateInfo);
 
         #endregion
 

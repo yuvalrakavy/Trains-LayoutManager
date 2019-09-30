@@ -28,11 +28,7 @@ namespace LayoutManager.Tools.Dialogs {
                 textBoxLabel.Text = label;
         }
 
-        public string Label {
-            get {
-                return textBoxLabel.Text.Trim() == "" ? null : textBoxLabel.Text;
-            }
-        }
+        public string Label => textBoxLabel.Text.Trim() == "" ? null : textBoxLabel.Text;
 
         /// <summary>
         /// Clean up any resources being used.

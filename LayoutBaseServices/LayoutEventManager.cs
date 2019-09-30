@@ -213,11 +213,7 @@ namespace LayoutManager {
             : base(eventName, sender, info, xmlDocument, targetType, ifTarget) {
         }
 
-        public new TSender? Sender {
-            get {
-                return base.Sender as TSender;
-            }
-        }
+        public new TSender? Sender => base.Sender as TSender;
 
         public new TInfo? Info {
             get {
@@ -241,11 +237,7 @@ namespace LayoutManager {
             base(eventName, sender, info, xmlDocument, targetType, ifTarget) {
         }
 
-        public new TSender? Sender {
-            get {
-                return base.Sender as TSender;
-            }
-        }
+        public new TSender? Sender => base.Sender as TSender;
 
         public new TInfo Info {
             get => (TInfo?)base.Info ?? default;
@@ -1256,9 +1248,7 @@ namespace LayoutManager {
         public LayoutEventDefAttribute[] GetEventDefinitions(LayoutEventRole requiredRole) {
             if (eventDefs == null) {
                 var eventDefsList = new List<LayoutEventDefAttribute>();
-                var moduleManager = (LayoutModuleManager?)Event(new LayoutEvent("get-module-manager", this));
-
-                Debug.Assert(moduleManager != null);
+                var moduleManager = Ensure.NotNull<LayoutModuleManager>(Event(new LayoutEvent("get-module-manager", this)), "moduleManager");
 
                 foreach (LayoutAssembly layoutAssembly in moduleManager.LayoutAssemblies) {
                     LayoutEventDefAttribute[] assemblyEventDefs = (LayoutEventDefAttribute[])layoutAssembly.Assembly.GetCustomAttributes(typeof(LayoutEventDefAttribute), true);
@@ -1321,16 +1311,11 @@ namespace LayoutManager {
     }
 
     public static class EventManager {
-        private static LayoutEventManager eventManager;
+        private static LayoutEventManager? eventManager;
 
         public static LayoutEventManager Instance {
-            get {
-                return eventManager!;
-            }
-
-            set {
-                eventManager = value;
-            }
+            get => eventManager ?? throw new NullReferenceException("Use of EventManager before it has been initialized");
+            set => eventManager = value;
         }
 
         /// <summary>

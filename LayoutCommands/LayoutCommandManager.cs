@@ -245,5 +245,11 @@ namespace LayoutManager {
     public class LayoutCommandException : Exception {
         public LayoutCommandException(String message) : base(message) {
         }
+
+        public LayoutCommandException() : base() {
+        }
+
+        public LayoutCommandException(string message, Exception innerException) : base(message, innerException) {
+        }
     }
 }

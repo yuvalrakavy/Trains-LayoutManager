@@ -19,7 +19,7 @@ namespace LayoutManager {
     /// <summary>
     /// Summary description for Form1.
     /// </summary>
-#pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060, IDE0069, IDE0067
     public partial class LayoutFrameWindow : Form, ILayoutFrameWindow {
         private TaskCompletionSource<FrameWindowAction> tcs;
 
@@ -312,17 +312,9 @@ namespace LayoutManager {
 
         private LayoutFrameWindowAreaTabPage ActiveAreaPage => (LayoutFrameWindowAreaTabPage)tabAreas.SelectedTab;
 
-        private LayoutFrameWindowAreaViewTabPage ActiveViewPage {
-            get {
-                return ActiveAreaPage == null ? null : (LayoutFrameWindowAreaViewTabPage)ActiveAreaPage.TabViews.SelectedTab;
-            }
-        }
+        private LayoutFrameWindowAreaViewTabPage ActiveViewPage => ActiveAreaPage == null ? null : (LayoutFrameWindowAreaViewTabPage)ActiveAreaPage.TabViews.SelectedTab;
 
-        private LayoutView ActiveView {
-            get {
-                return ActiveViewPage?.View;
-            }
-        }
+        private LayoutView ActiveView => ActiveViewPage?.View;
 
         #endregion
 
@@ -517,7 +509,7 @@ namespace LayoutManager {
         [LayoutEvent("show-routing-table-generation-dialog")]
         private void showRoutingTableGenerationDialog(LayoutEvent e) {
             int nTurnouts = (int)e.Info;
-            Dialogs.RoutingTableCalcProgress d = new Dialogs.RoutingTableCalcProgress(nTurnouts);
+            using Dialogs.RoutingTableCalcProgress d = new Dialogs.RoutingTableCalcProgress(nTurnouts);
 
             d.ShowDialog(this);
         }
@@ -1175,7 +1167,7 @@ namespace LayoutManager {
         }
 
         private void menuItemNewArea_Click(object sender, System.EventArgs e) {
-            Dialogs.GetAreasName getAreaName = new Dialogs.GetAreasName();
+            var getAreaName = new Dialogs.GetAreasName();
 
             if (getAreaName.ShowDialog(this) == DialogResult.OK) {
                 LayoutController.AddArea(getAreaName.AreaName);
@@ -1183,14 +1175,14 @@ namespace LayoutManager {
         }
 
         private void menuItemRenameArea_Click(object sender, System.EventArgs e) {
-            Dialogs.GetAreasName getAreaName = new Dialogs.GetAreasName();
+            var getAreaName = new Dialogs.GetAreasName();
 
             if (getAreaName.ShowDialog(this) == DialogResult.OK)
                 ((LayoutFrameWindowAreaTabPage)tabAreas.SelectedTab).Area.Name = getAreaName.AreaName;
         }
 
         private void menuItemStyleFonts_Click(object sender, System.EventArgs e) {
-            Dialogs.StandardFonts standardFonts = new Dialogs.StandardFonts();
+            var standardFonts = new Dialogs.StandardFonts();
 
             standardFonts.ShowDialog(this);
             LayoutModel.WriteModelXmlInfo();
@@ -1198,7 +1190,7 @@ namespace LayoutManager {
         }
 
         private void menuItemStylePositions_Click(object sender, System.EventArgs e) {
-            Dialogs.StandardPositions standardPositions = new Dialogs.StandardPositions();
+            var standardPositions = new Dialogs.StandardPositions();
 
             standardPositions.ShowDialog();
             LayoutModel.WriteModelXmlInfo();
@@ -1206,19 +1198,19 @@ namespace LayoutManager {
         }
 
         private void menuItemCopy_Click(object sender, System.EventArgs e) {
-            MenuItemCopySelection copySelection = new MenuItemCopySelection(LayoutController.UserSelection.TopLeftLocation);
+            var copySelection = new MenuItemCopySelection(LayoutController.UserSelection.TopLeftLocation);
 
             copySelection.Copy();
         }
 
         private void menuItemCut_Click(object sender, System.EventArgs e) {
-            MenuItemCutSelection cutSelection = new MenuItemCutSelection(LayoutController.UserSelection.TopLeftLocation);
+            var cutSelection = new MenuItemCutSelection(LayoutController.UserSelection.TopLeftLocation);
 
             cutSelection.Cut();
         }
 
         private void menuItemModules_Click(object sender, System.EventArgs e) {
-            Dialogs.ModuleManagement moduleManager = new Dialogs.ModuleManagement();
+            var moduleManager = new Dialogs.ModuleManagement();
 
             moduleManager.ShowDialog(this);
         }
@@ -1237,7 +1229,7 @@ namespace LayoutManager {
         }
 
         private void menuItemAreaArrange_Click(object sender, System.EventArgs e) {
-            Dialogs.ArrangeAreas arrangeAreas = new Dialogs.ArrangeAreas(tabAreas);
+            var arrangeAreas = new Dialogs.ArrangeAreas(tabAreas);
 
             arrangeAreas.ShowDialog(this);
         }
@@ -1301,7 +1293,7 @@ namespace LayoutManager {
         }
 
         public LayoutView AddNewView() {
-            Dialogs.GetViewName getViewName = new Dialogs.GetViewName();
+            var getViewName = new Dialogs.GetViewName();
 
             if (getViewName.ShowDialog() == DialogResult.OK) {
                 LayoutView oldView = ActiveView;
@@ -1330,7 +1322,7 @@ namespace LayoutManager {
 
         private void menuItemViewRename_Click(object sender, System.EventArgs e) {
             if (ActiveViewPage != null) {
-                Dialogs.GetViewName getViewName = new Dialogs.GetViewName();
+                var getViewName = new Dialogs.GetViewName();
 
                 if (getViewName.ShowDialog() == DialogResult.OK)
                     ActiveViewPage.Text = getViewName.ViewName;
@@ -1339,7 +1331,7 @@ namespace LayoutManager {
 
         private void menuItemViewArrage_Click(object sender, System.EventArgs e) {
             if (ActiveAreaPage != null) {
-                Dialogs.ArrangeViews arrangeViews = new Dialogs.ArrangeViews(this, ActiveAreaPage);
+                var arrangeViews = new Dialogs.ArrangeViews(this, ActiveAreaPage);
 
                 arrangeViews.ShowDialog();
             }
@@ -1400,7 +1392,7 @@ namespace LayoutManager {
 
         private void menuItemSetZoom_Click(object sender, System.EventArgs e) {
             if (ActiveView != null) {
-                Dialogs.SetZoom setZoom = new Dialogs.SetZoom {
+                var setZoom = new Dialogs.SetZoom {
                     ZoomFactor = (int)Math.Round(ActiveView.Zoom * 100)
                 };
 
@@ -1451,7 +1443,8 @@ namespace LayoutManager {
         }
 
         private void menuItemLocomotiveCatalog_Click(object sender, System.EventArgs e) {
-            new Dialogs.LocomotiveCatalog().ShowDialog(this);
+            var d = new Dialogs.LocomotiveCatalog();
+            d.ShowDialog(this);
         }
 
         private void splitterMessages_SplitterMoved(object sender, System.Windows.Forms.SplitterEventArgs e) {
@@ -1494,7 +1487,7 @@ namespace LayoutManager {
         }
 
         private void onManageManualDispatchRegions(object sender, EventArgs e) {
-            LayoutManager.Tools.Dialogs.ManualDispatchRegions d = new LayoutManager.Tools.Dialogs.ManualDispatchRegions();
+            var d = new LayoutManager.Tools.Dialogs.ManualDispatchRegions();
 
             d.Show();
         }
@@ -1505,7 +1498,7 @@ namespace LayoutManager {
             if (d != null)
                 d.Activate();
             else {
-                Dialogs.PoliciesDefinition p = new Dialogs.PoliciesDefinition {
+                var p = new Dialogs.PoliciesDefinition {
                     Owner = this
                 };
                 p.Show();
@@ -1513,20 +1506,20 @@ namespace LayoutManager {
         }
 
         private void menuItemAccelerationProfiles_Click(object sender, System.EventArgs e) {
-            LayoutManager.Tools.Dialogs.MotionRamps rampsDialog = new LayoutManager.Tools.Dialogs.MotionRamps(LayoutModel.Instance.Ramps);
+            var rampsDialog = new LayoutManager.Tools.Dialogs.MotionRamps(LayoutModel.Instance.Ramps);
 
             rampsDialog.ShowDialog();
             LayoutModel.WriteModelXmlInfo();
         }
 
         private void menuItemDefaultDriverParameters_Click(object sender, System.EventArgs e) {
-            LayoutManager.Tools.Dialogs.DefaultDrivingParameters d = new LayoutManager.Tools.Dialogs.DefaultDrivingParameters();
+            var d = new LayoutManager.Tools.Dialogs.DefaultDrivingParameters();
 
             d.ShowDialog(this);
         }
 
         private void menuItemCommonDestinations_Click(object sender, System.EventArgs e) {
-            LayoutManager.Tools.Dialogs.TripPlanCommonDestinations d = new LayoutManager.Tools.Dialogs.TripPlanCommonDestinations {
+            var d = new LayoutManager.Tools.Dialogs.TripPlanCommonDestinations {
                 Owner = this
             };
             d.Show();
@@ -1585,7 +1578,8 @@ namespace LayoutManager {
         }
 
         private void toggleAllLayoutManualDispatch(object sender, EventArgs e) {
-            new AllLayoutManualDispatchItem().PerformClick();
+            var item = new AllLayoutManualDispatchItem();
+            item.PerformClick();
         }
 
         private void menuItemSuspendLocomotives_Click(object sender, System.EventArgs e) {
@@ -1678,7 +1672,7 @@ namespace LayoutManager {
                     Form learnLayoutForm = (Form)EventManager.Event(new LayoutEvent("activate-learn-layout", this));
 
                     if (learnLayoutForm == null) {
-                        Dialogs.LearnLayout learnLayout = new LayoutManager.Dialogs.LearnLayout(Id) {
+                        var learnLayout = new LayoutManager.Dialogs.LearnLayout(Id) {
                             Owner = this
                         };
                         learnLayout.Show();
@@ -1695,7 +1689,7 @@ namespace LayoutManager {
         }
 
         private void menuItemFind_Click(object sender, EventArgs e) {
-            Dialogs.FindComponents d = new LayoutManager.Dialogs.FindComponents(ActiveAreaPage.Area);
+            var d = new LayoutManager.Dialogs.FindComponents(ActiveAreaPage.Area);
 
             d.ShowDialog(this);
         }

@@ -18,19 +18,11 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public LocomotiveTypeInfo SelectedLocomotiveType {
-            get {
-                return SelectedXmlItem != null ? ((LocoTypeItem)SelectedXmlItem).LocomotiveType : null;
-            }
-        }
+        public LocomotiveTypeInfo SelectedLocomotiveType => SelectedXmlItem != null ? ((LocoTypeItem)SelectedXmlItem).LocomotiveType : null;
 
         public override IXmlQueryListboxItem CreateItem(XmlQueryListbox.QueryItem queryItem, XmlElement itemElement) => new LocoTypeItem(this, queryItem, itemElement);
 
-        public LocomotiveCatalogInfo Catalog {
-            get {
-                return catalog ?? (catalog = LayoutModel.LocomotiveCatalog);
-            }
-        }
+        public LocomotiveCatalogInfo Catalog => catalog ?? (catalog = LayoutModel.LocomotiveCatalog);
 
         public void Initialize() {
             AddLayout(new ListLayoutByStorage());

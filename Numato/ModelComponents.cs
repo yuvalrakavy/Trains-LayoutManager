@@ -41,11 +41,7 @@ namespace NumatoController {
 
         public override bool LayoutEmulationSupported => true;
 
-        public ControlBus RelayBus {
-            get {
-                return _relayBus ?? (_relayBus = LayoutModel.ControlManager.Buses.GetBus(this, "NumatoRelayBus"));
-            }
-        }
+        public ControlBus RelayBus => _relayBus ?? (_relayBus = LayoutModel.ControlManager.Buses.GetBus(this, "NumatoRelayBus"));
 
         protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) => new NumatorEmulator(this, pipeName);
 

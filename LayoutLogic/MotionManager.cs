@@ -161,8 +161,7 @@ namespace LayoutManager.Logic {
                 }
             }
 
-            Debug.Assert(_commandStationCapabilties != null);
-            return _commandStationCapabilties;
+            return _commandStationCapabilties ?? throw new LayoutException($"Unable to get command station capabilities for train {train.Name}");
         }
 
         #endregion

@@ -335,13 +335,9 @@ namespace LayoutManager.Model {
             }
         }
 
-        public string StartConditionDescription {
-            get {
-                return StartCondition == null
+        public string StartConditionDescription => StartCondition == null
                     ? "At once"
                     : (string)EventManager.Event(new LayoutEvent("get-event-script-description", StartCondition));
-            }
-        }
 
         public XmlElement DriverInstructions {
             get {
@@ -371,13 +367,9 @@ namespace LayoutManager.Model {
             }
         }
 
-        public string DriverInstructionsDescription {
-            get {
-                return DriverInstructions == null
+        public string DriverInstructionsDescription => DriverInstructions == null
                     ? ""
                     : (string)EventManager.Event(new LayoutEvent("get-event-script-description", DriverInstructions));
-            }
-        }
 
         public LocomotiveOrientation Direction {
             get => AttributeValue(A_Direction).Enum<LocomotiveOrientation>() ?? LocomotiveOrientation.Forward;
@@ -540,11 +532,7 @@ namespace LayoutManager.Model {
 
         public Guid TrainId => (Guid)AttributeValue(A_TrainId);
 
-        public TrainStateInfo Train {
-            get {
-                return train ?? (train = LayoutModel.StateManager.Trains[TrainId]);
-            }
-        }
+        public TrainStateInfo Train => train ?? (train = LayoutModel.StateManager.Trains[TrainId]);
 
         public TripStatus Status {
             get => AttributeValue(A_Status).Enum<TripStatus>() ?? TripStatus.NotSubmitted;
@@ -561,11 +549,7 @@ namespace LayoutManager.Model {
 
         public int CurrentWaypointIndex { get; set; }
 
-        public TripPlanWaypointInfo CurrentWaypoint {
-            get {
-                return CurrentWaypointIndex >= 0 && TripPlan.Waypoints.Count > 0 ? TripPlan.Waypoints[CurrentWaypointIndex] : null;
-            }
-        }
+        public TripPlanWaypointInfo CurrentWaypoint => CurrentWaypointIndex >= 0 && TripPlan.Waypoints.Count > 0 ? TripPlan.Waypoints[CurrentWaypointIndex] : null;
 
         public bool CanBeCleared => Status == TripStatus.Done || Status == TripStatus.Aborted;
 
@@ -888,11 +872,7 @@ namespace LayoutManager.Model {
             return imageList;
         }
 
-        public ImageList LargeIconImageList {
-            get {
-                return largeIconImageList ?? (largeIconImageList = createImageList(32, 32));
-            }
-        }
+        public ImageList LargeIconImageList => largeIconImageList ?? (largeIconImageList = createImageList(32, 32));
 
         /// <summary>
         /// Given iconID returns its icon index

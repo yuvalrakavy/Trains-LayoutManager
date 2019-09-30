@@ -149,9 +149,8 @@ namespace LayoutManager {
 
         public string ValidString() {
             MustExist();
-            Debug.Assert(v != null);
 
-            return v;
+            return v!;
         }
 
         public static explicit operator string?(ConvertableString s) {

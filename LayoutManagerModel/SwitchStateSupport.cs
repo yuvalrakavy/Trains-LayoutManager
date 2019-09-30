@@ -58,11 +58,7 @@ namespace LayoutManager.Components {
         /// <returns>Connection point state</returns>
         public virtual int GetSwitchState(string connectionPointName) => (int?)LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic).AttributeValue($"Value{connectionPointName}") ?? 0;
 
-        public bool ReverseLogic {
-            get {
-                return Component is IModelComponentHasReverseLogic componentWithReverseLogic ? componentWithReverseLogic.ReverseLogic : false;
-            }
-        }
+        public bool ReverseLogic => Component is IModelComponentHasReverseLogic componentWithReverseLogic ? componentWithReverseLogic.ReverseLogic : false;
     }
 
     public abstract class ModelComponentWithSwitchingState : ModelComponent, IModelComponentHasSwitchingState {

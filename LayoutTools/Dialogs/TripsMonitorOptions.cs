@@ -50,11 +50,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        public int AutoClearTimeout {
-            get {
-                return checkBoxEnableAutoClear.Checked ? (int)numericUpDownAutoClearTimeout.Value : -1;
-            }
-        }
+        public int AutoClearTimeout => checkBoxEnableAutoClear.Checked ? (int)numericUpDownAutoClearTimeout.Value : -1;
 
         /// <summary>
         /// Clean up any resources being used.

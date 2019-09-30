@@ -75,11 +75,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        public int StartingAddress {
-            get {
-                return textBoxStartAddress.Text.Trim() == "" ? -1 : int.Parse(textBoxStartAddress.Text);
-            }
-        }
+        public int StartingAddress => textBoxStartAddress.Text.Trim() == "" ? -1 : int.Parse(textBoxStartAddress.Text);
 
         /// <summary>
         /// Clean up any resources being used.

@@ -52,11 +52,7 @@ namespace LayoutManager.Tools.Controls {
 
         public int AutoClearTimeout => autoClearTimeout;
 
-        public ILayoutFrameWindow FrameWindow {
-            get {
-                return frameWindow ?? (frameWindow = (ILayoutFrameWindow)FindForm());
-            }
-        }
+        public ILayoutFrameWindow FrameWindow => frameWindow ?? (frameWindow = (ILayoutFrameWindow)FindForm());
 
         public void AddTripAssignment(TripPlanAssignmentInfo tripAssignment) {
             TripAssignmentItem item = (TripAssignmentItem)mapTrainToItem[tripAssignment.TrainId];

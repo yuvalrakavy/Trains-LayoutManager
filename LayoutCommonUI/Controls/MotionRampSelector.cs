@@ -4,6 +4,7 @@ using System.Xml;
 using System.Diagnostics;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0067
 #nullable enable
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
@@ -175,7 +176,7 @@ namespace LayoutManager.CommonUI.Controls {
         private void buttonOverrideDefault_Click(object sender, System.EventArgs e) {
             ramp = new MotionRampInfo(MotionRampType.RateFixed, LayoutModel.Instance.LogicalSpeedSteps / 2);
 
-            using var d = new Dialogs.EditMotionRamp(ramp);
+            var d = new Dialogs.EditMotionRamp(ramp);
 
             if (d.ShowDialog(this) == DialogResult.OK) {
                 checkBoxOverrideDefault.Checked = true;

@@ -46,11 +46,7 @@ namespace LayoutManager.Tools.Dialogs {
             updateButtons(null, null);
         }
 
-        public LocomotiveOrientation Orientation {
-            get {
-                return radioButtonOrientationForward.Checked ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
-            }
-        }
+        public LocomotiveOrientation Orientation => radioButtonOrientationForward.Checked ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
 
         public LocomotiveInfo Locomotive => (LocomotiveInfo)listBoxLocomotives.SelectedItem;
 

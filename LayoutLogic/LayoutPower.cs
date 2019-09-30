@@ -13,14 +13,10 @@ using LayoutManager.Components;
 namespace LayoutManager.Logic {
     [LayoutModule("Layout Power Manager", UserControl = false)]
     internal class LayoutPowerManager : LayoutModuleBase {
-        private static ILayoutTopologyServices _topologyServices;
+        private static ILayoutTopologyServices? _topologyServices;
         private readonly Dictionary<Guid, Guid> _pendingPowerConnectedLockReady = new Dictionary<Guid, Guid>();
 
-        private static ILayoutTopologyServices TopologyServices {
-            get {
-                return _topologyServices ?? (_topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", sender: null))!);
-            }
-        }
+        private static ILayoutTopologyServices TopologyServices => _topologyServices ?? (_topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", sender: null))!);
 
         /// <summary>
         /// Event that indicates that a power source state was changed. Check if this power source is connected to any track power connector.
@@ -28,19 +24,18 @@ namespace LayoutManager.Logic {
         /// </summary>
         /// <param name="e"></param>
         [LayoutEvent("power-outlet-changed-state-notification")]
-        private void PowerOutletChangedState(LayoutEvent e0) {
-            var e = (LayoutEvent<ILayoutPowerOutlet, ILayoutPower>)e0;
-
-            Debug.Assert(e.Sender != null && e.Info != null);
+        private void PowerOutletChangedState(LayoutEvent e) {
+            var powerOutlet = Ensure.NotNull<ILayoutPowerOutlet>(e.Sender, "outlet component");
+            var power = Ensure.NotNull<ILayoutPower>(e.Info, "power");
 
             // Redraw all tracks
             foreach (LayoutTrackComponent track in LayoutModel.AllComponents<LayoutTrackComponent>(LayoutModel.ActivePhases))
                 track.Redraw();
 
-            var outletComponentId = e.Sender.OutletComponent.Id;
+            var outletComponentId = powerOutlet.OutletComponent.Id;
 
             // If this outlet was connected to power connector which needs to notify that is can be locked.
-            if (_pendingPowerConnectedLockReady.ContainsKey(outletComponentId) && e.Info.Type != LayoutPowerType.Disconnected) {
+            if (_pendingPowerConnectedLockReady.ContainsKey(outletComponentId) && power.Type != LayoutPowerType.Disconnected) {
                 var component = LayoutModel.Component<ILayoutLockResource>(_pendingPowerConnectedLockReady[outletComponentId]);
 
                 if (component != null)
@@ -139,7 +134,7 @@ namespace LayoutManager.Logic {
                         bool isSplitPoint = splitTrack.IsSplitPoint(edge.ConnectionPoint);
 
                         if (splitTrack == split) {
-                            if ((fromSplit && !isSplitPoint) || (!fromSplit && isSplitPoint)) {
+                            if (fromSplit ^ isSplitPoint) {
                                 Error(edge.Track, "Power reverse loop detected. This will cause short-circuit, you must resolve this before power can be connected");
                                 return true;
                             }
@@ -344,8 +339,7 @@ namespace LayoutManager.Logic {
                 _ => throw new ArgumentException("Invalid power region")
             };
 
-            Debug.Assert(powerConnector != null);
-            return powerConnector;
+            return powerConnector ?? throw new ArgumentException("Unable to get power connector for region");
         }
 
         [LayoutEventDef("train-power-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(ILayoutPower))]
@@ -368,8 +362,8 @@ namespace LayoutManager.Logic {
 
         [LayoutAsyncEvent("set-power")]
         private async Task setPower(LayoutEvent e) {
-            Debug.Assert(e.Sender != null);
-            LayoutTrackPowerConnectorComponent powerConnector = ExtractPowerConnector(e.Sender);
+            var powerRegionObject = Ensure.NotNull<object>(e.Sender, "power region");
+            LayoutTrackPowerConnectorComponent powerConnector = ExtractPowerConnector(powerRegionObject);
             ILayoutPower power;
 
             if (e.Info is ILayoutPower)
@@ -382,7 +376,7 @@ namespace LayoutManager.Logic {
             bool isPossible = powerConnector.Inlet.ConnectedOutlet.ObtainablePowers.Any(p => p.Type == power.Type);
 
             if (!isPossible)
-                throw new LayoutException(e.Sender, power.Type == LayoutPowerType.Disconnected ? "It is not possible to turn power off to this region" : "It is not possible to assign this power type to that region");
+                throw new LayoutException(powerRegionObject, power.Type == LayoutPowerType.Disconnected ? "It is not possible to turn power off to this region" : "It is not possible to assign this power type to that region");
 
             if (powerConnector.Inlet.ConnectedOutlet.Power.Type != power.Type) {
                 // Validate that this type of power can be connected to that region
@@ -473,12 +467,10 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEvent("train-is-removed")]
-        private void onCanRemoveTrain(LayoutEvent e0) {
-            var e = (LayoutEvent<TrainStateInfo>)e0;
-            var train = e.Sender;
-            var power = train?.LocomotiveBlock?.BlockDefinintion.Power;
+        private void onCanRemoveTrain(LayoutEvent e) {
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+            var power = train.LocomotiveBlock?.BlockDefinintion.Power;
 
-            Debug.Assert(train != null && power != null);
             if (power != null) {
                 var disconnectedPower = new LayoutPower(power.PowerOriginComponent, LayoutPowerType.Disconnected, power.DigitalFormats, "Disconnected");
 

@@ -28,8 +28,7 @@ namespace LayoutManager {
         /// <param name="theEvent"></param>
         /// <param name="commandStation"></param>
         /// <returns></returns>
-        public static LayoutEvent SetCommandStation(this LayoutEvent theEvent, IModelComponentHasNameAndId? commandStation) {
-            Debug.Assert(commandStation != null);
+        public static LayoutEvent SetCommandStation(this LayoutEvent theEvent, IModelComponentHasNameAndId commandStation) {
             return theEvent.SetOption(elementName: "CommandStation", optionName: "ID", id: commandStation.Id).SetOption(elementName: "CommandStation", optionName: "Name", value: commandStation.NameProvider.Name);
         }
 
@@ -39,7 +38,7 @@ namespace LayoutManager {
         /// <param name="theEvent">the event</param>
         /// <param name="train">the train that its controlling command station should be used</param>
         /// <returns></returns>
-        public static LayoutEvent SetCommandStation(this LayoutEvent theEvent, TrainStateInfo train) => SetCommandStation(theEvent, train.CommandStation);
+        public static LayoutEvent SetCommandStation(this LayoutEvent theEvent, TrainStateInfo train) => SetCommandStation(theEvent, train.CommandStation ?? throw new LayoutException($"Train {train.Name} is not assigned to a command station"));
 
         /// <summary>
         /// Add command station information based on the control bus the command station is connected to
@@ -89,11 +88,7 @@ namespace LayoutManager.Components {
             get;
         }
 
-        public ILayoutEmulatorServices LayoutEmulationServices {
-            get {
-                return _layoutEmulationServices ?? (_layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this))!);
-            }
-        }
+        public ILayoutEmulatorServices LayoutEmulationServices => _layoutEmulationServices ?? (_layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this))!);
 
         public bool EmulateLayout {
             get; set;
@@ -130,6 +125,7 @@ namespace LayoutManager.Components {
 
         #endregion
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0067:Dispose objects before losing scope", Justification = "<Pending>")]
         protected virtual void OpenCommunicationStream() {
             if (EmulateLayout && LayoutEmulationSupported) {
                 string pipeName = @"\\.\pipe\CommandStationEmulationFor_" + Name;
@@ -163,12 +159,13 @@ namespace LayoutManager.Components {
                 if (fileCommStream != null)
                     safeHandle?.Close();
 
-                CommunicationStream?.Close();
+                commStream?.Close();
                 System.GC.Collect();
 
                 if (fileCommStream != null && safeHandle != null && !safeHandle.IsClosed)
                     Trace.WriteLine("Warning: PORT WAS NOT CLOSED");
 
+                commStream?.Dispose();
                 commStream = null;
             }
         }
@@ -318,11 +315,11 @@ namespace LayoutManager.Components {
             get {
                 if (this is IModelComponentCanProgramLocomotives) {
                     Debug.Assert(trackPowerOutlet != null && programmingPowerOutlet != null);
-                    return Array.AsReadOnly<ILayoutPowerOutlet>(new ILayoutPowerOutlet[] { trackPowerOutlet, programmingPowerOutlet });
+                    return Array.AsReadOnly<ILayoutPowerOutlet>(new ILayoutPowerOutlet[] { trackPowerOutlet!, programmingPowerOutlet! });
                 }
                 else {
                     Debug.Assert(trackPowerOutlet != null);
-                    return Array.AsReadOnly<ILayoutPowerOutlet>(new ILayoutPowerOutlet[] { trackPowerOutlet });
+                    return Array.AsReadOnly<ILayoutPowerOutlet>(new ILayoutPowerOutlet[] { trackPowerOutlet! });
                 }
             }
         }
@@ -376,12 +373,14 @@ namespace LayoutManager.Components {
 
         protected void PowerOn() {
             if (OperationMode) {
-                Debug.Assert(trackPowerOutlet != null);
-                trackPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Digital, this.SupportedDigitalPowerFormats, A_EmulationTickTime);
+                if (trackPowerOutlet != null)
+                    trackPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Digital, this.SupportedDigitalPowerFormats, A_EmulationTickTime);
+                else
+                    throw new LayoutControlException("PowerOn while trackPowerOutlet is null");
 
                 if (this is IModelComponentCanProgramLocomotives) {
-                    Debug.Assert(programmingPowerOutlet != null);
-                    programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, A_EmulationTickTime);
+                    if(programmingPowerOutlet != null)
+                        programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, A_EmulationTickTime);
                 }
             }
             EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation>("command-station-power-on-notification", this));
@@ -389,22 +388,23 @@ namespace LayoutManager.Components {
 
         protected void PowerOff() {
             if (OperationMode) {
-                Debug.Assert(trackPowerOutlet != null);
-                trackPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Disconnected, DigitalPowerFormats.None, A_EmulationTickTime);
+                if (trackPowerOutlet != null)
+                    trackPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Disconnected, DigitalPowerFormats.None, A_EmulationTickTime);
+                else
+                    throw new LayoutControlException("PowerOff while trackPowerOutlet is null");
             }
             EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation>("command-station-power-off-notification", this));
         }
 
         protected void ProgrammingPowerOn() {
             if (OperationMode) {
-                Debug.Assert(programmingPowerOutlet != null);
-                programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, A_EmulationTickTime + "_programming");
+                if(programmingPowerOutlet != null)
+                    programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, A_EmulationTickTime + "_programming");
             }
         }
 
         protected void ProgrammingPowerOff() {
-            if (OperationMode) {
-                Debug.Assert(programmingPowerOutlet != null);
+            if (OperationMode && programmingPowerOutlet != null) {
                 programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Disconnected, DigitalPowerFormats.None, A_EmulationTickTime + "_programming");
             }
         }

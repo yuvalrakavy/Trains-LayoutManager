@@ -51,11 +51,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
 
         public bool AddNewModule => radioButtonAddNewModule.Checked;
 
-        public LayoutControlModuleLocationComponent ModuleLocation {
-            get {
-                return comboBoxModuleLocation.SelectedItem == null ? null : ((Item)comboBoxModuleLocation.SelectedItem).ModuleLocation;
-            }
-        }
+        public LayoutControlModuleLocationComponent ModuleLocation => comboBoxModuleLocation.SelectedItem == null ? null : ((Item)comboBoxModuleLocation.SelectedItem).ModuleLocation;
 
         /// <summary>
         /// Clean up any resources being used.

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-#pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060, IDE0067
 
 namespace LayoutManager.Tools {
     /// <summary>

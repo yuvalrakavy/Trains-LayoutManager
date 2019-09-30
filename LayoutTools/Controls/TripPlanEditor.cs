@@ -11,7 +11,7 @@ using LayoutManager.Components;
 using LayoutManager.CommonUI;
 using System.Collections.Generic;
 
-#pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060, RCS1213, IDE0069, IDE0067
 namespace LayoutManager.Tools.Controls {
     /// <summary>
     /// Summary description for TripPlanEditor.
@@ -429,9 +429,7 @@ namespace LayoutManager.Tools.Controls {
 
         public Form ActiveForm {
             get {
-                if (activeDestinationEditor != null)
-                    return activeDestinationEditor;
-                else return ParentForm.Enabled ? ParentForm : null;
+                return activeDestinationEditor ?? (ParentForm.Enabled ? ParentForm : null);
             }
         }
 
@@ -1063,7 +1061,7 @@ namespace LayoutManager.Tools.Controls {
 
         private void menuItemEditDriverInstructions_Click(object sender, System.EventArgs e) {
             WayPointItem selected = (WayPointItem)listViewWayPoints.SelectedItems[0];
-            Dialogs.TripPlanWayPointDriverInstructions d = new Dialogs.TripPlanWayPointDriverInstructions(selected.WayPoint) {
+            var d = new Dialogs.TripPlanWayPointDriverInstructions(selected.WayPoint) {
                 ViewOnly = this.ViewOnly
             };
 
@@ -1077,7 +1075,7 @@ namespace LayoutManager.Tools.Controls {
             hideSelections();
 
             if (ViewOnly) {
-                Dialogs.DestinationEditor destinationEditor = new Dialogs.DestinationEditor(selected.WayPoint.Destination, "Destination for " + TripPlanName) {
+                var destinationEditor = new Dialogs.DestinationEditor(selected.WayPoint.Destination, "Destination for " + TripPlanName) {
                     ViewOnly = true
                 };
                 destinationEditor.ShowDialog(this);
@@ -1126,7 +1124,7 @@ namespace LayoutManager.Tools.Controls {
         }
 
         private void onManagerCommonDestinations(object sender, EventArgs e) {
-            Dialogs.TripPlanManageCommonDestinations dialog = new Dialogs.TripPlanManageCommonDestinations();
+            var dialog = new Dialogs.TripPlanManageCommonDestinations();
 
             hideSelections();
             dialog.ShowDialog(this);
@@ -1212,11 +1210,7 @@ namespace LayoutManager.Tools.Controls {
                     ImageIndex = 0;
             }
 
-            protected string DestinationDescription {
-                get {
-                    return WayPoint.Destination.Count > 1 ? "{ " + WayPoint.Destination.Name + " }" : WayPoint.Destination.Name;
-                }
-            }
+            protected string DestinationDescription => WayPoint.Destination.Count > 1 ? "{ " + WayPoint.Destination.Name + " }" : WayPoint.Destination.Name;
 
             public TripPlanWaypointInfo WayPoint { get; }
 

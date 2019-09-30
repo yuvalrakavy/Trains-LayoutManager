@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060, RCS1135, RCS1154, RCS1213
 namespace LayoutManager.View {
     /// <summary>
     /// Summary description for LayoutView.
@@ -67,6 +67,7 @@ namespace LayoutManager.View {
         public LayoutView() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
+
             modelGridToModelCoordinatesStack.Push(this);
             Phases = LayoutPhase.All;
         }
@@ -75,10 +76,12 @@ namespace LayoutManager.View {
         /// Clean up any resources being used.
         /// </summary>
         protected override void Dispose(bool disposing) {
-            if (disposing) {
-                if (components != null) {
-                    components.Dispose();
-                }
+            vScrollBar.Dispose();
+            hScrollBar.Dispose();
+            timerScrollForDrop.Dispose();
+
+            if (disposing && components!= null) {
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -185,11 +188,7 @@ namespace LayoutManager.View {
         /// <summary>
         /// Frame window containing this view
         /// </summary>
-        public ILayoutFrameWindow FrameWindow {
-            get {
-                return frameWindow ?? (frameWindow = FindForm() as ILayoutFrameWindow);
-            }
-        }
+        public ILayoutFrameWindow FrameWindow => frameWindow ?? (frameWindow = FindForm() as ILayoutFrameWindow);
 
         /// <summary>
         /// The model location to be shown on the top left corner of the view
@@ -408,10 +407,11 @@ namespace LayoutManager.View {
 
                                     if (power != null) {
                                         switch (power.Type) {
-                                            default:
-                                            case LayoutPowerType.Digital: resultColor = Color.DarkCyan; break;
                                             case LayoutPowerType.Disconnected: resultColor = Color.FromArgb(0x20, 0x4b, 0x4b); break;
                                             case LayoutPowerType.Programmer: resultColor = Color.Red; break;
+
+                                            case LayoutPowerType.Digital:
+                                            default: resultColor = Color.DarkCyan; break;
                                         }
                                     }
                                     else
@@ -446,18 +446,10 @@ namespace LayoutManager.View {
             return resultColor;
         }
 
-        public TrackColors GetTrackSegmentColor(TrackSegment trackSegment) {
-            TrackColors result;
-            TrackSegmentPreviewResult previewResult = LayoutController.PreviewRouteManager[trackSegment];
-
-            if (previewResult != null)
-                result = new TrackColors(trackSegment, previewResult.Request.Color, previewResult.Annotations);
-            else
-                result = new TrackColors(trackSegment,
+        public TrackColors GetTrackSegmentColor(TrackSegment trackSegment) => LayoutController.PreviewRouteManager[trackSegment] != null
+                ? new TrackColors(trackSegment, LayoutController.PreviewRouteManager[trackSegment].Request.Color, LayoutController.PreviewRouteManager[trackSegment].Annotations)
+                : new TrackColors(trackSegment,
                     GetTrackEdgeColor(new TrackEdge(trackSegment.Track, trackSegment.Cp1)), GetTrackEdgeColor(new TrackEdge(trackSegment.Track, trackSegment.Cp2)));
-
-            return result;
-        }
 
         #endregion
 
@@ -483,37 +475,25 @@ namespace LayoutManager.View {
 
         public float GridLineWidthInModelCoordinates {
             get {
-                switch (showGrid) {
-                    case ShowGridLinesOption.Hide:
-                        return 0;
-
-                    case ShowGridLinesOption.Show:
-                        return mpGridLineSize.Width;
-
-                    case ShowGridLinesOption.AutoHide:
-                        return showingGrid ? mpGridLineSize.Width : 0;
-
-                    default:
-                        throw new NotImplementedException("Invalid ShowGrid value");
-                }
+                return showGrid switch
+                {
+                    ShowGridLinesOption.Hide => 0,
+                    ShowGridLinesOption.Show => mpGridLineSize.Width,
+                    ShowGridLinesOption.AutoHide => showingGrid ? mpGridLineSize.Width : 0,
+                    _ => throw new ArgumentException("Invalid ShowGrid value"),
+                };
             }
         }
 
         private int DcGridLineWidth {
             get {
-                switch (showGrid) {
-                    case ShowGridLinesOption.Hide:
-                        return 0;
-
-                    case ShowGridLinesOption.Show:
-                        return dcGridLineSize.Width;
-
-                    case ShowGridLinesOption.AutoHide:
-                        return showingGrid ? dcGridLineSize.Width : 0;
-
-                    default:
-                        throw new NotImplementedException("Invalid ShowGrid value");
-                }
+                return showGrid switch
+                {
+                    ShowGridLinesOption.Hide => 0,
+                    ShowGridLinesOption.Show => dcGridLineSize.Width,
+                    ShowGridLinesOption.AutoHide => showingGrid ? dcGridLineSize.Width : 0,
+                    _ => throw new ArgumentException("Invalid ShowGrid value"),
+                };
             }
         }
 
@@ -678,9 +658,7 @@ namespace LayoutManager.View {
 
         private void drawGrid(Graphics g, RectangleF boundingRect, float gridLineWidthInModelCoordinates) {
             using Pen penGrid = new Pen(gridLineColor, gridLineWidthInModelCoordinates);
-            float f;
-
-            f = boundingRect.Left;
+            float f = boundingRect.Left;
 
             for (int i = 0; f < boundingRect.Right; i++) {
                 f = getValue(boundingRect.Left, i, gridLineWidthInModelCoordinates + GridSizeInModelCoordinates.Width);
@@ -696,9 +674,7 @@ namespace LayoutManager.View {
         }
 
         private void drawCoordinates(Graphics g, RectangleF boundingRectInModelCoordinates, Point originInModelGridUnits, float gridLineWidthInModelCoordinates) {
-            float fy;
-
-            fy = boundingRectInModelCoordinates.Top;
+            float fy = boundingRectInModelCoordinates.Top;
 
             using Font font = new Font("Arial", 9, GraphicsUnit.World);
             for (int iy = 0; fy < boundingRectInModelCoordinates.Bottom; iy++) {
@@ -810,11 +786,7 @@ namespace LayoutManager.View {
 
             #region ILayoutDrawingRegion Members
 
-            public Region BoundingRegionInModelCoordinates {
-                get {
-                    return _boundingRegion ?? (_boundingRegion = new Region(view.ModelLocationRectangleInModelCoordinates(spot.Location)));
-                }
-            }
+            public Region BoundingRegionInModelCoordinates => _boundingRegion ?? (_boundingRegion = new Region(view.ModelLocationRectangleInModelCoordinates(spot.Location)));
 
             public int ZOrder => 0;
 
@@ -1080,20 +1052,17 @@ namespace LayoutManager.View {
 
         private ScrollDirection NeedToScroll(Point p) {
             Size scrollRegionSize = new Size(16, 16);
-            ScrollDirection result;
 
             if (new Rectangle(0, 0, scrollRegionSize.Width, ClientRectangle.Height).Contains(p))
-                result = ScrollDirection.Left;
+                return ScrollDirection.Left;
             else if (new Rectangle(0, 0, ClientRectangle.Width, scrollRegionSize.Height).Contains(p))
-                result = ScrollDirection.Up;
+                return ScrollDirection.Up;
             else if (new Rectangle(ClientRectangle.Width - scrollRegionSize.Width, 0, scrollRegionSize.Width, ClientRectangle.Height).Contains(p))
-                result = ScrollDirection.Right;
+                return ScrollDirection.Right;
             else if (new Rectangle(0, ClientRectangle.Height - scrollRegionSize.Height, ClientRectangle.Width, scrollRegionSize.Height).Contains(p))
-                result = ScrollDirection.Down;
+                return ScrollDirection.Down;
             else
-                result = ScrollDirection.None;
-
-            return result;
+                return ScrollDirection.None;
         }
 
         protected override void OnDragOver(DragEventArgs drgevent) {
@@ -1486,7 +1455,7 @@ namespace LayoutManager.View {
             if (e.Delta > 0) {
                 int steps = e.Delta / 120;
 
-                if ((Control.ModifierKeys & Keys.Shift) != 0)
+                if ((Control.ModifierKeys & (Keys.Shift|Keys.Alt)) != 0)
                     ScrollWindow(new Size(-steps, 0));
                 else if ((Control.ModifierKeys & Keys.Control) != 0) {
                     float zoom = Zoom + (steps * 0.1F);
@@ -1501,7 +1470,7 @@ namespace LayoutManager.View {
             else {
                 int steps = -e.Delta / 120;
 
-                if ((Control.ModifierKeys & Keys.Shift) != 0)
+                if ((Control.ModifierKeys & (Keys.Shift|Keys.Alt)) != 0)
                     ScrollWindow(new Size(steps, 0));
                 else if ((Control.ModifierKeys & Keys.Control) != 0) {
                     float zoom = Zoom - (steps * 0.1F);

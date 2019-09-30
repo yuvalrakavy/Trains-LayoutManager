@@ -55,11 +55,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         public LayoutXmlInfo XmlInfo { get; }
 
-        public LayoutTrackLink TrackLink {
-            get {
-                return radioButtonLinked.Checked ? trackLinkTree.SelectedTrackLink : null;
-            }
-        }
+        public LayoutTrackLink TrackLink => radioButtonLinked.Checked ? trackLinkTree.SelectedTrackLink : null;
 
         /// <summary>
         /// Clean up any resources being used.

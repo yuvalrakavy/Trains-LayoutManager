@@ -679,11 +679,7 @@ namespace LayoutManager.Model {
 
         public int Index { get; }
 
-        public ControlModule? Module {
-            get {
-                return moduleID == Guid.Empty ? null : ControlManager.GetModule(moduleID);
-            }
-        }
+        public ControlModule? Module => moduleID == Guid.Empty ? null : ControlManager.GetModule(moduleID);
 
         public ControlModuleReference ModuleReference => new ControlModuleReference(ControlManager, moduleID);
 
@@ -845,13 +841,9 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Return the control module location component that is assigned to this module (if any)
         /// </summary>
-        public LayoutControlModuleLocationComponent? Location {
-            get {
-                return LocationId == Guid.Empty
+        public LayoutControlModuleLocationComponent? Location => LocationId == Guid.Empty
                     ? null
                     : LayoutModel.Component<LayoutControlModuleLocationComponent>(LocationId, LayoutModel.ActivePhases);
-            }
-        }
 
         /// <summary>
         /// The module label
@@ -1233,11 +1225,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The bus type object that define properties of this bus
         /// </summary>
-        public ControlBusType BusType {
-            get {
-                return busType ?? (busType = ControlManager.GetBusType(BusTypeName));
-            }
-        }
+        public ControlBusType BusType => busType ?? (busType = ControlManager.GetBusType(BusTypeName));
 
         /// <summary>
         /// Return the modules attached to this bus
@@ -1660,7 +1648,7 @@ namespace LayoutManager.Model {
             if (connectionPoints == null) {
                 Debug.Assert(this.connectionPoint != null);
                 connectionPoints = new List<ControlConnectionPoint> {
-                    this.connectionPoint
+                    this.connectionPoint ?? throw new LayoutException("ControlConnectionPointMapEntry - assert failed")
                 };
             }
 
@@ -1684,10 +1672,8 @@ namespace LayoutManager.Model {
 
                 return false;
             }
-            else {
-                Debug.Assert(this.connectionPoint != null);
-                return this.connectionPoint.Id == connectionPointID;
-            }
+            else
+                return this.connectionPoint?.Id == connectionPointID;
         }
 
         public bool Remove(ControlConnectionPoint connectionPoint) => Remove(connectionPoint.Id);
@@ -1700,7 +1686,7 @@ namespace LayoutManager.Model {
                 if (connectionPoints == null) {
                     Debug.Assert(this.connectionPoint != null);
                     List<ControlConnectionPoint> theList = new List<ControlConnectionPoint> {
-                        connectionPoint
+                        connectionPoint ?? throw new LayoutException("ControlConnectionPointMapEntry - assert failed")
                     };
                     return theList.AsReadOnly();
                 }
@@ -2101,17 +2087,9 @@ namespace LayoutManager.Model {
         /// Return a map from components (or component IDs) to connection points (usually one) that are connected to
         /// the component
         /// </summary>
-        public ControlConnectionPointsMap ConnectionPoints {
-            get {
-                return connectionPointsMap ?? (connectionPointsMap = new ControlConnectionPointsMap(this, ModulesElement));
-            }
-        }
+        public ControlConnectionPointsMap ConnectionPoints => connectionPointsMap ?? (connectionPointsMap = new ControlConnectionPointsMap(this, ModulesElement));
 
-        public ControlBusCollection Buses {
-            get {
-                return buses ?? (buses = new ControlBusCollection(this));
-            }
-        }
+        public ControlBusCollection Buses => buses ?? (buses = new ControlBusCollection(this));
 
         /// <summary>
         /// Get a module given its ID

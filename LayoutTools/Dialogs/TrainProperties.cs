@@ -7,7 +7,7 @@ using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
-#pragma warning disable IDE0051, IDE0060, IDE0069
+#pragma warning disable IDE0051, IDE0060, IDE0069, IDE0067
 #nullable enable
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -655,7 +655,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void buttonLocoAdd_Click(object sender, System.EventArgs e) {
-            using var addLoco = new Dialogs.AddLocomotiveToTrain(train);
+            var addLoco = new Dialogs.AddLocomotiveToTrain(train);
 
             if (addLoco.ShowDialog() == DialogResult.OK) {
                 CanPlaceTrainResult result = train.AddLocomotive(addLoco.Locomotive, addLoco.Orientation, null, true);

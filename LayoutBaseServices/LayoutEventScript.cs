@@ -343,7 +343,7 @@ namespace LayoutManager {
                 if (element == null || element.ChildNodes.Count < 1)
                     return defaultValue;
 
-                LayoutEventScriptTask task = new LayoutEventScriptTask(this, (XmlElement)element.ChildNodes[0], ScriptContext);
+                using LayoutEventScriptTask task = new LayoutEventScriptTask(this, (XmlElement)element.ChildNodes[0], ScriptContext);
 
                 return task.ConditionRoot.IsTrue;
             }
@@ -369,13 +369,9 @@ namespace LayoutManager {
 
         public object? ScriptSubject { get; set; }
 
-        public string? Description {
-            get {
-                return element == null || element.ChildNodes.Count < 1
+        public string? Description => element == null || element.ChildNodes.Count < 1
                     ? ""
                     : (string?)EventManager.Event(new LayoutEvent("get-event-script-description", element.ChildNodes[0]));
-            }
-        }
 
         #endregion
     }
@@ -628,8 +624,7 @@ namespace LayoutManager {
         private readonly LayoutParseEventScript parseEventInfo;
 
         protected LayoutEventScriptNode(LayoutEvent e) {
-            Debug.Assert(e.Sender != null);
-            this.parseEventInfo = (LayoutParseEventScript)e.Sender;
+            this.parseEventInfo = Ensure.NotNull<LayoutParseEventScript>(e.Sender, "parseEventInfo");
         }
 
         public XmlElement Element => parseEventInfo.Element;
@@ -670,29 +665,21 @@ namespace LayoutManager {
             if (symbolAccess == "Value") {
                 var v = element.AttributeValue($"Value{suffix}");
 
-                switch (element.GetAttribute("Type" + suffix)) {
-                    case "Boolean":
-                        return (bool)v;
-
-                    case "Integer":
-                        return (int)v;
-
-                    case "Double":
-                        return (double)v;
-
-                    default:
-                        return (string?)v ?? "";
-                }
+                return (element.GetAttribute("Type" + suffix)) switch
+                {
+                    "Boolean" => (bool)v,
+                    "Integer" => (int)v,
+                    "Double" => (double)v,
+                    _ => (string?)v ?? "",
+                };
             }
             else {
                 string symbolName = element.GetAttribute("Symbol" + suffix);
                 var symbolValue = Context[symbolName];
 
-                if (symbolValue == null)
-                    return null;
-                else {
-                    return symbolValue.GetType().IsArray ? symbolValue : GetOperand(element, symbolName, symbolValue, symbolAccess, suffix);
-                }
+                return symbolValue == null
+                    ? null
+                    : symbolValue.GetType().IsArray ? symbolValue : GetOperand(element, symbolName, symbolValue, symbolAccess, suffix);
             }
         }
 
@@ -1885,11 +1872,7 @@ namespace LayoutManager {
 
                 public string ToDay(int i) => new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" }[i];
 
-                public override string Description {
-                    get {
-                        return IsRange ? ToDay(From) + "-" + ToDay(To) : ToDay(Value);
-                    }
-                }
+                public override string Description => IsRange ? ToDay(From) + "-" + ToDay(To) : ToDay(Value);
             }
         }
 
@@ -2078,18 +2061,12 @@ namespace LayoutManager {
                         break;
 
                     case "ValueOf":
-                        object? v;
 
-                        switch (Element.GetAttribute("SymbolToAccess")) {
-                            case "Property":
-                                v = Context.GetProperty(symbol, symbolValue, Element.GetAttribute("NameTo"));
-                                break;
-
-                            default:
-                                v = Context.GetAttribute(symbol, symbolValue, Element.GetAttribute("NameTo"));
-                                break;
-                        }
-
+                        var v = (Element.GetAttribute("SymbolToAccess")) switch
+                        {
+                            "Property" => Context.GetProperty(symbol, symbolValue, Element.GetAttribute("NameTo")),
+                            _ => Context.GetAttribute(symbol, symbolValue, Element.GetAttribute("NameTo")),
+                        };
                         attributes[attribute] = v;
                         break;
 

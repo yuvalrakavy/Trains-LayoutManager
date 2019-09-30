@@ -328,15 +328,13 @@ namespace LayoutManager.View {
                 this.component = (LayoutTriggerableBlockEdgeBase)component;
             }
 
-            public LayoutTriggerableBlockEdgePainter.ComponentType PainterComponentType {
-                get => this.component switch
-                {
-                    LayoutTrackContactComponent _ => LayoutTriggerableBlockEdgePainter.ComponentType.TrackContact,
-                    LayoutProximitySensorComponent sensor when !sensor.IsTriggered => LayoutTriggerableBlockEdgePainter.ComponentType.ProximitySensor,
-                    LayoutProximitySensorComponent sensor when sensor.IsTriggered => LayoutTriggerableBlockEdgePainter.ComponentType.ActiveProximitySensor,
-                    _ => throw new NotImplementedException()
-                };
-            }
+            public LayoutTriggerableBlockEdgePainter.ComponentType PainterComponentType => this.component switch
+            {
+                LayoutTrackContactComponent _ => LayoutTriggerableBlockEdgePainter.ComponentType.TrackContact,
+                LayoutProximitySensorComponent sensor when !sensor.IsTriggered => LayoutTriggerableBlockEdgePainter.ComponentType.ProximitySensor,
+                LayoutProximitySensorComponent sensor when sensor.IsTriggered => LayoutTriggerableBlockEdgePainter.ComponentType.ActiveProximitySensor,
+                _ => throw new NotImplementedException()
+            };
 
             public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
                 bool disposeFill = true;

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
 
-#pragma warning disable IDE0051
+#pragma warning disable IDE0051, RCS1090
 #nullable enable
 namespace LayoutManager.Model {
     [LayoutModule("Programming Operations Manager", UserControl = false)]
@@ -23,8 +23,8 @@ namespace LayoutManager.Model {
 
                 action.Status = ActionStatus.InProgress;
 
-                if (action is ILayoutDccProgrammingAction)
-                    result = await ((ILayoutDccProgrammingAction)action).Execute(commandStation, (bool?)e.GetOption("UsePOM") ?? false);
+                if (action is ILayoutDccProgrammingAction layoutDccProgrammingAction)
+                    result = await (layoutDccProgrammingAction).Execute(commandStation, (bool?)e.GetOption("UsePOM") ?? false);
 
                 if (result != LayoutActionResult.Ok) {
                     action.Status = ActionStatus.Failed;
@@ -383,10 +383,10 @@ namespace LayoutManager.Model {
         }
 
         public async Task<LayoutActionResult> Execute(IModelComponentCanProgramLocomotives commandStation, bool useProgramOnMain) {
-            var decoderType = ProgrammingTarget.DecoderType as DccDecoderTypeInfo;
             LayoutActionResult result = LayoutActionResult.Ok;
 
-            Debug.Assert(decoderType != null);
+            if (!(ProgrammingTarget.DecoderType is DccDecoderTypeInfo decoderType))
+                throw new LayoutException("Decoder is not DCC compatibile");
 
             foreach (var cv in CVs) {
                 if (useProgramOnMain)
@@ -411,7 +411,7 @@ namespace LayoutManager.Model {
             string sep = "";
 
             foreach (DccProgrammingCV cv in CVs) {
-                s.Append(sep + "CV" + cv.Number + "=" + cv.Value.ToString("d") + " (" + cv.Value.ToString("x2") + ")");
+                s.Append(sep).Append("CV").Append(cv.Number).Append('=').Append(cv.Value.ToString("d")).Append(" (").Append(cv.Value.ToString("x2")).Append(')');
                 sep = ", ";
             }
 
