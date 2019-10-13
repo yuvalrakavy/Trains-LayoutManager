@@ -306,8 +306,8 @@ namespace LayoutManager.Model {
 
         public string FullDescription {
             get {
-                string location = (Spot == null) ? "Not placed" : "at " + Spot.Area.Name + ": " + Spot.Location;
-                string phaseName = Spot == null ? LayoutModel.Instance.DefaultPhase.ToString() : Spot.Phase.ToString();
+                string location = (OptionalSpot == null) ? "Not placed" : "at " + Spot.Area.Name + ": " + Spot.Location;
+                string phaseName = OptionalSpot == null ? LayoutModel.Instance.DefaultPhase.ToString() : Spot.Phase.ToString();
                 string typeName = this.GetType().Name;
                 LayoutTextInfo nameProvider = new LayoutTextInfo(this);
 
