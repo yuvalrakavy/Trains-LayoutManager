@@ -98,7 +98,7 @@ namespace LayoutManager.Model {
     /// </summary>
     public enum ControlAddressingMethod {
         /// <summary>
-        /// Address if of a connection point
+        /// Address is of a connection point
         /// </summary>
         DirectConnectionPointAddressing,
 
