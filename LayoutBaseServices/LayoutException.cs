@@ -79,10 +79,23 @@ namespace LayoutManager {
             return (T)v;
         }
 
+        public static T NotNull<T>(object ?v) where T: class {
+            if (v == null)
+                throw new ArgumentNullException();
+            return (T)v;
+        }
+
         public static T ValueNotNull<T>(object? v, string name) where T : struct {
             if (v == null)
                 throw new ArgumentNullException(name);
             return (T)v;
         }
+
+        public static T ValueNotNull<T>(object? v) where T : struct {
+            if (v == null)
+                throw new ArgumentNullException();
+            return (T)v;
+        }
+
     }
 }
