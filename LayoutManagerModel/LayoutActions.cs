@@ -97,7 +97,7 @@ namespace LayoutManager.Model {
 
         private ILayoutAction? GetAction(XmlElement actionElement) {
             LayoutAction? action = null;
-            var actionType = actionElement.GetAttribute("Type");
+            var actionType = (string?)actionElement.AttributeValue("Type");
 
             if (actionType != null)
                 action = EventManager.Event(new LayoutEvent("get-action", actionElement, Owner)) as LayoutAction;
