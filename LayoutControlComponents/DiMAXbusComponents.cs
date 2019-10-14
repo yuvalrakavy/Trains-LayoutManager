@@ -90,7 +90,7 @@ namespace LayoutManager.ControlComponents {
             var action = Ensure.NotNull<IMassothFeedbackDecoderSetAddress>(e.Info, "action");
             var controlModule = Ensure.NotNull<ControlModule>(e.Sender, "controlModule");
 
-            var d = new Dialogs.MassothFeedbackDecoderAddressSettings(action, controlModule);
+            using var d = new Dialogs.MassothFeedbackDecoderAddressSettings(action, controlModule);
 
             if (d.ShowDialog() == DialogResult.OK)
                 e.Result = true;

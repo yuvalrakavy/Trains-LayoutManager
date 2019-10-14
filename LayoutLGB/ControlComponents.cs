@@ -2,6 +2,7 @@
 using LayoutManager;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051
 namespace LayoutLGB {
     [LayoutModule("LGB MTS Bus Definitions")]
     internal class LGBcontrolComponents : LayoutModuleBase {
