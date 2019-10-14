@@ -37,8 +37,10 @@ namespace LayoutManager {
 
         public static void SetAttribute(this IObjectHasXml xmlObject, string name, int v, int removeIf) => xmlObject.Element.SetAttribute(name, v, removeIf);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, int v) => xmlObject.Element.SetAttribute(name, v);
+        public static void SetAttribute(this IObjectHasXml xmlObject, string name, UInt32 v) => xmlObject.Element.SetAttribute(name, v);
+        public static void SetAttribute(this IObjectHasXml xmlObject, string name, UInt32 v, UInt32 removeIf) => xmlObject.Element.SetAttribute(name, v, removeIf);
 
+        public static void SetAttribute(this IObjectHasXml xmlObject, string name, int v) => xmlObject.Element.SetAttribute(name, v);
         public static void SetAttribute(this IObjectHasXml xmlObject, string name, long v) => xmlObject.Element.SetAttribute(name, v);
 
         public static void SetAttribute(this IObjectHasXml xmlObject, string name, double v) => xmlObject.Element.SetAttribute(name, v);
@@ -79,6 +81,15 @@ namespace LayoutManager {
         }
 
         public static void SetAttribute(this XmlElement e, string name, int v) => e.SetAttribute(name, XmlConvert.ToString(v));
+
+        public static void SetAttribute(this XmlElement e, string name, UInt32 v, UInt32 removeIf) {
+            if (v == removeIf)
+                e.RemoveAttribute(name);
+            else
+                e.SetAttribute(name, XmlConvert.ToString(v));
+        }
+
+        public static void SetAttribute(this XmlElement e, string name, UInt32 v) => e.SetAttribute(name, XmlConvert.ToString(v));
 
         public static void SetAttribute(this XmlElement e, string name, long v) => e.SetAttribute(name, XmlConvert.ToString(v));
 

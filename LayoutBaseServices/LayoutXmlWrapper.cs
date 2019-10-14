@@ -85,6 +85,10 @@ namespace LayoutManager {
 
         public void SetAttribute(string name, int v) => ((IObjectHasXml)this).SetAttribute(name, v);
 
+        public void SetAttribute(string name, UInt32 v, UInt32 removeIf) => ((IObjectHasXml)this).SetAttribute(name, v, removeIf);
+
+        public void SetAttribute(string name, UInt32 v) => ((IObjectHasXml)this).SetAttribute(name, v);
+
         public void SetAttribute(string name, double v) => ((IObjectHasXml)this).SetAttribute(name, v);
 
         public void SetAttribute(string name, Guid v) => ((IObjectHasXml)this).SetAttribute(name, v);
