@@ -161,8 +161,8 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Set/Get well known reference to this provider
         /// </summary>
-        public string Ref {
-            get => GetAttribute("Ref");
+        public string? Ref {
+            get => (string?)AttributeValue("Ref");
 
             set => SetAttribute("Ref", value, removeIf: null);
         }
@@ -245,7 +245,7 @@ namespace LayoutManager.Model {
         }
 
         public override string ToString() {
-            string title = GetAttribute(A_Title);
+            var title = (string?)AttributeValue(A_Title);
 
             return title == null ? Description : title + " (" + Description + ")";
         }
@@ -454,7 +454,7 @@ namespace LayoutManager.Model {
         public LayoutFontInfo FontProvider {
             get {
                 if (fontProvider == null) {
-                    if (Component != null)
+                    if (OptionalComponent != null)
                         fontProvider = new LayoutFontInfo(Component, FontElementPath);
                     else
                         fontProvider = new LayoutFontInfo(ContainerElement, FontElementPath);
@@ -467,7 +467,7 @@ namespace LayoutManager.Model {
         public LayoutPositionInfo PositionProvider {
             get {
                 if (positionProvider == null) {
-                    if (Component != null)
+                    if (OptionalComponent != null)
                         positionProvider = new LayoutPositionInfo(Component, PositionElementPath);
                     else
                         positionProvider = new LayoutPositionInfo(ContainerElement, PositionElementPath);

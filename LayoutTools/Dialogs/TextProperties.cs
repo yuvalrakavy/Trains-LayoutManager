@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 using LayoutManager.Model;
 
+#pragma warning disable IDE0069
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for LabelProperties.

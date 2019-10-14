@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 using LayoutManager.Model;
 
+#pragma warning disable IDE0069
 namespace LayoutManager.CommonUI.Dialogs {
     /// <summary>
     /// Summary description for TextProviderSettings.
@@ -27,7 +28,7 @@ namespace LayoutManager.CommonUI.Dialogs {
 
             this.textProvider = textProvider;
 
-            textProviderFontDefinition1.XmlInfo = xmlInfo;
+            textProviderFontDefinition1.OptionalXmlInfo = xmlInfo;
             textProviderFontDefinition1.FontProvider = textProvider.FontProvider;
 
             TextProviderPositionDefinition1.XmlInfo = xmlInfo;
@@ -86,7 +87,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.textProviderFontDefinition1.Name = "textProviderFontDefinition1";
             this.textProviderFontDefinition1.Size = new System.Drawing.Size(320, 108);
             this.textProviderFontDefinition1.TabIndex = 9;
-            this.textProviderFontDefinition1.XmlInfo = null;
+            this.textProviderFontDefinition1.OptionalXmlInfo = null;
             // 
             // buttonCancel
             // 

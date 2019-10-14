@@ -5,6 +5,8 @@ using System.Xml;
 
 using LayoutManager.Model;
 
+#pragma warning disable IDE0069
+#nullable enable
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for TextProviderFontDefinition.
@@ -19,11 +21,12 @@ namespace LayoutManager.CommonUI.Controls {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private readonly Container components = null;
+        private readonly Container? components = null;
         private LayoutManager.CommonUI.Controls.LayoutInfosComboBox layoutInfosComboBoxFonts;
         private System.Windows.Forms.FontDialog fontDialogCustomSetting;
-        private LayoutXmlInfo xmlInfo;
+        private LayoutXmlInfo? xmlInfo;
 
+        #nullable disable
         public TextProviderFontDefinition() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
@@ -31,8 +34,9 @@ namespace LayoutManager.CommonUI.Controls {
             // TODO: Add any initialization after the InitForm call
 
         }
+        #nullable enable
 
-        public LayoutXmlInfo XmlInfo {
+        public LayoutXmlInfo? OptionalXmlInfo {
             get {
                 return xmlInfo;
             }
@@ -49,6 +53,11 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
+        public LayoutXmlInfo XmlInfo {
+            get => Ensure.NotNull<LayoutXmlInfo>(OptionalXmlInfo, "XmlInfo");
+            set => OptionalXmlInfo = value;
+        }
+
         public string CustomFontElementName { get; set; } = "Font";
 
         public LayoutFontInfo FontProvider {
@@ -57,7 +66,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
 
             set {
-                if (value.Element != null && !value.FoundInComponentDocument) {
+                if (value.OptionalElement != null && !value.FoundInComponentDocument) {
                     radioButtonStandardFont.Checked = true;
                     layoutInfosComboBoxFonts.SelectedItem = value;
                 }
@@ -76,11 +85,11 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private LayoutFontInfo getCustomFont() {
-            LayoutFontInfo fontProvider = new LayoutFontInfo(xmlInfo.DocumentElement, CustomFontElementName);
+            LayoutFontInfo fontProvider = new LayoutFontInfo(XmlInfo.DocumentElement, CustomFontElementName);
 
             // If font element did not exist, create it
-            if (fontProvider.Element == null)
-                fontProvider.Element = LayoutInfo.CreateProviderElement(xmlInfo, CustomFontElementName, null);
+            if (fontProvider.OptionalElement == null)
+                fontProvider.Element = LayoutInfo.CreateProviderElement(XmlInfo, CustomFontElementName, null);
 
             return fontProvider;
         }

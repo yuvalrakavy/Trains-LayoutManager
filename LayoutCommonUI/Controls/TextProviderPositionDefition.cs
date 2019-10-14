@@ -5,6 +5,8 @@ using System.Xml;
 
 using LayoutManager.Model;
 
+#nullable enable
+#pragma warning disable IDE0069
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for TextProviderPositionDefinition.
@@ -19,7 +21,7 @@ namespace LayoutManager.CommonUI.Controls {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private readonly Container components = null;
+        private readonly Container? components = null;
         private LayoutXmlInfo xmlInfo;
 
         public LayoutXmlInfo XmlInfo {
@@ -52,7 +54,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
 
             set {
-                if (value.Element != null && !value.FoundInComponentDocument) {
+                if (value.OptionalElement != null && !value.FoundInComponentDocument) {
                     radioButtonStandardPosition.Checked = true;
                     layoutInfosComboBoxPositions.SelectedItem = value;
                 }
@@ -74,6 +76,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
+        #nullable disable
         public TextProviderPositionDefinition() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
@@ -81,12 +84,13 @@ namespace LayoutManager.CommonUI.Controls {
             // TODO: Add any initialization after the InitForm call
 
         }
+        #nullable enable
 
         private LayoutPositionInfo getCustomPosition() {
             LayoutPositionInfo positionProvider = new LayoutPositionInfo(xmlInfo.DocumentElement, CustomPositionElementName);
 
             // If font element did not exist, create it
-            if (positionProvider.Element == null)
+            if (positionProvider.OptionalElement == null)
                 positionProvider.Element = LayoutInfo.CreateProviderElement(xmlInfo.DocumentElement, CustomPositionElementName, null);
 
             return positionProvider;
