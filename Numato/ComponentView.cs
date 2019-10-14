@@ -7,6 +7,7 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
 
+#pragma warning disable IDE0051
 namespace NumatoController {
     /// <summary>
     /// Summary description for ComponentView.
@@ -79,10 +80,8 @@ namespace NumatoController {
         }
 
         private class DrawingRegionNumatoRelayController : LayoutDrawingRegionGrid {
-            private readonly NumatoController component;
 
             internal DrawingRegionNumatoRelayController(ModelComponent component, ILayoutView view) : base(component, view) {
-                this.component = (NumatoController)component;
             }
 
             public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
@@ -103,10 +102,7 @@ namespace NumatoController {
         }
 
         private class NumatoRelayControllerPainter {
-            private Size componentSize;
-
-            internal NumatoRelayControllerPainter(Size componentSize) {
-                this.componentSize = componentSize;
+            internal NumatoRelayControllerPainter(Size _) {
             }
 
             internal void Paint(Graphics g) {

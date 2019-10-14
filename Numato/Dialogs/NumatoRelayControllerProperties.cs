@@ -8,6 +8,7 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#pragma warning disable IDE0069
 namespace NumatoController.Dialogs {
     /// <summary>
     /// Summary description for CentralStationProperties.
@@ -413,7 +414,7 @@ namespace NumatoController.Dialogs {
         private void buttonCOMsettings_Click(object sender, EventArgs e) {
             string modeString = XmlInfo.DocumentElement["ModeString"].InnerText;
 
-            LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
+            using var d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
 
             if (d.ShowDialog(this) == DialogResult.OK)
                 XmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;

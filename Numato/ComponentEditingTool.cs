@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using LayoutManager;
 
+#pragma warning disable IDE0051, IDE0052
 namespace NumatoController {
     /// <summary>
     /// Summary description for ComponentTool.
@@ -51,7 +52,7 @@ namespace NumatoController {
         [LayoutEvent("model-component-placement-request", SenderType = typeof(NumatoController))]
         private void PlaceNumatoRelayController(LayoutEvent e) {
             var component = (NumatoController)e.Sender;
-            var csProperties = new Dialogs.NumatoControllerProperties(component);
+            using var csProperties = new Dialogs.NumatoControllerProperties(component);
 
             if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 component.XmlInfo.XmlDocument = csProperties.XmlInfo.XmlDocument;
