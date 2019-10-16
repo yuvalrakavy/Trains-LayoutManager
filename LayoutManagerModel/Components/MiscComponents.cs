@@ -184,7 +184,7 @@ namespace LayoutManager.Components {
 
         public bool CheckReverseLoops {
             get => (bool?)AttributeValue(A_CheckReverseLoops) ?? true;
-            set => SetAttribute(A_CheckReverseLoops, value, removeIf: true);
+            set => SetAttributeValue(A_CheckReverseLoops, value, removeIf: true);
         }
     }
 
@@ -860,22 +860,22 @@ namespace LayoutManager.Components {
 
         public bool TwoDirectionRelays {
             get => (bool?)AttributeValue(A_TwoDirectionRelays) ?? false;
-            set => SetAttribute(A_TwoDirectionRelays, value);
+            set => SetAttributeValue(A_TwoDirectionRelays, value);
         }
 
         public FeedbackTypes FeedbackType {
             get => AttributeValue(A_FeedbackType).Enum<FeedbackTypes>() ?? FeedbackTypes.NoFeedback;
-            set => SetAttribute(A_FeedbackType, value);
+            set => SetAttributeValue(A_FeedbackType, value);
         }
 
         public bool ReverseDirection {
             get => (bool?)AttributeValue(A_ReverseDirection) ?? false;
-            set => SetAttribute(A_ReverseDirection, value);
+            set => SetAttributeValue(A_ReverseDirection, value);
         }
 
         public bool ReverseMotion {
             get => (bool?)AttributeValue(A_ReverseMotion) ?? false;
-            set => SetAttribute(A_ReverseMotion, value);
+            set => SetAttributeValue(A_ReverseMotion, value);
         }
 
         /// <summary>
@@ -886,7 +886,7 @@ namespace LayoutManager.Components {
         /// </remarks>
         public int MotionTimeout {
             get => (int?)AttributeValue(A_MotionTimeout) ?? 10;
-            set => SetAttribute(A_MotionTimeout, value);
+            set => SetAttributeValue(A_MotionTimeout, value);
         }
 
         /// <summary>
@@ -894,7 +894,7 @@ namespace LayoutManager.Components {
         /// </summary>
         public int MotionTime {
             get => (int?)AttributeValue(A_MotionTime) ?? 10;
-            set => SetAttribute(A_MotionTime, value);
+            set => SetAttributeValue(A_MotionTime, value);
         }
 
         /// <summary>
@@ -902,7 +902,7 @@ namespace LayoutManager.Components {
         /// </summary>
         public bool OpenUpOrLeft {
             get => (bool?)AttributeValue(A_OpenUpOrLeft) ?? false;
-            set => SetAttribute(A_OpenUpOrLeft, value);
+            set => SetAttributeValue(A_OpenUpOrLeft, value);
         }
     }
 

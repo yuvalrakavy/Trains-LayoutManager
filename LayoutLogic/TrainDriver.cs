@@ -93,13 +93,13 @@ namespace LayoutManager.Logic {
             public AutoDriverState State {
                 get => AttributeValue("AutoDriverState").Enum<AutoDriverState>() ?? AutoDriverState.Stop;
 
-                set => SetAttribute("AutoDriverState", value.ToString());
+                set => SetAttributeValue("AutoDriverState", value.ToString());
             }
 
             public LocomotiveOrientation Direction {
                 get => AttributeValue("Direction").Enum<LocomotiveOrientation>() ?? LocomotiveOrientation.Forward;
 
-                set => SetAttribute("Direction", value.ToString());
+                set => SetAttributeValue("Direction", value.ToString());
             }
         }
 

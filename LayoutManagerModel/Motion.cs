@@ -45,22 +45,22 @@ namespace LayoutManager.Model {
 
         public string Name {
             get => GetOptionalAttribute(A_Name) ?? "";
-            set => SetAttribute(A_Name, value);
+            set => SetAttributeValue(A_Name, value);
         }
 
         public string? Role {
             get => GetOptionalAttribute(A_Role);
-            set => SetAttribute(A_Role, value, removeIf: null);
+            set => SetAttributValue(A_Role, value, removeIf: null);
         }
 
         public bool UseInTrainControllerDialog {
             get => (bool?)AttributeValue(A_UseInTrainController) ?? false;
-            set => SetAttribute(A_UseInTrainController, value, removeIf: false);
+            set => SetAttributeValue(A_UseInTrainController, value, removeIf: false);
         }
 
         public MotionRampType RampType {
             get => AttributeValue(A_RampType).Enum<MotionRampType>() ?? MotionRampType.RateFixed;
-            set => SetAttribute(A_RampType, value);
+            set => SetAttributeValue(A_RampType, value);
         }
 
         /// <summary>
@@ -68,12 +68,12 @@ namespace LayoutManager.Model {
         /// </summary>
         public int MotionTime {
             get => (int?)AttributeValue(A_MotionTime) ?? 0;
-            set => SetAttribute(A_MotionTime, value);
+            set => SetAttributeValue(A_MotionTime, value);
         }
 
         public int SpeedChangeRate {
             get => (int?)AttributeValue(A_SpeedChangeRate) ?? 0;
-            set => SetAttribute(A_SpeedChangeRate, value);
+            set => SetAttributeValue(A_SpeedChangeRate, value);
         }
 
         public string Description => Element.HasAttribute(A_Name) ? Name + " (" + GetRampDescription() + ")" : GetRampDescription();
@@ -152,7 +152,7 @@ namespace LayoutManager.Model {
 
         public int MinTimeBetweenSpeedSteps {
             get => (int?)AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 0;
-            set => SetAttribute(A_MinTimeBetweenSpeedSteps, value);
+            set => SetAttributeValue(A_MinTimeBetweenSpeedSteps, value);
         }
     }
 
@@ -190,12 +190,12 @@ namespace LayoutManager.Model {
 
         public int SpeedLimit {
             get => (int?)AttributeValue(A_SpeedLimit) ?? 0;
-            set => SetAttribute(A_SpeedLimit, value);
+            set => SetAttributeValue(A_SpeedLimit, value);
         }
 
         public int SlowdownSpeed {
             get => (int?)AttributeValue(A_SlowDownSpeed) ?? 1;
-            set => SetAttribute(A_SlowDownSpeed, value);
+            set => SetAttributeValue(A_SlowDownSpeed, value);
         }
 
         private MotionRampInfo? getRamp(string role) {

@@ -164,7 +164,7 @@ namespace LayoutManager.Model {
         public string? Ref {
             get => (string?)AttributeValue("Ref");
 
-            set => SetAttribute("Ref", value, removeIf: null);
+            set => SetAttributValue("Ref", value, removeIf: null);
         }
     }
 
@@ -193,17 +193,17 @@ namespace LayoutManager.Model {
 
         public FontStyle Style {
             get => OptionalElement?.AttributeValue(A_Style).Enum<FontStyle>() ?? FontStyle.Regular;
-            set => SetAttribute(A_Style, value);
+            set => SetAttributeValue(A_Style, value);
         }
 
         public string Name {
             get => (string?)OptionalElement?.AttributeValue(A_Name) ?? "Arial";
-            set => SetAttribute(A_Name, value);
+            set => SetAttributeValue(A_Name, value);
         }
 
         public float Size {
             get => (float?)OptionalElement?.AttributeValue(A_Size) ?? 8;
-            set => SetAttribute(A_Size, value);
+            set => SetAttributeValue(A_Size, value);
         }
 
         public Font Font {
@@ -241,7 +241,7 @@ namespace LayoutManager.Model {
                 return colorName == null ? Color.Black : Color.FromName(colorName);
             }
 
-            set => SetAttribute(A_Color, value.Name);
+            set => SetAttributeValue(A_Color, value.Name);
         }
 
         public override string ToString() {
@@ -283,22 +283,22 @@ namespace LayoutManager.Model {
 
         public int Distance {
             get => (int?)OptionalElement?.AttributeValue(A_Distance) ?? 8;
-            set => SetAttribute(A_Distance, value);
+            set => SetAttributeValue(A_Distance, value);
         }
 
         public int Width {
             get => (int?)OptionalElement?.AttributeValue(A_Width) ?? 0;
-            set => SetAttribute(A_Width, value);
+            set => SetAttributeValue(A_Width, value);
         }
 
         public LayoutDrawingAnchorPoint AnchorPoint {
             get => OptionalElement?.AttributeValue(A_Anchor).Enum<LayoutDrawingAnchorPoint>() ?? LayoutDrawingAnchorPoint.Center;
-            set => SetAttribute(A_Anchor, value);
+            set => SetAttributeValue(A_Anchor, value);
         }
 
         public LayoutDrawingSide Side {
             get => OptionalElement?.AttributeValue(A_Side).Enum<LayoutDrawingSide>() ?? LayoutDrawingSide.Bottom;
-            set => SetAttribute(A_Side, value);
+            set => SetAttributeValue(A_Side, value);
         }
 
         public override string ToString() => (string?)OptionalElement?.AttributeValue(A_Title) ?? "No title";
@@ -375,14 +375,14 @@ namespace LayoutManager.Model {
 
         public bool Visible {
             get => (bool?)AttributeValue(A_Visible) ?? false;
-            set => SetAttribute(A_Visible, value);
+            set => SetAttributeValue(A_Visible, value);
         }
 
         public virtual string FontElementPath {
             get => GetOptionalAttribute("Font") ?? "//Font[@Ref=\"Default\"]";
 
             set {
-                SetAttribute("Font", value);
+                SetAttributeValue("Font", value);
                 fontProvider = null;
             }
         }
@@ -446,7 +446,7 @@ namespace LayoutManager.Model {
             get => GetOptionalAttribute("Position") ?? LayoutPositionInfo.GetElementPathPositionPath(DefaultLayoutDrawingSide);
 
             set {
-                SetAttribute("Position", value);
+                SetAttributeValue("Position", value);
                 positionProvider = null;
             }
         }
@@ -581,12 +581,12 @@ namespace LayoutManager.Model {
 
         public int Unit {
             get => (int?)AttributeValue(A_Unit) ?? 0;
-            set => SetAttribute(A_Unit, value);
+            set => SetAttributeValue(A_Unit, value);
         }
 
         public int Subunit {
             get => (int?)AttributeValue(A_Subunit) ?? 0;
-            set => SetAttribute(A_Subunit, value);
+            set => SetAttributeValue(A_Subunit, value);
         }
 
         public bool HasSubunit {
@@ -597,14 +597,14 @@ namespace LayoutManager.Model {
                     Element.RemoveAttribute(A_Subunit);
                 else {
                     if (!Element.HasAttribute(A_Subunit))
-                        SetAttribute(A_Subunit, 0);
+                        SetAttributeValue(A_Subunit, 0);
                 }
             }
         }
 
         public override string Text {
             get => GetOptionalAttribute(A_Text) ?? "***";
-            set => SetAttribute(A_Text, value);
+            set => SetAttributeValue(A_Text, value);
         }
 
         /// <summary>
@@ -694,7 +694,7 @@ namespace LayoutManager.Model {
 
         public string ImageFile {
             get => GetAttribute(A_ImageFile);
-            set => SetAttribute(A_ImageFile, value);
+            set => SetAttributeValue(A_ImageFile, value);
         }
 
         public Size Size {
@@ -704,60 +704,60 @@ namespace LayoutManager.Model {
             };
 
             set {
-                SetAttribute(A_Width, value.Width, removeIf: -1);
-                SetAttribute(A_Height, value.Height, removeIf: -1);
+                SetAttributeValue(A_Width, value.Width, removeIf: -1);
+                SetAttributeValue(A_Height, value.Height, removeIf: -1);
             }
         }
 
         public ImageSizeUnit WidthSizeUnit {
             get => AttributeValue(A_WidthSizeUnit).Enum<ImageSizeUnit>() ?? ImageSizeUnit.GridUnits;
-            set => SetAttribute(A_WidthSizeUnit, value);
+            set => SetAttributeValue(A_WidthSizeUnit, value);
         }
 
         public ImageSizeUnit HeightSizeUnit {
             get => AttributeValue(A_HeightSideUnit).Enum<ImageSizeUnit>() ?? ImageSizeUnit.GridUnits;
-            set => SetAttribute(A_HeightSideUnit, value);
+            set => SetAttributeValue(A_HeightSideUnit, value);
         }
 
         public Size Offset {
             get => new Size((int?)AttributeValue(A_OffsetWidth) ?? 0, (int?)AttributeValue(A_OffsetHeight) ?? 0);
 
             set {
-                SetAttribute(A_OffsetWidth, value.Width);
-                SetAttribute(A_OffsetHeight, value.Height);
+                SetAttributeValue(A_OffsetWidth, value.Width);
+                SetAttributeValue(A_OffsetHeight, value.Height);
             }
         }
 
         public ImageOriginMethod OriginMethod {
             get => AttributeValue(A_OriginMethod).Enum<ImageOriginMethod>() ?? ImageOriginMethod.TopLeft;
-            set => SetAttribute(A_OriginMethod, value);
+            set => SetAttributeValue(A_OriginMethod, value);
         }
 
         public ImageHorizontalAlignment HorizontalAlignment {
             get => AttributeValue(A_HorizontalAlignment).Enum<ImageHorizontalAlignment>() ?? ImageHorizontalAlignment.Left;
-            set => SetAttribute(A_HorizontalAlignment, value);
+            set => SetAttributeValue(A_HorizontalAlignment, value);
         }
 
         public ImageVerticalAlignment VerticalAlignment {
             get => AttributeValue(A_VerticalAlignment).Enum<ImageVerticalAlignment>() ?? ImageVerticalAlignment.Top;
-            set => SetAttribute(A_VerticalAlignment, value);
+            set => SetAttributeValue(A_VerticalAlignment, value);
         }
 
         public ImageFillEffect FillEffect {
             get => AttributeValue(A_ImageFillEffect).Enum<ImageFillEffect>() ?? ImageFillEffect.Stretch;
-            set => SetAttribute(A_ImageFillEffect, value);
+            set => SetAttributeValue(A_ImageFillEffect, value);
         }
 
         public RotateFlipType RotateFlipEffect {
             get => AttributeValue(A_RotateFlipEffect).Enum<RotateFlipType>() ?? RotateFlipType.RotateNoneFlipNone;
-            set => SetAttribute(A_RotateFlipEffect, value);
+            set => SetAttributeValue(A_RotateFlipEffect, value);
         }
 
         public string ImageCacheEventXml => "<Effect Type='" + RotateFlipEffect.ToString() + "' />";
 
         public bool ImageError {
             get => (bool?)AttributeValue(A_ImageError) ?? false;
-            set => SetAttribute(A_ImageError, value, removeIf: false);
+            set => SetAttributeValue(A_ImageError, value, removeIf: false);
         }
     }
 }

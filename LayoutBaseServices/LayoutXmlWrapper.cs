@@ -77,33 +77,35 @@ namespace LayoutManager {
 
         public string GetAttribute(string name) => AttributeValue(name).ValidString();
 
-        public void SetAttribute(string name, string? v) => Element.SetAttributeValue(name, v, null);
+        public void SetAttributeValue(string name, string? v) => Element.SetAttributeValue(name, v, null);
 
-        public void SetAttribute(string name, string? v, string? removeIf) => Element.SetAttributeValue(name, v, removeIf);
+        public void SetAttributValue(string name, string? v, string? removeIf) => Element.SetAttributeValue(name, v, removeIf);
 
-        public void SetAttribute(string name, int v, int removeIf) => Element.SetAttributeValue(name, v, removeIf);
+        public void SetAttributeValue(string name, int v, int removeIf) => Element.SetAttributeValue(name, v, removeIf);
 
-        public void SetAttribute(string name, int v) => Element.SetAttributeValue(name, v);
+        public void SetAttributeValue(string name, int v) => Element.SetAttributeValue(name, v);
 
-        public void SetAttribute(string name, UInt32 v, UInt32 removeIf) => Element.SetAttributeValue(name, v, removeIf);
+        public void SetAttributeValue(string name, UInt32 v, UInt32 removeIf) => Element.SetAttributeValue(name, v, removeIf);
 
-        public void SetAttribute(string name, UInt32 v) => Element.SetAttributeValue(name, v);
+        public void SetAttributeValue(string name, UInt32 v) => Element.SetAttributeValue(name, v);
 
-        public void SetAttribute(string name, double v) => Element.SetAttributeValue(name, v);
+        public void SetAttributeValue(string name, double v) => Element.SetAttributeValue(name, v);
 
-        public void SetAttribute(string name, Guid v) => Element.SetAttributeValue(name, v);
+        public void SetAttributeValue(string name, Guid v) => Element.SetAttributeValue(name, v);
 
-        public void SetAttribute(string name, Guid v, Guid removeIf) => Element.SetAttributeValue(name, v, removeIf);
+        public void SetAttributeValue(string name, Guid v, Guid removeIf) => Element.SetAttributeValue(name, v, removeIf);
 
-        public void SetAttribute(string name, bool v) => Element.SetAttributeValue(name, v);
+        public void SetAttributeValue(string name, bool v) => Element.SetAttributeValue(name, v);
 
-        public void SetAttribute(string name, bool v, bool removeIf) => Element.SetAttributeValue(name, v, removeIf);
+        public void SetAttributeValue(string name, bool v, bool removeIf) => Element.SetAttributeValue(name, v, removeIf);
 
-        public void SetAttribute(string name, Enum e) => Element.SetAttributeValue(name, e);
+        public void SetAttributeValue(string name, Enum e) => Element.SetAttributeValue(name, e);
 
         public void SetAttribute(string name, Enum e, Enum removeIf) => Element.SetAttributeValue(name, e, removeIf);
 
         public bool HasAttribute(string name) => Element.HasAttribute(name);
+
+        public void RemoveAttribute(string name) => Element.RemoveAttribute(name);
 
         public Guid Id {
             get {
@@ -112,7 +114,7 @@ namespace LayoutManager {
                 if (!id.HasValue) {
                     Guid newId = Guid.NewGuid();
 
-                    this.SetAttribute("ID", newId);
+                    this.SetAttributeValue("ID", newId);
                     return newId;
                 }
                 else
@@ -121,7 +123,7 @@ namespace LayoutManager {
 
             set {
                 Debug.Assert(!this.HasAttribute("ID"));
-                this.SetAttribute("ID", value);
+                this.SetAttributeValue("ID", value);
             }
         }
     }

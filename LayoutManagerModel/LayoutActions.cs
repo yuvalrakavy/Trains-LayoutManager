@@ -250,7 +250,7 @@ namespace LayoutManager.Model {
             get => AttributeValue(A_Status).Enum<ActionStatus>() ?? ActionStatus.Pending;
 
             set {
-                SetAttribute(A_Status, value);
+                SetAttributeValue(A_Status, value);
                 if (value != ActionStatus.Pending)
                     EventManager.Event(new LayoutEventInfoValueType<ILayoutAction, ActionStatus>("action-status-changed", this, value));
             }
@@ -297,7 +297,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool IgnoreNoResponseResult {
             get => (bool?)AttributeValue(A_IgnoreNoResponse) ?? false;
-            set => SetAttribute(A_IgnoreNoResponse, value, removeIf: false);
+            set => SetAttributeValue(A_IgnoreNoResponse, value, removeIf: false);
         }
     }
 
@@ -319,12 +319,12 @@ namespace LayoutManager.Model {
 
         public int Number {
             get => (int)AttributeValue(A_Number);
-            set => SetAttribute(A_Number, value);
+            set => SetAttributeValue(A_Number, value);
         }
 
         public byte Value {
             get => (byte)AttributeValue(A_Value);
-            set => SetAttribute(A_Value, value);
+            set => SetAttributeValue(A_Value, value);
         }
     }
 
@@ -346,7 +346,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int ProgrammingTargetAddress {
             get => (int?)AttributeValue(LayoutDccProgrammingAction<TProgrammingTargetType>.A_ProgrammingTargetAddress) ?? -1;
-            set => SetAttribute(LayoutDccProgrammingAction<TProgrammingTargetType>.A_ProgrammingTargetAddress, value);
+            set => SetAttributeValue(LayoutDccProgrammingAction<TProgrammingTargetType>.A_ProgrammingTargetAddress, value);
         }
 
         /// <summary>
@@ -438,17 +438,17 @@ namespace LayoutManager.Model {
 
         public int Address {
             get => (int)AttributeValue(A_Address);
-            set => SetAttribute(A_Address, value);
+            set => SetAttributeValue(A_Address, value);
         }
 
         public int SpeedSteps {
             get => (int?)AttributeValue(A_SpeedSteps) ?? 28;
-            set => SetAttribute(A_SpeedSteps, value);
+            set => SetAttributeValue(A_SpeedSteps, value);
         }
 
         public bool ReverseDirection {
             get => (bool?)AttributeValue(A_ReverseDirection) ?? false;
-            set => SetAttribute(A_ReverseDirection, value, removeIf: false);
+            set => SetAttributeValue(A_ReverseDirection, value, removeIf: false);
         }
 
         public override string Description => "Set address to " + Address + ", " + SpeedSteps + " speed steps" + (ReverseDirection ? ", reverse direction" : "");

@@ -130,14 +130,14 @@ namespace LayoutManager.ControlComponents {
 
         public MassothFeedbackDecoderBusConnectionMethod DiMAX_BusConnectionMethod {
             get => AttributeValue(A_DiMAXBusConnectionMethod).Enum<MassothFeedbackDecoderBusConnectionMethod>() ?? MassothFeedbackDecoderBusConnectionMethod.Slave;
-            set => SetAttribute(A_DiMAXBusConnectionMethod, value);
+            set => SetAttributeValue(A_DiMAXBusConnectionMethod, value);
         }
 
         public bool HasDiMAX_BusId => HasAttribute(A_DiMAXBusID);
 
         public int DiMAX_BusId {
             get => (int?)AttributeValue(A_DiMAXBusID) ?? 12;
-            set => SetAttribute(A_DiMAXBusID, value);
+            set => SetAttributeValue(A_DiMAXBusID, value);
         }
 
         /// <summary>
@@ -220,12 +220,12 @@ namespace LayoutManager.ControlComponents {
 
         public MassothFeedbackDecoderBusConnectionMethod BusConnectionMethod {
             get => AttributeValue(A_BusConnection).Enum<MassothFeedbackDecoderBusConnectionMethod>() ?? MassothFeedbackDecoderBusConnectionMethod.Slave;
-            set => SetAttribute(A_BusConnection, value);
+            set => SetAttributeValue(A_BusConnection, value);
         }
 
         public int BusId {
             get => (int)AttributeValue(A_BusId);
-            set => SetAttribute(A_BusId, value);
+            set => SetAttributeValue(A_BusId, value);
         }
 
         #endregion
@@ -286,7 +286,7 @@ namespace LayoutManager.ControlComponents {
 
         public int BusId {
             get => (int)AttributeValue(A_BusId);
-            set => SetAttribute(A_BusId, value);
+            set => SetAttributeValue(A_BusId, value);
         }
 
         #endregion

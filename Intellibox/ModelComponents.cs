@@ -337,17 +337,17 @@ namespace Intellibox {
 
         public int Number {
             get => (int)AttributeValue(A_Number);
-            set => SetAttribute(A_Number, value);
+            set => SetAttributeValue(A_Number, value);
         }
 
         public int Value {
             get => (int)AttributeValue(A_Value);
-            set => SetAttribute(A_Value, value);
+            set => SetAttributeValue(A_Value, value);
         }
 
         public string Description {
             get => GetAttribute(A_Description);
-            set => SetAttribute(A_Description, value);
+            set => SetAttributeValue(A_Description, value);
         }
     }
 

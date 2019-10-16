@@ -38,7 +38,7 @@ namespace LayoutManager.Model {
 
         public TripPlanTrainConditionScope ConditionScope {
             get => AttributeValue(A_Scope).Enum<TripPlanTrainConditionScope>() ?? TripPlanTrainConditionScope.AllowIfTrue;
-            set => SetAttribute(A_Scope, value);
+            set => SetAttributeValue(A_Scope, value);
         }
 
         public bool IsConditionEmpty => Element.ChildNodes.Count == 0;
@@ -73,7 +73,7 @@ namespace LayoutManager.Model {
 
         public Guid BlockId {
             get => (Guid)AttributeValue(A_BlockId);
-            set => SetAttribute(A_BlockId, value);
+            set => SetAttributeValue(A_BlockId, value);
         }
 
         public override string GetDescription() {
@@ -436,22 +436,22 @@ namespace LayoutManager.Model {
 
         public bool IsCircular {
             get => (bool?)AttributeValue(A_IsCircular) ?? false;
-            set => SetAttribute(A_IsCircular, value, removeIf: false);
+            set => SetAttributeValue(A_IsCircular, value, removeIf: false);
         }
 
         public string Name {
             get => GetAttribute(A_Name);
-            set => SetAttribute(A_Name, value, removeIf: null);
+            set => SetAttributValue(A_Name, value, removeIf: null);
         }
 
         public Guid IconId {
             get => (Guid?)AttributeValue(A_IconId) ?? Guid.Empty;
-            set => SetAttribute(A_IconId, value);
+            set => SetAttributeValue(A_IconId, value);
         }
 
         public bool FromCatalog {
             get => (bool?)AttributeValue(A_FromCatalog) ?? false;
-            set => SetAttribute(A_FromCatalog, value, removeIf: false);
+            set => SetAttributeValue(A_FromCatalog, value, removeIf: false);
         }
 
         public LayoutSelection Selection {
@@ -521,7 +521,7 @@ namespace LayoutManager.Model {
             Element = doc.DocumentElement;
 
             Element.AppendChild(doc.ImportNode(tripPlan.Element, true));
-            SetAttribute(A_TrainId, train.Id);
+            SetAttributeValue(A_TrainId, train.Id);
             Status = TripStatus.NotSubmitted;
         }
 
@@ -541,7 +541,7 @@ namespace LayoutManager.Model {
             set {
                 TripStatus oldStatus = Status;
 
-                SetAttribute(A_Status, value.ToString());
+                SetAttributeValue(A_Status, value.ToString());
                 EventManager.Event(new LayoutEvent("trip-status-changed", this, oldStatus));
                 Train.Redraw();
             }

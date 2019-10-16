@@ -34,7 +34,7 @@ namespace LayoutManager.Dialogs {
 
         public void Get(LayoutPositionInfo positionProvider) {
             positionDefinition.Get(positionProvider);
-            positionProvider.SetAttribute("Title", textBoxTitle.Text);
+            positionProvider.SetAttributeValue("Title", textBoxTitle.Text);
             if (textBoxRef.Text.Trim() == "")
                 positionProvider.Ref = null;
             else

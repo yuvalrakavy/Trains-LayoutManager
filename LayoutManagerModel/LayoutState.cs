@@ -575,28 +575,28 @@ namespace LayoutManager.Model {
 
         public int CurrentSpeedLimit {
             get => (int?)AttributeValue(A_CurrentSpeedLimit) ?? 0;
-            set => SetAttribute(A_CurrentSpeedLimit, value);
+            set => SetAttributeValue(A_CurrentSpeedLimit, value);
         }
 
         private const string A_CurrentSlowDownSpeed = "CurrentSlowDownSpeed";
 
         public int CurrentSlowdownSpeed {
             get => (int?)AttributeValue(A_CurrentSlowDownSpeed) ?? 0;
-            set => SetAttribute(A_CurrentSlowDownSpeed, value);
+            set => SetAttributeValue(A_CurrentSlowDownSpeed, value);
         }
 
         private const string A__RequestedSpeedLimit = "_RequestedSpeedLimit";
 
         protected int RequestedSpeedLimit {
             get => (int?)AttributeValue(A__RequestedSpeedLimit) ?? 0;
-            set => SetAttribute(A__RequestedSpeedLimit, value);
+            set => SetAttributeValue(A__RequestedSpeedLimit, value);
         }
 
         private const string A_MotionDirection = "MotionDirection";
 
         public LocomotiveOrientation MotionDirection {
             get => AttributeValue(A_MotionDirection).Enum<LocomotiveOrientation>() ?? LocomotiveOrientation.Forward;
-            set => SetAttribute(A_MotionDirection, value);
+            set => SetAttributeValue(A_MotionDirection, value);
         }
 
         /// <summary>
@@ -640,7 +640,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int FinalSpeed {
             get => (int?)AttributeValue(A_FinalSpeed) ?? 0;
-            set => SetAttribute(A_FinalSpeed, value);
+            set => SetAttributeValue(A_FinalSpeed, value);
         }
 
         private const string A_Speed = "Speed";
@@ -1023,7 +1023,7 @@ namespace LayoutManager.Model {
         [LayoutEventDef("train-speed-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
         public void SetSpeedValue(int speedInSteps) {
             if (speedInSteps != this.SpeedInSteps) {
-                SetAttribute(A_Speed, speedInSteps);
+                SetAttributeValue(A_Speed, speedInSteps);
                 EventManager.Event(new LayoutEvent("train-speed-changed", this, speedInSteps));
             }
         }
@@ -1036,7 +1036,7 @@ namespace LayoutManager.Model {
         [LayoutEventDef("train-lights-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(bool))]
         public void SetLightsValue(bool lights) {
             if (lights != Lights) {
-                SetAttribute(A_Lights, lights);
+                SetAttributeValue(A_Lights, lights);
                 EventManager.Event(new LayoutEvent("train-lights-changed", this, lights));
             }
         }
@@ -1307,8 +1307,8 @@ namespace LayoutManager.Model {
                     Element.RemoveAttribute(A_LastBlockEdgeCrossingTime);
                 }
                 else {
-                    SetAttribute(A_LastCrossedBlockEdge, value.Id);
-                    SetAttribute(A_LastBlockEdgeCrossingTime, DateTime.Now.Ticks);
+                    SetAttributeValue(A_LastCrossedBlockEdge, value.Id);
+                    SetAttributeValue(A_LastBlockEdgeCrossingTime, DateTime.Now.Ticks);
                 }
             }
         }
@@ -1320,11 +1320,11 @@ namespace LayoutManager.Model {
         public int LastBlockEdgeCrossingSpeed {
             get => (int?)AttributeValue(A_LastBlockEdgeCrossingSpeed) ?? 0;
 
-            set => SetAttribute(A_LastBlockEdgeCrossingSpeed, value);
+            set => SetAttributeValue(A_LastBlockEdgeCrossingSpeed, value);
         }
 
         public Guid LastEnteredBlockId {
-            set => SetAttribute(A_LastEnteredBlock, value, removeIf: Guid.Empty);
+            set => SetAttributeValue(A_LastEnteredBlock, value, removeIf: Guid.Empty);
             get => (Guid?)AttributeValue(A_LastEnteredBlock) ?? Guid.Empty;
         }
 
@@ -1336,7 +1336,7 @@ namespace LayoutManager.Model {
         public bool TrainStoppedOnBlockEdgeCrossing {
             get => (bool?)AttributeValue(A_StoppedOnBlockCrossing) ?? false;
 
-            set => SetAttribute(A_StoppedOnBlockCrossing, value, removeIf: false);
+            set => SetAttributeValue(A_StoppedOnBlockCrossing, value, removeIf: false);
         }
 
         #region IEqualityComparer<TrainStateInfo> Members
@@ -1370,7 +1370,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public Guid BlockId {
             get => (Guid)AttributeValue(A_BlockId);
-            set => SetAttribute(A_BlockId, value);
+            set => SetAttributeValue(A_BlockId, value);
         }
 
         /// <summary>
@@ -1394,8 +1394,8 @@ namespace LayoutManager.Model {
 
             set {
                 if (value != Guid.Empty) {
-                    SetAttribute(A_BlockEdgeId, value);
-                    SetAttribute(A_BlockEdgeCrossingTime, $"{DateTime.Now.Ticks}");
+                    SetAttributeValue(A_BlockEdgeId, value);
+                    SetAttributeValue(A_BlockEdgeCrossingTime, $"{DateTime.Now.Ticks}");
                 }
                 else {
                     Element.RemoveAttribute(A_BlockEdgeId);
@@ -1448,7 +1448,7 @@ namespace LayoutManager.Model {
         public LayoutComponentConnectionPoint DisplayFront {
             get => LayoutComponentConnectionPoint.Parse(GetAttribute(A_DisplayFront));
 
-            set => SetAttribute(A_DisplayFront, value);
+            set => SetAttributeValue(A_DisplayFront, value);
         }
     }
 
@@ -1779,7 +1779,7 @@ namespace LayoutManager.Model {
 
         public Guid TrainId {
             get => (Guid)AttributeValue(A_TrainId);
-            set => SetAttribute(A_TrainId, value);
+            set => SetAttributeValue(A_TrainId, value);
         }
 
         public TrainStateInfo Train {
@@ -1789,7 +1789,7 @@ namespace LayoutManager.Model {
 
         public Guid FromBlockId {
             get => (Guid)AttributeValue(A_FromBlockID);
-            set => SetAttribute(A_FromBlockID, value);
+            set => SetAttributeValue(A_FromBlockID, value);
         }
 
         public LayoutBlock FromBlock {
@@ -1799,12 +1799,12 @@ namespace LayoutManager.Model {
 
         public int FromBlockTriggerCount {
             get => (int)AttributeValue(A_FromBlockTriggerCount);
-            set => SetAttribute(A_FromBlockTriggerCount, value);
+            set => SetAttributeValue(A_FromBlockTriggerCount, value);
         }
 
         public Guid ToBlockId {
             get => (Guid)AttributeValue(A_ToBlockID);
-            set => SetAttribute(A_ToBlockID, value);
+            set => SetAttributeValue(A_ToBlockID, value);
         }
 
         public LayoutBlock ToBlock {
@@ -1815,12 +1815,12 @@ namespace LayoutManager.Model {
 
         public int ToBlockTriggerCount {
             get => (int)AttributeValue(A_ToBlockTriggerCount);
-            set => SetAttribute(A_ToBlockTriggerCount, value);
+            set => SetAttributeValue(A_ToBlockTriggerCount, value);
         }
 
         public LocomotiveOrientation Direction {
             get => AttributeValue(A_Direction).Enum<LocomotiveOrientation>() ?? throw new ArgumentNullException(A_Direction);
-            set => SetAttribute(A_Direction, value);
+            set => SetAttributeValue(A_Direction, value);
         }
 
         public void Remove() {
@@ -1886,7 +1886,7 @@ namespace LayoutManager.Model {
 
         public string Name {
             get => GetOptionalAttribute(A_Name) ?? "";
-            set => SetAttribute(A_Name, value);
+            set => SetAttributeValue(A_Name, value);
         }
 
         public bool Active {
@@ -1909,7 +1909,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="active"></param>
         public void SetActive(bool active) {
-            SetAttribute(A_Active, active);
+            SetAttributeValue(A_Active, active);
             EventManager.Event(new LayoutEvent("manual-dispatch-region-activation-changed", this, active));
         }
 
@@ -2025,7 +2025,7 @@ namespace LayoutManager.Model {
         public bool IgnoreNotConnectedFeedbacks {
             get => (bool?)AttributeValue(A_IgnoreNotConnectedFeedbacks) ?? false;
 
-            set => SetAttribute(A_IgnoreNotConnectedFeedbacks, value);
+            set => SetAttributeValue(A_IgnoreNotConnectedFeedbacks, value);
         }
 
         /// <summary>
@@ -2034,7 +2034,7 @@ namespace LayoutManager.Model {
         public bool IgnoreNotConnectedPowerComponents {
             get => (bool?)AttributeValue(A_IgnoreNotPowerComponents) ?? false;
 
-            set => SetAttribute(A_IgnoreNotPowerComponents, value);
+            set => SetAttributeValue(A_IgnoreNotPowerComponents, value);
         }
     }
 
@@ -2055,7 +2055,7 @@ namespace LayoutManager.Model {
 
         public TrainTrackingInManualDispatchRegion TrainTrackingInManualDispatchRegion {
             get => AttributeValue(A_InManualDispatchRegion).Enum<TrainTrackingInManualDispatchRegion>() ?? TrainTrackingInManualDispatchRegion.Normal;
-            set => SetAttribute(A_InManualDispatchRegion, value);
+            set => SetAttributeValue(A_InManualDispatchRegion, value);
         }
 
         /// <summary>
@@ -2064,7 +2064,7 @@ namespace LayoutManager.Model {
         public int ProximitySensorSensitivityDelay {
             get => (int?)AttributeValue(A_ProximitySensorSensitivityDelay) ?? ProxmitySensorSensitivityDefault;
             set {
-                SetAttribute(A_ProximitySensorSensitivityDelay, value, removeIf: ProxmitySensorSensitivityDefault);
+                SetAttributeValue(A_ProximitySensorSensitivityDelay, value, removeIf: ProxmitySensorSensitivityDefault);
                 EventManager.Event("proximity-sensitivity-delay-changed");
             }
         }
@@ -2100,7 +2100,7 @@ namespace LayoutManager.Model {
             Scope = scope;
             Apply = apply;
 
-            SetAttribute(A_Global, globalPolicy);
+            SetAttributeValue(A_Global, globalPolicy);
         }
 
         public LayoutEventScript? ActiveScript => (LayoutEventScript?)EventManager.Event(new LayoutEvent("get-active-event-script", Id));
@@ -2110,13 +2110,13 @@ namespace LayoutManager.Model {
         public string Name {
             get => GetAttribute(A_Name);
 
-            set => SetAttribute(A_Name, value);
+            set => SetAttributeValue(A_Name, value);
         }
 
         public string Scope {
             get => GetOptionalAttribute(A_Scope) ?? "TripPlan";
 
-            set => SetAttribute(A_Scope, value);
+            set => SetAttributeValue(A_Scope, value);
         }
 
         /// <summary>
@@ -2126,13 +2126,13 @@ namespace LayoutManager.Model {
         public bool GlobalPolicy {
             get => (bool?)AttributeValue(A_Global) ?? false;
 
-            set => SetAttribute(A_Global, value);
+            set => SetAttributeValue(A_Global, value);
         }
 
         public bool ShowInMenu {
             get => (bool?)AttributeValue(A_ShowInMenu) ?? false;
 
-            set => SetAttribute(A_ShowInMenu, value);
+            set => SetAttributeValue(A_ShowInMenu, value);
         }
 
         public XmlElement? EventScriptElement {
@@ -2179,7 +2179,7 @@ namespace LayoutManager.Model {
 
         public bool Apply {
             get => (bool?)AttributeValue(A_Apply) ?? false;
-            set => SetAttribute(A_Apply, value);
+            set => SetAttributeValue(A_Apply, value);
         }
     }
 

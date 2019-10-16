@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 using LayoutManager.Components;
 
-#pragma warning disable IDE0051, IDE0052, IDE0060
+#pragma warning disable IDE0051, IDE0052, IDE0060, CA1032
 #nullable enable
 namespace LayoutManager.Model {
     /// <summary>
@@ -185,6 +185,7 @@ namespace LayoutManager.Model {
     /// by components that can be connected to control module. The common case is that a component has one possible
     /// connection. But some components (e.g turnout with feedback) may require more than one connection
     /// </summary>
+    #pragma warning disable CA1815
     public struct ModelComponentControlConnectionDescription {
         /// <summary>
         /// Describe a possible connection between component and control module
@@ -306,15 +307,15 @@ namespace LayoutManager.Model {
                 if (Component != null) {
                     if (!HasAttribute(A_DisplayName)) {     // Convert old connection to newer format
                         Debug.Assert(Component.ControlConnectionDescriptions.Count > 0);
-                        SetAttribute(A_Name, Component.ControlConnectionDescriptions[0].Name);
-                        SetAttribute(A_DisplayName, Component.ControlConnectionDescriptions[0].DisplayName);
+                        SetAttributeValue(A_Name, Component.ControlConnectionDescriptions[0].Name);
+                        SetAttributeValue(A_DisplayName, Component.ControlConnectionDescriptions[0].DisplayName);
                     }
                 }
 
                 return HasAttribute(A_Name) ? GetAttribute(A_Name) : null;
             }
 
-            set => SetAttribute(A_Name, value, removeIf: null);
+            set => SetAttributValue(A_Name, value, removeIf: null);
         }
 
         /// <summary>
@@ -355,7 +356,7 @@ namespace LayoutManager.Model {
 
                     theComponent.EraseImage();
 
-                    SetAttribute(A_ComponentId, value.Id);
+                    SetAttributeValue(A_ComponentId, value.Id);
                     Module.ControlManager.ConnectionPoints.Add(this);
 
                     theComponent.Redraw();
@@ -377,7 +378,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int Index {
             get => (int?)AttributeValue(A_Index) ?? -1;
-            set => SetAttribute(A_Index, value);
+            set => SetAttributeValue(A_Index, value);
         }
 
         /// <summary>
@@ -385,7 +386,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string Type {
             get => GetOptionalAttribute(A_Type) ?? Module.DefaultControlConnectionPointType;
-            set => SetAttribute(A_Type, value, removeIf: Module.DefaultControlConnectionPointType);
+            set => SetAttributValue(A_Type, value, removeIf: Module.DefaultControlConnectionPointType);
         }
 
         public ControlConnectionPointUsage Usage {
@@ -403,7 +404,7 @@ namespace LayoutManager.Model {
                 return AttributeValue(A_Usage).Enum<ControlConnectionPointUsage>() ?? GetBusTypeUsage();
             }
 
-            set => SetAttribute(A_Usage, value);
+            set => SetAttributeValue(A_Usage, value);
         }
 
         /// <summary>
@@ -414,14 +415,14 @@ namespace LayoutManager.Model {
             get {
                 if (!HasAttribute(A_DisplayName) && Component != null) {     // Convert old connection to newer format
                     Debug.Assert(Component.ControlConnectionDescriptions.Count > 0);
-                    SetAttribute(A_Name, Component.ControlConnectionDescriptions[0].Name);
-                    SetAttribute(A_DisplayName, Component.ControlConnectionDescriptions[0].DisplayName);
+                    SetAttributeValue(A_Name, Component.ControlConnectionDescriptions[0].Name);
+                    SetAttributeValue(A_DisplayName, Component.ControlConnectionDescriptions[0].DisplayName);
                 }
 
                 return GetAttribute(A_DisplayName);
             }
 
-            set => SetAttribute(A_DisplayName, value);
+            set => SetAttributeValue(A_DisplayName, value);
         }
 
         /// <summary>
@@ -429,7 +430,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool UserActionRequired {
             get => (bool?)AttributeValue(A_UserActionRequired) ?? false;
-            set => SetAttribute(A_UserActionRequired, value, removeIf: false);
+            set => SetAttributeValue(A_UserActionRequired, value, removeIf: false);
         }
     }
 
@@ -626,7 +627,7 @@ namespace LayoutManager.Model {
         /// Get enumerator for the connection points sorted by index
         /// </summary>
         /// <returns>Enumerator for conection point sorted by ascending index</returns>
-        public new IEnumerator<ControlConnectionPoint?> GetEnumerator() => GetSortedIterator((KeyValuePair<int, XmlElement> pair1, KeyValuePair<int, XmlElement> pair2) => pair1.Key - pair2.Key);
+        public new IEnumerator<ControlConnectionPoint> GetEnumerator() => GetSortedIterator((KeyValuePair<int, XmlElement> pair1, KeyValuePair<int, XmlElement> pair2) => pair1.Key - pair2.Key);
     }
 
     /// <summary>
@@ -679,7 +680,9 @@ namespace LayoutManager.Model {
 
         public int Index { get; }
 
-        public ControlModule? Module => moduleID == Guid.Empty ? null : ControlManager.GetModule(moduleID);
+        public ControlModule? OptionalModule => moduleID == Guid.Empty ? null : ControlManager.GetModule(moduleID);
+
+        public ControlModule Module => Ensure.NotNull<ControlModule>(OptionalModule);
 
         public ControlModuleReference ModuleReference => new ControlModuleReference(ControlManager, moduleID);
 
@@ -748,6 +751,7 @@ namespace LayoutManager.Model {
     /// a conrolled component.
     /// </para>
     /// </summary>
+    #pragma warning disable CA1036
     public class ControlModule : LayoutXmlWrapper, IComparable<ControlModule>, IControlSupportUserAction, IHasDecoder {
         private const string A_DefaultConnectionPointType = "DefaultConnectionPointType";
         private const string A_Address = "Address";
@@ -772,7 +776,7 @@ namespace LayoutManager.Model {
         public string ModuleTypeName {
             get => GetAttribute("ModuleTypeName");
 
-            set => SetAttribute("ModuleTypeName", value);
+            set => SetAttributeValue("ModuleTypeName", value);
         }
 
         /// <summary>
@@ -780,7 +784,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public ControlModuleType ModuleType {
             get {
-                return moduleType ?? (moduleType = ControlManager.GetModuleType(ModuleTypeName));
+                return moduleType ?? (moduleType = LayoutControlManager.GetModuleType(ModuleTypeName));
             }
 
             set => ModuleTypeName = value.TypeName;
@@ -791,7 +795,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public Guid BusId {
             get => (Guid?)AttributeValue(A_BusId) ?? Guid.Empty;
-            set => SetAttribute(A_BusId, value, removeIf: Guid.Empty);
+            set => SetAttributeValue(A_BusId, value, removeIf: Guid.Empty);
         }
 
         /// <summary>
@@ -808,7 +812,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int NumberOfConnectionPoints {
             get => (int?)AttributeValue(A_NumberOfConnectionPoints) ?? ModuleType.NumberOfConnectionPoints;
-            set => SetAttribute(A_NumberOfConnectionPoints, value, removeIf: ModuleType.NumberOfConnectionPoints);
+            set => SetAttributeValue(A_NumberOfConnectionPoints, value, removeIf: ModuleType.NumberOfConnectionPoints);
         }
 
         public XmlElement ConnectionPointsElement {
@@ -831,7 +835,7 @@ namespace LayoutManager.Model {
 
         public string DefaultControlConnectionPointType {
             get => GetOptionalAttribute(A_DefaultConnectionPointType) ?? ModuleType.DefaultControlConnectionPointType;
-            set => SetAttribute(A_DefaultConnectionPointType, value, removeIf: ModuleType.DefaultControlConnectionPointType);
+            set => SetAttributValue(A_DefaultConnectionPointType, value, removeIf: ModuleType.DefaultControlConnectionPointType);
         }
 
         /// <summary>
@@ -839,7 +843,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int Address {
             get => (int?)AttributeValue(A_Address) ?? -1;
-            set => SetAttribute(A_Address, value);
+            set => SetAttributeValue(A_Address, value);
         }
 
         /// <summary>
@@ -847,7 +851,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public Guid LocationId {
             get => (Guid?)AttributeValue(A_LocationId) ?? Guid.Empty;
-            set => SetAttribute(A_LocationId, value, removeIf: Guid.Empty);
+            set => SetAttributeValue(A_LocationId, value, removeIf: Guid.Empty);
         }
 
         /// <summary>
@@ -862,7 +866,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string? Label {
             get => GetOptionalAttribute(A_Label);
-            set => SetAttribute(A_Label, value, removeIf: null);
+            set => SetAttributValue(A_Label, value, removeIf: null);
         }
 
         /// <summary>
@@ -870,7 +874,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool UserActionRequired {
             get => (bool?)AttributeValue(A_UserActionRequired) ?? false;
-            set => SetAttribute(A_UserActionRequired, value, removeIf: false);
+            set => SetAttributeValue(A_UserActionRequired, value, removeIf: false);
         }
 
         /// <summary>
@@ -878,7 +882,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool AddressProgrammingRequired {
             get => (bool?)AttributeValue(A_AddressProgrammingRequired) ?? false;
-            set => SetAttribute(A_AddressProgrammingRequired, value, removeIf: false);
+            set => SetAttributeValue(A_AddressProgrammingRequired, value, removeIf: false);
         }
 
         /// <summary>
@@ -1012,7 +1016,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string TypeName {
             get => GetAttribute(A_TypeName);
-            set => SetAttribute(A_TypeName, value);
+            set => SetAttributeValue(A_TypeName, value);
         }
 
         /// <summary>
@@ -1020,7 +1024,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string Name {
             get => GetAttribute(A_Name);
-            set => SetAttribute(A_Name, value);
+            set => SetAttributeValue(A_Name, value);
         }
 
         /// <summary>
@@ -1028,7 +1032,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string DefaultControlConnectionPointType {
             get => GetOptionalAttribute(A_DefaultConnectionPointType) ?? ControlConnectionPointTypes.OutputSolenoid;
-            set => SetAttribute(A_DefaultConnectionPointType, value);
+            set => SetAttributeValue(A_DefaultConnectionPointType, value);
         }
 
         /// <summary>
@@ -1038,7 +1042,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int NumberOfAddresses {
             get => (int?)AttributeValue(A_NumberOfAddresses) ?? 1;
-            set => SetAttribute(A_NumberOfAddresses, value);
+            set => SetAttributeValue(A_NumberOfAddresses, value);
         }
 
         /// <summary>
@@ -1047,7 +1051,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int AddressAlignment {
             get => (int?)AttributeValue(A_AddressAlignment) ?? NumberOfAddresses;
-            set => SetAttribute(A_AddressAlignment, value);
+            set => SetAttributeValue(A_AddressAlignment, value);
         }
 
         /// <summary>
@@ -1055,7 +1059,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int ConnectionPointsPerAddress {
             get => (int?)AttributeValue(A_ConnectionPointsPerAddress) ?? 1;
-            set => SetAttribute(A_ConnectionPointsPerAddress, value);
+            set => SetAttributeValue(A_ConnectionPointsPerAddress, value);
         }
 
         /// <summary>
@@ -1063,7 +1067,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int NumberOfConnectionPoints {
             get => (int?)AttributeValue(A_NumberOfConnectionPoints) ?? NumberOfAddresses * ConnectionPointsPerAddress;
-            set => SetAttribute(A_NumberOfConnectionPoints, value);
+            set => SetAttributeValue(A_NumberOfConnectionPoints, value);
         }
 
         /// <summary>
@@ -1071,7 +1075,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public ControlModuleConnectionPointArrangementOptions ConnectionPointArrangement {
             get => (ControlModuleConnectionPointArrangementOptions)((int?)AttributeValue(A_ConnectionPointArrangement) ?? 6);
-            set => SetAttribute(A_ConnectionPointArrangement, (int)value);
+            set => SetAttributeValue(A_ConnectionPointArrangement, (int)value);
         }
 
         /// <summary>
@@ -1079,7 +1083,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public ControlConnectionPointLabelFormatOptions ConnectionPointLabelFormat {
             get => (ControlConnectionPointLabelFormatOptions)((int?)AttributeValue(A_ConnectionPointLabelFormat) ?? 0);
-            set => SetAttribute(A_ConnectionPointLabelFormat, (int)value);
+            set => SetAttributeValue(A_ConnectionPointLabelFormat, (int)value);
         }
 
         /// <summary>
@@ -1087,7 +1091,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int ConnectionPointIndexBase {
             get => (int?)AttributeValue(A_ConnectionPointIndexBase) ?? 0;
-            set => SetAttribute(A_ConnectionPointIndexBase, value);
+            set => SetAttributeValue(A_ConnectionPointIndexBase, value);
         }
 
         /// <summary>
@@ -1100,7 +1104,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int FirstAddress {
             get => (int?)AttributeValue(A_FirstAddress) ?? -1;
-            set => SetAttribute(A_FirstAddress, value);
+            set => SetAttributeValue(A_FirstAddress, value);
         }
 
         /// <summary>
@@ -1108,7 +1112,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int LastAddress {
             get => (int?)AttributeValue(A_LastAddress) ?? -1;
-            set => SetAttribute(A_LastAddress, value);
+            set => SetAttributeValue(A_LastAddress, value);
         }
 
         /// <summary>
@@ -1117,7 +1121,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool BuiltIn {
             get => (bool?)AttributeValue(A_BuiltIn) ?? false;
-            set => SetAttribute(A_BuiltIn, value);
+            set => SetAttributeValue(A_BuiltIn, value);
         }
 
         /// <summary>
@@ -1125,7 +1129,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string? DecoderTypeName {
             get => (string?)AttributeValue("DecoderType");
-            set => SetAttribute("DecoderType", value, removeIf: null);
+            set => SetAttributValue("DecoderType", value, removeIf: null);
         }
 
         /// <summary>
@@ -1212,7 +1216,7 @@ namespace LayoutManager.Model {
                 return (Guid?)AttributeValue(A_BusProviderId) ?? DefaultBusProviderId() ?? Guid.Empty;
             }
 
-            set => SetAttribute(A_BusProviderId, value);
+            set => SetAttributeValue(A_BusProviderId, value);
         }
 
         /// <summary>
@@ -1228,7 +1232,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string BusTypeName {
             get => GetAttribute(A_BusTypeName);
-            set => SetAttribute(A_BusTypeName, value);
+            set => SetAttributeValue(A_BusTypeName, value);
         }
 
         /// <summary>
@@ -1360,7 +1364,7 @@ namespace LayoutManager.Model {
             return doAdd(controlModuleLocationId, moduleType, address);
         }
 
-        public ControlModule Add(Guid controlModuleLocationId, string moduleTypeName, int address) => Add(controlModuleLocationId, ControlManager.GetModuleType(moduleTypeName), address);
+        public ControlModule Add(Guid controlModuleLocationId, string moduleTypeName, int address) => Add(controlModuleLocationId, LayoutControlManager.GetModuleType(moduleTypeName), address);
 
         /// <summary>
         /// Add a new module at the end of a daisy chained bus.
@@ -1380,7 +1384,7 @@ namespace LayoutManager.Model {
             return doAdd(controlModuleLocationId, moduleType, address);
         }
 
-        public ControlModule Add(Guid controlModuleLocationId, string moduleTypeName) => Add(controlModuleLocationId, ControlManager.GetModuleType(moduleTypeName));
+        public ControlModule Add(Guid controlModuleLocationId, string moduleTypeName) => Add(controlModuleLocationId, LayoutControlManager.GetModuleType(moduleTypeName));
 
         /// <summary>
         /// Insert a new module after a given module in a daisy chained bus
@@ -1408,7 +1412,7 @@ namespace LayoutManager.Model {
         }
 
         public ControlModule Insert(Guid controlModuleLocationId, ControlModule insertBeforeModule, string moduleTypeName) =>
-            Insert(controlModuleLocationId, insertBeforeModule, ControlManager.GetModuleType(moduleTypeName));
+            Insert(controlModuleLocationId, insertBeforeModule, LayoutControlManager.GetModuleType(moduleTypeName));
 
         public ControlModule Insert(int address, XmlElement moduleElement) {
             if (BusType.Topology != ControlBusTopology.DaisyChain)
@@ -1554,7 +1558,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string BusFamilyName {
             get => GetAttribute(A_BusFamilyName);
-            set => SetAttribute(A_BusFamilyName, value);
+            set => SetAttributeValue(A_BusFamilyName, value);
         }
 
         /// <summary>
@@ -1562,7 +1566,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string BusTypeName {
             get => GetAttribute(A_BusTypeName);
-            set => SetAttribute(A_BusTypeName, value);
+            set => SetAttributeValue(A_BusTypeName, value);
         }
 
         /// <summary>
@@ -1570,7 +1574,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string Name {
             get => GetAttribute(A_Name);
-            set => SetAttribute(A_Name, value);
+            set => SetAttributeValue(A_Name, value);
         }
 
         /// <summary>
@@ -1578,17 +1582,17 @@ namespace LayoutManager.Model {
         /// </summary>
         public ControlBusTopology Topology {
             get => AttributeValue(A_Topology).Enum<ControlBusTopology>() ?? ControlBusTopology.RandomAddressing;
-            set => SetAttribute(A_Topology, value);
+            set => SetAttributeValue(A_Topology, value);
         }
 
         public ControlAddressingMethod AddressingMethod {
             get => AttributeValue(A_AddressingMethod).Enum<ControlAddressingMethod>() ?? ControlAddressingMethod.DirectConnectionPointAddressing;
-            set => SetAttribute(A_AddressingMethod, value);
+            set => SetAttributeValue(A_AddressingMethod, value);
         }
 
         public bool CanChangeAddress {
             get => (bool?)AttributeValue(A_CanChangeAddress) ?? true;
-            set => SetAttribute(A_CanChangeAddress, value, removeIf: true);
+            set => SetAttributeValue(A_CanChangeAddress, value, removeIf: true);
         }
 
         /// <summary>
@@ -1596,7 +1600,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public int FirstAddress {
             get => (int?)AttributeValue(A_FirstAddress) ?? 0;
-            set => SetAttribute(A_FirstAddress, value);
+            set => SetAttributeValue(A_FirstAddress, value);
         }
 
         /// <summary>
@@ -1604,29 +1608,29 @@ namespace LayoutManager.Model {
         /// </summary>
         public int LastAddress {
             get => (int?)AttributeValue(A_LastAddress) ?? 255;
-            set => SetAttribute(A_LastAddress, value);
+            set => SetAttributeValue(A_LastAddress, value);
         }
 
         public int RecommendedStartAddress {
             get => (int?)AttributeValue(A_RecommendedStartAddress) ?? FirstAddress;
-            set => SetAttribute(A_RecommendedStartAddress, value);
+            set => SetAttributeValue(A_RecommendedStartAddress, value);
         }
 
         public ControlConnectionPointUsage Usage {
             get => AttributeValue(A_Usage).Enum<ControlConnectionPointUsage>() ?? ControlConnectionPointUsage.Both;
-            set => SetAttribute(A_Usage, value);
+            set => SetAttributeValue(A_Usage, value);
         }
 
         public string ClickToAddModuleEventName {
             get => (string?)AttributeValue(A_ClickToAddEventName) ?? "control-module-click-to-add";
-            set => SetAttribute(A_ClickToAddEventName, value);
+            set => SetAttributeValue(A_ClickToAddEventName, value);
         }
 
         /// <summary>
         /// Return an element whose children are all the module types
         /// </summary>
         /// <returns>An XML element with all module types</returns>
-        public XmlElement GetAllModuleTypeElements() {
+        public static XmlElement GetAllModuleTypeElements() {
             XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
             XmlElement moduleTypesElement = doc.CreateElement(E_ModuleTypes);
 
@@ -2114,7 +2118,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="moduleTypeName">The module type name</param>
         /// <returns>The module type object</returns>
-        public ControlModuleType GetModuleType(string moduleTypeName) {
+        public static ControlModuleType GetModuleType(string moduleTypeName) {
             XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
             XmlElement moduleTypesElement = doc.CreateElement("ModuleTypes");
 

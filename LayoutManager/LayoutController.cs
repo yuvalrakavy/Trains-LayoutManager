@@ -746,16 +746,16 @@ namespace LayoutManager {
                     else
                         mode = "Operate";
 
-                    SetAttribute(A_Phases, value.Phases);
+                    SetAttributeValue(A_Phases, value.Phases);
                 }
 
-                SetAttribute(A_Mode, mode);
+                SetAttributeValue(A_Mode, mode);
             }
         }
 
         public int ActiveWindowIndex {
             get { return (int?)AttributeValue(A_ActiveWindowIndex) ?? -1; }
-            set { SetAttribute(A_ActiveWindowIndex, value); }
+            set { SetAttributeValue(A_ActiveWindowIndex, value); }
         }
 
         public IEnumerable<FrameWindowState> FrameWindowStates {

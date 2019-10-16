@@ -218,7 +218,7 @@ namespace LayoutManager.Dialogs {
             XmlElement fontElement = LayoutInfo.CreateProviderElement(LayoutModel.Instance.XmlInfo, "Font", "Fonts");
             LayoutFontInfo fontProvider = new LayoutFontInfo(fontElement);
 
-            fontProvider.SetAttribute("Title", "New font");
+            fontProvider.SetAttributeValue("Title", "New font");
             FontItem item = new FontItem(fontElement);
 
             listViewFonts.Items.Add(item);
@@ -230,7 +230,7 @@ namespace LayoutManager.Dialogs {
 
             LayoutFontInfo fontProvider = item.FontProvider;
 
-            fontProvider.SetAttribute("Title", e.Label);
+            fontProvider.SetAttributeValue("Title", e.Label);
             item.Text = e.Label;
             item.Update();
         }
@@ -288,7 +288,7 @@ namespace LayoutManager.Dialogs {
                     Input = item.FontProvider.GetAttribute("Title")
                 };
                 if (titleBox.ShowDialog() == DialogResult.OK) {
-                    item.FontProvider.SetAttribute("Title", titleBox.Input);
+                    item.FontProvider.SetAttributeValue("Title", titleBox.Input);
                     item.Update();
                 }
             }

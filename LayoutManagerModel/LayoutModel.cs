@@ -655,7 +655,7 @@ namespace LayoutManager.Model {
             }
 
             set {
-                SetAttribute("OutletDescription", value);
+                SetAttributeValue("OutletDescription", value);
             }
         }
 
@@ -716,7 +716,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public Guid OutletComponentId {
             get => (Guid?)AttributeValue(A_OutletId) ?? Guid.Empty;
-            set => SetAttribute(A_OutletId, value, removeIf: Guid.Empty);
+            set => SetAttributeValue(A_OutletId, value, removeIf: Guid.Empty);
         }
 
         /// <summary>
@@ -752,7 +752,7 @@ namespace LayoutManager.Model {
 
             set {
                 Debug.Assert(OutletComponent != null);
-                SetAttribute(A_OutletIndex, value);
+                SetAttributeValue(A_OutletIndex, value);
             }
         }
 

@@ -30,7 +30,7 @@ namespace LayoutManager.Components {
 
         public Guid SignalId {
             get => (Guid)Element.AttributeValue(A_SignalId);
-            set => SetAttribute(A_SignalId, value);
+            set => SetAttributeValue(A_SignalId, value);
         }
     }
 
@@ -279,7 +279,7 @@ namespace LayoutManager.Components {
 
         public Guid ResourceId {
             get => (Guid)AttributeValue(A_ResourceID);
-            set => SetAttribute(A_ResourceID, value);
+            set => SetAttributeValue(A_ResourceID, value);
         }
 
         public IModelComponentLayoutLockResource? GetResource(LayoutPhase phase) => LayoutModel.Component<IModelComponentLayoutLockResource>(ResourceId, phase);
@@ -366,17 +366,17 @@ namespace LayoutManager.Components {
 
         public bool SuggestForPlacement {
             get => (bool?)AttributeValue(A_SuggestForPlacement) ?? false;
-            set => SetAttribute(A_SuggestForPlacement, value);
+            set => SetAttributeValue(A_SuggestForPlacement, value);
         }
 
         public bool SuggestForDestination {
             get => (bool?)AttributeValue(A_SuggestForDestination) ?? false;
-            set => SetAttribute(A_SuggestForDestination, value, removeIf: false);
+            set => SetAttributeValue(A_SuggestForDestination, value, removeIf: false);
         }
 
         public bool SuggestForProgramming {
             get => (bool?)AttributeValue(A_SuggestForProgramming) ?? false;
-            set => SetAttribute(A_SuggestForProgramming, value, removeIf: false);
+            set => SetAttributeValue(A_SuggestForProgramming, value, removeIf: false);
         }
 
         public TrainLength TrainLengthLimit {
@@ -386,12 +386,12 @@ namespace LayoutManager.Components {
 
         public bool NoFeedback {
             get => (bool?)AttributeValue(A_NoFeedback) ?? false;
-            set => SetAttribute(A_NoFeedback, value, removeIf: false);
+            set => SetAttributeValue(A_NoFeedback, value, removeIf: false);
         }
 
         public bool IsSlowdownRegion {
             get => (bool?)AttributeValue(A_SlowDownRegion) ?? false;
-            set => SetAttribute(A_SlowDownRegion, value, removeIf: false);
+            set => SetAttributeValue(A_SlowDownRegion, value, removeIf: false);
         }
 
         public bool UseDefaultCanTrainWait {
@@ -412,14 +412,14 @@ namespace LayoutManager.Components {
 
         public bool IsOccupancyDetectionBlock {
             get => (bool?)AttributeValue(A_OccupancyDetectionBlock) ?? false;
-            set => SetAttribute(A_OccupancyDetectionBlock, value);
+            set => SetAttributeValue(A_OccupancyDetectionBlock, value);
         }
 
         public LayoutAddressInfo? AddressProvider => Element["Address"] != null ? new LayoutAddressInfo(BlockDefinition) : null;
 
         public double Length {
             get => (double?)AttributeValue(A_Length) ?? 100.0;
-            set => SetAttribute(A_Length, value);
+            set => SetAttributeValue(A_Length, value);
         }
 
         public int LengthInCM => (int)Length;
@@ -428,7 +428,7 @@ namespace LayoutManager.Components {
             get => (int?)AttributeValue(A_SpeedLimit) ?? 0;
 
             set {
-                SetAttribute(A_SpeedLimit, value, removeIf: 0);
+                SetAttributeValue(A_SpeedLimit, value, removeIf: 0);
                 RefreshSpeedLimit();
             }
         }
@@ -437,7 +437,7 @@ namespace LayoutManager.Components {
             get => (int?)AttributeValue(A_SlowDownSpeed) ?? 0;
 
             set {
-                SetAttribute(A_SlowDownSpeed, value, removeIf: 0);
+                SetAttributeValue(A_SlowDownSpeed, value, removeIf: 0);
                 RefreshSpeedLimit();
             }
         }
@@ -477,7 +477,7 @@ namespace LayoutManager.Components {
 
         public bool IsTripSectionBoundry(int cpIndex) => (bool?)AttributeValue($"TripSectonBoundry{cpIndex}") ?? false;
 
-        public void SetTripSectionBoundry(int cpIndex, bool isBoundry) => SetAttribute($"TripSectonBoundry{cpIndex}", isBoundry, removeIf: false);
+        public void SetTripSectionBoundry(int cpIndex, bool isBoundry) => SetAttributeValue($"TripSectonBoundry{cpIndex}", isBoundry, removeIf: false);
 
         /// <summary>
         /// Set the state of the train detected state. Please note that this method just set the attribute
@@ -642,7 +642,7 @@ namespace LayoutManager.Components {
         private static readonly IList<ModelComponentControlConnectionDescription> controlConnectionsOfNormalBlock = new List<ModelComponentControlConnectionDescription>().AsReadOnly();
 
         public LayoutBlockDefinitionComponent() {
-            blockEdges = new List<LayoutBlockEdgeBase>[0];
+            blockEdges = Array.Empty<List<LayoutBlockEdgeBase>>();
             XmlDocument.LoadXml("<BlockInfo />");
         }
 
@@ -803,7 +803,7 @@ namespace LayoutManager.Components {
 
         public bool ReverseLogic {
             get => (bool?)AttributeValue(A_ReverseLogic) ?? false;
-            set => SetAttribute(A_ReverseLogic, value, removeIf: false);
+            set => SetAttributeValue(A_ReverseLogic, value, removeIf: false);
         }
     }
 
@@ -926,7 +926,7 @@ namespace LayoutManager.Components {
 
         public Guid CommandStationId {
             get => (Guid?)AttributeValue(A_CommandStationId) ?? Guid.Empty;
-            set => SetAttribute(A_CommandStationId, value, removeIf: Guid.Empty);
+            set => SetAttributeValue(A_CommandStationId, value, removeIf: Guid.Empty);
         }
 
         public IModelComponentIsCommandStation? CommandStation {
@@ -982,7 +982,7 @@ namespace LayoutManager.Components {
         /// </summary>
         public Guid BusId {
             get => (Guid)AttributeValue(A_BusId);
-            set => SetAttribute(A_BusId, value);
+            set => SetAttributeValue(A_BusId, value);
         }
 
         public ControlBus? Bus => LayoutModel.ControlManager.Buses[BusId];
@@ -997,18 +997,18 @@ namespace LayoutManager.Components {
                 if (string.IsNullOrEmpty(value))
                     Element.RemoveAttribute(A_DefaultModuleTypeName);
                 else
-                    SetAttribute(A_DefaultModuleTypeName, value);
+                    SetAttributeValue(A_DefaultModuleTypeName, value);
             }
         }
 
-        public ControlModuleType DefaultModuleType => LayoutModel.ControlManager.GetModuleType(DefaultModuleTypeName);
+        public ControlModuleType DefaultModuleType => LayoutControlManager.GetModuleType(DefaultModuleTypeName);
 
         /// <summary>
         /// Start allocating address from this number when adding components at this location
         /// </summary>
         public int DefaultStartAddress {
             get => (int?)AttributeValue(A_DefaultStartAddress) ?? -1;
-            set => SetAttribute(A_DefaultStartAddress, value, removeIf: -1);
+            set => SetAttributeValue(A_DefaultStartAddress, value, removeIf: -1);
         }
     }
 

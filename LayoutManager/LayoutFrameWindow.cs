@@ -2026,17 +2026,17 @@ namespace LayoutManager {
 
         public FormWindowState WindowState {
             get => AttributeValue(A_WindowState).Enum<FormWindowState>() ?? FormWindowState.Normal;
-            set => SetAttribute(A_WindowState, value);
+            set => SetAttributeValue(A_WindowState, value);
         }
 
         public Rectangle Bounds {
             get => new Rectangle((int)AttributeValue(A_Left), (int)AttributeValue(A_Top), (int)AttributeValue(A_Width), (int)AttributeValue(A_Height));
 
             set {
-                SetAttribute(A_Left, value.Left);
-                SetAttribute(A_Top, value.Top);
-                SetAttribute(A_Width, value.Width);
-                SetAttribute(A_Height, value.Height);
+                SetAttributeValue(A_Left, value.Left);
+                SetAttributeValue(A_Top, value.Top);
+                SetAttributeValue(A_Width, value.Width);
+                SetAttributeValue(A_Height, value.Height);
             }
         }
 
@@ -2052,27 +2052,27 @@ namespace LayoutManager {
 
         public int ActiveAreaIndex {
             get => (int?)AttributeValue("ActiveAreaIndex") ?? 0;
-            set => SetAttribute("ActiveAreaIndex", value);
+            set => SetAttributeValue("ActiveAreaIndex", value);
         }
 
         public int ControlViewerWidth {
             get => (int?)AttributeValue("ControlViewerWidth") ?? 0;
-            set => SetAttribute("ControlViewerWidth", value);
+            set => SetAttributeValue("ControlViewerWidth", value);
         }
 
         public int LocomotiveViewerWidth {
             get => (int?)AttributeValue("LocomotiveViewerWidth") ?? 0;
-            set => SetAttribute("LocomotiveViewerWidth", value);
+            set => SetAttributeValue("LocomotiveViewerWidth", value);
         }
 
         public int TripsViewerHeight {
             get => (int?)AttributeValue("TripsViewerHeight") ?? 0;
-            set => SetAttribute("TripsViewerHeight", value);
+            set => SetAttributeValue("TripsViewerHeight", value);
         }
 
         public int MessagesViewerHeight {
             get => (int?)AttributeValue("MessagesViewerHeight") ?? 0;
-            set => SetAttribute("MessagesViewerHeight", value);
+            set => SetAttributeValue("MessagesViewerHeight", value);
         }
     }
 
@@ -2110,7 +2110,7 @@ namespace LayoutManager {
 
         public Guid AreaId {
             get => (Guid)AttributeValue("ID");
-            set => SetAttribute("ID", value);
+            set => SetAttributeValue("ID", value);
         }
 
         public IEnumerable<FrameWindowViewState> ViewStates {
@@ -2125,7 +2125,7 @@ namespace LayoutManager {
 
         public int ActiveViewIndex {
             get => (int?)AttributeValue("ActiveViewIndex") ?? 0;
-            set => SetAttribute("ActiveViewIndex", value);
+            set => SetAttributeValue("ActiveViewIndex", value);
         }
     }
 
@@ -2173,48 +2173,48 @@ namespace LayoutManager {
 
         public string Name {
             get => GetAttribute(A_Name);
-            set => SetAttribute(A_Name, value);
+            set => SetAttributeValue(A_Name, value);
         }
 
         public float Zoom {
             get => (float?)AttributeValue(A_Zoom) ?? 1.0f;
-            set => SetAttribute(A_Zoom, value);
+            set => SetAttributeValue(A_Zoom, value);
         }
 
         public float DefaultZoom {
             get => (float?)AttributeValue(A_DefaultZoom) ?? 1.0f;
-            set => SetAttribute(A_DefaultZoom, value);
+            set => SetAttributeValue(A_DefaultZoom, value);
         }
 
         public Point Origin {
             get => new Point((int?)AttributeValue(A_OriginX) ?? 0, (int?)AttributeValue(A_OriginY) ?? 0);
             set {
-                SetAttribute(A_OriginX, value.X);
-                SetAttribute(A_OriginY, value.Y);
+                SetAttributeValue(A_OriginX, value.X);
+                SetAttributeValue(A_OriginY, value.Y);
             }
         }
 
         public Point DefaultOrigin {
             get => new Point((int?)AttributeValue(A_DefaultOriginX) ?? 0, (int?)AttributeValue(A_DefaultOriginY) ?? 0);
             set {
-                SetAttribute(A_DefaultOriginX, value.X);
-                SetAttribute(A_DefaultOriginY, value.Y);
+                SetAttributeValue(A_DefaultOriginX, value.X);
+                SetAttributeValue(A_DefaultOriginY, value.Y);
             }
         }
 
         public ShowGridLinesOption Grid {
             get => AttributeValue(A_Grid).Enum<ShowGridLinesOption>() ?? ShowGridLinesOption.Hide;
-            set => SetAttribute(A_Grid, value);
+            set => SetAttributeValue(A_Grid, value);
         }
 
         public bool ShowCoordinates {
             get => (bool?)AttributeValue(A_ShowCoordinates) ?? false;
-            set => SetAttribute(A_ShowCoordinates, value);
+            set => SetAttributeValue(A_ShowCoordinates, value);
         }
 
         public bool ShowActivePhases {
             get => (bool?)AttributeValue(A_ShowActivePhases) ?? false;
-            set => SetAttribute(A_ShowActivePhases, value);
+            set => SetAttributeValue(A_ShowActivePhases, value);
         }
     }
 }

@@ -56,22 +56,22 @@ namespace LayoutManager.Model {
 
         public string Namespace {
             get => GetOptionalAttribute(A_Namespace) ?? "Default";
-            set => SetAttribute(A_Namespace, value);
+            set => SetAttributeValue(A_Namespace, value);
         }
 
         public int UnitMin {
             get => (int?)AttributeValue(A_UnitMin) ?? 1;
-            set => SetAttribute(A_UnitMin, value);
+            set => SetAttributeValue(A_UnitMin, value);
         }
 
         public int UnitMax {
             get => (int?)AttributeValue(A_UnitMax) ?? 256;
-            set => SetAttribute(A_UnitMax, value);
+            set => SetAttributeValue(A_UnitMax, value);
         }
 
         public bool ShowSubunit {
             get => (bool?)AttributeValue(A_ShowSubunit) ?? false;
-            set => SetAttribute(A_ShowSubunit, value);
+            set => SetAttributeValue(A_ShowSubunit, value);
         }
 
         public enum SubunitFormatValue {
@@ -81,17 +81,17 @@ namespace LayoutManager.Model {
 
         public SubunitFormatValue SubunitFormat {
             get => AttributeValue(A_SubunitFormat).Enum<SubunitFormatValue>() ?? SubunitFormatValue.Number;
-            set => SetAttribute(A_SubunitFormat, value);
+            set => SetAttributeValue(A_SubunitFormat, value);
         }
 
         public int SubunitMin {
             get => (int?)AttributeValue(A_SubunitMin) ?? 1;
-            set => SetAttribute(A_SubunitMin, value);
+            set => SetAttributeValue(A_SubunitMin, value);
         }
 
         public int SubunitMax {
             get => (int?)AttributeValue(A_SubunitMax) ?? 256;
-            set => SetAttribute(A_SubunitMax, value);
+            set => SetAttributeValue(A_SubunitMax, value);
         }
     }
 

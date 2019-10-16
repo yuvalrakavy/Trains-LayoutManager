@@ -514,12 +514,12 @@ namespace LayoutManager.Model {
 
         public double Length {
             get => (int?)AttributeValue(A_Length) ?? 60;
-            set => SetAttribute(A_Length, value);
+            set => SetAttributeValue(A_Length, value);
         }
 
         public TrackGauges Guage {
             get => AttributeValue(A_Guage).Enum<TrackGauges>() ?? TrackGauges.HO;
-            set => SetAttribute(A_Guage, value);
+            set => SetAttributeValue(A_Guage, value);
         }
 
         public bool HasAttributes => Element[E_Attributes] != null;
@@ -543,7 +543,7 @@ namespace LayoutManager.Model {
 
         public int SpeedLimit {
             get => (int?)AttributeValue(A_SpeedLimit) ?? 0;
-            set => SetAttribute(A_SpeedLimit, value, removeIf: 0);
+            set => SetAttributeValue(A_SpeedLimit, value, removeIf: 0);
         }
 
         public LocomotiveOrigin Origin {
@@ -581,7 +581,7 @@ namespace LayoutManager.Model {
 
         public int Store {
             get => (int?)AttributeValue(A_Store) ?? 0;
-            set => SetAttribute(A_Store, value);
+            set => SetAttributeValue(A_Store, value);
         }
 
         public XmlElement Functions => Element[E_Functions];
@@ -619,7 +619,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string? DecoderTypeName {
             get => GetOptionalAttribute(A_DecoderType);       // TODO: Get default decoder type from the catalog
-            set => SetAttribute(A_DecoderType, value, removeIf: null);
+            set => SetAttributValue(A_DecoderType, value, removeIf: null);
         }
 
         /// <summary>
@@ -645,27 +645,27 @@ namespace LayoutManager.Model {
 
         public int Number {
             get => (int?)AttributeValue(A_Number) ?? 1;
-            set => SetAttribute(A_Number, value);
+            set => SetAttributeValue(A_Number, value);
         }
 
         public LocomotiveFunctionType Type {
             get => AttributeValue(A_Type).Enum<LocomotiveFunctionType>() ?? LocomotiveFunctionType.Trigger;
-            set => SetAttribute(A_Type, value);
+            set => SetAttributeValue(A_Type, value);
         }
 
         public string Name {
             get => GetOptionalAttribute(A_Name) ?? "";
-            set => SetAttribute(A_Name, value);
+            set => SetAttributeValue(A_Name, value);
         }
 
         public String? Description {
             get => GetOptionalAttribute(A_Description);
-            set => SetAttribute(A_Description, value);
+            set => SetAttributeValue(A_Description, value);
         }
 
         public bool State {
             get => (bool?)AttributeValue(A_State) ?? false;
-            set => SetAttribute(A_State, value);
+            set => SetAttributeValue(A_State, value);
         }
 
         public override string ToString() {
@@ -702,7 +702,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public Guid TypeId {
             get => (Guid)AttributeValue(A_TypeId);
-            set => SetAttribute(A_TypeId, value);
+            set => SetAttributeValue(A_TypeId, value);
         }
 
         /// <summary>
@@ -711,7 +711,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool LinkedToType {
             get => (bool?)AttributeValue(A_LinkedToType) ?? true;
-            set => SetAttribute(A_LinkedToType, value);
+            set => SetAttributeValue(A_LinkedToType, value);
         }
 
         public string Name {
@@ -752,12 +752,12 @@ namespace LayoutManager.Model {
 
         public string CollectionId {
             get => GetOptionalAttribute(A_CollectionId) ?? "";
-            set => SetAttribute(A_CollectionId, value);
+            set => SetAttributeValue(A_CollectionId, value);
         }
 
         public int SpeedSteps {
             get => (int?)AttributeValue(A_SpeedSteps) ?? 28;
-            set => SetAttribute(A_SpeedSteps, value);
+            set => SetAttributeValue(A_SpeedSteps, value);
         }
 
         /// <summary>
@@ -768,7 +768,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool NotManaged {
             get => (bool?)AttributeValue(A_NotManaged) ?? false;
-            set => SetAttribute(A_NotManaged, value, removeIf: false);
+            set => SetAttributeValue(A_NotManaged, value, removeIf: false);
         }
 
         /// <summary>
@@ -776,7 +776,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool CanTriggerTrackContact {
             get => (bool?)AttributeValue(A_CanTriggerTrackContact) ?? Kind != LocomotiveKind.SoundUnit;
-            set => SetAttribute(A_CanTriggerTrackContact, value);
+            set => SetAttributeValue(A_CanTriggerTrackContact, value);
         }
 
         public LayoutActionContainer<LocomotiveInfo> Actions => new LayoutActionContainer<LocomotiveInfo>(Element, this);
@@ -883,7 +883,7 @@ namespace LayoutManager.Model {
 
         public Guid LocomotiveId {
             get => (Guid)AttributeValue(A_LocomotiveID);
-            set => SetAttribute(A_LocomotiveID, value);
+            set => SetAttributeValue(A_LocomotiveID, value);
         }
 
         public LocomotiveInfo? OptionalLocomotive {
@@ -898,12 +898,12 @@ namespace LayoutManager.Model {
 
         public LocomotiveOrientation Orientation {
             get => AttributeValue(A_Orientation).Enum<LocomotiveOrientation>() ?? LocomotiveOrientation.Forward;
-            set => SetAttribute(A_Orientation, value);
+            set => SetAttributeValue(A_Orientation, value);
         }
 
         public Guid CollectionElementId {
             get => (Guid?)AttributeValue(A_CollectionElementId) ?? LocomotiveId;
-            set => SetAttribute(A_CollectionElementId, value);
+            set => SetAttributeValue(A_CollectionElementId, value);
         }
 
         // The following properties are for allowing easy access from event scripts
@@ -925,17 +925,17 @@ namespace LayoutManager.Model {
 
         public int Count {
             get => (int?)AttributeValue(A_Count) ?? 1;
-            set => SetAttribute(A_Count, value);
+            set => SetAttributeValue(A_Count, value);
         }
 
         public string Description {
             get => GetOptionalAttribute(A_Description) ?? "";
-            set => SetAttribute(A_Description, value);
+            set => SetAttributeValue(A_Description, value);
         }
 
         public double CarLength {
             get => (int?)AttributeValue(A_CarLength) ?? 46;
-            set => SetAttribute(A_CarLength, value);
+            set => SetAttributeValue(A_CarLength, value);
         }
 
         public double Length => Count * CarLength;
@@ -961,7 +961,7 @@ namespace LayoutManager.Model {
 
         public string? DriverId {
             get => GetOptionalAttribute(A_DriverId);
-            set => SetAttribute(A_DriverId, value, removeIf: null);
+            set => SetAttributValue(A_DriverId, value, removeIf: null);
         }
 
         /// <summary>
@@ -1252,7 +1252,7 @@ namespace LayoutManager.Model {
                     if (LastCarTriggerBlockEdge)
                         triggerCount++;
 
-                    SetAttribute(A__TriggerCount, triggerCount);
+                    SetAttributeValue(A__TriggerCount, triggerCount);
                 }
 
                 return (int)AttributeValue(A__TriggerCount);
@@ -1263,7 +1263,7 @@ namespace LayoutManager.Model {
             get => (bool?)AttributeValue(A_LastCarTriggerBlockEdge) ?? false;
 
             set {
-                SetAttribute(A_LastCarTriggerBlockEdge, value);
+                SetAttributeValue(A_LastCarTriggerBlockEdge, value);
                 FlushCachedValues();
             }
         }
@@ -1272,14 +1272,14 @@ namespace LayoutManager.Model {
             get => (bool?)AttributeValue(A_LastCarDetected) ?? false;
 
             set {
-                SetAttribute(A_LastCarDetected, value);
+                SetAttributeValue(A_LastCarDetected, value);
                 FlushCachedValues();
             }
         }
 
         public TrainLength Length {
             get => AttributeValue(A_Length).ToTrainLength() ?? TrainLength.Standard;
-            set => SetAttribute(A_Length, value);
+            set => SetAttributeValue(A_Length, value);
         }
 
         public bool HasLights {
@@ -1325,7 +1325,7 @@ namespace LayoutManager.Model {
                         }
                     }
 
-                    SetAttribute(A__LocomotivesSpeedLimit, speedLimit);
+                    SetAttributeValue(A__LocomotivesSpeedLimit, speedLimit);
                 }
 
                 return (int)AttributeValue(A__LocomotivesSpeedLimit);
@@ -1334,12 +1334,12 @@ namespace LayoutManager.Model {
 
         public virtual int SpeedLimit {
             get => (int?)AttributeValue(A_SpeedLimit) ?? 0;
-            set => SetAttribute(A_SpeedLimit, value, removeIf: 0);
+            set => SetAttributeValue(A_SpeedLimit, value, removeIf: 0);
         }
 
         public int SlowdownSpeed {
             get => (int?)AttributeValue(A_SlowDownSpeed) ?? 0;
-            set => SetAttribute(A_SlowDownSpeed, value, removeIf: 0);
+            set => SetAttributeValue(A_SlowDownSpeed, value, removeIf: 0);
         }
 
         /// <summary>
@@ -1348,7 +1348,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public virtual int TargetSpeed {
             get => (int?)AttributeValue(A_TargetSpeed) ?? LayoutModel.Instance.LogicalSpeedSteps / 2;
-            set => SetAttribute(A_TargetSpeed, value);
+            set => SetAttributeValue(A_TargetSpeed, value);
         }
 
         public virtual void RefreshSpeedLimit() {

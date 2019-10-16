@@ -30,7 +30,7 @@ namespace LayoutManager {
             }
 
             set {
-                SetAttribute("LayoutFilename", value);
+                SetAttributeValue("LayoutFilename", value);
             }
         }
     }
