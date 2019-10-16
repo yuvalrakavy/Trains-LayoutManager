@@ -349,7 +349,7 @@ namespace LayoutManager {
         }
 
         public override void Do() {
-            bus.Remove(Ensure.NotNull<ControlModule>(moduleReference));
+            bus.Remove(moduleReference.Module);
         }
 
         public override void Undo() {
