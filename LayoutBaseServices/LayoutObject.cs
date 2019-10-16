@@ -9,7 +9,9 @@ namespace LayoutManager {
         XmlElement? OptionalElement { get; }
     }
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
     public struct XmlElementWrapper : IObjectHasXml {
+#pragma warning restore CA1815 // Override equals and operator equals on value types
         public XmlElementWrapper(XmlElement element) {
             this.OptionalElement = element;
         }
@@ -127,7 +129,9 @@ namespace LayoutManager {
         }
     }
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
     public struct ConvertableString {
+#pragma warning restore CA1815 // Override equals and operator equals on value types
         private readonly string? v;
         private readonly Func<string> getDescription;
 
