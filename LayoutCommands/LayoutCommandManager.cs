@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace LayoutManager {
@@ -36,7 +37,7 @@ namespace LayoutManager {
     /// Manage Undo/Redo queue for layout commands
     /// </summary>
     public class LayoutCommandManager : ILayoutCommandManager {
-        private readonly ArrayList commands = new ArrayList(20);
+        private readonly List<ILayoutCommand> commands = new List<ILayoutCommand>(capacity: 20);
         private int iCommand = 0;
         private int changeLevel = 0;
 
@@ -88,7 +89,7 @@ namespace LayoutManager {
             if (i < 0)
                 throw new LayoutCommandException("Undo command stack empty");
 
-            ((LayoutCommand)commands[i]).Undo();
+            commands[i].Undo();
             iCommand = i;
             ChangeLevel--;
         }
@@ -102,7 +103,7 @@ namespace LayoutManager {
             if (i >= commands.Count)
                 throw new LayoutCommandException("No command to redo");
 
-            ((LayoutCommand)commands[i]).Do();      // Redo the command
+            commands[i].Do();      // Redo the command
             iCommand = i + 1;
             ChangeLevel++;
         }
@@ -127,7 +128,7 @@ namespace LayoutManager {
                 if (i < 0)
                     throw new LayoutCommandException("No command to undo");
 
-                return ((LayoutCommand)commands[i]).ToString();
+                return commands[i].ToString();
             }
         }
 
@@ -141,7 +142,7 @@ namespace LayoutManager {
                 if (i >= commands.Count)
                     throw new LayoutCommandException("No command to redo");
 
-                return ((LayoutCommand)commands[i]).ToString();
+                return commands[i].ToString();
             }
         }
 
@@ -164,7 +165,7 @@ namespace LayoutManager {
         private int getUndoIndex() {
             int i;
 
-            for (i = iCommand - 1; i >= 0 && ((LayoutCommand)commands[i]).IsCheckpoint; i--)
+            for (i = iCommand - 1; i >= 0 && commands[i].IsCheckpoint; i--)
                 ;
 
             return i;
@@ -178,7 +179,7 @@ namespace LayoutManager {
         private int getRedoIndex() {
             int i;
 
-            for (i = iCommand; i < commands.Count && ((LayoutCommand)commands[i]).IsCheckpoint; i++)
+            for (i = iCommand; i < commands.Count && commands[i].IsCheckpoint; i++)
                 ;
 
             return i;
@@ -191,8 +192,8 @@ namespace LayoutManager {
     /// A command that represents a series of commands that are done (or done) together. To
     /// the user this series of commands is presented as a single command.
     /// </summary>
-    public class LayoutCompoundCommand : LayoutCommand, ILayoutCompoundCommand, IEnumerable {
-        private readonly ArrayList commands = new ArrayList();
+    public class LayoutCompoundCommand : LayoutCommand, ILayoutCompoundCommand, IEnumerable<ILayoutCommand> {
+        private readonly List<ILayoutCommand> commands = new List<ILayoutCommand>();
         private bool executeAtOnce = false;
 
         public LayoutCompoundCommand(String description) {
@@ -224,11 +225,8 @@ namespace LayoutManager {
         }
 
         public override void Undo() {
-            for (int i = commands.Count - 1; i >= 0; i--) {
-                ILayoutCommand command = (LayoutCommand)commands[i];
-
-                command.Undo();
-            }
+            for (int i = commands.Count - 1; i >= 0; i--)
+                commands[i].Undo();
 
             executeAtOnce = false;      // So Do (which now really means redo, will execute the commands)
         }
@@ -237,7 +235,9 @@ namespace LayoutManager {
 
         #region IEnumerable Members
 
-        public IEnumerator GetEnumerator() => commands.GetEnumerator();
+        public IEnumerator<ILayoutCommand> GetEnumerator() => commands.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         #endregion
     }
