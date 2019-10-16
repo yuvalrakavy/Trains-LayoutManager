@@ -109,7 +109,7 @@ namespace LayoutManager.Model {
         private static void attachNewElement(XmlElement container, String? parentPath, XmlElement element) {
             XmlElement parentElement = container;
 
-            element.SetAttribute(A_Id, Guid.NewGuid());
+            element.SetAttributeValue(A_Id, Guid.NewGuid());
 
             if (parentPath != null) {
                 XmlNodeList parentNodes = container.SelectNodes(parentPath);
@@ -192,17 +192,17 @@ namespace LayoutManager.Model {
         }
 
         public FontStyle Style {
-            get => AttributeValue(A_Style).Enum<FontStyle>() ?? FontStyle.Regular;
+            get => OptionalElement?.AttributeValue(A_Style).Enum<FontStyle>() ?? FontStyle.Regular;
             set => SetAttribute(A_Style, value);
         }
 
         public string Name {
-            get => GetOptionalAttribute(A_Name) ?? "Arial";
+            get => (string?)OptionalElement?.AttributeValue(A_Name) ?? "Arial";
             set => SetAttribute(A_Name, value);
         }
 
         public float Size {
-            get => (float?)AttributeValue(A_Size) ?? 8;
+            get => (float?)OptionalElement?.AttributeValue(A_Size) ?? 8;
             set => SetAttribute(A_Size, value);
         }
 
@@ -237,7 +237,7 @@ namespace LayoutManager.Model {
 
         public Color Color {
             get {
-                var colorName = GetOptionalAttribute(A_Color);
+                var colorName = (string?)OptionalElement?.AttributeValue(A_Color);
                 return colorName == null ? Color.Black : Color.FromName(colorName);
             }
 
@@ -245,7 +245,7 @@ namespace LayoutManager.Model {
         }
 
         public override string ToString() {
-            var title = (string?)AttributeValue(A_Title);
+            var title = (string?)OptionalElement?.AttributeValue(A_Title);
 
             return title == null ? Description : title + " (" + Description + ")";
         }
@@ -282,26 +282,26 @@ namespace LayoutManager.Model {
         }
 
         public int Distance {
-            get => (int?)AttributeValue(A_Distance) ?? 8;
+            get => (int?)OptionalElement?.AttributeValue(A_Distance) ?? 8;
             set => SetAttribute(A_Distance, value);
         }
 
         public int Width {
-            get => (int?)AttributeValue(A_Width) ?? 0;
+            get => (int?)OptionalElement?.AttributeValue(A_Width) ?? 0;
             set => SetAttribute(A_Width, value);
         }
 
         public LayoutDrawingAnchorPoint AnchorPoint {
-            get => AttributeValue(A_Anchor).Enum<LayoutDrawingAnchorPoint>() ?? LayoutDrawingAnchorPoint.Center;
+            get => OptionalElement?.AttributeValue(A_Anchor).Enum<LayoutDrawingAnchorPoint>() ?? LayoutDrawingAnchorPoint.Center;
             set => SetAttribute(A_Anchor, value);
         }
 
         public LayoutDrawingSide Side {
-            get => AttributeValue(A_Side).Enum<LayoutDrawingSide>() ?? LayoutDrawingSide.Bottom;
+            get => OptionalElement?.AttributeValue(A_Side).Enum<LayoutDrawingSide>() ?? LayoutDrawingSide.Bottom;
             set => SetAttribute(A_Side, value);
         }
 
-        public override string ToString() => GetOptionalAttribute(A_Title) ?? "No title";
+        public override string ToString() => (string?)OptionalElement?.AttributeValue(A_Title) ?? "No title";
 
         /// <summary>
         /// Get the other "side" of a given side.
