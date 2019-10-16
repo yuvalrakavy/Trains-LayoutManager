@@ -6,8 +6,10 @@ using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.Components;
+using System.Collections.Generic;
 
-#pragma warning disable IDE0051
+#pragma warning disable IDE0051, IDE0069
+#nullable enable
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for BindBlockEdgeToSignals.
@@ -25,10 +27,11 @@ namespace LayoutManager.Tools.Dialogs {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private readonly Container components = null;
+        private readonly Container? components = null;
         private readonly LayoutSelection blockEdgeSelection;
         private readonly LayoutSelection linkedSignalSelection;
 
+#nullable disable
         public BindBlockEdgeToSignals(LayoutBlockEdgeBase blockEdge) {
             //
             // Required for Windows Form Designer support
@@ -59,6 +62,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             updateButtons(null, null);
         }
+#nullable enable
 
         private void updateButtons(object sender, EventArgs e) {
             LinkedSignalItem selected = (LinkedSignalItem)listBoxSignals.SelectedItem;
@@ -89,8 +93,8 @@ namespace LayoutManager.Tools.Dialogs {
 
         [LayoutEvent("query-bind-signals-dialogs")]
         private void queryBindSignalsDialog(LayoutEvent e) {
-            LayoutBlockEdgeBase queryBlockEdge = (LayoutBlockEdgeBase)e.Sender;
-            ArrayList list = (ArrayList)e.Info;
+            var queryBlockEdge = (LayoutBlockEdgeBase?)e.Sender;
+            var list = Ensure.NotNull<IList<IModelComponentReceiverDialog>>(e.Info);
 
             if (queryBlockEdge == null || queryBlockEdge.Id == BlockEdge.Id)
                 list.Add((IModelComponentReceiverDialog)this);
@@ -98,7 +102,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         [LayoutEvent("removed-from-model")]
         private void removedFromModel(LayoutEvent e) {
-            ModelComponent component = (ModelComponent)e.Sender;
+            var component = Ensure.NotNull<ModelComponent>(e.Sender);
 
             if (component is LayoutBlockEdgeBase && component.Id == BlockEdge.Id)
                 Close();
@@ -240,7 +244,7 @@ namespace LayoutManager.Tools.Dialogs {
                 XmlElement linkedSignalElement = linkedSignalsElement.OwnerDocument.CreateElement(E_LinkedSignal);
 
                 linkedSignalsElement.AppendChild(linkedSignalElement);
-                linkedSignalElement.SetAttribute(A_SignalId, linkedSignalItem.SignalComponent.Id);
+                linkedSignalElement.SetAttributeValue(A_SignalId, linkedSignalItem.SignalComponent.Id);
             }
 
             LayoutModifyComponentDocumentCommand modifyComponentDocumentCommand =
@@ -262,7 +266,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         private class LinkedSignalItem {
             public LinkedSignalItem(BindBlockEdgeToSignals dialog, LinkedSignalInfo linkedSignal) {
-                if (LayoutModel.Component<LayoutSignalComponent>(linkedSignal.SignalId, LayoutModel.ActivePhases) == null)
+                this.SignalComponent = LayoutModel.Component<LayoutSignalComponent>(linkedSignal.SignalId, LayoutModel.ActivePhases) ??
                     throw new LayoutException(dialog.BlockEdge, "A signal linked to this track contact cannot be found");
             }
 
@@ -272,21 +276,13 @@ namespace LayoutManager.Tools.Dialogs {
 
             public LayoutSignalComponent SignalComponent { get; }
 
-            public override string ToString() {
-                switch (SignalComponent.Info.SignalType) {
-                    case LayoutSignalType.Lights:
-                        return "Lights";
-
-                    case LayoutSignalType.Semaphore:
-                        return "Semaphore";
-
-                    case LayoutSignalType.Distance:
-                        return "Distance Signal";
-
-                    default:
-                        return "Unknown signal type";
-                }
-            }
+            public override string ToString() => SignalComponent.Info.SignalType switch
+            {
+                LayoutSignalType.Lights => "Lights",
+                LayoutSignalType.Semaphore => "Semaphore",
+                LayoutSignalType.Distance => "Distance Signal",
+                _ => "Unknown signal type",
+            };
         }
     }
 }

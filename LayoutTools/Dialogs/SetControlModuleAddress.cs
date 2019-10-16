@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0051, IDE0069
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for SetControlModuleAddress.
@@ -20,7 +21,6 @@ namespace LayoutManager.Tools.Dialogs {
         /// </summary>
         private readonly Container components = null;
 
-        private void endOfDesignerVariables() { }
 
         private readonly ControlBus bus;
         private readonly ControlModuleType moduleType;
@@ -82,7 +82,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             // Figure out default address to suggest
 
-            int defaultAddress = -1;
+            int defaultAddress;
 
             if (module != null)
                 defaultAddress = module.Address;
