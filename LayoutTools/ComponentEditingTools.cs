@@ -120,7 +120,7 @@ namespace LayoutManager.Tools {
                     if (constructor != null) {
                         dialog = (ILayoutComponentPropertiesDialog)entry.propertiesDialogType.Assembly.CreateInstance(
                             entry.propertiesDialogType.FullName, false,
-                            BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance, null, new Object[] { component, new PlacementInfo(e) }, null, new Object[] { });
+                            BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance, null, new Object[] { component, new PlacementInfo(e) }, null, Array.Empty<Object>());
                     }
                     else {
                         constructor = entry.propertiesDialogType.GetConstructor(new Type[] { typeof(ModelComponent) });
@@ -128,7 +128,7 @@ namespace LayoutManager.Tools {
                         if (constructor != null) {
                             dialog = (ILayoutComponentPropertiesDialog)entry.propertiesDialogType.Assembly.CreateInstance(
                                 entry.propertiesDialogType.FullName, false,
-                                BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance, null, new Object[] { component }, null, new Object[] { });
+                                BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance, null, new Object[] { component }, null, Array.Empty<Object>());
                         }
                         else
                             throw new ArgumentException("Invalid dialog class constructor (should be cons(LayoutModel, ModelComponent, [XmlElement]))");
@@ -225,6 +225,7 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("test-layout-object-request")]
+        #pragma warning disable CA1031
         private void testLayoutObjectRequest(LayoutEvent e) {
             object? testObject = e.Sender;
 
@@ -263,6 +264,7 @@ namespace LayoutManager.Tools {
                 MessageBox.Show(LayoutController.ActiveFrameWindow, "Error when activating layout: " + ex.Message, "Error in layout activation", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        #pragma warning restore CA1031
 
         #endregion
 
@@ -485,7 +487,7 @@ namespace LayoutManager.Tools {
             menu.MenuItems.Add(item);
         }
 
-        public class BlockEdgeBindSignalMenuItem : MenuItem {
+        internal class BlockEdgeBindSignalMenuItem : MenuItem {
             private readonly LayoutBlockEdgeBase blockEdge;
 
             public BlockEdgeBindSignalMenuItem(LayoutBlockEdgeBase blockEdge) {
@@ -534,7 +536,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-        public class SignalBindSignalMenuItem : MenuItem {
+        internal class SignalBindSignalMenuItem : MenuItem {
             private readonly LayoutSignalComponent signal;
             private readonly IModelComponentReceiverDialog dialog;
 
@@ -970,7 +972,7 @@ namespace LayoutManager.Tools {
 
         #endregion
 
-        public class ShiftComponentsMenuEntry : MenuItem {
+        internal class ShiftComponentsMenuEntry : MenuItem {
             public ShiftComponentsMenuEntry(LayoutHitTestResult hitTestResult) {
                 this.Text = "&Shift Components";
 
@@ -983,7 +985,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-        public class MoveSelectionMenuEntry : MenuItem {
+        internal class MoveSelectionMenuEntry : MenuItem {
             public MoveSelectionMenuEntry(LayoutHitTestResult hitTestResult) {
                 this.Text = "&Move selection";
 

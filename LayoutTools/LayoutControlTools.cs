@@ -9,8 +9,8 @@ using LayoutManager.Components;
 using LayoutManager.CommonUI;
 
 #nullable enable
+#pragma warning disable IDE0051, IDE0060, IDE0067, IDE0068, CA1031
 namespace LayoutManager.Tools {
-#pragma warning disable IDE0051, IDE0060, IDE0067, IDE0068
     [LayoutModule("Layout Control Tools", UserControl = false)]
     internal class LayoutControlTools : LayoutModuleBase {
         #region Component/Control connection manager
@@ -327,7 +327,7 @@ namespace LayoutManager.Tools {
                                 moduleTypeName = moduleTypeNames[0];
 
                                 if (!connectLayout) {
-                                    AutoConnectDialogs.AnnounceCreateNewModule d = new AutoConnectDialogs.AnnounceCreateNewModule(LayoutModel.ControlManager.GetModuleType(moduleTypeName), request.ModuleLocation);
+                                    AutoConnectDialogs.AnnounceCreateNewModule d = new AutoConnectDialogs.AnnounceCreateNewModule(LayoutControlManager.GetModuleType(moduleTypeName), request.ModuleLocation);
 
                                     ensureVisible(request);
                                     if (d.ShowDialog(LayoutController.ActiveFrameWindow) == DialogResult.Cancel)
@@ -417,7 +417,7 @@ namespace LayoutManager.Tools {
                                     }
                                 }
                                 else {      // Not daisy chain bus
-                                    int address = moduleTypeName != null ? bus.AllocateFreeAddress(LayoutModel.ControlManager.GetModuleType(moduleTypeName), moduleLocationID) : -1;
+                                    int address = moduleTypeName != null ? bus.AllocateFreeAddress(LayoutControlManager.GetModuleType(moduleTypeName), moduleLocationID) : -1;
 
                                     if (address < 0) {
                                         ensureVisible(request);
@@ -431,7 +431,7 @@ namespace LayoutManager.Tools {
                             }
                             else {      // There is an address constraint
                                 if (moduleTypeName != null) {
-                                    ControlModuleType moduleType = LayoutModel.ControlManager.GetModuleType(moduleTypeName);
+                                    ControlModuleType moduleType = LayoutControlManager.GetModuleType(moduleTypeName);
 
                                     if (bus.BusType.Topology == ControlBusTopology.DaisyChain) {
                                         if (request.Bus != null) {
@@ -456,6 +456,7 @@ namespace LayoutManager.Tools {
                             }
 
                             if (addCommand != null) {
+                                #pragma warning disable CA1031
                                 try {
                                     command.Add(addCommand);        // Note: this will also execute the command
                                 }
@@ -464,6 +465,7 @@ namespace LayoutManager.Tools {
                                     MessageBox.Show(ex.Message, "Unable to add module", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     return null;
                                 }
+                                #pragma warning restore CA1031
                             }
 
                             break;      // Module was created, stop scanning the bus
@@ -1536,6 +1538,7 @@ namespace LayoutManager.Tools {
                 }
                 catch (Exception ex) {
                     Error(ex.Message);
+                    throw;
                 }
             }
         }

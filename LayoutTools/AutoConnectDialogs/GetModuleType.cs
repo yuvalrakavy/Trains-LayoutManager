@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0069
 namespace LayoutManager.Tools.AutoConnectDialogs {
     /// <summary>
     /// Summary description for GetModuleType.
@@ -26,7 +27,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             InitializeComponent();
 
             foreach (string moduleTypeName in moduleTypeNames) {
-                ControlModuleType moduleType = LayoutModel.ControlManager.GetModuleType(moduleTypeName);
+                ControlModuleType moduleType = LayoutControlManager.GetModuleType(moduleTypeName);
 
                 comboBoxModuleTypes.Items.Add(new Item(moduleType));
             }

@@ -11,7 +11,7 @@ using Microsoft.Win32.SafeHandles;
 using LayoutManager.Model;
 using System.Net.Sockets;
 
-#pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060, CA1031
 #nullable enable
 namespace LayoutManager {
     public enum CommunicationInterfaceType {
@@ -63,6 +63,7 @@ namespace LayoutManager {
     }
 }
 
+#pragma warning disable CA1036
 namespace LayoutManager.Components {
     #region Base class for command station components
 
@@ -291,7 +292,7 @@ namespace LayoutManager.Components {
     ///Base class for command station components. This class implements the functionality that is common to command station components,
     ///Thus making it simpler to implement those components.
     /// </summary>
-    public abstract class LayoutCommandStationComponent : LayoutBusProviderSupport, IModelComponentIsCommandStation, IDisposable, ILayoutLockResource {
+    public abstract class LayoutCommandStationComponent : LayoutBusProviderSupport, IModelComponentIsCommandStation, ILayoutLockResource {
         public const string A_EmulationTickTime = "EmulationTickTime";
         public const string A_AnimateTrainMotion = "AnimateTrainMotion";
         public const string A_EmulateTrainMotion = "EmulateTrainMotion";
@@ -673,7 +674,7 @@ namespace LayoutManager.Components {
                 IList<string> moduleTypeNames = Bus.BusType.GetConnectableControlModuleTypeNames(connectionDestination);
 
                 foreach (string moduleTypeName in moduleTypeNames)
-                    moduleTypes.Add(LayoutModel.ControlManager.GetModuleType(moduleTypeName));
+                    moduleTypes.Add(LayoutControlManager.GetModuleType(moduleTypeName));
             }
             else if (ConnectionPointRef.Module != null)
                 moduleTypes.Add(ConnectionPointRef.Module.ModuleType);

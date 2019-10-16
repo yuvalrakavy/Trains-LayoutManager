@@ -145,7 +145,7 @@ namespace LayoutManager.View {
         }
     }
 
-    public abstract class LayoutDrawingRegionBallon : LayoutDrawingRegion, IDisposable {
+    public abstract class LayoutDrawingRegionBallon : LayoutDrawingRegion {
         private SizeF ballonContentSize;
         private readonly float hangSize = 0.25f;
 
@@ -294,7 +294,7 @@ namespace LayoutManager.View {
         protected Font Font { get; }
     }
 
-    public class LayoutDrawingRegionBallonInfo : LayoutDrawingRegionBallonText, IDisposable {
+    public class LayoutDrawingRegionBallonInfo : LayoutDrawingRegionBallonText {
         public LayoutDrawingRegionBallonInfo(ModelComponent component, ILayoutView view, Graphics g, LayoutBlockBallon ballonInfo) :
             base(component, view, g, ballonInfo.Text, new Font("Arial", ballonInfo.FontSize, GraphicsUnit.World)) {
             Painter.Fill = new SolidBrush(ballonInfo.FillColor);

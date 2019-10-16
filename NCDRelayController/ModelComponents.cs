@@ -17,7 +17,7 @@ namespace NCDRelayController {
         TCP,
     };
 
-#pragma warning disable IDE0051, IDE0060, IDE0052, RCS1003, RCS1090
+#pragma warning disable IDE0051, IDE0060, IDE0052, CA1031
     public class NCDRelayController : ModelComponent, IModelComponentIsBusProvider {
         private const string A_InterfaceType = "InterfaceType";
         private const string A_OverlappedIO = "OverlappedIO";
@@ -227,7 +227,7 @@ namespace NCDRelayController {
 
         #region Command classes
 
-        public abstract class NCDcommandBase : OutputSynchronousCommandBase {
+        internal abstract class NCDcommandBase : OutputSynchronousCommandBase {
             private readonly byte[] replyBuffer;
 
             protected NCDRelayController RelayController { get; }

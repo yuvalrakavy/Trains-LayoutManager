@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#pragma warning disable IDE0069
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for TrackContactProperties.
@@ -61,7 +62,7 @@ namespace LayoutManager.Tools.Dialogs {
 
                     if (moduleTypeNames.Count > 0) {
                         foreach (string moduleTypeName in moduleTypeNames) {
-                            ControlModuleType moduleType = LayoutModel.ControlManager.GetModuleType(moduleTypeName);
+                            ControlModuleType moduleType = LayoutControlManager.GetModuleType(moduleTypeName);
 
                             if (moduleType.BuiltIn)
                                 comboBoxBuiltinDecoders.Items.Add(new Item(moduleType));
