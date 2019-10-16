@@ -381,14 +381,14 @@ namespace NumatoController.Dialogs {
                 return;
             }
 
-            XmlInfo.DocumentElement.SetAttribute(NumatoController.A_Relays, relayCount);
+            XmlInfo.DocumentElement.SetAttributeValue(NumatoController.A_Relays, relayCount);
 
             if (radioButtonSerial.Checked) {
-                XmlInfo.DocumentElement.SetAttribute(A_InterfaceType, InterfaceType.Serial);
+                XmlInfo.DocumentElement.SetAttributeValue(A_InterfaceType, InterfaceType.Serial);
                 XmlInfo.DocumentElement.SetAttribute(A_Port, comboBoxPort.Text);
             }
             else {
-                XmlInfo.DocumentElement.SetAttribute(A_InterfaceType, InterfaceType.TCP);
+                XmlInfo.DocumentElement.SetAttributeValue(A_InterfaceType, InterfaceType.TCP);
                 XmlInfo.DocumentElement.SetAttribute(A_Address, textBoxAddress.Text);
             }
 

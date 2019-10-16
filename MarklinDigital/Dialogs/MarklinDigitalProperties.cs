@@ -248,7 +248,7 @@ namespace MarklinDigital.Dialogs {
             // Commit
 
             XmlInfo.DocumentElement.SetAttribute(LayoutIOServices.A_Port, comboBoxPort.Text);
-            XmlInfo.DocumentElement.SetAttribute(A_FeedbackPolling, numericUpDownFeedbackPolling.Value);
+            XmlInfo.DocumentElement.SetAttributeValue(A_FeedbackPolling, numericUpDownFeedbackPolling.Value);
             layoutEmulationSetup.Commit();
 
             DialogResult = DialogResult.OK;

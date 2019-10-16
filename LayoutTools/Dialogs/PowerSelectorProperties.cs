@@ -128,13 +128,13 @@ namespace LayoutManager.Tools.Dialogs {
 
             powerSelectorNameInfo.Name = textBoxName.Text;
             powerSelectorNameInfo.Visible = checkBoxDisplayPowerSelectorName.Checked;
-            XmlInfo.Element.SetAttribute(A_ReverseLogic, checkBoxReverseLogic.Checked);
+            XmlInfo.Element.SetAttributeValue(A_ReverseLogic, checkBoxReverseLogic.Checked);
 
-            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.A_SwitchingMethod,
+            XmlInfo.Element.SetAttributeValue(LayoutPowerSelectorComponent.A_SwitchingMethod,
                 radioButtonDTDPrelay.Checked ? LayoutPowerSelectorComponent.RelaySwitchingMethod.DPDSrelay : LayoutPowerSelectorComponent.RelaySwitchingMethod.TwoSPDSrelays);
 
-            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.A_HasOnOffRelay, checkBoxHasOnOffRelay.Checked);
-            XmlInfo.Element.SetAttribute(LayoutPowerSelectorComponent.A_ReverseOnOffRelay, checkBoxReverseOnOffRelay.Checked);
+            XmlInfo.Element.SetAttributeValue(LayoutPowerSelectorComponent.A_HasOnOffRelay, checkBoxHasOnOffRelay.Checked);
+            XmlInfo.Element.SetAttributeValue(LayoutPowerSelectorComponent.A_ReverseOnOffRelay, checkBoxReverseOnOffRelay.Checked);
 
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }

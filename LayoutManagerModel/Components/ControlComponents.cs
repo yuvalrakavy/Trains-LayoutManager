@@ -100,7 +100,7 @@ namespace LayoutManager.Components {
 
             [LayoutEventDef("logical-signal-state-changed", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutBlockEdgeBase), InfoType = typeof(LayoutSignalState))]
             set {
-                LayoutModel.StateManager.Components.StateOf(this, "Signal", create: true).SetAttribute(A_State, value);
+                LayoutModel.StateManager.Components.StateOf(this, "Signal", create: true).SetAttributeValue(A_State, value);
                 Redraw();
                 EventManager.Event(new LayoutEvent("logical-signal-state-changed", this, value));
             }
@@ -181,7 +181,7 @@ namespace LayoutManager.Components {
 
         public bool IsEmergencySensor {
             get => (bool?)Element.AttributeValue(A_EmergencyContact) ?? false;
-            set => Element.SetAttribute(A_EmergencyContact, value, removeIf: false);
+            set => Element.SetAttributeValue(A_EmergencyContact, value, removeIf: false);
         }
 
         public bool IsTriggered {
@@ -401,13 +401,13 @@ namespace LayoutManager.Components {
                 if (value)
                     Element.RemoveAttribute(A_IsWaitable);
                 else
-                    Element.SetAttribute(A_IsWaitable, BlockDefinition.Block != null ? BlockDefinition.Block.CanTrainWaitDefault : value);
+                    Element.SetAttributeValue(A_IsWaitable, BlockDefinition.Block != null ? BlockDefinition.Block.CanTrainWaitDefault : value);
             }
         }
 
         public bool CanTrainWait {
             get => (bool?)AttributeValue(A_IsWaitable) ?? BlockDefinition.Block.CanTrainWaitDefault;
-            set => Element.SetAttribute(A_IsWaitable, value);
+            set => Element.SetAttributeValue(A_IsWaitable, value);
         }
 
         public bool IsOccupancyDetectionBlock {
@@ -487,13 +487,13 @@ namespace LayoutManager.Components {
         public void SetTrainDetected(bool detected) {
             var trainDetectionElement = LayoutModel.StateManager.Components.StateOf(BlockDefinition, "TrainDetection", create: true);
 
-            trainDetectionElement.SetAttribute(A_TrainDetected, detected);
+            trainDetectionElement.SetAttributeValue(A_TrainDetected, detected);
         }
 
         public void SetTrainWillBeDetected(bool detected) {
             var trainDetectionElement = LayoutModel.StateManager.Components.StateOf(BlockDefinition, "TrainDetection", create: true);
 
-            trainDetectionElement.SetAttribute(A_TrainWillBeDetected, detected);
+            trainDetectionElement.SetAttributeValue(A_TrainWillBeDetected, detected);
         }
 
         public bool TrainWillBeDetected {

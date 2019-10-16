@@ -1164,7 +1164,7 @@ namespace LayoutManager.CommonUI {
         public DrawControlModule(LayoutControlBusViewer viewer, ControlModule module) : base(viewer) {
             this.Module = module;
 
-            for (int index = 0; index < module.ModuleType.NumberOfConnectionPoints; index++)
+            for (int index = 0; index < module.NumberOfConnectionPoints; index++)
                 AddDrawObject(new DrawControlConnectionPoint(Viewer, this, index));
 
             if ((module.ModuleType.ConnectionPointArrangement & ControlModuleConnectionPointArrangementOptions.TopRow) != 0) {
@@ -1297,7 +1297,7 @@ namespace LayoutManager.CommonUI {
 
         private int ConnectionPointsPerRow {
             get {
-                int connectionPointsPerRow = Module.ModuleType.NumberOfConnectionPoints;
+                int connectionPointsPerRow = Module.NumberOfConnectionPoints;
 
                 if ((Module.ModuleType.ConnectionPointArrangement & ControlModuleConnectionPointArrangementOptions.BothRows) == ControlModuleConnectionPointArrangementOptions.BothRows)
                     connectionPointsPerRow /= 2;

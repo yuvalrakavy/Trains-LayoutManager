@@ -265,7 +265,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             }
 
             element.SetAttribute(A_Symbol, comboBoxSymbol.Text);
-            element.SetAttribute(A_SelectCircularTripPlans, checkBoxCircularMayBeSelected.Checked);
+            element.SetAttributeValue(A_SelectCircularTripPlans, checkBoxCircularMayBeSelected.Checked);
 
             string v;
 

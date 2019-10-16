@@ -433,7 +433,7 @@ namespace LayoutManager.Tools.Controls {
                 }
                 else {
                     updateAutoClearTimers();
-                    LayoutModel.StateManager.Element.SetAttribute(A_TripsMonitorAutoClearTimeout, autoClearTimeout);
+                    LayoutModel.StateManager.Element.SetAttributeValue(A_TripsMonitorAutoClearTimeout, autoClearTimeout);
                 }
             }
         }

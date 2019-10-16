@@ -249,7 +249,7 @@ namespace LayoutManager.Dialogs {
 
             foreach (StoreItem item in listViewStores.Items) {
                 if (item.IsDefault) {
-                    storesElement.SetAttribute(A_DefaultStore, defaultStoreIndex);
+                    storesElement.SetAttributeValue(A_DefaultStore, defaultStoreIndex);
                     defaultFound = true;
                     break;
                 }
@@ -265,7 +265,7 @@ namespace LayoutManager.Dialogs {
                         "No storage location specified", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else if (listViewStores.Items.Count == 1) {
-                    storesElement.SetAttribute(A_DefaultStore, 0);
+                    storesElement.SetAttributeValue(A_DefaultStore, 0);
                     errorCondition = false;
                 }
                 else {

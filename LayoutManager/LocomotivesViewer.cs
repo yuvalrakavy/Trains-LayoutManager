@@ -152,8 +152,8 @@ namespace LayoutManager {
         private void addNewLocomotiveToCollection(LayoutEvent e) {
             XmlElement locoElement = locomotiveCollection.CollectionDocument.CreateElement(E_Locomotive);
 
-            locoElement.SetAttribute(A_Id, Guid.NewGuid());
-            locoElement.SetAttribute(A_Store, locomotiveCollection.DefaultStore);
+            locoElement.SetAttributeValue(A_Id, Guid.NewGuid());
+            locoElement.SetAttributeValue(A_Store, locomotiveCollection.DefaultStore);
 
             LocomotiveInfo loco = new LocomotiveInfo(locoElement);
             Dialogs.LocomotiveProperties locoProperties = new Dialogs.LocomotiveProperties(loco);

@@ -236,7 +236,7 @@ namespace LayoutManager.Dialogs {
 
                 element.SetAttribute(A_Name, comboBoxFunctionName.Text);
                 element.SetAttribute(A_Description, textBoxFunctionDescription.Text);
-                element.SetAttribute(A_Type, (LocomotiveFunctionType)comboBoxFunctionType.SelectedIndex);
+                element.SetAttributeValue(A_Type, (LocomotiveFunctionType)comboBoxFunctionType.SelectedIndex);
                 catalog.LocomotiveFunctionNames.AppendChild(element);
             }
 

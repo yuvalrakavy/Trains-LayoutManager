@@ -58,7 +58,7 @@ namespace LayoutManager.CommonUI.Controls {
                 onTrack = trainState.Locomotives.Count <= 1 || element.Name != "Locomotive";
             }
 
-            element.SetAttribute(A_OnTrack, onTrack);
+            element.SetAttributeValue(A_OnTrack, onTrack);
 
             if (!onTrack) {
                 // Try to check if the locomotive can be placed on a block
@@ -109,7 +109,7 @@ namespace LayoutManager.CommonUI.Controls {
                 else
                     element.SetAttribute(A_Reason, reason);
 
-                element.SetAttribute(A_CanPlaceOnTrack, canPlaceOnTrack);
+                element.SetAttributeValue(A_CanPlaceOnTrack, canPlaceOnTrack);
             }
         }
 

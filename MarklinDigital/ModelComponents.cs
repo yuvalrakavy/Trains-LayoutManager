@@ -52,9 +52,9 @@ namespace MarklinDigital {
             base.OnCommunicationSetup();
 
             if (!Element.HasAttribute(A_ReadIntervalTimeout))
-                Element.SetAttribute(A_ReadIntervalTimeout, 20);
+                Element.SetAttributeValue(A_ReadIntervalTimeout, 20);
             if (!Element.HasAttribute(A_ReadTotalTimeoutConstant))
-                Element.SetAttribute(A_ReadTotalTimeoutConstant, 5000);
+                Element.SetAttributeValue(A_ReadTotalTimeoutConstant, 5000);
         }
 
         public override DigitalPowerFormats SupportedDigitalPowerFormats => DigitalPowerFormats.Motorola;

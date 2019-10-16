@@ -202,7 +202,7 @@ namespace LayoutManager.CommonUI.Controls {
                 }
 
                 if (linkMenuConstantType.SelectedIndex == 3)
-                    Element.SetAttribute(A_Value + Prefix, comboBoxBooleanConstant.SelectedIndex == 1);
+                    Element.SetAttributeValue(A_Value + Prefix, comboBoxBooleanConstant.SelectedIndex == 1);
                 else
                     Element.SetAttribute(A_Value + Prefix, textBoxConstantValue.Text);
             }

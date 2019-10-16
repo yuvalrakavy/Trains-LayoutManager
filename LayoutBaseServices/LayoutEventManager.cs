@@ -455,7 +455,7 @@ namespace LayoutManager {
             set {
                 role = value;
 
-                DocumentElement.SetAttribute(A_Role, value, removeIf: LayoutEventRole.Unspecified);
+                DocumentElement.SetAttributeValue(A_Role, value, removeIf: LayoutEventRole.Unspecified);
             }
         }
 
@@ -579,7 +579,7 @@ namespace LayoutManager {
 
             set {
                 order = value;
-                DocumentElement.SetAttribute(A_Order, value);
+                DocumentElement.SetAttributeValue(A_Order, value);
             }
         }
 

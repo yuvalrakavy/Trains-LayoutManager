@@ -1021,7 +1021,7 @@ namespace LayoutManager.Tools.Controls {
         private XmlElement GenerateUsePolicy(WayPointItem waypoint, LayoutPolicyInfo policy) {
             XmlElement runPolicy = waypoint.WayPoint.Element.OwnerDocument.CreateElement(E_RunPolicy);
 
-            runPolicy.SetAttribute(A_PolicyID, policy.Id);
+            runPolicy.SetAttributeValue(A_PolicyID, policy.Id);
             return runPolicy;
         }
 

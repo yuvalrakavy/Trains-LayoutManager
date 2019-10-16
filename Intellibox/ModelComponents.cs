@@ -36,22 +36,22 @@ namespace Intellibox {
 
         public int PollingPeriod {
             get => (int?)Element.AttributeValue(A_PollingPeriod) ?? 20;
-            set => Element.SetAttribute(A_PollingPeriod, value);
+            set => Element.SetAttributeValue(A_PollingPeriod, value);
         }
 
         public int AccessoryCommandTime {
             get => (int?)Element.AttributeValue(A_AccessorySwitchingTime) ?? 100;
-            set => Element.SetAttribute(A_AccessorySwitchingTime, value);
+            set => Element.SetAttributeValue(A_AccessorySwitchingTime, value);
         }
 
         public byte OperationModeDebounceCount {
             get => (byte?)Element.AttributeValue(A_OperationModeDebounceCount) ?? 1;
-            set => Element.SetAttribute(A_OperationModeDebounceCount, value);
+            set => Element.SetAttributeValue(A_OperationModeDebounceCount, value);
         }
 
         public byte DesignTimeDebounceCount {
             get => (byte?)Element.AttributeValue(A_DesignTimeDebounceCount) ?? 1;
-            set => Element.SetAttribute(A_DesignTimeDebounceCount, value);
+            set => Element.SetAttributeValue(A_DesignTimeDebounceCount, value);
         }
     }
 
@@ -107,11 +107,11 @@ namespace Intellibox {
             CachedDesignTimeDebounceCount = Info.DesignTimeDebounceCount;
 
             if (!Element.HasAttribute(LayoutIOServices.A_ReadIntervalTimeout))
-                Element.SetAttribute(LayoutIOServices.A_ReadIntervalTimeout, 100);
+                Element.SetAttributeValue(LayoutIOServices.A_ReadIntervalTimeout, 100);
             if (!Element.HasAttribute(LayoutIOServices.A_ReadTotalTimeoutConstant))
-                Element.SetAttribute(LayoutIOServices.A_ReadTotalTimeoutConstant, 5000);
+                Element.SetAttributeValue(LayoutIOServices.A_ReadTotalTimeoutConstant, 5000);
             if (!Element.HasAttribute(LayoutIOServices.A_BufferSize))
-                Element.SetAttribute(LayoutIOServices.A_BufferSize, 1);
+                Element.SetAttributeValue(LayoutIOServices.A_BufferSize, 1);
         }
 
         protected override void OnInitialize() {

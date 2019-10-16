@@ -122,8 +122,8 @@ namespace LayoutManager.Dialogs {
             CheckBox checkBoxHasLights = (CheckBox)nameToControlMap["checkBoxHasLights"];
             ComboBox comboBoxStore = (ComboBox)nameToControlMap["comboBoxStore"];
 
-            element[E_Functions].SetAttribute(A_Light, checkBoxHasLights.Checked);
-            element.SetAttribute(A_Store, comboBoxStore.SelectedIndex);
+            element[E_Functions].SetAttributeValue(A_Light, checkBoxHasLights.Checked);
+            element.SetAttributeValue(A_Store, comboBoxStore.SelectedIndex);
 
             attributesEditor.Commit();
 
@@ -231,7 +231,7 @@ namespace LayoutManager.Dialogs {
             LengthInput c = (LengthInput)nameToControlMap[controlName];
 
             if (!c.IsEmpty)
-                element.SetAttribute(a, c.NeutralValue);
+                element.SetAttributeValue(a, c.NeutralValue);
         }
 
         protected bool ValidateSpeedLimit(string controlName) {
@@ -260,13 +260,13 @@ namespace LayoutManager.Dialogs {
             if (limit == 0)
                 element.RemoveAttribute(a);
             else
-                element.SetAttribute(a, limit);
+                element.SetAttributeValue(a, limit);
         }
 
         protected void GetGuage() {
             TrackGuageSelector trackGuageSelector = (TrackGuageSelector)nameToControlMap["trackGuageSelector"];
 
-            element.SetAttribute("Guage", trackGuageSelector.Value);
+            element.SetAttributeValue("Guage", trackGuageSelector.Value);
         }
 
         #endregion
@@ -345,7 +345,7 @@ namespace LayoutManager.Dialogs {
                 }
             } while (functionNumberUsed);
 
-            functionElement.SetAttribute(A_Number, functionNumber);
+            functionElement.SetAttributeValue(A_Number, functionNumber);
 
             if (item.Edit(this, Catalog, functionsElement) == DialogResult.OK) {
                 functionsElement.AppendChild(item.FunctionElement);

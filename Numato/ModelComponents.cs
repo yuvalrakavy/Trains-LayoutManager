@@ -75,13 +75,13 @@ namespace NumatoController {
 
         override protected void OnCommunicationSetup() {
             if (!Element.HasAttribute(A_OverlappedIO))
-                Element.SetAttribute(A_OverlappedIO, true);
+                Element.SetAttributeValue(A_OverlappedIO, true);
             if (!Element.HasAttribute(A_ReadIntervalTimeout))
-                Element.SetAttribute(A_ReadIntervalTimeout, 3500);
+                Element.SetAttributeValue(A_ReadIntervalTimeout, 3500);
             if (!Element.HasAttribute(A_ReadTotalTimeoutConstant))
-                Element.SetAttribute(A_ReadTotalTimeoutConstant, 6000);
+                Element.SetAttributeValue(A_ReadTotalTimeoutConstant, 6000);
             if (!Element.HasAttribute(A_WriteTotalTimeoutConstant))
-                Element.SetAttribute(A_WriteTotalTimeoutConstant, 6000);
+                Element.SetAttributeValue(A_WriteTotalTimeoutConstant, 6000);
         }
 
         override protected async Task OnTerminateCommunication() {

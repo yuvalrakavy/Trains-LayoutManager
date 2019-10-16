@@ -1848,17 +1848,17 @@ namespace LayoutManager {
 
                 public int Value {
                     get => (int)Element.AttributeValue(A_Value);
-                    set => Element.SetAttribute(A_Value, value);
+                    set => Element.SetAttributeValue(A_Value, value);
                 }
 
                 public int From {
                     get => (int)Element.AttributeValue(A_From);
-                    set => Element.SetAttribute(A_From, value);
+                    set => Element.SetAttributeValue(A_From, value);
                 }
 
                 public int To {
                     get => (int)Element.AttributeValue(A_To);
-                    set => Element.SetAttribute(A_To, value);
+                    set => Element.SetAttributeValue(A_To, value);
                 }
 
                 public bool InRange(int v) => IsRange ? From <= v && v <= To : v == Value;

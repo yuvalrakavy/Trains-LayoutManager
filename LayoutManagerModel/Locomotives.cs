@@ -161,7 +161,7 @@ namespace LayoutManager.Model {
                         while (r.NodeType == XmlNodeType.Element) {
                             XmlElement newNode = (XmlElement)CollectionDocument.ReadNode(r);
 
-                            newNode.SetAttribute(A_Store, iStore);
+                            newNode.SetAttributeValue(A_Store, iStore);
                             CollectionElement.AppendChild(newNode);
                         }
 
@@ -241,8 +241,8 @@ namespace LayoutManager.Model {
 
             XmlElement collectionElement = CollectionDocument.CreateElement(CollectionElementName);
 
-            collectionElement.SetAttribute(A_Store, DefaultStore);
-            collectionElement.SetAttribute(A_Id, Guid.NewGuid());
+            collectionElement.SetAttributeValue(A_Store, DefaultStore);
+            collectionElement.SetAttributeValue(A_Id, Guid.NewGuid());
             return collectionElement;
         }
 
@@ -320,8 +320,8 @@ namespace LayoutManager.Model {
             if (image != null) {
                 if (imageElement == null) {
                     imageElement = Element.OwnerDocument.CreateElement(E_Image);
-                    imageElement.SetAttribute(A_Kind, kind);
-                    imageElement.SetAttribute(A_Origin, origin);
+                    imageElement.SetAttributeValue(A_Kind, kind);
+                    imageElement.SetAttributeValue(A_Origin, origin);
                     imagesElement.AppendChild(imageElement);
                 }
 
@@ -548,7 +548,7 @@ namespace LayoutManager.Model {
 
         public LocomotiveOrigin Origin {
             get => AttributeValue(A_Origin).Enum<LocomotiveOrigin>() ?? LocomotiveOrigin.Europe;
-            set => Element.SetAttribute(A_Origin, value);
+            set => Element.SetAttributeValue(A_Origin, value);
         }
 
         public Image? Image {
@@ -1443,8 +1443,8 @@ namespace LayoutManager.Model {
         }
 
         public void Initialize() {
-            Element.SetAttribute(A_Id, Guid.NewGuid());
-            Element.SetAttribute(A_Store, LayoutModel.LocomotiveCollection.DefaultStore);
+            Element.SetAttributeValue(A_Id, Guid.NewGuid());
+            Element.SetAttributeValue(A_Store, LayoutModel.LocomotiveCollection.DefaultStore);
         }
 
         public virtual void CopyFrom(TrainCommonInfo otherTrain, LayoutBlock? block, bool validateAddress) {

@@ -46,7 +46,7 @@ namespace LayoutManager {
         /// </summary>
         public bool UserControl {
             get => (bool)XmlInfo.DocumentElement.AttributeValue(A_UserControl);
-            set => XmlInfo.DocumentElement.SetAttribute(A_UserControl, value);
+            set => XmlInfo.DocumentElement.SetAttributeValue(A_UserControl, value);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace LayoutManager {
                 }
 
                 if (ok)
-                    XmlInfo.DocumentElement.SetAttribute(A_Enabled, value);
+                    XmlInfo.DocumentElement.SetAttributeValue(A_Enabled, value);
             }
         }
 
@@ -294,7 +294,7 @@ namespace LayoutManager {
         /// </summary>
         public bool SaveAssemblyReference {
             get => (bool?)XmlInfo.DocumentElement.AttributeValue(A_Save) ?? false;
-            set => XmlInfo.DocumentElement.SetAttribute(A_Save, value);
+            set => XmlInfo.DocumentElement.SetAttributeValue(A_Save, value);
         }
 
         /// <summary>

@@ -221,7 +221,7 @@ namespace LayoutLGB.Dialogs {
             // Commit
 
             XmlInfo.DocumentElement.SetAttribute(LayoutIOServices.A_Port, comboBoxPort.Text);
-            XmlInfo.DocumentElement.SetAttribute(A_XbusId, (int)numericUpDownXbusID.Value);
+            XmlInfo.DocumentElement.SetAttributeValue(A_XbusId, (int)numericUpDownXbusID.Value);
             layoutEmulationSetup.Commit();
 
             DialogResult = DialogResult.OK;

@@ -67,7 +67,7 @@ namespace LayoutManager.Model {
         protected override XmlElement CreateElement(Guid item) {
             XmlElement itemElement = Element.OwnerDocument.CreateElement(E_Policy);
 
-            itemElement.SetAttribute(A_PolicyId, item);
+            itemElement.SetAttributeValue(A_PolicyId, item);
             return itemElement;
         }
 

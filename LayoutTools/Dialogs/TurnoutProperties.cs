@@ -224,8 +224,8 @@ namespace LayoutManager.Tools.Dialogs {
         #endregion
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
-            XmlInfo.DocumentElement.SetAttribute(A_ReverseLogic, checkBoxReverseLogic.Checked);
-            XmlInfo.DocumentElement.SetAttribute(A_HasFeedback, checkBoxHasFeedback.Checked);
+            XmlInfo.DocumentElement.SetAttributeValue(A_ReverseLogic, checkBoxReverseLogic.Checked);
+            XmlInfo.DocumentElement.SetAttributeValue(A_HasFeedback, checkBoxHasFeedback.Checked);
 
             if (checkBoxHasBuiltinDecoder.Checked)
                 XmlInfo.Element.SetAttribute(A_BuiltinDecoderTypeName, ((Item)comboBoxBuiltinDecoders.SelectedItem).ModuleType.TypeName);

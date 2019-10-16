@@ -302,15 +302,15 @@ namespace NCDRelayController.Dialogs {
             // Commit
 
             if (radioButtonSerial.Checked) {
-                XmlInfo.DocumentElement.SetAttribute(A_InterfaceType, InterfaceType.Serial);
+                XmlInfo.DocumentElement.SetAttributeValue(A_InterfaceType, InterfaceType.Serial);
                 XmlInfo.DocumentElement.SetAttribute(A_Port, comboBoxPort.Text);
             }
             else {
-                XmlInfo.DocumentElement.SetAttribute(A_InterfaceType, InterfaceType.TCP);
+                XmlInfo.DocumentElement.SetAttributeValue(A_InterfaceType, InterfaceType.TCP);
                 XmlInfo.DocumentElement.SetAttribute(A_Address, textBoxAddress.Text);
             }
 
-            XmlInfo.DocumentElement.SetAttribute(A_PollingPeriod, pollingPeriod);
+            XmlInfo.DocumentElement.SetAttributeValue(A_PollingPeriod, pollingPeriod);
             DialogResult = DialogResult.OK;
         }
 

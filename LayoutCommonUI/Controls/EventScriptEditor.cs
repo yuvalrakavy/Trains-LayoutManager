@@ -927,7 +927,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
 
             protected override void OnClick(EventArgs e) {
-                node.Element.SetAttribute(A_Optional, true);
+                node.Element.SetAttributeValue(A_Optional, true);
                 node.UpdateNode();
             }
         }

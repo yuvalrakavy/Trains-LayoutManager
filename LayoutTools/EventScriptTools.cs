@@ -895,8 +895,8 @@ namespace LayoutManager.Tools {
 
             if (d.ShowDialog() == DialogResult.OK) {
                 element.SetAttribute(A_TrainSymbol, d.SymbolName);
-                element.SetAttribute(A_Length, d.Length);
-                element.SetAttribute(A_Comparison, d.Comparison);
+                element.SetAttributeValue(A_Length, d.Length);
+                element.SetAttributeValue(A_Comparison, d.Comparison);
                 site.EditingDone();
             }
             else
@@ -1495,7 +1495,7 @@ namespace LayoutManager.Tools {
                 EventManager.Event(new LayoutEvent("set-script-context", train, scriptContext));
 
                 workingDoc.AppendChild(applicableTripPlansElement);
-                applicableTripPlansElement.SetAttribute(A_StaticGrade, false);
+                applicableTripPlansElement.SetAttributeValue(A_StaticGrade, false);
 
                 EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", train, applicableTripPlansElement));
 

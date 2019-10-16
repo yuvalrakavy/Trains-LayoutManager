@@ -56,11 +56,11 @@ namespace LayoutLGB {
             base.OnCommunicationSetup();
 
             if (!Element.HasAttribute(A_OverlappedIO))
-                Element.SetAttribute(A_OverlappedIO, true);
+                Element.SetAttributeValue(A_OverlappedIO, true);
             if (!Element.HasAttribute(A_ReadIntervalTimeout))
-                Element.SetAttribute(A_ReadIntervalTimeout, 100);
+                Element.SetAttributeValue(A_ReadIntervalTimeout, 100);
             if (!Element.HasAttribute(A_ReadTotalTimeoutConstant))
-                Element.SetAttribute(A_ReadTotalTimeoutConstant, 5000);
+                Element.SetAttributeValue(A_ReadTotalTimeoutConstant, 5000);
         }
 
         protected override void OnInitialize() {

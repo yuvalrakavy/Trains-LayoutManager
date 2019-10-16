@@ -420,7 +420,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
                 case 2:
                     element.SetAttribute(A_SetTo, "Boolean");
-                    element.SetAttribute(A_Value, radioButtonValueTrue.Checked);
+                    element.SetAttributeValue(A_Value, radioButtonValueTrue.Checked);
                     break;
 
                 case 3:

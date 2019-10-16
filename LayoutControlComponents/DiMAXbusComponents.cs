@@ -281,7 +281,7 @@ namespace LayoutManager.ControlComponents {
 
         public MassothFeedbackDecoderBusConnectionMethod BusConnectionMethod {
             get => AttributeValue(A_BusConnection).Enum<MassothFeedbackDecoderBusConnectionMethod>() ?? MassothFeedbackDecoderBusConnectionMethod.Slave;
-            set => Element.SetAttribute(A_BusConnection, value);
+            set => Element.SetAttributeValue(A_BusConnection, value);
         }
 
         public int BusId {

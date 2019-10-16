@@ -248,7 +248,7 @@ namespace LayoutManager.Model {
                 }
             }
 
-            LayoutModel.StateManager.Components.StateOf(BlockDefinintion, State_TrainEntry, create: true).SetAttribute(A_Time, DateTime.Now.Ticks);
+            LayoutModel.StateManager.Components.StateOf(BlockDefinintion, State_TrainEntry, create: true).SetAttributeValue(A_Time, DateTime.Now.Ticks);
 
             BlockDefinintion.OnComponentChanged();
         }
@@ -684,7 +684,7 @@ namespace LayoutManager.Model {
 
         public Guid BlockEdgeId {
             get => (Guid)Element.AttributeValue(A_BlockEdgeID);
-            set => Element.SetAttribute(A_BlockEdgeID, value);
+            set => Element.SetAttributeValue(A_BlockEdgeID, value);
         }
 
         public LayoutBlockEdgeBase BlockEdge {
@@ -694,7 +694,7 @@ namespace LayoutManager.Model {
 
         public Guid TrainId {
             get => (Guid)Element.AttributeValue(A_TrainID);
-            set => Element.SetAttribute(A_TrainID, value);
+            set => Element.SetAttributeValue(A_TrainID, value);
         }
 
         public TrainStateInfo Train {
@@ -706,7 +706,7 @@ namespace LayoutManager.Model {
 
         public Guid FromBlockId {
             get => (Guid)Element.AttributeValue(A_FromBlockID);
-            set => Element.SetAttribute(A_FromBlockID, value);
+            set => Element.SetAttributeValue(A_FromBlockID, value);
         }
 
         public LayoutBlock FromBlock {
@@ -716,7 +716,7 @@ namespace LayoutManager.Model {
 
         public Guid ToBlockId {
             get => (Guid)Element.AttributeValue(A_ToBlockID);
-            set => Element.SetAttribute(A_ToBlockID, value);
+            set => Element.SetAttributeValue(A_ToBlockID, value);
         }
 
         public LayoutBlock ToBlock {

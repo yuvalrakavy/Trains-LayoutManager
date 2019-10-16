@@ -52,7 +52,7 @@ namespace NCDRelayController {
 
         private InterfaceType InterfaceType {
             get => Element.AttributeValue(A_InterfaceType).Enum<InterfaceType>() ?? InterfaceType.Serial;
-            set => Element.SetAttribute(A_InterfaceType, value);
+            set => Element.SetAttributeValue(A_InterfaceType, value);
         }
 
         private Stream CommStream => commStream;
@@ -79,13 +79,13 @@ namespace NCDRelayController {
 
         private void OnCommunicationSetup() {
             if (!Element.HasAttribute(A_OverlappedIO))
-                Element.SetAttribute(A_OverlappedIO, true);
+                Element.SetAttributeValue(A_OverlappedIO, true);
             if (!Element.HasAttribute(A_ReadIntervalTimeout))
-                Element.SetAttribute(A_ReadIntervalTimeout, 3500);
+                Element.SetAttributeValue(A_ReadIntervalTimeout, 3500);
             if (!Element.HasAttribute(A_ReadTotalTimeoutConstant))
-                Element.SetAttribute(A_ReadTotalTimeoutConstant, 6000);
+                Element.SetAttributeValue(A_ReadTotalTimeoutConstant, 6000);
             if (!Element.HasAttribute(A_WriteTotalTimeoutConstant))
-                Element.SetAttribute(A_WriteTotalTimeoutConstant, 6000);
+                Element.SetAttributeValue(A_WriteTotalTimeoutConstant, 6000);
         }
 
         private void OpenCommunicationStream() {

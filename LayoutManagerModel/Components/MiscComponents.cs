@@ -179,7 +179,7 @@ namespace LayoutManager.Components {
 
         public TrackGauges TrackGauge {
             get => AttributeValue(A_Gauge).Enum<TrackGauges>() ?? TrackGauges.HO;
-            set => Element.SetAttribute(A_Gauge, value);
+            set => Element.SetAttributeValue(A_Gauge, value);
         }
 
         public bool CheckReverseLoops {
@@ -222,17 +222,17 @@ namespace LayoutManager.Components {
 
         public RelaySwitchingMethod SwitchingMethod {
             get => this.AttributeValue(A_SwitchingMethod).Enum<RelaySwitchingMethod>() ?? RelaySwitchingMethod.DPDSrelay;
-            set => this.SetAttribute(A_SwitchingMethod, value);
+            set => this.SetAttributeValue(A_SwitchingMethod, value);
         }
 
         public bool HasOnOffRelay {
             get => (bool?)this.AttributeValue(A_HasOnOffRelay) ?? false;
-            set => this.SetAttribute(A_HasOnOffRelay, value);
+            set => this.SetAttributeValue(A_HasOnOffRelay, value);
         }
 
         public bool RevereseOnOffRelay {
             get => (bool?)this.AttributeValue(A_ReverseOnOffRelay) ?? false;
-            set => this.SetAttribute(A_ReverseOnOffRelay, value);
+            set => this.SetAttributeValue(A_ReverseOnOffRelay, value);
         }
 
         protected override SwitchingStateSupport GetSwitchingStateSupporter() => new LayoutPowerSelectorSwitchingStateSupporter(this);
@@ -927,7 +927,7 @@ namespace LayoutManager.Components {
             get => LayoutModel.StateManager.Components.StateOf(Id, Topic_GateState).AttributeValue(A_State).Enum<LayoutGateState>() ?? LayoutGateState.Close;
 
             set {
-                LayoutModel.StateManager.Components.StateOf(Id, Topic_GateState, create: true).SetAttribute(A_State, value);
+                LayoutModel.StateManager.Components.StateOf(Id, Topic_GateState, create: true).SetAttributeValue(A_State, value);
                 OnComponentChanged();
 
                 if (value == LayoutGateState.Open)

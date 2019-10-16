@@ -160,9 +160,9 @@ namespace LayoutManager.Dialogs {
                 return;
             }
 
-            functionInfoElement.SetAttribute(A_Type, (LocomotiveFunctionType)comboBoxFunctionType.SelectedIndex);
-            functionInfoElement.SetAttribute(A_Name, textBoxFunctionName.Text);
-            functionInfoElement.SetAttribute(A_Description, textBoxDescription.Text);
+            functionInfoElement.SetAttributeValue(A_Type, (LocomotiveFunctionType)comboBoxFunctionType.SelectedIndex);
+            functionInfoElement.SetAttributeValue(A_Name, textBoxFunctionName.Text);
+            functionInfoElement.SetAttributeValue(A_Description, textBoxDescription.Text);
 
             DialogResult = DialogResult.OK;
         }

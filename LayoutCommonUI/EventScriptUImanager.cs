@@ -436,7 +436,7 @@ namespace LayoutManager.CommonUI {
             else {
                 var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
 
-                element.SetAttribute(A_Weight, int.Parse(weightText));
+                element.SetAttributeValue(A_Weight, int.Parse(weightText));
                 site.EditingDone();
             }
         }

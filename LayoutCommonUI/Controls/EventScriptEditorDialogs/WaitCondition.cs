@@ -231,16 +231,16 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         }
 
         private void buttonOk_Click(object sender, System.EventArgs e) {
-            conditionElement.SetAttribute(A_Minutes, (int)numericUpDownMinutes.Value, removeIf: 0);
-            conditionElement.SetAttribute(A_Seconds, (int)numericUpDownRandomSeconds.Value, removeIf: 0);
-            conditionElement.SetAttribute(A_RandomSeconds, (int)numericUpDownRandomSeconds.Value);
+            conditionElement.SetAttributeValue(A_Minutes, (int)numericUpDownMinutes.Value, removeIf: 0);
+            conditionElement.SetAttributeValue(A_Seconds, (int)numericUpDownRandomSeconds.Value, removeIf: 0);
+            conditionElement.SetAttributeValue(A_RandomSeconds, (int)numericUpDownRandomSeconds.Value);
 
             if (checkBoxRadomWait.Checked)
-                conditionElement.SetAttribute(A_RandomSeconds, (int)numericUpDownRandomSeconds.Value);
+                conditionElement.SetAttributeValue(A_RandomSeconds, (int)numericUpDownRandomSeconds.Value);
             else
                 conditionElement.RemoveAttribute(A_RandomSeconds);
 
-            conditionElement.SetAttribute(A_IsError, true, removeIf: !checkBoxErrorState.Checked);
+            conditionElement.SetAttributeValue(A_IsError, true, removeIf: !checkBoxErrorState.Checked);
             DialogResult = DialogResult.OK;
             Close();
         }

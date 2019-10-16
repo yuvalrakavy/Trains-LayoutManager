@@ -263,12 +263,12 @@ namespace LayoutManager.Tools {
                         if (AllTripPlans || (quality = VerifyTripPlan(tripPlan, false)).IsValidRoute) {
                             XmlElement applicableTripPlanElement = Element.OwnerDocument.CreateElement(E_ApplicableTripPlan);
 
-                            applicableTripPlanElement.SetAttribute(A_TripPlanID, tripPlan.Id);
-                            applicableTripPlanElement.SetAttribute(A_ShouldReverse, false);
+                            applicableTripPlanElement.SetAttributeValue(A_TripPlanID, tripPlan.Id);
+                            applicableTripPlanElement.SetAttributeValue(A_ShouldReverse, false);
 
                             if (quality != null) {
-                                applicableTripPlanElement.SetAttribute(A_Penalty, quality.Penalty);
-                                applicableTripPlanElement.SetAttribute(A_ClearanceQuality, quality.ClearanceQuality);
+                                applicableTripPlanElement.SetAttributeValue(A_Penalty, quality.Penalty);
+                                applicableTripPlanElement.SetAttributeValue(A_ClearanceQuality, quality.ClearanceQuality);
                             }
 
                             Element.AppendChild(applicableTripPlanElement);
@@ -276,10 +276,10 @@ namespace LayoutManager.Tools {
                         else if ((quality = VerifyTripPlan(tripPlan, true)).IsValidRoute) {
                             XmlElement applicableTripPlanElement = Element.OwnerDocument.CreateElement(E_ApplicableTripPlan);
 
-                            applicableTripPlanElement.SetAttribute(A_TripPlanID, tripPlan.Id);
-                            applicableTripPlanElement.SetAttribute(A_ShouldReverse, true);
-                            applicableTripPlanElement.SetAttribute(A_Penalty, quality.Penalty);
-                            applicableTripPlanElement.SetAttribute(A_ClearanceQuality, quality.ClearanceQuality);
+                            applicableTripPlanElement.SetAttributeValue(A_TripPlanID, tripPlan.Id);
+                            applicableTripPlanElement.SetAttributeValue(A_ShouldReverse, true);
+                            applicableTripPlanElement.SetAttributeValue(A_Penalty, quality.Penalty);
+                            applicableTripPlanElement.SetAttributeValue(A_ClearanceQuality, quality.ClearanceQuality);
                             Element.AppendChild(applicableTripPlanElement);
                         }
 
@@ -287,8 +287,8 @@ namespace LayoutManager.Tools {
                     }
 
                     if (LocomotiveBlock != null) {
-                        Element.SetAttribute(A_LocomotiveBlockId, LocomotiveBlock.Id);
-                        Element.SetAttribute(A_LocomotiveFront, LocomotiveFront);
+                        Element.SetAttributeValue(A_LocomotiveBlockId, LocomotiveBlock.Id);
+                        Element.SetAttributeValue(A_LocomotiveFront, LocomotiveFront);
                     }
                 }
                 else {
@@ -296,15 +296,15 @@ namespace LayoutManager.Tools {
                         if (AllTripPlans || IsTripPlanApplicable(tripPlan, false)) {
                             var applicableTripPlanElement = Element.OwnerDocument.CreateElement(E_ApplicableTripPlan);
 
-                            applicableTripPlanElement.SetAttribute(A_TripPlanID, tripPlan.Id);
-                            applicableTripPlanElement.SetAttribute(A_ShouldReverse, false);
+                            applicableTripPlanElement.SetAttributeValue(A_TripPlanID, tripPlan.Id);
+                            applicableTripPlanElement.SetAttributeValue(A_ShouldReverse, false);
                             Element.AppendChild(applicableTripPlanElement);
                         }
                         else if (IsTripPlanApplicable(tripPlan, true)) {
                             var applicableTripPlanElement = Element.OwnerDocument.CreateElement(E_ApplicableTripPlan);
 
-                            applicableTripPlanElement.SetAttribute(A_TripPlanID, tripPlan.Id);
-                            applicableTripPlanElement.SetAttribute(A_ShouldReverse, true);
+                            applicableTripPlanElement.SetAttributeValue(A_TripPlanID, tripPlan.Id);
+                            applicableTripPlanElement.SetAttributeValue(A_ShouldReverse, true);
                             Element.AppendChild(applicableTripPlanElement);
                         }
 
@@ -312,8 +312,8 @@ namespace LayoutManager.Tools {
                     }
 
                     if (LocomotiveBlock != null) {
-                        Element.SetAttribute(A_LocomotiveBlockId, LocomotiveBlock.Id);
-                        Element.SetAttribute(A_LocomotiveFront, LocomotiveFront);
+                        Element.SetAttributeValue(A_LocomotiveBlockId, LocomotiveBlock.Id);
+                        Element.SetAttributeValue(A_LocomotiveFront, LocomotiveFront);
                     }
                 }
             }

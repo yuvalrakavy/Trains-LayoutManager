@@ -49,7 +49,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         private bool IsEmergencyContact {
             get => (bool?)XmlInfo.Element.AttributeValue(LayoutTriggerableBlockEdgeBase.A_EmergencyContact) ?? false;
-            set => XmlInfo.Element.SetAttribute(LayoutTriggerableBlockEdgeBase.A_EmergencyContact, value, removeIf: false);
+            set => XmlInfo.Element.SetAttributeValue(LayoutTriggerableBlockEdgeBase.A_EmergencyContact, value, removeIf: false);
         }
 
         public LayoutXmlInfo XmlInfo { get; }

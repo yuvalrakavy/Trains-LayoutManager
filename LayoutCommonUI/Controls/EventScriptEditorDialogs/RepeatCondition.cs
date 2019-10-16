@@ -156,7 +156,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         #endregion
 
         private void buttonOk_Click(object sender, System.EventArgs e) {
-            element.SetAttribute(A_Count, radioButtonRepeatForever.Checked ? -1 : (int)numericUpDownCount.Value);
+            element.SetAttributeValue(A_Count, radioButtonRepeatForever.Checked ? -1 : (int)numericUpDownCount.Value);
             DialogResult = DialogResult.OK;
         }
 

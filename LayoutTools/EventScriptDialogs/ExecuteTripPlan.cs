@@ -277,13 +277,13 @@ namespace LayoutManager.Tools.EventScriptDialogs {
                 return;
             }
 
-            element.SetAttribute(A_TripPlanID, tripPlan.Id);
-            element.SetAttribute(A_ShouldReverse, tripPlanList.ShouldReverseSelectedTripPlan);
+            element.SetAttributeValue(A_TripPlanID, tripPlan.Id);
+            element.SetAttributeValue(A_ShouldReverse, tripPlanList.ShouldReverseSelectedTripPlan);
             element.SetAttribute(A_TrainSymbol, comboBoxTrainSymbol.Text);
 
             if (locomotiveBlock != null) {
-                element.SetAttribute(A_LocomotiveBlockId, locomotiveBlock.Id);
-                element.SetAttribute(A_LocomotiveFront, locomotiveFront);
+                element.SetAttributeValue(A_LocomotiveBlockId, locomotiveBlock.Id);
+                element.SetAttributeValue(A_LocomotiveFront, locomotiveFront);
             }
 
             DialogResult = DialogResult.OK;

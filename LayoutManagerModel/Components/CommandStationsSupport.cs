@@ -114,7 +114,7 @@ namespace LayoutManager.Components {
             }
 
             set {
-                Element.SetAttribute(A_InterfaceType, value);
+                Element.SetAttributeValue(A_InterfaceType, value);
             }
         }
 
@@ -660,7 +660,7 @@ namespace LayoutManager.Components {
                 else
                     theIndex = Index;
 
-                result += moduleType.GetConnectionPointAddressText(baseAddress, theIndex, true);
+                result += moduleType.GetConnectionPointAddressText(moduleType, baseAddress, theIndex, true);
             }
 
             return result;

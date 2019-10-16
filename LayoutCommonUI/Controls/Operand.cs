@@ -101,7 +101,7 @@ namespace LayoutManager.CommonUI.Controls {
                 Element.SetAttribute(accessAttribute, "Value");
 
                 if (ValueIsBoolean) {
-                    Element.SetAttribute($"Value{Suffix}", linkMenu1Boolean.SelectedIndex == 0);
+                    Element.SetAttributeValue($"Value{Suffix}", linkMenu1Boolean.SelectedIndex == 0);
                     Element.SetAttribute($"Type{Suffix}", "Booelan");
                 }
                 else {

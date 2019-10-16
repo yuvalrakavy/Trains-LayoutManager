@@ -183,7 +183,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
             if (comboBoxPolicy.SelectedItem is PolicyEntry selected) {
-                element.SetAttribute(A_PolicyID, selected.Policy.Id);
+                element.SetAttributeValue(A_PolicyID, selected.Policy.Id);
             }
 
             DialogResult = DialogResult.OK;

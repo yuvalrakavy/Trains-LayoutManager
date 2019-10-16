@@ -47,7 +47,7 @@ namespace LayoutManager.Components {
         /// </summary>
         /// <param name="switchState">The new switch state</param>
         public virtual void SetSwitchState(ControlConnectionPoint controlConnectionPoint, int switchState, string connectionPointName = null) {
-            LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic, create: true).SetAttribute($"Value{connectionPointName ?? ""}", switchState);
+            LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic, create: true).SetAttributeValue($"Value{connectionPointName ?? ""}", switchState);
             Component.OnComponentChanged();
         }
 
@@ -93,7 +93,7 @@ namespace LayoutManager.Components {
 
         public bool ReverseLogic {
             get => (bool?)Element.AttributeValue(A_ReverseLogic) ?? false;
-            set => Element.SetAttribute(A_ReverseLogic, value);
+            set => Element.SetAttributeValue(A_ReverseLogic, value);
         }
 
         #endregion

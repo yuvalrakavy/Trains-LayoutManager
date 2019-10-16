@@ -137,7 +137,7 @@ namespace LayoutManager.CommonUI.Controls {
             if (textBoxSpeedLimit.Text.Trim() != "") {
                 int speedLimit = int.Parse(textBoxSpeedLimit.Text);
 
-                Element.SetAttribute(A_SpeedLimit, speedLimit);
+                Element.SetAttributeValue(A_SpeedLimit, speedLimit);
             }
             else
                 Element.RemoveAttribute(A_SpeedLimit);
@@ -145,7 +145,7 @@ namespace LayoutManager.CommonUI.Controls {
             if (textBoxSlowDownSpeed.Text.Trim() != "") {
                 int slowDownSpeed = int.Parse(textBoxSlowDownSpeed.Text);
 
-                Element.SetAttribute(A_SlowDownSpeed, slowDownSpeed);
+                Element.SetAttributeValue(A_SlowDownSpeed, slowDownSpeed);
             }
             else
                 Element.RemoveAttribute(A_SlowDownSpeed);

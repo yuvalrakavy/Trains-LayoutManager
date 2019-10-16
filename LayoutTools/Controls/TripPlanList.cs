@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 
+#pragma warning disable IDE0069, IDE0067
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for TripPlanList.
@@ -20,7 +21,6 @@ namespace LayoutManager.CommonUI.Controls {
         private ImageList imageListState;
         private IContainer components;
 
-        private void endOfDesignerVariables() { }
 
         private bool initialized = false;
         private XmlElement applicableTripPlansElement = null;

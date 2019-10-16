@@ -84,13 +84,13 @@ namespace DiMAX {
             base.OnCommunicationSetup();
 
             if (!Element.HasAttribute("OverlappedIO"))
-                Element.SetAttribute("OverlappedIO", true);
+                Element.SetAttributeValue("OverlappedIO", true);
             if (!Element.HasAttribute("ReadIntervalTimeout"))
-                Element.SetAttribute("ReadIntervalTimeout", 3500);
+                Element.SetAttributeValue("ReadIntervalTimeout", 3500);
             if (!Element.HasAttribute("ReadTotalTimeoutConstant"))
-                Element.SetAttribute("ReadTotalTimeoutConstant", 6000);
+                Element.SetAttributeValue("ReadTotalTimeoutConstant", 6000);
             if (!Element.HasAttribute("WriteTotalTimeoutConstant"))
-                Element.SetAttribute("WriteTotalTimeoutConstant", 6000);
+                Element.SetAttributeValue("WriteTotalTimeoutConstant", 6000);
         }
 
         protected override void OnInitialize() {

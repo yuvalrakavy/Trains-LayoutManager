@@ -898,7 +898,7 @@ namespace LayoutManager.Model {
             XmlElement iconElement = Element.OwnerDocument.CreateElement(E_Icon);
             Guid iconID = Guid.NewGuid();
 
-            iconElement.SetAttribute(A_Id, iconID);
+            iconElement.SetAttributeValue(A_Id, iconID);
 
             using (MemoryStream s = new MemoryStream()) {
                 icon.Save(s);

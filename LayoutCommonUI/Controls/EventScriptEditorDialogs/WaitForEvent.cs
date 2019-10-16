@@ -122,7 +122,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             }
 
             Element.SetAttribute(A_Name, comboBoxEvent.Text);
-            Element.SetAttribute(A_LimitToScope, checkBoxLimitedToScope.Checked, removeIf: true);
+            Element.SetAttributeValue(A_LimitToScope, checkBoxLimitedToScope.Checked, removeIf: true);
             DialogResult = DialogResult.OK;
             Close();
         }

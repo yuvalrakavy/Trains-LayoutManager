@@ -24,7 +24,7 @@ namespace LayoutManager.Logic {
             XmlElement manualWithControllerElement = driversElement.OwnerDocument.CreateElement(E_Driver);
 
             manualWithControllerElement.SetAttribute(A_TypeName, "Manual (via extrnal controller)");
-            manualWithControllerElement.SetAttribute(A_ComputerDriven, false);
+            manualWithControllerElement.SetAttributeValue(A_ComputerDriven, false);
             manualWithControllerElement.SetAttribute(A_Type, "ManualController");
 
             driversElement.AppendChild(manualWithControllerElement);
@@ -32,7 +32,7 @@ namespace LayoutManager.Logic {
             XmlElement manuaOnScreenlDriverElement = driversElement.OwnerDocument.CreateElement(E_Driver);
 
             manuaOnScreenlDriverElement.SetAttribute(A_TypeName, "Manual (via on-screen dialog)");
-            manuaOnScreenlDriverElement.SetAttribute(A_ComputerDriven, true);
+            manuaOnScreenlDriverElement.SetAttributeValue(A_ComputerDriven, true);
             manuaOnScreenlDriverElement.SetAttribute(A_Type, "ManualOnScreen");
 
             driversElement.AppendChild(manuaOnScreenlDriverElement);
@@ -40,7 +40,7 @@ namespace LayoutManager.Logic {
             XmlElement autoDriverElement = driversElement.OwnerDocument.CreateElement(E_Driver);
 
             autoDriverElement.SetAttribute(A_TypeName, "Automatic (by the computer)");
-            autoDriverElement.SetAttribute(A_ComputerDriven, true);
+            autoDriverElement.SetAttributeValue(A_ComputerDriven, true);
             autoDriverElement.SetAttribute(A_Type, "Automatic");
 
             driversElement.AppendChild(autoDriverElement);

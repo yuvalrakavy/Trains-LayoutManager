@@ -703,7 +703,7 @@ namespace LayoutManager.Components {
 
         public bool ReverseLogic {
             get => (bool?)Element.AttributeValue(A_ReverseLogic) ?? false;
-            set => Element.SetAttribute(A_ReverseLogic, value);
+            set => Element.SetAttributeValue(A_ReverseLogic, value);
         }
 
         public override string? RequiredControlModuleTypeName => (string?)Element.AttributeValue(A_BuiltinDecoderTypeName) ?? null;
@@ -923,7 +923,7 @@ namespace LayoutManager.Components {
                     realSwitchState = 2;
 
                 if (realSwitchState >= 0) {
-                    LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic, create: true).SetAttribute(A_Value, realSwitchState);
+                    LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic, create: true).SetAttributeValue(A_Value, realSwitchState);
                     Component.OnComponentChanged();
                 }
             }

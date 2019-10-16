@@ -1068,7 +1068,7 @@ namespace LayoutManager.Model {
 
                 resultElement.SetAttribute(A_Name, functionName);
                 if (locomotiveId != Guid.Empty)
-                    resultElement.SetAttribute(A_LocomotiveId, locomotiveId);
+                    resultElement.SetAttributeValue(A_LocomotiveId, locomotiveId);
 
                 FunctionStatesElement.AppendChild(resultElement);
             }
@@ -1533,7 +1533,7 @@ namespace LayoutManager.Model {
             if (trainId == Guid.Empty)
                 trainId = Guid.NewGuid();
 
-            trainStateElement.SetAttribute(A_Id, trainId);
+            trainStateElement.SetAttributeValue(A_Id, trainId);
             Element.AppendChild(trainStateElement);
 
             TrainStateInfo trainState = new TrainStateInfo(trainStateElement);
@@ -1633,7 +1633,7 @@ namespace LayoutManager.Model {
             if (!_idToComponentStateElement.TryGetValue(componentId, out XmlElement componentStateElement)) {
                 componentStateElement = Element.OwnerDocument.CreateElement(E_ComponentState);
 
-                componentStateElement.SetAttribute(A_Id, componentId);
+                componentStateElement.SetAttributeValue(A_Id, componentId);
                 Element.AppendChild(componentStateElement);
 
                 _idToComponentStateElement.Add(componentId, componentStateElement);
@@ -1845,7 +1845,7 @@ namespace LayoutManager.Model {
         protected override XmlElement CreateElement(Guid item) {
             XmlElement itemElement = Element.OwnerDocument.CreateElement(E_Block);
 
-            itemElement.SetAttribute(A_BlockId, item);
+            itemElement.SetAttributeValue(A_BlockId, item);
             return itemElement;
         }
 
@@ -2514,7 +2514,7 @@ namespace LayoutManager.Model {
 
                     try {
                         allLayoutManualDispatch.Active = true;
-                        Element.SetAttribute(A_AllLayoutManualDispatchRegion, true);
+                        Element.SetAttributeValue(A_AllLayoutManualDispatchRegion, true);
                         active = true;
                     }
                     catch (LayoutException) {
