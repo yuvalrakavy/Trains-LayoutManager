@@ -97,5 +97,8 @@ namespace LayoutManager {
             return (T)v;
         }
 
+        public static (TSender, TInfo) NotNull<TSender, TInfo>(LayoutEvent e) where TSender : class where TInfo : class {
+            return (Ensure.NotNull<TSender>(e.Sender), Ensure.NotNull<TInfo>(e.Info));
+        }
     }
 }
