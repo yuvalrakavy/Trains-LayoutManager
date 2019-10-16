@@ -10,42 +10,46 @@ using System.Xml;
 using LayoutManager.Model;
 
 #pragma warning disable IDE0051, IDE0060, IDE0067, IDE0069, RCS1163
+#nullable enable
 namespace LayoutManager.CommonUI {
     /// <summary>
     /// Summary description for LayoutControlBusViewer.
     /// </summary>
     public class LayoutControlBusViewer : System.Windows.Forms.Control {
-        private IContainer components;
+        private IContainer? components;
         private System.Windows.Forms.HScrollBar hScrollBar;
         private ImageList imageListConnectionPointTypes;
         private System.Windows.Forms.VScrollBar vScrollBar;
 
-        private ILayoutFrameWindow frameWindow = null;
+        private ILayoutFrameWindow? frameWindow = null;
 
         private float zoom = 1.0F;
         private Point origin = new Point(0, 0);
 
-        private DrawControlBase drawRoot = null;
+        private DrawControlBase? drawRoot = null;
 
         private Guid busProviderId = Guid.Empty;
-        private string busType = null;
+        private string? busType = null;
         private Guid controlModuleLocationId = Guid.Empty;
 
         private MouseButtons mouseDownButton = MouseButtons.None;
-        private DrawControlBase mouseDrawObject = null;
+        private DrawControlBase? mouseDrawObject = null;
         private readonly IDictionary imageMap = new HybridDictionary();
 
-        private ControlModule selectedModule = null;
-        private ControlConnectionPoint selectedConnectionPoint = null;
-        private LayoutSelection selectedComponents = null;
+        private ControlModule? selectedModule = null;
+        private ControlConnectionPoint? selectedConnectionPoint = null;
+        private readonly LayoutSelection selectedComponents;
 
+        #nullable disable
         public LayoutControlBusViewer() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
 
+            selectedComponents = new LayoutSelection();
             Controls.Add(hScrollBar);
             Controls.Add(vScrollBar);
         }
+        #nullable enable
 
         #region Public Properties
 
@@ -73,7 +77,7 @@ namespace LayoutManager.CommonUI {
             }
         }
 
-        public string BusTypeName {
+        public string? BusTypeName {
             get {
                 return busType;
             }
@@ -105,15 +109,13 @@ namespace LayoutManager.CommonUI {
 
         public void Initialize() {
             EventManager.AddObjectSubscriptions(this);
-
-            selectedComponents = new LayoutSelection();
         }
 
         public void EnsureVisible(ControlConnectionPointReference connectionPointRef, bool select) {
             Recalc();
             this.Update();
 
-            DrawControlConnectionPoint drawConnectionPointObject = drawRoot.FindConnectionPoint(connectionPointRef);
+            var drawConnectionPointObject = DrawRoot.FindConnectionPoint(connectionPointRef);
 
             if (drawConnectionPointObject != null) {
                 EnsureVisible(drawConnectionPointObject.DrawModule);
@@ -127,7 +129,7 @@ namespace LayoutManager.CommonUI {
             Recalc();
             this.Update();
 
-            DrawControlModule drawModuleObject = drawRoot.FindModule(moduleRef);
+            var drawModuleObject = DrawRoot.FindModule(moduleRef);
 
             if (drawModuleObject != null) {
                 EnsureVisible(drawModuleObject);
@@ -179,9 +181,9 @@ namespace LayoutManager.CommonUI {
         /// <param name="connectionPointType">The connection point type</param>
         /// <param name="topRow">True - the image will be shown on the top row of an image</param>
         /// <returns>An image or null if no image</returns>
-        internal Image GetConnectionPointImage(string connectionPointType, bool topRow) {
+        internal Image? GetConnectionPointImage(string connectionPointType, bool topRow) {
             string key = connectionPointType + "-" + topRow.ToString();
-            Image typeImage;
+            Image? typeImage;
 
             if (!imageMap.Contains(key)) {
                 if (connectionPointType == ControlConnectionPointTypes.OutputSolenoid)
@@ -195,7 +197,7 @@ namespace LayoutManager.CommonUI {
                 else if (connectionPointType == ControlConnectionPointTypes.InputCurrent)
                     typeImage = imageListConnectionPointTypes.Images[3];
                 else
-                    typeImage = (Image)EventManager.Event(new LayoutEvent("get-connection-point-type-image", this).SetOption("ConnectionPointType", connectionPointType).SetOption("TopRow", topRow));
+                    typeImage = (Image?)EventManager.Event(new LayoutEvent("get-connection-point-type-image", this).SetOption("ConnectionPointType", connectionPointType).SetOption("TopRow", topRow));
 
                 imageMap.Add(key, typeImage);
             }
@@ -211,15 +213,15 @@ namespace LayoutManager.CommonUI {
         /// <param name="connectionPoint">The connection point</param>
         /// <param name="topRow">True - the image will be shown on the top row of an image</param>
         /// <returns>An image or null if no image</returns>
-        internal Image GetConnectionPointImage(ControlConnectionPoint connectionPoint, bool topRow) {
-            IModelComponentConnectToControl component = (IModelComponentConnectToControl)connectionPoint.Component;
+        internal Image? GetConnectionPointImage(ControlConnectionPoint connectionPoint, bool topRow) {
+            var component = connectionPoint.Component;
 
             if (component != null) {
                 string key = component.GetType().Name + "-" + component.ToString() + topRow.ToString() + "_";
-                Image image;
+                Image? image;
 
                 if (!imageMap.Contains(key)) {
-                    image = (Image)EventManager.Event(
+                    image = (Image?)EventManager.Event(
                         new LayoutEvent("get-connection-point-component-image", component).SetOption("TopRow", topRow).SetOption("ModuleID", connectionPoint.Module.Id).SetOption("Index", connectionPoint.Index));
 
                     imageMap.Add(key, image);
@@ -233,7 +235,7 @@ namespace LayoutManager.CommonUI {
                 return null;
         }
 
-        internal ControlModule SelectedModule {
+        internal ControlModule? SelectedModule {
             get {
                 return selectedModule;
             }
@@ -247,7 +249,7 @@ namespace LayoutManager.CommonUI {
             }
         }
 
-        internal ControlConnectionPoint SelectedConnectionPoint {
+        internal ControlConnectionPoint? SelectedConnectionPoint {
             get {
                 return selectedConnectionPoint;
             }
@@ -266,7 +268,7 @@ namespace LayoutManager.CommonUI {
         #region Internal methods (initialization etc.)
 
         public void Recalc() {
-            drawRoot = new DrawControlBusProviders(this);
+            DrawRoot = new DrawControlBusProviders(this);
             Invalidate();
         }
 
@@ -282,7 +284,7 @@ namespace LayoutManager.CommonUI {
             selectedComponents.Clear();
 
             if (SelectedConnectionPoint != null) {
-                IModelComponentConnectToControl component = SelectedConnectionPoint.Component;
+                var component = SelectedConnectionPoint.Component;
 
                 if (component != null) {
                     selectedComponents.Add((ModelComponent)component);
@@ -291,7 +293,7 @@ namespace LayoutManager.CommonUI {
             }
 
             if (SelectedModule != null) {
-                foreach (ControlConnectionPoint connectionPoint in SelectedModule.ConnectionPoints)
+                foreach (var connectionPoint in SelectedModule.ConnectionPoints)
                     if (connectionPoint.ComponentId != Guid.Empty)
                         selectedComponents.Add(connectionPoint.ComponentId);
             }
@@ -373,14 +375,19 @@ namespace LayoutManager.CommonUI {
             g.FillRectangle(b, clipBounds);
         }
 
-        private RectangleF DrawingBounds => RectangleF.FromLTRB(0, 0, drawRoot.Bounds.Right, drawRoot.Bounds.Bottom);
+        private RectangleF DrawingBounds => RectangleF.FromLTRB(0, 0, DrawRoot.Bounds.Right, DrawRoot.Bounds.Bottom);
+
+        public DrawControlBase DrawRoot {
+            get => Ensure.NotNull<DrawControlBase>(drawRoot);
+            set => drawRoot = value;
+        }
 
         private bool updateScrollBars() {
             bool needRedraw = false;
             float vMargin = 20 / zoom;
             float hMargin = 20 / zoom;
 
-            if (drawRoot != null && drawRoot.Bounds != RectangleF.Empty) {
+            if (DrawRoot != null && DrawRoot.Bounds != RectangleF.Empty) {
                 RectangleF bounds = DrawingBounds;
                 RectangleF clientBounds = RectangleF.FromLTRB(ClientRectangle.Left / zoom, ClientRectangle.Top / zoom,
                     ClientRectangle.Right / zoom, ClientRectangle.Bottom / zoom);
@@ -429,8 +436,8 @@ namespace LayoutManager.CommonUI {
             if (DesignMode || EventManager.Instance == null)
                 return;
 
-            RectangleF clipBounds = pe.Graphics.VisibleClipBounds;
-            Bitmap buffer = (Bitmap)EventManager.Event(new LayoutEvent("allocate-offscreen-buffer", pe.Graphics, clipBounds));
+            var clipBounds = pe.Graphics.VisibleClipBounds;
+            var buffer = Ensure.NotNull<Bitmap>(EventManager.Event(new LayoutEvent("allocate-offscreen-buffer", pe.Graphics, clipBounds)));
 
             using (Graphics g = Graphics.FromImage(buffer)) {
                 // Translate so the top-left of the clip region is on the top/left (0,0)
@@ -443,8 +450,8 @@ namespace LayoutManager.CommonUI {
                 g.ScaleTransform(zoom, zoom);
                 g.TranslateTransform(-origin.X, -origin.Y);
 
-                if (drawRoot != null) {
-                    drawRoot.Draw(g, StartingPoint);
+                if (DrawRoot != null) {
+                    DrawRoot.Draw(g, StartingPoint);
 
                     g.Restore(gs);
 
@@ -456,7 +463,7 @@ namespace LayoutManager.CommonUI {
                         g.ScaleTransform(zoom, zoom);
                         g.TranslateTransform(-origin.X, -origin.Y);
 
-                        drawRoot.Draw(g, StartingPoint);
+                        DrawRoot.Draw(g, StartingPoint);
 
                         g.Restore(gs);
                     }
@@ -471,14 +478,14 @@ namespace LayoutManager.CommonUI {
 
         #region Mouse Hit methods
 
-        private DrawControlBase GetHitDrawObject(Point hitPoint) {
-            DrawControlBase result = null;
+        private DrawControlBase? GetHitDrawObject(Point hitPoint) {
+            DrawControlBase? result = null;
 
             // Convert from client coordinate to world coordinates
             PointF p = new PointF((hitPoint.X / zoom) + origin.X, (hitPoint.Y / zoom) + origin.Y);
 
-            if (drawRoot != null)
-                result = drawRoot.GetDrawObjectContainingPoint(p);
+            if (DrawRoot != null)
+                result = DrawRoot.GetDrawObjectContainingPoint(p);
 
             return result;
         }
@@ -514,7 +521,7 @@ namespace LayoutManager.CommonUI {
 
         [LayoutEvent("component-disconnected-from-control-module")]
         private void componentDisconnectedFromControlModule(LayoutEvent e) {
-            ControlConnectionPoint connectionPoint = (ControlConnectionPoint)e.Info;
+            var connectionPoint = Ensure.NotNull<ControlConnectionPoint>(e.Info);
 
             if (selectedModule != null && connectionPoint.Module.Id == selectedModule.Id) {
                 SelectedModule = null;
@@ -546,13 +553,13 @@ namespace LayoutManager.CommonUI {
 
         private void LayoutControlBusViewer_SizeChanged(object sender, System.EventArgs e) {
             // Check if need to update scroll bars
-            if (drawRoot != null) {
+            if (DrawRoot != null) {
                 if (updateScrollBars())
                     Invalidate();
             }
         }
 
-        private void hScrollBar_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e) {
+        private void hScrollBar_Scroll(object? sender, System.Windows.Forms.ScrollEventArgs e) {
             switch (e.Type) {
                 case ScrollEventType.First:
                     origin.X = 0;
@@ -592,7 +599,7 @@ namespace LayoutManager.CommonUI {
             Invalidate();
         }
 
-        private void vScrollBar_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e) {
+        private void vScrollBar_Scroll(object? sender, System.Windows.Forms.ScrollEventArgs e) {
             switch (e.Type) {
                 case ScrollEventType.First:
                     origin.Y = 0;
@@ -633,14 +640,14 @@ namespace LayoutManager.CommonUI {
         }
 
         private void LayoutControlBusViewer_DoubleClick(object sender, System.EventArgs e) {
-            DrawControlBase hitDrawObject = GetHitDrawObject(PointToClient(Control.MousePosition));
+            var hitDrawObject = GetHitDrawObject(PointToClient(Control.MousePosition));
 
             if (hitDrawObject != null)
                 hitDrawObject.OnDoubleClick();
         }
 
         private void LayoutControlBusViewer_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
-            DrawControlBase hitDrawObject = GetHitDrawObject(PointToClient(Control.MousePosition));
+            var hitDrawObject = GetHitDrawObject(PointToClient(Control.MousePosition));
 
             mouseDownButton = e.Button;
 
@@ -649,7 +656,7 @@ namespace LayoutManager.CommonUI {
         }
 
         private void LayoutControlBusViewer_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e) {
-            DrawControlBase hitDrawObject = GetHitDrawObject(PointToClient(Control.MousePosition));
+            var hitDrawObject = GetHitDrawObject(PointToClient(Control.MousePosition));
 
             if (hitDrawObject != mouseDrawObject) {
                 if (mouseDrawObject != null)
@@ -663,7 +670,7 @@ namespace LayoutManager.CommonUI {
         }
 
         private void LayoutControlBusViewer_Click(object sender, System.EventArgs e) {
-            DrawControlBase hitDrawObject = GetHitDrawObject(PointToClient(Control.MousePosition));
+            var hitDrawObject = GetHitDrawObject(PointToClient(Control.MousePosition));
 
             if (hitDrawObject != null)
                 hitDrawObject.OnClick(mouseDownButton);
@@ -770,9 +777,9 @@ namespace LayoutManager.CommonUI {
 
     public abstract class DrawControlBase {
         private RectangleF bounds = RectangleF.Empty;
-        private readonly ArrayList drawObjects = new ArrayList();
+        private readonly List<DrawControlBase> drawObjects = new List<DrawControlBase>();
 
-        private Cursor savedCursor = null;
+        private Cursor? savedCursor = null;
 
         protected DrawControlBase(LayoutControlBusViewer viewer) {
             this.Viewer = viewer;
@@ -817,14 +824,14 @@ namespace LayoutManager.CommonUI {
             drawObjects.Add(drawObject);
         }
 
-        public DrawControlBase[] DrawObjects => (DrawControlBase[])drawObjects.ToArray(typeof(DrawControlBase));
+        public List<DrawControlBase> DrawObjects => drawObjects;
 
-        public virtual Cursor Cursor => null;
+        public virtual Cursor? Cursor => null;
 
         public abstract void Draw(Graphics g, PointF startingPoint);
 
-        public DrawControlBase GetDrawObjectContainingPoint(PointF p) {
-            DrawControlBase hitDrawObject;
+        public DrawControlBase? GetDrawObjectContainingPoint(PointF p) {
+            DrawControlBase? hitDrawObject;
 
             // Check if a sub-object was hit
             foreach (DrawControlBase drawObject in DrawObjects)
@@ -859,7 +866,7 @@ namespace LayoutManager.CommonUI {
         public virtual void OnMouseEnter() {
             savedCursor = Cursor.Current;
 
-            Cursor newCursor = this.Cursor;
+            var newCursor = this.Cursor;
 
             if (newCursor != null)
                 Viewer.Cursor = newCursor;
@@ -870,8 +877,8 @@ namespace LayoutManager.CommonUI {
                 Viewer.Cursor = savedCursor;
         }
 
-        public virtual DrawControlConnectionPoint FindConnectionPoint(ControlConnectionPointReference connectionPointRef) {
-            DrawControlConnectionPoint result = null;
+        public virtual DrawControlConnectionPoint? FindConnectionPoint(ControlConnectionPointReference connectionPointRef) {
+            DrawControlConnectionPoint? result = null;
 
             foreach (DrawControlBase drawObject in DrawObjects) {
                 result = drawObject.FindConnectionPoint(connectionPointRef);
@@ -882,8 +889,8 @@ namespace LayoutManager.CommonUI {
             return result;
         }
 
-        public virtual DrawControlModule FindModule(ControlModuleReference moduleRef) {
-            DrawControlModule result = null;
+        public virtual DrawControlModule? FindModule(ControlModuleReference moduleRef) {
+            DrawControlModule? result = null;
 
             foreach (DrawControlBase drawObject in DrawObjects) {
                 result = drawObject.FindModule(moduleRef);
@@ -945,7 +952,7 @@ namespace LayoutManager.CommonUI {
                     AddDrawObject(new DrawControlBus(Viewer, bus));
             }
             else {
-                ControlBus bus = null;
+                ControlBus? bus = null;
 
                 foreach (ControlBus aBus in buses)
                     if (aBus.BusTypeName == Viewer.BusTypeName) {
@@ -969,7 +976,7 @@ namespace LayoutManager.CommonUI {
                 SizeF busProviderRectSize = new SizeF(0, 0);
                 SizeF nameSize = g.MeasureString(BusProvider.NameProvider.Name, nameFont);
 
-                minSize.Width = Math.Max(minSize.Width, busLineHorizontalGap * (1 + DrawObjects.Length));
+                minSize.Width = Math.Max(minSize.Width, busLineHorizontalGap * (1 + DrawObjects.Count));
                 busProviderRectSize.Width = Math.Max(nameSize.Width + 4, minSize.Width);
                 busProviderRectSize.Height = Math.Max(nameSize.Height + 4, minSize.Height);
 
@@ -989,14 +996,14 @@ namespace LayoutManager.CommonUI {
             }
 
             // Draw buses for each bus provider
-            int verticalLength = DrawObjects.Length * busLineVerticalGap;
+            int verticalLength = DrawObjects.Count * busLineVerticalGap;
             PointF busLineStartingPoint = new PointF(busProviderRect.Left + busLineHorizontalGap, busProviderRect.Bottom);
             PointF busStartingPoint = new PointF(busLineStartingPoint.X, busLineStartingPoint.Y + verticalLength);
 
             int iBus = 0;
             foreach (DrawControlBus drawBus in DrawObjects) {
-                PointF corner1 = new PointF(busLineStartingPoint.X, busLineStartingPoint.Y + ((DrawObjects.Length - iBus) * busLineVerticalGap));
-                PointF corner2 = new PointF(busStartingPoint.X, busLineStartingPoint.Y + ((DrawObjects.Length - iBus) * busLineVerticalGap));
+                PointF corner1 = new PointF(busLineStartingPoint.X, busLineStartingPoint.Y + ((DrawObjects.Count - iBus) * busLineVerticalGap));
+                PointF corner2 = new PointF(busStartingPoint.X, busLineStartingPoint.Y + ((DrawObjects.Count - iBus) * busLineVerticalGap));
 
                 g.DrawLines(Viewer.BusPen, new PointF[] { busLineStartingPoint, corner1, corner2, busStartingPoint });
                 drawBus.Draw(g, busStartingPoint);
@@ -1077,8 +1084,8 @@ namespace LayoutManager.CommonUI {
             int expectedAddress = Bus.BusType.FirstAddress;
 
             // Draw the modules on the bus
-            if (DrawObjects.Length > 0) {
-                DrawControlBase lastModule = DrawObjects[DrawObjects.Length - 1];
+            if (DrawObjects.Count > 0) {
+                DrawControlBase lastModule = DrawObjects[DrawObjects.Count - 1];
 
                 foreach (DrawControlBase drawObject in DrawObjects) {
                     DrawControlBusLineFlags flags = DrawControlBusLineFlags.Default;
@@ -1158,11 +1165,13 @@ namespace LayoutManager.CommonUI {
         private const int horizontalModuleNameMargin = 8;
         private const int connectionPointMargin = 10;
         private const int connectionPointGap = 10;
-        private readonly DrawControlConnectionPoint[] topRow = null;
-        private readonly DrawControlConnectionPoint[] bottomRow = null;
+        private readonly DrawControlConnectionPoint[] topRow;
+        private readonly DrawControlConnectionPoint[] bottomRow;
 
         public DrawControlModule(LayoutControlBusViewer viewer, ControlModule module) : base(viewer) {
             this.Module = module;
+
+            moduleText = "";
 
             for (int index = 0; index < module.NumberOfConnectionPoints; index++)
                 AddDrawObject(new DrawControlConnectionPoint(Viewer, this, index));
@@ -1186,6 +1195,8 @@ namespace LayoutManager.CommonUI {
                     }
                 }
             }
+            else
+                topRow = Array.Empty<DrawControlConnectionPoint>();
 
             if ((module.ModuleType.ConnectionPointArrangement & ControlModuleConnectionPointArrangementOptions.BottomRow) != 0) {
                 int b = ((module.ModuleType.ConnectionPointArrangement & ControlModuleConnectionPointArrangementOptions.StartOnBottom) == ControlModuleConnectionPointArrangementOptions.StartOnBottom) ? 0 : ConnectionPointsPerRow;
@@ -1206,6 +1217,8 @@ namespace LayoutManager.CommonUI {
                     }
                 }
             }
+            else
+                bottomRow = Array.Empty<DrawControlConnectionPoint>();
         }
 
         public ControlModule Module { get; }
@@ -1306,14 +1319,13 @@ namespace LayoutManager.CommonUI {
             }
         }
 
-        private string getModulePhaseText() {
-            switch (Module.Phase) {
-                case LayoutPhase.Construction: return "(In construction)";
-                case LayoutPhase.Planned: return "(Planned)";
-                case LayoutPhase.Operational:
-                default: return null;
-            }
-        }
+        private string getModulePhaseText() => Module.Phase switch
+        {
+            LayoutPhase.Construction => "(In construction)",
+            LayoutPhase.Planned => "(Planned)",
+            LayoutPhase.Operational => "",
+            _ => throw new ArgumentException("Invalid module phase"),
+        };
 
         private void calcModuleRect(Graphics g, PointF startingPoint) {
             SizeF moduleNameTextSize;
@@ -1362,10 +1374,11 @@ namespace LayoutManager.CommonUI {
                 addressText = Module.Address.ToString() + " - " + lastAddress.ToString();
             }
 
-            return Module.ModuleType.Name + " (" + addressText + ")" + (Module.Label != null ? "\n" + Module.Label : "");
+            var text = (string?)EventManager.Event(new LayoutEvent("get-control-module-description", Module).SetOption("AddressText", addressText));
+            return text ?? Module.ModuleType.Name + " (" + addressText + ")" + (Module.Label != null ? "\n" + Module.Label : "");
         }
 
-        public override DrawControlModule FindModule(ControlModuleReference moduleRef) {
+        public override DrawControlModule? FindModule(ControlModuleReference moduleRef) {
             return Module.Id == moduleRef.ModuleId ? (this) : null;
         }
     }
@@ -1455,7 +1468,7 @@ namespace LayoutManager.CommonUI {
 
     public class DrawControlConnectionPoint : DrawControlBase {
         private bool topRow = false;
-        private Image image = null;
+        private Image? image = null;
 
         private const int connectionPointWidth = 20;
         private const int connectionPointShapeHeight = 20;
@@ -1550,9 +1563,9 @@ namespace LayoutManager.CommonUI {
             UnionBounds(statusRect);
         }
 
-        public override Cursor Cursor {
+        public override Cursor? Cursor {
             get {
-                ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)EventManager.Event(new LayoutEvent("get-component-to-control-connect", this));
+                var connectionDestination = (ControlConnectionPointDestination?)EventManager.Event(new LayoutEvent("get-component-to-control-connect", this));
 
                 return connectionDestination != null && Module.ConnectionPoints.CanBeConnected(connectionDestination, Index)
                     ? Cursors.Cross
@@ -1560,7 +1573,7 @@ namespace LayoutManager.CommonUI {
             }
         }
 
-        public override DrawControlConnectionPoint FindConnectionPoint(ControlConnectionPointReference connectionPointRef) {
+        public override DrawControlConnectionPoint? FindConnectionPoint(ControlConnectionPointReference connectionPointRef) {
             return connectionPointRef.Module.Id == DrawModule.Module.Id && connectionPointRef.Index == Index ? (this) : null;
         }
     }
