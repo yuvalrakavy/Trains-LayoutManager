@@ -7,6 +7,7 @@ using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#nullable enable
 namespace LayoutManager {
     /// <summary>
     /// Place a component in the model
@@ -15,7 +16,7 @@ namespace LayoutManager {
         private readonly LayoutModelArea area;
         private Point areaLocation;
         private readonly ModelComponent component;
-        private ModelComponent previousComponent;
+        private ModelComponent? previousComponent;
         private LayoutPhase previousPhase;
         private readonly string description;
         private readonly LayoutPhase phase;
@@ -29,7 +30,7 @@ namespace LayoutManager {
         }
 
         override public void Do() {
-            LayoutModelSpotComponentCollection spot = area[areaLocation, LayoutPhase.All];
+            var spot = area[areaLocation, LayoutPhase.All];
 
             if (spot != null) {
                 previousComponent = spot[component.Kind];
@@ -147,7 +148,7 @@ namespace LayoutManager {
 
     public class LayoutComponentUnlinkCommand : LayoutCommand {
         private readonly LayoutTrackLinkComponent trackLinkComponent;
-        private LayoutTrackLink savedLink = null;
+        private LayoutTrackLink? savedLink = null;
 
         public LayoutComponentUnlinkCommand(LayoutTrackLinkComponent trackLinkComponent) {
             this.trackLinkComponent = trackLinkComponent;
@@ -184,7 +185,7 @@ namespace LayoutManager {
     public class LayoutModifyComponentDocumentCommand : LayoutCommand {
         private readonly ModelComponent component;
         private readonly LayoutXmlInfo newXmlInfo;
-        private System.Xml.XmlDocument prevDocument = null;
+        private System.Xml.XmlDocument? prevDocument = null;
 
         public LayoutModifyComponentDocumentCommand(ModelComponent component, LayoutXmlInfo newXmlInfo) {
             this.component = component;
@@ -207,7 +208,7 @@ namespace LayoutManager {
 
         public override void Undo() {
             component.EraseImage();
-            component.XmlInfo.XmlDocument = prevDocument;
+            component.XmlInfo.XmlDocument = prevDocument!;
 
             if (component.Spot != null)
                 EventManager.Instance.RefreshObjectSubscriptions(component);
@@ -271,9 +272,11 @@ namespace LayoutManager {
         private readonly ControlBus bus;
         private readonly string moduleTypeName;
         private readonly int address = -1;
-        private readonly ControlModuleReference insertBefore = null;
-        private ControlModuleReference addedModule = null;
+        private readonly ControlModuleReference? insertBefore = null;
+        private ControlModuleReference? addedModuleReference = null;
         private Guid moduleLocationID;
+
+        private XmlElement? moduleElement;
 
         public AddControlModuleCommand(ControlBus bus, string moduleTypeName, Guid moduleLocationID) {
             this.bus = bus;
@@ -296,77 +299,67 @@ namespace LayoutManager {
         }
 
         public override void Do() {
-            addedModule = bus.BusType.Topology switch
-            {
-                ControlBusTopology.DaisyChain when insertBefore == null => new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName)),
-                ControlBusTopology.DaisyChain => new ControlModuleReference(bus.Insert(moduleLocationID, insertBefore, moduleTypeName)),
-                var t when t == ControlBusTopology.Fixed || t == ControlBusTopology.RandomAddressing => new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName, address)),
-                _ => throw new ArgumentException($"Unexpected bus topology: {bus.BusType.Topology}")
-            };
+            if (moduleElement == null) {
+                addedModuleReference = bus.BusType.Topology switch
+                {
+                    ControlBusTopology.DaisyChain when insertBefore == null => new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName)),
+                    ControlBusTopology.DaisyChain => new ControlModuleReference(bus.Insert(moduleLocationID, insertBefore!, moduleTypeName)),
+                    var t when t == ControlBusTopology.Fixed || t == ControlBusTopology.RandomAddressing => new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName, address)),
+                    _ => throw new ArgumentException($"Unexpected bus topology: {bus.BusType.Topology}")
+                };
+
+                var xmlDoc = new XmlDocument();
+                moduleElement = (XmlElement)xmlDoc.ImportNode(addedModuleReference.Module.Element, true);
+            }
+            else {
+                if (insertBefore != null)
+                    bus.Insert(insertBefore.Module.Address, moduleElement);
+                else
+                    bus.Add(moduleElement);
+            }
         }
 
-        public ControlModuleReference AddModule => addedModule;
+        public ControlModuleReference AddedModule => Ensure.NotNull<ControlModuleReference>(addedModuleReference);
 
         public override void Undo() {
-            bus.Remove(addedModule);
+            Debug.Assert(addedModuleReference != null);
+            if(addedModuleReference != null)
+                bus.Remove(Ensure.NotNull<ControlModule>(addedModuleReference.Module));
         }
 
-        public override string ToString() => "Add " + addedModule.Module.ModuleType.Name + " control module";
+        public override string ToString() => $"Add {moduleTypeName} control module";
     }
 
     public class RemoveControlModuleCommand : LayoutCommand {
-        private readonly ControlModuleReference module;
+        private readonly ControlModuleReference moduleReference;
         private readonly ControlBus bus;
+        private readonly XmlElement moduleElement;
+        private readonly int insertBeforeAddress = -1;
         private readonly string moduleTypeName;
-        private readonly ControlModuleReference insertBefore;
-        private readonly int address;
-        private Guid moduleLocationID;
 
         public RemoveControlModuleCommand(ControlModule module) {
-            this.module = new ControlModuleReference(module);
+            moduleReference = new ControlModuleReference(module);
             bus = module.Bus;
             moduleTypeName = module.ModuleTypeName;
-            moduleLocationID = module.LocationId;
+            var xmlDocument = new XmlDocument();
+            this.moduleElement = (XmlElement)xmlDocument.ImportNode(module.Element, true);
 
-            if (bus.BusType.Topology == ControlBusTopology.DaisyChain) {
-                if (module.Address == bus.BusType.LastAddress)
-                    insertBefore = null;
-                else {
-                    ControlModule insertBeforeModule = bus.GetModuleUsingAddress(module.Address + module.ModuleType.NumberOfAddresses);
-
-                    if (insertBeforeModule != null)
-                        insertBefore = new ControlModuleReference(insertBeforeModule);
-                }
-            }
-            else if (bus.BusType.Topology == ControlBusTopology.RandomAddressing || bus.BusType.Topology == ControlBusTopology.Fixed)
-                address = module.Address;
-            else
-                Debug.Fail($"Unexpected bus topology {bus.BusType.Topology}");
-
-            this.module = new ControlModuleReference(module);
+            if (bus.BusType.Topology == ControlBusTopology.DaisyChain && module.Address != bus.BusType.LastAddress)
+                insertBeforeAddress = module.Address;
         }
 
         public override void Do() {
-            bus.Remove(module);
+            bus.Remove(Ensure.NotNull<ControlModule>(moduleReference));
         }
 
         public override void Undo() {
-            ControlModule addedModule;
-
-            if (bus.BusType.Topology == ControlBusTopology.DaisyChain) {
-                if (insertBefore == null)
-                    addedModule = bus.Add(moduleLocationID, moduleTypeName);
-                else
-                    addedModule = bus.Insert(moduleLocationID, insertBefore, moduleTypeName);
-            }
+            if (insertBeforeAddress >= 0)
+                bus.Insert(insertBeforeAddress, moduleElement);
             else
-                addedModule = bus.Add(moduleLocationID, moduleTypeName, address);
-
-            addedModule.Id = module.ModuleId;
-            module.Module.LocationId = moduleLocationID;
+                bus.Add(moduleElement);
         }
 
-        public override string ToString() => "Remove " + module.Module.ModuleType.Name + " control module";
+        public override string ToString() => "Remove " + moduleTypeName + " control module";
     }
 
     public class SetControlModuleAddressCommand : LayoutCommand {
@@ -418,16 +411,40 @@ namespace LayoutManager {
         public override string ToString() => "Assign module location";
     }
 
+    public class SetControlModuleConnectionPointsCount : LayoutCommand {
+        private readonly ControlModuleReference controlModuleRef;
+        private int connectionPointsCount;
+
+        public SetControlModuleConnectionPointsCount(ControlModule module, int connectionPointsCount) {
+            this.controlModuleRef = new ControlModuleReference(module);
+            this.connectionPointsCount = connectionPointsCount;
+        }
+
+        public override void Do() {
+            var module = this.controlModuleRef.Module;
+            int previousConnectionPointsCount = module.NumberOfConnectionPoints;
+
+            module.NumberOfConnectionPoints = this.connectionPointsCount;
+            this.connectionPointsCount = previousConnectionPointsCount;
+        }
+
+        public override void Undo() {
+            Do();
+        }
+
+        public override string ToString() => $"Define {connectionPointsCount} connection points for {controlModuleRef.Module?.ModuleTypeName ?? "(?)"}";
+    }
+
     public class ConnectComponentToControlConnectionPointCommand : LayoutCommand {
-        private readonly IModelComponentConnectToControl component;
-        private readonly string name;
+        private readonly IModelComponentConnectToControl? component;
+        private readonly string? name;
         private readonly string displayName;
-        private readonly ControlModuleReference module;
+        private readonly ControlModuleReference moduleReference;
         private readonly int index;
-        private XmlElement connectionPointElement = null;
+        private XmlElement? connectionPointElement = null;
 
         public ConnectComponentToControlConnectionPointCommand(ControlModule module, int index, IModelComponentConnectToControl component, string connectionName, string displayName) {
-            this.module = new ControlModuleReference(module);
+            this.moduleReference = new ControlModuleReference(module);
             this.index = index;
             this.component = component;
             this.name = connectionName;
@@ -435,47 +452,48 @@ namespace LayoutManager {
         }
 
         public ConnectComponentToControlConnectionPointCommand(ControlModule module, XmlElement connectionPointElement) {
-            this.module = new ControlModuleReference(module);
+            this.moduleReference = new ControlModuleReference(module);
 
             XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
             connectionPointElement = (XmlElement)doc.ImportNode(connectionPointElement, true);
 
-            ControlConnectionPoint connectionPoint = new ControlConnectionPoint(module, connectionPointElement);
+            var connectionPoint = new ControlConnectionPoint(module, connectionPointElement);
             this.index = connectionPoint.Index;
             this.component = connectionPoint.Component;
+            this.displayName = connectionPoint.DisplayName;
         }
 
         public override void Do() {
             if (connectionPointElement == null) {
-                ControlConnectionPoint connectionPoint = module.Module.ConnectionPoints[index];
+                ControlConnectionPoint connectionPoint = moduleReference.Module.ConnectionPoints[index];
 
                 connectionPoint.Component = component;
                 connectionPoint.Name = name;
                 connectionPoint.DisplayName = displayName;
             }
             else
-                module.Module.ConnectionPoints.Add(connectionPointElement);
+                moduleReference.Module.ConnectionPoints.Add(connectionPointElement);
         }
 
         public override void Undo() {
             XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
-            connectionPointElement = (XmlElement)doc.ImportNode(module.Module.ConnectionPoints[index].Element, true);
+            connectionPointElement = (XmlElement)doc.ImportNode(moduleReference.Module.ConnectionPoints[index].Element, true);
 
             doc.AppendChild(connectionPointElement);
 
-            module.Module.ConnectionPoints.Disconnect(index);
+            moduleReference.Module.ConnectionPoints.Disconnect(index);
         }
 
         public override string ToString() => "Connect component";
     }
 
     public class DisconnectComponentFromConnectionPointCommand : LayoutCommand {
-        private readonly ConnectComponentToControlConnectionPointCommand[] commands = null;
+        private readonly ConnectComponentToControlConnectionPointCommand[] commands;
         private readonly bool disconnectComponent = false;
 
         public DisconnectComponentFromConnectionPointCommand(IModelComponentConnectToControl component) {
-            IList<ControlConnectionPoint> connectionPoints = LayoutModel.ControlManager.ConnectionPoints[component];
+            var connectionPoints = Ensure.NotNull<IList<ControlConnectionPoint>>(LayoutModel.ControlManager.ConnectionPoints[component]);
 
             commands = new ConnectComponentToControlConnectionPointCommand[connectionPoints.Count];
 
@@ -516,7 +534,7 @@ namespace LayoutManager {
 
         public override void Do() {
             var current = bus.BusProvider;
-            ControlBus otherBus = bus.ControlManager.Buses.GetBus(otherBusProvider, bus.BusTypeName);
+            var otherBus = Ensure.NotNull<ControlBus>(bus.ControlManager.Buses.GetBus(otherBusProvider, bus.BusTypeName));
 
             bus.BusProvider = otherBusProvider;
             otherBus.BusProvider = current;
@@ -570,7 +588,7 @@ namespace LayoutManager {
 
     public class SetControlModuleLabelCommand : LayoutCommand {
         private readonly ControlModuleReference moduleRef;
-        private string label;
+        private string? label;
 
         public SetControlModuleLabelCommand(ControlModule module, string label) {
             this.moduleRef = new ControlModuleReference(module);
@@ -578,10 +596,10 @@ namespace LayoutManager {
         }
 
         public override void Do() {
-            ControlModule module = moduleRef.Module;
-            string previousLabel = module.Label;
+            var module = Ensure.NotNull<ControlModule>(moduleRef.Module);
+            var previousLabel = module.Label;
 
-            moduleRef.Module.Label = label;
+            module.Label = label;
             label = previousLabel;
 
             EventManager.Event(new LayoutEvent("control-module-label-changed", module));
@@ -595,8 +613,8 @@ namespace LayoutManager {
     }
 
     public class SetControlUserActionRequiredCommand : LayoutCommand {
-        private readonly ControlModuleReference moduleRef = null;
-        private readonly ControlConnectionPointReference connectionPointRef = null;
+        private readonly ControlModuleReference? moduleRef = null;
+        private readonly ControlConnectionPointReference? connectionPointRef = null;
         private bool userActionRequired;
 
         public SetControlUserActionRequiredCommand(IControlSupportUserAction subject, bool userActionRequired) {
@@ -616,7 +634,10 @@ namespace LayoutManager {
             get {
                 if (moduleRef != null)
                     return moduleRef.Module;
-                else return connectionPointRef?.ConnectionPoint;
+                else if (connectionPointRef != null)
+                    return Ensure.NotNull<IControlSupportUserAction>(connectionPointRef.ConnectionPoint);
+                else
+                    throw new ArgumentOutOfRangeException("both moduleRef and connectionPointRef are null");
             }
         }
 
@@ -715,5 +736,5 @@ namespace LayoutManager {
         public override string ToString() => "Change component phase";
     }
 
-    #endregion
+#endregion
 }
