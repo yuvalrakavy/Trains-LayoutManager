@@ -52,7 +52,7 @@ namespace LayoutManager.Dialogs {
                             IList<ControlConnectionPoint> connections = LayoutModel.ControlManager.ConnectionPoints[connectedComponent];
 
                             foreach (ControlConnectionPoint connection in connections) {
-                                if (isMatch(connection.Module.ModuleType.GetConnectionPointAddressText(connection.Module.Address, connection.Index, true), findWhat)) {
+                                if (isMatch(connection.Module.ModuleType.GetConnectionPointAddressText(connection.Module.ModuleType, connection.Module.Address, connection.Index, true), findWhat)) {
                                     found = true;
                                     break;
                                 }

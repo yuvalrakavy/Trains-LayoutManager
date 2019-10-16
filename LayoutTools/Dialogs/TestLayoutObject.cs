@@ -81,7 +81,7 @@ namespace LayoutManager.Tools.Dialogs {
                     " on " + connectionPointRef.Module.Bus.Name;
             else {
                 Text = connectionPointRef.ConnectionPoint.DisplayName + " at " +
-                connectionPointRef.Module.ModuleType.GetConnectionPointAddressText(connectionPointRef.Module.Address, connectionPointRef.Index, true);
+                connectionPointRef.Module.ModuleType.GetConnectionPointAddressText(connectionPointRef.Module.ModuleType, connectionPointRef.Module.Address, connectionPointRef.Index, true);
                 EventManager.Event(new LayoutEvent("show-control-connection-point", connectionPointRef).SetFrameWindow(frameWindowId));
             }
         }
@@ -252,7 +252,7 @@ namespace LayoutManager.Tools.Dialogs {
             ModelComponent theComponent = (ModelComponent)component;
             LayoutXmlInfo xmlInfo = new LayoutXmlInfo(theComponent);
 
-            xmlInfo.DocumentElement.SetAttribute(A_ReverseLogic, checkBoxReverseLogic.Checked);
+            xmlInfo.DocumentElement.SetAttributeValue(A_ReverseLogic, checkBoxReverseLogic.Checked);
 
             LayoutModifyComponentDocumentCommand modifyDocCommand = new LayoutModifyComponentDocumentCommand(theComponent, xmlInfo);
 

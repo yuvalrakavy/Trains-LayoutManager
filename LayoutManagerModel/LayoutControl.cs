@@ -554,7 +554,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The printable label for this connection point
         /// </summary>
-        public string GetLabel(int index, bool fullPath) => module.ModuleType.GetConnectionPointAddressText(module.Address, index, fullPath);
+        public string GetLabel(int index, bool fullPath) => module.ModuleType.GetConnectionPointAddressText(module.ModuleType, module.Address, index, fullPath);
 
         public string GetLabel(int index) => GetLabel(index, false);
 
@@ -683,7 +683,9 @@ namespace LayoutManager.Model {
 
         public ControlModuleReference ModuleReference => new ControlModuleReference(ControlManager, moduleID);
 
-        public ControlConnectionPoint? ConnectionPoint => Module?.ConnectionPoints[Index];
+        public ControlConnectionPoint? OptionalConnectionPoint => Module?.ConnectionPoints[Index];
+
+        public ControlConnectionPoint ConnectionPoint => Ensure.NotNull<ControlConnectionPoint>(OptionalConnectionPoint);
 
         public bool IsConnected => Module?.ConnectionPoints.IsConnected(Index) ?? false;
 
@@ -754,6 +756,7 @@ namespace LayoutManager.Model {
         private const string A_AddressProgrammingRequired = "AddressProgrammingRequired";
         private const string A_BusId = "BusID";
         private const string A_LocationId = "LocationID";
+        private const string A_NumberOfConnectionPoints = "NumberOfConnectionPoints";
         private ControlModuleType? moduleType;
         private LayoutPhase _phase = LayoutPhase.None;
 
@@ -797,6 +800,15 @@ namespace LayoutManager.Model {
         public ControlBus Bus {
             get => Ensure.NotNull<ControlBus>(ControlManager.Buses[BusId], $"Bus for id: {BusId}");
             set => BusId = value.Id;
+        }
+
+        /// <summary>
+        /// The total number of connection points of this specific module. The default is the number
+        /// of connection points of modules of this type.
+        /// </summary>
+        public int NumberOfConnectionPoints {
+            get => (int?)AttributeValue(A_NumberOfConnectionPoints) ?? ModuleType.NumberOfConnectionPoints;
+            set => SetAttribute(A_NumberOfConnectionPoints, value, removeIf: ModuleType.NumberOfConnectionPoints);
         }
 
         public XmlElement ConnectionPointsElement {
@@ -884,7 +896,7 @@ namespace LayoutManager.Model {
                 if (_phase == LayoutPhase.None) {
                     _phase = LayoutPhase.Planned;       // If no connection point is connected, the module is Planned
 
-                    for (int index = 0; index < ModuleType.NumberOfConnectionPoints; index++) {
+                    for (int index = 0; index < NumberOfConnectionPoints; index++) {
                         if (ConnectionPoints.IsConnected(index)) {
                             var component = ConnectionPoints[index].Component;
                             var componentPhase = LayoutPhase.Planned;
@@ -949,7 +961,9 @@ namespace LayoutManager.Model {
 
         public LayoutControlManager ControlManager { get; }
 
-        public ControlModule? Module => ControlManager.GetModule(_moduleId);
+        public ControlModule? OptionalModule => ControlManager.GetModule(_moduleId);
+
+        public ControlModule Module => Ensure.NotNull<ControlModule>(OptionalModule);
 
         public Guid ModuleId => _moduleId;
 
@@ -1109,8 +1123,8 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The name of the decoder type built into module of this type (or null if modules of this type has no decoder)
         /// </summary>
-        public string DecoderTypeName {
-            get => GetAttribute("DecoderType");
+        public string? DecoderTypeName {
+            get => (string?)AttributeValue("DecoderType");
             set => SetAttribute("DecoderType", value, removeIf: null);
         }
 
@@ -1122,7 +1136,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The printable label for an address
         /// </summary>
-        public string GetConnectionPointAddressText(int baseAddress, int index, bool fullAddressPath) {
+        public string GetConnectionPointAddressText(ControlModuleType moduleType, int baseAddress, int index, bool fullAddressPath) {
             ControlConnectionPointLabelFormatOptions format = ConnectionPointLabelFormat;
             string result;
 
@@ -1133,7 +1147,7 @@ namespace LayoutManager.Model {
                 string addressText;
 
                 if ((format & ControlConnectionPointLabelFormatOptions.ConnectionPointIndex) != 0)
-                    addressText = index.ToString();
+                    addressText = (index + moduleType.ConnectionPointIndexBase).ToString();
                 else
                     addressText = address.ToString();
 
@@ -1163,7 +1177,7 @@ namespace LayoutManager.Model {
             return result;
         }
 
-        public string GetConnectionPointAddressText(int baseAddress, int index) => GetConnectionPointAddressText(baseAddress, index, false);
+        public string GetConnectionPointAddressText(ControlModuleType moduleType, int baseAddress, int index) => GetConnectionPointAddressText(moduleType, baseAddress, index, false);
     }
 
     /// <summary>
@@ -1304,6 +1318,20 @@ namespace LayoutManager.Model {
             }
         }
 
+        public ControlModule Add(XmlElement moduleElement) {
+            ResetAddressModuleMap();
+
+            if (moduleElement.OwnerDocument != ControlManager.ModulesElement.OwnerDocument)
+                moduleElement = (XmlElement)ControlManager.ModulesElement.OwnerDocument.ImportNode(moduleElement, true);
+
+            var module = new ControlModule(ControlManager, moduleElement);
+            ControlManager.ModulesElement.AppendChild(moduleElement);
+
+            EventManager.Event(new LayoutEvent("control-module-added", module));
+
+            return module;
+        }
+
         /// <summary>
         /// Add a new module at a given address
         /// </summary>
@@ -1362,7 +1390,7 @@ namespace LayoutManager.Model {
         /// <returns>The new inserted module</returns>
         public ControlModule Insert(Guid controlModuleLocationId, ControlModule insertBeforeModule, ControlModuleType moduleType) {
             if (BusType.Topology != ControlBusTopology.DaisyChain)
-                throw new ArgumentException("You insert module in a bus only if the bus is daisy chained");
+                throw new ArgumentException("Insert module in a bus only if the bus is daisy chained");
 
             if (NextModuleAddress > BusType.LastAddress)
                 throw new ControlBusFullException(this);
@@ -1379,7 +1407,30 @@ namespace LayoutManager.Model {
             return doAdd(controlModuleLocationId, moduleType, address);
         }
 
-        public ControlModule Insert(Guid controlModuleLocationId, ControlModule insertBeforeModule, string moduleTypeName) => Insert(controlModuleLocationId, insertBeforeModule, ControlManager.GetModuleType(moduleTypeName));
+        public ControlModule Insert(Guid controlModuleLocationId, ControlModule insertBeforeModule, string moduleTypeName) =>
+            Insert(controlModuleLocationId, insertBeforeModule, ControlManager.GetModuleType(moduleTypeName));
+
+        public ControlModule Insert(int address, XmlElement moduleElement) {
+            if (BusType.Topology != ControlBusTopology.DaisyChain)
+                throw new ArgumentException("Insert module in a bus only if the bus is daisy chained");
+
+            ResetAddressModuleMap();
+
+            if (moduleElement.OwnerDocument != ControlManager.ModulesElement.OwnerDocument)
+                moduleElement = (XmlElement)ControlManager.ModulesElement.OwnerDocument.ImportNode(moduleElement, true);
+
+            var insertedModule = new ControlModule(ControlManager, moduleElement);
+
+            foreach (ControlModule module in Modules) {
+                if (module.Address >= address)
+                    module.Address += insertedModule.ModuleType.NumberOfAddresses;
+            }
+
+            ControlManager.ModulesElement.AppendChild(moduleElement);
+            EventManager.Event(new LayoutEvent("control-module-added", insertedModule));
+
+            return insertedModule;
+        }
 
         /// <summary>
         /// Remove a module from the bus. The module is disconnected from all components
@@ -1487,6 +1538,8 @@ namespace LayoutManager.Model {
         private const string A_LastAddress = "LastAddress";
         private const string A_RecommendedStartAddress = "RecommendedStartAddress";
         private const string A_Usage = "Usage";
+        private const string A_ClickToAddEventName= "ClickToAddEventName";
+        private const string A_CanChangeAddress = "CanChangeAddress";
         private const string E_ModuleTypes = "ModuleTypes";
 
         public ControlBusType() {
@@ -1533,6 +1586,11 @@ namespace LayoutManager.Model {
             set => SetAttribute(A_AddressingMethod, value);
         }
 
+        public bool CanChangeAddress {
+            get => (bool?)AttributeValue(A_CanChangeAddress) ?? true;
+            set => SetAttribute(A_CanChangeAddress, value, removeIf: true);
+        }
+
         /// <summary>
         /// First valid address on the bus
         /// </summary>
@@ -1557,6 +1615,11 @@ namespace LayoutManager.Model {
         public ControlConnectionPointUsage Usage {
             get => AttributeValue(A_Usage).Enum<ControlConnectionPointUsage>() ?? ControlConnectionPointUsage.Both;
             set => SetAttribute(A_Usage, value);
+        }
+
+        public string ClickToAddModuleEventName {
+            get => (string?)AttributeValue(A_ClickToAddEventName) ?? "control-module-click-to-add";
+            set => SetAttribute(A_ClickToAddEventName, value);
         }
 
         /// <summary>
