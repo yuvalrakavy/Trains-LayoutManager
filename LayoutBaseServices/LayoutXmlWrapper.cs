@@ -71,39 +71,39 @@ namespace LayoutManager {
             }
         }
 
-        public ConvertableString AttributeValue(string name) => ((IObjectHasXml)this).AttributeValue(name);
+        public ConvertableString AttributeValue(string name) => Element.AttributeValue(name);
 
         public String? GetOptionalAttribute(string name) => (string?)AttributeValue(name);
 
         public string GetAttribute(string name) => AttributeValue(name).ValidString();
 
-        public void SetAttribute(string name, string? v) => ((IObjectHasXml)this).SetAttribute(name, v);
+        public void SetAttribute(string name, string? v) => Element.SetAttributeValue(name, v, null);
 
-        public void SetAttribute(string name, string? v, string? removeIf) => ((IObjectHasXml)this).SetAttribute(name, v, removeIf);
+        public void SetAttribute(string name, string? v, string? removeIf) => Element.SetAttributeValue(name, v, removeIf);
 
-        public void SetAttribute(string name, int v, int removeIf) => ((IObjectHasXml)this).SetAttribute(name, v, removeIf);
+        public void SetAttribute(string name, int v, int removeIf) => Element.SetAttributeValue(name, v, removeIf);
 
-        public void SetAttribute(string name, int v) => ((IObjectHasXml)this).SetAttribute(name, v);
+        public void SetAttribute(string name, int v) => Element.SetAttributeValue(name, v);
 
-        public void SetAttribute(string name, UInt32 v, UInt32 removeIf) => ((IObjectHasXml)this).SetAttribute(name, v, removeIf);
+        public void SetAttribute(string name, UInt32 v, UInt32 removeIf) => Element.SetAttributeValue(name, v, removeIf);
 
-        public void SetAttribute(string name, UInt32 v) => ((IObjectHasXml)this).SetAttribute(name, v);
+        public void SetAttribute(string name, UInt32 v) => Element.SetAttributeValue(name, v);
 
-        public void SetAttribute(string name, double v) => ((IObjectHasXml)this).SetAttribute(name, v);
+        public void SetAttribute(string name, double v) => Element.SetAttributeValue(name, v);
 
-        public void SetAttribute(string name, Guid v) => ((IObjectHasXml)this).SetAttribute(name, v);
+        public void SetAttribute(string name, Guid v) => Element.SetAttributeValue(name, v);
 
-        public void SetAttribute(string name, Guid v, Guid removeIf) => ((IObjectHasXml)this).SetAttribute(name, v, removeIf);
+        public void SetAttribute(string name, Guid v, Guid removeIf) => Element.SetAttributeValue(name, v, removeIf);
 
-        public void SetAttribute(string name, bool v) => ((IObjectHasXml)this).SetAttribute(name, v);
+        public void SetAttribute(string name, bool v) => Element.SetAttributeValue(name, v);
 
-        public void SetAttribute(string name, bool v, bool removeIf) => ((IObjectHasXml)this).SetAttribute(name, v, removeIf);
+        public void SetAttribute(string name, bool v, bool removeIf) => Element.SetAttributeValue(name, v, removeIf);
 
-        public void SetAttribute(string name, Enum e) => ((IObjectHasXml)this).SetAttribute(name, e);
+        public void SetAttribute(string name, Enum e) => Element.SetAttributeValue(name, e);
 
-        public void SetAttribute(string name, Enum e, Enum removeIf) => ((IObjectHasXml)this).SetAttribute(name, e, removeIf);
+        public void SetAttribute(string name, Enum e, Enum removeIf) => Element.SetAttributeValue(name, e, removeIf);
 
-        public bool HasAttribute(string name) => ((IObjectHasXml)this).HasAttribute(name);
+        public bool HasAttribute(string name) => Element.HasAttribute(name);
 
         public Guid Id {
             get {

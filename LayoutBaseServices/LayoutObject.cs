@@ -23,38 +23,38 @@ namespace LayoutManager {
     public static class IObjectHasXmlExtensions {
         public static ConvertableString AttributeValue(this IObjectHasXml xmlObject, string name) => xmlObject.OptionalElement.AttributeValue(name);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, string? v) {
+        public static void SetAttributeValue(this IObjectHasXml xmlObject, string name, string? v) {
             if (xmlObject.OptionalElement == null)
                 throw new ArgumentNullException($"Trying to set attribute {name} to {v ?? "(null)"} for XmlElement which is null");
 
             if (v == null)
-                xmlObject.OptionalElement.RemoveAttribute(name);
+                xmlObject.OptionalElement?.RemoveAttribute(name);
             else
-                xmlObject.OptionalElement.SetAttribute(name, v);
+                xmlObject.OptionalElement?.SetAttribute(name, v);
         }
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, string? v, string? removeIf) => xmlObject.Element.SetAttribute(name, v, removeIf);
+        public static void SetAttributeValue(this IObjectHasXml xmlObject, string name, string? v, string? removeIf) => xmlObject.Element.SetAttributeValue(name, v, removeIf);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, int v, int removeIf) => xmlObject.Element.SetAttribute(name, v, removeIf);
+        public static void SetAttributeValue(this IObjectHasXml xmlObject, string name, int v, int removeIf) => xmlObject.Element.SetAttributeValue(name, v, removeIf);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, UInt32 v) => xmlObject.Element.SetAttribute(name, v);
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, UInt32 v, UInt32 removeIf) => xmlObject.Element.SetAttribute(name, v, removeIf);
+        public static void SetAttributeValue(this IObjectHasXml xmlObject, string name, UInt32 v) => xmlObject.Element.SetAttributeValue(name, v);
+        public static void SetAttributeValue(this IObjectHasXml xmlObject, string name, UInt32 v, UInt32 removeIf) => xmlObject.Element.SetAttributeValue(name, v, removeIf);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, int v) => xmlObject.Element.SetAttribute(name, v);
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, long v) => xmlObject.Element.SetAttribute(name, v);
+        public static void SetAttributeValue(this IObjectHasXml xmlObject, string name, int v) => xmlObject.Element.SetAttributeValue(name, v);
+        public static void SetAttributeValue(this IObjectHasXml xmlObject, string name, long v) => xmlObject.Element.SetAttributeValue(name, v);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, double v) => xmlObject.Element.SetAttribute(name, v);
+        public static void SetAttributeValue(this IObjectHasXml xmlObject, string name, double v) => xmlObject.Element.SetAttributeValue(name, v);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, Guid v) => xmlObject.Element.SetAttribute(name, v);
+        public static void SetAttributeValue(this IObjectHasXml xmlObject, string name, Guid v) => xmlObject.Element.SetAttributeValue(name, v);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, Guid v, Guid removeIf) => xmlObject.Element.SetAttribute(name, v, removeIf);
+        public static void SetAttributeValue(this IObjectHasXml xmlObject, string name, Guid v, Guid removeIf) => xmlObject.Element.SetAttributeValue(name, v, removeIf);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, bool v) => xmlObject.Element.SetAttribute(name, v);
+        public static void SetAttributeValue(this IObjectHasXml xmlObject, string name, bool v) => xmlObject.Element.SetAttributeValue(name, v);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, bool v, bool removeIf) => xmlObject.Element.SetAttribute(name, v, removeIf);
+        public static void SetAttributeValue(this IObjectHasXml xmlObject, string name, bool v, bool removeIf) => xmlObject.Element.SetAttributeValue(name, v, removeIf);
 
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, Enum e) => xmlObject.Element.SetAttribute(name, e);
-        public static void SetAttribute(this IObjectHasXml xmlObject, string name, Enum e, Enum removeIf) => xmlObject.Element.SetAttribute(name, e, removeIf);
+        public static void SetAttributeValue(this IObjectHasXml xmlObject, string name, Enum e) => xmlObject.Element.SetAttributeValue(name, e);
+        public static void SetAttributeValue(this IObjectHasXml xmlObject, string name, Enum e, Enum removeIf) => xmlObject.Element.SetAttributeValue(name, e, removeIf);
 
         public static bool HasAttribute(this IObjectHasXml xmlObject, string name) => xmlObject.Element.HasAttribute(name);
     }
@@ -66,60 +66,60 @@ namespace LayoutManager {
                 : new ConvertableString(e.GetAttribute(name), name, e);
         }
 
-        public static void SetAttribute(this XmlElement e, string name, string? v, string? removeIf) {
+        public static void SetAttributeValue(this XmlElement e, string name, string? v, string? removeIf) {
             if (v == null || v == removeIf)
                 e.RemoveAttribute(name);
             else
                 e.SetAttribute(name, v);
         }
 
-        public static void SetAttribute(this XmlElement e, string name, int v, int removeIf) {
+        public static void SetAttributeValue(this XmlElement e, string name, int v, int removeIf) {
             if (v == removeIf)
                 e.RemoveAttribute(name);
             else
                 e.SetAttribute(name, XmlConvert.ToString(v));
         }
 
-        public static void SetAttribute(this XmlElement e, string name, int v) => e.SetAttribute(name, XmlConvert.ToString(v));
+        public static void SetAttributeValue(this XmlElement e, string name, int v) => e.SetAttribute(name, XmlConvert.ToString(v));
 
-        public static void SetAttribute(this XmlElement e, string name, UInt32 v, UInt32 removeIf) {
+        public static void SetAttributeValue(this XmlElement e, string name, UInt32 v, UInt32 removeIf) {
             if (v == removeIf)
                 e.RemoveAttribute(name);
             else
                 e.SetAttribute(name, XmlConvert.ToString(v));
         }
 
-        public static void SetAttribute(this XmlElement e, string name, UInt32 v) => e.SetAttribute(name, XmlConvert.ToString(v));
+        public static void SetAttributeValue(this XmlElement e, string name, UInt32 v) => e.SetAttribute(name, XmlConvert.ToString(v));
 
-        public static void SetAttribute(this XmlElement e, string name, long v) => e.SetAttribute(name, XmlConvert.ToString(v));
+        public static void SetAttributeValue(this XmlElement e, string name, long v) => e.SetAttribute(name, XmlConvert.ToString(v));
 
-        public static void SetAttribute(this XmlElement e, string name, byte v) => e.SetAttribute(name, XmlConvert.ToString(v));
+        public static void SetAttributeValue(this XmlElement e, string name, byte v) => e.SetAttribute(name, XmlConvert.ToString(v));
 
-        public static void SetAttribute(this XmlElement e, string name, double v) => e.SetAttribute(name, XmlConvert.ToString(v));
+        public static void SetAttributeValue(this XmlElement e, string name, double v) => e.SetAttribute(name, XmlConvert.ToString(v));
 
-        public static void SetAttribute(this XmlElement e, string name, decimal v) => e.SetAttribute(name, XmlConvert.ToString(v));
+        public static void SetAttributeValue(this XmlElement e, string name, decimal v) => e.SetAttribute(name, XmlConvert.ToString(v));
 
-        public static void SetAttribute(this XmlElement e, string name, Guid v) => e.SetAttribute(name, XmlConvert.ToString(v));
+        public static void SetAttributeValue(this XmlElement e, string name, Guid v) => e.SetAttribute(name, XmlConvert.ToString(v));
 
-        public static void SetAttribute(this XmlElement e, string name, Guid v, Guid removeIf) {
+        public static void SetAttributeValue(this XmlElement e, string name, Guid v, Guid removeIf) {
             if (v == removeIf)
                 e.RemoveAttribute(name);
             else
                 e.SetAttribute(name, XmlConvert.ToString(v));
         }
 
-        public static void SetAttribute(this XmlElement e, string name, bool v) => e.SetAttribute(name, XmlConvert.ToString(v));
+        public static void SetAttributeValue(this XmlElement e, string name, bool v) => e.SetAttribute(name, XmlConvert.ToString(v));
 
-        public static void SetAttribute(this XmlElement e, string name, bool v, bool removeIf) {
+        public static void SetAttributeValue(this XmlElement e, string name, bool v, bool removeIf) {
             if (v == removeIf)
                 e.RemoveAttribute(name);
             else
                 e.SetAttribute(name, XmlConvert.ToString(v));
         }
 
-        public static void SetAttribute(this XmlElement e, string name, Enum v) => e.SetAttribute(name, v.ToString());
+        public static void SetAttributeValue(this XmlElement e, string name, Enum v) => e.SetAttribute(name, v.ToString());
 
-        public static void SetAttribute(this XmlElement e, string name, Enum v, Enum removeIf) {
+        public static void SetAttributeValue(this XmlElement e, string name, Enum v, Enum removeIf) {
             if (v == removeIf)
                 e.RemoveAttribute(name);
             else
@@ -289,14 +289,14 @@ namespace LayoutManager {
                 if (idAttribute == null) {
                     Guid id = Guid.NewGuid();
 
-                    DocumentElement.SetAttribute("ID", id);
+                    DocumentElement.SetAttributeValue("ID", id);
                     return id;
                 }
                 else
                     return new Guid(idAttribute.Value);
             }
 
-            set => DocumentElement.SetAttribute("ID", value);
+            set => DocumentElement.SetAttributeValue("ID", value);
         }
     }
 
