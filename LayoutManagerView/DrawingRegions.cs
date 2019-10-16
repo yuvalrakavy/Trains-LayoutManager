@@ -99,21 +99,13 @@ namespace LayoutManager.View {
     /// Base class for drawing region that draws a rectangle whose relative to a grid location is provided
     /// </summary>
     public abstract class LayoutDrawingRegionRectangle : LayoutDrawingRegion {
-        private float getAlignedValue(float v, float d, LayoutDrawingAnchorPoint a) {
-            switch (a) {
-                case LayoutDrawingAnchorPoint.Center:
-                    return v - (d / 2.0f);
-
-                case LayoutDrawingAnchorPoint.Left:
-                    return v;
-
-                case LayoutDrawingAnchorPoint.Right:
-                    return v - d;
-
-                default:
-                    throw new ArgumentException("Invalid Anchor point value");
-            }
-        }
+        private float getAlignedValue(float v, float d, LayoutDrawingAnchorPoint a) => a switch
+        {
+            LayoutDrawingAnchorPoint.Center => v - (d / 2.0f),
+            LayoutDrawingAnchorPoint.Left => v,
+            LayoutDrawingAnchorPoint.Right => v - d,
+            _ => throw new ArgumentException("Invalid Anchor point value"),
+        };
 
         /// <summary>
         /// Construct a drawing region for drawing a rectangle with relative position to a model grid
@@ -126,42 +118,29 @@ namespace LayoutManager.View {
         protected LayoutDrawingRegionRectangle(ModelComponent component, ILayoutView view,
             LayoutPositionInfo positionProvider, SizeF rectSize) : base(component) {
             PointF ptTopLeft = view.ModelLocationInModelCoordinates(component.Location);
-            RectangleF rcRegion;
             PointF origin = new PointF(ptTopLeft.X + (view.GridSizeInModelCoordinates.Width / 2), ptTopLeft.Y + (view.GridSizeInModelCoordinates.Height / 2));
 
-            switch (positionProvider.Side) {
-                case LayoutDrawingSide.Top:
-                    rcRegion = new RectangleF(
-                        new PointF(getAlignedValue(origin.X, rectSize.Width, positionProvider.AnchorPoint),
-                        origin.Y - rectSize.Height - positionProvider.Distance), rectSize);
-                    break;
+            var rcRegion = positionProvider.Side switch
+            {
+                LayoutDrawingSide.Top => new RectangleF(new PointF(getAlignedValue(origin.X, rectSize.Width, positionProvider.AnchorPoint),
+                                            origin.Y - rectSize.Height - positionProvider.Distance), rectSize),
 
-                case LayoutDrawingSide.Bottom:
-                    rcRegion = new RectangleF(
+                LayoutDrawingSide.Bottom => new RectangleF(
                         new PointF(getAlignedValue(origin.X, rectSize.Width, positionProvider.AnchorPoint),
-                        origin.Y + positionProvider.Distance), rectSize);
-                    break;
+                        origin.Y + positionProvider.Distance), rectSize),
 
-                case LayoutDrawingSide.Left:
-                    rcRegion = new RectangleF(
+                LayoutDrawingSide.Left => new RectangleF(
                         new PointF(origin.X - rectSize.Width - positionProvider.Distance,
-                        getAlignedValue(origin.Y, rectSize.Height, positionProvider.AnchorPoint)), rectSize);
-                    break;
+                        getAlignedValue(origin.Y, rectSize.Height, positionProvider.AnchorPoint)), rectSize),
 
-                case LayoutDrawingSide.Right:
-                    rcRegion = new RectangleF(new PointF(origin.X + positionProvider.Distance,
-                        getAlignedValue(origin.Y, rectSize.Height, positionProvider.AnchorPoint)), rectSize);
-                    break;
+                LayoutDrawingSide.Right => new RectangleF(new PointF(origin.X + positionProvider.Distance,
+                        getAlignedValue(origin.Y, rectSize.Height, positionProvider.AnchorPoint)), rectSize),
 
-                case LayoutDrawingSide.Center:
-                    rcRegion = new RectangleF(new PointF(origin.X - (rectSize.Width / 2), origin.Y - (rectSize.Height / 2)),
-                        rectSize);
-                    break;
+                LayoutDrawingSide.Center => new RectangleF(new PointF(origin.X - (rectSize.Width / 2), origin.Y - (rectSize.Height / 2)),
+                        rectSize),
 
-                default:
-                    throw new ArgumentException("Invalid LayoutDrawingSide value");
-            }
-
+                _ => throw new ArgumentException("Invalid LayoutDrawingSide value"),
+            };
             BoundingRegionInModelCoordinates = new Region(rcRegion);
         }
     }
