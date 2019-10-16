@@ -72,7 +72,7 @@ namespace NumatoController {
             var addControlModuleCommand = new AddControlModuleCommand(bus, moduleType, Guid.Empty, 0);
 
             command.Add(addControlModuleCommand);
-            command.Add(new SetControlUserActionRequiredCommand(addControlModuleCommand.AddModule.Module, true));
+            command.Add(new SetControlUserActionRequiredCommand(addControlModuleCommand.AddedModule.Module, true));
         }
 
         [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(NumatoController))]
