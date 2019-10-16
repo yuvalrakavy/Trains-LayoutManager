@@ -76,7 +76,9 @@ namespace LayoutManager.Dialogs {
                         ResourceManager rm = new ResourceManager("LayoutManager.Sounds", this.GetType().Assembly);
                         byte[] soundData = (byte[])rm.GetObject(resourceName);
                         MemoryStream stream = new MemoryStream(soundData);
+#pragma warning disable IDE0067 // Dispose objects before losing scope
                         SoundPlayer soundPlayer = new SoundPlayer(stream);
+#pragma warning restore IDE0067 // Dispose objects before losing scope
 
                         soundPlayer.Stop();
                         soundPlayer.Play();
