@@ -515,6 +515,7 @@ namespace LayoutManager.CommonUI {
         [LayoutEvent("control-address-programming-required-changed")]
         [LayoutEvent("control-buses-added")]
         [LayoutEvent("control-buses-removed")]
+        [LayoutEvent("control-module-modified")]
         private void changeMode(LayoutEvent e) {
             Recalc();
         }
@@ -1374,7 +1375,7 @@ namespace LayoutManager.CommonUI {
                 addressText = Module.Address.ToString() + " - " + lastAddress.ToString();
             }
 
-            var text = (string?)EventManager.Event(new LayoutEvent("get-control-module-description", Module).SetOption("AddressText", addressText));
+            var text = (string?)EventManager.Event(new LayoutEvent("get-control-module-description", Module).SetOption("AddressText", addressText).SetOption("ModuleTypeName", Module.ModuleTypeName));
             return text ?? Module.ModuleType.Name + " (" + addressText + ")" + (Module.Label != null ? "\n" + Module.Label : "");
         }
 
