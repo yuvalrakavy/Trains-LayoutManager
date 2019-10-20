@@ -1,6 +1,7 @@
 using System;
 
 #nullable enable
+#pragma warning disable CA1032, CA2237
 namespace LayoutManager {
     public class LayoutException : Exception {
         public LayoutException() {
