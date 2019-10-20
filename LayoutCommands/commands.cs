@@ -274,24 +274,24 @@ namespace LayoutManager {
         private readonly int address = -1;
         private readonly ControlModuleReference? insertBefore = null;
         private ControlModuleReference? addedModuleReference = null;
-        private Guid moduleLocationID;
+        private Guid? moduleLocationID;
 
         private XmlElement? moduleElement;
 
-        public AddControlModuleCommand(ControlBus bus, string moduleTypeName, Guid moduleLocationID) {
+        public AddControlModuleCommand(ControlBus bus, string moduleTypeName, Guid? moduleLocationID) {
             this.bus = bus;
             this.moduleTypeName = moduleTypeName;
             this.moduleLocationID = moduleLocationID;
         }
 
-        public AddControlModuleCommand(ControlBus bus, string moduleTypeName, Guid moduleLocationID, int address) {
+        public AddControlModuleCommand(ControlBus bus, string moduleTypeName, Guid? moduleLocationID, int address) {
             this.bus = bus;
             this.moduleTypeName = moduleTypeName;
             this.moduleLocationID = moduleLocationID;
             this.address = address;
         }
 
-        public AddControlModuleCommand(ControlBus bus, string moduleTypeName, Guid moduleLocationID, ControlModule insertBefore) {
+        public AddControlModuleCommand(ControlBus bus, string moduleTypeName, Guid? moduleLocationID, ControlModule insertBefore) {
             this.bus = bus;
             this.moduleTypeName = moduleTypeName;
             this.moduleLocationID = moduleLocationID;
@@ -363,21 +363,21 @@ namespace LayoutManager {
     }
 
     public class SetControlModuleAddressCommand : LayoutCommand {
-        private readonly ControlModuleReference module;
+        private readonly ControlModuleReference moduleRef;
         private int address;
 
         public SetControlModuleAddressCommand(ControlModule module, int address) {
-            this.module = new ControlModuleReference(module);
+            this.moduleRef = new ControlModuleReference(module);
             this.address = address;
         }
 
         public override void Do() {
-            int previousAddress = module.Module.Address;
+            int previousAddress = moduleRef.Module.Address;
 
-            module.Module.Address = address;
+            moduleRef.Module.Address = address;
             address = previousAddress;
 
-            EventManager.Event(new LayoutEvent("control-module-address-changed", module.Module));
+            EventManager.Event(new LayoutEvent("control-module-address-changed", moduleRef.Module));
         }
 
         public override void Undo() {
@@ -388,20 +388,20 @@ namespace LayoutManager {
     }
 
     public class AssignControlModuleLocationCommand : LayoutCommand {
-        private readonly ControlModuleReference module;
-        private Guid locationID;
+        private readonly ControlModuleReference moduleRef;
+        private Guid? locationID;
 
         public AssignControlModuleLocationCommand(ControlModule module, Guid locationID) {
-            this.module = new ControlModuleReference(module);
+            this.moduleRef = new ControlModuleReference(module);
             this.locationID = locationID;
         }
 
         public override void Do() {
-            Guid previousLocationID = module.Module.LocationId;
+            var previousLocationID = moduleRef.Module.LocationId;
 
-            module.Module.LocationId = locationID;
+            moduleRef.Module.LocationId = locationID;
             locationID = previousLocationID;
-            EventManager.Event(new LayoutEvent("control-module-location-changed", module.Module));
+            EventManager.Event(new LayoutEvent("control-module-location-changed", moduleRef.Module));
         }
 
         public override void Undo() {
@@ -426,6 +426,8 @@ namespace LayoutManager {
 
             module.NumberOfConnectionPoints = this.connectionPointsCount;
             this.connectionPointsCount = previousConnectionPointsCount;
+            EventManager.Event(new LayoutEvent("control-module-connection-point-count-changed", controlModuleRef.Module));
+            EventManager.Event(new LayoutEvent("control-module-modified", controlModuleRef.Module));
         }
 
         public override void Undo() {
@@ -576,7 +578,7 @@ namespace LayoutManager {
             this.address = address + delta;
             this.delta = -delta;
 
-            EventManager.Event(new LayoutEvent("control-module-address-changed", thisModule));
+            EventManager.Event(new LayoutEvent("control-module-address-changed", thisModule).SetOption("ModuleTypeName", thisModule.ModuleTypeName));
         }
 
         public override void Undo() {
@@ -590,7 +592,7 @@ namespace LayoutManager {
         private readonly ControlModuleReference moduleRef;
         private string? label;
 
-        public SetControlModuleLabelCommand(ControlModule module, string label) {
+        public SetControlModuleLabelCommand(ControlModule module, string? label) {
             this.moduleRef = new ControlModuleReference(module);
             this.label = label;
         }
@@ -600,9 +602,9 @@ namespace LayoutManager {
             var previousLabel = module.Label;
 
             module.Label = label;
-            label = previousLabel;
+            EventManager.Event(new LayoutEvent("control-module-label-changed", module, label).SetOption("ModuleTypeName", module.ModuleTypeName));
 
-            EventManager.Event(new LayoutEvent("control-module-label-changed", module));
+            label = previousLabel;
         }
 
         public override void Undo() {
@@ -672,7 +674,7 @@ namespace LayoutManager {
 
             controlModule.AddressProgrammingRequired = this.addressProgrammingRequired;
             this.addressProgrammingRequired = previousValue;
-            EventManager.Event(new LayoutEvent("control-address-programming-required-changed", this.controlModule));
+            EventManager.Event(new LayoutEvent("control-address-programming-required-changed", this.controlModule).SetOption("ModuleTypeName", controlModule.ModuleTypeName));
         }
 
         public override void Undo() {

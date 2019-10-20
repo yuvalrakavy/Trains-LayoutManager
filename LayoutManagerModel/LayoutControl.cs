@@ -849,17 +849,17 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The ID of a location in which the control module is located
         /// </summary>
-        public Guid LocationId {
+        public Guid? LocationId {
             get => (Guid?)AttributeValue(A_LocationId) ?? Guid.Empty;
-            set => SetAttributeValue(A_LocationId, value, removeIf: Guid.Empty);
+            set => SetAttributeValue(A_LocationId, value ?? Guid.Empty, removeIf: Guid.Empty);
         }
 
         /// <summary>
         /// Return the control module location component that is assigned to this module (if any)
         /// </summary>
-        public LayoutControlModuleLocationComponent? Location => LocationId == Guid.Empty
+        public LayoutControlModuleLocationComponent? Location => LocationId == null || LocationId == Guid.Empty
                     ? null
-                    : LayoutModel.Component<LayoutControlModuleLocationComponent>(LocationId, LayoutModel.ActivePhases);
+                    : LayoutModel.Component<LayoutControlModuleLocationComponent>((Guid)LocationId, LayoutModel.ActivePhases);
 
         /// <summary>
         /// The module label
@@ -1284,7 +1284,7 @@ namespace LayoutManager.Model {
         /// <param name="moduleType"></param>
         /// <param name="address"></param>
         /// <returns></returns>
-        private ControlModule doAdd(Guid controlModuleLocationId, ControlModuleType moduleType, int address) {
+        private ControlModule doAdd(Guid? controlModuleLocationId, ControlModuleType moduleType, int address) {
             XmlElement moduleElement = ControlManager.ModulesElement.OwnerDocument.CreateElement("Module");
             ControlModule module = new ControlModule(ControlManager, moduleElement) {
                 ModuleType = moduleType,
@@ -1342,7 +1342,7 @@ namespace LayoutManager.Model {
         /// <param name="moduleType">The type of the module to add</param>
         /// <param name="address">The address of the new module</param>
         /// <returns>The new module</returns>
-        public ControlModule Add(Guid controlModuleLocationId, ControlModuleType moduleType, int address) {
+        public ControlModule Add(Guid? controlModuleLocationId, ControlModuleType moduleType, int address) {
             if (BusType.Topology == ControlBusTopology.DaisyChain)
                 throw new ArgumentException("You cannot add module with address to daisy chained bus");
 
@@ -1364,14 +1364,14 @@ namespace LayoutManager.Model {
             return doAdd(controlModuleLocationId, moduleType, address);
         }
 
-        public ControlModule Add(Guid controlModuleLocationId, string moduleTypeName, int address) => Add(controlModuleLocationId, LayoutControlManager.GetModuleType(moduleTypeName), address);
+        public ControlModule Add(Guid? controlModuleLocationId, string moduleTypeName, int address) => Add(controlModuleLocationId, LayoutControlManager.GetModuleType(moduleTypeName), address);
 
         /// <summary>
         /// Add a new module at the end of a daisy chained bus.
         /// </summary>
         /// <param name="moduleType">The type of the module to add</param>
         /// <returns>The new added module</returns>
-        public ControlModule Add(Guid controlModuleLocationId, ControlModuleType moduleType) {
+        public ControlModule Add(Guid? controlModuleLocationId, ControlModuleType moduleType) {
             if (BusType.Topology != ControlBusTopology.DaisyChain)
                 throw new ArgumentException("You cannot add module to the end of a bus only if the bus is daisy chained");
 
@@ -1384,7 +1384,7 @@ namespace LayoutManager.Model {
             return doAdd(controlModuleLocationId, moduleType, address);
         }
 
-        public ControlModule Add(Guid controlModuleLocationId, string moduleTypeName) => Add(controlModuleLocationId, LayoutControlManager.GetModuleType(moduleTypeName));
+        public ControlModule Add(Guid? controlModuleLocationId, string moduleTypeName) => Add(controlModuleLocationId, LayoutControlManager.GetModuleType(moduleTypeName));
 
         /// <summary>
         /// Insert a new module after a given module in a daisy chained bus
@@ -1392,7 +1392,7 @@ namespace LayoutManager.Model {
         /// <param name="insertBeforeModule">The module after which the new module is to be added</param>
         /// <param name="moduleType">The type of the module to add</param>
         /// <returns>The new inserted module</returns>
-        public ControlModule Insert(Guid controlModuleLocationId, ControlModule insertBeforeModule, ControlModuleType moduleType) {
+        public ControlModule Insert(Guid? controlModuleLocationId, ControlModule insertBeforeModule, ControlModuleType moduleType) {
             if (BusType.Topology != ControlBusTopology.DaisyChain)
                 throw new ArgumentException("Insert module in a bus only if the bus is daisy chained");
 
@@ -1411,7 +1411,7 @@ namespace LayoutManager.Model {
             return doAdd(controlModuleLocationId, moduleType, address);
         }
 
-        public ControlModule Insert(Guid controlModuleLocationId, ControlModule insertBeforeModule, string moduleTypeName) =>
+        public ControlModule Insert(Guid? controlModuleLocationId, ControlModule insertBeforeModule, string moduleTypeName) =>
             Insert(controlModuleLocationId, insertBeforeModule, LayoutControlManager.GetModuleType(moduleTypeName));
 
         public ControlModule Insert(int address, XmlElement moduleElement) {
@@ -1544,6 +1544,8 @@ namespace LayoutManager.Model {
         private const string A_Usage = "Usage";
         private const string A_ClickToAddEventName= "ClickToAddEventName";
         private const string A_CanChangeAddress = "CanChangeAddress";
+        private const string A_CanChangeLabel = "CanChangeLabel";
+        private const string A_AllowEmptyLabel = "AllowEmptyLabel";
         private const string E_ModuleTypes = "ModuleTypes";
 
         public ControlBusType() {
@@ -1593,6 +1595,16 @@ namespace LayoutManager.Model {
         public bool CanChangeAddress {
             get => (bool?)AttributeValue(A_CanChangeAddress) ?? true;
             set => SetAttributeValue(A_CanChangeAddress, value, removeIf: true);
+        }
+
+        public bool CanChangeLabel {
+            get => (bool?)AttributeValue(A_CanChangeLabel) ?? true;
+            set => SetAttributeValue(A_CanChangeLabel, value, removeIf: true);
+        }
+
+        public bool AllowEmptyLabel {
+            get => (bool?)AttributeValue(A_AllowEmptyLabel) ?? true;
+            set => SetAttributeValue(A_AllowEmptyLabel, value, removeIf: true);
         }
 
         /// <summary>
