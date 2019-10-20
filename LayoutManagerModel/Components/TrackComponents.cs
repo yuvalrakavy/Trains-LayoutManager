@@ -353,11 +353,11 @@ namespace LayoutManager.Components {
         public override LayoutComponentConnectionPoint[] ConnectTo(LayoutComponentConnectionPoint from, LayoutComponentConnectionType type) {
             // For topology type connection, track with track contacts are disconnection points
             if ((type == LayoutComponentConnectionType.Electrical && LayoutTrackIsolationComponent.Is(Spot)) || (type == LayoutComponentConnectionType.ReverseLoop && LayoutTrackReverseLoopModule.Is(Spot)))
-                return new LayoutComponentConnectionPoint[] { };
+                return Array.Empty<LayoutComponentConnectionPoint>();
             else {
                 if (from == cp1)
                     return new LayoutComponentConnectionPoint[] { cp2 };
-                else return from == cp2 ? (new LayoutComponentConnectionPoint[] { cp1 }) : (new LayoutComponentConnectionPoint[] { });
+                else return from == cp2 ? (new LayoutComponentConnectionPoint[] { cp1 }) : (Array.Empty<LayoutComponentConnectionPoint>());
             }
         }
 
@@ -758,14 +758,14 @@ namespace LayoutManager.Components {
             if (type == LayoutComponentConnectionType.Passage || type == LayoutComponentConnectionType.ReverseLoop) {
                 if (from == tip)
                     return new LayoutComponentConnectionPoint[] { straight, branch };
-                else return from == straight || from == branch ? (new LayoutComponentConnectionPoint[] { tip }) : (new LayoutComponentConnectionPoint[] { });
+                else return from == straight || from == branch ? (new LayoutComponentConnectionPoint[] { tip }) : (Array.Empty<LayoutComponentConnectionPoint>());
             }
             else {
                 if (from == tip)
                     return new LayoutComponentConnectionPoint[] { straight, branch };
                 else if (from == straight)
                     return new LayoutComponentConnectionPoint[] { tip, branch };
-                else return from == branch ? (new LayoutComponentConnectionPoint[] { straight, tip }) : (new LayoutComponentConnectionPoint[] { });
+                else return from == branch ? (new LayoutComponentConnectionPoint[] { straight, tip }) : (Array.Empty<LayoutComponentConnectionPoint>());
             }
         }
 
