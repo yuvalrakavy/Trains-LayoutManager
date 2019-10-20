@@ -11,13 +11,14 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#pragma warning disable CA1031
 namespace NumatoController {
     public enum InterfaceType {
         Serial,
         TCP,
     };
 
-    public class NumatoController : LayoutBusProviderSupport, IModelComponentIsBusProvider {
+    public class NumatoController : LayoutBusProviderWithStreamCommunicationSupport, IModelComponentIsBusProvider {
         internal const string A_Relays = "Relays";
         internal const string A_User = "User";
         internal const string A_Password = "Password";
@@ -167,7 +168,7 @@ namespace NumatoController {
 
         #region Command classes
 
-        public abstract class NumatoCommandBase : OutputSynchronousCommandBase {
+        internal abstract class NumatoCommandBase : OutputSynchronousCommandBase {
             protected NumatoController RelayController { get; }
 
             protected NumatoCommandBase(NumatoController relayController) {

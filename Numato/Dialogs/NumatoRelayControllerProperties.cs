@@ -70,8 +70,8 @@ namespace NumatoController.Dialogs {
 
             InterfaceType interfaceType = InterfaceType.Serial;
 
-            if (XmlInfo.DocumentElement.HasAttribute(LayoutBusProviderSupport.A_InterfaceType))
-                interfaceType = (InterfaceType)Enum.Parse(typeof(InterfaceType), XmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.A_InterfaceType));
+            if (XmlInfo.DocumentElement.HasAttribute(LayoutBusProviderWithStreamCommunicationSupport.A_InterfaceType))
+                interfaceType = (InterfaceType)Enum.Parse(typeof(InterfaceType), XmlInfo.DocumentElement.GetAttribute(LayoutBusProviderWithStreamCommunicationSupport.A_InterfaceType));
 
             if (interfaceType == InterfaceType.Serial)
                 radioButtonSerial.Checked = true;
@@ -79,10 +79,10 @@ namespace NumatoController.Dialogs {
                 radioButtonTCP.Checked = true;
 
             nameDefinition.XmlInfo = this.XmlInfo;
-            comboBoxPort.Text = XmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.A_Port);
+            comboBoxPort.Text = XmlInfo.DocumentElement.GetAttribute(LayoutBusProviderWithStreamCommunicationSupport.A_Port);
 
-            if (XmlInfo.DocumentElement.HasAttribute(LayoutBusProviderSupport.A_Address))
-                textBoxAddress.Text = XmlInfo.DocumentElement.GetAttribute(LayoutBusProviderSupport.A_Address);
+            if (XmlInfo.DocumentElement.HasAttribute(LayoutBusProviderWithStreamCommunicationSupport.A_Address))
+                textBoxAddress.Text = XmlInfo.DocumentElement.GetAttribute(LayoutBusProviderWithStreamCommunicationSupport.A_Address);
 
             if (XmlInfo.DocumentElement.HasAttribute(NumatoController.A_User))
                 textBoxUser.Text = XmlInfo.DocumentElement.GetAttribute(NumatoController.A_User);
