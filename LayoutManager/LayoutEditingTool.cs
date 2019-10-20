@@ -12,7 +12,7 @@ namespace LayoutManager {
     /// <summary>
     /// This tool is used for editing the layout
     /// </summary>
-#pragma warning disable IDE0051, IDE0060
+#pragma warning disable IDE0051, IDE0060, IDE0067
 
     public class LayoutEditingTool : LayoutTool {
         private LayoutStraightTrackComponent lastTrack = null;

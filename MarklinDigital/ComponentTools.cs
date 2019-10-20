@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using LayoutManager;
 
+#pragma warning disable IDE0051, IDE0067
 namespace MarklinDigital {
     /// <summary>
     /// Summary description for ComponentTool.
@@ -13,8 +14,6 @@ namespace MarklinDigital {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
-
         #region Constructors
 
         public ComponentTool(IContainer container) {
@@ -98,7 +97,6 @@ namespace MarklinDigital {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            components = new Container();
         }
         #endregion
     }

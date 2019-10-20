@@ -11,6 +11,7 @@ using System.Linq;
 using LayoutManager.Components;
 
 #nullable enable
+#pragma warning disable CA1036, CA1822, CA2237
 namespace LayoutManager.Model {
     public enum ModelComponentKind {
         Background,
@@ -1330,6 +1331,7 @@ namespace LayoutManager.Model {
                         else {
                             // TODO: Generate a warning that component implementation was not found
                             Debug.WriteLine("Implementation for component: " + componentTypeName + " not found, component module probably not loaded");
+                            r.Skip();
                         }
                     }
                     else
@@ -1424,39 +1426,8 @@ namespace LayoutManager.Model {
         public new IEnumerator<LayoutModelArea> GetEnumerator() => Values.GetEnumerator();
     }
 
-    public class SortedVector<T> : SortedDictionary<int, T> {
+    public partial class SortedVector<T> : SortedDictionary<int, T> {
         public ValueRange RangeValues(int from, int to) => new ValueRange(this, from, to);
-
-        public class ValueRange : IEnumerable<T> {
-            private readonly SortedVector<T> list;
-            private readonly int from;
-            private readonly int to;
-
-            internal ValueRange(SortedVector<T> list, int from, int to) {
-                this.list = list;
-                this.from = from;
-                this.to = to;
-            }
-
-            #region IEnumerable<T> Members
-
-            public IEnumerator<T> GetEnumerator() {
-                foreach (KeyValuePair<int, T> entry in list) {
-                    if (entry.Key > to)
-                        yield break;
-                    if (entry.Key >= from)
-                        yield return entry.Value;
-                }
-            }
-
-            #endregion
-
-            #region IEnumerable Members
-
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-            #endregion
-        }
     }
 
     /// <summary>

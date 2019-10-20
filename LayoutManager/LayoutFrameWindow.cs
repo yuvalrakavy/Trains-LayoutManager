@@ -1683,9 +1683,11 @@ namespace LayoutManager {
                 else
                     throw new LayoutException("Command station does not support powering the layout while in design mode");
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception ex) {
                 MessageBox.Show(this, "Error when activating layout: " + ex.Message, "Error in layout activation", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         private void menuItemFind_Click(object sender, EventArgs e) {

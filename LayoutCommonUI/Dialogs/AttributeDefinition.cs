@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Forms;
 
+#pragma warning disable IDE0069
 namespace LayoutManager.CommonUI.Dialogs {
     /// <summary>
     /// Summary description for AttributeDefinition.
@@ -298,7 +299,7 @@ namespace LayoutManager.CommonUI.Dialogs {
         #endregion
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
-            if (comboBoxName.Text.Trim() == "") {
+            if (string.IsNullOrWhiteSpace(comboBoxName.Text)) {
                 MessageBox.Show(this, "You must specify a name for the attribute", "Missing Name", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 comboBoxName.Focus();
                 return;
@@ -314,11 +315,13 @@ namespace LayoutManager.CommonUI.Dialogs {
                 try {
                     int.Parse(textBoxValue.Text);
                 }
+#pragma warning disable CA1031 // Do not catch general exception types
                 catch (FormatException) {
                     MessageBox.Show(this, "Value is not a valid number", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     textBoxValue.Focus();
                     return;
                 }
+#pragma warning restore CA1031 // Do not catch general exception types
             }
 
             DialogResult = DialogResult.OK;

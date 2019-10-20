@@ -4,7 +4,10 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using LayoutManager.Model;
 using LayoutManager.Components;
+using System.Diagnostics;
 
+#nullable enable
+#pragma warning disable IDE0051, IDE0069, IDE0060
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for LayoutControlViewer.
@@ -30,6 +33,7 @@ namespace LayoutManager.CommonUI.Controls {
         private int zoomIndex = 3;
         private readonly string notInLocationText = "(Not in any location)";
 
+        #nullable disable
         public LayoutControlViewer() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
@@ -37,6 +41,7 @@ namespace LayoutManager.CommonUI.Controls {
             // TODO: Add any initialization after the InitializeComponent call
 
         }
+        #nullable enable
 
         internal void EnsureModuleVisible(ControlModule module) {
             if (((Item)comboBoxBusProvider.SelectedItem).Id != Guid.Empty && module.Bus.BusProviderId != ((Item)comboBoxBusProvider.SelectedItem).Id)
@@ -46,7 +51,7 @@ namespace LayoutManager.CommonUI.Controls {
                 ViewBusType(module.Bus.BusType.BusTypeName);
 
             if (comboBoxLocation.SelectedIndex != 0 && ((Item)comboBoxLocation.SelectedItem).Id != module.LocationId)
-                ViewLocation(module.LocationId);
+                ViewLocation(module.LocationId ?? Guid.Empty);
         }
 
         public void EnsureVisible(ControlConnectionPointReference connectionPointRef, bool select) {
@@ -145,7 +150,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         [LayoutEvent("show-control-modules-location")]
         private void showControlModulesLocation(LayoutEvent e) {
-            Guid controlModuleLocationId = Guid.Empty;
+            Guid controlModuleLocationId;
 
             if (e.Sender is LayoutControlModuleLocationComponent)
                 controlModuleLocationId = ((LayoutControlModuleLocationComponent)e.Sender).Id;
@@ -166,7 +171,7 @@ namespace LayoutManager.CommonUI.Controls {
         private void updateBusSelector() {
             Item selectedBusProvider = (Item)comboBoxBusProvider.SelectedItem;
 
-            string selectedBusType = null;
+            string? selectedBusType = null;
 
             if (comboBoxBus.SelectedIndex >= 0)
                 selectedBusType = ((Item)comboBoxBus.SelectedItem).Value;
@@ -175,7 +180,7 @@ namespace LayoutManager.CommonUI.Controls {
             comboBoxBus.Items.Add(new Item("(All)", null));
 
             if (selectedBusProvider.Id == Guid.Empty) {
-                var busTypes = new Dictionary<string, object>();
+                var busTypes = new Dictionary<string, object?>();
 
                 foreach (var busProvider in LayoutModel.Components<IModelComponentIsBusProvider>(LayoutModel.ActivePhases)) {
                     IEnumerable<ControlBus> buses = LayoutModel.ControlManager.Buses.Buses(busProvider);
@@ -191,8 +196,12 @@ namespace LayoutManager.CommonUI.Controls {
             else {
                 var busProvider = LayoutModel.Component<IModelComponentIsBusProvider>(selectedBusProvider.Id, LayoutModel.ActivePhases);
 
-                foreach (ControlBus bus in LayoutModel.ControlManager.Buses.Buses(busProvider))
-                    comboBoxBus.Items.Add(new Item(bus.BusType.Name, bus.BusTypeName));
+                if (busProvider != null) {
+                    foreach (ControlBus bus in LayoutModel.ControlManager.Buses.Buses(busProvider))
+                        comboBoxBus.Items.Add(new Item(bus.BusType.Name, bus.BusTypeName));
+                }
+                else
+                    Debug.Assert(false);
             }
 
             bool selectionFound = false;
@@ -428,7 +437,7 @@ namespace LayoutManager.CommonUI.Controls {
         private struct Item {
             public string Text;
             public Guid Id;
-            public string Value;
+            public string? Value;
 
             public Item(string text, Guid id) {
                 this.Text = text;
@@ -436,7 +445,7 @@ namespace LayoutManager.CommonUI.Controls {
                 this.Value = null;
             }
 
-            public Item(string text, string theValue) {
+            public Item(string text, string? theValue) {
                 this.Text = text;
                 this.Id = Guid.Empty;
                 this.Value = theValue;

@@ -390,7 +390,7 @@ namespace LayoutManager.View {
 
         #region Track Color services
 
-        public Color GetTrackEdgeColor(TrackEdge edge) {
+        public static Color GetTrackEdgeColor(TrackEdge edge) {
             Color resultColor = Color.Black;
 
             if (LayoutController.IsOperationMode) {

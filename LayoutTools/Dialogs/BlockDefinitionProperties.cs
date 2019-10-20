@@ -6,6 +6,7 @@ using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
+#pragma warning disable IDE0069, IDE0067
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for BlockInfoProperties.
@@ -46,7 +47,6 @@ namespace LayoutManager.Tools.Dialogs {
         /// </summary>
         private readonly Container components = null;
 
-        private void EndOfDesignerVariables() { }
         private readonly LayoutBlockDefinitionComponent blockDefinition;
         private static int nextBlockNumber = -1;
         private readonly PlacementInfo placementInfo;

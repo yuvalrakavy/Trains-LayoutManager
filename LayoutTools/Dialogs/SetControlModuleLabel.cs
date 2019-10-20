@@ -1,6 +1,10 @@
+using LayoutManager.Model;
+using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
+#nullable enable
+#pragma warning disable IDE0069
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for SetControlModuleLabel.
@@ -11,24 +15,29 @@ namespace LayoutManager.Tools.Dialogs {
         private Button buttonOK;
         private Button buttonCancel;
 
+        private readonly ControlModule module;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private readonly Container components = null;
+        private readonly Container? components = null;
 
-        public SetControlModuleLabel(string label) {
+        #nullable disable
+        public SetControlModuleLabel(ControlModule module) {
             //
             // Required for Windows Form Designer support
             //
             InitializeComponent();
+            this.module = module;
 
-            if (label == null)
+            if (module.Label == null)
                 textBoxLabel.Text = "";
             else
-                textBoxLabel.Text = label;
+                textBoxLabel.Text = module.Label;
         }
+        #nullable enable
 
-        public string Label => textBoxLabel.Text.Trim() == "" ? null : textBoxLabel.Text;
+        public string? Label => string.IsNullOrWhiteSpace(textBoxLabel.Text) ? null : textBoxLabel.Text;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -106,6 +115,14 @@ namespace LayoutManager.Tools.Dialogs {
         #endregion
 
         private void buttonOK_Click(object sender, System.EventArgs e) {
+            var validationError = (string?)EventManager.Event(new LayoutEvent("validate-control-module-label", module, null).SetOption("ModuleTypeName", module.ModuleTypeName).SetOption("Label", textBoxLabel.Text));
+
+            if(validationError != null) {
+                MessageBox.Show(validationError, "Invalid label", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBoxLabel.Focus();
+                return;
+            }
+
             DialogResult = DialogResult.OK;
         }
     }

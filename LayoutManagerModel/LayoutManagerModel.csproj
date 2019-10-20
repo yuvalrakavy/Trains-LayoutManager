@@ -200,6 +200,7 @@
     <Compile Include="NRMAprogrammingServices.cs" />
     <Compile Include="SwitchStateSupport.cs" />
     <Compile Include="TaskCompletionSource.cs" />
+    <Compile Include="ValueRange.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
