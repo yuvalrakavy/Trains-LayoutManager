@@ -11,12 +11,14 @@ using Microsoft.Win32.SafeHandles;
 using LayoutManager.Model;
 using System.Net.Sockets;
 
-#pragma warning disable IDE0051, IDE0060, CA1031
+#pragma warning disable IDE0051, IDE0060, CA1031, IDE0067
 #nullable enable
 namespace LayoutManager {
     public enum CommunicationInterfaceType {
         Serial,
         TCP,
+        UDP,
+        Othe,
     };
 
     public static class CommandStationLayoutEventExtender {
@@ -67,15 +69,75 @@ namespace LayoutManager {
 namespace LayoutManager.Components {
     #region Base class for command station components
 
-    public abstract class LayoutBusProviderSupport : ModelComponent, IModelComponentIsBusProvider {
-        private ILayoutEmulatorServices? _layoutEmulationServices;
-        private Stream? commStream;
-        private ILayoutCommandStationEmulator? commandStationEmulator;
-        private bool operationMode;
-
+    public abstract class LayoutBusProviderWithStreamCommunicationSupport : LayoutBusProviderSupport {
         public const string A_InterfaceType = "InterfaceType";
         public const string A_Port = "Port";
         public const string A_Address = "Address";
+
+        public Stream? CommunicationStream => commStream;
+        private Stream? commStream;
+
+        public CommunicationInterfaceType InterfaceType {
+            get => Element.AttributeValue(A_InterfaceType).Enum<CommunicationInterfaceType>() ?? CommunicationInterfaceType.Serial;
+            set => Element.SetAttributeValue(A_InterfaceType, value);
+        }
+
+        public string IPaddress {
+            get { return Element.GetAttribute(A_Address); }
+            set { Element.SetAttribute(A_Address, value); }
+        }
+
+        protected override void OpenCommunicationStream() {
+            if (EmulateLayout && LayoutEmulationSupported) {
+                string pipeName = @"\\.\pipe\CommandStationEmulationFor_" + Name;
+                var overlappedIO = (bool)Element.AttributeValue("OverlappedIO");
+
+                SafeFileHandle handle = (SafeFileHandle)EventManager.Event(new LayoutEvent("create-named-pipe-request", pipeName,
+                    overlappedIO, null))!;
+
+                commandStationEmulator = CreateCommandStationEmulator(pipeName);
+
+                commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-client-to-connect-request", handle, overlappedIO))!;
+            }
+            else if (InterfaceType == CommunicationInterfaceType.Serial)
+                commStream = (FileStream)EventManager.Event(new LayoutEvent("open-serial-communication-device-request", Element))!;
+            else if (InterfaceType == CommunicationInterfaceType.TCP)
+                commStream = new TcpClient(IPaddress, 23).GetStream();
+        }
+
+        protected override void CloseCommunicationStream() {
+            if (commandStationEmulator != null) {
+                commandStationEmulator.Dispose();
+                commandStationEmulator = null;
+
+                EventManager.Event(new LayoutEvent("disconnect-named-pipe-request", CommunicationStream));
+            }
+
+            if (commStream != null) {
+                var fileCommStream = commStream as FileStream;
+                var safeHandle = fileCommStream?.SafeFileHandle;
+
+                if (fileCommStream != null)
+                    safeHandle?.Close();
+
+                commStream?.Close();
+                System.GC.Collect();
+
+                if (fileCommStream != null && safeHandle != null && !safeHandle.IsClosed)
+                    Trace.WriteLine("Warning: PORT WAS NOT CLOSED");
+
+                commStream?.Dispose();
+                commStream = null;
+            }
+        }
+
+    }
+
+    public abstract class LayoutBusProviderSupport : ModelComponent, IModelComponentIsBusProvider {
+        private ILayoutEmulatorServices? _layoutEmulationServices;
+        protected ILayoutCommandStationEmulator? commandStationEmulator;
+        private bool operationMode;
+
 
         public override ModelComponentKind Kind => ModelComponentKind.ControlComponent;
 
@@ -101,75 +163,14 @@ namespace LayoutManager.Components {
 
         #region Properties accessible from derived concrete command station component classes
 
-        public Stream? CommunicationStream => commStream;
 
         public ILayoutInterThreadEventInvoker InterThreadEventInvoker => EventManager.Instance.InterThreadEventInvoker;
 
         public bool OperationMode => operationMode;
 
-        public CommunicationInterfaceType InterfaceType {
-            get {
-                return Element.HasAttribute(A_InterfaceType)
-                    ? (CommunicationInterfaceType)Enum.Parse(typeof(CommunicationInterfaceType), Element.GetAttribute(A_InterfaceType))
-                    : CommunicationInterfaceType.Serial;
-            }
-
-            set {
-                Element.SetAttributeValue(A_InterfaceType, value);
-            }
-        }
-
-        public string IPaddress {
-            get { return Element.GetAttribute(A_Address); }
-            set { Element.SetAttribute(A_Address, value); }
-        }
-
         #endregion
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0067:Dispose objects before losing scope", Justification = "<Pending>")]
-        protected virtual void OpenCommunicationStream() {
-            if (EmulateLayout && LayoutEmulationSupported) {
-                string pipeName = @"\\.\pipe\CommandStationEmulationFor_" + Name;
-                var overlappedIO = (bool)Element.AttributeValue("OverlappedIO");
-
-                SafeFileHandle handle = (SafeFileHandle)EventManager.Event(new LayoutEvent("create-named-pipe-request", pipeName,
-                    overlappedIO, null))!;
-
-                commandStationEmulator = CreateCommandStationEmulator(pipeName);
-
-                commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-client-to-connect-request", handle, overlappedIO))!;
-            }
-            else if (InterfaceType == CommunicationInterfaceType.Serial)
-                commStream = (FileStream)EventManager.Event(new LayoutEvent("open-serial-communication-device-request", Element))!;
-            else if (InterfaceType == CommunicationInterfaceType.TCP)
-                commStream = new TcpClient(IPaddress, 23).GetStream();
-        }
-
-        protected virtual void CloseCommunicationStream() {
-            if (commandStationEmulator != null) {
-                commandStationEmulator.Dispose();
-                commandStationEmulator = null;
-
-                EventManager.Event(new LayoutEvent("disconnect-named-pipe-request", CommunicationStream));
-            }
-
-            if (commStream != null) {
-                var fileCommStream = commStream as FileStream;
-                var safeHandle = fileCommStream?.SafeFileHandle;
-
-                if (fileCommStream != null)
-                    safeHandle?.Close();
-
-                commStream?.Close();
-                System.GC.Collect();
-
-                if (fileCommStream != null && safeHandle != null && !safeHandle.IsClosed)
-                    Trace.WriteLine("Warning: PORT WAS NOT CLOSED");
-
-                commStream?.Dispose();
-                commStream = null;
-            }
-        }
 
         public override void OnAddedToModel() {
             base.OnAddedToModel();
@@ -245,6 +246,12 @@ namespace LayoutManager.Components {
             return tcs.Task;
         }
 
+        protected virtual void OpenCommunicationStream() {
+        }
+
+        protected virtual void CloseCommunicationStream() {
+        }
+
         /// <summary>
         /// Terminate command station operation. Called before terminating power to the layout
         /// </summary>
@@ -292,7 +299,7 @@ namespace LayoutManager.Components {
     ///Base class for command station components. This class implements the functionality that is common to command station components,
     ///Thus making it simpler to implement those components.
     /// </summary>
-    public abstract class LayoutCommandStationComponent : LayoutBusProviderSupport, IModelComponentIsCommandStation, ILayoutLockResource {
+    public abstract class LayoutCommandStationComponent : LayoutBusProviderWithStreamCommunicationSupport, IModelComponentIsCommandStation, ILayoutLockResource {
         public const string A_EmulationTickTime = "EmulationTickTime";
         public const string A_AnimateTrainMotion = "AnimateTrainMotion";
         public const string A_EmulateTrainMotion = "EmulateTrainMotion";

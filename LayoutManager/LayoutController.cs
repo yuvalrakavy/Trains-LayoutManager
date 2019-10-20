@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051, IDE0060, IDE0067, RCS1090
+#pragma warning disable IDE0051, IDE0060, IDE0067, RCS1090, CA1031
 #nullable enable
 namespace LayoutManager {
     /// <summary>
@@ -321,13 +321,23 @@ namespace LayoutManager {
                     }
 
                     EventManager.Event(new LayoutEvent<OperationModeParameters>("enter-operation-mode", settings));
+                    Task.WhenAll(EventManager.AsyncEventBroadcast(new LayoutEvent("enter-operation-mode-async", settings))).Wait(500);
                     LayoutModel.Instance.Redraw();
                 }
-                catch (Exception ex) {
-                    EventManager.Event(new LayoutEvent("add-error", null, "Could not enter operational mode - " + ex.Message));
+                catch (AggregateException ex) {
+                    foreach (var inner in ex.InnerExceptions) {
+                        EventManager.Event(new LayoutEvent("add-error", null, inner.Message));
+                    }
 
-                    ExitOperationModeRequest().Wait();
-                    EnterDesignModeRequest().Wait();
+                    ExitOperationModeRequest().Wait(500);
+                    EnterDesignModeRequest().Wait(500);
+                    switchMode = false;
+                }
+                catch (Exception ex) {
+                    EventManager.Event(new LayoutEvent("add-error", null, ex.Message));
+
+                    ExitOperationModeRequest().Wait(500);
+                    EnterDesignModeRequest().Wait(500);
                     switchMode = false;
                 }
             }
