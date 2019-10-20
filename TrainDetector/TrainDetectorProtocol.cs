@@ -320,7 +320,7 @@ namespace TrainDetector {
 
             States = new List<bool>(capacity: count);
             for (var i = 0; i < count; i++)
-                States[i] = r.ReadByte() != 0;
+                States.Add(r.ReadByte() != 0);
         }
 
         public override void Encode(BinaryWriter w) {
@@ -399,7 +399,7 @@ namespace TrainDetector {
 
             States = new List<bool>(capacity: count);
             for (var i = 0; i < count; i++)
-                States[i] = r.ReadByte() != 0;
+                States.Add(r.ReadByte() != 0);
         }
 
         public override void Encode(BinaryWriter w) {
