@@ -1284,7 +1284,10 @@ namespace LayoutManager.Tools {
                 menu.MenuItems.Add("-");
 
             menu.MenuItems.Add(new SetModuleLocationMenuItem(drawObject.Viewer.ModuleLocationID == Guid.Empty, module));
-            menu.MenuItems.Add(new SetModuleLabelMenuItem(module));
+
+            if(drawObject.Module.Bus.BusType.CanChangeLabel)
+                menu.MenuItems.Add(new SetModuleLabelMenuItem(module));
+
             menu.MenuItems.Add(new ToggleUserActionRequiredMenuItem(module));
 
             if (module.DecoderType != null)
@@ -1448,7 +1451,7 @@ namespace LayoutManager.Tools {
 
             menu.MenuItems.Add(new ClearAllUserActionRequiredMenuItem(drawObject));
 
-            EventManager.Event(new LayoutEvent("add-component-editing-context-menu-entries", drawObject.BusProvider, menu));
+            EventManager.Event(new LayoutEvent("add-component-editing-context-menu-entries", drawObject.BusProvider, menu).SetOption("ModuleLocationId", drawObject.Viewer.ModuleLocationID));
         }
 
         #endregion
@@ -1977,8 +1980,8 @@ namespace LayoutManager.Tools {
             }
 
             protected override void OnClick(EventArgs e) {
-                Dialogs.SetControlModuleLabel d = new Dialogs.SetControlModuleLabel(module.Label);
-
+                Dialogs.SetControlModuleLabel d = new Dialogs.SetControlModuleLabel(module);
+                
                 if (d.ShowDialog(LayoutController.ActiveFrameWindow) == DialogResult.OK) {
                     SetControlModuleLabelCommand command = new SetControlModuleLabelCommand(module, d.Label);
 
