@@ -326,12 +326,18 @@ namespace LayoutManager {
             }
         }
 
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
+                foreach (LayoutModule module in layoutModules)
+                    module.Enabled = false;
+            }
+        }
+
         /// <summary>
         /// Dispose the assembly, disable all modules
         /// </summary>
         public void Dispose() {
-            foreach (LayoutModule module in layoutModules)
-                module.Enabled = false;
+            Dispose(true);
         }
 
         /// <summary>
@@ -443,7 +449,9 @@ namespace LayoutManager {
         public void ReadXml(XmlReader r) {
             r.Read();       // <LayoutAssemblies
             while (r.NodeType == XmlNodeType.Element) {
+#pragma warning disable IDE0068 // Use recommended dispose pattern
                 LayoutAssembly layoutAssembly = new LayoutAssembly(r);
+#pragma warning restore IDE0068 // Use recommended dispose pattern
 
                 if (!IsDefined(Path.GetFileName(layoutAssembly.AssemblyFilename)))
                     Add(layoutAssembly);
@@ -540,11 +548,13 @@ namespace LayoutManager {
                 ReadXml(r);
                 r.Close();
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (DirectoryNotFoundException) {
                 Directory.CreateDirectory(Path.GetDirectoryName(DocumentFilename));
             }
             catch (FileNotFoundException) {
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         }
     }
 

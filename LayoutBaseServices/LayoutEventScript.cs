@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Diagnostics;
 
 // Reenable warning when switch to .NET 4.8 and range c#8 feature is supported
-#pragma warning disable IDE0057
+#pragma warning disable IDE0057, CA1031, CA1032, CA2237
 
 #nullable enable
 namespace LayoutManager {
@@ -160,19 +160,25 @@ namespace LayoutManager {
             EventRoot.Cancel();
         }
 
+        protected virtual void Dispose(bool disposing) {
+            if(disposing) {
+                try {
+                    EventManager.Event(new LayoutEvent("event-script-task-dispose", EventScript, this));
+                    EventRoot.Dispose();
+                }
+                catch (LayoutEventScriptException ex) {
+                    EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, ex.Node, ex.ExecutionPhase, ex.InnerException),
+                        null));
+                }
+                catch (Exception ex) {
+                    EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, Root, LayoutEventScriptExecutionPhase.Disposing, ex),
+                        null));
+                }
+            }
+        }
+
         public void Dispose() {
-            try {
-                EventManager.Event(new LayoutEvent("event-script-task-dispose", EventScript, this));
-                EventRoot.Dispose();
-            }
-            catch (LayoutEventScriptException ex) {
-                EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, ex.Node, ex.ExecutionPhase, ex.InnerException),
-                    null));
-            }
-            catch (Exception ex) {
-                EventManager.Event(new LayoutEvent("event-script-error", EventScript, new LayoutEventScriptErrorInfo(EventScript, this, Root, LayoutEventScriptExecutionPhase.Disposing, ex),
-                    null));
-            }
+            Dispose(true);
         }
     }
 
@@ -271,28 +277,35 @@ namespace LayoutManager {
 
         public string? Description => (string?)EventManager.Event(new LayoutEvent("get-event-script-description", scriptElement));
 
+        protected virtual void Dispose(bool disposing) {
+            if(disposing) {
+                EventManager.Event(new LayoutEvent("event-script-dispose", this));
+
+                foreach (LayoutEventScriptTask task in tasks) {
+                    try {
+                        task.Dispose();
+                    }
+                    catch (LayoutEventScriptException ex) {
+                        EventManager.Event(new LayoutEvent("event-script-error", this, new LayoutEventScriptErrorInfo(this, task, ex.Node, ex.ExecutionPhase, ex.InnerException),
+                            null));
+                    }
+                    catch (Exception ex) {
+                        EventManager.Event(new LayoutEvent("event-script-error", this, new LayoutEventScriptErrorInfo(this, task, task.Root, LayoutEventScriptExecutionPhase.Disposing, ex),
+                            null));
+                    }
+                }
+
+                tasks.Clear();
+                if (rootTask != null) {
+                    rootTask.Dispose();
+                    rootTask = null;
+                }
+
+            }
+        }
+
         public void Dispose() {
-            EventManager.Event(new LayoutEvent("event-script-dispose", this));
-
-            foreach (LayoutEventScriptTask task in tasks) {
-                try {
-                    task.Dispose();
-                }
-                catch (LayoutEventScriptException ex) {
-                    EventManager.Event(new LayoutEvent("event-script-error", this, new LayoutEventScriptErrorInfo(this, task, ex.Node, ex.ExecutionPhase, ex.InnerException),
-                        null));
-                }
-                catch (Exception ex) {
-                    EventManager.Event(new LayoutEvent("event-script-error", this, new LayoutEventScriptErrorInfo(this, task, task.Root, LayoutEventScriptExecutionPhase.Disposing, ex),
-                        null));
-                }
-            }
-
-            tasks.Clear();
-            if (rootTask != null) {
-                rootTask.Dispose();
-                rootTask = null;
-            }
+            Dispose(true);
         }
     }
 
@@ -538,7 +551,7 @@ namespace LayoutManager {
         public bool Contains(string symbolName, object rawSymbolValue) => rawSymbolValue is IObjectHasId symbolValue
               && symbols.TryGetValue(symbolName, out object? previousValueObject) && previousValueObject is IObjectHasId previousValue && previousValue.Id == symbolValue.Id;
 
-        public object GetProperty(string symbolName, object symbolValue, string propertyName) {
+        public static object GetProperty(string symbolName, object symbolValue, string propertyName) {
             PropertyInfo propertyInfo = symbolValue.GetType().GetProperty(propertyName);
 
             if (propertyInfo == null) {
@@ -570,7 +583,7 @@ namespace LayoutManager {
                 throw new ArgumentException("Event script context does not contain object named " + symbolName);
         }
 
-        public object? GetAttribute(string symbolName, object symbolValue, string attributeName) {
+        public static object? GetAttribute(string symbolName, object symbolValue, string attributeName) {
             if (symbolValue is IObjectHasAttributes symbolWithAttributes)
                 return symbolWithAttributes.Attributes[attributeName];
             else
@@ -646,13 +659,13 @@ namespace LayoutManager {
 
         #region Common Access methods
 
-        protected object? GetOperand(XmlElement element, string symbolName, object symbolValue, string symbolAccess, string suffix) {
+        protected static object? GetOperand(XmlElement element, string symbolName, object symbolValue, string symbolAccess, string suffix) {
             string tagName = element.GetAttribute("Name" + suffix);
 
             if (symbolAccess == "Property")
-                return Context.GetProperty(symbolName, symbolValue, tagName);
+                return LayoutScriptContext.GetProperty(symbolName, symbolValue, tagName);
             else if (symbolAccess == "Attribute")
-                return Context.GetAttribute(symbolName, symbolValue, tagName);
+                return LayoutScriptContext.GetAttribute(symbolName, symbolValue, tagName);
             else
                 throw new ArgumentException("Invalid symbol access method " + symbolAccess + " for symbol " + symbolName);
         }
@@ -717,10 +730,14 @@ namespace LayoutManager {
         /// <summary>
         /// Release all resources allocated by the node, do not forget to call base.Dispose()
         /// </summary>
-        public virtual void Dispose() {
-            EventManager.Subscriptions.RemoveObjectSubscriptions(this);
+        protected virtual void Dispose(bool disposing) {
+            if(disposing)
+                EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 
+        public void Dispose() {
+            Dispose(true);
+        }
         /// <summary>
         /// Parse 'Condition' element
         /// </summary>
@@ -993,11 +1010,12 @@ namespace LayoutManager {
                 eventNode.Cancel();
         }
 
-        public override void Dispose() {
-            foreach (LayoutEventScriptNodeEventBase eventNode in events)
-                eventNode.Dispose();
-
-            base.Dispose();
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                foreach (LayoutEventScriptNodeEventBase eventNode in events)
+                    eventNode.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 
@@ -1296,9 +1314,11 @@ namespace LayoutManager {
                 base.Cancel();
             }
 
-            public override void Dispose() {
-                repeatedEvent.Dispose();
-                base.Dispose();
+            protected override void Dispose(bool disposing) {
+                if (disposing) {
+                    repeatedEvent.Dispose();
+                }
+                base.Dispose(disposing);
             }
         }
 
@@ -1377,9 +1397,12 @@ namespace LayoutManager {
                 base.Cancel();
             }
 
-            public override void Dispose() {
-                chosenNode?.Dispose();
-                base.Dispose();
+            protected override void Dispose(bool disposing) {
+                if (disposing) {
+                    chosenNode?.Dispose();
+                }
+
+                base.Dispose(disposing);
             }
 
             private class ChoiceEntry {
@@ -1494,12 +1517,14 @@ namespace LayoutManager {
                 }
             }
 
-            public override void Dispose() {
-                if (delayedEvent != null) {
-                    delayedEvent = null;
+            protected override void Dispose(bool disposing) {
+                if (disposing) {
+                    if (delayedEvent != null) {
+                        delayedEvent = null;
+                    }
                 }
 
-                base.Dispose();
+                base.Dispose(disposing);
             }
 
             [LayoutEvent("wait-event-condition-occured")]
@@ -2064,8 +2089,8 @@ namespace LayoutManager {
 
                         var v = (Element.GetAttribute("SymbolToAccess")) switch
                         {
-                            "Property" => Context.GetProperty(symbol, symbolValue, Element.GetAttribute("NameTo")),
-                            _ => Context.GetAttribute(symbol, symbolValue, Element.GetAttribute("NameTo")),
+                            "Property" => LayoutScriptContext.GetProperty(symbol, symbolValue, Element.GetAttribute("NameTo")),
+                            _ => LayoutScriptContext.GetAttribute(symbol, symbolValue, Element.GetAttribute("NameTo")),
                         };
                         attributes[attribute] = v;
                         break;

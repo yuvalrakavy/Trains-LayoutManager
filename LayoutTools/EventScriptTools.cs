@@ -295,7 +295,7 @@ namespace LayoutManager.Tools {
                 if (activeScript != null)
                     activeScript.Dispose();
                 else {
-                    LayoutEventScript runningScript = EventManager.EventScript("Layout policy " + policy.Name, policy.EventScriptElement, new Guid[] { }, null);
+                    LayoutEventScript runningScript = EventManager.EventScript("Layout policy " + policy.Name, policy.EventScriptElement, Array.Empty<Guid>(), null);
                     runningScript.Id = policy.Id;
 
                     runningScript.Reset();
@@ -469,13 +469,15 @@ namespace LayoutManager.Tools {
                 }
             }
 
-            public override void Dispose() {
-                Cancel();
+            protected override void Dispose(bool disposing) {
+                if (disposing) {
+                    Cancel();
 
-                if (eventScript != null)
-                    eventScript.Dispose();
+                    if (eventScript != null)
+                        eventScript.Dispose();
+                }
 
-                base.Dispose();
+                base.Dispose(disposing);
             }
 
             [LayoutEvent("run-policy-done")]
@@ -663,9 +665,11 @@ namespace LayoutManager.Tools {
                 repeatedEvent?.Cancel();
             }
 
-            public override void Dispose() {
-                repeatedEvent?.Dispose();
-                base.Dispose();
+            protected override void Dispose(bool disposing) {
+                if (disposing) {
+                    repeatedEvent?.Dispose();
+                }
+                base.Dispose(disposing);
             }
         }
 

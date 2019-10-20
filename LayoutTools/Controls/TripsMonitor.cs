@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051, IDE0060, IDE0052
+#pragma warning disable IDE0051, IDE0060, IDE0052, IDE0069
 namespace LayoutManager.Tools.Controls {
     /// <summary>
     /// Summary description for TripsMonitor.
@@ -399,7 +399,9 @@ namespace LayoutManager.Tools.Controls {
             selected.CancelAutoClearTimer();
 
             if (selected != null) {
+#pragma warning disable IDE0067 // Dispose objects before losing scope
                 Dialogs.TripPlanViewing tripPlanView = new Dialogs.TripPlanViewing(selected.Train, selected.TripAssignment.TripPlan, selected.TripAssignment.CurrentWaypointIndex);
+#pragma warning restore IDE0067 // Dispose objects before losing scope
 
                 tripPlanView.FormClosed += (object s1, FormClosedEventArgs e1) => selected.UpdateAutoClearTimer();
                 tripPlanView.Show(FindForm());
@@ -422,7 +424,7 @@ namespace LayoutManager.Tools.Controls {
         }
 
         private void buttonOptions_Click(object sender, System.EventArgs e) {
-            Dialogs.TripsMonitorOptions d = new Dialogs.TripsMonitorOptions(autoClearTimeout);
+            using Dialogs.TripsMonitorOptions d = new Dialogs.TripsMonitorOptions(autoClearTimeout);
 
             if (d.ShowDialog(this.ParentForm) == DialogResult.OK) {
                 autoClearTimeout = d.AutoClearTimeout;
@@ -532,15 +534,11 @@ namespace LayoutManager.Tools.Controls {
 
             #region Format field strings
 
-            private string getDriverName() {
-                switch (tripAssignment.Train.Driver.Type) {
-                    case "ManualOnScreen":
-                        return "Manual (Dialog)";
-
-                    default:
-                        return tripAssignment.Train.Driver.Type.ToString();
-                }
-            }
+            private string getDriverName() => tripAssignment.Train.Driver.Type switch
+            {
+                "ManualOnScreen" => "Manual (Dialog)",
+                _ => tripAssignment.Train.Driver.Type.ToString(),
+            };
 
             private string getDestination() {
                 IList<TripPlanWaypointInfo> wayPoints = tripAssignment.TripPlan.Waypoints;
@@ -548,73 +546,33 @@ namespace LayoutManager.Tools.Controls {
                 return wayPoints.Count < 1 ? "<Empty>" : wayPoints[wayPoints.Count - 1].Destination.Name;
             }
 
-            private string getTripState() {
-                switch (tripAssignment.Status) {
-                    case TripStatus.NotSubmitted:
-                        return "New - not submitted";
+            private string getTripState() => tripAssignment.Status switch
+            {
+                TripStatus.NotSubmitted => "New - not submitted",
+                TripStatus.Go => "Allowed to move",
+                TripStatus.PrepareStop => "Prepare to stop",
+                TripStatus.Stopped => "Must stop!",
+                TripStatus.WaitLock => "Wait for green light",
+                TripStatus.WaitStartCondition => "Wait to start next segment",
+                TripStatus.Suspended => "Trip suspended",
+                TripStatus.Aborted => "Trip aborted!",
+                TripStatus.Done => "Trip done!",
+                _ => tripAssignment.Status.ToString(),
+            };
 
-                    case TripStatus.Go:
-                        return "Allowed to move";
-
-                    case TripStatus.PrepareStop:
-                        return "Prepare to stop";
-
-                    case TripStatus.Stopped:
-                        return "Must stop!";
-
-                    case TripStatus.WaitLock:
-                        return "Wait for green light";
-
-                    case TripStatus.WaitStartCondition:
-                        return "Wait to start next segment";
-
-                    case TripStatus.Suspended:
-                        return "Trip suspended";
-
-                    case TripStatus.Aborted:
-                        return "Trip aborted!";
-
-                    case TripStatus.Done:
-                        return "Trip done!";
-
-                    default:
-                        return tripAssignment.Status.ToString();
-                }
-            }
-
-            private int getStateImageIndex() {
-                switch (tripAssignment.Status) {
-                    case TripStatus.NotSubmitted:
-                        return 0;
-
-                    case TripStatus.Go:
-                        return 1;
-
-                    case TripStatus.PrepareStop:
-                        return 2;
-
-                    case TripStatus.Stopped:
-                        return 3;
-
-                    case TripStatus.WaitLock:
-                        return 4;
-
-                    case TripStatus.WaitStartCondition:
-                        return 5;
-
-                    case TripStatus.Suspended:
-                        return 6;
-
-                    case TripStatus.Aborted:
-                        return 7;
-
-                    case TripStatus.Done:
-                        return 8;
-
-                    default:
-                        return 0;
-                }
-            }
+            private int getStateImageIndex() => tripAssignment.Status switch
+            {
+                TripStatus.NotSubmitted => 0,
+                TripStatus.Go => 1,
+                TripStatus.PrepareStop => 2,
+                TripStatus.Stopped => 3,
+                TripStatus.WaitLock => 4,
+                TripStatus.WaitStartCondition => 5,
+                TripStatus.Suspended => 6,
+                TripStatus.Aborted => 7,
+                TripStatus.Done => 8,
+                _ => 0,
+            };
 
             #endregion
 

@@ -10,7 +10,7 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-#pragma warning disable IDE0050, IE0060
+#pragma warning disable IDE0050, IE0060, CA1031, CA2237
 #nullable enable
 namespace DiMAX {
     /// <summary>
@@ -792,31 +792,27 @@ namespace DiMAX {
     /// Encode DiMAX command/reply packet
     /// </summary>
     public class DiMAXpacket {
-        private readonly byte parameterCount;                // Number of parameters (0..7)
+        public List<byte> Parameters { get; set; }
 
         public DiMAXpacket(DiMAXcommandCode commandCode) {
             this.CommandCode = commandCode;
-            this.parameterCount = 0;
-            Parameters = new byte[0];
+            Parameters = new List<byte>();
         }
 
         public DiMAXpacket(DiMAXcommandCode commandCode, params byte[] parameters) {
             if (parameters.Length > 7)
                 throw new ArgumentException("Too many DiMAX command parameters");
 
-            this.parameterCount = (byte)parameters.Length;
             this.CommandCode = commandCode;
-            this.Parameters = new byte[this.parameterCount];
-            parameters.CopyTo(this.Parameters, 0);
+            this.Parameters = new List<byte>(parameters);
         }
 
         public DiMAXpacket(DiMAXcommandCode commandCode, int parameterCount) {
             if (parameterCount < 0 || parameterCount > 7)
                 throw new ArgumentException("Invalid number of DiMAX command parameters");
 
-            this.parameterCount = (byte)parameterCount;
             this.CommandCode = commandCode;
-            this.Parameters = new byte[parameterCount];
+            this.Parameters = new List<byte>(capacity: parameterCount);
         }
 
         private static void CheckPacket(byte lengthAndCommandCode, byte[] buffer) {
@@ -833,16 +829,16 @@ namespace DiMAX {
 
             if (lengthAndCommandCode == 0) {
                 // Status message
-                this.parameterCount = (byte)buffer[1];
+                var parameterCount = (byte)buffer[1];
 
                 if (parameterCount == 1)
                     CommandCode = (buffer[2] & 0xe0) == 0x80 ? DiMAXcommandCode.SystemStatus : DiMAXcommandCode.MessageSent;
                 else
                     CommandCode = (DiMAXcommandCode)(parameterCount + DiMAXcommandCode.StatusBase);
 
-                this.Parameters = new byte[parameterCount];
+                this.Parameters = new List<byte>(capacity: parameterCount);
                 for (int i = 0; i < parameterCount; i++)
-                    Parameters[i] = buffer[i + 2];
+                    Parameters.Add(buffer[i + 2]);
             }
             else {
                 byte commandValue = (byte)(lengthAndCommandCode & 0x1f);
@@ -851,25 +847,25 @@ namespace DiMAX {
 
                 if (CommandCode != DiMAXcommandCode.DirectReply) {
                     // Command packet
-                    this.parameterCount = (byte)((lengthAndCommandCode >> 5) & 0x07);
+                    var parameterCount = (byte)((lengthAndCommandCode >> 5) & 0x07);
 
                     if (buffer.Length != parameterCount + 1)
                         throw new DiMAXException("Buffer length mismatch");
 
-                    this.Parameters = new byte[parameterCount];
+                    this.Parameters = new List<byte>(capacity: parameterCount);
 
                     for (int i = 1; i < buffer.Length; i++)
-                        Parameters[i - 1] = buffer[i];
+                        Parameters.Add(buffer[i]);
                 }
                 else {
                     // Direct reply packet
                     CommandCode = DiMAXcommandCode.DirectReply;
 
-                    this.parameterCount = (byte)buffer[1];
-                    this.Parameters = new byte[parameterCount];
+                    var parameterCount = (byte)buffer[1];
+                    this.Parameters = new List<byte>(capacity: parameterCount);
 
                     for (int i = 0; i < parameterCount; i++)
-                        Parameters[i] = buffer[i + 2];
+                        Parameters.Add(buffer[i + 2]);
                 }
             }
         }
@@ -879,9 +875,9 @@ namespace DiMAX {
         /// </summary>
         /// <returns>A byte array with the packet bytes</returns>
         public byte[] GetBuffer() {
-            byte[] buffer = new byte[2 + parameterCount];
+            byte[] buffer = new byte[2 + Parameters.Count];
 
-            buffer[0] = (byte)(parameterCount << 5 | (byte)CommandCode);
+            buffer[0] = (byte)(Parameters.Count << 5 | (byte)CommandCode);
             if (Parameters != null)
                 Parameters.CopyTo(buffer, 2);
 
@@ -898,9 +894,7 @@ namespace DiMAX {
         /// </summary>
         public DiMAXcommandCode CommandCode { get; }
 
-        public int ParameterCount => parameterCount;
-
-        public byte[] Parameters { get; }
+        public int ParameterCount => Parameters.Count;
 
         internal void Dump(string textMessage) {
             Trace.Write(textMessage + ", type " + CommandCode.ToString() + " Parameters: ");

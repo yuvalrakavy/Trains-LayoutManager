@@ -849,7 +849,7 @@ namespace LayoutManager {
     }
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-    public class LayoutEventAttribute : LayoutEventAttributeBase {
+    public sealed class LayoutEventAttribute : LayoutEventAttributeBase {
         public LayoutEventAttribute(string eventName)
             : base(eventName) {
         }
@@ -862,7 +862,7 @@ namespace LayoutManager {
     }
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-    public class LayoutAsyncEventAttribute : LayoutEventAttributeBase {
+    public sealed class LayoutAsyncEventAttribute : LayoutEventAttributeBase {
 #if NOT
         public LayoutAsyncEventAttribute()
 			: base() {
@@ -989,9 +989,11 @@ namespace LayoutManager {
                     EventManager.Instance.InterThreadEventInvoker.QueueEvent(Event);
                 }
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (OperationCanceledException) {
                 Status = DelayedEventStatus.Canceled;
             }
+#pragma warning restore CA1031 // Do not catch general exception types
             finally {
                 EventManager.Instance.UnregisterDelayedEvent(this);
             }
@@ -1149,7 +1151,7 @@ namespace LayoutManager {
 
         #endregion
 
-        public LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) => new LayoutDelayedEvent(delayTime, e);
+        public static LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) => new LayoutDelayedEvent(delayTime, e);
 
         internal void RegisterDelayedEvent(LayoutDelayedEvent delayedEvent) {
             lock (activeDelayedEvents) {
@@ -1173,11 +1175,11 @@ namespace LayoutManager {
             }
         }
 
-        public LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent, LayoutEvent? errorOccurredEvent) => new LayoutEventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
+        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent, LayoutEvent? errorOccurredEvent) => new LayoutEventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
 
-        public LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
+        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
 
-        protected void AddMethodSubscriptions<TSubscriptionAttribute, TSubscription>(ILayoutSubscriptionCollection subscriptions, object objectInstance, MethodInfo methodInfo) where TSubscriptionAttribute : LayoutEventAttributeBase where TSubscription : LayoutEventSubscriptionBase {
+        protected static void AddMethodSubscriptions<TSubscriptionAttribute, TSubscription>(ILayoutSubscriptionCollection subscriptions, object objectInstance, MethodInfo methodInfo) where TSubscriptionAttribute : LayoutEventAttributeBase where TSubscription : LayoutEventSubscriptionBase {
             var eventAttributes = (TSubscriptionAttribute[])methodInfo.GetCustomAttributes(typeof(TSubscriptionAttribute), true);
 
             foreach (var eventAttribute in eventAttributes) {
@@ -1351,7 +1353,7 @@ namespace LayoutManager {
         /// <param name="delayTime">The time to wait</param>
         /// <param name="e">The event to send</param>
         /// <returns>Delay event object</returns>
-        public static LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) => Instance.DelayedEvent(delayTime, e);
+        public static LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) => LayoutEventManager.DelayedEvent(delayTime, e);
 
         /// <summary>
         /// Hook up event handlers annotated with the LayoutEvent attribute in a given object instance
