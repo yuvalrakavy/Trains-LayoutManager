@@ -38,7 +38,8 @@ namespace TrainDetector {
                 var packet = rawPacket.GetPacket();
 
                 if (packet is IdentificationInfoPacket identificationPacket) {
-                    detectedContollers.Add(rawPacket.RemoteEndPoint, new DetectedTrainDetectorController(rawPacket.RemoteEndPoint, identificationPacket.SensorCount, identificationPacket.Name));
+                    if(!detectedContollers.ContainsKey(rawPacket.RemoteEndPoint))
+                        detectedContollers.Add(rawPacket.RemoteEndPoint, new DetectedTrainDetectorController(rawPacket.RemoteEndPoint, identificationPacket.SensorCount, identificationPacket.Name));
                     networkHandler.SendPacketAsync(new IdentificationAcknowledgePacket((UInt16)identificationPacket.RequestNumber), rawPacket.RemoteEndPoint);
                 }
             };
@@ -68,13 +69,18 @@ namespace TrainDetector {
             // If the user selected none, or no unassigned controller could be found, add the detected controller to the bus
             //
             foreach (var detectedController in detectedControllers) {
-                if (AssignedModules.Any(module => module.ControllerIpAddress == detectedController.IpEndPoint && module.NumberOfConnectionPoints == detectedController.SensorsCount && module.Label == detectedController.Name)) {
+                if (AssignedModules.Any(
+                    module => module.ControllerIpAddress!.ToString() == detectedController.IpEndPoint.ToString() && module.NumberOfConnectionPoints == detectedController.SensorsCount && module.Label == detectedController.Name
+                )) {
                     result.FoundControllers++;
                     continue;       // Found the detected controller on the bus
                 }
 
                 // See if the detected controller has the same name and address but with more sensors...
-                var fixSensorCountModule = AssignedModules.FirstOrDefault(module => module.ControllerIpAddress == detectedController.IpEndPoint && detectedController.SensorsCount > module.NumberOfConnectionPoints && module.Label == detectedController.Name);
+                var fixSensorCountModule = AssignedModules.FirstOrDefault(
+                    module => module.ControllerIpAddress!.ToString() == detectedController.IpEndPoint.ToString() && detectedController.SensorsCount > module.NumberOfConnectionPoints && module.Label == detectedController.Name
+                );
+
                 if (fixSensorCountModule != null) {
                     commands.Add(new SetControlModuleConnectionPointsCount(fixSensorCountModule, detectedController.SensorsCount));
                     result.SensorsCountUpdated++;
