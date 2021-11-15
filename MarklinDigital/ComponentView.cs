@@ -177,7 +177,7 @@ namespace MarklinDigital {
         /// </summary>
         private void InitializeComponent() {
             this.components = new Container();
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(ComponentView));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComponentView));
             this.imageListComponents = new System.Windows.Forms.ImageList(this.components) {
                 // 
                 // imageListComponents

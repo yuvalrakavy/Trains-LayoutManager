@@ -19,7 +19,7 @@ namespace LayoutManager.Tools.Dialogs {
             comboBoxCommandStation.SelectedIndex = 0;
         }
 
-        private void comboBoxCommandStation_SelectedIndexChanged(object sender, EventArgs e) {
+        private void ComboBoxCommandStation_SelectedIndexChanged(object? sender, EventArgs e) {
             IModelComponentIsCommandStation selected = (IModelComponentIsCommandStation)comboBoxCommandStation.SelectedItem;
 
             comboBoxBus.Items.Clear();
@@ -32,7 +32,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        private void comboBoxBus_SelectedIndexChanged(object sender, EventArgs e) {
+        private void ComboBoxBus_SelectedIndexChanged(object? sender, EventArgs e) {
             ControlBus bus = (ControlBus)comboBoxBus.SelectedItem;
 
             if (bus != null) {
@@ -47,7 +47,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             IModelComponentIsCommandStation commandStation = (IModelComponentIsCommandStation)comboBoxCommandStation.SelectedItem;
 
             if (commandStation == null) {
@@ -87,7 +87,7 @@ namespace LayoutManager.Tools.Dialogs {
                 return;
             }
 
-            CommandStationInputEvent commandStationEvent = new CommandStationInputEvent((ModelComponent)commandStation, bus, address, index, state);
+            CommandStationInputEvent commandStationEvent = new((ModelComponent)commandStation, bus, address, index, state);
 
             EventManager.Event(new LayoutEvent("design-time-command-station-event", this, commandStationEvent));
 

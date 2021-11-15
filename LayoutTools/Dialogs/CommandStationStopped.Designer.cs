@@ -74,7 +74,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonPowerOn.TabIndex = 4;
             this.buttonPowerOn.Text = "&Power On!";
             this.buttonPowerOn.UseVisualStyleBackColor = true;
-            this.buttonPowerOn.Click += new System.EventHandler(this.buttonPowerOn_Click);
+            this.buttonPowerOn.Click += new System.EventHandler(this.ButtonPowerOn_Click);
             // 
             // buttonAbortTrips
             // 
@@ -84,7 +84,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonAbortTrips.TabIndex = 6;
             this.buttonAbortTrips.Text = "&Suspend train trips";
             this.buttonAbortTrips.UseVisualStyleBackColor = true;
-            this.buttonAbortTrips.Click += new System.EventHandler(this.buttonAbortTrips_Click);
+            this.buttonAbortTrips.Click += new System.EventHandler(this.ButtonAbortTrips_Click);
             // 
             // CommandStationStopped
             // 

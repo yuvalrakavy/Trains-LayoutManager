@@ -63,15 +63,15 @@ namespace LayoutManager.Model {
             SearchProviderElement(component.Element, elementPath);
         }
 
-        public void SearchProviderElement(XmlElement container, string elementPath) {
+        public void SearchProviderElement(XmlElement? container, string elementPath) {
             if (container != null) {
-                XmlNodeList elements = container.SelectNodes(elementPath);
+                var elements = Ensure.NotNull<XmlNodeList>(container.SelectNodes(elementPath));
 
                 OptionalElement = null;
                 this.container = container;
 
                 if (elements.Count == 1) {
-                    Element = (XmlElement)elements[0];
+                    OptionalElement = (XmlElement?)elements[0];
                     elementInComponentDocument = true;
                 }
                 else if (elements.Count > 1)
@@ -79,10 +79,10 @@ namespace LayoutManager.Model {
 
                 // If the element was not found in the component XML document, search the model document
                 if (OptionalElement == null) {
-                    elements = LayoutModel.Instance.XmlInfo.DocumentElement.SelectNodes(elementPath);
+                    elements = Ensure.NotNull<XmlNodeList>(LayoutModel.Instance.XmlInfo.DocumentElement.SelectNodes(elementPath));
 
                     if (elements.Count == 1) {
-                        Element = (XmlElement)elements[0];
+                        OptionalElement = (XmlElement?)elements[0];
                         elementInComponentDocument = false;
                     }
                     else if (elements.Count > 1)
@@ -106,16 +106,19 @@ namespace LayoutManager.Model {
             OptionalElement = null;
         }
 
-        private static void attachNewElement(XmlElement container, String? parentPath, XmlElement element) {
+        public LayoutInfo(string name) : base(name) {
+        }
+
+        private static void AttachNewElement(XmlElement container, String? parentPath, XmlElement element) {
             XmlElement parentElement = container;
 
             element.SetAttributeValue(A_Id, Guid.NewGuid());
 
             if (parentPath != null) {
-                XmlNodeList parentNodes = container.SelectNodes(parentPath);
+                var parentNodes = container.SelectNodes(parentPath);
 
-                if (parentNodes.Count > 0)
-                    parentElement = (XmlElement)parentNodes[0];
+                if (parentNodes != null && parentNodes.Count > 0)
+                    parentElement = (XmlElement)parentNodes[0]!;
                 else {
                     int index = parentPath.IndexOf('/');
                     string parentName;
@@ -124,15 +127,15 @@ namespace LayoutManager.Model {
                     if (index < 0)
                         parentName = parentPath;
                     else {
-                        parentName = parentPath.Substring(0, index);
-                        tail = parentPath.Substring(index + 1);
+                        parentName = parentPath[..index];
+                        tail = parentPath[(index + 1)..];
                     }
 
                     parentElement = container.OwnerDocument.CreateElement(parentName);
                     container.AppendChild(parentElement);
 
                     if (!string.IsNullOrEmpty(tail)) {
-                        attachNewElement(parentElement, tail, element);
+                        AttachNewElement(parentElement, tail, element);
                         return;
                     }
                 }
@@ -150,7 +153,7 @@ namespace LayoutManager.Model {
         public static XmlElement CreateProviderElement(XmlElement container, string elementName, string? parentPath = null) {
             XmlElement element = container.OwnerDocument.CreateElement(elementName);
 
-            attachNewElement(container, parentPath, element);
+            AttachNewElement(container, parentPath, element);
             return element;
         }
 
@@ -353,15 +356,13 @@ namespace LayoutManager.Model {
         }
 
         public virtual string Name {
-            get {
-                return OptionalElement == null || Element.ChildNodes.Count == 0 ? "" : Element.FirstChild.Value;
-            }
+            get => (OptionalElement == null || Element.ChildNodes.Count == 0) ? "" : Element.FirstChild?.Value ?? "";
 
             set {
                 XmlText textNode = Element.OwnerDocument.CreateTextNode(value);
 
                 if (Element.ChildNodes.Count > 0)
-                    Element.ReplaceChild(textNode, Element.FirstChild);
+                    Element.ReplaceChild(textNode, Element.FirstChild!);
                 else
                     Element.AppendChild(textNode);
             }

@@ -40,7 +40,6 @@ namespace LayoutManager {
             set => Element.SetAttributeValue(A_Type, value);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
         public object Value {
             get => AttributeType switch
             {
@@ -117,7 +116,7 @@ namespace LayoutManager {
 
         public AttributesInfo Attributes {
             get {
-                XmlElement attributesElement = Element["Attributes"];
+                var attributesElement = Element["Attributes"];
 
                 if (attributesElement == null) {
                     attributesElement = Element.OwnerDocument.CreateElement("Attributes");

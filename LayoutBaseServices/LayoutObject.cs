@@ -9,14 +9,12 @@ namespace LayoutManager {
         XmlElement? OptionalElement { get; }
     }
 
-#pragma warning disable CA1815 // Override equals and operator equals on value types
     public struct XmlElementWrapper : IObjectHasXml {
-#pragma warning restore CA1815 // Override equals and operator equals on value types
-        public XmlElementWrapper(XmlElement element) {
+        public XmlElementWrapper(XmlElement? element) {
             this.OptionalElement = element;
         }
 
-        public XmlElement? OptionalElement { get; }
+        public XmlElement? OptionalElement { get; set; }
         public XmlElement Element => Ensure.NotNull<XmlElement>(OptionalElement, nameof(OptionalElement));
 
         public static implicit operator XmlElement(XmlElementWrapper e) => e.Element;
@@ -129,9 +127,7 @@ namespace LayoutManager {
         }
     }
 
-#pragma warning disable CA1815 // Override equals and operator equals on value types
     public struct ConvertableString {
-#pragma warning restore CA1815 // Override equals and operator equals on value types
         private readonly string? v;
         private readonly Func<string> getDescription;
 
@@ -144,7 +140,7 @@ namespace LayoutManager {
                 string elementAsString = element?.OuterXml ?? "[Null] element";
 
                 if (elementAsString.Length > maxElementStringLength)
-                    elementAsString = elementAsString.Substring(0, maxElementStringLength) + "...";
+                    elementAsString = string.Concat(elementAsString.AsSpan(0, maxElementStringLength), "...");
 
                 return $"Invalid or missing value for attribute {attributeName} for ({elementAsString})";
             };
@@ -277,7 +273,7 @@ namespace LayoutManager {
             }
         }
 
-        public XmlElement DocumentElement => xmlDocument.DocumentElement;
+        public XmlElement DocumentElement => Ensure.NotNull<XmlElement>(xmlDocument.DocumentElement);
 
         public XmlElement Element => DocumentElement;
         public XmlElement? OptionalElement => DocumentElement;
@@ -288,7 +284,7 @@ namespace LayoutManager {
         /// </summary>
         public Guid Id {
             get {
-                XmlAttribute idAttribute = (XmlAttribute)DocumentElement.Attributes.GetNamedItem("ID");
+                var idAttribute = (XmlAttribute?)DocumentElement.Attributes.GetNamedItem("ID");
 
                 if (idAttribute == null) {
                     Guid id = Guid.NewGuid();

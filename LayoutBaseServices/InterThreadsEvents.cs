@@ -20,6 +20,7 @@ namespace LayoutBaseServices {
         private readonly object queueLock = new object();
         private Form? uiThreadForm;
         private bool _disposed;
+        private bool terminate;
 
         [LayoutEvent("initialize-event-interthread-relay")]
         private void InitializeEventInterthreadRelay(LayoutEvent e) {
@@ -34,7 +35,8 @@ namespace LayoutBaseServices {
                 Debug.Assert(uiThreadForm.IsHandleCreated);
 
                 controlInUIthread = uiThreadForm;
-                relayThread = new Thread(new ThreadStart(eventRelayThreadFunction)) {
+                terminate = false;
+                relayThread = new Thread(new ThreadStart(EventRelayThreadFunction)) {
                     Name = "Relay Events"
                 };
                 relayThread.Start();
@@ -42,15 +44,15 @@ namespace LayoutBaseServices {
         }
 
         [LayoutEvent("terminate-event-interthread-relay")]
-#pragma warning disable IDE0060 // Remove unused parameter
-        private void terminateEventInterthreadRelay(LayoutEvent e) {
-#pragma warning restore IDE0060 // Remove unused parameter
+        private void TerminateEventInterthreadRelay(LayoutEvent e) {
             Debug.Assert(relayThread != null);
 
             QueueEvent(new LayoutEvent("terminate-event-relay-thread", this));
 
-            if (!terminatedEvent.WaitOne(1000, false))
-                relayThread?.Abort();
+            if (!terminatedEvent.WaitOne(1000, false)) {
+                terminate = true;
+                eventInQueue.Set();
+            }
 
             uiThreadForm?.Close();
             Dispose();
@@ -63,8 +65,7 @@ namespace LayoutBaseServices {
 
         private delegate object? LayoutEventCaller(LayoutEvent e);
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private void eventRelayThreadFunction() {
+        private void EventRelayThreadFunction() {
             // Wait until control is created, so events can be delivered to it
             while (controlInUIthread?.IsHandleCreated != true)
                 Thread.Sleep(100);
@@ -73,6 +74,8 @@ namespace LayoutBaseServices {
                 LayoutEvent e;
 
                 eventInQueue.WaitOne();
+                if (terminate)
+                    break;
 
                 lock (queueLock) {
                     e = eventQueue.Dequeue();

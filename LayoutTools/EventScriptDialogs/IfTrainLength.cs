@@ -16,7 +16,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             trainLengthDiagram.Comparison = comparison;
         }
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             if (string.IsNullOrEmpty(comboBoxTrain.Text)) {
                 MessageBox.Show(this, "You have to define a train symbol name", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 comboBoxTrain.Focus();

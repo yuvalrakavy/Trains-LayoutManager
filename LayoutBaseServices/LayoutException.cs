@@ -1,7 +1,5 @@
 using System;
 
-#nullable enable
-#pragma warning disable CA1032, CA2237
 namespace LayoutManager {
     public class LayoutException : Exception {
         public LayoutException() {
@@ -80,9 +78,9 @@ namespace LayoutManager {
             return (T)v;
         }
 
-        public static T NotNull<T>(object ?v) where T: class {
+        public static T NotNull<T>(object? v) where T: class {
             if (v == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(v));
             return (T)v;
         }
 
@@ -94,12 +92,13 @@ namespace LayoutManager {
 
         public static T ValueNotNull<T>(object? v) where T : struct {
             if (v == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(v));
             return (T)v;
         }
 
         public static (TSender, TInfo) NotNull<TSender, TInfo>(LayoutEvent e) where TSender : class where TInfo : class {
             return (Ensure.NotNull<TSender>(e.Sender), Ensure.NotNull<TInfo>(e.Info));
         }
+
     }
 }

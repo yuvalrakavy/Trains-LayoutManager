@@ -302,9 +302,9 @@ namespace LayoutManager.Components {
 
         public ModelComponent? TrackAnnotation => trackAnnotation == this ? null : trackAnnotation;
 
-        public ModelComponent TrackBackground {
+        public ModelComponent? TrackBackground {
             get {
-                ModelComponent background = Spot[ModelComponentKind.Background];
+                var background = Spot[ModelComponentKind.Background];
 
                 return background;
             }
@@ -923,7 +923,7 @@ namespace LayoutManager.Components {
                     realSwitchState = 2;
 
                 if (realSwitchState >= 0) {
-                    LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic, create: true).SetAttributeValue(A_Value, realSwitchState);
+                    LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic).SetAttributeValue(A_Value, realSwitchState);
                     Component.OnComponentChanged();
                 }
             }

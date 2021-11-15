@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-
+﻿
 using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI.Controls {

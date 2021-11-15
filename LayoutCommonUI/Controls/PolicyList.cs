@@ -1,6 +1,3 @@
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 
@@ -14,20 +11,9 @@ namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for PolicyList.
     /// </summary>
-    public class PolicyList : System.Windows.Forms.UserControl, IPolicyListCustomizer, IControlSupportViewOnly {
-        private ListView listViewPolicies;
-        private ColumnHeader columnHeaderName;
-        private Button buttonNew;
-        private Button buttonRemove;
-        private Button buttonEdit;
-
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container components = null;
-
-        private void endOfDesignerVariables() { }
-        private readonly CommonUI.ListViewStringColumnsSorter sorter;
+    public partial class PolicyList : UserControl, IPolicyListCustomizer, IControlSupportViewOnly {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "<Pending>")]
+        private readonly ListViewStringColumnsSorter sorter;
         private int updateOnMouseUp = -1;
         private bool editingPolicy = false;
 
@@ -35,13 +21,15 @@ namespace LayoutManager.CommonUI.Controls {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
 
-            sorter = new CommonUI.ListViewStringColumnsSorter(listViewPolicies);
+            sorter = new ListViewStringColumnsSorter(listViewPolicies);
             Customizer = this;
         }
 
         public string Scope { get; set; } = "TripPlan";
 
-        public LayoutPoliciesCollection Policies { get; set; }
+        public LayoutPoliciesCollection Policies { get => Ensure.NotNull<LayoutPoliciesCollection>(OptionalPolicies); set => OptionalPolicies = value; }
+
+        public LayoutPoliciesCollection? OptionalPolicies { get; set; }
 
         public IPolicyListCustomizer Customizer { get; set; }
 
@@ -73,15 +61,15 @@ namespace LayoutManager.CommonUI.Controls {
             if (Customizer == null)
                 listViewPolicies.CheckBoxes = false;
 
-            UpdateButtons(null, null);
+            UpdateButtons(null, EventArgs.Empty);
             EventManager.AddObjectSubscriptions(this);
         }
 
-        protected PolicyItem GetSelection() {
+        protected PolicyItem? GetSelection() {
             return listViewPolicies.SelectedItems.Count == 0 ? null : (PolicyItem)listViewPolicies.SelectedItems[0];
         }
 
-        protected virtual void UpdateButtons(object sender, EventArgs e) {
+        protected virtual void UpdateButtons(object? sender, EventArgs e) {
             if (GetSelection() == null) {
                 buttonEdit.Enabled = false;
                 buttonRemove.Enabled = false;
@@ -113,88 +101,7 @@ namespace LayoutManager.CommonUI.Controls {
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.listViewPolicies = new ListView();
-            this.columnHeaderName = new ColumnHeader();
-            this.buttonNew = new Button();
-            this.buttonRemove = new Button();
-            this.buttonEdit = new Button();
-            this.SuspendLayout();
-            // 
-            // listViewPolicies
-            // 
-            this.listViewPolicies.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right);
-            this.listViewPolicies.CheckBoxes = true;
-            this.listViewPolicies.Columns.AddRange(new ColumnHeader[] {
-                                                                                               this.columnHeaderName});
-            this.listViewPolicies.FullRowSelect = true;
-            this.listViewPolicies.GridLines = true;
-            this.listViewPolicies.HideSelection = false;
-            this.listViewPolicies.Location = new System.Drawing.Point(8, 8);
-            this.listViewPolicies.MultiSelect = false;
-            this.listViewPolicies.Name = "listViewPolicies";
-            this.listViewPolicies.Size = new System.Drawing.Size(368, 112);
-            this.listViewPolicies.TabIndex = 0;
-            this.listViewPolicies.View = System.Windows.Forms.View.Details;
-            this.listViewPolicies.MouseUp += this.listViewPolicies_MouseUp;
-            this.listViewPolicies.SelectedIndexChanged += this.UpdateButtons;
-            this.listViewPolicies.ItemCheck += this.listViewPolicies_ItemCheck;
-            // 
-            // columnHeaderName
-            // 
-            this.columnHeaderName.Text = "Name";
-            this.columnHeaderName.Width = 92;
-            // 
-            // buttonNew
-            // 
-            this.buttonNew.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonNew.Location = new System.Drawing.Point(8, 128);
-            this.buttonNew.Name = "buttonNew";
-            this.buttonNew.Size = new System.Drawing.Size(72, 23);
-            this.buttonNew.TabIndex = 1;
-            this.buttonNew.Text = "&New...";
-            this.buttonNew.Click += this.buttonNew_Click;
-            // 
-            // buttonRemove
-            // 
-            this.buttonRemove.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonRemove.Location = new System.Drawing.Point(168, 128);
-            this.buttonRemove.Name = "buttonRemove";
-            this.buttonRemove.Size = new System.Drawing.Size(72, 23);
-            this.buttonRemove.TabIndex = 3;
-            this.buttonRemove.Text = "&Remove";
-            this.buttonRemove.Click += this.buttonRemove_Click;
-            // 
-            // buttonEdit
-            // 
-            this.buttonEdit.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonEdit.Location = new System.Drawing.Point(88, 128);
-            this.buttonEdit.Name = "buttonEdit";
-            this.buttonEdit.Size = new System.Drawing.Size(72, 23);
-            this.buttonEdit.TabIndex = 2;
-            this.buttonEdit.Text = "&Edit";
-            this.buttonEdit.Click += this.buttonEdit_Click;
-            // 
-            // PolicyList
-            // 
-            this.Controls.Add(this.buttonNew);
-            this.Controls.Add(this.listViewPolicies);
-            this.Controls.Add(this.buttonRemove);
-            this.Controls.Add(this.buttonEdit);
-            this.Name = "PolicyList";
-            this.Size = new System.Drawing.Size(384, 160);
-            this.ResumeLayout(false);
-        }
-        #endregion
-
-        private void listViewPolicies_ItemCheck(object sender, System.Windows.Forms.ItemCheckEventArgs e) {
+        private void ListViewPolicies_ItemCheck(object? sender, ItemCheckEventArgs e) {
             if (!ViewOnly) {
                 PolicyItem policyItem = (PolicyItem)listViewPolicies.Items[e.Index];
 
@@ -207,43 +114,43 @@ namespace LayoutManager.CommonUI.Controls {
                 updateOnMouseUp = e.Index;
         }
 
-        private void buttonEdit_Click(object sender, System.EventArgs e) {
-            PolicyItem selectedItem = GetSelection();
+        private void ButtonEdit_Click(object? sender, EventArgs e) {
+            var selectedItem = GetSelection();
 
             if (selectedItem != null) {
-                Dialogs.PolicyDefinition d = new Dialogs.PolicyDefinition(selectedItem.Policy);
+                Dialogs.PolicyDefinition d = new(selectedItem.Policy);
 
                 editingPolicy = true;
-                new SemiModalDialog(this.FindForm(), d, new SemiModalDialogClosedHandler(onCloseEditPolicy), selectedItem).ShowDialog();
+                new SemiModalDialog(this.FindForm(), d, new SemiModalDialogClosedHandler(OnCloseEditPolicy), selectedItem).ShowDialog();
             }
         }
 
-        private void onCloseEditPolicy(Form dialog, object info) {
+        private void OnCloseEditPolicy(Form dialog, object? info) {
             if (dialog.DialogResult == DialogResult.OK) {
-                PolicyItem selectedItem = (PolicyItem)info;
+                var selectedItem = Ensure.NotNull<PolicyItem>(info);
 
                 Policies.Update(selectedItem.Policy);
                 selectedItem.Update();
-                UpdateButtons(null, null);
+                UpdateButtons(null, EventArgs.Empty);
             }
 
             editingPolicy = false;
         }
 
-        private void buttonNew_Click(object sender, System.EventArgs e) {
+        private void ButtonNew_Click(object? sender, EventArgs e) {
             XmlDocument workingDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
             workingDoc.AppendChild(workingDoc.CreateElement("Policies"));
 
-            LayoutPolicyInfo policy = new LayoutPolicyInfo(workingDoc.DocumentElement, null, null, Scope, false, false);
-            Dialogs.PolicyDefinition d = new Dialogs.PolicyDefinition(policy);
+            LayoutPolicyInfo policy = new(workingDoc.DocumentElement!, null, null, Scope, false, false);
+            Dialogs.PolicyDefinition d = new(policy);
 
-            new SemiModalDialog(this.FindForm(), d, new SemiModalDialogClosedHandler(onAddDone), policy).ShowDialog();
+            new SemiModalDialog(this.FindForm(), d, new SemiModalDialogClosedHandler(OnAddDone), policy).ShowDialog();
         }
 
-        private void onAddDone(Form dialog, object info) {
+        private void OnAddDone(Form dialog, object? info) {
             if (dialog.DialogResult == DialogResult.OK) {
-                LayoutPolicyInfo policy = (LayoutPolicyInfo)info;
+                var policy = Ensure.NotNull<LayoutPolicyInfo>(info);
 
                 Policies.Update(policy);
             }
@@ -252,25 +159,25 @@ namespace LayoutManager.CommonUI.Controls {
         [LayoutEvent("policy-added")]
         protected void PolicyAdded(LayoutEvent e) {
             if (!editingPolicy) {
-                LayoutPolicyInfo policy = (LayoutPolicyInfo)e.Sender;
-                LayoutPoliciesCollection policies = (LayoutPoliciesCollection)e.Info;
+                var policy = Ensure.NotNull<LayoutPolicyInfo>(e.Sender);
+                var policies = Ensure.NotNull<LayoutPoliciesCollection>(e.Info);
 
                 if (policies == this.Policies) {
-                    PolicyItem policyItem = new PolicyItem(this, policy);
+                    PolicyItem policyItem = new(this, policy);
 
                     listViewPolicies.Items.Add(policyItem);
                     policyItem.Update();
                     policyItem.Selected = true;
 
-                    UpdateButtons(null, null);
+                    UpdateButtons(null, EventArgs.Empty);
                 }
             }
         }
 
         [LayoutEvent("policy-updated")]
-        private void policyUpdated(LayoutEvent e) {
-            LayoutPolicyInfo policy = (LayoutPolicyInfo)e.Sender;
-            LayoutPoliciesCollection policies = (LayoutPoliciesCollection)e.Info;
+        private void PolicyUpdated(LayoutEvent e) {
+            var policy = Ensure.NotNull<LayoutPolicyInfo>(e.Sender);
+            var policies = Ensure.NotNull<LayoutPoliciesCollection>(e.Info);
 
             if (policies == this.Policies) {
                 foreach (PolicyItem policyItem in listViewPolicies.Items)
@@ -284,15 +191,15 @@ namespace LayoutManager.CommonUI.Controls {
         [LayoutEvent("event-script-reset", Order = 100)]
         [LayoutEvent("event-script-terminated", Order = 100)]
         [LayoutEvent("event-script-dispose", Order = 100)]
-        protected virtual void updateList(LayoutEvent e) {
+        protected virtual void UpdateList(LayoutEvent e) {
             foreach (PolicyItem policyItem in listViewPolicies.Items)
                 policyItem.Update();
 
-            UpdateButtons(null, null);
+            UpdateButtons(null, EventArgs.Empty);
         }
 
-        private void buttonRemove_Click(object sender, System.EventArgs e) {
-            PolicyItem selectedItem = GetSelection();
+        private void ButtonRemove_Click(object? sender, EventArgs e) {
+            var selectedItem = GetSelection();
 
             if (selectedItem != null)
                 Policies.Remove(selectedItem.Policy);
@@ -301,11 +208,11 @@ namespace LayoutManager.CommonUI.Controls {
         [LayoutEvent("policy-removed")]
         protected void PolicyRemoved(LayoutEvent e) {
             if (!editingPolicy) {
-                LayoutPolicyInfo policy = (LayoutPolicyInfo)e.Sender;
-                LayoutPoliciesCollection policies = (LayoutPoliciesCollection)e.Info;
+                var policy = Ensure.NotNull<LayoutPolicyInfo>(e.Sender);
+                var policies = Ensure.NotNull<LayoutPoliciesCollection>(e.Info);
 
                 if (policies == this.Policies) {
-                    PolicyItem policyItem = null;
+                    PolicyItem? policyItem = null;
 
                     foreach (PolicyItem p in listViewPolicies.Items)
                         if (p.Policy.Id == policy.Id) {
@@ -315,13 +222,13 @@ namespace LayoutManager.CommonUI.Controls {
 
                     if (policyItem != null) {
                         listViewPolicies.Items.Remove(policyItem);
-                        UpdateButtons(null, null);
+                        UpdateButtons(null, EventArgs.Empty);
                     }
                 }
             }
         }
 
-        private void listViewPolicies_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e) {
+        private void ListViewPolicies_MouseUp(object? sender, MouseEventArgs e) {
             if (updateOnMouseUp >= 0) {
                 ((PolicyItem)listViewPolicies.Items[updateOnMouseUp]).Update();
                 updateOnMouseUp = -1;

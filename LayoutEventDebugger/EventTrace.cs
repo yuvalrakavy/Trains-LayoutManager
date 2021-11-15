@@ -150,24 +150,24 @@ namespace LayoutEventDebugger {
         }
         #endregion
 
-        private void EventTrace_Closed(object sender, System.EventArgs e) {
+        private void EventTrace_Closed(object? sender, System.EventArgs e) {
             EventManager.Instance.TraceEvents = false;
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
             EventManager.Event(new LayoutEvent("event-trace-closed", this));
         }
 
-        private void buttonTraceState_Click(object sender, System.EventArgs e) {
+        private void buttonTraceState_Click(object? sender, System.EventArgs e) {
             if (EventManager.Instance.TraceEvents)
                 EndTrace();
             else
                 StartTrace();
         }
 
-        private void buttonClose_Click(object sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, System.EventArgs e) {
             this.Close();
         }
 
-        private void buttonClear_Click(object sender, System.EventArgs e) {
+        private void buttonClear_Click(object? sender, System.EventArgs e) {
             treeViewEventTrace.Nodes.Clear();
         }
     }

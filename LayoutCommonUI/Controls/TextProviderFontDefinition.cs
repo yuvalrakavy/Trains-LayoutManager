@@ -1,32 +1,14 @@
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager.Model;
 
-#pragma warning disable IDE0069
-#nullable enable
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for TextProviderFontDefinition.
     /// </summary>
-    public class TextProviderFontDefinition : System.Windows.Forms.UserControl {
-        private GroupBox groupBoxFont;
-        private RadioButton radioButtonCustomFont;
-        private RadioButton radioButtonStandardFont;
-        private Label labelFontDescription;
-        private Button buttonCustomFontSettings;
-
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container? components = null;
-        private LayoutManager.CommonUI.Controls.LayoutInfosComboBox layoutInfosComboBoxFonts;
-        private System.Windows.Forms.FontDialog fontDialogCustomSetting;
+    public partial class TextProviderFontDefinition : UserControl {
         private LayoutXmlInfo? xmlInfo;
 
-        #nullable disable
         public TextProviderFontDefinition() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
@@ -34,7 +16,6 @@ namespace LayoutManager.CommonUI.Controls {
             // TODO: Add any initialization after the InitForm call
 
         }
-        #nullable enable
 
         public LayoutXmlInfo? OptionalXmlInfo {
             get {
@@ -43,7 +24,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             set {
                 if (value != null) {
-                    XmlElement fonts = (XmlElement)LayoutModel.Instance.XmlInfo.DocumentElement.SelectSingleNode("Fonts");
+                    XmlElement fonts = Ensure.NotNull<XmlElement>(LayoutModel.Instance.XmlInfo.DocumentElement.SelectSingleNode("Fonts"));
 
                     layoutInfosComboBoxFonts.InfoType = typeof(LayoutFontInfo);
                     layoutInfosComboBoxFonts.InfoContainer = fonts;
@@ -62,7 +43,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public LayoutFontInfo FontProvider {
             get {
-                return radioButtonStandardFont.Checked ? (LayoutFontInfo)layoutInfosComboBoxFonts.SelectedItem : getCustomFont();
+                return radioButtonStandardFont.Checked ? (LayoutFontInfo)layoutInfosComboBoxFonts.SelectedItem : GetCustomFont();
             }
 
             set {
@@ -75,17 +56,17 @@ namespace LayoutManager.CommonUI.Controls {
                     labelFontDescription.Text = value.ToString();
                 }
 
-                updateDependencies();
+                UpdateDependencies();
             }
         }
 
-        private void updateDependencies() {
+        private void UpdateDependencies() {
             buttonCustomFontSettings.Enabled = radioButtonCustomFont.Checked;
             layoutInfosComboBoxFonts.Enabled = radioButtonStandardFont.Checked;
         }
 
-        private LayoutFontInfo getCustomFont() {
-            LayoutFontInfo fontProvider = new LayoutFontInfo(XmlInfo.DocumentElement, CustomFontElementName);
+        private LayoutFontInfo GetCustomFont() {
+            LayoutFontInfo fontProvider = new(XmlInfo.DocumentElement, CustomFontElementName);
 
             // If font element did not exist, create it
             if (fontProvider.OptionalElement == null)
@@ -106,95 +87,9 @@ namespace LayoutManager.CommonUI.Controls {
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.buttonCustomFontSettings = new Button();
-            this.groupBoxFont = new GroupBox();
-            this.layoutInfosComboBoxFonts = new LayoutManager.CommonUI.Controls.LayoutInfosComboBox();
-            this.radioButtonCustomFont = new RadioButton();
-            this.radioButtonStandardFont = new RadioButton();
-            this.labelFontDescription = new Label();
-            this.fontDialogCustomSetting = new System.Windows.Forms.FontDialog();
-            this.groupBoxFont.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // buttonCustomFontSettings
-            // 
-            this.buttonCustomFontSettings.Location = new System.Drawing.Point(112, 45);
-            this.buttonCustomFontSettings.Name = "buttonCustomFontSettings";
-            this.buttonCustomFontSettings.Size = new System.Drawing.Size(88, 23);
-            this.buttonCustomFontSettings.TabIndex = 2;
-            this.buttonCustomFontSettings.Text = "Font setting...";
-            this.buttonCustomFontSettings.Click += this.buttonCustomFontSettings_Click;
-            // 
-            // groupBoxFont
-            // 
-            this.groupBoxFont.Controls.AddRange(new System.Windows.Forms.Control[] {
-                                                                                       this.layoutInfosComboBoxFonts,
-                                                                                       this.radioButtonCustomFont,
-                                                                                       this.radioButtonStandardFont,
-                                                                                       this.labelFontDescription,
-                                                                                       this.buttonCustomFontSettings});
-            this.groupBoxFont.Location = new System.Drawing.Point(8, 8);
-            this.groupBoxFont.Name = "groupBoxFont";
-            this.groupBoxFont.Size = new System.Drawing.Size(304, 96);
-            this.groupBoxFont.TabIndex = 1;
-            this.groupBoxFont.TabStop = false;
-            this.groupBoxFont.Text = "Font:";
-            // 
-            // layoutInfosComboBoxFonts
-            // 
-            this.layoutInfosComboBoxFonts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.layoutInfosComboBoxFonts.DropDownWidth = 176;
-            this.layoutInfosComboBoxFonts.InfoContainer = null;
-            this.layoutInfosComboBoxFonts.InfoType = null;
-            this.layoutInfosComboBoxFonts.Location = new System.Drawing.Point(112, 21);
-            this.layoutInfosComboBoxFonts.Name = "layoutInfosComboBoxFonts";
-            this.layoutInfosComboBoxFonts.Size = new System.Drawing.Size(176, 21);
-            this.layoutInfosComboBoxFonts.TabIndex = 4;
-            // 
-            // radioButtonCustomFont
-            // 
-            this.radioButtonCustomFont.Location = new System.Drawing.Point(16, 48);
-            this.radioButtonCustomFont.Name = "radioButtonCustomFont";
-            this.radioButtonCustomFont.Size = new System.Drawing.Size(96, 17);
-            this.radioButtonCustomFont.TabIndex = 1;
-            this.radioButtonCustomFont.Text = "Custom font:";
-            this.radioButtonCustomFont.CheckedChanged += this.radioButtonCustomFont_CheckedChanged;
-            // 
-            // radioButtonStandardFont
-            // 
-            this.radioButtonStandardFont.Location = new System.Drawing.Point(16, 19);
-            this.radioButtonStandardFont.Name = "radioButtonStandardFont";
-            this.radioButtonStandardFont.Size = new System.Drawing.Size(96, 24);
-            this.radioButtonStandardFont.TabIndex = 0;
-            this.radioButtonStandardFont.Text = "Standard font:";
-            this.radioButtonStandardFont.CheckedChanged += this.radioButtonStandardFont_CheckedChanged;
-            // 
-            // labelFontDescription
-            // 
-            this.labelFontDescription.Location = new System.Drawing.Point(40, 71);
-            this.labelFontDescription.Name = "labelFontDescription";
-            this.labelFontDescription.Size = new System.Drawing.Size(248, 16);
-            this.labelFontDescription.TabIndex = 3;
-            // 
-            // TextProviderFontDefinition
-            // 
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
-                                                                          this.groupBoxFont});
-            this.Name = "TextProviderFontDefinition";
-            this.Size = new System.Drawing.Size(320, 112);
-            this.groupBoxFont.ResumeLayout(false);
-            this.ResumeLayout(false);
-        }
-        #endregion
 
-        private void buttonCustomFontSettings_Click(object sender, System.EventArgs e) {
-            LayoutFontInfo fontProvider = getCustomFont();
+        private void ButtonCustomFontSettings_Click(object? sender, EventArgs e) {
+            LayoutFontInfo fontProvider = GetCustomFont();
 
             fontDialogCustomSetting.Color = fontProvider.Color;
             fontDialogCustomSetting.ShowColor = true;
@@ -206,13 +101,13 @@ namespace LayoutManager.CommonUI.Controls {
             labelFontDescription.Text = fontProvider.ToString();
         }
 
-        private void radioButtonStandardFont_CheckedChanged(object sender, System.EventArgs e) {
-            updateDependencies();
+        private void RadioButtonStandardFont_CheckedChanged(object? sender, EventArgs e) {
+            UpdateDependencies();
             labelFontDescription.Text = "";
         }
 
-        private void radioButtonCustomFont_CheckedChanged(object sender, System.EventArgs e) {
-            updateDependencies();
+        private void RadioButtonCustomFont_CheckedChanged(object? sender, EventArgs e) {
+            UpdateDependencies();
         }
     }
 }

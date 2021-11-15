@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
@@ -11,10 +7,10 @@ namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for LocomotiveFront.
     /// </summary>
-    public class LocomotiveFront : System.Windows.Forms.Control {
-        private IList<LayoutComponentConnectionPoint> connectionPoints = null;
+    public class LocomotiveFront : Control {
+        private IList<LayoutComponentConnectionPoint>? connectionPoints = null;
         private LayoutComponentConnectionPoint front = LayoutComponentConnectionPoint.Empty;
-        private Cursor saveCursor = null;
+        private Cursor? saveCursor = null;
         private const int inMargin = 8;
         private const int edgeSize = 6;
 
@@ -23,11 +19,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         [Browsable(false)]
         public IList<LayoutComponentConnectionPoint> ConnectionPoints {
-            get {
-                return connectionPoints == null
-                    ? Array.AsReadOnly<LayoutComponentConnectionPoint>(new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.L, LayoutComponentConnectionPoint.R })
-                    : connectionPoints;
-            }
+            get => connectionPoints ?? Array.AsReadOnly(new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.L, LayoutComponentConnectionPoint.R });
 
             set {
                 connectionPoints = value;
@@ -50,11 +42,11 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public string LocomotiveName { get; set; } = null;
+        public string? LocomotiveName { get; set; } = null;
 
-        private Point getEdgeLocation(LayoutComponentConnectionPoint cp, int margin) {
+        private Point GetEdgeLocation(LayoutComponentConnectionPoint cp, int margin) {
             Size offset = LayoutTrackComponent.GetConnectionOffset(cp);
-            Point result = new Point(0, 0) {
+            Point result = new(0, 0) {
                 X = offset.Width * ((ClientSize.Width / 2) - margin),
                 Y = offset.Height * ((ClientSize.Height / 2) - margin)
             };
@@ -72,16 +64,16 @@ namespace LayoutManager.CommonUI.Controls {
             Point[] trackPoints = new Point[2];
 
             for (int i = 0; i < 2; i++) {
-                edgeLocations[i] = getEdgeLocation(ConnectionPoints[i], inMargin);
+                edgeLocations[i] = GetEdgeLocation(ConnectionPoints[i], inMargin);
                 edgeLocations[i].X -= edgeSize / 2;
                 edgeLocations[i].Y -= edgeSize / 2;
-                trackPoints[i] = getEdgeLocation(ConnectionPoints[i], inMargin + edgeSize + 2);
+                trackPoints[i] = GetEdgeLocation(ConnectionPoints[i], inMargin + edgeSize + 2);
             }
 
             Color trackColor = Enabled ? Color.Black : Color.LightGray;
 
             // paint the track
-            using (Pen trackPen = new Pen(trackColor, 4.0F)) {
+            using (Pen trackPen = new(trackColor, 4.0F)) {
                 pe.Graphics.DrawLine(trackPen, trackPoints[0], trackPoints[1]);
             }
 
@@ -100,7 +92,7 @@ namespace LayoutManager.CommonUI.Controls {
                     new Rectangle(edgeLocations[i], new Size(edgeSize, edgeSize)));
             }
 
-            LayoutManager.View.LocomotivePainter locoPainter = new LayoutManager.View.LocomotivePainter();
+            View.LocomotivePainter locoPainter = new();
 
             if (!Enabled)
                 locoPainter.BackgroundBrush = Brushes.LightGray;
@@ -118,8 +110,8 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         // Mouse hit test
-        private Rectangle getEdgeHitRectangle(int iPoint) {
-            Point edgeCenter = getEdgeLocation(ConnectionPoints[iPoint], inMargin);
+        private Rectangle GetEdgeHitRectangle(int iPoint) {
+            Point edgeCenter = GetEdgeLocation(ConnectionPoints[iPoint], inMargin);
 
             edgeCenter.X += (ClientSize.Width / 2) - (edgeSize / 2) - 6;
             edgeCenter.Y += (ClientSize.Height / 2) - (edgeSize / 2) - 6;
@@ -127,9 +119,9 @@ namespace LayoutManager.CommonUI.Controls {
             return new Rectangle(edgeCenter, new Size(edgeSize + 12, edgeSize + 12));
         }
 
-        private int getHitEdgeIndex(Point mouse) {
+        private int GetHitEdgeIndex(Point mouse) {
             for (int i = 0; i < 2; i++) {
-                Rectangle edgeRect = getEdgeHitRectangle(i);
+                Rectangle edgeRect = GetEdgeHitRectangle(i);
 
                 if (edgeRect.Contains(mouse))
                     return i;
@@ -153,7 +145,7 @@ namespace LayoutManager.CommonUI.Controls {
         protected override void OnMouseMove(MouseEventArgs e) {
             base.OnMouseMove(e);
 
-            if (getHitEdgeIndex(new Point(e.X, e.Y)) >= 0)
+            if (GetHitEdgeIndex(new Point(e.X, e.Y)) >= 0)
                 Cursor.Current = Cursors.Default;
             else
                 Cursor.Current = Cursors.No;
@@ -162,7 +154,7 @@ namespace LayoutManager.CommonUI.Controls {
         protected override void OnMouseDown(MouseEventArgs e) {
             base.OnMouseDown(e);
 
-            int hitEdge = getHitEdgeIndex(new Point(e.X, e.Y));
+            int hitEdge = GetHitEdgeIndex(new Point(e.X, e.Y));
 
             if (hitEdge >= 0) {
                 front = ConnectionPoints[hitEdge];

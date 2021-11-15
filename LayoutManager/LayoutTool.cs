@@ -5,6 +5,7 @@ using System.ComponentModel;
 using LayoutManager.Model;
 using LayoutManager.View;
 using System.Collections.Generic;
+using LayoutManager.CommonUI;
 
 namespace LayoutManager {
     /// <summary>
@@ -22,7 +23,7 @@ namespace LayoutManager {
         /// implementation is to figure out what model component is clicked, and call
         /// the OnModelComponentClick handler
         /// </summary>
-        public void LayoutView_ModelComponentClick(object sender, LayoutViewEventArgs e) {
+        public void LayoutView_ModelComponentClick(object? sender, LayoutViewEventArgs e) {
             if ((e.MouseEventArgs.Button & MouseButtons.Right) != 0)
                 ModelComponent_RightClick(e);
             else
@@ -34,7 +35,7 @@ namespace LayoutManager {
         /// </summary>
         /// <param name="sender">The view sending this event</param>
         /// <param name="e">EventArgs including: HitTest of which the drop should occure, DragEventArgs in which the allowed drop effect are returned</param>
-        public void LayoutView_ModelComponentQueryDrop(object sender, LayoutViewEventArgs e) {
+        public void LayoutView_ModelComponentQueryDrop(object? sender, LayoutViewEventArgs e) {
             e.DragEventArgs.Effect = DragDropEffects.None;
 
             if (e.HitTestResult != null) {
@@ -48,7 +49,7 @@ namespace LayoutManager {
         /// </summary>
         /// <param name="sender">The view sending this event</param>
         /// <param name="e">EventArgs including: Where the drop occurs and what type of operation is to take place</param>
-        public void LayoutView_ModelComponentDrop(object sender, LayoutViewEventArgs e) {
+        public void LayoutView_ModelComponentDrop(object? sender, LayoutViewEventArgs e) {
             foreach (ModelComponent component in e.HitTestResult.Selection)
                 EventManager.Event(new LayoutEvent(DropEventName, component, e.DragEventArgs).SetFrameWindow(e.HitTestResult.FrameWindow));
         }
@@ -58,7 +59,7 @@ namespace LayoutManager {
         /// </summary>
         /// <param name="sender">The event sender (the view in which the user initiated the dragging)</param>
         /// <param name="e">Arguments - including what is being dragged, and mouse events when dragging begun</param>
-        public void LayoutView_ModelComponentDragged(object sender, LayoutViewEventArgs e) {
+        public void LayoutView_ModelComponentDragged(object? sender, LayoutViewEventArgs e) {
             object draggedObject = null;
             DragDropEffects allowedEffects = DragDropEffects.All;
 
@@ -329,8 +330,8 @@ namespace LayoutManager {
         /// </remarks>
         /// <param name="area">The model area</param>
         /// <param name="hitTestResult">Information about the regions that contains the mouse hotspot</param>
-        protected ContextMenu GetSpotContextMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
-            ContextMenu menu = new ContextMenu();
+        protected ContextMenuStrip GetSpotContextMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
+            var menu = new ContextMenuStrip();
             List<ModelComponent> components = new List<ModelComponent>();
 
             // Add top level entries
@@ -349,14 +350,14 @@ namespace LayoutManager {
                     components.Add((ModelComponent)queryResult);
             }
 
-            if (menu.MenuItems.Count > 0 && components.Count > 0)       // At least one entry was added
-                menu.MenuItems.Add("-");
+            if (menu.Items.Count > 0 && components.Count > 0)       // At least one entry was added
+                menu.Items.Add(new ToolStripSeparator());
 
             if (components.Count <= 1) {
                 // Only one component contribute context menu, add as part of the context menu
                 foreach (ModelComponent component in hitTestResult.Selection) {
                     if (components.Contains(component))
-                        EventManager.Event(new LayoutEvent(ComponentContextMenuAddEntriesEventName, component, menu).SetFrameWindow(hitTestResult.FrameWindow));
+                        EventManager.Event(new LayoutEvent(ComponentContextMenuAddEntriesEventName, component, new MenuOrMenuItem(menu)).SetFrameWindow(hitTestResult.FrameWindow));
 
                     bool componentCanBeRemoved = false;
 
@@ -365,9 +366,9 @@ namespace LayoutManager {
                             new LayoutEvent(ComponentContextMenuQueryCanRemoveEventName, component, true).SetFrameWindow(hitTestResult.FrameWindow));
 
                     if (componentCanBeRemoved && hitTestResult.Selection.Count > 1) {
-                        if (menu.MenuItems.Count > 0)
-                            menu.MenuItems.Add("-");
-                        menu.MenuItems.Add(new MenuItemDeleteComponent("&Remove " + component.ToString(), component));
+                        if (menu.Items.Count > 0)
+                            menu.Items.Add(new ToolStripSeparator());
+                        menu.Items.Add(new MenuItemDeleteComponent("&Remove " + component.ToString(), component));
                     }
                 }
             }
@@ -381,9 +382,9 @@ namespace LayoutManager {
                     else
                         componentMenuName = component.ToString();
 
-                    MenuItem componentContextMenu = new MenuItem(componentMenuName);
+                    var componentMenuItem = new LayoutMenuItem(componentMenuName);
 
-                    EventManager.Event(new LayoutEvent(ComponentContextMenuAddEntriesEventName, component, componentContextMenu,
+                    EventManager.Event(new LayoutEvent(ComponentContextMenuAddEntriesEventName, component, new MenuOrMenuItem(componentMenuItem),
                         null).SetFrameWindow(hitTestResult.FrameWindow));
 
                     bool componentCanBeRemoved = false;
@@ -393,13 +394,13 @@ namespace LayoutManager {
                             new LayoutEvent(ComponentContextMenuQueryCanRemoveEventName, component, true).SetFrameWindow(hitTestResult.FrameWindow));
 
                     if (componentCanBeRemoved) {
-                        if (componentContextMenu.MenuItems.Count > 0)
-                            componentContextMenu.MenuItems.Add("-");
-                        componentContextMenu.MenuItems.Add(new MenuItemDeleteComponent("&Remove", component));
+                        if (componentMenuItem.DropDownItems.Count > 0)
+                            componentMenuItem.DropDownItems.Add(new ToolStripSeparator());
+                        componentMenuItem.DropDownItems.Add(new MenuItemDeleteComponent("&Remove", component));
                     }
 
-                    if (componentContextMenu.MenuItems.Count > 0)
-                        menu.MenuItems.Add(componentContextMenu);
+                    if (componentMenuItem.DropDownItems.Count > 0)
+                        menu.Items.Add(componentMenuItem);
                 }
             }
 

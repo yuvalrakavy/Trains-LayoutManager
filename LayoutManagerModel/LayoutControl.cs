@@ -185,7 +185,6 @@ namespace LayoutManager.Model {
     /// by components that can be connected to control module. The common case is that a component has one possible
     /// connection. But some components (e.g turnout with feedback) may require more than one connection
     /// </summary>
-    #pragma warning disable CA1815
     public struct ModelComponentControlConnectionDescription {
         /// <summary>
         /// Describe a possible connection between component and control module
@@ -634,7 +633,7 @@ namespace LayoutManager.Model {
     /// A reference to a connection point. The connection point is reference via module and index
     /// </summary>
     public class ControlConnectionPointReference : IControlSupportUserAction {
-        private Guid moduleID;
+        private readonly Guid moduleID;
 
         public ControlConnectionPointReference(ControlModule module, int index) {
             this.ControlManager = module.ControlManager;
@@ -645,20 +644,25 @@ namespace LayoutManager.Model {
         public ControlConnectionPointReference(ControlBus bus, int address, int index) {
             this.ControlManager = bus.ControlManager;
 
-            ControlModule module = bus.GetModuleUsingAddress(address);
-            int addressOffset = address - module.Address;
+            var module = bus.GetModuleUsingAddress(address);
 
-            Debug.Assert(addressOffset < module.ModuleType.NumberOfAddresses);
-            int indexOffset = addressOffset * module.ModuleType.ConnectionPointsPerAddress;
+            if (module != null) {
+                int addressOffset = address - module.Address;
 
-            this.moduleID = module == null ? Guid.Empty : module.Id;
-            this.Index = indexOffset + index;
+                Debug.Assert(addressOffset < module.ModuleType.NumberOfAddresses);
+                int indexOffset = addressOffset * module.ModuleType.ConnectionPointsPerAddress;
+
+                this.moduleID = module == null ? Guid.Empty : module.Id;
+                this.Index = indexOffset + index;
+            }
+            else
+                this.moduleID = Guid.Empty;
         }
 
         public ControlConnectionPointReference(ControlBus bus, int address) {
             this.ControlManager = bus.ControlManager;
 
-            ControlModule module = bus.GetModuleUsingAddress(address);
+            var module = bus.GetModuleUsingAddress(address);
 
             if (module != null) {
                 this.moduleID = module.Id;
@@ -784,7 +788,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public ControlModuleType ModuleType {
             get {
-                return moduleType ?? (moduleType = LayoutControlManager.GetModuleType(ModuleTypeName));
+                return moduleType ??= LayoutControlManager.GetModuleType(ModuleTypeName);
             }
 
             set => ModuleTypeName = value.TypeName;
@@ -817,7 +821,7 @@ namespace LayoutManager.Model {
 
         public XmlElement ConnectionPointsElement {
             get {
-                XmlElement connectionPointsElement = Element["ConnectionPoints"];
+                XmlElement? connectionPointsElement = Element["ConnectionPoints"];
 
                 if (connectionPointsElement == null) {
                     connectionPointsElement = Element.OwnerDocument.CreateElement("ConnectionPoints");
@@ -941,7 +945,7 @@ namespace LayoutManager.Model {
 
         #region IComparable<ControlModule> Members
 
-        public int CompareTo(ControlModule other) => Address - other.Address;
+        public int CompareTo(ControlModule? other) => other != null ? Address - other.Address : throw new ArgumentNullException(nameof(other));
 
         public bool Equals(ControlModule other) => this == other;
         #endregion
@@ -951,7 +955,7 @@ namespace LayoutManager.Model {
     /// Hold long term reference to control module.
     /// </summary>
     public class ControlModuleReference {
-        private Guid _moduleId;
+        private readonly Guid _moduleId;
 
         public ControlModuleReference(ControlModule module) {
             this.ControlManager = module.ControlManager;
@@ -1243,18 +1247,20 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The bus type object that define properties of this bus
         /// </summary>
-        public ControlBusType BusType => busType ?? (busType = ControlManager.GetBusType(BusTypeName));
+        public ControlBusType BusType => busType ??= ControlManager.GetBusType(BusTypeName);
 
         /// <summary>
         /// Return the modules attached to this bus
         /// </summary>
         public IList<ControlModule> Modules {
             get {
-                XmlNodeList moduleElements = ControlManager.ModulesElement.SelectNodes("Module[@BusID='" + this.Id.ToString() + "']");
-                List<ControlModule> modules = new List<ControlModule>(moduleElements.Count);
+                var moduleElements = ControlManager.ModulesElement.SelectNodes("Module[@BusID='" + this.Id.ToString() + "']");
+                List<ControlModule> modules = new List<ControlModule>(moduleElements?.Count ?? 0);
 
-                foreach (XmlElement moduleElement in moduleElements)
-                    modules.Add(new ControlModule(ControlManager, moduleElement));
+                if (moduleElements != null) {
+                    foreach (XmlElement moduleElement in moduleElements)
+                        modules.Add(new ControlModule(ControlManager, moduleElement));
+                }
 
                 return modules;
             }
@@ -1264,7 +1270,7 @@ namespace LayoutManager.Model {
             addressModuleMap = null;
         }
 
-        public ControlModule GetModuleUsingAddress(int address) {
+        public ControlModule? GetModuleUsingAddress(int address) {
             if (addressModuleMap == null) {
                 addressModuleMap = new Dictionary<int, ControlModule>();
 
@@ -1274,7 +1280,7 @@ namespace LayoutManager.Model {
                 }
             }
 
-            addressModuleMap.TryGetValue(address, out ControlModule result);
+            addressModuleMap.TryGetValue(address, out ControlModule? result);
             return result;
         }
 
@@ -1284,7 +1290,7 @@ namespace LayoutManager.Model {
         /// <param name="moduleType"></param>
         /// <param name="address"></param>
         /// <returns></returns>
-        private ControlModule doAdd(Guid? controlModuleLocationId, ControlModuleType moduleType, int address) {
+        private ControlModule DoAdd(Guid? controlModuleLocationId, ControlModuleType moduleType, int address) {
             XmlElement moduleElement = ControlManager.ModulesElement.OwnerDocument.CreateElement("Module");
             ControlModule module = new ControlModule(ControlManager, moduleElement) {
                 ModuleType = moduleType,
@@ -1361,7 +1367,7 @@ namespace LayoutManager.Model {
                 if (module.UsingAddress(address))
                     throw new ControlAddressInUseException(moduleType, address, module);
 
-            return doAdd(controlModuleLocationId, moduleType, address);
+            return DoAdd(controlModuleLocationId, moduleType, address);
         }
 
         public ControlModule Add(Guid? controlModuleLocationId, string moduleTypeName, int address) => Add(controlModuleLocationId, LayoutControlManager.GetModuleType(moduleTypeName), address);
@@ -1381,7 +1387,7 @@ namespace LayoutManager.Model {
             if (address > lastAddress)
                 throw new ControlBusFullException(this);
 
-            return doAdd(controlModuleLocationId, moduleType, address);
+            return DoAdd(controlModuleLocationId, moduleType, address);
         }
 
         public ControlModule Add(Guid? controlModuleLocationId, string moduleTypeName) => Add(controlModuleLocationId, LayoutControlManager.GetModuleType(moduleTypeName));
@@ -1408,7 +1414,7 @@ namespace LayoutManager.Model {
                     module.Address += moduleType.NumberOfAddresses;
             }
 
-            return doAdd(controlModuleLocationId, moduleType, address);
+            return DoAdd(controlModuleLocationId, moduleType, address);
         }
 
         public ControlModule Insert(Guid? controlModuleLocationId, ControlModule insertBeforeModule, string moduleTypeName) =>
@@ -1552,7 +1558,7 @@ namespace LayoutManager.Model {
             XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
             doc.LoadXml("<BusType />");
-            Element = doc.DocumentElement;
+            Element = doc.DocumentElement!;
         }
 
         /// <summary>
@@ -1794,7 +1800,7 @@ namespace LayoutManager.Model {
                     ControlConnectionPoint connectionPoint = new ControlConnectionPoint(module, connectionPointElement);
 
                     if (connectionPoint.IsConnected) {
-                        if (idMap.TryGetValue(connectionPoint.ComponentId, out ControlConnectionPointMapEntry entry))
+                        if (idMap.TryGetValue(connectionPoint.ComponentId, out ControlConnectionPointMapEntry? entry))
                             entry.Add(connectionPoint);
                         else {
                             entry = new ControlConnectionPointMapEntry(connectionPoint);
@@ -1812,7 +1818,7 @@ namespace LayoutManager.Model {
         /// <returns>A list of all control connection points that are connected to the component</returns>
         public IList<ControlConnectionPoint>? this[Guid componentId] {
             get {
-                return idMap.TryGetValue(componentId, out ControlConnectionPointMapEntry entry)
+                return idMap.TryGetValue(componentId, out ControlConnectionPointMapEntry? entry)
                     ? (IList<ControlConnectionPoint>)entry.ConnectionPoints
                     : null;
             }
@@ -1930,7 +1936,7 @@ namespace LayoutManager.Model {
         }
 
         internal void Add(ControlConnectionPoint connectionPoint) {
-            if (idMap.TryGetValue(connectionPoint.ComponentId, out ControlConnectionPointMapEntry entry))
+            if (idMap.TryGetValue(connectionPoint.ComponentId, out ControlConnectionPointMapEntry? entry))
                 entry.Add(connectionPoint);
             else {
                 entry = new ControlConnectionPointMapEntry(connectionPoint);
@@ -1939,7 +1945,7 @@ namespace LayoutManager.Model {
         }
 
         internal void Remove(ControlConnectionPoint connectionPoint) {
-            if (idMap.TryGetValue(connectionPoint.ComponentId, out ControlConnectionPointMapEntry entry)) {
+            if (idMap.TryGetValue(connectionPoint.ComponentId, out ControlConnectionPointMapEntry? entry)) {
                 if (entry.Remove(connectionPoint))
                     idMap.Remove(connectionPoint.ComponentId);
             }
@@ -1968,10 +1974,12 @@ namespace LayoutManager.Model {
         /// <param name="busProviderId">The bus provider ID</param>
         /// <returns>An array of bus objects</returns>
         public IEnumerable<ControlBus> Buses(Guid busProviderId) {
-            XmlNodeList busElements = Element.SelectNodes("Bus[@BusProviderID='" + busProviderId.ToString() + "']");
+            XmlNodeList? busElements = Element.SelectNodes("Bus[@BusProviderID='" + busProviderId.ToString() + "']");
 
-            foreach (XmlElement busElement in busElements)
-                yield return FromElement(busElement);
+            if (busElements != null) {
+                foreach (XmlElement busElement in busElements)
+                    yield return FromElement(busElement);
+            }
         }
 
         /// <summary>
@@ -1988,7 +1996,7 @@ namespace LayoutManager.Model {
         /// <param name="busTypeName">The bus type name</param>
         /// <returns>or bus</returns>
         public ControlBus? GetBus(Guid busProviderId, string busTypeName) {
-            XmlElement busElement = (XmlElement)Element.SelectSingleNode("Bus[@BusProviderID='" + busProviderId.ToString() + "' and @BusTypeName='" + busTypeName + "']");
+            var busElement = (XmlElement?)Element.SelectSingleNode("Bus[@BusProviderID='" + busProviderId.ToString() + "' and @BusTypeName='" + busTypeName + "']");
 
             return busElement == null ? null : FromElement(busElement);
         }
@@ -2062,13 +2070,13 @@ namespace LayoutManager.Model {
             XmlDocument xmlDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
             xmlDoc.LoadXml("<LayoutControl><Modules /><Buses /></LayoutControl>");
-            Element = xmlDoc.DocumentElement;
+            Element = xmlDoc.DocumentElement!;
         }
 
         public LayoutControlManager(XmlReader r) {
             XmlDocument xmlDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
             xmlDoc.Load(r);
-            Element = xmlDoc.DocumentElement;
+            Element = Ensure.NotNull<XmlElement>(xmlDoc.DocumentElement);
         }
 
         public void WriteXml(XmlWriter w) {
@@ -2077,7 +2085,7 @@ namespace LayoutManager.Model {
 
         public XmlElement ModulesElement {
             get {
-                XmlElement modulesElement = Element["Modules"];
+                XmlElement? modulesElement = Element["Modules"];
 
                 if (modulesElement == null) {
                     modulesElement = Element.OwnerDocument.CreateElement("Modules");
@@ -2090,7 +2098,7 @@ namespace LayoutManager.Model {
 
         public XmlElement BusesElement {
             get {
-                XmlElement busesElement = Element["Buses"];
+                XmlElement? busesElement = Element["Buses"];
 
                 if (busesElement == null) {
                     busesElement = Element.OwnerDocument.CreateElement("Buses");
@@ -2107,13 +2115,15 @@ namespace LayoutManager.Model {
         /// <param name="locationID">The ID of the location</param>
         /// <returns>An array of all modules in this location</returns>
         public ControlModule[] GetModulesAtLocation(Guid locationId) {
-            XmlNodeList modulesElement = ModulesElement.SelectNodes("Module[@LocationID='" + locationId.ToString() + "']");
+            var modulesElement = ModulesElement.SelectNodes("Module[@LocationID='" + locationId.ToString() + "']");
 
-            ControlModule[] modules = new ControlModule[modulesElement.Count];
+            ControlModule[] modules = new ControlModule[modulesElement?.Count ?? 0];
 
-            int i = 0;
-            foreach (XmlElement moduleElement in modulesElement)
-                modules[i++] = new ControlModule(this, moduleElement);
+            if (modulesElement != null) {
+                int i = 0;
+                foreach (XmlElement moduleElement in modulesElement)
+                    modules[i++] = new ControlModule(this, moduleElement);
+            }
 
             return modules;
         }
@@ -2145,7 +2155,7 @@ namespace LayoutManager.Model {
             else if (count > 1)
                 throw new ArgumentException("More than 1 control module type defined for module type: " + moduleTypeName);
             else
-                return new ControlModuleType((XmlElement)moduleTypesElement.ChildNodes[0]);
+                return new ControlModuleType((XmlElement)moduleTypesElement.ChildNodes[0]!);
         }
 
         /// <summary>
@@ -2166,9 +2176,9 @@ namespace LayoutManager.Model {
         /// Return a map from components (or component IDs) to connection points (usually one) that are connected to
         /// the component
         /// </summary>
-        public ControlConnectionPointsMap ConnectionPoints => connectionPointsMap ?? (connectionPointsMap = new ControlConnectionPointsMap(this, ModulesElement));
+        public ControlConnectionPointsMap ConnectionPoints => connectionPointsMap ??= new ControlConnectionPointsMap(this, ModulesElement);
 
-        public ControlBusCollection Buses => buses ?? (buses = new ControlBusCollection(this));
+        public ControlBusCollection Buses => buses ??= new ControlBusCollection(this);
 
         /// <summary>
         /// Get a module given its ID
@@ -2176,7 +2186,7 @@ namespace LayoutManager.Model {
         /// <param name="moduleID">The module ID</param>
         /// <returns>A ControlModule object</returns>
         public ControlModule? GetModule(Guid moduleId) {
-            XmlElement moduleElement = (XmlElement)ModulesElement.SelectSingleNode("Module[@ID='" + moduleId.ToString() + "']");
+            var moduleElement = (XmlElement?)ModulesElement.SelectSingleNode("Module[@ID='" + moduleId.ToString() + "']");
 
             return moduleElement == null ? null : new ControlModule(this, moduleElement);
         }

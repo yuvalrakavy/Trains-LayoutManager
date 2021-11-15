@@ -1,5 +1,3 @@
-using System;
-using System.Drawing;
 using System.Xml;
 
 using LayoutManager.Model;
@@ -9,8 +7,8 @@ namespace LayoutManager.CommonUI.Controls {
     /// Draw locomotive image
     /// </summary>
     public class LocomotiveImagePainter : IDisposable {
-        private LocomotiveCatalogInfo catalog = null;
-        private Pen framePen = new Pen(Color.Black, 1.0F);
+        private LocomotiveCatalogInfo? catalog = null;
+        private Pen framePen = new(Color.Black, 1.0F);
 
         public LocomotiveImagePainter() {
         }
@@ -34,13 +32,13 @@ namespace LayoutManager.CommonUI.Controls {
             }
 
             get {
-                return catalog ?? (catalog = LayoutModel.LocomotiveCatalog);
+                return catalog ??= LayoutModel.LocomotiveCatalog;
             }
         }
 
         public XmlElement LocomotiveElement {
             set {
-                LocomotiveTypeInfo locoType = new LocomotiveTypeInfo(value);
+                LocomotiveTypeInfo locoType = new(value);
                 Image = locoType.Image;
 
                 if (Image == null)
@@ -48,7 +46,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public Image Image { get; set; } = null;
+        public Image? Image { get; set; } = null;
 
         public Pen FramePen {
             get {
@@ -71,6 +69,7 @@ namespace LayoutManager.CommonUI.Controls {
         public Point Origin { get; set; } = new Point(0, 0);
 
         public void Dispose() {
+            GC.SuppressFinalize(this);
             if (framePen != null)
                 framePen.Dispose();
         }

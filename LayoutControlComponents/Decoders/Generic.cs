@@ -9,7 +9,7 @@ namespace LayoutManager.Decoders {
         [LayoutEvent("enum-decoder-types")]
         [LayoutEvent("get-decoder-type", IfEvent = "LayoutEvent[Options/@DecoderType='GenericDCC']")]
         private void GetGenericDcc(LayoutEvent e) {
-            var list = (List<DecoderTypeInfo>)e.Sender;
+            var list = Ensure.NotNull<List<DecoderTypeInfo>>(e.Sender);
             var decoder = new DccDecoderTypeInfo() {
                 Manufacturer = "Generic",
                 Name = "DCC",

@@ -177,8 +177,8 @@ namespace DiMAX {
         [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
         private Task ChangeTurnoutState(LayoutEvent e) {
             var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
-            var module = Ensure.NotNull<ControlModule>(connectionPointRef.Module, "module");
             var state = Ensure.ValueNotNull<int>(e.Info, "state");
+            var module = Ensure.NotNull<ControlModule>(connectionPointRef.Module, "module");
             int address = module.Address + connectionPointRef.Index;
 
             var task = OutputManager.AddCommand(new DiMAXchangeAccessoryState(this, address, state));

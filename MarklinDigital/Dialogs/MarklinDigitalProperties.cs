@@ -54,7 +54,7 @@ namespace MarklinDigital.Dialogs {
 
         public LayoutXmlInfo XmlInfo { get; }
 
-        private void updateButtons(object sender, EventArgs e) {
+        private void updateButtons(object? sender, EventArgs e) {
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace MarklinDigital.Dialogs {
         }
         #endregion
 
-        private void buttonOK_Click(object sender, System.EventArgs e) {
+        private void buttonOK_Click(object? sender, System.EventArgs e) {
             // Validate
 
             if (nameDefinition.Commit()) {
@@ -254,7 +254,7 @@ namespace MarklinDigital.Dialogs {
             DialogResult = DialogResult.OK;
         }
 
-        private void buttonCOMsettings_Click(object sender, EventArgs e) {
+        private void buttonCOMsettings_Click(object? sender, EventArgs e) {
             string modeString = XmlInfo.DocumentElement[LayoutIOServices.E_ModeString].InnerText;
 
             LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);

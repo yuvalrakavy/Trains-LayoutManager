@@ -44,17 +44,17 @@ namespace NCDRelayController.Dialogs {
                 labelStatus.Text = "Select one of the following devices:";
         }
 
-        private void listViewDevices_SelectedIndexChanged(object sender, EventArgs e) {
+        private void listViewDevices_SelectedIndexChanged(object? sender, EventArgs e) {
             if (listViewDevices.SelectedItems.Count > 0)
                 buttonSelect.Enabled = true;
         }
 
-        private void listViewDevices_DoubleClick(object sender, EventArgs e) {
+        private void listViewDevices_DoubleClick(object? sender, EventArgs e) {
             if (buttonSelect.Enabled)
                 buttonSelect.PerformClick();
         }
 
-        private void buttonSelect_Click(object sender, EventArgs e) {
+        private void buttonSelect_Click(object? sender, EventArgs e) {
             if (listViewDevices.SelectedItems.Count > 0)
                 SelectedAddress = listViewDevices.SelectedItems[0].Text;
             DialogResult = System.Windows.Forms.DialogResult.OK;

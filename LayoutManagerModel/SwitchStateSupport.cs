@@ -47,7 +47,7 @@ namespace LayoutManager.Components {
         /// </summary>
         /// <param name="switchState">The new switch state</param>
         public virtual void SetSwitchState(ControlConnectionPoint controlConnectionPoint, int switchState, string connectionPointName = null) {
-            LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic, create: true).SetAttributeValue($"Value{connectionPointName ?? ""}", switchState);
+            LayoutModel.StateManager.Components.OptionalStateOf(Component.Id, StateTopic, create: true).SetAttributeValue($"Value{connectionPointName ?? ""}", switchState);
             Component.OnComponentChanged();
         }
 
@@ -56,7 +56,7 @@ namespace LayoutManager.Components {
         /// </summary>
         /// <param name="connectionPointName">Connection point name or null for the default connection point</param>
         /// <returns>Connection point state</returns>
-        public virtual int GetSwitchState(string connectionPointName) => (int?)LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic).AttributeValue($"Value{connectionPointName}") ?? 0;
+        public virtual int GetSwitchState(string connectionPointName) => (int?)LayoutModel.StateManager.Components.OptionalStateOf(Component.Id, StateTopic).AttributeValue($"Value{connectionPointName}") ?? 0;
 
         public bool ReverseLogic => Component is IModelComponentHasReverseLogic componentWithReverseLogic ? componentWithReverseLogic.ReverseLogic : false;
     }

@@ -9,17 +9,8 @@ namespace LayoutManager.Tools.EventScriptDialogs {
     /// <summary>
     /// Summary description for RunPolicy.
     /// </summary>
-    public class RunPolicy : Form {
+    public partial class RunPolicy : Form {
         private const string A_PolicyID = "PolicyID";
-        private Label label1;
-        private Button buttonOK;
-        private Button buttonCancel;
-        private ComboBox comboBoxPolicy;
-
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container components = null;
         private readonly XmlElement element;
 
         public RunPolicy(XmlElement element) {
@@ -32,30 +23,30 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
             comboBoxPolicy.Items.Add(new GlobalOrLayoutEntry(this, "Policies for all layout"));
 
-            addPoliciesOfScope(LayoutModel.Instance.GlobalPoliciesElement, "Global", "Layout wide policies");
-            addPoliciesOfScope(LayoutModel.Instance.GlobalPoliciesElement, "TripPlan", "Trip plan policies");
-            addPoliciesOfScope(LayoutModel.Instance.GlobalPoliciesElement, "Block", "Block policies");
+            AddPoliciesOfScope(LayoutModel.Instance.GlobalPoliciesElement, "Global", "Layout wide policies");
+            AddPoliciesOfScope(LayoutModel.Instance.GlobalPoliciesElement, "TripPlan", "Trip plan policies");
+            AddPoliciesOfScope(LayoutModel.Instance.GlobalPoliciesElement, "Block", "Block policies");
 
             comboBoxPolicy.Items.Add(new GlobalOrLayoutEntry(this, "Policies for this layout only"));
 
-            addPoliciesOfScope(LayoutModel.StateManager.LayoutPoliciesElement, "Global", "Layout wide policies");
-            addPoliciesOfScope(LayoutModel.StateManager.LayoutPoliciesElement, "TripPlan", "Trip plan policies");
-            addPoliciesOfScope(LayoutModel.StateManager.LayoutPoliciesElement, "Block", "Block policies");
+            AddPoliciesOfScope(LayoutModel.StateManager.LayoutPoliciesElement, "Global", "Layout wide policies");
+            AddPoliciesOfScope(LayoutModel.StateManager.LayoutPoliciesElement, "TripPlan", "Trip plan policies");
+            AddPoliciesOfScope(LayoutModel.StateManager.LayoutPoliciesElement, "Block", "Block policies");
 
             if (element.HasAttribute(A_PolicyID)) {
                 var policyID = (Guid)element.AttributeValue(A_PolicyID);
 
-                foreach (PolicyEntryBase entry in comboBoxPolicy.Items) {
-                    if (entry is PolicyEntry && ((PolicyEntry)entry).Policy.Id == policyID) {
-                        comboBoxPolicy.SelectedItem = entry;
+                foreach (PolicyEntryBase entryBase in comboBoxPolicy.Items) {
+                    if (entryBase is PolicyEntry entry && entry.Policy.Id == policyID) {
+                        comboBoxPolicy.SelectedItem = entryBase;
                         break;
                     }
                 }
             }
         }
 
-        private void addPoliciesOfScope(XmlElement policiesCollectionElement, string scope, string scopeName) {
-            LayoutPoliciesCollection policies = new LayoutPoliciesCollection(policiesCollectionElement, null, scope);
+        private void AddPoliciesOfScope(XmlElement policiesCollectionElement, string scope, string scopeName) {
+            LayoutPoliciesCollection policies = new(policiesCollectionElement, null, scope);
 
             if (policies.Count > 0) {
                 comboBoxPolicy.Items.Add(new PolicyUsageEntry(this, scopeName));
@@ -93,78 +84,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.comboBoxPolicy = new ComboBox();
-            this.label1 = new Label();
-            this.buttonOK = new Button();
-            this.buttonCancel = new Button();
-            this.SuspendLayout();
-            // 
-            // comboBoxPolicy
-            // 
-            this.comboBoxPolicy.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right);
-            this.comboBoxPolicy.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.comboBoxPolicy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxPolicy.Location = new System.Drawing.Point(8, 26);
-            this.comboBoxPolicy.MaxDropDownItems = 15;
-            this.comboBoxPolicy.Name = "comboBoxPolicy";
-            this.comboBoxPolicy.Size = new System.Drawing.Size(272, 21);
-            this.comboBoxPolicy.TabIndex = 0;
-            this.comboBoxPolicy.SelectedIndexChanged += this.comboBoxPolicy_SelectedIndexChanged;
-            this.comboBoxPolicy.MeasureItem += this.comboBoxPolicy_MeasureItem;
-            this.comboBoxPolicy.DrawItem += this.comboBoxPolicy_DrawItem;
-            // 
-            // label1
-            // 
-            this.label1.Location = new System.Drawing.Point(8, 10);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 16);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Run policy:";
-            // 
-            // buttonOK
-            // 
-            this.buttonOK.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonOK.Location = new System.Drawing.Point(128, 58);
-            this.buttonOK.Name = "buttonOK";
-            this.buttonOK.TabIndex = 2;
-            this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.buttonOK_Click;
-            // 
-            // buttonCancel
-            // 
-            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(208, 58);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.TabIndex = 2;
-            this.buttonCancel.Text = "Cancel";
-            // 
-            // RunPolicy
-            // 
-            this.AcceptButton = this.buttonOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
-            this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(292, 86);
-            this.ControlBox = false;
-            this.Controls.Add(this.buttonOK);
-            this.Controls.Add(this.comboBoxPolicy);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.buttonCancel);
-            this.Name = "RunPolicy";
-            this.ShowInTaskbar = false;
-            this.Text = "Run Policy";
-            this.ResumeLayout(false);
-        }
-        #endregion
-
-        private void comboBoxPolicy_MeasureItem(object sender, System.Windows.Forms.MeasureItemEventArgs e) {
+        private void ComboBoxPolicy_MeasureItem(object? sender, System.Windows.Forms.MeasureItemEventArgs e) {
             if (e.Index >= 0) {
                 PolicyEntryBase entry = (PolicyEntryBase)comboBoxPolicy.Items[e.Index];
 
@@ -173,7 +93,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             }
         }
 
-        private void comboBoxPolicy_DrawItem(object sender, System.Windows.Forms.DrawItemEventArgs e) {
+        private void ComboBoxPolicy_DrawItem(object? sender, System.Windows.Forms.DrawItemEventArgs e) {
             if (e.Index >= 0) {
                 PolicyEntryBase entry = (PolicyEntryBase)comboBoxPolicy.Items[e.Index];
 
@@ -181,7 +101,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             }
         }
 
-        private void buttonOK_Click(object sender, System.EventArgs e) {
+        private void ButtonOK_Click(object? sender, System.EventArgs e) {
             if (comboBoxPolicy.SelectedItem is PolicyEntry selected) {
                 element.SetAttributeValue(A_PolicyID, selected.Policy.Id);
             }
@@ -189,10 +109,10 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             DialogResult = DialogResult.OK;
         }
 
-        private void comboBoxPolicy_SelectedIndexChanged(object sender, System.EventArgs e) {
+        private void ComboBoxPolicy_SelectedIndexChanged(object? sender, System.EventArgs e) {
             buttonOK.Enabled = comboBoxPolicy.SelectedItem != null && comboBoxPolicy.SelectedItem is PolicyEntry;
 
-            if (!(comboBoxPolicy.SelectedItem is PolicyEntry))
+            if (comboBoxPolicy.SelectedItem is not PolicyEntry)
                 comboBoxPolicy.SelectedItem = null;
         }
 
@@ -212,13 +132,13 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             }
 
             public virtual void Draw(DrawItemEventArgs e) {
-                StringFormat format = new StringFormat {
+                StringFormat format = new() {
                     LineAlignment = StringAlignment.Center,
                     FormatFlags = StringFormatFlags.NoWrap,
                     Trimming = StringTrimming.EllipsisWord
                 };
 
-                Brush backBrush = BackBrush;
+                var backBrush = BackBrush;
 
                 if (backBrush != null)
                     e.Graphics.FillRectangle(backBrush, e.Bounds);
@@ -226,11 +146,11 @@ namespace LayoutManager.Tools.EventScriptDialogs {
                 if (!IsTitle)
                     e.DrawBackground();
 
-                RectangleF titleRect = new RectangleF(e.Bounds.Left + Indent, e.Bounds.Top, e.Bounds.Width - Indent, e.Bounds.Height);
+                RectangleF titleRect = new(e.Bounds.Left + Indent, e.Bounds.Top, e.Bounds.Width - Indent, e.Bounds.Height);
 
                 e.Graphics.DrawString(ToString(), Font, FontBrush, titleRect, format);
 
-                Pen underlinePen = UnderlinePen;
+                var underlinePen = UnderlinePen;
 
                 if (underlinePen != null)
                     e.Graphics.DrawLine(underlinePen, new PointF(e.Bounds.Left, e.Bounds.Bottom - (underlinePen.Width / 2)), new PointF(e.Bounds.Right, e.Bounds.Bottom - (underlinePen.Width / 2)));
@@ -245,13 +165,13 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
             protected virtual Brush FontBrush => Brushes.Black;
 
-            protected virtual Brush BackBrush => null;
+            protected virtual Brush? BackBrush => null;
 
             protected virtual int VerticalMargins => 0;
 
             protected virtual bool IsTitle => false;
 
-            protected virtual Pen UnderlinePen => null;
+            protected virtual Pen? UnderlinePen => null;
         }
 
         private class PolicyEntry : PolicyEntryBase {

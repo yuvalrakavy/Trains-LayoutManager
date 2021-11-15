@@ -37,7 +37,7 @@ namespace LayoutManager {
     public class LayoutControllerImplementation : ApplicationContext, ILayoutController, ILayoutSelectionManager {
         private string? layoutFilename;
         private readonly LayoutCommandManager commandManager;
-        private readonly List<LayoutSelection> displayedSelections = new List<LayoutSelection>();
+        private readonly List<LayoutSelection> displayedSelections = new();
         private readonly LayoutSelectionWithUndo userSelection;
         private int trainsAnalysisPhaseCount = 0;       // How many command stations perform layout analysis phase
         private int layoutDesignTimeActivationNesting = 0;
@@ -299,7 +299,7 @@ namespace LayoutManager {
 
                     commandManager.Clear();         // Clear undo stack
 
-                    List<IModelComponentIsCommandStation> performTrainsAnalysis = new List<IModelComponentIsCommandStation>();
+                    var performTrainsAnalysis = new List<IModelComponentIsCommandStation>();
 
                     EventManager.Event(new LayoutEvent("query-perform-trains-analysis", this, performTrainsAnalysis));
                     trainsAnalysisPhaseCount = performTrainsAnalysis.Count;
@@ -358,7 +358,7 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("command-station-trains-analysis-phase-done")]
-        private void trainsAnalysisPhaseDone(LayoutEvent e) {
+        private void TrainsAnalysisPhaseDone(LayoutEvent e) {
             if (--trainsAnalysisPhaseCount == 0) {
                 EventManager.Event(new LayoutEvent("end-trains-analysis-phase", this));
                 EventManager.Event(new LayoutEvent("perform-trains-analysis", LayoutModel.Instance));
@@ -418,7 +418,7 @@ namespace LayoutManager {
                 if (doit) {
                     var result = EventManager.Event(new LayoutEvent("begin-design-time-layout-activation", this));
 
-                    if (result == null || !(result is bool))
+                    if (result == null || result is not bool)
                         ok = false;
                     else
                         ok = (bool)result;
@@ -537,7 +537,7 @@ namespace LayoutManager {
         /// </summary>
         private void CreateNewModel(string layoutFilename) {
             LayoutModel.Instance.Clear();
-            LayoutModelArea area = new LayoutModelArea {
+            var area = new LayoutModelArea {
                 // Create the default area
                 Name = "Layout area"
             };
@@ -561,7 +561,7 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEvent("new-layout-document", null, layoutFilename));
         }
 
-        private void ReadModelXmlDocument(string filename) {
+        private static void ReadModelXmlDocument(string filename) {
             XmlTextReader r = new LayoutXmlTextReader(filename, LayoutReadXmlContext.LoadingModel) {
                 WhitespaceHandling = WhitespaceHandling.None
             };
@@ -591,8 +591,8 @@ namespace LayoutManager {
             commandManager.ChangeLevel = 0;             // Layout saved
         }
 
-        private void WriteModelXmlDocument(string filename) {
-            XmlTextWriter w = new XmlTextWriter(filename, new System.Text.UTF8Encoding());
+        private static void WriteModelXmlDocument(string filename) {
+            var w = new XmlTextWriter(filename, new System.Text.UTF8Encoding());
 
             w.WriteStartDocument();
             w.WriteStartElement("LayoutManager");
@@ -612,7 +612,7 @@ namespace LayoutManager {
         /// </summary>
         /// <returns>The newly created area</returns>
         public LayoutModelArea AddArea(String areaName) {
-            LayoutModelArea area = new LayoutModelArea {
+            var area = new LayoutModelArea {
                 Name = areaName
             };
             LayoutModel.Areas.Add(area);
@@ -620,21 +620,21 @@ namespace LayoutManager {
             return area;
         }
 
-        public void Area_Added(object sender, EventArgs e) {
+        public void Area_Added(object? sender, EventArgs e) {
             LayoutModelArea area = (LayoutModelArea)sender;
 
             EventManager.Event(new LayoutEvent<LayoutModelArea>("area-added", area));
             LayoutModified();
         }
 
-        public void Area_Removed(object sender, EventArgs e) {
+        public void Area_Removed(object? sender, EventArgs e) {
             LayoutModelArea area = (LayoutModelArea)sender;
 
             EventManager.Event(new LayoutEvent<LayoutModelArea>("area-removed", area));
             LayoutModified();
         }
 
-        public void Area_Renamed(object sender, EventArgs e) {
+        public void Area_Renamed(object? sender, EventArgs e) {
             LayoutModelArea area = (LayoutModelArea)sender;
 
             EventManager.Event(new LayoutEvent<LayoutModelArea>("area-renamed", area));
@@ -652,7 +652,7 @@ namespace LayoutManager {
         public LayoutModuleManager ModuleManager { get; }
 
         [LayoutEvent("get-module-manager")]
-        private void getModuleManager(LayoutEvent e) {
+        private void GetModuleManager(LayoutEvent e) {
             e.Info = ModuleManager;
         }
 
@@ -691,7 +691,7 @@ namespace LayoutManager {
         #region Event Handlers
 
         [LayoutEvent("save-layout")]
-        private void saveLayout(LayoutEvent e) {
+        private void SaveLayout(LayoutEvent e) {
             SaveModel(LayoutFilename);
             SaveDisplayState(FrameWindows);
 

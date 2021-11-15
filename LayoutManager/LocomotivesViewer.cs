@@ -6,6 +6,7 @@ using System.Xml;
 
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
+using LayoutManager.CommonUI;
 
 #pragma warning disable IDE0051, IDE0060
 namespace LayoutManager {
@@ -288,13 +289,13 @@ namespace LayoutManager {
         /// </summary>
         private void InitializeComponent() {
             this.components = new Container();
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(LocomotivesViewer));
-            this.contextMenuAdd = new ContextMenu();
-            this.menuItemAddLocomotive = new MenuItem();
-            this.menuItemAddTrain = new MenuItem();
-            this.contextMenuOptions = new ContextMenu();
-            this.menuItemArrange = new MenuItem();
-            this.menuItemStorage = new MenuItem();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LocomotivesViewer));
+            this.contextMenuAdd = new ContextMenuStrip();
+            this.menuItemAddLocomotive = new ToolStripMenuItem();
+            this.menuItemAddTrain = new ToolStripMenuItem();
+            this.contextMenuOptions = new ContextMenuStrip();
+            this.menuItemArrange = new ToolStripMenuItem();
+            this.menuItemStorage = new ToolStripMenuItem();
             this.buttonAdd = new Button();
             this.buttonEdit = new Button();
             this.buttonDelete = new Button();
@@ -302,7 +303,7 @@ namespace LayoutManager {
             this.panel1 = new Panel();
             this.buttonClose = new Button();
             this.imageListCloseButton = new ImageList(this.components);
-            this.contextMenuArrange = new ContextMenu();
+            this.contextMenuArrange = new ContextMenuStrip();
             this.locomotiveList = new LayoutManager.CommonUI.Controls.LocomotiveList();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -447,22 +448,22 @@ namespace LayoutManager {
         }
         #endregion
 
-        private void buttonAdd_Click(object sender, System.EventArgs e) {
+        private void buttonAdd_Click(object? sender, System.EventArgs e) {
             contextMenuAdd.Show(this, new Point(buttonAdd.Left, buttonAdd.Bottom + 2));
         }
 
-        private void menuItemAddLocomotive_Click(object sender, System.EventArgs e) {
+        private void menuItemAddLocomotive_Click(object? sender, System.EventArgs e) {
             EventManager.Event(new LayoutEvent("add-new-locomotive-to-collection", this));
         }
 
-        private void buttonOptions_Click(object sender, System.EventArgs e) {
+        private void buttonOptions_Click(object? sender, System.EventArgs e) {
             if (!operationMode)
                 contextMenuOptions.Show(this, new Point(buttonOptions.Left, buttonOptions.Bottom));
             else
                 contextMenuArrange.Show(this, new Point(buttonOptions.Left, buttonOptions.Bottom));
         }
 
-        private void menuItemStorage_Click(object sender, System.EventArgs e) {
+        private void menuItemStorage_Click(object? sender, System.EventArgs e) {
             Dialogs.LocomotiveCollectionStores stores = new Dialogs.LocomotiveCollectionStores("Locomotive Collection",
                 locomotiveCollection.Element["Stores"], "Locomotive Collection",
                 locomotiveCollection.DefaultStoreDirectory, ".LocomotiveCollection") {
@@ -479,40 +480,40 @@ namespace LayoutManager {
             SaveModelDocument();
         }
 
-        private void locomotiveList_SelectedIndexChanged(object sender, System.EventArgs e) {
+        private void locomotiveList_SelectedIndexChanged(object? sender, System.EventArgs e) {
             updateButtons();
         }
 
-        private void buttonEdit_Click(object sender, System.EventArgs e) {
+        private void buttonEdit_Click(object? sender, System.EventArgs e) {
             XmlElement selectedElement = locomotiveList.SelectedXmlElement;
 
             EventManager.Event(new LayoutEvent("edit-locomotive-collection-item", selectedElement));
         }
 
-        private void buttonDelete_Click(object sender, System.EventArgs e) {
+        private void buttonDelete_Click(object? sender, System.EventArgs e) {
             XmlElement selectedElement = locomotiveList.SelectedXmlElement;
 
             EventManager.Event(new LayoutEvent("delete-locomotive-collection-item", selectedElement));
         }
 
-        private void menuItemAddTrain_Click(object sender, System.EventArgs e) {
+        private void menuItemAddTrain_Click(object? sender, System.EventArgs e) {
             EventManager.Event(new LayoutEvent("add-new-train-to-collection", this));
         }
 
-        private void locomotiveList_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
+        private void locomotiveList_MouseDown(object? sender, System.Windows.Forms.MouseEventArgs e) {
             if ((e.Button & MouseButtons.Right) != 0) {
                 int clickedIndex = locomotiveList.IndexFromPoint(e.X, e.Y);
 
                 if (clickedIndex >= 0) {
                     if (locomotiveList.Items[clickedIndex] is IXmlQueryListBoxXmlElementItem clickedItem) {
-                        ContextMenu m = new ContextMenu();
+                        var m = new ContextMenuStrip);
 
                         if (operationMode)
-                            EventManager.Event(new LayoutEvent("add-locomotive-collection-operation-context-menu-entries", clickedItem.Element, m));
+                            EventManager.Event(new LayoutEvent("add-locomotive-collection-operation-context-menu-entries", clickedItem.Element, new MenuOrMenuItem(m)));
                         else
-                            EventManager.Event(new LayoutEvent("add-locomotive-collection-editing-context-menu-entries", clickedItem.Element, m));
+                            EventManager.Event(new LayoutEvent("add-locomotive-collection-editing-context-menu-entries", clickedItem.Element, new MenuOrMenuItem(m)));
 
-                        if (m.MenuItems.Count > 0) {
+                        if (m.Items.Count > 0) {
                             Rectangle itemRect = locomotiveList.GetItemRectangle(clickedIndex);
 
                             m.Show(this, new Point(itemRect.Left, (itemRect.Top + itemRect.Bottom) / 2));
@@ -522,7 +523,7 @@ namespace LayoutManager {
             }
         }
 
-        private void buttonClose_Click(object sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, System.EventArgs e) {
             EventManager.Event(new LayoutEvent("hide-locomotives", this));
         }
     }

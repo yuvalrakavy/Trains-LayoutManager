@@ -300,28 +300,28 @@ namespace LayoutManager.Dialogs {
             e.Info = this;
         }
 
-        private void PoliciesDefinition_Closed(object sender, System.EventArgs e) {
+        private void PoliciesDefinition_Closed(object? sender, System.EventArgs e) {
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
             policyListTripPlan.Dispose();
         }
 
-        private void PoliciesDefinition_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+        private void PoliciesDefinition_Closing(object? sender, System.ComponentModel.CancelEventArgs e) {
             if (Owner != null)
                 Owner.Activate();
         }
 
-        private void buttonClose_Click(object sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, System.EventArgs e) {
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void buttonExport_Click(object sender, EventArgs e) {
+        private void buttonExport_Click(object? sender, EventArgs e) {
             Dialogs.ExportPolicies d = new ExportPolicies();
 
             d.ShowDialog(this);
         }
 
-        private void buttonImport_Click(object sender, EventArgs e) {
+        private void buttonImport_Click(object? sender, EventArgs e) {
             Dialogs.ImportPolicies d = new ImportPolicies();
 
             d.ShowDialog(this);

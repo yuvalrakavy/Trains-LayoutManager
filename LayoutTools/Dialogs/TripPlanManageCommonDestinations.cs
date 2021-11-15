@@ -9,16 +9,7 @@ namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for TripPlanManageCommonDestinations.
     /// </summary>
-    public class TripPlanManageCommonDestinations : Form {
-        private TreeView treeViewDestinations;
-        private Button buttonDelete;
-        private Button buttonRename;
-        private Button buttonClose;
-
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container components = null;
+    public partial class TripPlanManageCommonDestinations : Form {
         private readonly TripPlanCatalogInfo tripPlanCatalog;
         private readonly LayoutSelection destinationSelection;
         private readonly ILayoutSelectionLook destinationSelectionLook = new LayoutSelectionLook(Color.Orange);
@@ -42,18 +33,18 @@ namespace LayoutManager.Tools.Dialogs {
             destinationSelection.Display(destinationSelectionLook);
             selectedLocationSelection.Display(selectedLocationSelectionLook);
 
-            updateButtons();
+            UpdateButtons();
         }
 
-        private DestinationNode getSelectedDestination() {
+        private DestinationNode? GetSelectedDestination() {
             TreeNode selected = treeViewDestinations.SelectedNode;
 
-            if (selected is DestinationNode)
-                return (DestinationNode)selected;
+            if (selected is DestinationNode desintation)
+                return desintation;
             else return selected is DestinationEntryNode ? (DestinationNode)selected.Parent : null;
         }
 
-        private void updateButtons() {
+        private void UpdateButtons() {
             TreeNode selected = treeViewDestinations.SelectedNode;
 
             if (selected != null && selected is DestinationNode) {
@@ -69,13 +60,13 @@ namespace LayoutManager.Tools.Dialogs {
             selectedLocationSelection.Clear();
 
             if (selected != null) {
-                DestinationNode selectedDestinationNode = null;
-                DestinationEntryNode selectedDestinationEntryNode = null;
+                DestinationNode?selectedDestinationNode = null;
+                DestinationEntryNode? selectedDestinationEntryNode = null;
 
-                if (selected is DestinationNode)
-                    selectedDestinationNode = (DestinationNode)selected;
-                else if (selected is DestinationEntryNode) {
-                    selectedDestinationEntryNode = (DestinationEntryNode)selected;
+                if (selected is DestinationNode destination)
+                    selectedDestinationNode = destination;
+                else if (selected is DestinationEntryNode destinationEntry) {
+                    selectedDestinationEntryNode = destinationEntry;
                     selectedDestinationNode = (DestinationNode)selected.Parent;
                 }
 
@@ -84,7 +75,7 @@ namespace LayoutManager.Tools.Dialogs {
                 if (selectedDestinationEntryNode != null)
                     selectedLocationSelection.Add(selectedDestinationEntryNode.BlockInfo);
 
-                ModelComponent component = null;
+                ModelComponent? component = null;
 
                 if (selectedLocationSelection.Count > 0)
                     component = selectedLocationSelection.Components.First();
@@ -108,80 +99,7 @@ namespace LayoutManager.Tools.Dialogs {
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.treeViewDestinations = new TreeView();
-            this.buttonDelete = new Button();
-            this.buttonRename = new Button();
-            this.buttonClose = new Button();
-            this.SuspendLayout();
-            // 
-            // treeViewDestinations
-            // 
-            this.treeViewDestinations.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right);
-            this.treeViewDestinations.HideSelection = false;
-            this.treeViewDestinations.ImageIndex = -1;
-            this.treeViewDestinations.Location = new System.Drawing.Point(8, 8);
-            this.treeViewDestinations.Name = "treeViewDestinations";
-            this.treeViewDestinations.SelectedImageIndex = -1;
-            this.treeViewDestinations.ShowLines = false;
-            this.treeViewDestinations.Size = new System.Drawing.Size(216, 208);
-            this.treeViewDestinations.TabIndex = 0;
-            this.treeViewDestinations.AfterSelect += this.treeViewDestinations_AfterSelect;
-            // 
-            // buttonDelete
-            // 
-            this.buttonDelete.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonDelete.Location = new System.Drawing.Point(8, 224);
-            this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(56, 19);
-            this.buttonDelete.TabIndex = 1;
-            this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += this.buttonDelete_Click;
-            // 
-            // buttonRename
-            // 
-            this.buttonRename.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonRename.Location = new System.Drawing.Point(72, 224);
-            this.buttonRename.Name = "buttonRename";
-            this.buttonRename.Size = new System.Drawing.Size(56, 19);
-            this.buttonRename.TabIndex = 1;
-            this.buttonRename.Text = "&Rename";
-            this.buttonRename.Click += this.buttonRename_Click;
-            // 
-            // buttonClose
-            // 
-            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonClose.Location = new System.Drawing.Point(168, 224);
-            this.buttonClose.Name = "buttonClose";
-            this.buttonClose.Size = new System.Drawing.Size(56, 19);
-            this.buttonClose.TabIndex = 1;
-            this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += this.buttonClose_Click;
-            // 
-            // TripPlanManageCommonDestinations
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
-            this.ClientSize = new System.Drawing.Size(232, 254);
-            this.ControlBox = false;
-            this.Controls.Add(this.buttonDelete);
-            this.Controls.Add(this.treeViewDestinations);
-            this.Controls.Add(this.buttonRename);
-            this.Controls.Add(this.buttonClose);
-            this.Name = "TripPlanManageCommonDestinations";
-            this.ShowInTaskbar = false;
-            this.Text = "Manage \"Smart\" Destinations";
-            this.ResumeLayout(false);
-        }
-        #endregion
-
-        private void buttonClose_Click(object sender, System.EventArgs e) {
+        private void ButtonClose_Click(object? sender, System.EventArgs e) {
             selectedLocationSelection.Hide();
             selectedLocationSelection.Clear();
             selectedLocationSelection.Hide();
@@ -190,26 +108,26 @@ namespace LayoutManager.Tools.Dialogs {
             this.Close();
         }
 
-        private void treeViewDestinations_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e) {
-            updateButtons();
+        private void TreeViewDestinations_AfterSelect(object? sender, System.Windows.Forms.TreeViewEventArgs e) {
+            UpdateButtons();
         }
 
-        private void buttonDelete_Click(object sender, System.EventArgs e) {
-            DestinationNode selected = getSelectedDestination();
+        private void ButtonDelete_Click(object? sender, System.EventArgs e) {
+            var selected = GetSelectedDestination();
 
             if (selected != null) {
                 tripPlanCatalog.Destinations.Remove(selected.Destination);
                 selected.Remove();
             }
 
-            updateButtons();
+            UpdateButtons();
         }
 
-        private void buttonRename_Click(object sender, System.EventArgs e) {
-            DestinationNode selected = getSelectedDestination();
+        private void ButtonRename_Click(object? sender, System.EventArgs e) {
+            var selected = GetSelectedDestination();
 
             if (selected != null) {
-                string name = CommonUI.Dialogs.InputBox.Show("Enter new name", "Rename Destination");
+                var name = CommonUI.Dialogs.InputBox.Show("Enter new name", "Rename Destination");
 
                 if (name != null) {
                     TripPlanDestinationInfo existingDestination = tripPlanCatalog.Destinations[name];
@@ -276,7 +194,7 @@ namespace LayoutManager.Tools.Dialogs {
                 get {
                     LayoutBlock block = LayoutModel.Blocks[Entry.BlockId];
 
-                    return block?.BlockDefinintion;
+                    return Ensure.NotNull<LayoutBlockDefinitionComponent>(block?.BlockDefinintion);
                 }
             }
         }

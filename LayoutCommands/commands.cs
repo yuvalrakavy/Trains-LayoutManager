@@ -138,7 +138,7 @@ namespace LayoutManager {
         }
 
         public override void Undo() {
-            LayoutComponentUnlinkCommand unlinkCommand = new LayoutComponentUnlinkCommand(trackLinkComponent);
+            var unlinkCommand = new LayoutComponentUnlinkCommand(trackLinkComponent);
 
             unlinkCommand.Do();
         }
@@ -173,7 +173,7 @@ namespace LayoutManager {
 
         public override void Undo() {
             if (savedLink != null) {
-                LayoutComponentLinkCommand linkCommand = new LayoutComponentLinkCommand(trackLinkComponent, savedLink);
+                var linkCommand = new LayoutComponentLinkCommand(trackLinkComponent, savedLink);
 
                 linkCommand.Do();
             }
@@ -274,7 +274,7 @@ namespace LayoutManager {
         private readonly int address = -1;
         private readonly ControlModuleReference? insertBefore = null;
         private ControlModuleReference? addedModuleReference = null;
-        private Guid? moduleLocationID;
+        private readonly Guid? moduleLocationID;
 
         private XmlElement? moduleElement;
 
@@ -567,18 +567,20 @@ namespace LayoutManager {
         }
 
         public override void Do() {
-            ControlModule thisModule = bus.GetModuleUsingAddress(address);
-            ControlModule otherModule = bus.GetModuleUsingAddress(address + delta);
+            var thisModule = bus.GetModuleUsingAddress(address);
+            var otherModule = bus.GetModuleUsingAddress(address + delta);
 
-            thisModule.Address = address + delta;
-            otherModule.Address = address;
+            if (thisModule != null && otherModule != null) {
+                thisModule.Address = address + delta;
+                otherModule.Address = address;
 
-            bus.ResetAddressModuleMap();
+                bus.ResetAddressModuleMap();
 
-            this.address = address + delta;
-            this.delta = -delta;
+                this.address = address + delta;
+                this.delta = -delta;
 
-            EventManager.Event(new LayoutEvent("control-module-address-changed", thisModule).SetOption("ModuleTypeName", thisModule.ModuleTypeName));
+                EventManager.Event(new LayoutEvent("control-module-address-changed", thisModule).SetOption("ModuleTypeName", thisModule.ModuleTypeName));
+            }
         }
 
         public override void Undo() {

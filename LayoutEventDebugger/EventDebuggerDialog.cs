@@ -421,7 +421,7 @@ namespace LayoutEventDebugger {
         }
         #endregion
 
-        private void buttonSubscribe_Click(object sender, System.EventArgs e) {
+        private void buttonSubscribe_Click(object? sender, System.EventArgs e) {
             ed.CancelActiveSubscription();
 
             var newSubscription = this.GetUpdattedSubscription();
@@ -431,13 +431,13 @@ namespace LayoutEventDebugger {
             updateDialog();
         }
 
-        private void buttonUnsubscribe_Click(object sender, System.EventArgs e) {
+        private void buttonUnsubscribe_Click(object? sender, System.EventArgs e) {
             ed.CancelActiveSubscription();
 
             updateDialog();
         }
 
-        private void buttonSendEvent_Click(object sender, System.EventArgs e) {
+        private void buttonSendEvent_Click(object? sender, System.EventArgs e) {
             ed.FiredEventName = textBoxEvent!.Text;
             ed.EventXmlInfo = xmlInfoEditorEvent!.XmlInfo.DocumentElement.InnerXml;
             LayoutEvent firedEvent = new LayoutEvent(ed.FiredEventName, sender: ed.Sender, xmlDocument: ed.EventXmlInfo);

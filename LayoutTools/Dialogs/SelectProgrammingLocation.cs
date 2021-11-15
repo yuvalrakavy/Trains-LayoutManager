@@ -17,7 +17,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         public LayoutBlockDefinitionComponent SelectedProgrammingLocation => (LayoutBlockDefinitionComponent)listBoxProgrammingLocations.SelectedItem;
 
-        private void listBoxProgrammingLocations_SelectedIndexChanged(object sender, EventArgs e) {
+        private void ListBoxProgrammingLocations_SelectedIndexChanged(object? sender, EventArgs e) {
             LayoutBlockDefinitionComponent blockDefinition = (LayoutBlockDefinitionComponent)listBoxProgrammingLocations.SelectedItem;
 
             if (blockDefinition != null)

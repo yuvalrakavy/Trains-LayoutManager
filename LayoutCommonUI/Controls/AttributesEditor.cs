@@ -1,8 +1,3 @@
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-
 namespace LayoutManager.CommonUI.Controls {
     public interface ICheckIfNameUsed {
         bool IsUsed(string name);
@@ -11,23 +6,8 @@ namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for AttributesEditor.
     /// </summary>
-    public class AttributesEditor : System.Windows.Forms.UserControl, ICheckIfNameUsed, IControlSupportViewOnly {
-        private ListView listViewAttributes;
-        private Button buttonAdd;
-        private Button buttonEdit;
-        private Button buttonRemove;
-        private ColumnHeader columnHeaderName;
-        private ColumnHeader columnHeaderType;
-        private ColumnHeader columnHeaderValue;
-
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container components = null;
-
-        private void endOfDesignerVariables() { }
-
-        private IObjectHasAttributes attributesOwner = null;
+    public partial class AttributesEditor : UserControl, ICheckIfNameUsed, IControlSupportViewOnly {
+        private IObjectHasAttributes? attributesOwner = null;
         private readonly ListViewStringColumnsSorter sorter;
         private bool viewOnly = false;
 
@@ -38,24 +18,24 @@ namespace LayoutManager.CommonUI.Controls {
             sorter = new ListViewStringColumnsSorter(listViewAttributes);
         }
 
-        public Type AttributesSource { get; set; } = null;
+        public Type? AttributesSource { get; set; } = null;
 
-        public IObjectHasAttributes AttributesOwner {
+        public IObjectHasAttributes? AttributesOwner {
             get {
-                return attributesOwner;
+                return Ensure.NotNull<IObjectHasAttributes>(attributesOwner);
             }
 
             set {
                 if (value != null) {
                     attributesOwner = value;
-                    initialize();
+                    Initialize();
                 }
                 else
                     listViewAttributes.Items.Clear();
             }
         }
 
-        public AttributesInfo Attributes => attributesOwner.Attributes;
+        public AttributesInfo? Attributes => AttributesOwner?.Attributes;
 
         public bool ViewOnly {
             get {
@@ -85,11 +65,13 @@ namespace LayoutManager.CommonUI.Controls {
         #region Operations
 
         public bool Commit() {
-            if (listViewAttributes.Items.Count > 0 || attributesOwner.HasAttributes) {
-                attributesOwner.Attributes.Clear();
+            if (AttributesOwner != null && (listViewAttributes.Items.Count > 0 || AttributesOwner.HasAttributes)) {
+                var attOwner = AttributesOwner;
+
+                attOwner.Attributes.Clear();
 
                 foreach (AttributeItem item in listViewAttributes.Items)
-                    attributesOwner.Attributes[item.AttributeName] = item.Value;
+                    attOwner.Attributes[item.AttributeName] = item.Value;
             }
 
             return true;
@@ -99,18 +81,18 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region methods
 
-        private void initialize() {
+        private void Initialize() {
             listViewAttributes.Items.Clear();
 
-            if (attributesOwner.HasAttributes) {
+            if (AttributesOwner != null && AttributesOwner.HasAttributes && Attributes != null) {
                 foreach (AttributeInfo attribute in Attributes)
                     listViewAttributes.Items.Add(new AttributeItem(attribute.Name, attribute.Value));
             }
 
-            updateButtons(null, null);
+            UpdateButtons(null, EventArgs.Empty);
         }
 
-        private void updateButtons(object sender, EventArgs e) {
+        private void UpdateButtons(object? sender, EventArgs e) {
             if (listViewAttributes.SelectedItems.Count > 0) {
                 buttonEdit.Enabled = true;
                 buttonRemove.Enabled = true;
@@ -128,7 +110,7 @@ namespace LayoutManager.CommonUI.Controls {
             return false;
         }
 
-        private AttributeItem getSelected() {
+        private AttributeItem? GetSelected() {
             return listViewAttributes.SelectedItems.Count == 0 ? null : (AttributeItem)listViewAttributes.SelectedItems[0];
         }
 
@@ -146,128 +128,36 @@ namespace LayoutManager.CommonUI.Controls {
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.listViewAttributes = new ListView();
-            this.columnHeaderName = new ColumnHeader();
-            this.columnHeaderType = new ColumnHeader();
-            this.columnHeaderValue = new ColumnHeader();
-            this.buttonAdd = new Button();
-            this.buttonEdit = new Button();
-            this.buttonRemove = new Button();
-            this.SuspendLayout();
-            // 
-            // listViewAttributes
-            // 
-            this.listViewAttributes.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right;
-            this.listViewAttributes.Columns.AddRange(new ColumnHeader[] {
-                                                                                                 this.columnHeaderName,
-                                                                                                 this.columnHeaderType,
-                                                                                                 this.columnHeaderValue});
-            this.listViewAttributes.FullRowSelect = true;
-            this.listViewAttributes.GridLines = true;
-            this.listViewAttributes.Location = new System.Drawing.Point(8, 8);
-            this.listViewAttributes.MultiSelect = false;
-            this.listViewAttributes.Name = "listViewAttributes";
-            this.listViewAttributes.Size = new System.Drawing.Size(240, 160);
-            this.listViewAttributes.TabIndex = 0;
-            this.listViewAttributes.View = System.Windows.Forms.View.Details;
-            this.listViewAttributes.DoubleClick += this.buttonEdit_Click;
-            this.listViewAttributes.SelectedIndexChanged += this.updateButtons;
-            // 
-            // columnHeaderName
-            // 
-            this.columnHeaderName.Text = "Name";
-            this.columnHeaderName.Width = 90;
-            // 
-            // columnHeaderType
-            // 
-            this.columnHeaderType.Text = "Type";
-            this.columnHeaderType.Width = 56;
-            // 
-            // columnHeaderValue
-            // 
-            this.columnHeaderValue.Text = "Value";
-            this.columnHeaderValue.Width = 90;
-            // 
-            // buttonAdd
-            // 
-            this.buttonAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonAdd.Location = new System.Drawing.Point(8, 176);
-            this.buttonAdd.Name = "buttonAdd";
-            this.buttonAdd.Size = new System.Drawing.Size(56, 20);
-            this.buttonAdd.TabIndex = 1;
-            this.buttonAdd.Text = "&Add";
-            this.buttonAdd.Click += this.buttonAdd_Click;
-            // 
-            // buttonEdit
-            // 
-            this.buttonEdit.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonEdit.Location = new System.Drawing.Point(72, 176);
-            this.buttonEdit.Name = "buttonEdit";
-            this.buttonEdit.Size = new System.Drawing.Size(56, 20);
-            this.buttonEdit.TabIndex = 1;
-            this.buttonEdit.Text = "&Edit";
-            this.buttonEdit.Click += this.buttonEdit_Click;
-            // 
-            // buttonRemove
-            // 
-            this.buttonRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonRemove.Location = new System.Drawing.Point(136, 176);
-            this.buttonRemove.Name = "buttonRemove";
-            this.buttonRemove.Size = new System.Drawing.Size(56, 20);
-            this.buttonRemove.TabIndex = 1;
-            this.buttonRemove.Text = "&Remove";
-            this.buttonRemove.Click += this.buttonRemove_Click;
-            // 
-            // AttributesEditor
-            // 
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
-                                                                          this.buttonAdd,
-                                                                          this.listViewAttributes,
-                                                                          this.buttonEdit,
-                                                                          this.buttonRemove});
-            this.Name = "AttributesEditor";
-            this.Size = new System.Drawing.Size(256, 200);
-            this.ResumeLayout(false);
-        }
-        #endregion
 
-        private void buttonAdd_Click(object sender, System.EventArgs e) {
-            Dialogs.AttributeDefinition d = new Dialogs.AttributeDefinition(AttributesSource, this, null, null);
+        private void ButtonAdd_Click(object? sender, EventArgs e) {
+            Dialogs.AttributeDefinition d = new(AttributesSource, this, null, null);
 
             if (d.ShowDialog(this) == DialogResult.OK) {
                 listViewAttributes.Items.Add(new AttributeItem(d.AttributeName, d.Value));
-                updateButtons(null, null);
+                UpdateButtons(null, EventArgs.Empty);
             }
         }
 
-        private void buttonEdit_Click(object sender, System.EventArgs e) {
-            AttributeItem selected = getSelected();
+        private void ButtonEdit_Click(object? sender, EventArgs e) {
+            var selected = GetSelected();
 
             if (selected != null && !viewOnly) {
-                Dialogs.AttributeDefinition d = new Dialogs.AttributeDefinition(AttributesSource, this, selected.AttributeName, selected.Value);
+                Dialogs.AttributeDefinition d = new(AttributesSource, this, selected.AttributeName, selected.Value);
 
                 if (d.ShowDialog(this) == DialogResult.OK) {
                     selected.AttributeName = d.AttributeName;
                     selected.Value = d.Value;
                 }
-                updateButtons(null, null);
+                UpdateButtons(null, EventArgs.Empty);
             }
         }
 
-        private void buttonRemove_Click(object sender, System.EventArgs e) {
-            AttributeItem selected = getSelected();
+        private void ButtonRemove_Click(object? sender, EventArgs e) {
+            var selected = GetSelected();
 
             if (selected != null) {
                 listViewAttributes.Items.Remove(selected);
-                updateButtons(null, null);
+                UpdateButtons(null, EventArgs.Empty);
             }
         }
 
@@ -312,17 +202,17 @@ namespace LayoutManager.CommonUI.Controls {
                 string typeName;
                 string valueString;
 
-                if (attributeValue is string) {
+                if (attributeValue is string aString) {
                     typeName = "Text";
-                    valueString = (string)attributeValue;
+                    valueString = aString;
                 }
-                else if (attributeValue is bool) {
+                else if (attributeValue is bool aBool) {
                     typeName = "Boolean";
-                    valueString = attributeValue.ToString();
+                    valueString = aBool.ToString();
                 }
-                else if (attributeValue is int) {
+                else if (attributeValue is int anInt) {
                     typeName = "Number";
-                    valueString = attributeValue.ToString();
+                    valueString = anInt.ToString();
                 }
                 else
                     throw new ApplicationException("Attribute value has non-supported type");

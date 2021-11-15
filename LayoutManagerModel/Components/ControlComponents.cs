@@ -7,7 +7,6 @@ using System.Xml;
 using LayoutManager.Model;
 
 #nullable enable
-#pragma warning disable RCS1163
 namespace LayoutManager.Components {
     #region Block Edge base classes
 
@@ -82,7 +81,7 @@ namespace LayoutManager.Components {
 
         public XmlElement LinkedSignalsElement {
             get {
-                XmlElement linkedSignalsElement = Element["LinkedSignals"];
+                var linkedSignalsElement = Element["LinkedSignals"];
 
                 if (linkedSignalsElement == null) {
                     linkedSignalsElement = Element.OwnerDocument.CreateElement("LinkedSignals");
@@ -96,11 +95,11 @@ namespace LayoutManager.Components {
         public LinkedSignalsCollection LinkedSignals => new LinkedSignalsCollection(this);
 
         public LayoutSignalState SignalState {
-            get => LayoutModel.StateManager.Components.StateOf(this.Id, "Signal").AttributeValue(A_State).Enum<LayoutSignalState>() ?? LayoutSignalState.Yellow;
+            get => LayoutModel.StateManager.Components.OptionalStateOf(this.Id, "Signal").AttributeValue(A_State).Enum<LayoutSignalState>() ?? LayoutSignalState.Yellow;
 
             [LayoutEventDef("logical-signal-state-changed", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutBlockEdgeBase), InfoType = typeof(LayoutSignalState))]
             set {
-                LayoutModel.StateManager.Components.StateOf(this, "Signal", create: true).SetAttributeValue(A_State, value);
+                LayoutModel.StateManager.Components.StateOf(this, "Signal").SetAttributeValue(A_State, value);
                 Redraw();
                 EventManager.Event(new LayoutEvent("logical-signal-state-changed", this, value));
             }
@@ -190,7 +189,7 @@ namespace LayoutManager.Components {
             set {
                 if (value != IsTriggered) {
                     if (value)
-                        LayoutModel.StateManager.Components.StateOf(this, Topic_TriggeredState, create: true).SetAttribute(A_Value, "True");
+                        LayoutModel.StateManager.Components.StateOf(this, Topic_TriggeredState).SetAttribute(A_Value, "True");
                     else
                         LayoutModel.StateManager.Components.Remove(this, Topic_TriggeredState);
 
@@ -451,7 +450,7 @@ namespace LayoutManager.Components {
 
         public XmlElement ResourcesElement {
             get {
-                XmlElement resourcesElement = Element[E_Resources];
+                XmlElement? resourcesElement = Element[E_Resources];
 
                 if (resourcesElement == null) {
                     resourcesElement = Element.OwnerDocument.CreateElement(E_Resources);
@@ -464,7 +463,7 @@ namespace LayoutManager.Components {
 
         public XmlElement PoliciesElement {
             get {
-                XmlElement policiesElement = Element[E_Policies];
+                XmlElement? policiesElement = Element[E_Policies];
 
                 if (policiesElement == null) {
                     policiesElement = Element.OwnerDocument.CreateElement(E_Policies);
@@ -485,21 +484,17 @@ namespace LayoutManager.Components {
         /// </summary>
         /// <param name="detected">Train detection status</param>
         public void SetTrainDetected(bool detected) {
-            var trainDetectionElement = LayoutModel.StateManager.Components.StateOf(BlockDefinition, "TrainDetection", create: true);
-
-            trainDetectionElement.SetAttributeValue(A_TrainDetected, detected);
+            LayoutModel.StateManager.Components.StateOf(BlockDefinition, "TrainDetection").SetAttributeValue(A_TrainDetected, detected);
         }
 
         public void SetTrainWillBeDetected(bool detected) {
-            var trainDetectionElement = LayoutModel.StateManager.Components.StateOf(BlockDefinition, "TrainDetection", create: true);
-
-            trainDetectionElement.SetAttributeValue(A_TrainWillBeDetected, detected);
+            LayoutModel.StateManager.Components.StateOf(BlockDefinition, "TrainDetection").SetAttributeValue(A_TrainWillBeDetected, detected);
         }
 
         public bool TrainWillBeDetected {
             get {
                 if (IsOccupancyDetectionBlock)
-                    return (bool?)LayoutModel.StateManager.Components.StateOf(BlockDefinition.Id, "TrainDetection").AttributeValue(A_TrainWillBeDetected) ?? false;
+                    return (bool?)LayoutModel.StateManager.Components.OptionalStateOf(BlockDefinition.Id, "TrainDetection").AttributeValue(A_TrainWillBeDetected) ?? false;
                 else {
                     LayoutBlock block = BlockDefinition.Block;
 
@@ -551,7 +546,7 @@ namespace LayoutManager.Components {
         public bool TrainDetected {
             get {
                 if (IsOccupancyDetectionBlock)
-                    return (bool?)LayoutModel.StateManager.Components.StateOf(BlockDefinition.Id, "TrainDetection").AttributeValue(A_TrainDetected) ?? false;
+                    return (bool?)LayoutModel.StateManager.Components.OptionalStateOf(BlockDefinition.Id, "TrainDetection").AttributeValue(A_TrainDetected) ?? false;
                 else {
                     LayoutBlock block = BlockDefinition.Block;
 
@@ -656,11 +651,11 @@ namespace LayoutManager.Components {
 
         public LayoutBlockDefinitionComponentInfo Info => new LayoutBlockDefinitionComponentInfo(this, Element);
 
-        public LayoutTrackComponent Track => Spot.Track;
+        public LayoutTrackComponent Track => Ensure.NotNull<LayoutTrackComponent>(Spot.Track);
 
-        public LayoutBlock Block => Track.GetBlock(Track.ConnectionPoints[0]);
+        public LayoutBlock Block => Ensure.NotNull<LayoutBlock>(Track?.GetBlock(Track.ConnectionPoints[0]));
 
-        public LayoutBlock? OptionalBlock => Track.GetOptionalBlock(Track.ConnectionPoints[0]);
+        public LayoutBlock? OptionalBlock => Track?.GetOptionalBlock(Track.ConnectionPoints[0]);
 
         public LayoutTrackPowerConnectorComponent PowerConnector {
             get {
@@ -844,7 +839,7 @@ namespace LayoutManager.Components {
         /// Get or set the signal state
         /// </summary>
         public LayoutSignalState SignalState {
-            get => LayoutModel.StateManager.Components.StateOf(this, "SignalState").AttributeValue("Value").Enum<LayoutSignalState>() ?? LayoutSignalState.Yellow;
+            get => LayoutModel.StateManager.Components.OptionalStateOf(this, "SignalState").AttributeValue("Value").Enum<LayoutSignalState>() ?? LayoutSignalState.Yellow;
 
             set {
                 var connectionPoint = LayoutModel.ControlManager.ConnectionPoints[this]?[0];
@@ -865,7 +860,7 @@ namespace LayoutManager.Components {
         /// <param name="switchState">The new switch state</param>
         public void SetSignalState(LayoutSignalState state) {
             // TODO: Complaint if a switch state is changed not either when there is no lock, or not by lock owner.
-            LayoutModel.StateManager.Components.StateOf(this, "SignalState", create: true).SetAttribute("Value", state.ToString());
+            LayoutModel.StateManager.Components.StateOf(this, "SignalState").SetAttribute("Value", state.ToString());
             OnComponentChanged();
         }
 
@@ -911,7 +906,7 @@ namespace LayoutManager.Components {
         /// </summary>
         public XmlElement DefaultsElement {
             get {
-                XmlElement defaultsElement = Element[E_Defaults];
+                XmlElement? defaultsElement = Element[E_Defaults];
 
                 if (defaultsElement == null) {
                     defaultsElement = Element.OwnerDocument.CreateElement(E_Defaults);
@@ -985,7 +980,7 @@ namespace LayoutManager.Components {
             set => SetAttributeValue(A_BusId, value);
         }
 
-        public ControlBus? Bus => LayoutModel.ControlManager.Buses[BusId];
+        public ControlBus Bus => Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses[BusId]);
 
         /// <summary>
         /// The component type name of the default component to add this bus when new module is needed to be added to this location
@@ -1027,6 +1022,6 @@ namespace LayoutManager.Components {
 
         public override bool DrawOutOfGrid => NameProvider.Element != null;
 
-        public LayoutControlModuleLocationComponentInfo Info => _info ?? (_info = new LayoutControlModuleLocationComponentInfo(this, Element));
+        public LayoutControlModuleLocationComponentInfo Info => _info ??= new LayoutControlModuleLocationComponentInfo(this, Element);
     }
 }

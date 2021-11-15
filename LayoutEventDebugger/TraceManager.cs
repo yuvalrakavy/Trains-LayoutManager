@@ -338,7 +338,7 @@ namespace LayoutEventDebugger {
             selection.Update();
         }
 
-        private void listViewSwitches_SelectedIndexChanged(object sender, System.EventArgs e) {
+        private void listViewSwitches_SelectedIndexChanged(object? sender, System.EventArgs e) {
             Switch selectedSwitch = getSelected();
 
             setRadioButtonLayout();
@@ -376,50 +376,50 @@ namespace LayoutEventDebugger {
             }
         }
 
-        private void radioButtonTraceNone_CheckedChanged(object sender, System.EventArgs e) {
+        private void radioButtonTraceNone_CheckedChanged(object? sender, System.EventArgs e) {
             if (getSelected() is TraceSwitch selectedSwitch)
                 selectedSwitch.Level = TraceLevel.Off;
 
             updateSelected();
         }
 
-        private void radioButtonTraceError_CheckedChanged(object sender, System.EventArgs e) {
+        private void radioButtonTraceError_CheckedChanged(object? sender, System.EventArgs e) {
             if (getSelected() is TraceSwitch selectedSwitch)
                 selectedSwitch.Level = TraceLevel.Error;
             updateSelected();
         }
 
-        private void radioButtonWarnings_CheckedChanged(object sender, System.EventArgs e) {
+        private void radioButtonWarnings_CheckedChanged(object? sender, System.EventArgs e) {
             if (getSelected() is TraceSwitch selectedSwitch)
                 selectedSwitch.Level = TraceLevel.Warning;
             updateSelected();
         }
 
-        private void radioButtonTraceInfo_CheckedChanged(object sender, System.EventArgs e) {
+        private void radioButtonTraceInfo_CheckedChanged(object? sender, System.EventArgs e) {
             if (getSelected() is TraceSwitch selectedSwitch)
                 selectedSwitch.Level = TraceLevel.Info;
             updateSelected();
         }
 
-        private void radioButtonTraceVerbose_CheckedChanged(object sender, System.EventArgs e) {
+        private void radioButtonTraceVerbose_CheckedChanged(object? sender, System.EventArgs e) {
             if (getSelected() is TraceSwitch selectedSwitch)
                 selectedSwitch.Level = TraceLevel.Verbose;
             updateSelected();
         }
 
-        private void radioButtonBooleanOff_CheckedChanged(object sender, System.EventArgs e) {
+        private void radioButtonBooleanOff_CheckedChanged(object? sender, System.EventArgs e) {
             if (getSelected() is BooleanSwitch selectedSwitch)
                 selectedSwitch.Enabled = false;
             updateSelected();
         }
 
-        private void radioButtonBooleanOn_CheckedChanged(object sender, System.EventArgs e) {
+        private void radioButtonBooleanOn_CheckedChanged(object? sender, System.EventArgs e) {
             if (getSelected() is BooleanSwitch selectedSwitch)
                 selectedSwitch.Enabled = true;
             updateSelected();
         }
 
-        private void switchTypeChanged(object sender, EventArgs e) {
+        private void switchTypeChanged(object? sender, EventArgs e) {
             fillList();
         }
 
@@ -481,7 +481,7 @@ namespace LayoutEventDebugger {
             toolsMenu.MenuItems.Add("&Trace switches", new EventHandler(this.onSetTraceSwitches));
         }
 
-        private void onSetTraceSwitches(object sender, EventArgs e) {
+        private void onSetTraceSwitches(object? sender, EventArgs e) {
             TraceManager traceManager = new TraceManager();
 
             traceManager.ShowDialog();

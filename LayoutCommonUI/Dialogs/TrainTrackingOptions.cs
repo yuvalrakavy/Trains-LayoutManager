@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
+﻿
 using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI.Dialogs {
@@ -21,7 +12,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             }
         }
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             if (radioButtonManualDispatchNormalTracking.Checked)
                 LayoutModel.StateManager.TrainTrackingOptions.TrainTrackingInManualDispatchRegion = TrainTrackingInManualDispatchRegion.Normal;
             else if (radioButtonManualDispatchNoTracking.Checked)

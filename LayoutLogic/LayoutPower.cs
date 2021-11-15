@@ -8,15 +8,13 @@ using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-#nullable enable
-#pragma warning disable IDE0051
 namespace LayoutManager.Logic {
     [LayoutModule("Layout Power Manager", UserControl = false)]
     internal class LayoutPowerManager : LayoutModuleBase {
         private static ILayoutTopologyServices? _topologyServices;
         private readonly Dictionary<Guid, Guid> _pendingPowerConnectedLockReady = new Dictionary<Guid, Guid>();
 
-        private static ILayoutTopologyServices TopologyServices => _topologyServices ?? (_topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", sender: null))!);
+        private static ILayoutTopologyServices TopologyServices => _topologyServices ??= (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", sender: null))!;
 
         /// <summary>
         /// Event that indicates that a power source state was changed. Check if this power source is connected to any track power connector.
@@ -45,7 +43,7 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEvent("register-power-connected-lock")]
-        private void registerPowerConnectedLock(LayoutEvent e0) {
+        private void RegisterPowerConnectedLock(LayoutEvent e0) {
             var e = (LayoutEvent<LayoutTrackPowerConnectorComponent>)e0;
             var outletComponent = e.Sender?.Info?.Inlet?.ConnectedOutlet?.OutletComponent;
 
@@ -63,7 +61,7 @@ namespace LayoutManager.Logic {
         private void CheckForReverseLoops(LayoutEvent e) {
             LayoutPhase phase = e.GetPhases();
 
-            if (checkForReverseLoopsForPowerSection(phase))
+            if (CheckForReverseLoopsForPowerSection(phase))
                 e.Info = false;
         }
 
@@ -112,7 +110,7 @@ namespace LayoutManager.Logic {
             }
         }
 
-        private bool checkForReverseLoopsForPowerSection(LayoutPhase phase) {
+        private bool CheckForReverseLoopsForPowerSection(LayoutPhase phase) {
             var scanStack = new ReverseLoopScanStack();
 
             foreach (var split in LayoutModel.Components<IModelComponentIsMultiPath>(phase)) {
@@ -156,7 +154,7 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEvent("add-power-connector-as-resource")]
-        private void addPowerConnectorAsResource(LayoutEvent e0) {
+        private void AddPowerConnectorAsResource(LayoutEvent e0) {
             var e = (LayoutEvent<LayoutTrackPowerConnectorComponent, Action<LayoutBlockDefinitionComponent>>)e0;
             var powerConnector = e.Sender;
 
@@ -185,10 +183,10 @@ namespace LayoutManager.Logic {
                 e.Info = false;
             }
             else {
-                resetPowerConnectors();
+                ResetPowerConnectors();
 
                 foreach (LayoutTrackPowerConnectorComponent powerConnector in powerConnectors) {
-                    LayoutTrackComponent track = powerConnector.Spot.Track;
+                    var track = powerConnector.Spot.Track;
 
                     if (track == null) {
                         Error(powerConnector, "power connector is not on track component");
@@ -210,7 +208,7 @@ namespace LayoutManager.Logic {
                                 e.Info = false;
                             }
                             else
-                                propagatePowerConnector(powerConnector);
+                                PropagatePowerConnector(powerConnector);
                         }
                     }
                 }
@@ -225,7 +223,7 @@ namespace LayoutManager.Logic {
                 foreach (LayoutModelArea area in LayoutModel.Areas) {
                     foreach (LayoutModelSpotComponentCollection spot in area.Grid.Values) {
                         if ((spot.Phase & phase) != 0) {
-                            LayoutTrackComponent track = spot.Track;
+                            var track = spot.Track;
 
                             if (track != null) {
                                 foreach (LayoutComponentConnectionPoint cp in track.ConnectionPoints) {
@@ -260,20 +258,20 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEvent("check-layout", Order = 102)]
-        private void checkPowerSelectors(LayoutEvent e) {
+        private void CheckPowerSelectors(LayoutEvent e) {
             LayoutPhase phase = e.GetPhases();
 
             var powerSelectorComponents = LayoutModel.Components<LayoutPowerSelectorComponent>(phase);
 
             foreach (var powerSelector in powerSelectorComponents) {
-                if (!checkInlet(powerSelector, powerSelector.Inlet1, "Inlet 1"))
+                if (!CheckInlet(powerSelector, powerSelector.Inlet1, "Inlet 1"))
                     e.Info = false;
-                if (!checkInlet(powerSelector, powerSelector.Inlet2, "Inlet 2"))
+                if (!CheckInlet(powerSelector, powerSelector.Inlet2, "Inlet 2"))
                     e.Info = false;
             }
         }
 
-        private bool checkInlet(LayoutPowerSelectorComponent powerSelector, ILayoutPowerInlet inlet, string inletName) {
+        private bool CheckInlet(LayoutPowerSelectorComponent powerSelector, ILayoutPowerInlet inlet, string inletName) {
             if (inlet.OutletComponentId != Guid.Empty && inlet.OutletComponent == null) {
                 if (LayoutModel.Component<IModelComponentHasPowerOutlets>(inlet.OutletComponentId, LayoutPhase.All) == null) {
                     Error(powerSelector, "Inlet " + inletName + " was connected to component that is no longer on the layout");
@@ -288,10 +286,10 @@ namespace LayoutManager.Logic {
                 return true;
         }
 
-        private static void resetPowerConnectors() {
+        private static void ResetPowerConnectors() {
             foreach (LayoutModelArea area in LayoutModel.Areas) {
                 foreach (LayoutModelSpotComponentCollection spot in area.Grid.Values) {
-                    LayoutTrackComponent track = spot.Track;
+                    var track = spot.Track;
 
                     if (track != null) {
                         if (track.Spot[ModelComponentKind.TrackLink] == null) {
@@ -303,16 +301,18 @@ namespace LayoutManager.Logic {
             }
         }
 
-        private void propagatePowerConnector(LayoutTrackPowerConnectorComponent powerConnector) {
+        private void PropagatePowerConnector(LayoutTrackPowerConnectorComponent powerConnector) {
             Stack<TrackEdge> scanStack = new Stack<TrackEdge>(10);
-            LayoutTrackComponent track = powerConnector.Spot.Track;
+            var track = powerConnector.Spot.Track;
             TrackEdgeDictionary scannedEdges = new TrackEdgeDictionary();
 
-            foreach (LayoutComponentConnectionPoint cp in track.ConnectionPoints) {
-                scanStack.Push(new TrackEdge(track, cp));
+            if (track != null) {
+                foreach (LayoutComponentConnectionPoint cp in track.ConnectionPoints) {
+                    scanStack.Push(new TrackEdge(track, cp));
 
-                foreach (TrackEdge edge in TopologyServices.FindConnectingTracks(new TrackEdge(track, cp), LayoutComponentConnectionType.Electrical))
-                    scanStack.Push(edge);
+                    foreach (TrackEdge edge in TopologyServices.FindConnectingTracks(new TrackEdge(track, cp), LayoutComponentConnectionType.Electrical))
+                        scanStack.Push(edge);
+                }
             }
 
             while (scanStack.Count > 0) {
@@ -352,7 +352,7 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEvent("change-train-power")]
-        private void changeTrainPower(LayoutEvent e0) {
+        private void ChangeTrainPower(LayoutEvent e0) {
             var e = (LayoutEvent<TrainStateInfo, ILayoutPower>)e0;
 
             Debug.Assert(e.Sender != null && e.Info != null);
@@ -361,15 +361,17 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutAsyncEvent("set-power")]
-        private async Task setPower(LayoutEvent e) {
+        private async Task SetPower(LayoutEvent e) {
             var powerRegionObject = Ensure.NotNull<object>(e.Sender, "power region");
             LayoutTrackPowerConnectorComponent powerConnector = ExtractPowerConnector(powerRegionObject);
             ILayoutPower power;
 
-            if (e.Info is ILayoutPower)
-                power = (ILayoutPower)e.Info;
-            else if (e.Info is LayoutPowerType)
-                power = (from p in powerConnector.Inlet.ConnectedOutlet.ObtainablePowers where p.Type == (LayoutPowerType)e.Info select p).FirstOrDefault();
+            if (e.Info is ILayoutPower aPower)
+                power = aPower;
+            else if (e.Info is LayoutPowerType powerType)
+                power = Ensure.NotNull<ILayoutPower>(
+                        (from p in powerConnector.Inlet.ConnectedOutlet.ObtainablePowers where p.Type == powerType select p).FirstOrDefault()
+                    );
             else
                 throw new ArgumentException("Invalid power for set-power");
 
@@ -446,7 +448,7 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEvent("command-station-power-on-notification")]
-        private void onCommandStationPowerOn(LayoutEvent e) {
+        private void OnCommandStationPowerOn(LayoutEvent e) {
             var commandStation = Ensure.NotNull<IModelComponentIsCommandStation>(e.Sender, "commandStation");
 
             if (LayoutController.IsOperationMode) {
@@ -457,7 +459,7 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEvent("train-placed-on-track")]
-        private void onTrainPlaced(LayoutEvent e0) {
+        private void OnTrainPlaced(LayoutEvent e0) {
             var e = (LayoutEvent<TrainStateInfo>)e0;
             var train = e.Sender;
 
@@ -467,7 +469,7 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEvent("train-is-removed")]
-        private void onCanRemoveTrain(LayoutEvent e) {
+        private void OnCanRemoveTrain(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
             var power = train.LocomotiveBlock?.BlockDefinintion.Power;
 

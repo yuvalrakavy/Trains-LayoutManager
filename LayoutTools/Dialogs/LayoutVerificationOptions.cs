@@ -11,7 +11,7 @@ namespace LayoutManager.Tools.Dialogs {
             checkBoxIgnorePowerComponents.Checked = LayoutModel.StateManager.VerificationOptions.IgnoreNotConnectedPowerComponents;
         }
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             LayoutModel.StateManager.VerificationOptions.IgnoreNotConnectedFeedbacks = checkBoxIgnoreFeedbackComponents.Checked;
             LayoutModel.StateManager.VerificationOptions.IgnoreNotConnectedPowerComponents = checkBoxIgnorePowerComponents.Checked;
 

@@ -16,7 +16,7 @@ namespace Gui.Wizard {
             }
         }
 
-        private void handleRemovePage(object sender, EventArgs e) {
+        private void handleRemovePage(object? sender, EventArgs e) {
             WizardPage page = this.Control as WizardPage;
 
             IDesignerHost h = (IDesignerHost)GetService(typeof(IDesignerHost));

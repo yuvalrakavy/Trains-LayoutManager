@@ -147,7 +147,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonOK_Click(object sender, System.EventArgs e) {
+        private void buttonOK_Click(object? sender, System.EventArgs e) {
             if (textBoxTitle.Text.Trim() == "") {
                 MessageBox.Show(this, "You must specify title", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxTitle.Focus();

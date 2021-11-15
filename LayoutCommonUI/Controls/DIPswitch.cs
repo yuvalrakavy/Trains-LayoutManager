@@ -1,18 +1,13 @@
-using System;
 using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for DIPswitch.
     /// </summary>
-    public class DIPswitch : System.Windows.Forms.Control {
+    public partial class DIPswitch : Control {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
-
         private int switchCount = 8;
         private long switchValue = 0;
         private bool lsbOnRight = false;
@@ -81,23 +76,14 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        #region Component Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            components = new Container();
-        }
-        #endregion
 
-        private void drawSwitch(Graphics g, int iSwitch, int switchIndex) {
+        private void DrawSwitch(Graphics g, int iSwitch, int switchIndex) {
             int switchHeight = Height - topMargin - bottomMargin;
-            Rectangle switchRect = new Rectangle(new Point(leftMargin + (xUnit * 2 * iSwitch), topMargin), new Size(xUnit, switchHeight));
+            Rectangle switchRect = new(new Point(leftMargin + (xUnit * 2 * iSwitch), topMargin), new Size(xUnit, switchHeight));
             bool thumbUp = (switchValue & (1 << switchIndex)) != 0;
             int thumbHeight = switchHeight / 3;
             int yThumb = thumbUp ? switchRect.Top + 1 : switchRect.Bottom - thumbHeight - 2;
-            Rectangle thumbRect = new Rectangle(new Point(switchRect.Left + 1, yThumb), new Size(xUnit - 2, thumbHeight));
+            Rectangle thumbRect = new(new Point(switchRect.Left + 1, yThumb), new Size(xUnit - 2, thumbHeight));
 
             g.FillRectangle(Brushes.Silver, switchRect);
             g.DrawLines(Pens.DarkGray, new Point[] { new Point(switchRect.Left, switchRect.Bottom), new Point(switchRect.Left, switchRect.Top), new Point(switchRect.Right, switchRect.Top) });
@@ -107,15 +93,15 @@ namespace LayoutManager.CommonUI.Controls {
             g.DrawLines(Pens.White, new Point[] { new Point(thumbRect.Left, thumbRect.Bottom), new Point(thumbRect.Left, thumbRect.Top), new Point(thumbRect.Right, thumbRect.Top) });
             g.DrawLines(Pens.Gainsboro, new Point[] { new Point(thumbRect.Right, thumbRect.Top + 1), new Point(thumbRect.Right, thumbRect.Bottom), new Point(thumbRect.Left, thumbRect.Bottom) });
 
-            using Font labelFont = new Font("Arial", 6.5F);
+            using Font labelFont = new("Arial", 6.5F);
             string label = ((int)(switchIndex + SwitchCountBase)).ToString();
             SizeF labelSize = g.MeasureString(label, labelFont);
 
             g.DrawString(label, labelFont, Brushes.White, new RectangleF(new PointF(switchRect.Left + ((switchRect.Width - labelSize.Width) / 2), switchRect.Bottom + 2), labelSize));
         }
 
-        private void drawLabels(Graphics g) {
-            using Font labelFont = new Font("Arial", 6.5F);
+        private void DrawLabels(Graphics g) {
+            using Font labelFont = new("Arial", 6.5F);
             SizeF labelSize;
 
             labelSize = g.MeasureString("On", labelFont);
@@ -129,10 +115,10 @@ namespace LayoutManager.CommonUI.Controls {
             base.OnPaint(pe);
 
             xUnit = (Width - leftMargin) / (2 * switchCount);
-            float ySwitch = Height - topMargin - bottomMargin;
+            //float ySwitch = Height - topMargin - bottomMargin;
 
             RectangleF clipBounds = pe.Graphics.VisibleClipBounds;
-            Bitmap buffer = new Bitmap((int)Math.Ceiling(clipBounds.Width), (int)Math.Ceiling(clipBounds.Height), pe.Graphics);
+            Bitmap buffer = new((int)Math.Ceiling(clipBounds.Width), (int)Math.Ceiling(clipBounds.Height), pe.Graphics);
 
             using (Graphics g = Graphics.FromImage(buffer)) {
                 // Translate so the top-left of the clip region is on the top/left (0,0)
@@ -145,14 +131,14 @@ namespace LayoutManager.CommonUI.Controls {
 
                 if (lsbOnRight) {
                     for (int i = switchCount - 1; i >= 0; i--)
-                        drawSwitch(g, i, switchIndex++);
+                        DrawSwitch(g, i, switchIndex++);
                 }
                 else {
                     for (int i = 0; i < switchCount; i++)
-                        drawSwitch(g, i, switchIndex++);
+                        DrawSwitch(g, i, switchIndex++);
                 }
 
-                drawLabels(g);
+                DrawLabels(g);
             }
 
             // After the background image is created, draw it on the screen

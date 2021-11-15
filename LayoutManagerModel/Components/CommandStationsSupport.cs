@@ -11,7 +11,6 @@ using Microsoft.Win32.SafeHandles;
 using LayoutManager.Model;
 using System.Net.Sockets;
 
-#pragma warning disable IDE0051, IDE0060, CA1031, IDE0067
 #nullable enable
 namespace LayoutManager {
     public enum CommunicationInterfaceType {
@@ -151,7 +150,7 @@ namespace LayoutManager.Components {
             get;
         }
 
-        public ILayoutEmulatorServices LayoutEmulationServices => _layoutEmulationServices ?? (_layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this))!);
+        public ILayoutEmulatorServices LayoutEmulationServices => _layoutEmulationServices ??= (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this))!;
 
         public bool EmulateLayout {
             get; set;
@@ -164,13 +163,13 @@ namespace LayoutManager.Components {
         #region Properties accessible from derived concrete command station component classes
 
 
+#pragma warning disable CA1822 // Mark members as static
         public ILayoutInterThreadEventInvoker InterThreadEventInvoker => EventManager.Instance.InterThreadEventInvoker;
+#pragma warning restore CA1822 // Mark members as static
 
         public bool OperationMode => operationMode;
 
         #endregion
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0067:Dispose objects before losing scope", Justification = "<Pending>")]
 
         public override void OnAddedToModel() {
             base.OnAddedToModel();
@@ -342,7 +341,7 @@ namespace LayoutManager.Components {
                     animatedTrainsSelection = new LayoutSelection();
                     animatedTrainsSelection.Display(new LayoutSelectionLook(Color.DarkSlateBlue));
 
-                    animatedTrainsTimer = new System.Threading.Timer(new TimerCallback(animationTimerCallback), null, 500, 200);
+                    animatedTrainsTimer = new System.Threading.Timer(new TimerCallback(AnimationTimerCallback), null, 500, 200);
                 }
             }
         }
@@ -447,7 +446,7 @@ namespace LayoutManager.Components {
             }
         }
 
-        private void animationTimerCallback(object state) {
+        private void AnimationTimerCallback(object? state) {
             InterThreadEventInvoker.QueueEvent(new LayoutEvent("show-emulated-locomotive-locations", this));
         }
 
@@ -612,7 +611,7 @@ namespace LayoutManager.Components {
         public int State { get; }
 
         private ControlConnectionPointReference? FindConnectionPointRef(ControlBus bus) {
-            ControlModule module = bus.GetModuleUsingAddress(Address);
+            var module = bus.GetModuleUsingAddress(Address);
 
             if (module == null)
                 return null;
@@ -713,7 +712,10 @@ namespace LayoutManager.Components {
 
         #region IComparable<CommandStationInputEvent> Members
 
-        public int CompareTo(CommandStationInputEvent other) {
+        public int CompareTo(CommandStationInputEvent? other) {
+            if(other == null)
+                throw new ArgumentNullException(nameof(other));
+
             if (CommandStation != other.CommandStation) {
                 IModelComponentHasName thisCommandStation = (IModelComponentHasName)CommandStation;
                 IModelComponentHasName otherCommandStation = (IModelComponentHasName)other;
@@ -886,6 +888,7 @@ namespace LayoutManager.Components {
         private static readonly LayoutTraceSwitch traceOutputManager = new LayoutTraceSwitch("OutputManager", "Output Manager");
         private IOutputCommandWithReply? pendingCommandWithReply = null;
         private readonly object _lockObject = new object();
+        private bool terminateTread;
 
         public OutputManager(string name, int numberOfQueues) {
             this.name = name;
@@ -907,13 +910,16 @@ namespace LayoutManager.Components {
                     Name = "CommandManagerThread for " + name,
                     Priority = ThreadPriority.AboveNormal
                 };
+                terminateTread = false;
                 commandManagerThread.Start();
             }
         }
 
         public void Terminate() {
-            if (commandManagerThread != null)
-                commandManagerThread.Abort();
+            if (commandManagerThread != null) {
+                terminateTread = true;
+                workToDo.Set();
+            }
         }
 
         /// <summary>
@@ -1032,85 +1038,83 @@ namespace LayoutManager.Components {
         protected void CommandManagerThread() {
             long previousIdleCommandTime = 0;
 
-            try {
-                while (true) {
-                    IOutputCommand? command = null;
+            while (true) {
+                IOutputCommand? command = null;
 
-                    //Trace.WriteLineIf(traceCommandStationManager.TraceVerbose, " CommandManagerThread: Wait for work to do");
-                    workToDo.WaitOne();
-                    //Trace.WriteLineIf(traceCommandStationManager.TraceVerbose, " CommandManagerThread: Got something to do");
+                //Trace.WriteLineIf(traceCommandStationManager.TraceVerbose, " CommandManagerThread: Wait for work to do");
+                workToDo.WaitOne();
+                //Trace.WriteLineIf(traceCommandStationManager.TraceVerbose, " CommandManagerThread: Got something to do");
 
-                    lock (queues) {
-                        // Scan the queues and look for the first queue with a command ready to execute
-                        foreach (CommandManagerQueue queue in queues) {
-                            if (queue.IsCommandReady) {
-                                command = queue.GetCommand();
-                                //Trace.WriteLineIf(traceCommandStationManager.TraceVerbose, " CommandManagerThread: Found command in queue");
-                                break;
-                            }
+                if (terminateTread)
+                    break;
+
+                lock (queues) {
+                    // Scan the queues and look for the first queue with a command ready to execute
+                    foreach (CommandManagerQueue queue in queues) {
+                        if (queue.IsCommandReady) {
+                            command = queue.GetCommand();
+                            //Trace.WriteLineIf(traceCommandStationManager.TraceVerbose, " CommandManagerThread: Found command in queue");
+                            break;
                         }
+                    }
 
-                        // No command was found in the queue, check if an idle command is ready for execution
-                        if (command == null && DoIdleCommands && idleCommands.IsCommandReady) {
-                            command = idleCommands.GetCommand();
+                    // No command was found in the queue, check if an idle command is ready for execution
+                    if (command == null && DoIdleCommands && idleCommands.IsCommandReady) {
+                        command = idleCommands.GetCommand();
 
-                            long idleCommandTime = DateTime.Now.Ticks;
+                        long idleCommandTime = DateTime.Now.Ticks;
 
-                            if (previousIdleCommandTime != 0) {
-                                long diff = (idleCommandTime - previousIdleCommandTime) / 10000;    // Diff in milliseconds
+                        if (previousIdleCommandTime != 0) {
+                            long diff = (idleCommandTime - previousIdleCommandTime) / 10000;    // Diff in milliseconds
 
 #if ALERT_ON_SLOW_POLLING
 								if(diff > 70)
 									Trace.WriteLine("Idle command gap is more than 70 milliseconds: " + diff);
 #endif
-                            }
-
-                            previousIdleCommandTime = idleCommandTime;
-
-                            //Trace.WriteLineIf(traceCommandStationManager.TraceVerbose, " CommandManagerThread: Found command in idle commands queue");
                         }
 
-                        // No command is available, reset the work to do event
-                        if (command == null) {
-                            //Trace.WriteLineIf(traceCommandStationManager.TraceVerbose, " CommandManagerThread: Command not found, reset work to do event");
-                            workToDo.Reset();
-                            nothingToDo.Set();
-                        }
+                        previousIdleCommandTime = idleCommandTime;
+
+                        //Trace.WriteLineIf(traceCommandStationManager.TraceVerbose, " CommandManagerThread: Found command in idle commands queue");
                     }
 
-                    if (command != null) {
-                        var idleCommand = command as IOutputIdlecommand;
-
-                        if (idleCommand == null || traceOutputManager.TraceVerbose)
-                            Trace.WriteLineIf(traceOutputManager.TraceInfo, " CommandManagerThread: execute command " + command.GetType().Name + ": " + command.ToString());
-
-                        var commandWithReply = command as IOutputCommandWithReply;
-
-                        if (commandWithReply != null)
-                            pendingCommandWithReply = commandWithReply;
-
-                        command.Do();
-                        Trace.WriteLineIf(traceOutputManager.TraceVerbose, " CommandManagerThread: command done " + command.GetType().Name);
-
-                        if (commandWithReply != null) {
-                            bool timeout = !waitToGetReply.WaitOne(commandWithReply.Timeout);
-
-                            waitToGetReply.Reset();
-                            pendingCommandWithReply = null;
-
-                            if (timeout)
-                                commandWithReply.OnTimeout();
-                        }
-                        else if (idleCommand == null)
-                            command.Completed(null);
-
-                        if (idleCommand != null && !idleCommand.RemoveFromQueue)
-                            AddIdleCommand(idleCommand);
+                    // No command is available, reset the work to do event
+                    if (command == null) {
+                        //Trace.WriteLineIf(traceCommandStationManager.TraceVerbose, " CommandManagerThread: Command not found, reset work to do event");
+                        workToDo.Reset();
+                        nothingToDo.Set();
                     }
                 }
-            }
-            catch (ThreadAbortException) {
-                commandManagerThread = null;
+
+                if (command != null) {
+                    var idleCommand = command as IOutputIdlecommand;
+
+                    if (idleCommand == null || traceOutputManager.TraceVerbose)
+                        Trace.WriteLineIf(traceOutputManager.TraceInfo, " CommandManagerThread: execute command " + command.GetType().Name + ": " + command.ToString());
+
+                    var commandWithReply = command as IOutputCommandWithReply;
+
+                    if (commandWithReply != null)
+                        pendingCommandWithReply = commandWithReply;
+
+                    command.Do();
+                    Trace.WriteLineIf(traceOutputManager.TraceVerbose, " CommandManagerThread: command done " + command.GetType().Name);
+
+                    if (commandWithReply != null) {
+                        bool timeout = !waitToGetReply.WaitOne(commandWithReply.Timeout);
+
+                        waitToGetReply.Reset();
+                        pendingCommandWithReply = null;
+
+                        if (timeout)
+                            commandWithReply.OnTimeout();
+                    }
+                    else if (idleCommand == null)
+                        command.Completed(null);
+
+                    if (idleCommand != null && !idleCommand.RemoveFromQueue)
+                        AddIdleCommand(idleCommand);
+                }
             }
 
             Trace.WriteLineIf(traceOutputManager.TraceInfo, "CommandManagerThread: Terminated");
@@ -1140,14 +1144,14 @@ namespace LayoutManager.Components {
 
                 if (command.WaitPeriod > 0) {
                     lock (sync) {
-                        queueSuspendedTimer = new Timer(new TimerCallback(enableQueue), null, command.WaitPeriod, Timeout.Infinite);
+                        queueSuspendedTimer = new Timer(new TimerCallback(EnableQueue), null, command.WaitPeriod, Timeout.Infinite);
                     }
                 }
 
                 return command;
             }
 
-            private void enableQueue(object state) {
+            private void EnableQueue(object? state) {
                 lock (sync) {
                     if (queueSuspendedTimer != null)
                         queueSuspendedTimer.Dispose();

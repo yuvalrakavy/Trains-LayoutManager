@@ -278,7 +278,7 @@ namespace NCDRelayController.Dialogs {
         }
         #endregion
 
-        private void buttonOK_Click(object sender, System.EventArgs e) {
+        private void buttonOK_Click(object? sender, System.EventArgs e) {
             if (nameDefinition.Commit()) {
                 LayoutTextInfo myName = new LayoutTextInfo(XmlInfo.DocumentElement, "Name");
 
@@ -314,7 +314,7 @@ namespace NCDRelayController.Dialogs {
             DialogResult = DialogResult.OK;
         }
 
-        private void buttonCOMsettings_Click(object sender, EventArgs e) {
+        private void buttonCOMsettings_Click(object? sender, EventArgs e) {
             string modeString = XmlInfo.DocumentElement[E_ModeString].InnerText;
 
             LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
@@ -323,7 +323,7 @@ namespace NCDRelayController.Dialogs {
                 XmlInfo.DocumentElement[E_ModeString].InnerText = d.ModeString;
         }
 
-        private void radioButtonInterfaceType_CheckedChanged(object sender, EventArgs e) {
+        private void radioButtonInterfaceType_CheckedChanged(object? sender, EventArgs e) {
             if (radioButtonSerial.Checked) {
                 comboBoxPort.Enabled = true;
                 buttonCOMsettings.Enabled = true;
@@ -340,7 +340,7 @@ namespace NCDRelayController.Dialogs {
             }
         }
 
-        private void buttonIpSettings_Click(object sender, EventArgs e) {
+        private void buttonIpSettings_Click(object? sender, EventArgs e) {
             if (!string.IsNullOrWhiteSpace(textBoxAddress.Text)) {
                 string url = "http://" + textBoxAddress.Text;
 
@@ -350,7 +350,7 @@ namespace NCDRelayController.Dialogs {
                 MessageBox.Show(this, "No valid IP address was entered", "No address was entered", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private void buttonBrowseForDigiDevices_Click(object sender, EventArgs e) {
+        private void buttonBrowseForDigiDevices_Click(object? sender, EventArgs e) {
             var d = new Dialogs.DiscoverDigiDevicesDialog();
 
             if (d.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)

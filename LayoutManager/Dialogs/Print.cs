@@ -50,14 +50,14 @@ namespace LayoutManager.Dialogs {
 
         public bool GridLines => checkBoxGridLines.Checked;
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void buttonOK_Click(object? sender, EventArgs e) {
             printDoc.PrinterSettings.PrinterName = comboBoxPrinters.SelectedItem.ToString();
 
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void buttonProperties_Click(object sender, EventArgs e) {
+        private void buttonProperties_Click(object? sender, EventArgs e) {
             string printerName = comboBoxPrinters.SelectedItem.ToString();
 
             IntPtr devModeHandle = IntPtr.Zero;

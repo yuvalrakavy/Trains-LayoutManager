@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Xml;
 using LayoutManager.Model;
+using LayoutManager.CommonUI;
 
 namespace LayoutManager {
     #region Context Menu items
@@ -167,7 +168,7 @@ namespace LayoutManager {
         }
     }
 
-    internal class MenuItemDeleteComponent : MenuItem {
+    internal class MenuItemDeleteComponent : LayoutMenuItem {
         private readonly ModelComponent component;
 
         public MenuItemDeleteComponent(String text, ModelComponent component) {

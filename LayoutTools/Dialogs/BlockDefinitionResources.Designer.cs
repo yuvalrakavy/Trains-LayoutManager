@@ -39,7 +39,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonResourceAdd.Size = new System.Drawing.Size(75, 23);
             this.buttonResourceAdd.TabIndex = 6;
             this.buttonResourceAdd.Text = "&Add";
-            this.buttonResourceAdd.Click += new System.EventHandler(this.buttonResourceAdd_Click);
+            this.buttonResourceAdd.Click += new System.EventHandler(this.ButtonResourceAdd_Click);
             // 
             // listBoxResources
             // 
@@ -68,7 +68,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonResourceRemove.Size = new System.Drawing.Size(75, 23);
             this.buttonResourceRemove.TabIndex = 5;
             this.buttonResourceRemove.Text = "&Remove";
-            this.buttonResourceRemove.Click += new System.EventHandler(this.buttonResourceRemove_Click);
+            this.buttonResourceRemove.Click += new System.EventHandler(this.ButtonResourceRemove_Click);
             // 
             // buttonOK
             // 
@@ -79,7 +79,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.TabIndex = 7;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 

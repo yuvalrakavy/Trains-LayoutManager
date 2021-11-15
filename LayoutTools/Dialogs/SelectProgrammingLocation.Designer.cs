@@ -48,7 +48,7 @@
 			this.listBoxProgrammingLocations.Name = "listBoxProgrammingLocations";
 			this.listBoxProgrammingLocations.Size = new System.Drawing.Size(227, 134);
 			this.listBoxProgrammingLocations.TabIndex = 1;
-			this.listBoxProgrammingLocations.SelectedIndexChanged += new System.EventHandler(this.listBoxProgrammingLocations_SelectedIndexChanged);
+			this.listBoxProgrammingLocations.SelectedIndexChanged += new System.EventHandler(this.ListBoxProgrammingLocations_SelectedIndexChanged);
 			// 
 			// buttonOk
 			// 

@@ -5,8 +5,6 @@ using System.Windows.Forms;
 using LayoutManager.Model;
 using LayoutManager.CommonUI;
 
-#pragma warning disable IDE0051
-#nullable enable
 namespace LayoutManager.ControlComponents {
     public interface IMarklinControlModuleSettingDialog {
         bool ClearUserActionRequiredFlag { get; }
@@ -20,7 +18,7 @@ namespace LayoutManager.ControlComponents {
         private ControlBusType? s88bus = null;
 
         [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='Motorola']")]
-        private void getMotorolaBusType(LayoutEvent e) {
+        private void GetMotorolaBusType(LayoutEvent e) {
             if (motorola == null) {
                 motorola = new ControlBusType {
                     BusFamilyName = "Motorola",
@@ -37,7 +35,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='S88BUS']")]
-        private void gets88busType(LayoutEvent e) {
+        private void Gets88busType(LayoutEvent e) {
             if (s88bus == null) {
                 s88bus = new ControlBusType {
                     BusFamilyName = "S88BUS",
@@ -55,7 +53,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='Motorola']")]
-        private void recommendMotorolaDCCcontrolModuleTypes(LayoutEvent e) {
+        private void RecommendMotorolaDCCcontrolModuleTypes(LayoutEvent e) {
             var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
             var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
 
@@ -67,7 +65,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='S88BUS']")]
-        private void recommendS88BUScontrolModuleTypes(LayoutEvent e) {
+        private void RecommendS88BUScontrolModuleTypes(LayoutEvent e) {
             var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
             var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
 
@@ -77,10 +75,10 @@ namespace LayoutManager.ControlComponents {
 
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='S88']")]
         [LayoutEvent("enum-control-module-types")]
-        private void getS88(LayoutEvent e) {
+        private void GetS88(LayoutEvent e) {
             var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
-            ControlModuleType moduleType = new ControlModuleType(parentElement, "S88", "S88 Decoder");
+            var moduleType = new ControlModuleType(parentElement, "S88", "S88 Decoder");
 
             moduleType.BusTypeNames.Add("S88BUS");
             moduleType.ConnectionPointsPerAddress = 16;
@@ -93,10 +91,10 @@ namespace LayoutManager.ControlComponents {
 
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='K83']")]
         [LayoutEvent("enum-control-module-types")]
-        private void getK83(LayoutEvent e) {
+        private void GetK83(LayoutEvent e) {
             var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
-            ControlModuleType moduleType = new ControlModuleType(parentElement, "K83", "K83 Turnouts Decoder");
+            var moduleType = new ControlModuleType(parentElement, "K83", "K83 Turnouts Decoder");
 
             moduleType.BusTypeNames.Add("Motorola");
             moduleType.ConnectionPointsPerAddress = 1;
@@ -106,10 +104,10 @@ namespace LayoutManager.ControlComponents {
 
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='K73']")]
         [LayoutEvent("enum-control-module-types")]
-        private void getK73(LayoutEvent e) {
+        private void GetK73(LayoutEvent e) {
             var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
-            ControlModuleType moduleType = new ControlModuleType(parentElement, "K73", "K73 Turnout Decoder");
+            var moduleType = new ControlModuleType(parentElement, "K73", "K73 Turnout Decoder");
 
             moduleType.BusTypeNames.Add("Motorola");
             moduleType.ConnectionPointsPerAddress = 1;
@@ -119,10 +117,10 @@ namespace LayoutManager.ControlComponents {
 
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='K84']")]
         [LayoutEvent("enum-control-module-types")]
-        private void getK84(LayoutEvent e) {
+        private void GetK84(LayoutEvent e) {
             var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
-            ControlModuleType moduleType = new ControlModuleType(parentElement, "K84", "K84 Accessories Decoder");
+            var moduleType = new ControlModuleType(parentElement, "K84", "K84 Accessories Decoder");
 
             moduleType.BusTypeNames.Add("Motorola");
             moduleType.ConnectionPointsPerAddress = 1;
@@ -132,10 +130,10 @@ namespace LayoutManager.ControlComponents {
 
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='74460']")]
         [LayoutEvent("enum-control-module-types")]
-        private void get74460(LayoutEvent e) {
+        private void Get74460(LayoutEvent e) {
             var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
-            ControlModuleType moduleType = new ControlModuleType(parentElement, "74460", "C-Track Turnout Decoder");
+            var moduleType = new ControlModuleType(parentElement, "74460", "C-Track Turnout Decoder");
 
             moduleType.BusTypeNames.Add("Motorola");
             moduleType.ConnectionPointsPerAddress = 1;
@@ -145,19 +143,19 @@ namespace LayoutManager.ControlComponents {
         }
 
         [LayoutEvent("add-control-editing-context-menu-entries", Order = 100, SenderType = typeof(DrawControlModule))]
-        private void addControlModuleEditingContextMenu(LayoutEvent e) {
+        private void AddControlModuleEditingContextMenu(LayoutEvent e) {
             var drawModule = Ensure.NotNull<DrawControlModule>(e.Sender, "drawModule");
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
             ControlModuleType moduleType = drawModule.Module.ModuleType;
 
             if (moduleType.TypeName == "K83" || moduleType.TypeName == "K84" || moduleType.TypeName == "74460") {
-                if (menu.MenuItems.Count > 0 && menu.MenuItems[menu.MenuItems.Count - 1].Text != "-")
-                    menu.MenuItems.Add("-");
-                menu.MenuItems.Add(new MarklinKxxModuleSettingMenuItem(drawModule.Module));
+                if (menu.Items.Count > 0 && menu.Items[menu.Items.Count - 1] is not ToolStripSeparator)
+                    menu.Items.Add(new ToolStripSeparator());
+                menu.Items.Add(new MarklinKxxModuleSettingMenuItem(drawModule.Module));
             }
         }
 
-        private class MarklinKxxModuleSettingMenuItem : MenuItem {
+        private class MarklinKxxModuleSettingMenuItem : LayoutMenuItem {
             private readonly ControlModule module;
 
             public MarklinKxxModuleSettingMenuItem(ControlModule module) {
@@ -179,7 +177,7 @@ namespace LayoutManager.ControlComponents {
                 d.ShowDialog(LayoutController.ActiveFrameWindow);
 
                 if (d.ClearUserActionRequiredFlag) {
-                    SetControlUserActionRequiredCommand command = new SetControlUserActionRequiredCommand(module, false);
+                    var command = new SetControlUserActionRequiredCommand(module, false);
 
                     LayoutController.Do(command);
                 }

@@ -263,7 +263,7 @@ namespace LayoutManager.Model {
                 while (r.NodeType == XmlNodeType.Element) {
                     if (r.Name == "Info") {
                         r.Read();       // <Info>
-                        XmlNode infoNode = XmlInfo.XmlDocument.ReadNode(r);
+                        var infoNode = Ensure.NotNull<XmlElement>(XmlInfo.XmlDocument.ReadNode(r));
 
                         XmlInfo.XmlDocument.RemoveAll();
                         XmlInfo.XmlDocument.AppendChild(infoNode);
@@ -313,7 +313,7 @@ namespace LayoutManager.Model {
                 LayoutTextInfo nameProvider = new LayoutTextInfo(this);
 
                 if (typeName.StartsWith("Layout"))
-                    typeName = typeName.Substring("Layout".Length);       // Strip out the Layout
+                    typeName = typeName["Layout".Length..];       // Strip out the Layout
                 if (typeName.EndsWith(E_Component))
                     typeName = typeName.Remove(typeName.Length - E_Component.Length);
 
@@ -334,7 +334,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="objModelComponent">The component to compare to</param>
         /// <returns>+n if this component is above, 0 if same, -n if below</returns>
-        public int CompareTo(ModelComponent other) => Kind - other.Kind;
+        public int CompareTo(ModelComponent? other) => other != null ? Kind - other.Kind : throw new ArgumentNullException(nameof(other));
 
         public bool Equals(ModelComponent other) => this == other;
 
@@ -361,19 +361,18 @@ namespace LayoutManager.Model {
         public const int R = 2;
         public const int L = 3;
 
-        public static LayoutComponentConnectionPoint Parse(string t) {
-            if (t == "T")
-                return T;
-            else if (t == "B")
-                return B;
-            else if (t == "R")
-                return R;
-            else return t == "L" ? (LayoutComponentConnectionPoint)L : (LayoutComponentConnectionPoint)Int32.Parse(t);
+        public static LayoutComponentConnectionPoint Parse(string? t) {
+            return t switch {
+                null => throw new ArgumentNullException(nameof(t)),
+                "T" => T,
+                "B" => B,
+                "R" => R,
+                _ => t == "L" ? (LayoutComponentConnectionPoint)L : (LayoutComponentConnectionPoint)int.Parse(t)
+            };
         }
 
         public override string ToString() {
-            return cp switch
-            {
+            return cp switch {
                 -1 => "Empty",
                 0 => "T",
                 1 => "B",
@@ -386,7 +385,7 @@ namespace LayoutManager.Model {
         public bool IsHorizontal => cp == L || cp == R;
         public bool IsVertical => cp == T || cp == B;
 
-        public override bool Equals(object obj) {
+        public override bool Equals(object? obj) {
             if (obj != null) {
                 LayoutComponentConnectionPoint other = (LayoutComponentConnectionPoint)obj;
 
@@ -419,11 +418,11 @@ namespace LayoutManager.Model {
     }
 
     public class LayoutComponentConnectionPointConverter : System.ComponentModel.TypeConverter {
-        public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, Type destinationType) => destinationType == typeof(string);
+        public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext? context, Type? destinationType) => destinationType == typeof(string);
 
-        public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType) {
-            if (destinationType == typeof(string) && value is LayoutComponentConnectionPoint)
-                return ((LayoutComponentConnectionPoint)value).ToString();
+        public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext? context, System.Globalization.CultureInfo? culture, object? value, Type destinationType) {
+            if (destinationType == typeof(string) && value is LayoutComponentConnectionPoint point)
+                return point.ToString();
             throw new NotSupportedException("Cannot LayoutComponentConnectionPoint convert to " + destinationType.FullName);
         }
     }
@@ -463,7 +462,7 @@ namespace LayoutManager.Model {
 
         public static bool operator >(TrackEdge edge1, TrackEdge edge2) => edge1.CompareTo(edge2) > 0;
 
-        public override bool Equals(object obj) {
+        public override bool Equals(object? obj) {
             if (obj != null) {
                 TrackEdge other = (TrackEdge)obj;
 
@@ -513,7 +512,7 @@ namespace LayoutManager.Model {
     /// hold its ID
     /// </summary>
     public struct TrackEdgeId {
-        private Guid trackId;
+        private readonly Guid trackId;
 
         public static readonly TrackEdgeId Empty = new TrackEdgeId(Guid.Empty, 0);
 
@@ -538,7 +537,7 @@ namespace LayoutManager.Model {
 
         public LayoutComponentConnectionPoint ConnectionPoint { get; }
 
-        public override bool Equals(object obj) {
+        public override bool Equals(object? obj) {
             if (obj == null || !(obj is TrackEdgeId))
                 return false;
 
@@ -574,13 +573,13 @@ namespace LayoutManager.Model {
     }
 
     public class TrackEdgeConverter : System.ComponentModel.TypeConverter {
-        public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, Type destinationType) {
+        public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext? context, Type? destinationType) {
             return destinationType == typeof(string);
         }
 
-        public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType) {
-            if (destinationType == typeof(string) && value is TrackEdge)
-                return ((TrackEdge)value).ToString();
+        public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext? context, System.Globalization.CultureInfo? culture, object? value, Type destinationType) {
+            if (destinationType == typeof(string) && value is TrackEdge edge)
+                return edge.ToString();
             throw new NotSupportedException("Cannot TrackEdge convert to " + destinationType.FullName);
         }
     }
@@ -820,13 +819,13 @@ namespace LayoutManager.Model {
         /// Get the component of a given kind in a given layer
         /// </summary>
         /// <example>c = aSpot[ModelComponentKind.Track];</example>
-        public ModelComponent this[ModelComponentKind kind] => Components.Find((ModelComponent c) => c.Kind == kind);
+        public ModelComponent? this[ModelComponentKind kind] => Components.Find((ModelComponent c) => c.Kind == kind);
 
         /// <summary>
         /// Get the track in the current spot
         /// </summary>
         /// <value>Track component or null if this spot does not have track component</value>
-        public LayoutTrackComponent Track => (LayoutTrackComponent)this[ModelComponentKind.Track];
+        public LayoutTrackComponent? Track => (LayoutTrackComponent?)this[ModelComponentKind.Track];
 
         /// <summary>
         /// Collection of all the components in this spot
@@ -859,7 +858,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="c">The component to be added</param>
         public void Add(ModelComponent c) {
-            ModelComponent old = this[c.Kind];
+            var old = this[c.Kind];
 
             if (old != null) {
                 old.EraseImage();
@@ -1088,7 +1087,7 @@ namespace LayoutManager.Model {
         public void AddSpotLocation(LayoutModelSpotComponentCollection spot) {
             Point p = spot.Location;
 
-            if (!SortedRows.TryGetValue(p.Y, out SortedVector<LayoutModelSpotComponentCollection> sortedColumns)) {
+            if (!SortedRows.TryGetValue(p.Y, out SortedVector<LayoutModelSpotComponentCollection>? sortedColumns)) {
                 sortedColumns = new SortedVector<LayoutModelSpotComponentCollection>();
                 SortedRows[p.Y] = sortedColumns;
             }
@@ -1113,14 +1112,14 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="p"></param>
         /// <param name="c"></param>
-        private void addNoEvent(Point p, ModelComponent c, LayoutPhase phase) {
-            if (!grid.TryGetValue(p, out LayoutModelSpotComponentCollection spot)) {
+        private void AddNoEvent(Point p, ModelComponent c, LayoutPhase phase) {
+            if (!grid.TryGetValue(p, out LayoutModelSpotComponentCollection? spot)) {
                 spot = new LayoutModelSpotComponentCollection(this, p, phase);
                 this[p] = spot;         // Add to the grid
 
                 AddSpotLocation(spot);
 
-                if (adjustBounds(p))        // Adjust the model bounds
+                if (AdjustBounds(p))        // Adjust the model bounds
                     OnAreaBoundsChanged();
             }
 
@@ -1134,7 +1133,7 @@ namespace LayoutManager.Model {
         /// Set or add a model component to a given location and layer in the grid
         /// </summary>
         public void Add(Point p, ModelComponent c, LayoutPhase phase) {
-            addNoEvent(p, c, phase);
+            AddNoEvent(p, c, phase);
             OnComponentChanged(c);
         }
 
@@ -1148,7 +1147,7 @@ namespace LayoutManager.Model {
                 spot.Remove(c);
             }
 
-            if (adjustBounds(spot.Location)) {
+            if (AdjustBounds(spot.Location)) {
                 recalcBounds = true;            // Removed a spot that was on the model bounding rectangle
                 OnAreaBoundsChanged();
             }
@@ -1169,7 +1168,7 @@ namespace LayoutManager.Model {
         public Rectangle Bounds {
             get {
                 if (recalcBounds)
-                    calculateAreaBounds();
+                    CalculateAreaBounds();
 
                 return mlBounds;
             }
@@ -1180,7 +1179,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="ml"></param>
         /// <returns>True if model boundries were modified</returns>
-        private bool adjustBounds(Point ml) {
+        private bool AdjustBounds(Point ml) {
             bool adjusted = false;
             int top = mlBounds.Top;
             int bottom = mlBounds.Bottom;
@@ -1216,11 +1215,11 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Calcuate the rectangle that bounds the model
         /// </summary>
-        private void calculateAreaBounds() {
+        private void CalculateAreaBounds() {
             mlBounds = new Rectangle(0, 0, 0, 0);
 
             foreach (LayoutModelSpotComponentCollection spot in grid.Values)
-                adjustBounds(spot.Location);
+                AdjustBounds(spot.Location);
 
             recalcBounds = false;       // Bounds are calculated
         }
@@ -1291,7 +1290,7 @@ namespace LayoutManager.Model {
 
         #region XML saving/loading
 
-        private void writeXmlGrid(XmlWriter w) {
+        private void WriteXmlGrid(XmlWriter w) {
             w.WriteStartElement(E_Grid);
             foreach (LayoutModelSpotComponentCollection spot in grid.Values)
                 spot.WriteXml(w);
@@ -1303,12 +1302,12 @@ namespace LayoutManager.Model {
             w.WriteAttributeString(A_Name, XmlConvert.EncodeName(Name));
             w.WriteAttributeString(A_Id, XmlConvert.EncodeName(id.ToString()));
 
-            writeXmlGrid(w);
+            WriteXmlGrid(w);
             w.WriteEndElement();
         }
 
         // On entry <Location> on exit </Location>
-        private void parseLocation(XmlReader r, Point ml, LayoutPhase phase) {
+        private void ParseLocation(XmlReader r, Point ml, LayoutPhase phase) {
             if (r.IsEmptyElement)
                 r.Read();
             else {
@@ -1316,7 +1315,7 @@ namespace LayoutManager.Model {
 
                 while (r.NodeType == XmlNodeType.Element) {
                     if (r.Name == E_Component) {
-                        string componentTypeName = XmlConvert.DecodeName(r.GetAttribute(A_Class));
+                        string componentTypeName = XmlConvert.DecodeName(r.GetAttribute(A_Class)) ?? "UnknownType";
 
                         var component = LayoutModel.CreateModelComponent(componentTypeName);
 
@@ -1326,7 +1325,7 @@ namespace LayoutManager.Model {
                             else
                                 r.Read();
 
-                            addNoEvent(ml, component, phase);           // Add the component to the grid
+                            AddNoEvent(ml, component, phase);           // Add the component to the grid
                         }
                         else {
                             // TODO: Generate a warning that component implementation was not found
@@ -1343,7 +1342,7 @@ namespace LayoutManager.Model {
         }
 
         // On entry <Grid> on exit </Grid>
-        private void parseGrid(XmlReader r) {
+        private void ParseGrid(XmlReader r) {
             ConvertableString GetAttribute(string name) => new ConvertableString(r.GetAttribute(name), name);
             grid.Clear();
 
@@ -1357,7 +1356,7 @@ namespace LayoutManager.Model {
                         var phaseAttributeValue = GetAttribute(A_Phase);
                         var phase = phaseAttributeValue.Enum<LayoutPhase>() ?? LayoutPhase.Operational;
 
-                        parseLocation(r, new Point((int)GetAttribute(A_x), (int)GetAttribute(A_y)), phase);
+                        ParseLocation(r, new Point((int)GetAttribute(A_x), (int)GetAttribute(A_y)), phase);
                     }
                     else
                         r.Skip();
@@ -1369,8 +1368,8 @@ namespace LayoutManager.Model {
 
         // On entry <Area> on exit </Area>
         public void ReadXml(XmlReader r) {
-            Name = XmlConvert.DecodeName(r.GetAttribute(A_Name));
-            id = new Guid(XmlConvert.DecodeName(r.GetAttribute(A_Id)));
+            Name = XmlConvert.DecodeName(r.GetAttribute(A_Name)) ?? "-NO-NAME-";
+            id = new Guid(Ensure.NotNull<string>(XmlConvert.DecodeName(r.GetAttribute(A_Id))));
 
             if (r.IsEmptyElement)
                 r.Read();
@@ -1379,7 +1378,7 @@ namespace LayoutManager.Model {
 
                 while (r.NodeType == XmlNodeType.Element) {
                     if (r.Name == E_Grid)
-                        parseGrid(r);
+                        ParseGrid(r);
                     else
                         r.Skip();
                 }
@@ -1504,7 +1503,7 @@ namespace LayoutManager.Model {
         #endregion
 
         [LayoutEvent("get-control-manager")]
-        private void getControlManager(LayoutEvent e) {
+        private void GetControlManager(LayoutEvent e) {
             e.Info = ControlManager;
         }
 
@@ -1564,7 +1563,7 @@ namespace LayoutManager.Model {
         public MotionRampCollection Ramps {
             get {
                 if (ramps == null) {
-                    XmlElement rampsElement = Element["Ramps"];
+                    var rampsElement = Element["Ramps"];
 
                     if (rampsElement == null) {
                         rampsElement = Element.OwnerDocument.CreateElement("Ramps");
@@ -1580,7 +1579,7 @@ namespace LayoutManager.Model {
 
         public XmlElement GlobalPoliciesElement {
             get {
-                XmlElement globalPoliciesElement = Element["Policies"];
+                var globalPoliciesElement = Element["Policies"];
 
                 if (globalPoliciesElement == null) {
                     globalPoliciesElement = Element.OwnerDocument.CreateElement("Policies");
@@ -1593,7 +1592,7 @@ namespace LayoutManager.Model {
 
         public TripPlanIconListInfo TripPlanIconList {
             get {
-                XmlElement tripPlanIconListElement = Element["TripPlanIconList"];
+                var tripPlanIconListElement = Element["TripPlanIconList"];
 
                 if (tripPlanIconListElement == null) {
                     tripPlanIconListElement = Element.OwnerDocument.CreateElement("TripPlanIconList");
@@ -1727,7 +1726,7 @@ namespace LayoutManager.Model {
 
         #region Saving/Loading model from XML files
 
-        private void writeXmlAreas(XmlWriter w) {
+        private void WriteXmlAreas(XmlWriter w) {
             w.WriteStartElement("Areas");
 
             foreach (var area in Areas)
@@ -1743,13 +1742,13 @@ namespace LayoutManager.Model {
         public void WriteXml(XmlWriter w) {
             w.WriteStartElement("LayoutModel");
             w.WriteAttributeString("DefaultPhase", DefaultPhase.ToString());
-            writeXmlAreas(w);
+            WriteXmlAreas(w);
             controlManager?.WriteXml(w);
             w.WriteEndElement();
         }
 
         // On entry: <Layers> (For backward compatability, read and ignore it)
-        private void parseLayers(XmlReader r) {
+        private void ParseLayers(XmlReader r) {
             if (r.IsEmptyElement)
                 r.Read();
             else {
@@ -1767,7 +1766,7 @@ namespace LayoutManager.Model {
         }
 
         // On entry: <Areas>
-        private void parseAreas(XmlReader r) {
+        private void ParseAreas(XmlReader r) {
             componentReferences.Clear();
             MyAreas.Clear();
 
@@ -1792,7 +1791,7 @@ namespace LayoutManager.Model {
         }
 
         // On entry <LayoutControl>
-        private void parseLayoutControl(XmlReader r) {
+        private void ParseLayoutControl(XmlReader r) {
             controlManager = new LayoutControlManager(r);
         }
 
@@ -1810,11 +1809,11 @@ namespace LayoutManager.Model {
 
                 while (r.NodeType == XmlNodeType.Element) {
                     if (r.Name == "Layers")
-                        parseLayers(r);
+                        ParseLayers(r);
                     else if (r.Name == "Areas")
-                        parseAreas(r);
+                        ParseAreas(r);
                     else if (r.Name == "LayoutControl")
-                        parseLayoutControl(r);
+                        ParseLayoutControl(r);
                     else
                         r.Skip();
                 }
@@ -1853,7 +1852,7 @@ namespace LayoutManager.Model {
         /// Save the current state of the model wide information. The old file is renamed and saved as a backup file
         /// </summary>
         protected void MyWriteModelXmlInfo() {
-            if (XmlInfo.XmlDocument != null) {
+            if (XmlInfo.XmlDocument != null && modelXmlInfoFilename != null) {
                 string backupModelXmlInfoFilename = modelXmlInfoFilename + ".backup";
                 FileInfo modelXmlInfoFileInfo = new FileInfo(modelXmlInfoFilename);
 
@@ -1878,7 +1877,7 @@ namespace LayoutManager.Model {
             ModelComponent? component = null;
 
             foreach (Assembly a in loadedAssemblies) {
-                component = (ModelComponent)a.CreateInstance(componentTypeName);
+                component = (ModelComponent?)a.CreateInstance(componentTypeName);
 
                 if (component != null)
                     break;

@@ -115,7 +115,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonOK_Click(object sender, System.EventArgs e) {
+        private void buttonOK_Click(object? sender, System.EventArgs e) {
             XmlElement selectedElement = xmlQueryComboboxCopyFrom.SelectedElement;
 
             if (selectedElement == null) {

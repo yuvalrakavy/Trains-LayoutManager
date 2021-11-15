@@ -24,7 +24,7 @@ namespace LayoutManager.Model {
             : base(element) {
         }
 
-        public XmlElement ComponentStateElement => (XmlElement)Element.ParentNode;
+        public XmlElement ComponentStateElement => (XmlElement)Element.ParentNode!;
 
         public Guid ComponentId => (Guid)ComponentStateElement.AttributeValue("ID");
     }
@@ -150,7 +150,7 @@ namespace LayoutManager.Model {
     public class LocomotiveAddressMap : Dictionary<int, LocomotiveAddressMapEntryBase> {
         public new LocomotiveAddressMapEntryBase? this[int address] {
             get {
-                return TryGetValue(address, out LocomotiveAddressMapEntryBase entry) ? entry : null;
+                return TryGetValue(address, out LocomotiveAddressMapEntryBase? entry) ? entry : null;
             }
         }
     }
@@ -199,7 +199,7 @@ namespace LayoutManager.Model {
 
         public PerOperationStates this[string operationName] {
             get {
-                if (!operationStates.TryGetValue(operationName, out PerOperationStates perOperationStates)) {
+                if (!operationStates.TryGetValue(operationName, out PerOperationStates? perOperationStates)) {
                     perOperationStates = new PerOperationStates();
                     operationStates.Add(operationName, perOperationStates);
                 }
@@ -263,6 +263,8 @@ namespace LayoutManager.Model {
             PerOperationStates operationContexts = LayoutModel.StateManager.OperationStates[ContextSectionName];
             var removeList = new List<string>(10);
             string myKey = Key;
+
+            GC.SuppressFinalize(this);
 
             // Pass on all the pending operation and remove all references based on the operation id, or any operation's participant id
             foreach (var pair in operationContexts) {
@@ -515,7 +517,7 @@ namespace LayoutManager.Model {
 
         public XmlElement LocationsElement {
             get {
-                XmlElement locationsElement = Element[E_Locations];
+                var locationsElement = Element[E_Locations];
 
                 if (locationsElement == null) {
                     locationsElement = Element.OwnerDocument.CreateElement(E_Locations);
@@ -529,7 +531,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Return the location element for the frontmost train location (usually the locomotive)
         /// </summary>
-        public TrainLocationInfo? LocomotiveLocation => LocationsElement.HasChildNodes ? new TrainLocationInfo(this, (XmlElement)LocationsElement.FirstChild) : null;
+        public TrainLocationInfo? LocomotiveLocation => LocationsElement.HasChildNodes ? new TrainLocationInfo(this, (XmlElement)LocationsElement.FirstChild!) : null;
 
         /// <summary>
         /// The block on which the frontmost train element is located (usually it will be a locomotive)
@@ -542,7 +544,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public TrainLocationInfo? LastCarLocation => LocationsElement.HasChildNodes ? new TrainLocationInfo(this, (XmlElement)LocationsElement.LastChild) : null;
+        public TrainLocationInfo? LastCarLocation => LocationsElement.HasChildNodes ? new TrainLocationInfo(this, (XmlElement)LocationsElement.LastChild!) : null;
 
         public LayoutBlock? LastCarBlock {
             get {
@@ -842,7 +844,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// True if train is powered (connected to digital command station)
         /// </summary>
-        public bool IsPowered => Power == null ? false : Power.Type == LayoutPowerType.Digital;
+        public bool IsPowered => Power != null &&Power.Type == LayoutPowerType.Digital;
 
         #endregion
 
@@ -1056,12 +1058,12 @@ namespace LayoutManager.Model {
         /// <param name="create">If true, a new state element will be created</param>
         /// <returns></returns>
         protected LocomotiveFunctionInfo? FindFunctionState(String functionName, Guid locomotiveId, bool create) {
-            XmlElement resultElement;
+            XmlElement? resultElement;
 
             if (locomotiveId == Guid.Empty)
-                resultElement = (XmlElement)FunctionStatesElement.SelectSingleNode("FunctionState[@Name='" + functionName + "']");
+                resultElement = (XmlElement?)FunctionStatesElement.SelectSingleNode("FunctionState[@Name='" + functionName + "']");
             else
-                resultElement = (XmlElement)FunctionStatesElement.SelectSingleNode("FunctionState[@Name='" + functionName + "' and @LocomotiveID='" + locomotiveId + "']");
+                resultElement = (XmlElement?)FunctionStatesElement.SelectSingleNode("FunctionState[@Name='" + functionName + "' and @LocomotiveID='" + locomotiveId + "']");
 
             if (resultElement == null && create) {
                 resultElement = FunctionStatesElement.OwnerDocument.CreateElement("FunctionState");
@@ -1077,9 +1079,9 @@ namespace LayoutManager.Model {
         }
 
         protected LocomotiveFunctionInfo? FindFunctionState(int functionNumber, Guid locomotiveId) {
-            XmlElement resultElement = locomotiveId == Guid.Empty
-                ? (XmlElement)FunctionStatesElement.SelectSingleNode($"FunctionState[@Number='{functionNumber}']")
-                : (XmlElement)FunctionStatesElement.SelectSingleNode($"FunctionState[@Number='{functionNumber}' and @LocomotiveID='{locomotiveId}']");
+            XmlElement? resultElement = locomotiveId == Guid.Empty
+                ? (XmlElement?)FunctionStatesElement.SelectSingleNode($"FunctionState[@Number='{functionNumber}']")
+                : (XmlElement?)FunctionStatesElement.SelectSingleNode($"FunctionState[@Number='{functionNumber}' and @LocomotiveID='{locomotiveId}']");
             return resultElement != null ? new LocomotiveFunctionInfo(resultElement) : null;
         }
 
@@ -1087,7 +1089,7 @@ namespace LayoutManager.Model {
 
         public XmlElement FunctionStatesElement {
             get {
-                XmlElement functionStates = Element[E_FunctionStates];
+                var functionStates = Element[E_FunctionStates];
 
                 if (functionStates == null) {
                     functionStates = Element.OwnerDocument.CreateElement(E_FunctionStates);
@@ -1098,7 +1100,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        private string getFunctionXml(String functionName, Guid locomotiveId) {
+        private static string GetFunctionXml(String functionName, Guid locomotiveId) {
             return locomotiveId != Guid.Empty
                 ? $"<Function Name='{functionName}' LocomotiveID='{locomotiveId}' />"
                 : $"<Function Name='{functionName}' />";
@@ -1111,7 +1113,7 @@ namespace LayoutManager.Model {
             if (function != null) {
                 function.State = state;
                 EventManager.Event(new LayoutEvent("locomotive-function-state-changed", this,
-                    state, getFunctionXml(functionName, locomotiveId)));
+                    state, GetFunctionXml(functionName, locomotiveId)));
             }
         }
 
@@ -1123,7 +1125,7 @@ namespace LayoutManager.Model {
                 function.State = state;
 
                 EventManager.Event(new LayoutEvent("locomotive-function-state-changed", this,
-                    state, getFunctionXml(function.Name, locomotiveId)));
+                    state, GetFunctionXml(function.Name, locomotiveId)));
             }
         }
 
@@ -1135,7 +1137,7 @@ namespace LayoutManager.Model {
         /// <param name="state">The state (true = on, false = off)</param>
         public void SetLocomotiveFunctionState(String functionName, Guid locomotiveId, bool state) {
             EventManager.Event(new LayoutEvent("set-locomotive-function-state-request", this,
-                state, getFunctionXml(functionName, locomotiveId)));
+                state, GetFunctionXml(functionName, locomotiveId)));
         }
 
         /// <summary>
@@ -1145,7 +1147,7 @@ namespace LayoutManager.Model {
         /// <param name="locoIndex">which locomotive (relevant if locomotive set), -1 set the state for all locomotives in the set</param>
         public void TriggerLocomotiveFunction(String functionName, Guid locomotiveId) {
             EventManager.Event(new LayoutEvent("trigger-locomotive-function-request", sender: this,
-                xmlDocument: getFunctionXml(functionName, locomotiveId)));
+                xmlDocument: GetFunctionXml(functionName, locomotiveId)));
         }
 
         private const string A_State = "State";
@@ -1180,16 +1182,18 @@ namespace LayoutManager.Model {
         /// Return true if locomotive has any active function
         /// </summary>
         public bool HasActiveFunction(Guid locomotiveId) {
-            XmlNodeList elements;
+            XmlNodeList? elements;
 
             if (locomotiveId == Guid.Empty)
                 elements = FunctionStatesElement.ChildNodes;
             else
                 elements = FunctionStatesElement.SelectNodes($"FunctionState[@LocomotiveID='{locomotiveId}']");
 
-            foreach (XmlElement functionStateElement in elements) {
-                if ((bool?)functionStateElement.AttributeValue(A_State) ?? false)
-                    return true;
+            if (elements != null) {
+                foreach (XmlElement functionStateElement in elements) {
+                    if ((bool?)functionStateElement.AttributeValue(A_State) ?? false)
+                        return true;
+                }
             }
 
             return false;
@@ -1341,7 +1345,7 @@ namespace LayoutManager.Model {
 
         #region IEqualityComparer<TrainStateInfo> Members
 
-        public bool Equals(TrainStateInfo x, TrainStateInfo y) => x.Id == y.Id;
+        public bool Equals(TrainStateInfo? x, TrainStateInfo? y) => x != null && y != null && x.Id == y.Id;
 
         public int GetHashCode(TrainStateInfo obj) => obj.Id.GetHashCode();
 
@@ -1378,7 +1382,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public LayoutBlock Block {
             get {
-                if (!LayoutModel.Blocks.TryGetValue(BlockId, out LayoutBlock block))
+                if (!LayoutModel.Blocks.TryGetValue(BlockId, out LayoutBlock? block))
                     throw new LayoutException($"Location of train {Train.Name} could not found - (track was removed?)");
                 return block;
             }
@@ -1420,11 +1424,14 @@ namespace LayoutManager.Model {
         /// </summary>
         public long BlockEdgeCrossingTime => (Int64)AttributeValue(A_BlockEdgeCrossingTime);
 
-        public XmlElement LocomotiveStateElement => (XmlElement)Element.ParentNode.ParentNode;
+        public XmlElement LocomotiveStateElement => (XmlElement)Element.ParentNode!.ParentNode!;
 
         public TrainPart TrainPart {
             get {
-                XmlElement locationsElement = (XmlElement)LocomotiveStateElement[E_Locations];
+                var locationsElement = (XmlElement?)LocomotiveStateElement[E_Locations];
+
+                if (locationsElement == null)
+                    return TrainPart.None;
 
                 if (Element == locationsElement.FirstChild)
                     return TrainPart.Locomotive;
@@ -1469,16 +1476,18 @@ namespace LayoutManager.Model {
         public IList<TrainStateInfo> this[LayoutBlock block] {
             get {
                 List<TrainStateInfo> result;
-                XmlNodeList trainLocationList = Element.SelectNodes("TrainState/Locations/Block[@BlockID='" + block.Id.ToString() + "']");
+                var trainLocationList = Element.SelectNodes("TrainState/Locations/Block[@BlockID='" + block.Id.ToString() + "']");
 
-                result = new List<TrainStateInfo>(trainLocationList.Count);
+                result = new List<TrainStateInfo>(trainLocationList?.Count ?? 0);
 
-                foreach (XmlElement trainLocationElement in trainLocationList) {
-                    var trainStateElement = (XmlElement)trainLocationElement.ParentNode.ParentNode;
-                    var train = new TrainStateInfo(trainStateElement);
+                if (trainLocationList != null) {
+                    foreach (XmlElement trainLocationElement in trainLocationList) {
+                        var trainStateElement = (XmlElement)trainLocationElement.ParentNode!.ParentNode!;
+                        var train = new TrainStateInfo(trainStateElement);
 
-                    if (train.OnTrack)
-                        result.Add(new TrainStateInfo(trainStateElement));
+                        if (train.OnTrack)
+                            result.Add(new TrainStateInfo(trainStateElement));
+                    }
                 }
 
                 return result.AsReadOnly();
@@ -1490,7 +1499,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public TrainStateInfo? this[Guid id] {
             get {
-                return IdToTrainStateElement.TryGetValue(id, out XmlElement trainStateElement) ? new TrainStateInfo(trainStateElement) : null;
+                return IdToTrainStateElement.TryGetValue(id, out XmlElement? trainStateElement) ? new TrainStateInfo(trainStateElement) : null;
             }
         }
 
@@ -1557,7 +1566,7 @@ namespace LayoutManager.Model {
             IdToTrainStateElement.Remove(trainState.Id);
         }
 
-        public void RemoveTrainFromTrack(TrainStateInfo trainState) {
+        public static void RemoveTrainFromTrack(TrainStateInfo trainState) {
             foreach (TrainLocationInfo trainLocation in trainState.Locations)
                 trainState.LeaveBlock(trainLocation.Block, generateEvent: false);
 
@@ -1630,7 +1639,7 @@ namespace LayoutManager.Model {
         /// <param name="componentId">The component ID</param>
         /// <returns>The component runtime state element</returns>
         private XmlElement GetComponentStateElement(Guid componentId) {
-            if (!_idToComponentStateElement.TryGetValue(componentId, out XmlElement componentStateElement)) {
+            if (!_idToComponentStateElement.TryGetValue(componentId, out XmlElement? componentStateElement)) {
                 componentStateElement = Element.OwnerDocument.CreateElement(E_ComponentState);
 
                 componentStateElement.SetAttributeValue(A_Id, componentId);
@@ -1648,9 +1657,9 @@ namespace LayoutManager.Model {
         /// <param name="componentId">The component name</param>
         /// <param name="topicName">The topic name</param>
         /// <returns>The component topic runtime state XML element</returns>
-        public XmlElement StateOf(Guid componentId, string topicName, bool create = false) {
+        public XmlElement? OptionalStateOf(Guid componentId, string topicName, bool create = false) {
             XmlElement componentStateElement = GetComponentStateElement(componentId);
-            XmlElement componentStateTopicElement = componentStateElement[topicName];
+            XmlElement? componentStateTopicElement = componentStateElement[topicName];
 
             if (create && componentStateTopicElement == null) {
                 componentStateTopicElement = Element.OwnerDocument.CreateElement(topicName);
@@ -1661,7 +1670,10 @@ namespace LayoutManager.Model {
             return componentStateTopicElement;
         }
 
-        public XmlElement StateOf(IModelComponentHasId component, string topicName, bool create = false) => StateOf(component.Id, topicName, create);
+        public XmlElement? OptionalStateOf(IModelComponentHasId component, string topicName, bool create = false) => OptionalStateOf(component.Id, topicName, create);
+
+        public XmlElement StateOf(Guid componentId, string topicName) => OptionalStateOf(componentId, topicName, true)!;
+        public XmlElement StateOf(IModelComponentHasId component, string topicName) => OptionalStateOf(component, topicName, true)!;
 
         #endregion
 
@@ -1703,9 +1715,10 @@ namespace LayoutManager.Model {
         public void Remove(Guid componentId, string topicName) {
             if (Contains(componentId, topicName)) {
                 XmlElement componentStateElement = GetComponentStateElement(componentId);
-                XmlElement componentStateTopicElement = componentStateElement[topicName];
+                XmlElement? componentStateTopicElement = componentStateElement[topicName];
 
-                componentStateElement.RemoveChild(componentStateTopicElement);
+                if(componentStateTopicElement != null)
+                    componentStateElement.RemoveChild(componentStateTopicElement);
 
                 if (componentStateElement.ChildNodes.Count == 0)
                     Remove(componentId);
@@ -1725,18 +1738,20 @@ namespace LayoutManager.Model {
         /// <param name="trainID">The train ID</param>
         /// <param name="topicName">The topic name</param>
         public void RemoveForTrain(Guid trainId, string topicName) {
-            XmlNodeList elementsToRemove = Element.SelectNodes($"ComponentState/{topicName}[@TrainID='{trainId}']");
+            var elementsToRemove = Element.SelectNodes($"ComponentState/{topicName}[@TrainID='{trainId}']");
             List<Guid> removeList = new List<Guid>();
 
-            foreach (XmlElement componentStateTopicElement in elementsToRemove) {
-                var componentStateElement = (XmlElement)componentStateTopicElement.ParentNode;
-                var componentID = (Guid)componentStateElement.AttributeValue(A_Id);
+            if (elementsToRemove != null) {
+                foreach (XmlElement componentStateTopicElement in elementsToRemove) {
+                    var componentStateElement = (XmlElement)componentStateTopicElement.ParentNode!;
+                    var componentID = (Guid)componentStateElement.AttributeValue(A_Id);
 
-                removeList.Add(componentID);
+                    removeList.Add(componentID);
+                }
+
+                foreach (Guid componentId in removeList)
+                    Remove(componentId, topicName);
             }
-
-            foreach (Guid componentId in removeList)
-                Remove(componentId, topicName);
         }
 
         public void Clear() {
@@ -1873,7 +1888,7 @@ namespace LayoutManager.Model {
 
         public XmlElement BlocksElement {
             get {
-                XmlElement blocksElement = Element[E_Blocks];
+                var blocksElement = Element[E_Blocks];
 
                 if (blocksElement == null) {
                     blocksElement = Element.OwnerDocument.CreateElement(E_Blocks);
@@ -1913,7 +1928,7 @@ namespace LayoutManager.Model {
             EventManager.Event(new LayoutEvent("manual-dispatch-region-activation-changed", this, active));
         }
 
-        public BlockIdCollection BlockIdList => blockIdCollection ?? (blockIdCollection = new BlockIdCollection(this));
+        public BlockIdCollection BlockIdList => blockIdCollection ??= new BlockIdCollection(this);
 
         public LayoutSelection Selection {
             get {
@@ -2088,7 +2103,7 @@ namespace LayoutManager.Model {
             : base(element) {
         }
 
-        public LayoutPolicyInfo(XmlElement parent, string name, XmlElement eventScriptElement, string scope, bool globalPolicy, bool apply) {
+        public LayoutPolicyInfo(XmlElement parent, string? name, XmlElement? eventScriptElement, string scope, bool globalPolicy, bool apply) {
             Element = parent.OwnerDocument.CreateElement(E_Policy);
 
             if (name != null)
@@ -2137,12 +2152,12 @@ namespace LayoutManager.Model {
 
         public XmlElement? EventScriptElement {
             get {
-                XmlElement eventScriptElement = Element[E_EventScript];
+                var eventScriptElement = Element[E_EventScript];
 
                 if (eventScriptElement != null) {
                     Debug.Assert(eventScriptElement.ChildNodes.Count == 1);
 
-                    return (XmlElement)eventScriptElement.ChildNodes[0];
+                    return (XmlElement)eventScriptElement.ChildNodes[0]!;
                 }
 
                 return null;
@@ -2152,7 +2167,7 @@ namespace LayoutManager.Model {
                 if (value == null)
                     throw new ArgumentNullException("EventScriptElement cannot be set to null");
 
-                XmlElement eventScriptElement = Element[E_EventScript];
+                var eventScriptElement = Element[E_EventScript];
                 XmlElement theScriptElement;
 
                 if (eventScriptElement == null) {
@@ -2200,20 +2215,28 @@ namespace LayoutManager.Model {
                 filter = "*";
 
             if (globalPoliciesElement != null) {
-                foreach (XmlElement policyElement in globalPoliciesElement.SelectNodes(filter)) {
-                    LayoutPolicyInfo policy = new LayoutPolicyInfo(policyElement) {
-                        GlobalPolicy = true
-                    };
-                    policies.Add(policy);
+                var filteredNodes = globalPoliciesElement.SelectNodes(filter);
+
+                if (filteredNodes != null) {
+                    foreach (XmlElement policyElement in filteredNodes) {
+                        LayoutPolicyInfo policy = new LayoutPolicyInfo(policyElement) {
+                            GlobalPolicy = true
+                        };
+                        policies.Add(policy);
+                    }
                 }
             }
 
             if (policiesElement != null) {
-                foreach (XmlElement policyElement in policiesElement.SelectNodes(filter)) {
-                    LayoutPolicyInfo policy = new LayoutPolicyInfo(policyElement) {
-                        GlobalPolicy = false
-                    };
-                    policies.Add(policy);
+                var filteredNodes = policiesElement.SelectNodes(filter);
+
+                if (filteredNodes != null) {
+                    foreach (XmlElement policyElement in filteredNodes) {
+                        LayoutPolicyInfo policy = new LayoutPolicyInfo(policyElement) {
+                            GlobalPolicy = false
+                        };
+                        policies.Add(policy);
+                    }
                 }
             }
         }
@@ -2244,7 +2267,7 @@ namespace LayoutManager.Model {
                 policies.Remove(policyToRemove);
 
                 EventManager.Event(new LayoutEvent("policy-removed", policyToRemove, this));
-                policyToRemove.Element.ParentNode.RemoveChild(policyToRemove.Element);
+                policyToRemove.Element.ParentNode!.RemoveChild(policyToRemove.Element);
 
                 if (save)
                     LayoutModel.WriteModelXmlInfo();
@@ -2377,17 +2400,17 @@ namespace LayoutManager.Model {
         private OperationStates? operationStates;
 
         public LayoutStateManager() : base("<LayoutState><Trains /><Components /><TrackContacts /><TripPlansCatalog /></LayoutState>") {
-            initialize();
+            Initialize();
         }
 
-        private void initialize() {
-            trains = new TrainsStateInfo(getElement("Trains"));
-            componentsState = new ComponentsStateInfo(getElement("Components"));
-            tripPlansCatalog = new TripPlanCatalogInfo(getElement("TripPlansCatalog"));
-            manualDispatchRegions = new ManualDispatchRegionCollection(getElement("ManualDispatchRegions"));
-            defaultDriverParameters = new DefaultDriverParametersInfo(getElement("DefaultDriverParameters"));
-            layoutVerificationOptions = new LayoutVerificationOptions(getElement("LayoutVerificiationOptions"));
-            trainTrackingOptions = new TrainTrackingOptions(getElement("TrainTracking"));
+        private void Initialize() {
+            trains = new TrainsStateInfo(GetElement("Trains"));
+            componentsState = new ComponentsStateInfo(GetElement("Components"));
+            tripPlansCatalog = new TripPlanCatalogInfo(GetElement("TripPlansCatalog"));
+            manualDispatchRegions = new ManualDispatchRegionCollection(GetElement("ManualDispatchRegions"));
+            defaultDriverParameters = new DefaultDriverParametersInfo(GetElement("DefaultDriverParameters"));
+            layoutVerificationOptions = new LayoutVerificationOptions(GetElement("LayoutVerificiationOptions"));
+            trainTrackingOptions = new TrainTrackingOptions(GetElement("TrainTracking"));
 
             tripPlanPolicies = new LayoutPoliciesCollection(GlobalPoliciesElement, LayoutPoliciesElement, "TripPlan");
             blockInfoPolicies = new LayoutPoliciesCollection(GlobalPoliciesElement, LayoutPoliciesElement, "BlockInfo");
@@ -2397,8 +2420,8 @@ namespace LayoutManager.Model {
             operationStates = null;
         }
 
-        private XmlElement getElement(string name) {
-            XmlElement element = Element[name];
+        private XmlElement GetElement(string name) {
+            var element = Element[name];
 
             if (element == null) {
                 element = Element.OwnerDocument.CreateElement(name);
@@ -2408,9 +2431,9 @@ namespace LayoutManager.Model {
             return element;
         }
 
-        public XmlElement LayoutPoliciesElement => getElement("Policies");
+        public XmlElement LayoutPoliciesElement => GetElement("Policies");
 
-        public XmlElement GlobalPoliciesElement => LayoutModel.Instance.GlobalPoliciesElement;
+        public static XmlElement GlobalPoliciesElement => LayoutModel.Instance.GlobalPoliciesElement;
 
         public TrainsStateInfo Trains => trains!;
 
@@ -2445,7 +2468,7 @@ namespace LayoutManager.Model {
         /// <param name="role"></param>
         /// <returns></returns>
         public static MotionRampInfo? GetRamp(XmlElement element, string role) {
-            XmlElement rampElement = (XmlElement)element.SelectSingleNode("Ramp[@Role='" + role + "']");
+            var rampElement = (XmlElement?)element.SelectSingleNode("Ramp[@Role='" + role + "']");
 
             return rampElement == null ? null : new MotionRampInfo(rampElement);
         }
@@ -2455,25 +2478,25 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="role">Accelerate, Decelrate, Slowdown, Stop</param>
         /// <returns>The ramp to be used</returns>
-        public MotionRampInfo? GetDefaultRamp(string role) => GetRamp(DefaultDriverParameters.Element, role);
+        public MotionRampInfo GetDefaultRamp(string role) => GetRamp(DefaultDriverParameters.Element, role) ?? MotionRampInfo.Default;
 
-        public MotionRampInfo? DefaultAccelerationRamp => GetDefaultRamp("Acceleration");
+        public MotionRampInfo DefaultAccelerationRamp => GetDefaultRamp("Acceleration");
 
-        public MotionRampInfo? DefaultDecelerationRamp => GetDefaultRamp("Deceleration");
+        public MotionRampInfo DefaultDecelerationRamp => GetDefaultRamp("Deceleration");
 
-        public MotionRampInfo? DefaultSlowdownRamp => GetDefaultRamp("SlowDown");
+        public MotionRampInfo DefaultSlowdownRamp => GetDefaultRamp("SlowDown");
 
-        public MotionRampInfo? DefaultStopRamp => GetDefaultRamp("Stop");
+        public MotionRampInfo DefaultStopRamp => GetDefaultRamp("Stop");
 
-        public List<LayoutPolicyType> PolicyTypes => policyTypes ?? (policyTypes = new List<LayoutPolicyType>(new LayoutPolicyType[] {
+        public List<LayoutPolicyType> PolicyTypes => policyTypes ??= new List<LayoutPolicyType>(new LayoutPolicyType[] {
                         new LayoutPolicyType("Global scripts", "Global", LayoutModel.StateManager.LayoutPolicies),
                         new LayoutPolicyType("Block scripts", "BlockInfo", LayoutModel.StateManager.BlockInfoPolicies),
                         new LayoutPolicyType("Trip plan scripts", "TripPlan", LayoutModel.StateManager.TripPlanPolicies),
                         new LayoutPolicyType("Before Trip Section Start scripts", "RideStart", LayoutModel.StateManager.RideStartPolicies),
                         new LayoutPolicyType("Driver Instructions scrtips", "DriverInstructions", LayoutModel.StateManager.DriverInstructionsPolicies)
-                    }));
+                    });
 
-        public OperationStates OperationStates => operationStates ?? (operationStates = new OperationStates());
+        public OperationStates OperationStates => operationStates ??= new OperationStates();
 
         /// <summary>
         /// Remove all state information
@@ -2494,12 +2517,12 @@ namespace LayoutManager.Model {
         public void Load() {
             try {
                 XmlDocument.Load(LayoutController.LayoutRuntimeStateFilename);
-                initialize();
+                Initialize();
             }
             catch (IOException) {
                 if (Element == null)
                     XmlDocument.LoadXml("<LayoutState><Trains /><Components /><TrackContacts /><TripPlansCatalog /></LayoutState>");
-                initialize();
+                Initialize();
             }
         }
 
@@ -2534,7 +2557,7 @@ namespace LayoutManager.Model {
         }
 
         [LayoutEvent("exit-operation-mode")]
-        private void exitOperationMode(LayoutEvent e) {
+        private void ExitOperationMode(LayoutEvent e) {
             Save();
             allLayoutManualDispatch = null;
         }

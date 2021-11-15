@@ -71,7 +71,7 @@ namespace LayoutManager.Dialogs {
         /// </summary>
         private void InitializeComponent() {
             this.components = new Container();
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(ArrangeAreas));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ArrangeAreas));
             this.listBoxAreas = new ListBox();
             this.buttonMoveDown = new Button();
             this.imageListButtons = new ImageList(this.components);
@@ -186,7 +186,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonMoveDown_Click(object sender, System.EventArgs e) {
+        private void buttonMoveDown_Click(object? sender, System.EventArgs e) {
             int selectedAreaIndex = listBoxAreas.SelectedIndex;
 
             if (selectedAreaIndex != -1 && selectedAreaIndex < listBoxAreas.Items.Count - 1) {
@@ -199,7 +199,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonMoveUp_Click(object sender, System.EventArgs e) {
+        private void buttonMoveUp_Click(object? sender, System.EventArgs e) {
             int selectedAreaIndex = listBoxAreas.SelectedIndex;
 
             if (selectedAreaIndex != -1 && selectedAreaIndex > 0) {
@@ -212,7 +212,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonClose_Click(object sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, System.EventArgs e) {
             if (rebuildTabs) {
                 tabAreas.TabPages.Clear();
 
@@ -223,11 +223,11 @@ namespace LayoutManager.Dialogs {
             this.Close();
         }
 
-        private void listBoxAreas_SelectedIndexChanged(object sender, System.EventArgs e) {
+        private void listBoxAreas_SelectedIndexChanged(object? sender, System.EventArgs e) {
             updateButtons();
         }
 
-        private void buttonRename_Click(object sender, System.EventArgs e) {
+        private void buttonRename_Click(object? sender, System.EventArgs e) {
             int selectedIndex = listBoxAreas.SelectedIndex;
 
             if (selectedIndex != -1) {
@@ -243,7 +243,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonNew_Click(object sender, System.EventArgs e) {
+        private void buttonNew_Click(object? sender, System.EventArgs e) {
             Dialogs.GetAreasName getAreaName = new Dialogs.GetAreasName();
 
             if (getAreaName.ShowDialog(this) == DialogResult.OK) {
@@ -260,7 +260,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonDelete_Click(object sender, System.EventArgs e) {
+        private void buttonDelete_Click(object? sender, System.EventArgs e) {
             LayoutFrameWindowAreaTabPage selectedAreaPage = (LayoutFrameWindowAreaTabPage)listBoxAreas.SelectedItem;
             LayoutModelArea selectedArea = selectedAreaPage.Area;
 

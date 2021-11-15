@@ -43,7 +43,7 @@
 			this.buttonNext.TabIndex = 0;
 			this.buttonNext.Text = "Next >";
 			this.buttonNext.UseVisualStyleBackColor = true;
-			this.buttonNext.Click += new System.EventHandler(this.buttonNext_Click);
+			this.buttonNext.Click += new System.EventHandler(this.ButtonNext_Click);
 			// 
 			// buttonCancelOrClose
 			// 
@@ -53,7 +53,7 @@
 			this.buttonCancelOrClose.TabIndex = 1;
 			this.buttonCancelOrClose.Text = "&Cancel";
 			this.buttonCancelOrClose.UseVisualStyleBackColor = true;
-			this.buttonCancelOrClose.Click += new System.EventHandler(this.buttonCancelOrClose_Click);
+			this.buttonCancelOrClose.Click += new System.EventHandler(this.ButtonCancelOrClose_Click);
 			// 
 			// panelConnectModule
 			// 

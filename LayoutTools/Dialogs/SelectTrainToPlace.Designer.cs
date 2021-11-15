@@ -57,7 +57,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.textBoxSearch.Name = "textBoxSearch";
             this.textBoxSearch.Size = new System.Drawing.Size(199, 20);
             this.textBoxSearch.TabIndex = 1;
-            this.textBoxSearch.TextChanged += new System.EventHandler(this.textBoxSearch_TextChanged);
+            this.textBoxSearch.TextChanged += new System.EventHandler(this.TextBoxSearch_TextChanged);
             // 
             // listBoxSearchResult
             // 
@@ -71,9 +71,9 @@ namespace LayoutManager.Tools.Dialogs {
             this.listBoxSearchResult.Name = "listBoxSearchResult";
             this.listBoxSearchResult.Size = new System.Drawing.Size(199, 171);
             this.listBoxSearchResult.TabIndex = 2;
-            this.listBoxSearchResult.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxSearchResult_DrawItem);
-            this.listBoxSearchResult.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.listBoxSearchResult_MeasureItem);
-            this.listBoxSearchResult.SelectedIndexChanged += new System.EventHandler(this.listBoxSearchResult_SelectedIndexChanged);
+            this.listBoxSearchResult.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.ListBoxSearchResult_DrawItem);
+            this.listBoxSearchResult.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.ListBoxSearchResult_MeasureItem);
+            this.listBoxSearchResult.SelectedIndexChanged += new System.EventHandler(this.ListBoxSearchResult_SelectedIndexChanged);
             // 
             // buttonOK
             // 
@@ -84,7 +84,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.TabIndex = 6;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -142,7 +142,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonNew.TabIndex = 3;
             this.buttonNew.Text = "New";
             this.buttonNew.UseVisualStyleBackColor = true;
-            this.buttonNew.Click += new System.EventHandler(this.buttonNew_Click);
+            this.buttonNew.Click += new System.EventHandler(this.ButtonNew_Click);
             // 
             // groupBox1
             // 

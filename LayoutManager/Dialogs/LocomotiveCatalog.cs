@@ -220,7 +220,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void menuItemStorage_Click(object sender, System.EventArgs e) {
+        private void menuItemStorage_Click(object? sender, System.EventArgs e) {
             if (catalog.IsLoaded)
                 catalog.Unload();
 
@@ -230,21 +230,21 @@ namespace LayoutManager.Dialogs {
             locomotiveTypeList.ContainerElement = catalog.CollectionElement;
         }
 
-        private void buttonClose_Click(object sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, System.EventArgs e) {
             if (catalog.IsLoaded)
                 catalog.Unload();
 
             LayoutModel.WriteModelXmlInfo();
         }
 
-        private void buttonAdd_Click(object sender, System.EventArgs e) {
+        private void buttonAdd_Click(object? sender, System.EventArgs e) {
             LocomotiveTypeInfo locomotiveType = new LocomotiveTypeInfo(catalog.CreateCollectionElement());
 
             if (new Dialogs.LocomotiveTypeProperties(locomotiveType).ShowDialog(this) == DialogResult.OK)
                 catalog.CollectionElement.AppendChild(locomotiveType.Element);
         }
 
-        private void buttonEdit_Click(object sender, System.EventArgs e) {
+        private void buttonEdit_Click(object? sender, System.EventArgs e) {
             if (locomotiveTypeList.SelectedLocomotiveType != null)
                 new Dialogs.LocomotiveTypeProperties(locomotiveTypeList.SelectedLocomotiveType).ShowDialog(this);
             else
@@ -253,14 +253,14 @@ namespace LayoutManager.Dialogs {
             updateButtons();
         }
 
-        private void locomotiveTypeList_DoubleClick(object sender, System.EventArgs e) {
+        private void locomotiveTypeList_DoubleClick(object? sender, System.EventArgs e) {
             if (locomotiveTypeList.SelectedLocomotiveType != null)
                 new Dialogs.LocomotiveTypeProperties(locomotiveTypeList.SelectedLocomotiveType).ShowDialog(this);
 
             updateButtons();
         }
 
-        private void buttonRemove_Click(object sender, System.EventArgs e) {
+        private void buttonRemove_Click(object? sender, System.EventArgs e) {
             if (locomotiveTypeList.SelectedLocomotiveType != null) {
                 LocomotiveTypeInfo s = locomotiveTypeList.SelectedLocomotiveType;
 
@@ -270,19 +270,19 @@ namespace LayoutManager.Dialogs {
             updateButtons();
         }
 
-        private void locomotiveTypeList_SelectedIndexChanged(object sender, System.EventArgs e) {
+        private void locomotiveTypeList_SelectedIndexChanged(object? sender, System.EventArgs e) {
             updateButtons();
         }
 
-        private void menuItemStandardImages_Click(object sender, System.EventArgs e) {
+        private void menuItemStandardImages_Click(object? sender, System.EventArgs e) {
             new Dialogs.LocomotiveCatalogStandardImages(catalog).ShowDialog(this);
         }
 
-        private void buttonOptions_Click(object sender, System.EventArgs e) {
+        private void buttonOptions_Click(object? sender, System.EventArgs e) {
             contextMenuOptions.Show(this, new Point(buttonOptions.Left, buttonOptions.Bottom));
         }
 
-        private void menuItemStandardLocomotiveFunctions_Click(object sender, System.EventArgs e) {
+        private void menuItemStandardLocomotiveFunctions_Click(object? sender, System.EventArgs e) {
             new Dialogs.StandardFunctions().ShowDialog(this);
         }
     }

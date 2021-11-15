@@ -154,7 +154,7 @@ namespace LayoutManager.Model {
                             canTrainWait = false;
                             break;
                         }
-                        else if (edge.Track is LayoutDoubleTrackComponent && ((LayoutDoubleTrackComponent)edge.Track).IsCross) {
+                        else if (edge.Track is LayoutDoubleTrackComponent track && track.IsCross) {
                             canTrainWait = false;
                             break;
                         }
@@ -248,7 +248,7 @@ namespace LayoutManager.Model {
                 }
             }
 
-            LayoutModel.StateManager.Components.StateOf(BlockDefinintion, State_TrainEntry, create: true).SetAttributeValue(A_Time, DateTime.Now.Ticks);
+            LayoutModel.StateManager.Components.StateOf(BlockDefinintion, State_TrainEntry).SetAttributeValue(A_Time, DateTime.Now.Ticks);
 
             BlockDefinintion.OnComponentChanged();
         }
@@ -280,7 +280,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public long? TrainEntryTime => (long?)LayoutModel.StateManager.Components.StateOf(BlockDefinintion, State_TrainEntry)?.AttributeValue(A_Time);
+        public long? TrainEntryTime => (long?)LayoutModel.StateManager.Components.OptionalStateOf(BlockDefinintion, State_TrainEntry)?.AttributeValue(A_Time);
 
         public void ClearTrains() {
             trainsInBlock.Clear();
@@ -370,7 +370,7 @@ namespace LayoutManager.Model {
         public IList<LayoutBlock> ContainedBlocks {
             get {
                 if (myBlock == null)
-                    return Array.AsReadOnly<LayoutBlock>(new LayoutBlock[] { });
+                    return Array.AsReadOnly<LayoutBlock>(Array.Empty<LayoutBlock>());
                 else return containedBlocks == null ? Array.AsReadOnly<LayoutBlock>(new LayoutBlock[1] { myBlock }) : containedBlocks.AsReadOnly();
             }
         }
@@ -422,7 +422,7 @@ namespace LayoutManager.Model {
         }
 
         static public string GetDescription(Guid resourceId) {
-            if (LayoutModel.Blocks.TryGetValue(resourceId, out LayoutBlock block))
+            if (LayoutModel.Blocks.TryGetValue(resourceId, out LayoutBlock? block))
                 return "Block: " + block.Name;
             else {
                 var component = LayoutModel.Component<ModelComponent>(resourceId, LayoutModel.ActivePhases);
@@ -447,7 +447,7 @@ namespace LayoutManager.Model {
         public void Add(LayoutBlock block, LayoutLockBlockEntry.LockBlockOptions options = LayoutLockBlockEntry.LockBlockOptions.None) {
             this[block.Id] = new LayoutLockBlockEntry(block, options);
             foreach (var resourceInfo in block.BlockDefinintion.Info.Resources)
-                addResource(resourceInfo.ResourceId);
+                AddResource(resourceInfo.ResourceId);
         }
 
         public ResourceUseCountMap ResourcesUseCount { get; } = new ResourceUseCountMap();
@@ -457,7 +457,7 @@ namespace LayoutManager.Model {
                 Add(block, options);
         }
 
-        private Guid addResource(Guid resourceId) {
+        private Guid AddResource(Guid resourceId) {
             if (ResourcesUseCount.ContainsKey(resourceId))
                 ResourcesUseCount[resourceId]++;
             else
@@ -467,7 +467,7 @@ namespace LayoutManager.Model {
 
         public void AddResources(IList<ILayoutLockResource> resources) {
             foreach (var r in resources)
-                addResource(r.Id);
+                AddResource(r.Id);
         }
 
         public new IEnumerator<LayoutLockBlockEntry> GetEnumerator() => Values.GetEnumerator();
@@ -625,9 +625,9 @@ namespace LayoutManager.Model {
 
                 EventManager.Event(new LayoutEvent("train-enter-block", trackingResult.Train, trackingResult.ToBlock));
                 EventManager.Event(new LayoutEvent("train-crossed-block-edge", trackingResult.Train, trackingResult.BlockEdge));
-                if (trackingResult.BlockEdge is LayoutBlockEdgeComponent) {
+                if (trackingResult.BlockEdge is LayoutBlockEdgeComponent blockEdge) {
                     EventManager.Event(new LayoutEvent("occupancy-block-edge-crossed",
-                        (LayoutBlockEdgeComponent)trackingResult.BlockEdge, trackingResult.Train, null));
+                        blockEdge, trackingResult.Train, null));
                 }
             }
         }
@@ -661,15 +661,15 @@ namespace LayoutManager.Model {
 
         public LocomotiveTrackingResult(LayoutBlockEdgeBase blockEdge, TrainStateInfo trainState,
             TrainLocationInfo trainLocation, LayoutBlock fromBlock, LayoutBlock toBlock) {
-            initialize(blockEdge, trainState, trainLocation, fromBlock, toBlock, null);
+            Initialize(blockEdge, trainState, trainLocation, fromBlock, toBlock, null);
         }
 
         public LocomotiveTrackingResult(LayoutBlockEdgeBase blockEdge, TrainStateInfo trainState,
             TrainLocationInfo trainLocation, LayoutBlock fromBlock, LayoutBlock toBlock, TrainMotionListManager motionListManager) {
-            initialize(blockEdge, trainState, trainLocation, fromBlock, toBlock, motionListManager);
+            Initialize(blockEdge, trainState, trainLocation, fromBlock, toBlock, motionListManager);
         }
 
-        private void initialize(LayoutBlockEdgeBase blockEdge, TrainStateInfo trainState,
+        private void Initialize(LayoutBlockEdgeBase blockEdge, TrainStateInfo trainState,
             TrainLocationInfo trainLocation, LayoutBlock fromBlock, LayoutBlock toBlock, TrainMotionListManager? motionListManager) {
             XmlDocument.LoadXml("<TrackingResult />");
 

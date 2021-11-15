@@ -38,7 +38,7 @@ namespace Gui.Wizard {
             InitializeComponent();
         }
 
-        private void Wizard_Load(object sender, System.EventArgs e) {
+        private void Wizard_Load(object? sender, System.EventArgs e) {
             //Attempt to activate a page
             ActivatePage(0);
 
@@ -264,25 +264,25 @@ namespace Gui.Wizard {
                 this.Invalidate();
         }
 
-        private void btnNext_Click(object sender, System.EventArgs e) {
+        private void btnNext_Click(object? sender, System.EventArgs e) {
             Next();
         }
 
-        private void btnNext_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
+        private void btnNext_MouseDown(object? sender, System.Windows.Forms.MouseEventArgs e) {
             if (DesignMode)
                 Next();
         }
 
-        private void btnBack_Click(object sender, System.EventArgs e) {
+        private void btnBack_Click(object? sender, System.EventArgs e) {
             Back();
         }
 
-        private void btnBack_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
+        private void btnBack_MouseDown(object? sender, System.Windows.Forms.MouseEventArgs e) {
             if (DesignMode)
                 Back();
         }
 
-        private void btnCancel_Click(object sender, System.EventArgs e) {
+        private void btnCancel_Click(object? sender, System.EventArgs e) {
             CancelEventArgs arg = new CancelEventArgs();
 
             //Throw the event out to subscribers

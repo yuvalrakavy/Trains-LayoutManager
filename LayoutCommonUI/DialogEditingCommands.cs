@@ -1,14 +1,10 @@
-using System;
-using System.Drawing;
-using System.Windows.Forms;
-
 namespace LayoutManager.CommonUI {
     public interface IControlSupportViewOnly {
         bool ViewOnly { get; set; }
     }
 
     public abstract class DialogEditingCommandBase {
-        protected Control control;
+        protected Control? control;
 
         protected DialogEditingCommandBase() {
             this.control = null;
@@ -28,11 +24,13 @@ namespace LayoutManager.CommonUI {
         }
 
         public override void Do() {
-            control.Visible = false;
+            if(control != null)
+                control.Visible = false;
         }
 
         public override void Undo() {
-            control.Visible = true;
+            if(control != null)
+                control.Visible = true;
         }
     }
 
@@ -41,11 +39,13 @@ namespace LayoutManager.CommonUI {
         }
 
         public override void Do() {
-            control.Enabled = false;
+            if(control != null)
+                control.Enabled = false;
         }
 
         public override void Undo() {
-            control.Enabled = true;
+            if(control != null)
+                control.Enabled = true;
         }
     }
 
@@ -57,10 +57,12 @@ namespace LayoutManager.CommonUI {
         }
 
         public override void Do() {
-            string oldText = control.Text;
+            if (control != null) {
+                string oldText = control.Text;
 
-            control.Text = text;
-            text = oldText;
+                control.Text = text;
+                text = oldText;
+            }
         }
 
         public override void Undo() {
@@ -76,14 +78,16 @@ namespace LayoutManager.CommonUI {
         }
 
         public override void Do() {
-            Point oldLocation = control.Location;
+            if (control != null) {
+                Point oldLocation = control.Location;
 
-            control.Parent.SuspendLayout();
+                control.Parent.SuspendLayout();
 
-            control.Location = this.location;
-            this.location = oldLocation;
+                control.Location = this.location;
+                this.location = oldLocation;
 
-            control.Parent.ResumeLayout();
+                control.Parent.ResumeLayout();
+            }
         }
 
         public override void Undo() {
@@ -92,22 +96,22 @@ namespace LayoutManager.CommonUI {
     }
 
     public class DialogEditingRemoveMenuEntry : DialogEditingCommandBase {
-        private readonly Menu menu;
-        private readonly MenuItem item;
+        private readonly ToolStripDropDownMenu menu;
+        private readonly ToolStripMenuItem item;
         private int index;
 
-        public DialogEditingRemoveMenuEntry(Menu menu, MenuItem item) {
+        public DialogEditingRemoveMenuEntry(ToolStripDropDownMenu menu, ToolStripMenuItem item) {
             this.menu = menu;
             this.item = item;
         }
 
         public override void Do() {
-            index = item.Index;
-            menu.MenuItems.Remove(item);
+            index = menu.Items.IndexOf(item);
+            menu.Items.Remove(item);
         }
 
         public override void Undo() {
-            menu.MenuItems.Add(index, item);
+            menu.Items.Insert(index, item);
         }
     }
 
@@ -119,14 +123,16 @@ namespace LayoutManager.CommonUI {
         }
 
         public override void Do() {
-            Size oldSize = control.Size;
+            if (control != null) {
+                Size oldSize = control.Size;
 
-            control.Parent.SuspendLayout();
+                control.Parent.SuspendLayout();
 
-            control.Size = size;
-            size = oldSize;
+                control.Size = size;
+                size = oldSize;
 
-            control.Parent.ResumeLayout();
+                control.Parent.ResumeLayout();
+            }
         }
 
         public override void Undo() {
@@ -216,19 +222,19 @@ namespace LayoutManager.CommonUI {
             form.ResumeLayout();
         }
 
-        private void setViewOnly(Control control, bool viewOnly) {
-            if (control is IControlSupportViewOnly)
-                ((IControlSupportViewOnly)control).ViewOnly = viewOnly;
+        private void SetViewOnly(Control control, bool viewOnly) {
+            if (control is IControlSupportViewOnly viewOnlyControl)
+                viewOnlyControl.ViewOnly = viewOnly;
             else {
                 foreach (Control c in control.Controls)
-                    setViewOnly(c, viewOnly);
+                    SetViewOnly(c, viewOnly);
             }
         }
 
         public bool ViewOnly {
             set {
                 foreach (Control c in form.Controls)
-                    setViewOnly(c, value);
+                    SetViewOnly(c, value);
                 viewOnly = value;
             }
 

@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
+using LayoutManager.CommonUI;
 using LayoutManager;
 
 namespace DiMAX {
@@ -68,10 +69,10 @@ namespace DiMAX {
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(DiMAXcommandStation))]
         private void AddEditingContextMenuEntries(LayoutEvent e) {
-            Menu menu = (Menu)e.Info;
+            Menu menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
             DiMAXcommandStation component = (DiMAXcommandStation)e.Sender;
 
-            menu.MenuItems.Add(new DiMAXcommandStationMenuItemProperties(component));
+            menu.Items.Add(new DiMAXcommandStationMenuItemProperties(component));
         }
 
         #region DiMAX Command Station Menu Item Classes
@@ -106,10 +107,10 @@ namespace DiMAX {
         [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(DiMAXcommandStation))]
         private void AddOperationContextMenuEntries(LayoutEvent e) {
             var commandStation = (DiMAXcommandStation)e.Sender;
-            var m = (Menu)e.Info;
+            var m = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
-            m.MenuItems.Add(new MenuItem("Test locomotive select", (s, ea) => new Dialogs.TestLocoSelect(commandStation).ShowDialog()));
-            m.MenuItems.Add(new MenuItem("Test locomotive drive", (s, ea) => new Dialogs.TestLocoDrive(commandStation).ShowDialog()));
+            m.Items.Add(new MenuItem("Test locomotive select", (s, ea) => new Dialogs.TestLocoSelect(commandStation).ShowDialog()));
+            m.Items.Add(new MenuItem("Test locomotive drive", (s, ea) => new Dialogs.TestLocoDrive(commandStation).ShowDialog()));
         }
 
         #region Component Designer generated code

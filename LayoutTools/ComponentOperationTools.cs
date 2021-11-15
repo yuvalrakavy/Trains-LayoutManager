@@ -13,9 +13,8 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.CommonUI.Controls;
 using LayoutManager.View;
+using LayoutManager.CommonUI;
 
-#pragma warning disable IDE0051, IDE0060, IDE0067
-#nullable enable
 namespace LayoutManager.Tools {
     /// <summary>
     /// Summary description for ComponentTools.
@@ -30,7 +29,7 @@ namespace LayoutManager.Tools {
 
         [LayoutEventDef("emergency-stop-request", Role = LayoutEventRole.Request)]
         [LayoutEvent("emergency-stop-request")]
-        private void emergencyStopRequest(LayoutEvent e0) {
+        private void EmergencyStopRequest(LayoutEvent e0) {
             var e = (LayoutEvent<IModelComponentIsCommandStation, string>)e0;
 
             if (e.Sender == null) {
@@ -46,7 +45,7 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("command-station-emergency-stop-notification")]
-        private void commandStationEmergencyStopNotification(LayoutEvent e) {
+        private void CommandStationEmergencyStopNotification(LayoutEvent e) {
             var commandStation = Ensure.NotNull<IModelComponentIsCommandStation>(e.Sender, "commandStation");
             var activeNotification = (Form?)EventManager.Event(new LayoutEvent("get-command-station-notification-dialog", commandStation));
 
@@ -58,8 +57,9 @@ namespace LayoutManager.Tools {
             }
             else {
                 ILayoutFrameWindow frameWindow = LayoutController.ActiveFrameWindow;
+                var reason = (string)(e.Info ?? String.Empty);
 
-                using (activeNotification = new Dialogs.CommandStationStopped(commandStation, (string?)e.Info) {
+                using (activeNotification = new Dialogs.CommandStationStopped(commandStation, reason) {
                     Owner = frameWindow as Form
                 }) {
                     activeNotification.Show(LayoutController.ActiveFrameWindow);
@@ -69,7 +69,7 @@ namespace LayoutManager.Tools {
 
         [LayoutEventDef("cancel-emergency-stop-request", Role = LayoutEventRole.Request)]
         [LayoutEvent("cancel-emergency-stop-request")]
-        private void cancelEmergencyStopRequest(LayoutEvent e) {
+        private void CancelEmergencyStopRequest(LayoutEvent e) {
             if (e.Sender == null) {
                 foreach (IModelComponentIsCommandStation commandStation in LayoutModel.Components<IModelComponentIsCommandStation>(LayoutModel.ActivePhases))
                     EventManager.Event(new LayoutEvent("cancel-emergency-stop-request", commandStation));
@@ -87,7 +87,7 @@ namespace LayoutManager.Tools {
         #region Utility Functions
 
         private void SetSwitchState(IModelComponentHasSwitchingState component, int switchState) {
-            List<SwitchingCommand> switchingCommands = new List<SwitchingCommand>();
+            List<SwitchingCommand> switchingCommands = new();
 
             component.AddSwitchingCommands(switchingCommands, switchState);
             EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands));
@@ -132,29 +132,30 @@ namespace LayoutManager.Tools {
         [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(IModelComponentIsDualState))]
         private void AddTurnoutContextMenu(LayoutEvent e) {
             var component = Ensure.NotNull<ModelComponent>(e.Sender, "component");
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
             var multipath = (IModelComponentIsDualState)component;
 
-            MenuItem item = new LayoutComponentMenuItem(component, "&Toggle " + component.ToString(), new EventHandler(this.OnToggleDualStateComponent)) {
+            var item = new LayoutComponentMenuItem(component, "&Toggle " + component.ToString(), new EventHandler(this.OnToggleDualStateComponent)) {
                 DefaultItem = true
             };
-            menu.MenuItems.Add(item);
+            menu.Items.Add(item);
         }
 
-        private void OnToggleDualStateComponent(Object sender, EventArgs e) {
-            IModelComponentIsDualState multipath = (IModelComponentIsDualState)((LayoutComponentMenuItem)sender).Component;
+        private void OnToggleDualStateComponent(Object? sender, EventArgs e) {
+            var componentMenuItem = Ensure.NotNull<LayoutComponentMenuItem>(sender);
+            var multipath = (IModelComponentIsDualState)componentMenuItem.Component;
 
-            toggleDualStateComponent(multipath);
+            ToggleDualStateComponent(multipath);
         }
 
         [LayoutEvent("default-action-command", SenderType = typeof(IModelComponentIsDualState))]
-        private void dualStateComponentDefaultAction(LayoutEvent e) {
+        private void DualStateComponentDefaultAction(LayoutEvent e) {
             var multipath = Ensure.NotNull<IModelComponentIsDualState>(e.Sender, "multipath");
 
-            toggleDualStateComponent(multipath);
+            ToggleDualStateComponent(multipath);
         }
 
-        private void toggleDualStateComponent(IModelComponentIsDualState multipath) {
+        private void ToggleDualStateComponent(IModelComponentIsDualState multipath) {
             var track = Ensure.NotNull<LayoutTrackComponent>(multipath, "track");
             var block = track.GetBlock(track.ConnectionPoints[0]);
             bool doit = true;
@@ -184,17 +185,19 @@ namespace LayoutManager.Tools {
         [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutSignalComponent))]
         private void AddSignalContextMenu(LayoutEvent e) {
             var component = Ensure.NotNull<ModelComponent>(e.Sender, "component");
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
 
-            MenuItem item = new LayoutComponentMenuItem(component, "&Toggle signal", new EventHandler(this.OnToggleSignal)) {
+            var item = new LayoutComponentMenuItem(component, "&Toggle signal", new EventHandler(this.OnToggleSignal)) {
                 DefaultItem = true
             };
 
-            menu.MenuItems.Add(item);
+            menu.Items.Add(item);
         }
 
-        private void OnToggleSignal(Object sender, EventArgs e) {
-            LayoutSignalComponent signal = (LayoutSignalComponent)((LayoutComponentMenuItem)sender).Component;
+        private void OnToggleSignal(Object? sender, EventArgs e) {
+            var componentMenuItem = Ensure.NotNull<LayoutComponentMenuItem>(sender);
+            var signal = (LayoutSignalComponent)componentMenuItem.Component;
+
             LayoutSignalState oldState = signal.SignalState;
             LayoutSignalState newState;
 
@@ -240,7 +243,7 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(LayoutStraightTrackComponent))]
-        private void queryStraightTrackContextMenu(LayoutEvent e) {
+        private void QueryStraightTrackContextMenu(LayoutEvent e) {
             if (!ReflectEventToBlockDefinition(e))
                 e.Info = false;
         }
@@ -252,7 +255,7 @@ namespace LayoutManager.Tools {
         [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutStraightTrackComponent))]
         [LayoutEvent("add-operation-details-window-sections", SenderType = typeof(LayoutStraightTrackComponent))]
         [LayoutEvent("default-action-command", SenderType = typeof(LayoutStraightTrackComponent))]
-        private void doRefelectEventToBlockDefinition(LayoutEvent e) {
+        private void DoRefelectEventToBlockDefinition(LayoutEvent e) {
             ReflectEventToBlockDefinition(e);
         }
 
@@ -261,37 +264,37 @@ namespace LayoutManager.Tools {
         #region Block Definition Component
 
         [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void queryBlockInfoContextMenu(LayoutEvent e) {
+        private void QueryBlockInfoContextMenu(LayoutEvent e) {
             e.Info = e.Sender;
         }
 
-        private void addBlockInfoMenuEntries(Menu m, LayoutBlockDefinitionComponent blockDefinition, IList<TrainStateInfo> trains) {
+        private void AddBlockInfoMenuEntries(MenuOrMenuItem m, LayoutBlockDefinitionComponent blockDefinition, IList<TrainStateInfo> trains) {
             bool defaultSet = false;
             LayoutBlock block = blockDefinition.Block;
 
             // Check if there any dialog that could take a block info for a way point
-            List<ITripPlanEditorDialog> tripPlanEditorDialogs = new List<ITripPlanEditorDialog>();
+            List<ITripPlanEditorDialog> tripPlanEditorDialogs = new();
 
             EventManager.Event(new LayoutEvent("query-edit-trip-plan-dialog", blockDefinition, tripPlanEditorDialogs));
 
             if (tripPlanEditorDialogs.Count == 1) {
                 ITripPlanEditorDialog tripPlanEditorDialog = tripPlanEditorDialogs[0];
 
-                MenuItem item = new AddBlockInfoToTripPlanEditorDialog(blockDefinition, tripPlanEditorDialog, "Add &Waypoint") {
-                    DefaultItem = true
-                };
+                var item = new AddBlockInfoToTripPlanEditorDialog(blockDefinition, tripPlanEditorDialog, "Add &Waypoint");
+
+                item.Font = new Font(item.Font, item.Font.Style | FontStyle.Bold);
                 defaultSet = true;
-                m.MenuItems.Add(item);
+                m.Items.Add(item);
             }
             else if (tripPlanEditorDialogs.Count > 1) {
-                MenuItem addWayPoint = new MenuItem("Add &Waypoint");
+                var addWayPoint = new LayoutMenuItem("Add &Waypoint");
 
                 foreach (ITripPlanEditorDialog tripPlanEditorDialog in tripPlanEditorDialogs)
-                    addWayPoint.MenuItems.Add(new AddBlockInfoToTripPlanEditorDialog(blockDefinition, tripPlanEditorDialog, tripPlanEditorDialog.DialogName));
+                    addWayPoint.DropDownItems.Add(new AddBlockInfoToTripPlanEditorDialog(blockDefinition, tripPlanEditorDialog, tripPlanEditorDialog.DialogName));
 
-                addWayPoint.DefaultItem = true;
+                addWayPoint.Font = new Font(addWayPoint.Font, addWayPoint.Font.Style | FontStyle.Bold);
                 defaultSet = true;
-                m.MenuItems.Add(addWayPoint);
+                m.Items.Add(addWayPoint);
             }
 
             // Check if there any dialog that could take a block info for a trip-plan origin
@@ -304,28 +307,28 @@ namespace LayoutManager.Tools {
             if (dialogs.Count == 1) {
                 var dialog = dialogs[0];
 
-                MenuItem item = new AddBlockInfoToDialogMenuItem(blockDefinition, dialog, "Add &Trip-plan start location");
+                var item = new AddBlockInfoToDialogMenuItem(blockDefinition, dialog, "Add &Trip-plan start location");
 
                 if (!defaultSet) {
                     item.DefaultItem = true;
                     defaultSet = true;
                 }
 
-                m.MenuItems.Add(item);
+                m.Items.Add(item);
             }
             else if (dialogs.Count > 1) {
-                MenuItem addLocation = new MenuItem("Add &Trip-plan start location");
+                var addLocation = new LayoutMenuItem("Add &Trip-plan start location");
 
                 foreach (var dialog in dialogs)
-                    addLocation.MenuItems.Add(new AddBlockInfoToDialogMenuItem(blockDefinition, dialog, dialog.DialogName(blockDefinition)));
+                    addLocation.DropDownItems.Add(new AddBlockInfoToDialogMenuItem(blockDefinition, dialog, dialog.DialogName(blockDefinition)));
 
-                m.MenuItems.Add(addLocation);
+                m.Items.Add(addLocation);
             }
 
             // Check if there any dialog that could take a block info for a destination location
             dialogs.Clear();
 
-            EventManager.Event(new LayoutEvent<LayoutBlockDefinitionComponent, List<IModelComponentReceiverDialog>>("query-edit-destination-dialog", blockDefinition, dialogs));
+            EventManager.Event(new LayoutEvent("query-edit-destination-dialog", blockDefinition, dialogs));
 
             if (dialogs.Count == 1) {
                 var dialog = dialogs[0];
@@ -336,15 +339,15 @@ namespace LayoutManager.Tools {
                     defaultSet = true;
                 }
 
-                m.MenuItems.Add(item);
+                m.Items.Add(item);
             }
             else if (dialogs.Count > 1) {
-                MenuItem addLocation = new MenuItem("Add &Location");
+                var addLocation = new LayoutMenuItem("Add &Location");
 
                 foreach (IModelComponentReceiverDialog dialog in dialogs)
-                    addLocation.MenuItems.Add(new AddBlockInfoToDialogMenuItem(blockDefinition, dialog, dialog.DialogName(blockDefinition)));
+                    addLocation.DropDownItems.Add(new AddBlockInfoToDialogMenuItem(blockDefinition, dialog, dialog.DialogName(blockDefinition)));
 
-                m.MenuItems.Add(addLocation);
+                m.Items.Add(addLocation);
             }
 
             // Check if there any dialog that could take a block info for a destination location
@@ -363,20 +366,20 @@ namespace LayoutManager.Tools {
                     defaultSet = true;
                 }
 
-                m.MenuItems.Add(item);
+                m.Items.Add(item);
             }
 
             if (block.LockRequest != null && block.LockRequest.IsManualDispatchLock) {
-                if (m.MenuItems.Count > 0)
-                    m.MenuItems.Add("-");
+                if (m.Items.Count > 0)
+                    m.Items.Add(new ToolStripSeparator());
 
-                addManualDispatchRouteMenuEntries(blockDefinition, m);
-                m.MenuItems.Add("-");
+                AddManualDispatchRouteMenuEntries(blockDefinition, m);
+                m.Items.Add(new ToolStripSeparator());
             }
 
             // Check of block belongs to region that can accept more than one power
             if (blockDefinition.PowerConnector.Inlet.ConnectedOutlet.ObtainablePowers.Count() > 1)
-                addPowerConnectionEntries(blockDefinition, m);
+                AddPowerConnectionEntries(blockDefinition, m);
 
             // Check if this block info has trains in it.
 
@@ -384,21 +387,21 @@ namespace LayoutManager.Tools {
                 var context = LayoutOperationContext.GetPendingOperation("TrainPlacement", blockDefinition);
 
                 if (context == null) {
-                    m.MenuItems.Add("Place on track...",
-                        (object sender, EventArgs e) => {
-                            Dialogs.SelectTrainToPlace d = new LayoutManager.Tools.Dialogs.SelectTrainToPlace(blockDefinition);
-                            if (d.ShowDialog() == DialogResult.OK) {
+                    m.Items.Add("Place on track...", null,
+                        (object? sender, EventArgs e) => {
+                            Dialogs.SelectTrainToPlace d = new(blockDefinition);
+                            if (d.ShowDialog() == DialogResult.OK && d.Selected?.Element != null) {
                                 DoValidateAndPlaceTrain(new LayoutEvent<LayoutBlockDefinitionComponent, XmlElement>("validate-and-place-train-request", blockDefinition, d.Selected.Element).SetOption("Train", "Front", d.Front.ToString()).SetOption("Train", "Length", d.Length.ToString()));
                             }
                         });
                 }
                 else
-                    m.MenuItems.Add("Cancel " + context.Description, (s, ea) => context.Cancel());
+                    m.Items.Add("Cancel " + context.Description, null, (s, ea) => context.Cancel());
 
                 if (blockDefinition.Info.UnexpectedTrainDetected) {
-                    using MenuItem identifyTrainMenuItem = getRelocateTrainMenuItem(blockDefinition);
-                    if (identifyTrainMenuItem.MenuItems.Count > 0)
-                        m.MenuItems.Add(identifyTrainMenuItem);
+                    using var identifyTrainMenuItem = GetRelocateTrainMenuItem(blockDefinition);
+                    if (identifyTrainMenuItem.DropDownItems.Count > 0)
+                        m.Items.Add(identifyTrainMenuItem);
                 }
                 else {
                     var otherTrains = new List<TrainStateInfo>();
@@ -413,23 +416,23 @@ namespace LayoutManager.Tools {
                     }
 
                     if (otherTrains.Count == 1)
-                        m.MenuItems.Add($"Fix: train '{otherTrains[0].DisplayName}' located here",
+                        m.Items.Add($"Fix: train '{otherTrains[0].DisplayName}' located here", null,
                             (sender, e1) => EventManager.Event(new LayoutEvent("relocate-train-request", otherTrains[0], blockDefinition)));
                     else if (otherTrains.Count > 1) {
-                        var fixTrainLocationMenu = new MenuItem("Fix: train which is located here");
+                        var fixTrainLocationMenu = new LayoutMenuItem("Fix: train which is located here");
 
                         foreach (var train in otherTrains)
-                            fixTrainLocationMenu.MenuItems.Add(train.DisplayName, (sender, e1) => EventManager.Event(new LayoutEvent("relocate-train-request", train, blockDefinition)));
+                            fixTrainLocationMenu.DropDownItems.Add(train.DisplayName, null, (sender, e1) => EventManager.Event(new LayoutEvent("relocate-train-request", train, blockDefinition)));
 
-                        m.MenuItems.Add(fixTrainLocationMenu);
+                        m.Items.Add(fixTrainLocationMenu);
                     }
                 }
 
                 // Check if trains in neighboring blocks can be extended
-                var extendTrainMenuItem = (MenuItem?)EventManager.Event(new LayoutEvent("get-extend-train-menu", blockDefinition));
+                var extendTrainMenuItem = (LayoutMenuItem?)EventManager.Event(new LayoutEvent("get-extend-train-menu", blockDefinition));
 
                 if (extendTrainMenuItem != null)
-                    m.MenuItems.Add(extendTrainMenuItem);
+                    m.Items.Add(extendTrainMenuItem);
             }
             else {
                 if (trains.Count == 1) {
@@ -437,52 +440,52 @@ namespace LayoutManager.Tools {
 
                     if (train.IsPowered) {
                         if (blockDefinition.Block.LockRequest == null || !blockDefinition.Block.LockRequest.IsManualDispatchLock) {
-                            MenuItem item = new NewTripPlanMenuItem("New &Trip plan", train, blockDefinition);
+                            var item = new NewTripPlanMenuItem("New &Trip plan", train, blockDefinition);
 
                             if (!defaultSet && train.Speed == 0) {
                                 item.DefaultItem = true;
                                 defaultSet = true;
                             }
 
-                            m.MenuItems.Add(item);
+                            m.Items.Add(item);
 
-                            m.MenuItems.Add(new TripPlanCatalogMenuItem("&Saved Trip-plans...", trains[0]));
-                            m.MenuItems.Add("-");
+                            m.Items.Add(new TripPlanCatalogMenuItem("&Saved Trip-plans...", trains[0]));
+                            m.Items.Add(new ToolStripSeparator());
                         }
                     }
 
-                    EventManager.Event(new LayoutEvent<TrainStateInfo, Menu>("add-train-operation-menu", trains[0], m));
+                    EventManager.Event(new LayoutEvent("add-train-operation-menu", trains[0], m));
                 }
                 else {
                     foreach (TrainStateInfo train in trains) {
-                        MenuItem trainItem = new MenuItem(train.DisplayName);
+                        var trainItem = new LayoutMenuItem(train.DisplayName);
 
                         if (train.IsPowered) {
                             if (blockDefinition.Block.LockRequest == null || !blockDefinition.Block.LockRequest.IsManualDispatchLock) {
-                                trainItem.MenuItems.Add(new NewTripPlanMenuItem(train.DisplayName, train, blockDefinition));
-                                trainItem.MenuItems.Add(new TripPlanCatalogMenuItem("&Saved Trip-plans...", train));
-                                trainItem.MenuItems.Add("-");
+                                trainItem.DropDownItems.Add(new NewTripPlanMenuItem(train.DisplayName, train, blockDefinition));
+                                trainItem.DropDownItems.Add(new TripPlanCatalogMenuItem("&Saved Trip-plans...", train));
+                                trainItem.DropDownItems.Add("-");
                             }
                         }
 
-                        EventManager.Event(new LayoutEvent<TrainStateInfo, Menu>("add-train-operation-menu", train, trainItem));
+                        EventManager.Event(new LayoutEvent("add-train-operation-menu", train, trainItem));
 
-                        if (trainItem.MenuItems.Count > 0)
-                            m.MenuItems.Add(trainItem);
+                        if (trainItem.DropDownItems.Count > 0)
+                            m.Items.Add(trainItem);
                     }
                 }
             }
 
             if (blockDefinition.Info.IsOccupancyDetectionBlock)
-                m.MenuItems.Add(new ToggleTrainDetectionStateMenuItem(blockDefinition));
+                m.Items.Add(new ToggleTrainDetectionStateMenuItem(blockDefinition));
         }
 
         [LayoutEvent("add-train-operation-menu")]
-        private void addFixTrainOrientationMenu(LayoutEvent e) {
+        private void AddFixTrainOrientationMenu(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+            var menuOrMenuItem = Ensure.NotNull<object>(e.Info);
 
-            menu.MenuItems.Add("Fix: reverse train orientation", (sender, e1) => {
+            var item = new LayoutMenuItem("Fix: reverse train orientation", null, (sender, e1) => {
                 foreach (var trainLocation in train.Locations) {
                     if (trainLocation.IsDisplayFrontKnown) {
                         var reversedFront = trainLocation.Block.BlockDefinintion.Track.ConnectTo(trainLocation.DisplayFront, LayoutComponentConnectionType.Passage).FirstOrDefault();
@@ -492,79 +495,83 @@ namespace LayoutManager.Tools {
                     }
                 }
             });
+
+            item.AddMeTo(menuOrMenuItem);
         }
 
-        private void addPowerConnectionEntries(LayoutBlockDefinitionComponent blockDefinition, Menu m) {
-            var menuItems = new List<MenuItem>();
+        private void AddPowerConnectionEntries(LayoutBlockDefinitionComponent blockDefinition, MenuOrMenuItem m) {
+            var menuItems = new List<ToolStripMenuItem>();
 
             foreach (var power in blockDefinition.PowerConnector.Inlet.ConnectedOutlet.ObtainablePowers) {
                 if (power.PowerOriginComponentId != blockDefinition.Power.PowerOriginComponentId || power.Type != blockDefinition.Power.Type) {
                     ILayoutPower p = power;
-                    void setPower(object s, EventArgs ea) => EventManager.AsyncEvent(new LayoutEvent<LayoutBlockDefinitionComponent, ILayoutPower>("set-power", blockDefinition, p));
+                    void setPower(object? s, EventArgs ea) => EventManager.AsyncEvent(new LayoutEvent<LayoutBlockDefinitionComponent, ILayoutPower>("set-power", blockDefinition, p));
 
                     switch (p.Type) {
                         case LayoutPowerType.Disconnected:
-                            menuItems.Add(new MenuItem("Disconnect from power", setPower));
+                            menuItems.Add(new LayoutMenuItem("Disconnect from power", null, setPower));
                             break;
 
                         case LayoutPowerType.Programmer:
                             // Add option for this, only if all the power region is a manual dispatch region
                             if (blockDefinition.PowerConnector.Blocks.All(b => b.LockRequest != null && b.LockRequest.IsManualDispatchLock))
-                                menuItems.Add(new MenuItem("Connect to programming power", setPower));
+                                menuItems.Add(new LayoutMenuItem("Connect to programming power", null, setPower));
                             break;
 
                         default:
-                            menuItems.Add(new MenuItem("Connect to " + p.PowerOriginComponent.NameProvider.Name + " " + p.Name + " power", setPower));
+                            menuItems.Add(new LayoutMenuItem($"Connect to {p.PowerOriginComponent.NameProvider.Name} {p.Name} power", null, setPower));
                             break;
                     }
                 }
             }
 
             if (menuItems.Count > 0) {
-                if (m.MenuItems.Count > 0 && m.MenuItems[m.MenuItems.Count - 1].Text != "-")
-                    m.MenuItems.Add("-");
-                m.MenuItems.AddRange(menuItems.ToArray());
-                m.MenuItems.Add("-");
+                if (m.Items.Count > 0 && m.Items[m.Items.Count - 1] is not ToolStripSeparator)
+                    m.Items.Add(new ToolStripSeparator());
+                m.Items.AddRange(menuItems.ToArray());
+                m.Items.Add(new ToolStripSeparator());
             }
         }
 
         [LayoutEvent("add-train-operation-menu")]
-        private void addTrainOperationMenu(LayoutEvent e) {
+        private void AddTrainOperationMenu(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+            var menu = Ensure.NotNull<object>(e.Info, "menu");
             bool isDefaultSet = false;
 
-            foreach (MenuItem item in menu.MenuItems)
-                if (item.DefaultItem) {
-                    isDefaultSet = true;
-                    break;
-                }
-
-            if (train.IsPowered) {
-                MenuItem showControllerItem = new LocomotiveOperationTools.ShowLocomotiveControllerMenuItem(train);
-
-                menu.MenuItems.Add(showControllerItem);
-                if (showControllerItem.Enabled && !isDefaultSet) {
-                    showControllerItem.DefaultItem = true;
-                }
+            if (menu is ToolStripDropDown aMenu) {
+                foreach (var item in aMenu.Items)
+                    if (item is LayoutMenuItem lmi && lmi.DefaultItem) {
+                        isDefaultSet = true;
+                        break;
+                    }
             }
 
-            menu.MenuItems.Add(new SaveTrainInCollectionMenuItem(train));
-            menu.MenuItems.Add(new LocomotiveOperationTools.TrainPropertiesMenuItem(train));
-            menu.MenuItems.Add("-");
+            if (train.IsPowered) {
+                var showControllerItem = new LocomotiveOperationTools.ShowLocomotiveControllerMenuItem(train);
+
+                if (showControllerItem.Enabled && !isDefaultSet)
+                    showControllerItem.DefaultItem = true;
+
+                showControllerItem.AddMeTo(menu);
+            }
+
+            new SaveTrainInCollectionMenuItem(train).AddMeTo(menu);
+            new ToolStripSeparator().AddMeTo(menu);
+            new LocomotiveOperationTools.TrainPropertiesMenuItem(train).AddMeTo(menu);
             if (LayoutOperationContext.HasPendingOperation("TrainRemoval", train))
-                menu.MenuItems.Add(new LocomotiveOperationTools.CancelTrainRemovalMenuItem(train));
+                new LocomotiveOperationTools.CancelTrainRemovalMenuItem(train).AddMeTo(menu);
             else
-                menu.MenuItems.Add(new LocomotiveOperationTools.RemoveFromTrackMenuItem(train));
-            menu.MenuItems.Add("-");
+                new LocomotiveOperationTools.RemoveFromTrackMenuItem(train).AddMeTo(menu);
+            new ToolStripSeparator().AddMeTo(menu);
         }
 
         [LayoutEvent("query-operation-drop", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void blockDefinitionQueryDrop(LayoutEvent e) {
+        private void BlockDefinitionQueryDrop(LayoutEvent e) {
             var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockDefinition");
-            var dragEvent = Ensure.NotNull<DragEventArgs>(e.Info, "dragEvent");
+            var dragEventArgs = Ensure.NotNull<DragEventArgs>(e.Info, "dragEvent");
 
-            if (dragEvent.Data.GetData(typeof(XmlElement)) is XmlElement element) {
+            if (dragEventArgs.Data?.GetData(typeof(XmlElement)) is XmlElement element) {
                 if (element.Name == "Locomotive" || element.Name == "Train") {
                     if (!blockDefinition.Block.HasTrains) {
                         var train = LayoutModel.StateManager.Trains[element];
@@ -573,12 +580,12 @@ namespace LayoutManager.Tools {
                             var result = EventManager.Event<XmlElement, LayoutBlockDefinitionComponent, CanPlaceTrainResult>("can-locomotive-be-placed", element, blockDefinition)!;
 
                             if (result.CanBeResolved)
-                                dragEvent.Effect = DragDropEffects.Link;
+                                dragEventArgs.Effect = DragDropEffects.Link;
                         }
                     }
                 }
                 else if (element.Name == "TrainState") {
-                    TrainStateInfo train = new TrainStateInfo(element);
+                    var train = new TrainStateInfo(element);
 
                     if (IsTrainOnSamePower(train, blockDefinition)) {
                         // Check whether this is a train identification case (the block with the train
@@ -596,10 +603,10 @@ namespace LayoutManager.Tools {
 
                         if (relocateTrain) {
                             if (blockDefinition.Info.UnexpectedTrainDetected)
-                                dragEvent.Effect = DragDropEffects.Copy;
+                                dragEventArgs.Effect = DragDropEffects.Copy;
                         }
                         else if (blockDefinition.Block.CanTrainWait)
-                            dragEvent.Effect = DragDropEffects.Move;
+                            dragEventArgs.Effect = DragDropEffects.Move;
                     }
                 }
             }
@@ -621,11 +628,11 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("do-operation-drop", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void blockDefinitionDoDrop(LayoutEvent e) {
+        private void BlockDefinitionDoDrop(LayoutEvent e) {
             var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockDefinition");
-            var dragEvent = Ensure.NotNull<DragEventArgs>(e.Info, "dragEvent");
+            var dragEventArgs = Ensure.NotNull<DragEventArgs>(e.Info, "dragEvent");
 
-            if (dragEvent.Data.GetData(typeof(XmlElement)) is XmlElement element) {
+            if (dragEventArgs.Data?.GetData(typeof(XmlElement)) is XmlElement element) {
                 if (element.Name == "Locomotive" || element.Name == "Train") {
                     if (!blockDefinition.Block.HasTrains) {
                         var train = LayoutModel.StateManager.Trains[element];
@@ -638,18 +645,18 @@ namespace LayoutManager.Tools {
                     }
                 }
                 else if (element.Name == "TrainState") {
-                    TrainStateInfo train = new TrainStateInfo(element);
+                    TrainStateInfo train = new(element);
 
-                    if (dragEvent.Effect == DragDropEffects.Copy) {
+                    if (dragEventArgs.Effect == DragDropEffects.Copy) {
                         EventManager.Event(new LayoutEvent("relocate-train-request", train, blockDefinition));
                     }
-                    else if (dragEvent.Effect == DragDropEffects.Move) {
+                    else if (dragEventArgs.Effect == DragDropEffects.Move) {
                         // Create trip plan to move train
-                        TripPlanInfo tripPlan = new TripPlanInfo();
+                        TripPlanInfo tripPlan = new();
 
                         tripPlan.Add(blockDefinition);
 
-                        using Dialogs.TripPlanEditor tripPlanEditor = new Dialogs.TripPlanEditor(tripPlan, train);
+                        using Dialogs.TripPlanEditor tripPlanEditor = new(tripPlan, train);
 
                         tripPlanEditor.Show();
                     }
@@ -658,7 +665,7 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("get-block-smart-destination-list")]
-        private void getBlockSmartDestinationList(LayoutEvent e) {
+        private void GetBlockSmartDestinationList(LayoutEvent e) {
             var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockDefinition");
             var destinations = Ensure.NotNull<List<TripPlanDestinationInfo>>(e.Info, "destinations");
 
@@ -672,7 +679,7 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("query-operation-drag", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void blockDefinitionQueryOperationDrag(LayoutEvent e) {
+        private void BlockDefinitionQueryOperationDrag(LayoutEvent e) {
             var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockDefinition");
 
             if (blockDefinition.Block.Trains.Count == 1)
@@ -680,7 +687,7 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("get-component-operation-properties-menu-name", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void getBlockInfoPropertiesMenuName(LayoutEvent e) {
+        private void GetBlockInfoPropertiesMenuName(LayoutEvent e) {
             var blockInfo = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockInfo");
             var menuName = Ensure.NotNull<string>(e.Info, "menuName");
 
@@ -689,16 +696,16 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void addBlockInfoContextMenu(LayoutEvent e) {
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+        private void AddBlockInfoContextMenu(LayoutEvent e) {
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
             var blockInfo = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockInfo");
             IList<TrainStateInfo> trains = LayoutModel.StateManager.Trains[blockInfo.Block];
 
-            addBlockInfoMenuEntries(menu, blockInfo, trains);
+            AddBlockInfoMenuEntries(menu, blockInfo, trains);
         }
 
         [LayoutEvent("add-operation-details-window-sections", SenderType = typeof(LayoutBlockDefinitionComponent), Order = 1000)]
-        private void addBlockDefinitionTrainsDetailsWindowSection(LayoutEvent e) {
+        private void AddBlockDefinitionTrainsDetailsWindowSection(LayoutEvent e) {
             var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockDefinition");
             var container = Ensure.NotNull<PopupWindowContainerSection>(e.Info, "container");
 
@@ -731,7 +738,7 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("add-train-details-window-section", SenderType = typeof(TrainStateInfo))]
-        private void addTrainDetailsWindowSetion(LayoutEvent e) {
+        private void AddTrainDetailsWindowSetion(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
             var container = Ensure.NotNull<PopupWindowContainerSection>(e.Info, "container");
             PopupWindowContainerSection trainContainer = container.CreateContainer();
@@ -763,7 +770,7 @@ namespace LayoutManager.Tools {
                 }
             }
 
-            addTrainDetailsPopupSections(trainContainer, train);
+            AddTrainDetailsPopupSections(trainContainer, train);
             container.AddVerticalSection(trainContainer);
 
             if (train.Attributes.Count > 0)
@@ -773,18 +780,18 @@ namespace LayoutManager.Tools {
                 container.AddText("Train speed limit: " + train.SpeedLimit);
         }
 
-        private void addTrainDetailsPopupSections(PopupWindowContainerSection container, TrainStateInfo train) {
+        private void AddTrainDetailsPopupSections(PopupWindowContainerSection container, TrainStateInfo train) {
             foreach (TrainLocomotiveInfo trainLocomotive in train.Locomotives) {
                 PopupWindowContainerSection locoContainer = container.CreateContainer();
 
-                addLocomotiveDetailsPopupSections(locoContainer, trainLocomotive);
+                AddLocomotiveDetailsPopupSections(locoContainer, trainLocomotive);
                 container.AddHorizontalSection(locoContainer);
             }
 
             //TODO: Add train attributes
         }
 
-        private void addLocomotiveDetailsPopupSections(PopupWindowContainerSection locoContainer, TrainLocomotiveInfo trainLocomotive) {
+        private void AddLocomotiveDetailsPopupSections(PopupWindowContainerSection locoContainer, TrainLocomotiveInfo trainLocomotive) {
             var locoImage = trainLocomotive.Locomotive.Image ?? LayoutModel.LocomotiveCatalog.GetStandardImage(trainLocomotive.Locomotive.Kind, trainLocomotive.Locomotive.Origin);
 
             if (locoImage != null) {
@@ -827,26 +834,24 @@ namespace LayoutManager.Tools {
         //private const string E_ApplicableTripPlans = "ApplicableTripPlans";
         //private const string A_TripPlanId = "TripPlanID";
         //private const string A_ShouldReverse = "ShouldReverse";
-        private readonly ManualDispatchRouteSetting manualDispatchRouteSetting = new ManualDispatchRouteSetting();
+        private readonly ManualDispatchRouteSetting manualDispatchRouteSetting = new();
 
         [LayoutEvent("exit-operation-mode")]
-        private void resetRouteSource(LayoutEvent e) {
-            manualDispatchRouteSetting.SourceBlockInfo = null;
-        }
+        private void ResetRouteSource(LayoutEvent e) => manualDispatchRouteSetting.SourceBlockInfo = null;
 
-        private void addManualDispatchRouteMenuEntries(LayoutBlockDefinitionComponent blockInfo, Menu m) {
+        private void AddManualDispatchRouteMenuEntries(LayoutBlockDefinitionComponent blockInfo, MenuOrMenuItem m) {
             var lockRequest = blockInfo.Block.LockRequest;
 
             if (lockRequest != null && lockRequest.IsManualDispatchLock) {
                 if (manualDispatchRouteSetting.SourceBlockInfo != null && manualDispatchRouteSetting.SourceRegionID == lockRequest.OwnerId && manualDispatchRouteSetting.SourceBlockInfo.Id != blockInfo.Id)
-                    m.MenuItems.Add(new CreateManualDispatchRouteMenuItem(manualDispatchRouteSetting, blockInfo));
-                m.MenuItems.Add(new SetManualDispatchRouteSourceMenuItem(manualDispatchRouteSetting, blockInfo));
+                    m.Items.Add(new CreateManualDispatchRouteMenuItem(manualDispatchRouteSetting, blockInfo));
+                m.Items.Add(new SetManualDispatchRouteSourceMenuItem(manualDispatchRouteSetting, blockInfo));
             }
         }
 
         #region Route creation menu items
 
-        private class SetManualDispatchRouteSourceMenuItem : MenuItem {
+        private class SetManualDispatchRouteSourceMenuItem : LayoutMenuItem {
             private readonly ManualDispatchRouteSetting manualDispatchRouteSetting;
             private readonly LayoutBlockDefinitionComponent blockInfo;
 
@@ -862,7 +867,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-        private class CreateManualDispatchRouteMenuItem : MenuItem {
+        private class CreateManualDispatchRouteMenuItem : LayoutMenuItem {
             private readonly ManualDispatchRouteSetting manualDispatchRouteSetting;
             private readonly LayoutBlockDefinitionComponent blockInfo;
             private readonly LocomotiveOrientation direction = LocomotiveOrientation.Unknown;
@@ -872,8 +877,8 @@ namespace LayoutManager.Tools {
                 this.blockInfo = blockInfo;
 
                 Text = "&Create route";
-                MenuItems.Add(new CreateManualDispatchRouteMenuItem(manualDispatchRouteSetting, blockInfo, LocomotiveOrientation.Forward));
-                MenuItems.Add(new CreateManualDispatchRouteMenuItem(manualDispatchRouteSetting, blockInfo, LocomotiveOrientation.Backward));
+                DropDownItems.Add(new CreateManualDispatchRouteMenuItem(manualDispatchRouteSetting, blockInfo, LocomotiveOrientation.Forward));
+                DropDownItems.Add(new CreateManualDispatchRouteMenuItem(manualDispatchRouteSetting, blockInfo, LocomotiveOrientation.Backward));
             }
 
             public CreateManualDispatchRouteMenuItem(ManualDispatchRouteSetting manualDispatchRouteSetting, LayoutBlockDefinitionComponent blockInfo, LocomotiveOrientation direction) {
@@ -911,13 +916,13 @@ namespace LayoutManager.Tools {
                         bool completed = (bool)(EventManager.Event(new LayoutEvent("dispatcher-set-switches", manualDispatchRouteSetting.SourceRegionID, bestRoute)) ?? false);
 
                         if (!completed) {
-                            LayoutSelection selection = new LayoutSelection(new ModelComponent[] { manualDispatchRouteSetting.SourceBlockInfo, blockInfo });
+                            LayoutSelection selection = new(new ModelComponent[] { manualDispatchRouteSetting.SourceBlockInfo, blockInfo });
 
                             LayoutModuleBase.Error(selection, "Could not find route that is within the manual dispatch region");
                         }
                     }
                     else {
-                        LayoutSelection selection = new LayoutSelection(new ModelComponent[] { manualDispatchRouteSetting.SourceBlockInfo, blockInfo });
+                        LayoutSelection selection = new(new ModelComponent[] { manualDispatchRouteSetting.SourceBlockInfo, blockInfo });
 
                         LayoutModuleBase.Error(selection, "No route could be found");
                     }
@@ -929,12 +934,12 @@ namespace LayoutManager.Tools {
 
         #endregion
 
-        private class AddBlockInfoToTripPlanEditorDialog : MenuItem {
+        private class AddBlockInfoToTripPlanEditorDialog : LayoutMenuItem {
             private readonly LayoutBlockDefinitionComponent blockDefinition;
             private readonly ITripPlanEditorDialog tripPlanEditorDialog;
 
             public AddBlockInfoToTripPlanEditorDialog(LayoutBlockDefinitionComponent blockDefinition, ITripPlanEditorDialog tripPlanEditorDialog, string title) {
-                List<TripPlanDestinationInfo> smartDestinations = new List<TripPlanDestinationInfo>();
+                List<TripPlanDestinationInfo> smartDestinations = new();
 
                 Text = title;
                 this.blockDefinition = blockDefinition;
@@ -943,13 +948,13 @@ namespace LayoutManager.Tools {
                 EventManager.Event(new LayoutEvent("get-block-smart-destination-list", blockDefinition, smartDestinations));
 
                 if (smartDestinations.Count > 0) {
-                    MenuItems.Add("This specific block", (object sender, EventArgs e) => tripPlanEditorDialog.AddWayPoint(blockDefinition));
-                    MenuItems.Add("-");
+                    DropDownItems.Add("This specific block", null, (object? sender, EventArgs e) => tripPlanEditorDialog.AddWayPoint(blockDefinition));
+                    DropDownItems.Add(new ToolStripSeparator());
 
                     foreach (TripPlanDestinationInfo tripPlanDestination in smartDestinations) {
                         TripPlanDestinationInfo destination = tripPlanDestination;
 
-                        MenuItems.Add(tripPlanDestination.Name, (object sender, EventArgs e) => tripPlanEditorDialog.AddWayPoint(destination));
+                        DropDownItems.Add(tripPlanDestination.Name, null, (object? sender, EventArgs e) => tripPlanEditorDialog.AddWayPoint(destination));
                     }
                 }
             }
@@ -963,7 +968,7 @@ namespace LayoutManager.Tools {
 
         #region Add waypoint to trip plan
 
-        private class AddBlockInfoToDialogMenuItem : MenuItem {
+        private class AddBlockInfoToDialogMenuItem : LayoutMenuItem {
             private readonly LayoutBlockDefinitionComponent blockInfo;
             private readonly IModelComponentReceiverDialog dialog;
 
@@ -1024,10 +1029,10 @@ namespace LayoutManager.Tools {
         }
 #endif
 
-        private class NewTripPlanMenuItem : MenuItem {
+        private class NewTripPlanMenuItem : LayoutMenuItem {
             private readonly TrainStateInfo train;
 
-            public NewTripPlanMenuItem(string title, TrainStateInfo train, LayoutBlockDefinitionComponent blockInfo) {
+            public NewTripPlanMenuItem(string title, TrainStateInfo train, LayoutBlockDefinitionComponent _) {
                 this.Text = title;
                 this.train = train;
 
@@ -1041,7 +1046,7 @@ namespace LayoutManager.Tools {
                 if (dialog != null)
                     dialog.Activate();
                 else {
-                    TripPlanInfo tripPlan = new TripPlanInfo();
+                    TripPlanInfo tripPlan = new();
 
                     var tripPlanEditor = new Dialogs.TripPlanEditor(tripPlan, train);
 
@@ -1050,7 +1055,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-        private class TripPlanCatalogMenuItem : MenuItem {
+        private class TripPlanCatalogMenuItem : LayoutMenuItem {
             private readonly TrainStateInfo train;
 
             public TripPlanCatalogMenuItem(string title, TrainStateInfo train) {
@@ -1070,7 +1075,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-        private class UseExistingTripPlanMenuItem : MenuItem {
+        private class UseExistingTripPlanMenuItem : LayoutMenuItem {
             private readonly TripPlanInfo tripPlan;
             private readonly TrainStateInfo train;
             private readonly bool shouldReverse;
@@ -1091,14 +1096,14 @@ namespace LayoutManager.Tools {
 
                 tripPlanDoc.AppendChild(tripPlanDoc.ImportNode(tripPlan.Element, true));
 
-                TripPlanInfo newTripPlan = new TripPlanInfo(tripPlanDoc.DocumentElement);
+                TripPlanInfo newTripPlan = new(tripPlanDoc.DocumentElement);
 
                 if (shouldReverse)
                     newTripPlan.Reverse();
 
                 newTripPlan.FromCatalog = true;
 
-                using Dialogs.TripPlanEditor tripPlanEditor = new Dialogs.TripPlanEditor(newTripPlan, train);
+                using Dialogs.TripPlanEditor tripPlanEditor = new(newTripPlan, train);
 
                 tripPlanEditor.Show();
             }
@@ -1108,7 +1113,7 @@ namespace LayoutManager.Tools {
 
 #region Save train in collection
 
-        private class SaveTrainInCollectionMenuItem : MenuItem {
+        private class SaveTrainInCollectionMenuItem : LayoutMenuItem {
             private readonly TrainStateInfo train;
 
             public SaveTrainInCollectionMenuItem(TrainStateInfo train) {
@@ -1119,7 +1124,7 @@ namespace LayoutManager.Tools {
 
             protected override void OnClick(EventArgs e) {
                 LocomotiveCollectionInfo collection = LayoutModel.LocomotiveCollection;
-                XmlElement trainInCollectionElement = collection["Train", train.Name];
+                var trainInCollectionElement = collection["Train", train.Name];
                 TrainInCollectionInfo trainInCollection;
 
                 if (trainInCollectionElement == null) {
@@ -1143,60 +1148,57 @@ namespace LayoutManager.Tools {
 
 #region Locomotive owner draw menu item base class
 
-        private class LocomotiveMenuItem : MenuItem {
+        private class LocomotiveMenuItem : LayoutMenuItem {
             public LocomotiveMenuItem(XmlElement placedElement, LayoutBlock block) {
                 this.PlacedElement = placedElement;
                 this.Block = block;
 
-                this.OwnerDraw = true;
-                this.Text = placedElement["Name"].InnerText;
+                this.AutoSize = false;
+                this.Text = placedElement["Name"]?.InnerText ?? "Unknown-Name";
             }
 
             protected XmlElement PlacedElement { get; }
 
             protected LayoutBlock Block { get; }
 
-            protected override void OnMeasureItem(MeasureItemEventArgs e) {
-                SizeF textSize;
-                int imageWidth;
-                int textShift = 0;
-                string name;
+            protected override Size DefaultSize {
+                get {
+                    SizeF textSize;
+                    int imageWidth;
+                    int textShift = 0;
+                    string name;
 
-                base.OnMeasureItem(e);
-                e.ItemHeight = 50;
+                    if (PlacedElement.Name == "Locomotive") {
+                        LocomotiveInfo loco = new(PlacedElement);
 
-                if (PlacedElement.Name == "Locomotive") {
-                    LocomotiveInfo loco = new LocomotiveInfo(PlacedElement);
+                        name = loco.DisplayName;
+                        imageWidth = 50;
+                        textShift = 55;
+                    }
+                    else {
+                        TrainInCollectionInfo trainInCollection = new(PlacedElement);
 
-                    name = loco.DisplayName;
-                    imageWidth = 50;
-                    textShift = 55;
+                        name = trainInCollection.DisplayName;
+                        imageWidth = 2 + ((28 + 2) * trainInCollection.Locomotives.Count);
+                    }
+
+                    using (Graphics g = Owner.CreateGraphics())
+                        using(Font titleFont = new("Arial", 8, FontStyle.Bold))
+                            textSize = g.MeasureString(name, titleFont);
+
+                    return new Size(Math.Max((int)textSize.Width + textShift, imageWidth), 50);
                 }
-                else {
-                    TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(PlacedElement);
-
-                    name = trainInCollection.DisplayName;
-                    imageWidth = 2 + ((28 + 2) * trainInCollection.Locomotives.Count);
-                }
-
-                using (Font titleFont = new Font("Arial", 8, FontStyle.Bold)) {
-                    textSize = e.Graphics.MeasureString(name, titleFont);
-                }
-
-                e.ItemWidth = Math.Max((int)textSize.Width + textShift, imageWidth);
             }
 
-            protected override void OnDrawItem(DrawItemEventArgs e) {
-                base.OnDrawItem(e);
+            protected override void OnPaint(PaintEventArgs e) {
+                base.OnPaint(e);
+                using (Brush br = new SolidBrush(Selected ? SystemColors.Highlight : SystemColors.Menu))
+                    e.Graphics.FillRectangle(br, e.ClipRectangle);
 
-                using (Brush br = new SolidBrush((e.State & DrawItemState.Selected) != 0 ? SystemColors.Highlight : SystemColors.Menu))
-                    e.Graphics.FillRectangle(br, e.Bounds);
-
-                e.DrawFocusRectangle();
+                Owner.Renderer.DrawItemBackground(new(e.Graphics, this));
 
                 GraphicsState gs = e.Graphics.Save();
-
-                e.Graphics.TranslateTransform(e.Bounds.Left, e.Bounds.Top);
+                e.Graphics.TranslateTransform(e.ClipRectangle.Left, e.ClipRectangle.Top);
 
                 // Draw the locomotive image and name. There are two possible layouts one
                 // for locomotive and one for locomotive set
@@ -1205,9 +1207,9 @@ namespace LayoutManager.Tools {
                 string name;
 
                 if (PlacedElement.Name == "Locomotive") {
-                    LocomotiveInfo loco = new LocomotiveInfo(PlacedElement);
+                    LocomotiveInfo loco = new(PlacedElement);
 
-                    using (LocomotiveImagePainter locoPainter = new LocomotiveImagePainter(LayoutModel.LocomotiveCatalog)) {
+                    using (LocomotiveImagePainter locoPainter = new(LayoutModel.LocomotiveCatalog)) {
                         locoPainter.Draw(e.Graphics, new Point(2, 2), new Size(50, 36), loco.Element);
                     }
 
@@ -1216,9 +1218,9 @@ namespace LayoutManager.Tools {
                     name = loco.DisplayName;
                 }
                 else if (PlacedElement.Name == "Train" || PlacedElement.Name == "TrainState") {
-                    TrainCommonInfo train = new TrainCommonInfo(PlacedElement);
+                    TrainCommonInfo train = new(PlacedElement);
 
-                    using (LocomotiveImagePainter locoPainter = new LocomotiveImagePainter(LayoutModel.LocomotiveCatalog)) {
+                    using (LocomotiveImagePainter locoPainter = new(LayoutModel.LocomotiveCatalog)) {
                         int x = 2;
 
                         locoPainter.FrameSize = new Size(28, 20);
@@ -1240,10 +1242,10 @@ namespace LayoutManager.Tools {
                 else
                     throw new ApplicationException("Invalid placed element");
 
-                using (Brush textBrush = new SolidBrush((e.State & DrawItemState.Selected) != 0 ? SystemColors.HighlightText : SystemColors.MenuText)) {
+                using (Brush textBrush = new SolidBrush(Selected ? SystemColors.HighlightText : SystemColors.MenuText)) {
                     SizeF textSize;
 
-                    using (Font titleFont = new Font("Arial", 8, FontStyle.Bold)) {
+                    using (Font titleFont = new("Arial", 8, FontStyle.Bold)) {
                         textSize = e.Graphics.MeasureString(name, titleFont);
                         e.Graphics.DrawString(name, titleFont, textBrush, new PointF(xText, yText));
                     }
@@ -1266,12 +1268,12 @@ namespace LayoutManager.Tools {
             return train.Power == blockDefinition.Power;
         }
 
-        private MenuItem getRelocateTrainMenuItem(LayoutBlockDefinitionComponent blockInfo) {
-            MenuItem menu = new MenuItem("Identify train");
+        private LayoutMenuItem GetRelocateTrainMenuItem(LayoutBlockDefinitionComponent blockInfo) {
+            var menu = new LayoutMenuItem("Identify train");
             IDictionary addedTrains = new HybridDictionary();
 
             foreach (XmlElement trainElement in LayoutModel.StateManager.Trains.Element) {
-                TrainStateInfo train = new TrainStateInfo(trainElement);
+                var train = new TrainStateInfo(trainElement);
 
                 if (IsTrainOnSamePower(train, blockInfo)) {
                     bool phantomTrain = false;
@@ -1288,19 +1290,19 @@ namespace LayoutManager.Tools {
 
                     if (phantomTrain) {
                         addedTrains.Add(train.Id, trainElement);
-                        menu.MenuItems.Add(new RelocateTrainMenuItem(trainElement, blockInfo.Block));
+                        menu.DropDownItems.Add(new RelocateTrainMenuItem(trainElement, blockInfo.Block));
                     }
                 }
             }
 
-            if (menu.MenuItems.Count > 0)
-                menu.MenuItems.Add("-");
+            if (menu.DropDownItems.Count > 0)
+                menu.DropDownItems.Add(new ToolStripSeparator());
 
             foreach (XmlElement trainElement in LayoutModel.StateManager.Trains.Element) {
-                TrainStateInfo train = new TrainStateInfo(trainElement);
+                var train = new TrainStateInfo(trainElement);
 
                 if (IsTrainOnSamePower(train, blockInfo) && !addedTrains.Contains(train.Id))
-                    menu.MenuItems.Add(new RelocateTrainMenuItem(trainElement, blockInfo.Block));
+                    menu.DropDownItems.Add(new RelocateTrainMenuItem(trainElement, blockInfo.Block));
             }
 
             return menu;
@@ -1319,7 +1321,7 @@ namespace LayoutManager.Tools {
 
 #region Toggle train detection state
 
-        private class ToggleTrainDetectionStateMenuItem : MenuItem {
+        private class ToggleTrainDetectionStateMenuItem : LayoutMenuItem {
             private readonly LayoutBlockDefinitionComponent blockInfo;
 
             public ToggleTrainDetectionStateMenuItem(LayoutBlockDefinitionComponent blockInfo) {
@@ -1338,10 +1340,10 @@ namespace LayoutManager.Tools {
 
 #endregion
 
-#region Remove ballon if track is detected
+        #region Remove ballon if track is detected
 
         [LayoutEvent("train-detection-block-occupied")]
-        private void removeBallonWhenTrainIsDetected(LayoutEvent e) {
+        private void RemoveBallonWhenTrainIsDetected(LayoutEvent e) {
             var occupancyBlock = Ensure.NotNull<LayoutOccupancyBlock>(e.Sender, "occupancyBlock");
 
             // Check if any contained block contains train. If so, then the detection was of this train, and nothing should be done
@@ -1353,13 +1355,13 @@ namespace LayoutManager.Tools {
             }
         }
 
-#endregion
+        #endregion
 
         [LayoutEvent("default-action-command", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void blockDefinitionDefaultAction(LayoutEvent e) {
+        private void BlockDefinitionDefaultAction(LayoutEvent e) {
             var hitTestResult = Ensure.NotNull<LayoutHitTestResult>(e.Info, "hitTestResult");
             LayoutBlockDefinitionComponent? blockInfo = null;
-            List<TrainStateInfo> trains = new List<TrainStateInfo>();
+            var trains = new List<TrainStateInfo>();
 
             foreach (ModelComponent component in hitTestResult.Selection)
                 if (component is LayoutBlockDefinitionComponent blockDefinition) {
@@ -1374,18 +1376,20 @@ namespace LayoutManager.Tools {
                     trains.Add(trainLocation.Train);
             }
 
-            using ContextMenu m = new ContextMenu();
-            addBlockInfoMenuEntries(m, blockInfo, trains.ToArray());
+            using var m = new ContextMenuStrip();
+            AddBlockInfoMenuEntries(new MenuOrMenuItem(m), blockInfo, trains.ToArray());
 
-            foreach (MenuItem item in m.MenuItems) {
-                if (item.DefaultItem) {
-                    if (item.MenuItems.Count > 0) {
-                        List<MenuItem> subitems = new List<MenuItem>();
+            foreach (var entry in m.Items) {
+                if (entry is LayoutMenuItem item && item.DefaultItem) {
+                    if (item.DropDownItems.Count > 0) {
+                        var subitems = new List<LayoutMenuItem>();
 
-                        foreach (MenuItem subitem in item.MenuItems)
-                            subitems.Add(subitem);
+                        foreach (var subEntry in item.DropDownItems)
+                            if(subEntry is LayoutMenuItem subitem)
+                                subitems.Add(subitem);
 
-                        ContextMenu contextMenu = new ContextMenu(subitems.ToArray());
+                        var contextMenu = new ContextMenuStrip();
+                        contextMenu.Items.AddRange(subitems.ToArray());
                         Form parentForm = hitTestResult.View.FindForm();
                         Point where = parentForm.PointToClient(Control.MousePosition);
 
@@ -1402,7 +1406,7 @@ namespace LayoutManager.Tools {
         #region Track Power Connector component
 
         [LayoutEvent("add-operation-details-window-sections", SenderType = typeof(LayoutTrackPowerConnectorComponent), Order = 1000)]
-        private void addTrackPowerConnectorDetailsWindowSection(LayoutEvent e) {
+        private void AddTrackPowerConnectorDetailsWindowSection(LayoutEvent e) {
             var component = Ensure.NotNull<LayoutTrackPowerConnectorComponent>(e.Sender, "component");
             var container = Ensure.NotNull<PopupWindowContainerSection>(e.Info, "container");
 
@@ -1452,10 +1456,10 @@ namespace LayoutManager.Tools {
 #region Extend train
 
         [LayoutEvent("get-extend-train-menu")]
-        private void getExtendTrainMenu(LayoutEvent e) {
+        private void GetExtendTrainMenu(LayoutEvent e) {
             var blockInfo = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockInfo");
             LayoutBlock block = blockInfo.Block;
-            ArrayList extendableTrains = new ArrayList();
+            var extendableTrains = new List<ExtendableTrainInfo>();
 
             foreach (TrackEdge edge in block.TrackEdges) {
                 LayoutComponentConnectionPoint otherBlockCp = (edge.ConnectionPoint == edge.Track.ConnectionPoints[0]) ? edge.Track.ConnectionPoints[1] : edge.Track.ConnectionPoints[0];
@@ -1469,15 +1473,15 @@ namespace LayoutManager.Tools {
             if (extendableTrains.Count == 0)
                 e.Info = null;
             else if (extendableTrains.Count == 1) {
-                ExtendableTrainInfo extendableTrain = (ExtendableTrainInfo)extendableTrains[0];
+                ExtendableTrainInfo extendableTrain = extendableTrains[0];
 
                 e.Info = new ExtendTrainMenuItem("Extend train (" + extendableTrain.Train.DisplayName + ")", block, extendableTrain);
             }
             else {
-                MenuItem extendTrainMenuItem = new MenuItem("&Extend Train");
+                var extendTrainMenuItem = new LayoutMenuItem("&Extend Train");
 
                 foreach (ExtendableTrainInfo extendableTrain in extendableTrains)
-                    extendTrainMenuItem.MenuItems.Add(new ExtendTrainMenuItem(extendableTrain.Train.DisplayName, block, extendableTrain));
+                    extendTrainMenuItem.DropDownItems.Add(new ExtendTrainMenuItem(extendableTrain.Train.DisplayName, block, extendableTrain));
 
                 e.Info = extendTrainMenuItem;
             }
@@ -1493,12 +1497,12 @@ namespace LayoutManager.Tools {
 
                 var blockEdge = edge.Track.BlockEdgeBase;
 
-                this.blockEdge = blockEdge ?? throw new ArgumentNullException("ExtendableTrainInfo.blockEdge is null");
+                this.blockEdge = blockEdge ?? throw new NullReferenceException(nameof(blockEdge));
                 this.Block = otherBlock;
             }
         }
 
-        private class ExtendTrainMenuItem : MenuItem {
+        private class ExtendTrainMenuItem : LayoutMenuItem {
             private readonly LayoutBlock block;
             private readonly ExtendableTrainInfo extendableTrainInfo;
 
@@ -1522,7 +1526,7 @@ namespace LayoutManager.Tools {
                 }
 
                 // Get lock on the block that the train is about to be placed
-                LayoutLockRequest lockRequest = new LayoutLockRequest(extendableTrainInfo.Train.Id);
+                LayoutLockRequest lockRequest = new(extendableTrainInfo.Train.Id);
 
                 lockRequest.Blocks.Add(block);
                 EventManager.Event(new LayoutEvent("request-layout-lock", lockRequest));
@@ -1530,7 +1534,7 @@ namespace LayoutManager.Tools {
                 TrackContactPassingStateInfo? trackContactPassingState = null;
 
                 if (extendableTrainInfo.blockEdge.IsTrackContact()) {
-                    trackContactPassingState = new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(extendableTrainInfo.blockEdge, "TrainPassing", create: true)) {
+                    trackContactPassingState = new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.StateOf(extendableTrainInfo.blockEdge, "TrainPassing")) {
                         Train = extendableTrainInfo.Train,
                         FromBlock = block,
                         ToBlock = extendableTrainInfo.Block,
@@ -1595,9 +1599,9 @@ namespace LayoutManager.Tools {
         [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutTrackContactComponent))]
         private void AddTrackContactContextMenu(LayoutEvent e) {
             var trackContact = Ensure.NotNull<LayoutTrackContactComponent>(e.Sender, "component");
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
 
-            menu.MenuItems.Add(new LayoutComponentMenuItem(trackContact, "&Trigger contact", (s, e) => EventManager.Event("track-contact-triggered-notification", trackContact)));
+            menu.Items.Add(new LayoutComponentMenuItem(trackContact, "&Trigger contact", (s, e) => EventManager.Event("track-contact-triggered-notification", trackContact)));
         }
 
 #endregion
@@ -1612,9 +1616,9 @@ namespace LayoutManager.Tools {
         [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutProximitySensorComponent))]
         private void AddProximitySensorContextMenu(LayoutEvent e) {
             var component = Ensure.NotNull<LayoutProximitySensorComponent>(e.Sender, "component");
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
 
-            menu.MenuItems.Add(new LayoutComponentMenuItem(component, "&Proximiy sensor active", (s, e) => EventManager.Event("proximity-sensor-state-changed-notification", component, !component.IsTriggered)) {
+            menu.Items.Add(new LayoutComponentMenuItem(component, "&Proximiy sensor active", (s, e) => EventManager.Event("proximity-sensor-state-changed-notification", component, !component.IsTriggered)) {
                 Checked = component.IsTriggered
             });
         }
@@ -1631,13 +1635,13 @@ namespace LayoutManager.Tools {
         [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutGateComponent))]
         private void AddGateContextMenu(LayoutEvent e) {
             var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
 
             if (gateComponent.GateState != LayoutGateState.Open)
-                menu.MenuItems.Add("Open gate", (object sender, EventArgs a) => EventManager.Event(new LayoutEvent("open-gate-request", gateComponent)));
+                menu.Items.Add("Open gate", null, (object? sender, EventArgs a) => EventManager.Event(new LayoutEvent("open-gate-request", gateComponent)));
 
             if (gateComponent.GateState != LayoutGateState.Close)
-                menu.MenuItems.Add("Close gate", (object sender, EventArgs a) => EventManager.Event(new LayoutEvent("close-gate-request", gateComponent)));
+                menu.Items.Add("Close gate", null, (object? sender, EventArgs a) => EventManager.Event(new LayoutEvent("close-gate-request", gateComponent)));
         }
 
 #endregion

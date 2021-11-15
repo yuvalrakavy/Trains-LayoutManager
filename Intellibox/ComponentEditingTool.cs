@@ -51,7 +51,7 @@ namespace Intellibox {
         [LayoutEvent("model-component-placement-request", SenderType = typeof(IntelliboxComponent))]
         private void PlaceTrackContactRequest(LayoutEvent e) {
             IntelliboxComponent component = (IntelliboxComponent)e.Sender;
-            using Dialogs.CentralStationProperties csProperties = new Dialogs.CentralStationProperties(component);
+            using Dialogs.CentralStationProperties csProperties = new(component);
             if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 component.XmlInfo.XmlDocument = csProperties.XmlInfo.XmlDocument;
                 e.Info = true;      // Place component
@@ -67,10 +67,10 @@ namespace Intellibox {
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(IntelliboxComponent))]
         private void AddTrackContactContextMenuEntries(LayoutEvent e) {
-            Menu menu = (Menu)e.Info;
+            Menu menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
             IntelliboxComponent component = (IntelliboxComponent)e.Sender;
 
-            menu.MenuItems.Add(new IntelliboxMenuItemProperties(component));
+            menu.Items.Add(new IntelliboxMenuItemProperties(component));
         }
 
         #region Intellibox Menu Item Classes
@@ -84,11 +84,11 @@ namespace Intellibox {
             }
 
             protected override void OnClick(EventArgs e) {
-                Dialogs.CentralStationProperties csProperties = new Dialogs.CentralStationProperties(component);
+                Dialogs.CentralStationProperties csProperties = new(component);
 
                 if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                     LayoutModifyComponentDocumentCommand modifyComponentDocumentCommand =
-                        new LayoutModifyComponentDocumentCommand(component, csProperties.XmlInfo);
+                        new(component, csProperties.XmlInfo);
 
                     LayoutController.Do(modifyComponentDocumentCommand);
                 }

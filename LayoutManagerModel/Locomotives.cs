@@ -141,35 +141,41 @@ namespace LayoutManager.Model {
 
                 // Load the catalog from its stores
                 int iStore = 0;
+                var stores = Element[E_Stores];
 
-                foreach (XmlElement storeElement in Element[E_Stores]) {
-                    string filename = LayoutAssembly.ValueToFilePath(storeElement.GetAttribute(A_File), DefaultStoreDirectory);
 
-                    Debug.WriteLine("-Loading collection from store: '" + storeElement.GetAttribute(A_Name) + "' from file: " + storeElement.GetAttribute(A_File));
+                if (stores != null) {
+                    foreach (XmlElement storeElement in stores) {
+                        string filename = LayoutAssembly.ValueToFilePath(storeElement.GetAttribute(A_File), DefaultStoreDirectory);
 
-                    try {
-                        XmlTextReader r = new XmlTextReader(filename) {
-                            WhitespaceHandling = WhitespaceHandling.None
-                        };
+                        Debug.WriteLine("-Loading collection from store: '" + storeElement.GetAttribute(A_Name) + "' from file: " + storeElement.GetAttribute(A_File));
 
-                        // Skip all kind of declaration stuff
-                        while (r.Read() && r.NodeType == XmlNodeType.XmlDeclaration)
-                            ;
+                        try {
+                            XmlTextReader r = new XmlTextReader(filename) {
+                                WhitespaceHandling = WhitespaceHandling.None
+                            };
 
-                        r.Read();       // <`CollectionElementName`>
+                            // Skip all kind of declaration stuff
+                            while (r.Read() && r.NodeType == XmlNodeType.XmlDeclaration)
+                                ;
 
-                        while (r.NodeType == XmlNodeType.Element) {
-                            XmlElement newNode = (XmlElement)CollectionDocument.ReadNode(r);
+                            r.Read();       // <`CollectionElementName`>
 
-                            newNode.SetAttributeValue(A_Store, iStore);
-                            CollectionElement.AppendChild(newNode);
+                            while (r.NodeType == XmlNodeType.Element) {
+                                var newNode = (XmlElement?)CollectionDocument.ReadNode(r);
+
+                                if (newNode != null) {
+                                    newNode.SetAttributeValue(A_Store, iStore);
+                                    CollectionElement.AppendChild(newNode);
+                                }
+                            }
+
+                            iStore++;
+                            r.Close();
                         }
-
-                        iStore++;
-                        r.Close();
-                    }
-                    catch (IOException ex) {
-                        EventManager.Event(new LayoutEvent("add-error", null, $"Unable to load {CollectionName} file: {filename} - {ex.Message}"));
+                        catch (IOException ex) {
+                            EventManager.Event(new LayoutEvent("add-error", null, $"Unable to load {CollectionName} file: {filename} - {ex.Message}"));
+                        }
                     }
                 }
 
@@ -184,7 +190,7 @@ namespace LayoutManager.Model {
             loadCount++;
         }
 
-        private void OnCollectionNodeChanged(Object sender, XmlNodeChangedEventArgs e) {
+        private void OnCollectionNodeChanged(object? sender, XmlNodeChangedEventArgs e) {
             // TODO: Handle the case in which the type is used by a locomotive in the collection
 
             modified = true;
@@ -194,34 +200,39 @@ namespace LayoutManager.Model {
             int iStore = 0;
 
             // TODO: Save only stores which are actually modified
+            var storesElement = Element[E_Stores];
 
-            foreach (XmlElement storeElement in Element[E_Stores]) {
-                Debug.WriteLine("-Saving collection in store: '" + storeElement.GetAttribute(A_Name) + "' to file: " + storeElement.GetAttribute(A_File));
+            if (storesElement != null) {
+                foreach (XmlElement storeElement in storesElement) {
+                    Debug.WriteLine("-Saving collection in store: '" + storeElement.GetAttribute(A_Name) + "' to file: " + storeElement.GetAttribute(A_File));
 
-                XmlNodeList elementsInStore = CollectionElement.SelectNodes("*[@Store='" + iStore + "']");
+                    var elementsInStore = CollectionElement.SelectNodes("*[@Store='" + iStore + "']");
 
-                try {
-                    string filename = LayoutAssembly.ValueToFilePath(storeElement.GetAttribute(A_File), DefaultStoreDirectory);
-                    XmlTextWriter w = new XmlTextWriter(filename, new System.Text.UTF8Encoding());
+                    if (elementsInStore != null) {
+                        try {
+                            string filename = LayoutAssembly.ValueToFilePath(storeElement.GetAttribute(A_File), DefaultStoreDirectory);
+                            XmlTextWriter w = new XmlTextWriter(filename, new System.Text.UTF8Encoding());
 
-                    w.WriteStartDocument();
-                    w.WriteStartElement(CollectionElementName);
+                            w.WriteStartDocument();
+                            w.WriteStartElement(CollectionElementName);
 
-                    foreach (XmlElement collectionElement in elementsInStore)
-                        collectionElement.WriteTo(w);
+                            foreach (XmlElement collectionElement in elementsInStore)
+                                collectionElement.WriteTo(w);
 
-                    w.WriteEndElement();
-                    w.WriteEndDocument();
+                            w.WriteEndElement();
+                            w.WriteEndDocument();
 
-                    w.Close();
+                            w.Close();
+                        }
+                        catch (IOException ex) {
+                            EventManager.Event(new LayoutEvent("add-error", null,
+                                "Cannot store locomotives store '" + storeElement.GetAttribute(A_Name) + "' in file: " + storeElement.GetAttribute(A_File) +
+                                " - " + ex.Message));
+                        }
+                    }
+
+                    iStore++;
                 }
-                catch (IOException ex) {
-                    EventManager.Event(new LayoutEvent("add-error", null,
-                        "Cannot store locomotives store '" + storeElement.GetAttribute(A_Name) + "' in file: " + storeElement.GetAttribute(A_File) +
-                        " - " + ex.Message));
-                }
-
-                iStore++;
             }
 
             modified = false;
@@ -246,9 +257,9 @@ namespace LayoutManager.Model {
             return collectionElement;
         }
 
-        public XmlElement this[string name] => (XmlElement)CollectionElement.SelectSingleNode("*/[./Name='" + name + "']");
+        public XmlElement? this[string name] => (XmlElement?)CollectionElement.SelectSingleNode("*/[./Name='" + name + "']");
 
-        public XmlElement this[string elementKind, string name] => (XmlElement)CollectionElement.SelectSingleNode(elementKind + "[./Name='" + name + "']");
+        public XmlElement? this[string elementKind, string name] => (XmlElement?)CollectionElement.SelectSingleNode(elementKind + "[./Name='" + name + "']");
     }
 
     /// <summary>
@@ -267,7 +278,7 @@ namespace LayoutManager.Model {
         private const string A_Kind = "Kind";
         private const string A_Origin = "Origin";
 
-        public LocomotiveCatalogInfo() : base(LayoutModel.Instance.XmlInfo.DocumentElement[E_LocomotiveCatalog]) {
+        public LocomotiveCatalogInfo() : base(Ensure.NotNull<XmlElement>(LayoutModel.Instance.XmlInfo.DocumentElement[E_LocomotiveCatalog])) {
             if (Element == null) {
                 Element = LayoutInfo.CreateProviderElement(LayoutModel.Instance.XmlInfo, E_LocomotiveCatalog, null);
 
@@ -289,7 +300,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public XmlElement LocomotiveFunctionNames {
             get {
-                XmlElement e = Element[E_CommonFunctionNames];
+                var e = Element[E_CommonFunctionNames];
 
                 if (e == null) {
                     e = Element.OwnerDocument.CreateElement(E_CommonFunctionNames);
@@ -307,15 +318,15 @@ namespace LayoutManager.Model {
         /// <param name="origin">Locomotive origin</param>
         /// <returns>The image to display</returns>
         public override Image? GetStandardImage(LocomotiveKind kind, LocomotiveOrigin origin) {
-            XmlElement imagesElement = Element[E_Images];
-            XmlElement imageElement = (XmlElement)imagesElement.SelectSingleNode("Image[@Kind='" + kind.ToString() + "' and @Origin='" + origin.ToString() + "']");
+            var imagesElement = Element[E_Images];
+            var imageElement = (XmlElement?)imagesElement?.SelectSingleNode("Image[@Kind='" + kind.ToString() + "' and @Origin='" + origin.ToString() + "']");
 
             return imageElement != null ? Image.FromStream(new MemoryStream(Convert.FromBase64String(imageElement.InnerText))) : null;
         }
 
         public void SetStandardImage(LocomotiveKind kind, LocomotiveOrigin origin, Image image) {
-            XmlElement imagesElement = Element[E_Images];
-            XmlElement imageElement = (XmlElement)imagesElement.SelectSingleNode("Image[@Kind='" + kind.ToString() + "' and @Origin='" + origin.ToString() + "']");
+            var imagesElement = Ensure.NotNull<XmlElement>(Element[E_Images]);
+            var imageElement = (XmlElement?)imagesElement.SelectSingleNode("Image[@Kind='" + kind.ToString() + "' and @Origin='" + origin.ToString() + "']");
 
             if (image != null) {
                 if (imageElement == null) {
@@ -331,7 +342,7 @@ namespace LayoutManager.Model {
             }
             else {
                 if (imageElement != null)
-                    imageElement.ParentNode.RemoveChild(imageElement);
+                    imageElement.ParentNode!.RemoveChild(imageElement);
             }
         }
     }
@@ -343,7 +354,7 @@ namespace LayoutManager.Model {
         private const string E_Locomotive = "Locomotive";
         private const string E_Train = "Train";
 
-        public LocomotiveCollectionInfo() : base(LayoutModel.Instance.XmlInfo.DocumentElement["LocomotiveCollection"]) {
+        public LocomotiveCollectionInfo() : base(Ensure.NotNull<XmlElement>(LayoutModel.Instance.XmlInfo.DocumentElement["LocomotiveCollection"])) {
             if (Element == null) {
                 Element = LayoutInfo.CreateProviderElement(LayoutModel.Instance.XmlInfo, "LocomotiveCollection", null);
 
@@ -360,7 +371,7 @@ namespace LayoutManager.Model {
 
         public override string DefaultStoreDirectory => GetDataSubdirectoryPath("Collection");
 
-        public XmlElement this[Guid id] => (XmlElement)CollectionElement.SelectSingleNode("*[@ID='" + id.ToString() + "']");
+        public XmlElement? this[Guid id] => (XmlElement?)CollectionElement.SelectSingleNode("*[@ID='" + id.ToString() + "']");
 
         public override Image? GetStandardImage(LocomotiveKind kind, LocomotiveOrigin origin) {
             LocomotiveCatalogInfo catalog = LayoutModel.LocomotiveCatalog;
@@ -369,18 +380,20 @@ namespace LayoutManager.Model {
         }
 
         [LayoutEvent("locomotive-type-updated")]
-        private void locomotiveTypeUpdated(LayoutEvent e) {
+        private void LocomotiveTypeUpdated(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
             LocomotiveTypeInfo locoType = new LocomotiveTypeInfo(element);
-            XmlNodeList locoWithTypeElements = CollectionElement.SelectNodes($"Locomotive[@TypeID='{locoType.Id}']");
+            var locoWithTypeElements = CollectionElement.SelectNodes($"Locomotive[@TypeID='{locoType.Id}']");
 
-            foreach (XmlElement locoWithTypeElement in locoWithTypeElements) {
-                LocomotiveInfo loco = new LocomotiveInfo(locoWithTypeElement);
+            if (locoWithTypeElements != null) {
+                foreach (XmlElement locoWithTypeElement in locoWithTypeElements) {
+                    LocomotiveInfo loco = new LocomotiveInfo(locoWithTypeElement);
 
-                if (loco.LinkedToType) {
-                    Debug.WriteLine("Updating type information of locomotive " + loco.DisplayName);
-                    loco.UpdateFromLocomotiveType(locoType);
-                    e.Info = true;
+                    if (loco.LinkedToType) {
+                        Debug.WriteLine("Updating type information of locomotive " + loco.DisplayName);
+                        loco.UpdateFromLocomotiveType(locoType);
+                        e.Info = true;
+                    }
                 }
             }
 
@@ -409,15 +422,19 @@ namespace LayoutManager.Model {
                         modified = true;
                     }
                     else {
-                        LocomotiveInfo loco = new LocomotiveInfo(LayoutModel.LocomotiveCollection[trainLocomotive.LocomotiveId]);
+                        var locoElement = LayoutModel.LocomotiveCollection[trainLocomotive.LocomotiveId];
 
-                        if (loco.NotManaged)        // Do not allow non managed locomotive in a locomotive set
-                            membersToRemove.Add(trainLocomotive);
+                        if (locoElement != null) {
+                            LocomotiveInfo loco = new LocomotiveInfo(locoElement);
+
+                            if (loco.NotManaged)        // Do not allow non managed locomotive in a locomotive set
+                                membersToRemove.Add(trainLocomotive);
+                        }
                     }
                 }
 
-                foreach (TrainLocomotiveInfo trainLocomotive in membersToRemove)
-                    trainInCollection.RemoveLocomotive(trainLocomotive);
+                foreach (TrainLocomotiveInfo removedTrainLocomotive in membersToRemove)
+                    trainInCollection.RemoveLocomotive(removedTrainLocomotive);
 
                 if (trainInCollection.Locomotives.Count == 0) {
                     LayoutModuleBase.Warning("Deleting locomotive set '" + trainInCollection.DisplayName + "' which has became empty");
@@ -426,8 +443,8 @@ namespace LayoutManager.Model {
                 }
             }
 
-            foreach (TrainInCollectionInfo trainInCollection in trainsToRemove)
-                CollectionElement.RemoveChild(trainInCollection.Element);
+            foreach (TrainInCollectionInfo removedTrainInCollection in trainsToRemove)
+                CollectionElement.RemoveChild(removedTrainInCollection.Element);
 
             return modified;
         }
@@ -494,12 +511,12 @@ namespace LayoutManager.Model {
         }
 
         public string TypeName {
-            get => Element[E_TypeName] != null ? Element[E_TypeName].InnerText : "";
+            get => Element[E_TypeName]?.InnerText ?? "";
 
             set {
-                if (Element[E_TypeName] == null)
-                    Element.AppendChild(Element.OwnerDocument.CreateElement(E_TypeName));
-                Element[E_TypeName].InnerText = value;
+                var e = Element[E_TypeName] ?? (XmlElement)Element.AppendChild(Element.OwnerDocument.CreateElement(E_TypeName))!;
+
+                e.InnerText = value;
             }
         }
 
@@ -529,7 +546,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public AttributesInfo Attributes {
             get {
-                XmlElement attributesElement = Element[E_Attributes];
+                var attributesElement = Element[E_Attributes];
 
                 if (attributesElement == null) {
                     attributesElement = Element.OwnerDocument.CreateElement(E_Attributes);
@@ -554,7 +571,7 @@ namespace LayoutManager.Model {
         public Image? Image {
             set {
                 if (value == null) {
-                    XmlNode imageNode = Element[E_Image];
+                    var imageNode = Element[E_Image];
 
                     if (imageNode != null)
                         Element.RemoveChild(imageNode);
@@ -563,17 +580,18 @@ namespace LayoutManager.Model {
                     using MemoryStream s = new MemoryStream();
                     value.Save(s, System.Drawing.Imaging.ImageFormat.Bmp);
 
-                    if (Element[E_Image] == null)
-                        Element.AppendChild(Element.OwnerDocument.CreateElement(E_Image));
-                    Element[E_Image].InnerText = Convert.ToBase64String(s.GetBuffer());
+                    var e = (XmlElement)(Element[E_Image] ?? Element.AppendChild(Element.OwnerDocument.CreateElement(E_Image))!);
+                    e.InnerText = Convert.ToBase64String(s.GetBuffer());
                 }
             }
 
             get {
-                if (Element[E_Image] == null)
+                var imageElement = Element[E_Image];
+
+                if (imageElement == null)
                     return null;
                 else {
-                    MemoryStream s = new MemoryStream(Convert.FromBase64String(Element[E_Image].InnerText));
+                    MemoryStream s = new MemoryStream(Convert.FromBase64String(imageElement.InnerText));
                     return Image.FromStream(s);
                 }
             }
@@ -584,11 +602,11 @@ namespace LayoutManager.Model {
             set => SetAttributeValue(A_Store, value);
         }
 
-        public XmlElement Functions => Element[E_Functions];
+        public XmlElement? Functions => Element[E_Functions];
 
         public LocomotiveFunctionInfo? GetFunctionByName(String functionName) {
             if (Functions != null) {
-                XmlElement functionElement = (XmlElement)Functions.SelectSingleNode("Function[@Name = '" + functionName + "' ]");
+                XmlElement? functionElement = (XmlElement?)Functions.SelectSingleNode("Function[@Name = '" + functionName + "' ]");
 
                 return functionElement == null ? null : new LocomotiveFunctionInfo(functionElement);
             }
@@ -598,7 +616,7 @@ namespace LayoutManager.Model {
 
         public LocomotiveFunctionInfo? GetFunctionByNumber(int functionNumber) {
             if (Functions != null) {
-                XmlElement functionElement = (XmlElement)Functions.SelectSingleNode("Function[@Number = " + functionNumber + "]");
+                var functionElement = (XmlElement?)Functions.SelectSingleNode("Function[@Number = " + functionNumber + "]");
 
                 return functionElement == null ? null : new LocomotiveFunctionInfo(functionElement);
             }
@@ -716,13 +734,13 @@ namespace LayoutManager.Model {
 
         public string Name {
             get {
-                XmlElement nameElement = Element[E_Name];
+                var nameElement = Element[E_Name];
 
                 return nameElement != null ? nameElement.InnerText : "";
             }
 
             set {
-                XmlElement nameElement = Element[E_Name];
+                var nameElement = Element[E_Name];
 
                 if (nameElement == null) {
                     nameElement = Element.OwnerDocument.CreateElement(E_Name);
@@ -798,9 +816,9 @@ namespace LayoutManager.Model {
                 TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(element);
 
                 foreach (TrainLocomotiveInfo trainLocomotive in trainInCollection.Locomotives) {
-                    XmlElement locoElement = LayoutModel.LocomotiveCollection[trainLocomotive.LocomotiveId];
+                    var locoElement = LayoutModel.LocomotiveCollection[trainLocomotive.LocomotiveId];
 
-                    if (!IsCompatibleOperationCharacteristics(locoElement))
+                    if (locoElement == null || !IsCompatibleOperationCharacteristics(locoElement))
                         return false;
                 }
 
@@ -814,8 +832,10 @@ namespace LayoutManager.Model {
             foreach (XmlElement typeElement in locoType.Element) {
                 XmlElement locoElement = (XmlElement)Element.OwnerDocument.ImportNode(typeElement, true);
 
-                if (Element[locoElement.Name] != null)
-                    Element.RemoveChild(Element[locoElement.Name]);
+                var oldLocoElement = Element[locoElement.Name];
+
+                if (oldLocoElement != null)
+                    Element.RemoveChild(oldLocoElement);
 
                 Element.AppendChild(locoElement);
             }
@@ -888,7 +908,7 @@ namespace LayoutManager.Model {
 
         public LocomotiveInfo? OptionalLocomotive {
             get {
-                XmlElement element = LayoutModel.LocomotiveCollection[LocomotiveId];
+                var element = LayoutModel.LocomotiveCollection[LocomotiveId];
 
                 return element == null ? null : new LocomotiveInfo(element);
             }
@@ -1022,8 +1042,8 @@ namespace LayoutManager.Model {
 
         public static bool operator <=(TrainLength l1, TrainLength l2) => l1 < l2 || l1 == l2;
 
-        public override bool Equals(object obj) {
-            return obj == null || !(obj is TrainLength) ? false : ((TrainLength)obj).length == length;
+        public override bool Equals(object? obj) {
+            return obj != null && obj is TrainLength trainLength &&trainLength.length == length;
         }
 
         public override int GetHashCode() => length.GetHashCode();
@@ -1077,7 +1097,7 @@ namespace LayoutManager.Model {
                 case KnownTrainLength.VeryLong: t = "Very long"; break;
             }
 
-            return lowerCase ? $"{t.Substring(0, 1).ToLower()}{t.Substring(1)}" : t;
+            return lowerCase ? $"{t[..1].ToLower()}{t[1..]}" : t;
         }
 
         public string ToDisplayString() => ToDisplayString(false);
@@ -1153,7 +1173,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public AttributesInfo Attributes {
             get {
-                XmlElement attributesElement = Element[E_Attributes];
+                var attributesElement = Element[E_Attributes];
 
                 if (attributesElement == null) {
                     attributesElement = Element.OwnerDocument.CreateElement(E_Attributes);
@@ -1170,13 +1190,13 @@ namespace LayoutManager.Model {
         /// </summary>
         public string Name {
             get {
-                XmlElement nameElement = Element[E_Name];
+                var nameElement = Element[E_Name];
 
                 return nameElement != null ? nameElement.InnerText : "";
             }
 
             set {
-                XmlElement nameElement = Element[E_Name];
+                var nameElement = Element[E_Name];
 
                 EraseImage();
 
@@ -1356,7 +1376,7 @@ namespace LayoutManager.Model {
 
         public XmlElement DriverElement {
             get {
-                XmlElement driverElement = Element[E_Driver];
+                var driverElement = Element[E_Driver];
 
                 if (driverElement == null) {
                     driverElement = Element.OwnerDocument.CreateElement(E_Driver);
@@ -1368,7 +1388,7 @@ namespace LayoutManager.Model {
             }
 
             set {
-                XmlElement driverElement = Element[E_Driver];
+                var driverElement = Element[E_Driver];
 
                 if (driverElement != null)
                     Element.RemoveChild(driverElement);
@@ -1388,7 +1408,7 @@ namespace LayoutManager.Model {
 
         internal XmlElement LocomotivesElement {
             get {
-                XmlElement locomotivesElement = Element[E_Locomotives];
+                var locomotivesElement = Element[E_Locomotives];
 
                 if (locomotivesElement == null) {
                     locomotivesElement = Element.OwnerDocument.CreateElement(E_Locomotives);
@@ -1457,11 +1477,16 @@ namespace LayoutManager.Model {
             this.LastCarTriggerBlockEdge = otherTrain.LastCarTriggerBlockEdge;
 
             // Copy user attributes
-            if (otherTrain.Element[E_Attributes] != null) {
-                XmlElement attributesElement = (XmlElement)Element.OwnerDocument.ImportNode(otherTrain.Element[E_Attributes], true);
+            var otherTrainAttributeElement = otherTrain.Element[E_Attributes];
 
-                if (Element[E_Attributes] != null)
-                    Element.RemoveChild(Element[E_Attributes]);
+            if (otherTrainAttributeElement != null) {
+                XmlElement attributesElement = (XmlElement)Element.OwnerDocument.ImportNode(otherTrainAttributeElement, true);
+
+                var oldAttributeElement = Element[E_Attributes];
+
+                if (oldAttributeElement != null)
+                    Element.RemoveChild(oldAttributeElement);
+
                 Element.AppendChild(attributesElement);
             }
 
@@ -1470,12 +1495,14 @@ namespace LayoutManager.Model {
             this.SlowdownSpeed = otherTrain.SlowdownSpeed;
 
             // Copy motion ramps
-            XmlNodeList otherTrainRampElements = otherTrain.Element.SelectNodes("Ramp");
+            var otherTrainRampElements = otherTrain.Element.SelectNodes("Ramp");
 
-            foreach (XmlElement otherTrainRampElement in otherTrainRampElements) {
-                XmlElement rampElement = (XmlElement)Element.OwnerDocument.ImportNode(otherTrainRampElement, true);
+            if (otherTrainRampElements != null) {
+                foreach (XmlElement otherTrainRampElement in otherTrainRampElements) {
+                    XmlElement rampElement = (XmlElement)Element.OwnerDocument.ImportNode(otherTrainRampElement, true);
 
-                Element.AppendChild(rampElement);
+                    Element.AppendChild(rampElement);
+                }
             }
         }
 
@@ -1489,7 +1516,7 @@ namespace LayoutManager.Model {
 
         public XmlElement CarsElement {
             get {
-                XmlElement carsElement = Element[E_Cars];
+                var carsElement = Element[E_Cars];
 
                 if (carsElement == null) {
                     carsElement = Element.OwnerDocument.CreateElement(E_Cars);

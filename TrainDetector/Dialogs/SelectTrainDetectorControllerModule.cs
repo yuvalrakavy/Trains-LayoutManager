@@ -44,16 +44,16 @@ namespace TrainDetector.Dialogs {
             }
         }
 
-        private void radioButtonAssignToController_CheckedChanged(object sender, EventArgs e) {
+        private void radioButtonAssignToController_CheckedChanged(object? sender, EventArgs e) {
             listViewControllerModules.Enabled = radioButtonAssignToController.Checked;
             listViewControllerModules.HideSelection = !radioButtonAssignToController.Checked;
         }
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void buttonOK_Click(object? sender, EventArgs e) {
             DialogResult = DialogResult.OK;
         }
 
-        private void listViewControllerModules_SelectedIndexChanged(object sender, EventArgs e) {
+        private void listViewControllerModules_SelectedIndexChanged(object? sender, EventArgs e) {
             if (radioButtonAssignToController.Checked && listViewControllerModules.SelectedItems.Count > 0) {
                 var module = ((ModuleItem)listViewControllerModules.SelectedItems[0]).Module;
 
@@ -70,7 +70,7 @@ namespace TrainDetector.Dialogs {
             }
         }
 
-        private void SelectTrainDetectorModule_FormClosing(object sender, FormClosingEventArgs e) {
+        private void SelectTrainDetectorModule_FormClosing(object? sender, FormClosingEventArgs e) {
             connectedComponents.Hide();
             connectedComponents.Clear();
         }

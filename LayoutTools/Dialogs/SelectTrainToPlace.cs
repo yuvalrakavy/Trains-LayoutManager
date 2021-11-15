@@ -32,7 +32,7 @@ namespace LayoutManager.Tools.Dialogs {
             UpdateInstructions();
         }
 
-        public LayoutNamedTrainObject Selected {
+        public LayoutNamedTrainObject? Selected {
             get {
                 SearchResultItem searchResult = (SearchResultItem)listBoxSearchResult.SelectedItem;
 
@@ -67,7 +67,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private string GetSegnificantSearchString() {
-            StringBuilder segnificantSearchText = new StringBuilder(textBoxSearch.Text.Length);
+            StringBuilder segnificantSearchText = new(textBoxSearch.Text.Length);
 
             foreach (char c in textBoxSearch.Text) {
                 if (c != '(' && c != ')' && c != '[' && c != ']')
@@ -93,7 +93,7 @@ namespace LayoutManager.Tools.Dialogs {
                         result = EventManager.Event<XmlElement, LayoutBlockDefinitionComponent, CanPlaceTrainResult>("can-locomotive-be-placed", element, blockDefinition)!;
 
                         if (result.CanBeResolved) {
-                            LayoutNamedTrainObject namedObject = null;
+                            LayoutNamedTrainObject? namedObject = null;
 
                             if (element.Name == "Locomotive")
                                 namedObject = new LocomotiveInfo(element);
@@ -118,7 +118,7 @@ namespace LayoutManager.Tools.Dialogs {
                     }
                 }
 
-                List<SearchResultItem> itemsToDelete = new List<SearchResultItem>();
+                List<SearchResultItem> itemsToDelete = new();
 
                 foreach (SearchResultItem searchResult in listBoxSearchResult.Items)
                     if (searchResult.DeleteMe)
@@ -152,23 +152,23 @@ namespace LayoutManager.Tools.Dialogs {
             public override string ToString() => NamedObject.DisplayName;
         }
 
-        private void textBoxSearch_TextChanged(object sender, EventArgs e) {
+        private void TextBoxSearch_TextChanged(object? sender, EventArgs e) {
             Search();
         }
 
-        private void listBoxSearchResult_MeasureItem(object sender, MeasureItemEventArgs e) {
+        private void ListBoxSearchResult_MeasureItem(object? sender, MeasureItemEventArgs e) {
             SearchResultItem searchResult = (SearchResultItem)listBoxSearchResult.Items[e.Index];
 
             LayoutManager.CommonUI.Controls.LocomotiveListItemPainter.Measure(e, searchResult.NamedObject.Element);
         }
 
-        private void listBoxSearchResult_DrawItem(object sender, DrawItemEventArgs e) {
+        private void ListBoxSearchResult_DrawItem(object? sender, DrawItemEventArgs e) {
             SearchResultItem searchResult = (SearchResultItem)listBoxSearchResult.Items[e.Index];
 
             LayoutManager.CommonUI.Controls.LocomotiveListItemPainter.Draw(e, searchResult.NamedObject.Element, catalog, true);
         }
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             if (listBoxSearchResult.SelectedItem == null) {
                 MessageBox.Show(this, "You have not selected a locomotive or train", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxSearch.Focus();
@@ -179,15 +179,15 @@ namespace LayoutManager.Tools.Dialogs {
             Close();
         }
 
-        private void buttonNew_Click(object sender, EventArgs e) {
-            ContextMenu m = new ContextMenu();
+        private void ButtonNew_Click(object? sender, EventArgs e) {
+            var m = new ContextMenuStrip();
 
-            m.MenuItems.Add("Locomotive...", (object s, EventArgs a) => {
+            m.Items.Add("Locomotive...", null, (_, _) => {
                 EventManager.Event(new LayoutEvent("add-new-locomotive-to-collection", this));
                 ForceSearch();
             });
 
-            m.MenuItems.Add("Train...", (object s, EventArgs a) => {
+            m.Items.Add("Train...", null, (_, _) => {
                 EventManager.Event(new LayoutEvent("add-new-train-to-collection", this));
                 ForceSearch();
             });
@@ -195,8 +195,8 @@ namespace LayoutManager.Tools.Dialogs {
             m.Show(buttonNew.Parent, new Point(buttonNew.Left, buttonNew.Bottom));
         }
 
-        private void listBoxSearchResult_SelectedIndexChanged(object sender, EventArgs e) {
-            LayoutNamedTrainObject selected = Selected;
+        private void ListBoxSearchResult_SelectedIndexChanged(object? sender, EventArgs e) {
+            var selected = Selected;
 
             if (selected != null) {
                 if (selected.Element.Name == "Locomotive")

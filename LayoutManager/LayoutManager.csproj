@@ -1,17 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{221D7C82-7BBA-4D39-80FD-39A018FEC162}</ProjectGuid>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>
-    </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>LayoutManager</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
@@ -19,11 +12,8 @@
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>LayoutManager</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>LayoutManager.LayoutControllerImplementation</StartupObject>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -32,11 +22,7 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -51,460 +37,87 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
-    <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>RCS1003, RCS1001, RCS1146, RCS1029, RCS1163</NoWarn>
-    <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\Release\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
-    <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>
     </NoWarn>
-    <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System">
+    <Reference Update="System">
       <Name>System</Name>
     </Reference>
-    <Reference Include="System.Data">
+    <Reference Update="System.Data">
       <Name>System.Data</Name>
     </Reference>
-    <Reference Include="System.Drawing">
+    <Reference Update="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
     <Reference Include="System.Runtime.Serialization.Formatters.Soap">
       <Name>System.Runtime.Serialization.Formatters.Soap</Name>
     </Reference>
-    <Reference Include="System.Windows.Forms">
-      <Name>System.Windows.Forms</Name>
-    </Reference>
-    <Reference Include="System.Xml">
+    <Reference Update="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\LayoutBaseServices\LayoutBaseServices.csproj">
-      <Name>LayoutBaseServices</Name>
-      <Project>{D861E89E-9BB2-4080-AA3F-A26EC8ACEF16}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\LayoutCommands\LayoutCommands.csproj">
-      <Name>LayoutCommands</Name>
-      <Project>{5FABCFA6-6359-4126-865A-24119F0E3871}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\LayoutCommonUI\LayoutCommonUI.csproj">
-      <Name>LayoutCommonUI</Name>
-      <Project>{C314F674-90C0-4216-901E-3F411C3F3406}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\LayoutControlComponents\LayoutControlComponents.csproj">
-      <Project>{D9FAA62D-675B-49D9-B5E2-D99C0A62AEC6}</Project>
-      <Name>LayoutControlComponents</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LayoutLogic\LayoutLogic.csproj">
-      <Name>LayoutLogic</Name>
-      <Project>{0C05CFA4-AEB1-4798-9236-6BFB75D299C5}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\LayoutManagerModel\LayoutManagerModel.csproj">
-      <Name>LayoutManagerModel</Name>
-      <Project>{BD926873-4803-4036-868A-9EA11A1AE227}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\LayoutManagerView\LayoutManagerView.csproj">
-      <Name>LayoutManagerView</Name>
-      <Project>{857F7A5E-7B92-4722-BEBF-C3598293627D}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\LayoutTools\LayoutTools.csproj">
-      <Name>LayoutTools</Name>
-      <Project>{11CDBBF4-F29B-4053-9E1A-9137FDC074F8}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\Wizard\WizardControl.csproj">
-      <Project>{93023B51-CA12-42A4-89CB-E031CC913D3B}</Project>
-      <Name>WizardControl</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\LayoutBaseServices\LayoutBaseServices.csproj" />
+    <ProjectReference Include="..\LayoutCommands\LayoutCommands.csproj" />
+    <ProjectReference Include="..\LayoutCommonUI\LayoutCommonUI.csproj" />
+    <ProjectReference Include="..\LayoutControlComponents\LayoutControlComponents.csproj" />
+    <ProjectReference Include="..\LayoutLogic\LayoutLogic.csproj" />
+    <ProjectReference Include="..\LayoutManagerModel\LayoutManagerModel.csproj" />
+    <ProjectReference Include="..\LayoutManagerView\LayoutManagerView.csproj" />
+    <ProjectReference Include="..\LayoutTools\LayoutTools.csproj" />
+    <ProjectReference Include="..\Wizard\WizardControl.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Dialogs\ArrangeAreas.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\ArrangeViews.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\ExportPolicies.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\ExportPolicies.Designer.cs">
-      <DependentUpon>ExportPolicies.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\FindComponents.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\FindComponents.Designer.cs">
-      <DependentUpon>FindComponents.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\GetAreasName.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\GetViewName.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\ImportPolicies.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\ImportPolicies.Designer.cs">
-      <DependentUpon>ImportPolicies.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\LaunchDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\LaunchDialog.Designer.cs">
-      <DependentUpon>LaunchDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\LearnLayout.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\LearnLayout.Designer.cs">
-      <DependentUpon>LearnLayout.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\LocomotiveCatalog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\LocomotiveCatalogStandardImages.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\LocomotiveCollectionStore.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\LocomotiveCollectionStores.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\LocomotiveFunction.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\LocomotiveFunctionsCopyFrom.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\LocomotiveProperties.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\LocomotivePropertiesBaseForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\LocomotiveTypeProperties.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\ModuleManagement.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\PoliciesDefinition.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\Print.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\Print.Designer.cs">
-      <DependentUpon>Print.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\RoutingTableCalcProgress.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\SelectLocomotiveType.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\SetZoom.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\StadardPositionProperties.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\StandardFonts.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\StandardFunction.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\StandardFunctions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\StandardPositions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\TestControl.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\TestLocoPainter.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="LayoutController.cs" />
-    <Compile Include="LayoutFrameWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LayoutEditingTool.cs">
+    <Compile Update="LayoutEditingTool.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="LayoutEditingToolMenuItems.cs">
+    <Compile Update="LayoutEditingToolMenuItems.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="LayoutFrameWindow.Designer.cs">
-      <DependentUpon>LayoutFrameWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="LayoutOperationTool.cs">
+    <Compile Update="LayoutOperationTool.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="LayoutTool.cs">
+    <Compile Update="LayoutTool.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="LocomotivesViewer.cs">
+    <Compile Update="LocomotivesViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MessageViewer.cs">
+    <Compile Update="MessageViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SelectionMenuItems.cs">
+    <Compile Update="SelectionMenuItems.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Sounds.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Sounds.resx</DependentUpon>
-    </Compile>
-    <Content Include="Images\closeWindow.bmp" />
-    <Content Include="Images\designMode.bmp" />
-    <Content Include="Images\DisabledModule.ICO" />
-    <Content Include="Images\EmergencyStop.bmp" />
-    <Content Include="Images\EnabledModule.ico" />
-    <Content Include="Images\LearnLayoutConnected.ICO" />
-    <Content Include="Images\LearnLayoutNoControlModule.ICO" />
-    <Content Include="Images\LearnLayoutNotConnected.ICO" />
-    <Content Include="Images\ManualDispatchMode.bmp" />
-    <Content Include="Images\MessageSeverityError.ICO" />
-    <Content Include="Images\MessageSeverityMessage.ICO" />
-    <Content Include="Images\MessageSeverityWarning.ICO" />
-    <Content Include="Images\OPEN.BMP" />
-    <Content Include="Images\operationMode.bmp" />
-    <Content Include="Images\SAVE.BMP" />
-    <Content Include="Images\SavedAssemblyReference.ICO" />
-    <Content Include="Images\SetAsDefaultOriginAndZoom.bmp" />
-    <Content Include="Images\SetToDefaultOriginAndZoom.bmp" />
-    <Content Include="Images\showLayoutControl.bmp" />
-    <Content Include="Images\ShowLocomotives.bmp" />
-    <Content Include="Images\ShowMessages.bmp" />
-    <Content Include="Images\ShowTripsMonitor.bmp" />
-    <Content Include="Images\Simulate.bmp" />
-    <Content Include="Images\StopAllLocomotives.bmp" />
-    <Content Include="Images\TemporaryAssemblyReference.ICO" />
-    <Content Include="Images\ToggleGrid.bmp" />
-    <Content Include="Images\Zoom100.bmp" />
-    <Content Include="Images\ZoomFitAll.bmp" />
-    <Content Include="Images\ZoomIn.bmp" />
-    <Content Include="Images\ZoomOut.bmp" />
-    <EmbeddedResource Include="Dialogs\ArrangeAreas.resx">
-      <DependentUpon>ArrangeAreas.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\ArrangeViews.resx">
-      <DependentUpon>ArrangeViews.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\ExportPolicies.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ExportPolicies.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\FindComponents.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FindComponents.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\GetAreasName.resx">
-      <DependentUpon>GetAreasName.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\GetViewName.resx">
-      <DependentUpon>GetViewName.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\ImportPolicies.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ImportPolicies.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\LaunchDialog.resx">
-      <DependentUpon>LaunchDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\LearnLayout.resx">
-      <DependentUpon>LearnLayout.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\LocomotiveCatalog.resx">
-      <DependentUpon>LocomotiveCatalog.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\LocomotiveCatalogStandardImages.resx">
-      <DependentUpon>LocomotiveCatalogStandardImages.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\LocomotiveCollectionStore.resx">
-      <DependentUpon>LocomotiveCollectionStore.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\LocomotiveCollectionStores.resx">
-      <DependentUpon>LocomotiveCollectionStores.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\LocomotiveFunction.resx">
-      <DependentUpon>LocomotiveFunction.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\LocomotiveFunctionsCopyFrom.resx">
-      <DependentUpon>LocomotiveFunctionsCopyFrom.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\LocomotiveProperties.resx">
-      <DependentUpon>LocomotiveProperties.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\LocomotivePropertiesBaseForm.resx">
-      <DependentUpon>LocomotivePropertiesBaseForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\LocomotiveTypeProperties.resx">
-      <DependentUpon>LocomotiveTypeProperties.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\ModuleManagement.resx">
-      <DependentUpon>ModuleManagement.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\PoliciesDefinition.resx">
-      <DependentUpon>PoliciesDefinition.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\RoutingTableCalcProgress.resx">
-      <DependentUpon>RoutingTableCalcProgress.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\SelectLocomotiveType.resx">
-      <DependentUpon>SelectLocomotiveType.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\SetZoom.resx">
-      <DependentUpon>SetZoom.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\StadardPositionProperties.resx">
-      <DependentUpon>StadardPositionProperties.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\StandardFonts.resx">
-      <DependentUpon>StandardFonts.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\StandardFunction.resx">
-      <DependentUpon>StandardFunction.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\StandardFunctions.resx">
-      <DependentUpon>StandardFunctions.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\StandardPositions.resx">
-      <DependentUpon>StandardPositions.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\TestControl.resx">
-      <DependentUpon>TestControl.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\TestLocoPainter.resx">
-      <DependentUpon>TestLocoPainter.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LayoutFrameWindow.resx">
-      <DependentUpon>LayoutFrameWindow.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LayoutEditingTool.resx">
-      <DependentUpon>LayoutEditingTool.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LayoutEditingToolMenuItems.resx">
-      <DependentUpon>LayoutEditingToolMenuItems.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LayoutOperationTool.resx">
-      <DependentUpon>LayoutOperationTool.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LayoutTool.resx">
-      <DependentUpon>LayoutTool.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LocomotivesViewer.resx">
-      <DependentUpon>LocomotivesViewer.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MessageViewer.resx">
-      <DependentUpon>MessageViewer.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SelectionMenuItems.resx">
-      <DependentUpon>SelectionMenuItems.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sounds.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Sounds.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <Content Include="licenses.licx" />
-    <None Include="app.config" />
-    <None Include="Images\Picasa.ini" />
-    <None Include="Sounds\soundLearnLayoutNoControlModule.wav" />
-    <None Include="Sounds\soundLearnLayoutConnected.wav" />
-    <None Include="Sounds\soundLearnLayoutNotConnected.wav" />
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -537,11 +150,20 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <ItemGroup>
+    <Compile Remove="orig\LayoutController.cs" />
+    <Compile Remove="Tmp\LayoutController.cs" />
+    <EmbeddedResource Remove="orig\LayoutController.resx" />
+    <EmbeddedResource Remove="s.resx" />
+    <EmbeddedResource Remove="Tmp\LayoutController.resx" />
+  </ItemGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.255803">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
+  </ItemGroup>
 </Project>

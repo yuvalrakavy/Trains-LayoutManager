@@ -1,7 +1,6 @@
 ﻿#region Using directives
 
 using System.Text;
-using System.Windows.Forms;
 
 #endregion
 
@@ -111,7 +110,7 @@ namespace LayoutManager.CommonUI.Dialogs {
 
         public string ModeString {
             get {
-                StringBuilder modeString = new StringBuilder("baud=" + comboBoxBaudrate.SelectedItem + " parity=" + ((string)comboBoxParity.SelectedItem)[0] + " data=");
+                StringBuilder modeString = new("baud=" + comboBoxBaudrate.SelectedItem + " parity=" + ((string)comboBoxParity.SelectedItem)[0] + " data=");
 
                 if (radioButtonData8.Checked)
                     modeString.Append("8");

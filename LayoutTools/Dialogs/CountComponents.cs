@@ -8,7 +8,7 @@ namespace LayoutManager.Tools.Dialogs {
         public CountComponents(Dictionary<string, int[]> counts) {
             InitializeComponent();
 
-            Dictionary<string, string> typeNames = new Dictionary<string, string> {
+            Dictionary<string, string> typeNames = new() {
                 { ControlConnectionPointTypes.Input, "Input (e.g. contact)" },
                 { ControlConnectionPointTypes.OutputRelay, "Relay" },
                 { ControlConnectionPointTypes.Output, "Output (e.g. Turnout)" }
@@ -22,7 +22,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        private void buttonClose_Click(object sender, EventArgs e) {
+        private void ButtonClose_Click(object? sender, EventArgs e) {
             Close();
         }
     }

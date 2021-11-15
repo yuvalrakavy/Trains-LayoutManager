@@ -57,7 +57,7 @@ namespace Intellibox.Dialogs {
             this.XmlInfo = new LayoutXmlInfo(component);
             this._SOcollection = new SOcollection(XmlInfo.Element);
 
-            IntelliboxComponentInfo Info = new IntelliboxComponentInfo(component, XmlInfo.Element);
+            IntelliboxComponentInfo Info = new(component, XmlInfo.Element);
 
             nameDefinition.XmlInfo = this.XmlInfo;
 
@@ -465,9 +465,9 @@ namespace Intellibox.Dialogs {
         }
         #endregion
 
-        private void buttonOK_Click(object sender, System.EventArgs e) {
+        private void buttonOK_Click(object? sender, System.EventArgs e) {
             if (nameDefinition.Commit()) {
-                LayoutTextInfo myName = new LayoutTextInfo(XmlInfo.DocumentElement, "Name");
+                LayoutTextInfo myName = new(XmlInfo.DocumentElement, "Name");
 
                 foreach (IModelComponentIsCommandStation otherCommandStation in LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All)) {
                     if (otherCommandStation.NameProvider.Name == myName.Name && otherCommandStation.Id != _component.Id) {
@@ -485,7 +485,7 @@ namespace Intellibox.Dialogs {
                     return;
             }
 
-            IntelliboxComponentInfo info = new IntelliboxComponentInfo(_component, XmlInfo.Element);
+            IntelliboxComponentInfo info = new(_component, XmlInfo.Element);
 
             if (!int.TryParse(textBoxPollingPeriod.Text, out int pollingPeriod)) {
                 MessageBox.Show(this, "Invalid number", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -524,10 +524,10 @@ namespace Intellibox.Dialogs {
             DialogResult = DialogResult.OK;
         }
 
-        private void buttonSettings_Click(object sender, EventArgs e) {
+        private void buttonSettings_Click(object? sender, EventArgs e) {
             string modeString = XmlInfo.DocumentElement["ModeString"].InnerText;
 
-            using LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
+            using LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new(modeString);
             if (d.ShowDialog(this) == DialogResult.OK)
                 XmlInfo.DocumentElement["ModeString"].InnerText = d.ModeString;
         }
@@ -553,16 +553,16 @@ namespace Intellibox.Dialogs {
 
         #endregion
 
-        private void buttonSOadd_Click(object sender, EventArgs e) {
-            SOinfo so = new SOinfo();
+        private void buttonSOadd_Click(object? sender, EventArgs e) {
+            SOinfo so = new();
 
-            using Dialogs.SOdefinition d = new SOdefinition(so);
+            using Dialogs.SOdefinition d = new(so);
             if (d.ShowDialog(this) == DialogResult.OK)
                 listViewSO.Items.Add(new SOitem(_SOcollection.Add(so)));
             UpdateButtons();
         }
 
-        private void buttonSOedit_Click(object sender, EventArgs e) {
+        private void buttonSOedit_Click(object? sender, EventArgs e) {
             if (listViewSO.SelectedItems.Count > 0) {
                 SOitem item = (SOitem)listViewSO.SelectedItems[0];
 
@@ -570,7 +570,7 @@ namespace Intellibox.Dialogs {
                 XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
                 doc.AppendChild(doc.ImportNode(item.SOinfo.Element, true));
 
-                SOinfo tempSOinfo = new SOinfo(doc.DocumentElement);
+                SOinfo tempSOinfo = new(doc.DocumentElement);
 
                 var d = new Dialogs.SOdefinition(tempSOinfo);
                 if (d.ShowDialog(this) == DialogResult.OK) {
@@ -584,7 +584,7 @@ namespace Intellibox.Dialogs {
             UpdateButtons();
         }
 
-        private void buttonSOdelete_Click(object sender, EventArgs e) {
+        private void buttonSOdelete_Click(object? sender, EventArgs e) {
             SOitem[] deletedItems = new SOitem[listViewSO.SelectedItems.Count];
 
             listViewSO.SelectedItems.CopyTo(deletedItems, 0);
@@ -596,12 +596,12 @@ namespace Intellibox.Dialogs {
             UpdateButtons();
         }
 
-        private void listViewSO_DoubleClick(object sender, EventArgs e) {
+        private void listViewSO_DoubleClick(object? sender, EventArgs e) {
             if (listViewSO.SelectedItems.Count > 0)
                 buttonSOedit.PerformClick();
         }
 
-        private void listViewSO_SelectedIndexChanged(object sender, EventArgs e) {
+        private void listViewSO_SelectedIndexChanged(object? sender, EventArgs e) {
             UpdateButtons();
         }
     }

@@ -64,7 +64,7 @@ namespace TrainDetector {
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(TrainDetectorsComponent))]
         private void AddEditingContextMenuEntries(LayoutEvent e) {
-            var menu = Ensure.NotNull<Menu>(e.Info);
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
             var component = Ensure.NotNull<TrainDetectorsComponent>(e.Sender);
             var moduleLocationId = (Guid?)e.GetOption("ModuleLocationId");
 
@@ -78,7 +78,7 @@ namespace TrainDetector {
                     MessageBox.Show("Train Detectors are up-to-date", "Train Detector Controllers", MessageBoxButtons.OK, MessageBoxIcon.Information);
             });
 
-            menu.MenuItems.Add("&Properties", (s, ea) => {
+            menu.Items.Add("&Properties", null, (s, ea) => {
                 var d = new Dialogs.TrainDetectorProperties(component, initialPlacment: false);
 
                 if (d.ShowDialog() == DialogResult.OK)

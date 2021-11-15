@@ -82,10 +82,10 @@ namespace NumatoController {
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(NumatoController))]
         private void AddEditingContextMenuEntries(LayoutEvent e) {
-            var menu = (Menu)e.Info;
-            var component = (NumatoController)e.Sender;
+            var component = Ensure.NotNull<NumatoController>(e.Sender);
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
-            menu.MenuItems.Add("&Properties", (s, ea) => {
+            menu.Items.Add("&Properties", null, (s, ea) => {
                 var d = new Dialogs.NumatoControllerProperties(component);
 
                 if (d.ShowDialog() == DialogResult.OK)

@@ -133,18 +133,18 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonClose_Click(object sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, System.EventArgs e) {
             this.Close();
         }
 
-        private void buttonEdit_Click(object sender, System.EventArgs e) {
+        private void buttonEdit_Click(object? sender, System.EventArgs e) {
             LayoutPositionInfo positionProvider = (LayoutPositionInfo)listBoxPositions.SelectedItem;
 
             edit(positionProvider);
             listBoxPositions.Items[listBoxPositions.SelectedIndex] = positionProvider;
         }
 
-        private void buttonNew_Click(object sender, System.EventArgs e) {
+        private void buttonNew_Click(object? sender, System.EventArgs e) {
             XmlElement positionElement = LayoutInfo.CreateProviderElement(LayoutModel.Instance.XmlInfo, "Position", "Positions");
             LayoutPositionInfo positionProvider = new LayoutPositionInfo(positionElement);
 
@@ -152,7 +152,7 @@ namespace LayoutManager.Dialogs {
                 listBoxPositions.SelectedIndex = listBoxPositions.Items.Add(positionProvider);
         }
 
-        private void buttonDelete_Click(object sender, System.EventArgs e) {
+        private void buttonDelete_Click(object? sender, System.EventArgs e) {
             if (listBoxPositions.SelectedItem != null) {
                 if (MessageBox.Show("Do you really want to delete a style position definition. " +
                     "This will cause problems if this position is still being used!", "Warning",

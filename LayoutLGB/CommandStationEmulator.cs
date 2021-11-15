@@ -116,7 +116,7 @@ namespace LayoutLGB {
             }
         }
 
-        private void layoutEmulationServices_LocomotiveMoved(object sender, LocomotiveMovedEventArgs e) {
+        private void layoutEmulationServices_LocomotiveMoved(object? sender, LocomotiveMovedEventArgs e) {
             if (e.CommandStationId == this.commandStationId) {
                 if (e.Location.Track.TrackContactComponent != null) {
                     positions.TryGetValue(e.Unit, out PositionEntry position);

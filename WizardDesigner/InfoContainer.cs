@@ -40,7 +40,7 @@ namespace Gui.Wizard {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(InfoContainer));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InfoContainer));
             this.picImage = new PictureBox();
             this.lblTitle = new Label();
             this.SuspendLayout();
@@ -79,7 +79,7 @@ namespace Gui.Wizard {
         }
         #endregion
 
-        private void InfoContainer_Load(object sender, System.EventArgs e) {
+        private void InfoContainer_Load(object? sender, System.EventArgs e) {
             //Handle really irating resize that doesn't take account of Anchor
             lblTitle.Left = picImage.Width + 8;
             lblTitle.Width = this.Width - 4 - lblTitle.Left;

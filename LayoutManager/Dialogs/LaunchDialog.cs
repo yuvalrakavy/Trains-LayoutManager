@@ -39,12 +39,12 @@ namespace LayoutManager.Dialogs {
             private set;
         }
 
-        private void buttonExit_Click(object sender, EventArgs e) {
+        private void buttonExit_Click(object? sender, EventArgs e) {
             Close();
             Action = LaunchAction.Exit;
         }
 
-        private void buttonNew_Click(object sender, EventArgs e) {
+        private void buttonNew_Click(object? sender, EventArgs e) {
             if (saveFileDialog.ShowDialog(this) == System.Windows.Forms.DialogResult.OK) {
                 LayoutFilename = saveFileDialog.FileName;
                 Close();
@@ -52,7 +52,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonOpen_Click(object sender, EventArgs e) {
+        private void buttonOpen_Click(object? sender, EventArgs e) {
             if (openFileDialog.ShowDialog(this) == System.Windows.Forms.DialogResult.OK) {
                 LayoutFilename = openFileDialog.FileName;
                 Close();
@@ -60,7 +60,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void linkLabelLastLayoutName_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+        private void linkLabelLastLayoutName_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e) {
             LayoutFilename = linkLabelLastLayoutName.Text;
             UseLastOpenLayout = true;
             Close();

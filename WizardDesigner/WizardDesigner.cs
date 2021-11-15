@@ -97,7 +97,7 @@ namespace Gui.Wizard {
             }
         }
 
-        private void handleAddPage(object sender, EventArgs e) {
+        private void handleAddPage(object? sender, EventArgs e) {
             Wizard wiz = this.Control as Wizard;
 
             IDesignerHost h = (IDesignerHost)GetService(typeof(IDesignerHost));

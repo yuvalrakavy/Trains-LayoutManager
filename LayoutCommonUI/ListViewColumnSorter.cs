@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Windows.Forms;
 
 namespace LayoutManager.CommonUI {
     /// <summary>
@@ -23,10 +21,10 @@ namespace LayoutManager.CommonUI {
                 orders[i] = SortOrder.Ascending;
 
             listView.ListViewItemSorter = this;
-            listView.ColumnClick += this.listView_ColumnClick;
+            listView.ColumnClick += this.ListView_ColumnClick;
         }
 
-        private void listView_ColumnClick(object sender, ColumnClickEventArgs e) {
+        private void ListView_ColumnClick(object? sender, ColumnClickEventArgs e) {
             if (sortedColumn == e.Column)
                 orders[sortedColumn] = (sortOrder == SortOrder.Ascending) ? SortOrder.Decending : SortOrder.Ascending;
 
@@ -35,9 +33,9 @@ namespace LayoutManager.CommonUI {
             listView.Sort();
         }
 
-        public virtual int Compare(object oItem1, object oItem2) {
-            ListViewItem item1 = (ListViewItem)oItem1;
-            ListViewItem item2 = (ListViewItem)oItem2;
+        public virtual int Compare(object? oItem1, object? oItem2) {
+            var item1 = Ensure.NotNull<ListViewItem>(oItem1, nameof(oItem1));
+            var item2 = Ensure.NotNull<ListViewItem>(oItem2, nameof(oItem2));
 
             int result = String.Compare(item1.SubItems[sortedColumn].Text, item2.SubItems[sortedColumn].Text);
 

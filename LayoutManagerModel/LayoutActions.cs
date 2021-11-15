@@ -252,7 +252,7 @@ namespace LayoutManager.Model {
             set {
                 SetAttributeValue(A_Status, value);
                 if (value != ActionStatus.Pending)
-                    EventManager.Event(new LayoutEventInfoValueType<ILayoutAction, ActionStatus>("action-status-changed", this, value));
+                    EventManager.Event("action-status-changed", this, value);
             }
         }
 

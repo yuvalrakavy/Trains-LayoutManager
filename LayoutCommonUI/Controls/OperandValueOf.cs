@@ -1,34 +1,19 @@
-using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
 using System.ComponentModel;
-using System.Windows.Forms;
 using System.Xml;
-using System.Collections.Generic;
 
-#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for OperandValueOf.
     /// </summary>
-    public class OperandValueOf : System.Windows.Forms.UserControl {
-        private ComboBox comboBoxTag;
-        private ComboBox comboBoxSymbol;
-        private LayoutManager.CommonUI.Controls.LinkMenu linkMenuPropertyOrAttribute;
-        private Label label1;
-
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container components = null;
-
-        private void endOfDesignerVariables() { }
-        private IDictionary symbolNameToTypeMap = null;
+    public partial class OperandValueOf : UserControl {
+        private IDictionary? symbolNameToTypeMap = null;
         private string propertiesOfSymbol = "";
         private bool propertyOrAttributeChanged = false;
 
-        public event EventHandler ValueChanged;
+        public event EventHandler? ValueChanged;
 
         public OperandValueOf() {
             // This call is required by the Windows.Forms Form Designer.
@@ -39,11 +24,11 @@ namespace LayoutManager.CommonUI.Controls {
 
         public string Suffix { get; set; } = "";
 
-        public XmlElement Element { get; set; } = null;
+        public XmlElement? Element { get; set; } = null;
 
         public string DefaultAccess { get; set; } = "Property";
 
-        public Type[] AllowedTypes { get; set; } = null;
+        public Type[]? AllowedTypes { get; set; } = null;
 
         #endregion
 
@@ -91,9 +76,9 @@ namespace LayoutManager.CommonUI.Controls {
                 return false;
 
             if (linkMenuPropertyOrAttribute.SelectedIndex == 0)
-                Element.SetAttribute(accessAttribute, "Property");
+                Element?.SetAttribute(accessAttribute, "Property");
             else
-                Element.SetAttribute(accessAttribute, "Attribute");
+                Element?.SetAttribute(accessAttribute, "Attribute");
 
             if (comboBoxTag.SelectedItem == null) {
                 foreach (TagEntry entry in comboBoxTag.Items) {
@@ -104,11 +89,11 @@ namespace LayoutManager.CommonUI.Controls {
                 }
             }
 
-            Element.SetAttribute("Symbol" + Suffix, comboBoxSymbol.Text);
-            Element.SetAttribute("Name" + Suffix, comboBoxTag.Text);
+            Element?.SetAttribute("Symbol" + Suffix, comboBoxSymbol.Text);
+            Element?.SetAttribute("Name" + Suffix, comboBoxTag.Text);
 
             if (comboBoxTag.SelectedItem != null)
-                Element.SetAttribute("Type" + Suffix, ((TagEntry)comboBoxTag.SelectedItem).TypeName);
+                Element?.SetAttribute("Type" + Suffix, ((TagEntry)comboBoxTag.SelectedItem).TypeName);
 
             return ok;
         }
@@ -136,82 +121,14 @@ namespace LayoutManager.CommonUI.Controls {
             }
             base.Dispose(disposing);
         }
-
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.comboBoxTag = new ComboBox();
-            this.comboBoxSymbol = new ComboBox();
-            this.linkMenuPropertyOrAttribute = new LayoutManager.CommonUI.Controls.LinkMenu();
-            this.label1 = new Label();
-            this.SuspendLayout();
-            // 
-            // comboBoxTag
-            // 
-            this.comboBoxTag.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right);
-            this.comboBoxTag.Location = new System.Drawing.Point(70, 35);
-            this.comboBoxTag.Name = "comboBoxTag";
-            this.comboBoxTag.Size = new System.Drawing.Size(100, 21);
-            this.comboBoxTag.TabIndex = 6;
-            this.comboBoxTag.DropDown += this.comboBoxTag_DropDown;
-            // 
-            // comboBoxSymbol
-            // 
-            this.comboBoxSymbol.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right);
-            this.comboBoxSymbol.Location = new System.Drawing.Point(70, 10);
-            this.comboBoxSymbol.Name = "comboBoxSymbol";
-            this.comboBoxSymbol.Size = new System.Drawing.Size(100, 21);
-            this.comboBoxSymbol.TabIndex = 5;
-            this.comboBoxSymbol.SelectedIndexChanged += this.comboBoxSymbol_SelectedIndexChanged;
-            // 
-            // linkMenuPropertyOrAttribute
-            // 
-            this.linkMenuPropertyOrAttribute.Location = new System.Drawing.Point(15, 34);
-            this.linkMenuPropertyOrAttribute.Name = "linkMenuPropertyOrAttribute";
-            this.linkMenuPropertyOrAttribute.Options = new string[] {
-                                                                        "property",
-                                                                        "attribute"};
-            this.linkMenuPropertyOrAttribute.SelectedIndex = 0;
-            this.linkMenuPropertyOrAttribute.Size = new System.Drawing.Size(48, 23);
-            this.linkMenuPropertyOrAttribute.TabIndex = 4;
-            this.linkMenuPropertyOrAttribute.TabStop = true;
-            this.linkMenuPropertyOrAttribute.Text = "property";
-            this.linkMenuPropertyOrAttribute.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkMenuPropertyOrAttribute.ValueChanged += this.linkMenuPropertyOrAttribute_ValueChanged;
-            // 
-            // label1
-            // 
-            this.label1.Location = new System.Drawing.Point(8, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(56, 23);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "Value of:";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // OperandValueOf
-            // 
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBoxTag);
-            this.Controls.Add(this.comboBoxSymbol);
-            this.Controls.Add(this.linkMenuPropertyOrAttribute);
-            this.Name = "OperandValueOf";
-            this.Size = new System.Drawing.Size(176, 64);
-            this.ResumeLayout(false);
-        }
-        #endregion
-
-        private void linkMenuPropertyOrAttribute_ValueChanged(object sender, System.EventArgs e) {
+ 
+        private void LinkMenuPropertyOrAttribute_ValueChanged(object? sender, EventArgs e) {
             propertyOrAttributeChanged = true;
 
-            ValueChanged?.Invoke(this, null);
+            ValueChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private bool isAllowedType(Type typeToCheck) {
+        private bool IsAllowedType(Type typeToCheck) {
             if (AllowedTypes == null)
                 return true;
             else {
@@ -223,14 +140,14 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        private void comboBoxTag_DropDown(object sender, System.EventArgs e) {
+        private void ComboBoxTag_DropDown(object? sender, EventArgs e) {
             if (comboBoxSymbol.Text != propertiesOfSymbol || propertyOrAttributeChanged) {
                 propertiesOfSymbol = comboBoxSymbol.Text;
                 propertyOrAttributeChanged = false;
 
                 comboBoxTag.Items.Clear();
 
-                Type symbolType = (Type)symbolNameToTypeMap[propertiesOfSymbol];
+                var symbolType = (Type?)symbolNameToTypeMap?[propertiesOfSymbol];
 
                 if (symbolType != null) {
                     if (linkMenuPropertyOrAttribute.SelectedIndex == 0) {   // Property
@@ -240,30 +157,30 @@ namespace LayoutManager.CommonUI.Controls {
 
                         foreach (PropertyInfo property in properties) {
                             BrowsableAttribute[] browsables = (BrowsableAttribute[])property.GetCustomAttributes(typeof(BrowsableAttribute), true);
-                            bool propertyAllowed = false;
+                            bool propertyAllowed;
 
                             if (browsables.Length > 0 && !browsables[0].Browsable)
                                 propertyAllowed = false;
                             else
-                                propertyAllowed = isAllowedType(property.PropertyType);
+                                propertyAllowed = IsAllowedType(property.PropertyType);
 
                             if (propertyAllowed)
                                 comboBoxTag.Items.Add(new TagEntry(property.Name, property.PropertyType));
                         }
 
-                        Type infoType = (Type)EventManager.Event(new LayoutEvent("get-context-symbol-info-type", symbolType));
+                        var infoType = (Type?)EventManager.Event(new LayoutEvent("get-context-symbol-info-type", symbolType));
 
                         if (infoType != null) {
                             PropertyInfo[] infoProperties = infoType.GetProperties();
 
                             foreach (PropertyInfo property in infoProperties) {
                                 BrowsableAttribute[] browsables = (BrowsableAttribute[])property.GetCustomAttributes(typeof(BrowsableAttribute), true);
-                                bool propertyAllowed = false;
+                                bool propertyAllowed;
 
                                 if (browsables.Length > 0 && !browsables[0].Browsable)
                                     propertyAllowed = false;
                                 else
-                                    propertyAllowed = isAllowedType(property.PropertyType);
+                                    propertyAllowed = IsAllowedType(property.PropertyType);
 
                                 bool nameExist = false;
 
@@ -286,7 +203,7 @@ namespace LayoutManager.CommonUI.Controls {
 
                         foreach (AttributesInfo attributes in attributesList) {
                             foreach (AttributeInfo attribute in attributes) {
-                                if (!attributesMap.ContainsKey(attribute.Name) && isAllowedType(attribute.Value.GetType())) {
+                                if (!attributesMap.ContainsKey(attribute.Name) && IsAllowedType(attribute.Value.GetType())) {
                                     attributesMap.Add(attribute.Name, attribute);
                                     comboBoxTag.Items.Add(new TagEntry(attribute.Name, attribute.AttributeType));
                                 }
@@ -296,11 +213,11 @@ namespace LayoutManager.CommonUI.Controls {
                 }
             }
 
-            ValueChanged?.Invoke(this, null);
+            ValueChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void comboBoxSymbol_SelectedIndexChanged(object sender, System.EventArgs e) {
-            ValueChanged?.Invoke(this, null);
+        private void ComboBoxSymbol_SelectedIndexChanged(object? sender, EventArgs e) {
+            ValueChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private class TagEntry {
@@ -315,20 +232,11 @@ namespace LayoutManager.CommonUI.Controls {
             public TagEntry(string name, AttributeType attributeType) {
                 this.Name = name;
 
-                switch (attributeType) {
-                    case AttributeType.Boolean:
-                        Type = typeof(bool);
-                        break;
-
-                    case AttributeType.Number:
-                        Type = typeof(int);
-                        break;
-
-                    case AttributeType.String:
-                    default:
-                        Type = typeof(string);
-                        break;
-                }
+                Type =attributeType switch {
+                    AttributeType.Boolean => typeof(bool),
+                    AttributeType.Number => typeof(int),
+                    _ => typeof(string),
+                };
             }
 
             public string TypeName {

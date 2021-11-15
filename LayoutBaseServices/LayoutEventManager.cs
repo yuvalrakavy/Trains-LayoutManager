@@ -9,10 +9,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Threading;
 
-// Reenable warning when switch to .NET 4.8 and range c#8 feature is supported
-#pragma warning disable IDE0057
-
-#nullable enable
 namespace LayoutManager {
     /// <summary>
     /// A Layout Manager event
@@ -73,7 +69,7 @@ namespace LayoutManager {
         /// <summary>
         /// The event name
         /// </summary>
-        public string EventName => eventName ?? (eventName = DocumentElement.GetAttribute("EventName"));
+        public string EventName => eventName ??= DocumentElement.GetAttribute("EventName");
 
         /// <summary>
         /// Determine if more subscriptions should be checked for applicability to this event
@@ -122,7 +118,7 @@ namespace LayoutManager {
         /// <returns></returns>
         protected bool Matches(XmlElement element, string xpathExpression) {
             try {
-                return element.CreateNavigator().Matches(xpathExpression);
+                return Ensure.NotNull<XPathNavigator>(element.CreateNavigator()).Matches(xpathExpression);
             }
             catch (XPathException ex) {
                 Trace.WriteLine($"XPath error: ({ex.Message}) {xpathExpression} Targeted Event: {EventName} Sender {(Sender != null ? $"{Sender} ({Sender.GetType().FullName})" : "(Null)")}");
@@ -152,7 +148,7 @@ namespace LayoutManager {
         #region Methods to get/set event parameters
 
         public static bool HasOption<TEvent>(this TEvent e, string elementName, string optionName) where TEvent : LayoutEvent {
-            XmlElement optionElement = e.Element[elementName];
+            var optionElement = e.Element[elementName];
 
             return optionElement?.HasAttribute(optionName) ?? false;
         }
@@ -166,7 +162,7 @@ namespace LayoutManager {
         }
 
         public static TEvent CopyOptions<TEvent>(this TEvent e, LayoutEvent other, string elementName = DefaultOptionsElementName) where TEvent : LayoutEvent {
-            XmlElement otherElement = other.Element[elementName];
+            var otherElement = other.Element[elementName];
 
             if (otherElement != null)
                 e.Element.AppendChild(e.Element.OwnerDocument.ImportNode(otherElement, true));
@@ -175,7 +171,7 @@ namespace LayoutManager {
         }
 
         public static TEvent SetOption<TEvent>(this TEvent e, string elementName, string optionName, string value) where TEvent : LayoutEvent {
-            XmlElement optionElement = e.Element[elementName];
+            var optionElement = e.Element[elementName];
 
             if (optionElement == null) {
                 optionElement = e.Element.OwnerDocument.CreateElement(elementName);
@@ -393,7 +389,7 @@ namespace LayoutManager {
             if (!(TargetObject is IObjectHasXml subscriberXml))
                 return xpath;
 
-            XPathNavigator xpn = subscriberXml.Element.CreateNavigator();
+            var xpn = Ensure.NotNull<XPathNavigator>(subscriberXml.Element.CreateNavigator());
             System.Text.StringBuilder result = new System.Text.StringBuilder(xpath.Length);
             int pos = 0;
 
@@ -414,7 +410,7 @@ namespace LayoutManager {
 
                     expandXpath = xpath.Substring(s + 1, nextPos - s - 1);
 
-                    string expandedXpath = xpn.Evaluate(expandXpath).ToString();
+                    var expandedXpath = xpn.Evaluate(expandXpath).ToString();
                     result.Append(expandedXpath);
 
                     nextPos++;      // skip the closing `
@@ -610,7 +606,7 @@ namespace LayoutManager {
 
         protected bool Matches(XmlElement element, string xpathExpression) {
             try {
-                return element.CreateNavigator().Matches(xpathExpression);
+                return Ensure.NotNull<XPathNavigator>(element.CreateNavigator()).Matches(xpathExpression);
             }
             catch (XPathException ex) {
                 Trace.WriteLine("XPath error: (" + ex.Message + ") " + xpathExpression + " Subscription for " + MethodName);
@@ -628,8 +624,8 @@ namespace LayoutManager {
                 return false;
 
             if (SenderType != null && e.Sender != null) {
-                if (e.Sender is Type) {
-                    if ((Type)e.Sender != SenderType && !((Type)e.Sender).IsSubclassOf(SenderType))
+                if (e.Sender is Type type) {
+                    if (type != SenderType && !type.IsSubclassOf(SenderType))
                         return false;
                 }
                 else {
@@ -642,8 +638,8 @@ namespace LayoutManager {
                 return false;
 
             if (InfoType != null && e.Info != null) {
-                if (e.Info is Type) {
-                    if ((Type)e.Info == InfoType && !((Type)e.Info).IsSubclassOf(InfoType))
+                if (e.Info is Type type) {
+                    if (type == InfoType && !type.IsSubclassOf(InfoType))
                         return false;
                 }
                 else {
@@ -655,10 +651,10 @@ namespace LayoutManager {
             if (e.Sender != null && IfSender != null) {
                 XmlElement? element = null;
 
-                if (e.Sender is IObjectHasXml)
-                    element = ((IObjectHasXml)e.Sender).Element;
-                else if (e.Sender is XmlElement)
-                    element = (XmlElement)e.Sender;
+                if (e.Sender is IObjectHasXml xml)
+                    element = xml.Element;
+                else if (e.Sender is XmlElement anElement)
+                    element = anElement;
 
                 if (element != null && !Matches(element, IfSender))
                     return false;
@@ -670,10 +666,10 @@ namespace LayoutManager {
             if (IfInfo != null && e.Info != null) {
                 XmlElement? element = null;
 
-                if (e.Info is IObjectHasXml)
-                    element = ((IObjectHasXml)e.Info).Element;
-                else if (e.Info is XmlElement)
-                    element = (XmlElement)e.Info;
+                if (e.Info is IObjectHasXml xml)
+                    element = xml.Element;
+                else if (e.Info is XmlElement anElement)
+                    element = anElement;
 
                 if (element != null && !Matches(element, IfInfo))
                     return false;
@@ -766,12 +762,12 @@ namespace LayoutManager {
 
         public override void SetMethod(object? objectInstance, MethodInfo method) {
             if (objectInstance == null) {
-                _voidEventHandler = (LayoutVoidAsyncEventHandler)Delegate.CreateDelegate(typeof(LayoutVoidAsyncEventHandler), method, false);
+                _voidEventHandler = (LayoutVoidAsyncEventHandler?)Delegate.CreateDelegate(typeof(LayoutVoidAsyncEventHandler), method, false);
                 if (_voidEventHandler == null)
                     _eventHandler = (LayoutAsyncEventHandler)Delegate.CreateDelegate(typeof(LayoutAsyncEventHandler), method);
             }
             else {
-                _voidEventHandler = (LayoutVoidAsyncEventHandler)Delegate.CreateDelegate(typeof(LayoutVoidAsyncEventHandler), objectInstance, method, false);
+                _voidEventHandler = (LayoutVoidAsyncEventHandler?)Delegate.CreateDelegate(typeof(LayoutVoidAsyncEventHandler), objectInstance, method, false);
                 if (_voidEventHandler == null)
                     _eventHandler = (LayoutAsyncEventHandler)Delegate.CreateDelegate(typeof(LayoutAsyncEventHandler), objectInstance, method);
             }
@@ -984,16 +980,14 @@ namespace LayoutManager {
                     EventManager.Instance.RegisterDelayedEvent(this);
 
                     Status = DelayedEventStatus.NotYetCalled;
-                    await Task.WhenAny(Task.Delay(delayTime), tcs.Task).ConfigureAwait(false);
+                    await Task.WhenAny(Task.Delay(delayTime, cancellationToken), tcs.Task).ConfigureAwait(false);
                     Status = DelayedEventStatus.Called;
                     EventManager.Instance.InterThreadEventInvoker.QueueEvent(Event);
                 }
             }
-#pragma warning disable CA1031 // Do not catch general exception types
             catch (OperationCanceledException) {
                 Status = DelayedEventStatus.Canceled;
             }
-#pragma warning restore CA1031 // Do not catch general exception types
             finally {
                 EventManager.Instance.UnregisterDelayedEvent(this);
             }
@@ -1013,11 +1007,7 @@ namespace LayoutManager {
         private readonly Dictionary<Guid, LayoutDelayedEvent> activeDelayedEvents = new Dictionary<Guid, LayoutDelayedEvent>();
         private LayoutEventDefAttribute[]? eventDefs;
 
-#pragma warning disable IDE0060 // Remove unused parameter
-        public LayoutEventManager(LayoutModuleManager moduleManager) {
-#pragma warning restore IDE0060 // Remove unused parameter
-            this.Subscriptions = new LayoutSubscriptionHashtableByEventName();
-        }
+        public LayoutEventManager(LayoutModuleManager _) => this.Subscriptions = new LayoutSubscriptionHashtableByEventName();
 
         /// <summary>
         /// A collection of active event subscriptions
@@ -1253,10 +1243,12 @@ namespace LayoutManager {
                 var moduleManager = Ensure.NotNull<LayoutModuleManager>(Event(new LayoutEvent("get-module-manager", this)), "moduleManager");
 
                 foreach (LayoutAssembly layoutAssembly in moduleManager.LayoutAssemblies) {
-                    LayoutEventDefAttribute[] assemblyEventDefs = (LayoutEventDefAttribute[])layoutAssembly.Assembly.GetCustomAttributes(typeof(LayoutEventDefAttribute), true);
+                    var assemblyEventDefs = (LayoutEventDefAttribute[]?)layoutAssembly.Assembly?.GetCustomAttributes(typeof(LayoutEventDefAttribute), true);
 
-                    addEventDefs(assemblyEventDefs, requiredRole, eventDefsList);
-                    addEventDefs(layoutAssembly.Assembly.GetTypes(), requiredRole, eventDefsList);
+                    if (assemblyEventDefs != null) {
+                        AddEventDefs(assemblyEventDefs, requiredRole, eventDefsList);
+                        AddEventDefs(layoutAssembly.Assembly?.GetTypes() ?? Array.Empty<Type>(), requiredRole, eventDefsList);
+                    }
                 }
 
                 eventDefs = eventDefsList.ToArray();
@@ -1271,27 +1263,27 @@ namespace LayoutManager {
 
         #region Helper methods for getting event attributes
 
-        private void addEventDefs(LayoutEventDefAttribute[] eventDefsToAdd, LayoutEventRole requiredRole, List<LayoutEventDefAttribute> eventDefs) {
+        private void AddEventDefs(LayoutEventDefAttribute[] eventDefsToAdd, LayoutEventRole requiredRole, List<LayoutEventDefAttribute> eventDefs) {
             foreach (LayoutEventDefAttribute eventDef in eventDefsToAdd) {
                 if (eventDef.Role == requiredRole)
                     eventDefs.Add(eventDef);
             }
         }
 
-        private void addEventDefs(Type[] types, LayoutEventRole requiredRole, List<LayoutEventDefAttribute> eventDefs) {
+        private void AddEventDefs(Type[] types, LayoutEventRole requiredRole, List<LayoutEventDefAttribute> eventDefs) {
             foreach (Type type in types) {
                 if (type.IsClass || type.IsInterface) {
                     LayoutEventDefAttribute[] typeEventDefs = (LayoutEventDefAttribute[])type.GetCustomAttributes(typeof(LayoutEventDefAttribute), true);
 
-                    addEventDefs(typeEventDefs, requiredRole, eventDefs);
+                    AddEventDefs(typeEventDefs, requiredRole, eventDefs);
 
                     foreach (MethodInfo method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)) {
                         LayoutEventDefAttribute[] methodEventDefs = (LayoutEventDefAttribute[])method.GetCustomAttributes(typeof(LayoutEventDefAttribute), true);
 
-                        addEventDefs(methodEventDefs, requiredRole, eventDefs);
+                        AddEventDefs(methodEventDefs, requiredRole, eventDefs);
                     }
 
-                    addEventDefs(type.GetNestedTypes(), requiredRole, eventDefs);
+                    AddEventDefs(type.GetNestedTypes(), requiredRole, eventDefs);
                 }
             }
         }
@@ -1452,9 +1444,9 @@ namespace LayoutManager {
         private readonly Dictionary<string, ILayoutSubscriptionCollection> subscriptionByEventName = new Dictionary<string, ILayoutSubscriptionCollection>();
         private readonly LayoutSubscriptionArray noEventNameFilterSubscriptions = new LayoutSubscriptionArray();
 
-        private ILayoutSubscriptionCollection getSlot(LayoutEventSubscriptionBase subscription) {
+        private ILayoutSubscriptionCollection GetSlot(LayoutEventSubscriptionBase subscription) {
             if (!string.IsNullOrEmpty(subscription.EventName)) {
-                if (!subscriptionByEventName.TryGetValue(subscription.EventName, out ILayoutSubscriptionCollection hashEntry)) {
+                if (!subscriptionByEventName.TryGetValue(subscription.EventName, out ILayoutSubscriptionCollection? hashEntry)) {
                     hashEntry = new LayoutSubscriptionArray();
                     subscriptionByEventName[subscription.EventName] = hashEntry;
                 }
@@ -1466,11 +1458,11 @@ namespace LayoutManager {
         }
 
         public void Add(LayoutEventSubscriptionBase subscription) {
-            getSlot(subscription).Add(subscription);
+            GetSlot(subscription).Add(subscription);
         }
 
         public void Remove(LayoutEventSubscriptionBase subscription) {
-            getSlot(subscription).Remove(subscription);
+            GetSlot(subscription).Remove(subscription);
         }
 
         public void RemoveObjectSubscriptions(object instance) {
@@ -1480,7 +1472,7 @@ namespace LayoutManager {
         }
 
         public void AddApplicableSubscriptions<TSubscription>(ICollection<LayoutEventSubscriptionBase> applicableSubscriptions, LayoutEvent e) {
-            if (subscriptionByEventName.TryGetValue(e.EventName, out ILayoutSubscriptionCollection hashEntry))
+            if (subscriptionByEventName.TryGetValue(e.EventName, out ILayoutSubscriptionCollection? hashEntry))
                 hashEntry.AddApplicableSubscriptions<TSubscription>(applicableSubscriptions, e);
 
             noEventNameFilterSubscriptions.AddApplicableSubscriptions<TSubscription>(applicableSubscriptions, e);
@@ -1528,9 +1520,9 @@ namespace LayoutManager {
         private readonly Dictionary<Type, ILayoutSubscriptionCollection> subscriptionBySenderType = new Dictionary<Type, ILayoutSubscriptionCollection>();
         private readonly LayoutSubscriptionArray noSenderTypeSubscriptions = new LayoutSubscriptionArray();
 
-        private ILayoutSubscriptionCollection getSlot(LayoutEventSubscriptionBase subscription) {
+        private ILayoutSubscriptionCollection GetSlot(LayoutEventSubscriptionBase subscription) {
             if (subscription.SenderType != null) {
-                if (!subscriptionBySenderType.TryGetValue(subscription.SenderType, out ILayoutSubscriptionCollection hashEntry)) {
+                if (!subscriptionBySenderType.TryGetValue(subscription.SenderType, out ILayoutSubscriptionCollection? hashEntry)) {
                     hashEntry = new LayoutSubscriptionArray();
                     subscriptionBySenderType[subscription.SenderType] = hashEntry;
                 }
@@ -1542,11 +1534,11 @@ namespace LayoutManager {
         }
 
         public void Add(LayoutEventSubscriptionBase subscription) {
-            getSlot(subscription).Add(subscription);
+            GetSlot(subscription).Add(subscription);
         }
 
         public void Remove(LayoutEventSubscriptionBase subscription) {
-            getSlot(subscription).Remove(subscription);
+            GetSlot(subscription).Remove(subscription);
         }
 
         public void RemoveObjectSubscriptions(object instance) {
@@ -1556,7 +1548,7 @@ namespace LayoutManager {
         }
 
         public void AddApplicableSubscriptions<TSubscription>(ICollection<LayoutEventSubscriptionBase> applicableSubscriptions, LayoutEvent e) {
-            if (e.Sender != null && subscriptionBySenderType.TryGetValue(e.Sender.GetType(), out ILayoutSubscriptionCollection hashEntry))
+            if (e.Sender != null && subscriptionBySenderType.TryGetValue(e.Sender.GetType(), out ILayoutSubscriptionCollection? hashEntry))
                 hashEntry.AddApplicableSubscriptions<TSubscription>(applicableSubscriptions, e);
 
             noSenderTypeSubscriptions.AddApplicableSubscriptions<TSubscription>(applicableSubscriptions, e);

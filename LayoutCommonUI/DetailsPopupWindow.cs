@@ -1,5 +1,3 @@
-using System.Drawing;
-using System.Windows.Forms;
 using LayoutManager.View;
 
 namespace LayoutManager.CommonUI {

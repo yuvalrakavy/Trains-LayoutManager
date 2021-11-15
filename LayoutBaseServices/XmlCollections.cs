@@ -25,10 +25,14 @@ namespace LayoutManager {
         /// <param name="parentElement">Element containing the collection element</param>
         /// <param name="collectionElementName">The collection element name</param>
         protected XmlCollection(XmlElement parentElement, string collectionElementName) {
-            if ((this.Element = parentElement[collectionElementName]) == null) {
+            XmlElement? element;
+
+            if ((element = parentElement[collectionElementName]) == null) {
                 this.Element = parentElement.OwnerDocument.CreateElement(collectionElementName);
                 parentElement.AppendChild(this.Element);
             }
+            else
+                this.Element = element;
         }
 
         /// <summary>
@@ -36,7 +40,6 @@ namespace LayoutManager {
         /// </summary>
         /// <param name="item">The item for which the element need to be created</param>
         /// <returns>XML element to store the item in</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("General", "RCS1079:Throwing of new NotImplementedException.", Justification = "<Pending>")]
         virtual protected XmlElement CreateElement(T item) {
             throw new NotImplementedException();
         }
@@ -187,12 +190,12 @@ namespace LayoutManager {
     /// </summary>
     /// <typeparam name="T">The type of items in the collection</typeparam>
     /// <typeparam name="KeyT">The type of the key used to index the collection</typeparam>
-    public abstract class XmlIndexedCollection<T, KeyT> : XmlCollection<T>, ICollection<T> where T : class {
+    public abstract class XmlIndexedCollection<T, KeyT> : XmlCollection<T>, ICollection<T> where T : class where KeyT: notnull {
         private Dictionary<KeyT, XmlElement>? _index;
         private List<KeyValuePair<KeyT, XmlElement>>? sorted = null;
 
         private Dictionary<KeyT, XmlElement> Index {
-            get => _index ?? (_index = CreateAndInitializeIndex());
+            get => _index ??= CreateAndInitializeIndex();
         }
 
         /// <summary>
@@ -295,7 +298,7 @@ namespace LayoutManager {
         /// <returns>True if item was removed, false if item was not found</returns>
         public bool Remove(KeyT key) {
             if (Index != null) {
-                if (Index.TryGetValue(key, out XmlElement itemElement)) {
+                if (Index.TryGetValue(key, out XmlElement? itemElement)) {
                     ItemsDictionary.Remove(key);
                     sorted = null;
                     Element.RemoveChild(itemElement);
@@ -312,7 +315,7 @@ namespace LayoutManager {
         /// <param name="key">The key associated with the item</param>
         /// <returns>The collection's item associated with the key</returns>
         public T? this[KeyT key] {
-            get => Index.TryGetValue(key, out XmlElement itemElement) ? FromElement(itemElement) : (default);
+            get => Index.TryGetValue(key, out XmlElement? itemElement) ? FromElement(itemElement) : (default);
 
             set {
                 if (value == null)
@@ -365,7 +368,7 @@ namespace LayoutManager {
                 items = new List<string>();
         }
 
-        private void updateAttribute() {
+        private void UpdateAttribute() {
             element.SetAttribute(attributeName, string.Join(",", items.ToArray()));
         }
 
@@ -373,12 +376,12 @@ namespace LayoutManager {
 
         public void Add(string item) {
             items.Add(item);
-            updateAttribute();
+            UpdateAttribute();
         }
 
         public void Clear() {
             items.Clear();
-            updateAttribute();
+            UpdateAttribute();
         }
 
         public bool Contains(string item) => items.Contains(item);
@@ -393,7 +396,7 @@ namespace LayoutManager {
 
         public bool Remove(string item) {
             bool result = items.Remove(item);
-            updateAttribute();
+            UpdateAttribute();
 
             return result;
         }

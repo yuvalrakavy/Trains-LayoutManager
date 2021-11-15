@@ -84,7 +84,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonClose_Click(object sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, System.EventArgs e) {
             Close();
         }
     }

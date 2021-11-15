@@ -1,30 +1,16 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
-using System.Xml;
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051, IDE0060, IDE0067, IDE0069, RCS1163
-#nullable enable
 namespace LayoutManager.CommonUI {
     /// <summary>
     /// Summary description for LayoutControlBusViewer.
     /// </summary>
-    public class LayoutControlBusViewer : System.Windows.Forms.Control {
-        private IContainer? components;
-        private System.Windows.Forms.HScrollBar hScrollBar;
-        private ImageList imageListConnectionPointTypes;
-        private System.Windows.Forms.VScrollBar vScrollBar;
+    public partial class LayoutControlBusViewer : Control {
 
         private ILayoutFrameWindow? frameWindow = null;
 
         private float zoom = 1.0F;
-        private Point origin = new Point(0, 0);
+        private Point origin = new(0, 0);
 
         private DrawControlBase? drawRoot = null;
 
@@ -34,7 +20,7 @@ namespace LayoutManager.CommonUI {
 
         private MouseButtons mouseDownButton = MouseButtons.None;
         private DrawControlBase? mouseDrawObject = null;
-        private readonly IDictionary imageMap = new HybridDictionary();
+        private readonly Dictionary<string, Image?> imageMap = new();
 
         private ControlModule? selectedModule = null;
         private ControlConnectionPoint? selectedConnectionPoint = null;
@@ -53,7 +39,7 @@ namespace LayoutManager.CommonUI {
 
         #region Public Properties
 
-        public ILayoutFrameWindow FrameWindow => frameWindow ?? (frameWindow = (ILayoutFrameWindow)FindForm());
+        public ILayoutFrameWindow FrameWindow => frameWindow ??= (ILayoutFrameWindow)FindForm();
 
         public float Zoom {
             get {
@@ -143,7 +129,7 @@ namespace LayoutManager.CommonUI {
             SelectedModule = null;
         }
 
-        private RectangleF DrawnRectangle => new RectangleF(new PointF(origin.X, origin.Y), new SizeF(
+        private RectangleF DrawnRectangle => new(new PointF(origin.X, origin.Y), new SizeF(
                     (ClientSize.Width - (vScrollBar.Visible ? vScrollBar.Width : 0)) / zoom,
                     (ClientSize.Height - (hScrollBar.Visible ? hScrollBar.Height : 0)) / zoom));
 
@@ -185,7 +171,7 @@ namespace LayoutManager.CommonUI {
             string key = connectionPointType + "-" + topRow.ToString();
             Image? typeImage;
 
-            if (!imageMap.Contains(key)) {
+            if (!imageMap.ContainsKey(key)) {
                 if (connectionPointType == ControlConnectionPointTypes.OutputSolenoid)
                     typeImage = imageListConnectionPointTypes.Images[0];
                 else if (connectionPointType == ControlConnectionPointTypes.InputDryTrigger) {
@@ -202,7 +188,7 @@ namespace LayoutManager.CommonUI {
                 imageMap.Add(key, typeImage);
             }
             else
-                typeImage = (Image)imageMap[key];
+                typeImage = (Image?)imageMap[key];
 
             return typeImage;
         }
@@ -220,14 +206,14 @@ namespace LayoutManager.CommonUI {
                 string key = component.GetType().Name + "-" + component.ToString() + topRow.ToString() + "_";
                 Image? image;
 
-                if (!imageMap.Contains(key)) {
+                if (!imageMap.ContainsKey(key)) {
                     image = (Image?)EventManager.Event(
                         new LayoutEvent("get-connection-point-component-image", component).SetOption("TopRow", topRow).SetOption("ModuleID", connectionPoint.Module.Id).SetOption("Index", connectionPoint.Index));
 
                     imageMap.Add(key, image);
                 }
                 else
-                    image = (Image)imageMap[key];
+                    image = (Image?)imageMap[key];
 
                 return image;
             }
@@ -244,7 +230,7 @@ namespace LayoutManager.CommonUI {
                 selectedModule = value;
                 selectedConnectionPoint = null;
 
-                updateComponentSelection();
+                UpdateComponentSelection();
                 Invalidate();
             }
         }
@@ -258,7 +244,7 @@ namespace LayoutManager.CommonUI {
                 selectedConnectionPoint = value;
                 selectedModule = null;
 
-                updateComponentSelection();
+                UpdateComponentSelection();
                 Invalidate();
             }
         }
@@ -273,14 +259,14 @@ namespace LayoutManager.CommonUI {
         }
 
         internal void VerticalScroll(ScrollEventType type) {
-            vScrollBar_Scroll(null, new ScrollEventArgs(type, 0));
+            VScrollBar_Scroll(null, new ScrollEventArgs(type, 0));
         }
 
         internal void HorizontalScroll(ScrollEventType type) {
-            hScrollBar_Scroll(null, new ScrollEventArgs(type, 0));
+            HScrollBar_Scroll(null, new ScrollEventArgs(type, 0));
         }
 
-        private void updateComponentSelection() {
+        private void UpdateComponentSelection() {
             selectedComponents.Clear();
 
             if (SelectedConnectionPoint != null) {
@@ -314,63 +300,10 @@ namespace LayoutManager.CommonUI {
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.components = new Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LayoutControlBusViewer));
-            this.hScrollBar = new System.Windows.Forms.HScrollBar();
-            this.vScrollBar = new System.Windows.Forms.VScrollBar();
-            this.imageListConnectionPointTypes = new ImageList(this.components);
-            this.SuspendLayout();
-            // 
-            // hScrollBar
-            // 
-            this.hScrollBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.hScrollBar.Location = new System.Drawing.Point(117, 17);
-            this.hScrollBar.Name = "hScrollBar";
-            this.hScrollBar.Size = new System.Drawing.Size(80, 17);
-            this.hScrollBar.TabIndex = 0;
-            this.hScrollBar.Scroll += this.hScrollBar_Scroll;
-            // 
-            // vScrollBar
-            // 
-            this.vScrollBar.Dock = System.Windows.Forms.DockStyle.Right;
-            this.vScrollBar.Location = new System.Drawing.Point(17, 17);
-            this.vScrollBar.Name = "vScrollBar";
-            this.vScrollBar.Size = new System.Drawing.Size(17, 80);
-            this.vScrollBar.TabIndex = 0;
-            this.vScrollBar.Scroll += this.vScrollBar_Scroll;
-            // 
-            // imageListConnectionPointTypes
-            // 
-            this.imageListConnectionPointTypes.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListConnectionPointTypes.ImageStream");
-            this.imageListConnectionPointTypes.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListConnectionPointTypes.Images.SetKeyName(0, "");
-            this.imageListConnectionPointTypes.Images.SetKeyName(1, "");
-            this.imageListConnectionPointTypes.Images.SetKeyName(2, "");
-            this.imageListConnectionPointTypes.Images.SetKeyName(3, "");
-            // 
-            // LayoutControlBusViewer
-            // 
-            this.SizeChanged += this.LayoutControlBusViewer_SizeChanged;
-            this.Click += this.LayoutControlBusViewer_Click;
-            this.DoubleClick += this.LayoutControlBusViewer_DoubleClick;
-            this.KeyDown += this.LayoutControlBusViewer_KeyDown;
-            this.MouseDown += this.LayoutControlBusViewer_MouseDown;
-            this.MouseEnter += this.LayoutControlBusViewer_MouseEnter;
-            this.MouseLeave += this.LayoutControlBusViewer_MouseLeave;
-            this.MouseMove += this.LayoutControlBusViewer_MouseMove;
-            this.ResumeLayout(false);
-        }
-        #endregion
-
+ 
         #region Drawing
 
-        private void drawBackground(Graphics g, RectangleF clipBounds) {
+        private void DrawBackground(Graphics g, RectangleF clipBounds) {
             using Brush b = new SolidBrush(Parent.BackColor);
             g.FillRectangle(b, clipBounds);
         }
@@ -382,7 +315,7 @@ namespace LayoutManager.CommonUI {
             set => drawRoot = value;
         }
 
-        private bool updateScrollBars() {
+        private bool UpdateScrollBars() {
             bool needRedraw = false;
             float vMargin = 20 / zoom;
             float hMargin = 20 / zoom;
@@ -443,7 +376,7 @@ namespace LayoutManager.CommonUI {
                 // Translate so the top-left of the clip region is on the top/left (0,0)
                 // of the bitmap
                 g.TranslateTransform(-clipBounds.Left, -clipBounds.Top);
-                drawBackground(g, clipBounds);
+                DrawBackground(g, clipBounds);
 
                 GraphicsState gs = g.Save();
 
@@ -455,8 +388,8 @@ namespace LayoutManager.CommonUI {
 
                     g.Restore(gs);
 
-                    if (updateScrollBars()) {
-                        drawBackground(g, clipBounds);
+                    if (UpdateScrollBars()) {
+                        DrawBackground(g, clipBounds);
 
                         gs = g.Save();
 
@@ -482,7 +415,7 @@ namespace LayoutManager.CommonUI {
             DrawControlBase? result = null;
 
             // Convert from client coordinate to world coordinates
-            PointF p = new PointF((hitPoint.X / zoom) + origin.X, (hitPoint.Y / zoom) + origin.Y);
+            PointF p = new((hitPoint.X / zoom) + origin.X, (hitPoint.Y / zoom) + origin.Y);
 
             if (DrawRoot != null)
                 result = DrawRoot.GetDrawObjectContainingPoint(p);
@@ -516,12 +449,12 @@ namespace LayoutManager.CommonUI {
         [LayoutEvent("control-buses-added")]
         [LayoutEvent("control-buses-removed")]
         [LayoutEvent("control-module-modified")]
-        private void changeMode(LayoutEvent e) {
+        private void ChangeMode(LayoutEvent e) {
             Recalc();
         }
 
         [LayoutEvent("component-disconnected-from-control-module")]
-        private void componentDisconnectedFromControlModule(LayoutEvent e) {
+        private void ComponentDisconnectedFromControlModule(LayoutEvent e) {
             var connectionPoint = Ensure.NotNull<ControlConnectionPoint>(e.Info);
 
             if (selectedModule != null && connectionPoint.Module.Id == selectedModule.Id) {
@@ -536,12 +469,12 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("layout-control-shown")]
-        private void layoutControlShown(LayoutEvent e) {
+        private void LayoutControlShown(LayoutEvent e) {
             selectedComponents.Display(new LayoutSelectionLook(Color.Red));
         }
 
         [LayoutEvent("layout-control-hidden")]
-        private void layoutControlHidden(LayoutEvent e) {
+        private void LayoutControlHidden(LayoutEvent e) {
             selectedComponents.Hide();
         }
 
@@ -552,15 +485,15 @@ namespace LayoutManager.CommonUI {
         protected override void OnPaintBackground(PaintEventArgs pevent) {
         }
 
-        private void LayoutControlBusViewer_SizeChanged(object sender, System.EventArgs e) {
+        private void LayoutControlBusViewer_SizeChanged(object? sender, EventArgs e) {
             // Check if need to update scroll bars
             if (DrawRoot != null) {
-                if (updateScrollBars())
+                if (UpdateScrollBars())
                     Invalidate();
             }
         }
 
-        private void hScrollBar_Scroll(object? sender, System.Windows.Forms.ScrollEventArgs e) {
+        private void HScrollBar_Scroll(object? sender, ScrollEventArgs e) {
             switch (e.Type) {
                 case ScrollEventType.First:
                     origin.X = 0;
@@ -600,7 +533,7 @@ namespace LayoutManager.CommonUI {
             Invalidate();
         }
 
-        private void vScrollBar_Scroll(object? sender, System.Windows.Forms.ScrollEventArgs e) {
+        private void VScrollBar_Scroll(object? sender, ScrollEventArgs e) {
             switch (e.Type) {
                 case ScrollEventType.First:
                     origin.Y = 0;
@@ -640,14 +573,14 @@ namespace LayoutManager.CommonUI {
             Invalidate();
         }
 
-        private void LayoutControlBusViewer_DoubleClick(object sender, System.EventArgs e) {
+        private void LayoutControlBusViewer_DoubleClick(object? sender, EventArgs e) {
             var hitDrawObject = GetHitDrawObject(PointToClient(Control.MousePosition));
 
             if (hitDrawObject != null)
                 hitDrawObject.OnDoubleClick();
         }
 
-        private void LayoutControlBusViewer_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
+        private void LayoutControlBusViewer_MouseDown(object? sender, MouseEventArgs e) {
             var hitDrawObject = GetHitDrawObject(PointToClient(Control.MousePosition));
 
             mouseDownButton = e.Button;
@@ -656,7 +589,7 @@ namespace LayoutManager.CommonUI {
                 hitDrawObject.OnMouseDown(e);
         }
 
-        private void LayoutControlBusViewer_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e) {
+        private void LayoutControlBusViewer_MouseMove(object? sender, MouseEventArgs e) {
             var hitDrawObject = GetHitDrawObject(PointToClient(Control.MousePosition));
 
             if (hitDrawObject != mouseDrawObject) {
@@ -670,14 +603,14 @@ namespace LayoutManager.CommonUI {
             }
         }
 
-        private void LayoutControlBusViewer_Click(object sender, System.EventArgs e) {
+        private void LayoutControlBusViewer_Click(object? sender, EventArgs e) {
             var hitDrawObject = GetHitDrawObject(PointToClient(Control.MousePosition));
 
             if (hitDrawObject != null)
                 hitDrawObject.OnClick(mouseDownButton);
         }
 
-        private void LayoutControlBusViewer_MouseLeave(object sender, System.EventArgs e) {
+        private void LayoutControlBusViewer_MouseLeave(object? sender, EventArgs e) {
             if (mouseDrawObject != null)
                 mouseDrawObject.OnMouseExit();
         }
@@ -686,7 +619,7 @@ namespace LayoutManager.CommonUI {
             return (keyData & ~Keys.Shift) != Keys.Tab;
         }
 
-        private void LayoutControlBusViewer_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
+        private void LayoutControlBusViewer_KeyDown(object? sender, KeyEventArgs e) {
             switch (e.KeyCode) {
                 case Keys.Left:
                     HorizontalScroll((e.Modifiers & Keys.Control) != 0 ? ScrollEventType.LargeDecrement : ScrollEventType.SmallDecrement);
@@ -767,7 +700,7 @@ namespace LayoutManager.CommonUI {
             }
         }
 
-        private void LayoutControlBusViewer_MouseEnter(object sender, System.EventArgs e) {
+        private void LayoutControlBusViewer_MouseEnter(object? sender, EventArgs e) {
             Focus();
         }
 
@@ -778,7 +711,7 @@ namespace LayoutManager.CommonUI {
 
     public abstract class DrawControlBase {
         private RectangleF bounds = RectangleF.Empty;
-        private readonly List<DrawControlBase> drawObjects = new List<DrawControlBase>();
+        private readonly List<DrawControlBase> drawObjects = new();
 
         private Cursor? savedCursor = null;
 
@@ -847,10 +780,10 @@ namespace LayoutManager.CommonUI {
             if (Enabled) {
                 if (e.Button == MouseButtons.Right) {       // Right click
                     string eventName = "add-control-" + (Viewer.IsOperationMode ? "operation" : "editing") + "-context-menu-entries";
-                    ContextMenu menu = new ContextMenu();
+                    var menu = new ContextMenuStrip();
 
                     EventManager.Event(new LayoutEvent(eventName, this, menu).SetFrameWindow(Viewer.FrameWindow));
-                    if (menu.MenuItems.Count > 0)
+                    if (menu.Items.Count > 0)
                         menu.Show(Viewer, Viewer.PointToClient(Control.MousePosition));
                 }
             }
@@ -869,12 +802,12 @@ namespace LayoutManager.CommonUI {
 
             var newCursor = this.Cursor;
 
-            if (newCursor != null)
+            if (newCursor is not null)
                 Viewer.Cursor = newCursor;
         }
 
         public virtual void OnMouseExit() {
-            if (savedCursor != null)
+            if (savedCursor is not null)
                 Viewer.Cursor = savedCursor;
         }
 
@@ -910,7 +843,7 @@ namespace LayoutManager.CommonUI {
             if (Viewer.BusProviderId == Guid.Empty) {
                 if (LayoutModel.Instance != null) {
                     foreach (IModelComponentIsBusProvider busProvider in LayoutModel.Components<IModelComponentIsBusProvider>(LayoutModel.ActivePhases)) {
-                        DrawControlBusProvider drawBusProvider = new DrawControlBusProvider(Viewer, busProvider);
+                        DrawControlBusProvider drawBusProvider = new(Viewer, busProvider);
 
                         AddDrawObject(drawBusProvider);
                     }
@@ -920,7 +853,7 @@ namespace LayoutManager.CommonUI {
                 var busProvider = LayoutModel.Component<IModelComponentIsBusProvider>(Viewer.BusProviderId, LayoutModel.ActivePhases);
 
                 if (busProvider != null) {
-                    DrawControlBusProvider drawBusProvider = new DrawControlBusProvider(Viewer, busProvider);
+                    DrawControlBusProvider drawBusProvider = new(Viewer, busProvider);
 
                     AddDrawObject(drawBusProvider);
                 }
@@ -938,7 +871,7 @@ namespace LayoutManager.CommonUI {
     }
 
     public class DrawControlBusProvider : DrawControlBase {
-        private SizeF minSize = new SizeF(60, 28);
+        private SizeF minSize = new(60, 28);
         private const int busLineHorizontalGap = 6;
         private const int busLineVerticalGap = 16;
         private const int busGap = 16;
@@ -962,7 +895,7 @@ namespace LayoutManager.CommonUI {
                     }
 
                 if (bus != null) {
-                    DrawControlBus drawBus = new DrawControlBus(Viewer, bus);
+                    DrawControlBus drawBus = new(Viewer, bus);
                     AddDrawObject(drawBus);
                 }
             }
@@ -973,8 +906,8 @@ namespace LayoutManager.CommonUI {
         public override void Draw(Graphics g, PointF startingPoint) {
             RectangleF busProviderRect;
 
-            using (Font nameFont = new Font("Arial", 9)) {
-                SizeF busProviderRectSize = new SizeF(0, 0);
+            using (Font nameFont = new("Arial", 9)) {
+                SizeF busProviderRectSize = new(0, 0);
                 SizeF nameSize = g.MeasureString(BusProvider.NameProvider.Name, nameFont);
 
                 minSize.Width = Math.Max(minSize.Width, busLineHorizontalGap * (1 + DrawObjects.Count));
@@ -986,7 +919,7 @@ namespace LayoutManager.CommonUI {
                 g.FillRectangle(Brushes.Khaki, busProviderRect);
                 g.DrawRectangle(Pens.Black, busProviderRect.Left, busProviderRect.Top, busProviderRect.Width, busProviderRect.Height);
 
-                StringFormat format = new StringFormat {
+                StringFormat format = new() {
                     Alignment = StringAlignment.Center,
                     LineAlignment = StringAlignment.Center
                 };
@@ -998,13 +931,13 @@ namespace LayoutManager.CommonUI {
 
             // Draw buses for each bus provider
             int verticalLength = DrawObjects.Count * busLineVerticalGap;
-            PointF busLineStartingPoint = new PointF(busProviderRect.Left + busLineHorizontalGap, busProviderRect.Bottom);
-            PointF busStartingPoint = new PointF(busLineStartingPoint.X, busLineStartingPoint.Y + verticalLength);
+            PointF busLineStartingPoint = new(busProviderRect.Left + busLineHorizontalGap, busProviderRect.Bottom);
+            PointF busStartingPoint = new(busLineStartingPoint.X, busLineStartingPoint.Y + verticalLength);
 
             int iBus = 0;
             foreach (DrawControlBus drawBus in DrawObjects) {
-                PointF corner1 = new PointF(busLineStartingPoint.X, busLineStartingPoint.Y + ((DrawObjects.Count - iBus) * busLineVerticalGap));
-                PointF corner2 = new PointF(busStartingPoint.X, busLineStartingPoint.Y + ((DrawObjects.Count - iBus) * busLineVerticalGap));
+                PointF corner1 = new(busLineStartingPoint.X, busLineStartingPoint.Y + ((DrawObjects.Count - iBus) * busLineVerticalGap));
+                PointF corner2 = new(busStartingPoint.X, busLineStartingPoint.Y + ((DrawObjects.Count - iBus) * busLineVerticalGap));
 
                 g.DrawLines(Viewer.BusPen, new PointF[] { busLineStartingPoint, corner1, corner2, busStartingPoint });
                 drawBus.Draw(g, busStartingPoint);
@@ -1030,7 +963,7 @@ namespace LayoutManager.CommonUI {
             this.Bus = bus;
 
             IList<ControlModule> modules = bus.Modules;
-            List<ControlModule> modulesByAddress = new List<ControlModule>();
+            List<ControlModule> modulesByAddress = new();
 
             if (Viewer.ModuleLocationID == Guid.Empty && !Viewer.ShowOnlyNotInLocation)
                 modulesByAddress.AddRange(modules);
@@ -1046,7 +979,7 @@ namespace LayoutManager.CommonUI {
                 AddDrawObject(new DrawControlModule(Viewer, module));
 
             if (!Viewer.IsOperationMode && bus.BusType.Topology != ControlBusTopology.Fixed) {
-                DrawControlClickToAddModule d = new DrawControlClickToAddModule(Viewer, bus);
+                DrawControlClickToAddModule d = new(Viewer, bus);
 
                 AddDrawObject(d);
             }
@@ -1064,18 +997,18 @@ namespace LayoutManager.CommonUI {
         public override void Draw(Graphics g, PointF startingPoint) {
             PointF busStartPoint;
 
-            using (Font busNameFont = new Font("Arial", 8)) {
+            using (Font busNameFont = new("Arial", 8)) {
                 SizeF busNameSize = g.MeasureString(Bus.BusType.Name, busNameFont);
 
                 busStartPoint = new PointF(startingPoint.X, startingPoint.Y + busNameSize.Height + aboveNameMargin + belowNameMargin);
 
                 g.DrawLine(Viewer.BusPen, startingPoint, busStartPoint);
 
-                StringFormat format = new StringFormat {
+                StringFormat format = new() {
                     LineAlignment = StringAlignment.Center
                 };
 
-                PointF busNamePoint = new PointF(startingPoint.X + leftNameMargin, startingPoint.Y + aboveNameMargin);
+                PointF busNamePoint = new(startingPoint.X + leftNameMargin, startingPoint.Y + aboveNameMargin);
 
                 g.DrawString(Bus.BusType.Name, busNameFont, Brushes.Black, busNamePoint);
                 UnionBounds(new RectangleF(busNamePoint, busNameSize));
@@ -1086,7 +1019,7 @@ namespace LayoutManager.CommonUI {
 
             // Draw the modules on the bus
             if (DrawObjects.Count > 0) {
-                DrawControlBase lastModule = DrawObjects[DrawObjects.Count - 1];
+                DrawControlBase lastModule = DrawObjects[^1];
 
                 foreach (DrawControlBase drawObject in DrawObjects) {
                     DrawControlBusLineFlags flags = DrawControlBusLineFlags.Default;
@@ -1102,12 +1035,12 @@ namespace LayoutManager.CommonUI {
                         flags |= DrawControlBusLineFlags.LastComponent;
 
                     drawObject.Draw(g, new PointF(busStartPoint.X + moduleLeftMargin, busStartPoint.Y + moduleVerticalGap));
-                    busStartPoint = drawBusLine(g, busStartPoint, drawObject, flags);
+                    busStartPoint = DrawBusLine(g, busStartPoint, drawObject, flags);
                 }
             }
         }
 
-        private PointF drawBusLine(Graphics g, PointF busStartPoint, DrawControlBase moduleDrawObject, DrawControlBusLineFlags flags) {
+        private PointF DrawBusLine(Graphics g, PointF busStartPoint, DrawControlBase moduleDrawObject, DrawControlBusLineFlags flags) {
             PointF busEndPoint;
 
             if (Bus.BusType.Topology == ControlBusTopology.DaisyChain) {
@@ -1118,8 +1051,8 @@ namespace LayoutManager.CommonUI {
 
                 if ((flags & DrawControlBusLineFlags.BrokenBus) != 0) {
                     float y1 = (busStartPoint.Y + busEndPoint.Y) / 2;
-                    PointF p1 = new PointF(busStartPoint.X, y1 - 2);
-                    PointF p2 = new PointF(busStartPoint.X, y1 + 2);
+                    PointF p1 = new(busStartPoint.X, y1 - 2);
+                    PointF p2 = new(busStartPoint.X, y1 + 2);
 
                     g.DrawLine(Viewer.BusPen, busStartPoint, p1);
                     g.DrawLine(Viewer.BusPen, p2, busEndPoint);
@@ -1161,7 +1094,7 @@ namespace LayoutManager.CommonUI {
         private RectangleF moduleTextRect = RectangleF.Empty;
         private string moduleText;
 
-        private SizeF minModuleSize = new SizeF(80, 50);        // Minimal module size
+        private SizeF minModuleSize = new(80, 50);        // Minimal module size
         private const int verticalModuleNameMargin = 24;
         private const int horizontalModuleNameMargin = 8;
         private const int connectionPointMargin = 10;
@@ -1225,32 +1158,24 @@ namespace LayoutManager.CommonUI {
         public ControlModule Module { get; }
 
         public bool Selected {
-            get {
-                return Viewer.SelectedModule == null ? false : Viewer.SelectedModule.Id == Module.Id;
-            }
-
-            set {
-                if (value)
-                    Viewer.SelectedModule = Module;
-                else
-                    Viewer.SelectedModule = null;
-            }
+            get => Viewer.SelectedModule != null &&Viewer.SelectedModule.Id == Module.Id;
+            set => Viewer.SelectedModule =value ? Module : null;
         }
 
-        private void drawConnectionPoints(Graphics g, DrawControlConnectionPoint[] drawObjects, PointF cpStartingPoint, bool topRow) {
-            StringFormat format = new StringFormat {
+        private void DrawConnectionPoints(Graphics g, DrawControlConnectionPoint[] drawObjects, PointF cpStartingPoint, bool topRow) {
+            StringFormat format = new() {
                 Alignment = StringAlignment.Center,
                 LineAlignment = StringAlignment.Center
             };
 
-            using Font labelFont = new Font("Arial", 7.5F);
+            using Font labelFont = new("Arial", 7.5F);
             foreach (DrawControlConnectionPoint drawObject in drawObjects) {
                 drawObject.Draw(g, cpStartingPoint);
 
                 string label = Module.ConnectionPoints.GetLabel(drawObject.Index);
                 SizeF labelSize = g.MeasureString(label, labelFont);
 
-                RectangleF labelRect = new RectangleF(new PointF(drawObject.Bounds.Left + ((drawObject.Bounds.Width - labelSize.Width) / 2),
+                RectangleF labelRect = new(new PointF(drawObject.Bounds.Left + ((drawObject.Bounds.Width - labelSize.Width) / 2),
                     topRow ? drawObject.Bounds.Bottom : drawObject.Bounds.Top - labelSize.Height), labelSize);
 
                 g.DrawString(label, labelFont, Brushes.Gray, labelRect, format);
@@ -1262,9 +1187,9 @@ namespace LayoutManager.CommonUI {
 
         public override void Draw(Graphics g, PointF startingPoint) {
             if (moduleRect == RectangleF.Empty)
-                calcModuleRect(g, startingPoint);
+                CalcModuleRect(g, startingPoint);
 
-            StringFormat format = new StringFormat {
+            StringFormat format = new() {
                 Alignment = StringAlignment.Near
             };
 
@@ -1274,40 +1199,40 @@ namespace LayoutManager.CommonUI {
             g.DrawRectangle(Pens.Black, moduleRect.Left, moduleRect.Top, moduleRect.Width, moduleRect.Height);
 
             if (!Viewer.IsOperationMode && Module.UserActionRequired) {
-                RectangleF actionRect = new RectangleF(moduleRect.Location, new SizeF(4, moduleRect.Height));
+                RectangleF actionRect = new(moduleRect.Location, new SizeF(4, moduleRect.Height));
 
                 g.FillRectangle(Brushes.Red, actionRect.Left, actionRect.Top, actionRect.Width, actionRect.Height);
             }
 
             if (!Viewer.IsOperationMode && Module.AddressProgrammingRequired) {
-                RectangleF rect = new RectangleF(new PointF(moduleRect.Location.X + 4, moduleRect.Location.Y), new SizeF(4, moduleRect.Height));
+                RectangleF rect = new(new PointF(moduleRect.Location.X + 4, moduleRect.Location.Y), new SizeF(4, moduleRect.Height));
 
                 g.FillRectangle(Brushes.DarkBlue, rect.Left, rect.Top, rect.Width, rect.Height);
             }
 
-            string modulePhaseText = getModulePhaseText();
+            string modulePhaseText = GetModulePhaseText();
 
             if (modulePhaseText != null) {
-                using var font = getModulePhaseFont();
+                using var font = GetModulePhaseFont();
                 g.DrawString(modulePhaseText, font, Brushes.Gray, phaseTextRect, format);
             }
 
-            using (var font = getModuleNameFont())
+            using (var font = GetModuleNameFont())
                 g.DrawString(moduleText, font, Brushes.Black, moduleTextRect, format);
 
             UnionBounds(moduleRect);
 
             // Draw top row connection points
             if (topRow != null)
-                drawConnectionPoints(g, topRow, new PointF(moduleRect.Left + connectionPointMargin, moduleRect.Top), true);
+                DrawConnectionPoints(g, topRow, new PointF(moduleRect.Left + connectionPointMargin, moduleRect.Top), true);
 
             if (bottomRow != null)
-                drawConnectionPoints(g, bottomRow, new PointF(moduleRect.Left + connectionPointMargin, moduleRect.Bottom), false);
+                DrawConnectionPoints(g, bottomRow, new PointF(moduleRect.Left + connectionPointMargin, moduleRect.Bottom), false);
         }
 
-        private Font getModuleNameFont() => new Font("Arial", 8, FontStyle.Bold);
+        private Font GetModuleNameFont() => new("Arial", 8, FontStyle.Bold);
 
-        private Font getModulePhaseFont() => new Font("Arial", 8, FontStyle.Regular);
+        private Font GetModulePhaseFont() => new("Arial", 8, FontStyle.Regular);
 
         private int ConnectionPointsPerRow {
             get {
@@ -1320,7 +1245,7 @@ namespace LayoutManager.CommonUI {
             }
         }
 
-        private string getModulePhaseText() => Module.Phase switch
+        private string GetModulePhaseText() => Module.Phase switch
         {
             LayoutPhase.Construction => "(In construction)",
             LayoutPhase.Planned => "(Planned)",
@@ -1328,26 +1253,26 @@ namespace LayoutManager.CommonUI {
             _ => throw new ArgumentException("Invalid module phase"),
         };
 
-        private void calcModuleRect(Graphics g, PointF startingPoint) {
+        private void CalcModuleRect(Graphics g, PointF startingPoint) {
             SizeF moduleNameTextSize;
 
             startingPoint.Y += DrawControlConnectionPoint.Measure().Height;
 
-            string phaseText = getModulePhaseText();
+            string phaseText = GetModulePhaseText();
             SizeF modulePhaseTextSize = new Size(0, 0);
 
             if (phaseText != null) {
-                using Font modulePhaseFont = getModulePhaseFont();
+                using Font modulePhaseFont = GetModulePhaseFont();
                 modulePhaseTextSize = g.MeasureString(phaseText, modulePhaseFont);
             }
 
-            moduleText = getModuleText();
+            moduleText = GetModuleText();
 
-            using (Font moduleNameFont = getModuleNameFont())
+            using (Font moduleNameFont = GetModuleNameFont())
                 moduleNameTextSize = g.MeasureString(moduleText, moduleNameFont);
 
-            SizeF moduleSize = new SizeF(0, 0);
-            SizeF textSize = new SizeF(Math.Max(modulePhaseTextSize.Width, moduleNameTextSize.Width), modulePhaseTextSize.Height + moduleNameTextSize.Height);
+            SizeF moduleSize = new(0, 0);
+            SizeF textSize = new(Math.Max(modulePhaseTextSize.Width, moduleNameTextSize.Width), modulePhaseTextSize.Height + moduleNameTextSize.Height);
 
             moduleSize.Height = (2 * verticalModuleNameMargin) + textSize.Height;
             moduleSize.Width = (2 * horizontalModuleNameMargin) + textSize.Width;
@@ -1364,7 +1289,7 @@ namespace LayoutManager.CommonUI {
             moduleTextRect = new RectangleF(new PointF(startingPoint.X + horizontalModuleNameMargin, phaseTextRect.Bottom), textSize);
         }
 
-        private string getModuleText() {
+        private string GetModuleText() {
             string addressText;
 
             if (Module.ModuleType.NumberOfAddresses == 1)
@@ -1397,7 +1322,7 @@ namespace LayoutManager.CommonUI {
             this.Bus = bus;
 
             while (address <= bus.BusType.LastAddress) {
-                ControlModule module = bus.GetModuleUsingAddress(address);
+                var module = bus.GetModuleUsingAddress(address);
 
                 if (module == null) {
                     busFull = false;
@@ -1452,8 +1377,8 @@ namespace LayoutManager.CommonUI {
             using (textFont) {
                 using (framePen) {
                     SizeF textSize = g.MeasureString(text, textFont);
-                    RectangleF r = new RectangleF(startingPoint, new SizeF(textSize.Width + (2 * horizontalMargin), textSize.Height + (2 * verticalMargin)));
-                    StringFormat format = new StringFormat {
+                    RectangleF r = new(startingPoint, new SizeF(textSize.Width + (2 * horizontalMargin), textSize.Height + (2 * verticalMargin)));
+                    StringFormat format = new() {
                         Alignment = StringAlignment.Center,
                         LineAlignment = StringAlignment.Center
                     };
@@ -1489,18 +1414,11 @@ namespace LayoutManager.CommonUI {
         public int Index { get; }
 
         public bool Selected {
-            get {
-                return Viewer.SelectedConnectionPoint == null
-                    ? false
-                    : Viewer.SelectedConnectionPoint.Module.Id == Module.Id && Viewer.SelectedConnectionPoint.Index == Index;
-            }
+            get => Viewer.SelectedConnectionPoint != null &&
+                    Viewer.SelectedConnectionPoint.Module.Id == Module.Id &&
+                    Viewer.SelectedConnectionPoint.Index == Index;
 
-            set {
-                if (value)
-                    Viewer.SelectedConnectionPoint = Module.ConnectionPoints[Index];
-                else
-                    Viewer.SelectedConnectionPoint = null;
-            }
+            set => Viewer.SelectedConnectionPoint = value ? Module.ConnectionPoints[Index] : null;
         }
 
         private bool DrawSelection => Selected || (DrawModule.Selected && Module.ConnectionPoints.IsConnected(Index));
@@ -1522,7 +1440,7 @@ namespace LayoutManager.CommonUI {
 
         public ControlConnectionPoint ConnectionPoint => Module.ConnectionPoints[Index];
 
-        public static SizeF Measure() => new SizeF(connectionPointWidth, connectionPointHeight);
+        public static SizeF Measure() => new(connectionPointWidth, connectionPointHeight);
 
         public string FullDescription => Module.ModuleType.Name + " address " + Module.ConnectionPoints.GetLabel(Index);
 

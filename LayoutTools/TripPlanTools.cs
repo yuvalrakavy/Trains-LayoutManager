@@ -5,8 +5,7 @@ using System.Xml;
 using System.Windows.Forms;
 using LayoutManager.Model;
 using LayoutManager.Components;
-
-#pragma warning disable IDE0051, IDE0060, IDE0067
+using LayoutManager.CommonUI;
 
 namespace LayoutManager.Tools {
     [LayoutModule("Trip Planning Tools", UserControl = false)]
@@ -18,10 +17,10 @@ namespace LayoutManager.Tools {
         #region Save Trip plan
 
         [LayoutEvent("save-trip-plan")]
-        private void saveTripPlan(LayoutEvent e) {
-            TripPlanInfo tripPlan = (TripPlanInfo)e.Sender;
-            Form parentForm = (Form)e.Info;
-            using Dialogs.SaveTripPlan saveTripPlan = new Dialogs.SaveTripPlan();
+        private void SaveTripPlan(LayoutEvent e) {
+            var tripPlan = Ensure.NotNull<TripPlanInfo>(e.Sender);
+            var parentForm = Ensure.NotNull<Form>(e.Info);
+            using Dialogs.SaveTripPlan saveTripPlan = new();
 
             Guid editedTripPlanID = Guid.Empty;
 
@@ -30,7 +29,7 @@ namespace LayoutManager.Tools {
                 saveTripPlan.TripPlanName = tripPlan.Name;
             }
             else
-                saveTripPlan.TripPlanName = createDefaultName(tripPlan);
+                saveTripPlan.TripPlanName = CreateDefaultName(tripPlan);
 
             if (saveTripPlan.ShowDialog(parentForm) == DialogResult.OK) {
                 TripPlanCatalogInfo tripPlanCatalog = LayoutModel.StateManager.TripPlansCatalog;
@@ -47,7 +46,7 @@ namespace LayoutManager.Tools {
 
                 if (doSave) {
                     XmlElement savedTripPlanElement = (XmlElement)tripPlanCatalog.Element.OwnerDocument.ImportNode(tripPlan.Element, true);
-                    TripPlanInfo savedTripPlan = new TripPlanInfo(savedTripPlanElement) {
+                    TripPlanInfo savedTripPlan = new(savedTripPlanElement) {
                         Name = saveTripPlan.TripPlanName,
                         IconId = saveTripPlan.IconID
                     };
@@ -60,7 +59,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-        private string createDefaultName(TripPlanInfo tripPlan) {
+        private string CreateDefaultName(TripPlanInfo tripPlan) {
             int wayPointCount = tripPlan.Waypoints.Count;
             string name = "to " + tripPlan.Waypoints[wayPointCount - 1].Name;
 
@@ -78,9 +77,9 @@ namespace LayoutManager.Tools {
         #region Get train target speed
 
         [LayoutEvent("get-train-target-speed")]
-        private void getTrainTargetSpeed(LayoutEvent e) {
-            TrainCommonInfo train = (TrainStateInfo)e.Sender;
-            IWin32Window owner = (IWin32Window)e.Info;
+        private void GetTrainTargetSpeed(LayoutEvent e) {
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender);
+            var owner = Ensure.NotNull<IWin32Window>(e.Info);
 
             var d = new Dialogs.GetTargetSpeed(train);
 
@@ -100,19 +99,19 @@ namespace LayoutManager.Tools {
             private const string A_LocomotiveBlockId = "LocomotiveBlockID";
             private const string A_LocomotiveFront = "LocomotiveFront";
             private readonly bool staticGrade = false;
-            private IRoutePlanningServices _tripPlanningServices = null;
+            private IRoutePlanningServices? _tripPlanningServices = null;
 
             public ApplicableTripPlansData(XmlElement element) : base(element) {
                 staticGrade = (bool?)AttributeValue("StaticGrade") ?? true;
             }
 
-            public IRoutePlanningServices TripPlanningServices => _tripPlanningServices ?? (_tripPlanningServices = (IRoutePlanningServices)EventManager.Event(new LayoutEvent("get-route-planning-services", this)));
+            public IRoutePlanningServices TripPlanningServices => _tripPlanningServices ??= Ensure.NotNull<IRoutePlanningServices>(EventManager.Event(new LayoutEvent("get-route-planning-services", this)));
 
-            public LayoutBlock LocomotiveBlock { get; set; }
+            public LayoutBlock? LocomotiveBlock { get; set; }
 
             public LayoutComponentConnectionPoint LocomotiveFront { get; set; }
 
-            public LayoutBlock LastCarBlock { get; set; }
+            public LayoutBlock? LastCarBlock { get; set; }
 
             public LayoutComponentConnectionPoint LastCarFront { get; set; }
 
@@ -125,9 +124,9 @@ namespace LayoutManager.Tools {
             public TrainStateInfo Train {
                 set {
                     LocomotiveBlock = value.LocomotiveBlock;
-                    LocomotiveFront = value.LocomotiveLocation.DisplayFront;
+                    LocomotiveFront = value.LocomotiveLocation?.DisplayFront ?? LayoutComponentConnectionPoint.Empty;
                     LastCarBlock = value.LastCarBlock;
-                    LastCarFront = value.LastCarLocation.DisplayFront;
+                    LastCarFront = value.LastCarLocation?.DisplayFront ?? LayoutComponentConnectionPoint.Empty;
                     RouteOwner = value.Id;
 
                     LocateRealTrainFront(value);
@@ -138,14 +137,15 @@ namespace LayoutManager.Tools {
             // between the last car and locomotive blocks. So at the end, the train can always move forward from the locomotive block
             // and backward from the last car block.
             protected void LocateRealTrainFront(TrainStateInfo train) {
-                LayoutBlockDefinitionComponent locomotiveBlockInfo = LocomotiveBlock.BlockDefinintion;
+                var locomotiveBlock = Ensure.NotNull<LayoutBlock>(LocomotiveBlock);
+                var locomotiveBlockInfo = locomotiveBlock.BlockDefinintion;
 
                 LayoutBlockEdgeBase[] blockEdges = locomotiveBlockInfo.GetBlockEdges(locomotiveBlockInfo.GetConnectionPointIndex(LocomotiveFront));
 
                 bool switchFrontAndLastCar = false;
 
                 foreach (LayoutBlockEdgeBase blockEdge in blockEdges) {
-                    LayoutBlock otherBlock = LocomotiveBlock.OtherBlock(blockEdge);
+                    LayoutBlock otherBlock = locomotiveBlock.OtherBlock(blockEdge);
 
                     if (train.LocationOfBlock(otherBlock) != null) {
                         switchFrontAndLastCar = true;
@@ -154,7 +154,7 @@ namespace LayoutManager.Tools {
                 }
 
                 if (switchFrontAndLastCar) {
-                    LayoutBlock tBlock = LocomotiveBlock;
+                    LayoutBlock tBlock = locomotiveBlock;
 
                     LocomotiveBlock = LastCarBlock;
                     LastCarBlock = tBlock;
@@ -183,19 +183,22 @@ namespace LayoutManager.Tools {
             }
 
             protected bool IsTripPlanApplicable(TripPlanInfo tripPlan, bool shouldReverse) {
-                Direction d = new Direction(shouldReverse);
-                LayoutTrackComponent sourceTrack = null;
+                var d = new Direction(shouldReverse);
+                LayoutTrackComponent? sourceTrack = null;
                 LayoutComponentConnectionPoint sourceFront = LayoutComponentConnectionPoint.Empty;
 
                 for (int i = 0; i < tripPlan.Waypoints.Count; i++) {
                     IList<TripPlanWaypointInfo> wayPoints = tripPlan.Waypoints;
 
                     if (i == 0) {
-                        LayoutBlock sourceBlock = (d.Get(wayPoints[0]) == LocomotiveOrientation.Forward) ? LocomotiveBlock : LastCarBlock;
+                        var sourceBlock = (d.Get(wayPoints[0]) == LocomotiveOrientation.Forward) ? LocomotiveBlock : LastCarBlock;
 
-                        sourceTrack = sourceBlock.BlockDefinintion.Track;
+                        sourceTrack = sourceBlock?.BlockDefinintion.Track;
                         sourceFront = (d.Get(wayPoints[0]) == LocomotiveOrientation.Forward) ? LocomotiveFront : LastCarFront;
                     }
+
+                    if (sourceTrack == null)
+                        return false;
 
                     BestRoute bestRoute = TripPlanningServices.FindBestRoute(sourceTrack, sourceFront, d.Get(wayPoints[i]), wayPoints[i].Destination, RouteOwner, wayPoints[i].TrainStopping);
 
@@ -215,25 +218,25 @@ namespace LayoutManager.Tools {
             }
 
             protected RouteQuality VerifyTripPlan(TripPlanInfo tripPlan, bool shouldReverese) {
-                Direction d = new Direction(shouldReverese);
-                LayoutTrackComponent sourceTrack = null;
+                Direction d = new(shouldReverese);
+                LayoutTrackComponent? sourceTrack = null;
                 LayoutComponentConnectionPoint sourceFront = LayoutComponentConnectionPoint.Empty;
                 TripBestRouteResult result;
-                RouteQuality quality = new RouteQuality(RouteOwner);
+                RouteQuality quality = new(RouteOwner);
 
                 for (int i = 0; i < tripPlan.Waypoints.Count; i++) {
                     TripBestRouteRequest request;
                     IList<TripPlanWaypointInfo> wayPoints = tripPlan.Waypoints;
 
                     if (i == 0) {
-                        LayoutBlock sourceBlock = (d.Get(wayPoints[0]) == LocomotiveOrientation.Forward) ? LocomotiveBlock : LastCarBlock;
+                        var sourceBlock = (d.Get(wayPoints[0]) == LocomotiveOrientation.Forward) ? LocomotiveBlock : LastCarBlock;
 
-                        sourceTrack = sourceBlock.BlockDefinintion.Track;
+                        sourceTrack = sourceBlock?.BlockDefinintion.Track;
                         sourceFront = (d.Get(wayPoints[0]) == LocomotiveOrientation.Forward) ? LocomotiveFront : LastCarFront;
                     }
 
                     request = new TripBestRouteRequest(RouteOwner, wayPoints[i].Destination, sourceTrack, sourceFront, d.Get(wayPoints[i]), staticGrade);
-                    result = (TripBestRouteResult)EventManager.Event(new LayoutEvent("find-best-route-request", request));
+                    result = Ensure.NotNull<TripBestRouteResult>(EventManager.Event(new LayoutEvent("find-best-route-request", request)));
 
                     if (result.BestRoute == null)
                         return result.Quality;
@@ -257,7 +260,7 @@ namespace LayoutManager.Tools {
 
             public void FindApplicableTripPlans() {
                 if (CalculatePenalty) {
-                    RouteQuality quality = null;
+                    RouteQuality? quality = null;
 
                     foreach (TripPlanInfo tripPlan in LayoutModel.StateManager.TripPlansCatalog.TripPlans) {
                         if (AllTripPlans || (quality = VerifyTripPlan(tripPlan, false)).IsValidRoute) {
@@ -320,25 +323,25 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("get-applicable-trip-plans-request")]
-        private void getApplicableTripPlansRequest(LayoutEvent e) {
-            XmlElement applicableTripPlansElement = (XmlElement)e.Info;
+        private void GetApplicableTripPlansRequest(LayoutEvent e) {
+            XmlElement applicableTripPlansElement = Ensure.NotNull<XmlElement>(e.Info);
 
             if (e.Sender == null) {
-                ApplicableTripPlansData applicableTripPlans = new ApplicableTripPlansData(applicableTripPlansElement) {
+                var applicableTripPlans = new ApplicableTripPlansData(applicableTripPlansElement) {
                     AllTripPlans = true,
                     CalculatePenalty = (bool?)e.GetOption("CalculatePenalty") ?? true
                 };
                 applicableTripPlans.FindApplicableTripPlans();
             }
             else if (e.Sender is TrainStateInfo train) {
-                ApplicableTripPlansData applicableTripPlans = new ApplicableTripPlansData(applicableTripPlansElement) {
+                ApplicableTripPlansData applicableTripPlans = new(applicableTripPlansElement) {
                     Train = train,
                     CalculatePenalty = (bool?)e.GetOption("CalculatePenalty") ?? true
                 };
                 applicableTripPlans.FindApplicableTripPlans();
             }
             else if (e.Sender is LayoutBlock block) {
-                ApplicableTripPlansData applicableTripPlans = new ApplicableTripPlansData(applicableTripPlansElement);
+                ApplicableTripPlansData applicableTripPlans = new(applicableTripPlansElement);
                 LayoutComponentConnectionPoint? front = e.GetOption("Front").ToOptionalComponentConnectionPoint() ??
                     EventManager.EventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>("get-locomotive-front", block.BlockDefinintion, "");
 
@@ -351,8 +354,8 @@ namespace LayoutManager.Tools {
                     applicableTripPlans.FindApplicableTripPlans();
                 }
             }
-            else if (e.Sender is LayoutBlockDefinitionComponent)
-                e.Info = EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", ((LayoutBlockDefinitionComponent)e.Sender).Block, applicableTripPlansElement));
+            else if (e.Sender is LayoutBlockDefinitionComponent blockDefinition)
+                e.Info = EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", blockDefinition.Block, applicableTripPlansElement));
         }
 
         #endregion
@@ -362,16 +365,16 @@ namespace LayoutManager.Tools {
         // Check if a block is a free destination. It is not free, if there is a train standing on it which
         // is not assigned to an active trip plan, or if there is a train that executes a trip plan in which
         // this block is the only destination.
-        private bool isBlockAfreeDestination(LayoutBlock block) {
+        private bool IsBlockAfreeDestination(LayoutBlock block) {
             foreach (TrainLocationInfo trainLocation in block.Trains) {
-                TripPlanAssignmentInfo tripPlanAssignment = (TripPlanAssignmentInfo)EventManager.Event(new LayoutEvent("get-train-active-trip", trainLocation.Train));
+                var tripPlanAssignment = (TripPlanAssignmentInfo?)EventManager.Event(new LayoutEvent("get-train-active-trip", trainLocation.Train));
 
                 if (tripPlanAssignment == null)
                     return false;           // This block has a train that is not engaged in active trip plan, so it is not free
             }
 
             // Check all active trip plans and ensure that non of them is destined to this block
-            TripPlanAssignmentInfo[] activeTrips = (TripPlanAssignmentInfo[])EventManager.Event(new LayoutEvent("get-active-trips", this));
+            var activeTrips = Ensure.NotNull<TripPlanAssignmentInfo[]>(EventManager.Event(new LayoutEvent("get-active-trips", this)));
 
             foreach (TripPlanAssignmentInfo trip in activeTrips) {
                 TripPlanInfo tripPlan = trip.TripPlan;
@@ -388,8 +391,8 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("check-trip-plan-destination-request")]
-        private void checkTripPlanDestination(LayoutEvent e) {
-            TripPlanInfo tripPlan = (TripPlanInfo)e.Sender;
+        private void CheckTripPlanDestination(LayoutEvent e) {
+            var tripPlan = Ensure.NotNull<TripPlanInfo>(e.Sender);
 
             if (tripPlan.IsCircular)
                 e.Info = true;          // Trip plan is circular, so there is no "clear" destination (TODO: is that the right policy?)
@@ -400,7 +403,7 @@ namespace LayoutManager.Tools {
 
                 // Check that at least one location in the last destination is available.
                 foreach (LayoutBlock block in lastWaypoint.Destination.Blocks) {
-                    if (isBlockAfreeDestination(block)) {
+                    if (IsBlockAfreeDestination(block)) {
                         e.Info = true;
                         break;
                     }
@@ -414,24 +417,24 @@ namespace LayoutManager.Tools {
         // DEBUG CODE
 
         private class TestTripInfo {
-            public LayoutTrackComponent OriginTrack { get; set; } = null;
+            public LayoutTrackComponent? OriginTrack { get; set; } = null;
 
             public LayoutComponentConnectionPoint OriginFront { get; set; }
 
             public LocomotiveOrientation Direction { get; set; } = LocomotiveOrientation.Forward;
 
-            public LayoutTrackComponent DestinationTrack { get; set; } = null;
+            public LayoutTrackComponent? DestinationTrack { get; set; } = null;
         }
 
-        private static readonly LayoutTraceSwitch traceShowTrackDescription = new LayoutTraceSwitch("ShowTrackDescription", "Show track description menu");
+        private static readonly LayoutTraceSwitch traceShowTrackDescription = new("ShowTrackDescription", "Show track description menu");
 
         [LayoutEvent("add-component-operation-context-menu-entries", Order = 900, SenderType = typeof(LayoutTrackComponent))]
-        private void addTrackDescription(LayoutEvent e) {
-            Menu menu = (Menu)e.Info;
-            LayoutTrackComponent track = (LayoutTrackComponent)e.Sender;
+        private void AddTrackDescription(LayoutEvent e) {
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+            var track = Ensure.NotNull<LayoutTextComponent>(e.Sender);
 
             if (traceShowTrackDescription.TraceInfo)
-                menu.MenuItems.Add("(Track " + track.FullDescription + ")");
+                menu.Items.Add("(Track " + track.FullDescription + ")");
         }
 
         #endregion
@@ -457,7 +460,7 @@ namespace LayoutManager.Tools {
 				menu.MenuItems.Add(new LayoutComponentMenuItem(blockInfo, "&Unlock block", new EventHandler(this.unlockBlock)));
 		}
 
-		private void addToLockRequest(object sender, EventArgs e) {
+		private void addToLockRequest(object? sender, EventArgs e) {
 			LayoutBlockInfoComponent	blockInfo = (LayoutBlockInfoComponent)((LayoutComponentMenuItem)sender).Component;
 
 			if(blockLockTester == null) {
@@ -468,7 +471,7 @@ namespace LayoutManager.Tools {
 				blockLockTester.AddBlockInfo(blockInfo);
 		}
 
-		private void unlockBlock(object sender, EventArgs e) {
+		private void unlockBlock(object? sender, EventArgs e) {
 			LayoutBlockInfoComponent	blockInfo = (LayoutBlockInfoComponent)((LayoutComponentMenuItem)sender).Component;
 
 			blockInfo.EventManager.Event(new LayoutEvent(blockInfo.Block.ID, "free-layout-lock"));

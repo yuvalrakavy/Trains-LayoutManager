@@ -101,32 +101,32 @@ namespace LayoutManager.Model {
         private static ILayoutLockManagerServices? _lockManagerServices = null;
 
         public RouteQuality(Guid routeOwner, RouteClearanceQuality clearanceQuality, int penalty) {
-            initialize(routeOwner);
+            Initialize(routeOwner);
             this.ClearanceQuality = clearanceQuality;
             this.Penalty = penalty;
         }
 
         public RouteQuality(Guid routeOwner) {
-            initialize(routeOwner);
+            Initialize(routeOwner);
         }
 
         public RouteQuality(Guid routeOwner, LayoutBlock block) {
-            initialize(routeOwner);
+            Initialize(routeOwner);
             AddQuality(block.BlockDefinintion);
         }
 
         public RouteQuality(Guid routeOwner, LayoutBlockDefinitionComponent blockInfo) {
-            initialize(routeOwner);
+            Initialize(routeOwner);
             AddQuality(blockInfo);
         }
 
         public RouteQuality(RouteQuality copyFrom) {
-            initialize(copyFrom.RouteOwner);
+            Initialize(copyFrom.RouteOwner);
             ClearanceQuality = copyFrom.ClearanceQuality;
             Penalty = copyFrom.Penalty;
         }
 
-        private void initialize(Guid routeOwner) {
+        private void Initialize(Guid routeOwner) {
             this.routeOwner = routeOwner;
         }
 
@@ -138,7 +138,7 @@ namespace LayoutManager.Model {
 
         public Guid RouteOwner => routeOwner;
 
-        protected static ILayoutLockManagerServices LockManagerServices => _lockManagerServices ?? (_lockManagerServices = (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services"))!);
+        protected static ILayoutLockManagerServices LockManagerServices => _lockManagerServices ??= (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services"))!;
 
         public void AddClearanceQuality(RouteClearanceQuality q) {
             if ((int)q > (int)ClearanceQuality)
@@ -211,7 +211,10 @@ namespace LayoutManager.Model {
 
         #region IComparable<RouteQuality> Members
 
-        public int CompareTo(RouteQuality other) {
+        public int CompareTo(RouteQuality? other) {
+            if(other == null)
+                throw new ArgumentNullException(nameof(other));
+
             // If are "free" then penalize one that willBeFree by a factor, so a route
             // which is FreeNow will be preferred if even if its penalty is bit larger
             if (IsFree && other.IsFree) {
@@ -263,7 +266,7 @@ namespace LayoutManager.Model {
 
         public RouteQuality Quality { get; }
 
-        public override bool Equals(object obj) {
+        public override bool Equals(object? obj) {
             return obj is RouteTarget otherTarget && otherTarget.TargetEdge == TargetEdge && otherTarget.SwitchState == SwitchState;
         }
 
@@ -273,7 +276,7 @@ namespace LayoutManager.Model {
     }
 
     public class BestRoute : ITripRoute {
-        private Guid routeOwner;
+        private readonly Guid routeOwner;
         private readonly List<RouteTarget> targets = new List<RouteTarget>();
         private List<int>? switchStates;
         private TrainStateInfo? train;
@@ -396,14 +399,14 @@ namespace LayoutManager.Model {
         /// that the route is not calculated for a specific train (e.g. in a manual dispatch resgion).
         /// In this case null is returned
         /// </summary>
-        public TrainStateInfo? Train => train ?? (train = LayoutModel.StateManager.Trains[routeOwner] as TrainStateInfo);
+        public TrainStateInfo? Train => train ??= LayoutModel.StateManager.Trains[routeOwner] as TrainStateInfo;
 
         #endregion
 
         #region Utilities
 
         public static LayoutTrackComponent TrackOf(ModelComponent component) {
-            LayoutTrackComponent track = component.Spot.Track;
+            var track = component.Spot.Track;
 
             if (track == null)
                 throw new ArgumentException("This component is not on track: " + component.FullDescription);

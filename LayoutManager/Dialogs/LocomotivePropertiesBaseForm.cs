@@ -324,7 +324,7 @@ namespace LayoutManager.Dialogs {
 
         #region Default event handler implementations
 
-        protected void ButtonFunctionAdd_Click(object sender, System.EventArgs e) {
+        protected void ButtonFunctionAdd_Click(object? sender, System.EventArgs e) {
             XmlElement functionElement = element.OwnerDocument.CreateElement("Function");
             FunctionItem item = new FunctionItem(functionElement);
 
@@ -356,7 +356,7 @@ namespace LayoutManager.Dialogs {
             UpdateButtons();
         }
 
-        protected void ButtonFunctionEdit_Click(object sender, System.EventArgs e) {
+        protected void ButtonFunctionEdit_Click(object? sender, System.EventArgs e) {
             if (listViewFunctions.SelectedItems.Count > 0) {
                 FunctionItem selected = (FunctionItem)listViewFunctions.SelectedItems[0];
                 XmlElement functionsElement = element[E_Functions];
@@ -365,7 +365,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        protected void ButtonFunctionRemove_Click(object sender, System.EventArgs e) {
+        protected void ButtonFunctionRemove_Click(object? sender, System.EventArgs e) {
             if (listViewFunctions.SelectedItems.Count > 0) {
                 FunctionItem selected = (FunctionItem)listViewFunctions.SelectedItems[0];
 
@@ -375,19 +375,19 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        protected void TrackGuageSelector_SelectedIndexChanged(object sender, System.EventArgs e) {
+        protected void TrackGuageSelector_SelectedIndexChanged(object? sender, System.EventArgs e) {
             InitDecoderTypeComboBox();
         }
 
-        protected void ListViewFunctions_SelectedIndexChanged(object sender, System.EventArgs e) {
+        protected void ListViewFunctions_SelectedIndexChanged(object? sender, System.EventArgs e) {
             UpdateButtons();
         }
 
-        protected void OnUpdateImage(object sender, System.EventArgs e) {
+        protected void OnUpdateImage(object? sender, System.EventArgs e) {
             imageGetter.DefaultImage = Catalog.GetStandardImage(CurrentKind, CurrentOrigin);
         }
 
-        protected void ButtonCopyFrom_Click(object sender, System.EventArgs e) {
+        protected void ButtonCopyFrom_Click(object? sender, System.EventArgs e) {
             LocomotiveCatalogInfo catalog = Catalog;
 
             catalog.Load();

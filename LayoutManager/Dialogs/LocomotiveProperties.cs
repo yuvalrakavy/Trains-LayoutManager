@@ -677,7 +677,7 @@ namespace LayoutManager.Dialogs {
         #endregion
 
         [LayoutEventDef("locomotive-configuration-changed", Role = LayoutEventRole.Notification, SenderType = typeof(LocomotiveInfo))]
-        private void buttonOk_Click(object sender, System.EventArgs e) {
+        private void buttonOk_Click(object? sender, System.EventArgs e) {
             if (textBoxName.Text.Trim() == "") {
                 tabControl1.SelectedTab = tabPageGeneral;
                 MessageBox.Show(this, "You must enter a name", "Input error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -715,7 +715,7 @@ namespace LayoutManager.Dialogs {
             DialogResult = DialogResult.OK;
         }
 
-        private void buttonSelectType_Click(object sender, System.EventArgs e) {
+        private void buttonSelectType_Click(object? sender, System.EventArgs e) {
             Dialogs.SelectLocomotiveType selectType = new Dialogs.SelectLocomotiveType();
 
             if (selectType.ShowDialog(this) == DialogResult.OK) {
@@ -730,27 +730,27 @@ namespace LayoutManager.Dialogs {
             selectType.Dispose();
         }
 
-        private void buttonFunctionAdd_Click_1(object sender, EventArgs e) {
+        private void buttonFunctionAdd_Click_1(object? sender, EventArgs e) {
             ButtonFunctionAdd_Click(sender, e);
         }
 
-        private void buttonFunctionEdit_Click_1(object sender, EventArgs e) {
+        private void buttonFunctionEdit_Click_1(object? sender, EventArgs e) {
             ButtonFunctionEdit_Click(sender, e);
         }
 
-        private void buttonFunctionRemove_Click_1(object sender, EventArgs e) {
+        private void buttonFunctionRemove_Click_1(object? sender, EventArgs e) {
             ButtonFunctionRemove_Click(sender, e);
         }
 
-        private void buttonCopyFrom_Click_1(object sender, EventArgs e) {
+        private void buttonCopyFrom_Click_1(object? sender, EventArgs e) {
             ButtonCopyFrom_Click(sender, e);
         }
 
-        private void listViewFunctions_SelectedIndexChanged_1(object sender, EventArgs e) {
+        private void listViewFunctions_SelectedIndexChanged_1(object? sender, EventArgs e) {
             ListViewFunctions_SelectedIndexChanged(sender, e);
         }
 
-        private void trackGuageSelector_SelectedIndexChanged_1(object sender, EventArgs e) {
+        private void trackGuageSelector_SelectedIndexChanged_1(object? sender, EventArgs e) {
             TrackGuageSelector_SelectedIndexChanged(sender, e);
         }
     }

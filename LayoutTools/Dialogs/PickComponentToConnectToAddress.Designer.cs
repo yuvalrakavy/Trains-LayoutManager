@@ -44,7 +44,7 @@
 			this.buttonCancel.Size = new System.Drawing.Size(60, 23);
 			this.buttonCancel.TabIndex = 1;
 			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+			this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
 // 
 // PickComponentToConnectToAddress
 // 

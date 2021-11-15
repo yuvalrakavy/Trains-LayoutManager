@@ -5,8 +5,6 @@ using System.Diagnostics;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-#nullable enable
-#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Logic {
     /// <summary>
     /// Summary description for LayoutCompiler.
@@ -20,7 +18,7 @@ namespace LayoutManager.Logic {
 
         private ILayoutTopologyServices? _topologyServices;
 
-        private ILayoutTopologyServices TopologyServices => _topologyServices ?? (_topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!);
+        private ILayoutTopologyServices TopologyServices => _topologyServices ??= (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!;
 
         #region Build block graph
 
@@ -38,7 +36,7 @@ namespace LayoutManager.Logic {
 
             foreach (LayoutModelArea area in LayoutModel.Areas) {
                 foreach (LayoutModelSpotComponentCollection spot in area.Grid.Values) {
-                    LayoutTrackComponent track = spot.Track;
+                    var track = spot.Track;
 
                     if (track != null) {
                         foreach (LayoutComponentConnectionPoint cp in track.ConnectionPoints)
@@ -54,9 +52,9 @@ namespace LayoutManager.Logic {
                 if (track != null) {
                     scanFrom = new TrackEdge(track, track.ConnectionPoints[0]);
                     if (!scannedBlockBoundries.ContainsKey(scanFrom)) {
-                        var block = scanBlock(scannedBlockBoundries, scanFrom, null);
+                        var block = ScanBlock(scannedBlockBoundries, scanFrom, null);
 
-                        if (block == null || !checkBlockForBlockInfo(block))
+                        if (block == null || !CheckBlockForBlockInfo(block))
                             e.Info = false;
 
                         if (!scannedBlockBoundries.ContainsKey(scanFrom))
@@ -65,9 +63,9 @@ namespace LayoutManager.Logic {
 
                     scanFrom = new TrackEdge(track, track.ConnectionPoints[1]);
                     if (!scannedBlockBoundries.ContainsKey(scanFrom)) {
-                        var block = scanBlock(scannedBlockBoundries, scanFrom, null);
+                        var block = ScanBlock(scannedBlockBoundries, scanFrom, null);
 
-                        if (block == null || !checkBlockForBlockInfo(block))
+                        if (block == null || !CheckBlockForBlockInfo(block))
                             e.Info = false;
 
                         if (!scannedBlockBoundries.ContainsKey(scanFrom))
@@ -81,7 +79,7 @@ namespace LayoutManager.Logic {
             foreach (LayoutModelArea area in LayoutModel.Areas) {
                 foreach (LayoutModelSpotComponentCollection spot in area.Grid.Values) {
                     if ((spot.Phase & phases) != 0) {
-                        LayoutTrackComponent track = spot.Track;
+                        var track = spot.Track;
 
                         if (track != null) {
                             if (spot[ModelComponentKind.TrackLink] == null) {
@@ -90,14 +88,14 @@ namespace LayoutManager.Logic {
                                         LayoutBlock? block = null;
 
                                         foreach (LayoutComponentConnectionPoint scanCp in track.ConnectionPoints) {
-                                            block = scanBlock(scannedBlockBoundries, new TrackEdge(track, scanCp), block);
+                                            block = ScanBlock(scannedBlockBoundries, new TrackEdge(track, scanCp), block);
                                             if (block == null) {
                                                 e.Info = false;
                                                 break;
                                             }
                                         }
 
-                                        if (block != null && !checkBlockForBlockInfo(block))
+                                        if (block != null && !CheckBlockForBlockInfo(block))
                                             e.Info = false;
                                     }
                                 }
@@ -111,7 +109,7 @@ namespace LayoutManager.Logic {
                 e.ContinueProcessing = false;
         }
 
-        private bool checkBlockForBlockInfo(LayoutBlock block) {
+        private bool CheckBlockForBlockInfo(LayoutBlock block) {
             if (block.OptionalBlockDefinition == null) {
                 Error(block, "This block does not contain any block definition component");
                 return false;
@@ -120,13 +118,13 @@ namespace LayoutManager.Logic {
             return true;
         }
 
-        private LayoutBlock? scanBlock(TrackEdgeDictionary scannedBlockBoundres, TrackEdge scanFrom, LayoutBlock? block) {
+        private LayoutBlock? ScanBlock(TrackEdgeDictionary scannedBlockBoundres, TrackEdge scanFrom, LayoutBlock? block) {
             TrackEdgeDictionary scannedEdges = new TrackEdgeDictionary();
             Stack<TrackEdge> scanStack = new Stack<TrackEdge>();
             const bool ok = true;
 
-            (block ?? (block = new LayoutBlock())).Add(scanFrom);
-            checkIfBlockDefinitionTrack(block, scanFrom);
+            (block ??= new LayoutBlock()).Add(scanFrom);
+            CheckIfBlockDefinitionTrack(block, scanFrom);
 
             TrackEdge startFrom = TopologyServices.FindTrackConnectingAt(scanFrom);
 
@@ -148,7 +146,7 @@ namespace LayoutManager.Logic {
                             scannedBlockBoundres.Add(edge, null);
                     }
                     else {
-                        checkIfBlockDefinitionTrack(block, edge);
+                        CheckIfBlockDefinitionTrack(block, edge);
 
                         LayoutComponentConnectionPoint[] cps = edge.Track.ConnectTo(edge.ConnectionPoint, LayoutComponentConnectionType.Topology);
 
@@ -167,7 +165,7 @@ namespace LayoutManager.Logic {
             return !ok ? null : block;
         }
 
-        private static void checkIfBlockDefinitionTrack(LayoutBlock block, TrackEdge edge) {
+        private static void CheckIfBlockDefinitionTrack(LayoutBlock block, TrackEdge edge) {
             if (edge.Track.Spot[ModelComponentKind.BlockInfo] is LayoutBlockDefinitionComponent blockInfo) {
                 if (block.OptionalBlockDefinition != null && block.BlockDefinintion.Id != blockInfo.Id)
                     Error(blockInfo, "Block contains more than one block definition component");
@@ -192,7 +190,7 @@ namespace LayoutManager.Logic {
                 blockDefinition.ClearBlockEdges();
 
                 for (int cpIndex = 0; cpIndex < blockDefinition.Track.ConnectionPoints.Count; cpIndex++)
-                    addBlockInfoBlockEdges(blockDefinition, cpIndex);
+                    AddBlockInfoBlockEdges(blockDefinition, cpIndex);
 
 #if DUMP_BLOCK_EDGE_MAP
 				Trace.WriteLine("Block " + blockInfo.FullDescription + " edges:");
@@ -259,7 +257,7 @@ namespace LayoutManager.Logic {
             }
         }
 
-        private void addBlockInfoBlockEdges(LayoutBlockDefinitionComponent blockInfo, int cpIndex) {
+        private void AddBlockInfoBlockEdges(LayoutBlockDefinitionComponent blockInfo, int cpIndex) {
             Stack<TrackEdge> scanStack = new Stack<TrackEdge>();
             TrackEdgeDictionary scanned = new TrackEdgeDictionary();
 
@@ -292,7 +290,7 @@ namespace LayoutManager.Logic {
         #region Build Occupancy (train detection blocks) data structures
 
         [LayoutEvent("check-layout", Order = 320)]
-        private void locateNoFeedbackBlocks(LayoutEvent e) {
+        private void LocateNoFeedbackBlocks(LayoutEvent e) {
             foreach (LayoutBlock block in LayoutModel.Blocks) {
                 LayoutBlockDefinitionComponentInfo info = block.BlockDefinintion.Info;
 
@@ -312,7 +310,7 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEvent("check-layout", Order = 350)]
-        private void buildTrainDetectionBlocks(LayoutEvent e) {
+        private void BuildTrainDetectionBlocks(LayoutEvent e) {
             LayoutPhase phase = e.GetPhases();
 
             foreach (LayoutBlockDefinitionComponent blockInfo in LayoutModel.Components<LayoutBlockDefinitionComponent>(phase)) {
@@ -322,13 +320,13 @@ namespace LayoutManager.Logic {
 
                     occupancyBlock.BlockDefinintion = blockInfo;
 
-                    scanTrainDetectionBlock(new TrackEdge(track, track.ConnectionPoints[0]), occupancyBlock);
-                    scanTrainDetectionBlock(new TrackEdge(track, track.ConnectionPoints[1]), occupancyBlock);
+                    ScanTrainDetectionBlock(new TrackEdge(track, track.ConnectionPoints[0]), occupancyBlock);
+                    ScanTrainDetectionBlock(new TrackEdge(track, track.ConnectionPoints[1]), occupancyBlock);
                 }
             }
         }
 
-        private void scanTrainDetectionBlock(TrackEdge scanFrom, LayoutOccupancyBlock occupancyBlock) {
+        private void ScanTrainDetectionBlock(TrackEdge scanFrom, LayoutOccupancyBlock occupancyBlock) {
             TrackEdgeDictionary scannedEdges = new TrackEdgeDictionary();
             Stack<TrackEdge> scanStack = new Stack<TrackEdge>();
 
@@ -364,7 +362,7 @@ namespace LayoutManager.Logic {
         #region Handle block policy
 
         [LayoutEvent("train-enter-block")]
-        private void activateBlockPolicy(LayoutEvent e) {
+        private void ActivateBlockPolicy(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
             var block = Ensure.NotNull<LayoutBlock>(e.Info, "block");
 

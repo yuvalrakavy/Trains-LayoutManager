@@ -1,7 +1,3 @@
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-
 namespace LayoutManager.CommonUI.Dialogs {
     [Flags]
     public enum InputBoxValidationOptions {
@@ -11,16 +7,8 @@ namespace LayoutManager.CommonUI.Dialogs {
     /// <summary>
     /// Summary description for InputBox.
     /// </summary>
-    public class InputBox : Form {
-        private Label labelPrompt;
-        private TextBox textBox;
-        private Button buttonOK;
-        private Button buttonCancel;
+    public partial class InputBox : Form {
 
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container components = null;
 
         public InputBox(String caption, string prompt) {
             //
@@ -44,16 +32,16 @@ namespace LayoutManager.CommonUI.Dialogs {
 
         public InputBoxValidationOptions ValidationOptions { get; set; } = 0;
 
-        public static string Show(String caption, string prompt, InputBoxValidationOptions validationOptions) {
-            InputBox inputBox = new InputBox(caption, prompt) {
+        public static string? Show(String caption, string prompt, InputBoxValidationOptions validationOptions) {
+            InputBox inputBox = new(caption, prompt) {
                 ValidationOptions = validationOptions
             };
             return inputBox.ShowDialog() == DialogResult.OK ? inputBox.Input : null;
         }
 
-        public static string Show(String caption, string prompt) => InputBox.Show(caption, prompt, 0);
+        public static string? Show(String caption, string prompt) => InputBox.Show(caption, prompt, 0);
 
-        public static string Show(String prompt) => InputBox.Show("", prompt);
+        public static string? Show(String prompt) => InputBox.Show("", prompt);
 
         /// <summary>
         /// Clean up any resources being used.
@@ -67,70 +55,8 @@ namespace LayoutManager.CommonUI.Dialogs {
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.buttonCancel = new Button();
-            this.textBox = new TextBox();
-            this.labelPrompt = new Label();
-            this.buttonOK = new Button();
-            this.SuspendLayout();
-            // 
-            // buttonCancel
-            // 
-            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(216, 69);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.TabIndex = 3;
-            this.buttonCancel.Text = "Cancel";
-            // 
-            // textBox
-            // 
-            this.textBox.Location = new System.Drawing.Point(8, 40);
-            this.textBox.Name = "textBox";
-            this.textBox.Size = new System.Drawing.Size(280, 20);
-            this.textBox.TabIndex = 1;
-            this.textBox.Text = "";
-            // 
-            // labelPrompt
-            // 
-            this.labelPrompt.Location = new System.Drawing.Point(8, 16);
-            this.labelPrompt.Name = "labelPrompt";
-            this.labelPrompt.Size = new System.Drawing.Size(280, 16);
-            this.labelPrompt.TabIndex = 0;
-            this.labelPrompt.Text = "Prompt";
-            // 
-            // buttonOK
-            // 
-            this.buttonOK.Location = new System.Drawing.Point(136, 69);
-            this.buttonOK.Name = "buttonOK";
-            this.buttonOK.TabIndex = 2;
-            this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.buttonOK_Click;
-            // 
-            // InputBox
-            // 
-            this.AcceptButton = this.buttonOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
-            this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(300, 98);
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
-                                                                          this.buttonCancel,
-                                                                          this.buttonOK,
-                                                                          this.textBox,
-                                                                          this.labelPrompt});
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "InputBox";
-            this.ShowInTaskbar = false;
-            this.Text = "InputBox";
-            this.ResumeLayout(false);
-        }
-        #endregion
 
-        private void buttonOK_Click(object sender, System.EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             if ((ValidationOptions & InputBoxValidationOptions.AllowEmpty) == 0 && textBox.Text.Trim() == "") {
                 MessageBox.Show(this, "Value cannot be empty", "Input error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBox.Focus();

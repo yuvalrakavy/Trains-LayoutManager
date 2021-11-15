@@ -63,7 +63,7 @@ namespace LayoutManager {
 
         public XmlElement? this[string elementName, bool createIfNotFound = false] {
             get {
-                XmlElement childElement = Element[elementName];
+                var childElement = Element[elementName];
 
                 if (childElement == null && createIfNotFound)
                     childElement = CreateChildElement(elementName);

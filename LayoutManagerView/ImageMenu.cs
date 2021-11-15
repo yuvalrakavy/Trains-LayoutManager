@@ -10,7 +10,7 @@ namespace LayoutManager.UIGadgets {
     /// Base class for ImageMenuItem or ImageMenuCategory
     /// </summary>
     public abstract class ImageMenuEntry {
-        public string Tooltip { get; set; }
+        public string? Tooltip { get; set; }
 
         public Rectangle Bounds { get; set; }
 
@@ -32,9 +32,9 @@ namespace LayoutManager.UIGadgets {
     public abstract class ImageMenuCategory : ImageMenuEntry {
         public ImageMenuItemCollection Items { get; } = new ImageMenuItemCollection();
 
-        public ImageMenu Menu { get; set; }
+        public ImageMenu? Menu { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 
     /// <summary>
@@ -47,7 +47,7 @@ namespace LayoutManager.UIGadgets {
     /// A collection of all items in an image menu category
     /// </summary>
     public class ImageMenuCategoryCollection : List<ImageMenuCategory> {
-        public ImageMenuCategory this[string categoryName] {
+        public ImageMenuCategory? this[string categoryName] {
             get {
                 foreach (ImageMenuCategory category in this)
                     if (category.Name == categoryName)
@@ -93,7 +93,7 @@ namespace LayoutManager.UIGadgets {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ShadowOf_Resize(Object sender, EventArgs e) {
+        private void ShadowOf_Resize(Object? sender, EventArgs e) {
             Rectangle r = shadowOf.Bounds;
             r.Offset(4, 4);
             this.Bounds = r;
@@ -111,13 +111,14 @@ namespace LayoutManager.UIGadgets {
     /// Control that implement tooltip window for image menu objects
     /// </summary>
     internal class TipWindow : Control {
-        private readonly Font tipFont = new Font("Arial", 8);
+        private readonly Font tipFont = new("Arial", 8);
 
         internal TipWindow(Control parent) {
             this.Parent = parent;
             this.BackColor = Color.LightYellow;
             this.Visible = false;
             this.CreateControl();
+            this.TipText = String.Empty;
         }
 
         /// <summary>
@@ -128,7 +129,7 @@ namespace LayoutManager.UIGadgets {
         /// <summary>
         /// Make sure that the tooltip text is not truncated
         /// </summary>
-        private void adjustLocation() {
+        private void AdjustLocation() {
             if (Right >= Parent.Right)
                 Left = Parent.Right - Width - 5;
             if (Bottom >= Parent.Bottom)
@@ -147,7 +148,7 @@ namespace LayoutManager.UIGadgets {
 
             this.Size = Size.Ceiling(tipSize);
             this.Location = p;
-            adjustLocation();
+            AdjustLocation();
             this.BringToFront();
             this.Visible = true;
         }
@@ -175,19 +176,19 @@ namespace LayoutManager.UIGadgets {
         private const int vGap = 3;                     // vertical gap (between categories)
         private const int itemsToCategoriesGap = 7;     // Space between items and categories
         private const int tipTime = 250;                // Show tooltip if no mouse motion in 250 milliseconds
-        private Size itemSize = new Size(40, 40);
-        private Size categorySize = new Size(18, 18);
-        private ImageMenuEntry hilightedEntry;
-        private ImageMenuCategory selectedCategory;
-        private ImageMenuCategory initialCategory;          // initial category to show
-        private ImageMenuCategory shiftKeyCategory;
-        private ImageMenuCategory beforeShiftCategory;
-        private Shadow shadow;
+        private Size itemSize = new(40, 40);
+        private Size categorySize = new(18, 18);
+        private ImageMenuEntry? hilightedEntry;
+        private ImageMenuCategory? selectedCategory;
+        private ImageMenuCategory? initialCategory;          // initial category to show
+        private ImageMenuCategory? shiftKeyCategory;
+        private ImageMenuCategory? beforeShiftCategory;
+        private Shadow? shadow;
         private readonly bool categoriesVisible = true;
-        private ImageMenuItem resultItem;
-        private TipWindow tipWindow;
-        private Timer tipTimer;
-        private ImageMenuEntry tippedEntry;
+        private ImageMenuItem? resultItem;
+        private TipWindow? tipWindow;
+        private Timer? tipTimer;
+        private ImageMenuEntry? tippedEntry;
 
         private enum MenuState {
             Open,               // Menu is open
@@ -195,7 +196,7 @@ namespace LayoutManager.UIGadgets {
             Closed              // Menu is closed.
         };
 
-        private MenuState menuState = new MenuState();
+        private MenuState menuState = new();
 
         /// <summary>
         /// Return a collection of items in the menu
@@ -205,7 +206,7 @@ namespace LayoutManager.UIGadgets {
         /// <summary>
         /// Make sure that the menu is shown in such a way that it is not truncated.
         /// </summary>
-        private void adjustLocation() {
+        private void AdjustLocation() {
             if (Right >= Parent.Right)
                 Left = Parent.Right - Width - 5;
             if (Bottom >= Parent.Bottom)
@@ -216,7 +217,7 @@ namespace LayoutManager.UIGadgets {
         /// Adjust the size of the menu based on the number of items in the currently selected
         /// category
         /// </summary>
-        private void adjustSize() {
+        private void AdjustSize(ImageMenuCategory selectedCategory) {
             int width = hMargin + (selectedCategory.Items.Count * (itemSize.Width + gap)) - gap + hMargin;
             int height = (vMargin * 2) + Math.Max(itemSize.Height, (categorySize.Height * 2) + gap);
 
@@ -230,13 +231,13 @@ namespace LayoutManager.UIGadgets {
         /// Select a new category. The menu is reformatted to show the items in the new category
         /// </summary>
         /// <param name="newCategory">New category to select</param>
-        private void selectCategory(ImageMenuCategory newCategory) {
+        private void SelectCategory(ImageMenuCategory newCategory) {
             if (selectedCategory != newCategory) {
                 // TODO: For animation effect, may want to display just the categories, and then expand
                 // the menu with the new selection
 
                 selectedCategory = newCategory;
-                adjustSize();
+                AdjustSize(selectedCategory);
 
                 int x = hMargin;
 
@@ -268,7 +269,7 @@ namespace LayoutManager.UIGadgets {
         /// <summary>
         /// The initial category to select
         /// </summary>
-        public string InitialCategoryName {
+        public string? InitialCategoryName {
             get {
                 return initialCategory?.Name;
             }
@@ -284,10 +285,8 @@ namespace LayoutManager.UIGadgets {
             }
         }
 
-        public string ShiftKeyCategory {
-            get {
-                return ShiftKeyCategory != null ? shiftKeyCategory.Name : null;
-            }
+        public string? ShiftKeyCategory {
+            get => shiftKeyCategory?.Name;
 
             set {
                 shiftKeyCategory = null;
@@ -303,7 +302,7 @@ namespace LayoutManager.UIGadgets {
         /// <summary>
         /// The last category that was selected (it make sense to use this property after calling show)
         /// </summary>
-        public ImageMenuCategory SelectedCategory => selectedCategory;
+        public ImageMenuCategory? SelectedCategory => selectedCategory;
 
         /// <summary>
         /// Show the menu. The menu is shown in a given point of a given parent control
@@ -311,7 +310,7 @@ namespace LayoutManager.UIGadgets {
         /// <param name="parent">The control on which the menu is shown</param>
         /// <param name="p">The position where the menu should be shown</param>
         /// <returns>The selected menu item or null if no item is selected.</returns>
-        public ImageMenuItem Show(Control parent, Point p) {
+        public ImageMenuItem? Show(Control parent, Point p) {
             this.Parent = parent;
             this.Location = p;      // TODO: Location should be much smarter (considering alighment) etc.
 
@@ -323,8 +322,8 @@ namespace LayoutManager.UIGadgets {
             if (initialCategory == null)
                 initialCategory = Categories[0];
 
-            selectCategory(initialCategory);
-            adjustLocation();
+            SelectCategory(initialCategory);
+            AdjustLocation();
 
             this.Visible = true;
 
@@ -333,7 +332,7 @@ namespace LayoutManager.UIGadgets {
             tipTimer = new Timer {
                 Interval = tipTime
             };
-            tipTimer.Tick += tipTimer_tick;
+            tipTimer.Tick += TipTimer_tick;
 
             this.CreateControl();
             this.Capture = true;
@@ -348,10 +347,12 @@ namespace LayoutManager.UIGadgets {
                 Application.DoEvents();
             }
 
-            this.Dispose();
             tipWindow.Dispose();
+            tipWindow = null;
             tipTimer.Dispose();
+            tipTimer = null;
 
+            this.Dispose();
             return resultItem;
         }
 
@@ -359,8 +360,8 @@ namespace LayoutManager.UIGadgets {
         /// Start counting tooltip time from the begining. THis function is called when the mouse
         /// point is moved.
         /// </summary>
-        private void resetTipTimer() {
-            if (!tipWindow.Visible) {
+        private void ResetTipTimer() {
+            if (tipWindow != null && tipTimer != null && !tipWindow.Visible) {
                 tipTimer.Stop();
                 tipTimer.Interval = tipTime;
                 tipTimer.Start();
@@ -372,10 +373,10 @@ namespace LayoutManager.UIGadgets {
         /// </summary>
         /// <param name="g">Graphics object to use</param>
         /// <param name="select">If true selection is drawn, if false it is erased</param>
-        private void drawSelection(Graphics g, bool select) {
+        private void DrawSelection(Graphics g, bool select) {
             if (hilightedEntry != null) {
                 Rectangle rectHighlighted = hilightedEntry.Bounds;
-                Pen p = new Pen(select ? Color.Red : this.BackColor);
+                Pen p = new(select ? Color.Red : this.BackColor);
 
                 rectHighlighted.Inflate(new Size(2, 2));
                 rectHighlighted.Width--;
@@ -391,8 +392,10 @@ namespace LayoutManager.UIGadgets {
             e.Graphics.DrawLine(Pens.SlateGray, this.Width - 1, 0, this.Width - 1, this.Height - 1);
             e.Graphics.DrawLine(Pens.SlateGray, 0, this.Height - 1, this.Width - 1, this.Height - 1);
 
-            foreach (ImageMenuItem item in selectedCategory.Items)
-                item.PaintEntry(e.Graphics);
+            if (selectedCategory != null) {
+                foreach (ImageMenuItem item in selectedCategory.Items)
+                    item.PaintEntry(e.Graphics);
+            }
 
             if (categoriesVisible)
                 foreach (ImageMenuCategory category in Categories)
@@ -402,13 +405,13 @@ namespace LayoutManager.UIGadgets {
             if (selectedCategory != null) {
                 Rectangle r = selectedCategory.Bounds;
 
-                r.Location = r.Location + new Size(-1, -1);
+                r.Location += new Size(-1, -1);
                 r.Size = new Size(r.Width + 1, r.Height + 1);
 
                 e.Graphics.DrawRectangle(Pens.Blue, r);
             }
 
-            drawSelection(e.Graphics, true);
+            DrawSelection(e.Graphics, true);
         }
 
         /// <summary>
@@ -416,10 +419,12 @@ namespace LayoutManager.UIGadgets {
         /// </summary>
         /// <param name="p">The mouse point</param>
         /// <returns>The ImageMenuEntry under the mouse or null if none found</returns>
-        private ImageMenuEntry GetEntryAtPoint(Point p) {
-            foreach (ImageMenuItem item in selectedCategory.Items)
-                if (item.Bounds.Contains(p))
-                    return item;
+        private ImageMenuEntry? GetEntryAtPoint(Point p) {
+            if (selectedCategory != null) {
+                foreach (ImageMenuItem item in selectedCategory.Items)
+                    if (item.Bounds.Contains(p))
+                        return item;
+            }
 
             foreach (ImageMenuCategory category in Categories)
                 if (category.Bounds.Contains(p))
@@ -433,23 +438,23 @@ namespace LayoutManager.UIGadgets {
         /// </summary>
         /// <param name="p">Mouse hit point</param>
         /// <param name="hideHighlightAllowed">What to do with the selection if the mouse if not on an item</param>
-        private void updateSelection(Point p, bool hideHighlightAllowed) {
-            ImageMenuEntry hitEntry = GetEntryAtPoint(p);
+        private void UpdateSelection(Point p, bool hideHighlightAllowed) {
+            var hitEntry = GetEntryAtPoint(p);
 
             // If mouse moved from the item for which there is an open tooltip, close the tooltip.
             if (tippedEntry != null && hitEntry != tippedEntry) {
                 tippedEntry = null;
-                tipWindow.HideTip();
-                resetTipTimer();
+                tipWindow?.HideTip();
+                ResetTipTimer();
             }
 
             if (hitEntry != null) {
                 if (hitEntry != hilightedEntry) {
                     Graphics g = CreateGraphics();
 
-                    drawSelection(g, false);
+                    DrawSelection(g, false);
                     hilightedEntry = hitEntry;
-                    drawSelection(g, true);
+                    DrawSelection(g, true);
 
                     g.Dispose();
                 }
@@ -457,17 +462,17 @@ namespace LayoutManager.UIGadgets {
             else if (hideHighlightAllowed) {
                 Graphics g = CreateGraphics();
 
-                drawSelection(g, false);
+                DrawSelection(g, false);
                 hilightedEntry = null;
             }
         }
 
-        private void selectEntry(ImageMenuEntry newEntry) {
+        private void SelectEntry(ImageMenuEntry newEntry) {
             Graphics g = CreateGraphics();
 
-            drawSelection(g, false);
+            DrawSelection(g, false);
             hilightedEntry = newEntry;
-            drawSelection(g, true);
+            DrawSelection(g, true);
 
             g.Dispose();
         }
@@ -478,14 +483,18 @@ namespace LayoutManager.UIGadgets {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void tipTimer_tick(Object sender, EventArgs e) {
-            ImageMenuEntry hitEntry = GetEntryAtPoint(PointToClient(Control.MousePosition));
+        private void TipTimer_tick(Object? sender, EventArgs e) {
+            var hitEntry = GetEntryAtPoint(PointToClient(Control.MousePosition));
 
             if (hitEntry != null && hitEntry.Tooltip != null) {
                 tippedEntry = hitEntry;
-                tipWindow.TipText = hitEntry.Tooltip;
-                tipWindow.ShowTip(Parent.PointToClient(Control.MousePosition) + new Size(5, 16));
-                tipTimer.Stop();
+
+                if (tipWindow != null) {
+                    tipWindow.TipText = hitEntry.Tooltip;
+                    tipWindow.ShowTip(Parent.PointToClient(Control.MousePosition) + new Size(5, 16));
+                }
+
+                tipTimer?.Stop();
             }
         }
 
@@ -498,11 +507,11 @@ namespace LayoutManager.UIGadgets {
             this.Capture = true;
             base.OnMouseDown(e);
 
-            resetTipTimer();
+            ResetTipTimer();
 
             if (!ClientRectangle.Contains(new Point(e.X, e.Y))) {
                 menuState = MenuState.Closing;
-                shadow.Close();
+                shadow?.Close();
                 this.Visible = false;
             }
         }
@@ -516,23 +525,23 @@ namespace LayoutManager.UIGadgets {
             this.Capture = true;
             base.OnMouseUp(e);
 
-            tipWindow.Hide();
-            resetTipTimer();
+            tipWindow?.Hide();
+            ResetTipTimer();
 
             if (menuState != MenuState.Closing) {
-                ImageMenuEntry hitEntry = GetEntryAtPoint(new Point(e.X, e.Y));
+                var hitEntry = GetEntryAtPoint(new Point(e.X, e.Y));
 
                 if (hitEntry != null) {
                     if (hitEntry is ImageMenuItem hitMenuItem) {
                         resultItem = hitMenuItem;
-                        shadow.Close();
+                        shadow?.Close();
                         this.Visible = false;
                         menuState = MenuState.Closed;
                     }
                     else {
                         if (hitEntry is ImageMenuCategory hitCategory) {
-                            selectCategory(hitCategory);
-                            updateSelection(PointToClient(Control.MousePosition), true);
+                            SelectCategory(hitCategory);
+                            UpdateSelection(PointToClient(Control.MousePosition), true);
                         }
                     }
                 }
@@ -549,8 +558,8 @@ namespace LayoutManager.UIGadgets {
             this.Capture = true;
             base.OnMouseMove(e);
 
-            resetTipTimer();
-            updateSelection(new Point(e.X, e.Y), false);
+            ResetTipTimer();
+            UpdateSelection(new Point(e.X, e.Y), false);
         }
 
         protected override void OnKeyDown(KeyEventArgs e) {
@@ -560,46 +569,46 @@ namespace LayoutManager.UIGadgets {
                 case Keys.ShiftKey:
                     if (shiftKeyCategory != null && SelectedCategory != shiftKeyCategory) {
                         beforeShiftCategory = SelectedCategory;
-                        selectCategory(shiftKeyCategory);
+                        SelectCategory(shiftKeyCategory);
                     }
                     break;
 
                 case Keys.Escape:
-                    shadow.Close();
+                    shadow?.Close();
                     this.Visible = false;
                     menuState = MenuState.Closed;
                     break;
 
                 case Keys.Right: {
-                        if (hilightedEntry is ImageMenuItem) {
-                            int iItem = selectedCategory.Items.IndexOf((ImageMenuItem)hilightedEntry);
+                        if (hilightedEntry is ImageMenuItem item && selectedCategory != null) {
+                            int iItem = selectedCategory.Items.IndexOf(item);
 
                             if (++iItem >= selectedCategory.Items.Count)
                                 iItem = 0;
 
-                            selectEntry(selectedCategory.Items[iItem]);
+                            SelectEntry(selectedCategory.Items[iItem]);
                         }
                         break;
                     }
 
                 case Keys.Left: {
-                        if (hilightedEntry is ImageMenuItem) {
-                            int iItem = selectedCategory.Items.IndexOf((ImageMenuItem)hilightedEntry);
+                        if (hilightedEntry is ImageMenuItem item && selectedCategory != null) {
+                            int iItem = selectedCategory.Items.IndexOf(item);
 
                             if (iItem == 0)
                                 iItem = selectedCategory.Items.Count - 1;
                             else
                                 iItem--;
 
-                            selectEntry(selectedCategory.Items[iItem]);
+                            SelectEntry(selectedCategory.Items[iItem]);
                         }
                         break;
                     }
 
                 case Keys.Space: {
-                        if (hilightedEntry is ImageMenuItem) {
-                            resultItem = (ImageMenuItem)hilightedEntry;
-                            shadow.Close();
+                        if (hilightedEntry is ImageMenuItem item) {
+                            resultItem = item;
+                            shadow?.Close();
                             this.Visible = false;
                             menuState = MenuState.Closed;
                         }
@@ -613,7 +622,7 @@ namespace LayoutManager.UIGadgets {
 
             if (e.KeyCode == Keys.ShiftKey) {
                 if (beforeShiftCategory != null) {
-                    selectCategory(beforeShiftCategory);
+                    SelectCategory(beforeShiftCategory);
                     beforeShiftCategory = null;
                 }
             }
@@ -621,7 +630,7 @@ namespace LayoutManager.UIGadgets {
 
         protected override void OnMouseWheel(MouseEventArgs e) {
             this.Capture = true;
-            shadow.Close();
+            shadow?.Close();
             this.Visible = false;
             menuState = MenuState.Closed;
             base.OnMouseWheel(e);

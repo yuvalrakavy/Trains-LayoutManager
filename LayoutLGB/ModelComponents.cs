@@ -137,10 +137,9 @@ namespace LayoutLGB {
         #endregion
         // Implement command events
         [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private Task ChangeTurnoutState(LayoutEvent e0) {
-            var e = (LayoutEventInfoValueType<ControlConnectionPointReference, int>)e0;
-            ControlConnectionPointReference connectionPointRef = e.Sender;
-            int state = e.Info;
+        private Task ChangeTurnoutState(LayoutEvent e) {
+            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
+            var state = Ensure.ValueNotNull<int>(e.Info, "state");
             int address = connectionPointRef.Module.Address + connectionPointRef.Index;
 
             var task = commandStationManager.AddCommand(new MTSchangeAccessoryState(CommunicationStream, address, state));

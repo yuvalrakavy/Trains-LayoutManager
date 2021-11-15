@@ -1,6 +1,3 @@
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
 
 using LayoutManager.Model;
 
@@ -8,17 +5,8 @@ namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for NameDefinition.
     /// </summary>
-    public class NameDefinition : System.Windows.Forms.UserControl {
-        private CheckBox checkBoxVisible;
-        private TextBox textBoxName;
-        private Button buttonSettings;
-        private Label labelName;
-
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container components = null;
-        private LayoutXmlInfo xmlInfo;
+    public partial class NameDefinition : UserControl {
+        private LayoutXmlInfo? xmlInfo;
 
         public NameDefinition() {
             // This call is required by the Windows.Forms Form Designer.
@@ -38,20 +26,20 @@ namespace LayoutManager.CommonUI.Controls {
 
         public LayoutXmlInfo XmlInfo {
             get {
-                return xmlInfo;
+                return Ensure.NotNull<LayoutXmlInfo>(xmlInfo);
             }
 
             set {
                 xmlInfo = value;
                 if (xmlInfo != null)
-                    initialize();
+                    Initialize();
             }
         }
 
-        public ModelComponent Component { get; set; } = null;
+        public ModelComponent? Component { get; set; } = null;
 
-        private void initialize() {
-            LayoutTextInfo textProvider = getTextProvider(false);
+        private void Initialize() {
+            LayoutTextInfo textProvider = GetTextProvider(false);
 
             textBoxName.Text = textProvider.Text;
             if (textProvider.OptionalElement == null)
@@ -59,23 +47,23 @@ namespace LayoutManager.CommonUI.Controls {
             else
                 checkBoxVisible.Checked = textProvider.Visible;
 
-            updateDependencies();
+            UpdateDependencies();
         }
 
-        private void updateDependencies() {
+        private void UpdateDependencies() {
             buttonSettings.Enabled = checkBoxVisible.Checked;
         }
 
-        private LayoutTextInfo getTextProvider(bool create) {
+        private LayoutTextInfo GetTextProvider(bool create) {
             LayoutTextInfo textProvider;
 
-            textProvider = new LayoutTextInfo(xmlInfo.DocumentElement, ElementName);
+            textProvider = new LayoutTextInfo(XmlInfo.DocumentElement, ElementName);
 
             if (Component != null)
                 textProvider.Component = Component;
 
             if (textProvider.OptionalElement == null && create)
-                textProvider.Element = LayoutInfo.CreateProviderElement(xmlInfo, ElementName, null);
+                textProvider.Element = LayoutInfo.CreateProviderElement(XmlInfo, ElementName, null);
 
             return textProvider;
         }
@@ -88,7 +76,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
 
             if (textBoxName.Text.Trim() != "") {
-                LayoutTextInfo textProvider = getTextProvider(true);
+                LayoutTextInfo textProvider = GetTextProvider(true);
 
                 textProvider.Text = textBoxName.Text;
                 textProvider.Visible = checkBoxVisible.Checked;
@@ -98,7 +86,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public void Set(string text, bool visible) {
-            LayoutTextInfo textProvider = getTextProvider(true);
+            LayoutTextInfo textProvider = GetTextProvider(true);
 
             textProvider.Text = text;
             textProvider.Visible = visible;
@@ -116,74 +104,13 @@ namespace LayoutManager.CommonUI.Controls {
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.checkBoxVisible = new CheckBox();
-            this.textBoxName = new TextBox();
-            this.buttonSettings = new Button();
-            this.labelName = new Label();
-            this.SuspendLayout();
-            // 
-            // checkBoxVisible
-            // 
-            this.checkBoxVisible.Location = new System.Drawing.Point(64, 28);
-            this.checkBoxVisible.Name = "checkBoxVisible";
-            this.checkBoxVisible.Size = new System.Drawing.Size(64, 24);
-            this.checkBoxVisible.TabIndex = 2;
-            this.checkBoxVisible.Text = "Visible";
-            this.checkBoxVisible.CheckedChanged += this.checkBoxVisible_CheckedChanged;
-            // 
-            // textBoxName
-            // 
-            this.textBoxName.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right;
-            this.textBoxName.Location = new System.Drawing.Point(64, 4);
-            this.textBoxName.Name = "textBoxName";
-            this.textBoxName.Size = new System.Drawing.Size(208, 20);
-            this.textBoxName.TabIndex = 1;
-            this.textBoxName.Text = "";
-            // 
-            // buttonSettings
-            // 
-            this.buttonSettings.Location = new System.Drawing.Point(136, 28);
-            this.buttonSettings.Name = "buttonSettings";
-            this.buttonSettings.TabIndex = 3;
-            this.buttonSettings.Text = "Settings...";
-            this.buttonSettings.Click += this.buttonSettings_Click;
-            // 
-            // labelName
-            // 
-            this.labelName.Location = new System.Drawing.Point(8, 6);
-            this.labelName.Name = "labelName";
-            this.labelName.Size = new System.Drawing.Size(48, 16);
-            this.labelName.TabIndex = 0;
-            this.labelName.Text = "Name:";
-            this.labelName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // NameDefinition
-            // 
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
-                                                                          this.checkBoxVisible,
-                                                                          this.textBoxName,
-                                                                          this.buttonSettings,
-                                                                          this.labelName});
-            this.Name = "NameDefinition";
-            this.Size = new System.Drawing.Size(280, 53);
-            this.ResumeLayout(false);
-        }
-        #endregion
-
-        private void checkBoxVisible_CheckedChanged(object sender, System.EventArgs e) {
-            updateDependencies();
+        private void CheckBoxVisible_CheckedChanged(object? sender, EventArgs e) {
+            UpdateDependencies();
         }
 
-        private void buttonSettings_Click(object sender, System.EventArgs e) {
-            LayoutTextInfo textProvider = getTextProvider(true);
-            Dialogs.TextProviderSettings textProviderSettings = new Dialogs.TextProviderSettings(xmlInfo, textProvider);
+        private void ButtonSettings_Click(object? sender, EventArgs e) {
+            LayoutTextInfo textProvider = GetTextProvider(true);
+            Dialogs.TextProviderSettings textProviderSettings = new(XmlInfo, textProvider);
 
             textProviderSettings.ShowDialog(this);
         }

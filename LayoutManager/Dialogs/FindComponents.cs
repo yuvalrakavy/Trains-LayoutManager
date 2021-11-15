@@ -66,7 +66,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonSearch_Click(object sender, EventArgs e) {
+        private void buttonSearch_Click(object? sender, EventArgs e) {
             LayoutSelection results = new LayoutSelection();
 
             if (checkBoxLimitToActiveArea.Checked)

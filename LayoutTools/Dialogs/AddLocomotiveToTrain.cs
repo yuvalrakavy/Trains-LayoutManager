@@ -13,22 +13,7 @@ namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for AddLocomotiveToTrain.
     /// </summary>
-    public class AddLocomotiveToTrain : Form {
-        private ListBox listBoxLocomotives;
-        private GroupBox groupBox1;
-        private RadioButton radioButtonOrientationForward;
-        private RadioButton radioButtonOrientationBackward;
-        private Button buttonAdd;
-        private Button buttonCancel;
-
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container components = null;
-
-#pragma warning disable IDE0051 // Remove unused private members
-        private void endOfDesignerVariables() { }
-#pragma warning restore IDE0051 // Remove unused private members
+    public partial class AddLocomotiveToTrain : Form {
 
         private readonly TrainCommonInfo train;
 
@@ -42,23 +27,23 @@ namespace LayoutManager.Tools.Dialogs {
 
             radioButtonOrientationForward.Checked = true;
 
-            updateLocomotiveList();
-            updateButtons(null, null);
+            UpdateLocomotiveList();
+            UpdateButtons(null, EventArgs.Empty);
         }
 
         public LocomotiveOrientation Orientation => radioButtonOrientationForward.Checked ? LocomotiveOrientation.Forward : LocomotiveOrientation.Backward;
 
         public LocomotiveInfo Locomotive => (LocomotiveInfo)listBoxLocomotives.SelectedItem;
 
-        private void updateButtons(Object sender, EventArgs e) {
+        private void UpdateButtons(Object? sender, EventArgs e) {
             buttonAdd.Enabled = listBoxLocomotives.SelectedItem != null;
         }
 
-        private void updateLocomotiveList(Object sender, EventArgs e) {
-            updateLocomotiveList();
+        private void UpdateLocomotiveList(object? sender, EventArgs e) {
+            UpdateLocomotiveList();
         }
 
-        private bool isValidLoco(LocomotiveInfo loco, LocomotiveOrientation orientation) {
+        private bool IsValidLoco(LocomotiveInfo loco, LocomotiveOrientation orientation) {
             foreach (TrainLocomotiveInfo trainLocomotive in train.Locomotives) {
                 if (trainLocomotive.LocomotiveId == loco.Id)
                     return false;
@@ -77,7 +62,7 @@ namespace LayoutManager.Tools.Dialogs {
             return true;
         }
 
-        private void updateLocomotiveList() {
+        private void UpdateLocomotiveList() {
             IDictionary inList = new HybridDictionary();
             LocomotiveOrientation orientation;
 
@@ -86,7 +71,7 @@ namespace LayoutManager.Tools.Dialogs {
             else
                 orientation = LocomotiveOrientation.Forward;
 
-            ArrayList removeList = new ArrayList();
+            ArrayList removeList = new();
 
             foreach (LocomotiveInfo loco in listBoxLocomotives.Items) {
                 // Check if loco is valid
@@ -95,13 +80,13 @@ namespace LayoutManager.Tools.Dialogs {
                 inList.Add(loco.Id, loco);
 
                 if (train is TrainStateInfo) {
-                    CanPlaceTrainResult result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("is-locomotive-address-valid", loco.Element, train, "<Orientation Value='" + orientation.ToString() + "' />"));
+                    var result = Ensure.NotNull<CanPlaceTrainResult>(EventManager.Event(new LayoutEvent("is-locomotive-address-valid", loco.Element, train, "<Orientation Value='" + orientation.ToString() + "' />")));
 
                     if (!result.CanBeResolved)
                         retainInList = false;
                 }
                 else {
-                    if (!isValidLoco(loco, orientation))
+                    if (!IsValidLoco(loco, orientation))
                         retainInList = false;
                 }
 
@@ -113,23 +98,23 @@ namespace LayoutManager.Tools.Dialogs {
                 listBoxLocomotives.Items.Remove(loco);
 
             // Now pass on the collection and check each locomotive that was not in the list
-            foreach (XmlElement collectionElement in LayoutModel.LocomotiveCollection.CollectionElement.SelectNodes("Locomotive")) {
+            foreach (XmlElement collectionElement in LayoutModel.LocomotiveCollection.CollectionElement.SelectNodes("Locomotive")!) {
                 bool validLoco = true;
-                LocomotiveInfo loco = new LocomotiveInfo(collectionElement);
+                LocomotiveInfo loco = new(collectionElement);
 
                 if (!inList.Contains(loco.Id)) {
                     if (train is TrainStateInfo) {
-                        var result = EventManager.Event<XmlElement, object, CanPlaceTrainResult>("can-locomotive-be-placed-on-track", loco.Element);
+                        var result = Ensure.NotNull<CanPlaceTrainResult>(EventManager.Event("can-locomotive-be-placed-on-track", loco.Element));
 
                         if (result.Status == CanPlaceTrainStatus.CanPlaceTrain)
-                            result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent(
-                                "is-locomotive-address-valid", loco.Element, train, xmlDocument: "<Orientation Value='" + orientation.ToString() + "' />"));
+                            result = Ensure.NotNull<CanPlaceTrainResult>(EventManager.Event(new LayoutEvent(
+                                "is-locomotive-address-valid", loco.Element, train, xmlDocument: "<Orientation Value='" + orientation.ToString() + "' />")));
 
                         if (result.Status != CanPlaceTrainStatus.CanPlaceTrain)
                             validLoco = false;
                     }
                     else {
-                        if (!isValidLoco(loco, orientation))
+                        if (!IsValidLoco(loco, orientation))
                             validLoco = false;
                     }
 
@@ -151,105 +136,7 @@ namespace LayoutManager.Tools.Dialogs {
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.listBoxLocomotives = new ListBox();
-            this.groupBox1 = new GroupBox();
-            this.radioButtonOrientationForward = new RadioButton();
-            this.radioButtonOrientationBackward = new RadioButton();
-            this.buttonAdd = new Button();
-            this.buttonCancel = new Button();
-            this.groupBox1.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // listBoxLocomotives
-            // 
-            this.listBoxLocomotives.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right;
-            this.listBoxLocomotives.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.listBoxLocomotives.ItemHeight = 46;
-            this.listBoxLocomotives.Location = new System.Drawing.Point(8, 8);
-            this.listBoxLocomotives.Name = "listBoxLocomotives";
-            this.listBoxLocomotives.Size = new System.Drawing.Size(152, 234);
-            this.listBoxLocomotives.TabIndex = 0;
-            this.listBoxLocomotives.DrawItem += this.listBoxLocomotives_DrawItem;
-            this.listBoxLocomotives.SelectedIndexChanged += this.updateButtons;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            this.groupBox1.Controls.AddRange(new System.Windows.Forms.Control[] {
-                                                                                    this.radioButtonOrientationForward,
-                                                                                    this.radioButtonOrientationBackward});
-            this.groupBox1.Location = new System.Drawing.Point(166, 8);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(104, 56);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Orientation";
-            // 
-            // radioButtonOrientationForward
-            // 
-            this.radioButtonOrientationForward.Location = new System.Drawing.Point(8, 15);
-            this.radioButtonOrientationForward.Name = "radioButtonOrientationForward";
-            this.radioButtonOrientationForward.Size = new System.Drawing.Size(80, 16);
-            this.radioButtonOrientationForward.TabIndex = 0;
-            this.radioButtonOrientationForward.Text = "Forward";
-            this.radioButtonOrientationForward.CheckedChanged += this.updateLocomotiveList;
-            // 
-            // radioButtonOrientationBackward
-            // 
-            this.radioButtonOrientationBackward.Location = new System.Drawing.Point(8, 35);
-            this.radioButtonOrientationBackward.Name = "radioButtonOrientationBackward";
-            this.radioButtonOrientationBackward.Size = new System.Drawing.Size(80, 16);
-            this.radioButtonOrientationBackward.TabIndex = 1;
-            this.radioButtonOrientationBackward.Text = "Backward";
-            this.radioButtonOrientationBackward.CheckedChanged += this.updateLocomotiveList;
-            // 
-            // buttonAdd
-            // 
-            this.buttonAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            this.buttonAdd.Location = new System.Drawing.Point(195, 192);
-            this.buttonAdd.Name = "buttonAdd";
-            this.buttonAdd.TabIndex = 2;
-            this.buttonAdd.Text = "&Add";
-            this.buttonAdd.Click += this.buttonAdd_Click;
-            // 
-            // buttonCancel
-            // 
-            this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(195, 224);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.TabIndex = 3;
-            this.buttonCancel.Text = "&Cancel";
-            // 
-            // AddLocomotiveToTrain
-            // 
-            this.AcceptButton = this.buttonAdd;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
-            this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(276, 266);
-            this.ControlBox = false;
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
-                                                                          this.buttonAdd,
-                                                                          this.groupBox1,
-                                                                          this.listBoxLocomotives,
-                                                                          this.buttonCancel});
-            this.Name = "AddLocomotiveToTrain";
-            this.ShowInTaskbar = false;
-            this.Text = "Add Locomotive";
-            this.groupBox1.ResumeLayout(false);
-            this.ResumeLayout(false);
-        }
-        #endregion
-
-        private void buttonAdd_Click(object sender, System.EventArgs e) {
+        private void ButtonAdd_Click(object? sender, System.EventArgs e) {
             if (listBoxLocomotives.SelectedIndex == -1) {
                 MessageBox.Show(this, "You did not select a locomotive to add", "Missing Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -258,7 +145,7 @@ namespace LayoutManager.Tools.Dialogs {
             DialogResult = DialogResult.OK;
         }
 
-        private void listBoxLocomotives_DrawItem(object sender, System.Windows.Forms.DrawItemEventArgs e) {
+        private void ListBoxLocomotives_DrawItem(object? sender, System.Windows.Forms.DrawItemEventArgs e) {
             int xText;
             float yText;
             LocomotiveInfo loco = (LocomotiveInfo)listBoxLocomotives.Items[e.Index];
@@ -269,7 +156,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             e.Graphics.TranslateTransform(e.Bounds.Left, e.Bounds.Top);
 
-            using (LocomotiveImagePainter locoPainter = new LocomotiveImagePainter(LayoutModel.LocomotiveCatalog)) {
+            using (LocomotiveImagePainter locoPainter = new(LayoutModel.LocomotiveCatalog)) {
                 locoPainter.Draw(e.Graphics, new Point(2, 2), new Size(50, 36), loco.Element);
             }
 
@@ -279,14 +166,14 @@ namespace LayoutManager.Tools.Dialogs {
             using (Brush textBrush = new SolidBrush((e.State & DrawItemState.Selected) != 0 ? SystemColors.HighlightText : SystemColors.WindowText)) {
                 SizeF textSize;
 
-                using (Font titleFont = new Font("Arial", 8, FontStyle.Bold)) {
+                using (Font titleFont = new("Arial", 8, FontStyle.Bold)) {
                     textSize = e.Graphics.MeasureString(loco.DisplayName, titleFont);
                     e.Graphics.DrawString(loco.DisplayName, titleFont, textBrush, new PointF(xText, yText));
                     yText += textSize.Height;
                 }
 
                 if (loco.TypeName != null) {
-                    using Font typeFont = new Font("Arial", 7, FontStyle.Regular);
+                    using Font typeFont = new("Arial", 7, FontStyle.Regular);
                     string typeText = " (" + loco.TypeName + ")";
                     SizeF typeSize = e.Graphics.MeasureString(typeText, typeFont);
 
@@ -296,7 +183,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             e.Graphics.Restore(gs);
 
-            using (Pen p = new Pen(Color.Black, 2.0F))
+            using (Pen p = new(Color.Black, 2.0F))
                 e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Bottom, e.Bounds.Right, e.Bounds.Bottom);
 
             e.DrawFocusRectangle();

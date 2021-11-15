@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.CommonUI.Controls;
 
-#pragma warning disable IDE0051, IDE0060
-#nullable enable
 namespace LayoutManager.CommonUI {
     [LayoutModule("Event Script UI Manager", UserControl = false)]
     public class EventScriptUImanager : LayoutModuleBase {
@@ -15,101 +10,100 @@ namespace LayoutManager.CommonUI {
         #region Methods to return add menus for various section (events, condition and actions)
 
         [LayoutEvent("get-event-script-editor-event-container-menu")]
-        private void eventContainerAddMenu(LayoutEvent e) {
+        private void EventContainerAddMenu(LayoutEvent e) {
             var eventContainerNode = Ensure.NotNull<LayoutEventScriptEditorTreeNode>(e.Sender, "eventContainerNode");
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info, "menu");
 
             if (eventContainerNode.Element["Events"] == null)
-                menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Events", "Events"));
+                menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Events", "Events"));
             if (eventContainerNode.SupportConditions && eventContainerNode.Element["Condition"] == null)
-                menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Condition", "Condition"));
+                menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Condition", "Condition"));
             if (eventContainerNode.SupportActions && eventContainerNode.Element["Actions"] == null)
-                menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Actions", "Actions"));
+                menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Actions", "Actions"));
         }
 
         [LayoutEvent("get-event-script-editor-insert-event-container-menu")]
-        private void getEventScriptEditorInsertEventConatinerMenu(LayoutEvent e) {
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+        private void GetEventScriptEditorInsertEventConatinerMenu(LayoutEvent e) {
+            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info, "menu");
 
-            menu.MenuItems.Add(new Controls.EventScriptEditorInsertEventContainerMenuItem(e, "Any", "Any"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorInsertEventContainerMenuItem(e, "All", "All"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorInsertEventContainerMenuItem(e, "Sequence", "Sequence"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorInsertEventContainerMenuItem(e, "Repeat", "Repeat"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorInsertEventContainerMenuItem(e, "Task", "Task"));
+            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(e, "Any", "Any"));
+            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(e, "All", "All"));
+            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(e, "Sequence", "Sequence"));
+            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(e, "Repeat", "Repeat"));
+            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(e, "Task", "Task"));
         }
 
         [LayoutEvent("get-event-script-editor-event-menu")]
-        private void eventAddMenu(LayoutEvent e) {
+        private void EventAddMenu(LayoutEvent e) {
             var eventNode = Ensure.NotNull<LayoutEventScriptEditorTreeNode>(e.Sender, "eventNode");
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info, "menu");
 
             if (eventNode.SupportConditions && eventNode.Element["Condition"] == null)
-                menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Condition", "Condition"));
+                menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Condition", "Condition"));
             if (eventNode.SupportActions && eventNode.Element["Actions"] == null)
-                menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Actions", "Actions"));
+                menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Actions", "Actions"));
         }
 
         [LayoutEvent("get-event-script-editor-events-section-menu", Order = 0)]
-        private void addEventsSectionAddMenuWithEventContainers(LayoutEvent e) {
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+        private void AddEventsSectionAddMenuWithEventContainers(LayoutEvent e) {
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
 
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Any", "Any"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "All", "All"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Sequence", "Sequence"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Repeat", "Repeat"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Random Choice", "RandomChoice"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Task", "Task"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Any", "Any"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "All", "All"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Sequence", "Sequence"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Repeat", "Repeat"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Random Choice", "RandomChoice"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Task", "Task"));
         }
 
         [LayoutEvent("get-event-script-editor-events-section-menu", Order = 100)]
-        private void addEventsSectionAddMenuWithEvents(LayoutEvent e) {
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+        private void AddEventsSectionAddMenuWithEvents(LayoutEvent e) {
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
 
-            if (menu.MenuItems.Count > 0)
-                menu.MenuItems.Add("-");
+            if (menu.Items.Count > 0)
+                menu.Items.Add(new ToolStripSeparator());
 
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Do now", "DoNow"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Wait", "Wait"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Wait for Event", "WaitForEvent"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Do now", "DoNow"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Wait", "Wait"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Wait for Event", "WaitForEvent"));
         }
 
         [LayoutEvent("get-event-script-editor-random-choice-menu")]
-        private void addRandomChoiceMenu(LayoutEvent e) {
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+        private void AddRandomChoiceMenu(LayoutEvent e) {
+            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info, "menu");
 
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, A_Choice, A_Choice));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, A_Choice, A_Choice));
         }
 
         [LayoutEvent("get-event-script-editor-condition-section-menu")]
-        private void addConditionSectionAddMenu(LayoutEvent e) {
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+        private void AddConditionSectionAddMenu(LayoutEvent e) {
+            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info, "menu");
 
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "And", "And"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Or", "Or"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Not", "Not"));
-            menu.MenuItems.Add("-");
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "If (String)", "IfString"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "If (Number)", "IfNumber"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "If (Boolean)", "IfBoolean"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "If (Defined)", "IfDefined"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "If (Time)", "IfTime"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "And", "And"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Or", "Or"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Not", "Not"));
+            menu.Items.Add("-");
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "If (String)", "IfString"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "If (Number)", "IfNumber"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "If (Boolean)", "IfBoolean"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "If (Defined)", "IfDefined"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "If (Time)", "IfTime"));
         }
 
         [LayoutEvent("get-event-script-editor-insert-condition-container-menu")]
-        private void getEventScriptEditorInsertConditionContainerMenu(LayoutEvent e) {
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+        private void GetEventScriptEditorInsertConditionContainerMenu(LayoutEvent e) {
+            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info, "menu");
 
-            menu.MenuItems.Add(new Controls.EventScriptEditorInsertConditionContainerMenuItem(e, "And", "And"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorInsertConditionContainerMenuItem(e, "Or", "Or"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorInsertConditionContainerMenuItem(e, "Not", "Not"));
+            menu.Items.Add(new EventScriptEditorInsertConditionContainerMenuItem(e, "And", "And"));
+            menu.Items.Add(new EventScriptEditorInsertConditionContainerMenuItem(e, "Or", "Or"));
+            menu.Items.Add(new EventScriptEditorInsertConditionContainerMenuItem(e, "Not", "Not"));
         }
-
         [LayoutEvent("get-event-script-editor-actions-section-menu")]
-        private void getActionsSectionAddMenu(LayoutEvent e) {
-            var menu = Ensure.NotNull<Menu>(e.Info, "menu");
+        private void GetActionsSectionAddMenu(LayoutEvent e) {
+            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info, "menu");
 
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Show message", "ShowMessage"));
-            menu.MenuItems.Add(new Controls.EventScriptEditorAddMenuItem(e, "Set Attribute", "SetAttribute"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Show message", "ShowMessage"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Set Attribute", "SetAttribute"));
         }
 
         #endregion
@@ -117,7 +111,7 @@ namespace LayoutManager.CommonUI {
         #region Utilty methods for generating descriptions
 
         public static bool IsTrivialContainer(XmlElement containerElement) {
-            XmlElement eventsElement = containerElement["Events"];
+            var eventsElement = containerElement["Events"];
 
             return eventsElement != null && eventsElement.ChildNodes.Count == 1 && containerElement["Condition"] == null && containerElement["Actions"] == null;
         }
@@ -140,8 +134,8 @@ namespace LayoutManager.CommonUI {
             var substrings = new List<string>();
 
             if (IsTrivialContainer(element)) {
-                element = (XmlElement)element.ChildNodes[0].ChildNodes[0];
-                return (string)GetElementDescription(element);
+                var childElement = (XmlElement?)element.ChildNodes[0]?.ChildNodes[0];
+                return childElement != null? (string)GetElementDescription(childElement) : String.Empty;
             }
             else {
                 substrings.Add(prefix);
@@ -156,7 +150,8 @@ namespace LayoutManager.CommonUI {
                     else if (childElement.Name == "Condition") {
                         if (substrings.Count > 0)
                             substrings.Add(",");
-                        substrings.Add(" Condition { " + GetElementDescription((XmlElement)childElement.ChildNodes[0]) + " }");
+                        XmlElement? grandChildElement = (XmlElement?)childElement.ChildNodes[0];
+                        substrings.Add(" Condition { " + (grandChildElement != null ? GetElementDescription(grandChildElement) : String.Empty) + " }");
                     }
                     else if (childElement.Name == "Actions") {
                         if (substrings.Count > 0)
@@ -189,7 +184,7 @@ namespace LayoutManager.CommonUI {
             var containerElement = Ensure.NotNull<XmlElement>(e.Sender, "containerElement");
 
             if (containerElement.ChildNodes.Count == 1)     // If there is only one some condition, return its description
-                e.Info = GetElementDescription((XmlElement)containerElement.ChildNodes[0]);
+                e.Info = GetElementDescription((XmlElement)containerElement.ChildNodes[0]!);
             else {
                 string[] conditions = new string[containerElement.ChildNodes.Count];
 
@@ -208,21 +203,21 @@ namespace LayoutManager.CommonUI {
         #region Tree nodes for event container sections
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "Events")]
-        private void getEventsSectionTreeNode(LayoutEvent e) {
+        private void GetEventsSectionTreeNode(LayoutEvent e) {
             var eventsElement = Ensure.NotNull<XmlElement>(e.Sender, "eventsElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeEventsSection(eventsElement);
         }
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "Condition")]
-        private void getConditionSectionTreeNode(LayoutEvent e) {
+        private void GetConditionSectionTreeNode(LayoutEvent e) {
             var conditionElement = Ensure.NotNull<XmlElement>(e.Sender, "conditionElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeConditionSection(conditionElement);
         }
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "Actions")]
-        private void getActionsSectionTreeNode(LayoutEvent e) {
+        private void GetActionsSectionTreeNode(LayoutEvent e) {
             var actionsElement = Ensure.NotNull<XmlElement>(e.Sender, "actionsElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeActionsSection(actionsElement);
@@ -235,14 +230,14 @@ namespace LayoutManager.CommonUI {
         #region Sequence
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "Sequence")]
-        private void getSequenceTreeNode(LayoutEvent e) {
+        private void GetSequenceTreeNode(LayoutEvent e) {
             var sequenceElement = Ensure.NotNull<XmlElement>(e.Sender, "sequenceElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeSequence(sequenceElement);
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "Sequence")]
-        private void getSequenceDescription(LayoutEvent e) {
+        private void GetSequenceDescription(LayoutEvent e) {
             e.Info = GetEventOrEventContainerDescription(e, "Sequence");
         }
 
@@ -263,14 +258,14 @@ namespace LayoutManager.CommonUI {
         #region All
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "All")]
-        private void getAllTreeNode(LayoutEvent e) {
+        private void GetAllTreeNode(LayoutEvent e) {
             var allElement = Ensure.NotNull<XmlElement>(e.Sender, "allElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeAll(allElement);
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "All")]
-        private void getAllDescription(LayoutEvent e) {
+        private void GetAllDescription(LayoutEvent e) {
             e.Info = GetEventOrEventContainerDescription(e, "All");
         }
 
@@ -289,14 +284,14 @@ namespace LayoutManager.CommonUI {
         #region Any
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "Any")]
-        private void getAnyTreeNode(LayoutEvent e) {
+        private void GetAnyTreeNode(LayoutEvent e) {
             var anyElement = Ensure.NotNull<XmlElement>(e.Sender, "anyElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeAny(anyElement);
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "Any")]
-        private void getAnyDescription(LayoutEvent e) {
+        private void GetAnyDescription(LayoutEvent e) {
             e.Info = GetEventOrEventContainerDescription(e, "Any");
         }
 
@@ -315,17 +310,17 @@ namespace LayoutManager.CommonUI {
         #region Repeat
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "Repeat")]
-        private void getRepeatTreeNode(LayoutEvent e) {
+        private void GetRepeatTreeNode(LayoutEvent e) {
             var repeatElement = Ensure.NotNull<XmlElement>(e.Sender, "repeatElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeRepeat(repeatElement);
         }
 
         [LayoutEvent("event-script-editor-edit-element", IfSender = "Repeat")]
-        private void editRepeatTreeNode(LayoutEvent e) {
+        private void EditRepeatTreeNode(LayoutEvent e) {
             var repeatElement = Ensure.NotNull<XmlElement>(e.Sender, "repeatElement");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            Controls.EventScriptEditorDialogs.RepeatCondition repeatDialog = new Controls.EventScriptEditorDialogs.RepeatCondition(repeatElement);
+            Controls.EventScriptEditorDialogs.RepeatCondition repeatDialog = new(repeatElement);
 
             if (repeatDialog.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -334,7 +329,7 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "Repeat")]
-        private void getRepeatDescription(LayoutEvent e) {
+        private void GetRepeatDescription(LayoutEvent e) {
             var conditionElement = Ensure.NotNull<XmlElement>(e.Sender, "conditionElement");
 
             e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeRepeat.GetDescription(conditionElement) + " { ", " } ");
@@ -367,7 +362,7 @@ namespace LayoutManager.CommonUI {
             /// </summary>
             public override int MaxSubNodes => 1;
 
-            public override Controls.LayoutEventScriptEditorTreeNode? NodeToEdit => this;        // repeat rule can be edited (changing the count)
+            public override LayoutEventScriptEditorTreeNode? NodeToEdit => this;        // repeat rule can be edited (changing the count)
 
             public override bool ShouldInsertAsFirst(XmlElement elementToInsert) {
                 return elementToInsert.Name == "Condition";
@@ -379,21 +374,21 @@ namespace LayoutManager.CommonUI {
         #region Random Choice
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "RandomChoice")]
-        private void getRandomChoiceTreeNode(LayoutEvent e) {
+        private void GetRandomChoiceTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
 
             e.Info = new LayoutEventScriptEditorTreeNodeRandomChoice(element);
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "RandomChoice")]
-        private void getRandomChoiceDescription(LayoutEvent e) {
+        private void GetRandomChoiceDescription(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
             var substrings = new List<string> {
                 "Random-Choice [ "
             };
 
             foreach (XmlElement choiceElement in element.GetElementsByTagName(A_Choice)) {
-                substrings.Add($"Choice ({(int)choiceElement.AttributeValue(A_Weight)}): {{ {GetElementDescription((XmlElement)choiceElement.ChildNodes[0])} }} ");
+                substrings.Add($"Choice ({(int)choiceElement.AttributeValue(A_Weight)}): {{ {GetElementDescription((XmlElement)choiceElement.ChildNodes[0]!)} }} ");
             }
 
             substrings.Add("] ");
@@ -412,7 +407,7 @@ namespace LayoutManager.CommonUI {
 
             protected override int IconIndex => IconEvent;
 
-            public override Controls.LayoutEventScriptEditorTreeNode? NodeToEdit => null;
+            public override LayoutEventScriptEditorTreeNode? NodeToEdit => null;
         }
 
         #endregion
@@ -420,16 +415,16 @@ namespace LayoutManager.CommonUI {
         #region Choice Entry
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = A_Choice)]
-        private void getRandomChoiceEntryTreeNode(LayoutEvent e) {
+        private void GetRandomChoiceEntryTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
 
             e.Info = new LayoutEventScriptEditorTreeNodeRandomChoiceEntry(element);
         }
 
         [LayoutEvent("event-script-editor-edit-element", IfSender = A_Choice)]
-        private void editRandomChoiceEntryTreeNode(LayoutEvent e) {
+        private void EditRandomChoiceEntryTreeNode(LayoutEvent e) {
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            string weightText = CommonUI.Dialogs.InputBox.Show("Choice Weight", "Please enter the weight (probability) for this choice", CommonUI.Dialogs.InputBoxValidationOptions.IntegerNumber);
+            var weightText = CommonUI.Dialogs.InputBox.Show("Choice Weight", "Please enter the weight (probability) for this choice", CommonUI.Dialogs.InputBoxValidationOptions.IntegerNumber);
 
             if (weightText == null)
                 site.EditingCancelled();
@@ -456,7 +451,7 @@ namespace LayoutManager.CommonUI {
 
             public override int MaxSubNodes => 1;
 
-            public override Controls.LayoutEventScriptEditorTreeNode? NodeToEdit => this;        // Choice can be edited
+            public override LayoutEventScriptEditorTreeNode? NodeToEdit => this;        // Choice can be edited
         }
 
         #endregion
@@ -464,14 +459,14 @@ namespace LayoutManager.CommonUI {
         #region Task
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "Task")]
-        private void getTaskTreeNode(LayoutEvent e) {
+        private void GetTaskTreeNode(LayoutEvent e) {
             var taskElement = Ensure.NotNull<XmlElement>(e.Sender, "taskElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeTask(taskElement);
         }
 
         [LayoutEvent("event-script-editor-edit-element", IfSender = "Task")]
-        private void editTaskTreeNode(LayoutEvent e) {
+        private void EditTaskTreeNode(LayoutEvent e) {
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
             //			Controls.EventScriptEditorDialogs.RepeatCondition	repeatDialog = new Controls.EventScriptEditorDialogs.RepeatCondition((XmlElement)e.Sender);
 
@@ -483,9 +478,9 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "Task")]
-        private void getTaskDescription(LayoutEvent e) {
+        private void GetTaskDescription(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-            XmlElement taskElement = (XmlElement)element.ChildNodes[0];
+            var taskElement = (XmlElement)element.ChildNodes[0]!;
 
             e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeTask.GetDescription(taskElement) + " { ", " } ");
         }
@@ -510,7 +505,7 @@ namespace LayoutManager.CommonUI {
             /// </summary>
             public override int MaxSubNodes => 1;
 
-            public override Controls.LayoutEventScriptEditorTreeNode? NodeToEdit => this;        // repeat rule can be edited (changing the count)
+            public override LayoutEventScriptEditorTreeNode? NodeToEdit => this;        // repeat rule can be edited (changing the count)
 
             public override bool ShouldInsertAsFirst(XmlElement elementToInsert) {
                 return elementToInsert.Name == "Condition";
@@ -526,17 +521,17 @@ namespace LayoutManager.CommonUI {
         #region Wait
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "Wait")]
-        private void getWaitTreeNode(LayoutEvent e) {
+        private void GetWaitTreeNode(LayoutEvent e) {
             var waitElement = Ensure.NotNull<XmlElement>(e.Sender, "waitElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeWait(waitElement);
         }
 
         [LayoutEvent("event-script-editor-edit-element", IfSender = "Wait")]
-        private void editWaitTreeNode(LayoutEvent e) {
+        private void EditWaitTreeNode(LayoutEvent e) {
             var waitElement = Ensure.NotNull<XmlElement>(e.Sender, "waitElement");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            Controls.EventScriptEditorDialogs.WaitCondition waitDialog = new Controls.EventScriptEditorDialogs.WaitCondition(waitElement);
+            Controls.EventScriptEditorDialogs.WaitCondition waitDialog = new(waitElement);
 
             if (waitDialog.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -545,13 +540,13 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "Wait")]
-        private void getWaitDescription(LayoutEvent e) {
+        private void GetWaitDescription(LayoutEvent e) {
             var waitElement = Ensure.NotNull<XmlElement>(e.Sender, "waitElement");
 
             e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeWait.GetWaitDescription(waitElement));
         }
 
-        private class LayoutEventScriptEditorTreeNodeWait : Controls.LayoutEventScriptEditorTreeNodeEvent {
+        private class LayoutEventScriptEditorTreeNodeWait : LayoutEventScriptEditorTreeNodeEvent {
             private const string A_RandomSeconds = "RandomSeconds";
             private const string A_Minutes = "Minutes";
             private const string A_Seconds = "Seconds";
@@ -561,7 +556,7 @@ namespace LayoutManager.CommonUI {
                 AddChildEventScriptTreeNodes();
             }
 
-            private static void addWaitString(XmlElement conditionElement, List<string> list, string attrName, string unitSingle, string unitPlural) {
+            private static void AddWaitString(XmlElement conditionElement, List<string> list, string attrName, string unitSingle, string unitPlural) {
                 if (conditionElement.HasAttribute(attrName)) {
                     var v = (int)conditionElement.AttributeValue(attrName);
 
@@ -574,9 +569,9 @@ namespace LayoutManager.CommonUI {
                 var delayStrings = new List<string>();
                 string s;
 
-                addWaitString(conditionElement, delayStrings, A_Minutes, "minute", "minutes");
-                addWaitString(conditionElement, delayStrings, A_Seconds, "second", "seconds");
-                addWaitString(conditionElement, delayStrings, A_MilliSeconds, "milli-second", "milli-seconds");
+                AddWaitString(conditionElement, delayStrings, A_Minutes, "minute", "minutes");
+                AddWaitString(conditionElement, delayStrings, A_Seconds, "second", "seconds");
+                AddWaitString(conditionElement, delayStrings, A_MilliSeconds, "milli-second", "milli-seconds");
 
                 s = "Wait for " + String.Concat(delayStrings);
 
@@ -594,27 +589,27 @@ namespace LayoutManager.CommonUI {
         #region DoNow
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "DoNow")]
-        private void getDoNowTreeNode(LayoutEvent e) {
+        private void GetDoNowTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
 
             e.Info = new LayoutEventScriptEditorTreeNodeDoNow(element);
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "DoNow")]
-        private void getDoNowDescription(LayoutEvent e) {
+        private void GetDoNowDescription(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
 
             e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeDoNow.GetDescription(element));
         }
 
-        private class LayoutEventScriptEditorTreeNodeDoNow : Controls.LayoutEventScriptEditorTreeNodeEvent {
+        private class LayoutEventScriptEditorTreeNodeDoNow : LayoutEventScriptEditorTreeNodeEvent {
             public LayoutEventScriptEditorTreeNodeDoNow(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
 
             public static string GetDescription(XmlElement element) => "Do now";
 
-            public override Controls.LayoutEventScriptEditorTreeNode? NodeToEdit => null;		// Nothing to edit
+            public override LayoutEventScriptEditorTreeNode? NodeToEdit => null;		// Nothing to edit
 
             protected override string Description => GetDescription(Element);
         }
@@ -624,17 +619,17 @@ namespace LayoutManager.CommonUI {
         #region Wait for event
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "WaitForEvent")]
-        private void getWaitForEventTreeNode(LayoutEvent e) {
+        private void GetWaitForEventTreeNode(LayoutEvent e) {
             var waitElement = Ensure.NotNull<XmlElement>(e.Sender, "waitElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeWaitForEvent(waitElement);
         }
 
         [LayoutEvent("event-script-editor-edit-element", IfSender = "WaitForEvent")]
-        private void editWaitForEventTreeNode(LayoutEvent e) {
+        private void EditWaitForEventTreeNode(LayoutEvent e) {
             var waitElement = Ensure.NotNull<XmlElement>(e.Sender, "waitElement");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            Controls.EventScriptEditorDialogs.WaitForEvent d = new Controls.EventScriptEditorDialogs.WaitForEvent(waitElement);
+            Controls.EventScriptEditorDialogs.WaitForEvent d = new(waitElement);
 
             if (d.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -643,13 +638,13 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "WaitForEvent")]
-        private void getWaitForEventDescription(LayoutEvent e) {
+        private void GetWaitForEventDescription(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
 
             e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeWaitForEvent.GetDescription(element));
         }
 
-        private class LayoutEventScriptEditorTreeNodeWaitForEvent : Controls.LayoutEventScriptEditorTreeNodeEvent {
+        private class LayoutEventScriptEditorTreeNodeWaitForEvent : LayoutEventScriptEditorTreeNodeEvent {
             public LayoutEventScriptEditorTreeNodeWaitForEvent(XmlElement conditionElement) : base(conditionElement) {
                 AddChildEventScriptTreeNodes();
             }
@@ -672,14 +667,14 @@ namespace LayoutManager.CommonUI {
         #region And
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "And")]
-        private void getAndTreeNode(LayoutEvent e) {
+        private void GetAndTreeNode(LayoutEvent e) {
             var AndElement = Ensure.NotNull<XmlElement>(e.Sender, "AndElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeAnd(AndElement);
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "And")]
-        private void getAndDescription(LayoutEvent e) {
+        private void GetAndDescription(LayoutEvent e) {
             GetConditionContainerDescription(e, "And");
         }
 
@@ -696,14 +691,14 @@ namespace LayoutManager.CommonUI {
         #region Or
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "Or")]
-        private void getOrTreeNode(LayoutEvent e) {
+        private void GetOrTreeNode(LayoutEvent e) {
             var OrElement = Ensure.NotNull<XmlElement>(e.Sender, "OrElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeOr(OrElement);
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "Or")]
-        private void getOrDescription(LayoutEvent e) {
+        private void GetOrDescription(LayoutEvent e) {
             GetConditionContainerDescription(e, "Or");
         }
 
@@ -720,17 +715,17 @@ namespace LayoutManager.CommonUI {
         #region Not
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "Not")]
-        private void getNotTreeNode(LayoutEvent e) {
+        private void GetNotTreeNode(LayoutEvent e) {
             var NotElement = Ensure.NotNull<XmlElement>(e.Sender, "NotElement");
 
             e.Info = new LayoutEventScriptEditnotTreeNodeNot(NotElement);
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "Not")]
-        private void getNotDescription(LayoutEvent e) {
+        private void GetNotDescription(LayoutEvent e) {
             var notElement = Ensure.NotNull<XmlElement>(e.Sender, "notElement");
 
-            e.Info = "Not " + GetElementDescription((XmlElement)notElement.ChildNodes[0]);
+            e.Info = "Not " + GetElementDescription((XmlElement)notElement.ChildNodes[0]!);
         }
 
         private class LayoutEventScriptEditnotTreeNodeNot : LayoutEventScriptEditorTreeNodeConditionContainer {
@@ -761,7 +756,7 @@ namespace LayoutManager.CommonUI {
         #region If (String)
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "IfString")]
-        private void getIfStringTreeNode(LayoutEvent e) {
+        private void GetIfStringTreeNode(LayoutEvent e) {
             var ifElement = Ensure.NotNull<XmlElement>(e.Sender, "ifElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeIfString(ifElement);
@@ -783,10 +778,10 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("event-script-editor-edit-element", IfSender = "IfString")]
-        private void editIfStringNode(LayoutEvent e) {
+        private void EditIfStringNode(LayoutEvent e) {
             var ifElement = Ensure.NotNull<XmlElement>(e.Sender, "ifElement");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            Controls.EventScriptEditorDialogs.IfCondition ifDialog = new Controls.EventScriptEditorDialogs.IfCondition(ifElement, new IfStringCustomizer());
+            Controls.EventScriptEditorDialogs.IfCondition ifDialog = new(ifElement, new IfStringCustomizer());
 
             if (ifDialog.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -795,7 +790,7 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "IfString")]
-        private void getIfStringDescription(LayoutEvent e) {
+        private void GetIfStringDescription(LayoutEvent e) {
             var ifStringElement = Ensure.NotNull<XmlElement>(e.Sender, "ifStringElement");
 
             e.Info = LayoutEventScriptEditorTreeNodeIfString.GetDescription(ifStringElement);
@@ -819,7 +814,7 @@ namespace LayoutManager.CommonUI {
         #region If (Number)
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "IfNumber")]
-        private void getIfNumberTreeNode(LayoutEvent e) {
+        private void GetIfNumberTreeNode(LayoutEvent e) {
             var ifElement = Ensure.NotNull<XmlElement>(e.Sender, "ifElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeIfNumber(ifElement);
@@ -840,10 +835,10 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("event-script-editor-edit-element", IfSender = "IfNumber")]
-        private void editIfNumberNode(LayoutEvent e) {
+        private void EditIfNumberNode(LayoutEvent e) {
             var ifElement = Ensure.NotNull<XmlElement>(e.Sender, "ifElement");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            Controls.EventScriptEditorDialogs.IfCondition ifDialog = new Controls.EventScriptEditorDialogs.IfCondition(ifElement, new IfNumberCustomizer());
+            Controls.EventScriptEditorDialogs.IfCondition ifDialog = new(ifElement, new IfNumberCustomizer());
 
             if (ifDialog.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -852,7 +847,7 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "IfNumber")]
-        private void getIfNumberDescription(LayoutEvent e) {
+        private void GetIfNumberDescription(LayoutEvent e) {
             var ifStringElement = Ensure.NotNull<XmlElement>(e.Sender, "ifStringElement");
 
             e.Info = LayoutEventScriptEditorTreeNodeIfNumber.GetDescription(ifStringElement);
@@ -876,7 +871,7 @@ namespace LayoutManager.CommonUI {
         #region If (Boolean)
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "IfBoolean")]
-        private void getIfBooleanTreeNode(LayoutEvent e) {
+        private void GetIfBooleanTreeNode(LayoutEvent e) {
             var ifElement = Ensure.NotNull<XmlElement>(e.Sender, "ifElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeIfBoolean(ifElement);
@@ -897,10 +892,10 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("event-script-editor-edit-element", IfSender = "IfBoolean")]
-        private void editIfBooleanNode(LayoutEvent e) {
+        private void EditIfBooleanNode(LayoutEvent e) {
             var ifElement = Ensure.NotNull<XmlElement>(e.Sender, "ifElement");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            Controls.EventScriptEditorDialogs.IfCondition ifDialog = new Controls.EventScriptEditorDialogs.IfCondition(ifElement, new IfBooleanCustomizer());
+            Controls.EventScriptEditorDialogs.IfCondition ifDialog = new(ifElement, new IfBooleanCustomizer());
 
             if (ifDialog.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -909,7 +904,7 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "IfBoolean")]
-        private void getIfBooleanDescription(LayoutEvent e) {
+        private void GetIfBooleanDescription(LayoutEvent e) {
             var ifStringElement = Ensure.NotNull<XmlElement>(e.Sender, "ifStringElement");
 
             e.Info = LayoutEventScriptEditorTreeNodeIfBoolean.GetDescription(ifStringElement);
@@ -933,17 +928,17 @@ namespace LayoutManager.CommonUI {
         #region If (Defined)
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "IfDefined")]
-        private void getIfDefinedTreeNode(LayoutEvent e) {
+        private void GetIfDefinedTreeNode(LayoutEvent e) {
             var ifElement = Ensure.NotNull<XmlElement>(e.Sender, "ifElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeIfDefined(ifElement);
         }
 
         [LayoutEvent("event-script-editor-edit-element", IfSender = "IfDefined")]
-        private void editIfDefinedNode(LayoutEvent e) {
+        private void EditIfDefinedNode(LayoutEvent e) {
             var ifElement = Ensure.NotNull<XmlElement>(e.Sender, "ifElement");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            Controls.EventScriptEditorDialogs.IfDefined ifDialog = new Controls.EventScriptEditorDialogs.IfDefined(ifElement);
+            Controls.EventScriptEditorDialogs.IfDefined ifDialog = new(ifElement);
 
             if (ifDialog.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -952,7 +947,7 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "IfDefined")]
-        private void getIfDefinedDescription(LayoutEvent e) {
+        private void GetIfDefinedDescription(LayoutEvent e) {
             var ifElement = Ensure.NotNull<XmlElement>(e.Sender, "ifElement");
 
             e.Info = LayoutEventScriptEditorTreeNodeIfDefined.GetDescription(ifElement);
@@ -982,17 +977,17 @@ namespace LayoutManager.CommonUI {
         #region If (Time)
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "IfTime")]
-        private void getIfTimeTreeNode(LayoutEvent e) {
+        private void GetIfTimeTreeNode(LayoutEvent e) {
             var ifElement = Ensure.NotNull<XmlElement>(e.Sender, "ifElement");
 
             e.Info = new LayoutEventScriptEditorTreeNodeIfTime(ifElement);
         }
 
         [LayoutEvent("event-script-editor-edit-element", IfSender = "IfTime")]
-        private void editIfTimeNode(LayoutEvent e) {
+        private void EditIfTimeNode(LayoutEvent e) {
             var ifElement = Ensure.NotNull<XmlElement>(e.Sender, "ifElement");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            Controls.EventScriptEditorDialogs.IfTime ifDialog = new Controls.EventScriptEditorDialogs.IfTime(ifElement);
+            Controls.EventScriptEditorDialogs.IfTime ifDialog = new(ifElement);
 
             if (ifDialog.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -1001,7 +996,7 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "IfTime")]
-        private void getIfTimeDescription(LayoutEvent e) {
+        private void GetIfTimeDescription(LayoutEvent e) {
             var IfTimeElement = Ensure.NotNull<XmlElement>(e.Sender, "IfTimeElement");
 
             e.Info = LayoutEventScriptEditorTreeNodeIfTime.GetDescription(IfTimeElement);
@@ -1011,7 +1006,7 @@ namespace LayoutManager.CommonUI {
             public LayoutEventScriptEditorTreeNodeIfTime(XmlElement conditionElement) : base(conditionElement) {
             }
 
-            private static string? getNodesDescription(XmlElement element, string nodeName, string title) {
+            private static string? GetNodesDescription(XmlElement element, string nodeName, string title) {
                 var nodes = (IIfTimeNode[]?)EventManager.Event(new LayoutEvent("parse-if-time-element", element, nodeName));
                 string? d = null;
 
@@ -1034,13 +1029,13 @@ namespace LayoutManager.CommonUI {
                 var parts = new List<string>();
                 string? s;
 
-                if ((s = getNodesDescription(element, "DayOfWeek", "day of week is")) != null)
+                if ((s = GetNodesDescription(element, "DayOfWeek", "day of week is")) != null)
                     parts.Add(s);
-                if ((s = getNodesDescription(element, "Hours", "hour is")) != null)
+                if ((s = GetNodesDescription(element, "Hours", "hour is")) != null)
                     parts.Add((parts.Count > 0 ? " and " : "") + s);
-                if ((s = getNodesDescription(element, "Minutes", "minute is")) != null)
+                if ((s = GetNodesDescription(element, "Minutes", "minute is")) != null)
                     parts.Add((parts.Count > 0 ? " and " : "") + s);
-                if ((s = getNodesDescription(element, "Seconds", "second is")) != null)
+                if ((s = GetNodesDescription(element, "Seconds", "second is")) != null)
                     parts.Add((parts.Count > 0 ? " and " : "") + s);
 
                 return string.Concat(parts);
@@ -1058,17 +1053,17 @@ namespace LayoutManager.CommonUI {
         #region Show Message
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "ShowMessage")]
-        private void getShowMessageTreeNode(LayoutEvent e) {
+        private void GetShowMessageTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
 
             e.Info = new LayoutEventScriptEditorTreeNodeShowMessage(element);
         }
 
         [LayoutEvent("event-script-editor-edit-element", IfSender = "ShowMessage")]
-        private void editShowMessageTreeNode(LayoutEvent e) {
+        private void EditShowMessageTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            Controls.EventScriptEditorDialogs.ShowMessage d = new Controls.EventScriptEditorDialogs.ShowMessage(element);
+            Controls.EventScriptEditorDialogs.ShowMessage d = new(element);
 
             if (d.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -1077,7 +1072,7 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "ShowMessage")]
-        private void getShowMessageDescription(LayoutEvent e) {
+        private void GetShowMessageDescription(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
 
             e.Info = LayoutEventScriptEditorTreeNodeShowMessage.GetDescription(element);
@@ -1116,17 +1111,17 @@ namespace LayoutManager.CommonUI {
         #region Set Attribute
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "SetAttribute")]
-        private void getSetAttributeTreeNode(LayoutEvent e) {
+        private void GetSetAttributeTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
 
             e.Info = new LayoutEventScriptEditorTreeNodeSetAttribute(element);
         }
 
         [LayoutEvent("event-script-editor-edit-element", IfSender = "SetAttribute")]
-        private void editSetAttributeTreeNode(LayoutEvent e) {
+        private void EditSetAttributeTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            Controls.EventScriptEditorDialogs.SetAttribute d = new Controls.EventScriptEditorDialogs.SetAttribute(element);
+            Controls.EventScriptEditorDialogs.SetAttribute d = new(element);
 
             if (d.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -1135,7 +1130,7 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "SetAttribute")]
-        private void getSetAttributeDescription(LayoutEvent e) {
+        private void GetSetAttributeDescription(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
 
             e.Info = LayoutEventScriptEditorTreeNodeSetAttribute.GetDescription(element);
@@ -1188,17 +1183,17 @@ namespace LayoutManager.CommonUI {
         #region Generate Event
 
         [LayoutEvent("get-event-script-editor-tree-node", IfSender = "GenerateEvent")]
-        private void getGenerateEventTreeNode(LayoutEvent e) {
+        private void GetGenerateEventTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
 
             e.Info = new LayoutEventScriptEditorTreeNodeGenerateEvent(element);
         }
 
         [LayoutEvent("event-script-editor-edit-element", IfSender = "GenerateEvent")]
-        private void editGenerateEventTreeNode(LayoutEvent e) {
+        private void EditGenerateEventTreeNode(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
             var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-            Controls.EventScriptEditorDialogs.GenerateEvent d = new Controls.EventScriptEditorDialogs.GenerateEvent(element);
+            Controls.EventScriptEditorDialogs.GenerateEvent d = new(element);
 
             if (d.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
@@ -1207,17 +1202,17 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("get-event-script-description", IfSender = "GenerateEvent")]
-        private void getGenerateEventDescription(LayoutEvent e) {
+        private void GetGenerateEventDescription(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
 
             e.Info = LayoutEventScriptEditorTreeNodeGenerateEvent.GetDescription(element);
         }
 
-        private class LayoutEventScriptEditorTreeNodeGenerateEvent : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
+        private class LayoutEventScriptEditorTreeNodeGenerateEvent : LayoutEventScriptEditorTreeNodeAction {
             public LayoutEventScriptEditorTreeNodeGenerateEvent(XmlElement conditionElement) : base(conditionElement) {
             }
 
-            private static string? getArgumentDescription(XmlElement element, string prefix) {
+            private static string? GetArgumentDescription(XmlElement element, string prefix) {
                 string getValueOf(string constant) =>
                     element.GetAttribute($"Type{prefix}") switch
                     {
@@ -1241,22 +1236,22 @@ namespace LayoutManager.CommonUI {
 
             public static string GetDescription(XmlElement element) {
                 var parts = new List<string>();
-                var argument = getArgumentDescription(element, "Sender");
+                var argument = GetArgumentDescription(element, "Sender");
 
                 parts.Add("Generate Event " + element.GetAttribute("EventName"));
 
                 if (argument != null)
                     parts.Add("Sender " + argument);
 
-                argument = getArgumentDescription(element, "Info");
+                argument = GetArgumentDescription(element, "Info");
 
                 if (argument != null)
                     parts.Add("Info " + argument);
 
                 if (element["Options"] != null) {
-                    XmlElement optionsElement = element["Options"];
+                    var optionsElement = element["Options"];
 
-                    if (optionsElement.ChildNodes.Count > 0) {
+                    if (optionsElement != null && optionsElement.ChildNodes.Count > 0) {
                         parts.Add("Options {");
 
                         foreach (XmlElement optionElement in optionsElement)

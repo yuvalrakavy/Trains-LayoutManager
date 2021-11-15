@@ -19,7 +19,6 @@ namespace LayoutManager {
     /// <summary>
     /// Summary description for Form1.
     /// </summary>
-#pragma warning disable IDE0051, IDE0060, IDE0069, IDE0067
     public partial class LayoutFrameWindow : Form, ILayoutFrameWindow {
         private TaskCompletionSource<FrameWindowAction> tcs;
 
@@ -514,7 +513,7 @@ namespace LayoutManager {
             d.ShowDialog(this);
         }
 
-        private void onResetLayoutEmulation(object sender, EventArgs e) {
+        private void onResetLayoutEmulation(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEvent("reset-layout-emulation", this));
         }
 
@@ -740,7 +739,7 @@ namespace LayoutManager {
                 hideMarkerTimer.Start();
             }
 
-            private void onHideMarker(object sender, EventArgs e) {
+            private void onHideMarker(object? sender, EventArgs e) {
                 hideMarkerTimer.Dispose();
                 hideMarkerTimer = null;
                 markerSelection.Hide();
@@ -889,13 +888,13 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("layout-control-shown")]
-        private void layoutControlShown(LayoutEvent e) {
+        private void LayoutControlShown(LayoutEvent e) {
             if (e.IsThisFrameWindow(this))
                 toolBarButtonShowLayoutControl.Pushed = true;
         }
 
         [LayoutEvent("layout-control-hidden")]
-        private void layoutControlHidden(LayoutEvent e) {
+        private void LayoutControlHidden(LayoutEvent e) {
             if (e.IsThisFrameWindow(this))
                 toolBarButtonShowLayoutControl.Pushed = false;
         }
@@ -938,27 +937,27 @@ namespace LayoutManager {
             }
         }
 
-        private void LayoutView_ModelComponentClick(object sender, LayoutViewEventArgs e) {
+        private void LayoutView_ModelComponentClick(object? sender, LayoutViewEventArgs e) {
             if (activeTool != null)
                 activeTool.LayoutView_ModelComponentClick(sender, e);
         }
 
-        private void LayoutView_ModelComponentDragged(object sender, LayoutViewEventArgs e) {
+        private void LayoutView_ModelComponentDragged(object? sender, LayoutViewEventArgs e) {
             if (activeTool != null)
                 activeTool.LayoutView_ModelComponentDragged(sender, e);
         }
 
-        private void LayoutView_ModelComponentQueryDrop(object sender, LayoutViewEventArgs e) {
+        private void LayoutView_ModelComponentQueryDrop(object? sender, LayoutViewEventArgs e) {
             if (activeTool != null)
                 activeTool.LayoutView_ModelComponentQueryDrop(sender, e);
         }
 
-        private void LayoutView_ModelComponentDrop(object sender, LayoutViewEventArgs e) {
+        private void LayoutView_ModelComponentDrop(object? sender, LayoutViewEventArgs e) {
             if (activeTool != null)
                 activeTool.LayoutView_ModelComponentDrop(sender, e);
         }
 
-        private void LayoutView_MouseDown(object sender, MouseEventArgs e) {
+        private void LayoutView_MouseDown(object? sender, MouseEventArgs e) {
             timerDetailsPopup.Stop();
 
             if (detailsPopupWindow != null) {
@@ -969,7 +968,7 @@ namespace LayoutManager {
             }
         }
 
-        private void LayoutView_MouseMove(object sender, MouseEventArgs e) {
+        private void LayoutView_MouseMove(object? sender, MouseEventArgs e) {
             // Reset timer
             if (new Point(e.X, e.Y) != viewMouseLocation)
                 timerDetailsPopup.Stop();
@@ -1004,7 +1003,7 @@ namespace LayoutManager {
             }
         }
 
-        private void timerDetailsPopup_Tick(object sender, EventArgs e) {
+        private void timerDetailsPopup_Tick(object? sender, EventArgs e) {
             // Mouse did not move for enough time, need to show details popup window
             if (detailsPopupWindow == null) {
                 if (viewWithMouse != null) {
@@ -1032,17 +1031,17 @@ namespace LayoutManager {
             timerDetailsPopup.Stop();
         }
 
-        private void menuItemSave_Click(object sender, System.EventArgs e) {
+        private void menuItemSave_Click(object? sender, System.EventArgs e) {
             EventManager.Event(new LayoutEvent("save-layout", this));
         }
 
-        private void menuSaveAs_Click(object sender, System.EventArgs e) {
+        private void menuSaveAs_Click(object? sender, System.EventArgs e) {
         }
 
-        private void menuItemOpen_Click(object sender, System.EventArgs e) {
+        private void menuItemOpen_Click(object? sender, System.EventArgs e) {
         }
 
-        private void menuItemNewLayout_Click(object sender, System.EventArgs e) {
+        private void menuItemNewLayout_Click(object? sender, System.EventArgs e) {
         }
 
         private class ButtonToMenuMap {
@@ -1055,17 +1054,17 @@ namespace LayoutManager {
             }
         }
 
-        private void toolBarMain_ButtonClick(object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e) {
+        private void toolBarMain_ButtonClick(object? sender, System.Windows.Forms.ToolBarButtonClickEventArgs e) {
             ButtonToMenuMap[] map = new ButtonToMenuMap[] {
                 new ButtonToMenuMap(toolBarButtonOpenLayiout, new EventHandler(menuItemOpen_Click)),
                 new ButtonToMenuMap(toolBarButtonSaveLayout, new EventHandler(menuItemSave_Click)),
                 new ButtonToMenuMap(toolBarButtonShowLocomotives, new EventHandler(menuItemShowLocomotives_Click)),
-                new ButtonToMenuMap(toolBarButtonShowLayoutControl, new EventHandler(menuItemShowLayoutControl_Click)),
+                new ButtonToMenuMap(toolBarButtonShowLayoutControl, new EventHandler(MenuItemShowLayoutControl_Click)),
                 new ButtonToMenuMap(toolBarButtonShowMessages, new EventHandler(menuItemShowMessages_Click)),
                 new ButtonToMenuMap(toolBarButtonShowTripsMonitor, new EventHandler(menuItemShowTripsMonitor_Click)),
-                new ButtonToMenuMap(toolBarButtonDesignMode, new EventHandler(menuItemDesign_Click)),
-                new ButtonToMenuMap(toolBarButtonOperationMode, new EventHandler(menuItemOperational_Click)),
-                new ButtonToMenuMap(toolBarButtonToggleAllLayoutManualDispatch, new EventHandler(toggleAllLayoutManualDispatch)),
+                new ButtonToMenuMap(toolBarButtonDesignMode, new EventHandler(MenuItemDesign_Click)),
+                new ButtonToMenuMap(toolBarButtonOperationMode, new EventHandler(MenuItemOperational_Click)),
+                new ButtonToMenuMap(toolBarButtonToggleAllLayoutManualDispatch, new EventHandler(ToggleAllLayoutManualDispatch)),
                 new ButtonToMenuMap(toolBarButtonStopAllLocomotives, new EventHandler(menuItemSuspendLocomotives_Click)),
                 new ButtonToMenuMap(toolBarButtonEmergencyStop, new EventHandler(menuItemEmergencyStop_Click)),
                 new ButtonToMenuMap(toolBarButtonZoomFitAll, new EventHandler(menuItemZoomAllArea_Click)),
@@ -1105,11 +1104,11 @@ namespace LayoutManager {
             }
         }
 
-        private void toolbar_Zoom100(object sender, System.EventArgs e) {
+        private void toolbar_Zoom100(object? sender, System.EventArgs e) {
             menuItemZoom100.PerformClick();
         }
 
-        private void toolbar_ZoomOut(object sender, System.EventArgs e) {
+        private void toolbar_ZoomOut(object? sender, System.EventArgs e) {
             float zoom = ActiveView.Zoom - 0.1F;
 
             if (zoom < 0.1)
@@ -1117,7 +1116,7 @@ namespace LayoutManager {
             ActiveView.Zoom = zoom;
         }
 
-        private void toolbar_ZoomIn(object sender, System.EventArgs e) {
+        private void toolbar_ZoomIn(object? sender, System.EventArgs e) {
             float zoom = ActiveView.Zoom + 0.1F;
 
             if (zoom > 4)
@@ -1125,19 +1124,19 @@ namespace LayoutManager {
             ActiveView.Zoom = zoom;
         }
 
-        private void menuItemExit_Click(object sender, System.EventArgs e) {
+        private void menuItemExit_Click(object? sender, System.EventArgs e) {
             ControllerCommand = FrameWindowCommand.CloseLayout;
         }
 
-        private void menuItemUndo_Click(object sender, System.EventArgs e) {
+        private void menuItemUndo_Click(object? sender, System.EventArgs e) {
             LayoutController.CommandManager.Undo();
         }
 
-        private void menuItemRedo_Click(object sender, System.EventArgs e) {
+        private void menuItemRedo_Click(object? sender, System.EventArgs e) {
             LayoutController.CommandManager.Redo();
         }
 
-        private void menuEdit_Popup(object sender, System.EventArgs e) {
+        private void menuEdit_Popup(object? sender, System.EventArgs e) {
             if (!LayoutController.IsOperationMode && LayoutController.CommandManager.CanUndo) {
                 menuItemUndo.Enabled = true;
                 menuItemUndo.Text = "&Undo " + LayoutController.CommandManager.UndoCommandName;
@@ -1166,7 +1165,7 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemNewArea_Click(object sender, System.EventArgs e) {
+        private void menuItemNewArea_Click(object? sender, System.EventArgs e) {
             var getAreaName = new Dialogs.GetAreasName();
 
             if (getAreaName.ShowDialog(this) == DialogResult.OK) {
@@ -1174,14 +1173,14 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemRenameArea_Click(object sender, System.EventArgs e) {
+        private void menuItemRenameArea_Click(object? sender, System.EventArgs e) {
             var getAreaName = new Dialogs.GetAreasName();
 
             if (getAreaName.ShowDialog(this) == DialogResult.OK)
                 ((LayoutFrameWindowAreaTabPage)tabAreas.SelectedTab).Area.Name = getAreaName.AreaName;
         }
 
-        private void menuItemStyleFonts_Click(object sender, System.EventArgs e) {
+        private void menuItemStyleFonts_Click(object? sender, System.EventArgs e) {
             var standardFonts = new Dialogs.StandardFonts();
 
             standardFonts.ShowDialog(this);
@@ -1189,7 +1188,7 @@ namespace LayoutManager {
             LayoutModel.Instance.Redraw();
         }
 
-        private void menuItemStylePositions_Click(object sender, System.EventArgs e) {
+        private void menuItemStylePositions_Click(object? sender, System.EventArgs e) {
             var standardPositions = new Dialogs.StandardPositions();
 
             standardPositions.ShowDialog();
@@ -1197,25 +1196,25 @@ namespace LayoutManager {
             LayoutModel.Instance.Redraw();
         }
 
-        private void menuItemCopy_Click(object sender, System.EventArgs e) {
+        private void menuItemCopy_Click(object? sender, System.EventArgs e) {
             var copySelection = new MenuItemCopySelection(LayoutController.UserSelection.TopLeftLocation);
 
             copySelection.Copy();
         }
 
-        private void menuItemCut_Click(object sender, System.EventArgs e) {
+        private void menuItemCut_Click(object? sender, System.EventArgs e) {
             var cutSelection = new MenuItemCutSelection(LayoutController.UserSelection.TopLeftLocation);
 
             cutSelection.Cut();
         }
 
-        private void menuItemModules_Click(object sender, System.EventArgs e) {
+        private void menuItemModules_Click(object? sender, System.EventArgs e) {
             var moduleManager = new Dialogs.ModuleManagement();
 
             moduleManager.ShowDialog(this);
         }
 
-        private void menuItemTools_Popup(object sender, System.EventArgs e) {
+        private void menuItemTools_Popup(object? sender, System.EventArgs e) {
             menuItemTools.MenuItems.Clear();
 
             EventManager.Event(new LayoutEvent("tools-menu-open-request", this, menuItemTools).SetFrameWindow(this));
@@ -1228,13 +1227,13 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemAreaArrange_Click(object sender, System.EventArgs e) {
+        private void menuItemAreaArrange_Click(object? sender, System.EventArgs e) {
             var arrangeAreas = new Dialogs.ArrangeAreas(tabAreas);
 
             arrangeAreas.ShowDialog(this);
         }
 
-        private void menuItemDeleteArea_Click(object sender, System.EventArgs e) {
+        private void menuItemDeleteArea_Click(object? sender, System.EventArgs e) {
             LayoutFrameWindowAreaTabPage selectedAreaPage = (LayoutFrameWindowAreaTabPage)tabAreas.SelectedTab;
             LayoutModelArea selectedArea = selectedAreaPage.Area;
 
@@ -1245,7 +1244,7 @@ namespace LayoutManager {
                 LayoutModel.Areas.Remove(selectedArea);
         }
 
-        private void menuItemView_Popup(object sender, System.EventArgs e) {
+        private void menuItemView_Popup(object? sender, System.EventArgs e) {
             if (ActiveView != null)
                 menuItemViewGrid.Checked = ActiveView.ShowGrid != ShowGridLinesOption.Hide;
 
@@ -1279,7 +1278,7 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemViewGrid_Click(object sender, System.EventArgs e) {
+        private void menuItemViewGrid_Click(object? sender, System.EventArgs e) {
             if (ActiveView != null) {
                 if (ActiveView.ShowGrid != ShowGridLinesOption.Hide) {
                     ActiveView.ShowGrid = ShowGridLinesOption.Hide;
@@ -1311,16 +1310,16 @@ namespace LayoutManager {
             return null;
         }
 
-        private void menuItemViewNew_Click(object sender, System.EventArgs e) {
+        private void menuItemViewNew_Click(object? sender, System.EventArgs e) {
             AddNewView();
         }
 
-        private void menuItemViewDelete_Click(object sender, System.EventArgs e) {
+        private void menuItemViewDelete_Click(object? sender, System.EventArgs e) {
             if (ActiveViewPage != null)
                 ActiveAreaPage.TabViews.TabPages.Remove(ActiveViewPage);
         }
 
-        private void menuItemViewRename_Click(object sender, System.EventArgs e) {
+        private void menuItemViewRename_Click(object? sender, System.EventArgs e) {
             if (ActiveViewPage != null) {
                 var getViewName = new Dialogs.GetViewName();
 
@@ -1329,7 +1328,7 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemViewArrage_Click(object sender, System.EventArgs e) {
+        private void menuItemViewArrage_Click(object? sender, System.EventArgs e) {
             if (ActiveAreaPage != null) {
                 var arrangeViews = new Dialogs.ArrangeViews(this, ActiveAreaPage);
 
@@ -1347,7 +1346,7 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemZoomMenu_Popup(object sender, System.EventArgs e) {
+        private void menuItemZoomMenu_Popup(object? sender, System.EventArgs e) {
             if (ActiveView != null) {
                 int currentZoom = (int)Math.Round(ActiveView.Zoom * 100);
                 bool presetZoomFound = false;
@@ -1363,7 +1362,7 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemZoomPreset_Click(object sender, System.EventArgs e) {
+        private void menuItemZoomPreset_Click(object? sender, System.EventArgs e) {
             MenuItem menuItem = (MenuItem)sender;
 
             if (ActiveView != null) {
@@ -1376,12 +1375,12 @@ namespace LayoutManager {
             }
         }
 
-        private void LayoutController_Deactivate(object sender, System.EventArgs e) {
+        private void LayoutController_Deactivate(object? sender, System.EventArgs e) {
             EventManager.Event(new LayoutEvent("frame-window-deactivated", this).SetFrameWindow(this));
             timerFreeResources.Enabled = true;
         }
 
-        private void LayoutController_Resize(object sender, System.EventArgs e) {
+        private void LayoutController_Resize(object? sender, System.EventArgs e) {
             if (this.WindowState == FormWindowState.Minimized) {
                 EventManager.Event(new LayoutEvent("frame-window-minimized", this).SetFrameWindow(this));
                 timerFreeResources.Enabled = true;
@@ -1390,7 +1389,7 @@ namespace LayoutManager {
                 timerFreeResources.Enabled = false;
         }
 
-        private void menuItemSetZoom_Click(object sender, System.EventArgs e) {
+        private void menuItemSetZoom_Click(object? sender, System.EventArgs e) {
             if (ActiveView != null) {
                 var setZoom = new Dialogs.SetZoom {
                     ZoomFactor = (int)Math.Round(ActiveView.Zoom * 100)
@@ -1401,65 +1400,65 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemZoomAllArea_Click(object sender, System.EventArgs e) {
+        private void menuItemZoomAllArea_Click(object? sender, System.EventArgs e) {
             if (ActiveView != null)
                 ActiveView.ShowAllArea();
         }
 
-        private void menuItemShowMessages_Click(object sender, System.EventArgs e) {
+        private void menuItemShowMessages_Click(object? sender, System.EventArgs e) {
             if (messageViewVisible)
                 EventManager.Event(new LayoutEvent("hide-messages", this).SetFrameWindow(this));
             else
                 EventManager.Event(new LayoutEvent("show-messages", this).SetFrameWindow(this));
         }
 
-        private void menuItemShowTripsMonitor_Click(object sender, System.EventArgs e) {
+        private void menuItemShowTripsMonitor_Click(object? sender, System.EventArgs e) {
             if (tripsMonitorVisible)
                 EventManager.Event(new LayoutEvent("hide-trips-monitor", this).SetFrameWindow(this));
             else
                 EventManager.Event(new LayoutEvent("show-trips-monitor", this).SetFrameWindow(this));
         }
 
-        private void menuItemShowLocomotives_Click(object sender, System.EventArgs e) {
+        private void menuItemShowLocomotives_Click(object? sender, System.EventArgs e) {
             if (locomotiveViewVisible)
                 EventManager.Event(new LayoutEvent("hide-locomotives", this).SetFrameWindow(this));
             else
                 EventManager.Event(new LayoutEvent("show-locomotives", this).SetFrameWindow(this));
         }
 
-        private void menuItemShowLayoutControl_Click(object sender, System.EventArgs e) {
+        private void MenuItemShowLayoutControl_Click(object? sender, System.EventArgs e) {
             if (layoutControlVisible)
                 EventManager.Event(new LayoutEvent("hide-layout-control", this).SetFrameWindow(this));
             else
                 EventManager.Event(new LayoutEvent("show-layout-control", this).SetFrameWindow(this));
         }
 
-        private void menuItemOperational_Click(object sender, System.EventArgs e) {
+        private void MenuItemOperational_Click(object? sender, System.EventArgs e) {
             LayoutController.Instance.EnterOperationModeRequest(new OperationModeParameters() { Phases = LayoutPhase.Operational, Simulation = false });
         }
 
-        private void menuItemDesign_Click(object sender, System.EventArgs e) {
+        private void MenuItemDesign_Click(object? sender, System.EventArgs e) {
             LayoutController.Instance.EnterDesignModeRequest();
         }
 
-        private void menuItemLocomotiveCatalog_Click(object sender, System.EventArgs e) {
+        private void MenuItemLocomotiveCatalog_Click(object? sender, System.EventArgs e) {
             var d = new Dialogs.LocomotiveCatalog();
             d.ShowDialog(this);
         }
 
-        private void splitterMessages_SplitterMoved(object sender, System.Windows.Forms.SplitterEventArgs e) {
+        private void SplitterMessages_SplitterMoved(object? sender, System.Windows.Forms.SplitterEventArgs e) {
             UpdateMessageVisible();
         }
 
-        private void splitterTripsMonitor_SplitterMoved(object sender, System.Windows.Forms.SplitterEventArgs e) {
+        private void SplitterTripsMonitor_SplitterMoved(object? sender, System.Windows.Forms.SplitterEventArgs e) {
             UpdateTripsMonitorVisible();
         }
 
-        private void splitterLocomotives_SplitterMoved(object sender, System.Windows.Forms.SplitterEventArgs e) {
+        private void SplitterLocomotives_SplitterMoved(object? sender, System.Windows.Forms.SplitterEventArgs e) {
             UpdateLocomotivesVisible();
         }
 
-        private void timerFreeResources_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+        private void TimerFreeResources_Elapsed(object? sender, System.Timers.ElapsedEventArgs e) {
             // 30 seconds (or so) were passed while the application was minimized or deactivated
             // recoverable resources can be disposed.
             Debug.WriteLine("--- LayoutManager application not active - free resources ---");
@@ -1467,11 +1466,11 @@ namespace LayoutManager {
             timerFreeResources.Enabled = false;
         }
 
-        private void LayoutController_Activated(object sender, System.EventArgs e) {
+        private void LayoutController_Activated(object? sender, EventArgs e) {
             timerFreeResources.Enabled = false;
         }
 
-        private void menuItemManualDispatchRegions_Popup(object sender, System.EventArgs e) {
+        private void MenuItemManualDispatchRegions_Popup(object? sender, System.EventArgs e) {
             menuItemManualDispatchRegions.MenuItems.Clear();
 
             foreach (ManualDispatchRegionInfo manualDispatchRegion in LayoutModel.StateManager.ManualDispatchRegions)
@@ -1483,16 +1482,16 @@ namespace LayoutManager {
             menuItemManualDispatchRegions.MenuItems.Add(new AllLayoutManualDispatchItem());
             menuItemManualDispatchRegions.MenuItems.Add("-");
 
-            menuItemManualDispatchRegions.MenuItems.Add("Manage Manual Dispatch Regions...", new EventHandler(this.onManageManualDispatchRegions));
+            menuItemManualDispatchRegions.MenuItems.Add("Manage Manual Dispatch Regions...", new EventHandler(this.OnManageManualDispatchRegions));
         }
 
-        private void onManageManualDispatchRegions(object sender, EventArgs e) {
+        private void OnManageManualDispatchRegions(object? sender, EventArgs e) {
             var d = new LayoutManager.Tools.Dialogs.ManualDispatchRegions();
 
             d.Show();
         }
 
-        private void menuItemPolicies_Click(object sender, System.EventArgs e) {
+        private void MenuItemPolicies_Click(object? sender, System.EventArgs e) {
             Form d = (Form)EventManager.Event(new LayoutEvent("query-policies-definition-dialog", this));
 
             if (d != null)
@@ -1505,27 +1504,27 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemAccelerationProfiles_Click(object sender, System.EventArgs e) {
+        private void MenuItemAccelerationProfiles_Click(object? sender, System.EventArgs e) {
             var rampsDialog = new LayoutManager.Tools.Dialogs.MotionRamps(LayoutModel.Instance.Ramps);
 
             rampsDialog.ShowDialog();
             LayoutModel.WriteModelXmlInfo();
         }
 
-        private void menuItemDefaultDriverParameters_Click(object sender, System.EventArgs e) {
+        private void MenuItemDefaultDriverParameters_Click(object? sender, System.EventArgs e) {
             var d = new LayoutManager.Tools.Dialogs.DefaultDrivingParameters();
 
             d.ShowDialog(this);
         }
 
-        private void menuItemCommonDestinations_Click(object sender, System.EventArgs e) {
+        private void MenuItemCommonDestinations_Click(object? sender, System.EventArgs e) {
             var d = new LayoutManager.Tools.Dialogs.TripPlanCommonDestinations {
                 Owner = this
             };
             d.Show();
         }
 
-        private class ManualDispatchRegionItem : MenuItem {
+        private class ManualDispatchRegionItem : LayoutMenuItem {
             private readonly ManualDispatchRegionInfo manualDispatchRegion;
 
             public ManualDispatchRegionItem(ManualDispatchRegionInfo manualDispatchRegion) {
@@ -1552,7 +1551,7 @@ namespace LayoutManager {
             }
         }
 
-        private class AllLayoutManualDispatchItem : MenuItem {
+        private class AllLayoutManualDispatchItem : LayoutMenuItem {
             public AllLayoutManualDispatchItem() {
                 Text = "All layout";
 
@@ -1577,12 +1576,12 @@ namespace LayoutManager {
             }
         }
 
-        private void toggleAllLayoutManualDispatch(object sender, EventArgs e) {
+        private void ToggleAllLayoutManualDispatch(object? sender, EventArgs e) {
             var item = new AllLayoutManualDispatchItem();
             item.PerformClick();
         }
 
-        private void menuItemSuspendLocomotives_Click(object sender, System.EventArgs e) {
+        private void menuItemSuspendLocomotives_Click(object? sender, System.EventArgs e) {
             bool allSuspended = (bool)EventManager.Event(new LayoutEvent("are-all-locomotives-suspended", this));
 
             if (allSuspended)
@@ -1607,7 +1606,7 @@ namespace LayoutManager {
         private EventHandler simulateEventHandler;
         private EventHandler verifyLayoutEventHandler;
 
-        private void menuLayout_Popup(object sender, System.EventArgs e) {
+        private void menuLayout_Popup(object? sender, System.EventArgs e) {
             bool allSuspended = (bool)EventManager.Event(new LayoutEvent("are-all-locomotives-suspended", this));
 
             if (allSuspended)
@@ -1640,11 +1639,11 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemSimulation_Click(object sender, EventArgs e) {
+        private void menuItemSimulation_Click(object? sender, EventArgs e) {
             simulateEventHandler(sender, e);
         }
 
-        private void menuItemCompile_Click(object sender, System.EventArgs e) {
+        private void menuItemCompile_Click(object? sender, System.EventArgs e) {
             verifyLayoutEventHandler(sender, e);
         }
 
@@ -1658,15 +1657,15 @@ namespace LayoutManager {
                 MessageBox.Show(this, "Layout checked, all seems to be OK", "Layout Check Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void menuItemEmergencyStop_Click(object sender, System.EventArgs e) {
+        private void menuItemEmergencyStop_Click(object? sender, System.EventArgs e) {
             EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation, string>("emergency-stop-request", null, "User initiated"));
         }
 
-        private void menuItemConnectLayout_Click(object sender, System.EventArgs e) {
+        private void menuItemConnectLayout_Click(object? sender, System.EventArgs e) {
             EventManager.Event(new LayoutEvent("connect-layout-to-control-request", this));
         }
 
-        private void menuItemLearnLayout_Click(object sender, EventArgs e) {
+        private void menuItemLearnLayout_Click(object? sender, EventArgs e) {
             try {
                 if (LayoutController.Instance.BeginDesignTimeActivation()) {
                     Form learnLayoutForm = (Form)EventManager.Event(new LayoutEvent("activate-learn-layout", this));
@@ -1690,13 +1689,13 @@ namespace LayoutManager {
 #pragma warning restore CA1031 // Do not catch general exception types
         }
 
-        private void menuItemFind_Click(object sender, EventArgs e) {
+        private void menuItemFind_Click(object? sender, EventArgs e) {
             var d = new LayoutManager.Dialogs.FindComponents(ActiveAreaPage.Area);
 
             d.ShowDialog(this);
         }
 
-        private void printDocument_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e) {
+        private void printDocument_PrintPage(object? sender, System.Drawing.Printing.PrintPageEventArgs e) {
             LayoutFrameWindowAreaTabPage areaPage;
             ILayoutView view;
 
@@ -1753,7 +1752,7 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemPrint_Click(object sender, EventArgs e) {
+        private void menuItemPrint_Click(object? sender, EventArgs e) {
             printState = new PrintState(new Dialogs.Print(printDocument));
             if (printState.PrintDialog.ShowDialog(this) == DialogResult.OK) {
                 printDocument.DocumentName = LayoutController.LayoutFilename ?? "Untitled";
@@ -1763,17 +1762,17 @@ namespace LayoutManager {
                 printState = null;
         }
 
-        private void menuItemRestoreDefaultZoomAndOrigin_Click(object sender, EventArgs e) {
+        private void menuItemRestoreDefaultZoomAndOrigin_Click(object? sender, EventArgs e) {
             if (ActiveView != null)
                 ActiveView.SetOriginAndZoomToDefault();
         }
 
-        private void menuItemSaveAsDefaultZoomAndOrigin_Click(object sender, EventArgs e) {
+        private void menuItemSaveAsDefaultZoomAndOrigin_Click(object? sender, EventArgs e) {
             if (ActiveView != null && MessageBox.Show("Do you want to set current position and zoom as the default for this view?", "Set Default Origin & View", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 ActiveView.SetAsDefaultOriginAndZoom();
         }
 
-        private void menuItemSelectUnconnectedComponents_Click(object sender, EventArgs e) {
+        private void menuItemSelectUnconnectedComponents_Click(object? sender, EventArgs e) {
             var selection = new LayoutSelection();
 
             foreach (IModelComponentConnectToControl component in LayoutModel.Components<IModelComponentConnectToControl>(LayoutPhase.All))
@@ -1788,7 +1787,7 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEvent("show-messages", this));
         }
 
-        private void menuItemSelectUnlinkedSignals_Click(object sender, EventArgs e) {
+        private void menuItemSelectUnlinkedSignals_Click(object? sender, EventArgs e) {
             Dictionary<Guid, LayoutBlockEdgeBase> map = (Dictionary<Guid, LayoutBlockEdgeBase>)EventManager.Event(new LayoutEvent("get-linked-signal-map", this));
             LayoutSelection selection = new LayoutSelection();
 
@@ -1804,7 +1803,7 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEvent("show-messages", this));
         }
 
-        private void menuItemSelectUnlinkedTrackLinks_Click(object sender, EventArgs e) {
+        private void menuItemSelectUnlinkedTrackLinks_Click(object? sender, EventArgs e) {
             LayoutSelection selection = new LayoutSelection();
 
             foreach (LayoutTrackLinkComponent trackLink in LayoutModel.Components<LayoutTrackLinkComponent>(LayoutPhase.All))
@@ -1819,43 +1818,43 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEvent("show-messages", this));
         }
 
-        private void menuItemNewComponentDesignPhase_Click(object sender, EventArgs e) {
+        private void menuItemNewComponentDesignPhase_Click(object? sender, EventArgs e) {
             var command = new ChangeDefaultPhaseCommand(LayoutPhase.Planned);
 
             LayoutController.Do(command);
         }
 
-        private void menuItemNewComponentConstructionPhase_Click(object sender, EventArgs e) {
+        private void menuItemNewComponentConstructionPhase_Click(object? sender, EventArgs e) {
             var command = new ChangeDefaultPhaseCommand(LayoutPhase.Construction);
 
             LayoutController.Do(command);
         }
 
-        private void menuItemNewComponentOperationalPhase_Click(object sender, EventArgs e) {
+        private void menuItemNewComponentOperationalPhase_Click(object? sender, EventArgs e) {
             var command = new ChangeDefaultPhaseCommand(LayoutPhase.Operational);
 
             LayoutController.Do(command);
         }
 
-        private void menuItemSetToDesignPhase_Click(object sender, EventArgs e) {
+        private void menuItemSetToDesignPhase_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEventInfoValueType<LayoutSelection, LayoutPhase>("change-phase", null, LayoutPhase.Planned));
         }
 
-        private void menuItemSetToConstructionPhase_Click(object sender, EventArgs e) {
+        private void menuItemSetToConstructionPhase_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEventInfoValueType<LayoutSelection, LayoutPhase>("change-phase", null, LayoutPhase.Construction));
         }
 
-        private void menuItemSetToOperationalPhase_Click(object sender, EventArgs e) {
+        private void menuItemSetToOperationalPhase_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEventInfoValueType<LayoutSelection, LayoutPhase>("change-phase", null, LayoutPhase.Operational));
         }
 
-        private void menuItemDefaultPhase_Popup(object sender, EventArgs e) {
+        private void menuItemDefaultPhase_Popup(object? sender, EventArgs e) {
             menuItemNewComponentDesignPhase.Checked = LayoutModel.Instance.DefaultPhase == LayoutPhase.Planned;
             menuItemNewComponentConstructionPhase.Checked = LayoutModel.Instance.DefaultPhase == LayoutPhase.Construction;
             menuItemNewComponentOperationalPhase.Checked = LayoutModel.Instance.DefaultPhase == LayoutPhase.Operational;
         }
 
-        private void menuItemViewActivePhases_Click(object sender, EventArgs e) {
+        private void menuItemViewActivePhases_Click(object? sender, EventArgs e) {
             menuItemViewActivePhases.Checked = !menuItemViewActivePhases.Checked;
             ActiveViewPage.ShowActivePhases = menuItemViewActivePhases.Checked;
 
@@ -1867,15 +1866,15 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemNewWindow_Click(object sender, EventArgs e) {
+        private void menuItemNewWindow_Click(object? sender, EventArgs e) {
             ControllerCommand = FrameWindowCommand.NewWindow;
         }
 
-        private void menuItemCloseWindow_Click(object sender, EventArgs e) {
+        private void menuItemCloseWindow_Click(object? sender, EventArgs e) {
             Close();
         }
 
-        private void menuItemSelectPowerConnectors_Click(object sender, EventArgs e) {
+        private void menuItemSelectPowerConnectors_Click(object? sender, EventArgs e) {
             var selection = new LayoutSelection(LayoutModel.Components<LayoutTrackPowerConnectorComponent>(LayoutPhase.All));
 
             if (selection.Count == 0)
@@ -1884,7 +1883,7 @@ namespace LayoutManager {
                 LayoutModuleBase.Message(selection, "Track power connectors");
         }
 
-        private void menuItemSelectReverseLoopModules_Click(object sender, EventArgs e) {
+        private void menuItemSelectReverseLoopModules_Click(object? sender, EventArgs e) {
             var selection = new LayoutSelection(LayoutModel.AllComponents<LayoutTrackReverseLoopModule>(LayoutPhase.All));
 
             if (selection.Count == 0)
@@ -1893,13 +1892,13 @@ namespace LayoutManager {
                 LayoutModuleBase.Message(selection, "Reverse loop modules");
         }
 
-        private void menuItemVerificationOptions_Click(object sender, EventArgs e) {
+        private void menuItemVerificationOptions_Click(object? sender, EventArgs e) {
             var d = new LayoutManager.Tools.Dialogs.LayoutVerificationOptions();
 
             d.ShowDialog(this);
         }
 
-        private void menuItemTrainTracking_Click(object sender, EventArgs e) {
+        private void menuItemTrainTracking_Click(object? sender, EventArgs e) {
             var d = new CommonUI.Dialogs.TrainTrackingOptions();
 
             d.ShowDialog();
@@ -1935,7 +1934,7 @@ namespace LayoutManager {
                 TabViews.SelectedIndexChanged -= tabViews_SelectedIndexChanged;
         }
 
-        private void tabViews_SelectedIndexChanged(object sender, EventArgs e) {
+        private void tabViews_SelectedIndexChanged(object? sender, EventArgs e) {
             FrameWindow.OnViewChanged();
         }
     }

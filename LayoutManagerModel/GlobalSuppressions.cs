@@ -4,6 +4,8 @@
 // Project-level suppressions either have no target or are given 
 // a specific target and scoped to a namespace, type, member, etc.
 
+using System.Diagnostics.CodeAnalysis;
+
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>", Scope = "member", Target = "~M:LayoutManager.Model.LayoutModelArea.OnComponentDeleted(LayoutManager.Model.LayoutModelSpotComponentCollection,LayoutManager.Model.ModelComponent)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>", Scope = "member", Target = "~M:LayoutManager.Components.ResourceCollection.CheckIntegrity(LayoutManager.LayoutModuleBase,LayoutManager.Model.LayoutPhase)~System.Boolean")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "RCS1168:Parameter name differs from base name.", Justification = "<Pending>", Scope = "member", Target = "~M:LayoutManager.Components.LayoutTrackComponent.HasConnectionPoint(LayoutManager.Model.LayoutComponentConnectionPoint)~System.Boolean")]
@@ -27,3 +29,12 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Readability", "RCS1234:Duplicate enum value.", Justification = "<Pending>", Scope = "type", Target = "~T:LayoutManager.Model.ControlConnectionPointLabelFormatOptions")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Readability", "RCS1154:Sort enum members.", Justification = "<Pending>", Scope = "type", Target = "~T:LayoutManager.Model.ControlModuleConnectionPointArrangementOptions")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Readability", "RCS1234:Duplicate enum value.", Justification = "<Pending>", Scope = "type", Target = "~T:LayoutManager.Model.ControlModuleConnectionPointArrangementOptions")]
+[assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>", Scope = "member", Target = "~M:LayoutManager.Components.StandardGateDrivers.ControlConnectionPointStateChangedNotification(LayoutManager.LayoutEvent)")]
+[assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>", Scope = "member", Target = "~M:LayoutManager.Components.StandardGateDrivers.GateCloseTimeout(LayoutManager.LayoutEvent)")]
+[assembly: SuppressMessage("Usage", "CA2208:Instantiate argument exceptions correctly", Justification = "<Pending>", Scope = "member", Target = "~M:LayoutManager.Components.LayoutTrackComponent.GetBlock(LayoutManager.Model.LayoutComponentConnectionPoint)~LayoutManager.Model.LayoutBlock")]
+[assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>", Scope = "member", Target = "~M:LayoutManager.Model.LocomotiveCollectionInfo.GetElementId(System.Xml.XmlElement)~System.Guid")]
+[assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>", Scope = "member", Target = "~M:LayoutManager.Model.LocomotiveCollectionBaseInfo.GetDataSubdirectoryPath(System.String)~System.String")]
+[assembly: SuppressMessage("Design", "CA1069:Enums values should not be duplicated", Justification = "<Pending>", Scope = "type", Target = "~T:LayoutManager.Model.ControlConnectionPointLabelFormatOptions")]
+[assembly: SuppressMessage("Design", "CA1069:Enums values should not be duplicated", Justification = "<Pending>", Scope = "type", Target = "~T:LayoutManager.Model.ControlModuleConnectionPointArrangementOptions")]
+[assembly: SuppressMessage("Usage", "CA2208:Instantiate argument exceptions correctly", Justification = "<Pending>", Scope = "member", Target = "~P:LayoutManager.Model.LayoutPolicyInfo.EventScriptElement")]
+[assembly: SuppressMessage("Usage", "CA2208:Instantiate argument exceptions correctly", Justification = "<Pending>", Scope = "member", Target = "~M:LayoutManager.Model.LayoutComponentConnectionPointExtensions.ToComponentConnectionPoint(LayoutManager.ConvertableString)~LayoutManager.Model.LayoutComponentConnectionPoint")]

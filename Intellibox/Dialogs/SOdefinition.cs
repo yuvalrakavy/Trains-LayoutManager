@@ -9,13 +9,13 @@ namespace Intellibox.Dialogs {
             //			SOinfoBindingSource.SuspendBinding();
         }
 
-        private void buttonOk_Click(object sender, EventArgs e) {
+        private void buttonOk_Click(object? sender, EventArgs e) {
             //			SOinfoBindingSource.ResumeBinding();
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void textBoxNumber_Validated(object sender, EventArgs e) {
+        private void textBoxNumber_Validated(object? sender, EventArgs e) {
             errorProvider.SetError(textBoxNumber, "");
 
             if (textBoxNumber.Text.Trim().Length == 0)
@@ -24,7 +24,7 @@ namespace Intellibox.Dialogs {
                 errorProvider.SetError(textBoxNumber, "SO number is not a valid number");
         }
 
-        private void textBoxValue_TextChanged(object sender, EventArgs e) {
+        private void textBoxValue_TextChanged(object? sender, EventArgs e) {
             errorProvider.SetError(textBoxValue, "");
 
             if (textBoxValue.Text.Trim().Length == 0)

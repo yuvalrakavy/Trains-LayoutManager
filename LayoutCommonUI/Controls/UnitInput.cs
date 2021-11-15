@@ -1,25 +1,11 @@
-using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
-
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for UnitInput.
     /// </summary>
-    public class UnitInput : System.Windows.Forms.UserControl {
-        private TextBox textBoxValue;
-        private LayoutManager.CommonUI.Controls.LinkMenu linkMenuUnits;
+    public partial class UnitInput : UserControl {
 
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container components = null;
-
-        private void endOfDesignerVariables() { }
-
-        private readonly ArrayList units = new ArrayList();
-        private Unit currentUnit = null;
+        private readonly List<Unit> units = new();
+        private Unit? currentUnit = null;
         private bool unitDefinitionUpdated = false;
 
         public UnitInput() {
@@ -31,13 +17,13 @@ namespace LayoutManager.CommonUI.Controls {
             get {
                 if (!unitDefinitionUpdated)
                     throw new ApplicationException("No units are defined or you did not called UnitDefinitionDone()");
-                return currentUnit.ToNeutralValue(UnitValue);
+                return currentUnit?.ToNeutralValue(UnitValue) ?? UnitValue;
             }
 
             set {
                 if (!unitDefinitionUpdated)
                     throw new ApplicationException("No units are defined or you did not called UnitDefinitionDone()");
-                textBoxValue.Text = currentUnit.ToUnitValue(value).ToString();
+                textBoxValue.Text = (currentUnit?.ToUnitValue(value) ?? UnitValue).ToString();
             }
         }
 
@@ -58,9 +44,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public bool IsEmpty {
-            get {
-                return textBoxValue.Text.Trim() == "";
-            }
+            get => textBoxValue.Text.Trim() == "";
 
             set {
                 if (value)
@@ -118,13 +102,8 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public bool ReadOnly {
-            set {
-                textBoxValue.ReadOnly = value;
-            }
-
-            get {
-                return textBoxValue.ReadOnly;
-            }
+            set => textBoxValue.ReadOnly = value;
+            get => textBoxValue.ReadOnly;
         }
 
         /// <summary> 
@@ -139,52 +118,7 @@ namespace LayoutManager.CommonUI.Controls {
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.textBoxValue = new TextBox();
-            this.linkMenuUnits = new LayoutManager.CommonUI.Controls.LinkMenu();
-            this.SuspendLayout();
-            // 
-            // textBoxValue
-            // 
-            this.textBoxValue.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right;
-            this.textBoxValue.Location = new System.Drawing.Point(7, 2);
-            this.textBoxValue.Name = "textBoxValue";
-            this.textBoxValue.Size = new System.Drawing.Size(48, 20);
-            this.textBoxValue.TabIndex = 0;
-            this.textBoxValue.Text = "";
-            // 
-            // linkMenuUnits
-            // 
-            this.linkMenuUnits.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                | System.Windows.Forms.AnchorStyles.Right;
-            this.linkMenuUnits.Location = new System.Drawing.Point(60, 2);
-            this.linkMenuUnits.Name = "linkMenuUnits";
-            this.linkMenuUnits.Options = new string[0];
-            this.linkMenuUnits.SelectedIndex = -1;
-            this.linkMenuUnits.Size = new System.Drawing.Size(40, 20);
-            this.linkMenuUnits.TabIndex = 1;
-            this.linkMenuUnits.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkMenuUnits.ValueChanged += this.linkMenuUnits_ValueChanged;
-            // 
-            // UnitInput
-            // 
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
-                                                                          this.linkMenuUnits,
-                                                                          this.textBoxValue});
-            this.Name = "UnitInput";
-            this.Size = new System.Drawing.Size(104, 24);
-            this.ResumeLayout(false);
-        }
-        #endregion
-
-        private void linkMenuUnits_ValueChanged(object sender, System.EventArgs e) {
+        private void LinkMenuUnits_ValueChanged(object? sender, EventArgs e) {
             SelectUnit(linkMenuUnits.SelectedIndex);
         }
 

@@ -533,7 +533,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        protected void buttonSet_click(Object sender, EventArgs e) {
+        protected void buttonSet_click(object? sender, EventArgs e) {
             for (int iOrigin = 0; iOrigin < origins.Length; iOrigin++) {
                 for (int iKind = 0; iKind < kinds.Length; iKind++) {
                     ImageEntry entry = imageTable[iOrigin, iKind];
@@ -562,7 +562,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        protected void buttonClear_click(Object sender, EventArgs e) {
+        protected void buttonClear_click(object? sender, EventArgs e) {
             for (int iOrigin = 0; iOrigin < origins.Length; iOrigin++) {
                 for (int iKind = 0; iKind < kinds.Length; iKind++) {
                     ImageEntry entry = imageTable[iOrigin, iKind];
@@ -576,7 +576,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonOK_Click(object sender, System.EventArgs e) {
+        private void buttonOK_Click(object? sender, System.EventArgs e) {
             for (int iOrigin = 0; iOrigin < origins.Length; iOrigin++) {
                 for (int iKind = 0; iKind < kinds.Length; iKind++) {
                     ImageEntry entry = imageTable[iOrigin, iKind];

@@ -30,6 +30,12 @@ namespace LayoutManager.Model {
         private const string A_SpeedChangeRate = "SpeedChangeRate";
         private const string E_Ramp = "Ramp";
 
+        public MotionRampInfo() {
+            
+        }
+
+        public MotionRampInfo(string name) : base(name) { }
+
         public MotionRampInfo(XmlElement element) : base(element) {
         }
 
@@ -91,7 +97,7 @@ namespace LayoutManager.Model {
 
         protected void Initialize(XmlNode parent, MotionRampType rampType, int parameter) {
             if (!(parent is XmlDocument doc))
-                doc = parent.OwnerDocument;
+                doc = parent.OwnerDocument!;
 
             Element = doc.CreateElement(E_Ramp);
 
@@ -105,6 +111,12 @@ namespace LayoutManager.Model {
 
             parent.AppendChild(Element);
         }
+
+        public static MotionRampInfo Default = new("Default") {
+            Name = "Default",
+            RampType = MotionRampType.TimeFixed,
+            MotionTime = 1000,
+        };
     }
 
     public class MotionRampCollection : XmlCollection<MotionRampInfo>, ICollection<MotionRampInfo> {
@@ -165,13 +177,13 @@ namespace LayoutManager.Model {
 
         public DefaultDriverParametersInfo(XmlElement element) : base(element) {
             if (element.ChildNodes.Count == 0)
-                initialize();
+                Initialize();
         }
 
         /// <summary>
         /// Initialize with default values
         /// </summary>
-        private void initialize() {
+        private void Initialize() {
             int speedSteps = LayoutModel.Instance.LogicalSpeedSteps;
 
             MotionRampInfo acceleration = new MotionRampInfo(Element, MotionRampType.RateFixed, speedSteps / 2);
@@ -198,18 +210,18 @@ namespace LayoutManager.Model {
             set => SetAttributeValue(A_SlowDownSpeed, value);
         }
 
-        private MotionRampInfo? getRamp(string role) {
-            XmlElement rampElement = (XmlElement)Element.SelectSingleNode("Ramp[@Role='" + role + "']");
+        private MotionRampInfo? GetRamp(string role) {
+            var rampElement = (XmlElement?)Element.SelectSingleNode("Ramp[@Role='" + role + "']");
 
             return rampElement == null ? null : new MotionRampInfo(rampElement);
         }
 
-        public MotionRampInfo? AccelerationProfile => getRamp("Acceleration");
+        public MotionRampInfo? AccelerationProfile => GetRamp("Acceleration");
 
-        public MotionRampInfo? DecelerationProfile => getRamp("Deceleration");
+        public MotionRampInfo? DecelerationProfile => GetRamp("Deceleration");
 
-        public MotionRampInfo? SlowdownProfile => getRamp("SlowDown");
+        public MotionRampInfo? SlowdownProfile => GetRamp("SlowDown");
 
-        public MotionRampInfo? StopProfile => getRamp("Stop");
+        public MotionRampInfo? StopProfile => GetRamp("Stop");
     }
 }

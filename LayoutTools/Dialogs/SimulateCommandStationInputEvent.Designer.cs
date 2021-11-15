@@ -55,7 +55,7 @@
 			this.comboBoxCommandStation.Name = "comboBoxCommandStation";
 			this.comboBoxCommandStation.Size = new System.Drawing.Size(168, 21);
 			this.comboBoxCommandStation.TabIndex = 1;
-			this.comboBoxCommandStation.SelectedIndexChanged += new System.EventHandler(this.comboBoxCommandStation_SelectedIndexChanged);
+			this.comboBoxCommandStation.SelectedIndexChanged += new System.EventHandler(this.ComboBoxCommandStation_SelectedIndexChanged);
 // 
 // label2
 // 
@@ -75,7 +75,7 @@
 			this.comboBoxBus.Name = "comboBoxBus";
 			this.comboBoxBus.Size = new System.Drawing.Size(100, 21);
 			this.comboBoxBus.TabIndex = 3;
-			this.comboBoxBus.SelectedIndexChanged += new System.EventHandler(this.comboBoxBus_SelectedIndexChanged);
+			this.comboBoxBus.SelectedIndexChanged += new System.EventHandler(this.ComboBoxBus_SelectedIndexChanged);
 // 
 // label3
 // 
@@ -118,7 +118,7 @@
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.TabIndex = 10;
 			this.buttonOK.Text = "OK";
-			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
 // 
 // buttonCancel
 // 
@@ -148,6 +148,7 @@
 // SimulateCommandStationInputEvent
 // 
 			this.AcceptButton = this.buttonOK;
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(367, 124);

@@ -259,7 +259,7 @@ namespace LayoutManager.Model {
             Element = tripPlan.Element.OwnerDocument.CreateElement(E_WayPoint);
 
             // This added new destination to the destination list
-            new TripPlanDestinationInfo(this, blockInfo);
+            _ = new TripPlanDestinationInfo(this, blockInfo);
         }
 
         public TripPlanWaypointInfo(TripPlanInfo tripPlan) {
@@ -532,7 +532,7 @@ namespace LayoutManager.Model {
 
         public Guid TrainId => (Guid)AttributeValue(A_TrainId);
 
-        public TrainStateInfo Train => train ?? (train = LayoutModel.StateManager.Trains[TrainId]);
+        public TrainStateInfo Train => train ??= LayoutModel.StateManager.Trains[TrainId];
 
         public TripStatus Status {
             get => AttributeValue(A_Status).Enum<TripStatus>() ?? TripStatus.NotSubmitted;
@@ -702,7 +702,7 @@ namespace LayoutManager.Model {
         /// Check that each location indeed exist in the model.
         /// </summary>
         /// <returns>true - destination ok, false - destination became empty, should be deleted</returns>
-        private bool checkDestinationIntegrity(IntegrityContext ic, TripPlanDestinationInfo destination, LayoutPhase phase) {
+        private static bool CheckDestinationIntegrity(IntegrityContext ic, TripPlanDestinationInfo destination, LayoutPhase phase) {
             List<Guid> removeList = null;
 
             foreach (Guid blockId in destination.BlockIdList)
@@ -735,7 +735,7 @@ namespace LayoutManager.Model {
                 foreach (TripPlanWaypointInfo wayPoint in tripPlan.Waypoints) {
                     ic.Waypoint = wayPoint;
 
-                    if (!checkDestinationIntegrity(ic, wayPoint.Destination, phase)) {
+                    if (!CheckDestinationIntegrity(ic, wayPoint.Destination, phase)) {
                         ic.Message("All the locations (blocks) in this waypoint were removed, removing waypoint");
                         wayPointRemoveList.Add(wayPoint);
                     }
@@ -762,7 +762,7 @@ namespace LayoutManager.Model {
             foreach (TripPlanDestinationInfo destination in Destinations) {
                 ic.Destination = destination;
 
-                if (!checkDestinationIntegrity(ic, destination, phase)) {
+                if (!CheckDestinationIntegrity(ic, destination, phase)) {
                     ic.Message("All blocks in this destination are removed, removing destination");
                     destinationRemoveList.Add(destination);
                 }
@@ -781,7 +781,7 @@ namespace LayoutManager.Model {
     #region Classes for find-best-route-request event
 
     public class TripBestRouteRequest {
-        private Guid _routeOwner;
+        private readonly Guid _routeOwner;
         private readonly bool _trainStopping;
 
         public TripBestRouteRequest(Guid routeOwner, TripPlanDestinationInfo destination, ModelComponent source, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, bool trainStopping) {
@@ -853,7 +853,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        private ImageList createImageList(int width, int height) {
+        private ImageList CreateImageList(int width, int height) {
             ImageList imageList = new ImageList {
                 ImageSize = new Size(height, width),
                 ColorDepth = ColorDepth.Depth24Bit
@@ -872,7 +872,7 @@ namespace LayoutManager.Model {
             return imageList;
         }
 
-        public ImageList LargeIconImageList => largeIconImageList ?? (largeIconImageList = createImageList(32, 32));
+        public ImageList LargeIconImageList => largeIconImageList ??= CreateImageList(32, 32);
 
         /// <summary>
         /// Given iconID returns its icon index

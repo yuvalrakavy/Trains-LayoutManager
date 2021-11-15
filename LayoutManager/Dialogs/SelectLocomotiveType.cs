@@ -134,18 +134,18 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void locomotiveTypeList_SelectedIndexChanged(object sender, System.EventArgs e) {
+        private void locomotiveTypeList_SelectedIndexChanged(object? sender, System.EventArgs e) {
             updateButtons();
         }
 
-        private void buttonCancel_Click(object sender, System.EventArgs e) {
+        private void buttonCancel_Click(object? sender, System.EventArgs e) {
         }
 
-        private void buttonSelect_Click(object sender, System.EventArgs e) {
+        private void buttonSelect_Click(object? sender, System.EventArgs e) {
             DialogResult = DialogResult.OK;
         }
 
-        private void buttonArrangeBy_Click(object sender, System.EventArgs e) {
+        private void buttonArrangeBy_Click(object? sender, System.EventArgs e) {
             ContextMenu m = new ContextMenu();
 
             locomotiveTypeList.AddLayoutMenuItems(m);

@@ -1,5 +1,3 @@
-using System;
-
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for LengthInput.
@@ -14,7 +12,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public void Initialize() {
-            string defaultLengthUnit = (String)EventManager.Event(new LayoutEvent("get-default-length-unit", Parent));
+            var defaultLengthUnit = (String?)EventManager.Event(new LayoutEvent("get-default-length-unit", Parent));
 
             if (defaultLengthUnit != null)
                 SelectUnit(defaultLengthUnit);

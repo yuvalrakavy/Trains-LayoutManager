@@ -134,13 +134,13 @@ namespace LayoutManager {
 
                 if (currentMessageSelection.Count > 0) {
                     currentComponentSelection = new LayoutSelection();
-                    setComponentSelection(currentMessageSelection.Components.First());
+                    SetComponentSelection(currentMessageSelection.Components.First());
                     currentComponentSelection.Display(new LayoutSelectionLook(Color.DarkRed));
                 }
             }
         }
 
-        private void setComponentSelection(ModelComponent component) {
+        private void SetComponentSelection(ModelComponent component) {
             currentComponentSelection.Clear();
             currentComponentSelection.Add(component);
             EventManager.Event(new LayoutEvent("ensure-component-visible", component, false));
@@ -184,7 +184,7 @@ namespace LayoutManager {
                 this.Severity = severity;
 
                 if (messageSubject != null) {
-                    selectMessageSubject(messageSubject);
+                    SelectMessageSubject(messageSubject);
 
                     // Create areas string
                     Hashtable areas = new Hashtable();
@@ -220,18 +220,18 @@ namespace LayoutManager {
                 }
             }
 
-            private void selectMessageSubject(object messageSubject) {
-                if (messageSubject is LayoutSelection)
-                    this.selection = (LayoutSelection)messageSubject;
+            private void SelectMessageSubject(object messageSubject) {
+                if (messageSubject is LayoutSelection selection)
+                    this.selection = selection;
                 else if (messageSubject is ModelComponent) {
                     ModelComponent component = (ModelComponent)messageSubject;
 
-                    selection = new LayoutSelection(new ModelComponent[] { component });
+                    this.selection = new LayoutSelection(new ModelComponent[] { component });
                 }
                 else if (messageSubject is TrainStateInfo) {
                     TrainStateInfo train = (TrainStateInfo)messageSubject;
 
-                    selection = new LayoutSelection {
+                    this.selection = new LayoutSelection {
                         train
                     };
                 }
@@ -239,41 +239,41 @@ namespace LayoutManager {
                     LayoutBlock block = (LayoutBlock)messageSubject;
 
                     if (block.OptionalBlockDefinition != null)
-                        selection = new LayoutSelection(new ModelComponent[] { block.BlockDefinintion });
+                        this.selection = new LayoutSelection(new ModelComponent[] { block.BlockDefinintion });
                     else {
-                        selection = new LayoutSelection();
+                        this.selection = new LayoutSelection();
 
                         foreach (TrackEdge edge in block.TrackEdges)
-                            selection.Add(edge.Track);
+                            this.selection.Add(edge.Track);
                     }
                 }
-                else if (messageSubject is LayoutOccupancyBlock) {
-                    selection = new LayoutSelection();
+                else if (messageSubject is LayoutOccupancyBlock aBlock) {
+                    this.selection = new LayoutSelection();
 
-                    foreach (TrackEdge edge in ((LayoutOccupancyBlock)messageSubject).TrackEdges)
-                        selection.Add(edge.Track);
+                    foreach (TrackEdge edge in aBlock.TrackEdges)
+                        this.selection.Add(edge.Track);
                 }
                 else if (messageSubject is TrainStateInfo[] trains) {
-                    selection = new LayoutSelection();
+                    this.selection = new LayoutSelection();
 
                     foreach (TrainStateInfo train in trains)
-                        selection.Add(train);
+                        this.selection.Add(train);
                 }
                 else if (messageSubject is Guid id) {
                     var component = LayoutModel.Component<ModelComponent>(id, LayoutPhase.All);
 
                     if (component != null)
-                        selectMessageSubject(component);
+                        SelectMessageSubject(component);
                     else {
                         LayoutBlock block = LayoutModel.Blocks[id];
 
                         if (block != null)
-                            selectMessageSubject(block);
+                            SelectMessageSubject(block);
                         else {
                             TrainStateInfo train = LayoutModel.StateManager.Trains[id];
 
                             if (train != null)
-                                selectMessageSubject(train);
+                                SelectMessageSubject(train);
                             else
                                 throw new ArgumentException("The ID " + id.ToString() + " given as message subject can not be associated with an object");
                         }
@@ -365,7 +365,7 @@ namespace LayoutManager {
             this.listViewMessages.TabIndex = 5;
             this.listViewMessages.UseCompatibleStateImageBehavior = false;
             this.listViewMessages.View = System.Windows.Forms.View.Details;
-            this.listViewMessages.SelectedIndexChanged += this.listViewMessages_SelectedIndexChanged;
+            this.listViewMessages.SelectedIndexChanged += this.ListViewMessages_SelectedIndexChanged;
             // 
             // columnHeaderMessage
             // 
@@ -393,7 +393,7 @@ namespace LayoutManager {
             this.buttonClose.Size = new System.Drawing.Size(75, 22);
             this.buttonClose.TabIndex = 4;
             this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += this.buttonClose_Click;
+            this.buttonClose.Click += this.ButtonClose_Click;
             // 
             // buttonNextMessage
             // 
@@ -403,7 +403,7 @@ namespace LayoutManager {
             this.buttonNextMessage.Size = new System.Drawing.Size(74, 22);
             this.buttonNextMessage.TabIndex = 2;
             this.buttonNextMessage.Text = "↓ message";
-            this.buttonNextMessage.Click += this.buttonNextMessage_Click;
+            this.buttonNextMessage.Click += this.ButtonNextMessage_Click;
             // 
             // buttonPrevMessage
             // 
@@ -413,7 +413,7 @@ namespace LayoutManager {
             this.buttonPrevMessage.Size = new System.Drawing.Size(74, 22);
             this.buttonPrevMessage.TabIndex = 3;
             this.buttonPrevMessage.Text = "↑ message";
-            this.buttonPrevMessage.Click += this.buttonPrevMessage_Click;
+            this.buttonPrevMessage.Click += this.ButtonPrevMessage_Click;
             // 
             // buttonNextComponent
             // 
@@ -422,7 +422,7 @@ namespace LayoutManager {
             this.buttonNextComponent.Size = new System.Drawing.Size(91, 22);
             this.buttonNextComponent.TabIndex = 0;
             this.buttonNextComponent.Text = "→ component";
-            this.buttonNextComponent.Click += this.buttonNextComponent_Click;
+            this.buttonNextComponent.Click += this.ButtonNextComponent_Click;
             // 
             // buttonPreviousComponent
             // 
@@ -431,7 +431,7 @@ namespace LayoutManager {
             this.buttonPreviousComponent.Size = new System.Drawing.Size(91, 22);
             this.buttonPreviousComponent.TabIndex = 1;
             this.buttonPreviousComponent.Text = "← component";
-            this.buttonPreviousComponent.Click += this.buttonPreviousComponent_Click;
+            this.buttonPreviousComponent.Click += this.ButtonPreviousComponent_Click;
             // 
             // buttonClear
             // 
@@ -441,7 +441,7 @@ namespace LayoutManager {
             this.buttonClear.Size = new System.Drawing.Size(74, 22);
             this.buttonClear.TabIndex = 6;
             this.buttonClear.Text = "Clear";
-            this.buttonClear.Click += this.buttonClear_Click;
+            this.buttonClear.Click += this.ButtonClear_Click;
             // 
             // MessageViewer
             // 
@@ -458,16 +458,16 @@ namespace LayoutManager {
         }
         #endregion
 
-        private void buttonClose_Click(object sender, System.EventArgs e) {
+        private void ButtonClose_Click(object? sender, System.EventArgs e) {
             EventManager.Event(new LayoutEvent("hide-messages", this));
         }
 
-        private void listViewMessages_SelectedIndexChanged(object sender, System.EventArgs e) {
+        private void ListViewMessages_SelectedIndexChanged(object? sender, System.EventArgs e) {
             UpdateSelections();
             UpdateButtons();
         }
 
-        private void buttonNextComponent_Click(object sender, System.EventArgs e) {
+        private void ButtonNextComponent_Click(object? sender, System.EventArgs e) {
             if (currentComponentSelection != null) {
                 IList<ModelComponent> messageComponents = currentMessageSelection.Components.ToList();
                 ModelComponent currentComponent = currentComponentSelection.Components.FirstOrDefault() ?? messageComponents[0];
@@ -483,12 +483,12 @@ namespace LayoutManager {
                     if (++currentComponentIndex == messageComponents.Count)
                         currentComponentIndex = 0;
 
-                    setComponentSelection(messageComponents[currentComponentIndex]);
+                    SetComponentSelection(messageComponents[currentComponentIndex]);
                 }
             }
         }
 
-        private void buttonPreviousComponent_Click(object sender, System.EventArgs e) {
+        private void ButtonPreviousComponent_Click(object? sender, System.EventArgs e) {
             if (currentComponentSelection != null) {
                 IList<ModelComponent> messageComponents = currentMessageSelection.Components.ToList();
                 ModelComponent currentComponent = currentComponentSelection.Components.FirstOrDefault() ?? messageComponents[0];
@@ -504,12 +504,12 @@ namespace LayoutManager {
                     if (currentComponentIndex-- == 0)
                         currentComponentIndex = messageComponents.Count - 1;
 
-                    setComponentSelection(messageComponents[currentComponentIndex]);
+                    SetComponentSelection(messageComponents[currentComponentIndex]);
                 }
             }
         }
 
-        private void buttonNextMessage_Click(object sender, System.EventArgs e) {
+        private void ButtonNextMessage_Click(object? sender, System.EventArgs e) {
             if (listViewMessages.SelectedItems.Count > 0) {
                 int i;
 
@@ -522,7 +522,7 @@ namespace LayoutManager {
             }
         }
 
-        private void buttonPrevMessage_Click(object sender, System.EventArgs e) {
+        private void ButtonPrevMessage_Click(object? sender, System.EventArgs e) {
             if (listViewMessages.SelectedItems.Count > 0) {
                 int i;
 
@@ -536,7 +536,7 @@ namespace LayoutManager {
             }
         }
 
-        private void buttonClear_Click(object sender, EventArgs e) {
+        private void ButtonClear_Click(object? sender, EventArgs e) {
             EventManager.Event("clear-messages", this);
         }
     }

@@ -1,27 +1,10 @@
-using System;
-using System.Drawing;
-using System.ComponentModel;
-using System.Windows.Forms;
 using System.Xml;
 
-#pragma warning disable IDE0067
-#nullable enable
 namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
     /// <summary>
     /// Summary description for IfTime.
     /// </summary>
-    public class IfTime : Form {
-        private TreeView treeView;
-        private Button buttonAdd;
-        private Button buttonEdit;
-        private Button buttonDelete;
-        private Button buttonOK;
-        private Button buttonCancel;
-        private MenuItem menuItemSeconds;
-        private MenuItem menuItemMinutes;
-        private MenuItem menuItemHours;
-        private MenuItem menuItemDayOfWeek;
-        private ContextMenu contextMenuAdd;
+    public partial class IfTime : Form {
 
         /// <summary>
         /// Required designer variable.
@@ -31,7 +14,6 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private readonly XmlElement element;
         private readonly XmlElement inElement;
 
-#nullable disable
         public IfTime(XmlElement inElement) {
             //
             // Required for Windows Form Designer support
@@ -46,7 +28,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
             int i = 0;
             foreach (string timeConstraintName in new string[] { "Seconds", "Minutes", "Hours", "DayOfWeek" }) {
-                IIfTimeNode[] nodes = (IIfTimeNode[])EventManager.Event(new LayoutEvent("parse-if-time-element", element, timeConstraintName));
+                IIfTimeNode[] nodes = Ensure.NotNull<IIfTimeNode[]>(EventManager.Event(new LayoutEvent("parse-if-time-element", element, timeConstraintName)));
 
                 if (nodes.Length > 0)
                     treeView.Nodes.Add(new TimeSectionTreeNode(new string[] { "Seconds", "Minutes", "Hours", "Day of week" }[i],
@@ -54,24 +36,23 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
                 i++;
             }
         }
-#nullable enable
 
-        private TimeSectionTreeNode? findTimeSection(Type treeNodeType) {
+        private TimeSectionTreeNode? FindTimeSection(Type treeNodeType) {
             foreach (TimeSectionTreeNode timeSection in treeView.Nodes)
                 if (treeNodeType.IsInstanceOfType(timeSection.Nodes[0]))
                     return timeSection;
             return null;
         }
 
-        private void insert(string nodeElementName, string timeSectionTitle, Type treeNodeType) {
+        private void Insert(string nodeElementName, string timeSectionTitle, Type treeNodeType) {
             XmlElement nodeElement = element.OwnerDocument.CreateElement(nodeElementName);
             var node = Ensure.NotNull<IIfTimeNode>(EventManager.Event(new LayoutEvent("allocate-if-time-node", nodeElement)), "node");
 
             node.Value = 0;
-            TreeNodeBase treeNode = (TreeNodeBase)Activator.CreateInstance(treeNodeType, new object[] { node });
+            TreeNodeBase treeNode = Ensure.NotNull<TreeNodeBase>(Activator.CreateInstance(treeNodeType, new object[] { node }));
 
             if (treeNode.Edit()) {
-                var timeSection = findTimeSection(treeNodeType);
+                var timeSection = FindTimeSection(treeNodeType);
 
                 element.AppendChild(nodeElement);
                 treeNode.Text = node.Description;
@@ -86,7 +67,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             }
         }
 
-        private void updateButtons() {
+        private void UpdateButtons() {
             if (treeView.SelectedNode is TimeSectionTreeNode)
                 buttonEdit.Enabled = false;
             else if (treeView.SelectedNode is TreeNodeBase)
@@ -95,163 +76,28 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             buttonDelete.Enabled = treeView.SelectedNode != null;
         }
 
-        #region Windows Form Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.treeView = new TreeView();
-            this.buttonAdd = new Button();
-            this.buttonEdit = new Button();
-            this.buttonDelete = new Button();
-            this.buttonOK = new Button();
-            this.buttonCancel = new Button();
-            this.contextMenuAdd = new ContextMenu();
-            this.menuItemSeconds = new MenuItem();
-            this.menuItemMinutes = new MenuItem();
-            this.menuItemHours = new MenuItem();
-            this.menuItemDayOfWeek = new MenuItem();
-            this.SuspendLayout();
-            // 
-            // treeView
-            // 
-            this.treeView.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right);
-            this.treeView.ImageIndex = -1;
-            this.treeView.Location = new System.Drawing.Point(8, 8);
-            this.treeView.Name = "treeView";
-            this.treeView.SelectedImageIndex = -1;
-            this.treeView.Size = new System.Drawing.Size(200, 200);
-            this.treeView.TabIndex = 0;
-            this.treeView.DoubleClick += this.treeView_DoubleClick;
-            this.treeView.AfterSelect += this.treeView_AfterSelect;
-            // 
-            // buttonAdd
-            // 
-            this.buttonAdd.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonAdd.Location = new System.Drawing.Point(8, 212);
-            this.buttonAdd.Name = "buttonAdd";
-            this.buttonAdd.Size = new System.Drawing.Size(61, 19);
-            this.buttonAdd.TabIndex = 1;
-            this.buttonAdd.Text = "&Add";
-            this.buttonAdd.Click += this.buttonAdd_Click;
-            // 
-            // buttonEdit
-            // 
-            this.buttonEdit.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonEdit.Location = new System.Drawing.Point(72, 212);
-            this.buttonEdit.Name = "buttonEdit";
-            this.buttonEdit.Size = new System.Drawing.Size(61, 19);
-            this.buttonEdit.TabIndex = 2;
-            this.buttonEdit.Text = "&Edit...";
-            this.buttonEdit.Click += this.buttonEdit_Click;
-            // 
-            // buttonDelete
-            // 
-            this.buttonDelete.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonDelete.Location = new System.Drawing.Point(136, 212);
-            this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(61, 19);
-            this.buttonDelete.TabIndex = 3;
-            this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += this.buttonDelete_Click;
-            // 
-            // buttonOK
-            // 
-            this.buttonOK.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonOK.Location = new System.Drawing.Point(73, 250);
-            this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(64, 23);
-            this.buttonOK.TabIndex = 4;
-            this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.buttonOK_Click;
-            // 
-            // buttonCancel
-            // 
-            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(145, 250);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(64, 23);
-            this.buttonCancel.TabIndex = 5;
-            this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.buttonCancel_Click;
-            // 
-            // contextMenuAdd
-            // 
-            this.contextMenuAdd.MenuItems.AddRange(new MenuItem[] {
-                                                                                           this.menuItemSeconds,
-                                                                                           this.menuItemMinutes,
-                                                                                           this.menuItemHours,
-                                                                                           this.menuItemDayOfWeek});
-            // 
-            // menuItemSeconds
-            // 
-            this.menuItemSeconds.Index = 0;
-            this.menuItemSeconds.Text = "Seconds...";
-            this.menuItemSeconds.Click += this.menuItemSeconds_Click;
-            // 
-            // menuItemMinutes
-            // 
-            this.menuItemMinutes.Index = 1;
-            this.menuItemMinutes.Text = "Minutes...";
-            this.menuItemMinutes.Click += this.menuItemMinutes_Click;
-            // 
-            // menuItemHours
-            // 
-            this.menuItemHours.Index = 2;
-            this.menuItemHours.Text = "Hours...";
-            this.menuItemHours.Click += this.menuItemHours_Click;
-            // 
-            // menuItemDayOfWeek
-            // 
-            this.menuItemDayOfWeek.Index = 3;
-            this.menuItemDayOfWeek.Text = "Day of week...";
-            this.menuItemDayOfWeek.Click += this.menuItemDayOfWeek_Click;
-            // 
-            // IfTime
-            // 
-            this.AcceptButton = this.buttonOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
-            this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(216, 278);
-            this.ControlBox = false;
-            this.Controls.Add(this.buttonOK);
-            this.Controls.Add(this.buttonAdd);
-            this.Controls.Add(this.treeView);
-            this.Controls.Add(this.buttonEdit);
-            this.Controls.Add(this.buttonDelete);
-            this.Controls.Add(this.buttonCancel);
-            this.Name = "IfTime";
-            this.ShowInTaskbar = false;
-            this.Text = "If (Time)";
-            this.ResumeLayout(false);
-        }
-        #endregion
 
-        private void buttonAdd_Click(object sender, System.EventArgs e) {
+        private void ButtonAdd_Click(object? sender, EventArgs e) {
             contextMenuAdd.Show(buttonAdd.Parent, new Point(buttonAdd.Left, buttonAdd.Bottom));
         }
 
-        private void menuItemSeconds_Click(object sender, System.EventArgs e) {
-            insert("Seconds", "Seconds", typeof(SecondsTreeNode));
+        private void MenuItemSeconds_Click(object? sender, EventArgs e) {
+            Insert("Seconds", "Seconds", typeof(SecondsTreeNode));
         }
 
-        private void menuItemMinutes_Click(object sender, System.EventArgs e) {
-            insert("Minutes", "Minutes", typeof(MinutesTreeNode));
+        private void MenuItemMinutes_Click(object? sender, EventArgs e) {
+            Insert("Minutes", "Minutes", typeof(MinutesTreeNode));
         }
 
-        private void menuItemHours_Click(object sender, System.EventArgs e) {
-            insert("Hours", "Hours", typeof(HoursTreeNode));
+        private void MenuItemHours_Click(object? sender, EventArgs e) {
+            Insert("Hours", "Hours", typeof(HoursTreeNode));
         }
 
-        private void menuItemDayOfWeek_Click(object sender, System.EventArgs e) {
-            insert("DayOfWeek", "Day of week", typeof(DayOfWeekTreeNode));
+        private void MenuItemDayOfWeek_Click(object? sender, EventArgs e) {
+            Insert("DayOfWeek", "Day of week", typeof(DayOfWeekTreeNode));
         }
 
-        private void buttonOK_Click(object sender, System.EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             inElement.RemoveAll();
 
             foreach (XmlElement nodeElement in element) {
@@ -264,23 +110,23 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             Close();
         }
 
-        private void buttonCancel_Click(object sender, System.EventArgs e) {
+        private void ButtonCancel_Click(object? sender, EventArgs e) {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void buttonEdit_Click(object sender, System.EventArgs e) {
+        private void ButtonEdit_Click(object? sender, EventArgs e) {
             if (treeView.SelectedNode is TreeNodeBase selected) {
                 if (selected.Edit())
                     selected.Text = selected.Node.Description;
             }
         }
 
-        private void buttonDelete_Click(object sender, System.EventArgs e) {
+        private void ButtonDelete_Click(object? sender, EventArgs e) {
             TimeSectionTreeNode timeSection;
 
-            if (treeView.SelectedNode is TimeSectionTreeNode) {
-                timeSection = (TimeSectionTreeNode)treeView.SelectedNode;
+            if (treeView.SelectedNode is TimeSectionTreeNode timeSectionNode) {
+                timeSection = timeSectionNode;
 
                 foreach (TreeNodeBase treeNode in timeSection.Nodes)
                     element.RemoveChild(treeNode.Element);
@@ -298,11 +144,11 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
                 treeView.Nodes.Remove(timeSection);
         }
 
-        private void treeView_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e) {
-            updateButtons();
+        private void TreeView_AfterSelect(object? sender, TreeViewEventArgs e) {
+            UpdateButtons();
         }
 
-        private void treeView_DoubleClick(object sender, System.EventArgs e) {
+        private void TreeView_DoubleClick(object? sender, EventArgs e) {
             buttonEdit.PerformClick();
         }
 
@@ -312,7 +158,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
                 if (nodes != null) {
                     foreach (IIfTimeNode node in nodes) {
-                        TreeNode treeNode = (TreeNode)Activator.CreateInstance(treeNodeClass, new object[] { node });
+                        TreeNode treeNode = Ensure.NotNull<TreeNode>(Activator.CreateInstance(treeNodeClass, new object[] { node }));
 
                         Nodes.Add(treeNode);
                     }

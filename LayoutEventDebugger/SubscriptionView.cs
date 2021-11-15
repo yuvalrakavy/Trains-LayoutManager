@@ -194,26 +194,26 @@ namespace LayoutEventDebugger {
         }
         #endregion
 
-        private void buttonClose_Click(object sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, System.EventArgs e) {
             this.Close();
         }
 
-        private void radioButtonViewByEventName_CheckedChanged(object sender, System.EventArgs e) {
+        private void radioButtonViewByEventName_CheckedChanged(object? sender, System.EventArgs e) {
             ViewByEventName();
         }
 
-        private void radioButtonByEventHandlerObject_CheckedChanged(object sender, System.EventArgs e) {
+        private void radioButtonByEventHandlerObject_CheckedChanged(object? sender, System.EventArgs e) {
             ViewByHandlerObject();
         }
 
-        private void buttonRefresh_Click(object sender, System.EventArgs e) {
+        private void buttonRefresh_Click(object? sender, System.EventArgs e) {
             if (radioButtonByEventHandlerObject.Checked)
                 ViewByHandlerObject();
             else if (radioButtonViewByEventName.Checked)
                 ViewByEventName();
         }
 
-        private void SubscriptionView_Closed(object sender, System.EventArgs e) {
+        private void SubscriptionView_Closed(object? sender, System.EventArgs e) {
             EventManager.Event(new LayoutEvent("subscription-view-closed", this));
         }
     }

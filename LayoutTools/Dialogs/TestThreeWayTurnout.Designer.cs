@@ -44,7 +44,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.panelIllustration.Name = "panelIllustration";
             this.panelIllustration.Size = new System.Drawing.Size(64, 64);
             this.panelIllustration.TabIndex = 0;
-            this.panelIllustration.Paint += new System.Windows.Forms.PaintEventHandler(this.panelIllustration_Paint);
+            this.panelIllustration.Paint += new System.Windows.Forms.PaintEventHandler(this.PanelIllustration_Paint);
             // 
             // radioButtonBottom
             // 
@@ -56,7 +56,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonBottom.TabStop = true;
             this.radioButtonBottom.Text = " ";
             this.radioButtonBottom.UseVisualStyleBackColor = true;
-            this.radioButtonBottom.Click += new System.EventHandler(this.radioButtonBottom_Clicked);
+            this.radioButtonBottom.Click += new System.EventHandler(this.RadioButtonBottom_Clicked);
             // 
             // radioButtonTop
             // 
@@ -68,7 +68,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonTop.TabStop = true;
             this.radioButtonTop.Text = " ";
             this.radioButtonTop.UseVisualStyleBackColor = true;
-            this.radioButtonTop.Click += new System.EventHandler(this.radioButtonTop_Clicked);
+            this.radioButtonTop.Click += new System.EventHandler(this.RadioButtonTop_Clicked);
             // 
             // radioButtonRight
             // 
@@ -80,7 +80,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonRight.TabStop = true;
             this.radioButtonRight.Text = " ";
             this.radioButtonRight.UseVisualStyleBackColor = true;
-            this.radioButtonRight.Click += new System.EventHandler(this.radioButtonRight_Clicked);
+            this.radioButtonRight.Click += new System.EventHandler(this.RadioButtonRight_Clicked);
             // 
             // radioButtonLeft
             // 
@@ -92,7 +92,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonLeft.TabStop = true;
             this.radioButtonLeft.Text = " ";
             this.radioButtonLeft.UseVisualStyleBackColor = true;
-            this.radioButtonLeft.Click += new System.EventHandler(this.radioButtonLeft_Clicked);
+            this.radioButtonLeft.Click += new System.EventHandler(this.RadioButtonLeft_Clicked);
             // 
             // buttonPassed
             // 
@@ -102,7 +102,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonPassed.Size = new System.Drawing.Size(69, 23);
             this.buttonPassed.TabIndex = 1;
             this.buttonPassed.Text = "&Passed";
-            this.buttonPassed.Click += new System.EventHandler(this.buttonPassed_Click);
+            this.buttonPassed.Click += new System.EventHandler(this.ButtonPassed_Click);
             // 
             // buttonFailed
             // 
@@ -112,7 +112,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonFailed.Size = new System.Drawing.Size(69, 23);
             this.buttonFailed.TabIndex = 2;
             this.buttonFailed.Text = "&Failed";
-            this.buttonFailed.Click += new System.EventHandler(this.buttonFailed_Click);
+            this.buttonFailed.Click += new System.EventHandler(this.ButtonFailed_Click);
             // 
             // buttonConnect
             // 
@@ -121,7 +121,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonConnect.Size = new System.Drawing.Size(69, 23);
             this.buttonConnect.TabIndex = 7;
             this.buttonConnect.Text = "&Connect";
-            this.buttonConnect.Click += new System.EventHandler(this.buttonConnect_Click);
+            this.buttonConnect.Click += new System.EventHandler(this.ButtonConnect_Click);
             // 
             // buttonDisconnect
             // 
@@ -130,7 +130,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonDisconnect.Size = new System.Drawing.Size(69, 23);
             this.buttonDisconnect.TabIndex = 8;
             this.buttonDisconnect.Text = "&Disconnect";
-            this.buttonDisconnect.Click += new System.EventHandler(this.buttonDisconnect_Click);
+            this.buttonDisconnect.Click += new System.EventHandler(this.ButtonDisconnect_Click);
             // 
             // buttonSwap
             // 
@@ -140,7 +140,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonSwap.TabIndex = 9;
             this.buttonSwap.Text = "&Swap";
             this.toolTips.SetToolTip(this.buttonSwap, "Swap between Straight/Right and Straight/Left");
-            this.buttonSwap.Click += new System.EventHandler(this.buttonSwap_Click);
+            this.buttonSwap.Click += new System.EventHandler(this.ButtonSwap_Click);
             // 
             // TestThreeWayTurnout
             // 

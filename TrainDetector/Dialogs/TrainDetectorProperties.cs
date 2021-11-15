@@ -33,7 +33,7 @@ namespace TrainDetector.Dialogs {
             set => checkBoxAutoDetect.Checked = value;
         }
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void buttonOK_Click(object? sender, EventArgs e) {
             if (!nameDefinition.Commit())
                 return;
 
@@ -44,7 +44,7 @@ namespace TrainDetector.Dialogs {
             DialogResult = DialogResult.OK;
         }
 
-        private void nameDefinition_Load(object sender, EventArgs e) {
+        private void nameDefinition_Load(object? sender, EventArgs e) {
 
         }
     }

@@ -7,36 +7,36 @@ using System.IO;
 namespace LayoutManager.View {
     [LayoutModule("Image Cache Manager", UserControl = false)]
     internal class ImageCacheManager : LayoutModuleBase {
-        private readonly Dictionary<string, Image> imageHashtable = new Dictionary<string, Image>();
-        private string layoutFileDirectory;
+        private readonly Dictionary<string, Image> imageHashtable = new();
+        private string? layoutFileDirectory;
 
-        private string LayoutFileDirectory => layoutFileDirectory ?? (layoutFileDirectory = Path.GetDirectoryName(LayoutController.LayoutFilename));
+        private string LayoutFileDirectory => layoutFileDirectory ??= Path.GetDirectoryName(LayoutController.LayoutFilename)!;
 
-        private string getImageFilename(LayoutEvent e) {
-            string imageFilename = (String)e.Info;
+        private string GetImageFilename(LayoutEvent e) {
+            string imageFilename = Ensure.NotNull<String>(e.Info);
 
             if (!Path.IsPathRooted(imageFilename) && LayoutFileDirectory != null)
                 imageFilename = Path.Combine(LayoutFileDirectory, imageFilename);
             return imageFilename;
         }
 
-        private string getEffectName(LayoutEvent e) => e.GetOption("Type", "Effect").ValidString();
+        private string GetEffectName(LayoutEvent e) => e.GetOption("Type", "Effect").ValidString();
 
-        private string getImageCacheKey(LayoutEvent e) => getEffectName(e) + "|" + getImageFilename(e);
+        private string GetImageCacheKey(LayoutEvent e) => GetEffectName(e) + "|" + GetImageFilename(e);
 
         [LayoutEvent("get-image-from-cache")]
-        private void getImageFromCache(LayoutEvent e) {
-            string imageCacheKey = getImageCacheKey(e);
+        private void GetImageFromCache(LayoutEvent e) {
+            string imageCacheKey = GetImageCacheKey(e);
 
-            if (!imageHashtable.TryGetValue(imageCacheKey, out Image image)) {
+            if (!imageHashtable.TryGetValue(imageCacheKey, out Image? image)) {
                 try {
-                    image = Image.FromFile(getImageFilename(e));
+                    image = Image.FromFile(GetImageFilename(e));
                 }
                 catch (Exception ex) {
-                    throw new ImageLoadException(getImageFilename(e), e.Sender, ex);
+                    throw new ImageLoadException(GetImageFilename(e), e.Sender, ex);
                 }
 
-                RotateFlipType effect = (RotateFlipType)Enum.Parse(typeof(RotateFlipType), getEffectName(e));
+                RotateFlipType effect = (RotateFlipType)Enum.Parse(typeof(RotateFlipType), GetEffectName(e));
 
                 image.RotateFlip(effect);
                 imageHashtable[imageCacheKey] = image;
@@ -46,8 +46,8 @@ namespace LayoutManager.View {
         }
 
         [LayoutEvent("remove-image-from-cache")]
-        private void removeImageFromCache(LayoutEvent e) {
-            string imageCacheKey = getImageCacheKey(e);
+        private void RemoveImageFromCache(LayoutEvent e) {
+            string imageCacheKey = GetImageCacheKey(e);
 
             if (imageHashtable.TryGetValue(imageCacheKey, out var image)) {
                 image.Dispose();
@@ -56,20 +56,20 @@ namespace LayoutManager.View {
         }
 
         [LayoutEvent("clear-image-cache")]
-        private void clearImageCache(LayoutEvent e) {
+        private void ClearImageCache(LayoutEvent e) {
             foreach (Image image in imageHashtable.Values)
                 image.Dispose();
             imageHashtable.Clear();
         }
 
         [LayoutEvent("new-layout-document")]
-        private void newLayoutDocument(LayoutEvent e) {
+        private void NewLayoutDocument(LayoutEvent e) {
             layoutFileDirectory = null;     // Invalidate it
             EventManager.Event(new LayoutEvent("clear-image-cache", this));
         }
 
         [LayoutEvent("free-resources")]
-        private void mainWindowMinimizedOrDeactivated(LayoutEvent e) {
+        private void MainWindowMinimizedOrDeactivated(LayoutEvent e) {
             EventManager.Event(new LayoutEvent("clear-image-cache", this));
         }
     }

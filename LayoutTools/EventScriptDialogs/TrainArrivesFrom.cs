@@ -9,7 +9,7 @@ using LayoutManager.Components;
 namespace LayoutManager.Tools.EventScriptDialogs {
     public partial class TrainArrivesFrom : Form {
         public TrainArrivesFrom(LayoutBlockDefinitionComponent blockDefinition, XmlElement element) {
-            LayoutComponentConnectionPoint from = LayoutComponentConnectionPoint.Empty;
+            LayoutComponentConnectionPoint from;
 
             InitializeComponent();
 
@@ -66,16 +66,16 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             }
         }
 
-        private void radioButton_CheckedChanged(object sender, EventArgs e) {
+        private void RadioButton_CheckedChanged(object? sender, EventArgs e) {
             UpdateDisplay();
         }
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void panelArrow_Paint(object sender, PaintEventArgs e) {
+        private void PanelArrow_Paint(object? sender, PaintEventArgs e) {
             Graphics g = e.Graphics;
             LayoutComponentConnectionPoint from = From;
 
@@ -96,7 +96,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             g.DrawPolygon(Pens.Black, arrow);
         }
 
-        private void panelArrow_MouseClick(object sender, MouseEventArgs e) {
+        private void PanelArrow_MouseClick(object? sender, MouseEventArgs e) {
             if (LayoutTrackComponent.IsVertical(From)) {
                 if (e.Y > 32)
                     radioButtonBottom.PerformClick();

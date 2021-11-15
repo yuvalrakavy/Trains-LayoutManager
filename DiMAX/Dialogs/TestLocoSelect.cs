@@ -13,7 +13,7 @@ namespace DiMAX.Dialogs {
             this.commandStation = commandStation;
         }
 
-        private void buttonSendCommand_Click(object sender, EventArgs e) {
+        private void buttonSendCommand_Click(object? sender, EventArgs e) {
             if (!int.TryParse(textBoxAddress.Text, out int address)) {
                 MessageBox.Show("Invalid loco address");
                 return;

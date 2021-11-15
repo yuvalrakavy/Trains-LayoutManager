@@ -36,15 +36,15 @@ namespace LayoutManager.ControlComponents.Dialogs {
             panelBusId.Enabled = radioButtonMaster.Checked;
         }
 
-        private void radioButtonMaster_CheckedChanged(object sender, EventArgs e) {
+        private void RadioButtonMaster_CheckedChanged(object? sender, EventArgs e) {
             UpdateForm();
         }
 
-        private void radioButtonSlave_CheckedChanged(object sender, EventArgs e) {
+        private void RadioButtonSlave_CheckedChanged(object? sender, EventArgs e) {
             UpdateForm();
         }
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             if (radioButtonMaster.Checked) {
                 if (!int.TryParse(textBoxBusId.Text, out int busId) || busId < 11 || busId > 20) {
                     MessageBox.Show(this, "Invalid Bus ID", "Bus ID should be a number between 11 and 20", MessageBoxButtons.OK, MessageBoxIcon.Error);

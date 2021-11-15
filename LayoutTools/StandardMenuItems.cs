@@ -1,12 +1,14 @@
 using System;
 using System.Windows.Forms;
 using System.Reflection;
+using System.Drawing;
 
 using LayoutManager.Model;
+using LayoutManager.CommonUI;
 
 namespace LayoutManager.Tools {
-    public class LayoutComponentMenuItem : MenuItem {
-        public LayoutComponentMenuItem(ModelComponent component, string name, EventHandler onClick) : base(name, onClick) {
+    public class LayoutComponentMenuItem : LayoutMenuItem {
+        public LayoutComponentMenuItem(ModelComponent component, string name, EventHandler onClick) : base(name, null, onClick) {
             this.Component = component;
         }
 
@@ -16,7 +18,7 @@ namespace LayoutManager.Tools {
     /// <summary>
     /// Implement a properties menu item. Invoke the given dialog type
     /// </summary>
-    public class MenuItemProperties : MenuItem {
+    public class MenuItemProperties : LayoutMenuItem {
         private readonly Type dialogType;
         private readonly ModelComponent component;
 
@@ -27,37 +29,38 @@ namespace LayoutManager.Tools {
             string menuName = "&Properties...";
 
             if (LayoutController.IsOperationMode)
-                menuName = (string)EventManager.Event(new LayoutEvent<ModelComponent, string, string>("get-component-operation-properties-menu-name", component, menuName));
+                menuName = Ensure.NotNull<string>(EventManager.Event(new LayoutEvent<ModelComponent, string, string>("get-component-operation-properties-menu-name", component, menuName)));
             else
-                menuName = (string)EventManager.Event(new LayoutEvent<ModelComponent, string, string>("get-component-editing-properties-menu-name", component, menuName));
+                menuName = Ensure.NotNull<string>(EventManager.Event(new LayoutEvent<ModelComponent, string, string>("get-component-editing-properties-menu-name", component, menuName)));
 
             this.Text = menuName;
         }
 
         protected override void OnClick(EventArgs e) {
-            ConstructorInfo constructor = dialogType.GetConstructor(new Type[] { typeof(ModelComponent), typeof(PlacementInfo) });
-            ILayoutComponentPropertiesDialog dialog;
+            var constructor = dialogType.GetConstructor(new Type[] { typeof(ModelComponent), typeof(PlacementInfo) });
+            var dialogTypeFullName = Ensure.NotNull<string>(dialogType.FullName);
+            ILayoutComponentPropertiesDialog? dialog;
 
             if (constructor != null) {
-                dialog = (ILayoutComponentPropertiesDialog)dialogType.Assembly.CreateInstance(
-                    dialogType.FullName, false, BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance, null,
+                dialog = (ILayoutComponentPropertiesDialog?)dialogType.Assembly.CreateInstance(
+                    dialogTypeFullName, false, BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance, null,
                     new Object[] { component, new PlacementInfo(component) }, null, new Object[] { });
             }
             else {
                 constructor = dialogType.GetConstructor(new Type[] { typeof(ModelComponent) });
 
                 if (constructor != null) {
-                    dialog = (ILayoutComponentPropertiesDialog)dialogType.Assembly.CreateInstance(
-                        dialogType.FullName, false, BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance, null,
+                    dialog = (ILayoutComponentPropertiesDialog?)dialogType.Assembly.CreateInstance(
+                        dialogTypeFullName, false, BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance, null,
                         new Object[] { component }, null, new Object[] { });
                 }
                 else
                     throw new ArgumentException("Invalid dialog class constructor (should be cons(LayoutModel, ModelComponent, [XmlElement]))");
             }
 
-            if (dialog.ShowDialog() == DialogResult.OK) {
+            if (dialog != null && dialog.ShowDialog() == DialogResult.OK) {
                 LayoutModifyComponentDocumentCommand modifyComponentDocumentCommand =
-                    new LayoutModifyComponentDocumentCommand(component, dialog.XmlInfo);
+                    new(component, dialog.XmlInfo);
 
                 LayoutController.Do(modifyComponentDocumentCommand);
             }

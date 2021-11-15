@@ -71,7 +71,7 @@
             this.radioButtonInput1disconnected.TabStop = true;
             this.radioButtonInput1disconnected.Text = "Disconnected";
             this.radioButtonInput1disconnected.UseVisualStyleBackColor = true;
-            this.radioButtonInput1disconnected.CheckedChanged += new System.EventHandler(this.radioButton_Click);
+            this.radioButtonInput1disconnected.CheckedChanged += new System.EventHandler(this.RadioButton_Click);
             // 
             // comboBoxInput1
             // 
@@ -90,7 +90,7 @@
             this.radioButtonInput1connected.TabIndex = 0;
             this.radioButtonInput1connected.TabStop = true;
             this.radioButtonInput1connected.UseVisualStyleBackColor = true;
-            this.radioButtonInput1connected.CheckedChanged += new System.EventHandler(this.radioButton_Click);
+            this.radioButtonInput1connected.CheckedChanged += new System.EventHandler(this.RadioButton_Click);
             // 
             // groupBoxInput2
             // 
@@ -114,7 +114,7 @@
             this.radioButtonInput2disconnected.TabStop = true;
             this.radioButtonInput2disconnected.Text = "Disconnected";
             this.radioButtonInput2disconnected.UseVisualStyleBackColor = true;
-            this.radioButtonInput2disconnected.CheckedChanged += new System.EventHandler(this.radioButton_Click);
+            this.radioButtonInput2disconnected.CheckedChanged += new System.EventHandler(this.RadioButton_Click);
             // 
             // comboBoxInput2
             // 
@@ -133,7 +133,7 @@
             this.radioButtonInput2connected.TabIndex = 0;
             this.radioButtonInput2connected.TabStop = true;
             this.radioButtonInput2connected.UseVisualStyleBackColor = true;
-            this.radioButtonInput2connected.CheckedChanged += new System.EventHandler(this.radioButton_Click);
+            this.radioButtonInput2connected.CheckedChanged += new System.EventHandler(this.RadioButton_Click);
             // 
             // label1
             // 
@@ -152,7 +152,7 @@
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -171,7 +171,7 @@
             this.buttonSettings.Size = new System.Drawing.Size(75, 23);
             this.buttonSettings.TabIndex = 7;
             this.buttonSettings.Text = "Settings...";
-            this.buttonSettings.Click += new System.EventHandler(this.buttonSettings_Click);
+            this.buttonSettings.Click += new System.EventHandler(this.ButtonSettings_Click);
             // 
             // checkBoxDisplayPowerSelectorName
             // 
@@ -230,7 +230,7 @@
             this.radioButtonDTDPrelay.TabStop = true;
             this.radioButtonDTDPrelay.Text = "Single DPDS relay";
             this.radioButtonDTDPrelay.UseVisualStyleBackColor = true;
-            this.radioButtonDTDPrelay.CheckedChanged += new System.EventHandler(this.radioButton_Click);
+            this.radioButtonDTDPrelay.CheckedChanged += new System.EventHandler(this.RadioButton_Click);
             // 
             // radioButtonSTDP
             // 
@@ -242,7 +242,7 @@
             this.radioButtonSTDP.TabStop = true;
             this.radioButtonSTDP.Text = "Two DPST relays (must have also On/Off relay to avoid shortcut)";
             this.radioButtonSTDP.UseVisualStyleBackColor = true;
-            this.radioButtonSTDP.CheckedChanged += new System.EventHandler(this.radioButton_Click);
+            this.radioButtonSTDP.CheckedChanged += new System.EventHandler(this.RadioButton_Click);
             // 
             // checkBoxHasOnOffRelay
             // 

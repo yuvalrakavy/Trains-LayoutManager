@@ -45,7 +45,7 @@
             this.panelIllustration.Name = "panelIllustration";
             this.panelIllustration.Size = new System.Drawing.Size(64, 64);
             this.panelIllustration.TabIndex = 1;
-            this.panelIllustration.Paint += new System.Windows.Forms.PaintEventHandler(this.panelIllustration_Paint);
+            this.panelIllustration.Paint += new System.Windows.Forms.PaintEventHandler(this.PanelIllustration_Paint);
             // 
             // groupBox1
             // 
@@ -66,10 +66,10 @@
             this.checkBoxToggle.Location = new System.Drawing.Point(8, 13);
             this.checkBoxToggle.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.checkBoxToggle.Name = "checkBoxToggle";
-            this.checkBoxToggle.Size = new System.Drawing.Size(50, 23);
+            this.checkBoxToggle.Size = new System.Drawing.Size(96, 42);
             this.checkBoxToggle.TabIndex = 0;
             this.checkBoxToggle.Text = "&Toggle";
-            this.checkBoxToggle.CheckedChanged += new System.EventHandler(this.checkBoxToggle_CheckedChanged);
+            this.checkBoxToggle.CheckedChanged += new System.EventHandler(this.CheckBoxToggle_CheckedChanged);
             // 
             // label2
             // 
@@ -77,7 +77,7 @@
             this.label2.Location = new System.Drawing.Point(140, 18);
             this.label2.Margin = new System.Windows.Forms.Padding(1, 3, 3, 3);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(47, 13);
+            this.label2.Size = new System.Drawing.Size(100, 32);
             this.label2.TabIndex = 3;
             this.label2.Text = "seconds";
             // 
@@ -96,7 +96,7 @@
             0,
             0});
             this.numericUpDownToggleTime.Name = "numericUpDownToggleTime";
-            this.numericUpDownToggleTime.Size = new System.Drawing.Size(40, 20);
+            this.numericUpDownToggleTime.Size = new System.Drawing.Size(40, 39);
             this.numericUpDownToggleTime.TabIndex = 2;
             this.numericUpDownToggleTime.Value = new decimal(new int[] {
             2,
@@ -110,7 +110,7 @@
             this.label1.Location = new System.Drawing.Point(61, 18);
             this.label1.Margin = new System.Windows.Forms.Padding(3, 1, 1, 3);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(37, 13);
+            this.label1.Size = new System.Drawing.Size(76, 32);
             this.label1.TabIndex = 1;
             this.label1.Text = "Every:";
             // 
@@ -122,7 +122,7 @@
             this.buttonFailed.Size = new System.Drawing.Size(69, 23);
             this.buttonFailed.TabIndex = 6;
             this.buttonFailed.Text = "&Failed";
-            this.buttonFailed.Click += new System.EventHandler(this.buttonFailed_Click);
+            this.buttonFailed.Click += new System.EventHandler(this.ButtonFailed_Click);
             // 
             // radioButtonOn
             // 
@@ -136,7 +136,7 @@
             this.radioButtonOn.Text = "O&n";
             this.radioButtonOn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.radioButtonOn.UseVisualStyleBackColor = false;
-            this.radioButtonOn.Click += new System.EventHandler(this.radioButtonOn_Click);
+            this.radioButtonOn.Click += new System.EventHandler(this.RadioButtonOn_Click);
             // 
             // buttonPassed
             // 
@@ -146,17 +146,17 @@
             this.buttonPassed.Size = new System.Drawing.Size(69, 23);
             this.buttonPassed.TabIndex = 5;
             this.buttonPassed.Text = "&Passed";
-            this.buttonPassed.Click += new System.EventHandler(this.buttonPassed_Click);
+            this.buttonPassed.Click += new System.EventHandler(this.ButtonPassed_Click);
             // 
             // checkBoxReverseLogic
             // 
             this.checkBoxReverseLogic.AutoSize = true;
             this.checkBoxReverseLogic.Location = new System.Drawing.Point(11, 134);
             this.checkBoxReverseLogic.Name = "checkBoxReverseLogic";
-            this.checkBoxReverseLogic.Size = new System.Drawing.Size(108, 17);
+            this.checkBoxReverseLogic.Size = new System.Drawing.Size(227, 36);
             this.checkBoxReverseLogic.TabIndex = 4;
             this.checkBoxReverseLogic.Text = "Use reverse logic";
-            this.checkBoxReverseLogic.CheckedChanged += new System.EventHandler(this.checkBoxReverseLogic_CheckedChanged);
+            this.checkBoxReverseLogic.CheckedChanged += new System.EventHandler(this.CheckBoxReverseLogic_CheckedChanged);
             // 
             // buttonConnect
             // 
@@ -165,7 +165,7 @@
             this.buttonConnect.Size = new System.Drawing.Size(69, 23);
             this.buttonConnect.TabIndex = 7;
             this.buttonConnect.Text = "Connect";
-            this.buttonConnect.Click += new System.EventHandler(this.buttonConnect_Click);
+            this.buttonConnect.Click += new System.EventHandler(this.ButtonConnect_Click);
             // 
             // radioButtonOff
             // 
@@ -179,11 +179,13 @@
             this.radioButtonOff.Text = "Off";
             this.radioButtonOff.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.radioButtonOff.UseVisualStyleBackColor = false;
-            this.radioButtonOff.Click += new System.EventHandler(this.radioButtonOff_Click);
+            this.radioButtonOff.Click += new System.EventHandler(this.RadioButtonOff_Click);
             // 
             // TestLayoutObject
             // 
             this.AcceptButton = this.buttonPassed;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(223, 168);
             this.Controls.Add(this.radioButtonOff);
             this.Controls.Add(this.buttonConnect);

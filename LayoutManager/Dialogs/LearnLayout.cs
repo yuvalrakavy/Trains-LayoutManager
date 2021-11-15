@@ -213,17 +213,17 @@ namespace LayoutManager.Dialogs {
 
         #endregion
 
-        private void LearnLayout_FormClosed(object sender, FormClosedEventArgs e) {
+        private void LearnLayout_FormClosed(object? sender, FormClosedEventArgs e) {
             EventManager.Event(new LayoutEvent("deselect-control-objects", this).SetFrameWindow(frameWindowId));
             LayoutController.Instance.EndDesignTimeActivation();
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 
-        private void buttonClose_Click(object sender, EventArgs e) {
+        private void buttonClose_Click(object? sender, EventArgs e) {
             Close();
         }
 
-        private void buttonRemove_Click(object sender, EventArgs e) {
+        private void buttonRemove_Click(object? sender, EventArgs e) {
             if (listViewEvents.SelectedItems.Count > 0) {
                 EventItem selected = (EventItem)listViewEvents.SelectedItems[0];
 
@@ -231,12 +231,12 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonRemoveAll_Click(object sender, EventArgs e) {
+        private void buttonRemoveAll_Click(object? sender, EventArgs e) {
             listViewEvents.Items.Clear();
             UpdateButtons();
         }
 
-        private void listViewEvents_SelectedIndexChanged(object sender, EventArgs e) {
+        private void listViewEvents_SelectedIndexChanged(object? sender, EventArgs e) {
             UpdateButtons();
         }
 
@@ -267,7 +267,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonAction_Click(object sender, EventArgs e) {
+        private void buttonAction_Click(object? sender, EventArgs e) {
             if (listViewEvents.SelectedItems.Count > 0) {
                 EventItem selected = (EventItem)listViewEvents.SelectedItems[0];
                 Tools.Dialogs.PickComponentToConnectToAddress pickDialog = new Tools.Dialogs.PickComponentToConnectToAddress(selected.CommandStationEvent);
@@ -283,12 +283,12 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void listViewEvents_DoubleClick(object sender, EventArgs e) {
+        private void listViewEvents_DoubleClick(object? sender, EventArgs e) {
             if (buttonAction.Enabled)
                 buttonAction.PerformClick();
         }
 
-        private void checkBoxEnableSound_CheckedChanged(object sender, EventArgs e) {
+        private void checkBoxEnableSound_CheckedChanged(object? sender, EventArgs e) {
             enableSound = checkBoxEnableSound.Checked;
         }
     }

@@ -1,18 +1,8 @@
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for GlobalPolicyList.
     /// </summary>
-    public class GlobalPolicyList : PolicyList {
-        private Button buttonStartStop;
-
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container components = null;
+    public partial class GlobalPolicyList : PolicyList {
 
         public GlobalPolicyList() {
             // This call is required by the Windows.Forms Form Designer.
@@ -21,8 +11,8 @@ namespace LayoutManager.CommonUI.Controls {
             ShowIfRunning = true;
         }
 
-        protected override void UpdateButtons(object sender, EventArgs e) {
-            PolicyList.PolicyItem selected = GetSelection();
+        protected override void UpdateButtons(object? sender, EventArgs e) {
+            PolicyItem? selected = GetSelection();
 
             if (selected == null || !LayoutController.IsOperationMode) {
                 buttonStartStop.Text = "Activate";
@@ -50,39 +40,12 @@ namespace LayoutManager.CommonUI.Controls {
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.buttonStartStop = new Button();
-            this.SuspendLayout();
-            // 
-            // buttonStartStop
-            // 
-            this.buttonStartStop.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonStartStop.Location = new System.Drawing.Point(248, 128);
-            this.buttonStartStop.Name = "buttonStartStop";
-            this.buttonStartStop.Size = new System.Drawing.Size(72, 23);
-            this.buttonStartStop.TabIndex = 4;
-            this.buttonStartStop.Text = "&Deactivate";
-            this.buttonStartStop.Click += this.buttonStartStop_Click;
-            // 
-            // GlobalPolicyList
-            // 
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
-                                                                          this.buttonStartStop});
-            this.Name = "GlobalPolicyList";
-            this.ResumeLayout(false);
-        }
-        #endregion
 
-        private void buttonStartStop_Click(object sender, System.EventArgs e) {
-            PolicyList.PolicyItem selected = GetSelection();
+        private void ButtonStartStop_Click(object? sender, EventArgs e) {
+            var selected = GetSelection();
 
             if (selected != null) {
-                LayoutEventScript runningScript = (LayoutEventScript)EventManager.Event(new LayoutEvent("get-active-event-script", selected.Policy.Id));
+                var runningScript = (LayoutEventScript?)EventManager.Event(new LayoutEvent("get-active-event-script", selected.Policy.Id));
 
                 if (runningScript != null)
                     runningScript.Dispose();
@@ -94,7 +57,7 @@ namespace LayoutManager.CommonUI.Controls {
                 }
 
                 selected.Update();
-                UpdateButtons(null, null);
+                UpdateButtons(null, EventArgs.Empty);
             }
         }
     }

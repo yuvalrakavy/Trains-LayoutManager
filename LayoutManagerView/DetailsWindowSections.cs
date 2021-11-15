@@ -49,25 +49,23 @@ namespace LayoutManager.View {
 
         #endregion
 
-        private readonly List<SectionEntry> sectionEntries = new List<SectionEntry>();
-        private Point insertionPoint = new Point(0, 0);
+        private readonly List<SectionEntry> sectionEntries = new();
+        private Point insertionPoint = new(0, 0);
         private int verticalHeight = 0;
-        private Pen borderPen;
+        private Pen? borderPen;
 
         public PopupWindowContainerSection() {
             this.Parent = null;
         }
 
-        public PopupWindowContainerSection(Control parent) {
-            this.Parent = parent;
-        }
+        public PopupWindowContainerSection(Control? parent) => this.Parent = parent;
 
         #region Properties
 
         /// <summary>
         /// The parent control on which this popup window will be displayed
         /// </summary>
-        public Control Parent { get; }
+        public Control? Parent { get; }
 
         /// <summary>
         ///  Number of sections in the container
@@ -91,7 +89,7 @@ namespace LayoutManager.View {
         /// </summary>
         public Size Size {
             get {
-                using Graphics g = Parent.CreateGraphics();
+                using Graphics g = Ensure.NotNull<Control>(Parent).CreateGraphics();
                 return GetSize(g);
             }
         }
@@ -99,7 +97,7 @@ namespace LayoutManager.View {
         /// <summary>
         /// Pen used to draw an optional border around the sections contained in this container
         /// </summary>
-        public Pen BorderPen {
+        public Pen? BorderPen {
             get {
                 return borderPen;
             }
@@ -131,7 +129,8 @@ namespace LayoutManager.View {
         }
 
         public void AddVerticalSection(IPopupWindowSection section) {
-            AddVerticalSection(this.Parent, section);
+            if(Parent != null)
+                AddVerticalSection(Parent, section);
         }
 
         /// <summary>
@@ -152,11 +151,13 @@ namespace LayoutManager.View {
         }
 
         public void AddHorizontalSection(IPopupWindowSection section) {
-            AddHorizontalSection(this.Parent, section);
+            if(Parent != null)
+                AddHorizontalSection(this.Parent, section);
         }
 
         public void AddText(Control parent, string text) {
-            AddVerticalSection(parent, new PopupWindowTextSection(text));
+            if(Parent != null)
+                AddVerticalSection(parent, new PopupWindowTextSection(text));
         }
 
         /// <summary>
@@ -171,18 +172,18 @@ namespace LayoutManager.View {
         /// Create a new container section for the same view as the current container
         /// </summary>
         /// <returns>A new container section</returns>
-        public PopupWindowContainerSection CreateContainer() => new PopupWindowContainerSection(this.Parent);
+        public PopupWindowContainerSection CreateContainer() => new(this.Parent);
 
         #endregion
 
         #region IDetailsPopWindowSection Members
 
         public Size GetSize(Graphics g) {
-            Size totalSize = new Size(0, 0);
+            Size totalSize = new(0, 0);
 
             foreach (SectionEntry entry in sectionEntries) {
                 Size sectionSize = entry.GetSize(g);
-                Size s = new Size(entry.Origin.X + sectionSize.Width, entry.Origin.Y + sectionSize.Height);
+                Size s = new(entry.Origin.X + sectionSize.Width, entry.Origin.Y + sectionSize.Height);
 
                 if (s.Width > totalSize.Width)
                     totalSize.Width = s.Width;
@@ -213,12 +214,14 @@ namespace LayoutManager.View {
     }
 
     public class PopupWindowTextSection : IPopupWindowSection, IDisposable {
-        private Brush brush;
+        private Brush? brush;
 
         public PopupWindowTextSection() {
-        }
+            this.Font = new Font("Arial", 8);
+            this.Text = String.Empty;
 
-        public PopupWindowTextSection(string text) {
+        }
+        public PopupWindowTextSection(string text) : this(){
             this.Text = text;
         }
 
@@ -229,9 +232,9 @@ namespace LayoutManager.View {
 
         #region Properties
 
-        public string Text { get; set; }
+        public string Text { get; init; }
 
-        public Font Font { get; set; }
+        public Font Font { get; private set; }
 
         public Brush Brush {
             get {
@@ -247,22 +250,16 @@ namespace LayoutManager.View {
 
         #region IDetailsPopWindowSection Members
 
-        public Size GetSize(Graphics g) {
-            if (Font == null)
-                Font = new Font("Arial", 8);
+        public Size GetSize(Graphics g) => g.MeasureString(Text, Font).ToSize();
 
-            return g.MeasureString(Text, Font).ToSize();
-        }
-
-        public void Paint(Graphics g) {
-            g.DrawString(Text, Font, this.Brush, new Point(0, 0));
-        }
+        public void Paint(Graphics g) => g.DrawString(Text, Font, this.Brush, new Point(0, 0));
 
         #endregion
 
         #region IDisposable Members
 
         public void Dispose() {
+            GC.SuppressFinalize(this);
             if (Font != null)
                 Font.Dispose();
             if (brush != null)
@@ -321,7 +318,7 @@ namespace LayoutManager.View {
             string list = "";
 
             foreach (Guid policyId in policyIds) {
-                LayoutPolicyInfo policy = policies[policyId];
+                var policy = policies[policyId];
 
                 if (policy != null) {
                     if (list.Length > 0)
@@ -351,7 +348,7 @@ namespace LayoutManager.View {
         public Size GetSize(Graphics g) => drawingSize;
 
         public void Paint(Graphics g) {
-            Rectangle drawingRect = new Rectangle(new Point(0, 0), drawingSize);
+            Rectangle drawingRect = new(new Point(0, 0), drawingSize);
 
             view.Draw(g, drawingRect, new Rectangle(ml, new Size(1, 1)), 0, false);
             g.DrawRectangle(Pens.Black, drawingRect);

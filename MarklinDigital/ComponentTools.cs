@@ -61,10 +61,10 @@ namespace MarklinDigital {
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(MarklinDigitalCentralStation))]
         private void AddMarklinDigitalContextMenuEntries(LayoutEvent e) {
-            Menu menu = (Menu)e.Info;
-            MarklinDigitalCentralStation component = (MarklinDigitalCentralStation)e.Sender;
+            var component = Ensure.NotNull<MarklinDigitalCentralStation>(e.Sender);
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
-            menu.MenuItems.Add(new MarklinDigitalMenuItemProperties(component));
+            menu.Items.Add(new MarklinDigitalMenuItemProperties(component));
         }
 
         #region Markin Digital Menu Item Classes

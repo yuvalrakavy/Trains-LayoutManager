@@ -1,36 +1,21 @@
-using System.ComponentModel;
-using System.Windows.Forms;
 using System.Xml;
 using System.Diagnostics;
 using LayoutManager.Model;
 
-#pragma warning disable IDE0067
-#nullable enable
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for MotionRampSelector.
     /// </summary>
-    public class MotionRampSelector : System.Windows.Forms.UserControl, IObjectHasXml {
-        private GroupBox groupBoxRampSelector;
-        private Label labelRampDescription;
-        private Button buttonOverrideDefault;
-        private CheckBox checkBoxOverrideDefault;
-
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-
+    public partial class MotionRampSelector : UserControl, IObjectHasXml {
         private XmlElement? element = null;
         private MotionRampInfo? ramp = null;
 
-#nullable disable
         public MotionRampSelector() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
         }
-#nullable enable
 
-        public string Role { get; set; }
+        public string? Role { get; set; }
 
         public XmlElement Element {
             get => Ensure.NotNull<XmlElement>(OptionalElement, "Element");
@@ -48,7 +33,7 @@ namespace LayoutManager.CommonUI.Controls {
                 if (element != null) {
                     Debug.Assert(Role != null);
 
-                    initialize();
+                    Initialize();
                 }
             }
         }
@@ -79,7 +64,7 @@ namespace LayoutManager.CommonUI.Controls {
             if (!ValidateValues())
                 return false;
 
-            XmlElement rampElement = (XmlElement)Element.SelectSingleNode("Ramp[@Role='" + Role + "']");
+            var rampElement = (XmlElement?)Element.SelectSingleNode("Ramp[@Role='" + Role + "']");
 
             if (rampElement != null)
                 Element.RemoveChild(rampElement);
@@ -94,7 +79,7 @@ namespace LayoutManager.CommonUI.Controls {
             return true;
         }
 
-        private void initialize() {
+        private void Initialize() {
             var rampElement = (XmlElement?)Element.SelectSingleNode("Ramp[@Role='" + Role + "']");
 
             if (rampElement == null)
@@ -112,68 +97,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.groupBoxRampSelector = new GroupBox();
-            this.checkBoxOverrideDefault = new CheckBox();
-            this.buttonOverrideDefault = new Button();
-            this.labelRampDescription = new Label();
-            this.groupBoxRampSelector.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // groupBoxRampSelector
-            // 
-            this.groupBoxRampSelector.Controls.AddRange(new System.Windows.Forms.Control[] {
-                                                                                               this.checkBoxOverrideDefault,
-                                                                                               this.buttonOverrideDefault,
-                                                                                               this.labelRampDescription});
-            this.groupBoxRampSelector.Location = new System.Drawing.Point(4, 0);
-            this.groupBoxRampSelector.Name = "groupBoxRampSelector";
-            this.groupBoxRampSelector.Size = new System.Drawing.Size(264, 41);
-            this.groupBoxRampSelector.TabIndex = 0;
-            this.groupBoxRampSelector.TabStop = false;
-            this.groupBoxRampSelector.Text = "Acceleration Profile:";
-            // 
-            // checkBoxOverrideDefault
-            // 
-            this.checkBoxOverrideDefault.Location = new System.Drawing.Point(5, 18);
-            this.checkBoxOverrideDefault.Name = "checkBoxOverrideDefault";
-            this.checkBoxOverrideDefault.Size = new System.Drawing.Size(16, 16);
-            this.checkBoxOverrideDefault.TabIndex = 4;
-            this.checkBoxOverrideDefault.Click += this.checkBoxOverrideDefault_Click;
-            // 
-            // buttonOverrideDefault
-            // 
-            this.buttonOverrideDefault.Location = new System.Drawing.Point(21, 16);
-            this.buttonOverrideDefault.Name = "buttonOverrideDefault";
-            this.buttonOverrideDefault.Size = new System.Drawing.Size(97, 20);
-            this.buttonOverrideDefault.TabIndex = 3;
-            this.buttonOverrideDefault.Text = "&Override Default";
-            this.buttonOverrideDefault.Click += this.buttonOverrideDefault_Click;
-            // 
-            // labelRampDescription
-            // 
-            this.labelRampDescription.Location = new System.Drawing.Point(124, 16);
-            this.labelRampDescription.Name = "labelRampDescription";
-            this.labelRampDescription.Size = new System.Drawing.Size(132, 16);
-            this.labelRampDescription.TabIndex = 2;
-            // 
-            // MotionRampSelector
-            // 
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
-                                                                          this.groupBoxRampSelector});
-            this.Name = "MotionRampSelector";
-            this.Size = new System.Drawing.Size(272, 41);
-            this.groupBoxRampSelector.ResumeLayout(false);
-            this.ResumeLayout(false);
-        }
-        #endregion
-
-        private void buttonOverrideDefault_Click(object sender, System.EventArgs e) {
+        private void ButtonOverrideDefault_Click(object? sender, EventArgs e) {
             ramp = new MotionRampInfo(MotionRampType.RateFixed, LayoutModel.Instance.LogicalSpeedSteps / 2);
 
             var d = new Dialogs.EditMotionRamp(ramp);
@@ -184,7 +108,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        private void checkBoxOverrideDefault_Click(object sender, System.EventArgs e) {
+        private void CheckBoxOverrideDefault_Click(object? sender, EventArgs e) {
             if (!checkBoxOverrideDefault.Checked)
                 labelRampDescription.Text = "";
             else {

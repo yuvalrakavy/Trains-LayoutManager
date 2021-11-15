@@ -205,7 +205,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonOk_Click(object sender, System.EventArgs e) {
+        private void buttonOk_Click(object? sender, System.EventArgs e) {
             foreach (XmlElement fElement in functionsElement) {
                 LocomotiveFunctionInfo f = new LocomotiveFunctionInfo(fElement);
 
@@ -243,15 +243,15 @@ namespace LayoutManager.Dialogs {
             DialogResult = DialogResult.OK;
         }
 
-        private void comboBoxFunctionType_SelectedIndexChanged(object sender, System.EventArgs e) {
+        private void comboBoxFunctionType_SelectedIndexChanged(object? sender, System.EventArgs e) {
             typeChanged = true;
         }
 
-        private void textBoxFunctionDescription_TextChanged(object sender, System.EventArgs e) {
+        private void textBoxFunctionDescription_TextChanged(object? sender, System.EventArgs e) {
             descriptionChanged = true;
         }
 
-        private void comboBoxFunctionName_SelectionChangeCommitted(object sender, System.EventArgs e) {
+        private void comboBoxFunctionName_SelectionChangeCommitted(object? sender, System.EventArgs e) {
             var functionInfoElement = new XmlElementWrapper((XmlElement)catalog.LocomotiveFunctionNames.GetElementsByTagName("Function")[comboBoxFunctionName.SelectedIndex]);
 
             if (!typeChanged) {

@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace LayoutManager.CommonUI.Controls {
+﻿namespace LayoutManager.CommonUI.Controls {
     public partial class ImageGetter : UserControl {
         public ImageGetter() {
             InitializeComponent();
         }
 
-        private Image _defaultImage = null;
+        private Image? _defaultImage = null;
 
         public bool HasImage {
             get;
@@ -38,7 +28,7 @@ namespace LayoutManager.CommonUI.Controls {
             get => pictureBoxImage.BackgroundImage;
         }
 
-        public Image DefaultImage {
+        public Image? DefaultImage {
             set {
                 _defaultImage = value;
                 if (!HasImage)
@@ -50,7 +40,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public Size RequiredImageSize { get; set; } = new Size(46, 34);
 
-        private void buttonSet_Click(object sender, EventArgs e) {
+        private void ButtonSet_Click(object? sender, EventArgs e) {
             FileDialog fileDialog = new OpenFileDialog {
                 AddExtension = true,
                 CheckFileExists = true,
@@ -74,13 +64,13 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        private void buttonClear_Click(object sender, EventArgs e) {
+        private void ButtonClear_Click(object? sender, EventArgs e) {
             if (pictureBoxImage.Image != null)
                 this.ImageModified = true;
             pictureBoxImage.BackgroundImage = DefaultImage;
         }
 
-        private void buttonPaste_Click(object sender, EventArgs e) {
+        private void ButtonPaste_Click(object? sender, EventArgs e) {
             if (Clipboard.ContainsImage()) {
                 var image = Clipboard.GetImage();
                 var trimDialog = new Dialogs.ImageTrim(image, this.RequiredImageSize);

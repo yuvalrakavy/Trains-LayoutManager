@@ -125,7 +125,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonOK_Click(object sender, System.EventArgs e) {
+        private void buttonOK_Click(object? sender, System.EventArgs e) {
             try {
                 int zoomFactor = zoomFactor = System.Int32.Parse(textBoxZoomFactor.Text);
 

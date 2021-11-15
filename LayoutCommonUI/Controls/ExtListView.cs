@@ -18,7 +18,7 @@ namespace LayoutManager.CommonUI.Controls {
     ]
     public class DataListView : ListView {
         #region Variables used within Scope of this Class.
-        private object mDataSource = null;
+        private object? mDataSource = null;
         private string mDataMember = string.Empty;
         private string mNoDataMessage = "There are no data available at present.";
         private bool mAutoDiscovery = true;
@@ -26,14 +26,14 @@ namespace LayoutManager.CommonUI.Controls {
         private bool mGridLines = false;
         private bool mUseItemStyleForSubItems = false;
         private const int WM_ERASEBKGND = 0x14;
-        private readonly SolidBrush mSbBackColor = new SolidBrush(System.Drawing.Color.FromKnownColor(KnownColor.Window));
-        private readonly SolidBrush mSbForeColor = new SolidBrush(System.Drawing.Color.FromKnownColor(KnownColor.WindowText));
-        private IBindingList mBindingList = null;
-        private DataColumnHeaderCollection mColumns = null;
-        private Thread t_Serialize = null;
-        private Thread t_DeSerialize = null;
-        private Thread t_ResizeColumns = null;
-        private Thread t_DataBind = null;
+        private readonly SolidBrush mSbBackColor = new(System.Drawing.Color.FromKnownColor(KnownColor.Window));
+        private readonly SolidBrush mSbForeColor = new(System.Drawing.Color.FromKnownColor(KnownColor.WindowText));
+        private IBindingList? mBindingList = null;
+        private DataColumnHeaderCollection? mColumns = null;
+        private Thread? t_Serialize = null;
+        private Thread? t_DeSerialize = null;
+        private Thread? t_ResizeColumns = null;
+        private Thread? t_DataBind = null;
         private bool mThreadDataBind = false;
         private bool mThreadSerialization = false;
         private bool mThreadDeSerialization = false;
@@ -72,7 +72,7 @@ namespace LayoutManager.CommonUI.Controls {
                     this.Items.Clear();
                 }
                 if (this.mBindingList != null) {
-                    this.mBindingList.ListChanged -= mBindingList_ListChanged;
+                    this.mBindingList.ListChanged -= MBindingList_ListChanged;
                     this.mBindingList = null;
                 }
                 if (this.mColumns != null) {
@@ -99,11 +99,11 @@ namespace LayoutManager.CommonUI.Controls {
                         base.GridLines = false;
                     }
                     using Graphics g = this.CreateGraphics();
-                    using StringFormat sf = new StringFormat {
+                    using StringFormat sf = new() {
                         Alignment = StringAlignment.Center
                     };
                     int w = (this.Width - g.MeasureString(this.mNoDataMessage, this.Font).ToSize().Width) / 2;
-                    Rectangle rc = new Rectangle(0, (int)(this.Font.Height * 1.5), w, this.Height);
+                    Rectangle rc = new(0, (int)(this.Font.Height * 1.5), w, this.Height);
                     //g.FillRectangle(SystemBrushes.Window, 0, 0, this.Width, this.Height);
                     g.FillRectangle(this.mSbBackColor, 0, 0, this.Width, this.Height);
                     //g.DrawString(this.mNoDataMessage, this.Font, SystemBrushes.ControlText, w, 30);
@@ -124,7 +124,7 @@ namespace LayoutManager.CommonUI.Controls {
         System.ComponentModel.RefreshProperties(RefreshProperties.Repaint),
         System.ComponentModel.TypeConverter("System.Windows.Forms.Design.DataSourceConverter, System.Design"),
         System.ComponentModel.Description("Data Source.")]
-        public object DataSource {
+        public object? DataSource {
             get { return this.mDataSource; }
             set {
                 if (value != null) {
@@ -182,7 +182,7 @@ namespace LayoutManager.CommonUI.Controls {
         [System.ComponentModel.Category("Data"),
         System.ComponentModel.Browsable(true),
         System.ComponentModel.Description("Columns.")]
-        public new DataColumnHeaderCollection Columns => this.mColumns;
+        public new DataColumnHeaderCollection? Columns => this.mColumns;
         #endregion
 
         #region GridLines Property
@@ -320,17 +320,17 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region LargeImageList Property - Turn this off
         [System.ComponentModel.Browsable(false)]
-        public new ImageList LargeImageList => null;
+        public new ImageList? LargeImageList => null;
         #endregion
 
         #region SmallImageList Property - Turn this off
         [System.ComponentModel.Browsable(false)]
-        public new ImageList SmallImageList => null;
+        public new ImageList? SmallImageList => null;
         #endregion
 
         #region StateImageList Property - Turn this off
         [System.ComponentModel.Browsable(false)]
-        public new ImageList StateImageList => null;
+        public new ImageList? StateImageList => null;
         #endregion
         #endregion
 
@@ -367,9 +367,9 @@ namespace LayoutManager.CommonUI.Controls {
             if (bDisposing) return;
             base.Clear();
             if (this.mDataSource == null) return;
-            if (this.mColumns.Count == 0) return;
+            if (this.mColumns == null || this.mColumns.Count == 0) return;
             IList InnerSource = InnerDataSource();
-            ListViewItem lvi = null;
+            ListViewItem? lvi = null;
             Cursor current = this.Cursor;
             this.Cursor = Cursors.WaitCursor;
             this.BeginUpdate();
@@ -379,7 +379,7 @@ namespace LayoutManager.CommonUI.Controls {
             for (int Row = 0; Row < InnerSource.Count; Row++) {
                 lvi = new ListViewItem {
                     UseItemStyleForSubItems = this.mUseItemStyleForSubItems,
-                    Text = this.GetField(InnerSource[Row], this.mColumns[0].Field).ToString()
+                    Text = this.GetField(InnerSource[Row], this.mColumns[0].Field) ?? String.Empty
                 };
                 for (int Field = 1; Field < this.mColumns.Count; Field++) {
                     lvi.SubItems.Add(this.GetField(InnerSource[Row], this.mColumns[Field].Field)).ToString();
@@ -392,14 +392,14 @@ namespace LayoutManager.CommonUI.Controls {
         #endregion
 
         #region InnerDataSource Function - Private
-        private IList InnerDataSource() {
-            if (this.mDataSource is DataSet) {
+        private IList? InnerDataSource() {
+            if (this.mDataSource is DataSet set) {
                 return this.mDataMember.Length > 0
-                    ? ((IListSource)((DataSet)this.mDataSource).Tables[this.mDataMember]).GetList()
-                    : ((IListSource)((DataSet)this.mDataSource).Tables[0]).GetList();
+                    ? ((IListSource)set.Tables[this.mDataMember]).GetList()
+                    : ((IListSource)set.Tables[0]).GetList();
             }
             else {
-                return this.mDataSource is IListSource ? ((IListSource)this.mDataSource).GetList() : (IList)this.mDataSource;
+                return this.mDataSource is IListSource source ? source.GetList() : (IList?)this.mDataSource;
             }
         }
         #endregion
@@ -409,7 +409,7 @@ namespace LayoutManager.CommonUI.Controls {
             IList InnerSource = this.InnerDataSource();
             if (InnerSource is IBindingList) {
                 this.mBindingList = (IBindingList)InnerSource;
-                this.mBindingList.ListChanged += mBindingList_ListChanged;
+                this.mBindingList.ListChanged += MBindingList_ListChanged;
             }
             else {
                 this.mBindingList = null;
@@ -418,7 +418,7 @@ namespace LayoutManager.CommonUI.Controls {
         #endregion
 
         #region mBindingList_ListChanged Event Handler
-        private void mBindingList_ListChanged(object sender, ListChangedEventArgs e) {
+        private void MBindingList_ListChanged(object? sender, ListChangedEventArgs e) {
             this.DataBind();
             if (this.Items.Count == 0) this.Invalidate();
         }
@@ -471,14 +471,14 @@ namespace LayoutManager.CommonUI.Controls {
             if (ds.Count > 0) {
                 object obj = ds[0];
                 if (obj is ValueType && obj.GetType().IsPrimitive) {
-                    DataColumnHeader Col = new DataColumnHeader {
+                    DataColumnHeader Col = new() {
                         Text = "Value"
                     };
                     this.mColumns.Add(Col);
                 }
                 else {
                     if (obj is string) {
-                        DataColumnHeader Col = new DataColumnHeader {
+                        DataColumnHeader Col = new() {
                             Text = "String"
                         };
                         this.mColumns.Add(Col);
@@ -505,9 +505,12 @@ namespace LayoutManager.CommonUI.Controls {
         #endregion
 
         #region GetField Function - Private
-        private string GetField(object obj, string FieldName) {
-            if (obj is DataRowView) {
-                return ((DataRowView)obj)[FieldName].ToString();
+        private string? GetField(object? obj, string FieldName) {
+            if (obj == null)
+                return "(null)";
+
+            if (obj is DataRowView view) {
+                return view[FieldName].ToString();
             }
             else {
                 if (obj is ValueType && obj.GetType().IsPrimitive) {
@@ -520,13 +523,13 @@ namespace LayoutManager.CommonUI.Controls {
                     else {
                         try {
                             Type SourceType = obj.GetType();
-                            PropertyInfo prop = obj.GetType().GetProperty(FieldName);
+                            var prop = obj.GetType().GetProperty(FieldName);
                             if (prop == null || !prop.CanRead) {
-                                FieldInfo field = SourceType.GetField(FieldName);
-                                return field == null ? "(null)" : field.GetValue(obj).ToString();
+                                var field = SourceType.GetField(FieldName);
+                                return field == null ? "(null)" : field.GetValue(obj)?.ToString();
                             }
                             else {
-                                return prop.GetValue(obj, null).ToString();
+                                return prop.GetValue(obj, null)?.ToString();
                             }
                         }
                         catch (Exception) {
@@ -553,13 +556,13 @@ namespace LayoutManager.CommonUI.Controls {
         #endregion
 
         #region DataListView_BackColorChanged Event Handler
-        private void DataListView_BackColorChanged(object sender, EventArgs e) {
+        private void DataListView_BackColorChanged(object? sender, EventArgs e) {
             this.mSbBackColor.Color = this.BackColor;
         }
         #endregion
 
         #region DataListView_ForeColorChanged Event Handler
-        private void DataListView_ForeColorChanged(object sender, EventArgs e) {
+        private void DataListView_ForeColorChanged(object? sender, EventArgs e) {
             this.mSbForeColor.Color = this.ForeColor;
         }
         #endregion
@@ -695,7 +698,7 @@ namespace LayoutManager.CommonUI.Controls {
             Cursor current = Cursor.Current;
             this.Cursor = Cursors.WaitCursor;
             if (nItemsCount >= 1) {
-                DataLstView dlvItems = new DataLstView {
+                DataLstView dlvItems = new() {
                     DataListViewItems = new ListViewItem[nItemsCount],
                     DataListViewTags = new object[nItemsCount]
                 };
@@ -734,7 +737,7 @@ namespace LayoutManager.CommonUI.Controls {
                 }
                 if (!bFileError) {
                     try {
-                        BinaryFormatter bf = new BinaryFormatter();
+                        BinaryFormatter bf = new();
                         bf.Serialize(fs, dlvItems);
                     }
                     catch (SerializationException) {
@@ -785,7 +788,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         private void DeSerializeFrmDisk(string FileName) {
             FileStream fs = null;
-            DataLstView dlvItems = new DataLstView();
+            DataLstView dlvItems = new();
             bool bFileError = false;
             Cursor current = this.Cursor;
             this.Cursor = Cursors.WaitCursor;
@@ -807,7 +810,7 @@ namespace LayoutManager.CommonUI.Controls {
             if (!bFileError) {
                 this.BeginUpdate();
                 try {
-                    BinaryFormatter bf = new BinaryFormatter();
+                    BinaryFormatter bf = new();
                     this.DataSource = null;
                     base.Columns.Clear();
                     this.mColumns.Clear();
@@ -883,7 +886,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public void Add(string Field) {
-            DataColumnHeader col = new DataColumnHeader {
+            DataColumnHeader col = new() {
                 Text = Field,
                 Field = Field
             };
@@ -891,7 +894,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public void Add(string Field, int Width) {
-            DataColumnHeader col = new DataColumnHeader {
+            DataColumnHeader col = new() {
                 Text = Field,
                 Field = Field,
                 Width = Width
@@ -900,7 +903,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public void Add(string Text, string Field) {
-            DataColumnHeader col = new DataColumnHeader {
+            DataColumnHeader col = new() {
                 Text = Text,
                 Field = Field
             };
@@ -908,7 +911,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public void Add(string Text, string Field, int Width) {
-            DataColumnHeader col = new DataColumnHeader {
+            DataColumnHeader col = new() {
                 Text = Text,
                 Field = Field,
                 Width = Width

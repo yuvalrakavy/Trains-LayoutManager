@@ -30,17 +30,17 @@ namespace LayoutManager.View {
         /// <param name="view">The view in which the region needs to be drawn</param>
         /// <param name="selectionLook">If region is selected, encupsolate selection visual cues</param>
         /// <param name="g">The graphics on which the region is to be drawn</param>
-        void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g);
+        void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook? selectionLook, Graphics g);
 
         /// <summary>
         /// If not null this will be called if region is clicked
         /// </summary>
-        Func<bool> ClickHandler { get; set; }
+        Func<bool>? ClickHandler { get; set; }
 
         /// <summary>
         /// If not null this will be called if region is right clicked
         /// </summary>
-        Func<bool> RightClickHandler { get; set; }
+        Func<bool>? RightClickHandler { get; set; }
 
         /// <summary>
         /// Return true if the region can be clicked (clicking on it will be considered as clicking on the component)
@@ -51,24 +51,27 @@ namespace LayoutManager.View {
     }
 
     public abstract class LayoutDrawingRegion : ILayoutDrawingRegion {
+        static readonly Region emptyRegion = new();
+
         protected LayoutDrawingRegion(ModelComponent component) {
             ZOrder = component.ZOrder;
+            BoundingRegionInModelCoordinates = emptyRegion;
         }
 
-        public Region BoundingRegionInModelCoordinates { get; protected set; }
+        public Region BoundingRegionInModelCoordinates { get; protected init; }
 
         public virtual int ZOrder { get; }
 
-        public Func<bool> ClickHandler { get; set; }
+        public Func<bool>? ClickHandler { get; set; }
 
-        public Func<bool> RightClickHandler { get; set; }
+        public Func<bool>? RightClickHandler { get; set; }
 
         public virtual bool CanBeClicked => true;
 
-        public virtual void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
+        public virtual void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook? selectionLook, Graphics g) {
             if (selectionLook != null) {
                 RectangleF rc = BoundingRegionInModelCoordinates.GetBounds(g);
-                Pen p = new Pen(selectionLook.Color, view.LineWidthInModelCoordinates) {
+                Pen p = new(selectionLook.Color, view.LineWidthInModelCoordinates) {
                     Alignment = System.Drawing.Drawing2D.PenAlignment.Center
                 };
                 g.DrawRectangle(p, view.LineWidthInModelCoordinates / 2.0F, view.LineWidthInModelCoordinates / 2.0F, rc.Width - (1.5F * view.LineWidthInModelCoordinates), rc.Height - (1.5F * view.LineWidthInModelCoordinates));
@@ -99,7 +102,7 @@ namespace LayoutManager.View {
     /// Base class for drawing region that draws a rectangle whose relative to a grid location is provided
     /// </summary>
     public abstract class LayoutDrawingRegionRectangle : LayoutDrawingRegion {
-        private float getAlignedValue(float v, float d, LayoutDrawingAnchorPoint a) => a switch
+        private float GetAlignedValue(float v, float d, LayoutDrawingAnchorPoint a) => a switch
         {
             LayoutDrawingAnchorPoint.Center => v - (d / 2.0f),
             LayoutDrawingAnchorPoint.Left => v,
@@ -118,23 +121,23 @@ namespace LayoutManager.View {
         protected LayoutDrawingRegionRectangle(ModelComponent component, ILayoutView view,
             LayoutPositionInfo positionProvider, SizeF rectSize) : base(component) {
             PointF ptTopLeft = view.ModelLocationInModelCoordinates(component.Location);
-            PointF origin = new PointF(ptTopLeft.X + (view.GridSizeInModelCoordinates.Width / 2), ptTopLeft.Y + (view.GridSizeInModelCoordinates.Height / 2));
+            PointF origin = new(ptTopLeft.X + (view.GridSizeInModelCoordinates.Width / 2), ptTopLeft.Y + (view.GridSizeInModelCoordinates.Height / 2));
 
             var rcRegion = positionProvider.Side switch
             {
-                LayoutDrawingSide.Top => new RectangleF(new PointF(getAlignedValue(origin.X, rectSize.Width, positionProvider.AnchorPoint),
+                LayoutDrawingSide.Top => new RectangleF(new PointF(GetAlignedValue(origin.X, rectSize.Width, positionProvider.AnchorPoint),
                                             origin.Y - rectSize.Height - positionProvider.Distance), rectSize),
 
                 LayoutDrawingSide.Bottom => new RectangleF(
-                        new PointF(getAlignedValue(origin.X, rectSize.Width, positionProvider.AnchorPoint),
+                        new PointF(GetAlignedValue(origin.X, rectSize.Width, positionProvider.AnchorPoint),
                         origin.Y + positionProvider.Distance), rectSize),
 
                 LayoutDrawingSide.Left => new RectangleF(
                         new PointF(origin.X - rectSize.Width - positionProvider.Distance,
-                        getAlignedValue(origin.Y, rectSize.Height, positionProvider.AnchorPoint)), rectSize),
+                        GetAlignedValue(origin.Y, rectSize.Height, positionProvider.AnchorPoint)), rectSize),
 
                 LayoutDrawingSide.Right => new RectangleF(new PointF(origin.X + positionProvider.Distance,
-                        getAlignedValue(origin.Y, rectSize.Height, positionProvider.AnchorPoint)), rectSize),
+                        GetAlignedValue(origin.Y, rectSize.Height, positionProvider.AnchorPoint)), rectSize),
 
                 LayoutDrawingSide.Center => new RectangleF(new PointF(origin.X - (rectSize.Width / 2), origin.Y - (rectSize.Height / 2)),
                         rectSize),
@@ -153,10 +156,10 @@ namespace LayoutManager.View {
             this.ballonContentSize = ballonContentSize;
 
             bool horizontal = true;
-            LayoutTrackComponent track = component.Spot.Track;
+            var track = component.Spot.Track;
             PointF ptTopLeft = view.ModelLocationInModelCoordinates(component.Location);
-            PointF ptCenter = new PointF(ptTopLeft.X + (view.GridSizeInModelCoordinates.Width / 2), ptTopLeft.Y + (view.GridSizeInModelCoordinates.Height / 2));
-            SizeF totalContentSize = new SizeF(ballonContentSize.Width + (Margins.Width * 2), ballonContentSize.Height + (Margins.Height * 2));
+            PointF ptCenter = new(ptTopLeft.X + (view.GridSizeInModelCoordinates.Width / 2), ptTopLeft.Y + (view.GridSizeInModelCoordinates.Height / 2));
+            SizeF totalContentSize = new(ballonContentSize.Width + (Margins.Width * 2), ballonContentSize.Height + (Margins.Height * 2));
             bool onTop = true;
             bool onRight = true;
             float xBallon;
@@ -232,7 +235,7 @@ namespace LayoutManager.View {
 
         protected BallonPainter Painter { get; } = new BallonPainter();
 
-        public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
+        public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook? selectionLook, Graphics g) {
             GraphicsState gs = g.Save();
 
             g.TranslateTransform(3, 3);
@@ -256,7 +259,7 @@ namespace LayoutManager.View {
         /// <summary>
         /// The margins around the content in the ballon
         /// </summary>
-        protected SizeF Margins => new SizeF(4, 4);
+        protected SizeF Margins => new(4, 4);
 
         #region IDisposable Members
 
@@ -344,7 +347,7 @@ namespace LayoutManager.View {
         public bool ForceDraw { get; set; }
 
         public LayoutDrawingRegionText(ModelComponent component, ILayoutView view, ViewDetailLevel detailLevel, Graphics g, LayoutTextInfo textProvider) :
-            base(component, view, textProvider.PositionProvider, measureProviderString(g, detailLevel, textProvider)) {
+            base(component, view, textProvider.PositionProvider, MeasureProviderString(g, detailLevel, textProvider)) {
             this.textProvider = textProvider;
         }
 
@@ -356,7 +359,7 @@ namespace LayoutManager.View {
             : this(e, new LayoutTextInfo(e.Component)) {
         }
 
-        public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
+        public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook? selectionLook, Graphics g) {
             base.Draw(view, detailLevel, selectionLook, g);
 
             if (textProvider.Element != null && (textProvider.Visible || ForceDraw)) {
@@ -364,7 +367,7 @@ namespace LayoutManager.View {
                 Color fontColor = textProvider.FontProvider.Color;
 
                 if (detailLevel == ViewDetailLevel.High || textProvider.FontProvider.Font.Height > 14) {
-                    using SolidBrush fontBrush = new SolidBrush(fontColor);
+                    using SolidBrush fontBrush = new(fontColor);
                     if (width == 0)
                         g.DrawString(textProvider.Text, textProvider.FontProvider.Font, fontBrush, new Point(0, 0));
                     else
@@ -372,10 +375,10 @@ namespace LayoutManager.View {
                             new RectangleF(new PointF(0, 0), new SizeF(width, 10000.0F)), new StringFormat());
                 }
                 else {
-                    SizeF size = measureProviderString(g, detailLevel, textProvider);
-                    RectangleF textArea = new RectangleF(new PointF(0, 0), size);
+                    SizeF size = MeasureProviderString(g, detailLevel, textProvider);
+                    RectangleF textArea = new(new PointF(0, 0), size);
 
-                    using Pen p = new Pen(fontColor, 3.0f) {
+                    using Pen p = new(fontColor, 3.0f) {
                         DashStyle = DashStyle.DashDotDot
                     };
                     float y = (float)((textArea.Bottom - textArea.Top) / 2.0);
@@ -385,7 +388,7 @@ namespace LayoutManager.View {
             }
         }
 
-        static private SizeF measureProviderString(Graphics g, ViewDetailLevel detailLevel, LayoutTextInfo textProvider) {
+        static private SizeF MeasureProviderString(Graphics g, ViewDetailLevel detailLevel, LayoutTextInfo textProvider) {
             if (textProvider.Element != null) {
                 int width = textProvider.PositionProvider.Width;
 
@@ -421,7 +424,7 @@ namespace LayoutManager.View {
 
         public LayoutDrawingRegionNotConnected(ModelComponent component, ILayoutView view, bool onTop) : base(component, view) {
             this.component = (IModelComponentHasId)component;
-            imageListComponents = (ImageList)EventManager.Event(new LayoutEvent("get-components-image-list", this));
+            imageListComponents = Ensure.NotNull<ImageList>(EventManager.Event(new LayoutEvent("get-components-image-list", this)));
             this.onTop = onTop;
         }
 
@@ -429,12 +432,13 @@ namespace LayoutManager.View {
             : this(component, view, false) {
         }
 
-        public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
+        public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook? selectionLook, Graphics g) {
             // If the component is not connected, mark it
             if (!LayoutModel.ControlManager.ConnectionPoints.IsFullyConnected(component.Id)) {
-                Image notConnectedImage = imageListComponents.Images[2];
+                var notConnectedImage = imageListComponents.Images[2];
 
-                g.DrawImage(notConnectedImage, new Rectangle(new Point(0, 0), notConnectedImage.Size));
+                if(notConnectedImage != null)
+                    g.DrawImage(notConnectedImage, new Rectangle(new Point(0, 0), notConnectedImage.Size));
             }
         }
 

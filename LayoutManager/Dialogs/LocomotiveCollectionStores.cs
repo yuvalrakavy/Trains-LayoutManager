@@ -193,7 +193,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonNew_Click(object sender, System.EventArgs e) {
+        private void buttonNew_Click(object? sender, System.EventArgs e) {
             XmlElement storeElement = storesElement.OwnerDocument.CreateElement("Store");
 
             if (new Dialogs.LocomotiveCollectionStore(storesName, storeElement, collectionDescription, defaultDirectory, defaultExtension).ShowDialog(this) == DialogResult.OK) {
@@ -203,7 +203,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonEdit_Click(object sender, System.EventArgs e) {
+        private void buttonEdit_Click(object? sender, System.EventArgs e) {
             if (listViewStores.SelectedItems.Count > 0) {
                 StoreItem selected = (StoreItem)listViewStores.SelectedItems[0];
 
@@ -212,11 +212,11 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void listViewStores_SelectedIndexChanged(object sender, System.EventArgs e) {
+        private void listViewStores_SelectedIndexChanged(object? sender, System.EventArgs e) {
             updateButtons();
         }
 
-        private void buttonRemove_Click(object sender, System.EventArgs e) {
+        private void buttonRemove_Click(object? sender, System.EventArgs e) {
             if (listViewStores.SelectedItems.Count > 0) {
                 StoreItem selected = (StoreItem)listViewStores.SelectedItems[0];
 
@@ -226,7 +226,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonSetAsDefault_Click(object sender, System.EventArgs e) {
+        private void buttonSetAsDefault_Click(object? sender, System.EventArgs e) {
             if (listViewStores.SelectedItems.Count > 0) {
                 StoreItem selected = (StoreItem)listViewStores.SelectedItems[0];
 
@@ -243,7 +243,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonClose_Click(object sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, System.EventArgs e) {
             bool defaultFound = false;
             int defaultStoreIndex = 0;
 

@@ -1,35 +1,31 @@
-using System;
-using System.Drawing;
-using System.Windows.Forms;
-
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for LinkMenu.
     /// </summary>
-    public class LinkMenu : System.Windows.Forms.LinkLabel {
-        private readonly ContextMenu menu = new ContextMenu();
+    public class LinkMenu : LinkLabel {
+        private readonly ContextMenuStrip menu = new();
         private int selectedIndex = -1;
-        public event EventHandler ValueChanged;
+        public event EventHandler? ValueChanged;
 
         public LinkMenu() {
         }
 
         public String[] Options {
             get {
-                String[] values = new String[menu.MenuItems.Count];
+                String[] values = new String[menu.Items.Count];
 
                 for (int i = 0; i < values.Length; i++)
-                    values[i] = menu.MenuItems[i].Text;
+                    values[i] = menu.Items[i].Text;
 
                 return values;
             }
 
             set {
-                menu.MenuItems.Clear();
+                menu.Items.Clear();
 
                 if (value != null) {
                     foreach (String text in value)
-                        menu.MenuItems.Add(new LinkMenuItem(this, text));
+                        menu.Items.Add(new LinkMenuItem(this, text));
                 }
             }
         }
@@ -41,17 +37,17 @@ namespace LayoutManager.CommonUI.Controls {
 
             set {
                 if (value >= 0) {
-                    if (value >= menu.MenuItems.Count)
+                    if (value >= menu.Items.Count)
                         throw new ArgumentException("Invalid selected index");
                     selectedIndex = value;
-                    Text = menu.MenuItems[selectedIndex].Text;
+                    Text = menu.Items[selectedIndex].Text;
                 }
             }
         }
 
-        protected MenuItem SelectedItem {
+        protected ToolStripMenuItem SelectedItem {
             set {
-                SelectedIndex = menu.MenuItems.IndexOf(value);
+                SelectedIndex = menu.Items.IndexOf(value);
             }
         }
 
@@ -60,7 +56,7 @@ namespace LayoutManager.CommonUI.Controls {
             menu.Show(Parent, new Point(Left, Bottom));
         }
 
-        private class LinkMenuItem : MenuItem {
+        private class LinkMenuItem : LayoutMenuItem {
             private readonly LinkMenu linkMenu;
 
             public LinkMenuItem(LinkMenu linkMenu, string text) {
@@ -72,7 +68,7 @@ namespace LayoutManager.CommonUI.Controls {
                 base.OnClick(e);
                 linkMenu.SelectedItem = this;
 
-                linkMenu.ValueChanged?.Invoke(linkMenu, null);
+                linkMenu.ValueChanged?.Invoke(linkMenu, EventArgs.Empty);
             }
         }
     }

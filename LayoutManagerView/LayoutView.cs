@@ -14,7 +14,7 @@ namespace LayoutManager.View {
     /// <summary>
     /// Summary description for LayoutView.
     /// </summary>
-    public class LayoutView : System.Windows.Forms.UserControl, ILayoutView, ILayoutViewModelGridToModelCoordinatesSettings {
+    public partial class LayoutView : System.Windows.Forms.UserControl, ILayoutView, ILayoutViewModelGridToModelCoordinatesSettings {
         private const string E_LayoutView = "LayoutView";
         private const string E_Origin = "Origin";
         private const string A_x = "x";
@@ -24,28 +24,28 @@ namespace LayoutManager.View {
         private const string E_Grid = "Grid";
         private const string A_Visible = "visible";
         private const string A_Color = "color";
-        private Size dcGridLineSize = new Size(1, 1);
-        private SizeF dcComponentSize = new SizeF(32, 32);  // Component size in client coordinates
-        private static readonly BooleanSwitch showCoordinatesSwitch = new BooleanSwitch("ShowCoordinates", "Show coordinates on grid");
+        private Size dcGridLineSize = new(1, 1);
+        private SizeF dcComponentSize = new(32, 32);  // Component size in client coordinates
+        private static readonly BooleanSwitch showCoordinatesSwitch = new("ShowCoordinates", "Show coordinates on grid");
 
         private float zoom = 1.0F;              // zoom factor
 
-        private Point mlOrigin = new Point(0, 0);   // origin
-        private Point mlScrolledOrigin = new Point(0, 0);       // Origin that scroll bar is set to
+        private Point mlOrigin = new(0, 0);   // origin
+        private Point mlScrolledOrigin = new(0, 0);       // Origin that scroll bar is set to
         private ShowGridLinesOption showGrid = ShowGridLinesOption.AutoHide;
         private bool showingGrid = true;
-        private ModelComponent erasedComponent;         // Do not draw this component, it is erased!
+        private ModelComponent? erasedComponent;         // Do not draw this component, it is erased!
 
-        private LayoutModelArea area;                       // The model area that this view shows
-        private ILayoutFrameWindow frameWindow;
+        private LayoutModelArea? area;                       // The model area that this view shows
+        private ILayoutFrameWindow? frameWindow;
 
         // Define various colors
         private Color gridLineColor = Color.LightGray;
         private bool showCoordinates;
 
         // grid line size in world coordinate (taking into accunt the zoom factor)
-        private SizeF mpGridLineSize = new SizeF(1.0F, 1.0F);
-        private readonly Stack<ILayoutViewModelGridToModelCoordinatesSettings> modelGridToModelCoordinatesStack = new Stack<ILayoutViewModelGridToModelCoordinatesSettings>();
+        private SizeF mpGridLineSize = new(1.0F, 1.0F);
+        private readonly Stack<ILayoutViewModelGridToModelCoordinatesSettings> modelGridToModelCoordinatesStack = new();
 
         // Drop support
         private enum ScrollDirection {
@@ -56,13 +56,9 @@ namespace LayoutManager.View {
 
         // Drag support
         private Rectangle dragSourceRectangle = Rectangle.Empty;
-        private LayoutHitTestResult draggedHitTestResult = null;
+        private LayoutHitTestResult? draggedHitTestResult = null;
 
         // Child controls
-        private System.Windows.Forms.HScrollBar hScrollBar;
-        private System.Windows.Forms.VScrollBar vScrollBar;
-        private Timer timerScrollForDrop;
-        private IContainer components;
 
         public LayoutView() {
             // This call is required by the Windows.Forms Form Designer.
@@ -72,29 +68,15 @@ namespace LayoutManager.View {
             Phases = LayoutPhase.All;
         }
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose(bool disposing) {
-            vScrollBar.Dispose();
-            hScrollBar.Dispose();
-            timerScrollForDrop.Dispose();
-
-            if (disposing && components!= null) {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
         #region Public Exposed Events
 
-        public event EventHandler<LayoutViewEventArgs> ModelComponentClick;
+        public event EventHandler<LayoutViewEventArgs>? ModelComponentClick;
 
-        public event EventHandler<LayoutViewEventArgs> ModelComponentDragged;
+        public event EventHandler<LayoutViewEventArgs>? ModelComponentDragged;
 
-        public event EventHandler<LayoutViewEventArgs> ModelComponentQueryDrop;
+        public event EventHandler<LayoutViewEventArgs>? ModelComponentQueryDrop;
 
-        public event EventHandler<LayoutViewEventArgs> ModelComponentDrop;
+        public event EventHandler<LayoutViewEventArgs>? ModelComponentDrop;
 
         #endregion
 
@@ -158,7 +140,7 @@ namespace LayoutManager.View {
                 LayoutController.LayoutModified();
 
                 if (Area != null)
-                    setScrollBars();
+                    SetScrollBars();
                 Invalidate();
             }
 
@@ -188,7 +170,7 @@ namespace LayoutManager.View {
         /// <summary>
         /// Frame window containing this view
         /// </summary>
-        public ILayoutFrameWindow FrameWindow => frameWindow ?? (frameWindow = FindForm() as ILayoutFrameWindow);
+        public ILayoutFrameWindow FrameWindow => frameWindow ??= (ILayoutFrameWindow)FindForm()!;
 
         /// <summary>
         /// The model location to be shown on the top left corner of the view
@@ -197,7 +179,7 @@ namespace LayoutManager.View {
             set {
                 mlOrigin = value;
 
-                updateScrollBarPosition();
+                UpdateScrollBarPosition();
 
                 LayoutController.LayoutModified();
                 Invalidate();
@@ -293,15 +275,13 @@ namespace LayoutManager.View {
                     area.EraseComponentImage += this.OnEraseComponentImage;
                     area.AreaBoundsChanged += this.OnAreaBoundsChanged;
 
-                    setScrollBars();
+                    SetScrollBars();
                 }
 
                 EventManager.Instance.OptimizeForFilteringBySenderType("get-model-component-drawing-regions");
             }
 
-            get {
-                return area;
-            }
+            get => Ensure.NotNull<LayoutModelArea>(area);
         }
 
         /// <summary>
@@ -324,7 +304,7 @@ namespace LayoutManager.View {
             var regions = new List<ILayoutDrawingRegion>();
             var clickedRegions = new List<ILayoutDrawingRegion>();
 
-            LayoutSelection selection = new LayoutSelection();
+            LayoutSelection selection = new();
 
             using (Graphics g = CreateTransformedGraphics()) {
                 foreach (LayoutModelSpotComponentCollection spot in Area.Grid.Values) {
@@ -354,7 +334,9 @@ namespace LayoutManager.View {
         public LayoutHitTestResult HitTest(Point dcLocation) => HitTest(LayoutModel.ActivePhases, dcLocation);
 
         public void ShowAllArea() {
-            SizeF neededSize = new SizeF(
+            var area = Area;
+
+            SizeF neededSize = new(
                 (area.Bounds.Width + 2) * (GridSizeInModelCoordinates.Width + GridLineWidthInModelCoordinates),
                 (area.Bounds.Height + 2) * (GridSizeInModelCoordinates.Height + GridLineWidthInModelCoordinates));
 
@@ -367,15 +349,16 @@ namespace LayoutManager.View {
 
         // Ensure that a given point on the model is visible
         public void EnsureVisible(Point mlAbs) {
-            Point mlOrigin = modelGridToModelCoordinatesStack.Peek().OriginInModelGridUnits;
-            Point ml = new Point(mlAbs.X - mlOrigin.X, mlAbs.Y - mlOrigin.Y);
-            SizeF mlClientSize = ClientSizeInModelGridUnits;
+            var area = Area;
+            var mlOrigin = modelGridToModelCoordinatesStack.Peek().OriginInModelGridUnits;
+            var ml = new Point(mlAbs.X - mlOrigin.X, mlAbs.Y - mlOrigin.Y);
+            var mlClientSize = ClientSizeInModelGridUnits;
 
             if (ml.X >= 0 && ml.X < mlClientSize.Width && ml.Y >= 0 && ml.Y < mlClientSize.Height)
                 return;             // Already visible, nothing to do
 
             // Set the origin so the required point will be at the middle of the screen
-            Point origin = new Point((int)(mlAbs.X - (mlClientSize.Width / 2)), (int)(mlAbs.Y - (mlClientSize.Height / 2)));
+            Point origin = new((int)(mlAbs.X - (mlClientSize.Width / 2)), (int)(mlAbs.Y - (mlClientSize.Height / 2)));
 
             if (origin.X < area.Bounds.Left)
                 origin.X = area.Bounds.Left;
@@ -394,25 +377,23 @@ namespace LayoutManager.View {
             Color resultColor = Color.Black;
 
             if (LayoutController.IsOperationMode) {
-                LayoutBlock block = edge.Track.GetOptionalBlock(edge.ConnectionPoint);
+                var block = edge.Track?.GetOptionalBlock(edge.ConnectionPoint);
 
                 if (block == null) {
                     resultColor = Color.LightGray;
                 }
                 else {
-                    if (block.IsLocked) {
+                    if (block.IsLocked && block.LockRequest != null) {
                         switch (block.LockRequest.Type) {
                             case LayoutLockType.ManualDispatch: {
-                                    var power = edge.Track.GetOptionalPower(edge.ConnectionPoint);
+                                    var power = edge.Track?.GetOptionalPower(edge.ConnectionPoint);
 
                                     if (power != null) {
-                                        switch (power.Type) {
-                                            case LayoutPowerType.Disconnected: resultColor = Color.FromArgb(0x20, 0x4b, 0x4b); break;
-                                            case LayoutPowerType.Programmer: resultColor = Color.Red; break;
-
-                                            case LayoutPowerType.Digital:
-                                            default: resultColor = Color.DarkCyan; break;
-                                        }
+                                        resultColor =power.Type switch {
+                                            LayoutPowerType.Disconnected => Color.FromArgb(0x20, 0x4b, 0x4b),
+                                            LayoutPowerType.Programmer => Color.Red,
+                                            _ => Color.DarkCyan,
+                                        };
                                     }
                                     else
                                         resultColor = Color.FromArgb(0x20, 0x4b, 0x4b);
@@ -429,7 +410,7 @@ namespace LayoutManager.View {
                         }
                     }
                     else {
-                        ILayoutPower power = edge.Track.GetPower(edge.ConnectionPoint);
+                        var power = edge.Track?.GetPower(edge.ConnectionPoint);
 
                         if (power != null) {
                             if (power.Type == LayoutPowerType.Disconnected)
@@ -461,12 +442,12 @@ namespace LayoutManager.View {
         /// </summary>
         /// <param name="desc">A description of the dumped rectangle</param>
         /// <param name="r">the rectangle to dump</param>
-        private void dumpRect(String desc, Rectangle r) {
+        private void DumpRect(String desc, Rectangle r) {
             Debug.WriteLine(String.Format("{0}: (X={1:g},Y={2:g}-Width={3:g},Height={4:g})", desc,
                 r.Left, r.Top, r.Width, r.Height));
         }
 
-        private void dumpRect(String desc, RectangleF r) {
+        private void DumpRect(String desc, RectangleF r) {
             Debug.WriteLine(String.Format("{0}: (X={1:g},Y={2:g}-Width={3:g},Height={4:g})", desc,
                 r.Left, r.Top, r.Width, r.Height));
         }
@@ -500,14 +481,14 @@ namespace LayoutManager.View {
         /// <summary>
         /// Return the client rectangle in model points
         /// </summary>
-        public RectangleF ClientRectangleInModelCoordinates => new RectangleF(0, 0, ClientRectangle.Right / zoom, ClientRectangle.Bottom / zoom);
+        public RectangleF ClientRectangleInModelCoordinates => new(0, 0, ClientRectangle.Right / zoom, ClientRectangle.Bottom / zoom);
 
         public RectangleF DrawingRectangleInModelCoordinates => modelGridToModelCoordinatesStack.Peek().ClientRectangleInModelCoordinates;
 
         /// <summary>
         /// Return the client window size in model grid units
         /// </summary>
-        public SizeF ClientSizeInModelGridUnits => new SizeF((ClientSize.Width - vScrollBar.Width) / (dcComponentSize.Width + DcGridLineWidth),
+        public SizeF ClientSizeInModelGridUnits => new((ClientSize.Width - vScrollBar.Width) / (dcComponentSize.Width + DcGridLineWidth),
                     (ClientSize.Height - hScrollBar.Height) / (dcComponentSize.Height + DcGridLineWidth));
 
         /// <summary>
@@ -517,7 +498,7 @@ namespace LayoutManager.View {
         /// <returns>Top left coordinate in world coordinates</returns>
         public PointF ModelLocationInModelCoordinates(Point mlAbs) {
             Point mlOrigin = modelGridToModelCoordinatesStack.Peek().OriginInModelGridUnits;
-            Point ml = new Point(mlAbs.X - mlOrigin.X, mlAbs.Y - mlOrigin.Y);
+            Point ml = new(mlAbs.X - mlOrigin.X, mlAbs.Y - mlOrigin.Y);
 
             return new PointF((GridLineWidthInModelCoordinates * (1 + ml.X)) + (GridSizeInModelCoordinates.Width * ml.X),
                 (GridLineWidthInModelCoordinates * (1 + ml.Y)) + (GridSizeInModelCoordinates.Height * ml.Y));
@@ -528,7 +509,7 @@ namespace LayoutManager.View {
         /// </summary>
         /// <param name="ml">The model location</param>
         /// <returns>The grid location in model points</returns>
-        public RectangleF ModelLocationRectangleInModelCoordinates(Point ml) => new RectangleF(ModelLocationInModelCoordinates(ml), GridSizeInModelCoordinates);
+        public RectangleF ModelLocationRectangleInModelCoordinates(Point ml) => new(ModelLocationInModelCoordinates(ml), GridSizeInModelCoordinates);
 
         /// <summary>
         /// Return a given the bounding rectangle of a given model component (specified
@@ -548,7 +529,7 @@ namespace LayoutManager.View {
         /// <summary>
         /// Map a rectangle from world cooridnates to page coordinates
         /// </summary>
-        private Rectangle dcMapRectangle(Graphics g, RectangleF wcRect) {
+        private Rectangle DcMapRectangle(Graphics g, RectangleF wcRect) {
             PointF[] wc = new PointF[2];
 
             wc[0] = wcRect.Location;
@@ -612,7 +593,7 @@ namespace LayoutManager.View {
         }
 
         public void ReadXml(XmlReader r) {
-            ConvertableString GetAttribute(string name) => new ConvertableString(r.GetAttribute(name), name);
+            ConvertableString GetAttribute(string name) => new(r.GetAttribute(name), name);
 
             if (r.IsEmptyElement)
                 r.Read();
@@ -629,7 +610,7 @@ namespace LayoutManager.View {
                         r.Skip();
                     }
                     else if (r.Name == E_Grid) {
-                        this.GridLineColor = Color.FromName((string)GetAttribute(A_Color));
+                        this.GridLineColor = Color.FromName((string?)GetAttribute(A_Color) ?? "Black");
                         this.ShowGrid = GetAttribute(A_Visible).Enum<ShowGridLinesOption>() ?? ShowGridLinesOption.AutoHide;
 
                         if (r.GetAttribute("ShowCoordinates") != null)
@@ -654,36 +635,36 @@ namespace LayoutManager.View {
 
         #region Handle drawing
 
-        private float getValue(float offset, int i, float slope) => offset + (i * slope);
+        private float GetValue(float offset, int i, float slope) => offset + (i * slope);
 
-        private void drawGrid(Graphics g, RectangleF boundingRect, float gridLineWidthInModelCoordinates) {
-            using Pen penGrid = new Pen(gridLineColor, gridLineWidthInModelCoordinates);
+        private void DrawGrid(Graphics g, RectangleF boundingRect, float gridLineWidthInModelCoordinates) {
+            using Pen penGrid = new(gridLineColor, gridLineWidthInModelCoordinates);
             float f = boundingRect.Left;
 
             for (int i = 0; f < boundingRect.Right; i++) {
-                f = getValue(boundingRect.Left, i, gridLineWidthInModelCoordinates + GridSizeInModelCoordinates.Width);
+                f = GetValue(boundingRect.Left, i, gridLineWidthInModelCoordinates + GridSizeInModelCoordinates.Width);
                 g.DrawLine(penGrid, f, boundingRect.Top, f, boundingRect.Bottom);
             }
 
             f = boundingRect.Top;
 
             for (int i = 0; f < boundingRect.Bottom; i++) {
-                f = getValue(boundingRect.Top, i, gridLineWidthInModelCoordinates + GridSizeInModelCoordinates.Height);
+                f = GetValue(boundingRect.Top, i, gridLineWidthInModelCoordinates + GridSizeInModelCoordinates.Height);
                 g.DrawLine(penGrid, boundingRect.Left, f, boundingRect.Right, f);
             }
         }
 
-        private void drawCoordinates(Graphics g, RectangleF boundingRectInModelCoordinates, Point originInModelGridUnits, float gridLineWidthInModelCoordinates) {
+        private void DrawCoordinates(Graphics g, RectangleF boundingRectInModelCoordinates, Point originInModelGridUnits, float gridLineWidthInModelCoordinates) {
             float fy = boundingRectInModelCoordinates.Top;
 
-            using Font font = new Font("Arial", 9, GraphicsUnit.World);
+            using Font font = new("Arial", 9, GraphicsUnit.World);
             for (int iy = 0; fy < boundingRectInModelCoordinates.Bottom; iy++) {
-                fy = getValue(boundingRectInModelCoordinates.Top, iy, gridLineWidthInModelCoordinates + GridSizeInModelCoordinates.Height);
+                fy = GetValue(boundingRectInModelCoordinates.Top, iy, gridLineWidthInModelCoordinates + GridSizeInModelCoordinates.Height);
 
                 float fx = boundingRectInModelCoordinates.Left;
 
                 for (int ix = 0; fx < boundingRectInModelCoordinates.Right; ix++) {
-                    fx = getValue(boundingRectInModelCoordinates.Left, ix, gridLineWidthInModelCoordinates + GridSizeInModelCoordinates.Width);
+                    fx = GetValue(boundingRectInModelCoordinates.Left, ix, gridLineWidthInModelCoordinates + GridSizeInModelCoordinates.Width);
 
                     int x = originInModelGridUnits.X + ix;
                     int y = originInModelGridUnits.Y + iy;
@@ -693,7 +674,7 @@ namespace LayoutManager.View {
             }
         }
 
-        private void drawBackground(Graphics g, RectangleF clipBounds) {
+        private void DrawBackground(Graphics g, RectangleF clipBounds) {
             g.FillRectangle(Brushes.White, clipBounds);
         }
 
@@ -702,8 +683,8 @@ namespace LayoutManager.View {
         /// </summary>
         /// <param name="component">The component</param>
         /// <returns>A non null SelectionLook is the component is selected in a visible selection</returns>
-        private ILayoutSelectionLook getSelectionLook(ModelComponent component) {
-            ILayoutSelectionLook selectionLook = null;
+        private ILayoutSelectionLook? GetSelectionLook(ModelComponent component) {
+            ILayoutSelectionLook? selectionLook = null;
 
             foreach (LayoutSelection selection in LayoutController.SelectionManager.DisplayedSelections) {
                 selectionLook = selection.GetComponentSelectionLook(component);
@@ -732,7 +713,7 @@ namespace LayoutManager.View {
                 return VisibleResult.No;
 
             using (Graphics g = CreateTransformedGraphics()) {
-                List<ILayoutDrawingRegion> regions = new List<ILayoutDrawingRegion>();
+                List<ILayoutDrawingRegion> regions = new();
 
                 EventManager.Event(new LayoutGetDrawingRegionsEvent(component, this, DetailLevel, g, regions));
 
@@ -766,9 +747,9 @@ namespace LayoutManager.View {
         /// </summary>
         internal struct DrawListEntry {
             internal ILayoutDrawingRegion region;
-            internal ILayoutSelectionLook selectionLook;
+            internal ILayoutSelectionLook? selectionLook;
 
-            internal DrawListEntry(ILayoutDrawingRegion region, ILayoutSelectionLook selectionLook) {
+            internal DrawListEntry(ILayoutDrawingRegion region, ILayoutSelectionLook? selectionLook) {
                 this.region = region;
                 this.selectionLook = selectionLook;
             }
@@ -777,7 +758,7 @@ namespace LayoutManager.View {
         private class SpotBackgroundRegion : ILayoutDrawingRegion {
             private readonly LayoutModelSpotComponentCollection spot;
             private readonly ILayoutView view;
-            private Region _boundingRegion = null;
+            private Region? _boundingRegion = null;
 
             public SpotBackgroundRegion(ILayoutView view, LayoutModelSpotComponentCollection spot) {
                 this.view = view;
@@ -786,11 +767,11 @@ namespace LayoutManager.View {
 
             #region ILayoutDrawingRegion Members
 
-            public Region BoundingRegionInModelCoordinates => _boundingRegion ?? (_boundingRegion = new Region(view.ModelLocationRectangleInModelCoordinates(spot.Location)));
+            public Region BoundingRegionInModelCoordinates => _boundingRegion ??= new Region(view.ModelLocationRectangleInModelCoordinates(spot.Location));
 
             public int ZOrder => 0;
 
-            public void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
+            public void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook? selectionLook, Graphics g) {
                 switch (spot.Phase) {
                     case LayoutPhase.Planned: {
                             using var b = new SolidBrush(Color.FromArgb(170, 0xa0, 0xa0, 0xa0));
@@ -806,24 +787,24 @@ namespace LayoutManager.View {
                 }
             }
 
-            public Func<bool> ClickHandler { get; set; }
+            public Func<bool>? ClickHandler { get; set; }
 
-            public Func<bool> RightClickHandler { get; set; }
+            public Func<bool>? RightClickHandler { get; set; }
 
             public bool CanBeClicked => false;
 
             #endregion
         }
 
-        private void addSpotDrawingRegions(Graphics g, ViewDetailLevel detailLevel, List<DrawListEntry> drawList, LayoutModelSpotComponentCollection spot) {
-            List<ILayoutDrawingRegion> regions = new List<ILayoutDrawingRegion>(10);
+        private void AddSpotDrawingRegions(Graphics g, ViewDetailLevel detailLevel, List<DrawListEntry> drawList, LayoutModelSpotComponentCollection spot) {
+            List<ILayoutDrawingRegion> regions = new(10);
 
             if (spot.Phase != LayoutPhase.Operational)
                 drawList.Add(new DrawListEntry(new SpotBackgroundRegion(this, spot), null));
 
             foreach (ModelComponent component in spot) {
                 if (component != erasedComponent) {
-                    ILayoutSelectionLook selectionLook = null;
+                    ILayoutSelectionLook? selectionLook = null;
                     bool selectionChecked = false;
 
                     regions.Clear();
@@ -833,7 +814,7 @@ namespace LayoutManager.View {
                         if (g.IsVisible(region.BoundingRegionInModelCoordinates.GetBounds(g))) {
                             if (!selectionChecked) {
                                 selectionChecked = true;
-                                selectionLook = getSelectionLook(component);
+                                selectionLook = GetSelectionLook(component);
                             }
 
                             drawList.Add(new DrawListEntry(region, selectionLook));
@@ -847,15 +828,15 @@ namespace LayoutManager.View {
             }
         }
 
-        private void drawComponents(Graphics g, ViewDetailLevel detailLevel, Rectangle modelAreaInModelGridUnits) {
-            List<DrawListEntry> drawList = new List<DrawListEntry>(Area.Grid.Count);
+        private void DrawComponents(Graphics g, ViewDetailLevel detailLevel, Rectangle modelAreaInModelGridUnits) {
+            List<DrawListEntry> drawList = new(Area.Grid.Count);
 
             int drawLevel = ++LayoutModel.Instance.DrawLevel;
 
             foreach (SortedVector<LayoutModelSpotComponentCollection> sortedRow in Area.SortedRows.RangeValues(modelAreaInModelGridUnits.Top, modelAreaInModelGridUnits.Bottom + 1)) {
                 foreach (LayoutModelSpotComponentCollection spot in sortedRow.RangeValues(modelAreaInModelGridUnits.Left, modelAreaInModelGridUnits.Right + 1)) {
                     if ((spot.Phase & Phases) != 0) {
-                        addSpotDrawingRegions(g, detailLevel, drawList, spot);
+                        AddSpotDrawingRegions(g, detailLevel, drawList, spot);
                         spot.DrawLevel = drawLevel;
                     }
                 }
@@ -864,7 +845,7 @@ namespace LayoutManager.View {
             foreach (LayoutModelSpotComponentCollection spot in Area.OutOfGridSpots) {
                 if (spot.DrawLevel != drawLevel) {
                     if ((spot.Phase & Phases) != 0) {
-                        addSpotDrawingRegions(g, detailLevel, drawList, spot);
+                        AddSpotDrawingRegions(g, detailLevel, drawList, spot);
                         spot.DrawLevel = drawLevel;
                     }
                 }
@@ -887,7 +868,7 @@ namespace LayoutManager.View {
             }
         }
 
-        private Bitmap allocateOffScreenBuffer(Graphics g, RectangleF clipBounds) => (Bitmap)EventManager.Event(new LayoutEvent("allocate-offscreen-buffer", g, clipBounds));
+        private Bitmap AllocateOffScreenBuffer(Graphics g, RectangleF clipBounds) => Ensure.NotNull<Bitmap>(EventManager.Event(new LayoutEvent("allocate-offscreen-buffer", g, clipBounds)));
 
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
@@ -898,24 +879,24 @@ namespace LayoutManager.View {
             if (clipBounds.IsEmpty)
                 return;
 
-            Bitmap buffer = allocateOffScreenBuffer(e.Graphics, clipBounds);
+            Bitmap buffer = AllocateOffScreenBuffer(e.Graphics, clipBounds);
 
             using (g = Graphics.FromImage(buffer)) {
                 // Translate so the top-left of the clip region is on the top/left (0,0)
                 // of the bitmap
                 g.TranslateTransform(-clipBounds.Left, -clipBounds.Top);
-                drawBackground(g, clipBounds);
+                DrawBackground(g, clipBounds);
 
                 g.ScaleTransform(zoom, zoom);
 
                 if (showingGrid) {
-                    drawGrid(g, ClientRectangleInModelCoordinates, mpGridLineSize.Width);
+                    DrawGrid(g, ClientRectangleInModelCoordinates, mpGridLineSize.Width);
                     if (ShowCoordinates)
-                        drawCoordinates(g, ClientRectangleInModelCoordinates, mlOrigin, mpGridLineSize.Width);
+                        DrawCoordinates(g, ClientRectangleInModelCoordinates, mlOrigin, mpGridLineSize.Width);
                 }
 
                 if (area != null)
-                    drawComponents(g, DetailLevel, MapRectangleFromDeviceCoordinatesToModelGridUnits(Rectangle.Truncate(clipBounds)));
+                    DrawComponents(g, DetailLevel, MapRectangleFromDeviceCoordinatesToModelGridUnits(Rectangle.Truncate(clipBounds)));
             }
 
             // After the background image is created, draw it on the screen
@@ -943,9 +924,9 @@ namespace LayoutManager.View {
         }
 
         public void Draw(Graphics g, Rectangle drawingRectangleInDeviceCoordinates, Rectangle modelAreaInGridUnits, int gridLineWidthInDeviceCoordinates, bool showCoordinates) {
-            drawBackground(g, drawingRectangleInDeviceCoordinates);
+            DrawBackground(g, drawingRectangleInDeviceCoordinates);
 
-            SizeF neededSize = new SizeF(
+            SizeF neededSize = new(
                 modelAreaInGridUnits.Width * (GridSizeInModelCoordinates.Width + gridLineWidthInDeviceCoordinates),
                 modelAreaInGridUnits.Height * (GridSizeInModelCoordinates.Height + gridLineWidthInDeviceCoordinates));
 
@@ -976,16 +957,16 @@ namespace LayoutManager.View {
             g.ScaleTransform(zoomValue, zoomValue);
 
             if (gridLineWidthInDeviceCoordinates > 0) {
-                RectangleF boundingRectInModelCoordinates = new RectangleF(0, 0, drawingRectangleInDeviceCoordinates.Width / zoomValue, drawingRectangleInDeviceCoordinates.Height / zoomValue);
+                RectangleF boundingRectInModelCoordinates = new(0, 0, drawingRectangleInDeviceCoordinates.Width / zoomValue, drawingRectangleInDeviceCoordinates.Height / zoomValue);
 
-                drawGrid(g, boundingRectInModelCoordinates, gridLineWidthInModelCoordinates);
+                DrawGrid(g, boundingRectInModelCoordinates, gridLineWidthInModelCoordinates);
 
                 if (showCoordinates)
-                    drawCoordinates(g, boundingRectInModelCoordinates, modelAreaInGridUnits.Location, gridLineWidthInModelCoordinates);
+                    DrawCoordinates(g, boundingRectInModelCoordinates, modelAreaInGridUnits.Location, gridLineWidthInModelCoordinates);
             }
 
             modelGridToModelCoordinatesStack.Push(new MapFromGridUnitsToModelLocation(modelAreaInGridUnits.Location, new RectangleF(0, 0, modelAreaInGridUnits.Width * GridSizeInModelCoordinates.Width, modelAreaInGridUnits.Height * GridSizeInModelCoordinates.Height), gridLineWidthInModelCoordinates));
-            drawComponents(g, ViewDetailLevel.High, modelAreaInGridUnits);
+            DrawComponents(g, ViewDetailLevel.High, modelAreaInGridUnits);
             modelGridToModelCoordinatesStack.Pop();
 
             g.Restore(gs);
@@ -999,10 +980,10 @@ namespace LayoutManager.View {
 
         #region Handle scroll bars
 
-        private void setScrollBars() {
+        private void SetScrollBars() {
             Size mlClientSize = Size.Round(ClientSizeInModelGridUnits);
             Rectangle mlBounds = Area.Bounds;
-            Size scrollBarSize = new Size(Math.Max(mlClientSize.Width, mlBounds.Width),
+            Size scrollBarSize = new(Math.Max(mlClientSize.Width, mlBounds.Width),
                 Math.Max(mlClientSize.Height, mlBounds.Height));
 
             hScrollBar.Minimum = mlBounds.Left;
@@ -1016,7 +997,7 @@ namespace LayoutManager.View {
                 vScrollBar.LargeChange = mlClientSize.Height - 1;
         }
 
-        private void updateScrollBarPosition() {
+        private void UpdateScrollBarPosition() {
             if (OriginInModelGridUnits.X != mlScrolledOrigin.X) {
                 if (OriginInModelGridUnits.X < hScrollBar.Minimum)
                     hScrollBar.Value = hScrollBar.Minimum;
@@ -1039,11 +1020,11 @@ namespace LayoutManager.View {
         }
 
         public void DoVerticalScroll(ScrollEventType type) {
-            vScrollBar_Scroll(null, new ScrollEventArgs(type, 0));
+            VScrollBar_Scroll(null, new ScrollEventArgs(type, 0));
         }
 
         public void DoHorizontalScroll(ScrollEventType type) {
-            hScrollBar_Scroll(null, new ScrollEventArgs(type, 0));
+            HScrollBar_Scroll(null, new ScrollEventArgs(type, 0));
         }
 
         #endregion
@@ -1051,7 +1032,7 @@ namespace LayoutManager.View {
         #region Handle drag-drop
 
         private ScrollDirection NeedToScroll(Point p) {
-            Size scrollRegionSize = new Size(16, 16);
+            Size scrollRegionSize = new(16, 16);
 
             if (new Rectangle(0, 0, scrollRegionSize.Width, ClientRectangle.Height).Contains(p))
                 return ScrollDirection.Left;
@@ -1096,8 +1077,8 @@ namespace LayoutManager.View {
 
         #region Event handlers
 
-        private void invalidateComponentDrawingRegion(ILayoutDrawingRegion region) {
-            Matrix m = new Matrix();
+        private void InvalidateComponentDrawingRegion(ILayoutDrawingRegion region) {
+            Matrix m = new();
 
             using System.Drawing.Region r = region.BoundingRegionInModelCoordinates.Clone();
             m.Scale(zoom, zoom);
@@ -1105,27 +1086,27 @@ namespace LayoutManager.View {
             Invalidate(r);
         }
 
-        private void invalidateComponent(ModelComponent component) {
+        private void InvalidateComponent(ModelComponent component) {
             using Graphics g = CreateTransformedGraphics();
-            List<ILayoutDrawingRegion> regions = new List<ILayoutDrawingRegion>();
+            List<ILayoutDrawingRegion> regions = new();
 
             EventManager.Event(new LayoutGetDrawingRegionsEvent(component, this, DetailLevel, g, regions));
 
             foreach (ILayoutDrawingRegion region in regions) {
-                invalidateComponentDrawingRegion(region);
+                InvalidateComponentDrawingRegion(region);
 
                 if (region is IDisposable disposableRegion)
                     disposableRegion.Dispose();
             }
         }
 
-        private void OnAreaChanged(Object sender, EventArgs e) {
+        private void OnAreaChanged(Object? sender, EventArgs e) {
             if (sender is LayoutModelArea)
                 Invalidate();
             else {
                 if (sender is LayoutModelSpotComponentCollection spot) {
-                    System.Drawing.Region spotRegion = new Region(ModelLocationRectangleInModelCoordinates(spot.Location));
-                    Matrix m = new Matrix();
+                    System.Drawing.Region spotRegion = new(ModelLocationRectangleInModelCoordinates(spot.Location));
+                    Matrix m = new();
 
                     m.Scale(Zoom, Zoom);
                     spotRegion.Transform(m);
@@ -1133,7 +1114,7 @@ namespace LayoutManager.View {
                 }
                 else {
                     if (sender is ModelComponent component)
-                        invalidateComponent(component);
+                        InvalidateComponent(component);
                     else
                         Debug.Fail("Unknown sender in OnModelChanged");
                 }
@@ -1147,8 +1128,8 @@ namespace LayoutManager.View {
         /// </summary>
         /// <param name="sender">The model component to be erased</param>
         /// <param name="e"></param>
-        private void OnEraseComponentImage(Object sender, EventArgs e) {
-            ModelComponent c = (ModelComponent)sender;
+        private void OnEraseComponentImage(Object? sender, EventArgs e) {
+            ModelComponent c = Ensure.NotNull<ModelComponent>(sender);
 
             erasedComponent = c;        // ensure that this component is not painted
             OnAreaChanged(c, e);        // Invalidate this component
@@ -1162,58 +1143,10 @@ namespace LayoutManager.View {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnAreaBoundsChanged(Object sender, EventArgs e) {
-            setScrollBars();        // update the scroll bars to reflect the change
+        private void OnAreaBoundsChanged(Object? sender, EventArgs e) {
+            SetScrollBars();        // update the scroll bars to reflect the change
         }
 
-        #endregion
-
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.components = new Container();
-            this.vScrollBar = new System.Windows.Forms.VScrollBar();
-            this.hScrollBar = new System.Windows.Forms.HScrollBar();
-            this.timerScrollForDrop = new System.Windows.Forms.Timer(this.components);
-            this.SuspendLayout();
-            // 
-            // vScrollBar
-            // 
-            this.vScrollBar.Dock = System.Windows.Forms.DockStyle.Right;
-            this.vScrollBar.Location = new System.Drawing.Point(134, 0);
-            this.vScrollBar.Name = "vScrollBar";
-            this.vScrollBar.Size = new System.Drawing.Size(16, 134);
-            this.vScrollBar.TabIndex = 1;
-            this.vScrollBar.Scroll += this.vScrollBar_Scroll;
-            // 
-            // hScrollBar
-            // 
-            this.hScrollBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.hScrollBar.Location = new System.Drawing.Point(0, 134);
-            this.hScrollBar.Name = "hScrollBar";
-            this.hScrollBar.Size = new System.Drawing.Size(150, 16);
-            this.hScrollBar.TabIndex = 0;
-            this.hScrollBar.Scroll += this.hScrollBar_Scroll;
-            // 
-            // timerScrollForDrop
-            // 
-            this.timerScrollForDrop.Interval = 250;
-            this.timerScrollForDrop.Tick += this.timerScrollForDrop_Tick;
-            // 
-            // LayoutView
-            // 
-            this.AllowDrop = true;
-            this.Controls.Add(this.vScrollBar);
-            this.Controls.Add(this.hScrollBar);
-            this.Name = E_LayoutView;
-            this.Resize += this.LayoutView_Resize;
-            this.MouseEnter += this.LayoutView_MouseEnter;
-            this.KeyDown += this.LayoutView_KeyDown;
-            this.ResumeLayout(false);
-        }
         #endregion
 
         #region Scroll handling
@@ -1247,12 +1180,12 @@ namespace LayoutManager.View {
             int dx,
             int dy,
             [MarshalAs(UnmanagedType.LPStruct)]
-            RECT prcScroll,
+            RECT? prcScroll,
             [MarshalAs(UnmanagedType.LPStruct)]
-            RECT prcClip,
+            RECT? prcClip,
             System.IntPtr hrgnUpdate,
             [MarshalAs(UnmanagedType.LPStruct)]
-            RECT prcUpdate,
+            RECT? prcUpdate,
             ScrollWindowExFlags flags
             );
 
@@ -1282,7 +1215,7 @@ namespace LayoutManager.View {
         }
 
         protected void DoScrollWindow(int deltaX, int deltaY) {
-            ScrollWindowEx(Handle, deltaX, deltaY, null, null, IntPtr.Zero, null, ScrollWindowExFlags.SW_INVALIDATE);
+            _ = ScrollWindowEx(Handle, deltaX, deltaY, null, null, IntPtr.Zero, null, ScrollWindowExFlags.SW_INVALIDATE);
         }
 
         #endregion
@@ -1292,13 +1225,13 @@ namespace LayoutManager.View {
 
             DoScrollWindow(-(int)(mlSize.Width * (dcComponentSize.Width + DcGridLineWidth)),
                 -(int)(mlSize.Height * (dcComponentSize.Height + DcGridLineWidth)));
-            updateScrollBarPosition();
+            UpdateScrollBarPosition();
 
             LayoutController.LayoutModified();
             Update();
         }
 
-        private void vScrollBar_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e) {
+        private void VScrollBar_Scroll(object? sender, System.Windows.Forms.ScrollEventArgs e) {
             switch (e.Type) {
                 case ScrollEventType.SmallIncrement:
                     ScrollWindow(new Size(0, 1));
@@ -1330,7 +1263,7 @@ namespace LayoutManager.View {
             }
         }
 
-        private void hScrollBar_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e) {
+        private void HScrollBar_Scroll(object? sender, System.Windows.Forms.ScrollEventArgs e) {
             switch (e.Type) {
                 case ScrollEventType.SmallIncrement:
                     ScrollWindow(new Size(1, 0));
@@ -1362,11 +1295,11 @@ namespace LayoutManager.View {
             }
         }
 
-        private void LayoutView_Resize(object sender, System.EventArgs e) {
-            setScrollBars();
+        private void LayoutView_Resize(object? sender, System.EventArgs e) {
+            SetScrollBars();
         }
 
-        private void LayoutView_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
+        private void LayoutView_KeyDown(object? sender, System.Windows.Forms.KeyEventArgs e) {
             switch (e.KeyCode) {
                 case Keys.Left:
                     DoHorizontalScroll((e.Modifiers & Keys.Control) != 0 ? ScrollEventType.LargeDecrement : ScrollEventType.SmallDecrement);
@@ -1486,11 +1419,11 @@ namespace LayoutManager.View {
 
         protected override bool IsInputKey(Keys keyData) => true;
 
-        private void LayoutView_MouseEnter(object sender, System.EventArgs e) {
+        private void LayoutView_MouseEnter(object? sender, System.EventArgs e) {
             Focus();
         }
 
-        private void timerScrollForDrop_Tick(object sender, EventArgs e) {
+        private void TimerScrollForDrop_Tick(object? sender, EventArgs e) {
             switch (dropScrollDirection) {
                 case ScrollDirection.Down:
                     DoVerticalScroll(ScrollEventType.SmallIncrement);
@@ -1531,7 +1464,7 @@ namespace LayoutManager.View {
         /// <summary>
         /// The model area that this view shows
         /// </summary>
-        LayoutModelArea Area {
+        LayoutModelArea? Area {
             get;
         }
 
@@ -1661,7 +1594,7 @@ namespace LayoutManager.View {
             return i == 0 ? trackSegment.Cp1 : trackSegment.Cp2;
         }
 
-        public IList<RoutePreviewAnnotation> Annotations { get; }
+        public IList<RoutePreviewAnnotation>? Annotations { get; }
     }
 
     public class LayoutGetDrawingRegionsEvent : LayoutEvent {
@@ -1679,7 +1612,7 @@ namespace LayoutManager.View {
 
         public Graphics Graphics { get; }
 
-        public ModelComponent Component => (ModelComponent)this.Sender;
+        public ModelComponent Component => Ensure.NotNull<ModelComponent>(this.Sender);
 
         public IList<ILayoutDrawingRegion> Regions { get; }
 
@@ -1692,16 +1625,16 @@ namespace LayoutManager.View {
     /// Passed as EventArgs for various view triggered events
     /// </summary>
     public class LayoutViewEventArgs : EventArgs {
-        public LayoutHitTestResult HitTestResult;
-        public MouseEventArgs MouseEventArgs;
-        public DragEventArgs DragEventArgs;
+        public LayoutHitTestResult? HitTestResult;
+        public MouseEventArgs? MouseEventArgs;
+        public DragEventArgs? DragEventArgs;
 
-        public LayoutViewEventArgs(LayoutHitTestResult hitTestResult, MouseEventArgs mouseEventArgs) {
+        public LayoutViewEventArgs(LayoutHitTestResult? hitTestResult, MouseEventArgs mouseEventArgs) {
             this.HitTestResult = hitTestResult;
             this.MouseEventArgs = mouseEventArgs;
         }
 
-        public LayoutViewEventArgs(LayoutHitTestResult hitTestResult, DragEventArgs dragEventArgs) {
+        public LayoutViewEventArgs(LayoutHitTestResult? hitTestResult, DragEventArgs dragEventArgs) {
             this.HitTestResult = hitTestResult;
             this.DragEventArgs = dragEventArgs;
         }
@@ -1713,12 +1646,12 @@ namespace LayoutManager.View {
     /// </summary>
     [LayoutModule("Off-screen Buffer Manager", UserControl = false)]
     internal class OffscreenBufferManager {
-        private Bitmap offScreenBuffer;
+        private Bitmap? offScreenBuffer;
 
         [LayoutEvent("allocate-offscreen-buffer")]
         private void AllocateOffScreenBuffer(LayoutEvent e) {
-            Graphics g = (Graphics)e.Sender;
-            RectangleF clipBounds = (RectangleF)e.Info;
+            Graphics g = Ensure.NotNull<Graphics>(e.Sender);
+            RectangleF clipBounds = Ensure.ValueNotNull<RectangleF>(e.Info);
 
             if (offScreenBuffer == null || clipBounds.Width > offScreenBuffer.Width || clipBounds.Height > offScreenBuffer.Height) {
                 if (offScreenBuffer != null)

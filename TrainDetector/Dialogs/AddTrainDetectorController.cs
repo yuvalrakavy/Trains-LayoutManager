@@ -28,7 +28,7 @@ namespace TrainDetector.Dialogs {
             set => textBoxName.Text = value;
         }
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void buttonOK_Click(object? sender, EventArgs e) {
             var validationError = validateFunction != null ? validateFunction(ControllerName) : null;
 
             if(validationError != null) {

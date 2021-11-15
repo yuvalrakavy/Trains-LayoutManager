@@ -24,7 +24,7 @@ namespace LayoutManager.Dialogs {
             UpdateButtons(null, null);
         }
 
-        private void UpdateButtons(object sender, EventArgs e) {
+        private void UpdateButtons(object? sender, EventArgs e) {
             TreeNode selected = treeViewScripts.SelectedNode;
 
             buttonAdd.Enabled = selected != null;
@@ -33,11 +33,11 @@ namespace LayoutManager.Dialogs {
             buttonRemove.Enabled = selected != null;
         }
 
-        private void treeViewScriptsAndExportedScripts_AfterSelect(object sender, TreeViewEventArgs e) {
+        private void treeViewScriptsAndExportedScripts_AfterSelect(object? sender, TreeViewEventArgs e) {
             UpdateButtons(sender, e);
         }
 
-        private void buttonBrowse_Click(object sender, EventArgs e) {
+        private void buttonBrowse_Click(object? sender, EventArgs e) {
             if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
                 textBoxFilename.Text = saveFileDialog.FileName;
         }
@@ -73,7 +73,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonAdd_Click(object sender, EventArgs e) {
+        private void buttonAdd_Click(object? sender, EventArgs e) {
             if (treeViewScripts.SelectedNode is PolicyTreeNode policyNode)
                 addScript(policyNode);
             else {
@@ -101,7 +101,7 @@ namespace LayoutManager.Dialogs {
                 treeViewExportedScripts.Nodes.Remove(policySectionNode);
         }
 
-        private void buttonRemove_Click(object sender, EventArgs e) {
+        private void buttonRemove_Click(object? sender, EventArgs e) {
             if (treeViewExportedScripts.SelectedNode is PolicyTreeNode selectedPolicyNode)
                 removeScript(selectedPolicyNode, true);
             else {
@@ -117,7 +117,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void buttonOK_Click(object? sender, EventArgs e) {
             if (string.IsNullOrEmpty(textBoxFilename.Text)) {
                 MessageBox.Show(this, "Please provide a name for the file to which scripts are to be exported", "Missing filename", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxFilename.Focus();
@@ -149,11 +149,11 @@ namespace LayoutManager.Dialogs {
             Close();
         }
 
-        private void treeViewScripts_DoubleClick(object sender, EventArgs e) {
+        private void treeViewScripts_DoubleClick(object? sender, EventArgs e) {
             buttonAdd.PerformClick();
         }
 
-        private void treeViewExportedScripts_DoubleClick(object sender, EventArgs e) {
+        private void treeViewExportedScripts_DoubleClick(object? sender, EventArgs e) {
             buttonRemove.PerformClick();
         }
     }

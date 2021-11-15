@@ -7,12 +7,12 @@ using LayoutManager.Model;
 namespace LayoutManager.Tools.Dialogs {
     public partial class ChangeLocomotiveAddress : Form {
         private LocomotiveInfo Locomotive { get; }
-        public IModelComponentIsCommandStation CommandStation { get; }
+        public IModelComponentIsCommandStation? CommandStation { get; }
         public int Address { get; private set; }
         public bool ProgramLocomotive { get; private set; }
         public int SpeedSteps { get; private set; }
 
-        public ChangeLocomotiveAddress(LocomotiveInfo locomotive, IModelComponentIsCommandStation commandStation = null) {
+        public ChangeLocomotiveAddress(LocomotiveInfo locomotive, IModelComponentIsCommandStation? commandStation = null) {
             InitializeComponent();
             this.Locomotive = locomotive;
 
@@ -43,15 +43,15 @@ namespace LayoutManager.Tools.Dialogs {
             AcceptButton = buttonSaveAndProgram.Enabled ? buttonSaveAndProgram : buttonSaveOnly;
         }
 
-        private void radioButtonSetAddress_CheckedChanged(object sender, EventArgs e) {
+        private void RadioButtonSetAddress_CheckedChanged(object? sender, EventArgs e) {
             SetButtons();
         }
 
-        private void radioButtonUnknownAddress_CheckedChanged(object sender, EventArgs e) {
+        private void RadioButtonUnknownAddress_CheckedChanged(object? sender, EventArgs e) {
             SetButtons();
         }
 
-        private void buttonAllocateAddress_Click(object sender, EventArgs e) {
+        private void ButtonAllocateAddress_Click(object? sender, EventArgs e) {
             var address = EventManager.EventResultValueType<Components.LayoutBlockDefinitionComponent, LocomotiveInfo, int>("allocate-locomotive-address", null, Locomotive);
 
             if (address.HasValue)
@@ -62,6 +62,9 @@ namespace LayoutManager.Tools.Dialogs {
 
         private bool ValidateAddress(out int address) {
             bool result = true;
+
+            if(CommandStation == null)
+               throw new NullReferenceException("CommandStation");
 
             if (!int.TryParse(textBoxAddress.Text, out address)) {
                 MessageBox.Show(this, "Invalid address", "You have entered invalid locomotive address", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -84,7 +87,7 @@ namespace LayoutManager.Tools.Dialogs {
                     var power = (from powerOutlet in CommandStation.PowerOutlets where powerOutlet.Power.Type == LayoutPowerType.Digital select powerOutlet.Power).FirstOrDefault();
 
                     if (power != null) {
-                        var isAddressValid = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent<XmlElement, ILayoutPower>("is-locomotive-address-valid", Locomotive.Element, power).SetOption("LocoAddress", address));
+                        var isAddressValid = Ensure.NotNull<CanPlaceTrainResult>(EventManager.Event(new LayoutEvent<XmlElement, ILayoutPower>("is-locomotive-address-valid", Locomotive.Element, power).SetOption("LocoAddress", address)));
 
                         if (!isAddressValid.CanBeResolved)
                             result = MessageBox.Show(this, isAddressValid.ToString() + "\n\nDo you want to use this address?", "Address warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;
@@ -98,7 +101,7 @@ namespace LayoutManager.Tools.Dialogs {
             return result;
         }
 
-        private void buttonSaveOnly_Click(object sender, EventArgs e) {
+        private void ButtonSaveOnly_Click(object? sender, EventArgs e) {
             if (radioButtonUnknownAddress.Checked || ValidateAddress(out int address)) {
                 ProgramLocomotive = false;
                 DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -106,7 +109,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        private void buttonSaveAndProgram_Click(object sender, EventArgs e) {
+        private void ButtonSaveAndProgram_Click(object? sender, EventArgs e) {
             if (radioButtonUnknownAddress.Checked || ValidateAddress(out int address)) {
                 ProgramLocomotive = true;
                 DialogResult = System.Windows.Forms.DialogResult.OK;

@@ -555,7 +555,7 @@ namespace LayoutManager {
             // 
             this.menuItemShowLayoutControl.Index = 11;
             resources.ApplyResources(this.menuItemShowLayoutControl, "menuItemShowLayoutControl");
-            this.menuItemShowLayoutControl.Click += new System.EventHandler(this.menuItemShowLayoutControl_Click);
+            this.menuItemShowLayoutControl.Click += new System.EventHandler(this.MenuItemShowLayoutControl_Click);
             // 
             // menuItemShowTripsMonitor
             // 
@@ -590,7 +590,7 @@ namespace LayoutManager {
             // 
             this.menuItemOperational.Index = 1;
             resources.ApplyResources(this.menuItemOperational, "menuItemOperational");
-            this.menuItemOperational.Click += new System.EventHandler(this.menuItemOperational_Click);
+            this.menuItemOperational.Click += new System.EventHandler(this.MenuItemOperational_Click);
             // 
             // menuItemTools
             // 
@@ -633,7 +633,7 @@ namespace LayoutManager {
             // 
             this.menuItemDesign.Index = 0;
             resources.ApplyResources(this.menuItemDesign, "menuItemDesign");
-            this.menuItemDesign.Click += new System.EventHandler(this.menuItemDesign_Click);
+            this.menuItemDesign.Click += new System.EventHandler(this.MenuItemDesign_Click);
             // 
             // menuItemSimulation
             // 
@@ -696,19 +696,19 @@ namespace LayoutManager {
             // 
             this.menuItemPolicies.Index = 12;
             resources.ApplyResources(this.menuItemPolicies, "menuItemPolicies");
-            this.menuItemPolicies.Click += new System.EventHandler(this.menuItemPolicies_Click);
+            this.menuItemPolicies.Click += new System.EventHandler(this.MenuItemPolicies_Click);
             // 
             // menuItemDefaultDriverParameters
             // 
             this.menuItemDefaultDriverParameters.Index = 13;
             resources.ApplyResources(this.menuItemDefaultDriverParameters, "menuItemDefaultDriverParameters");
-            this.menuItemDefaultDriverParameters.Click += new System.EventHandler(this.menuItemDefaultDriverParameters_Click);
+            this.menuItemDefaultDriverParameters.Click += new System.EventHandler(this.MenuItemDefaultDriverParameters_Click);
             // 
             // menuItemCommonDestinations
             // 
             this.menuItemCommonDestinations.Index = 15;
             resources.ApplyResources(this.menuItemCommonDestinations, "menuItemCommonDestinations");
-            this.menuItemCommonDestinations.Click += new System.EventHandler(this.menuItemCommonDestinations_Click);
+            this.menuItemCommonDestinations.Click += new System.EventHandler(this.MenuItemCommonDestinations_Click);
             // 
             // menuItemManualDispatchRegions
             // 
@@ -716,7 +716,7 @@ namespace LayoutManager {
             this.menuItemManualDispatchRegions.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem4});
             resources.ApplyResources(this.menuItemManualDispatchRegions, "menuItemManualDispatchRegions");
-            this.menuItemManualDispatchRegions.Popup += new System.EventHandler(this.menuItemManualDispatchRegions_Popup);
+            this.menuItemManualDispatchRegions.Popup += new System.EventHandler(this.MenuItemManualDispatchRegions_Popup);
             // 
             // menuItem4
             // 
@@ -984,13 +984,13 @@ namespace LayoutManager {
             // 
             this.menuItemLocomotiveCatalog.Index = 13;
             resources.ApplyResources(this.menuItemLocomotiveCatalog, "menuItemLocomotiveCatalog");
-            this.menuItemLocomotiveCatalog.Click += new System.EventHandler(this.menuItemLocomotiveCatalog_Click);
+            this.menuItemLocomotiveCatalog.Click += new System.EventHandler(this.MenuItemLocomotiveCatalog_Click);
             // 
             // menuItemAccelerationProfiles
             // 
             this.menuItemAccelerationProfiles.Index = 14;
             resources.ApplyResources(this.menuItemAccelerationProfiles, "menuItemAccelerationProfiles");
-            this.menuItemAccelerationProfiles.Click += new System.EventHandler(this.menuItemAccelerationProfiles_Click);
+            this.menuItemAccelerationProfiles.Click += new System.EventHandler(this.MenuItemAccelerationProfiles_Click);
             // 
             // menuItemArea
             // 
@@ -1054,7 +1054,7 @@ namespace LayoutManager {
             resources.ApplyResources(this.splitterTripsMonitor, "splitterTripsMonitor");
             this.splitterTripsMonitor.Name = "splitterTripsMonitor";
             this.splitterTripsMonitor.TabStop = false;
-            this.splitterTripsMonitor.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterTripsMonitor_SplitterMoved);
+            this.splitterTripsMonitor.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.SplitterTripsMonitor_SplitterMoved);
             // 
             // tabAreas
             // 
@@ -1074,7 +1074,7 @@ namespace LayoutManager {
             resources.ApplyResources(this.splitterMessages, "splitterMessages");
             this.splitterMessages.Name = "splitterMessages";
             this.splitterMessages.TabStop = false;
-            this.splitterMessages.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterMessages_SplitterMoved);
+            this.splitterMessages.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.SplitterMessages_SplitterMoved);
             // 
             // messageViewer
             // 
@@ -1087,7 +1087,7 @@ namespace LayoutManager {
             resources.ApplyResources(this.splitterLocomotives, "splitterLocomotives");
             this.splitterLocomotives.Name = "splitterLocomotives";
             this.splitterLocomotives.TabStop = false;
-            this.splitterLocomotives.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterLocomotives_SplitterMoved);
+            this.splitterLocomotives.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.SplitterLocomotives_SplitterMoved);
             // 
             // panelLocomotiveViewer
             // 
@@ -1137,7 +1137,7 @@ namespace LayoutManager {
             // 
             this.timerFreeResources.Interval = 30000D;
             this.timerFreeResources.SynchronizingObject = this;
-            this.timerFreeResources.Elapsed += new System.Timers.ElapsedEventHandler(this.timerFreeResources_Elapsed);
+            this.timerFreeResources.Elapsed += new System.Timers.ElapsedEventHandler(this.TimerFreeResources_Elapsed);
             // 
             // timerDetailsPopup
             // 

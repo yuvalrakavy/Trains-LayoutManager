@@ -1,17 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FD5529DD-21BE-4FC1-8D99-9D5850AC952A}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NCDRelayController</RootNamespace>
-    <AssemblyName>NCDRelayController</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -20,112 +11,40 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
-    <TargetFrameworkProfile />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>..\LayoutManager\bin\Debug\Modules\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ComponentEditingTool.cs">
+    <Compile Update="ComponentEditingTool.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ComponentView.cs">
+    <Compile Update="ComponentView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Dialogs\DiscoverDigiDevicesDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\DiscoverDigiDevicesDialog.Designer.cs">
-      <DependentUpon>DiscoverDigiDevicesDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\NCDRelayControllerProperties.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DigiFinder.cs" />
-    <Compile Include="RelayBusComponents.cs" />
-    <Compile Include="ModelComponents.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LayoutBaseServices\LayoutBaseServices.csproj">
-      <Project>{D861E89E-9BB2-4080-AA3F-A26EC8ACEF16}</Project>
-      <Name>LayoutBaseServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LayoutCommands\LayoutCommands.csproj">
-      <Project>{5FABCFA6-6359-4126-865A-24119F0E3871}</Project>
-      <Name>LayoutCommands</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LayoutCommonUI\LayoutCommonUI.csproj">
-      <Project>{C314F674-90C0-4216-901E-3F411C3F3406}</Project>
-      <Name>LayoutCommonUI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LayoutManagerModel\LayoutManagerModel.csproj">
-      <Project>{BD926873-4803-4036-868A-9EA11A1AE227}</Project>
-      <Name>LayoutManagerModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LayoutManagerView\LayoutManagerView.csproj">
-      <Project>{857F7A5E-7B92-4722-BEBF-C3598293627D}</Project>
-      <Name>LayoutManagerView</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ComponentEditingTool.resx">
-      <DependentUpon>ComponentEditingTool.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ComponentView.resx">
-      <DependentUpon>ComponentView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\DiscoverDigiDevicesDialog.resx">
-      <DependentUpon>DiscoverDigiDevicesDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\NCDRelayControllerProperties.resx">
-      <DependentUpon>NCDRelayControllerProperties.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <ProjectReference Include="..\LayoutBaseServices\LayoutBaseServices.csproj" />
+    <ProjectReference Include="..\LayoutCommands\LayoutCommands.csproj" />
+    <ProjectReference Include="..\LayoutCommonUI\LayoutCommonUI.csproj" />
+    <ProjectReference Include="..\LayoutManagerModel\LayoutManagerModel.csproj" />
+    <ProjectReference Include="..\LayoutManagerView\LayoutManagerView.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\NCDrelayController.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include=".editorconfig" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.255803">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

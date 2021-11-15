@@ -1,6 +1,3 @@
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager.Model;
@@ -11,19 +8,19 @@ namespace LayoutManager.CommonUI.Controls {
     /// of standard fonts, standard positions etc.)
     /// </summary>
     public class LayoutInfosComboBox : ComboBox {
-        private XmlElement container = null;
-        private Type infoType = null;
+        private XmlElement? container = null;
+        private Type? infoType = null;
 
         public LayoutInfosComboBox() {
             this.DropDownStyle = ComboBoxStyle.DropDownList;
         }
 
-        public XmlElement InfoContainer {
+        public XmlElement? InfoContainer {
             set {
                 container = value;
 
                 if (container != null)
-                    fillComboBox();
+                    FillComboBox();
             }
 
             get {
@@ -60,12 +57,16 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        protected void fillComboBox() {
-            foreach (XmlElement element in container) {
-                LayoutInfo info = (LayoutInfo)Activator.CreateInstance(infoType);
+        protected void FillComboBox() {
+            if (container != null && infoType != null) {
+                foreach (XmlElement element in container) {
+                    var info = (LayoutInfo?)Activator.CreateInstance(infoType);
 
-                info.Element = element;
-                this.Items.Add(info);
+                    if (info != null) {
+                        info.Element = element;
+                        this.Items.Add(info);
+                    }
+                }
             }
         }
     }
@@ -74,7 +75,7 @@ namespace LayoutManager.CommonUI.Controls {
     /// Show values of an enumeration
     /// </summary>
     public class EnumComboBox : ComboBox {
-        private Type enumType;
+        private Type? enumType;
 
         public EnumComboBox() {
             this.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -93,7 +94,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public new int SelectedItem {
             set {
-                int[] values = (int[])Enum.GetValues(enumType);
+                int[] values = (int[])Enum.GetValues(Ensure.NotNull<Type>(enumType));
 
                 for (int i = 0; i < values.Length; i++)
                     if (values[i] == value) {
@@ -103,7 +104,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
 
             get {
-                return (int)Enum.Parse(enumType, (String)base.SelectedItem, false);
+                return (int)Enum.Parse(Ensure.NotNull<Type>(enumType), (String)base.SelectedItem, false);
             }
         }
     }
@@ -112,9 +113,9 @@ namespace LayoutManager.CommonUI.Controls {
         private LayoutDrawingSide side = LayoutDrawingSide.Bottom;
         private LayoutDrawingAnchorPoint alignment = LayoutDrawingAnchorPoint.Center;
         private int distance = 0;
-        private Size areaGridSize = new Size(32, 32);
-        private Size previewGridSize = new Size(16, 16);
-        private Size rectSize = new Size(30, 10);
+        private Size areaGridSize = new(32, 32);
+        private Size previewGridSize = new(16, 16);
+        private Size rectSize = new(30, 10);
 
         public LayoutDrawingSide Side {
             set {
@@ -158,7 +159,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        private void drawBackground(Graphics g) {
+        private void DrawBackground(Graphics g) {
             int x = 0;
 
             while (x < ClientSize.Width) {
@@ -183,77 +184,43 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        private void drawFrame(Graphics g) {
+        private void DrawFrame(Graphics g) {
             g.DrawRectangle(Pens.Black, 0, 0, ClientRectangle.Width - 1, ClientRectangle.Height - 1);
         }
 
-        private Rectangle drawSampleComponent(Graphics g) {
-            Point ml = new Point(ClientSize.Width / 2 / (previewGridSize.Width + 1), ClientSize.Height / 2 / (previewGridSize.Height + 1));
-            Rectangle r = new Rectangle((ml.X * previewGridSize.Width) + ml.X - 1, (ml.Y * previewGridSize.Height) + ml.Y - 1,
+        private Rectangle DrawSampleComponent(Graphics g) {
+            Point ml = new(ClientSize.Width / 2 / (previewGridSize.Width + 1), ClientSize.Height / 2 / (previewGridSize.Height + 1));
+            Rectangle r = new((ml.X * previewGridSize.Width) + ml.X - 1, (ml.Y * previewGridSize.Height) + ml.Y - 1,
                 previewGridSize.Width + 1, previewGridSize.Height + 1);
 
-            using (Pen p = new Pen(Brushes.Black, 2)) {
+            using (Pen p = new(Brushes.Black, 2)) {
                 g.DrawRectangle(p, r);
             }
 
             return r;
         }
 
-        private float getAlignedValue(float v, float d) {
-            switch (alignment) {
-                case LayoutDrawingAnchorPoint.Center:
-                    return v - (d / 2.0f);
+        private float GetAlignedValue(float v, float d) => alignment switch {
+            LayoutDrawingAnchorPoint.Center => v - (d / 2.0f),
+            LayoutDrawingAnchorPoint.Left => v,
+            LayoutDrawingAnchorPoint.Right => v - d,
+            _ => throw new ArgumentException("Invalid Anchor point value"),
+        };
 
-                case LayoutDrawingAnchorPoint.Left:
-                    return v;
-
-                case LayoutDrawingAnchorPoint.Right:
-                    return v - d;
-
-                default:
-                    throw new ArgumentException("Invalid Anchor point value");
-            }
-        }
-
-        private void drawPositionedRect(Graphics g, Rectangle rectComponent) {
+        private void DrawPositionedRect(Graphics g, Rectangle rectComponent) {
             int d = distance * previewGridSize.Width / areaGridSize.Width;
-            RectangleF rcRegion;
-            PointF origin = new PointF(rectComponent.Left + (previewGridSize.Width / 2), rectComponent.Top + (previewGridSize.Height / 2));
-
-            switch (side) {
-                case LayoutDrawingSide.Top:
-                    rcRegion = new RectangleF(
-                        new PointF(getAlignedValue(origin.X, rectSize.Width),
-                        origin.Y - rectSize.Height - d), rectSize);
-                    break;
-
-                case LayoutDrawingSide.Bottom:
-                    rcRegion = new RectangleF(
-                        new PointF(getAlignedValue(origin.X, rectSize.Width),
-                        origin.Y + d), rectSize);
-                    break;
-
-                case LayoutDrawingSide.Left:
-                    rcRegion = new RectangleF(
-                        new PointF(origin.X - rectSize.Width - d,
-                        getAlignedValue(origin.Y, rectSize.Height)), rectSize);
-                    break;
-
-                case LayoutDrawingSide.Right:
-                    rcRegion = new RectangleF(new PointF(origin.X + d,
-                        getAlignedValue(origin.Y, rectSize.Height)), rectSize);
-                    break;
-
-                case LayoutDrawingSide.Center:
-                    rcRegion = new RectangleF(new PointF(origin.X - (rectSize.Width / 2), origin.Y - (rectSize.Height / 2)),
-                        rectSize);
-                    break;
-
-                default:
-                    throw new ArgumentException("Invalid LayoutDrawingSide value");
-            }
-
-            using Pen p = new Pen(Brushes.BlueViolet, 2);
+            PointF origin = new(rectComponent.Left + (previewGridSize.Width / 2), rectComponent.Top + (previewGridSize.Height / 2));
+            var rcRegion = side switch {
+                LayoutDrawingSide.Top => new RectangleF(
+                                        new PointF(GetAlignedValue(origin.X, rectSize.Width),
+                                        origin.Y - rectSize.Height - d), rectSize),
+                LayoutDrawingSide.Bottom => new RectangleF(new PointF(GetAlignedValue(origin.X, rectSize.Width), origin.Y + d), rectSize),
+                LayoutDrawingSide.Left => new RectangleF(new PointF(origin.X - rectSize.Width - d, GetAlignedValue(origin.Y, rectSize.Height)), rectSize),
+                LayoutDrawingSide.Right => new RectangleF(new PointF(origin.X + d,GetAlignedValue(origin.Y, rectSize.Height)), rectSize),
+                LayoutDrawingSide.Center => new RectangleF(new PointF(origin.X - (rectSize.Width / 2), origin.Y - (rectSize.Height / 2)),rectSize),
+                _ => throw new ArgumentException("Invalid LayoutDrawingSide value"),
+            };
+            using Pen p = new(Brushes.BlueViolet, 2);
             g.DrawRectangle(p, Rectangle.Ceiling(rcRegion));
         }
 
@@ -261,12 +228,12 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         protected override void OnPaint(PaintEventArgs e) {
-            drawBackground(e.Graphics);
-            drawFrame(e.Graphics);
-            Rectangle rectSize = drawSampleComponent(e.Graphics);
+            DrawBackground(e.Graphics);
+            DrawFrame(e.Graphics);
+            Rectangle rectSize = DrawSampleComponent(e.Graphics);
 
             if (Enabled)
-                drawPositionedRect(e.Graphics, rectSize);
+                DrawPositionedRect(e.Graphics, rectSize);
         }
     }
 }

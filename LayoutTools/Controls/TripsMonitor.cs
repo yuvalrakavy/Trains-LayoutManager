@@ -7,36 +7,18 @@ using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051, IDE0060, IDE0052, IDE0069
 namespace LayoutManager.Tools.Controls {
     /// <summary>
     /// Summary description for TripsMonitor.
     /// </summary>
-    public class TripsMonitor : System.Windows.Forms.UserControl {
+    public partial class TripsMonitor : System.Windows.Forms.UserControl {
         private const string A_TripsMonitorAutoClearTimeout = "TripsMonitorAutoClearTimeout";
-        private ListView listViewTrips;
-        private Button buttonAbort;
-        private ColumnHeader columnHeaderTrain;
-        private ColumnHeader columnHeaderStatus;
-        private ColumnHeader columnHeaderDriver;
-        private ColumnHeader columnHeaderFinalDestination;
-        private ColumnHeader columnHeaderState;
-        private Button buttonClose;
-        private Button buttonView;
-        private Button buttonSave;
-        private Button buttonTalk;
-        private Button buttonOptions;
-        private ImageList imageListTripState;
-        private Button buttonSpeed;
-        private Button buttonSuspend;
-        private IContainer components;
-
-        private void endOfDesignerVariables() { }
 
         private readonly IDictionary mapTrainToItem = new HybridDictionary();
         private int autoClearTimeout;      // Clear completed trips after this amount of time
-        private CommonUI.ListViewStringColumnsSorter columnSorter;
-        private ILayoutFrameWindow frameWindow = null;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "<Pending>")]
+        private CommonUI.ListViewStringColumnsSorter? columnSorter;
+        private ILayoutFrameWindow? frameWindow = null;
 
         public TripsMonitor() {
             // This call is required by the Windows.Forms Form Designer.
@@ -52,10 +34,10 @@ namespace LayoutManager.Tools.Controls {
 
         public int AutoClearTimeout => autoClearTimeout;
 
-        public ILayoutFrameWindow FrameWindow => frameWindow ?? (frameWindow = (ILayoutFrameWindow)FindForm());
+        public ILayoutFrameWindow FrameWindow => frameWindow ??= (ILayoutFrameWindow)FindForm();
 
         public void AddTripAssignment(TripPlanAssignmentInfo tripAssignment) {
-            TripAssignmentItem item = (TripAssignmentItem)mapTrainToItem[tripAssignment.TrainId];
+            var item = (TripAssignmentItem?)mapTrainToItem[tripAssignment.TrainId];
 
             if (item == null) {
                 item = new TripAssignmentItem(this, tripAssignment);
@@ -68,27 +50,27 @@ namespace LayoutManager.Tools.Controls {
             listViewTrips.Sort();
         }
 
-        private void removeTripAssignment(TripAssignmentItem item) {
+        private void RemoveTripAssignment(TripAssignmentItem item) {
             item.Dispose();
             mapTrainToItem.Remove(item.Train.Id);
             listViewTrips.Items.Remove(item);
         }
 
-        private void removeTripAssignment(Guid trainID) {
-            TripAssignmentItem item = getTripAssignmentItem(trainID);
+        private void RemoveTripAssignment(Guid trainID) {
+            var item = GetTripAssignmentItem(trainID);
 
             if (item != null)
-                removeTripAssignment(item);
+                RemoveTripAssignment(item);
         }
 
-        private TripAssignmentItem getTripAssignmentItem(Guid trainID) => (TripAssignmentItem)mapTrainToItem[trainID];
+        private TripAssignmentItem? GetTripAssignmentItem(Guid trainID) => (TripAssignmentItem?)mapTrainToItem[trainID];
 
-        private TripAssignmentItem getTripAssignmentItem(TrainStateInfo train) => getTripAssignmentItem(train.Id);
+        private TripAssignmentItem? GetTripAssignmentItem(TrainStateInfo train) => GetTripAssignmentItem(train.Id);
 
-        private TripAssignmentItem getTripAssignmentItem(TripPlanAssignmentInfo tripPlanAssignment) => getTripAssignmentItem(tripPlanAssignment.TrainId);
+        private TripAssignmentItem? GetTripAssignmentItem(TripPlanAssignmentInfo tripPlanAssignment) => GetTripAssignmentItem(tripPlanAssignment.TrainId);
 
-        private TripAssignmentItem getSelected() {
-            TripAssignmentItem selected = null;
+        private TripAssignmentItem? GetSelected() {
+            TripAssignmentItem? selected = null;
 
             if (listViewTrips.SelectedItems.Count > 0)
                 selected = (TripAssignmentItem)listViewTrips.SelectedItems[0];
@@ -96,13 +78,13 @@ namespace LayoutManager.Tools.Controls {
             return selected;
         }
 
-        private void updateAutoClearTimers() {
+        private void UpdateAutoClearTimers() {
             foreach (TripAssignmentItem item in listViewTrips.Items)
                 item.UpdateAutoClearTimer();
         }
 
-        private void updateButtons(object sender, EventArgs e) {
-            TripAssignmentItem selected = getSelected();
+        private void UpdateButtons(object? sender, EventArgs e) {
+            var selected = GetSelected();
 
             if (selected != null) {
                 buttonAbort.Enabled = true;
@@ -157,259 +139,81 @@ namespace LayoutManager.Tools.Controls {
         #region Layout Event Handlers
 
         [LayoutEvent("trip-added")]
-        private void tripAdded(LayoutEvent e) {
-            TripPlanAssignmentInfo tripAssignment = (TripPlanAssignmentInfo)e.Sender;
+        private void TripAdded(LayoutEvent e) {
+            var tripAssignment = Ensure.NotNull<TripPlanAssignmentInfo>(e.Sender);
 
             AddTripAssignment(tripAssignment);
         }
 
         [LayoutEvent("trip-cleared")]
-        private void tripCleared(LayoutEvent e) {
-            TripPlanAssignmentInfo tripAssignment = (TripPlanAssignmentInfo)e.Sender;
+        private void TripCleared(LayoutEvent e) {
+            var tripAssignment = Ensure.NotNull<TripPlanAssignmentInfo>(e.Sender);
 
-            removeTripAssignment(tripAssignment.TrainId);
+            RemoveTripAssignment(tripAssignment.TrainId);
         }
 
         [LayoutEvent("trip-status-changed")]
-        private void tripStatusChanged(LayoutEvent e) {
-            TripAssignmentItem item = getTripAssignmentItem((TripPlanAssignmentInfo)e.Sender);
+        private void TripStatusChanged(LayoutEvent e) {
+            var trip = Ensure.NotNull<TripPlanAssignmentInfo>(e.Sender);
+            var item = GetTripAssignmentItem(trip);
 
             if (item != null)
                 item.UpdateTripState();
-            updateButtons(null, null);
+            UpdateButtons(null, EventArgs.Empty);
         }
 
         [LayoutEvent("train-speed-changed")]
         [LayoutEvent("train-enter-block")]
-        private void trainStatusChanged(LayoutEvent e) {
-            TripAssignmentItem item = getTripAssignmentItem((TrainStateInfo)e.Sender);
+        private void TrainStatusChanged(LayoutEvent e) {
+            var train = Ensure.NotNull<TrainsStateInfo>(e.Sender);
+            var item = GetTripAssignmentItem(train.Id);
 
             if (item != null)
                 item.UpdateTrainStatus();
         }
 
         [LayoutEvent("prepare-enter-operation-mode")]
-        private void enterOperationMode(LayoutEvent e) {
+        private void EnterOperationMode(LayoutEvent e) {
             listViewTrips.Items.Clear();
             mapTrainToItem.Clear();
-            updateButtons(null, null);
+            UpdateButtons(null, EventArgs.Empty);
         }
 
         [LayoutEvent("train-is-removed")]
-        private void trainRemoved(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)e.Sender;
+        private void TrainRemoved(LayoutEvent e) {
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender);
 
-            removeTripAssignment(train.Id);
+            RemoveTripAssignment(train.Id);
         }
 
         #endregion
 
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.components = new Container();
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(TripsMonitor));
-            this.listViewTrips = new ListView();
-            this.columnHeaderTrain = new ColumnHeader();
-            this.columnHeaderDriver = new ColumnHeader();
-            this.columnHeaderStatus = new ColumnHeader();
-            this.columnHeaderFinalDestination = new ColumnHeader();
-            this.columnHeaderState = new ColumnHeader();
-            this.imageListTripState = new ImageList(this.components);
-            this.buttonAbort = new Button();
-            this.buttonClose = new Button();
-            this.buttonView = new Button();
-            this.buttonSave = new Button();
-            this.buttonTalk = new Button();
-            this.buttonOptions = new Button();
-            this.buttonSpeed = new Button();
-            this.buttonSuspend = new Button();
-            this.SuspendLayout();
-            // 
-            // listViewTrips
-            // 
-            this.listViewTrips.AllowColumnReorder = true;
-            this.listViewTrips.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right;
-            this.listViewTrips.Columns.AddRange(new ColumnHeader[] {
-                                                                                            this.columnHeaderTrain,
-                                                                                            this.columnHeaderDriver,
-                                                                                            this.columnHeaderStatus,
-                                                                                            this.columnHeaderFinalDestination,
-                                                                                            this.columnHeaderState});
-            this.listViewTrips.FullRowSelect = true;
-            this.listViewTrips.HideSelection = false;
-            this.listViewTrips.Location = new System.Drawing.Point(8, 8);
-            this.listViewTrips.MultiSelect = false;
-            this.listViewTrips.Name = "listViewTrips";
-            this.listViewTrips.Size = new System.Drawing.Size(656, 120);
-            this.listViewTrips.SmallImageList = this.imageListTripState;
-            this.listViewTrips.TabIndex = 0;
-            this.listViewTrips.View = System.Windows.Forms.View.Details;
-            this.listViewTrips.Click += this.listViewTrips_Click;
-            this.listViewTrips.SelectedIndexChanged += this.updateButtons;
-            // 
-            // columnHeaderTrain
-            // 
-            this.columnHeaderTrain.Text = "Train";
-            this.columnHeaderTrain.Width = 85;
-            // 
-            // columnHeaderDriver
-            // 
-            this.columnHeaderDriver.Text = "Driver";
-            this.columnHeaderDriver.Width = 107;
-            // 
-            // columnHeaderStatus
-            // 
-            this.columnHeaderStatus.Text = "Status";
-            this.columnHeaderStatus.Width = 180;
-            // 
-            // columnHeaderFinalDestination
-            // 
-            this.columnHeaderFinalDestination.Text = "Destination";
-            this.columnHeaderFinalDestination.Width = 160;
-            // 
-            // columnHeaderState
-            // 
-            this.columnHeaderState.Text = "State";
-            this.columnHeaderState.Width = 120;
-            // 
-            // imageListTripState
-            // 
-            this.imageListTripState.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.imageListTripState.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListTripState.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListTripState.ImageStream");
-            this.imageListTripState.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // buttonAbort
-            // 
-            this.buttonAbort.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonAbort.Location = new System.Drawing.Point(8, 136);
-            this.buttonAbort.Name = "buttonAbort";
-            this.buttonAbort.Size = new System.Drawing.Size(75, 19);
-            this.buttonAbort.TabIndex = 1;
-            this.buttonAbort.Text = "&Abort";
-            this.buttonAbort.Click += this.buttonAbort_Click;
-            // 
-            // buttonClose
-            // 
-            this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            this.buttonClose.Location = new System.Drawing.Point(589, 136);
-            this.buttonClose.Name = "buttonClose";
-            this.buttonClose.Size = new System.Drawing.Size(75, 19);
-            this.buttonClose.TabIndex = 8;
-            this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += this.buttonClose_Click;
-            // 
-            // buttonView
-            // 
-            this.buttonView.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonView.Location = new System.Drawing.Point(168, 136);
-            this.buttonView.Name = "buttonView";
-            this.buttonView.Size = new System.Drawing.Size(75, 19);
-            this.buttonView.TabIndex = 3;
-            this.buttonView.Text = "&View...";
-            this.buttonView.Click += this.buttonView_Click;
-            // 
-            // buttonSave
-            // 
-            this.buttonSave.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonSave.Location = new System.Drawing.Point(248, 136);
-            this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(75, 19);
-            this.buttonSave.TabIndex = 4;
-            this.buttonSave.Text = "&Save...";
-            this.buttonSave.Click += this.buttonSave_Click;
-            // 
-            // buttonTalk
-            // 
-            this.buttonTalk.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonTalk.Location = new System.Drawing.Point(328, 136);
-            this.buttonTalk.Name = "buttonTalk";
-            this.buttonTalk.Size = new System.Drawing.Size(75, 19);
-            this.buttonTalk.TabIndex = 5;
-            this.buttonTalk.Text = "&Talk";
-            // 
-            // buttonOptions
-            // 
-            this.buttonOptions.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonOptions.Location = new System.Drawing.Point(488, 136);
-            this.buttonOptions.Name = "buttonOptions";
-            this.buttonOptions.Size = new System.Drawing.Size(75, 19);
-            this.buttonOptions.TabIndex = 7;
-            this.buttonOptions.Text = "&Options...";
-            this.buttonOptions.Click += this.buttonOptions_Click;
-            // 
-            // buttonSpeed
-            // 
-            this.buttonSpeed.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonSpeed.Location = new System.Drawing.Point(408, 136);
-            this.buttonSpeed.Name = "buttonSpeed";
-            this.buttonSpeed.Size = new System.Drawing.Size(75, 19);
-            this.buttonSpeed.TabIndex = 6;
-            this.buttonSpeed.Text = "S&peed...";
-            this.buttonSpeed.Click += this.buttonSpeed_Click;
-            // 
-            // buttonSuspend
-            // 
-            this.buttonSuspend.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonSuspend.Location = new System.Drawing.Point(88, 136);
-            this.buttonSuspend.Name = "buttonSuspend";
-            this.buttonSuspend.Size = new System.Drawing.Size(75, 19);
-            this.buttonSuspend.TabIndex = 2;
-            this.buttonSuspend.Text = "&Suspend";
-            this.buttonSuspend.Click += this.buttonSuspend_Click;
-            // 
-            // TripsMonitor
-            // 
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
-                                                                          this.buttonTalk,
-                                                                          this.buttonAbort,
-                                                                          this.listViewTrips,
-                                                                          this.buttonClose,
-                                                                          this.buttonView,
-                                                                          this.buttonSave,
-                                                                          this.buttonOptions,
-                                                                          this.buttonSpeed,
-                                                                          this.buttonSuspend});
-            this.Name = "TripsMonitor";
-            this.Size = new System.Drawing.Size(672, 160);
-            this.ResumeLayout(false);
-        }
-        #endregion
-
-        private void buttonClose_Click(object sender, System.EventArgs e) {
+        private void ButtonClose_Click(object? sender, System.EventArgs e) {
             EventManager.Event(new LayoutEvent("hide-trips-monitor", this).SetFrameWindow((ILayoutFrameWindow)FindForm()));
         }
 
-        private void buttonSave_Click(object sender, System.EventArgs e) {
-            TripAssignmentItem selected = getSelected();
+        private void ButtonSave_Click(object? sender, System.EventArgs e) {
+            var selected = GetSelected();
 
             if (selected != null)
                 EventManager.Event(new LayoutEvent("save-trip-plan", selected.TripAssignment.TripPlan, this.ParentForm));
         }
 
-        private void buttonView_Click(object sender, System.EventArgs e) {
-            TripAssignmentItem selected = getSelected();
+        private void ButtonView_Click(object? sender, System.EventArgs e) {
+            var selected = GetSelected();
 
-            selected.CancelAutoClearTimer();
 
             if (selected != null) {
-#pragma warning disable IDE0067 // Dispose objects before losing scope
-                Dialogs.TripPlanViewing tripPlanView = new Dialogs.TripPlanViewing(selected.Train, selected.TripAssignment.TripPlan, selected.TripAssignment.CurrentWaypointIndex);
-#pragma warning restore IDE0067 // Dispose objects before losing scope
+                selected.CancelAutoClearTimer();
 
-                tripPlanView.FormClosed += (object s1, FormClosedEventArgs e1) => selected.UpdateAutoClearTimer();
+                Dialogs.TripPlanViewing tripPlanView = new(selected.Train, selected.TripAssignment.TripPlan, selected.TripAssignment.CurrentWaypointIndex);
+                tripPlanView.FormClosed += (_, _) => selected.UpdateAutoClearTimer();
                 tripPlanView.Show(FindForm());
             }
         }
 
-        private void listViewTrips_Click(object sender, System.EventArgs e) {
-            TripAssignmentItem selected = getSelected();
+        private void ListViewTrips_Click(object? sender, System.EventArgs e) {
+            var selected = GetSelected();
 
             if (selected != null) {
                 if (selected.Train.LocomotiveBlock != null) {
@@ -420,28 +224,28 @@ namespace LayoutManager.Tools.Controls {
                 }
             }
 
-            updateButtons(null, null);
+            UpdateButtons(null, EventArgs.Empty);
         }
 
-        private void buttonOptions_Click(object sender, System.EventArgs e) {
-            using Dialogs.TripsMonitorOptions d = new Dialogs.TripsMonitorOptions(autoClearTimeout);
+        private void ButtonOptions_Click(object? sender, System.EventArgs e) {
+            using Dialogs.TripsMonitorOptions d = new(autoClearTimeout);
 
             if (d.ShowDialog(this.ParentForm) == DialogResult.OK) {
                 autoClearTimeout = d.AutoClearTimeout;
 
                 if (autoClearTimeout < 0) {
-                    updateAutoClearTimers();
+                    UpdateAutoClearTimers();
                     LayoutModel.StateManager.Element.RemoveAttribute(A_TripsMonitorAutoClearTimeout);
                 }
                 else {
-                    updateAutoClearTimers();
+                    UpdateAutoClearTimers();
                     LayoutModel.StateManager.Element.SetAttributeValue(A_TripsMonitorAutoClearTimeout, autoClearTimeout);
                 }
             }
         }
 
-        private void buttonAbort_Click(object sender, System.EventArgs e) {
-            TripAssignmentItem selected = getSelected();
+        private void ButtonAbort_Click(object? sender, System.EventArgs e) {
+            var selected = GetSelected();
 
             if (selected != null) {
                 if (selected.TripAssignment.CanBeCleared)
@@ -451,8 +255,8 @@ namespace LayoutManager.Tools.Controls {
             }
         }
 
-        private void buttonSuspend_Click(object sender, System.EventArgs e) {
-            TripAssignmentItem selected = getSelected();
+        private void ButtonSuspend_Click(object? sender, System.EventArgs e) {
+            var selected = GetSelected();
 
             if (selected != null) {
                 if (selected.TripAssignment.Status == TripStatus.Suspended)
@@ -462,8 +266,8 @@ namespace LayoutManager.Tools.Controls {
             }
         }
 
-        private void buttonSpeed_Click(object sender, System.EventArgs e) {
-            TripAssignmentItem selected = getSelected();
+        private void ButtonSpeed_Click(object? sender, System.EventArgs e) {
+            var selected = GetSelected();
 
             if (selected != null && selected.Train.Driver.Type == "Automatic")
                 EventManager.Event(new LayoutEvent("get-train-target-speed", selected.TripAssignment.Train, this));
@@ -472,7 +276,7 @@ namespace LayoutManager.Tools.Controls {
         private class TripAssignmentItem : ListViewItem, IDisposable {
             private readonly TripsMonitor tripsMonitor;
             private TripPlanAssignmentInfo tripAssignment;
-            private LayoutDelayedEvent clearTripEvent = null;
+            private LayoutDelayedEvent? clearTripEvent = null;
 
             public TripAssignmentItem(TripsMonitor tripsMonitor, TripPlanAssignmentInfo tripAssignment) {
                 this.tripsMonitor = tripsMonitor;
@@ -480,11 +284,11 @@ namespace LayoutManager.Tools.Controls {
                 this.Train = tripAssignment.Train;
 
                 Text = Train.DisplayName;
-                ImageIndex = getStateImageIndex();
-                SubItems.Add(getDriverName());
+                ImageIndex = GetStateImageIndex();
+                SubItems.Add(GetDriverName());
                 SubItems.Add(Train.StatusText);
-                SubItems.Add(getDestination());
-                SubItems.Add(getTripState());
+                SubItems.Add(GetDestination());
+                SubItems.Add(GetTripState());
             }
 
             #region Properties
@@ -512,7 +316,7 @@ namespace LayoutManager.Tools.Controls {
             #region Operations
 
             public void UpdateDriverName() {
-                SubItems[1].Text = getDriverName();
+                SubItems[1].Text = GetDriverName();
             }
 
             public void UpdateTrainStatus() {
@@ -520,12 +324,12 @@ namespace LayoutManager.Tools.Controls {
             }
 
             public void UpdateDestination() {
-                SubItems[3].Text = getDestination();
+                SubItems[3].Text = GetDestination();
             }
 
             public void UpdateTripState() {
-                ImageIndex = getStateImageIndex();
-                SubItems[4].Text = getTripState();
+                ImageIndex = GetStateImageIndex();
+                SubItems[4].Text = GetTripState();
 
                 UpdateAutoClearTimer();
             }
@@ -534,19 +338,19 @@ namespace LayoutManager.Tools.Controls {
 
             #region Format field strings
 
-            private string getDriverName() => tripAssignment.Train.Driver.Type switch
+            private string GetDriverName() => tripAssignment.Train.Driver.Type switch
             {
                 "ManualOnScreen" => "Manual (Dialog)",
                 _ => tripAssignment.Train.Driver.Type.ToString(),
             };
 
-            private string getDestination() {
+            private string GetDestination() {
                 IList<TripPlanWaypointInfo> wayPoints = tripAssignment.TripPlan.Waypoints;
 
                 return wayPoints.Count < 1 ? "<Empty>" : wayPoints[wayPoints.Count - 1].Destination.Name;
             }
 
-            private string getTripState() => tripAssignment.Status switch
+            private string GetTripState() => tripAssignment.Status switch
             {
                 TripStatus.NotSubmitted => "New - not submitted",
                 TripStatus.Go => "Allowed to move",
@@ -560,7 +364,7 @@ namespace LayoutManager.Tools.Controls {
                 _ => tripAssignment.Status.ToString(),
             };
 
-            private int getStateImageIndex() => tripAssignment.Status switch
+            private int GetStateImageIndex() => tripAssignment.Status switch
             {
                 TripStatus.NotSubmitted => 0,
                 TripStatus.Go => 1,

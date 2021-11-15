@@ -68,10 +68,10 @@ namespace LayoutLGB {
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(MTScentralStation))]
         private void AddTrackContactContextMenuEntries(LayoutEvent e) {
-            Menu menu = (Menu)e.Info;
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
             MTScentralStation component = (MTScentralStation)e.Sender;
 
-            menu.MenuItems.Add(new MTScentralStationMenuItemProperties(component));
+            menu.Items.Add(new MTScentralStationMenuItemProperties(component));
         }
 
         #region MTS Central Station Menu Item Classes

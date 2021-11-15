@@ -31,7 +31,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             if (string.IsNullOrEmpty(Name)) {
                 MessageBox.Show("Please enter name for the saved definition");
                 comboBoxName.Focus();

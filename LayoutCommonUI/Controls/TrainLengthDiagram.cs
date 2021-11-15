@@ -1,6 +1,3 @@
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI.Controls {
@@ -22,8 +19,8 @@ namespace LayoutManager.CommonUI.Controls {
             linkMenuTrainLength.SelectedIndex = (int)TrainLength.Standard;
         }
 
-        public event EventHandler TrainLengthChanged;
-        public event EventHandler ComparisonChanged;
+        public event EventHandler? TrainLengthChanged;
+        public event EventHandler? ComparisonChanged;
 
         public TrainLength Length {
             get {
@@ -71,7 +68,7 @@ namespace LayoutManager.CommonUI.Controls {
                 FillMenu("Longer than");
         }
 
-        private void FillMenu(string p) {
+        private void FillMenu(string? p) {
             string[] lengthEntries = new string[] {
                 "Locomotive only", "Very short", "Short", "Standard", "Long", "Very long"
             };
@@ -81,7 +78,7 @@ namespace LayoutManager.CommonUI.Controls {
                 entries = new string[lengthEntries.Length];
 
                 for (int i = 0; i < lengthEntries.Length; i++)
-                    entries[i] = p + " " + lengthEntries[i].Substring(0, 1).ToLower() + lengthEntries[i].Substring(1);
+                    entries[i] = p + " " + lengthEntries[i][..1].ToLower() + lengthEntries[i][1..];
             }
 
             linkMenuTrainLength.Options = entries;
@@ -99,7 +96,7 @@ namespace LayoutManager.CommonUI.Controls {
         private void PaintTrain(Graphics g, int horizontalMargin) {
             int yTrain = 8;
             int xTrain = horizontalMargin;
-            Rectangle loco = new Rectangle(xTrain, yTrain, 27, 16);
+            Rectangle loco = new(xTrain, yTrain, 27, 16);
             int trainLength = 0;
 
             Brush locoBrush = Enabled ? Brushes.DarkGray : Brushes.LightGray;
@@ -118,7 +115,7 @@ namespace LayoutManager.CommonUI.Controls {
                     case KnownTrainLength.VeryLong: trainLength = 27 * 5; break;
                 }
 
-                Rectangle cars = new Rectangle(xTrain, yTrain, trainLength, 16);
+                Rectangle cars = new(xTrain, yTrain, trainLength, 16);
 
                 Brush carsBrush = Enabled ? Brushes.Wheat : Brushes.LightGray;
 
@@ -128,7 +125,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private void PaintDividers(Graphics g) {
-            using Pen p = new Pen(Color.Black) {
+            using Pen p = new(Color.Black) {
                 DashStyle = System.Drawing.Drawing2D.DashStyle.Dot
             };
 
@@ -136,15 +133,15 @@ namespace LayoutManager.CommonUI.Controls {
                 g.DrawLine(p, xDivider, 4, xDivider, 28);
         }
 
-        private void buttonNotLonger_Click(object sender, EventArgs e) {
+        private void ButtonNotLonger_Click(object? sender, EventArgs e) {
             Comparison = TrainLengthComparison.NotLonger;
         }
 
-        private void buttonLonger_Click(object sender, EventArgs e) {
+        private void ButtonLonger_Click(object? sender, EventArgs e) {
             Comparison = TrainLengthComparison.Longer;
         }
 
-        private void linkMenuTrainLength_ValueChanged(object sender, EventArgs e) {
+        private void LinkMenuTrainLength_ValueChanged(object? sender, EventArgs e) {
             Length = new TrainLength(linkMenuTrainLength.SelectedIndex);
         }
 

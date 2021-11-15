@@ -198,7 +198,7 @@ namespace LayoutLGB.Dialogs {
         }
         #endregion
 
-        private void buttonOK_Click(object sender, System.EventArgs e) {
+        private void buttonOK_Click(object? sender, System.EventArgs e) {
             if (nameDefinition.Commit()) {
                 LayoutTextInfo myName = new LayoutTextInfo(XmlInfo.DocumentElement, "Name");
 
@@ -227,7 +227,7 @@ namespace LayoutLGB.Dialogs {
             DialogResult = DialogResult.OK;
         }
 
-        private void buttonCOMsettings_Click(object sender, EventArgs e) {
+        private void buttonCOMsettings_Click(object? sender, EventArgs e) {
             string modeString = XmlInfo.DocumentElement["ModeString"].InnerText;
 
             LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);

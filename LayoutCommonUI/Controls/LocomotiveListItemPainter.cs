@@ -1,7 +1,4 @@
-using System;
-using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager.Model;
@@ -25,7 +22,7 @@ namespace LayoutManager.CommonUI.Controls {
             if (annotateForOperationMode) {
                 onTrack = (bool)element.AttributeValue(A_OnTrack);
                 if (!onTrack) {
-                    if (!Enum.TryParse<CanPlaceTrainResolveMethod>(element.GetAttribute(A_CanPlaceOnTrack), out canPlaceOnTrack))
+                    if (!Enum.TryParse(element.GetAttribute(A_CanPlaceOnTrack), out canPlaceOnTrack))
                         canPlaceOnTrack = CanPlaceTrainResolveMethod.NotPossible;
                 }
             }
@@ -53,19 +50,11 @@ namespace LayoutManager.CommonUI.Controls {
                 if (!annotateForOperationMode || onTrack)
                     textColor = SystemColors.WindowText;
                 else {
-                    switch (canPlaceOnTrack) {
-                        case CanPlaceTrainResolveMethod.NotPossible:
-                            textColor = SystemColors.GrayText;
-                            break;
-
-                        case CanPlaceTrainResolveMethod.ReprogramAddress:
-                            textColor = Color.Blue;
-                            break;
-
-                        default:
-                            textColor = SystemColors.WindowText;
-                            break;
-                    }
+                    textColor =canPlaceOnTrack switch {
+                        CanPlaceTrainResolveMethod.NotPossible => SystemColors.GrayText,
+                        CanPlaceTrainResolveMethod.ReprogramAddress => Color.Blue,
+                        _ => SystemColors.WindowText,
+                    };
                 }
             }
 
@@ -75,12 +64,12 @@ namespace LayoutManager.CommonUI.Controls {
             int xText;
             float yText;
             string name;
-            string typeName = null;
+            string? typeName = null;
 
             if (element.Name == "Locomotive") {
-                LocomotiveInfo loco = new LocomotiveInfo(element);
+                LocomotiveInfo loco = new(element);
 
-                using (LocomotiveImagePainter locoPainter = new LocomotiveImagePainter(catalog)) {
+                using (LocomotiveImagePainter locoPainter = new(catalog)) {
                     locoPainter.FlipImage = true;   //DEBUG
                     locoPainter.Draw(e.Graphics, new Point(2, 2), new Size(50, 36), loco.Element);
                 }
@@ -92,9 +81,9 @@ namespace LayoutManager.CommonUI.Controls {
                 typeName = loco.TypeName;
             }
             else if (element.Name == "Train") {
-                TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(element);
+                TrainInCollectionInfo trainInCollection = new(element);
 
-                using (LocomotiveImagePainter locoPainter = new LocomotiveImagePainter(catalog)) {
+                using (LocomotiveImagePainter locoPainter = new(catalog)) {
                     int x = 2;
 
                     locoPainter.FrameSize = new Size(28, 20);
@@ -108,7 +97,7 @@ namespace LayoutManager.CommonUI.Controls {
                         x += locoPainter.FrameSize.Width + 2;
                     }
 
-                    using Font f = new Font("Arial", 8);
+                    using Font f = new("Arial", 8);
                     e.Graphics.DrawString("(" + trainInCollection.Length.ToDisplayString(true) + ")", f, textBrush, new Point(x, 4));
                 }
 
@@ -121,13 +110,13 @@ namespace LayoutManager.CommonUI.Controls {
 
             SizeF textSize;
 
-            using (Font titleFont = new Font("Arial", 8, FontStyle.Bold)) {
+            using (Font titleFont = new("Arial", 8, FontStyle.Bold)) {
                 textSize = e.Graphics.MeasureString(name, titleFont);
                 e.Graphics.DrawString(name, titleFont, textBrush, new PointF(xText, yText));
             }
 
             if (typeName != null) {
-                using Font typeFont = new Font("Arial", 7, FontStyle.Regular);
+                using Font typeFont = new("Arial", 7, FontStyle.Regular);
                 string typeText = " (" + typeName + ")";
                 SizeF typeSize = e.Graphics.MeasureString(typeText, typeFont);
 
@@ -139,7 +128,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             if (annotateForOperationMode) {
                 string status;
-                TrainStateInfo train = LayoutModel.StateManager.Trains[element];
+                var train = LayoutModel.StateManager.Trains[element];
 
                 if (onTrack && train != null)
                     status = train.StatusText;
@@ -150,7 +139,7 @@ namespace LayoutManager.CommonUI.Controls {
                         status = element.GetAttribute("Reason");
                 }
 
-                using (Font typeFont = new Font("Arial", 6.5F, FontStyle.Regular)) {
+                using (Font typeFont = new("Arial", 6.5F, FontStyle.Regular)) {
                     textSize = e.Graphics.MeasureString(status, typeFont);
                     e.Graphics.DrawString(status, typeFont, textBrush, new PointF(xText, yText));
                 }
@@ -160,7 +149,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             e.Graphics.Restore(gs);
 
-            using Pen p = new Pen(Color.Black, 2.0F);
+            using Pen p = new(Color.Black, 2.0F);
             e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Bottom, e.Bounds.Right, e.Bounds.Bottom);
         }
     }

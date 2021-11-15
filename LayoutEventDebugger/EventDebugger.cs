@@ -22,7 +22,7 @@ namespace LayoutEventDebugger {
     public class EventDebugger : LayoutObject, ILayoutModuleSetup {
         public LayoutEventSubscription? ActiveSubscription;
         public string FiredEventName = "debug-event";
-        public LayoutObject Sender = new LayoutObject();
+        public Layoutobject? sender = new LayoutObject();
         public string? EventXmlInfo = null;
 
         private SubscriptionView? subscriptionView = null;
@@ -67,13 +67,13 @@ namespace LayoutEventDebugger {
             toolsMenu.MenuItems.Add(new MenuItem("&Trace events", new EventHandler(this.OnEventTraceClick)));
         }
 
-        private void OnEventDebuggerClick(Object sender, EventArgs e) {
+        private void OnEventDebuggerClick(object? sender, EventArgs e) {
             EventDebuggerDialog eventDebuggerDialog = new EventDebuggerDialog(this);
 
             eventDebuggerDialog.ShowDialog();
         }
 
-        private void OnViewSubscriptionsClick(Object sender, EventArgs e) {
+        private void OnViewSubscriptionsClick(object? sender, EventArgs e) {
             if (subscriptionView == null) {
                 subscriptionView = new SubscriptionView();
                 subscriptionView.Show();
@@ -82,7 +82,7 @@ namespace LayoutEventDebugger {
                 subscriptionView.Activate();
         }
 
-        private void OnEventTraceClick(Object sender, EventArgs e) {
+        private void OnEventTraceClick(object? sender, EventArgs e) {
             if (eventTrace == null) {
                 eventTrace = new EventTrace();
                 eventTrace.Show();

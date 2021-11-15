@@ -42,7 +42,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 			this.radioButtonLeft.TabIndex = 1;
 			this.radioButtonLeft.TabStop = true;
 			this.radioButtonLeft.UseVisualStyleBackColor = true;
-			this.radioButtonLeft.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
+			this.radioButtonLeft.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
 			// 
 			// radioButtonRight
 			// 
@@ -53,7 +53,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 			this.radioButtonRight.TabIndex = 2;
 			this.radioButtonRight.TabStop = true;
 			this.radioButtonRight.UseVisualStyleBackColor = true;
-			this.radioButtonRight.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
+			this.radioButtonRight.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
 			// 
 			// radioButtonTop
 			// 
@@ -64,7 +64,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 			this.radioButtonTop.TabIndex = 0;
 			this.radioButtonTop.TabStop = true;
 			this.radioButtonTop.UseVisualStyleBackColor = true;
-			this.radioButtonTop.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
+			this.radioButtonTop.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
 			// 
 			// radioButtonBottom
 			// 
@@ -75,7 +75,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 			this.radioButtonBottom.TabIndex = 3;
 			this.radioButtonBottom.TabStop = true;
 			this.radioButtonBottom.UseVisualStyleBackColor = true;
-			this.radioButtonBottom.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
+			this.radioButtonBottom.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
 			// 
 			// panelArrow
 			// 
@@ -83,8 +83,8 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 			this.panelArrow.Name = "panelArrow";
 			this.panelArrow.Size = new System.Drawing.Size(64, 64);
 			this.panelArrow.TabIndex = 4;
-			this.panelArrow.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelArrow_MouseClick);
-			this.panelArrow.Paint += new System.Windows.Forms.PaintEventHandler(this.panelArrow_Paint);
+			this.panelArrow.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PanelArrow_MouseClick);
+			this.panelArrow.Paint += new System.Windows.Forms.PaintEventHandler(this.PanelArrow_Paint);
 			// 
 			// labelCondition
 			// 
@@ -114,7 +114,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 			this.buttonOK.TabIndex = 6;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
 			// 
 			// TrainArrivesFrom
 			// 

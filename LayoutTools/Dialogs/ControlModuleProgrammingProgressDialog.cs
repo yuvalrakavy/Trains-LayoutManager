@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Dialogs {
-#pragma warning disable IDE0051, IDE0060
     public partial class ControlModuleProgrammingProgressDialog : Form {
         private readonly Func<Task> doProgramming;
         private bool showingProgress = false;
@@ -27,24 +26,24 @@ namespace LayoutManager.Tools.Dialogs {
             EventManager.AddObjectSubscriptions(this);
         }
 
-        private void ControlModuleProgrammingProgressDialog_FormClosing(object sender, FormClosingEventArgs e) {
+        private void ControlModuleProgrammingProgressDialog_FormClosing(object? sender, FormClosingEventArgs e) {
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 
         [LayoutEvent("action-status-changed")]
-        private void actionStatusChanged(LayoutEvent e0) {
-            var e = (LayoutEventInfoValueType<ILayoutAction, ActionStatus>)e0;
-            ILayoutAction action = e.Sender;
+        private void ActionStatusChanged(LayoutEvent e) {
+            var action = Ensure.NotNull<ILayoutAction>(e.Sender);
+            var status = Ensure.ValueNotNull<ActionStatus>(e.Info);
 
             foreach (ActionItem actionItem in listViewActions.Items) {
                 if (actionItem.Id == action.Id) {
-                    actionItem.Status = e.Info;
+                    actionItem.Status = status;
                     break;
                 }
             }
         }
 
-        private async void buttonNext_Click(object sender, EventArgs e) {
+        private async void ButtonNext_Click(object? sender, EventArgs e) {
             if (!showingProgress) {
                 showingProgress = true;
                 panelConnectModule.Visible = false;
@@ -60,7 +59,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        private void buttonCancelOrClose_Click(object sender, EventArgs e) {
+        private void ButtonCancelOrClose_Click(object? sender, EventArgs e) {
             if (programmingDone) {
                 DialogResult = System.Windows.Forms.DialogResult.OK;
                 Close();
@@ -79,7 +78,8 @@ namespace LayoutManager.Tools.Dialogs {
 
         public ActionItem(ILayoutAction action) {
             this.Id = action.Id;
-            this.Description = action.ToString();
+            this.Description = action.ToString() ?? String.Empty;
+            this.StatusText = String.Empty;
             Text = Description;
 
             SubItems.Add("");
@@ -87,17 +87,13 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         public ActionStatus Status {
-            set {
-                switch (value) {
-                    case ActionStatus.Done: StatusText = "Done"; break;
-                    case ActionStatus.Failed: StatusText = "Failed"; break;
-                    case ActionStatus.InProgress: StatusText = "In progress"; break;
-                    case ActionStatus.Pending: StatusText = "Pending"; break;
-                    default: StatusText = "**UNKNOWN**"; break;
-                }
-
-                SubItems[1].Text = StatusText;
-            }
+            set => SubItems[1].Text =value switch {
+                    ActionStatus.Done => "Done",
+                    ActionStatus.Failed => "Failed",
+                    ActionStatus.InProgress => "In progress",
+                    ActionStatus.Pending => "Pending",
+                    _ => "**UNKNOWN**",
+                };
         }
     }
 }

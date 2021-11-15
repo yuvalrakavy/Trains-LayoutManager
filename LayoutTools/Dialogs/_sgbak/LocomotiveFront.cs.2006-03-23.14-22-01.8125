@@ -163,7 +163,7 @@ namespace LayoutManager.Tools.Dialogs
 		}
 		#endregion
 
-		private void buttonOk_Click(object sender, System.EventArgs e) {
+		private void buttonOk_Click(object? sender, System.EventArgs e) {
 
 			DialogResult = DialogResult.OK;
 			this.Close();

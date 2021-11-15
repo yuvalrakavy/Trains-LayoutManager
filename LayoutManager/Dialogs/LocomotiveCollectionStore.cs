@@ -150,14 +150,14 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonOk_Click(object sender, System.EventArgs e) {
+        private void buttonOk_Click(object? sender, System.EventArgs e) {
             storeElement.SetAttribute("Name", textBoxName.Text);
             storeElement.SetAttribute("File", textBoxFile.Text);
 
             DialogResult = DialogResult.OK;
         }
 
-        private void buttonBrowse_Click(object sender, System.EventArgs e) {
+        private void buttonBrowse_Click(object? sender, System.EventArgs e) {
             FileDialog fileDialog = new OpenFileDialog {
                 FileName = textBoxFile.Text,
                 InitialDirectory = defaultDirectory,

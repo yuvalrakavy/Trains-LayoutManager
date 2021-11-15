@@ -21,12 +21,12 @@ namespace LayoutManager.Dialogs {
             buttonViewScript.Enabled = listViewScripts.SelectedItems.Count > 0;
         }
 
-        private void buttonBrowse_Click(object sender, EventArgs e) {
+        private void buttonBrowse_Click(object? sender, EventArgs e) {
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
                 textBoxFilename.Text = openFileDialog.FileName;
         }
 
-        private void wizardPageSetFilename_CloseFromNext(object sender, Gui.Wizard.PageEventArgs e) {
+        private void wizardPageSetFilename_CloseFromNext(object? sender, Gui.Wizard.PageEventArgs e) {
             try {
                 XmlDocument importedScriptsDoc = new XmlDocument();
 
@@ -77,11 +77,11 @@ namespace LayoutManager.Dialogs {
             public LayoutPolicyInfo Policy { get; }
         }
 
-        private void ImportPolicies_FormClosed(object sender, FormClosedEventArgs e) {
+        private void ImportPolicies_FormClosed(object? sender, FormClosedEventArgs e) {
             boldFont.Dispose();
         }
 
-        private void wizardPageSelectScripts_CloseFromNext(object sender, Gui.Wizard.PageEventArgs e) {
+        private void wizardPageSelectScripts_CloseFromNext(object? sender, Gui.Wizard.PageEventArgs e) {
             foreach (PolicyItem policyItem in listViewScripts.Items) {
                 if (policyItem.Checked) {
                     LayoutPolicyInfo policy;
@@ -108,7 +108,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonViewScript_Click(object sender, EventArgs e) {
+        private void buttonViewScript_Click(object? sender, EventArgs e) {
             if (listViewScripts.SelectedItems.Count > 0) {
                 PolicyItem policyItem = (PolicyItem)listViewScripts.SelectedItems[0];
 
@@ -119,7 +119,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void listViewScripts_SelectedIndexChanged(object sender, EventArgs e) {
+        private void listViewScripts_SelectedIndexChanged(object? sender, EventArgs e) {
             UpdateButtons();
         }
     }

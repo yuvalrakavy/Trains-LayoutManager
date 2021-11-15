@@ -99,7 +99,7 @@ namespace LayoutManager.Dialogs {
         /// </summary>
         private void InitializeComponent() {
             this.components = new Container();
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(ModuleManagement));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ModuleManagement));
             this.buttonRemove = new Button();
             this.buttonChangeStatus = new Button();
             this.treeViewAssemblies = new TreeView();
@@ -188,7 +188,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonAdd_Click(object sender, System.EventArgs e) {
+        private void buttonAdd_Click(object? sender, System.EventArgs e) {
             if (openFileDialogAssembly.ShowDialog() == DialogResult.OK) {
                 try {
                     LayoutAssembly layoutAssembly = new LayoutAssembly(openFileDialogAssembly.FileName);
@@ -204,11 +204,11 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void treeViewAssemblies_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e) {
+        private void treeViewAssemblies_AfterSelect(object? sender, System.Windows.Forms.TreeViewEventArgs e) {
             updateButtons();
         }
 
-        private void buttonChangeStatus_Click(object sender, System.EventArgs e) {
+        private void buttonChangeStatus_Click(object? sender, System.EventArgs e) {
             TreeNode selected = treeViewAssemblies.SelectedNode;
 
             if (selected != null) {
@@ -223,7 +223,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonRemove_Click(object sender, System.EventArgs e) {
+        private void buttonRemove_Click(object? sender, System.EventArgs e) {
             TreeNode selected = treeViewAssemblies.SelectedNode;
 
             if (selected != null) {
@@ -237,7 +237,7 @@ namespace LayoutManager.Dialogs {
             updateButtons();
         }
 
-        private void ModuleManagement_Closed(object sender, System.EventArgs e) {
+        private void ModuleManagement_Closed(object? sender, System.EventArgs e) {
             if (needToSaveState)
                 LayoutController.ModuleManager.SaveState();
         }

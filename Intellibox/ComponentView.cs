@@ -66,7 +66,7 @@ namespace Intellibox {
 
             g.TranslateTransform(4, 4);
 
-            IntelliboxPainter painter = new IntelliboxPainter(new Size(32, 32));
+            IntelliboxPainter painter = new(new Size(32, 32));
 
             painter.Paint(g);
         }
@@ -87,7 +87,7 @@ namespace Intellibox {
             if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
                 e.AddRegion(new DrawingRegionIntellibox(e.Component, e.View));
 
-            LayoutTextInfo textProvider = new LayoutTextInfo(e.Component);
+            LayoutTextInfo textProvider = new(e.Component);
 
             if (textProvider.Element != null)
                 e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
@@ -98,7 +98,7 @@ namespace Intellibox {
             }
 
             public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
-                IntelliboxPainter painter = new IntelliboxPainter(view.GridSizeInModelCoordinates);
+                IntelliboxPainter painter = new(view.GridSizeInModelCoordinates);
 
                 painter.Paint(g);
                 base.Draw(view, detailLevel, selectionLook, g);
@@ -134,7 +134,7 @@ namespace Intellibox {
         private void getCommandStationFormat(LayoutEvent e) {
             if (e.Info == null) {
                 AddressUsage usage = (AddressUsage)e.Sender;
-                AddressFormatInfo addressFormat = new AddressFormatInfo();
+                AddressFormatInfo addressFormat = new();
 
                 switch (usage) {
                     case AddressUsage.Locomotive:
@@ -228,7 +228,7 @@ namespace Intellibox {
         /// </summary>
         private void InitializeComponent() {
             this.components = new Container();
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(ComponentView));
+            System.Resources.ResourceManager resources = new(typeof(ComponentView));
             this.imageListComponents = new System.Windows.Forms.ImageList(this.components) {
                 // 
                 // imageListComponents

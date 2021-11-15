@@ -6,8 +6,6 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager;
 
-#pragma warning disable IDE0051,IDE0060
-#nullable enable
 namespace LayoutManager.Logic {
     public class ModelTopology {
         private const string A_Cp = "Cp";
@@ -32,7 +30,7 @@ namespace LayoutManager.Logic {
                         ModelTopologyEntry entry = new ModelTopologyEntry(connectedPoints.Length);
 
                         for (int i = 0; i < entry.SwitchingStateCount; i++)
-                            entry[i] = getConnectedSplit(switchingTrack.GetConnectedComponentEdge(switchingTrack.ConnectTo(cp, i)));
+                            entry[i] = GetConnectedSplit(switchingTrack.GetConnectedComponentEdge(switchingTrack.ConnectTo(cp, i)));
 
                         topology.Add(new TrackEdgeId(switchingTrack.Id, cp), entry);
                     }
@@ -108,7 +106,7 @@ namespace LayoutManager.Logic {
         /// </summary>
         /// <param name="obj">The other topology</param>
         /// <returns>True - the two topologies are the same</returns>
-        public override bool Equals(object obj) {
+        public override bool Equals(object? obj) {
             if (!(obj is ModelTopology other))
                 return false;
 
@@ -160,7 +158,7 @@ namespace LayoutManager.Logic {
 
         public override int GetHashCode() => base.GetHashCode();
 
-        private static ModelTopologyConnectionEntry getConnectedSplit(TrackEdge edge) {
+        private static ModelTopologyConnectionEntry GetConnectedSplit(TrackEdge edge) {
             TrackEdgeDictionary visitedMergePoints = new TrackEdgeDictionary();
             int penalty = 0;
 
@@ -192,7 +190,7 @@ namespace LayoutManager.Logic {
     }
 
     public class ModelTopologyConnectionEntry {
-        private TrackEdgeId destination;                // Where this connects to
+        private readonly TrackEdgeId destination;                // Where this connects to
 
         public ModelTopologyConnectionEntry(TrackEdgeId destination, int penalty) {
             this.destination = destination;
@@ -207,11 +205,11 @@ namespace LayoutManager.Logic {
 
         public ModelTopologyEntry? DestinationTopologyEntry { get; set; }
 
-        public override bool Equals(object obj) {
+        public override bool Equals(object? obj) {
             if (obj == null)
                 return destination == TrackEdgeId.Empty;
 
-            return !(obj is ModelTopologyConnectionEntry other) ? false : destination.Equals(other.destination) && Penalty == other.Penalty;
+            return obj is ModelTopologyConnectionEntry other && destination.Equals(other.destination) && Penalty == other.Penalty;
         }
 
         public override int GetHashCode() => destination.GetHashCode() ^ Penalty;
@@ -239,7 +237,7 @@ namespace LayoutManager.Logic {
             }
         }
 
-        public override bool Equals(object obj) {
+        public override bool Equals(object? obj) {
             if (!(obj is ModelTopologyEntry other))
                 return false;
 

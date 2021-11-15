@@ -1,5 +1,3 @@
-using System;
-using System.Windows.Forms;
 using System.Xml;
 using System.Text.RegularExpressions;
 
@@ -11,35 +9,35 @@ namespace LayoutManager.CommonUI.Controls {
         public XmlQueryCombobox() {
         }
 
-        public XmlElement ContainerElement { set; get; }
+        public XmlElement? ContainerElement { init; get; }
 
         public string Query { get; set; } = "*[contains(Name, '<TEXT>')]";
 
         public string Extract { get; set; } = "string(Name)";
 
-        public XmlElement SelectedElement {
+        public XmlElement? SelectedElement {
             get {
-                XmlNodeList l = getElements();
+                var l = GetElements();
 
-                return l.Count > 0 ? (XmlElement)l[0] : null;
+                return l == null ? null : l.Count > 0 ? (XmlElement?)l[0] : null;
             }
         }
 
         public bool IsTextAmbiguous {
             get {
-                XmlNodeList l = getElements();
+                var l = GetElements();
 
-                return l.Count > 1;
+                return l != null && l.Count > 1;
             }
         }
 
-        private XmlNodeList getElements() {
+        private XmlNodeList? GetElements() {
             string q = "*";
 
             if (Text.Trim() != "")
                 q = Regex.Replace(Query, "<TEXT>", Text);
 
-            return ContainerElement.SelectNodes(q);
+            return ContainerElement?.SelectNodes(q);
         }
 
         protected override void OnDropDown(EventArgs e) {
@@ -50,8 +48,12 @@ namespace LayoutManager.CommonUI.Controls {
                 ext = "string(Name)";
 
             Items.Clear();
-            foreach (XmlElement element in getElements())
-                Items.Add(element.CreateNavigator().Evaluate(ext));
+            var elements = GetElements();
+
+            if (elements != null) {
+                foreach (XmlElement element in elements)
+                    Items.Add(element.CreateNavigator()!.Evaluate(ext));
+            }
         }
     }
 }

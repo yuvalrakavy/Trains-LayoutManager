@@ -67,10 +67,10 @@ namespace NCDRelayController {
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(NCDRelayController))]
         private void AddEditingContextMenuEntries(LayoutEvent e) {
-            var menu = (Menu)e.Info;
-            var component = (NCDRelayController)e.Sender;
+            var component = Ensure.NotNull<NCDRelayController>(e.Sender);
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
-            menu.MenuItems.Add("&Properties", (s, ea) => {
+            menu.Items.Add("&Properties", null, (s, ea) => {
                 var d = new Dialogs.NCDRelayControllerProperties(component);
 
                 if (d.ShowDialog() == DialogResult.OK)

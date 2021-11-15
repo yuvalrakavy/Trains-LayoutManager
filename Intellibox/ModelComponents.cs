@@ -83,11 +83,11 @@ namespace Intellibox {
             new SOcollection(Element).Add(33, 0, "Disable echo to I2C bus");
         }
 
-        public IntelliboxComponentInfo Info => new IntelliboxComponentInfo(this, Element);
+        public IntelliboxComponentInfo Info => new(this, Element);
 
-        public ControlBus MotorolaBus => _motorolaBus ?? (_motorolaBus = LayoutModel.ControlManager.Buses.GetBus(this, "Motorola"));
+        public ControlBus MotorolaBus => _motorolaBus ??= LayoutModel.ControlManager.Buses.GetBus(this, "Motorola");
 
-        public ControlBus S88Bus => _S88bus ?? (_S88bus = LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS"));
+        public ControlBus S88Bus => _S88bus ??= LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS");
 
         internal byte CachedOperationModeDebounceCount { get; set; }
 
@@ -159,7 +159,7 @@ namespace Intellibox {
 
         [LayoutEvent("get-command-station-capabilities", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private void GetCommandStationCapabilities(LayoutEvent e) {
-            CommandStationCapabilitiesInfo cap = new CommandStationCapabilitiesInfo {
+            CommandStationCapabilitiesInfo cap = new() {
                 MinTimeBetweenSpeedSteps = (int?)Element.AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 100
             };
 
@@ -191,10 +191,9 @@ namespace Intellibox {
 
         // Implement command events
         [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private Task ChangeTurnoutState(LayoutEvent e0) {
-            var e = (LayoutEventInfoValueType<ControlConnectionPointReference, int>)e0;
-            ControlConnectionPointReference connectionPointRef = e.Sender;
-            int state = e.Info;
+        private Task ChangeTurnoutState(LayoutEvent e) {
+            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
+            var state = Ensure.ValueNotNull<int>(e.Info, "state");
             int address = connectionPointRef.Module.Address + connectionPointRef.Index;
             var tasks = new List<Task> {
                 commandStationManager.AddCommand(queueLayoutSwitchingCommands, new IntelliboxAccessoryCommand(this, address, state)),
@@ -235,7 +234,7 @@ namespace Intellibox {
         }
 
         [LayoutEvent("change-signal-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private void changeSignalStateCommand(LayoutEvent e) {
+        private void ChangeSignalStateCommand(LayoutEvent e) {
             ControlConnectionPointReference connectionPointRef = (ControlConnectionPointReference)e.Sender;
             LayoutSignalState state = (LayoutSignalState)e.Info;
             int address = connectionPointRef.Module.Address + connectionPointRef.Index;
@@ -254,7 +253,7 @@ namespace Intellibox {
         }
 
         [LayoutEvent("locomotive-motion-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void locomotiveMotionCommand(LayoutEvent e) {
+        private void LocomotiveMotionCommand(LayoutEvent e) {
             LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
             int speed = (int)e.Info;
             TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
@@ -278,14 +277,14 @@ namespace Intellibox {
         }
 
         [LayoutEvent("set-locomotive-lights-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void setLocomotiveLightsCommand(LayoutEvent e) {
+        private void SetLocomotiveLightsCommand(LayoutEvent e) {
             LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
             TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
 
             EventManager.Event(new LayoutEvent("locomotive-motion-command", loco, train.SpeedInSteps).SetCommandStation(train));
         }
 
-        private byte getFunctionMask(LocomotiveInfo loco) {
+        private byte GetFunctionMask(LocomotiveInfo loco) {
             TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
             byte functionMask = 0;
 
@@ -300,14 +299,14 @@ namespace Intellibox {
         }
 
         [LayoutEvent("set-locomotive-function-state-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void setLocomotiveFunctionStateCommand(LayoutEvent e) {
+        private void SetLocomotiveFunctionStateCommand(LayoutEvent e) {
             LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
 
-            commandStationManager.AddCommand(queueLocoCommands, new IntelliboxLocomotiveFunctionsCommand(this, loco.AddressProvider.Unit, getFunctionMask(loco)));
+            commandStationManager.AddCommand(queueLocoCommands, new IntelliboxLocomotiveFunctionsCommand(this, loco.AddressProvider.Unit, GetFunctionMask(loco)));
         }
 
         [LayoutEvent("trigger-locomotive-function-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void triggerLocomotiveFunctionCommand(LayoutEvent e) {
+        private void TriggerLocomotiveFunctionCommand(LayoutEvent e) {
             LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
             string functionName = (string)e.Info;
             TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
@@ -374,7 +373,7 @@ namespace Intellibox {
         }
 
         public SOinfo Add(int number, int v, string description) {
-            SOinfo so = new SOinfo {
+            SOinfo so = new() {
                 Number = number,
                 Value = v,
                 Description = description
@@ -410,7 +409,7 @@ namespace Intellibox {
     #region Intellibox Command Classes
 
     internal abstract class IntelliboxCommand : OutputCommandBase {
-        public static LayoutTraceSwitch traceIntelliboxRaw = new LayoutTraceSwitch("Intellibox Raw data", "Intellibox raw input/output");
+        public static LayoutTraceSwitch traceIntelliboxRaw = new("Intellibox Raw data", "Intellibox raw input/output");
 
         protected IntelliboxCommand(IntelliboxComponent commandStation) {
             this.CommandStation = commandStation;
@@ -595,18 +594,18 @@ namespace Intellibox {
         private ControlBus _motorolaBus = null;
         private ControlBus _S88bus = null;
         private byte[] previousReply = null;
-        private readonly List<FeedbackData> feedbackData = new List<FeedbackData>();
+        private readonly List<FeedbackData> feedbackData = new();
 
         public InterlliboxProcessEventsCommand(IntelliboxComponent commandStation, int pollingPeriod) : base(commandStation) {
             DefaultWaitPeriod = pollingPeriod;
         }
 
-        protected ControlBus MotorolaBus => _motorolaBus ?? (_motorolaBus = LayoutModel.ControlManager.Buses.GetBus(CommandStation, "Motorola"));
+        protected ControlBus MotorolaBus => _motorolaBus ??= LayoutModel.ControlManager.Buses.GetBus(CommandStation, "Motorola");
 
-        protected ControlBus S88Bus => _S88bus ?? (_S88bus = LayoutModel.ControlManager.Buses.GetBus(CommandStation, "S88BUS"));
+        protected ControlBus S88Bus => _S88bus ??= LayoutModel.ControlManager.Buses.GetBus(CommandStation, "S88BUS");
 
         public override void Do() {
-            List<LayoutEvent> events = new List<LayoutEvent>();
+            List<LayoutEvent> events = new();
 
             byte[] reply = new byte[3];
 
@@ -785,7 +784,7 @@ namespace Intellibox {
     }
 
     internal abstract class IntelliboxAccessoryCommandBase : IntelliboxCommand {
-        protected List<KeyValuePair<int, int>> listOfunitAndState = new List<KeyValuePair<int, int>>();
+        protected List<KeyValuePair<int, int>> listOfunitAndState = new();
 
         protected IntelliboxAccessoryCommandBase(IntelliboxComponent commandStation, int unit, int state) : base(commandStation) {
             listOfunitAndState.Add(new KeyValuePair<int, int>(unit, 1 - state));

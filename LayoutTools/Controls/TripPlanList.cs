@@ -5,29 +5,13 @@ using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 
-#pragma warning disable IDE0069, IDE0067
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for TripPlanList.
     /// </summary>
-    public class TripPlanList : System.Windows.Forms.UserControl {
-        private const string A_TripPlanID = "TripPlanID";
-        private const string A_ShouldReverse = "ShouldReverse";
-        private Button buttonChangeIcon;
-        private Button buttonDelete;
-        private ListView listViewTripPlans;
-        private Button buttonRename;
-        private Button buttonDuplicate;
-        private ImageList imageListState;
-        private IContainer components;
+    public partial class TripPlanList : System.Windows.Forms.UserControl {
 
-
-        private bool initialized = false;
-        private XmlElement applicableTripPlansElement = null;
-        private TripPlanInfo tripPlanToSelect = null;
-        private TripPlanIconListInfo tripPlanIconList = null;
-
-        public event EventHandler SelectedTripPlanChanged = null;
+        public event EventHandler? SelectedTripPlanChanged = null;
 
         public TripPlanList() {
             // This call is required by the Windows.Forms Form Designer.
@@ -45,11 +29,11 @@ namespace LayoutManager.CommonUI.Controls {
             set {
                 applicableTripPlansElement = value;
                 if (initialized)
-                    fillList();
+                    FillList();
             }
         }
 
-        public TripPlanInfo SelectedTripPlan {
+        public TripPlanInfo? SelectedTripPlan {
             get {
                 if (initialized) {
                     if (listViewTripPlans.SelectedItems.Count > 0) {
@@ -74,7 +58,7 @@ namespace LayoutManager.CommonUI.Controls {
                             if (item.TripPlan.Id == value.Id) {
                                 item.Selected = true;
 
-                                SelectedTripPlanChanged?.Invoke(this, null);
+                                SelectedTripPlanChanged?.Invoke(this, EventArgs.Empty);
 
                                 break;
                             }
@@ -108,7 +92,7 @@ namespace LayoutManager.CommonUI.Controls {
             listViewTripPlans.StateImageList = imageListState;
 
             if (applicableTripPlansElement != null)
-                fillList();
+                FillList();
 
             initialized = true;
 
@@ -116,7 +100,7 @@ namespace LayoutManager.CommonUI.Controls {
                 SelectedTripPlan = tripPlanToSelect;
         }
 
-        private void fillList() {
+        private void FillList() {
             listViewTripPlans.Items.Clear();
 
             foreach (XmlElement applicableTripPlanElement in applicableTripPlansElement) {
@@ -124,16 +108,17 @@ namespace LayoutManager.CommonUI.Controls {
                 var shouldReverse = (bool)applicableTripPlanElement.AttributeValue(A_ShouldReverse);
                 var tripPlan = originalTripPlan;
 
-                listViewTripPlans.Items.Add(new TripPlanItem(tripPlan, shouldReverse, tripPlanIconList));
+                if(tripPlan != null)
+                    listViewTripPlans.Items.Add(new TripPlanItem(tripPlan, shouldReverse, tripPlanIconList));
             }
 
             if (listViewTripPlans.Items.Count > 0)
                 SelectedTripPlan = ((TripPlanItem)listViewTripPlans.Items[0]).TripPlan;
 
-            updateButtons();
+            UpdateButtons();
         }
 
-        private void updateButtons() {
+        private void UpdateButtons() {
             if (listViewTripPlans.SelectedItems.Count > 0) {
                 buttonDuplicate.Enabled = listViewTripPlans.SelectedItems.Count == 1;
                 buttonRename.Enabled = listViewTripPlans.SelectedItems.Count == 1;
@@ -148,7 +133,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        private void updateAll() {
+        private void UpdateAll() {
             foreach (TripPlanItem item in listViewTripPlans.Items)
                 item.Update();
         }
@@ -165,98 +150,9 @@ namespace LayoutManager.CommonUI.Controls {
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.components = new Container();
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(TripPlanList));
-            this.buttonChangeIcon = new Button();
-            this.buttonDelete = new Button();
-            this.listViewTripPlans = new ListView();
-            this.buttonRename = new Button();
-            this.buttonDuplicate = new Button();
-            this.imageListState = new ImageList(this.components);
-            this.SuspendLayout();
-            // 
-            // buttonChangeIcon
-            // 
-            this.buttonChangeIcon.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonChangeIcon.Location = new System.Drawing.Point(158, 169);
-            this.buttonChangeIcon.Name = "buttonChangeIcon";
-            this.buttonChangeIcon.Size = new System.Drawing.Size(93, 20);
-            this.buttonChangeIcon.TabIndex = 8;
-            this.buttonChangeIcon.Text = "Change Icon...";
-            this.buttonChangeIcon.Click += this.buttonChangeIcon_Click;
-            // 
-            // buttonDelete
-            // 
-            this.buttonDelete.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonDelete.Location = new System.Drawing.Point(4, 169);
-            this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(71, 20);
-            this.buttonDelete.TabIndex = 6;
-            this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += this.buttonRemove_Click;
-            // 
-            // listViewTripPlans
-            // 
-            this.listViewTripPlans.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right);
-            this.listViewTripPlans.HideSelection = false;
-            this.listViewTripPlans.LabelEdit = true;
-            this.listViewTripPlans.Location = new System.Drawing.Point(4, 4);
-            this.listViewTripPlans.Name = "listViewTripPlans";
-            this.listViewTripPlans.Size = new System.Drawing.Size(527, 160);
-            this.listViewTripPlans.TabIndex = 5;
-            this.listViewTripPlans.AfterLabelEdit += this.listViewTripPlans_AfterLabelEdit;
-            this.listViewTripPlans.SelectedIndexChanged += this.listViewTripPlans_SelectedIndexChanged;
-            // 
-            // buttonRename
-            // 
-            this.buttonRename.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonRename.Location = new System.Drawing.Point(81, 169);
-            this.buttonRename.Name = "buttonRename";
-            this.buttonRename.Size = new System.Drawing.Size(71, 20);
-            this.buttonRename.TabIndex = 7;
-            this.buttonRename.Text = "&Rename";
-            this.buttonRename.Click += this.buttonRename_Click;
-            // 
-            // buttonDuplicate
-            // 
-            this.buttonDuplicate.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonDuplicate.Location = new System.Drawing.Point(256, 169);
-            this.buttonDuplicate.Name = "buttonDuplicate";
-            this.buttonDuplicate.Size = new System.Drawing.Size(64, 20);
-            this.buttonDuplicate.TabIndex = 9;
-            this.buttonDuplicate.Text = "D&uplicate";
-            this.buttonDuplicate.Click += this.buttonDuplicate_Click;
-            // 
-            // imageListState
-            // 
-            this.imageListState.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListState.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListState.ImageStream");
-            this.imageListState.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // TripPlanList
-            // 
-            this.Controls.Add(this.buttonChangeIcon);
-            this.Controls.Add(this.buttonDelete);
-            this.Controls.Add(this.listViewTripPlans);
-            this.Controls.Add(this.buttonRename);
-            this.Controls.Add(this.buttonDuplicate);
-            this.Name = "TripPlanList";
-            this.Size = new System.Drawing.Size(536, 192);
-            this.ResumeLayout(false);
-        }
-        #endregion
-
         #region Event Handlers
 
-        private void buttonRemove_Click(object sender, System.EventArgs e) {
+        private void ButtonRemove_Click(object? sender, System.EventArgs e) {
             if (listViewTripPlans.SelectedItems.Count > 0) {
                 foreach (TripPlanItem tripPlanItem in listViewTripPlans.SelectedItems) {
                     LayoutModel.StateManager.TripPlansCatalog.TripPlans.Remove(tripPlanItem.TripPlan.Id);
@@ -265,24 +161,24 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        private void listViewTripPlans_SelectedIndexChanged(object sender, System.EventArgs e) {
+        private void ListViewTripPlans_SelectedIndexChanged(object? sender, System.EventArgs e) {
             if (listViewTripPlans.SelectedItems.Count > 0) {
                 TripPlanItem tripPlanItem = (TripPlanItem)listViewTripPlans.SelectedItems[0];
 
-                SelectedTripPlanChanged?.Invoke(this, null);
+                SelectedTripPlanChanged?.Invoke(this, EventArgs.Empty);
             }
             else
                 SelectedTripPlan = null;
 
-            updateButtons();
+            UpdateButtons();
         }
 
-        private void buttonChangeIcon_Click(object sender, System.EventArgs e) {
+        private void ButtonChangeIcon_Click(object? sender, System.EventArgs e) {
             if (listViewTripPlans.SelectedItems.Count > 0) {
-                TripPlanItem tripPlanItem = (TripPlanItem)listViewTripPlans.SelectedItems[0];
-                TripPlanInfo tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[tripPlanItem.TripPlan.Id];  // Get real version (non-reversed)
+                var tripPlanItem = (TripPlanItem)listViewTripPlans.SelectedItems[0];
+                var tripPlan = Ensure.NotNull<TripPlanInfo>(LayoutModel.StateManager.TripPlansCatalog.TripPlans[tripPlanItem.TripPlan.Id]);  // Get real version (non-reversed)
 
-                LayoutManager.Tools.Dialogs.TripPlanChangeIcon d = new LayoutManager.Tools.Dialogs.TripPlanChangeIcon(tripPlan, tripPlanIconList);
+                LayoutManager.Tools.Dialogs.TripPlanChangeIcon d = new(tripPlan, tripPlanIconList);
 
                 tripPlanIconList.IconListModified = false;
 
@@ -293,12 +189,12 @@ namespace LayoutManager.CommonUI.Controls {
 
                 if (tripPlanIconList.IconListModified) {
                     LayoutModel.WriteModelXmlInfo();
-                    updateAll();
+                    UpdateAll();
                 }
             }
         }
 
-        private void buttonRename_Click(object sender, System.EventArgs e) {
+        private void ButtonRename_Click(object? sender, System.EventArgs e) {
             if (listViewTripPlans.SelectedItems.Count > 0) {
                 TripPlanItem tripPlanItem = (TripPlanItem)listViewTripPlans.SelectedItems[0];
 
@@ -306,16 +202,16 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        private void listViewTripPlans_AfterLabelEdit(object sender, System.Windows.Forms.LabelEditEventArgs e) {
-            TripPlanItem selected = (TripPlanItem)listViewTripPlans.Items[e.Item];
-            TripPlanInfo existingTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[e.Label];
+        private void ListViewTripPlans_AfterLabelEdit(object? sender, System.Windows.Forms.LabelEditEventArgs e) {
+            var selected = (TripPlanItem)listViewTripPlans.Items[e.Item];
+            var existingTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[e.Label];
 
             if (existingTripPlan != null && existingTripPlan.Id != selected.TripPlan.Id) {
                 MessageBox.Show(this, "A trip plan with this name already exists", "Invalid name", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 e.CancelEdit = true;
             }
             else {
-                TripPlanInfo tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[selected.TripPlan.Id];
+                var tripPlan = Ensure.NotNull<TripPlanInfo>(LayoutModel.StateManager.TripPlansCatalog.TripPlans[selected.TripPlan.Id]);
 
                 tripPlan.Name = e.Label;
                 selected.TripPlan.Name = e.Label;
@@ -323,7 +219,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        private void buttonDuplicate_Click(object sender, System.EventArgs e) {
+        private void ButtonDuplicate_Click(object? sender, System.EventArgs e) {
             if (listViewTripPlans.SelectedItems.Count > 0) {
                 TripPlanItem tripPlanItem = (TripPlanItem)listViewTripPlans.SelectedItems[0];
                 XmlElement newTripPlanElement;
@@ -333,7 +229,7 @@ namespace LayoutManager.CommonUI.Controls {
                 else
                     newTripPlanElement = (XmlElement)tripPlanItem.TripPlan.Element.CloneNode(true);
 
-                TripPlanInfo newTripPlan = new TripPlanInfo(newTripPlanElement);
+                TripPlanInfo newTripPlan = new(newTripPlanElement);
 
                 newTripPlan.Name = "Copy of " + newTripPlan.Name;
                 LayoutModel.StateManager.TripPlansCatalog.TripPlans.Add(newTripPlan);

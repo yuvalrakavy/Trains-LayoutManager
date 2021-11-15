@@ -52,7 +52,7 @@
             this.buttonLoad.TabIndex = 1;
             this.buttonLoad.Text = "Load...";
             this.buttonLoad.UseVisualStyleBackColor = true;
-            this.buttonLoad.Click += new System.EventHandler(this.buttonSet_Click);
+            this.buttonLoad.Click += new System.EventHandler(this.ButtonSet_Click);
             // 
             // buttonClear
             // 
@@ -63,7 +63,7 @@
             this.buttonClear.TabIndex = 2;
             this.buttonClear.Text = "Clear";
             this.buttonClear.UseVisualStyleBackColor = true;
-            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+            this.buttonClear.Click += new System.EventHandler(this.ButtonClear_Click);
             // 
             // buttonPaste
             // 
@@ -74,7 +74,7 @@
             this.buttonPaste.TabIndex = 3;
             this.buttonPaste.Text = "Paste";
             this.buttonPaste.UseVisualStyleBackColor = true;
-            this.buttonPaste.Click += new System.EventHandler(this.buttonPaste_Click);
+            this.buttonPaste.Click += new System.EventHandler(this.ButtonPaste_Click);
             // 
             // ImageGetter
             // 

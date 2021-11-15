@@ -6,17 +6,15 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051
-#nullable enable
 namespace LayoutManager.ControlComponents {
     [LayoutModule("DiMAX Bus Control Components")]
     internal class DiMAXBusComponents : LayoutModuleBase {
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8170001']")]
         [LayoutEvent("enum-control-module-types")]
-        private void getMassoth8170001(LayoutEvent e) {
+        private void GetMassoth8170001(LayoutEvent e) {
             var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
-            ControlModuleType moduleType = new ControlModuleType(parentElement, "Massoth8170001", "Massoth Trigger Feedback Interface") {
+            var moduleType = new ControlModuleType(parentElement, "Massoth8170001", "Massoth Trigger Feedback Interface") {
                 AddressAlignment = 4
             };
             EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DiMAXBus"));
@@ -31,10 +29,10 @@ namespace LayoutManager.ControlComponents {
 
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8170001level']")]
         [LayoutEvent("enum-control-module-types")]
-        private void getMassoth8170001level(LayoutEvent e) {
+        private void GetMassoth8170001level(LayoutEvent e) {
             var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
-            ControlModuleType moduleType = new ControlModuleType(parentElement, "Massoth8170001level", "Massoth Level Feedback Interface") {
+            var moduleType = new ControlModuleType(parentElement, "Massoth8170001level", "Massoth Level Feedback Interface") {
                 AddressAlignment = 4
             };
             EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DiMAXBus"));
@@ -48,7 +46,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='DiMAXBus']")]
-        private void recommendLGBcompatibleBusControlModuleType(LayoutEvent e) {
+        private void RecommendLGBcompatibleBusControlModuleType(LayoutEvent e) {
             var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
             var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
 
@@ -60,14 +58,14 @@ namespace LayoutManager.ControlComponents {
 
         [LayoutEvent("query-action", IfEvent = "LayoutEvent[Options/@Action='set-address']", SenderType = typeof(ControlModule), IfSender = "*[@ModuleTypeName='Massoth8170001']")]
         [LayoutEvent("query-action", IfEvent = "LayoutEvent[Options/@Action='set-address']", SenderType = typeof(ControlModule), IfSender = "*[@ModuleTypeName='Massoth8170001level']")]
-        private void querySetMassothFeedbackDecoderAddress(LayoutEvent e0) {
+        private void QuerySetMassothFeedbackDecoderAddress(LayoutEvent e0) {
             var e = (LayoutEventInfoResultValueType<IHasDecoder, bool, bool>)e0;
 
             e.Result = true;
         }
 
         [LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[@ModuleTypeName='Massoth8170001']")]
-        private void getProgramMassothTriggerFeedbackDecoderAddressAction(LayoutEvent e) {
+        private void GetProgramMassothTriggerFeedbackDecoderAddressAction(LayoutEvent e) {
             var actionElement = Ensure.NotNull<XmlElement>(e.Sender, "actionElement");
             var module = Ensure.NotNull<ControlModule>(e.Info, "module");
 
@@ -76,7 +74,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[@ModuleTypeName='Massoth8170001level']")]
-        private void getProgramMassothLevelFeedbackDecoderAddressAction(LayoutEvent e) {
+        private void GetProgramMassothLevelFeedbackDecoderAddressAction(LayoutEvent e) {
             var actionElement = Ensure.NotNull<XmlElement>(e.Sender, "actionElement");
             var module = Ensure.NotNull<ControlModule>(e.Info, "module");
 
@@ -85,7 +83,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [LayoutEvent("edit-action-settings", InfoType = typeof(IMassothFeedbackDecoderSetAddress))]
-        private void editMassothFeedbackSetAddressSettings(LayoutEvent e0) {
+        private void EditMassothFeedbackSetAddressSettings(LayoutEvent e0) {
             var e = (LayoutEventResultValueType<object, ILayoutAction, bool>)e0;
             var action = Ensure.NotNull<IMassothFeedbackDecoderSetAddress>(e.Info, "action");
             var controlModule = Ensure.NotNull<ControlModule>(e.Sender, "controlModule");
@@ -159,7 +157,7 @@ namespace LayoutManager.ControlComponents {
             return -1;
         }
 
-        public static MassothFeedbackModule GetMasterUsingBusId(IModelComponentIsBusProvider commandStation, int busId) {
+        public static MassothFeedbackModule? GetMasterUsingBusId(IModelComponentIsBusProvider commandStation, int busId) {
             var bus = Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(commandStation, "DiMAXBUS"), "DiMAXBUS");
 
             return (from module in bus.Modules

@@ -12,36 +12,12 @@ namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for DestinationEditor.
     /// </summary>
-    public class DestinationEditor : Form, IModelComponentReceiverDialog, IControlSupportViewOnly {
-        private Label label1;
-        private Label label2;
-        private GroupBox groupBoxSelection;
-        private ImageList imageListButttons;
-        private CommonUI.TextBoxWithViewOnly textBoxName;
-        private GroupBox groupBoxLocations;
-        private CommonUI.RadioButtonWithViewOnly radioButtonSelectionListOrder;
-        private CommonUI.RadioButtonWithViewOnly radioButtonSelectionRandom;
-        private Button buttonMoveLocationDown;
-        private Button buttonMoveLocationUp;
-        private Button buttonCancel;
-        private Button buttonAddLocation;
-        private Button buttonRemoveLocation;
-        private Button buttonOk;
-        private Button buttonSave;
-        private ListView listViewLocations;
-        private ColumnHeader columnHeaderLocation;
-        private ColumnHeader columnHeaderCondition;
-        private Button buttonCondition;
-        private IContainer components;
-
-        private void endOfDesignerVariables() { }
-
+    public partial class DestinationEditor : Form, IModelComponentReceiverDialog, IControlSupportViewOnly {
         private readonly TripPlanDestinationInfo inDestination;
-        private readonly string title;
         private readonly TripPlanDestinationInfo destination;
-        private DialogEditing changeToViewonly = null;
-        private readonly LayoutSelection destinationSelection = null;
-        private readonly LayoutSelection selectedBlockInfoSelection = null;
+        private DialogEditing? changeToViewonly = null;
+        private readonly LayoutSelection? destinationSelection = null;
+        private readonly LayoutSelection? selectedBlockInfoSelection = null;
 
         public DestinationEditor(TripPlanDestinationInfo inDestination, string title) {
             //
@@ -49,7 +25,6 @@ namespace LayoutManager.Tools.Dialogs {
             //
             InitializeComponent();
 
-            this.title = title;
             this.Text = title;
             this.inDestination = inDestination;
 
@@ -79,7 +54,10 @@ namespace LayoutManager.Tools.Dialogs {
             selectedBlockInfoSelection.Display(new LayoutSelectionLook(Color.OrangeRed));
         }
 
-        private void updateButtons(object sender, EventArgs e) {
+        private void UpdateButtons(object? sender, EventArgs e) {
+            if (selectedBlockInfoSelection == null)
+                return;
+
             selectedBlockInfoSelection.Clear();
 
             foreach (LocationItem item in listViewLocations.SelectedItems) {
@@ -120,10 +98,9 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [LayoutEvent("query-edit-destination-dialog")]
-        private void queryEditDestinationDialog(LayoutEvent e0) {
-            var e = (LayoutEvent<LayoutBlockDefinitionComponent, List<IModelComponentReceiverDialog>>)e0;
-            var blockDefinition = e.Sender;
-            var dialogs = e.Info;
+        private void QueryEditDestinationDialog(LayoutEvent e) {
+            var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender);
+            var dialogs = Ensure.NotNull<List<IModelComponentReceiverDialog>>(e.Info);
             bool locationInList = false;
 
             foreach (LocationItem item in listViewLocations.Items)
@@ -145,8 +122,8 @@ namespace LayoutManager.Tools.Dialogs {
 
             TripPlanDestinationEntryInfo newEntry = destination.Add(blockInfo);
             listViewLocations.Items.Add(new LocationItem(newEntry));
-            destinationSelection.Add(blockInfo);
-            updateButtons(null, null);
+            destinationSelection?.Add(blockInfo);
+            UpdateButtons(null, EventArgs.Empty);
         }
 
         public bool ViewOnly {
@@ -156,7 +133,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             set {
                 if (value && !ViewOnly) {
-                    Size newSize = new Size(buttonMoveLocationUp.Right - listViewLocations.Left, buttonAddLocation.Bottom - listViewLocations.Top);
+                    Size newSize = new(buttonMoveLocationUp.Right - listViewLocations.Left, buttonAddLocation.Bottom - listViewLocations.Top);
 
                     changeToViewonly = new DialogEditing(this,
                         new DialogEditingCommandBase[] {
@@ -175,9 +152,11 @@ namespace LayoutManager.Tools.Dialogs {
                     this.ShowInTaskbar = false;
                 }
                 else if (!value && ViewOnly) {
-                    changeToViewonly.Undo();
-                    changeToViewonly.ViewOnly = false;
-                    changeToViewonly = null;
+                    if (changeToViewonly != null) {
+                        changeToViewonly.Undo();
+                        changeToViewonly.ViewOnly = false;
+                        changeToViewonly = null;
+                    }
                     this.ControlBox = true;
                     this.ShowInTaskbar = true;
                 }
@@ -194,259 +173,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        #region Windows Form Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.components = new Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DestinationEditor));
-            this.buttonCancel = new Button();
-            this.label1 = new Label();
-            this.textBoxName = new LayoutManager.CommonUI.TextBoxWithViewOnly();
-            this.groupBoxLocations = new GroupBox();
-            this.buttonCondition = new Button();
-            this.listViewLocations = new ListView();
-            this.columnHeaderLocation = new ColumnHeader();
-            this.columnHeaderCondition = new ColumnHeader();
-            this.buttonAddLocation = new Button();
-            this.buttonRemoveLocation = new Button();
-            this.buttonMoveLocationUp = new Button();
-            this.imageListButttons = new ImageList(this.components);
-            this.buttonMoveLocationDown = new Button();
-            this.label2 = new Label();
-            this.groupBoxSelection = new GroupBox();
-            this.radioButtonSelectionListOrder = new LayoutManager.CommonUI.RadioButtonWithViewOnly();
-            this.radioButtonSelectionRandom = new LayoutManager.CommonUI.RadioButtonWithViewOnly();
-            this.buttonOk = new Button();
-            this.buttonSave = new Button();
-            this.groupBoxLocations.SuspendLayout();
-            this.groupBoxSelection.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // buttonCancel
-            // 
-            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(232, 276);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(56, 20);
-            this.buttonCancel.TabIndex = 7;
-            this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.buttonCancel_Click;
-            // 
-            // label1
-            // 
-            this.label1.Location = new System.Drawing.Point(4, 8);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(40, 16);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Name:";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBoxName
-            // 
-            this.textBoxName.Location = new System.Drawing.Point(42, 6);
-            this.textBoxName.Name = "textBoxName";
-            this.textBoxName.Size = new System.Drawing.Size(188, 20);
-            this.textBoxName.TabIndex = 1;
-            this.textBoxName.ViewOnly = false;
-            // 
-            // groupBoxLocations
-            // 
-            this.groupBoxLocations.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                        | System.Windows.Forms.AnchorStyles.Left
-                        | System.Windows.Forms.AnchorStyles.Right);
-            this.groupBoxLocations.Controls.Add(this.buttonCondition);
-            this.groupBoxLocations.Controls.Add(this.listViewLocations);
-            this.groupBoxLocations.Controls.Add(this.buttonAddLocation);
-            this.groupBoxLocations.Controls.Add(this.buttonRemoveLocation);
-            this.groupBoxLocations.Controls.Add(this.buttonMoveLocationUp);
-            this.groupBoxLocations.Controls.Add(this.buttonMoveLocationDown);
-            this.groupBoxLocations.Location = new System.Drawing.Point(8, 112);
-            this.groupBoxLocations.Name = "groupBoxLocations";
-            this.groupBoxLocations.Size = new System.Drawing.Size(280, 160);
-            this.groupBoxLocations.TabIndex = 4;
-            this.groupBoxLocations.TabStop = false;
-            this.groupBoxLocations.Text = "Locations:";
-            // 
-            // buttonCondition
-            // 
-            this.buttonCondition.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonCondition.Location = new System.Drawing.Point(168, 133);
-            this.buttonCondition.Name = "buttonCondition";
-            this.buttonCondition.Size = new System.Drawing.Size(73, 20);
-            this.buttonCondition.TabIndex = 3;
-            this.buttonCondition.Text = "Condition...";
-            this.buttonCondition.Click += this.buttonCondition_Click;
-            // 
-            // listViewLocations
-            // 
-            this.listViewLocations.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                        | System.Windows.Forms.AnchorStyles.Left
-                        | System.Windows.Forms.AnchorStyles.Right);
-            this.listViewLocations.Columns.AddRange(new ColumnHeader[] {
-            this.columnHeaderLocation,
-            this.columnHeaderCondition});
-            this.listViewLocations.FullRowSelect = true;
-            this.listViewLocations.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.listViewLocations.HideSelection = false;
-            this.listViewLocations.Location = new System.Drawing.Point(8, 16);
-            this.listViewLocations.MultiSelect = false;
-            this.listViewLocations.Name = "listViewLocations";
-            this.listViewLocations.Size = new System.Drawing.Size(240, 112);
-            this.listViewLocations.TabIndex = 0;
-            this.listViewLocations.UseCompatibleStateImageBehavior = false;
-            this.listViewLocations.View = System.Windows.Forms.View.Details;
-            this.listViewLocations.SelectedIndexChanged += this.listViewLocations_SelectedIndexChanged;
-            // 
-            // columnHeaderLocation
-            // 
-            this.columnHeaderLocation.Text = "Location";
-            this.columnHeaderLocation.Width = 78;
-            // 
-            // columnHeaderCondition
-            // 
-            this.columnHeaderCondition.Text = "Condition";
-            this.columnHeaderCondition.Width = 154;
-            // 
-            // buttonAddLocation
-            // 
-            this.buttonAddLocation.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonAddLocation.Location = new System.Drawing.Point(8, 133);
-            this.buttonAddLocation.Name = "buttonAddLocation";
-            this.buttonAddLocation.Size = new System.Drawing.Size(73, 20);
-            this.buttonAddLocation.TabIndex = 1;
-            this.buttonAddLocation.Text = "&Add";
-            this.buttonAddLocation.Click += this.buttonAddLocation_Click;
-            // 
-            // buttonRemoveLocation
-            // 
-            this.buttonRemoveLocation.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonRemoveLocation.Location = new System.Drawing.Point(88, 133);
-            this.buttonRemoveLocation.Name = "buttonRemoveLocation";
-            this.buttonRemoveLocation.Size = new System.Drawing.Size(73, 20);
-            this.buttonRemoveLocation.TabIndex = 2;
-            this.buttonRemoveLocation.Text = "&Remove";
-            this.buttonRemoveLocation.Click += this.buttonRemoveLocation_Click;
-            // 
-            // buttonMoveLocationUp
-            // 
-            this.buttonMoveLocationUp.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonMoveLocationUp.ImageIndex = 1;
-            this.buttonMoveLocationUp.ImageList = this.imageListButttons;
-            this.buttonMoveLocationUp.Location = new System.Drawing.Point(251, 17);
-            this.buttonMoveLocationUp.Name = "buttonMoveLocationUp";
-            this.buttonMoveLocationUp.Size = new System.Drawing.Size(24, 20);
-            this.buttonMoveLocationUp.TabIndex = 4;
-            this.buttonMoveLocationUp.Click += this.buttonMoveLocationUp_Click;
-            // 
-            // imageListButttons
-            // 
-            this.imageListButttons.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListButttons.ImageStream");
-            this.imageListButttons.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListButttons.Images.SetKeyName(0, "");
-            this.imageListButttons.Images.SetKeyName(1, "");
-            // 
-            // buttonMoveLocationDown
-            // 
-            this.buttonMoveLocationDown.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonMoveLocationDown.ImageIndex = 0;
-            this.buttonMoveLocationDown.ImageList = this.imageListButttons;
-            this.buttonMoveLocationDown.Location = new System.Drawing.Point(251, 40);
-            this.buttonMoveLocationDown.Name = "buttonMoveLocationDown";
-            this.buttonMoveLocationDown.Size = new System.Drawing.Size(24, 20);
-            this.buttonMoveLocationDown.TabIndex = 5;
-            this.buttonMoveLocationDown.Click += this.buttonMoveLocationDown_Click;
-            // 
-            // label2
-            // 
-            this.label2.Location = new System.Drawing.Point(10, 28);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(184, 18);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "(Leave empty to use default name)";
-            // 
-            // groupBoxSelection
-            // 
-            this.groupBoxSelection.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
-                        | System.Windows.Forms.AnchorStyles.Right);
-            this.groupBoxSelection.Controls.Add(this.radioButtonSelectionListOrder);
-            this.groupBoxSelection.Controls.Add(this.radioButtonSelectionRandom);
-            this.groupBoxSelection.Location = new System.Drawing.Point(8, 48);
-            this.groupBoxSelection.Name = "groupBoxSelection";
-            this.groupBoxSelection.Size = new System.Drawing.Size(280, 56);
-            this.groupBoxSelection.TabIndex = 3;
-            this.groupBoxSelection.TabStop = false;
-            this.groupBoxSelection.Text = "Selection:";
-            // 
-            // radioButtonSelectionListOrder
-            // 
-            this.radioButtonSelectionListOrder.Location = new System.Drawing.Point(8, 16);
-            this.radioButtonSelectionListOrder.Name = "radioButtonSelectionListOrder";
-            this.radioButtonSelectionListOrder.Size = new System.Drawing.Size(168, 16);
-            this.radioButtonSelectionListOrder.TabIndex = 0;
-            this.radioButtonSelectionListOrder.Text = "Priority based on order in list";
-            this.radioButtonSelectionListOrder.ViewOnly = false;
-            // 
-            // radioButtonSelectionRandom
-            // 
-            this.radioButtonSelectionRandom.AutoSize = true;
-            this.radioButtonSelectionRandom.Location = new System.Drawing.Point(8, 34);
-            this.radioButtonSelectionRandom.Name = "radioButtonSelectionRandom";
-            this.radioButtonSelectionRandom.Size = new System.Drawing.Size(228, 17);
-            this.radioButtonSelectionRandom.TabIndex = 1;
-            this.radioButtonSelectionRandom.Text = "Best fit between train and destination lenth ";
-            this.radioButtonSelectionRandom.ViewOnly = false;
-            // 
-            // buttonOk
-            // 
-            this.buttonOk.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonOk.Location = new System.Drawing.Point(168, 276);
-            this.buttonOk.Name = "buttonOk";
-            this.buttonOk.Size = new System.Drawing.Size(56, 20);
-            this.buttonOk.TabIndex = 6;
-            this.buttonOk.Text = "OK";
-            this.buttonOk.Click += this.buttonOk_Click;
-            // 
-            // buttonSave
-            // 
-            this.buttonSave.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonSave.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonSave.Location = new System.Drawing.Point(8, 276);
-            this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(56, 20);
-            this.buttonSave.TabIndex = 5;
-            this.buttonSave.Text = "Save...";
-            this.buttonSave.Click += this.buttonSave_Click;
-            // 
-            // DestinationEditor
-            // 
-            this.AcceptButton = this.buttonOk;
-            this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(296, 301);
-            this.Controls.Add(this.groupBoxSelection);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.groupBoxLocations);
-            this.Controls.Add(this.textBoxName);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.buttonCancel);
-            this.Controls.Add(this.buttonOk);
-            this.Controls.Add(this.buttonSave);
-            this.Name = "DestinationEditor";
-            this.Text = "DestinationEditor";
-            this.Closed += this.DestinationEditor_Closed;
-            this.Closing += this.DestinationEditor_Closing;
-            this.groupBoxLocations.ResumeLayout(false);
-            this.groupBoxSelection.ResumeLayout(false);
-            this.groupBoxSelection.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-        }
-        #endregion
-
-        private void buttonOk_Click(object sender, System.EventArgs e) {
+        private void ButtonOk_Click(object? sender, System.EventArgs e) {
             if (listViewLocations.Items.Count == 0) {
                 MessageBox.Show(this, "Destination must contain at least one location", "Invalid destination", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 listViewLocations.Focus();
@@ -467,7 +194,7 @@ namespace LayoutManager.Tools.Dialogs {
             foreach (LocationItem item in listViewLocations.Items)
                 destination.Add(item.Entry);
 
-            XmlElement inParent = (XmlElement)inDestination.Element.ParentNode;
+            var inParent = (XmlElement)inDestination.Element.ParentNode!;
 
             inParent.RemoveChild(inDestination.Element);
             inParent.AppendChild(inParent.OwnerDocument.ImportNode(destination.Element, true));
@@ -476,22 +203,22 @@ namespace LayoutManager.Tools.Dialogs {
             Close();
         }
 
-        private void buttonCancel_Click(object sender, System.EventArgs e) {
+        private void ButtonCancel_Click(object? sender, System.EventArgs e) {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void DestinationEditor_Closed(object sender, System.EventArgs e) {
-            destinationSelection.Hide();
-            destinationSelection.Clear();
+        private void DestinationEditor_Closed(object? sender, System.EventArgs e) {
+            destinationSelection?.Hide();
+            destinationSelection?.Clear();
 
-            selectedBlockInfoSelection.Hide();
-            selectedBlockInfoSelection.Clear();
+            selectedBlockInfoSelection?.Hide();
+            selectedBlockInfoSelection?.Clear();
 
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 
-        private void buttonMoveLocationUp_Click(object sender, System.EventArgs e) {
+        private void ButtonMoveLocationUp_Click(object? sender, System.EventArgs e) {
             if (listViewLocations.SelectedItems.Count > 0) {
                 LocationItem selected = (LocationItem)listViewLocations.SelectedItems[0];
                 int selectedIndex = listViewLocations.SelectedIndices[0];
@@ -504,7 +231,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        private void buttonMoveLocationDown_Click(object sender, System.EventArgs e) {
+        private void ButtonMoveLocationDown_Click(object? sender, System.EventArgs e) {
             if (listViewLocations.SelectedItems.Count > 0) {
                 LocationItem selected = (LocationItem)listViewLocations.SelectedItems[0];
                 int selectedIndex = listViewLocations.SelectedIndices[0];
@@ -517,28 +244,28 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        private void buttonRemoveLocation_Click(object sender, System.EventArgs e) {
+        private void ButtonRemoveLocation_Click(object? sender, System.EventArgs e) {
             if (listViewLocations.SelectedItems.Count > 0) {
                 LocationItem selected = (LocationItem)listViewLocations.SelectedItems[0];
 
                 listViewLocations.Items.Remove(selected);
-                destinationSelection.Remove(selected.BlockDefinition);
-                updateButtons(null, null);
+                destinationSelection?.Remove(selected.BlockDefinition);
+                UpdateButtons(null, EventArgs.Empty);
             }
         }
 
-        private void buttonAddLocation_Click(object sender, System.EventArgs e) {
-            ContextMenu menu = new ContextMenu();
+        private void ButtonAddLocation_Click(object? sender, System.EventArgs e) {
+            var menu = new ContextMenuStrip();
 
             new BuildComponentsMenu<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases, "*[@SuggestForDestination='true']",
-                    new CommonUI.BuildComponentsMenuComponentFilter<LayoutBlockDefinitionComponent>(this.addMenuFilter),
-                    (object s, EventArgs ea) => AddComponent(((ModelComponentMenuItemBase<LayoutBlockDefinitionComponent>)s).Component)).AddComponentMenuItems(menu);
+                    new CommonUI.BuildComponentsMenuComponentFilter<LayoutBlockDefinitionComponent>(this.AddMenuFilter),
+                    (s, _) => AddComponent((Ensure.NotNull<ModelComponentMenuItemBase<LayoutBlockDefinitionComponent>>(s)).Component)).AddComponentMenuItems(new MenuOrMenuItem(menu));
 
-            if (menu.MenuItems.Count > 0)
+            if (menu.Items.Count > 0)
                 menu.Show(groupBoxLocations, new Point(buttonAddLocation.Left, buttonAddLocation.Bottom));
         }
 
-        private bool addMenuFilter(LayoutBlockDefinitionComponent component) {
+        private bool AddMenuFilter(LayoutBlockDefinitionComponent component) {
             foreach (LocationItem item in listViewLocations.Items)
                 if (item.BlockDefinition.Id == component.Id)
                     return false;
@@ -546,8 +273,8 @@ namespace LayoutManager.Tools.Dialogs {
             return true;
         }
 
-        private void buttonSave_Click(object sender, System.EventArgs e) {
-            CommonUI.Dialogs.InputBox inBox = new CommonUI.Dialogs.InputBox("Save Destination", "Enter destination name:") {
+        private void ButtonSave_Click(object? sender, System.EventArgs e) {
+            CommonUI.Dialogs.InputBox inBox = new("Save Destination", "Enter destination name:") {
                 Input = textBoxName.Text
             };
 
@@ -568,7 +295,7 @@ namespace LayoutManager.Tools.Dialogs {
 
                 if (doSave) {
                     XmlElement catalogDestinationElement = LayoutModel.StateManager.TripPlansCatalog.Element.OwnerDocument.CreateElement("Destination");
-                    TripPlanDestinationInfo catalogDestination = new TripPlanDestinationInfo(catalogDestinationElement);
+                    TripPlanDestinationInfo catalogDestination = new(catalogDestinationElement);
 
                     foreach (LocationItem item in listViewLocations.Items) {
                         XmlElement catalogDestinationEntryElement = (XmlElement)catalogDestinationElement.OwnerDocument.ImportNode(item.Entry.Element, true);
@@ -588,11 +315,11 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        private void DestinationEditor_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+        private void DestinationEditor_Closing(object? sender, System.ComponentModel.CancelEventArgs e) {
             Owner = null;
         }
 
-        private void buttonCondition_Click(object sender, System.EventArgs e) {
+        private void ButtonCondition_Click(object? sender, System.EventArgs e) {
             if (listViewLocations.SelectedItems.Count > 0) {
                 LocationItem selected = (LocationItem)listViewLocations.SelectedItems[0];
 
@@ -600,8 +327,8 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        private void listViewLocations_SelectedIndexChanged(object sender, System.EventArgs e) {
-            updateButtons(null, null);
+        private void ListViewLocations_SelectedIndexChanged(object? sender, System.EventArgs e) {
+            UpdateButtons(null, EventArgs.Empty);
         }
 
         private class LocationItem : ListViewItem {
@@ -629,20 +356,20 @@ namespace LayoutManager.Tools.Dialogs {
 
             public LayoutBlockDefinitionComponent BlockDefinition {
                 get {
-                    LayoutBlock block = LayoutModel.Blocks[entry.BlockId];
+                    var block = Ensure.NotNull<LayoutBlock>(LayoutModel.Blocks[entry.BlockId]);
 
-                    return block?.BlockDefinintion;
+                    return block.BlockDefinintion;
                 }
             }
 
             public bool Edit(IWin32Window owner) {
-                CommonUI.Dialogs.TrainConditionDefinition d = new CommonUI.Dialogs.TrainConditionDefinition(BlockDefinition, entry);
+                CommonUI.Dialogs.TrainConditionDefinition d = new(BlockDefinition, entry);
 
                 if (d.ShowDialog(owner) == DialogResult.OK) {
-                    XmlElement parentElement = (XmlElement)entry.Element.ParentNode;
+                    var parentElement = (XmlElement?)entry.Element.ParentNode;
                     XmlElement newEntryElement = (XmlElement)entry.Element.OwnerDocument.ImportNode(d.TrainCondition.Element, true);
 
-                    parentElement.ReplaceChild(newEntryElement, entry.Element);
+                    parentElement?.ReplaceChild(newEntryElement, entry.Element);
                     entry = new TripPlanDestinationEntryInfo(newEntryElement);
 
                     Update();

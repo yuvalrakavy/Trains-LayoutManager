@@ -3,7 +3,6 @@ using System.Windows.Forms;
 using LayoutManager.Model;
 using LayoutManager.Logic;
 
-#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Tools.Dialogs {
     public partial class CommandStationStopped : Form {
         private readonly IModelComponentIsCommandStation _commandStation;
@@ -17,40 +16,41 @@ namespace LayoutManager.Tools.Dialogs {
             if (reason != null)
                 labelReason.Text = reason;
 
-            bool hasActiveTrips = (bool)EventManager.Event("any-active-trip-plan");
+            bool hasActiveTrips = Ensure.ValueNotNull<bool>(EventManager.Event("any-active-trip-plan"));
             buttonAbortTrips.Visible = hasActiveTrips;
 
             EventManager.AddObjectSubscriptions(this);
         }
 
         [LayoutEvent("get-command-station-notification-dialog")]
-        private void getCommandStationNotificationDialog(LayoutEvent e) {
+        private void GetCommandStationNotificationDialog(LayoutEvent e) {
             if (e.Sender == _commandStation)
                 e.Info = this;
         }
 
         [LayoutEvent("update-command-station-notification-dialog")]
-        private void updateCommandStationNotificationDialog(LayoutEvent e) {
+        private void UpdateCommandStationNotificationDialog(LayoutEvent e) {
             if (e.Sender == _commandStation) {
-                labelReason.Text = (string)e.Info;
+                var reason = Ensure.NotNull<string>(e.Info);
+                labelReason.Text = reason;
             }
         }
 
         [LayoutEvent("command-station-power-on-notification")]
-        private void commandStationPowerOnNotification(LayoutEvent e) {
+        private void CommandStationPowerOnNotification(LayoutEvent e) {
             if (e.Sender == _commandStation)
                 Close();
         }
 
-        private void CommandStationStopped_FormClosing(object sender, FormClosingEventArgs e) {
+        private void CommandStationStopped_FormClosing(object? sender, FormClosingEventArgs e) {
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 
-        private void buttonPowerOn_Click(object sender, EventArgs e) {
+        private void ButtonPowerOn_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEvent("cancel-emergency-stop-request", _commandStation));
         }
 
-        private void buttonAbortTrips_Click(object sender, EventArgs e) {
+        private void ButtonAbortTrips_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEvent("suspend-all-trips", _commandStation));
         }
     }

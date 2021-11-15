@@ -8,8 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LayoutManager.Model;
 using LayoutManager.Components;
-
-#pragma warning disable IDE0051, IDE0060, IDE0067
+using LayoutManager.CommonUI;
 
 namespace LayoutManager.Tools {
     /// <summary>
@@ -28,21 +27,21 @@ namespace LayoutManager.Tools {
         /// and the second level is with the block names.
         /// </summary>
         [LayoutEvent("add-placeble-blocks-menu-entries")]
-        private void addPlacebleBlocksMenuEntries(LayoutEvent e) {
-            XmlElement placedElement = (XmlElement)e.Sender;
-            Menu m = (Menu)e.Info;
-            var result = EventManager.Event<XmlElement, object, CanPlaceTrainResult>("can-locomotive-be-placed-on-track", placedElement)!;
+        private void AddPlacebleBlocksMenuEntries(LayoutEvent e) {
+            var placedElement = Ensure.NotNull<XmlElement>(e.Sender);
+            var m = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+            var result = Ensure.NotNull<CanPlaceTrainResult>(EventManager.Event("can-locomotive-be-placed-on-track", placedElement));
 
             if (result.Status != CanPlaceTrainStatus.CanPlaceTrain) {
-                MenuItem problemItem = new MenuItem(result.ToString()) {
+                var problemItem = new LayoutMenuItem(result.ToString()) {
                     Enabled = false
                 };
-                m.MenuItems.Add(problemItem);
+                m.Items.Add(problemItem);
                 return;
             }
 
             PlacementProblem problem = PlacementProblem.NoProblem;
-            string errorMessage = null;
+            string? errorMessage = null;
             var areaToBlockList = new Dictionary<LayoutModelArea, List<LayoutBlockDefinitionComponent>>();
 
             foreach (LayoutBlockDefinitionComponent blockInfo in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases)) {
@@ -57,7 +56,7 @@ namespace LayoutManager.Tools {
                         break;
                     }
                     else {
-                        if (!areaToBlockList.TryGetValue(blockInfo.Spot.Area, out List<LayoutBlockDefinitionComponent> blocksInArea)) {
+                        if (!areaToBlockList.TryGetValue(blockInfo.Spot.Area, out List<LayoutBlockDefinitionComponent>? blocksInArea)) {
                             blocksInArea = new List<LayoutBlockDefinitionComponent>();
                             areaToBlockList[blockInfo.Spot.Area] = blocksInArea;
                         }
@@ -70,10 +69,10 @@ namespace LayoutManager.Tools {
 
             if (problem == PlacementProblem.NoProblem) {
                 if (areaToBlockList.Count == 0) {
-                    MenuItem problemItem = new MenuItem("No empty block was found") {
+                    var problemItem = new LayoutMenuItem("No empty block was found") {
                         Enabled = false
                     };
-                    m.MenuItems.Add(problemItem);
+                    m.Items.Add(problemItem);
                 }
                 else if (areaToBlockList.Count == 1) {
                     // If there is only block info in one area, just add those to the menu
@@ -81,7 +80,7 @@ namespace LayoutManager.Tools {
                         blockInfoList.Sort((b1, b2) => b1.NameProvider.Name.CompareTo(b2.NameProvider.Name));
 
                         foreach (var blockInfo in blockInfoList)
-                            m.MenuItems.Add(new PlaceOnTrackMenuItem(placedElement, blockInfo));
+                            m.Items.Add(new PlaceOnTrackMenuItem(placedElement, blockInfo));
                     }
                 }
                 else {
@@ -92,35 +91,35 @@ namespace LayoutManager.Tools {
                     Array.Sort(areas, (a1, a2) => a1.Name.CompareTo(a2.Name));
 
                     foreach (LayoutModelArea area in areas) {
-                        MenuItem areaMenuItem = new MenuItem(area.Name);
+                        var areaMenuItem = new LayoutMenuItem(area.Name);
                         var blockInfoList = areaToBlockList[area];
 
                         blockInfoList.Sort((b1, b2) => b1.NameProvider.Name.CompareTo(b2.NameProvider.Name));
 
                         foreach (LayoutBlockDefinitionComponent blockInfo in blockInfoList)
-                            areaMenuItem.MenuItems.Add(new PlaceOnTrackMenuItem(placedElement, blockInfo));
+                            areaMenuItem.DropDownItems.Add(new PlaceOnTrackMenuItem(placedElement, blockInfo));
 
-                        m.MenuItems.Add(areaMenuItem);
+                        m.Items.Add(areaMenuItem);
                     }
                 }
             }
             else {
-                MenuItem problemItem = new MenuItem(errorMessage) {
+                var problemItem = new LayoutMenuItem(errorMessage ?? "bug: errorMessage was not specified") {
                     Enabled = false
                 };
-                m.MenuItems.Add(problemItem);
+                m.Items.Add(problemItem);
             }
         }
 
         [LayoutEvent("show-locomotive-controller")]
-        private void showLocomotiveController(LayoutEvent e) {
+        private void ShowLocomotiveController(LayoutEvent e) {
             TrainStateInfo trainState = EventManager.Event<object, object, TrainStateInfo>("extract-train-state", e.Sender)!;
 
             if (trainState.NotManaged)
                 throw new LocomotiveNotManagedException(trainState.Locomotives[0].Locomotive);
 
             if (EventManager.Event(new LayoutEvent("activate-locomotive-controller", trainState)) == null) {
-                Dialogs.LocomotiveController locoController = new Dialogs.LocomotiveController(trainState);
+                Dialogs.LocomotiveController locoController = new(trainState);
 
                 locoController.Show();
             }
@@ -132,41 +131,41 @@ namespace LayoutManager.Tools {
         /// </summary>
         [LayoutEvent("add-locomotive-collection-operation-context-menu-entries")]
         protected void AddLocomotiveCollectionOperationContextMenuEntries(LayoutEvent e) {
-            XmlElement placedElement = (XmlElement)e.Sender;
-            Menu m = (Menu)e.Info;
-            TrainStateInfo train = LayoutModel.StateManager.Trains[LayoutModel.LocomotiveCollection.GetElementId(placedElement)];
+            var placedElement = Ensure.NotNull<XmlElement>(e.Sender);
+            var m = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+            var train = LayoutModel.StateManager.Trains[LayoutModel.LocomotiveCollection.GetElementId(placedElement)];
 
             if (train == null) {
                 var context = LayoutOperationContext.GetPendingOperation("TrainPlacement", new LayoutXmlWithIdWrapper(placedElement));
 
                 if (context == null) {
-                    MenuItem placeOnTrack = new MenuItem("Place on track");
+                    var placeOnTrackItem = new LayoutMenuItem("Place on track");
 
-                    EventManager.Event(new LayoutEvent("add-placeble-blocks-menu-entries", placedElement, placeOnTrack));
-                    placeOnTrack.Enabled = placeOnTrack.MenuItems.Count > 0;
-                    m.MenuItems.Add(placeOnTrack);
+                    EventManager.Event(new LayoutEvent("add-placeble-blocks-menu-entries", placedElement, new MenuOrMenuItem(placeOnTrackItem)));
+                    placeOnTrackItem.Enabled = placeOnTrackItem.DropDownItems.Count > 0;
+                    m.Items.Add(placeOnTrackItem);
                 }
                 else
-                    m.MenuItems.Add("Cancel " + context.Description, (s, ea) => context.Cancel());
+                    m.Items.Add(new LayoutMenuItem($"Cancel {context.Description}", null, (_, _) => context.Cancel()));
             }
             else {
                 var context = LayoutOperationContext.GetPendingOperation("TrainPlacement", new LayoutXmlWithIdWrapper(placedElement));
 
                 if (context != null)
-                    m.MenuItems.Add("Cancel " + context.Description, (s, ea) => context.Cancel());
+                    m.Items.Add(new LayoutMenuItem($"Cancel {context.Description}", null, (_, _) => context.Cancel()));
 
                 if (train.IsPowered)
-                    m.MenuItems.Add(new ShowLocomotiveControllerMenuItem(train));
+                    m.Items.Add(new ShowLocomotiveControllerMenuItem(train));
 
-                m.MenuItems.Add(new TrainPropertiesMenuItem(train));
+                m.Items.Add(new TrainPropertiesMenuItem(train));
 
                 if (train.OnTrack)
-                    m.MenuItems.Add(new LocateLocomotiveMenuItem(train.LocomotiveBlock.BlockDefinintion));
+                    m.Items.Add(new LocateLocomotiveMenuItem(train.LocomotiveBlock!.BlockDefinintion));
 
                 if (LayoutOperationContext.HasPendingOperation("TrainRemoval", train))
-                    m.MenuItems.Add(new CancelTrainRemovalMenuItem(train));
+                    m.Items.Add(new CancelTrainRemovalMenuItem(train));
                 else if (train.OnTrack)
-                    m.MenuItems.Add(new RemoveFromTrackMenuItem(train));
+                    m.Items.Add(new RemoveFromTrackMenuItem(train));
             }
 
             if (placedElement.Name == "Locomotive") {
@@ -174,24 +173,24 @@ namespace LayoutManager.Tools {
                 var context = LayoutOperationContext.GetPendingOperation("LocomotiveProgramming", locomotive);
 
                 if (context != null)
-                    m.MenuItems.Add("Cancel " + context.Description, (s, ea) => context.Cancel());
+                    m.Items.Add(new LayoutMenuItem($"Cancel {context.Description}", null, (_, _) => context.Cancel()));
                 else {
-                    var locomotiveProgrammingMenu = new MenuItem("&Program locomotive");
+                    var locomotiveProgrammingMenuItem = new LayoutMenuItem("&Program locomotive");
 
-                    EventManager.Event(new LayoutEvent<LocomotiveInfo, Menu>("add-locomotive-programming-menu-entries", locomotive, locomotiveProgrammingMenu));
+                    EventManager.Event(new LayoutEvent("add-locomotive-programming-menu-entries", locomotive, new MenuOrMenuItem(locomotiveProgrammingMenuItem)));
 
-                    if (locomotiveProgrammingMenu.MenuItems.Count == 1)
-                        m.MenuItems.Add(locomotiveProgrammingMenu.MenuItems[0]);
-                    else if (locomotiveProgrammingMenu.MenuItems.Count > 1)
-                        m.MenuItems.Add(locomotiveProgrammingMenu);
+                    if (locomotiveProgrammingMenuItem.DropDownItems.Count == 1)
+                        m.Items.Add(locomotiveProgrammingMenuItem.DropDownItems[0]);
+                    else if (locomotiveProgrammingMenuItem.DropDownItems.Count > 1)
+                        m.Items.Add(locomotiveProgrammingMenuItem);
                 }
             }
         }
 
         [LayoutEvent("edit-train-properties")]
-        private void editTrainProperties(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)e.Sender;
-            Dialogs.TrainProperties trainProperties = new Dialogs.TrainProperties(train);
+        private void EditTrainProperties(LayoutEvent e) {
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender);
+            Dialogs.TrainProperties trainProperties = new(train);
 
             trainProperties.ShowDialog();
         }
@@ -213,24 +212,25 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("get-locomotive-front")]
-        private void getLocomotiveFront(LayoutEvent e0) {
-            var e = (LayoutEventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>)e0;
-            var name = ExtractTrainDisplayName(e.Info);
+        private void GetLocomotiveFront(LayoutEvent e) {
+            var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender);
+            var nameObject = Ensure.NotNull<object>(e.Info);
+            var name = ExtractTrainDisplayName(nameObject);
 
             EventManager.Event(new LayoutEvent("ensure-component-visible", e.Sender, false));
 
-            Dialogs.LocomotiveFront locoFront = new Dialogs.LocomotiveFront(e.Sender, name);
+            Dialogs.LocomotiveFront locoFront = new(blockDefinition, name);
             if (locoFront.ShowDialog() == DialogResult.OK)
-                e.Result = locoFront.Front;
+                e.Info = locoFront.Front;
             else
-                e.Result = null;
+                e.Info = null;
         }
 
         [LayoutEvent("get-waypoint-front")]
-        private void getWaypointFront(LayoutEvent e) {
-            LayoutStraightTrackComponent track = (LayoutStraightTrackComponent)e.Sender;
+        private void GetWaypointFront(LayoutEvent e) {
+            var track = Ensure.NotNull<LayoutStraightTrackComponent>(e.Sender);
 
-            Dialogs.LocomotiveFront locoFront = new Dialogs.LocomotiveFront(track, "", "");
+            Dialogs.LocomotiveFront locoFront = new(track, "", "");
 
             if (locoFront.ShowDialog() == DialogResult.OK)
                 e.Info = locoFront.Front;
@@ -239,17 +239,18 @@ namespace LayoutManager.Tools {
         }
 
         [LayoutEvent("get-train-front-and-length")]
-        private void getTrainFrontAndLength(LayoutEvent e0) {
-            var e = (LayoutEvent<LayoutBlockDefinitionComponent, object, TrainFrontAndLength>)e0;
-            var name = ExtractTrainDisplayName(e.Info);
+        private void GetTrainFrontAndLength(LayoutEvent e) {
+            var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender);
+            var collectionElement = Ensure.NotNull<XmlElement>(e.Info);
+            var name = ExtractTrainDisplayName(collectionElement);
 
             EventManager.Event(new LayoutEvent("ensure-component-visible", e.Sender, false));
 
-            Dialogs.TrainFrontAndLength trainFrontAndLength = new Dialogs.TrainFrontAndLength(e.Sender, name);
+            Dialogs.TrainFrontAndLength trainFrontAndLength = new(blockDefinition, name);
             if (trainFrontAndLength.ShowDialog() == DialogResult.OK)
-                e.Result = new TrainFrontAndLength(trainFrontAndLength.Front, trainFrontAndLength.Length);
+                e.Info = new TrainFrontAndLength(trainFrontAndLength.Front, trainFrontAndLength.Length);
             else
-                e.Result = null;
+                e.Info = null;
         }
 
         [LayoutEvent("get-programming-location")]
@@ -282,35 +283,37 @@ namespace LayoutManager.Tools {
         #region Locomoative Programming menu entries
 
         [LayoutEvent("add-locomotive-programming-menu-entries")]
-        private void addSetLocomotiveSetAddress(LayoutEvent e0) {
-            var e = (LayoutEvent<LocomotiveInfo, Menu>)e0;
-            LocomotiveInfo locomotive = e.Sender;
+        private void AddSetLocomotiveSetAddress(LayoutEvent e) {
+            var locomotive = Ensure.NotNull<LocomotiveInfo>(e.Sender);
+            var m = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
             if (locomotive.DecoderType is DecoderWithNumericAddressTypeInfo)
-                e.Info.MenuItems.Add(new MenuItem("Set address...", (s, ea) => doSetLocomotiveAddress(locomotive)));
+                m.Items.Add(new LayoutMenuItem("Set address...", null, (_, _) => DoSetLocomotiveAddress(locomotive)));
         }
 
-        private async void doSetLocomotiveAddress(LocomotiveInfo locomotive) {
+        private async void DoSetLocomotiveAddress(LocomotiveInfo locomotive) {
             var d = new Dialogs.ChangeLocomotiveAddress(locomotive);
 
             if (d.ShowDialog() == DialogResult.OK) {
                 var programmingState = new LocomotiveProgrammingState(locomotive);
 
                 programmingState.ProgrammingActions = new LayoutActionContainer<LocomotiveInfo>(programmingState.Locomotive);
-                var changeAddressAction = (ILayoutLocomotiveAddressChangeAction)programmingState.ProgrammingActions.Add("set-address");
+                var changeAddressAction = (ILayoutLocomotiveAddressChangeAction?)programmingState.ProgrammingActions.Add("set-address");
 
-                changeAddressAction.Address = d.Address;
-                changeAddressAction.SpeedSteps = d.SpeedSteps;
+                if (changeAddressAction != null) {
+                    changeAddressAction.Address = d.Address;
+                    changeAddressAction.SpeedSteps = d.SpeedSteps;
 
-                if (d.ProgramLocomotive) {
-                    try {
-                        using var context = new LayoutOperationContext("LocomotiveProgramming", "set locomotive address", locomotive);
-                        var train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent("program-locomotive", programmingState).SetOperationContext(context));
+                    if (d.ProgramLocomotive) {
+                        try {
+                            using var context = new LayoutOperationContext("LocomotiveProgramming", "set locomotive address", locomotive);
+                            var train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent("program-locomotive", programmingState).SetOperationContext(context));
+                        }
+                        catch (LayoutException) { }
                     }
-                    catch (LayoutException) { }
+                    else
+                        programmingState.ProgrammingActions.Commit();
                 }
-                else
-                    programmingState.ProgrammingActions.Commit();
             }
         }
 
@@ -320,7 +323,7 @@ namespace LayoutManager.Tools {
 
         #region Locate Locomotive menu item
 
-        private class LocateLocomotiveMenuItem : MenuItem {
+        private class LocateLocomotiveMenuItem : LayoutMenuItem {
             private readonly LayoutBlockDefinitionComponent blockInfo;
 
             public LocateLocomotiveMenuItem(LayoutBlockDefinitionComponent blockInfo) {
@@ -344,7 +347,7 @@ namespace LayoutManager.Tools {
         /// <summary>
         /// Menu item for placing locomotive on track
         /// </summary>
-        private class PlaceOnTrackMenuItem : MenuItem {
+        private class PlaceOnTrackMenuItem : LayoutMenuItem {
             private readonly XmlElement placedElement;
             private readonly LayoutBlockDefinitionComponent blockInfo;
 
@@ -366,7 +369,7 @@ namespace LayoutManager.Tools {
 
         #region Remove from track menu item
 
-        public class RemoveFromTrackMenuItem : MenuItem {
+        public class RemoveFromTrackMenuItem : LayoutMenuItem {
             private readonly TrainStateInfo train;
 
             public RemoveFromTrackMenuItem(TrainStateInfo train) {
@@ -389,7 +392,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-        public class CancelTrainRemovalMenuItem : MenuItem {
+        public class CancelTrainRemovalMenuItem : LayoutMenuItem {
             private readonly TrainStateInfo train;
 
             public CancelTrainRemovalMenuItem(TrainStateInfo train) {
@@ -409,7 +412,7 @@ namespace LayoutManager.Tools {
 
         #region Train properties menu item
 
-        public class TrainPropertiesMenuItem : MenuItem {
+        public class TrainPropertiesMenuItem : LayoutMenuItem {
             private readonly TrainStateInfo train;
 
             public TrainPropertiesMenuItem(TrainStateInfo train) {
@@ -427,7 +430,7 @@ namespace LayoutManager.Tools {
 
         #region Show locomotive controller menu item
 
-        public class ShowLocomotiveControllerMenuItem : MenuItem {
+        public class ShowLocomotiveControllerMenuItem : LayoutMenuItem {
             private readonly TrainStateInfo state;
 
             public ShowLocomotiveControllerMenuItem(TrainStateInfo state) {

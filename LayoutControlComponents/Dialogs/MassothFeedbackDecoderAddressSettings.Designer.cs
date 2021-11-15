@@ -45,7 +45,7 @@
 			this.radioButtonMaster.TabStop = true;
 			this.radioButtonMaster.Text = "Master - Feedback module is connected to DiMAX bus port";
 			this.radioButtonMaster.UseVisualStyleBackColor = true;
-			this.radioButtonMaster.CheckedChanged += new System.EventHandler(this.radioButtonMaster_CheckedChanged);
+			this.radioButtonMaster.CheckedChanged += new System.EventHandler(this.RadioButtonMaster_CheckedChanged);
 			// 
 			// radioButtonSlave
 			// 
@@ -57,7 +57,7 @@
 			this.radioButtonSlave.TabStop = true;
 			this.radioButtonSlave.Text = "Slave - Feedback module is connected to another feedback module";
 			this.radioButtonSlave.UseVisualStyleBackColor = true;
-			this.radioButtonSlave.CheckedChanged += new System.EventHandler(this.radioButtonSlave_CheckedChanged);
+			this.radioButtonSlave.CheckedChanged += new System.EventHandler(this.RadioButtonSlave_CheckedChanged);
 			// 
 			// label1
 			// 
@@ -102,7 +102,7 @@
 			this.buttonOK.TabIndex = 6;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
 			// 
 			// buttonCancel
 			// 

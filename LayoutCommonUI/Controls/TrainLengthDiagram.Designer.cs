@@ -39,7 +39,7 @@ namespace LayoutManager.CommonUI.Controls {
 			this.buttonNotLonger.Text = "<";
 			this.toolTip1.SetToolTip(this.buttonNotLonger, "Not longer than");
 			this.buttonNotLonger.UseVisualStyleBackColor = true;
-			this.buttonNotLonger.Click += new System.EventHandler(this.buttonNotLonger_Click);
+			this.buttonNotLonger.Click += new System.EventHandler(this.ButtonNotLonger_Click);
 			// 
 			// buttonLonger
 			// 
@@ -50,7 +50,7 @@ namespace LayoutManager.CommonUI.Controls {
 			this.buttonLonger.Text = ">";
 			this.toolTip1.SetToolTip(this.buttonLonger, "Longer than");
 			this.buttonLonger.UseVisualStyleBackColor = true;
-			this.buttonLonger.Click += new System.EventHandler(this.buttonLonger_Click);
+			this.buttonLonger.Click += new System.EventHandler(this.ButtonLonger_Click);
 			// 
 			// linkMenuTrainLength
 			// 
@@ -63,7 +63,7 @@ namespace LayoutManager.CommonUI.Controls {
 			this.linkMenuTrainLength.TabStop = true;
 			this.linkMenuTrainLength.Text = "linkMenu1";
 			this.linkMenuTrainLength.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.linkMenuTrainLength.ValueChanged += new System.EventHandler(this.linkMenuTrainLength_ValueChanged);
+			this.linkMenuTrainLength.ValueChanged += new System.EventHandler(this.LinkMenuTrainLength_ValueChanged);
 			// 
 			// TrainLengthDiagram
 			// 

@@ -1,32 +1,22 @@
-using System.ComponentModel;
-using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for TrainDriverComboBox.
     /// </summary>
-    public class TrainDriverComboBox : System.Windows.Forms.UserControl {
-        private ComboBox comboBoxDrivers;
-        private Button buttonDriverSettings;
+    public partial class TrainDriverComboBox : UserControl {
 
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container components = null;
+        private TrainCommonInfo? train;
 
-        private void endOfDesignerVariables() { }
+        public TrainCommonInfo Train { get => Ensure.NotNull<TrainCommonInfo>(OptionalTrain); set => OptionalTrain = value; }
 
-        private TrainCommonInfo train;
-
-        public TrainCommonInfo Train {
+        public TrainCommonInfo? OptionalTrain {
             set {
                 train = value;
 
                 if (train != null)
-                    initialize();
+                    Initialize();
             }
 
             get {
@@ -50,7 +40,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             DriverItem selected = (DriverItem)comboBoxDrivers.SelectedItem;
 
-            train.DriverElement = selected.DriverElement;
+            Train.DriverElement = selected.DriverElement;
             return true;
         }
 
@@ -59,14 +49,14 @@ namespace LayoutManager.CommonUI.Controls {
             InitializeComponent();
         }
 
-        private void initialize() {
+        private void Initialize() {
             XmlDocument driversDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
             // enum the possible drivers, and build a menu
             driversDoc.LoadXml("<Drivers />");
             EventManager.Event(new LayoutEvent("enum-train-drivers", train, driversDoc.DocumentElement));
 
-            foreach (XmlElement driverElement in driversDoc.DocumentElement)
+            foreach (XmlElement driverElement in driversDoc.DocumentElement!)
                 comboBoxDrivers.Items.Add(new DriverItem(driverElement));
 
             foreach (DriverItem driverItem in comboBoxDrivers.Items)
@@ -75,14 +65,14 @@ namespace LayoutManager.CommonUI.Controls {
                     break;
                 }
 
-            setDriverSettingButtonState();
+            SetDriverSettingButtonState();
         }
 
         private bool IsSelectedHasSettings() {
             DriverItem selected = (DriverItem)comboBoxDrivers.SelectedItem;
 
             if (selected != null) {
-                object oResult = EventManager.Event(new LayoutEvent("query-driver-setting-dialog", selected.DriverElement));
+                object? oResult = EventManager.Event(new LayoutEvent("query-driver-setting-dialog", selected.DriverElement));
 
                 if (oResult != null && (bool)oResult)
                     return true;
@@ -91,7 +81,7 @@ namespace LayoutManager.CommonUI.Controls {
             return false;
         }
 
-        private void setDriverSettingButtonState() {
+        private void SetDriverSettingButtonState() {
             var selected = (DriverItem)comboBoxDrivers.SelectedItem;
 
             if (selected != null)
@@ -110,56 +100,14 @@ namespace LayoutManager.CommonUI.Controls {
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.comboBoxDrivers = new ComboBox();
-            this.buttonDriverSettings = new Button();
-            this.SuspendLayout();
-            // 
-            // comboBoxDrivers
-            // 
-            this.comboBoxDrivers.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right);
-            this.comboBoxDrivers.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxDrivers.Location = new System.Drawing.Point(0, 0);
-            this.comboBoxDrivers.Name = "comboBoxDrivers";
-            this.comboBoxDrivers.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxDrivers.TabIndex = 0;
-            this.comboBoxDrivers.SelectedIndexChanged += this.comboBoxDrivers_SelectedIndexChanged;
-            // 
-            // buttonDriverSettings
-            // 
-            this.buttonDriverSettings.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonDriverSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (System.Byte)177);
-            this.buttonDriverSettings.Location = new System.Drawing.Point(120, 0);
-            this.buttonDriverSettings.Name = "buttonDriverSettings";
-            this.buttonDriverSettings.Size = new System.Drawing.Size(24, 21);
-            this.buttonDriverSettings.TabIndex = 1;
-            this.buttonDriverSettings.Text = "...";
-            this.buttonDriverSettings.Click += this.buttonDriverSettings_Click;
-            // 
-            // TrainDriverComboBox
-            // 
-            this.Controls.Add(this.buttonDriverSettings);
-            this.Controls.Add(this.comboBoxDrivers);
-            this.Name = "TrainDriverComboBox";
-            this.Size = new System.Drawing.Size(144, 24);
-            this.ResumeLayout(false);
-        }
-        #endregion
-
-        private void comboBoxDrivers_SelectedIndexChanged(object sender, System.EventArgs e) {
-            setDriverSettingButtonState();
+        private void ComboBoxDrivers_SelectedIndexChanged(object? sender, EventArgs e) {
+            SetDriverSettingButtonState();
 
             if (IsSelectedHasSettings())
                 buttonDriverSettings.PerformClick();
         }
 
-        private void buttonDriverSettings_Click(object sender, System.EventArgs e) {
+        private void ButtonDriverSettings_Click(object? sender, EventArgs e) {
             DriverItem selected = (DriverItem)comboBoxDrivers.SelectedItem;
 
             if (selected != null)

@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Drawing.Drawing2D;
 
 namespace LayoutManager.CommonUI.Dialogs {
@@ -25,9 +16,11 @@ namespace LayoutManager.CommonUI.Dialogs {
         /// <summary>
         /// The resulted trimmed image
         /// </summary>
-        public Image Image { get; private set; }
+        public Image Image { get => Ensure.NotNull<Image>(OptionalImage); private set => OptionalImage = value; }
 
-        public Size Insets = new Size(10, 10);
+        private Image? OptionalImage { get; set; }
+
+        public Size Insets = new(10, 10);
 
         private Rectangle _clipFrame;
 
@@ -52,7 +45,7 @@ namespace LayoutManager.CommonUI.Dialogs {
             this.InputImage = inputImage;
             this.RequiredSize = requiredSize;
 
-            _clipFrame = initClipFrame();
+            _clipFrame = InitClipFrame();
 
             panelImage.Paint += PanelImage_Paint;
             panelImage.SizeChanged += (sender, e) => panelImage.Invalidate();
@@ -62,15 +55,15 @@ namespace LayoutManager.CommonUI.Dialogs {
             panelImage.MouseDown += (sender, e) => {
                 _startDragClipFrame = _clipFrame;
                 _startDragLocation = e.Location;
-                _dragging = getDragRegion(e.Location);
+                _dragging = GetDragRegion(e.Location);
             };
         }
 
-        private (int, int) adjustForCornerDragging(int dx, int dy) => (dx, dx * RequiredSize.Height / RequiredSize.Width);
+        private (int, int) AdjustForCornerDragging(int dx, int dy) => (dx, dx * RequiredSize.Height / RequiredSize.Width);
 
-        private void PanelImage_MouseMove(object sender, MouseEventArgs e) {
+        private void PanelImage_MouseMove(object? sender, MouseEventArgs e) {
             if (_dragging != Dragging.None) {
-                var transformMatrix = getTransformMatrix();
+                var transformMatrix = GetTransformMatrix();
                 transformMatrix.Invert();
 
                 var points = new Point[] { _startDragLocation, e.Location };
@@ -80,7 +73,7 @@ namespace LayoutManager.CommonUI.Dialogs {
                 var dy = points[1].Y - points[0].Y;
 
                 if (_dragging != Dragging.ClipFrame)
-                    (dx, dy) = adjustForCornerDragging(dx, dy);
+                    (dx, dy) = AdjustForCornerDragging(dx, dy);
 
                 Trace.WriteLine($"Dragging {_dragging} from {points[0]} to {points[1]} dx: {dx} dy: {dy}");
 
@@ -114,7 +107,7 @@ namespace LayoutManager.CommonUI.Dialogs {
                 panelImage.Invalidate();
             }
             else {
-                switch (getDragRegion(e.Location)) {
+                switch (GetDragRegion(e.Location)) {
                     case Dragging.None: panelImage.Cursor = Cursors.Arrow; break;
                     case Dragging.CornerNW: case Dragging.CornerSE: panelImage.Cursor = Cursors.SizeNWSE; break;
                     case Dragging.CornerNE: case Dragging.CornerSW: panelImage.Cursor = Cursors.SizeNESW; break;
@@ -123,17 +116,17 @@ namespace LayoutManager.CommonUI.Dialogs {
             }
         }
 
-        private Dragging getDragRegion(Point pt) {
-            Size cornerHotZone = new Size(20, 20);
+        private Dragging GetDragRegion(Point pt) {
+            Size cornerHotZone = new(20, 20);
 
             foreach (var corner in Enumerable.Range(0, 4))
-                if (transformed(getClipFrameCornerRect(corner, cornerHotZone)).IsVisible(pt))
+                if (Transformed(GetClipFrameCornerRect(corner, cornerHotZone)).IsVisible(pt))
                     return (Dragging)corner;
 
-            return transformed(_clipFrame).IsVisible(pt) ? Dragging.ClipFrame : Dragging.None;
+            return Transformed(_clipFrame).IsVisible(pt) ? Dragging.ClipFrame : Dragging.None;
         }
 
-        private Rectangle initClipFrame() {
+        private Rectangle InitClipFrame() {
             Size clipFrameSize;
             Point clipFrameOrigin;
             if (RequiredSize.Width > RequiredSize.Height) {
@@ -148,18 +141,18 @@ namespace LayoutManager.CommonUI.Dialogs {
             return new Rectangle(clipFrameOrigin, clipFrameSize);
         }
 
-        private void PanelImage_Paint(object sender, PaintEventArgs e) {
+        private void PanelImage_Paint(object? sender, PaintEventArgs e) {
             e.Graphics.FillRectangle(SystemBrushes.Window, e.ClipRectangle);
             var state = e.Graphics.Save();
 
-            e.Graphics.Transform = getTransformMatrix();
+            e.Graphics.Transform = GetTransformMatrix();
             e.Graphics.DrawImage(this.InputImage, new Rectangle(new Point(0, 0), this.InputImage.Size));
 
-            drawClipFrame(e.Graphics);
+            DrawClipFrame(e.Graphics);
             e.Graphics.Restore(state);
         }
 
-        private Matrix getTransformMatrix() {
+        private Matrix GetTransformMatrix() {
             var m = new Matrix();
             var displayRect = new Rectangle(0, 0, panelImage.Width - (Insets.Width * 2), panelImage.Height - (Insets.Height * 2));
             float scale = Math.Min((float)displayRect.Height / InputImage.Height, (float)displayRect.Width / InputImage.Width);
@@ -172,30 +165,30 @@ namespace LayoutManager.CommonUI.Dialogs {
             return m;
         }
 
-        private Region transformed(Rectangle rect) {
+        private Region Transformed(Rectangle rect) {
             var r = new Region(rect);
 
-            r.Transform(getTransformMatrix());
+            r.Transform(GetTransformMatrix());
             return r;
         }
 
-        private void drawClipFrame(Graphics g) {
+        private void DrawClipFrame(Graphics g) {
             var cornerSize = new Size(10, 10);
 
             g.DrawRectangle(Pens.Black, _clipFrame);
 
             foreach (var corner in Enumerable.Range(0, 4))
-                g.FillRectangle(Brushes.Black, getClipFrameCornerRect(corner, cornerSize));
+                g.FillRectangle(Brushes.Black, GetClipFrameCornerRect(corner, cornerSize));
         }
 
-        private Rectangle getClipFrameCornerRect(int corner, Size cornerSize) {
+        private Rectangle GetClipFrameCornerRect(int corner, Size cornerSize) {
             return new Rectangle(new Point(
                 (corner & 1) == 0 ? _clipFrame.X : _clipFrame.X + _clipFrame.Width - cornerSize.Width,
                 (corner & 2) == 0 ? _clipFrame.Y : _clipFrame.Y + _clipFrame.Height - cornerSize.Height),
                 cornerSize);
         }
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             var result = new Bitmap(RequiredSize.Width, RequiredSize.Height);
 
             using (Graphics g = Graphics.FromImage(result)) {

@@ -47,7 +47,7 @@
             this.radioButtonSetAddress.TabStop = true;
             this.radioButtonSetAddress.Text = "Set address to: ";
             this.radioButtonSetAddress.UseVisualStyleBackColor = true;
-            this.radioButtonSetAddress.CheckedChanged += new System.EventHandler(this.radioButtonSetAddress_CheckedChanged);
+            this.radioButtonSetAddress.CheckedChanged += new System.EventHandler(this.RadioButtonSetAddress_CheckedChanged);
             // 
             // radioButtonUnknownAddress
             // 
@@ -59,7 +59,7 @@
             this.radioButtonUnknownAddress.TabStop = true;
             this.radioButtonUnknownAddress.Text = "The address of this locomotive is unknown";
             this.radioButtonUnknownAddress.UseVisualStyleBackColor = true;
-            this.radioButtonUnknownAddress.CheckedChanged += new System.EventHandler(this.radioButtonUnknownAddress_CheckedChanged);
+            this.radioButtonUnknownAddress.CheckedChanged += new System.EventHandler(this.RadioButtonUnknownAddress_CheckedChanged);
             // 
             // textBoxAddress
             // 
@@ -76,7 +76,7 @@
             this.buttonAllocateAddress.TabIndex = 2;
             this.buttonAllocateAddress.Text = "&Allocate address";
             this.buttonAllocateAddress.UseVisualStyleBackColor = true;
-            this.buttonAllocateAddress.Click += new System.EventHandler(this.buttonAllocateAddress_Click);
+            this.buttonAllocateAddress.Click += new System.EventHandler(this.ButtonAllocateAddress_Click);
             // 
             // buttonCancel
             // 
@@ -96,7 +96,7 @@
             this.buttonSaveOnly.TabIndex = 8;
             this.buttonSaveOnly.Text = "&Save without programming locomotive";
             this.buttonSaveOnly.UseVisualStyleBackColor = true;
-            this.buttonSaveOnly.Click += new System.EventHandler(this.buttonSaveOnly_Click);
+            this.buttonSaveOnly.Click += new System.EventHandler(this.ButtonSaveOnly_Click);
             // 
             // buttonSaveAndProgram
             // 
@@ -106,7 +106,7 @@
             this.buttonSaveAndProgram.TabIndex = 7;
             this.buttonSaveAndProgram.Text = "Save and &program locomotive";
             this.buttonSaveAndProgram.UseVisualStyleBackColor = true;
-            this.buttonSaveAndProgram.Click += new System.EventHandler(this.buttonSaveAndProgram_Click);
+            this.buttonSaveAndProgram.Click += new System.EventHandler(this.ButtonSaveAndProgram_Click);
             // 
             // label1
             // 

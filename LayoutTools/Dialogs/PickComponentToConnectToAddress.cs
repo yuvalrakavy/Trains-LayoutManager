@@ -12,7 +12,7 @@ using LayoutManager.Components;
 namespace LayoutManager.Tools.Dialogs {
     public partial class PickComponentToConnectToAddress : Form, IControlConnectionPointDestinationReceiverDialog {
         private readonly CommandStationInputEvent csEvent;
-        private ControlConnectionPointDestination selectedDestination = null;
+        private ControlConnectionPointDestination? selectedDestination = null;
 
         public PickComponentToConnectToAddress(CommandStationInputEvent csEvent) {
             InitializeComponent();
@@ -25,21 +25,21 @@ namespace LayoutManager.Tools.Dialogs {
             EventManager.AddObjectSubscriptions(this);
         }
 
-        public ControlConnectionPointDestination ConnectionDestination => selectedDestination;
+        public ControlConnectionPointDestination? ConnectionDestination => selectedDestination;
 
         [LayoutEvent("query-learn-layout-pick-component-dialog")]
-        private void queryLearnLayoutPickComponentDialog(LayoutEvent e) {
-            List<IControlConnectionPointDestinationReceiverDialog> dialogs = (List<IControlConnectionPointDestinationReceiverDialog>)e.Info;
+        private void QueryLearnLayoutPickComponentDialog(LayoutEvent e) {
+            var dialogs = Ensure.NotNull<List<IControlConnectionPointDestinationReceiverDialog>>(e.Info);
 
             dialogs.Add(this);
         }
 
-        private void buttonCancel_Click(object sender, EventArgs e) {
+        private void ButtonCancel_Click(object? sender, EventArgs e) {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void PickComponentToConnectToAddress_FormClosed(object sender, FormClosedEventArgs e) {
+        private void PickComponentToConnectToAddress_FormClosed(object? sender, FormClosedEventArgs e) {
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 

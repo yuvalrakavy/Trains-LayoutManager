@@ -206,15 +206,15 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonClose_Click(object sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, System.EventArgs e) {
             this.Close();
         }
 
-        private void buttonEdit_Click(object sender, System.EventArgs e) {
+        private void buttonEdit_Click(object? sender, System.EventArgs e) {
             contextMenuEdit.Show(this, new Point(buttonEdit.Left, buttonEdit.Bottom));
         }
 
-        private void buttonAdd_Click(object sender, System.EventArgs e) {
+        private void buttonAdd_Click(object? sender, System.EventArgs e) {
             XmlElement fontElement = LayoutInfo.CreateProviderElement(LayoutModel.Instance.XmlInfo, "Font", "Fonts");
             LayoutFontInfo fontProvider = new LayoutFontInfo(fontElement);
 
@@ -225,7 +225,7 @@ namespace LayoutManager.Dialogs {
             item.BeginEdit();
         }
 
-        private void listViewFonts_AfterLabelEdit(object sender, System.Windows.Forms.LabelEditEventArgs e) {
+        private void listViewFonts_AfterLabelEdit(object? sender, System.Windows.Forms.LabelEditEventArgs e) {
             FontItem item = (FontItem)listViewFonts.Items[e.Item];
 
             LayoutFontInfo fontProvider = item.FontProvider;
@@ -235,7 +235,7 @@ namespace LayoutManager.Dialogs {
             item.Update();
         }
 
-        private void buttonDelete_Click(object sender, System.EventArgs e) {
+        private void buttonDelete_Click(object? sender, System.EventArgs e) {
             if (listViewFonts.SelectedItems.Count == 1) {
                 if (MessageBox.Show("Do you really want to delete a style font. " +
                     "This will cause problems if this font is still being used!", "Warning",
@@ -249,7 +249,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void menuItemEditSettings_Click(object sender, System.EventArgs e) {
+        private void menuItemEditSettings_Click(object? sender, System.EventArgs e) {
             if (listViewFonts.SelectedItems.Count == 1) {
                 FontItem item = (FontItem)listViewFonts.SelectedItems[0];
                 FontDialog fontDialog = new FontDialog {
@@ -266,7 +266,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void menuItemFontID_Click(object sender, System.EventArgs e) {
+        private void menuItemFontID_Click(object? sender, System.EventArgs e) {
             if (listViewFonts.SelectedItems.Count == 1) {
                 FontItem item = (FontItem)listViewFonts.SelectedItems[0];
                 CommonUI.Dialogs.InputBox fontIDbox = new CommonUI.Dialogs.InputBox("Font Ref", "Font Ref:") {
@@ -281,7 +281,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void menuItemEditTitle_Click(object sender, System.EventArgs e) {
+        private void menuItemEditTitle_Click(object? sender, System.EventArgs e) {
             if (listViewFonts.SelectedItems.Count == 1) {
                 FontItem item = (FontItem)listViewFonts.SelectedItems[0];
                 CommonUI.Dialogs.InputBox titleBox = new CommonUI.Dialogs.InputBox("Title", "Title:") {

@@ -153,7 +153,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonOk_Click(object sender, System.EventArgs e) {
+        private void buttonOk_Click(object? sender, System.EventArgs e) {
             if (textBoxFunctionName.Text.Trim()?.Length == 0) {
                 MessageBox.Show(this, "Missing value", "You have to specifiy function name", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxFunctionName.Focus();

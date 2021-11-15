@@ -7,43 +7,20 @@ using System.Xml;
 using System.Diagnostics;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
+using LayoutManager.CommonUI;
 
-#pragma warning disable IDE0051, IDE0060, IDE0069, IDE0067
-#nullable enable
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for LocomotiveController.
     /// </summary>
     [LayoutEventDef("train-controller-activated", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
     [LayoutEventDef("train-controller-deactivated", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
-    public class LocomotiveController : Form, IObjectHasXml {
-        private Panel panelInfo;
-        private ImageList imageListMotionButtons;
-        private Button buttonBackward;
-        private Button buttonStop;
-        private Button buttonForward;
-        private Button buttonFunction;
-        private Button buttonLight;
-        private Button buttonLocate;
-        private System.Windows.Forms.ToolTip toolTips;
-        private ContextMenu contextMenuLights;
-        private MenuItem menuItemLightsOn;
-        private MenuItem menuItemLightsOff;
-        private Button buttonProperties;
-        private Label labelDriverInstructions;
-        private Panel panelSpeedLimit;
-        private Label labelSpeedLimit;
-        private Button buttonBackwardMenu;
-        private Button buttonStopMenu;
-        private Button buttonForwardMenu;
-        private IContainer components;
+    public partial class LocomotiveController : Form, IObjectHasXml {
 
         private readonly TrainStateInfo train;
 
         public XmlElement Element => train.Element;
         public XmlElement? OptionalElement => Element;
-
-#nullable disable
 
         public LocomotiveController(TrainStateInfo train) {
             //
@@ -57,7 +34,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             buttonLight.Enabled = train.HasLights;
 
-            setTitleBar();
+            SetTitleBar();
 
             if (train.CurrentSpeedLimit != 0)
                 labelSpeedLimit.Text = train.CurrentSpeedLimit.ToString();
@@ -70,15 +47,13 @@ namespace LayoutManager.Tools.Dialogs {
             EventManager.Event(new LayoutEvent<TrainStateInfo>("train-controller-activated", train));
         }
 
-#nullable restore
-
         protected override void OnFormClosing(FormClosingEventArgs e) {
             base.OnFormClosing(e);
 
             EventManager.Event(new LayoutEvent<TrainStateInfo>("train-controller-deactivated", train));
         }
 
-        private void setTitleBar() {
+        private void SetTitleBar() {
             if (train.Locomotives.Count == 1) {
                 LocomotiveInfo loco = train.Locomotives[0].Locomotive;
 
@@ -94,18 +69,18 @@ namespace LayoutManager.Tools.Dialogs {
         #region Layout Event Handlers
 
         [LayoutEvent("activate-locomotive-controller", IfSender = "*[@ID='`string(@ID)`']")]
-        private void acivateLocomotiveController(LayoutEvent e) {
+        private void AcivateLocomotiveController(LayoutEvent e) {
             this.Activate();
             e.Info = this;
         }
 
         [LayoutEvent("exit-operation-mode", Order = 10)]
-        private void trainRemoveFromTrack(LayoutEvent e) {
+        private void TrainRemoveFromTrack(LayoutEvent e) {
             this.Close();
         }
 
         [LayoutEvent("train-power-changed", IfSender = "*[@ID='`string(@ID)`']", Order = 10)]
-        private void onTrainPowerChanged(LayoutEvent e) {
+        private void OnTrainPowerChanged(LayoutEvent e) {
             var _ = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
             var power = Ensure.NotNull<ILayoutPower>(e.Info, "power");
 
@@ -114,13 +89,13 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [LayoutEvent("train-speed-changed", IfSender = "*[@ID='`string(@ID)`']")]
-        private void trainSpeedChanged(LayoutEvent e) {
+        private void TrainSpeedChanged(LayoutEvent e) {
             panelInfo.Invalidate();
         }
 
         [LayoutEvent("train-speed-limit-changed", IfSender = "*[@ID='`string(@ID)`']")]
-        private void trainSpeedLimitChanged(LayoutEvent e) {
-            int speedLimit = (int)e.Info;
+        private void TrainSpeedLimitChanged(LayoutEvent e) {
+            int speedLimit = Ensure.ValueNotNull<int>(e.Info);
 
             if (speedLimit == 0)
                 labelSpeedLimit.Text = "";
@@ -131,13 +106,13 @@ namespace LayoutManager.Tools.Dialogs {
         [LayoutEvent("train-enter-block", IfSender = "*[@ID='`string(@ID)`']")]
         [LayoutEvent("train-created", IfSender = "*[@ID='`string(@ID)`']")]
         [LayoutEvent("train-extended", IfSender = "*[@ID='`string(@ID)`']")]
-        private void locomotiveEnterBlock(LayoutEvent e) {
+        private void LocomotiveEnterBlock(LayoutEvent e) {
             panelInfo.Invalidate();
         }
 
         [LayoutEvent("train-lights-changed", IfSender = "*[@ID='`string(@ID)`']")]
-        private void locomotiveLightsChanged(LayoutEvent e) {
-            bool lights = (bool)e.Info;
+        private void LocomotiveLightsChanged(LayoutEvent e) {
+            bool lights = Ensure.ValueNotNull<bool>(e.Info);
 
             if (lights)
                 buttonLight.FlatStyle = FlatStyle.Flat;
@@ -146,13 +121,13 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [LayoutEvent("train-configuration-changed", IfSender = "*[@ID='`string(@ID)`']")]
-        private void trainNameChanged(LayoutEvent e) {
-            setTitleBar();
+        private void TrainNameChanged(LayoutEvent e) {
+            SetTitleBar();
         }
 
         [LayoutEvent("driver-train-go", IfSender = "*[@ID='`string(@ID)`']")]
-        private void driverTrainGo(LayoutEvent e) {
-            LocomotiveOrientation direction = (LocomotiveOrientation)e.Info;
+        private void DriverTrainGo(LayoutEvent e) {
+            var direction = Ensure.ValueNotNull<LocomotiveOrientation>(e.Info);
 
             labelDriverInstructions.BackColor = Color.Green;
             labelDriverInstructions.ForeColor = Color.Yellow;
@@ -161,7 +136,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [LayoutEvent("driver-prepare-stop", IfSender = "*[@ID='`string(@ID)`']")]
-        private void driverTrainPrepareStop(LayoutEvent e) {
+        private void DriverTrainPrepareStop(LayoutEvent e) {
             labelDriverInstructions.BackColor = Color.Yellow;
             labelDriverInstructions.ForeColor = Color.Black;
             labelDriverInstructions.Font = new Font(labelDriverInstructions.Font, FontStyle.Regular);
@@ -169,19 +144,19 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [LayoutEvent("driver-stop", IfSender = "*[@ID='`string(@ID)`']")]
-        private void driverTrainStop(LayoutEvent e) {
+        private void DriverTrainStop(LayoutEvent e) {
             labelDriverInstructions.BackColor = Color.Red;
             labelDriverInstructions.ForeColor = Color.Yellow;
             labelDriverInstructions.Font = new Font(labelDriverInstructions.Font, FontStyle.Bold);
             labelDriverInstructions.Text = "STOP!";
         }
 
-        private void addLocomotiveFunctions(SortedList<string, List<LocomotiveInfo>> functions, LocomotiveInfo loco) {
+        private static void AddLocomotiveFunctions(SortedList<string, List<LocomotiveInfo>> functions, LocomotiveInfo loco) {
             if (loco.Functions != null) {
                 foreach (XmlElement functionElement in loco.Functions) {
-                    LocomotiveFunctionInfo function = new LocomotiveFunctionInfo(functionElement);
+                    var function = new LocomotiveFunctionInfo(functionElement);
 
-                    if (!functions.TryGetValue(function.Name, out List<LocomotiveInfo> locos)) {
+                    if (!functions.TryGetValue(function.Name, out List<LocomotiveInfo>? locos)) {
                         locos = new List<LocomotiveInfo>();
                         functions.Add(function.Name, locos);
                     }
@@ -191,13 +166,13 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        private void addLocomotiveFunctionPresets(SortedList<string, List<LocomotiveInfo>> functions, LocomotiveInfo loco) {
+        private void AddLocomotiveFunctionPresets(SortedList<string, List<LocomotiveInfo>> functions, LocomotiveInfo loco) {
             if (loco.Functions != null) {
                 foreach (XmlElement functionElement in loco.Functions) {
-                    LocomotiveFunctionInfo function = new LocomotiveFunctionInfo(functionElement);
+                    LocomotiveFunctionInfo function = new(functionElement);
 
                     if (function.Type == LocomotiveFunctionType.OnOff) {
-                        if (!functions.TryGetValue(function.Name, out List<LocomotiveInfo> locos)) {
+                        if (!functions.TryGetValue(function.Name, out List<LocomotiveInfo>? locos)) {
                             locos = new List<LocomotiveInfo>();
                             functions.Add(function.Name, locos);
                         }
@@ -209,18 +184,18 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [LayoutEvent("add-locomotive-controller-function-menu-entries", IfSender = "*[@ID='`string(@ID)`']")]
-        private void addLocomotiveControllerFunctionMenuEntries(LayoutEvent e) {
+        private void AddLocomotiveControllerFunctionMenuEntries(LayoutEvent e) {
             var functions = new SortedList<string, List<LocomotiveInfo>>();
-            Menu m = (Menu)e.Info;
+            var m = new MenuOrMenuItem(Ensure.NotNull<object>(e.Info));
 
             foreach (TrainLocomotiveInfo trainLoco in train.Locomotives)
-                addLocomotiveFunctions(functions, trainLoco.Locomotive);
+                AddLocomotiveFunctions(functions, trainLoco.Locomotive);
 
             // Add all available functions to the menu. If the same function is available on more than one
             // locomotive, it will be presented as a submenu with each locomotive, and a All option.
             if (functions.Count > 0) {
-                if (m.MenuItems.Count > 0)
-                    m.MenuItems.Add("-");
+                if (new MenuOrMenuItem(m).Items.Count > 0)
+                    m.Items.Add(new ToolStripSeparator());
 
                 foreach (var d in functions) {
                     var locos = d.Value;
@@ -231,24 +206,26 @@ namespace LayoutManager.Tools.Dialogs {
                     if (locos.Count == 1) {
                         LocomotiveInfo loco = (LocomotiveInfo)locos[0];
 
-                        m.MenuItems.Add(new LocomotiveFunctionMenuItem(train, loco, functionName, true, train.Locomotives.Count > 1));
+                        m.Items.Add(new LocomotiveFunctionMenuItem(train, loco, functionName, true, train.Locomotives.Count > 1));
                     }
                     else {
-                        MenuItem functionItem = new MenuItem(GetFunctionDescription((LocomotiveInfo)locos[0], functionName));
-                        LocomotiveFunctionInfo function = null;
+                        var functionItem = new LayoutMenuItem(GetFunctionDescription((LocomotiveInfo)locos[0], functionName));
+                        LocomotiveFunctionInfo? function = null;
 
                         foreach (LocomotiveInfo loco in locos) {
-                            functionItem.MenuItems.Add(new LocomotiveFunctionMenuItem(train, loco, functionName, false, true));
+                            functionItem.DropDownItems.Add(new LocomotiveFunctionMenuItem(train, loco, functionName, false, true));
                             if (function == null)
                                 function = loco.GetFunctionByName(functionName);
                         }
 
-                        if (function.Type != LocomotiveFunctionType.OnOff) {
-                            functionItem.MenuItems.Add("-");
-                            functionItem.MenuItems.Add(new LocomotiveFunctionMenuItem(train, function));
+                        if (function != null) {
+                            if (function.Type != LocomotiveFunctionType.OnOff) {
+                                functionItem.DropDownItems.Add("-");
+                                functionItem.DropDownItems.Add(new LocomotiveFunctionMenuItem(train, function));
+                            }
                         }
 
-                        m.MenuItems.Add(functionItem);
+                        m.Items.Add(functionItem);
                     }
                 }
 
@@ -256,84 +233,87 @@ namespace LayoutManager.Tools.Dialogs {
 
                 // Add presets
                 foreach (TrainLocomotiveInfo trainLoco in train.Locomotives)
-                    addLocomotiveFunctionPresets(functions, trainLoco.Locomotive);
+                    AddLocomotiveFunctionPresets(functions, trainLoco.Locomotive);
 
                 if (functions.Count > 0) {
-                    m.MenuItems.Add("-");
+                    m.Items.Add(new ToolStripSeparator());
 
-                    MenuItem presetItem = new MenuItem("Set function state");
+                    var presetItem = new LayoutMenuItem("Set function state");
 
                     foreach (var d in functions) {
                         var locos = d.Value;
                         var functionName = d.Key;
 
                         if (locos.Count == 1)
-                            presetItem.MenuItems.Add(new LocomotiveFunctionPresetMenuItem(train, locos[0], functionName, true, train.Locomotives.Count > 1));
+                            presetItem.DropDownItems.Add(new LocomotiveFunctionPresetMenuItem(train, locos[0], functionName, true, train.Locomotives.Count > 1));
                         else {
-                            MenuItem functionItem = new MenuItem(GetFunctionDescription(locos[0], functionName));
+                            var functionItem = new LayoutMenuItem(GetFunctionDescription(locos[0], functionName));
 
                             foreach (var loco in locos)
-                                functionItem.MenuItems.Add(new LocomotiveFunctionPresetMenuItem(train, loco, functionName, false, true));
+                                functionItem.DropDownItems.Add(new LocomotiveFunctionPresetMenuItem(train, loco, functionName, false, true));
 
-                            presetItem.MenuItems.Add(functionItem);
+                            presetItem.DropDownItems.Add(functionItem);
                         }
                     }
 
-                    m.MenuItems.Add(presetItem);
+                    m.Items.Add(presetItem);
                 }
             }
 
             if (EventManager.Event(new LayoutEvent("get-command-station-set-function-number-support", train).SetCommandStation(train)) is CommandStationSetFunctionNumberSupportInfo functionNumberSupport &&
                 functionNumberSupport.SetFunctionNumberSupport != SetFunctionNumberSupport.None) {
-                if (m.MenuItems.Count == 0)
-                    addTrainFunctionNumberItems(m, functionNumberSupport);
+                if (m.Items.Count == 0)
+                    AddTrainFunctionNumberItems(m, functionNumberSupport);
                 else {
-                    m.MenuItems.Add("-");
+                    m.Items.Add(new ToolStripSeparator());
 
-                    var functionNumberMenu = new MenuItem("Other functions...");
+                    var functionNumberMenuItem = new LayoutMenuItem("Other functions...");
 
-                    addTrainFunctionNumberItems(functionNumberMenu, functionNumberSupport);
-                    m.MenuItems.Add(functionNumberMenu);
+                    AddTrainFunctionNumberItems(new MenuOrMenuItem(functionNumberMenuItem), functionNumberSupport);
+                    m.Items.Add(functionNumberMenuItem);
                 }
             }
         }
 
-        private void addTrainFunctionNumberItems(Menu m, CommandStationSetFunctionNumberSupportInfo functionNumberSupportInfo) {
+        private void AddTrainFunctionNumberItems(MenuOrMenuItem m, CommandStationSetFunctionNumberSupportInfo functionNumberSupportInfo) {
             if (train.Locomotives.Count == 1)
-                addLocomotiveFunctionNumberItems(m, train.Locomotives[0].Locomotive, functionNumberSupportInfo);
+                AddLocomotiveFunctionNumberItems(m, train.Locomotives[0].Locomotive, functionNumberSupportInfo);
             else
                 foreach (var trainLoco in train.Locomotives) {
-                    MenuItem locoFuncionNumbersMenu = new MenuItem(trainLoco.Name);
+                    var locoFuncionNumbersMenuItem = new LayoutMenuItem(trainLoco.Name);
 
-                    addLocomotiveFunctionNumberItems(locoFuncionNumbersMenu, trainLoco.Locomotive, functionNumberSupportInfo);
-                    m.MenuItems.Add(locoFuncionNumbersMenu);
+                    AddLocomotiveFunctionNumberItems(new MenuOrMenuItem(locoFuncionNumbersMenuItem), trainLoco.Locomotive, functionNumberSupportInfo);
+                    m.Items.Add(locoFuncionNumbersMenuItem);
                 }
         }
 
-        private void addLocomotiveFunctionNumberItems(Menu m, LocomotiveInfo loco, CommandStationSetFunctionNumberSupportInfo functionNumberSupportInfo) {
+        private void AddLocomotiveFunctionNumberItems(MenuOrMenuItem m, LocomotiveInfo loco, CommandStationSetFunctionNumberSupportInfo functionNumberSupportInfo) {
             for (var functionNumber = functionNumberSupportInfo.MinFunctionNumber; functionNumber <= functionNumberSupportInfo.MaxFunctionNumber; functionNumber++)
-                m.MenuItems.Add(new LocomotiveFunctionNumberMenuItem(train, loco, functionNumber, functionNumberSupportInfo.SetFunctionNumberSupport == SetFunctionNumberSupport.FunctionNumberAndBooleanState));
+                m.Items.Add(new LocomotiveFunctionNumberMenuItem(train, loco, functionNumber, functionNumberSupportInfo.SetFunctionNumberSupport == SetFunctionNumberSupport.FunctionNumberAndBooleanState));
         }
 
         protected static string GetFunctionDescription(LocomotiveInfo loco, string functionName) {
-            LocomotiveFunctionInfo function = loco.GetFunctionByName(functionName);
+            var function = loco.GetFunctionByName(functionName);
 
-            return !string.IsNullOrEmpty(function.Description) ? function.Description : function.Name;
+            
+            return function != null ? 
+                (!string.IsNullOrEmpty(function.Description) ? function.Description : function.Name) :
+                $"Function {functionName} not defined";
         }
 
         #region Menu Items
 
-        private class LocomotiveFunctionMenuItem : MenuItem {
+        private class LocomotiveFunctionMenuItem : LayoutMenuItem {
             private readonly LocomotiveFunctionInfo function;
             private readonly TrainStateInfo trainState;
-            private readonly LocomotiveInfo loco;
-            private Guid id;
+            private readonly LocomotiveInfo? loco;
+            private readonly Guid id;
 
             public LocomotiveFunctionMenuItem(TrainStateInfo trainState, LocomotiveInfo loco, string functionName, bool showFunctionName, bool addLocoName) {
                 this.trainState = trainState;
                 this.loco = loco;
                 this.id = loco.Id;
-                this.function = loco.GetFunctionByName(functionName);
+                this.function = Ensure.NotNull<LocomotiveFunctionInfo>(loco.GetFunctionByName(functionName));
 
                 if (showFunctionName)
                     this.Text = LocomotiveController.GetFunctionDescription(loco, functionName) + (addLocoName ? (" (" + loco.DisplayName + ")") : "");
@@ -359,7 +339,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             protected override void OnClick(EventArgs e) {
                 if (function.Type == LocomotiveFunctionType.OnOff) {
-                    bool state = trainState.GetFunctionState(function.Name, loco.Id, false);
+                    bool state = loco != null && trainState.GetFunctionState(function.Name, loco.Id, false);
 
                     state = !state;
                     trainState.SetLocomotiveFunctionState(function.Name, id, state);
@@ -369,22 +349,22 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        private class LocomotiveFunctionNumberMenuItem : MenuItem {
+        private class LocomotiveFunctionNumberMenuItem : LayoutMenuItem {
             public LocomotiveFunctionNumberMenuItem(TrainStateInfo train, LocomotiveInfo loco, int functionNumber, bool canSetBooleanState) {
                 var function = loco.GetFunctionByNumber(functionNumber);
 
                 this.Text = $"Function {functionNumber}{(function != null ? $" ({function})" : "")}";
 
                 if (canSetBooleanState) {
-                    this.MenuItems.Add(new MenuItem("On", (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber).SetCommandStation(train).SetOption("FunctionState", true))));
-                    this.MenuItems.Add(new MenuItem("Off", (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber).SetCommandStation(train).SetOption("FunctionState", false))));
+                    this.DropDownItems.Add(new LayoutMenuItem("On", null, (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber).SetCommandStation(train).SetOption("FunctionState", true))));
+                    this.DropDownItems.Add(new LayoutMenuItem("Off", null, (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber).SetCommandStation(train).SetOption("FunctionState", false))));
                 }
                 else
                     this.Click += (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber).SetCommandStation(train));
             }
         }
 
-        private class LocomotiveFunctionPresetMenuItem : MenuItem {
+        private class LocomotiveFunctionPresetMenuItem : LayoutMenuItem {
             private readonly LocomotiveFunctionInfo function;
             private readonly TrainStateInfo trainState;
             private readonly LocomotiveInfo loco;
@@ -392,22 +372,22 @@ namespace LayoutManager.Tools.Dialogs {
             public LocomotiveFunctionPresetMenuItem(TrainStateInfo trainState, LocomotiveInfo loco, string functionName, bool showFunctionName, bool addLocoName) {
                 this.trainState = trainState;
                 this.loco = loco;
-                this.function = loco.GetFunctionByName(functionName);
+                this.function = Ensure.NotNull<LocomotiveFunctionInfo>(loco.GetFunctionByName(functionName));
 
                 if (showFunctionName)
                     this.Text = LocomotiveController.GetFunctionDescription(loco, functionName) + (addLocoName ? (" (" + loco.DisplayName + ")") : "");
                 else
                     this.Text = loco.DisplayName;
 
-                MenuItems.Add("On", new EventHandler(this.MenuItemOn_Click));
-                MenuItems.Add("Off", new EventHandler(this.MenuItemOff_Click));
+                DropDownItems.Add("On", null, new EventHandler(this.MenuItemOn_Click));
+                DropDownItems.Add("Off", null, new EventHandler(this.MenuItemOff_Click));
             }
 
-            protected void MenuItemOn_Click(object sender, EventArgs e) {
+            protected void MenuItemOn_Click(object? sender, EventArgs e) {
                 trainState.SetLocomotiveFunctionStateValue(function.Name, loco.Id, true);
             }
 
-            protected void MenuItemOff_Click(object sender, EventArgs e) {
+            protected void MenuItemOff_Click(object? sender, EventArgs e) {
                 trainState.SetLocomotiveFunctionStateValue(function.Name, loco.Id, false);
             }
         }
@@ -428,254 +408,14 @@ namespace LayoutManager.Tools.Dialogs {
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LocomotiveController));
-            this.panelInfo = new System.Windows.Forms.Panel();
-            this.imageListMotionButtons = new System.Windows.Forms.ImageList(this.components);
-            this.buttonBackward = new System.Windows.Forms.Button();
-            this.buttonStop = new System.Windows.Forms.Button();
-            this.buttonForward = new System.Windows.Forms.Button();
-            this.buttonFunction = new System.Windows.Forms.Button();
-            this.buttonLight = new System.Windows.Forms.Button();
-            this.contextMenuLights = new System.Windows.Forms.ContextMenu();
-            this.menuItemLightsOn = new System.Windows.Forms.MenuItem();
-            this.menuItemLightsOff = new System.Windows.Forms.MenuItem();
-            this.buttonLocate = new System.Windows.Forms.Button();
-            this.toolTips = new System.Windows.Forms.ToolTip(this.components);
-            this.buttonProperties = new System.Windows.Forms.Button();
-            this.labelDriverInstructions = new System.Windows.Forms.Label();
-            this.panelSpeedLimit = new System.Windows.Forms.Panel();
-            this.labelSpeedLimit = new System.Windows.Forms.Label();
-            this.buttonBackwardMenu = new System.Windows.Forms.Button();
-            this.buttonStopMenu = new System.Windows.Forms.Button();
-            this.buttonForwardMenu = new System.Windows.Forms.Button();
-            this.panelSpeedLimit.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // panelInfo
-            // 
-            this.panelInfo.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
-            | System.Windows.Forms.AnchorStyles.Right);
-            this.panelInfo.Location = new System.Drawing.Point(3, 1);
-            this.panelInfo.Name = "panelInfo";
-            this.panelInfo.Size = new System.Drawing.Size(188, 56);
-            this.panelInfo.TabIndex = 0;
-            this.panelInfo.Paint += this.panelInfo_Paint;
-            // 
-            // imageListMotionButtons
-            // 
-            this.imageListMotionButtons.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListMotionButtons.ImageStream");
-            this.imageListMotionButtons.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListMotionButtons.Images.SetKeyName(0, "");
-            this.imageListMotionButtons.Images.SetKeyName(1, "");
-            this.imageListMotionButtons.Images.SetKeyName(2, "");
-            this.imageListMotionButtons.Images.SetKeyName(3, "");
-            this.imageListMotionButtons.Images.SetKeyName(4, "");
-            this.imageListMotionButtons.Images.SetKeyName(5, "");
-            // 
-            // buttonBackward
-            // 
-            this.buttonBackward.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonBackward.ImageIndex = 0;
-            this.buttonBackward.ImageList = this.imageListMotionButtons;
-            this.buttonBackward.Location = new System.Drawing.Point(5, 64);
-            this.buttonBackward.Name = "buttonBackward";
-            this.buttonBackward.Size = new System.Drawing.Size(32, 23);
-            this.buttonBackward.TabIndex = 1;
-            this.toolTips.SetToolTip(this.buttonBackward, "Backward");
-            this.buttonBackward.Click += this.buttonBackward_Click;
-            // 
-            // buttonStop
-            // 
-            this.buttonStop.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonStop.ImageIndex = 1;
-            this.buttonStop.ImageList = this.imageListMotionButtons;
-            this.buttonStop.Location = new System.Drawing.Point(40, 64);
-            this.buttonStop.Name = "buttonStop";
-            this.buttonStop.Size = new System.Drawing.Size(32, 23);
-            this.buttonStop.TabIndex = 2;
-            this.toolTips.SetToolTip(this.buttonStop, "Stop");
-            this.buttonStop.Click += this.buttonStop_Click;
-            // 
-            // buttonForward
-            // 
-            this.buttonForward.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonForward.ImageIndex = 2;
-            this.buttonForward.ImageList = this.imageListMotionButtons;
-            this.buttonForward.Location = new System.Drawing.Point(76, 64);
-            this.buttonForward.Name = "buttonForward";
-            this.buttonForward.Size = new System.Drawing.Size(32, 23);
-            this.buttonForward.TabIndex = 3;
-            this.toolTips.SetToolTip(this.buttonForward, "Forward");
-            this.buttonForward.Click += this.buttonForward_Click;
-            // 
-            // buttonFunction
-            // 
-            this.buttonFunction.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonFunction.Location = new System.Drawing.Point(165, 64);
-            this.buttonFunction.Name = "buttonFunction";
-            this.buttonFunction.Size = new System.Drawing.Size(56, 23);
-            this.buttonFunction.TabIndex = 5;
-            this.buttonFunction.Text = "Function";
-            this.buttonFunction.Click += this.buttonFunction_Click;
-            // 
-            // buttonLight
-            // 
-            this.buttonLight.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonLight.ContextMenu = this.contextMenuLights;
-            this.buttonLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonLight.ImageIndex = 3;
-            this.buttonLight.ImageList = this.imageListMotionButtons;
-            this.buttonLight.Location = new System.Drawing.Point(133, 64);
-            this.buttonLight.Name = "buttonLight";
-            this.buttonLight.Size = new System.Drawing.Size(26, 23);
-            this.buttonLight.TabIndex = 4;
-            this.toolTips.SetToolTip(this.buttonLight, "Turn lights on/off");
-            this.buttonLight.Click += this.buttonLight_Click;
-            // 
-            // contextMenuLights
-            // 
-            this.contextMenuLights.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuItemLightsOn,
-            this.menuItemLightsOff});
-            // 
-            // menuItemLightsOn
-            // 
-            this.menuItemLightsOn.Index = 0;
-            this.menuItemLightsOn.Text = "Lights are ON";
-            this.menuItemLightsOn.Click += this.menuLightsOn_Click;
-            // 
-            // menuItemLightsOff
-            // 
-            this.menuItemLightsOff.Index = 1;
-            this.menuItemLightsOff.Text = "Lights are OFF";
-            this.menuItemLightsOff.Click += this.menuItemLightsOff_Click;
-            // 
-            // buttonLocate
-            // 
-            this.buttonLocate.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonLocate.ImageIndex = 4;
-            this.buttonLocate.ImageList = this.imageListMotionButtons;
-            this.buttonLocate.Location = new System.Drawing.Point(193, 27);
-            this.buttonLocate.Name = "buttonLocate";
-            this.buttonLocate.Size = new System.Drawing.Size(26, 23);
-            this.buttonLocate.TabIndex = 6;
-            this.toolTips.SetToolTip(this.buttonLocate, "Locate locomotive");
-            this.buttonLocate.Click += this.buttonLocate_Click;
-            // 
-            // buttonProperties
-            // 
-            this.buttonProperties.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonProperties.ImageIndex = 5;
-            this.buttonProperties.ImageList = this.imageListMotionButtons;
-            this.buttonProperties.Location = new System.Drawing.Point(193, 1);
-            this.buttonProperties.Name = "buttonProperties";
-            this.buttonProperties.Size = new System.Drawing.Size(26, 23);
-            this.buttonProperties.TabIndex = 7;
-            this.toolTips.SetToolTip(this.buttonProperties, "Edit train configuration");
-            this.buttonProperties.Click += this.buttonProperties_Click;
-            // 
-            // labelDriverInstructions
-            // 
-            this.labelDriverInstructions.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Left
-            | System.Windows.Forms.AnchorStyles.Right);
-            this.labelDriverInstructions.BackColor = System.Drawing.SystemColors.Control;
-            this.labelDriverInstructions.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.labelDriverInstructions.Location = new System.Drawing.Point(5, 104);
-            this.labelDriverInstructions.Name = "labelDriverInstructions";
-            this.labelDriverInstructions.Size = new System.Drawing.Size(173, 18);
-            this.labelDriverInstructions.TabIndex = 8;
-            this.labelDriverInstructions.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // panelSpeedLimit
-            // 
-            this.panelSpeedLimit.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
-            this.panelSpeedLimit.Controls.Add(this.labelSpeedLimit);
-            this.panelSpeedLimit.Location = new System.Drawing.Point(185, 94);
-            this.panelSpeedLimit.Name = "panelSpeedLimit";
-            this.panelSpeedLimit.Size = new System.Drawing.Size(34, 34);
-            this.panelSpeedLimit.TabIndex = 9;
-            this.panelSpeedLimit.Paint += this.panelSpeedLimit_Paint;
-            // 
-            // labelSpeedLimit
-            // 
-            this.labelSpeedLimit.BackColor = System.Drawing.Color.Transparent;
-            this.labelSpeedLimit.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (byte)177);
-            this.labelSpeedLimit.Location = new System.Drawing.Point(2, 7);
-            this.labelSpeedLimit.Name = "labelSpeedLimit";
-            this.labelSpeedLimit.Size = new System.Drawing.Size(30, 20);
-            this.labelSpeedLimit.TabIndex = 0;
-            this.labelSpeedLimit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // buttonBackwardMenu
-            // 
-            this.buttonBackwardMenu.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonBackwardMenu.Location = new System.Drawing.Point(5, 87);
-            this.buttonBackwardMenu.Name = "buttonBackwardMenu";
-            this.buttonBackwardMenu.Size = new System.Drawing.Size(32, 10);
-            this.buttonBackwardMenu.TabIndex = 10;
-            this.buttonBackwardMenu.Click += this.buttonBackwardMenu_Click;
-            // 
-            // buttonStopMenu
-            // 
-            this.buttonStopMenu.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonStopMenu.Location = new System.Drawing.Point(40, 87);
-            this.buttonStopMenu.Name = "buttonStopMenu";
-            this.buttonStopMenu.Size = new System.Drawing.Size(32, 10);
-            this.buttonStopMenu.TabIndex = 10;
-            this.buttonStopMenu.Click += this.buttonStopMenu_Click;
-            // 
-            // buttonForwardMenu
-            // 
-            this.buttonForwardMenu.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left);
-            this.buttonForwardMenu.Location = new System.Drawing.Point(76, 87);
-            this.buttonForwardMenu.Name = "buttonForwardMenu";
-            this.buttonForwardMenu.Size = new System.Drawing.Size(32, 10);
-            this.buttonForwardMenu.TabIndex = 10;
-            this.buttonForwardMenu.Click += this.buttonForwardMenu_Click;
-            // 
-            // LocomotiveController
-            // 
-            this.ClientSize = new System.Drawing.Size(224, 130);
-            this.Controls.Add(this.buttonBackwardMenu);
-            this.Controls.Add(this.panelSpeedLimit);
-            this.Controls.Add(this.labelDriverInstructions);
-            this.Controls.Add(this.buttonFunction);
-            this.Controls.Add(this.buttonBackward);
-            this.Controls.Add(this.panelInfo);
-            this.Controls.Add(this.buttonStop);
-            this.Controls.Add(this.buttonForward);
-            this.Controls.Add(this.buttonLight);
-            this.Controls.Add(this.buttonLocate);
-            this.Controls.Add(this.buttonProperties);
-            this.Controls.Add(this.buttonStopMenu);
-            this.Controls.Add(this.buttonForwardMenu);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MinimumSize = new System.Drawing.Size(220, 104);
-            this.Name = "LocomotiveController";
-            this.Text = "LocomotiveController";
-            this.Closing += this.LocomotiveController_Closing;
-            this.Closed += this.LocomotiveController_Closed;
-            this.panelSpeedLimit.ResumeLayout(false);
-            this.ResumeLayout(false);
-        }
-        #endregion
-
-        private void panelInfo_Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
+        private void PanelInfo_Paint(object? sender, System.Windows.Forms.PaintEventArgs e) {
             int xText;
             float yText;
 
             if (train.Locomotives.Count == 1) {
                 LocomotiveInfo loco = train.Locomotives[0].Locomotive;
 
-                using (LocomotiveImagePainter locoPainter = new LocomotiveImagePainter(LayoutModel.LocomotiveCatalog)) {
+                using (LocomotiveImagePainter locoPainter = new(LayoutModel.LocomotiveCatalog)) {
                     locoPainter.Draw(e.Graphics, new Point(2, 2), new Size(50, 36), loco.Element);
                 }
 
@@ -683,7 +423,7 @@ namespace LayoutManager.Tools.Dialogs {
                 xText = 55;
             }
             else {
-                using LocomotiveImagePainter locoPainter = new LocomotiveImagePainter(LayoutModel.LocomotiveCatalog);
+                using LocomotiveImagePainter locoPainter = new(LayoutModel.LocomotiveCatalog);
                 int x = 2;
 
                 locoPainter.FrameSize = new Size(28, 20);
@@ -705,7 +445,7 @@ namespace LayoutManager.Tools.Dialogs {
             SizeF textSize;
             string status = train.StatusText;
 
-            using (Font statusFont = new Font("Arial", 8, FontStyle.Regular)) {
+            using (Font statusFont = new("Arial", 8, FontStyle.Regular)) {
                 textSize = e.Graphics.MeasureString(status, statusFont);
                 e.Graphics.DrawString(status, statusFont, textBrush, new PointF(xText, yText));
             }
@@ -713,69 +453,71 @@ namespace LayoutManager.Tools.Dialogs {
             yText += textSize.Height;
         }
 
-        private void LocomotiveController_Closed(object sender, System.EventArgs e) {
+        private void LocomotiveController_Closed(object? sender, System.EventArgs e) {
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 
-        private void buttonLocate_Click(object sender, System.EventArgs e) {
-            ModelComponent locoLocation = null;
+        private void ButtonLocate_Click(object? sender, System.EventArgs e) {
+            ModelComponent? locoLocation = null;
 
-            if (train.LocomotiveBlock.BlockDefinintion != null)
-                locoLocation = train.LocomotiveBlock.BlockDefinintion;
-            else {
-                if (train.LocomotiveBlock.TrackEdges.Count > 0)
-                    locoLocation = train.LocomotiveBlock.TrackEdges[0].Track;
+            if (train.LocomotiveBlock != null) {
+                if (train.LocomotiveBlock.BlockDefinintion != null)
+                    locoLocation = train.LocomotiveBlock.BlockDefinintion;
+                else {
+                    if (train.LocomotiveBlock.TrackEdges.Count > 0)
+                        locoLocation = train.LocomotiveBlock.TrackEdges[0].Track;
+                }
+
+                EventManager.Event(new LayoutEvent("ensure-component-visible", locoLocation, true).SetFrameWindow(LayoutController.ActiveFrameWindow));
             }
-
-            EventManager.Event(new LayoutEvent("ensure-component-visible", locoLocation, true).SetFrameWindow(LayoutController.ActiveFrameWindow));
         }
 
-        private void buttonStop_Click(object sender, System.EventArgs e) {
+        private void ButtonStop_Click(object? sender, System.EventArgs e) {
             train.SpeedInSteps = 0;
         }
 
-        private void buttonBackward_Click(object sender, System.EventArgs e) {
+        private void ButtonBackward_Click(object? sender, System.EventArgs e) {
             if (train.Speed > -LayoutModel.Instance.LogicalSpeedSteps)
                 train.Speed--;
         }
 
-        private void buttonForward_Click(object sender, System.EventArgs e) {
+        private void ButtonForward_Click(object? sender, System.EventArgs e) {
             if (train.Speed < LayoutModel.Instance.LogicalSpeedSteps)
                 train.Speed++;
         }
 
-        private void buttonLight_Click(object sender, System.EventArgs e) {
+        private void ButtonLight_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEvent("set-train-lights-request", train, !train.Lights));
         }
 
-        private void menuLightsOn_Click(object sender, System.EventArgs e) {
+        private void MenuLightsOn_Click(object? sender, EventArgs e) {
             train.SetLightsValue(true);
         }
 
-        private void menuItemLightsOff_Click(object sender, System.EventArgs e) {
+        private void MenuItemLightsOff_Click(object? sender, EventArgs e) {
             train.SetLightsValue(false);
         }
 
-        private void buttonFunction_Click(object sender, System.EventArgs e) {
-            ContextMenu functionMenu = new ContextMenu();
+        private void ButtonFunction_Click(object? sender, System.EventArgs e) {
+            var functionMenu = new ContextMenuStrip();
 
             EventManager.Event(new LayoutEvent("add-locomotive-controller-function-menu-entries", train, functionMenu));
 
-            if (functionMenu.MenuItems.Count == 0) {
-                MenuItem noFunctions = new MenuItem("No functions") {
+            if (functionMenu.Items.Count == 0) {
+                var noFunctions = new LayoutMenuItem("No functions") {
                     Enabled = false
                 };
-                functionMenu.MenuItems.Add(noFunctions);
+                functionMenu.Items.Add(noFunctions);
             }
 
             functionMenu.Show(this, new Point(buttonFunction.Left, buttonFunction.Bottom));
         }
 
-        private void buttonProperties_Click(object sender, System.EventArgs e) {
+        private void ButtonProperties_Click(object? sender, System.EventArgs e) {
             EventManager.Event(new LayoutEvent("edit-train-properties", train));
         }
 
-        private void panelSpeedLimit_Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
+        private void PanelSpeedLimit_Paint(object? sender, System.Windows.Forms.PaintEventArgs e) {
             const int boarderSize = 3;
 
             e.Graphics.FillEllipse(Brushes.Red, 0, 0, panelSpeedLimit.Width, panelSpeedLimit.Height);
@@ -784,63 +526,64 @@ namespace LayoutManager.Tools.Dialogs {
 
         #region Speed change menu
 
-        private void addAccelerationMenuEntries(Menu menu, int speed) {
+        private void AddAccelerationMenuEntries(object menuOrMenuItem, int speed) {
             foreach (MotionRampInfo ramp in LayoutModel.Instance.Ramps)
-                menu.MenuItems.Add(new SpeedChangeMenuItem(train, speed, ramp));
+                new SpeedChangeMenuItem(train, speed, ramp).AddMeTo(menuOrMenuItem);
         }
 
         private MotionRampInfo GetDefaultRamp(int speed) {
             if (speed == 0)
                 return LayoutModel.StateManager.DefaultStopRamp;
-            else return speed > train.Speed ? LayoutModel.StateManager.DefaultAccelerationRamp : LayoutModel.StateManager.DefaultDecelerationRamp;
+            else 
+                return speed > train.Speed ? LayoutModel.StateManager.DefaultAccelerationRamp : LayoutModel.StateManager.DefaultDecelerationRamp;
         }
 
-        private void addSpeedMenuEntries(Menu menu, LocomotiveOrientation direction) {
+        private void AddSpeedMenuEntries(ToolStripDropDown menu, LocomotiveOrientation direction) {
             for (int i = 1; i <= LayoutModel.Instance.LogicalSpeedSteps; i++) {
                 int speed = (direction == LocomotiveOrientation.Forward) ? i : -i;
-                MenuItem speedItem = new MenuItem(i.ToString());
+                var speedItem = new LayoutMenuItem(i.ToString());
 
-                addAccelerationMenuEntries(speedItem, speed);
+                AddAccelerationMenuEntries(speedItem, speed);
 
-                if (speedItem.MenuItems.Count == 0) {
+                if (speedItem.DropDownItems.Count == 0) {
                     speedItem.Click += (s, ea) => train.ChangeSpeed(speed, GetDefaultRamp(speed));
                 }
 
-                menu.MenuItems.Add(speedItem);
+                menu.Items.Add(speedItem);
             }
         }
 
-        private void buttonStopMenu_Click(object sender, System.EventArgs e) {
-            var menu = new ContextMenu();
+        private void ButtonStopMenu_Click(object? sender, System.EventArgs e) {
+            var menu = new ContextMenuStrip();
 
-            addAccelerationMenuEntries(menu, 0);
+            AddAccelerationMenuEntries(menu, 0);
 
-            if (menu.MenuItems.Count > 0)
+            if (menu.Items.Count > 0)
                 menu.Show(this, new Point(buttonStopMenu.Left, buttonStopMenu.Bottom));
             else
                 train.ChangeSpeed(0, GetDefaultRamp(0));
         }
 
-        private void buttonBackwardMenu_Click(object sender, System.EventArgs e) {
-            var menu = new ContextMenu();
+        private void ButtonBackwardMenu_Click(object? sender, System.EventArgs e) {
+            var menu = new ContextMenuStrip();
 
-            addSpeedMenuEntries(menu, LocomotiveOrientation.Backward);
+            AddSpeedMenuEntries(menu, LocomotiveOrientation.Backward);
             menu.Show(this, new Point(buttonBackwardMenu.Left, buttonBackwardMenu.Bottom));
         }
 
-        private void buttonForwardMenu_Click(object sender, System.EventArgs e) {
-            var menu = new ContextMenu();
+        private void ButtonForwardMenu_Click(object? sender, System.EventArgs e) {
+            var menu = new ContextMenuStrip();
 
-            addSpeedMenuEntries(menu, LocomotiveOrientation.Forward);
+            AddSpeedMenuEntries(menu, LocomotiveOrientation.Forward);
             menu.Show(this, new Point(buttonForwardMenu.Left, buttonForwardMenu.Bottom));
         }
 
-        private void LocomotiveController_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+        private void LocomotiveController_Closing(object? sender, System.ComponentModel.CancelEventArgs e) {
             if (Owner != null)
                 Owner.Activate();
         }
 
-        private class SpeedChangeMenuItem : MenuItem {
+        private class SpeedChangeMenuItem : LayoutMenuItem {
             private readonly MotionRampInfo ramp;
             private readonly int speed;
             private readonly TrainStateInfo train;

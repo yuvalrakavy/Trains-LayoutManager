@@ -73,7 +73,7 @@ namespace LayoutManager.Dialogs {
             throw new ApplicationException("No checked radio control found in " + genericName);
         }
 
-        protected void UpdateLocoPainter(Object sender, EventArgs e) {
+        protected void UpdateLocoPainter(object? sender, EventArgs e) {
             locoPainter.DrawFront = true;
             locoPainter.Front = (LayoutComponentConnectionPoint)GetRadio("radioButtonFront", typeof(LayoutComponentConnectionPoint));
             locoPainter.Orientation = (LocomotiveOrientation)GetRadio("radioButtonOrientation", typeof(LocomotiveOrientation));
@@ -312,12 +312,12 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void panel_Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
+        private void panel_Paint(object? sender, System.Windows.Forms.PaintEventArgs e) {
             e.Graphics.TranslateTransform(panel.Width / 2, panel.Height / 2);
             locoPainter.Draw(e.Graphics);
         }
 
-        private void buttonClose_Click(object sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, System.EventArgs e) {
             this.Close();
         }
     }

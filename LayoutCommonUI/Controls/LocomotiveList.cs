@@ -1,13 +1,8 @@
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 using System.Xml;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-#nullable enable
-#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for LocomotiveList.
@@ -41,11 +36,11 @@ namespace LayoutManager.CommonUI.Controls {
 
         public XmlElement? SelectedXmlElement => SelectedXmlItem != null ? ((IXmlQueryListBoxXmlElementItem)SelectedXmlItem).Element : null;
 
-        protected LocomotiveCatalogInfo Catalog => catalog ?? (catalog = LayoutModel.LocomotiveCatalog);
+        protected LocomotiveCatalogInfo Catalog => catalog ??= LayoutModel.LocomotiveCatalog;
 
         protected bool OperationMode => operationMode;
 
-        protected void UpdateElementState(XmlElement element) {
+        protected static void UpdateElementState(XmlElement element) {
             var id = (Guid)element.AttributeValue(A_Id);
             bool onTrack;
 
@@ -114,10 +109,12 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         protected void UpdateElements() {
-            EventManager.Event(new LayoutEvent("disable-locomotive-list-update", this));
-            foreach (XmlElement element in ContainerElement)
-                UpdateElementState(element);
-            EventManager.Event(new LayoutEvent("enable-locomotive-list-update", this));
+            if (ContainerElement != null) {
+                EventManager.Event(new LayoutEvent("disable-locomotive-list-update", this));
+                foreach (XmlElement element in ContainerElement)
+                    UpdateElementState(element);
+                EventManager.Event(new LayoutEvent("enable-locomotive-list-update", this));
+            }
         }
 
         protected void InvalidateElement(XmlElement element) {
@@ -130,8 +127,12 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         protected void InvalidateTrainState(TrainStateInfo trainState) {
-            foreach (TrainLocomotiveInfo trainLoco in trainState.Locomotives)
-                InvalidateElement(LayoutModel.LocomotiveCollection[trainLoco.CollectionElementId]);
+            foreach (TrainLocomotiveInfo trainLoco in trainState.Locomotives) {
+                XmlElement? element = LayoutModel.LocomotiveCollection[trainLoco.CollectionElementId];
+
+                if(element != null)
+                    InvalidateElement(element);
+            }
         }
 
         #region Drag/Drop support
@@ -174,40 +175,40 @@ namespace LayoutManager.CommonUI.Controls {
         #endregion
 
         [LayoutEvent("enter-operation-mode", Order = 1000)]
-        private void enterOperationMode(LayoutEvent e) {
+        private void EnterOperationMode(LayoutEvent e) {
             operationMode = true;
             UpdateElements();
             Invalidate();
         }
 
         [LayoutEvent("enter-design-mode")]
-        private void enterDesignMode(LayoutEvent e) {
+        private void EnterDesignMode(LayoutEvent e) {
             operationMode = false;
             Invalidate();
         }
 
         [LayoutEvent("train-placed-on-track")]
-        private void locomotivePlacedOnTrack(LayoutEvent e) {
+        private void LocomotivePlacedOnTrack(LayoutEvent e) {
             UpdateElements();
             Invalidate();
         }
 
         [LayoutEvent("locomotive-removed-from-train")]
-        private void locomotiveRemovedFromTrack(LayoutEvent e) {
+        private void LocomotiveRemovedFromTrack(LayoutEvent e) {
             UpdateElements();
             Invalidate();
         }
 
         [LayoutEvent("train-speed-changed")]
         [LayoutEvent("train-enter-block")]
-        private void needToUpdateLocomotiveItem(LayoutEvent e) {
+        private void NeedToUpdateLocomotiveItem(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
 
             InvalidateTrainState(train);
         }
 
         [LayoutEvent("train-saved-in-collection")]
-        private void trainSavedInCollection(LayoutEvent e) {
+        private void TrainSavedInCollection(LayoutEvent e) {
             UpdateElements();
             Invalidate();
         }
@@ -237,7 +238,7 @@ namespace LayoutManager.CommonUI.Controls {
             public void Draw(DrawItemEventArgs e) {
                 if (list.OperationMode) {
                     if (!Element.HasAttribute(A_OnTrack))
-                        list.UpdateElementState(Element);
+                        LocomotiveList.UpdateElementState(Element);
                 }
 
                 LocomotiveListItemPainter.Draw(e, Element, list.Catalog, list.OperationMode);
@@ -245,9 +246,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             public object Bookmark => new LocomotiveInfo(Element).Id.ToString();
 
-            public bool IsBookmarkEqual(object bookmark) {
-                return bookmark is String ? (String)bookmark == Element.GetAttribute(A_Id) : false;
-            }
+            public bool IsBookmarkEqual(object bookmark) => bookmark is string aString && aString == Element.GetAttribute(A_Id);
         }
 
         #endregion
@@ -258,8 +257,8 @@ namespace LayoutManager.CommonUI.Controls {
             public override string LayoutName => "Simple";
 
             public override void ApplyLayout(XmlQueryListbox list) {
-                list.AddQuery("Locomotives", "Locomotive").Expand();
-                list.AddQuery("Trains", "Train").Expand();
+                list.AddQuery("Locomotives", "Locomotive")?.Expand();
+                list.AddQuery("Trains", "Train")?.Expand();
             }
         }
 
@@ -292,15 +291,18 @@ namespace LayoutManager.CommonUI.Controls {
                 LocomotiveCollectionInfo collection = LayoutModel.LocomotiveCollection;
 
                 int iStore = 0;
-                foreach (XmlElement storeElement in collection.Element["Stores"]) {
-                    LocomotiveStorageInfo store = new LocomotiveStorageInfo(storeElement);
-                    QueryItem q;
+                XmlElement? storeElements = collection.Element["Stores"];
 
-                    q = list.AddQuery(store.StorageName, null);
-                    q.Add("Locomotives", "Locomotive[@Store='" + iStore + "']");
-                    q.Add("Trains", "Train[@Store='" + iStore + "']");
+                if (storeElements != null) {
+                    foreach (XmlElement storeElement in storeElements) {
+                        LocomotiveStorageInfo store = new(storeElement);
+                        var q = list.AddQuery(store.StorageName, null);
+                        
+                        q?.Add("Locomotives", "Locomotive[@Store='" + iStore + "']");
+                        q?.Add("Trains", "Train[@Store='" + iStore + "']");
 
-                    iStore++;
+                        iStore++;
+                    }
                 }
             }
         }

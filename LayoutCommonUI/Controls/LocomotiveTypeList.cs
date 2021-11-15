@@ -1,6 +1,3 @@
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 
@@ -9,7 +6,7 @@ namespace LayoutManager.CommonUI.Controls {
     /// Summary description for LocomotiveTypeList.
     /// </summary>
     public class LocomotiveTypeList : XmlQueryListbox {
-        private LocomotiveCatalogInfo catalog = null;
+        private LocomotiveCatalogInfo? catalog = null;
 
         public LocomotiveTypeList() {
             if (!DesignMode) {
@@ -18,11 +15,11 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public LocomotiveTypeInfo SelectedLocomotiveType => SelectedXmlItem != null ? ((LocoTypeItem)SelectedXmlItem).LocomotiveType : null;
+        public LocomotiveTypeInfo? SelectedLocomotiveType => SelectedXmlItem != null ? ((LocoTypeItem)SelectedXmlItem).LocomotiveType : null;
 
-        public override IXmlQueryListboxItem CreateItem(XmlQueryListbox.QueryItem queryItem, XmlElement itemElement) => new LocoTypeItem(this, queryItem, itemElement);
+        public override IXmlQueryListboxItem CreateItem(QueryItem queryItem, XmlElement itemElement) => new LocoTypeItem(this, queryItem, itemElement);
 
-        public LocomotiveCatalogInfo Catalog => catalog ?? (catalog = LayoutModel.LocomotiveCatalog);
+        public LocomotiveCatalogInfo Catalog => catalog ??= LayoutModel.LocomotiveCatalog;
 
         public void Initialize() {
             AddLayout(new ListLayoutByStorage());
@@ -33,29 +30,25 @@ namespace LayoutManager.CommonUI.Controls {
         private class LocoTypeItem : IXmlQueryListboxItem {
             private readonly XmlElement locoTypeElement;
             private readonly LocomotiveTypeList list;
-            private readonly XmlQueryListbox.QueryItem queryItem;
+            private readonly QueryItem queryItem;
 
-            public LocoTypeItem(LocomotiveTypeList list, XmlQueryListbox.QueryItem queryItem, XmlElement locoTypeElement) {
+            public LocoTypeItem(LocomotiveTypeList list, QueryItem queryItem, XmlElement locoTypeElement) {
                 this.list = list;
                 this.queryItem = queryItem;
                 this.locoTypeElement = locoTypeElement;
             }
 
-            public LocomotiveTypeInfo LocomotiveType => new LocomotiveTypeInfo(locoTypeElement);
+            public LocomotiveTypeInfo LocomotiveType => new(locoTypeElement);
 
             public Object Bookmark => locoTypeElement.GetAttribute("ID");
 
-            public bool IsBookmarkEqual(object bookmark) {
-                return bookmark is String ? (String)bookmark == locoTypeElement.GetAttribute("ID") : false;
-            }
+            public bool IsBookmarkEqual(object bookmark) => bookmark is string aString && aString == locoTypeElement.GetAttribute("ID");
 
-            public void Measure(MeasureItemEventArgs e) {
-                e.ItemHeight = 50 + 4 + 6;
-            }
+            public void Measure(MeasureItemEventArgs e) => e.ItemHeight = 50 + 4 + 6;
 
             public void Draw(DrawItemEventArgs e) {
-                LocomotiveTypeInfo locomotiveType = LocomotiveType;
-                Image image = locomotiveType.Image;
+                var locomotiveType = LocomotiveType;
+                var image = locomotiveType.Image;
 
                 if (image == null)
                     image = list.Catalog.GetStandardImage(locomotiveType.Kind, locomotiveType.Origin);
@@ -68,15 +61,15 @@ namespace LayoutManager.CommonUI.Controls {
 
                 int leftMargin = e.Bounds.Left + 4 + (16 * queryItem.Level);
 
-                Rectangle imageRect = new Rectangle(new Point(leftMargin, e.Bounds.Top + 4), new Size(100, 50));
+                Rectangle imageRect = new(new Point(leftMargin, e.Bounds.Top + 4), new Size(100, 50));
 
                 e.Graphics.FillRectangle(Brushes.White, imageRect);
                 e.Graphics.DrawRectangle(Pens.Black, imageRect);
 
                 if (image != null) {
-                    Size imageSize = new Size(image.Width < 98 ? image.Width : 98,
+                    Size imageSize = new(image.Width < 98 ? image.Width : 98,
                         image.Height < 48 ? image.Height : 48);
-                    Point imageOrigin = new Point(imageRect.Left + ((100 - imageSize.Width) / 2), imageRect.Top + ((50 - imageSize.Height) / 2));
+                    Point imageOrigin = new(imageRect.Left + ((100 - imageSize.Width) / 2), imageRect.Top + ((50 - imageSize.Height) / 2));
 
                     e.Graphics.DrawImage(image, new Rectangle(imageOrigin, imageSize));
                 }
@@ -87,7 +80,7 @@ namespace LayoutManager.CommonUI.Controls {
                 using (Brush textBrush = new SolidBrush((e.State & DrawItemState.Selected) != 0 ? SystemColors.HighlightText : SystemColors.WindowText)) {
                     SizeF titleSize;
 
-                    using (Font titleFont = new Font("Arial", 8, FontStyle.Bold)) {
+                    using (Font titleFont = new("Arial", 8, FontStyle.Bold)) {
                         titleSize = e.Graphics.MeasureString(locomotiveType.TypeName, titleFont);
 
                         e.Graphics.DrawString(locomotiveType.TypeName, titleFont, textBrush, new PointF(xText, yText));
@@ -96,7 +89,7 @@ namespace LayoutManager.CommonUI.Controls {
                     yText += titleSize.Height;
                 }
 
-                using Pen p = new Pen(Color.Black, 2.0F);
+                using Pen p = new(Color.Black, 2.0F);
                 e.Graphics.DrawLine(p, e.Bounds.Left, e.Bounds.Bottom, e.Bounds.Right, e.Bounds.Bottom);
             }
         }
@@ -109,19 +102,23 @@ namespace LayoutManager.CommonUI.Controls {
             public override string LayoutName => "Locomotive origin";
 
             public override void ApplyLayout(XmlQueryListbox list) {
-                QueryItem q;
+                QueryItem? q;
 
                 q = list.AddQuery("European Locomotives", null);
-                q.Add("Steam", "*[@Origin='Europe' and @Kind='Steam']");
-                q.Add("Diesel", "*[@Origin='Europe' and @Kind='Diesel']");
-                q.Add("Electric", "*[@Origin='Europe' and @Kind='Electric']");
-                q.Add("Sound Unit", "*[@Origin='Europe' and @Kind='SoundUnit']");
+                if (q != null) {
+                    q.Add("Steam", "*[@Origin='Europe' and @Kind='Steam']");
+                    q.Add("Diesel", "*[@Origin='Europe' and @Kind='Diesel']");
+                    q.Add("Electric", "*[@Origin='Europe' and @Kind='Electric']");
+                    q.Add("Sound Unit", "*[@Origin='Europe' and @Kind='SoundUnit']");
+                }
 
                 q = list.AddQuery("American Locomotives", null);
-                q.Add("Steam", "*[@Origin='US' and @Kind='Steam']");
-                q.Add("Diesel", "*[@Origin='US' and @Kind='Diesel']");
-                q.Add("Electric", "*[@Origin='US' and @Kind='Electric']");
-                q.Add("Sound Unit", "*[@Origin='US' and @Kind='SoundUnit']");
+                if (q != null) {
+                    q.Add("Steam", "*[@Origin='US' and @Kind='Steam']");
+                    q.Add("Diesel", "*[@Origin='US' and @Kind='Diesel']");
+                    q.Add("Electric", "*[@Origin='US' and @Kind='Electric']");
+                    q.Add("Sound Unit", "*[@Origin='US' and @Kind='SoundUnit']");
+                }
             }
         }
 
@@ -129,23 +126,23 @@ namespace LayoutManager.CommonUI.Controls {
             public override string LayoutName => "Locomotive type";
 
             public override void ApplyLayout(XmlQueryListbox list) {
-                QueryItem q;
+                QueryItem? q;
 
                 q = list.AddQuery("Steam Locomotives", null);
-                q.Add("European Locomotives", "*[@Origin='Europe' and @Kind='Steam']");
-                q.Add("American Locomotives", "*[@Origin='US' and @Kind='Steam']");
+                q?.Add("European Locomotives", "*[@Origin='Europe' and @Kind='Steam']");
+                q?.Add("American Locomotives", "*[@Origin='US' and @Kind='Steam']");
 
                 q = list.AddQuery("Diesel Locomotives", null);
-                q.Add("European Locomotives", "*[@Origin='Europe' and @Kind='Diesel']");
-                q.Add("American Locomotives", "*[@Origin='US' and @Kind='Diesel']");
+                q?.Add("European Locomotives", "*[@Origin='Europe' and @Kind='Diesel']");
+                q?.Add("American Locomotives", "*[@Origin='US' and @Kind='Diesel']");
 
                 q = list.AddQuery("Electric Locomotives", null);
-                q.Add("European Locomotives", "*[@Origin='Europe' and @Kind='Electric']");
-                q.Add("American Locomotives", "*[@Origin='US' and @Kind='Electric']");
+                q?.Add("European Locomotives", "*[@Origin='Europe' and @Kind='Electric']");
+                q?.Add("American Locomotives", "*[@Origin='US' and @Kind='Electric']");
 
                 q = list.AddQuery("Sound units", null);
-                q.Add("European Locomotives", "*[@Origin='Europe' and @Kind='SoundUnit']");
-                q.Add("American Locomotives", "*[@Origin='US' and @Kind='SoundUnit']");
+                q?.Add("European Locomotives", "*[@Origin='Europe' and @Kind='SoundUnit']");
+                q?.Add("American Locomotives", "*[@Origin='US' and @Kind='SoundUnit']");
             }
         }
 
@@ -156,11 +153,15 @@ namespace LayoutManager.CommonUI.Controls {
                 LocomotiveCatalogInfo catalog = LayoutModel.LocomotiveCatalog;
 
                 int iStore = 0;
-                foreach (XmlElement storeElement in catalog.Element["Stores"]) {
-                    LocomotiveStorageInfo store = new LocomotiveStorageInfo(storeElement);
+                XmlElement? storeElements = catalog.Element["Stores"];
 
-                    list.AddQuery(store.StorageName, "*[@Store='" + iStore + "']");
-                    iStore++;
+                if (storeElements != null) {
+                    foreach (XmlElement storeElement in storeElements) {
+                        LocomotiveStorageInfo store = new(storeElement);
+
+                        list.AddQuery(store.StorageName, "*[@Store='" + iStore + "']");
+                        iStore++;
+                    }
                 }
             }
         }

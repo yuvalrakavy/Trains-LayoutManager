@@ -6,9 +6,6 @@ using System.Linq;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-#pragma warning disable IDE0051,IDE0060
-#nullable enable
-
 namespace LayoutManager.Logic {
     /// <summary>
     /// Summary description for LayoutValidator.
@@ -20,25 +17,25 @@ namespace LayoutManager.Logic {
             bool stopProcessing = false;
             LayoutPhase phase = e.GetPhases();
 
-            resetTrackConnections();
-            resetTrackAnnotation();
-            setTrackConnections(phase);
+            ResetTrackConnections();
+            ResetTrackAnnotation();
+            SetTrackConnections(phase);
 
-            if (!checkCommandStations(phase))
+            if (!CheckCommandStations(phase))
                 e.Info = false;
 
-            if (!checkTrackLinks(phase)) {
+            if (!CheckTrackLinks(phase)) {
                 stopProcessing = true;
                 e.Info = false;
             }
 
-            if (!checkAddresses(phase))
+            if (!CheckAddresses(phase))
                 e.Info = false;
 
-            if (!checkSignalLinks(phase))
+            if (!CheckSignalLinks(phase))
                 e.Info = false;
 
-            if (!checkBlockResources(phase))
+            if (!CheckBlockResources(phase))
                 e.Info = false;
 
             if (stopProcessing)
@@ -46,14 +43,14 @@ namespace LayoutManager.Logic {
         }
 
         [LayoutEvent("exit-operation-mode", Order = 10000)]
-        private void clearTrackConnections(LayoutEvent e) {
-            resetTrackConnections();
+        private void ClearTrackConnections(LayoutEvent e) {
+            ResetTrackConnections();
         }
 
-        private void resetTrackAnnotation() {
+        private void ResetTrackAnnotation() {
             foreach (LayoutModelArea area in LayoutModel.Areas) {
                 foreach (LayoutModelSpotComponentCollection spot in area.Grid.Values) {
-                    LayoutTrackComponent track = spot.Track;
+                    var track = spot.Track;
 
                     if (track != null) {
                         if (track is LayoutStraightTrackComponent straightTrack)
@@ -63,11 +60,11 @@ namespace LayoutManager.Logic {
             }
         }
 
-        private static void setTrackConnections(LayoutPhase phase) {
+        private static void SetTrackConnections(LayoutPhase phase) {
             foreach (LayoutModelArea area in LayoutModel.Areas) {
                 foreach (LayoutModelSpotComponentCollection spot in area.Grid.Values) {
                     if ((spot.Phase & phase) != 0) {
-                        LayoutTrackComponent track = spot.Track;
+                        var track = spot.Track;
 
                         if (track != null) {
                             foreach (LayoutComponentConnectionPoint cp in track.ConnectionPoints) {
@@ -87,10 +84,10 @@ namespace LayoutManager.Logic {
             }
         }
 
-        private static void resetTrackConnections() {
+        private static void ResetTrackConnections() {
             foreach (LayoutModelArea area in LayoutModel.Areas) {
                 foreach (LayoutModelSpotComponentCollection spot in area.Grid.Values) {
-                    LayoutTrackComponent track = spot.Track;
+                    var track = spot.Track;
 
                     if (track != null)
                         track.CleanupComponentEdgeConnections();
@@ -98,7 +95,7 @@ namespace LayoutManager.Logic {
             }
         }
 
-        private bool checkCommandStations(LayoutPhase phase) {
+        private bool CheckCommandStations(LayoutPhase phase) {
             if (!LayoutModel.Components<IModelComponentIsCommandStation>(phase).Any()) {
                 Error("At least one command station component should be included in the layout");
                 return false;
@@ -107,7 +104,7 @@ namespace LayoutManager.Logic {
             return true;
         }
 
-        private static LayoutComponentConnectionPoint getLinkedConnectionPoint(LayoutTrackComponent track, LayoutPhase phase) {
+        private static LayoutComponentConnectionPoint GetLinkedConnectionPoint(LayoutTrackComponent track, LayoutPhase phase) {
             LayoutComponentConnectionPoint linkedConnectionPoint = LayoutComponentConnectionPoint.Empty;
 
             foreach (LayoutComponentConnectionPoint cp in track.ConnectionPoints) {
@@ -127,7 +124,7 @@ namespace LayoutManager.Logic {
             return linkedConnectionPoint;
         }
 
-        private bool checkTrackLinks(LayoutPhase phase) {
+        private bool CheckTrackLinks(LayoutPhase phase) {
             LayoutSelection notLinked = new LayoutSelection();
             LayoutSelection invalidLinks = new LayoutSelection();
 
@@ -136,7 +133,7 @@ namespace LayoutManager.Logic {
                     notLinked.Add(trackLink);
                 else {
                     LayoutTrackComponent thisTrack = trackLink.Track;
-                    LayoutComponentConnectionPoint thisCp = getLinkedConnectionPoint(thisTrack, phase);
+                    LayoutComponentConnectionPoint thisCp = GetLinkedConnectionPoint(thisTrack, phase);
 
                     if (thisCp == LayoutComponentConnectionPoint.Empty)
                         invalidLinks.Add(trackLink);
@@ -146,7 +143,7 @@ namespace LayoutManager.Logic {
                         if (otherTrack == null || (otherTrack.Spot.Phase & phase) == 0)
                             invalidLinks.Add(trackLink);
                         else {
-                            LayoutComponentConnectionPoint otherCp = getLinkedConnectionPoint(otherTrack, phase);
+                            LayoutComponentConnectionPoint otherCp = GetLinkedConnectionPoint(otherTrack, phase);
 
                             if (otherCp != LayoutComponentConnectionPoint.Empty)
                                 thisTrack.SetConnectedComponentEdge(thisCp, new TrackEdge(otherTrack, otherCp));
@@ -168,7 +165,7 @@ namespace LayoutManager.Logic {
             return true;
         }
 
-        private bool checkAddresses(LayoutPhase phase) {
+        private bool CheckAddresses(LayoutPhase phase) {
             LayoutSelection nonConnectedComponents = new LayoutSelection();
             IEnumerable<IModelComponentConnectToControl> connectableComponents = LayoutModel.Components<IModelComponentConnectToControl>(phase);
             bool result = true;
@@ -190,7 +187,7 @@ namespace LayoutManager.Logic {
             return result;
         }
 
-        private bool checkSignalLinks(LayoutPhase phase) {
+        private bool CheckSignalLinks(LayoutPhase phase) {
             bool ok = true;
 
             foreach (var blockEdge in LayoutModel.Components<LayoutBlockEdgeBase>(phase)) {
@@ -200,11 +197,11 @@ namespace LayoutManager.Logic {
                     if (LayoutModel.Component<ModelComponent>(linkedSignal.SignalId, phase) == null) {
                         // If the signal cannot be found at all on the layout (not just on the given phase), remove the link
                         if (LayoutModel.Component<ModelComponent>(linkedSignal.SignalId, LayoutPhase.All) == null) {
-                            Warning(blockEdge, $"A signal that was linked to this {blockEdge.ToString()} cannot be found in the layout");
+                            Warning(blockEdge, $"A signal that was linked to this {blockEdge} cannot be found in the layout");
                             removeList.Add(linkedSignal);
                         }
                         else
-                            Error(blockEdge, $"The signal linked to this {blockEdge.ToString()} is marked either as Planned or In construction phase");
+                            Error(blockEdge, $"The signal linked to this {blockEdge} is marked either as Planned or In construction phase");
 
                         ok = false;
                     }
@@ -217,10 +214,10 @@ namespace LayoutManager.Logic {
             return ok;
         }
 
-        private bool checkBlockResources(LayoutPhase phase) => LayoutModel.Components<LayoutBlockDefinitionComponent>(phase).All(blockInfo => blockInfo.Info.Resources.CheckIntegrity(this, phase));
+        private bool CheckBlockResources(LayoutPhase phase) => LayoutModel.Components<LayoutBlockDefinitionComponent>(phase).All(blockInfo => blockInfo.Info.Resources.CheckIntegrity(this, phase));
 
         [LayoutEvent("perform-trains-analysis")]
-        private void performTrainsAnalysis(LayoutEvent e) {
+        private void PerformTrainsAnalysis(LayoutEvent e) {
             var phantomTrains = new LayoutSelection();
             var unexpectedTrains = new LayoutSelection();
             var processedBlocks = new Dictionary<Guid, object?>();

@@ -13,7 +13,7 @@ namespace LayoutManager {
         private const string A_Enabled = "Enabled";
         private readonly Type moduleType;             // The type used to create an instance of the module
         private readonly LayoutAssembly layoutAssembly;         // The assembly in which the module is found
-        private Object moduleInstance;          // The class instance associated with this module
+        private Object? moduleInstance;          // The class instance associated with this module
 
         /// <summary>
         /// Construct a new layout module
@@ -78,14 +78,17 @@ namespace LayoutManager {
         /// <summary>
         /// Return the instance of the module class (or null if the module is in disabled state)
         /// </summary>
-        public Object ModuleInstance => moduleInstance;
+        public Object? ModuleInstance => moduleInstance;
 
         /// <summary>
         /// Internal method to enable the module
         /// </summary>
         protected void EnableModule() {
             if (moduleInstance == null) {
-                moduleInstance = layoutAssembly.Assembly.CreateInstance(moduleType.FullName);
+                moduleInstance = layoutAssembly.Assembly?.CreateInstance(Ensure.NotNull<string>(moduleType.FullName));
+
+                if (moduleInstance == null)
+                    throw new LayoutException($"Could not load module {moduleType.FullName}");
 
                 // Create subscriptions for event handlers in the new module instance
                 EventManager.AddObjectSubscriptions(moduleInstance);
@@ -102,7 +105,7 @@ namespace LayoutManager {
                 LayoutEvent moduleDisableRequestEvent = new LayoutEvent("module-disable-request", moduleInstance, true);
 
                 EventManager.Event(moduleDisableRequestEvent);
-                if (!(bool)moduleDisableRequestEvent.Info)
+                if (!(bool)(moduleDisableRequestEvent.Info ?? false))
                     return false;           // Module refuses to be disabled
 
                 EventManager.Event(new LayoutEvent("module-disabled", moduleInstance));
@@ -110,8 +113,8 @@ namespace LayoutManager {
                 // Remove all subscriptions for this instance
                 EventManager.Subscriptions.RemoveObjectSubscriptions(moduleInstance);
 
-                if (moduleInstance is IDisposable)
-                    ((IDisposable)moduleInstance).Dispose();
+                if (moduleInstance is IDisposable module)
+                    module.Dispose();
 
                 moduleInstance = null;
                 Enabled = false;
@@ -141,6 +144,7 @@ namespace LayoutManager {
         }
 
         public LayoutModuleAttribute() {
+            this.ModuleName = "Unnamed-Module";
         }
 
         /// <summary>
@@ -164,14 +168,14 @@ namespace LayoutManager {
     /// </summary>
     public class LayoutAssembly : LayoutObject, IDisposable {
         private const string A_Save = "Save";
-        private Assembly assembly;
+        private Assembly? assembly;
         private readonly List<LayoutModule> layoutModules = new List<LayoutModule>();
 
         public enum AssemblyOrigin {
             BuiltIn, InModulesDirectory, UserLoaded
         };
 
-        private static string _modulesDirectory;
+        private static string? _modulesDirectory;
 
         /// <summary>
         /// Define a new assembly
@@ -211,7 +215,7 @@ namespace LayoutManager {
         }
 
         public LayoutAssembly(XmlReader r) {
-            XmlNode layoutAssemblyNode = XmlInfo.XmlDocument.ReadNode(r);
+            var layoutAssemblyNode = Ensure.NotNull<XmlNode>(XmlInfo.XmlDocument.ReadNode(r));
             XmlInfo.XmlDocument.AppendChild(layoutAssemblyNode);
             ScanAssembly();
         }
@@ -231,11 +235,11 @@ namespace LayoutManager {
 
             path = Path.GetFullPath(path);
 
-            if (Path.GetDirectoryName(path).StartsWith(root, true, null)) {
-                v = path.Substring(root.Length);
+            if (Ensure.NotNull<String>(Path.GetDirectoryName(path)).StartsWith(root, true, null)) {
+                v = path[root.Length..];
 
                 if (v[0] == Path.DirectorySeparatorChar)
-                    v = v.Substring(1);
+                    v = v[1..];
             }
             else
                 v = path;
@@ -285,7 +289,7 @@ namespace LayoutManager {
         /// <summary>
         /// Return the assembly object
         /// </summary>
-        public Assembly Assembly => assembly;
+        public Assembly? Assembly => assembly;
 
         public AssemblyOrigin Origin { get; set; }
 
@@ -337,6 +341,7 @@ namespace LayoutManager {
         /// Dispose the assembly, disable all modules
         /// </summary>
         public void Dispose() {
+            GC.SuppressFinalize(this);
             Dispose(true);
         }
 
@@ -449,9 +454,7 @@ namespace LayoutManager {
         public void ReadXml(XmlReader r) {
             r.Read();       // <LayoutAssemblies
             while (r.NodeType == XmlNodeType.Element) {
-#pragma warning disable IDE0068 // Use recommended dispose pattern
                 LayoutAssembly layoutAssembly = new LayoutAssembly(r);
-#pragma warning restore IDE0068 // Use recommended dispose pattern
 
                 if (!IsDefined(Path.GetFileName(layoutAssembly.AssemblyFilename)))
                     Add(layoutAssembly);
@@ -474,7 +477,7 @@ namespace LayoutManager {
         /// <summary>
         /// The file name of the document used to save the state of the module manager.
         /// </summary>
-        public string DocumentFilename { get; set; }
+        public string? DocumentFilename { get; set; }
 
         /// <summary>
         /// A collection of all the referenced layout assemblies
@@ -538,6 +541,9 @@ namespace LayoutManager {
         /// Load the module manager state from a file
         /// </summary>
         public void LoadState() {
+            if (DocumentFilename == null)
+                throw new ArgumentException("No document name was set");
+
             try {
                 using FileStream fileIn = new FileStream(DocumentFilename, FileMode.Open, FileAccess.Read);
                 XmlTextReader r = new XmlTextReader(fileIn) {
@@ -548,13 +554,11 @@ namespace LayoutManager {
                 ReadXml(r);
                 r.Close();
             }
-#pragma warning disable CA1031 // Do not catch general exception types
             catch (DirectoryNotFoundException) {
-                Directory.CreateDirectory(Path.GetDirectoryName(DocumentFilename));
+                Directory.CreateDirectory(Ensure.NotNull<string>(Path.GetDirectoryName(DocumentFilename)));
             }
             catch (FileNotFoundException) {
             }
-#pragma warning restore CA1031 // Do not catch general exception types
         }
     }
 
@@ -562,7 +566,7 @@ namespace LayoutManager {
     /// A convinence class for defining modules. It implements ILayoutModuleSetup.
     /// </summary>
     public class LayoutModuleBase : ILayoutModuleSetup {
-        public static void Error(Object subject, string message) {
+        public static void Error(Object? subject, string message) {
             EventManager.Event(new LayoutEvent("add-error", subject, message));
         }
 
@@ -570,7 +574,7 @@ namespace LayoutManager {
             Error(null, message);
         }
 
-        public static void Warning(Object subject, string message) {
+        public static void Warning(Object? subject, string message) {
             EventManager.Event(new LayoutEvent("add-warning", subject, message));
         }
 
@@ -578,7 +582,7 @@ namespace LayoutManager {
             Warning(null, message);
         }
 
-        public static void Message(Object subject, string messageText) {
+        public static void Message(Object? subject, string messageText) {
             EventManager.Event(new LayoutEvent("add-message", subject, messageText));
         }
 

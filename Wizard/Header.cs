@@ -44,7 +44,7 @@ namespace Gui.Wizard {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(Header));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Header));
             this.pnlDockPadding = new Panel();
             this.lblDescription = new Label();
             this.lblTitle = new Label();
@@ -146,7 +146,7 @@ namespace Gui.Wizard {
             lblDescription.Width = picIcon.Left - lblDescription.Left;
         }
 
-        private void Header_SizeChanged(object sender, System.EventArgs e) {
+        private void Header_SizeChanged(object? sender, System.EventArgs e) {
             ResizeImageAndText();
         }
 

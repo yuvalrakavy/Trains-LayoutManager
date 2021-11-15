@@ -106,7 +106,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        private void buttonOK_Click(object sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             if (string.IsNullOrWhiteSpace(textBoxName.Text)) {
                 MessageBox.Show(this, "You should provide a name", "Missing name", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxName.Focus();
@@ -139,16 +139,16 @@ namespace LayoutManager.Tools.Dialogs {
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
-        private void radioButton_Click(object sender, System.EventArgs e) {
+        private void RadioButton_Click(object? sender, System.EventArgs e) {
             UpdateButtons();
         }
 
-        private void buttonSettings_Click(object sender, System.EventArgs e) {
+        private void ButtonSettings_Click(object? sender, System.EventArgs e) {
             var powerSelectorNameInfo = new LayoutPowerSelectorComponent.LayoutPowerSelectorNameInfo(XmlInfo.DocumentElement) {
                 Component = Component
             };
 
-            CommonUI.Dialogs.TextProviderSettings settings = new CommonUI.Dialogs.TextProviderSettings(XmlInfo, powerSelectorNameInfo);
+            CommonUI.Dialogs.TextProviderSettings settings = new(XmlInfo, powerSelectorNameInfo);
 
             if (powerSelectorNameInfo.Element == null)
                 powerSelectorNameInfo.CreateElement(XmlInfo);

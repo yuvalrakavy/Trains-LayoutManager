@@ -1,34 +1,20 @@
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for SelectTripPlanIcon.
     /// </summary>
-    public class SelectTripPlanIcon : System.Windows.Forms.UserControl {
-        private NoBackgroundErasePanel panelIcons;
-        private Button buttonAdd;
-        private Button buttonDelete;
-        private System.Windows.Forms.OpenFileDialog openFileDialog;
-        private System.Windows.Forms.HScrollBar hScrollBar;
-
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container components = null;
-
-        private void endOfDesignerVariables() { }
+    public partial class SelectTripPlanIcon : UserControl {
         private int selected = -1;
         private int leftIconIndex = 0;
         private bool initialized = false;
-        private Bitmap frameBuffer = null;
+        private Bitmap? frameBuffer = null;
 
         #region Exposed Properties
 
-        public TripPlanIconListInfo IconList { get; set; } = null;
+        public TripPlanIconListInfo? OptionalIconList { get; set; } = null;
+
+        public TripPlanIconListInfo IconList { get => Ensure.NotNull<TripPlanIconListInfo>(OptionalIconList); set => OptionalIconList = value; }
 
         public int SelectedIndex {
             get {
@@ -67,7 +53,7 @@ namespace LayoutManager.CommonUI.Controls {
         public void Initialize() {
             initialized = true;
             panelIcons.Invalidate();
-            setScrollBar();
+            SetScrollBar();
             buttonDelete.Enabled = false;
         }
 
@@ -75,7 +61,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region Internal methods
 
-        private Graphics getFrameBufferGraphics(Graphics g, Rectangle clipBounds) {
+        private Graphics GetFrameBufferGraphics(Graphics g, Rectangle clipBounds) {
             if (frameBuffer == null || clipBounds.Width > frameBuffer.Width || clipBounds.Height > frameBuffer.Height) {
                 if (frameBuffer != null)
                     frameBuffer.Dispose();
@@ -86,7 +72,7 @@ namespace LayoutManager.CommonUI.Controls {
             return Graphics.FromImage(frameBuffer);
         }
 
-        private void setScrollBar() {
+        private void SetScrollBar() {
             int maxDisplayedIconCount = Width / 36;
             int iconCount = IconList.LargeIconImageList.Images.Count;
 
@@ -130,83 +116,11 @@ namespace LayoutManager.CommonUI.Controls {
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.panelIcons = new LayoutManager.CommonUI.Controls.SelectTripPlanIcon.NoBackgroundErasePanel();
-            this.hScrollBar = new System.Windows.Forms.HScrollBar();
-            this.buttonAdd = new Button();
-            this.buttonDelete = new Button();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.panelIcons.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // panelIcons
-            // 
-            this.panelIcons.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right);
-            this.panelIcons.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelIcons.Controls.Add(this.hScrollBar);
-            this.panelIcons.Location = new System.Drawing.Point(2, 2);
-            this.panelIcons.Name = "panelIcons";
-            this.panelIcons.Size = new System.Drawing.Size(244, 60);
-            this.panelIcons.TabIndex = 0;
-            this.panelIcons.Resize += this.panelIcons_Resize;
-            this.panelIcons.Paint += this.panelIcons_Paint;
-            this.panelIcons.MouseDown += this.panelIcons_MouseDown;
-            // 
-            // hScrollBar
-            // 
-            this.hScrollBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.hScrollBar.Location = new System.Drawing.Point(0, 46);
-            this.hScrollBar.Name = "hScrollBar";
-            this.hScrollBar.Size = new System.Drawing.Size(242, 12);
-            this.hScrollBar.TabIndex = 0;
-            this.hScrollBar.Scroll += this.hScrollBar_Scroll;
-            // 
-            // buttonAdd
-            // 
-            this.buttonAdd.Location = new System.Drawing.Point(4, 66);
-            this.buttonAdd.Name = "buttonAdd";
-            this.buttonAdd.Size = new System.Drawing.Size(53, 17);
-            this.buttonAdd.TabIndex = 1;
-            this.buttonAdd.Text = "Add...";
-            this.buttonAdd.Click += this.buttonAdd_Click;
-            // 
-            // buttonDelete
-            // 
-            this.buttonDelete.Location = new System.Drawing.Point(61, 66);
-            this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(53, 17);
-            this.buttonDelete.TabIndex = 1;
-            this.buttonDelete.Text = "Delete";
-            this.buttonDelete.Click += this.buttonDelete_Click;
-            // 
-            // openFileDialog
-            // 
-            this.openFileDialog.DefaultExt = "ico";
-            this.openFileDialog.Filter = "Icon files|*.ico|All files|*.*";
-            this.openFileDialog.Multiselect = true;
-            // 
-            // SelectTripPlanIcon
-            // 
-            this.Controls.Add(this.buttonAdd);
-            this.Controls.Add(this.panelIcons);
-            this.Controls.Add(this.buttonDelete);
-            this.Name = "SelectTripPlanIcon";
-            this.Size = new System.Drawing.Size(248, 86);
-            this.panelIcons.ResumeLayout(false);
-            this.ResumeLayout(false);
-        }
-        #endregion
 
-        private void panelIcons_Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
+        private void PanelIcons_Paint(object? sender, PaintEventArgs e) {
             Rectangle clipBounds = Rectangle.Ceiling(e.Graphics.VisibleClipBounds);
 
-            using (Graphics g = getFrameBufferGraphics(e.Graphics, clipBounds)) {
+            using (Graphics g = GetFrameBufferGraphics(e.Graphics, clipBounds)) {
                 g.TranslateTransform(-clipBounds.Left, -clipBounds.Top);
 
                 g.FillRectangle(SystemBrushes.Window, clipBounds);
@@ -218,7 +132,7 @@ namespace LayoutManager.CommonUI.Controls {
                         g.DrawImage(IconList.LargeIconImageList.Images[iconIndex], x + 6, 6);
 
                         if (iconIndex == selected) {
-                            using Pen p = new Pen(Color.Red, 2);
+                            using Pen p = new(Color.Red, 2);
                             g.DrawRectangle(p, x + 2, 2, 32 + 8, 32 + 8);
                         }
 
@@ -227,14 +141,14 @@ namespace LayoutManager.CommonUI.Controls {
                 }
             }
 
-            e.Graphics.DrawImage(frameBuffer, clipBounds.Location);
+            e.Graphics.DrawImage(frameBuffer!, clipBounds.Location);
         }
 
-        private void buttonAdd_Click(object sender, System.EventArgs e) {
+        private void ButtonAdd_Click(object? sender, EventArgs e) {
             if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
                 foreach (string filename in openFileDialog.FileNames) {
                     try {
-                        Icon icon = new Icon(filename);
+                        Icon icon = new(filename);
 
                         IconList.Add(icon);
                     }
@@ -243,12 +157,12 @@ namespace LayoutManager.CommonUI.Controls {
                     }
                 }
 
-                setScrollBar();
+                SetScrollBar();
                 panelIcons.Invalidate();
             }
         }
 
-        private void panelIcons_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
+        private void PanelIcons_MouseDown(object? sender, MouseEventArgs e) {
             int newSelection = -1;
             int x = 0;
 
@@ -264,7 +178,7 @@ namespace LayoutManager.CommonUI.Controls {
             SelectedIndex = newSelection;
         }
 
-        private void hScrollBar_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e) {
+        private void HScrollBar_Scroll(object? sender, ScrollEventArgs e) {
             int maxDisplayedIconCount = Width / 36;
             int oldValue = leftIconIndex;
 
@@ -309,12 +223,12 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        private void panelIcons_Resize(object sender, System.EventArgs e) {
+        private void PanelIcons_Resize(object? sender, EventArgs e) {
             if (initialized)
-                setScrollBar();
+                SetScrollBar();
         }
 
-        private void buttonDelete_Click(object sender, System.EventArgs e) {
+        private void ButtonDelete_Click(object? sender, EventArgs e) {
             int count = IconList.LargeIconImageList.Images.Count;
             bool doit = true;
 
@@ -327,7 +241,7 @@ namespace LayoutManager.CommonUI.Controls {
                     if (SelectedIndex >= count - 1)
                         SelectedIndex = count - 2;
 
-                    setScrollBar();
+                    SetScrollBar();
                     panelIcons.Invalidate();
                 }
             }

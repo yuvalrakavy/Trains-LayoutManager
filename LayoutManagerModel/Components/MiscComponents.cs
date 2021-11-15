@@ -237,9 +237,9 @@ namespace LayoutManager.Components {
 
         protected override SwitchingStateSupport GetSwitchingStateSupporter() => new LayoutPowerSelectorSwitchingStateSupporter(this);
 
-        public ILayoutPowerInlet Inlet1 => _inlet1 ?? (_inlet1 = new LayoutPowerInlet(this, "Inlet1"));
+        public ILayoutPowerInlet Inlet1 => _inlet1 ??= new LayoutPowerInlet(this, "Inlet1");
 
-        public ILayoutPowerInlet Inlet2 => _inlet2 ?? (_inlet2 = new LayoutPowerInlet(this, "Inlet2"));
+        public ILayoutPowerInlet Inlet2 => _inlet2 ??= new LayoutPowerInlet(this, "Inlet2");
 
         public bool IsSwitch => !Inlet1.IsConnected ^ !Inlet2.IsConnected;
 
@@ -567,8 +567,8 @@ namespace LayoutManager.Components {
 
         public void ReadXml(XmlReader r) {
             if (r.Name == E_Link) {
-                areaGuid = new Guid(XmlConvert.DecodeName(r.GetAttribute(A_AreaGuid)));
-                trackLinkGuid = new Guid(XmlConvert.DecodeName(r.GetAttribute(A_TrackLinkGuid)));
+                areaGuid = new Guid(Ensure.NotNull<string>(XmlConvert.DecodeName(r.GetAttribute(A_AreaGuid))));
+                trackLinkGuid = new Guid(Ensure.NotNull<string>(XmlConvert.DecodeName(r.GetAttribute(A_TrackLinkGuid))));
                 r.Read();
             }
             else
@@ -579,7 +579,10 @@ namespace LayoutManager.Components {
 
         #region IComparable<LayoutTrackLink> Members
 
-        public int CompareTo(LayoutTrackLink other) {
+        public int CompareTo(LayoutTrackLink? other) {
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+
             return Equals(other) ? 0 : GetHashCode() - other.GetHashCode();
         }
 
@@ -608,7 +611,7 @@ namespace LayoutManager.Components {
 
         public LayoutTrackComponent? LinkedTrack => LinkedComponent?.Spot.Track;
 
-        public LayoutTrackComponent Track => Spot.Track;
+        public LayoutTrackComponent Track => Ensure.NotNull<LayoutTrackComponent>(Spot?.Track);
 
         /// <summary>
         /// Return a LayoutTrackLink for this component
@@ -690,7 +693,7 @@ namespace LayoutManager.Components {
                 return true;
             }
             else if (r.Name == E_TrackLink) {
-                Guid id = new Guid(XmlConvert.DecodeName(r.GetAttribute(A_Id)));
+                Guid id = new Guid(Ensure.NotNull<string>(XmlConvert.DecodeName(r.GetAttribute(A_Id))));
 
                 if (context.ReadXmlContext == LayoutReadXmlContext.PasteComponents) {
                     bool idFound = false;
@@ -924,10 +927,10 @@ namespace LayoutManager.Components {
         /// The gate open/close (or transition state)
         /// </summary>
         public LayoutGateState GateState {
-            get => LayoutModel.StateManager.Components.StateOf(Id, Topic_GateState).AttributeValue(A_State).Enum<LayoutGateState>() ?? LayoutGateState.Close;
+            get => LayoutModel.StateManager.Components.OptionalStateOf(Id, Topic_GateState).AttributeValue(A_State).Enum<LayoutGateState>() ?? LayoutGateState.Close;
 
             set {
-                LayoutModel.StateManager.Components.StateOf(Id, Topic_GateState, create: true).SetAttributeValue(A_State, value);
+                LayoutModel.StateManager.Components.StateOf(Id, Topic_GateState).SetAttributeValue(A_State, value);
                 OnComponentChanged();
 
                 if (value == LayoutGateState.Open)
@@ -1001,10 +1004,10 @@ namespace LayoutManager.Components {
         internal const string GateMotionDoneConnectionPoint = "GateMotionDone";
 
         [LayoutEvent("open-gate-request", SenderType = typeof(LayoutGateComponent))]
-        private void openGateRequest(LayoutEvent e) {
+        private void OpenGateRequest(LayoutEvent e) {
             var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
 
-            if (pendingEvents.TryGetValue(gateComponent.Id, out LayoutDelayedEvent pendingEvent)) {
+            if (pendingEvents.TryGetValue(gateComponent.Id, out LayoutDelayedEvent? pendingEvent)) {
                 pendingEvent.Cancel();
                 pendingEvents.Remove(gateComponent.Id);
             }
@@ -1024,10 +1027,10 @@ namespace LayoutManager.Components {
         }
 
         [LayoutEvent("close-gate-request", SenderType = typeof(LayoutGateComponent))]
-        private void closeGateRequest(LayoutEvent e) {
+        private void CloseGateRequest(LayoutEvent e) {
             var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
 
-            if (pendingEvents.TryGetValue(gateComponent.Id, out LayoutDelayedEvent pendingEvent)) {
+            if (pendingEvents.TryGetValue(gateComponent.Id, out LayoutDelayedEvent? pendingEvent)) {
                 pendingEvent.Cancel();
                 pendingEvents.Remove(gateComponent.Id);
             }
@@ -1045,13 +1048,13 @@ namespace LayoutManager.Components {
             gateComponent.GateState = LayoutGateState.Closing;
         }
 
-        private static ControlConnectionPointReference cprOf(LayoutGateComponent gateComponent, string name) {
+        private static ControlConnectionPointReference CprOf(LayoutGateComponent gateComponent, string name) {
             var cp = Ensure.NotNull<ControlConnectionPoint>(LayoutModel.ControlManager.ConnectionPoints[gateComponent, name], name);
             return new ControlConnectionPointReference(cp);
         }
 
         private static void StartGateMotion(LayoutGateComponent gateComponent, int directionState) {
-            ControlConnectionPointReference cprOf(string name) => StandardGateDrivers.cprOf(gateComponent, name);
+            ControlConnectionPointReference cprOf(string name) => StandardGateDrivers.CprOf(gateComponent, name);
 
             if (gateComponent.Info.TwoDirectionRelays) {
                 var gateRelay1Reference = cprOf(Direction1ConnectionPoint);
@@ -1073,7 +1076,7 @@ namespace LayoutManager.Components {
         }
 
         private static void StopGateMotion(LayoutGateComponent gateComponent) {
-            ControlConnectionPointReference cprOf(string name) => StandardGateDrivers.cprOf(gateComponent, name);
+            ControlConnectionPointReference cprOf(string name) => StandardGateDrivers.CprOf(gateComponent, name);
 
             if (gateComponent.Info.TwoDirectionRelays) {
                 var gateRelay1Reference = cprOf(Direction1ConnectionPoint);
@@ -1092,12 +1095,12 @@ namespace LayoutManager.Components {
         }
 
         [LayoutEvent("gate-is-open", SenderType = typeof(LayoutGateComponent))]
-        private void gateIsOpen(LayoutEvent e) {
+        private void GateIsOpen(LayoutEvent e) {
             var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
 
             StopGateMotion(gateComponent);
 
-            if (pendingEvents.TryGetValue(gateComponent.Id, out LayoutDelayedEvent pendingEvent)) {
+            if (pendingEvents.TryGetValue(gateComponent.Id, out LayoutDelayedEvent? pendingEvent)) {
                 pendingEvent.Cancel();
                 pendingEvents.Remove(gateComponent.Id);
             }
@@ -1106,12 +1109,12 @@ namespace LayoutManager.Components {
         }
 
         [LayoutEvent("gate-is-closed", SenderType = typeof(LayoutGateComponent))]
-        private void gateIsClosed(LayoutEvent e) {
+        private void GateIsClosed(LayoutEvent e) {
             var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
 
             StopGateMotion(gateComponent);
 
-            if (pendingEvents.TryGetValue(gateComponent.Id, out LayoutDelayedEvent pendingEvent)) {
+            if (pendingEvents.TryGetValue(gateComponent.Id, out LayoutDelayedEvent? pendingEvent)) {
                 pendingEvent.Cancel();
                 pendingEvents.Remove(gateComponent.Id);
             }
@@ -1120,7 +1123,9 @@ namespace LayoutManager.Components {
         }
 
         [LayoutEvent("gate-open-timeout", SenderType = typeof(LayoutGateComponent))]
-        private void gateOpenTimeout(LayoutEvent e) {
+#pragma warning disable CA1822 // Mark members as static
+        private void GateOpenTimeout(LayoutEvent e) {
+#pragma warning restore CA1822 // Mark members as static
             var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
 
             Error(gateComponent, "Timeout while waiting for gate to open");
@@ -1128,7 +1133,7 @@ namespace LayoutManager.Components {
         }
 
         [LayoutEvent("gate-close-timeout", SenderType = typeof(LayoutGateComponent))]
-        private void gateCloseTimeout(LayoutEvent e) {
+        private void GateCloseTimeout(LayoutEvent e) {
             var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
 
             Error(gateComponent, "Timeout while waiting for gate to close");
@@ -1136,7 +1141,7 @@ namespace LayoutManager.Components {
         }
 
         [LayoutEvent("control-connection-point-state-changed-notification")]
-        private void controlConnectionPointStateChangedNotification(LayoutEvent e) {
+        private void ControlConnectionPointStateChangedNotification(LayoutEvent e) {
             var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
 
             if (connectionPointRef.IsConnected) {
