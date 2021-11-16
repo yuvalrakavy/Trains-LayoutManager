@@ -58,7 +58,7 @@ namespace Intellibox.Dialogs {
 			this.textBoxNumber.Name = "textBoxNumber";
 			this.textBoxNumber.Size = new System.Drawing.Size(68, 20);
 			this.textBoxNumber.TabIndex = 1;
-			this.textBoxNumber.Validated += new System.EventHandler(this.textBoxNumber_Validated);
+			this.textBoxNumber.Validated += new System.EventHandler(this.TextBoxNumber_Validated);
 			// 
 			// label2
 			// 
@@ -78,7 +78,7 @@ namespace Intellibox.Dialogs {
 			this.textBoxValue.Name = "textBoxValue";
 			this.textBoxValue.Size = new System.Drawing.Size(68, 20);
 			this.textBoxValue.TabIndex = 3;
-			this.textBoxValue.TextChanged += new System.EventHandler(this.textBoxValue_TextChanged);
+			this.textBoxValue.TextChanged += new System.EventHandler(this.TextBoxValue_TextChanged);
 			// 
 			// label3
 			// 
@@ -108,7 +108,7 @@ namespace Intellibox.Dialogs {
 			this.buttonOk.TabIndex = 6;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
-			this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+			this.buttonOk.Click += new System.EventHandler(this.ButtonOk_Click);
 			// 
 			// buttonCancel
 			// 

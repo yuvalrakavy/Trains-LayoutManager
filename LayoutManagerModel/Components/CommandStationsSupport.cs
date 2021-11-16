@@ -156,7 +156,7 @@ namespace LayoutManager.Components {
             get; set;
         }
 
-        protected virtual ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) {
+        protected virtual ILayoutCommandStationEmulator? CreateCommandStationEmulator(string pipeName) {
             throw new ArgumentException("You must implement a CreateCommandStationEmulator method, or not use layout emulation");
         }
 

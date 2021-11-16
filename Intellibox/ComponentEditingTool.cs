@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager;
+using LayoutManager.CommonUI;
 
 namespace Intellibox {
     /// <summary>
@@ -13,11 +14,9 @@ namespace Intellibox {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
-
         #region Implementation of ILayoutModuleSetup
 
-        public LayoutModule Module { set; get; }
+        public LayoutModule? Module { set; get; }
 
         #endregion
 
@@ -50,7 +49,7 @@ namespace Intellibox {
 
         [LayoutEvent("model-component-placement-request", SenderType = typeof(IntelliboxComponent))]
         private void PlaceTrackContactRequest(LayoutEvent e) {
-            IntelliboxComponent component = (IntelliboxComponent)e.Sender;
+            var component = Ensure.NotNull<IntelliboxComponent>(e.Sender);
             using Dialogs.CentralStationProperties csProperties = new(component);
             if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 component.XmlInfo.XmlDocument = csProperties.XmlInfo.XmlDocument;
@@ -67,15 +66,15 @@ namespace Intellibox {
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(IntelliboxComponent))]
         private void AddTrackContactContextMenuEntries(LayoutEvent e) {
-            Menu menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-            IntelliboxComponent component = (IntelliboxComponent)e.Sender;
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+            IntelliboxComponent component = Ensure.NotNull<IntelliboxComponent>(e.Sender);
 
             menu.Items.Add(new IntelliboxMenuItemProperties(component));
         }
 
         #region Intellibox Menu Item Classes
 
-        private class IntelliboxMenuItemProperties : MenuItem {
+        private class IntelliboxMenuItemProperties : LayoutMenuItem {
             private readonly IntelliboxComponent component;
 
             internal IntelliboxMenuItemProperties(IntelliboxComponent component) {
@@ -103,7 +102,6 @@ namespace Intellibox {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            components = new Container();
         }
         #endregion
     }

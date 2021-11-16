@@ -46,7 +46,7 @@ namespace LayoutLGB {
 
         [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
         private void AddCentralStationItem(LayoutEvent e) {
-            XmlElement categoryElement = (XmlElement)e.Sender;
+            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
             ModelComponent old = (ModelComponent)e.Info;
 
             if (old == null)

@@ -8,17 +8,12 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
 
-#pragma warning disable IDE0051, IDE0060
-
 namespace Intellibox {
     /// <summary>
     /// Summary description for ComponentView.
     /// </summary>
     [LayoutModule("Intellibox Component View", UserControl = false)]
-    public class ComponentView : System.ComponentModel.Component, ILayoutModuleSetup {
-        private System.Windows.Forms.ImageList imageListComponents;
-        private IContainer components;
-
+    public partial class ComponentView : System.ComponentModel.Component, ILayoutModuleSetup {
         #region Constructors
 
         public ComponentView(IContainer container) {
@@ -50,8 +45,8 @@ namespace Intellibox {
 
         [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
         private void AddCentralStationItem(LayoutEvent e) {
-            XmlElement categoryElement = (XmlElement)e.Sender;
-            ModelComponent old = (ModelComponent)e.Info;
+            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
+            var old = (ModelComponent?)e.Info;
 
             if (old == null)
                 categoryElement.InnerXml += "<Item Name='Intellibox' Tooltip='Intellibox Command Station' />";
@@ -59,7 +54,7 @@ namespace Intellibox {
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='Intellibox']")]
         private void PaintCentralStationItem(LayoutEvent e) {
-            Graphics g = (Graphics)e.Info;
+            var g = Ensure.NotNull<Graphics>(e.Info);
 
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
@@ -97,7 +92,7 @@ namespace Intellibox {
             internal DrawingRegionIntellibox(ModelComponent component, ILayoutView view) : base(component, view) {
             }
 
-            public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
+            public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook? selectionLook, Graphics g) {
                 IntelliboxPainter painter = new(view.GridSizeInModelCoordinates);
 
                 painter.Paint(g);
@@ -115,11 +110,11 @@ namespace Intellibox {
         }
 
         private class IntelliboxPainter {
-            internal IntelliboxPainter(Size componentSize) {
+            internal IntelliboxPainter(Size _) {
             }
 
             internal void Paint(Graphics g) {
-                Image image = (Image)EventManager.Event(new LayoutEvent("get-image", this));
+                var image = Ensure.NotNull<Image>(EventManager.Event(new LayoutEvent("get-image", this)));
 
                 g.DrawImage(image, new Rectangle(new Point(1, 1), image.Size));
             }
@@ -131,9 +126,9 @@ namespace Intellibox {
 
         [LayoutEvent("get-command-station-address-format", IfEvent = "*[CommandStation/@Type='IntelliboxMarklin']")]
         [LayoutEvent("get-command-station-address-format", IfEvent = "*[CommandStation/@Type='Any']")]
-        private void getCommandStationFormat(LayoutEvent e) {
+        private void GetCommandStationFormat(LayoutEvent e) {
             if (e.Info == null) {
-                AddressUsage usage = (AddressUsage)e.Sender;
+                var usage = Ensure.ValueNotNull<AddressUsage>(e.Sender);
                 AddressFormatInfo addressFormat = new();
 
                 switch (usage) {
@@ -176,18 +171,18 @@ namespace Intellibox {
         /// </summary>
         /// <param name="e.Info">The array of events to be invoked</param>
         [LayoutEvent("intellibox-invoke-events")]
-        private void intelliboxInvokeEvents(LayoutEvent e) {
-            List<LayoutEvent> events = (List<LayoutEvent>)e.Info;
+        private void IntelliboxInvokeEvents(LayoutEvent e) {
+            List<LayoutEvent> events = Ensure.NotNull<List<LayoutEvent>>(e.Info);
 
             events.ForEach((LayoutEvent ev) => EventManager.Event(ev));
         }
 
         [LayoutEvent("intellibox-notify-locomotive-state")]
-        private void intelliboxNotifiyLocomotiveState(LayoutEvent e) {
-            IntelliboxComponent component = (IntelliboxComponent)e.Sender;
-            ExternalLocomotiveEventInfo info = (ExternalLocomotiveEventInfo)e.Info;
+        private void IntelliboxNotifiyLocomotiveState(LayoutEvent e) {
+            var component = Ensure.NotNull<IntelliboxComponent>(e.Sender);
+            var info = Ensure.ValueNotNull<ExternalLocomotiveEventInfo>(e.Info);
             var addressMap = EventManager.Event<object, object, OnTrackLocomotiveAddressMap>("get-on-track-locomotive-address-map", component);
-            var addressMapEntry = addressMap[info.Unit];
+            var addressMapEntry = addressMap?[info.Unit];
 
             if (addressMapEntry == null)
                 LayoutModuleBase.Warning("Locomotive status reported for a unrecognized locomotive (unit " + info.Unit + ")");
@@ -219,25 +214,6 @@ namespace Intellibox {
             }
         }
 
-        #endregion
-
-        #region Component Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.components = new Container();
-            System.Resources.ResourceManager resources = new(typeof(ComponentView));
-            this.imageListComponents = new System.Windows.Forms.ImageList(this.components) {
-                // 
-                // imageListComponents
-                // 
-                ImageSize = new System.Drawing.Size(30, 30),
-                ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListComponents.ImageStream"),
-                TransparentColor = System.Drawing.Color.Transparent
-            };
-        }
         #endregion
 
     }

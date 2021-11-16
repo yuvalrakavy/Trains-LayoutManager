@@ -58,14 +58,13 @@ namespace Intellibox {
     /// <summary>
     /// Implementation of Intellibox interface
     /// </summary>
-#pragma warning disable IDE0051, IDE0060, IDE0052
     public class IntelliboxComponent : LayoutCommandStationComponent {
         private const string A_MinTimeBetweenSpeedSteps = "MinTimeBetweenSpeedSteps";
         //private static readonly LayoutTraceSwitch traceIntellibox = new LayoutTraceSwitch("Intellibox", "Intellibox Command Station");
-        private OutputManager commandStationManager;
+        private OutputManager? commandStationManager;
 
-        private ControlBus _motorolaBus = null;
-        private ControlBus _S88bus = null;
+        private ControlBus? _motorolaBus = null;
+        private ControlBus? _S88bus = null;
 
         private const int queuePowerCommands = 0;               // Queue for power on/off etc.
         private const int queueLayoutSwitchingCommands = 1; // Queue for turnout/lights control commands
@@ -85,9 +84,9 @@ namespace Intellibox {
 
         public IntelliboxComponentInfo Info => new(this, Element);
 
-        public ControlBus MotorolaBus => _motorolaBus ??= LayoutModel.ControlManager.Buses.GetBus(this, "Motorola");
+        public ControlBus MotorolaBus => _motorolaBus ??= Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "Motorola"));
 
-        public ControlBus S88Bus => _S88bus ??= LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS");
+        public ControlBus S88Bus => _S88bus ??= Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS"));
 
         internal byte CachedOperationModeDebounceCount { get; set; }
 
@@ -136,8 +135,8 @@ namespace Intellibox {
         protected override async Task OnTerminateCommunication() {
             await base.OnTerminateCommunication();
 
-            await commandStationManager.WaitForIdle();
             if (commandStationManager != null) {
+                await commandStationManager.WaitForIdle();
                 commandStationManager.Terminate();
                 commandStationManager = null;
             }
@@ -151,7 +150,7 @@ namespace Intellibox {
 
         public override bool TrainsAnalysisSupported => true;
 
-        protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) => null;
+        protected override ILayoutCommandStationEmulator? CreateCommandStationEmulator(string pipeName) => null;
 
         #endregion
 
@@ -169,7 +168,7 @@ namespace Intellibox {
         [LayoutEvent("disconnect-power-request")]
         private void PowerDisconnectRequest(LayoutEvent e) {
             if (e.Sender == null || e.Sender == this)
-                commandStationManager.AddCommand(queuePowerCommands, new IntelliboxPowerOffCommand(this));
+                commandStationManager?.AddCommand(queuePowerCommands, new IntelliboxPowerOffCommand(this));
 
             PowerOff();
         }
@@ -177,14 +176,14 @@ namespace Intellibox {
         [LayoutEvent("connect-power-request")]
         private void PowerConnectRequest(LayoutEvent e) {
             if (e.Sender == null || e.Sender == this)
-                commandStationManager.AddCommand(queuePowerCommands, new IntelliboxPowerOnCommand(this));
+                commandStationManager?.AddCommand(queuePowerCommands, new IntelliboxPowerOnCommand(this));
 
             PowerOn();
         }
 
         protected override void OnConnectTrackPower(LayoutEvent e) {
             if (e.Sender == this)
-                commandStationManager.AddCommand(queuePowerCommands, new IntelliboxTrackPowerOnCommand(this));
+                commandStationManager?.AddCommand(queuePowerCommands, new IntelliboxTrackPowerOnCommand(this));
 
             PowerOn();
         }
@@ -192,9 +191,13 @@ namespace Intellibox {
         // Implement command events
         [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
         private Task ChangeTurnoutState(LayoutEvent e) {
+            if (commandStationManager == null)
+                throw new NullReferenceException(nameof(commandStationManager));
+
             var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
             var state = Ensure.ValueNotNull<int>(e.Info, "state");
             int address = connectionPointRef.Module.Address + connectionPointRef.Index;
+
             var tasks = new List<Task> {
                 commandStationManager.AddCommand(queueLayoutSwitchingCommands, new IntelliboxAccessoryCommand(this, address, state)),
                 commandStationManager.AddCommand(queueLayoutSwitchingCommands, new IntelliboxEndAccessoryCommand(this, address, state))
@@ -208,7 +211,10 @@ namespace Intellibox {
 
         [LayoutAsyncEvent("change-batch-of-track-component-state-command", IfEvent = "LayoutEvent[Options/@CommandStationID='`string(@ID)`']")]
         private Task ChangeBatchOfTurnoutStates(LayoutEvent e) {
-            List<SwitchingCommand> switchingCommands = (List<SwitchingCommand>)e.Info;
+            if (commandStationManager == null)
+                throw new NullReferenceException(nameof(commandStationManager));
+
+            var switchingCommands = Ensure.NotNull<List<SwitchingCommand>>(e.Info);
             var tasks = new List<Task>();
             int count;
 
@@ -235,8 +241,11 @@ namespace Intellibox {
 
         [LayoutEvent("change-signal-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
         private void ChangeSignalStateCommand(LayoutEvent e) {
-            ControlConnectionPointReference connectionPointRef = (ControlConnectionPointReference)e.Sender;
-            LayoutSignalState state = (LayoutSignalState)e.Info;
+            if (commandStationManager == null)
+                throw new NullReferenceException(nameof(commandStationManager));
+
+            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender);
+            var state = Ensure.ValueNotNull<LayoutSignalState>(e.Info);
             int address = connectionPointRef.Module.Address + connectionPointRef.Index;
             byte v;
 
@@ -254,9 +263,12 @@ namespace Intellibox {
 
         [LayoutEvent("locomotive-motion-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private void LocomotiveMotionCommand(LayoutEvent e) {
-            LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
-            int speed = (int)e.Info;
-            TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
+            if (commandStationManager == null)
+                throw new NullReferenceException(nameof(commandStationManager));
+
+            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
+            int speed = Ensure.ValueNotNull<int>(e.Info);
+            var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
             LocomotiveOrientation direction = LocomotiveOrientation.Forward;
             int logicalSpeed;
 
@@ -278,18 +290,18 @@ namespace Intellibox {
 
         [LayoutEvent("set-locomotive-lights-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private void SetLocomotiveLightsCommand(LayoutEvent e) {
-            LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
-            TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
+            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
+            var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
 
             EventManager.Event(new LayoutEvent("locomotive-motion-command", loco, train.SpeedInSteps).SetCommandStation(train));
         }
 
         private byte GetFunctionMask(LocomotiveInfo loco) {
-            TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
+            var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
             byte functionMask = 0;
 
             for (int functionNumber = 0; functionNumber < 8; functionNumber++) {
-                LocomotiveFunctionInfo functionDef = loco.GetFunctionByNumber(functionNumber + 1);
+                LocomotiveFunctionInfo? functionDef = loco.GetFunctionByNumber(functionNumber + 1);
 
                 if (functionDef != null && train.GetFunctionState(functionDef.Name, loco.Id, false))
                     functionMask |= (byte)(1 << functionNumber);
@@ -300,17 +312,20 @@ namespace Intellibox {
 
         [LayoutEvent("set-locomotive-function-state-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private void SetLocomotiveFunctionStateCommand(LayoutEvent e) {
-            LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
+            if (commandStationManager == null)
+                throw new NullReferenceException(nameof(commandStationManager));
+
+            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
 
             commandStationManager.AddCommand(queueLocoCommands, new IntelliboxLocomotiveFunctionsCommand(this, loco.AddressProvider.Unit, GetFunctionMask(loco)));
         }
 
         [LayoutEvent("trigger-locomotive-function-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private void TriggerLocomotiveFunctionCommand(LayoutEvent e) {
-            LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
-            string functionName = (string)e.Info;
-            TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
-            bool state = train.GetFunctionState(functionName, loco.Id, false);
+            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
+            var functionName = Ensure.NotNull<string>(e.Info);
+            var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
+            var state = train.GetFunctionState(functionName, loco.Id, false);
 
             state = !state;
             train.SetLocomotiveFunctionState(functionName, loco.Id, state);
@@ -352,9 +367,9 @@ namespace Intellibox {
 
     public class SOcollection : LayoutXmlWrapper, IEnumerable<SOinfo> {
         public SOcollection(XmlElement parentElement) {
-            Element = parentElement["SpecialOptions"];
+            OptionalElement = parentElement["SpecialOptions"];
 
-            if (Element == null) {
+            if (OptionalElement == null) {
                 Element = parentElement.OwnerDocument.CreateElement("SpecialOptions");
                 parentElement.AppendChild(Element);
             }
@@ -418,20 +433,20 @@ namespace Intellibox {
 
         protected IntelliboxComponent CommandStation { get; }
 
-        protected Stream Stream { get; }
+        protected Stream? Stream { get; }
 
         protected void BeginCommand() {
-            Stream.WriteByte((byte)'x');
+            Stream?.WriteByte((byte)'x');
         }
 
         protected void EndCommand() {
-            Stream.Flush();
+            Stream?.Flush();
         }
 
         protected byte GetResponse() {
             byte[] buffer = new byte[1];
 
-            Stream.Read(buffer, 0, 1);
+            Stream?.Read(buffer, 0, 1);
 
             Trace.WriteLineIf(traceIntelliboxRaw.TraceVerbose, "  Response " + Convert.ToString(buffer[0], 16));
             return buffer[0];
@@ -452,7 +467,7 @@ namespace Intellibox {
 
             BeginCommand();
             foreach (byte b in command)
-                Stream.WriteByte(b);
+                Stream?.WriteByte(b);
             EndCommand();
 
             // Read reply
@@ -469,7 +484,7 @@ namespace Intellibox {
         protected byte Command(byte b) => Command(new byte[] { b });
 
         protected void ReportError(byte errorCode) {
-            string message = null;
+            string? message = null;
 
             message = errorCode switch
             {
@@ -591,18 +606,18 @@ namespace Intellibox {
     /// and report those events to the main thread. This command is sent as idle command.
     /// </summary>
     internal class InterlliboxProcessEventsCommand : IntelliboxCommand, IOutputIdlecommand {
-        private ControlBus _motorolaBus = null;
-        private ControlBus _S88bus = null;
-        private byte[] previousReply = null;
+        private ControlBus? _motorolaBus = null;
+        private ControlBus? _S88bus = null;
+        private byte[]? previousReply = null;
         private readonly List<FeedbackData> feedbackData = new();
 
         public InterlliboxProcessEventsCommand(IntelliboxComponent commandStation, int pollingPeriod) : base(commandStation) {
             DefaultWaitPeriod = pollingPeriod;
         }
 
-        protected ControlBus MotorolaBus => _motorolaBus ??= LayoutModel.ControlManager.Buses.GetBus(CommandStation, "Motorola");
+        protected ControlBus MotorolaBus => _motorolaBus ??= Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(CommandStation, "Motorola"));
 
-        protected ControlBus S88Bus => _S88bus ??= LayoutModel.ControlManager.Buses.GetBus(CommandStation, "S88BUS");
+        protected ControlBus S88Bus => _S88bus ??= Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(CommandStation, "S88BUS"));
 
         public override void Do() {
             List<LayoutEvent> events = new();
