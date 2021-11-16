@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager;
+using LayoutManager.CommonUI;
 
 #pragma warning disable IDE0051, IDE0052
 namespace NumatoController {
@@ -11,14 +12,10 @@ namespace NumatoController {
     /// </summary>
     [LayoutModule("Numato Relay Controller Component Editing Tool", UserControl = false)]
     public class ComponentTool : System.ComponentModel.Component, ILayoutModuleSetup {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private Container components = null;
 
         #region Implementation of ILayoutModuleSetup
 
-        public LayoutModule Module { set; get; }
+        public LayoutModule? Module { set; get; }
 
         #endregion
 
@@ -29,7 +26,6 @@ namespace NumatoController {
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
             container.Add(this);
-            InitializeComponent();
 
             //
             // TODO: Add any constructor code after InitializeComponent call
@@ -37,21 +33,13 @@ namespace NumatoController {
         }
 
         public ComponentTool() {
-            /// <summary>
-            /// Required for Windows.Forms Class Composition Designer support
-            /// </summary>
-            InitializeComponent();
-
-            //
-            // TODO: Add any constructor code after InitializeComponent call
-            //
         }
 
         #endregion
 
         [LayoutEvent("model-component-placement-request", SenderType = typeof(NumatoController))]
         private void PlaceNumatoRelayController(LayoutEvent e) {
-            var component = (NumatoController)e.Sender;
+            var component = Ensure.NotNull<NumatoController>(e.Sender);
             using var csProperties = new Dialogs.NumatoControllerProperties(component);
 
             if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
@@ -64,8 +52,8 @@ namespace NumatoController {
 
         [LayoutEvent("model-component-post-placement-request", SenderType = typeof(NumatoController))]
         private void PlaceNumatoRelayControllerRelayModule(LayoutEvent e) {
-            var component = (NumatoController)e.Sender;
-            var command = (ILayoutCompoundCommand)e.Info;
+            var component = Ensure.NotNull<NumatoController>(e.Sender);
+            var command = Ensure.NotNull<ILayoutCompoundCommand>(e.Info);
 
             var bus = component.RelayBus;
             var moduleType = $"{component.RelaysCount}_NumatoRelays";
@@ -92,15 +80,5 @@ namespace NumatoController {
                     LayoutController.Do(new LayoutModifyComponentDocumentCommand(component, d.XmlInfo));
             });
         }
-
-        #region Component Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            components = new Container();
-        }
-        #endregion
     }
 }

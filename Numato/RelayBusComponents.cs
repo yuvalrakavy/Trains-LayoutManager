@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Xml;
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051
 namespace LayoutManager.ControlComponents {
     [LayoutModule("Numato Relay Components")]
     internal class NumatoControlComponents : LayoutModuleBase {
-        private ControlBusType relayBus = null;
+        private ControlBusType? relayBus = null;
 
         [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='NumatoRelayBus']")]
-        private void getRelayBusBusType(LayoutEvent e) {
+        private void GetRelayBusBusType(LayoutEvent e) {
             if (relayBus == null) {
                 relayBus = new ControlBusType {
                     BusFamilyName = "RelayBus",
@@ -28,9 +27,9 @@ namespace LayoutManager.ControlComponents {
         }
 
         [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='RelayBus']")]
-        private void recommendRelayBusControlModuleTypes(LayoutEvent e) {
-            ControlConnectionPointDestination connectionDestination = (ControlConnectionPointDestination)e.Sender;
-            IList<string> moduleTypeNames = (IList<string>)e.Info;
+        private void RecommendRelayBusControlModuleTypes(LayoutEvent e) {
+            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender);
+            var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info);
 
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Relay")) {
                 moduleTypeNames.Add("2_NumatoRelays");
@@ -62,17 +61,17 @@ namespace LayoutManager.ControlComponents {
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='16_NumatoRelays']")]
         [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='32_NumatoRelays']")]
         [LayoutEvent("enum-control-module-types")]
-        private void getRelayModule(LayoutEvent e) {
-            XmlElement parentElement = (XmlElement)e.Sender;
+        private void GetRelayModule(LayoutEvent e) {
+            var parentElement = Ensure.NotNull<XmlElement>(e.Sender);
 
             if (e.EventName == "enum-control-module-types") {
                 foreach (var nRelays in new int[] { 2, 4, 8, 16, 32 })
                     GetRelayModuleType(parentElement, nRelays);
             }
             else {
-                var moduleTypeName = (string)e.GetOption("ModuleTypeName");
+                var moduleTypeName = e.GetOption("ModuleTypeName").ValidString();
 
-                int nRelay = Convert.ToInt32(moduleTypeName.Substring(0, moduleTypeName.IndexOf('_')));
+                int nRelay = Convert.ToInt32(moduleTypeName[..moduleTypeName.IndexOf('_')]);
 
                 GetRelayModuleType(parentElement, nRelay);
             }

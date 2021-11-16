@@ -6,6 +6,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>..\LayoutManager\bin\Debug\Modules\</OutputPath>
@@ -18,9 +19,7 @@
     <Compile Update="ComponentEditingTool.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="ComponentView.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="ComponentView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LayoutBaseServices\LayoutBaseServices.csproj" />

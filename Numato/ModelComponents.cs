@@ -11,7 +11,6 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-#pragma warning disable CA1031
 namespace NumatoController {
     public enum InterfaceType {
         Serial,
@@ -26,9 +25,10 @@ namespace NumatoController {
         private const string A_ReadIntervalTimeout = "ReadIntervalTimeout";
         private const string A_ReadTotalTimeoutConstant = "ReadTotalTimeoutConstant";
         private const string A_WriteTotalTimeoutConstant = "WriteTotalTimeoutConstant";
-        public static LayoutTraceSwitch TraceNumato = new LayoutTraceSwitch("NumatoController", "Numato Relay controller");
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "<Pending>")]
+        public static LayoutTraceSwitch TraceNumato = new("NumatoController", "Numato Relay controller");
 
-        private ControlBus _relayBus = null;
+        private ControlBus? _relayBus = null;
 
         public NumatoController() {
             this.XmlDocument.LoadXml(
@@ -42,11 +42,11 @@ namespace NumatoController {
 
         public override bool LayoutEmulationSupported => true;
 
-        public ControlBus RelayBus => _relayBus ?? (_relayBus = LayoutModel.ControlManager.Buses.GetBus(this, "NumatoRelayBus"));
+        public ControlBus RelayBus => _relayBus ??= Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "NumatoRelayBus"));
 
         protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) => new NumatorEmulator(this, pipeName);
 
-        private OutputManager OutputManager { get; set; }
+        private OutputManager? OutputManager { get; set; }
 
         public int RelaysCount => (int)Element.AttributeValue(A_Relays);
 
@@ -126,10 +126,9 @@ namespace NumatoController {
         #endregion
 
         #region Event Handlers
-#pragma warning disable IDE0051, IDE0060
 
         [LayoutEvent("begin-design-time-layout-activation")]
-        private void beginDesignTimeLayoutActivation(LayoutEvent e) {
+        private void BeginDesignTimeLayoutActivation(LayoutEvent e) {
             OnCommunicationSetup();
             OpenCommunicationStream();
             OnInitialize();
@@ -146,21 +145,22 @@ namespace NumatoController {
         }
 
         [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private Task changeTrackComponentStateCommand(LayoutEvent e0) {
-            var e = (LayoutEventInfoValueType<ControlConnectionPointReference, int>)e0;
-            var connectionPointRef = e.Sender;
+        private Task ChangeTrackComponentStateCommand(LayoutEvent e) {
+            if (OutputManager == null)
+                throw new NullReferenceException(nameof(OutputManager));
 
+            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender);
+            var on = Ensure.ValueNotNull<int>(e.Info) != 0;
             int iRelay = connectionPointRef.Module.Address + connectionPointRef.Index;
-            bool on = e.Info != 0;
 
             return OutputManager.AddCommand(new SetRelayCommand(this, iRelay, on));
         }
 
         [LayoutEvent("numato-invoke-events", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private void numatoInvokeEvents(LayoutEvent e0) {
-            var e = (LayoutEvent<IList<LayoutEvent>>)e0;
+        private void NumatoInvokeEvents(LayoutEvent e0) {
+            var events = Ensure.NotNull<IList<LayoutEvent>>(e0.Sender);
 
-            foreach (var anEvent in e.Sender)
+            foreach (var anEvent in events)
                 EventManager.Event(anEvent);
         }
 
@@ -183,7 +183,7 @@ namespace NumatoController {
             protected void Send(byte[] command) {
                 Trace.WriteLineIf(TraceNumato.TraceInfo, $"NumatoRelayController: Sending: {Encoding.UTF8.GetString(command)}");
 
-                RelayController.CommunicationStream.Write(command, 0, command.Length);
+                RelayController.CommunicationStream?.Write(command, 0, command.Length);
             }
 
             protected void Send(string whatToSend) => Send(Encoding.UTF8.GetBytes(whatToSend));
@@ -195,7 +195,7 @@ namespace NumatoController {
 
             private const int maxReplySize = 1024;
 
-            private static bool isSuffixOf(byte[] suffix, byte[] buffer, int endOfBufferIndex) {
+            private static bool IsSuffixOf(byte[] suffix, byte[] buffer, int endOfBufferIndex) {
                 if (endOfBufferIndex < suffix.Length)
                     return false;
 
@@ -213,11 +213,14 @@ namespace NumatoController {
                 var _ = expectToGet.Length; // expectLength
                 var index = 0;
 
+                if (RelayController.CommunicationStream == null)
+                    throw new NullReferenceException(nameof(RelayController.CommunicationStream));
+
                 do {
                     RelayController.CommunicationStream.Read(reply, index, 1);
                     index++;            // Read an additional byte
 
-                    if (isSuffixOf(expectToGet, reply, index))
+                    if (IsSuffixOf(expectToGet, reply, index))
                         break;
 
                 } while (index < reply.Length);
@@ -225,14 +228,14 @@ namespace NumatoController {
                 if (index == reply.Length)
                     throw new FormatException("Invalid Numator Relay controller reply (too long, probably junk)");
 
-                return reply.ToString();
+                return reply.ToString() ?? String.Empty;
             }
 
             protected string CollectReply(string expectToGet) => CollectReply(Encoding.UTF8.GetBytes(expectToGet));
 
             public override void Do() {
                 SendCommand();
-                RelayController.OutputManager.SetReply(CollectReply(">"));
+                RelayController.OutputManager?.SetReply(CollectReply(">"));
             }
         }
 
@@ -262,7 +265,7 @@ namespace NumatoController {
                     Send($"{Password}\r\n");
                     CollectReply(">>");
 
-                    RelayController.OutputManager.SetReply("Login");
+                    RelayController.OutputManager?.SetReply("Login");
                 }
                 catch (EndOfStreamException) {
                     RelayController.Error($"Login command failed for {this.RelayController}");
