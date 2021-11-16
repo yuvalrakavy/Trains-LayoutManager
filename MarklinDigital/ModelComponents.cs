@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
+using LayoutManager.CommonUI;
 
 namespace MarklinDigital {
     /// <summary>
@@ -18,10 +19,10 @@ namespace MarklinDigital {
 #pragma warning disable IDE0051, IDE0060, IDE0052
 
     public class MarklinDigitalCentralStation : LayoutCommandStationComponent {
-        private static readonly LayoutTraceSwitch traceMarklinDigital = new LayoutTraceSwitch("MarkinDigital", "Marklin Digital Interface (P50)");
-        private OutputManager commandStationManager;
+        private static readonly LayoutTraceSwitch traceMarklinDigital = new("MarkinDigital", "Marklin Digital Interface (P50)");
+        private OutputManager? commandStationManager;
 
-        private ControlBus _S88bus = null;
+        private ControlBus? _S88bus = null;
 
         private const int queuePowerCommands = 0;               // Queue for power on/off etc.
         private const int queueLayoutSwitchingCommands = 1; // Queue for turnout/lights control commands
@@ -42,7 +43,7 @@ namespace MarklinDigital {
 
         public int FeedbackPolling => (int)Element.AttributeValue(A_FeedbackPolling);
 
-        public ControlBus S88Bus => _S88bus ?? (_S88bus = LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS"));
+        public ControlBus S88Bus => _S88bus ??= Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "S88BUS"));
 
         #region Specific implementation to base class overrideble methods and properties
 
@@ -59,7 +60,7 @@ namespace MarklinDigital {
 
         public override DigitalPowerFormats SupportedDigitalPowerFormats => DigitalPowerFormats.Motorola;
 
-        private int getNumberOfFeedbackUnits() {
+        private int GetNumberOfFeedbackUnits() {
             int maxAddress = 0;
 
             foreach (ControlModule module in S88Bus.Modules)
@@ -76,7 +77,7 @@ namespace MarklinDigital {
 
             commandStationManager = new OutputManager(A_FeedbackPolling, 3);
 
-            int feedbackUnits = getNumberOfFeedbackUnits();
+            int feedbackUnits = GetNumberOfFeedbackUnits();
 
             if (feedbackUnits > 0) {
                 int waitPeriod = (1000 - (feedbackUnits * feedbackUnitPollingTime)) / FeedbackPolling;
@@ -100,7 +101,7 @@ namespace MarklinDigital {
             if (OperationMode) {
                 // Set all trains to non-reverse state
                 foreach (XmlElement trainStateElement in LayoutModel.StateManager.Trains.Element) {
-                    TrainStateInfo train = new TrainStateInfo(trainStateElement) {
+                    var train = new TrainStateInfo(trainStateElement) {
                         SpeedInSteps = 0
                     };
 
@@ -129,7 +130,7 @@ namespace MarklinDigital {
 
         public override bool TrainsAnalysisSupported => true;
 
-        protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) => new MarkliinCommandStationEmulator(this, pipeName, EmulationTickTime);
+        protected override ILayoutCommandStationEmulator CreateCommandStationEmulator(string pipeName) => new MarklinCommandStationEmulator(this, pipeName, EmulationTickTime);
 
         public override bool DesignTimeLayoutActivationSupported => true;
 
@@ -138,8 +139,8 @@ namespace MarklinDigital {
         #region Notification Event Handlers
 
         [LayoutEvent("train-is-removed")]
-        private void trainRemoved(LayoutEvent e) {
-            TrainStateInfo train = (TrainStateInfo)e.Sender;
+        private void TrainRemoved(LayoutEvent e) {
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender);
 
             if (train.MotionDirection == LocomotiveOrientation.Backward) {
                 foreach (TrainLocomotiveInfo trainLoco in train.Locomotives)
@@ -153,37 +154,36 @@ namespace MarklinDigital {
         #region Request event handlers
 
         [LayoutEvent("add-train-operation-menu", Order = 100)]
-        private void addTrainOperationMenu(LayoutEvent e0) {
-            var e = (LayoutEvent<TrainStateInfo, Menu>)e0;
-            TrainStateInfo train = e.Sender;
-            Menu menu = e.Info;
-            bool trainInActiveTrip = (bool)EventManager.Event(new LayoutEvent("is-train-in-active-trip", train));
+        private void AddTrainOperationMenu(LayoutEvent e) {
+            var train = Ensure.NotNull<TrainStateInfo>(e.Sender);
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+            bool trainInActiveTrip = Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("is-train-in-active-trip", train)));
 
             if (train.CommandStation != null && train.CommandStation.Id == Id) {
                 if (train.Locomotives.Count == 1) {
                     LocomotiveInfo loco = train.Locomotives[0].Locomotive;
 
-                    menu.MenuItems.Add(new ToggleLocoDirectionMenuItem(loco, "Toggle Locomotive Direction"));
+                    menu.Items.Add(new ToggleLocoDirectionMenuItem(loco, "Toggle Locomotive Direction"));
                 }
                 else {
-                    MenuItem toggleLocoDirection = new MenuItem("Toggle Locomotive direction");
+                    var toggleLocoDirection = new LayoutMenuItem("Toggle Locomotive direction");
 
                     foreach (TrainLocomotiveInfo trainLoco in train.Locomotives)
-                        toggleLocoDirection.MenuItems.Add(new ToggleLocoDirectionMenuItem(trainLoco.Locomotive, trainLoco.Name));
+                        toggleLocoDirection.DropDownItems.Add(new ToggleLocoDirectionMenuItem(trainLoco.Locomotive, trainLoco.Name));
 
-                    if (toggleLocoDirection.MenuItems.Count > 0)
-                        menu.MenuItems.Add(toggleLocoDirection);
+                    if (toggleLocoDirection.DropDownItems.Count > 0)
+                        menu.Items.Add(toggleLocoDirection);
                 }
 
                 if (!trainInActiveTrip)
-                    menu.MenuItems.Add(new ToggleLocomotiveManagement(train));
+                    menu.Items.Add(new ToggleLocomotiveManagement(train));
             }
         }
 
         [LayoutEvent("disconnect-power-request")]
         private void PowerDisconnectRequest(LayoutEvent e) {
             if (e.Sender == null || e.Sender == this)
-                commandStationManager.AddCommand(queuePowerCommands, new MarklinStopCommand(CommunicationStream));
+                commandStationManager?.AddCommand(queuePowerCommands, new MarklinStopCommand(CommunicationStream));
 
             PowerOff();
         }
@@ -191,7 +191,7 @@ namespace MarklinDigital {
         [LayoutEvent("connect-power-request")]
         private void PowerConnectRequest(LayoutEvent e) {
             if (e.Sender == null || e.Sender == this)
-                commandStationManager.AddCommand(queuePowerCommands, new MarklinGoCommand(CommunicationStream));
+                commandStationManager?.AddCommand(queuePowerCommands, new MarklinGoCommand(CommunicationStream));
 
             PowerOn();
         }
@@ -207,10 +207,12 @@ namespace MarklinDigital {
 
         // Implement command events
         [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private Task ChangeTurnoutState(LayoutEvent e0) {
-            var e = (LayoutEventInfoValueType<ControlConnectionPointReference, int>)e0;
-            ControlConnectionPointReference connectionPointRef = e.Sender;
-            int state = e.Info;
+        private Task ChangeTurnoutState(LayoutEvent e) {
+            if (commandStationManager == null)
+                throw new NullReferenceException(nameof(commandStationManager));
+
+            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender);
+            var state = Ensure.ValueNotNull<int>(e.Info);
             int address = connectionPointRef.Module.Address + connectionPointRef.Index;
             var tasks = new List<Task> {
                 commandStationManager.AddCommand(queueLayoutSwitchingCommands, new MarklinSwitchAccessoryCommand(CommunicationStream, address, state)),
@@ -224,9 +226,12 @@ namespace MarklinDigital {
         }
 
         [LayoutEvent("change-signal-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private void changeSignalStateCommand(LayoutEvent e) {
-            ControlConnectionPointReference connectionPointRef = (ControlConnectionPointReference)e.Sender;
-            LayoutSignalState state = (LayoutSignalState)e.Info;
+        private void ChangeSignalStateCommand(LayoutEvent e) {
+            if (commandStationManager == null)
+                throw new NullReferenceException(nameof(commandStationManager));
+
+            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender);
+            var state = Ensure.ValueNotNull<LayoutSignalState>(e.Info);
             int address = connectionPointRef.Module.Address + connectionPointRef.Index;
             int v;
 
@@ -243,20 +248,26 @@ namespace MarklinDigital {
         }
 
         [LayoutEvent("locomotive-reverse-motion-direction-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void locomotiveReverseMotionDirectionCommand(LayoutEvent e) {
-            LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
+        private void LocomotiveReverseMotionDirectionCommand(LayoutEvent e) {
+            if (commandStationManager == null)
+                throw new NullReferenceException(nameof(commandStationManager));
+
+            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
 
             commandStationManager.AddCommand(queueLocoCommands, new MarklinReverseLocomotiveDirection(CommunicationStream, loco.AddressProvider.Unit));
         }
 
         [LayoutEvent("locomotive-motion-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void locomotiveMotionCommand(LayoutEvent e) {
-            LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
-            TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
-            int speed = (int)e.Info;
+        private void LocomotiveMotionCommand(LayoutEvent e) {
+            if (commandStationManager == null)
+                throw new NullReferenceException(nameof(commandStationManager));
+
+            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
+            var train =Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
+            var speed = Ensure.ValueNotNull<int>(e.Info);
             bool auxFunction;
 
-            LocomotiveFunctionInfo locoAuxFunction = loco.GetFunctionByNumber(0);
+            var locoAuxFunction = loco.GetFunctionByNumber(0);
 
             if (locoAuxFunction?.Type == LocomotiveFunctionType.OnOff)
                 auxFunction = train.GetFunctionState(locoAuxFunction.Name, loco.Id, false);
@@ -267,19 +278,19 @@ namespace MarklinDigital {
         }
 
         [LayoutEvent("set-locomotive-lights-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void setLocomotiveLightsCommand(LayoutEvent e) {
-            LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
-            TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
+        private void SetLocomotiveLightsCommand(LayoutEvent e) {
+            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
+            var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
 
             EventManager.Event(new LayoutEvent("locomotive-motion-command", loco, train.SpeedInSteps).SetCommandStation(train));
         }
 
-        private byte getFunctionMask(LocomotiveInfo loco) {
-            TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
+        private byte GetFunctionMask(LocomotiveInfo loco) {
+            var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
             byte functionMask = 0;
 
             for (int functionNumber = 0; functionNumber < 4; functionNumber++) {
-                LocomotiveFunctionInfo functionDef = loco.GetFunctionByNumber(functionNumber + 1);
+                var functionDef = loco.GetFunctionByNumber(functionNumber + 1);
 
                 if (functionDef?.Type == LocomotiveFunctionType.OnOff && train.GetFunctionState(functionDef.Name, loco.Id, false))
                     functionMask |= (byte)(1 << functionNumber);
@@ -289,16 +300,19 @@ namespace MarklinDigital {
         }
 
         [LayoutEvent("set-locomotive-function-state-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void setLocomotiveFunctionStateCommand(LayoutEvent e) {
-            LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
-            string functionName = (string)e.Info;
+        private void SetLocomotiveFunctionStateCommand(LayoutEvent e) {
+            if (commandStationManager == null)
+                throw new NullReferenceException(nameof(commandStationManager));
 
-            LocomotiveFunctionInfo functionDef = loco.GetFunctionByName(functionName);
+            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
+            var functionName = Ensure.NotNull<string>(e.Info);
+
+            var functionDef = loco.GetFunctionByName(functionName);
 
             if (functionDef == null || functionDef.Number != 0)
-                commandStationManager.AddCommand(queueLocoCommands, new MarklinSetFunctions(CommunicationStream, loco.AddressProvider.Unit, getFunctionMask(loco)));
+                commandStationManager.AddCommand(queueLocoCommands, new MarklinSetFunctions(CommunicationStream, loco.AddressProvider.Unit, GetFunctionMask(loco)));
             else {
-                TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
+                var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
 
                 commandStationManager.AddCommand(queueLocoCommands, new MarklinLocomotiveMotion(CommunicationStream, loco.AddressProvider.Unit, train.SpeedInSteps,
                     train.GetFunctionState(functionDef.Name, loco.Id, false)));
@@ -306,10 +320,10 @@ namespace MarklinDigital {
         }
 
         [LayoutEvent("trigger-locomotive-function-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void triggerLocomotiveFunctionCommand(LayoutEvent e) {
-            LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
-            string functionName = (string)e.Info;
-            TrainStateInfo train = LayoutModel.StateManager.Trains[loco.Id];
+        private void TriggerLocomotiveFunctionCommand(LayoutEvent e) {
+            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
+            var functionName = Ensure.NotNull<string>(e.Info);
+            var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
             bool state = train.GetFunctionState(functionName, loco.Id, false);
 
             state = !state;
@@ -320,7 +334,7 @@ namespace MarklinDigital {
 
         #region Menu Items
 
-        private class ToggleLocoDirectionMenuItem : MenuItem {
+        private class ToggleLocoDirectionMenuItem : LayoutMenuItem {
             private readonly LocomotiveInfo loco;
 
             public ToggleLocoDirectionMenuItem(LocomotiveInfo loco, string title) {
@@ -333,7 +347,7 @@ namespace MarklinDigital {
             }
         }
 
-        private class ToggleLocomotiveManagement : MenuItem {
+        private class ToggleLocomotiveManagement : LayoutMenuItem {
             private readonly TrainStateInfo train;
 
             public ToggleLocomotiveManagement(TrainStateInfo train) {
@@ -349,10 +363,15 @@ namespace MarklinDigital {
                 bool managed = train.Managed;
 
                 if (!managed) {
-                    var front = EventManager.EventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>("get-locomotive-front",
-                        train.LocomotiveBlock.BlockDefinintion, train.Element);
+                    if (train.LocomotiveBlock != null) {
+                        var front = (LayoutComponentConnectionPoint?)EventManager.Event("get-locomotive-front",
+                            train.LocomotiveBlock.BlockDefinintion, train.Element);
 
-                    train.LocationOfBlock(train.LocomotiveBlock).DisplayFront = front ?? train.LocomotiveBlock.TrackEdges[0].ConnectionPoint;
+                        TrainLocationInfo? trainLocationInfo = train.LocationOfBlock(train.LocomotiveBlock);
+
+                        if(trainLocationInfo != null)
+                            trainLocationInfo.DisplayFront = front ?? train.LocomotiveBlock.TrackEdges[0].ConnectionPoint;
+                    }
                 }
 
                 foreach (TrainLocomotiveInfo trainLoco in train.Locomotives)
@@ -366,36 +385,40 @@ namespace MarklinDigital {
     #region Marklin Digial Command Classes
 
     internal abstract class MarklinCommand : OutputCommandBase {
-        protected MarklinCommand(Stream stream) {
+        protected MarklinCommand(Stream? stream) {
             this.Stream = stream;
         }
 
-        public Stream Stream { get; }
+        public Stream? Stream { get; }
 
         protected void Output(byte v) {
             Thread.Sleep(10);
-            Stream.WriteByte(v);
-            Stream.Flush();
+            Stream?.WriteByte(v);
+            Stream?.Flush();
+        }
+
+        protected void Flush() {
+            Stream?.Flush();
         }
     }
 
     internal class MarklinGoCommand : MarklinCommand {
-        public MarklinGoCommand(Stream comm) : base(comm) {
+        public MarklinGoCommand(Stream? comm) : base(comm) {
         }
 
         public override void Do() {
             Output(96);
-            Stream.Flush();
+            Flush();
         }
     }
 
     internal class MarklinStopCommand : MarklinCommand {
-        public MarklinStopCommand(Stream comm) : base(comm) {
+        public MarklinStopCommand(Stream? comm) : base(comm) {
         }
 
         public override void Do() {
             Output(97);
-            Stream.Flush();
+            Flush();
         }
     }
 
@@ -403,7 +426,7 @@ namespace MarklinDigital {
         private readonly int address;
         private readonly int state;
 
-        public MarklinSwitchAccessoryCommand(Stream comm, int address, int state) : base(comm) {
+        public MarklinSwitchAccessoryCommand(Stream? comm, int address, int state) : base(comm) {
             this.address = address;
             this.state = state;
         }
@@ -416,7 +439,7 @@ namespace MarklinDigital {
             else
                 throw new ArgumentException("Invalid marklin accessory state: " + state + " address: " + address);
             Output((byte)address);
-            Stream.Flush();
+            Flush();
         }
 
         // Wait 100 milliseconds before sending next command from this queue
@@ -424,26 +447,26 @@ namespace MarklinDigital {
     }
 
     internal class MarklinEndSwitchingProcedure : MarklinCommand {
-        public MarklinEndSwitchingProcedure(Stream comm) : base(comm) {
+        public MarklinEndSwitchingProcedure(Stream? comm) : base(comm) {
         }
 
         public override void Do() {
             Output(32);
-            Stream.Flush();
+            Flush();
         }
     }
 
     internal class MarklinReverseLocomotiveDirection : MarklinCommand {
         private readonly int address;
 
-        public MarklinReverseLocomotiveDirection(Stream comm, int address) : base(comm) {
+        public MarklinReverseLocomotiveDirection(Stream? comm, int address) : base(comm) {
             this.address = address;
         }
 
         public override void Do() {
             Output(15);
             Output((byte)address);
-            Stream.Flush();
+            Flush();
         }
     }
 
@@ -452,7 +475,7 @@ namespace MarklinDigital {
         private readonly byte speed;
         private readonly bool auxFunction;
 
-        public MarklinLocomotiveMotion(Stream comm, int address, int speed, bool auxFunction) : base(comm) {
+        public MarklinLocomotiveMotion(Stream? comm, int address, int speed, bool auxFunction) : base(comm) {
             this.address = address;
 
             if (speed > 0)
@@ -470,7 +493,7 @@ namespace MarklinDigital {
                 v |= 0x10;
             Output(v);
             Output((byte)address);
-            Stream.Flush();
+            Flush();
         }
     }
 
@@ -478,7 +501,7 @@ namespace MarklinDigital {
         private readonly int address;
         private readonly byte functionMask;
 
-        public MarklinSetFunctions(Stream comm, int address, byte functionMask) : base(comm) {
+        public MarklinSetFunctions(Stream? comm, int address, byte functionMask) : base(comm) {
             this.address = address;
             this.functionMask = functionMask;
         }
@@ -494,7 +517,7 @@ namespace MarklinDigital {
 
             Output(v);
             Output((byte)address);
-            Stream.Flush();
+            Flush();
         }
     }
 
@@ -546,8 +569,11 @@ namespace MarklinDigital {
         }
 
         public override void Do() {
+            if (Stream == null)
+                return;
+
             Output((byte)(192 + unit));
-            Stream.Flush();
+            Flush();
 
             byte[] buffer = new Byte[2];
             int bytesRead = Stream.Read(buffer, 0, 2);
@@ -558,7 +584,7 @@ namespace MarklinDigital {
                 int newValue = (low << 8) | high;
 
                 if (newValue != feedback) {
-                    MarklinFeedbackResult feedbackResult = new MarklinFeedbackResult(unit);
+                    var feedbackResult = new MarklinFeedbackResult(unit);
                     int changeIndex = 0;
 
                     for (int contactNo = 1; contactNo <= 16; contactNo++) {

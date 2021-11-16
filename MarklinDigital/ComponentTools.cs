@@ -3,8 +3,8 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager;
+using LayoutManager.CommonUI;
 
-#pragma warning disable IDE0051, IDE0067
 namespace MarklinDigital {
     /// <summary>
     /// Summary description for ComponentTool.
@@ -43,8 +43,8 @@ namespace MarklinDigital {
 
         [LayoutEvent("model-component-placement-request", SenderType = typeof(MarklinDigitalCentralStation))]
         private void PlaceTrackContactRequest(LayoutEvent e) {
-            MarklinDigitalCentralStation component = (MarklinDigitalCentralStation)e.Sender;
-            Dialogs.MarklinDigitalProperties csProperties = new Dialogs.MarklinDigitalProperties(component);
+            var component = Ensure.NotNull<MarklinDigitalCentralStation>(e.Sender);
+            var csProperties = new Dialogs.MarklinDigitalProperties(component);
 
             if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 component.XmlInfo.XmlDocument = csProperties.XmlInfo.XmlDocument;
@@ -69,7 +69,7 @@ namespace MarklinDigital {
 
         #region Markin Digital Menu Item Classes
 
-        private class MarklinDigitalMenuItemProperties : MenuItem {
+        private class MarklinDigitalMenuItemProperties : LayoutMenuItem {
             private readonly MarklinDigitalCentralStation component;
 
             internal MarklinDigitalMenuItemProperties(MarklinDigitalCentralStation component) {
@@ -78,10 +78,10 @@ namespace MarklinDigital {
             }
 
             protected override void OnClick(EventArgs e) {
-                Dialogs.MarklinDigitalProperties csProperties = new Dialogs.MarklinDigitalProperties(component);
+                var csProperties = new Dialogs.MarklinDigitalProperties(component);
 
                 if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    LayoutModifyComponentDocumentCommand modifyComponentDocumentCommand =
+                    var modifyComponentDocumentCommand =
                         new LayoutModifyComponentDocumentCommand(component, csProperties.XmlInfo);
 
                     LayoutController.Do(modifyComponentDocumentCommand);

@@ -3,67 +3,69 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
 namespace MarklinDigital {
-    public class MarkliinCommandStationEmulator : ILayoutCommandStationEmulator {
-        private Guid commandStationId;
+    public class MarklinCommandStationEmulator : ILayoutCommandStationEmulator {
+        private readonly Guid commandStationId;
         private readonly string pipeName;
 
-        private FileStream commStream;
+        private FileStream? commStream;
         private readonly ILayoutEmulatorServices layoutEmulationServices;
-        private readonly Thread interfaceThread = null;
+        private readonly CancellationTokenSource stopInterfaceThrad;
+        private readonly Task interfaceTask;
         private readonly UInt16[] feedbackDecoders = new UInt16[31];
         private bool resetMode = true;
-        private Timer feedbackTimer = null;
+        private readonly Timer? feedbackTimer = null;
 
-        public MarkliinCommandStationEmulator(IModelComponentIsCommandStation commandStation, string pipeName, int emulationTickTime) {
+        public MarklinCommandStationEmulator(IModelComponentIsCommandStation commandStation, string pipeName, int emulationTickTime) {
             this.commandStationId = commandStation.Id;
             this.pipeName = pipeName;
 
-            layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
+            layoutEmulationServices = Ensure.NotNull<ILayoutEmulatorServices>(EventManager.Event(new LayoutEvent("get-layout-emulation-services", this)));
 
             EventManager.Event(new LayoutEvent("initialize-layout-emulation", this)
                 .SetOption(LayoutCommandStationComponent.Option_EmulateTrainMotion, commandStation.EmulateTrainMotion)
                 .SetOption(LayoutCommandStationComponent.Option_EmulationTickTime, commandStation.EmulationTickTime)
             );
 
-            interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction)) {
-                Name = "Command station emulation for " + commandStation.Name
-            };
-            interfaceThread.Start();
-
-            feedbackTimer = new Timer(new TimerCallback(readFeedbacksCallback), null, 0, 200);
+            stopInterfaceThrad = new CancellationTokenSource();
+            interfaceTask = InterfaceThreadFunction(stopInterfaceThrad.Token);
+            feedbackTimer = new Timer(new TimerCallback(ReadFeedbacksCallback), null, 0, emulationTickTime);
         }
 
-        public void Dispose() {
-            if (feedbackTimer != null) {
-                feedbackTimer.Dispose();
-                feedbackTimer = null;
-            }
+        public async void Dispose() {
+            feedbackTimer?.Dispose();
+            stopInterfaceThrad.Cancel();
+            await interfaceTask;
+            commStream?.Close();
 
-            if (interfaceThread != null) {
-                if (interfaceThread.IsAlive)
-                    interfaceThread.Abort();
-            }
-
-            commStream.Close();
+            GC.SuppressFinalize(this);
         }
 
-        private void InterfaceThreadFunction() {
+        private async Task InterfaceThreadFunction(CancellationToken stopMe) {
             // Create the pipe for communication
 
-            commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, false));
+            commStream = Ensure.NotNull<FileStream>(EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, false)));
 
             try {
                 while (true) {
-                    byte command = (byte)commStream.ReadByte();
+                    var byteBuffer = new byte[1];
+
+                    await commStream.ReadAsync(byteBuffer, stopMe);
+                    if (stopMe.IsCancellationRequested)
+                        break;
+                    byte command = byteBuffer[0];
 
                     if (command < 32) {
-                        int unit = commStream.ReadByte();
+                        await commStream.ReadAsync(byteBuffer, stopMe);
+                        if (stopMe.IsCancellationRequested)
+                            break;
+                        int unit = byteBuffer[0];
 
                         // Locomotive command
                         command &= 0xf;         // The state of the aux function is ignored
@@ -74,7 +76,10 @@ namespace MarklinDigital {
                             layoutEmulationServices.ToggleLocomotiveDirection(commandStationId, unit);
                     }
                     else if (command == 33 || command == 34) {
-                        int unit = commStream.ReadByte();
+                        await commStream.ReadAsync(byteBuffer, stopMe);
+                        if (stopMe.IsCancellationRequested)
+                            break;
+                        int unit = byteBuffer[0];
 
                         layoutEmulationServices.SetTurnoutState(commandStationId, unit, (command == 33) ? 0 : 1);
                     }
@@ -86,12 +91,12 @@ namespace MarklinDigital {
                         resetMode = false;
                     else if (129 <= command && command <= 160) {
                         for (int i = 0; i < command - 128; i++)
-                            sendFeedback(i);
+                            SendFeedback(i);
                     }
                     else if (command == 192)
                         resetMode = true;
                     else if (193 <= command && command <= 224)
-                        sendFeedback(command - 193);
+                        SendFeedback(command - 193);
                 }
             }
             catch (Exception ex) {
@@ -99,14 +104,14 @@ namespace MarklinDigital {
             }
         }
 
-        private void sendFeedback(int feedbackIndex) {
+        private void SendFeedback(int feedbackIndex) {
             lock (feedbackDecoders) {
-                commStream.WriteByte((byte)((feedbackDecoders[feedbackIndex] >> 8) & 0xff));
-                commStream.WriteByte((byte)(feedbackDecoders[feedbackIndex] & 0xff));
+                commStream?.WriteByte((byte)((feedbackDecoders[feedbackIndex] >> 8) & 0xff));
+                commStream?.WriteByte((byte)(feedbackDecoders[feedbackIndex] & 0xff));
             }
         }
 
-        private void readFeedbacksCallback(object state) {
+        private void ReadFeedbacksCallback(object? state) {
             IList<ILocomotiveLocation> locomotiveLocations = layoutEmulationServices.GetLocomotiveLocations(commandStationId);
 
             if (resetMode) {
@@ -119,7 +124,7 @@ namespace MarklinDigital {
                     LayoutBlockDefinitionComponent blockInfo = location.Track.GetBlock(location.Front).BlockDefinintion;
 
                     if (blockInfo?.Info.IsOccupancyDetectionBlock == true) {
-                        ControlConnectionPoint connectionPoint = LayoutModel.ControlManager.ConnectionPoints[blockInfo][0];
+                        var connectionPoint = Ensure.NotNull<ControlConnectionPoint>(LayoutModel.ControlManager.ConnectionPoints[blockInfo]?[0]);
 
                         int decoderIndex = connectionPoint.Module.Address - 1;
                         int contactIndex = 15 - connectionPoint.Index;
