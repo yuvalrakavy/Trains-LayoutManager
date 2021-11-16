@@ -30,7 +30,7 @@ namespace LayoutManager.Dialogs {
         /// Required designer variable.
         /// </summary>
         private readonly Container components = null;
-        private readonly LayoutManager.View.LocomotivePainter locoPainter = new LayoutManager.View.LocomotivePainter();
+        private readonly View.LocomotivePainter locoPainter = new View.LocomotivePainter();
 
         public TestLocoPainter() {
             //
@@ -121,12 +121,12 @@ namespace LayoutManager.Dialogs {
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)this.numericUpDownSpeed).BeginInit();
+            ((ISupportInitialize)this.numericUpDownSpeed).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.groupBox1.Controls.AddRange(new Control[] {
                                                                                     this.radioButtonFrontT,
                                                                                     this.radioButtonFrontB,
                                                                                     this.radioButtonFrontR,
@@ -176,7 +176,7 @@ namespace LayoutManager.Dialogs {
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.groupBox2.Controls.AddRange(new Control[] {
                                                                                     this.radioButtonDirectionForward,
                                                                                     this.radioButtonDirectionBackward});
             this.groupBox2.Location = new System.Drawing.Point(152, 152);
@@ -206,7 +206,7 @@ namespace LayoutManager.Dialogs {
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.groupBox3.Controls.AddRange(new Control[] {
                                                                                     this.radioButtonOrientationForward,
                                                                                     this.radioButtonOrientationBackward});
             this.groupBox3.Location = new System.Drawing.Point(272, 152);
@@ -292,7 +292,7 @@ namespace LayoutManager.Dialogs {
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.CancelButton = this.buttonClose;
             this.ClientSize = new System.Drawing.Size(392, 286);
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.Controls.AddRange(new Control[] {
                                                                           this.numericUpDownSpeed,
                                                                           this.panel,
                                                                           this.buttonClose,
@@ -307,17 +307,17 @@ namespace LayoutManager.Dialogs {
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)this.numericUpDownSpeed).EndInit();
+            ((ISupportInitialize)this.numericUpDownSpeed).EndInit();
             this.ResumeLayout(false);
         }
         #endregion
 
-        private void panel_Paint(object? sender, System.Windows.Forms.PaintEventArgs e) {
+        private void panel_Paint(object? sender, PaintEventArgs e) {
             e.Graphics.TranslateTransform(panel.Width / 2, panel.Height / 2);
             locoPainter.Draw(e.Graphics);
         }
 
-        private void buttonClose_Click(object? sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, EventArgs e) {
             this.Close();
         }
     }

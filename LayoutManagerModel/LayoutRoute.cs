@@ -252,11 +252,11 @@ namespace LayoutManager.Model {
 
         public LayoutTrackComponent DestinationTrack { get; }
 
-        public TrackEdge DestinationEdge => new TrackEdge(DestinationTrack, Front);
+        public TrackEdge DestinationEdge => new(DestinationTrack, Front);
 
         public TrackEdge TargetEdge { get; }
 
-        public TrackEdgeId TargetEdgeId => new TrackEdgeId(TargetEdge);
+        public TrackEdgeId TargetEdgeId => new(TargetEdge);
 
         public int SwitchState { get; }
 
@@ -277,7 +277,7 @@ namespace LayoutManager.Model {
 
     public class BestRoute : ITripRoute {
         private readonly Guid routeOwner;
-        private readonly List<RouteTarget> targets = new List<RouteTarget>();
+        private readonly List<RouteTarget> targets = new();
         private List<int>? switchStates;
         private TrainStateInfo? train;
 
@@ -327,7 +327,7 @@ namespace LayoutManager.Model {
 
         public IList<TrackEdge> TrackEdges {
             get {
-                List<TrackEdge> edges = new List<TrackEdge>();
+                List<TrackEdge> edges = new();
                 TrackEdge edge = SourceEdge;
                 var switchStates = Ensure.NotNull<IList<int>>(SwitchStates, "switchState");
                 int switchStateIndex = 0;
@@ -355,7 +355,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public LayoutSelection Selection {
             get {
-                LayoutSelection selection = new LayoutSelection();
+                LayoutSelection selection = new();
 
                 foreach (TrackEdge edge in TrackEdges)
                     selection.Add(edge.Track);
@@ -366,7 +366,7 @@ namespace LayoutManager.Model {
 
         public IList<LayoutBlock> Blocks {
             get {
-                List<LayoutBlock> blocks = new List<LayoutBlock>();
+                List<LayoutBlock> blocks = new();
 
                 foreach (TrackEdge edge in TrackEdges) {
                     var blockInfo = edge.Track.BlockDefinitionComponent;
@@ -381,7 +381,7 @@ namespace LayoutManager.Model {
 
         public IList<LayoutBlockEdgeBase> BlockEdges {
             get {
-                List<LayoutBlockEdgeBase> blockEdges = new List<LayoutBlockEdgeBase>();
+                List<LayoutBlockEdgeBase> blockEdges = new();
 
                 foreach (TrackEdge edge in TrackEdges) {
                     var blockEdge = edge.Track.BlockEdgeBase;

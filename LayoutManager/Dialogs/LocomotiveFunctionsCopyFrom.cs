@@ -12,7 +12,7 @@ namespace LayoutManager.Dialogs {
         private Label label1;
         private Button buttonOK;
         private Button buttonCancel;
-        private LayoutManager.CommonUI.Controls.XmlQueryCombobox xmlQueryComboboxCopyFrom;
+        private CommonUI.Controls.XmlQueryCombobox xmlQueryComboboxCopyFrom;
 
         /// <summary>
         /// Required designer variable.
@@ -53,7 +53,7 @@ namespace LayoutManager.Dialogs {
         /// </summary>
         private void InitializeComponent() {
             this.label1 = new Label();
-            this.xmlQueryComboboxCopyFrom = new LayoutManager.CommonUI.Controls.XmlQueryCombobox();
+            this.xmlQueryComboboxCopyFrom = new CommonUI.Controls.XmlQueryCombobox();
             this.buttonOK = new Button();
             this.buttonCancel = new Button();
             this.SuspendLayout();
@@ -103,7 +103,7 @@ namespace LayoutManager.Dialogs {
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(292, 70);
             this.ControlBox = false;
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.Controls.AddRange(new Control[] {
                                                                           this.buttonOK,
                                                                           this.xmlQueryComboboxCopyFrom,
                                                                           this.label1,

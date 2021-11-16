@@ -73,7 +73,7 @@ namespace LayoutManager.Dialogs {
         /// </summary>
         private void InitializeComponent() {
             this.components = new Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ArrangeViews));
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(ArrangeViews));
             this.listBoxViews = new ListBox();
             this.buttonMoveDown = new Button();
             this.imageListButtons = new ImageList(this.components);
@@ -112,7 +112,7 @@ namespace LayoutManager.Dialogs {
             // 
             this.imageListButtons.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
             this.imageListButtons.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListButtons.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListButtons.ImageStream");
+            this.imageListButtons.ImageStream = (ImageListStreamer)resources.GetObject("imageListButtons.ImageStream");
             this.imageListButtons.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // buttonMoveUp
@@ -173,7 +173,7 @@ namespace LayoutManager.Dialogs {
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.ClientSize = new System.Drawing.Size(264, 302);
             this.ControlBox = false;
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.Controls.AddRange(new Control[] {
                                                                           this.buttonRename,
                                                                           this.buttonDelete,
                                                                           this.buttonNew,
@@ -235,7 +235,7 @@ namespace LayoutManager.Dialogs {
             if (selectedIndex != -1) {
                 LayoutFrameWindowAreaViewTabPage selectedView = (LayoutFrameWindowAreaViewTabPage)listBoxViews.SelectedItem;
 
-                Dialogs.GetViewName getViewName = new Dialogs.GetViewName();
+                GetViewName getViewName = new GetViewName();
 
                 if (getViewName.ShowDialog(this) == DialogResult.OK) {
                     selectedView.Text = getViewName.ViewName;

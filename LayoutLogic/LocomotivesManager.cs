@@ -89,7 +89,7 @@ namespace LayoutManager.Logic {
                 // b) (TODO) Check that all members have identical decoder setting.
                 //
                 if (placeableElement.Name == E_Train) {
-                    TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(placeableElement);
+                    TrainInCollectionInfo trainInCollection = new(placeableElement);
                     IList<TrainLocomotiveInfo> locomotives = trainInCollection.Locomotives;
 
                     for (int i = 0; i < locomotives.Count; i++) {
@@ -157,7 +157,7 @@ namespace LayoutManager.Logic {
                     }
                 }
                 else if (placeableElement.Name == E_Locomotive) {
-                    LocomotiveInfo loco = new LocomotiveInfo(placeableElement);
+                    LocomotiveInfo loco = new(placeableElement);
 
                     if (!loco.NotManaged) {
                         if (loco.AddressProvider.Element == null || loco.AddressProvider.Unit <= 0) {
@@ -247,7 +247,7 @@ namespace LayoutManager.Logic {
             var result = new CanPlaceTrainResult();
 
             if (placeableElement.Name == E_Train) {
-                TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(placeableElement);
+                TrainInCollectionInfo trainInCollection = new(placeableElement);
                 var oldTrainState = LayoutModel.StateManager.Trains[trainInCollection.Id];
 
                 if (oldTrainState != null)
@@ -279,7 +279,7 @@ namespace LayoutManager.Logic {
             else if (placeableElement.Name == E_Locomotive) {
                 Guid id = LayoutModel.LocomotiveCollection.GetElementId(placeableElement);
                 var oldTrainState = LayoutModel.StateManager.Trains[id];
-                LocomotiveInfo loco = new LocomotiveInfo(placeableElement);
+                LocomotiveInfo loco = new(placeableElement);
 
                 if (oldTrainState != null) {
                     // The locomotive is already on track
@@ -376,7 +376,7 @@ namespace LayoutManager.Logic {
 
                 // Pass on all locomotives in collection
                 foreach (XmlElement locomotiveElement in LayoutModel.LocomotiveCollection.CollectionElement.GetElementsByTagName(E_Locomotive)) {
-                    LocomotiveInfo locomotive = new LocomotiveInfo(locomotiveElement);
+                    LocomotiveInfo locomotive = new(locomotiveElement);
                     int locomotiveAddress = locomotive.AddressProvider.Unit;
 
                     if (locomotiveAddress >= 0 && (locomotive.Guage & gauges) != 0 && !addressMap.ContainsKey(locomotiveAddress))
@@ -385,7 +385,7 @@ namespace LayoutManager.Logic {
             }
         }
 
-        private readonly Dictionary<IModelComponentIsCommandStation, OnTrackLocomotiveAddressMap> addressMapCache = new Dictionary<IModelComponentIsCommandStation, OnTrackLocomotiveAddressMap>();
+        private readonly Dictionary<IModelComponentIsCommandStation, OnTrackLocomotiveAddressMap> addressMapCache = new();
 
         [LayoutEvent("get-on-track-locomotive-address-map")]
         private void GetOnTrackLocomotiveAddressMap(LayoutEvent e0) {
@@ -420,7 +420,7 @@ namespace LayoutManager.Logic {
             var e = (LayoutEventResultValueType<LayoutBlockDefinitionComponent, LocomotiveInfo, int>)e0;
             var commandStation = ExtractCommandStation(e);
             var locomotive = Ensure.NotNull<LocomotiveInfo>(e.Info, "locomotive");
-            LocomotiveAddressMap addressMap = new LocomotiveAddressMap();
+            LocomotiveAddressMap addressMap = new();
 
             e.Result = default;
 
@@ -453,7 +453,7 @@ namespace LayoutManager.Logic {
                         e.Result = address;
                         return;
                     }
-                    else if (!(addressMapEntry is LocomotiveBusModuleAddressMapEntry) && !(addressMapEntry is OnPoweredTrackLocomotiveAddressMapEntry)) {
+                    else if (addressMapEntry is not LocomotiveBusModuleAddressMapEntry && addressMapEntry is not OnPoweredTrackLocomotiveAddressMapEntry) {
                         if (addressMapEntry is LocomotiveAddressMapEntry locomotiveAddressMapEntry) {
                             if (locomotiveAddressMapEntry is OnDisconnectedTrackLocomotiveAddressMapEntry)
                                 bestOnNonPowerTrackAddress = address;
@@ -618,7 +618,7 @@ namespace LayoutManager.Logic {
                     if (front == null)
                         throw new OperationCanceledException("get-locomotive-front");
 
-                    TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(collectionElement);
+                    TrainInCollectionInfo trainInCollection = new(collectionElement);
 
                     trainLength = trainInCollection.Length;
                     trainName = trainInCollection.Name;
@@ -650,7 +650,7 @@ namespace LayoutManager.Logic {
             Guid trainID = Guid.Empty;
 
             if (collectionElement.Name == E_Train) {
-                TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(collectionElement);
+                TrainInCollectionInfo trainInCollection = new(collectionElement);
 
                 trainID = trainInCollection.Id;
             }
@@ -814,7 +814,7 @@ namespace LayoutManager.Logic {
                 EventManager.Event(new LayoutEvent("free-layout-lock", blocksToUnlock));
 
             // Get lock on the block that the train is about to be placed
-            LayoutLockRequest lockRequest = new LayoutLockRequest(train.Id);
+            LayoutLockRequest lockRequest = new(train.Id);
 
             if (blockDefinition.Block.LockRequest == null || !blockDefinition.Block.LockRequest.IsManualDispatchLock) {
                 lockRequest.Blocks.Add(blockDefinition.Block);
@@ -930,7 +930,11 @@ namespace LayoutManager.Logic {
             };
             lockRequest.Blocks.Add(programmingLocation.PowerConnector.Blocks);
 
-            if (!((from power in programmingLocation.PowerConnector.Inlet.ConnectedOutlet.ObtainablePowers where power.Type == LayoutPowerType.Programmer select power.PowerOriginComponent).FirstOrDefault() is ILayoutLockResource commandStationResource))
+            if ((
+                from power in programmingLocation.PowerConnector.Inlet.ConnectedOutlet.ObtainablePowers 
+                where power.Type == LayoutPowerType.Programmer
+                select power.PowerOriginComponent).FirstOrDefault() is not ILayoutLockResource commandStationResource
+            )
                 throw new LayoutException($"GetProgrammingTrackLock for {programmingLocation.FullDescription} - command station is null");
 
             lockRequest.Resources = new ILayoutLockResource[] { commandStationResource };
@@ -1049,7 +1053,7 @@ namespace LayoutManager.Logic {
 
             if (newBlock.BlockDefinintion.Info.IsOccupancyDetectionBlock && !newBlock.HasTrains && (newBlock.BlockDefinintion.Info.TrainDetected || newBlock.BlockDefinintion.Info.TrainWillBeDetected) && !newBlock.IsLocked) {
                 // Get lock on the block that the train is about to be placed
-                LayoutLockRequest lockRequest = new LayoutLockRequest(train.Id);
+                LayoutLockRequest lockRequest = new(train.Id);
 
                 lockRequest.Blocks.Add(newBlock);
 
@@ -1369,7 +1373,7 @@ namespace LayoutManager.Logic {
 
             if (LayoutController.IsOperationMode) {
                 foreach (XmlElement trainElement in LayoutModel.StateManager.Trains.Element) {
-                    TrainStateInfo train = new TrainStateInfo(trainElement);
+                    TrainStateInfo train = new(trainElement);
 
                     foreach (TrainLocomotiveInfo trainLocomotive in train.Locomotives) {
                         if (trainLocomotive.LocomotiveId == loco.Id)
@@ -1379,7 +1383,7 @@ namespace LayoutManager.Logic {
             }
 
             foreach (XmlElement trainElement in LayoutModel.LocomotiveCollection.CollectionElement.GetElementsByTagName(E_Train)) {
-                TrainStateInfo train = new TrainStateInfo(trainElement);
+                TrainStateInfo train = new(trainElement);
 
                 foreach (TrainLocomotiveInfo trainLocomotive in train.Locomotives) {
                     if (trainLocomotive.LocomotiveId == loco.Id)
@@ -1466,9 +1470,9 @@ namespace LayoutManager.Logic {
         /// array and locomotive cound are corrected.
         /// </summary>
         private bool RebuildTrainState(LayoutPhase phase) {
-            ArrayList invalidStateElements = new ArrayList();
-            ArrayList noTrackContactCrossTrainLocations = new ArrayList();
-            ArrayList trainLocations = new ArrayList();
+            ArrayList invalidStateElements = new();
+            ArrayList noTrackContactCrossTrainLocations = new();
+            ArrayList trainLocations = new();
 
             // Remove all locomotives from all blocks
             foreach (LayoutBlock block in LayoutModel.Blocks)
@@ -1476,7 +1480,7 @@ namespace LayoutManager.Logic {
 
             foreach (XmlElement trainStateElement in LayoutModel.StateManager.Trains.Element) {
                 bool validTrainState = true;
-                TrainStateInfo trainState = new TrainStateInfo(trainStateElement);
+                TrainStateInfo trainState = new(trainStateElement);
 
                 foreach (TrainLocomotiveInfo trainLoco in trainState.Locomotives) {
                     if (trainLoco.Locomotive == null && LayoutModel.LocomotiveCollection[trainLoco.CollectionElementId] == null) {
@@ -1516,7 +1520,7 @@ namespace LayoutManager.Logic {
             // in acending order based on track contact crossing time. locations which were placed will be placed first
             foreach (TrainLocationInfo trainLocation in noTrackContactCrossTrainLocations) {
                 // Get lock on the block that the train is about to be placed
-                LayoutLockRequest lockRequest = new LayoutLockRequest(trainLocation.Train.Id);
+                LayoutLockRequest lockRequest = new(trainLocation.Train.Id);
 
                 lockRequest.Blocks.Add(trainLocation.Block);
                 EventManager.Event(new LayoutEvent("request-layout-lock", lockRequest));
@@ -1536,7 +1540,7 @@ namespace LayoutManager.Logic {
             LayoutModel.StateManager.Trains.RebuildIdMap();
 
             foreach (TrainLocationInfo trainLocation in trainLocations) {
-                LayoutLockRequest lockRequest = new LayoutLockRequest(trainLocation.Train.Id);
+                LayoutLockRequest lockRequest = new(trainLocation.Train.Id);
 
                 lockRequest.Blocks.Add(trainLocation.Block);
                 EventManager.Event(new LayoutEvent("request-layout-lock", lockRequest).SetOption("DoNotLockResources", true));
@@ -1548,7 +1552,7 @@ namespace LayoutManager.Logic {
         [LayoutEvent("enter-operation-mode", Order = 20000)]
         private void EnterOperationModeAndInitializeTrains(LayoutEvent e) {
             foreach (XmlElement trainStateElement in LayoutModel.StateManager.Trains.Element) {
-                TrainStateInfo train = new TrainStateInfo(trainStateElement);
+                TrainStateInfo train = new(trainStateElement);
 
                 if (train.Speed != 0)
                     train.SpeedInSteps = 0;
@@ -1556,7 +1560,7 @@ namespace LayoutManager.Logic {
         }
 
         public bool RebuildComponentsState(LayoutPhase phase) {
-            ArrayList removeList = new ArrayList();
+            ArrayList removeList = new();
 
             LayoutModel.StateManager.Components.IdToComponentStateElement.Clear();
 
@@ -1602,7 +1606,7 @@ namespace LayoutManager.Logic {
             foreach (LayoutTrackContactComponent trackContact in LayoutModel.Components<LayoutTrackContactComponent>(phase)) {
                 if (LayoutModel.StateManager.Components.Contains(trackContact, "TrainPassing")) {
                     var trackContactPassingElement = LayoutModel.StateManager.Components.StateOf(trackContact, "TrainPassing");
-                    TrackContactPassingStateInfo trackContactPassingState = new TrackContactPassingStateInfo(trackContactPassingElement);
+                    TrackContactPassingStateInfo trackContactPassingState = new(trackContactPassingElement);
 
                     if (trackContactPassingState.Train == null) {
                         Warning(trackContactPassingState.TrackContact, "The train that was above this train contact cannot be found");

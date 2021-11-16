@@ -44,9 +44,9 @@ namespace LayoutManager.Dialogs {
         private ColumnHeader columnHeaderName;
         private ColumnHeader columnHeaderFunctionDescription;
         private Label label3;
-        private LayoutManager.CommonUI.Controls.LengthInput lengthInput;
+        private CommonUI.Controls.LengthInput lengthInput;
         private TabPage tabPageAttributes;
-        private LayoutManager.CommonUI.Controls.AttributesEditor attributesEditor;
+        private CommonUI.Controls.AttributesEditor attributesEditor;
         private Label label4;
         private TextBox textBoxSpeedLimit;
         private TabPage tabPageDecoder;
@@ -55,7 +55,7 @@ namespace LayoutManager.Dialogs {
         private CommonUI.Controls.TrackGuageSelector trackGuageSelector;
         private CheckBox checkBoxHasBuiltinDecoder;
         private RadioButton radioButtonKindSoundUnit;
-        private LayoutManager.CommonUI.Controls.ImageGetter imageGetter;
+        private CommonUI.Controls.ImageGetter imageGetter;
 
         private void EndOfDesignerVariables() { }
 
@@ -107,46 +107,46 @@ namespace LayoutManager.Dialogs {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPageGeneral = new System.Windows.Forms.TabPage();
-            this.label5 = new System.Windows.Forms.Label();
-            this.trackGuageSelector = new LayoutManager.CommonUI.Controls.TrackGuageSelector();
-            this.textBoxSpeedLimit = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.lengthInput = new LayoutManager.CommonUI.Controls.LengthInput();
-            this.label3 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.imageGetter = new LayoutManager.CommonUI.Controls.ImageGetter();
-            this.comboBoxStore = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.groupBoxOrigin = new System.Windows.Forms.GroupBox();
-            this.radioButtonOriginUS = new System.Windows.Forms.RadioButton();
-            this.radioButtonOriginEurope = new System.Windows.Forms.RadioButton();
-            this.groupBoxKind = new System.Windows.Forms.GroupBox();
-            this.radioButtonKindSoundUnit = new System.Windows.Forms.RadioButton();
-            this.radioButtonKindElectric = new System.Windows.Forms.RadioButton();
-            this.radioButtonKindDiesel = new System.Windows.Forms.RadioButton();
-            this.radioButtonKindSteam = new System.Windows.Forms.RadioButton();
-            this.textBoxName = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tabPageFunctions = new System.Windows.Forms.TabPage();
-            this.listViewFunctions = new System.Windows.Forms.ListView();
-            this.columnHeaderFunctionNumber = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderType = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderName = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderFunctionDescription = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
-            this.buttonCopyFrom = new System.Windows.Forms.Button();
-            this.checkBoxHasLights = new System.Windows.Forms.CheckBox();
-            this.buttonFunctionAdd = new System.Windows.Forms.Button();
-            this.buttonFunctionEdit = new System.Windows.Forms.Button();
-            this.buttonFunctionRemove = new System.Windows.Forms.Button();
-            this.tabPageDecoder = new System.Windows.Forms.TabPage();
-            this.checkBoxHasBuiltinDecoder = new System.Windows.Forms.CheckBox();
-            this.comboBoxDecoderType = new System.Windows.Forms.ComboBox();
-            this.tabPageAttributes = new System.Windows.Forms.TabPage();
-            this.attributesEditor = new LayoutManager.CommonUI.Controls.AttributesEditor();
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.buttonOk = new System.Windows.Forms.Button();
+            this.tabControl1 = new TabControl();
+            this.tabPageGeneral = new TabPage();
+            this.label5 = new Label();
+            this.trackGuageSelector = new CommonUI.Controls.TrackGuageSelector();
+            this.textBoxSpeedLimit = new TextBox();
+            this.label4 = new Label();
+            this.lengthInput = new CommonUI.Controls.LengthInput();
+            this.label3 = new Label();
+            this.groupBox1 = new GroupBox();
+            this.imageGetter = new CommonUI.Controls.ImageGetter();
+            this.comboBoxStore = new ComboBox();
+            this.label2 = new Label();
+            this.groupBoxOrigin = new GroupBox();
+            this.radioButtonOriginUS = new RadioButton();
+            this.radioButtonOriginEurope = new RadioButton();
+            this.groupBoxKind = new GroupBox();
+            this.radioButtonKindSoundUnit = new RadioButton();
+            this.radioButtonKindElectric = new RadioButton();
+            this.radioButtonKindDiesel = new RadioButton();
+            this.radioButtonKindSteam = new RadioButton();
+            this.textBoxName = new TextBox();
+            this.label1 = new Label();
+            this.tabPageFunctions = new TabPage();
+            this.listViewFunctions = new ListView();
+            this.columnHeaderFunctionNumber = (ColumnHeader)new ColumnHeader();
+            this.columnHeaderType = (ColumnHeader)new ColumnHeader();
+            this.columnHeaderName = (ColumnHeader)new ColumnHeader();
+            this.columnHeaderFunctionDescription = (ColumnHeader)new ColumnHeader();
+            this.buttonCopyFrom = new Button();
+            this.checkBoxHasLights = new CheckBox();
+            this.buttonFunctionAdd = new Button();
+            this.buttonFunctionEdit = new Button();
+            this.buttonFunctionRemove = new Button();
+            this.tabPageDecoder = new TabPage();
+            this.checkBoxHasBuiltinDecoder = new CheckBox();
+            this.comboBoxDecoderType = new ComboBox();
+            this.tabPageAttributes = new TabPage();
+            this.attributesEditor = new CommonUI.Controls.AttributesEditor();
+            this.buttonCancel = new Button();
+            this.buttonOk = new Button();
             this.tabControl1.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -159,7 +159,7 @@ namespace LayoutManager.Dialogs {
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+            this.tabControl1.Anchor = (AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left
             | System.Windows.Forms.AnchorStyles.Right);
             this.tabControl1.Controls.Add(this.tabPageGeneral);
@@ -390,7 +390,7 @@ namespace LayoutManager.Dialogs {
             // 
             // listViewFunctions
             // 
-            this.listViewFunctions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listViewFunctions.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderFunctionNumber,
             this.columnHeaderType,
             this.columnHeaderName,
@@ -523,7 +523,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonCancel.Anchor = (AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(254, 270);
             this.buttonCancel.Name = "buttonCancel";
@@ -533,7 +533,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonOk
             // 
-            this.buttonOk.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonOk.Anchor = (AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonOk.Location = new System.Drawing.Point(174, 270);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
@@ -568,7 +568,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonOk_Click(object? sender, System.EventArgs e) {
+        private void buttonOk_Click(object? sender, EventArgs e) {
             if (textBoxName.Text.Trim() == "") {
                 tabControl1.SelectedTab = tabPageGeneral;
                 MessageBox.Show(this, "You must enter a name", "Input error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -604,7 +604,7 @@ namespace LayoutManager.Dialogs {
             DialogResult = DialogResult.OK;
         }
 
-        private void lengthInput1_Load(object? sender, System.EventArgs e) {
+        private void lengthInput1_Load(object? sender, EventArgs e) {
         }
 
         private void checkBoxHasBuiltinDecoder_CheckedChanged(object? sender, EventArgs e) {

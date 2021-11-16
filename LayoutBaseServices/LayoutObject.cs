@@ -237,7 +237,7 @@ namespace LayoutManager {
         /// and store (all the strings are using the same atom table, instead of each component allocating
         /// it own strings).
         /// </summary>
-        private static readonly XmlImplementation _xmlImplementation = new XmlImplementation();
+        private static readonly XmlImplementation _xmlImplementation = new();
 
         public static XmlImplementation XmlImplementation => LayoutXmlInfo._xmlImplementation;
 

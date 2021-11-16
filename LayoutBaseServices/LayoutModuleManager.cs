@@ -102,7 +102,7 @@ namespace LayoutManager {
         /// <returns>True if the module successfuly disabled, false if the module refused to be disabled</returns>
         protected bool DisableModule() {
             if (moduleInstance != null) {
-                LayoutEvent moduleDisableRequestEvent = new LayoutEvent("module-disable-request", moduleInstance, true);
+                LayoutEvent moduleDisableRequestEvent = new("module-disable-request", moduleInstance, true);
 
                 EventManager.Event(moduleDisableRequestEvent);
                 if (!(bool)(moduleDisableRequestEvent.Info ?? false))
@@ -169,7 +169,7 @@ namespace LayoutManager {
     public class LayoutAssembly : LayoutObject, IDisposable {
         private const string A_Save = "Save";
         private Assembly? assembly;
-        private readonly List<LayoutModule> layoutModules = new List<LayoutModule>();
+        private readonly List<LayoutModule> layoutModules = new();
 
         public enum AssemblyOrigin {
             BuiltIn, InModulesDirectory, UserLoaded
@@ -321,7 +321,7 @@ namespace LayoutManager {
                     (LayoutModuleAttribute[])type.GetCustomAttributes(typeof(LayoutModuleAttribute), false);
 
                 foreach (LayoutModuleAttribute layoutModuleAttribute in layoutModuleAttributes) {
-                    LayoutModule layoutModule = new LayoutModule(this, type, layoutModuleAttribute);
+                    LayoutModule layoutModule = new(this, type, layoutModuleAttribute);
 
                     layoutModules.Add(layoutModule);
                 }
@@ -454,7 +454,7 @@ namespace LayoutManager {
         public void ReadXml(XmlReader r) {
             r.Read();       // <LayoutAssemblies
             while (r.NodeType == XmlNodeType.Element) {
-                LayoutAssembly layoutAssembly = new LayoutAssembly(r);
+                LayoutAssembly layoutAssembly = new(r);
 
                 if (!IsDefined(Path.GetFileName(layoutAssembly.AssemblyFilename)))
                     Add(layoutAssembly);
@@ -522,15 +522,15 @@ namespace LayoutManager {
                 throw new ArgumentException("No document name was set");
 
             string backupFilename = DocumentFilename + ".backup";
-            FileInfo fileInfo = new FileInfo(DocumentFilename);
+            FileInfo fileInfo = new(DocumentFilename);
 
             new FileInfo(backupFilename).Delete();
 
             if (fileInfo.Exists)
                 fileInfo.MoveTo(backupFilename);
 
-            using FileStream fileOut = new FileStream(DocumentFilename, FileMode.Create, FileAccess.Write);
-            XmlTextWriter w = new XmlTextWriter(fileOut, System.Text.Encoding.UTF8);
+            using FileStream fileOut = new(DocumentFilename, FileMode.Create, FileAccess.Write);
+            XmlTextWriter w = new(fileOut, System.Text.Encoding.UTF8);
             w.WriteStartDocument();
             WriteXml(w);
             w.WriteEndDocument();
@@ -545,8 +545,8 @@ namespace LayoutManager {
                 throw new ArgumentException("No document name was set");
 
             try {
-                using FileStream fileIn = new FileStream(DocumentFilename, FileMode.Open, FileAccess.Read);
-                XmlTextReader r = new XmlTextReader(fileIn) {
+                using FileStream fileIn = new(DocumentFilename, FileMode.Open, FileAccess.Read);
+                XmlTextReader r = new(fileIn) {
                     WhitespaceHandling = WhitespaceHandling.None
                 };
                 r.Read();       // <?XML stuff >

@@ -71,7 +71,7 @@ namespace LayoutManager.Dialogs {
         /// </summary>
         private void InitializeComponent() {
             this.components = new Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ArrangeAreas));
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(ArrangeAreas));
             this.listBoxAreas = new ListBox();
             this.buttonMoveDown = new Button();
             this.imageListButtons = new ImageList(this.components);
@@ -110,7 +110,7 @@ namespace LayoutManager.Dialogs {
             // 
             this.imageListButtons.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
             this.imageListButtons.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListButtons.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListButtons.ImageStream");
+            this.imageListButtons.ImageStream = (ImageListStreamer)resources.GetObject("imageListButtons.ImageStream");
             this.imageListButtons.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // buttonMoveUp
@@ -171,7 +171,7 @@ namespace LayoutManager.Dialogs {
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.ClientSize = new System.Drawing.Size(264, 302);
             this.ControlBox = false;
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.Controls.AddRange(new Control[] {
                                                                           this.buttonRename,
                                                                           this.buttonDelete,
                                                                           this.buttonNew,
@@ -233,7 +233,7 @@ namespace LayoutManager.Dialogs {
             if (selectedIndex != -1) {
                 LayoutFrameWindowAreaTabPage selectedArea = (LayoutFrameWindowAreaTabPage)listBoxAreas.SelectedItem;
 
-                Dialogs.GetAreasName getAreaName = new Dialogs.GetAreasName();
+                GetAreasName getAreaName = new GetAreasName();
 
                 if (getAreaName.ShowDialog(this) == DialogResult.OK) {
                     selectedArea.Area.Name = getAreaName.AreaName;
@@ -244,7 +244,7 @@ namespace LayoutManager.Dialogs {
         }
 
         private void buttonNew_Click(object? sender, System.EventArgs e) {
-            Dialogs.GetAreasName getAreaName = new Dialogs.GetAreasName();
+            GetAreasName getAreaName = new GetAreasName();
 
             if (getAreaName.ShowDialog(this) == DialogResult.OK) {
                 LayoutModelArea area = LayoutController.AddArea(getAreaName.AreaName);

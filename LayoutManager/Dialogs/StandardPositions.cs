@@ -36,7 +36,7 @@ namespace LayoutManager.Dialogs {
         }
 
         private bool edit(LayoutPositionInfo positionProvider) {
-            Dialogs.StandardPositionProperties positionProperties = new Dialogs.StandardPositionProperties(positionProvider);
+            StandardPositionProperties positionProperties = new StandardPositionProperties(positionProvider);
 
             if (positionProperties.ShowDialog() == DialogResult.OK) {
                 positionProperties.Get(positionProvider);
@@ -117,7 +117,7 @@ namespace LayoutManager.Dialogs {
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.ClientSize = new System.Drawing.Size(270, 346);
             this.ControlBox = false;
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.Controls.AddRange(new Control[] {
                                                                           this.buttonClose,
                                                                           this.buttonDelete,
                                                                           this.buttonEdit,

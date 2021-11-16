@@ -188,7 +188,7 @@ namespace LayoutManager {
         private readonly LayoutEvent? errorOccurredEvent;
         private readonly XmlElement? scriptElement;
         private LayoutScriptContext? scriptContext;
-        private readonly List<LayoutEventScriptTask> tasks = new List<LayoutEventScriptTask>();
+        private readonly List<LayoutEventScriptTask> tasks = new();
         private LayoutEventScriptTask? rootTask;
 
         public LayoutEventScript(string scriptName, XmlElement? scriptElement,
@@ -239,7 +239,7 @@ namespace LayoutManager {
         public string Name { get; }
 
         public LayoutEventScriptTask AddTask(XmlElement? scriptElement, LayoutScriptContext context) {
-            LayoutEventScriptTask task = new LayoutEventScriptTask(this, scriptElement, context);
+            LayoutEventScriptTask task = new(this, scriptElement, context);
 
             tasks.Add(task);
             EventManager.Event(new LayoutEvent("event-script-task-created", this, task));
@@ -358,7 +358,7 @@ namespace LayoutManager {
                 if (element == null || element.ChildNodes.Count < 1)
                     return defaultValue;
 
-                using LayoutEventScriptTask task = new LayoutEventScriptTask(this, (XmlElement)element.ChildNodes[0]!, ScriptContext);
+                using LayoutEventScriptTask task = new(this, (XmlElement)element.ChildNodes[0]!, ScriptContext);
 
                 return task.ConditionRoot.IsTrue;
             }
@@ -657,7 +657,7 @@ namespace LayoutManager {
 
         protected LayoutEventScriptNode? Parse(XmlElement elementToParse) => Task.Parse(elementToParse, Context);
 
-        protected LayoutEventScriptParseException ParseErrorException(string message) => new LayoutEventScriptParseException(Script, Element, message);
+        protected LayoutEventScriptParseException ParseErrorException(string message) => new(Script, Element, message);
 
         #region Common Access methods
 
@@ -901,7 +901,7 @@ namespace LayoutManager {
 
             try {
                 if (!Occurred && EventName != null) {
-                    LayoutEventAttribute subscriptionInfo = new LayoutEventAttribute(EventName);
+                    LayoutEventAttribute subscriptionInfo = new(EventName);
 
                     subscription = subscriptionInfo.CreateSubscription();
                     subscription.SetFromLayoutEventAttribute(subscriptionInfo);
@@ -985,7 +985,7 @@ namespace LayoutManager {
     }
 
     public abstract class LayoutEventScriptNodeEventContainer : LayoutEventScriptNodeEventBase {
-        private readonly List<LayoutEventScriptNodeEventBase> events = new List<LayoutEventScriptNodeEventBase>();
+        private readonly List<LayoutEventScriptNodeEventBase> events = new();
 
         protected LayoutEventScriptNodeEventContainer(LayoutEvent e) : base(e) {
             var eventsElement = Element["Events"];
@@ -1043,7 +1043,7 @@ namespace LayoutManager {
     }
 
     public abstract class LayoutEventScriptNodeConditionContainer : LayoutEventScriptNodeCondition {
-        private readonly List<LayoutEventScriptNodeCondition> conditions = new List<LayoutEventScriptNodeCondition>();
+        private readonly List<LayoutEventScriptNodeCondition> conditions = new();
 
         protected LayoutEventScriptNodeConditionContainer(LayoutEvent e) : base(e) {
             foreach (XmlElement conditionElement in Element) {
@@ -1072,7 +1072,7 @@ namespace LayoutManager {
     }
 
     public class LayoutEventScriptNodeActions : LayoutEventScriptNode {
-        private readonly ArrayList actions = new ArrayList();
+        private readonly ArrayList actions = new();
 
         public LayoutEventScriptNodeActions(LayoutEvent e) : base(e) {
             foreach (XmlElement elementAction in Element) {
@@ -1341,7 +1341,7 @@ namespace LayoutManager {
         private class LayoutEventScriptNodeEventContainerRandomChoice : LayoutEventScriptNodeEventContainer {
             private const string A_Choice = "Choice";
             private const string A_Weight = "Weight";
-            private readonly List<ChoiceEntry> choices = new List<ChoiceEntry>();
+            private readonly List<ChoiceEntry> choices = new();
             private LayoutEventScriptNodeEventBase? chosenNode;
 
             public LayoutEventScriptNodeEventContainerRandomChoice(LayoutEvent e) : base(e) {
@@ -1967,7 +1967,7 @@ namespace LayoutManager {
             public string ExpandMessage(string text) {
                 int s = 0;
                 int e;
-                ArrayList parts = new ArrayList();
+                ArrayList parts = new();
 
                 while (true) {
                     for (e = s; e < text.Length && text[e] != '[' && text[e] != '<'; e++)
@@ -2139,7 +2139,7 @@ namespace LayoutManager {
             public override void Execute() {
                 var sender = GetArgument("Sender");
                 var info = GetArgument("Info");
-                LayoutEvent theEvent = new LayoutEvent(Element.GetAttribute("EventName"), sender, info);
+                LayoutEvent theEvent = new(Element.GetAttribute("EventName"), sender, info);
 
                 var optionsElement = Element["Options"];
 

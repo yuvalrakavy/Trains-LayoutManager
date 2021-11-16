@@ -140,7 +140,7 @@ namespace LayoutManager.Components {
 
         public override ModelComponentKind Kind => ModelComponentKind.ControlComponent;
 
-        public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
+        public LayoutTextInfo NameProvider => new(this);
 
         public override bool DrawOutOfGrid => NameProvider.Element != null && NameProvider.Visible;
 
@@ -418,7 +418,7 @@ namespace LayoutManager.Components {
 
         #region Animate Train (when using emulation)
 
-        private readonly TrackEdgeDictionary currentShownTrainPositions = new TrackEdgeDictionary();
+        private readonly TrackEdgeDictionary currentShownTrainPositions = new();
 
         [LayoutEvent("show-emulated-locomotive-locations")]
         protected virtual void ShowTrainPositions(LayoutEvent e) {
@@ -674,7 +674,7 @@ namespace LayoutManager.Components {
         }
 
         public string GetAddressTextForComponent(ControlConnectionPointDestination connectionDestination) {
-            List<ControlModuleType> moduleTypes = new List<ControlModuleType>();
+            List<ControlModuleType> moduleTypes = new();
 
             if (ConnectionPointRef == null) {
                 IList<string> moduleTypeNames = Bus.BusType.GetConnectableControlModuleTypeNames(connectionDestination);
@@ -690,7 +690,7 @@ namespace LayoutManager.Components {
 
         public string AddressText {
             get {
-                List<ControlModuleType> moduleTypes = new List<ControlModuleType>();
+                List<ControlModuleType> moduleTypes = new();
 
                 if (ConnectionPointRef != null && ConnectionPointRef.Module != null)
                     moduleTypes.Add(ConnectionPointRef.Module.ModuleType);
@@ -800,7 +800,7 @@ namespace LayoutManager.Components {
     }
 
     public abstract class OutputCommandBase : IOutputCommand {
-        protected TaskCompletionSource<object?> tcs = new TaskCompletionSource<object?>();
+        protected TaskCompletionSource<object?> tcs = new();
 
         /// <summary>
         /// Execute the action associated with the command
@@ -879,15 +879,15 @@ namespace LayoutManager.Components {
     public class OutputManager {
         private readonly string name;
         private readonly CommandManagerQueue[] queues;
-        private readonly ManualResetEvent workToDo = new ManualResetEvent(false);
-        private readonly ManualResetEvent nothingToDo = new ManualResetEvent(true);
-        private readonly ManualResetEvent waitToGetReply = new ManualResetEvent(false);
+        private readonly ManualResetEvent workToDo = new(false);
+        private readonly ManualResetEvent nothingToDo = new(true);
+        private readonly ManualResetEvent waitToGetReply = new(false);
         private readonly CommandManagerQueue idleCommands;
         private bool doIdleCommands = true;
         private Thread? commandManagerThread;
-        private static readonly LayoutTraceSwitch traceOutputManager = new LayoutTraceSwitch("OutputManager", "Output Manager");
+        private static readonly LayoutTraceSwitch traceOutputManager = new("OutputManager", "Output Manager");
         private IOutputCommandWithReply? pendingCommandWithReply = null;
-        private readonly object _lockObject = new object();
+        private readonly object _lockObject = new();
         private bool terminateTread;
 
         public OutputManager(string name, int numberOfQueues) {

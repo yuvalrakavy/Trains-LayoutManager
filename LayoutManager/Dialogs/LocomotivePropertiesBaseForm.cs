@@ -23,7 +23,7 @@ namespace LayoutManager.Dialogs {
         private const string A_Name = "Name";
         private readonly Dictionary<string, Control> nameToControlMap = new Dictionary<string, Control>();
         protected XmlElement element;
-        private CommonUI.Controls.ImageGetter imageGetter;
+        private ImageGetter imageGetter;
 
         private ListView listViewFunctions;
         private AttributesEditor attributesEditor;
@@ -324,7 +324,7 @@ namespace LayoutManager.Dialogs {
 
         #region Default event handler implementations
 
-        protected void ButtonFunctionAdd_Click(object? sender, System.EventArgs e) {
+        protected void ButtonFunctionAdd_Click(object? sender, EventArgs e) {
             XmlElement functionElement = element.OwnerDocument.CreateElement("Function");
             FunctionItem item = new FunctionItem(functionElement);
 
@@ -356,7 +356,7 @@ namespace LayoutManager.Dialogs {
             UpdateButtons();
         }
 
-        protected void ButtonFunctionEdit_Click(object? sender, System.EventArgs e) {
+        protected void ButtonFunctionEdit_Click(object? sender, EventArgs e) {
             if (listViewFunctions.SelectedItems.Count > 0) {
                 FunctionItem selected = (FunctionItem)listViewFunctions.SelectedItems[0];
                 XmlElement functionsElement = element[E_Functions];
@@ -365,7 +365,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        protected void ButtonFunctionRemove_Click(object? sender, System.EventArgs e) {
+        protected void ButtonFunctionRemove_Click(object? sender, EventArgs e) {
             if (listViewFunctions.SelectedItems.Count > 0) {
                 FunctionItem selected = (FunctionItem)listViewFunctions.SelectedItems[0];
 
@@ -375,23 +375,23 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        protected void TrackGuageSelector_SelectedIndexChanged(object? sender, System.EventArgs e) {
+        protected void TrackGuageSelector_SelectedIndexChanged(object? sender, EventArgs e) {
             InitDecoderTypeComboBox();
         }
 
-        protected void ListViewFunctions_SelectedIndexChanged(object? sender, System.EventArgs e) {
+        protected void ListViewFunctions_SelectedIndexChanged(object? sender, EventArgs e) {
             UpdateButtons();
         }
 
-        protected void OnUpdateImage(object? sender, System.EventArgs e) {
+        protected void OnUpdateImage(object? sender, EventArgs e) {
             imageGetter.DefaultImage = Catalog.GetStandardImage(CurrentKind, CurrentOrigin);
         }
 
-        protected void ButtonCopyFrom_Click(object? sender, System.EventArgs e) {
+        protected void ButtonCopyFrom_Click(object? sender, EventArgs e) {
             LocomotiveCatalogInfo catalog = Catalog;
 
             catalog.Load();
-            Dialogs.LocomotiveFunctionsCopyFrom copyFromDialog = new Dialogs.LocomotiveFunctionsCopyFrom(catalog);
+            LocomotiveFunctionsCopyFrom copyFromDialog = new LocomotiveFunctionsCopyFrom(catalog);
 
             if (copyFromDialog.ShowDialog(this) == DialogResult.OK) {
                 XmlElement functionsElement = element[E_Functions];
@@ -452,7 +452,7 @@ namespace LayoutManager.Dialogs {
         }
 
         public DialogResult Edit(Control parent, LocomotiveCatalogInfo catalog, XmlElement functionsElement) {
-            Dialogs.LocomotiveFunction locoFunction = new Dialogs.LocomotiveFunction(catalog, functionsElement, FunctionElement);
+            LocomotiveFunction locoFunction = new LocomotiveFunction(catalog, functionsElement, FunctionElement);
 
             DialogResult r = locoFunction.ShowDialog(parent);
             Update();

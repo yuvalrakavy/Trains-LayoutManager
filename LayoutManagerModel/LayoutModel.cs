@@ -76,7 +76,7 @@ namespace LayoutManager.Model {
 
         public void CheckIntegrity(string scope) {
             IDictionary<Guid, LayoutPolicyInfo> map = LayoutModel.StateManager.Policies(scope).IdToPolicyMap;
-            List<Guid> removeList = new List<Guid>();
+            List<Guid> removeList = new();
 
             foreach (Guid policyID in this)
                 if (!map.ContainsKey(policyID))
@@ -310,7 +310,7 @@ namespace LayoutManager.Model {
                 string location = (OptionalSpot == null) ? "Not placed" : "at " + Spot.Area.Name + ": " + Spot.Location;
                 string phaseName = OptionalSpot == null ? LayoutModel.Instance.DefaultPhase.ToString() : Spot.Phase.ToString();
                 string typeName = this.GetType().Name;
-                LayoutTextInfo nameProvider = new LayoutTextInfo(this);
+                LayoutTextInfo nameProvider = new(this);
 
                 if (typeName.StartsWith("Layout"))
                     typeName = typeName["Layout".Length..];       // Strip out the Layout
@@ -351,7 +351,7 @@ namespace LayoutManager.Model {
 
         public static implicit operator int(LayoutComponentConnectionPoint v) => v.cp;
 
-        public static implicit operator LayoutComponentConnectionPoint(int v) => new LayoutComponentConnectionPoint(v);
+        public static implicit operator LayoutComponentConnectionPoint(int v) => new(v);
 
         // Default value for standard connection points
 
@@ -437,7 +437,7 @@ namespace LayoutManager.Model {
     public struct TrackEdge : IComparable<TrackEdge> {
         private readonly LayoutTrackComponent? track;
 
-        public static readonly TrackEdge Empty = new TrackEdge();
+        public static readonly TrackEdge Empty = new();
 
         public TrackEdge(LayoutTrackComponent track, LayoutComponentConnectionPoint cp) {
             this.track = track;
@@ -479,7 +479,7 @@ namespace LayoutManager.Model {
                     ? multiPath.ConnectTo(ConnectionPoint, multiPath.CurrentSwitchState)
                     : Track.ConnectTo(ConnectionPoint, LayoutComponentConnectionType.Topology)[0];
 
-        public TrackEdge OtherSide => new TrackEdge(Track, OtherConnectionPoint);
+        public TrackEdge OtherSide => new(Track, OtherConnectionPoint);
 
         #region IComparable<TrackEdge> Members
 
@@ -514,7 +514,7 @@ namespace LayoutManager.Model {
     public struct TrackEdgeId {
         private readonly Guid trackId;
 
-        public static readonly TrackEdgeId Empty = new TrackEdgeId(Guid.Empty, 0);
+        public static readonly TrackEdgeId Empty = new(Guid.Empty, 0);
 
         public TrackEdgeId(Guid trackID, LayoutComponentConnectionPoint cp) {
             this.trackId = trackID;
@@ -551,7 +551,7 @@ namespace LayoutManager.Model {
 
         public static bool operator !=(TrackEdgeId edge1, TrackEdgeId edge2) => !edge1.Equals(edge2);
 
-        public TrackEdge ToTrackEdge() => new TrackEdge(Ensure.NotNull<LayoutTrackComponent>(LayoutModel.Component<LayoutTrackComponent>(trackId, LayoutModel.ActivePhases), $"track for id {trackId}"), ConnectionPoint);
+        public TrackEdge ToTrackEdge() => new(Ensure.NotNull<LayoutTrackComponent>(LayoutModel.Component<LayoutTrackComponent>(trackId, LayoutModel.ActivePhases), $"track for id {trackId}"), ConnectionPoint);
 
         public new string ToString() => ToTrackEdge().ToString();
 
@@ -985,10 +985,10 @@ namespace LayoutManager.Model {
         private const string A_x = "x";
         private const string A_y = "y";
         private string name;                           // The area's name
-        private readonly Dictionary<Point, LayoutModelSpotComponentCollection> grid = new Dictionary<Point, LayoutModelSpotComponentCollection>();              // grid of spots
-        private Rectangle mlBounds = new Rectangle();       // Model bounds
+        private readonly Dictionary<Point, LayoutModelSpotComponentCollection> grid = new();              // grid of spots
+        private Rectangle mlBounds = new();       // Model bounds
         private bool recalcBounds = true;            // need to recalculate bounds
-        private readonly List<LayoutModelSpotComponentCollection> outOfGridSpots = new List<LayoutModelSpotComponentCollection>();  // Spots which have at least one component that is drawn out of its grid
+        private readonly List<LayoutModelSpotComponentCollection> outOfGridSpots = new();  // Spots which have at least one component that is drawn out of its grid
         private Guid id;                             // The area ID
 
         /// <summary>
@@ -1343,7 +1343,7 @@ namespace LayoutManager.Model {
 
         // On entry <Grid> on exit </Grid>
         private void ParseGrid(XmlReader r) {
-            ConvertableString GetAttribute(string name) => new ConvertableString(r.GetAttribute(name), name);
+            ConvertableString GetAttribute(string name) => new(r.GetAttribute(name), name);
             grid.Clear();
 
             if (r.IsEmptyElement)
@@ -1426,7 +1426,7 @@ namespace LayoutManager.Model {
     }
 
     public partial class SortedVector<T> : SortedDictionary<int, T> {
-        public ValueRange RangeValues(int from, int to) => new ValueRange(this, from, to);
+        public ValueRange RangeValues(int from, int to) => new(this, from, to);
     }
 
     /// <summary>
@@ -1437,7 +1437,7 @@ namespace LayoutManager.Model {
     public class LayoutModel : ILayoutModuleSetup, IObjectHasXml {
         private string? modelXmlInfoFilename;
         private bool modelIsLoading;
-        private readonly Hashtable componentReferences = new Hashtable();       // Component ID to component
+        private readonly Hashtable componentReferences = new();       // Component ID to component
         private LocomotiveCollectionInfo? locomotiveCollection;
         private static LayoutModel? instance;
         private static LayoutStateManager? stateManager;
@@ -1532,7 +1532,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The locomotive catalog. This is a catalog of available locomotive types
         /// </summary>
-        public static LocomotiveCatalogInfo LocomotiveCatalog => new LocomotiveCatalogInfo();
+        public static LocomotiveCatalogInfo LocomotiveCatalog => new();
 
         /// <summary>
         /// The locomotive collection. This contains the locomotive that the user has.
@@ -1777,7 +1777,7 @@ namespace LayoutManager.Model {
 
                 while (r.NodeType == XmlNodeType.Element) {
                     if (r.Name == "Area") {
-                        LayoutModelArea area = new LayoutModelArea();
+                        LayoutModelArea area = new();
 
                         area.ReadXml(r);
                         MyAreas.Add(area);
@@ -1797,7 +1797,7 @@ namespace LayoutManager.Model {
 
         // On entry reader is on <LayoutModel> on exit it is on </LayoutModel>
         public void ReadXml(XmlReader r) {
-            ConvertableString GetAttribute(string name) => new ConvertableString(r.GetAttribute(name), name);
+            ConvertableString GetAttribute(string name) => new(r.GetAttribute(name), name);
             modelIsLoading = true;
 
             DefaultPhase = GetAttribute("DefaultPhase").Enum<LayoutPhase>() ?? LayoutPhase.Operational;
@@ -1835,7 +1835,7 @@ namespace LayoutManager.Model {
             modelXmlInfoFilename = path + System.IO.Path.DirectorySeparatorChar + "ModelInfo.Xml";
 
             if (new FileInfo(modelXmlInfoFilename).Exists) {
-                using (FileStream inStream = new FileStream(modelXmlInfoFilename, FileMode.Open)) {
+                using (FileStream inStream = new(modelXmlInfoFilename, FileMode.Open)) {
                     XmlInfo.XmlDocument.Load(inStream);
                 }
                 result = true;
@@ -1854,14 +1854,14 @@ namespace LayoutManager.Model {
         protected void MyWriteModelXmlInfo() {
             if (XmlInfo.XmlDocument != null && modelXmlInfoFilename != null) {
                 string backupModelXmlInfoFilename = modelXmlInfoFilename + ".backup";
-                FileInfo modelXmlInfoFileInfo = new FileInfo(modelXmlInfoFilename);
+                FileInfo modelXmlInfoFileInfo = new(modelXmlInfoFilename);
 
                 new FileInfo(backupModelXmlInfoFilename).Delete();
 
                 if (modelXmlInfoFileInfo.Exists)
                     modelXmlInfoFileInfo.MoveTo(backupModelXmlInfoFilename);
 
-                using FileStream fileOut = new FileStream(modelXmlInfoFilename, FileMode.Create, FileAccess.Write);
+                using FileStream fileOut = new(modelXmlInfoFilename, FileMode.Create, FileAccess.Write);
                 XmlInfo.XmlDocument.Save(fileOut);
             }
         }

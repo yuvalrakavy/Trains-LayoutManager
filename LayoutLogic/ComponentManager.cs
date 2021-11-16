@@ -55,9 +55,9 @@ namespace LayoutManager.Logic {
             var tasks = new List<Task>();
 
             if (switchingCommands.Count > 0) {
-                Dictionary<IModelComponentIsBusProvider, List<SwitchingCommand>> commandStationIdToSwitchingCommands = new Dictionary<IModelComponentIsBusProvider, List<SwitchingCommand>>();
+                Dictionary<IModelComponentIsBusProvider, List<SwitchingCommand>> commandStationIdToSwitchingCommands = new();
                 Guid defaultCommandStationId = switchingCommands[0].CommandStationId;
-                List<SwitchingCommand> movedSwitchingCommands = new List<SwitchingCommand>();
+                List<SwitchingCommand> movedSwitchingCommands = new();
 
                 var busProvider = switchingCommands[0].BusProvider;
                 if (busProvider != null)
@@ -125,7 +125,7 @@ namespace LayoutManager.Logic {
         [LayoutEvent("proximity-sensitivity-delay-changed")]
         private void ProximitySensorSensitivityDelayChanged(LayoutEvent e) => _proximitySensorSensitivityDelay = -1;
 
-        private readonly Dictionary<Guid, LayoutDelayedEvent> _changingProximitySensors = new Dictionary<Guid, LayoutDelayedEvent>();
+        private readonly Dictionary<Guid, LayoutDelayedEvent> _changingProximitySensors = new();
 
         [LayoutEvent("proximity-sensor-state-changed-notification", SenderType = typeof(LayoutProximitySensorComponent))]
         private void ProximitySensorComponentStateChanged(LayoutEvent e) {
@@ -268,7 +268,7 @@ namespace LayoutManager.Logic {
 
             if (removedBlockEdge.LinkedSignalsElement != null && removedBlockEdge.LinkedSignals.Count > 0) {
                 Dictionary<Guid, LayoutBlockEdgeBase> map = LinkedSignalMap;
-                List<Guid> removeList = new List<Guid>();
+                List<Guid> removeList = new();
 
                 foreach (KeyValuePair<Guid, LayoutBlockEdgeBase> signalIdBlockEdgePair in map)
                     if (signalIdBlockEdgePair.Value == removedBlockEdge)
@@ -287,7 +287,7 @@ namespace LayoutManager.Logic {
         private void BlockEdgeModified(LayoutEvent e) {
             var modifiedBlockEdge = Ensure.NotNull<LayoutBlockEdgeBase>(e.Sender, "modifiedBlockEdge");
             Dictionary<Guid, LayoutBlockEdgeBase> map = LinkedSignalMap;
-            List<Guid> previousLinkedSignals = new List<Guid>();
+            List<Guid> previousLinkedSignals = new();
 
             foreach (KeyValuePair<Guid, LayoutBlockEdgeBase> signalIdBlockEdgePair in map)
                 if (signalIdBlockEdgePair.Value == modifiedBlockEdge)

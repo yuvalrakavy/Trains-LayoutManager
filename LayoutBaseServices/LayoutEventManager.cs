@@ -390,7 +390,7 @@ namespace LayoutManager {
                 return xpath;
 
             var xpn = Ensure.NotNull<XPathNavigator>(subscriberXml.Element.CreateNavigator());
-            System.Text.StringBuilder result = new System.Text.StringBuilder(xpath.Length);
+            System.Text.StringBuilder result = new(xpath.Length);
             int pos = 0;
 
             for (int nextPos; (nextPos = xpath.IndexOf('`', pos)) >= 0; pos = nextPos) {
@@ -958,7 +958,7 @@ namespace LayoutManager {
             Canceled,
         }
 
-        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource cancellationTokenSource = new();
 
         public DelayedEventStatus Status { get; private set; }
         public Guid Id { get; }
@@ -1004,7 +1004,7 @@ namespace LayoutManager {
     /// </summary>
     public class LayoutEventManager {
         private ILayoutInterThreadEventInvoker? invoker;
-        private readonly Dictionary<Guid, LayoutDelayedEvent> activeDelayedEvents = new Dictionary<Guid, LayoutDelayedEvent>();
+        private readonly Dictionary<Guid, LayoutDelayedEvent> activeDelayedEvents = new();
         private LayoutEventDefAttribute[]? eventDefs;
 
         public LayoutEventManager(LayoutModuleManager _) => this.Subscriptions = new LayoutSubscriptionHashtableByEventName();
@@ -1036,7 +1036,7 @@ namespace LayoutManager {
         /// <param name="scope">The event scope</param>
         /// <param name="traceEvent">Optional trace event to be generated</param>
         protected void GenerateEvent(LayoutEvent e, LayoutEventScope scope, LayoutEventTraceEvent? traceEvent) {
-            List<LayoutEventSubscriptionBase> applicableSubscriptions = new List<LayoutEventSubscriptionBase>();
+            List<LayoutEventSubscriptionBase> applicableSubscriptions = new();
 
             Subscriptions.AddApplicableSubscriptions<LayoutEventSubscription>(applicableSubscriptions, e);
             if (applicableSubscriptions.Count > 1)
@@ -1141,7 +1141,7 @@ namespace LayoutManager {
 
         #endregion
 
-        public static LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) => new LayoutDelayedEvent(delayTime, e);
+        public static LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) => new(delayTime, e);
 
         internal void RegisterDelayedEvent(LayoutDelayedEvent delayedEvent) {
             lock (activeDelayedEvents) {
@@ -1165,7 +1165,7 @@ namespace LayoutManager {
             }
         }
 
-        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent, LayoutEvent? errorOccurredEvent) => new LayoutEventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
+        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent, LayoutEvent? errorOccurredEvent) => new(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
 
         public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
 
@@ -1202,7 +1202,7 @@ namespace LayoutManager {
         /// <param name="instance">The object instance</param>
         /// <returns>Array of LayoutEventSubscription to event handler of the given object</returns>
         public LayoutEventSubscriptionBase[] GetObjectSubscriptions(object instance) {
-            ArrayList instanceSubscriptions = new ArrayList();
+            ArrayList instanceSubscriptions = new();
 
             foreach (LayoutEventSubscriptionBase subscription in Subscriptions)
                 if (subscription.TargetObject == instance)
@@ -1360,7 +1360,7 @@ namespace LayoutManager {
         /// </summary>
         public static ILayoutSubscriptionCollection Subscriptions => Instance.Subscriptions;
 
-        public static LayoutEventScript EventScript(string scriptName, XmlElement? conditionElement, ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent, LayoutEvent? errorOccurredEvent) => new LayoutEventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
+        public static LayoutEventScript EventScript(string scriptName, XmlElement? conditionElement, ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent, LayoutEvent? errorOccurredEvent) => new(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
 
         public static LayoutEventScript EventScript(string scriptName, XmlElement? conditionElement, ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
 
@@ -1398,7 +1398,7 @@ namespace LayoutManager {
     /// A subscription collection implemented as an array. <see cref="ILayoutSubscriptionCollection"/>
     /// </summary>
     internal class LayoutSubscriptionArray : ILayoutSubscriptionCollection {
-        private readonly List<LayoutEventSubscriptionBase> subscriptions = new List<LayoutEventSubscriptionBase>();
+        private readonly List<LayoutEventSubscriptionBase> subscriptions = new();
 
         public void Add(LayoutEventSubscriptionBase subscription) {
             subscriptions.Add(subscription);
@@ -1411,7 +1411,7 @@ namespace LayoutManager {
         }
 
         public void RemoveObjectSubscriptions(object instance) {
-            List<LayoutEventSubscriptionBase> subscriptionsToRemove = new List<LayoutEventSubscriptionBase>();
+            List<LayoutEventSubscriptionBase> subscriptionsToRemove = new();
 
             foreach (LayoutEventSubscriptionBase subscription in subscriptions)
                 if (subscription.TargetObject == instance)
@@ -1441,8 +1441,8 @@ namespace LayoutManager {
     /// event name, all other subscriptions are stored in a array based subscription collection.
     /// </summary>
     internal class LayoutSubscriptionHashtableByEventName : ILayoutSubscriptionCollection {
-        private readonly Dictionary<string, ILayoutSubscriptionCollection> subscriptionByEventName = new Dictionary<string, ILayoutSubscriptionCollection>();
-        private readonly LayoutSubscriptionArray noEventNameFilterSubscriptions = new LayoutSubscriptionArray();
+        private readonly Dictionary<string, ILayoutSubscriptionCollection> subscriptionByEventName = new();
+        private readonly LayoutSubscriptionArray noEventNameFilterSubscriptions = new();
 
         private ILayoutSubscriptionCollection GetSlot(LayoutEventSubscriptionBase subscription) {
             if (!string.IsNullOrEmpty(subscription.EventName)) {
@@ -1479,7 +1479,7 @@ namespace LayoutManager {
         }
 
         public IEnumerator<LayoutEventSubscriptionBase> GetEnumerator() {
-            List<LayoutEventSubscriptionBase> allSubscriptions = new List<LayoutEventSubscriptionBase>();
+            List<LayoutEventSubscriptionBase> allSubscriptions = new();
 
             foreach (ILayoutSubscriptionCollection hashEntry in subscriptionByEventName.Values) {
                 foreach (LayoutEventSubscriptionBase subscription in hashEntry)
@@ -1517,8 +1517,8 @@ namespace LayoutManager {
     /// all other subscriptions are stored in a array based subscription collection.
     /// </summary>
     internal class LayoutSubscriptionHashtableBySenderType : ILayoutSubscriptionCollection {
-        private readonly Dictionary<Type, ILayoutSubscriptionCollection> subscriptionBySenderType = new Dictionary<Type, ILayoutSubscriptionCollection>();
-        private readonly LayoutSubscriptionArray noSenderTypeSubscriptions = new LayoutSubscriptionArray();
+        private readonly Dictionary<Type, ILayoutSubscriptionCollection> subscriptionBySenderType = new();
+        private readonly LayoutSubscriptionArray noSenderTypeSubscriptions = new();
 
         private ILayoutSubscriptionCollection GetSlot(LayoutEventSubscriptionBase subscription) {
             if (subscription.SenderType != null) {
@@ -1555,7 +1555,7 @@ namespace LayoutManager {
         }
 
         public IEnumerator<LayoutEventSubscriptionBase> GetEnumerator() {
-            List<LayoutEventSubscriptionBase> allSubscriptions = new List<LayoutEventSubscriptionBase>();
+            List<LayoutEventSubscriptionBase> allSubscriptions = new();
 
             foreach (ILayoutSubscriptionCollection hashEntry in subscriptionBySenderType.Values) {
                 foreach (LayoutEventSubscriptionBase subscription in hashEntry)

@@ -12,7 +12,7 @@ namespace LayoutManager.Model {
     [LayoutModule("Programming Operations Manager", UserControl = false)]
     internal class ActionManager : LayoutModuleBase {
         [LayoutAsyncEvent("do-command-station-actions")]
-        private async Task<object?> doProgrammingActions(LayoutEvent e) {
+        private async Task<object?> DoProgrammingActions(LayoutEvent e) {
             var actions = Ensure.NotNull<ILayoutActionContainer>(e.Sender, "actions");
             var commandStation = Ensure.NotNull<IModelComponentCanProgramLocomotives>(e.Info, "commandStation");
 
@@ -354,7 +354,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="cvNumber">Control variable (CV) number</param>
         /// <param name="value">The value to be programmed</param>
-        public DccProgrammingCV SetCV(int cvNumber, byte value) => new DccProgrammingCV(Element, cvNumber, value);
+        public DccProgrammingCV SetCV(int cvNumber, byte value) => new(Element, cvNumber, value);
 
         public IEnumerable<DccProgrammingCV> CVs {
             get {
@@ -407,7 +407,7 @@ namespace LayoutManager.Model {
         }
 
         public override string ToString() {
-            StringBuilder s = new StringBuilder(Description + ": ");
+            StringBuilder s = new(Description + ": ");
             string sep = "";
 
             foreach (DccProgrammingCV cv in CVs) {

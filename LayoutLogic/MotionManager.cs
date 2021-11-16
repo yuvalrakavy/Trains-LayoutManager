@@ -12,10 +12,10 @@ namespace LayoutManager.Logic {
     /// </summary>
     [LayoutModule("Train Motion Manager", UserControl = false)]
     public class TrainMotionManager : LayoutModuleBase {
-        private readonly Dictionary<string, CommandStationCapabilitiesInfo> commandStationCapabiltiesMap = new Dictionary<string, CommandStationCapabilitiesInfo>();
+        private readonly Dictionary<string, CommandStationCapabilitiesInfo> commandStationCapabiltiesMap = new();
         private string? _commandStationName;
         private CommandStationCapabilitiesInfo? _commandStationCapabilties;
-        private readonly Dictionary<Guid, SpeedChangeState> trainIDtoSpeedChangeState = new Dictionary<Guid, SpeedChangeState>();
+        private readonly Dictionary<Guid, SpeedChangeState> trainIDtoSpeedChangeState = new();
 
         [LayoutEvent("train-speed-change-request")]
         private void trainSpeedChangeRequest(LayoutEvent e) {
@@ -124,7 +124,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("exit-operation-mode")]
         private void exitOperationMode(LayoutEvent e) {
-            List<SpeedChangeState> activeSpeedChanges = new List<SpeedChangeState>();
+            List<SpeedChangeState> activeSpeedChanges = new();
 
             foreach (SpeedChangeState speedChangeState in trainIDtoSpeedChangeState.Values)
                 activeSpeedChanges.Add(speedChangeState);

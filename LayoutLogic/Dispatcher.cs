@@ -11,10 +11,10 @@ using LayoutManager.Components;
 namespace LayoutManager.Logic {
     [LayoutModule("Disptacher")]
     internal class Dispatcher : LayoutModuleBase {
-        private static readonly LayoutTraceSwitch traceDispatcher = new LayoutTraceSwitch("Dispatcher", "Master Dispatcher");
-        private static readonly LayoutTraceSubsystem traceUnlockingManager = new LayoutTraceSubsystem(traceDispatcher, "DispatcherUnlockingManager", "Layout Block Unlock Manager");
-        private static readonly LayoutTraceSubsystem traceDispatching = new LayoutTraceSubsystem(traceDispatcher, "Dispatching", "Displatching operation");
-        private static readonly LayoutTraceSubsystem traceDeadlock = new LayoutTraceSubsystem(traceDispatcher, "DeadlockIdentification", "Deadlock identification");
+        private static readonly LayoutTraceSwitch traceDispatcher = new("Dispatcher", "Master Dispatcher");
+        private static readonly LayoutTraceSubsystem traceUnlockingManager = new(traceDispatcher, "DispatcherUnlockingManager", "Layout Block Unlock Manager");
+        private static readonly LayoutTraceSubsystem traceDispatching = new(traceDispatcher, "Dispatching", "Displatching operation");
+        private static readonly LayoutTraceSubsystem traceDeadlock = new(traceDispatcher, "DeadlockIdentification", "Deadlock identification");
 
         #region Definitions and Explanations
 
@@ -203,7 +203,7 @@ namespace LayoutManager.Logic {
             }
 
             public void Flush() {
-                ArrayList blockIDs = new ArrayList();
+                ArrayList blockIDs = new();
 
                 Trace.WriteLineIf(traceDispatcher.TraceVerbose, "*** Flushing queue");
 
@@ -266,7 +266,7 @@ namespace LayoutManager.Logic {
             }
 
             public void RemoveByOwner(Guid trainID) {
-                List<Guid> removeList = new List<Guid>();
+                List<Guid> removeList = new();
 
                 foreach (Guid blockID in Keys) {
                     LayoutBlock block = LayoutModel.Blocks[blockID];
@@ -310,7 +310,7 @@ namespace LayoutManager.Logic {
                 var block = Ensure.NotNull<LayoutBlock>(e.Sender, "block");
                 var lockRequest = (LayoutLockRequest?)e.Info;
 
-                List<Guid> resourceIDsToUnlock = new List<Guid>();
+                List<Guid> resourceIDsToUnlock = new();
                 bool retryWaitingTrains = false;
 
                 Trace.WriteLineIf(traceUnlockingManager.TraceInfo, $"UnlockingManager: Unlock on timeout {block}");
@@ -384,7 +384,7 @@ namespace LayoutManager.Logic {
             public bool ArrivedToDestination { get; }
 
             public LayoutLockRequest? RequestLayoutLock(ActiveTripInfo trip, BlockUnlockingManager blockUnlockingManager) {
-                LayoutLockRequest lockRequest = new LayoutLockRequest(trip.TrainId);
+                LayoutLockRequest lockRequest = new(trip.TrainId);
                 bool gotLock;
 
                 foreach (BlockEntry entry in BlockEntries) {
@@ -432,8 +432,8 @@ namespace LayoutManager.Logic {
         /// <summary>
         /// activeTrips map from train ID to active trip
         /// </summary>
-        private readonly ActiveTripsCollection activeTrips = new ActiveTripsCollection();
-        private readonly BlockUnlockingManager blockUnlockingManager = new BlockUnlockingManager();
+        private readonly ActiveTripsCollection activeTrips = new();
+        private readonly BlockUnlockingManager blockUnlockingManager = new();
         private IRoutePlanningServices? _tripPlanningServices;
         private ILayoutLockManagerServices? _layoutLockManagerServices;
         private ILayoutTopologyServices? _layoutTopologyServices;
@@ -665,7 +665,7 @@ namespace LayoutManager.Logic {
 
         [LayoutEvent("get-active-trips")]
         private void GetActiveTrips(LayoutEvent e) {
-            ArrayList trips = new ArrayList();
+            ArrayList trips = new();
 
             foreach (ActiveTripInfo trip in activeTrips.Values)
                 if (trip.Status != TripStatus.Aborted && trip.Status != TripStatus.Done)
@@ -775,8 +775,8 @@ namespace LayoutManager.Logic {
         /// <param name="trip">The trip for which the lock request is needed</param>
         /// <param name="route">The route which the train is about to make</param>
         private TripSection GetTripSection(ActiveTripInfo trip, ITripRoute route, Guid startSectionBlockID) {
-            List<BlockEntry> blockEntries = new List<BlockEntry>();
-            List<LayoutBlock> crossedBlocks = new List<LayoutBlock>();  // Blocks that are crossed by the current route
+            List<BlockEntry> blockEntries = new();
+            List<LayoutBlock> crossedBlocks = new();  // Blocks that are crossed by the current route
             TrackEdge edge = route.SourceEdge;
             TrackEdge destinationEdge = route.DestinationEdge;
             var switchStates = route.SwitchStates;
@@ -1275,7 +1275,7 @@ namespace LayoutManager.Logic {
             //			Dictionary<Guid, object> alreadySwitched = new Dictionary<Guid, object>(switchStates.Count);
             int switchStateIndex = 0;
             bool completed = true;
-            List<SwitchingCommand> switchingCommands = new List<SwitchingCommand>();
+            List<SwitchingCommand> switchingCommands = new();
             var powerConnectors = new Dictionary<Guid, LayoutTrackPowerConnectorComponent>();
 
             while (edge.Track != destinationEdge.Track) {
@@ -1654,7 +1654,7 @@ namespace LayoutManager.Logic {
                 // Train is not associated with an active trip
 
                 if (block.LockRequest == null) {
-                    LayoutLockRequest lockRequest = new LayoutLockRequest(train.Id);
+                    LayoutLockRequest lockRequest = new(train.Id);
 
                     lockRequest.Blocks.Add(block);
                     EventManager.Event(new LayoutEvent("request-layout-lock", lockRequest));
@@ -1840,12 +1840,12 @@ namespace LayoutManager.Logic {
 
         private class CheckRoutesResult {
             public IDictionary<Guid, TrackEdge> ReachableDestinationEdges = new Dictionary<Guid, TrackEdge>();
-            public List<TrackEdge> ValidSourceEdges = new List<TrackEdge>();
-            public List<TrackEdge> InvalidSourceEdges = new List<TrackEdge>();
+            public List<TrackEdge> ValidSourceEdges = new();
+            public List<TrackEdge> InvalidSourceEdges = new();
         }
 
         private CheckRoutesResult CheckRoutes(List<TrackEdge> sourceEdges, List<LayoutBlockDefinitionComponent> destinations, LocomotiveOrientation direction, TrainStateInfo train, bool trainStopping) {
-            CheckRoutesResult result = new CheckRoutesResult();
+            CheckRoutesResult result = new();
 
             foreach (TrackEdge sourceEdge in sourceEdges) {
                 bool sourceIsValid = false;
@@ -1876,8 +1876,8 @@ namespace LayoutManager.Logic {
         private void ValidateTripPlanRoute(LayoutEvent e) {
             var tripPlan = Ensure.NotNull<TripPlanInfo>(e.Sender, "tripPlan");
             var train = Ensure.NotNull<TrainStateInfo>(e.Info, "train");
-            List<TrackEdge> sourceEdges = new List<TrackEdge>();
-            List<ITripRouteValidationAction> actions = new List<ITripRouteValidationAction>();
+            List<TrackEdge> sourceEdges = new();
+            List<ITripRouteValidationAction> actions = new();
             bool canBeFixed = true;
 
             var locoBlock = train.LocomotiveBlock;
@@ -1891,7 +1891,7 @@ namespace LayoutManager.Logic {
             for (int wayPointIndex = 0; wayPointIndex < tripPlan.Waypoints.Count; wayPointIndex++) {
                 TripPlanWaypointInfo wayPoint = tripPlan.Waypoints[wayPointIndex];
                 LocomotiveOrientation direction = wayPoint.Direction;
-                List<LayoutBlockDefinitionComponent> destinations = new List<LayoutBlockDefinitionComponent>();
+                List<LayoutBlockDefinitionComponent> destinations = new();
 
                 // try to find route from each source to each destination. If no route can be found to any destination,
                 // remove this source 

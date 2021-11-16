@@ -127,7 +127,7 @@ namespace LayoutManager.Model {
             throw new NotImplementedException();
         }
 
-        protected override MotionRampInfo FromElement(XmlElement itemElement) => new MotionRampInfo(itemElement);
+        protected override MotionRampInfo FromElement(XmlElement itemElement) => new(itemElement);
     }
 
     public class TrainSpeedChangeParameters {
@@ -186,10 +186,10 @@ namespace LayoutManager.Model {
         private void Initialize() {
             int speedSteps = LayoutModel.Instance.LogicalSpeedSteps;
 
-            MotionRampInfo acceleration = new MotionRampInfo(Element, MotionRampType.RateFixed, speedSteps / 2);
-            MotionRampInfo deceleration = new MotionRampInfo(Element, MotionRampType.RateFixed, speedSteps / 2);
-            MotionRampInfo slowdown = new MotionRampInfo(Element, MotionRampType.RateFixed, speedSteps / 3);
-            MotionRampInfo stop = new MotionRampInfo(Element, MotionRampType.RateFixed, speedSteps);
+            MotionRampInfo acceleration = new(Element, MotionRampType.RateFixed, speedSteps / 2);
+            MotionRampInfo deceleration = new(Element, MotionRampType.RateFixed, speedSteps / 2);
+            MotionRampInfo slowdown = new(Element, MotionRampType.RateFixed, speedSteps / 3);
+            MotionRampInfo stop = new(Element, MotionRampType.RateFixed, speedSteps);
 
             acceleration.Role = "Acceleration";
             deceleration.Role = "Deceleration";

@@ -15,7 +15,7 @@ namespace LayoutManager.Logic {
         private const string A_TrackId = "TrackID";
         private const string E_Component = "Component";
         private const string E_ConnectTo = "ConnectTo";
-        private readonly Dictionary<TrackEdgeId, ModelTopologyEntry> topology = new Dictionary<TrackEdgeId, ModelTopologyEntry>();
+        private readonly Dictionary<TrackEdgeId, ModelTopologyEntry> topology = new();
         private bool compiled;
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace LayoutManager.Logic {
                 foreach (LayoutComponentConnectionPoint cp in switchingTrack.ConnectionPoints)
                     if (switchingTrack.IsSplitPoint(cp)) {  // Note that for simple turnout, only one connection point is a split point
                         LayoutComponentConnectionPoint[] connectedPoints = switchingTrack.ConnectTo(cp, LayoutComponentConnectionType.Passage);
-                        ModelTopologyEntry entry = new ModelTopologyEntry(connectedPoints.Length);
+                        ModelTopologyEntry entry = new(connectedPoints.Length);
 
                         for (int i = 0; i < entry.SwitchingStateCount; i++)
                             entry[i] = GetConnectedSplit(switchingTrack.GetConnectedComponentEdge(switchingTrack.ConnectTo(cp, i)));
@@ -43,7 +43,7 @@ namespace LayoutManager.Logic {
         /// <remarks>Assume current element is "Topology"</remarks>
         /// <param name="r"></param>
         public ModelTopology(XmlReader r) {
-            ConvertableString GetAttribute(string name) => new ConvertableString(r.GetAttribute(name), $"Attribute {name}");
+            ConvertableString GetAttribute(string name) => new(r.GetAttribute(name), $"Attribute {name}");
 
             if (!r.IsEmptyElement) {
                 r.Read();
@@ -159,7 +159,7 @@ namespace LayoutManager.Logic {
         public override int GetHashCode() => base.GetHashCode();
 
         private static ModelTopologyConnectionEntry GetConnectedSplit(TrackEdge edge) {
-            TrackEdgeDictionary visitedMergePoints = new TrackEdgeDictionary();
+            TrackEdgeDictionary visitedMergePoints = new();
             int penalty = 0;
 
             while (edge != TrackEdge.Empty) {

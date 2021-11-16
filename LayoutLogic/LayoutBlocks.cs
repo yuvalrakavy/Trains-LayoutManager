@@ -12,8 +12,8 @@ namespace LayoutManager.Logic {
     [LayoutModule("Layout Block Manager", UserControl = false)]
     internal class LayoutBlockManager : LayoutModuleBase {
 #pragma warning disable IDE0052, RCS1213
-        private static readonly LayoutTraceSwitch traceBlocks = new LayoutTraceSwitch("BlockIdentification", "Block Identification");
-        private static readonly LayoutTraceSwitch traceBlockInfo = new LayoutTraceSwitch("BlockInfo", "Block Info directions");
+        private static readonly LayoutTraceSwitch traceBlocks = new("BlockIdentification", "Block Identification");
+        private static readonly LayoutTraceSwitch traceBlockInfo = new("BlockInfo", "Block Info directions");
 #pragma warning restore IDE0052, RCS1213
 
         private ILayoutTopologyServices? _topologyServices;
@@ -30,7 +30,7 @@ namespace LayoutManager.Logic {
         private void LocateBlocks(LayoutEvent e) {
             LayoutPhase phases = e.GetPhases();
             IEnumerable<LayoutBlockEdgeBase> blockEdges = LayoutModel.Components<LayoutBlockEdgeBase>(phases);
-            TrackEdgeDictionary scannedBlockBoundries = new TrackEdgeDictionary();
+            TrackEdgeDictionary scannedBlockBoundries = new();
 
             LayoutModel.Blocks.Clear();
 
@@ -119,8 +119,8 @@ namespace LayoutManager.Logic {
         }
 
         private LayoutBlock? ScanBlock(TrackEdgeDictionary scannedBlockBoundres, TrackEdge scanFrom, LayoutBlock? block) {
-            TrackEdgeDictionary scannedEdges = new TrackEdgeDictionary();
-            Stack<TrackEdge> scanStack = new Stack<TrackEdge>();
+            TrackEdgeDictionary scannedEdges = new();
+            Stack<TrackEdge> scanStack = new();
             const bool ok = true;
 
             (block ??= new LayoutBlock()).Add(scanFrom);
@@ -203,8 +203,8 @@ namespace LayoutManager.Logic {
 
                 // Validate that all track contacts that bound the block are reachable from the block info
                 // (if not, generate a warning)
-                LayoutSelection unreachedBlockEdges = new LayoutSelection();
-                LayoutSelection ambiguousBlockEdges = new LayoutSelection();
+                LayoutSelection unreachedBlockEdges = new();
+                LayoutSelection ambiguousBlockEdges = new();
 
                 foreach (TrackEdge edge in blockDefinition.Block.TrackEdges) {
                     var blockEdge = edge.Track.BlockEdgeBase;
@@ -258,8 +258,8 @@ namespace LayoutManager.Logic {
         }
 
         private void AddBlockInfoBlockEdges(LayoutBlockDefinitionComponent blockInfo, int cpIndex) {
-            Stack<TrackEdge> scanStack = new Stack<TrackEdge>();
-            TrackEdgeDictionary scanned = new TrackEdgeDictionary();
+            Stack<TrackEdge> scanStack = new();
+            TrackEdgeDictionary scanned = new();
 
             scanStack.Push(TopologyServices.FindTrackConnectingAt(new TrackEdge(blockInfo.Track, blockInfo.Track.ConnectionPoints[cpIndex])));
 
@@ -315,7 +315,7 @@ namespace LayoutManager.Logic {
 
             foreach (LayoutBlockDefinitionComponent blockInfo in LayoutModel.Components<LayoutBlockDefinitionComponent>(phase)) {
                 if (blockInfo.Info.IsOccupancyDetectionBlock) {
-                    LayoutOccupancyBlock occupancyBlock = new LayoutOccupancyBlock();
+                    LayoutOccupancyBlock occupancyBlock = new();
                     LayoutTrackComponent track = blockInfo.Track;
 
                     occupancyBlock.BlockDefinintion = blockInfo;
@@ -327,8 +327,8 @@ namespace LayoutManager.Logic {
         }
 
         private void ScanTrainDetectionBlock(TrackEdge scanFrom, LayoutOccupancyBlock occupancyBlock) {
-            TrackEdgeDictionary scannedEdges = new TrackEdgeDictionary();
-            Stack<TrackEdge> scanStack = new Stack<TrackEdge>();
+            TrackEdgeDictionary scannedEdges = new();
+            Stack<TrackEdge> scanStack = new();
 
             scanStack.Push(scanFrom);
 

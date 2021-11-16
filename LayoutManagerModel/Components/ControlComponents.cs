@@ -49,10 +49,10 @@ namespace LayoutManager.Components {
             throw new NotImplementedException();
         }
 
-        protected override LinkedSignalInfo FromElement(XmlElement itemElement) => new LinkedSignalInfo(itemElement);
+        protected override LinkedSignalInfo FromElement(XmlElement itemElement) => new(itemElement);
 
         public LinkedSignalInfo Add(LayoutSignalComponent signalComponent) {
-            LinkedSignalInfo newLinkedSignal = new LinkedSignalInfo(blockEdge.LinkedSignalsElement, signalComponent);
+            LinkedSignalInfo newLinkedSignal = new(blockEdge.LinkedSignalsElement, signalComponent);
 
             Add(newLinkedSignal);
             EventManager.Event(new LayoutEvent("signal-component-linked", blockEdge, signalComponent));
@@ -92,7 +92,7 @@ namespace LayoutManager.Components {
             }
         }
 
-        public LinkedSignalsCollection LinkedSignals => new LinkedSignalsCollection(this);
+        public LinkedSignalsCollection LinkedSignals => new(this);
 
         public LayoutSignalState SignalState {
             get => LayoutModel.StateManager.Components.OptionalStateOf(this.Id, "Signal").AttributeValue(A_State).Enum<LayoutSignalState>() ?? LayoutSignalState.Yellow;
@@ -161,15 +161,15 @@ namespace LayoutManager.Components {
     public abstract class LayoutTriggerableBlockEdgeBase : LayoutBlockEdgeBase, IModelComponentHasName, IModelComponentConnectToControl {
         private const string Topic_TriggeredState = "Triggered";
 
-        public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
+        public LayoutTextInfo NameProvider => new(this);
 
         public abstract IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions { get; }
 
-        public LayoutAddressInfo AddressProvider => new LayoutAddressInfo(this);
+        public LayoutAddressInfo AddressProvider => new(this);
 
         public override bool DrawOutOfGrid {
             get {
-                LayoutTextInfo text = new LayoutTextInfo(this);
+                LayoutTextInfo text = new(this);
 
                 return text.OptionalElement != null;
             }
@@ -298,13 +298,13 @@ namespace LayoutManager.Components {
             throw new NotImplementedException();
         }
 
-        protected override ResourceInfo FromElement(XmlElement itemElement) => new ResourceInfo(itemElement);
+        protected override ResourceInfo FromElement(XmlElement itemElement) => new(itemElement);
 
         protected override Guid GetItemKey(ResourceInfo item) => item.ResourceId;
 
         public ResourceInfo Add(Guid resourceId) {
             XmlElement resourceElement = blockDefinition.Element.OwnerDocument.CreateElement("Resource");
-            ResourceInfo resourceInfo = new ResourceInfo(resourceElement) {
+            ResourceInfo resourceInfo = new(resourceElement) {
                 ResourceId = resourceId
             };
             Add(resourceInfo);
@@ -316,7 +316,7 @@ namespace LayoutManager.Components {
 
         public bool CheckIntegrity(LayoutModuleBase moduleBase, LayoutPhase phase) {
             bool ok = true;
-            ArrayList removeList = new ArrayList();
+            ArrayList removeList = new();
 
             foreach (ResourceInfo resourceInfo in this) {
                 if (resourceInfo.GetResource(phase) == null) {
@@ -617,13 +617,13 @@ namespace LayoutManager.Components {
             }
         }
 
-        public ResourceCollection Resources => new ResourceCollection(this);
+        public ResourceCollection Resources => new(this);
 
-        public LayoutPolicyIdCollection Policies => new LayoutPolicyIdCollection(PoliciesElement);
+        public LayoutPolicyIdCollection Policies => new(PoliciesElement);
 
-        public TripPlanTrainConditionInfo TrainPassCondition => new TripPlanTrainConditionInfo(Element, "TrainPassCondition");
+        public TripPlanTrainConditionInfo TrainPassCondition => new(Element, "TrainPassCondition");
 
-        public TripPlanTrainConditionInfo TrainStopCondition => new TripPlanTrainConditionInfo(Element, "TrainStopCondition");
+        public TripPlanTrainConditionInfo TrainStopCondition => new(Element, "TrainStopCondition");
     }
 
     public class LayoutBlockDefinitionComponent : ModelComponent, IObjectHasId, IModelComponentHasName, IObjectHasAttributes, IModelComponentConnectToControl {
@@ -643,13 +643,13 @@ namespace LayoutManager.Components {
 
         public override ModelComponentKind Kind => ModelComponentKind.BlockInfo;
 
-        public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
+        public LayoutTextInfo NameProvider => new(this);
 
         public override bool DrawOutOfGrid => NameProvider.Element != null && NameProvider.Visible;
 
         public string Name => NameProvider.Name;
 
-        public LayoutBlockDefinitionComponentInfo Info => new LayoutBlockDefinitionComponentInfo(this, Element);
+        public LayoutBlockDefinitionComponentInfo Info => new(this, Element);
 
         public LayoutTrackComponent Track => Ensure.NotNull<LayoutTrackComponent>(Spot.Track);
 
@@ -722,7 +722,7 @@ namespace LayoutManager.Components {
         public int GetOtherConnectionPointIndex(LayoutComponentConnectionPoint cp) => GetOtherConnectionPointIndex(GetConnectionPointIndex(cp));
 
         public int GetOtherConnectionPointIndex(int cpIndex) {
-            TrackEdge edge = new TrackEdge(Track, Track.ConnectionPoints[cpIndex]);
+            TrackEdge edge = new(Track, Track.ConnectionPoints[cpIndex]);
 
             return GetConnectionPointIndex(edge.OtherConnectionPoint);
         }
@@ -821,9 +821,9 @@ namespace LayoutManager.Components {
 
         public override ModelComponentKind Kind => ModelComponentKind.Signal;
 
-        public LayoutAddressInfo AddressProvider => new LayoutAddressInfo(this);
+        public LayoutAddressInfo AddressProvider => new(this);
 
-        public LayoutSignalComponentInfo Info => new LayoutSignalComponentInfo(Element);
+        public LayoutSignalComponentInfo Info => new(Element);
 
         public bool ReverseLogic {
             get => Info.ReverseLogic;
@@ -917,7 +917,7 @@ namespace LayoutManager.Components {
             }
         }
 
-        public ControlModuleLocationBusDefaultSettingCollection Defaults => new ControlModuleLocationBusDefaultSettingCollection(DefaultsElement);
+        public ControlModuleLocationBusDefaultSettingCollection Defaults => new(DefaultsElement);
 
         public Guid CommandStationId {
             get => (Guid?)AttributeValue(A_CommandStationId) ?? Guid.Empty;
@@ -936,14 +936,14 @@ namespace LayoutManager.Components {
 
         protected override XmlElement CreateElement(ControlModuleLocationBusDefaultInfo item) => Element.OwnerDocument.CreateElement("BusDefault");
 
-        protected override ControlModuleLocationBusDefaultInfo FromElement(XmlElement itemElement) => new ControlModuleLocationBusDefaultInfo(itemElement);
+        protected override ControlModuleLocationBusDefaultInfo FromElement(XmlElement itemElement) => new(itemElement);
 
         protected override Guid GetItemKey(ControlModuleLocationBusDefaultInfo item) => item.BusId;
 
         public ControlModuleLocationBusDefaultInfo Add(Guid busId, string defaultModuleTypeName, int defaultStartAddress) {
             XmlElement busDefaultElement = Element.OwnerDocument.CreateElement("BusDefault");
 
-            ControlModuleLocationBusDefaultInfo busDefault = new ControlModuleLocationBusDefaultInfo(busDefaultElement) {
+            ControlModuleLocationBusDefaultInfo busDefault = new(busDefaultElement) {
                 BusId = busId,
                 DefaultModuleTypeName = defaultModuleTypeName,
                 DefaultStartAddress = defaultStartAddress
@@ -1016,7 +1016,7 @@ namespace LayoutManager.Components {
 
         public override ModelComponentKind Kind => ModelComponentKind.ControlComponent;
 
-        public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
+        public LayoutTextInfo NameProvider => new(this);
 
         public string Name => NameProvider.Name;
 

@@ -51,7 +51,7 @@ namespace LayoutManager.Model {
             if (IsConditionEmpty)
                 return "";
             else {
-                LayoutConditionScript conditionScript = new LayoutConditionScript("Train Condition", ConditionElement);
+                LayoutConditionScript conditionScript = new("Train Condition", ConditionElement);
 
                 return conditionScript.Description;
             }
@@ -111,7 +111,7 @@ namespace LayoutManager.Model {
             XmlElement entryElement = Element.OwnerDocument.CreateElement(E_Block);
 
             Element.AppendChild(entryElement);
-            TripPlanDestinationEntryInfo entry = new TripPlanDestinationEntryInfo(entryElement) {
+            TripPlanDestinationEntryInfo entry = new(entryElement) {
                 BlockId = blockInfo.Block.Id
             };
             Flush();
@@ -127,7 +127,7 @@ namespace LayoutManager.Model {
 
         public void Remove(Guid blockId) {
             foreach (XmlElement destinationEntryElement in Element) {
-                TripPlanDestinationEntryInfo entry = new TripPlanDestinationEntryInfo(destinationEntryElement);
+                TripPlanDestinationEntryInfo entry = new(destinationEntryElement);
 
                 if (entry.BlockId == blockId) {
                     Element.RemoveChild(entry.Element);
@@ -159,7 +159,7 @@ namespace LayoutManager.Model {
 
         public IList<Guid> BlockIdList {
             get {
-                List<Guid> blockIdList = new List<Guid>(Entries.Count);
+                List<Guid> blockIdList = new(Entries.Count);
 
                 entries.ForEach((TripPlanDestinationEntryInfo entry) => blockIdList.Add(entry.BlockId));
                 return blockIdList;
@@ -168,7 +168,7 @@ namespace LayoutManager.Model {
 
         public IList<LayoutBlock> Blocks {
             get {
-                List<LayoutBlock> blocks = new List<LayoutBlock>(Entries.Count);
+                List<LayoutBlock> blocks = new(Entries.Count);
 
                 entries.ForEach((TripPlanDestinationEntryInfo entry) => blocks.Add(LayoutModel.Blocks[entry.BlockId]));
                 return blocks;
@@ -177,7 +177,7 @@ namespace LayoutManager.Model {
 
         public IList<LayoutBlockDefinitionComponent> BlockInfoList {
             get {
-                List<LayoutBlockDefinitionComponent> blockInfos = new List<LayoutBlockDefinitionComponent>(Entries.Count);
+                List<LayoutBlockDefinitionComponent> blockInfos = new(Entries.Count);
 
                 entries.ForEach((TripPlanDestinationEntryInfo entry) => {
                     if (LayoutModel.Blocks.TryGetValue(entry.BlockId, out LayoutBlock block)) {
@@ -192,7 +192,7 @@ namespace LayoutManager.Model {
 
         public LayoutSelection Selection {
             get {
-                LayoutSelection selection = new LayoutSelection();
+                LayoutSelection selection = new();
 
                 selection.Add<LayoutBlockDefinitionComponent>(BlockInfoList);
                 return selection;
@@ -321,7 +321,7 @@ namespace LayoutManager.Model {
 
         public TripPlanInfo TripPlan {
             get {
-                TripPlanInfo tripPlan = new TripPlanInfo((XmlElement)Element.ParentNode.ParentNode);
+                TripPlanInfo tripPlan = new((XmlElement)Element.ParentNode.ParentNode);
 
                 return tripPlan;
             }
@@ -425,7 +425,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public IList<TripPlanWaypointInfo> Waypoints {
             get {
-                List<TripPlanWaypointInfo> wayPoints = new List<TripPlanWaypointInfo>(Count);
+                List<TripPlanWaypointInfo> wayPoints = new(Count);
 
                 foreach (XmlElement wayPointElement in WaypointsElement)
                     wayPoints.Add(new TripPlanWaypointInfo(wayPointElement));
@@ -456,7 +456,7 @@ namespace LayoutManager.Model {
 
         public LayoutSelection Selection {
             get {
-                LayoutSelection selection = new LayoutSelection();
+                LayoutSelection selection = new();
 
                 foreach (TripPlanWaypointInfo wayPoint in Waypoints)
                     selection.Add(wayPoint.Destination.Selection);
@@ -465,21 +465,21 @@ namespace LayoutManager.Model {
             }
         }
 
-        public LayoutPolicyIdCollection Policies => new LayoutPolicyIdCollection(Element);
+        public LayoutPolicyIdCollection Policies => new(Element);
 
         /// <summary>
         /// Add a new way point to the trip plan.
         /// </summary>
         /// <param name="blockInfo">Create a destination containing only this block</param>
         public TripPlanWaypointInfo Add(LayoutBlockDefinitionComponent blockInfo) {
-            TripPlanWaypointInfo wayPoint = new TripPlanWaypointInfo(this, blockInfo);
+            TripPlanWaypointInfo wayPoint = new(this, blockInfo);
 
             WaypointsElement.AppendChild(wayPoint.Element);
             return wayPoint;
         }
 
         public TripPlanWaypointInfo Add(TripPlanDestinationInfo destination) {
-            TripPlanWaypointInfo wayPoint = new TripPlanWaypointInfo(this) {
+            TripPlanWaypointInfo wayPoint = new(this) {
                 Destination = destination
             };
             WaypointsElement.AppendChild(wayPoint.Element);
@@ -528,7 +528,7 @@ namespace LayoutManager.Model {
         public TripPlanAssignmentInfo(XmlElement element) : base(element) {
         }
 
-        public TripPlanInfo TripPlan => new TripPlanInfo(Element[E_TripPlan]);
+        public TripPlanInfo TripPlan => new(Element[E_TripPlan]);
 
         public Guid TrainId => (Guid)AttributeValue(A_TrainId);
 
@@ -575,7 +575,7 @@ namespace LayoutManager.Model {
             throw new NotImplementedException();
         }
 
-        protected override TripPlanDestinationInfo FromElement(XmlElement itemElement) => new TripPlanDestinationInfo(itemElement);
+        protected override TripPlanDestinationInfo FromElement(XmlElement itemElement) => new(itemElement);
 
         public TripPlanDestinationInfo this[string name] {
             get {
@@ -596,7 +596,7 @@ namespace LayoutManager.Model {
 
         protected override Guid GetItemKey(TripPlanInfo item) => item.Id;
 
-        protected override TripPlanInfo FromElement(XmlElement itemElement) => new TripPlanInfo(itemElement);
+        protected override TripPlanInfo FromElement(XmlElement itemElement) => new(itemElement);
 
         public TripPlanInfo this[string name] {
             get {
@@ -724,11 +724,11 @@ namespace LayoutManager.Model {
         }
 
         public void CheckIntegrity(LayoutModuleBase mb, LayoutPhase phase) {
-            IntegrityContext ic = new IntegrityContext();
-            ArrayList tripPlanRemoveList = new ArrayList();
+            IntegrityContext ic = new();
+            ArrayList tripPlanRemoveList = new();
 
             foreach (TripPlanInfo tripPlan in TripPlans) {
-                List<TripPlanWaypointInfo> wayPointRemoveList = new List<TripPlanWaypointInfo>();
+                List<TripPlanWaypointInfo> wayPointRemoveList = new();
 
                 ic.TripPlan = tripPlan;
 
@@ -757,7 +757,7 @@ namespace LayoutManager.Model {
             foreach (TripPlanInfo tripPlan in tripPlanRemoveList)
                 TripPlans.Remove(tripPlan);
 
-            ArrayList destinationRemoveList = new ArrayList();
+            ArrayList destinationRemoveList = new();
 
             foreach (TripPlanDestinationInfo destination in Destinations) {
                 ic.Destination = destination;
@@ -854,7 +854,7 @@ namespace LayoutManager.Model {
         }
 
         private ImageList CreateImageList(int width, int height) {
-            ImageList imageList = new ImageList {
+            ImageList imageList = new() {
                 ImageSize = new Size(height, width),
                 ColorDepth = ColorDepth.Depth24Bit
             };
@@ -862,7 +862,7 @@ namespace LayoutManager.Model {
             foreach (XmlElement iconElement in Element) {
                 Icon icon;
 
-                using (MemoryStream s = new MemoryStream(Convert.FromBase64String(iconElement.InnerText))) {
+                using (MemoryStream s = new(Convert.FromBase64String(iconElement.InnerText))) {
                     icon = new Icon(s);
                 }
 
@@ -900,7 +900,7 @@ namespace LayoutManager.Model {
 
             iconElement.SetAttributeValue(A_Id, iconID);
 
-            using (MemoryStream s = new MemoryStream()) {
+            using (MemoryStream s = new()) {
                 icon.Save(s);
 
                 iconElement.InnerText = Convert.ToBase64String(s.GetBuffer());

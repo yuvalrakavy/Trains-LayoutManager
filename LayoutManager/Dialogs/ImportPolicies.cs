@@ -112,7 +112,7 @@ namespace LayoutManager.Dialogs {
             if (listViewScripts.SelectedItems.Count > 0) {
                 PolicyItem policyItem = (PolicyItem)listViewScripts.SelectedItems[0];
 
-                LayoutManager.CommonUI.Dialogs.PolicyDefinition d = new LayoutManager.CommonUI.Dialogs.PolicyDefinition(policyItem.Policy);
+                CommonUI.Dialogs.PolicyDefinition d = new CommonUI.Dialogs.PolicyDefinition(policyItem.Policy);
 
                 d.ShowDialog(this);
                 policyItem.Update();

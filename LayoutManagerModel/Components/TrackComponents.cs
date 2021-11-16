@@ -618,7 +618,7 @@ namespace LayoutManager.Components {
             switchingStateSupport = GetSwitchingStateSupporter();
         }
 
-        protected virtual SwitchingStateSupport GetSwitchingStateSupporter() => new SwitchingStateSupport(this);
+        protected virtual SwitchingStateSupport GetSwitchingStateSupporter() => new(this);
 
         public virtual int SwitchStateCount => switchingStateSupport.SwitchStateCount;
 
@@ -818,7 +818,7 @@ namespace LayoutManager.Components {
         public IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions {
             get {
                 if (RequiredControlModuleTypeName != null) {
-                    List<ModelComponentControlConnectionDescription> connectionDescriptions = new List<ModelComponentControlConnectionDescription>(
+                    List<ModelComponentControlConnectionDescription> connectionDescriptions = new(
                         HasFeedback ? controlConnectionsWithFeedback : controlConnectionsNoFeedback);
 
                     connectionDescriptions[0] = new ModelComponentControlConnectionDescription(connectionDescriptions[0].Name, connectionDescriptions[0].DisplayName, RequiredControlModuleTypeName);
@@ -1075,7 +1075,7 @@ namespace LayoutManager.Components {
         }
 
         protected override bool ReadXmlField(XmlReader r) {
-            ConvertableString GetAttribute(string name) => new ConvertableString(r.GetAttribute(name), $"Attribute {name}");
+            ConvertableString GetAttribute(string name) => new(r.GetAttribute(name), $"Attribute {name}");
 
             if (r.Name == E_Connections) {
                 diagonalIndex = (int)GetAttribute(A_DiagonalIndex);

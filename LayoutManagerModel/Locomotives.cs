@@ -151,7 +151,7 @@ namespace LayoutManager.Model {
                         Debug.WriteLine("-Loading collection from store: '" + storeElement.GetAttribute(A_Name) + "' from file: " + storeElement.GetAttribute(A_File));
 
                         try {
-                            XmlTextReader r = new XmlTextReader(filename) {
+                            XmlTextReader r = new(filename) {
                                 WhitespaceHandling = WhitespaceHandling.None
                             };
 
@@ -211,7 +211,7 @@ namespace LayoutManager.Model {
                     if (elementsInStore != null) {
                         try {
                             string filename = LayoutAssembly.ValueToFilePath(storeElement.GetAttribute(A_File), DefaultStoreDirectory);
-                            XmlTextWriter w = new XmlTextWriter(filename, new System.Text.UTF8Encoding());
+                            XmlTextWriter w = new(filename, new System.Text.UTF8Encoding());
 
                             w.WriteStartDocument();
                             w.WriteStartElement(CollectionElementName);
@@ -336,7 +336,7 @@ namespace LayoutManager.Model {
                     imagesElement.AppendChild(imageElement);
                 }
 
-                using MemoryStream s = new MemoryStream();
+                using MemoryStream s = new();
                 image.Save(s, image.RawFormat);
                 imageElement.InnerText = Convert.ToBase64String(s.GetBuffer());
             }
@@ -382,12 +382,12 @@ namespace LayoutManager.Model {
         [LayoutEvent("locomotive-type-updated")]
         private void LocomotiveTypeUpdated(LayoutEvent e) {
             var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-            LocomotiveTypeInfo locoType = new LocomotiveTypeInfo(element);
+            LocomotiveTypeInfo locoType = new(element);
             var locoWithTypeElements = CollectionElement.SelectNodes($"Locomotive[@TypeID='{locoType.Id}']");
 
             if (locoWithTypeElements != null) {
                 foreach (XmlElement locoWithTypeElement in locoWithTypeElements) {
-                    LocomotiveInfo loco = new LocomotiveInfo(locoWithTypeElement);
+                    LocomotiveInfo loco = new(locoWithTypeElement);
 
                     if (loco.LinkedToType) {
                         Debug.WriteLine("Updating type information of locomotive " + loco.DisplayName);
@@ -412,7 +412,7 @@ namespace LayoutManager.Model {
             var trainsToRemove = new List<TrainInCollectionInfo>();
 
             foreach (XmlElement trainElement in CollectionElement.GetElementsByTagName(E_Train)) {
-                TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(trainElement);
+                TrainInCollectionInfo trainInCollection = new(trainElement);
                 var membersToRemove = new List<TrainLocomotiveInfo>();
 
                 foreach (TrainLocomotiveInfo trainLocomotive in trainInCollection.Locomotives) {
@@ -425,7 +425,7 @@ namespace LayoutManager.Model {
                         var locoElement = LayoutModel.LocomotiveCollection[trainLocomotive.LocomotiveId];
 
                         if (locoElement != null) {
-                            LocomotiveInfo loco = new LocomotiveInfo(locoElement);
+                            LocomotiveInfo loco = new(locoElement);
 
                             if (loco.NotManaged)        // Do not allow non managed locomotive in a locomotive set
                                 membersToRemove.Add(trainLocomotive);
@@ -456,12 +456,12 @@ namespace LayoutManager.Model {
         /// <returns>The element GUID</returns>
         public Guid GetElementId(XmlElement element) {
             if (element.Name == E_Locomotive) {
-                LocomotiveInfo loco = new LocomotiveInfo(element);
+                LocomotiveInfo loco = new(element);
 
                 return loco.Id;
             }
             else if (element.Name == E_Train) {
-                TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(element);
+                TrainInCollectionInfo trainInCollection = new(element);
 
                 return trainInCollection.Id;
             }
@@ -520,7 +520,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public LayoutTextInfo NameProvider => new LayoutTextInfo(Element, E_TypeName);
+        public LayoutTextInfo NameProvider => new(Element, E_TypeName);
 
         public override string GetDisplayName(TrainObjectDisplayNameFormat format) => NameProvider.Name;
 
@@ -577,7 +577,7 @@ namespace LayoutManager.Model {
                         Element.RemoveChild(imageNode);
                 }
                 else {
-                    using MemoryStream s = new MemoryStream();
+                    using MemoryStream s = new();
                     value.Save(s, System.Drawing.Imaging.ImageFormat.Bmp);
 
                     var e = (XmlElement)(Element[E_Image] ?? Element.AppendChild(Element.OwnerDocument.CreateElement(E_Image))!);
@@ -591,7 +591,7 @@ namespace LayoutManager.Model {
                 if (imageElement == null)
                     return null;
                 else {
-                    MemoryStream s = new MemoryStream(Convert.FromBase64String(imageElement.InnerText));
+                    MemoryStream s = new(Convert.FromBase64String(imageElement.InnerText));
                     return Image.FromStream(s);
                 }
             }
@@ -762,11 +762,11 @@ namespace LayoutManager.Model {
             return name;
         }
 
-        public new LayoutTextInfo NameProvider => new LayoutTextInfo(Element, E_Name);
+        public new LayoutTextInfo NameProvider => new(Element, E_Name);
 
-        public LayoutTextInfo TypeNameProvider => new LayoutTextInfo(Element, E_TypeName);
+        public LayoutTextInfo TypeNameProvider => new(Element, E_TypeName);
 
-        public LayoutAddressInfo AddressProvider => new LayoutAddressInfo(Element);
+        public LayoutAddressInfo AddressProvider => new(Element);
 
         public string CollectionId {
             get => GetOptionalAttribute(A_CollectionId) ?? "";
@@ -797,7 +797,7 @@ namespace LayoutManager.Model {
             set => SetAttributeValue(A_CanTriggerTrackContact, value);
         }
 
-        public LayoutActionContainer<LocomotiveInfo> Actions => new LayoutActionContainer<LocomotiveInfo>(Element, this);
+        public LayoutActionContainer<LocomotiveInfo> Actions => new(Element, this);
 
         /// <summary>
         /// Check if this locomotive has compatible operation characteristics as of another locomotive or
@@ -808,12 +808,12 @@ namespace LayoutManager.Model {
         /// <returns></returns>
         public bool IsCompatibleOperationCharacteristics(XmlElement element) {
             if (element.Name == E_Locomotive) {
-                LocomotiveInfo otherLoco = new LocomotiveInfo(element);
+                LocomotiveInfo otherLoco = new(element);
 
                 return SpeedSteps == otherLoco.SpeedSteps && Guage == otherLoco.Guage;
             }
             else if (element.Name == E_Train) {
-                TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(element);
+                TrainInCollectionInfo trainInCollection = new(element);
 
                 foreach (TrainLocomotiveInfo trainLocomotive in trainInCollection.Locomotives) {
                     var locoElement = LayoutModel.LocomotiveCollection[trainLocomotive.LocomotiveId];
@@ -1019,12 +1019,12 @@ namespace LayoutManager.Model {
             length = Parse(t).length;
         }
 
-        public static TrainLength LocomotiveOnly => new TrainLength(KnownTrainLength.LocomotiveOnly);
-        public static TrainLength VeryShort => new TrainLength(KnownTrainLength.VeryShort);
-        public static TrainLength Short => new TrainLength(KnownTrainLength.Short);
-        public static TrainLength Standard => new TrainLength(KnownTrainLength.Standard);
-        public static TrainLength Long => new TrainLength(KnownTrainLength.Long);
-        public static TrainLength VeryLong => new TrainLength(KnownTrainLength.VeryLong);
+        public static TrainLength LocomotiveOnly => new(KnownTrainLength.LocomotiveOnly);
+        public static TrainLength VeryShort => new(KnownTrainLength.VeryShort);
+        public static TrainLength Short => new(KnownTrainLength.Short);
+        public static TrainLength Standard => new(KnownTrainLength.Standard);
+        public static TrainLength Long => new(KnownTrainLength.Long);
+        public static TrainLength VeryLong => new(KnownTrainLength.VeryLong);
 
         public static implicit operator KnownTrainLength(TrainLength l) => l.length;
 
@@ -1157,7 +1157,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public IList<TrainLocomotiveInfo> Locomotives {
             get {
-                List<TrainLocomotiveInfo> trainLocomotives = new List<TrainLocomotiveInfo>(LocomotivesElement.ChildNodes.Count);
+                List<TrainLocomotiveInfo> trainLocomotives = new(LocomotivesElement.ChildNodes.Count);
 
                 foreach (XmlElement trainLocomotiveElement in LocomotivesElement)
                     trainLocomotives.Add(new TrainLocomotiveInfo(this, trainLocomotiveElement));
@@ -1231,7 +1231,7 @@ namespace LayoutManager.Model {
                 return "";
         }
 
-        public LayoutTextInfo NameProvider => new LayoutTextInfo(Element, E_Name);
+        public LayoutTextInfo NameProvider => new(Element, E_Name);
 
         /// <summary>
         /// The train is not managed. There is no information about the train motion direction or speed
@@ -1398,7 +1398,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        public TrainDriverInfo Driver => new TrainDriverInfo(DriverElement);
+        public TrainDriverInfo Driver => new(DriverElement);
 
         #endregion
 
@@ -1431,7 +1431,7 @@ namespace LayoutManager.Model {
         #region Add Locomotive
 
         public virtual CanPlaceTrainResult AddLocomotive(LocomotiveInfo loco, LocomotiveOrientation orientation, LayoutBlock? block, bool validateAddress) {
-            CanPlaceTrainResult result = new CanPlaceTrainResult();
+            CanPlaceTrainResult result = new();
 
             if (Locomotives.Count > 0 && !Locomotives[0].Locomotive.IsCompatibleOperationCharacteristics(loco.Element)) {
                 result.Status = CanPlaceTrainStatus.LocomotiveNotCompatible;
@@ -1440,7 +1440,7 @@ namespace LayoutManager.Model {
             }
             else {
                 XmlElement trainLocomotiveElement = Element.OwnerDocument.CreateElement(E_Locomotive);
-                TrainLocomotiveInfo trainLocomotive = new TrainLocomotiveInfo(this, trainLocomotiveElement) {
+                TrainLocomotiveInfo trainLocomotive = new(this, trainLocomotiveElement) {
                     LocomotiveId = loco.Id,
                     Orientation = orientation
                 };
@@ -1542,7 +1542,7 @@ namespace LayoutManager.Model {
 
         public IList<TrainCarsInfo> Cars {
             get {
-                List<TrainCarsInfo> cars = new List<TrainCarsInfo>(CarsElement.ChildNodes.Count);
+                List<TrainCarsInfo> cars = new(CarsElement.ChildNodes.Count);
 
                 foreach (XmlElement carsInfoElement in CarsElement)
                     cars.Add(new TrainCarsInfo(this, carsInfoElement));

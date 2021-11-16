@@ -125,8 +125,8 @@ namespace LayoutManager.Logic {
         }
 
         private bool CheckTrackLinks(LayoutPhase phase) {
-            LayoutSelection notLinked = new LayoutSelection();
-            LayoutSelection invalidLinks = new LayoutSelection();
+            LayoutSelection notLinked = new();
+            LayoutSelection invalidLinks = new();
 
             foreach (LayoutTrackLinkComponent trackLink in LayoutModel.Components<LayoutTrackLinkComponent>(phase)) {
                 if (trackLink.Link == null)
@@ -166,7 +166,7 @@ namespace LayoutManager.Logic {
         }
 
         private bool CheckAddresses(LayoutPhase phase) {
-            LayoutSelection nonConnectedComponents = new LayoutSelection();
+            LayoutSelection nonConnectedComponents = new();
             IEnumerable<IModelComponentConnectToControl> connectableComponents = LayoutModel.Components<IModelComponentConnectToControl>(phase);
             bool result = true;
             bool ignoreFeedbackComponents = LayoutModel.StateManager.VerificationOptions.IgnoreNotConnectedFeedbacks;
@@ -245,7 +245,7 @@ namespace LayoutManager.Logic {
                         }
                     }
                     else if (block.BlockDefinintion.Info.UnexpectedTrainDetected) {
-                        Stack<LayoutBlock> blocksStack = new Stack<LayoutBlock>();
+                        Stack<LayoutBlock> blocksStack = new();
                         bool detected = false;
 
                         blocksStack.Push(block);

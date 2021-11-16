@@ -360,7 +360,7 @@ namespace LayoutManager {
     public class InconsistentLocomotiveBlockCrossingException : BlockEdgeCrossingException {
         public InconsistentLocomotiveBlockCrossingException(LayoutBlockEdgeBase blockEdge, TrainStateInfo trainState) :
             base("Locomotive seems to cross between blocks, however this locomotive is either not moving or moving in the other direction") {
-            LayoutSelection selection = new LayoutSelection();
+            LayoutSelection selection = new();
 
             this.LocomotiveState = trainState;
             BlockEdge = blockEdge;

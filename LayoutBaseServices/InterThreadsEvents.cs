@@ -13,11 +13,11 @@ namespace LayoutBaseServices {
     [LayoutModule("Interthreads Event Relay", Enabled = true, UserControl = false)]
     internal class InterThreadsEvents : LayoutModuleBase, ILayoutInterThreadEventInvoker, IDisposable {
         private Control? controlInUIthread;
-        private readonly Queue<LayoutEvent> eventQueue = new Queue<LayoutEvent>();
-        private readonly ManualResetEvent eventInQueue = new ManualResetEvent(false);
-        private readonly AutoResetEvent terminatedEvent = new AutoResetEvent(false);
+        private readonly Queue<LayoutEvent> eventQueue = new();
+        private readonly ManualResetEvent eventInQueue = new(false);
+        private readonly AutoResetEvent terminatedEvent = new(false);
         private Thread? relayThread = null;
-        private readonly object queueLock = new object();
+        private readonly object queueLock = new();
         private Form? uiThreadForm;
         private bool _disposed;
         private bool terminate;

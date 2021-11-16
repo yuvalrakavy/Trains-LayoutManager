@@ -12,7 +12,7 @@ namespace LayoutManager.Logic {
     [LayoutModule("Layout Power Manager", UserControl = false)]
     internal class LayoutPowerManager : LayoutModuleBase {
         private static ILayoutTopologyServices? _topologyServices;
-        private readonly Dictionary<Guid, Guid> _pendingPowerConnectedLockReady = new Dictionary<Guid, Guid>();
+        private readonly Dictionary<Guid, Guid> _pendingPowerConnectedLockReady = new();
 
         private static ILayoutTopologyServices TopologyServices => _topologyServices ??= (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", sender: null))!;
 
@@ -176,7 +176,7 @@ namespace LayoutManager.Logic {
         private void AssignPowerSource(LayoutEvent e) {
             LayoutPhase phase = e.GetPhases();
             IEnumerable<LayoutTrackPowerConnectorComponent> powerConnectors = LayoutModel.Components<LayoutTrackPowerConnectorComponent>(phase);
-            LayoutSelection duplicatedPowerConnectors = new LayoutSelection();
+            LayoutSelection duplicatedPowerConnectors = new();
 
             if (!powerConnectors.Any()) {
                 Error("No power-source (e.g. command station) is connected to the tracks - use track power connector component");
@@ -218,7 +218,7 @@ namespace LayoutManager.Logic {
                     e.Info = false;
                 }
 
-                LayoutSelection tracksWithNoPower = new LayoutSelection();
+                LayoutSelection tracksWithNoPower = new();
 
                 foreach (LayoutModelArea area in LayoutModel.Areas) {
                     foreach (LayoutModelSpotComponentCollection spot in area.Grid.Values) {
@@ -302,9 +302,9 @@ namespace LayoutManager.Logic {
         }
 
         private void PropagatePowerConnector(LayoutTrackPowerConnectorComponent powerConnector) {
-            Stack<TrackEdge> scanStack = new Stack<TrackEdge>(10);
+            Stack<TrackEdge> scanStack = new(10);
             var track = powerConnector.Spot.Track;
-            TrackEdgeDictionary scannedEdges = new TrackEdgeDictionary();
+            TrackEdgeDictionary scannedEdges = new();
 
             if (track != null) {
                 foreach (LayoutComponentConnectionPoint cp in track.ConnectionPoints) {

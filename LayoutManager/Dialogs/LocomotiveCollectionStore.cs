@@ -134,7 +134,7 @@ namespace LayoutManager.Dialogs {
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(336, 110);
             this.ControlBox = false;
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.Controls.AddRange(new Control[] {
                                                                           this.buttonOk,
                                                                           this.buttonBrowse,
                                                                           this.textBoxName,
@@ -150,14 +150,14 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonOk_Click(object? sender, System.EventArgs e) {
+        private void buttonOk_Click(object? sender, EventArgs e) {
             storeElement.SetAttribute("Name", textBoxName.Text);
             storeElement.SetAttribute("File", textBoxFile.Text);
 
             DialogResult = DialogResult.OK;
         }
 
-        private void buttonBrowse_Click(object? sender, System.EventArgs e) {
+        private void buttonBrowse_Click(object? sender, EventArgs e) {
             FileDialog fileDialog = new OpenFileDialog {
                 FileName = textBoxFile.Text,
                 InitialDirectory = defaultDirectory,

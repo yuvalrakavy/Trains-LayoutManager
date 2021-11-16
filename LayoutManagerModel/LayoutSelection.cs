@@ -13,7 +13,7 @@ namespace LayoutManager.Model {
     /// selection is displayed, then the component in the selection should be highlighted by the view
     /// </summary>
     public class LayoutSelection : IEnumerable<ModelComponent> {
-        private readonly Dictionary<ModelComponent, object> selection = new Dictionary<ModelComponent, object>();
+        private readonly Dictionary<ModelComponent, object> selection = new();
         private ILayoutSelectionLook selectionLook;
 
         public const int ZOrderTopmost = 0;
@@ -37,7 +37,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public Point TopLeftLocation {
             get {
-                Point minLocation = new Point(0, 0);
+                Point minLocation = new(0, 0);
                 bool first = true;
 
                 foreach (ModelComponent component in this) {
@@ -288,8 +288,8 @@ namespace LayoutManager.Model {
         /// <param name="mlOrigin">Origin in which the component location relates to</param>
         /// <returns>The data object</returns>
         public IDataObject GetDataObject(Point mlOrigin) {
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            XmlTextWriter w = new XmlTextWriter(ms, System.Text.Encoding.UTF8);
+            System.IO.MemoryStream ms = new();
+            XmlTextWriter w = new(ms, System.Text.Encoding.UTF8);
 
             w.WriteStartDocument();
             w.WriteStartElement("Components");
@@ -303,7 +303,7 @@ namespace LayoutManager.Model {
             w.WriteEndDocument();
             w.Close();
 
-            DataObject dataObj = new DataObject();
+            DataObject dataObj = new();
 
             dataObj.SetData("LayoutManagerComponents", ms.GetBuffer());
             string xml = new System.Text.UTF8Encoding().GetString(ms.GetBuffer());

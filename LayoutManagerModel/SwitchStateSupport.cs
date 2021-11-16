@@ -69,7 +69,7 @@ namespace LayoutManager.Components {
             switchingStateSupport = GetSwitchingStateSupporter();
         }
 
-        protected virtual SwitchingStateSupport GetSwitchingStateSupporter() => new SwitchingStateSupport(this);
+        protected virtual SwitchingStateSupport GetSwitchingStateSupporter() => new(this);
 
         #region IModelComponentHasSwitchingState Members
 

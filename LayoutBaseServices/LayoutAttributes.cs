@@ -73,7 +73,7 @@ namespace LayoutManager {
             return (XmlElement)Element.OwnerDocument.ImportNode(item.Element, true);
         }
 
-        protected override AttributeInfo FromElement(XmlElement itemElement) => new AttributeInfo(itemElement);
+        protected override AttributeInfo FromElement(XmlElement itemElement) => new(itemElement);
 
         protected override string GetItemKey(AttributeInfo item) => item.Name;
 

@@ -31,7 +31,7 @@ namespace LayoutManager.Model {
 
         public static DecoderTypeInfo GetDecoderType(string decoderTypeName) {
             if (decoderTypeName != null) {
-                List<DecoderTypeInfo> decoders = new List<DecoderTypeInfo>();
+                List<DecoderTypeInfo> decoders = new();
 
                 EventManager.Event(new LayoutEvent("get-decoder-type", decoders).SetOption("DecoderType", decoderTypeName));
 

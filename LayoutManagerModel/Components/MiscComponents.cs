@@ -23,7 +23,7 @@ namespace LayoutManager.Components {
 
         public override string ToString() => "track power connector";
 
-        public LayoutTrackPowerConnectorInfo Info => new LayoutTrackPowerConnectorInfo(this);
+        public LayoutTrackPowerConnectorInfo Info => new(this);
 
         public LayoutPowerInlet Inlet => Info.Inlet;
 
@@ -175,7 +175,7 @@ namespace LayoutManager.Components {
 
         public override string Text => Name;
 
-        public LayoutPowerInlet Inlet => new LayoutPowerInlet(Element, "PowerInlet");
+        public LayoutPowerInlet Inlet => new(Element, "PowerInlet");
 
         public TrackGauges TrackGauge {
             get => AttributeValue(A_Gauge).Enum<TrackGauges>() ?? TrackGauges.HO;
@@ -616,7 +616,7 @@ namespace LayoutManager.Components {
         /// <summary>
         /// Return a LayoutTrackLink for this component
         /// </summary>
-        public LayoutTrackLink ThisLink => new LayoutTrackLink(Spot.Area.AreaGuid, trackLinkGuid);
+        public LayoutTrackLink ThisLink => new(Spot.Area.AreaGuid, trackLinkGuid);
 
         /// <summary>
         /// Return the LayoutTrackLink of the component that this component is linked to.
@@ -693,7 +693,7 @@ namespace LayoutManager.Components {
                 return true;
             }
             else if (r.Name == E_TrackLink) {
-                Guid id = new Guid(Ensure.NotNull<string>(XmlConvert.DecodeName(r.GetAttribute(A_Id))));
+                Guid id = new(Ensure.NotNull<string>(XmlConvert.DecodeName(r.GetAttribute(A_Id))));
 
                 if (context.ReadXmlContext == LayoutReadXmlContext.PasteComponents) {
                     bool idFound = false;
@@ -734,7 +734,7 @@ namespace LayoutManager.Components {
                 else {
                     string name = base.Text;
                     LayoutTrackLinkComponent destinationTrackLinkComponent = trackLinkComponent.LinkedComponent;
-                    LayoutTextInfo destinationTextProvider = new LayoutTextInfo(destinationTrackLinkComponent);
+                    LayoutTextInfo destinationTextProvider = new(destinationTrackLinkComponent);
                     string destinationName = destinationTextProvider.Text;
 
                     return trackLinkComponent.ThisLink.AreaGuid == destinationTrackLinkComponent.ThisLink.AreaGuid
@@ -755,7 +755,7 @@ namespace LayoutManager.Components {
 
         public override ModelComponentKind Kind => ModelComponentKind.Annotation;
 
-        public LayoutTextInfo TextProvider => new LayoutTextInfo(this, "Text");
+        public LayoutTextInfo TextProvider => new(this, "Text");
 
         public override string ToString() => "text: " + TextProvider.Text;
 
@@ -770,7 +770,7 @@ namespace LayoutManager.Components {
         public override ModelComponentKind Kind => ModelComponentKind.Background;
 
         public override void OnRemovingFromModel() {
-            LayoutImageInfo imageProvider = new LayoutImageInfo(Element);
+            LayoutImageInfo imageProvider = new(Element);
 
             EventManager.Event(new LayoutEvent("remove-image-from-cache", this, imageProvider.ImageFile, imageProvider.ImageCacheEventXml));
 
@@ -921,7 +921,7 @@ namespace LayoutManager.Components {
 
         public override bool DrawOutOfGrid => false;
 
-        public LayoutGateComponentInfo Info => new LayoutGateComponentInfo(Element);
+        public LayoutGateComponentInfo Info => new(Element);
 
         /// <summary>
         /// The gate open/close (or transition state)
@@ -986,7 +986,7 @@ namespace LayoutManager.Components {
 
         #region IObjectHasName Members
 
-        public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
+        public LayoutTextInfo NameProvider => new(this);
 
         #endregion
     }
@@ -994,7 +994,7 @@ namespace LayoutManager.Components {
 #pragma warning disable IDE0051
     [LayoutModule("Standard Gate Drivers", UserControl = false)]
     internal class StandardGateDrivers : LayoutModuleBase {
-        private readonly Dictionary<Guid, LayoutDelayedEvent> pendingEvents = new Dictionary<Guid, LayoutDelayedEvent>();
+        private readonly Dictionary<Guid, LayoutDelayedEvent> pendingEvents = new();
 
         internal const string Direction1ConnectionPoint = "Direction1";
         internal const string Direction2ConnectionPoint = "Direction2";

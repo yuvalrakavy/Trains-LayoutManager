@@ -168,7 +168,7 @@ namespace LayoutManager.Logic {
         [LayoutEvent("driver-prepare-stop", IfSender = "*[Driver/@Type='Automatic']")]
         private void autoDriverPrepareStop(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-            TrainAutoDriverInfo driver = new TrainAutoDriverInfo(train) {
+            TrainAutoDriverInfo driver = new(train) {
                 State = AutoDriverState.SlowDown
             };
 
@@ -184,7 +184,7 @@ namespace LayoutManager.Logic {
         [LayoutEvent("driver-target-speed-changed", IfSender = "*[Driver/@Type='Automatic']")]
         private void autoDriverUpdateSpeed(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-            TrainAutoDriverInfo driver = new TrainAutoDriverInfo(train);
+            TrainAutoDriverInfo driver = new(train);
 
             if (driver.State == AutoDriverState.Go) {
                 int effectiveSpeed = CalculateEffectiveTargetSpeed(train);
@@ -205,7 +205,7 @@ namespace LayoutManager.Logic {
 
         private static int CalculateEffectiveTargetSpeed(TrainStateInfo train) {
             int effectiveSpeed;
-            TrainAutoDriverInfo driver = new TrainAutoDriverInfo(train);
+            TrainAutoDriverInfo driver = new(train);
 
             if (driver.State == AutoDriverState.SlowDown)
                 effectiveSpeed = train.CurrentSlowdownSpeed;

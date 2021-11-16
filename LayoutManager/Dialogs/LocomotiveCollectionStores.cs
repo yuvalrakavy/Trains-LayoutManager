@@ -100,7 +100,7 @@ namespace LayoutManager.Dialogs {
             // buttonClose
             // 
             this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            this.buttonClose.Location = new System.Drawing.Point(496, 232);
+            this.buttonClose.Location = new Point(496, 232);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.TabIndex = 5;
             this.buttonClose.Text = "&Close";
@@ -117,9 +117,9 @@ namespace LayoutManager.Dialogs {
             this.listViewStores.FullRowSelect = true;
             this.listViewStores.GridLines = true;
             this.listViewStores.HideSelection = false;
-            this.listViewStores.Location = new System.Drawing.Point(8, 8);
+            this.listViewStores.Location = new Point(8, 8);
             this.listViewStores.Name = "listViewStores";
-            this.listViewStores.Size = new System.Drawing.Size(560, 192);
+            this.listViewStores.Size = new Size(560, 192);
             this.listViewStores.TabIndex = 0;
             this.listViewStores.View = System.Windows.Forms.View.Details;
             this.listViewStores.SelectedIndexChanged += this.listViewStores_SelectedIndexChanged;
@@ -137,9 +137,9 @@ namespace LayoutManager.Dialogs {
             // buttonNew
             // 
             this.buttonNew.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonNew.Location = new System.Drawing.Point(8, 208);
+            this.buttonNew.Location = new Point(8, 208);
             this.buttonNew.Name = "buttonNew";
-            this.buttonNew.Size = new System.Drawing.Size(88, 23);
+            this.buttonNew.Size = new Size(88, 23);
             this.buttonNew.TabIndex = 1;
             this.buttonNew.Text = "&New...";
             this.buttonNew.Click += this.buttonNew_Click;
@@ -147,9 +147,9 @@ namespace LayoutManager.Dialogs {
             // buttonEdit
             // 
             this.buttonEdit.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonEdit.Location = new System.Drawing.Point(104, 208);
+            this.buttonEdit.Location = new Point(104, 208);
             this.buttonEdit.Name = "buttonEdit";
-            this.buttonEdit.Size = new System.Drawing.Size(88, 23);
+            this.buttonEdit.Size = new Size(88, 23);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit...";
             this.buttonEdit.Click += this.buttonEdit_Click;
@@ -157,18 +157,18 @@ namespace LayoutManager.Dialogs {
             // buttonRemove
             // 
             this.buttonRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonRemove.Location = new System.Drawing.Point(200, 208);
+            this.buttonRemove.Location = new Point(200, 208);
             this.buttonRemove.Name = "buttonRemove";
-            this.buttonRemove.Size = new System.Drawing.Size(88, 23);
+            this.buttonRemove.Size = new Size(88, 23);
             this.buttonRemove.TabIndex = 3;
             this.buttonRemove.Text = "&Delete";
             this.buttonRemove.Click += this.buttonRemove_Click;
             // 
             // buttonSetAsDefault
             // 
-            this.buttonSetAsDefault.Location = new System.Drawing.Point(296, 208);
+            this.buttonSetAsDefault.Location = new Point(296, 208);
             this.buttonSetAsDefault.Name = "buttonSetAsDefault";
-            this.buttonSetAsDefault.Size = new System.Drawing.Size(88, 23);
+            this.buttonSetAsDefault.Size = new Size(88, 23);
             this.buttonSetAsDefault.TabIndex = 4;
             this.buttonSetAsDefault.Text = "Set as default";
             this.buttonSetAsDefault.Click += this.buttonSetAsDefault_Click;
@@ -176,10 +176,10 @@ namespace LayoutManager.Dialogs {
             // LocomotiveCollectionStores
             // 
             this.AcceptButton = this.buttonClose;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
-            this.ClientSize = new System.Drawing.Size(576, 262);
+            this.AutoScaleDimensions = new SizeF(5, 13);
+            this.ClientSize = new Size(576, 262);
             this.ControlBox = false;
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.Controls.AddRange(new Control[] {
                                                                           this.buttonSetAsDefault,
                                                                           this.buttonNew,
                                                                           this.listViewStores,
@@ -193,30 +193,30 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonNew_Click(object? sender, System.EventArgs e) {
+        private void buttonNew_Click(object? sender, EventArgs e) {
             XmlElement storeElement = storesElement.OwnerDocument.CreateElement("Store");
 
-            if (new Dialogs.LocomotiveCollectionStore(storesName, storeElement, collectionDescription, defaultDirectory, defaultExtension).ShowDialog(this) == DialogResult.OK) {
+            if (new LocomotiveCollectionStore(storesName, storeElement, collectionDescription, defaultDirectory, defaultExtension).ShowDialog(this) == DialogResult.OK) {
                 storesElement.AppendChild(storeElement);
                 listViewStores.Items.Add(new StoreItem(storeElement));
                 updateButtons();
             }
         }
 
-        private void buttonEdit_Click(object? sender, System.EventArgs e) {
+        private void buttonEdit_Click(object? sender, EventArgs e) {
             if (listViewStores.SelectedItems.Count > 0) {
                 StoreItem selected = (StoreItem)listViewStores.SelectedItems[0];
 
-                if (new Dialogs.LocomotiveCollectionStore(storesName, selected.StoreElement, collectionDescription, defaultDirectory, defaultExtension).ShowDialog(this) == DialogResult.OK)
+                if (new LocomotiveCollectionStore(storesName, selected.StoreElement, collectionDescription, defaultDirectory, defaultExtension).ShowDialog(this) == DialogResult.OK)
                     selected.Update();
             }
         }
 
-        private void listViewStores_SelectedIndexChanged(object? sender, System.EventArgs e) {
+        private void listViewStores_SelectedIndexChanged(object? sender, EventArgs e) {
             updateButtons();
         }
 
-        private void buttonRemove_Click(object? sender, System.EventArgs e) {
+        private void buttonRemove_Click(object? sender, EventArgs e) {
             if (listViewStores.SelectedItems.Count > 0) {
                 StoreItem selected = (StoreItem)listViewStores.SelectedItems[0];
 
@@ -226,7 +226,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonSetAsDefault_Click(object? sender, System.EventArgs e) {
+        private void buttonSetAsDefault_Click(object? sender, EventArgs e) {
             if (listViewStores.SelectedItems.Count > 0) {
                 StoreItem selected = (StoreItem)listViewStores.SelectedItems[0];
 
@@ -243,7 +243,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonClose_Click(object? sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, EventArgs e) {
             bool defaultFound = false;
             int defaultStoreIndex = 0;
 

@@ -210,7 +210,7 @@ namespace LayoutManager.Model {
         }
 
         public Font Font {
-            get => new Font(this.Name, this.Size, this.Style, GraphicsUnit.World);
+            get => new(this.Name, this.Size, this.Style, GraphicsUnit.World);
 
             set {
                 this.Name = value.Name;
@@ -484,7 +484,7 @@ namespace LayoutManager.Model {
             Hidden, AnotherBallon, Clicked, TrainDetected, Canceled,
         }
 
-        private readonly TaskCompletionSource<TerminationReason> tcs = new TaskCompletionSource<TerminationReason>();
+        private readonly TaskCompletionSource<TerminationReason> tcs = new();
 
         public LayoutBlockBallon() {
             FillColor = Color.LightYellow;
@@ -699,7 +699,7 @@ namespace LayoutManager.Model {
         }
 
         public Size Size {
-            get => new Size {
+            get => new() {
                 Width = (int?)AttributeValue(A_Width) ?? -1,
                 Height = (int?)AttributeValue(A_Height) ?? -1
             };
@@ -721,7 +721,7 @@ namespace LayoutManager.Model {
         }
 
         public Size Offset {
-            get => new Size((int?)AttributeValue(A_OffsetWidth) ?? 0, (int?)AttributeValue(A_OffsetHeight) ?? 0);
+            get => new((int?)AttributeValue(A_OffsetWidth) ?? 0, (int?)AttributeValue(A_OffsetHeight) ?? 0);
 
             set {
                 SetAttributeValue(A_OffsetWidth, value.Width);

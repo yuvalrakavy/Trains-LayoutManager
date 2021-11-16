@@ -158,7 +158,7 @@ namespace LayoutManager.Dialogs {
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.ClientSize = new System.Drawing.Size(328, 222);
             this.ControlBox = false;
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.Controls.AddRange(new Control[] {
                                                                           this.buttonClose,
                                                                           this.buttonNew,
                                                                           this.listViewFunctionInfo,
@@ -172,7 +172,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonNew_Click(object? sender, System.EventArgs e) {
+        private void buttonNew_Click(object? sender, EventArgs e) {
             XmlElement f = commonFunctionsElement.OwnerDocument.CreateElement("Function");
             StandardFunction d = new StandardFunction(f);
 
@@ -182,7 +182,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonEdit_Click(object? sender, System.EventArgs e) {
+        private void buttonEdit_Click(object? sender, EventArgs e) {
             if (listViewFunctionInfo.SelectedItems.Count > 0) {
                 StandardFunctionItem item = (StandardFunctionItem)listViewFunctionInfo.SelectedItems[0];
 
@@ -190,7 +190,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonDelete_Click(object? sender, System.EventArgs e) {
+        private void buttonDelete_Click(object? sender, EventArgs e) {
             if (listViewFunctionInfo.SelectedItems.Count > 0) {
                 StandardFunctionItem item = (StandardFunctionItem)listViewFunctionInfo.SelectedItems[0];
 
@@ -201,11 +201,11 @@ namespace LayoutManager.Dialogs {
             updateButtons();
         }
 
-        private void listViewFunctionInfo_SelectedIndexChanged(object? sender, System.EventArgs e) {
+        private void listViewFunctionInfo_SelectedIndexChanged(object? sender, EventArgs e) {
             updateButtons();
         }
 
-        private void buttonClose_Click(object? sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, EventArgs e) {
             this.Close();
         }
 

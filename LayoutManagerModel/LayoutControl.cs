@@ -446,7 +446,7 @@ namespace LayoutManager.Model {
 
         protected override int GetItemKey(ControlConnectionPoint item) => item.Index;
 
-        protected override ControlConnectionPoint FromElement(XmlElement itemElement) => new ControlConnectionPoint(module, itemElement);
+        protected override ControlConnectionPoint FromElement(XmlElement itemElement) => new(module, itemElement);
 
         /// <summary>
         /// Return a connection point for a given index. If there is no connection point for this index, a new one is created
@@ -475,7 +475,7 @@ namespace LayoutManager.Model {
         /// <param name="inConnectionPointElement">The connection point element</param>
         /// <returns>The connection point</returns>
         public ControlConnectionPoint Add(XmlElement connectionPointElement) {
-            ControlConnectionPoint connectionPoint = new ControlConnectionPoint(module, connectionPointElement);
+            ControlConnectionPoint connectionPoint = new(module, connectionPointElement);
 
             if (IsDefined(connectionPoint.Index))
                 throw new ArgumentException("Trying to add a connection point which is already defined");
@@ -609,7 +609,7 @@ namespace LayoutManager.Model {
         /// <param name="index">The control connection point index</param>
         /// <returns>List of ModelComponentControlConnectDescription</returns>
         public IList<ModelComponentControlConnectionDescription> GetPossibleConnectionDescriptions(IModelComponentConnectToControl component, int index) {
-            List<ModelComponentControlConnectionDescription> possibleConnectionDescriptions = new List<ModelComponentControlConnectionDescription>();
+            List<ModelComponentControlConnectionDescription> possibleConnectionDescriptions = new();
 
             foreach (ModelComponentControlConnectionDescription connectionDescription in component.ControlConnectionDescriptions)
                 if (LayoutModel.ControlManager.ConnectionPoints[component, connectionDescription.Name] == null && CanBeConnected(new ControlConnectionPointDestination(component, connectionDescription), index))
@@ -688,7 +688,7 @@ namespace LayoutManager.Model {
 
         public ControlModule Module => Ensure.NotNull<ControlModule>(OptionalModule);
 
-        public ControlModuleReference ModuleReference => new ControlModuleReference(ControlManager, moduleID);
+        public ControlModuleReference ModuleReference => new(ControlManager, moduleID);
 
         public ControlConnectionPoint? OptionalConnectionPoint => Module?.ConnectionPoints[Index];
 
@@ -835,7 +835,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The collection of this control module's connection points
         /// </summary>
-        public ControlConnectionPointCollection ConnectionPoints => new ControlConnectionPointCollection(this);
+        public ControlConnectionPointCollection ConnectionPoints => new(this);
 
         public string DefaultControlConnectionPointType {
             get => GetOptionalAttribute(A_DefaultConnectionPointType) ?? ModuleType.DefaultControlConnectionPointType;
@@ -1101,7 +1101,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The control module is connected using those buses (e.g. DCC, Motorola, LGBBUS, MarklinDigital etc.
         /// </summary>
-        public XmlAttributeListCollection BusTypeNames => new XmlAttributeListCollection(Element, "BusTypeName");
+        public XmlAttributeListCollection BusTypeNames => new(Element, "BusTypeName");
 
         /// <summary>
         /// Return minimum address allowed for this module (if any or -1 if use the default bus addressing limits)
@@ -1255,7 +1255,7 @@ namespace LayoutManager.Model {
         public IList<ControlModule> Modules {
             get {
                 var moduleElements = ControlManager.ModulesElement.SelectNodes("Module[@BusID='" + this.Id.ToString() + "']");
-                List<ControlModule> modules = new List<ControlModule>(moduleElements?.Count ?? 0);
+                List<ControlModule> modules = new(moduleElements?.Count ?? 0);
 
                 if (moduleElements != null) {
                     foreach (XmlElement moduleElement in moduleElements)
@@ -1292,7 +1292,7 @@ namespace LayoutManager.Model {
         /// <returns></returns>
         private ControlModule DoAdd(Guid? controlModuleLocationId, ControlModuleType moduleType, int address) {
             XmlElement moduleElement = ControlManager.ModulesElement.OwnerDocument.CreateElement("Module");
-            ControlModule module = new ControlModule(ControlManager, moduleElement) {
+            ControlModule module = new(ControlManager, moduleElement) {
                 ModuleType = moduleType,
                 Bus = this,
                 Address = address,
@@ -1664,10 +1664,10 @@ namespace LayoutManager.Model {
         /// </summary>
         public IList<ControlModuleType> ModuleTypes {
             get {
-                List<ControlModuleType> moduleTypes = new List<ControlModuleType>();
+                List<ControlModuleType> moduleTypes = new();
 
                 foreach (XmlElement moduleTypeElement in GetAllModuleTypeElements()) {
-                    ControlModuleType moduleType = new ControlModuleType(moduleTypeElement);
+                    ControlModuleType moduleType = new(moduleTypeElement);
 
                     foreach (string moduleBusTypeName in moduleType.BusTypeNames)
                         if (moduleBusTypeName == BusTypeName)
@@ -1684,7 +1684,7 @@ namespace LayoutManager.Model {
         /// <param name="connectionDestinaion">The connection destination (component/connection description)</param>
         /// <returns>A list of all module types that can be connected. Empty list if no module (of this bus) can be connected</returns>
         public IList<string> GetConnectableControlModuleTypeNames(ControlConnectionPointDestination connectionDestination) {
-            List<string> applicableModuleTypes = new List<string>();
+            List<string> applicableModuleTypes = new();
 
             EventManager.Event(new LayoutEvent("recommend-control-module-types", connectionDestination, applicableModuleTypes).SetOption("BusType", BusTypeName).SetOption("BusFamily", BusFamilyName));
 
@@ -1770,7 +1770,7 @@ namespace LayoutManager.Model {
             get {
                 if (connectionPoints == null) {
                     Debug.Assert(this.connectionPoint != null);
-                    List<ControlConnectionPoint> theList = new List<ControlConnectionPoint> {
+                    List<ControlConnectionPoint> theList = new() {
                         connectionPoint ?? throw new LayoutException("ControlConnectionPointMapEntry - assert failed")
                     };
                     return theList.AsReadOnly();
@@ -1787,17 +1787,17 @@ namespace LayoutManager.Model {
     /// object and the bus object
     /// </summary>
     public class ControlConnectionPointsMap : LayoutXmlWrapper {
-        private readonly Dictionary<Guid, ControlConnectionPointMapEntry> idMap = new Dictionary<Guid, ControlConnectionPointMapEntry>();
+        private readonly Dictionary<Guid, ControlConnectionPointMapEntry> idMap = new();
         private readonly LayoutControlManager controlManager;
 
         internal ControlConnectionPointsMap(LayoutControlManager controlManager, XmlElement modulesElement) {
             this.controlManager = controlManager;
 
             foreach (XmlElement moduleElement in modulesElement) {
-                ControlModule module = new ControlModule(controlManager, moduleElement);
+                ControlModule module = new(controlManager, moduleElement);
 
                 foreach (XmlElement connectionPointElement in module.ConnectionPointsElement) {
-                    ControlConnectionPoint connectionPoint = new ControlConnectionPoint(module, connectionPointElement);
+                    ControlConnectionPoint connectionPoint = new(module, connectionPointElement);
 
                     if (connectionPoint.IsConnected) {
                         if (idMap.TryGetValue(connectionPoint.ComponentId, out ControlConnectionPointMapEntry? entry))
@@ -1966,7 +1966,7 @@ namespace LayoutManager.Model {
 
         protected override XmlElement CreateElement(ControlBus item) => Element.OwnerDocument.CreateElement("Bus");
 
-        protected override ControlBus FromElement(XmlElement itemElement) => new ControlBus(controlManager, itemElement);
+        protected override ControlBus FromElement(XmlElement itemElement) => new(controlManager, itemElement);
 
         /// <summary>
         /// Return an array of all buses mastered by a given command station
@@ -2028,7 +2028,7 @@ namespace LayoutManager.Model {
             foreach (string busTypeName in busProvider.BusTypeNames) {
                 if (!IsBusDefined(busProvider, busTypeName)) {
                     XmlElement busElement = Element.OwnerDocument.CreateElement("Bus");
-                    ControlBus bus = new ControlBus(controlManager, busElement) {
+                    ControlBus bus = new(controlManager, busElement) {
                         BusProvider = busProvider,
                         BusTypeName = busTypeName
                     };

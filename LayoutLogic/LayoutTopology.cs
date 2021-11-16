@@ -90,10 +90,10 @@ namespace LayoutManager.Logic {
         public TrackEdge[] FindConnectingTracks(TrackEdge edge, LayoutComponentConnectionType type) {
             LayoutComponentConnectionPoint[] connectedCp = edge.Track.ConnectTo(edge.ConnectionPoint, type);
 
-            List<TrackEdge> connectedEdges = new List<TrackEdge>(connectedCp.Length);
+            List<TrackEdge> connectedEdges = new(connectedCp.Length);
 
             foreach (LayoutComponentConnectionPoint cp in connectedCp) {
-                TrackEdge otherEdge = new TrackEdge(edge.Track, cp);
+                TrackEdge otherEdge = new(edge.Track, cp);
                 TrackEdge otherTrackEdge = FindTrackConnectingAt(otherEdge);
 
                 if (otherTrackEdge != TrackEdge.Empty)

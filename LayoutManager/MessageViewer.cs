@@ -15,7 +15,7 @@ namespace LayoutManager {
     /// <summary>
     /// Summary description for MessageViewer.
     /// </summary>
-    public class MessageViewer : System.Windows.Forms.UserControl {
+    public class MessageViewer : UserControl {
         private readonly ListViewItem lastMessageMarker = null;
 
         private LayoutSelection currentMessageSelection = null;
@@ -332,35 +332,35 @@ namespace LayoutManager {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MessageViewer));
-            this.listViewMessages = new System.Windows.Forms.ListView();
-            this.columnHeaderMessage = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderArea = (System.Windows.Forms.ColumnHeader)new System.Windows.Forms.ColumnHeader();
-            this.imageListSeverity = new System.Windows.Forms.ImageList(this.components);
-            this.buttonClose = new System.Windows.Forms.Button();
-            this.buttonNextMessage = new System.Windows.Forms.Button();
-            this.buttonPrevMessage = new System.Windows.Forms.Button();
-            this.buttonNextComponent = new System.Windows.Forms.Button();
-            this.buttonPreviousComponent = new System.Windows.Forms.Button();
-            this.buttonClear = new System.Windows.Forms.Button();
+            this.components = new Container();
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(MessageViewer));
+            this.listViewMessages = new ListView();
+            this.columnHeaderMessage = (ColumnHeader)new ColumnHeader();
+            this.columnHeaderArea = (ColumnHeader)new ColumnHeader();
+            this.imageListSeverity = new ImageList(this.components);
+            this.buttonClose = new Button();
+            this.buttonNextMessage = new Button();
+            this.buttonPrevMessage = new Button();
+            this.buttonNextComponent = new Button();
+            this.buttonPreviousComponent = new Button();
+            this.buttonClear = new Button();
             this.SuspendLayout();
             // 
             // listViewMessages
             // 
-            this.listViewMessages.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+            this.listViewMessages.Anchor = (AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left
             | System.Windows.Forms.AnchorStyles.Right);
-            this.listViewMessages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listViewMessages.Columns.AddRange(new ColumnHeader[] {
             this.columnHeaderMessage,
             this.columnHeaderArea});
             this.listViewMessages.FullRowSelect = true;
             this.listViewMessages.GridLines = true;
             this.listViewMessages.HideSelection = false;
-            this.listViewMessages.Location = new System.Drawing.Point(0, 31);
+            this.listViewMessages.Location = new Point(0, 31);
             this.listViewMessages.MultiSelect = false;
             this.listViewMessages.Name = "listViewMessages";
-            this.listViewMessages.Size = new System.Drawing.Size(680, 80);
+            this.listViewMessages.Size = new Size(680, 80);
             this.listViewMessages.SmallImageList = this.imageListSeverity;
             this.listViewMessages.TabIndex = 5;
             this.listViewMessages.UseCompatibleStateImageBehavior = false;
@@ -379,7 +379,7 @@ namespace LayoutManager {
             // 
             // imageListSeverity
             // 
-            this.imageListSeverity.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListSeverity.ImageStream");
+            this.imageListSeverity.ImageStream = (ImageListStreamer)resources.GetObject("imageListSeverity.ImageStream");
             this.imageListSeverity.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListSeverity.Images.SetKeyName(0, "");
             this.imageListSeverity.Images.SetKeyName(1, "");
@@ -387,58 +387,58 @@ namespace LayoutManager {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonClose.Location = new System.Drawing.Point(598, 4);
+            this.buttonClose.Anchor = (AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonClose.Location = new Point(598, 4);
             this.buttonClose.Name = "buttonClose";
-            this.buttonClose.Size = new System.Drawing.Size(75, 22);
+            this.buttonClose.Size = new Size(75, 22);
             this.buttonClose.TabIndex = 4;
             this.buttonClose.Text = "&Close";
             this.buttonClose.Click += this.ButtonClose_Click;
             // 
             // buttonNextMessage
             // 
-            this.buttonNextMessage.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonNextMessage.Location = new System.Drawing.Point(419, 4);
+            this.buttonNextMessage.Anchor = (AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonNextMessage.Location = new Point(419, 4);
             this.buttonNextMessage.Name = "buttonNextMessage";
-            this.buttonNextMessage.Size = new System.Drawing.Size(74, 22);
+            this.buttonNextMessage.Size = new Size(74, 22);
             this.buttonNextMessage.TabIndex = 2;
             this.buttonNextMessage.Text = "↓ message";
             this.buttonNextMessage.Click += this.ButtonNextMessage_Click;
             // 
             // buttonPrevMessage
             // 
-            this.buttonPrevMessage.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonPrevMessage.Location = new System.Drawing.Point(499, 4);
+            this.buttonPrevMessage.Anchor = (AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonPrevMessage.Location = new Point(499, 4);
             this.buttonPrevMessage.Name = "buttonPrevMessage";
-            this.buttonPrevMessage.Size = new System.Drawing.Size(74, 22);
+            this.buttonPrevMessage.Size = new Size(74, 22);
             this.buttonPrevMessage.TabIndex = 3;
             this.buttonPrevMessage.Text = "↑ message";
             this.buttonPrevMessage.Click += this.ButtonPrevMessage_Click;
             // 
             // buttonNextComponent
             // 
-            this.buttonNextComponent.Location = new System.Drawing.Point(8, 4);
+            this.buttonNextComponent.Location = new Point(8, 4);
             this.buttonNextComponent.Name = "buttonNextComponent";
-            this.buttonNextComponent.Size = new System.Drawing.Size(91, 22);
+            this.buttonNextComponent.Size = new Size(91, 22);
             this.buttonNextComponent.TabIndex = 0;
             this.buttonNextComponent.Text = "→ component";
             this.buttonNextComponent.Click += this.ButtonNextComponent_Click;
             // 
             // buttonPreviousComponent
             // 
-            this.buttonPreviousComponent.Location = new System.Drawing.Point(105, 4);
+            this.buttonPreviousComponent.Location = new Point(105, 4);
             this.buttonPreviousComponent.Name = "buttonPreviousComponent";
-            this.buttonPreviousComponent.Size = new System.Drawing.Size(91, 22);
+            this.buttonPreviousComponent.Size = new Size(91, 22);
             this.buttonPreviousComponent.TabIndex = 1;
             this.buttonPreviousComponent.Text = "← component";
             this.buttonPreviousComponent.Click += this.ButtonPreviousComponent_Click;
             // 
             // buttonClear
             // 
-            this.buttonClear.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.buttonClear.Location = new System.Drawing.Point(324, 4);
+            this.buttonClear.Anchor = (AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonClear.Location = new Point(324, 4);
             this.buttonClear.Name = "buttonClear";
-            this.buttonClear.Size = new System.Drawing.Size(74, 22);
+            this.buttonClear.Size = new Size(74, 22);
             this.buttonClear.TabIndex = 6;
             this.buttonClear.Text = "Clear";
             this.buttonClear.Click += this.ButtonClear_Click;
@@ -453,21 +453,21 @@ namespace LayoutManager {
             this.Controls.Add(this.buttonClose);
             this.Controls.Add(this.listViewMessages);
             this.Name = "MessageViewer";
-            this.Size = new System.Drawing.Size(680, 112);
+            this.Size = new Size(680, 112);
             this.ResumeLayout(false);
         }
         #endregion
 
-        private void ButtonClose_Click(object? sender, System.EventArgs e) {
+        private void ButtonClose_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEvent("hide-messages", this));
         }
 
-        private void ListViewMessages_SelectedIndexChanged(object? sender, System.EventArgs e) {
+        private void ListViewMessages_SelectedIndexChanged(object? sender, EventArgs e) {
             UpdateSelections();
             UpdateButtons();
         }
 
-        private void ButtonNextComponent_Click(object? sender, System.EventArgs e) {
+        private void ButtonNextComponent_Click(object? sender, EventArgs e) {
             if (currentComponentSelection != null) {
                 IList<ModelComponent> messageComponents = currentMessageSelection.Components.ToList();
                 ModelComponent currentComponent = currentComponentSelection.Components.FirstOrDefault() ?? messageComponents[0];
@@ -488,7 +488,7 @@ namespace LayoutManager {
             }
         }
 
-        private void ButtonPreviousComponent_Click(object? sender, System.EventArgs e) {
+        private void ButtonPreviousComponent_Click(object? sender, EventArgs e) {
             if (currentComponentSelection != null) {
                 IList<ModelComponent> messageComponents = currentMessageSelection.Components.ToList();
                 ModelComponent currentComponent = currentComponentSelection.Components.FirstOrDefault() ?? messageComponents[0];
@@ -509,7 +509,7 @@ namespace LayoutManager {
             }
         }
 
-        private void ButtonNextMessage_Click(object? sender, System.EventArgs e) {
+        private void ButtonNextMessage_Click(object? sender, EventArgs e) {
             if (listViewMessages.SelectedItems.Count > 0) {
                 int i;
 
@@ -522,7 +522,7 @@ namespace LayoutManager {
             }
         }
 
-        private void ButtonPrevMessage_Click(object? sender, System.EventArgs e) {
+        private void ButtonPrevMessage_Click(object? sender, EventArgs e) {
             if (listViewMessages.SelectedItems.Count > 0) {
                 int i;
 

@@ -111,7 +111,7 @@ namespace LayoutManager.Dialogs {
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(250, 72);
             this.ControlBox = false;
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.Controls.AddRange(new Control[] {
                                                                           this.buttonCancel,
                                                                           this.buttonOK,
                                                                           this.label2,
@@ -125,7 +125,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonOK_Click(object? sender, System.EventArgs e) {
+        private void buttonOK_Click(object? sender, EventArgs e) {
             try {
                 int zoomFactor = zoomFactor = System.Int32.Parse(textBoxZoomFactor.Text);
 

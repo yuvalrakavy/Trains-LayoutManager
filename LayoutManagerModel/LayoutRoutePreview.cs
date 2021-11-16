@@ -9,7 +9,7 @@ namespace LayoutManager.Model {
     public struct TrackSegment {
         private LayoutComponentConnectionPoint cp1, cp2;
 
-        public static readonly TrackSegment Empty = new TrackSegment(null, 0, 0);
+        public static readonly TrackSegment Empty = new(null, 0, 0);
 
         public TrackSegment(LayoutTrackComponent track, LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
             this.Track = track;
@@ -135,7 +135,7 @@ namespace LayoutManager.Model {
     }
 
     public class RoutePreviewRequest {
-        private readonly List<PreviewRequestEntry> requestEntries = new List<PreviewRequestEntry>();
+        private readonly List<PreviewRequestEntry> requestEntries = new();
 
         public RoutePreviewRequest(Color color) {
             this.Color = color;
@@ -174,7 +174,7 @@ namespace LayoutManager.Model {
                     else
                         otherCp = edge.Track.ConnectTo(edge.ConnectionPoint, LayoutComponentConnectionType.Passage)[0];
 
-                    TrackSegment trackSegment = new TrackSegment(edge.Track, edge.ConnectionPoint, otherCp);
+                    TrackSegment trackSegment = new(edge.Track, edge.ConnectionPoint, otherCp);
                     bool trackSegmentAdded = false;
 
                     if (insertAnnotationEvery >= 0) {
@@ -224,7 +224,7 @@ namespace LayoutManager.Model {
     }
 
     public class PreviewRouteManager {
-        private readonly Dictionary<TrackSegment, TrackSegmentMapEntry> trackSegmentMap = new Dictionary<TrackSegment, TrackSegmentMapEntry>();
+        private readonly Dictionary<TrackSegment, TrackSegmentMapEntry> trackSegmentMap = new();
 
         public void Add(RoutePreviewRequest previewRequest) {
             foreach (PreviewRequestEntry requestEntry in previewRequest.RequestEntries) {

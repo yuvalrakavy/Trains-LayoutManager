@@ -60,7 +60,7 @@ namespace LayoutManager.Components {
             commStream = new FileStream(new SafeFileHandle(commHandle, true), FileAccess.ReadWrite, bufferSize, overlappedIO);
 
             string modeString = setupElement[E_ModeString].InnerText;
-            DCB dcb = new DCB();
+            DCB dcb = new();
 
             // Fix mode string (remove CR/LF etc.)
             modeString = System.Text.RegularExpressions.Regex.Replace(modeString, "[\\r\\n ]+", " ", System.Text.RegularExpressions.RegexOptions.None);
@@ -73,7 +73,7 @@ namespace LayoutManager.Components {
             if (!NativeMethods.SetCommState(commStream.SafeFileHandle.DangerousGetHandle(), dcb))
                 throw new IOException("Failed to set communication port " + port + " parameters");
 
-            CommunicationTimeouts commTimeouts = new CommunicationTimeouts {
+            CommunicationTimeouts commTimeouts = new() {
                 ReadIntervalTimeout = (uint?)setupElement.AttributeValue(A_ReadIntervalTimeout) ?? 0,
                 ReadTotalTimeoutConstant = (uint?)setupElement.AttributeValue(A_ReadTotalTimeoutConstant) ?? 0,
                 ReadTotalTimeoutMultiplier = (uint?)setupElement.AttributeValue(A_ReadTotalTimeoutMultiplier) ?? 0,

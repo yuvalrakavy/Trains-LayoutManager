@@ -167,7 +167,7 @@ namespace LayoutManager.Model {
     }
 
     public class PerOperationStates : IEnumerable<KeyValuePair<object, IOperationState>> {
-        private readonly Dictionary<object, IOperationState> states = new Dictionary<object, IOperationState>();
+        private readonly Dictionary<object, IOperationState> states = new();
 
         public bool HasState(object key) => states.ContainsKey(key);
 
@@ -195,7 +195,7 @@ namespace LayoutManager.Model {
     }
 
     public class OperationStates {
-        private readonly Dictionary<string, PerOperationStates> operationStates = new Dictionary<string, PerOperationStates>();
+        private readonly Dictionary<string, PerOperationStates> operationStates = new();
 
         public PerOperationStates this[string operationName] {
             get {
@@ -504,7 +504,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public IList<TrainLocationInfo> Locations {
             get {
-                List<TrainLocationInfo> trainLocations = new List<TrainLocationInfo>(LocationsElement.ChildNodes.Count);
+                List<TrainLocationInfo> trainLocations = new(LocationsElement.ChildNodes.Count);
 
                 foreach (XmlElement locationElement in LocationsElement)
                     trainLocations.Add(new TrainLocationInfo(this, locationElement));
@@ -928,7 +928,7 @@ namespace LayoutManager.Model {
         }
 
         public TrainLocationInfo PlaceInBlock(LayoutBlock block, LayoutComponentConnectionPoint front) {
-            TrainLocationInfo trainLocation = new TrainLocationInfo(this, Element.OwnerDocument.CreateElement("Block"));
+            TrainLocationInfo trainLocation = new(this, Element.OwnerDocument.CreateElement("Block"));
             XmlElement locationsElement = LocationsElement;
 
             trainLocation.BlockId = block.Id;
@@ -952,7 +952,7 @@ namespace LayoutManager.Model {
             if (trainPart != TrainPart.Locomotive && trainPart != TrainPart.LastCar)
                 throw new ArgumentException("Invalid train part - can be only Locomotive or LastCar", nameof(trainPart));
 
-            TrainLocationInfo trainLocation = new TrainLocationInfo(this, Element.OwnerDocument.CreateElement("Block"));
+            TrainLocationInfo trainLocation = new(this, Element.OwnerDocument.CreateElement("Block"));
             XmlElement locationsElement = LocationsElement;
 
             trainLocation.BlockId = block.Id;
@@ -1506,12 +1506,12 @@ namespace LayoutManager.Model {
         public TrainStateInfo? this[XmlElement element] {
             get {
                 if (element.Name == E_Locomotive) {
-                    LocomotiveInfo loco = new LocomotiveInfo(element);
+                    LocomotiveInfo loco = new(element);
 
                     return this[loco.Id];
                 }
                 else if (element.Name == E_Train) {
-                    TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(element);
+                    TrainInCollectionInfo trainInCollection = new(element);
 
                     return this[trainInCollection.Id];
                 }
@@ -1545,7 +1545,7 @@ namespace LayoutManager.Model {
             trainStateElement.SetAttributeValue(A_Id, trainId);
             Element.AppendChild(trainStateElement);
 
-            TrainStateInfo trainState = new TrainStateInfo(trainStateElement);
+            TrainStateInfo trainState = new(trainStateElement);
 
             IdToTrainStateElement.Add(trainState.Id, trainState.Element);
 
@@ -1587,7 +1587,7 @@ namespace LayoutManager.Model {
             IdToTrainStateElement.Clear();
 
             foreach (XmlElement trainStateElement in Element) {
-                TrainStateInfo trainState = new TrainStateInfo(trainStateElement);
+                TrainStateInfo trainState = new(trainStateElement);
 
                 IdToTrainStateElement.Add(trainState.Id, trainStateElement);
 
@@ -1625,7 +1625,7 @@ namespace LayoutManager.Model {
     public class ComponentsStateInfo : LayoutStateInfoBase {
         private const string E_ComponentState = "ComponentState";
         private const string A_Id = "ID";
-        private readonly Dictionary<Guid, XmlElement> _idToComponentStateElement = new Dictionary<Guid, XmlElement>();
+        private readonly Dictionary<Guid, XmlElement> _idToComponentStateElement = new();
 
         public ComponentsStateInfo(XmlElement element)
             : base(element) {
@@ -1739,7 +1739,7 @@ namespace LayoutManager.Model {
         /// <param name="topicName">The topic name</param>
         public void RemoveForTrain(Guid trainId, string topicName) {
             var elementsToRemove = Element.SelectNodes($"ComponentState/{topicName}[@TrainID='{trainId}']");
-            List<Guid> removeList = new List<Guid>();
+            List<Guid> removeList = new();
 
             if (elementsToRemove != null) {
                 foreach (XmlElement componentStateTopicElement in elementsToRemove) {
@@ -1932,7 +1932,7 @@ namespace LayoutManager.Model {
 
         public LayoutSelection Selection {
             get {
-                LayoutSelection selection = new LayoutSelection();
+                LayoutSelection selection = new();
 
                 foreach (Guid blockID in BlockIdList) {
                     LayoutBlock block = LayoutModel.Blocks[blockID];
@@ -1945,7 +1945,7 @@ namespace LayoutManager.Model {
         }
 
         public bool CheckIntegrity(LayoutModuleBase mb) {
-            List<Guid> removeList = new List<Guid>();
+            List<Guid> removeList = new();
 
             foreach (Guid blockID in BlockIdList) {
                 if (LayoutModel.Blocks[blockID] == null) {
@@ -1984,11 +1984,11 @@ namespace LayoutManager.Model {
 
         protected override Guid GetItemKey(ManualDispatchRegionInfo item) => item.Id;
 
-        protected override ManualDispatchRegionInfo FromElement(XmlElement itemElement) => new ManualDispatchRegionInfo(itemElement);
+        protected override ManualDispatchRegionInfo FromElement(XmlElement itemElement) => new(itemElement);
 
         public ManualDispatchRegionInfo Create() {
             XmlElement manualDispatchRegionElement = Element.OwnerDocument.CreateElement("ManualDispatchRegion");
-            ManualDispatchRegionInfo createdManualDispatchRegion = new ManualDispatchRegionInfo(manualDispatchRegionElement);
+            ManualDispatchRegionInfo createdManualDispatchRegion = new(manualDispatchRegionElement);
 
             Add(createdManualDispatchRegion);
             return createdManualDispatchRegion;
@@ -2003,7 +2003,7 @@ namespace LayoutManager.Model {
 
         public bool CheckIntegrity(LayoutModuleBase moduleBase) {
             bool ok = true;
-            List<ManualDispatchRegionInfo> removeList = new List<ManualDispatchRegionInfo>();
+            List<ManualDispatchRegionInfo> removeList = new();
 
             foreach (ManualDispatchRegionInfo manualDispatchRegion in this) {
                 if (!manualDispatchRegion.CheckIntegrity(moduleBase)) {
@@ -2199,7 +2199,7 @@ namespace LayoutManager.Model {
     }
 
     public class LayoutPoliciesCollection : ICollection<LayoutPolicyInfo> {
-        private readonly List<LayoutPolicyInfo> policies = new List<LayoutPolicyInfo>();
+        private readonly List<LayoutPolicyInfo> policies = new();
         private readonly XmlElement globalPoliciesElement;
         private readonly XmlElement? policiesElement;
 
@@ -2219,7 +2219,7 @@ namespace LayoutManager.Model {
 
                 if (filteredNodes != null) {
                     foreach (XmlElement policyElement in filteredNodes) {
-                        LayoutPolicyInfo policy = new LayoutPolicyInfo(policyElement) {
+                        LayoutPolicyInfo policy = new(policyElement) {
                             GlobalPolicy = true
                         };
                         policies.Add(policy);
@@ -2232,7 +2232,7 @@ namespace LayoutManager.Model {
 
                 if (filteredNodes != null) {
                     foreach (XmlElement policyElement in filteredNodes) {
-                        LayoutPolicyInfo policy = new LayoutPolicyInfo(policyElement) {
+                        LayoutPolicyInfo policy = new(policyElement) {
                             GlobalPolicy = false
                         };
                         policies.Add(policy);
@@ -2447,7 +2447,7 @@ namespace LayoutManager.Model {
 
         public LayoutPoliciesCollection TripPlanPolicies => tripPlanPolicies!;
 
-        public LayoutPoliciesCollection Policies(string? scope) => new LayoutPoliciesCollection(GlobalPoliciesElement, LayoutPoliciesElement, scope);
+        public LayoutPoliciesCollection Policies(string? scope) => new(GlobalPoliciesElement, LayoutPoliciesElement, scope);
 
         public LayoutPoliciesCollection BlockInfoPolicies => blockInfoPolicies!;
 

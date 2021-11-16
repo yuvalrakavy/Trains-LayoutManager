@@ -109,36 +109,36 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Location = new System.Drawing.Point(168, 224);
+            this.buttonDelete.Location = new Point(168, 224);
             this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(72, 23);
+            this.buttonDelete.Size = new Size(72, 23);
             this.buttonDelete.TabIndex = 4;
             this.buttonDelete.Text = "&Delete";
             this.buttonDelete.Click += this.buttonDelete_Click;
             // 
             // buttonEdit
             // 
-            this.buttonEdit.Location = new System.Drawing.Point(88, 224);
+            this.buttonEdit.Location = new Point(88, 224);
             this.buttonEdit.Name = "buttonEdit";
-            this.buttonEdit.Size = new System.Drawing.Size(72, 23);
+            this.buttonEdit.Size = new Size(72, 23);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit";
             this.buttonEdit.Click += this.buttonEdit_Click;
             // 
             // buttonClose
             // 
-            this.buttonClose.Location = new System.Drawing.Point(168, 256);
+            this.buttonClose.Location = new Point(168, 256);
             this.buttonClose.Name = "buttonClose";
-            this.buttonClose.Size = new System.Drawing.Size(72, 23);
+            this.buttonClose.Size = new Size(72, 23);
             this.buttonClose.TabIndex = 5;
             this.buttonClose.Text = "&Close";
             this.buttonClose.Click += this.buttonClose_Click;
             // 
             // buttonAdd
             // 
-            this.buttonAdd.Location = new System.Drawing.Point(8, 224);
+            this.buttonAdd.Location = new Point(8, 224);
             this.buttonAdd.Name = "buttonAdd";
-            this.buttonAdd.Size = new System.Drawing.Size(72, 23);
+            this.buttonAdd.Size = new Size(72, 23);
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "&New";
             this.buttonAdd.Click += this.buttonAdd_Click;
@@ -150,9 +150,9 @@ namespace LayoutManager.Dialogs {
             this.columnHeaderDescription});
             this.listViewFonts.HideSelection = false;
             this.listViewFonts.LabelEdit = true;
-            this.listViewFonts.Location = new System.Drawing.Point(8, 16);
+            this.listViewFonts.Location = new Point(8, 16);
             this.listViewFonts.Name = "listViewFonts";
-            this.listViewFonts.Size = new System.Drawing.Size(240, 200);
+            this.listViewFonts.Size = new Size(240, 200);
             this.listViewFonts.TabIndex = 0;
             this.listViewFonts.View = System.Windows.Forms.View.Details;
             this.listViewFonts.DoubleClick += this.buttonEdit_Click;
@@ -191,7 +191,7 @@ namespace LayoutManager.Dialogs {
             // StadardFonts
             // 
             this.AcceptButton = this.buttonClose;
-            this.ClientSize = new System.Drawing.Size(258, 288);
+            this.ClientSize = new Size(258, 288);
             this.ControlBox = false;
             this.Controls.Add(this.buttonClose);
             this.Controls.Add(this.buttonDelete);
@@ -206,15 +206,15 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private void buttonClose_Click(object? sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, EventArgs e) {
             this.Close();
         }
 
-        private void buttonEdit_Click(object? sender, System.EventArgs e) {
+        private void buttonEdit_Click(object? sender, EventArgs e) {
             contextMenuEdit.Show(this, new Point(buttonEdit.Left, buttonEdit.Bottom));
         }
 
-        private void buttonAdd_Click(object? sender, System.EventArgs e) {
+        private void buttonAdd_Click(object? sender, EventArgs e) {
             XmlElement fontElement = LayoutInfo.CreateProviderElement(LayoutModel.Instance.XmlInfo, "Font", "Fonts");
             LayoutFontInfo fontProvider = new LayoutFontInfo(fontElement);
 
@@ -225,7 +225,7 @@ namespace LayoutManager.Dialogs {
             item.BeginEdit();
         }
 
-        private void listViewFonts_AfterLabelEdit(object? sender, System.Windows.Forms.LabelEditEventArgs e) {
+        private void listViewFonts_AfterLabelEdit(object? sender, LabelEditEventArgs e) {
             FontItem item = (FontItem)listViewFonts.Items[e.Item];
 
             LayoutFontInfo fontProvider = item.FontProvider;
@@ -235,7 +235,7 @@ namespace LayoutManager.Dialogs {
             item.Update();
         }
 
-        private void buttonDelete_Click(object? sender, System.EventArgs e) {
+        private void buttonDelete_Click(object? sender, EventArgs e) {
             if (listViewFonts.SelectedItems.Count == 1) {
                 if (MessageBox.Show("Do you really want to delete a style font. " +
                     "This will cause problems if this font is still being used!", "Warning",
@@ -249,7 +249,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void menuItemEditSettings_Click(object? sender, System.EventArgs e) {
+        private void menuItemEditSettings_Click(object? sender, EventArgs e) {
             if (listViewFonts.SelectedItems.Count == 1) {
                 FontItem item = (FontItem)listViewFonts.SelectedItems[0];
                 FontDialog fontDialog = new FontDialog {
@@ -266,7 +266,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void menuItemFontID_Click(object? sender, System.EventArgs e) {
+        private void menuItemFontID_Click(object? sender, EventArgs e) {
             if (listViewFonts.SelectedItems.Count == 1) {
                 FontItem item = (FontItem)listViewFonts.SelectedItems[0];
                 CommonUI.Dialogs.InputBox fontIDbox = new CommonUI.Dialogs.InputBox("Font Ref", "Font Ref:") {
@@ -281,7 +281,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void menuItemEditTitle_Click(object? sender, System.EventArgs e) {
+        private void menuItemEditTitle_Click(object? sender, EventArgs e) {
             if (listViewFonts.SelectedItems.Count == 1) {
                 FontItem item = (FontItem)listViewFonts.SelectedItems[0];
                 CommonUI.Dialogs.InputBox titleBox = new CommonUI.Dialogs.InputBox("Title", "Title:") {

@@ -77,17 +77,17 @@ namespace LayoutManager.Dialogs {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.label1 = new System.Windows.Forms.Label();
-            this.numericUpDownFunctionNumber = new System.Windows.Forms.NumericUpDown();
-            this.label2 = new System.Windows.Forms.Label();
-            this.buttonOk = new System.Windows.Forms.Button();
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.comboBoxFunctionName = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.comboBoxFunctionType = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBoxFunctionDescription = new System.Windows.Forms.TextBox();
-            ((System.ComponentModel.ISupportInitialize)this.numericUpDownFunctionNumber).BeginInit();
+            this.label1 = new Label();
+            this.numericUpDownFunctionNumber = new NumericUpDown();
+            this.label2 = new Label();
+            this.buttonOk = new Button();
+            this.buttonCancel = new Button();
+            this.comboBoxFunctionName = new ComboBox();
+            this.label3 = new Label();
+            this.comboBoxFunctionType = new ComboBox();
+            this.label4 = new Label();
+            this.textBoxFunctionDescription = new TextBox();
+            ((ISupportInitialize)this.numericUpDownFunctionNumber).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -199,13 +199,13 @@ namespace LayoutManager.Dialogs {
             this.Name = "LocomotiveFunction";
             this.ShowInTaskbar = false;
             this.Text = "Locomotive Function";
-            ((System.ComponentModel.ISupportInitialize)this.numericUpDownFunctionNumber).EndInit();
+            ((ISupportInitialize)this.numericUpDownFunctionNumber).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
         #endregion
 
-        private void buttonOk_Click(object? sender, System.EventArgs e) {
+        private void buttonOk_Click(object? sender, EventArgs e) {
             foreach (XmlElement fElement in functionsElement) {
                 LocomotiveFunctionInfo f = new LocomotiveFunctionInfo(fElement);
 
@@ -243,15 +243,15 @@ namespace LayoutManager.Dialogs {
             DialogResult = DialogResult.OK;
         }
 
-        private void comboBoxFunctionType_SelectedIndexChanged(object? sender, System.EventArgs e) {
+        private void comboBoxFunctionType_SelectedIndexChanged(object? sender, EventArgs e) {
             typeChanged = true;
         }
 
-        private void textBoxFunctionDescription_TextChanged(object? sender, System.EventArgs e) {
+        private void textBoxFunctionDescription_TextChanged(object? sender, EventArgs e) {
             descriptionChanged = true;
         }
 
-        private void comboBoxFunctionName_SelectionChangeCommitted(object? sender, System.EventArgs e) {
+        private void comboBoxFunctionName_SelectionChangeCommitted(object? sender, EventArgs e) {
             var functionInfoElement = new XmlElementWrapper((XmlElement)catalog.LocomotiveFunctionNames.GetElementsByTagName("Function")[comboBoxFunctionName.SelectedIndex]);
 
             if (!typeChanged) {

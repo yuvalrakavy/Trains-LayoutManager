@@ -7,7 +7,7 @@ namespace LayoutManager.Dialogs {
     /// </summary>
     public class RoutingTableCalcProgress : Form {
         private Label label1;
-        private System.Windows.Forms.ProgressBar progressBar;
+        private ProgressBar progressBar;
         private Button buttonAbort;
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace LayoutManager.Dialogs {
         /// </summary>
         private void InitializeComponent() {
             this.label1 = new Label();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.progressBar = new ProgressBar();
             this.buttonAbort = new Button();
             this.SuspendLayout();
             // 

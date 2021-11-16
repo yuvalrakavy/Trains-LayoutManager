@@ -18,8 +18,8 @@ namespace LayoutManager.Logic {
 
         private ILayoutTopologyServices? _topologyServices;
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "<Pending>")]
-        public static LayoutTraceSwitch traceLocomotiveTracking = new LayoutTraceSwitch("LocomotiveTracking", "Locomotive Tracking");
-        private static readonly LayoutBooleanSwitch switchBreakOnBadLocomotiveTracking = new LayoutBooleanSwitch("BreakOnBadLocomotiveTracking", "Locomotive Tracking Break");
+        public static LayoutTraceSwitch traceLocomotiveTracking = new("LocomotiveTracking", "Locomotive Tracking");
+        private static readonly LayoutBooleanSwitch switchBreakOnBadLocomotiveTracking = new("BreakOnBadLocomotiveTracking", "Locomotive Tracking Break");
 
         #region Common properties
 
@@ -188,7 +188,7 @@ namespace LayoutManager.Logic {
 
             if (LayoutModel.StateManager.Components.Contains(trackContact.Id, "TrainPassing")) {
                 TrackContactPassingStateInfo trackContactPassingState =
-                    new TrackContactPassingStateInfo(LayoutModel.StateManager.Components.OptionalStateOf(trackContact.Id, "TrainPassing")!);
+                    new(LayoutModel.StateManager.Components.OptionalStateOf(trackContact.Id, "TrainPassing")!);
 
                 // Track contact has state. This means that a train with multiple triggers is passing on top of this contact
                 // If the train continue to move in the same direction, one less triggers is expected to come for the train
@@ -281,7 +281,7 @@ namespace LayoutManager.Logic {
                 EventManager.Event(new LayoutEvent("request-auto-train-extend", extendedTrainBlock.Trains[0].Train, extendedTrainBlock.BlockDefinintion));
             else {
                 try {
-                    ArrayList trackingResults = new ArrayList();
+                    ArrayList trackingResults = new();
 
                     // The contained blocks are empty, yet a train is detected. Look in all the neighboring blocks and check which one
                     // contain trains which may have moved to this block
@@ -447,7 +447,7 @@ namespace LayoutManager.Logic {
         }
 
         private IModelComponentIsMultiPath? FindFaultyTurnout(TrackEdge scanFrom, TrainStateInfo train) {
-            Stack<TrackEdge> scanStack = new Stack<TrackEdge>();
+            Stack<TrackEdge> scanStack = new();
 
             scanStack.Push(scanFrom);
 
@@ -502,7 +502,7 @@ namespace LayoutManager.Logic {
             var occupancyBlock = Ensure.NotNull<LayoutOccupancyBlock>(e.Sender, "occupancyBlock");
 
             foreach (LayoutBlock block in occupancyBlock.ContainedBlocks) {
-                List<TrainLocationInfo> blockTrains = new List<TrainLocationInfo>(block.Trains);    // Take snapshot to avoid changing the collection while iterating
+                List<TrainLocationInfo> blockTrains = new(block.Trains);    // Take snapshot to avoid changing the collection while iterating
 
                 foreach (TrainLocationInfo trainLocation in blockTrains) {
                     TrainStateInfo train = trainLocation.Train;
@@ -615,7 +615,7 @@ namespace LayoutManager.Logic {
             var track = trackContact.Track;
             IList<TrainLocationInfo> trains1, trains2;
 
-            TrainMotionListManager motionListManager = new TrainMotionListManager();
+            TrainMotionListManager motionListManager = new();
 
             var block1 = track.GetOptionalBlock(track.ConnectionPoints[0]);
             var block2 = track.GetOptionalBlock(track.ConnectionPoints[1]);
@@ -709,7 +709,7 @@ namespace LayoutManager.Logic {
             LayoutBlock sourceBlock;
             IList<TrainLocationInfo> trains;
 
-            TrainMotionListManager motionListManager = new TrainMotionListManager();
+            TrainMotionListManager motionListManager = new();
 
             sourceBlock = track.GetBlock(track.ConnectionPoints[0]);
             if (sourceBlock.Id == destinationBlock.Id)
@@ -893,7 +893,7 @@ namespace LayoutManager.Logic {
 
             if (trackingResult.Train.Speed != 0) {
                 ILayoutTopologyServices ts = TopologyServices;
-                TrackEdge edge = new TrackEdge(trackingResult.FromBlock.BlockDefinintion.Track, trackingResult.Train.LocationOfBlock(trackingResult.FromBlock)!.DisplayFront);
+                TrackEdge edge = new(trackingResult.FromBlock.BlockDefinintion.Track, trackingResult.Train.LocationOfBlock(trackingResult.FromBlock)!.DisplayFront);
 
                 //				trackingResult.Dump();
 
@@ -971,7 +971,7 @@ namespace LayoutManager.Logic {
 
                     if (bestCandidate == null) {        // No locomotive originated from toBlock
                         foreach (TrainLocationInfo trainLocation in fromBlock.Trains) {
-                            TrainStateInfo trainState = new TrainStateInfo(trainLocation.LocomotiveStateElement);
+                            TrainStateInfo trainState = new(trainLocation.LocomotiveStateElement);
 
                             if (trainLocation.BlockEdgeId != Guid.Empty) {
                                 if (bestCandidate == null || trainLocation.BlockEdgeCrossingTime < bestCrossingTime) {
@@ -985,7 +985,7 @@ namespace LayoutManager.Logic {
                     if (bestCandidate == null)
                         throw new LayoutException("Internal: movingFrom could not find what to move");
 
-                    TrainStateInfo bestCandidateLocoState = new TrainStateInfo(bestCandidate.LocomotiveStateElement);
+                    TrainStateInfo bestCandidateLocoState = new(bestCandidate.LocomotiveStateElement);
 
                     if (CanLocomotiveCrossBlockEdge(bestCandidate, blockEdge)) {
                         trackingResult = new LocomotiveTrackingResult(blockEdge, bestCandidateLocoState, bestCandidate, fromBlock, toBlock);
@@ -1012,7 +1012,7 @@ namespace LayoutManager.Logic {
 
                     if (nValid == 1 && bestCandidate != null) {
                         // Only one locomotive is moving, it has to be the one...
-                        TrainStateInfo bestCandidateLocoState = new TrainStateInfo(bestCandidate.LocomotiveStateElement);
+                        TrainStateInfo bestCandidateLocoState = new(bestCandidate.LocomotiveStateElement);
 
                         trackingResult = new LocomotiveTrackingResult(blockEdge, bestCandidateLocoState, bestCandidate, fromBlock, toBlock);
                         if (!ValidateTrackingResult(trackingResult))
@@ -1063,7 +1063,7 @@ namespace LayoutManager.Logic {
         private bool CanLocomotiveCrossBlockEdge(TrainLocationInfo trainLocation, LayoutBlockEdgeBase blockEdge) {
             bool result;
 
-            TrainStateInfo trainState = new TrainStateInfo(trainLocation.LocomotiveStateElement);
+            TrainStateInfo trainState = new(trainLocation.LocomotiveStateElement);
 
             Trace.WriteLineIf(traceLocomotiveTracking.TraceVerbose, "! check if train " + trainState.DisplayName + "(" + trainState.StatusText + ") can cross " + blockEdge.FullDescription);
 

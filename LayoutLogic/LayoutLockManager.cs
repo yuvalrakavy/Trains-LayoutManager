@@ -13,8 +13,8 @@ namespace LayoutManager.Logic {
     [LayoutModule("Layout Lock Manager")]
 
     internal class LayoutLockManager : LayoutModuleBase, ILayoutLockManagerServices {
-        private static readonly LayoutTraceSwitch traceLockManager = new LayoutTraceSwitch("LockManager", "Layout Lock Manager");
-        private readonly Dictionary<Guid, LockedResourceEntry> lockedResourceMap = new Dictionary<Guid, LockedResourceEntry>();
+        private static readonly LayoutTraceSwitch traceLockManager = new("LockManager", "Layout Lock Manager");
+        private readonly Dictionary<Guid, LockedResourceEntry> lockedResourceMap = new();
 
         /// <summary>
         /// Obtain lock on one or more blocks
@@ -106,11 +106,11 @@ namespace LayoutManager.Logic {
         [LayoutEvent("request-manual-dispatch-lock")]
         private void RequestManualDispatchLock(LayoutEvent e) {
             var manualDispatchRegion = Ensure.NotNull<ManualDispatchRegionInfo>(e.Sender, "manualDispatchRegion");
-            LayoutSelection activeTrains = new LayoutSelection();
-            LayoutSelection alreadyManualDispatch = new LayoutSelection();
-            LayoutSelection partialTrains = new LayoutSelection();
+            LayoutSelection activeTrains = new();
+            LayoutSelection alreadyManualDispatch = new();
+            LayoutSelection partialTrains = new();
             IDictionary reportedTrains = new HybridDictionary();
-            LayoutLockRequest manualDispatchRegionLockRequest = new LayoutLockRequest(manualDispatchRegion.Id) {
+            LayoutLockRequest manualDispatchRegionLockRequest = new(manualDispatchRegion.Id) {
                 Type = LayoutLockType.ManualDispatch
             };
 
@@ -183,7 +183,7 @@ namespace LayoutManager.Logic {
 
                 foreach (TrainLocationInfo trainLocation in block.Trains) {
                     if (!lockedTrains.Contains(trainLocation.Train.Id)) {
-                        LayoutLockRequest trainLockRequest = new LayoutLockRequest(trainLocation.Train.Id) {
+                        LayoutLockRequest trainLockRequest = new(trainLocation.Train.Id) {
                             Status = LayoutLockRequest.RequestStatus.NotGranted
                         };
 
@@ -247,7 +247,7 @@ namespace LayoutManager.Logic {
             var e = (LayoutEventInfoValueType<object, Guid>)e0;
             Guid ownerID = e.Info;
             var releasePending = (bool)e.GetOption("ReleasePending");
-            List<Guid> resourceIDsToFree = new List<Guid>();
+            List<Guid> resourceIDsToFree = new();
 
             foreach (KeyValuePair<Guid, LockedResourceEntry> d in lockedResourceMap) {
                 LockedResourceEntry lbe = d.Value;

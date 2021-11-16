@@ -10,7 +10,7 @@ namespace LayoutManager.Dialogs {
     public class StandardPositionProperties : Form {
         private Label label1;
         private TextBox textBoxTitle;
-        private LayoutManager.CommonUI.Controls.PositionDefinition positionDefinition;
+        private CommonUI.Controls.PositionDefinition positionDefinition;
         private Button buttonOK;
         private Button buttonCancel;
         private Label label2;
@@ -62,7 +62,7 @@ namespace LayoutManager.Dialogs {
             this.buttonOK = new Button();
             this.label1 = new Label();
             this.buttonCancel = new Button();
-            this.positionDefinition = new LayoutManager.CommonUI.Controls.PositionDefinition();
+            this.positionDefinition = new CommonUI.Controls.PositionDefinition();
             this.textBoxTitle = new TextBox();
             this.label2 = new Label();
             this.textBoxRef = new TextBox();

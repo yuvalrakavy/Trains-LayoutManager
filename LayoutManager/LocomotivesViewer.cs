@@ -13,7 +13,7 @@ namespace LayoutManager {
     /// <summary>
     /// Summary description for LocomotivesViewer.
     /// </summary>
-    public class LocomotivesViewer : System.Windows.Forms.UserControl {
+    public class LocomotivesViewer : UserControl {
         private const string E_Locomotive = "Locomotive";
         private const string A_Id = "ID";
         private const string A_Store = "Store";
@@ -31,7 +31,7 @@ namespace LayoutManager {
         private Button buttonClose;
         private ImageList imageListCloseButton;
         private ContextMenu contextMenuArrange;
-        private LayoutManager.CommonUI.Controls.LocomotiveList locomotiveList;
+        private LocomotiveList locomotiveList;
         private MenuItem menuItemAddTrain;
         private MenuItem menuItemStorage;
 
@@ -289,7 +289,7 @@ namespace LayoutManager {
         /// </summary>
         private void InitializeComponent() {
             this.components = new Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LocomotivesViewer));
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(LocomotivesViewer));
             this.contextMenuAdd = new ContextMenuStrip();
             this.menuItemAddLocomotive = new ToolStripMenuItem();
             this.menuItemAddTrain = new ToolStripMenuItem();
@@ -304,7 +304,7 @@ namespace LayoutManager {
             this.buttonClose = new Button();
             this.imageListCloseButton = new ImageList(this.components);
             this.contextMenuArrange = new ContextMenuStrip();
-            this.locomotiveList = new LayoutManager.CommonUI.Controls.LocomotiveList();
+            this.locomotiveList = new LocomotiveList();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -346,9 +346,9 @@ namespace LayoutManager {
             // buttonAdd
             // 
             this.buttonAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonAdd.Location = new System.Drawing.Point(12, 464);
+            this.buttonAdd.Location = new Point(12, 464);
             this.buttonAdd.Name = "buttonAdd";
-            this.buttonAdd.Size = new System.Drawing.Size(56, 20);
+            this.buttonAdd.Size = new Size(56, 20);
             this.buttonAdd.TabIndex = 5;
             this.buttonAdd.Text = "&Add";
             this.buttonAdd.Click += this.buttonAdd_Click;
@@ -356,9 +356,9 @@ namespace LayoutManager {
             // buttonEdit
             // 
             this.buttonEdit.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonEdit.Location = new System.Drawing.Point(76, 464);
+            this.buttonEdit.Location = new Point(76, 464);
             this.buttonEdit.Name = "buttonEdit";
-            this.buttonEdit.Size = new System.Drawing.Size(56, 20);
+            this.buttonEdit.Size = new Size(56, 20);
             this.buttonEdit.TabIndex = 6;
             this.buttonEdit.Text = "&Edit...";
             this.buttonEdit.Click += this.buttonEdit_Click;
@@ -366,9 +366,9 @@ namespace LayoutManager {
             // buttonDelete
             // 
             this.buttonDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonDelete.Location = new System.Drawing.Point(140, 464);
+            this.buttonDelete.Location = new Point(140, 464);
             this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(56, 20);
+            this.buttonDelete.Size = new Size(56, 20);
             this.buttonDelete.TabIndex = 3;
             this.buttonDelete.Text = "&Delete";
             this.buttonDelete.Click += this.buttonDelete_Click;
@@ -376,9 +376,9 @@ namespace LayoutManager {
             // buttonOptions
             // 
             this.buttonOptions.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonOptions.Location = new System.Drawing.Point(134, 488);
+            this.buttonOptions.Location = new Point(134, 488);
             this.buttonOptions.Name = "buttonOptions";
-            this.buttonOptions.Size = new System.Drawing.Size(62, 20);
+            this.buttonOptions.Size = new Size(62, 20);
             this.buttonOptions.TabIndex = 4;
             this.buttonOptions.Text = "&Options...";
             this.buttonOptions.Click += this.buttonOptions_Click;
@@ -388,30 +388,30 @@ namespace LayoutManager {
             this.panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
                 | System.Windows.Forms.AnchorStyles.Right;
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.panel1.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.panel1.Controls.AddRange(new Control[] {
                                                                                  this.buttonClose});
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(208, 20);
+            this.panel1.Size = new Size(208, 20);
             this.panel1.TabIndex = 7;
             // 
             // buttonClose
             // 
             this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             this.buttonClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonClose.Image = (System.Drawing.Bitmap)resources.GetObject("buttonClose.Image");
+            this.buttonClose.Image = (Bitmap)resources.GetObject("buttonClose.Image");
             this.buttonClose.ImageIndex = 0;
             this.buttonClose.ImageList = this.imageListCloseButton;
-            this.buttonClose.Location = new System.Drawing.Point(186, 1);
+            this.buttonClose.Location = new Point(186, 1);
             this.buttonClose.Name = "buttonClose";
-            this.buttonClose.Size = new System.Drawing.Size(16, 16);
+            this.buttonClose.Size = new Size(16, 16);
             this.buttonClose.TabIndex = 0;
             this.buttonClose.Click += this.buttonClose_Click;
             // 
             // imageListCloseButton
             // 
             this.imageListCloseButton.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.imageListCloseButton.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListCloseButton.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListCloseButton.ImageStream");
+            this.imageListCloseButton.ImageSize = new Size(16, 16);
+            this.imageListCloseButton.ImageStream = (ImageListStreamer)resources.GetObject("imageListCloseButton.ImageStream");
             this.imageListCloseButton.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // locomotiveList
@@ -424,17 +424,17 @@ namespace LayoutManager {
             this.locomotiveList.CurrentListLayoutIndex = -1;
             this.locomotiveList.DefaultSortField = "Name";
             this.locomotiveList.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.locomotiveList.Location = new System.Drawing.Point(4, 24);
+            this.locomotiveList.Location = new Point(4, 24);
             this.locomotiveList.Name = "locomotiveList";
             this.locomotiveList.ShowOnlyLocomotives = false;
-            this.locomotiveList.Size = new System.Drawing.Size(196, 432);
+            this.locomotiveList.Size = new Size(196, 432);
             this.locomotiveList.TabIndex = 8;
             this.locomotiveList.MouseDown += this.locomotiveList_MouseDown;
             this.locomotiveList.SelectedIndexChanged += this.locomotiveList_SelectedIndexChanged;
             // 
             // LocomotivesViewer
             // 
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.Controls.AddRange(new Control[] {
                                                                           this.locomotiveList,
                                                                           this.panel1,
                                                                           this.buttonAdd,
@@ -442,28 +442,28 @@ namespace LayoutManager {
                                                                           this.buttonDelete,
                                                                           this.buttonOptions});
             this.Name = "LocomotivesViewer";
-            this.Size = new System.Drawing.Size(208, 512);
+            this.Size = new Size(208, 512);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
         }
         #endregion
 
-        private void buttonAdd_Click(object? sender, System.EventArgs e) {
+        private void buttonAdd_Click(object? sender, EventArgs e) {
             contextMenuAdd.Show(this, new Point(buttonAdd.Left, buttonAdd.Bottom + 2));
         }
 
-        private void menuItemAddLocomotive_Click(object? sender, System.EventArgs e) {
+        private void menuItemAddLocomotive_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEvent("add-new-locomotive-to-collection", this));
         }
 
-        private void buttonOptions_Click(object? sender, System.EventArgs e) {
+        private void buttonOptions_Click(object? sender, EventArgs e) {
             if (!operationMode)
                 contextMenuOptions.Show(this, new Point(buttonOptions.Left, buttonOptions.Bottom));
             else
                 contextMenuArrange.Show(this, new Point(buttonOptions.Left, buttonOptions.Bottom));
         }
 
-        private void menuItemStorage_Click(object? sender, System.EventArgs e) {
+        private void menuItemStorage_Click(object? sender, EventArgs e) {
             Dialogs.LocomotiveCollectionStores stores = new Dialogs.LocomotiveCollectionStores("Locomotive Collection",
                 locomotiveCollection.Element["Stores"], "Locomotive Collection",
                 locomotiveCollection.DefaultStoreDirectory, ".LocomotiveCollection") {
@@ -480,27 +480,27 @@ namespace LayoutManager {
             SaveModelDocument();
         }
 
-        private void locomotiveList_SelectedIndexChanged(object? sender, System.EventArgs e) {
+        private void locomotiveList_SelectedIndexChanged(object? sender, EventArgs e) {
             updateButtons();
         }
 
-        private void buttonEdit_Click(object? sender, System.EventArgs e) {
+        private void buttonEdit_Click(object? sender, EventArgs e) {
             XmlElement selectedElement = locomotiveList.SelectedXmlElement;
 
             EventManager.Event(new LayoutEvent("edit-locomotive-collection-item", selectedElement));
         }
 
-        private void buttonDelete_Click(object? sender, System.EventArgs e) {
+        private void buttonDelete_Click(object? sender, EventArgs e) {
             XmlElement selectedElement = locomotiveList.SelectedXmlElement;
 
             EventManager.Event(new LayoutEvent("delete-locomotive-collection-item", selectedElement));
         }
 
-        private void menuItemAddTrain_Click(object? sender, System.EventArgs e) {
+        private void menuItemAddTrain_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEvent("add-new-train-to-collection", this));
         }
 
-        private void locomotiveList_MouseDown(object? sender, System.Windows.Forms.MouseEventArgs e) {
+        private void locomotiveList_MouseDown(object? sender, MouseEventArgs e) {
             if ((e.Button & MouseButtons.Right) != 0) {
                 int clickedIndex = locomotiveList.IndexFromPoint(e.X, e.Y);
 
@@ -523,7 +523,7 @@ namespace LayoutManager {
             }
         }
 
-        private void buttonClose_Click(object? sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEvent("hide-locomotives", this));
         }
     }

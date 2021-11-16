@@ -13,13 +13,13 @@ namespace LayoutManager.Dialogs {
         private TabPage tabPageGlobal;
         private TabPage tabPageTripPlan;
         private TabPage tabPageBlock;
-        private LayoutManager.CommonUI.Controls.PolicyList policyListTripPlan;
-        private LayoutManager.CommonUI.Controls.PolicyList policyListBlock;
-        private LayoutManager.CommonUI.Controls.GlobalPolicyList globalPolicyListGlobal;
+        private CommonUI.Controls.PolicyList policyListTripPlan;
+        private CommonUI.Controls.PolicyList policyListBlock;
+        private CommonUI.Controls.GlobalPolicyList globalPolicyListGlobal;
         private TabPage tabPageStartCondition;
         private TabPage tabPageDriverInstructions;
-        private LayoutManager.CommonUI.Controls.PolicyList policyListStartCondition;
-        private LayoutManager.CommonUI.Controls.PolicyList policyListDriverInstructions;
+        private CommonUI.Controls.PolicyList policyListStartCondition;
+        private CommonUI.Controls.PolicyList policyListDriverInstructions;
         private Button buttonExport;
         private Button buttonImport;
 
@@ -89,11 +89,11 @@ namespace LayoutManager.Dialogs {
             this.tabPageStartCondition = new TabPage();
             this.tabPageDriverInstructions = new TabPage();
             this.buttonExport = new Button();
-            this.globalPolicyListGlobal = new LayoutManager.CommonUI.Controls.GlobalPolicyList();
-            this.policyListBlock = new LayoutManager.CommonUI.Controls.PolicyList();
-            this.policyListTripPlan = new LayoutManager.CommonUI.Controls.PolicyList();
-            this.policyListStartCondition = new LayoutManager.CommonUI.Controls.PolicyList();
-            this.policyListDriverInstructions = new LayoutManager.CommonUI.Controls.PolicyList();
+            this.globalPolicyListGlobal = new CommonUI.Controls.GlobalPolicyList();
+            this.policyListBlock = new CommonUI.Controls.PolicyList();
+            this.policyListTripPlan = new CommonUI.Controls.PolicyList();
+            this.policyListStartCondition = new CommonUI.Controls.PolicyList();
+            this.policyListDriverInstructions = new CommonUI.Controls.PolicyList();
             this.buttonImport = new Button();
             this.tabControlStartCondition.SuspendLayout();
             this.tabPageGlobal.SuspendLayout();
@@ -105,7 +105,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
+            this.buttonClose.Anchor = (AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right);
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonClose.Location = new System.Drawing.Point(312, 240);
             this.buttonClose.Name = "buttonClose";
@@ -116,7 +116,7 @@ namespace LayoutManager.Dialogs {
             // 
             // tabControlStartCondition
             // 
-            this.tabControlStartCondition.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+            this.tabControlStartCondition.Anchor = (AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
                         | System.Windows.Forms.AnchorStyles.Left
                         | System.Windows.Forms.AnchorStyles.Right);
             this.tabControlStartCondition.Controls.Add(this.tabPageGlobal);
@@ -165,7 +165,7 @@ namespace LayoutManager.Dialogs {
             this.tabPageStartCondition.Controls.Add(this.policyListStartCondition);
             this.tabPageStartCondition.Location = new System.Drawing.Point(4, 22);
             this.tabPageStartCondition.Name = "tabPageStartCondition";
-            this.tabPageStartCondition.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageStartCondition.Padding = new Padding(3);
             this.tabPageStartCondition.Size = new System.Drawing.Size(392, 206);
             this.tabPageStartCondition.TabIndex = 3;
             this.tabPageStartCondition.Text = "Start Condition";
@@ -176,7 +176,7 @@ namespace LayoutManager.Dialogs {
             this.tabPageDriverInstructions.Controls.Add(this.policyListDriverInstructions);
             this.tabPageDriverInstructions.Location = new System.Drawing.Point(4, 22);
             this.tabPageDriverInstructions.Name = "tabPageDriverInstructions";
-            this.tabPageDriverInstructions.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageDriverInstructions.Padding = new Padding(3);
             this.tabPageDriverInstructions.Size = new System.Drawing.Size(392, 206);
             this.tabPageDriverInstructions.TabIndex = 4;
             this.tabPageDriverInstructions.Text = "Driver Instructions";
@@ -300,29 +300,29 @@ namespace LayoutManager.Dialogs {
             e.Info = this;
         }
 
-        private void PoliciesDefinition_Closed(object? sender, System.EventArgs e) {
+        private void PoliciesDefinition_Closed(object? sender, EventArgs e) {
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
             policyListTripPlan.Dispose();
         }
 
-        private void PoliciesDefinition_Closing(object? sender, System.ComponentModel.CancelEventArgs e) {
+        private void PoliciesDefinition_Closing(object? sender, CancelEventArgs e) {
             if (Owner != null)
                 Owner.Activate();
         }
 
-        private void buttonClose_Click(object? sender, System.EventArgs e) {
+        private void buttonClose_Click(object? sender, EventArgs e) {
             DialogResult = DialogResult.OK;
             Close();
         }
 
         private void buttonExport_Click(object? sender, EventArgs e) {
-            Dialogs.ExportPolicies d = new ExportPolicies();
+            ExportPolicies d = new ExportPolicies();
 
             d.ShowDialog(this);
         }
 
         private void buttonImport_Click(object? sender, EventArgs e) {
-            Dialogs.ImportPolicies d = new ImportPolicies();
+            ImportPolicies d = new ImportPolicies();
 
             d.ShowDialog(this);
         }

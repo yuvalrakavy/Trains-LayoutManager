@@ -8,7 +8,7 @@ namespace LayoutManager.Dialogs {
     /// </summary>
     public class TestControl : Form {
         private Button buttonClose;
-        private LayoutManager.CommonUI.Controls.SelectTripPlanIcon selectTripPlanIcon1;
+        private CommonUI.Controls.SelectTripPlanIcon selectTripPlanIcon1;
 
         /// <summary>
         /// Required designer variable.
@@ -46,7 +46,7 @@ namespace LayoutManager.Dialogs {
         /// </summary>
         private void InitializeComponent() {
             this.buttonClose = new Button();
-            this.selectTripPlanIcon1 = new LayoutManager.CommonUI.Controls.SelectTripPlanIcon();
+            this.selectTripPlanIcon1 = new CommonUI.Controls.SelectTripPlanIcon();
             this.SuspendLayout();
             // 
             // buttonClose
@@ -60,7 +60,7 @@ namespace LayoutManager.Dialogs {
             // 
             // selectTripPlanIcon1
             // 
-            this.selectTripPlanIcon1.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
+            this.selectTripPlanIcon1.Anchor = (AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
                 | System.Windows.Forms.AnchorStyles.Right);
             this.selectTripPlanIcon1.IconList = null;
             this.selectTripPlanIcon1.Location = new System.Drawing.Point(16, 16);

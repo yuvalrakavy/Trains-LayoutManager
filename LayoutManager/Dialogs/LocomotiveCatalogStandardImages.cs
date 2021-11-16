@@ -161,7 +161,7 @@ namespace LayoutManager.Dialogs {
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.groupBox1.Controls.AddRange(new Control[] {
                                                                                     this.buttonSetES,
                                                                                     this.label1,
                                                                                     this.pictureBoxES,
@@ -178,16 +178,16 @@ namespace LayoutManager.Dialogs {
                                                                                     this.label7,
                                                                                     this.pictureBoxESU,
                                                                                     this.buttonClearESU});
-            this.groupBox1.Location = new System.Drawing.Point(8, 8);
+            this.groupBox1.Location = new Point(8, 8);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(480, 112);
+            this.groupBox1.Size = new Size(480, 112);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "European Locomotives:";
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.groupBox2.Controls.AddRange(new Control[] {
                                                                                     this.buttonSetUSU,
                                                                                     this.label8,
                                                                                     this.pictureBoxUSU,
@@ -204,9 +204,9 @@ namespace LayoutManager.Dialogs {
                                                                                     this.buttonSetUD,
                                                                                     this.buttonClearUE,
                                                                                     this.buttonSetUE});
-            this.groupBox2.Location = new System.Drawing.Point(8, 128);
+            this.groupBox2.Location = new Point(8, 128);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(480, 112);
+            this.groupBox2.Size = new Size(480, 112);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "American Locomotives:";
@@ -214,7 +214,7 @@ namespace LayoutManager.Dialogs {
             // pictureBoxES
             // 
             this.pictureBoxES.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBoxES.Location = new System.Drawing.Point(8, 32);
+            this.pictureBoxES.Location = new Point(8, 32);
             this.pictureBoxES.Name = "pictureBoxES";
             this.pictureBoxES.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBoxES.TabIndex = 0;
@@ -223,7 +223,7 @@ namespace LayoutManager.Dialogs {
             // pictureBoxED
             // 
             this.pictureBoxED.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBoxED.Location = new System.Drawing.Point(128, 32);
+            this.pictureBoxED.Location = new Point(128, 32);
             this.pictureBoxED.Name = "pictureBoxED";
             this.pictureBoxED.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBoxED.TabIndex = 0;
@@ -232,7 +232,7 @@ namespace LayoutManager.Dialogs {
             // pictureBoxEE
             // 
             this.pictureBoxEE.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBoxEE.Location = new System.Drawing.Point(248, 32);
+            this.pictureBoxEE.Location = new Point(248, 32);
             this.pictureBoxEE.Name = "pictureBoxEE";
             this.pictureBoxEE.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBoxEE.TabIndex = 0;
@@ -240,99 +240,99 @@ namespace LayoutManager.Dialogs {
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(8, 16);
+            this.label1.Location = new Point(8, 16);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 16);
+            this.label1.Size = new Size(100, 16);
             this.label1.TabIndex = 1;
             this.label1.Text = "Steam";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(128, 16);
+            this.label2.Location = new Point(128, 16);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(100, 16);
+            this.label2.Size = new Size(100, 16);
             this.label2.TabIndex = 1;
             this.label2.Text = "Diesel";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(248, 16);
+            this.label3.Location = new Point(248, 16);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(100, 16);
+            this.label3.Size = new Size(100, 16);
             this.label3.TabIndex = 1;
             this.label3.Text = "Electric";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // buttonSetES
             // 
-            this.buttonSetES.Location = new System.Drawing.Point(8, 86);
+            this.buttonSetES.Location = new Point(8, 86);
             this.buttonSetES.Name = "buttonSetES";
-            this.buttonSetES.Size = new System.Drawing.Size(48, 19);
+            this.buttonSetES.Size = new Size(48, 19);
             this.buttonSetES.TabIndex = 2;
             this.buttonSetES.Text = "Set";
             this.buttonSetES.Click += this.buttonSet_click;
             // 
             // buttonClearES
             // 
-            this.buttonClearES.Location = new System.Drawing.Point(60, 86);
+            this.buttonClearES.Location = new Point(60, 86);
             this.buttonClearES.Name = "buttonClearES";
-            this.buttonClearES.Size = new System.Drawing.Size(48, 19);
+            this.buttonClearES.Size = new Size(48, 19);
             this.buttonClearES.TabIndex = 2;
             this.buttonClearES.Text = "Clear";
             this.buttonClearES.Click += this.buttonClear_click;
             // 
             // buttonClearED
             // 
-            this.buttonClearED.Location = new System.Drawing.Point(180, 86);
+            this.buttonClearED.Location = new Point(180, 86);
             this.buttonClearED.Name = "buttonClearED";
-            this.buttonClearED.Size = new System.Drawing.Size(48, 19);
+            this.buttonClearED.Size = new Size(48, 19);
             this.buttonClearED.TabIndex = 2;
             this.buttonClearED.Text = "Clear";
             this.buttonClearED.Click += this.buttonClear_click;
             // 
             // buttonSetED
             // 
-            this.buttonSetED.Location = new System.Drawing.Point(128, 86);
+            this.buttonSetED.Location = new Point(128, 86);
             this.buttonSetED.Name = "buttonSetED";
-            this.buttonSetED.Size = new System.Drawing.Size(48, 19);
+            this.buttonSetED.Size = new Size(48, 19);
             this.buttonSetED.TabIndex = 2;
             this.buttonSetED.Text = "Set";
             this.buttonSetED.Click += this.buttonSet_click;
             // 
             // buttonClearEE
             // 
-            this.buttonClearEE.Location = new System.Drawing.Point(300, 86);
+            this.buttonClearEE.Location = new Point(300, 86);
             this.buttonClearEE.Name = "buttonClearEE";
-            this.buttonClearEE.Size = new System.Drawing.Size(48, 19);
+            this.buttonClearEE.Size = new Size(48, 19);
             this.buttonClearEE.TabIndex = 2;
             this.buttonClearEE.Text = "Clear";
             this.buttonClearEE.Click += this.buttonClear_click;
             // 
             // buttonSetEE
             // 
-            this.buttonSetEE.Location = new System.Drawing.Point(248, 86);
+            this.buttonSetEE.Location = new Point(248, 86);
             this.buttonSetEE.Name = "buttonSetEE";
-            this.buttonSetEE.Size = new System.Drawing.Size(48, 19);
+            this.buttonSetEE.Size = new Size(48, 19);
             this.buttonSetEE.TabIndex = 2;
             this.buttonSetEE.Text = "Set";
             this.buttonSetEE.Click += this.buttonSet_click;
             // 
             // buttonSetUS
             // 
-            this.buttonSetUS.Location = new System.Drawing.Point(10, 84);
+            this.buttonSetUS.Location = new Point(10, 84);
             this.buttonSetUS.Name = "buttonSetUS";
-            this.buttonSetUS.Size = new System.Drawing.Size(48, 19);
+            this.buttonSetUS.Size = new Size(48, 19);
             this.buttonSetUS.TabIndex = 12;
             this.buttonSetUS.Text = "Set";
             this.buttonSetUS.Click += this.buttonSet_click;
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(10, 14);
+            this.label4.Location = new Point(10, 14);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(100, 16);
+            this.label4.Size = new Size(100, 16);
             this.label4.TabIndex = 8;
             this.label4.Text = "Steam";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -340,7 +340,7 @@ namespace LayoutManager.Dialogs {
             // pictureBoxUS
             // 
             this.pictureBoxUS.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBoxUS.Location = new System.Drawing.Point(10, 30);
+            this.pictureBoxUS.Location = new Point(10, 30);
             this.pictureBoxUS.Name = "pictureBoxUS";
             this.pictureBoxUS.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBoxUS.TabIndex = 5;
@@ -349,7 +349,7 @@ namespace LayoutManager.Dialogs {
             // pictureBoxUD
             // 
             this.pictureBoxUD.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBoxUD.Location = new System.Drawing.Point(130, 30);
+            this.pictureBoxUD.Location = new Point(130, 30);
             this.pictureBoxUD.Name = "pictureBoxUD";
             this.pictureBoxUD.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBoxUD.TabIndex = 3;
@@ -358,7 +358,7 @@ namespace LayoutManager.Dialogs {
             // pictureBoxUE
             // 
             this.pictureBoxUE.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBoxUE.Location = new System.Drawing.Point(250, 30);
+            this.pictureBoxUE.Location = new Point(250, 30);
             this.pictureBoxUE.Name = "pictureBoxUE";
             this.pictureBoxUE.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBoxUE.TabIndex = 4;
@@ -366,70 +366,70 @@ namespace LayoutManager.Dialogs {
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(130, 14);
+            this.label5.Location = new Point(130, 14);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(100, 16);
+            this.label5.Size = new Size(100, 16);
             this.label5.TabIndex = 7;
             this.label5.Text = "Diesel";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(250, 14);
+            this.label6.Location = new Point(250, 14);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(100, 16);
+            this.label6.Size = new Size(100, 16);
             this.label6.TabIndex = 6;
             this.label6.Text = "Electric";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // buttonClearUS
             // 
-            this.buttonClearUS.Location = new System.Drawing.Point(62, 84);
+            this.buttonClearUS.Location = new Point(62, 84);
             this.buttonClearUS.Name = "buttonClearUS";
-            this.buttonClearUS.Size = new System.Drawing.Size(48, 19);
+            this.buttonClearUS.Size = new Size(48, 19);
             this.buttonClearUS.TabIndex = 13;
             this.buttonClearUS.Text = "Clear";
             this.buttonClearUS.Click += this.buttonClear_click;
             // 
             // buttonClearUD
             // 
-            this.buttonClearUD.Location = new System.Drawing.Point(182, 84);
+            this.buttonClearUD.Location = new Point(182, 84);
             this.buttonClearUD.Name = "buttonClearUD";
-            this.buttonClearUD.Size = new System.Drawing.Size(48, 19);
+            this.buttonClearUD.Size = new Size(48, 19);
             this.buttonClearUD.TabIndex = 14;
             this.buttonClearUD.Text = "Clear";
             this.buttonClearUD.Click += this.buttonClear_click;
             // 
             // buttonSetUD
             // 
-            this.buttonSetUD.Location = new System.Drawing.Point(130, 84);
+            this.buttonSetUD.Location = new Point(130, 84);
             this.buttonSetUD.Name = "buttonSetUD";
-            this.buttonSetUD.Size = new System.Drawing.Size(48, 19);
+            this.buttonSetUD.Size = new Size(48, 19);
             this.buttonSetUD.TabIndex = 9;
             this.buttonSetUD.Text = "Set";
             this.buttonSetUD.Click += this.buttonSet_click;
             // 
             // buttonClearUE
             // 
-            this.buttonClearUE.Location = new System.Drawing.Point(302, 84);
+            this.buttonClearUE.Location = new Point(302, 84);
             this.buttonClearUE.Name = "buttonClearUE";
-            this.buttonClearUE.Size = new System.Drawing.Size(48, 19);
+            this.buttonClearUE.Size = new Size(48, 19);
             this.buttonClearUE.TabIndex = 10;
             this.buttonClearUE.Text = "Clear";
             this.buttonClearUE.Click += this.buttonClear_click;
             // 
             // buttonSetUE
             // 
-            this.buttonSetUE.Location = new System.Drawing.Point(250, 84);
+            this.buttonSetUE.Location = new Point(250, 84);
             this.buttonSetUE.Name = "buttonSetUE";
-            this.buttonSetUE.Size = new System.Drawing.Size(48, 19);
+            this.buttonSetUE.Size = new Size(48, 19);
             this.buttonSetUE.TabIndex = 11;
             this.buttonSetUE.Text = "Set";
             this.buttonSetUE.Click += this.buttonSet_click;
             // 
             // buttonOK
             // 
-            this.buttonOK.Location = new System.Drawing.Point(331, 248);
+            this.buttonOK.Location = new Point(331, 248);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
@@ -438,24 +438,24 @@ namespace LayoutManager.Dialogs {
             // buttonCancel
             // 
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(413, 248);
+            this.buttonCancel.Location = new Point(413, 248);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.TabIndex = 1;
             this.buttonCancel.Text = "Cancel";
             // 
             // buttonSetESU
             // 
-            this.buttonSetESU.Location = new System.Drawing.Point(368, 86);
+            this.buttonSetESU.Location = new Point(368, 86);
             this.buttonSetESU.Name = "buttonSetESU";
-            this.buttonSetESU.Size = new System.Drawing.Size(48, 19);
+            this.buttonSetESU.Size = new Size(48, 19);
             this.buttonSetESU.TabIndex = 2;
             this.buttonSetESU.Text = "Set";
             // 
             // label7
             // 
-            this.label7.Location = new System.Drawing.Point(368, 16);
+            this.label7.Location = new Point(368, 16);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(100, 16);
+            this.label7.Size = new Size(100, 16);
             this.label7.TabIndex = 1;
             this.label7.Text = "Sound Unit";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -463,7 +463,7 @@ namespace LayoutManager.Dialogs {
             // pictureBoxESU
             // 
             this.pictureBoxESU.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBoxESU.Location = new System.Drawing.Point(368, 32);
+            this.pictureBoxESU.Location = new Point(368, 32);
             this.pictureBoxESU.Name = "pictureBoxESU";
             this.pictureBoxESU.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBoxESU.TabIndex = 0;
@@ -471,25 +471,25 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonClearESU
             // 
-            this.buttonClearESU.Location = new System.Drawing.Point(420, 86);
+            this.buttonClearESU.Location = new Point(420, 86);
             this.buttonClearESU.Name = "buttonClearESU";
-            this.buttonClearESU.Size = new System.Drawing.Size(48, 19);
+            this.buttonClearESU.Size = new Size(48, 19);
             this.buttonClearESU.TabIndex = 2;
             this.buttonClearESU.Text = "Clear";
             // 
             // buttonSetUSU
             // 
-            this.buttonSetUSU.Location = new System.Drawing.Point(368, 84);
+            this.buttonSetUSU.Location = new Point(368, 84);
             this.buttonSetUSU.Name = "buttonSetUSU";
-            this.buttonSetUSU.Size = new System.Drawing.Size(48, 19);
+            this.buttonSetUSU.Size = new Size(48, 19);
             this.buttonSetUSU.TabIndex = 18;
             this.buttonSetUSU.Text = "Set";
             // 
             // label8
             // 
-            this.label8.Location = new System.Drawing.Point(368, 14);
+            this.label8.Location = new Point(368, 14);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(100, 16);
+            this.label8.Size = new Size(100, 16);
             this.label8.TabIndex = 16;
             this.label8.Text = "Sound Unit";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -497,7 +497,7 @@ namespace LayoutManager.Dialogs {
             // pictureBoxUSU
             // 
             this.pictureBoxUSU.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBoxUSU.Location = new System.Drawing.Point(368, 30);
+            this.pictureBoxUSU.Location = new Point(368, 30);
             this.pictureBoxUSU.Name = "pictureBoxUSU";
             this.pictureBoxUSU.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBoxUSU.TabIndex = 15;
@@ -505,20 +505,20 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonClearUSU
             // 
-            this.buttonClearUSU.Location = new System.Drawing.Point(420, 84);
+            this.buttonClearUSU.Location = new Point(420, 84);
             this.buttonClearUSU.Name = "buttonClearUSU";
-            this.buttonClearUSU.Size = new System.Drawing.Size(48, 19);
+            this.buttonClearUSU.Size = new Size(48, 19);
             this.buttonClearUSU.TabIndex = 17;
             this.buttonClearUSU.Text = "Clear";
             // 
             // LocomotiveCatalogStandardImages
             // 
             this.AcceptButton = this.buttonOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoScaleDimensions = new SizeF(5, 13);
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(493, 278);
+            this.ClientSize = new Size(493, 278);
             this.ControlBox = false;
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.Controls.AddRange(new Control[] {
                                                                           this.buttonOK,
                                                                           this.groupBox1,
                                                                           this.groupBox2,
@@ -576,7 +576,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonOK_Click(object? sender, System.EventArgs e) {
+        private void buttonOK_Click(object? sender, EventArgs e) {
             for (int iOrigin = 0; iOrigin < origins.Length; iOrigin++) {
                 for (int iKind = 0; iKind < kinds.Length; iKind++) {
                     ImageEntry entry = imageTable[iOrigin, iKind];

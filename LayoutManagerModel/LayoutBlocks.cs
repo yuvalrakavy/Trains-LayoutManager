@@ -89,7 +89,7 @@ namespace LayoutManager.Model {
     /// Block the locomotive is passing.
     /// </summary>
     public class LayoutBlock : LayoutBlockBase {
-        private readonly List<TrainLocationInfo> trainsInBlock = new List<TrainLocationInfo>();
+        private readonly List<TrainLocationInfo> trainsInBlock = new();
         private LayoutLockRequest? lockRequest;
         private bool isLinear = true;
         private bool isLinearCalculated;
@@ -232,7 +232,7 @@ namespace LayoutManager.Model {
 
                 trainsInBlock.Add(trainLocation);
 
-                TrainStateInfo trainState = new TrainStateInfo(trainLocation.LocomotiveStateElement);
+                TrainStateInfo trainState = new(trainLocation.LocomotiveStateElement);
 
                 if (trainState.Managed) {
                     if (!trainLocation.IsDisplayFrontKnown) {
@@ -307,7 +307,7 @@ namespace LayoutManager.Model {
         public bool IsLocked => LockRequest != null;
 
         public LayoutSelection GetSelection() {
-            LayoutSelection selection = new LayoutSelection();
+            LayoutSelection selection = new();
 
             foreach (TrackEdge edge in TrackEdges)
                 if (edge.Track.BlockEdgeBase == null)
@@ -600,8 +600,8 @@ namespace LayoutManager.Model {
     }
 
     public class TrainMotionListManager {
-        private readonly List<TrainMotionListEntry> motions = new List<TrainMotionListEntry>();
-        private readonly Dictionary<Guid, int> trainSpeeds = new Dictionary<Guid, int>();
+        private readonly List<TrainMotionListEntry> motions = new();
+        private readonly Dictionary<Guid, int> trainSpeeds = new();
 
         public void Add(LocomotiveTrackingResult trackingResult) {
             TrainStateInfo train = trackingResult.Train;

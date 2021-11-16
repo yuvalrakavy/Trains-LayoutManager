@@ -13,7 +13,7 @@ namespace LayoutManager.Dialogs {
         private Button buttonAdd;
         private Button buttonEdit;
         private Button buttonRemove;
-        private LayoutManager.CommonUI.Controls.LocomotiveTypeList locomotiveTypeList;
+        private CommonUI.Controls.LocomotiveTypeList locomotiveTypeList;
 
         /// <summary>
         /// Required designer variable.
@@ -98,7 +98,7 @@ namespace LayoutManager.Dialogs {
             this.buttonAdd = new Button();
             this.buttonEdit = new Button();
             this.buttonRemove = new Button();
-            this.locomotiveTypeList = new LayoutManager.CommonUI.Controls.LocomotiveTypeList();
+            this.locomotiveTypeList = new CommonUI.Controls.LocomotiveTypeList();
             this.contextMenuOptions = new ContextMenu();
             this.menuItemArrange = new MenuItem();
             this.menuItemStorage = new MenuItem();
@@ -111,7 +111,7 @@ namespace LayoutManager.Dialogs {
             // 
             this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonClose.Location = new System.Drawing.Point(392, 464);
+            this.buttonClose.Location = new Point(392, 464);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.TabIndex = 6;
             this.buttonClose.Text = "&Close";
@@ -120,7 +120,7 @@ namespace LayoutManager.Dialogs {
             // buttonAdd
             // 
             this.buttonAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonAdd.Location = new System.Drawing.Point(8, 424);
+            this.buttonAdd.Location = new Point(8, 424);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "&Add...";
@@ -129,7 +129,7 @@ namespace LayoutManager.Dialogs {
             // buttonEdit
             // 
             this.buttonEdit.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonEdit.Location = new System.Drawing.Point(88, 424);
+            this.buttonEdit.Location = new Point(88, 424);
             this.buttonEdit.Name = "buttonEdit";
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit...";
@@ -138,7 +138,7 @@ namespace LayoutManager.Dialogs {
             // buttonRemove
             // 
             this.buttonRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonRemove.Location = new System.Drawing.Point(168, 424);
+            this.buttonRemove.Location = new Point(168, 424);
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.TabIndex = 3;
             this.buttonRemove.Text = "&Remove";
@@ -154,9 +154,9 @@ namespace LayoutManager.Dialogs {
             this.locomotiveTypeList.CurrentListLayoutIndex = -1;
             this.locomotiveTypeList.DefaultSortField = null;
             this.locomotiveTypeList.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.locomotiveTypeList.Location = new System.Drawing.Point(8, 8);
+            this.locomotiveTypeList.Location = new Point(8, 8);
             this.locomotiveTypeList.Name = "locomotiveTypeList";
-            this.locomotiveTypeList.Size = new System.Drawing.Size(464, 408);
+            this.locomotiveTypeList.Size = new Size(464, 408);
             this.locomotiveTypeList.TabIndex = 0;
             this.locomotiveTypeList.DoubleClick += this.locomotiveTypeList_DoubleClick;
             this.locomotiveTypeList.SelectedIndexChanged += this.locomotiveTypeList_SelectedIndexChanged;
@@ -188,7 +188,7 @@ namespace LayoutManager.Dialogs {
             // 
             // buttonOptions
             // 
-            this.buttonOptions.Location = new System.Drawing.Point(8, 464);
+            this.buttonOptions.Location = new Point(8, 464);
             this.buttonOptions.Name = "buttonOptions";
             this.buttonOptions.TabIndex = 7;
             this.buttonOptions.Text = "&Options";
@@ -203,10 +203,10 @@ namespace LayoutManager.Dialogs {
             // LocomotiveCatalog
             // 
             this.AcceptButton = this.buttonClose;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
-            this.ClientSize = new System.Drawing.Size(480, 494);
+            this.AutoScaleDimensions = new SizeF(5, 13);
+            this.ClientSize = new Size(480, 494);
             this.ControlBox = false;
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
+            this.Controls.AddRange(new Control[] {
                                                                           this.buttonOptions,
                                                                           this.locomotiveTypeList,
                                                                           this.buttonRemove,
@@ -224,7 +224,7 @@ namespace LayoutManager.Dialogs {
             if (catalog.IsLoaded)
                 catalog.Unload();
 
-            new Dialogs.LocomotiveCollectionStores("Locomotive Catalog", catalog.Element["Stores"], "Locomotive Catalog", catalog.DefaultStoreDirectory, ".LocomotiveCatalog").ShowDialog(this);
+            new LocomotiveCollectionStores("Locomotive Catalog", catalog.Element["Stores"], "Locomotive Catalog", catalog.DefaultStoreDirectory, ".LocomotiveCatalog").ShowDialog(this);
 
             catalog.Load();
             locomotiveTypeList.ContainerElement = catalog.CollectionElement;
@@ -240,13 +240,13 @@ namespace LayoutManager.Dialogs {
         private void buttonAdd_Click(object? sender, System.EventArgs e) {
             LocomotiveTypeInfo locomotiveType = new LocomotiveTypeInfo(catalog.CreateCollectionElement());
 
-            if (new Dialogs.LocomotiveTypeProperties(locomotiveType).ShowDialog(this) == DialogResult.OK)
+            if (new LocomotiveTypeProperties(locomotiveType).ShowDialog(this) == DialogResult.OK)
                 catalog.CollectionElement.AppendChild(locomotiveType.Element);
         }
 
         private void buttonEdit_Click(object? sender, System.EventArgs e) {
             if (locomotiveTypeList.SelectedLocomotiveType != null)
-                new Dialogs.LocomotiveTypeProperties(locomotiveTypeList.SelectedLocomotiveType).ShowDialog(this);
+                new LocomotiveTypeProperties(locomotiveTypeList.SelectedLocomotiveType).ShowDialog(this);
             else
                 locomotiveTypeList.ToggleSelectedExpansion();
 
@@ -255,7 +255,7 @@ namespace LayoutManager.Dialogs {
 
         private void locomotiveTypeList_DoubleClick(object? sender, System.EventArgs e) {
             if (locomotiveTypeList.SelectedLocomotiveType != null)
-                new Dialogs.LocomotiveTypeProperties(locomotiveTypeList.SelectedLocomotiveType).ShowDialog(this);
+                new LocomotiveTypeProperties(locomotiveTypeList.SelectedLocomotiveType).ShowDialog(this);
 
             updateButtons();
         }
@@ -275,7 +275,7 @@ namespace LayoutManager.Dialogs {
         }
 
         private void menuItemStandardImages_Click(object? sender, System.EventArgs e) {
-            new Dialogs.LocomotiveCatalogStandardImages(catalog).ShowDialog(this);
+            new LocomotiveCatalogStandardImages(catalog).ShowDialog(this);
         }
 
         private void buttonOptions_Click(object? sender, System.EventArgs e) {
@@ -283,7 +283,7 @@ namespace LayoutManager.Dialogs {
         }
 
         private void menuItemStandardLocomotiveFunctions_Click(object? sender, System.EventArgs e) {
-            new Dialogs.StandardFunctions().ShowDialog(this);
+            new StandardFunctions().ShowDialog(this);
         }
     }
 }
