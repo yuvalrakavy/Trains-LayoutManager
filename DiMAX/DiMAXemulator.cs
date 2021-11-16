@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using LayoutManager;
@@ -12,10 +13,11 @@ namespace DiMAX {
     public class DiMAXcommandStationEmulator : ILayoutCommandStationEmulator {
         private readonly Guid commandStationId;
         private readonly string pipeName;
+        private readonly CancellationTokenSource stopInterfaceThrad;
+        private readonly Task interfaceTask;
 
         private FileStream? commStream;
         private readonly ILayoutEmulatorServices layoutEmulationServices;
-        private readonly Thread? interfaceThread = null;
         private readonly ILayoutInterThreadEventInvoker interThreadEventInvoker;
         private readonly Dictionary<int, PositionEntry> positions = new();
         private static readonly LayoutTraceSwitch traceDiMAXemulator = new("TraceDiMAXemulator", "Trace DiMAX command station emulation");
@@ -33,10 +35,9 @@ namespace DiMAX {
                 .SetOption(LayoutCommandStationComponent.Option_EmulationTickTime, commandStation.EmulationTickTime)
             );
 
-            interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction)) {
-                Name = "Command station emulation for " + commandStation.Name
-            };
-            interfaceThread.Start();
+            stopInterfaceThrad = new CancellationTokenSource();
+
+            interfaceTask = InterfaceThreadFunction(stopInterfaceThrad.Token);
         }
 
         public void InterfaceThreadError(object subject, string message) {
@@ -47,19 +48,32 @@ namespace DiMAX {
             interThreadEventInvoker.QueueEvent(new LayoutEvent("add-warning", subject, message));
         }
 
-        private void InterfaceThreadFunction() {
+        private async Task InterfaceThreadFunction(CancellationToken stopMe) {
             commStream = Ensure.NotNull<FileStream>(EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true)));
             layoutEmulationServices.LocomotiveMoved += LayoutEmulationServices_LocomotiveMoved;
             layoutEmulationServices.LocomotiveFallFromTrack += (s, ea) => InterfaceThreadError(ea.Location.Track, "Locomotive (address " + ea.Unit + ") fall from track");
 
             try {
                 while (true) {
-                    byte commandAndLength = (byte)commStream.ReadByte();
+                    var commandAndLengthBuffer = new byte[1];
+
+                    await commStream.ReadAsync(commandAndLengthBuffer.AsMemory(0, 1), stopMe);
+                    if (stopMe.IsCancellationRequested)
+                        break;
+
+                    byte commandAndLength = commandAndLengthBuffer[0];
+
                     int length = (commandAndLength & 0xe0) >> 5;
                     byte[] buffer = new byte[length + 1];       // 1 more byte for the xor byte
 
-                    for (int i = 0; i < buffer.Length;)
-                        i += commStream.Read(buffer, i, buffer.Length - i);
+                    for (int i = 0; i < buffer.Length;) {
+                        i += await commStream.ReadAsync(buffer.AsMemory(i, buffer.Length - i), stopMe);
+                        if (stopMe.IsCancellationRequested)
+                            break;
+                    }
+
+                    if (stopMe.IsCancellationRequested)
+                        break;
 
                     var packet = new DiMAXpacket(commandAndLength, buffer);
 
@@ -162,7 +176,10 @@ namespace DiMAX {
 
         #region IDisposable Members
 
-        public void Dispose() {
+        public async void Dispose() {
+            stopInterfaceThrad.Cancel();
+            await interfaceTask;
+
             layoutEmulationServices.LocomotiveMoved -= LayoutEmulationServices_LocomotiveMoved;
 
             commStream?.Close();
