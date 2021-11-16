@@ -17,7 +17,6 @@ namespace NCDRelayController {
         TCP,
     };
 
-#pragma warning disable IDE0051, IDE0060, IDE0052, CA1031
     public class NCDRelayController : ModelComponent, IModelComponentIsBusProvider {
         private const string A_InterfaceType = "InterfaceType";
         private const string A_OverlappedIO = "OverlappedIO";
@@ -25,14 +24,15 @@ namespace NCDRelayController {
         private const string A_ReadTotalTimeoutConstant = "ReadTotalTimeoutConstant";
         private const string A_WriteTotalTimeoutConstant = "WriteTotalTimeoutConstant";
         private const string A_PollingPeriod = "PollingPeriod";
-        public static LayoutTraceSwitch TraceNCD = new LayoutTraceSwitch("NCDRelayController", "NCD Relay controller");
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "<Pending>")]
+        public static LayoutTraceSwitch TraceNCD = new("NCDRelayController", "NCD Relay controller");
 
-        private ControlBus _relayBus = null;
-        private ControlBus _inputBus = null;
+        private ControlBus? _relayBus = null;
+        private ControlBus? _inputBus = null;
         private bool simulation;
         private bool operationMode;
-        private Stream commStream;
-        private OutputManager outputManager;
+        private Stream? commStream;
+        private OutputManager? outputManager;
 
         public NCDRelayController() {
             this.XmlDocument.LoadXml(
@@ -44,18 +44,18 @@ namespace NCDRelayController {
 
         public bool LayoutEmulationSupported => false;
 
-        public ControlBus RelayBus => _relayBus ?? (_relayBus = LayoutModel.ControlManager.Buses.GetBus(this, "NCDRelayBus"));
+        public ControlBus RelayBus => _relayBus ??= Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "NCDRelayBus"));
 
-        public ControlBus InputBus => _inputBus ?? (_inputBus = LayoutModel.ControlManager.Buses.GetBus(this, "NCDInputBus"));
+        public ControlBus InputBus => _inputBus ??= Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "NCDInputBus"));
 
-        private OutputManager OutputManager => outputManager;
+        private OutputManager OutputManager => Ensure.NotNull<OutputManager>(outputManager);
 
         private InterfaceType InterfaceType {
             get => Element.AttributeValue(A_InterfaceType).Enum<InterfaceType>() ?? InterfaceType.Serial;
             set => Element.SetAttributeValue(A_InterfaceType, value);
         }
 
-        private Stream CommStream => commStream;
+        private Stream CommStream => Ensure.NotNull<Stream>(commStream);
 
         #region Communication init/cleanup
 
@@ -90,7 +90,7 @@ namespace NCDRelayController {
 
         private void OpenCommunicationStream() {
             if (InterfaceType == InterfaceType.Serial) {
-                commStream = (FileStream)EventManager.Event(new LayoutEvent("open-serial-communication-device-request", Element));
+                commStream = Ensure.NotNull<FileStream>(EventManager.Event(new LayoutEvent("open-serial-communication-device-request", Element)));
             }
             else {
                 string address = XmlInfo.DocumentElement.GetAttribute("Address");
@@ -100,18 +100,18 @@ namespace NCDRelayController {
                 if (portIndex < 0)
                     port = 2101;
                 else {
-                    int.TryParse(address.Substring(portIndex + 1), out port);
-                    address = address.Substring(0, portIndex);
+                    _ = int.TryParse(address.AsSpan(portIndex + 1), out port);
+                    address = address[..portIndex];
                 }
 
-                using TcpClient tcpClient = new TcpClient(address, port);
+                using var tcpClient = new TcpClient(address, port);
 
                 commStream = tcpClient.GetStream();
             }
         }
 
         private void CloseCommunicationStream() {
-            commStream.Close();
+            commStream?.Close();
             commStream = null;
         }
 
@@ -155,18 +155,15 @@ namespace NCDRelayController {
 
         #region IObjectHasName Members
 
-        public LayoutTextInfo NameProvider => new LayoutTextInfo(this);
+        public LayoutTextInfo NameProvider => new(this);
 
         #endregion
 
         #region Event Handlers
-#pragma warning disable IDE0051, IDE0060, IDE0052
 
         [LayoutEvent("enter-operation-mode")]
-        protected virtual void EnterOperationMode(LayoutEvent e0) {
-            var e = (LayoutEvent<OperationModeParameters>)e0;
-
-            simulation = e.Sender.Simulation;
+        protected virtual void EnterOperationMode(LayoutEvent e) {
+            simulation = Ensure.NotNull<OperationModeParameters>(e.Sender).Simulation;
 
             OnCommunicationSetup();
             OpenCommunicationStream();
@@ -176,7 +173,7 @@ namespace NCDRelayController {
         }
 
         [LayoutEvent("begin-design-time-layout-activation")]
-        private void beginDesignTimeLayoutActivation(LayoutEvent e) {
+        private void BeginDesignTimeLayoutActivation(LayoutEvent e) {
             OnCommunicationSetup();
             OpenCommunicationStream();
             OnInitialize();
@@ -205,21 +202,20 @@ namespace NCDRelayController {
         }
 
         [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private Task changeTrackComponentStateCommand(LayoutEvent e0) {
-            var e = (LayoutEventInfoValueType<ControlConnectionPointReference, int>)e0;
-            var connectionPointRef = e.Sender;
+        private Task ChangeTrackComponentStateCommand(LayoutEvent e) {
+            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender);
+            bool on = Ensure.ValueNotNull<int>(e.Info) != 0;
 
             int iRelay = connectionPointRef.Module.Address + connectionPointRef.Index;
-            bool on = e.Info != 0;
 
-            return outputManager.AddCommand(new SetRelayCommand(this, iRelay, on));
+            return OutputManager.AddCommand(new SetRelayCommand(this, iRelay, on));
         }
 
         [LayoutEvent("NCD-invoke-events", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private void ncdInvokeEvents(LayoutEvent e0) {
-            var e = (LayoutEvent<IList<LayoutEvent>>)e0;
+        private void NcdInvokeEvents(LayoutEvent e) {
+            var events = Ensure.NotNull<IList<LayoutEvent>>(e.Sender);
 
-            foreach (var anEvent in e.Sender)
+            foreach (var anEvent in events)
                 EventManager.Event(anEvent);
         }
 
@@ -228,7 +224,7 @@ namespace NCDRelayController {
         #region Command classes
 
         internal abstract class NCDcommandBase : OutputSynchronousCommandBase {
-            private readonly byte[] replyBuffer;
+            private readonly byte[]? replyBuffer;
 
             protected NCDRelayController RelayController { get; }
             protected int ReplySize { get; set; }
@@ -239,6 +235,7 @@ namespace NCDRelayController {
 
                 if (replySize > 0)
                     replyBuffer = new byte[replySize];
+               
             }
 
             public override void OnReply(object replyPacket) {
@@ -272,7 +269,7 @@ namespace NCDRelayController {
             public override void Do() {
                 SendCommand(RelayController.CommStream);
 
-                if (ReplySize > 0) {
+                if (ReplySize > 0 && replyBuffer != null) {
                     int count = RelayController.CommStream.Read(replyBuffer, 0, ReplySize);
 
                     if (TraceNCD.TraceVerbose) {

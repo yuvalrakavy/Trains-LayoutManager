@@ -7,21 +7,20 @@ using System.Net;
 
 using System.IO;
 
-#pragma warning disable RCS1090
 namespace DigiFinder {
     public class DigiDevice {
-        public byte[] MacAddress { get; internal set; }
-        public IPAddress IpAddress { get; internal set; }
-        public IPAddress GatewayAddress { get; internal set; }
-        public IPAddress NetMask { get; internal set; }
-        public string DeviceName { get; internal set; }
+        public byte[]? MacAddress { get; internal set; }
+        public IPAddress? IpAddress { get; internal set; }
+        public IPAddress? GatewayAddress { get; internal set; }
+        public IPAddress? NetMask { get; internal set; }
+        public string? DeviceName { get; internal set; }
         public bool DhcpEnabled { get; internal set; }
-        public string FirmwareDescription { get; internal set; }
+        public string? FirmwareDescription { get; internal set; }
         public int RealPortNumber { get; internal set; }
         public int EncryptedRealPortNumber { get; internal set; }
         public int PortCount { get; internal set; }
 
-        public override string ToString() => IpAddress.ToString() + " [" + RealPortNumber + "]: " + DeviceName + " (" + FirmwareDescription + ") " + PortCount + " serial ports";
+        public override string ToString() => $"{IpAddress} [{RealPortNumber}]: {DeviceName} ({FirmwareDescription}) {PortCount} serial ports";
     }
 
     public class DigiFinder {
@@ -42,9 +41,9 @@ namespace DigiFinder {
                     var count = discoverySocket.EndReceiveFrom(ia, ref remoteEndPoint);
 
                     // Parse reply and build a new DigiDevice entry
-                    DigiReplyPacket replyPacket = new DigiReplyPacket(replyBuffer);
-                    byte[] fieldData;
-                    DigiDevice device = new DigiDevice();
+                    var replyPacket = new DigiReplyPacket(replyBuffer);
+                    byte[]? fieldData;
+                    var device = new DigiDevice();
 
                     while ((fieldData = replyPacket.GetField(out DigiReplyFieldType fieldType)) != null) {
                         System.Diagnostics.Trace.WriteLine("Got field: " + fieldType.ToString());
@@ -128,7 +127,7 @@ namespace DigiFinder {
     }
 
     internal class DiscoveryDigiPacket : DigiRequestPacket {
-        public DiscoveryDigiPacket(byte[] specificTargetMac = null)
+        public DiscoveryDigiPacket(byte[]? specificTargetMac = null)
             : base(1) {
             byte[] mac = specificTargetMac ?? new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
@@ -185,7 +184,7 @@ namespace DigiFinder {
             return (Int16)((h << 8) + l);
         }
 
-        public byte[] GetField(out DigiReplyFieldType fieldType) {
+        public byte[]? GetField(out DigiReplyFieldType fieldType) {
             if (packetStream.Position >= PayloadLength + 6) {
                 fieldType = 0;
                 return null;            // No more fields

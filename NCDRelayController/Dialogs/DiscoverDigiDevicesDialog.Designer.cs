@@ -43,8 +43,8 @@
             this.listViewDevices.TabIndex = 0;
             this.listViewDevices.UseCompatibleStateImageBehavior = false;
             this.listViewDevices.View = System.Windows.Forms.View.Details;
-            this.listViewDevices.SelectedIndexChanged += new System.EventHandler(this.listViewDevices_SelectedIndexChanged);
-            this.listViewDevices.DoubleClick += new System.EventHandler(this.listViewDevices_DoubleClick);
+            this.listViewDevices.SelectedIndexChanged += new System.EventHandler(this.ListViewDevices_SelectedIndexChanged);
+            this.listViewDevices.DoubleClick += new System.EventHandler(this.ListViewDevices_DoubleClick);
             // 
             // buttonSelect
             // 
@@ -55,7 +55,7 @@
             this.buttonSelect.TabIndex = 1;
             this.buttonSelect.Text = "Select";
             this.buttonSelect.UseVisualStyleBackColor = true;
-            this.buttonSelect.Click += new System.EventHandler(this.buttonSelect_Click);
+            this.buttonSelect.Click += new System.EventHandler(this.ButtonSelect_Click);
             // 
             // buttonCancel
             // 

@@ -12,10 +12,7 @@ namespace NCDRelayController {
     /// Summary description for ComponentView.
     /// </summary>
     [LayoutModule("NCD Relay controller Component View", UserControl = false)]
-    public class ComponentView : System.ComponentModel.Component, ILayoutModuleSetup {
-        private ImageList imageListComponents;
-        private IContainer components = null;
-
+    public partial class ComponentView : System.ComponentModel.Component, ILayoutModuleSetup {
         #region Implementation of ILayoutModuleSetup
 
         #endregion
@@ -35,8 +32,8 @@ namespace NCDRelayController {
 
         [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
         private void AddRelayControllerItem(LayoutEvent e) {
-            XmlElement categoryElement = (XmlElement)e.Sender;
-            ModelComponent old = (ModelComponent)e.Info;
+            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
+            var old = (ModelComponent?)e.Info;
 
             if (old == null)
                 categoryElement.InnerXml += "<Item Name='NCDRelayController' Tooltip='NCD Relay Controller' />";
@@ -44,14 +41,14 @@ namespace NCDRelayController {
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='NCDRelayController']")]
         private void PaintCentralStationItem(LayoutEvent e) {
-            Graphics g = (Graphics)e.Info;
+            var g = Ensure.NotNull<Graphics>(e.Info);
 
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
             g.TranslateTransform(4, 4);
 
-            NCDRelayControllerPainter painter = new NCDRelayControllerPainter(new Size(32, 32));
+            var painter = new NCDRelayControllerPainter();
 
             painter.Paint(g);
         }
@@ -72,21 +69,19 @@ namespace NCDRelayController {
             if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
                 e.AddRegion(new DrawingRegionNCDRelayController(e.Component, e.View));
 
-            LayoutTextInfo textProvider = new LayoutTextInfo(e.Component);
+            var textProvider = new LayoutTextInfo(e.Component);
 
             if (textProvider.Element != null)
                 e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
         }
 
         private class DrawingRegionNCDRelayController : LayoutDrawingRegionGrid {
-            private readonly NCDRelayController component;
 
             internal DrawingRegionNCDRelayController(ModelComponent component, ILayoutView view) : base(component, view) {
-                this.component = (NCDRelayController)component;
             }
 
-            public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
-                NCDRelayControllerPainter painter = new NCDRelayControllerPainter(view.GridSizeInModelCoordinates);
+            public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook? selectionLook, Graphics g) {
+                var painter = new NCDRelayControllerPainter();
 
                 painter.Paint(g);
                 base.Draw(view, detailLevel, selectionLook, g);
@@ -103,14 +98,8 @@ namespace NCDRelayController {
         }
 
         private class NCDRelayControllerPainter {
-            private Size componentSize;
-
-            internal NCDRelayControllerPainter(Size componentSize) {
-                this.componentSize = componentSize;
-            }
-
             internal void Paint(Graphics g) {
-                Image image = (Image)EventManager.Event(new LayoutEvent("get-image", this));
+                var image = Ensure.NotNull<Image>(EventManager.Event(new LayoutEvent("get-image", this)));
 
                 g.DrawImage(image, new Rectangle(new Point(1, 1), image.Size));
             }
@@ -122,10 +111,10 @@ namespace NCDRelayController {
 
         [LayoutEvent("get-command-station-address-format", IfEvent = "*[CommandStation/@Type='DiMAX']")]
         [LayoutEvent("get-command-station-address-format", IfEvent = "*[CommandStation/@Type='Any']")]
-        private void getCommandStationFormat(LayoutEvent e) {
+        private void GetCommandStationFormat(LayoutEvent e) {
             if (e.Info == null) {
-                AddressUsage usage = (AddressUsage)e.Sender;
-                AddressFormatInfo addressFormat = new AddressFormatInfo();
+                var usage = Ensure.ValueNotNull<AddressUsage>(e.Sender);
+                var addressFormat = new AddressFormatInfo();
 
                 switch (usage) {
                     case AddressUsage.Locomotive:
@@ -163,25 +152,5 @@ namespace NCDRelayController {
         }
 
         #endregion
-
-        #region Component Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.components = new Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComponentView));
-            this.imageListComponents = new ImageList(this.components) {
-                // 
-                // imageListComponents
-                // 
-                ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListComponents.ImageStream"),
-                TransparentColor = System.Drawing.Color.Lime
-            };
-            this.imageListComponents.Images.SetKeyName(0, "NCDrelayController.bmp");
-        }
-        #endregion
-
     }
 }

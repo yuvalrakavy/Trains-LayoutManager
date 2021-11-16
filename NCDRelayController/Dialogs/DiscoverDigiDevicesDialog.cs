@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 using DigiFinder;
 
@@ -12,7 +13,7 @@ namespace NCDRelayController.Dialogs {
             FindDevices();
         }
 
-        public string SelectedAddress { get; private set; }
+        public string? SelectedAddress { get; private set; }
 
         public async void FindDevices() {
             labelStatus.Text = "Searching the network for DIGI devices...";
@@ -23,8 +24,8 @@ namespace NCDRelayController.Dialogs {
             devices.CollectionChanged += (s, ea) => {
                 if (ea.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add) {
                     this.Invoke((Action)(() => {
-                        foreach (DigiDevice d in ea.NewItems) {
-                            var item = new ListViewItem(new string[] { d.IpAddress.ToString(), d.DeviceName });
+                        foreach (var d in ea.NewItems?.Cast<DigiDevice>() ?? Enumerable.Empty<DigiDevice>()) {
+                            var item = new ListViewItem(new string[] { d.IpAddress?.ToString() ?? String.Empty, d.DeviceName ?? String.Empty });
 
                             listViewDevices.Items.Add(item);
                             if (listViewDevices.SelectedItems.Count == 0)
@@ -44,17 +45,17 @@ namespace NCDRelayController.Dialogs {
                 labelStatus.Text = "Select one of the following devices:";
         }
 
-        private void listViewDevices_SelectedIndexChanged(object? sender, EventArgs e) {
+        private void ListViewDevices_SelectedIndexChanged(object? sender, EventArgs e) {
             if (listViewDevices.SelectedItems.Count > 0)
                 buttonSelect.Enabled = true;
         }
 
-        private void listViewDevices_DoubleClick(object? sender, EventArgs e) {
+        private void ListViewDevices_DoubleClick(object? sender, EventArgs e) {
             if (buttonSelect.Enabled)
                 buttonSelect.PerformClick();
         }
 
-        private void buttonSelect_Click(object? sender, EventArgs e) {
+        private void ButtonSelect_Click(object? sender, EventArgs e) {
             if (listViewDevices.SelectedItems.Count > 0)
                 SelectedAddress = listViewDevices.SelectedItems[0].Text;
             DialogResult = System.Windows.Forms.DialogResult.OK;

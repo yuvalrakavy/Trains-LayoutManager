@@ -962,9 +962,10 @@ namespace LayoutManager.Components {
         /// and more commands (if any) will be sent to the workstation. If there is no pending synchronous command, the reply is just ignored
         /// </summary>
         /// <param name="reply"></param>
-        public void SetReply(object reply) {
+        public void SetReply(object? reply) {
             lock (_lockObject) {
-                pendingCommandWithReply?.OnReply(reply);
+                if(reply != null)
+                    pendingCommandWithReply?.OnReply(reply);
                 waitToGetReply.Set();       // Wait is done
             }
         }

@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager;
+using LayoutManager.CommonUI;
 
 namespace NCDRelayController {
     /// <summary>
@@ -12,11 +13,9 @@ namespace NCDRelayController {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
-
         #region Implementation of ILayoutModuleSetup
 
-        public LayoutModule Module { set; get; }
+        public LayoutModule? Module { set; get; }
 
         #endregion
 
@@ -49,7 +48,7 @@ namespace NCDRelayController {
 
         [LayoutEvent("model-component-placement-request", SenderType = typeof(NCDRelayController))]
         private void PlaceTrackContactRequest(LayoutEvent e) {
-            var component = (NCDRelayController)e.Sender;
+            var component = Ensure.NotNull<NCDRelayController>(e.Sender);
             var csProperties = new Dialogs.NCDRelayControllerProperties(component);
 
             if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
@@ -70,12 +69,12 @@ namespace NCDRelayController {
             var component = Ensure.NotNull<NCDRelayController>(e.Sender);
             var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
-            menu.Items.Add("&Properties", null, (s, ea) => {
+            menu.Items.Add(new LayoutMenuItem("&Properties", null, (s, ea) => {
                 var d = new Dialogs.NCDRelayControllerProperties(component);
 
                 if (d.ShowDialog() == DialogResult.OK)
                     LayoutController.Do(new LayoutModifyComponentDocumentCommand(component, d.XmlInfo));
-            });
+            }));
         }
 
         #region Component Designer generated code
@@ -84,7 +83,6 @@ namespace NCDRelayController {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            components = new Container();
         }
         #endregion
     }
