@@ -10,24 +10,24 @@ using LayoutManager.Components;
 
 namespace DiMAX {
     public class DiMAXcommandStationEmulator : ILayoutCommandStationEmulator {
-        private Guid commandStationId;
+        private readonly Guid commandStationId;
         private readonly string pipeName;
 
-        private FileStream commStream;
+        private FileStream? commStream;
         private readonly ILayoutEmulatorServices layoutEmulationServices;
-        private Thread interfaceThread = null;
+        private readonly Thread? interfaceThread = null;
         private readonly ILayoutInterThreadEventInvoker interThreadEventInvoker;
-        private readonly Dictionary<int, PositionEntry> positions = new Dictionary<int, PositionEntry>();
-        private static readonly LayoutTraceSwitch traceDiMAXemulator = new LayoutTraceSwitch("TraceDiMAXemulator", "Trace DiMAX command station emulation");
+        private readonly Dictionary<int, PositionEntry> positions = new();
+        private static readonly LayoutTraceSwitch traceDiMAXemulator = new("TraceDiMAXemulator", "Trace DiMAX command station emulation");
 
         public DiMAXcommandStationEmulator(IModelComponentIsCommandStation commandStation, string pipeName) {
             this.commandStationId = commandStation.Id;
             this.pipeName = pipeName;
-            this.interThreadEventInvoker = (ILayoutInterThreadEventInvoker)EventManager.Event(new LayoutEvent("get-inter-thread-event-invoker", this));
+            this.interThreadEventInvoker = Ensure.NotNull<ILayoutInterThreadEventInvoker>(EventManager.Event(new LayoutEvent("get-inter-thread-event-invoker", this)));
 
             traceDiMAXemulator.Level = TraceLevel.Off;      // Until it seems to work
 
-            layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
+            layoutEmulationServices = Ensure.NotNull<ILayoutEmulatorServices>(EventManager.Event(new LayoutEvent("get-layout-emulation-services", this)));
             EventManager.Event(new LayoutEvent("initialize-layout-emulation", this)
                 .SetOption(LayoutCommandStationComponent.Option_EmulateTrainMotion, commandStation.EmulateTrainMotion)
                 .SetOption(LayoutCommandStationComponent.Option_EmulationTickTime, commandStation.EmulationTickTime)
@@ -47,10 +47,9 @@ namespace DiMAX {
             interThreadEventInvoker.QueueEvent(new LayoutEvent("add-warning", subject, message));
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void InterfaceThreadFunction() {
-            commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true));
-            layoutEmulationServices.LocomotiveMoved += layoutEmulationServices_LocomotiveMoved;
+            commStream = Ensure.NotNull<FileStream>(EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true)));
+            layoutEmulationServices.LocomotiveMoved += LayoutEmulationServices_LocomotiveMoved;
             layoutEmulationServices.LocomotiveFallFromTrack += (s, ea) => InterfaceThreadError(ea.Location.Track, "Locomotive (address " + ea.Unit + ") fall from track");
 
             try {
@@ -132,14 +131,14 @@ namespace DiMAX {
             }
         }
 
-        private void layoutEmulationServices_LocomotiveMoved(object? sender, LocomotiveMovedEventArgs e) {
+        private void LayoutEmulationServices_LocomotiveMoved(object? sender, LocomotiveMovedEventArgs e) {
             if (e.CommandStationId == this.commandStationId) {
                 if (e.Location.Track.TrackContactComponent != null) {
-                    positions.TryGetValue(e.Unit, out PositionEntry position);
+                    positions.TryGetValue(e.Unit, out PositionEntry? position);
 
                     if (position == null || e.Location.Edge != position.Edge || e.Direction != position.Direction) {
                         LayoutTrackContactComponent trackContact = e.Location.Track.TrackContactComponent;
-                        ControlConnectionPoint connectionPoint = LayoutModel.ControlManager.ConnectionPoints[trackContact][0];
+                        var connectionPoint = Ensure.NotNull<ControlConnectionPoint>(LayoutModel.ControlManager.ConnectionPoints[trackContact]?[0]);
 
                         var connectionPointPerAddress = connectionPoint.Module.ModuleType.ConnectionPointsPerAddress;
                         int address = connectionPoint.Module.Address + (connectionPoint.Index / connectionPointPerAddress);
@@ -152,8 +151,8 @@ namespace DiMAX {
                             triggerMessage.Dump("Sending DiMAX message (track contact: " + address + "ab"[connectionPoint.Index % connectionPointPerAddress] + ")");
 
                         byte[] buffer = triggerMessage.GetBuffer();
-                        commStream.Write(buffer, 0, buffer.Length);
-                        commStream.Flush();
+                        commStream?.Write(buffer, 0, buffer.Length);
+                        commStream?.Flush();
 
                         positions[e.Unit] = new PositionEntry(e.Location.Edge, e.Direction, e.Speed);
                     }
@@ -164,15 +163,9 @@ namespace DiMAX {
         #region IDisposable Members
 
         public void Dispose() {
-            if (interfaceThread != null) {
-                if (interfaceThread.IsAlive)
-                    interfaceThread.Abort();
-                interfaceThread = null;
-            }
+            layoutEmulationServices.LocomotiveMoved -= LayoutEmulationServices_LocomotiveMoved;
 
-            layoutEmulationServices.LocomotiveMoved -= layoutEmulationServices_LocomotiveMoved;
-
-            commStream.Close();
+            commStream?.Close();
             commStream = null;
             GC.SuppressFinalize(this);
         }

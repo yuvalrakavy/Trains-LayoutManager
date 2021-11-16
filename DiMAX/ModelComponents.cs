@@ -10,15 +10,15 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-#pragma warning disable IDE0050, IE0060, CA1031, CA2237
-#nullable enable
 namespace DiMAX {
     /// <summary>
     /// Summary description for MTScomponents.
     /// </summary>
     public class DiMAXcommandStation : LayoutCommandStationComponent, IModelComponentCanProgramLocomotives {
-        public static LayoutTraceSwitch TraceDiMAX = new LayoutTraceSwitch("DiMAX", "Massoth DiMAX Central Station");
-        public static LayoutTraceSwitch TraceRawData = new LayoutTraceSwitch("DiMAXrawData", "Trace raw DiMAX central station input/output");
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "<Pending>")]
+        public static LayoutTraceSwitch TraceDiMAX = new("DiMAX", "Massoth DiMAX Central Station");
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "<Pending>")]
+        public static LayoutTraceSwitch TraceRawData = new("DiMAXrawData", "Trace raw DiMAX central station input/output");
 
         // Mfg ID for this software (TODO: Ask Massoth for one)
         public const UInt16 MID_LayoutManager = 0x39f4;
@@ -27,13 +27,13 @@ namespace DiMAX {
         private readonly byte[] lengthAndCommand = new byte[1];
         private readonly byte[] directAnswerLength = new byte[2];
         private byte[]? inputBuffer;
-        private readonly AutoResetEvent readAbortedEvent = new AutoResetEvent(false);
+        private readonly AutoResetEvent readAbortedEvent = new(false);
 
         private ControlBus? _DiMAXbus = null;
         private ControlBus? _DCCbus = null;
         private ControlBus? _locoBus = null;
-        private readonly DiMAXstatus dimaxStatus = new DiMAXstatus();
-        private readonly Dictionary<int, ActiveLocomotiveInfo> registeredLocomotives = new Dictionary<int, ActiveLocomotiveInfo>();
+        private readonly DiMAXstatus dimaxStatus = new();
+        private readonly Dictionary<int, ActiveLocomotiveInfo> registeredLocomotives = new();
 
         private enum LocomotiveSelection {
             Selected, DeselectedActive, DeselectedPassive
@@ -62,11 +62,11 @@ namespace DiMAX {
                 );
         }
 
-        public ControlBus DiMAXbus => _DiMAXbus ?? (_DiMAXbus = Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXBUS"), "DiMAXbus"));
+        public ControlBus DiMAXbus => _DiMAXbus ??= Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXBUS"), "DiMAXbus");
 
-        public ControlBus DCCbus => _DCCbus ?? (_DCCbus = Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXDCC"), "DCCbus"));
+        public ControlBus DCCbus => _DCCbus ??= Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXDCC"), "DCCbus");
 
-        public ControlBus LocoBus => _locoBus ?? (_locoBus = Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXLocoBus"), "DiMAXlocoBus"));
+        public ControlBus LocoBus => _locoBus ??= Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "DiMAXLocoBus"), "DiMAXlocoBus");
 
         private OutputManager OutputManager => Ensure.NotNull<OutputManager>(this.outputManager, "outputManager");
 
@@ -140,11 +140,10 @@ namespace DiMAX {
         }
 
         #region Request Event Handlers
-#pragma warning disable IDE0051, IDE0060
 
         [LayoutEvent("get-command-station-capabilities", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private void GetCommandStationCapabilities(LayoutEvent e) {
-            CommandStationCapabilitiesInfo cap = new CommandStationCapabilitiesInfo {
+            var cap = new CommandStationCapabilitiesInfo {
                 MinTimeBetweenSpeedSteps = (int?)Element.AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 100
             };
             e.Info = cap.Element;
@@ -167,7 +166,7 @@ namespace DiMAX {
         }
 
         [LayoutEvent("get-command-station-set-function-number-support", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private void getSetFunctionNumberSupport(LayoutEvent e) {
+        private void GetSetFunctionNumberSupport(LayoutEvent e) {
             e.Info = new CommandStationSetFunctionNumberSupportInfo() {
                 SetFunctionNumberSupport = SetFunctionNumberSupport.FunctionNumberAndBooleanState
             };
@@ -188,7 +187,7 @@ namespace DiMAX {
         }
 
         [LayoutEvent("change-signal-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private void changeSignalStateCommand(LayoutEvent e) {
+        private void ChangeSignalStateCommand(LayoutEvent e) {
             var connectionPoint = Ensure.NotNull<ControlConnectionPoint>(e.Sender, "connectionPoint");
             var state = Ensure.ValueNotNull<LayoutSignalState>(e.Info, "state");
             int address = connectionPoint.Module.Address + connectionPoint.Index;
@@ -204,7 +203,7 @@ namespace DiMAX {
         }
 
         [LayoutEvent("locomotive-motion-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void locomotiveMotionCommand(LayoutEvent e) {
+        private void LocomotiveMotionCommand(LayoutEvent e) {
             var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender, "loco");
             var speedInSteps = Ensure.ValueNotNull<int>(e.Info, "speedInSteps");
 
@@ -212,7 +211,7 @@ namespace DiMAX {
         }
 
         [LayoutEvent("set-locomotive-lights-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void setLocomotiveLightsCommand(LayoutEvent e) {
+        private void SetLocomotiveLightsCommand(LayoutEvent e) {
             var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender, "loco");
             var lights = Ensure.ValueNotNull<bool>(e.Info, "lights");
 
@@ -223,7 +222,7 @@ namespace DiMAX {
 
         [LayoutEvent("set-locomotive-function-state-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         [LayoutEvent("trigger-locomotive-function-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void setLocomotiveFunctionStateCommand(LayoutEvent e) {
+        private void SetLocomotiveFunctionStateCommand(LayoutEvent e) {
             var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender, "loco");
             var functionName = Ensure.NotNull<String>(e.Info, "functionName");
             var function = loco.GetFunctionByName(functionName);
@@ -234,13 +233,13 @@ namespace DiMAX {
                     if (decoder.ParallelFunctionSupport)
                         OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, function.Number, (bool)e.GetOption("FunctionState"), train.Lights));
                     else
-                        generateSerialFunctionCommands(train, loco, function.Number);
+                        GenerateSerialFunctionCommands(train, loco, function.Number);
                 }
             }
         }
 
         [LayoutEvent("trigger-locomotive-function-number", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void triggerLocomotiveFunctionNumber(LayoutEvent e) {
+        private void TriggerLocomotiveFunctionNumber(LayoutEvent e) {
             if (e.Sender is LocomotiveInfo loco && e.Info is int functionNumber) {
                 var train = LayoutModel.StateManager.Trains[loco.Id];
 
@@ -249,13 +248,13 @@ namespace DiMAX {
                         if (decoder.ParallelFunctionSupport)
                             OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, functionNumber, (bool)e.GetOption("FunctionState"), train.Lights));
                         else
-                            generateSerialFunctionCommands(train, loco, functionNumber);
+                            GenerateSerialFunctionCommands(train, loco, functionNumber);
                     }
                 }
             }
         }
 
-        private void generateSerialFunctionCommands(TrainStateInfo train, LocomotiveInfo loco, int functionNumber) {
+        private void GenerateSerialFunctionCommands(TrainStateInfo train, LocomotiveInfo loco, int functionNumber) {
             var state = registeredLocomotives[loco.AddressProvider.Unit].SerialFunctionState;
 
             for (var i = 0; i < functionNumber; i++) {
@@ -285,13 +284,13 @@ namespace DiMAX {
         }
 
         [LayoutAsyncEvent("enable-DiMAX-status-update", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private Task enableDiMAXstatusUpdate(LayoutEvent e) => OutputManager.AddCommand(new DiMAXinterfaceAnnouncement(this, true));
+        private Task EnableDiMAXstatusUpdate(LayoutEvent e) => OutputManager.AddCommand(new DiMAXinterfaceAnnouncement(this, true));
 
         [LayoutAsyncEvent("disable-DiMAX-status-update", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private Task disableDiMAXstatusUpdate(LayoutEvent e) => OutputManager.AddCommand(new DiMAXinterfaceAnnouncement(this, false));
+        private Task DisableDiMAXstatusUpdate(LayoutEvent e) => OutputManager.AddCommand(new DiMAXinterfaceAnnouncement(this, false));
 
         [LayoutAsyncEvent("program-CV-direct-request", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private async Task<Object> programCVdirectRequest(LayoutEvent e) {
+        private async Task<object> ProgramCVdirectRequest(LayoutEvent e) {
             var cv = Ensure.NotNull<DccProgrammingCV>(e.Sender, "register");
 
             return await (Task<object>)OutputManager.AddCommand(new DiMAXprogramCV(this, cv.Number, cv.Value));
@@ -300,7 +299,7 @@ namespace DiMAX {
         private async Task<LayoutActionResult> SetRegister(int register, byte value) => (LayoutActionResult)await (Task<object>)OutputManager.AddCommand(new DiMAXprogramRegister(this, (byte)register, value));
 
         [LayoutAsyncEvent("program-CV-register-requst", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private async Task<Object> programCVregisterRequst(LayoutEvent e) {
+        private async Task<object> ProgramCVregisterRequst(LayoutEvent e) {
             var cv = Ensure.NotNull<DccProgrammingCV>(e.Sender, "cv");
 
             if (cv.Number < 1)
@@ -316,21 +315,21 @@ namespace DiMAX {
         }
 
         [LayoutAsyncEvent("program-CV-POM-request", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private async Task<Object> programCVPOMrequest(LayoutEvent e) {
+        private async Task<object> ProgramCVPOMrequest(LayoutEvent e) {
             var cv = Ensure.NotNull<DccProgrammingCV>(e.Sender, "cv");
 
             return await (Task<object>)OutputManager.AddCommand(new DiMAXprogramCVonTrack(this, (int)e.GetOption("Address"), cv.Number, cv.Value));
         }
 
         [LayoutEvent("locomotive-power-changed")]
-        private void locomotivePowerChanged(LayoutEvent e) {
+        private void LocomotivePowerChanged(LayoutEvent e) {
             var trainLocomotive = Ensure.NotNull<TrainLocomotiveInfo>(e.Sender, "trainLocomotive");
             var power = Ensure.NotNull<ILayoutPower>(e.Info, "power");
             var locomotive = trainLocomotive.Locomotive;
             int address = locomotive.AddressProvider.Unit;
 
             if (power.Type != LayoutPowerType.Digital) {
-                if (registeredLocomotives.TryGetValue(address, out ActiveLocomotiveInfo activeLocomotive)) {
+                if (registeredLocomotives.TryGetValue(address, out ActiveLocomotiveInfo? activeLocomotive)) {
                     Debug.Assert(activeLocomotive.SelectNesting == 0);
 
                     if (activeLocomotive.ActiveDeselection)
@@ -354,7 +353,7 @@ namespace DiMAX {
                     if (value is int i)
                         navigatorImage = i;
                     else if (value is string s)
-                        int.TryParse(s, out navigatorImage);
+                        _ = int.TryParse(s, out navigatorImage);
                 }
 
                 OutputManager.AddCommand(new DiMAXlocomotiveRegistration(this, locomotive.AddressProvider.Unit,
@@ -368,7 +367,7 @@ namespace DiMAX {
         private void SelectLocomotive(LocomotiveInfo locomotive) {
             int address = locomotive.AddressProvider.Unit;
 
-            if (registeredLocomotives.TryGetValue(address, out ActiveLocomotiveInfo activeLocomotive)) {
+            if (registeredLocomotives.TryGetValue(address, out ActiveLocomotiveInfo? activeLocomotive)) {
                 if (activeLocomotive.SelectNesting++ == 0)
                     OutputManager.AddCommand(new DiMAXlocomotiveSelection(this, address, select: true, deselectActive: false, unconditional: false));
             }
@@ -384,7 +383,7 @@ namespace DiMAX {
         private void DeselectLocomotive(TrainStateInfo train, LocomotiveInfo locomotive) {
             int address = locomotive.AddressProvider.Unit;
 
-            if (registeredLocomotives.TryGetValue(address, out ActiveLocomotiveInfo activeLocomotive)) {
+            if (registeredLocomotives.TryGetValue(address, out ActiveLocomotiveInfo? activeLocomotive)) {
                 if (activeLocomotive.SelectNesting == 0 || --activeLocomotive.SelectNesting == 0) {
                     activeLocomotive.ActiveDeselection = IsLocomotiveActive(train, locomotive);
 
@@ -394,7 +393,7 @@ namespace DiMAX {
         }
 
         [LayoutEvent("locomotive-controller-activated")]
-        private void locomotiveControllerActivated(LayoutEvent e) {
+        private void LocomotiveControllerActivated(LayoutEvent e) {
             var trainLocomotive = Ensure.NotNull<TrainLocomotiveInfo>(e.Sender, "trainLocomotive");
             var locomotive = trainLocomotive.Locomotive;
 
@@ -402,7 +401,7 @@ namespace DiMAX {
         }
 
         [LayoutEvent("locomotive-controller-deactivated")]
-        private void locomotiveControllerDeactivated(LayoutEvent e) {
+        private void LocomotiveControllerDeactivated(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Info, "train");
             var locomotive = Ensure.NotNull<TrainLocomotiveInfo>(e.Sender, "locomotive").Locomotive;
 
@@ -410,7 +409,7 @@ namespace DiMAX {
         }
 
         [LayoutEvent("trip-added")]
-        private void tripAdded(LayoutEvent e) {
+        private void TripAdded(LayoutEvent e) {
             var trip = Ensure.NotNull<TripPlanAssignmentInfo>(e.Sender, "trip");
 
             if (trip.Train.Driver.ComputerDriven) {
@@ -422,7 +421,7 @@ namespace DiMAX {
 
         [LayoutEvent("trip-aborted")]
         [LayoutEvent("trip-done")]
-        private void tripDone(LayoutEvent e) {
+        private void TripDone(LayoutEvent e) {
             var trip = Ensure.NotNull<TripPlanAssignmentInfo>(e.Sender, "trip");
 
             if (trip.Train.Driver.ComputerDriven) {
@@ -433,7 +432,7 @@ namespace DiMAX {
         }
 
         [LayoutAsyncEvent("test-loco-select", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private Task testLocoSelect(LayoutEvent e0) {
+        private Task TestLocoSelect(LayoutEvent e0) {
             var e = e0;
 
             int address = (int)e.GetOption("Address");
@@ -445,7 +444,7 @@ namespace DiMAX {
         }
 
         [LayoutAsyncEvent("test-loco-speed", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private Task testLocoSpeed(LayoutEvent e0) {
+        private Task TestLocoSpeed(LayoutEvent e0) {
             var e = e0;
 
             int address = (int)e.GetOption("Address");
@@ -476,7 +475,7 @@ namespace DiMAX {
         #region DiMAX input handling
 
         [LayoutEvent("processes-DiMAX-packet")]
-        private void processDiMAXpacket(LayoutEvent e) {
+        private void ProcessDiMAXpacket(LayoutEvent e) {
             if (e.Sender == this) {
                 var packet = Ensure.NotNull<DiMAXpacket>(e.Info, "packet");
 
@@ -485,7 +484,7 @@ namespace DiMAX {
 
                 switch (packet.CommandCode) {
                     case DiMAXcommandCode.TurnoutControl: {
-                            DiMAXturnoutOrFeedbackControlPacket p = new DiMAXturnoutOrFeedbackControlPacket(packet);
+                            var p = new DiMAXturnoutOrFeedbackControlPacket(packet);
 
                             if (OperationMode)
                                 DCCbusNotification(p.Address, p.State);
@@ -496,7 +495,7 @@ namespace DiMAX {
                         break;
 
                     case DiMAXcommandCode.FeedbackControl: {
-                            DiMAXturnoutOrFeedbackControlPacket p = new DiMAXturnoutOrFeedbackControlPacket(packet);
+                            var p = new DiMAXturnoutOrFeedbackControlPacket(packet);
 
                             if (OperationMode)
                                 DiMAXbusNotification(p.Address, p.State);
@@ -508,7 +507,7 @@ namespace DiMAX {
 
                     case DiMAXcommandCode.LocoSpeedControl: {
                             if (OperationMode) {
-                                DiMAXlocoSpeedControlPacket p = new DiMAXlocoSpeedControlPacket(packet);
+                                var p = new DiMAXlocoSpeedControlPacket(packet);
 
                                 EventManager.Event(
                                     new LayoutEvent("locomotive-motion-notification", this, p.SpeedInSteps).SetOption("Address", "Unit", p.Unit));
@@ -518,7 +517,7 @@ namespace DiMAX {
 
                     case DiMAXcommandCode.LocoFunctionControl: {
                             if (OperationMode) {
-                                DiMAXlocoFunctionControlPacket p = new DiMAXlocoFunctionControlPacket(packet);
+                                var p = new DiMAXlocoFunctionControlPacket(packet);
 
                                 if (p.FunctionNumber == 0)
                                     EventManager.Event(new LayoutEvent("set-locomotive-lights-notification", this, p.Lights).SetOption("Address", "Unit", p.Unit));
@@ -565,7 +564,7 @@ namespace DiMAX {
                 bool select = (packet.Parameters[2] & 0x10) != 0;
 
                 if (select) {
-                    if (registeredLocomotives.TryGetValue(address, out ActiveLocomotiveInfo activeLocomotive)) {
+                    if (registeredLocomotives.TryGetValue(address, out ActiveLocomotiveInfo? activeLocomotive)) {
                         var train = LayoutModel.StateManager.Trains[activeLocomotive.Locomotive.Id];
 
                         if (train != null) {
@@ -662,7 +661,7 @@ namespace DiMAX {
                         Trace.WriteLine("");
                     }
 
-                    DiMAXpacket packet = new DiMAXpacket(lengthAndCommand[0], inputBuffer);
+                    var packet = new DiMAXpacket(lengthAndCommand[0], inputBuffer);
 
                     if (packet.CommandCode == DiMAXcommandCode.DirectReply) {
                         if (OutputManager.IsWaitingForReply)

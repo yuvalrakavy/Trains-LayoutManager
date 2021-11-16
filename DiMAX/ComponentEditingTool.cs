@@ -14,11 +14,9 @@ namespace DiMAX {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
-
         #region Implementation of ILayoutModuleSetup
 
-        public LayoutModule Module { set; get; }
+        public LayoutModule? Module { set; get; }
 
         #endregion
 
@@ -29,7 +27,6 @@ namespace DiMAX {
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
             container.Add(this);
-            InitializeComponent();
 
             //
             // TODO: Add any constructor code after InitializeComponent call
@@ -40,7 +37,6 @@ namespace DiMAX {
             /// <summary>
             /// Required for Windows.Forms Class Composition Designer support
             /// </summary>
-            InitializeComponent();
 
             //
             // TODO: Add any constructor code after InitializeComponent call
@@ -51,8 +47,8 @@ namespace DiMAX {
 
         [LayoutEvent("model-component-placement-request", SenderType = typeof(DiMAXcommandStation))]
         private void PlaceTrackContactRequest(LayoutEvent e) {
-            DiMAXcommandStation component = (DiMAXcommandStation)e.Sender;
-            Dialogs.DiMAXcommandlStationProperties csProperties = new Dialogs.DiMAXcommandlStationProperties(component);
+            DiMAXcommandStation component = Ensure.NotNull<DiMAXcommandStation>(e.Sender);
+            var csProperties = new Dialogs.DiMAXcommandlStationProperties(component);
 
             if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 component.XmlInfo.XmlDocument = csProperties.XmlInfo.XmlDocument;
@@ -69,15 +65,15 @@ namespace DiMAX {
 
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(DiMAXcommandStation))]
         private void AddEditingContextMenuEntries(LayoutEvent e) {
-            Menu menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-            DiMAXcommandStation component = (DiMAXcommandStation)e.Sender;
+            var component = Ensure.NotNull<DiMAXcommandStation>(e.Sender);
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
             menu.Items.Add(new DiMAXcommandStationMenuItemProperties(component));
         }
 
         #region DiMAX Command Station Menu Item Classes
 
-        private class DiMAXcommandStationMenuItemProperties : MenuItem {
+        private class DiMAXcommandStationMenuItemProperties : LayoutMenuItem {
             private readonly DiMAXcommandStation component;
 
             internal DiMAXcommandStationMenuItemProperties(DiMAXcommandStation component) {
@@ -86,10 +82,10 @@ namespace DiMAX {
             }
 
             protected override void OnClick(EventArgs e) {
-                Dialogs.DiMAXcommandlStationProperties csProperties = new Dialogs.DiMAXcommandlStationProperties(component);
+                var csProperties = new Dialogs.DiMAXcommandlStationProperties(component);
 
                 if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    LayoutModifyComponentDocumentCommand modifyComponentDocumentCommand =
+                    var modifyComponentDocumentCommand =
                         new LayoutModifyComponentDocumentCommand(component, csProperties.XmlInfo);
 
                     LayoutController.Do(modifyComponentDocumentCommand);
@@ -106,21 +102,11 @@ namespace DiMAX {
 
         [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(DiMAXcommandStation))]
         private void AddOperationContextMenuEntries(LayoutEvent e) {
-            var commandStation = (DiMAXcommandStation)e.Sender;
+            var commandStation = Ensure.NotNull<DiMAXcommandStation>(e.Sender);
             var m = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
-            m.Items.Add(new MenuItem("Test locomotive select", (s, ea) => new Dialogs.TestLocoSelect(commandStation).ShowDialog()));
-            m.Items.Add(new MenuItem("Test locomotive drive", (s, ea) => new Dialogs.TestLocoDrive(commandStation).ShowDialog()));
+            m.Items.Add(new LayoutMenuItem("Test locomotive select", null, (_, _) => new Dialogs.TestLocoSelect(commandStation).ShowDialog()));
+            m.Items.Add(new LayoutMenuItem("Test locomotive drive", null, (_, _) => new Dialogs.TestLocoDrive(commandStation).ShowDialog()));
         }
-
-        #region Component Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            components = new Container();
-        }
-        #endregion
     }
 }
