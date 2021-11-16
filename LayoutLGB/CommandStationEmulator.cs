@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 using LayoutManager;
 using LayoutManager.Model;
@@ -10,58 +11,57 @@ using LayoutManager.Components;
 
 namespace LayoutLGB {
     public class MTScommandStationEmulator : ILayoutCommandStationEmulator {
-        private static readonly LayoutTraceSwitch traceMTSemulator = new LayoutTraceSwitch("TraceMTSemulator", "Trace MTS command station emulation");
-        private Guid commandStationId;
+        private static readonly LayoutTraceSwitch traceMTSemulator = new("TraceMTSemulator", "Trace MTS command station emulation");
+        private readonly Guid commandStationId;
         private readonly string pipeName;
-        private readonly Dictionary<int, PositionEntry> positions = new Dictionary<int, PositionEntry>();
+        private readonly Dictionary<int, PositionEntry> positions = new();
+        private readonly CancellationTokenSource stopInterfaceThrad;
+        private readonly Task interfaceTask;
 
-        private volatile FileStream commStream;
+        private volatile FileStream? commStream;
         private readonly ILayoutEmulatorServices layoutEmulationServices;
-        private Thread interfaceThread = null;
 
         public MTScommandStationEmulator(IModelComponentIsCommandStation commandStation, string pipeName) {
             this.commandStationId = commandStation.Id;
             this.pipeName = pipeName;
 
-            layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
+            layoutEmulationServices = Ensure.NotNull<ILayoutEmulatorServices>(EventManager.Event(new LayoutEvent("get-layout-emulation-services", this)));
 
             EventManager.Event(new LayoutEvent("initialize-layout-emulation", this)
                 .SetOption(LayoutCommandStationComponent.Option_EmulateTrainMotion, commandStation.EmulateTrainMotion)
                 .SetOption(LayoutCommandStationComponent.Option_EmulationTickTime, commandStation.EmulationTickTime)
             );
 
-            interfaceThread = new Thread(new ThreadStart(InterfaceThreadFunction)) {
-                Name = "Command station emulation for " + commandStation.Name
-            };
-            interfaceThread.Start();
+            stopInterfaceThrad = new CancellationTokenSource();
+            interfaceTask = InterfaceThreadFunction(stopInterfaceThrad.Token);
         }
 
-        public void Dispose() {
-            layoutEmulationServices.LocomotiveMoved -= layoutEmulationServices_LocomotiveMoved;
+        public async void Dispose() {
+            stopInterfaceThrad.Cancel();
+            await interfaceTask;
 
-            if (interfaceThread != null) {
-                if (interfaceThread.IsAlive)
-                    interfaceThread.Abort();
-                interfaceThread = null;
-            }
+            layoutEmulationServices.LocomotiveMoved -= LayoutEmulationServices_LocomotiveMoved;
 
-            commStream.Close();
+            commStream?.Close();
             commStream = null;
+            GC.SuppressFinalize(this);
         }
 
-        private void InterfaceThreadFunction() {
+        private async Task InterfaceThreadFunction(CancellationToken stopMe) {
             // Create the pipe for communication
-
-            commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true));
-            layoutEmulationServices.LocomotiveMoved += layoutEmulationServices_LocomotiveMoved;
+            commStream = Ensure.NotNull<FileStream>(EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true)));
+            layoutEmulationServices.LocomotiveMoved += LayoutEmulationServices_LocomotiveMoved;
 
             try {
                 while (true) {
                     byte[] buffer = new byte[4];
 
-                    commStream.Read(buffer, 0, 4);
+                    await commStream.ReadAsync(buffer.AsMemory(0, 4), stopMe);
 
-                    MTSmessage command = new MTSmessage(buffer);
+                    if (stopMe.IsCancellationRequested)
+                        break;
+
+                    var command = new MTSmessage(buffer);
 
                     Trace.WriteLineIf(traceMTSemulator.TraceInfo, "Command station emulator, got command: " + command.ToString());
 
@@ -116,21 +116,21 @@ namespace LayoutLGB {
             }
         }
 
-        private void layoutEmulationServices_LocomotiveMoved(object? sender, LocomotiveMovedEventArgs e) {
+        private void LayoutEmulationServices_LocomotiveMoved(object? sender, LocomotiveMovedEventArgs e) {
             if (e.CommandStationId == this.commandStationId) {
                 if (e.Location.Track.TrackContactComponent != null) {
-                    positions.TryGetValue(e.Unit, out PositionEntry position);
+                    positions.TryGetValue(e.Unit, out PositionEntry? position);
 
                     if (position == null || e.Location.Edge != position.Edge || e.Direction != position.Direction) {
                         LayoutTrackContactComponent trackContact = e.Location.Track.TrackContactComponent;
-                        ControlConnectionPoint connectionPoint = LayoutModel.ControlManager.ConnectionPoints[trackContact][0];
+                        var connectionPoint = Ensure.NotNull<ControlConnectionPoint>(LayoutModel.ControlManager.ConnectionPoints[trackContact]?[0]);
                         int address = connectionPoint.Module.Address + (connectionPoint.Index / 2);
 
-                        MTSmessage triggerMessage = new MTSmessage(MTScommand.TurnoutControl, (byte)address, (byte)(connectionPoint.Index & 1));
+                        var triggerMessage = new MTSmessage(MTScommand.TurnoutControl, (byte)address, (byte)(connectionPoint.Index & 1));
 
                         Trace.WriteLineIf(traceMTSemulator.TraceInfo, "Sending MTS message " + triggerMessage.ToString());
-                        commStream.Write(triggerMessage.Buffer, 0, 4);
-                        commStream.Flush();
+                        commStream?.Write(triggerMessage.Buffer, 0, 4);
+                        commStream?.Flush();
 
                         positions[e.Unit] = new PositionEntry(e.Location.Edge, e.Direction, e.Speed);
                     }

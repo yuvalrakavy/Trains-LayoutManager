@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager;
+using LayoutManager.CommonUI;
 
 namespace LayoutLGB {
     /// <summary>
@@ -10,14 +11,9 @@ namespace LayoutLGB {
     /// </summary>
     [LayoutModule("LGB MTS Component Editing Tool", UserControl = false)]
     public class ComponentTool : System.ComponentModel.Component, ILayoutModuleSetup {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private Container components = null;
-
         #region Implementation of ILayoutModuleSetup
 
-        public LayoutModule Module { set; get; }
+        public LayoutModule? Module { set; get; }
 
         #endregion
 
@@ -50,8 +46,8 @@ namespace LayoutLGB {
 
         [LayoutEvent("model-component-placement-request", SenderType = typeof(MTScentralStation))]
         private void PlaceTrackContactRequest(LayoutEvent e) {
-            MTScentralStation component = (MTScentralStation)e.Sender;
-            Dialogs.CentralStationProperties csProperties = new Dialogs.CentralStationProperties(component);
+            var component = Ensure.NotNull<MTScentralStation>(e.Sender);
+            var csProperties = new Dialogs.CentralStationProperties(component);
 
             if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 component.XmlInfo.XmlDocument = csProperties.XmlInfo.XmlDocument;
@@ -69,14 +65,14 @@ namespace LayoutLGB {
         [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(MTScentralStation))]
         private void AddTrackContactContextMenuEntries(LayoutEvent e) {
             var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-            MTScentralStation component = (MTScentralStation)e.Sender;
+            var component = Ensure.NotNull<MTScentralStation>(e.Sender);
 
             menu.Items.Add(new MTScentralStationMenuItemProperties(component));
         }
 
         #region MTS Central Station Menu Item Classes
 
-        private class MTScentralStationMenuItemProperties : MenuItem {
+        private class MTScentralStationMenuItemProperties : LayoutMenuItem {
             private readonly MTScentralStation component;
 
             internal MTScentralStationMenuItemProperties(MTScentralStation component) {
@@ -85,10 +81,10 @@ namespace LayoutLGB {
             }
 
             protected override void OnClick(EventArgs e) {
-                Dialogs.CentralStationProperties csProperties = new Dialogs.CentralStationProperties(component);
+                var csProperties = new Dialogs.CentralStationProperties(component);
 
                 if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    LayoutModifyComponentDocumentCommand modifyComponentDocumentCommand =
+                    var modifyComponentDocumentCommand =
                         new LayoutModifyComponentDocumentCommand(component, csProperties.XmlInfo);
 
                     LayoutController.Do(modifyComponentDocumentCommand);
@@ -104,7 +100,6 @@ namespace LayoutLGB {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            components = new Container();
         }
         #endregion
     }

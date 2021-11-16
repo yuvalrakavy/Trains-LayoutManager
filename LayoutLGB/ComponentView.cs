@@ -11,10 +11,7 @@ namespace LayoutLGB {
     /// Summary description for ComponentView.
     /// </summary>
     [LayoutModule("LGB MTS Component View", UserControl = false)]
-    public class ComponentView : System.ComponentModel.Component, ILayoutModuleSetup {
-        private System.Windows.Forms.ImageList imageListComponents;
-        private IContainer components;
-
+    public partial class ComponentView : System.ComponentModel.Component, ILayoutModuleSetup {
         #region Constructors
 
         public ComponentView(IContainer container) {
@@ -47,7 +44,7 @@ namespace LayoutLGB {
         [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
         private void AddCentralStationItem(LayoutEvent e) {
             var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-            ModelComponent old = (ModelComponent)e.Info;
+            var old = (ModelComponent?)e.Info;
 
             if (old == null)
                 categoryElement.InnerXml += "<Item Name='CentralStation' Tooltip='LGB MTS Central Station' />";
@@ -55,14 +52,14 @@ namespace LayoutLGB {
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='CentralStation']")]
         private void PaintCentralStationItem(LayoutEvent e) {
-            Graphics g = (Graphics)e.Info;
+            var g = Ensure.NotNull<Graphics>(e.Info);
 
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
             g.TranslateTransform(4, 4);
 
-            CentralStationPainter painter = new CentralStationPainter(new Size(32, 32));
+            var painter = new CentralStationPainter();
 
             painter.Paint(g);
         }
@@ -83,21 +80,18 @@ namespace LayoutLGB {
             if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
                 e.AddRegion(new DrawingRegionCentralStation(e.Component, e.View));
 
-            LayoutTextInfo textProvider = new LayoutTextInfo(e.Component);
+            var textProvider = new LayoutTextInfo(e.Component);
 
             if (textProvider.Element != null)
                 e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
         }
 
         private class DrawingRegionCentralStation : LayoutDrawingRegionGrid {
-            private readonly MTScentralStation component;
-
             internal DrawingRegionCentralStation(ModelComponent component, ILayoutView view) : base(component, view) {
-                this.component = (MTScentralStation)component;
             }
 
-            public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
-                CentralStationPainter painter = new CentralStationPainter(view.GridSizeInModelCoordinates);
+            public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook? selectionLook, Graphics g) {
+                var painter = new CentralStationPainter();
 
                 painter.Paint(g);
                 base.Draw(view, detailLevel, selectionLook, g);
@@ -114,14 +108,12 @@ namespace LayoutLGB {
         }
 
         private class CentralStationPainter {
-            private Size componentSize;
 
-            internal CentralStationPainter(Size componentSize) {
-                this.componentSize = componentSize;
+            internal CentralStationPainter() {
             }
 
             internal void Paint(Graphics g) {
-                Image image = (Image)EventManager.Event(new LayoutEvent("get-image", this));
+                var image = Ensure.NotNull<Image>(EventManager.Event(new LayoutEvent("get-image", this)));
 
                 g.DrawImage(image, new Rectangle(new Point(1, 1), image.Size));
             }
@@ -133,10 +125,10 @@ namespace LayoutLGB {
 
         [LayoutEvent("get-command-station-address-format", IfEvent = "*[CommandStation/@Type='LGBMTS']")]
         [LayoutEvent("get-command-station-address-format", IfEvent = "*[CommandStation/@Type='Any']")]
-        private void getCommandStationFormat(LayoutEvent e) {
+        private void GetCommandStationFormat(LayoutEvent e) {
             if (e.Info == null) {
-                AddressUsage usage = (AddressUsage)e.Sender;
-                AddressFormatInfo addressFormat = new AddressFormatInfo();
+                var usage = Ensure.ValueNotNull<AddressUsage>(e.Sender);
+                var addressFormat = new AddressFormatInfo();
 
                 switch (usage) {
                     case AddressUsage.Locomotive:
@@ -173,26 +165,6 @@ namespace LayoutLGB {
             }
         }
 
-        #endregion
-
-        #region Component Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.components = new Container();
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(ComponentView));
-            this.imageListComponents = new System.Windows.Forms.ImageList(this.components) {
-                // 
-                // imageListComponents
-                // 
-                ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit,
-                ImageSize = new System.Drawing.Size(30, 30),
-                ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListComponents.ImageStream"),
-                TransparentColor = System.Drawing.Color.Transparent
-            };
-        }
         #endregion
     }
 }

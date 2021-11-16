@@ -2,15 +2,14 @@
 using LayoutManager;
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051
 namespace LayoutLGB {
     [LayoutModule("LGB MTS Bus Definitions")]
     internal class LGBcontrolComponents : LayoutModuleBase {
-        private ControlBusType dccBus = null;
-        private ControlBusType lgbBus = null;
+        private ControlBusType? dccBus = null;
+        private ControlBusType? lgbBus = null;
 
         [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='LGBDCC']")]
-        private void getLGBDCCbusType(LayoutEvent e) {
+        private void GetLGBDCCbusType(LayoutEvent e) {
             if (dccBus == null) {
                 dccBus = new ControlBusType {
                     BusFamilyName = "DCC",
@@ -27,7 +26,7 @@ namespace LayoutLGB {
         }
 
         [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='LGBBUS']")]
-        private void getLGBBUSbusType(LayoutEvent e) {
+        private void GetLGBBUSbusType(LayoutEvent e) {
             if (lgbBus == null) {
                 lgbBus = new ControlBusType {
                     BusFamilyName = "LGBBUS",
@@ -46,14 +45,14 @@ namespace LayoutLGB {
 
         [LayoutEvent("add-bus-connectable-to-module", IfEvent = "LayoutEvent[Options/@GenericBusType='DCC']")]
         private void AddLGBDCCbusToDCCcompatibleModule(LayoutEvent e) {
-            ControlModuleType moduleType = (ControlModuleType)e.Sender;
+            var moduleType = Ensure.NotNull<ControlModuleType>(e.Sender);
 
             moduleType.BusTypeNames.Add("LGBDCC");
         }
 
         [LayoutEvent("add-bus-connectable-to-module", IfEvent = "LayoutEvent[Options/@GenericBusType='LGBBUS']")]
         private void AddLGBBUStoLGBBUScompatibleModule(LayoutEvent e) {
-            ControlModuleType moduleType = (ControlModuleType)e.Sender;
+            var moduleType = Ensure.NotNull<ControlModuleType>(e.Sender);
 
             moduleType.BusTypeNames.Add("LGBBUS");
         }
