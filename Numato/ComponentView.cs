@@ -48,7 +48,7 @@ namespace NumatoController {
 
             g.TranslateTransform(4, 4);
 
-            NumatoRelayControllerPainter painter = new NumatoRelayControllerPainter(new Size(32, 32));
+            var painter = new NumatoRelayControllerPainter(new Size(32, 32));
 
             painter.Paint(g);
         }
@@ -69,7 +69,7 @@ namespace NumatoController {
             if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
                 e.AddRegion(new DrawingRegionNumatoRelayController(e.Component, e.View));
 
-            LayoutTextInfo textProvider = new LayoutTextInfo(e.Component);
+            var textProvider = new LayoutTextInfo(e.Component);
 
             if (textProvider.Element != null)
                 e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
@@ -81,7 +81,7 @@ namespace NumatoController {
             }
 
             public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook? selectionLook, Graphics g) {
-                NumatoRelayControllerPainter painter = new NumatoRelayControllerPainter(view.GridSizeInModelCoordinates);
+                var painter = new NumatoRelayControllerPainter(view.GridSizeInModelCoordinates);
 
                 painter.Paint(g);
                 base.Draw(view, detailLevel, selectionLook, g);
@@ -117,7 +117,7 @@ namespace NumatoController {
         private void GetCommandStationFormat(LayoutEvent e) {
             if (e.Info == null) {
                 var usage = Ensure.ValueNotNull<AddressUsage>(e.Sender);
-                AddressFormatInfo addressFormat = new AddressFormatInfo();
+                var addressFormat = new AddressFormatInfo();
 
                 switch (usage) {
                     case AddressUsage.Locomotive:

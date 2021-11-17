@@ -210,7 +210,7 @@ namespace LayoutManager {
             tripsMonitor.Initialize();
             layoutControlViewer.Initialize();
 
-            doUIsetting(designModeUIsetting);
+            DoUIsetting(designModeUIsetting);
             uiMode = null;
 
             designTool = new LayoutEditingTool();
@@ -320,10 +320,10 @@ namespace LayoutManager {
         #region Setting UI for various mode (design/operational/simulation)
 
         private void ForceSetUserInterfaceMode(OperationModeParameters settings) {
-            undoUIsetting();
+            UndoUIsetting();
 
             if (settings == null) {
-                doUIsetting(designModeUIsetting);
+                DoUIsetting(designModeUIsetting);
                 activeTool = designTool;
 
                 toolBarButtonDesignMode.Pushed = true;
@@ -341,7 +341,7 @@ namespace LayoutManager {
                 toolBarButtonDesignMode.Pushed = false;
 
                 if (settings.Simulation) {
-                    doUIsetting(simulationModeUIsetting);
+                    DoUIsetting(simulationModeUIsetting);
                     toolBarButtonOperationMode.Pushed = false;
                     toolBarButtonSimulation.Pushed = true;
 
@@ -355,7 +355,7 @@ namespace LayoutManager {
                     statusBarPanelMode.Text = s;
                 }
                 else {
-                    doUIsetting(operationModeUIsetting);
+                    DoUIsetting(operationModeUIsetting);
                     toolBarButtonOperationMode.Pushed = true;
                     toolBarButtonSimulation.Pushed = false;
                     statusBarPanelMode.Text = "Operation";
@@ -501,41 +501,41 @@ namespace LayoutManager {
             if (layoutEmulationServices != null) {
                 Menu toolsMenu = (Menu)e.Info;
 
-                toolsMenu.MenuItems.Add(new MenuItem("Reset layout emulation", new EventHandler(onResetLayoutEmulation)));
+                toolsMenu.MenuItems.Add(new MenuItem("Reset layout emulation", new EventHandler(OnResetLayoutEmulation)));
             }
         }
 
         [LayoutEvent("show-routing-table-generation-dialog")]
-        private void showRoutingTableGenerationDialog(LayoutEvent e) {
+        private void ShowRoutingTableGenerationDialog(LayoutEvent e) {
             int nTurnouts = (int)e.Info;
             using Dialogs.RoutingTableCalcProgress d = new Dialogs.RoutingTableCalcProgress(nTurnouts);
 
             d.ShowDialog(this);
         }
 
-        private void onResetLayoutEmulation(object? sender, EventArgs e) {
+        private void OnResetLayoutEmulation(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEvent("reset-layout-emulation", this));
         }
 
         [LayoutEvent("enter-design-mode")]
-        private void enterDesignMode(LayoutEvent e) {
+        private void EnterDesignMode(LayoutEvent e) {
             SetUserInterfaceMode(null);
         }
 
         [LayoutEvent("prepare-enter-operation-mode")]
-        private void enterOperationMode(LayoutEvent e0) {
+        private void EnterOperationMode(LayoutEvent e0) {
             var e = (LayoutEvent<OperationModeParameters>)e0;
 
             SetUserInterfaceMode(e.Sender);
         }
 
         [LayoutEvent("begin-trains-analysis-phase")]
-        private void beginTrainsAnalysisPhase(LayoutEvent e) {
+        private void BeginTrainsAnalysisPhase(LayoutEvent e) {
             statusBarPanelOperation.Text = "Analyzing trains status...";
         }
 
         [LayoutEvent("end-trains-analysis-phase")]
-        private void endTrainsAnalysisPhase(LayoutEvent e) {
+        private void EndTrainsAnalysisPhase(LayoutEvent e) {
             statusBarPanelOperation.Text = "Ready";
         }
 
@@ -545,10 +545,10 @@ namespace LayoutManager {
         /// Apply the setting (do) to menu items based on instructions in a provided table
         /// </summary>
         /// <param name="menuSetting">Instructions for the menu item setting</param>
-        private void doUIsetting(UIsettingEntry[] uiSetting) {
+        private void DoUIsetting(UIsettingEntry[] uiSetting) {
             foreach (UIsettingEntry aEntry in uiSetting) {
                 if (aEntry is DoSettingEntry doSettingEntry)
-                    doUIsetting(doSettingEntry.DoThis);
+                    DoUIsetting(doSettingEntry.DoThis);
                 else if (aEntry is MenuSettingEntry menuEntry) {
                     if (menuEntry.Setting == UIitemSetting.Hidden)
                         menuEntry.MenuItem.Visible = false;
@@ -570,10 +570,10 @@ namespace LayoutManager {
         /// Undo the setting to menu items. The setting are described in the passed table
         /// </summary>
         /// <param name="menuSetting"0>Instructions for the menu item setting</param>
-        private void undoUIsetting(UIsettingEntry[] uiSetting) {
+        private void UndoUIsetting(UIsettingEntry[] uiSetting) {
             foreach (UIsettingEntry aEntry in uiSetting) {
                 if (aEntry is DoSettingEntry doSettingEntry)
-                    undoUIsetting(doSettingEntry.DoThis);
+                    UndoUIsetting(doSettingEntry.DoThis);
                 else if (aEntry is MenuSettingEntry menuEntry) {
                     if (menuEntry.Setting == UIitemSetting.Hidden)
                         menuEntry.MenuItem.Visible = true;
@@ -589,9 +589,9 @@ namespace LayoutManager {
             }
         }
 
-        private void undoUIsetting() {
+        private void UndoUIsetting() {
             if (activeUIsetting != null) {
-                undoUIsetting(activeUIsetting);
+                UndoUIsetting(activeUIsetting);
                 activeUIsetting = null;
             }
         }
@@ -601,7 +601,7 @@ namespace LayoutManager {
         #region Layout Event handlers
 
         [LayoutEvent("show-control-connection-point")]
-        private void showControlConnectionPoint(LayoutEvent e) {
+        private void ShowControlConnectionPoint(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
                 ControlConnectionPointReference connectionPointRef = (ControlConnectionPointReference)e.Sender;
 
@@ -611,7 +611,7 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("show-control-module")]
-        private void showControlModule(LayoutEvent e) {
+        private void ShowControlModule(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
                 ControlModuleReference moduleRef = (ControlModuleReference)e.Sender;
 
@@ -621,13 +621,13 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("deselect-control-objects")]
-        private void deselectControlObjects(LayoutEvent e) {
+        private void DeselectControlObjects(LayoutEvent e) {
             if (e.IsThisFrameWindow(this))
                 layoutControlViewer.DeselectAll();
         }
 
         [LayoutEvent("ensure-component-visible")]
-        private void ensureComponentVisible(LayoutEvent e) {
+        private void EnsureComponentVisible(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
                 ModelComponent component = (ModelComponent)e.Sender;
                 LayoutModelArea area = component.Spot.Area;
@@ -682,7 +682,7 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("manual-dispatch-region-status-changed")]
-        private void manualDispatchRegionStatusChanged(LayoutEvent e) {
+        private void ManualDispatchRegionStatusChanged(LayoutEvent e) {
             bool enableAllLayoutManualDispatch = true;
 
             foreach (ManualDispatchRegionInfo manualDispatchRegion in LayoutModel.StateManager.ManualDispatchRegions)
@@ -693,14 +693,14 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("all-locomotives-suspended-status-changed")]
-        private void allLocomotivesSuspendedStatusChanged(LayoutEvent e) {
+        private void AllLocomotivesSuspendedStatusChanged(LayoutEvent e) {
             bool allSuspended = (bool)e.Info;
 
             toolBarButtonStopAllLocomotives.Pushed = allSuspended;
         }
 
         [LayoutEvent("show-marker")]
-        private void showMarker(LayoutEvent e) {
+        private void ShowMarker(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
                 LayoutSelection markerSelection;
 

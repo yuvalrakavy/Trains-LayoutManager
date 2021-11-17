@@ -362,7 +362,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         private void InitializeComponent() {
             this.components = new Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(XmlQueryListbox));
+            ComponentResourceManager resources = new(typeof(XmlQueryListbox));
             this.imageListArrows = new ImageList(this.components) {
                 // 
                 // imageListArrows

@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using LayoutManager;
 using LayoutManager.CommonUI;
 
-#pragma warning disable IDE0051, IDE0052
 namespace NumatoController {
     /// <summary>
     /// Summary description for ComponentTool.

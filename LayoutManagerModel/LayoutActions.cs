@@ -369,7 +369,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool CanUseProgramOnMain {
             get {
-                if (!(ProgrammingTarget.DecoderType is DccDecoderTypeInfo dccDecoder) || !dccDecoder.SupportPOMprogramming)
+                if (ProgrammingTarget.DecoderType is not DccDecoderTypeInfo dccDecoder || !dccDecoder.SupportPOMprogramming)
                     return false;           // Not DCC or does not support POM
 
                 if (ProgrammingTargetAddress < 0)
@@ -385,7 +385,7 @@ namespace LayoutManager.Model {
         public async Task<LayoutActionResult> Execute(IModelComponentCanProgramLocomotives commandStation, bool useProgramOnMain) {
             LayoutActionResult result = LayoutActionResult.Ok;
 
-            if (!(ProgrammingTarget.DecoderType is DccDecoderTypeInfo decoderType))
+            if (ProgrammingTarget.DecoderType is not DccDecoderTypeInfo decoderType)
                 throw new LayoutException("Decoder is not DCC compatibile");
 
             foreach (var cv in CVs) {

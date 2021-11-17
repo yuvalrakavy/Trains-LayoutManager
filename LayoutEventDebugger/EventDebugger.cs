@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Diagnostics;
 
 using LayoutManager;
+using LayoutManager.CommonUI;
 
 #nullable enable
 #pragma warning disable IDE0051, IDE0060
@@ -22,7 +23,7 @@ namespace LayoutEventDebugger {
     public class EventDebugger : LayoutObject, ILayoutModuleSetup {
         public LayoutEventSubscription? ActiveSubscription;
         public string FiredEventName = "debug-event";
-        public Layoutobject? sender = new LayoutObject();
+        public LayoutObject? Sender = new LayoutObject();
         public string? EventXmlInfo = null;
 
         private SubscriptionView? subscriptionView = null;
@@ -47,8 +48,12 @@ namespace LayoutEventDebugger {
                 this.CancelActiveSubscription();
 
             this.ActiveSubscription = newSubscription;
-            ActiveSubscription.SetMethod(this, this.GetType().GetMethod("OnDebuggedEvent", BindingFlags.Instance | BindingFlags.NonPublic));
-            EventManager.Subscriptions.Add(ActiveSubscription);
+            var method = this.GetType().GetMethod("OnDebuggedEvent", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            if (method != null) {
+                ActiveSubscription.SetMethod(this, method);
+                EventManager.Subscriptions.Add(ActiveSubscription);
+            }
         }
 
         public void FireEvent(string eventName) {
@@ -60,11 +65,11 @@ namespace LayoutEventDebugger {
 
         [LayoutEvent("tools-menu-open-request")]
         private void OnToolsMenuOpenRequest(LayoutEvent e) {
-            var toolsMenu = (Menu)e.Info!;
+            var toolsMenu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
-            toolsMenu.MenuItems.Add(new MenuItem("Event &Debugger", new EventHandler(this.OnEventDebuggerClick)));
-            toolsMenu.MenuItems.Add(new MenuItem("&View Subscriptions", new EventHandler(this.OnViewSubscriptionsClick)));
-            toolsMenu.MenuItems.Add(new MenuItem("&Trace events", new EventHandler(this.OnEventTraceClick)));
+            toolsMenu.Items.Add(new LayoutMenuItem("Event &Debugger", null, new EventHandler(this.OnEventDebuggerClick)));
+            toolsMenu.Items.Add(new LayoutMenuItem("&View Subscriptions", null, new EventHandler(this.OnViewSubscriptionsClick)));
+            toolsMenu.Items.Add(new LayoutMenuItem("&Trace events", null, new EventHandler(this.OnEventTraceClick)));
         }
 
         private void OnEventDebuggerClick(object? sender, EventArgs e) {
@@ -133,7 +138,7 @@ namespace LayoutEventDebugger {
                 TreeNode ifSenderNode = new TreeNode($"If sender XML matches: {subscription.IfSender}");
 
                 subscriptionNode.Nodes.Add(ifSenderNode);
-                if (subscription.NonExpandedIfSender.IndexOf('`') >= 0)
+                if (subscription.NonExpandedIfSender.Contains('`'))
                     ifSenderNode.Nodes.Add(new TreeNode($"Non expanded: {subscription.NonExpandedIfSender}"));
             }
 
@@ -141,7 +146,7 @@ namespace LayoutEventDebugger {
                 TreeNode IfEventNode = new TreeNode($"If event XML matches: {subscription.IfEvent}");
 
                 subscriptionNode.Nodes.Add(IfEventNode);
-                if (subscription.NonExpandedIfEvent.IndexOf('`') >= 0)
+                if (subscription.NonExpandedIfEvent.Contains('`'))
                     IfEventNode.Nodes.Add(new TreeNode($"Non expanded: {subscription.NonExpandedIfEvent}"));
             }
 
@@ -149,7 +154,7 @@ namespace LayoutEventDebugger {
                 TreeNode IfInfoNode = new TreeNode("If Info XML matches: " + subscription.IfInfo);
 
                 subscriptionNode.Nodes.Add(IfInfoNode);
-                if (subscription.NonExpandedIfInfo.IndexOf('`') >= 0)
+                if (subscription.NonExpandedIfInfo.Contains('`'))
                     IfInfoNode.Nodes.Add(new TreeNode($"Non expanded: {subscription.NonExpandedIfInfo}"));
             }
         }

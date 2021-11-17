@@ -8,7 +8,6 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-#pragma warning disable IDE0069
 namespace NumatoController.Dialogs {
     /// <summary>
     /// Summary description for CentralStationProperties.
@@ -85,7 +84,7 @@ namespace NumatoController.Dialogs {
 
         private void ButtonOK_Click(object? sender, System.EventArgs e) {
             if (nameDefinition.Commit()) {
-                LayoutTextInfo myName = new LayoutTextInfo(XmlInfo.DocumentElement, "Name");
+                var myName = new LayoutTextInfo(XmlInfo.DocumentElement, "Name");
 
                 foreach (IModelComponentIsCommandStation otherCommandStation in LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All)) {
                     if (otherCommandStation.NameProvider.Name == myName.Name && otherCommandStation.Id != component.Id) {

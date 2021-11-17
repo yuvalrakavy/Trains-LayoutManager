@@ -78,7 +78,7 @@ namespace LayoutEmulation {
 
         #region Properties
 
-        public ILayoutTopologyServices TopologyServices => _topologyServices ?? (_topologyServices = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!);
+        public ILayoutTopologyServices TopologyServices => _topologyServices ??= (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!;
 
         public int SpeedSteps => 15;            // 0 - 14
 
@@ -149,7 +149,7 @@ namespace LayoutEmulation {
         public void StartEmulation() {
             lock (Sync) {
                 if (operationNesting == 0 && emulateTrainMotion) {
-                    emulationTimer = new Timer(new TimerCallback(this.onEmulationTick), null, 0, tickTime);
+                    emulationTimer = new Timer(new TimerCallback(this.OnEmulationTick), null, 0, tickTime);
                     operationNesting++;
                 }
             }
@@ -192,7 +192,7 @@ namespace LayoutEmulation {
         }
 
         private CommandStationObjects GetCommandStationObjects(Guid commandStationId) {
-            commandStations.TryGetValue(commandStationId, out CommandStationObjects commandStationObjects);
+            commandStations.TryGetValue(commandStationId, out CommandStationObjects? commandStationObjects);
 
             if (commandStationObjects == null) {
                 commandStationObjects = new CommandStationObjects(this, commandStationId);
@@ -228,10 +228,10 @@ namespace LayoutEmulation {
 
         public IList<ILocomotiveLocation> GetLocomotiveLocations(Guid commandStationId) {
             lock (Sync) {
-                commandStations.TryGetValue(commandStationId, out CommandStationObjects commandStationObjects);
+                commandStations.TryGetValue(commandStationId, out CommandStationObjects? commandStationObjects);
 
                 return commandStationObjects == null
-                    ? Array.AsReadOnly<ILocomotiveLocation>(new LocomotiveLocation[0])
+                    ? Array.AsReadOnly<ILocomotiveLocation>(Array.Empty<LocomotiveLocation>())
                     : commandStationObjects.GetLocomotiveLocations();
             }
         }
@@ -261,7 +261,7 @@ namespace LayoutEmulation {
         }
 
         private void RemoveLocomotive(Guid commandStationId, int unit) {
-            if (commandStations.TryGetValue(commandStationId, out CommandStationObjects commandStationObjects))
+            if (commandStations.TryGetValue(commandStationId, out CommandStationObjects? commandStationObjects))
                 commandStationObjects.RemoveLocomotive(unit);
         }
 
@@ -315,7 +315,7 @@ namespace LayoutEmulation {
             }
         }
 
-        private void onEmulationTick(object state) {
+        private void OnEmulationTick(object? state) {
             lock (Sync) {
                 foreach (CommandStationObjects commandStationObjects in commandStations.Values)
                     commandStationObjects.Tick();
@@ -327,19 +327,19 @@ namespace LayoutEmulation {
         #region External Operations
 
         [LayoutEvent("initialize-layout-emulation")]
-        private void startLayoutEmulation(LayoutEvent e) {
+        private void StartLayoutEmulation(LayoutEvent e) {
             emulateTrainMotion = (bool?)e.GetOption(LayoutCommandStationComponent.Option_EmulateTrainMotion) ?? false;
             if (emulateTrainMotion)
                 tickTime = (int)e.GetOption(LayoutCommandStationComponent.Option_EmulationTickTime);
         }
 
         [LayoutEvent("get-layout-emulation-services")]
-        private void getLayoutEmulationServices(LayoutEvent e) {
+        private void GetLayoutEmulationServices(LayoutEvent e) {
             e.Info = (ILayoutEmulatorServices)this;
         }
 
         [LayoutEvent("reset-layout-emulation")]
-        private void resetLayoutEmulation(LayoutEvent e) {
+        private void ResetLayoutEmulation(LayoutEvent e) {
             ResetEmulator();
         }
 
@@ -348,7 +348,7 @@ namespace LayoutEmulation {
         #region Trapped events
 
         [LayoutEvent("train-created")]
-        private void trainCreated(LayoutEvent e) {
+        private void TrainCreated(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
 
             lock (Sync) {
@@ -371,7 +371,7 @@ namespace LayoutEmulation {
         }
 
         [LayoutEvent("train-is-removed")]
-        private void trainRemoved(LayoutEvent e) {
+        private void TrainRemoved(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
 
             lock (Sync) {
@@ -388,11 +388,11 @@ namespace LayoutEmulation {
         }
 
         [LayoutEvent("train-relocated")]
-        private void trainRelocated(LayoutEvent e) {
+        private void TrainRelocated(LayoutEvent e) {
             //var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
 
-            trainRemoved(e);
-            trainCreated(e);
+            TrainRemoved(e);
+            TrainCreated(e);
 #if NO
             lock (Sync) {
                 if (train.CommandStation != null) {
@@ -416,7 +416,7 @@ namespace LayoutEmulation {
 
     internal class CommandStationObjects {
         private readonly ILayoutEmulationEnvironment environment;
-        private Guid commandStationId;
+        private readonly Guid commandStationId;
         private readonly Dictionary<int, LocomotiveState> locomotives = new Dictionary<int, LocomotiveState>();
         private readonly Dictionary<int, int> turnouts = new Dictionary<int, int>();
 
@@ -426,7 +426,7 @@ namespace LayoutEmulation {
         }
 
         public LocomotiveState AddLocomotive(int unit, TrackEdge location) {
-            locomotives.TryGetValue(unit, out LocomotiveState locomotive);
+            locomotives.TryGetValue(unit, out LocomotiveState? locomotive);
 
             if (locomotive == null) {
                 locomotive = new LocomotiveState(environment, commandStationId, unit, location);
@@ -439,7 +439,7 @@ namespace LayoutEmulation {
         }
 
         public LocomotiveState? GetLocomotive(int unit) {
-            return !locomotives.TryGetValue(unit, out LocomotiveState loco) ? null : loco;
+            return !locomotives.TryGetValue(unit, out LocomotiveState? loco) ? null : loco;
         }
 
         public void RemoveLocomotive(int unit) {
@@ -495,7 +495,7 @@ namespace LayoutEmulation {
 
     public class LocomotiveState {
         private readonly ILayoutEmulationEnvironment _environment;
-        private Guid _commandStationId;
+        private readonly Guid _commandStationId;
         private int _speed;             // the locomotive current speed (and direction)
         private LocomotiveLocation _location;           // Where the locomotive is on the layout (when there is support for longer trains, this will become an array)
                                                         //		LayoutComponentConnectionPoint	rear;				// Where is the rear of the train

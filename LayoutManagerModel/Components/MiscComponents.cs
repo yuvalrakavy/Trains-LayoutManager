@@ -1123,9 +1123,7 @@ namespace LayoutManager.Components {
         }
 
         [LayoutEvent("gate-open-timeout", SenderType = typeof(LayoutGateComponent))]
-#pragma warning disable CA1822 // Mark members as static
         private void GateOpenTimeout(LayoutEvent e) {
-#pragma warning restore CA1822 // Mark members as static
             var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
 
             Error(gateComponent, "Timeout while waiting for gate to open");

@@ -163,9 +163,7 @@ namespace LayoutManager.Components {
         #region Properties accessible from derived concrete command station component classes
 
 
-#pragma warning disable CA1822 // Mark members as static
         public ILayoutInterThreadEventInvoker InterThreadEventInvoker => EventManager.Instance.InterThreadEventInvoker;
-#pragma warning restore CA1822 // Mark members as static
 
         public bool OperationMode => operationMode;
 

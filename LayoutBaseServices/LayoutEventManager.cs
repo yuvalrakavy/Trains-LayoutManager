@@ -139,7 +139,7 @@ namespace LayoutManager {
             if (target == null || (TargetType != null && !TargetType.IsInstanceOfType(target)))
                 return false;
 
-            return IfTarget == null || !(target is IObjectHasXml targetXml) || Matches(targetXml.Element, IfTarget);
+            return IfTarget == null || target is not IObjectHasXml targetXml || Matches(targetXml.Element, IfTarget);
         }
     }
 
@@ -386,7 +386,7 @@ namespace LayoutManager {
             if (xpath == null || xpath.IndexOf('`') < 0)
                 return xpath;
 
-            if (!(TargetObject is IObjectHasXml subscriberXml))
+            if (TargetObject is not IObjectHasXml subscriberXml)
                 return xpath;
 
             var xpn = Ensure.NotNull<XPathNavigator>(subscriberXml.Element.CreateNavigator());
