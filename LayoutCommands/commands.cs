@@ -7,7 +7,6 @@ using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
-#nullable enable
 namespace LayoutManager {
     /// <summary>
     /// Place a component in the model

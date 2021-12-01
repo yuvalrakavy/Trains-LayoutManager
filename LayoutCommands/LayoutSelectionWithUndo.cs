@@ -30,10 +30,10 @@ namespace LayoutManager {
         /// </summary>
         /// <param name="ml">The model location to add to the selection</param>
         public void Add(LayoutModelArea area, Point ml, LayoutPhase phase) {
-            LayoutModelSpotComponentCollection spot = area[ml, phase];
+            var spot = area[ml, phase];
 
             if (spot != null) {
-                ILayoutCompoundCommand selectCommand = null;
+                ILayoutCompoundCommand? selectCommand = null;
 
                 selectCommand = new LayoutCompoundCommand("select");
 
@@ -70,7 +70,7 @@ namespace LayoutManager {
 
             for (int y = p1.Y; y <= p2.Y; y++) {
                 for (int x = p1.X; x <= p2.X; x++) {
-                    LayoutModelSpotComponentCollection spot = area[new Point(x, y), phase];
+                    var spot = area[new Point(x, y), phase];
 
                     if (spot != null) {
                         foreach (ModelComponent component in spot)
@@ -101,7 +101,7 @@ namespace LayoutManager {
         /// </summary>
         /// <param name="ml">Model location</param>
         public void Remove(LayoutPhase phase, LayoutModelArea area, Point ml) {
-            LayoutModelSpotComponentCollection spot = area[ml, phase];
+            var spot = area[ml, phase];
 
             if (spot != null) {
                 ILayoutCompoundCommand unselectCommand = new LayoutCompoundCommand("unselect");
