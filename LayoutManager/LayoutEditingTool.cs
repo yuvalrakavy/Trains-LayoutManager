@@ -7,6 +7,7 @@ using System.Linq;
 using LayoutManager.Model;
 using LayoutManager.UIGadgets;
 using LayoutManager.Components;
+using LayoutManager.CommonUI;
 
 namespace LayoutManager {
     /// <summary>
@@ -15,8 +16,8 @@ namespace LayoutManager {
 #pragma warning disable IDE0051, IDE0060, IDE0067
 
     public class LayoutEditingTool : LayoutTool {
-        private LayoutStraightTrackComponent lastTrack = null;
-        private string lastCategoryName = null;
+        private LayoutStraightTrackComponent? lastTrack = null;
+        private string? lastCategoryName = null;
 
         public LayoutEditingTool() {
             InitializeComponent();
@@ -24,11 +25,11 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("add-editing-empty-spot-context-menu-entries", Order = 0)]
-        private void addEditingEmptySpotMenuEntries(LayoutEvent e) {
-            LayoutHitTestResult hitTestResult = (LayoutHitTestResult)e.Sender;
-            Menu menu = (Menu)e.Info;
+        private void AddEditingEmptySpotMenuEntries(LayoutEvent e) {
+            var hitTestResult = Ensure.NotNull<LayoutHitTestResult>(e.Sender);
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
-            menu.MenuItems.Add(new MenuItemPasteComponents(hitTestResult));
+            menu.Items.Add(new MenuItemPasteComponents(hitTestResult));
         }
 
         #region Implement properties for returning various context menu related event names
@@ -62,55 +63,55 @@ namespace LayoutManager {
         #endregion
 
         [LayoutEvent("add-component-editing-context-menu-common-entries", Order = 0)]
-        private void addContextMenuCommonEntries(LayoutEvent e) {
-            Menu menu = (Menu)e.Info;
-            LayoutHitTestResult hitTestResult = (LayoutHitTestResult)e.Sender;
+        private void AddContextMenuCommonEntries(LayoutEvent e) {
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+            var hitTestResult = Ensure.NotNull<LayoutHitTestResult>(e.Sender);
 
-            if (menu.MenuItems.Count > 0)
-                menu.MenuItems.Add("-");
+            if (menu.Items.Count > 0)
+                menu.Items.Add(new ToolStripSeparator());
 
-            menu.MenuItems.Add(new MenuItemDeleteAllComponents(hitTestResult));
+            menu.Items.Add(new MenuItemDeleteAllComponents(hitTestResult));
         }
 
         [LayoutEvent("add-component-editing-context-menu-common-entries", Order = 200)]
-        private void addClipboardCommonEntries(LayoutEvent e) {
-            Menu menu = (Menu)e.Info;
-            LayoutHitTestResult hitTestResult = (LayoutHitTestResult)e.Sender;
+        private void AddClipboardCommonEntries(LayoutEvent e) {
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+            var hitTestResult = Ensure.NotNull<LayoutHitTestResult>(e.Sender);
 
-            if (menu.MenuItems.Count > 0)
-                menu.MenuItems.Add("-");
-            menu.MenuItems.Add(new MenuItemCopyComponent(hitTestResult));
-            menu.MenuItems.Add(new MenuItemCutComponent(hitTestResult));
-            menu.MenuItems.Add(new MenuItemPasteComponents(hitTestResult));
+            if (menu.Items.Count > 0)
+                menu.Items.Add(new ToolStripSeparator());
+            menu.Items.Add(new MenuItemCopyComponent(hitTestResult));
+            menu.Items.Add(new MenuItemCutComponent(hitTestResult));
+            menu.Items.Add(new MenuItemPasteComponents(hitTestResult));
 
             var spot = (from component in hitTestResult.Selection.Components select component.Spot).FirstOrDefault();
 
             if (spot != null) {
-                menu.MenuItems.Add("-");
-                menu.MenuItems.Add(GetSetPhaseMenuItem((phaneName, phase) => LayoutController.Do(new ChangePhaseCommand(spot, phase))));
+                menu.Items.Add(new ToolStripSeparator());
+                menu.Items.Add(GetSetPhaseMenuItem((phaneName, phase) => LayoutController.Do(new ChangePhaseCommand(spot, phase))));
             }
         }
 
         [LayoutEvent("add-editing-selection-menu-entries", Order = 0)]
-        private void addSelectionCommandsMenuEntries(LayoutEvent e) {
-            Menu menu = (Menu)e.Info;
+        private void AddSelectionCommandsMenuEntries(LayoutEvent e) {
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
-            menu.MenuItems.Add(new MenuItemDeleteSelection());
+            menu.Items.Add(new MenuItemDeleteSelection());
         }
 
         [LayoutEvent("add-editing-selection-menu-entries", Order = 1000)]
-        private void addSelectionClipboardMenuEntries(LayoutEvent e) {
-            LayoutHitTestResult hitTestResult = (LayoutHitTestResult)e.Sender;
-            Menu menu = (Menu)e.Info;
+        private void AddSelectionClipboardMenuEntries(LayoutEvent e) {
+            var hitTestResult = Ensure.NotNull<LayoutHitTestResult>(e.Sender);
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
-            if (menu.MenuItems.Count > 0)
-                menu.MenuItems.Add("-");
-            menu.MenuItems.Add(new MenuItemCopySelection(hitTestResult.ModelLocation));
-            menu.MenuItems.Add(new MenuItemCutSelection(hitTestResult.ModelLocation));
-            menu.MenuItems.Add(new MenuItemPasteComponents(hitTestResult));
+            if (menu.Items.Count > 0)
+                menu.Items.Add(new ToolStripSeparator());
+            menu.Items.Add(new MenuItemCopySelection(hitTestResult.ModelLocation));
+            menu.Items.Add(new MenuItemCutSelection(hitTestResult.ModelLocation));
+            menu.Items.Add(new MenuItemPasteComponents(hitTestResult));
 
-            menu.MenuItems.Add("-");
-            menu.MenuItems.Add(GetSetPhaseMenuItem((phaseName, phase) => {
+            menu.Items.Add(new ToolStripSeparator());
+            menu.Items.Add(GetSetPhaseMenuItem((phaseName, phase) => {
                 var command = new LayoutCompoundCommand("Set selection phase to " + phaseName);
 
                 foreach (var spot in (from component in LayoutController.UserSelection.Components select component.Spot).Distinct())
@@ -123,19 +124,19 @@ namespace LayoutManager {
         protected override void DefaultAction(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
             // Create the component
             Point ml = hitTestResult.ModelLocation;
-            LayoutModelSpotComponentCollection spot = area[ml, LayoutPhase.All];
-            LayoutTrackComponent oldTrack = null;
-            ModelComponent component = null;
+            var spot = area[ml, LayoutPhase.All];
+            LayoutTrackComponent? oldTrack = null;
+            ModelComponent? component = null;
             bool showComponentsMenu = true;
 
             if (spot != null) {
                 IList<ModelComponent> components = spot.Components;
-                ModelComponent componentWithDefaultEditingAction = null;
+                ModelComponent? componentWithDefaultEditingAction = null;
 
                 oldTrack = spot.Track;
 
                 foreach (ModelComponent c in components)
-                    if ((bool)EventManager.Event(new LayoutEvent("query-editing-default-action", c, (bool)false).SetFrameWindow(hitTestResult.FrameWindow))) {
+                    if (Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("query-editing-default-action", c, (bool)false).SetFrameWindow(hitTestResult.FrameWindow)))) {
                         componentWithDefaultEditingAction = c;
                         break;
                     }
@@ -150,24 +151,28 @@ namespace LayoutManager {
                 if (oldTrack == null && (Control.ModifierKeys & Keys.Shift) == 0)
                     // There is not track in that spot. Check if using the last track
                     // will connect to one of its neighbors
-                    component = canUseLast(area, ml);
+                    component = CanUseLast(area, ml);
 
                 if (component == null) {
-                    ImageMenu m = new ImageMenu();
-                    XmlDocument categories = new XmlDocument();
+                    ImageMenu m = new();
+                    XmlDocument categories = new();
 
                     categories.LoadXml("<ComponentMenuCategories />");
 
                     EventManager.Event(new LayoutEvent("get-component-menu-categories", categories.DocumentElement,
                         oldTrack, null));
 
-                    foreach (XmlElement categoryElement in categories.DocumentElement.ChildNodes) {
-                        EventManager.Event(new LayoutEvent("get-component-menu-category-items", categoryElement,
-                            oldTrack, null));
+                    var childNodes = categories.DocumentElement?.ChildNodes;
 
-                        // If this category contains at least one item, create the category and add the items
-                        if (categoryElement.ChildNodes.Count > 0)
-                            m.Categories.Add(new LayoutImageMenuCategory(categoryElement));
+                    if (childNodes != null) {
+                        foreach (XmlElement categoryElement in childNodes) {
+                            EventManager.Event(new LayoutEvent("get-component-menu-category-items", categoryElement,
+                                oldTrack, null));
+
+                            // If this category contains at least one item, create the category and add the items
+                            if (categoryElement.ChildNodes.Count > 0)
+                                m.Categories.Add(new LayoutImageMenuCategory(categoryElement));
+                        }
                     }
 
                     if (lastCategoryName != null) {
@@ -179,10 +184,10 @@ namespace LayoutManager {
 
                     m.ShiftKeyCategory = "Tracks";
 
-                    LayoutImageMenuItem s = (LayoutImageMenuItem)m.Show(hitTestResult.View, hitTestResult.ClientLocation);
+                    var s = (LayoutImageMenuItem?)m.Show(hitTestResult.View, hitTestResult.ClientLocation);
 
                     if (m.SelectedCategory != null)
-                        lastCategoryName = m.SelectedCategory.Name;
+                        lastCategoryName = m.SelectedCategory.Name ?? String.Empty;
 
                     if (s != null) {
                         component = s.CreateComponent(oldTrack);
@@ -196,8 +201,8 @@ namespace LayoutManager {
                     bool placeComponent;
                     var placementXml = $"<PlacementInfo AreaID='{area.AreaGuid.ToString()}' X='{ml.X}' Y='{ml.Y}' />";
 
-                    placeComponent = (bool)EventManager.Event(new LayoutEvent("model-component-placement-request", component,
-                        true, placementXml));
+                    placeComponent = Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("model-component-placement-request", component,
+                        true, placementXml)));
 
                     if (placeComponent) {
                         var command = new LayoutCompoundCommand($"add {component}", true) {
@@ -211,12 +216,12 @@ namespace LayoutManager {
             }
         }
 
-        private MenuItem GetSetPhaseMenuItem(Action<string, LayoutPhase> doThis) {
-            var m = new MenuItem("Change phase to");
+        private LayoutMenuItem GetSetPhaseMenuItem(Action<string, LayoutPhase> doThis) {
+            var m = new LayoutMenuItem("Change phase to");
 
-            m.MenuItems.Add("Operational", (s, ea) => doThis("Operational", LayoutPhase.Operational));
-            m.MenuItems.Add("In construction", (s, ea) => doThis("Construction", LayoutPhase.Construction));
-            m.MenuItems.Add("Planned", (s, ea) => doThis("Planned", LayoutPhase.Planned));
+            m.DropDownItems.Add("Operational", null, (s, ea) => doThis("Operational", LayoutPhase.Operational));
+            m.DropDownItems.Add("In construction", null, (s, ea) => doThis("Construction", LayoutPhase.Construction));
+            m.DropDownItems.Add("Planned", null, (s, ea) => doThis("Planned", LayoutPhase.Planned));
 
             return m;
         }
@@ -227,14 +232,14 @@ namespace LayoutManager {
         /// <param name="area">The model location</param>
         /// <param name="ml">Grid location</param>
         /// <returns>The component (if the last one could be used) or null</returns>
-        private ModelComponent canUseLast(LayoutModelArea area, Point ml) {
-            ModelComponent result = null;
+        private ModelComponent? CanUseLast(LayoutModelArea area, Point ml) {
+            ModelComponent? result = null;
 
             if (lastTrack != null) {
                 foreach (LayoutComponentConnectionPoint c in lastTrack.ConnectionPoints) {
-                    ILayoutConnectableComponent neighbor = null;
+                    ILayoutConnectableComponent? neighbor = null;
                     Point neighborLocation = ml + LayoutTrackComponent.GetConnectionOffset(c);
-                    LayoutModelSpotComponentCollection neighborSpot = area[neighborLocation, LayoutPhase.All];
+                    LayoutModelSpotComponentCollection? neighborSpot = area[neighborLocation, LayoutPhase.All];
 
                     if (neighborSpot != null)
                         neighbor = neighborSpot.Track as ILayoutConnectableComponent;
@@ -255,7 +260,7 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("change-phase")]
-        private void changePhase(LayoutEvent e0) {
+        private void ChangePhase(LayoutEvent e0) {
             var e = (LayoutEventInfoValueType<LayoutSelection, LayoutPhase>)e0;
             LayoutSelection selection = e.Sender ?? LayoutController.UserSelection;
             LayoutPhase phase = e.Info;
@@ -267,7 +272,7 @@ namespace LayoutManager {
                 case LayoutPhase.Operational: phaseName = "Operational"; break;
             }
 
-            LayoutCompoundCommand command = null;
+            LayoutCompoundCommand? command = null;
 
             if (selection.Count == 0) {
                 if (MessageBox.Show("Set all components to '" + phaseName + "'", "Are you sure?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) {
@@ -325,8 +330,8 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEvent("paint-image-menu-item", itemElement, g));
         }
 
-        public ModelComponent CreateComponent(ModelComponent old) {
-            ModelComponent newComponent = (ModelComponent)EventManager.Event(new LayoutEvent("create-model-component",
+        public ModelComponent? CreateComponent(ModelComponent? old) {
+            var newComponent = (ModelComponent?)EventManager.Event(new LayoutEvent("create-model-component",
                 itemElement, old, null));
 
             return newComponent != old ? newComponent : null;

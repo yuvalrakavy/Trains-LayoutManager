@@ -1005,7 +1005,7 @@ namespace LayoutManager.Tools {
         [LayoutEvent("add-component-editing-context-menu-common-entries", Order = 100)]
         private void AddShiftComponentMenuEntry(LayoutEvent e) {
             var hitTestResult = Ensure.NotNull<LayoutHitTestResult>(e.Sender);
-            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info);
+            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
             menu.Items.Add(new ShiftComponentsMenuEntry(hitTestResult));
         }

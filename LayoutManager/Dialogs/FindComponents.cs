@@ -49,12 +49,14 @@ namespace LayoutManager.Dialogs {
 
                     if (!found && checkBoxScopeAddresses.Checked) {
                         if (component is IModelComponentConnectToControl connectedComponent && connectedComponent.IsConnected) {
-                            IList<ControlConnectionPoint> connections = LayoutModel.ControlManager.ConnectionPoints[connectedComponent];
+                            var connections = LayoutModel.ControlManager.ConnectionPoints[connectedComponent];
 
-                            foreach (ControlConnectionPoint connection in connections) {
-                                if (isMatch(connection.Module.ModuleType.GetConnectionPointAddressText(connection.Module.ModuleType, connection.Module.Address, connection.Index, true), findWhat)) {
-                                    found = true;
-                                    break;
+                            if (connections != null) {
+                                foreach (ControlConnectionPoint connection in connections) {
+                                    if (isMatch(connection.Module.ModuleType.GetConnectionPointAddressText(connection.Module.ModuleType, connection.Module.Address, connection.Index, true), findWhat)) {
+                                        found = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -67,7 +69,7 @@ namespace LayoutManager.Dialogs {
         }
 
         private void buttonSearch_Click(object? sender, EventArgs e) {
-            LayoutSelection results = new LayoutSelection();
+            LayoutSelection results = new();
 
             if (checkBoxLimitToActiveArea.Checked)
                 searchArea(ActiveArea, results);

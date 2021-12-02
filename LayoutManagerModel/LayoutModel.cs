@@ -219,7 +219,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="w"></param>
         public void WriteInnerXml(XmlWriter w) {
-            if (XmlInfo != null && XmlInfo.DocumentElement != null) {
+            if (XmlInfo != null && XmlInfo.OptionalDocumentElement != null) {
                 w.WriteStartElement("Info");
                 XmlInfo.DocumentElement.WriteTo(w);
                 w.WriteEndElement();

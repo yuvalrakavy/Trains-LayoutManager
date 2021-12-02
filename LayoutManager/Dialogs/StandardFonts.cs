@@ -10,23 +10,7 @@ namespace LayoutManager.Dialogs {
     /// <summary>
     /// Summary description for StadardFonts.
     /// </summary>
-    public class StandardFonts : Form {
-        private ListView listViewFonts;
-        private ColumnHeader columnHeaderTitle;
-        private ColumnHeader columnHeaderDescription;
-        private Button buttonAdd;
-        private Button buttonEdit;
-        private Button buttonDelete;
-        private Button buttonClose;
-
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container components = null;
-        private ContextMenu contextMenuEdit;
-        private MenuItem menuItemEditSettings;
-        private MenuItem menuItemEditTitle;
-        private MenuItem menuItemFontID;
+    public partial class StandardFonts : Form {
 
         public StandardFonts() {
             //
@@ -37,11 +21,11 @@ namespace LayoutManager.Dialogs {
             listViewFonts.MultiSelect = false;
             listViewFonts.FullRowSelect = true;
 
-            fill();
+            Fill();
         }
 
-        private void fill() {
-            XmlNode fonts = LayoutModel.Instance.XmlInfo.DocumentElement.SelectSingleNode("Fonts");
+        private void Fill() {
+            var fonts = LayoutModel.Instance.XmlInfo.DocumentElement.SelectSingleNode("Fonts");
 
             if (fonts != null) {
                 foreach (XmlElement fontElement in fonts)
@@ -55,17 +39,17 @@ namespace LayoutManager.Dialogs {
             public FontItem(XmlElement fontElement) {
                 this.fontElement = fontElement;
 
-                LayoutFontInfo fontProvider = new LayoutFontInfo(fontElement);
+                LayoutFontInfo fontProvider = new(fontElement);
                 String[] items = new String[1] { fontProvider.Description };
 
                 this.Text = fontProvider.GetAttribute("Title");
                 SubItems.AddRange(items);
             }
 
-            public LayoutFontInfo FontProvider => new LayoutFontInfo(fontElement);
+            public LayoutFontInfo FontProvider => new(fontElement);
 
             public void Update() {
-                LayoutFontInfo fontProvider = new LayoutFontInfo(fontElement);
+                LayoutFontInfo fontProvider = new(fontElement);
 
                 SubItems[1].Text = fontProvider.Description;
             }
@@ -83,149 +67,26 @@ namespace LayoutManager.Dialogs {
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.columnHeaderTitle = new ColumnHeader();
-            this.buttonDelete = new Button();
-            this.buttonEdit = new Button();
-            this.buttonClose = new Button();
-            this.buttonAdd = new Button();
-            this.listViewFonts = new ListView();
-            this.columnHeaderDescription = new ColumnHeader();
-            this.contextMenuEdit = new ContextMenu();
-            this.menuItemEditSettings = new MenuItem();
-            this.menuItemEditTitle = new MenuItem();
-            this.menuItemFontID = new MenuItem();
-            this.SuspendLayout();
-            // 
-            // columnHeaderTitle
-            // 
-            this.columnHeaderTitle.Text = "Title";
-            this.columnHeaderTitle.Width = 80;
-            // 
-            // buttonDelete
-            // 
-            this.buttonDelete.Location = new Point(168, 224);
-            this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new Size(72, 23);
-            this.buttonDelete.TabIndex = 4;
-            this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += this.buttonDelete_Click;
-            // 
-            // buttonEdit
-            // 
-            this.buttonEdit.Location = new Point(88, 224);
-            this.buttonEdit.Name = "buttonEdit";
-            this.buttonEdit.Size = new Size(72, 23);
-            this.buttonEdit.TabIndex = 2;
-            this.buttonEdit.Text = "&Edit";
-            this.buttonEdit.Click += this.buttonEdit_Click;
-            // 
-            // buttonClose
-            // 
-            this.buttonClose.Location = new Point(168, 256);
-            this.buttonClose.Name = "buttonClose";
-            this.buttonClose.Size = new Size(72, 23);
-            this.buttonClose.TabIndex = 5;
-            this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += this.buttonClose_Click;
-            // 
-            // buttonAdd
-            // 
-            this.buttonAdd.Location = new Point(8, 224);
-            this.buttonAdd.Name = "buttonAdd";
-            this.buttonAdd.Size = new Size(72, 23);
-            this.buttonAdd.TabIndex = 1;
-            this.buttonAdd.Text = "&New";
-            this.buttonAdd.Click += this.buttonAdd_Click;
-            // 
-            // listViewFonts
-            // 
-            this.listViewFonts.Columns.AddRange(new ColumnHeader[] {
-            this.columnHeaderTitle,
-            this.columnHeaderDescription});
-            this.listViewFonts.HideSelection = false;
-            this.listViewFonts.LabelEdit = true;
-            this.listViewFonts.Location = new Point(8, 16);
-            this.listViewFonts.Name = "listViewFonts";
-            this.listViewFonts.Size = new Size(240, 200);
-            this.listViewFonts.TabIndex = 0;
-            this.listViewFonts.View = System.Windows.Forms.View.Details;
-            this.listViewFonts.DoubleClick += this.buttonEdit_Click;
-            this.listViewFonts.AfterLabelEdit += this.listViewFonts_AfterLabelEdit;
-            // 
-            // columnHeaderDescription
-            // 
-            this.columnHeaderDescription.Text = "Description";
-            this.columnHeaderDescription.Width = 188;
-            // 
-            // contextMenuEdit
-            // 
-            this.contextMenuEdit.MenuItems.AddRange(new MenuItem[] {
-            this.menuItemEditSettings,
-            this.menuItemEditTitle,
-            this.menuItemFontID});
-            // 
-            // menuItemEditSettings
-            // 
-            this.menuItemEditSettings.Index = 0;
-            this.menuItemEditSettings.Text = "Settings...";
-            this.menuItemEditSettings.Click += this.menuItemEditSettings_Click;
-            // 
-            // menuItemEditTitle
-            // 
-            this.menuItemEditTitle.Index = 1;
-            this.menuItemEditTitle.Text = "Title...";
-            this.menuItemEditTitle.Click += this.menuItemEditTitle_Click;
-            // 
-            // menuItemFontID
-            // 
-            this.menuItemFontID.Index = 2;
-            this.menuItemFontID.Text = "Font Ref...";
-            this.menuItemFontID.Click += this.menuItemFontID_Click;
-            // 
-            // StadardFonts
-            // 
-            this.AcceptButton = this.buttonClose;
-            this.ClientSize = new Size(258, 288);
-            this.ControlBox = false;
-            this.Controls.Add(this.buttonClose);
-            this.Controls.Add(this.buttonDelete);
-            this.Controls.Add(this.buttonEdit);
-            this.Controls.Add(this.buttonAdd);
-            this.Controls.Add(this.listViewFonts);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "StadardFonts";
-            this.ShowInTaskbar = false;
-            this.Text = "Standard Fonts";
-            this.ResumeLayout(false);
-        }
-        #endregion
-
-        private void buttonClose_Click(object? sender, EventArgs e) {
+        private void ButtonClose_Click(object? sender, EventArgs e) {
             this.Close();
         }
 
-        private void buttonEdit_Click(object? sender, EventArgs e) {
+        private void ButtonEdit_Click(object? sender, EventArgs e) {
             contextMenuEdit.Show(this, new Point(buttonEdit.Left, buttonEdit.Bottom));
         }
 
-        private void buttonAdd_Click(object? sender, EventArgs e) {
+        private void ButtonAdd_Click(object? sender, EventArgs e) {
             XmlElement fontElement = LayoutInfo.CreateProviderElement(LayoutModel.Instance.XmlInfo, "Font", "Fonts");
-            LayoutFontInfo fontProvider = new LayoutFontInfo(fontElement);
+            LayoutFontInfo fontProvider = new(fontElement);
 
             fontProvider.SetAttributeValue("Title", "New font");
-            FontItem item = new FontItem(fontElement);
+            FontItem item = new(fontElement);
 
             listViewFonts.Items.Add(item);
             item.BeginEdit();
         }
 
-        private void listViewFonts_AfterLabelEdit(object? sender, LabelEditEventArgs e) {
+        private void ListViewFonts_AfterLabelEdit(object? sender, LabelEditEventArgs e) {
             FontItem item = (FontItem)listViewFonts.Items[e.Item];
 
             LayoutFontInfo fontProvider = item.FontProvider;
@@ -235,24 +96,24 @@ namespace LayoutManager.Dialogs {
             item.Update();
         }
 
-        private void buttonDelete_Click(object? sender, EventArgs e) {
+        private void ButtonDelete_Click(object? sender, EventArgs e) {
             if (listViewFonts.SelectedItems.Count == 1) {
                 if (MessageBox.Show("Do you really want to delete a style font. " +
                     "This will cause problems if this font is still being used!", "Warning",
                     MessageBoxButtons.OKCancel, MessageBoxIcon.Stop) == DialogResult.OK) {
                     FontItem item = (FontItem)listViewFonts.SelectedItems[0];
-                    XmlNode fonts = LayoutModel.Instance.XmlInfo.DocumentElement.SelectSingleNode("Fonts");
+                    var fonts = LayoutModel.Instance.XmlInfo.DocumentElement.SelectSingleNode("Fonts");
 
-                    fonts.RemoveChild(item.FontProvider.Element);
+                    fonts?.RemoveChild(item.FontProvider.Element);
                     item.Remove();
                 }
             }
         }
 
-        private void menuItemEditSettings_Click(object? sender, EventArgs e) {
+        private void MenuItemEditSettings_Click(object? sender, EventArgs e) {
             if (listViewFonts.SelectedItems.Count == 1) {
                 FontItem item = (FontItem)listViewFonts.SelectedItems[0];
-                FontDialog fontDialog = new FontDialog {
+                FontDialog fontDialog = new() {
                     ShowColor = true,
                     Color = item.FontProvider.Color,
                     Font = item.FontProvider.Font
@@ -266,11 +127,11 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void menuItemFontID_Click(object? sender, EventArgs e) {
+        private void MenuItemFontID_Click(object? sender, EventArgs e) {
             if (listViewFonts.SelectedItems.Count == 1) {
                 FontItem item = (FontItem)listViewFonts.SelectedItems[0];
-                CommonUI.Dialogs.InputBox fontIDbox = new CommonUI.Dialogs.InputBox("Font Ref", "Font Ref:") {
-                    Input = item.FontProvider.Ref
+                CommonUI.Dialogs.InputBox fontIDbox = new("Font Ref", "Font Ref:") {
+                    Input = item.FontProvider.Ref ?? String.Empty
                 };
                 if (fontIDbox.ShowDialog() == DialogResult.OK) {
                     if (fontIDbox.Input.Trim() == "")
@@ -281,10 +142,10 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void menuItemEditTitle_Click(object? sender, EventArgs e) {
+        private void MenuItemEditTitle_Click(object? sender, EventArgs e) {
             if (listViewFonts.SelectedItems.Count == 1) {
                 FontItem item = (FontItem)listViewFonts.SelectedItems[0];
-                CommonUI.Dialogs.InputBox titleBox = new CommonUI.Dialogs.InputBox("Title", "Title:") {
+                CommonUI.Dialogs.InputBox titleBox = new("Title", "Title:") {
                     Input = item.FontProvider.GetAttribute("Title")
                 };
                 if (titleBox.ShowDialog() == DialogResult.OK) {

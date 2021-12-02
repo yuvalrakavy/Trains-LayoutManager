@@ -641,7 +641,7 @@ namespace LayoutManager.CommonUI.Controls {
             ApplyLayout(Layouts[iLayout]);
         }
 
-        public void AddLayoutMenuItems(ToolStripDropDownMenu m) {
+        public void AddLayoutMenuItems(MenuOrMenuItem m) {
             foreach (ListLayout layout in Layouts)
                 m.Items.Add(new XmlLayoutMenuItem(this, layout));
         }

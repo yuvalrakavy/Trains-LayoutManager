@@ -273,10 +273,11 @@ namespace LayoutManager {
             }
         }
 
-        public XmlElement DocumentElement => Ensure.NotNull<XmlElement>(xmlDocument.DocumentElement);
+        public XmlElement? OptionalDocumentElement => XmlDocument.DocumentElement;
+        public XmlElement DocumentElement => Ensure.NotNull<XmlElement>(OptionalDocumentElement);
 
         public XmlElement Element => DocumentElement;
-        public XmlElement? OptionalElement => DocumentElement;
+        public XmlElement? OptionalElement => OptionalDocumentElement;
 
         /// <summary>
         /// Return a unique ID for this XML document. If the document has no unique ID assigned to it, 
@@ -323,7 +324,7 @@ namespace LayoutManager {
         public XmlElement DocumentElement => XmlInfo.DocumentElement;
 
         public XmlElement Element => XmlInfo.Element;
-        public XmlElement? OptionalElement => Element;
+        public XmlElement? OptionalElement => XmlInfo.OptionalElement;
 
         public LayoutObject() {
         }

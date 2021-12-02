@@ -69,7 +69,7 @@ namespace LayoutManager.Dialogs {
 			this.wizardPageSetFilename.Name = "wizardPageSetFilename";
 			this.wizardPageSetFilename.Size = new System.Drawing.Size(496, 308);
 			this.wizardPageSetFilename.TabIndex = 1;
-			this.wizardPageSetFilename.CloseFromNext += new Gui.Wizard.PageEventHandler(this.wizardPageSetFilename_CloseFromNext);
+			this.wizardPageSetFilename.CloseFromNext += new Gui.Wizard.PageEventHandler(this.WizardPageSetFilename_CloseFromNext);
 			// 
 			// label1
 			// 
@@ -111,7 +111,7 @@ namespace LayoutManager.Dialogs {
 			this.buttonBrowse.TabIndex = 3;
 			this.buttonBrowse.Text = "&Browse...";
 			this.buttonBrowse.UseVisualStyleBackColor = true;
-			this.buttonBrowse.Click += new System.EventHandler(this.buttonBrowse_Click);
+			this.buttonBrowse.Click += new System.EventHandler(this.ButtonBrowse_Click);
 			// 
 			// wizardPageSelectScripts
 			// 
@@ -125,7 +125,7 @@ namespace LayoutManager.Dialogs {
 			this.wizardPageSelectScripts.Name = "wizardPageSelectScripts";
 			this.wizardPageSelectScripts.Size = new System.Drawing.Size(543, 308);
 			this.wizardPageSelectScripts.TabIndex = 2;
-			this.wizardPageSelectScripts.CloseFromNext += new Gui.Wizard.PageEventHandler(this.wizardPageSelectScripts_CloseFromNext);
+			this.wizardPageSelectScripts.CloseFromNext += new Gui.Wizard.PageEventHandler(this.WizardPageSelectScripts_CloseFromNext);
 			// 
 			// headerSelectScript
 			// 
@@ -154,7 +154,7 @@ namespace LayoutManager.Dialogs {
 			this.listViewScripts.TabIndex = 1;
 			this.listViewScripts.UseCompatibleStateImageBehavior = false;
 			this.listViewScripts.View = System.Windows.Forms.View.Details;
-			this.listViewScripts.SelectedIndexChanged += new System.EventHandler(this.listViewScripts_SelectedIndexChanged);
+			this.listViewScripts.SelectedIndexChanged += new System.EventHandler(this.ListViewScripts_SelectedIndexChanged);
 			// 
 			// columnHeaderScriptName
 			// 
@@ -191,7 +191,7 @@ namespace LayoutManager.Dialogs {
 			this.buttonViewScript.TabIndex = 3;
 			this.buttonViewScript.Text = "View script...";
 			this.buttonViewScript.UseVisualStyleBackColor = true;
-			this.buttonViewScript.Click += new System.EventHandler(this.buttonViewScript_Click);
+			this.buttonViewScript.Click += new System.EventHandler(this.ButtonViewScript_Click);
 			// 
 			// ImportPolicies
 			// 

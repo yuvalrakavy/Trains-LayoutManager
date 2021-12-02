@@ -31,7 +31,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public LayoutPoliciesCollection? OptionalPolicies { get; set; }
 
-        public IPolicyListCustomizer Customizer { get; set; }
+        public IPolicyListCustomizer? Customizer { get; set; }
 
         public bool ViewOnly { get; set; } = false;
 
@@ -106,9 +106,9 @@ namespace LayoutManager.CommonUI.Controls {
                 PolicyItem policyItem = (PolicyItem)listViewPolicies.Items[e.Index];
 
                 if (e.CurrentValue == CheckState.Checked)
-                    Customizer.SetPolicyChecked(policyItem.Policy, false);
+                    Customizer?.SetPolicyChecked(policyItem.Policy, false);
                 else
-                    Customizer.SetPolicyChecked(policyItem.Policy, true);
+                    Customizer?.SetPolicyChecked(policyItem.Policy, true);
             }
             else
                 updateOnMouseUp = e.Index;

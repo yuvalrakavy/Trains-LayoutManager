@@ -38,8 +38,8 @@ namespace LayoutManager.Dialogs {
 
         [LayoutEvent("design-time-command-station-event")]
         private void designTimeCommandStationEvent(LayoutEvent e) {
-            CommandStationInputEvent csEvent = (CommandStationInputEvent)e.Info;
-            EventItem eventItem = null;
+            var csEvent = Ensure.NotNull<CommandStationInputEvent>(e.Info);
+            EventItem? eventItem = null;
 
             foreach (EventItem item in listViewEvents.Items)
                 if (item.CommandStationEvent.Equals(csEvent)) {
@@ -62,7 +62,7 @@ namespace LayoutManager.Dialogs {
                 long diff = DateTime.Now.Ticks - lastSoundTime;
 
                 if (diff > soundGapThreshold) {
-                    string resourceName = null;
+                    string? resourceName = null;
 
                     Trace.WriteLine("Sending sound " + DateTime.Now.Ticks + " " + lastSoundTime + " diff " + diff + " threadshold " + soundGapThreshold);
 
@@ -73,15 +73,16 @@ namespace LayoutManager.Dialogs {
                     }
 
                     if (resourceName != null) {
-                        ResourceManager rm = new ResourceManager("LayoutManager.Sounds", this.GetType().Assembly);
-                        byte[] soundData = (byte[])rm.GetObject(resourceName);
-                        MemoryStream stream = new MemoryStream(soundData);
-#pragma warning disable IDE0067 // Dispose objects before losing scope
-                        SoundPlayer soundPlayer = new SoundPlayer(stream);
-#pragma warning restore IDE0067 // Dispose objects before losing scope
+                        ResourceManager rm = new("LayoutManager.Sounds", this.GetType().Assembly);
+                        var soundData = (byte[]?)rm.GetObject(resourceName);
 
-                        soundPlayer.Stop();
-                        soundPlayer.Play();
+                        if (soundData != null) {
+                            MemoryStream stream = new(soundData);
+                            SoundPlayer soundPlayer = new(stream);
+
+                            soundPlayer.Stop();
+                            soundPlayer.Play();
+                        }
                     }
 
                     lastSoundTime = DateTime.Now.Ticks;
@@ -161,7 +162,7 @@ namespace LayoutManager.Dialogs {
 
             public CommandStationEventStatus Status {
                 get {
-                    ControlConnectionPointReference cpr = csEvent.ConnectionPointRef;
+                    var cpr = csEvent.ConnectionPointRef;
 
                     if (cpr == null || !cpr.IsModuleDefined())
                         return CommandStationEventStatus.NoControlModule;
@@ -255,7 +256,11 @@ namespace LayoutManager.Dialogs {
                         break;
 
                     case CommandStationEventStatus.NotConnected:
-                        EventManager.Event(new LayoutEvent("show-control-module", selected.CommandStationEvent.ConnectionPointRef.ModuleReference).SetFrameWindow(frameWindowId));
+                        var moduleReference = selected.CommandStationEvent.ConnectionPointRef?.ModuleReference;
+
+                        if(moduleReference != null)
+                            EventManager.Event(new LayoutEvent("show-control-module", moduleReference).SetFrameWindow(frameWindowId));
+
                         buttonAction.Enabled = true;    // Need to connect
                         break;
 
@@ -270,11 +275,11 @@ namespace LayoutManager.Dialogs {
         private void buttonAction_Click(object? sender, EventArgs e) {
             if (listViewEvents.SelectedItems.Count > 0) {
                 EventItem selected = (EventItem)listViewEvents.SelectedItems[0];
-                Tools.Dialogs.PickComponentToConnectToAddress pickDialog = new Tools.Dialogs.PickComponentToConnectToAddress(selected.CommandStationEvent);
+                Tools.Dialogs.PickComponentToConnectToAddress pickDialog = new(selected.CommandStationEvent);
 
-                new SemiModalDialog(this, pickDialog, (Form dialog, object info) => {
+                new SemiModalDialog(this, pickDialog, (Form dialog, object? info) => {
                     if (pickDialog.DialogResult == DialogResult.OK) {
-                        ControlConnectionPoint connectionPoint = (ControlConnectionPoint)EventManager.Event(new LayoutEvent("connect-component-to-control-module-address-request", pickDialog.ConnectionDestination, selected.CommandStationEvent));
+                        var connectionPoint = (ControlConnectionPoint?)EventManager.Event(new LayoutEvent("connect-component-to-control-module-address-request", pickDialog.ConnectionDestination, selected.CommandStationEvent));
 
                         if (connectionPoint != null)
                             EventManager.Event(new LayoutEvent("show-control-connection-point", new ControlConnectionPointReference(connectionPoint)).SetFrameWindow(frameWindowId));

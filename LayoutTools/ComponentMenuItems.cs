@@ -444,7 +444,7 @@ namespace LayoutManager.Tools {
         [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Block']")]
         private void AddBlockCategoryItems(LayoutEvent e) {
             var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var old = Ensure.NotNull<LayoutTrackComponent>(e.Info);
+            var old = (LayoutTrackComponent?)e.Info;
 
             if (CanComposeBlockEdge(old))
                 AddChild(categoryElement, "<Item Name='track-contact' Tooltip='Track contact (block edge)' />");
@@ -467,7 +467,7 @@ namespace LayoutManager.Tools {
 
         //----
 
-        private bool CanComposeBlockEdge(LayoutTrackComponent existingTrack) {
+        private bool CanComposeBlockEdge(LayoutTrackComponent? existingTrack) {
             if (existingTrack != null) {
                 if (existingTrack is LayoutStraightTrackComponent track) {
                     track.SetTrackAnnotation();
@@ -571,7 +571,7 @@ namespace LayoutManager.Tools {
 
         //----
 
-        private bool CanComposeBlockInfo(LayoutTrackComponent existingTrack) {
+        private bool CanComposeBlockInfo(LayoutTrackComponent? existingTrack) {
             if (existingTrack != null) {
                 if (existingTrack is LayoutStraightTrackComponent track && !track.IsDiagonal()) {
                     track.SetTrackAnnotation();
@@ -616,7 +616,7 @@ namespace LayoutManager.Tools {
 
         //----
 
-        private bool CanComposeSignal(LayoutTrackComponent existingTrack) {
+        private bool CanComposeSignal(LayoutTrackComponent? existingTrack) {
             if (existingTrack != null) {
                 if (existingTrack is LayoutStraightTrackComponent track && !track.IsDiagonal()) {
                     if (track.Spot[ModelComponentKind.Signal] == null)
@@ -646,7 +646,7 @@ namespace LayoutManager.Tools {
 
         //----
 
-        private bool CanComposeGate(LayoutTrackComponent old) {
+        private bool CanComposeGate(LayoutTrackComponent? old) {
             if (old != null && old is LayoutStraightTrackComponent && !LayoutStraightTrackComponent.IsDiagonal(old)) {
                 if (old.Spot[ModelComponentKind.Gate] == null)
                     return true;
@@ -687,7 +687,7 @@ namespace LayoutManager.Tools {
         [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Annotation']")]
         private void AddAnnotationCategoryItems(LayoutEvent e) {
             var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var old = Ensure.NotNull<LayoutTrackComponent>(e.Info);
+            var old = (LayoutTrackComponent?)(e.Info);
 
             AddChild(categoryElement, "<Item Name='text' Tooltip='Text label' />");
             AddChild(categoryElement, "<Item Name='image' Tooltip='Image (picture)' />");
@@ -739,7 +739,7 @@ namespace LayoutManager.Tools {
 
         //----
 
-        private bool CanComposeBridge(LayoutTrackComponent old) => old != null && old is LayoutStraightTrackComponent;
+        private bool CanComposeBridge(LayoutTrackComponent? old) => old != null && old is LayoutStraightTrackComponent;
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='bridge']")]
         private void PaintBridgeItem(LayoutEvent e) {
@@ -770,7 +770,7 @@ namespace LayoutManager.Tools {
 
         //----
 
-        private bool CanComposeTunnel(LayoutTrackComponent old) => old != null && old is LayoutStraightTrackComponent;
+        private bool CanComposeTunnel(LayoutTrackComponent? old) => old != null && old is LayoutStraightTrackComponent;
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='tunnel']")]
         private void PaintTunnelItem(LayoutEvent e) {
@@ -806,7 +806,7 @@ namespace LayoutManager.Tools {
         [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']", Order = 100)]
         private void AddControlCategoryItems(LayoutEvent e) {
             var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var old = Ensure.NotNull<LayoutTrackComponent>(e.Info);
+            var old = (LayoutTrackComponent?)e.Info;
 
             if (CanComposeTrackPower(old))
                 AddChild(categoryElement, "<Item Name='track-power' Tooltip='Track power connector' />");
@@ -829,7 +829,7 @@ namespace LayoutManager.Tools {
 
         //----
 
-        private bool CanComposeTrackPower(LayoutTrackComponent existingTrack) => existingTrack != null &&
+        private bool CanComposeTrackPower(LayoutTrackComponent? existingTrack) => existingTrack != null &&
                 !LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) && existingTrack.BlockDefinitionComponent == null;
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='track-power']")]
@@ -857,7 +857,7 @@ namespace LayoutManager.Tools {
 
         //----
 
-        private bool CanComposeTrackIsolation(LayoutTrackComponent existingTrack) => existingTrack != null &&
+        private bool CanComposeTrackIsolation(LayoutTrackComponent? existingTrack) => existingTrack != null &&
                 !LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) && existingTrack.BlockDefinitionComponent == null && !LayoutTrackReverseLoopModule.Is(existingTrack.Spot);
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='track-isolation']")]
@@ -886,7 +886,7 @@ namespace LayoutManager.Tools {
 
         //----
 
-        private bool CanComposeTrackReverseLoopModule(LayoutTrackComponent existingTrack) => existingTrack != null &&
+        private bool CanComposeTrackReverseLoopModule(LayoutTrackComponent? existingTrack) => existingTrack != null &&
                 !LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) && existingTrack.BlockDefinitionComponent == null && !LayoutTrackIsolationComponent.Is(existingTrack.Spot);
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='track-reverse-loop-module']")]
@@ -915,7 +915,7 @@ namespace LayoutManager.Tools {
 
         //----
 
-        private bool CanComposeControlModuleLocation(LayoutTrackComponent exitingTrack) => exitingTrack == null;
+        private bool CanComposeControlModuleLocation(LayoutTrackComponent? exitingTrack) => exitingTrack == null;
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='control-module-location']")]
         private void PaintControlModuleLocation(LayoutEvent e) {

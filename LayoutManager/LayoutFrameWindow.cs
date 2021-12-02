@@ -20,12 +20,12 @@ namespace LayoutManager {
     /// Summary description for Form1.
     /// </summary>
     public partial class LayoutFrameWindow : Form, ILayoutFrameWindow {
-        private TaskCompletionSource<FrameWindowAction> tcs;
+        private TaskCompletionSource<FrameWindowAction>? tcs;
 
-        private LayoutTool designTool = null;
-        private LayoutTool operationTool = null;
-        private LayoutTool activeTool = null;
-        private ZoomEntry[] zoomEntries;
+        private LayoutTool? designTool = null;
+        private LayoutTool? operationTool = null;
+        private LayoutTool? activeTool = null;
+        private ZoomEntry[] zoomEntries = Array.Empty<ZoomEntry>();
 
         private bool layoutControlVisible = false;
         private bool tripsMonitorVisible = false;
@@ -35,15 +35,15 @@ namespace LayoutManager {
         private int tripsMonitorHeightInOperationMode = 0;
         private int layoutControlWidth = 0;
 
-        private PrintState printState = null;
+        private PrintState? printState = null;
 
-        private DetailsPopupWindow detailsPopupWindow;
-        private LayoutView viewWithMouse;
+        private DetailsPopupWindow? detailsPopupWindow;
+        private LayoutView? viewWithMouse;
 
-        private Point viewMouseLocation = new Point(0, 0);
-        private Point detailsPopupLocationInModelPoints = new Point(0, 0);
+        private Point viewMouseLocation = new(0, 0);
+        private Point detailsPopupLocationInModelPoints = new(0, 0);
 
-        private OperationModeParameters uiMode = null;
+        private OperationModeParameters? uiMode = null;
 
         #region UI setting classes
 
@@ -67,31 +67,31 @@ namespace LayoutManager {
         }
 
         private class MenuSettingEntry : UIsettingEntry {
-            public MenuSettingEntry(MenuItem menuItem, UIitemSetting setting) {
+            public MenuSettingEntry(ToolStripItem menuItem, UIitemSetting setting) {
                 this.MenuItem = menuItem;
                 this.setting = setting;
             }
 
-            public MenuItem MenuItem { get; }
+            public ToolStripItem MenuItem { get; }
         }
 
         private class ToolbarSettingEntry : UIsettingEntry {
-            public ToolbarSettingEntry(ToolBarButton button, UIitemSetting setting) {
+            public ToolbarSettingEntry(ToolStripButton button, UIitemSetting setting) {
                 this.Button = button;
                 this.setting = setting;
             }
 
-            public ToolBarButton Button { get; }
+            public ToolStripButton Button { get; }
         }
 
         #endregion
 
-        private UIsettingEntry[] operationBaseUIsetting;
-        private UIsettingEntry[] operationModeUIsetting;
-        private UIsettingEntry[] simulationModeUIsetting;
+        private UIsettingEntry[] operationBaseUIsetting = Array.Empty<UIsettingEntry>();
+        private UIsettingEntry[] operationModeUIsetting = Array.Empty<UIsettingEntry>();
+        private UIsettingEntry[] simulationModeUIsetting = Array.Empty<UIsettingEntry>();
 
-        private UIsettingEntry[] designModeUIsetting;
-        private UIsettingEntry[] activeUIsetting;
+        private UIsettingEntry[] designModeUIsetting = Array.Empty<UIsettingEntry>();
+        private UIsettingEntry[]? activeUIsetting;
 
         /// <summary>
         /// Initialize frame window with all areas in the model, and with one default view page in each area
@@ -176,18 +176,18 @@ namespace LayoutManager {
                 new MenuSettingEntry(menuItemSetComponentPhase, UIitemSetting.Hidden),
                 new MenuSettingEntry(menuItemNewArea, UIitemSetting.Disabled),
                 new MenuSettingEntry(menuItemDeleteArea, UIitemSetting.Disabled),
-                new ToolbarSettingEntry(toolBarButtonOpenLayiout, UIitemSetting.Hidden),
+                //new ToolbarSettingEntry(toolBarButtonOpenLayout, UIitemSetting.Hidden),
             };
 
             // Initialize the menu setting tables
             operationModeUIsetting = new UIsettingEntry[] {
                 new DoSettingEntry(operationBaseUIsetting),
-                new ToolbarSettingEntry(toolBarButtonSimulation, UIitemSetting.Hidden),
+                //new ToolbarSettingEntry(toolBarButtonSimulation, UIitemSetting.Hidden),
             };
 
             simulationModeUIsetting = new UIsettingEntry[] {
                 new DoSettingEntry(operationBaseUIsetting),
-                new ToolbarSettingEntry(toolBarButtonOperationMode, UIitemSetting.Hidden),
+                //new ToolbarSettingEntry(toolBarButtonOperationMode, UIitemSetting.Hidden),
             };
 
             designModeUIsetting = new UIsettingEntry[] {
@@ -199,10 +199,10 @@ namespace LayoutManager {
                 new MenuSettingEntry(menuItemSuspendLocomotives, UIitemSetting.Hidden),
                 new MenuSettingEntry(menuItemEmergencyStop, UIitemSetting.Hidden),
                 new MenuSettingEntry(menuItemViewActivePhases, UIitemSetting.Hidden),
-                new ToolbarSettingEntry(toolBarButtonShowTripsMonitor, UIitemSetting.Hidden),
-                new ToolbarSettingEntry(toolBarButtonToggleAllLayoutManualDispatch, UIitemSetting.Hidden),
-                new ToolbarSettingEntry(toolBarButtonStopAllLocomotives, UIitemSetting.Hidden),
-                new ToolbarSettingEntry(toolBarButtonEmergencyStop, UIitemSetting.Hidden),
+                //new ToolbarSettingEntry(toolBarButtonShowTripsMonitor, UIitemSetting.Hidden),
+                //new ToolbarSettingEntry(toolBarButtonToggleAllLayoutManualDispatch, UIitemSetting.Hidden),
+                //new ToolbarSettingEntry(toolBarButtonStopAllLocomotives, UIitemSetting.Hidden),
+                //new ToolbarSettingEntry(toolBarButtonEmergencyStop, UIitemSetting.Hidden),
             };
 
             messageViewer.Initialize();
@@ -219,7 +219,7 @@ namespace LayoutManager {
             locomotivesViewer.LocomotiveCollection = LayoutModel.LocomotiveCollection;
 
             InitializeTask();
-            ForceSetUserInterfaceMode(LayoutController.OperationModeSettings);
+            ForceSetUserInterfaceMode(LayoutController.OptionalOperationModeSettings);
         }
 
         #endregion
@@ -277,7 +277,7 @@ namespace LayoutManager {
         /// Task associated with this frame window. The controller await on this task, and will do the action
         /// specified by the returned value
         /// </summary>
-        public Task<FrameWindowAction> Task => tcs.Task;
+        public Task<FrameWindowAction> Task => Ensure.NotNull<Task<FrameWindowAction>>(tcs?.Task);
 
         /// <summary>
         /// Return the area tab pages in the window
@@ -311,25 +311,26 @@ namespace LayoutManager {
 
         private LayoutFrameWindowAreaTabPage ActiveAreaPage => (LayoutFrameWindowAreaTabPage)tabAreas.SelectedTab;
 
-        private LayoutFrameWindowAreaViewTabPage ActiveViewPage => ActiveAreaPage == null ? null : (LayoutFrameWindowAreaViewTabPage)ActiveAreaPage.TabViews.SelectedTab;
+        private LayoutFrameWindowAreaViewTabPage? ActiveViewPage => ActiveAreaPage == null ? null : (LayoutFrameWindowAreaViewTabPage)ActiveAreaPage.TabViews.SelectedTab;
 
-        private LayoutView ActiveView => ActiveViewPage?.View;
+        private LayoutView? ActiveView => ActiveViewPage?.View;
 
         #endregion
 
         #region Setting UI for various mode (design/operational/simulation)
 
-        private void ForceSetUserInterfaceMode(OperationModeParameters settings) {
+        private void ForceSetUserInterfaceMode(OperationModeParameters? settings) {
             UndoUIsetting();
 
             if (settings == null) {
                 DoUIsetting(designModeUIsetting);
                 activeTool = designTool;
 
-                toolBarButtonDesignMode.Pushed = true;
-                toolBarButtonOperationMode.Pushed = false;
-                toolBarButtonSimulation.Pushed = false;
-                statusBarPanelMode.Text = "Design";
+                //SUSPENDED
+                //toolBarButtonDesignMode.Pushed = true;
+                //toolBarButtonOperationMode.Pushed = false;
+                //toolBarButtonSimulation.Pushed = false;
+                //statusBarPanelMode.Text = "Design";
 
                 tripsMonitorHeightInOperationMode = tripsMonitor.Height;
                 EventManager.Event(new LayoutEvent("hide-trips-monitor", this).SetFrameWindow(this));
@@ -338,12 +339,14 @@ namespace LayoutManager {
                 ChangeAllViewsPhases(LayoutPhase.All);      // In editing show all phases
             }
             else {
-                toolBarButtonDesignMode.Pushed = false;
+                //SUSPENDED
+                //toolBarButtonDesignMode.Pushed = false;
 
                 if (settings.Simulation) {
                     DoUIsetting(simulationModeUIsetting);
-                    toolBarButtonOperationMode.Pushed = false;
-                    toolBarButtonSimulation.Pushed = true;
+                    //SUSPENDED
+                    //toolBarButtonOperationMode.Pushed = false;
+                    //toolBarButtonSimulation.Pushed = true;
 
                     string s = "Simulation";
 
@@ -352,13 +355,16 @@ namespace LayoutManager {
                         case LayoutPhase.NotPlanned: s += " on operational+in construnction regions"; break;
                     }
 
-                    statusBarPanelMode.Text = s;
+                    //SUSPENDED
+                    //statusBarPanelMode.Text = s;
+                    
                 }
                 else {
                     DoUIsetting(operationModeUIsetting);
-                    toolBarButtonOperationMode.Pushed = true;
-                    toolBarButtonSimulation.Pushed = false;
-                    statusBarPanelMode.Text = "Operation";
+                    //SUSPENDED
+                    //toolBarButtonOperationMode.Pushed = true;
+                    //toolBarButtonSimulation.Pushed = false;
+                    //statusBarPanelMode.Text = "Operation";
                 }
 
                 if (tripsMonitorHeightInOperationMode > 0) {
@@ -389,7 +395,7 @@ namespace LayoutManager {
             uiMode = settings;
         }
 
-        private void SetUserInterfaceMode(OperationModeParameters settings) {
+        private void SetUserInterfaceMode(OperationModeParameters? settings) {
             if (settings != uiMode)
                 ForceSetUserInterfaceMode(settings);
         }
@@ -413,7 +419,7 @@ namespace LayoutManager {
             view.ModelComponentQueryDrop += LayoutView_ModelComponentQueryDrop;
             view.ModelComponentDrop += LayoutView_ModelComponentDrop;
 
-            LayoutFrameWindowAreaViewTabPage viewTabPage = new LayoutFrameWindowAreaViewTabPage(view) {
+            LayoutFrameWindowAreaViewTabPage viewTabPage = new(view) {
                 Text = name
             };
             areaTabPage.TabViews.TabPages.Add(viewTabPage);
@@ -450,7 +456,7 @@ namespace LayoutManager {
         /// <summary>
         /// Update the form title based on the layout file used
         /// </summary>
-        private void updateFormTitle() {
+        private void UpdateFormTitle() {
             string layoutName;
             string modified = "";
 
@@ -463,28 +469,29 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("close-all-frame-windows")]
-        private void closeAllFrameWindows(LayoutEvent e) {
+        private void CloseAllFrameWindows(LayoutEvent e) {
             Close();
         }
 
         [LayoutEvent("model-modified")]
         [LayoutEvent("model-not-modified")]
-        private void modelModificationStateChanged(LayoutEvent e) {
-            updateFormTitle();
+        private void ModelModificationStateChanged(LayoutEvent e) {
+            UpdateFormTitle();
         }
 
         internal void OnViewChanged() {
-            if (ActiveView != null)
-                toolBarButtonToggleGrid.Pushed = ActiveView.ShowGrid != ShowGridLinesOption.Hide;
+            //SUSPENDED
+            //if (ActiveView != null)
+            //    toolBarButtonToggleGrid.Pushed = ActiveView.ShowGrid != ShowGridLinesOption.Hide;
         }
 
         [LayoutEvent("test")]
-        private void test(LayoutEvent e) {
+        private void Test(LayoutEvent e) {
             Trace.WriteLine("Got event test");
             Trace.WriteLine("Sender is " + (e.Sender == null ? "Null" : e.Sender.ToString()));
             Trace.WriteLine("Info is " + (e.Info == null ? "Null" : e.Info.ToString()));
 
-            XmlElement optionsElement = e.Element["Options"];
+            var optionsElement = e.Element["Options"];
 
             if (optionsElement != null) {
                 Trace.WriteLine("Options:");
@@ -496,19 +503,19 @@ namespace LayoutManager {
 
         [LayoutEvent("tools-menu-open-request")]
         private void OnToolsMenuOpenRequest(LayoutEvent e) {
-            ILayoutEmulatorServices layoutEmulationServices = (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
+            var layoutEmulationServices = (ILayoutEmulatorServices?)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
 
             if (layoutEmulationServices != null) {
-                Menu toolsMenu = (Menu)e.Info;
+                var toolsMenu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
-                toolsMenu.MenuItems.Add(new MenuItem("Reset layout emulation", new EventHandler(OnResetLayoutEmulation)));
+                toolsMenu.Items.Add(new LayoutMenuItem("Reset layout emulation", null, new EventHandler(OnResetLayoutEmulation)));
             }
         }
 
         [LayoutEvent("show-routing-table-generation-dialog")]
         private void ShowRoutingTableGenerationDialog(LayoutEvent e) {
-            int nTurnouts = (int)e.Info;
-            using Dialogs.RoutingTableCalcProgress d = new Dialogs.RoutingTableCalcProgress(nTurnouts);
+            var nTurnouts = Ensure.ValueNotNull<int>(e.Info);
+            using Dialogs.RoutingTableCalcProgress d = new(nTurnouts);
 
             d.ShowDialog(this);
         }
@@ -531,12 +538,14 @@ namespace LayoutManager {
 
         [LayoutEvent("begin-trains-analysis-phase")]
         private void BeginTrainsAnalysisPhase(LayoutEvent e) {
-            statusBarPanelOperation.Text = "Analyzing trains status...";
+            //SUSPENDED
+            //statusBarPanelOperation.Text = "Analyzing trains status...";
         }
 
         [LayoutEvent("end-trains-analysis-phase")]
         private void EndTrainsAnalysisPhase(LayoutEvent e) {
-            statusBarPanelOperation.Text = "Ready";
+            //SUSPENDED
+            //statusBarPanelOperation.Text = "Ready";
         }
 
         #region Menu Editing functions
@@ -603,7 +612,7 @@ namespace LayoutManager {
         [LayoutEvent("show-control-connection-point")]
         private void ShowControlConnectionPoint(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
-                ControlConnectionPointReference connectionPointRef = (ControlConnectionPointReference)e.Sender;
+                var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender);
 
                 EventManager.Event(new LayoutEvent("show-layout-control", this).SetFrameWindow(e));
                 layoutControlViewer.EnsureVisible(connectionPointRef, true);
@@ -613,7 +622,7 @@ namespace LayoutManager {
         [LayoutEvent("show-control-module")]
         private void ShowControlModule(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
-                ControlModuleReference moduleRef = (ControlModuleReference)e.Sender;
+                var moduleRef = Ensure.NotNull<ControlModuleReference>(e.Sender);
 
                 EventManager.Event(new LayoutEvent("show-layout-control", this));
                 layoutControlViewer.EnsureVisible(moduleRef, true);
@@ -629,10 +638,10 @@ namespace LayoutManager {
         [LayoutEvent("ensure-component-visible")]
         private void EnsureComponentVisible(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
-                ModelComponent component = (ModelComponent)e.Sender;
+                var component = Ensure.NotNull<ModelComponent>(e.Sender);
                 LayoutModelArea area = component.Spot.Area;
-                LayoutFrameWindowAreaTabPage areaPage = null;
-                bool markComponent = (bool)e.Info;
+                LayoutFrameWindowAreaTabPage? areaPage = null;
+                bool markComponent = Ensure.ValueNotNull<bool>(e.Info);
 
                 foreach (LayoutFrameWindowAreaTabPage ap in tabAreas.TabPages)
                     if (ap.Area == area) {
@@ -641,7 +650,7 @@ namespace LayoutManager {
                     }
 
                 if (areaPage != null) {
-                    LayoutFrameWindowAreaViewTabPage bestViewPage = null;
+                    LayoutFrameWindowAreaViewTabPage? bestViewPage = null;
                     LayoutView.VisibleResult bestVisibleResult = LayoutView.VisibleResult.No;
 
                     // Figure out what view in this area shows the component best
@@ -654,7 +663,7 @@ namespace LayoutManager {
                             bestViewPage = vp;
                         }
                         else if (visibleResult != LayoutView.VisibleResult.No &&
-                            visibleResult == bestVisibleResult && vp.View.Zoom > bestViewPage.View.Zoom) {
+                            visibleResult == bestVisibleResult && bestViewPage != null && vp.View.Zoom > bestViewPage.View.Zoom) {
                             bestVisibleResult = visibleResult;
                             bestViewPage = vp;
                         }
@@ -676,27 +685,34 @@ namespace LayoutManager {
 
         [LayoutEvent("all-layout-manual-dispatch-mode-status-changed")]
         private void AllLayoutManualDispatchModeStatusChanged(LayoutEvent e) {
-            bool active = (bool)e.Info;
+            bool active = Ensure.ValueNotNull<bool>(e.Info);
 
-            toolBarButtonToggleAllLayoutManualDispatch.Pushed = active;
+            //SUSPENDED
+            //toolBarButtonToggleAllLayoutManualDispatch.Pushed = active;
         }
 
         [LayoutEvent("manual-dispatch-region-status-changed")]
         private void ManualDispatchRegionStatusChanged(LayoutEvent e) {
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
             bool enableAllLayoutManualDispatch = true;
+#pragma warning restore CS0219 // Variable is assigned but its value is never used
 
             foreach (ManualDispatchRegionInfo manualDispatchRegion in LayoutModel.StateManager.ManualDispatchRegions)
                 if (manualDispatchRegion.Active)
                     enableAllLayoutManualDispatch = false;
 
-            toolBarButtonToggleAllLayoutManualDispatch.Enabled = enableAllLayoutManualDispatch;
+            //SUSPENDED
+            //toolBarButtonToggleAllLayoutManualDispatch.Enabled = enableAllLayoutManualDispatch;
         }
 
         [LayoutEvent("all-locomotives-suspended-status-changed")]
         private void AllLocomotivesSuspendedStatusChanged(LayoutEvent e) {
-            bool allSuspended = (bool)e.Info;
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
+            var allSuspended = Ensure.ValueNotNull<bool>(e.Info);
+#pragma warning restore CS0219 // Variable is assigned but its value is never used
 
-            toolBarButtonStopAllLocomotives.Pushed = allSuspended;
+            //SUSPENDED
+            //toolBarButtonStopAllLocomotives.Pushed = allSuspended;
         }
 
         [LayoutEvent("show-marker")]
@@ -704,17 +720,17 @@ namespace LayoutManager {
             if (e.IsThisFrameWindow(this)) {
                 LayoutSelection markerSelection;
 
-                if (e.Sender is ModelComponent) {
+                if (e.Sender is ModelComponent component) {
                     markerSelection = new LayoutSelection {
-                        (ModelComponent)e.Sender
+                        component
                     };
                 }
-                else if (e.Sender is LayoutSelection)
-                    markerSelection = (LayoutSelection)e.Sender;
+                else if (e.Sender is LayoutSelection selection)
+                    markerSelection = selection;
                 else
                     throw new ArgumentException("Invalid marker (can be either component or selection");
 
-                new Marker(markerSelection);
+                _ = new Marker(markerSelection);
             }
         }
 
@@ -725,7 +741,7 @@ namespace LayoutManager {
         }
 
         private class Marker {
-            private Timer hideMarkerTimer;
+            private Timer? hideMarkerTimer;
             private readonly LayoutSelection markerSelection;
 
             public Marker(LayoutSelection markerSelection) {
@@ -735,12 +751,12 @@ namespace LayoutManager {
                 hideMarkerTimer = new Timer {
                     Interval = 500
                 };
-                hideMarkerTimer.Tick += this.onHideMarker;
+                hideMarkerTimer.Tick += this.OnHideMarker;
                 hideMarkerTimer.Start();
             }
 
-            private void onHideMarker(object? sender, EventArgs e) {
-                hideMarkerTimer.Dispose();
+            private void OnHideMarker(object? sender, EventArgs e) {
+                hideMarkerTimer?.Dispose();
                 hideMarkerTimer = null;
                 markerSelection.Hide();
             }
@@ -852,59 +868,66 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("messages-shown")]
-        private void messagesShown(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
-                toolBarButtonShowMessages.Pushed = true;
+        private void MessagesShown(LayoutEvent e) {
+            //SUSPENDED
+            //if (e.IsThisFrameWindow(this))
+            //    toolBarButtonShowMessages.Pushed = true;
         }
 
         [LayoutEvent("messages-hidden")]
-        private void messagesHidden(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
-                toolBarButtonShowMessages.Pushed = false;
+        private void MessagesHidden(LayoutEvent e) {
+            //SUSPENDED
+            //if (e.IsThisFrameWindow(this))
+            //    toolBarButtonShowMessages.Pushed = false;
         }
 
         [LayoutEvent("trips-monitor-shown")]
-        private void tripsMonitorShown(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
-                toolBarButtonShowTripsMonitor.Pushed = true;
+        private void TripsMonitorShown(LayoutEvent e) {
+            //SUSPENDED
+            //if (e.IsThisFrameWindow(this))
+            //    toolBarButtonShowTripsMonitor.Pushed = true;
         }
 
         [LayoutEvent("trips-monitor-hidden")]
-        private void tripsMonitorHidden(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
-                toolBarButtonShowTripsMonitor.Pushed = false;
+        private void TripsMonitorHidden(LayoutEvent e) {
+            //SUSPENDED
+            //if (e.IsThisFrameWindow(this))
+            //    toolBarButtonShowTripsMonitor.Pushed = false;
         }
 
         [LayoutEvent("locomotives-shown")]
-        private void locomotivesShown(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
-                toolBarButtonShowLocomotives.Pushed = true;
+        private void LocomotivesShown(LayoutEvent e) {
+            //SUSPENDED
+            //if (e.IsThisFrameWindow(this))
+            //    toolBarButtonShowLocomotives.Pushed = true;
         }
 
         [LayoutEvent("locomotives-hidden")]
-        private void locomotivesHidden(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
-                toolBarButtonShowLocomotives.Pushed = false;
+        private void LocomotivesHidden(LayoutEvent e) {
+            //SUSPENDED
+            //if (e.IsThisFrameWindow(this))
+            //    toolBarButtonShowLocomotives.Pushed = false;
         }
 
         [LayoutEvent("layout-control-shown")]
         private void LayoutControlShown(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
-                toolBarButtonShowLayoutControl.Pushed = true;
+            //SUSPENDED
+            //if (e.IsThisFrameWindow(this))
+            //    toolBarButtonShowLayoutControl.Pushed = true;
         }
 
         [LayoutEvent("layout-control-hidden")]
         private void LayoutControlHidden(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
-                toolBarButtonShowLayoutControl.Pushed = false;
+            //SUSPENDED
+            //if (e.IsThisFrameWindow(this))
+            //    toolBarButtonShowLayoutControl.Pushed = false;
         }
 
         #endregion
 
         [LayoutEvent("area-added")]
-        private void areaAdded(LayoutEvent e0) {
-            var e = (LayoutEvent<LayoutModelArea>)e0;
-            var area = e.Sender;
+        private void AreaAdded(LayoutEvent e) {
+            var area = Ensure.NotNull<LayoutModelArea>(e.Sender);
             var areaPage = new LayoutFrameWindowAreaTabPage(area);
 
             tabAreas.TabPages.Add(areaPage);
@@ -912,9 +935,8 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("area-removed")]
-        private void areaRemoved(LayoutEvent e0) {
-            var e = (LayoutEvent<LayoutModelArea>)e0;
-            var area = e.Sender;
+        private void AreaRemoved(LayoutEvent e) {
+            var area = Ensure.NotNull<LayoutModelArea>(e.Sender);
 
             foreach (LayoutFrameWindowAreaTabPage areaTabPage in tabAreas.TabPages) {
                 if (areaTabPage.Area == area) {
@@ -925,7 +947,7 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("area-renamed")]
-        private void areaRenamed(LayoutEvent e0) {
+        private void AreaRenamed(LayoutEvent e0) {
             var e = (LayoutEvent<LayoutModelArea>)e0;
             var area = e.Sender;
 
@@ -973,7 +995,7 @@ namespace LayoutManager {
             if (new Point(e.X, e.Y) != viewMouseLocation)
                 timerDetailsPopup.Stop();
 
-            LayoutView mouseView = sender as LayoutView;
+            var mouseView = sender as LayoutView;
 
             if (mouseView != viewWithMouse || new Point(e.X, e.Y) != viewMouseLocation) {
                 bool closeIt = true;
@@ -990,7 +1012,8 @@ namespace LayoutManager {
                     if (closeIt) {
                         detailsPopupWindow.Close();
                         detailsPopupWindow = null;
-                        viewWithMouse.Capture = false;
+                        if(viewWithMouse != null)
+                            viewWithMouse.Capture = false;
                     }
                 }
 
@@ -1003,17 +1026,17 @@ namespace LayoutManager {
             }
         }
 
-        private void timerDetailsPopup_Tick(object? sender, EventArgs e) {
+        private void TimerDetailsPopup_Tick(object? sender, EventArgs e) {
             // Mouse did not move for enough time, need to show details popup window
             if (detailsPopupWindow == null) {
                 if (viewWithMouse != null) {
                     LayoutHitTestResult hitTestResult = viewWithMouse.HitTest(viewMouseLocation);
-                    LayoutModelSpotComponentCollection spot = hitTestResult.Area[hitTestResult.ModelLocation, LayoutModel.ActivePhases];
-                    Rectangle bounds = new Rectangle(new Point(viewMouseLocation.X - (SystemInformation.DragSize.Width / 2), viewMouseLocation.Y - (SystemInformation.DragSize.Height / 2)),
+                    var spot = hitTestResult.Area[hitTestResult.ModelLocation, LayoutModel.ActivePhases];
+                    Rectangle bounds = new(new Point(viewMouseLocation.X - (SystemInformation.DragSize.Width / 2), viewMouseLocation.Y - (SystemInformation.DragSize.Height / 2)),
                         SystemInformation.DragSize);
 
                     if (spot != null && bounds.Contains(viewWithMouse.PointToClient(Control.MousePosition))) {
-                        PopupWindowContainerSection container = new PopupWindowContainerSection(hitTestResult.View);
+                        PopupWindowContainerSection container = new(hitTestResult.View);
 
                         foreach (ModelComponent component in spot)
                             EventManager.Event(new LayoutEvent("add-" + (LayoutController.IsOperationMode ? "operation" : "editing") + "-details-window-sections", component, container).SetFrameWindow(this));
@@ -1031,51 +1054,33 @@ namespace LayoutManager {
             timerDetailsPopup.Stop();
         }
 
-        private void menuItemSave_Click(object? sender, EventArgs e) {
+        private void MenuItemSave_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEvent("save-layout", this));
         }
 
-        private void menuSaveAs_Click(object? sender, EventArgs e) {
+        private void MenuSaveAs_Click(object? sender, EventArgs e) {
         }
 
-        private void menuItemOpen_Click(object? sender, EventArgs e) {
+        private void MenuItemOpen_Click(object? sender, EventArgs e) {
         }
 
-        private void menuItemNewLayout_Click(object? sender, EventArgs e) {
+        private void MenuItemNewLayout_Click(object? sender, EventArgs e) {
         }
 
         private class ButtonToMenuMap {
-            public ToolBarButton theButton;
+            public ToolStripButton theButton;
             public EventHandler theEvent;
 
-            public ButtonToMenuMap(ToolBarButton button, EventHandler eh) {
+            public ButtonToMenuMap(ToolStripButton button, EventHandler eh) {
                 theButton = button;
                 theEvent = eh;
             }
         }
 
-        private void toolBarMain_ButtonClick(object? sender, System.Windows.Forms.ToolBarButtonClickEventArgs e) {
-            ButtonToMenuMap[] map = new ButtonToMenuMap[] {
-                new ButtonToMenuMap(toolBarButtonOpenLayiout, new EventHandler(menuItemOpen_Click)),
-                new ButtonToMenuMap(toolBarButtonSaveLayout, new EventHandler(menuItemSave_Click)),
-                new ButtonToMenuMap(toolBarButtonShowLocomotives, new EventHandler(menuItemShowLocomotives_Click)),
-                new ButtonToMenuMap(toolBarButtonShowLayoutControl, new EventHandler(MenuItemShowLayoutControl_Click)),
-                new ButtonToMenuMap(toolBarButtonShowMessages, new EventHandler(menuItemShowMessages_Click)),
-                new ButtonToMenuMap(toolBarButtonShowTripsMonitor, new EventHandler(menuItemShowTripsMonitor_Click)),
-                new ButtonToMenuMap(toolBarButtonDesignMode, new EventHandler(MenuItemDesign_Click)),
-                new ButtonToMenuMap(toolBarButtonOperationMode, new EventHandler(MenuItemOperational_Click)),
-                new ButtonToMenuMap(toolBarButtonToggleAllLayoutManualDispatch, new EventHandler(ToggleAllLayoutManualDispatch)),
-                new ButtonToMenuMap(toolBarButtonStopAllLocomotives, new EventHandler(menuItemSuspendLocomotives_Click)),
-                new ButtonToMenuMap(toolBarButtonEmergencyStop, new EventHandler(menuItemEmergencyStop_Click)),
-                new ButtonToMenuMap(toolBarButtonZoomFitAll, new EventHandler(menuItemZoomAllArea_Click)),
-                new ButtonToMenuMap(toolBarButtonZoom100, new EventHandler(toolbar_Zoom100)),
-                new ButtonToMenuMap(toolBarButtonZoomIn, new EventHandler(toolbar_ZoomIn)),
-                new ButtonToMenuMap(toolBarButtonZoomOut, new EventHandler(toolbar_ZoomOut)),
-                new ButtonToMenuMap(toolBarButtonToggleGrid, new EventHandler(menuItemViewGrid_Click)),
-                new ButtonToMenuMap(toolBarButtonSetToDefaultOriginAndZoom, new EventHandler(menuItemRestoreDefaultZoomAndOrigin_Click)),
-                new ButtonToMenuMap(toolbarButtonSetAsDefaultOriginAndZoom, new EventHandler(menuItemSaveAsDefaultZoomAndOrigin_Click)),
-            };
+        private void ToolBarMain_ButtonClick(object? sender, EventHandler e) {
+            ButtonToMenuMap[] map = Array.Empty<ButtonToMenuMap>();
 
+#if SUSPENDED
             if (e.Button.Visible && e.Button.Enabled) {
                 if (e.Button == toolBarButtonSimulation) {
                     if (LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All).Any(cs => cs.LayoutEmulationSupported)) {
@@ -1102,41 +1107,46 @@ namespace LayoutManager {
                     }
                 }
             }
+#endif
         }
 
-        private void toolbar_Zoom100(object? sender, EventArgs e) {
+        private void Toolbar_Zoom100(object? sender, EventArgs e) {
             menuItemZoom100.PerformClick();
         }
 
-        private void toolbar_ZoomOut(object? sender, EventArgs e) {
-            float zoom = ActiveView.Zoom - 0.1F;
+        private void Toolbar_ZoomOut(object? sender, EventArgs e) {
+            if (ActiveView != null) {
+                float zoom = ActiveView.Zoom - 0.1F;
 
-            if (zoom < 0.1)
-                zoom = 0.1F;
-            ActiveView.Zoom = zoom;
+                if (zoom < 0.1)
+                    zoom = 0.1F;
+                ActiveView.Zoom = zoom;
+            }
         }
 
-        private void toolbar_ZoomIn(object? sender, EventArgs e) {
-            float zoom = ActiveView.Zoom + 0.1F;
+        private void Toolbar_ZoomIn(object? sender, EventArgs e) {
+            if (ActiveView != null) {
+                float zoom = ActiveView.Zoom + 0.1F;
 
-            if (zoom > 4)
-                zoom = 4F;
-            ActiveView.Zoom = zoom;
+                if (zoom > 4)
+                    zoom = 4F;
+                ActiveView.Zoom = zoom;
+            }
         }
 
-        private void menuItemExit_Click(object? sender, EventArgs e) {
+        private void MenuItemExit_Click(object? sender, EventArgs e) {
             ControllerCommand = FrameWindowCommand.CloseLayout;
         }
 
-        private void menuItemUndo_Click(object? sender, EventArgs e) {
+        private void MenuItemUndo_Click(object? sender, EventArgs e) {
             LayoutController.CommandManager.Undo();
         }
 
-        private void menuItemRedo_Click(object? sender, EventArgs e) {
+        private void MenuItemRedo_Click(object? sender, EventArgs e) {
             LayoutController.CommandManager.Redo();
         }
 
-        private void menuEdit_Popup(object? sender, EventArgs e) {
+        private void MenuEdit_Popup(object? sender, EventArgs e) {
             if (!LayoutController.IsOperationMode && LayoutController.CommandManager.CanUndo) {
                 menuItemUndo.Enabled = true;
                 menuItemUndo.Text = "&Undo " + LayoutController.CommandManager.UndoCommandName;
@@ -1165,7 +1175,7 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemNewArea_Click(object? sender, EventArgs e) {
+        private void MenuItemNewArea_Click(object? sender, EventArgs e) {
             var getAreaName = new Dialogs.GetAreasName();
 
             if (getAreaName.ShowDialog(this) == DialogResult.OK) {
@@ -1173,14 +1183,14 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemRenameArea_Click(object? sender, EventArgs e) {
+        private void MenuItemRenameArea_Click(object? sender, EventArgs e) {
             var getAreaName = new Dialogs.GetAreasName();
 
             if (getAreaName.ShowDialog(this) == DialogResult.OK)
                 ((LayoutFrameWindowAreaTabPage)tabAreas.SelectedTab).Area.Name = getAreaName.AreaName;
         }
 
-        private void menuItemStyleFonts_Click(object? sender, EventArgs e) {
+        private void MenuItemStyleFonts_Click(object? sender, EventArgs e) {
             var standardFonts = new Dialogs.StandardFonts();
 
             standardFonts.ShowDialog(this);
@@ -1188,7 +1198,7 @@ namespace LayoutManager {
             LayoutModel.Instance.Redraw();
         }
 
-        private void menuItemStylePositions_Click(object? sender, EventArgs e) {
+        private void MenuItemStylePositions_Click(object? sender, EventArgs e) {
             var standardPositions = new Dialogs.StandardPositions();
 
             standardPositions.ShowDialog();
@@ -1196,44 +1206,44 @@ namespace LayoutManager {
             LayoutModel.Instance.Redraw();
         }
 
-        private void menuItemCopy_Click(object? sender, EventArgs e) {
+        private void MenuItemCopy_Click(object? sender, EventArgs e) {
             var copySelection = new MenuItemCopySelection(LayoutController.UserSelection.TopLeftLocation);
 
             copySelection.Copy();
         }
 
-        private void menuItemCut_Click(object? sender, EventArgs e) {
+        private void MenuItemCut_Click(object? sender, EventArgs e) {
             var cutSelection = new MenuItemCutSelection(LayoutController.UserSelection.TopLeftLocation);
 
             cutSelection.Cut();
         }
 
-        private void menuItemModules_Click(object? sender, EventArgs e) {
+        private void MenuItemModules_Click(object? sender, EventArgs e) {
             var moduleManager = new Dialogs.ModuleManagement();
 
             moduleManager.ShowDialog(this);
         }
 
-        private void menuItemTools_Popup(object? sender, EventArgs e) {
-            menuItemTools.MenuItems.Clear();
+        private void MenuItemTools_Popup(object? sender, EventArgs e) {
+            menuItemTools.DropDownItems.Clear();
 
-            EventManager.Event(new LayoutEvent("tools-menu-open-request", this, menuItemTools).SetFrameWindow(this));
+            EventManager.Event(new LayoutEvent("tools-menu-open-request", this, new MenuOrMenuItem(menuItemTools)).SetFrameWindow(this));
 
-            if (menuItemTools.MenuItems.Count == 0) {
-                MenuItem noTools = new MenuItem("No tools") {
+            if (menuItemTools.DropDownItems.Count == 0) {
+                var noTools = new ToolStripMenuItem("No tools") {
                     Enabled = false
                 };
-                menuItemTools.MenuItems.Add(noTools);
+                menuItemTools.DropDownItems.Add(noTools);
             }
         }
 
-        private void menuItemAreaArrange_Click(object? sender, EventArgs e) {
+        private void MenuItemAreaArrange_Click(object? sender, EventArgs e) {
             var arrangeAreas = new Dialogs.ArrangeAreas(tabAreas);
 
             arrangeAreas.ShowDialog(this);
         }
 
-        private void menuItemDeleteArea_Click(object? sender, EventArgs e) {
+        private void MenuItemDeleteArea_Click(object? sender, EventArgs e) {
             LayoutFrameWindowAreaTabPage selectedAreaPage = (LayoutFrameWindowAreaTabPage)tabAreas.SelectedTab;
             LayoutModelArea selectedArea = selectedAreaPage.Area;
 
@@ -1244,7 +1254,7 @@ namespace LayoutManager {
                 LayoutModel.Areas.Remove(selectedArea);
         }
 
-        private void menuItemView_Popup(object? sender, EventArgs e) {
+        private void MenuItemView_Popup(object? sender, EventArgs e) {
             if (ActiveView != null)
                 menuItemViewGrid.Checked = ActiveView.ShowGrid != ShowGridLinesOption.Hide;
 
@@ -1271,31 +1281,34 @@ namespace LayoutManager {
             if (LayoutController.IsOperationMode) {
                 if (LayoutModel.ModelPhases != LayoutModel.ActivePhases) {
                     menuItemViewActivePhases.Visible = true;
-                    menuItemViewActivePhases.Checked = ActiveViewPage.ShowActivePhases;
+                    if(ActiveViewPage != null)
+                        menuItemViewActivePhases.Checked = ActiveViewPage.ShowActivePhases;
                 }
                 else
                     menuItemViewActivePhases.Visible = false;
             }
         }
 
-        private void menuItemViewGrid_Click(object? sender, EventArgs e) {
+        private void MenuItemViewGrid_Click(object? sender, EventArgs e) {
             if (ActiveView != null) {
                 if (ActiveView.ShowGrid != ShowGridLinesOption.Hide) {
                     ActiveView.ShowGrid = ShowGridLinesOption.Hide;
-                    toolBarButtonToggleGrid.Pushed = false;
+                    //SUSPENDED
+                    //toolBarButtonToggleGrid.Pushed = false;
                 }
                 else {
                     ActiveView.ShowGrid = ShowGridLinesOption.AutoHide;
-                    toolBarButtonToggleGrid.Pushed = true;
+                    //SUSPENDED
+                    //toolBarButtonToggleGrid.Pushed = true;
                 }
             }
         }
 
-        public LayoutView AddNewView() {
+        public LayoutView? AddNewView() {
             var getViewName = new Dialogs.GetViewName();
 
             if (getViewName.ShowDialog() == DialogResult.OK) {
-                LayoutView oldView = ActiveView;
+                var oldView = ActiveView;
                 var tabViewPage = AddViewToArea(ActiveAreaPage, getViewName.ViewName);
                 var newView = tabViewPage.View;
 
@@ -1310,16 +1323,16 @@ namespace LayoutManager {
             return null;
         }
 
-        private void menuItemViewNew_Click(object? sender, EventArgs e) {
+        private void MenuItemViewNew_Click(object? sender, EventArgs e) {
             AddNewView();
         }
 
-        private void menuItemViewDelete_Click(object? sender, EventArgs e) {
+        private void MenuItemViewDelete_Click(object? sender, EventArgs e) {
             if (ActiveViewPage != null)
                 ActiveAreaPage.TabViews.TabPages.Remove(ActiveViewPage);
         }
 
-        private void menuItemViewRename_Click(object? sender, EventArgs e) {
+        private void MenuItemViewRename_Click(object? sender, EventArgs e) {
             if (ActiveViewPage != null) {
                 var getViewName = new Dialogs.GetViewName();
 
@@ -1328,7 +1341,7 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemViewArrage_Click(object? sender, EventArgs e) {
+        private void MenuItemViewArrage_Click(object? sender, EventArgs e) {
             if (ActiveAreaPage != null) {
                 var arrangeViews = new Dialogs.ArrangeViews(this, ActiveAreaPage);
 
@@ -1338,15 +1351,15 @@ namespace LayoutManager {
 
         private struct ZoomEntry {
             public int zoomFactor;
-            public MenuItem menuItem;
+            public ToolStripMenuItem menuItem;
 
-            public ZoomEntry(int zoomFactor, MenuItem menuItem) {
+            public ZoomEntry(int zoomFactor, ToolStripMenuItem menuItem) {
                 this.zoomFactor = zoomFactor;
                 this.menuItem = menuItem;
             }
         }
 
-        private void menuItemZoomMenu_Popup(object? sender, EventArgs e) {
+        private void MenuItemZoomMenu_Popup(object? sender, EventArgs e) {
             if (ActiveView != null) {
                 int currentZoom = (int)Math.Round(ActiveView.Zoom * 100);
                 bool presetZoomFound = false;
@@ -1362,8 +1375,8 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemZoomPreset_Click(object? sender, EventArgs e) {
-            MenuItem menuItem = (MenuItem)sender;
+        private void MenuItemZoomPreset_Click(object? sender, EventArgs e) {
+            var menuItem = (ToolStripMenuItem?)sender;
 
             if (ActiveView != null) {
                 foreach (ZoomEntry zoomEntry in zoomEntries) {
@@ -1389,7 +1402,7 @@ namespace LayoutManager {
                 timerFreeResources.Enabled = false;
         }
 
-        private void menuItemSetZoom_Click(object? sender, EventArgs e) {
+        private void MenuItemSetZoom_Click(object? sender, EventArgs e) {
             if (ActiveView != null) {
                 var setZoom = new Dialogs.SetZoom {
                     ZoomFactor = (int)Math.Round(ActiveView.Zoom * 100)
@@ -1400,26 +1413,26 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemZoomAllArea_Click(object? sender, EventArgs e) {
+        private void MenuItemZoomAllArea_Click(object? sender, EventArgs e) {
             if (ActiveView != null)
                 ActiveView.ShowAllArea();
         }
 
-        private void menuItemShowMessages_Click(object? sender, EventArgs e) {
+        private void MenuItemShowMessages_Click(object? sender, EventArgs e) {
             if (messageViewVisible)
                 EventManager.Event(new LayoutEvent("hide-messages", this).SetFrameWindow(this));
             else
                 EventManager.Event(new LayoutEvent("show-messages", this).SetFrameWindow(this));
         }
 
-        private void menuItemShowTripsMonitor_Click(object? sender, EventArgs e) {
+        private void MenuItemShowTripsMonitor_Click(object? sender, EventArgs e) {
             if (tripsMonitorVisible)
                 EventManager.Event(new LayoutEvent("hide-trips-monitor", this).SetFrameWindow(this));
             else
                 EventManager.Event(new LayoutEvent("show-trips-monitor", this).SetFrameWindow(this));
         }
 
-        private void menuItemShowLocomotives_Click(object? sender, EventArgs e) {
+        private void MenuItemShowLocomotives_Click(object? sender, EventArgs e) {
             if (locomotiveViewVisible)
                 EventManager.Event(new LayoutEvent("hide-locomotives", this).SetFrameWindow(this));
             else
@@ -1471,18 +1484,18 @@ namespace LayoutManager {
         }
 
         private void MenuItemManualDispatchRegions_Popup(object? sender, EventArgs e) {
-            menuItemManualDispatchRegions.MenuItems.Clear();
+            menuItemManualDispatchRegions.DropDownItems.Clear();
 
             foreach (ManualDispatchRegionInfo manualDispatchRegion in LayoutModel.StateManager.ManualDispatchRegions)
-                menuItemManualDispatchRegions.MenuItems.Add(new ManualDispatchRegionItem(manualDispatchRegion));
+                menuItemManualDispatchRegions.DropDownItems.Add(new ManualDispatchRegionItem(manualDispatchRegion));
 
-            if (menuItemManualDispatchRegions.MenuItems.Count > 0)
-                menuItemManualDispatchRegions.MenuItems.Add("-");
+            if (menuItemManualDispatchRegions.DropDownItems.Count > 0)
+                menuItemManualDispatchRegions.DropDownItems.Add(new ToolStripSeparator());
 
-            menuItemManualDispatchRegions.MenuItems.Add(new AllLayoutManualDispatchItem());
-            menuItemManualDispatchRegions.MenuItems.Add("-");
+            menuItemManualDispatchRegions.DropDownItems.Add(new AllLayoutManualDispatchItem());
+            menuItemManualDispatchRegions.DropDownItems.Add(new ToolStripSeparator());
 
-            menuItemManualDispatchRegions.MenuItems.Add("Manage Manual Dispatch Regions...", new EventHandler(this.OnManageManualDispatchRegions));
+            menuItemManualDispatchRegions.DropDownItems.Add("Manage Manual Dispatch Regions...", null, new EventHandler(this.OnManageManualDispatchRegions));
         }
 
         private void OnManageManualDispatchRegions(object? sender, EventArgs e) {
@@ -1492,7 +1505,7 @@ namespace LayoutManager {
         }
 
         private void MenuItemPolicies_Click(object? sender, EventArgs e) {
-            Form d = (Form)EventManager.Event(new LayoutEvent("query-policies-definition-dialog", this));
+            var d = (Form?)EventManager.Event(new LayoutEvent("query-policies-definition-dialog", this));
 
             if (d != null)
                 d.Activate();
@@ -1581,8 +1594,8 @@ namespace LayoutManager {
             item.PerformClick();
         }
 
-        private void menuItemSuspendLocomotives_Click(object? sender, EventArgs e) {
-            bool allSuspended = (bool)EventManager.Event(new LayoutEvent("are-all-locomotives-suspended", this));
+        private void MenuItemSuspendLocomotives_Click(object? sender, EventArgs e) {
+            var allSuspended = Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("are-all-locomotives-suspended", this)));
 
             if (allSuspended)
                 EventManager.Event(new LayoutEvent("resume-all-locomotives", this));
@@ -1603,72 +1616,70 @@ namespace LayoutManager {
             return entries;
         }
 
-        private EventHandler simulateEventHandler;
-        private EventHandler verifyLayoutEventHandler;
+        private EventHandler? simulateEventHandler;
+        private EventHandler? verifyLayoutEventHandler;
 
-        private void menuLayout_Popup(object? sender, EventArgs e) {
-            bool allSuspended = (bool)EventManager.Event(new LayoutEvent("are-all-locomotives-suspended", this));
+        private void MenuLayout_Popup(object? sender, EventArgs e) {
+            bool allSuspended = Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("are-all-locomotives-suspended", this)));
 
             if (allSuspended)
                 menuItemSuspendLocomotives.Text = "&Resume train operation";
             else
                 menuItemSuspendLocomotives.Text = "&Stop trains";
 
-            var simulateEntries = GetPhasesEntries(simulate);
-            menuItemSimulation.MenuItems.Clear();
+            var simulateEntries = GetPhasesEntries(Simulate);
+            menuItemSimulation.DropDownItems.Clear();
 
             if (LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All).Any(cs => cs.LayoutEmulationSupported)) {
                 if (simulateEntries.Count == 1)
                     simulateEventHandler = simulateEntries[0].Item2;
                 else {
                     foreach (var entry in simulateEntries)
-                        menuItemSimulation.MenuItems.Add(entry.Item1, entry.Item2);
+                        menuItemSimulation.DropDownItems.Add(entry.Item1, null, entry.Item2);
                 }
             }
             else
                 menuItemSimulation.Enabled = false;
 
-            var verifyLayoutEntries = GetPhasesEntries(verify);
-            menuItemCompile.MenuItems.Clear();
+            var verifyLayoutEntries = GetPhasesEntries(Verify);
+            menuItemCompile.DropDownItems.Clear();
 
             if (verifyLayoutEntries.Count == 1)
                 verifyLayoutEventHandler = verifyLayoutEntries[0].Item2;
             else {
                 foreach (var entry in verifyLayoutEntries)
-                    menuItemCompile.MenuItems.Add(entry.Item1, entry.Item2);
+                    menuItemCompile.DropDownItems.Add(entry.Item1, null, entry.Item2);
             }
         }
 
-        private void menuItemSimulation_Click(object? sender, EventArgs e) {
-            simulateEventHandler(sender, e);
+        private void MenuItemSimulation_Click(object? sender, EventArgs e) {
+            simulateEventHandler?.Invoke(sender, e);
         }
 
-        private void menuItemCompile_Click(object? sender, EventArgs e) {
-            verifyLayoutEventHandler(sender, e);
+        private void MenuItemCompile_Click(object? sender, EventArgs e) {
+            verifyLayoutEventHandler?.Invoke(sender, e);
         }
 
-        private void simulate(LayoutPhase phases) {
+        private void Simulate(LayoutPhase phases) {
             LayoutController.Instance.EnterOperationModeRequest(new OperationModeParameters() { Phases = phases, Simulation = true });
         }
 
-        private void verify(LayoutPhase phases) {
+        private void Verify(LayoutPhase phases) {
             EventManager.Event(new LayoutEvent("clear-messages", this));
-            if ((bool)EventManager.Event(new LayoutEvent("check-layout", LayoutModel.Instance, true).SetPhases(phases)))
+            if (Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("check-layout", LayoutModel.Instance, true).SetPhases(phases))))
                 MessageBox.Show(this, "Layout checked, all seems to be OK", "Layout Check Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void menuItemEmergencyStop_Click(object? sender, EventArgs e) {
+        private void MenuItemEmergencyStop_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation, string>("emergency-stop-request", null, "User initiated"));
         }
 
-        private void menuItemConnectLayout_Click(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent("connect-layout-to-control-request", this));
-        }
+        private void MenuItemConnectLayout_Click(object? sender, EventArgs e) => EventManager.Event(new LayoutEvent("connect-layout-to-control-request", this));
 
-        private void menuItemLearnLayout_Click(object? sender, EventArgs e) {
+        private void MenuItemLearnLayout_Click(object? sender, EventArgs e) {
             try {
                 if (LayoutController.Instance.BeginDesignTimeActivation()) {
-                    Form learnLayoutForm = (Form)EventManager.Event(new LayoutEvent("activate-learn-layout", this));
+                    var learnLayoutForm = (Form?)EventManager.Event(new LayoutEvent("activate-learn-layout", this));
 
                     if (learnLayoutForm == null) {
                         var learnLayout = new Dialogs.LearnLayout(Id) {
@@ -1689,15 +1700,18 @@ namespace LayoutManager {
 #pragma warning restore CA1031 // Do not catch general exception types
         }
 
-        private void menuItemFind_Click(object? sender, EventArgs e) {
+        private void MenuItemFind_Click(object? sender, EventArgs e) {
             var d = new Dialogs.FindComponents(ActiveAreaPage.Area);
 
             d.ShowDialog(this);
         }
 
-        private void printDocument_PrintPage(object? sender, System.Drawing.Printing.PrintPageEventArgs e) {
+        private void PrintDocument_PrintPage(object? sender, System.Drawing.Printing.PrintPageEventArgs e) {
             LayoutFrameWindowAreaTabPage areaPage;
             ILayoutView view;
+
+            if (printState == null || e.Graphics == null)
+                return;
 
             if (printState.AllAreas)
                 areaPage = (LayoutFrameWindowAreaTabPage)tabAreas.TabPages[printState.AreaIndex];
@@ -1752,7 +1766,7 @@ namespace LayoutManager {
             }
         }
 
-        private void menuItemPrint_Click(object? sender, EventArgs e) {
+        private void MenuItemPrint_Click(object? sender, EventArgs e) {
             printState = new PrintState(new Dialogs.Print(printDocument));
             if (printState.PrintDialog.ShowDialog(this) == DialogResult.OK) {
                 printDocument.DocumentName = LayoutController.LayoutFilename ?? "Untitled";
@@ -1762,17 +1776,17 @@ namespace LayoutManager {
                 printState = null;
         }
 
-        private void menuItemRestoreDefaultZoomAndOrigin_Click(object? sender, EventArgs e) {
+        private void MenuItemRestoreDefaultZoomAndOrigin_Click(object? sender, EventArgs e) {
             if (ActiveView != null)
                 ActiveView.SetOriginAndZoomToDefault();
         }
 
-        private void menuItemSaveAsDefaultZoomAndOrigin_Click(object? sender, EventArgs e) {
+        private void MenuItemSaveAsDefaultZoomAndOrigin_Click(object? sender, EventArgs e) {
             if (ActiveView != null && MessageBox.Show("Do you want to set current position and zoom as the default for this view?", "Set Default Origin & View", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 ActiveView.SetAsDefaultOriginAndZoom();
         }
 
-        private void menuItemSelectUnconnectedComponents_Click(object? sender, EventArgs e) {
+        private void MenuItemSelectUnconnectedComponents_Click(object? sender, EventArgs e) {
             var selection = new LayoutSelection();
 
             foreach (IModelComponentConnectToControl component in LayoutModel.Components<IModelComponentConnectToControl>(LayoutPhase.All))
@@ -1787,9 +1801,9 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEvent("show-messages", this));
         }
 
-        private void menuItemSelectUnlinkedSignals_Click(object? sender, EventArgs e) {
-            Dictionary<Guid, LayoutBlockEdgeBase> map = (Dictionary<Guid, LayoutBlockEdgeBase>)EventManager.Event(new LayoutEvent("get-linked-signal-map", this));
-            LayoutSelection selection = new LayoutSelection();
+        private void MenuItemSelectUnlinkedSignals_Click(object? sender, EventArgs e) {
+            var map = Ensure.NotNull<Dictionary<Guid, LayoutBlockEdgeBase>>(EventManager.Event(new LayoutEvent("get-linked-signal-map", this)));
+            LayoutSelection selection = new();
 
             foreach (LayoutSignalComponent signal in LayoutModel.Components<LayoutSignalComponent>(LayoutPhase.All))
                 if (!map.ContainsKey(signal.Id))
@@ -1803,8 +1817,8 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEvent("show-messages", this));
         }
 
-        private void menuItemSelectUnlinkedTrackLinks_Click(object? sender, EventArgs e) {
-            LayoutSelection selection = new LayoutSelection();
+        private void MenuItemSelectUnlinkedTrackLinks_Click(object? sender, EventArgs e) {
+            LayoutSelection selection = new();
 
             foreach (LayoutTrackLinkComponent trackLink in LayoutModel.Components<LayoutTrackLinkComponent>(LayoutPhase.All))
                 if (trackLink.LinkedComponent == null)
@@ -1818,63 +1832,64 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEvent("show-messages", this));
         }
 
-        private void menuItemNewComponentDesignPhase_Click(object? sender, EventArgs e) {
+        private void MenuItemNewComponentDesignPhase_Click(object? sender, EventArgs e) {
             var command = new ChangeDefaultPhaseCommand(LayoutPhase.Planned);
 
             LayoutController.Do(command);
         }
 
-        private void menuItemNewComponentConstructionPhase_Click(object? sender, EventArgs e) {
+        private void MenuItemNewComponentConstructionPhase_Click(object? sender, EventArgs e) {
             var command = new ChangeDefaultPhaseCommand(LayoutPhase.Construction);
 
             LayoutController.Do(command);
         }
 
-        private void menuItemNewComponentOperationalPhase_Click(object? sender, EventArgs e) {
+        private void MenuItemNewComponentOperationalPhase_Click(object? sender, EventArgs e) {
             var command = new ChangeDefaultPhaseCommand(LayoutPhase.Operational);
 
             LayoutController.Do(command);
         }
 
-        private void menuItemSetToDesignPhase_Click(object? sender, EventArgs e) {
+        private void MenuItemSetToDesignPhase_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEventInfoValueType<LayoutSelection, LayoutPhase>("change-phase", null, LayoutPhase.Planned));
         }
 
-        private void menuItemSetToConstructionPhase_Click(object? sender, EventArgs e) {
+        private void MenuItemSetToConstructionPhase_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEventInfoValueType<LayoutSelection, LayoutPhase>("change-phase", null, LayoutPhase.Construction));
         }
 
-        private void menuItemSetToOperationalPhase_Click(object? sender, EventArgs e) {
+        private void MenuItemSetToOperationalPhase_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEventInfoValueType<LayoutSelection, LayoutPhase>("change-phase", null, LayoutPhase.Operational));
         }
 
-        private void menuItemDefaultPhase_Popup(object? sender, EventArgs e) {
+        private void MenuItemDefaultPhase_Popup(object? sender, EventArgs e) {
             menuItemNewComponentDesignPhase.Checked = LayoutModel.Instance.DefaultPhase == LayoutPhase.Planned;
             menuItemNewComponentConstructionPhase.Checked = LayoutModel.Instance.DefaultPhase == LayoutPhase.Construction;
             menuItemNewComponentOperationalPhase.Checked = LayoutModel.Instance.DefaultPhase == LayoutPhase.Operational;
         }
 
-        private void menuItemViewActivePhases_Click(object? sender, EventArgs e) {
-            menuItemViewActivePhases.Checked = !menuItemViewActivePhases.Checked;
-            ActiveViewPage.ShowActivePhases = menuItemViewActivePhases.Checked;
+        private void MenuItemViewActivePhases_Click(object? sender, EventArgs e) {
+            if (ActiveViewPage != null) {
+                menuItemViewActivePhases.Checked = !menuItemViewActivePhases.Checked;
+                ActiveViewPage.ShowActivePhases = menuItemViewActivePhases.Checked;
 
-            LayoutPhase phases = ActiveViewPage.ShowActivePhases ? LayoutModel.ActivePhases : LayoutPhase.All;
+                LayoutPhase phases = ActiveViewPage.ShowActivePhases ? LayoutModel.ActivePhases : LayoutPhase.All;
 
-            if (phases != ActiveViewPage.View.Phases) {
-                ActiveViewPage.View.Phases = phases;
-                ActiveViewPage.View.Invalidate();
+                if (phases != ActiveViewPage.View.Phases) {
+                    ActiveViewPage.View.Phases = phases;
+                    ActiveViewPage.View.Invalidate();
+                }
             }
         }
-
-        private void menuItemNewWindow_Click(object? sender, EventArgs e) {
+        private void MenuItemNewWindow_Click(object? sender, EventArgs e) {
             ControllerCommand = FrameWindowCommand.NewWindow;
         }
 
-        private void menuItemCloseWindow_Click(object? sender, EventArgs e) {
+        private void MenuItemCloseWindow_Click(object? sender, EventArgs e) {
             Close();
         }
 
-        private void menuItemSelectPowerConnectors_Click(object? sender, EventArgs e) {
+        private void MenuItemSelectPowerConnectors_Click(object? sender, EventArgs e) {
             var selection = new LayoutSelection(LayoutModel.Components<LayoutTrackPowerConnectorComponent>(LayoutPhase.All));
 
             if (selection.Count == 0)
@@ -1883,7 +1898,7 @@ namespace LayoutManager {
                 LayoutModuleBase.Message(selection, "Track power connectors");
         }
 
-        private void menuItemSelectReverseLoopModules_Click(object? sender, EventArgs e) {
+        private void MenuItemSelectReverseLoopModules_Click(object? sender, EventArgs e) {
             var selection = new LayoutSelection(LayoutModel.AllComponents<LayoutTrackReverseLoopModule>(LayoutPhase.All));
 
             if (selection.Count == 0)
@@ -1892,13 +1907,13 @@ namespace LayoutManager {
                 LayoutModuleBase.Message(selection, "Reverse loop modules");
         }
 
-        private void menuItemVerificationOptions_Click(object? sender, EventArgs e) {
+        private void MenuItemVerificationOptions_Click(object? sender, EventArgs e) {
             var d = new Tools.Dialogs.LayoutVerificationOptions();
 
             d.ShowDialog(this);
         }
 
-        private void menuItemTrainTracking_Click(object? sender, EventArgs e) {
+        private void MenuItemTrainTracking_Click(object? sender, EventArgs e) {
             var d = new CommonUI.Dialogs.TrainTrackingOptions();
 
             d.ShowDialog();
@@ -1913,7 +1928,7 @@ namespace LayoutManager {
                 Dock = DockStyle.Fill,
                 Alignment = TabAlignment.Bottom
             };
-            TabViews.SelectedIndexChanged += tabViews_SelectedIndexChanged;
+            TabViews.SelectedIndexChanged += TabViews_SelectedIndexChanged;
 
             this.Text = Area.Name;
             this.Controls.Add(TabViews);
@@ -1931,10 +1946,10 @@ namespace LayoutManager {
 
         protected override void Dispose(bool disposing) {
             if (disposing)
-                TabViews.SelectedIndexChanged -= tabViews_SelectedIndexChanged;
+                TabViews.SelectedIndexChanged -= TabViews_SelectedIndexChanged;
         }
 
-        private void tabViews_SelectedIndexChanged(object? sender, EventArgs e) {
+        private void TabViews_SelectedIndexChanged(object? sender, EventArgs e) {
             FrameWindow.OnViewChanged();
         }
     }
@@ -2009,7 +2024,7 @@ namespace LayoutManager {
             XmlElement areaStatesElement = CreateChildElement("AreaStates");
 
             foreach (var areaTab in frameWindow.AreaTabs)
-                new FrameWindowAreaState(areaStatesElement, areaTab);
+                _ = new FrameWindowAreaState(areaStatesElement, areaTab);
 
             this.ActiveAreaIndex = frameWindow.ActiveAreaIndex;
         }
@@ -2031,7 +2046,7 @@ namespace LayoutManager {
         }
 
         public Rectangle Bounds {
-            get => new Rectangle((int)AttributeValue(A_Left), (int)AttributeValue(A_Top), (int)AttributeValue(A_Width), (int)AttributeValue(A_Height));
+            get => new((int)AttributeValue(A_Left), (int)AttributeValue(A_Top), (int)AttributeValue(A_Width), (int)AttributeValue(A_Height));
 
             set {
                 SetAttributeValue(A_Left, value.Left);
@@ -2043,7 +2058,7 @@ namespace LayoutManager {
 
         public IEnumerable<FrameWindowAreaState> AreaStates {
             get {
-                XmlElement areasElement = Element["AreaStates"];
+                var areasElement = Element["AreaStates"];
 
                 if (areasElement != null)
                     foreach (XmlElement areaElement in areasElement)
@@ -2098,7 +2113,7 @@ namespace LayoutManager {
             LayoutModelArea area = LayoutModel.Areas[AreaId];
 
             if (area != null) {
-                LayoutFrameWindowAreaTabPage areaTab = new LayoutFrameWindowAreaTabPage(area);
+                LayoutFrameWindowAreaTabPage areaTab = new(area);
 
                 tabAreas.TabPages.Add(areaTab);
 
@@ -2116,7 +2131,7 @@ namespace LayoutManager {
 
         public IEnumerable<FrameWindowViewState> ViewStates {
             get {
-                XmlElement viewsElement = Element["ViewStates"];
+                var viewsElement = Element["ViewStates"];
 
                 if (viewsElement != null)
                     foreach (XmlElement viewElement in viewsElement)
@@ -2188,7 +2203,7 @@ namespace LayoutManager {
         }
 
         public Point Origin {
-            get => new Point((int?)AttributeValue(A_OriginX) ?? 0, (int?)AttributeValue(A_OriginY) ?? 0);
+            get => new((int?)AttributeValue(A_OriginX) ?? 0, (int?)AttributeValue(A_OriginY) ?? 0);
             set {
                 SetAttributeValue(A_OriginX, value.X);
                 SetAttributeValue(A_OriginY, value.Y);
@@ -2196,7 +2211,7 @@ namespace LayoutManager {
         }
 
         public Point DefaultOrigin {
-            get => new Point((int?)AttributeValue(A_DefaultOriginX) ?? 0, (int?)AttributeValue(A_DefaultOriginY) ?? 0);
+            get => new((int?)AttributeValue(A_DefaultOriginX) ?? 0, (int?)AttributeValue(A_DefaultOriginY) ?? 0);
             set {
                 SetAttributeValue(A_DefaultOriginX, value.X);
                 SetAttributeValue(A_DefaultOriginY, value.Y);

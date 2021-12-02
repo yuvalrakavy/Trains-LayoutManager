@@ -85,7 +85,8 @@ namespace LayoutManager {
         public static PreviewRouteManager PreviewRouteManager => Instance.PreviewRouteManager;
         public static ILayoutSelectionManager SelectionManager => (ILayoutSelectionManager)Instance;
         public static LayoutSelection UserSelection => Instance.UserSelection;
-        public static OperationModeParameters? OperationModeSettings => Instance.OperationModeSettings;
+        public static OperationModeParameters? OptionalOperationModeSettings => Instance.OperationModeSettings;
+        public static OperationModeParameters OperationModeSettings => Ensure.NotNull<OperationModeParameters>(Instance.OperationModeSettings);
         public static ILayoutCommandManager CommandManager => Instance.CommandManager;
         public static LayoutModuleManager ModuleManager => Instance.ModuleManager;
 

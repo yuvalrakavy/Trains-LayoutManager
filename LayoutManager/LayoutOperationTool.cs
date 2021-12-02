@@ -14,7 +14,7 @@ namespace LayoutManager {
             EventManager.AddObjectSubscriptions(this);
         }
 
-        protected override ContextMenu GetEmptySpotMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) => null;
+        protected override ContextMenuStrip? GetEmptySpotMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) => null;
 
         #region Implement properties for returning various context menu related event names
 
@@ -22,7 +22,7 @@ namespace LayoutManager {
 
         protected override string ComponentContextMenuQueryEventName => "query-component-operation-context-menu";
 
-        protected override string ComponentContextMenuQueryCanRemoveEventName => null;
+        protected override string? ComponentContextMenuQueryCanRemoveEventName => null;
 
         protected override string ComponentContextMenuAddEntriesEventName => "add-component-operation-context-menu-entries";
 

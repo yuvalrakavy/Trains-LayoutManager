@@ -5,7 +5,7 @@ using System.IO;
 
 namespace LayoutManager.Dialogs {
     public partial class LaunchDialog : Form {
-        private readonly TaskCompletionSource<LaunchAction> tcs = new TaskCompletionSource<LaunchAction>();
+        private readonly TaskCompletionSource<LaunchAction> tcs = new();
 
         public LaunchDialog(string lastLayoutFilename) {
             InitializeComponent();
@@ -30,7 +30,7 @@ namespace LayoutManager.Dialogs {
         public string LayoutFilename {
             get;
             private set;
-        }
+        } = String.Empty;
 
         public bool ResetToDefaultDisplayLayout => checkBoxResetToDefaultDisplayLayout.Checked;
 

@@ -873,9 +873,9 @@ namespace LayoutManager.Tools {
             // Check if it make sense to add this menu entry
             if (LayoutController.IsDesignTimeActivation) {
                 if (LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All).Any(commandStation => commandStation.DesignTimeLayoutActivationSupported)) {
-                    var toolsMenu = Ensure.NotNull<ToolStripMenuItem>(e.Info);
+                    var toolsMenu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
-                    toolsMenu.DropDownItems.Add("Emulate &Command station Event...", null,
+                    toolsMenu.Items.Add("Emulate &Command station Event...", null,
                         (object? sender, EventArgs ea) => new Dialogs.SimulateCommandStationInputEvent().ShowDialog(LayoutController.ActiveFrameWindow));
                 }
             }

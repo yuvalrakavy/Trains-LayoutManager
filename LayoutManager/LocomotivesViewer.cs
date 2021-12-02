@@ -8,36 +8,17 @@ using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 using LayoutManager.CommonUI;
 
-#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager {
     /// <summary>
     /// Summary description for LocomotivesViewer.
     /// </summary>
-    public class LocomotivesViewer : UserControl {
+    public partial class LocomotivesViewer : UserControl {
         private const string E_Locomotive = "Locomotive";
         private const string A_Id = "ID";
         private const string A_Store = "Store";
         private const string E_Train = "Train";
-        private ContextMenu contextMenuAdd;
-        private MenuItem menuItemAddLocomotive;
-        private IContainer components;
-        private ContextMenu contextMenuOptions;
-        private MenuItem menuItemArrange;
-        private Button buttonAdd;
-        private Button buttonEdit;
-        private Button buttonDelete;
-        private Button buttonOptions;
-        private Panel panel1;
-        private Button buttonClose;
-        private ImageList imageListCloseButton;
-        private ContextMenu contextMenuArrange;
-        private LocomotiveList locomotiveList;
-        private MenuItem menuItemAddTrain;
-        private MenuItem menuItemStorage;
 
-        private void EndOfDesignerVariables() { }
-
-        private LocomotiveCollectionInfo locomotiveCollection;
+        private LocomotiveCollectionInfo? locomotiveCollection;
         private bool operationMode = false;
 
         public LocomotivesViewer() {
@@ -51,11 +32,11 @@ namespace LayoutManager {
                 if (locomotiveCollection != null)
                     locomotiveList.ContainerElement = locomotiveCollection.CollectionElement;
                 locomotiveList.CurrentListLayoutIndex = 0;
-                updateButtons();
+                UpdateButtons();
             }
 
             get {
-                return locomotiveCollection;
+                return Ensure.NotNull<LocomotiveCollectionInfo>(locomotiveCollection);
             }
         }
 
@@ -64,17 +45,17 @@ namespace LayoutManager {
         /// </summary>
         /// <param name="selectedElement"></param>
         /// <returns>True - item can be deleted</returns>
-        private bool canDelete(XmlElement selectedElement) {
+        private bool CanDelete(XmlElement selectedElement) {
             bool result = true;
 
             if (operationMode) {
                 if (selectedElement.Name == E_Locomotive) {
-                    LocomotiveInfo loco = new LocomotiveInfo(selectedElement);
+                    LocomotiveInfo loco = new(selectedElement);
 
                     result = LayoutModel.StateManager.Trains[loco.Id] == null;
                 }
                 else if (selectedElement.Name == E_Train) {
-                    TrainInCollectionInfo train = new TrainInCollectionInfo(selectedElement);
+                    TrainInCollectionInfo train = new(selectedElement);
 
                     result = LayoutModel.StateManager.Trains[train.Id] == null;
                 }
@@ -83,12 +64,12 @@ namespace LayoutManager {
             return result;
         }
 
-        private void updateButtons() {
-            XmlElement selectedElement = locomotiveList.SelectedXmlElement;
+        private void UpdateButtons() {
+            var selectedElement = locomotiveList.SelectedXmlElement;
 
             if (selectedElement != null) {
                 buttonEdit.Enabled = true;
-                buttonDelete.Enabled = canDelete(selectedElement);
+                buttonDelete.Enabled = CanDelete(selectedElement);
             }
             else {
                 buttonEdit.Enabled = false;
@@ -99,35 +80,35 @@ namespace LayoutManager {
         public void Initialize() {
             EventManager.AddObjectSubscriptions(this);
             locomotiveList.Initialize();
-            locomotiveList.AddLayoutMenuItems(menuItemArrange);
-            locomotiveList.AddLayoutMenuItems(contextMenuArrange);
+            locomotiveList.AddLayoutMenuItems(new MenuOrMenuItem(menuItemArrange));
+            locomotiveList.AddLayoutMenuItems(new MenuOrMenuItem(contextMenuArrange));
         }
 
         [LayoutEvent("enter-design-mode")]
-        private void enterDesignMode(LayoutEvent e) {
+        private void EnterDesignMode(LayoutEvent e) {
             operationMode = false;
             buttonOptions.Text = "&Options";
         }
 
         [LayoutEvent("enter-operation-mode")]
-        private void enterOperationMode(LayoutEvent e) {
+        private void EnterOperationMode(LayoutEvent e) {
             operationMode = true;
             buttonOptions.Text = "&Arrange";
         }
 
         [LayoutEvent("train-created")]
         [LayoutEvent("train-is-removed")]
-        private void eventThatUpdateButtons(LayoutEvent e) {
-            updateButtons();
+        private void EventThatUpdateButtons(LayoutEvent e) {
+            UpdateButtons();
         }
 
         [LayoutEvent("disable-locomotive-list-update")]
-        private void disableLocomotiveListUpdate(LayoutEvent e) {
+        private void DisableLocomotiveListUpdate(LayoutEvent e) {
             locomotiveList.DisableUpdate();
         }
 
         [LayoutEvent("enable-locomotive-list-update")]
-        private void enableLocomotiveListUpdate(LayoutEvent e) {
+        private void EnableLocomotiveListUpdate(LayoutEvent e) {
             locomotiveList.EnableUpdate();
         }
 
@@ -136,28 +117,31 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("locomotive-set-updated-locomotive-definition")]
-        private void locomotiveDefinitionUpdated(LayoutEvent e) {
-            locomotiveCollection.Save();
+        private void LocomotiveDefinitionUpdated(LayoutEvent e) {
+            locomotiveCollection?.Save();
         }
 
         [LayoutEvent("edit-locomotive-properties")]
-        private void editLocomotiveProperties(LayoutEvent e) {
-            LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
-            Dialogs.LocomotiveProperties locoProperties = new Dialogs.LocomotiveProperties(loco);
+        private void EditLocomotiveProperties(LayoutEvent e) {
+            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
+            Dialogs.LocomotiveProperties locoProperties = new(loco);
 
             if (locoProperties.ShowDialog(this) == DialogResult.OK)
-                locomotiveCollection.Save();
+                locomotiveCollection?.Save();
         }
 
         [LayoutEvent("add-new-locomotive-to-collection")]
-        private void addNewLocomotiveToCollection(LayoutEvent e) {
+        private void AddNewLocomotiveToCollection(LayoutEvent e) {
+            if (locomotiveCollection == null)
+                return;
+
             XmlElement locoElement = locomotiveCollection.CollectionDocument.CreateElement(E_Locomotive);
 
             locoElement.SetAttributeValue(A_Id, Guid.NewGuid());
             locoElement.SetAttributeValue(A_Store, locomotiveCollection.DefaultStore);
 
-            LocomotiveInfo loco = new LocomotiveInfo(locoElement);
-            Dialogs.LocomotiveProperties locoProperties = new Dialogs.LocomotiveProperties(loco);
+            LocomotiveInfo loco = new(locoElement);
+            Dialogs.LocomotiveProperties locoProperties = new(loco);
 
             if (locoProperties.ShowDialog(this) == DialogResult.OK) {
                 locomotiveCollection.CollectionElement.AppendChild(loco.Element);
@@ -166,13 +150,16 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("add-new-train-to-collection")]
-        private void addNewTrainToCollection(LayoutEvent e) {
+        private void AddNewTrainToCollection(LayoutEvent e) {
+            if (locomotiveCollection == null)
+                return;
+
             XmlElement trainInCollectionElement = locomotiveCollection.CollectionDocument.CreateElement(E_Train);
-            TrainInCollectionInfo trainInCollection = new TrainInCollectionInfo(trainInCollectionElement);
+            TrainInCollectionInfo trainInCollection = new(trainInCollectionElement);
 
             trainInCollection.Initialize();
 
-            Tools.Dialogs.TrainProperties trainDialog = new Tools.Dialogs.TrainProperties(trainInCollection);
+            Tools.Dialogs.TrainProperties trainDialog = new(trainInCollection);
 
             if (trainDialog.ShowDialog(this) == DialogResult.OK) {
                 locomotiveCollection.CollectionElement.AppendChild(trainInCollectionElement);
@@ -181,66 +168,66 @@ namespace LayoutManager {
         }
 
         [LayoutEvent("edit-locomotive-collection-item")]
-        private void editLocomotiveCollectionItem(LayoutEvent e) {
-            XmlElement selectedElement = (XmlElement)e.Sender;
+        private void EditLocomotiveCollectionItem(LayoutEvent e) {
+            var selectedElement = (XmlElement?)e.Sender;
 
             if (selectedElement != null) {
                 if (selectedElement.Name == E_Locomotive) {
-                    LocomotiveInfo loco = new LocomotiveInfo(selectedElement);
-                    Dialogs.LocomotiveProperties locoProperties = new Dialogs.LocomotiveProperties(loco);
+                    LocomotiveInfo loco = new(selectedElement);
+                    Dialogs.LocomotiveProperties locoProperties = new(loco);
 
                     if (locoProperties.ShowDialog(this) == DialogResult.OK)
-                        locomotiveCollection.Save();
+                        locomotiveCollection?.Save();
                 }
                 else if (selectedElement.Name == E_Train) {
-                    Tools.Dialogs.TrainProperties trainDialog = new Tools.Dialogs.TrainProperties(new TrainInCollectionInfo(selectedElement));
+                    Tools.Dialogs.TrainProperties trainDialog = new(new TrainInCollectionInfo(selectedElement));
 
                     if (trainDialog.ShowDialog(this) == DialogResult.OK)
-                        locomotiveCollection.Save();
+                        locomotiveCollection?.Save();
                 }
             }
         }
 
         [LayoutEvent("delete-locomotive-collection-item")]
-        private void deleteLocomotiveCollectionItem(LayoutEvent e) {
-            XmlElement selectedElement = (XmlElement)e.Sender;
+        private void DeleteLocomotiveCollectionItem(LayoutEvent e) {
+            var selectedElement = (XmlElement?)e.Sender;
 
-            if (selectedElement != null && canDelete(selectedElement)) {
-                selectedElement.ParentNode.RemoveChild(selectedElement);
-                locomotiveCollection.EnsureReferentialIntegrity();
-                locomotiveCollection.Save();
+            if (selectedElement != null && CanDelete(selectedElement)) {
+                selectedElement.ParentNode?.RemoveChild(selectedElement);
+                locomotiveCollection?.EnsureReferentialIntegrity();
+                locomotiveCollection?.Save();
             }
         }
 
         [LayoutEvent("add-locomotive-collection-editing-context-menu-entries")]
-        private void addLocomotiveCollectionEditingContextMenuEntries(LayoutEvent e) {
-            XmlElement clickedElement = (XmlElement)e.Sender;
-            Menu m = (Menu)e.Info;
+        private void AddLocomotiveCollectionEditingContextMenuEntries(LayoutEvent e) {
+            var clickedElement = (XmlElement?)e.Sender;
+            var m = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
             if (clickedElement != null) {
-                m.MenuItems.Add(new EditLocomotiveCollectionItemPropertiesMenuItem(clickedElement, "&Properties..."));
-                m.MenuItems.Add(new DeleteLocomotiveCollectionItemMenuItem(clickedElement, canDelete(clickedElement)));
+                m.Items.Add(new EditLocomotiveCollectionItemPropertiesMenuItem(clickedElement, "&Properties..."));
+                m.Items.Add(new DeleteLocomotiveCollectionItemMenuItem(clickedElement, CanDelete(clickedElement)));
             }
         }
 
         [LayoutEvent("add-locomotive-collection-operation-context-menu-entries", Order = 100)]
-        private void addLocomotiveCollectionOperationContextMenuEntries(LayoutEvent e) {
-            XmlElement clickedElement = (XmlElement)e.Sender;
-            Menu m = (Menu)e.Info;
+        private void AddLocomotiveCollectionOperationContextMenuEntries(LayoutEvent e) {
+            var clickedElement = (XmlElement?)e.Sender;
+            var m = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
             if (clickedElement != null) {
-                if (m.MenuItems.Count > 0)
-                    m.MenuItems.Add("-");
+                if (m.Items.Count > 0)
+                    m.Items.Add(new ToolStripSeparator());
 
                 if (clickedElement.Name == E_Locomotive)
-                    m.MenuItems.Add(new EditLocomotiveCollectionItemPropertiesMenuItem(clickedElement, "&Locomotive properties..."));
-                m.MenuItems.Add(new DeleteLocomotiveCollectionItemMenuItem(clickedElement, canDelete(clickedElement)));
+                    m.Items.Add(new EditLocomotiveCollectionItemPropertiesMenuItem(clickedElement, "&Locomotive properties..."));
+                m.Items.Add(new DeleteLocomotiveCollectionItemMenuItem(clickedElement, CanDelete(clickedElement)));
             }
         }
 
         #region Context menu items
 
-        private class EditLocomotiveCollectionItemPropertiesMenuItem : MenuItem {
+        private class EditLocomotiveCollectionItemPropertiesMenuItem : LayoutMenuItem {
             private readonly XmlElement element;
 
             public EditLocomotiveCollectionItemPropertiesMenuItem(XmlElement element, string menuText) {
@@ -253,7 +240,7 @@ namespace LayoutManager {
             }
         }
 
-        private class DeleteLocomotiveCollectionItemMenuItem : MenuItem {
+        private class DeleteLocomotiveCollectionItemMenuItem : LayoutMenuItem {
             private readonly XmlElement element;
 
             public DeleteLocomotiveCollectionItemMenuItem(XmlElement element, bool canDelete) {
@@ -282,190 +269,27 @@ namespace LayoutManager {
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.components = new Container();
-            ComponentResourceManager resources = new ComponentResourceManager(typeof(LocomotivesViewer));
-            this.contextMenuAdd = new ContextMenuStrip();
-            this.menuItemAddLocomotive = new ToolStripMenuItem();
-            this.menuItemAddTrain = new ToolStripMenuItem();
-            this.contextMenuOptions = new ContextMenuStrip();
-            this.menuItemArrange = new ToolStripMenuItem();
-            this.menuItemStorage = new ToolStripMenuItem();
-            this.buttonAdd = new Button();
-            this.buttonEdit = new Button();
-            this.buttonDelete = new Button();
-            this.buttonOptions = new Button();
-            this.panel1 = new Panel();
-            this.buttonClose = new Button();
-            this.imageListCloseButton = new ImageList(this.components);
-            this.contextMenuArrange = new ContextMenuStrip();
-            this.locomotiveList = new LocomotiveList();
-            this.panel1.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // contextMenuAdd
-            // 
-            this.contextMenuAdd.MenuItems.AddRange(new MenuItem[] {
-                                                                                           this.menuItemAddLocomotive,
-                                                                                           this.menuItemAddTrain});
-            // 
-            // menuItemAddLocomotive
-            // 
-            this.menuItemAddLocomotive.Index = 0;
-            this.menuItemAddLocomotive.Text = "&Locomotive...";
-            this.menuItemAddLocomotive.Click += this.menuItemAddLocomotive_Click;
-            // 
-            // menuItemAddTrain
-            // 
-            this.menuItemAddTrain.Index = 1;
-            this.menuItemAddTrain.Text = "&Train...";
-            this.menuItemAddTrain.Click += this.menuItemAddTrain_Click;
-            // 
-            // contextMenuOptions
-            // 
-            this.contextMenuOptions.MenuItems.AddRange(new MenuItem[] {
-                                                                                               this.menuItemArrange,
-                                                                                               this.menuItemStorage});
-            // 
-            // menuItemArrange
-            // 
-            this.menuItemArrange.Index = 0;
-            this.menuItemArrange.Text = "Arrange by";
-            // 
-            // menuItemStorage
-            // 
-            this.menuItemStorage.Index = 1;
-            this.menuItemStorage.Text = "Storage...";
-            this.menuItemStorage.Click += this.menuItemStorage_Click;
-            // 
-            // buttonAdd
-            // 
-            this.buttonAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonAdd.Location = new Point(12, 464);
-            this.buttonAdd.Name = "buttonAdd";
-            this.buttonAdd.Size = new Size(56, 20);
-            this.buttonAdd.TabIndex = 5;
-            this.buttonAdd.Text = "&Add";
-            this.buttonAdd.Click += this.buttonAdd_Click;
-            // 
-            // buttonEdit
-            // 
-            this.buttonEdit.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonEdit.Location = new Point(76, 464);
-            this.buttonEdit.Name = "buttonEdit";
-            this.buttonEdit.Size = new Size(56, 20);
-            this.buttonEdit.TabIndex = 6;
-            this.buttonEdit.Text = "&Edit...";
-            this.buttonEdit.Click += this.buttonEdit_Click;
-            // 
-            // buttonDelete
-            // 
-            this.buttonDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonDelete.Location = new Point(140, 464);
-            this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new Size(56, 20);
-            this.buttonDelete.TabIndex = 3;
-            this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += this.buttonDelete_Click;
-            // 
-            // buttonOptions
-            // 
-            this.buttonOptions.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            this.buttonOptions.Location = new Point(134, 488);
-            this.buttonOptions.Name = "buttonOptions";
-            this.buttonOptions.Size = new Size(62, 20);
-            this.buttonOptions.TabIndex = 4;
-            this.buttonOptions.Text = "&Options...";
-            this.buttonOptions.Click += this.buttonOptions_Click;
-            // 
-            // panel1
-            // 
-            this.panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right;
-            this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.panel1.Controls.AddRange(new Control[] {
-                                                                                 this.buttonClose});
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new Size(208, 20);
-            this.panel1.TabIndex = 7;
-            // 
-            // buttonClose
-            // 
-            this.buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            this.buttonClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonClose.Image = (Bitmap)resources.GetObject("buttonClose.Image");
-            this.buttonClose.ImageIndex = 0;
-            this.buttonClose.ImageList = this.imageListCloseButton;
-            this.buttonClose.Location = new Point(186, 1);
-            this.buttonClose.Name = "buttonClose";
-            this.buttonClose.Size = new Size(16, 16);
-            this.buttonClose.TabIndex = 0;
-            this.buttonClose.Click += this.buttonClose_Click;
-            // 
-            // imageListCloseButton
-            // 
-            this.imageListCloseButton.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.imageListCloseButton.ImageSize = new Size(16, 16);
-            this.imageListCloseButton.ImageStream = (ImageListStreamer)resources.GetObject("imageListCloseButton.ImageStream");
-            this.imageListCloseButton.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // locomotiveList
-            // 
-            this.locomotiveList.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
-                | System.Windows.Forms.AnchorStyles.Left
-                | System.Windows.Forms.AnchorStyles.Right;
-            this.locomotiveList.ContainerElement = null;
-            this.locomotiveList.CurrentListLayout = null;
-            this.locomotiveList.CurrentListLayoutIndex = -1;
-            this.locomotiveList.DefaultSortField = "Name";
-            this.locomotiveList.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.locomotiveList.Location = new Point(4, 24);
-            this.locomotiveList.Name = "locomotiveList";
-            this.locomotiveList.ShowOnlyLocomotives = false;
-            this.locomotiveList.Size = new Size(196, 432);
-            this.locomotiveList.TabIndex = 8;
-            this.locomotiveList.MouseDown += this.locomotiveList_MouseDown;
-            this.locomotiveList.SelectedIndexChanged += this.locomotiveList_SelectedIndexChanged;
-            // 
-            // LocomotivesViewer
-            // 
-            this.Controls.AddRange(new Control[] {
-                                                                          this.locomotiveList,
-                                                                          this.panel1,
-                                                                          this.buttonAdd,
-                                                                          this.buttonEdit,
-                                                                          this.buttonDelete,
-                                                                          this.buttonOptions});
-            this.Name = "LocomotivesViewer";
-            this.Size = new Size(208, 512);
-            this.panel1.ResumeLayout(false);
-            this.ResumeLayout(false);
-        }
-        #endregion
-
-        private void buttonAdd_Click(object? sender, EventArgs e) {
+        private void ButtonAdd_Click(object? sender, EventArgs e) {
             contextMenuAdd.Show(this, new Point(buttonAdd.Left, buttonAdd.Bottom + 2));
         }
 
-        private void menuItemAddLocomotive_Click(object? sender, EventArgs e) {
+        private void MenuItemAddLocomotive_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEvent("add-new-locomotive-to-collection", this));
         }
 
-        private void buttonOptions_Click(object? sender, EventArgs e) {
+        private void ButtonOptions_Click(object? sender, EventArgs e) {
             if (!operationMode)
                 contextMenuOptions.Show(this, new Point(buttonOptions.Left, buttonOptions.Bottom));
             else
                 contextMenuArrange.Show(this, new Point(buttonOptions.Left, buttonOptions.Bottom));
         }
 
-        private void menuItemStorage_Click(object? sender, EventArgs e) {
-            Dialogs.LocomotiveCollectionStores stores = new Dialogs.LocomotiveCollectionStores("Locomotive Collection",
-                locomotiveCollection.Element["Stores"], "Locomotive Collection",
+        private void MenuItemStorage_Click(object? sender, EventArgs e) {
+            if (locomotiveCollection == null)
+                return;
+
+            Dialogs.LocomotiveCollectionStores stores = new("Locomotive Collection",
+                locomotiveCollection.Element["Stores"]!, "Locomotive Collection",
                 locomotiveCollection.DefaultStoreDirectory, ".LocomotiveCollection") {
                 Text = "Locomotive Collection Storage"
             };
@@ -480,33 +304,33 @@ namespace LayoutManager {
             SaveModelDocument();
         }
 
-        private void locomotiveList_SelectedIndexChanged(object? sender, EventArgs e) {
-            updateButtons();
+        private void LocomotiveList_SelectedIndexChanged(object? sender, EventArgs e) {
+            UpdateButtons();
         }
 
-        private void buttonEdit_Click(object? sender, EventArgs e) {
-            XmlElement selectedElement = locomotiveList.SelectedXmlElement;
+        private void ButtonEdit_Click(object? sender, EventArgs e) {
+            var selectedElement = locomotiveList.SelectedXmlElement;
 
             EventManager.Event(new LayoutEvent("edit-locomotive-collection-item", selectedElement));
         }
 
-        private void buttonDelete_Click(object? sender, EventArgs e) {
-            XmlElement selectedElement = locomotiveList.SelectedXmlElement;
+        private void ButtonDelete_Click(object? sender, EventArgs e) {
+            var selectedElement = locomotiveList.SelectedXmlElement;
 
             EventManager.Event(new LayoutEvent("delete-locomotive-collection-item", selectedElement));
         }
 
-        private void menuItemAddTrain_Click(object? sender, EventArgs e) {
+        private void MenuItemAddTrain_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEvent("add-new-train-to-collection", this));
         }
 
-        private void locomotiveList_MouseDown(object? sender, MouseEventArgs e) {
+        private void LocomotiveList_MouseDown(object? sender, MouseEventArgs e) {
             if ((e.Button & MouseButtons.Right) != 0) {
                 int clickedIndex = locomotiveList.IndexFromPoint(e.X, e.Y);
 
                 if (clickedIndex >= 0) {
                     if (locomotiveList.Items[clickedIndex] is IXmlQueryListBoxXmlElementItem clickedItem) {
-                        var m = new ContextMenuStrip);
+                        var m = new ContextMenuStrip();
 
                         if (operationMode)
                             EventManager.Event(new LayoutEvent("add-locomotive-collection-operation-context-menu-entries", clickedItem.Element, new MenuOrMenuItem(m)));
@@ -523,7 +347,7 @@ namespace LayoutManager {
             }
         }
 
-        private void buttonClose_Click(object? sender, EventArgs e) {
+        private void ButtonClose_Click(object? sender, EventArgs e) {
             EventManager.Event(new LayoutEvent("hide-locomotives", this));
         }
     }

@@ -64,7 +64,7 @@ namespace LayoutManager.Dialogs {
 			this.buttonBrowse.TabIndex = 2;
 			this.buttonBrowse.Text = "&Browse...";
 			this.buttonBrowse.UseVisualStyleBackColor = true;
-			this.buttonBrowse.Click += new System.EventHandler(this.buttonBrowse_Click);
+			this.buttonBrowse.Click += new System.EventHandler(this.ButtonBrowse_Click);
 			// 
 			// tableLayoutPanel1
 			// 
@@ -100,8 +100,8 @@ namespace LayoutManager.Dialogs {
 			this.tableLayoutPanel1.SetRowSpan(this.treeViewScripts, 4);
 			this.treeViewScripts.Size = new System.Drawing.Size(287, 250);
 			this.treeViewScripts.TabIndex = 1;
-			this.treeViewScripts.DoubleClick += new System.EventHandler(this.treeViewScripts_DoubleClick);
-			this.treeViewScripts.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewScriptsAndExportedScripts_AfterSelect);
+			this.treeViewScripts.DoubleClick += new System.EventHandler(this.TreeViewScripts_DoubleClick);
+			this.treeViewScripts.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewScriptsAndExportedScripts_AfterSelect);
 			// 
 			// buttonAdd
 			// 
@@ -114,7 +114,7 @@ namespace LayoutManager.Dialogs {
 			this.buttonAdd.TabIndex = 3;
 			this.buttonAdd.Text = ">>";
 			this.buttonAdd.UseVisualStyleBackColor = true;
-			this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+			this.buttonAdd.Click += new System.EventHandler(this.ButtonAdd_Click);
 			// 
 			// buttonRemove
 			// 
@@ -127,7 +127,7 @@ namespace LayoutManager.Dialogs {
 			this.buttonRemove.TabIndex = 4;
 			this.buttonRemove.Text = "<<";
 			this.buttonRemove.UseVisualStyleBackColor = true;
-			this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+			this.buttonRemove.Click += new System.EventHandler(this.ButtonRemove_Click);
 			// 
 			// treeViewExportedScripts
 			// 
@@ -137,8 +137,8 @@ namespace LayoutManager.Dialogs {
 			this.tableLayoutPanel1.SetRowSpan(this.treeViewExportedScripts, 4);
 			this.treeViewExportedScripts.Size = new System.Drawing.Size(288, 250);
 			this.treeViewExportedScripts.TabIndex = 2;
-			this.treeViewExportedScripts.DoubleClick += new System.EventHandler(this.treeViewExportedScripts_DoubleClick);
-			this.treeViewExportedScripts.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewScriptsAndExportedScripts_AfterSelect);
+			this.treeViewExportedScripts.DoubleClick += new System.EventHandler(this.TreeViewExportedScripts_DoubleClick);
+			this.treeViewExportedScripts.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewScriptsAndExportedScripts_AfterSelect);
 			// 
 			// label2
 			// 
@@ -167,7 +167,7 @@ namespace LayoutManager.Dialogs {
 			this.buttonOK.TabIndex = 3;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
 			// 
 			// buttonCancel
 			// 

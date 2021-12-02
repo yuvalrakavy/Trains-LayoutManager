@@ -9,7 +9,7 @@ namespace LayoutManager.CommonUI.Controls {
         public XmlQueryCombobox() {
         }
 
-        public XmlElement? ContainerElement { init; get; }
+        public XmlElement? ContainerElement { set; get; }
 
         public string Query { get; set; } = "*[contains(Name, '<TEXT>')]";
 

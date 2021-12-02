@@ -17,12 +17,12 @@ namespace LayoutManager {
 namespace LayoutManager.Dialogs {
     internal partial class Print : Form {
         private readonly PrintDocument printDoc;
-        private readonly Dictionary<string, IntPtr> devModes = new Dictionary<string, IntPtr>();
+        private readonly Dictionary<string, IntPtr> devModes = new();
 
         public Print(PrintDocument printDoc) {
             InitializeComponent();
 
-            string defaultPrinterName = null;
+            string? defaultPrinterName = null;
 
             this.printDoc = printDoc;
 
@@ -51,14 +51,14 @@ namespace LayoutManager.Dialogs {
         public bool GridLines => checkBoxGridLines.Checked;
 
         private void buttonOK_Click(object? sender, EventArgs e) {
-            printDoc.PrinterSettings.PrinterName = comboBoxPrinters.SelectedItem.ToString();
+            printDoc.PrinterSettings.PrinterName = comboBoxPrinters.SelectedItem.ToString() ?? String.Empty;
 
             DialogResult = DialogResult.OK;
             Close();
         }
 
         private void buttonProperties_Click(object? sender, EventArgs e) {
-            string printerName = comboBoxPrinters.SelectedItem.ToString();
+            string printerName = comboBoxPrinters.SelectedItem.ToString() ?? String.Empty;
 
             IntPtr devModeHandle = IntPtr.Zero;
             IntPtr devModePtr = IntPtr.Zero;
@@ -88,7 +88,7 @@ namespace LayoutManager.Dialogs {
             private NativeMethods() {
             }
 
-            static internal HandleRef nullHandleRef = new HandleRef();
+            static internal HandleRef nullHandleRef = new();
 
             [DllImport("kernel32.dll", PreserveSig = true, CallingConvention = CallingConvention.Winapi)]
             static internal extern IntPtr GlobalAlloc(uint flags, int size);

@@ -2,18 +2,19 @@ using System;
 using System.Windows.Forms;
 using System.Drawing;
 using LayoutManager.Model;
+using LayoutManager.CommonUI;
 
 /// This file contain implementation of commands that are carried out on a selection
 /// 
 
 namespace LayoutManager {
-    public class MenuItemDeleteSelection : MenuItem {
+    public class MenuItemDeleteSelection : LayoutMenuItem {
         public MenuItemDeleteSelection() {
             this.Text = "&Delete";
         }
 
         protected override void OnClick(EventArgs e) {
-            LayoutCompoundCommand deleteSelectionCommand = new LayoutCompoundCommand("delete selection");
+            LayoutCompoundCommand deleteSelectionCommand = new("delete selection");
 
             foreach (ModelComponent component in LayoutController.UserSelection) {
                 deleteSelectionCommand.Add(new LayoutComponentDeselectCommand(LayoutController.UserSelection, component, "unselect"));
@@ -25,7 +26,7 @@ namespace LayoutManager {
         }
     }
 
-    public class MenuItemCopySelection : MenuItem {
+    public class MenuItemCopySelection : LayoutMenuItem {
         private Point location;
 
         public MenuItemCopySelection(Point location) {
@@ -47,7 +48,7 @@ namespace LayoutManager {
         }
     }
 
-    public class MenuItemCutSelection : MenuItem {
+    public class MenuItemCutSelection : LayoutMenuItem {
         private Point location;
 
         public MenuItemCutSelection(Point location) {
@@ -62,7 +63,7 @@ namespace LayoutManager {
         public void Cut() {
             Clipboard.SetDataObject(LayoutController.UserSelection.GetDataObject(location));
 
-            LayoutCompoundCommand deleteSelectionCommand = new LayoutCompoundCommand("Cut selection");
+            LayoutCompoundCommand deleteSelectionCommand = new("Cut selection");
 
             foreach (ModelComponent component in LayoutController.UserSelection) {
                 deleteSelectionCommand.Add(new LayoutComponentDeselectCommand(LayoutController.UserSelection, component, "unselect"));

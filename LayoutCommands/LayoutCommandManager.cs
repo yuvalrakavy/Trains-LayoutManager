@@ -37,7 +37,7 @@ namespace LayoutManager {
     /// Manage Undo/Redo queue for layout commands
     /// </summary>
     public class LayoutCommandManager : ILayoutCommandManager {
-        private readonly List<ILayoutCommand> commands = new List<ILayoutCommand>(capacity: 20);
+        private readonly List<ILayoutCommand> commands = new(capacity: 20);
         private int iCommand = 0;
         private int changeLevel = 0;
 
@@ -193,7 +193,7 @@ namespace LayoutManager {
     /// the user this series of commands is presented as a single command.
     /// </summary>
     public class LayoutCompoundCommand : LayoutCommand, ILayoutCompoundCommand, IEnumerable<ILayoutCommand> {
-        private readonly List<ILayoutCommand> commands = new List<ILayoutCommand>();
+        private readonly List<ILayoutCommand> commands = new();
         private bool executeAtOnce = false;
 
         public LayoutCompoundCommand(String description) {

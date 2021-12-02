@@ -975,7 +975,7 @@ namespace LayoutManager.Model {
 
         public Guid ModuleId => _moduleId;
 
-        public static implicit operator ControlModule?(ControlModuleReference moduleRef) => moduleRef.Module;
+        public static implicit operator ControlModule(ControlModuleReference moduleRef) => moduleRef.Module;
     }
 
     /// <summary>

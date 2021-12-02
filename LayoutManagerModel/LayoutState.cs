@@ -2520,7 +2520,7 @@ namespace LayoutManager.Model {
                 Initialize();
             }
             catch (IOException) {
-                if (Element == null)
+                if (OptionalElement == null)
                     XmlDocument.LoadXml("<LayoutState><Trains /><Components /><TrackContacts /><TripPlansCatalog /></LayoutState>");
                 Initialize();
             }

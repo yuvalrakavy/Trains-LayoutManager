@@ -17,7 +17,7 @@ namespace LayoutManager {
         /// <param name="containerCommand">if the select operation is part of a compund command then
         /// this parameter is the compound command object, otherwise is is null</param>
         public void Add(ModelComponent component, ILayoutCompoundCommand containerCommand) {
-            LayoutComponentSelectCommand selectCommand = new LayoutComponentSelectCommand(this, component, "select");
+            LayoutComponentSelectCommand selectCommand = new(this, component, "select");
 
             if (containerCommand != null)
                 containerCommand.Add(selectCommand);
@@ -88,7 +88,7 @@ namespace LayoutManager {
         /// </summary>
         /// <param name="component">The component to remove from the selection</param>
         public void Remove(ModelComponent component, ILayoutCompoundCommand container) {
-            LayoutComponentDeselectCommand deselectCommand = new LayoutComponentDeselectCommand(this, component, "unselect");
+            LayoutComponentDeselectCommand deselectCommand = new(this, component, "unselect");
 
             if (container != null)
                 container.Add(deselectCommand);
@@ -117,7 +117,7 @@ namespace LayoutManager {
         /// <summary>
         /// Remove all components from the selection
         /// </summary>
-        public void Clear(ILayoutCompoundCommand container) {
+        public void Clear(ILayoutCompoundCommand? container) {
             if (this.Count > 0) {
                 ILayoutCompoundCommand clearCommand = new LayoutCompoundCommand("unselect all");
 

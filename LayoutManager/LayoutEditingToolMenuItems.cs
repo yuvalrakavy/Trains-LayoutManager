@@ -10,7 +10,7 @@ using LayoutManager.CommonUI;
 namespace LayoutManager {
     #region Context Menu items
 
-    internal class MenuItemDeleteAllComponents : MenuItem {
+    internal class MenuItemDeleteAllComponents : LayoutMenuItem {
         private readonly LayoutHitTestResult hitTestResult;
 
         public MenuItemDeleteAllComponents(LayoutHitTestResult hitTestResult) {
@@ -22,7 +22,7 @@ namespace LayoutManager {
         public class ZorderSorter : IComparer<ModelComponent> {
             #region IComparer<ModelComponent> Members
 
-            public int Compare(ModelComponent x, ModelComponent y) => y.ZOrder - x.ZOrder;
+            public int Compare(ModelComponent? x, ModelComponent? y) => y!.ZOrder - x!.ZOrder;
 
             public bool Equals(ModelComponent x, ModelComponent y) => x == y;
 
@@ -39,7 +39,7 @@ namespace LayoutManager {
 
             components.Sort(new ZorderSorter());
 
-            LayoutCompoundCommand deleteCommand = new LayoutCompoundCommand("delete");
+            LayoutCompoundCommand deleteCommand = new("delete");
 
             for (int i = components.Count - 1; i >= 0; i--) {
                 EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", components[i], deleteCommand));
@@ -50,7 +50,7 @@ namespace LayoutManager {
         }
     }
 
-    internal class MenuItemCopyComponent : MenuItem {
+    internal class MenuItemCopyComponent : LayoutMenuItem {
         private readonly LayoutHitTestResult hitTestResult;
 
         public MenuItemCopyComponent(LayoutHitTestResult hitTestResult) {
@@ -65,7 +65,7 @@ namespace LayoutManager {
         }
     }
 
-    internal class MenuItemCutComponent : MenuItem {
+    internal class MenuItemCutComponent : LayoutMenuItem {
         private readonly LayoutHitTestResult hitTestResult;
 
         public MenuItemCutComponent(LayoutHitTestResult hitTestResult) {
@@ -79,9 +79,9 @@ namespace LayoutManager {
 
             Clipboard.SetDataObject(hitTestResult.Selection.GetDataObject(hitTestResult.ModelLocation));
 
-            LayoutCompoundCommand cutCommand = new LayoutCompoundCommand("cut component");
+            LayoutCompoundCommand cutCommand = new("cut component");
             foreach (ModelComponent c in hitTestResult.Selection) {
-                LayoutComponentRemovalCommand removeCommand = new LayoutComponentRemovalCommand(c, "remove");
+                LayoutComponentRemovalCommand removeCommand = new(c, "remove");
 
                 cutCommand.Add(removeCommand);
             }
@@ -90,7 +90,7 @@ namespace LayoutManager {
         }
     }
 
-    internal class MenuItemPasteComponents : MenuItem {
+    internal class MenuItemPasteComponents : LayoutMenuItem {
         private readonly LayoutHitTestResult hitTestResult;
         private readonly string componentsFormat = "LayoutManagerComponents";
 
@@ -108,7 +108,7 @@ namespace LayoutManager {
         }
 
         private void clearLocation(LayoutCompoundCommand pasteCommand, LayoutModelArea area, Point ml) {
-            LayoutModelSpotComponentCollection spot = area[ml, LayoutPhase.All];
+            var spot = area[ml, LayoutPhase.All];
 
             if (spot != null) {
                 IList<ModelComponent> components = spot.Components;
@@ -122,10 +122,10 @@ namespace LayoutManager {
             IDataObject dataObj = Clipboard.GetDataObject();
 
             if (dataObj != null && dataObj.GetDataPresent(componentsFormat)) {
-                System.IO.MemoryStream ms = new System.IO.MemoryStream((byte[])dataObj.GetData(componentsFormat));
+                System.IO.MemoryStream ms = new((byte[])dataObj.GetData(componentsFormat));
                 XmlTextReader r = new LayoutXmlTextReader(ms, LayoutReadXmlContext.PasteComponents);
-                ConvertableString GetAttribute(string name) => new ConvertableString(r.GetAttribute(name), $"Attribute {name}");
-                LayoutCompoundCommand pasteCommand = new LayoutCompoundCommand("paste components");
+                ConvertableString GetAttribute(string name) => new(r.GetAttribute(name), $"Attribute {name}");
+                LayoutCompoundCommand pasteCommand = new("paste components");
 
                 // If there was a selection, then the pasted stuff replaces this selection
                 if (LayoutController.UserSelection.Count > 0) {
@@ -144,19 +144,19 @@ namespace LayoutManager {
                 r.Read();       // <Component>
 
                 while (r.NodeType == XmlNodeType.Element) {
-                    Point ml = new Point((int)GetAttribute("X") + hitTestResult.ModelLocation.X,
+                    Point ml = new((int)GetAttribute("X") + hitTestResult.ModelLocation.X,
                         (int)GetAttribute("Y") + hitTestResult.ModelLocation.Y);
 
                     clearLocation(pasteCommand, hitTestResult.Area, ml);
 
                     // Create the component
-                    string className = r.GetAttribute("Class");
-                    ModelComponent component = LayoutModel.CreateModelComponent(className);
+                    string className = Ensure.NotNull<string>(r.GetAttribute("Class"));
+                    ModelComponent? component = LayoutModel.CreateModelComponent(className);
 
                     if (component != null) {
                         component.ReadXml(r);
 
-                        LayoutComponentPlacmentCommand placeComponentCommand = new LayoutComponentPlacmentCommand(hitTestResult.Area, ml, component, "Add component", hitTestResult.Area.Phase(ml));
+                        LayoutComponentPlacmentCommand placeComponentCommand = new(hitTestResult.Area, ml, component, "Add component", hitTestResult.Area.Phase(ml));
 
                         pasteCommand.Add(placeComponentCommand);
                         ((LayoutSelectionWithUndo)LayoutController.UserSelection).Add(component, pasteCommand);
@@ -179,7 +179,7 @@ namespace LayoutManager {
         protected override void OnClick(EventArgs e) {
             base.OnClick(e);
 
-            LayoutCompoundCommand deleteCommand = new LayoutCompoundCommand("remove " + component.ToString());
+            LayoutCompoundCommand deleteCommand = new("remove " + component.ToString());
 
             EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, deleteCommand));
             deleteCommand.Add(new LayoutComponentRemovalCommand(component, "remove " + component.ToString()));

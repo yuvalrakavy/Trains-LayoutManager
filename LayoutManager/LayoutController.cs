@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051, IDE0060, IDE0067, RCS1090, CA1031
-#nullable enable
 namespace LayoutManager {
     /// <summary>
     /// Actions that the user can perform in the launch dialog
@@ -55,8 +53,8 @@ namespace LayoutManager {
                 Application.Run(new LayoutControllerImplementation());
             }
             catch (TargetInvocationException ex) {
-                Trace.WriteLine("Unhandled exception: " + ex.InnerException.Message);
-                Trace.Write("At: " + ex.InnerException.StackTrace);
+                Trace.WriteLine("Unhandled exception: " + ex.InnerException?.Message ?? "No inner exception");
+                Trace.Write("At: " + ex.InnerException?.StackTrace ?? "No inner exception");
             }
         }
 
@@ -104,7 +102,8 @@ namespace LayoutManager {
             ModuleManager.LayoutAssemblies.Add(new LayoutAssembly(this.GetType().Assembly));
 
             // Add assemblies in the Modules directory
-            string modulesDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules");
+            //string modulesDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules");
+            string modulesDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
             foreach (string moduleFilename in Directory.GetFiles(modulesDirectory, "*.dll")) {
                 if (!ModuleManager.LayoutAssemblies.IsDefined(moduleFilename))
@@ -621,21 +620,21 @@ namespace LayoutManager {
         }
 
         public void Area_Added(object? sender, EventArgs e) {
-            LayoutModelArea area = (LayoutModelArea)sender;
+            var area = Ensure.NotNull<LayoutModelArea>(sender);
 
             EventManager.Event(new LayoutEvent<LayoutModelArea>("area-added", area));
             LayoutModified();
         }
 
         public void Area_Removed(object? sender, EventArgs e) {
-            LayoutModelArea area = (LayoutModelArea)sender;
+            var area = Ensure.NotNull<LayoutModelArea>(sender);
 
             EventManager.Event(new LayoutEvent<LayoutModelArea>("area-removed", area));
             LayoutModified();
         }
 
         public void Area_Renamed(object? sender, EventArgs e) {
-            LayoutModelArea area = (LayoutModelArea)sender;
+            var area = Ensure.NotNull<LayoutModelArea>(sender);
 
             EventManager.Event(new LayoutEvent<LayoutModelArea>("area-renamed", area));
             LayoutModified();
@@ -709,7 +708,7 @@ namespace LayoutManager {
         private const string E_WindowStates = "WindowStates";
 
         public LayoutDisplayState(IEnumerable<LayoutFrameWindow> frameWindows) : base("DisplayState") {
-            OperationModeSettings = LayoutController.OperationModeSettings;
+            OperationModeSettings = LayoutController.OptionalOperationModeSettings;
 
             XmlElement windowStatesElement = CreateChildElement(E_WindowStates);
 
@@ -770,7 +769,7 @@ namespace LayoutManager {
 
         public IEnumerable<FrameWindowState> FrameWindowStates {
             get {
-                XmlElement windowStatesElement = Element[E_WindowStates];
+                var windowStatesElement = Element[E_WindowStates];
 
                 if (windowStatesElement != null)
                     foreach (XmlElement windowStateElement in windowStatesElement)

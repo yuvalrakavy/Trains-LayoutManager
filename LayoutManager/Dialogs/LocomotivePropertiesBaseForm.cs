@@ -14,21 +14,20 @@ namespace LayoutManager.Dialogs {
     /// <summary>
     /// Base form for the locomotive & locomotive type properties
     /// </summary>
-    public class LocomotiveBasePropertiesForm : Form {
+    public partial class LocomotiveBasePropertiesForm : Form {
         private const string E_Functions = "Functions";
         private const string A_Light = "Light";
         private const string A_Store = "Store";
         private const string A_Number = "Number";
         private const string A_SpeedLimit = "SpeedLimit";
         private const string A_Name = "Name";
-        private readonly Dictionary<string, Control> nameToControlMap = new Dictionary<string, Control>();
+        private readonly Dictionary<string, Control> nameToControlMap = new();
         protected XmlElement element;
-        private ImageGetter imageGetter;
-
-        private ListView listViewFunctions;
-        private AttributesEditor attributesEditor;
 
         public LocomotiveBasePropertiesForm() {
+            var doc = new XmlDocument();
+            doc.LoadXml("<Root/>");
+            element = doc.DocumentElement!;
         }
 
         private void addToNameToControlMap(Dictionary<string, Control> h, Control c) {
@@ -46,7 +45,7 @@ namespace LayoutManager.Dialogs {
         protected LocomotiveCatalogInfo Catalog => LayoutModel.LocomotiveCatalog;
 
         protected void InitializeControls(XmlElement element, XmlElement storesElement) {
-            LocomotiveTypeInfo locoType = new LocomotiveTypeInfo(element);
+            LocomotiveTypeInfo locoType = new(element);
 
             BuildControlNameMap();
 
@@ -89,7 +88,7 @@ namespace LayoutManager.Dialogs {
                 TrackGuageSelector trackGuageSelector = (TrackGuageSelector)nameToControlMap["trackGuageSelector"];
                 var previousSelectionIndex = comboBoxDecoderType.SelectedIndex;
 
-                List<DecoderTypeInfo> decoderTypes = new List<DecoderTypeInfo>();
+                List<DecoderTypeInfo> decoderTypes = new();
 
                 EventManager.Event(new LayoutEvent("enum-decoder-types", decoderTypes));
 
@@ -122,7 +121,7 @@ namespace LayoutManager.Dialogs {
             CheckBox checkBoxHasLights = (CheckBox)nameToControlMap["checkBoxHasLights"];
             ComboBox comboBoxStore = (ComboBox)nameToControlMap["comboBoxStore"];
 
-            element[E_Functions].SetAttributeValue(A_Light, checkBoxHasLights.Checked);
+            element[E_Functions]?.SetAttributeValue(A_Light, checkBoxHasLights.Checked);
             element.SetAttributeValue(A_Store, comboBoxStore.SelectedIndex);
 
             attributesEditor.Commit();
@@ -133,7 +132,7 @@ namespace LayoutManager.Dialogs {
         #region Utility methods
 
         protected void SetImage() {
-            LocomotiveTypeInfo locoType = new LocomotiveTypeInfo(element);
+            LocomotiveTypeInfo locoType = new(element);
 
             if (locoType.Image != null)
                 imageGetter.Image = locoType.Image;
@@ -205,7 +204,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        protected string GetRadioValue(Enum e, string a) {
+        protected string? GetRadioValue(Enum e, string a) {
             String[] names = Enum.GetNames(e.GetType());
 
             foreach (String n in names) {
@@ -281,9 +280,8 @@ namespace LayoutManager.Dialogs {
         }
 
         protected void SetFunctions() {
-            CheckBox checkBoxHasLights = (CheckBox)nameToControlMap["checkBoxHasLights"];
-
-            XmlElement functionsElement = element[E_Functions];
+            var checkBoxHasLights = (CheckBox)nameToControlMap["checkBoxHasLights"];
+            var functionsElement = element[E_Functions];
 
             if (functionsElement == null) {
                 functionsElement = element.OwnerDocument.CreateElement(E_Functions);
@@ -311,9 +309,9 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        protected LocomotiveKind CurrentKind => (LocomotiveKind)Enum.Parse(typeof(LocomotiveKind), GetRadioValue(new LocomotiveKind(), "Kind"));
+        protected LocomotiveKind CurrentKind => (LocomotiveKind)Enum.Parse(typeof(LocomotiveKind), GetRadioValue(new LocomotiveKind(), "Kind") ?? "Steam");
 
-        protected LocomotiveOrigin CurrentOrigin => (LocomotiveOrigin)Enum.Parse(typeof(LocomotiveOrigin), GetRadioValue(new LocomotiveOrigin(), "Origin"));
+        protected LocomotiveOrigin CurrentOrigin => (LocomotiveOrigin)Enum.Parse(typeof(LocomotiveOrigin), GetRadioValue(new LocomotiveOrigin(), "Origin") ?? "Europe");
 
 #if DEBUG
         private void Dump() {
@@ -326,42 +324,45 @@ namespace LayoutManager.Dialogs {
 
         protected void ButtonFunctionAdd_Click(object? sender, EventArgs e) {
             XmlElement functionElement = element.OwnerDocument.CreateElement("Function");
-            FunctionItem item = new FunctionItem(functionElement);
+            FunctionItem item = new(functionElement);
 
             // Allocate default function number
             int functionNumber = 0;
             bool functionNumberUsed;
-            XmlElement functionsElement = element[E_Functions];
+            var functionsElement = element[E_Functions];
 
-            do {
-                functionNumber++;
-                functionNumberUsed = false;
+            if (functionsElement != null) {
+                do {
+                    functionNumber++;
+                    functionNumberUsed = false;
 
-                foreach (XmlElement f in functionsElement) {
-                    if ((int)f.AttributeValue(A_Number) == functionNumber) {
-                        functionNumberUsed = true;
-                        break;
+                    foreach (XmlElement f in functionsElement) {
+                        if ((int)f.AttributeValue(A_Number) == functionNumber) {
+                            functionNumberUsed = true;
+                            break;
+                        }
                     }
+                } while (functionNumberUsed);
+
+                functionElement.SetAttributeValue(A_Number, functionNumber);
+
+                if (item.Edit(this, Catalog, functionsElement) == DialogResult.OK) {
+                    functionsElement.AppendChild(item.FunctionElement);
+                    listViewFunctions.Items.Add(item);
                 }
-            } while (functionNumberUsed);
 
-            functionElement.SetAttributeValue(A_Number, functionNumber);
-
-            if (item.Edit(this, Catalog, functionsElement) == DialogResult.OK) {
-                functionsElement.AppendChild(item.FunctionElement);
-                listViewFunctions.Items.Add(item);
+                item.Selected = true;
+                UpdateButtons();
             }
-
-            item.Selected = true;
-            UpdateButtons();
         }
 
         protected void ButtonFunctionEdit_Click(object? sender, EventArgs e) {
             if (listViewFunctions.SelectedItems.Count > 0) {
                 FunctionItem selected = (FunctionItem)listViewFunctions.SelectedItems[0];
-                XmlElement functionsElement = element[E_Functions];
+                var functionsElement = element[E_Functions];
 
-                selected.Edit(this, Catalog, functionsElement);
+                if(functionsElement != null)
+                    selected.Edit(this, Catalog, functionsElement);
             }
         }
 
@@ -369,7 +370,7 @@ namespace LayoutManager.Dialogs {
             if (listViewFunctions.SelectedItems.Count > 0) {
                 FunctionItem selected = (FunctionItem)listViewFunctions.SelectedItems[0];
 
-                selected.FunctionElement.ParentNode.RemoveChild(selected.FunctionElement);
+                selected.FunctionElement.ParentNode?.RemoveChild(selected.FunctionElement);
                 listViewFunctions.Items.Remove(selected);
                 UpdateButtons();
             }
@@ -391,16 +392,16 @@ namespace LayoutManager.Dialogs {
             LocomotiveCatalogInfo catalog = Catalog;
 
             catalog.Load();
-            LocomotiveFunctionsCopyFrom copyFromDialog = new LocomotiveFunctionsCopyFrom(catalog);
+            LocomotiveFunctionsCopyFrom copyFromDialog = new(catalog);
 
             if (copyFromDialog.ShowDialog(this) == DialogResult.OK) {
-                XmlElement functionsElement = element[E_Functions];
-                XmlElement copyFunctionsElement = copyFromDialog.SelectedLocomotiveType.Element[E_Functions];
+                var functionsElement = element[E_Functions];
+                var copyFunctionsElement = copyFromDialog.SelectedLocomotiveType?.Element[E_Functions];
 
-                functionsElement.RemoveAll();
+                functionsElement?.RemoveAll();
                 listViewFunctions.Items.Clear();
 
-                if (copyFunctionsElement != null) {
+                if (copyFunctionsElement != null && functionsElement != null) {
                     foreach (XmlElement f in copyFunctionsElement) {
                         XmlElement fCopy;
 
@@ -432,7 +433,7 @@ namespace LayoutManager.Dialogs {
         public FunctionItem(XmlElement functionElement) {
             this.FunctionElement = functionElement;
 
-            LocomotiveFunctionInfo function = new LocomotiveFunctionInfo(functionElement);
+            LocomotiveFunctionInfo function = new(functionElement);
 
             this.Text = function.Number.ToString();
             this.SubItems.Add(function.Type == LocomotiveFunctionType.OnOff ? "On/Off" : function.Type.ToString());
@@ -443,7 +444,7 @@ namespace LayoutManager.Dialogs {
         public XmlElement FunctionElement { get; }
 
         public void Update() {
-            LocomotiveFunctionInfo function = new LocomotiveFunctionInfo(FunctionElement);
+            LocomotiveFunctionInfo function = new(FunctionElement);
 
             this.Text = function.Number.ToString();
             this.SubItems[1].Text = function.Type == LocomotiveFunctionType.OnOff ? "On/Off" : function.Type.ToString();
@@ -452,7 +453,7 @@ namespace LayoutManager.Dialogs {
         }
 
         public DialogResult Edit(Control parent, LocomotiveCatalogInfo catalog, XmlElement functionsElement) {
-            LocomotiveFunction locoFunction = new LocomotiveFunction(catalog, functionsElement, FunctionElement);
+            LocomotiveFunction locoFunction = new(catalog, functionsElement, FunctionElement);
 
             DialogResult r = locoFunction.ShowDialog(parent);
             Update();

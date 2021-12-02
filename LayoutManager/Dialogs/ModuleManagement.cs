@@ -4,25 +4,11 @@ using System.Windows.Forms;
 using System.IO;
 
 namespace LayoutManager.Dialogs {
+
     /// <summary>
     /// Implement the module management dialog
     /// </summary>
-    public class ModuleManagement : Form {
-        private Button buttonClose;
-        private Button buttonAdd;
-        private IContainer components;
-        private OpenFileDialog openFileDialogAssembly;
-        private Button buttonChangeStatus;
-        private TreeView treeViewAssemblies;
-        private Button buttonRemove;
-
-        // Images
-        // 0 - Saved module reference
-        // 1 - Temporary module reference
-        // 2 - Disabled module
-        // 3 - Enabled module
-        private ImageList imageListTree;
-
+    public partial class ModuleManagement : Form {
         private bool needToSaveState = false;
 
         public ModuleManagement() {
@@ -34,10 +20,10 @@ namespace LayoutManager.Dialogs {
             foreach (LayoutAssembly layoutAssembly in LayoutController.ModuleManager.LayoutAssemblies)
                 treeViewAssemblies.Nodes.Add(new AssemblyNode(layoutAssembly));
 
-            updateButtons();
+            UpdateButtons();
         }
 
-        private void updateButtons() {
+        private void UpdateButtons() {
             TreeNode selected = treeViewAssemblies.SelectedNode;
 
             if (selected != null) {
@@ -92,106 +78,10 @@ namespace LayoutManager.Dialogs {
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.components = new Container();
-            ComponentResourceManager resources = new ComponentResourceManager(typeof(ModuleManagement));
-            this.buttonRemove = new Button();
-            this.buttonChangeStatus = new Button();
-            this.treeViewAssemblies = new TreeView();
-            this.imageListTree = new ImageList(this.components);
-            this.buttonClose = new Button();
-            this.buttonAdd = new Button();
-            this.openFileDialogAssembly = new OpenFileDialog();
-            this.SuspendLayout();
-            // 
-            // buttonRemove
-            // 
-            this.buttonRemove.Location = new System.Drawing.Point(96, 256);
-            this.buttonRemove.Name = "buttonRemove";
-            this.buttonRemove.TabIndex = 5;
-            this.buttonRemove.Text = "&Remove";
-            this.buttonRemove.Click += this.buttonRemove_Click;
-            // 
-            // buttonChangeStatus
-            // 
-            this.buttonChangeStatus.Location = new System.Drawing.Point(8, 256);
-            this.buttonChangeStatus.Name = "buttonChangeStatus";
-            this.buttonChangeStatus.Size = new System.Drawing.Size(80, 23);
-            this.buttonChangeStatus.TabIndex = 1;
-            this.buttonChangeStatus.Text = "Op";
-            this.buttonChangeStatus.Click += this.buttonChangeStatus_Click;
-            // 
-            // treeViewAssemblies
-            // 
-            this.treeViewAssemblies.HideSelection = false;
-            this.treeViewAssemblies.ImageList = this.imageListTree;
-            this.treeViewAssemblies.Location = new System.Drawing.Point(8, 8);
-            this.treeViewAssemblies.Name = "treeViewAssemblies";
-            this.treeViewAssemblies.Size = new System.Drawing.Size(232, 240);
-            this.treeViewAssemblies.TabIndex = 4;
-            this.treeViewAssemblies.AfterSelect += this.treeViewAssemblies_AfterSelect;
-            // 
-            // imageListTree
-            // 
-            this.imageListTree.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.imageListTree.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageListTree.ImageStream = (ImageListStreamer)resources.GetObject("imageListTree.ImageStream");
-            this.imageListTree.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // buttonClose
-            // 
-            this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonClose.Location = new System.Drawing.Point(248, 256);
-            this.buttonClose.Name = "buttonClose";
-            this.buttonClose.TabIndex = 3;
-            this.buttonClose.Text = "&Close";
-            // 
-            // buttonAdd
-            // 
-            this.buttonAdd.Location = new System.Drawing.Point(248, 224);
-            this.buttonAdd.Name = "buttonAdd";
-            this.buttonAdd.TabIndex = 2;
-            this.buttonAdd.Text = "&Add...";
-            this.buttonAdd.Click += this.buttonAdd_Click;
-            // 
-            // openFileDialogAssembly
-            // 
-            this.openFileDialogAssembly.DefaultExt = "dll";
-            this.openFileDialogAssembly.Filter = "DLL files|*.dll";
-            this.openFileDialogAssembly.Title = "Select Layout Module Assembly file";
-            // 
-            // ModuleManagement
-            // 
-            this.AcceptButton = this.buttonClose;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
-            this.CancelButton = this.buttonClose;
-            this.ClientSize = new System.Drawing.Size(346, 290);
-            this.ControlBox = false;
-            this.Controls.AddRange(new Control[] {
-                                                                          this.buttonRemove,
-                                                                          this.treeViewAssemblies,
-                                                                          this.buttonChangeStatus,
-                                                                          this.buttonAdd,
-                                                                          this.buttonClose});
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.Name = "ModuleManagement";
-            this.ShowInTaskbar = false;
-            this.Text = "Module Management";
-            this.Closed += this.ModuleManagement_Closed;
-            this.ResumeLayout(false);
-        }
-        #endregion
-
-        private void buttonAdd_Click(object? sender, EventArgs e) {
+        private void ButtonAdd_Click(object? sender, EventArgs e) {
             if (openFileDialogAssembly.ShowDialog() == DialogResult.OK) {
                 try {
-                    LayoutAssembly layoutAssembly = new LayoutAssembly(openFileDialogAssembly.FileName);
+                    LayoutAssembly layoutAssembly = new(openFileDialogAssembly.FileName);
 
                     LayoutController.ModuleManager.LayoutAssemblies.Add(layoutAssembly);
                     treeViewAssemblies.Nodes.Add(new AssemblyNode(layoutAssembly));
@@ -204,11 +94,11 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void treeViewAssemblies_AfterSelect(object? sender, TreeViewEventArgs e) {
-            updateButtons();
+        private void TreeViewAssemblies_AfterSelect(object? sender, TreeViewEventArgs e) {
+            UpdateButtons();
         }
 
-        private void buttonChangeStatus_Click(object? sender, EventArgs e) {
+        private void ButtonChangeStatus_Click(object? sender, EventArgs e) {
             TreeNode selected = treeViewAssemblies.SelectedNode;
 
             if (selected != null) {
@@ -219,11 +109,11 @@ namespace LayoutManager.Dialogs {
                 else
                     ((ModuleNode)selected).ToggleEnableState();
 
-                updateButtons();
+                UpdateButtons();
             }
         }
 
-        private void buttonRemove_Click(object? sender, EventArgs e) {
+        private void ButtonRemove_Click(object? sender, EventArgs e) {
             TreeNode selected = treeViewAssemblies.SelectedNode;
 
             if (selected != null) {
@@ -234,7 +124,7 @@ namespace LayoutManager.Dialogs {
                 }
             }
 
-            updateButtons();
+            UpdateButtons();
         }
 
         private void ModuleManagement_Closed(object? sender, EventArgs e) {
@@ -244,36 +134,39 @@ namespace LayoutManager.Dialogs {
     }
 
     internal class AssemblyNode : TreeNode {
+        const int Image_SaveModuleReference = 0;
+        const int Image_TemporaryModuleReference = 1;
+
         internal AssemblyNode(LayoutAssembly layoutAssembly) {
             this.LayoutAssembly = layoutAssembly;
 
-            setName();
+            SetName();
 
             foreach (LayoutModule module in layoutAssembly.LayoutModules)
                 Nodes.Add(new ModuleNode(module));
         }
 
-        private void setName() {
+        private void SetName() {
             this.Text = Path.GetFileName(LayoutAssembly.AssemblyFilename);
 
             if (LayoutAssembly.Origin == LayoutAssembly.AssemblyOrigin.BuiltIn) {
                 this.Text += " (Builtin)";
-                this.ImageIndex = 0;
-                this.SelectedImageIndex = 0;
+                this.ImageIndex = Image_SaveModuleReference;
+                this.SelectedImageIndex = Image_SaveModuleReference;
             }
             else if (LayoutAssembly.Origin == LayoutAssembly.AssemblyOrigin.InModulesDirectory) {
                 this.Text += " (Modules directory)";
-                this.ImageIndex = 0;
-                this.SelectedImageIndex = 0;
+                this.ImageIndex = Image_SaveModuleReference;
+                this.SelectedImageIndex = Image_SaveModuleReference;
             }
             else if (!LayoutAssembly.SaveAssemblyReference) {
                 this.Text += " (Temporary)";
-                this.ImageIndex = 1;
-                this.SelectedImageIndex = 1;
+                this.ImageIndex = Image_TemporaryModuleReference;
+                this.SelectedImageIndex = Image_TemporaryModuleReference;
             }
             else {
-                this.ImageIndex = 0;
-                this.SelectedImageIndex = 0;
+                this.ImageIndex = Image_SaveModuleReference;
+                this.SelectedImageIndex = Image_SaveModuleReference;
             }
         }
 
@@ -281,28 +174,31 @@ namespace LayoutManager.Dialogs {
 
         internal void ToggleSaveState() {
             LayoutAssembly.SaveAssemblyReference = !LayoutAssembly.SaveAssemblyReference;
-            setName();
+            SetName();
         }
     }
 
     internal class ModuleNode : TreeNode {
+        const int Image_EnabledModule = 2;
+        const int Image_DisbaledModule = 3;
+
         internal ModuleNode(LayoutModule module) {
             this.Module = module;
 
-            setName();
+            SetName();
         }
 
-        private void setName() {
+        private void SetName() {
             this.Text = Module.ModuleName;
 
             if (!Module.Enabled) {
                 Text += " (Disabled)";
-                this.ImageIndex = 3;
-                this.SelectedImageIndex = 3;
+                this.ImageIndex = Image_DisbaledModule;
+                this.SelectedImageIndex = Image_DisbaledModule;
             }
             else {
-                this.ImageIndex = 2;
-                this.SelectedImageIndex = 2;
+                this.ImageIndex = Image_EnabledModule;
+                this.SelectedImageIndex = Image_EnabledModule;
             }
         }
 
@@ -310,7 +206,7 @@ namespace LayoutManager.Dialogs {
 
         internal void ToggleEnableState() {
             Module.Enabled = !Module.Enabled;
-            setName();
+            SetName();
         }
     }
 }

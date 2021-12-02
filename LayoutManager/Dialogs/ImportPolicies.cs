@@ -21,18 +21,18 @@ namespace LayoutManager.Dialogs {
             buttonViewScript.Enabled = listViewScripts.SelectedItems.Count > 0;
         }
 
-        private void buttonBrowse_Click(object? sender, EventArgs e) {
+        private void ButtonBrowse_Click(object? sender, EventArgs e) {
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
                 textBoxFilename.Text = openFileDialog.FileName;
         }
 
-        private void wizardPageSetFilename_CloseFromNext(object? sender, Gui.Wizard.PageEventArgs e) {
+        private void WizardPageSetFilename_CloseFromNext(object? sender, Gui.Wizard.PageEventArgs e) {
             try {
-                XmlDocument importedScriptsDoc = new XmlDocument();
+                XmlDocument importedScriptsDoc = new();
 
                 importedScriptsDoc.Load(textBoxFilename.Text);
 
-                foreach (XmlElement policyElement in importedScriptsDoc.DocumentElement)
+                foreach (XmlElement policyElement in importedScriptsDoc.DocumentElement!)
                     listViewScripts.Items.Add(new PolicyItem(listViewScripts, boldFont, policyElement));
             }
             catch (IOException ex) {
@@ -50,7 +50,7 @@ namespace LayoutManager.Dialogs {
                 Policy = new LayoutPolicyInfo(policyElement);
 
                 ListViewGroup group = listViewScripts.Groups[Policy.Scope];
-                LayoutPolicyType policyType = LayoutModel.StateManager.PolicyTypes.Find((LayoutPolicyType pt) => pt.ScopeName == Policy.Scope);
+                var policyType = LayoutModel.StateManager.PolicyTypes.Find((LayoutPolicyType pt) => pt.ScopeName == Policy.Scope);
 
                 if (policyType != null) {
                     if (group == null) {
@@ -81,45 +81,47 @@ namespace LayoutManager.Dialogs {
             boldFont.Dispose();
         }
 
-        private void wizardPageSelectScripts_CloseFromNext(object? sender, Gui.Wizard.PageEventArgs e) {
+        private void WizardPageSelectScripts_CloseFromNext(object? sender, Gui.Wizard.PageEventArgs e) {
             foreach (PolicyItem policyItem in listViewScripts.Items) {
                 if (policyItem.Checked) {
-                    LayoutPolicyInfo policy;
-                    LayoutPolicyType policyType = LayoutModel.StateManager.PolicyTypes.Find((LayoutPolicyType pt) => pt.ScopeName == policyItem.Group.Name);
+                    LayoutPolicyInfo? policy;
+                    var policyType = LayoutModel.StateManager.PolicyTypes.Find((LayoutPolicyType pt) => pt.ScopeName == policyItem.Group.Name);
 
-                    policy = policyType.Policies[policyItem.Policy.Id];
-                    if (policy == null)
-                        policy = policyType.Policies[policyItem.Policy.Name];
+                    if (policyType != null) {
+                        policy = policyType.Policies[policyItem.Policy.Id];
+                        if (policy == null)
+                            policy = policyType.Policies[policyItem.Policy.Name];
 
-                    if (policy != null) {
-                        policy.Name = policyItem.Policy.Name;
-                        policy.Apply = policyItem.Policy.Apply;
-                        policy.EventScriptElement = policyItem.Policy.EventScriptElement;
-                        policy.GlobalPolicy = policyItem.Policy.GlobalPolicy;
-                        policy.ShowInMenu = policyItem.Policy.ShowInMenu;
+                        if (policy != null) {
+                            policy.Name = policyItem.Policy.Name;
+                            policy.Apply = policyItem.Policy.Apply;
+                            policy.EventScriptElement = policyItem.Policy.EventScriptElement;
+                            policy.GlobalPolicy = policyItem.Policy.GlobalPolicy;
+                            policy.ShowInMenu = policyItem.Policy.ShowInMenu;
 
-                        EventManager.Event(new LayoutEvent("policy-updated", policy, policyType.Policies));
-                    }
-                    else {
-                        policy = policyItem.Policy;
-                        policyType.Policies.Update(policy);
+                            EventManager.Event(new LayoutEvent("policy-updated", policy, policyType.Policies));
+                        }
+                        else {
+                            policy = policyItem.Policy;
+                            policyType.Policies.Update(policy);
+                        }
                     }
                 }
             }
         }
 
-        private void buttonViewScript_Click(object? sender, EventArgs e) {
+        private void ButtonViewScript_Click(object? sender, EventArgs e) {
             if (listViewScripts.SelectedItems.Count > 0) {
                 PolicyItem policyItem = (PolicyItem)listViewScripts.SelectedItems[0];
 
-                CommonUI.Dialogs.PolicyDefinition d = new CommonUI.Dialogs.PolicyDefinition(policyItem.Policy);
+                CommonUI.Dialogs.PolicyDefinition d = new(policyItem.Policy);
 
                 d.ShowDialog(this);
                 policyItem.Update();
             }
         }
 
-        private void listViewScripts_SelectedIndexChanged(object? sender, EventArgs e) {
+        private void ListViewScripts_SelectedIndexChanged(object? sender, EventArgs e) {
             UpdateButtons();
         }
     }

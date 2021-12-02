@@ -13,8 +13,8 @@ namespace LayoutManager {
     /// </summary>
     public abstract class LayoutTool : Component {
         private Point selectionCorner = Point.Empty;
-        private LayoutModelArea selectionCornerArea = null;
-        private LayoutSelectionWithUndo _userSelection = null;
+        private LayoutModelArea? selectionCornerArea = null;
+        private LayoutSelectionWithUndo? _userSelection = null;
 
         public LayoutSelectionWithUndo UserSelection => _userSelection ?? (_userSelection = (LayoutSelectionWithUndo)LayoutController.UserSelection);
 
@@ -24,6 +24,9 @@ namespace LayoutManager {
         /// the OnModelComponentClick handler
         /// </summary>
         public void LayoutView_ModelComponentClick(object? sender, LayoutViewEventArgs e) {
+            if (e.MouseEventArgs == null)
+                return;
+
             if ((e.MouseEventArgs.Button & MouseButtons.Right) != 0)
                 ModelComponent_RightClick(e);
             else
@@ -36,6 +39,9 @@ namespace LayoutManager {
         /// <param name="sender">The view sending this event</param>
         /// <param name="e">EventArgs including: HitTest of which the drop should occure, DragEventArgs in which the allowed drop effect are returned</param>
         public void LayoutView_ModelComponentQueryDrop(object? sender, LayoutViewEventArgs e) {
+            if (e.DragEventArgs == null)
+                return;
+
             e.DragEventArgs.Effect = DragDropEffects.None;
 
             if (e.HitTestResult != null) {
@@ -50,6 +56,9 @@ namespace LayoutManager {
         /// <param name="sender">The view sending this event</param>
         /// <param name="e">EventArgs including: Where the drop occurs and what type of operation is to take place</param>
         public void LayoutView_ModelComponentDrop(object? sender, LayoutViewEventArgs e) {
+            if (e.HitTestResult == null)
+                return;
+
             foreach (ModelComponent component in e.HitTestResult.Selection)
                 EventManager.Event(new LayoutEvent(DropEventName, component, e.DragEventArgs).SetFrameWindow(e.HitTestResult.FrameWindow));
         }
@@ -60,12 +69,12 @@ namespace LayoutManager {
         /// <param name="sender">The event sender (the view in which the user initiated the dragging)</param>
         /// <param name="e">Arguments - including what is being dragged, and mouse events when dragging begun</param>
         public void LayoutView_ModelComponentDragged(object? sender, LayoutViewEventArgs e) {
-            object draggedObject = null;
+            object? draggedObject = null;
             DragDropEffects allowedEffects = DragDropEffects.All;
 
             if (e.HitTestResult != null) {
                 foreach (ModelComponent component in e.HitTestResult.Selection) {
-                    object info = EventManager.Event(new LayoutEvent(QueryDragEventName, component, e).SetFrameWindow(e.HitTestResult.FrameWindow));
+                    object? info = EventManager.Event(new LayoutEvent(QueryDragEventName, component, e).SetFrameWindow(e.HitTestResult.FrameWindow));
 
                     if (info != e) {
                         draggedObject = info;
@@ -94,6 +103,9 @@ namespace LayoutManager {
         public virtual void ModelComponent_Click(LayoutViewEventArgs e) {
             bool applyDefaultAction;
 
+            if (e.HitTestResult == null)
+                return;
+
             applyDefaultAction = TestRegionClick(e.HitTestResult);
 
             if (applyDefaultAction) {
@@ -102,7 +114,7 @@ namespace LayoutManager {
                 if ((Control.ModifierKeys & Keys.Control) != 0) {
                     // Toggle selection
                     if (LayoutController.UserSelection.ContainsAny(e.HitTestResult.Selection)) {
-                        LayoutCompoundCommand deselectCommand = new LayoutCompoundCommand("deselect component");
+                        LayoutCompoundCommand deselectCommand = new("deselect component");
 
                         foreach (ModelComponent component in e.HitTestResult.Selection)
                             if (UserSelection.Contains(component))
@@ -111,7 +123,7 @@ namespace LayoutManager {
                         LayoutController.Do(deselectCommand);
                     }
                     else {
-                        LayoutCompoundCommand selectCommand = new LayoutCompoundCommand("select component");
+                        LayoutCompoundCommand selectCommand = new("select component");
 
                         foreach (ModelComponent component in e.HitTestResult.Selection)
                             UserSelection.Add(component, selectCommand);
@@ -163,13 +175,16 @@ namespace LayoutManager {
         /// <param name="area">The area</param>
         /// <param name="hitTestResult">Mouse hit information</param>
         public virtual void ModelComponent_RightClick(LayoutViewEventArgs e) {
+            if (e.HitTestResult == null)
+                return;
+
             bool applyDefaultAction;
-            LayoutModelArea area = e.HitTestResult.View.Area;
+            var area = e.HitTestResult.View.Area;
 
             applyDefaultAction = TestRegionRightClick(e.HitTestResult);
 
             if (applyDefaultAction) {
-                ContextMenu menu;
+                ContextMenuStrip? menu;
                 bool hitSelectionShown = false;
 
                 if ((Control.ModifierKeys & Keys.Control) != 0) {
@@ -217,12 +232,12 @@ namespace LayoutManager {
         /// <param name="area">The area</param>
         /// <param name="hitTestResult">Mouse hit information</param>
         /// <returns>A menu to show, or null if no menu</returns>
-        protected virtual ContextMenu GetSelectionContextMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
-            ContextMenu menu = new ContextMenu();
+        protected virtual ContextMenuStrip? GetSelectionContextMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
+            var menu = new ContextMenuStrip();
 
-            EventManager.Event(new LayoutEvent(ComponentContextMenuAddSelectionEntriesEventName, hitTestResult, menu).SetFrameWindow(hitTestResult.FrameWindow));
+            EventManager.Event(new LayoutEvent(ComponentContextMenuAddSelectionEntriesEventName, hitTestResult, new MenuOrMenuItem(menu)).SetFrameWindow(hitTestResult.FrameWindow));
 
-            return menu.MenuItems.Count == 0 ? null : menu;
+            return menu.Items.Count == 0 ? null : menu;
         }
 
         /// <summary>
@@ -231,12 +246,12 @@ namespace LayoutManager {
         /// <param name="area">The area</param>
         /// <param name="hitTestResult">Mouse hit information</param>
         /// <returns>A menu to show, or null if no menu</returns>
-        protected virtual ContextMenu GetEmptySpotMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
-            ContextMenu menu = new ContextMenu();
+        protected virtual ContextMenuStrip? GetEmptySpotMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
+            var menu = new ContextMenuStrip();
 
-            EventManager.Event(new LayoutEvent(ComponentContextMenuAddEmptySpotEntriesEventName, hitTestResult, menu).SetFrameWindow(hitTestResult.FrameWindow));
+            EventManager.Event(new LayoutEvent(ComponentContextMenuAddEmptySpotEntriesEventName, hitTestResult, new MenuOrMenuItem(menu)).SetFrameWindow(hitTestResult.FrameWindow));
 
-            return menu.MenuItems.Count == 0 ? null : menu;
+            return menu.Items.Count == 0 ? null : menu;
         }
 
         protected abstract string ComponentContextMenuAddEmptySpotEntriesEventName {
@@ -261,7 +276,7 @@ namespace LayoutManager {
         /// Event to send to check if a component can be removed (without removing all components
         /// in its grid location)
         /// </summary>
-        protected abstract string ComponentContextMenuQueryCanRemoveEventName {
+        protected abstract string? ComponentContextMenuQueryCanRemoveEventName {
             get;
         }
 
@@ -332,7 +347,7 @@ namespace LayoutManager {
         /// <param name="hitTestResult">Information about the regions that contains the mouse hotspot</param>
         protected ContextMenuStrip GetSpotContextMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
             var menu = new ContextMenuStrip();
-            List<ModelComponent> components = new List<ModelComponent>();
+            List<ModelComponent> components = new();
 
             // Add top level entries
 
@@ -340,14 +355,14 @@ namespace LayoutManager {
                 if (ComponentContextMenuAddTopEntriesEventName != null)
                     EventManager.Event(new LayoutEvent(ComponentContextMenuAddTopEntriesEventName, component, menu));
 
-                object queryResult = EventManager.Event(new LayoutEvent(ComponentContextMenuQueryEventName, component, false).SetFrameWindow(hitTestResult.FrameWindow));
+                object? queryResult = EventManager.Event(new LayoutEvent(ComponentContextMenuQueryEventName, component, false).SetFrameWindow(hitTestResult.FrameWindow));
 
-                if (queryResult is bool) {
-                    if ((bool)queryResult && !components.Contains(component))
+                if (queryResult is bool addComponent) {
+                    if (addComponent && !components.Contains(component))
                         components.Add(component);
                 }
-                else if (queryResult is ModelComponent && !components.Contains(component))
-                    components.Add((ModelComponent)queryResult);
+                else if (queryResult is ModelComponent aComponent && !components.Contains(component))
+                    components.Add(aComponent);
             }
 
             if (menu.Items.Count > 0 && components.Count > 0)       // At least one entry was added
@@ -362,8 +377,8 @@ namespace LayoutManager {
                     bool componentCanBeRemoved = false;
 
                     if (ComponentContextMenuQueryCanRemoveEventName != null)
-                        componentCanBeRemoved = (bool)EventManager.Event(
-                            new LayoutEvent(ComponentContextMenuQueryCanRemoveEventName, component, true).SetFrameWindow(hitTestResult.FrameWindow));
+                        componentCanBeRemoved = (bool?)EventManager.Event(
+                            new LayoutEvent(ComponentContextMenuQueryCanRemoveEventName, component, true).SetFrameWindow(hitTestResult.FrameWindow)) ?? false;
 
                     if (componentCanBeRemoved && hitTestResult.Selection.Count > 1) {
                         if (menu.Items.Count > 0)
@@ -377,8 +392,8 @@ namespace LayoutManager {
                     string componentMenuName;
 
                     if (ComponentContextMenuQueryNameEventName != null)
-                        componentMenuName = (String)EventManager.Event(
-                            new LayoutEvent(ComponentContextMenuQueryNameEventName, sender: component, component.ToString()).SetFrameWindow(hitTestResult.FrameWindow));
+                        componentMenuName = (String?)EventManager.Event(
+                            new LayoutEvent(ComponentContextMenuQueryNameEventName, sender: component, component.ToString()).SetFrameWindow(hitTestResult.FrameWindow)) ?? component.ToString();
                     else
                         componentMenuName = component.ToString();
 
@@ -390,8 +405,8 @@ namespace LayoutManager {
                     bool componentCanBeRemoved = false;
 
                     if (ComponentContextMenuQueryCanRemoveEventName != null)
-                        componentCanBeRemoved = (bool)EventManager.Event(
-                            new LayoutEvent(ComponentContextMenuQueryCanRemoveEventName, component, true).SetFrameWindow(hitTestResult.FrameWindow));
+                        componentCanBeRemoved = (bool?)EventManager.Event(
+                            new LayoutEvent(ComponentContextMenuQueryCanRemoveEventName, component, true).SetFrameWindow(hitTestResult.FrameWindow)) ?? false;
 
                     if (componentCanBeRemoved) {
                         if (componentMenuItem.DropDownItems.Count > 0)
@@ -411,7 +426,7 @@ namespace LayoutManager {
 
             if (ComponentContextMenuAddCommonEntriesEventName != null)
                 EventManager.Event(
-                    new LayoutEvent(ComponentContextMenuAddCommonEntriesEventName, hitTestResult, menu).SetFrameWindow(hitTestResult.FrameWindow));
+                    new LayoutEvent(ComponentContextMenuAddCommonEntriesEventName, hitTestResult, new MenuOrMenuItem(menu)).SetFrameWindow(hitTestResult.FrameWindow));
 
             return menu;
         }
