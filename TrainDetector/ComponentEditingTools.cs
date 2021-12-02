@@ -9,15 +9,10 @@ using System.Linq;
 using LayoutManager.CommonUI;
 using LayoutManager.ControlComponents;
 
-#pragma warning disable IDE0051, CA1031
 namespace TrainDetector {
 
     [LayoutModule("Train Detector Component Editing Tool", UserControl = false)]
     public class ComponentTool : System.ComponentModel.Component, ILayoutModuleSetup {
-        #region Implementation of ILayoutModuleSetup
-        public LayoutModule Module { set; get; }
-
-        #endregion
 
         [LayoutEvent("model-component-placement-request", SenderType = typeof(TrainDetectorsComponent))]
         private void PlaceNumatoTrainDetectpr(LayoutEvent e) {
@@ -42,7 +37,7 @@ namespace TrainDetector {
         }
 
         [LayoutEvent("model-component-post-placement-request", SenderType =typeof(TrainDetectorsComponent))]
-        private async void checkIfAutoDetect(LayoutEvent e) {
+        private async void CheckIfAutoDetect(LayoutEvent e) {
             var component = Ensure.NotNull<TrainDetectorsComponent>(e.Sender);
 
             if(component.Info.AutoDetect) {
@@ -68,7 +63,7 @@ namespace TrainDetector {
             var component = Ensure.NotNull<TrainDetectorsComponent>(e.Sender);
             var moduleLocationId = (Guid?)e.GetOption("ModuleLocationId");
 
-            menu.MenuItems.Add("Detect controllers", async (s, ea) => {
+            menu.Items.Add("Detect controllers", null, async (s, ea) => {
                 var detector = new TrainDetectorControllersDetection(component.TrainDetectorsBus, moduleLocationId);
                 var result = await detector.UpdateBus();
 
@@ -87,7 +82,7 @@ namespace TrainDetector {
         }
 
         [LayoutEvent("click-to-add-train-detector")]
-        private void clickToAddTrainDetector(LayoutEvent e) {
+        private void ClickToAddTrainDetector(LayoutEvent e) {
             var drawObject = Ensure.NotNull<DrawControlClickToAddModule>(e.Sender);
 
             using var d = new Dialogs.AddTrainDetectorController(name => 
@@ -112,7 +107,7 @@ namespace TrainDetector {
         }
 
         [LayoutEvent("control-module-label-changed", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='TrainDetectorController']")]
-        private async void moduleNameChanged(LayoutEvent e) {
+        private async void ModuleNameChanged(LayoutEvent e) {
             (var module, var name) = Ensure.NotNull<ControlModule, string>(e);
             var controller = new TrainDetectorControllerModule(module);
 
@@ -130,9 +125,9 @@ namespace TrainDetector {
         }
 
         [LayoutEvent("validate-control-module-label", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='TrainDetectorController']")]
-        private void validateControlModuleLabel(LayoutEvent e) {
+        private void ValidateControlModuleLabel(LayoutEvent e) {
             var module = Ensure.NotNull<ControlModule>(e.Sender);
-            var label = (string)e.GetOption("Label");
+            var label = (string?)e.GetOption("Label");
 
             if (string.IsNullOrWhiteSpace(label))
                 e.Info = "Module label cannot be empty";

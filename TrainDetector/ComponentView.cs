@@ -7,15 +7,12 @@ using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
 
-#pragma warning disable IDE0051
 namespace TrainDetector {
     /// <summary>
     /// Summary description for ComponentView.
     /// </summary>
     [LayoutModule("Train Detector Component View", UserControl = false)]
-    public class ComponentView : System.ComponentModel.Component, ILayoutModuleSetup {
-        private ImageList imageListComponents;
-        private IContainer components = null;
+    partial class ComponentView : System.ComponentModel.Component, ILayoutModuleSetup {
 
         #region Implementation of ILayoutModuleSetup
 
@@ -36,8 +33,8 @@ namespace TrainDetector {
 
         [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
         private void AddTrainDetectorItem(LayoutEvent e) {
-            XmlElement categoryElement = (XmlElement)e.Sender;
-            ModelComponent old = (ModelComponent)e.Info;
+            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
+            var old = (ModelComponent?)e.Info;
 
             if (old == null)
                 categoryElement.InnerXml += "<Item Name='TrainDetectorController' Tooltip='VillaRakavy TrainDetector' />";
@@ -45,7 +42,7 @@ namespace TrainDetector {
 
         [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='TrainDetectorController']")]
         private void PaintCentralStationItem(LayoutEvent e) {
-            Graphics g = (Graphics)e.Info;
+            var g = Ensure.NotNull<Graphics>(e.Info);
 
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
@@ -84,7 +81,7 @@ namespace TrainDetector {
             internal DrawingRegionTrainDetector(ModelComponent component, ILayoutView view) : base(component, view) {
             }
 
-            public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook selectionLook, Graphics g) {
+            public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook? selectionLook, Graphics g) {
                 TrainDetectorPainter painter = new TrainDetectorPainter(view.GridSizeInModelCoordinates);
 
                 painter.Paint(g);
@@ -107,32 +104,12 @@ namespace TrainDetector {
             }
 
             internal void Paint(Graphics g) {
-                Image image = (Image)EventManager.Event(new LayoutEvent("get-image", this));
+                var image = Ensure.NotNull<Image>(EventManager.Event(new LayoutEvent("get-image", this)));
 
                 g.DrawImage(image, new Rectangle(new Point(1, 1), image.Size));
             }
         }
 
-        #endregion
-
-        #region Component Designer generated code
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        #pragma warning disable IDE0017
-        private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComponentView));
-            this.imageListComponents = new System.Windows.Forms.ImageList(this.components);
-            // 
-            // imageListComponents
-            // 
-            this.imageListComponents.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListComponents.ImageStream")));
-            this.imageListComponents.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageListComponents.Images.SetKeyName(0, "TrainDetectorController.png");
-
-        }
         #endregion
 
     }

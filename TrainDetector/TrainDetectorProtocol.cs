@@ -272,7 +272,7 @@ namespace TrainDetector {
         public bool IsError { get; private set; }
         public string Value { get; private set; }
 
-        public ConfigGetReplyPacket(UInt16 requestNumber, string value, string error = null) : base(PacketType.ConfigGetReply, requestNumber) {
+        public ConfigGetReplyPacket(UInt16 requestNumber, string value, string? error = null) : base(PacketType.ConfigGetReply, requestNumber) {
             if(error != null) {
                 IsError = true;
                 Value = error;

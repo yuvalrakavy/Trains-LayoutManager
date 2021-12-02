@@ -13,7 +13,7 @@ namespace TrainDetector.Dialogs {
     public partial class AddTrainDetectorController : Form {
         readonly Func<string, string?>? validateFunction;
 
-        public AddTrainDetectorController(Func<string, string>? validateFunction) {
+        public AddTrainDetectorController(Func<string, string?>? validateFunction) {
             InitializeComponent();
             this.validateFunction = validateFunction;
         }
