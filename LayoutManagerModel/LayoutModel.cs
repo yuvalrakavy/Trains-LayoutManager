@@ -1458,7 +1458,9 @@ namespace LayoutManager.Model {
             e.Info = this;
         }
 
-        public static LayoutModel Instance => instance ?? throw new NullReferenceException("Using LayoutModel.Instance before initialization");
+        public static LayoutModel? OptionalInstance => instance;
+
+        public static LayoutModel Instance => OptionalInstance ?? throw new NullReferenceException($"Using LayoutModel.Instance before initialization at {new System.Diagnostics.StackTrace()}");
 
         public static LayoutStateManager StateManager {
             get {

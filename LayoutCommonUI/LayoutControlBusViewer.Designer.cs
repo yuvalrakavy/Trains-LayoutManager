@@ -2,7 +2,7 @@
     /// <summary>
     /// Summary description for LayoutControlBusViewer.
     /// </summary>
-    public partial class LayoutControlBusViewer : System.Windows.Forms.Control {
+    partial class LayoutControlBusViewer : System.Windows.Forms.UserControl {
         #region Component Designer generated code
         /// <summary>
         /// Required method for Designer support - do not modify 
@@ -10,7 +10,7 @@
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new(typeof(LayoutControlBusViewer));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LayoutControlBusViewer));
             this.hScrollBar = new System.Windows.Forms.HScrollBar();
             this.vScrollBar = new System.Windows.Forms.VScrollBar();
             this.imageListConnectionPointTypes = new ImageList(this.components);
@@ -45,6 +45,9 @@
             // 
             // LayoutControlBusViewer
             // 
+            this.Controls.Add(hScrollBar);
+            this.Controls.Add(vScrollBar);
+
             this.SizeChanged += this.LayoutControlBusViewer_SizeChanged;
             this.Click += this.LayoutControlBusViewer_Click;
             this.DoubleClick += this.LayoutControlBusViewer_DoubleClick;

@@ -1,25 +1,24 @@
-using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using System.Xml;
-using System.Diagnostics;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-
-using System.IO;
+using System.Windows.Forms;
 
 using LayoutManager.Model;
 using LayoutManager.View;
 using LayoutManager.CommonUI;
 using LayoutManager.Components;
+using System.Diagnostics;
+using System.IO;
+using System.Xml;
+using System.Drawing.Drawing2D;
 
 namespace LayoutManager {
-    /// <summary>
-    /// Summary description for Form1.
-    /// </summary>
-    public partial class LayoutFrameWindow : Form, ILayoutFrameWindow {
+    public partial class FrameWindow : Form, ILayoutFrameWindow {
         private TaskCompletionSource<FrameWindowAction>? tcs;
 
         private LayoutTool? designTool = null;
@@ -84,6 +83,17 @@ namespace LayoutManager {
             public ToolStripButton Button { get; }
         }
 
+        private struct ZoomEntry {
+            public int zoomFactor;
+            public ToolStripMenuItem menuItem;
+
+            public ZoomEntry(int zoomFactor, ToolStripMenuItem menuItem) {
+                this.zoomFactor = zoomFactor;
+                this.menuItem = menuItem;
+            }
+        }
+
+
         #endregion
 
         private UIsettingEntry[] operationBaseUIsetting = Array.Empty<UIsettingEntry>();
@@ -93,10 +103,15 @@ namespace LayoutManager {
         private UIsettingEntry[] designModeUIsetting = Array.Empty<UIsettingEntry>();
         private UIsettingEntry[]? activeUIsetting;
 
+#if  pureForm
+        public FrameWindow() {
+            InitializeComponent();
+        }
+#else
         /// <summary>
         /// Initialize frame window with all areas in the model, and with one default view page in each area
         /// </summary>
-        public LayoutFrameWindow() {
+        public FrameWindow() {
             CommonInitialization();
 
             // Create default frame window settings (one view for each area)
@@ -112,7 +127,7 @@ namespace LayoutManager {
         /// Initialize frame window and restore its state
         /// </summary>
         /// <param name="windowStateElement">Xml element describing the frame window state</param>
-        public LayoutFrameWindow(FrameWindowState frameWindowState) {
+        public FrameWindow(FrameWindowState frameWindowState) {
             CommonInitialization();
 
             StartPosition = FormStartPosition.Manual;
@@ -131,8 +146,18 @@ namespace LayoutManager {
             layoutControlViewer.Width = frameWindowState.ControlViewerWidth;
             UpdateLayoutControlVisible();
 
-            messageViewer.Height = frameWindowState.MessagesViewerHeight;
+            splitContainerMessageViewer.SplitterDistance = frameWindowState.MessagesViewerHeight;
+            splitContainerLocomotivesViewer.SplitterDistance = frameWindowState.LocomotiveViewerWidth;
+            splitControlViewer.SplitterDistance = frameWindowState.ControlViewerWidth;
+            splitContainerTripsMonitor.SplitterDistance = frameWindowState.TripsViewerHeight;
+
+            messageViewVisible = frameWindowState.MessagesViewerVisible;
+            locomotiveViewVisible = frameWindowState.LocomotiveViewerVisble;
+            layoutControlVisible = frameWindowState.ControlViewerVisible;
+            
             UpdateMessageVisible();
+            UpdateLayoutControlVisible();
+            UpdateLocomotivesVisible();
 
             tripsMonitorHeightInOperationMode = frameWindowState.TripsViewerHeight;
         }
@@ -156,26 +181,26 @@ namespace LayoutManager {
 
             // Initialize the built-in zoom preset table
             zoomEntries = new ZoomEntry[] {
-                                               new ZoomEntry(200, menuItemZoom200),
-                                               new ZoomEntry(150, menuItemZoom150),
-                                               new ZoomEntry(100, menuItemZoom100),
-                                               new ZoomEntry(70, menuItemZoom75),
-                                               new ZoomEntry(50, menuItemZoom50),
-                                               new ZoomEntry(20, menuItemZoom25),
+                                               new ZoomEntry(200, setZoom200toolStripMenuItem),
+                                               new ZoomEntry(150, setZoom150toolStripMenuItem),
+                                               new ZoomEntry(100, setZoom100toolStripMenuItem),
+                                               new ZoomEntry(70, setZoom75toolStripMenuItem),
+                                               new ZoomEntry(50, setZoom50toolStripMenuItem),
+                                               new ZoomEntry(20, setZoom25toolStripMenuItem),
             };
 
             operationBaseUIsetting = new UIsettingEntry[] {
-                new MenuSettingEntry(menuItemArea, UIitemSetting.Hidden),
-                new MenuSettingEntry(menuItemOperational, UIitemSetting.Disabled),
-                new MenuSettingEntry(menuItemSimulation, UIitemSetting.Disabled),
-                new MenuSettingEntry(menuItemCompile, UIitemSetting.Hidden),
-                new MenuSettingEntry(menuItemDesignTimeOnlySeperator, UIitemSetting.Hidden),
-                new MenuSettingEntry(menuItemLearnLayout, UIitemSetting.Hidden),
-                new MenuSettingEntry(menuItemConnectLayout, UIitemSetting.Hidden),
-                new MenuSettingEntry(menuItemDefaultPhase, UIitemSetting.Hidden),
-                new MenuSettingEntry(menuItemSetComponentPhase, UIitemSetting.Hidden),
-                new MenuSettingEntry(menuItemNewArea, UIitemSetting.Disabled),
-                new MenuSettingEntry(menuItemDeleteArea, UIitemSetting.Disabled),
+                new MenuSettingEntry(areaToolStripMenuItem, UIitemSetting.Hidden),
+                new MenuSettingEntry(operationToolStripMenuItem, UIitemSetting.Disabled),
+                new MenuSettingEntry(simulationToolStripMenuItem, UIitemSetting.Disabled),
+                new MenuSettingEntry(verifyLayoutToolStripMenuItem, UIitemSetting.Hidden),
+                new MenuSettingEntry(toolStripSeparatorDesignTimeOnly, UIitemSetting.Hidden),
+                new MenuSettingEntry(learnLayoutToolStripMenuItem, UIitemSetting.Hidden),
+                new MenuSettingEntry(connectLayoutToolStripMenuItem, UIitemSetting.Hidden),
+                new MenuSettingEntry(newComponentsPhaseToolStripMenuItem, UIitemSetting.Hidden),
+                new MenuSettingEntry(setComponentsPhaseToToolStripMenuItem, UIitemSetting.Hidden),
+                new MenuSettingEntry(newAreaToolStripMenuItem, UIitemSetting.Disabled),
+                new MenuSettingEntry(deleteAreaToolStripMenuItem, UIitemSetting.Disabled),
                 //new ToolbarSettingEntry(toolBarButtonOpenLayout, UIitemSetting.Hidden),
             };
 
@@ -191,14 +216,14 @@ namespace LayoutManager {
             };
 
             designModeUIsetting = new UIsettingEntry[] {
-                new MenuSettingEntry(menuItemDesign, UIitemSetting.Disabled),
-                new MenuSettingEntry(menuItemCommonDestinations, UIitemSetting.Hidden),
-                new MenuSettingEntry(menuItemManualDispatchRegions, UIitemSetting.Hidden),
-                new MenuSettingEntry(menuItemShowTripsMonitor, UIitemSetting.Hidden),
-                new MenuSettingEntry(menuItemEmergencyStop, UIitemSetting.Hidden),
-                new MenuSettingEntry(menuItemSuspendLocomotives, UIitemSetting.Hidden),
-                new MenuSettingEntry(menuItemEmergencyStop, UIitemSetting.Hidden),
-                new MenuSettingEntry(menuItemViewActivePhases, UIitemSetting.Hidden),
+                new MenuSettingEntry(designToolStripMenuItem, UIitemSetting.Disabled),
+                new MenuSettingEntry(smartDestinationsToolStripMenuItem, UIitemSetting.Hidden),
+                new MenuSettingEntry(manualDispatchRegionsToolStripMenuItem, UIitemSetting.Hidden),
+                new MenuSettingEntry(showTripsToolStripMenuItem, UIitemSetting.Hidden),
+                new MenuSettingEntry(emergencyStopToolStripMenuItem, UIitemSetting.Hidden),
+                new MenuSettingEntry(stopLocomotivesToolStripMenuItem, UIitemSetting.Hidden),
+                new MenuSettingEntry(emergencyStopToolStripMenuItem, UIitemSetting.Hidden),
+                new MenuSettingEntry(onlyActiveLayoutPhasesToolStripMenuItem, UIitemSetting.Hidden),
                 //new ToolbarSettingEntry(toolBarButtonShowTripsMonitor, UIitemSetting.Hidden),
                 //new ToolbarSettingEntry(toolBarButtonToggleAllLayoutManualDispatch, UIitemSetting.Hidden),
                 //new ToolbarSettingEntry(toolBarButtonStopAllLocomotives, UIitemSetting.Hidden),
@@ -246,14 +271,16 @@ namespace LayoutManager {
         /// </summary>
         /// <param name="windowStateElement">The Xml element in which the state is saved</param>
         public void SaveFrameWindowState(FrameWindowState frameWindowState) {
-            frameWindowState.LocomotiveViewerWidth = locomotivesViewer.Width;
-            frameWindowState.ControlViewerWidth = layoutControlViewer.Width;
-            frameWindowState.MessagesViewerHeight = messageViewer.Height;
+            frameWindowState.LocomotiveViewerVisble = locomotiveViewVisible;
+            frameWindowState.LocomotiveViewerWidth = splitContainerLocomotivesViewer.SplitterDistance;
 
-            if (LayoutController.IsOperationMode)
-                frameWindowState.TripsViewerHeight = tripsMonitor.Height;
-            else
-                frameWindowState.TripsViewerHeight = tripsMonitorHeightInOperationMode;
+            frameWindowState.ControlViewerVisible = layoutControlVisible;
+            frameWindowState.ControlViewerWidth = splitControlViewer.SplitterDistance;
+
+            frameWindowState.MessagesViewerVisible = messageViewVisible;
+            frameWindowState.MessagesViewerHeight = splitContainerMessageViewer.SplitterDistance;
+
+            frameWindowState.TripsViewerHeight = splitContainerTripsMonitor.SplitterDistance;
         }
 
         /// <summary>
@@ -303,7 +330,7 @@ namespace LayoutManager {
                 if (tcs.Task.Status == TaskStatus.RanToCompletion)
                     tcs = null;
 
-                //myTcs.SetResult(new FrameWindowAction(this, value));
+                myTcs.SetResult(new FrameWindowAction(this, value));
             }
         }
 
@@ -334,7 +361,7 @@ namespace LayoutManager {
 
                 tripsMonitorHeightInOperationMode = tripsMonitor.Height;
                 EventManager.Event(new LayoutEvent("hide-trips-monitor", this).SetFrameWindow(this));
-                splitterTripsMonitor.Visible = false;
+                splitContainerTripsMonitor.Panel1Collapsed = true;
 
                 ChangeAllViewsPhases(LayoutPhase.All);      // In editing show all phases
             }
@@ -357,7 +384,7 @@ namespace LayoutManager {
 
                     //SUSPENDED
                     //statusBarPanelMode.Text = s;
-                    
+
                 }
                 else {
                     DoUIsetting(operationModeUIsetting);
@@ -372,7 +399,7 @@ namespace LayoutManager {
                     UpdateTripsMonitorVisible();
                 }
 
-                splitterTripsMonitor.Visible = true;
+                splitContainerTripsMonitor.Panel1Collapsed = false;
 
                 AdjustAllViewsPhases();
                 activeTool = operationTool;
@@ -767,9 +794,8 @@ namespace LayoutManager {
         private void UpdateLayoutControlVisible() {
             bool previousState = layoutControlVisible;
 
-            layoutControlVisible = layoutControlViewer.Width > 10;
-            if (layoutControlVisible != previousState)
-                EventManager.Event(new LayoutEvent(layoutControlVisible ? "layout-control-shown" : "layout-control-hidden", this).SetFrameWindow(this));
+            splitControlViewer.Panel1Collapsed = !layoutControlVisible;
+            EventManager.Event(new LayoutEvent(layoutControlVisible ? "layout-control-shown" : "layout-control-hidden", this).SetFrameWindow(this));
         }
 
         private void UpdateTripsMonitorVisible() {
@@ -781,25 +807,19 @@ namespace LayoutManager {
         }
 
         private void UpdateMessageVisible() {
-            bool previousState = messageViewVisible;
-
-            messageViewVisible = messageViewer.Height > 10;
-            if (messageViewVisible != previousState)
-                EventManager.Event(new LayoutEvent(messageViewVisible ? "messages-shown" : "messages-hidden", this).SetFrameWindow(this));
+            splitContainerMessageViewer.Panel2Collapsed = !messageViewVisible;
+            EventManager.Event(new LayoutEvent(messageViewVisible ? "messages-shown" : "messages-hidden", this).SetFrameWindow(this));
         }
 
         private void UpdateLocomotivesVisible() {
-            bool previousState = locomotiveViewVisible;
-
-            locomotiveViewVisible = locomotivesViewer.Width > 10;
-            if (locomotiveViewVisible != previousState)
-                EventManager.Event(new LayoutEvent(locomotiveViewVisible ? "locomotives-shown" : "locomotives-hidden", this).SetFrameWindow(this));
+            splitContainerLocomotivesViewer.Panel2Collapsed = !locomotiveViewVisible;
+            EventManager.Event(new LayoutEvent(locomotiveViewVisible ? "locomotives-shown" : "locomotives-hidden", this).SetFrameWindow(this));
         }
 
         [LayoutEvent("show-messages")]
         private void ShowMessages(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
-                messageViewer.Height = ClientSize.Height * 25 / 100;
+                messageViewVisible = true;
                 UpdateMessageVisible();
             }
         }
@@ -807,7 +827,7 @@ namespace LayoutManager {
         [LayoutEvent("hide-messages")]
         private void HideMessages(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
-                messageViewer.Height = 0;
+                messageViewVisible = false;
                 UpdateMessageVisible();
             }
         }
@@ -815,7 +835,7 @@ namespace LayoutManager {
         [LayoutEvent("show-locomotives")]
         private void ShowLocomotives(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
-                locomotivesViewer.Width = 220;
+                locomotiveViewVisible = true;
                 UpdateLocomotivesVisible();
             }
         }
@@ -823,7 +843,7 @@ namespace LayoutManager {
         [LayoutEvent("hide-locomotives")]
         private void HideLocomotives(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
-                locomotivesViewer.Width = 0;
+                locomotiveViewVisible = false;
                 UpdateLocomotivesVisible();
             }
         }
@@ -831,13 +851,7 @@ namespace LayoutManager {
         [LayoutEvent("show-layout-control")]
         private void ShowLayoutControl(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
-                if (layoutControlViewer.Width < 20) {
-                    if (layoutControlWidth > 20)
-                        layoutControlViewer.Width = layoutControlWidth;
-                    else
-                        layoutControlViewer.Width = 220;
-                }
-
+                layoutControlVisible = true;
                 UpdateLayoutControlVisible();
             }
         }
@@ -845,8 +859,7 @@ namespace LayoutManager {
         [LayoutEvent("hide-layout-control")]
         private void HideLayoutControl(LayoutEvent e) {
             if (e.IsThisFrameWindow(this)) {
-                layoutControlWidth = layoutControlViewer.Width;
-                layoutControlViewer.Width = 0;
+                layoutControlVisible = false;
                 UpdateLayoutControlVisible();
             }
         }
@@ -1012,7 +1025,7 @@ namespace LayoutManager {
                     if (closeIt) {
                         detailsPopupWindow.Close();
                         detailsPopupWindow = null;
-                        if(viewWithMouse != null)
+                        if (viewWithMouse != null)
                             viewWithMouse.Capture = false;
                     }
                 }
@@ -1111,7 +1124,7 @@ namespace LayoutManager {
         }
 
         private void Toolbar_Zoom100(object? sender, EventArgs e) {
-            menuItemZoom100.PerformClick();
+            setZoom100toolStripMenuItem.PerformClick();
         }
 
         private void Toolbar_ZoomOut(object? sender, EventArgs e) {
@@ -1146,32 +1159,32 @@ namespace LayoutManager {
             LayoutController.CommandManager.Redo();
         }
 
-        private void MenuEdit_Popup(object? sender, EventArgs e) {
+        private void EditToolStripMenuItem_DropDownOpening(object sender, EventArgs e) {
             if (!LayoutController.IsOperationMode && LayoutController.CommandManager.CanUndo) {
-                menuItemUndo.Enabled = true;
-                menuItemUndo.Text = "&Undo " + LayoutController.CommandManager.UndoCommandName;
+                undoToolStripMenuItem.Enabled = true;
+                undoToolStripMenuItem.Text = $"&Undo {LayoutController.CommandManager.UndoCommandName}";
             }
             else {
-                menuItemUndo.Enabled = false;
-                menuItemUndo.Text = "&Undo";
+                undoToolStripMenuItem.Enabled = false;
+                undoToolStripMenuItem.Text = "&Undo";
             }
 
             if (!LayoutController.IsOperationMode && LayoutController.CommandManager.CanRedo) {
-                menuItemRedo.Enabled = true;
-                menuItemRedo.Text = "&Redo " + LayoutController.CommandManager.RedoCommandName;
+                redoToolStripMenuItem.Enabled = true;
+                redoToolStripMenuItem.Text = $"&Redo {LayoutController.CommandManager.RedoCommandName}";
             }
             else {
-                menuItemRedo.Enabled = false;
-                menuItemRedo.Text = "&Redo";
+                redoToolStripMenuItem.Enabled = false;
+                redoToolStripMenuItem.Text = "&Redo";
             }
 
             if (LayoutController.IsOperationMode || LayoutController.UserSelection.Count == 0) {
-                menuItemCopy.Enabled = false;
-                menuItemCut.Enabled = false;
+                copyToolStripMenuItem.Enabled = false;
+                cutToolStripMenuItem.Enabled = false;
             }
             else {
-                menuItemCopy.Enabled = true;
-                menuItemCut.Enabled = true;
+                copyToolStripMenuItem.Enabled = true;
+                cutToolStripMenuItem.Enabled = true;
             }
         }
 
@@ -1224,16 +1237,16 @@ namespace LayoutManager {
             moduleManager.ShowDialog(this);
         }
 
-        private void MenuItemTools_Popup(object? sender, EventArgs e) {
-            menuItemTools.DropDownItems.Clear();
+        private void ToolsToolStripMenuItem_DropDownOpening(object sender, EventArgs e) {
+            toolsToolStripMenuItem.DropDownItems.Clear();
 
-            EventManager.Event(new LayoutEvent("tools-menu-open-request", this, new MenuOrMenuItem(menuItemTools)).SetFrameWindow(this));
+            EventManager.Event(new LayoutEvent("tools-menu-open-request", this, new MenuOrMenuItem(toolsToolStripMenuItem)).SetFrameWindow(this));
 
-            if (menuItemTools.DropDownItems.Count == 0) {
+            if (toolsToolStripMenuItem.DropDownItems.Count == 0) {
                 var noTools = new ToolStripMenuItem("No tools") {
                     Enabled = false
                 };
-                menuItemTools.DropDownItems.Add(noTools);
+                toolsToolStripMenuItem.DropDownItems.Add(noTools);
             }
         }
 
@@ -1254,38 +1267,23 @@ namespace LayoutManager {
                 LayoutModel.Areas.Remove(selectedArea);
         }
 
-        private void MenuItemView_Popup(object? sender, EventArgs e) {
+        private void ViewToolStripMenuItem_DropDownOpening(object sender, EventArgs e) {
             if (ActiveView != null)
-                menuItemViewGrid.Checked = ActiveView.ShowGrid != ShowGridLinesOption.Hide;
+                gridToolStripMenuItem.Checked = ActiveView.ShowGrid != ShowGridLinesOption.Hide;
 
-            if (messageViewVisible)
-                menuItemShowMessages.Text = "Hide &Messages";
-            else
-                menuItemShowMessages.Text = "Show &Messages";
-
-            if (locomotiveViewVisible)
-                menuItemShowLocomotives.Text = "Hide &Locomotives";
-            else
-                menuItemShowLocomotives.Text = "Show &Locomotives";
-
-            if (tripsMonitorVisible)
-                menuItemShowTripsMonitor.Text = "Hide &Trips";
-            else
-                menuItemShowTripsMonitor.Text = "Show &Trips";
-
-            if (layoutControlVisible)
-                menuItemShowLayoutControl.Text = "Hide Layout &Control";
-            else
-                menuItemShowLayoutControl.Text = "Show Layout &Control";
+            showMessagesToolStripMenuItem.Text = messageViewVisible ? "Hide &Messages" : "Show &Messages";
+            showLocomotivesToolStripMenuItem.Text = locomotiveViewVisible ? "Hide &Locomotives" : "Show &Locomotives";
+            showTripsToolStripMenuItem.Text = tripsMonitorVisible ? "Hide &Trips" : "Show &Trips";
+            showLayoutControlToolStripMenuItem.Text = layoutControlVisible ? "Hide Layout &Control" : "Show Layout &Control";
 
             if (LayoutController.IsOperationMode) {
                 if (LayoutModel.ModelPhases != LayoutModel.ActivePhases) {
-                    menuItemViewActivePhases.Visible = true;
-                    if(ActiveViewPage != null)
-                        menuItemViewActivePhases.Checked = ActiveViewPage.ShowActivePhases;
+                    onlyActiveLayoutPhasesToolStripMenuItem.Visible = true;
+                    if (ActiveViewPage != null)
+                        onlyActiveLayoutPhasesToolStripMenuItem.Checked = ActiveViewPage.ShowActivePhases;
                 }
                 else
-                    menuItemViewActivePhases.Visible = false;
+                    onlyActiveLayoutPhasesToolStripMenuItem.Visible = false;
             }
         }
 
@@ -1343,23 +1341,13 @@ namespace LayoutManager {
 
         private void MenuItemViewArrage_Click(object? sender, EventArgs e) {
             if (ActiveAreaPage != null) {
-                //var arrangeViews = new Dialogs.ArrangeViews(this, ActiveAreaPage);
+                var arrangeViews = new Dialogs.ArrangeViews(this, ActiveAreaPage);
 
-                //arrangeViews.ShowDialog();
+                arrangeViews.ShowDialog();
             }
         }
 
-        private struct ZoomEntry {
-            public int zoomFactor;
-            public ToolStripMenuItem menuItem;
-
-            public ZoomEntry(int zoomFactor, ToolStripMenuItem menuItem) {
-                this.zoomFactor = zoomFactor;
-                this.menuItem = menuItem;
-            }
-        }
-
-        private void MenuItemZoomMenu_Popup(object? sender, EventArgs e) {
+        private void ZoomToolStripMenuItem_DropDownOpening(object sender, EventArgs e) {
             if (ActiveView != null) {
                 int currentZoom = (int)Math.Round(ActiveView.Zoom * 100);
                 bool presetZoomFound = false;
@@ -1370,8 +1358,8 @@ namespace LayoutManager {
                         presetZoomFound = true;
                 }
 
-                menuItemSetZoom.Text = "Set zoom (" + currentZoom + "%)...";
-                menuItemSetZoom.Checked = !presetZoomFound;
+                setZoomToolStripMenuItem.Text = "Set zoom (" + currentZoom + "%)...";
+                setZoomToolStripMenuItem.Checked = !presetZoomFound;
             }
         }
 
@@ -1418,33 +1406,17 @@ namespace LayoutManager {
                 ActiveView.ShowAllArea();
         }
 
-        private void MenuItemShowMessages_Click(object? sender, EventArgs e) {
-            if (messageViewVisible)
-                EventManager.Event(new LayoutEvent("hide-messages", this).SetFrameWindow(this));
-            else
-                EventManager.Event(new LayoutEvent("show-messages", this).SetFrameWindow(this));
-        }
+        private void MenuItemShowMessages_Click(object? sender, EventArgs e) =>
+            EventManager.Event(new LayoutEvent(messageViewVisible ? "hide-messages" : "show-messages", this).SetFrameWindow(this));
 
-        private void MenuItemShowTripsMonitor_Click(object? sender, EventArgs e) {
-            if (tripsMonitorVisible)
-                EventManager.Event(new LayoutEvent("hide-trips-monitor", this).SetFrameWindow(this));
-            else
-                EventManager.Event(new LayoutEvent("show-trips-monitor", this).SetFrameWindow(this));
-        }
+        private void MenuItemShowTripsMonitor_Click(object? sender, EventArgs e) => 
+            EventManager.Event(new LayoutEvent(tripsMonitorVisible ? "hide-trips-monitor" : "show-trips-monitor", this).SetFrameWindow(this));
 
-        private void MenuItemShowLocomotives_Click(object? sender, EventArgs e) {
-            if (locomotiveViewVisible)
-                EventManager.Event(new LayoutEvent("hide-locomotives", this).SetFrameWindow(this));
-            else
-                EventManager.Event(new LayoutEvent("show-locomotives", this).SetFrameWindow(this));
-        }
+        private void MenuItemShowLocomotives_Click(object? sender, EventArgs e) =>
+            EventManager.Event(new LayoutEvent(locomotiveViewVisible ? "hide-locomotives" : "show-locomotives", this).SetFrameWindow(this));
 
-        private void MenuItemShowLayoutControl_Click(object? sender, EventArgs e) {
-            if (layoutControlVisible)
-                EventManager.Event(new LayoutEvent("hide-layout-control", this).SetFrameWindow(this));
-            else
-                EventManager.Event(new LayoutEvent("show-layout-control", this).SetFrameWindow(this));
-        }
+        private void MenuItemShowLayoutControl_Click(object? sender, EventArgs e) => 
+            EventManager.Event(new LayoutEvent(layoutControlVisible ? "hide-layout-control" : "show-layout-control", this).SetFrameWindow(this));
 
         private void MenuItemOperational_Click(object? sender, EventArgs e) {
             LayoutController.Instance.EnterOperationModeRequest(new OperationModeParameters() { Phases = LayoutPhase.Operational, Simulation = false });
@@ -1481,21 +1453,6 @@ namespace LayoutManager {
 
         private void LayoutController_Activated(object? sender, EventArgs e) {
             timerFreeResources.Enabled = false;
-        }
-
-        private void MenuItemManualDispatchRegions_Popup(object? sender, EventArgs e) {
-            menuItemManualDispatchRegions.DropDownItems.Clear();
-
-            foreach (ManualDispatchRegionInfo manualDispatchRegion in LayoutModel.StateManager.ManualDispatchRegions)
-                menuItemManualDispatchRegions.DropDownItems.Add(new ManualDispatchRegionItem(manualDispatchRegion));
-
-            if (menuItemManualDispatchRegions.DropDownItems.Count > 0)
-                menuItemManualDispatchRegions.DropDownItems.Add(new ToolStripSeparator());
-
-            menuItemManualDispatchRegions.DropDownItems.Add(new AllLayoutManualDispatchItem());
-            menuItemManualDispatchRegions.DropDownItems.Add(new ToolStripSeparator());
-
-            menuItemManualDispatchRegions.DropDownItems.Add("Manage Manual Dispatch Regions...", null, new EventHandler(this.OnManageManualDispatchRegions));
         }
 
         private void OnManageManualDispatchRegions(object? sender, EventArgs e) {
@@ -1619,36 +1576,36 @@ namespace LayoutManager {
         private EventHandler? simulateEventHandler;
         private EventHandler? verifyLayoutEventHandler;
 
-        private void MenuLayout_Popup(object? sender, EventArgs e) {
+        private void LayoutToolStripMenuItem_DropDownOpening(object sender, EventArgs e) {
             bool allSuspended = Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("are-all-locomotives-suspended", this)));
 
             if (allSuspended)
-                menuItemSuspendLocomotives.Text = "&Resume train operation";
+                stopLocomotivesToolStripMenuItem.Text = "&Resume train operation";
             else
-                menuItemSuspendLocomotives.Text = "&Stop trains";
+                stopLocomotivesToolStripMenuItem.Text = "&Stop trains";
 
             var simulateEntries = GetPhasesEntries(Simulate);
-            menuItemSimulation.DropDownItems.Clear();
+            simulationToolStripMenuItem.DropDownItems.Clear();
 
             if (LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All).Any(cs => cs.LayoutEmulationSupported)) {
                 if (simulateEntries.Count == 1)
                     simulateEventHandler = simulateEntries[0].Item2;
                 else {
                     foreach (var entry in simulateEntries)
-                        menuItemSimulation.DropDownItems.Add(entry.Item1, null, entry.Item2);
+                        simulationToolStripMenuItem.DropDownItems.Add(entry.Item1, null, entry.Item2);
                 }
             }
             else
-                menuItemSimulation.Enabled = false;
+                simulationToolStripMenuItem.Enabled = false;
 
             var verifyLayoutEntries = GetPhasesEntries(Verify);
-            menuItemCompile.DropDownItems.Clear();
+            verifyLayoutToolStripMenuItem.DropDownItems.Clear();
 
             if (verifyLayoutEntries.Count == 1)
                 verifyLayoutEventHandler = verifyLayoutEntries[0].Item2;
             else {
                 foreach (var entry in verifyLayoutEntries)
-                    menuItemCompile.DropDownItems.Add(entry.Item1, null, entry.Item2);
+                    verifyLayoutToolStripMenuItem.DropDownItems.Add(entry.Item1, null, entry.Item2);
             }
         }
 
@@ -1862,16 +1819,16 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEventInfoValueType<LayoutSelection, LayoutPhase>("change-phase", null, LayoutPhase.Operational));
         }
 
-        private void MenuItemDefaultPhase_Popup(object? sender, EventArgs e) {
-            menuItemNewComponentDesignPhase.Checked = LayoutModel.Instance.DefaultPhase == LayoutPhase.Planned;
-            menuItemNewComponentConstructionPhase.Checked = LayoutModel.Instance.DefaultPhase == LayoutPhase.Construction;
-            menuItemNewComponentOperationalPhase.Checked = LayoutModel.Instance.DefaultPhase == LayoutPhase.Operational;
+        private void NewComponentsPhaseToolStripMenuItem_DropDownOpening(object? sender, EventArgs e) {
+            newComponentPlanPhaseToolStripMenuItem.Checked = LayoutModel.Instance.DefaultPhase == LayoutPhase.Planned;
+            newComponentConstructionPhaseToolStripMenuItem.Checked = LayoutModel.Instance.DefaultPhase == LayoutPhase.Construction;
+            newComponentOperationalPhaseToolStripMenuItem.Checked = LayoutModel.Instance.DefaultPhase == LayoutPhase.Operational;
         }
 
         private void MenuItemViewActivePhases_Click(object? sender, EventArgs e) {
             if (ActiveViewPage != null) {
-                menuItemViewActivePhases.Checked = !menuItemViewActivePhases.Checked;
-                ActiveViewPage.ShowActivePhases = menuItemViewActivePhases.Checked;
+                onlyActiveLayoutPhasesToolStripMenuItem.Checked = !onlyActiveLayoutPhasesToolStripMenuItem.Checked;
+                ActiveViewPage.ShowActivePhases = onlyActiveLayoutPhasesToolStripMenuItem.Checked;
 
                 LayoutPhase phases = ActiveViewPage.ShowActivePhases ? LayoutModel.ActivePhases : LayoutPhase.All;
 
@@ -1881,7 +1838,8 @@ namespace LayoutManager {
                 }
             }
         }
-        private void MenuItemNewWindow_Click(object? sender, EventArgs e) {
+
+        private void NewWindowToolStripMenuItem_Click(object? sender, EventArgs e) {
             ControllerCommand = FrameWindowCommand.NewWindow;
         }
 
@@ -1922,10 +1880,11 @@ namespace LayoutManager {
         private void SplitterLayoutControl_SplitterMoved(object sender, SplitterEventArgs e) {
 
         }
+
     }
 
-    public class ObsoleteLayoutFrameWindowAreaTabPage : TabPage {
-        public ObsoleteLayoutFrameWindowAreaTabPage(LayoutModelArea area) {
+    public class LayoutFrameWindowAreaTabPage : TabPage {
+        public LayoutFrameWindowAreaTabPage(LayoutModelArea area) {
             this.Area = area;
 
             TabViews = new TabControl {
@@ -1946,7 +1905,7 @@ namespace LayoutManager {
             get;
         }
 
-        public LayoutFrameWindow FrameWindow => (LayoutFrameWindow)this.FindForm();
+        public FrameWindow FrameWindow => (FrameWindow)this.FindForm();
 
         protected override void Dispose(bool disposing) {
             if (disposing)
@@ -1956,321 +1915,6 @@ namespace LayoutManager {
         private void TabViews_SelectedIndexChanged(object? sender, EventArgs e) {
             FrameWindow.OnViewChanged();
         }
-    }
-
-    public class LayoutFrameWindowAreaViewTabPage : TabPage {
-        public LayoutFrameWindowAreaViewTabPage(LayoutView view) {
-            this.View = view;
-            view.Dock = DockStyle.Fill;
-            Controls.Add(view);
-            this.BorderStyle = BorderStyle.None;
-            ShowActivePhases = false;
-        }
-
-        public LayoutView View { get; }
-
-        public bool ShowActivePhases {
-            get;
-            set;
-        }
-
-        public void WriteXml(XmlWriter w) {
-            w.WriteStartElement("View");
-            w.WriteAttributeString("AreaID", XmlConvert.EncodeName(View.Area.AreaGuid.ToString()));
-            w.WriteAttributeString("Name", XmlConvert.EncodeLocalName(this.Text));
-            this.View.WriteXml(w);
-            w.WriteEndElement();
-        }
-    }
-
-    internal class PrintState {
-        private int areaIndex;
-
-        public PrintState(Dialogs.Print printDialog) {
-            this.PrintDialog = printDialog;
-        }
-
-        public Dialogs.Print PrintDialog { get; }
-
-        public bool AllAreas => PrintDialog.AllAreas;
-
-        public PrintViewScope PrintViewScope => PrintDialog.PrintViewScope;
-
-        public bool GridLines => PrintDialog.GridLines;
-
-        public int AreaIndex {
-            get => areaIndex;
-
-            set {
-                areaIndex = value;
-                ViewIndex = 0;
-            }
-        }
-
-        public int ViewIndex { get; set; }
-    }
-
-    public class FrameWindowState : LayoutXmlWrapper {
-        private const string A_WindowState = "WindowState";
-        private const string A_Left = "Left";
-        private const string A_Top = "Top";
-        private const string A_Width = "Width";
-        private const string A_Height = "Height";
-        private const string A_AreaStates = "AreaStates";
-        private const string A_ActiveAreaIndex = "ActiveAreaIndex";
-        private const string A_ControlViewerWidth = "ControlViewerWidth";
-        private const string A_LocomotiveViewerWidth = "LocomotiveViewerWidth";
-        private const string A_TripsViewerHeight = "TripsViewerHeight";
-        private const string A_MessagesViewerHeight = "MessagesViewerHeight";
-        private const string A_ControlViewerVisible = "ControlViewerVisible";
-        private const string A_MessagesViewerVisible = "MessagesViewerVisible";
-        private const string A_LocomotiveViewerVisible = "LocomotiveViewerVisible";
-        private const string A_TripsViewerVisible = "TripsViewerVisible";
-
-        public FrameWindowState(XmlElement element)
-            : base(element) {
-        }
-
-        public FrameWindowState(XmlElement windowStatesElement, FrameWindow frameWindow) : base(windowStatesElement, A_WindowState, alwaysAppend: true) {
-            WindowState = frameWindow.WindowState;
-            Bounds = frameWindow.Bounds;
-
-            XmlElement areaStatesElement = CreateChildElement(A_AreaStates);
-
-            foreach (var areaTab in frameWindow.AreaTabs)
-                _ = new FrameWindowAreaState(areaStatesElement, areaTab);
-
-            this.ActiveAreaIndex = frameWindow.ActiveAreaIndex;
-        }
-
-        public void Restore(List<FrameWindow> frameWindows) {
-            frameWindows.Add(new FrameWindow(this));
-        }
-
-        public void Restore(TabControl tabAreas) {
-            foreach (var areaState in AreaStates)
-                areaState.Restore(tabAreas);
-
-            tabAreas.SelectedIndex = this.ActiveAreaIndex;
-        }
-
-        public FormWindowState WindowState {
-            get => AttributeValue(A_WindowState).Enum<FormWindowState>() ?? FormWindowState.Normal;
-            set => SetAttributeValue(A_WindowState, value);
-        }
-
-        public Rectangle Bounds {
-            get => new((int)AttributeValue(A_Left), (int)AttributeValue(A_Top), (int)AttributeValue(A_Width), (int)AttributeValue(A_Height));
-
-            set {
-                SetAttributeValue(A_Left, value.Left);
-                SetAttributeValue(A_Top, value.Top);
-                SetAttributeValue(A_Width, value.Width);
-                SetAttributeValue(A_Height, value.Height);
-            }
-        }
-
-        public IEnumerable<FrameWindowAreaState> AreaStates {
-            get {
-                var areasElement = Element[A_AreaStates];
-
-                if (areasElement != null)
-                    foreach (XmlElement areaElement in areasElement)
-                        yield return new FrameWindowAreaState(areaElement);
-            }
-        }
-
-        public int ActiveAreaIndex {
-            get => (int?)AttributeValue(A_ActiveAreaIndex) ?? 0;
-            set => SetAttributeValue(A_ActiveAreaIndex, value);
-        }
-
-        public bool ControlViewerVisible {
-            get => (bool?)AttributeValue(A_ControlViewerVisible) ?? false;
-            set => SetAttributeValue(A_ControlViewerVisible, value);
-
-        }
-
-        public int ControlViewerWidth {
-            get => (int?)AttributeValue(A_ControlViewerWidth) ?? 0;
-            set => SetAttributeValue(A_ControlViewerWidth, value);
-        }
-
-        public bool LocomotiveViewerVisble {
-            get => (bool?)AttributeValue(A_LocomotiveViewerVisible) ?? true;
-            set => SetAttributeValue(A_LocomotiveViewerVisible, value);
-        }
-
-        public int LocomotiveViewerWidth {
-            get => (int?)AttributeValue(A_LocomotiveViewerWidth) ?? 0;
-            set => SetAttributeValue(A_LocomotiveViewerWidth, value);
-        }
-
-        public bool TripsViewerVisible {
-            get => (bool?)AttributeValue(A_TripsViewerVisible) ?? false;
-            set => SetAttributeValue(A_TripsViewerVisible, value);
-        }
-
-        public int TripsViewerHeight {
-            get => (int?)AttributeValue(A_TripsViewerHeight) ?? 0;
-            set => SetAttributeValue(A_TripsViewerHeight, value);
-        }
-
-        public bool MessagesViewerVisible {
-            get => (bool?)AttributeValue(A_MessagesViewerVisible) ?? false;
-            set => SetAttributeValue (A_MessagesViewerVisible, value);
-        }
-
-        public int MessagesViewerHeight {
-            get => (int?)AttributeValue(A_MessagesViewerHeight) ?? 0;
-            set => SetAttributeValue(A_MessagesViewerHeight, value);
-        }
-    }
-
-    public class FrameWindowAreaState : LayoutXmlWrapper {
-        private const string E_AreaState = "AreaState";
-        private const string E_ViewStates = "ViewStates";
-        private const string A_Id = "ID";
-        private const string A_ActiveViewIndex = "ActiveViewIndex";
-
-        public FrameWindowAreaState(XmlElement element)
-            : base(element) {
-        }
-
-        public FrameWindowAreaState(XmlElement areaStatesElement, LayoutFrameWindowAreaTabPage areaTab)
-          : base(areaStatesElement, E_AreaState, alwaysAppend: true) {
-            AreaId = areaTab.Area.AreaGuid;
-
-            XmlElement viewStatesElement = CreateChildElement(E_ViewStates);
-
-            foreach (LayoutFrameWindowAreaViewTabPage viewTab in areaTab.TabViews.TabPages)
-                _ = new FrameWindowViewState(viewStatesElement, viewTab);
-
-            ActiveViewIndex = areaTab.TabViews.SelectedIndex;
-        }
-
-        public void Restore(TabControl tabAreas) {
-            LayoutModelArea area = LayoutModel.Areas[AreaId];
-
-            if (area != null) {
-                LayoutFrameWindowAreaTabPage areaTab = new(area);
-
-                tabAreas.TabPages.Add(areaTab);
-
-                foreach (var viewState in ViewStates)
-                    viewState.Restore(areaTab);
-
-                areaTab.TabViews.SelectedIndex = ActiveViewIndex;
-            }
-        }
-
-        public Guid AreaId {
-            get => (Guid)AttributeValue(A_Id);
-            set => SetAttributeValue(A_Id, value);
-        }
-
-        public IEnumerable<FrameWindowViewState> ViewStates {
-            get {
-                var viewsElement = Element[E_ViewStates];
-
-                if (viewsElement != null)
-                    foreach (XmlElement viewElement in viewsElement)
-                        yield return new FrameWindowViewState(viewElement);
-            }
-        }
-
-        public int ActiveViewIndex {
-            get => (int?)AttributeValue(A_ActiveViewIndex) ?? 0;
-            set => SetAttributeValue(A_ActiveViewIndex, value);
-        }
-    }
-
-    public class FrameWindowViewState : LayoutXmlWrapper {
-        private const string A_Name = "Name";
-        private const string A_Zoom = "Zoom";
-        private const string A_DefaultZoom = "DefaultZoom";
-        private const string A_OriginX = "OriginX";
-        private const string A_OriginY = "OriginY";
-        private const string A_DefaultOriginX = "DefaultOriginX";
-        private const string A_DefaultOriginY = "DefaultOriginY";
-        private const string A_Grid = "Grid";
-        private const string A_ShowCoordinates = "ShowCoordinates";
-        private const string A_ShowActivePhases = "ShowActivePhases";
-
-        public FrameWindowViewState(XmlElement element)
-            : base(element) {
-        }
-
-        public FrameWindowViewState(XmlElement viewStatesElement, LayoutFrameWindowAreaViewTabPage viewPage)
-         : base(viewStatesElement, "ViewState", alwaysAppend: true) {
-            Name = viewPage.Text;
-            Zoom = viewPage.View.Zoom;
-            DefaultZoom = viewPage.View.DefaultZoom;
-            Origin = viewPage.View.OriginInModelGridUnits;
-            DefaultOrigin = viewPage.View.DefaultOriginInModelGridUnits;
-            Grid = viewPage.View.ShowGrid;
-            ShowCoordinates = viewPage.View.ShowCoordinates;
-            ShowActivePhases = viewPage.ShowActivePhases;
-        }
-
-        public void Restore(LayoutFrameWindowAreaTabPage areaPage) {
-            var view = new LayoutView() {
-                Area = areaPage.Area,
-                Zoom = this.Zoom,
-                DefaultZoom = this.DefaultZoom,
-                OriginInModelGridUnits = this.Origin,
-                DefaultOriginInModelGridUnits = this.DefaultOrigin,
-                ShowGrid = this.Grid,
-                ShowCoordinates = this.ShowCoordinates,
-            };
-
-            areaPage.FrameWindow.AddViewToArea(areaPage, this.Name, view).ShowActivePhases = this.ShowActivePhases;
-        }
-
-        public string Name {
-            get => GetAttribute(A_Name);
-            set => SetAttributeValue(A_Name, value);
-        }
-
-        public float Zoom {
-            get => (float?)AttributeValue(A_Zoom) ?? 1.0f;
-            set => SetAttributeValue(A_Zoom, value);
-        }
-
-        public float DefaultZoom {
-            get => (float?)AttributeValue(A_DefaultZoom) ?? 1.0f;
-            set => SetAttributeValue(A_DefaultZoom, value);
-        }
-
-        public Point Origin {
-            get => new((int?)AttributeValue(A_OriginX) ?? 0, (int?)AttributeValue(A_OriginY) ?? 0);
-            set {
-                SetAttributeValue(A_OriginX, value.X);
-                SetAttributeValue(A_OriginY, value.Y);
-            }
-        }
-
-        public Point DefaultOrigin {
-            get => new((int?)AttributeValue(A_DefaultOriginX) ?? 0, (int?)AttributeValue(A_DefaultOriginY) ?? 0);
-            set {
-                SetAttributeValue(A_DefaultOriginX, value.X);
-                SetAttributeValue(A_DefaultOriginY, value.Y);
-            }
-        }
-
-        public ShowGridLinesOption Grid {
-            get => AttributeValue(A_Grid).Enum<ShowGridLinesOption>() ?? ShowGridLinesOption.Hide;
-            set => SetAttributeValue(A_Grid, value);
-        }
-
-        public bool ShowCoordinates {
-            get => (bool?)AttributeValue(A_ShowCoordinates) ?? false;
-            set => SetAttributeValue(A_ShowCoordinates, value);
-        }
-
-        public bool ShowActivePhases {
-            get => (bool?)AttributeValue(A_ShowActivePhases) ?? false;
-            set => SetAttributeValue(A_ShowActivePhases, value);
-        }
+#endif
     }
 }

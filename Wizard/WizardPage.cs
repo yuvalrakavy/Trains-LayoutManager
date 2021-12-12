@@ -12,23 +12,23 @@ namespace Gui.Wizard {
         /// Event called before this page is closed when the back button is pressed. If you don't want to show pageIndex -1 then
         /// set page to be the new page that you wish to show
         /// </summary>
-        public event PageEventHandler CloseFromBack;
+        public event PageEventHandler? CloseFromBack;
 
         /// <summary>
         /// Event called before this page is closed when the next button is pressed. If you don't want to show pageIndex -1 then
         /// set page to be the new page that you wish to show 
         /// </summary>
-        public event PageEventHandler CloseFromNext;
+        public event PageEventHandler? CloseFromNext;
 
         /// <summary>
         /// Event called after this page is shown when the back button is pressed.
         /// </summary>
-        public event EventHandler ShowFromBack;
+        public event EventHandler? ShowFromBack;
 
         /// <summary>
         /// Event called after this page is shown when the next button is pressed. 
         /// </summary>
-        public event EventHandler ShowFromNext;
+        public event EventHandler? ShowFromNext;
 
         /// <summary>
         /// Fires the CloseFromBack Event
@@ -37,7 +37,7 @@ namespace Gui.Wizard {
         /// <returns>Index of Page that the event handlers would like to see next</returns>
         public int OnCloseFromBack(Wizard wiz) {
             //Event args thinks that the next pgae will be the one before this one
-            PageEventArgs e = new PageEventArgs(wiz.PageIndex - 1, wiz.Pages);
+            var e = new PageEventArgs(wiz.PageIndex - 1, wiz.Pages);
             //Tell anybody who listens
             CloseFromBack?.Invoke(wiz, e);
             //And then tell whomever called me what the prefered page is
@@ -50,7 +50,7 @@ namespace Gui.Wizard {
         /// <param name="wiz">Sender</param>
         public int OnCloseFromNext(Wizard wiz) {
             //Event args thinks that the next pgae will be the one before this one
-            PageEventArgs e = new PageEventArgs(wiz.PageIndex + 1, wiz.Pages);
+            var e = new PageEventArgs(wiz.PageIndex + 1, wiz.Pages);
             //Tell anybody who listens
             CloseFromNext?.Invoke(wiz, e);
             //And then tell whomever called me what the prefered page is
@@ -94,7 +94,7 @@ namespace Gui.Wizard {
         /// </summary>
         public void FocusFirstTabIndex() {
             //Activate the first control in the Panel
-            Control found = null;
+            Control? found = null;
             //find the control with the lowest 
             foreach (Control control in this.Controls) {
                 if (control.CanFocus && (found == null || control.TabIndex < found.TabIndex)) {

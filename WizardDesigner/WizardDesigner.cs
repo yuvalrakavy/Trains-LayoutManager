@@ -72,17 +72,17 @@ namespace Gui.Wizard {
         }
 
         protected override bool GetHitTest(Point point) {
-            Wizard wiz = this.Control as Wizard;
-
-            if (wiz.btnNext.Enabled
-                && wiz.btnNext.ClientRectangle.Contains(wiz.btnNext.PointToClient(point))) {
-                //Next can handle that
-                return true;
-            }
-            if (wiz.btnBack.Enabled
-                && wiz.btnBack.ClientRectangle.Contains(wiz.btnBack.PointToClient(point))) {
-                //Back can handle that
-                return true;
+            if (this.Control is Wizard wiz) {
+                if (wiz.btnNext.Enabled
+                    && wiz.btnNext.ClientRectangle.Contains(wiz.btnNext.PointToClient(point))) {
+                    //Next can handle that
+                    return true;
+                }
+                if (wiz.btnBack.Enabled
+                    && wiz.btnBack.ClientRectangle.Contains(wiz.btnBack.PointToClient(point))) {
+                    //Back can handle that
+                    return true;
+                }
             }
             //Nope not interested
             return false;
@@ -90,30 +90,31 @@ namespace Gui.Wizard {
 
         public override DesignerVerbCollection Verbs {
             get {
-                DesignerVerbCollection verbs = new DesignerVerbCollection();
-                verbs.Add(new DesignerVerb("Add Page", new EventHandler(handleAddPage)));
+                var verbs = new DesignerVerbCollection {
+                    new DesignerVerb("Add Page", new EventHandler(HandleAddPage))
+                };
 
                 return verbs;
             }
         }
 
-        private void handleAddPage(object? sender, EventArgs e) {
-            Wizard wiz = this.Control as Wizard;
+        private void HandleAddPage(object? sender, EventArgs e) {
+            if (this.Control is Wizard wiz) {
+                IDesignerHost h = (IDesignerHost)GetService(typeof(IDesignerHost));
+                IComponentChangeService c = (IComponentChangeService)GetService(typeof(IComponentChangeService));
 
-            IDesignerHost h = (IDesignerHost)GetService(typeof(IDesignerHost));
-            IComponentChangeService c = (IComponentChangeService)GetService(typeof(IComponentChangeService));
+                DesignerTransaction dt = h.CreateTransaction("Add Page");
+                WizardPage page = (WizardPage)h.CreateComponent(typeof(WizardPage));
+                c.OnComponentChanging(wiz, null);
 
-            DesignerTransaction dt = h.CreateTransaction("Add Page");
-            WizardPage page = (WizardPage)h.CreateComponent(typeof(WizardPage));
-            c.OnComponentChanging(wiz, null);
+                //Add a new page to the collection
+                wiz.Pages.Add(page);
+                wiz.Controls.Add(page);
+                wiz.ActivatePage(page);
 
-            //Add a new page to the collection
-            wiz.Pages.Add(page);
-            wiz.Controls.Add(page);
-            wiz.ActivatePage(page);
-
-            c.OnComponentChanged(wiz, null, null, null);
-            dt.Commit();
+                c.OnComponentChanged(wiz, null, null, null);
+                dt.Commit();
+            }
         }
 
         protected override void OnPaintAdornments(PaintEventArgs pe) {

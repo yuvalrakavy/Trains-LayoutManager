@@ -10,9 +10,9 @@ namespace LayoutManager.Dialogs {
     public partial class ArrangeViews : Form {
         private readonly LayoutFrameWindowAreaTabPage areaPage;
         private bool rebuildTabs = false;
-        private readonly LayoutFrameWindow controller;
+        private readonly FrameWindow controller;
 
-        public ArrangeViews(LayoutFrameWindow controller, LayoutFrameWindowAreaTabPage areaPage) {
+        public ArrangeViews(FrameWindow controller, LayoutFrameWindowAreaTabPage areaPage) {
             this.controller = controller;
             this.areaPage = areaPage;
 
@@ -24,7 +24,7 @@ namespace LayoutManager.Dialogs {
             foreach (LayoutFrameWindowAreaViewTabPage viewPage in areaPage.TabViews.TabPages)
                 listBoxViews.Items.Add(viewPage);
 
-            updateButtons();
+            UpdateButtons();
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace LayoutManager.Dialogs {
             base.Dispose(disposing);
         }
 
-        private void updateButtons() {
+        private void UpdateButtons() {
             int selectedViewIndex = listBoxViews.SelectedIndex;
 
             if (selectedViewIndex == -1) {
@@ -57,7 +57,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonMoveDown_Click(object? sender, System.EventArgs e) {
+        private void ButtonMoveDown_Click(object? sender, System.EventArgs e) {
             int selectedViewIndex = listBoxViews.SelectedIndex;
 
             if (selectedViewIndex != -1 && selectedViewIndex < listBoxViews.Items.Count - 1) {
@@ -70,7 +70,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonMoveUp_Click(object? sender, System.EventArgs e) {
+        private void ButtonMoveUp_Click(object? sender, System.EventArgs e) {
             int selectedViewIndex = listBoxViews.SelectedIndex;
 
             if (selectedViewIndex != -1 && selectedViewIndex > 0) {
@@ -83,7 +83,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonClose_Click(object? sender, System.EventArgs e) {
+        private void ButtonClose_Click(object? sender, System.EventArgs e) {
             if (rebuildTabs) {
                 areaPage.TabViews.TabPages.Clear();
 
@@ -94,11 +94,11 @@ namespace LayoutManager.Dialogs {
             this.Close();
         }
 
-        private void listBoxViews_SelectedIndexChanged(object? sender, System.EventArgs e) {
-            updateButtons();
+        private void ListBoxViews_SelectedIndexChanged(object? sender, System.EventArgs e) {
+            UpdateButtons();
         }
 
-        private void buttonRename_Click(object? sender, System.EventArgs e) {
+        private void ButtonRename_Click(object? sender, System.EventArgs e) {
             int selectedIndex = listBoxViews.SelectedIndex;
 
             if (selectedIndex != -1) {
@@ -114,7 +114,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonNew_Click(object? sender, System.EventArgs e) {
+        private void ButtonNew_Click(object? sender, System.EventArgs e) {
             var newView = controller.AddNewView();
 
             foreach (LayoutFrameWindowAreaViewTabPage viewPage in areaPage.TabViews.TabPages) {
@@ -125,13 +125,13 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonDelete_Click(object? sender, System.EventArgs e) {
+        private void ButtonDelete_Click(object? sender, System.EventArgs e) {
             LayoutFrameWindowAreaViewTabPage selectedViewPage = (LayoutFrameWindowAreaViewTabPage)listBoxViews.SelectedItem;
 
             if (selectedViewPage != null) {
                 areaPage.TabViews.TabPages.Remove(selectedViewPage);
                 listBoxViews.Items.Remove(selectedViewPage);
-                updateButtons();
+                UpdateButtons();
             }
         }
     }

@@ -2,7 +2,7 @@
     /// <summary>
     /// Summary description for DIPswitch.
     /// </summary>
-    partial class DIPswitch : System.Windows.Forms.Control {
+    partial class DIPswitch : System.Windows.Forms.UserControl {
         private System.ComponentModel.Container components = null;
 
         #region Component Designer generated code

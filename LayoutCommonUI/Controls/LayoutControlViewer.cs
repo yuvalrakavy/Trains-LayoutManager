@@ -11,7 +11,6 @@ namespace LayoutManager.CommonUI.Controls {
         private int zoomIndex = 3;
         private readonly string notInLocationText = "(Not in any location)";
 
-        #nullable disable
         public LayoutControlViewer() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
@@ -19,7 +18,6 @@ namespace LayoutManager.CommonUI.Controls {
             // TODO: Add any initialization after the InitializeComponent call
 
         }
-        #nullable enable
 
         internal void EnsureModuleVisible(ControlModule module) {
             if (((Item)comboBoxBusProvider.SelectedItem).Id != Guid.Empty && module.Bus.BusProviderId != ((Item)comboBoxBusProvider.SelectedItem).Id)
@@ -72,6 +70,9 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public void Initialize() {
+            if(DesignMode)
+                throw new ApplicationException("Initialize called");
+
             layoutControlBusViewer.Initialize();
             EventManager.AddObjectSubscriptions(this);
 

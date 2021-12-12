@@ -1307,6 +1307,10 @@ namespace LayoutManager {
     public static class EventManager {
         private static LayoutEventManager? eventManager;
 
+        public static LayoutEventManager? OptionalInstance {
+            get => eventManager;
+        }
+
         public static LayoutEventManager Instance {
             get => eventManager ?? throw new NullReferenceException("Use of EventManager before it has been initialized");
             set => eventManager = value;

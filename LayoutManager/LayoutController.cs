@@ -23,10 +23,10 @@ namespace LayoutManager {
     }
 
     public class FrameWindowAction {
-        public LayoutFrameWindow FrameWindow { get; }
+        public FrameWindow FrameWindow { get; }
         public FrameWindowCommand Command { get; }
 
-        public FrameWindowAction(LayoutFrameWindow frameWindow, FrameWindowCommand command) {
+        public FrameWindowAction(FrameWindow frameWindow, FrameWindowCommand command) {
             this.FrameWindow = frameWindow;
             this.Command = command;
         }
@@ -41,7 +41,7 @@ namespace LayoutManager {
         private int layoutDesignTimeActivationNesting = 0;
         private bool showConnectTrackPowerWarning = true;
         private ILayoutFrameWindow? _activeFrameWindow;
-        private List<LayoutFrameWindow>? _frameWindows;
+        private List<FrameWindow>? _frameWindows;
 
         /// <summary>
         /// The main entry point for the application.
@@ -207,7 +207,7 @@ namespace LayoutManager {
             ExitThread();
         }
 
-        private void SaveDisplayState(IEnumerable<LayoutFrameWindow> frameWindows) {
+        private void SaveDisplayState(IEnumerable<FrameWindow> frameWindows) {
             var displayState = new LayoutDisplayState(frameWindows);
 
             displayState.Save(LayoutDisplayStateFilename);
@@ -248,7 +248,7 @@ namespace LayoutManager {
                     case FrameWindowCommand.NewWindow: {
                             actionTask.Result.FrameWindow.InitializeTask();
 
-                            var newWindow = new LayoutFrameWindow();
+                            var newWindow = new FrameWindow();
 
                             newWindow.Show();
                             newWindow.Activate();
@@ -515,8 +515,8 @@ namespace LayoutManager {
         /// <summary>
         /// Currently open frame windows
         /// </summary>
-        public List<LayoutFrameWindow> FrameWindows {
-            get => Ensure.NotNull<List<LayoutFrameWindow>>(_frameWindows, nameof(_frameWindows));
+        public List<FrameWindow> FrameWindows {
+            get => Ensure.NotNull<List<FrameWindow>>(_frameWindows, nameof(_frameWindows));
             private set => _frameWindows = value;
         }
 
@@ -707,7 +707,7 @@ namespace LayoutManager {
         private const string A_ActiveWindowIndex = "ActiveWindowIndex";
         private const string E_WindowStates = "WindowStates";
 
-        public LayoutDisplayState(IEnumerable<LayoutFrameWindow> frameWindows) : base("DisplayState") {
+        public LayoutDisplayState(IEnumerable<FrameWindow> frameWindows) : base("DisplayState") {
             OperationModeSettings = LayoutController.OptionalOperationModeSettings;
 
             XmlElement windowStatesElement = CreateChildElement(E_WindowStates);
@@ -780,16 +780,16 @@ namespace LayoutManager {
         /// <summary>
         /// Return a list of frame windows. If display state is empty, the list consists of one default frame window
         /// </summary>
-        public List<LayoutFrameWindow> FrameWindows {
+        public List<FrameWindow> FrameWindows {
             get {
-                var frameWindows = new List<LayoutFrameWindow>();
+                var frameWindows = new List<FrameWindow>();
 
                 if (FrameWindowStates.Any()) {
                     foreach (var frameWindowState in FrameWindowStates)
                         frameWindowState.Restore(frameWindows);
                 }
                 else
-                    frameWindows.Add(new LayoutFrameWindow());
+                    frameWindows.Add(new FrameWindow());
 
                 return frameWindows;
             }

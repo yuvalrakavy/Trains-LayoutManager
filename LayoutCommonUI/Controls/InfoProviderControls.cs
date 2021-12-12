@@ -109,7 +109,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
     }
 
-    public class LayoutPositionInfoPreview : Control {
+    public class LayoutPositionInfoPreview : UserControl {
         private LayoutDrawingSide side = LayoutDrawingSide.Bottom;
         private LayoutDrawingAnchorPoint alignment = LayoutDrawingAnchorPoint.Center;
         private int distance = 0;

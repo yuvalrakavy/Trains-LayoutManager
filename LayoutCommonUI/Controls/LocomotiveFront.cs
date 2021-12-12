@@ -7,7 +7,7 @@ namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for LocomotiveFront.
     /// </summary>
-    public class LocomotiveFront : Control {
+    public class LocomotiveFront : UserControl {
         private IList<LayoutComponentConnectionPoint>? connectionPoints = null;
         private LayoutComponentConnectionPoint front = LayoutComponentConnectionPoint.Empty;
         private Cursor? saveCursor = null;

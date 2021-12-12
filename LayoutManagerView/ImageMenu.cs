@@ -62,7 +62,7 @@ namespace LayoutManager.UIGadgets {
     /// This utility control displays shadow for a given control. It can be useful for
     /// popup controls such as the image menu
     /// </summary>
-    public class Shadow : Control {
+    public class Shadow : UserControl {
         private readonly Control shadowOf;
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace LayoutManager.UIGadgets {
     /// <summary>
     /// Control that implement tooltip window for image menu objects
     /// </summary>
-    internal class TipWindow : Control {
+    internal class TipWindow : UserControl {
         private readonly Font tipFont = new("Arial", 8);
 
         internal TipWindow(Control parent) {
@@ -169,7 +169,7 @@ namespace LayoutManager.UIGadgets {
     /// <summary>
     /// This class shows an horizontal menu of items that draw themself.
     /// </summary>
-    public class ImageMenu : Control {
+    public class ImageMenu : UserControl {
         private const int vMargin = 5;                  // Space from top and bottom of the menu
         private const int hMargin = 6;                  // Space from right and left of the menu
         private const int gap = 3;                      // Space between menu items

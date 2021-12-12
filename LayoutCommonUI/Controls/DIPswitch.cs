@@ -4,7 +4,7 @@ namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for DIPswitch.
     /// </summary>
-    public partial class DIPswitch : Control {
+    public partial class DIPswitch : UserControl {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -21,17 +21,6 @@ namespace LayoutManager.CommonUI.Controls {
             InitializeComponent();
 
             // TODO: Add any initialization after the InitComponent call
-        }
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose(bool disposing) {
-            if (disposing) {
-                if (components != null)
-                    components.Dispose();
-            }
-            base.Dispose(disposing);
         }
 
         [Description("Number of DIP switches")]

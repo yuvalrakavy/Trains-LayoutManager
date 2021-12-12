@@ -25,7 +25,6 @@ namespace LayoutManager {
             this.menuItemViewNew = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemViewDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemViewRename = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItemSeperator6 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemZoomMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemSetZoom = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemSeperator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -49,6 +48,7 @@ namespace LayoutManager {
             this.menuItemShowLocomotives = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemSeperator4 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemViewArrage = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItemSeperator6 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemOperational = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemTools = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemDummy = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,22 +63,23 @@ namespace LayoutManager {
             this.menuItemConnectLayout = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemEmergencyStop = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemSuspendLocomotives = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemPolicies = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemDefaultDriverParameters = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItemTrainTracking = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemCommonDestinations = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemManualDispatchRegions = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItem4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFile = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemNewWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemSave = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemSeperator9 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemPrint = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItemSeperator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemModules = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemSeperator3 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemCloseWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItemSeperator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemUndo = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemRedo = new System.Windows.Forms.ToolStripMenuItem();
@@ -86,7 +87,6 @@ namespace LayoutManager {
             this.menuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemCut = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemFind = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemSelect = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemSelectUnconnectedComponents = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemSelectUnlinkedSignals = new System.Windows.Forms.ToolStripMenuItem();
@@ -108,6 +108,7 @@ namespace LayoutManager {
             this.menuItemStylePositions = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemLocomotiveCatalog = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemAccelerationProfiles = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemArea = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemNewArea = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemDeleteArea = new System.Windows.Forms.ToolStripMenuItem();
@@ -116,8 +117,8 @@ namespace LayoutManager {
             this.menuItemAreaArrange = new System.Windows.Forms.ToolStripMenuItem();
             this.panelMessageViewer = new System.Windows.Forms.Panel();
             this.panelTripsMonitor = new System.Windows.Forms.Panel();
-            this.splitterTripsMonitor = new System.Windows.Forms.Splitter();
             this.tabAreas = new System.Windows.Forms.TabControl();
+            this.splitterTripsMonitor = new System.Windows.Forms.Splitter();
             this.tripsMonitor = new LayoutManager.Tools.Controls.TripsMonitor();
             this.splitterMessages = new System.Windows.Forms.Splitter();
             this.messageViewer = new LayoutManager.MessageViewer();
@@ -125,24 +126,24 @@ namespace LayoutManager {
             this.panelLocomotiveViewer = new System.Windows.Forms.Panel();
             this.locomotivesViewer = new LayoutManager.LocomotivesViewer();
             this.panelLayoutControl = new System.Windows.Forms.Panel();
-            this.splitterLayoutControl = new System.Windows.Forms.Splitter();
             this.layoutControlViewer = new LayoutManager.CommonUI.Controls.LayoutControlViewer();
+            this.splitterLayoutControl = new System.Windows.Forms.Splitter();
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.timerFreeResources = new System.Timers.Timer();
             this.timerDetailsPopup = new System.Windows.Forms.Timer(this.components);
             this.printDocument = new System.Drawing.Printing.PrintDocument();
             this.menuItem13 = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItemTrainTracking = new System.Windows.Forms.ToolStripMenuItem();
             this.panelMessageViewer.SuspendLayout();
             this.panelTripsMonitor.SuspendLayout();
             this.panelLocomotiveViewer.SuspendLayout();
             this.panelLayoutControl.SuspendLayout();
+            this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timerFreeResources)).BeginInit();
             this.SuspendLayout();
-
             // 
             // menuItem2
             // 
+            this.menuItem2.Name = "menuItem2";
             resources.ApplyResources(this.menuItem2, "menuItem2");
             // 
             // menuItemView
@@ -151,7 +152,6 @@ namespace LayoutManager {
             this.menuItemViewNew,
             this.menuItemViewDelete,
             this.menuItemViewRename,
-            this.menuItemSeperator6,
             this.menuItemZoomMenu,
             this.menuItemViewGrid,
             this.menuItemViewActivePhases,
@@ -165,28 +165,27 @@ namespace LayoutManager {
             this.menuItemShowLocomotives,
             this.menuItemSeperator4,
             this.menuItemViewArrage});
+            this.menuItemView.Name = "menuItemView";
             resources.ApplyResources(this.menuItemView, "menuItemView");
-            this.menuItemView.DropDownItemClicked += new ToolStripItemClickedEventHandler(this.MenuItemView_Popup);
-
+            this.menuItemView.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.MenuItemView_Popup);
             // 
             // menuItemViewNew
             // 
+            this.menuItemViewNew.Name = "menuItemViewNew";
             resources.ApplyResources(this.menuItemViewNew, "menuItemViewNew");
             this.menuItemViewNew.Click += new System.EventHandler(this.MenuItemViewNew_Click);
             // 
             // menuItemViewDelete
             // 
+            this.menuItemViewDelete.Name = "menuItemViewDelete";
             resources.ApplyResources(this.menuItemViewDelete, "menuItemViewDelete");
             this.menuItemViewDelete.Click += new System.EventHandler(this.MenuItemViewDelete_Click);
             // 
             // menuItemViewRename
             // 
+            this.menuItemViewRename.Name = "menuItemViewRename";
             resources.ApplyResources(this.menuItemViewRename, "menuItemViewRename");
             this.menuItemViewRename.Click += new System.EventHandler(this.MenuItemViewRename_Click);
-            // 
-            // menuItemSeperator6
-            // 
-            resources.ApplyResources(this.menuItemSeperator6, "menuItemSeperator6");
             // 
             // menuItemZoomMenu
             // 
@@ -201,101 +200,145 @@ namespace LayoutManager {
             this.menuItemZoom25,
             this.menuItemSeperator12,
             this.menuItem1ZoomAllArea});
+            this.menuItemZoomMenu.Name = "menuItemZoomMenu";
             resources.ApplyResources(this.menuItemZoomMenu, "menuItemZoomMenu");
-            this.menuItemZoomMenu.DropDownItemClicked += new ToolStripItemClickedEventHandler(this.MenuItemZoomMenu_Popup);
+            this.menuItemZoomMenu.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.MenuItemZoomMenu_Popup);
             // 
             // menuItemSetZoom
             // 
+            this.menuItemSetZoom.Name = "menuItemSetZoom";
             resources.ApplyResources(this.menuItemSetZoom, "menuItemSetZoom");
             this.menuItemSetZoom.Click += new System.EventHandler(this.MenuItemSetZoom_Click);
             // 
-            // menuItem5
+            // menuItemSeperator5
             // 
-            resources.ApplyResources(this.menuItemSeperator5, "menuItem5");
+            this.menuItemSeperator5.Name = "menuItemSeperator5";
+            resources.ApplyResources(this.menuItemSeperator5, "menuItemSeperator5");
             // 
             // menuItemZoom200
             // 
+            this.menuItemZoom200.Name = "menuItemZoom200";
             resources.ApplyResources(this.menuItemZoom200, "menuItemZoom200");
             this.menuItemZoom200.Click += new System.EventHandler(this.MenuItemZoomPreset_Click);
             // 
             // menuItemZoom150
             // 
+            this.menuItemZoom150.Name = "menuItemZoom150";
             resources.ApplyResources(this.menuItemZoom150, "menuItemZoom150");
             this.menuItemZoom150.Click += new System.EventHandler(this.MenuItemZoomPreset_Click);
             // 
             // menuItemZoom100
             // 
+            this.menuItemZoom100.Name = "menuItemZoom100";
             resources.ApplyResources(this.menuItemZoom100, "menuItemZoom100");
             this.menuItemZoom100.Click += new System.EventHandler(this.MenuItemZoomPreset_Click);
             // 
             // menuItemZoom75
             // 
+            this.menuItemZoom75.Name = "menuItemZoom75";
             resources.ApplyResources(this.menuItemZoom75, "menuItemZoom75");
             this.menuItemZoom75.Click += new System.EventHandler(this.MenuItemZoomPreset_Click);
             // 
             // menuItemZoom50
             // 
+            this.menuItemZoom50.Name = "menuItemZoom50";
             resources.ApplyResources(this.menuItemZoom50, "menuItemZoom50");
             this.menuItemZoom50.Click += new System.EventHandler(this.MenuItemZoomPreset_Click);
             // 
             // menuItemZoom25
             // 
+            this.menuItemZoom25.Name = "menuItemZoom25";
             resources.ApplyResources(this.menuItemZoom25, "menuItemZoom25");
             this.menuItemZoom25.Click += new System.EventHandler(this.MenuItemZoomPreset_Click);
-
+            // 
+            // menuItemSeperator12
+            // 
+            this.menuItemSeperator12.Name = "menuItemSeperator12";
+            resources.ApplyResources(this.menuItemSeperator12, "menuItemSeperator12");
             // 
             // menuItem1ZoomAllArea
             // 
+            this.menuItem1ZoomAllArea.Name = "menuItem1ZoomAllArea";
             resources.ApplyResources(this.menuItem1ZoomAllArea, "menuItem1ZoomAllArea");
             this.menuItem1ZoomAllArea.Click += new System.EventHandler(this.MenuItemZoomAllArea_Click);
             // 
             // menuItemViewGrid
             // 
+            this.menuItemViewGrid.Name = "menuItemViewGrid";
             resources.ApplyResources(this.menuItemViewGrid, "menuItemViewGrid");
             this.menuItemViewGrid.Click += new System.EventHandler(this.MenuItemViewGrid_Click);
             // 
             // menuItemViewActivePhases
             // 
+            this.menuItemViewActivePhases.Name = "menuItemViewActivePhases";
             resources.ApplyResources(this.menuItemViewActivePhases, "menuItemViewActivePhases");
             this.menuItemViewActivePhases.Click += new System.EventHandler(this.MenuItemViewActivePhases_Click);
             // 
+            // menuItemSeperator7
+            // 
+            this.menuItemSeperator7.Name = "menuItemSeperator7";
+            resources.ApplyResources(this.menuItemSeperator7, "menuItemSeperator7");
+            // 
             // menuItemRestoreDefaultZoomAndOrigin
             // 
+            this.menuItemRestoreDefaultZoomAndOrigin.Name = "menuItemRestoreDefaultZoomAndOrigin";
             resources.ApplyResources(this.menuItemRestoreDefaultZoomAndOrigin, "menuItemRestoreDefaultZoomAndOrigin");
             this.menuItemRestoreDefaultZoomAndOrigin.Click += new System.EventHandler(this.MenuItemRestoreDefaultZoomAndOrigin_Click);
             // 
             // menuItemSaveAsDefaultZoomAndOrigin
             // 
+            this.menuItemSaveAsDefaultZoomAndOrigin.Name = "menuItemSaveAsDefaultZoomAndOrigin";
             resources.ApplyResources(this.menuItemSaveAsDefaultZoomAndOrigin, "menuItemSaveAsDefaultZoomAndOrigin");
             this.menuItemSaveAsDefaultZoomAndOrigin.Click += new System.EventHandler(this.MenuItemSaveAsDefaultZoomAndOrigin_Click);
             // 
+            // menuItemSeperator10
+            // 
+            this.menuItemSeperator10.Name = "menuItemSeperator10";
+            resources.ApplyResources(this.menuItemSeperator10, "menuItemSeperator10");
+            // 
             // menuItemShowLayoutControl
             // 
+            this.menuItemShowLayoutControl.Name = "menuItemShowLayoutControl";
             resources.ApplyResources(this.menuItemShowLayoutControl, "menuItemShowLayoutControl");
             this.menuItemShowLayoutControl.Click += new System.EventHandler(this.MenuItemShowLayoutControl_Click);
             // 
             // menuItemShowTripsMonitor
             // 
+            this.menuItemShowTripsMonitor.Name = "menuItemShowTripsMonitor";
             resources.ApplyResources(this.menuItemShowTripsMonitor, "menuItemShowTripsMonitor");
             this.menuItemShowTripsMonitor.Click += new System.EventHandler(this.MenuItemShowTripsMonitor_Click);
             // 
             // menuItemShowMessages
             // 
+            this.menuItemShowMessages.Name = "menuItemShowMessages";
             resources.ApplyResources(this.menuItemShowMessages, "menuItemShowMessages");
             this.menuItemShowMessages.Click += new System.EventHandler(this.MenuItemShowMessages_Click);
             // 
             // menuItemShowLocomotives
             // 
+            this.menuItemShowLocomotives.Name = "menuItemShowLocomotives";
             resources.ApplyResources(this.menuItemShowLocomotives, "menuItemShowLocomotives");
             this.menuItemShowLocomotives.Click += new System.EventHandler(this.MenuItemShowLocomotives_Click);
             // 
+            // menuItemSeperator4
+            // 
+            this.menuItemSeperator4.Name = "menuItemSeperator4";
+            resources.ApplyResources(this.menuItemSeperator4, "menuItemSeperator4");
+            // 
             // menuItemViewArrage
             // 
+            this.menuItemViewArrage.Name = "menuItemViewArrage";
             resources.ApplyResources(this.menuItemViewArrage, "menuItemViewArrage");
             this.menuItemViewArrage.Click += new System.EventHandler(this.MenuItemViewArrage_Click);
             // 
+            // menuItemSeperator6
+            // 
+            this.menuItemSeperator6.Name = "menuItemSeperator6";
+            resources.ApplyResources(this.menuItemSeperator6, "menuItemSeperator6");
+            // 
             // menuItemOperational
             // 
+            this.menuItemOperational.Name = "menuItemOperational";
             resources.ApplyResources(this.menuItemOperational, "menuItemOperational");
             this.menuItemOperational.Click += new System.EventHandler(this.MenuItemOperational_Click);
             // 
@@ -303,11 +346,13 @@ namespace LayoutManager {
             // 
             this.menuItemTools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItemDummy});
+            this.menuItemTools.Name = "menuItemTools";
             resources.ApplyResources(this.menuItemTools, "menuItemTools");
-            this.menuItemTools.DropDownItemClicked += new ToolStripItemClickedEventHandler(this.MenuItemTools_Popup);
+            this.menuItemTools.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.MenuItemTools_Popup);
             // 
             // menuItemDummy
             // 
+            this.menuItemDummy.Name = "menuItemDummy";
             resources.ApplyResources(this.menuItemDummy, "menuItemDummy");
             // 
             // menuLayout
@@ -330,61 +375,89 @@ namespace LayoutManager {
             this.menuItemTrainTracking,
             this.menuItemCommonDestinations,
             this.menuItemManualDispatchRegions});
+            this.menuLayout.Name = "menuLayout";
             resources.ApplyResources(this.menuLayout, "menuLayout");
-            this.menuLayout.DropDownItemClicked += new ToolStripItemClickedEventHandler(this.MenuLayout_Popup);
+            this.menuLayout.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.MenuLayout_Popup);
             // 
             // menuItemDesign
             // 
+            this.menuItemDesign.Name = "menuItemDesign";
             resources.ApplyResources(this.menuItemDesign, "menuItemDesign");
             this.menuItemDesign.Click += new System.EventHandler(this.MenuItemDesign_Click);
             // 
             // menuItemSimulation
             // 
+            this.menuItemSimulation.Name = "menuItemSimulation";
             resources.ApplyResources(this.menuItemSimulation, "menuItemSimulation");
             this.menuItemSimulation.Click += new System.EventHandler(this.MenuItemSimulation_Click);
             // 
+            // menuItemDesignTimeOnlySeperator
+            // 
+            this.menuItemDesignTimeOnlySeperator.Name = "menuItemDesignTimeOnlySeperator";
+            resources.ApplyResources(this.menuItemDesignTimeOnlySeperator, "menuItemDesignTimeOnlySeperator");
+            // 
             // menuItemCompile
             // 
+            this.menuItemCompile.Name = "menuItemCompile";
             resources.ApplyResources(this.menuItemCompile, "menuItemCompile");
             this.menuItemCompile.Click += new System.EventHandler(this.MenuItemCompile_Click);
             // 
             // menuItemVerificationOptions
             // 
+            this.menuItemVerificationOptions.Name = "menuItemVerificationOptions";
             resources.ApplyResources(this.menuItemVerificationOptions, "menuItemVerificationOptions");
             this.menuItemVerificationOptions.Click += new System.EventHandler(this.MenuItemVerificationOptions_Click);
             // 
+            // menuItemSeperator8
+            // 
+            this.menuItemSeperator8.Name = "menuItemSeperator8";
+            resources.ApplyResources(this.menuItemSeperator8, "menuItemSeperator8");
+            // 
             // menuItemLearnLayout
             // 
+            this.menuItemLearnLayout.Name = "menuItemLearnLayout";
             resources.ApplyResources(this.menuItemLearnLayout, "menuItemLearnLayout");
             this.menuItemLearnLayout.Click += new System.EventHandler(this.MenuItemLearnLayout_Click);
             // 
             // menuItemConnectLayout
             // 
+            this.menuItemConnectLayout.Name = "menuItemConnectLayout";
             resources.ApplyResources(this.menuItemConnectLayout, "menuItemConnectLayout");
             this.menuItemConnectLayout.Click += new System.EventHandler(this.MenuItemConnectLayout_Click);
             // 
             // menuItemEmergencyStop
             // 
+            this.menuItemEmergencyStop.Name = "menuItemEmergencyStop";
             resources.ApplyResources(this.menuItemEmergencyStop, "menuItemEmergencyStop");
             this.menuItemEmergencyStop.Click += new System.EventHandler(this.MenuItemEmergencyStop_Click);
             // 
             // menuItemSuspendLocomotives
             // 
+            this.menuItemSuspendLocomotives.Name = "menuItemSuspendLocomotives";
             resources.ApplyResources(this.menuItemSuspendLocomotives, "menuItemSuspendLocomotives");
             this.menuItemSuspendLocomotives.Click += new System.EventHandler(this.MenuItemSuspendLocomotives_Click);
             // 
             // menuItemPolicies
             // 
+            this.menuItemPolicies.Name = "menuItemPolicies";
             resources.ApplyResources(this.menuItemPolicies, "menuItemPolicies");
             this.menuItemPolicies.Click += new System.EventHandler(this.MenuItemPolicies_Click);
             // 
             // menuItemDefaultDriverParameters
             // 
+            this.menuItemDefaultDriverParameters.Name = "menuItemDefaultDriverParameters";
             resources.ApplyResources(this.menuItemDefaultDriverParameters, "menuItemDefaultDriverParameters");
             this.menuItemDefaultDriverParameters.Click += new System.EventHandler(this.MenuItemDefaultDriverParameters_Click);
             // 
+            // menuItemTrainTracking
+            // 
+            this.menuItemTrainTracking.Name = "menuItemTrainTracking";
+            resources.ApplyResources(this.menuItemTrainTracking, "menuItemTrainTracking");
+            this.menuItemTrainTracking.Click += new System.EventHandler(this.MenuItemTrainTracking_Click);
+            // 
             // menuItemCommonDestinations
             // 
+            this.menuItemCommonDestinations.Name = "menuItemCommonDestinations";
             resources.ApplyResources(this.menuItemCommonDestinations, "menuItemCommonDestinations");
             this.menuItemCommonDestinations.Click += new System.EventHandler(this.MenuItemCommonDestinations_Click);
             // 
@@ -392,12 +465,19 @@ namespace LayoutManager {
             // 
             this.menuItemManualDispatchRegions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItem4});
+            this.menuItemManualDispatchRegions.Name = "menuItemManualDispatchRegions";
             resources.ApplyResources(this.menuItemManualDispatchRegions, "menuItemManualDispatchRegions");
-            this.menuItemManualDispatchRegions.DropDownItemClicked += new ToolStripItemClickedEventHandler(this.MenuItemManualDispatchRegions_Popup);
+            this.menuItemManualDispatchRegions.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.MenuItemManualDispatchRegions_Popup);
             // 
             // menuItem4
             // 
+            this.menuItem4.Name = "menuItem4";
             resources.ApplyResources(this.menuItem4, "menuItem4");
+            // 
+            // menuItem6
+            // 
+            this.menuItem6.Name = "menuItem6";
+            resources.ApplyResources(this.menuItem6, "menuItem6");
             // 
             // menuFile
             // 
@@ -406,42 +486,63 @@ namespace LayoutManager {
             this.menuItemSave,
             this.menuItemSeperator9,
             this.menuItemPrint,
-            this.menuItemSeperator1,
             this.menuItemModules,
             this.menuItemSeperator3,
             this.menuItemCloseWindow,
             this.menuItemExit});
+            this.menuFile.Name = "menuFile";
             resources.ApplyResources(this.menuFile, "menuFile");
             // 
             // menuItemNewWindow
             // 
+            this.menuItemNewWindow.Name = "menuItemNewWindow";
             resources.ApplyResources(this.menuItemNewWindow, "menuItemNewWindow");
             this.menuItemNewWindow.Click += new System.EventHandler(this.MenuItemNewWindow_Click);
             // 
             // menuItemSave
             // 
+            this.menuItemSave.Name = "menuItemSave";
             resources.ApplyResources(this.menuItemSave, "menuItemSave");
             this.menuItemSave.Click += new System.EventHandler(this.MenuItemSave_Click);
             // 
+            // menuItemSeperator9
+            // 
+            this.menuItemSeperator9.Name = "menuItemSeperator9";
+            resources.ApplyResources(this.menuItemSeperator9, "menuItemSeperator9");
+            // 
             // menuItemPrint
             // 
+            this.menuItemPrint.Name = "menuItemPrint";
             resources.ApplyResources(this.menuItemPrint, "menuItemPrint");
             this.menuItemPrint.Click += new System.EventHandler(this.MenuItemPrint_Click);
             // 
             // menuItemModules
             // 
+            this.menuItemModules.Name = "menuItemModules";
             resources.ApplyResources(this.menuItemModules, "menuItemModules");
             this.menuItemModules.Click += new System.EventHandler(this.MenuItemModules_Click);
             // 
+            // menuItemSeperator3
+            // 
+            this.menuItemSeperator3.Name = "menuItemSeperator3";
+            resources.ApplyResources(this.menuItemSeperator3, "menuItemSeperator3");
+            // 
             // menuItemCloseWindow
             // 
+            this.menuItemCloseWindow.Name = "menuItemCloseWindow";
             resources.ApplyResources(this.menuItemCloseWindow, "menuItemCloseWindow");
             this.menuItemCloseWindow.Click += new System.EventHandler(this.MenuItemCloseWindow_Click);
             // 
             // menuItemExit
             // 
+            this.menuItemExit.Name = "menuItemExit";
             resources.ApplyResources(this.menuItemExit, "menuItemExit");
             this.menuItemExit.Click += new System.EventHandler(this.MenuItemExit_Click);
+            // 
+            // menuItemSeperator1
+            // 
+            this.menuItemSeperator1.Name = "menuItemSeperator1";
+            resources.ApplyResources(this.menuItemSeperator1, "menuItemSeperator1");
             // 
             // menuEdit
             // 
@@ -461,31 +562,42 @@ namespace LayoutManager {
             this.menuItemStyles,
             this.menuItemLocomotiveCatalog,
             this.menuItemAccelerationProfiles});
+            this.menuEdit.Name = "menuEdit";
             resources.ApplyResources(this.menuEdit, "menuEdit");
-            this.menuEdit.DropDownItemClicked += new ToolStripItemClickedEventHandler(this.MenuEdit_Popup);
+            this.menuEdit.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.MenuEdit_Popup);
             // 
             // menuItemUndo
             // 
+            this.menuItemUndo.Name = "menuItemUndo";
             resources.ApplyResources(this.menuItemUndo, "menuItemUndo");
             this.menuItemUndo.Click += new System.EventHandler(this.MenuItemUndo_Click);
             // 
             // menuItemRedo
             // 
+            this.menuItemRedo.Name = "menuItemRedo";
             resources.ApplyResources(this.menuItemRedo, "menuItemRedo");
             this.menuItemRedo.Click += new System.EventHandler(this.MenuItemRedo_Click);
             // 
+            // menuItemSeparator
+            // 
+            this.menuItemSeparator.Name = "menuItemSeparator";
+            resources.ApplyResources(this.menuItemSeparator, "menuItemSeparator");
+            // 
             // menuItemCopy
             // 
+            this.menuItemCopy.Name = "menuItemCopy";
             resources.ApplyResources(this.menuItemCopy, "menuItemCopy");
             this.menuItemCopy.Click += new System.EventHandler(this.MenuItemCopy_Click);
             // 
             // menuItemCut
             // 
+            this.menuItemCut.Name = "menuItemCut";
             resources.ApplyResources(this.menuItemCut, "menuItemCut");
             this.menuItemCut.Click += new System.EventHandler(this.MenuItemCut_Click);
             // 
             // menuItemFind
             // 
+            this.menuItemFind.Name = "menuItemFind";
             resources.ApplyResources(this.menuItemFind, "menuItemFind");
             this.menuItemFind.Click += new System.EventHandler(this.MenuItemFind_Click);
             // 
@@ -497,32 +609,43 @@ namespace LayoutManager {
             this.menuItemSelectUnlinkedTrackLinks,
             this.menuItemSelectPowerConnectors,
             this.menuItemSelectReverseLoopModules});
+            this.menuItemSelect.Name = "menuItemSelect";
             resources.ApplyResources(this.menuItemSelect, "menuItemSelect");
             // 
             // menuItemSelectUnconnectedComponents
             // 
+            this.menuItemSelectUnconnectedComponents.Name = "menuItemSelectUnconnectedComponents";
             resources.ApplyResources(this.menuItemSelectUnconnectedComponents, "menuItemSelectUnconnectedComponents");
             this.menuItemSelectUnconnectedComponents.Click += new System.EventHandler(this.MenuItemSelectUnconnectedComponents_Click);
             // 
             // menuItemSelectUnlinkedSignals
             // 
+            this.menuItemSelectUnlinkedSignals.Name = "menuItemSelectUnlinkedSignals";
             resources.ApplyResources(this.menuItemSelectUnlinkedSignals, "menuItemSelectUnlinkedSignals");
             this.menuItemSelectUnlinkedSignals.Click += new System.EventHandler(this.MenuItemSelectUnlinkedSignals_Click);
             // 
             // menuItemSelectUnlinkedTrackLinks
             // 
+            this.menuItemSelectUnlinkedTrackLinks.Name = "menuItemSelectUnlinkedTrackLinks";
             resources.ApplyResources(this.menuItemSelectUnlinkedTrackLinks, "menuItemSelectUnlinkedTrackLinks");
             this.menuItemSelectUnlinkedTrackLinks.Click += new System.EventHandler(this.MenuItemSelectUnlinkedTrackLinks_Click);
             // 
             // menuItemSelectPowerConnectors
             // 
+            this.menuItemSelectPowerConnectors.Name = "menuItemSelectPowerConnectors";
             resources.ApplyResources(this.menuItemSelectPowerConnectors, "menuItemSelectPowerConnectors");
             this.menuItemSelectPowerConnectors.Click += new System.EventHandler(this.MenuItemSelectPowerConnectors_Click);
             // 
             // menuItemSelectReverseLoopModules
             // 
+            this.menuItemSelectReverseLoopModules.Name = "menuItemSelectReverseLoopModules";
             resources.ApplyResources(this.menuItemSelectReverseLoopModules, "menuItemSelectReverseLoopModules");
             this.menuItemSelectReverseLoopModules.Click += new System.EventHandler(this.MenuItemSelectReverseLoopModules_Click);
+            // 
+            // menuItemSeperator11
+            // 
+            this.menuItemSeperator11.Name = "menuItemSeperator11";
+            resources.ApplyResources(this.menuItemSeperator11, "menuItemSeperator11");
             // 
             // menuItemDefaultPhase
             // 
@@ -530,21 +653,25 @@ namespace LayoutManager {
             this.menuItemNewComponentDesignPhase,
             this.menuItemNewComponentConstructionPhase,
             this.menuItemNewComponentOperationalPhase});
+            this.menuItemDefaultPhase.Name = "menuItemDefaultPhase";
             resources.ApplyResources(this.menuItemDefaultPhase, "menuItemDefaultPhase");
-            this.menuItemDefaultPhase.DropDownItemClicked += new ToolStripItemClickedEventHandler(this.MenuItemDefaultPhase_Popup);
+            this.menuItemDefaultPhase.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.MenuItemDefaultPhase_Popup);
             // 
             // menuItemNewComponentDesignPhase
             // 
+            this.menuItemNewComponentDesignPhase.Name = "menuItemNewComponentDesignPhase";
             resources.ApplyResources(this.menuItemNewComponentDesignPhase, "menuItemNewComponentDesignPhase");
             this.menuItemNewComponentDesignPhase.Click += new System.EventHandler(this.MenuItemNewComponentDesignPhase_Click);
             // 
             // menuItemNewComponentConstructionPhase
             // 
+            this.menuItemNewComponentConstructionPhase.Name = "menuItemNewComponentConstructionPhase";
             resources.ApplyResources(this.menuItemNewComponentConstructionPhase, "menuItemNewComponentConstructionPhase");
             this.menuItemNewComponentConstructionPhase.Click += new System.EventHandler(this.MenuItemNewComponentConstructionPhase_Click);
             // 
             // menuItemNewComponentOperationalPhase
             // 
+            this.menuItemNewComponentOperationalPhase.Name = "menuItemNewComponentOperationalPhase";
             resources.ApplyResources(this.menuItemNewComponentOperationalPhase, "menuItemNewComponentOperationalPhase");
             this.menuItemNewComponentOperationalPhase.Click += new System.EventHandler(this.MenuItemNewComponentOperationalPhase_Click);
             // 
@@ -554,49 +681,68 @@ namespace LayoutManager {
             this.menuItemSetToDesignPhase,
             this.menuItemSetToConstructionPhase,
             this.menuItemSetToOperationalPhase});
+            this.menuItemSetComponentPhase.Name = "menuItemSetComponentPhase";
             resources.ApplyResources(this.menuItemSetComponentPhase, "menuItemSetComponentPhase");
             // 
             // menuItemSetToDesignPhase
             // 
+            this.menuItemSetToDesignPhase.Name = "menuItemSetToDesignPhase";
             resources.ApplyResources(this.menuItemSetToDesignPhase, "menuItemSetToDesignPhase");
             this.menuItemSetToDesignPhase.Click += new System.EventHandler(this.MenuItemSetToDesignPhase_Click);
             // 
             // menuItemSetToConstructionPhase
             // 
+            this.menuItemSetToConstructionPhase.Name = "menuItemSetToConstructionPhase";
             resources.ApplyResources(this.menuItemSetToConstructionPhase, "menuItemSetToConstructionPhase");
             this.menuItemSetToConstructionPhase.Click += new System.EventHandler(this.MenuItemSetToConstructionPhase_Click);
             // 
             // menuItemSetToOperationalPhase
             // 
+            this.menuItemSetToOperationalPhase.Name = "menuItemSetToOperationalPhase";
             resources.ApplyResources(this.menuItemSetToOperationalPhase, "menuItemSetToOperationalPhase");
             this.menuItemSetToOperationalPhase.Click += new System.EventHandler(this.MenuItemSetToOperationalPhase_Click);
+            // 
+            // menuItemSeperator14
+            // 
+            this.menuItemSeperator14.Name = "menuItemSeperator14";
+            resources.ApplyResources(this.menuItemSeperator14, "menuItemSeperator14");
             // 
             // menuItemStyles
             // 
             this.menuItemStyles.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItemStyleFonts,
             this.menuItemStylePositions});
+            this.menuItemStyles.Name = "menuItemStyles";
             resources.ApplyResources(this.menuItemStyles, "menuItemStyles");
             // 
             // menuItemStyleFonts
             // 
+            this.menuItemStyleFonts.Name = "menuItemStyleFonts";
             resources.ApplyResources(this.menuItemStyleFonts, "menuItemStyleFonts");
             this.menuItemStyleFonts.Click += new System.EventHandler(this.MenuItemStyleFonts_Click);
             // 
             // menuItemStylePositions
             // 
+            this.menuItemStylePositions.Name = "menuItemStylePositions";
             resources.ApplyResources(this.menuItemStylePositions, "menuItemStylePositions");
             this.menuItemStylePositions.Click += new System.EventHandler(this.MenuItemStylePositions_Click);
             // 
             // menuItemLocomotiveCatalog
             // 
+            this.menuItemLocomotiveCatalog.Name = "menuItemLocomotiveCatalog";
             resources.ApplyResources(this.menuItemLocomotiveCatalog, "menuItemLocomotiveCatalog");
             this.menuItemLocomotiveCatalog.Click += new System.EventHandler(this.MenuItemLocomotiveCatalog_Click);
             // 
             // menuItemAccelerationProfiles
             // 
+            this.menuItemAccelerationProfiles.Name = "menuItemAccelerationProfiles";
             resources.ApplyResources(this.menuItemAccelerationProfiles, "menuItemAccelerationProfiles");
             this.menuItemAccelerationProfiles.Click += new System.EventHandler(this.MenuItemAccelerationProfiles_Click);
+            // 
+            // menuItem1
+            // 
+            this.menuItem1.Name = "menuItem1";
+            resources.ApplyResources(this.menuItem1, "menuItem1");
             // 
             // menuItemArea
             // 
@@ -606,25 +752,35 @@ namespace LayoutManager {
             this.menuItemRenameArea,
             this.menuSeperator2,
             this.menuItemAreaArrange});
+            this.menuItemArea.Name = "menuItemArea";
             resources.ApplyResources(this.menuItemArea, "menuItemArea");
             // 
             // menuItemNewArea
             // 
+            this.menuItemNewArea.Name = "menuItemNewArea";
             resources.ApplyResources(this.menuItemNewArea, "menuItemNewArea");
             this.menuItemNewArea.Click += new System.EventHandler(this.MenuItemNewArea_Click);
             // 
             // menuItemDeleteArea
             // 
+            this.menuItemDeleteArea.Name = "menuItemDeleteArea";
             resources.ApplyResources(this.menuItemDeleteArea, "menuItemDeleteArea");
             this.menuItemDeleteArea.Click += new System.EventHandler(this.MenuItemDeleteArea_Click);
             // 
             // menuItemRenameArea
             // 
+            this.menuItemRenameArea.Name = "menuItemRenameArea";
             resources.ApplyResources(this.menuItemRenameArea, "menuItemRenameArea");
             this.menuItemRenameArea.Click += new System.EventHandler(this.MenuItemRenameArea_Click);
             // 
+            // menuSeperator2
+            // 
+            this.menuSeperator2.Name = "menuSeperator2";
+            resources.ApplyResources(this.menuSeperator2, "menuSeperator2");
+            // 
             // menuItemAreaArrange
             // 
+            this.menuItemAreaArrange.Name = "menuItemAreaArrange";
             resources.ApplyResources(this.menuItemAreaArrange, "menuItemAreaArrange");
             this.menuItemAreaArrange.Click += new System.EventHandler(this.MenuItemAreaArrange_Click);
             // 
@@ -638,11 +794,18 @@ namespace LayoutManager {
             // 
             // panelTripsMonitor
             // 
-            this.panelTripsMonitor.Controls.Add(this.splitterTripsMonitor);
             this.panelTripsMonitor.Controls.Add(this.tabAreas);
+            this.panelTripsMonitor.Controls.Add(this.splitterTripsMonitor);
             this.panelTripsMonitor.Controls.Add(this.tripsMonitor);
             resources.ApplyResources(this.panelTripsMonitor, "panelTripsMonitor");
             this.panelTripsMonitor.Name = "panelTripsMonitor";
+            // 
+            // tabAreas
+            // 
+            resources.ApplyResources(this.tabAreas, "tabAreas");
+            this.tabAreas.Multiline = true;
+            this.tabAreas.Name = "tabAreas";
+            this.tabAreas.SelectedIndex = 0;
             // 
             // splitterTripsMonitor
             // 
@@ -651,13 +814,6 @@ namespace LayoutManager {
             this.splitterTripsMonitor.Name = "splitterTripsMonitor";
             this.splitterTripsMonitor.TabStop = false;
             this.splitterTripsMonitor.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.SplitterTripsMonitor_SplitterMoved);
-            // 
-            // tabAreas
-            // 
-            resources.ApplyResources(this.tabAreas, "tabAreas");
-            this.tabAreas.Multiline = true;
-            this.tabAreas.Name = "tabAreas";
-            this.tabAreas.SelectedIndex = 0;
             // 
             // tripsMonitor
             // 
@@ -696,16 +852,20 @@ namespace LayoutManager {
             // locomotivesViewer
             // 
             resources.ApplyResources(this.locomotivesViewer, "locomotivesViewer");
-            this.locomotivesViewer.LocomotiveCollection = null;
             this.locomotivesViewer.Name = "locomotivesViewer";
             // 
             // panelLayoutControl
             // 
-            this.panelLayoutControl.Controls.Add(this.panelLocomotiveViewer);
-            this.panelLayoutControl.Controls.Add(this.splitterLayoutControl);
             this.panelLayoutControl.Controls.Add(this.layoutControlViewer);
+            this.panelLayoutControl.Controls.Add(this.splitterLayoutControl);
+            this.panelLayoutControl.Controls.Add(this.panelLocomotiveViewer);
             resources.ApplyResources(this.panelLayoutControl, "panelLayoutControl");
             this.panelLayoutControl.Name = "panelLayoutControl";
+            // 
+            // layoutControlViewer
+            // 
+            resources.ApplyResources(this.layoutControlViewer, "layoutControlViewer");
+            this.layoutControlViewer.Name = "layoutControlViewer";
             // 
             // splitterLayoutControl
             // 
@@ -713,21 +873,20 @@ namespace LayoutManager {
             resources.ApplyResources(this.splitterLayoutControl, "splitterLayoutControl");
             this.splitterLayoutControl.Name = "splitterLayoutControl";
             this.splitterLayoutControl.TabStop = false;
-            // 
-            // layoutControlViewer
-            // 
-            resources.ApplyResources(this.layoutControlViewer, "layoutControlViewer");
-            this.layoutControlViewer.Name = "layoutControlViewer";
+            this.splitterLayoutControl.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.SplitterLayoutControl_SplitterMoved);
             // 
             // mainMenu
             // 
-            this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripMenuItem[] {
+            this.mainMenu.ImageScalingSize = new System.Drawing.Size(32, 32);
+            this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuFile,
             this.menuEdit,
             this.menuItemView,
             this.menuItemArea,
             this.menuLayout,
             this.menuItemTools});
+            resources.ApplyResources(this.mainMenu, "mainMenu");
+            this.mainMenu.Name = "mainMenu";
             // 
             // timerFreeResources
             // 
@@ -744,16 +903,15 @@ namespace LayoutManager {
             // 
             this.printDocument.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.PrintDocument_PrintPage);
             // 
-            // menuItemTrainTracking
+            // menuItem13
             // 
-            resources.ApplyResources(this.menuItemTrainTracking, "menuItemTrainTracking");
-            this.menuItemTrainTracking.Click += new System.EventHandler(this.MenuItemTrainTracking_Click);
+            this.menuItem13.Name = "menuItem13";
+            resources.ApplyResources(this.menuItem13, "menuItem13");
             // 
             // LayoutFrameWindow
             // 
-            this.AutoScaleDimensions = new SizeF(5, 13);
-            this.AutoScaleMode = AutoScaleMode.Font;
             resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.mainMenu);
             this.Controls.Add(this.panelLayoutControl);
             this.Name = "LayoutFrameWindow";
@@ -764,6 +922,9 @@ namespace LayoutManager {
             this.panelTripsMonitor.ResumeLayout(false);
             this.panelLocomotiveViewer.ResumeLayout(false);
             this.panelLayoutControl.ResumeLayout(false);
+            this.panelLayoutControl.PerformLayout();
+            this.mainMenu.ResumeLayout(false);
+            this.mainMenu.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timerFreeResources)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

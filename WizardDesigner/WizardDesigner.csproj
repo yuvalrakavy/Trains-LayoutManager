@@ -15,11 +15,8 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System.Design" />
-    <Reference Include="System.Drawing.Design" />
-  </ItemGroup>
   <ItemGroup>
     <Compile Update="InfoContainer.cs">
       <SubType>UserControl</SubType>

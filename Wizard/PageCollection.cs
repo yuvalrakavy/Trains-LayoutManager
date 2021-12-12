@@ -21,9 +21,9 @@ namespace Gui.Wizard {
         /// <summary>
         /// Finds the Page in the collection
         /// </summary>
-        public WizardPage this[int index] {
+        public WizardPage? this[int index] {
             get {
-                return (WizardPage)List[index];
+                return (WizardPage?)List[index];
             }
             set {
                 List[index] = value;
@@ -88,7 +88,7 @@ namespace Gui.Wizard {
         /// </summary>
         /// <param name="index"></param>
         /// <param name="value"></param>
-        protected override void OnInsertComplete(int index, object value) {
+        protected override void OnInsertComplete(int index, object? value) {
             base.OnInsertComplete(index, value);
             //Showthe page added
             Parent.PageIndex = index;
@@ -99,7 +99,7 @@ namespace Gui.Wizard {
         /// </summary>
         /// <param name="index"></param>
         /// <param name="value"></param>
-        protected override void OnRemoveComplete(int index, object value) {
+        protected override void OnRemoveComplete(int index, object? value) {
             base.OnRemoveComplete(index, value);
             //If the page that was added was the one that was visible
             if (Parent.PageIndex == index) {

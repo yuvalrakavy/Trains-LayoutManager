@@ -10,7 +10,7 @@
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new(typeof(LayoutControlViewer));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LayoutControlViewer));
             this.imageListCloseButton = new ImageList(this.components);
             this.panel1 = new Panel();
             this.buttonClose = new Button();
@@ -162,6 +162,8 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.layoutControlBusViewer);
             this.Controls.Add(this.panel1);
+            this.AutoScaleDimensions = new SizeF(5, 13);
+            this.AutoScaleMode = AutoScaleMode.Font;
             this.Name = "LayoutControlViewer";
             this.Size = new System.Drawing.Size(200, 688);
             this.panel1.ResumeLayout(false);

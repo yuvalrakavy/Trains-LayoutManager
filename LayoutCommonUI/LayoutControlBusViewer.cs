@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using LayoutManager.Model;
 
@@ -5,7 +6,7 @@ namespace LayoutManager.CommonUI {
     /// <summary>
     /// Summary description for LayoutControlBusViewer.
     /// </summary>
-    public partial class LayoutControlBusViewer : Control {
+    public partial class LayoutControlBusViewer : UserControl {
 
         private ILayoutFrameWindow? frameWindow = null;
 
@@ -26,20 +27,17 @@ namespace LayoutManager.CommonUI {
         private ControlConnectionPoint? selectedConnectionPoint = null;
         private readonly LayoutSelection selectedComponents;
 
-        #nullable disable
         public LayoutControlBusViewer() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
 
             selectedComponents = new LayoutSelection();
-            Controls.Add(hScrollBar);
-            Controls.Add(vScrollBar);
         }
-        #nullable enable
 
-        #region Public Properties
 
-        public ILayoutFrameWindow FrameWindow => frameWindow ??= (ILayoutFrameWindow)FindForm();
+    #region Public Properties
+
+    public ILayoutFrameWindow FrameWindow => frameWindow ??= (ILayoutFrameWindow)FindForm();
 
         public float Zoom {
             get {
@@ -258,11 +256,11 @@ namespace LayoutManager.CommonUI {
             Invalidate();
         }
 
-        internal void VerticalScroll(ScrollEventType type) {
+        internal void DoVerticalScroll(ScrollEventType type) {
             VScrollBar_Scroll(null, new ScrollEventArgs(type, 0));
         }
 
-        internal void HorizontalScroll(ScrollEventType type) {
+        internal void DoHorizontalScroll(ScrollEventType type) {
             HScrollBar_Scroll(null, new ScrollEventArgs(type, 0));
         }
 
@@ -310,9 +308,14 @@ namespace LayoutManager.CommonUI {
 
         private RectangleF DrawingBounds => RectangleF.FromLTRB(0, 0, DrawRoot.Bounds.Right, DrawRoot.Bounds.Bottom);
 
-        public DrawControlBase DrawRoot {
-            get => Ensure.NotNull<DrawControlBase>(drawRoot);
+        public DrawControlBase? OptionalDrawRoot {
+            get => drawRoot;
             set => drawRoot = value;
+        }
+
+        public DrawControlBase DrawRoot {
+            get => Ensure.NotNull<DrawControlBase>(OptionalDrawRoot);
+            set => OptionalDrawRoot = value;
         }
 
         private bool UpdateScrollBars() {
@@ -366,7 +369,7 @@ namespace LayoutManager.CommonUI {
         protected override void OnPaint(PaintEventArgs pe) {
             base.OnPaint(pe);
 
-            if (DesignMode || EventManager.Instance == null)
+            if (LicenseManager.UsageMode == LicenseUsageMode.Designtime || EventManager.OptionalInstance == null)
                 return;
 
             var clipBounds = pe.Graphics.VisibleClipBounds;
@@ -487,7 +490,7 @@ namespace LayoutManager.CommonUI {
 
         private void LayoutControlBusViewer_SizeChanged(object? sender, EventArgs e) {
             // Check if need to update scroll bars
-            if (DrawRoot != null) {
+            if (OptionalDrawRoot != null) {
                 if (UpdateScrollBars())
                     Invalidate();
             }
@@ -622,41 +625,41 @@ namespace LayoutManager.CommonUI {
         private void LayoutControlBusViewer_KeyDown(object? sender, KeyEventArgs e) {
             switch (e.KeyCode) {
                 case Keys.Left:
-                    HorizontalScroll((e.Modifiers & Keys.Control) != 0 ? ScrollEventType.LargeDecrement : ScrollEventType.SmallDecrement);
+                    DoHorizontalScroll((e.Modifiers & Keys.Control) != 0 ? ScrollEventType.LargeDecrement : ScrollEventType.SmallDecrement);
                     break;
 
                 case Keys.Right:
-                    HorizontalScroll((e.Modifiers & Keys.Control) != 0 ? ScrollEventType.LargeIncrement : ScrollEventType.SmallIncrement);
+                    DoHorizontalScroll((e.Modifiers & Keys.Control) != 0 ? ScrollEventType.LargeIncrement : ScrollEventType.SmallIncrement);
                     break;
 
                 case Keys.Up:
-                    VerticalScroll(ScrollEventType.SmallDecrement);
+                    DoVerticalScroll(ScrollEventType.SmallDecrement);
                     break;
 
                 case Keys.Down:
-                    VerticalScroll(ScrollEventType.SmallIncrement);
+                    DoVerticalScroll(ScrollEventType.SmallIncrement);
                     break;
 
                 case Keys.PageUp:
-                    VerticalScroll(ScrollEventType.LargeDecrement);
+                    DoVerticalScroll(ScrollEventType.LargeDecrement);
                     break;
 
                 case Keys.PageDown:
-                    VerticalScroll(ScrollEventType.LargeIncrement);
+                    DoVerticalScroll(ScrollEventType.LargeIncrement);
                     break;
 
                 case Keys.Home:
                     if ((e.Modifiers & Keys.Control) != 0)
-                        HorizontalScroll(ScrollEventType.First);
+                        DoHorizontalScroll(ScrollEventType.First);
                     else
-                        VerticalScroll(ScrollEventType.First);
+                        DoVerticalScroll(ScrollEventType.First);
                     break;
 
                 case Keys.End:
                     if ((e.Modifiers & Keys.Control) != 0)
-                        HorizontalScroll(ScrollEventType.Last);
+                        DoHorizontalScroll(ScrollEventType.Last);
                     else
-                        VerticalScroll(ScrollEventType.Last);
+                        DoVerticalScroll(ScrollEventType.Last);
                     break;
             }
         }
@@ -670,7 +673,7 @@ namespace LayoutManager.CommonUI {
                 while (delta > 0) {
                     if ((Control.ModifierKeys & (Keys.Shift|Keys.Alt)) != 0) {
                         for (int i = 0; i < 3; i++)
-                            HorizontalScroll(ScrollEventType.SmallDecrement);
+                            DoHorizontalScroll(ScrollEventType.SmallDecrement);
                     }
                     else if ((Control.ModifierKeys & Keys.Control) != 0) {
                         if (Zoom > 0.3)
@@ -678,7 +681,7 @@ namespace LayoutManager.CommonUI {
                     }
                     else {
                         for (int i = 0; i < 6; i++)
-                            VerticalScroll(ScrollEventType.SmallDecrement);
+                            DoVerticalScroll(ScrollEventType.SmallDecrement);
                     }
 
                     delta -= 120;
@@ -687,7 +690,7 @@ namespace LayoutManager.CommonUI {
             else if (e.Delta < 0) {
                 if ((Control.ModifierKeys & (Keys.Shift|Keys.Alt)) != 0) {
                     for (int i = 0; i < 3; i++)
-                        HorizontalScroll(ScrollEventType.SmallIncrement);
+                        DoHorizontalScroll(ScrollEventType.SmallIncrement);
                 }
                 else if ((Control.ModifierKeys & Keys.Control) != 0) {
                     if (Zoom < 2.0)
@@ -695,7 +698,7 @@ namespace LayoutManager.CommonUI {
                 }
                 else {
                     for (int i = 0; i < 6; i++)
-                        VerticalScroll(ScrollEventType.SmallIncrement);
+                        DoVerticalScroll(ScrollEventType.SmallIncrement);
                 }
             }
         }
@@ -841,7 +844,7 @@ namespace LayoutManager.CommonUI {
 
         public DrawControlBusProviders(LayoutControlBusViewer viewer) : base(viewer) {
             if (Viewer.BusProviderId == Guid.Empty) {
-                if (LayoutModel.Instance != null) {
+                if (LayoutModel.OptionalInstance != null) {
                     foreach (IModelComponentIsBusProvider busProvider in LayoutModel.Components<IModelComponentIsBusProvider>(LayoutModel.ActivePhases)) {
                         DrawControlBusProvider drawBusProvider = new(Viewer, busProvider);
 

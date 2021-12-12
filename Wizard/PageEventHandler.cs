@@ -28,13 +28,13 @@ namespace Gui.Wizard {
         /// <summary>
         /// Gets/Sets the wizard page that will be displayed next. If you set this it must be to a wizardPage from the wizard.
         /// </summary>
-        public WizardPage Page {
+        public WizardPage? Page {
             get {
                 //Is this a valid page
                 return vPage >= 0 && vPage < vPages.Count ? vPages[vPage] : null;
             }
             set {
-                if (vPages.Contains(value)) {
+                if (value != null && vPages.Contains(value)) {
                     //If this is a valid page then set it
                     vPage = vPages.IndexOf(value);
                 }

@@ -96,9 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Controls\AttributesEditor.cs" />
-    <Compile Update="Controls\DIPswitch.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="Controls\DIPswitch.cs" />
     <Compile Update="Controls\DrivingParameters.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -199,9 +197,7 @@
     <Compile Update="Controls\XmlQueryListbox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="LayoutControlBusViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="LayoutControlBusViewer.cs" />
     <Compile Update="Controls\TrainLengthDiagram.cs">
       <SubType>UserControl</SubType>
     </Compile>

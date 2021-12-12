@@ -71,6 +71,11 @@
     <LangVersion>9.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="orig\**" />
+    <EmbeddedResource Remove="orig\**" />
+    <None Remove="orig\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Update="System">
       <Name>System</Name>
     </Reference>
@@ -151,9 +156,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="orig\LayoutController.cs" />
     <Compile Remove="Tmp\LayoutController.cs" />
-    <EmbeddedResource Remove="orig\LayoutController.resx" />
     <EmbeddedResource Remove="s.resx" />
     <EmbeddedResource Remove="Tmp\LayoutController.resx" />
   </ItemGroup>

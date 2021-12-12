@@ -14,18 +14,7 @@ namespace Gui.Wizard {
     [Designer("Gui.Wizard.WizardDesigner", "WizardDesigner.dll")]
     [ToolboxItem(true)]
     [ToolboxBitmap(typeof(Gui.Wizard.Wizard))]
-    public class Wizard : System.Windows.Forms.UserControl {
-        protected internal Panel pnlButtons;
-        private Panel pnlButtonBright3d;
-        private Panel pnlButtonDark3d;
-        public Button btnBack;
-        public Button btnNext;
-        private Button btnCancel;
-
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private readonly Container components = null;
+    public partial class Wizard : System.Windows.Forms.UserControl {
 
         /// <summary>
         /// Wizard control with designer support
@@ -58,96 +47,6 @@ namespace Gui.Wizard {
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.pnlButtons = new Panel();
-            this.btnCancel = new Button();
-            this.btnNext = new Button();
-            this.btnBack = new Button();
-            this.pnlButtonBright3d = new Panel();
-            this.pnlButtonDark3d = new Panel();
-            this.pnlButtons.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // pnlButtons
-            // 
-            this.pnlButtons.Controls.Add(this.btnCancel);
-            this.pnlButtons.Controls.Add(this.btnNext);
-            this.pnlButtons.Controls.Add(this.btnBack);
-            this.pnlButtons.Controls.Add(this.pnlButtonBright3d);
-            this.pnlButtons.Controls.Add(this.pnlButtonDark3d);
-            this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlButtons.Location = new System.Drawing.Point(0, 224);
-            this.pnlButtons.Name = "pnlButtons";
-            this.pnlButtons.Size = new System.Drawing.Size(444, 48);
-            this.pnlButtons.TabIndex = 0;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnCancel.Location = new System.Drawing.Point(356, 12);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.TabIndex = 5;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.Click += this.btnCancel_Click;
-            // 
-            // btnNext
-            // 
-            this.btnNext.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.btnNext.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnNext.Location = new System.Drawing.Point(272, 12);
-            this.btnNext.Name = "btnNext";
-            this.btnNext.TabIndex = 4;
-            this.btnNext.Text = "&Next >";
-            this.btnNext.Click += this.btnNext_Click;
-            this.btnNext.MouseDown += this.btnNext_MouseDown;
-            // 
-            // btnBack
-            // 
-            this.btnBack.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-            this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnBack.Location = new System.Drawing.Point(196, 12);
-            this.btnBack.Name = "btnBack";
-            this.btnBack.TabIndex = 3;
-            this.btnBack.Text = "< &Back";
-            this.btnBack.Click += this.btnBack_Click;
-            this.btnBack.MouseDown += this.btnBack_MouseDown;
-            // 
-            // pnlButtonBright3d
-            // 
-            this.pnlButtonBright3d.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.pnlButtonBright3d.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlButtonBright3d.Location = new System.Drawing.Point(0, 1);
-            this.pnlButtonBright3d.Name = "pnlButtonBright3d";
-            this.pnlButtonBright3d.Size = new System.Drawing.Size(444, 1);
-            this.pnlButtonBright3d.TabIndex = 1;
-            // 
-            // pnlButtonDark3d
-            // 
-            this.pnlButtonDark3d.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.pnlButtonDark3d.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlButtonDark3d.Location = new System.Drawing.Point(0, 0);
-            this.pnlButtonDark3d.Name = "pnlButtonDark3d";
-            this.pnlButtonDark3d.Size = new System.Drawing.Size(444, 1);
-            this.pnlButtonDark3d.TabIndex = 2;
-            // 
-            // Wizard
-            // 
-            this.Controls.Add(this.pnlButtons);
-            this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, (System.Byte)0);
-            this.Name = "Wizard";
-            this.Size = new System.Drawing.Size(444, 272);
-            this.Load += this.Wizard_Load;
-            this.pnlButtons.ResumeLayout(false);
-            this.ResumeLayout(false);
-        }
-
-        #endregion
         /// <summary>
         /// Returns the collection of Pages in the wizard
         /// </summary>
@@ -155,7 +54,7 @@ namespace Gui.Wizard {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public PageCollection Pages { get; }
 
-        private WizardPage vActivePage = null;
+        private WizardPage? vActivePage = null;
 
         /// <summary>
         /// Gets/Sets the activePage in the wizard
@@ -163,7 +62,7 @@ namespace Gui.Wizard {
         [Category("Wizard")]
         internal int PageIndex {
             get {
-                return Pages.IndexOf(vActivePage);
+                return vActivePage != null ? Pages.IndexOf(vActivePage) : -1;
             }
             set {
                 //Do I have any pages?
@@ -187,7 +86,7 @@ namespace Gui.Wizard {
         /// <summary>
         /// Alternative way of getting/Setiing  the current page by using wizardPage objects
         /// </summary>
-        public WizardPage Page => vActivePage;
+        public WizardPage? Page => vActivePage;
 
         protected void ActivatePage(int index) {
             //If the new page is invalid
@@ -199,10 +98,11 @@ namespace Gui.Wizard {
             }
 
             //Change to the new Page
-            WizardPage tWizPage = (WizardPage)Pages[index];
+            var tWizPage = (WizardPage?)Pages[index];
 
             //Really activate the page
-            ActivatePage(tWizPage);
+            if(tWizPage != null)
+                ActivatePage(tWizPage);
         }
 
         public void ActivatePage(WizardPage page) {
@@ -218,7 +118,7 @@ namespace Gui.Wizard {
                 //Ensure that this panel displays inside the wizard
                 vActivePage.Parent = this;
                 if (!this.Contains(vActivePage)) {
-                    this.Container.Add(vActivePage);
+                    this.Container?.Add(vActivePage);
                 }
                 //Make it fill the space
                 vActivePage.Dock = DockStyle.Fill;
@@ -236,54 +136,54 @@ namespace Gui.Wizard {
             }
 
             //What should the Next button say
-            if (Pages.IndexOf(vActivePage) < Pages.Count - 1
-                && !vActivePage.IsFinishPage) {
-                btnNext.Text = "&Next >";
-                btnNext.Enabled = true;
-                //Don't close the wizard :)
-                btnNext.DialogResult = DialogResult.None;
-            }
-            else {
-                btnNext.Text = "Fi&nish";
-                //Dont allow a finish in designer
-                if (DesignMode
-                    && Pages.IndexOf(vActivePage) == Pages.Count - 1) {
-                    btnNext.Enabled = false;
+            if (vActivePage != null) {
+                if (Pages.IndexOf(vActivePage) < Pages.Count - 1
+                    && !vActivePage.IsFinishPage) {
+                    btnNext.Text = "&Next >";
+                    btnNext.Enabled = true;
+                    //Don't close the wizard :)
+                    btnNext.DialogResult = DialogResult.None;
                 }
                 else {
-                    btnNext.Enabled = true;
-                    //If Not in design mode then allow a close
-                    btnNext.DialogResult = DialogResult.OK;
+                    btnNext.Text = "Fi&nish";
+                    //Dont allow a finish in designer
+                    if (DesignMode
+                        && Pages.IndexOf(vActivePage) == Pages.Count - 1) {
+                        btnNext.Enabled = false;
+                    }
+                    else {
+                        btnNext.Enabled = true;
+                        //If Not in design mode then allow a close
+                        btnNext.DialogResult = DialogResult.OK;
+                    }
                 }
-            }
 
-            //Cause a refresh
-            if (vActivePage != null)
                 vActivePage.Invalidate();
+            }
             else
                 this.Invalidate();
         }
 
-        private void btnNext_Click(object? sender, System.EventArgs e) {
+        private void BtnNext_Click(object? sender, System.EventArgs e) {
             Next();
         }
 
-        private void btnNext_MouseDown(object? sender, System.Windows.Forms.MouseEventArgs e) {
+        private void BtnNext_MouseDown(object? sender, System.Windows.Forms.MouseEventArgs e) {
             if (DesignMode)
                 Next();
         }
 
-        private void btnBack_Click(object? sender, System.EventArgs e) {
+        private void BtnBack_Click(object? sender, System.EventArgs e) {
             Back();
         }
 
-        private void btnBack_MouseDown(object? sender, System.Windows.Forms.MouseEventArgs e) {
+        private void BtnBack_MouseDown(object? sender, System.Windows.Forms.MouseEventArgs e) {
             if (DesignMode)
                 Back();
         }
 
-        private void btnCancel_Click(object? sender, System.EventArgs e) {
-            CancelEventArgs arg = new CancelEventArgs();
+        private void BtnCancel_Click(object? sender, System.EventArgs e) {
+            var arg = new CancelEventArgs();
 
             //Throw the event out to subscribers
             CloseFromCancel?.Invoke(this, arg);
@@ -340,13 +240,16 @@ namespace Gui.Wizard {
         /// Called when the cancel button is pressed, before the form is closed. Set e.Cancel to true if 
         /// you do not wish the cancel to close the wizard.
         /// </summary>
-        public event CancelEventHandler CloseFromCancel;
+        public event CancelEventHandler? CloseFromCancel;
 
         /// <summary>
         /// Closes the current page after a <see cref="WizardPage.CloseFromNext"/>, then moves to 
         /// the Next page and calls <see cref="WizardPage.ShowFromNext"/>
         /// </summary>
         public void Next() {
+            if (vActivePage == null)
+                return;
+
             Debug.Assert(this.PageIndex >= 0, "Page Index was below 0");
             //Tell the Application I just closed a Page
             int newPage = vActivePage.OnCloseFromNext(this);
@@ -378,7 +281,7 @@ namespace Gui.Wizard {
             //Since we have a page to go to, then there is no need to validate most of it
             ActivatePage(page);
             //Tell the application, I have just shown a page
-            vActivePage.OnShowFromNext(this);
+            vActivePage?.OnShowFromNext(this);
         }
 
         /// <summary>
@@ -389,6 +292,9 @@ namespace Gui.Wizard {
             Debug.Assert(this.PageIndex < Pages.Count, "Page Index was beyond Maximum pages");
             //Can I press back
             Debug.Assert(this.PageIndex > 0 && this.PageIndex < Pages.Count, "Attempted to go back to a page that doesn't exist");
+            if (vActivePage == null)
+                return;
+
             //Tell the application that I closed a page
             int newPage = vActivePage.OnCloseFromBack(this);
 
@@ -403,6 +309,9 @@ namespace Gui.Wizard {
         /// <remarks>Does NOT call <see cref="WizardPage.CloseFromBack"/> on the current page</remarks>
         /// <param name="page"></param>
         public void BackTo(WizardPage page) {
+            if (vActivePage == null)
+                return;
+
             //Since we have a page to go to, then there is no need to validate most of it
             ActivatePage(page);
             //Tell the application, I have just shown a page
@@ -417,7 +326,7 @@ namespace Gui.Wizard {
                 const string noPagesText = "No wizard pages inside the wizard.";
 
                 SizeF textSize = e.Graphics.MeasureString(noPagesText, this.Font);
-                RectangleF layout = new RectangleF((this.Width - textSize.Width) / 2,
+                var layout = new RectangleF((this.Width - textSize.Width) / 2,
                     (this.pnlButtons.Top - textSize.Height) / 2,
                     textSize.Width, textSize.Height);
 
