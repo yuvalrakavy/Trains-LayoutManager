@@ -102,6 +102,11 @@
     <ProjectReference Include="..\Wizard\WizardControl.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Images.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Images.resx</DependentUpon>
+    </Compile>
     <Compile Update="LayoutEditingTool.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -168,5 +173,11 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Images.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Images.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

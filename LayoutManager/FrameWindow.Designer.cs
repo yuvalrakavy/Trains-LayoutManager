@@ -119,6 +119,31 @@
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dummyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
+            this.toolBarButtonOpenLayout = new System.Windows.Forms.ToolStripButton();
+            this.toolBarButtonSaveLayout = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolBarButtonDesignMode = new System.Windows.Forms.ToolStripButton();
+            this.toolBarButtonOperationMode = new System.Windows.Forms.ToolStripButton();
+            this.toolBarButtonSimulation = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolBarButtonShowLayoutControl = new System.Windows.Forms.ToolStripButton();
+            this.toolBarButtonShowTripsMonitor = new System.Windows.Forms.ToolStripButton();
+            this.toolBarButtonShowMessages = new System.Windows.Forms.ToolStripButton();
+            this.toolBarButtonShowLocomotives = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolBarButtonSetToDefaultOriginAndZoom = new System.Windows.Forms.ToolStripButton();
+            this.toolbarButtonSetAsDefaultOriginAndZoom = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolBarButtonToggleGrid = new System.Windows.Forms.ToolStripButton();
+            this.toolBarButtonZoom100 = new System.Windows.Forms.ToolStripButton();
+            this.toolBarButtonZoomIn = new System.Windows.Forms.ToolStripButton();
+            this.toolBarButtonZoomOut = new System.Windows.Forms.ToolStripButton();
+            this.toolBarButtonZoomFitAll = new System.Windows.Forms.ToolStripButton();
+            this.toolStripInOperateMode1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolBarButtonToggleAllLayoutManualDispatch = new System.Windows.Forms.ToolStripButton();
+            this.toolStripInOperateMode2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolBarButtonStopAllLocomotives = new System.Windows.Forms.ToolStripButton();
+            this.toolBarButtonEmergencyStop = new System.Windows.Forms.ToolStripButton();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.splitControlViewer = new System.Windows.Forms.SplitContainer();
             this.layoutControlViewer = new LayoutManager.CommonUI.Controls.LayoutControlViewer();
@@ -133,6 +158,7 @@
             this.timerFreeResources = new System.Windows.Forms.Timer(this.components);
             this.printDocument = new System.Drawing.Printing.PrintDocument();
             this.menuStrip.SuspendLayout();
+            this.toolStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitControlViewer)).BeginInit();
             this.splitControlViewer.Panel1.SuspendLayout();
             this.splitControlViewer.Panel2.SuspendLayout();
@@ -871,11 +897,280 @@
             // toolStrip
             // 
             this.toolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
+            this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolBarButtonOpenLayout,
+            this.toolBarButtonSaveLayout,
+            this.toolStripSeparator16,
+            this.toolBarButtonDesignMode,
+            this.toolBarButtonOperationMode,
+            this.toolBarButtonSimulation,
+            this.toolStripSeparator17,
+            this.toolBarButtonShowLayoutControl,
+            this.toolBarButtonShowTripsMonitor,
+            this.toolBarButtonShowMessages,
+            this.toolBarButtonShowLocomotives,
+            this.toolStripSeparator18,
+            this.toolBarButtonSetToDefaultOriginAndZoom,
+            this.toolbarButtonSetAsDefaultOriginAndZoom,
+            this.toolStripSeparator19,
+            this.toolBarButtonToggleGrid,
+            this.toolBarButtonZoom100,
+            this.toolBarButtonZoomIn,
+            this.toolBarButtonZoomOut,
+            this.toolBarButtonZoomFitAll,
+            this.toolStripInOperateMode1,
+            this.toolBarButtonToggleAllLayoutManualDispatch,
+            this.toolStripInOperateMode2,
+            this.toolBarButtonStopAllLocomotives,
+            this.toolBarButtonEmergencyStop});
             this.toolStrip.Location = new System.Drawing.Point(0, 40);
             this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(1816, 38);
+            this.toolStrip.Size = new System.Drawing.Size(1816, 42);
             this.toolStrip.TabIndex = 1;
             this.toolStrip.Text = "toolStrip";
+            // 
+            // toolBarButtonOpenLayout
+            // 
+            this.toolBarButtonOpenLayout.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonOpenLayout.Enabled = false;
+            this.toolBarButtonOpenLayout.Image = global::LayoutManager.Images.OPEN;
+            this.toolBarButtonOpenLayout.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonOpenLayout.Name = "toolBarButtonOpenLayout";
+            this.toolBarButtonOpenLayout.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonOpenLayout.Text = "toolStripButton1";
+            this.toolBarButtonOpenLayout.ToolTipText = "Open new layout";
+            this.toolBarButtonOpenLayout.Click += new System.EventHandler(this.MenuItemOpen_Click);
+            // 
+            // toolBarButtonSaveLayout
+            // 
+            this.toolBarButtonSaveLayout.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonSaveLayout.Image = global::LayoutManager.Images.SAVE;
+            this.toolBarButtonSaveLayout.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonSaveLayout.Name = "toolBarButtonSaveLayout";
+            this.toolBarButtonSaveLayout.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonSaveLayout.Text = "toolBarButtonSaveLayout";
+            this.toolBarButtonSaveLayout.ToolTipText = "Save layout";
+            this.toolBarButtonSaveLayout.Click += new System.EventHandler(this.MenuItemSave_Click);
+            // 
+            // toolStripSeparator16
+            // 
+            this.toolStripSeparator16.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.toolStripSeparator16.Name = "toolStripSeparator16";
+            this.toolStripSeparator16.Size = new System.Drawing.Size(6, 42);
+            // 
+            // toolBarButtonDesignMode
+            // 
+            this.toolBarButtonDesignMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonDesignMode.Image = global::LayoutManager.Images.designMode;
+            this.toolBarButtonDesignMode.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonDesignMode.Name = "toolBarButtonDesignMode";
+            this.toolBarButtonDesignMode.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonDesignMode.Text = "toolBarButtonDesignMode";
+            this.toolBarButtonDesignMode.ToolTipText = "Enter Design mode";
+            this.toolBarButtonDesignMode.Click += new System.EventHandler(this.MenuItemDesign_Click);
+            // 
+            // toolBarButtonOperationMode
+            // 
+            this.toolBarButtonOperationMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonOperationMode.Image = global::LayoutManager.Images.operationMode;
+            this.toolBarButtonOperationMode.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonOperationMode.Name = "toolBarButtonOperationMode";
+            this.toolBarButtonOperationMode.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonOperationMode.Text = "toolBarButtonOperationMode";
+            this.toolBarButtonOperationMode.ToolTipText = "Enter operation mode";
+            this.toolBarButtonOperationMode.Click += new System.EventHandler(this.MenuItemOperational_Click);
+            // 
+            // toolBarButtonSimulation
+            // 
+            this.toolBarButtonSimulation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonSimulation.Image = global::LayoutManager.Images.Simulate;
+            this.toolBarButtonSimulation.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonSimulation.Name = "toolBarButtonSimulation";
+            this.toolBarButtonSimulation.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonSimulation.Text = "toolBarButtonSimulation";
+            this.toolBarButtonSimulation.Click += new System.EventHandler(this.MenuItemSimulation_Click);
+            // 
+            // toolStripSeparator17
+            // 
+            this.toolStripSeparator17.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.toolStripSeparator17.Name = "toolStripSeparator17";
+            this.toolStripSeparator17.Size = new System.Drawing.Size(6, 42);
+            // 
+            // toolBarButtonShowLayoutControl
+            // 
+            this.toolBarButtonShowLayoutControl.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonShowLayoutControl.Image = global::LayoutManager.Images.showLayoutControl;
+            this.toolBarButtonShowLayoutControl.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonShowLayoutControl.Name = "toolBarButtonShowLayoutControl";
+            this.toolBarButtonShowLayoutControl.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonShowLayoutControl.Text = "toolBarButtonShowLayoutControl";
+            this.toolBarButtonShowLayoutControl.ToolTipText = "Show/Hide control modeuls";
+            this.toolBarButtonShowLayoutControl.Click += new System.EventHandler(this.MenuItemShowLayoutControl_Click);
+            // 
+            // toolBarButtonShowTripsMonitor
+            // 
+            this.toolBarButtonShowTripsMonitor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonShowTripsMonitor.Image = global::LayoutManager.Images.ShowTripsMonitor;
+            this.toolBarButtonShowTripsMonitor.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonShowTripsMonitor.Name = "toolBarButtonShowTripsMonitor";
+            this.toolBarButtonShowTripsMonitor.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonShowTripsMonitor.Text = "toolBarButtonShowTripsMonitor";
+            this.toolBarButtonShowTripsMonitor.Click += new System.EventHandler(this.MenuItemShowTripsMonitor_Click);
+            // 
+            // toolBarButtonShowMessages
+            // 
+            this.toolBarButtonShowMessages.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonShowMessages.Image = global::LayoutManager.Images.ShowMessages;
+            this.toolBarButtonShowMessages.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonShowMessages.Name = "toolBarButtonShowMessages";
+            this.toolBarButtonShowMessages.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonShowMessages.Text = "toolBarButtonShowMessages";
+            this.toolBarButtonShowMessages.ToolTipText = "Show/Hide messages";
+            this.toolBarButtonShowMessages.Click += new System.EventHandler(this.MenuItemShowMessages_Click);
+            // 
+            // toolBarButtonShowLocomotives
+            // 
+            this.toolBarButtonShowLocomotives.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonShowLocomotives.Image = global::LayoutManager.Images.ShowLocomotives;
+            this.toolBarButtonShowLocomotives.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonShowLocomotives.Name = "toolBarButtonShowLocomotives";
+            this.toolBarButtonShowLocomotives.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonShowLocomotives.Text = "toolBarButtonShowLocomotives";
+            this.toolBarButtonShowLocomotives.ToolTipText = "Show/Hide locomotive & trains";
+            this.toolBarButtonShowLocomotives.Click += new System.EventHandler(this.MenuItemShowLocomotives_Click);
+            // 
+            // toolStripSeparator18
+            // 
+            this.toolStripSeparator18.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.toolStripSeparator18.Name = "toolStripSeparator18";
+            this.toolStripSeparator18.Size = new System.Drawing.Size(6, 42);
+            // 
+            // toolBarButtonSetToDefaultOriginAndZoom
+            // 
+            this.toolBarButtonSetToDefaultOriginAndZoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonSetToDefaultOriginAndZoom.Image = global::LayoutManager.Images.SetToDefaultOriginAndZoom;
+            this.toolBarButtonSetToDefaultOriginAndZoom.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonSetToDefaultOriginAndZoom.Name = "toolBarButtonSetToDefaultOriginAndZoom";
+            this.toolBarButtonSetToDefaultOriginAndZoom.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonSetToDefaultOriginAndZoom.Text = "toolBarButtonSetToDefaultOriginAndZoom";
+            this.toolBarButtonSetToDefaultOriginAndZoom.ToolTipText = "Restore to default view";
+            this.toolBarButtonSetToDefaultOriginAndZoom.Click += new System.EventHandler(this.MenuItemRestoreDefaultZoomAndOrigin_Click);
+            // 
+            // toolbarButtonSetAsDefaultOriginAndZoom
+            // 
+            this.toolbarButtonSetAsDefaultOriginAndZoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolbarButtonSetAsDefaultOriginAndZoom.Image = global::LayoutManager.Images.SetAsDefaultOriginAndZoom;
+            this.toolbarButtonSetAsDefaultOriginAndZoom.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolbarButtonSetAsDefaultOriginAndZoom.Name = "toolbarButtonSetAsDefaultOriginAndZoom";
+            this.toolbarButtonSetAsDefaultOriginAndZoom.Size = new System.Drawing.Size(46, 36);
+            this.toolbarButtonSetAsDefaultOriginAndZoom.Text = "toolbarButtonSetAsDefaultOriginAndZoom";
+            this.toolbarButtonSetAsDefaultOriginAndZoom.ToolTipText = "Save as default view";
+            this.toolbarButtonSetAsDefaultOriginAndZoom.Click += new System.EventHandler(this.MenuItemSaveAsDefaultZoomAndOrigin_Click);
+            // 
+            // toolStripSeparator19
+            // 
+            this.toolStripSeparator19.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.toolStripSeparator19.Name = "toolStripSeparator19";
+            this.toolStripSeparator19.Size = new System.Drawing.Size(6, 42);
+            // 
+            // toolBarButtonToggleGrid
+            // 
+            this.toolBarButtonToggleGrid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonToggleGrid.Image = global::LayoutManager.Images.ToggleGrid;
+            this.toolBarButtonToggleGrid.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonToggleGrid.Name = "toolBarButtonToggleGrid";
+            this.toolBarButtonToggleGrid.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonToggleGrid.Text = "toolBarButtonToggleGrid";
+            this.toolBarButtonToggleGrid.ToolTipText = "Toggle Grid";
+            this.toolBarButtonToggleGrid.Click += new System.EventHandler(this.MenuItemViewGrid_Click);
+            // 
+            // toolBarButtonZoom100
+            // 
+            this.toolBarButtonZoom100.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonZoom100.Image = global::LayoutManager.Images.Zoom100;
+            this.toolBarButtonZoom100.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonZoom100.Name = "toolBarButtonZoom100";
+            this.toolBarButtonZoom100.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonZoom100.Text = "toolBarButtonZoom100";
+            this.toolBarButtonZoom100.ToolTipText = "Zoom to 1:1";
+            this.toolBarButtonZoom100.Click += new System.EventHandler(this.Toolbar_Zoom100);
+            // 
+            // toolBarButtonZoomIn
+            // 
+            this.toolBarButtonZoomIn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonZoomIn.Image = global::LayoutManager.Images.ZoomIn;
+            this.toolBarButtonZoomIn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonZoomIn.Name = "toolBarButtonZoomIn";
+            this.toolBarButtonZoomIn.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonZoomIn.Text = "toolBarButtonZoomIn";
+            this.toolBarButtonZoomIn.ToolTipText = "Zoom in";
+            this.toolBarButtonZoomIn.Click += new System.EventHandler(this.Toolbar_ZoomIn);
+            // 
+            // toolBarButtonZoomOut
+            // 
+            this.toolBarButtonZoomOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonZoomOut.Image = global::LayoutManager.Images.ZoomOut;
+            this.toolBarButtonZoomOut.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonZoomOut.Name = "toolBarButtonZoomOut";
+            this.toolBarButtonZoomOut.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonZoomOut.Text = "toolBarButtonZoomOut";
+            this.toolBarButtonZoomOut.ToolTipText = "Zoom out";
+            this.toolBarButtonZoomOut.Click += new System.EventHandler(this.Toolbar_ZoomOut);
+            // 
+            // toolBarButtonZoomFitAll
+            // 
+            this.toolBarButtonZoomFitAll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonZoomFitAll.Image = global::LayoutManager.Images.ZoomFitAll;
+            this.toolBarButtonZoomFitAll.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonZoomFitAll.Name = "toolBarButtonZoomFitAll";
+            this.toolBarButtonZoomFitAll.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonZoomFitAll.Text = "toolBarButtonZoomFitAll";
+            this.toolBarButtonZoomFitAll.Click += new System.EventHandler(this.MenuItemZoomAllArea_Click);
+            // 
+            // toolStripInOperateMode1
+            // 
+            this.toolStripInOperateMode1.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.toolStripInOperateMode1.Name = "toolStripInOperateMode1";
+            this.toolStripInOperateMode1.Size = new System.Drawing.Size(6, 42);
+            // 
+            // toolBarButtonToggleAllLayoutManualDispatch
+            // 
+            this.toolBarButtonToggleAllLayoutManualDispatch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonToggleAllLayoutManualDispatch.Image = global::LayoutManager.Images.ManualDispatchMode;
+            this.toolBarButtonToggleAllLayoutManualDispatch.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonToggleAllLayoutManualDispatch.Name = "toolBarButtonToggleAllLayoutManualDispatch";
+            this.toolBarButtonToggleAllLayoutManualDispatch.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonToggleAllLayoutManualDispatch.Text = "toolBarButtonToggleAllLayoutManualDispatch";
+            this.toolBarButtonToggleAllLayoutManualDispatch.ToolTipText = "Toogle all layout in manual control";
+            this.toolBarButtonToggleAllLayoutManualDispatch.Click += new System.EventHandler(this.ToggleAllLayoutManualDispatch);
+            // 
+            // toolStripInOperateMode2
+            // 
+            this.toolStripInOperateMode2.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.toolStripInOperateMode2.Name = "toolStripInOperateMode2";
+            this.toolStripInOperateMode2.Size = new System.Drawing.Size(6, 42);
+            // 
+            // toolBarButtonStopAllLocomotives
+            // 
+            this.toolBarButtonStopAllLocomotives.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonStopAllLocomotives.Image = global::LayoutManager.Images.StopAllLocomotives;
+            this.toolBarButtonStopAllLocomotives.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonStopAllLocomotives.Name = "toolBarButtonStopAllLocomotives";
+            this.toolBarButtonStopAllLocomotives.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonStopAllLocomotives.Text = "toolBarButtonStopAllLocomotives";
+            this.toolBarButtonStopAllLocomotives.ToolTipText = "Stop all locomotives";
+            this.toolBarButtonStopAllLocomotives.Click += new System.EventHandler(this.MenuItemSuspendLocomotives_Click);
+            // 
+            // toolBarButtonEmergencyStop
+            // 
+            this.toolBarButtonEmergencyStop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolBarButtonEmergencyStop.Image = global::LayoutManager.Images.EmergencyStop;
+            this.toolBarButtonEmergencyStop.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolBarButtonEmergencyStop.Name = "toolBarButtonEmergencyStop";
+            this.toolBarButtonEmergencyStop.Size = new System.Drawing.Size(46, 36);
+            this.toolBarButtonEmergencyStop.Text = "toolBarButtonEmergencyStop";
+            this.toolBarButtonEmergencyStop.ToolTipText = "Emergency Stop!";
+            this.toolBarButtonEmergencyStop.Click += new System.EventHandler(this.MenuItemEmergencyStop_Click);
             // 
             // statusStrip
             // 
@@ -890,7 +1185,7 @@
             // 
             this.splitControlViewer.Cursor = System.Windows.Forms.Cursors.VSplit;
             this.splitControlViewer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitControlViewer.Location = new System.Drawing.Point(0, 78);
+            this.splitControlViewer.Location = new System.Drawing.Point(0, 82);
             this.splitControlViewer.Name = "splitControlViewer";
             // 
             // splitControlViewer.Panel1
@@ -903,7 +1198,7 @@
             // 
             this.splitControlViewer.Panel2.Controls.Add(this.splitContainerLocomotivesViewer);
             this.splitControlViewer.Panel2.Cursor = System.Windows.Forms.Cursors.PanSouth;
-            this.splitControlViewer.Size = new System.Drawing.Size(1816, 1026);
+            this.splitControlViewer.Size = new System.Drawing.Size(1816, 1022);
             this.splitControlViewer.SplitterDistance = 427;
             this.splitControlViewer.SplitterWidth = 6;
             this.splitControlViewer.TabIndex = 3;
@@ -917,7 +1212,7 @@
             this.layoutControlViewer.Location = new System.Drawing.Point(0, 0);
             this.layoutControlViewer.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.layoutControlViewer.Name = "layoutControlViewer";
-            this.layoutControlViewer.Size = new System.Drawing.Size(423, 1026);
+            this.layoutControlViewer.Size = new System.Drawing.Size(423, 1022);
             this.layoutControlViewer.TabIndex = 0;
             // 
             // splitContainerLocomotivesViewer
@@ -936,7 +1231,7 @@
             this.splitContainerLocomotivesViewer.Panel2.BackColor = System.Drawing.Color.MidnightBlue;
             this.splitContainerLocomotivesViewer.Panel2.Controls.Add(this.locomotivesViewer);
             this.splitContainerLocomotivesViewer.Panel2.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
-            this.splitContainerLocomotivesViewer.Size = new System.Drawing.Size(1383, 1026);
+            this.splitContainerLocomotivesViewer.Size = new System.Drawing.Size(1383, 1022);
             this.splitContainerLocomotivesViewer.SplitterDistance = 844;
             this.splitContainerLocomotivesViewer.SplitterWidth = 6;
             this.splitContainerLocomotivesViewer.TabIndex = 0;
@@ -958,8 +1253,8 @@
             this.splitContainerMessageViewer.Panel2.BackColor = System.Drawing.Color.Teal;
             this.splitContainerMessageViewer.Panel2.Controls.Add(this.messageViewer);
             this.splitContainerMessageViewer.Panel2.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
-            this.splitContainerMessageViewer.Size = new System.Drawing.Size(844, 1026);
-            this.splitContainerMessageViewer.SplitterDistance = 728;
+            this.splitContainerMessageViewer.Size = new System.Drawing.Size(844, 1022);
+            this.splitContainerMessageViewer.SplitterDistance = 725;
             this.splitContainerMessageViewer.SplitterWidth = 6;
             this.splitContainerMessageViewer.TabIndex = 0;
             // 
@@ -980,8 +1275,8 @@
             // 
             this.splitContainerTripsMonitor.Panel2.Controls.Add(this.tabAreas);
             this.splitContainerTripsMonitor.Panel2.Padding = new System.Windows.Forms.Padding(2);
-            this.splitContainerTripsMonitor.Size = new System.Drawing.Size(844, 728);
-            this.splitContainerTripsMonitor.SplitterDistance = 275;
+            this.splitContainerTripsMonitor.Size = new System.Drawing.Size(844, 725);
+            this.splitContainerTripsMonitor.SplitterDistance = 274;
             this.splitContainerTripsMonitor.SplitterWidth = 6;
             this.splitContainerTripsMonitor.TabIndex = 0;
             // 
@@ -994,7 +1289,7 @@
             this.tripsMonitor.Location = new System.Drawing.Point(0, 0);
             this.tripsMonitor.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.tripsMonitor.Name = "tripsMonitor";
-            this.tripsMonitor.Size = new System.Drawing.Size(844, 271);
+            this.tripsMonitor.Size = new System.Drawing.Size(844, 270);
             this.tripsMonitor.TabIndex = 0;
             // 
             // tabAreas
@@ -1004,7 +1299,7 @@
             this.tabAreas.Location = new System.Drawing.Point(2, 2);
             this.tabAreas.Name = "tabAreas";
             this.tabAreas.SelectedIndex = 0;
-            this.tabAreas.Size = new System.Drawing.Size(840, 443);
+            this.tabAreas.Size = new System.Drawing.Size(840, 441);
             this.tabAreas.TabIndex = 0;
             // 
             // messageViewer
@@ -1016,7 +1311,7 @@
             this.messageViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.messageViewer.Location = new System.Drawing.Point(0, 4);
             this.messageViewer.Name = "messageViewer";
-            this.messageViewer.Size = new System.Drawing.Size(844, 288);
+            this.messageViewer.Size = new System.Drawing.Size(844, 287);
             this.messageViewer.TabIndex = 0;
             // 
             // locomotivesViewer
@@ -1029,7 +1324,7 @@
             this.locomotivesViewer.Location = new System.Drawing.Point(4, 0);
             this.locomotivesViewer.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.locomotivesViewer.Name = "locomotivesViewer";
-            this.locomotivesViewer.Size = new System.Drawing.Size(529, 1026);
+            this.locomotivesViewer.Size = new System.Drawing.Size(529, 1022);
             this.locomotivesViewer.TabIndex = 0;
             // 
             // FrameWindow
@@ -1046,6 +1341,8 @@
             this.Text = "Layout Manager";
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
+            this.toolStrip.ResumeLayout(false);
+            this.toolStrip.PerformLayout();
             this.splitControlViewer.Panel1.ResumeLayout(false);
             this.splitControlViewer.Panel1.PerformLayout();
             this.splitControlViewer.Panel2.ResumeLayout(false);
@@ -1181,5 +1478,30 @@
         private System.Windows.Forms.Timer timerFreeResources;
         private System.Drawing.Printing.PrintDocument printDocument;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripButton toolBarButtonOpenLayout;
+        private System.Windows.Forms.ToolStripButton toolBarButtonSaveLayout;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator16;
+        private System.Windows.Forms.ToolStripButton toolBarButtonDesignMode;
+        private System.Windows.Forms.ToolStripButton toolBarButtonOperationMode;
+        private System.Windows.Forms.ToolStripButton toolBarButtonSimulation;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator17;
+        private System.Windows.Forms.ToolStripButton toolBarButtonShowLayoutControl;
+        private System.Windows.Forms.ToolStripButton toolBarButtonShowTripsMonitor;
+        private System.Windows.Forms.ToolStripButton toolBarButtonShowMessages;
+        private System.Windows.Forms.ToolStripButton toolBarButtonShowLocomotives;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator18;
+        private System.Windows.Forms.ToolStripButton toolBarButtonSetToDefaultOriginAndZoom;
+        private System.Windows.Forms.ToolStripButton toolbarButtonSetAsDefaultOriginAndZoom;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;
+        private System.Windows.Forms.ToolStripButton toolBarButtonToggleGrid;
+        private System.Windows.Forms.ToolStripButton toolBarButtonZoom100;
+        private System.Windows.Forms.ToolStripButton toolBarButtonZoomIn;
+        private System.Windows.Forms.ToolStripButton toolBarButtonZoomOut;
+        private System.Windows.Forms.ToolStripButton toolBarButtonZoomFitAll;
+        private System.Windows.Forms.ToolStripSeparator toolStripInOperateMode1;
+        private System.Windows.Forms.ToolStripButton toolBarButtonToggleAllLayoutManualDispatch;
+        private System.Windows.Forms.ToolStripSeparator toolStripInOperateMode2;
+        private System.Windows.Forms.ToolStripButton toolBarButtonStopAllLocomotives;
+        private System.Windows.Forms.ToolStripButton toolBarButtonEmergencyStop;
     }
 }

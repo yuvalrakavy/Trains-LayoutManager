@@ -32,7 +32,6 @@ namespace LayoutManager {
         private bool locomotiveViewVisible = false;
 
         private int tripsMonitorHeightInOperationMode = 0;
-        private int layoutControlWidth = 0;
 
         private PrintState? printState = null;
 
@@ -81,6 +80,15 @@ namespace LayoutManager {
             }
 
             public ToolStripButton Button { get; }
+        }
+
+        private class SeparatorSettingEntry : UIsettingEntry {
+            public SeparatorSettingEntry(ToolStripSeparator separator, UIitemSetting setting) {
+                this.Separator = separator;
+                this.setting = setting;
+            }
+
+            public ToolStripSeparator Separator { get;  }
         }
 
         private struct ZoomEntry {
@@ -201,18 +209,18 @@ namespace LayoutManager {
                 new MenuSettingEntry(setComponentsPhaseToToolStripMenuItem, UIitemSetting.Hidden),
                 new MenuSettingEntry(newAreaToolStripMenuItem, UIitemSetting.Disabled),
                 new MenuSettingEntry(deleteAreaToolStripMenuItem, UIitemSetting.Disabled),
-                //new ToolbarSettingEntry(toolBarButtonOpenLayout, UIitemSetting.Hidden),
+                new ToolbarSettingEntry(toolBarButtonOpenLayout, UIitemSetting.Hidden),
             };
 
             // Initialize the menu setting tables
             operationModeUIsetting = new UIsettingEntry[] {
                 new DoSettingEntry(operationBaseUIsetting),
-                //new ToolbarSettingEntry(toolBarButtonSimulation, UIitemSetting.Hidden),
+                new ToolbarSettingEntry(toolBarButtonSimulation, UIitemSetting.Hidden),
             };
 
             simulationModeUIsetting = new UIsettingEntry[] {
                 new DoSettingEntry(operationBaseUIsetting),
-                //new ToolbarSettingEntry(toolBarButtonOperationMode, UIitemSetting.Hidden),
+                new ToolbarSettingEntry(toolBarButtonOperationMode, UIitemSetting.Hidden),
             };
 
             designModeUIsetting = new UIsettingEntry[] {
@@ -224,10 +232,12 @@ namespace LayoutManager {
                 new MenuSettingEntry(stopLocomotivesToolStripMenuItem, UIitemSetting.Hidden),
                 new MenuSettingEntry(emergencyStopToolStripMenuItem, UIitemSetting.Hidden),
                 new MenuSettingEntry(onlyActiveLayoutPhasesToolStripMenuItem, UIitemSetting.Hidden),
-                //new ToolbarSettingEntry(toolBarButtonShowTripsMonitor, UIitemSetting.Hidden),
-                //new ToolbarSettingEntry(toolBarButtonToggleAllLayoutManualDispatch, UIitemSetting.Hidden),
-                //new ToolbarSettingEntry(toolBarButtonStopAllLocomotives, UIitemSetting.Hidden),
-                //new ToolbarSettingEntry(toolBarButtonEmergencyStop, UIitemSetting.Hidden),
+                new ToolbarSettingEntry(toolBarButtonShowTripsMonitor, UIitemSetting.Hidden),
+                new ToolbarSettingEntry(toolBarButtonToggleAllLayoutManualDispatch, UIitemSetting.Hidden),
+                new ToolbarSettingEntry(toolBarButtonStopAllLocomotives, UIitemSetting.Hidden),
+                new ToolbarSettingEntry(toolBarButtonEmergencyStop, UIitemSetting.Hidden),
+                new SeparatorSettingEntry(toolStripInOperateMode1, UIitemSetting.Hidden),
+                new SeparatorSettingEntry(toolStripInOperateMode2, UIitemSetting.Hidden),
             };
 
             messageViewer.Initialize();
@@ -353,10 +363,10 @@ namespace LayoutManager {
                 DoUIsetting(designModeUIsetting);
                 activeTool = designTool;
 
+                toolBarButtonDesignMode.Checked = true;
+                toolBarButtonOperationMode.Checked = false;
+                toolBarButtonSimulation.Checked = false;
                 //SUSPENDED
-                //toolBarButtonDesignMode.Pushed = true;
-                //toolBarButtonOperationMode.Pushed = false;
-                //toolBarButtonSimulation.Pushed = false;
                 //statusBarPanelMode.Text = "Design";
 
                 tripsMonitorHeightInOperationMode = tripsMonitor.Height;
@@ -366,14 +376,12 @@ namespace LayoutManager {
                 ChangeAllViewsPhases(LayoutPhase.All);      // In editing show all phases
             }
             else {
-                //SUSPENDED
-                //toolBarButtonDesignMode.Pushed = false;
+                toolBarButtonDesignMode.Checked = false;
 
                 if (settings.Simulation) {
                     DoUIsetting(simulationModeUIsetting);
-                    //SUSPENDED
-                    //toolBarButtonOperationMode.Pushed = false;
-                    //toolBarButtonSimulation.Pushed = true;
+                    toolBarButtonOperationMode.Checked = false;
+                    toolBarButtonSimulation.Checked = true;
 
                     string s = "Simulation";
 
@@ -388,9 +396,9 @@ namespace LayoutManager {
                 }
                 else {
                     DoUIsetting(operationModeUIsetting);
+                    toolBarButtonOperationMode.Checked = true;
+                    toolBarButtonSimulation.Checked = false;
                     //SUSPENDED
-                    //toolBarButtonOperationMode.Pushed = true;
-                    //toolBarButtonSimulation.Pushed = false;
                     //statusBarPanelMode.Text = "Operation";
                 }
 
@@ -507,9 +515,8 @@ namespace LayoutManager {
         }
 
         internal void OnViewChanged() {
-            //SUSPENDED
-            //if (ActiveView != null)
-            //    toolBarButtonToggleGrid.Pushed = ActiveView.ShowGrid != ShowGridLinesOption.Hide;
+            if (ActiveView != null)
+                toolBarButtonToggleGrid.Checked = ActiveView.ShowGrid != ShowGridLinesOption.Hide;
         }
 
         [LayoutEvent("test")]
@@ -596,6 +603,10 @@ namespace LayoutManager {
                         toolbarEntry.Button.Visible = false;
                     else if (toolbarEntry.Setting == UIitemSetting.Disabled)
                         toolbarEntry.Button.Enabled = false;
+                }
+                else if (aEntry is SeparatorSettingEntry separatorSettingEntry) {
+                    if (separatorSettingEntry.Setting == UIitemSetting.Hidden)
+                        separatorSettingEntry.Separator.Visible = false;
                 }
             }
 
@@ -714,32 +725,25 @@ namespace LayoutManager {
         private void AllLayoutManualDispatchModeStatusChanged(LayoutEvent e) {
             bool active = Ensure.ValueNotNull<bool>(e.Info);
 
-            //SUSPENDED
-            //toolBarButtonToggleAllLayoutManualDispatch.Pushed = active;
+            toolBarButtonToggleAllLayoutManualDispatch.Checked = active;
         }
 
         [LayoutEvent("manual-dispatch-region-status-changed")]
         private void ManualDispatchRegionStatusChanged(LayoutEvent e) {
-#pragma warning disable CS0219 // Variable is assigned but its value is never used
             bool enableAllLayoutManualDispatch = true;
-#pragma warning restore CS0219 // Variable is assigned but its value is never used
 
             foreach (ManualDispatchRegionInfo manualDispatchRegion in LayoutModel.StateManager.ManualDispatchRegions)
                 if (manualDispatchRegion.Active)
                     enableAllLayoutManualDispatch = false;
 
-            //SUSPENDED
-            //toolBarButtonToggleAllLayoutManualDispatch.Enabled = enableAllLayoutManualDispatch;
+            toolBarButtonToggleAllLayoutManualDispatch.Checked = enableAllLayoutManualDispatch;
         }
 
         [LayoutEvent("all-locomotives-suspended-status-changed")]
         private void AllLocomotivesSuspendedStatusChanged(LayoutEvent e) {
-#pragma warning disable CS0219 // Variable is assigned but its value is never used
             var allSuspended = Ensure.ValueNotNull<bool>(e.Info);
-#pragma warning restore CS0219 // Variable is assigned but its value is never used
 
-            //SUSPENDED
-            //toolBarButtonStopAllLocomotives.Pushed = allSuspended;
+            toolBarButtonStopAllLocomotives.Checked = allSuspended;
         }
 
         [LayoutEvent("show-marker")]
@@ -882,58 +886,50 @@ namespace LayoutManager {
 
         [LayoutEvent("messages-shown")]
         private void MessagesShown(LayoutEvent e) {
-            //SUSPENDED
-            //if (e.IsThisFrameWindow(this))
-            //    toolBarButtonShowMessages.Pushed = true;
+            if (e.IsThisFrameWindow(this))
+                toolBarButtonShowMessages.Checked = true;
         }
 
         [LayoutEvent("messages-hidden")]
         private void MessagesHidden(LayoutEvent e) {
-            //SUSPENDED
-            //if (e.IsThisFrameWindow(this))
-            //    toolBarButtonShowMessages.Pushed = false;
+            if (e.IsThisFrameWindow(this))
+                toolBarButtonShowMessages.Checked = false;
         }
 
         [LayoutEvent("trips-monitor-shown")]
         private void TripsMonitorShown(LayoutEvent e) {
-            //SUSPENDED
-            //if (e.IsThisFrameWindow(this))
-            //    toolBarButtonShowTripsMonitor.Pushed = true;
+            if (e.IsThisFrameWindow(this))
+                toolBarButtonShowTripsMonitor.Checked = true;
         }
 
         [LayoutEvent("trips-monitor-hidden")]
         private void TripsMonitorHidden(LayoutEvent e) {
-            //SUSPENDED
-            //if (e.IsThisFrameWindow(this))
-            //    toolBarButtonShowTripsMonitor.Pushed = false;
+            if (e.IsThisFrameWindow(this))
+                toolBarButtonShowTripsMonitor.Checked = false;
         }
 
         [LayoutEvent("locomotives-shown")]
         private void LocomotivesShown(LayoutEvent e) {
-            //SUSPENDED
-            //if (e.IsThisFrameWindow(this))
-            //    toolBarButtonShowLocomotives.Pushed = true;
+            if (e.IsThisFrameWindow(this))
+                toolBarButtonShowLocomotives.Checked = true;
         }
 
         [LayoutEvent("locomotives-hidden")]
         private void LocomotivesHidden(LayoutEvent e) {
-            //SUSPENDED
-            //if (e.IsThisFrameWindow(this))
-            //    toolBarButtonShowLocomotives.Pushed = false;
+            if (e.IsThisFrameWindow(this))
+                toolBarButtonShowLocomotives.Checked = false;
         }
 
         [LayoutEvent("layout-control-shown")]
         private void LayoutControlShown(LayoutEvent e) {
-            //SUSPENDED
-            //if (e.IsThisFrameWindow(this))
-            //    toolBarButtonShowLayoutControl.Pushed = true;
+            if (e.IsThisFrameWindow(this))
+                toolBarButtonShowLayoutControl.Checked = true;
         }
 
         [LayoutEvent("layout-control-hidden")]
         private void LayoutControlHidden(LayoutEvent e) {
-            //SUSPENDED
-            //if (e.IsThisFrameWindow(this))
-            //    toolBarButtonShowLayoutControl.Pushed = false;
+            if (e.IsThisFrameWindow(this))
+                toolBarButtonShowLayoutControl.Checked = false;
         }
 
         #endregion
@@ -1291,13 +1287,11 @@ namespace LayoutManager {
             if (ActiveView != null) {
                 if (ActiveView.ShowGrid != ShowGridLinesOption.Hide) {
                     ActiveView.ShowGrid = ShowGridLinesOption.Hide;
-                    //SUSPENDED
-                    //toolBarButtonToggleGrid.Pushed = false;
+                    toolBarButtonToggleGrid.Checked = false;
                 }
                 else {
                     ActiveView.ShowGrid = ShowGridLinesOption.AutoHide;
-                    //SUSPENDED
-                    //toolBarButtonToggleGrid.Pushed = true;
+                    toolBarButtonToggleGrid.Checked = true;
                 }
             }
         }
