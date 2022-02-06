@@ -1,22 +1,22 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29403.142
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controllers", "Controllers", "{C747C622-A756-44EB-A2A4-2065AB682F04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutTools", "LayoutTools\LayoutTools.csproj", "{11CDBBF4-F29B-4053-9E1A-9137FDC074F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayoutTools", "LayoutTools\LayoutTools.csproj", "{11CDBBF4-F29B-4053-9E1A-9137FDC074F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutLogic", "LayoutLogic\LayoutLogic.csproj", "{0C05CFA4-AEB1-4798-9236-6BFB75D299C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayoutLogic", "LayoutLogic\LayoutLogic.csproj", "{0C05CFA4-AEB1-4798-9236-6BFB75D299C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutBaseServices", "LayoutBaseServices\LayoutBaseServices.csproj", "{D861E89E-9BB2-4080-AA3F-A26EC8ACEF16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayoutBaseServices", "LayoutBaseServices\LayoutBaseServices.csproj", "{D861E89E-9BB2-4080-AA3F-A26EC8ACEF16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutCommands", "LayoutCommands\LayoutCommands.csproj", "{5FABCFA6-6359-4126-865A-24119F0E3871}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayoutCommands", "LayoutCommands\LayoutCommands.csproj", "{5FABCFA6-6359-4126-865A-24119F0E3871}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutEventDebugger", "LayoutEventDebugger\LayoutEventDebugger.csproj", "{0283B12D-8E1E-4705-8494-73415B4527DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayoutEventDebugger", "LayoutEventDebugger\LayoutEventDebugger.csproj", "{0283B12D-8E1E-4705-8494-73415B4527DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LGBMTS", "LayoutLGB\LGBMTS.csproj", "{F78053BD-5824-4E52-9FF9-7E8E41517418}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LGBMTS", "LayoutLGB\LGBMTS.csproj", "{F78053BD-5824-4E52-9FF9-7E8E41517418}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutManager", "LayoutManager\LayoutManager.csproj", "{221D7C82-7BBA-4D39-80FD-39A018FEC162}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayoutManager", "LayoutManager\LayoutManager.csproj", "{221D7C82-7BBA-4D39-80FD-39A018FEC162}"
 	ProjectSection(ProjectDependencies) = postProject
 		{937E560F-1E01-4FFC-A56E-6EDD17B137E7} = {937E560F-1E01-4FFC-A56E-6EDD17B137E7}
 		{0283B12D-8E1E-4705-8494-73415B4527DE} = {0283B12D-8E1E-4705-8494-73415B4527DE}
@@ -29,31 +29,35 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutManager", "LayoutMana
 		{FD5529DD-21BE-4FC1-8D99-9D5850AC952A} = {FD5529DD-21BE-4FC1-8D99-9D5850AC952A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutManagerModel", "LayoutManagerModel\LayoutManagerModel.csproj", "{BD926873-4803-4036-868A-9EA11A1AE227}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayoutManagerModel", "LayoutManagerModel\LayoutManagerModel.csproj", "{BD926873-4803-4036-868A-9EA11A1AE227}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutManagerView", "LayoutManagerView\LayoutManagerView.csproj", "{857F7A5E-7B92-4722-BEBF-C3598293627D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayoutManagerView", "LayoutManagerView\LayoutManagerView.csproj", "{857F7A5E-7B92-4722-BEBF-C3598293627D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutCommonUI", "LayoutCommonUI\LayoutCommonUI.csproj", "{C314F674-90C0-4216-901E-3F411C3F3406}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayoutCommonUI", "LayoutCommonUI\LayoutCommonUI.csproj", "{C314F674-90C0-4216-901E-3F411C3F3406}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarklinDigital", "MarklinDigital\MarklinDigital.csproj", "{D8B1BEA4-8A37-4052-8D39-2531269C0A2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarklinDigital", "MarklinDigital\MarklinDigital.csproj", "{D8B1BEA4-8A37-4052-8D39-2531269C0A2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutEmulation", "LayoutEmulation\LayoutEmulation.csproj", "{140AA72E-2734-4623-9797-9DC014ACE68E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayoutEmulation", "LayoutEmulation\LayoutEmulation.csproj", "{140AA72E-2734-4623-9797-9DC014ACE68E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intellibox", "Intellibox\Intellibox.csproj", "{8666FE95-AD11-476D-A44F-A233C4B0631E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Intellibox", "Intellibox\Intellibox.csproj", "{8666FE95-AD11-476D-A44F-A233C4B0631E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiMAX", "DiMAX\DiMAX.csproj", "{D1B5FF47-8D71-4119-8B25-FFC6DF7310CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiMAX", "DiMAX\DiMAX.csproj", "{D1B5FF47-8D71-4119-8B25-FFC6DF7310CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayoutControlComponents", "LayoutControlComponents\LayoutControlComponents.csproj", "{D9FAA62D-675B-49D9-B5E2-D99C0A62AEC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LayoutControlComponents", "LayoutControlComponents\LayoutControlComponents.csproj", "{D9FAA62D-675B-49D9-B5E2-D99C0A62AEC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WizardControl", "Wizard\WizardControl.csproj", "{93023B51-CA12-42A4-89CB-E031CC913D3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WizardControl", "Wizard\WizardControl.csproj", "{93023B51-CA12-42A4-89CB-E031CC913D3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WizardDesigner", "WizardDesigner\WizardDesigner.csproj", "{053B5828-427D-45F4-B4DE-25FEF6665EF5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WizardDesigner", "WizardDesigner\WizardDesigner.csproj", "{053B5828-427D-45F4-B4DE-25FEF6665EF5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCDRelayController", "NCDRelayController\NCDRelayController.csproj", "{FD5529DD-21BE-4FC1-8D99-9D5850AC952A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NCDRelayController", "NCDRelayController\NCDRelayController.csproj", "{FD5529DD-21BE-4FC1-8D99-9D5850AC952A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Numato", "Numato\Numato.csproj", "{937E560F-1E01-4FFC-A56E-6EDD17B137E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Numato", "Numato\Numato.csproj", "{937E560F-1E01-4FFC-A56E-6EDD17B137E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainDetector", "TrainDetector\TrainDetector.csproj", "{29915370-7BD5-41B1-A4CD-3D3C0A9BAE6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrainDetector", "TrainDetector\TrainDetector.csproj", "{29915370-7BD5-41B1-A4CD-3D3C0A9BAE6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MethodDispatcher", "MethodDispatcher\MethodDispatcher.csproj", "{81271794-4C0B-4206-AF01-D14D1F6CFAF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MethodDispatcherTest", "MethodDispatcherTest\MethodDispatcherTest.csproj", "{CB855C69-B877-4B97-8176-50033FEE03B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -141,6 +145,14 @@ Global
 		{29915370-7BD5-41B1-A4CD-3D3C0A9BAE6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29915370-7BD5-41B1-A4CD-3D3C0A9BAE6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29915370-7BD5-41B1-A4CD-3D3C0A9BAE6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81271794-4C0B-4206-AF01-D14D1F6CFAF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81271794-4C0B-4206-AF01-D14D1F6CFAF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81271794-4C0B-4206-AF01-D14D1F6CFAF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81271794-4C0B-4206-AF01-D14D1F6CFAF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB855C69-B877-4B97-8176-50033FEE03B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB855C69-B877-4B97-8176-50033FEE03B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB855C69-B877-4B97-8176-50033FEE03B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB855C69-B877-4B97-8176-50033FEE03B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
