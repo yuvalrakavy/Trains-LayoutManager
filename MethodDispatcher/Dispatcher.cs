@@ -18,6 +18,8 @@ namespace MethodDispatcher {
     /// 
     /// To dispatch call to function you need to define a dispatcher source.
     /// 
+    /// for examples how to define Dispatch source see: <see cref="DispatchSource"/>
+    /// 
     /// <example>
     /// public static class Extensions {
     /// 
@@ -40,12 +42,51 @@ namespace MethodDispatcher {
     public class Dispatcher {
         readonly Dictionary<string, DispatchSource> dispatchSources = new();
 
-        public void DefineSources() {
+        /// <summary>
+        /// Initialize the displatcher system
+        /// 
+        /// Add dispatch sources and static targets for the currently loaded assemblies.
+        /// If you dynamically load assemblies, you will need to call InitializeDispatcherForAssembly for each loaded assembly
+        ///
+        /// </summary>
+        /// 
+        /// <exception cref="DispatcherErrorsException">
+        /// This exception contains a list of errors. For example mismatch in types or nullability between dispatch source
+        /// and dispatch targets
+        /// </exception>
+        public void InitializeDispatcher() {
+            DefineSources();
+            VerifyTargets();
+            AddStaticTargets();
+        }
+
+        /// <summary>
+        /// Add dispatch sources defined in assembly, verify targets against sources (check types/nullability) and add
+        /// static dispatch targets
+        /// </summary>
+        /// <param name="assembly">The assembly to add</param>
+        ///
+        /// <exception cref="DispatcherErrorsException">
+        /// This exception contains a list of errors. For example mismatch in types or nullability between dispatch source
+        /// and dispatch targets
+        /// </exception>
+        /// 
+        public void InitializeDispatcherForAssembly(Assembly assembly) {
+            DefineAssemblySources(assembly);
+            VerifyAssemblyTargets(assembly);
+            AddStaticAssemblyTargets(assembly);
+        }
+
+        public DispatchSource this[string sourceName] {
+            get => dispatchSources[sourceName];
+        }
+
+        private void DefineSources() {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
                 DefineAssemblySources(assembly);
         }
 
-        void DefineAssemblySources(Assembly assembly) {
+        private void DefineAssemblySources(Assembly assembly) {
             var types = assembly.GetTypes();
             var query = from type in types
                         where type.IsSealed && !type.IsGenericType && !type.IsNested
@@ -58,12 +99,12 @@ namespace MethodDispatcher {
                 DefineSourceMethod(method);
         }
 
-        void DefineSourceMethod(MethodInfo method) {
-            Debug.Assert(!dispatchSources.ContainsKey(method.Name));
-            dispatchSources.Add(method.Name, new DispatchSource(method));
+        private void DefineSourceMethod(MethodInfo method) {
+            if(!dispatchSources.ContainsKey(method.Name))
+                dispatchSources.Add(method.Name, new DispatchSource(method));
         }
 
-        public void VerifyTargets() {
+        private void VerifyTargets() {
             List<DispatcherException> errors = new();
 
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -81,7 +122,7 @@ namespace MethodDispatcher {
                 throw new DispatcherErrorsException("Verify targets", errors);
         }
 
-        public void VerifyAssemblyTargets(Assembly assembly) {
+        private void VerifyAssemblyTargets(Assembly assembly) {
             List<DispatcherException> errors = new();
             var types = assembly.GetTypes();
             var query = from type in types
@@ -104,12 +145,12 @@ namespace MethodDispatcher {
                 throw new DispatcherErrorsException($"Errors verifying assembly {assembly.FullName} dispatch targets", errors);
         }
 
-        public void AddStaticTargets() {
+        private void AddStaticTargets() {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
                 AddStaticAssemblyTargets(assembly);
         }
 
-        public void AddStaticAssemblyTargets(Assembly assembly) {
+        private void AddStaticAssemblyTargets(Assembly assembly) {
             var types = assembly.GetTypes();
             var query = from type in types
                         from method in type.GetMethods(BindingFlags.Static |BindingFlags.Public | BindingFlags.NonPublic)
@@ -124,7 +165,7 @@ namespace MethodDispatcher {
 
         }
 
-        public void AddInstanceTargets(object objectInstance) {
+        public void AddObjectInstanceDispatchTargets(object objectInstance) {
             MethodInfo[] methodsInfo = objectInstance.GetType().GetMethods(
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
@@ -137,12 +178,12 @@ namespace MethodDispatcher {
             }
         }
 
-        public void RemoveInstanceTargets(object objectInstance) {
+        public void RemoveObjectInstanceDispatchTargets(object objectInstance) {
             foreach (var dispatchSource in dispatchSources.Values)
                 dispatchSource.RemoveTargetsInInstance(objectInstance);
         }
 
-        DispatchSource GetDispatchSource(DispatchTargetAttribute dispatchTargetAttribute, MethodInfo method) {
+        private DispatchSource GetDispatchSource(DispatchTargetAttribute dispatchTargetAttribute, MethodInfo method) {
             var name = dispatchTargetAttribute.Name ?? method.Name;
             var inDispatchSources = (from part in name.Split('_') where dispatchSources.ContainsKey(part) select dispatchSources[part]).ToArray();
 
@@ -152,12 +193,26 @@ namespace MethodDispatcher {
                 _ => throw new AmbiguousDispatchSourcesNameException(dispatchTargetAttribute.SourceFile, inDispatchSources)
             };
         }
-
-        public DispatchSource this[string sourceName] {
-            get => dispatchSources[sourceName];
-        }
     }
 
+    /// <summary>
+    /// Static access to dispatch system
+    ///
+    /// Start by calling Dispatch.InitializeDispatcher.
+    /// Make sure to handle possible DispatcherErrorsException.
+    /// 
+    /// Dispatch sources are added as Dispatcher extension methods. So to dispatch a method (call its targets)
+    /// use:
+    /// 
+    /// Dispatch.Call.AdispatchedMethod(...)
+    /// 
+    /// If you dyamically load additional assemblies after calling Dispatch.InitializeDispatcher, make sure to call
+    /// Dispatch.InitializeDispatcherForAssembly for each such loaded assembly (remember to handle DispatchErrorsException)
+    /// 
+    /// To add targets in an object instance, call: Dispatch.AddObjectInstanceDispatchTargets. You can optionally call
+    /// Dispatch.RemoveObjectInstanceDispatchTargets when disposing the object
+    /// 
+    /// </summary>
     public static class Dispatch {
         static readonly Dispatcher _instance;
 
@@ -177,7 +232,41 @@ namespace MethodDispatcher {
         /// </example>
         ///
         static public Dispatcher Call => _instance;
+
+        /// <summary>
+        /// Initialize the method dispatch system
+        ///
+        /// This will add dispatch sources, verify targets (type/nullability vs. the source) for the currenly loaded
+        /// assemblies
+        /// </summary>
+        /// <exception cref="DispatcherErrorsException">is thrown if there are errors in the verification process</exception>
+        static public void InitializeDispatcher() => _instance.InitializeDispatcher();
+
+        /// <summary>
+        /// Add dispatch sources, verify targets and add static targets in a given assembly
+        /// </summary>
+        /// <remarks>You need to call this for any assembly you dynamically loade after calling InitializeDispatcher</remarks>
+        /// <param name="assembly">The assembly to use</param>
+        /// <exception cref="DispatcherErrorsException">is thrown if there are errors in the verification process</exception>
+        static public void InitializeDispatcherForAssembly(Assembly assembly) => _instance.InitializeDispatcherForAssembly(assembly);
+
+        /// <summary>
+        /// Add dispatch targets in an object instance
+        /// </summary>
+        /// <remarks>
+        /// You don't have to remove these targets upon disposing the object. The dispatch system hold weak reference to the object
+        /// and those targets will be automatically removed when the object is garbage collected
+        /// </remarks>
+        /// <param name="instance">the object instance containing the targets</param>
+        static public void AddObjectInstanceDispatcherTargets(object instance) => _instance.AddObjectInstanceDispatchTargets(instance);
+
+        /// <summary>
+        /// Remove dispatch targets in residing in an object instance.
+        /// </summary>
+        /// <param name="instance">the object instance with the targets to be removed</param>
+        static public void RemoveObjectInstanceDispatcherTargets(object instance) => _instance.RemoveObjectInstanceDispatchTargets(_instance);
     }
+
 
     #region Attributes definitions
 
@@ -489,14 +578,16 @@ namespace MethodDispatcher {
             var applicableTargets = (from target in Targets where target.IsApplicable(parameters) select target).ToArray();
 
             if (applicableTargets.Length == 0 && !AllowNoTargets)
-                throw new ZeroTargetsNotAllowedException(_source, AllowMoreThanOneTarget ? "at least one target" : "one target");
+                throw new ZeroTargetsNotAllowedException(_source, AllowMoreThanOneTarget ? "at least one applicable target" : "one applicable target");
 
-            Debug.Assert(applicableTargets.Length == 1);
-            return applicableTargets[0].Invoke(parameters);
+            Debug.Assert(AllowNoTargets || applicableTargets.Length == 1);
+            return applicableTargets.Length  > 0 ? applicableTargets[0].Invoke(parameters) : null;
         }
     }
 
     internal abstract class DispatchTarget {
+        bool? _hasFilters;
+
         protected MethodInfo Method { get; private set; }
 
         public int? Order { get; private set; }
@@ -518,22 +609,26 @@ namespace MethodDispatcher {
         public bool IsApplicable(object?[] parameters) {
             Debug.Assert(parameters.Length == Method.GetParameters().Length);
 
-            foreach (var p in Method.GetParameters().Select((parameter, i) => new { TargetParameter = parameter, ParameterValue = parameters[i] })) {
-                if (p.TargetParameter.GetCustomAttribute(typeof(DispatchFilterAttribute)) != null) {
+            _hasFilters ??= Method.GetParameters().Any(p => p.GetCustomAttribute(typeof(DispatchFilterAttribute)) != null);
 
-                    // Filter by value
-                    if (p.TargetParameter.HasDefaultValue) {
-                        if (p.TargetParameter.DefaultValue == null) {
-                            if (p.ParameterValue != null)
+            if (_hasFilters.Value) {
+                foreach (var p in Method.GetParameters().Select((parameter, i) => new { TargetParameter = parameter, ParameterValue = parameters[i] })) {
+                    if (p.TargetParameter.GetCustomAttribute(typeof(DispatchFilterAttribute)) != null) {
+
+                        // Filter by value
+                        if (p.TargetParameter.HasDefaultValue) {
+                            if (p.TargetParameter.DefaultValue == null) {
+                                if (p.ParameterValue != null)
+                                    return false;
+                            }
+                            else if (!p.TargetParameter.DefaultValue.Equals(p.ParameterValue))
                                 return false;
                         }
-                        else if (!p.TargetParameter.DefaultValue.Equals(p.ParameterValue))
+
+                        // Filter by type
+                        if (p.ParameterValue != null &&  !p.TargetParameter.ParameterType.IsAssignableFrom(p.ParameterValue.GetType()))
                             return false;
                     }
-
-                    // Filter by type
-                    if (p.ParameterValue != null &&  !p.TargetParameter.ParameterType.IsAssignableFrom(p.ParameterValue.GetType()))
-                        return false;
                 }
             }
 
@@ -583,6 +678,30 @@ namespace MethodDispatcher {
 
         internal DispatcherErrorsException(string message, IEnumerable<DispatcherException> dispatcherExceptions) : base(message) {
             Errors = new List<DispatcherException>(dispatcherExceptions);
+        }
+
+        /// <summary>
+        /// Save the list of dispatch errors to a writer
+        /// </summary>
+        /// <param name="w">TextWriter to use</param>
+        /// <param name="title">Error list title</param>
+        public void Save(TextWriter w, string title = "Initializing dispatcher") {
+            w.WriteLine($"Errors while {title}:");
+            w.WriteLine();
+
+            foreach(var error in Errors)
+                w.WriteLine(error.ToString());
+
+        }
+
+        /// <summary>
+        /// Save the list of errors to a file
+        /// </summary>
+        /// <param name="title">Error list title</param>
+        /// <param name="filename"The file's name></param>
+        public void Save(string title = "Initializing dispatcher", string filename = "dispatcher_errors.txt") {
+            using (var w = new StreamWriter(filename))
+                Save(w, title);
         }
     }
 

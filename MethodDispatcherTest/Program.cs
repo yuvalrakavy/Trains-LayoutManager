@@ -63,22 +63,18 @@ namespace MethodDispatcherTest {
         [STAThread]
         static void Main() {
 
-            Dispatch.Call.DefineSources();
             try {
-                Dispatch.Call.VerifyTargets();
-                Dispatch.Call.AddStaticTargets();
-
-                Dispatch.Call.GetSomeClass(4);
-
-                foreach(var s in Dispatch.Call.CollectNames()) {
-                    Trace.WriteLine($"Collected {s}");
-                }
+                Dispatch.InitializeDispatcher();
+            } catch(DispatcherErrorsException ex) {
+                ex.Save();
+                MessageBox.Show("Errors while initializing dispatcher (see dispatcher_errors.txt)");
+                Application.Exit();
             }
-            catch (DispatcherErrorsException ex) {
-                Trace.WriteLine($"{ex.Errors.Count} Dispatch verification errors were found:");
 
-                foreach (var error in ex.Errors)
-                    Trace.WriteLine(error.Message);
+            Dispatch.Call.GetSomeClass(4);
+
+            foreach(var s in Dispatch.Call.CollectNames()) {
+                Trace.WriteLine($"Collected {s}");
             }
 
             // To customize application configuration such as set high DPI settings or default font,
