@@ -3,8 +3,26 @@ using System.Xml;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
+using MethodDispatcher;
 
 namespace LayoutManager {
+    public static class LayoutModuleDispatchExtensions {
+        [DispatchSource]
+        public static void OnModuleEnabled(this Dispatcher d) {
+            d[nameof(OnModuleEnabled)].CallVoid();
+        }
+
+        [DispatchSource]
+        public static bool? OnModuleDisableRequest(this Dispatcher d, object moduleInstance) {
+            return d[nameof(OnModuleDisableRequest)].CallNullable<bool>(moduleInstance);
+        }
+
+        [DispatchSource]
+        public static void OnModuleDisabled(this Dispatcher d, object moduleInstance) {
+            d[nameof(OnModuleDisabled)].CallVoid(moduleInstance);
+        }
+    }
+
     /// <summary>
     /// Layout module information
     /// </summary>
@@ -87,30 +105,38 @@ namespace LayoutManager {
             if (moduleInstance == null) {
                 moduleInstance = layoutAssembly.Assembly?.CreateInstance(Ensure.NotNull<string>(moduleType.FullName));
 
-                if (moduleInstance == null)
+                if (layoutAssembly.Assembly == null || moduleInstance == null)
                     throw new LayoutException($"Could not load module {moduleType.FullName}");
 
-                // Create subscriptions for event handlers in the new module instance
+                try {
+                    Dispatch.InitializeDispatcherForAssembly(layoutAssembly.Assembly);
+                    Dispatch.AddObjectInstanceDispatcherTargets(moduleInstance);
+                }
+                catch (DispatcherErrorsException ex) {
+                    ex.Save($"Initializing dispatch for assembly: {layoutAssembly.Assembly.FullName}");
+                    throw new LayoutException($"Errors initializing dynamic dispatch for assembly {layoutAssembly.Assembly.FullName} (see dispatcher_errors.txt)");
+                }
+
+                Dispatch.Call.OnModuleEnabled();
+                               
+                // Create subscriptions for event handlers in the new module instance (will this one day become obsolete...)
                 EventManager.AddObjectSubscriptions(moduleInstance);
-                EventManager.Event(new LayoutEvent("module-enabled", moduleInstance));
             }
         }
 
         /// <summary>
         /// Internal method to disable the module
         /// </summary>
-        /// <returns>True if the module successfuly disabled, false if the module refused to be disabled</returns>
+        /// <returns>True if the module successful disabled, false if the module refused to be disabled</returns>
         protected bool DisableModule() {
             if (moduleInstance != null) {
-                LayoutEvent moduleDisableRequestEvent = new("module-disable-request", moduleInstance, true);
-
-                EventManager.Event(moduleDisableRequestEvent);
-                if (!(bool)(moduleDisableRequestEvent.Info ?? false))
+                if (!(Dispatch.Call.OnModuleDisableRequest(moduleInstance) ?? true))
                     return false;           // Module refuses to be disabled
 
-                EventManager.Event(new LayoutEvent("module-disabled", moduleInstance));
+                Dispatch.Call.OnModuleDisabled(moduleInstance);
+                Dispatch.RemoveObjectInstanceDispatcherTargets(moduleInstance);
 
-                // Remove all subscriptions for this instance
+                // Remove all subscriptions for this instance (will this become obsolete one day?)
                 EventManager.Subscriptions.RemoveObjectSubscriptions(moduleInstance);
 
                 if (moduleInstance is IDisposable module)
@@ -224,7 +250,7 @@ namespace LayoutManager {
         /// Convert file path to value that can be stored.
         /// </summary>
         /// <remarks>
-        /// The returned value is not rooted (relative) if the path refered to a file in the default directory, otherwise
+        /// The returned value is not rooted (relative) if the path referred to a file in the default directory, otherwise
         /// the returned value is the rooted value
         /// </remarks>
         /// <param name="path">Path</param>
@@ -510,7 +536,7 @@ namespace LayoutManager {
                         break;
                 }
                 else
-                    throw new FileParseException(String.Format("Unpexected element {0}: {1}", r.NodeType, r.Name));
+                    throw new FileParseException(String.Format("Unexpected element {0}: {1}", r.NodeType, r.Name));
             }
         }
 
@@ -563,7 +589,7 @@ namespace LayoutManager {
     }
 
     /// <summary>
-    /// A convinence class for defining modules. It implements ILayoutModuleSetup.
+    /// A convenience class for defining modules. It implements ILayoutModuleSetup.
     /// </summary>
     public class LayoutModuleBase : ILayoutModuleSetup {
         public static void Error(Object? subject, string message) {

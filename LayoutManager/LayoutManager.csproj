@@ -99,6 +99,7 @@
     <ProjectReference Include="..\LayoutManagerModel\LayoutManagerModel.csproj" />
     <ProjectReference Include="..\LayoutManagerView\LayoutManagerView.csproj" />
     <ProjectReference Include="..\LayoutTools\LayoutTools.csproj" />
+    <ProjectReference Include="..\MethodDispatcher\MethodDispatcher.csproj" />
     <ProjectReference Include="..\Wizard\WizardControl.csproj" />
   </ItemGroup>
   <ItemGroup>

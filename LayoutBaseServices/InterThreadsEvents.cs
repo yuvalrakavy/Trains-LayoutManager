@@ -4,16 +4,60 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Diagnostics;
 
+using MethodDispatcher;
 using LayoutManager;
+
+namespace LayoutManager {
+    public static class InterthreadDispatchSources {
+        [DispatchSource]
+        public static void InitializeEventInterthreadRelay(this Dispatcher d) {
+            d[nameof(InitializeEventInterthreadRelay)].CallVoid();
+        }
+
+        [DispatchSource]
+        public static void TerminateEventInterthreadRelay(this Dispatcher d) {
+            d[nameof(TerminateEventInterthreadRelay)].CallVoid();
+        }
+
+        static DispatchSource? GetInterthreadInvokerDispatchSource;
+
+        [DispatchSource]
+        public static ILayoutInterThreadEventInvoker GetInterthreadInvoker(this Dispatcher d) => 
+            (GetInterthreadInvokerDispatchSource ??= d[nameof(GetInterthreadInvoker)]).Call<ILayoutInterThreadEventInvoker>();
+    }
 
 #nullable enable
 namespace LayoutBaseServices {
 #pragma warning disable IDE0051, RCS1163
 
-    [LayoutModule("Interthreads Event Relay", Enabled = true, UserControl = false)]
+    abstract class QueueEntry {
+
+    }
+
+    class EventQueueEntry : QueueEntry {
+        public LayoutEvent LayoutEvent { get; private set; }
+
+        public EventQueueEntry(LayoutEvent e) {
+            this.LayoutEvent = e;
+        }
+    }
+
+    class ActionQueueEntry : QueueEntry {
+        public Action Action { get; private set; }
+
+        public ActionQueueEntry(Action a) {
+            this.Action = a;
+        }
+    }
+
+    class TerminateThreadQueueEntry : QueueEntry {
+
+    }
+
+    [LayoutModule("Inter threads Event Relay", Enabled = true, UserControl = false)]
     internal class InterThreadsEvents : LayoutModuleBase, ILayoutInterThreadEventInvoker, IDisposable {
         private Control? controlInUIthread;
-        private readonly Queue<LayoutEvent> eventQueue = new();
+        private readonly Queue<QueueEntry> eventQueue = new();
         private readonly ManualResetEvent eventInQueue = new(false);
         private readonly AutoResetEvent terminatedEvent = new(false);
         private Thread? relayThread = null;
@@ -22,8 +66,9 @@ namespace LayoutBaseServices {
         private bool _disposed;
         private bool terminate;
 
-        [LayoutEvent("initialize-event-interthread-relay")]
-        private void InitializeEventInterthreadRelay(LayoutEvent e) {
+
+        [DispatchTarget]
+        private void InitializeEventInterthreadRelay() {
             if (relayThread == null) {
                 uiThreadForm = new Form {
                     ShowInTaskbar = false,
@@ -35,7 +80,6 @@ namespace LayoutBaseServices {
                 Debug.Assert(uiThreadForm.IsHandleCreated);
 
                 controlInUIthread = uiThreadForm;
-                terminate = false;
                 relayThread = new Thread(new ThreadStart(EventRelayThreadFunction)) {
                     Name = "Relay Events"
                 };
@@ -43,14 +87,13 @@ namespace LayoutBaseServices {
             }
         }
 
-        [LayoutEvent("terminate-event-interthread-relay")]
-        private void TerminateEventInterthreadRelay(LayoutEvent e) {
+        [DispatchTarget]
+        private void TerminateEventInterthreadRelay() {
             Debug.Assert(relayThread != null);
 
-            QueueEvent(new LayoutEvent("terminate-event-relay-thread", this));
+            QueueEntry(new TerminateThreadQueueEntry());
 
             if (!terminatedEvent.WaitOne(1000, false)) {
-                terminate = true;
                 eventInQueue.Set();
             }
 
@@ -58,10 +101,8 @@ namespace LayoutBaseServices {
             Dispose();
         }
 
-        [LayoutEvent("get-inter-thread-event-invoker")]
-        private void GetInvoker(LayoutEvent e) {
-            e.Info = (ILayoutInterThreadEventInvoker)this;
-        }
+        [DispatchTarget]
+        ILayoutInterThreadEventInvoker GetInterthreadInvoker() => this;
 
         private delegate object? LayoutEventCaller(LayoutEvent e);
 
@@ -70,8 +111,10 @@ namespace LayoutBaseServices {
             while (controlInUIthread?.IsHandleCreated != true)
                 Thread.Sleep(100);
 
-            while (true) {
-                LayoutEvent e;
+            bool terminate = false;
+
+            while (!terminate) {
+                QueueEntry e;
 
                 eventInQueue.WaitOne();
                 if (terminate)
@@ -84,28 +127,50 @@ namespace LayoutBaseServices {
                         eventInQueue.Reset();
                 }
 
-                if (e.Sender != this || e.EventName != "terminate-event-relay-thread") {
-                    try {
-                        controlInUIthread.Invoke(new LayoutEventCaller(EventManager.Event), new object[] { e });
-                    }
-                    catch (Exception ex) {
-                        Trace.WriteLine("Exception when invoking event in UI thread: " + ex.Message + " at " + ex.StackTrace);
-                    }
+                switch(e) {
+                    case EventQueueEntry { LayoutEvent: LayoutEvent theEvent }:
+                        try {
+                            controlInUIthread.Invoke(new LayoutEventCaller(EventManager.Event), new object[] { theEvent });
+                        }
+                        catch (Exception ex) {
+                            Trace.WriteLine("Exception when invoking event in UI thread: " + ex.Message + " at " + ex.StackTrace);
+                        }
+                        break;
+
+                    case ActionQueueEntry { Action: Action a }:
+                        try {
+                            controlInUIthread.Invoke(a);
+                        }
+                        catch (Exception ex) {
+                            Trace.WriteLine("Exception when invoking action in UI thread: " + ex.Message + " at " + ex.StackTrace);
+                        }
+                        break;
+
+                    case TerminateThreadQueueEntry:
+                        terminate = true;
+                        break;
                 }
-                else
-                    break;
             }
 
             terminatedEvent.Set();
         }
 
+        private void QueueEntry(QueueEntry entry) {
+            lock (queueLock) {
+                eventQueue.Enqueue(entry);
+                eventInQueue.Set();
+
+            }
+        }
+
         #region ILayoutInvoker Members
 
         public void QueueEvent(LayoutEvent e) {
-            lock (queueLock) {
-                eventQueue.Enqueue(e);
-                eventInQueue.Set();
-            }
+            QueueEntry(new EventQueueEntry(e));
+        }
+
+        public void Queue(Action a) {
+            QueueEntry(new ActionQueueEntry(a));
         }
 
         #endregion

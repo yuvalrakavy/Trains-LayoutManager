@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using MethodDispatcher;
+
 using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
@@ -25,7 +27,7 @@ namespace DiMAX {
         public DiMAXcommandStationEmulator(IModelComponentIsCommandStation commandStation, string pipeName) {
             this.commandStationId = commandStation.Id;
             this.pipeName = pipeName;
-            this.interThreadEventInvoker = Ensure.NotNull<ILayoutInterThreadEventInvoker>(EventManager.Event(new LayoutEvent("get-inter-thread-event-invoker", this)));
+            this.interThreadEventInvoker = Dispatch.Call.GetInterthreadInvoker();
 
             traceDiMAXemulator.Level = TraceLevel.Off;      // Until it seems to work
 

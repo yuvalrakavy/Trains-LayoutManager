@@ -9,6 +9,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Threading;
 
+using MethodDispatcher;
+
 namespace LayoutManager {
     /// <summary>
     /// A Layout Manager event
@@ -1019,13 +1021,7 @@ namespace LayoutManager {
         /// </summary>
         public bool TraceEvents { get; set; }
 
-        public ILayoutInterThreadEventInvoker InterThreadEventInvoker {
-            get {
-                if (invoker == null)
-                    invoker = (ILayoutInterThreadEventInvoker?)Event(new LayoutEvent("get-inter-thread-event-invoker", this));
-                return invoker!;
-            }
-        }
+        public ILayoutInterThreadEventInvoker InterThreadEventInvoker => (invoker ??= Dispatch.Call.GetInterthreadInvoker());
 
         #region Synchronous (normal) events
 
@@ -1592,7 +1588,15 @@ namespace LayoutManager {
         /// Use this method when you need to invoke an event from thread different than the
         /// main thread. For example upon completing asynchronous I/O operation
         /// </remarks>
+        /// !!!Depreciated!!!
+        //
         void QueueEvent(LayoutEvent e);
+
+        /// <summary>
+        /// Queue a function to be executed in the context of the main there (UI thread)
+        /// </summary>
+        /// <param name="action">closure to run in the context of the main thread</param>
+        void Queue(Action action);
     }
 };
 

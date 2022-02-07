@@ -298,12 +298,9 @@ namespace LayoutManager {
         private FrameWindowCommand ControllerCommand {
             set {
                 Debug.Assert(tcs != null);
-                var myTcs = tcs;
 
                 if (tcs.Task.Status == TaskStatus.RanToCompletion)
                     tcs = null;
-
-                //myTcs.SetResult(new FrameWindowAction(this, value));
             }
         }
 

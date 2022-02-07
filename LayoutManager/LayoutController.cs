@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.Xml;
 using System.Threading.Tasks;
 
+using MethodDispatcher;
+
 using LayoutManager.Model;
 
 namespace LayoutManager {
@@ -30,6 +32,9 @@ namespace LayoutManager {
             this.FrameWindow = frameWindow;
             this.Command = command;
         }
+    }
+
+    public static class LayoutControllerDispatchSources {
     }
 
     public class LayoutControllerImplementation : ApplicationContext, ILayoutController, ILayoutSelectionManager {
@@ -60,6 +65,15 @@ namespace LayoutManager {
 
         public LayoutControllerImplementation() {
             LayoutController.Instance = this;
+
+            try {
+                Dispatch.InitializeDispatcher();
+            }
+            catch (DispatcherErrorsException ex) {
+                ex.Save();
+                MessageBox.Show("Errors when initializing dynamic method dispatcher (see dispatcher_errors.txt)");
+                Application.Exit();
+            }
 
             ModuleManager = new LayoutModuleManager();
             EventManager.Instance = new LayoutEventManager(ModuleManager);
@@ -128,7 +142,7 @@ namespace LayoutManager {
             LayoutModel.Areas.AreaRemoved += Area_Removed;
             LayoutModel.Areas.AreaRenamed += Area_Renamed;
 
-            EventManager.Event(new LayoutEvent("initialize-event-interthread-relay", this));
+            Dispatch.Call.InitializeEventInterthreadRelay();
 
             LauchLayoutManager();
         }
@@ -147,7 +161,7 @@ namespace LayoutManager {
 
             switch (action) {
                 case LaunchAction.Exit:
-                    EventManager.Event(new LayoutEvent("terminate-event-interthread-relay", this));
+                    Dispatch.Call.TerminateEventInterthreadRelay();
                     ExitThreadCore();
                     return;
 
@@ -202,7 +216,7 @@ namespace LayoutManager {
             await EnterDesignModeRequest();
             Trace.WriteLine("After EnterDesignRequest");
 
-            EventManager.Event(new LayoutEvent("terminate-event-interthread-relay", this));
+            Dispatch.Call.TerminateEventInterthreadRelay();
 
             ExitThread();
         }

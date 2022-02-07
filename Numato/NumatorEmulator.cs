@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
+using MethodDispatcher;
 using LayoutManager;
 using LayoutManager.Model;
 
@@ -31,7 +32,7 @@ namespace NumatoController {
 
         public NumatorEmulator(IModelComponentIsBusProvider numatoComponent, string pipeName) {
             this.pipeName = pipeName;
-            this.interThreadEventInvoker = Ensure.NotNull<ILayoutInterThreadEventInvoker>(EventManager.Event(new LayoutEvent("get-inter-thread-event-invoker", this)));
+            this.interThreadEventInvoker = Dispatch.Call.GetInterthreadInvoker();
 
             layoutEmulationServices = Ensure.NotNull<ILayoutEmulatorServices>(EventManager.Event(new LayoutEvent("get-layout-emulation-services", this)));
             EventManager.Event(new LayoutEvent("initialize-layout-emulation"));
