@@ -35,6 +35,10 @@ namespace LayoutManager {
     }
 
     public static class LayoutControllerDispatchSources {
+        [DispatchSource]
+        public static void CloseAllFrameWindows(this Dispatcher d) {
+            d[nameof(CloseAllFrameWindows)].CallVoid();
+        }
     }
 
     public class LayoutControllerImplementation : ApplicationContext, ILayoutController, ILayoutSelectionManager {
@@ -128,7 +132,6 @@ namespace LayoutManager {
             ModuleManager.LoadState();
 
             EventManager.Instance.AddObjectSubscriptions(this);
-            EventManager.Event(new LayoutEvent("modules-initialized", this));
 
             #endregion
 
@@ -242,7 +245,7 @@ namespace LayoutManager {
                         SaveDisplayState(FrameWindows);
                         FrameWindows.Remove(actionTask.Result.FrameWindow);
 
-                        EventManager.Event(new LayoutEvent("close-all-frame-windows"));
+                        Dispatch.Call.CloseAllFrameWindows();
 
                         // Wait until all frame windows are closed
                         await Task.WhenAll(from frameWindow in FrameWindows select frameWindow.Task);
@@ -290,7 +293,7 @@ namespace LayoutManager {
             if (commandManager.ChangeLevel != 0)
                 SaveModel(LayoutFilename);
 
-            EventManager.Event(new LayoutEvent("clear-messages", this));
+            Dispatch.Call.ClearMessages();
 
             if (!(bool)(EventManager.Event(new LayoutEvent("check-layout", LayoutModel.Instance, true).SetPhases(settings.Phases)) ?? false)) {
                 MessageBox.Show(ActiveFrameWindow, "Problems were detected in the layout. Please fix those problems before entering operation mode", "Layout Check Results",
@@ -339,7 +342,7 @@ namespace LayoutManager {
                 }
                 catch (AggregateException ex) {
                     foreach (var inner in ex.InnerExceptions) {
-                        EventManager.Event(new LayoutEvent("add-error", null, inner.Message));
+                        Dispatch.Call.AddError(inner.Message, null);
                     }
 
                     ExitOperationModeRequest().Wait(500);
@@ -347,7 +350,7 @@ namespace LayoutManager {
                     switchMode = false;
                 }
                 catch (Exception ex) {
-                    EventManager.Event(new LayoutEvent("add-error", null, ex.Message));
+                    Dispatch.Call.AddError(ex.Message, null);
 
                     ExitOperationModeRequest().Wait(500);
                     EnterDesignModeRequest().Wait(500);

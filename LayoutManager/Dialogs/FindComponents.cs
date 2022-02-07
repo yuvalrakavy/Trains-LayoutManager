@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
+using MethodDispatcher;
+
 #endregion
 
 using LayoutManager.Model;
@@ -20,11 +22,11 @@ namespace LayoutManager.Dialogs {
 
         public LayoutModelArea ActiveArea => activeArea;
 
-        private bool isMatch(string text, string findWhat) {
+        private bool IsMatch(string text, string findWhat) {
             return checkBoxExactMatch.Checked ? text.ToLower() == findWhat : text.ToLower().Contains(findWhat);
         }
 
-        private void searchArea(LayoutModelArea area, LayoutSelection results) {
+        private void SearchArea(LayoutModelArea area, LayoutSelection results) {
             string findWhat = textBoxFind.Text.ToLower();
 
             foreach (LayoutModelSpotComponentCollection spot in area.Grid.Values) {
@@ -32,14 +34,14 @@ namespace LayoutManager.Dialogs {
                     bool found = false;
 
                     if (checkBoxScopeNames.Checked) {
-                        if (component is IModelComponentHasName namedComponent && isMatch(namedComponent.NameProvider.Name, findWhat))
+                        if (component is IModelComponentHasName namedComponent && IsMatch(namedComponent.NameProvider.Name, findWhat))
                             found = true;
                     }
 
                     if (!found && checkBoxScopeAttributes.Checked) {
                         if (component is IObjectHasAttributes attributedComponent && attributedComponent.HasAttributes) {
                             foreach (AttributeInfo attribute in attributedComponent.Attributes) {
-                                if (attribute.Name.Contains(findWhat) || isMatch(attribute.ValueAsString, findWhat)) {
+                                if (attribute.Name.Contains(findWhat) || IsMatch(attribute.ValueAsString, findWhat)) {
                                     found = true;
                                     break;
                                 }
@@ -53,7 +55,7 @@ namespace LayoutManager.Dialogs {
 
                             if (connections != null) {
                                 foreach (ControlConnectionPoint connection in connections) {
-                                    if (isMatch(connection.Module.ModuleType.GetConnectionPointAddressText(connection.Module.ModuleType, connection.Module.Address, connection.Index, true), findWhat)) {
+                                    if (IsMatch(connection.Module.ModuleType.GetConnectionPointAddressText(connection.Module.ModuleType, connection.Module.Address, connection.Index, true), findWhat)) {
                                         found = true;
                                         break;
                                     }
@@ -68,14 +70,14 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonSearch_Click(object? sender, EventArgs e) {
+        private void ButtonSearch_Click(object? sender, EventArgs e) {
             LayoutSelection results = new();
 
             if (checkBoxLimitToActiveArea.Checked)
-                searchArea(ActiveArea, results);
+                SearchArea(ActiveArea, results);
             else
                 foreach (LayoutModelArea area in LayoutModel.Areas)
-                    searchArea(area, results);
+                    SearchArea(area, results);
 
             if (results.Count == 0)
                 MessageBox.Show(this, "No components found", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -85,7 +87,7 @@ namespace LayoutManager.Dialogs {
                     LayoutController.UserSelection.Add(results);
                 }
                 else {
-                    EventManager.Event(new LayoutEvent("add-message", results, "Components that matched '" + textBoxFind.Text + "'"));
+                    Dispatch.Call.AddMessage($"Components that matched '{textBoxFind.Text}'", results);
                     EventManager.Event(new LayoutEvent("show-messages", this));
                 }
 

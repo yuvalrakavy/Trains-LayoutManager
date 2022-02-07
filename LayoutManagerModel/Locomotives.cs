@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using MethodDispatcher;
 
 #pragma warning disable IDE0051, IDE0060
 #nullable enable
@@ -174,7 +175,7 @@ namespace LayoutManager.Model {
                             r.Close();
                         }
                         catch (IOException ex) {
-                            EventManager.Event(new LayoutEvent("add-error", null, $"Unable to load {CollectionName} file: {filename} - {ex.Message}"));
+                            Dispatch.Call.AddError($"Unable to load {CollectionName} file: {filename} - {ex.Message}", null);
                         }
                     }
                 }
@@ -225,9 +226,9 @@ namespace LayoutManager.Model {
                             w.Close();
                         }
                         catch (IOException ex) {
-                            EventManager.Event(new LayoutEvent("add-error", null,
+                            Dispatch.Call.AddError(
                                 "Cannot store locomotives store '" + storeElement.GetAttribute(A_Name) + "' in file: " + storeElement.GetAttribute(A_File) +
-                                " - " + ex.Message));
+                                " - " + ex.Message, null);
                         }
                     }
 

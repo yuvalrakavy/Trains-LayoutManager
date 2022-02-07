@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Linq;
 
+using MethodDispatcher;
 using LayoutManager.Model;
 
 namespace LayoutManager {
@@ -33,37 +34,31 @@ namespace LayoutManager {
         }
 
         public void Initialize() {
-            EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
-        [LayoutEvent("add-message")]
-        private void AddMessage(LayoutEvent e) {
-            var message = Ensure.NotNull<String>(e.Info);
-
-            AddMessageItem(new MessageItem(MessageSeverity.Message, e.Sender, message));
+        [DispatchTarget]
+        private void AddMessage(string message, object? subject) {
+            AddMessageItem(new MessageItem(MessageSeverity.Message, subject, message));
             columnHeaderArea.Width = -1;
         }
 
-        [LayoutEvent("add-warning")]
-        private void AddWarning(LayoutEvent e) {
-            var message = Ensure.NotNull<String>(e.Info);
-
-            AddMessageItem(new MessageItem(MessageSeverity.Warning, e.Sender, message));
+        [DispatchTarget]
+        private void AddWarning(string message, object? subject) {
+            AddMessageItem(new MessageItem(MessageSeverity.Warning, subject, message));
             columnHeaderArea.Width = -1;
         }
 
-        [LayoutEvent("add-error")]
-        private void AddError(LayoutEvent e) {
-            var message = Ensure.NotNull<String>(e.Info);
-
-            AddMessageItem(new MessageItem(MessageSeverity.Error, e.Sender, message));
+        [DispatchTarget]
+        private void AddError(string message, object? subject) {
+            AddMessageItem(new MessageItem(MessageSeverity.Error, subject, message));
         }
 
         private void AddMessageItem(MessageItem item) {
             item.TraceMessage();
 
             if (clearOnNewMessage) {
-                EventManager.Event(new LayoutEvent("clear-messages", this));
+                Dispatch.Call.ClearMessages();
                 clearOnNewMessage = false;
             }
 
@@ -71,7 +66,7 @@ namespace LayoutManager {
             columnHeaderArea.Width = -1;
 
             if (item.Severity != MessageSeverity.Message)
-                EventManager.Event(new LayoutEvent("show-messages", this));
+                Dispatch.Call.ShowMessages(Guid.Empty);
 
             if (listViewMessages.SelectedItems.Count == 1 && listViewMessages.SelectedItems[0] == lastMessageMarker)
                 listViewMessages.EnsureVisible(lastMessageMarker.Index);
@@ -139,19 +134,24 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEvent("ensure-component-visible", component, false));
         }
 
-        [LayoutEvent("messages-hidden")]
-        private void MessagesHidden(LayoutEvent e) {
-            clearOnNewMessage = true;
-            HideSelections();
+        Guid FrameWindowId => ((FrameWindow)ParentForm).Id;
+
+        [DispatchTarget]
+        private void OnMessagesHidden(Guid frameWindowId) {
+            if (frameWindowId == this.FrameWindowId) {
+                clearOnNewMessage = true;
+                HideSelections();
+            }
         }
 
-        [LayoutEvent("messages-shown")]
-        private void MessagesShown(LayoutEvent e) {
-            UpdateSelections();
+        [DispatchTarget]
+        private void OnMessagesShown(Guid frameWindowId) {
+            if (frameWindowId == this.FrameWindowId)
+                UpdateSelections();
         }
 
-        [LayoutEvent("clear-messages")]
-        private void ClearMessages(LayoutEvent e) {
+        [DispatchTarget]
+        private void ClearMessages() {
             listViewMessages.Items.Clear();
             listViewMessages.Items.Add(lastMessageMarker);
 
@@ -322,7 +322,7 @@ namespace LayoutManager {
         }
 
         private void ButtonClose_Click(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent("hide-messages", this));
+            Dispatch.Call.HideMessages(this.FrameWindowId);
         }
 
         private void ListViewMessages_SelectedIndexChanged(object? sender, EventArgs e) {
@@ -400,7 +400,7 @@ namespace LayoutManager {
         }
 
         private void ButtonClear_Click(object? sender, EventArgs e) {
-            EventManager.Event("clear-messages", this);
+            Dispatch.Call.ClearMessages();
         }
     }
 }

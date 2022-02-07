@@ -7,6 +7,7 @@ using System.Xml;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using MethodDispatcher;
 
 using System.IO;
 
@@ -465,8 +466,8 @@ namespace LayoutManager {
             this.Text = Path.GetFileName(layoutName) + modified + " - VillaRakavy Layout Manager";
         }
 
-        [LayoutEvent("close-all-frame-windows")]
-        private void CloseAllFrameWindows(LayoutEvent e) {
+        [DispatchTarget]
+        private void CloseAllFrameWindows() {
             Close();
         }
 

@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using MethodDispatcher;
+
 using LayoutManager.Model;
 using LayoutManager.View;
 using LayoutManager.CommonUI;
@@ -18,6 +20,89 @@ using System.Xml;
 using System.Drawing.Drawing2D;
 
 namespace LayoutManager {
+    public static class FrameWindowDispatchSources {
+        [DispatchSource]
+        public static void ShowMessages(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(ShowMessages)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void HideMessages(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(HideMessages)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnMessagesShown(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnMessagesShown)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnMessagesHidden(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnMessagesHidden)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void ShowTripsMonitor(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(ShowTripsMonitor)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void HideTripsMonitor(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(HideTripsMonitor)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnTripsMonitorShown(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnTripsMonitorShown)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnTripsMonitorHidden(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnTripsMonitorHidden)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void ShowLocomotives(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(ShowLocomotives)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void HideLocomotives(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(HideLocomotives)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnLocomotivesShown(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnLocomotivesShown)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnLocomotivesHidden(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnLocomotivesHidden)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void ShowLayoutControl(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(ShowLayoutControl)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void HideLayoutControl(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(HideLayoutControl)].CallVoid(frameWindowId);
+        }
+
+
+        [DispatchSource]
+        public static void OnLayoutControlShown(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnLayoutControlShown)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnLayoutControlHidden(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnLayoutControlHidden)].CallVoid(frameWindowId);
+        }
+
+    }
     public partial class FrameWindow : Form, ILayoutFrameWindow {
         private TaskCompletionSource<FrameWindowAction>? tcs;
 
@@ -178,7 +263,8 @@ namespace LayoutManager {
             //
             InitializeComponent();
 
-            EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
+            EventManager.AddObjectSubscriptions(this);      // Will become obsolete
 
             Id = Guid.NewGuid();
 
@@ -503,8 +589,8 @@ namespace LayoutManager {
             this.Text = Path.GetFileName(layoutName) + modified + " - VillaRakavy Layout Manager";
         }
 
-        [LayoutEvent("close-all-frame-windows")]
-        private void CloseAllFrameWindows(LayoutEvent e) {
+        [DispatchTarget]
+        private void CloseAllFrameWindows() {
             Close();
         }
 
@@ -799,136 +885,150 @@ namespace LayoutManager {
             bool previousState = layoutControlVisible;
 
             splitControlViewer.Panel1Collapsed = !layoutControlVisible;
-            EventManager.Event(new LayoutEvent(layoutControlVisible ? "layout-control-shown" : "layout-control-hidden", this).SetFrameWindow(this));
+            if (layoutControlVisible)
+                Dispatch.Call.OnLayoutControlShown(Id);
+            else
+                Dispatch.Call.OnLayoutControlHidden(Id);
         }
 
         private void UpdateTripsMonitorVisible() {
             bool previousState = tripsMonitorVisible;
 
             tripsMonitorVisible = tripsMonitor.Height > 10;
-            if (tripsMonitorVisible != previousState)
-                EventManager.Event(new LayoutEvent(tripsMonitorVisible ? "trips-monitor-shown" : "trips-monitor-hidden", this).SetFrameWindow(this));
+            if (tripsMonitorVisible != previousState) {
+                if (tripsMonitorVisible)
+                    Dispatch.Call.OnTripsMonitorShown(Id);
+                else
+                    Dispatch.Call.OnTripsMonitorHidden(Id);
+            }
         }
 
         private void UpdateMessageVisible() {
             splitContainerMessageViewer.Panel2Collapsed = !messageViewVisible;
-            EventManager.Event(new LayoutEvent(messageViewVisible ? "messages-shown" : "messages-hidden", this).SetFrameWindow(this));
+
+            if (messageViewVisible)
+                Dispatch.Call.OnMessagesShown(Id);
+            else
+                Dispatch.Call.OnMessagesHidden(Id);
         }
 
         private void UpdateLocomotivesVisible() {
             splitContainerLocomotivesViewer.Panel2Collapsed = !locomotiveViewVisible;
-            EventManager.Event(new LayoutEvent(locomotiveViewVisible ? "locomotives-shown" : "locomotives-hidden", this).SetFrameWindow(this));
+            if (locomotiveViewVisible)
+                Dispatch.Call.OnLocomotivesShown(Id);
+            else
+                Dispatch.Call.OnLocomotivesHidden(Id);
         }
 
-        [LayoutEvent("show-messages")]
-        private void ShowMessages(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this)) {
+        [DispatchTarget]
+        private void ShowMessages(Guid frameWindowId) {
+            if (frameWindowId == Id || frameWindowId == Guid.Empty) {
                 messageViewVisible = true;
                 UpdateMessageVisible();
             }
         }
 
-        [LayoutEvent("hide-messages")]
-        private void HideMessages(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this)) {
+        [DispatchTarget]
+        private void HideMessages(Guid frameWindowId) {
+            if (frameWindowId == Id || frameWindowId == Guid.Empty) {
                 messageViewVisible = false;
                 UpdateMessageVisible();
             }
         }
 
-        [LayoutEvent("show-locomotives")]
-        private void ShowLocomotives(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this)) {
+        [DispatchTarget]
+        private void ShowLocomotives(Guid frameWindowId) {
+            if (frameWindowId == Id || frameWindowId == Guid.Empty) {
                 locomotiveViewVisible = true;
                 UpdateLocomotivesVisible();
             }
         }
 
-        [LayoutEvent("hide-locomotives")]
-        private void HideLocomotives(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this)) {
+        [DispatchTarget]
+        private void HideLocomotives(Guid frameWindowId) {
+            if (frameWindowId == Id || frameWindowId == Guid.Empty) {
                 locomotiveViewVisible = false;
                 UpdateLocomotivesVisible();
             }
         }
 
-        [LayoutEvent("show-layout-control")]
-        private void ShowLayoutControl(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this)) {
+        [DispatchTarget]
+        private void ShowLayoutControl(Guid frameWindowId) {
+            if (frameWindowId == Id || frameWindowId == Guid.Empty) {
                 layoutControlVisible = true;
                 UpdateLayoutControlVisible();
             }
         }
 
-        [LayoutEvent("hide-layout-control")]
-        private void HideLayoutControl(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this)) {
+        [DispatchTarget]
+        private void HideLayoutControl(Guid frameWindowId) {
+            if (frameWindowId == Id || frameWindowId == Guid.Empty) {
                 layoutControlVisible = false;
                 UpdateLayoutControlVisible();
             }
         }
 
-        [LayoutEvent("show-trips-monitor")]
-        private void ShowTripsMonitor(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this)) {
+        [DispatchTarget]
+        private void ShowTripsMonitor(Guid frameWindowId) {
+            if (frameWindowId == Id || frameWindowId == Guid.Empty) {
                 tripsMonitor.Height = ClientSize.Height * 12 / 100;
                 UpdateTripsMonitorVisible();
             }
         }
 
-        [LayoutEvent("hide-trips-monitor")]
-        private void HideTripsMonitor(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this)) {
+        [DispatchTarget]
+        private void HideTripsMonitor(Guid frameWindowId) {
+            if (frameWindowId == Id || frameWindowId == Guid.Empty) {
                 tripsMonitor.Height = 0;
                 UpdateTripsMonitorVisible();
             }
         }
 
-        [LayoutEvent("messages-shown")]
-        private void MessagesShown(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
+        [DispatchTarget]
+        private void OnMessagesShown(Guid frameWindowId) {
+            if (frameWindowId == Id)
                 toolBarButtonShowMessages.Checked = true;
         }
 
-        [LayoutEvent("messages-hidden")]
-        private void MessagesHidden(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
+        [DispatchTarget]
+        private void OnMessagesHidden(Guid frameWindowId) {
+            if (frameWindowId == Id)
                 toolBarButtonShowMessages.Checked = false;
         }
 
-        [LayoutEvent("trips-monitor-shown")]
-        private void TripsMonitorShown(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
+        [DispatchTarget]
+        private void OnTripsMonitorShown(Guid frameWindowId) {
+            if(frameWindowId == Id)
                 toolBarButtonShowTripsMonitor.Checked = true;
         }
 
-        [LayoutEvent("trips-monitor-hidden")]
-        private void TripsMonitorHidden(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
+        [DispatchTarget]
+        private void OnTripsMonitorHidden(Guid frameWindowId) {
+            if (frameWindowId == Id)
                 toolBarButtonShowTripsMonitor.Checked = false;
         }
 
-        [LayoutEvent("locomotives-shown")]
-        private void LocomotivesShown(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
+        [DispatchTarget]
+        private void OnLocomotivesShown(Guid frameWindowId) {
+            if (frameWindowId == Id)
                 toolBarButtonShowLocomotives.Checked = true;
         }
 
-        [LayoutEvent("locomotives-hidden")]
-        private void LocomotivesHidden(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
+        [DispatchTarget]
+        private void OnLocomotivesHidden(Guid frameWindowId) {
+            if (frameWindowId == Id)
                 toolBarButtonShowLocomotives.Checked = false;
         }
 
-        [LayoutEvent("layout-control-shown")]
-        private void LayoutControlShown(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
+        [DispatchTarget]
+        private void OnLayoutControlShown(Guid frameWindowId) {
+            if (frameWindowId == Id)
                 toolBarButtonShowLayoutControl.Checked = true;
         }
 
-        [LayoutEvent("layout-control-hidden")]
-        private void LayoutControlHidden(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
+        [DispatchTarget]
+        private void OnLayoutControlHidden(Guid frameWindowId) {
+            if (frameWindowId == Id)
                 toolBarButtonShowLayoutControl.Checked = false;
         }
 
@@ -1400,17 +1500,33 @@ namespace LayoutManager {
                 ActiveView.ShowAllArea();
         }
 
-        private void MenuItemShowMessages_Click(object? sender, EventArgs e) =>
-            EventManager.Event(new LayoutEvent(messageViewVisible ? "hide-messages" : "show-messages", this).SetFrameWindow(this));
+        private void MenuItemShowMessages_Click(object? sender, EventArgs e) {
+            if (messageViewVisible)
+                Dispatch.Call.HideMessages(Id);
+            else
+                Dispatch.Call.ShowMessages(Id);
+        }
 
-        private void MenuItemShowTripsMonitor_Click(object? sender, EventArgs e) => 
-            EventManager.Event(new LayoutEvent(tripsMonitorVisible ? "hide-trips-monitor" : "show-trips-monitor", this).SetFrameWindow(this));
+        private void MenuItemShowTripsMonitor_Click(object? sender, EventArgs e) {
+            if (tripsMonitorVisible)
+                Dispatch.Call.HideTripsMonitor(Id);
+            else
+                Dispatch.Call.ShowTripsMonitor(Id);
+        }
 
-        private void MenuItemShowLocomotives_Click(object? sender, EventArgs e) =>
-            EventManager.Event(new LayoutEvent(locomotiveViewVisible ? "hide-locomotives" : "show-locomotives", this).SetFrameWindow(this));
+        private void MenuItemShowLocomotives_Click(object? sender, EventArgs e) {
+            if (locomotiveViewVisible)
+                Dispatch.Call.HideLocomotives(Id);
+            else
+                Dispatch.Call.ShowLocomotives(Id);
+        }
 
-        private void MenuItemShowLayoutControl_Click(object? sender, EventArgs e) => 
-            EventManager.Event(new LayoutEvent(layoutControlVisible ? "hide-layout-control" : "show-layout-control", this).SetFrameWindow(this));
+        private void MenuItemShowLayoutControl_Click(object? sender, EventArgs e) {
+            if (layoutControlVisible)
+                Dispatch.Call.HideLayoutControl(Id);
+            else
+                Dispatch.Call.ShowLayoutControl(Id);
+        }
 
         private void MenuItemOperational_Click(object? sender, EventArgs e) {
             LayoutController.Instance.EnterOperationModeRequest(new OperationModeParameters() { Phases = LayoutPhase.Operational, Simulation = false });
@@ -1616,7 +1732,7 @@ namespace LayoutManager {
         }
 
         private void Verify(LayoutPhase phases) {
-            EventManager.Event(new LayoutEvent("clear-messages", this));
+            Dispatch.Call.ClearMessages();
             if (Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("check-layout", LayoutModel.Instance, true).SetPhases(phases))))
                 MessageBox.Show(this, "Layout checked, all seems to be OK", "Layout Check Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -1909,4 +2025,320 @@ namespace LayoutManager {
         }
 #endif
     }
+    public class LayoutFrameWindowAreaViewTabPage : TabPage {
+        public LayoutFrameWindowAreaViewTabPage(LayoutView view) {
+            this.View = view;
+            view.Dock = DockStyle.Fill;
+            Controls.Add(view);
+            this.BorderStyle = BorderStyle.None;
+            ShowActivePhases = false;
+        }
+
+        public LayoutView View { get; }
+
+        public bool ShowActivePhases {
+            get;
+            set;
+        }
+
+        public void WriteXml(XmlWriter w) {
+            w.WriteStartElement("View");
+            w.WriteAttributeString("AreaID", XmlConvert.EncodeName(View.Area.AreaGuid.ToString()));
+            w.WriteAttributeString("Name", XmlConvert.EncodeLocalName(this.Text));
+            this.View.WriteXml(w);
+            w.WriteEndElement();
+        }
+    }
+
+    internal class PrintState {
+        private int areaIndex;
+
+        public PrintState(Dialogs.Print printDialog) {
+            this.PrintDialog = printDialog;
+        }
+
+        public Dialogs.Print PrintDialog { get; }
+
+        public bool AllAreas => PrintDialog.AllAreas;
+
+        public PrintViewScope PrintViewScope => PrintDialog.PrintViewScope;
+
+        public bool GridLines => PrintDialog.GridLines;
+
+        public int AreaIndex {
+            get => areaIndex;
+
+            set {
+                areaIndex = value;
+                ViewIndex = 0;
+            }
+        }
+
+        public int ViewIndex { get; set; }
+    }
+
+    public class FrameWindowState : LayoutXmlWrapper {
+        private const string A_WindowState = "WindowState";
+        private const string A_Left = "Left";
+        private const string A_Top = "Top";
+        private const string A_Width = "Width";
+        private const string A_Height = "Height";
+        private const string A_AreaStates = "AreaStates";
+        private const string A_ActiveAreaIndex = "ActiveAreaIndex";
+        private const string A_ControlViewerWidth = "ControlViewerWidth";
+        private const string A_LocomotiveViewerWidth = "LocomotiveViewerWidth";
+        private const string A_TripsViewerHeight = "TripsViewerHeight";
+        private const string A_MessagesViewerHeight = "MessagesViewerHeight";
+        private const string A_ControlViewerVisible = "ControlViewerVisible";
+        private const string A_MessagesViewerVisible = "MessagesViewerVisible";
+        private const string A_LocomotiveViewerVisible = "LocomotiveViewerVisible";
+        private const string A_TripsViewerVisible = "TripsViewerVisible";
+
+        public FrameWindowState(XmlElement element)
+            : base(element) {
+        }
+
+        public FrameWindowState(XmlElement windowStatesElement, FrameWindow frameWindow) : base(windowStatesElement, A_WindowState, alwaysAppend: true) {
+            WindowState = frameWindow.WindowState;
+            Bounds = frameWindow.Bounds;
+
+            XmlElement areaStatesElement = CreateChildElement(A_AreaStates);
+
+            foreach (var areaTab in frameWindow.AreaTabs)
+                _ = new FrameWindowAreaState(areaStatesElement, areaTab);
+
+            this.ActiveAreaIndex = frameWindow.ActiveAreaIndex;
+        }
+
+        public void Restore(List<FrameWindow> frameWindows) {
+            frameWindows.Add(new FrameWindow(this));
+        }
+
+        public void Restore(TabControl tabAreas) {
+            foreach (var areaState in AreaStates)
+                areaState.Restore(tabAreas);
+
+            tabAreas.SelectedIndex = this.ActiveAreaIndex;
+        }
+
+        public FormWindowState WindowState {
+            get => AttributeValue(A_WindowState).Enum<FormWindowState>() ?? FormWindowState.Normal;
+            set => SetAttributeValue(A_WindowState, value);
+        }
+
+        public Rectangle Bounds {
+            get => new((int)AttributeValue(A_Left), (int)AttributeValue(A_Top), (int)AttributeValue(A_Width), (int)AttributeValue(A_Height));
+
+            set {
+                SetAttributeValue(A_Left, value.Left);
+                SetAttributeValue(A_Top, value.Top);
+                SetAttributeValue(A_Width, value.Width);
+                SetAttributeValue(A_Height, value.Height);
+            }
+        }
+
+        public IEnumerable<FrameWindowAreaState> AreaStates {
+            get {
+                var areasElement = Element[A_AreaStates];
+
+                if (areasElement != null)
+                    foreach (XmlElement areaElement in areasElement)
+                        yield return new FrameWindowAreaState(areaElement);
+            }
+        }
+
+        public int ActiveAreaIndex {
+            get => (int?)AttributeValue(A_ActiveAreaIndex) ?? 0;
+            set => SetAttributeValue(A_ActiveAreaIndex, value);
+        }
+
+        public bool ControlViewerVisible {
+            get => (bool?)AttributeValue(A_ControlViewerVisible) ?? false;
+            set => SetAttributeValue(A_ControlViewerVisible, value);
+
+        }
+
+        public int ControlViewerWidth {
+            get => (int?)AttributeValue(A_ControlViewerWidth) ?? 0;
+            set => SetAttributeValue(A_ControlViewerWidth, value);
+        }
+
+        public bool LocomotiveViewerVisble {
+            get => (bool?)AttributeValue(A_LocomotiveViewerVisible) ?? true;
+            set => SetAttributeValue(A_LocomotiveViewerVisible, value);
+        }
+
+        public int LocomotiveViewerWidth {
+            get => (int?)AttributeValue(A_LocomotiveViewerWidth) ?? 0;
+            set => SetAttributeValue(A_LocomotiveViewerWidth, value);
+        }
+
+        public bool TripsViewerVisible {
+            get => (bool?)AttributeValue(A_TripsViewerVisible) ?? false;
+            set => SetAttributeValue(A_TripsViewerVisible, value);
+        }
+
+        public int TripsViewerHeight {
+            get => (int?)AttributeValue(A_TripsViewerHeight) ?? 0;
+            set => SetAttributeValue(A_TripsViewerHeight, value);
+        }
+
+        public bool MessagesViewerVisible {
+            get => (bool?)AttributeValue(A_MessagesViewerVisible) ?? false;
+            set => SetAttributeValue(A_MessagesViewerVisible, value);
+        }
+
+        public int MessagesViewerHeight {
+            get => (int?)AttributeValue(A_MessagesViewerHeight) ?? 0;
+            set => SetAttributeValue(A_MessagesViewerHeight, value);
+        }
+    }
+
+    public class FrameWindowAreaState : LayoutXmlWrapper {
+        private const string E_AreaState = "AreaState";
+        private const string E_ViewStates = "ViewStates";
+        private const string A_Id = "ID";
+        private const string A_ActiveViewIndex = "ActiveViewIndex";
+
+        public FrameWindowAreaState(XmlElement element)
+            : base(element) {
+        }
+
+        public FrameWindowAreaState(XmlElement areaStatesElement, LayoutFrameWindowAreaTabPage areaTab)
+          : base(areaStatesElement, E_AreaState, alwaysAppend: true) {
+            AreaId = areaTab.Area.AreaGuid;
+
+            XmlElement viewStatesElement = CreateChildElement(E_ViewStates);
+
+            foreach (LayoutFrameWindowAreaViewTabPage viewTab in areaTab.TabViews.TabPages)
+                _ = new FrameWindowViewState(viewStatesElement, viewTab);
+
+            ActiveViewIndex = areaTab.TabViews.SelectedIndex;
+        }
+
+        public void Restore(TabControl tabAreas) {
+            LayoutModelArea area = LayoutModel.Areas[AreaId];
+
+            if (area != null) {
+                LayoutFrameWindowAreaTabPage areaTab = new(area);
+
+                tabAreas.TabPages.Add(areaTab);
+
+                foreach (var viewState in ViewStates)
+                    viewState.Restore(areaTab);
+
+                areaTab.TabViews.SelectedIndex = ActiveViewIndex;
+            }
+        }
+
+        public Guid AreaId {
+            get => (Guid)AttributeValue(A_Id);
+            set => SetAttributeValue(A_Id, value);
+        }
+
+        public IEnumerable<FrameWindowViewState> ViewStates {
+            get {
+                var viewsElement = Element[E_ViewStates];
+
+                if (viewsElement != null)
+                    foreach (XmlElement viewElement in viewsElement)
+                        yield return new FrameWindowViewState(viewElement);
+            }
+        }
+
+        public int ActiveViewIndex {
+            get => (int?)AttributeValue(A_ActiveViewIndex) ?? 0;
+            set => SetAttributeValue(A_ActiveViewIndex, value);
+        }
+    }
+
+    public class FrameWindowViewState : LayoutXmlWrapper {
+        private const string A_Name = "Name";
+        private const string A_Zoom = "Zoom";
+        private const string A_DefaultZoom = "DefaultZoom";
+        private const string A_OriginX = "OriginX";
+        private const string A_OriginY = "OriginY";
+        private const string A_DefaultOriginX = "DefaultOriginX";
+        private const string A_DefaultOriginY = "DefaultOriginY";
+        private const string A_Grid = "Grid";
+        private const string A_ShowCoordinates = "ShowCoordinates";
+        private const string A_ShowActivePhases = "ShowActivePhases";
+
+        public FrameWindowViewState(XmlElement element)
+            : base(element) {
+        }
+
+        public FrameWindowViewState(XmlElement viewStatesElement, LayoutFrameWindowAreaViewTabPage viewPage)
+         : base(viewStatesElement, "ViewState", alwaysAppend: true) {
+            Name = viewPage.Text;
+            Zoom = viewPage.View.Zoom;
+            DefaultZoom = viewPage.View.DefaultZoom;
+            Origin = viewPage.View.OriginInModelGridUnits;
+            DefaultOrigin = viewPage.View.DefaultOriginInModelGridUnits;
+            Grid = viewPage.View.ShowGrid;
+            ShowCoordinates = viewPage.View.ShowCoordinates;
+            ShowActivePhases = viewPage.ShowActivePhases;
+        }
+
+        public void Restore(LayoutFrameWindowAreaTabPage areaPage) {
+            var view = new LayoutView() {
+                Area = areaPage.Area,
+                Zoom = this.Zoom,
+                DefaultZoom = this.DefaultZoom,
+                OriginInModelGridUnits = this.Origin,
+                DefaultOriginInModelGridUnits = this.DefaultOrigin,
+                ShowGrid = this.Grid,
+                ShowCoordinates = this.ShowCoordinates,
+            };
+
+            areaPage.FrameWindow.AddViewToArea(areaPage, this.Name, view).ShowActivePhases = this.ShowActivePhases;
+        }
+
+        public string Name {
+            get => GetAttribute(A_Name);
+            set => SetAttributeValue(A_Name, value);
+        }
+
+        public float Zoom {
+            get => (float?)AttributeValue(A_Zoom) ?? 1.0f;
+            set => SetAttributeValue(A_Zoom, value);
+        }
+
+        public float DefaultZoom {
+            get => (float?)AttributeValue(A_DefaultZoom) ?? 1.0f;
+            set => SetAttributeValue(A_DefaultZoom, value);
+        }
+
+        public Point Origin {
+            get => new((int?)AttributeValue(A_OriginX) ?? 0, (int?)AttributeValue(A_OriginY) ?? 0);
+            set {
+                SetAttributeValue(A_OriginX, value.X);
+                SetAttributeValue(A_OriginY, value.Y);
+            }
+        }
+
+        public Point DefaultOrigin {
+            get => new((int?)AttributeValue(A_DefaultOriginX) ?? 0, (int?)AttributeValue(A_DefaultOriginY) ?? 0);
+            set {
+                SetAttributeValue(A_DefaultOriginX, value.X);
+                SetAttributeValue(A_DefaultOriginY, value.Y);
+            }
+        }
+
+        public ShowGridLinesOption Grid {
+            get => AttributeValue(A_Grid).Enum<ShowGridLinesOption>() ?? ShowGridLinesOption.Hide;
+            set => SetAttributeValue(A_Grid, value);
+        }
+
+        public bool ShowCoordinates {
+            get => (bool?)AttributeValue(A_ShowCoordinates) ?? false;
+            set => SetAttributeValue(A_ShowCoordinates, value);
+        }
+
+        public bool ShowActivePhases {
+            get => (bool?)AttributeValue(A_ShowActivePhases) ?? false;
+            set => SetAttributeValue(A_ShowActivePhases, value);
+        }
+    }
 }
+

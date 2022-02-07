@@ -123,9 +123,7 @@
     <Compile Update="LocomotivesViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="MessageViewer.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="MessageViewer.cs" />
     <Compile Update="SelectionMenuItems.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -162,7 +160,10 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="LayoutFrameWindow.cs" />
+    <Compile Remove="LayoutFrameWindow.Designer.cs" />
     <Compile Remove="Tmp\LayoutController.cs" />
+    <EmbeddedResource Remove="LayoutFrameWindow.resx" />
     <EmbeddedResource Remove="s.resx" />
     <EmbeddedResource Remove="Tmp\LayoutController.resx" />
   </ItemGroup>

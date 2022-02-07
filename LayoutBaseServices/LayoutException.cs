@@ -1,4 +1,5 @@
 using System;
+using MethodDispatcher;
 
 namespace LayoutManager {
     public class LayoutException : Exception {
@@ -27,43 +28,29 @@ namespace LayoutManager {
         /// </summary>
         public virtual string DefaultMessageType => "error";
 
-        virtual protected void Generate(String messageType) {
-            string messageEventName = "add-" + messageType;
-
-            EventManager.Event(new LayoutEvent(messageEventName, Subject, Message));
-        }
-
         /// <summary>
         /// Send to the message viewer the message associated with this exception. Use the default
         /// error level (message, warning or error) that was designated by the exception creator
         /// </summary>
-        virtual public void Report() {
-            Generate(DefaultMessageType);
-        }
+        virtual public void Report() => ReportError();
 
         /// <summary>
         /// Send to the message viewer the message associated with this exception. 
         /// Report the message as an error
         /// </summary>
-        virtual public void ReportError() {
-            Generate("error");
-        }
+        virtual public void ReportError() => Dispatch.Call.AddError(Message, Subject);
 
         /// <summary>
         /// Send to the message viewer the message associated with this exception. 
         /// Report the message as a warning
         /// </summary>
-        virtual public void ReportWarning() {
-            Generate("warning");
-        }
+        virtual public void ReportWarning() => Dispatch.Call.AddWarning(Message, Subject);
 
         /// <summary>
         /// Send to the message viewer the message associated with this exception. 
         /// Report the message as a message
         /// </summary>
-        virtual public void ReportMessage() {
-            Generate("message");
-        }
+        virtual public void ReportMessage() => Dispatch.Call.AddMessage(Message, Subject);
     }
 
     public class FileParseException : Exception {

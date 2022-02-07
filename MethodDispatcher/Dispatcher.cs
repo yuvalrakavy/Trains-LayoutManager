@@ -257,14 +257,14 @@ namespace MethodDispatcher {
         /// You don't have to remove these targets upon disposing the object. The dispatch system hold weak reference to the object
         /// and those targets will be automatically removed when the object is garbage collected
         /// </remarks>
-        /// <param name="instance">the object instance containing the targets</param>
-        static public void AddObjectInstanceDispatcherTargets(object instance) => _instance.AddObjectInstanceDispatchTargets(instance);
+        /// <param name="objectInstance">the object instance containing the targets</param>
+        static public void AddObjectInstanceDispatcherTargets(object objectInstance) => _instance.AddObjectInstanceDispatchTargets(objectInstance);
 
         /// <summary>
         /// Remove dispatch targets in residing in an object instance.
         /// </summary>
-        /// <param name="instance">the object instance with the targets to be removed</param>
-        static public void RemoveObjectInstanceDispatcherTargets(object instance) => _instance.RemoveObjectInstanceDispatchTargets(_instance);
+        /// <param name="objectInstance">the object instance with the targets to be removed</param>
+        static public void RemoveObjectInstanceDispatcherTargets(object objectInstance) => _instance.RemoveObjectInstanceDispatchTargets(objectInstance);
     }
 
 
@@ -690,7 +690,7 @@ namespace MethodDispatcher {
             w.WriteLine();
 
             foreach(var error in Errors)
-                w.WriteLine(error.ToString());
+                w.WriteLine(error.Message);
 
         }
 
@@ -700,8 +700,8 @@ namespace MethodDispatcher {
         /// <param name="title">Error list title</param>
         /// <param name="filename"The file's name></param>
         public void Save(string title = "Initializing dispatcher", string filename = "dispatcher_errors.txt") {
-            using (var w = new StreamWriter(filename))
-                Save(w, title);
+            using var w = new StreamWriter(filename);
+            Save(w, title);
         }
     }
 

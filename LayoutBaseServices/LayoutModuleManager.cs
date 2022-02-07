@@ -23,6 +23,34 @@ namespace LayoutManager {
         }
     }
 
+    public static class MessageViewerDispatchSources {
+        [DispatchSource]
+        public static void ClearMessages(this Dispatcher d) {
+            d[nameof(ClearMessages)].CallVoid();
+        }
+
+        [DispatchSource]
+        public static void AddMessage(this Dispatcher d, string message, object? subject) {
+            d[nameof(AddMessage)].CallVoid(message, subject);
+        }
+
+        [DispatchSource]
+        public static void AddWarning(this Dispatcher d, string message, object? subject) {
+            d[nameof(AddWarning)].CallVoid(message, subject);
+        }
+
+        [DispatchSource]
+        public static void AddError(this Dispatcher d, string message, object? subject) {
+            d[nameof(AddError)].CallVoid(message, subject);
+        }
+
+        [DispatchSource]
+        public static void ShowMessages(this Dispatcher d) {
+            d[nameof(ShowMessages)].CallVoid();
+        }
+    }
+
+
     /// <summary>
     /// Layout module information
     /// </summary>
@@ -593,7 +621,7 @@ namespace LayoutManager {
     /// </summary>
     public class LayoutModuleBase : ILayoutModuleSetup {
         public static void Error(Object? subject, string message) {
-            EventManager.Event(new LayoutEvent("add-error", subject, message));
+            Dispatch.Call.AddError(message, subject);
         }
 
         public static void Error(String message) {
@@ -601,7 +629,7 @@ namespace LayoutManager {
         }
 
         public static void Warning(Object? subject, string message) {
-            EventManager.Event(new LayoutEvent("add-warning", subject, message));
+            Dispatch.Call.AddWarning(message, subject);
         }
 
         public static void Warning(String message) {
@@ -609,7 +637,7 @@ namespace LayoutManager {
         }
 
         public static void Message(Object? subject, string messageText) {
-            EventManager.Event(new LayoutEvent("add-message", subject, messageText));
+            Dispatch.Call.AddMessage(messageText, subject);
         }
 
         public static void Message(String messageText) {

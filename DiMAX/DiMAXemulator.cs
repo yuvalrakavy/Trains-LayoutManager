@@ -42,12 +42,12 @@ namespace DiMAX {
             interfaceTask = InterfaceThreadFunction(stopInterfaceThrad.Token);
         }
 
-        public void InterfaceThreadError(object subject, string message) {
-            interThreadEventInvoker.QueueEvent(new LayoutEvent("add-error", subject, message));
+        public void InterfaceThreadError(object? subject, string message) {
+            interThreadEventInvoker.Queue(() => Dispatch.Call.AddError(message, subject));
         }
 
-        public void InterfaceThreadWarning(object subject, string message) {
-            interThreadEventInvoker.QueueEvent(new LayoutEvent("add-warning", subject, message));
+        public void InterfaceThreadWarning(object? subject, string message) {
+            interThreadEventInvoker.Queue(() => Dispatch.Call.AddWarning(message, subject));
         }
 
         private async Task InterfaceThreadFunction(CancellationToken stopMe) {

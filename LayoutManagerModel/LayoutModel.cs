@@ -8,6 +8,7 @@ using System.IO;
 using System.Reflection;
 using System.Linq;
 
+using MethodDispatcher;
 using LayoutManager.Components;
 
 #nullable enable
@@ -289,16 +290,16 @@ namespace LayoutManager.Model {
         /// <returns>True if the field was parsed</returns>
         protected virtual bool ReadXmlField(XmlReader r) => false;
 
-        public virtual void Error(Object subject, string message) {
-            EventManager.Event(new LayoutEvent("add-error", subject, message));
+        public virtual void Error(Object? subject, string message) {
+            Dispatch.Call.AddError(message, subject);
         }
 
         public void Error(String message) {
             Error(this, message);
         }
 
-        public virtual void Warning(Object subject, string message) {
-            EventManager.Event(new LayoutEvent("add-warning", subject, message));
+        public virtual void Warning(Object? subject, string message) {
+            Dispatch.Call.AddWarning(message, subject);
         }
 
         public void Warning(String message) {
@@ -538,7 +539,7 @@ namespace LayoutManager.Model {
         public LayoutComponentConnectionPoint ConnectionPoint { get; }
 
         public override bool Equals(object? obj) {
-            if (obj == null || !(obj is TrackEdgeId))
+            if (obj == null || obj is not TrackEdgeId)
                 return false;
 
             TrackEdgeId other = (TrackEdgeId)obj;

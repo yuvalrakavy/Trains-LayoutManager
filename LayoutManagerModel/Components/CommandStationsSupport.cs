@@ -8,6 +8,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
 
+using MethodDispatcher;
 using LayoutManager.Model;
 using System.Net.Sockets;
 
@@ -199,18 +200,18 @@ namespace LayoutManager.Components {
 
         // Error and warning methods that can be called from any thread
 
-        public override void Error(object subject, string message) {
+        public override void Error(object? subject, string message) {
             if (InterThreadEventInvoker == null)
                 base.Error(subject, message);
             else
-                InterThreadEventInvoker.QueueEvent(new LayoutEvent("add-error", subject, message));
+                InterThreadEventInvoker.Queue(() => Dispatch.Call.AddError(message, subject));
         }
 
-        public override void Warning(object subject, string message) {
+        public override void Warning(object? subject, string message) {
             if (InterThreadEventInvoker == null)
                 base.Warning(subject, message);
             else
-                InterThreadEventInvoker.QueueEvent(new LayoutEvent("add-warning", subject, message));
+                InterThreadEventInvoker.Queue(() => Dispatch.Call.AddWarning(message, subject));
         }
 
         /// <summary>
