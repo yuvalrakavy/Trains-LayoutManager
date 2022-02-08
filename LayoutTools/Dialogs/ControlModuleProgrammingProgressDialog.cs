@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+using MethodDispatcher;
 using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Dialogs {
@@ -24,6 +25,7 @@ namespace LayoutManager.Tools.Dialogs {
             buttonCancelOrClose.Text = "Cancel";
 
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
         private void ControlModuleProgrammingProgressDialog_FormClosing(object? sender, FormClosingEventArgs e) {

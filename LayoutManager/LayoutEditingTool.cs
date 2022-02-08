@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Xml;
 using System.Collections.Generic;
 using System.Linq;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.UIGadgets;
 using LayoutManager.Components;
@@ -22,6 +23,7 @@ namespace LayoutManager {
         public LayoutEditingTool() {
             InitializeComponent();
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
         [LayoutEvent("add-editing-empty-spot-context-menu-entries", Order = 0)]

@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Xml;
 using System.Diagnostics;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
 #nullable enable
 namespace LayoutManager.Logic {
-    [LayoutModule("Disptacher")]
+    [LayoutModule("Dispatcher")]
     internal class Dispatcher : LayoutModuleBase {
         private static readonly LayoutTraceSwitch traceDispatcher = new("Dispatcher", "Master Dispatcher");
         private static readonly LayoutTraceSubsystem traceUnlockingManager = new(traceDispatcher, "DispatcherUnlockingManager", "Layout Block Unlock Manager");
@@ -236,6 +237,7 @@ namespace LayoutManager.Logic {
 
             public BlockUnlockingManager() {
                 EventManager.AddObjectSubscriptions(this);
+                Dispatch.AddObjectInstanceDispatcherTargets(this);
             }
 
             public void Add(LayoutBlock block, int timeout) {

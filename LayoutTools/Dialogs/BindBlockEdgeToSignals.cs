@@ -1,9 +1,8 @@
 using System;
 using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using System.Collections.Generic;
@@ -31,6 +30,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.Owner = LayoutController.ActiveFrameWindow as Form;
 
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             blockEdgeSelection = new LayoutSelection();
             linkedSignalSelection = new LayoutSelection();

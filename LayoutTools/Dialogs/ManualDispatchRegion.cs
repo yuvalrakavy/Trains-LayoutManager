@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Xml;
+using MethodDispatcher;
 using LayoutManager.CommonUI;
 using LayoutManager.Model;
 using LayoutManager.Components;
@@ -50,6 +51,7 @@ namespace LayoutManager.Tools.Dialogs {
             selectedBlockSelection.Display(new LayoutSelectionLook(Color.DarkMagenta));
 
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
         public XmlElement Element => manualDispatchRegion.Element;

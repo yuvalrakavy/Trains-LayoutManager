@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Xml;
+using MethodDispatcher;
 using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Controls {
@@ -27,6 +27,7 @@ namespace LayoutManager.Tools.Controls {
 
         public void Initialize() {
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             autoClearTimeout = (int?)LayoutModel.StateManager.Element.AttributeValue(A_TripsMonitorAutoClearTimeout) ?? 15;
             columnSorter = new CommonUI.ListViewStringColumnsSorter(listViewTrips);

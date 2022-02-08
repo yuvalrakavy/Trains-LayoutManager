@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
 using System.Windows.Forms;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.CommonUI;
@@ -128,6 +129,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void TestLayoutObject_Load(object? sender, EventArgs e) {
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
             EventManager.AddObjectSubscriptions(this);
         }
 

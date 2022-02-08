@@ -882,8 +882,6 @@ namespace LayoutManager {
         #endregion
 
         private void UpdateLayoutControlVisible() {
-            bool previousState = layoutControlVisible;
-
             splitControlViewer.Panel1Collapsed = !layoutControlVisible;
             if (layoutControlVisible)
                 Dispatch.Call.OnLayoutControlShown(Id);

@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using MethodDispatcher;
 using System.Windows.Forms;
 
 namespace LayoutManager.Dialogs {
@@ -13,6 +14,7 @@ namespace LayoutManager.Dialogs {
             InitializeComponent();
 
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             progressBar.Maximum = nTurnouts;
             progressBar.Step = 1;

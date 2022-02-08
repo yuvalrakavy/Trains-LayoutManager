@@ -149,6 +149,7 @@ namespace LayoutManager {
                                
                 // Create subscriptions for event handlers in the new module instance (will this one day become obsolete...)
                 EventManager.AddObjectSubscriptions(moduleInstance);
+                Dispatch.AddObjectInstanceDispatcherTargets(this);
             }
         }
 
@@ -166,6 +167,7 @@ namespace LayoutManager {
 
                 // Remove all subscriptions for this instance (will this become obsolete one day?)
                 EventManager.Subscriptions.RemoveObjectSubscriptions(moduleInstance);
+                Dispatch.RemoveObjectInstanceDispatcherTargets(moduleInstance);
 
                 if (moduleInstance is IDisposable module)
                     module.Dispose();

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 using System.Linq;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.CommonUI;
@@ -45,6 +46,7 @@ namespace LayoutManager.Tools.Controls {
 
         public void Initialize() {
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
         public LayoutBlock? LocomotiveBlock { get; set; } = null;

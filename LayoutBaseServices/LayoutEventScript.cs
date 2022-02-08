@@ -3,13 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.Reflection;
-
 using System.Diagnostics;
+using MethodDispatcher;
 
-// Reenable warning when switch to .NET 4.8 and range c#8 feature is supported
-#pragma warning disable IDE0057, CA1031, CA1032, CA2237
-
-#nullable enable
 namespace LayoutManager {
     #region Event Script Implementations
 
@@ -715,6 +711,7 @@ namespace LayoutManager {
 
         protected LayoutEventScriptNodeEventBase(LayoutEvent e) : base(e) {
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
         /// <summary>
@@ -1047,7 +1044,7 @@ namespace LayoutManager {
 
         protected LayoutEventScriptNodeConditionContainer(LayoutEvent e) : base(e) {
             foreach (XmlElement conditionElement in Element) {
-                if (!(Parse(conditionElement) is LayoutEventScriptNodeCondition condition))
+                if (Parse(conditionElement) is not LayoutEventScriptNodeCondition condition)
                     throw ParseErrorException("Invalid condition: " + conditionElement.Name);
 
                 conditions.Add(condition);
@@ -1076,7 +1073,7 @@ namespace LayoutManager {
 
         public LayoutEventScriptNodeActions(LayoutEvent e) : base(e) {
             foreach (XmlElement elementAction in Element) {
-                if (!((LayoutEventScriptNodeAction?)Parse(elementAction) is LayoutEventScriptNodeAction action))
+                if ((LayoutEventScriptNodeAction?)Parse(elementAction) is not LayoutEventScriptNodeAction action)
                     throw ParseErrorException("Invalid action: " + elementAction.Name);
 
                 actions.Add(action);
@@ -1973,7 +1970,7 @@ namespace LayoutManager {
                     for (e = s; e < text.Length && text[e] != '[' && text[e] != '<'; e++)
                         ;
 
-                    parts.Add(text.Substring(s, e - s));
+                    parts.Add(text[s..e]);
 
                     if (e >= text.Length)
                         break;
@@ -1989,7 +1986,7 @@ namespace LayoutManager {
                         if (e >= text.Length)
                             throw new ArgumentException("Missing ] to terminate reference, text: " + text);
 
-                        string reference = text.Substring(s, e - s);
+                        string reference = text[s..e];
 
                         s = e + 1;
 
@@ -2065,7 +2062,7 @@ namespace LayoutManager {
                 if (symbolValue == null)
                     throw new ArgumentException("Event script context does not contain object named " + symbol);
 
-                if (!(symbolValue is IObjectHasAttributes symbolWithAttributes))
+                if (symbolValue is not IObjectHasAttributes symbolWithAttributes)
                     throw new ArgumentException("The object named " + symbol + " does not support attributes");
 
                 var setTo = Element.GetAttribute(A_SetTo);

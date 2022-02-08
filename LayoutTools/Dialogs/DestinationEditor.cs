@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.CommonUI;
@@ -44,6 +45,7 @@ namespace LayoutManager.Tools.Dialogs {
                 listViewLocations.Items.Add(new LocationItem(entry));
 
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             destinationSelection = new LayoutSelection();
             selectedBlockInfoSelection = new LayoutSelection();

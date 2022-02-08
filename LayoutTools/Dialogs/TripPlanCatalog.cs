@@ -1,5 +1,6 @@
 using System.Windows.Forms;
 using System.Xml;
+using MethodDispatcher;
 using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Dialogs {
@@ -34,6 +35,7 @@ namespace LayoutManager.Tools.Dialogs {
             tripPlanList.Initialize();
 
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             this.train = train;
             SetTrain(train);

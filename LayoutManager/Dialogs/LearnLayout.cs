@@ -11,6 +11,7 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.CommonUI;
 using System.Media;
+using MethodDispatcher;
 
 #endregion
 
@@ -27,6 +28,7 @@ namespace LayoutManager.Dialogs {
 
             this.frameWindowId = frameWindowId;
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             checkBoxEnableSound.Checked = enableSound;
 

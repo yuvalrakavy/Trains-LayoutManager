@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+using MethodDispatcher;
 
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
@@ -79,6 +80,8 @@ namespace LayoutManager {
 
         public void Initialize() {
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
+
             locomotiveList.Initialize();
             locomotiveList.AddLayoutMenuItems(new MenuOrMenuItem(menuItemArrange));
             locomotiveList.AddLayoutMenuItems(new MenuOrMenuItem(contextMenuArrange));

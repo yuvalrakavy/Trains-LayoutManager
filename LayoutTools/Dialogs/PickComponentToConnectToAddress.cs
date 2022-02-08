@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
@@ -23,6 +24,7 @@ namespace LayoutManager.Tools.Dialogs {
                 "ADDRESS", csEvent.AddressText);
 
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
         public ControlConnectionPointDestination? ConnectionDestination => selectedDestination;

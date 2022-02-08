@@ -132,6 +132,7 @@ namespace LayoutManager {
             ModuleManager.LoadState();
 
             EventManager.Instance.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             #endregion
 

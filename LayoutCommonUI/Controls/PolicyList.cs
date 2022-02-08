@@ -1,5 +1,6 @@
 using System.Xml;
 using LayoutManager.Model;
+using MethodDispatcher;
 
 namespace LayoutManager.CommonUI.Controls {
     public interface IPolicyListCustomizer {
@@ -63,6 +64,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             UpdateButtons(null, EventArgs.Empty);
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
         protected PolicyItem? GetSelection() {

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Windows.Forms;
+using MethodDispatcher;
 
 using LayoutManager;
 
@@ -15,6 +16,7 @@ namespace LayoutEventDebugger {
             InitializeComponent();
 
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
         private void StartTrace() {

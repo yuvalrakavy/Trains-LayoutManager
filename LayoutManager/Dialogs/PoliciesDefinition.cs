@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using MethodDispatcher;
+
 using LayoutManager.Model;
 
 namespace LayoutManager.Dialogs {
@@ -15,6 +17,7 @@ namespace LayoutManager.Dialogs {
             InitializeComponent();
 
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             globalPolicyListGlobal.Scope = "Global";
             globalPolicyListGlobal.Policies = LayoutModel.StateManager.LayoutPolicies;

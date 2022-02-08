@@ -2,6 +2,7 @@ using System.Xml;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
+using MethodDispatcher;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
@@ -28,6 +29,7 @@ namespace LayoutManager.CommonUI.Controls {
         public void Initialize() {
             AddLayout(new ListLayoutByStorage());
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
         public bool ShowOnlyLocomotives { set; get; } = false;

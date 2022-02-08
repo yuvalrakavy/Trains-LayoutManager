@@ -166,16 +166,25 @@ namespace MethodDispatcher {
         }
 
         public void AddObjectInstanceDispatchTargets(object objectInstance) {
+            List<DispatcherException>? errors = null;
+
             MethodInfo[] methodsInfo = objectInstance.GetType().GetMethods(
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-            foreach (MethodInfo method in methodsInfo) {
-                var dispatchTargetAttributes = (DispatchTargetAttribute[])method.GetCustomAttributes(typeof(DispatchTargetAttribute), true);
+            try {
+                foreach (MethodInfo method in methodsInfo) {
+                    var dispatchTargetAttributes = (DispatchTargetAttribute[])method.GetCustomAttributes(typeof(DispatchTargetAttribute), true);
 
-                foreach (var dispatchTargetAttribute in dispatchTargetAttributes) {
-                    GetDispatchSource(dispatchTargetAttribute, method).AddInstanceTarget(objectInstance, method, dispatchTargetAttribute);
+                    foreach (var dispatchTargetAttribute in dispatchTargetAttributes) {
+                        GetDispatchSource(dispatchTargetAttribute, method).AddInstanceTarget(objectInstance, method, dispatchTargetAttribute);
+                    }
                 }
+            } catch(DispatcherException ex) {
+                (errors ??= new()).Add(ex);
             }
+
+            if (errors != null)
+                throw new DispatcherErrorsException($"Adding dispatch targets for object of type: {objectInstance.GetType().Name}", errors);
         }
 
         public void RemoveObjectInstanceDispatchTargets(object objectInstance) {

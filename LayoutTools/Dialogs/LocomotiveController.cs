@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 using System.Diagnostics;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 using LayoutManager.CommonUI;
@@ -30,6 +31,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             this.train = train;
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
             this.Owner = LayoutController.ActiveFrameWindow as Form;
 
             buttonLight.Enabled = train.HasLights;

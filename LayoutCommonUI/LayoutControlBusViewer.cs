@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Drawing.Drawing2D;
+using MethodDispatcher;
 using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI {
@@ -93,6 +94,7 @@ namespace LayoutManager.CommonUI {
 
         public void Initialize() {
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
         public void EnsureVisible(ControlConnectionPointReference connectionPointRef, bool select) {

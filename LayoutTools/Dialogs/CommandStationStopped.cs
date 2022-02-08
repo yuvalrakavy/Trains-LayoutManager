@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Logic;
 
@@ -20,6 +21,7 @@ namespace LayoutManager.Tools.Dialogs {
             buttonAbortTrips.Visible = hasActiveTrips;
 
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
         [LayoutEvent("get-command-station-notification-dialog")]

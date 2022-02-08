@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
@@ -136,6 +137,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void TestThreeWayTurnout_Load(object? sender, EventArgs e) {
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
             EventManager.AddObjectSubscriptions(this);
         }
 

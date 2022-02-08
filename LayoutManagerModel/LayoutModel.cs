@@ -155,6 +155,7 @@ namespace LayoutManager.Model {
         /// <param name="e"></param>
         public virtual void OnAddedToModel() {
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             if (this is IObjectHasId) {
                 if (LayoutModel.Component<ModelComponent>(this.Id, LayoutPhase.All) != null)
@@ -1469,6 +1470,7 @@ namespace LayoutManager.Model {
                     stateManager = new LayoutStateManager();
 
                     EventManager.AddObjectSubscriptions(stateManager);
+                    Dispatch.AddObjectInstanceDispatcherTargets(stateManager);
                 }
 
                 return stateManager;
@@ -1547,6 +1549,8 @@ namespace LayoutManager.Model {
                     locomotiveCollection = new LocomotiveCollectionInfo();
                     locomotiveCollection.Load();
                     EventManager.AddObjectSubscriptions(locomotiveCollection);
+                    Dispatch.AddObjectInstanceDispatcherTargets(locomotiveCollection);
+
                     locomotiveCollection.EnsureReferentialIntegrity();
                 }
 

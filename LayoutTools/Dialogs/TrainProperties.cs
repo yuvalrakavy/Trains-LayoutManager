@@ -4,6 +4,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
@@ -48,6 +49,7 @@ namespace LayoutManager.Tools.Dialogs {
             UpdateControls();
 
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
         public XmlElement Element => train.Element;

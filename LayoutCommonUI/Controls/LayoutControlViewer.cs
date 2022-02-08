@@ -1,6 +1,7 @@
 using LayoutManager.Model;
 using LayoutManager.Components;
 using System.Diagnostics;
+using MethodDispatcher;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
@@ -75,6 +76,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             layoutControlBusViewer.Initialize();
             EventManager.AddObjectSubscriptions(this);
+            Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             UpdateSelectors();
         }
