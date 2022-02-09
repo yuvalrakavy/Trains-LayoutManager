@@ -3,6 +3,11 @@ using System.Runtime.CompilerServices;
 using System.Diagnostics;
 
 namespace MethodDispatcher {
+    /// Define custom filter (see AddCustomFilter)
+    ///   a custom filter parameters are (filter-value, target object, parameter value)
+    ///   
+    using CustomDispatchFilter = Func<string?, object?, object?, bool>;
+
     /// <summary>
     /// Dispatcher - a way to call functions without knowing where they reside...
     /// </summary>
@@ -43,7 +48,7 @@ namespace MethodDispatcher {
         readonly Dictionary<string, DispatchSource> dispatchSources = new();
 
         /// <summary>
-        /// Initialize the displatcher system
+        /// Initialize the dispatcher system
         /// 
         /// Add dispatch sources and static targets for the currently loaded assemblies.
         /// If you dynamically load assemblies, you will need to call InitializeDispatcherForAssembly for each loaded assembly
@@ -215,7 +220,7 @@ namespace MethodDispatcher {
     /// 
     /// Dispatch.Call.AdispatchedMethod(...)
     /// 
-    /// If you dyamically load additional assemblies after calling Dispatch.InitializeDispatcher, make sure to call
+    /// If you dynamically load additional assemblies after calling Dispatch.InitializeDispatcher, make sure to call
     /// Dispatch.InitializeDispatcherForAssembly for each such loaded assembly (remember to handle DispatchErrorsException)
     /// 
     /// To add targets in an object instance, call: Dispatch.AddObjectInstanceDispatchTargets. You can optionally call
@@ -224,10 +229,10 @@ namespace MethodDispatcher {
     /// </summary>
     public static class Dispatch {
         static readonly Dispatcher _instance;
+        static readonly Dictionary<string, CustomDispatchFilter> _filters = new();
 
         static Dispatch() {
             _instance = new Dispatcher();
-
         }
 
         static public Dispatcher Instance => _instance;
@@ -245,7 +250,7 @@ namespace MethodDispatcher {
         /// <summary>
         /// Initialize the method dispatch system
         ///
-        /// This will add dispatch sources, verify targets (type/nullability vs. the source) for the currenly loaded
+        /// This will add dispatch sources, verify targets (type/nullability vs. the source) for the currently loaded
         /// assemblies
         /// </summary>
         /// <exception cref="DispatcherErrorsException">is thrown if there are errors in the verification process</exception>
@@ -254,7 +259,7 @@ namespace MethodDispatcher {
         /// <summary>
         /// Add dispatch sources, verify targets and add static targets in a given assembly
         /// </summary>
-        /// <remarks>You need to call this for any assembly you dynamically loade after calling InitializeDispatcher</remarks>
+        /// <remarks>You need to call this for any assembly you dynamically loaded after calling InitializeDispatcher</remarks>
         /// <param name="assembly">The assembly to use</param>
         /// <exception cref="DispatcherErrorsException">is thrown if there are errors in the verification process</exception>
         static public void InitializeDispatcherForAssembly(Assembly assembly) => _instance.InitializeDispatcherForAssembly(assembly);
@@ -274,6 +279,26 @@ namespace MethodDispatcher {
         /// </summary>
         /// <param name="objectInstance">the object instance with the targets to be removed</param>
         static public void RemoveObjectInstanceDispatcherTargets(object objectInstance) => _instance.RemoveObjectInstanceDispatchTargets(objectInstance);
+
+        /// <summary>
+        /// Add custom filter function.
+        /// 
+        /// When defining DispatchTarget a filter is used to decide if the target is applicable based on a argument's value
+        /// For example, you can define XPath filter which will make target applicable only if the argument value is XmlElement and
+        /// is matching a given XPath
+        /// </summary>
+        /// <param name="filterType"></param>
+        /// <param name="filter"></param>
+        static public void AddCustomFilter(string filterType, CustomDispatchFilter filter) {
+            _filters.Add(filterType, filter);
+        }
+
+        static internal CustomDispatchFilter? GetDispatchFilter(string filterType) {
+            CustomDispatchFilter? result;
+
+            _filters.TryGetValue(filterType, out result);
+            return result;
+        }
     }
 
 
@@ -317,7 +342,8 @@ namespace MethodDispatcher {
 
     [AttributeUsage(AttributeTargets.Parameter)]
     public class DispatchFilterAttribute : Attribute {
-
+        public string? Type { get; set; }
+        public string? Value { get; set; }
     }
 
     #endregion
@@ -557,7 +583,7 @@ namespace MethodDispatcher {
             List<object?> results = new();
 
             foreach (var target in _targets) {
-                if (target.IsAlive && target.IsApplicable(parameters)) {
+                if (target.IsAlive && target.ShouldInvoke(parameters)) {
                     results.Add(target.Invoke(parameters));
                 }
                 else {
@@ -566,7 +592,7 @@ namespace MethodDispatcher {
                 }
             }
 
-            invalidTargets?.ForEach(Remove);
+            invalidTargets?.ForEach(Remove);            
 
             return results;
         }
@@ -584,7 +610,7 @@ namespace MethodDispatcher {
 
             RemoveDeadTargets();
 
-            var applicableTargets = (from target in Targets where target.IsApplicable(parameters) select target).ToArray();
+            var applicableTargets = (from target in Targets where target.ShouldInvoke(parameters) select target).ToArray();
 
             if (applicableTargets.Length == 0 && !AllowNoTargets)
                 throw new ZeroTargetsNotAllowedException(_source, AllowMoreThanOneTarget ? "at least one applicable target" : "one applicable target");
@@ -615,14 +641,29 @@ namespace MethodDispatcher {
 
         public abstract object? Invoke(object?[] parameters);
 
-        public bool IsApplicable(object?[] parameters) {
+        public abstract bool ShouldInvoke(object?[] parameters);
+
+        protected bool IsApplicable(object? targetObject, object?[] parameters) {
             Debug.Assert(parameters.Length == Method.GetParameters().Length);
 
             _hasFilters ??= Method.GetParameters().Any(p => p.GetCustomAttribute(typeof(DispatchFilterAttribute)) != null);
 
             if (_hasFilters.Value) {
                 foreach (var p in Method.GetParameters().Select((parameter, i) => new { TargetParameter = parameter, ParameterValue = parameters[i] })) {
-                    if (p.TargetParameter.GetCustomAttribute(typeof(DispatchFilterAttribute)) != null) {
+                    var filterAttribute = (DispatchFilterAttribute?)p.TargetParameter.GetCustomAttribute(typeof(DispatchFilterAttribute));
+
+                    if (filterAttribute != null) {
+
+                        if(filterAttribute.Type != null) {
+                            var filter = Dispatch.GetDispatchFilter(filterAttribute.Type) ?? throw new UndefinedDispatchFilterTypeException(SourceFile, filterAttribute.Type, p.TargetParameter);
+
+                            try {
+                                if (!filter(filterAttribute.Value, targetObject, p.ParameterValue))
+                                    return false;
+                            } catch(DispatchFilterException ex) {
+                                throw new DispatchFilterException(SourceFile, filterAttribute.Type, p.TargetParameter, ex.Message);
+                            }
+                        }
 
                         // Filter by value
                         if (p.TargetParameter.HasDefaultValue) {
@@ -654,6 +695,10 @@ namespace MethodDispatcher {
         public override bool IsAlive => true;
 
         public override object? Invoke(object?[] parameters) => Method.Invoke(null, parameters);
+
+        public override bool ShouldInvoke(object?[] parameters) {
+            return base.IsApplicable(null, parameters);
+        }
     }
 
     internal class ObjectInstanceDispatchTarget : DispatchTarget {
@@ -670,6 +715,11 @@ namespace MethodDispatcher {
         public override object? Invoke(object?[] parameters) => Instance != null
                 ? Method.Invoke(Instance, parameters)
                 : throw new ObjectDisposedException($"Instance of dispatch target {Method.Name}");
+
+        public override bool ShouldInvoke(object?[] parameters) {
+            return Instance != null ? base.IsApplicable(Instance, parameters) : false;
+        }
+
     }
 
     #region Exceptions
@@ -802,5 +852,21 @@ namespace MethodDispatcher {
         }
     }
 
+    public class UndefinedDispatchFilterTypeException : DispatcherException {
+        public UndefinedDispatchFilterTypeException(SourceFileLocation targetSourceFile, string filterType, ParameterInfo taretParameter) : base(targetSourceFile,
+            $"Using undefined filter type {filterType} for filtering target's parameter '{taretParameter.Name}'") {
+        }
+    }
+
+    public class DispatchFilterException : DispatcherException {
+        internal DispatchFilterException(SourceFileLocation targetSourceFile, string filterType, ParameterInfo targetParameter, string errorMessage) : base(targetSourceFile,
+            $"Error while applying {filterType} filter on parameter {targetParameter.Name}: {errorMessage}")
+        {
+        }
+
+        public DispatchFilterException(string errorMessage) : base(errorMessage) {
+
+        }
+    }
     #endregion
 }
