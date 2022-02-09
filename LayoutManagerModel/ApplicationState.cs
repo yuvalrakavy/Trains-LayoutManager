@@ -1,6 +1,6 @@
 namespace LayoutManager {
     public class ApplicationStateInfo : LayoutXmlWrapper {
-        private readonly string filename;
+        private readonly string? filename;
 
         public enum LayoutState {
             Design, Operation, Simulation
@@ -21,7 +21,8 @@ namespace LayoutManager {
         }
 
         public void Save() {
-            Element.OwnerDocument.Save(filename);
+            if(filename != null)
+                Element.OwnerDocument.Save(filename);
         }
 
         public string LayoutFilename {

@@ -1,9 +1,78 @@
 using System;
 using System.Diagnostics;
 using System.Xml;
+using MethodDispatcher;
 
 #nullable enable
 namespace LayoutManager {
+    static class DispatcherXPathFilter {
+        static XmlElement? ExtractXml(object? obj) {
+            return obj switch {
+                XmlElement element => element,
+                IObjectHasXml hasXml => hasXml.OptionalElement,
+                _ => null,
+            };
+        }
+
+        static string ExpandXPath(string xPath, XmlElement instanceElement) {
+            if (xPath.IndexOf('`') < 0)
+                return xPath;
+
+            var xpn = instanceElement.CreateNavigator() ?? throw new DispatchFilterException("Invalid instance object XML");
+
+            System.Text.StringBuilder result = new(xPath.Length + 60);
+            int pos = 0;
+
+            for (int nextPos; (nextPos = xPath.IndexOf('`', pos)) >= 0; pos = nextPos) {
+                result.Append(xPath, pos, nextPos - pos);
+
+                if (xPath[nextPos + 1] == '`') {
+                    result.Append('`');     // `` is converted to a single `
+                    nextPos += 2;
+                }
+                else {
+                    int s = nextPos;    // s is first ` index
+                    string expandXpath;
+
+                    nextPos = xPath.IndexOf('`', nextPos + 1);      // nextPos is the index of the terminating `
+                    if (nextPos < 0)
+                        throw new DispatchFilterException("XPath missing a ` character for expanded string");
+
+                    expandXpath = xPath.Substring(s + 1, nextPos - s - 1);
+
+                    var expandedXpath = xpn.Evaluate(expandXpath).ToString();
+                    result.Append(expandedXpath);
+
+                    nextPos++;      // skip the closing `
+                }
+            }
+
+            result.Append(xPath, pos, xPath.Length - pos);
+
+            return result.ToString();
+        }
+
+        static private bool XPathFilter(string? filterValue, object? targetObject, object? parameterValue) {
+            if (filterValue == null)
+                throw new DispatchFilterException("Missing Value");
+
+            var element = ExtractXml(parameterValue);
+
+            if(element == null)
+                return false;
+
+            var instanceElement = ExtractXml(targetObject);
+            var xPath = instanceElement != null ? ExpandXPath(filterValue, instanceElement) : filterValue;
+
+            return element.CreateNavigator()?.Matches(xPath) ?? false;
+        }
+
+        [DispatchTarget]
+        public static void AddDispatcherFilters() {
+            Dispatch.AddCustomFilter("XPath", XPathFilter);
+        }
+    }
+
     public class LayoutXmlWrapper : IObjectHasXml {
         public LayoutXmlWrapper() {
         }

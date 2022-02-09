@@ -116,7 +116,7 @@ namespace LayoutManager.Tools.Dialogs {
                         overwrite = true;
                 }
 
-                if (doSave) {
+                if (doSave && eventScriptEditor.EventScriptElement != null) {
                     LayoutPolicyInfo policy;
 
                     if (overwrite) {

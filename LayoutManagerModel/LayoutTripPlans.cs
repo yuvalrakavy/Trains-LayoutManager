@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
+using MethodDispatcher;
 using LayoutManager.Components;
 using System.Collections.Generic;
 
@@ -45,7 +46,7 @@ namespace LayoutManager.Model {
 
         public XmlElement ConditionElement => Element;
 
-        public XmlElement ConditionBodyElement => Element.ChildNodes.Count > 0 ? (XmlElement)Element.ChildNodes[0] : null;
+        public XmlElement? ConditionBodyElement => Element.ChildNodes.Count > 0 ? Element.ChildNodes[0] as XmlElement : null;
 
         public virtual string GetDescription() {
             if (IsConditionEmpty)
@@ -95,7 +96,7 @@ namespace LayoutManager.Model {
         private const string A_SelectionMethod = "SelectionMethod";
         private const string E_Destination = "Destination";
         private const string E_Block = "Block";
-        private List<TripPlanDestinationEntryInfo> entries;
+        private List<TripPlanDestinationEntryInfo>? entries;
 
         public TripPlanDestinationInfo(XmlElement element) : base(element) {
         }
@@ -144,7 +145,7 @@ namespace LayoutManager.Model {
 
         public int Count => Element.ChildNodes.Count;
 
-        public IList<TripPlanDestinationEntryInfo> Entries {
+        public List<TripPlanDestinationEntryInfo> Entries {
             get {
                 if (entries == null) {
                     entries = new List<TripPlanDestinationEntryInfo>(Count);
@@ -161,7 +162,7 @@ namespace LayoutManager.Model {
             get {
                 List<Guid> blockIdList = new(Entries.Count);
 
-                entries.ForEach((TripPlanDestinationEntryInfo entry) => blockIdList.Add(entry.BlockId));
+                Entries.ForEach((TripPlanDestinationEntryInfo entry) => blockIdList.Add(entry.BlockId));
                 return blockIdList;
             }
         }
@@ -170,7 +171,7 @@ namespace LayoutManager.Model {
             get {
                 List<LayoutBlock> blocks = new(Entries.Count);
 
-                entries.ForEach((TripPlanDestinationEntryInfo entry) => blocks.Add(LayoutModel.Blocks[entry.BlockId]));
+                Entries.ForEach((TripPlanDestinationEntryInfo entry) => blocks.Add(LayoutModel.Blocks[entry.BlockId]));
                 return blocks;
             }
         }
@@ -179,8 +180,8 @@ namespace LayoutManager.Model {
             get {
                 List<LayoutBlockDefinitionComponent> blockInfos = new(Entries.Count);
 
-                entries.ForEach((TripPlanDestinationEntryInfo entry) => {
-                    if (LayoutModel.Blocks.TryGetValue(entry.BlockId, out LayoutBlock block)) {
+                Entries.ForEach((TripPlanDestinationEntryInfo entry) => {
+                    if (LayoutModel.Blocks.TryGetValue(entry.BlockId, out LayoutBlock? block)) {
                         if (block.BlockDefinintion != null)
                             blockInfos.Add(block.BlockDefinintion);
                     }
@@ -268,7 +269,7 @@ namespace LayoutManager.Model {
 
         public TripPlanDestinationInfo Destination {
             get {
-                XmlElement destinationElement = Element[E_Destination];
+                XmlElement? destinationElement = Element[E_Destination];
 
                 if (destinationElement == null) {
                     destinationElement = Element.OwnerDocument.CreateElement(E_Destination);
@@ -279,7 +280,7 @@ namespace LayoutManager.Model {
             }
 
             set {
-                XmlElement destinationElement = Element[E_Destination];
+                XmlElement? destinationElement = Element[E_Destination];
 
                 if (destinationElement != null)
                     Element.RemoveChild(destinationElement);
@@ -291,17 +292,17 @@ namespace LayoutManager.Model {
 
         public string Name => Destination.Name;
 
-        public XmlElement StartCondition {
+        public XmlElement? StartCondition {
             get {
-                XmlElement startConditionElement = Element[E_StartCondition];
+                XmlElement? startConditionElement = Element[E_StartCondition];
 
                 return startConditionElement != null && startConditionElement.ChildNodes.Count > 0
-                    ? (XmlElement)startConditionElement.ChildNodes[0]
+                    ? (XmlElement)startConditionElement.ChildNodes[0]!
                     : null;
             }
 
             set {
-                XmlElement startConditionElement = Element[E_StartCondition];
+                XmlElement? startConditionElement = Element[E_StartCondition];
 
                 if (value == null) {
                     if (startConditionElement != null)
@@ -321,7 +322,7 @@ namespace LayoutManager.Model {
 
         public TripPlanInfo TripPlan {
             get {
-                TripPlanInfo tripPlan = new((XmlElement)Element.ParentNode.ParentNode);
+                TripPlanInfo tripPlan = new((XmlElement)Element.ParentNode!.ParentNode!);
 
                 return tripPlan;
             }
@@ -329,7 +330,7 @@ namespace LayoutManager.Model {
 
         public bool TrainStopping {
             get {
-                bool lastWaypoint = (XmlElement)TripPlan.WaypointsElement.LastChild == Element;
+                bool lastWaypoint = (XmlElement?)TripPlan.WaypointsElement.LastChild == Element;
 
                 return (StartCondition != null && !StartCondition.IsEmpty) || (lastWaypoint && !TripPlan.IsCircular);
             }
@@ -337,19 +338,19 @@ namespace LayoutManager.Model {
 
         public string StartConditionDescription => StartCondition == null
                     ? "At once"
-                    : (string)EventManager.Event(new LayoutEvent("get-event-script-description", StartCondition));
+                    : Dispatch.Call.GetEventScriptDescription(StartCondition) ?? $"({StartCondition.Name})";
 
-        public XmlElement DriverInstructions {
+        public XmlElement? DriverInstructions {
             get {
-                XmlElement driverInstructionsElement = Element[E_DriverInstructions];
+                XmlElement? driverInstructionsElement = Element[E_DriverInstructions];
 
                 return driverInstructionsElement != null && driverInstructionsElement.ChildNodes.Count > 0
-                    ? (XmlElement)driverInstructionsElement.ChildNodes[0]
+                    ? (XmlElement)driverInstructionsElement.ChildNodes[0]!
                     : null;
             }
 
             set {
-                XmlElement driverInstructionsElement = Element[E_DriverInstructions];
+                XmlElement? driverInstructionsElement = Element[E_DriverInstructions];
 
                 if (value == null) {
                     if (driverInstructionsElement != null)
@@ -369,7 +370,7 @@ namespace LayoutManager.Model {
 
         public string DriverInstructionsDescription => DriverInstructions == null
                     ? ""
-                    : (string)EventManager.Event(new LayoutEvent("get-event-script-description", DriverInstructions));
+                    : Dispatch.Call.GetEventScriptDescription(DriverInstructions) ?? $"({DriverInstructions.Name})";
 
         public LocomotiveOrientation Direction {
             get => AttributeValue(A_Direction).Enum<LocomotiveOrientation>() ?? LocomotiveOrientation.Forward;
@@ -390,7 +391,7 @@ namespace LayoutManager.Model {
             XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
             doc.LoadXml("<TripPlan><WayPoints /></TripPlan>");
-            Element = doc.DocumentElement;
+            Element = doc.DocumentElement!;
 
             // Enable the policies which are on by default
             foreach (LayoutPolicyInfo policy in LayoutModel.StateManager.TripPlanPolicies)
@@ -404,7 +405,7 @@ namespace LayoutManager.Model {
 
         public XmlElement WaypointsElement {
             get {
-                XmlElement waypointsElement = Element["WayPoints"];
+                XmlElement? waypointsElement = Element["WayPoints"];
 
                 if (waypointsElement == null) {
                     waypointsElement = Element.OwnerDocument.CreateElement("WayPoints");
@@ -512,13 +513,13 @@ namespace LayoutManager.Model {
         private const string E_TripPlan = "TripPlan";
         private const string A_TrainId = "TrainID";
         private const string A_Status = "Status";
-        private TrainStateInfo train;
+        private TrainStateInfo? train;
 
         public TripPlanAssignmentInfo(TripPlanInfo tripPlan, TrainStateInfo train) {
             XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
             doc.LoadXml("<TripPlanAssignment />");
-            Element = doc.DocumentElement;
+            Element = doc.DocumentElement!;
 
             Element.AppendChild(doc.ImportNode(tripPlan.Element, true));
             SetAttributeValue(A_TrainId, train.Id);
@@ -528,11 +529,11 @@ namespace LayoutManager.Model {
         public TripPlanAssignmentInfo(XmlElement element) : base(element) {
         }
 
-        public TripPlanInfo TripPlan => new(Element[E_TripPlan]);
+        public TripPlanInfo TripPlan => new(Element[E_TripPlan]!);
 
         public Guid TrainId => (Guid)AttributeValue(A_TrainId);
 
-        public TrainStateInfo Train => train ??= LayoutModel.StateManager.Trains[TrainId];
+        public TrainStateInfo Train => train ??= LayoutModel.StateManager.Trains[TrainId]!;
 
         public TripStatus Status {
             get => AttributeValue(A_Status).Enum<TripStatus>() ?? TripStatus.NotSubmitted;
@@ -549,7 +550,7 @@ namespace LayoutManager.Model {
 
         public int CurrentWaypointIndex { get; set; }
 
-        public TripPlanWaypointInfo CurrentWaypoint => CurrentWaypointIndex >= 0 && TripPlan.Waypoints.Count > 0 ? TripPlan.Waypoints[CurrentWaypointIndex] : null;
+        public TripPlanWaypointInfo? CurrentWaypoint => CurrentWaypointIndex >= 0 && TripPlan.Waypoints.Count > 0 ? TripPlan.Waypoints[CurrentWaypointIndex] : null;
 
         public bool CanBeCleared => Status == TripStatus.Done || Status == TripStatus.Aborted;
 
@@ -577,7 +578,7 @@ namespace LayoutManager.Model {
 
         protected override TripPlanDestinationInfo FromElement(XmlElement itemElement) => new(itemElement);
 
-        public TripPlanDestinationInfo this[string name] {
+        public TripPlanDestinationInfo? this[string name] {
             get {
                 foreach (TripPlanDestinationInfo existingDestination in this)
                     if (existingDestination.Name == name)
@@ -598,7 +599,7 @@ namespace LayoutManager.Model {
 
         protected override TripPlanInfo FromElement(XmlElement itemElement) => new(itemElement);
 
-        public TripPlanInfo this[string name] {
+        public TripPlanInfo? this[string name] {
             get {
                 foreach (TripPlanInfo existingTripPlan in this)
                     if (existingTripPlan.Name == name)
@@ -624,7 +625,7 @@ namespace LayoutManager.Model {
 
         public XmlElement TripPlansElement {
             get {
-                XmlElement tripPlansElement = Element[E_TripPlans];
+                XmlElement? tripPlansElement = Element[E_TripPlans];
 
                 if (tripPlansElement == null) {
                     tripPlansElement = Element.OwnerDocument.CreateElement(E_TripPlans);
@@ -637,7 +638,7 @@ namespace LayoutManager.Model {
 
         public XmlElement DestinationsElement {
             get {
-                XmlElement destinationsElement = Element[E_Destinations];
+                XmlElement? destinationsElement = Element[E_Destinations];
 
                 if (destinationsElement == null) {
                     destinationsElement = Element.OwnerDocument.CreateElement(E_Destinations);
@@ -660,7 +661,7 @@ namespace LayoutManager.Model {
         #region Integrity checking
 
         private class IntegrityContext {
-            private TripPlanWaypointInfo waypoint;
+            private TripPlanWaypointInfo? waypoint;
 
             public void Message(string message) {
                 string s = "";
@@ -680,9 +681,9 @@ namespace LayoutManager.Model {
                 LayoutModuleBase.Message(s);
             }
 
-            public TripPlanInfo TripPlan { get; set; }
+            public TripPlanInfo? TripPlan { get; set; }
 
-            public TripPlanWaypointInfo Waypoint {
+            public TripPlanWaypointInfo? Waypoint {
                 get => waypoint;
 
                 set {
@@ -691,11 +692,11 @@ namespace LayoutManager.Model {
                     if (waypoint == null)
                         Destination = null;
                     else
-                        Destination = value.Destination;
+                        Destination = waypoint.Destination;
                 }
             }
 
-            public TripPlanDestinationInfo Destination { get; set; }
+            public TripPlanDestinationInfo? Destination { get; set; }
         }
 
         /// <summary>
@@ -703,7 +704,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <returns>true - destination ok, false - destination became empty, should be deleted</returns>
         private static bool CheckDestinationIntegrity(IntegrityContext ic, TripPlanDestinationInfo destination, LayoutPhase phase) {
-            List<Guid> removeList = null;
+            List<Guid>? removeList = null;
 
             foreach (Guid blockId in destination.BlockIdList)
                 if (LayoutModel.Component<ModelComponent>(blockId, phase) == null) {
@@ -827,8 +828,8 @@ namespace LayoutManager.Model {
     public class TripPlanIconListInfo : LayoutInfo {
         private const string E_Icon = "Icon";
         private const string A_Id = "ID";
-        private ImageList largeIconImageList;
-        private Dictionary<Guid, int> iconIdMap;
+        private ImageList? largeIconImageList;
+        private Dictionary<Guid, int>? iconIdMap;
 
         public TripPlanIconListInfo(XmlElement element) : base(element) {
         }
@@ -836,22 +837,17 @@ namespace LayoutManager.Model {
         public TripPlanIconListInfo(XmlElement parent, string elementName) : base(parent, elementName) {
         }
 
-        protected void CreateIconIdMap() {
-            if (iconIdMap == null) {
-                iconIdMap = new Dictionary<Guid, int>(Element.ChildNodes.Count);
+        protected Dictionary<Guid, int> CreateIconIdMap() {
+            var iconIdMap = new Dictionary<Guid, int>(Element.ChildNodes.Count);
 
-                int iconIndex = 0;
-                foreach (XmlElement iconElement in Element)
-                    iconIdMap.Add((Guid)iconElement.AttributeValue(A_Id), iconIndex++);
-            }
+            int iconIndex = 0;
+            foreach (XmlElement iconElement in Element)
+                iconIdMap.Add((Guid)iconElement.AttributeValue(A_Id), iconIndex++);
+
+            return iconIdMap;
         }
 
-        public IDictionary<Guid, int> IConIdMap {
-            get {
-                CreateIconIdMap();
-                return iconIdMap;
-            }
-        }
+        public IDictionary<Guid, int> IConIdMap => (iconIdMap ??= CreateIconIdMap());
 
         private ImageList CreateImageList(int width, int height) {
             ImageList imageList = new() {
@@ -877,17 +873,12 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Given iconID returns its icon index
         /// </summary>
-        public int this[Guid iconId] {
-            get {
-                CreateIconIdMap();
-                return iconIdMap.TryGetValue(iconId, out int iconIndex) ? iconIndex : 0;
-            }
-        }
+        public int this[Guid iconId] => IConIdMap.TryGetValue(iconId, out int iconIndex) ? iconIndex : 0;
 
         /// <summary>
         /// Given an iconIndex, return its icon ID
         /// </summary>
-        public Guid this[int iconIndex] => (Guid)((XmlElement)Element.ChildNodes[iconIndex]).AttributeValue(A_Id);
+        public Guid this[int iconIndex] => Element.ChildNodes[iconIndex] is XmlElement iconElement ? (Guid)iconElement.AttributeValue(A_Id) : Guid.Empty;
 
         /// <summary>
         /// Add Icon
@@ -921,9 +912,8 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="iconIndex"></param>
         public void Remove(int iconIndex) {
-            XmlElement iconElement = (XmlElement)Element.ChildNodes[iconIndex];
-
-            Element.RemoveChild(iconElement);
+            if(Element.ChildNodes[iconIndex] is XmlElement iconElement)
+                Element.RemoveChild(iconElement);
             iconIdMap = null;               // force rebuilding the icon ID to index map
 
             // Remove from the image list(s)

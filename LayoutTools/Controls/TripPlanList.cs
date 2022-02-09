@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
+using LayoutManager.Tools;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
@@ -21,13 +22,12 @@ namespace LayoutManager.CommonUI.Controls {
 
         }
 
-        public XmlElement ApplicableTripPlansElement {
-            get {
-                return applicableTripPlansElement;
-            }
+        List<ApplicableTripPlanData> _tripPlans = new();
 
+        public List<ApplicableTripPlanData> TripPlans {
+            get => _tripPlans;
             set {
-                applicableTripPlansElement = value;
+                _tripPlans = value;
                 if (initialized)
                     FillList();
             }
@@ -204,7 +204,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         private void ListViewTripPlans_AfterLabelEdit(object? sender, System.Windows.Forms.LabelEditEventArgs e) {
             var selected = (TripPlanItem)listViewTripPlans.Items[e.Item];
-            var existingTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[e.Label];
+            var existingTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[e.Label ?? String.Empty];
 
             if (existingTripPlan != null && existingTripPlan.Id != selected.TripPlan.Id) {
                 MessageBox.Show(this, "A trip plan with this name already exists", "Invalid name", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -213,8 +213,8 @@ namespace LayoutManager.CommonUI.Controls {
             else {
                 var tripPlan = Ensure.NotNull<TripPlanInfo>(LayoutModel.StateManager.TripPlansCatalog.TripPlans[selected.TripPlan.Id]);
 
-                tripPlan.Name = e.Label;
-                selected.TripPlan.Name = e.Label;
+                tripPlan.Name = e.Label ?? string.Empty;
+                selected.TripPlan.Name = e.Label ?? string.Empty;
                 selected.Update();
             }
         }

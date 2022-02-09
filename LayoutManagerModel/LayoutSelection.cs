@@ -13,8 +13,8 @@ namespace LayoutManager.Model {
     /// selection is displayed, then the component in the selection should be highlighted by the view
     /// </summary>
     public class LayoutSelection : IEnumerable<ModelComponent> {
-        private readonly Dictionary<ModelComponent, object> selection = new();
-        private ILayoutSelectionLook selectionLook;
+        private readonly Dictionary<ModelComponent, object?> selection = new();
+        private ILayoutSelectionLook? selectionLook;
 
         public const int ZOrderTopmost = 0;
         public const int ZOrderBottom = 1;
@@ -141,15 +141,15 @@ namespace LayoutManager.Model {
             if (component != null)
                 Add(component);
             else {
-                if (LayoutModel.Blocks.TryGetValue(id, out LayoutBlock block))
+                if (LayoutModel.Blocks.TryGetValue(id, out LayoutBlock? block))
                     Add(block);
                 else {
-                    TrainStateInfo train = LayoutModel.StateManager.Trains[id];
+                    TrainStateInfo? train = LayoutModel.StateManager.Trains[id];
 
                     if (train != null)
                         Add(train);
                     else {
-                        ManualDispatchRegionInfo manualDispatchRegion = LayoutModel.StateManager.ManualDispatchRegions[id];
+                        ManualDispatchRegionInfo? manualDispatchRegion = LayoutModel.StateManager.ManualDispatchRegions[id];
 
                         if (manualDispatchRegion != null)
                             Add(manualDispatchRegion.Selection);
@@ -239,7 +239,7 @@ namespace LayoutManager.Model {
             Display(selectionLook, ZOrderTopmost);
         }
 
-        public ILayoutSelectionLook SelectionLook => selectionLook;
+        public ILayoutSelectionLook? SelectionLook => selectionLook;
 
         /// <summary>
         /// Hide the selection
@@ -259,7 +259,7 @@ namespace LayoutManager.Model {
         /// null if component not in selection, 
         /// otherwise an instance of a LayoutSelectionLook object.
         /// </returns>
-        public ILayoutSelectionLook GetComponentSelectionLook(ModelComponent component) {
+        public ILayoutSelectionLook? GetComponentSelectionLook(ModelComponent component) {
             return selection.ContainsKey(component) ? selectionLook : null;
         }
 

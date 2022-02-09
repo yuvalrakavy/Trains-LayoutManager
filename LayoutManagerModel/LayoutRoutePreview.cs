@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Diagnostics;
+using MethodDispatcher;
 
 using LayoutManager.Components;
 
@@ -9,13 +10,14 @@ namespace LayoutManager.Model {
     public struct TrackSegment {
         private LayoutComponentConnectionPoint cp1, cp2;
 
-        public static readonly TrackSegment Empty = new(null, 0, 0);
+        static readonly LayoutStraightTrackComponent noTrack = new();
+        public static readonly TrackSegment Empty = new(noTrack, 0, 0);
 
         public TrackSegment(LayoutTrackComponent track, LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
             this.Track = track;
             this.cp1 = cp1;
             this.cp2 = cp2;
-            initalizeConnectionPoints(cp1, cp2);
+            InitalizeConnectionPoints(cp1, cp2);
         }
 
         public TrackSegment(LayoutTrackComponent track, IList<LayoutComponentConnectionPoint> cps) {
@@ -25,14 +27,14 @@ namespace LayoutManager.Model {
             this.Track = track;
             this.cp1 = cps[0];
             this.cp2 = cps[1];
-            initalizeConnectionPoints(cps[0], cps[1]);
+            InitalizeConnectionPoints(cps[0], cps[1]);
         }
 
         // Ensure order between cp1 and cp2.
         // If vertical then cp1=top cp2=bottom
         // If horizontal then cp1=left, cp2=right
         // If diagonal then cp1={horizontal} cp2={vertical}
-        private void initalizeConnectionPoints(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
+        private void InitalizeConnectionPoints(LayoutComponentConnectionPoint cp1, LayoutComponentConnectionPoint cp2) {
             if (LayoutTrackComponent.IsVertical(cp1, cp2)) {
                 if (cp1 == LayoutComponentConnectionPoint.B) {
                     this.cp1 = cp2;
@@ -61,10 +63,10 @@ namespace LayoutManager.Model {
 
         public LayoutComponentConnectionPoint Cp2 => cp2;
 
-        public override string ToString() => Track.FullDescription + " (" + cp1.ToString() + " to " + cp2.ToString() + ")";
+        public override string ToString() => $"{Track.FullDescription} ({cp1} to {cp2})";
 
-        public override bool Equals(object obj) {
-            return obj is TrackSegment other ? Track == other.Track && cp1 == other.cp1 && cp2 == other.cp2 : true;
+        public override bool Equals(object? obj) {
+            return obj is not TrackSegment other || (Track == other.Track && cp1 == other.cp1 && cp2 == other.cp2);
         }
 
         static public bool operator ==(TrackSegment s1, TrackSegment s2) => s1.Equals(s2);
@@ -89,14 +91,14 @@ namespace LayoutManager.Model {
     }
 
     internal class TrackSegmentPreviewInfo {
-        internal TrackSegmentPreviewInfo(RoutePreviewRequest request, RoutePreviewAnnotation annotation) {
+        internal TrackSegmentPreviewInfo(RoutePreviewRequest request, RoutePreviewAnnotation? annotation) {
             Request = request;
             Annotation = annotation;
         }
 
         public RoutePreviewRequest Request { get; }
 
-        public RoutePreviewAnnotation Annotation { get; }
+        public RoutePreviewAnnotation? Annotation { get; }
     }
 
     /// <summary>
@@ -131,7 +133,7 @@ namespace LayoutManager.Model {
 
         public TrackSegment TrackSegment => _trackSegment;
 
-        public RoutePreviewAnnotation PreviewAnnotation { get; }
+        public RoutePreviewAnnotation? PreviewAnnotation { get; }
     }
 
     public class RoutePreviewRequest {
@@ -155,7 +157,7 @@ namespace LayoutManager.Model {
         }
 
         public void Add(ITripRoute route, int insertAnnotationEvery) {
-            ILayoutTopologyServices ts = (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this));
+            ILayoutTopologyServices ts = Dispatch.Call.GetTopologyServices();
             TrackEdge edge = route.SourceEdge;
             TrackEdge destinationEdge = route.DestinationEdge;
             IList<int> switchStates = route.SwitchStates;
@@ -228,7 +230,7 @@ namespace LayoutManager.Model {
 
         public void Add(RoutePreviewRequest previewRequest) {
             foreach (PreviewRequestEntry requestEntry in previewRequest.RequestEntries) {
-                if (!trackSegmentMap.TryGetValue(requestEntry.TrackSegment, out TrackSegmentMapEntry entry)) {
+                if (!trackSegmentMap.TryGetValue(requestEntry.TrackSegment, out TrackSegmentMapEntry? entry)) {
                     entry = new TrackSegmentMapEntry();
                     trackSegmentMap.Add(requestEntry.TrackSegment, entry);
                 }
@@ -256,11 +258,11 @@ namespace LayoutManager.Model {
             previewRequest.Redraw();
         }
 
-        public TrackSegmentPreviewResult this[TrackSegment trackSegment] {
+        public TrackSegmentPreviewResult? this[TrackSegment trackSegment] {
             get {
                 // TODO: May need to merge the preview annotation info from all preview requests that are displayed for this track segment
 
-                return trackSegmentMap.TryGetValue(trackSegment, out TrackSegmentMapEntry entry)
+                return trackSegmentMap.TryGetValue(trackSegment, out TrackSegmentMapEntry? entry) && entry.TopPreviewInfo != null
                     ? new TrackSegmentPreviewResult(entry.TopPreviewInfo.Request, entry.Annotations)
                     : null;
             }
@@ -280,8 +282,8 @@ namespace LayoutManager.Model {
         }
 
         private class TrackSegmentMapEntry {
-            private TrackSegmentPreviewInfo topPreviewInfo;
-            private List<TrackSegmentPreviewInfo> otherPreviewInfos;
+            private TrackSegmentPreviewInfo? topPreviewInfo;
+            private List<TrackSegmentPreviewInfo>? otherPreviewInfos;
             private int annotationCount = -1;
 
             public void Add(TrackSegmentPreviewInfo previewInfo) {
@@ -291,9 +293,9 @@ namespace LayoutManager.Model {
                     topPreviewInfo = previewInfo;
                 else {
                     if (otherPreviewInfos == null) {
-                        otherPreviewInfos = new List<TrackSegmentPreviewInfo>();
-
-                        otherPreviewInfos.Add(topPreviewInfo);
+                        otherPreviewInfos = new List<TrackSegmentPreviewInfo> {
+                            topPreviewInfo
+                        };
                     }
                     otherPreviewInfos.Add(previewInfo);
                     topPreviewInfo = previewInfo;
@@ -305,11 +307,11 @@ namespace LayoutManager.Model {
 
                 annotationCount = -1;
 
-                if (previewRequest == topPreviewInfo.Request)
+                if (topPreviewInfo != null && previewRequest == topPreviewInfo.Request)
                     setTopPreviewInfo = true;
 
                 if (otherPreviewInfos != null) {
-                    TrackSegmentPreviewInfo previewInfoToRemove = null;
+                    TrackSegmentPreviewInfo? previewInfoToRemove = null;
 
                     foreach (TrackSegmentPreviewInfo previewInfo in otherPreviewInfos)
                         if (previewInfo.Request == previewRequest) {
@@ -326,13 +328,13 @@ namespace LayoutManager.Model {
 
                 if (setTopPreviewInfo) {
                     if (otherPreviewInfos != null)
-                        topPreviewInfo = otherPreviewInfos[otherPreviewInfos.Count - 1];
+                        topPreviewInfo = otherPreviewInfos[^1];
                     else
                         topPreviewInfo = null;
                 }
             }
 
-            public TrackSegmentPreviewInfo TopPreviewInfo => topPreviewInfo;
+            public TrackSegmentPreviewInfo? TopPreviewInfo => topPreviewInfo;
 
             public bool IsEmpty => topPreviewInfo == null && otherPreviewInfos == null;
 

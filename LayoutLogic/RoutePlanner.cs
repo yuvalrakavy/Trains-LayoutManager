@@ -4,6 +4,7 @@ using System.Xml;
 using System.Diagnostics;
 using System.Threading;
 using System.Linq;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
@@ -20,9 +21,9 @@ namespace LayoutManager.Logic {
         private ModelTopology? routingTableTopology;
         private bool aborted;
 
-        [LayoutEvent("get-route-planning-services")]
-        private void GetRoutePlanningServers(LayoutEvent e) {
-            e.Info = (IRoutePlanningServices)this;
+        [DispatchTarget]
+        private IRoutePlanningServices GetRoutePlanningServices() {
+            return this;
         }
 
         #region Build routing table

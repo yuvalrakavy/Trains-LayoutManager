@@ -248,7 +248,9 @@ namespace LayoutManager.Components {
         };
 
         public static LayoutComponentConnectionPoint[] DiagonalConnectionPoints(LayoutComponentConnectionPoint cp) {
+#pragma warning disable IDE0066 // Convert switch statement to expression
             switch (cp) {
+#pragma warning restore IDE0066 // Convert switch statement to expression
                 case LayoutComponentConnectionPoint.B:
                 case LayoutComponentConnectionPoint.T:
                     return new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.L, LayoutComponentConnectionPoint.R };
@@ -512,11 +514,11 @@ namespace LayoutManager.Components {
         // Implement ILayoutConnectableComponent
         public override IList<LayoutComponentConnectionPoint> ConnectionPoints => Array.AsReadOnly<LayoutComponentConnectionPoint>(new LayoutComponentConnectionPoint[] { cp1, cp2, cp3, cp4 });
 
-        public LayoutComponentConnectionPoint[]? GetTrackPath(int n) {
-            if (n == 0)
-                return new LayoutComponentConnectionPoint[] { cp1, cp2 };
-            else return n == 1 ? (new LayoutComponentConnectionPoint[] { cp3, cp4 }) : null;
-        }
+        public LayoutComponentConnectionPoint[] GetTrackPath(int n) => n switch {
+            0 => new LayoutComponentConnectionPoint[] { cp1, cp2 },
+            1 => new LayoutComponentConnectionPoint[] { cp3, cp4 },
+            _ => throw new ArgumentException("path number", nameof(n)),
+        };
 
         public override LayoutComponentConnectionPoint[] ConnectTo(LayoutComponentConnectionPoint from, LayoutComponentConnectionType type) {
             if (from == cp1)
@@ -627,7 +629,7 @@ namespace LayoutManager.Components {
         /// </summary>
         public virtual int CurrentSwitchState => switchingStateSupport.CurrentSwitchState;
 
-        public virtual void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string connectionPointName) {
+        public virtual void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string?connectionPointName) {
             switchingStateSupport.AddSwitchingCommands(switchingCommands, switchingState, connectionPointName);
         }
 
@@ -636,7 +638,7 @@ namespace LayoutManager.Components {
         /// notification handler, and not directly.
         /// </summary>
         /// <param name="switchState">The new switch state</param>
-        public virtual void SetSwitchState(ControlConnectionPoint connectionPoint, int switchState, string connectionPointName) {
+        public virtual void SetSwitchState(ControlConnectionPoint connectionPoint, int switchState, string? connectionPointName) {
             switchingStateSupport.SetSwitchState(connectionPoint, switchState, connectionPointName);
         }
 
@@ -884,7 +886,7 @@ namespace LayoutManager.Components {
                 : base(component, switchStateCount: 3) {
             }
 
-            public override void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string connectionPointName) {
+            public override void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string? connectionPointName) {
                 if (switchingState < 0 || switchingState > 2)
                     throw new LayoutException(this, "Invalid switch state: " + switchingState);
 
@@ -905,7 +907,7 @@ namespace LayoutManager.Components {
                     switchingCommands.Add(new SwitchingCommand(new ControlConnectionPointReference(connectionPointLeft), leftState));
             }
 
-            public override void SetSwitchState(ControlConnectionPoint controlConnectionPoint, int switchState, string connectionPointName) {
+            public override void SetSwitchState(ControlConnectionPoint controlConnectionPoint, int switchState, string? connectionPointName) {
                 Trace.WriteLine($"ThreeWayTurnout::SetSwitchState for {controlConnectionPoint.Name} to {switchState}");
 
                 if (controlConnectionPoint.Name == "Right")

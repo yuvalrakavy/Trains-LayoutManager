@@ -78,9 +78,9 @@ namespace LayoutManager {
         private readonly ILayoutScript script;
         private bool taskTerminated;
 
-        public LayoutEventScriptTask(ILayoutScript eventScript, XmlElement? scriptElement, LayoutScriptContext context) {
+        public LayoutEventScriptTask(ILayoutScript eventScript, XmlElement scriptElement, LayoutScriptContext context) {
             this.script = eventScript;
-            this.scriptElement = scriptElement ?? throw new ArgumentNullException(nameof(scriptElement));
+            this.scriptElement = scriptElement;
 
             Root = Parse(this.scriptElement, context);
         }
@@ -150,7 +150,7 @@ namespace LayoutManager {
 
         public bool IsErrorState => EventRoot.IsErrorState;
 
-        public string? Description => (string?)EventManager.Event(new LayoutEvent("get-event-script-description", scriptElement));
+        public string Description => Dispatch.Call.GetEventScriptDescription(scriptElement) ?? $"?({scriptElement})?";
 
         public void Cancel() {
             EventRoot.Cancel();
@@ -182,12 +182,12 @@ namespace LayoutManager {
     public class LayoutEventScript : ILayoutScript, IDisposable, IObjectHasId {
         private readonly LayoutEvent? scriptDoneEvent;
         private readonly LayoutEvent? errorOccurredEvent;
-        private readonly XmlElement? scriptElement;
+        private readonly XmlElement scriptElement;
         private LayoutScriptContext? scriptContext;
         private readonly List<LayoutEventScriptTask> tasks = new();
         private LayoutEventScriptTask? rootTask;
 
-        public LayoutEventScript(string scriptName, XmlElement? scriptElement,
+        public LayoutEventScript(string scriptName, XmlElement scriptElement,
             ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent, LayoutEvent? errorOccurredEvent) {
             this.Name = scriptName;
             this.scriptElement = scriptElement;
@@ -234,7 +234,7 @@ namespace LayoutManager {
         /// </summary>
         public string Name { get; }
 
-        public LayoutEventScriptTask AddTask(XmlElement? scriptElement, LayoutScriptContext context) {
+        public LayoutEventScriptTask AddTask(XmlElement scriptElement, LayoutScriptContext context) {
             LayoutEventScriptTask task = new(this, scriptElement, context);
 
             tasks.Add(task);
@@ -272,7 +272,7 @@ namespace LayoutManager {
 
         public bool IsErrorState => RootTask.IsErrorState;
 
-        public string? Description => (string?)EventManager.Event(new LayoutEvent("get-event-script-description", scriptElement));
+        public string Description => scriptElement != null ? ((string?)Dispatch.Call.GetEventScriptDescription(scriptElement) ?? $"({scriptElement.Name})") : "(null)";
 
         protected virtual void Dispose(bool disposing) {
             if(disposing) {
@@ -380,9 +380,14 @@ namespace LayoutManager {
 
         public object? ScriptSubject { get; set; }
 
-        public string? Description => element == null || element.ChildNodes.Count < 1
-                    ? ""
-                    : (string?)EventManager.Event(new LayoutEvent("get-event-script-description", element.ChildNodes[0]));
+        public string Description {
+            get {
+                if (element != null && element.ChildNodes.Count > 0 && element.ChildNodes[0] is XmlElement child)
+                    return Dispatch.Call.GetEventScriptDescription(child) ?? $"({child.Name})";
+                else
+                    return "";
+            }
+        }
 
         #endregion
     }

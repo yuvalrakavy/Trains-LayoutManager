@@ -73,6 +73,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\LayoutBaseServices\LayoutBaseServices.csproj" />
+    <ProjectReference Include="..\LayoutLogic\LayoutLogic.csproj" />
     <ProjectReference Include="..\LayoutManagerModel\LayoutManagerModel.csproj" />
   </ItemGroup>
   <ItemGroup>

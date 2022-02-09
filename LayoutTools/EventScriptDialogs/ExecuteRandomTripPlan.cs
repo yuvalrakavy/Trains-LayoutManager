@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
+using MethodDispatcher;
 
 namespace LayoutManager.Tools.EventScriptDialogs {
     /// <summary>
@@ -56,7 +57,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             if (conditionElement == null || conditionElement.ChildNodes.Count < 1)
                 textBoxCondition.Text = "<No condition>";
             else
-                textBoxCondition.Text = Ensure.NotNull<string>(EventManager.Event(new LayoutEvent("get-event-script-description", conditionElement.ChildNodes[0])));
+                textBoxCondition.Text = Dispatch.Call.GetEventScriptDescription((XmlElement)conditionElement.ChildNodes[0]!) ?? "(condition)";
         }
 
         /// <summary>

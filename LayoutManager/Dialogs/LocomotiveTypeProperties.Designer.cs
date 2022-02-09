@@ -149,7 +149,7 @@ namespace LayoutManager.Dialogs {
             this.lengthInput.Size = new System.Drawing.Size(95, 24);
             this.lengthInput.TabIndex = 16;
             this.lengthInput.UnitValue = 0D;
-            this.lengthInput.Load += this.lengthInput1_Load;
+            this.lengthInput.Load += this.LengthInput1_Load;
             // 
             // label3
             // 
@@ -315,7 +315,7 @@ namespace LayoutManager.Dialogs {
             this.listViewFunctions.TabIndex = 6;
             this.listViewFunctions.UseCompatibleStateImageBehavior = false;
             this.listViewFunctions.View = System.Windows.Forms.View.Details;
-            this.listViewFunctions.SelectedIndexChanged += this.listViewFunctions_SelectedIndexChanged_1;
+            this.listViewFunctions.SelectedIndexChanged += this.ListViewFunctions_SelectedIndexChanged_1;
             // 
             // columnHeaderFunctionNumber
             // 
@@ -344,7 +344,7 @@ namespace LayoutManager.Dialogs {
             this.buttonCopyFrom.Size = new System.Drawing.Size(75, 23);
             this.buttonCopyFrom.TabIndex = 5;
             this.buttonCopyFrom.Text = "&Copy from...";
-            this.buttonCopyFrom.Click += this.buttonCopyFrom_Click_1;
+            this.buttonCopyFrom.Click += this.ButtonCopyFrom_Click_1;
             // 
             // checkBoxHasLights
             // 
@@ -361,7 +361,7 @@ namespace LayoutManager.Dialogs {
             this.buttonFunctionAdd.Size = new System.Drawing.Size(72, 24);
             this.buttonFunctionAdd.TabIndex = 1;
             this.buttonFunctionAdd.Text = "&Add...";
-            this.buttonFunctionAdd.Click += this.buttonFunctionAdd_Click_1;
+            this.buttonFunctionAdd.Click += this.ButtonFunctionAdd_Click_1;
             // 
             // buttonFunctionEdit
             // 
@@ -370,7 +370,7 @@ namespace LayoutManager.Dialogs {
             this.buttonFunctionEdit.Size = new System.Drawing.Size(72, 24);
             this.buttonFunctionEdit.TabIndex = 2;
             this.buttonFunctionEdit.Text = "&Edit...";
-            this.buttonFunctionEdit.Click += this.buttonFunctionEdit_Click_1;
+            this.buttonFunctionEdit.Click += this.ButtonFunctionEdit_Click_1;
             // 
             // buttonFunctionRemove
             // 
@@ -379,7 +379,7 @@ namespace LayoutManager.Dialogs {
             this.buttonFunctionRemove.Size = new System.Drawing.Size(72, 24);
             this.buttonFunctionRemove.TabIndex = 3;
             this.buttonFunctionRemove.Text = "&Remove...";
-            this.buttonFunctionRemove.Click += this.buttonFunctionRemove_Click_1;
+            this.buttonFunctionRemove.Click += this.ButtonFunctionRemove_Click_1;
             // 
             // tabPageDecoder
             // 
@@ -401,7 +401,7 @@ namespace LayoutManager.Dialogs {
             this.checkBoxHasBuiltinDecoder.TabIndex = 4;
             this.checkBoxHasBuiltinDecoder.Text = "Has built in decoder";
             this.checkBoxHasBuiltinDecoder.UseVisualStyleBackColor = true;
-            this.checkBoxHasBuiltinDecoder.CheckedChanged += this.checkBoxHasBuiltinDecoder_CheckedChanged;
+            this.checkBoxHasBuiltinDecoder.CheckedChanged += this.CheckBoxHasBuiltinDecoder_CheckedChanged;
             // 
             // comboBoxDecoderType
             // 
@@ -449,7 +449,7 @@ namespace LayoutManager.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 1;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += this.buttonOk_Click;
+            this.buttonOk.Click += this.ButtonOk_Click;
             // 
             // LocomotiveTypeProperties
             // 

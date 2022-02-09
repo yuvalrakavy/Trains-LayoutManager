@@ -78,6 +78,7 @@
     <ProjectReference Include="..\LayoutBaseServices\LayoutBaseServices.csproj" />
     <ProjectReference Include="..\LayoutCommands\LayoutCommands.csproj" />
     <ProjectReference Include="..\LayoutCommonUI\LayoutCommonUI.csproj" />
+    <ProjectReference Include="..\LayoutLogic\LayoutLogic.csproj" />
     <ProjectReference Include="..\LayoutManagerModel\LayoutManagerModel.csproj" />
     <ProjectReference Include="..\LayoutManagerView\LayoutManagerView.csproj" />
   </ItemGroup>

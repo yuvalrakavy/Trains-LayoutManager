@@ -5,7 +5,6 @@ using System.Xml;
 
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Dialogs {
     /// <summary>
     /// Summary description for LocomotiveType.
@@ -53,7 +52,7 @@ namespace LayoutManager.Dialogs {
             base.Dispose(disposing);
         }
 
-        private void buttonOk_Click(object? sender, EventArgs e) {
+        private void ButtonOk_Click(object? sender, EventArgs e) {
             if (locoType == null || inLocoType == null)
                 return;
 
@@ -79,7 +78,7 @@ namespace LayoutManager.Dialogs {
             if (checkBoxHasBuiltinDecoder.Checked)
                 locoType.DecoderTypeName = ((DecoderTypeItem)comboBoxDecoderType.SelectedItem).DecoderType.TypeName;
             else
-                locoType.DecoderTypeName = null;
+                locoType.DecoderTypeName = "Generic-DCC";
 
             if (inLocoType.Element.ParentNode != null) {
                 // Replace the input with copy made for editing
@@ -92,34 +91,34 @@ namespace LayoutManager.Dialogs {
             DialogResult = DialogResult.OK;
         }
 
-        private void lengthInput1_Load(object? sender, EventArgs e) {
+        private void LengthInput1_Load(object? sender, EventArgs e) {
         }
 
-        private void checkBoxHasBuiltinDecoder_CheckedChanged(object? sender, EventArgs e) {
+        private void CheckBoxHasBuiltinDecoder_CheckedChanged(object? sender, EventArgs e) {
             comboBoxDecoderType.Enabled = checkBoxHasBuiltinDecoder.Checked;
         }
 
-        private void buttonFunctionAdd_Click_1(object? sender, EventArgs e) {
+        private void ButtonFunctionAdd_Click_1(object? sender, EventArgs e) {
             ButtonFunctionAdd_Click(sender, e);
         }
 
-        private void buttonFunctionEdit_Click_1(object? sender, EventArgs e) {
+        private void ButtonFunctionEdit_Click_1(object? sender, EventArgs e) {
             ButtonFunctionEdit_Click(sender, e);
         }
 
-        private void buttonFunctionRemove_Click_1(object? sender, EventArgs e) {
+        private void ButtonFunctionRemove_Click_1(object? sender, EventArgs e) {
             ButtonFunctionRemove_Click(sender, e);
         }
 
-        private void buttonCopyFrom_Click_1(object? sender, EventArgs e) {
+        private void ButtonCopyFrom_Click_1(object? sender, EventArgs e) {
             ButtonCopyFrom_Click(sender, e);
         }
 
-        private void listViewFunctions_SelectedIndexChanged_1(object? sender, EventArgs e) {
+        private void ListViewFunctions_SelectedIndexChanged_1(object? sender, EventArgs e) {
             ListViewFunctions_SelectedIndexChanged(sender, e);
         }
 
-        private void trackGuageSelector_SelectedIndexChanged_1(object? sender, EventArgs e) {
+        private void TrackGuageSelector_SelectedIndexChanged_1(object? sender, EventArgs e) {
             TrackGuageSelector_SelectedIndexChanged(sender, e);
         }
     }

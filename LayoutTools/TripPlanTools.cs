@@ -3,11 +3,241 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Xml;
 using System.Windows.Forms;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.CommonUI;
+using LayoutManager.Logic;
 
 namespace LayoutManager.Tools {
+    public static class DispatchSources {
+        [DispatchSource]
+        public static ApplicableTripPlansData GetApplicableTripPlansRequest(this Dispatcher d, object? target, bool calculatePenalty, LayoutComponentConnectionPoint? front) {
+            return d[nameof(GetApplicableTripPlansRequest)].Call<ApplicableTripPlansData>(target, calculatePenalty, front);
+        }
+    }
+
+    public class ApplicableTripPlanData {
+        public Guid TripPlanId { get; set; }
+        public bool ShouldReverse { get; set; }
+        public int? Penalty { get; set; }
+        public RouteClearanceQuality? ClearanceQuality { get; set; }
+    }
+
+    public class ApplicableTripPlansData {
+        private readonly bool staticGrade = false;
+        private IRoutePlanningServices? _tripPlanningServices = null;
+
+        public ApplicableTripPlansData(bool staticGrade = true) {
+            this.staticGrade = staticGrade;
+            TripPlans = new();
+        }
+
+        public IRoutePlanningServices TripPlanningServices => _tripPlanningServices ??= Dispatch.Call.GetRoutePlanningServices();
+        public Guid LocomtiveBlockId { get; set; }
+        public LayoutBlock? LocomotiveBlock { get; set; }
+        public LayoutBlock? LastCarBlock { get; set; }
+        public LayoutComponentConnectionPoint LastCarFront { get; set; }
+        public Guid RouteOwner { get; set; } = Guid.Empty;
+        public bool AllTripPlans { get; set; } = false;
+        public bool CalculatePenalty { get; set; } = true;
+        public LayoutComponentConnectionPoint LocomotiveFront { get; set; }
+        public List<ApplicableTripPlanData> TripPlans { get; private set; }
+
+        public TrainStateInfo Train {
+            set {
+                LocomotiveBlock = value.LocomotiveBlock;
+                LocomotiveFront = value.LocomotiveLocation?.DisplayFront ?? LayoutComponentConnectionPoint.Empty;
+                LastCarBlock = value.LastCarBlock;
+                LastCarFront = value.LastCarLocation?.DisplayFront ?? LayoutComponentConnectionPoint.Empty;
+                RouteOwner = value.Id;
+
+                LocateRealTrainFront(value);
+            }
+        }
+
+        // Verify that the blocks reachable from the locomotive front do not contain any part of the train. If they do, switch
+        // between the last car and locomotive blocks. So at the end, the train can always move forward from the locomotive block
+        // and backward from the last car block.
+        protected void LocateRealTrainFront(TrainStateInfo train) {
+            var locomotiveBlock = Ensure.NotNull<LayoutBlock>(LocomotiveBlock);
+            var locomotiveBlockInfo = locomotiveBlock.BlockDefinintion;
+
+            LayoutBlockEdgeBase[] blockEdges = locomotiveBlockInfo.GetBlockEdges(locomotiveBlockInfo.GetConnectionPointIndex(LocomotiveFront));
+
+            bool switchFrontAndLastCar = false;
+
+            foreach (LayoutBlockEdgeBase blockEdge in blockEdges) {
+                LayoutBlock otherBlock = locomotiveBlock.OtherBlock(blockEdge);
+
+                if (train.LocationOfBlock(otherBlock) != null) {
+                    switchFrontAndLastCar = true;
+                    break;
+                }
+            }
+
+            if (switchFrontAndLastCar) {
+                LayoutBlock tBlock = locomotiveBlock;
+
+                LocomotiveBlock = LastCarBlock;
+                LastCarBlock = tBlock;
+
+                LayoutComponentConnectionPoint tFront = LocomotiveFront;
+
+                LocomotiveFront = LastCarFront;
+                LastCarFront = tFront;
+            }
+        }
+
+        private class Direction {
+            private readonly bool shouldReverse;
+
+            public Direction(bool shouldReverse) {
+                this.shouldReverse = shouldReverse;
+            }
+
+            public LocomotiveOrientation Get(LocomotiveOrientation direction) {
+                return shouldReverse
+                    ? direction == LocomotiveOrientation.Forward ? LocomotiveOrientation.Backward : LocomotiveOrientation.Forward
+                    : direction;
+            }
+
+            public LocomotiveOrientation Get(TripPlanWaypointInfo wayPoint) => Get(wayPoint.Direction);
+        }
+
+        protected bool IsTripPlanApplicable(TripPlanInfo tripPlan, bool shouldReverse) {
+            var d = new Direction(shouldReverse);
+            LayoutTrackComponent? sourceTrack = null;
+            LayoutComponentConnectionPoint sourceFront = LayoutComponentConnectionPoint.Empty;
+
+            for (int i = 0; i < tripPlan.Waypoints.Count; i++) {
+                IList<TripPlanWaypointInfo> wayPoints = tripPlan.Waypoints;
+
+                if (i == 0) {
+                    var sourceBlock = (d.Get(wayPoints[0]) == LocomotiveOrientation.Forward) ? LocomotiveBlock : LastCarBlock;
+
+                    sourceTrack = sourceBlock?.BlockDefinintion.Track;
+                    sourceFront = (d.Get(wayPoints[0]) == LocomotiveOrientation.Forward) ? LocomotiveFront : LastCarFront;
+                }
+
+                if (sourceTrack == null)
+                    return false;
+
+                BestRoute bestRoute = TripPlanningServices.FindBestRoute(sourceTrack, sourceFront, d.Get(wayPoints[i]), wayPoints[i].Destination, RouteOwner, wayPoints[i].TrainStopping);
+
+                if (!bestRoute.Quality.IsValidRoute)
+                    return false;
+                else {
+                    // Avoid selecting null routes
+                    if (tripPlan.Waypoints.Count == 1 && bestRoute.TrackEdges.Count == 1)
+                        return false;
+
+                    sourceTrack = bestRoute.DestinationTrack;
+                    sourceFront = bestRoute.DestinationFront;
+                }
+            }
+
+            return true;
+        }
+
+        protected RouteQuality VerifyTripPlan(TripPlanInfo tripPlan, bool shouldReverese) {
+            Direction d = new(shouldReverese);
+            LayoutTrackComponent? sourceTrack = null;
+            LayoutComponentConnectionPoint sourceFront = LayoutComponentConnectionPoint.Empty;
+            TripBestRouteResult result;
+            RouteQuality quality = new(RouteOwner);
+
+            for (int i = 0; i < tripPlan.Waypoints.Count; i++) {
+                TripBestRouteRequest request;
+                IList<TripPlanWaypointInfo> wayPoints = tripPlan.Waypoints;
+
+                if (i == 0) {
+                    var sourceBlock = (d.Get(wayPoints[0]) == LocomotiveOrientation.Forward) ? LocomotiveBlock : LastCarBlock;
+
+                    if (sourceBlock == null)
+                        throw new LayoutException("Cannot figure out source block");
+
+                    sourceTrack = sourceBlock.BlockDefinintion.Track;
+                    sourceFront = (d.Get(wayPoints[0]) == LocomotiveOrientation.Forward) ? LocomotiveFront : LastCarFront;
+                }
+
+                if (sourceTrack == null)
+                    break;
+
+                request = new TripBestRouteRequest(RouteOwner, wayPoints[i].Destination, sourceTrack, sourceFront, d.Get(wayPoints[i]), staticGrade);
+                result = Ensure.NotNull<TripBestRouteResult>(EventManager.Event(new LayoutEvent("find-best-route-request", request)));
+
+                if (result.BestRoute == null)
+                    return result.Quality;
+                else {
+                    // Avoid selecting null routes
+                    if (tripPlan.Waypoints.Count == 1 && result.BestRoute.TrackEdges.Count == 1) {
+                        quality.ClearanceQuality = RouteClearanceQuality.NoPath;
+                        return quality;
+                    }
+
+                    sourceTrack = result.BestRoute.DestinationTrack;
+                    sourceFront = result.BestRoute.DestinationFront;
+
+                    quality.AddClearanceQuality(result.Quality.ClearanceQuality);
+                    quality.Penalty += result.Quality.Penalty;
+                }
+            }
+
+            return quality;
+        }
+
+        public void FindApplicableTripPlans() {
+            if (CalculatePenalty) {
+                RouteQuality? quality = null;
+
+                foreach (TripPlanInfo tripPlan in LayoutModel.StateManager.TripPlansCatalog.TripPlans) {
+                    if (AllTripPlans || (quality = VerifyTripPlan(tripPlan, shouldReverese: false)).IsValidRoute) {
+                        TripPlans.Add(new ApplicableTripPlanData {
+                            TripPlanId = tripPlan.Id,
+                            ShouldReverse = false,
+                            Penalty = quality?.Penalty,
+                            ClearanceQuality = quality?.ClearanceQuality,
+                        });
+                    }
+                    else if ((quality = VerifyTripPlan(tripPlan, shouldReverese: true)).IsValidRoute) {
+                        TripPlans.Add(new ApplicableTripPlanData {
+                            TripPlanId = tripPlan.Id,
+                            ShouldReverse = true,
+                            Penalty = quality?.Penalty,
+                            ClearanceQuality = quality?.ClearanceQuality,
+                        });
+                    }
+
+                    Application.DoEvents();
+                }
+            }
+            else {
+                foreach (TripPlanInfo tripPlan in LayoutModel.StateManager.TripPlansCatalog.TripPlans) {
+                    if (AllTripPlans || IsTripPlanApplicable(tripPlan, shouldReverse: false)) {
+                        TripPlans.Add(new ApplicableTripPlanData {
+                            TripPlanId = tripPlan.Id,
+                            ShouldReverse = false
+                        });
+                    }
+                    else if (IsTripPlanApplicable(tripPlan, shouldReverse: true)) {
+                        TripPlans.Add(new ApplicableTripPlanData {
+                            TripPlanId = tripPlan.Id,
+                            ShouldReverse = true
+                        });
+                    }
+
+                    Application.DoEvents();
+                }
+
+            }
+
+            if (LocomotiveBlock != null)
+                LocomtiveBlockId = LocomotiveBlock.Id;
+        }
+    }
+
+
     [LayoutModule("Trip Planning Tools", UserControl = false)]
     public class TripPlanningTools : ILayoutModuleSetup {
         /// <summary>
@@ -34,7 +264,7 @@ namespace LayoutManager.Tools {
             if (saveTripPlan.ShowDialog(parentForm) == DialogResult.OK) {
                 TripPlanCatalogInfo tripPlanCatalog = LayoutModel.StateManager.TripPlansCatalog;
                 bool doSave = true;
-                TripPlanInfo existingTripPlan = tripPlanCatalog.TripPlans[saveTripPlan.TripPlanName];
+                TripPlanInfo? existingTripPlan = tripPlanCatalog.TripPlans[saveTripPlan.TripPlanName];
 
                 if (existingTripPlan != null) {
                     if (editedTripPlanID != existingTripPlan.Id && MessageBox.Show(parentForm, "A trip plan with name already exists, would you like to replace it?",
@@ -90,275 +320,52 @@ namespace LayoutManager.Tools {
 
         #region Applicable Trip Plans
 
-        private class ApplicableTripPlansData : LayoutXmlWrapper {
-            private const string A_TripPlanID = "TripPlanID";
-            private const string A_ShouldReverse = "ShouldReverse";
-            private const string A_Penalty = "Penalty";
-            private const string A_ClearanceQuality = "ClearanceQuality";
-            private const string E_ApplicableTripPlan = "ApplicableTripPlan";
-            private const string A_LocomotiveBlockId = "LocomotiveBlockID";
-            private const string A_LocomotiveFront = "LocomotiveFront";
-            private readonly bool staticGrade = false;
-            private IRoutePlanningServices? _tripPlanningServices = null;
-
-            public ApplicableTripPlansData(XmlElement element) : base(element) {
-                staticGrade = (bool?)AttributeValue("StaticGrade") ?? true;
-            }
-
-            public IRoutePlanningServices TripPlanningServices => _tripPlanningServices ??= Ensure.NotNull<IRoutePlanningServices>(EventManager.Event(new LayoutEvent("get-route-planning-services", this)));
-
-            public LayoutBlock? LocomotiveBlock { get; set; }
-
-            public LayoutComponentConnectionPoint LocomotiveFront { get; set; }
-
-            public LayoutBlock? LastCarBlock { get; set; }
-
-            public LayoutComponentConnectionPoint LastCarFront { get; set; }
-
-            public Guid RouteOwner { get; set; } = Guid.Empty;
-
-            public bool AllTripPlans { get; set; } = false;
-
-            public bool CalculatePenalty { get; set; } = true;
-
-            public TrainStateInfo Train {
-                set {
-                    LocomotiveBlock = value.LocomotiveBlock;
-                    LocomotiveFront = value.LocomotiveLocation?.DisplayFront ?? LayoutComponentConnectionPoint.Empty;
-                    LastCarBlock = value.LastCarBlock;
-                    LastCarFront = value.LastCarLocation?.DisplayFront ?? LayoutComponentConnectionPoint.Empty;
-                    RouteOwner = value.Id;
-
-                    LocateRealTrainFront(value);
-                }
-            }
-
-            // Verify that the blocks reachable from the locomotive front do not contain any part of the train. If they do, switch
-            // between the last car and locomotive blocks. So at the end, the train can always move forward from the locomotive block
-            // and backward from the last car block.
-            protected void LocateRealTrainFront(TrainStateInfo train) {
-                var locomotiveBlock = Ensure.NotNull<LayoutBlock>(LocomotiveBlock);
-                var locomotiveBlockInfo = locomotiveBlock.BlockDefinintion;
-
-                LayoutBlockEdgeBase[] blockEdges = locomotiveBlockInfo.GetBlockEdges(locomotiveBlockInfo.GetConnectionPointIndex(LocomotiveFront));
-
-                bool switchFrontAndLastCar = false;
-
-                foreach (LayoutBlockEdgeBase blockEdge in blockEdges) {
-                    LayoutBlock otherBlock = locomotiveBlock.OtherBlock(blockEdge);
-
-                    if (train.LocationOfBlock(otherBlock) != null) {
-                        switchFrontAndLastCar = true;
-                        break;
-                    }
-                }
-
-                if (switchFrontAndLastCar) {
-                    LayoutBlock tBlock = locomotiveBlock;
-
-                    LocomotiveBlock = LastCarBlock;
-                    LastCarBlock = tBlock;
-
-                    LayoutComponentConnectionPoint tFront = LocomotiveFront;
-
-                    LocomotiveFront = LastCarFront;
-                    LastCarFront = tFront;
-                }
-            }
-
-            private class Direction {
-                private readonly bool shouldReverse;
-
-                public Direction(bool shouldReverse) {
-                    this.shouldReverse = shouldReverse;
-                }
-
-                public LocomotiveOrientation Get(LocomotiveOrientation direction) {
-                    return shouldReverse
-                        ? direction == LocomotiveOrientation.Forward ? LocomotiveOrientation.Backward : LocomotiveOrientation.Forward
-                        : direction;
-                }
-
-                public LocomotiveOrientation Get(TripPlanWaypointInfo wayPoint) => Get(wayPoint.Direction);
-            }
-
-            protected bool IsTripPlanApplicable(TripPlanInfo tripPlan, bool shouldReverse) {
-                var d = new Direction(shouldReverse);
-                LayoutTrackComponent? sourceTrack = null;
-                LayoutComponentConnectionPoint sourceFront = LayoutComponentConnectionPoint.Empty;
-
-                for (int i = 0; i < tripPlan.Waypoints.Count; i++) {
-                    IList<TripPlanWaypointInfo> wayPoints = tripPlan.Waypoints;
-
-                    if (i == 0) {
-                        var sourceBlock = (d.Get(wayPoints[0]) == LocomotiveOrientation.Forward) ? LocomotiveBlock : LastCarBlock;
-
-                        sourceTrack = sourceBlock?.BlockDefinintion.Track;
-                        sourceFront = (d.Get(wayPoints[0]) == LocomotiveOrientation.Forward) ? LocomotiveFront : LastCarFront;
-                    }
-
-                    if (sourceTrack == null)
-                        return false;
-
-                    BestRoute bestRoute = TripPlanningServices.FindBestRoute(sourceTrack, sourceFront, d.Get(wayPoints[i]), wayPoints[i].Destination, RouteOwner, wayPoints[i].TrainStopping);
-
-                    if (!bestRoute.Quality.IsValidRoute)
-                        return false;
-                    else {
-                        // Avoid selecting null routes
-                        if (tripPlan.Waypoints.Count == 1 && bestRoute.TrackEdges.Count == 1)
-                            return false;
-
-                        sourceTrack = bestRoute.DestinationTrack;
-                        sourceFront = bestRoute.DestinationFront;
-                    }
-                }
-
-                return true;
-            }
-
-            protected RouteQuality VerifyTripPlan(TripPlanInfo tripPlan, bool shouldReverese) {
-                Direction d = new(shouldReverese);
-                LayoutTrackComponent? sourceTrack = null;
-                LayoutComponentConnectionPoint sourceFront = LayoutComponentConnectionPoint.Empty;
-                TripBestRouteResult result;
-                RouteQuality quality = new(RouteOwner);
-
-                for (int i = 0; i < tripPlan.Waypoints.Count; i++) {
-                    TripBestRouteRequest request;
-                    IList<TripPlanWaypointInfo> wayPoints = tripPlan.Waypoints;
-
-                    if (i == 0) {
-                        var sourceBlock = (d.Get(wayPoints[0]) == LocomotiveOrientation.Forward) ? LocomotiveBlock : LastCarBlock;
-
-                        sourceTrack = sourceBlock?.BlockDefinintion.Track;
-                        sourceFront = (d.Get(wayPoints[0]) == LocomotiveOrientation.Forward) ? LocomotiveFront : LastCarFront;
-                    }
-
-                    request = new TripBestRouteRequest(RouteOwner, wayPoints[i].Destination, sourceTrack, sourceFront, d.Get(wayPoints[i]), staticGrade);
-                    result = Ensure.NotNull<TripBestRouteResult>(EventManager.Event(new LayoutEvent("find-best-route-request", request)));
-
-                    if (result.BestRoute == null)
-                        return result.Quality;
-                    else {
-                        // Avoid selecting null routes
-                        if (tripPlan.Waypoints.Count == 1 && result.BestRoute.TrackEdges.Count == 1) {
-                            quality.ClearanceQuality = RouteClearanceQuality.NoPath;
-                            return quality;
-                        }
-
-                        sourceTrack = result.BestRoute.DestinationTrack;
-                        sourceFront = result.BestRoute.DestinationFront;
-
-                        quality.AddClearanceQuality(result.Quality.ClearanceQuality);
-                        quality.Penalty += result.Quality.Penalty;
-                    }
-                }
-
-                return quality;
-            }
-
-            public void FindApplicableTripPlans() {
-                if (CalculatePenalty) {
-                    RouteQuality? quality = null;
-
-                    foreach (TripPlanInfo tripPlan in LayoutModel.StateManager.TripPlansCatalog.TripPlans) {
-                        if (AllTripPlans || (quality = VerifyTripPlan(tripPlan, false)).IsValidRoute) {
-                            XmlElement applicableTripPlanElement = Element.OwnerDocument.CreateElement(E_ApplicableTripPlan);
-
-                            applicableTripPlanElement.SetAttributeValue(A_TripPlanID, tripPlan.Id);
-                            applicableTripPlanElement.SetAttributeValue(A_ShouldReverse, false);
-
-                            if (quality != null) {
-                                applicableTripPlanElement.SetAttributeValue(A_Penalty, quality.Penalty);
-                                applicableTripPlanElement.SetAttributeValue(A_ClearanceQuality, quality.ClearanceQuality);
-                            }
-
-                            Element.AppendChild(applicableTripPlanElement);
-                        }
-                        else if ((quality = VerifyTripPlan(tripPlan, true)).IsValidRoute) {
-                            XmlElement applicableTripPlanElement = Element.OwnerDocument.CreateElement(E_ApplicableTripPlan);
-
-                            applicableTripPlanElement.SetAttributeValue(A_TripPlanID, tripPlan.Id);
-                            applicableTripPlanElement.SetAttributeValue(A_ShouldReverse, true);
-                            applicableTripPlanElement.SetAttributeValue(A_Penalty, quality.Penalty);
-                            applicableTripPlanElement.SetAttributeValue(A_ClearanceQuality, quality.ClearanceQuality);
-                            Element.AppendChild(applicableTripPlanElement);
-                        }
-
-                        Application.DoEvents();
-                    }
-
-                    if (LocomotiveBlock != null) {
-                        Element.SetAttributeValue(A_LocomotiveBlockId, LocomotiveBlock.Id);
-                        Element.SetAttributeValue(A_LocomotiveFront, LocomotiveFront);
-                    }
-                }
-                else {
-                    foreach (TripPlanInfo tripPlan in LayoutModel.StateManager.TripPlansCatalog.TripPlans) {
-                        if (AllTripPlans || IsTripPlanApplicable(tripPlan, false)) {
-                            var applicableTripPlanElement = Element.OwnerDocument.CreateElement(E_ApplicableTripPlan);
-
-                            applicableTripPlanElement.SetAttributeValue(A_TripPlanID, tripPlan.Id);
-                            applicableTripPlanElement.SetAttributeValue(A_ShouldReverse, false);
-                            Element.AppendChild(applicableTripPlanElement);
-                        }
-                        else if (IsTripPlanApplicable(tripPlan, true)) {
-                            var applicableTripPlanElement = Element.OwnerDocument.CreateElement(E_ApplicableTripPlan);
-
-                            applicableTripPlanElement.SetAttributeValue(A_TripPlanID, tripPlan.Id);
-                            applicableTripPlanElement.SetAttributeValue(A_ShouldReverse, true);
-                            Element.AppendChild(applicableTripPlanElement);
-                        }
-
-                        Application.DoEvents();
-                    }
-
-                    if (LocomotiveBlock != null) {
-                        Element.SetAttributeValue(A_LocomotiveBlockId, LocomotiveBlock.Id);
-                        Element.SetAttributeValue(A_LocomotiveFront, LocomotiveFront);
-                    }
-                }
-            }
-        }
-
-        [LayoutEvent("get-applicable-trip-plans-request")]
-        private void GetApplicableTripPlansRequest(LayoutEvent e) {
-            XmlElement applicableTripPlansElement = Ensure.NotNull<XmlElement>(e.Info);
-
-            if (e.Sender == null) {
-                var applicableTripPlans = new ApplicableTripPlansData(applicableTripPlansElement) {
-                    AllTripPlans = true,
-                    CalculatePenalty = (bool?)e.GetOption("CalculatePenalty") ?? true
-                };
-                applicableTripPlans.FindApplicableTripPlans();
-            }
-            else if (e.Sender is TrainStateInfo train) {
-                ApplicableTripPlansData applicableTripPlans = new(applicableTripPlansElement) {
-                    Train = train,
-                    CalculatePenalty = (bool?)e.GetOption("CalculatePenalty") ?? true
-                };
-                applicableTripPlans.FindApplicableTripPlans();
-            }
-            else if (e.Sender is LayoutBlock block) {
-                ApplicableTripPlansData applicableTripPlans = new(applicableTripPlansElement);
-                LayoutComponentConnectionPoint? front = e.GetOption("Front").ToOptionalComponentConnectionPoint() ??
-                    EventManager.EventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>("get-locomotive-front", block.BlockDefinintion, "");
-
-                if (front.HasValue) {
-                    applicableTripPlans.LocomotiveBlock = block;
-                    applicableTripPlans.LastCarBlock = block;
-                    applicableTripPlans.LocomotiveFront = front.Value;
-                    applicableTripPlans.LastCarFront = front.Value;
-                    applicableTripPlans.CalculatePenalty = (bool?)e.GetOption("CalculatePenalty") ?? true;
-                    applicableTripPlans.FindApplicableTripPlans();
-                }
-            }
-            else if (e.Sender is LayoutBlockDefinitionComponent blockDefinition)
-                e.Info = EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", blockDefinition.Block, applicableTripPlansElement));
-        }
-
         #endregion
+
+        [DispatchTarget]
+        private ApplicableTripPlansData GetApplicableTripPlansRequest(object? target, bool calculatePenalty, LayoutComponentConnectionPoint? front) {
+            switch (target) {
+                case null: {
+                        var applicableTripPlans = new ApplicableTripPlansData {
+                            AllTripPlans = true,
+                            CalculatePenalty = calculatePenalty,
+                        };
+                        applicableTripPlans.FindApplicableTripPlans();
+                        return applicableTripPlans;
+                    }
+
+                case TrainStateInfo train: {
+                        ApplicableTripPlansData applicableTripPlans = new() {
+                            Train = train,
+                            CalculatePenalty = calculatePenalty,
+                        };
+                        applicableTripPlans.FindApplicableTripPlans();
+                        return applicableTripPlans;
+                    }
+
+                case LayoutBlock block: {
+                        ApplicableTripPlansData applicableTripPlans = new();
+                        front ??= Dispatch.Call.GetLocomotiveFront(block.BlockDefinintion, "");
+
+                        if (front.HasValue) {
+                            applicableTripPlans.LocomotiveBlock = block;
+                            applicableTripPlans.LastCarBlock = block;
+                            applicableTripPlans.LocomotiveFront = front.Value;
+                            applicableTripPlans.LastCarFront = front.Value;
+                            applicableTripPlans.CalculatePenalty = calculatePenalty;
+                            applicableTripPlans.FindApplicableTripPlans();
+                        }
+
+                        return applicableTripPlans;
+                    }
+
+                case LayoutBlockDefinitionComponent blockDefinition:
+                    return GetApplicableTripPlansRequest(blockDefinition.Block, calculatePenalty, front);
+
+                default:
+                    throw new LayoutException($"Invalid target type for {nameof(GetApplicableTripPlansRequest)}");
+            }
+        }
 
         #region Check if trip plan destination is free
 
@@ -412,6 +419,7 @@ namespace LayoutManager.Tools {
         }
 
         #endregion
+
 
         #region Trip planner debug code
         // DEBUG CODE

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.Model;
@@ -50,7 +51,7 @@ namespace MarklinDigital {
         private async Task InterfaceThreadFunction(CancellationToken stopMe) {
             // Create the pipe for communication
 
-            commStream = Ensure.NotNull<FileStream>(EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, false)));
+            commStream = Dispatch.Call.WaitNamedPipeRequest(pipeName, false);
 
             try {
                 while (true) {

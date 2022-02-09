@@ -294,9 +294,7 @@ namespace MethodDispatcher {
         }
 
         static internal CustomDispatchFilter? GetDispatchFilter(string filterType) {
-            CustomDispatchFilter? result;
-
-            _filters.TryGetValue(filterType, out result);
+            _filters.TryGetValue(filterType, out CustomDispatchFilter? result);
             return result;
         }
     }
@@ -446,7 +444,8 @@ namespace MethodDispatcher {
             var sourceReturnNullabiliyInfo = new NullabilityInfoContext().Create(SourceMethod.ReturnParameter);
             var collectedType = GetCollectedReturnType(SourceMethod.ReturnType);
 
-            var (actualReturnType, actalReturnNullabilityInfo) = collectedType != null ?
+            // String implements IEnumerable<char>, however it is not a collected type...
+            var (actualReturnType, actalReturnNullabilityInfo) = SourceMethod.ReturnType != typeof(string) &&  collectedType != null ?
                 (collectedType, sourceReturnNullabiliyInfo.GenericTypeArguments[0]) :
                 (SourceMethod.ReturnType, sourceReturnNullabiliyInfo);
 
@@ -717,7 +716,7 @@ namespace MethodDispatcher {
                 : throw new ObjectDisposedException($"Instance of dispatch target {Method.Name}");
 
         public override bool ShouldInvoke(object?[] parameters) {
-            return Instance != null ? base.IsApplicable(Instance, parameters) : false;
+            return Instance != null && base.IsApplicable(Instance, parameters);
         }
 
     }

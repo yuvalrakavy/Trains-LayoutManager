@@ -3,6 +3,7 @@ using System.IO;
 using System.Xml;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
+using MethodDispatcher;
 
 #pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Components {
@@ -32,9 +33,8 @@ namespace LayoutManager.Components {
         /// </remarks>
         /// <param name="e.Sender">XML element with the attributes specifying various details</param>
         /// <returns>e.Info will be a Stream for the opened device</returns>
-        [LayoutEvent("open-serial-communication-device-request")]
-        private void openSerialCommunicationDeviceRequest(LayoutEvent e) {
-            XmlElement setupElement = (XmlElement)e.Sender;
+        [DispatchTarget]
+        FileStream OpenSerialCommunicationDeviceRequest(XmlElement setupElement) {
             string port = setupElement.GetAttribute(A_Port);
             bool overlappedIO = (bool?)setupElement.AttributeValue(A_OverlappedIO) ?? false;
             Win32createFileFlags createFlags = 0;
@@ -59,7 +59,7 @@ namespace LayoutManager.Components {
 
             commStream = new FileStream(new SafeFileHandle(commHandle, true), FileAccess.ReadWrite, bufferSize, overlappedIO);
 
-            string modeString = setupElement[E_ModeString].InnerText;
+            string modeString = setupElement[E_ModeString]?.InnerText ?? "";
             DCB dcb = new();
 
             // Fix mode string (remove CR/LF etc.)
@@ -82,16 +82,14 @@ namespace LayoutManager.Components {
 
             if (!NativeMethods.SetCommTimeouts(commStream.SafeFileHandle.DangerousGetHandle(), commTimeouts)) {
                 error = Marshal.GetLastWin32Error();
-                throw new IOException("Could not set " + port + " timeout (error " + String.Format("{0:x}", error) + ")");
+                throw new IOException($"Could not set {port} timeout (error {String.Format("{0:x}", error)})");
             }
 
-            e.Info = commStream;
+            return commStream;
         }
 
-        [LayoutEvent("create-named-pipe-request")]
-        private void createNamedPipeRequest(LayoutEvent e) {
-            var pipeName = Ensure.NotNull<string>(e.Sender, "pipeName");
-            var overlappedIO = (bool)e.Info;
+        [DispatchTarget]
+        private SafeFileHandle CreateNamedPipeRequest(string pipeName, bool overlappedIO) {
             PipeOpenModes pipeOpenMode = PipeOpenModes.AccessDuplex;
 
             if (overlappedIO)
@@ -103,40 +101,35 @@ namespace LayoutManager.Components {
             if ((int)handle == -1)
                 throw new IOException("Unable to create named pipe: " + pipeName);
 
-            e.Info = new SafeFileHandle(handle, true);
+            return new SafeFileHandle(handle, true);
         }
 
-        [LayoutEvent("wait-named-pipe-client-to-connect-request")]
-        private void waitNamedPipeClientToConnectRequest(LayoutEvent e) {
-            var safeHandle = Ensure.NotNull<SafeFileHandle>(e.Sender, "safeHandle");
-            bool overlappedIO = (bool)e.Info;
+
+        [DispatchTarget]
+        private FileStream WaitNamedPipeClientToConnectRequest(SafeFileHandle safeHandle, bool overlappedIO) {
 
             // Wait for the client to connect
             NativeMethods.ConnectNamedPipe(safeHandle.DangerousGetHandle(), 0);
 
-            e.Info = new FileStream(safeHandle, FileAccess.ReadWrite, 4, overlappedIO);
+            return new FileStream(safeHandle, FileAccess.ReadWrite, 4, overlappedIO);
         }
 
-        [LayoutEvent("disconnect-named-pipe-request")]
-        private void disconnectNamedPipeRequest(LayoutEvent e) {
+        [DispatchTarget]
+        private void DisconnectNamedPipeRequest(object handleObject) {
             IntPtr handle;
 
-            if (e.Sender is SafeFileHandle)
-                handle = ((SafeFileHandle)e.Sender).DangerousGetHandle();
-            else if (e.Sender is IntPtr)
-                handle = (IntPtr)e.Sender;
-            else if (e.Sender is FileStream)
-                handle = ((FileStream)e.Sender).SafeFileHandle.DangerousGetHandle();
-            else
-                throw new ArgumentException("Invalid pipe handle");
+            handle = handleObject switch {
+                SafeFileHandle h => h.DangerousGetHandle(),
+                IntPtr i => i,
+                FileStream s => s.SafeFileHandle.DangerousGetHandle(),
+                _ => throw new ArgumentException("Invalid pipe handle")
+            };
 
             NativeMethods.DisconnectNamedPipe(handle);
         }
 
-        [LayoutEvent("wait-named-pipe-request")]
-        private void waitNamedPipeRequest(LayoutEvent e) {
-            string pipeName = (string)e.Sender;
-            bool overlappedIO = (bool)e.Info;
+        [DispatchTarget]
+        private FileStream WaitNamedPipeRequest(string pipeName, bool overlappedIO) {
             Win32createFileFlags flags = 0;
 
             NativeMethods.WaitNamedPipe(pipeName, WaitForever);
@@ -149,9 +142,9 @@ namespace LayoutManager.Components {
             int error = Marshal.GetLastWin32Error();
 
             if (handle.ToInt32() == -1)
-                throw new IOException("Unable to open named pipe " + pipeName + " (error " + error + ")");
+                throw new IOException($"Unable to open named pipe {pipeName} (error {error})");
 
-            e.Info = new FileStream(new SafeFileHandle(handle, true), FileAccess.ReadWrite, 4, overlappedIO);
+            return new FileStream(new SafeFileHandle(handle, true), FileAccess.ReadWrite, 4, overlappedIO);
         }
 
         #region System structures and flags
@@ -217,6 +210,7 @@ namespace LayoutManager.Components {
 
         [Flags]
         internal enum PipeModes : uint {
+#pragma warning disable CA1069 // Enums values should not be duplicated
             Wait = 0x00000000,
             NoWait = 0x00000001,
             ReadModeByte = 0x00000000,
@@ -248,6 +242,7 @@ namespace LayoutManager.Components {
             RtsControlToggle = 0x00003000,
             AbortOnError = 0x00004000,
         }
+#pragma warning restore CA1069 // Enums values should not be duplicated
 
         [StructLayout(LayoutKind.Sequential)]
         internal class DCB {

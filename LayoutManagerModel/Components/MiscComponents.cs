@@ -332,7 +332,7 @@ namespace LayoutManager.Components {
                 : base(component) {
             }
 
-            public override void SetSwitchState(ControlConnectionPoint controlConnectionPoint, int switchState, string connectionPointName) {
+            public override void SetSwitchState(ControlConnectionPoint controlConnectionPoint, int switchState, string? connectionPointName) {
                 base.SetSwitchState(controlConnectionPoint, switchState, connectionPointName);
 
                 var powerSelector = (LayoutPowerSelectorComponent)Component;

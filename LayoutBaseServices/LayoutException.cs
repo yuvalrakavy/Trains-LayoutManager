@@ -2,6 +2,10 @@ using System;
 using MethodDispatcher;
 
 namespace LayoutManager {
+    public enum ExceptionMessageType {
+        Message, Warning, Error
+    }
+
     public class LayoutException : Exception {
         public LayoutException() {
         }
@@ -9,11 +13,11 @@ namespace LayoutManager {
         public LayoutException(String message) : base(message) {
         }
 
-        public LayoutException(object subject, string message) : base(message) {
+        public LayoutException(object? subject, string message) : base(message) {
             this.Subject = subject;
         }
 
-        public LayoutException(object subject, string message, Exception inner) : base(message, inner) {
+        public LayoutException(object? subject, string message, Exception inner) : base(message, inner) {
             this.Subject = subject;
         }
 
@@ -26,13 +30,19 @@ namespace LayoutManager {
         /// The event to generate for reporting this exception. The default is add-error, but it can
         /// also be add-warning or add-message
         /// </summary>
-        public virtual string DefaultMessageType => "error";
+        public virtual ExceptionMessageType DefaultMessageType => ExceptionMessageType.Error;
 
         /// <summary>
         /// Send to the message viewer the message associated with this exception. Use the default
         /// error level (message, warning or error) that was designated by the exception creator
         /// </summary>
-        virtual public void Report() => ReportError();
+        virtual public void Report() {
+            switch(DefaultMessageType) {
+                case ExceptionMessageType.Message: ReportMessage(); break;
+                case ExceptionMessageType.Warning: ReportWarning(); break;
+                case ExceptionMessageType.Error: ReportError(); break;
+            }
+        }
 
         /// <summary>
         /// Send to the message viewer the message associated with this exception. 

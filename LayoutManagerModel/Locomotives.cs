@@ -636,8 +636,8 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Decoder type name (if locomotive has built in decoder) or default decoder type for this type of locomotive
         /// </summary>
-        public string? DecoderTypeName {
-            get => GetOptionalAttribute(A_DecoderType);       // TODO: Get default decoder type from the catalog
+        public string DecoderTypeName {
+            get => GetOptionalAttribute(A_DecoderType) ?? "Generic-DCC";
             set => SetAttributValue(A_DecoderType, value, removeIf: null);
         }
 

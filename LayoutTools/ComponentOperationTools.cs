@@ -9,11 +9,13 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Linq;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.CommonUI.Controls;
 using LayoutManager.View;
 using LayoutManager.CommonUI;
+using LayoutManager.Logic;
 
 namespace LayoutManager.Tools {
     /// <summary>
@@ -893,7 +895,7 @@ namespace LayoutManager.Tools {
             }
 
             protected override void OnClick(EventArgs e) {
-                IRoutePlanningServices ts = (IRoutePlanningServices)EventManager.Event(new LayoutEvent("get-route-planning-services", this))!;
+                IRoutePlanningServices ts = Dispatch.Call.GetRoutePlanningServices();
                 var trainLocations = manualDispatchRouteSetting.SourceBlockInfo?.Block.Trains;
                 LayoutComponentConnectionPoint front = LayoutComponentConnectionPoint.Empty;
                 bool findRoute = true;
@@ -901,12 +903,14 @@ namespace LayoutManager.Tools {
                 if (trainLocations != null && trainLocations.Count > 0)
                     front = trainLocations[0].DisplayFront;
                 else {
-                    var oFront = EventManager.Event(new LayoutEvent("get-locomotive-front", manualDispatchRouteSetting.SourceBlockInfo, manualDispatchRouteSetting.SourceBlockInfo?.Name));
+                    if (manualDispatchRouteSetting.SourceBlockInfo != null) {
+                        front = Dispatch.Call.GetLocomotiveFront(manualDispatchRouteSetting.SourceBlockInfo, manualDispatchRouteSetting.SourceBlockInfo.Name) ?? LayoutComponentConnectionPoint.Empty;
 
-                    if (oFront == null)
-                        findRoute = false;
+                        if (front == LayoutComponentConnectionPoint.Empty)
+                            findRoute = false;
+                    }
                     else
-                        front = (LayoutComponentConnectionPoint)oFront;
+                        findRoute = false;
                 }
 
                 if (findRoute && manualDispatchRouteSetting.SourceBlockInfo != null) {
@@ -987,48 +991,6 @@ namespace LayoutManager.Tools {
 
 #region New/Use trip plan
 
-#if NotUsed
-        private MenuItem getUseSavedTripPlanMenuItem(LayoutBlockDefinitionComponent blockInfo, TrainStateInfo train) {
-            ArrayList tripPlansAtOrigin = new ArrayList();
-            MenuItem m;
-
-            XmlDocument applicableTripPlansDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
-            XmlElement applicableTripPlansElement = applicableTripPlansDoc.CreateElement(E_ApplicableTripPlans);
-
-            applicableTripPlansDoc.AppendChild(applicableTripPlansElement);
-            EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", train, applicableTripPlansElement).SetOption("CalculatePenalty", false));
-
-            foreach (XmlElement applicableTripPlanElement in applicableTripPlansElement) {
-                var tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[(Guid)applicableTripPlanElement.AttributeValue(A_TripPlanId)];
-                var shouldReverse = (bool)applicableTripPlanElement.AttributeValue(A_ShouldReverse);
-
-                if (tripPlan != null)
-                    tripPlansAtOrigin.Add(new UseExistingTripPlanMenuItem(tripPlan, shouldReverse, train));
-            }
-
-            MenuItem tripPlanCatalog = new TripPlanCatalogMenuItem("&Saved Trip-plans...", train);
-
-            if (tripPlansAtOrigin.Count == 0)
-                m = tripPlanCatalog;
-            else {
-                m = new MenuItem("Use existing trip plan");
-
-                m.MenuItems.Add(tripPlanCatalog);
-                m.MenuItems.Add("-");
-
-                foreach (MenuItem menuItem in tripPlansAtOrigin)
-                    m.MenuItems.Add(menuItem);
-
-                return m;
-            }
-
-            if (train.Locomotives.Count == 0)
-                m.Enabled = false;
-
-            return m;
-        }
-#endif
-
         private class NewTripPlanMenuItem : LayoutMenuItem {
             private readonly TrainStateInfo train;
 
@@ -1096,7 +1058,7 @@ namespace LayoutManager.Tools {
 
                 tripPlanDoc.AppendChild(tripPlanDoc.ImportNode(tripPlan.Element, true));
 
-                TripPlanInfo newTripPlan = new(tripPlanDoc.DocumentElement);
+                TripPlanInfo newTripPlan = new(tripPlanDoc.DocumentElement!);
 
                 if (shouldReverse)
                     newTripPlan.Reverse();

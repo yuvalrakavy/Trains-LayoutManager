@@ -72,6 +72,7 @@ namespace LayoutManager {
 
             try {
                 Dispatch.InitializeDispatcher();
+                Dispatch.Call.AddDispatcherFilters();
             }
             catch (DispatcherErrorsException ex) {
                 ex.Save();

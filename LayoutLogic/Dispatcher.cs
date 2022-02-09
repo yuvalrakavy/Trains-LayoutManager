@@ -487,7 +487,7 @@ namespace LayoutManager.Logic {
             foreach (Guid policyID in newTrip.TripPlan.Policies) {
                 LayoutPolicyInfo policy = (LayoutPolicyInfo)policyMap[policyID];
 
-                if (policy != null) {
+                if (policy != null && policy.EventScriptElement != null) {
                     LayoutEventScript activePolicy = EventManager.EventScript("trip policy: " + policy.Name, policy.EventScriptElement,
                         new Guid[] { newTrip.TrainId, newTrip.Id }, null);
 
@@ -688,11 +688,11 @@ namespace LayoutManager.Logic {
 
         #region Services getter properties
 
-        private IRoutePlanningServices TripPlanningServices => _tripPlanningServices ??= (IRoutePlanningServices)EventManager.Event(new LayoutEvent("get-route-planning-services", this))!;
+        private IRoutePlanningServices TripPlanningServices => _tripPlanningServices ??= Dispatch.Call.GetRoutePlanningServices();
 
         private ILayoutLockManagerServices LayoutLockManagerServices => _layoutLockManagerServices ??= (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services", this))!;
 
-        private ILayoutTopologyServices LayoutTopologyServices => _layoutTopologyServices ??= (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!;
+        private ILayoutTopologyServices LayoutTopologyServices => _layoutTopologyServices ??= Dispatch.Call.GetTopologyServices();
 
         private bool AllSuspended {
             get {
@@ -724,10 +724,14 @@ namespace LayoutManager.Logic {
         private TripBestRouteResult FindBestRoute(Guid routeOwner, TripPlanDestinationInfo destination, ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, bool trainStopping) {
             BestRoute bestRoute = TripPlanningServices.FindBestRoute(sourceComponent, front, direction, destination, routeOwner, trainStopping);
 
-            return new TripBestRouteResult(bestRoute.DestinationTarget == null ? null : bestRoute, bestRoute.Quality, false);
+            return new TripBestRouteResult(bestRoute, bestRoute.Quality, false);
         }
 
-        private TripBestRouteResult FindBestRoute(ActiveTripInfo trip, ModelComponent sourceComponent, LayoutComponentConnectionPoint front) => FindBestRoute(trip.TrainId, trip.CurrentWaypoint.Destination, sourceComponent, front, trip.CurrentWaypoint.Direction, trip.CurrentWaypoint.TrainStopping);
+        private TripBestRouteResult FindBestRoute(ActiveTripInfo trip, ModelComponent sourceComponent, LayoutComponentConnectionPoint front) {
+            if (trip.CurrentWaypoint == null)
+                throw new LayoutException("Trying to find best route when current way point in null");
+            return FindBestRoute(trip.TrainId, trip.CurrentWaypoint.Destination, sourceComponent, front, trip.CurrentWaypoint.Direction, trip.CurrentWaypoint.TrainStopping);
+        }
 
         [LayoutEvent("find-best-route-request")]
         private void FindBestRouteRequest(LayoutEvent e) {
@@ -1084,6 +1088,9 @@ namespace LayoutManager.Logic {
         private bool PrepareNextTripSection(ActiveTripInfo trip, BlockEntry currentBlockEntry, BlockEntry? nextBlockEntry) {
             bool trainCanMove = false;
             TripBestRouteResult tripBestRouteResult;
+
+            if (trip.CurrentWaypoint == null)
+                throw new LayoutException("Prepare next trip section when current way point is undefined");
 
             Trace.WriteLineIf(traceDispatching.TraceInfo, $"Prepare Next Trip Section for train {trip.Train.DisplayName} Current way point is {trip.CurrentWaypointIndex} direction is {trip.CurrentWaypoint.Direction} current block is {currentBlockEntry.Block}");
 
@@ -1494,8 +1501,10 @@ namespace LayoutManager.Logic {
         private void TrainStart(ActiveTripInfo trip) {
             Trace.WriteLineIf(traceDispatching.TraceInfo, $"Start moving - trip of train {trip.Train.DisplayName}");
 
+            if (trip.CurrentWaypoint == null)
+                throw new LayoutException("TrainStart when current way point is undefined");
             if (trip.CurrentWaypoint.DriverInstructions != null) {
-                Trace.WriteLineIf(traceDispatcher.TraceInfo, $"Train {trip.Train.DisplayName} Waypoint {trip.CurrentWaypoint.Name} Start driving instructions: {trip.CurrentWaypoint.DriverInstructionsDescription}");
+                Trace.WriteLineIf(traceDispatcher.TraceInfo, $"Train {trip.Train.DisplayName} Way point {trip.CurrentWaypoint.Name} Start driving instructions: {trip.CurrentWaypoint.DriverInstructionsDescription}");
 
                 trip.PendingDriverInstructions = EventManager.EventScript($"Driver instructions for {trip.Train.DisplayName} for going to {trip.CurrentWaypoint.Destination.Name}",
                     trip.CurrentWaypoint.DriverInstructions, new Guid[] { trip.TrainId, trip.Id }, null);

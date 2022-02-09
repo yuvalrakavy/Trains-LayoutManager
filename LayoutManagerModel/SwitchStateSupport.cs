@@ -27,18 +27,19 @@ namespace LayoutManager.Components {
 
         public virtual int CurrentSwitchState => GetSwitchState(DefaultConnectionPointName);
 
-        public virtual void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string connectionPointName = null) {
+        public virtual void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string? connectionPointName = null) {
             if (switchingState != 0 && switchingState != 1)
-                throw new LayoutException(this, "Invalid switch state: " + switchingState);
+                throw new LayoutException(this, $"Invalid switch state: {switchingState}");
 
             int state = switchingState;
 
             if (ReverseLogic && connectionPointName == null)
                 state = 1 - state;
 
-            ControlConnectionPoint connectionPoint = LayoutModel.ControlManager.ConnectionPoints[Component.Id, connectionPointName];
+            ControlConnectionPoint? connectionPoint = LayoutModel.ControlManager.ConnectionPoints[Component.Id, connectionPointName];
 
-            switchingCommands.Add(new SwitchingCommand(new ControlConnectionPointReference(connectionPoint), state));
+            if(connectionPoint != null)
+                switchingCommands.Add(new SwitchingCommand(new ControlConnectionPointReference(connectionPoint), state));
         }
 
         /// <summary>
@@ -46,8 +47,8 @@ namespace LayoutManager.Components {
         /// notification handler, and not directly.
         /// </summary>
         /// <param name="switchState">The new switch state</param>
-        public virtual void SetSwitchState(ControlConnectionPoint controlConnectionPoint, int switchState, string connectionPointName = null) {
-            LayoutModel.StateManager.Components.OptionalStateOf(Component.Id, StateTopic, create: true).SetAttributeValue($"Value{connectionPointName ?? ""}", switchState);
+        public virtual void SetSwitchState(ControlConnectionPoint controlConnectionPoint, int switchState, string? connectionPointName = null) {
+            LayoutModel.StateManager.Components.StateOf(Component.Id, StateTopic).SetAttributeValue($"Value{connectionPointName ?? ""}", switchState);
             Component.OnComponentChanged();
         }
 
@@ -56,9 +57,9 @@ namespace LayoutManager.Components {
         /// </summary>
         /// <param name="connectionPointName">Connection point name or null for the default connection point</param>
         /// <returns>Connection point state</returns>
-        public virtual int GetSwitchState(string connectionPointName) => (int?)LayoutModel.StateManager.Components.OptionalStateOf(Component.Id, StateTopic).AttributeValue($"Value{connectionPointName}") ?? 0;
+        public virtual int GetSwitchState(string? connectionPointName) => (int?)LayoutModel.StateManager.Components.OptionalStateOf(Component.Id, StateTopic).AttributeValue($"Value{connectionPointName ?? ""}") ?? 0;
 
-        public bool ReverseLogic => Component is IModelComponentHasReverseLogic componentWithReverseLogic ? componentWithReverseLogic.ReverseLogic : false;
+        public bool ReverseLogic => Component is IModelComponentHasReverseLogic componentWithReverseLogic && componentWithReverseLogic.ReverseLogic;
     }
 
     public abstract class ModelComponentWithSwitchingState : ModelComponent, IModelComponentHasSwitchingState {
@@ -75,15 +76,15 @@ namespace LayoutManager.Components {
 
         public int CurrentSwitchState => switchingStateSupport.CurrentSwitchState;
 
-        public void SetSwitchState(ControlConnectionPoint connectionPoint, int switchState, string connectionPointName = null) {
+        public void SetSwitchState(ControlConnectionPoint connectionPoint, int switchState, string? connectionPointName = null) {
             switchingStateSupport.SetSwitchState(connectionPoint, switchState, connectionPointName);
         }
 
-        public int GetSwitchState(string connectionPointName = null) => switchingStateSupport.GetSwitchState(connectionPointName);
+        public int GetSwitchState(string? connectionPointName = null) => switchingStateSupport.GetSwitchState(connectionPointName);
 
         public int SwitchStateCount => switchingStateSupport.SwitchStateCount;
 
-        public void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string connectionPointName = null) {
+        public void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string? connectionPointName = null) {
             switchingStateSupport.AddSwitchingCommands(switchingCommands, switchingState, connectionPointName);
         }
 

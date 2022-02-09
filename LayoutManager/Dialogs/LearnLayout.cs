@@ -15,13 +15,12 @@ using MethodDispatcher;
 
 #endregion
 
-#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Dialogs {
     internal partial class LearnLayout : Form {
         private static bool enableSound = false;
         private long lastSoundTime = 0;
         private const long soundGapThreshold = 4000 * TimeSpan.TicksPerMillisecond;
-        private Guid frameWindowId;
+        private readonly Guid frameWindowId;
 
         public LearnLayout(Guid frameWindowId) {
             InitializeComponent();
@@ -39,7 +38,7 @@ namespace LayoutManager.Dialogs {
         }
 
         [LayoutEvent("design-time-command-station-event")]
-        private void designTimeCommandStationEvent(LayoutEvent e) {
+        private void DesignTimeCommandStationEvent(LayoutEvent e) {
             var csEvent = Ensure.NotNull<CommandStationInputEvent>(e.Info);
             EventItem? eventItem = null;
 
@@ -95,7 +94,7 @@ namespace LayoutManager.Dialogs {
         }
 
         [LayoutEvent("activate-learn-layout")]
-        private void activateLearnLayout(LayoutEvent e) {
+        private void ActivateLearnLayout(LayoutEvent e) {
             if (WindowState == FormWindowState.Minimized)
                 WindowState = FormWindowState.Normal;
 
@@ -103,7 +102,7 @@ namespace LayoutManager.Dialogs {
         }
 
         [LayoutEvent("exit-design-mode")]
-        private void exitDesignMode(LayoutEvent e) {
+        private void ExitDesignMode(LayoutEvent e) {
             buttonClose.PerformClick();
         }
 
@@ -120,7 +119,7 @@ namespace LayoutManager.Dialogs {
         [LayoutEvent("control-address-programming-required-changed")]
         [LayoutEvent("control-buses-added")]
         [LayoutEvent("control-buses-removed")]
-        private void updateItems(LayoutEvent e) {
+        private void UpdateItems(LayoutEvent e) {
             foreach (EventItem item in listViewEvents.Items)
                 item.UpdateItem();
             UpdateButtons();
@@ -172,16 +171,11 @@ namespace LayoutManager.Dialogs {
                 }
             }
 
-            public string StatusText {
-                get {
-                    switch (Status) {
-                        case CommandStationEventStatus.Connected: return "Connected to component";
-                        case CommandStationEventStatus.NotConnected: return "Not Connected to component";
-                        default:
-                        case CommandStationEventStatus.NoControlModule: return "No control module";
-                    }
-                }
-            }
+            public string StatusText => Status switch {
+                CommandStationEventStatus.Connected => "Connected to component",
+                CommandStationEventStatus.NotConnected => "Not Connected to component",
+                _ => "No control module",
+            };
 
             public void UpdateItem() {
                 SubItems[0].Text = csEvent.AddressText;
@@ -222,11 +216,11 @@ namespace LayoutManager.Dialogs {
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 
-        private void buttonClose_Click(object? sender, EventArgs e) {
+        private void ButtonClose_Click(object? sender, EventArgs e) {
             Close();
         }
 
-        private void buttonRemove_Click(object? sender, EventArgs e) {
+        private void ButtonRemove_Click(object? sender, EventArgs e) {
             if (listViewEvents.SelectedItems.Count > 0) {
                 EventItem selected = (EventItem)listViewEvents.SelectedItems[0];
 
@@ -234,12 +228,12 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonRemoveAll_Click(object? sender, EventArgs e) {
+        private void ButtonRemoveAll_Click(object? sender, EventArgs e) {
             listViewEvents.Items.Clear();
             UpdateButtons();
         }
 
-        private void listViewEvents_SelectedIndexChanged(object? sender, EventArgs e) {
+        private void ListViewEvents_SelectedIndexChanged(object? sender, EventArgs e) {
             UpdateButtons();
         }
 
@@ -274,7 +268,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonAction_Click(object? sender, EventArgs e) {
+        private void ButtonAction_Click(object? sender, EventArgs e) {
             if (listViewEvents.SelectedItems.Count > 0) {
                 EventItem selected = (EventItem)listViewEvents.SelectedItems[0];
                 Tools.Dialogs.PickComponentToConnectToAddress pickDialog = new(selected.CommandStationEvent);
@@ -290,12 +284,12 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void listViewEvents_DoubleClick(object? sender, EventArgs e) {
+        private void ListViewEvents_DoubleClick(object? sender, EventArgs e) {
             if (buttonAction.Enabled)
                 buttonAction.PerformClick();
         }
 
-        private void checkBoxEnableSound_CheckedChanged(object? sender, EventArgs e) {
+        private void CheckBoxEnableSound_CheckedChanged(object? sender, EventArgs e) {
             enableSound = checkBoxEnableSound.Checked;
         }
     }

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.Threading;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.Model;
@@ -78,7 +79,7 @@ namespace LayoutEmulation {
 
         #region Properties
 
-        public ILayoutTopologyServices TopologyServices => _topologyServices ??= (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!;
+        public ILayoutTopologyServices TopologyServices => _topologyServices ??= Dispatch.Call.GetTopologyServices();
 
         public int SpeedSteps => 15;            // 0 - 14
 

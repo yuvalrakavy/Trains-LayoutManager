@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using MethodDispatcher;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
@@ -18,7 +19,7 @@ namespace LayoutManager.Logic {
 
         private ILayoutTopologyServices? _topologyServices;
 
-        private ILayoutTopologyServices TopologyServices => _topologyServices ??= (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!;
+        private ILayoutTopologyServices TopologyServices => _topologyServices ??= Dispatch.Call.GetTopologyServices();
 
         #region Build block graph
 
@@ -370,7 +371,7 @@ namespace LayoutManager.Logic {
                 foreach (Guid policyID in block.BlockDefinintion.Info.Policies) {
                     var policy = LayoutModel.StateManager.BlockInfoPolicies[policyID];
 
-                    if (policy != null) {
+                    if (policy != null && policy.EventScriptElement != null) {
                         LayoutEventScript eventScript = EventManager.EventScript("Policy " + policy.Name + " activated by train " + train.DisplayName + " entering block " + block.BlockDefinintion.Name,
                             policy.EventScriptElement, new Guid[] { block.Id, train.Id }, null);
 

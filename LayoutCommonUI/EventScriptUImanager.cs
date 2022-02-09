@@ -1,5 +1,6 @@
 using System.Xml;
 using LayoutManager.CommonUI.Controls;
+using MethodDispatcher;
 
 namespace LayoutManager.CommonUI {
     [LayoutModule("Event Script UI Manager", UserControl = false)]
@@ -108,7 +109,7 @@ namespace LayoutManager.CommonUI {
 
         #endregion
 
-        #region Utilty methods for generating descriptions
+        #region Utility methods for generating descriptions
 
         public static bool IsTrivialContainer(XmlElement containerElement) {
             var eventsElement = containerElement["Events"];
@@ -116,7 +117,7 @@ namespace LayoutManager.CommonUI {
             return eventsElement != null && eventsElement.ChildNodes.Count == 1 && containerElement["Condition"] == null && containerElement["Actions"] == null;
         }
 
-        public static string GetElementDescription(XmlElement element) => (string)EventManager.Event(new LayoutEvent("get-event-script-description", element))!;
+        public static string GetElementDescription(XmlElement element) => Dispatch.Call.GetEventScriptDescription(element) ?? $"({element.Name})";
 
         public static string GetActionsDescription(XmlElement actionsElement) {
             string[] actions = new string[actionsElement.ChildNodes.Count];
@@ -180,11 +181,9 @@ namespace LayoutManager.CommonUI {
             return GetEventOrEventContainerDescription(element, prefix);
         }
 
-        public static void GetConditionContainerDescription(LayoutEvent e, string containerName) {
-            var containerElement = Ensure.NotNull<XmlElement>(e.Sender, "containerElement");
-
+        public static string GetConditionContainerDescription(XmlElement containerElement, string containerName) {
             if (containerElement.ChildNodes.Count == 1)     // If there is only one some condition, return its description
-                e.Info = GetElementDescription((XmlElement)containerElement.ChildNodes[0]!);
+                return GetElementDescription((XmlElement)containerElement.ChildNodes[0]!);
             else {
                 string[] conditions = new string[containerElement.ChildNodes.Count];
 
@@ -194,7 +193,7 @@ namespace LayoutManager.CommonUI {
                     i++;
                 }
 
-                e.Info = "(" + string.Concat(conditions) + ")";
+                return $"({string.Concat(conditions)})";
             }
         }
 
@@ -236,9 +235,9 @@ namespace LayoutManager.CommonUI {
             e.Info = new LayoutEventScriptEditorTreeNodeSequence(sequenceElement);
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "Sequence")]
-        private void GetSequenceDescription(LayoutEvent e) {
-            e.Info = GetEventOrEventContainerDescription(e, "Sequence");
+        [DispatchTarget]
+        private string GetEventScriptDescription_Sequence([DispatchFilter(Type="XPatt", Value = "Sequence")] XmlElement element) {
+            return GetEventOrEventContainerDescription(element, "Sequence");
         }
 
         private class LayoutEventScriptEditorTreeNodeSequence : LayoutEventScriptEditorTreeNodeEventContainer {
@@ -264,9 +263,9 @@ namespace LayoutManager.CommonUI {
             e.Info = new LayoutEventScriptEditorTreeNodeAll(allElement);
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "All")]
-        private void GetAllDescription(LayoutEvent e) {
-            e.Info = GetEventOrEventContainerDescription(e, "All");
+        [DispatchTarget]
+        private string GetEventScriptDescription_All([DispatchFilter(Type="XPath", Value="All")] XmlElement element) {
+            return GetEventOrEventContainerDescription(element, "All");
         }
 
         private class LayoutEventScriptEditorTreeNodeAll : LayoutEventScriptEditorTreeNodeEventContainer {
@@ -290,9 +289,9 @@ namespace LayoutManager.CommonUI {
             e.Info = new LayoutEventScriptEditorTreeNodeAny(anyElement);
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "Any")]
-        private void GetAnyDescription(LayoutEvent e) {
-            e.Info = GetEventOrEventContainerDescription(e, "Any");
+        [DispatchTarget]
+        private string GetEventScriptDescription_Any([DispatchFilter(Type = "XPath",Value ="Any")] XmlElement element) {
+            return GetEventOrEventContainerDescription(element, "Any");
         }
 
         private class LayoutEventScriptEditorTreeNodeAny : LayoutEventScriptEditorTreeNodeEventContainer {
@@ -328,11 +327,8 @@ namespace LayoutManager.CommonUI {
                 site.EditingCancelled();
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "Repeat")]
-        private void GetRepeatDescription(LayoutEvent e) {
-            var conditionElement = Ensure.NotNull<XmlElement>(e.Sender, "conditionElement");
-
-            e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeRepeat.GetDescription(conditionElement) + " { ", " } ");
+        private string GetEventScriptDescription_Repeat([DispatchFilter(Type = "XPath", Value = "Repeat")] XmlElement element) {
+            return GetEventOrEventContainerDescription(element, "Repeat");
         }
 
         private class LayoutEventScriptEditorTreeNodeRepeat : LayoutEventScriptEditorTreeNodeMayBeOptional {
@@ -380,9 +376,8 @@ namespace LayoutManager.CommonUI {
             e.Info = new LayoutEventScriptEditorTreeNodeRandomChoice(element);
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "RandomChoice")]
-        private void GetRandomChoiceDescription(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
+        [DispatchTarget]
+        private string GetEventScriptDescription_RandomChoice([DispatchFilter(Type="XPath", Value="RandomChoice")] XmlElement element) {
             var substrings = new List<string> {
                 "Random-Choice [ "
             };
@@ -393,7 +388,7 @@ namespace LayoutManager.CommonUI {
 
             substrings.Add("] ");
 
-            e.Info = string.Concat(substrings);
+            return string.Concat(substrings);
         }
 
         private class LayoutEventScriptEditorTreeNodeRandomChoice : LayoutEventScriptEditorTreeNodeMayBeOptional {
@@ -477,12 +472,11 @@ namespace LayoutManager.CommonUI {
             site.EditingDone();
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "Task")]
-        private void GetTaskDescription(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
+        [DispatchTarget]
+        private string GetEventScriptDescription_Task([DispatchFilter(Type = "XPath", Value = "Task")] XmlElement element) {
             var taskElement = (XmlElement)element.ChildNodes[0]!;
 
-            e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeTask.GetDescription(taskElement) + " { ", " } ");
+            return GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeTask.GetDescription(taskElement) + " { ", " } ");
         }
 
         private class LayoutEventScriptEditorTreeNodeTask : LayoutEventScriptEditorTreeNode {
@@ -539,11 +533,10 @@ namespace LayoutManager.CommonUI {
                 site.EditingCancelled();
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "Wait")]
-        private void GetWaitDescription(LayoutEvent e) {
-            var waitElement = Ensure.NotNull<XmlElement>(e.Sender, "waitElement");
 
-            e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeWait.GetWaitDescription(waitElement));
+        [DispatchTarget]
+        private string GetEventScriptDescription_Wait([DispatchFilter(Type = "XPath", Value = "Wait")] XmlElement element) {
+            return GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeWait.GetWaitDescription(element));
         }
 
         private class LayoutEventScriptEditorTreeNodeWait : LayoutEventScriptEditorTreeNodeEvent {
@@ -595,11 +588,9 @@ namespace LayoutManager.CommonUI {
             e.Info = new LayoutEventScriptEditorTreeNodeDoNow(element);
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "DoNow")]
-        private void GetDoNowDescription(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-
-            e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeDoNow.GetDescription(element));
+        [DispatchTarget]
+        private string GetEventScriptDescription_DoNow([DispatchFilter(Type = "XPath", Value = "DoNow")] XmlElement element) {
+            return GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeDoNow.GetDescription(element));
         }
 
         private class LayoutEventScriptEditorTreeNodeDoNow : LayoutEventScriptEditorTreeNodeEvent {
@@ -637,11 +628,9 @@ namespace LayoutManager.CommonUI {
                 site.EditingCancelled();
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "WaitForEvent")]
-        private void GetWaitForEventDescription(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-
-            e.Info = GetEventOrEventContainerDescription(e, LayoutEventScriptEditorTreeNodeWaitForEvent.GetDescription(element));
+        [DispatchTarget]
+        private string GetEventScriptDescription_WaitForEvent([DispatchFilter(Type = "XPath", Value = "WaitForEvent")] XmlElement element) {
+            return GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeWaitForEvent.GetDescription(element));
         }
 
         private class LayoutEventScriptEditorTreeNodeWaitForEvent : LayoutEventScriptEditorTreeNodeEvent {
@@ -673,9 +662,9 @@ namespace LayoutManager.CommonUI {
             e.Info = new LayoutEventScriptEditorTreeNodeAnd(AndElement);
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "And")]
-        private void GetAndDescription(LayoutEvent e) {
-            GetConditionContainerDescription(e, "And");
+        [DispatchTarget]
+        private string GetEventScriptDescription_And([DispatchFilter(Type="XPath", Value ="And")] XmlElement element) {
+            return GetConditionContainerDescription(element, "And");
         }
 
         private class LayoutEventScriptEditorTreeNodeAnd : LayoutEventScriptEditorTreeNodeConditionContainer {
@@ -697,9 +686,9 @@ namespace LayoutManager.CommonUI {
             e.Info = new LayoutEventScriptEditorTreeNodeOr(OrElement);
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "Or")]
-        private void GetOrDescription(LayoutEvent e) {
-            GetConditionContainerDescription(e, "Or");
+        [DispatchTarget]
+        private string GetEventScriptDescription_Or([DispatchFilter(Type = "XPath", Value = "Or")] XmlElement element) {
+            return GetConditionContainerDescription(element, "Or");
         }
 
         private class LayoutEventScriptEditorTreeNodeOr : LayoutEventScriptEditorTreeNodeConditionContainer {
@@ -721,11 +710,9 @@ namespace LayoutManager.CommonUI {
             e.Info = new LayoutEventScriptEditnotTreeNodeNot(NotElement);
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "Not")]
-        private void GetNotDescription(LayoutEvent e) {
-            var notElement = Ensure.NotNull<XmlElement>(e.Sender, "notElement");
-
-            e.Info = "Not " + GetElementDescription((XmlElement)notElement.ChildNodes[0]!);
+        [DispatchTarget]
+        private string GetEventScriptDescription_Not([DispatchFilter(Type = "XPath", Value = "Not")] XmlElement element) {
+            return "Not " + GetElementDescription((XmlElement)element.ChildNodes[0]!);
         }
 
         private class LayoutEventScriptEditnotTreeNodeNot : LayoutEventScriptEditorTreeNodeConditionContainer {
@@ -789,11 +776,9 @@ namespace LayoutManager.CommonUI {
                 site.EditingCancelled();
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "IfString")]
-        private void GetIfStringDescription(LayoutEvent e) {
-            var ifStringElement = Ensure.NotNull<XmlElement>(e.Sender, "ifStringElement");
-
-            e.Info = LayoutEventScriptEditorTreeNodeIfString.GetDescription(ifStringElement);
+        [DispatchTarget]
+        private string GetEventScriptDescription_IfString([DispatchFilter(Type = "XPath", Value = "IfString")] XmlElement element) {
+            return LayoutEventScriptEditorTreeNodeIfString.GetDescription(element);
         }
 
         public class LayoutEventScriptEditorTreeNodeIfString : LayoutEventScriptEditorTreeNodeIf {
@@ -846,11 +831,9 @@ namespace LayoutManager.CommonUI {
                 site.EditingCancelled();
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "IfNumber")]
-        private void GetIfNumberDescription(LayoutEvent e) {
-            var ifStringElement = Ensure.NotNull<XmlElement>(e.Sender, "ifStringElement");
-
-            e.Info = LayoutEventScriptEditorTreeNodeIfNumber.GetDescription(ifStringElement);
+        [DispatchTarget]
+        private string GetEventScriptDescription_IfNumber([DispatchFilter(Type = "XPath", Value = "IfNumber")] XmlElement element) {
+            return LayoutEventScriptEditorTreeNodeIfNumber.GetDescription(element);
         }
 
         public class LayoutEventScriptEditorTreeNodeIfNumber : LayoutEventScriptEditorTreeNodeIf {
@@ -903,11 +886,9 @@ namespace LayoutManager.CommonUI {
                 site.EditingCancelled();
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "IfBoolean")]
-        private void GetIfBooleanDescription(LayoutEvent e) {
-            var ifStringElement = Ensure.NotNull<XmlElement>(e.Sender, "ifStringElement");
-
-            e.Info = LayoutEventScriptEditorTreeNodeIfBoolean.GetDescription(ifStringElement);
+        [DispatchTarget]
+        private string GetEventScriptDescription_IfBoolean([DispatchFilter(Type = "XPath", Value = "IfBoolean")] XmlElement element) {
+            return LayoutEventScriptEditorTreeNodeIfBoolean.GetDescription(element);
         }
 
         public class LayoutEventScriptEditorTreeNodeIfBoolean : LayoutEventScriptEditorTreeNodeIf {
@@ -946,11 +927,9 @@ namespace LayoutManager.CommonUI {
                 site.EditingCancelled();
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "IfDefined")]
-        private void GetIfDefinedDescription(LayoutEvent e) {
-            var ifElement = Ensure.NotNull<XmlElement>(e.Sender, "ifElement");
-
-            e.Info = LayoutEventScriptEditorTreeNodeIfDefined.GetDescription(ifElement);
+        [DispatchTarget]
+        private string GetEventScriptDescription_IfDefined([DispatchFilter(Type = "XPath", Value = "IfDefined")] XmlElement element) {
+            return LayoutEventScriptEditorTreeNodeIfDefined.GetDescription(element);
         }
 
         public class LayoutEventScriptEditorTreeNodeIfDefined : LayoutEventScriptEditorTreeNodeIf {
@@ -995,11 +974,9 @@ namespace LayoutManager.CommonUI {
                 site.EditingCancelled();
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "IfTime")]
-        private void GetIfTimeDescription(LayoutEvent e) {
-            var IfTimeElement = Ensure.NotNull<XmlElement>(e.Sender, "IfTimeElement");
-
-            e.Info = LayoutEventScriptEditorTreeNodeIfTime.GetDescription(IfTimeElement);
+        [DispatchTarget]
+        private string GetEventScriptDescription_IfTime([DispatchFilter(Type = "XPath", Value = "IfTime")] XmlElement element) {
+            return LayoutEventScriptEditorTreeNodeIfTime.GetDescription(element);
         }
 
         public class LayoutEventScriptEditorTreeNodeIfTime : LayoutEventScriptEditorTreeNodeCondition {
@@ -1071,11 +1048,9 @@ namespace LayoutManager.CommonUI {
                 site.EditingCancelled();
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "ShowMessage")]
-        private void GetShowMessageDescription(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-
-            e.Info = LayoutEventScriptEditorTreeNodeShowMessage.GetDescription(element);
+        [DispatchTarget]
+        private string GetEventScriptDescription_ShowMessage([DispatchFilter(Type = "XPath", Value = "ShowMessage")] XmlElement element) {
+            return LayoutEventScriptEditorTreeNodeShowMessage.GetDescription(element);
         }
 
         private class LayoutEventScriptEditorTreeNodeShowMessage : LayoutEventScriptEditorTreeNodeAction {
@@ -1129,11 +1104,9 @@ namespace LayoutManager.CommonUI {
                 site.EditingCancelled();
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "SetAttribute")]
-        private void GetSetAttributeDescription(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-
-            e.Info = LayoutEventScriptEditorTreeNodeSetAttribute.GetDescription(element);
+        [DispatchTarget]
+        private string GetEventScriptDescription_SetAttribute([DispatchFilter(Type = "XPath", Value = "SetAttribute")] XmlElement element) {
+            return LayoutEventScriptEditorTreeNodeSetAttribute.GetDescription(element);
         }
 
         private class LayoutEventScriptEditorTreeNodeSetAttribute : LayoutEventScriptEditorTreeNodeAction {
@@ -1201,11 +1174,9 @@ namespace LayoutManager.CommonUI {
                 site.EditingCancelled();
         }
 
-        [LayoutEvent("get-event-script-description", IfSender = "GenerateEvent")]
-        private void GetGenerateEventDescription(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-
-            e.Info = LayoutEventScriptEditorTreeNodeGenerateEvent.GetDescription(element);
+        [DispatchTarget]
+        private string GetEventScriptDescription_GenerateEvent([DispatchFilter(Type = "XPath", Value = "GenerateEvent")] XmlElement element) {
+            return LayoutEventScriptEditorTreeNodeGenerateEvent.GetDescription(element);
         }
 
         private class LayoutEventScriptEditorTreeNodeGenerateEvent : LayoutEventScriptEditorTreeNodeAction {

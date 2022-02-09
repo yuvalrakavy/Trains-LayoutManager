@@ -6,6 +6,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Xml;
 using System.Net.Sockets;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.Model;
@@ -90,7 +91,7 @@ namespace NCDRelayController {
 
         private void OpenCommunicationStream() {
             if (InterfaceType == InterfaceType.Serial) {
-                commStream = Ensure.NotNull<FileStream>(EventManager.Event(new LayoutEvent("open-serial-communication-device-request", Element)));
+                commStream = Dispatch.Call.OpenSerialCommunicationDeviceRequest(Element);
             }
             else {
                 string address = XmlInfo.DocumentElement.GetAttribute("Address");

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
@@ -68,19 +69,14 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
             workingDoc.AppendChild(applicableTripPlansElement);
 
-            LayoutEvent getApplicableTripPlansEvent = new("get-applicable-trip-plans-request", block, applicableTripPlansElement);
+            var applicableTripPlansData = Dispatch.Call.GetApplicableTripPlansRequest(block, true, front);
 
-            if (front != LayoutComponentConnectionPoint.Empty)
-                getApplicableTripPlansEvent.SetOption("Front", front.ToString());
-
-            EventManager.Event(getApplicableTripPlansEvent);
-
-            if (applicableTripPlansElement.HasAttribute(A_LocomotiveBlockId)) {
-                locomotiveBlock = LayoutModel.Blocks[(Guid)applicableTripPlansElement.AttributeValue(A_LocomotiveBlockId)];
-                locomotiveFront = applicableTripPlansElement.AttributeValue(A_LocomotiveFront).ToComponentConnectionPoint();
+            if(applicableTripPlansData.LocomtiveBlockId != Guid.Empty) {
+                locomotiveBlock = LayoutModel.Blocks[applicableTripPlansData.LocomtiveBlockId];
+                locomotiveFront = applicableTripPlansData.LocomotiveFront;
             }
 
-            tripPlanList.ApplicableTripPlansElement = applicableTripPlansElement;
+            tripPlanList.TripPlans = applicableTripPlansData.TripPlans;
         }
 
         /// <summary>
@@ -145,7 +141,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
                     XmlDocument workingDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
 
                     workingDoc.AppendChild((XmlElement)workingDoc.ImportNode(tripPlan.Element, true));
-                    tripPlan = new TripPlanInfo(workingDoc.DocumentElement);
+                    tripPlan = new TripPlanInfo(workingDoc.DocumentElement!);
                     tripPlan.Reverse();
                 }
 

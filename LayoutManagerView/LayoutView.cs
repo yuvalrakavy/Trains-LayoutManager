@@ -427,10 +427,14 @@ namespace LayoutManager.View {
             return resultColor;
         }
 
-        public TrackColors GetTrackSegmentColor(TrackSegment trackSegment) => LayoutController.PreviewRouteManager[trackSegment] != null
-                ? new TrackColors(trackSegment, LayoutController.PreviewRouteManager[trackSegment].Request.Color, LayoutController.PreviewRouteManager[trackSegment].Annotations)
-                : new TrackColors(trackSegment,
-                    GetTrackEdgeColor(new TrackEdge(trackSegment.Track, trackSegment.Cp1)), GetTrackEdgeColor(new TrackEdge(trackSegment.Track, trackSegment.Cp2)));
+        public TrackColors GetTrackSegmentColor(TrackSegment trackSegment) {
+            TrackSegmentPreviewResult? trackSegmentPreviewResult = LayoutController.PreviewRouteManager[trackSegment];
+
+            return trackSegmentPreviewResult != null
+                            ? new TrackColors(trackSegment, trackSegmentPreviewResult.Request.Color, trackSegmentPreviewResult.Annotations)
+                            : new TrackColors(trackSegment,
+                                GetTrackEdgeColor(new TrackEdge(trackSegment.Track, trackSegment.Cp1)), GetTrackEdgeColor(new TrackEdge(trackSegment.Track, trackSegment.Cp2)));
+        }
 
         #endregion
 

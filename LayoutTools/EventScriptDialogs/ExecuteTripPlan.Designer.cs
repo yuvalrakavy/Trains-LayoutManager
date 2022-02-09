@@ -32,7 +32,6 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             // 
             // tripPlanList
             // 
-            this.tripPlanList.ApplicableTripPlansElement = null;
             this.tripPlanList.Dock = System.Windows.Forms.DockStyle.Top;
             this.tripPlanList.Location = new System.Drawing.Point(0, 0);
             this.tripPlanList.Name = "tripPlanList";

@@ -914,7 +914,7 @@ namespace LayoutManager.Tools.Controls {
                 }
             }
 
-            public XmlElement StartCondition {
+            public XmlElement? StartCondition {
                 get {
                     return WayPoint.StartCondition;
                 }

@@ -52,7 +52,6 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // tripPlanList
             // 
-            this.tripPlanList.ApplicableTripPlansElement = null;
             this.tripPlanList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tripPlanList.Location = new System.Drawing.Point(0, 0);
             this.tripPlanList.Name = "tripPlanList";

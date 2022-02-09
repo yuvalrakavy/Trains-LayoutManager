@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
 using System.Threading.Tasks;
+using MethodDispatcher;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
@@ -252,6 +253,33 @@ namespace LayoutManager {
         }
     }
 
+    static class DispatcherFilter {
+        static private bool MyNameFilter(string? filterValue, object? targetObject, object? parameterValue) {
+            if (filterValue != null)
+                throw new DispatchFilterException("Unexpected Value in DispatchFilter attribute");
+
+            if (targetObject == null || parameterValue == null)
+                return false;
+
+            var parameterNameValue = parameterValue switch {
+                string s => s,
+                IObjectHasName name => name.NameProvider.Name,
+                _ => throw new DispatchFilterException("parameter is not object with name")
+            };
+
+            if (targetObject is IObjectHasName targetWithName)
+                return parameterNameValue == targetWithName.NameProvider.Name;
+            else
+                throw new DispatchFilterException("Target object is not an object with Id");
+        }
+
+        [DispatchTarget]
+        public static void AddDispatcherFilters() {
+            Dispatch.AddCustomFilter("IsMyName", MyNameFilter);
+        }
+
+
+    }
     /// <summary>
     /// This object can provide address information
     /// </summary>

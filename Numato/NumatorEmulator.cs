@@ -42,11 +42,8 @@ namespace NumatoController {
         }
 
         private async Task InterfaceThreadFunction(CancellationToken stopMe) {
-            commStream = Ensure.NotNull<FileStream>(EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true)));
+            commStream = Dispatch.Call.WaitNamedPipeRequest(pipeName, true);
             state = NumatoState.GetUser;
-
-            if (commStream == null)
-                return;
 
             async Task<byte> ReadByte() {
                 if (commStream == null)

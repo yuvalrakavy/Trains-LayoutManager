@@ -48,7 +48,7 @@ namespace LayoutManager.CommonUI.Dialogs {
         public TripPlanTrainConditionInfo TrainCondition {
             get {
                 if (radioButtonNoCondition.Checked) {
-                    if (!trainCondition.IsConditionEmpty)
+                    if (!trainCondition.IsConditionEmpty && trainCondition.ConditionBodyElement != null)
                         trainCondition.Element.RemoveChild(trainCondition.ConditionBodyElement);
                 }
 

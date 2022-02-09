@@ -66,13 +66,19 @@ namespace LayoutManager.CommonUI.Dialogs {
                 return;
             }
 
-            policy.Name = textBoxName.Text;
-            policy.Apply = checkBoxApply.Checked;
-            policy.EventScriptElement = eventScriptEditor.EventScriptElement;
-            policy.GlobalPolicy = checkBoxGlobalPolicy.Checked;
-            policy.ShowInMenu = checkBoxShowInMenu.Checked;
+            var scriptElement = eventScriptEditor.EventScriptElement;
 
-            DialogResult = DialogResult.OK;
+            if (scriptElement != null) {
+                policy.Name = textBoxName.Text;
+                policy.Apply = checkBoxApply.Checked;
+                policy.EventScriptElement = scriptElement;
+                policy.GlobalPolicy = checkBoxGlobalPolicy.Checked;
+                policy.ShowInMenu = checkBoxShowInMenu.Checked;
+                DialogResult = DialogResult.OK;
+            }
+            else
+                DialogResult = DialogResult.Cancel;
+
             Close();
         }
 

@@ -1360,9 +1360,9 @@ namespace LayoutManager {
         /// </summary>
         public static ILayoutSubscriptionCollection Subscriptions => Instance.Subscriptions;
 
-        public static LayoutEventScript EventScript(string scriptName, XmlElement? conditionElement, ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent, LayoutEvent? errorOccurredEvent) => new(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
+        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent, LayoutEvent? errorOccurredEvent) => new(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
 
-        public static LayoutEventScript EventScript(string scriptName, XmlElement? conditionElement, ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
+        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
 
         public static object? Event(string eventName, object? sender = null, object? info = null, string? xmlDocument = null, Type? targetType = null, string? ifTarget = null) =>
             Instance.Event(new LayoutEvent(eventName, sender, info, xmlDocument, targetType, ifTarget));

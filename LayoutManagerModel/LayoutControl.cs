@@ -1121,7 +1121,7 @@ namespace LayoutManager.Model {
 
         /// <summary>
         /// True if this control module type is "built-in" a component. For example, a decoder which snap in to a turnout
-        /// (e.g. Marklin C-track turnouts).
+        /// (e.g. Marlin C-track turnouts).
         /// </summary>
         public bool BuiltIn {
             get => (bool?)AttributeValue(A_BuiltIn) ?? false;
@@ -1131,8 +1131,8 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The name of the decoder type built into module of this type (or null if modules of this type has no decoder)
         /// </summary>
-        public string? DecoderTypeName {
-            get => (string?)AttributeValue("DecoderType");
+        public string DecoderTypeName {
+            get => (string?)AttributeValue("DecoderType") ?? "GenericDCC";
             set => SetAttributValue("DecoderType", value, removeIf: null);
         }
 
@@ -1837,7 +1837,7 @@ namespace LayoutManager.Model {
         /// <param name="componentId">The component ID</param>
         /// <param name="connectionName">The required function name</param>
         /// <returns>Connection point or null if non is defined</returns>
-        public ControlConnectionPoint? this[Guid componentId, string connectionName] => GetConnection(componentId, connectionName);
+        public ControlConnectionPoint? this[Guid componentId, string? connectionName] => GetConnection(componentId, connectionName);
 
         /// <summary>
         /// Get a connection for a specific function
@@ -1880,10 +1880,10 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Get a control connection point for a specific connection
         /// </summary>
-        /// <param name="componentId">The component ID to which the control moddule is connected</param>
+        /// <param name="componentId">The component ID to which the control module is connected</param>
         /// <param name="connectionName">The connection name</param>
         /// <returns>The control connection point, or null if the required connection between this component and a control module does not exist</returns>
-        public ControlConnectionPoint? GetConnection(Guid componentId, string connectionName) {
+        public ControlConnectionPoint? GetConnection(Guid componentId, string? connectionName) {
             var connectionPoints = this[componentId];
 
             if (connectionPoints != null) {

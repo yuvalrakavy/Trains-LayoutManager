@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using MethodDispatcher;
 using LayoutManager.Components;
 
 #pragma warning disable IDE0051, IDE0060
@@ -2152,21 +2153,12 @@ namespace LayoutManager.Model {
 
         public XmlElement? EventScriptElement {
             get {
-                var eventScriptElement = Element[E_EventScript];
+                var eventScriptElement = Element[E_EventScript]!;
 
-                if (eventScriptElement != null) {
-                    Debug.Assert(eventScriptElement.ChildNodes.Count == 1);
-
-                    return (XmlElement)eventScriptElement.ChildNodes[0]!;
-                }
-
-                return null;
+                return eventScriptElement != null && eventScriptElement.HasChildNodes ? (XmlElement)eventScriptElement.ChildNodes[0]! : null;
             }
 
             set {
-                if (value == null)
-                    throw new ArgumentNullException("EventScriptElement cannot be set to null");
-
                 var eventScriptElement = Element[E_EventScript];
                 XmlElement theScriptElement;
 
@@ -2175,13 +2167,16 @@ namespace LayoutManager.Model {
                     Element.AppendChild(eventScriptElement);
                 }
 
-                if (value.OwnerDocument != eventScriptElement.OwnerDocument)
-                    theScriptElement = (XmlElement)eventScriptElement.OwnerDocument.ImportNode(value, true);
-                else
-                    theScriptElement = value;
-
                 eventScriptElement.RemoveAll();
-                eventScriptElement.AppendChild(theScriptElement);
+
+                if (value != null) {
+                    if (value.OwnerDocument != eventScriptElement.OwnerDocument)
+                        theScriptElement = (XmlElement)eventScriptElement.OwnerDocument.ImportNode(value, true);
+                    else
+                        theScriptElement = value;
+
+                    eventScriptElement.AppendChild(theScriptElement);
+                }
             }
         }
 
@@ -2190,7 +2185,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string Text => EventScriptElement == null
                     ? "(Policy not set)"
-                    : (string)EventManager.Event(new LayoutEvent("get-event-script-description", EventScriptElement))!;
+                    :  Dispatch.Call.GetEventScriptDescription(EventScriptElement) ?? $"({EventScriptElement})";
 
         public bool Apply {
             get => (bool?)AttributeValue(A_Apply) ?? false;

@@ -6,6 +6,7 @@ using System.Xml;
 using System.Windows.Forms;
 using System.Linq;
 using System.Threading.Tasks;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.CommonUI;
@@ -211,46 +212,31 @@ namespace LayoutManager.Tools {
             };
         }
 
-        [LayoutEvent("get-locomotive-front")]
-        private void GetLocomotiveFront(LayoutEvent e) {
-            var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender);
-            var nameObject = Ensure.NotNull<object>(e.Info);
+        [DispatchTarget]
+        private LayoutComponentConnectionPoint? GetLocomotiveFront(LayoutBlockDefinitionComponent blockDefinition, object nameObject) {
             var name = ExtractTrainDisplayName(nameObject);
 
-            EventManager.Event(new LayoutEvent("ensure-component-visible", e.Sender, false));
+            EventManager.Event(new LayoutEvent("ensure-component-visible", blockDefinition, false));
 
             Dialogs.LocomotiveFront locoFront = new(blockDefinition, name);
-            if (locoFront.ShowDialog() == DialogResult.OK)
-                e.Info = locoFront.Front;
-            else
-                e.Info = null;
+            return locoFront.ShowDialog() == DialogResult.OK ? locoFront.Front : null;
         }
 
-        [LayoutEvent("get-waypoint-front")]
-        private void GetWaypointFront(LayoutEvent e) {
-            var track = Ensure.NotNull<LayoutStraightTrackComponent>(e.Sender);
-
+        [DispatchTarget]
+        private LayoutComponentConnectionPoint? GetWaypointFront(LayoutStraightTrackComponent track) {
             Dialogs.LocomotiveFront locoFront = new(track, "", "");
 
-            if (locoFront.ShowDialog() == DialogResult.OK)
-                e.Info = locoFront.Front;
-            else
-                e.Info = null;
+            return (locoFront.ShowDialog() == DialogResult.OK) ? locoFront.Front : null;
         }
 
-        [LayoutEvent("get-train-front-and-length")]
-        private void GetTrainFrontAndLength(LayoutEvent e) {
-            var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender);
-            var collectionElement = Ensure.NotNull<XmlElement>(e.Info);
+        [DispatchTarget]
+        private TrainFrontAndLength? GetTrainFrontAndLength(LayoutBlockDefinitionComponent blockDefinition, XmlElement collectionElement) { 
             var name = ExtractTrainDisplayName(collectionElement);
 
-            EventManager.Event(new LayoutEvent("ensure-component-visible", e.Sender, false));
+            EventManager.Event(new LayoutEvent("ensure-component-visible", blockDefinition, false));
 
             Dialogs.TrainFrontAndLength trainFrontAndLength = new(blockDefinition, name);
-            if (trainFrontAndLength.ShowDialog() == DialogResult.OK)
-                e.Info = new TrainFrontAndLength(trainFrontAndLength.Front, trainFrontAndLength.Length);
-            else
-                e.Info = null;
+            return trainFrontAndLength.ShowDialog() == DialogResult.OK ? new TrainFrontAndLength(trainFrontAndLength.Front, trainFrontAndLength.Length) : null;
         }
 
         [LayoutEvent("get-programming-location")]

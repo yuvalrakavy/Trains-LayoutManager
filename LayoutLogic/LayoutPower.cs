@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using MethodDispatcher;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
@@ -14,7 +15,7 @@ namespace LayoutManager.Logic {
         private static ILayoutTopologyServices? _topologyServices;
         private readonly Dictionary<Guid, Guid> _pendingPowerConnectedLockReady = new();
 
-        private static ILayoutTopologyServices TopologyServices => _topologyServices ??= (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", sender: null))!;
+        private static ILayoutTopologyServices TopologyServices => _topologyServices ??= Dispatch.Call.GetTopologyServices();
 
         /// <summary>
         /// Event that indicates that a power source state was changed. Check if this power source is connected to any track power connector.

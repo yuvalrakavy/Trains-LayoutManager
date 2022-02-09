@@ -5,12 +5,13 @@ using System.IO;
 using System.Xml;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.CommonUI;
+using LayoutManager.Logic;
 
 namespace MarklinDigital {
     /// <summary>
@@ -364,8 +365,7 @@ namespace MarklinDigital {
 
                 if (!managed) {
                     if (train.LocomotiveBlock != null) {
-                        var front = (LayoutComponentConnectionPoint?)EventManager.Event("get-locomotive-front",
-                            train.LocomotiveBlock.BlockDefinintion, train.Element);
+                        var front = Dispatch.Call.GetLocomotiveFront(train.LocomotiveBlock.BlockDefinintion, train.Element);
 
                         TrainLocationInfo? trainLocationInfo = train.LocationOfBlock(train.LocomotiveBlock);
 

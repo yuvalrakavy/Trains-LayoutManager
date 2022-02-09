@@ -1,6 +1,7 @@
 using System;
 using System.Xml;
 using System.Diagnostics;
+using MethodDispatcher;
 
 #nullable enable
 namespace LayoutManager {
@@ -232,8 +233,8 @@ namespace LayoutManager {
 
     public class LayoutXmlInfo : IObjectHasXml {
         /// <summary>
-        /// This Xml implementation is used for creating Xml DOM for all the objects.
-        /// This mean that all of them share the same name table, which make it much more effiecent to parse
+        /// This XML implementation is used for creating XML DOM for all the objects.
+        /// This mean that all of them share the same name table, which make it much more efficient to parse
         /// and store (all the strings are using the same atom table, instead of each component allocating
         /// it own strings).
         /// </summary>
@@ -242,7 +243,7 @@ namespace LayoutManager {
         public static XmlImplementation XmlImplementation => LayoutXmlInfo._xmlImplementation;
 
         /// <summary>
-        /// The xml document
+        /// The XML document
         /// </summary>
         internal XmlDocument xmlDocument;
 
@@ -347,4 +348,30 @@ namespace LayoutManager {
             }
         }
     };
-};
+
+    static class DispatchFilters {
+        static private bool MyIdFilter(string? filterValue, object? targetObject, object? parameterValue) {
+            if (filterValue != null)
+                throw new DispatchFilterException("Unexpected Value in DispatchFilter attribute");
+
+            if (targetObject == null || parameterValue == null)
+                return false;
+
+            var paramaterGuid = parameterValue switch {
+                Guid id => id,
+                IObjectHasId obj => obj.Id,
+                _ => throw new DispatchFilterException("parameter is not object with Id")
+            };
+
+            if (targetObject is Guid targetGuid)
+                return targetGuid == paramaterGuid;
+            else
+                throw new DispatchFilterException("Target object is not an object with Id");
+        }
+
+        [DispatchTarget]
+        public static void AddDispatcherFilters() {
+            Dispatch.AddCustomFilter("IsMyId", MyIdFilter);
+        }
+    }
+}

@@ -92,15 +92,13 @@ namespace LayoutManager.Components {
                 string pipeName = @"\\.\pipe\CommandStationEmulationFor_" + Name;
                 var overlappedIO = (bool)Element.AttributeValue("OverlappedIO");
 
-                SafeFileHandle handle = (SafeFileHandle)EventManager.Event(new LayoutEvent("create-named-pipe-request", pipeName,
-                    overlappedIO, null))!;
-
+                var handle = Dispatch.Call.CreateNamedPipeRequest(pipeName, overlappedIO);
                 commandStationEmulator = CreateCommandStationEmulator(pipeName);
 
-                commStream = (FileStream)EventManager.Event(new LayoutEvent("wait-named-pipe-client-to-connect-request", handle, overlappedIO))!;
+                commStream = Dispatch.Call.WaitNamedPipeClientToConnectRequest(handle, overlappedIO);
             }
             else if (InterfaceType == CommunicationInterfaceType.Serial)
-                commStream = (FileStream)EventManager.Event(new LayoutEvent("open-serial-communication-device-request", Element))!;
+                commStream = Dispatch.Call.OpenSerialCommunicationDeviceRequest(Element);
             else if (InterfaceType == CommunicationInterfaceType.TCP)
                 commStream = new TcpClient(IPaddress, 23).GetStream();
         }
@@ -110,7 +108,8 @@ namespace LayoutManager.Components {
                 commandStationEmulator.Dispose();
                 commandStationEmulator = null;
 
-                EventManager.Event(new LayoutEvent("disconnect-named-pipe-request", CommunicationStream));
+                if (CommunicationStream != null)
+                    Dispatch.Call.DisconnectNamedPipeRequest(CommunicationStream);
             }
 
             if (commStream != null) {

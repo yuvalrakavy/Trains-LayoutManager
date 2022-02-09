@@ -57,7 +57,7 @@ namespace LayoutManager.Dialogs {
         }
 
         [LayoutEvent("query-policies-definition-dialog")]
-        private void queryPoliciesDefinitionDialog(LayoutEvent e) {
+        private void QueryPoliciesDefinitionDialog(LayoutEvent e) {
             e.Info = this;
         }
 
@@ -71,18 +71,18 @@ namespace LayoutManager.Dialogs {
                 Owner.Activate();
         }
 
-        private void buttonClose_Click(object? sender, EventArgs e) {
+        private void ButtonClose_Click(object? sender, EventArgs e) {
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void buttonExport_Click(object? sender, EventArgs e) {
+        private void ButtonExport_Click(object? sender, EventArgs e) {
             ExportPolicies d = new();
 
             d.ShowDialog(this);
         }
 
-        private void buttonImport_Click(object? sender, EventArgs e) {
+        private void ButtonImport_Click(object? sender, EventArgs e) {
             ImportPolicies d = new();
 
             d.ShowDialog(this);

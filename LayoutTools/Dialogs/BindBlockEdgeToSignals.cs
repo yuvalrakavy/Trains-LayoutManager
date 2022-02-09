@@ -48,10 +48,10 @@ namespace LayoutManager.Tools.Dialogs {
                 }
             }
 
-            updateButtons(null, EventArgs.Empty);
+            UpdateButtons(null, EventArgs.Empty);
         }
 
-        private void updateButtons(object? sender, EventArgs e) {
+        private void UpdateButtons(object? sender, EventArgs e) {
             LinkedSignalItem selected = (LinkedSignalItem)listBoxSignals.SelectedItem;
 
             linkedSignalSelection.Clear();
@@ -79,7 +79,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [LayoutEvent("query-bind-signals-dialogs")]
-        private void queryBindSignalsDialog(LayoutEvent e) {
+        private void QueryBindSignalsDialog(LayoutEvent e) {
             var queryBlockEdge = (LayoutBlockEdgeBase?)e.Sender;
             var list = Ensure.NotNull<IList<IModelComponentReceiverDialog>>(e.Info);
 
@@ -88,7 +88,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [LayoutEvent("removed-from-model")]
-        private void removedFromModel(LayoutEvent e) {
+        private void RemovedFromModel(LayoutEvent e) {
             var component = Ensure.NotNull<ModelComponent>(e.Sender);
 
             if (component is LayoutBlockEdgeBase && component.Id == BlockEdge.Id)
@@ -123,14 +123,14 @@ namespace LayoutManager.Tools.Dialogs {
             Dispose();
         }
 
-        private void buttonRemove_Click(object? sender, System.EventArgs e) {
+        private void ButtonRemove_Click(object? sender, System.EventArgs e) {
             LinkedSignalItem selected = (LinkedSignalItem)listBoxSignals.SelectedItem;
 
             if (selected != null)
                 listBoxSignals.Items.Remove(selected);
         }
 
-        private void buttonOk_Click(object? sender, System.EventArgs e) {
+        private void ButtonOk_Click(object? sender, System.EventArgs e) {
             LayoutXmlInfo xmlInfo = new(BlockEdge);
             var linkedSignalsElement = xmlInfo.Element[E_LinkedSignals];
 
@@ -157,7 +157,7 @@ namespace LayoutManager.Tools.Dialogs {
             Close();
         }
 
-        private void buttonCancel_Click(object? sender, System.EventArgs e) {
+        private void ButtonCancel_Click(object? sender, System.EventArgs e) {
             Close();
         }
 

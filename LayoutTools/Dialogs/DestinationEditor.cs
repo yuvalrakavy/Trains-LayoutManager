@@ -31,7 +31,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             XmlDocument tempDoc = LayoutXmlInfo.XmlImplementation.CreateDocument();
             tempDoc.AppendChild(tempDoc.ImportNode(inDestination.Element, true));
-            destination = new TripPlanDestinationInfo(tempDoc.DocumentElement);
+            destination = new TripPlanDestinationInfo(tempDoc.DocumentElement!);
 
             if (destination.HasName)
                 textBoxName.Text = destination.Name;
@@ -285,7 +285,7 @@ namespace LayoutManager.Tools.Dialogs {
                 string name = inBox.Input;
                 TripPlanCatalogInfo tripPlanCatalog = LayoutModel.StateManager.TripPlansCatalog;
 
-                TripPlanDestinationInfo existingDestination = tripPlanCatalog.Destinations[name];
+                TripPlanDestinationInfo? existingDestination = tripPlanCatalog.Destinations[name];
 
                 if (existingDestination != null) {
                     if (MessageBox.Show(this, "A destination with name already exists, would you like to replace it?",

@@ -5,45 +5,39 @@ namespace LayoutManager.Model {
         public string Name {
             get;
             set;
-        }
+        } = string.Empty;
 
         public string Manufacturer {
             get;
             set;
-        }
+        } = "Unknown";
 
         public string Description {
             get;
             set;
-        }
+        } = string.Empty;
 
         public DigitalPowerFormats SupportedDigitalPowerFormats {
             get;
             set;
-        }
+        } = DigitalPowerFormats.None;
 
         public TrackGauges TrackGuages {
             get;
             set;
-        }
+        } = TrackGauges.Unknown;
 
         public string TypeName => Manufacturer + Name;
 
         public static DecoderTypeInfo GetDecoderType(string decoderTypeName) {
-            if (decoderTypeName != null) {
-                List<DecoderTypeInfo> decoders = new();
+            List<DecoderTypeInfo> decoders = new();
 
-                EventManager.Event(new LayoutEvent("get-decoder-type", decoders).SetOption("DecoderType", decoderTypeName));
+            EventManager.Event(new LayoutEvent("get-decoder-type", decoders).SetOption("DecoderType", decoderTypeName));
 
-                if (decoders.Count > 0)
-                    return decoders[0];
-                else {
-                    LayoutModuleBase.Error("Unable to get decoder type " + decoderTypeName);
-                    return null;
-                }
-            }
+            if (decoders.Count > 0)
+                return decoders[0];
             else
-                return null;
+                throw new LayoutException("Unable to get decoder type " + decoderTypeName);
         }
     }
 

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.Model;
@@ -49,7 +50,7 @@ namespace LayoutLGB {
 
         private async Task InterfaceThreadFunction(CancellationToken stopMe) {
             // Create the pipe for communication
-            commStream = Ensure.NotNull<FileStream>(EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true)));
+            commStream = Dispatch.Call.WaitNamedPipeRequest(pipeName, true);
             layoutEmulationServices.LocomotiveMoved += LayoutEmulationServices_LocomotiveMoved;
 
             try {

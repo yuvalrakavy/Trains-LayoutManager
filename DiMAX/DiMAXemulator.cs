@@ -51,9 +51,9 @@ namespace DiMAX {
         }
 
         private async Task InterfaceThreadFunction(CancellationToken stopMe) {
-            commStream = Ensure.NotNull<FileStream>(EventManager.Event(new LayoutEvent("wait-named-pipe-request", pipeName, true)));
+            commStream = Dispatch.Call.WaitNamedPipeRequest(pipeName, true);
             layoutEmulationServices.LocomotiveMoved += LayoutEmulationServices_LocomotiveMoved;
-            layoutEmulationServices.LocomotiveFallFromTrack += (s, ea) => InterfaceThreadError(ea.Location.Track, "Locomotive (address " + ea.Unit + ") fall from track");
+            layoutEmulationServices.LocomotiveFallFromTrack += (s, ea) => InterfaceThreadError(ea.Location.Track, $"Locomotive (address {ea.Unit}) fall from track");
 
             try {
                 while (true) {

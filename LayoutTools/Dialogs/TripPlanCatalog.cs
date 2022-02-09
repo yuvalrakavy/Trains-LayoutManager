@@ -42,21 +42,14 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void SetTrain(TrainStateInfo train) {
-            var applicableTripPlansElement = Ensure.NotNull<XmlElement>(workingDoc.DocumentElement![E_ApplicableTripPlans]);
-
-            applicableTripPlansElement.RemoveAll();
-
             this.train = train;
             tripPlanViewer.Train = train;
             tripPlanViewer.OptionalTripPlan = null;
 
-            Text = "Trip-plans for " + train.DisplayName;
+            Text = $"Trip-plans for {train.DisplayName}";
 
             trainDriverComboBox.Train = train;
-
-            EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", train, applicableTripPlansElement).SetOption("CalculatePenalty", false));
-
-            tripPlanList.ApplicableTripPlansElement = applicableTripPlansElement;
+            tripPlanList.TripPlans = Dispatch.Call.GetApplicableTripPlansRequest(train, false, LayoutComponentConnectionPoint.Empty).TripPlans;
             UpdateButtons();
         }
 
@@ -72,7 +65,7 @@ namespace LayoutManager.Tools.Dialogs {
         private void UpdateButtons() {
             if (tripPlanList.SelectedTripPlan != null) {
                 buttonEdit.Enabled = true;
-                buttonGo.Enabled = true;        // TODO: Chnage to tripPlanViewer.IsTripPlanValid
+                buttonGo.Enabled = true;        // TODO: Change to tripPlanViewer.IsTripPlanValid
             }
             else {
                 buttonEdit.Enabled = false;
@@ -123,7 +116,7 @@ namespace LayoutManager.Tools.Dialogs {
 
                 tripPlanDoc.AppendChild(tripPlanDoc.ImportNode(tripPlanList.SelectedTripPlan.Element, true));
 
-                TripPlanInfo tripPlan = new(tripPlanDoc.DocumentElement);
+                TripPlanInfo tripPlan = new(tripPlanDoc.DocumentElement!);
 
                 if (tripPlanList.ShouldReverseSelectedTripPlan)
                     tripPlan.Reverse();
@@ -149,7 +142,7 @@ namespace LayoutManager.Tools.Dialogs {
 
                 tripPlanDoc.AppendChild(tripPlanDoc.ImportNode(tripPlanList.SelectedTripPlan.Element, true));
 
-                TripPlanInfo tripPlan = new(tripPlanDoc.DocumentElement);
+                TripPlanInfo tripPlan = new(tripPlanDoc.DocumentElement!);
 
                 if (tripPlanList.ShouldReverseSelectedTripPlan)
                     tripPlan.Reverse();
@@ -180,7 +173,7 @@ namespace LayoutManager.Tools.Dialogs {
 
                     tripPlanDoc.AppendChild(tripPlanDoc.ImportNode(tripPlanList.SelectedTripPlan.Element, true));
 
-                    tripPlan = new TripPlanInfo(tripPlanDoc.DocumentElement);
+                    tripPlan = new TripPlanInfo(tripPlanDoc.DocumentElement!);
                     tripPlan.Reverse();
                 }
 

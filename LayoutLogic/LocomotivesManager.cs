@@ -3,11 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.Linq;
-using LayoutManager.Model;
-using LayoutManager.Components;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Threading;
+
+using MethodDispatcher;
+using LayoutManager;
+using LayoutManager.Model;
+using LayoutManager.Components;
 
 namespace LayoutManager.Logic {
     [LayoutModule("Trains Manager", UserControl = false)]
@@ -613,7 +616,7 @@ namespace LayoutManager.Logic {
                 front = e.GetOption(optionName: "Front", elementName: E_Train).ToComponentConnectionPoint();
             else {
                 if (collectionElement.Name == E_Train) {
-                    front = EventManager.EventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>("get-locomotive-front", blockDefinition, collectionElement);
+                    front = Dispatch.Call.GetLocomotiveFront(blockDefinition, collectionElement);
 
                     if (front == null)
                         throw new OperationCanceledException("get-locomotive-front");
@@ -793,7 +796,7 @@ namespace LayoutManager.Logic {
             if (e.HasOption(E_Train, "Front"))
                 front = e.GetOption("Front", E_Train).ToComponentConnectionPoint();
             else {
-                front = EventManager.EventResultValueType<LayoutBlockDefinitionComponent, object, LayoutComponentConnectionPoint>("get-locomotive-front", blockDefinition, train);
+                front = Dispatch.Call.GetLocomotiveFront(blockDefinition, train);
 
                 if (front == null)
                     return;         // User canceled.

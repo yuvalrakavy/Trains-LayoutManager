@@ -45,7 +45,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(75, 23);
             this.buttonClose.TabIndex = 2;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += this.buttonClose_Click;
+            this.buttonClose.Click += this.ButtonClose_Click;
             // 
             // tabControlStartCondition
             // 
@@ -123,7 +123,7 @@ namespace LayoutManager.Dialogs {
             this.buttonExport.TabIndex = 1;
             this.buttonExport.Text = "Export...";
             this.buttonExport.UseVisualStyleBackColor = true;
-            this.buttonExport.Click += this.buttonExport_Click;
+            this.buttonExport.Click += this.ButtonExport_Click;
             // 
             // globalPolicyListGlobal
             // 
@@ -203,7 +203,7 @@ namespace LayoutManager.Dialogs {
             this.buttonImport.TabIndex = 3;
             this.buttonImport.Text = "Import...";
             this.buttonImport.UseVisualStyleBackColor = true;
-            this.buttonImport.Click += this.buttonImport_Click;
+            this.buttonImport.Click += this.ButtonImport_Click;
             // 
             // PoliciesDefinition
             // 

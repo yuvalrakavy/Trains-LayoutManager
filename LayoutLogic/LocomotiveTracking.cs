@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using MethodDispatcher;
+
 using LayoutManager.Model;
 using LayoutManager.Components;
 using System.Linq;
@@ -23,7 +25,7 @@ namespace LayoutManager.Logic {
 
         #region Common properties
 
-        protected ILayoutTopologyServices TopologyServices => _topologyServices ??= (ILayoutTopologyServices)EventManager.Event(new LayoutEvent("get-topology-services", this))!;
+        protected ILayoutTopologyServices TopologyServices => _topologyServices ??= Dispatch.Call.GetTopologyServices();
 
         #endregion
 

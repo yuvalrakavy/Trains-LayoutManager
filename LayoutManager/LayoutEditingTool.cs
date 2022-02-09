@@ -14,8 +14,6 @@ namespace LayoutManager {
     /// <summary>
     /// This tool is used for editing the layout
     /// </summary>
-#pragma warning disable IDE0051, IDE0060, IDE0067
-
     public class LayoutEditingTool : LayoutTool {
         private LayoutStraightTrackComponent? lastTrack = null;
         private string? lastCategoryName = null;
@@ -194,14 +192,14 @@ namespace LayoutManager {
                     if (s != null) {
                         component = s.CreateComponent(oldTrack);
 
-                        if (component is LayoutStraightTrackComponent)
-                            lastTrack = (LayoutStraightTrackComponent)component;
+                        if (component is LayoutStraightTrackComponent straightTrack)
+                            lastTrack = straightTrack;
                     }
                 }
 
                 if (component != null) {
                     bool placeComponent;
-                    var placementXml = $"<PlacementInfo AreaID='{area.AreaGuid.ToString()}' X='{ml.X}' Y='{ml.Y}' />";
+                    var placementXml = $"<PlacementInfo AreaID='{area.AreaGuid}' X='{ml.X}' Y='{ml.Y}' />";
 
                     placeComponent = Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("model-component-placement-request", component,
                         true, placementXml)));

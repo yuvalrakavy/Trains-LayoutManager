@@ -130,7 +130,7 @@ namespace LayoutManager.Tools.Dialogs {
                 var name = CommonUI.Dialogs.InputBox.Show("Enter new name", "Rename Destination");
 
                 if (name != null) {
-                    TripPlanDestinationInfo existingDestination = tripPlanCatalog.Destinations[name];
+                    TripPlanDestinationInfo? existingDestination = tripPlanCatalog.Destinations[name];
 
                     if (existingDestination != null && existingDestination != selected.Destination)
                         MessageBox.Show(this, "A destination with this name already exists", "Invalid name", MessageBoxButtons.OK, MessageBoxIcon.Error);

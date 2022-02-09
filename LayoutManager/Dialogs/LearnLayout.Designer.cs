@@ -57,8 +57,8 @@
 			this.listViewEvents.SmallImageList = this.imageListStatus;
 			this.listViewEvents.TabIndex = 0;
 			this.listViewEvents.View = System.Windows.Forms.View.Details;
-			this.listViewEvents.SelectedIndexChanged += new System.EventHandler(this.listViewEvents_SelectedIndexChanged);
-			this.listViewEvents.DoubleClick += new System.EventHandler(this.listViewEvents_DoubleClick);
+			this.listViewEvents.SelectedIndexChanged += new System.EventHandler(this.ListViewEvents_SelectedIndexChanged);
+			this.listViewEvents.DoubleClick += new System.EventHandler(this.ListViewEvents_DoubleClick);
 // 
 // columnHeaderAddress
 // 
@@ -96,7 +96,7 @@
 			this.buttonAction.Name = "buttonAction";
 			this.buttonAction.TabIndex = 1;
 			this.buttonAction.Text = "&Connect";
-			this.buttonAction.Click += new System.EventHandler(this.buttonAction_Click);
+			this.buttonAction.Click += new System.EventHandler(this.ButtonAction_Click);
 // 
 // buttonRemove
 // 
@@ -105,7 +105,7 @@
 			this.buttonRemove.Name = "buttonRemove";
 			this.buttonRemove.TabIndex = 2;
 			this.buttonRemove.Text = "&Remove";
-			this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+			this.buttonRemove.Click += new System.EventHandler(this.ButtonRemove_Click);
 // 
 // buttonRemoveAll
 // 
@@ -114,7 +114,7 @@
 			this.buttonRemoveAll.Name = "buttonRemoveAll";
 			this.buttonRemoveAll.TabIndex = 3;
 			this.buttonRemoveAll.Text = "Remove &All";
-			this.buttonRemoveAll.Click += new System.EventHandler(this.buttonRemoveAll_Click);
+			this.buttonRemoveAll.Click += new System.EventHandler(this.ButtonRemoveAll_Click);
 // 
 // buttonClose
 // 
@@ -124,7 +124,7 @@
 			this.buttonClose.Name = "buttonClose";
 			this.buttonClose.TabIndex = 4;
 			this.buttonClose.Text = "&Close";
-			this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+			this.buttonClose.Click += new System.EventHandler(this.ButtonClose_Click);
 // 
 // checkBoxEnableSound
 // 
@@ -135,7 +135,7 @@
 			this.checkBoxEnableSound.Size = new System.Drawing.Size(150, 17);
 			this.checkBoxEnableSound.TabIndex = 5;
 			this.checkBoxEnableSound.Text = "Play sound upon new input";
-			this.checkBoxEnableSound.CheckedChanged += new System.EventHandler(this.checkBoxEnableSound_CheckedChanged);
+			this.checkBoxEnableSound.CheckedChanged += new System.EventHandler(this.CheckBoxEnableSound_CheckedChanged);
 // 
 // checkBoxOnlyShowNotConnected
 // 

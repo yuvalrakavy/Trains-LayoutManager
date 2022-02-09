@@ -1,19 +1,17 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
+using MethodDispatcher;
 using LayoutManager.Components;
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051, IDE0060
-#nullable enable
 namespace LayoutManager.Logic {
     [LayoutModule("Layout Topology Services", UserControl = false)]
     public class LayoutTopologyServices : LayoutModuleBase, ILayoutTopologyServices {
-        public static string TopologyServicesVersion = "1.0";
+        public static readonly string TopologyServicesVersion = "1.0";
 
-        [LayoutEvent("get-topology-services")]
-        private void GetTopologyServices(LayoutEvent e) {
-            e.Info = (ILayoutTopologyServices)this;
+        [DispatchTarget]
+        private ILayoutTopologyServices GetTopologyServices() {
+            return this;
         }
 
         /// <summary>
