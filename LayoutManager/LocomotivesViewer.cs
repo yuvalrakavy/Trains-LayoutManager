@@ -8,6 +8,7 @@ using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 using LayoutManager.CommonUI;
+using LayoutManager.Components;
 
 namespace LayoutManager {
     /// <summary>
@@ -99,9 +100,9 @@ namespace LayoutManager {
             buttonOptions.Text = "&Arrange";
         }
 
-        [LayoutEvent("train-created")]
+        [DispatchTarget(Name = "OnTrainCreated")]
         [LayoutEvent("train-is-removed")]
-        private void EventThatUpdateButtons(LayoutEvent e) {
+        private void EventThatUpdateButtons(TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
             UpdateButtons();
         }
 

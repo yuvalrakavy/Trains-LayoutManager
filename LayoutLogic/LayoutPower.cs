@@ -38,7 +38,7 @@ namespace LayoutManager.Logic {
                 var component = LayoutModel.Component<ILayoutLockResource>(_pendingPowerConnectedLockReady[outletComponentId]);
 
                 if (component != null)
-                    EventManager.Event(new LayoutEvent("layout-lock-resource-ready", component));
+                    Dispatch.Call.LayoutLockResourceReady(component);
                 _pendingPowerConnectedLockReady.Remove(outletComponentId);
             }
         }
@@ -361,15 +361,14 @@ namespace LayoutManager.Logic {
                 OnTrainPowerChanged(e.Sender, e.Info);
         }
 
-        [LayoutAsyncEvent("set-power")]
-        private async Task SetPower(LayoutEvent e) {
-            var powerRegionObject = Ensure.NotNull<object>(e.Sender, "power region");
+        [DispatchTarget]
+        private async Task SetPower(object powerRegionObject, object powerObjecct, LayoutOperationContext operationContext) {
             LayoutTrackPowerConnectorComponent powerConnector = ExtractPowerConnector(powerRegionObject);
             ILayoutPower power;
 
-            if (e.Info is ILayoutPower aPower)
+            if (powerObjecct is ILayoutPower aPower)
                 power = aPower;
-            else if (e.Info is LayoutPowerType powerType)
+            else if (powerObjecct is LayoutPowerType powerType)
                 power = Ensure.NotNull<ILayoutPower>(
                         (from p in powerConnector.Inlet.ConnectedOutlet.ObtainablePowers where p.Type == powerType select p).FirstOrDefault()
                     );
@@ -405,11 +404,11 @@ namespace LayoutManager.Logic {
                         // collision).
                         foreach (var trainLocation in powerConnector.TrainLocations) {
                             foreach (var trainLoco in trainLocation.Train.Locomotives) {
-                                var result = (CanPlaceTrainResult?)EventManager.Event(new LayoutEvent<XmlElement, object>("is-locomotive-address-valid", trainLoco.Locomotive.Element, power));
+                                var result = Dispatch.Call.IsLocomotiveAddressValid(trainLoco.Locomotive.Element, power, new IsLocomotiveAddressValidSettings());
 
                                 if (result != null) {
                                     if (result.ResolveMethod == CanPlaceTrainResolveMethod.NotPossible)
-                                        throw new LayoutException(trainLocation.Train, "Cannot connect power to this train: " + result.ToString());
+                                        throw new LayoutException(trainLocation.Train, $"Cannot connect power to this train: {result}");
                                     else if (result.ResolveMethod == CanPlaceTrainResolveMethod.ReprogramAddress) {
                                         // This can be done in place if there is only one locomotive in the power region, and this power region
                                         // can be connected to programming power
@@ -421,8 +420,7 @@ namespace LayoutManager.Logic {
 
                                         // There is only one locomotive on a region that can be connected to programming power
                                         var programmingState = new PlacedLocomotiveProgrammingState(trainLocation.Train.Element, result.Locomotive, trainLocation.Block.BlockDefinintion);
-
-                                        var programmedTrain = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent<PlacedLocomotiveProgrammingState>("placed-locomotive-address-programming", programmingState).CopyOperationContext(e));
+                                        var programmedTrain = await Dispatch.Call.PlacedLocomotiveAddressReprogramming(programmingState, new CreateTrainSettings(), operationContext);
 
                                         Debug.Assert(programmedTrain != null);
                                     }
@@ -459,13 +457,9 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("train-placed-on-track")]
-        private void OnTrainPlaced(LayoutEvent e0) {
-            var e = (LayoutEvent<TrainStateInfo>)e0;
-            var train = e.Sender;
-
-            Debug.Assert(train != null);
-            if (train != null && train.LocomotiveBlock != null)
+        [DispatchTarget]
+        private void OnTrainPlacedOnTrack(TrainStateInfo train) {
+            if (train.LocomotiveBlock != null)
                 OnTrainPowerChanged(train, train.LocomotiveBlock.BlockDefinintion.Power);
         }
 

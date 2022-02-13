@@ -9,19 +9,20 @@ using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 using LayoutManager.CommonUI;
+using LayoutManager.Components;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
     /// Summary description for LocomotiveController.
     /// </summary>
-    [LayoutEventDef("train-controller-activated", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
-    [LayoutEventDef("train-controller-deactivated", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
-    public partial class LocomotiveController : Form, IObjectHasXml {
+    public partial class LocomotiveController : Form, IObjectHasId, IObjectHasXml {
 
         private readonly TrainStateInfo train;
 
         public XmlElement Element => train.Element;
         public XmlElement? OptionalElement => Element;
+
+        public Guid Id => train.Id;
 
         public LocomotiveController(TrainStateInfo train) {
             //
@@ -46,13 +47,12 @@ namespace LayoutManager.Tools.Dialogs {
             else
                 buttonLight.FlatStyle = FlatStyle.Standard;
 
-            EventManager.Event(new LayoutEvent<TrainStateInfo>("train-controller-activated", train));
+            Dispatch.Notification.OnTrainControllerActivated(train);
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e) {
             base.OnFormClosing(e);
-
-            EventManager.Event(new LayoutEvent<TrainStateInfo>("train-controller-deactivated", train));
+            Dispatch.Notification.OnTrainControllerDeactivated(train);
         }
 
         private void SetTitleBar() {
@@ -60,7 +60,7 @@ namespace LayoutManager.Tools.Dialogs {
                 LocomotiveInfo loco = train.Locomotives[0].Locomotive;
 
                 if (loco.TypeName != "")
-                    this.Text = train.DisplayName + " (" + loco.TypeName + ")";
+                    this.Text = $"{train.DisplayName} ({loco.TypeName})";
                 else
                     this.Text = train.DisplayName;
             }
@@ -90,8 +90,8 @@ namespace LayoutManager.Tools.Dialogs {
                 this.Close();
         }
 
-        [LayoutEvent("train-speed-changed", IfSender = "*[@ID='`string(@ID)`']")]
-        private void TrainSpeedChanged(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnTrainSpeedChanged([DispatchFilter(Type="IsMyId")] TrainStateInfo train, int speed) {
             panelInfo.Invalidate();
         }
 
@@ -106,9 +106,9 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [LayoutEvent("train-enter-block", IfSender = "*[@ID='`string(@ID)`']")]
-        [LayoutEvent("train-created", IfSender = "*[@ID='`string(@ID)`']")]
+        [DispatchTarget(Name="OnTrainCreated")]
         [LayoutEvent("train-extended", IfSender = "*[@ID='`string(@ID)`']")]
-        private void LocomotiveEnterBlock(LayoutEvent e) {
+        private void InvalidateInfoPanel([DispatchFilter(Type="IsMyId")] TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
             panelInfo.Invalidate();
         }
 
@@ -489,7 +489,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void ButtonLight_Click(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent("set-train-lights-request", train, !train.Lights));
+            Dispatch.Call.SetLocomotiveLightsRequest(train, !train.Lights);
         }
 
         private void MenuLightsOn_Click(object? sender, EventArgs e) {

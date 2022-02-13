@@ -446,51 +446,5 @@ namespace LayoutManager.Tools {
         }
 
         #endregion
-
-        #region Block Lock debug code
-
-#if DEBUG_BLOCK_LOCK
-		Dialogs.BlockLockTester	blockLockTester = null;
-
-		[LayoutEvent("query-component-operation-context-menu", SenderType=typeof(LayoutBlockInfoComponent))]
-		private void queryBlockInfoContextMenu(LayoutEvent e) {
-			e.Info = true;
-		}
-
-		[LayoutEvent("add-component-operation-context-menu-entries", Order=1000, SenderType=typeof(LayoutBlockInfoComponent))]
-		private void addAddToRequestMenu(LayoutEvent e) {
-			Menu						menu = (Menu)e.Info;
-			LayoutBlockInfoComponent	blockInfo = (LayoutBlockInfoComponent)e.Sender;
-
-			menu.MenuItems.Add(new LayoutComponentMenuItem(blockInfo, "&Add to lock request", new EventHandler(this.addToLockRequest)));
-
-			if(blockInfo.Block.IsLocked)
-				menu.MenuItems.Add(new LayoutComponentMenuItem(blockInfo, "&Unlock block", new EventHandler(this.unlockBlock)));
-		}
-
-		private void addToLockRequest(object? sender, EventArgs e) {
-			LayoutBlockInfoComponent	blockInfo = (LayoutBlockInfoComponent)((LayoutComponentMenuItem)sender).Component;
-
-			if(blockLockTester == null) {
-				blockLockTester = new Dialogs.BlockLockTester(blockInfo);
-				blockLockTester.Show();
-			}
-			else
-				blockLockTester.AddBlockInfo(blockInfo);
-		}
-
-		private void unlockBlock(object? sender, EventArgs e) {
-			LayoutBlockInfoComponent	blockInfo = (LayoutBlockInfoComponent)((LayoutComponentMenuItem)sender).Component;
-
-			blockInfo.EventManager.Event(new LayoutEvent(blockInfo.Block.ID, "free-layout-lock"));
-		}
-
-		[LayoutEvent("block-tester-dialog-closed")]
-		private void blockTesterDialogClosed(LayoutEvent e) {
-			blockLockTester = null;
-		}
-#endif
-
-        #endregion
     }
 }

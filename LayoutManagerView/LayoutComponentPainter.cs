@@ -666,7 +666,7 @@ namespace LayoutManager.Components {
         }
     }
 
-    public class BallonPainter : IDisposable {
+    public class BalloonPainter : IDisposable {
         private int hotspotOrigin = 5;
 
         #region Properties
@@ -729,7 +729,7 @@ namespace LayoutManager.Components {
 
         #endregion
 
-        public GraphicsPath BallonGraphicPath {
+        public GraphicsPath BalloonGraphicPath {
             get {
                 GraphicsPath p = new();
                 LastPoint lp = new(p, new PointF(Bounds.Left + CornerSize.Width, Bounds.Top));
@@ -804,7 +804,7 @@ namespace LayoutManager.Components {
         }
 
         public void Paint(Graphics g) {
-            using GraphicsPath p = BallonGraphicPath;
+            using GraphicsPath p = BalloonGraphicPath;
             g.FillPath(Fill, p);
             g.DrawPath(Outline, p);
         }

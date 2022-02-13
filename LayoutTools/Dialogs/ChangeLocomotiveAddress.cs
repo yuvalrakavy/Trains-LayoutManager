@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Xml;
 using System.Windows.Forms;
+
+using MethodDispatcher;
 using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Dialogs {
@@ -52,7 +54,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void ButtonAllocateAddress_Click(object? sender, EventArgs e) {
-            var address = EventManager.EventResultValueType<Components.LayoutBlockDefinitionComponent, LocomotiveInfo, int>("allocate-locomotive-address", null, Locomotive);
+            var address = Dispatch.Call.AllocateLocomotiveAddress(Locomotive);
 
             if (address.HasValue)
                 textBoxAddress.Text = address.ToString();
@@ -87,10 +89,10 @@ namespace LayoutManager.Tools.Dialogs {
                     var power = (from powerOutlet in CommandStation.PowerOutlets where powerOutlet.Power.Type == LayoutPowerType.Digital select powerOutlet.Power).FirstOrDefault();
 
                     if (power != null) {
-                        var isAddressValid = Ensure.NotNull<CanPlaceTrainResult>(EventManager.Event(new LayoutEvent<XmlElement, ILayoutPower>("is-locomotive-address-valid", Locomotive.Element, power).SetOption("LocoAddress", address)));
+                        var isAddressValid = Dispatch.Call.IsLocomotiveAddressValid(Locomotive.Element, power, new IsLocomotiveAddressValidSettings { LocomotiveAddress = address });
 
                         if (!isAddressValid.CanBeResolved)
-                            result = MessageBox.Show(this, isAddressValid.ToString() + "\n\nDo you want to use this address?", "Address warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;
+                            result = MessageBox.Show(this, $"{isAddressValid.ToString()}\n\nDo you want to use this address?", "Address warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;
                     }
                 }
 

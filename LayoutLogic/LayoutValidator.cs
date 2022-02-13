@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using MethodDispatcher;
+
 using LayoutManager.Model;
 using LayoutManager.Components;
 
@@ -269,7 +271,7 @@ namespace LayoutManager.Logic {
                                     TrainStateInfo train = otherBlock.Trains[0].Train;
 
                                     // Train was detected, extend the block to include the one that the train
-                                    EventManager.Event(new LayoutEvent("request-auto-train-extend", train, otherBlock.BlockDefinintion));
+                                    Dispatch.Call.RequestAutoExtendTrain(train, otherBlock.BlockDefinintion);
                                     detected = true;
                                 }
                             }

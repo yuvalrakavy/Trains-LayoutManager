@@ -8,6 +8,7 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 using System.Threading.Tasks;
 using System.Threading;
+using MethodDispatcher;
 
 namespace LayoutManager.Logic {
     [LayoutModule("Layout Lock Manager")]
@@ -20,9 +21,9 @@ namespace LayoutManager.Logic {
         /// Obtain lock on one or more blocks
         /// </summary>
         /// <param name="e.Sender">A lock request (either as LayoutLockRequest object, or XML)</param>
-        [LayoutEvent("request-layout-lock")]
-        private void RequestLayoutLock(LayoutEvent e) {
-            var lockRequest = Ensure.NotNull<LayoutLockRequest>(e.Sender, "lockRequest");
+        [DispatchTarget]
+        private bool RequestLayoutLock(LayoutLockRequest lockRequest) {
+            bool lockGranted;
 
             lockRequest.Status = LayoutLockRequest.RequestStatus.NotGranted;
 
@@ -33,10 +34,10 @@ namespace LayoutManager.Logic {
 
             if (CanRequestBeGranted(lockRequest, true)) {
                 DoLockBlock(lockRequest);
-                e.Info = true;                  // Request could be granted immediately 
+                lockGranted = true;                  // Request could be granted immediately 
             }
             else {
-                e.Info = false;                 // Request was queued
+                lockGranted = false;                 // Request was queued
 
                 // Check if this request should be granted because it will "help" in clearing the way for granting high priority request
                 // this will be the case, if the owner of this request is a train that is locking resource that is needed by this "high
@@ -53,7 +54,7 @@ namespace LayoutManager.Logic {
                             if (CanRequestBeGranted(lockRequest, false)) {
                                 Trace.WriteLineIf(traceLockManager.TraceVerbose, "Request was granted");
                                 DoLockBlock(lockRequest);
-                                e.Info = true;
+                                lockGranted = true;
                             }
                             else
                                 Trace.WriteLineIf(traceLockManager.TraceVerbose, "Request was not granted");
@@ -66,18 +67,18 @@ namespace LayoutManager.Logic {
 
             if (traceLockManager.TraceVerbose) {
                 Trace.WriteLine("After processing lock request, locks map:");
-                EventManager.Event(new LayoutEvent("dump-locks", this));
+                DumpLocks();
             }
+
+            return lockGranted;
         }
 
-        [LayoutAsyncEvent("request-layout-lock-async")]
-        private Task RequestLayoutLockAsync(LayoutEvent e) {
-            var lockRequest = Ensure.NotNull<LayoutLockRequest>(e.Sender, "lockRequest");
-
+        [DispatchTarget]
+        private Task<bool> RequestLayoutLockAsync(LayoutLockRequest lockRequest) {
             if (lockRequest.OnLockGranted != null)
-                throw new ArgumentException("request-layout-lock-async LockRequest.OnLockGranted must be null");
+                throw new ArgumentException("RequestLayoutLockAsync LockRequest.OnLockGranted must be null");
 
-            var tcs = new TaskCompletionSource<object>();
+            var tcs = new TaskCompletionSource<bool>();
 
             if (lockRequest.CancellationToken.IsCancellationRequested)
                 tcs.TrySetCanceled();
@@ -88,24 +89,21 @@ namespace LayoutManager.Logic {
                     lockRequest.CancellationToken.Register(
                         () => {
                             if (lockRequest.Status == LayoutLockRequest.RequestStatus.NotGranted)
-                                EventManager.Event(new LayoutEvent<LayoutLockRequest>("cancel-layout-lock", lockRequest));
+                                CancelLayoutLock(lockRequest);
                             tcs.TrySetCanceled();
                         }
                     );
                 }
 
-                RequestLayoutLock(e);
-
-                if ((bool)(e.Info ?? false))       // Lock was granted immediately
+                if(RequestLayoutLock(lockRequest))
                     tcs.TrySetResult(true);
             }
 
             return tcs.Task;
         }
 
-        [LayoutEvent("request-manual-dispatch-lock")]
-        private void RequestManualDispatchLock(LayoutEvent e) {
-            var manualDispatchRegion = Ensure.NotNull<ManualDispatchRegionInfo>(e.Sender, "manualDispatchRegion");
+        [DispatchTarget]
+        private void RequestManualDispatchLock(ManualDispatchRegionInfo manualDispatchRegion) {
             LayoutSelection activeTrains = new();
             LayoutSelection alreadyManualDispatch = new();
             LayoutSelection partialTrains = new();
@@ -170,9 +168,8 @@ namespace LayoutManager.Logic {
             manualDispatchRegion.SetActive(true);
         }
 
-        [LayoutEvent("free-manual-dispatch-lock")]
-        private void FreeManualDispatchLock(LayoutEvent e) {
-            var manualDispatchRegion = Ensure.NotNull<ManualDispatchRegionInfo>(e.Sender, "manualDispatchRegion");
+        [DispatchTarget]
+        private void FreeManualDispatchLock(ManualDispatchRegionInfo manualDispatchRegion) {
             IDictionary lockedTrains = new HybridDictionary();
 
             foreach (Guid blockID in manualDispatchRegion.BlockIdList) {
@@ -198,7 +195,7 @@ namespace LayoutManager.Logic {
                 }
             }
 
-            EventManager.Event(new LayoutEventInfoValueType<object, Guid>("free-owned-layout-locks", null, manualDispatchRegion.Id).SetOption("ReleasePending", false));
+            FreeOwnedLayoutLocks(manualDispatchRegion.Id, false);
         }
 
         /// <summary>
@@ -208,11 +205,11 @@ namespace LayoutManager.Logic {
         /// Either lock request (all requested blocked are freed) or BlockID or array of 
         /// block IDs
         /// </param>
-        [LayoutEvent("free-layout-lock")]
-        private void FreeLayoutLock(LayoutEvent e) {
+        [DispatchTarget]
+        private void FreeLayoutLock(object lockedObject) {
             IDictionary<Guid, LockedResourceEntry> freedLockedResourceEntry = new Dictionary<Guid, LockedResourceEntry>();
 
-            switch (e.Sender) {
+            switch (lockedObject) {
                 case LayoutLockRequest request:
                     foreach (var blockEntry in request.Blocks)
                         DoFreeResource(blockEntry.Block.Id, freedLockedResourceEntry);
@@ -238,39 +235,33 @@ namespace LayoutManager.Logic {
 
             if (traceLockManager.TraceVerbose) {
                 Trace.WriteLine("After freeing resource, locks map:");
-                EventManager.Event(new LayoutEvent("dump-locks", this));
+                DumpLocks();
             }
         }
 
-        [LayoutEvent("free-owned-layout-locks")]
-        private void FreeOwnedLocks(LayoutEvent e0) {
-            var e = (LayoutEventInfoValueType<object, Guid>)e0;
-            Guid ownerID = e.Info;
-            var releasePending = (bool)e.GetOption("ReleasePending");
+        [DispatchTarget]
+        private void FreeOwnedLayoutLocks(Guid ownerId, bool releasePending) {
             List<Guid> resourceIDsToFree = new();
 
             foreach (KeyValuePair<Guid, LockedResourceEntry> d in lockedResourceMap) {
                 LockedResourceEntry lbe = d.Value;
                 Guid resourceID = d.Key;
 
-                if (lbe.Request != null && lbe.Request.OwnerId == ownerID)
+                if (lbe.Request != null && lbe.Request.OwnerId == ownerId)
                     resourceIDsToFree.Add(resourceID);
 
                 if (releasePending) {
                     foreach (LayoutLockRequest request in lbe.PendingRequests)
-                        if (request.OwnerId == ownerID)
+                        if (request.OwnerId == ownerId)
                             lbe.RemoveRequest(request);
                 }
             }
 
-            EventManager.Event(new LayoutEvent("free-layout-lock", resourceIDsToFree.ToArray()));
+            FreeLayoutLock(resourceIDsToFree.ToArray());
         }
 
-        [LayoutEvent("cancel-layout-lock")]
-        private void CancelLayoutLock(LayoutEvent e0) {
-            var e = (LayoutEvent<LayoutLockRequest>)e0;
-            var lockRequest = Ensure.NotNull<LayoutLockRequest>(e.Sender, "lockRequest");
-
+        [DispatchTarget]
+        private void CancelLayoutLock(LayoutLockRequest lockRequest) {
             if (lockRequest.Status != LayoutLockRequest.RequestStatus.NotGranted)
                 throw new ArgumentException("Lock request status is different from NotGranted, request cannot be canceled");
 
@@ -279,7 +270,7 @@ namespace LayoutManager.Logic {
                     lockedResourceEntry.RemoveRequest(lockRequest);
 
                     if (lockedResourceEntry.Request == null && lockedResourceEntry.PendingRequests.Length == 0) {
-                        Trace.WriteLineIf(traceLockManager.TraceInfo, "LockManager: Removing entry for canceled not-ready block " + blockEntry.BlockDefinition.FullDescription);
+                        Trace.WriteLineIf(traceLockManager.TraceInfo, $"LockManager: Removing entry for canceled not-ready block {blockEntry.BlockDefinition.FullDescription}");
 
                         lockedResourceMap.Remove(blockEntry.Block.Id);
                     }
@@ -292,7 +283,7 @@ namespace LayoutManager.Logic {
 
                     if (lockedResourceEntry.Request == null && lockedResourceEntry.PendingRequests.Length == 0) {
                         Trace.WriteLineIf(traceLockManager.TraceInfo,
-                            "LockManager: Removing entry for canceled not-ready block resource " + LayoutModel.Component<ModelComponent>(resourceId)?.FullDescription ?? $"Missing component {resourceId}");
+                            $"LockManager: Removing entry for canceled not-ready block resource {LayoutModel.Component<ModelComponent>(resourceId)?.FullDescription}" ?? $"Missing component {resourceId}");
 
                         lockedResourceMap.Remove(resourceId);
                     }
@@ -307,7 +298,7 @@ namespace LayoutManager.Logic {
                         lockedResourceEntry.RemoveRequest(lockRequest);
 
                         if (lockedResourceEntry.Request == null && lockedResourceEntry.PendingRequests.Length == 0) {
-                            Trace.WriteLineIf(traceLockManager.TraceInfo, "LockManager: Removing entry for canceled not-ready request resource " + resource.FullDescription);
+                            Trace.WriteLineIf(traceLockManager.TraceInfo, $"LockManager: Removing entry for canceled not-ready request resource {resource.FullDescription}");
 
                             lockedResourceMap.Remove(resourceId);
                         }
@@ -318,11 +309,12 @@ namespace LayoutManager.Logic {
             lockRequest.Status = LayoutLockRequest.RequestStatus.NotRequested;
         }
 
-        [LayoutEvent("get-layout-lock-manager-services")]
-        private void GetLayoutLockManagerServices(LayoutEvent e) => e.Info = (ILayoutLockManagerServices)this;
+        [DispatchTarget]
+        private ILayoutLockManagerServices GetLayoutLockManagerServices() => (ILayoutLockManagerServices)this;
 
-        [LayoutEvent("dump-locks")]
-        private void DumpLocks(LayoutEvent e) {
+
+        [DispatchTarget]
+        private void DumpLocks() {
             Trace.WriteLine("==== ==== ==== Lock Map ==== ==== ====");
 
             foreach (KeyValuePair<Guid, LockedResourceEntry> d in lockedResourceMap) {
@@ -527,7 +519,7 @@ namespace LayoutManager.Logic {
                 lockRequest.OnLockGranted();
             }
 
-            EventManager.Event(new LayoutEvent("layout-lock-granted", lockRequest));
+            Dispatch.Notification.OnLayoutLockGranted(lockRequest);
         }
 
         private LockedResourceEntry? SetResourceLock(Guid id, LayoutLockRequest lockRequest) {
@@ -671,7 +663,7 @@ namespace LayoutManager.Logic {
                 LockedResourceEntry lockedResourceEntry = d.Value;
 
                 if (!lockedResourceMap.ContainsKey(resourceID) || lockedResourceEntry.Request == null) {
-                    EventManager.Event(new LayoutEventInfoValueType<object, Guid>("layout-lock-released", null, resourceID));
+                    Dispatch.Notification.OnLayoutLockReleased(resourceID);
 
                     if (LayoutModel.Blocks.TryGetValue(resourceID, out LayoutBlock? block)) {
                         block.LockRequest = null;
@@ -687,10 +679,9 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("layout-lock-resource-ready")]
-        private void LayoutLockResourceReady(LayoutEvent e) {
-            var resource = Ensure.NotNull<ILayoutLockResource>(e.Sender, "resource");
 
+        [DispatchTarget]
+        private void LayoutLockResourceReady(ILayoutLockResource resource) {
             Trace.WriteLineIf(traceLockManager.TraceVerbose, $"LockManager: Resource {LayoutLockBlockEntry.GetDescription(resource.Id)} sent 'layout-resource-lock-ready'");
 
             if (lockedResourceMap.TryGetValue(resource.Id, out LockedResourceEntry? lockedResourceEntry)) {
@@ -732,17 +723,17 @@ namespace LayoutManager.Logic {
                 UpdateBlockEdgeSignalState(blockEdge);
         }
 
-        [LayoutEvent("rebuild-layout-state", Order = 900)]
-        private void RebuildLayoutStateClearSignals(LayoutEvent e) {
-            LayoutPhase phase = e.GetPhases();
+        [DispatchTarget(Order =900)]
+        private bool RebuildLayoutState_ClearSignals(LayoutPhase phase) {
             lockedResourceMap.Clear();
 
             foreach (LayoutBlockEdgeBase blockEdge in LayoutModel.Components<LayoutBlockEdgeBase>(phase))
                 blockEdge.RemoveSignalState();
+            return true;
         }
 
-        [LayoutEvent("rebuild-layout-state", Order = 1100)]
-        private void RebuildLayoutStateManualDispatchRegions(LayoutEvent e) {
+        [DispatchTarget(Order = 1100)]
+        private bool RebuildLayoutState_ManualDispatchRegions(LayoutPhase phase) {
             if (LayoutModel.StateManager.AllLayoutManualDispatch)
                 LayoutModel.StateManager.AllLayoutManualDispatch = true;
             else {
@@ -753,6 +744,8 @@ namespace LayoutManager.Logic {
                     }
                 }
             }
+
+            return true;
         }
 
         #region Locked Resource Entry

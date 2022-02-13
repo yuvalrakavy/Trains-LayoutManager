@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using LayoutManager.Model;
-using LayoutManager.Components;
 using System.Xml;
 using System.Diagnostics;
+
+using MethodDispatcher;
+using LayoutManager.Model;
+using LayoutManager.Components;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class SelectTrainToPlace : Form {
@@ -90,7 +92,7 @@ namespace LayoutManager.Tools.Dialogs {
                     if (LayoutModel.StateManager.Trains[element] == null) {     // Not already on track
                         CanPlaceTrainResult result;
 
-                        result = EventManager.Event<XmlElement, LayoutBlockDefinitionComponent, CanPlaceTrainResult>("can-locomotive-be-placed", element, blockDefinition)!;
+                        result = Dispatch.Call.CanLocomotiveBePlaced(element, blockDefinition);
 
                         if (result.CanBeResolved) {
                             LayoutNamedTrainObject? namedObject = null;

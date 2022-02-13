@@ -105,11 +105,12 @@ namespace MarklinDigital {
                     var train = new TrainStateInfo(trainStateElement) {
                         SpeedInSteps = 0
                     };
+                    var commandStation = Dispatch.Call.GetCommandStation(train);
 
                     if (train.MotionDirection == LocomotiveOrientation.Backward) {
                         foreach (TrainLocomotiveInfo trainLoco in train.Locomotives)
                             if (trainLoco.Orientation == LocomotiveOrientation.Forward)
-                                EventManager.Event(new LayoutEvent("locomotive-reverse-motion-direction-command", trainLoco.Locomotive));
+                                Dispatch.Call.LocomotiveReverseMotionDirectionCommand(commandStation, trainLoco.Locomotive);
                     }
                 }
             }
@@ -142,11 +143,12 @@ namespace MarklinDigital {
         [LayoutEvent("train-is-removed")]
         private void TrainRemoved(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender);
+            var commandStation = Dispatch.Call.GetCommandStation(train);
 
             if (train.MotionDirection == LocomotiveOrientation.Backward) {
                 foreach (TrainLocomotiveInfo trainLoco in train.Locomotives)
                     if (trainLoco.Orientation == LocomotiveOrientation.Forward)
-                        EventManager.Event(new LayoutEvent("locomotive-reverse-motion-direction-command", trainLoco.Locomotive));
+                        Dispatch.Call.LocomotiveReverseMotionDirectionCommand(commandStation, trainLoco.Locomotive);
             }
         }
 
@@ -248,24 +250,20 @@ namespace MarklinDigital {
                 EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state == LayoutSignalState.Green ? 1 : 0));
         }
 
-        [LayoutEvent("locomotive-reverse-motion-direction-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void LocomotiveReverseMotionDirectionCommand(LayoutEvent e) {
+        [DispatchTarget]
+        private void LocomotiveReverseMotionDirectionCommand([DispatchFilter(Type="MyId")] IModelComponentHasPowerOutlets commandStation, LocomotiveInfo loco) {
             if (commandStationManager == null)
                 throw new NullReferenceException(nameof(commandStationManager));
-
-            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
 
             commandStationManager.AddCommand(queueLocoCommands, new MarklinReverseLocomotiveDirection(CommunicationStream, loco.AddressProvider.Unit));
         }
 
-        [LayoutEvent("locomotive-motion-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void LocomotiveMotionCommand(LayoutEvent e) {
+        [DispatchTarget]
+        private void LocomotiveMotionCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, int speed) {
             if (commandStationManager == null)
                 throw new NullReferenceException(nameof(commandStationManager));
 
-            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
             var train =Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
-            var speed = Ensure.ValueNotNull<int>(e.Info);
             bool auxFunction;
 
             var locoAuxFunction = loco.GetFunctionByNumber(0);
@@ -283,7 +281,7 @@ namespace MarklinDigital {
             var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
             var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
 
-            EventManager.Event(new LayoutEvent("locomotive-motion-command", loco, train.SpeedInSteps).SetCommandStation(train));
+            Dispatch.Call.LocomotiveMotionCommand(Dispatch.Call.GetCommandStation(train), loco, train.SpeedInSteps);
         }
 
         private byte GetFunctionMask(LocomotiveInfo loco) {
@@ -300,35 +298,30 @@ namespace MarklinDigital {
             return functionMask;
         }
 
-        [LayoutEvent("set-locomotive-function-state-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void SetLocomotiveFunctionStateCommand(LayoutEvent e) {
+        [DispatchTarget]
+        void SetLocomotiveFunctionStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, string functionName, bool functionState) {
             if (commandStationManager == null)
                 throw new NullReferenceException(nameof(commandStationManager));
 
-            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
-            var functionName = Ensure.NotNull<string>(e.Info);
-
-            var functionDef = loco.GetFunctionByName(functionName);
+            var functionDef = locomotive.GetFunctionByName(functionName);
 
             if (functionDef == null || functionDef.Number != 0)
-                commandStationManager.AddCommand(queueLocoCommands, new MarklinSetFunctions(CommunicationStream, loco.AddressProvider.Unit, GetFunctionMask(loco)));
+                commandStationManager.AddCommand(queueLocoCommands, new MarklinSetFunctions(CommunicationStream, locomotive.AddressProvider.Unit, GetFunctionMask(locomotive)));
             else {
-                var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
+                var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[locomotive.Id]);
 
-                commandStationManager.AddCommand(queueLocoCommands, new MarklinLocomotiveMotion(CommunicationStream, loco.AddressProvider.Unit, train.SpeedInSteps,
-                    train.GetFunctionState(functionDef.Name, loco.Id, false)));
+                commandStationManager.AddCommand(queueLocoCommands, new MarklinLocomotiveMotion(CommunicationStream, locomotive.AddressProvider.Unit, train.SpeedInSteps,
+                    train.GetFunctionState(functionDef.Name, locomotive.Id, false)));
             }
         }
 
-        [LayoutEvent("trigger-locomotive-function-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void TriggerLocomotiveFunctionCommand(LayoutEvent e) {
-            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
-            var functionName = Ensure.NotNull<string>(e.Info);
-            var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
-            bool state = train.GetFunctionState(functionName, loco.Id, false);
+        [DispatchTarget]
+        void TriggerLocomotiveFunctionStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, string functionName, bool functionState) {
+            var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[locomotive.Id]);
+            bool state = train.GetFunctionState(functionName, locomotive.Id, false);
 
             state = !state;
-            train.SetLocomotiveFunctionState(functionName, loco.Id, state);
+            train.SetLocomotiveFunctionState(functionName, locomotive.Id, state);
         }
 
         #endregion
@@ -344,7 +337,7 @@ namespace MarklinDigital {
             }
 
             protected override void OnClick(EventArgs e) {
-                EventManager.Event(new LayoutEvent("locomotive-reverse-motion-direction-command", loco));
+                Dispatch.Call.LocomotiveReverseMotionDirectionCommand(Dispatch.Call.GetCommandStation(loco), loco);
             }
         }
 

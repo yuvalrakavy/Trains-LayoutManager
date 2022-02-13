@@ -163,7 +163,14 @@ namespace LayoutManager.Tools.Controls {
             UpdateButtons(null, EventArgs.Empty);
         }
 
-        [LayoutEvent("train-speed-changed")]
+        [DispatchTarget]
+        private void OnTrainSpeedChanged(TrainStateInfo train, int speed) {
+            var item = GetTripAssignmentItem(train.Id);
+
+            if (item != null)
+                item.UpdateTrainStatus();
+        }
+
         [LayoutEvent("train-enter-block")]
         private void TrainStatusChanged(LayoutEvent e) {
             var train = Ensure.NotNull<TrainsStateInfo>(e.Sender);

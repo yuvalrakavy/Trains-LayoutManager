@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MethodDispatcher;
 using LayoutManager.Components;
 
 #nullable enable
@@ -138,7 +139,7 @@ namespace LayoutManager.Model {
 
         public Guid RouteOwner => routeOwner;
 
-        protected static ILayoutLockManagerServices LockManagerServices => _lockManagerServices ??= (ILayoutLockManagerServices)EventManager.Event(new LayoutEvent("get-layout-lock-manager-services"))!;
+        protected static ILayoutLockManagerServices LockManagerServices => _lockManagerServices ??= Dispatch.Call.GetLayoutLockManagerServices();
 
         public void AddClearanceQuality(RouteClearanceQuality q) {
             if ((int)q > (int)ClearanceQuality)

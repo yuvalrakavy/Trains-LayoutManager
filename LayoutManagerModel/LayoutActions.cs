@@ -5,9 +5,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
+using MethodDispatcher;
 
-#pragma warning disable IDE0051, RCS1090
-#nullable enable
 namespace LayoutManager.Model {
     [LayoutModule("Programming Operations Manager", UserControl = false)]
     internal class ActionManager : LayoutModuleBase {
@@ -72,13 +71,13 @@ namespace LayoutManager.Model {
         void Commit();
 
         /// <summary>
-        /// Prepapre actions for actual programming. Action may for example, generate the correct CVs settings based on its
+        /// Prepare actions for actual programming. Action may for example, generate the correct CVs settings based on its
         /// properties
         /// </summary>
         void PrepareForProgramming();
     }
 
-    public class LayoutActionContainer<ActionsOwnerType> : LayoutXmlWrapper, ILayoutActionContainer {
+    public class LayoutActionContainer<ActionsOwnerType> : LayoutXmlWrapper, ILayoutActionContainer where ActionsOwnerType : notnull {
         private bool preparedForProgramming = false;
 
         public LayoutActionContainer(ActionsOwnerType actionsOwner)
@@ -96,13 +95,9 @@ namespace LayoutManager.Model {
         }
 
         private ILayoutAction? GetAction(XmlElement actionElement) {
-            LayoutAction? action = null;
             var actionType = (string?)actionElement.AttributeValue("Type");
 
-            if (actionType != null)
-                action = EventManager.Event(new LayoutEvent("get-action", actionElement, Owner)) as LayoutAction;
-
-            return action;
+            return actionType != null ? Dispatch.Call.GetAction(actionElement, Owner) : null;
         }
 
         public ILayoutAction? Add(string actionType) {
@@ -270,8 +265,7 @@ namespace LayoutManager.Model {
         /// <param name="actionName">Action name (e.g. set-address)</param>
         /// <param name="target">The object on which the action should be done</param>
         /// <returns>True - action is defined, false action is not defined</returns>
-        public static bool HasAction(string actionName, IHasDecoder target) =>
-            (bool)(EventManager.Event(new LayoutEventInfoResultValueType<IHasDecoder, bool, bool>("query-action", target, false).SetOption("Action", actionName)) ?? false);
+        public static bool HasAction(string actionName, IHasDecoder target) => Dispatch.Call.QueryAction(target, actionName);
     }
 
     public abstract class LayoutProgrammingAction : LayoutAction, ILayoutProgrammingAction {
@@ -287,13 +281,13 @@ namespace LayoutManager.Model {
         public virtual bool RequiresTrack => true;
 
         /// <summary>
-        /// Do what ever is needed to preprare action for programming (for example, generate CVs values)
+        /// Do what ever is needed to prepare action for programming (for example, generate CVs values)
         /// </summary>
         public virtual void PrepareProgramming() {
         }
 
         /// <summary>
-        /// (If true) Treat NoResponse result as Ok
+        /// (If true) Treat NoResponse result as OK
         /// </summary>
         public bool IgnoreNoResponseResult {
             get => (bool?)AttributeValue(A_IgnoreNoResponse) ?? false;

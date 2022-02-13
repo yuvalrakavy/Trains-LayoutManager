@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 using System.Threading;
 using System.Threading.Tasks;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.Model;
@@ -202,38 +203,30 @@ namespace DiMAX {
             DCCbusNotification(address, v);
         }
 
-        [LayoutEvent("locomotive-motion-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void LocomotiveMotionCommand(LayoutEvent e) {
-            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender, "loco");
-            var speedInSteps = Ensure.ValueNotNull<int>(e.Info, "speedInSteps");
-
+        [DispatchTarget]
+        private void LocomotiveMotionCommand([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, int speedInSteps) {
             OutputManager.AddCommand(new DiMAXlocomotiveMotion(this, loco.AddressProvider.Unit, speedInSteps));
         }
 
-        [LayoutEvent("set-locomotive-lights-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void SetLocomotiveLightsCommand(LayoutEvent e) {
-            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender, "loco");
-            var lights = Ensure.ValueNotNull<bool>(e.Info, "lights");
-
+        [DispatchTarget]
+        private void SetLocomotiveLightsCommand([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, bool lights) {
             OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, 0, false, lights));
             if (loco.DecoderType is DccDecoderTypeInfo decoder && !decoder.ParallelFunctionSupport)
                 OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, 9, false, false));
         }
 
-        [LayoutEvent("set-locomotive-function-state-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        [LayoutEvent("trigger-locomotive-function-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void SetLocomotiveFunctionStateCommand(LayoutEvent e) {
-            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender, "loco");
-            var functionName = Ensure.NotNull<String>(e.Info, "functionName");
-            var function = loco.GetFunctionByName(functionName);
-            var train = LayoutModel.StateManager.Trains[loco.Id];
+        [DispatchTarget(Name="TriggerLocomotiveFunctionStateCommand")]
+        [DispatchTarget]
+        void SetLocomotiveFunctionStateCommand([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, string functionName, bool functionState) {
+            var function = locomotive.GetFunctionByName(functionName);
+            var train = LayoutModel.StateManager.Trains[locomotive.Id];
 
             if (train != null && function != null) {
-                if (loco.DecoderType is DccDecoderTypeInfo decoder) {
+                if (locomotive.DecoderType is DccDecoderTypeInfo decoder) {
                     if (decoder.ParallelFunctionSupport)
-                        OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, function.Number, (bool)e.GetOption("FunctionState"), train.Lights));
+                        OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, locomotive.AddressProvider.Unit, function.Number, functionState, train.Lights));
                     else
-                        GenerateSerialFunctionCommands(train, loco, function.Number);
+                        GenerateSerialFunctionCommands(train, locomotive, function.Number);
                 }
             }
         }
@@ -392,20 +385,14 @@ namespace DiMAX {
             }
         }
 
-        [LayoutEvent("locomotive-controller-activated")]
-        private void LocomotiveControllerActivated(LayoutEvent e) {
-            var trainLocomotive = Ensure.NotNull<TrainLocomotiveInfo>(e.Sender, "trainLocomotive");
-            var locomotive = trainLocomotive.Locomotive;
-
-            SelectLocomotive(locomotive);
+        [DispatchTarget]
+        private void OnLocomotiveControllerActivated(TrainStateInfo train, TrainLocomotiveInfo trainLocomotive) {
+            SelectLocomotive(trainLocomotive.Locomotive);
         }
 
-        [LayoutEvent("locomotive-controller-deactivated")]
-        private void LocomotiveControllerDeactivated(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Info, "train");
-            var locomotive = Ensure.NotNull<TrainLocomotiveInfo>(e.Sender, "locomotive").Locomotive;
-
-            DeselectLocomotive(train, locomotive);
+        [DispatchTarget]
+        private void OnLocomotiveControllerDeactivated(TrainStateInfo train, TrainLocomotiveInfo trainLocomotive) {
+            DeselectLocomotive(train, trainLocomotive.Locomotive);
         }
 
         [LayoutEvent("trip-added")]
@@ -509,8 +496,7 @@ namespace DiMAX {
                             if (OperationMode) {
                                 var p = new DiMAXlocoSpeedControlPacket(packet);
 
-                                EventManager.Event(
-                                    new LayoutEvent("locomotive-motion-notification", this, p.SpeedInSteps).SetOption("Address", "Unit", p.Unit));
+                                Dispatch.Notification.OnLocomotiveMotion(this, p.SpeedInSteps, p.Unit);
                             }
                         }
                         break;
@@ -520,10 +506,9 @@ namespace DiMAX {
                                 var p = new DiMAXlocoFunctionControlPacket(packet);
 
                                 if (p.FunctionNumber == 0)
-                                    EventManager.Event(new LayoutEvent("set-locomotive-lights-notification", this, p.Lights).SetOption("Address", "Unit", p.Unit));
+                                    Dispatch.Notification.OnLocomotiveLightsChanged(this, p.Unit, p.Lights);
                                 else
-                                    EventManager.Event
-                                        (new LayoutEvent("set-locomotive-function-state-notification", this, p.FunctionActive).SetOption("Address", "Unit", p.Unit).SetOption("Function", "Number", p.FunctionNumber));
+                                    Dispatch.Notification.OnLocomotiveFunctionStateChanged(this, p.Unit, p.FunctionNumber, p.FunctionActive);
                             }
                         }
                         break;

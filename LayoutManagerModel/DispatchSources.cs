@@ -1,9 +1,12 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 using Microsoft.Win32.SafeHandles;
 
 using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace LayoutManager {
     static public class ModelDispatchSources {
@@ -51,5 +54,274 @@ namespace LayoutManager {
         public static ILayoutTopologyServices GetTopologyServices(this MethodDispatcher.Dispatcher d) {
             return d[nameof(GetTopologyServices)].Call<ILayoutTopologyServices>();
         }
+
+        [DispatchSource]
+        public static void RequestManualDispatchLock(this Dispatcher d, ManualDispatchRegionInfo manualDispatchRegion) {
+            d[nameof(RequestManualDispatchLock)].CallVoid(manualDispatchRegion);
+        }
+
+        [DispatchSource]
+        public static void FreeManualDispatchLock(this Dispatcher d, ManualDispatchRegionInfo manualDispatchRegion) {
+            d[nameof(FreeManualDispatchLock)].CallVoid(manualDispatchRegion);
+        }
+
+        [DispatchSource]
+        public static bool RequestLayoutLock(this Dispatcher d, LayoutLockRequest lockRequest) {
+            return d[nameof(RequestLayoutLock)].Call<bool>(lockRequest);
+        }
+
+        [DispatchSource]
+        public static Task<bool> RequestLayoutLockAsync(this Dispatcher d, LayoutLockRequest lockRequest) {
+            return d[nameof(RequestLayoutLockAsync)].Call<Task<bool>>(lockRequest);
+        }
+
+        [DispatchSource]
+        public static Task<TrainStateInfo> PlaceTrainRequest(this Dispatcher d, LayoutBlockDefinitionComponent blockDefinnition, XmlElement collectionElement, CreateTrainSettings options, LayoutOperationContext operationContext) {
+            return d[nameof(PlaceTrainRequest)].Call<Task<TrainStateInfo>>(blockDefinnition, collectionElement, options, operationContext);
+        }
+
+        [DispatchSource]
+        public static TrainStateInfo CreateTrain(this Dispatcher d, LayoutBlockDefinitionComponent blockDefinition, XmlElement collectionElement, CreateTrainSettings options) {
+            return d[nameof(CreateTrain)].Call<TrainStateInfo>(blockDefinition, collectionElement, options);
+        }
+
+        [DispatchSource]
+        public static void FreeLayoutLock(this Dispatcher d, object lockedObject) {
+            d[nameof(FreeLayoutLock)].CallVoid(lockedObject);
+        }
+
+        [DispatchSource]
+        public static void FreeOwnedLayoutLocks(this Dispatcher d, Guid ownerId, bool releasePending) {
+            d[nameof(FreeOwnedLayoutLocks)].CallVoid(ownerId, releasePending);
+        }
+
+        [DispatchSource]
+        public static void CancelLayoutLock(this Dispatcher d, LayoutLockRequest lockRequest) {
+            d[nameof(CancelLayoutLock)].CallVoid(lockRequest);
+        }
+
+        [DispatchSource]
+        public static ILayoutLockManagerServices GetLayoutLockManagerServices(this Dispatcher d) {
+            return d[nameof(GetLayoutLockManagerServices)].Call<ILayoutLockManagerServices>();
+        }
+
+        [DispatchSource]
+        public static void DumpLocks(this Dispatcher d) {
+            d[nameof(DumpLocks)].CallVoid();
+        }
+
+        [DispatchSource]
+        public static void LayoutLockResourceReady(this Dispatcher d, ILayoutLockResource resource) {
+            d[nameof(LayoutLockResourceReady)].CallVoid(resource);
+        }
+
+        public static void OnLayoutLockGranted(this Dispatcher d, LayoutLockRequest lockRequest) {
+            d[nameof(OnLayoutLockGranted)].CallVoid(lockRequest);
+        }
+
+        public static void OnLayoutLockReleased(this Dispatcher d, Guid resourceId) {
+            d[nameof(OnLayoutLockReleased)].CallVoid(resourceId);
+        }
+
+        [DispatchSource]
+        public static bool RebuildLayoutState(this Dispatcher d, LayoutPhase phase) {
+            return d[nameof(RebuildLayoutState)].CallBoolFunctions(invokeUntil: false, invokeAll: true, phase);
+        }
+
+        [DispatchSource]
+        public static void OnTrainCreated(this Dispatcher d, TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
+            d[nameof(OnTrainCreated)].CallVoid(train, blockDefinition);
+        }
+
+        [DispatchSource]
+        public static void OnTrainPlacedOnTrack(this Dispatcher d, TrainStateInfo train) {
+            d[nameof(OnTrainPlacedOnTrack)].CallVoid(train);
+        }
+
+        [DispatchSource]
+        public static Task<TrainStateInfo> ValidateAndPlaceTrainRequest(this Dispatcher d, LayoutBlockDefinitionComponent blockDefinition, XmlElement placedElement, CreateTrainSettings options, LayoutOperationContext operationContext) {
+            return d[nameof(ValidateAndPlaceTrainRequest)].Call<Task<TrainStateInfo>>(blockDefinition, placedElement, options, operationContext);
+        }
+
+        [DispatchSource]
+        public static CanPlaceTrainResult CanLocomotiveBePlaced(this Dispatcher d, XmlElement placeableElement, LayoutBlockDefinitionComponent blockDefinition) {
+            return d[nameof(CanLocomotiveBePlaced)].Call<CanPlaceTrainResult>(placeableElement, blockDefinition);
+        }
+
+        [DispatchSource]
+        public static CanPlaceTrainResult CanLocomotiveBePlacedOnTrack(this Dispatcher d, XmlElement placeableElement, LayoutBlockDefinitionComponent? blockDefinition = null) {
+            return d[nameof(CanLocomotiveBePlacedOnTrack)].Call<CanPlaceTrainResult>(placeableElement, blockDefinition);
+        }
+
+        [DispatchSource]
+        public static CanPlaceTrainResult IsLocomotiveAddressValid(this Dispatcher d, XmlElement placeableElement, object powerObject, IsLocomotiveAddressValidSettings settings) {
+            return d[nameof(IsLocomotiveAddressValid)].Call<CanPlaceTrainResult>(placeableElement, powerObject, settings);
+        }
+
+        [DispatchSource]
+        public static OnTrackLocomotiveAddressMap GetOnTrackLocomotiveAddressMap(this Dispatcher d, object commandStationObject) {
+            return d[nameof(GetOnTrackLocomotiveAddressMap)].Call<OnTrackLocomotiveAddressMap>(commandStationObject);
+        }
+
+        [DispatchSource]
+        public static int? AllocateLocomotiveAddress(this Dispatcher d, LocomotiveInfo locomotive) {
+            return d[nameof(AllocateLocomotiveAddress)].Call<int?>(locomotive);
+        }
+
+        [DispatchSource]
+        public static TrainStateInfo ExtractTrainState(this Dispatcher d, object trainStateObject) {
+            return d[nameof(ExtractTrainState)].Call<TrainStateInfo>(trainStateObject);
+        }
+
+        [DispatchSource]
+        public static Task RemoveFromTrackRequest(this Dispatcher d, TrainStateInfo train, string balloonText, LayoutOperationContext operationContext) {
+            return d[nameof(RemoveFromTrackRequest)].Call<Task>(train, balloonText, operationContext);
+        }
+
+        [DispatchSource]
+        public static Task<TrainStateInfo?> PlacedLocomotiveAddressReprogramming(this Dispatcher d, PlacedLocomotiveProgrammingState programmingState, CreateTrainSettings settings, LayoutOperationContext context) {
+            return d[nameof(PlacedLocomotiveAddressReprogramming)].Call<Task<TrainStateInfo?>>(programmingState, settings, context);
+        }
+
+        [DispatchSource]
+        public static Task<TrainStateInfo?> ProgramLocomotive(this Dispatcher d, LocomotiveProgrammingState programmingState, CreateTrainSettings settins, LayoutOperationContext operationContext) {
+            return d[nameof(ProgramLocomotive)].Call<Task<TrainStateInfo?>>(programmingState, settins, operationContext);
+        }
+
+        [DispatchSource]
+        public static LayoutBlockDefinitionComponent? GetProgrammingLocation(this Dispatcher d) {
+            return d[nameof(GetProgrammingLocation)].Call<LayoutBlockDefinitionComponent?>();
+        }
+
+        [DispatchSource]
+        public static bool QueryAction(this Dispatcher d, IHasDecoder target, string actionName) {
+            return d[nameof(QueryAction)].CallBoolFunctions(invokeUntil: true, invokeAll: false, target, actionName);
+        }
+
+        [DispatchSource]
+        public static LayoutAction? GetAction(this Dispatcher d, XmlElement actionElement, object owner) {
+            return d[nameof(GetAction)].CallUtilNotNull<LayoutAction>(actionElement, owner);
+        }
+
+        [DispatchSource]
+        public static Task SetPower(this Dispatcher d, object powerRegionObject, object powerObject, LayoutOperationContext operationContext) {
+            return d[nameof(SetPower)].Call<Task>(powerRegionObject, powerObject, operationContext);
+        }
+
+        [DispatchSource]
+        public static void RequestAutoExtendTrain(this Dispatcher d, TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
+            d[nameof(RequestAutoExtendTrain)].CallVoid(train, blockDefinition);
+        }
+
+        [DispatchSource]
+        public static IModelComponentHasNameAndId GetCommandStation(this Dispatcher d, object commandStationObject) {
+            return d[nameof(GetCommandStation)].Call<IModelComponentHasNameAndId>(commandStationObject);
+        }
+
+        [DispatchSource]
+        public static void SetLocomotiveSpeedRequest(this Dispatcher d, TrainStateInfo train, int speed) {
+            d[nameof(SetLocomotiveSpeedRequest)].CallVoid(train, speed);
+        }
+
+        [DispatchSource]
+        public static void LocomotiveMotionCommand(this Dispatcher d, IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, int speed) {
+            d[nameof(LocomotiveMotionCommand)].CallVoid(commandStation, locomotive, speed);
+        }
+
+        [DispatchSource]
+        public static void ReverseTrainMotionDirectionRequest(this Dispatcher d, object trainObject) {
+            d[nameof(ReverseTrainMotionDirectionRequest)].CallVoid(trainObject);
+        }
+
+        [DispatchSource]
+        public static void LocomotiveReverseMotionDirectionCommand(this Dispatcher d, IModelComponentHasNameAndId commandStation, LocomotiveInfo loco) {
+            d[nameof(LocomotiveReverseMotionDirectionCommand)].CallVoid(commandStation, loco);
+        }
+
+        [DispatchSource]
+        public static void RelocateTrainRequest(this Dispatcher d, TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition, LayoutComponentConnectionPoint? front = null) {
+            d[nameof(RelocateTrainRequest)].CallVoid(train, blockDefinition, front);
+        }
+
+        [DispatchSource]
+        public static void OnTrainRelocated(this Dispatcher d, TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
+            d[nameof(OnTrainRelocated)].CallVoid(train, blockDefinition);
+        }
+
+        [DispatchSource]
+        public static void OnLocomotiveMotion(this Dispatcher d, IModelComponentIsCommandStation commandStation, int speed, int unit) {
+            d[nameof(OnLocomotiveMotion)].CallVoid(commandStation, speed, unit);
+        }
+
+        [DispatchSource]
+        public static void OnTrainSpeedChanged(this Dispatcher d, TrainStateInfo train, int speed) {
+            d[nameof(OnTrainSpeedChanged)].CallVoid(train, speed);
+        }
+
+        [DispatchSource]
+        public static void SetLocomotiveLightsRequest(this Dispatcher d, TrainStateInfo train, bool lights) {
+            d[nameof(SetLocomotiveSpeedRequest)].CallVoid(train, lights);
+        }
+
+        [DispatchSource]
+        public static void SetLocomotiveLightCommand(this Dispatcher d, IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, bool lightsOn) {
+            d[nameof(SetLocomotiveLightCommand)].CallVoid(commandStation, locomotive, lightsOn);
+        }
+
+        [DispatchSource]
+        public static void OnLocomotiveLightsToggled(this Dispatcher d, IModelComponentHasNameAndId commandStation, int unit) {
+            d[nameof(OnLocomotiveLightsToggled)].CallVoid(commandStation, unit);
+        }
+
+        [DispatchSource]
+        public static void OnLocomotiveLightsChanged(this Dispatcher d, IModelComponentHasNameAndId commandStation, int unit, bool lights) {
+            d[nameof(OnLocomotiveLightsChanged)].CallVoid(commandStation, unit, lights);
+        }
+
+        [DispatchSource]
+        public static void SetLocomotiveFunctionStateRequest(this Dispatcher d, TrainStateInfo train, Guid locomotiveId, string functionName, bool functionState) {
+            d[nameof(SetLocomotiveFunctionStateRequest)].CallVoid(train, locomotiveId, functionName, functionState);
+        }
+
+        [DispatchSource]
+        public static void SetLocomotiveFunctionStateCommand(this Dispatcher d, IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, string functionName, bool functionState) {
+            d[nameof(SetLocomotiveFunctionStateCommand)].CallVoid(commandStation, locomotive, functionName, functionState);
+        }
+
+        [DispatchSource]
+        public static void TriggerLocomotiveFunctionStateRequest(this Dispatcher d, TrainStateInfo train, Guid locomotiveId, string functionName) {
+            d[nameof(TriggerLocomotiveFunctionStateRequest)].CallVoid(train, locomotiveId, functionName);
+        }
+
+        [DispatchSource]
+        public static void TriggerLocomotiveFunctionStateCommand(this Dispatcher d, IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, string functionName, bool functionState) {
+            d[nameof(TriggerLocomotiveFunctionStateCommand)].CallVoid(commandStation, locomotive, functionName, functionState);
+        }
+
+        [DispatchSource]
+        public static void OnLocomotiveFunctionStateChanged(this Dispatcher d, IModelComponentHasNameAndId commandStation, int unit, int functionNumber, bool functionState) {
+            d[nameof(OnLocomotiveFunctionStateChanged)].CallVoid(commandStation, unit, functionNumber, functionState);
+        }
+
+        [DispatchSource]
+        public static void OnTrainControllerActivated(this Dispatcher d, TrainStateInfo train) {
+            d[nameof(OnTrainControllerActivated)].CallVoid(train);
+        }
+
+        [DispatchSource]
+        public static void OnTrainControllerDeactivated(this Dispatcher d, TrainStateInfo train) {
+            d[nameof(OnTrainControllerDeactivated)].CallVoid(train);
+        }
+
+        [DispatchSource]
+        public static void OnLocomotiveControllerActivated(this Dispatcher d, TrainStateInfo train, TrainLocomotiveInfo trainLoco) {
+            d[nameof(OnLocomotiveControllerActivated)].CallVoid(train, trainLoco);
+        }
+
+        [DispatchSource]
+        public static void OnLocomotiveControllerDeactivated(this Dispatcher d, TrainStateInfo train, TrainLocomotiveInfo trainLoco) {
+            d[nameof(OnLocomotiveControllerDeactivated)].CallVoid(train, trainLoco);
+        }
+
     }
 }

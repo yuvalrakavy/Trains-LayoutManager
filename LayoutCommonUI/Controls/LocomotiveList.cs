@@ -68,7 +68,7 @@ namespace LayoutManager.CommonUI.Controls {
                         power = blockDefinition.Block.Power;
 
                         bool lookForMoreBlocks = true;
-                        var result = EventManager.Event<XmlElement, LayoutBlockDefinitionComponent, CanPlaceTrainResult>("can-locomotive-be-placed", element, blockDefinition)!;
+                        var result = Dispatch.Call.CanLocomotiveBePlaced(element, blockDefinition);
 
                         canPlaceOnTrack = result.ResolveMethod;
 
@@ -189,8 +189,8 @@ namespace LayoutManager.CommonUI.Controls {
             Invalidate();
         }
 
-        [LayoutEvent("train-placed-on-track")]
-        private void LocomotivePlacedOnTrack(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnTrainPlacedOnTrack(TrainStateInfo train) {
             UpdateElements();
             Invalidate();
         }
@@ -201,7 +201,11 @@ namespace LayoutManager.CommonUI.Controls {
             Invalidate();
         }
 
-        [LayoutEvent("train-speed-changed")]
+        [DispatchTarget]
+        private void OnTrainSpeedChanged(TrainStateInfo train, int speed) {
+            InvalidateTrainState(train);
+        }
+
         [LayoutEvent("train-enter-block")]
         private void NeedToUpdateLocomotiveItem(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");

@@ -6,6 +6,7 @@ using System.Xml;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.Model;
@@ -164,29 +165,22 @@ namespace LayoutLGB {
             DCCbusNotification(address, v);
         }
 
-        [LayoutEvent("locomotive-motion-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void locomotiveMotionCommand(LayoutEvent e) {
-            LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
-            int speed = (int)e.Info;
-
+        [DispatchTarget]
+        private void LocomotiveMotionCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, int speed) {
             commandStationManager.AddCommand(new MTSlocomotiveMotion(CommunicationStream, (byte)loco.AddressProvider.Unit, speed));
         }
 
-        [LayoutEvent("set-locomotive-lights-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void setLocomotiveLightsCommand(LayoutEvent e) {
-            LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
-
+        [DispatchTarget]
+        private void SetLocomotiveLightsCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, bool lights) {
             commandStationManager.AddCommand(new MTSlocomotiveFunction(CommunicationStream, loco.AddressProvider.Unit, 0x80));
         }
 
-        [LayoutEvent("set-locomotive-function-state-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        [LayoutEvent("trigger-locomotive-function-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void setLocomotiveFunctionStateCommand(LayoutEvent e) {
-            LocomotiveInfo loco = (LocomotiveInfo)e.Sender;
-            string functionName = (String)e.Info;
-            LocomotiveFunctionInfo function = loco.GetFunctionByName(functionName);
+        [DispatchTarget(Name = "TriggerLocomotiveFunctionStateCommand")]
+        [DispatchTarget]
+        void SetLocomotiveFunctionStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, string functionName, bool functionState) {
+            LocomotiveFunctionInfo function = locomotive.GetFunctionByName(functionName);
 
-            commandStationManager.AddCommand(new MTSlocomotiveFunction(CommunicationStream, loco.AddressProvider.Unit, function.Number));
+            commandStationManager.AddCommand(new MTSlocomotiveFunction(CommunicationStream, locomotive.AddressProvider.Unit, function.Number));
         }
 
         [LayoutEvent("trigger-locomotive-function-number", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
@@ -257,20 +251,15 @@ namespace LayoutLGB {
                         break;
 
                     case MTScommand.LocomotiveFunction:
-                        if (OperationMode) {
-                            if (message.Value == 0x80) {
-                                EventManager.Event(new LayoutEvent("toggle-locomotive-lights-notification", sender: this,
-                                    xmlDocument: "<Address Unit='" + message.Address + "' />"));
-                            }
-                        }
+                        if (OperationMode && message.Value == 0x80)
+                            Dispatch.Notification.OnLocomotiveLightsToggled(this, message.Address);
                         break;
 
                     case MTScommand.LocomotiveMotion: {
                             if (OperationMode) {
                                 int speed = message.Value >= 0x20 ? message.Value - 0x20 : -(int)message.Value;
 
-                                EventManager.Event(new LayoutEvent("locomotive-motion-notification", this,
-                                    speed, "<Address Unit='" + message.Address + "' />"));
+                                Dispatch.Notification.OnLocomotiveMotion(this, speed, message.Address);
                             }
                         }
                         break;

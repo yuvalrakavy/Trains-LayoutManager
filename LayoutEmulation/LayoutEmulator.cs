@@ -348,9 +348,8 @@ namespace LayoutEmulation {
 
         #region Trapped events
 
-        [LayoutEvent("train-created")]
-        private void TrainCreated(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+        [DispatchTarget]
+        private void OnTrainCreated(TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
 
             lock (Sync) {
                 if (train.CommandStation != null) {
@@ -372,10 +371,9 @@ namespace LayoutEmulation {
         }
 
         [LayoutEvent("train-is-removed")]
-        private void TrainRemoved(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-
-            lock (Sync) {
+        [DispatchTarget]
+        private void TrainRemoved(TrainStateInfo train) {
+             lock (Sync) {
                 if (train.CommandStation != null) {
                     var commandStationId = train.CommandStation.Id;
 
@@ -388,26 +386,10 @@ namespace LayoutEmulation {
             }
         }
 
-        [LayoutEvent("train-relocated")]
-        private void TrainRelocated(LayoutEvent e) {
-            //var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-
-            TrainRemoved(e);
-            TrainCreated(e);
-#if NO
-            lock (Sync) {
-                if (train.CommandStation != null) {
-                    var commandStationId = train.CommandStation.Id;
-
-                    foreach (TrainLocomotiveInfo trainLocomotive in train.Locomotives) {
-                        var locomotive = GetLocomotive(commandStationId, trainLocomotive.Locomotive.AddressProvider.Unit);
-
-                        if (locomotive != null)
-                            locomotive.Location = new LocomotiveLocation(new TrackEdge(train.LocomotiveBlock.BlockDefinintion.Track, train.LocomotiveLocation.DisplayFront));
-                    }
-                }
-            }
-#endif
+        [DispatchTarget]
+        private void OnTrainRelocated(TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
+            TrainRemoved(train);
+            OnTrainCreated(train, blockDefinition);
         }
 
         #endregion

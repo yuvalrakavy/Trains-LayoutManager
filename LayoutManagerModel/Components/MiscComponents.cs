@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Xml;
 using System.Linq;
+using MethodDispatcher;
 
 using LayoutManager.Model;
 using System.Collections.Generic;
@@ -934,7 +935,7 @@ namespace LayoutManager.Components {
                 OnComponentChanged();
 
                 if (value == LayoutGateState.Open)
-                    EventManager.Event(new LayoutEvent("layout-lock-resource-ready", this));
+                    Dispatch.Call.LayoutLockResourceReady(this);
             }
         }
 

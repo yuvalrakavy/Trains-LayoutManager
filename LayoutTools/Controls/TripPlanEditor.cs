@@ -29,7 +29,7 @@ namespace LayoutManager.Tools.Controls {
         private string? dialogName = null;
         private Dialogs.DestinationEditor? activeDestinationEditor = null;
         private readonly List<RoutePreviewRequest> previewRequests = new();
-        private IDictionary<Guid, string> displayedBallons = new Dictionary<Guid, string>();
+        private IDictionary<Guid, string> displayedBalloons = new Dictionary<Guid, string>();
 
         public event EventHandler? WayPointCountChanged = null;
         private DialogEditing? changeToViewOnly = null;
@@ -195,7 +195,7 @@ namespace LayoutManager.Tools.Controls {
             return bestRoute;
         }
 
-        private bool AddPreviewRequest(TripBestRouteResult result, WayPointItem wayPointItem, IDictionary ballons, bool anySelected, bool selected) {
+        private bool AddPreviewRequest(TripBestRouteResult result, WayPointItem wayPointItem, IDictionary balloons, bool anySelected, bool selected) {
             if (result.BestRoute != null) {
                 RoutePreviewRequest request;
 
@@ -230,8 +230,8 @@ namespace LayoutManager.Tools.Controls {
                             s = string.Concat(s.AsSpan(0, i), "...");
                         }
 
-                        if (!ballons.Contains(blockInfo.Id))
-                            ballons.Add(blockInfo.Id, s);
+                        if (!balloons.Contains(blockInfo.Id))
+                            balloons.Add(blockInfo.Id, s);
                     }
                 }
 
@@ -243,38 +243,38 @@ namespace LayoutManager.Tools.Controls {
             }
         }
 
-        private void UpdateBallons(IDictionary<Guid, string> newBallons) {
-            foreach (var d in newBallons) {
-                displayedBallons.TryGetValue(d.Key, out string? displayedBallonText);
+        private void UpdateBalloons(IDictionary<Guid, string> newBalloons) {
+            foreach (var d in newBalloons) {
+                displayedBalloons.TryGetValue(d.Key, out string? displayedBalloonText);
 
-                if (displayedBallonText != d.Value) {
+                if (displayedBalloonText != d.Value) {
                     var blockDefinition = LayoutModel.Component<LayoutBlockDefinitionComponent>((Guid)d.Key, LayoutModel.ActivePhases);
-                    var ballon = new LayoutBlockBallon();
+                    var balloon = new LayoutBlockBalloon();
 
                     Debug.Assert(blockDefinition != null);
 
-                    ballon.FillColor = Color.Yellow;
-                    ballon.TextColor = Color.Black;
-                    ballon.FontSize = 10f;
-                    ballon.Text = d.Value;
+                    balloon.FillColor = Color.Yellow;
+                    balloon.TextColor = Color.Black;
+                    balloon.FontSize = 10f;
+                    balloon.Text = d.Value;
 
-                    LayoutBlockBallon.Show(blockDefinition, ballon);
+                    LayoutBlockBalloon.Show(blockDefinition, balloon);
                 }
 
-                if (displayedBallonText != null)
-                    displayedBallons.Remove(d.Key);
+                if (displayedBalloonText != null)
+                    displayedBalloons.Remove(d.Key);
             }
 
-            // At this stage, the only entries in displayedBallons are entries that do not exist in newBallons and
+            // At this stage, the only entries in displayedBalloons are entries that do not exist in newBalloons and
             // therefore should be erased
-            foreach (var d in displayedBallons) {
+            foreach (var d in displayedBalloons) {
                 var blockDefinition = LayoutModel.Component<LayoutBlockDefinitionComponent>((Guid)d.Key, LayoutPhase.All);
 
                 if(blockDefinition != null)
-                    LayoutBlockBallon.Remove(blockDefinition, LayoutBlockBallon.TerminationReason.Hidden);
+                    LayoutBlockBalloon.Remove(blockDefinition, LayoutBlockBalloon.TerminationReason.Hidden);
             }
 
-            displayedBallons = newBallons;
+            displayedBalloons = newBalloons;
         }
 
         private void UpdatePreviewRequests() {
@@ -288,14 +288,14 @@ namespace LayoutManager.Tools.Controls {
                 Guid routeOwner = (train != null) ? Train.Id : Guid.Empty;
                 bool addMore;
                 int selectedIndex = listViewWayPoints.SelectedItems.Count > 0 ? listViewWayPoints.SelectedIndices[0] : -1;
-                var ballons = new Dictionary<Guid, string>();
+                var balloons = new Dictionary<Guid, string>();
 
                 if (LocomotiveBlock != null) {
                     TripBestRouteRequest request = new(routeOwner, wayPoint.Destination, LocomotiveBlock.BlockDefinintion.Track,
                         Front, wayPoint.Direction, wayPoint.TrainStopping);
 
                     result = FindBestRoute(request);
-                    addMore = AddPreviewRequest(result, wayPointItem, ballons, selectedIndex != -1, selectedIndex == wayPointIndex);
+                    addMore = AddPreviewRequest(result, wayPointItem, balloons, selectedIndex != -1, selectedIndex == wayPointIndex);
                 }
                 else
                     throw new ArgumentException("No train/locomotive-block is defined");
@@ -309,7 +309,7 @@ namespace LayoutManager.Tools.Controls {
                         result.BestRoute.DestinationFront, wayPoint.Direction, wayPoint.TrainStopping);
 
                     result = FindBestRoute(request);
-                    addMore = AddPreviewRequest(result, wayPointItem, ballons, selectedIndex != -1, selectedIndex == wayPointIndex);
+                    addMore = AddPreviewRequest(result, wayPointItem, balloons, selectedIndex != -1, selectedIndex == wayPointIndex);
                 }
 
                 if (addMore) {
@@ -323,7 +323,7 @@ namespace LayoutManager.Tools.Controls {
                             result.BestRoute.DestinationFront, wayPoint.Direction, wayPoint.TrainStopping);
 
                         result = FindBestRoute(request);
-                        AddPreviewRequest(result, wayPointItem, ballons, selectedIndex != -1, selectedIndex == wayPointIndex);
+                        AddPreviewRequest(result, wayPointItem, balloons, selectedIndex != -1, selectedIndex == wayPointIndex);
                     }
                 }
 
@@ -344,7 +344,7 @@ namespace LayoutManager.Tools.Controls {
                 }
 
                 listViewWayPoints.Invalidate();
-                UpdateBallons(ballons);
+                UpdateBalloons(balloons);
             }
         }
 
@@ -523,7 +523,7 @@ namespace LayoutManager.Tools.Controls {
                         activeDestinationEditor.Close();
 
                     ClearPreviewRequests();
-                    UpdateBallons(new Dictionary<Guid, string>());
+                    UpdateBalloons(new Dictionary<Guid, string>());
                 }
 
                 if (components != null) {

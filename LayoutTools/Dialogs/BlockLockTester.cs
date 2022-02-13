@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
@@ -67,7 +68,7 @@ namespace LayoutManager.Tools.Dialogs {
             foreach (LayoutBlockDefinitionComponent blockInfo in listBoxBlockInfo.SelectedItems)
                 blockIDs[i++] = blockInfo.Block.Id;
 
-            EventManager.Event(new LayoutEvent("free-layout-lock", blockIDs));
+            Dispatch.Call.FreeLayoutLock(blockIDs);
         }
 
         private void ButtonLock_Click(object? sender, System.EventArgs e) {
@@ -78,7 +79,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             request.OwnerId = Guid.NewGuid();
 
-            EventManager.Event(new LayoutEvent("request-layout-lock", request));
+            Dispatch.Call.RequestLayoutLock(request);
         }
 
         private void ButtonClose_Click(object? sender, System.EventArgs e) {

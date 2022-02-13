@@ -448,8 +448,8 @@ namespace LayoutManager.View {
             LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
             LayoutBlockDefinitionComponent blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Component, "blockDefinition");
 
-            if (LayoutBlockBallon.IsDisplayed(blockDefinition))
-                e.AddRegion(new LayoutDrawingRegionBallonInfo(e.Component, e.View, e.Graphics, LayoutBlockBallon.Get(blockDefinition)));
+            if (LayoutBlockBalloon.IsDisplayed(blockDefinition))
+                e.AddRegion(new LayoutDrawingRegionBalloonInfo(e.Component, e.View, e.Graphics, LayoutBlockBalloon.Get(blockDefinition)));
 
             if (LayoutController.IsOperationMode && blockDefinition.OptionalBlock != null && blockDefinition.OptionalBlock.HasTrains) {
                 IList<TrainLocationInfo> trainLocations = blockDefinition.Block.Trains;

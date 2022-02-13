@@ -148,22 +148,22 @@ namespace LayoutManager.View {
         }
     }
 
-    public abstract class LayoutDrawingRegionBallon : LayoutDrawingRegion {
-        private SizeF ballonContentSize;
+    public abstract class LayoutDrawingRegionBalloon : LayoutDrawingRegion {
+        private SizeF balloonContentSize;
         private readonly float hangSize = 0.25f;
 
-        protected LayoutDrawingRegionBallon(ModelComponent component, ILayoutView view, SizeF ballonContentSize) : base(component) {
-            this.ballonContentSize = ballonContentSize;
+        protected LayoutDrawingRegionBalloon(ModelComponent component, ILayoutView view, SizeF balloonContentSize) : base(component) {
+            this.balloonContentSize = balloonContentSize;
 
             bool horizontal = true;
             var track = component.Spot.Track;
             PointF ptTopLeft = view.ModelLocationInModelCoordinates(component.Location);
             PointF ptCenter = new(ptTopLeft.X + (view.GridSizeInModelCoordinates.Width / 2), ptTopLeft.Y + (view.GridSizeInModelCoordinates.Height / 2));
-            SizeF totalContentSize = new(ballonContentSize.Width + (Margins.Width * 2), ballonContentSize.Height + (Margins.Height * 2));
+            SizeF totalContentSize = new(balloonContentSize.Width + (Margins.Width * 2), balloonContentSize.Height + (Margins.Height * 2));
             bool onTop = true;
             bool onRight = true;
-            float xBallon;
-            float yBallon;
+            float xBalloon;
+            float yBalloon;
 
             if (ptCenter.Y < view.DrawingRectangleInModelCoordinates.Height / 2)
                 onTop = false;
@@ -178,42 +178,42 @@ namespace LayoutManager.View {
                 Painter.Hotspot = new PointF(ptCenter.X, ptCenter.Y + (onTop ? -4 : 4));
 
                 if (onRight) {
-                    xBallon = ptCenter.X - (hangSize * totalContentSize.Width);
+                    xBalloon = ptCenter.X - (hangSize * totalContentSize.Width);
                     Painter.HotspotOrigin = onTop ? 5 : 0;
                 }
                 else {
-                    xBallon = ptCenter.X - ((1 - hangSize) * totalContentSize.Width);
+                    xBalloon = ptCenter.X - ((1 - hangSize) * totalContentSize.Width);
                     Painter.HotspotOrigin = onTop ? 4 : 1;
                 }
 
                 if (onTop)
-                    yBallon = ptCenter.Y - totalContentSize.Height - 32;
+                    yBalloon = ptCenter.Y - totalContentSize.Height - 32;
                 else
-                    yBallon = ptCenter.Y + 32;
+                    yBalloon = ptCenter.Y + 32;
             }
             else {
                 Painter.Hotspot = new PointF(ptCenter.X + (onRight ? 4 : -4), ptCenter.Y);
 
                 if (onTop) {
-                    yBallon = ptCenter.Y - (hangSize * totalContentSize.Height);
+                    yBalloon = ptCenter.Y - (hangSize * totalContentSize.Height);
                     Painter.HotspotOrigin = onRight ? 6 : 3;
                 }
                 else {
-                    yBallon = ptCenter.Y - ((1 - hangSize) * totalContentSize.Height);
+                    yBalloon = ptCenter.Y - ((1 - hangSize) * totalContentSize.Height);
                     Painter.HotspotOrigin = onRight ? 7 : 2;
                 }
 
                 if (onRight)
-                    xBallon = ptCenter.X + 32;
+                    xBalloon = ptCenter.X + 32;
                 else
-                    xBallon = ptCenter.X - totalContentSize.Width - 32;
+                    xBalloon = ptCenter.X - totalContentSize.Width - 32;
             }
 
-            Painter.Bounds = new RectangleF(new PointF(xBallon, yBallon), totalContentSize);
+            Painter.Bounds = new RectangleF(new PointF(xBalloon, yBalloon), totalContentSize);
 
             PointF offsetAmount;
 
-            using (GraphicsPath p = Painter.BallonGraphicPath) {
+            using (GraphicsPath p = Painter.BalloonGraphicPath) {
                 RectangleF bounds = p.GetBounds();
 
                 bounds.Inflate(6, 6);
@@ -233,7 +233,7 @@ namespace LayoutManager.View {
 
         public override int ZOrder => 100;
 
-        protected BallonPainter Painter { get; } = new BallonPainter();
+        protected BalloonPainter Painter { get; } = new BalloonPainter();
 
         public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook? selectionLook, Graphics g) {
             GraphicsState gs = g.Save();
@@ -242,8 +242,8 @@ namespace LayoutManager.View {
             Painter.Paint(g);
 
             g.TranslateTransform(Painter.Bounds.Location.X + Margins.Width, Painter.Bounds.Location.Y + Margins.Height);
-            g.SetClip(new RectangleF(new PointF(0, 0), ballonContentSize));
-            DrawBallonContent(g);
+            g.SetClip(new RectangleF(new PointF(0, 0), balloonContentSize));
+            DrawBalloonContent(g);
 
             g.Restore(gs);
 
@@ -251,13 +251,13 @@ namespace LayoutManager.View {
         }
 
         /// <summary>
-        /// Draw the ballon content. The graphics canvas is set so 0, 0 is the top left of the ballon content area
+        /// Draw the balloon content. The graphics canvas is set so 0, 0 is the top left of the balloon content area
         /// </summary>
         /// <param name="g"></param>
-        protected abstract void DrawBallonContent(Graphics g);
+        protected abstract void DrawBalloonContent(Graphics g);
 
         /// <summary>
-        /// The margins around the content in the ballon
+        /// The margins around the content in the balloon
         /// </summary>
         protected SizeF Margins => new(4, 4);
 
@@ -271,15 +271,15 @@ namespace LayoutManager.View {
         #endregion
     }
 
-    public class LayoutDrawingRegionBallonText : LayoutDrawingRegionBallon {
+    public class LayoutDrawingRegionBalloonText : LayoutDrawingRegionBalloon {
         private readonly string text;
 
-        public LayoutDrawingRegionBallonText(ModelComponent component, ILayoutView view, Graphics g, string text, Font font) : base(component, view, GetBallonContentSize(g, text, font)) {
+        public LayoutDrawingRegionBalloonText(ModelComponent component, ILayoutView view, Graphics g, string text, Font font) : base(component, view, GetBalloonContentSize(g, text, font)) {
             this.text = text;
             this.Font = font;
         }
 
-        static protected SizeF GetBallonContentSize(Graphics g, string text, Font font) {
+        static protected SizeF GetBalloonContentSize(Graphics g, string text, Font font) {
             SizeF contentSize = g.MeasureString(text, font);
 
             contentSize.Width += 2;
@@ -288,7 +288,7 @@ namespace LayoutManager.View {
             return contentSize;
         }
 
-        protected override void DrawBallonContent(Graphics g) {
+        protected override void DrawBalloonContent(Graphics g) {
             g.DrawString(text, Font, TextBrush, Margins.Width, Margins.Height);
         }
 
@@ -297,17 +297,17 @@ namespace LayoutManager.View {
         protected Font Font { get; }
     }
 
-    public class LayoutDrawingRegionBallonInfo : LayoutDrawingRegionBallonText {
-        public LayoutDrawingRegionBallonInfo(ModelComponent component, ILayoutView view, Graphics g, LayoutBlockBallon ballonInfo) :
-            base(component, view, g, ballonInfo.Text, new Font("Arial", ballonInfo.FontSize, GraphicsUnit.World)) {
-            Painter.Fill = new SolidBrush(ballonInfo.FillColor);
-            TextBrush = new SolidBrush(ballonInfo.TextColor);
+    public class LayoutDrawingRegionBalloonInfo : LayoutDrawingRegionBalloonText {
+        public LayoutDrawingRegionBalloonInfo(ModelComponent component, ILayoutView view, Graphics g, LayoutBlockBalloon balloonInfo) :
+            base(component, view, g, balloonInfo.Text, new Font("Arial", balloonInfo.FontSize, GraphicsUnit.World)) {
+            Painter.Fill = new SolidBrush(balloonInfo.FillColor);
+            TextBrush = new SolidBrush(balloonInfo.TextColor);
 
             ClickHandler = () => {
-                if (ballonInfo.RemoveOnClick) {
+                if (balloonInfo.RemoveOnClick) {
                     var blockDefinition = (LayoutBlockDefinitionComponent)component;
 
-                    LayoutBlockBallon.Remove(blockDefinition, LayoutBlockBallon.TerminationReason.Clicked);
+                    LayoutBlockBalloon.Remove(blockDefinition, LayoutBlockBalloon.TerminationReason.Clicked);
                     return true;
                 }
                 return false;
@@ -326,15 +326,15 @@ namespace LayoutManager.View {
         #endregion
     }
 
-    public class LayoutDrawingRegionPopupBallon : LayoutDrawingRegionBallon {
-        private readonly Ballon ballon;
+    public class LayoutDrawingRegionPopupBalloon : LayoutDrawingRegionBalloon {
+        private readonly Balloon balloon;
 
-        public LayoutDrawingRegionPopupBallon(ModelComponent component, ILayoutView view, Graphics g, Ballon ballon) : base(component, view, ballon.Content.GetSize(g)) {
-            this.ballon = ballon;
+        public LayoutDrawingRegionPopupBalloon(ModelComponent component, ILayoutView view, Graphics g, Balloon balloon) : base(component, view, balloon.Content.GetSize(g)) {
+            this.balloon = balloon;
         }
 
-        protected override void DrawBallonContent(Graphics g) {
-            ballon.Content.Paint(g);
+        protected override void DrawBalloonContent(Graphics g) {
+            balloon.Content.Paint(g);
         }
     }
 

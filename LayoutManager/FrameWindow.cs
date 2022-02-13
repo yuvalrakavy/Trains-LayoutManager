@@ -884,9 +884,9 @@ namespace LayoutManager {
         private void UpdateLayoutControlVisible() {
             splitControlViewer.Panel1Collapsed = !layoutControlVisible;
             if (layoutControlVisible)
-                Dispatch.Call.OnLayoutControlShown(Id);
+                Dispatch.Notification.OnLayoutControlShown(Id);
             else
-                Dispatch.Call.OnLayoutControlHidden(Id);
+                Dispatch.Notification.OnLayoutControlHidden(Id);
         }
 
         private void UpdateTripsMonitorVisible() {
@@ -895,9 +895,9 @@ namespace LayoutManager {
             tripsMonitorVisible = tripsMonitor.Height > 10;
             if (tripsMonitorVisible != previousState) {
                 if (tripsMonitorVisible)
-                    Dispatch.Call.OnTripsMonitorShown(Id);
+                    Dispatch.Notification.OnTripsMonitorShown(Id);
                 else
-                    Dispatch.Call.OnTripsMonitorHidden(Id);
+                    Dispatch.Notification.OnTripsMonitorHidden(Id);
             }
         }
 
@@ -905,17 +905,17 @@ namespace LayoutManager {
             splitContainerMessageViewer.Panel2Collapsed = !messageViewVisible;
 
             if (messageViewVisible)
-                Dispatch.Call.OnMessagesShown(Id);
+                Dispatch.Notification.OnMessagesShown(Id);
             else
-                Dispatch.Call.OnMessagesHidden(Id);
+                Dispatch.Notification.OnMessagesHidden(Id);
         }
 
         private void UpdateLocomotivesVisible() {
             splitContainerLocomotivesViewer.Panel2Collapsed = !locomotiveViewVisible;
             if (locomotiveViewVisible)
-                Dispatch.Call.OnLocomotivesShown(Id);
+                Dispatch.Notification.OnLocomotivesShown(Id);
             else
-                Dispatch.Call.OnLocomotivesHidden(Id);
+                Dispatch.Notification.OnLocomotivesHidden(Id);
         }
 
         [DispatchTarget]

@@ -34,13 +34,6 @@ namespace LayoutManager {
         }
     }
 
-    public static class LayoutControllerDispatchSources {
-        [DispatchSource]
-        public static void CloseAllFrameWindows(this Dispatcher d) {
-            d[nameof(CloseAllFrameWindows)].CallVoid();
-        }
-    }
-
     public class LayoutControllerImplementation : ApplicationContext, ILayoutController, ILayoutSelectionManager {
         private string? layoutFilename;
         private readonly LayoutCommandManager commandManager;
@@ -330,7 +323,9 @@ namespace LayoutManager {
 
                     EventManager.Event(new LayoutEvent<OperationModeParameters>("prepare-enter-operation-mode", settings));
 
-                    if (!(bool)(EventManager.Event(new LayoutEvent("rebuild-layout-state", LayoutModel.Instance).SetPhases(settings.Phases)) ?? false)) {
+                    var ok = Dispatch.Call.RebuildLayoutState(settings.Phases);
+
+                    if (!ok) {
                         if (MessageBox.Show(ActiveFrameWindow, "The layout design or locomotive collection were modified. The previous state could not be fully restored.\n\n" +
                             "Would you like to continue with the partially restored state?\n\nSelecting \"No\" will clear the state. In this case, you will " +
                             "have to indicate the locomotive positions again", "Locomotive state cannot be restored",

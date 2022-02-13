@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using System.Threading.Tasks;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.Model;
@@ -60,7 +61,7 @@ namespace Intellibox {
     /// </summary>
     public class IntelliboxComponent : LayoutCommandStationComponent {
         private const string A_MinTimeBetweenSpeedSteps = "MinTimeBetweenSpeedSteps";
-        //private static readonly LayoutTraceSwitch traceIntellibox = new LayoutTraceSwitch("Intellibox", "Intellibox Command Station");
+        //private static read only LayoutTraceSwitch traceIntellibox = new LayoutTraceSwitch("Intellibox", "Intellibox Command Station");
         private OutputManager? commandStationManager;
 
         private ControlBus? _motorolaBus = null;
@@ -261,13 +262,11 @@ namespace Intellibox {
                 EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state == LayoutSignalState.Green ? 1 : 0));
         }
 
-        [LayoutEvent("locomotive-motion-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void LocomotiveMotionCommand(LayoutEvent e) {
+        [DispatchTarget]
+        private void LocomotiveMotionCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, int speed) {
             if (commandStationManager == null)
                 throw new NullReferenceException(nameof(commandStationManager));
 
-            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
-            int speed = Ensure.ValueNotNull<int>(e.Info);
             var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
             LocomotiveOrientation direction = LocomotiveOrientation.Forward;
             int logicalSpeed;
@@ -288,12 +287,11 @@ namespace Intellibox {
             commandStationManager.AddCommand(queueLocoCommands, new IntelliboxLocomotiveCommand(this, loco.AddressProvider.Unit, logicalSpeed, direction, train.Lights));
         }
 
-        [LayoutEvent("set-locomotive-lights-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void SetLocomotiveLightsCommand(LayoutEvent e) {
-            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
+        [DispatchTarget]
+        private void SetLocomotiveLightsCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, bool lights) {
             var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
 
-            EventManager.Event(new LayoutEvent("locomotive-motion-command", loco, train.SpeedInSteps).SetCommandStation(train));
+            Dispatch.Call.LocomotiveMotionCommand(Dispatch.Call.GetCommandStation(train), loco, train.SpeedInSteps);
         }
 
         private byte GetFunctionMask(LocomotiveInfo loco) {
@@ -310,25 +308,20 @@ namespace Intellibox {
             return functionMask;
         }
 
-        [LayoutEvent("set-locomotive-function-state-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void SetLocomotiveFunctionStateCommand(LayoutEvent e) {
+        [DispatchTarget]
+        void SetLocomotiveFunctionStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, string functionName, bool functionState) {
             if (commandStationManager == null)
                 throw new NullReferenceException(nameof(commandStationManager));
-
-            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
-
-            commandStationManager.AddCommand(queueLocoCommands, new IntelliboxLocomotiveFunctionsCommand(this, loco.AddressProvider.Unit, GetFunctionMask(loco)));
+            commandStationManager.AddCommand(queueLocoCommands, new IntelliboxLocomotiveFunctionsCommand(this, locomotive.AddressProvider.Unit, GetFunctionMask(locomotive)));
         }
 
-        [LayoutEvent("trigger-locomotive-function-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void TriggerLocomotiveFunctionCommand(LayoutEvent e) {
-            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
-            var functionName = Ensure.NotNull<string>(e.Info);
-            var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
-            var state = train.GetFunctionState(functionName, loco.Id, false);
+        [DispatchTarget]
+        void TriggerLocomotiveFunctionStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, string functionName, bool functionState) {
+            var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[locomotive.Id]);
+            var state = train.GetFunctionState(functionName, locomotive.Id, false);
 
             state = !state;
-            train.SetLocomotiveFunctionState(functionName, loco.Id, state);
+            train.SetLocomotiveFunctionState(functionName, locomotive.Id, state);
         }
 
         #endregion

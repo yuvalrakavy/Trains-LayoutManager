@@ -479,14 +479,14 @@ namespace LayoutManager.Model {
         }
     }
 
-    public class LayoutBlockBallon : IOperationState {
+    public class LayoutBlockBalloon : IOperationState {
         public enum TerminationReason {
-            Hidden, AnotherBallon, Clicked, TrainDetected, Canceled,
+            Hidden, AnotherBalloon, Clicked, TrainDetected, Canceled,
         }
 
         private readonly TaskCompletionSource<TerminationReason> tcs = new();
 
-        public LayoutBlockBallon() {
+        public LayoutBlockBalloon() {
             FillColor = Color.LightYellow;
             TextColor = Color.Black;
             RemoveOnClick = false;
@@ -496,7 +496,7 @@ namespace LayoutManager.Model {
             Text = "(None)";
         }
 
-        public LayoutBlockBallon(string text)
+        public LayoutBlockBalloon(string text)
             : this() {
             Text = text;
         }
@@ -508,37 +508,37 @@ namespace LayoutManager.Model {
                 tcs.TrySetResult(terminationReason);
         }
 
-        public static bool IsDisplayed(LayoutBlockDefinitionComponent blockDefinition) => LayoutModel.StateManager.OperationStates["SimpleBallon"].HasState(blockDefinition.Id);
+        public static bool IsDisplayed(LayoutBlockDefinitionComponent blockDefinition) => LayoutModel.StateManager.OperationStates["SimpleBalloon"].HasState(blockDefinition.Id);
 
-        public static LayoutBlockBallon Get(LayoutBlockDefinitionComponent blockDefinition) =>
-            Ensure.NotNull<LayoutBlockBallon>(LayoutModel.StateManager.OperationStates["SimpleBallon"].Get<LayoutBlockBallon>(blockDefinition.Id), "BlockBallon");
+        public static LayoutBlockBalloon Get(LayoutBlockDefinitionComponent blockDefinition) =>
+            Ensure.NotNull<LayoutBlockBalloon>(LayoutModel.StateManager.OperationStates["SimpleBalloon"].Get<LayoutBlockBalloon>(blockDefinition.Id), "BlockBalloon");
 
         public static void Remove(LayoutBlockDefinitionComponent blockDefinition, TerminationReason terminationReason) {
-            LayoutBlockBallon ballon = Get(blockDefinition);
+            LayoutBlockBalloon balloon = Get(blockDefinition);
 
-            if (ballon != null) {
+            if (balloon != null) {
                 blockDefinition.EraseImage();
-                ballon.Remove(terminationReason);
-                LayoutModel.StateManager.OperationStates["SimpleBallon"].Remove(blockDefinition.Id);
+                balloon.Remove(terminationReason);
+                LayoutModel.StateManager.OperationStates["SimpleBalloon"].Remove(blockDefinition.Id);
                 blockDefinition.Redraw();
             }
         }
 
-        public static void Show(LayoutBlockDefinitionComponent blockDefinition, LayoutBlockBallon ballon) {
-            PerOperationStates simpleBallons = LayoutModel.StateManager.OperationStates["SimpleBallon"];
+        public static void Show(LayoutBlockDefinitionComponent blockDefinition, LayoutBlockBalloon balloon) {
+            PerOperationStates simpleBalloons = LayoutModel.StateManager.OperationStates["SimpleBalloon"];
 
-            if (simpleBallons.HasState(blockDefinition.Id))
-                Remove(blockDefinition, TerminationReason.AnotherBallon);
+            if (simpleBalloons.HasState(blockDefinition.Id))
+                Remove(blockDefinition, TerminationReason.AnotherBalloon);
 
-            if (ballon.CancellationToken.CanBeCanceled)
-                ballon.CancellationToken.Register(
+            if (balloon.CancellationToken.CanBeCanceled)
+                balloon.CancellationToken.Register(
                     () => {
-                        if (LayoutBlockBallon.IsDisplayed(blockDefinition) && LayoutBlockBallon.Get(blockDefinition) == ballon)
-                            LayoutBlockBallon.Remove(blockDefinition, TerminationReason.Canceled);
+                        if (LayoutBlockBalloon.IsDisplayed(blockDefinition) && LayoutBlockBalloon.Get(blockDefinition) == balloon)
+                            LayoutBlockBalloon.Remove(blockDefinition, TerminationReason.Canceled);
                     }
                 );
 
-            simpleBallons.Set(blockDefinition.Id, ballon);
+            simpleBalloons.Set(blockDefinition.Id, balloon);
             blockDefinition.Redraw();
         }
 
@@ -553,11 +553,11 @@ namespace LayoutManager.Model {
         public Task<TerminationReason> Task => tcs.Task;
 
         /// <summary>
-        /// Convert ballon to its task, so one could do 'await Ballon'...
+        /// Convert balloon to its task, so one could do 'await Balloon'...
         /// </summary>
-        /// <param name="ballon"></param>
+        /// <param name="balloon"></param>
         /// <returns></returns>
-        public static implicit operator Task<TerminationReason>(LayoutBlockBallon ballon) => ballon.Task;
+        public static implicit operator Task<TerminationReason>(LayoutBlockBalloon balloon) => balloon.Task;
     }
 
     public class LayoutAddressInfo : LayoutTextInfo {

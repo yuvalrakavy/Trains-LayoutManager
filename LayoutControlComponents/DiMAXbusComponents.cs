@@ -4,6 +4,7 @@ using System.Xml;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Linq;
+using MethodDispatcher;
 using LayoutManager.Model;
 
 namespace LayoutManager.ControlComponents {
@@ -56,30 +57,23 @@ namespace LayoutManager.ControlComponents {
                 moduleTypeNames.Add("Massoth8170001level");
         }
 
-        [LayoutEvent("query-action", IfEvent = "LayoutEvent[Options/@Action='set-address']", SenderType = typeof(ControlModule), IfSender = "*[@ModuleTypeName='Massoth8170001']")]
-        [LayoutEvent("query-action", IfEvent = "LayoutEvent[Options/@Action='set-address']", SenderType = typeof(ControlModule), IfSender = "*[@ModuleTypeName='Massoth8170001level']")]
-        private void QuerySetMassothFeedbackDecoderAddress(LayoutEvent e0) {
-            var e = (LayoutEventInfoResultValueType<IHasDecoder, bool, bool>)e0;
-
-            e.Result = true;
+        [DispatchTarget]
+        private bool QueryAction_SetMassothFeedbackDecoderAddress([DispatchFilter(Type="XPath", Value ="[start-with(@ModuleTypeName, 'Massoth817001']")] ControlModule target, [DispatchFilter] string actionName = "set-address") {
+            return true;
         }
 
-        [LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[@ModuleTypeName='Massoth8170001']")]
-        private void GetProgramMassothTriggerFeedbackDecoderAddressAction(LayoutEvent e) {
-            var actionElement = Ensure.NotNull<XmlElement>(e.Sender, "actionElement");
-            var module = Ensure.NotNull<ControlModule>(e.Info, "module");
-
-            if (e.Info != null)
-                e.Info = new ProgramMassothTriggerFeedbackDecoderAddress(actionElement, module);
+        //[LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[@ModuleTypeName='Massoth8170001']")]
+        [DispatchTarget]
+        private LayoutAction? GetAction_ProgramMassothTriggerFeedbackDecoderAddress([DispatchFilter(Type = "XPath", Value = "Action[@Type='set-address']")] XmlElement actionElement,
+          [DispatchFilter(Type = "XPath", Value = "*[starts-with(@ModuleTypeName, 'Massoth8170001')]")] ControlModule module) {
+            return new ProgramMassothTriggerFeedbackDecoderAddress(actionElement, module);
         }
 
-        [LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[@ModuleTypeName='Massoth8170001level']")]
-        private void GetProgramMassothLevelFeedbackDecoderAddressAction(LayoutEvent e) {
-            var actionElement = Ensure.NotNull<XmlElement>(e.Sender, "actionElement");
-            var module = Ensure.NotNull<ControlModule>(e.Info, "module");
-
-            if (e.Info != null)
-                e.Info = new ProgramMassothLevelFeedbackDecoderAddress(actionElement, module);
+        //[LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[@ModuleTypeName='Massoth8170001level']")]
+        [DispatchTarget]
+        private LayoutAction? GetAction_ProgramMassothLevelFeedbackDecoderAddress([DispatchFilter(Type = "XPath", Value = "Action[@Type='set-address']")] XmlElement actionElement,
+          [DispatchFilter(Type = "XPath", Value = "*[starts-with(@ModuleTypeName, 'Massoth8170001level')]")] ControlModule module) {
+            return new ProgramMassothLevelFeedbackDecoderAddress(actionElement, module);
         }
 
         [LayoutEvent("edit-action-settings", InfoType = typeof(IMassothFeedbackDecoderSetAddress))]

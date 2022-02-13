@@ -35,3 +35,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Usage", "CA2208:Instantiate argument exceptions correctly", Justification = "<Pending>", Scope = "member", Target = "~P:LayoutManager.Model.LayoutPolicyInfo.EventScriptElement")]
 [assembly: SuppressMessage("Usage", "CA2208:Instantiate argument exceptions correctly", Justification = "<Pending>", Scope = "member", Target = "~M:LayoutManager.Model.LayoutComponentConnectionPointExtensions.ToComponentConnectionPoint(LayoutManager.ConvertableString)~LayoutManager.Model.LayoutComponentConnectionPoint")]
 [assembly: SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>", Scope = "module")]
+[assembly: SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>", Scope = "module")]

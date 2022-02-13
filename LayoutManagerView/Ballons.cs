@@ -1,10 +1,10 @@
 ﻿using System.Windows.Forms;
 
 namespace LayoutManager.View {
-    public class Ballon {
+    public class Balloon {
         public PopupWindowContainerSection Content { get; }
 
-        public Ballon(Control? parent = null) {
+        public Balloon(Control? parent = null) {
             Content = new PopupWindowContainerSection(parent);
         }
     }

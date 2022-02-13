@@ -3,16 +3,15 @@ using System.Xml;
 using LayoutManager.Components;
 using LayoutManager.Logic;
 using LayoutManager.Model;
-
 using MethodDispatcher;
 
 namespace LayoutManager {
-    public static class LogicDispatchSources {
+    public static class LayoutControllerDispatchSources {
         [DispatchSource]
-        public static IRoutePlanningServices GetRoutePlanningServices(this Dispatcher d) {
-            return d[nameof(GetRoutePlanningServices)].Call<IRoutePlanningServices>();
+        public static void CloseAllFrameWindows(this Dispatcher d) {
+            d[nameof(CloseAllFrameWindows)].CallVoid();
         }
     }
+
+
 }
-
-

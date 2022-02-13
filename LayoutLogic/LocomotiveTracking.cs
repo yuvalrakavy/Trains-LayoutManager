@@ -280,7 +280,7 @@ namespace LayoutManager.Logic {
             var extendedTrainBlock = IsExtendingTrain(occupancyBlock);
 
             if (extendedTrainBlock != null)
-                EventManager.Event(new LayoutEvent("request-auto-train-extend", extendedTrainBlock.Trains[0].Train, extendedTrainBlock.BlockDefinintion));
+                Dispatch.Call.RequestAutoExtendTrain(extendedTrainBlock.Trains[0].Train, extendedTrainBlock.BlockDefinintion);
             else {
                 try {
                     ArrayList trackingResults = new();
@@ -606,8 +606,8 @@ namespace LayoutManager.Logic {
             Debug.Assert(trackEdge.Track.BlockDefinitionComponent != null && trackEdge.Track.BlockDefinitionComponent!.Id == linkedBlock.BlockDefinintion.Id);
 
             Trace.WriteLineIf(traceLocomotiveTracking.TraceInfo,
-                $"No train was foun in blocks around {trackContact.FullDescription} however a train was found in {trainLocationInfo.Block.FullDescription} (distance {distance}), relocating it to {linkedBlock.FullDescription}");
-            EventManager.Event(new LayoutEvent("relocate-train-request", trainLocationInfo.Train, linkedBlock.BlockDefinintion).SetOption("Train", "Front", front.ToString()));
+                $"No train was found in blocks around {trackContact.FullDescription} however a train was found in {trainLocationInfo.Block.FullDescription} (distance {distance}), relocating it to {linkedBlock.FullDescription}");
+            Dispatch.Call.RelocateTrainRequest(trainLocationInfo.Train, linkedBlock.BlockDefinintion, front);
         }
 
         [LayoutEvent("track-locomotive-position")]

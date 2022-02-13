@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.Model;
@@ -181,7 +182,7 @@ namespace Intellibox {
         private void IntelliboxNotifiyLocomotiveState(LayoutEvent e) {
             var component = Ensure.NotNull<IntelliboxComponent>(e.Sender);
             var info = Ensure.ValueNotNull<ExternalLocomotiveEventInfo>(e.Info);
-            var addressMap = EventManager.Event<object, object, OnTrackLocomotiveAddressMap>("get-on-track-locomotive-address-map", component);
+            var addressMap = Dispatch.Call.GetOnTrackLocomotiveAddressMap(component);
             var addressMapEntry = addressMap?[info.Unit];
 
             if (addressMapEntry == null)
@@ -205,12 +206,10 @@ namespace Intellibox {
                         speedInSteps = -speedInSteps;
                 }
 
-                EventManager.Event(new LayoutEvent("locomotive-motion-notification", component,
-                    speedInSteps, "<Address Unit='" + info.Unit + "' />"));
+                Dispatch.Notification.OnLocomotiveMotion(component, speedInSteps, info.Unit);
 
                 if (info.Lights != train.Lights)
-                    EventManager.Event(new LayoutEvent("set-locomotive-lights-notification", component,
-                        info.Lights, "<Address Unit='" + info.Unit + "' />"));
+                    Dispatch.Notification.OnLocomotiveLightsChanged(component, info.Unit, info.Lights);
             }
         }
 

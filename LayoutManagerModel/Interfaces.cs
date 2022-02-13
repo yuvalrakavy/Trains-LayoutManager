@@ -215,6 +215,19 @@ namespace LayoutManager {
 
     #region Object property interfaces (mostly UI related)
 
+    public class CreateTrainSettings {
+        public string? TrainName { get; set; }
+        public LayoutComponentConnectionPoint? Front { get; set; }
+        public bool ValidateAddress { get; set; } = true;
+        public TrainLength? Length { get; set; }
+    }
+
+    public class IsLocomotiveAddressValidSettings {
+        public LocomotiveOrientation Orientation { get; set; } = LocomotiveOrientation.Forward;
+        public int? LocomotiveAddress { get; set; }
+
+    }
+
     /// <summary>
     /// This interface is implemented by any object that is capable of being locked by the lock
     /// manager. For example, a block object
@@ -232,7 +245,7 @@ namespace LayoutManager {
         /// <remarks>
         /// For example, if the resource is some kind of a gate,
         /// then it is ready to be locked when the gate is open. If the function returns false, it is
-        /// expected that the resource will generate a "layout-lock-resource-ready" when it becomes ready
+        /// expected that the resource will generate a Dispatch.Call.LayoutLockResourceReady when it becomes ready
         /// (in our example, calling IsResourceReady when the gate is closed will initiate the opening
         /// of this gate, and when the gate is open, the "layout-lock-resource-ready" event is sent.
         /// </remarks>

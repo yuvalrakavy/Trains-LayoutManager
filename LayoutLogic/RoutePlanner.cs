@@ -955,13 +955,12 @@ namespace LayoutManager.Logic {
 
         #endregion
 
-        [LayoutEvent("rebuild-layout-state", Order = 1100)]
-        private void RebuildLayoutState(LayoutEvent e) {
-            LayoutPhase phase = e.GetPhases();
+        [DispatchTarget(Order =1100)]
+        private bool RebuildLayoutState(LayoutPhase phase) {
             Debug.WriteLine("Rebuild trip plan catalog");
 
             LayoutModel.StateManager.TripPlansCatalog.CheckIntegrity(this, phase);
-            e.Info = true;
+            return true;
         }
 
         #region Data structures

@@ -145,7 +145,7 @@ namespace LayoutManager {
                     throw new LayoutException($"Errors initializing dynamic dispatch for assembly {layoutAssembly.Assembly.FullName} (see dispatcher_errors.txt)");
                 }
 
-                Dispatch.Call.OnModuleEnabled();
+                Dispatch.Notification.OnModuleEnabled();
                                
                 // Create subscriptions for event handlers in the new module instance (will this one day become obsolete...)
                 EventManager.AddObjectSubscriptions(moduleInstance);
@@ -159,10 +159,10 @@ namespace LayoutManager {
         /// <returns>True if the module successful disabled, false if the module refused to be disabled</returns>
         protected bool DisableModule() {
             if (moduleInstance != null) {
-                if (!(Dispatch.Call.OnModuleDisableRequest(moduleInstance) ?? true))
+                if (!(Dispatch.Notification.OnModuleDisableRequest(moduleInstance) ?? true))
                     return false;           // Module refuses to be disabled
 
-                Dispatch.Call.OnModuleDisabled(moduleInstance);
+                Dispatch.Notification.OnModuleDisabled(moduleInstance);
                 Dispatch.RemoveObjectInstanceDispatcherTargets(moduleInstance);
 
                 // Remove all subscriptions for this instance (will this become obsolete one day?)

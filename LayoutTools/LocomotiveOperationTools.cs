@@ -31,7 +31,7 @@ namespace LayoutManager.Tools {
         private void AddPlacebleBlocksMenuEntries(LayoutEvent e) {
             var placedElement = Ensure.NotNull<XmlElement>(e.Sender);
             var m = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-            var result = Ensure.NotNull<CanPlaceTrainResult>(EventManager.Event("can-locomotive-be-placed-on-track", placedElement));
+            var result = Dispatch.Call.CanLocomotiveBePlacedOnTrack(placedElement);
 
             if (result.Status != CanPlaceTrainStatus.CanPlaceTrain) {
                 var problemItem = new LayoutMenuItem(result.ToString()) {
@@ -47,7 +47,7 @@ namespace LayoutManager.Tools {
 
             foreach (LayoutBlockDefinitionComponent blockInfo in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases)) {
                 if (!blockInfo.Block.HasTrains && blockInfo.Info.SuggestForPlacement) {
-                    result = EventManager.Event<XmlElement, LayoutBlockDefinitionComponent, CanPlaceTrainResult>("can-locomotive-be-placed", placedElement, blockInfo)!;
+                    result = Dispatch.Call.CanLocomotiveBePlaced(placedElement, blockInfo);
 
                     problem = PlacementProblem.NoProblem;
 
@@ -114,7 +114,7 @@ namespace LayoutManager.Tools {
 
         [LayoutEvent("show-locomotive-controller")]
         private void ShowLocomotiveController(LayoutEvent e) {
-            TrainStateInfo trainState = EventManager.Event<object, object, TrainStateInfo>("extract-train-state", e.Sender)!;
+            TrainStateInfo trainState = Dispatch.Call.ExtractTrainState(e.Sender!);
 
             if (trainState.NotManaged)
                 throw new LocomotiveNotManagedException(trainState.Locomotives[0].Locomotive);
@@ -239,8 +239,8 @@ namespace LayoutManager.Tools {
             return trainFrontAndLength.ShowDialog() == DialogResult.OK ? new TrainFrontAndLength(trainFrontAndLength.Front, trainFrontAndLength.Length) : null;
         }
 
-        [LayoutEvent("get-programming-location")]
-        private void GetProgrammingLocation(LayoutEvent e) {
+        [DispatchTarget]
+        private LayoutBlockDefinitionComponent? GetProgrammingLocation() {
             var possibleLocations = from blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases) where blockDefinition.Info.SuggestForProgramming select blockDefinition;
             int count = possibleLocations.Count();
 
@@ -252,17 +252,17 @@ namespace LayoutManager.Tools {
                 else
                     LayoutModuleBase.Error(selection, "No block is designated as suggested for programming - you should edit at least one block's properties and set it as 'Suggest for programming'");
 
-                e.Info = null;
+                return null;
             }
             else if (count == 1)
-                e.Info = possibleLocations.First();
+                return possibleLocations.First();
             else {
                 var d = new Dialogs.SelectProgrammingLocation(possibleLocations);
 
                 if (d.ShowDialog() == DialogResult.OK)
-                    e.Info = d.SelectedProgrammingLocation;
+                    return d.SelectedProgrammingLocation;
                 else
-                    e.Info = null;
+                    return null;
             }
         }
 
@@ -293,7 +293,7 @@ namespace LayoutManager.Tools {
                     if (d.ProgramLocomotive) {
                         try {
                             using var context = new LayoutOperationContext("LocomotiveProgramming", "set locomotive address", locomotive);
-                            var train = (TrainStateInfo)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent("program-locomotive", programmingState).SetOperationContext(context));
+                            var train = await Dispatch.Call.ProgramLocomotive(programmingState, new CreateTrainSettings(), context);
                         }
                         catch (LayoutException) { }
                     }
@@ -347,7 +347,7 @@ namespace LayoutManager.Tools {
             protected override void OnClick(EventArgs e) {
                 base.OnClick(e);
 
-                ComponentOperationTools.DoValidateAndPlaceTrain(new LayoutEvent<LayoutBlockDefinitionComponent, XmlElement>("validate-and-place-train-request", blockInfo, placedElement));
+                ComponentOperationTools.DoValidateAndPlaceTrain(blockInfo, placedElement, new CreateTrainSettings());
             }
         }
 
@@ -367,7 +367,7 @@ namespace LayoutManager.Tools {
             protected override async void OnClick(EventArgs e) {
                 try {
                     using var context = new LayoutOperationContext("TrainRemoval", "removal of " + train.Name + " from track", train);
-                    await EventManager.AsyncEvent(new LayoutEvent<object, string>("remove-from-track-request", train, "Remove train from track").SetOperationContext(context));
+                    await Dispatch.Call.RemoveFromTrackRequest(train, "Remove train from track", context);
                 }
                 catch (LayoutException lex) {
                     lex.Report();

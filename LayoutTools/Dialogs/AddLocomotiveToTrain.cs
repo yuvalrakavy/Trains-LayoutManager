@@ -6,6 +6,8 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
+using MethodDispatcher;
+
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
@@ -80,7 +82,7 @@ namespace LayoutManager.Tools.Dialogs {
                 inList.Add(loco.Id, loco);
 
                 if (train is TrainStateInfo) {
-                    var result = Ensure.NotNull<CanPlaceTrainResult>(EventManager.Event(new LayoutEvent("is-locomotive-address-valid", loco.Element, train, "<Orientation Value='" + orientation.ToString() + "' />")));
+                    var result = Dispatch.Call.IsLocomotiveAddressValid(loco.Element, train, new IsLocomotiveAddressValidSettings { Orientation = orientation });
 
                     if (!result.CanBeResolved)
                         retainInList = false;
@@ -104,11 +106,10 @@ namespace LayoutManager.Tools.Dialogs {
 
                 if (!inList.Contains(loco.Id)) {
                     if (train is TrainStateInfo) {
-                        var result = Ensure.NotNull<CanPlaceTrainResult>(EventManager.Event("can-locomotive-be-placed-on-track", loco.Element));
+                        var result = Dispatch.Call.CanLocomotiveBePlacedOnTrack(loco.Element);
 
                         if (result.Status == CanPlaceTrainStatus.CanPlaceTrain)
-                            result = Ensure.NotNull<CanPlaceTrainResult>(EventManager.Event(new LayoutEvent(
-                                "is-locomotive-address-valid", loco.Element, train, xmlDocument: "<Orientation Value='" + orientation.ToString() + "' />")));
+                            result = Dispatch.Call.IsLocomotiveAddressValid(loco.Element, train, new IsLocomotiveAddressValidSettings { Orientation = orientation });
 
                         if (result.Status != CanPlaceTrainStatus.CanPlaceTrain)
                             validLoco = false;

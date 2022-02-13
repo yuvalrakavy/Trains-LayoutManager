@@ -319,7 +319,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Cancellation token for the ongoing operation
         /// </summary>
-        public CancellationToken CancelationToken => CancellationTokenSource.Token;
+        public CancellationToken CancellationToken => CancellationTokenSource.Token;
 
         /// <summary>
         /// Return a key that can be used to find this operation in the state map
@@ -427,7 +427,7 @@ namespace LayoutManager.Model {
         public static CancellationToken GetCancellationToken(this LayoutEvent theEvent) {
             var context = GetOperationContext(theEvent);
 
-            return context != null ? context.CancelationToken : System.Threading.CancellationToken.None;
+            return context != null ? context.CancellationToken : System.Threading.CancellationToken.None;
         }
     }
 
@@ -662,14 +662,14 @@ namespace LayoutManager.Model {
                 LocomotiveOrientation direction = MotionDirection;
 
                 if ((value > 0 && direction == LocomotiveOrientation.Backward) || (value < 0 && direction == LocomotiveOrientation.Forward))
-                    EventManager.Event(new LayoutEvent("reverse-train-motion-direction-request", this));
+                    Dispatch.Call.ReverseTrainMotionDirectionRequest(this);
 
                 if (value > 0)
                     MotionDirection = LocomotiveOrientation.Forward;
                 else if (value < 0)
                     MotionDirection = LocomotiveOrientation.Backward;
 
-                EventManager.Event(new LayoutEvent("set-train-speed-request", this, value));
+                Dispatch.Call.SetLocomotiveSpeedRequest(this, value);
             }
         }
 
@@ -731,7 +731,7 @@ namespace LayoutManager.Model {
             set {
                 if (NotManaged)
                     throw new LocomotiveNotManagedException(Locomotives[0].Locomotive);
-                EventManager.Event(new LayoutEvent("set-train-lights-request", this, value));
+                Dispatch.Call.SetLocomotiveLightsRequest(this, value);
             }
         }
 
@@ -860,16 +860,16 @@ namespace LayoutManager.Model {
 
             if (block != null)
                 // Verify that indeed the locomotive can be added (exception is thrown if not)
-                result = EventManager.Event<XmlElement, LayoutBlockDefinitionComponent, CanPlaceTrainResult>("can-locomotive-be-placed-on-track", loco.Element, block.BlockDefinintion)!;
+                result = Dispatch.Call.CanLocomotiveBePlacedOnTrack(loco.Element, block.BlockDefinintion);
             else
                 result = new CanPlaceTrainResult() { CanBeResolved = true, Status = CanPlaceTrainStatus.CanPlaceTrain };
 
             if (result.Status == CanPlaceTrainStatus.CanPlaceTrain) {
                 if (validateAddress) {
-                    if (LocomotiveBlock == null)
-                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("is-locomotive-address-valid", loco.Element, block, "<Orientation Value='" + orientation.ToString() + "' />"))!;
+                    if (LocomotiveBlock == null && block != null)
+                        result = Dispatch.Call.IsLocomotiveAddressValid(loco.Element, block, new IsLocomotiveAddressValidSettings { Orientation = orientation });
                     else
-                        result = (CanPlaceTrainResult)EventManager.Event(new LayoutEvent("is-locomotive-address-valid", loco.Element, this, "<Orientation Value='" + orientation.ToString() + "' />"))!;
+                        result = Dispatch.Call.IsLocomotiveAddressValid(loco.Element, this, new IsLocomotiveAddressValidSettings { Orientation = orientation });
                 }
 
                 if (LocomotiveBlock != null)
@@ -1023,11 +1023,10 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="speedInSteps"></param>
         /// <param name="direction"></param>
-        [LayoutEventDef("train-speed-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
         public void SetSpeedValue(int speedInSteps) {
             if (speedInSteps != this.SpeedInSteps) {
                 SetAttributeValue(A_Speed, speedInSteps);
-                EventManager.Event(new LayoutEvent("train-speed-changed", this, speedInSteps));
+                Dispatch.Notification.OnTrainSpeedChanged(this, speedInSteps);
             }
         }
 
@@ -1137,8 +1136,7 @@ namespace LayoutManager.Model {
         /// <param name="locoIndex">which locomotive (relevant if locomotive set), -1 set the state for all locomotives in the set</param>
         /// <param name="state">The state (true = on, false = off)</param>
         public void SetLocomotiveFunctionState(String functionName, Guid locomotiveId, bool state) {
-            EventManager.Event(new LayoutEvent("set-locomotive-function-state-request", this,
-                state, GetFunctionXml(functionName, locomotiveId)));
+            Dispatch.Call.SetLocomotiveFunctionStateRequest(this, locomotiveId, functionName, state);
         }
 
         /// <summary>
@@ -1147,8 +1145,7 @@ namespace LayoutManager.Model {
         /// <param name="functionName">The function name</param>
         /// <param name="locoIndex">which locomotive (relevant if locomotive set), -1 set the state for all locomotives in the set</param>
         public void TriggerLocomotiveFunction(String functionName, Guid locomotiveId) {
-            EventManager.Event(new LayoutEvent("trigger-locomotive-function-request", sender: this,
-                xmlDocument: GetFunctionXml(functionName, locomotiveId)));
+            Dispatch.Call.TriggerLocomotiveFunctionStateRequest(this, locomotiveId, functionName);
         }
 
         private const string A_State = "State";
@@ -1910,9 +1907,9 @@ namespace LayoutManager.Model {
 
             set {
                 if (value && !Active)
-                    EventManager.Event(new LayoutEvent("request-manual-dispatch-lock", this));
+                    Dispatch.Call.RequestManualDispatchLock(this);
                 else if (!value && Active) {
-                    EventManager.Event(new LayoutEvent("free-manual-dispatch-lock", this, false));
+                    Dispatch.Call.FreeManualDispatchLock(this);
                     SetActive(false);
                 }
             }
@@ -2124,7 +2121,7 @@ namespace LayoutManager.Model {
         public bool IsActive => ActiveScript != null;
 
         public string Name {
-            get => GetAttribute(A_Name);
+            get => GetOptionalAttribute(A_Name) ?? String.Empty;
 
             set => SetAttributeValue(A_Name, value);
         }

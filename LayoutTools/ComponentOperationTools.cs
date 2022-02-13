@@ -393,7 +393,7 @@ namespace LayoutManager.Tools {
                         (object? sender, EventArgs e) => {
                             Dialogs.SelectTrainToPlace d = new(blockDefinition);
                             if (d.ShowDialog() == DialogResult.OK && d.Selected?.Element != null) {
-                                DoValidateAndPlaceTrain(new LayoutEvent<LayoutBlockDefinitionComponent, XmlElement>("validate-and-place-train-request", blockDefinition, d.Selected.Element).SetOption("Train", "Front", d.Front.ToString()).SetOption("Train", "Length", d.Length.ToString()));
+                                DoValidateAndPlaceTrain(blockDefinition, d.Selected.Element, new CreateTrainSettings() { Front = d.Front, Length = d.Length });
                             }
                         });
                 }
@@ -419,12 +419,12 @@ namespace LayoutManager.Tools {
 
                     if (otherTrains.Count == 1)
                         m.Items.Add($"Fix: train '{otherTrains[0].DisplayName}' located here", null,
-                            (sender, e1) => EventManager.Event(new LayoutEvent("relocate-train-request", otherTrains[0], blockDefinition)));
+                            (sender, e1) => Dispatch.Call.RelocateTrainRequest(otherTrains[0], blockDefinition));
                     else if (otherTrains.Count > 1) {
                         var fixTrainLocationMenu = new LayoutMenuItem("Fix: train which is located here");
 
                         foreach (var train in otherTrains)
-                            fixTrainLocationMenu.DropDownItems.Add(train.DisplayName, null, (sender, e1) => EventManager.Event(new LayoutEvent("relocate-train-request", train, blockDefinition)));
+                            fixTrainLocationMenu.DropDownItems.Add(train.DisplayName, null, (sender, e1) => Dispatch.Call.RelocateTrainRequest(train, blockDefinition));
 
                         m.Items.Add(fixTrainLocationMenu);
                     }
@@ -579,7 +579,7 @@ namespace LayoutManager.Tools {
                         var train = LayoutModel.StateManager.Trains[element];
 
                         if (train == null) {        // Not already on track
-                            var result = EventManager.Event<XmlElement, LayoutBlockDefinitionComponent, CanPlaceTrainResult>("can-locomotive-be-placed", element, blockDefinition)!;
+                            var result = Dispatch.Call.CanLocomotiveBePlaced(element, blockDefinition);
 
                             if (result.CanBeResolved)
                                 dragEventArgs.Effect = DragDropEffects.Link;
@@ -592,7 +592,7 @@ namespace LayoutManager.Tools {
                     if (IsTrainOnSamePower(train, blockDefinition)) {
                         // Check whether this is a train identification case (the block with the train
                         // is an occupancy detection block with no train detected) or whether it is a shortcut
-                        // for moving the train from this poinr to the next
+                        // for moving the train from this point to the next
                         bool relocateTrain = false;
 
                         foreach (TrainLocationInfo trainLocation in train.Locations) {
@@ -614,14 +614,12 @@ namespace LayoutManager.Tools {
             }
         }
 
-        public static async void DoValidateAndPlaceTrain(LayoutEvent e) {
-            var placedElement = Ensure.NotNull<XmlElement>(e.Info, "placedElement");
-            var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockDefinition");
+        public static async void DoValidateAndPlaceTrain(LayoutBlockDefinitionComponent blockDefinition, XmlElement placedElement, CreateTrainSettings settings) {
             string name = placedElement.Name == "Locomotive" ? new LocomotiveInfo(placedElement).Name : new TrainInCollectionInfo(placedElement).Name;
 
-            using var context = new LayoutOperationContext("TrainPlacement", "Placing " + name + " on track", new LayoutXmlWithIdWrapper(placedElement), blockDefinition);
+            using var context = new LayoutOperationContext("TrainPlacement", $"Placing {name} on track", new LayoutXmlWithIdWrapper(placedElement), blockDefinition);
             try {
-                await EventManager.AsyncEvent(e.SetOperationContext(context));
+                await Dispatch.Call.ValidateAndPlaceTrainRequest(blockDefinition, placedElement, settings, context);
             }
             catch (LayoutException ex) {
                 ex.Report();
@@ -643,14 +641,14 @@ namespace LayoutManager.Tools {
                         if (train == null &&
                          !LayoutOperationContext.HasPendingOperation("TrainPlacement", new LayoutXmlWithIdWrapper(element)) &&
                          !LayoutOperationContext.HasPendingOperation("TrainPlacement", blockDefinition))
-                            DoValidateAndPlaceTrain(new LayoutEvent<LayoutBlockDefinitionComponent, XmlElement>("validate-and-place-train-request", blockDefinition, element));
+                            DoValidateAndPlaceTrain(blockDefinition, element, new CreateTrainSettings());
                     }
                 }
                 else if (element.Name == "TrainState") {
                     TrainStateInfo train = new(element);
 
                     if (dragEventArgs.Effect == DragDropEffects.Copy) {
-                        EventManager.Event(new LayoutEvent("relocate-train-request", train, blockDefinition));
+                        Dispatch.Call.RelocateTrainRequest(train, blockDefinition);
                     }
                     else if (dragEventArgs.Effect == DragDropEffects.Move) {
                         // Create trip plan to move train
@@ -1275,7 +1273,9 @@ namespace LayoutManager.Tools {
             }
 
             protected override void OnClick(EventArgs e) {
-                EventManager.Event(new LayoutEvent("relocate-train-request", PlacedElement, Block.BlockDefinintion));
+                var train = Dispatch.Call.ExtractTrainState(PlacedElement);
+
+                Dispatch.Call.RelocateTrainRequest(train, Block.BlockDefinintion);
             }
         }
 
@@ -1302,18 +1302,18 @@ namespace LayoutManager.Tools {
 
 #endregion
 
-        #region Remove ballon if track is detected
+        #region Remove balloon if track is detected
 
         [LayoutEvent("train-detection-block-occupied")]
-        private void RemoveBallonWhenTrainIsDetected(LayoutEvent e) {
+        private void RemoveBalloonWhenTrainIsDetected(LayoutEvent e) {
             var occupancyBlock = Ensure.NotNull<LayoutOccupancyBlock>(e.Sender, "occupancyBlock");
 
             // Check if any contained block contains train. If so, then the detection was of this train, and nothing should be done
             foreach (LayoutBlock block in occupancyBlock.ContainedBlocks) {
                 LayoutBlockDefinitionComponent blockDefinition = block.BlockDefinintion;
 
-                if (LayoutBlockBallon.IsDisplayed(blockDefinition) && LayoutBlockBallon.Get(blockDefinition).RemoveOnTrainDetected)
-                    LayoutBlockBallon.Remove(blockDefinition, LayoutBlockBallon.TerminationReason.TrainDetected);
+                if (LayoutBlockBalloon.IsDisplayed(blockDefinition) && LayoutBlockBalloon.Get(blockDefinition).RemoveOnTrainDetected)
+                    LayoutBlockBalloon.Remove(blockDefinition, LayoutBlockBalloon.TerminationReason.TrainDetected);
             }
         }
 
@@ -1491,7 +1491,7 @@ namespace LayoutManager.Tools {
                 LayoutLockRequest lockRequest = new(extendableTrainInfo.Train.Id);
 
                 lockRequest.Blocks.Add(block);
-                EventManager.Event(new LayoutEvent("request-layout-lock", lockRequest));
+                Dispatch.Call.RequestLayoutLock(lockRequest);
 
                 TrackContactPassingStateInfo? trackContactPassingState = null;
 
