@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 
@@ -195,8 +196,8 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("enter-operation-mode", Order = 2000)]
-        private void SetSignalsOnEnterOperationMode(LayoutEvent e) {
+        [DispatchTarget(Order =2000)]
+        private void EnterOperationMode(OperationModeParameters settings) {         
             foreach (LayoutBlockEdgeBase blockEdge in LayoutModel.Components<LayoutBlockEdgeBase>(LayoutModel.ActivePhases)) {
                 LayoutSignalState signalState = blockEdge.SignalState;
 

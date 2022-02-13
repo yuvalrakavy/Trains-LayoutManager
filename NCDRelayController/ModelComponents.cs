@@ -162,9 +162,9 @@ namespace NCDRelayController {
 
         #region Event Handlers
 
-        [LayoutEvent("enter-operation-mode")]
-        protected virtual void EnterOperationMode(LayoutEvent e) {
-            simulation = Ensure.NotNull<OperationModeParameters>(e.Sender).Simulation;
+        [DispatchTarget]
+        protected virtual void EnterOperationMode(OperationModeParameters settings) {
+            simulation = settings.Simulation;
 
             OnCommunicationSetup();
             OpenCommunicationStream();

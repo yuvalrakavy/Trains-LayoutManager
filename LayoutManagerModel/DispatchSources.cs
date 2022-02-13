@@ -323,5 +323,24 @@ namespace LayoutManager {
             d[nameof(OnLocomotiveControllerDeactivated)].CallVoid(train, trainLoco);
         }
 
+        [DispatchSource]
+        public static void AddCommandStationLocomotiveBusToAddressMap(this Dispatcher d, IModelComponentHasNameAndId commandStation, LocomotiveAddressMap addressMap) {
+            d[nameof(AddCommandStationLocomotiveBusToAddressMap)].CallVoid(commandStation, addressMap);
+        }
+
+        [DispatchSource]
+        public static Task<LayoutActionFailure?> DoCommandStationActions(this Dispatcher d, IModelComponentCanProgramLocomotives commandStation, ILayoutActionContainer actions, bool usePOM) {
+            return d[nameof(DoCommandStationActions)].Call<Task<LayoutActionFailure?>>(commandStation, actions, usePOM);
+        }
+
+        [DispatchSource]
+        public static void OnLocomotiveConfigurationChanged(this Dispatcher d, LocomotiveInfo locomotive) {
+            d[nameof(OnLocomotiveConfigurationChanged)].CallVoid(locomotive);
+        }
+
+        [DispatchSource]
+        public static void EnterOperationMode(this Dispatcher d, OperationModeParameters settings) {
+            d[nameof(EnterOperationMode)].CallVoid(settings);
+        }
     }
 }

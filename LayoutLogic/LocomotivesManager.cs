@@ -434,7 +434,7 @@ namespace LayoutManager.Logic {
 
         private void BuildAddressMap(IModelComponentIsCommandStation commandStation, LocomotiveAddressMap addressMap) {
             AddOnPoweredTracksLocomotivesToAddressMap(addressMap, commandStation);
-            EventManager.Event(new LayoutEvent("add-command-station-loco-bus-to-address-map", commandStation, addressMap));
+            Dispatch.Call.AddCommandStationLocomotiveBusToAddressMap(commandStation, addressMap);
             AddOnNonPoweredTracksLocomotivesToAddressMap(addressMap);
             AddOnShelfLocomotivesToAddressMap(addressMap, commandStation);
         }
@@ -868,10 +868,14 @@ namespace LayoutManager.Logic {
 
                     var commandStation = programmingLocation.Power.PowerOriginComponent as IModelComponentCanProgramLocomotives;
 
-                    var r = (LayoutActionFailure)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent<ILayoutActionContainer, IModelComponentCanProgramLocomotives>("do-command-station-actions", programmingState.ProgrammingActions, commandStation).SetOption("UsePOM", false));
+                    if (commandStation != null) {
+                        var r = await Dispatch.Call.DoCommandStationActions(commandStation, programmingState.ProgrammingActions, usePOM: false);
 
-                    if (r != null)
-                        Error(r.ToString());
+                        if (r != null)
+                            Error(r.ToString());
+                    }
+                    else
+                        Error(commandStation, "Is unable to program locomotive settings");
 
                     // If programming location is not same as original location (or where the train is supposed to be), remove the train from the programming location
                     if (programmingState.PlacementLocation == null || programmingState.PlacementLocation.Id != programmingLocation.Id) {
@@ -898,7 +902,7 @@ namespace LayoutManager.Logic {
             }
             else {
                 if (train?.CommandStation is IModelComponentCanProgramLocomotives commandStation) {
-                    var r = (LayoutActionFailure)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent<ILayoutActionContainer, IModelComponentCanProgramLocomotives>("do-command-station-actions", programmingState.ProgrammingActions, commandStation).SetOption("UsePOM", true));
+                    var r = await Dispatch.Call.DoCommandStationActions(commandStation, programmingState.ProgrammingActions, usePOM: true);
 
                     if (r != null)
                         Error(r.ToString());
@@ -1184,10 +1188,8 @@ namespace LayoutManager.Logic {
 
         #region Speed limit
 
-        [LayoutEvent("locomotive-configuration-changed")]
-        private void LocomotiveConfigurationChanged(LayoutEvent e) {
-            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender, "loco");
-
+        [DispatchTarget]
+        private void OnLocomotiveConfigurationChanged(LocomotiveInfo loco) {
             if (LayoutController.IsOperationMode) {
                 foreach (XmlElement trainElement in LayoutModel.StateManager.Trains.Element) {
                     TrainStateInfo train = new(trainElement);
@@ -1353,8 +1355,8 @@ namespace LayoutManager.Logic {
             return invalidStateElements.Count == 0;   // Fail if any invaid element was found
         }
 
-        [LayoutEvent("enter-operation-mode", Order = 20000)]
-        private void EnterOperationModeAndInitializeTrains(LayoutEvent e) {
+        [DispatchTarget(Order =2000)]
+        private void EnterOperationMode(OperationModeParameters settings) {
             foreach (XmlElement trainStateElement in LayoutModel.StateManager.Trains.Element) {
                 TrainStateInfo train = new(trainStateElement);
 
@@ -1376,7 +1378,7 @@ namespace LayoutManager.Logic {
 
                 if (component != null) {
                     foreach (XmlElement componentStateTopicElement in componentStateElement) {
-                        if (!(bool)(EventManager.Event(new LayoutEvent("verify-component-state-topic", componentStateTopicElement, true)) ?? false))
+                        if(!Dispatch.Call.VerifyComponentStateTopic(componentStateTopicElement))
                             topicRemoveList.Add(componentStateTopicElement);
                     }
 
@@ -1424,9 +1426,9 @@ namespace LayoutManager.Logic {
 
         /// <summary>
         /// Remove all unexpected trains block. The command station will re-detect all trains which are standing
-        /// on the tracks, so there is no point in remebering the previous state
+        /// on the tracks, so there is no point in remembering the previous state
         /// </summary>
-        /// <returns>True if all is ok</returns>
+        /// <returns>True if all is OK</returns>
         private bool ClearTrainDetectionBlocks(LayoutPhase phase) {
             foreach (LayoutBlockDefinitionComponent blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(phase)) {
                 if (blockDefinition.Info.IsOccupancyDetectionBlock) {
@@ -1438,16 +1440,14 @@ namespace LayoutManager.Logic {
             return true;
         }
 
-        [LayoutEvent("verify-component-state-topic", IfSender = "Balloon")]
-        private void RemoveBalloonTopics(LayoutEvent e) {
-            e.Info = false;
-        }
+        [DispatchTarget]
+        private bool VerifyCompoentStateTopic_Balloon([DispatchFilter(Type = "XPath", Value = "Balloon")] XmlElement componentStateTopicElement) => false;
 
         /// <summary>
         /// Clear the locomotive trainState (removing all locomotives)
         /// </summary>
-        [LayoutEvent("clear-layout-state")]
-        private void ClearLocomotiveState(LayoutEvent e) {
+        [DispatchTarget]
+        private void ClearLayoutState() {
             // Remove all locomotives from all blocks
             foreach (LayoutBlock block in LayoutModel.Blocks)
                 block.ClearTrains();

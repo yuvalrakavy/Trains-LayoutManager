@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
+using MethodDispatcher;
 
 using LayoutManager.Model;
 
@@ -56,7 +57,6 @@ namespace LayoutManager.Dialogs {
             base.Dispose(disposing);
         }
 
-        [LayoutEventDef("locomotive-configuration-changed", Role = LayoutEventRole.Notification, SenderType = typeof(LocomotiveInfo))]
         private void buttonOk_Click(object? sender, EventArgs e) {
             if (textBoxName.Text.Trim() == "") {
                 tabControl1.SelectedTab = tabPageGeneral;
@@ -90,8 +90,7 @@ namespace LayoutManager.Dialogs {
 
             inLoco.Element = loco.Element;
 
-            EventManager.Event(new LayoutEvent("locomotive-configuration-changed", inLoco));
-
+            Dispatch.Notification.OnLocomotiveConfigurationChanged(inLoco);
             DialogResult = DialogResult.OK;
         }
 

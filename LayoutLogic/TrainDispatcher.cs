@@ -291,8 +291,8 @@ namespace LayoutManager.Logic {
                 Clear();
             }
 
-            [LayoutEvent("enter-operation-mode")]
-            private void EnterOperationMode(LayoutEvent e) {
+            [DispatchTarget]
+            private void EnterOperationMode(OperationModeParameters settings) {
                 operationMode = true;
             }
 

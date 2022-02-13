@@ -327,13 +327,13 @@ namespace LayoutManager {
 
                     if (!ok) {
                         if (MessageBox.Show(ActiveFrameWindow, "The layout design or locomotive collection were modified. The previous state could not be fully restored.\n\n" +
-                            "Would you like to continue with the partially restored state?\n\nSelecting \"No\" will clear the state. In this case, you will " +
-                            "have to indicate the locomotive positions again", "Locomotive state cannot be restored",
+                          "Would you like to continue with the partially restored state?\n\nSelecting \"No\" will clear the state. In this case, you will " +
+                          "have to indicate the locomotive positions again", "Locomotive state cannot be restored",
                             MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-                            EventManager.Event(new LayoutEvent("clear-layout-state", LayoutModel.Instance));
+                            Dispatch.Call.ClearLayoutState();
                     }
 
-                    EventManager.Event(new LayoutEvent<OperationModeParameters>("enter-operation-mode", settings));
+                    Dispatch.Call.EnterOperationMode(settings);
                     Task.WhenAll(EventManager.AsyncEventBroadcast(new LayoutEvent("enter-operation-mode-async", settings))).Wait(500);
                     LayoutModel.Instance.Redraw();
                 }

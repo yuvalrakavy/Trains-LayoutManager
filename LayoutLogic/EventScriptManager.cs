@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
+using MethodDispatcher;
 using LayoutManager;
 using LayoutManager.Model;
 
@@ -48,8 +49,8 @@ namespace LayoutManager.Logic {
             e.Info = result;
         }
 
-        [LayoutEvent("enter-operation-mode", Order = 1000)]
-        private void enterOperationMode(LayoutEvent e) {
+        [DispatchTarget(Order = 1000)]
+        private void EnterOperationMode(OperationModeParameters settings) {
             foreach (LayoutPolicyInfo policy in LayoutModel.StateManager.LayoutPolicies) {
                 if (policy.Apply && policy.EventScriptElement != null) {
                     LayoutEventScript runningScript = EventManager.EventScript("Global policy " + policy.Name, policy.EventScriptElement, new Guid[] { }, null);

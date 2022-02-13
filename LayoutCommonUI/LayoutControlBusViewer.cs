@@ -438,7 +438,11 @@ namespace LayoutManager.CommonUI {
             Recalc();
         }
 
-        [LayoutEvent("enter-operation-mode")]
+        [DispatchTarget]
+        private void EnterOperationMode(OperationModeParameters settings) {
+            Recalc();
+        }
+
         [LayoutEvent("enter-design-mode")]
         [LayoutEvent("control-module-removed")]
         [LayoutEvent("control-module-added")]

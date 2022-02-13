@@ -256,9 +256,9 @@ namespace LayoutManager.Components {
         }
         // Event handlers
 
-        [LayoutEvent("enter-operation-mode")]
-        protected virtual void EnterOperationMode(LayoutEvent e) {
-            EmulateLayout = Ensure.NotNull<OperationModeParameters>(e.Sender, "EmulatedLayout").Simulation;
+        [DispatchTarget]
+        protected virtual void EnterOperationMode(OperationModeParameters settings) {
+            EmulateLayout = settings.Simulation;
 
             OnCommunicationSetup();
             OpenCommunicationStream();

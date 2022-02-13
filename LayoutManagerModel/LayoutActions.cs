@@ -10,11 +10,9 @@ using MethodDispatcher;
 namespace LayoutManager.Model {
     [LayoutModule("Programming Operations Manager", UserControl = false)]
     internal class ActionManager : LayoutModuleBase {
-        [LayoutAsyncEvent("do-command-station-actions")]
-        private async Task<object?> DoProgrammingActions(LayoutEvent e) {
-            var actions = Ensure.NotNull<ILayoutActionContainer>(e.Sender, "actions");
-            var commandStation = Ensure.NotNull<IModelComponentCanProgramLocomotives>(e.Info, "commandStation");
 
+        [DispatchTarget]        
+        private async Task<LayoutActionFailure?> DoProgrammingActions(IModelComponentCanProgramLocomotives commandStation, ILayoutActionContainer actions, bool usePOM) {
             actions.PrepareForProgramming();        // Ensure that actions are prepared for programming
 
             foreach (var action in actions) {
@@ -23,7 +21,7 @@ namespace LayoutManager.Model {
                 action.Status = ActionStatus.InProgress;
 
                 if (action is ILayoutDccProgrammingAction layoutDccProgrammingAction)
-                    result = await (layoutDccProgrammingAction).Execute(commandStation, (bool?)e.GetOption("UsePOM") ?? false);
+                    result = await (layoutDccProgrammingAction).Execute(commandStation, usePOM);
 
                 if (result != LayoutActionResult.Ok) {
                     action.Status = ActionStatus.Failed;

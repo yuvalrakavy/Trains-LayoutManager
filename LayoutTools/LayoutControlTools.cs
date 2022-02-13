@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Linq;
+using MethodDispatcher;
+
 using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.CommonUI;
@@ -1334,7 +1336,7 @@ namespace LayoutManager.Tools {
 
                         var d = new Dialogs.ControlModuleProgrammingProgressDialog(programmingState, doProgramming: async () => {
                             if (LayoutController.Instance.BeginDesignTimeActivation()) {
-                                await EventManager.AsyncEvent(new LayoutEvent<ILayoutActionContainer, IModelComponentCanProgramLocomotives>("do-command-station-actions", programmingState.ProgrammingActions, aProgrammer));
+                                await Dispatch.Call.DoCommandStationActions(aProgrammer, programmingState.ProgrammingActions, false);
                                 LayoutController.Instance.EndDesignTimeActivation();
                                 await LayoutController.Instance.EnterDesignModeRequest();
                             }

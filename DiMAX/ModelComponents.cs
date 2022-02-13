@@ -262,10 +262,8 @@ namespace DiMAX {
             registeredLocomotives[loco.AddressProvider.Unit].SerialFunctionState = state;
         }
 
-        [LayoutEvent("add-command-station-loco-bus-to-address-map", IfSender = "*[@ID='`string(@ID)`']")]
-        private void AddCommandStationLocoBusToAddressMap(LayoutEvent e) {
-            var addressMap = Ensure.NotNull<LocomotiveAddressMap>(e.Info, "addressMap");
-
+        [DispatchTarget]
+        private void AddCommandStationLocoBusToAddressMap([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveAddressMap addressMap) {
             foreach (ControlModule module in LocoBus.Modules) {
                 for (int i = 0; i < module.ModuleType.NumberOfAddresses; i++) {
                     int address = module.Address + i;
