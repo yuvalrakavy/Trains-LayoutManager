@@ -246,6 +246,7 @@ namespace MethodDispatcher {
         /// </example>
         ///
         static public Dispatcher Call => _instance;
+        static public Dispatcher Notification => _instance;
 
         /// <summary>
         /// Initialize the method dispatch system
@@ -326,8 +327,19 @@ namespace MethodDispatcher {
 
         public string? Name { get; set; }
 
-        public int? Order { set; get; }
+        private int _order = 1000;
+
+        public int Order {
+            get => _order;
+            set {
+                _order = value;
+                IsOrdered = true;
+            }
+        }
+
+        public bool IsOrdered { get; private set; }
     }
+
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class DispatchSourceAttribute : Attribute {
@@ -336,6 +348,11 @@ namespace MethodDispatcher {
         public DispatchSourceAttribute([CallerFilePath] string filePath = "", [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0) {
             SourceFile = new(filePath, memberName, lineNumber);
         }
+
+        // By default a verification is made the  dispatch source return type is assignable from the target return type.
+        // However sometimes this may not be desired, for example if the dispatch source returns a collection of targets' result
+        //
+        public bool VerifyTargetReturnType { get; set; } = true;
     }
 
     [AttributeUsage(AttributeTargets.Parameter)]
@@ -363,6 +380,10 @@ namespace MethodDispatcher {
         public T Call<T>(params object?[] parameters) => (T)Targets.Invoke(parameters)!;
 
         public T? CallNullable<T>(params object?[] parameters) => (T?)Targets.Invoke(parameters);
+
+        public bool CallBoolFunctions(bool invokeUntil, bool invokeAll, params object?[] parameters) => Targets.InvokeBoolTargets(invokeUntil, invokeAll, parameters);
+
+        public T? CallUtilNotNull<T>(params object?[] parameters) => (T?)Targets.InvokeUntilNotNull(parameters);
 
 
         internal DispatchTargets Targets { get; private set; }
@@ -407,63 +428,49 @@ namespace MethodDispatcher {
         private void SetTargetsRequirment() {
             var returnType = SourceMethod.ReturnType;
 
-            if (returnType == typeof(void) || GetCollectedReturnType(returnType) != null) {
-                Targets.AllowMoreThanOneTarget = true;
-                Targets.AllowNoTargets = true;
-            }
+            if (returnType == typeof(void))
+                Targets.AllowNullReturn = true;
             else {
-                Targets.AllowMoreThanOneTarget = false;
-
                 var nullabilityContext = new NullabilityInfoContext().Create(SourceMethod.ReturnParameter);
 
                 // If return type can be null, then 
-                Targets.AllowNoTargets =
+                Targets.AllowNullReturn =
                     nullabilityContext.ReadState != NullabilityState.NotNull &&
                     (returnType.BaseType == typeof(Task) && nullabilityContext.GenericTypeArguments[0].ReadState != NullabilityState.NotNull);
             }
         }
 
-        // If returnType is IList<T> return T, otherwise return null'
-        //
-        private static Type? GetCollectedReturnType(Type returnType) =>
-            returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(IEnumerable<>) ?
-                returnType.GetGenericArguments().First() :
-                returnType.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))?.GetGenericArguments().First();
-
         private void VerifyReturnValue(MethodInfo targetMethod, DispatchTargetAttribute dispatchTargetAttribute) {
             // Check dispatch source has no return value and the target also has no return value, there is nothing to check
-            if (SourceMethod.ReturnType == typeof(void)) {
-                if (targetMethod.ReturnType != typeof(void))
+            if (DispatchSourceAttribute == null || DispatchSourceAttribute.VerifyTargetReturnType) {
+                if (SourceMethod.ReturnType == typeof(void)) {
+                    if (targetMethod.ReturnType != typeof(void))
+                        throw new NonCompatibleReturnTypeException(dispatchTargetAttribute.SourceFile, this, targetMethod);
+                    else
+                        return;
+                }
+
+                // DispatchSource can either return single return value (if no more than one target is allowed)
+                // or a list of values in case multiple targets can be dispatched
+                var sourceReturnNullabiliyInfo = new NullabilityInfoContext().Create(SourceMethod.ReturnParameter);
+
+                // String implements IEnumerable<char>, however it is not a collected type...
+
+                bool ok = SourceMethod.ReturnType.IsAssignableFrom(targetMethod.ReturnType);
+
+                if (!ok)
                     throw new NonCompatibleReturnTypeException(dispatchTargetAttribute.SourceFile, this, targetMethod);
-                else
-                    return;
+
+                if (IsInvalidNullPossible(new NullabilityInfoContext().Create(targetMethod.ReturnParameter), sourceReturnNullabiliyInfo))
+                    throw new ReturnValueNullabilityException(dispatchTargetAttribute.SourceFile, this);
             }
-
-            // DispatchSource can either return single return value (if no more than one target is allowed)
-            // or a list of values in case multiple targets can be dispatched
-            var sourceReturnNullabiliyInfo = new NullabilityInfoContext().Create(SourceMethod.ReturnParameter);
-            var collectedType = GetCollectedReturnType(SourceMethod.ReturnType);
-
-            // String implements IEnumerable<char>, however it is not a collected type...
-            var (actualReturnType, actalReturnNullabilityInfo) = SourceMethod.ReturnType != typeof(string) &&  collectedType != null ?
-                (collectedType, sourceReturnNullabiliyInfo.GenericTypeArguments[0]) :
-                (SourceMethod.ReturnType, sourceReturnNullabiliyInfo);
-
-            bool ok = actualReturnType.Equals(targetMethod.ReturnType);
-            ok = ok || targetMethod.ReturnType.IsSubclassOf(actualReturnType);
-
-            if (!ok)
-                throw new NonCompatibleReturnTypeException(dispatchTargetAttribute.SourceFile, this, targetMethod);
-
-            if (IsInvalidNullPossible(new NullabilityInfoContext().Create(targetMethod.ReturnParameter), actalReturnNullabilityInfo))
-                throw new ReturnValueNullabilityException(dispatchTargetAttribute.SourceFile, this);
         }
 
         private void VerifyParameter(ParameterInfo sourceParameter, SourceFileLocation targetSourceFile, ParameterInfo targetParameter) {
             bool ok = sourceParameter.ParameterType.Equals(targetParameter.ParameterType);
 
             if (!ok) {
-                if (targetParameter.ParameterType.IsSubclassOf(sourceParameter.ParameterType) || targetParameter.ParameterType.IsInterface) {
+                if (sourceParameter.ParameterType.IsAssignableFrom(targetParameter.ParameterType)) {
                     if (targetParameter.GetCustomAttribute(typeof(DispatchFilterAttribute)) != null)
                         ok = true;
                     else if (targetParameter.ParameterType.IsInterface)
@@ -527,14 +534,11 @@ namespace MethodDispatcher {
 
         public int Count => _targets.Count;
 
-        public bool AllowNoTargets { get; set; } = true;
+        public bool AllowNullReturn { get; set; } = true;
 
         public bool AllowMoreThanOneTarget { get; set; } = true;
 
         public void Add(DispatchTarget target) {
-            if (!AllowMoreThanOneTarget && _targets.Count > 0)
-                throw new MultipleTargetsNotAllowedException(target.SourceFile, _source, _targets[0]);
-
             _targets.Add(target);
 
             if (target.Order.HasValue)
@@ -556,8 +560,8 @@ namespace MethodDispatcher {
         }
 
         private void VerifyInvokeParameters(object?[] parameters) {
-            if(!_invokeVerified) {
-                if(parameters.Length != _source.SourceMethod.GetParameters().Length-1)
+            if (!_invokeVerified) {
+                if (parameters.Length != _source.SourceMethod.GetParameters().Length-1)
                     throw new InvokeIncorrectParametersCount(_source, parameters.Length);
 
                 var sourceParameters = _source.SourceMethod.GetParameters();
@@ -565,7 +569,7 @@ namespace MethodDispatcher {
                 for (var i = 0; i < parameters.Length; i++) {
                     var parameter = parameters[i];
 
-                    if(parameter != null) {
+                    if (parameter != null) {
                         if (!sourceParameters[i+1].ParameterType.Equals(parameter.GetType()))
                             throw new InvokeWrongParameterType(_source, sourceParameters[i+1], parameter.GetType());
                     }
@@ -574,6 +578,7 @@ namespace MethodDispatcher {
                 _invokeVerified = true;
             }
         }
+
         public List<object?> InvokeAndCollect(object?[] parameters) {
             if (!_invokeVerified)
                 VerifyInvokeParameters(parameters);
@@ -581,17 +586,20 @@ namespace MethodDispatcher {
             List<DispatchTarget>? invalidTargets = null;
             List<object?> results = new();
 
-            foreach (var target in _targets) {
-                if (target.IsAlive && target.ShouldInvoke(parameters)) {
-                    results.Add(target.Invoke(parameters));
-                }
-                else {
-                    invalidTargets ??= new List<DispatchTarget>();
-                    invalidTargets.Add(target);
+            try {
+                foreach (var target in _targets) {
+                    if (target.IsAlive && target.ShouldInvoke(parameters)) {
+                        results.Add(target.Invoke(parameters));
+                    }
+                    else {
+                        invalidTargets ??= new List<DispatchTarget>();
+                        invalidTargets.Add(target);
+                    }
                 }
             }
-
-            invalidTargets?.ForEach(Remove);            
+            finally {
+                invalidTargets?.ForEach(Remove);
+            }
 
             return results;
         }
@@ -611,11 +619,82 @@ namespace MethodDispatcher {
 
             var applicableTargets = (from target in Targets where target.ShouldInvoke(parameters) select target).ToArray();
 
-            if (applicableTargets.Length == 0 && !AllowNoTargets)
-                throw new ZeroTargetsNotAllowedException(_source, AllowMoreThanOneTarget ? "at least one applicable target" : "one applicable target");
+            if (applicableTargets.Length == 0 && !AllowNullReturn)
+                throw new ZeroTargetsNotAllowedException(_source);
 
-            Debug.Assert(AllowNoTargets || applicableTargets.Length == 1);
-            return applicableTargets.Length  > 0 ? applicableTargets[0].Invoke(parameters) : null;
+            var results = (from result in from target in applicableTargets select target.Invoke(parameters) where result != null select result).ToArray();
+
+            if (results == null || results.Length == 0) {
+                if (!AllowNullReturn)
+                    throw new NoTargetReturnedValueException(_source);
+                else
+                    return null;
+            }
+            else if (results.Length > 1)
+                throw new TooManyResultsException(_source, applicableTargets);
+            else
+                return results[0];
+        }
+
+        public bool InvokeBoolTargets(bool invokeUntil, bool invokeAll, object?[] parameters) {
+            if (!_invokeVerified)
+                VerifyInvokeParameters(parameters);
+
+            List<DispatchTarget>? invalidTargets = null;
+            bool resultSummary = !invokeUntil;
+
+            try {
+                foreach (var target in _targets) {
+                    if (target.IsAlive && target.ShouldInvoke(parameters)) {
+                        var result = target.Invoke(parameters) as bool? ?? false;
+
+                        if (invokeUntil == true)
+                            resultSummary |= result;
+                        else
+                            resultSummary &= result;
+
+                        if (!invokeAll) {
+                            if (invokeUntil ^ resultSummary)
+                                return resultSummary;
+                        }
+                    }
+                    else {
+                        invalidTargets ??= new List<DispatchTarget>();
+                        invalidTargets.Add(target);
+                    }
+                }
+
+                return resultSummary;
+            }
+            finally {
+                invalidTargets?.ForEach(Remove);
+            }
+        }
+        public object? InvokeUntilNotNull(object?[] parameters) {
+            if (!_invokeVerified)
+                VerifyInvokeParameters(parameters);
+
+            List<DispatchTarget>? invalidTargets = null;
+
+            try {
+                foreach (var target in _targets) {
+                    if (target.IsAlive && target.ShouldInvoke(parameters)) {
+                        var result = target.Invoke(parameters);
+
+                        if (result != null)
+                            return result;
+                    }
+                    else {
+                        invalidTargets ??= new List<DispatchTarget>();
+                        invalidTargets.Add(target);
+                    }
+                }
+
+                return null;
+            }
+            finally {
+                invalidTargets?.ForEach(Remove);
+            }
         }
     }
 
@@ -632,7 +711,7 @@ namespace MethodDispatcher {
 
         protected DispatchTarget(MethodInfo method, DispatchTargetAttribute dispatchTargetAttribute) {
             Method = method;
-            Order = dispatchTargetAttribute.Order;
+            Order =dispatchTargetAttribute.IsOrdered ? dispatchTargetAttribute.Order : null;
             SourceFile = dispatchTargetAttribute.SourceFile;
         }
 
@@ -833,12 +912,23 @@ namespace MethodDispatcher {
     }
 
     public class ZeroTargetsNotAllowedException : DispatcherException {
-        internal ZeroTargetsNotAllowedException(DispatchSource source, string targetRequiement) : base(
-            $"Dispatch source {source.SourceFile} must have {targetRequiement}") {
-
+        internal ZeroTargetsNotAllowedException(DispatchSource source) : base(
+            $"No target returned value for Dispatch source {source.SourceFile} (either none is defined, or none was applicable)") {
         }
     }
 
+    public class NoTargetReturnedValueException : DispatcherException {
+        internal NoTargetReturnedValueException(DispatchSource source) : base(
+            $"All applicable targets for dispatch source {source.SourceFile} returned null however source return value cannot be null") {
+        }
+    }
+
+    public class TooManyResultsException : DispatcherException {
+        internal TooManyResultsException(DispatchSource source, DispatchTarget[] applicableTargets) : base(
+            $"Dispatch source {source.SourceFile} returns a single value, however multiple targets returned non-null value: ({string.Join(", ", from target in applicableTargets select target.SourceFile)})") {
+        }
+    }
+        
     public class InvokeIncorrectParametersCount : DispatcherException {
         internal InvokeIncorrectParametersCount(DispatchSource source, int count) : base(
             $"Dispatch source {source.SourceFile} called Invoke with wrong number of parameters (called with {count}, expected {source.SourceMethod.GetParameters().Length-1}). Probably bug in your dispatch source implementation") {
