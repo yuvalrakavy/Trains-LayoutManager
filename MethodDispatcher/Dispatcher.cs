@@ -470,7 +470,7 @@ namespace MethodDispatcher {
             bool ok = sourceParameter.ParameterType.Equals(targetParameter.ParameterType);
 
             if (!ok) {
-                if (sourceParameter.ParameterType.IsAssignableFrom(targetParameter.ParameterType)) {
+                if (sourceParameter.ParameterType.IsAssignableFrom(targetParameter.ParameterType) || targetParameter.ParameterType.IsInterface) {
                     if (targetParameter.GetCustomAttribute(typeof(DispatchFilterAttribute)) != null)
                         ok = true;
                     else if (targetParameter.ParameterType.IsInterface)

@@ -106,6 +106,12 @@ namespace LayoutManager.Dialogs {
             buttonClose.PerformClick();
         }
 
+        private void UpdateItems() {
+            foreach (EventItem item in listViewEvents.Items)
+                item.UpdateItem();
+            UpdateButtons();
+        }
+
         [LayoutEvent("control-module-removed")]
         [LayoutEvent("control-module-added")]
         [LayoutEvent("control-module-address-changed")]
@@ -113,16 +119,18 @@ namespace LayoutManager.Dialogs {
         [LayoutEvent("control-bus-reconnected")]
         [LayoutEvent("component-disconnected-from-control-module")]
         [LayoutEvent("component-connected-to-control-module")]
-        [LayoutEvent("component-configuration-changed")]
         [LayoutEvent("control-module-label-changed")]
         [LayoutEvent("control-user-action-required-changed")]
         [LayoutEvent("control-address-programming-required-changed")]
         [LayoutEvent("control-buses-added")]
         [LayoutEvent("control-buses-removed")]
-        private void UpdateItems(LayoutEvent e) {
-            foreach (EventItem item in listViewEvents.Items)
-                item.UpdateItem();
-            UpdateButtons();
+        private void DoUpdateItems(LayoutEvent e) {
+            UpdateItems();
+        }
+
+        [DispatchTarget]
+        private void OnComponentConfigurationChanged(ModelComponent component) {
+            UpdateItems();
         }
 
         #region Event Item

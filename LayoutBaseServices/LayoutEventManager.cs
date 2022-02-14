@@ -965,15 +965,22 @@ namespace LayoutManager {
         public DelayedEventStatus Status { get; private set; }
         public Guid Id { get; }
 
-        internal LayoutDelayedEvent(int delayTime, LayoutEvent theEvent) {
-            this.Event = theEvent;
+
+        internal LayoutDelayedEvent(int delayTime, Action action) {
+            this.Action = action;
 
             Id = Guid.NewGuid();
             DoDelay(delayTime, cancellationTokenSource.Token);
+
         }
 
-        public LayoutEvent Event { get; }
+        internal LayoutDelayedEvent(int delayTime, LayoutEvent theEvent) : this(delayTime, () => EventManager.Event(theEvent)) {
+        }
 
+        Action Action { get; set; }
+
+        //public LayoutEvent Event { get; }
+        
         private async void DoDelay(int delayTime, CancellationToken cancellationToken) {
             try {
                 var tcs = new TaskCompletionSource<object>();
@@ -984,7 +991,7 @@ namespace LayoutManager {
                     Status = DelayedEventStatus.NotYetCalled;
                     await Task.WhenAny(Task.Delay(delayTime, cancellationToken), tcs.Task).ConfigureAwait(false);
                     Status = DelayedEventStatus.Called;
-                    EventManager.Instance.InterThreadEventInvoker.QueueEvent(Event);
+                    EventManager.Instance.InterThreadEventInvoker.Queue(Action);
                 }
             }
             catch (OperationCanceledException) {
@@ -1138,6 +1145,7 @@ namespace LayoutManager {
         #endregion
 
         public static LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) => new(delayTime, e);
+        public static LayoutDelayedEvent DelayedEvent(int delayTime, Action action) => new(delayTime, action);
 
         internal void RegisterDelayedEvent(LayoutDelayedEvent delayedEvent) {
             lock (activeDelayedEvents) {
@@ -1346,6 +1354,7 @@ namespace LayoutManager {
         /// <param name="e">The event to send</param>
         /// <returns>Delay event object</returns>
         public static LayoutDelayedEvent DelayedEvent(int delayTime, LayoutEvent e) => LayoutEventManager.DelayedEvent(delayTime, e);
+        public static LayoutDelayedEvent DelayedEvent(int delayTime, Action action) => LayoutEventManager.DelayedEvent(delayTime, action);
 
         /// <summary>
         /// Hook up event handlers annotated with the LayoutEvent attribute in a given object instance

@@ -439,7 +439,7 @@ namespace LayoutManager.Logic {
                 var switchingCommands = new List<SwitchingCommand>();
 
                 powerConnector.Inlet.ConnectedOutlet.SelectPower(power.Type, switchingCommands);
-                await EventManager.AsyncEvent(new LayoutEvent<object, List<SwitchingCommand>>("set-track-components-state", sender: null, info: switchingCommands));
+                await Dispatch.Call.SetTrackComponentsState(switchingCommands);
 
                 foreach (var train in powerConnector.Trains)
                     OnTrainPowerChanged(train, power);

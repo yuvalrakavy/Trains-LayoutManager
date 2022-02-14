@@ -209,13 +209,11 @@ namespace MarklinDigital {
         }
 
         // Implement command events
-        [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private Task ChangeTurnoutState(LayoutEvent e) {
+        [DispatchTarget]
+        private Task ChangeTrackComponentStateCommand([DispatchFilter(Type="MyId")] IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, int state) {
             if (commandStationManager == null)
                 throw new NullReferenceException(nameof(commandStationManager));
 
-            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender);
-            var state = Ensure.ValueNotNull<int>(e.Info);
             int address = connectionPointRef.Module.Address + connectionPointRef.Index;
             var tasks = new List<Task> {
                 commandStationManager.AddCommand(queueLayoutSwitchingCommands, new MarklinSwitchAccessoryCommand(CommunicationStream, address, state)),
@@ -223,7 +221,7 @@ namespace MarklinDigital {
             };
 
             if (OperationMode)
-                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state));
+                Dispatch.Notification.OnControlConnectionPointStateChanged(connectionPointRef, state);
 
             return Task.WhenAll(tasks);
         }
@@ -247,7 +245,7 @@ namespace MarklinDigital {
             commandStationManager.AddCommand(queueLayoutSwitchingCommands, new MarklinEndSwitchingProcedure(CommunicationStream));
 
             if (OperationMode)
-                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state == LayoutSignalState.Green ? 1 : 0));
+                Dispatch.Notification.OnControlConnectionPointStateChanged(connectionPointRef, state == LayoutSignalState.Green ? 1 : 0);
         }
 
         [DispatchTarget]
@@ -552,8 +550,10 @@ namespace MarklinDigital {
         private void ProcessFeedback(MarklinFeedbackResult feedbackResult) {
             for (int i = 0; i < 16 && feedbackResult.Contacts[i].ContactNo > 0; i++) {
                 if (commandStation.OperationMode)
-                    invoker.QueueEvent(new LayoutEvent("control-connection-point-state-changed-notification",
-                        new ControlConnectionPointReference(commandStation.S88Bus, feedbackResult.Unit, feedbackResult.Contacts[i].ContactNo - 1), feedbackResult.Contacts[i].IsSet ? 1 : 0, null));
+                    invoker.Queue(() =>
+                      Dispatch.Notification.OnControlConnectionPointStateChanged(
+                        new ControlConnectionPointReference(commandStation.S88Bus, feedbackResult.Unit, feedbackResult.Contacts[i].ContactNo - 1), feedbackResult.Contacts[i].IsSet ? 1 : 0)
+                    );
                 else
                     invoker.QueueEvent(new LayoutEvent("design-time-command-station-event", this, new CommandStationInputEvent(commandStation, commandStation.S88Bus,
                         (feedbackResult.Unit * 16) + feedbackResult.Contacts[i].ContactNo - 1, feedbackResult.Contacts[i].IsSet ? 1 : 0),

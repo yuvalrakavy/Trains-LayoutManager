@@ -873,18 +873,19 @@ namespace LayoutManager.Logic {
 
                         if (r != null)
                             Error(r.ToString());
+
+                        // If programming location is not same as original location (or where the train is supposed to be), remove the train from the programming location
+                        if (programmingState.PlacementLocation == null || programmingState.PlacementLocation.Id != programmingLocation.Id) {
+                            await RemoveFromTrackRequest(train, "Remove locomotive from programming track", operationContext);
+                            train = null;
+                        }
+
+                        if (r != null)
+                            throw new LayoutException("Locomotive programming failed");
                     }
                     else
                         Error(commandStation, "Is unable to program locomotive settings");
 
-                    // If programming location is not same as original location (or where the train is supposed to be), remove the train from the programming location
-                    if (programmingState.PlacementLocation == null || programmingState.PlacementLocation.Id != programmingLocation.Id) {
-                        await RemoveFromTrackRequest(train, "Remove locomotive from programming track", operationContext);
-                        train = null;
-                    }
-
-                    if (r != null)
-                        throw new LayoutException("Locomotive programming failed");
                 }
                 finally {
                     if (originalPower != programmingLocation.Power) {
@@ -994,7 +995,7 @@ namespace LayoutManager.Logic {
                 IModelComponentIsCommandStation commandStation => commandStation,
                 TrainStateInfo train => train.CommandStation ?? throw new LayoutException($"Train {train.Name} has no associated command station (is it on the track?)"),
                 ControlBus bus => bus.BusProvider,
-                ControlConnectionPointReference connectionPointRef => Ensure.NotNull<ControlModule>(connectionPointRef.Module, "module").Bus.BusProvider,
+                ControlConnectionPointReference connectionPointRef => connectionPointRef.Module.Bus.BusProvider,
                 LocomotiveInfo loco => GetCommandStation(Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id])),
                 _ => throw new LayoutException("Cannot figure out which command station to use")
             };
@@ -1441,7 +1442,7 @@ namespace LayoutManager.Logic {
         }
 
         [DispatchTarget]
-        private bool VerifyCompoentStateTopic_Balloon([DispatchFilter(Type = "XPath", Value = "Balloon")] XmlElement componentStateTopicElement) => false;
+        private bool VerifyComponentStateTopic_Balloon([DispatchFilter(Type = "XPath", Value = "Balloon")] XmlElement componentStateTopicElement) => false;
 
         /// <summary>
         /// Clear the locomotive trainState (removing all locomotives)

@@ -101,7 +101,7 @@ namespace LayoutManager.Tools.Dialogs {
                         stateToSend = 1 - stateToSend;
 
                     if(connectionPointRef != null)
-                        EventManager.AsyncEvent(new LayoutEventInfoValueType<ControlConnectionPointReference, int>("change-track-component-state-command", connectionPointRef, stateToSend).SetCommandStation(connectionPointRef));
+                        Dispatch.Call.ChangeTrackComponentStateCommand(Dispatch.Call.GetCommandStation(connectionPointRef), connectionPointRef, stateToSend);
 
                     if (state == 0)
                         radioButtonOff.Checked = true;

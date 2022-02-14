@@ -14,7 +14,7 @@ namespace LayoutManager.Logic {
     internal class TrainDispatcher : LayoutModuleBase {
         private static readonly LayoutTraceSwitch traceDispatcher = new("Dispatcher", "Master Dispatcher");
         private static readonly LayoutTraceSubsystem traceUnlockingManager = new(traceDispatcher, "DispatcherUnlockingManager", "Layout Block Unlock Manager");
-        private static readonly LayoutTraceSubsystem traceDispatching = new(traceDispatcher, "Dispatching", "Displatching operation");
+        private static readonly LayoutTraceSubsystem traceDispatching = new(traceDispatcher, "Dispatching", "Dispatching operation");
         private static readonly LayoutTraceSubsystem traceDeadlock = new(traceDispatcher, "DeadlockIdentification", "Deadlock identification");
 
         #region Definitions and Explanations
@@ -1268,7 +1268,7 @@ namespace LayoutManager.Logic {
                 }
 
                 if (switchingCommands.Count > 0)
-                    EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands));
+                    Dispatch.Call.SetTrackComponentsState(switchingCommands);
             }
         }
 
@@ -1319,7 +1319,7 @@ namespace LayoutManager.Logic {
             }
 
             if (switchingCommands.Count > 0)
-                EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands));
+                Dispatch.Call.SetTrackComponentsState(switchingCommands);
 
             e.Info = completed;
         }

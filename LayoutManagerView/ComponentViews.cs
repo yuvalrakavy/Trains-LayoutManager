@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Diagnostics;
 using System.Windows.Forms;
+using MethodDispatcher;
+
 using LayoutManager.Components;
 using LayoutManager.Model;
 
@@ -717,7 +719,7 @@ namespace LayoutManager.View {
                     showNotLinked = false;
                 else {
                     if (linkedSignalMap == null)
-                        linkedSignalMap = (Dictionary<Guid, LayoutBlockEdgeBase>)EventManager.Event(new LayoutEvent("get-linked-signal-map", this))!;
+                        linkedSignalMap = Dispatch.Call.GetLinkedSignalMap();
 
                     showNotLinked = !linkedSignalMap.ContainsKey(signalComponent.Id);
                 }

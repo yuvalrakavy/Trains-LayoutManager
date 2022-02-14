@@ -912,19 +912,16 @@ namespace LayoutManager.Tools {
                     deleteCommand.Add(new DisconnectComponentFromConnectionPointCommand(connectionPoint));
         }
 
-        [LayoutEvent("removed-from-model", SenderType = typeof(IModelComponentConnectToControl))]
-        private void AvoidConnectingRemovedComponents(LayoutEvent e) {
-            var component = Ensure.NotNull<IModelComponentConnectToControl>(e.Sender);
+        [DispatchTarget]
+        private void OnRemovedFromModel_AvoidConnectingRemovedComponents([DispatchFilter] IModelComponentConnectToControl component) {
             var pendingConnectComponent = (ControlConnectionPointDestination?)EventManager.Event(new LayoutEvent("get-component-to-control-connect", this));
 
             if (pendingConnectComponent != null && component.Id == pendingConnectComponent.Component.Id)
                 EventManager.Event(new LayoutEvent("cancel-component-to-control-connect", component));
         }
 
-        [LayoutEvent("removed-from-model", SenderType = typeof(IModelComponentIsCommandStation))]
-        private void CommandStationRemovedFromModel(LayoutEvent e) {
-            var commandStation = Ensure.NotNull<IModelComponentIsCommandStation>(e.Sender);
-
+        [DispatchTarget]
+        private void OnRemovedFromModel_CommandStation([DispatchFilter] IModelComponentIsCommandStation commandStation) {
             foreach (LayoutControlModuleLocationComponent controlModuleLocation in LayoutModel.Components<LayoutControlModuleLocationComponent>(LayoutPhase.All))
                 if (controlModuleLocation.Info.CommandStationId == commandStation.Id)
                     controlModuleLocation.Info.CommandStationId = Guid.Empty;

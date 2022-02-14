@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 using System.Xml;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.Model;
@@ -144,24 +145,15 @@ namespace NumatoController {
             e.Info = true;
         }
 
-        [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private Task ChangeTrackComponentStateCommand(LayoutEvent e) {
+        [DispatchTarget]
+        private Task ChangeTrackComponentStateCommand([DispatchFilter(Type = "MyId")] IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, int state) {
             if (OutputManager == null)
                 throw new NullReferenceException(nameof(OutputManager));
 
-            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender);
-            var on = Ensure.ValueNotNull<int>(e.Info) != 0;
+            var on = state != 0;
             int iRelay = connectionPointRef.Module.Address + connectionPointRef.Index;
 
             return OutputManager.AddCommand(new SetRelayCommand(this, iRelay, on));
-        }
-
-        [LayoutEvent("numato-invoke-events", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private void NumatoInvokeEvents(LayoutEvent e0) {
-            var events = Ensure.NotNull<IList<LayoutEvent>>(e0.Sender);
-
-            foreach (var anEvent in events)
-                EventManager.Event(anEvent);
         }
 
         #endregion
@@ -292,9 +284,7 @@ namespace NumatoController {
             public override void OnReply(object replyPacket) {
                 base.OnReply(replyPacket);
 
-                EventManager.Instance.InterThreadEventInvoker.QueueEvent(new LayoutEvent<IList<LayoutEvent>>("numato-invoke-events", new LayoutEvent[] {
-                    new LayoutEventInfoValueType<ControlConnectionPointReference, int>("control-connection-point-state-changed-notification", new ControlConnectionPointReference(RelayController.RelayBus, iRelay), on ? 1 : 0)
-                }).SetCommandStation(RelayController));
+                EventManager.Instance.InterThreadEventInvoker.Queue(() => Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(RelayController.RelayBus, iRelay), on ? 1 : 0));
             }
         }
 

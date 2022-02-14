@@ -443,6 +443,11 @@ namespace LayoutManager.CommonUI {
             Recalc();
         }
 
+        [DispatchTarget]
+        private void OnComponentConfigurationChanged(ModelComponent component) {
+            Recalc();
+        }
+
         [LayoutEvent("enter-design-mode")]
         [LayoutEvent("control-module-removed")]
         [LayoutEvent("control-module-added")]
@@ -451,7 +456,6 @@ namespace LayoutManager.CommonUI {
         [LayoutEvent("control-bus-reconnected")]
         [LayoutEvent("component-disconnected-from-control-module")]
         [LayoutEvent("component-connected-to-control-module")]
-        [LayoutEvent("component-configuration-changed")]
         [LayoutEvent("control-module-label-changed")]
         [LayoutEvent("control-user-action-required-changed")]
         [LayoutEvent("control-address-programming-required-changed")]

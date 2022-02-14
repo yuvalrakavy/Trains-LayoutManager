@@ -137,10 +137,8 @@ namespace LayoutLGB {
         }
         #endregion
         // Implement command events
-        [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private Task ChangeTurnoutState(LayoutEvent e) {
-            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
-            var state = Ensure.ValueNotNull<int>(e.Info, "state");
+        [DispatchTarget]
+        private Task ChangeTrackComponentStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, int state) {
             int address = connectionPointRef.Module.Address + connectionPointRef.Index;
 
             var task = commandStationManager.AddCommand(new MTSchangeAccessoryState(CommunicationStream, address, state));
@@ -207,14 +205,14 @@ namespace LayoutLGB {
                     else
                         connectionPointRef = new ControlConnectionPointReference(lgbBusModule, address - lgbBusModule.Address);
 
-                    EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state));
+                    Dispatch.Notification.OnControlConnectionPointStateChanged(connectionPointRef, state);
                 }
             }
         }
 
         private void DCCbusNotification(int address, int state) {
             if (OperationMode)
-                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(DCCbus, address), state));
+                Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(DCCbus, address), state);
         }
 
         #endregion

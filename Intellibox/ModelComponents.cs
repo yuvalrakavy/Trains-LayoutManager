@@ -190,13 +190,11 @@ namespace Intellibox {
         }
 
         // Implement command events
-        [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private Task ChangeTurnoutState(LayoutEvent e) {
+        [DispatchTarget]
+        private Task ChangeTrackComponentStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, int state) {
             if (commandStationManager == null)
                 throw new NullReferenceException(nameof(commandStationManager));
 
-            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
-            var state = Ensure.ValueNotNull<int>(e.Info, "state");
             int address = connectionPointRef.Module.Address + connectionPointRef.Index;
 
             var tasks = new List<Task> {
@@ -205,17 +203,16 @@ namespace Intellibox {
             };
 
             if (OperationMode)
-                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state));
+                Dispatch.Notification.OnControlConnectionPointStateChanged(connectionPointRef, state);
 
             return Task.WhenAll(tasks);
         }
 
-        [LayoutAsyncEvent("change-batch-of-track-component-state-command", IfEvent = "LayoutEvent[Options/@CommandStationID='`string(@ID)`']")]
-        private Task ChangeBatchOfTurnoutStates(LayoutEvent e) {
+        [DispatchTarget]
+        private Task ChangeBatchOfTrackComponentStateCommand([DispatchFilter(Type="IsMyId")] Guid commandStationId, List<SwitchingCommand> switchingCommands) {
             if (commandStationManager == null)
                 throw new NullReferenceException(nameof(commandStationManager));
 
-            var switchingCommands = Ensure.NotNull<List<SwitchingCommand>>(e.Info);
             var tasks = new List<Task>();
             int count;
 
@@ -232,7 +229,7 @@ namespace Intellibox {
                     for (int switchingCommandIndex = 0; switchingCommandIndex < count; switchingCommandIndex++) {
                         SwitchingCommand switchingCommand = switchingCommands[i + switchingCommandIndex];
 
-                        EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", switchingCommand.ControlPointReference, switchingCommand.SwitchState));
+                        Dispatch.Notification.OnControlConnectionPointStateChanged(switchingCommand.ControlPointReference, switchingCommand.SwitchState);
                     }
                 }
             }
@@ -259,7 +256,7 @@ namespace Intellibox {
             commandStationManager.AddCommand(queueLayoutSwitchingCommands, new IntelliboxEndAccessoryCommand(this, address, v));
 
             if (OperationMode)
-                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, state == LayoutSignalState.Green ? 1 : 0));
+                Dispatch.Notification.OnControlConnectionPointStateChanged(connectionPointRef, state == LayoutSignalState.Green ? 1 : 0);
         }
 
         [DispatchTarget]
@@ -638,7 +635,7 @@ namespace Intellibox {
                     int state = ((addressHighAndMisc & 0x80) != 0) ? 1 : 0;
 
                     if (LayoutController.IsOperationMode)
-                        events.Add(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(MotorolaBus, address), state));
+                        Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(MotorolaBus, address), state);
                     else if (LayoutController.IsDesignTimeActivation)
                         events.Add(new LayoutEvent("design-time-command-station-event", CommandStation, new CommandStationInputEvent(CommandStation, MotorolaBus, address, state),
                             null));
@@ -751,7 +748,7 @@ namespace Intellibox {
                 for (int i = 0; i < 16; i++) {
                     if ((changedBits & 1) != 0) {
                         if (debounceCounters[i] > 0)
-                            commandStation.InterThreadEventInvoker.QueueEvent(new LayoutEvent("control-connection-point-state-unstable-notification", new ControlConnectionPointReference(commandStation.S88Bus, moduleNumber + 1, 15 - i), commandStation));
+                            commandStation.InterThreadEventInvoker.Queue(() => Dispatch.Notification.OnControlConnectionPointStateUnstable(new ControlConnectionPointReference(commandStation.S88Bus, moduleNumber + 1, 15 - i)));
                         debounceCounters[i] = commandStation.OperationMode ? commandStation.CachedOperationModeDebounceCount : commandStation.CachedDesignTimeDebounceCount;            // Start counting
                     }
                     changedBits >>= 1;
@@ -774,7 +771,7 @@ namespace Intellibox {
                             bool isSet = (currentData & (1 << i)) != 0;
 
                             if (LayoutController.IsOperationMode)
-                                events.Add(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(commandStation.S88Bus, moduleNumber + 1, 15 - i), isSet ? 1 : 0));
+                                Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(commandStation.S88Bus, moduleNumber + 1, 15 - i), isSet ? 1 : 0);
                             else if (LayoutController.IsDesignTimeActivation)
                                 events.Add(new LayoutEvent("design-time-command-station-event", commandStation, new CommandStationInputEvent(commandStation, commandStation.S88Bus, moduleNumber + 1, 15 - i, isSet ? 1 : 0),
                                     null));

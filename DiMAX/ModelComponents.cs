@@ -174,11 +174,9 @@ namespace DiMAX {
         }
 
         // Implement command events
-        [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private Task ChangeTurnoutState(LayoutEvent e) {
-            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
-            var state = Ensure.ValueNotNull<int>(e.Info, "state");
-            var module = Ensure.NotNull<ControlModule>(connectionPointRef.Module, "module");
+        [DispatchTarget]
+        private Task ChangeTrackComponentStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, int state) {
+            var module = connectionPointRef.Module;
             int address = module.Address + connectionPointRef.Index;
 
             var task = OutputManager.AddCommand(new DiMAXchangeAccessoryState(this, address, state));
@@ -443,16 +441,13 @@ namespace DiMAX {
         #region Generate notification events
 
         private void DiMAXbusNotification(int address, int state) {
-            if (OperationMode) {
-                var connectionPointRef = new ControlConnectionPointReference(DiMAXbus, address, state);
-
-                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", connectionPointRef, 1));
-            }
+            if (OperationMode)
+                Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(DiMAXbus, address, state), 1);
         }
 
         private void DCCbusNotification(int address, int state) {
             if (OperationMode)
-                EventManager.Event(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(DCCbus, address), state));
+                Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(DCCbus, address), state);
         }
 
         #endregion

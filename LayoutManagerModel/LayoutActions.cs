@@ -12,7 +12,7 @@ namespace LayoutManager.Model {
     internal class ActionManager : LayoutModuleBase {
 
         [DispatchTarget]        
-        private async Task<LayoutActionFailure?> DoProgrammingActions(IModelComponentCanProgramLocomotives commandStation, ILayoutActionContainer actions, bool usePOM) {
+        private async Task<LayoutActionFailure?> DoCommandStationActions(IModelComponentCanProgramLocomotives commandStation, ILayoutActionContainer actions, bool usePOM) {
             actions.PrepareForProgramming();        // Ensure that actions are prepared for programming
 
             foreach (var action in actions) {

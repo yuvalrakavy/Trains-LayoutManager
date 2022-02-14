@@ -2072,13 +2072,13 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Time (in milliseconds) in which proxmity sensor need to remain in the same state for the state to acknoledge
+        /// Time (in milliseconds) in which proximity sensor need to remain in the same state for the state to acknoledge
         /// </summary>
         public int ProximitySensorSensitivityDelay {
             get => (int?)AttributeValue(A_ProximitySensorSensitivityDelay) ?? ProxmitySensorSensitivityDefault;
             set {
                 SetAttributeValue(A_ProximitySensorSensitivityDelay, value, removeIf: ProxmitySensorSensitivityDefault);
-                EventManager.Event("proximity-sensitivity-delay-changed");
+                Dispatch.Notification.OnProximitySensitivityDelayChanged();
             }
         }
     }

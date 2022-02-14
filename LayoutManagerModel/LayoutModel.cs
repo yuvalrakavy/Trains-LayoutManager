@@ -176,8 +176,10 @@ namespace LayoutManager.Model {
             if (this is IObjectHasId)
                 LayoutModel.Instance.RemoveComponentReference(this.Id);
 
+            Dispatch.RemoveObjectInstanceDispatcherTargets(this);
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
-            EventManager.Event(new LayoutEvent("removed-from-model", this));
+
+            Dispatch.Notification.OnRemovedFromModel(this);
         }
 
         /// <summary>

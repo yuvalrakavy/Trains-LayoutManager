@@ -202,22 +202,13 @@ namespace NCDRelayController {
             e.Info = true;
         }
 
-        [LayoutAsyncEvent("change-track-component-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private Task ChangeTrackComponentStateCommand(LayoutEvent e) {
-            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender);
-            bool on = Ensure.ValueNotNull<int>(e.Info) != 0;
+        [DispatchTarget]
+        private Task ChangeTrackComponentStateCommand([DispatchFilter(Type = "MyId")] IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, int state) {
+            bool on = state != 0;
 
             int iRelay = connectionPointRef.Module.Address + connectionPointRef.Index;
 
             return OutputManager.AddCommand(new SetRelayCommand(this, iRelay, on));
-        }
-
-        [LayoutEvent("NCD-invoke-events", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private void NcdInvokeEvents(LayoutEvent e) {
-            var events = Ensure.NotNull<IList<LayoutEvent>>(e.Sender);
-
-            foreach (var anEvent in events)
-                EventManager.Event(anEvent);
         }
 
         #endregion
@@ -325,11 +316,7 @@ namespace NCDRelayController {
 
             public override void OnReply(object replyPacket) {
                 base.OnReply(replyPacket);
-
-                EventManager.Instance.InterThreadEventInvoker.QueueEvent(new LayoutEvent<IList<LayoutEvent>>("NCD-invoke-events",
-                    new LayoutEvent[] {
-                        new LayoutEventInfoValueType<ControlConnectionPointReference, int>("control-connection-point-state-changed-notification", new ControlConnectionPointReference(RelayController.RelayBus, iRelay), on ? 1 : 0)
-                    }).SetCommandStation(RelayController));
+                EventManager.Instance.InterThreadEventInvoker.Queue(() => Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(RelayController.RelayBus, iRelay), on ? 1 : 0));
             }
         }
 
@@ -348,7 +335,7 @@ namespace NCDRelayController {
             public override int Timeout => pollingPeriod;
 
             public override void Do() {
-                var events = new List<LayoutEvent>();
+                var events = new List<Action>();
 
                 int moduleNumber = 0;
                 foreach (var module in RelayController.InputBus.Modules) {
@@ -364,12 +351,12 @@ namespace NCDRelayController {
                 }
 
                 if (events.Count > 0)
-                    EventManager.Instance.InterThreadEventInvoker.QueueEvent(new LayoutEvent<IList<LayoutEvent>>("NCD-invoke-events", events).SetCommandStation(RelayController));
+                    EventManager.Instance.InterThreadEventInvoker.Queue(() => events.ForEach(a => a()));
 
                 RelayController.OutputManager.SetReply(null);
             }
 
-            private void PollContactClosureBank(IList<LayoutEvent> events, ControlModule module, int moduleNumber, int bank) {
+            private void PollContactClosureBank(IList<Action> events, ControlModule module, int moduleNumber, int bank) {
                 byte[] command = new byte[] { 254, 175, (byte)bank };
                 byte[] reply = new byte[1];
 
@@ -392,7 +379,7 @@ namespace NCDRelayController {
             private struct ContactClosureBankData {
                 private byte currentState;
 
-                public void NewData(IList<LayoutEvent> events, ControlModule module, int moduleNumber, byte data) {
+                public void NewData(IList<Action> events, ControlModule module, int moduleNumber, byte data) {
                     byte changedBits = (byte)(currentState ^ data);
                     byte mask = 1;
                     IModelComponentIsBusProvider busProvider = module.Bus.BusProvider;
@@ -402,10 +389,10 @@ namespace NCDRelayController {
                             int isSet = (data & mask) != 0 ? 1 : 0;
 
                             if (LayoutController.IsOperationMode)
-                                events.Add(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(module.Bus, moduleNumber + 1, i), isSet));
+                                events.Add(() => Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(module.Bus, moduleNumber + 1, i), isSet));
                             else if (LayoutController.IsDesignTimeActivation)
-                                events.Add(new LayoutEvent("design-time-command-station-event", busProvider, new CommandStationInputEvent((ModelComponent)busProvider, module.Bus, moduleNumber + 1, i, isSet),
-                                    null));
+                                events.Add(() => EventManager.Event(new LayoutEvent("design-time-command-station-event", busProvider, new CommandStationInputEvent((ModelComponent)busProvider, module.Bus, moduleNumber + 1, i, isSet),
+                                    null)));
                         }
 
                         mask <<= 1;

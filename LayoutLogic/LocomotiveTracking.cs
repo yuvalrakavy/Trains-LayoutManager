@@ -184,10 +184,8 @@ namespace LayoutManager.Logic {
 
         #region Track Contact Component
 
-        [LayoutEvent("track-contact-triggered-notification", SenderType = typeof(LayoutTrackContactComponent))]
-        private void TrackContactComponentStateChanged(LayoutEvent e) {
-            var trackContact = Ensure.NotNull<LayoutTrackContactComponent>(e.Sender, "trackContact");
-
+        [DispatchTarget]
+        private void OnTrackContactTriggered(LayoutTrackContactComponent trackContact) {
             if (LayoutModel.StateManager.Components.Contains(trackContact.Id, "TrainPassing")) {
                 TrackContactPassingStateInfo trackContactPassingState =
                     new(LayoutModel.StateManager.Components.OptionalStateOf(trackContact.Id, "TrainPassing")!);
@@ -196,7 +194,7 @@ namespace LayoutManager.Logic {
                 // If the train continue to move in the same direction, one less triggers is expected to come for the train
                 // which is still in the "from" block, and one more is expected from the train portion that is on the "to" block.
                 // If the number of triggers that are expected from the "from" block is 0, then the train had actually left this
-                // block, futhermore, the train is no longer "on top" of the track contact and therefore its state information
+                // block, furthermore, the train is no longer "on top" of the track contact and therefore its state information
                 // is remove.
                 // The same logic but reversing the "to" and "from" is applied if the train moves in an opposite direction
                 var train = trackContactPassingState.Train;

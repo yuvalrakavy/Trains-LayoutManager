@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 using System.Xml;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.Model;
@@ -178,7 +179,7 @@ namespace TrainDetector {
             foreach(var cp in module.ConnectionPoints) {
                 if(States[sensorIndex]) {
                     if (cp.IsConnected)
-                        trainDetectorsComponent.InterThreadEventInvoker.QueueEvent(new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(cp), States[sensorIndex] ? 1 : 0));
+                        trainDetectorsComponent.InterThreadEventInvoker.Queue(() => Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(cp), States[sensorIndex] ? 1 : 0));
                 }
                 sensorIndex++;
             }
@@ -187,10 +188,8 @@ namespace TrainDetector {
         public void UpdateState(UInt32 newVersion, int sensorIndex, bool isCovered, List<bool> allStates) {
             // The simple case
             if(newVersion == StateVersion+1) {
-                if(Module.ConnectionPoints[sensorIndex].IsConnected)
-                    TrainDetectorsComponent.InterThreadEventInvoker.QueueEvent(
-                        new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(Module.ConnectionPoints[sensorIndex]), isCovered ? 1 : 0));
-
+                if (Module.ConnectionPoints[sensorIndex].IsConnected)
+                    TrainDetectorsComponent.InterThreadEventInvoker.Queue(() => Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(Module.ConnectionPoints[sensorIndex]), isCovered ? 1 : 0));
             }
             else {
                 Trace.WriteLine($"TrainDetectors: Unexpected version {newVersion} (expected {StateVersion + 1} for module {Module.Label}@{Module.ControllerIpAddress?.ToString() ?? "No address"}");
@@ -198,8 +197,7 @@ namespace TrainDetector {
                 sensorIndex = 0;
                 foreach(var cp in Module.ConnectionPoints) {
                     if(cp.IsConnected) {
-                        TrainDetectorsComponent.InterThreadEventInvoker.QueueEvent(
-                            new LayoutEvent("control-connection-point-state-changed-notification", new ControlConnectionPointReference(cp), allStates[sensorIndex] ? 1 : 0));
+                        TrainDetectorsComponent.InterThreadEventInvoker.Queue(() => Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(cp), allStates[sensorIndex] ? 1 : 0));
                     }
 
                     States[sensorIndex] = allStates[sensorIndex];

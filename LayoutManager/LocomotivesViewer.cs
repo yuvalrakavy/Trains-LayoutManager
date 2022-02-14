@@ -101,7 +101,7 @@ namespace LayoutManager {
         }
 
         [DispatchTarget(Name = "OnTrainCreated")]
-        [LayoutEvent("train-is-removed")]
+        //[LayoutEvent("train-is-removed")]
         private void EventThatUpdateButtons(TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
             UpdateButtons();
         }

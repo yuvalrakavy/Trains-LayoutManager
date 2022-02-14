@@ -92,15 +92,7 @@ namespace LayoutManager.Components {
                             EventManager.Event(new LayoutEvent<TrainStateInfo, ILayoutPower>("change-train-power", train, power));
 
                         if (switchingCommands.Count > 0)
-                            EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands)
-#if NOTUSED
-                                .ContinueWith(
-                                (t) => {
-                                    switchingInProgress = false;
-                                    return Task.FromResult(0);
-                                }
-#endif
-                            );
+                            Dispatch.Call.SetTrackComponentsState(switchingCommands);
                     }
                 }
             }
@@ -117,7 +109,7 @@ namespace LayoutManager.Components {
                         EventManager.Event(new LayoutEvent<TrainStateInfo, ILayoutPower>("change-train-power", train, power));
 
                     if (switchingCommands.Count > 0)
-                        EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands));
+                        Dispatch.Call.SetTrackComponentsState(switchingCommands);
                 }
             }
         }
@@ -1060,19 +1052,21 @@ namespace LayoutManager.Components {
             if (gateComponent.Info.TwoDirectionRelays) {
                 var gateRelay1Reference = cprOf(Direction1ConnectionPoint);
                 var gateRelay2Reference = cprOf(Direction2ConnectionPoint);
+                var commandStation = Dispatch.Call.GetCommandStation(gateRelay1Reference);
 
                 // Put relays in opposite state, so one end is connected to one pole and the other end is connected to the other pole.
                 // which poles are connected is controlled via the direction state
-                EventManager.AsyncEvent(new LayoutEventInfoValueType<ControlConnectionPointReference, int>("change-track-component-state-command", gateRelay1Reference, directionState).SetCommandStation(gateRelay1Reference));
-                EventManager.AsyncEvent(new LayoutEventInfoValueType<ControlConnectionPointReference, int>("change-track-component-state-command", gateRelay2Reference, 1 - directionState).SetCommandStation(gateRelay2Reference));
+                Dispatch.Call.ChangeTrackComponentStateCommand(commandStation, gateRelay1Reference, directionState);
+                Dispatch.Call.ChangeTrackComponentStateCommand(commandStation, gateRelay2Reference, 1 - directionState);
             }
             else {
                 var gateDirectionReference = cprOf(Direction1ConnectionPoint);
                 var gateMotionReference = cprOf(MotionConnectionPoint);
                 int motionState = gateComponent.Info.ReverseMotion ? 0 : 1;
+                var commandStation = Dispatch.Call.GetCommandStation(gateDirectionReference);
 
-                EventManager.AsyncEvent(new LayoutEventInfoValueType<ControlConnectionPointReference, int>("change-track-component-state-command", gateDirectionReference, directionState).SetCommandStation(gateDirectionReference));
-                EventManager.AsyncEvent(new LayoutEventInfoValueType<ControlConnectionPointReference, int>("change-track-component-state-command", gateMotionReference, motionState).SetCommandStation(gateMotionReference));
+                Dispatch.Call.ChangeTrackComponentStateCommand(commandStation, gateDirectionReference, directionState);
+                Dispatch.Call.ChangeTrackComponentStateCommand(commandStation, gateMotionReference, motionState);
             }
         }
 
@@ -1082,16 +1076,19 @@ namespace LayoutManager.Components {
             if (gateComponent.Info.TwoDirectionRelays) {
                 var gateRelay1Reference = cprOf(Direction1ConnectionPoint);
                 var gateRelay2Reference = cprOf(Direction2ConnectionPoint);
+                var commandStation = Dispatch.Call.GetCommandStation(gateRelay1Reference);
 
                 // Put both relays in the same state, thus the same wire is connected to both ends...
-                EventManager.AsyncEvent(new LayoutEventInfoValueType<ControlConnectionPointReference, int>("change-track-component-state-command", gateRelay1Reference, 0).SetCommandStation(gateRelay1Reference));
-                EventManager.AsyncEvent(new LayoutEventInfoValueType<ControlConnectionPointReference, int>("change-track-component-state-command", gateRelay2Reference, 0).SetCommandStation(gateRelay2Reference));
+
+                Dispatch.Call.ChangeTrackComponentStateCommand(commandStation, gateRelay1Reference, 0);
+                Dispatch.Call.ChangeTrackComponentStateCommand(commandStation, gateRelay2Reference, 0);
             }
             else {
                 int motionState = gateComponent.Info.ReverseMotion ? 1 : 0;
                 var gateMotionReference = cprOf(MotionConnectionPoint);
+                var commandStation = Dispatch.Call.GetCommandStation(gateMotionReference);
 
-                EventManager.AsyncEvent(new LayoutEventInfoValueType<ControlConnectionPointReference, int>("change-track-component-state-command", gateMotionReference, motionState).SetCommandStation(gateMotionReference));
+                Dispatch.Call.ChangeTrackComponentStateCommand(commandStation, gateMotionReference, motionState);
             }
         }
 
@@ -1139,10 +1136,8 @@ namespace LayoutManager.Components {
             EventManager.Event(new LayoutEvent("gate-is-closed", gateComponent));
         }
 
-        [LayoutEvent("control-connection-point-state-changed-notification")]
-        private void ControlConnectionPointStateChangedNotification(LayoutEvent e) {
-            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
-
+        [DispatchTarget]
+        private void OnControlConnectionPointStateChanged(ControlConnectionPointReference connectionPointRef, int state) {
             if (connectionPointRef.IsConnected) {
                 var connectionPoint = connectionPointRef.ConnectionPoint;
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
+using MethodDispatcher;
 
 using LayoutManager.Model;
 
@@ -55,18 +56,18 @@ namespace LayoutManager.Components {
             LinkedSignalInfo newLinkedSignal = new(blockEdge.LinkedSignalsElement, signalComponent);
 
             Add(newLinkedSignal);
-            EventManager.Event(new LayoutEvent("signal-component-linked", blockEdge, signalComponent));
+            Dispatch.Notification.OnSignalComponentLinked(blockEdge, signalComponent);
             return newLinkedSignal;
         }
 
         public void Remove(LayoutSignalComponent signalComponent) {
-            EventManager.Event(new LayoutEvent("signal-component-unlinked", blockEdge, signalComponent));
+            Dispatch.Notification.OnSignalComponentUnlinked(signalComponent);
             Remove(signalComponent.Id);
         }
     }
 
     /// <summary>
-    /// Abstract base class for components that act as boundries to blocks. A block boundry function as logical signal
+    /// Abstract base class for components that act as boundaries to blocks. A block boundary function as logical signal
     /// for trains that specify whether the train can move between the two blocks. The logical signal can optionally be
     /// linked with a physical signal component
     /// </summary>
@@ -97,11 +98,10 @@ namespace LayoutManager.Components {
         public LayoutSignalState SignalState {
             get => LayoutModel.StateManager.Components.OptionalStateOf(this.Id, "Signal").AttributeValue(A_State).Enum<LayoutSignalState>() ?? LayoutSignalState.Yellow;
 
-            [LayoutEventDef("logical-signal-state-changed", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutBlockEdgeBase), InfoType = typeof(LayoutSignalState))]
             set {
                 LayoutModel.StateManager.Components.StateOf(this, "Signal").SetAttributeValue(A_State, value);
                 Redraw();
-                EventManager.Event(new LayoutEvent("logical-signal-state-changed", this, value));
+                Dispatch.Notification.OnLogicalSignalStateChanged(this, value);
             }
         }
 
@@ -126,7 +126,7 @@ namespace LayoutManager.Components {
                     return track.GetBlock(track.ConnectionPoints[0]);
             }
 
-            throw new ArgumentException(FullDescription + " is not boundry of block " + block.BlockDefinintion.FullDescription);
+            throw new ArgumentException(FullDescription + " is not boundary of block " + block.BlockDefinintion.FullDescription);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace LayoutManager.Components {
                     return new TrackEdge(Track, track.ConnectionPoints[1]);
             }
 
-            throw new ArgumentException(FullDescription + " is not boundry of block " + block.BlockDefinintion.FullDescription);
+            throw new ArgumentException(FullDescription + " is not boundary of block " + block.BlockDefinintion.FullDescription);
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace LayoutManager.Components {
 
     /// <summary>
     /// Track contact component is a component that is triggered when a locomotive (or car)
-    /// equiped with a track magnet passes over it
+    /// equipped with a track magnet passes over it
     /// </summary>
     public class LayoutTrackContactComponent : LayoutTriggerableBlockEdgeBase {
         private static readonly IList<ModelComponentControlConnectionDescription> controlConnections = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
@@ -244,7 +244,7 @@ namespace LayoutManager.Components {
 
     /// <summary>
     /// Track contact component is a component that is triggered when a locomotive (or car)
-    /// equiped with a track magnet passes over it
+    /// equipped with a track magnet passes over it
     /// </summary>
     public class LayoutProximitySensorComponent : LayoutTriggerableBlockEdgeBase {
         private static readonly IList<ModelComponentControlConnectionDescription> controlConnections = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
@@ -325,7 +325,7 @@ namespace LayoutManager.Components {
                         removeList.Add(resourceInfo);
                     }
                     else
-                        LayoutModuleBase.Error(blockDefinition.BlockDefinition, "Resource required by this block is marked either as 'Planned' or 'In constuction' phase");
+                        LayoutModuleBase.Error(blockDefinition.BlockDefinition, "Resource required by this block is marked either as 'Planned' or 'In construction' phase");
 
                     ok = false;
                 }

@@ -363,8 +363,8 @@ namespace LayoutManager {
                 _ => throw new DispatchFilterException("parameter is not object with Id")
             };
 
-            if (targetObject is Guid targetGuid)
-                return targetGuid == paramaterGuid;
+            if (targetObject is IObjectHasId objWithId)
+                return objWithId.Id == paramaterGuid;
             else
                 throw new DispatchFilterException("Target object is not an object with Id");
         }

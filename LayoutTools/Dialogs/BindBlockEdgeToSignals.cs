@@ -87,10 +87,8 @@ namespace LayoutManager.Tools.Dialogs {
                 list.Add((IModelComponentReceiverDialog)this);
         }
 
-        [LayoutEvent("removed-from-model")]
-        private void RemovedFromModel(LayoutEvent e) {
-            var component = Ensure.NotNull<ModelComponent>(e.Sender);
-
+        [DispatchTarget]
+        private void OnRemovedFromModel(ModelComponent component) {
             if (component is LayoutBlockEdgeBase && component.Id == BlockEdge.Id)
                 Close();
             else if (component is LayoutSignalComponent) {

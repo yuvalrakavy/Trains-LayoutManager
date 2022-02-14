@@ -213,9 +213,11 @@ namespace LayoutManager {
             d[nameof(RequestAutoExtendTrain)].CallVoid(train, blockDefinition);
         }
 
+        static DispatchSource? ds_GetCommandStation = null;
         [DispatchSource]
         public static IModelComponentHasNameAndId GetCommandStation(this Dispatcher d, object commandStationObject) {
-            return d[nameof(GetCommandStation)].Call<IModelComponentHasNameAndId>(commandStationObject);
+            ds_GetCommandStation ??= d[nameof(GetCommandStation)];
+            return ds_GetCommandStation.Call<IModelComponentHasNameAndId>(commandStationObject);
         }
 
         [DispatchSource]
@@ -341,6 +343,104 @@ namespace LayoutManager {
         [DispatchSource]
         public static void EnterOperationMode(this Dispatcher d, OperationModeParameters settings) {
             d[nameof(EnterOperationMode)].CallVoid(settings);
+        }
+
+        [DispatchSource]
+        public static bool VerifyComponentStateTopic(this Dispatcher d, XmlElement componentStateElement) {
+            return d[nameof(VerifyComponentStateTopic)].CallBoolFunctions(invokeUntil: false, invokeAll: false, componentStateElement);
+        }
+
+        [DispatchSource]
+        public static void ClearLayoutState(this Dispatcher d) {
+            d[nameof(ClearLayoutState)].CallVoid();
+        }
+
+        // ComponentManager
+
+        [DispatchSource]
+        public static void OnControlConnectionPointStateChanged(this Dispatcher d, ControlConnectionPointReference connectionPointRef, int state) {
+            d[nameof(OnControlConnectionPointStateChanged)].CallVoid(connectionPointRef, state);
+        }
+
+        [DispatchSource]
+        public static void OnTrackContactTriggered(this Dispatcher d, LayoutTrackContactComponent component) {
+            d[nameof(OnTrackContactTriggered)].CallVoid(component);
+        }
+
+        [DispatchSource]
+        public static void OnProximitySensorStateChanged(this Dispatcher d, LayoutProximitySensorComponent proximitySensor, bool state) {
+            d[nameof(OnProximitySensorStateChanged)].CallVoid(proximitySensor, state);
+        }
+
+        [DispatchSource]
+        public static void OnTrainDetectionStateChanged(this Dispatcher d, LayoutBlockDefinitionComponent blockDefinition, bool state) {
+            d[nameof(OnTrainDetectionStateChanged)].CallVoid(blockDefinition, state);
+        }
+
+        [DispatchSource]
+        public static void OnTrackComponentStateChanged(this Dispatcher d, ControlConnectionPoint connectionPoint, int state) {
+            d[nameof(OnTrackComponentStateChanged)].CallVoid(connectionPoint, state);
+        }
+
+        [DispatchSource]
+        public static void OnSignalStateChanged(this Dispatcher d, LayoutSignalComponent signal, LayoutSignalState state) {
+            d[nameof(OnSignalStateChanged)].CallVoid(signal, state);
+        }
+
+        [DispatchSource]
+        public static void OnControlConnectionPointStateUnstable(this Dispatcher d, ControlConnectionPointReference connectionRef) {
+            d[nameof(OnControlConnectionPointStateUnstable)].CallVoid(connectionRef);
+        }
+
+        [DispatchSource]
+        public static Task SetTrackComponentsState(this Dispatcher d, List<SwitchingCommand> switchingCommands) {
+            return d[nameof(SetTrackComponentsState)].Call<Task>(switchingCommands);
+        }
+
+        [DispatchSource]
+        public static Task ChangeBatchOfTrackComponentStateCommand(this Dispatcher d, Guid commandStationId, List<SwitchingCommand> switchingCommands) {
+            return d[nameof(ChangeBatchOfTrackComponentStateCommand)].Call<Task>(commandStationId, switchingCommands);
+        }
+
+        static DispatchSource? ds_ChangeTrackComponentStateCommand = null;
+        public static Task ChangeTrackComponentStateCommand(this Dispatcher d, IModelComponentHasNameAndId commandStation, ControlConnectionPointReference controlPointRef, int state) {
+            ds_ChangeTrackComponentStateCommand ??= d[nameof(ChangeTrackComponentStateCommand)];
+            return ds_ChangeTrackComponentStateCommand.Call<Task>(commandStation, controlPointRef, state);
+        }
+
+        [DispatchSource]
+        public static void OnProximitySensitivityDelayChanged(this Dispatcher d) {
+            d[nameof(OnProximitySensitivityDelayChanged)].CallVoid();
+        }
+
+        [DispatchSource]
+        public static void OnLogicalSignalStateChanged(this Dispatcher d, LayoutBlockEdgeBase blockEdge, LayoutSignalState state) {
+            d[nameof(OnLogicalSignalStateChanged)].CallVoid(blockEdge, state);
+        }
+
+        [DispatchSource]
+        public static Dictionary<Guid, LayoutBlockEdgeBase> GetLinkedSignalMap(this Dispatcher d) {
+            return d[nameof(GetLinkedSignalMap)].Call<Dictionary<Guid, LayoutBlockEdgeBase>>();
+        }
+
+        [DispatchSource]
+        public static void OnSignalComponentLinked(this Dispatcher d, LayoutBlockEdgeBase blockEdge, LayoutSignalComponent signalComponent) {
+            d[nameof(OnSignalComponentLinked)].CallVoid(blockEdge, signalComponent);
+        }
+
+        [DispatchSource]
+        public static void OnSignalComponentUnlinked(this Dispatcher d, LayoutSignalComponent signalComponent) {
+            d[nameof(OnSignalComponentUnlinked)].CallVoid(signalComponent);
+        }
+
+        [DispatchSource]
+        public static void OnRemovedFromModel(this Dispatcher d, ModelComponent component) {
+            d[nameof(OnRemovedFromModel)].CallVoid(component);
+        }
+
+        [DispatchSource]
+        public static void OnComponentConfigurationChanged(this Dispatcher d, ModelComponent component) {
+            d[nameof(OnComponentConfigurationChanged)].CallVoid(component);
         }
     }
 }

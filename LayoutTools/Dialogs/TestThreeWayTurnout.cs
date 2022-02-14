@@ -73,8 +73,10 @@ namespace LayoutManager.Tools.Dialogs {
                         else if (_state == 2)
                             stateLeft = 1;
 
-                        EventManager.AsyncEvent(new LayoutEventInfoValueType<ControlConnectionPointReference, int>("change-track-component-state-command", refRight, stateRight).SetCommandStation(refRight));
-                        EventManager.AsyncEvent(new LayoutEventInfoValueType<ControlConnectionPointReference, int>("change-track-component-state-command", refLeft, stateLeft).SetCommandStation(refLeft));
+                        var commandStation = Dispatch.Call.GetCommandStation(refRight);
+
+                        Dispatch.Call.ChangeTrackComponentStateCommand(commandStation, refRight, stateRight);
+                        Dispatch.Call.ChangeTrackComponentStateCommand(commandStation, refLeft, stateLeft);
                     }
                 }
                 else

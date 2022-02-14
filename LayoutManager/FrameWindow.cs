@@ -219,7 +219,7 @@ namespace LayoutManager {
         /// <summary>
         /// Initialize frame window and restore its state
         /// </summary>
-        /// <param name="windowStateElement">Xml element describing the frame window state</param>
+        /// <param name="windowStateElement">XML element describing the frame window state</param>
         public FrameWindow(FrameWindowState frameWindowState) {
             CommonInitialization();
 
@@ -365,7 +365,7 @@ namespace LayoutManager {
         /// <summary>
         /// Save the current window state (areas/view etc.)
         /// </summary>
-        /// <param name="windowStateElement">The Xml element in which the state is saved</param>
+        /// <param name="windowStateElement">The XML element in which the state is saved</param>
         public void SaveFrameWindowState(FrameWindowState frameWindowState) {
             frameWindowState.LocomotiveViewerVisble = locomotiveViewVisible;
             frameWindowState.LocomotiveViewerWidth = splitContainerLocomotivesViewer.SplitterDistance;
@@ -473,7 +473,7 @@ namespace LayoutManager {
 
                     switch (settings.Phases) {
                         case LayoutPhase.Operational: s += " on operational region"; break;
-                        case LayoutPhase.NotPlanned: s += " on operational+in construnction regions"; break;
+                        case LayoutPhase.NotPlanned: s += " on operational+in construction regions"; break;
                     }
 
                     //SUSPENDED
@@ -1111,7 +1111,7 @@ namespace LayoutManager {
                     if (viewWithMouse != null) {
                         LayoutHitTestResult hit = viewWithMouse.HitTest(new Point(e.X, e.Y));
 
-                        // Retain details popup window as long as mouse is in the same grid location
+                        // Retain details pop up window as long as mouse is in the same grid location
                         if (hit.ModelLocation == detailsPopupLocationInModelPoints)
                             closeIt = false;
                     }
@@ -1134,7 +1134,7 @@ namespace LayoutManager {
         }
 
         private void TimerDetailsPopup_Tick(object? sender, EventArgs e) {
-            // Mouse did not move for enough time, need to show details popup window
+            // Mouse did not move for enough time, need to show details pop up window
             if (detailsPopupWindow == null) {
                 if (viewWithMouse != null) {
                     LayoutHitTestResult hitTestResult = viewWithMouse.HitTest(viewMouseLocation);
@@ -1865,7 +1865,7 @@ namespace LayoutManager {
         }
 
         private void MenuItemSelectUnlinkedSignals_Click(object? sender, EventArgs e) {
-            var map = Ensure.NotNull<Dictionary<Guid, LayoutBlockEdgeBase>>(EventManager.Event(new LayoutEvent("get-linked-signal-map", this)));
+            var map = Dispatch.Call.GetLinkedSignalMap();
             LayoutSelection selection = new();
 
             foreach (LayoutSignalComponent signal in LayoutModel.Components<LayoutSignalComponent>(LayoutPhase.All))
@@ -1875,7 +1875,7 @@ namespace LayoutManager {
             if (selection.Count == 0)
                 LayoutModuleBase.Message("All signals are linked to logical signals (represented by block edge components)");
             else
-                LayoutModuleBase.Message(selection, "Singals which are not linked. You should link block edges to signals");
+                LayoutModuleBase.Message(selection, "Signals which are not linked. You should link block edges to signals");
 
             EventManager.Event(new LayoutEvent("show-messages", this));
         }

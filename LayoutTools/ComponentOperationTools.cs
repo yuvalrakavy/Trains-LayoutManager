@@ -92,7 +92,7 @@ namespace LayoutManager.Tools {
             List<SwitchingCommand> switchingCommands = new();
 
             component.AddSwitchingCommands(switchingCommands, switchState);
-            EventManager.AsyncEvent(new LayoutEvent("set-track-components-state", this, switchingCommands));
+            Dispatch.Call.SetTrackComponentsState(switchingCommands);
         }
 
         #endregion
@@ -1563,7 +1563,7 @@ namespace LayoutManager.Tools {
             var trackContact = Ensure.NotNull<LayoutTrackContactComponent>(e.Sender, "component");
             var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
 
-            menu.Items.Add(new LayoutComponentMenuItem(trackContact, "&Trigger contact", (s, e) => EventManager.Event("track-contact-triggered-notification", trackContact)));
+            menu.Items.Add(new LayoutComponentMenuItem(trackContact, "&Trigger contact", (s, e) => Dispatch.Notification.OnTrackContactTriggered(trackContact)));
         }
 
 #endregion
@@ -1580,7 +1580,7 @@ namespace LayoutManager.Tools {
             var component = Ensure.NotNull<LayoutProximitySensorComponent>(e.Sender, "component");
             var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
 
-            menu.Items.Add(new LayoutComponentMenuItem(component, "&Proximiy sensor active", (s, e) => EventManager.Event("proximity-sensor-state-changed-notification", component, !component.IsTriggered)) {
+            menu.Items.Add(new LayoutComponentMenuItem(component, "&Proximity sensor active", (s, e) => Dispatch.Notification.OnProximitySensorStateChanged(component, !component.IsTriggered)) {
                 Checked = component.IsTriggered
             });
         }

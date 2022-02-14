@@ -15,44 +15,47 @@ namespace LayoutManager.Logic {
     public class ComponentManager : LayoutModuleBase {
         #region Handle control-connection-point-notification
 
-        [LayoutEvent("control-connection-point-state-changed-notification")]
-        private void ControlConnectionPointStateChangedNotification(LayoutEvent e) {
-            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
-            int state = (int)(e.Info ?? 0);
-
+        [DispatchTarget]
+        private void OnControlConnectionPointStateChanged(ControlConnectionPointReference connectionPointRef, int state) {
             if (connectionPointRef.IsConnected) {
                 var connectionPoint = connectionPointRef.ConnectionPoint;
-                var component = (ModelComponent?)connectionPoint?.Component;
 
-                if (component is LayoutTrackContactComponent) {
-                    if (state == 1)
-                        EventManager.Event(new LayoutEvent("track-contact-triggered-notification", component));
+                if (connectionPoint != null) {
+                    var component = (ModelComponent?)connectionPoint.Component;
+
+                    switch (component) {
+                        case LayoutTrackContactComponent trackContact:
+                            if (state == 1)
+                                Dispatch.Notification.OnTrackContactTriggered(trackContact);
+                            break;
+                        case LayoutProximitySensorComponent proximitySensor:
+                            OnProximitySensorStateChanged(proximitySensor, state != 0);
+                            break;
+                        case LayoutBlockDefinitionComponent blockDefinition:
+                            OnTrainDetectionStateChanged(blockDefinition, state != 0);
+                            break;
+                        case IModelComponentHasSwitchingState:
+                            OnTrackComponentStateChanged(connectionPoint, state);
+                            break;
+                        case LayoutSignalComponent signalComponent:
+                            OnSignalStateChanged(signalComponent, state == 0 ? LayoutSignalState.Red : LayoutSignalState.Green);
+                            break;
+                    }
                 }
-                else if (component is LayoutProximitySensorComponent)
-                    EventManager.Event(new LayoutEvent("proximity-sensor-state-changed-notification", component, state != 0));
-                else if (component is LayoutBlockDefinitionComponent)
-                    EventManager.Event(new LayoutEvent("train-detection-state-changed-notification", component, state != 0));
-                else if (component is IModelComponentHasSwitchingState)
-                    EventManager.Event(new LayoutEvent("track-component-state-changed-notification", connectionPoint, state));
-                else if (component is LayoutSignalComponent)
-                    EventManager.Event(new LayoutEvent("signal-state-changed-notification", component, state == 0 ? LayoutSignalState.Red : LayoutSignalState.Green));
             }
         }
 
-        [LayoutEvent("control-connection-point-state-unstable-notification")]
-        private void ControlConnectionPointStateUnstable(LayoutEvent e) {
-            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender, "connectionPointRef");
-
+        [DispatchTarget]
+        private void OnControlConnectionPointStateUnstable(ControlConnectionPointReference connectionPointRef) {
             Message(connectionPointRef.ConnectionPoint?.Component, "Intermittent (very short) state change - you should check your hardware");
         }
 
         #endregion
 
-        #region Multipath Component (e.g. turnout, double-slip)
+        #region Multi-path Component (e.g. turnout, double-slip)
 
-        [LayoutAsyncEvent("set-track-components-state")]
-        private Task SetTrackComponentsState(LayoutEvent e) {
-            var switchingCommands = Ensure.NotNull<List<SwitchingCommand>>(e.Info, "switchingCommands");
+        [DispatchTarget]
+        private Task SetTrackComponentsState(List<SwitchingCommand> switchingCommands) {
             var tasks = new List<Task>();
 
             if (switchingCommands.Count > 0) {
@@ -85,10 +88,10 @@ namespace LayoutManager.Logic {
 
                 foreach (KeyValuePair<IModelComponentIsBusProvider, List<SwitchingCommand>> commandStationAndSwitchCommands in commandStationIdToSwitchingCommands) {
                     if (commandStationAndSwitchCommands.Key.BatchMultipathSwitchingSupported)
-                        tasks.Add(EventManager.AsyncEvent(new LayoutEvent("change-batch-of-track-component-state-command", this, commandStationAndSwitchCommands.Value).SetOption("CommandStationID", commandStationAndSwitchCommands.Key.Id)));
+                        tasks.Add(Dispatch.Call.ChangeBatchOfTrackComponentStateCommand(commandStationAndSwitchCommands.Key.Id, commandStationAndSwitchCommands.Value));
                     else {
                         foreach (SwitchingCommand switchingCommand in commandStationAndSwitchCommands.Value)
-                            tasks.Add(EventManager.AsyncEvent(new LayoutEventInfoValueType<ControlConnectionPointReference, int>("change-track-component-state-command", switchingCommand.ControlPointReference, switchingCommand.SwitchState).SetCommandStation(commandStationAndSwitchCommands.Key)));
+                            tasks.Add(Dispatch.Call.ChangeTrackComponentStateCommand(commandStationAndSwitchCommands.Key, switchingCommand.ControlPointReference, switchingCommand.SwitchState));
                     }
                 }
             }
@@ -96,12 +99,9 @@ namespace LayoutManager.Logic {
             return Task.WhenAll(tasks);
         }
 
-        [LayoutEvent("track-component-state-changed-notification")]
-        private void TrackComponentStateChanged(LayoutEvent e) {
-            var connectionPoint = Ensure.NotNull<ControlConnectionPoint>(e.Sender, "connectionPoint");
-
+        [DispatchTarget]
+        private void OnTrackComponentStateChanged(ControlConnectionPoint connectionPoint, int state) {
             if (connectionPoint.Component is IModelComponentHasSwitchingState componentWithSwitchingState) {
-                int state = (int)(e.Info ?? 0);
                 bool reverseLogic = false;
 
                 if (connectionPoint.Component is IModelComponentHasReverseLogic component)
@@ -123,41 +123,31 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("proximity-sensitivity-delay-changed")]
-        private void ProximitySensorSensitivityDelayChanged(LayoutEvent e) => _proximitySensorSensitivityDelay = -1;
+        [DispatchTarget]
+        private void OnProximitySensitivityDelayChanged() => _proximitySensorSensitivityDelay = -1;
 
         private readonly Dictionary<Guid, LayoutDelayedEvent> _changingProximitySensors = new();
 
-        [LayoutEvent("proximity-sensor-state-changed-notification", SenderType = typeof(LayoutProximitySensorComponent))]
-        private void ProximitySensorComponentStateChanged(LayoutEvent e) {
-            var component = Ensure.NotNull<LayoutProximitySensorComponent>(e.Sender, "component");
-            bool state = Ensure.ValueNotNull<bool>(e.Info, "state");
-
+        [DispatchTarget]
+        private void OnProximitySensorStateChanged(LayoutProximitySensorComponent component, bool state) {
             if (_changingProximitySensors.TryGetValue(component.Id, out var delayedEvent)) {
                 delayedEvent.Cancel();
                 _changingProximitySensors.Remove(component.Id);
             }
 
             _changingProximitySensors.Add(component.Id,
-                    EventManager.DelayedEvent(ProximitySensorSensitivityDelay, new LayoutEvent("proximity-sensor-change-stable", component, state)));
+                    EventManager.DelayedEvent(ProximitySensorSensitivityDelay, () => ProximitySensorChangeStable(component, state)));
         }
 
-        [LayoutEvent("proximity-sensor-change-stable")]
-        private void ProximitySensorChangeStable(LayoutEvent e) {
-            var component = Ensure.NotNull<LayoutProximitySensorComponent>(e.Sender, "component");
-            bool state = Ensure.ValueNotNull<bool>(e.Info, "state");
-
+        private void ProximitySensorChangeStable(LayoutProximitySensorComponent component, bool state) {
             _changingProximitySensors.Remove(component.Id);
             component.IsTriggered = state;
         }
 
         #region Signal Component
 
-        [LayoutEvent("signal-state-changed-notification", SenderType = typeof(LayoutSignalComponent))]
-        private void SignalComponentTurnoutStateChanged(LayoutEvent e) {
-            var signal = Ensure.NotNull<LayoutSignalComponent>(e.Sender, "signal");
-            var state = Ensure.ValueNotNull<LayoutSignalState>(e.Info, "state");
-
+        [DispatchTarget]
+        private void OnSignalStateChanged(LayoutSignalComponent signal, LayoutSignalState state) {
             if (signal.Info.ReverseLogic)
                 state = (state == LayoutSignalState.Red) ? LayoutSignalState.Green : LayoutSignalState.Red;
 
@@ -168,11 +158,8 @@ namespace LayoutManager.Logic {
 
         #region Train Detection Module
 
-        [LayoutEvent("train-detection-state-changed-notification", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void TrainDetectionStateChanged(LayoutEvent e) {
-            var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockDefinition");
-            bool detected = Ensure.ValueNotNull<bool>(e.Info, "detected");
-
+        [DispatchTarget]
+        private void OnTrainDetectionStateChanged(LayoutBlockDefinitionComponent blockDefinition, bool detected) {
             Trace.WriteLineIf(LocomotiveTracking.traceLocomotiveTracking.TraceInfo, "=-=-= Train " + (detected ? "detected" : "not detected") + " in block " + blockDefinition.FullDescription);
             blockDefinition.Info.TrainDetected = detected;
         }
@@ -181,12 +168,9 @@ namespace LayoutManager.Logic {
 
         #region Linked signals
 
-        [LayoutEvent("logical-signal-state-changed")]
-        private void SignalStateChanged(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnLogicalSignalStateChanged(LayoutBlockEdgeBase blockEdge, LayoutSignalState signalState) {
             if (LayoutController.IsOperationMode) {
-                var blockEdge = Ensure.NotNull<LayoutBlockEdgeBase>(e.Sender, "blockEdge");
-                var signalState = Ensure.ValueNotNull<LayoutSignalState>(e.Info, "signalState");
-
                 foreach (LinkedSignalInfo linkedSignal in blockEdge.LinkedSignals) {
                     var signalComponent = LayoutModel.Component<LayoutSignalComponent>(linkedSignal.SignalId, LayoutModel.ActivePhases);
 
@@ -229,15 +213,11 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("get-linked-signal-map")]
-        private void GetLinkedSignalMap(LayoutEvent e) {
-            e.Info = LinkedSignalMap;
-        }
+        [DispatchTarget]
+        private Dictionary<Guid, LayoutBlockEdgeBase> GetLinkedSignalMap() => LinkedSignalMap;
 
-        [LayoutEvent("signal-component-linked")]
-        private void SignalComponentLinked(LayoutEvent e) {
-            var blockEdge = Ensure.NotNull<LayoutBlockEdgeBase>(e.Sender, "blockEdge");
-            var signalComponent = Ensure.NotNull<LayoutSignalComponent>(e.Info, "signalComponent");
+        [DispatchTarget]
+        private void OnSignalComponentLinked(LayoutBlockEdgeBase blockEdge, LayoutSignalComponent signalComponent) {
             Dictionary<Guid, LayoutBlockEdgeBase> map = LinkedSignalMap;
 
             if (!map.ContainsKey(signalComponent.Id)) {
@@ -249,9 +229,8 @@ namespace LayoutManager.Logic {
                 Debug.Fail($"Signal component {signalComponent} not found not found in linked signal map");
         }
 
-        [LayoutEvent("signal-component-unlinked")]
-        private void SignalComponentUnlinked(LayoutEvent e) {
-            var signalComponent = Ensure.NotNull<LayoutSignalComponent>(e.Info, "signalComponent");
+        [DispatchTarget]
+        private void OnSignalComponentUnlinked(LayoutSignalComponent signalComponent) {
             Dictionary<Guid, LayoutBlockEdgeBase> map = LinkedSignalMap;
 
             if (map.ContainsKey(signalComponent.Id)) {
@@ -263,10 +242,8 @@ namespace LayoutManager.Logic {
                 Debug.Fail($"Signal component {signalComponent} not found not found in linked signal map");
         }
 
-        [LayoutEvent("removed-from-model", SenderType = typeof(LayoutBlockEdgeBase))]
-        private void RemovingBlockEdgeComponent(LayoutEvent e) {
-            var removedBlockEdge = Ensure.NotNull<LayoutBlockEdgeBase>(e.Sender, "removedBlockEdge");
-
+        [DispatchTarget]
+        private void OnRemovedFromModel_BlockEdge([DispatchFilter] LayoutBlockEdgeBase removedBlockEdge) {
             if (removedBlockEdge.LinkedSignalsElement != null && removedBlockEdge.LinkedSignals.Count > 0) {
                 Dictionary<Guid, LayoutBlockEdgeBase> map = LinkedSignalMap;
                 List<Guid> removeList = new();
@@ -279,14 +256,13 @@ namespace LayoutManager.Logic {
                     var signal = LayoutModel.Component<LayoutSignalComponent>(signalId, LayoutPhase.All);
 
                     if (signal != null)
-                        EventManager.Event(new LayoutEvent("signal-component-unlinked", removedBlockEdge, signal));
+                        Dispatch.Notification.OnSignalComponentUnlinked(signal);
                 });
             }
         }
 
-        [LayoutEvent("component-configuration-changed", SenderType = typeof(LayoutBlockEdgeBase))]
-        private void BlockEdgeModified(LayoutEvent e) {
-            var modifiedBlockEdge = Ensure.NotNull<LayoutBlockEdgeBase>(e.Sender, "modifiedBlockEdge");
+        [DispatchTarget]
+        private void OnComponentConfigurationChanged_BlockEdge([DispatchFilter] LayoutBlockEdgeBase modifiedBlockEdge) {
             Dictionary<Guid, LayoutBlockEdgeBase> map = LinkedSignalMap;
             List<Guid> previousLinkedSignals = new();
 
@@ -297,13 +273,21 @@ namespace LayoutManager.Logic {
             foreach (LinkedSignalInfo linkedSignalInfo in modifiedBlockEdge.LinkedSignals) {
                 if (previousLinkedSignals.Contains(linkedSignalInfo.SignalId))
                     previousLinkedSignals.Remove(linkedSignalInfo.SignalId);
-                else
-                    EventManager.Event(new LayoutEvent("signal-component-linked", modifiedBlockEdge, LayoutModel.Component<LayoutSignalComponent>(linkedSignalInfo.SignalId, LayoutPhase.All)));
+                else {
+                    var signalComponent = LayoutModel.Component<LayoutSignalComponent>(linkedSignalInfo.SignalId, LayoutPhase.All);
+
+                    if(signalComponent != null)
+                        Dispatch.Notification.OnSignalComponentLinked(modifiedBlockEdge, signalComponent);
+                }
             }
 
             // The signals that are left, are not linked now, so remove them from the map
-            foreach (Guid signalId in previousLinkedSignals)
-                EventManager.Event(new LayoutEvent("signal-component-unlinked", modifiedBlockEdge, LayoutModel.Component<LayoutSignalComponent>(signalId, LayoutPhase.All)));
+            foreach (Guid signalId in previousLinkedSignals) {
+                var signalComponent = LayoutModel.Component<LayoutSignalComponent>(signalId, LayoutPhase.All);
+
+                if (signalComponent != null)
+                    Dispatch.Notification.OnSignalComponentUnlinked(signalComponent);
+            }
         }
 
         #endregion

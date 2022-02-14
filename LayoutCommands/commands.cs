@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Diagnostics;
 using System.Xml;
+using MethodDispatcher;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
@@ -202,7 +203,7 @@ namespace LayoutManager {
             component.OnXmlInfoChanged();
             component.Redraw();
 
-            EventManager.Event(new LayoutEvent("component-configuration-changed", component));
+            Dispatch.Notification.OnComponentConfigurationChanged(component);
         }
 
         public override void Undo() {
@@ -215,7 +216,7 @@ namespace LayoutManager {
             component.OnXmlInfoChanged();
             component.Redraw();
 
-            EventManager.Event(new LayoutEvent("component-configuration-changed", component));
+            Dispatch.Notification.OnComponentConfigurationChanged(component);
         }
 
         public override string ToString() => "Edit " + component.ToString() + " properties";
