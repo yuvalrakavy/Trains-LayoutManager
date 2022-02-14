@@ -90,8 +90,8 @@ namespace LayoutManager.Tools.Dialogs {
                 Close();
         }
 
-        [LayoutEvent("exit-operation-mode")]
-        private void ExitOperationMode(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnExitOperationMode() {
             Close();
         }
 

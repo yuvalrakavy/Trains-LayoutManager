@@ -341,8 +341,13 @@ namespace LayoutManager {
         }
 
         [DispatchSource]
-        public static void EnterOperationMode(this Dispatcher d, OperationModeParameters settings) {
-            d[nameof(EnterOperationMode)].CallVoid(settings);
+        public static void OnEnteredOperationMode(this Dispatcher d, OperationModeParameters settings) {
+            d[nameof(OnEnteredOperationMode)].CallVoid(settings);
+        }
+
+        [DispatchSource]
+        public static void OnExitOperationMode(this Dispatcher d) {
+            d[nameof(OnExitOperationMode)].CallVoid();
         }
 
         [DispatchSource]

@@ -439,7 +439,7 @@ namespace LayoutManager.CommonUI {
         }
 
         [DispatchTarget]
-        private void EnterOperationMode(OperationModeParameters settings) {
+        private void OnEnteredOperationMode(OperationModeParameters settings) {
             Recalc();
         }
 

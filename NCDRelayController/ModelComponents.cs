@@ -163,7 +163,7 @@ namespace NCDRelayController {
         #region Event Handlers
 
         [DispatchTarget]
-        protected virtual void EnterOperationMode(OperationModeParameters settings) {
+        protected virtual void OnEnteredOperationMode(OperationModeParameters settings) {
             simulation = settings.Simulation;
 
             OnCommunicationSetup();

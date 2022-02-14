@@ -76,8 +76,9 @@ namespace LayoutManager.Tools.Dialogs {
             e.Info = this;
         }
 
-        [LayoutEvent("exit-operation-mode", Order = 10)]
-        private void TrainRemoveFromTrack(LayoutEvent e) {
+
+        [DispatchTarget(Order = 10)]
+        private void OnExitOperationMode() {
             this.Close();
         }
 

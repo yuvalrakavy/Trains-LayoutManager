@@ -836,8 +836,8 @@ namespace LayoutManager.Tools {
         //private const string A_ShouldReverse = "ShouldReverse";
         private readonly ManualDispatchRouteSetting manualDispatchRouteSetting = new();
 
-        [LayoutEvent("exit-operation-mode")]
-        private void ResetRouteSource(LayoutEvent e) => manualDispatchRouteSetting.SourceBlockInfo = null;
+        [DispatchTarget]
+        private void OnExitOperationMode() => manualDispatchRouteSetting.SourceBlockInfo = null;
 
         private void AddManualDispatchRouteMenuEntries(LayoutBlockDefinitionComponent blockInfo, MenuOrMenuItem m) {
             var lockRequest = blockInfo.Block.LockRequest;

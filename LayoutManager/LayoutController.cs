@@ -333,7 +333,7 @@ namespace LayoutManager {
                             Dispatch.Call.ClearLayoutState();
                     }
 
-                    Dispatch.Call.EnterOperationMode(settings);
+                    Dispatch.Notification.OnEnteredOperationMode(settings);
                     Task.WhenAll(EventManager.AsyncEventBroadcast(new LayoutEvent("enter-operation-mode-async", settings))).Wait(500);
                     LayoutModel.Instance.Redraw();
                 }
@@ -361,7 +361,8 @@ namespace LayoutManager {
         public async Task ExitOperationModeRequest() {
             bool simulation = LayoutController.IsOperationSimulationMode;
 
-            EventManager.Event(new LayoutEvent("exit-operation-mode", this));
+            Dispatch.Notification.OnExitOperationMode();
+
             Trace.WriteLine("Before invoking exit-operation-mode-async");
             await Task.WhenAll(EventManager.AsyncEventBroadcast(new LayoutEvent("exit-operation-mode-async", this)));
             Trace.WriteLine("After invoking exit-operation-mode-async");

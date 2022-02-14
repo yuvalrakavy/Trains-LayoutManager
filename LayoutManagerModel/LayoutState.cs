@@ -2116,7 +2116,7 @@ namespace LayoutManager.Model {
             SetAttributeValue(A_Global, globalPolicy);
         }
 
-        public LayoutEventScript? ActiveScript => (LayoutEventScript?)EventManager.Event(new LayoutEvent("get-active-event-script", Id));
+        public LayoutEventScript? ActiveScript => Dispatch.Call.GetActiveScript(Id);
 
         public bool IsActive => ActiveScript != null;
 
@@ -2548,8 +2548,8 @@ namespace LayoutManager.Model {
             }
         }
 
-        [LayoutEvent("exit-operation-mode")]
-        private void ExitOperationMode(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnExitOperationMode() {
             Save();
             allLayoutManualDispatch = null;
         }

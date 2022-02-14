@@ -190,10 +190,22 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        [LayoutEvent("event-script-reset", Order = 100)]
-        [LayoutEvent("event-script-terminated", Order = 100)]
-        [LayoutEvent("event-script-dispose", Order = 100)]
-        protected virtual void UpdateList(LayoutEvent e) {
+        [DispatchTarget(Order = 100)]
+        private void OnEventScriptReset(LayoutEventScript script, LayoutEventScriptTask task) {
+            UpdateList();
+        }
+
+        [DispatchTarget(Order = 100)]
+        private void OnEventScriptDispose(LayoutEventScript script) {
+            UpdateList();
+        }
+
+        [DispatchTarget(Order = 100)]
+        private void OnEventScriptTerminated(LayoutEventScript script) {
+            UpdateList();
+        }
+
+        private void UpdateList() { 
             foreach (PolicyItem policyItem in listViewPolicies.Items)
                 policyItem.Update();
 

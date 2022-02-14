@@ -1357,7 +1357,7 @@ namespace LayoutManager.Logic {
         }
 
         [DispatchTarget(Order =2000)]
-        private void EnterOperationMode(OperationModeParameters settings) {
+        private void OnEnteredOperationMode(OperationModeParameters settings) {
             foreach (XmlElement trainStateElement in LayoutModel.StateManager.Trains.Element) {
                 TrainStateInfo train = new(trainStateElement);
 

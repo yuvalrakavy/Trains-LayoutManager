@@ -282,8 +282,8 @@ namespace LayoutManager.Logic {
                     Remove(blockID);
             }
 
-            [LayoutEvent("exit-operation-mode")]
-            private void ExitOperationMode(LayoutEvent e) {
+            [DispatchTarget]
+            private void OnExitOperationMode() {
                 operationMode = false;
 
                 foreach (LayoutDelayedEvent delayedEvent in Values)
@@ -292,7 +292,7 @@ namespace LayoutManager.Logic {
             }
 
             [DispatchTarget]
-            private void EnterOperationMode(OperationModeParameters settings) {
+            private void OnEnteredOperationMode(OperationModeParameters settings) {
                 operationMode = true;
             }
 

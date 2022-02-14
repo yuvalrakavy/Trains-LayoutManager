@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using MethodDispatcher;
 using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Dialogs {
@@ -73,8 +74,8 @@ namespace LayoutManager.Tools.Dialogs {
                 e.Info = tripPlanEditor1.ActiveForm;
         }
 
-        [LayoutEvent("exit-operation-mode")]
-        private void ExitOperationMode(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnExitOperationMode() {
             Close();
         }
 

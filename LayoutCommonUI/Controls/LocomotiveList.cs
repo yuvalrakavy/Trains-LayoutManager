@@ -177,7 +177,7 @@ namespace LayoutManager.CommonUI.Controls {
         #endregion
 
         [DispatchTarget(Order = 1000)]
-        private void EnterOperationMode(OperationModeParameters settings) {
+        private void OnEnteredOperationMode(OperationModeParameters settings) {
             operationMode = true;
             UpdateElements();
             Invalidate();

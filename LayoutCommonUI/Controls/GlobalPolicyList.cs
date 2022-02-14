@@ -1,3 +1,5 @@
+using MethodDispatcher;
+
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for GlobalPolicyList.
@@ -45,7 +47,7 @@ namespace LayoutManager.CommonUI.Controls {
             var selected = GetSelection();
 
             if (selected != null) {
-                var runningScript = (LayoutEventScript?)EventManager.Event(new LayoutEvent("get-active-event-script", selected.Policy.Id));
+                var runningScript = Dispatch.Call.GetActiveScript(selected.Policy.Id);
 
                 if (runningScript != null)
                     runningScript.Dispose();

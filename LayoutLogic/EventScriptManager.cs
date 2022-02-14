@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using MethodDispatcher;
 using LayoutManager;
 using LayoutManager.Model;
@@ -13,47 +13,37 @@ namespace LayoutManager.Logic {
     /// </summary>
     [LayoutModule("Event Script Manager", UserControl = false)]
     public class EventScriptManagerManager : LayoutModuleBase {
-        private readonly IDictionary activeScripts = new HybridDictionary();
+        private readonly Dictionary<Guid, LayoutEventScript> activeScripts = new();
 
-        [LayoutEvent("event-script-reset")]
-        private void eventScriptReset(LayoutEvent e) {
-            var script = Ensure.NotNull<LayoutEventScript>(e.Sender, "script");
-
-            if (!activeScripts.Contains(script.Id))
+        [DispatchTarget]
+        private void OnEventScriptReset(LayoutEventScript script, LayoutEventScriptTask task) {
+            if (!activeScripts.ContainsKey(script.Id))
                 activeScripts.Add(script.Id, script);
         }
 
-        [LayoutEvent("event-script-dispose")]
-        [LayoutEvent("event-script-terminated")]
-        private void eventScriptDispose(LayoutEvent e) {
-            var script = Ensure.NotNull<LayoutEventScript>(e.Sender, "script");
+        [DispatchTarget]
+        private void OnEventScriptDispose(LayoutEventScript script) {
+            OnEventScriptTerminated(script);
+        }
 
+        [DispatchTarget]
+        private void OnEventScriptTerminated(LayoutEventScript script) {
             activeScripts.Remove(script.Id);
         }
 
-        [LayoutEvent("get-active-event-script")]
-        private void isEventScriptActive(LayoutEvent e) {
-            var scriptID = (Guid)(e.Sender ?? Guid.Empty);
-
-            e.Info = activeScripts[scriptID];
-        }
-
-        [LayoutEvent("get-active-event-scripts")]
-        private void getActiveEventScripts(LayoutEvent e) {
-            LayoutEventScript[] result = new LayoutEventScript[activeScripts.Count];
-
-            int i = 0;
-            foreach (LayoutEventScript script in activeScripts.Values)
-                result[i++] = script;
-
-            e.Info = result;
+        [DispatchTarget]
+        private LayoutEventScript? GetActiveScript(Guid scriptId) {
+            if(activeScripts.TryGetValue(scriptId, out var activeScript)) {
+                return activeScript;
+            }
+            return null;
         }
 
         [DispatchTarget(Order = 1000)]
-        private void EnterOperationMode(OperationModeParameters settings) {
+        private void OnEnteredOperationMode(OperationModeParameters settings) {
             foreach (LayoutPolicyInfo policy in LayoutModel.StateManager.LayoutPolicies) {
                 if (policy.Apply && policy.EventScriptElement != null) {
-                    LayoutEventScript runningScript = EventManager.EventScript("Global policy " + policy.Name, policy.EventScriptElement, new Guid[] { }, null);
+                    LayoutEventScript runningScript = EventManager.EventScript($"Global policy {policy.Name}", policy.EventScriptElement, Array.Empty<Guid>(), null);
 
                     runningScript.Id = policy.Id;
                     runningScript.Reset();
@@ -61,11 +51,9 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("exit-operation-mode", Order = -1000)]
-        private void exitOperationalMode(LayoutEvent e) {
-            LayoutEventScript[] scripts = (LayoutEventScript[])EventManager.Event(new LayoutEvent("get-active-event-scripts", this))!;
-
-            foreach (LayoutEventScript script in scripts)
+        [DispatchTarget(Order =-1000)]
+        private void OnExitOperationMode() {
+            foreach (LayoutEventScript script in activeScripts.Values)
                 script.Dispose();
         }
     }

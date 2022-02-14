@@ -181,7 +181,7 @@ namespace LayoutManager.Logic {
         }
 
         [DispatchTarget(Order =2000)]
-        private void EnterOperationMode(OperationModeParameters settings) {         
+        private void OnEnteredOperationMode(OperationModeParameters settings) {         
             foreach (LayoutBlockEdgeBase blockEdge in LayoutModel.Components<LayoutBlockEdgeBase>(LayoutModel.ActivePhases)) {
                 LayoutSignalState signalState = blockEdge.SignalState;
 

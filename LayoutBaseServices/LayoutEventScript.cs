@@ -246,7 +246,8 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEvent("event-script-task-terminated", this, task));
 
             if (task == RootTask) {
-                EventManager.Event(new LayoutEvent("event-script-terminated", this));
+                Dispatch.Notification.OnEventScriptTerminated(this);
+
                 if (task.EventRoot.IsErrorState && errorOccurredEvent != null)
                     EventManager.Event(errorOccurredEvent);
                 else if (scriptDoneEvent != null)
@@ -263,7 +264,7 @@ namespace LayoutManager {
             tasks.Clear();
 
             tasks.Add(RootTask);
-            EventManager.Event(new LayoutEvent("event-script-reset", this, RootTask));
+            Dispatch.Notification.OnEventScriptReset(this, RootTask);
 
             RootTask.Reset();
         }
@@ -276,7 +277,7 @@ namespace LayoutManager {
 
         protected virtual void Dispose(bool disposing) {
             if(disposing) {
-                EventManager.Event(new LayoutEvent("event-script-dispose", this));
+                Dispatch.Notification.OnEventScriptDispose(this);
 
                 foreach (LayoutEventScriptTask task in tasks) {
                     try {

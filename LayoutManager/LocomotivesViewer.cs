@@ -95,7 +95,7 @@ namespace LayoutManager {
         }
 
         [DispatchTarget]
-        private void EnterOperationMode(OperationModeParameters settings) {
+        private void OnEnteredOperationMode(OperationModeParameters settings) {
             operationMode = true;
             buttonOptions.Text = "&Arrange";
         }

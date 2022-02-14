@@ -44,8 +44,9 @@ namespace LayoutManager.Logic {
                 e.ContinueProcessing = false;
         }
 
-        [LayoutEvent("exit-operation-mode", Order = 10000)]
-        private void ClearTrackConnections(LayoutEvent e) {
+
+        [DispatchTarget(Order = 10000)]
+        private void OnExitOperationMode() {
             ResetTrackConnections();
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Diagnostics;
+using MethodDispatcher;
 using LayoutManager.Model;
 
 #pragma warning disable IDE0051,IDE0060
@@ -122,8 +123,8 @@ namespace LayoutManager.Logic {
             speedChangeState.OnTimer(e);
         }
 
-        [LayoutEvent("exit-operation-mode")]
-        private void exitOperationMode(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnExitOperationMode() {
             List<SpeedChangeState> activeSpeedChanges = new();
 
             foreach (SpeedChangeState speedChangeState in trainIDtoSpeedChangeState.Values)
