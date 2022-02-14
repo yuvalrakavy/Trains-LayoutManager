@@ -22,11 +22,8 @@ namespace LayoutManager.Logic {
         /// If it does, propagate the new power through the tracks.
         /// </summary>
         /// <param name="e"></param>
-        [LayoutEvent("power-outlet-changed-state-notification")]
-        private void PowerOutletChangedState(LayoutEvent e) {
-            var powerOutlet = Ensure.NotNull<ILayoutPowerOutlet>(e.Sender, "outlet component");
-            var power = Ensure.NotNull<ILayoutPower>(e.Info, "power");
-
+        [DispatchTarget]
+        private void OnPowerOutletChangedState(ILayoutPowerOutlet powerOutlet, ILayoutPower? power) {
             // Redraw all tracks
             foreach (LayoutTrackComponent track in LayoutModel.AllComponents<LayoutTrackComponent>(LayoutModel.ActivePhases))
                 track.Redraw();
@@ -34,7 +31,7 @@ namespace LayoutManager.Logic {
             var outletComponentId = powerOutlet.OutletComponent.Id;
 
             // If this outlet was connected to power connector which needs to notify that is can be locked.
-            if (_pendingPowerConnectedLockReady.ContainsKey(outletComponentId) && power.Type != LayoutPowerType.Disconnected) {
+            if (_pendingPowerConnectedLockReady.ContainsKey(outletComponentId) && power != null && power.Type != LayoutPowerType.Disconnected) {
                 var component = LayoutModel.Component<ILayoutLockResource>(_pendingPowerConnectedLockReady[outletComponentId]);
 
                 if (component != null)
@@ -43,19 +40,14 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("register-power-connected-lock")]
-        private void RegisterPowerConnectedLock(LayoutEvent e0) {
-            var e = (LayoutEvent<LayoutTrackPowerConnectorComponent>)e0;
-            var outletComponent = e.Sender?.Info?.Inlet?.ConnectedOutlet?.OutletComponent;
+        [DispatchTarget]
+        private void RegisterPowerConnectedLock(LayoutTrackPowerConnectorComponent powerConnector) {
+            var outletComponent = powerConnector.Info.Inlet.ConnectedOutlet.OutletComponent;
 
-            Debug.Assert(outletComponent != null);
+            var id = outletComponent.Id;
 
-            if (outletComponent != null) {
-                var id = outletComponent.Id;
-
-                if (!_pendingPowerConnectedLockReady.ContainsKey(id))
-                    _pendingPowerConnectedLockReady.Add(id, e.Sender!.Id);
-            }
+            if (!_pendingPowerConnectedLockReady.ContainsKey(id))
+                _pendingPowerConnectedLockReady.Add(id, powerConnector.Id);
         }
 
         [DispatchTarget(Order = 101)]
@@ -151,11 +143,8 @@ namespace LayoutManager.Logic {
             return false;
         }
 
-        [LayoutEvent("add-power-connector-as-resource")]
-        private void AddPowerConnectorAsResource(LayoutEvent e0) {
-            var e = (LayoutEvent<LayoutTrackPowerConnectorComponent, Action<LayoutBlockDefinitionComponent>>)e0;
-            var powerConnector = e.Sender;
-
+        [DispatchTarget]
+        private void AddPowerConnectorAsResource(LayoutTrackPowerConnectorComponent powerConnector, Action<LayoutBlockDefinitionComponent> addPowerConnectorAsResourceAction) {
             Debug.Assert(powerConnector != null);
 
             if (powerConnector != null && powerConnector.Inlet.IsConnected && powerConnector.Inlet.ConnectedOutlet.ObtainablePowers.Count() > 1) {
@@ -163,8 +152,7 @@ namespace LayoutManager.Logic {
                     if (!blockDefinition.Info.Resources.Any(resourceInfo => resourceInfo.ResourceId == powerConnector.Id)) {
                         // This block does not have this power connector as a resource
                         Trace.WriteLine($"Will add {powerConnector.FullDescription} as resource to {blockDefinition.FullDescription}");
-                        Debug.Assert(e.Info != null);
-                        e.Info?.Invoke(blockDefinition);
+                        addPowerConnectorAsResourceAction(blockDefinition);
                     }
                 }
             }
@@ -343,22 +331,12 @@ namespace LayoutManager.Logic {
             return powerConnector ?? throw new ArgumentException("Unable to get power connector for region");
         }
 
-        [LayoutEventDef("train-power-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(ILayoutPower))]
-        [LayoutEventDef("locomotive-power-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainLocomotiveInfo), InfoType = typeof(ILayoutPower))]
-        private void OnTrainPowerChanged(TrainStateInfo train, ILayoutPower power) {
-            EventManager.Event(new LayoutEvent<TrainStateInfo, ILayoutPower>("train-power-changed", train, power));
+        [DispatchTarget]
+        private void ChangeTrainPower(TrainStateInfo train, ILayoutPower power) {
+            Dispatch.Notification.OnTrainPowerChanged(train, power);
 
             foreach (var trainLoco in train.Locomotives)
-                EventManager.Event(new LayoutEvent<TrainLocomotiveInfo, ILayoutPower>("locomotive-power-changed", trainLoco, power));
-        }
-
-        [LayoutEvent("change-train-power")]
-        private void ChangeTrainPower(LayoutEvent e0) {
-            var e = (LayoutEvent<TrainStateInfo, ILayoutPower>)e0;
-
-            Debug.Assert(e.Sender != null && e.Info != null);
-            if (e.Sender != null && e.Info != null)
-                OnTrainPowerChanged(e.Sender, e.Info);
+                Dispatch.Notification.OnLocomotivePowerChanged(trainLoco, power);
         }
 
         [DispatchTarget]
@@ -442,36 +420,33 @@ namespace LayoutManager.Logic {
                 await Dispatch.Call.SetTrackComponentsState(switchingCommands);
 
                 foreach (var train in powerConnector.Trains)
-                    OnTrainPowerChanged(train, power);
+                    ChangeTrainPower(train, power);
             }
         }
 
-        [LayoutEvent("command-station-power-on-notification")]
-        private void OnCommandStationPowerOn(LayoutEvent e) {
-            var commandStation = Ensure.NotNull<IModelComponentIsCommandStation>(e.Sender, "commandStation");
-
+        [DispatchTarget]
+        private void OnCommandStationPowerOn(IModelComponentIsCommandStation commandStation) {
             if (LayoutController.IsOperationMode) {
                 foreach (var powerConnector in from p in LayoutModel.Components<LayoutTrackPowerConnectorComponent>(LayoutModel.ActivePhases) where p.Inlet.ConnectedOutlet.Power.PowerOriginComponentId == commandStation.Id select p)
                     foreach (var train in powerConnector.Trains)
-                        OnTrainPowerChanged(train, powerConnector.Inlet.ConnectedOutlet.Power);
+                        ChangeTrainPower(train, powerConnector.Inlet.ConnectedOutlet.Power);
             }
         }
 
         [DispatchTarget]
         private void OnTrainPlacedOnTrack(TrainStateInfo train) {
             if (train.LocomotiveBlock != null)
-                OnTrainPowerChanged(train, train.LocomotiveBlock.BlockDefinintion.Power);
+                ChangeTrainPower(train, train.LocomotiveBlock.BlockDefinintion.Power);
         }
 
-        [LayoutEvent("train-is-removed")]
-        private void OnCanRemoveTrain(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+        [DispatchTarget]
+        private void OnTrainIsRemoved(TrainStateInfo train) {
             var power = train.LocomotiveBlock?.BlockDefinintion.Power;
 
             if (power != null) {
                 var disconnectedPower = new LayoutPower(power.PowerOriginComponent, LayoutPowerType.Disconnected, power.DigitalFormats, "Disconnected");
 
-                OnTrainPowerChanged(train, disconnectedPower);
+                ChangeTrainPower(train, disconnectedPower);
             }
         }
     }

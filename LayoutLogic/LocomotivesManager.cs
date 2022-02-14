@@ -370,11 +370,18 @@ namespace LayoutManager.Logic {
             return addressMap;
         }
 
-        // Trap events that invalidate the locomotive address map cache
-        //[LayoutEvent("train-is-removed")]
-        [DispatchTarget(Name = "OnTrainPlacedOnTrack")]
-        //[LayoutEvent("locomotive-power-changed")]
-        private void InvalidateAddressMap(TrainStateInfo train) {
+        [DispatchTarget]
+        private void OnTrainPlacedOnTrack(TrainStateInfo train) {
+            addressMapCache.Clear();
+        }
+
+        [DispatchTarget]
+        private void OnLocomotivePowerChanged(TrainLocomotiveInfo trainLoco, ILayoutPower power) {
+            addressMapCache.Clear();
+        }
+
+        [DispatchTarget]
+        private void OnTrainIsRemoved(TrainStateInfo train) {
             addressMapCache.Clear();
         }
 

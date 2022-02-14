@@ -370,9 +370,8 @@ namespace LayoutEmulation {
             }
         }
 
-        [LayoutEvent("train-is-removed")]
         [DispatchTarget]
-        private void TrainRemoved(TrainStateInfo train) {
+        private void OnTrainIsRemoved(TrainStateInfo train) {
              lock (Sync) {
                 if (train.CommandStation != null) {
                     var commandStationId = train.CommandStation.Id;
@@ -388,7 +387,7 @@ namespace LayoutEmulation {
 
         [DispatchTarget]
         private void OnTrainRelocated(TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
-            TrainRemoved(train);
+            OnTrainIsRemoved(train);
             OnTrainCreated(train, blockDefinition);
         }
 

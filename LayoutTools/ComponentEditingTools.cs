@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Linq;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using LayoutManager.View;
@@ -359,17 +360,15 @@ namespace LayoutManager.Tools {
                     }
 
                     if (Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("check-layout", this, true).SetPhases(checkPhases)))) {
-                        EventManager.Event(
-                            new LayoutEvent<LayoutTrackPowerConnectorComponent, Action<LayoutBlockDefinitionComponent>>("add-power-connector-as-resource", powerConnectorcomponent,
-                                blockDefinition => {
-                                    LayoutXmlInfo xmlInfo = new(blockDefinition);
-                                    var newBlockDefinitionInfo = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element);
-                                    command ??= new LayoutCompoundCommand("Assign power connector as resource");
+                        Dispatch.Call.AddPowerConnectorAsResource(powerConnectorcomponent,
+                            blockDefinition => {
+                                LayoutXmlInfo xmlInfo = new(blockDefinition);
+                                var newBlockDefinitionInfo = new LayoutBlockDefinitionComponentInfo(blockDefinition, xmlInfo.Element);
+                                command ??= new LayoutCompoundCommand("Assign power connector as resource");
 
-                                    newBlockDefinitionInfo.Resources.Add(powerConnectorcomponent.Id);
-                                    command.Add(new LayoutModifyComponentDocumentCommand(blockDefinition, xmlInfo));
-                                }
-                            )
+                                newBlockDefinitionInfo.Resources.Add(powerConnectorcomponent.Id);
+                                command.Add(new LayoutModifyComponentDocumentCommand(blockDefinition, xmlInfo));
+                            }
                         );
 
                         if (command != null)

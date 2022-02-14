@@ -186,10 +186,8 @@ namespace LayoutManager.Tools.Controls {
             UpdateButtons(null, EventArgs.Empty);
         }
 
-        [LayoutEvent("train-is-removed")]
-        private void TrainRemoved(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender);
-
+        [DispatchTarget]
+        private void OnTrainIsRemoved(TrainStateInfo train) {
             RemoveTripAssignment(train.Id);
         }
 

@@ -100,9 +100,13 @@ namespace LayoutManager {
             buttonOptions.Text = "&Arrange";
         }
 
-        [DispatchTarget(Name = "OnTrainCreated")]
-        //[LayoutEvent("train-is-removed")]
-        private void EventThatUpdateButtons(TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
+        [DispatchTarget]
+        private void OnTrainCreated(TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
+            UpdateButtons();
+        }
+
+        [DispatchTarget]
+        private void OnTrainIsRemoved(TrainStateInfo train) {
             UpdateButtons();
         }
 

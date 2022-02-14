@@ -84,12 +84,14 @@ namespace LayoutManager.Components {
                     if (Info.Inlet.ConnectedOutlet.SelectPower(LayoutPowerType.Digital, switchingCommands)) {
                         //switchingInProgress = true;
 
-                        EventManager.Event(new LayoutEvent<LayoutTrackPowerConnectorComponent>("register-power-connected-lock", this));
+                        Dispatch.Call.RegisterPowerConnectedLock(this);
 
                         var power = (from p in this.Inlet.ConnectedOutlet.ObtainablePowers where p.Type == LayoutPowerType.Digital select p).FirstOrDefault();
 
-                        foreach (var train in this.Trains)
-                            EventManager.Event(new LayoutEvent<TrainStateInfo, ILayoutPower>("change-train-power", train, power));
+                        if (power != null) {
+                            foreach (var train in this.Trains)
+                                Dispatch.Call.ChangeTrainPower(train, power);
+                        }
 
                         if (switchingCommands.Count > 0)
                             Dispatch.Call.SetTrackComponentsState(switchingCommands);
@@ -105,8 +107,10 @@ namespace LayoutManager.Components {
                 if (Info.Inlet.ConnectedOutlet.SelectPower(LayoutPowerType.Disconnected, switchingCommands)) {
                     var power = (from p in this.Inlet.ConnectedOutlet.ObtainablePowers where p.Type == LayoutPowerType.Disconnected select p).FirstOrDefault();
 
-                    foreach (var train in this.Trains)
-                        EventManager.Event(new LayoutEvent<TrainStateInfo, ILayoutPower>("change-train-power", train, power));
+                    if (power != null) {
+                        foreach (var train in this.Trains)
+                            Dispatch.Call.ChangeTrainPower(train, power);
+                    }
 
                     if (switchingCommands.Count > 0)
                         Dispatch.Call.SetTrackComponentsState(switchingCommands);
@@ -331,7 +335,7 @@ namespace LayoutManager.Components {
                 var powerSelector = (LayoutPowerSelectorComponent)Component;
                 ILayoutPowerOutlet outlet = powerSelector.PowerOutlets[0];
 
-                EventManager.Event(new LayoutEvent<ILayoutPowerOutlet, ILayoutPower>("power-outlet-changed-state-notification", outlet, outlet.Power));
+                Dispatch.Notification.OnPowerOutletChangedState(outlet, outlet.Power);
             }
         }
 

@@ -594,7 +594,7 @@ namespace LayoutManager {
     /// </summary>
     public enum LayoutPowerType {
         Disconnected,       // No power
-        Digital,            // Digial DCC power
+        Digital,            // Digital DCC power
         Analog,             // Analog power
         Programmer,         // DCC programmer
     }

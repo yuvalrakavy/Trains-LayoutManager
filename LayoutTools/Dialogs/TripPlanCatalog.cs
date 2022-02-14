@@ -82,10 +82,8 @@ namespace LayoutManager.Tools.Dialogs {
             base.Dispose(disposing);
         }
 
-        [LayoutEvent("train-is-removed")]
-        private void TrainRemoved(LayoutEvent e) {
-            var removedTrain = Ensure.NotNull<TrainStateInfo>(e.Sender);
-
+        [DispatchTarget]
+        private void OnTrainIsRemoved(TrainStateInfo removedTrain) {
             if (train != null && removedTrain.Id == train.Id)
                 Close();
         }

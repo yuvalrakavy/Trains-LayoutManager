@@ -668,7 +668,7 @@ namespace LayoutManager.Model {
 
             set {
                 power = value;
-                EventManager.Event(new LayoutEvent<ILayoutPowerOutlet, ILayoutPower>("power-outlet-changed-state-notification", this, power));
+                Dispatch.Notification.OnPowerOutletChangedState(this, power);
             }
         }
 

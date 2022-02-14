@@ -38,9 +38,9 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        [LayoutEvent("command-station-power-on-notification")]
-        private void CommandStationPowerOnNotification(LayoutEvent e) {
-            if (e.Sender == _commandStation)
+        [DispatchTarget]
+        private void OnCommandStationPowerOn(IModelComponentIsCommandStation commandStation) {
+            if (commandStation == _commandStation)
                 Close();
         }
 

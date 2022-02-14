@@ -475,5 +475,53 @@ namespace LayoutManager {
             ds_isTrainInActiveTrip ??= d[nameof(IsTrainInActiveTrip)];
             return ds_isTrainInActiveTrip.Call<bool>(train);
         }
+
+        // LayoutPower
+
+        [DispatchSource]
+        public static void OnPowerOutletChangedState(this Dispatcher d, ILayoutPowerOutlet powerOutlet, ILayoutPower? power) {
+            d[nameof(OnPowerOutletChangedState)].CallVoid(powerOutlet, power);
+        }
+
+        [DispatchSource]
+        public static void RegisterPowerConnectedLock(this Dispatcher d, LayoutTrackPowerConnectorComponent powerConnector) {
+            d[nameof(RegisterPowerConnectedLock)].CallVoid(powerConnector);
+        }
+
+        [DispatchSource]
+        public static void AddPowerConnectorAsResource(this Dispatcher d, LayoutTrackPowerConnectorComponent powerConnector, Action<LayoutBlockDefinitionComponent> addPowerConnectorAsResourceAction) {
+            d[nameof(AddPowerConnectorAsResource)].CallVoid(powerConnector, addPowerConnectorAsResourceAction);
+        }
+
+        [DispatchSource]
+        public static void OnTrainPowerChanged(this Dispatcher d, TrainStateInfo train, ILayoutPower power) {
+            d[nameof(OnTrainPowerChanged)].CallVoid(train, power);
+        }
+
+        [DispatchSource]
+        public static void OnLocomotivePowerChanged(this Dispatcher d, TrainLocomotiveInfo trainLoco, ILayoutPower power) {
+            d[nameof(OnLocomotivePowerChanged)].CallVoid(trainLoco, power);
+        }
+
+        [DispatchSource]
+        public static void ChangeTrainPower(this Dispatcher d, TrainStateInfo train, ILayoutPower power) {
+            d[nameof(ChangeTrainPower)].CallVoid(train, power);
+        }
+
+        [DispatchSource]
+        public static void OnCommandStationPowerOn(this Dispatcher d, IModelComponentIsCommandStation commandStation) {
+            d[nameof(OnCommandStationPowerOn)].CallVoid(commandStation);
+        }
+
+        [DispatchSource]
+        public static void OnTrainIsRemoved(this Dispatcher d, TrainStateInfo train) {
+            d[nameof(OnTrainIsRemoved)].CallVoid(train);
+        }
+
+        [DispatchSource]
+        public static void OnTrainWasRemoved(this Dispatcher d, TrainStateInfo train) {
+            d[nameof(OnTrainWasRemoved)].CallVoid(train);
+        }
+
     }
 }

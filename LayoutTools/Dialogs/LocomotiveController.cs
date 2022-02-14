@@ -82,11 +82,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.Close();
         }
 
-        [LayoutEvent("train-power-changed", IfSender = "*[@ID='`string(@ID)`']", Order = 10)]
-        private void OnTrainPowerChanged(LayoutEvent e) {
-            var _ = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-            var power = Ensure.NotNull<ILayoutPower>(e.Info, "power");
-
+        [DispatchTarget]
+        private void OnTrainPowerChanged([DispatchFilter(Type="IsMyId")] TrainStateInfo train, ILayoutPower power) {
             if (power.Type != LayoutPowerType.Digital)
                 this.Close();
         }

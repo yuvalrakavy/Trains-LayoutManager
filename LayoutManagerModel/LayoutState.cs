@@ -1570,11 +1570,10 @@ namespace LayoutManager.Model {
             LayoutModel.StateManager.Components.RemoveForTrain(trainState.Id, "TrainPassing");
         }
 
-        [LayoutEventDef("train-removed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
         public void Remove(TrainStateInfo trainState) {
-            EventManager.Event(new LayoutEvent<TrainStateInfo>("train-is-removed", trainState));
+            Dispatch.Notification.OnTrainIsRemoved(trainState);
             RemoveTrainState(trainState);
-            EventManager.Event(new LayoutEvent("train-removed", trainState));
+            Dispatch.Notification.OnTrainWasRemoved(trainState);
         }
 
         /// <summary>

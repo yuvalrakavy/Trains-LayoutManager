@@ -388,7 +388,8 @@ namespace LayoutManager.Components {
                         programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, A_EmulationTickTime);
                 }
             }
-            EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation>("command-station-power-on-notification", this));
+
+            Dispatch.Notification.OnCommandStationPowerOn(this);
         }
 
         protected void PowerOff() {

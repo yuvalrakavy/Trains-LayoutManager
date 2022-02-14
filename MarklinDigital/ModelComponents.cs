@@ -140,9 +140,8 @@ namespace MarklinDigital {
 
         #region Notification Event Handlers
 
-        [LayoutEvent("train-is-removed")]
-        private void TrainRemoved(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender);
+        [DispatchTarget]
+        private void OnTrainIsRemoved(TrainStateInfo train) {
             var commandStation = Dispatch.Call.GetCommandStation(train);
 
             if (train.MotionDirection == LocomotiveOrientation.Backward) {

@@ -310,10 +310,8 @@ namespace DiMAX {
             return await (Task<object>)OutputManager.AddCommand(new DiMAXprogramCVonTrack(this, (int)e.GetOption("Address"), cv.Number, cv.Value));
         }
 
-        [LayoutEvent("locomotive-power-changed")]
-        private void LocomotivePowerChanged(LayoutEvent e) {
-            var trainLocomotive = Ensure.NotNull<TrainLocomotiveInfo>(e.Sender, "trainLocomotive");
-            var power = Ensure.NotNull<ILayoutPower>(e.Info, "power");
+        [DispatchTarget]
+        private void OnLocomotivePowerChanged(TrainLocomotiveInfo trainLocomotive, ILayoutPower power) {
             var locomotive = trainLocomotive.Locomotive;
             int address = locomotive.AddressProvider.Unit;
 

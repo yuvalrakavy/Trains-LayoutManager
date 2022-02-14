@@ -1545,17 +1545,8 @@ namespace LayoutManager.Logic {
                 EventManager.Event(new LayoutEvent("driver-target-speed-changed", trip.Train));
         }
 
-        [LayoutEvent("train-is-removed")]
-        private void CanRemoveTrain(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-
-            if (activeTrips.Contains(train.Id))
-                EventManager.Event(new LayoutEvent("abort-trip", train, true));
-        }
-
-        [LayoutEvent("train-is-removed")]
-        private void TrainRemoved(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+        [DispatchTarget]
+        private void OnTrainIsRemoved(TrainStateInfo train) {
             ActiveTripInfo? trip = activeTrips[train.Id];
 
             if (trip != null)
