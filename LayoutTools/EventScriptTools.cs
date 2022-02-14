@@ -143,15 +143,13 @@ namespace LayoutManager.Tools {
                 if (trip == null)
                     return null;
 
-                EventManager.Event(new LayoutEvent("set-script-context", trip, context));
+                Dispatch.Call.SetScriptContext(trip, context);
                 return context[symbolName];
             }
         }
 
-        [LayoutEvent("set-script-context", SenderType = typeof(TrainStateInfo))]
-        private void SetContextTrain(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-            var context = Ensure.NotNull<LayoutScriptContext>(e.Info, "context");
+        [DispatchTarget]
+        private void SetScriptContext([DispatchFilter] TrainStateInfo train, LayoutScriptContext context) {
 
             if (!context.Contains("Train", train)) {
                 context["Train"] = train;
@@ -165,16 +163,14 @@ namespace LayoutManager.Tools {
                 context["Driver"] = trainToTripResolver;
                 context["FinalDestination"] = trainToTripResolver;
                 context["CurrentWayPoint"] = trainToTripResolver;
-                context["Destinaion"] = trainToTripResolver;
+                context["Destination"] = trainToTripResolver;
                 context["TripPlan"] = trainToTripResolver;
                 context["TripPlanWayPoints"] = trainToTripResolver;
             }
         }
 
-        [LayoutEvent("set-script-context", SenderType = typeof(TripPlanAssignmentInfo))]
-        private void SetContextTripPlanAssignment(LayoutEvent e) {
-            var trip = Ensure.NotNull<TripPlanAssignmentInfo>(e.Sender, "trip");
-            var context = Ensure.NotNull<LayoutScriptContext>(e.Info, "context");
+        [DispatchTarget]
+        private void SetScriptContext_TripPlanAssignment([DispatchFilter] TripPlanAssignmentInfo trip, LayoutScriptContext context) {
 
             if (!context.Contains("Trip", trip)) {
                 context["Trip"] = trip;
@@ -186,24 +182,22 @@ namespace LayoutManager.Tools {
 
                 if (trip.CurrentWaypoint != null) {
                     context["CurrentWayPoint"] = trip.CurrentWaypoint;
-                    context["Destinaion"] = trip.CurrentWaypoint.Destination;
+                    context["Destination"] = trip.CurrentWaypoint.Destination;
                 }
                 else {      // Ensure that resolvers (placed by train) is removed to avoid infinite resolving loop
                     context.Remove("CurrentWayPoint");
                     context.Remove("Destination");
                 }
 
-                EventManager.Event(new LayoutEvent("set-script-context", trip.TripPlan, context));
+                Dispatch.Call.SetScriptContext(trip.TripPlan, context);
 
                 if (!context.Contains("Train", trip.Train))
-                    EventManager.Event(new LayoutEvent("set-script-context", trip.Train, context));
+                    Dispatch.Call.SetScriptContext(trip.Train, context);
             }
         }
 
-        [LayoutEvent("set-script-context", SenderType = typeof(TripPlanInfo))]
-        private void SetContextTripPlan(LayoutEvent e) {
-            var tripPlan = Ensure.NotNull<TripPlanInfo>(e.Sender, "tripPlan");
-            var context = Ensure.NotNull<LayoutScriptContext>(e.Info, "context");
+        [DispatchTarget]
+        private void SetScriptContext_TripPlan([DispatchFilter] TripPlanInfo tripPlan, LayoutScriptContext context) {
 
             if (!context.Contains("TripPlan", tripPlan)) {
                 context["TripPlan"] = tripPlan;
@@ -211,26 +205,21 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [LayoutEvent("set-script-context", SenderType = typeof(LayoutBlock))]
-        private void SetContextBlock(LayoutEvent e) {
-            var block = Ensure.NotNull<LayoutBlock>(e.Sender, "block");
-            var context = Ensure.NotNull<LayoutScriptContext>(e.Info, "context");
+        [DispatchTarget]
+        private void SetScriptContext_Block([DispatchFilter] LayoutBlock block, LayoutScriptContext context) {
 
             if (!context.Contains("Block", block)) {
                 context["Block"] = block;
 
                 if (block.BlockDefinintion != null)
-                    EventManager.Event(new LayoutEvent("set-script-context", block.BlockDefinintion, context));
+                    Dispatch.Call.SetScriptContext(block.BlockDefinintion, context);
             }
         }
 
-        [LayoutEvent("set-script-context", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void SetContextBlockInfo(LayoutEvent e) {
-            var blockInfo = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockInfo");
-            var context = Ensure.NotNull<LayoutScriptContext>(e.Info, "context");
-
-            if (!context.Contains("BlockInfo", blockInfo)) {
-                context["BlockInfo"] = blockInfo;
+        [DispatchTarget]
+        private void SetScriptContext_BlockDefinition([DispatchFilter] LayoutBlockDefinitionComponent blockDefinition, LayoutScriptContext context) {
+            if (!context.Contains("BlockInfo", blockDefinition)) {
+                context["BlockInfo"] = blockDefinition;
             }
         }
 
@@ -251,9 +240,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [LayoutEvent("train-enter-block")]
-        private void TrainEnterBlock(LayoutEvent e) {
-            EventManager.Event(new LayoutEvent("train-in-block", e.Sender, e.Info));
+        [DispatchTarget]
+        private void OnTrainEnteredBlock(TrainStateInfo train, LayoutBlock block) {
+            EventManager.Event(new LayoutEvent("train-in-block", train, block));
         }
 
         #endregion
@@ -608,12 +597,12 @@ namespace LayoutManager.Tools {
                 if (repeatedEvent != null)
                     repeatedEvent.Context = new LayoutScriptContext("ForEachTrain", parentContext);
 
-                EventManager.Event(new LayoutEvent("set-script-context", train, Context));
+                Dispatch.Call.SetScriptContext(train, Context);
 
                 var tripAssignment = (TripPlanAssignmentInfo?)EventManager.Event(new LayoutEvent("get-train-active-trip", train));
 
                 if (tripAssignment != null)
-                    EventManager.Event(new LayoutEvent("set-script-context", tripAssignment, Context));
+                    Dispatch.Call.SetScriptContext(tripAssignment, Context);
 
                 return true;
             }
@@ -1485,10 +1474,10 @@ namespace LayoutManager.Tools {
                 string selectReversedMethod = Element.GetAttribute(A_ReversedTripPlanSelection);
                 var tripPlanCandidates = new List<XmlElement>();
                 var reversedTripPlanCandidates = new List<XmlElement>();
-                var filter = new LayoutConditionScript("Execute Random Tripplan Filter", Ensure.NotNull<XmlElement>(Element[E_Filter]), true);
+                var filter = new LayoutConditionScript("Execute Random Trip-plan Filter", Ensure.NotNull<XmlElement>(Element[E_Filter]), true);
                 var scriptContext = filter.ScriptContext;
 
-                EventManager.Event(new LayoutEvent("set-script-context", train, scriptContext));
+                Dispatch.Call.SetScriptContext(train, scriptContext);
 
                 workingDoc.AppendChild(applicableTripPlansElement);
                 applicableTripPlansElement.SetAttributeValue(A_StaticGrade, false);
@@ -1509,7 +1498,7 @@ namespace LayoutManager.Tools {
 
                     if (tripPlan != null && routeQuality.IsFree) {
                         if (!tripPlan.IsCircular || selectCircular) {
-                            EventManager.Event(new LayoutEvent("set-script-context", tripPlan, scriptContext));
+                            Dispatch.Call.SetScriptContext(tripPlan, scriptContext);
 
                             Application.DoEvents();
 

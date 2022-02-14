@@ -160,7 +160,7 @@ namespace MarklinDigital {
         private void AddTrainOperationMenu(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender);
             var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-            bool trainInActiveTrip = Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("is-train-in-active-trip", train)));
+            bool trainInActiveTrip = Dispatch.Call.IsTrainInActiveTrip(train);
 
             if (train.CommandStation != null && train.CommandStation.Id == Id) {
                 if (train.Locomotives.Count == 1) {
@@ -180,6 +180,7 @@ namespace MarklinDigital {
 
                 if (!trainInActiveTrip)
                     menu.Items.Add(new ToggleLocomotiveManagement(train));
+
             }
         }
 

@@ -27,11 +27,11 @@ namespace LayoutManager.Logic {
         /// Build the track to block association
         /// </summary>
         /// <returns>True if there are no fatal errors</returns>
-        [LayoutEvent("check-layout", Order = 200)]
-        private void LocateBlocks(LayoutEvent e) {
-            LayoutPhase phases = e.GetPhases();
+        [DispatchTarget(Order = 200)]
+        private bool CheckLayout_LocateBlocks(LayoutPhase phases) {
             IEnumerable<LayoutBlockEdgeBase> blockEdges = LayoutModel.Components<LayoutBlockEdgeBase>(phases);
             TrackEdgeDictionary scannedBlockBoundries = new();
+            bool ok = true;
 
             LayoutModel.Blocks.Clear();
 
@@ -56,7 +56,7 @@ namespace LayoutManager.Logic {
                         var block = ScanBlock(scannedBlockBoundries, scanFrom, null);
 
                         if (block == null || !CheckBlockForBlockInfo(block))
-                            e.Info = false;
+                            ok = false;
 
                         if (!scannedBlockBoundries.ContainsKey(scanFrom))
                             scannedBlockBoundries.Add(scanFrom, scanFrom);
@@ -67,7 +67,7 @@ namespace LayoutManager.Logic {
                         var block = ScanBlock(scannedBlockBoundries, scanFrom, null);
 
                         if (block == null || !CheckBlockForBlockInfo(block))
-                            e.Info = false;
+                            ok = false;
 
                         if (!scannedBlockBoundries.ContainsKey(scanFrom))
                             scannedBlockBoundries.Add(scanFrom, scanFrom);
@@ -91,13 +91,13 @@ namespace LayoutManager.Logic {
                                         foreach (LayoutComponentConnectionPoint scanCp in track.ConnectionPoints) {
                                             block = ScanBlock(scannedBlockBoundries, new TrackEdge(track, scanCp), block);
                                             if (block == null) {
-                                                e.Info = false;
+                                                ok = false;
                                                 break;
                                             }
                                         }
 
                                         if (block != null && !CheckBlockForBlockInfo(block))
-                                            e.Info = false;
+                                            ok = false;
                                     }
                                 }
                             }
@@ -106,8 +106,7 @@ namespace LayoutManager.Logic {
                 }
             }
 
-            if (!(bool)(e.Info ?? false))
-                e.ContinueProcessing = false;
+            return ok;
         }
 
         private bool CheckBlockForBlockInfo(LayoutBlock block) {
@@ -183,9 +182,8 @@ namespace LayoutManager.Logic {
 
         #region Process block Info
 
-        [LayoutEvent("check-layout", Order = 300)]
-        private void ProcessBlockInfo(LayoutEvent e) {
-            LayoutPhase phase = e.GetPhases();
+        [DispatchTarget(Order = 300)]
+        private bool CheckLayout_ProcessBlockInfo(LayoutPhase phase) {
 
             foreach (LayoutBlockDefinitionComponent blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(phase)) {
                 blockDefinition.ClearBlockEdges();
@@ -256,6 +254,8 @@ namespace LayoutManager.Logic {
                     }
                 }
             }
+
+            return true;
         }
 
         private void AddBlockInfoBlockEdges(LayoutBlockDefinitionComponent blockInfo, int cpIndex) {
@@ -290,8 +290,8 @@ namespace LayoutManager.Logic {
 
         #region Build Occupancy (train detection blocks) data structures
 
-        [LayoutEvent("check-layout", Order = 320)]
-        private void LocateNoFeedbackBlocks(LayoutEvent e) {
+        [DispatchTarget(Order = 320)]
+        private bool CheckLayout_LocateNoFeedbackBlocks(LayoutPhase phase) {
             foreach (LayoutBlock block in LayoutModel.Blocks) {
                 LayoutBlockDefinitionComponentInfo info = block.BlockDefinintion.Info;
 
@@ -308,12 +308,12 @@ namespace LayoutManager.Logic {
                 else
                     info.NoFeedback = false;
             }
+
+            return true;
         }
 
-        [LayoutEvent("check-layout", Order = 350)]
-        private void BuildTrainDetectionBlocks(LayoutEvent e) {
-            LayoutPhase phase = e.GetPhases();
-
+        [DispatchTarget(Order = 350)]
+        private bool CheckLayout_BuildTrainDetectionBlocks(LayoutPhase phase) {
             foreach (LayoutBlockDefinitionComponent blockInfo in LayoutModel.Components<LayoutBlockDefinitionComponent>(phase)) {
                 if (blockInfo.Info.IsOccupancyDetectionBlock) {
                     LayoutOccupancyBlock occupancyBlock = new();
@@ -325,6 +325,8 @@ namespace LayoutManager.Logic {
                     ScanTrainDetectionBlock(new TrackEdge(track, track.ConnectionPoints[1]), occupancyBlock);
                 }
             }
+
+            return true;
         }
 
         private void ScanTrainDetectionBlock(TrackEdge scanFrom, LayoutOccupancyBlock occupancyBlock) {
@@ -362,23 +364,20 @@ namespace LayoutManager.Logic {
 
         #region Handle block policy
 
-        [LayoutEvent("train-enter-block")]
-        private void ActivateBlockPolicy(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-            var block = Ensure.NotNull<LayoutBlock>(e.Info, "block");
-
+        [DispatchTarget]
+        private void OnTrainEnteredBlock_ActivateBlockPolicy(TrainStateInfo train, LayoutBlock block) {
             if (block.BlockDefinintion != null) {
                 foreach (Guid policyID in block.BlockDefinintion.Info.Policies) {
                     var policy = LayoutModel.StateManager.BlockInfoPolicies[policyID];
 
                     if (policy != null && policy.EventScriptElement != null) {
-                        LayoutEventScript eventScript = EventManager.EventScript("Policy " + policy.Name + " activated by train " + train.DisplayName + " entering block " + block.BlockDefinintion.Name,
+                        LayoutEventScript eventScript = EventManager.EventScript($"Policy {policy.Name} activated by train {train.DisplayName} entering block {block.BlockDefinintion.Name}",
                             policy.EventScriptElement, new Guid[] { block.Id, train.Id }, null);
 
                         LayoutScriptContext scriptContext = eventScript.ScriptContext;
 
-                        EventManager.Event(new LayoutEvent("set-script-context", train, scriptContext));
-                        EventManager.Event(new LayoutEvent("set-script-context", block, scriptContext));
+                        Dispatch.Call.SetScriptContext(train, scriptContext);
+                        Dispatch.Call.SetScriptContext(block, scriptContext);
 
                         eventScript.Reset();
                     }

@@ -206,10 +206,8 @@ namespace LayoutManager.CommonUI.Controls {
             InvalidateTrainState(train);
         }
 
-        [LayoutEvent("train-enter-block")]
-        private void NeedToUpdateLocomotiveItem(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-
+        [DispatchTarget]
+        private void OnTrainEnteredBlock(TrainStateInfo train, LayoutBlock block) {
             InvalidateTrainState(train);
         }
 

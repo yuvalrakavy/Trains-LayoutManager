@@ -940,7 +940,7 @@ namespace LayoutManager.Logic {
                     train.LastBlockEdgeCrossingSpeed = 1;
 
                     if (oldBlock.BlockDefinintion.ContainsBlockEdge(oldTrainLocation.DisplayFront, blockEdge)) {
-                        newTrainLocation = train.EnterBlock(TrainPart.Locomotive, newBlock, blockEdge, "train-extended");
+                        newTrainLocation = train.EnterBlock(TrainPart.Locomotive, newBlock, blockEdge, (train, block) => Dispatch.Notification.OnTrainExtended(train, block));
 
                         train.LastCrossedBlockEdge = blockEdge;
 
@@ -952,7 +952,7 @@ namespace LayoutManager.Logic {
                             newTrainLocation.DisplayFront = newBlock.BlockDefinintion.Track.ConnectionPoints[0];
                     }
                     else {
-                        newTrainLocation = train.EnterBlock(TrainPart.LastCar, newBlock, blockEdge, "train-extended");
+                        newTrainLocation = train.EnterBlock(TrainPart.LastCar, newBlock, blockEdge, (train, block) => Dispatch.Notification.OnTrainExtended(train, block));
 
                         // Extended train location front should point to the track contact direction and the track contact
                         // state direction should be forward

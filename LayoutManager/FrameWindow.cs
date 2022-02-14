@@ -1731,7 +1731,8 @@ namespace LayoutManager {
 
         private void Verify(LayoutPhase phases) {
             Dispatch.Call.ClearMessages();
-            if (Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("check-layout", LayoutModel.Instance, true).SetPhases(phases))))
+
+            if (Dispatch.Call.CheckLayout(phases))
                 MessageBox.Show(this, "Layout checked, all seems to be OK", "Layout Check Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

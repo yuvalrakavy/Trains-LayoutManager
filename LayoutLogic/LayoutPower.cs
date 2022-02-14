@@ -58,12 +58,9 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("check-layout", Order = 101)]
-        private void CheckForReverseLoops(LayoutEvent e) {
-            LayoutPhase phase = e.GetPhases();
-
-            if (CheckForReverseLoopsForPowerSection(phase))
-                e.Info = false;
+        [DispatchTarget(Order = 101)]
+        private bool CheckLayout_ReverseLoops(LayoutPhase phase) {
+            return !CheckForReverseLoopsForPowerSection(phase);
         }
 
         private struct ReverseLoopStackEntry : IComparable<ReverseLoopStackEntry> {
@@ -173,15 +170,15 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("check-layout", Order = 100)]
-        private void AssignPowerSource(LayoutEvent e) {
-            LayoutPhase phase = e.GetPhases();
+        [DispatchTarget(Order = 100)]
+        private bool CheckLayout_AssignPowerSource(LayoutPhase phase) {
             IEnumerable<LayoutTrackPowerConnectorComponent> powerConnectors = LayoutModel.Components<LayoutTrackPowerConnectorComponent>(phase);
             LayoutSelection duplicatedPowerConnectors = new();
+            bool ok = true;
 
             if (!powerConnectors.Any()) {
                 Error("No power-source (e.g. command station) is connected to the tracks - use track power connector component");
-                e.Info = false;
+                ok = false;
             }
             else {
                 ResetPowerConnectors();
@@ -191,7 +188,7 @@ namespace LayoutManager.Logic {
 
                     if (track == null) {
                         Error(powerConnector, "power connector is not on track component");
-                        e.Info = false;
+                        ok = false;
                     }
                     else {
                         if (track.GetPowerConnector(track.ConnectionPoints[0]) != null)
@@ -199,14 +196,14 @@ namespace LayoutManager.Logic {
                         else {
                             if (powerConnector.Inlet.OutletComponentId == Guid.Empty) {
                                 Error(powerConnector, "This power connector is not assigned to any power source");
-                                e.Info = false;
+                                ok = false;
                             }
                             else if (powerConnector.Inlet.GetOutletComponent(phase) == null) {
                                 if (powerConnector.Inlet.GetOutletComponent(LayoutPhase.All) == null)
                                     Error(powerConnector, "The component supplying power to this power connector cannot be found");
                                 else
                                     Error(powerConnector, "The component supplying power to this power connector is marked as 'Planned' or 'In construction'");
-                                e.Info = false;
+                                ok = false;
                             }
                             else
                                 PropagatePowerConnector(powerConnector);
@@ -216,7 +213,7 @@ namespace LayoutManager.Logic {
 
                 if (duplicatedPowerConnectors.Count > 0) {
                     Error(duplicatedPowerConnectors, "Duplicate track power connector - use track isolation component to separate the circuits");
-                    e.Info = false;
+                    ok = false;
                 }
 
                 LayoutSelection tracksWithNoPower = new();
@@ -238,9 +235,9 @@ namespace LayoutManager.Logic {
 
                 if (tracksWithNoPower.Count > 0) {
                     Error(tracksWithNoPower, "Those tracks are not powered - use power connector component to supply power");
-                    e.Info = false;
+                    ok = false;
                 }
-                else if ((bool)(e.Info ?? false)) {
+                else if (ok) {
                     // Check that programming power can be obtained for all blocks that are marked as Suggest for programming
                     var invalidProgrammingBlocks = new LayoutSelection(from blockDefinition in LayoutModel.Components<LayoutBlockDefinitionComponent>(phase)
                                                                        where blockDefinition.Info.SuggestForProgramming &&
@@ -252,24 +249,27 @@ namespace LayoutManager.Logic {
                             invalidProgrammingBlocks.Count == 1 ?
                             "This block is suggested for programming, however it cannot receive track programming power" :
                             "These blocks are suggested for programming, however they cannot receive track programming power");
-                        e.Info = false;
+                        ok = false;
                     }
                 }
             }
+
+            return ok;
         }
 
-        [LayoutEvent("check-layout", Order = 102)]
-        private void CheckPowerSelectors(LayoutEvent e) {
-            LayoutPhase phase = e.GetPhases();
-
+        [DispatchTarget(Order = 102)]
+        private bool CheckLayout_PowerSelectors(LayoutPhase phase) {
             var powerSelectorComponents = LayoutModel.Components<LayoutPowerSelectorComponent>(phase);
+            bool ok = true;
 
             foreach (var powerSelector in powerSelectorComponents) {
                 if (!CheckInlet(powerSelector, powerSelector.Inlet1, "Inlet 1"))
-                    e.Info = false;
+                    ok = false;
                 if (!CheckInlet(powerSelector, powerSelector.Inlet2, "Inlet 2"))
-                    e.Info = false;
+                    ok = false;
             }
+
+            return ok;
         }
 
         private bool CheckInlet(LayoutPowerSelectorComponent powerSelector, ILayoutPowerInlet inlet, string inletName) {

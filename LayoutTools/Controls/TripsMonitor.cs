@@ -171,9 +171,8 @@ namespace LayoutManager.Tools.Controls {
                 item.UpdateTrainStatus();
         }
 
-        [LayoutEvent("train-enter-block")]
-        private void TrainStatusChanged(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainsStateInfo>(e.Sender);
+        [DispatchTarget]
+        private void OnTrainEnteredBlock(TrainStateInfo train, LayoutBlock block) {
             var item = GetTripAssignmentItem(train.Id);
 
             if (item != null)

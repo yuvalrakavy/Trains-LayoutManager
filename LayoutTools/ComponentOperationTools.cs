@@ -1474,7 +1474,6 @@ namespace LayoutManager.Tools {
                 this.extendableTrainInfo = extendableTrainInfo;
             }
 
-            [LayoutEventDef("train-extended", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(LayoutBlock))]
             protected override void OnClick(EventArgs e) {
                 int fromCount = 1, toCount = 1;
 
@@ -1512,7 +1511,7 @@ namespace LayoutManager.Tools {
                 extendableTrainInfo.Train.LastBlockEdgeCrossingSpeed = 1;
 
                 if (extendedTrainLocation != null && extendableTrainInfo.Block.BlockDefinintion.ContainsBlockEdge(extendedTrainLocation.DisplayFront, extendableTrainInfo.blockEdge)) {
-                    newTrainLocation = extendableTrainInfo.Train.EnterBlock(TrainPart.Locomotive, block, extendableTrainInfo.blockEdge, "train-extended");
+                    newTrainLocation = extendableTrainInfo.Train.EnterBlock(TrainPart.Locomotive, block, extendableTrainInfo.blockEdge, (train, block) => Dispatch.Notification.OnTrainExtended(train, block));
 
                     extendableTrainInfo.Train.LastCrossedBlockEdge = extendableTrainInfo.blockEdge;
 
@@ -1527,7 +1526,7 @@ namespace LayoutManager.Tools {
                         trackContactPassingState.Direction = LocomotiveOrientation.Forward;
                 }
                 else {
-                    newTrainLocation = extendableTrainInfo.Train.EnterBlock(TrainPart.LastCar, block, extendableTrainInfo.blockEdge, "train-extended");
+                    newTrainLocation = extendableTrainInfo.Train.EnterBlock(TrainPart.LastCar, block, extendableTrainInfo.blockEdge, (train, block) => Dispatch.Notification.OnTrainExtended(train, block));
 
                     // Extended train location front should point to the track contact direction and the track contact
                     // state direction should be forward

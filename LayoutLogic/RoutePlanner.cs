@@ -30,12 +30,12 @@ namespace LayoutManager.Logic {
 
         /// <summary>
         /// Build routing table. The routing table provide for each switching state of each split point (e.g. turnout)
-        /// a list (actually a hashtable) of all possible split points that are can be reached by passing in this
+        /// a list (actually a hash-table) of all possible split points that are can be reached by passing in this
         /// split point using the given switch state.
         /// </summary>
-        [LayoutEvent("check-layout", Order = 400)]
-        private void BuildRoutingTable(LayoutEvent e) {
-            LayoutPhase phase = e.GetPhases();
+        [DispatchTarget(Order = 400)]
+        private bool CheckLayout_BuildRoutingTable(LayoutPhase phase) {
+            var ok = true;
             ModelTopology currentTopology = new(phase);
 
             if (routingTableTopology == null || !currentTopology.Equals(routingTableTopology)) {
@@ -43,24 +43,21 @@ namespace LayoutManager.Logic {
                     routingTableTopology = null;
                     routingTable.Clear();
 
-                    e.Info = false;
-                    e.ContinueProcessing = false;
+                    ok = false;
                 }
                 else {
                     routingTableTopology = currentTopology;
-                    e.Info = true;
 
                     // Save the result
                     WriteRoutingTable(routingTableTopology, routingTable);
                 }
             }
-            else
-                e.Info = true;
 
 #if DEBUG
-            if ((bool)e.Info)
+            if (ok)
                 TraceRouteTableInfo(routingTable);
 #endif
+            return ok;
         }
 
         [LayoutEvent("new-layout-document")]
@@ -795,9 +792,9 @@ namespace LayoutManager.Logic {
                 conditionScript.ScriptSubject = newBlock.BlockDefinintion;
 
                 if (bestRoute.Train != null)
-                    EventManager.Event(new LayoutEvent("set-script-context", bestRoute.Train, context));
+                    Dispatch.Call.SetScriptContext(bestRoute.Train, context);
 
-                EventManager.Event(new LayoutEvent("set-script-context", newBlock, context));
+                Dispatch.Call.SetScriptContext(newBlock, context);
 
                 context["PreviousBlock"] = lookupState.Block;
                 context["PreviousBlockInfo"] = lookupState.Block.BlockDefinintion;

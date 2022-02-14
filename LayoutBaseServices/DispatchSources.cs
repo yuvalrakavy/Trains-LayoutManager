@@ -34,6 +34,10 @@ namespace LayoutManager {
             return d[nameof(GetActiveScript)].Call<LayoutEventScript?>(scriptId);
         }
 
-
+        static DispatchSource? ds_SetScriptContext = null;
+        public static void SetScriptContext(this Dispatcher d, object v, LayoutScriptContext context) {
+            ds_SetScriptContext ??= d[nameof(SetScriptContext)];
+            ds_SetScriptContext.CallVoid(v, context);
+        }
     }
 }

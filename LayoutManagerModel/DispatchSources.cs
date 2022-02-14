@@ -447,5 +447,33 @@ namespace LayoutManager {
         public static void OnComponentConfigurationChanged(this Dispatcher d, ModelComponent component) {
             d[nameof(OnComponentConfigurationChanged)].CallVoid(component);
         }
+
+        // LayoutBlocks
+
+        [DispatchSource]
+        public static bool CheckLayout(this Dispatcher d, LayoutPhase phase) {
+            return d[nameof(CheckLayout)].CallBoolFunctions(invokeUntil: false, invokeAll: false, phase);
+        }
+
+        static DispatchSource? ds_OnTrainEnteredBlock = null;
+        [DispatchSource]
+        public static void OnTrainEnteredBlock(this Dispatcher d, TrainStateInfo train, LayoutBlock block) {
+            ds_OnTrainEnteredBlock ??= d[nameof(OnTrainEnteredBlock)];
+            ds_OnTrainEnteredBlock.CallVoid(train, block);
+        }
+
+        static DispatchSource? ds_OnTrainExtended = null;
+        [DispatchSource]
+        public static void OnTrainExtended(this Dispatcher d, TrainStateInfo train, LayoutBlock block) {
+            ds_OnTrainExtended ??= d[nameof(OnTrainExtended)];
+            ds_OnTrainExtended.CallVoid(train, block);
+        }
+
+        static DispatchSource? ds_isTrainInActiveTrip = null;
+        [DispatchSource]
+        public static bool IsTrainInActiveTrip(this Dispatcher d, TrainStateInfo train) {
+            ds_isTrainInActiveTrip ??= d[nameof(IsTrainInActiveTrip)];
+            return ds_isTrainInActiveTrip.Call<bool>(train);
+        }
     }
 }

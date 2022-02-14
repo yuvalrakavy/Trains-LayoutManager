@@ -32,7 +32,7 @@ namespace LayoutManager.Model {
 
     #endregion
 
-    #region Locomotive Placment validity check result
+    #region Locomotive Placement validity check result
 
     public enum CanPlaceTrainStatus {
         CanPlaceTrain,
@@ -92,7 +92,7 @@ namespace LayoutManager.Model {
             CanPlaceTrainStatus.LocomotiveHasNoAddress => "Locomotive " + Locomotive.DisplayName + " has no assigned address",
             CanPlaceTrainStatus.TrainLocomotiveAlreadyUsed => "Locomotive " + Locomotive.DisplayName + " address is already used by another locomotive (" + Train.DisplayName + ")",
             CanPlaceTrainStatus.LocomotiveNotCompatible => "Locomotive " + Locomotive.DisplayName + " is not compatible with locomotives in train '" + Train.DisplayName + "' (e.g. # of speed steps)",
-            CanPlaceTrainStatus.LocomotiveGuageNotCompatibleWithTrack => "Locomotive " + Locomotive.DisplayName + " guage (" + Locomotive.Guage.ToString() + ") not compatible with track guage (" + BlockDefinition.Guage.ToString() + ")",
+            CanPlaceTrainStatus.LocomotiveGuageNotCompatibleWithTrack => "Locomotive " + Locomotive.DisplayName + " gage (" + Locomotive.Guage.ToString() + ") not compatible with track gage (" + BlockDefinition.Guage.ToString() + ")",
             CanPlaceTrainStatus.LocomotiveDigitalFormatNotCompatible => "Locomotive " + Locomotive.DisplayName + " decoder is not supported by command station",
             _ => "*No error text is defined for: " + Status.ToString(),
         };
@@ -242,7 +242,7 @@ namespace LayoutManager.Model {
         /// Define a context for ongoing operation (e.g. placing a locomotive)
         /// </summary>
         /// <param name="operationName">The operation name (e.g. "Placement"</param>
-        /// <param name="description">Human readable description (e.g. "placing 'Red crok' on track')</param>
+        /// <param name="description">Human readable description (e.g. "placing 'Red cork' on track')</param>
         /// <param name="participants">Objects that participate in the operation (e.g. the locomotive and the block definition on which the locomotive is placed)</param>
         public LayoutOperationContext(string operationName, string description, params IObjectHasId[] participants) {
             OperationName = operationName;
@@ -335,7 +335,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public void Cancel() {
             if (HasPendingOperation(OperationName, this)) {             // If operation is still going on
-                if (!CancellationTokenSource.IsCancellationRequested)   // and it was not already cancelled
+                if (!CancellationTokenSource.IsCancellationRequested)   // and it was not already canceled
                     CancellationTokenSource.Cancel();
             }
         }
@@ -364,7 +364,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Add another participant in for this operation
         /// </summary>
-        /// <param name="participant">Another participant (e.g. block definintion) in this operation</param>
+        /// <param name="participant">Another participant (e.g. block definition) in this operation</param>
         public void AddPariticpant(IObjectHasId participant) {
             if (!HasPendingOperation(OperationName, participant))
                 LayoutModel.StateManager.OperationStates[ContextSectionName].Set<LayoutOperationContext>(GetKey(OperationName, participant), this);
@@ -423,7 +423,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Return cancellation token that should be used to indicate cancellation of the operation
         /// </summary>
-        /// <returns>Cancelation token</returns>
+        /// <returns>Cancellation token</returns>
         public static CancellationToken GetCancellationToken(this LayoutEvent theEvent) {
             var context = GetOperationContext(theEvent);
 
@@ -530,12 +530,12 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Return the location element for the frontmost train location (usually the locomotive)
+        /// Return the location element for the front-most train location (usually the locomotive)
         /// </summary>
         public TrainLocationInfo? LocomotiveLocation => LocationsElement.HasChildNodes ? new TrainLocationInfo(this, (XmlElement)LocationsElement.FirstChild!) : null;
 
         /// <summary>
-        /// The block on which the frontmost train element is located (usually it will be a locomotive)
+        /// The block on which the front-most train element is located (usually it will be a locomotive)
         /// </summary>
         public LayoutBlock? LocomotiveBlock {
             get {
@@ -774,8 +774,8 @@ namespace LayoutManager.Model {
         private const string A_InTrip = "InTrip";
 
         /// <summary>
-        /// Return the trip that controls this trin, or null if this train is not currently
-        /// controled by a trip
+        /// Return the trip that controls this trip, or null if this train is not currently
+        /// controlled by a trip
         /// </summary>
         public TripPlanAssignmentInfo? Trip {
             get {
@@ -829,7 +829,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Return true if train is on track. This is usally the case, except for trains that are
+        /// Return true if train is on track. This is usually the case, except for trains that are
         /// in the middle of being placed on the track
         /// </summary>
         public bool OnTrack {
@@ -949,7 +949,7 @@ namespace LayoutManager.Model {
         /// <param name="block">The block</param>
         /// <param name="blockEdge">An optional track contact that was crossed when the train entered the block (or null)</param>
         /// <returns>The new train location object</returns>
-        public TrainLocationInfo EnterBlock(TrainPart trainPart, LayoutBlock block, LayoutBlockEdgeBase blockEdge, string? eventName) {
+        public TrainLocationInfo EnterBlock(TrainPart trainPart, LayoutBlock block, LayoutBlockEdgeBase blockEdge, Action<TrainStateInfo, LayoutBlock>? dispatchThis = null) {
             if (trainPart != TrainPart.Locomotive && trainPart != TrainPart.LastCar)
                 throw new ArgumentException("Invalid train part - can be only Locomotive or LastCar", nameof(trainPart));
 
@@ -969,8 +969,7 @@ namespace LayoutManager.Model {
 
             block.AddTrain(trainLocation);
 
-            if (eventName != null)
-                EventManager.Event(new LayoutEvent(eventName, this, block));
+            dispatchThis?.Invoke(this, block);
 
             Redraw();
 
@@ -980,7 +979,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// This method is called when the train leaves a block
         /// </summary>
-        /// <param name="trainLocation">The train locoation info object that encupsolte the block</param>
+        /// <param name="trainLocation">The train location info object that encapsulate the block</param>
         [LayoutEventDef("train-leave-block", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(LayoutBlock))]
         public void LeaveBlock(LayoutBlock block, bool generateEvent) {
             var trainLocation = LocationOfBlock(block);
@@ -2072,7 +2071,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Time (in milliseconds) in which proximity sensor need to remain in the same state for the state to acknoledge
+        /// Time (in milliseconds) in which proximity sensor need to remain in the same state for the state to acknowledge
         /// </summary>
         public int ProximitySensorSensitivityDelay {
             get => (int?)AttributeValue(A_ProximitySensorSensitivityDelay) ?? ProxmitySensorSensitivityDefault;
@@ -2468,7 +2467,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Get the default ramp for a given role
         /// </summary>
-        /// <param name="role">Accelerate, Decelrate, Slowdown, Stop</param>
+        /// <param name="role">Accelerate, Decelerate, Slowdown, Stop</param>
         /// <returns>The ramp to be used</returns>
         public MotionRampInfo GetDefaultRamp(string role) => GetRamp(DefaultDriverParameters.Element, role) ?? MotionRampInfo.Default;
 
@@ -2485,7 +2484,7 @@ namespace LayoutManager.Model {
                         new LayoutPolicyType("Block scripts", "BlockInfo", LayoutModel.StateManager.BlockInfoPolicies),
                         new LayoutPolicyType("Trip plan scripts", "TripPlan", LayoutModel.StateManager.TripPlanPolicies),
                         new LayoutPolicyType("Before Trip Section Start scripts", "RideStart", LayoutModel.StateManager.RideStartPolicies),
-                        new LayoutPolicyType("Driver Instructions scrtips", "DriverInstructions", LayoutModel.StateManager.DriverInstructionsPolicies)
+                        new LayoutPolicyType("Driver Instructions scripts", "DriverInstructions", LayoutModel.StateManager.DriverInstructionsPolicies)
                     });
 
         public OperationStates OperationStates => operationStates ??= new OperationStates();

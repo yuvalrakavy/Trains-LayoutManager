@@ -106,10 +106,18 @@ namespace LayoutManager.Tools.Dialogs {
                 labelSpeedLimit.Text = speedLimit.ToString();
         }
 
-        [LayoutEvent("train-enter-block", IfSender = "*[@ID='`string(@ID)`']")]
-        [DispatchTarget(Name="OnTrainCreated")]
-        [LayoutEvent("train-extended", IfSender = "*[@ID='`string(@ID)`']")]
-        private void InvalidateInfoPanel([DispatchFilter(Type="IsMyId")] TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
+        [DispatchTarget]
+        private void OnTrainEnteredBlock([DispatchFilter(Type="IsMyId")] TrainStateInfo train, LayoutBlock block) {
+            panelInfo.Invalidate();
+        }
+
+        [DispatchTarget]
+        private void OnTrainCreated([DispatchFilter(Type="IsMyId")] TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
+            panelInfo.Invalidate();
+        }
+
+        [DispatchTarget]
+        private void OnTrainExtended([DispatchFilter(Type = "IsMyId")] TrainStateInfo train, LayoutBlock block) {
             panelInfo.Invalidate();
         }
 

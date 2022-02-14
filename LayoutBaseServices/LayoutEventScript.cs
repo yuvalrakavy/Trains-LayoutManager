@@ -966,9 +966,9 @@ namespace LayoutManager {
 
                 if (relevantEvent) {
                     if (e.Sender != null)
-                        EventManager.Event(new LayoutEvent("set-script-context", e.Sender, Context));
+                        Dispatch.Call.SetScriptContext(e.Sender, Context);
                     if (e.Info != null)
-                        EventManager.Event(new LayoutEvent("set-script-context", e.Info, Context));
+                        Dispatch.Call.SetScriptContext(e.Info, Context);
 
                     if (IsConditionTrue) {
                         Cancel();

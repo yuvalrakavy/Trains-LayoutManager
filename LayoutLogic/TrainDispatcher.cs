@@ -491,7 +491,7 @@ namespace LayoutManager.Logic {
                         new Guid[] { newTrip.TrainId, newTrip.Id }, null);
 
                     activePolicy.ScriptSubject = newTrip.Train;
-                    EventManager.Event(new LayoutEvent("set-script-context", newTrip, activePolicy.ScriptContext));
+                    Dispatch.Call.SetScriptContext(newTrip, activePolicy.ScriptContext);
 
                     activePolicies[i++] = activePolicy;
                     activePolicy.Reset();
@@ -641,15 +641,14 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("is-train-in-active-trip")]
-        private void IsTrainInActiveTrip(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+        [DispatchTarget]
+        private bool IsTrainInActiveTrip(TrainStateInfo train) {
             ActiveTripInfo? trip = activeTrips[train.Id];
 
             if (trip == null || trip.Status == TripStatus.Aborted || trip.Status == TripStatus.Done)
-                e.Info = false;
+                return false;
             else {
-                e.Info = trip.Status == TripStatus.Done ? false : (object)true;
+                return trip.Status != TripStatus.Done;
             }
         }
 
@@ -1465,7 +1464,7 @@ namespace LayoutManager.Logic {
 
                         LayoutScriptContext context = trip.PendingStartCondition.ScriptContext;
 
-                        EventManager.Event(new LayoutEvent("set-script-context", trip, context));
+                        Dispatch.Call.SetScriptContext(trip, context);
                         trip.PendingStartCondition.Reset();
                     }
                     else {
@@ -1510,7 +1509,7 @@ namespace LayoutManager.Logic {
 
                 LayoutScriptContext context = trip.PendingDriverInstructions.ScriptContext;
 
-                EventManager.Event(new LayoutEvent("set-script-context", trip, context));
+                Dispatch.Call.SetScriptContext(trip, context);
                 trip.PendingDriverInstructions.Reset();
             }
 
@@ -1568,11 +1567,9 @@ namespace LayoutManager.Logic {
             Dispatch.Call.FreeOwnedLayoutLocks(train.Id, true);
         }
 
-        [LayoutEvent("train-enter-block", Order = 1000)]
         [LayoutEventDef("driver-prepare-stop", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
-        private void TrainEnterBlock(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-            var block = Ensure.NotNull<LayoutBlock>(e.Info, "block");
+        [DispatchTarget(Order = -100)]
+        private void OnTrainEnteredBlock(TrainStateInfo train, LayoutBlock block) {
             ActiveTripInfo? trip = activeTrips[train.Id];
 
             if (trip != null) {

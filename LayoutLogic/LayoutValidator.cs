@@ -14,34 +14,31 @@ namespace LayoutManager.Logic {
     /// </summary>
     [LayoutModule("Layout Validator", UserControl = false)]
     public class LayoutValidator : LayoutModuleBase {
-        [LayoutEvent("check-layout", Order = 0)]
-        private void ValidateLayout(LayoutEvent e) {
-            bool stopProcessing = false;
-            LayoutPhase phase = e.GetPhases();
+        [DispatchTarget(Order = 0)]
+        private bool CheckLayout(LayoutPhase phase) {
+            bool ok = true;
 
             ResetTrackConnections();
             ResetTrackAnnotation();
             SetTrackConnections(phase);
 
             if (!CheckCommandStations(phase))
-                e.Info = false;
+                ok = false;
 
             if (!CheckTrackLinks(phase)) {
-                stopProcessing = true;
-                e.Info = false;
+                ok = false;
             }
 
             if (!CheckAddresses(phase))
-                e.Info = false;
+                ok = false;
 
             if (!CheckSignalLinks(phase))
-                e.Info = false;
+                ok = false;
 
             if (!CheckBlockResources(phase))
-                e.Info = false;
+                ok = false;
 
-            if (stopProcessing)
-                e.ContinueProcessing = false;
+            return ok;
         }
 
 

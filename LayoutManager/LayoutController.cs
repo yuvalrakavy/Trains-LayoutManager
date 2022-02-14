@@ -290,7 +290,7 @@ namespace LayoutManager {
 
             Dispatch.Call.ClearMessages();
 
-            if (!(bool)(EventManager.Event(new LayoutEvent("check-layout", LayoutModel.Instance, true).SetPhases(settings.Phases)) ?? false)) {
+            if (!Dispatch.Call.CheckLayout(settings.Phases)) {
                 MessageBox.Show(ActiveFrameWindow, "Problems were detected in the layout. Please fix those problems before entering operation mode", "Layout Check Results",
                     MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 switchMode = false;

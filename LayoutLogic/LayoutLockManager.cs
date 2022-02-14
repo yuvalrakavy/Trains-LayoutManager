@@ -122,7 +122,7 @@ namespace LayoutManager.Logic {
                     alreadyManualDispatch.Add(block);
 
                 foreach (TrainLocationInfo trainLocation in block.Trains) {
-                    if ((bool)(EventManager.Event(new LayoutEvent("is-train-in-active-trip", trainLocation.Train)) ?? false)) {
+                    if (Dispatch.Call.IsTrainInActiveTrip(trainLocation.Train)) {
                         if (!reportedTrains.Contains(trainLocation.Train.Id)) {
                             activeTrains.Add(trainLocation.Train);
                             reportedTrains.Add(trainLocation.Train.Id, trainLocation.Train);
@@ -140,13 +140,13 @@ namespace LayoutManager.Logic {
             }
 
             if (activeTrains.Count > 0)
-                throw new LayoutException(activeTrains, "Requested manual dispatch region has " + ((activeTrains.Count == 1) ? "a train" : "trains") + " in middle of a trip");
+                throw new LayoutException(activeTrains, $"Requested manual dispatch region has {((activeTrains.Count == 1) ? "a train" : "trains")} in middle of a trip");
 
             if (alreadyManualDispatch.Count > 0)
                 throw new LayoutException(alreadyManualDispatch, "Part of the request manual dispatch region are already part of another active manual dispatch region");
 
             if (partialTrains.Count > 0)
-                throw new LayoutException(partialTrains, ((partialTrains.Count == 1) ? "Train is " : "Trains are ") + "only partially in the request manual dispatch region - cannot lock region");
+                throw new LayoutException(partialTrains, $"{((partialTrains.Count == 1) ? "Train is " : "Trains are ")}only partially in the request manual dispatch region - cannot lock region");
 
             // At that stage there are no active lock request
             foreach (var blockEntry in manualDispatchRegionLockRequest.Blocks) {

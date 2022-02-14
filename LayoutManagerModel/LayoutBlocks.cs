@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Diagnostics;
 using System.Linq;
+using MethodDispatcher;
 
 using LayoutManager.Components;
 using System.Threading;
@@ -623,7 +624,7 @@ namespace LayoutManager.Model {
             foreach (TrainMotionListEntry motionListEntry in motions) {
                 LocomotiveTrackingResult trackingResult = motionListEntry.TrackingResult;
 
-                EventManager.Event(new LayoutEvent("train-enter-block", trackingResult.Train, trackingResult.ToBlock));
+                Dispatch.Notification.OnTrainEnteredBlock(trackingResult.Train, trackingResult.ToBlock);
                 EventManager.Event(new LayoutEvent("train-crossed-block-edge", trackingResult.Train, trackingResult.BlockEdge));
                 if (trackingResult.BlockEdge is LayoutBlockEdgeComponent blockEdge) {
                     EventManager.Event(new LayoutEvent("occupancy-block-edge-crossed",
