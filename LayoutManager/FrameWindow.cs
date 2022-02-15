@@ -1737,7 +1737,7 @@ namespace LayoutManager {
         }
 
         private void MenuItemEmergencyStop_Click(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation, string>("emergency-stop-request", null, "User initiated"));
+            Dispatch.Call.EmergencyStopRequest("User initiated");
         }
 
         private void MenuItemConnectLayout_Click(object? sender, EventArgs e) => EventManager.Event(new LayoutEvent("connect-layout-to-control-request", this));

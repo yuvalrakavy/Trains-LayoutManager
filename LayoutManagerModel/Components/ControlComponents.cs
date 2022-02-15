@@ -194,7 +194,12 @@ namespace LayoutManager.Components {
                         LayoutModel.StateManager.Components.Remove(this, Topic_TriggeredState);
 
                     EventManager.Event("block-edge-sensor-changed", this, value);
-                    EventManager.Event(value ? "block-edge-sensor-active" : "block-edge-sensor-not-active", this);
+
+                    if (value)
+                        Dispatch.Notification.OnBlockEdgeSensorActive(this);
+                    else
+                        Dispatch.Notification.OnBlockEdgeSensorNotActive(this);
+
                     OnComponentChanged();
                 }
             }
@@ -519,9 +524,9 @@ namespace LayoutManager.Components {
 
                             if (!LayoutController.TrainsAnalysisPhase) {
                                 if (value)
-                                    EventManager.Event(new LayoutEvent("train-detection-block-will-be-occupied", occupancyBlock));
+                                    Dispatch.Notification.OnTrainDetectionBlockWillBeOccupied(occupancyBlock);
                                 else
-                                    EventManager.Event(new LayoutEvent("train-detection-block-will-be-free", occupancyBlock));
+                                    Dispatch.Notification.OnTrainDetectionBlockWillBeFree(occupancyBlock);
                             }
                         }
                     }
@@ -561,10 +566,6 @@ namespace LayoutManager.Components {
                 }
             }
 
-            [LayoutEventDef("train-detection-block-occupied", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutOccupancyBlock))]
-            [LayoutEventDef("train-detection-block-free", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutOccupancyBlock))]
-            [LayoutEventDef("train-detection-block-will-be-occupied", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutOccupancyBlock))]
-            [LayoutEventDef("train-detection-block-will-be-free", Role = LayoutEventRole.Notification, SenderType = typeof(LayoutOccupancyBlock))]
             set {
                 BlockDefinition.EraseImage();
 
@@ -579,9 +580,9 @@ namespace LayoutManager.Components {
 
                         if (!LayoutController.TrainsAnalysisPhase) {
                             if (value)
-                                EventManager.Event(new LayoutEvent("train-detection-block-occupied", occupancyBlock));
+                                Dispatch.Notification.OnTrainDetectionBlockOccupied(occupancyBlock);
                             else
-                                EventManager.Event(new LayoutEvent("train-detection-block-free", occupancyBlock));
+                                Dispatch.Notification.OnTrainDetectionBlockFree(occupancyBlock);
                         }
                     }
                 }

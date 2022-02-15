@@ -513,7 +513,7 @@ namespace DiMAX {
                         break;
 
                     case DiMAXcommandCode.EmergencyStopBegin:
-                        EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation, string>("emergency-stop-request", this, "Initiated by external controller"));
+                        Dispatch.Call.EmergencyStopRequest("Initiated by external controller", this);
                         break;
 
                     case DiMAXcommandCode.EmergencyStopFinish:

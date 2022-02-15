@@ -625,10 +625,10 @@ namespace LayoutManager.Model {
                 LocomotiveTrackingResult trackingResult = motionListEntry.TrackingResult;
 
                 Dispatch.Notification.OnTrainEnteredBlock(trackingResult.Train, trackingResult.ToBlock);
-                EventManager.Event(new LayoutEvent("train-crossed-block-edge", trackingResult.Train, trackingResult.BlockEdge));
+                Dispatch.Notification.OnTrainCrossedBlockEdge(trackingResult.Train, trackingResult.BlockEdge);
+
                 if (trackingResult.BlockEdge is LayoutBlockEdgeComponent blockEdge) {
-                    EventManager.Event(new LayoutEvent("occupancy-block-edge-crossed",
-                        blockEdge, trackingResult.Train, null));
+                    Dispatch.Notification.OnOccupancyBlockEdgeCrossed(blockEdge, trackingResult.Train);
                 }
             }
         }

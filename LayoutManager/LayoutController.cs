@@ -375,6 +375,7 @@ namespace LayoutManager {
         private void TrainsAnalysisPhaseDone(LayoutEvent e) {
             if (--trainsAnalysisPhaseCount == 0) {
                 EventManager.Event(new LayoutEvent("end-trains-analysis-phase", this));
+                Dispatch.Call.PerformTrainsAnalysis();
                 EventManager.Event(new LayoutEvent("perform-trains-analysis", LayoutModel.Instance));
             }
 

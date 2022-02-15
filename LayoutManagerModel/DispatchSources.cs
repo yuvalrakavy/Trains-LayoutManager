@@ -523,5 +523,95 @@ namespace LayoutManager {
             d[nameof(OnTrainWasRemoved)].CallVoid(train);
         }
 
+        // LayoutValidator
+
+        [DispatchSource]
+        public static void PerformTrainsAnalysis(this Dispatcher d) {
+            d[nameof(PerformTrainsAnalysis)].CallVoid();
+        }
+
+        // Locomotive Tracking
+
+        static DispatchSource? ds_OnBlockEdgeSensorActive = null;
+        [DispatchSource]
+        public static void OnBlockEdgeSensorActive(this Dispatcher d, LayoutTriggerableBlockEdgeBase blockEdge) {
+            ds_OnBlockEdgeSensorActive ??= d[nameof(OnBlockEdgeSensorActive)];
+            ds_OnBlockEdgeSensorActive.CallVoid(blockEdge);
+        }
+
+        static DispatchSource? ds_OnBlockEdgeSensorNotActive = null;
+        [DispatchSource]
+        public static void OnBlockEdgeSensorNotActive(this Dispatcher d, LayoutTriggerableBlockEdgeBase blockEdge) {
+            ds_OnBlockEdgeSensorNotActive ??= d[nameof(OnBlockEdgeSensorNotActive)];
+            ds_OnBlockEdgeSensorNotActive.CallVoid(blockEdge);
+        }
+
+        [DispatchSource]
+        public static void EmergencyStopRequest(this Dispatcher d, string reason, IModelComponentIsCommandStation? commandStation = null) {
+            d[nameof(EmergencyStopRequest)].CallVoid(commandStation, reason);
+        }
+
+        static DispatchSource? ds_OnTrackedTrainCrossedBlockEdge = null;
+        [DispatchSource]
+        public static void OnTrackedTrainCrossedBlockEdge(this Dispatcher d, LocomotiveTrackingResult trackingResult) {
+            ds_OnTrackedTrainCrossedBlockEdge ??= d[nameof(OnTrackedTrainCrossedBlockEdge)];
+            ds_OnTrackedTrainCrossedBlockEdge.CallVoid(trackingResult);
+        }
+
+        static DispatchSource? ds_OnTrainCrossedBlockEdge = null;
+        [DispatchSource]
+        public static void OnTrainCrossedBlockEdge(this Dispatcher d, TrainStateInfo train, LayoutBlockEdgeBase blockEdge) {
+            ds_OnTrainCrossedBlockEdge ??= d[nameof(OnTrainCrossedBlockEdge)];
+            ds_OnTrainCrossedBlockEdge.CallVoid(train, blockEdge);
+        }
+
+        static DispatchSource? ds_OnTrainDetectionBlockWillBeOccupied = null;
+        [DispatchSource]
+        public static void OnTrainDetectionBlockWillBeOccupied(this Dispatcher d, LayoutOccupancyBlock occupancyBlock) {
+            ds_OnTrainDetectionBlockWillBeOccupied ??= d[nameof(OnTrainDetectionBlockWillBeOccupied)];
+            ds_OnTrainDetectionBlockWillBeOccupied.CallVoid(occupancyBlock);
+        }
+
+        static DispatchSource? ds_OnTrainDetectionBlockWillBeFree = null;
+        [DispatchSource]
+        public static void OnTrainDetectionBlockWillBeFree(this Dispatcher d, LayoutOccupancyBlock occupancyBlock) {
+            ds_OnTrainDetectionBlockWillBeFree ??= d[nameof(OnTrainDetectionBlockWillBeFree)];
+            ds_OnTrainDetectionBlockWillBeFree.CallVoid(occupancyBlock);
+        }
+
+        static DispatchSource? ds_OnOccupancyBlockEdgeCrossed = null;
+        [DispatchSource]
+        public static void OnOccupancyBlockEdgeCrossed(this Dispatcher d, LayoutBlockEdgeBase blockEdge, TrainStateInfo train) {
+            ds_OnOccupancyBlockEdgeCrossed ??= d[nameof(OnOccupancyBlockEdgeCrossed)];
+            ds_OnOccupancyBlockEdgeCrossed.CallVoid(blockEdge, train);
+        }
+
+        [DispatchSource]
+        public static void AbortTrip(this Dispatcher d, TrainStateInfo train, bool emergency) {
+            d[nameof(AbortTrip)].CallVoid(train, emergency);
+        }
+
+        static DispatchSource? ds_OnTrainDetectionBlockOccupied = null;
+        [DispatchSource]
+        public static void OnTrainDetectionBlockOccupied(this Dispatcher d, LayoutOccupancyBlock occupancyBlock) {
+            ds_OnTrainDetectionBlockOccupied ??= d[nameof(OnTrainDetectionBlockOccupied)];
+            ds_OnTrainDetectionBlockOccupied.CallVoid(occupancyBlock);
+        }
+
+        static DispatchSource? ds_OnTrainDetectionBlockFree = null;
+        [DispatchSource]
+        public static void OnTrainDetectionBlockFree(this Dispatcher d, LayoutOccupancyBlock occupancyBlock) {
+            ds_OnTrainDetectionBlockFree ??= d[nameof(OnTrainDetectionBlockFree)];
+            ds_OnTrainDetectionBlockFree.CallVoid(occupancyBlock);
+        }
+
+        static DispatchSource? ds_TrainLeavingBlockDetails = null;
+        [DispatchSource]
+        public static void TrainLeavingBlockDetails(this Dispatcher d, LayoutBlockEdgeBase blockEdge, TrainChangingBlock trainChangingBlock) {
+            ds_TrainLeavingBlockDetails ??= d[nameof(TrainLeavingBlockDetails)];
+            ds_TrainLeavingBlockDetails.CallVoid(blockEdge, trainChangingBlock);
+
+        }
+
     }
 }

@@ -256,7 +256,7 @@ namespace LayoutManager.Tools.Controls {
                 if (selected.TripAssignment.CanBeCleared)
                     EventManager.Event(new LayoutEvent("clear-trip", selected.Train));
                 else
-                    EventManager.Event(new LayoutEvent("abort-trip", selected.Train, true));
+                    Dispatch.Call.AbortTrip(selected.Train, true);
             }
         }
 

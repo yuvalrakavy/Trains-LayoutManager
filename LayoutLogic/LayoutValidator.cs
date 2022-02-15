@@ -216,8 +216,8 @@ namespace LayoutManager.Logic {
 
         private bool CheckBlockResources(LayoutPhase phase) => LayoutModel.Components<LayoutBlockDefinitionComponent>(phase).All(blockInfo => blockInfo.Info.Resources.CheckIntegrity(this, phase));
 
-        [LayoutEvent("perform-trains-analysis")]
-        private void PerformTrainsAnalysis(LayoutEvent e) {
+        [DispatchTarget]
+        private void PerformTrainsAnalysis() {
             var phantomTrains = new LayoutSelection();
             var unexpectedTrains = new LayoutSelection();
             var processedBlocks = new Dictionary<Guid, object?>();

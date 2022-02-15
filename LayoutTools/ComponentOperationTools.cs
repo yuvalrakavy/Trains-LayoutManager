@@ -29,20 +29,15 @@ namespace LayoutManager.Tools {
 
         #region General services
 
-        [LayoutEventDef("emergency-stop-request", Role = LayoutEventRole.Request)]
-        [LayoutEvent("emergency-stop-request")]
-        private void EmergencyStopRequest(LayoutEvent e0) {
-            var e = (LayoutEvent<IModelComponentIsCommandStation, string>)e0;
-
-            if (e.Sender == null) {
+        [DispatchTarget]
+        private void EmergencyStopRequest(string reason, IModelComponentIsCommandStation? initiatingCommandStation) {
+            if (initiatingCommandStation == null) {
                 foreach (IModelComponentIsCommandStation commandStation in LayoutModel.Components<IModelComponentIsCommandStation>(LayoutModel.ActivePhases))
-                    EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation, string>("emergency-stop-request", commandStation, e.Info));
+                    Dispatch.Call.EmergencyStopRequest(reason, commandStation);
             }
             else {
-                var commandStation = e.Sender;
-
-                EventManager.Event(new LayoutEvent("disconnect-power-request", commandStation));
-                EventManager.Event(new LayoutEvent("command-station-emergency-stop-notification", commandStation, e.Info));
+                EventManager.Event(new LayoutEvent("disconnect-power-request", initiatingCommandStation));
+                EventManager.Event(new LayoutEvent("command-station-emergency-stop-notification", initiatingCommandStation, reason));
             }
         }
 

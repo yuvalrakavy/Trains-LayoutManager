@@ -512,13 +512,11 @@ namespace LayoutManager.Logic {
             e.Info = true;
         }
 
-        [LayoutEvent("abort-trip")]
         [LayoutEventDef("driver-stop", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
         [LayoutEventDef("driver-emergency-stop", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
         [LayoutEventDef("trip-aborted", Role = LayoutEventRole.Notification, SenderType = typeof(TripPlanAssignmentInfo))]
-        private void AbortTrip(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-            var emergency = Ensure.ValueNotNull<bool>(e.Info, "emergency");
+        [DispatchTarget]
+        private void AbortTrip(TrainStateInfo train, bool emergency) {
             var trip = activeTrips[train.Id];
 
             if (trip != null) {
@@ -1187,8 +1185,8 @@ namespace LayoutManager.Logic {
             }
             else {
                 if (tripBestRouteResult.BestRoute == null) {
-                    Error(trip.Train, "No route can be found to " + trip.CurrentWaypoint.Destination.Name + " - trip aborted");
-                    EventManager.Event(new LayoutEvent("abort-trip", trip.Train, true));
+                    Error(trip.Train, $"No route can be found to {trip.CurrentWaypoint.Destination.Name} - trip aborted");
+                    Dispatch.Call.AbortTrip(trip.Train, true);
                 }
                 else {
                     Warning(trip.Train, "All possible routes are blocked, possible by non-movable trains. Try to fix this");
@@ -1550,7 +1548,7 @@ namespace LayoutManager.Logic {
             ActiveTripInfo? trip = activeTrips[train.Id];
 
             if (trip != null)
-                EventManager.Event(new LayoutEvent("abort-trip", train, true));
+                Dispatch.Call.AbortTrip(train, true);
 
             blockUnlockingManager.RemoveByOwner(train.Id);
 
@@ -1681,9 +1679,8 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("train-leaving-block-details")]
-        private void TrainLeavingBlockDetails(LayoutEvent e) {
-            var trainChangingBlock = Ensure.NotNull<TrainChangingBlock>(e.Info, "trainChangingBlock");
+        [DispatchTarget]
+        private void TrainLeavingBlockDetails(LayoutBlockEdgeBase blockEdge, TrainChangingBlock trainChangingBlock) {
             ActiveTripInfo? trip = activeTrips[trainChangingBlock.Train.Id];
 
             if (trip != null) {
@@ -1723,8 +1720,8 @@ namespace LayoutManager.Logic {
                 }
             }
 
-            // Handle the special case of no feedback loop - leaving this block does not generate a "train-leaving-block-details"
-            // event.
+            // Handle the special case of no feedback loop - leaving this block does not call TrainLeavingBlockDetails
+            //
             if (block.BlockDefinintion.Info.NoFeedback && block.LockRequest != null && block.LockRequest.OwnerId == train.Id)
                 blockUnlockingManager.Add(block, 3000);         // Unlock block 3 seconds after it has been "left".
         }
@@ -1740,17 +1737,15 @@ namespace LayoutManager.Logic {
             EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, (bool)active));
         }
 
-        [LayoutEvent("train-detection-block-free")]
-        private void TrainDetectionBlockFree(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnTrainDetectionBlockFree(LayoutOccupancyBlock occupancyBlock) {
             Trace.WriteLineIf(traceDispatching.TraceInfo, "Occupancy block freed recalculate trips - retry waiting trains");
 
             EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, false));
         }
 
-        [LayoutEvent("train-detection-block-will-be-occupied")]
-        private void TrainDetectionBlockOccupied(LayoutEvent e) {
-            var occupancyBlock = Ensure.NotNull<LayoutOccupancyBlock>(e.Sender, "occupancyBlock");
-
+        [DispatchTarget]
+        private void OnTrainDetectionBlockWillBeOccupied(LayoutOccupancyBlock occupancyBlock) {
             if (occupancyBlock.BlockDefinintion.Info.UnexpectedTrainDetected) {
                 Trace.WriteLineIf(traceDispatching.TraceInfo, "Unexpected train detected - recalculate all train trips");
                 EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, true));
