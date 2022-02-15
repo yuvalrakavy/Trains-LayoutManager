@@ -433,8 +433,12 @@ namespace LayoutManager.CommonUI {
         #region Layout event handlers
 
         [LayoutEvent("model-loaded")]
-        [LayoutEvent("new-layout-document")]
         private void ModelLoaded(LayoutEvent e) {
+            Recalc();
+        }
+
+        [DispatchTarget]
+        private void OnNewLayoutDocument(string filename) {
             Recalc();
         }
 

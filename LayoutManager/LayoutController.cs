@@ -560,7 +560,7 @@ namespace LayoutManager {
 
             LayoutFilename = layoutFilename;
             commandManager.ChangeLevel = 0;
-            EventManager.Event(new LayoutEvent("new-layout-document", null, layoutFilename));
+            Dispatch.Notification.OnNewLayoutDocument(layoutFilename);
         }
 
         /// <summary>
@@ -573,7 +573,7 @@ namespace LayoutManager {
             LayoutFilename = layoutFilename;
 
             LayoutModel.StateManager.Load();
-            EventManager.Event(new LayoutEvent("new-layout-document", null, layoutFilename));
+            Dispatch.Notification.OnNewLayoutDocument(layoutFilename);
         }
 
         private static void ReadModelXmlDocument(string filename) {

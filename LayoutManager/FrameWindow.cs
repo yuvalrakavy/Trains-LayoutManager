@@ -632,9 +632,8 @@ namespace LayoutManager {
             }
         }
 
-        [LayoutEvent("show-routing-table-generation-dialog")]
-        private void ShowRoutingTableGenerationDialog(LayoutEvent e) {
-            var nTurnouts = Ensure.ValueNotNull<int>(e.Info);
+        [DispatchTarget]
+        private void ShowRoutingTableGenerationDialog(int nTurnouts) {
             using Dialogs.RoutingTableCalcProgress d = new(nTurnouts);
 
             d.ShowDialog(this);

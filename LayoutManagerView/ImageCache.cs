@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using MethodDispatcher;
 
 #pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.View {
@@ -62,8 +63,8 @@ namespace LayoutManager.View {
             imageHashtable.Clear();
         }
 
-        [LayoutEvent("new-layout-document")]
-        private void NewLayoutDocument(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnNewLayoutDocument(string filename) {
             layoutFileDirectory = null;     // Invalidate it
             EventManager.Event(new LayoutEvent("clear-image-cache", this));
         }

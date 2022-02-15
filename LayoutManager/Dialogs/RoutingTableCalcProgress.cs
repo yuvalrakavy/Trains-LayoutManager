@@ -36,18 +36,18 @@ namespace LayoutManager.Dialogs {
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 
-        [LayoutEvent("routing-table-generation-progress")]
-        private void RoutingTableGenerationProgress(LayoutEvent e) {
+        [DispatchTarget]
+        private void RoutingTableGenerationProgress() {
             progressBar.PerformStep();
         }
 
-        [LayoutEvent("routing-table-generation-done")]
-        private void RoutingTableGenerationDone(LayoutEvent e) {
+        [DispatchTarget]
+        private void RoutingTableGenerationDone() {
             Close();
         }
 
         private void ButtonAbort_Click(object? sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent("abort-routing-table-generation", this));
+            Dispatch.Call.AbortRoutingTableGenerationDialog();
         }
     }
 }

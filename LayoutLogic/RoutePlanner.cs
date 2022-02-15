@@ -60,8 +60,8 @@ namespace LayoutManager.Logic {
             return ok;
         }
 
-        [LayoutEvent("new-layout-document")]
-        private void NewLayoutDocument(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnNewLayoutDocument(string filename) {
             routingTableTopology = null;
             routingTable.Clear();
 
@@ -69,7 +69,7 @@ namespace LayoutManager.Logic {
                 try {
                     XmlTextReader r = new(LayoutController.LayoutRoutingFilename);
 
-                    Trace.WriteLine("-Loading routing information from " + LayoutController.LayoutRoutingFilename);
+                    Trace.WriteLine($"-Loading routing information from {LayoutController.LayoutRoutingFilename}");
 
                     do {
                         r.Read();
@@ -106,7 +106,7 @@ namespace LayoutManager.Logic {
             generateRoutingTableThread.Name = "Generate routing table";
             generateRoutingTableThread.Start(phase);
 
-            EventManager.Event(new LayoutEvent("show-routing-table-generation-dialog", this, multiPathTracks.Count()));
+            Dispatch.Call.ShowRoutingTableGenerationDialog(multiPathTracks.Count());
 
             return !aborted;
         }
@@ -145,12 +145,12 @@ namespace LayoutManager.Logic {
                 }
             }
 
-            Trace.WriteLine("There are " + nEntries + " entries in the routing table, total penalty is: " + totalPenalty);
+            Trace.WriteLine($"There are {nEntries} entries in the routing table, total penalty is: {totalPenalty}");
         }
 #endif
 
-        [LayoutEvent("abort-routing-table-generation")]
-        private void AbortRoutingTableGeneration(LayoutEvent e) {
+        [DispatchTarget]
+        private void AbortRoutingTableGenerationDialog() {
             aborted = true;
         }
 
@@ -164,7 +164,7 @@ namespace LayoutManager.Logic {
             routingTable.Clear();
 
             if (traceRoutePlanning.TraceInfo)
-                Trace.WriteLine("Routing for " + multiPathTracks.Count() + " multi-path tracks (turnouts)");
+                Trace.WriteLine($"Routing for {multiPathTracks.Count()} multi-path tracks (turnouts)");
 
             foreach (IModelComponentIsMultiPath turnout in multiPathTracks) {
                 if (aborted)
@@ -177,7 +177,7 @@ namespace LayoutManager.Logic {
                             RoutingTableEntry entry = new(connectedCps.Length);
                             TrackEdge splitEdge = new((LayoutTrackComponent)turnout, cp);
 
-                            Trace.WriteLineIf(traceRoutingTable.TraceVerbose, "buildRoutingTable: create new routing entry for " + new TrackEdgeId(turnout.Id, cp).ToString());
+                            Trace.WriteLineIf(traceRoutingTable.TraceVerbose, $"buildRoutingTable: create new routing entry for {new TrackEdgeId(turnout.Id, cp).ToString()}");
 
                             for (int iState = 0; iState < connectedCps.Length; iState++) {
                                 if (aborted)
@@ -197,10 +197,10 @@ namespace LayoutManager.Logic {
                     }
                 }
 
-                invoker.QueueEvent(new LayoutEvent("routing-table-generation-progress", this));
+                invoker.Queue(() => Dispatch.Call.RoutingTableGenerationProgress());
             }
 
-            invoker.QueueEvent(new LayoutEvent("routing-table-generation-done", this));
+            invoker.Queue(() => Dispatch.Call.RoutingTableGenerationDone());
         }
 
         private class GetSplitsInfo {
@@ -257,14 +257,15 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("dump-routing-table")]
-        private void DumpRoutingTable(LayoutEvent e) {
+#if DUMP_ROUTING_TABLES
+        private void DumpRoutingTable() {
             routingTable.Dump();
         }
+#endif
 
-        #endregion
+#endregion
 
-        #region Figure out routing target
+#region Figure out routing target
 
         private enum FirstBlockHandling {
             Ignore, AvoidIfNonWaitable, Processed
@@ -409,7 +410,7 @@ namespace LayoutManager.Logic {
         }
 
         private class TargetQualityComparer : IComparer<RouteTarget> {
-            #region IComparer<RouteTarget> Members
+#region IComparer<RouteTarget> Members
 
             public int Compare(RouteTarget? x, RouteTarget? y) => Ensure.NotNull<RouteTarget>(x).Quality.CompareTo(Ensure.NotNull<RouteTarget>(y).Quality);
 
@@ -417,7 +418,7 @@ namespace LayoutManager.Logic {
 
             public int GetHashCode(RouteTarget obj) => obj.GetHashCode();
 
-            #endregion
+#endregion
         }
 
         private SortTargetsResult SortTargets(IList<RouteTarget> targets, ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction) {
@@ -506,9 +507,9 @@ namespace LayoutManager.Logic {
             return result;
         }
 
-        #endregion
+#endregion
 
-        #region Trip route planning
+#region Trip route planning
 
         private LayoutTrackComponent TrackOf(ModelComponent component) {
             var track = component.Spot.Track;
@@ -518,9 +519,9 @@ namespace LayoutManager.Logic {
             return track;
         }
 
-        #endregion
+#endregion
 
-        #region Find best route
+#region Find best route
 
         public BestRoute FindBestRoute(ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, ModelComponent destinationComponent, Guid routeOwner, bool trainStopping) {
             BestRoute bestRoute = new(sourceComponent, front, direction, routeOwner);
@@ -530,12 +531,12 @@ namespace LayoutManager.Logic {
 
                 Trace.Write("Find route to destination component ");
                 if (train != null)
-                    Trace.Write("from " + sourceComponent.FullDescription + " ");
+                    Trace.Write($"from {sourceComponent.FullDescription} ");
 
                 var blockInfo = BestRoute.TrackOf(destinationComponent).BlockDefinitionComponent;
 
                 if (blockInfo != null)
-                    Trace.WriteLine(" to " + blockInfo.Name + " direction " + direction.ToString());
+                    Trace.WriteLine($" to {blockInfo.Name} direction {direction.ToString()}");
             }
 
             AddTargets(
@@ -588,8 +589,8 @@ namespace LayoutManager.Logic {
                         if (traceRoutePlanning.TraceInfo) {
                             Trace.Write("Find route ");
                             if (train != null)
-                                Trace.Write("from " + sourceComponent.FullDescription + " ");
-                            Trace.WriteLine(" to " + block.Name + " direction " + direction.ToString() + ", front " + front.ToString() + ", train " + (trainStopping ? "stops" : "does not stop"));
+                                Trace.Write($"from {sourceComponent.FullDescription} ");
+                            Trace.WriteLine($" to {block.Name} direction {direction}, front {front}, train {(trainStopping ? "stops" : "does not stop")}");
                         }
 
                         AddTargets(bestRoute, new TrackEdge(sourceTrack, front), entry, blockDefinition.Track, destinationRankPenalty + lengthDifferencePenalty, trainStopping);
@@ -609,7 +610,7 @@ namespace LayoutManager.Logic {
             if (traceRoutePlanning.TraceInfo) {
                 Trace.WriteLine("-Targets " + sortResult + ":");
                 foreach (RouteTarget t in bestRoute.Targets)
-                    Trace.WriteLine("  " + t.TargetEdge.ToString() + " switch state " + t.SwitchState + " quality " + t.Quality);
+                    Trace.WriteLine($"  {t.TargetEdge} switch state {t.SwitchState} quality {t.Quality}");
             }
 
             if (sortResult == SortTargetsResult.NoPath)
@@ -646,7 +647,7 @@ namespace LayoutManager.Logic {
             RouteLookupState? lookupState = new(bestRoute.RouteOwner, edge);
             RouteBacktrackManager backtrackManager = new();
 
-            Trace.WriteLineIf(traceRoutePlanning.TraceVerbose, ">>> FindBestRoute to target " + target.TargetEdge.ToString());
+            Trace.WriteLineIf(traceRoutePlanning.TraceVerbose, $">>> FindBestRoute to target {target.TargetEdge}");
 
             if (bestRoute.SourceTrack != target.DestinationTrack) {
                 while (lookupState != null) {
@@ -666,10 +667,10 @@ namespace LayoutManager.Logic {
                         if (newBlock != lookupState.Block) {
                             lookupState.Quality.AddQuality(newBlock);
 
-                            Trace.WriteLineIf(traceRoutePlanning.TraceVerbose, "Block " + newBlock.BlockDefinintion.FullDescription + " accumulated quality " + lookupState.Quality.ToString());
+                            Trace.WriteLineIf(traceRoutePlanning.TraceVerbose, $"Block {newBlock.BlockDefinintion.FullDescription} accumulated quality {lookupState.Quality}");
 
                             if (lookupState.Quality.IsWorseThen(qualityThreshold)) {
-                                Trace.WriteLineIf(traceRoutePlanning.TraceInfo, "Block " + newBlock.BlockDefinintion.FullDescription + " worse than quality threshold - backtrack");
+                                Trace.WriteLineIf(traceRoutePlanning.TraceInfo, $"Block {newBlock.BlockDefinintion.FullDescription} worse than quality threshold - backtrack");
                                 deadEnd = true;
                             }
                             else {
@@ -707,14 +708,14 @@ namespace LayoutManager.Logic {
                     }
 
                     if (deadEnd) {
-                        // If got to a deadend, but the quality is better than the previous deadend, save it, so in case of no route
+                        // If got to a dead-end, but the quality is better than the previous dead-end, save it, so in case of no route
                         // the quality will indicate the best quality that could be achieved
                         if (bestRoute.Quality.ClearanceQuality == RouteClearanceQuality.FreeNow || lookupState.Quality.IsBetterThan(bestRoute.Quality.ClearanceQuality))
                             bestRoute.Quality = lookupState.Quality;
 
                         lookupState = backtrackManager.LookupState;
                         if (lookupState != null)
-                            Trace.WriteLineIf(traceRoutePlanning.TraceInfo, "  Backtracking to " + lookupState.Edge.ToString());
+                            Trace.WriteLineIf(traceRoutePlanning.TraceInfo, $"  Backtracking to {lookupState.Edge}");
                     }
                     else {
                         if (lookupState.Edge.Track is IModelComponentIsMultiPath turnout) {
@@ -733,7 +734,7 @@ namespace LayoutManager.Logic {
                                 if (backtrackManager.HasEntry(lookupState)) {
                                     lookupState = backtrackManager.LookupState;
                                     if (lookupState != null)
-                                        Trace.WriteLineIf(traceRoutePlanning.TraceInfo, "  Backtracking to " + lookupState.Edge.ToString());
+                                        Trace.WriteLineIf(traceRoutePlanning.TraceInfo, $"  Backtracking to {lookupState.Edge}");
                                 }
                                 else {
                                     RouteOption[] routeOptions = GetRouteOptions(lookupState.Edge, target);
@@ -744,7 +745,7 @@ namespace LayoutManager.Logic {
                                     lookupState.SwitchStates.Add(routeOptions[0].SwitchState);
                                     lookupState.Edge = lookupState.Edge.Track.GetConnectedComponentEdge(turnout.ConnectTo(lookupState.Edge.ConnectionPoint, routeOptions[0].SwitchState));
 
-                                    Trace.WriteLineIf(traceRoutePlanning.TraceVerbose, "Turnout " + ((ModelComponent)turnout).FullDescription + " selecting route option w/ switch state " + routeOptions[0].SwitchState + " penalty " + routeOptions[0].Penalty);
+                                    Trace.WriteLineIf(traceRoutePlanning.TraceVerbose, $"Turnout {((ModelComponent)turnout).FullDescription} selecting route option w/ switch state {routeOptions[0].SwitchState} penalty {routeOptions[0].Penalty}");
                                 }
                             }
                         }
@@ -836,7 +837,7 @@ namespace LayoutManager.Logic {
             return routeOptions.ToArray();
         }
 
-        #region Helper classes
+#region Helper classes
 
         private class RouteOption : IComparable {
             public int SwitchState;
@@ -948,9 +949,9 @@ namespace LayoutManager.Logic {
             }
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
         [DispatchTarget(Order =1100)]
         private bool RebuildLayoutState(LayoutPhase phase) {
@@ -960,7 +961,7 @@ namespace LayoutManager.Logic {
             return true;
         }
 
-        #region Data structures
+#region Data structures
 
         private class RoutingTable {
             private const string E_RoutingTable = "RoutingTable";
@@ -1160,20 +1161,20 @@ namespace LayoutManager.Logic {
 
             public int SwitchStateCount { get; }
 
-            #region IEnumerable< Dictionary<TrackEdgeID, int>> Members
+#region IEnumerable< Dictionary<TrackEdgeID, int>> Members
 
             public IEnumerator<Dictionary<TrackEdgeId, int>> GetEnumerator() => Array.AsReadOnly<Dictionary<TrackEdgeId, int>>(reachableNodes).GetEnumerator();
 
-            #endregion
+#endregion
 
-            #region IEnumerable Members
+#region IEnumerable Members
 
             System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
-            #endregion
+#endregion
         }
 
-        #endregion
+#endregion
     }
 }
 

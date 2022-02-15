@@ -625,5 +625,29 @@ namespace LayoutManager {
             d[nameof(RemoveSpeedChangeState)].CallVoid(train);
         }
 
+        [DispatchSource]
+        public static void OnNewLayoutDocument(this Dispatcher d, string filename) {
+            d[nameof(OnNewLayoutDocument)].CallVoid(filename);
+        }
+
+        [DispatchSource]
+        public static void ShowRoutingTableGenerationDialog(this Dispatcher d, int nTurnouts) {
+            d[nameof(ShowRoutingTableGenerationDialog)].CallVoid(nTurnouts);
+        }
+
+        [DispatchSource]
+        public static void AbortRoutingTableGenerationDialog(this Dispatcher d) {
+            d[nameof(AbortRoutingTableGenerationDialog)].CallVoid();
+        }
+
+        [DispatchSource]
+        public static void RoutingTableGenerationProgress(this Dispatcher d) {
+            d[nameof(RoutingTableGenerationProgress)].CallVoid();
+        }
+
+        [DispatchSource]
+        public static void RoutingTableGenerationDone(this Dispatcher d) {
+            d[nameof(RoutingTableGenerationDone)].CallVoid();
+        }
     }
 }
