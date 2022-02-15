@@ -1278,8 +1278,7 @@ namespace LayoutManager.Model {
         }
 
         public void ChangeSpeed(int requestedSpeed, MotionRampInfo ramp) {
-            EventManager.Event(new LayoutEvent("train-speed-change-request", this, new TrainSpeedChangeParameters(requestedSpeed, ramp),
-                null));
+            Dispatch.Call.ChangeTrainSpeedRequest(this, requestedSpeed, ramp);
         }
 
         private const string A_LastCrossedBlockEdge = "LastCrossedBlockEdge";

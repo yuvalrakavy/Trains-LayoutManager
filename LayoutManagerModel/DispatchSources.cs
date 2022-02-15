@@ -613,5 +613,17 @@ namespace LayoutManager {
 
         }
 
+        // Motion manager
+
+        [DispatchSource]
+        public static void ChangeTrainSpeedRequest(this Dispatcher d, TrainStateInfo train, int speed, MotionRampInfo ramp) {
+            d[nameof(ChangeTrainSpeedRequest)].CallVoid(train, speed, ramp);
+        }
+
+        [DispatchSource]
+        public static void RemoveSpeedChangeState(this Dispatcher d, TrainStateInfo train) {
+            d[nameof(RemoveSpeedChangeState)].CallVoid(train);
+        }
+
     }
 }

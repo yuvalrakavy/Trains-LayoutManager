@@ -8,6 +8,13 @@ using LayoutManager.Model;
 #pragma warning disable IDE0051,IDE0060
 #nullable enable
 namespace LayoutManager.Logic {
+
+    internal static class MotionManagerDispatchSources {
+        internal static void TrainSpeedChangeTimer(this Dispatcher d, SpeedChangeState speedChangeState) {
+            d[nameof(TrainSpeedChangeTimer)].CallVoid(speedChangeState);
+        }
+    }
+
     /// <summary>
     /// Handle train motion issues, such as acceleration
     /// </summary>
@@ -18,13 +25,8 @@ namespace LayoutManager.Logic {
         private CommandStationCapabilitiesInfo? _commandStationCapabilties;
         private readonly Dictionary<Guid, SpeedChangeState> trainIDtoSpeedChangeState = new();
 
-        [LayoutEvent("train-speed-change-request")]
-        private void trainSpeedChangeRequest(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-            var scp = Ensure.NotNull<TrainSpeedChangeParameters>(e.Info, "scp");
-            MotionRampInfo ramp = scp.Ramp;
-            int requestedSpeed = scp.RequestedSpeed;
-
+        [DispatchTarget]
+        private void ChangeTrainSpeedRequest(TrainStateInfo train, int requestedSpeed, MotionRampInfo ramp) {
             if (train.Speed != requestedSpeed) {
                 train.FinalSpeed = requestedSpeed;
 
@@ -67,7 +69,7 @@ namespace LayoutManager.Logic {
                         motionTime = speedChangeState.Ticks * speedChangeState.TimePerTick;
                     }
                     else {
-                        Debug.Fail("Unknown ramp type: " + ramp.RampType);
+                        Debug.Fail($"Unknown ramp type: {ramp.RampType}");
                         return;
                     }
 
@@ -100,6 +102,7 @@ namespace LayoutManager.Logic {
             }
         }
 
+#if NOT_USED
         [LayoutEvent("train-speed-change-abort")]
         private void trainSpeedChangeAbort(LayoutEvent e) {
             var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
@@ -107,20 +110,16 @@ namespace LayoutManager.Logic {
             if (trainIDtoSpeedChangeState.TryGetValue(train.Id, out SpeedChangeState speedStateChange))
                 speedStateChange.Dispose();
         }
+#endif
 
-        [LayoutEvent("train-speed-change-done")]
-        [LayoutEvent("train-speed-change-aborted")]
-        private void removeSpeedChangeState(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-
+        [DispatchTarget]
+        private void RemoveSpeedChangeState(TrainStateInfo train) {
             trainIDtoSpeedChangeState.Remove(train.Id);
         }
 
-        [LayoutEvent("train-speed-change-timer")]
-        private void trainSpeedChnageTimer(LayoutEvent e) {
-            var speedChangeState = Ensure.ValueNotNull<SpeedChangeState>(e.Sender, "SpeedChangeState");
-
-            speedChangeState.OnTimer(e);
+        [DispatchTarget]
+        private void TrainSpeedChangeTimer(SpeedChangeState speedChangeState) {
+            speedChangeState.OnTimer();
         }
 
         [DispatchTarget]
@@ -139,7 +138,7 @@ namespace LayoutManager.Logic {
             commandStationCapabiltiesMap.Clear();
         }
 
-        #region Utility methods
+#region Utility methods
 
         /// <summary>
         /// Return the command station capabilties for a given train
@@ -165,123 +164,127 @@ namespace LayoutManager.Logic {
             return _commandStationCapabilties ?? throw new LayoutException($"Unable to get command station capabilities for train {train.Name}");
         }
 
+#endregion
+
+    }
+
+    #region Data structures
+
+    struct SpeedChangeState : IDisposable {
+        private readonly TrainStateInfo train;
+        private double logicalToTrainSpeedStepsFactor;
+        private double trainToLogicalSpeedStepsFactor;
+
+        private int tickCount;
+        private LayoutDelayedEvent? delayedEvent;
+        private int nextSpeed;
+
+        public SpeedChangeState(TrainStateInfo train) {
+            this.train = train;
+            tickCount = 0;
+            delayedEvent = null;
+            logicalToTrainSpeedStepsFactor = 1.0;
+            trainToLogicalSpeedStepsFactor = 1.0;
+            TimePerTick = 10;
+            StepsPerTick = 1;
+            Ticks = 0;
+            AddStepTickCount = 0;
+            ExpectedSpeed = 0;
+            nextSpeed = 0;
+            TargetSpeedSteps = 0;
+        }
+
+        #region Properties
+
+        public int TargetSpeedSteps { get; set; }
+
+        public int Ticks { get; set; }
+
+        public int TimePerTick { get; set; }
+
+        public int StepsPerTick { get; set; }
+
+        public int AddStepTickCount { get; set; }
+
+        public int ExpectedSpeed { get; set; }
+
+        public double LogicalToTrainSpeedStepsFactor {
+            get {
+                return logicalToTrainSpeedStepsFactor;
+            }
+
+            set {
+                logicalToTrainSpeedStepsFactor = value;
+                trainToLogicalSpeedStepsFactor = 1 / value;
+            }
+        }
+
+        public double TrainToLogicalSpeedStepsFactor {
+            get {
+                return trainToLogicalSpeedStepsFactor;
+            }
+
+            set {
+                trainToLogicalSpeedStepsFactor = value;
+                logicalToTrainSpeedStepsFactor = 1 / trainToLogicalSpeedStepsFactor;
+            }
+        }
+
         #endregion
 
-        #region Data structures
+        #region Operations
 
-        private struct SpeedChangeState : IDisposable {
-            private readonly TrainStateInfo train;
-            private double logicalToTrainSpeedStepsFactor;
-            private double trainToLogicalSpeedStepsFactor;
+        public void Start() {
+            nextSpeed = ExpectedSpeed + StepsPerTick;
+            train.SpeedInSteps = nextSpeed;
+            ExpectedSpeed = nextSpeed;
+            setTimer();
+        }
 
-            private int tickCount;
-            private LayoutDelayedEvent? delayedEvent;
-            private int nextSpeed;
+        private void setTimer() {
+            if (ExpectedSpeed != TargetSpeedSteps) {
+                if (Math.Abs(TargetSpeedSteps - ExpectedSpeed) < Math.Abs(StepsPerTick))
+                    nextSpeed = TargetSpeedSteps;
+                else {
+                    nextSpeed = ExpectedSpeed + StepsPerTick;
 
-            public SpeedChangeState(TrainStateInfo train) {
-                this.train = train;
-                tickCount = 0;
+                    if (AddStepTickCount > 0 && ((tickCount % AddStepTickCount) == 0))
+                        nextSpeed += (StepsPerTick > 0) ? 1 : -1;
+                }
+
+                var me = this;
+                delayedEvent = EventManager.DelayedEvent(TimePerTick, () => Dispatch.Call.TrainSpeedChangeTimer(me));
+            }
+            else {
                 delayedEvent = null;
-                logicalToTrainSpeedStepsFactor = 1.0;
-                trainToLogicalSpeedStepsFactor = 1.0;
-                TimePerTick = 10;
-                StepsPerTick = 1;
-                Ticks = 0;
-                AddStepTickCount = 0;
-                ExpectedSpeed = 0;
-                nextSpeed = 0;
-                TargetSpeedSteps = 0;
+                Dispatch.Call.RemoveSpeedChangeState(train);
             }
+        }
 
-            #region Properties
-
-            public int TargetSpeedSteps { get; set; }
-
-            public int Ticks { get; set; }
-
-            public int TimePerTick { get; set; }
-
-            public int StepsPerTick { get; set; }
-
-            public int AddStepTickCount { get; set; }
-
-            public int ExpectedSpeed { get; set; }
-
-            public double LogicalToTrainSpeedStepsFactor {
-                get {
-                    return logicalToTrainSpeedStepsFactor;
-                }
-
-                set {
-                    logicalToTrainSpeedStepsFactor = value;
-                    trainToLogicalSpeedStepsFactor = 1 / value;
-                }
-            }
-
-            public double TrainToLogicalSpeedStepsFactor {
-                get {
-                    return trainToLogicalSpeedStepsFactor;
-                }
-
-                set {
-                    trainToLogicalSpeedStepsFactor = value;
-                    logicalToTrainSpeedStepsFactor = 1 / trainToLogicalSpeedStepsFactor;
-                }
-            }
-
-            #endregion
-
-            #region Operations
-
-            public void Start() {
-                nextSpeed = ExpectedSpeed + StepsPerTick;
+        public void OnTimer() {
+            if (train.SpeedInSteps != ExpectedSpeed)
+                Dispatch.Call.RemoveSpeedChangeState(train);
+            else {
                 train.SpeedInSteps = nextSpeed;
                 ExpectedSpeed = nextSpeed;
-                setTimer();
+
+                tickCount++;
+                setTimer();     // This calculates the next speed
+            }
+        }
+
+        public void Dispose() {
+            if (delayedEvent != null) {
+                delayedEvent.Cancel();
+                delayedEvent = null;
             }
 
-            private void setTimer() {
-                if (ExpectedSpeed != TargetSpeedSteps) {
-                    if (Math.Abs(TargetSpeedSteps - ExpectedSpeed) < Math.Abs(StepsPerTick))
-                        nextSpeed = TargetSpeedSteps;
-                    else {
-                        nextSpeed = ExpectedSpeed + StepsPerTick;
-
-                        if (AddStepTickCount > 0 && ((tickCount % AddStepTickCount) == 0))
-                            nextSpeed += (StepsPerTick > 0) ? 1 : -1;
-                    }
-
-                    delayedEvent = EventManager.DelayedEvent(TimePerTick, new LayoutEvent("train-speed-change-timer", this));
-                }
-                else {
-                    delayedEvent = null;
-                    EventManager.Event(new LayoutEvent("train-speed-change-done", train));
-                }
-            }
-
-            public void OnTimer(LayoutEvent e) {
-                if (train.SpeedInSteps != ExpectedSpeed)
-                    EventManager.Event(new LayoutEvent("train-speed-change-aborted", train));
-                else {
-                    train.SpeedInSteps = nextSpeed;
-                    ExpectedSpeed = nextSpeed;
-
-                    tickCount++;
-                    setTimer();     // This calculates the next speed
-                }
-            }
-
-            public void Dispose() {
-                if (delayedEvent != null) {
-                    delayedEvent.Cancel();
-                    delayedEvent = null;
-                }
-                EventManager.Event(new LayoutEvent("train-speed-change-aborted", train));
-            }
-
-            #endregion
+            Dispatch.Call.RemoveSpeedChangeState(train);
         }
 
         #endregion
     }
+
+    #endregion
+
 }
