@@ -327,7 +327,7 @@ namespace MethodDispatcher {
 
         public string? Name { get; set; }
 
-        private int _order = 1000;
+        private int _order = 0;
 
         public int Order {
             get => _order;
