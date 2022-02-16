@@ -81,13 +81,13 @@ namespace LayoutManager.Tools.Dialogs {
             componentReceiverDialogs.Add((IModelComponentReceiverDialog)this);
         }
 
-        [LayoutEvent("manual-dispatch-region-activation-changed", IfSender = "*[@ID='`string(@ID)`']")]
-        private void ManualDispatchRegionActivationChanged(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnManualDispatchRegionActivationChanged([DispatchFilter(Type="IsMyId")] ManualDispatchRegionInfo manualDispatchRegion, bool active) {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        // Impelementation of IModelComponentReceiverComponent
+        // Implementation of IModelComponentReceiverComponent
 
         public string DialogName(IModelComponent component) => this.Text;
 

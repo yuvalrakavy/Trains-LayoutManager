@@ -256,11 +256,6 @@ namespace LayoutManager {
         }
 
         [DispatchSource]
-        public static void OnTrainSpeedChanged(this Dispatcher d, TrainStateInfo train, int speed) {
-            d[nameof(OnTrainSpeedChanged)].CallVoid(train, speed);
-        }
-
-        [DispatchSource]
         public static void SetLocomotiveLightsRequest(this Dispatcher d, TrainStateInfo train, bool lights) {
             d[nameof(SetLocomotiveSpeedRequest)].CallVoid(train, lights);
         }
@@ -338,6 +333,14 @@ namespace LayoutManager {
         [DispatchSource]
         public static void OnLocomotiveConfigurationChanged(this Dispatcher d, LocomotiveInfo locomotive) {
             d[nameof(OnLocomotiveConfigurationChanged)].CallVoid(locomotive);
+        }
+
+
+        static DispatchSource? ds_OnPrepareEnterOperationMode = null;
+        [DispatchSource]
+        public static void OnPrepareEnterOperationMode(this Dispatcher d, OperationModeParameters operationModeParameters) {
+            ds_OnPrepareEnterOperationMode ??= d[nameof(OnPrepareEnterOperationMode)];
+            ds_OnPrepareEnterOperationMode.CallVoid(operationModeParameters);
         }
 
         [DispatchSource]
@@ -649,5 +652,242 @@ namespace LayoutManager {
         public static void RoutingTableGenerationDone(this Dispatcher d) {
             d[nameof(RoutingTableGenerationDone)].CallVoid();
         }
+
+        static DispatchSource? ds_DispatcherRetryWaitingTrains = null;
+        [DispatchSource]
+        public static void DispatcherRetryWaitingTrains(this Dispatcher d, bool allTrains) {
+            ds_DispatcherRetryWaitingTrains ??= d[nameof(DispatcherRetryWaitingTrains)];
+            ds_DispatcherRetryWaitingTrains.CallVoid(allTrains);
+        }
+
+        static DispatchSource? ds_DriverStop = null;
+        [DispatchSource]
+        public static void DriverStop(this Dispatcher d, TrainStateInfo train) {
+            ds_DriverStop ??= d[nameof(DriverStop)];
+            ds_DriverStop.CallVoid(train);
+        }
+
+
+        static DispatchSource? ds_ExecuteTripPlan = null;
+        [DispatchSource]
+        public static bool ExecuteTripPlan(this Dispatcher d, TripPlanAssignmentInfo tripPlanAssignment) {
+            ds_ExecuteTripPlan ??= d[nameof(ExecuteTripPlan)];
+            return ds_ExecuteTripPlan.Call<bool>(tripPlanAssignment);
+        }
+
+
+        static DispatchSource? ds_DriverAssignment = null;
+        [DispatchSource]
+        public static bool DriverAssignment(this Dispatcher d, TrainStateInfo train) {
+            ds_DriverAssignment ??= d[nameof(DriverAssignment)];
+            return ds_DriverAssignment.Call<bool>(train);
+        }
+
+
+        static DispatchSource? ds_ShowLocomotiveController = null;
+        [DispatchSource]
+        public static void ShowLocomotiveController(this Dispatcher d, TrainStateInfo train) {
+            ds_ShowLocomotiveController ??= d[nameof(ShowLocomotiveController)];
+            ds_ShowLocomotiveController.CallVoid(train);
+        }
+
+
+        static DispatchSource? ds_ValidateTripPlanRoute = null;
+        [DispatchSource]
+        public static ITripRouteValidationResult ValidateTripPlanRoute(this Dispatcher d, TripPlanInfo tripPlan, TrainStateInfo train) {
+            ds_ValidateTripPlanRoute ??= d[nameof(ValidateTripPlanRoute)];
+            return ds_ValidateTripPlanRoute.Call<ITripRouteValidationResult>(tripPlan, train);
+        }
+
+
+        static DispatchSource? ds_OnTripAdded = null;
+        [DispatchSource]
+        public static void OnTripAdded(this Dispatcher d, TripPlanAssignmentInfo tripPlanAssignment) {
+            ds_OnTripAdded ??= d[nameof(OnTripAdded)];
+            ds_OnTripAdded.CallVoid(tripPlanAssignment);
+        }
+
+
+        static DispatchSource? ds_DriverEmergencyStop = null;
+        [DispatchSource]
+        public static void DriverEmergencyStop(this Dispatcher d, TrainStateInfo train) {
+            ds_DriverEmergencyStop ??= d[nameof(DriverEmergencyStop)];
+            ds_DriverEmergencyStop.CallVoid(train);
+        }
+
+
+        static DispatchSource? ds_OnTripDone = null;
+        [DispatchSource]
+        public static void OnTripDone(this Dispatcher d, TripPlanAssignmentInfo trip) {
+            ds_OnTripDone ??= d[nameof(OnTripDone)];
+            ds_OnTripDone.CallVoid(trip);
+        }
+
+        static DispatchSource? ds_OnTripAborted = null;
+        [DispatchSource]
+        public static void OnTripAborted(this Dispatcher d, TrainStateInfo train, TripPlanInfo trip) {
+            ds_OnTripAborted ??= d[nameof(OnTripAborted)];
+            ds_OnTripAborted.CallVoid(train, trip);
+        }
+
+        static DispatchSource? ds_SuspendTrip = null;
+        [DispatchSource]
+        public static void SuspendTrip(this Dispatcher d, TrainStateInfo train, bool emergency) {
+            ds_SuspendTrip ??= d[nameof(SuspendTrip)];
+            ds_SuspendTrip.CallVoid(train, emergency);
+        }
+
+
+        static DispatchSource? ds_ResumeTrip = null;
+        [DispatchSource]
+        public static void ResumeTrip(this Dispatcher d, TrainStateInfo train) {
+            ds_ResumeTrip ??= d[nameof(ResumeTrip)];
+            ds_ResumeTrip.CallVoid(train);
+        }
+
+
+        static DispatchSource? ds_ClearTrip = null;
+        [DispatchSource]
+        public static void ClearTrip(this Dispatcher d, TrainStateInfo train) {
+            ds_ClearTrip ??= d[nameof(ClearTrip)];
+            ds_ClearTrip.CallVoid(train);
+        }
+
+        static DispatchSource? ds_OnTripCleared = null;
+        [DispatchSource]
+        public static void OnTripCleared(this Dispatcher d, TrainStateInfo train, TripPlanInfo trip) {
+            ds_OnTripCleared ??= d[nameof(OnTripCleared)];
+            ds_OnTripCleared.CallVoid(train, trip);
+        }
+
+        static DispatchSource? ds_SuspendAllTrips = null;
+        [DispatchSource]
+        public static void SuspendAllTrips(this Dispatcher d) {
+            ds_SuspendAllTrips ??= d[nameof(SuspendAllTrips)];
+            ds_SuspendAllTrips.CallVoid();
+        }
+
+        static DispatchSource? ds_ResumeAllTrips = null;
+        [DispatchSource]
+        public static void ResumeAllTrips(this Dispatcher d) {
+            ds_ResumeAllTrips ??= d[nameof(ResumeAllTrips)];
+            ds_ResumeAllTrips.CallVoid();
+        }
+
+
+        static DispatchSource? ds_GetActiveTrip = null;
+        [DispatchSource]
+        public static TripPlanAssignmentInfo? GetActiveTrip(this Dispatcher d, TrainStateInfo train) {
+            ds_GetActiveTrip ??= d[nameof(GetActiveTrip)];
+            return ds_GetActiveTrip.Call<TripPlanAssignmentInfo?>(train);
+        }
+
+
+        static DispatchSource? ds_GetEditedTrip = null;
+        [DispatchSource]
+        public static TripPlanAssignmentInfo? GetEditedTrip(this Dispatcher d, TrainStateInfo train) {
+            ds_GetEditedTrip ??= d[nameof(GetEditedTrip)];
+            return ds_GetEditedTrip.Call<TripPlanAssignmentInfo?>(train);
+        }
+
+
+        static DispatchSource? ds_GetActiveTrips = null;
+        [DispatchSource]
+        public static IList<TripPlanAssignmentInfo> GetActiveTrips(this Dispatcher d) {
+            ds_GetActiveTrips ??= d[nameof(GetActiveTrips)];
+            return ds_GetActiveTrips.Call<IList<TripPlanAssignmentInfo>>();
+        }
+
+        static DispatchSource? ds_AreAllTripsSuspended = null;
+        [DispatchSource]
+        public static bool AreAllTripsSuspended(this Dispatcher d) {
+            ds_AreAllTripsSuspended ??= d[nameof(AreAllTripsSuspended)];
+            return ds_AreAllTripsSuspended.Call<bool>();
+        }
+
+        static DispatchSource? ds_IsAnyActiveTripPlan = null;
+        [DispatchSource]
+        public static bool IsAnyActiveTripPlan(this Dispatcher d) {
+            ds_IsAnyActiveTripPlan ??= d[nameof(IsAnyActiveTripPlan)];
+            return ds_IsAnyActiveTripPlan.Call<bool>();
+        }
+
+        static DispatchSource? ds_OnAllTripsSuspendedStatusChanged = null;
+        [DispatchSource]
+        public static void OnAllTripsSuspendedStatusChanged(this Dispatcher d, bool allSuspended) {
+            ds_OnAllTripsSuspendedStatusChanged ??= d[nameof(OnAllTripsSuspendedStatusChanged)];
+            ds_OnAllTripsSuspendedStatusChanged.CallVoid(allSuspended);
+        }
+
+        static DispatchSource? ds_OnTripStatusChanged = null;
+        [DispatchSource]
+        public static void OnTripStatusChanged(this Dispatcher d, TripPlanAssignmentInfo tripPlanAssignment, TripStatus oldStatus) {
+            ds_OnTripStatusChanged ??= d[nameof(OnTripStatusChanged)];
+            ds_OnTripStatusChanged.CallVoid(tripPlanAssignment, oldStatus);
+        }
+
+        static DispatchSource? ds_OnTrainSpeedChanged = null;
+        [DispatchSource]
+        public static void OnTrainSpeedChanged(this Dispatcher d, TrainStateInfo train, int speed) {
+            ds_OnTrainSpeedChanged ??= d[nameof(OnTrainSpeedChanged)];
+            ds_OnTrainSpeedChanged.CallVoid(train, speed);
+        }
+
+        static DispatchSource? ds_OnDriverTargetSpeedChanged = null;
+        [DispatchSource]
+        public static void OnDriverTargetSpeedChanged(this Dispatcher d, TrainStateInfo train) {
+            ds_OnDriverTargetSpeedChanged ??= d[nameof(OnDriverTargetSpeedChanged)];
+            ds_OnDriverTargetSpeedChanged.CallVoid(train);
+        }
+
+        static DispatchSource? ds_DriverPrepareStop = null;
+        [DispatchSource]
+        public static void DriverPrepareStop(this Dispatcher d, TrainStateInfo train) {
+            ds_DriverPrepareStop ??= d[nameof(DriverPrepareStop)];
+            ds_DriverPrepareStop.CallVoid(train);
+        }
+
+        static DispatchSource? ds_DriverUpdateSpeed = null;
+        [DispatchSource]
+        public static void DriverUpdateSpeed(this Dispatcher d, TrainStateInfo train) {
+            ds_DriverUpdateSpeed ??= d[nameof(DriverUpdateSpeed)];
+            ds_DriverUpdateSpeed.CallVoid(train);
+        }
+
+        static DispatchSource? ds_OnTrainLeaveBlock = null;
+        [DispatchSource]
+        public static void OnTrainLeaveBlock(this Dispatcher d, TrainStateInfo train, LayoutBlock block) {
+            ds_OnTrainLeaveBlock ??= d[nameof(OnTrainLeaveBlock)];
+            ds_OnTrainLeaveBlock.CallVoid(train, block);
+        }
+
+        static DispatchSource? ds_OnManualDispatchRegionActivationChanged = null;
+        [DispatchSource]
+        public static void OnManualDispatchRegionActivationChanged(this Dispatcher d, ManualDispatchRegionInfo manualDispatchRegion, bool active) {
+            ds_OnManualDispatchRegionActivationChanged ??= d[nameof(OnManualDispatchRegionActivationChanged)];
+            ds_OnManualDispatchRegionActivationChanged.CallVoid(manualDispatchRegion, active);
+        }
+
+        static DispatchSource? ds_DriverTrainGo = null;
+        [DispatchSource]
+        public static void DriverTrainGo(this Dispatcher d, TrainStateInfo train, LocomotiveOrientation direction) {
+            ds_DriverTrainGo ??= d[nameof(DriverTrainGo)];
+            ds_DriverTrainGo.CallVoid(train, direction);
+        }
+
+        static DispatchSource? ds_FindBestRouteRequest = null;
+        [DispatchSource]
+        public static TripBestRouteResult FindBestRouteRequest(this Dispatcher d, TripBestRouteRequest request) {
+            ds_FindBestRouteRequest ??= d[nameof(FindBestRouteRequest)];
+            return ds_FindBestRouteRequest.Call<TripBestRouteResult>(request);
+        }
+
+        static DispatchSource? ds_DispatcherSetSwitches = null;
+        [DispatchSource]
+        public static bool DispatcherSetSwitches(this Dispatcher d, Guid ownerId, ITripRoute route) {
+            ds_DispatcherSetSwitches ??= d[nameof(DispatcherSetSwitches)];
+            return ds_DispatcherSetSwitches.Call<bool>(ownerId, route);
+        }
+
     }
 }

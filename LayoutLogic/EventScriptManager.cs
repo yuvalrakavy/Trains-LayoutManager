@@ -5,7 +5,6 @@ using MethodDispatcher;
 using LayoutManager;
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051, IDE0060
 #nullable enable
 namespace LayoutManager.Logic {
     /// <summary>

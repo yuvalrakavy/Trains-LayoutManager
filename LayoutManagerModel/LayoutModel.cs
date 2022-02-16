@@ -1436,7 +1436,6 @@ namespace LayoutManager.Model {
     /// <summary>
     /// Summary description for Class1.
     /// </summary>
-#pragma warning disable IDE0051
     [LayoutModule("Layout Model", UserControl = false)]
     public class LayoutModel : ILayoutModuleSetup, IObjectHasXml {
         private string? modelXmlInfoFilename;

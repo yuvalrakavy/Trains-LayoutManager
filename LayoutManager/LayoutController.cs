@@ -321,7 +321,7 @@ namespace LayoutManager {
                     OperationModeSettings = settings;
                     LayoutModel.ActivePhases = settings.Phases;
 
-                    EventManager.Event(new LayoutEvent<OperationModeParameters>("prepare-enter-operation-mode", settings));
+                    Dispatch.Notification.OnPrepareEnterOperationMode(settings);
 
                     var ok = Dispatch.Call.RebuildLayoutState(settings.Phases);
 

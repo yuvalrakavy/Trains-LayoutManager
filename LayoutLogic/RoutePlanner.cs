@@ -536,7 +536,7 @@ namespace LayoutManager.Logic {
                 var blockInfo = BestRoute.TrackOf(destinationComponent).BlockDefinitionComponent;
 
                 if (blockInfo != null)
-                    Trace.WriteLine($" to {blockInfo.Name} direction {direction.ToString()}");
+                    Trace.WriteLine($" to {blockInfo.Name} direction {direction}");
             }
 
             AddTargets(

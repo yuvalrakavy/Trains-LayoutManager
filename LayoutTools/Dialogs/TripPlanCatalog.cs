@@ -147,7 +147,7 @@ namespace LayoutManager.Tools.Dialogs {
 
                 TripPlanAssignmentInfo tripAssignment = new(tripPlan, train);
 
-                EventManager.Event(new LayoutEvent("execute-trip-plan", tripAssignment));
+                Dispatch.Call.ExecuteTripPlan(tripAssignment);
                 DialogResult = DialogResult.OK;
                 Close();
             }

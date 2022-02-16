@@ -138,7 +138,7 @@ namespace LayoutManager.Tools {
             }
 
             public object? Resolve(LayoutScriptContext context, string symbolName) {
-                var trip = (TripPlanAssignmentInfo?)EventManager.Event(new LayoutEvent("get-train-active-trip", train));
+                var trip = Dispatch.Call.GetActiveTrip(train) ?? Dispatch.Call.GetEditedTrip(train);
 
                 if (trip == null)
                     return null;
@@ -453,7 +453,7 @@ namespace LayoutManager.Tools {
                 }
 
                 if (!Occurred && policy != null && policy.EventScriptElement != null) {
-                    eventScript = EventManager.EventScript(policy.Name, policy.EventScriptElement, ((LayoutEventScript)Script).ScopeIDs, new LayoutEvent("run-policy-done", this));
+                    eventScript = EventManager.EventScript(policy.Name, policy.EventScriptElement, ((LayoutEventScript)Script).ScopeIDs, () => EventManager.Event(new LayoutEvent("run-policy-done", this)));
                     eventScript.ParentContext = Context;
 
                     eventScript.Reset();
@@ -599,7 +599,7 @@ namespace LayoutManager.Tools {
 
                 Dispatch.Call.SetScriptContext(train, Context);
 
-                var tripAssignment = (TripPlanAssignmentInfo?)EventManager.Event(new LayoutEvent("get-train-active-trip", train));
+                var tripAssignment = Dispatch.Call.GetActiveTrip(train) ?? Dispatch.Call.GetEditedTrip(train);
 
                 if (tripAssignment != null)
                     Dispatch.Call.SetScriptContext(tripAssignment, Context);
@@ -1365,7 +1365,7 @@ namespace LayoutManager.Tools {
                     if (shouldReverse)
                         tripPlan.Reverse();
 
-                    EventManager.Event(new LayoutEvent("execute-trip-plan", new TripPlanAssignmentInfo(tripPlan, train)));
+                    Dispatch.Call.ExecuteTripPlan(new TripPlanAssignmentInfo(tripPlan, train));
                 }
             }
         }
@@ -1400,7 +1400,7 @@ namespace LayoutManager.Tools {
         }
 
         [DispatchTarget]
-        private string GetEventScriptDescription_ExecuteTripPlan([DispatchFilter(Type = "XPath", Value = "ExecuteTripPlan")] XmlElement element) {
+        private string GetEventScriptDescription_ExecuteTripPlanNode([DispatchFilter(Type = "XPath", Value = "ExecuteTripPlan")] XmlElement element) {
             return EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeExecuteTripPlan.GetDescription(element));
         }
 
@@ -1567,7 +1567,7 @@ namespace LayoutManager.Tools {
                             if (shouldReverse)
                                 tripPlan.Reverse();
 
-                            EventManager.Event(new LayoutEvent("execute-trip-plan", new TripPlanAssignmentInfo(tripPlan, train)));
+                            Dispatch.Call.ExecuteTripPlan(new TripPlanAssignmentInfo(tripPlan, train));
                         }
                     }
                 }

@@ -5,7 +5,6 @@ using System.Net;
 using LayoutManager.Model;
 using System.Diagnostics;
 
-#pragma warning disable IDE0051
 #nullable enable
 namespace LayoutManager.ControlComponents {
     [LayoutModule("Train Detector Bus Components")]

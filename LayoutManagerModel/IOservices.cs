@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 using MethodDispatcher;
 
-#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Components {
     [LayoutModule("Layout I/O Services")]
     public class LayoutIOServices : LayoutModuleBase {

@@ -112,15 +112,13 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [LayoutEvent("show-locomotive-controller")]
-        private void ShowLocomotiveController(LayoutEvent e) {
-            TrainStateInfo trainState = Dispatch.Call.ExtractTrainState(e.Sender!);
+        [DispatchTarget]
+        private void ShowLocomotiveController(TrainStateInfo train) {
+            if (train.NotManaged)
+                throw new LocomotiveNotManagedException(train.Locomotives[0].Locomotive);
 
-            if (trainState.NotManaged)
-                throw new LocomotiveNotManagedException(trainState.Locomotives[0].Locomotive);
-
-            if (EventManager.Event(new LayoutEvent("activate-locomotive-controller", trainState)) == null) {
-                Dialogs.LocomotiveController locoController = new(trainState);
+            if (EventManager.Event(new LayoutEvent("activate-locomotive-controller", train)) == null) {
+                Dialogs.LocomotiveController locoController = new(train);
 
                 locoController.Show();
             }
@@ -417,19 +415,19 @@ namespace LayoutManager.Tools {
         #region Show locomotive controller menu item
 
         public class ShowLocomotiveControllerMenuItem : LayoutMenuItem {
-            private readonly TrainStateInfo state;
+            private readonly TrainStateInfo train;
 
-            public ShowLocomotiveControllerMenuItem(TrainStateInfo state) {
-                this.state = state;
+            public ShowLocomotiveControllerMenuItem(TrainStateInfo train) {
+                this.train = train;
                 this.Text = "Show &Controller";
 
-                if (state.NotManaged || state.Locomotives.Count == 0)
+                if (train.NotManaged || train.Locomotives.Count == 0)
                     this.Enabled = false;
             }
 
             protected override void OnClick(EventArgs e) {
                 try {
-                    EventManager.Event(new LayoutEvent("show-locomotive-controller", state));
+                    Dispatch.Call.ShowLocomotiveController(train);
                 }
                 catch (LayoutException lex) {
                     lex.Report();

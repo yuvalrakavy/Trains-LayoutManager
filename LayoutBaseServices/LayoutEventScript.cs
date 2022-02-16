@@ -180,20 +180,20 @@ namespace LayoutManager {
     }
 
     public class LayoutEventScript : ILayoutScript, IDisposable, IObjectHasId {
-        private readonly LayoutEvent? scriptDoneEvent;
-        private readonly LayoutEvent? errorOccurredEvent;
+        private readonly Action? scriptDoneAction;
+        private readonly Action? errorOccurredAction;
         private readonly XmlElement scriptElement;
         private LayoutScriptContext? scriptContext;
         private readonly List<LayoutEventScriptTask> tasks = new();
         private LayoutEventScriptTask? rootTask;
 
         public LayoutEventScript(string scriptName, XmlElement scriptElement,
-            ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent, LayoutEvent? errorOccurredEvent) {
+            ICollection<Guid> scopeIDs, Action? scriptDoneAction, Action? errorOccurredAction) {
             this.Name = scriptName;
             this.scriptElement = scriptElement;
             this.ScopeIDs = scopeIDs;
-            this.scriptDoneEvent = scriptDoneEvent;
-            this.errorOccurredEvent = errorOccurredEvent;
+            this.scriptDoneAction = scriptDoneAction;
+            this.errorOccurredAction = errorOccurredAction;
 
             this.Id = Guid.NewGuid();
         }
@@ -248,10 +248,10 @@ namespace LayoutManager {
             if (task == RootTask) {
                 Dispatch.Notification.OnEventScriptTerminated(this);
 
-                if (task.EventRoot.IsErrorState && errorOccurredEvent != null)
-                    EventManager.Event(errorOccurredEvent);
-                else if (scriptDoneEvent != null)
-                    EventManager.Event(scriptDoneEvent);
+                if (task.EventRoot.IsErrorState && errorOccurredAction != null)
+                    errorOccurredAction();
+                else 
+                    scriptDoneAction?.Invoke();
             }
             else
                 tasks.Remove(task);

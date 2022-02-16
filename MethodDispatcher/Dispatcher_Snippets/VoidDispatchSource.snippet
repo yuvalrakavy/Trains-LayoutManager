@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+    <CodeSnippet Format="1.0.0">
+        <Header>
+            <Title>void DispatchSource</Title>
+            <Author>Yuval Rakavy</Author>
+            <Shortcut>vds</Shortcut>
+        </Header>
+        <Snippet>
+            <Code Language="CSharp">
+                <![CDATA[static DispatchSource? ds_$name$ = null;
+                [DispatchSource]
+                public static void $name$(this Dispatcher d, $arguments$) {
+                    ds_$name$ ??= d[nameof($name$)];
+                    ds_$name$.CallVoid($parameters$);
+			    }
+                ]]>
+            </Code>
+            <Declarations>
+                <Literal>
+                    <ID>name</ID>
+                    <ToolTip>Dispatch source name</ToolTip>
+                    <Default>name</Default>
+                </Literal>
+				<Literal>
+					<ID>arguments</ID>
+					<ToolTip>arguments</ToolTip>
+					<Default>arguments</Default>
+				</Literal>
+                <Literal>
+                    <ID>parameters</ID>
+                    <ToolTip>CallVoid parameters</ToolTip>
+                    <Default>parameters</Default>
+                </Literal>
+            </Declarations>
+        </Snippet>
+    </CodeSnippet>
+</CodeSnippets>

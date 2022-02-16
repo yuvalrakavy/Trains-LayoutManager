@@ -910,7 +910,7 @@ namespace LayoutManager.Tools {
                     BestRoute bestRoute = ts.FindBestRoute(manualDispatchRouteSetting.SourceBlockInfo, front, direction, blockInfo, manualDispatchRouteSetting.SourceRegionID, true);
 
                     if (bestRoute.Quality.IsValidRoute) {
-                        bool completed = (bool)(EventManager.Event(new LayoutEvent("dispatcher-set-switches", manualDispatchRouteSetting.SourceRegionID, bestRoute)) ?? false);
+                        bool completed = Dispatch.Call.DispatcherSetSwitches(manualDispatchRouteSetting.SourceRegionID, bestRoute);
 
                         if (!completed) {
                             LayoutSelection selection = new(new ModelComponent[] { manualDispatchRouteSetting.SourceBlockInfo, blockInfo });

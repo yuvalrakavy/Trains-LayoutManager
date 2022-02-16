@@ -83,7 +83,7 @@ namespace LayoutManager.Logic {
 
             internal TripStatus SuspendedStatus { get; set; } = TripStatus.NotSubmitted;
 
-            public LayoutEvent? SuspendedEvent { get; set; }
+            public Action? ResumeAction { get; set; }
 
             public LayoutEventScript[]? ActivePolicies { get; set; }
 
@@ -244,7 +244,7 @@ namespace LayoutManager.Logic {
                 Remove(block.Id);
 
                 Trace.WriteLineIf(traceUnlockingManager.TraceInfo, $"UnlockingManager: Adding {block} timeout {timeout}");
-                base.Add(block.Id, EventManager.DelayedEvent(timeout, new LayoutEvent("dispatcher-free-block-layout-lock", block, block.LockRequest)));
+                base.Add(block.Id, EventManager.DelayedEvent(timeout, () => DispatcherFreeBlockLayoutLock(block, block.LockRequest)));
             }
 
             public new void Remove(Guid blockID) {
@@ -302,13 +302,9 @@ namespace LayoutManager.Logic {
                 Remove(resourceId);
             }
 
-            [LayoutEvent("dispatcher-free-block-layout-lock")]
-            private void DispatcherFreeBlockLayoutLock(LayoutEvent e) {
+            private void DispatcherFreeBlockLayoutLock(LayoutBlock block, LayoutLockRequest? lockRequest) {
                 if (!operationMode)
-                    return;             // some kind of a timeout that happend just before exiting operation mode, ignore it
-
-                var block = Ensure.NotNull<LayoutBlock>(e.Sender, "block");
-                var lockRequest = (LayoutLockRequest?)e.Info;
+                    return;             // some kind of a timeout that happened just before exiting operation mode, ignore it
 
                 List<Guid> resourceIDsToUnlock = new();
                 bool retryWaitingTrains = false;
@@ -359,7 +355,7 @@ namespace LayoutManager.Logic {
 
                 if (retryWaitingTrains) {
                     Trace.WriteLineIf(traceUnlockingManager.TraceInfo, $"UnlockingManager: Unlocked block with turnouts {block} retry routes for waiting trains");
-                    EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, (bool)false));
+                    Dispatch.Call.DispatcherRetryWaitingTrains(false);
                 }
             }
         }
@@ -442,11 +438,8 @@ namespace LayoutManager.Logic {
 
         #region External Interface Event Handlers
 
-        [LayoutEvent("execute-trip-plan")]
-        [LayoutEventDef("trip-added", Role = LayoutEventRole.Notification, SenderType = typeof(TripPlanAssignmentInfo))]
-        private void ExecuteTripPlan(LayoutEvent e) {
-            var tripPlanAssignment = Ensure.NotNull<TripPlanAssignmentInfo>(e.Sender, "tripPlanAssignment");
-            object? form = e.Info;
+        [DispatchTarget]
+        private bool ExecuteTripPlan(TripPlanAssignmentInfo tripPlanAssignment) {
             var existingTrip = activeTrips[tripPlanAssignment.TrainId];
             var newTrip = new ActiveTripInfo(tripPlanAssignment.Element);
 
@@ -456,22 +449,21 @@ namespace LayoutManager.Logic {
             }
 
             // Assign driver to the trip.
-            if (!(bool)(EventManager.Event(new LayoutEvent("driver-assignment", newTrip.Train, form)) ?? false)) {
-                e.Info = false;
-                return;
+            if (!Dispatch.Call.DriverAssignment(newTrip.Train)) {
+                return false;
             }
 
             // Since driver assignment may take, time and in the meanwhile the train may have moved,
             // Validate the new trip (yet again) to verify that the train did
             // not move to a place where it is no longer valid
-            var validationResult = Ensure.NotNull<ITripRouteValidationResult>(EventManager.Event(new LayoutEvent("validate-trip-plan-route", newTrip.TripPlan, newTrip.Train)), "validate-trip-plan-roure");
+            var validationResult = Dispatch.Call.ValidateTripPlanRoute(newTrip.TripPlan, newTrip.Train);
 
             if (validationResult.CanBeFixed) {
                 foreach (ITripRouteValidationAction fixAction in validationResult.Actions)
                     fixAction.Apply(newTrip.TripPlan);
             }
             else
-                throw new LayoutException("Train " + newTrip.Train.DisplayName + " cannot execute the trip plan (i.e. No route)");
+                throw new LayoutException($"Train {newTrip.Train.DisplayName} cannot execute the trip plan (i.e. No route)");
 
             if (traceDispatching.TraceInfo)
                 newTrip.Dump();
@@ -507,14 +499,11 @@ namespace LayoutManager.Logic {
             newTrip.Train.Trip = newTrip;
 
             TrainStopped(newTrip, true);
-            EventManager.Event(new LayoutEvent("trip-added", newTrip));
+            Dispatch.Notification.OnTripAdded(newTrip);
 
-            e.Info = true;
+            return true;
         }
 
-        [LayoutEventDef("driver-stop", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
-        [LayoutEventDef("driver-emergency-stop", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
-        [LayoutEventDef("trip-aborted", Role = LayoutEventRole.Notification, SenderType = typeof(TripPlanAssignmentInfo))]
         [DispatchTarget]
         private void AbortTrip(TrainStateInfo train, bool emergency) {
             var trip = activeTrips[train.Id];
@@ -524,7 +513,7 @@ namespace LayoutManager.Logic {
                     Trace.WriteLineIf(traceDispatching.TraceInfo, $"Trip for train {train.DisplayName} emergency abort");
                     if (train.Managed) {
                         train.SpeedInSteps = 0;     // Stop the train at once
-                        EventManager.Event(new LayoutEvent("driver-emergency-stop", trip.Train));
+                        Dispatch.Call.DriverEmergencyStop(trip.Train);
                     }
 
                     trip.Status = TripStatus.Aborted;
@@ -536,23 +525,21 @@ namespace LayoutManager.Logic {
                     if (train.Managed && train.Speed != 0 && (trip.Status == TripStatus.Go || trip.Status == TripStatus.PrepareStop))
                         CauseTrainToStop(trip, BlockAction.AbortTrip);
                     else {
-                        EventManager.Event(new LayoutEvent("driver-stop", trip.Train));
+                        Dispatch.Call.DriverStop(trip.Train);
                         trip.Status = TripStatus.Aborted;
                         trip.Cancel();                      // Drop pending lock or pending waits
                         trip.Queue.Flush();
                     }
                 }
 
-                EventManager.Event(new LayoutEvent("trip-aborted", trip));
+                Dispatch.Notification.OnTripAborted(trip.Train, trip.TripPlan);
             }
             else
                 throw new LayoutException(train, "Trip plan execution was aborted for train that was not assigned to one");
         }
 
-        [LayoutEvent("suspend-trip")]
-        private void SuspendTrip(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-            var emergency = Ensure.ValueNotNull<bool>(e.Info, "emergency");
+        [DispatchTarget]
+        private void SuspendTrip(TrainStateInfo train, bool emergency) {
             ActiveTripInfo? trip = activeTrips[train.Id];
 
             if (trip != null && !CanClearTrip(trip) && trip.Status != TripStatus.Suspended) {
@@ -561,12 +548,12 @@ namespace LayoutManager.Logic {
 
                     if (train.Managed) {
                         train.SpeedInSteps = 0;     // Stop the train at once
-                        EventManager.Event(new LayoutEvent("driver-emergency-stop", trip.Train));
+                        Dispatch.Call.DriverEmergencyStop(trip.Train);
                     }
 
                     trip.SuspendedStatus = trip.Status;
                     trip.Status = TripStatus.Suspended;
-                    trip.SuspendedEvent = new LayoutEvent("dispatcher-resume-suspended", trip);
+                    trip.ResumeAction = () => ResumeSuspendedTrain(trip);
                 }
                 else {
                     if (train.Managed && train.Speed != 0 && (trip.Status == TripStatus.Go || trip.Status == TripStatus.PrepareStop))
@@ -574,24 +561,22 @@ namespace LayoutManager.Logic {
                     else {
                         trip.SuspendedStatus = trip.Status;
                         trip.Status = TripStatus.Suspended;
-                        trip.SuspendedEvent = new LayoutEvent("dispatcher-resume-suspended", trip);
+                        trip.ResumeAction = () => ResumeSuspendedTrain(trip);
                     }
                 }
             }
         }
 
-        [LayoutEvent("resume-trip")]
-        private void ResumeTrip(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+        [DispatchTarget]
+        private void ResumeTrip(TrainStateInfo train) {
             ActiveTripInfo? trip = activeTrips[train.Id];
 
             if (trip != null) {
                 if (trip.Status == TripStatus.Suspended) {
-                    Debug.Assert(trip.SuspendedEvent != null);
+                    Debug.Assert(trip.ResumeAction != null);
                     trip.Status = trip.SuspendedStatus;
-                    if(trip.SuspendedEvent != null)
-                        EventManager.Event(trip.SuspendedEvent);
-                    trip.SuspendedEvent = null;
+                    trip.ResumeAction?.Invoke();
+                    trip.ResumeAction = null;
                     AllSuspended = false;
                 }
                 else
@@ -599,10 +584,8 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("clear-trip")]
-        [LayoutEventDef("trip-cleared", Role = LayoutEventRole.Notification, SenderType = typeof(TripPlanAssignmentInfo))]
-        private void ClearTripPlan(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+        [DispatchTarget]
+        private void ClearTrip(TrainStateInfo train) {
             ActiveTripInfo? trip = activeTrips[train.Id];
 
             if (trip != null && trip.CanBeCleared) {
@@ -610,13 +593,12 @@ namespace LayoutManager.Logic {
                 train.Redraw();
 
                 activeTrips.Remove(train.Id);
-                EventManager.Event(new LayoutEvent("trip-cleared", trip));
+                Dispatch.Notification.OnTripCleared(trip.Train, trip.TripPlan);
             }
         }
 
-        [LayoutEvent("suspend-all-locomotives")]
-        [LayoutEvent("suspend-all-trips")]
-        private void SuspendAllLocomotives(LayoutEvent e) {
+        [DispatchTarget]
+        private void SuspendAllTrips() {
             foreach (XmlElement trainElement in LayoutModel.StateManager.Trains.Element) {
                 var train = new TrainStateInfo(trainElement);
                 var trip = activeTrips[train.Id];
@@ -624,18 +606,17 @@ namespace LayoutManager.Logic {
                 if (trip == null)
                     train.SpeedInSteps = 0;
                 else
-                    EventManager.Event(new LayoutEvent("suspend-trip", trip.Train, true));
+                    Dispatch.Call.SuspendTrip(trip.Train, true);
             }
 
             AllSuspended = true;
         }
 
-        [LayoutEvent("resume-all-locomotives")]
-        [LayoutEvent("resume-all-trips")]
-        private void ResumeAllLocomotives(LayoutEvent e) {
+        [DispatchTarget]
+        private void ResumeAllTrips() {
             foreach (ActiveTripInfo trip in activeTrips.Values) {
                 if (trip.Status == TripStatus.Suspended)
-                    EventManager.Event(new LayoutEvent("resume-trip", trip.Train));
+                    Dispatch.Call.ResumeTrip(trip.Train);
             }
         }
 
@@ -650,35 +631,29 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("get-train-active-trip")]
-        private void GetTrainActiveTrip(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+        [DispatchTarget]
+        private TripPlanAssignmentInfo? GetActiveTrip(TrainStateInfo train) {
             ActiveTripInfo? trip = activeTrips[train.Id];
 
-            if (trip == null || trip.Status == TripStatus.Aborted || trip.Status == TripStatus.Done)
-                e.Info = null;
-            else
-                e.Info = trip;
+            return trip == null || trip.Status == TripStatus.Aborted || trip.Status == TripStatus.Done ? null : trip;
         }
 
-        [LayoutEvent("get-active-trips")]
-        private void GetActiveTrips(LayoutEvent e) {
-            ArrayList trips = new();
+        [DispatchTarget]
+        private IList<TripPlanAssignmentInfo> GetActiveTrips() {
+            List<TripPlanAssignmentInfo> trips = new();
 
             foreach (ActiveTripInfo trip in activeTrips.Values)
                 if (trip.Status != TripStatus.Aborted && trip.Status != TripStatus.Done)
                     trips.Add(trip);
 
-            e.Info = trips.ToArray(typeof(ActiveTripInfo));
+            return trips.AsReadOnly();
         }
 
-        [LayoutEvent("are-all-locomotives-suspended")]
-        private void AreAllLocomotivesSuspended(LayoutEvent e) => e.Info = AllSuspended;
+        [DispatchTarget]
+        private bool AreAllTripsSuspended() => AllSuspended;
 
-        [LayoutEvent("any-active-trip-plan")]
-        private void AnyActiveTripPlan(LayoutEvent e) {
-            e.Info = activeTrips.Count > 0;
-        }
+        [DispatchTarget]
+        private bool IsAnyActiveTripPlan() => activeTrips.Count > 0;
 
         #endregion
 
@@ -698,7 +673,7 @@ namespace LayoutManager.Logic {
             set {
                 if (value != allSuspended) {
                     allSuspended = value;
-                    EventManager.Event(new LayoutEvent("all-locomotives-suspended-status-changed", this, allSuspended));
+                    Dispatch.Notification.OnAllTripsSuspendedStatusChanged(allSuspended);
                 }
             }
         }
@@ -708,11 +683,6 @@ namespace LayoutManager.Logic {
         #region Utility methods
 
         #region Finding Best Route
-
-        [LayoutEvent("dispatcher-get-block-unlocking-manager")]
-        private void DispatcherGetBlockUnlockingManager(LayoutEvent e) {
-            e.Info = blockUnlockingManager;
-        }
 
         /// <summary>
         /// Return the best route from a given position (and orientation) to the current destination.
@@ -729,11 +699,9 @@ namespace LayoutManager.Logic {
             return FindBestRoute(trip.TrainId, trip.CurrentWaypoint.Destination, sourceComponent, front, trip.CurrentWaypoint.Direction, trip.CurrentWaypoint.TrainStopping);
         }
 
-        [LayoutEvent("find-best-route-request")]
-        private void FindBestRouteRequest(LayoutEvent e) {
-            TripBestRouteRequest r = Ensure.NotNull<TripBestRouteRequest>(e.Sender, "r");
-
-            e.Info = FindBestRoute(r.RouteOwner, r.Destination, r.Source, r.Front, r.Direction, r.TrainStopping);
+        [DispatchTarget]
+        private TripBestRouteResult FindBestRouteRequest(TripBestRouteRequest r) {
+            return FindBestRoute(r.RouteOwner, r.Destination, r.Source, r.Front, r.Direction, r.TrainStopping);
         }
 
         #endregion
@@ -1167,7 +1135,7 @@ namespace LayoutManager.Logic {
                     Dispatch.Call.DumpLocks();
 
                 if (trip.PendingLockRequest != null) {
-                    trip.PendingLockRequest.LockedEvent = new LayoutEvent("dispatcher-layout-lock-obtained", trip, tripBestRouteResult.BestRoute);
+                    trip.PendingLockRequest.OnLockGranted = () => DispatcherLayoutLockObtained(trip, tripBestRouteResult.BestRoute);
 
                     if (nextBlockEntry != null) {
                         currentBlockEntry.AddAction(BlockAction.PrepareStop);
@@ -1269,10 +1237,8 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("dispatcher-set-switches")]
-        private void DispatcherSetSwitches(LayoutEvent e) {
-            var ownerID = Ensure.ValueNotNull<Guid>(e.Sender, "ownerId");
-            var route = Ensure.NotNull<ITripRoute>(e.Info, "route");
+       [DispatchTarget]
+        private bool DispatcherSetSwitches(Guid ownerId, ITripRoute route) {
             var destinationTrack = Ensure.NotNull<LayoutTrackComponent>(route.DestinationTrack, "destinationTrack");
             var edge = route.SourceEdge;
             var destinationEdge = new TrackEdge(destinationTrack, route.DestinationFront);
@@ -1286,7 +1252,7 @@ namespace LayoutManager.Logic {
             while (edge.Track != destinationEdge.Track) {
                 LayoutBlock block = edge.Track.GetBlock(edge.ConnectionPoint);
 
-                if (block.LockRequest == null || block.LockRequest.OwnerId != ownerID) {
+                if (block.LockRequest == null || block.LockRequest.OwnerId != ownerId) {
                     completed = false;
                     break;
                 }
@@ -1318,7 +1284,7 @@ namespace LayoutManager.Logic {
             if (switchingCommands.Count > 0)
                 Dispatch.Call.SetTrackComponentsState(switchingCommands);
 
-            e.Info = completed;
+            return completed;
         }
 
         private void RetryTrip(ActiveTripInfo trip) {
@@ -1428,7 +1394,8 @@ namespace LayoutManager.Logic {
             return true;
         }
 
-        private void RetryTripsWaitingForLocks(bool retryAllTrains) {
+        [DispatchTarget]
+        private void DispatcherRetryWaitingTrains(bool retryAllTrains) {
             Trace.WriteLineIf(traceDispatching.TraceInfo, $"-Retry trips for {(retryAllTrains ? "all trains" : "waiting trains")}");
 
             foreach (ActiveTripInfo trip in activeTrips.Values) {
@@ -1438,11 +1405,11 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEventDef("trip-done", Role = LayoutEventRole.Notification, SenderType = typeof(TripPlanAssignmentInfo))]
+        //[LayoutEventDef("trip-done", Role = LayoutEventRole.Notification, SenderType = typeof(TripPlanAssignmentInfo))]
         private void TrainStopped(ActiveTripInfo trip, bool atWayPoint) {
             trip.Status = TripStatus.Stopped;
 
-            EventManager.Event(new LayoutEvent("driver-stop", trip.Train));
+            Dispatch.Call.DriverStop(trip.Train);
 
             if (atWayPoint) {
                 Trace.WriteLineIf(traceDispatching.TraceInfo, $"Train {trip.Train.DisplayName} stopped on way point");
@@ -1458,7 +1425,7 @@ namespace LayoutManager.Logic {
 
                         Trace.WriteLineIf(traceDispatching.TraceInfo, "Start waiting for start condition");
                         trip.PendingStartCondition = EventManager.EventScript("Start condition for " + trip.Train.DisplayName + " for going to " + trip.CurrentWaypoint.Destination.Name,
-                            trip.CurrentWaypoint.StartCondition, new Guid[] { trip.TrainId, trip.Id }, new LayoutEvent("dispatcher-start-condition-occurred", trip));
+                            trip.CurrentWaypoint.StartCondition, new Guid[] { trip.TrainId, trip.Id }, () => DispatcherStartConditionOccurred(trip));
 
                         LayoutScriptContext context = trip.PendingStartCondition.ScriptContext;
 
@@ -1476,7 +1443,7 @@ namespace LayoutManager.Logic {
                 }
                 else {
                     trip.Status = TripStatus.Done;
-                    EventManager.Event(new LayoutEvent("trip-done", trip));
+                    Dispatch.Notification.OnTripDone(trip);
                 }
             }
             else {
@@ -1493,7 +1460,6 @@ namespace LayoutManager.Logic {
                 TrainStopped(trip, false);
         }
 
-        [LayoutEventDef("driver-train-go", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(LocomotiveOrientation))]
         private void TrainStart(ActiveTripInfo trip) {
             Trace.WriteLineIf(traceDispatching.TraceInfo, $"Start moving - trip of train {trip.Train.DisplayName}");
 
@@ -1512,35 +1478,34 @@ namespace LayoutManager.Logic {
             }
 
             trip.Status = TripStatus.Go;
-            EventManager.Event(new LayoutEvent("driver-train-go", trip.Train, trip.CurrentWaypoint.Direction));
+            Dispatch.Call.DriverTrainGo(trip.Train, trip.CurrentWaypoint.Direction);
         }
 
         #endregion
 
         #region Layout Event Handlers
 
-        [LayoutEvent("prepare-enter-operation-mode")]
-        private void DispatcherEnterOperationMode(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnPrepareEnterOperationMode(OperationModeParameters _) {
             activeTrips.Clear();
         }
 
-        [LayoutEvent("trip-status-changed", Order = 1000)]
-        private void TripStatusChanged(LayoutEvent e) {
-            if (e.Sender is ActiveTripInfo trip) {
-                if ((trip.Status == TripStatus.Done || trip.Status == TripStatus.Aborted) && trip.ActivePolicies != null) {
-                    foreach (LayoutEventScript activePolicy in trip.ActivePolicies)
+        [DispatchTarget(Order = 1000)]
+        private void OnTripStatusChanged(TripPlanAssignmentInfo trip, TripStatus oldStatus) {
+            if (trip is ActiveTripInfo activeTrip) {
+                if ((activeTrip.Status == TripStatus.Done || activeTrip.Status == TripStatus.Aborted) && activeTrip.ActivePolicies != null) {
+                    foreach (LayoutEventScript activePolicy in activeTrip.ActivePolicies)
                         activePolicy.Dispose();
                 }
             }
         }
 
-        [LayoutEvent("train-target-speed-changed")]
-        private void TrainTargetSpeedChanged(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
+        [DispatchTarget]
+        private void OnTrainSpeedChanged(TrainStateInfo train, int speed) {
             ActiveTripInfo? trip = activeTrips[train.Id];
 
             if (trip != null)
-                EventManager.Event(new LayoutEvent("driver-target-speed-changed", trip.Train));
+                Dispatch.Notification.OnDriverTargetSpeedChanged(trip.Train);
         }
 
         [DispatchTarget]
@@ -1556,7 +1521,6 @@ namespace LayoutManager.Logic {
             Dispatch.Call.FreeOwnedLayoutLocks(train.Id, true);
         }
 
-        [LayoutEventDef("driver-prepare-stop", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
         [DispatchTarget(Order = -100)]
         private void OnTrainEnteredBlock(TrainStateInfo train, LayoutBlock block) {
             ActiveTripInfo? trip = activeTrips[train.Id];
@@ -1586,7 +1550,7 @@ namespace LayoutManager.Logic {
                     if ((blockEntry.Action & BlockAction.PrepareStop) != 0) {
                         trip.Status = TripStatus.PrepareStop;
                         Trace.WriteLineIf(traceDispatching.TraceInfo, $"Prepare stop - trip of train {trip.Train.DisplayName}");
-                        EventManager.Event(new LayoutEvent("driver-prepare-stop", trip.Train));
+                        Dispatch.Call.DriverPrepareStop(trip.Train);
                     }
 
                     if ((blockEntry.Action & BlockAction.Stop) != 0 || trip.Queue.Count == 0) {
@@ -1603,12 +1567,12 @@ namespace LayoutManager.Logic {
 
                     if ((blockEntry.Action & BlockAction.SuspendTrip) != 0) {
                         trip.SuspendedStatus = trip.Status;
-                        trip.SuspendedEvent = new LayoutEvent("dispatcher-resume-suspended", trip);
+                        trip.ResumeAction = () => ResumeSuspendedTrain(trip);
                         trip.Status = TripStatus.Suspended;
                     }
 
                     if (trip.Status == TripStatus.Go || trip.Status == TripStatus.Done)
-                        EventManager.Event(new LayoutEvent("driver-update-speed", trip.Train));
+                        Dispatch.Call.DriverUpdateSpeed(trip.Train);
                 }
                 else {
                     Trace.WriteLineIf(traceDispatching.TraceInfo, $"Train {trip.Train.DisplayName} entered unexpected block: {block}");
@@ -1639,7 +1603,7 @@ namespace LayoutManager.Logic {
                                 //									Error(block, "Train " + train.Name + " entered wrong block (e.g. wrong turnout turn)");
                             }
                             else
-                                Error(block, "Train " + train.DisplayName + " entered a block which is already allocated");
+                                Error(block, $"Train {train.DisplayName} entered a block which is already allocated");
                         }
                     }
                 }
@@ -1671,7 +1635,7 @@ namespace LayoutManager.Logic {
                 }
 
                 if (generateError) {
-                    Error(train, "Train " + train.DisplayName + " is not associated with a trip-plan, and is not in a manual dispatch region. It is not allowed to move!");
+                    Error(train, $"Train {train.DisplayName} is not associated with a trip-plan, and is not in a manual dispatch region. It is not allowed to move!");
 
                     if (train.Managed)
                         train.Speed = 0;
@@ -1689,11 +1653,8 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("train-leave-block")]
-        private void TrainLeaveBlock(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-            var block = Ensure.NotNull<LayoutBlock>(e.Info, "block");
-
+        [DispatchTarget]
+        private void OnTrainLeaveBlock(TrainStateInfo train, LayoutBlock block) {
             Trace.WriteLineIf(traceDispatching.TraceInfo, $"Train {train.DisplayName} leaves block {block}");
 
             if (block.LockRequest != null) {
@@ -1726,29 +1687,27 @@ namespace LayoutManager.Logic {
                 blockUnlockingManager.Add(block, 3000);         // Unlock block 3 seconds after it has been "left".
         }
 
-        [LayoutEvent("manual-dispatch-region-activation-changed")]
-        private void ManualDisptachRegionActivationChanged(LayoutEvent e) {
-            var active = Ensure.ValueNotNull<bool>(e.Info, "active");
-
+        [DispatchTarget]
+        private void OnManualDispatchRegionActivationChanged(ManualDispatchRegionInfo manualDispatchRegion, bool active) {
             Trace.WriteLineIf(traceDispatching.TraceInfo, $"Manual dispatch region was {(active ? "granted" : "freed")} recalculate trips");
 
             // If manual dispatch was freed, need to retry only waiting, if it was granted, recalc all trains, since it may
             // block a route which is already calculated
-            EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, (bool)active));
+            Dispatch.Call.DispatcherRetryWaitingTrains(active);
         }
 
         [DispatchTarget]
         private void OnTrainDetectionBlockFree(LayoutOccupancyBlock occupancyBlock) {
             Trace.WriteLineIf(traceDispatching.TraceInfo, "Occupancy block freed recalculate trips - retry waiting trains");
 
-            EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, false));
+            Dispatch.Call.DispatcherRetryWaitingTrains(false);
         }
 
         [DispatchTarget]
         private void OnTrainDetectionBlockWillBeOccupied(LayoutOccupancyBlock occupancyBlock) {
             if (occupancyBlock.BlockDefinintion.Info.UnexpectedTrainDetected) {
                 Trace.WriteLineIf(traceDispatching.TraceInfo, "Unexpected train detected - recalculate all train trips");
-                EventManager.Event(new LayoutEvent("dispatcher-retry-waiting-trains", null, true));
+                Dispatch.Call.DispatcherRetryWaitingTrains(true);
             }
         }
 
@@ -1756,13 +1715,11 @@ namespace LayoutManager.Logic {
 
         #region Internal Dispatcher States Event Handlers
 
-        [LayoutEvent("dispatcher-start-condition-occurred")]
-        private void DispatcherStartConditionOccurred(LayoutEvent e) {
-            var trip = Ensure.NotNull<ActiveTripInfo>(e.Sender, "trip");
+        private void DispatcherStartConditionOccurred(ActiveTripInfo trip) {
 
             if (trip.Status == TripStatus.Suspended) {
-                Trace.WriteLineIf(traceDispatching.TraceInfo, $"Suspending {e.EventName} for train {trip.Train.DisplayName}");
-                trip.SuspendedEvent = e;
+                Trace.WriteLineIf(traceDispatching.TraceInfo, $"Suspending start condition occured for train {trip.Train.DisplayName}");
+                trip.ResumeAction = () => DispatcherStartConditionOccurred(trip);
             }
             else {
                 trip.PendingStartCondition?.Dispose();
@@ -1773,16 +1730,13 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("dispatcher-layout-lock-obtained")]
-        private void DispatcherLayoutLockObtained(LayoutEvent e) {
-            var trip = Ensure.NotNull<ActiveTripInfo>(e.Sender, "trip");
+        private void DispatcherLayoutLockObtained(ActiveTripInfo trip, ITripRoute route) {
 
             if (trip.Status == TripStatus.Suspended) {
-                Trace.WriteLineIf(traceDispatching.TraceInfo, $"Suspending {e.EventName} for train {trip.Train.DisplayName}");
-                trip.SuspendedEvent = e;
+                Trace.WriteLineIf(traceDispatching.TraceInfo, $"Suspending Locked obtained event for train {trip.Train.DisplayName}");
+                trip.ResumeAction = () => DispatcherLayoutLockObtained(trip, route);
             }
             else if (trip.Status != TripStatus.Done) {
-                var route = Ensure.NotNull<ITripRoute>(e.Info, "route");
                 LayoutLockRequest? lockRequest = trip.PendingLockRequest;
 
                 trip.PendingLockRequest = null;         // Request was granted
@@ -1812,17 +1766,7 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [LayoutEvent("dispatcher-retry-waiting-trains")]
-        private void RetryWaitingTrains(LayoutEvent e) {
-            bool retryAllTrains = (bool)(e.Info ?? true);
-
-            RetryTripsWaitingForLocks(retryAllTrains);
-        }
-
-        [LayoutEvent("dispatcher-resume-suspended")]
-        private void ResumeSuspendedTrain(LayoutEvent e) {
-            var trip = Ensure.NotNull<ActiveTripInfo>(e.Sender, "trip");
-
+        private void ResumeSuspendedTrain(ActiveTripInfo trip) {
             if (trip.Status == TripStatus.Go || trip.Status == TripStatus.PrepareStop)
                 TrainPrepareStart(trip);
         }
@@ -1865,10 +1809,8 @@ namespace LayoutManager.Logic {
             return result;
         }
 
-        [LayoutEvent("validate-trip-plan-route")]
-        private void ValidateTripPlanRoute(LayoutEvent e) {
-            var tripPlan = Ensure.NotNull<TripPlanInfo>(e.Sender, "tripPlan");
-            var train = Ensure.NotNull<TrainStateInfo>(e.Info, "train");
+        [DispatchTarget]
+        private ITripRouteValidationResult ValidateTripPlanRoute(TripPlanInfo tripPlan, TrainStateInfo train) {
             List<TrackEdge> sourceEdges = new();
             List<ITripRouteValidationAction> actions = new();
             bool canBeFixed = true;
@@ -1935,7 +1877,7 @@ namespace LayoutManager.Logic {
                 }
             }
 
-            e.Info = new RouteValidationResult(canBeFixed, actions);
+            return new RouteValidationResult(canBeFixed, actions);
         }
 
         #region Trip route validation action classes

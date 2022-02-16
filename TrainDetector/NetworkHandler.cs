@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using LayoutManager;
 
 #nullable enable
-#pragma warning disable IDE0051, UDE0060
 namespace TrainDetector {
     public interface IRequestReplyPacket {
         bool IsValid { get; }
@@ -24,14 +23,14 @@ namespace TrainDetector {
     [LayoutModule("Train Detector Network handler")]
     internal class TrainDetectorNetworkHandler : LayoutModuleBase {
         [LayoutEvent("set-network-request-exception")]
-        private void setNetworkRequestException(LayoutEvent e) {
+        private void SetNetworkRequestException(LayoutEvent e) {
             (var taskSource, var ex) = Ensure.NotNull<TaskCompletionSource<UdpReceiveResult>, Exception>(e);
 
             taskSource.SetException(ex);
         }
 
         [LayoutEvent("set-network-request-reply")]
-        private void setNetworkRequestReply(LayoutEvent e) {
+        private void SetNetworkRequestReply(LayoutEvent e) {
             var taskSource = Ensure.NotNull<TaskCompletionSource<UdpReceiveResult>>(e.Sender);
             var reply = Ensure.ValueNotNull<UdpReceiveResult>(e.Info);
 

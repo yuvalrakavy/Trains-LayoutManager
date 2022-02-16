@@ -1169,9 +1169,9 @@ namespace LayoutManager {
             }
         }
 
-        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent, LayoutEvent? errorOccurredEvent) => new(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
+        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, Action scriptDoneAction, Action? errorOccurredAction) => new(scriptName, conditionElement, scopeIDs, scriptDoneAction, errorOccurredAction);
 
-        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
+        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, Action scriptDoneAction) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneAction, null);
 
         protected static void AddMethodSubscriptions<TSubscriptionAttribute, TSubscription>(ILayoutSubscriptionCollection subscriptions, object objectInstance, MethodInfo methodInfo) where TSubscriptionAttribute : LayoutEventAttributeBase where TSubscription : LayoutEventSubscriptionBase {
             var eventAttributes = (TSubscriptionAttribute[])methodInfo.GetCustomAttributes(typeof(TSubscriptionAttribute), true);
@@ -1369,9 +1369,9 @@ namespace LayoutManager {
         /// </summary>
         public static ILayoutSubscriptionCollection Subscriptions => Instance.Subscriptions;
 
-        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent, LayoutEvent? errorOccurredEvent) => new(scriptName, conditionElement, scopeIDs, scriptDoneEvent, errorOccurredEvent);
+        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, Action? scriptDoneAction, Action? errorOccurredAction) => new(scriptName, conditionElement, scopeIDs, scriptDoneAction, errorOccurredAction);
 
-        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, LayoutEvent? scriptDoneEvent) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneEvent, null);
+        public static LayoutEventScript EventScript(string scriptName, XmlElement conditionElement, ICollection<Guid> scopeIDs, Action? scriptDoneAction) => EventScript(scriptName, conditionElement, scopeIDs, scriptDoneAction, null);
 
         public static object? Event(string eventName, object? sender = null, object? info = null, string? xmlDocument = null, Type? targetType = null, string? ifTarget = null) =>
             Instance.Event(new LayoutEvent(eventName, sender, info, xmlDocument, targetType, ifTarget));

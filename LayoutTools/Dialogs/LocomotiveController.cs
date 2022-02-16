@@ -133,26 +133,26 @@ namespace LayoutManager.Tools.Dialogs {
             SetTitleBar();
         }
 
-        [LayoutEvent("driver-train-go", IfSender = "*[@ID='`string(@ID)`']")]
-        private void DriverTrainGo(LayoutEvent e) {
-            var direction = Ensure.ValueNotNull<LocomotiveOrientation>(e.Info);
-
+        [DispatchTarget]
+        private void DriverTrainGo([DispatchFilter(Type = "IsMyId")] TrainStateInfo train, LocomotiveOrientation direction) {
             labelDriverInstructions.BackColor = Color.Green;
             labelDriverInstructions.ForeColor = Color.Yellow;
             labelDriverInstructions.Font = new Font(labelDriverInstructions.Font, FontStyle.Bold);
             labelDriverInstructions.Text = "Go " + ((direction == LocomotiveOrientation.Forward) ? "Forward" : "Backward") + "!";
         }
 
-        [LayoutEvent("driver-prepare-stop", IfSender = "*[@ID='`string(@ID)`']")]
-        private void DriverTrainPrepareStop(LayoutEvent e) {
+#if NOTUSED
+        [DispatchTarget]
+        private void DriverTrainPrepareStop([DispatchFilter(Type="IsMyId")] TrainStateInfo train) {
             labelDriverInstructions.BackColor = Color.Yellow;
             labelDriverInstructions.ForeColor = Color.Black;
             labelDriverInstructions.Font = new Font(labelDriverInstructions.Font, FontStyle.Regular);
             labelDriverInstructions.Text = "Get ready to STOP";
         }
+#endif
 
-        [LayoutEvent("driver-stop", IfSender = "*[@ID='`string(@ID)`']")]
-        private void DriverTrainStop(LayoutEvent e) {
+        [DispatchTarget]
+        private void DriverStop([DispatchFilter(Type="IsMyId")] TrainStateInfo train) {
             labelDriverInstructions.BackColor = Color.Red;
             labelDriverInstructions.ForeColor = Color.Yellow;
             labelDriverInstructions.Font = new Font(labelDriverInstructions.Font, FontStyle.Bold);
@@ -309,7 +309,7 @@ namespace LayoutManager.Tools.Dialogs {
                 $"Function {functionName} not defined";
         }
 
-        #region Menu Items
+#region Menu Items
 
         private class LocomotiveFunctionMenuItem : LayoutMenuItem {
             private readonly LocomotiveFunctionInfo function;
@@ -400,9 +400,9 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Clean up any resources being used.
@@ -532,7 +532,7 @@ namespace LayoutManager.Tools.Dialogs {
             e.Graphics.FillEllipse(Brushes.White, boarderSize, boarderSize, panelSpeedLimit.Width - (2 * boarderSize), panelSpeedLimit.Height - (2 * boarderSize));
         }
 
-        #region Speed change menu
+#region Speed change menu
 
         private void AddAccelerationMenuEntries(object menuOrMenuItem, int speed) {
             foreach (MotionRampInfo ramp in LayoutModel.Instance.Ramps)
@@ -609,6 +609,6 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        #endregion
+#endregion
     }
 }

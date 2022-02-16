@@ -139,23 +139,18 @@ namespace LayoutManager.Tools.Controls {
 
         #region Layout Event Handlers
 
-        [LayoutEvent("trip-added")]
-        private void TripAdded(LayoutEvent e) {
-            var tripAssignment = Ensure.NotNull<TripPlanAssignmentInfo>(e.Sender);
-
-            AddTripAssignment(tripAssignment);
+        [DispatchTarget]
+        private void OnTripAdded(TripPlanAssignmentInfo tripPlanAssignment) {
+            AddTripAssignment(tripPlanAssignment);
         }
 
-        [LayoutEvent("trip-cleared")]
-        private void TripCleared(LayoutEvent e) {
-            var tripAssignment = Ensure.NotNull<TripPlanAssignmentInfo>(e.Sender);
-
-            RemoveTripAssignment(tripAssignment.TrainId);
+        [DispatchTarget]
+        private void OnTripCleared(TrainStateInfo train, TripPlanInfo trip) {
+            RemoveTripAssignment(train.Id);
         }
 
-        [LayoutEvent("trip-status-changed")]
-        private void TripStatusChanged(LayoutEvent e) {
-            var trip = Ensure.NotNull<TripPlanAssignmentInfo>(e.Sender);
+        [DispatchTarget]
+        private void OnTripStatusChanged(TripPlanAssignmentInfo trip, TripStatus oldStatus) {
             var item = GetTripAssignmentItem(trip);
 
             if (item != null)
@@ -179,8 +174,8 @@ namespace LayoutManager.Tools.Controls {
                 item.UpdateTrainStatus();
         }
 
-        [LayoutEvent("prepare-enter-operation-mode")]
-        private void EnterOperationMode(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnPrepareEnterOperationMode(OperationModeParameters _) {
             listViewTrips.Items.Clear();
             mapTrainToItem.Clear();
             UpdateButtons(null, EventArgs.Empty);
@@ -254,7 +249,7 @@ namespace LayoutManager.Tools.Controls {
 
             if (selected != null) {
                 if (selected.TripAssignment.CanBeCleared)
-                    EventManager.Event(new LayoutEvent("clear-trip", selected.Train));
+                    Dispatch.Call.ClearTrip(selected.Train);
                 else
                     Dispatch.Call.AbortTrip(selected.Train, true);
             }
@@ -265,9 +260,9 @@ namespace LayoutManager.Tools.Controls {
 
             if (selected != null) {
                 if (selected.TripAssignment.Status == TripStatus.Suspended)
-                    EventManager.Event(new LayoutEvent("resume-trip", selected.Train));
+                    Dispatch.Call.ResumeTrip(selected.Train);
                 else
-                    EventManager.Event(new LayoutEvent("suspend-trip", selected.Train, true));
+                    Dispatch.Call.SuspendTrip(selected.Train, true);
             }
         }
 
@@ -399,7 +394,7 @@ namespace LayoutManager.Tools.Controls {
 
                 if (tripAssignment.CanBeCleared) {
                     if (tripsMonitor.AutoClearTimeout > 0)
-                        clearTripEvent = EventManager.DelayedEvent(tripsMonitor.AutoClearTimeout * 1000, new LayoutEvent("clear-trip", Train));
+                        clearTripEvent = EventManager.DelayedEvent(tripsMonitor.AutoClearTimeout * 1000, () => Dispatch.Call.ClearTrip(Train));
                 }
             }
 

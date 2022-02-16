@@ -165,7 +165,7 @@ namespace LayoutManager.Tools {
                     break;
 
                 request = new TripBestRouteRequest(RouteOwner, wayPoints[i].Destination, sourceTrack, sourceFront, d.Get(wayPoints[i]), staticGrade);
-                result = Ensure.NotNull<TripBestRouteResult>(EventManager.Event(new LayoutEvent("find-best-route-request", request)));
+                result = Dispatch.Call.FindBestRouteRequest(request);
 
                 if (result.BestRoute == null)
                     return result.Quality;
@@ -374,14 +374,14 @@ namespace LayoutManager.Tools {
         // this block is the only destination.
         private bool IsBlockAfreeDestination(LayoutBlock block) {
             foreach (TrainLocationInfo trainLocation in block.Trains) {
-                var tripPlanAssignment = (TripPlanAssignmentInfo?)EventManager.Event(new LayoutEvent("get-train-active-trip", trainLocation.Train));
+                var tripPlanAssignment = Dispatch.Call.GetActiveTrip(trainLocation.Train) ?? Dispatch.Call.GetEditedTrip(trainLocation.Train);
 
                 if (tripPlanAssignment == null)
                     return false;           // This block has a train that is not engaged in active trip plan, so it is not free
             }
 
             // Check all active trip plans and ensure that non of them is destined to this block
-            var activeTrips = Ensure.NotNull<TripPlanAssignmentInfo[]>(EventManager.Event(new LayoutEvent("get-active-trips", this)));
+            var activeTrips = Dispatch.Call.GetActiveTrips();
 
             foreach (TripPlanAssignmentInfo trip in activeTrips) {
                 TripPlanInfo tripPlan = trip.TripPlan;

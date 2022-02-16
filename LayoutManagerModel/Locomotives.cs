@@ -7,7 +7,6 @@ using System.Drawing;
 using System.IO;
 using MethodDispatcher;
 
-#pragma warning disable IDE0051, IDE0060
 #nullable enable
 namespace LayoutManager.Model {
     #region Enumerations

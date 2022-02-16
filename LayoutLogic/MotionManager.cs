@@ -5,7 +5,6 @@ using System.Diagnostics;
 using MethodDispatcher;
 using LayoutManager.Model;
 
-#pragma warning disable IDE0051,IDE0060
 #nullable enable
 namespace LayoutManager.Logic {
 
@@ -238,10 +237,10 @@ namespace LayoutManager.Logic {
             nextSpeed = ExpectedSpeed + StepsPerTick;
             train.SpeedInSteps = nextSpeed;
             ExpectedSpeed = nextSpeed;
-            setTimer();
+            SetTimer();
         }
 
-        private void setTimer() {
+        private void SetTimer() {
             if (ExpectedSpeed != TargetSpeedSteps) {
                 if (Math.Abs(TargetSpeedSteps - ExpectedSpeed) < Math.Abs(StepsPerTick))
                     nextSpeed = TargetSpeedSteps;
@@ -269,7 +268,7 @@ namespace LayoutManager.Logic {
                 ExpectedSpeed = nextSpeed;
 
                 tickCount++;
-                setTimer();     // This calculates the next speed
+                SetTimer();     // This calculates the next speed
             }
         }
 

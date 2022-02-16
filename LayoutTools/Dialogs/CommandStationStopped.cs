@@ -17,8 +17,7 @@ namespace LayoutManager.Tools.Dialogs {
             if (reason != null)
                 labelReason.Text = reason;
 
-            bool hasActiveTrips = Ensure.ValueNotNull<bool>(EventManager.Event("any-active-trip-plan"));
-            buttonAbortTrips.Visible = hasActiveTrips;
+            buttonAbortTrips.Visible = Dispatch.Call.IsAnyActiveTripPlan();
 
             EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
@@ -46,6 +45,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void CommandStationStopped_FormClosing(object? sender, FormClosingEventArgs e) {
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
+            Dispatch.RemoveObjectInstanceDispatcherTargets(this);
         }
 
         private void ButtonPowerOn_Click(object? sender, EventArgs e) {
@@ -53,7 +53,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void ButtonAbortTrips_Click(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent("suspend-all-trips", _commandStation));
+            Dispatch.Call.SuspendAllTrips();
         }
     }
 }

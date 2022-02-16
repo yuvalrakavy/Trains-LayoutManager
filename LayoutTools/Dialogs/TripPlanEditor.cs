@@ -98,8 +98,7 @@ namespace LayoutManager.Tools.Dialogs {
             if (!trainDriverComboBox.ValidateInput())
                 return;
 
-            ITripRouteValidationResult routeValidationResult = Ensure.NotNull<ITripRouteValidationResult>(EventManager.Event(
-                new LayoutEvent("validate-trip-plan-route", tripPlan, train)));
+            var routeValidationResult = Dispatch.Call.ValidateTripPlanRoute(tripPlan, train);
 
             if (routeValidationResult.Actions.Count > 0) {
                 Dialogs.TripPlanRouteValidationResult d = new(tripPlan, routeValidationResult, this);
@@ -118,7 +117,7 @@ namespace LayoutManager.Tools.Dialogs {
             try {
                 TripPlanAssignmentInfo tripPlanAssignment = new(tripPlan, train);
 
-                if ((bool?)EventManager.Event(new LayoutEvent("execute-trip-plan", tripPlanAssignment, this)) ?? false)
+                if (Dispatch.Call.ExecuteTripPlan(tripPlanAssignment))
                     Close();
             }
             catch (LayoutException ex) {

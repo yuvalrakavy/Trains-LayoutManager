@@ -389,10 +389,8 @@ namespace DiMAX {
             DeselectLocomotive(train, trainLocomotive.Locomotive);
         }
 
-        [LayoutEvent("trip-added")]
-        private void TripAdded(LayoutEvent e) {
-            var trip = Ensure.NotNull<TripPlanAssignmentInfo>(e.Sender, "trip");
-
+        [DispatchTarget]
+        private void OnTripAdded(TripPlanAssignmentInfo trip) {
             if (trip.Train.Driver.ComputerDriven) {
                 // The train is driven by computer (either automatic, or by train controller)
                 foreach (var trainLoco in trip.Train.Locomotives)
@@ -400,17 +398,17 @@ namespace DiMAX {
             }
         }
 
-        [LayoutEvent("trip-aborted")]
-        [LayoutEvent("trip-done")]
-        private void TripDone(LayoutEvent e) {
-            var trip = Ensure.NotNull<TripPlanAssignmentInfo>(e.Sender, "trip");
-
-            if (trip.Train.Driver.ComputerDriven) {
+        [DispatchTarget]
+        private void OnTripDone(TrainStateInfo train, TripPlanInfo trip) {
+            if (train.Driver.ComputerDriven) {
                 // The train is driven by computer (either automatic, or by train controller)
-                foreach (var trainLoco in trip.Train.Locomotives)
-                    DeselectLocomotive(trip.Train, trainLoco.Locomotive);
+                foreach (var trainLoco in train.Locomotives)
+                    DeselectLocomotive(train, trainLoco.Locomotive);
             }
         }
+
+        [DispatchTarget]
+        private void OnTripAborted(TrainStateInfo train, TripPlanInfo trip) => OnTripDone(train, trip);
 
         [LayoutAsyncEvent("test-loco-select", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private Task TestLocoSelect(LayoutEvent e0) {

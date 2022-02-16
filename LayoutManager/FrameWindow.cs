@@ -648,11 +648,9 @@ namespace LayoutManager {
             SetUserInterfaceMode(null);
         }
 
-        [LayoutEvent("prepare-enter-operation-mode")]
-        private void EnterOperationMode(LayoutEvent e0) {
-            var e = (LayoutEvent<OperationModeParameters>)e0;
-
-            SetUserInterfaceMode(e.Sender);
+        [DispatchTarget]
+        private void OnPrepareEnterOperationMode(OperationModeParameters settings) {
+            SetUserInterfaceMode(settings);
         }
 
         [LayoutEvent("begin-trains-analysis-phase")]
@@ -824,10 +822,8 @@ namespace LayoutManager {
             toolBarButtonToggleAllLayoutManualDispatch.Checked = enableAllLayoutManualDispatch;
         }
 
-        [LayoutEvent("all-locomotives-suspended-status-changed")]
-        private void AllLocomotivesSuspendedStatusChanged(LayoutEvent e) {
-            var allSuspended = Ensure.ValueNotNull<bool>(e.Info);
-
+        [DispatchTarget]
+        private void OnAllTripsSuspendedStatusChanged(bool allSuspended) {
             toolBarButtonStopAllLocomotives.Checked = allSuspended;
         }
 
@@ -1659,12 +1655,12 @@ namespace LayoutManager {
         }
 
         private void MenuItemSuspendLocomotives_Click(object? sender, EventArgs e) {
-            var allSuspended = Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("are-all-locomotives-suspended", this)));
+            var allSuspended = Dispatch.Call.AreAllTripsSuspended();
 
             if (allSuspended)
-                EventManager.Event(new LayoutEvent("resume-all-locomotives", this));
+                Dispatch.Call.ResumeAllTrips();
             else
-                EventManager.Event(new LayoutEvent("suspend-all-locomotives", this));
+                Dispatch.Call.SuspendAllTrips();
         }
 
         private List<Tuple<string, EventHandler>> GetPhasesEntries(Action<LayoutPhase> doThis) {
@@ -1684,7 +1680,7 @@ namespace LayoutManager {
         private EventHandler? verifyLayoutEventHandler;
 
         private void LayoutToolStripMenuItem_DropDownOpening(object sender, EventArgs e) {
-            bool allSuspended = Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("are-all-locomotives-suspended", this)));
+            bool allSuspended = Dispatch.Call.AreAllTripsSuspended();
 
             if (allSuspended)
                 stopLocomotivesToolStripMenuItem.Text = "&Resume train operation";

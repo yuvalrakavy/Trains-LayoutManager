@@ -16,17 +16,18 @@ using System.Net;
 using System.Net.Sockets;
 
 #nullable enable
-#pragma warning disable IDE0051, IDE0060
 namespace TrainDetector {
     public class TrainDetectorsComponent : LayoutBusProviderSupport, IModelComponentIsBusProvider {
+#pragma warning disable CA2211 // Non-constant fields should not be visible
         public static LayoutTraceSwitch TraceTrainDetector = new LayoutTraceSwitch("TrainDetectors", "VillaRakavy TrainDetectors");
+#pragma warning restore CA2211 // Non-constant fields should not be visible
 
         private ControlBus? _trainDetectorsBus = null;
         public NetworkHandler? OptionalNetworkHandler { get; set; }
         public NetworkHandler NetworkHandler => Ensure.NotNull<NetworkHandler>(OptionalNetworkHandler);
         readonly Dictionary<IPEndPoint, ControllerState> ipToStateMap = new Dictionary<IPEndPoint, ControllerState>();
 
-        public ControlBus TrainDetectorsBus => _trainDetectorsBus ?? (_trainDetectorsBus = Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "TrainDetectorsBus"), "TrainDetectorBus"));
+        public ControlBus TrainDetectorsBus => _trainDetectorsBus ??= Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(this, "TrainDetectorsBus"), "TrainDetectorBus");
 
         public TrainDetectorsComponent() {
             this.XmlDocument.LoadXml("<TrainDetectors />");
@@ -62,7 +63,7 @@ namespace TrainDetector {
         #region Event Handlers
 
         [LayoutEvent("begin-design-time-layout-activation")]
-        private void beginDesignTimeLayoutActivation(LayoutEvent e) {
+        private void BeginDesignTimeLayoutActivation(LayoutEvent e) {
             e.Info = true;
         }
 
@@ -72,7 +73,7 @@ namespace TrainDetector {
         }
 
         [LayoutAsyncEvent("enter-operation-mode-async")]
-        private async Task enterOperationModeAsync(LayoutEvent e) {
+        private async Task EnterOperationModeAsync(LayoutEvent e) {
             Debug.Assert(OptionalNetworkHandler == null);
             OptionalNetworkHandler = new NetworkHandler(rawPacket => rawPacket.GetPacketHeader());
             
@@ -83,21 +84,21 @@ namespace TrainDetector {
                         if (ipToStateMap.TryGetValue(rawPacket.RemoteEndPoint, out var controllerState))
                             controllerState.UpdateState(stateChangedPacket.Version, stateChangedPacket.SensorNumber, stateChangedPacket.IsCovered, stateChangedPacket.States);
                         else
-                            Trace.WriteLine($"TrainDetector: State changed packet from unexpected source {rawPacket.RemoteEndPoint.ToString()}");
+                            Trace.WriteLine($"TrainDetector: State changed packet from unexpected source {rawPacket.RemoteEndPoint}");
                         NetworkHandler.SendPacketAsync(new StateChangedAcknowledgePacket((UInt16)stateChangedPacket.RequestNumber), rawPacket.RemoteEndPoint);
                         break;
 
                     default:
-                        Trace.WriteLine($"TrainDetector: Unexpected packet received from {rawPacket.RemoteEndPoint.ToString()}");
+                        Trace.WriteLine($"TrainDetector: Unexpected packet received from {rawPacket.RemoteEndPoint}");
                         break;
                 }
             };
 
-            await verifyControllers();
+            await VerifyControllers();
         }
 
         [LayoutAsyncEvent("exit-operation-mode-async")]
-        private async Task exitOperationModeAsync(LayoutEvent e) {
+        private async Task ExitOperationModeAsync1(LayoutEvent e) {
             var requests = new List<Task<UdpReceiveResult>>(capacity: ipToStateMap.Count);
 
             // Unsubscrive from all the controllers
@@ -113,7 +114,7 @@ namespace TrainDetector {
         #endregion
 
 
-        private async Task verifyControllers() {
+        private async Task VerifyControllers() {
             ipToStateMap.Clear();
 
             foreach(var module in TrainDetectorsBus.Modules) {
@@ -138,7 +139,7 @@ namespace TrainDetector {
                             throw new LayoutControlException(trainConrollerModule, $"Received unexpected reply type");
 
                     } catch(TimeoutException) {
-                        throw new LayoutControlException(trainConrollerModule, $"No reply from train controller module ({ipEndPoint.ToString()})");
+                        throw new LayoutControlException(trainConrollerModule, $"No reply from train controller module ({ipEndPoint})");
                     }
                 }
 

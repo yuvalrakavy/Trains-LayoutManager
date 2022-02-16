@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using LayoutManager;
 using System.Windows.Forms;
 
-#pragma warning disable IDE0051
 #nullable enable
 namespace TrainDetector {
     public class TrainDetectorControllersDetection {

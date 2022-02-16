@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+    <CodeSnippet Format="1.0.0">
+        <Header>
+            <Title>function DispatchSource</Title>
+            <Author>Yuval Rakavy</Author>
+            <Shortcut>fds</Shortcut>
+			<Description>Define function dispatch source</Description>
+        </Header>
+        <Snippet>
+            <Code Language="CSharp">
+                <![CDATA[static DispatchSource? ds_$name$ = null;
+                [DispatchSource]
+                public static $return_type$ $name$(this Dispatcher d, $arguments$) {
+                    ds_$name$ ??= d[nameof($name$)];
+                    return ds_$name$.Call<$return_type$>($parameters$);
+				}
+                ]]>
+            </Code>
+            <Declarations>
+                <Literal>
+                    <ID>return_type</ID>
+                    <ToolTip>return type</ToolTip>
+                    <Default>int</Default>
+                </Literal>
+                <Literal>
+                    <ID>name</ID>
+                    <ToolTip>Dispatch source name</ToolTip>
+                    <Default>name</Default>
+                </Literal>
+				<Literal>
+					<ID>arguments</ID>
+					<ToolTip>arguments</ToolTip>
+					<Default>arguments</Default>
+				</Literal>
+				<Literal>
+                    <ID>parameters</ID>
+                    <ToolTip>Dispatch source parameters</ToolTip>
+                    <Default>parameters</Default>
+                </Literal>
+            </Declarations>
+        </Snippet>
+    </CodeSnippet>
+</CodeSnippets>

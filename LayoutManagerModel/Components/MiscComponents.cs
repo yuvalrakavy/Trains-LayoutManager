@@ -988,7 +988,6 @@ namespace LayoutManager.Components {
         #endregion
     }
 
-#pragma warning disable IDE0051
     [LayoutModule("Standard Gate Drivers", UserControl = false)]
     internal class StandardGateDrivers : LayoutModuleBase {
         private readonly Dictionary<Guid, LayoutDelayedEvent> pendingEvents = new();

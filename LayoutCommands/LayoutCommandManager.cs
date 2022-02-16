@@ -242,9 +242,7 @@ namespace LayoutManager {
         #endregion
     }
 
-#pragma warning disable CA2237 // Mark ISerializable types with serializable
     public class LayoutCommandException : Exception {
-#pragma warning restore CA2237 // Mark ISerializable types with serializable
         public LayoutCommandException(String message) : base(message) {
         }
 

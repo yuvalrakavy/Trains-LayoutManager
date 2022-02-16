@@ -188,7 +188,7 @@ namespace LayoutManager.Dialogs {
             this.buttonSelectType.Size = new System.Drawing.Size(48, 23);
             this.buttonSelectType.TabIndex = 0;
             this.buttonSelectType.Text = "&Select";
-            this.buttonSelectType.Click += this.buttonSelectType_Click;
+            this.buttonSelectType.Click += this.ButtonSelectType_Click;
             // 
             // textBoxName
             // 
@@ -391,7 +391,7 @@ namespace LayoutManager.Dialogs {
             this.buttonCopyFrom.Size = new System.Drawing.Size(75, 23);
             this.buttonCopyFrom.TabIndex = 5;
             this.buttonCopyFrom.Text = "&Copy from...";
-            this.buttonCopyFrom.Click += this.buttonCopyFrom_Click_1;
+            this.buttonCopyFrom.Click += this.ButtonCopyFrom_Click_1;
             // 
             // checkBoxHasLights
             // 
@@ -408,7 +408,7 @@ namespace LayoutManager.Dialogs {
             this.buttonFunctionAdd.Size = new System.Drawing.Size(72, 24);
             this.buttonFunctionAdd.TabIndex = 1;
             this.buttonFunctionAdd.Text = "&Add...";
-            this.buttonFunctionAdd.Click += this.buttonFunctionAdd_Click_1;
+            this.buttonFunctionAdd.Click += this.ButtonFunctionAdd_Click_1;
             // 
             // listViewFunctions
             // 
@@ -427,7 +427,7 @@ namespace LayoutManager.Dialogs {
             this.listViewFunctions.TabIndex = 0;
             this.listViewFunctions.UseCompatibleStateImageBehavior = false;
             this.listViewFunctions.View = System.Windows.Forms.View.Details;
-            this.listViewFunctions.SelectedIndexChanged += this.listViewFunctions_SelectedIndexChanged_1;
+            this.listViewFunctions.SelectedIndexChanged += this.ListViewFunctions_SelectedIndexChanged_1;
             // 
             // columnHeaderFunctionNumber
             // 
@@ -456,7 +456,7 @@ namespace LayoutManager.Dialogs {
             this.buttonFunctionEdit.Size = new System.Drawing.Size(72, 24);
             this.buttonFunctionEdit.TabIndex = 2;
             this.buttonFunctionEdit.Text = "&Edit...";
-            this.buttonFunctionEdit.Click += this.buttonFunctionEdit_Click_1;
+            this.buttonFunctionEdit.Click += this.ButtonFunctionEdit_Click_1;
             // 
             // buttonFunctionRemove
             // 
@@ -465,7 +465,7 @@ namespace LayoutManager.Dialogs {
             this.buttonFunctionRemove.Size = new System.Drawing.Size(72, 24);
             this.buttonFunctionRemove.TabIndex = 3;
             this.buttonFunctionRemove.Text = "&Remove...";
-            this.buttonFunctionRemove.Click += this.buttonFunctionRemove_Click_1;
+            this.buttonFunctionRemove.Click += this.ButtonFunctionRemove_Click_1;
             // 
             // tabPageDecoder
             // 
@@ -540,7 +540,7 @@ namespace LayoutManager.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 1;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += this.buttonOk_Click;
+            this.buttonOk.Click += this.ButtonOk_Click;
             // 
             // LocomotiveProperties
             // 

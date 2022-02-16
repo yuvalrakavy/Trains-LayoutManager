@@ -9,7 +9,6 @@ using System.Threading;
 using MethodDispatcher;
 using LayoutManager.Components;
 
-#pragma warning disable IDE0051, IDE0060
 #nullable enable
 namespace LayoutManager.Model {
     #region State Management Base classes
@@ -570,7 +569,7 @@ namespace LayoutManager.Model {
 
             set {
                 base.TargetSpeed = value;
-                EventManager.Event(new LayoutEvent("train-target-speed-changed", this, value));
+                Dispatch.Notification.OnTrainSpeedChanged(this, value);
             }
         }
 
@@ -781,7 +780,7 @@ namespace LayoutManager.Model {
             get {
                 if (HasAttribute(A_InTrip)) {
                     if (trip == null) {
-                        trip = (TripPlanAssignmentInfo?)EventManager.Event(new LayoutEvent("get-train-active-trip", this));
+                        trip = Dispatch.Call.GetActiveTrip(this) ?? Dispatch.Call.GetEditedTrip(this);
                         if (trip == null)
                             Element.RemoveAttribute(A_InTrip);
                     }
@@ -980,7 +979,6 @@ namespace LayoutManager.Model {
         /// This method is called when the train leaves a block
         /// </summary>
         /// <param name="trainLocation">The train location info object that encapsulate the block</param>
-        [LayoutEventDef("train-leave-block", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(LayoutBlock))]
         public void LeaveBlock(LayoutBlock block, bool generateEvent) {
             var trainLocation = LocationOfBlock(block);
 
@@ -990,7 +988,7 @@ namespace LayoutManager.Model {
             block.RemoveTrain(trainLocation);
             LocationsElement.RemoveChild(trainLocation.Element);
             if (generateEvent)
-                EventManager.Event(new LayoutEvent("train-leave-block", this, block));
+                Dispatch.Notification.OnTrainLeaveBlock(this, block);
             Redraw();
         }
 
@@ -1920,7 +1918,7 @@ namespace LayoutManager.Model {
         /// <param name="active"></param>
         public void SetActive(bool active) {
             SetAttributeValue(A_Active, active);
-            EventManager.Event(new LayoutEvent("manual-dispatch-region-activation-changed", this, active));
+            Dispatch.Notification.OnManualDispatchRegionActivationChanged(this, active);
         }
 
         public BlockIdCollection BlockIdList => blockIdCollection ??= new BlockIdCollection(this);

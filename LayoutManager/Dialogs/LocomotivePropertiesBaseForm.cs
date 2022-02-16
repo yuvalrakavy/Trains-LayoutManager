@@ -9,7 +9,6 @@ using System.Linq;
 using LayoutManager.Model;
 using LayoutManager.CommonUI.Controls;
 
-#pragma warning disable IDE0051
 namespace LayoutManager.Dialogs {
     /// <summary>
     /// Base form for the locomotive & locomotive type properties

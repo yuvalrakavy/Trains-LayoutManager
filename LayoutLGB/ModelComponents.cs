@@ -98,7 +98,6 @@ namespace LayoutLGB {
         #endregion
 
         #region Request Event Handlers
-#pragma warning disable IDE0051
 
         [LayoutEvent("get-command-station-capabilities", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private void GetCommandStationCapabilities(LayoutEvent e) {

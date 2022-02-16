@@ -182,12 +182,13 @@ namespace LayoutManager.Tools.Controls {
         }
 
         private TripBestRouteResult FindBestRoute(TripBestRouteRequest bestRouteRequest) {
-            var bestRoute = Ensure.NotNull<TripBestRouteResult>(EventManager.Event(new LayoutEvent("find-best-route-request", bestRouteRequest)));
+            var bestRoute = Dispatch.Call.FindBestRouteRequest(bestRouteRequest);
 
             if (bestRoute.BestRoute == null) {
                 bestRouteRequest.Direction = (bestRouteRequest.Direction == LocomotiveOrientation.Forward) ? LocomotiveOrientation.Backward : LocomotiveOrientation.Forward;
 
-                bestRoute = Ensure.NotNull<TripBestRouteResult>((TripBestRouteResult?)EventManager.Event(new LayoutEvent("find-best-route-request", bestRouteRequest)));
+                bestRoute = Dispatch.Call.FindBestRouteRequest(bestRouteRequest);
+
                 if (bestRoute.BestRoute != null)
                     bestRoute.ShouldReverse = true;
             }
@@ -477,15 +478,9 @@ namespace LayoutManager.Tools.Controls {
                 dialogs.Add((ITripPlanEditorDialog)this);
         }
 
-        [LayoutEvent("get-train-active-trip", Order = 100)]
-        private void GetTrainActiveTrip(LayoutEvent e) {
-            TrainStateInfo train = Ensure.NotNull<TrainStateInfo>(e.Sender);
-
-            if (e.Info == null && train.Id == this.Train.Id) {
-                var tripPlanAssignment = new TripPlanAssignmentInfo(TripPlan, Train);
-
-                e.Info = tripPlanAssignment;
-            }
+        [DispatchTarget]
+        private TripPlanAssignmentInfo? GetEditedTrip(TrainStateInfo train) {
+            return train.Id == this.Train.Id ? new TripPlanAssignmentInfo(TripPlan, train) : null;
         }
 
         [LayoutEvent("policy-added-to-policies-collection")]

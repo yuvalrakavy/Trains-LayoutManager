@@ -107,7 +107,7 @@ namespace LayoutManager.Logic {
         /// <param name="obj">The other topology</param>
         /// <returns>True - the two topologies are the same</returns>
         public override bool Equals(object? obj) {
-            if (!(obj is ModelTopology other))
+            if (obj is not ModelTopology other)
                 return false;
 
             foreach (KeyValuePair<TrackEdgeId, ModelTopologyEntry> d in topology) {
@@ -238,7 +238,7 @@ namespace LayoutManager.Logic {
         }
 
         public override bool Equals(object? obj) {
-            if (!(obj is ModelTopologyEntry other))
+            if (obj is not ModelTopologyEntry other)
                 return false;
 
             if (SwitchingStateCount != other.SwitchingStateCount)

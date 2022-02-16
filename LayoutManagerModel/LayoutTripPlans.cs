@@ -9,7 +9,6 @@ using MethodDispatcher;
 using LayoutManager.Components;
 using System.Collections.Generic;
 
-#pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.Model {
     /// <summary>
     /// How to select a location from destination with more than one location
@@ -507,7 +506,7 @@ namespace LayoutManager.Model {
     }
 
     /// <summary>
-    /// Warpper to document describing assignment of trip plan to train and a train driver
+    /// Wrapper to document describing assignment of trip plan to train and a train driver
     /// </summary>
     public class TripPlanAssignmentInfo : LayoutXmlWrapper {
         private const string E_TripPlan = "TripPlan";
@@ -538,12 +537,11 @@ namespace LayoutManager.Model {
         public TripStatus Status {
             get => AttributeValue(A_Status).Enum<TripStatus>() ?? TripStatus.NotSubmitted;
 
-            [LayoutEventDef("trip-status-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TripPlanAssignmentInfo), InfoType = typeof(TripStatus))]
             set {
                 TripStatus oldStatus = Status;
 
                 SetAttributeValue(A_Status, value.ToString());
-                EventManager.Event(new LayoutEvent("trip-status-changed", this, oldStatus));
+                Dispatch.Notification.OnTripStatusChanged(this, oldStatus);
                 Train.Redraw();
             }
         }
@@ -561,7 +559,7 @@ namespace LayoutManager.Model {
         }
     }
 
-    #region Trip Catalog Property type classses (DestinationCollection, TripPlanCollection)
+    #region Trip Catalog Property type classes (DestinationCollection, TripPlanCollection)
 
     /// <summary>
     /// Smart destination collection
