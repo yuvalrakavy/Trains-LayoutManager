@@ -889,5 +889,33 @@ namespace LayoutManager {
             return ds_DispatcherSetSwitches.Call<bool>(ownerId, route);
         }
 
+        static DispatchSource? ds_EnumTrainDrivers = null;
+        [DispatchSource]
+        public static void EnumTrainDrivers(this Dispatcher d, XmlElement driversElement) {
+            ds_EnumTrainDrivers ??= d[nameof(EnumTrainDrivers)];
+            ds_EnumTrainDrivers.CallVoid(driversElement);
+        }
+
+        static DispatchSource? ds_QueryDriverDialog = null;
+        [DispatchSource]
+        public static bool QueryDriverDialog(this Dispatcher d, XmlElement driverElement) {
+            ds_QueryDriverDialog ??= d[nameof(QueryDriverDialog)];
+            return ds_QueryDriverDialog.CallBoolFunctions(invokeUntil: true, invokeAll: false, driverElement);
+        }
+
+        static DispatchSource? ds_EditDriverSettings = null;
+        [DispatchSource]
+        public static void EditDriverSettings(this Dispatcher d, TrainCommonInfo train, XmlElement driverElement) {
+            ds_EditDriverSettings ??= d[nameof(EditDriverSettings)];
+            ds_EditDriverSettings.CallVoid(train, driverElement);
+        }
+
+        static DispatchSource? ds_GetTrainTargetSpeed = null;
+        [DispatchSource]
+        public static bool GetTrainTargetSpeed(this Dispatcher d, TrainCommonInfo train, System.Windows.Forms.IWin32Window? owner = null) {
+            ds_GetTrainTargetSpeed ??= d[nameof(GetTrainTargetSpeed)];
+            return ds_GetTrainTargetSpeed.Call<bool>(train, owner);
+        }
+
     }
 }

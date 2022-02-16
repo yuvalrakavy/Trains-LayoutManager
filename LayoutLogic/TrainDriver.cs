@@ -5,6 +5,37 @@ using LayoutManager.Model;
 
 #nullable enable
 namespace LayoutManager.Logic {
+
+    static class DriverFilters {
+        static private bool DriverTypeFilter(string? filterValue, object? targetObject, object? parameterValue) {
+
+            if (parameterValue is TrainStateInfo train) {
+                return filterValue switch {
+                    "ManualOnScreen" or "ManualController" or "Automatic" => train.Driver.Type == filterValue,
+                    _ => throw new DispatchFilterException($"Invalid IsTrainDriver Value {filterValue ?? "(missing)"} - Can be ManualOnScreen, ManualController or Automatic")
+                };
+            }
+            else
+                throw new DispatchFilterException($"IsTrainDriver dispatch filter can be only applied on type {nameof(TrainStateInfo)}");
+        }
+
+        static bool IsAutomaticTrainDriver(string? filterValue, object? targetObject, object? parameterValue) {
+            if (filterValue != null)
+                throw new DispatcherFilterHasValueException();
+            if (parameterValue is TrainStateInfo train)
+                return train.Driver.Type == "Automatic";
+            else
+                throw new DispatchFilterException($"IsAutomaticTrainDriver dispatch filter can be only applied on type {nameof(TrainStateInfo)}");
+
+        }
+
+        [DispatchTarget]
+        static void AddDispatcherFilters() {
+            Dispatch.AddCustomFilter("IsTrainDriver", DriverTypeFilter);
+            Dispatch.AddCustomFilter("IsAutomaticTrainDriver", IsAutomaticTrainDriver);
+        }
+
+    }
     /// <summary>
     /// Summary description for TripPlanner.
     /// </summary>
@@ -17,10 +48,8 @@ namespace LayoutManager.Logic {
 
         #region Code common to all driver types
 
-        [LayoutEvent("enum-train-drivers")]
-        private void EnumTrainDrivers(LayoutEvent e) {
-            XmlElement driversElement = Ensure.NotNull<XmlElement>(e.Info, "driversElement");
-
+        [DispatchTarget]
+        private void EnumTrainDrivers(XmlElement driversElement) {
             XmlElement manualWithControllerElement = driversElement.OwnerDocument.CreateElement(E_Driver);
 
             manualWithControllerElement.SetAttribute(A_TypeName, "Manual (via external controller)");
@@ -55,7 +84,7 @@ namespace LayoutManager.Logic {
         #region On screen manual driver
 
         [DispatchTarget]
-        private bool DriverAssignment_ManualOnScreen([DispatchFilter(Type = "XPath", Value = "*[Driver/@Type='ManualOnScreen']")] TrainStateInfo train) {
+        private bool DriverAssignment_ManualOnScreen([DispatchFilter(Type = "IsTrainDriver", Value = "ManualOnScreen")] TrainStateInfo train) {
             Dispatch.Call.ShowLocomotiveController(train);
             return true;
         }
@@ -65,7 +94,7 @@ namespace LayoutManager.Logic {
         #region Manual controller
 
         [DispatchTarget]
-        private bool DriverAssignment_ManualController([DispatchFilter(Type = "XPath", Value = "*[Driver/@Type='ManualController']")] TrainStateInfo train) => true;
+        private bool DriverAssignment_ManualController([DispatchFilter(Type = "IsTrainDriver", Value = "ManualController")] TrainStateInfo train) => true;
 
         #endregion
 
@@ -102,24 +131,22 @@ namespace LayoutManager.Logic {
         #endregion
 
         [DispatchTarget]
-        private bool DriverAssignment_Automatic([DispatchFilter(Type = "XPath", Value = "*[Driver/@Type='Automatic']")] TrainStateInfo train) => true;
+        private bool DriverAssignment_Automatic([DispatchFilter(Type = "IsAutomaticTrainDriver")] TrainStateInfo train) => true;
 
-        [LayoutEvent("query-driver-setting-dialog", IfSender = "*[@Type='Automatic']")]
-        private void AutomaticDriverQueryDriverSettingDialog(LayoutEvent e) {
-            e.Info = true;
-        }
 
-        [LayoutEvent("edit-driver-setting", IfSender = "*[@Type='Automatic']")]
-        private void AutomaticDriverEditDriverSetting(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainCommonInfo>(e.Info, "train");
+        [DispatchTarget]
+        private bool QueryDriverDialog_AutomaticDriver([DispatchFilter(Type="XPath",Value = "*[@Type='Automatic']")] XmlElement driverElement) => true;
 
-            EventManager.Event(new LayoutEvent("get-train-target-speed", train));
+
+        [DispatchTarget]
+        private void EditDriverSettings_AutomaticDriver(TrainCommonInfo train, [DispatchFilter(Type = "XPath", Value = "*[@Type='Automatic']")] XmlElement driverElement) {
+            Dispatch.Call.GetTrainTargetSpeed(train);
         }
 
         #region Event handlers for events taken care by the automatic driver
 
         [DispatchTarget]
-        private void DriverEmergencyStop([DispatchFilter(Type="XPath",Value = "*[Driver/@Type='Automatic']")] TrainStateInfo train) {
+        private void DriverEmergencyStop([DispatchFilter(Type="IsAutomaticTrainDriver")] TrainStateInfo train) {
             var _ = new TrainAutoDriverInfo(train) {
                 State = AutoDriverState.Stop
             };
@@ -128,7 +155,7 @@ namespace LayoutManager.Logic {
         }
 
         [DispatchTarget]
-        private void DriverStop([DispatchFilter(Type="XPath",Value= "*[Driver/@Type='Automatic']")] TrainStateInfo train) {
+        private void DriverStop([DispatchFilter(Type="IsAutomaticTrainDriver")] TrainStateInfo train) {
             var _ = new TrainAutoDriverInfo(train) {
                 State = AutoDriverState.Stop
             };
@@ -137,7 +164,7 @@ namespace LayoutManager.Logic {
         }
 
         [DispatchTarget]
-        private void DriverTrainGo([DispatchFilter(Type = "XPath", Value = "*[Driver/@Type='Automatic']")] TrainStateInfo train, LocomotiveOrientation direction) {
+        private void DriverTrainGo([DispatchFilter(Type = "IsAutomaticTrainDriver")] TrainStateInfo train, LocomotiveOrientation direction) {
             int effectiveSpeed = CalculateEffectiveTargetSpeed(train);
 
             if (direction == LocomotiveOrientation.Backward)
@@ -150,7 +177,7 @@ namespace LayoutManager.Logic {
         }
 
         [DispatchTarget]
-        private void DriverPrepareStop([DispatchFilter(Type = "XPath", Value = "*[Driver/@Type='Automatic']")] TrainStateInfo train) {
+        private void DriverPrepareStop([DispatchFilter(Type = "IsAutomaticTrainDriver")] TrainStateInfo train) {
             TrainAutoDriverInfo driver = new(train) {
                 State = AutoDriverState.SlowDown
             };
@@ -164,12 +191,12 @@ namespace LayoutManager.Logic {
         }
 
         [DispatchTarget]
-        private void OnDriverTargetSpeedChanged([DispatchFilter(Type="XPath",Value= "*[Driver/@Type='Automatic']")] TrainStateInfo train) {
+        private void OnDriverTargetSpeedChanged([DispatchFilter(Type="IsAutomaticTrainDriver")] TrainStateInfo train) {
             AutoDriverUpdateSpeed(train);
         }
 
         [DispatchTarget]
-        private void DriverUpdateSpeed([DispatchFilter(Type = "XPath", Value = "*[Driver/@Type='Automatic']")] TrainStateInfo train) {
+        private void DriverUpdateSpeed([DispatchFilter(Type = "IsAutomaticTrainDriver")] TrainStateInfo train) {
             AutoDriverUpdateSpeed(train);
         }
 

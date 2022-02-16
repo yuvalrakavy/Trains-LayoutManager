@@ -1,4 +1,5 @@
 using System.Xml;
+using MethodDispatcher;
 using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI.Controls {
@@ -54,7 +55,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             // enum the possible drivers, and build a menu
             driversDoc.LoadXml("<Drivers />");
-            EventManager.Event(new LayoutEvent("enum-train-drivers", train, driversDoc.DocumentElement));
+            Dispatch.Call.EnumTrainDrivers(driversDoc.DocumentElement!);
 
             foreach (XmlElement driverElement in driversDoc.DocumentElement!)
                 comboBoxDrivers.Items.Add(new DriverItem(driverElement));
@@ -71,14 +72,7 @@ namespace LayoutManager.CommonUI.Controls {
         private bool IsSelectedHasSettings() {
             DriverItem selected = (DriverItem)comboBoxDrivers.SelectedItem;
 
-            if (selected != null) {
-                object? oResult = EventManager.Event(new LayoutEvent("query-driver-setting-dialog", selected.DriverElement));
-
-                if (oResult != null && (bool)oResult)
-                    return true;
-            }
-
-            return false;
+            return selected != null && Dispatch.Call.QueryDriverDialog(selected.DriverElement);
         }
 
         private void SetDriverSettingButtonState() {
@@ -110,8 +104,8 @@ namespace LayoutManager.CommonUI.Controls {
         private void ButtonDriverSettings_Click(object? sender, EventArgs e) {
             DriverItem selected = (DriverItem)comboBoxDrivers.SelectedItem;
 
-            if (selected != null)
-                EventManager.Event(new LayoutEvent("edit-driver-setting", selected.DriverElement, train));
+            if (selected != null && train != null)
+                Dispatch.Call.EditDriverSettings(train, selected.DriverElement);
         }
 
         private class DriverItem {

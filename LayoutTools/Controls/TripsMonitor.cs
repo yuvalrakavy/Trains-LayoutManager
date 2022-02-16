@@ -270,7 +270,7 @@ namespace LayoutManager.Tools.Controls {
             var selected = GetSelected();
 
             if (selected != null && selected.Train.Driver.Type == "Automatic")
-                EventManager.Event(new LayoutEvent("get-train-target-speed", selected.TripAssignment.Train, this));
+                Dispatch.Call.GetTrainTargetSpeed(selected.Train, this);
         }
 
         private class TripAssignmentItem : ListViewItem, IDisposable {

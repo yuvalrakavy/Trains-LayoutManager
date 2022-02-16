@@ -82,10 +82,7 @@ namespace LayoutManager.Tools {
                 LocomotiveBlock = LastCarBlock;
                 LastCarBlock = tBlock;
 
-                LayoutComponentConnectionPoint tFront = LocomotiveFront;
-
-                LocomotiveFront = LastCarFront;
-                LastCarFront = tFront;
+                (LastCarFront, LocomotiveFront) = (LocomotiveFront, LastCarFront);
             }
         }
 
@@ -306,14 +303,11 @@ namespace LayoutManager.Tools {
 
         #region Get train target speed
 
-        [LayoutEvent("get-train-target-speed")]
-        private void GetTrainTargetSpeed(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender);
-            var owner = Ensure.NotNull<IWin32Window>(e.Info);
-
+        [DispatchTarget]
+        private bool GetTrainTargetSpeed(TrainCommonInfo train, IWin32Window? owner) {
             var d = new Dialogs.GetTargetSpeed(train);
 
-            e.Info = d.ShowDialog(owner) == DialogResult.OK ? true : (object)false;
+            return d.ShowDialog(owner) == DialogResult.OK;
         }
 
         #endregion
