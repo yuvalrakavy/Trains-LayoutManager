@@ -957,5 +957,11 @@ namespace MethodDispatcher {
 
         }
     }
+
+    public class DispatcherFilterHasValueException : DispatchFilterException {
+        public DispatcherFilterHasValueException() : base("This Dispatch filter type does not expect to have Value field") {
+
+        }
+    }
     #endregion
 }
