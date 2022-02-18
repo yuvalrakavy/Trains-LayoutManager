@@ -140,7 +140,7 @@ namespace LayoutManager.Logic {
 #region Utility methods
 
         /// <summary>
-        /// Return the command station capabilties for a given train
+        /// Return the command station capabilities for a given train
         /// </summary>
         private CommandStationCapabilitiesInfo GetCommandStationCapabilities(TrainStateInfo train) {
             if (train.CommandStation != null) {
@@ -151,8 +151,7 @@ namespace LayoutManager.Logic {
                     _commandStationName = commandStationName;
 
                     if (!commandStationCapabiltiesMap.TryGetValue(commandStationName, out _commandStationCapabilties)) {
-                        var commandStationCapabilitiesElement = Ensure.NotNull<XmlElement>(EventManager.Event(new LayoutEvent("get-command-station-capabilities").SetCommandStation(train)),
-                            $"Command station {commandStationName} does not return capabilities information");
+                        var commandStationCapabilitiesElement = Dispatch.Call.GetCommandStationCapabilities(Dispatch.Call.GetCommandStation(train));
 
                         _commandStationCapabilties = new CommandStationCapabilitiesInfo(commandStationCapabilitiesElement);
                         commandStationCapabiltiesMap.Add(commandStationName, _commandStationCapabilties);

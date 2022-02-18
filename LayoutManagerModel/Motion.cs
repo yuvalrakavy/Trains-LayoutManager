@@ -96,7 +96,7 @@ namespace LayoutManager.Model {
         }
 
         protected void Initialize(XmlNode parent, MotionRampType rampType, int parameter) {
-            if (!(parent is XmlDocument doc))
+            if (parent is not XmlDocument doc)
                 doc = parent.OwnerDocument!;
 
             Element = doc.CreateElement(E_Ramp);
@@ -112,7 +112,7 @@ namespace LayoutManager.Model {
             parent.AppendChild(Element);
         }
 
-        public static MotionRampInfo Default = new("Default") {
+        public static MotionRampInfo Default { get; } = new("Default") {
             Name = "Default",
             RampType = MotionRampType.TimeFixed,
             MotionTime = 1000,

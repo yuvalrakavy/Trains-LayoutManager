@@ -300,6 +300,21 @@ namespace LayoutManager {
             d[nameof(OnLocomotiveFunctionStateChanged)].CallVoid(commandStation, unit, functionNumber, functionState);
         }
 
+        static DispatchSource? ds_TriggerLocomotiveFunctionNumberCommand = null;
+        [DispatchSource]
+        public static void TriggerLocomotiveFunctionNumberCommand(this Dispatcher d, IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, int functionNumber, bool functionState) {
+            ds_TriggerLocomotiveFunctionNumberCommand ??= d[nameof(TriggerLocomotiveFunctionNumberCommand)];
+            ds_TriggerLocomotiveFunctionNumberCommand.CallVoid(commandStation, loco, functionNumber, functionState);
+        }
+
+
+        static DispatchSource? ds_ChangeSignalStateCommand = null;
+        [DispatchSource]
+        public static void ChangeSignalStateCommand(this Dispatcher d, IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, LayoutSignalState state) {
+            ds_ChangeSignalStateCommand ??= d[nameof(ChangeSignalStateCommand)];
+            ds_ChangeSignalStateCommand.CallVoid(commandStation, connectionPointRef, state);
+        }
+
         [DispatchSource]
         public static void OnTrainControllerActivated(this Dispatcher d, TrainStateInfo train) {
             d[nameof(OnTrainControllerActivated)].CallVoid(train);
@@ -915,6 +930,119 @@ namespace LayoutManager {
         public static bool GetTrainTargetSpeed(this Dispatcher d, TrainCommonInfo train, System.Windows.Forms.IWin32Window? owner = null) {
             ds_GetTrainTargetSpeed ??= d[nameof(GetTrainTargetSpeed)];
             return ds_GetTrainTargetSpeed.Call<bool>(train, owner);
+        }
+
+        static DispatchSource? ds_GetLayoutEmulationServices = null;
+        [DispatchSource]
+        public static ILayoutEmulatorServices GetLayoutEmulationServices(this Dispatcher d) {
+            ds_GetLayoutEmulationServices ??= d[nameof(GetLayoutEmulationServices)];
+            return ds_GetLayoutEmulationServices.Call<ILayoutEmulatorServices>();
+        }
+
+        static DispatchSource? ds_InitializeLayoutEmulation = null;
+        [DispatchSource]
+        public static void InitializeLayoutEmulation(this Dispatcher d, bool emulateTrainMotion, int emulationTickTime) {
+            ds_InitializeLayoutEmulation ??= d[nameof(InitializeLayoutEmulation)];
+            ds_InitializeLayoutEmulation.CallVoid(emulateTrainMotion, emulationTickTime);
+        }
+
+        static DispatchSource? ds_ConnectPowerRequest = null;
+        [DispatchSource]
+        public static void ConnectPowerRequest(this Dispatcher d, IModelComponentHasNameAndId commandStation) {
+            ds_ConnectPowerRequest ??= d[nameof(ConnectPowerRequest)];
+            ds_ConnectPowerRequest.CallVoid(commandStation);
+        }
+
+        static DispatchSource? ds_DisconnectPowerRequest = null;
+        [DispatchSource]
+        public static void DisconnectPowerRequest(this Dispatcher d, IModelComponentHasNameAndId commandStation) {
+            ds_DisconnectPowerRequest ??= d[nameof(DisconnectPowerRequest)];
+            ds_DisconnectPowerRequest.CallVoid(commandStation);
+        }
+
+        static DispatchSource? ds_ResetLayoutEmulation = null;
+        [DispatchSource]
+        public static void ResetLayoutEmulation(this Dispatcher d) {
+            ds_ResetLayoutEmulation ??= d[nameof(ResetLayoutEmulation)];
+            ds_ResetLayoutEmulation.CallVoid();
+        }
+
+        static DispatchSource? ds_ExitOperationModeAsync = null;
+        [DispatchSource]
+        public static Task ExitOperationModeAsync(this Dispatcher d) {
+            ds_ExitOperationModeAsync ??= d[nameof(ExitOperationModeAsync)];
+            var tasks = ds_ExitOperationModeAsync.CallCollect<Task>();
+            return Task.WhenAll(tasks);
+        }
+
+        static DispatchSource? ds_OnCommandStationPowerOff = null;
+        [DispatchSource]
+        public static void OnCommandStationPowerOff(this Dispatcher d, IModelComponentHasNameAndId commandStation) {
+            ds_OnCommandStationPowerOff ??= d[nameof(OnCommandStationPowerOff)];
+            ds_OnCommandStationPowerOff.CallVoid(commandStation);
+        }
+
+        static DispatchSource? ds_QueryPerformTrainsAnalysis = null;
+        [DispatchSource]
+        public static void QueryPerformTrainsAnalysis(this Dispatcher d, List<IModelComponentIsCommandStation> commandStations) {
+            ds_QueryPerformTrainsAnalysis ??= d[nameof(QueryPerformTrainsAnalysis)];
+            ds_QueryPerformTrainsAnalysis.CallVoid(commandStations);
+        }
+
+        static DispatchSource? ds_BeginDesignTimeLayoutActivation = null;
+        [DispatchSource]
+        public static bool BeginDesignTimeLayoutActivation(this Dispatcher d) {
+            ds_BeginDesignTimeLayoutActivation ??= d[nameof(BeginDesignTimeLayoutActivation)];
+            return ds_BeginDesignTimeLayoutActivation.CallBoolFunctions(invokeUntil: false, invokeAll: true);
+        }
+
+        static DispatchSource? ds_endDesignTimeLayoutActivation = null;
+        [DispatchSource]
+        public static bool EndDesignTimeLayoutActivation(this Dispatcher d) {
+            ds_endDesignTimeLayoutActivation ??= d[nameof(EndDesignTimeLayoutActivation)];
+            return ds_endDesignTimeLayoutActivation.CallBoolFunctions(invokeUntil: false, invokeAll: true);
+        }
+
+        static DispatchSource? ds_OnCommandStationTrainAnalysisPhaseDone = null;
+        [DispatchSource]
+        public static void OnCommandStationTrainAnalysisPhaseDone(this Dispatcher d) {
+            ds_OnCommandStationTrainAnalysisPhaseDone ??= d[nameof(OnCommandStationTrainAnalysisPhaseDone)];
+            ds_OnCommandStationTrainAnalysisPhaseDone.CallVoid();
+        }
+
+        static DispatchSource? ds_ProgramCvPomRequest = null;
+        [DispatchSource]
+        public static Task<LayoutActionResult> ProgramCvPomRequest(this Dispatcher d, IModelComponentHasNameAndId commandStation, DccProgrammingCV cv, DccDecoderTypeInfo decoderTypeInfo, int address) {
+            ds_ProgramCvPomRequest ??= d[nameof(ProgramCvPomRequest)];
+            return ds_ProgramCvPomRequest.Call<Task<LayoutActionResult>>(commandStation, cv, decoderTypeInfo, address);
+        }
+
+        static DispatchSource? ds_ProgramCvDirectRequest = null;
+        [DispatchSource]
+        public static Task<LayoutActionResult> ProgramCvDirectRequest(this Dispatcher d, IModelComponentHasNameAndId commandStation, DccProgrammingCV cv, DccDecoderTypeInfo decoderTypeInfo) {
+            ds_ProgramCvDirectRequest ??= d[nameof(ProgramCvDirectRequest)];
+            return ds_ProgramCvDirectRequest.Call<Task<LayoutActionResult>>(commandStation, cv, decoderTypeInfo);
+        }
+
+        static DispatchSource? ds_ProgramCvRegisterRequest = null;
+        [DispatchSource]
+        public static Task<LayoutActionResult> ProgramCvRegisterRequest(this Dispatcher d, IModelComponentHasNameAndId commandStation, DccProgrammingCV cv, DccDecoderTypeInfo decoderTypeInfo) {
+            ds_ProgramCvRegisterRequest ??= d[nameof(ProgramCvRegisterRequest)];
+            return ds_ProgramCvRegisterRequest.Call<Task<LayoutActionResult>>(commandStation, cv, decoderTypeInfo);
+        }
+
+        static DispatchSource? ds_GetCommandStationSetFunctionNumberSupport = null;
+        [DispatchSource]
+        public static CommandStationSetFunctionNumberSupportInfo? GetCommandStationSetFunctionNumberSupport(this Dispatcher d, IModelComponentHasNameAndId commandStation) {
+            ds_GetCommandStationSetFunctionNumberSupport ??= d[nameof(GetCommandStationSetFunctionNumberSupport)];
+            return ds_GetCommandStationSetFunctionNumberSupport.CallNullable<CommandStationSetFunctionNumberSupportInfo>(commandStation);
+        }
+
+        static DispatchSource? ds_GetCommandStationCapabilities = null;
+        [DispatchSource]
+        public static XmlElement GetCommandStationCapabilities(this Dispatcher d, IModelComponentHasNameAndId commandStation) {
+            ds_GetCommandStationCapabilities ??= d[nameof(GetCommandStationCapabilities)];
+            return ds_GetCommandStationCapabilities.Call<XmlElement>(commandStation);
         }
 
     }

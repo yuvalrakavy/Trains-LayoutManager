@@ -268,8 +268,8 @@ namespace LayoutManager.Tools.Dialogs {
                 }
             }
 
-            if (EventManager.Event(new LayoutEvent("get-command-station-set-function-number-support", train).SetCommandStation(train)) is CommandStationSetFunctionNumberSupportInfo functionNumberSupport &&
-                functionNumberSupport.SetFunctionNumberSupport != SetFunctionNumberSupport.None) {
+            var functionNumberSupport = Dispatch.Call.GetCommandStationSetFunctionNumberSupport(Dispatch.Call.GetCommandStation(train));
+            if (functionNumberSupport != null && functionNumberSupport.SetFunctionNumberSupport != SetFunctionNumberSupport.None) {
                 if (m.Items.Count == 0)
                     AddTrainFunctionNumberItems(m, functionNumberSupport);
                 else {
@@ -360,15 +360,16 @@ namespace LayoutManager.Tools.Dialogs {
         private class LocomotiveFunctionNumberMenuItem : LayoutMenuItem {
             public LocomotiveFunctionNumberMenuItem(TrainStateInfo train, LocomotiveInfo loco, int functionNumber, bool canSetBooleanState) {
                 var function = loco.GetFunctionByNumber(functionNumber);
+                var commandStation = Dispatch.Call.GetCommandStation(train);
 
                 this.Text = $"Function {functionNumber}{(function != null ? $" ({function})" : "")}";
 
                 if (canSetBooleanState) {
-                    this.DropDownItems.Add(new LayoutMenuItem("On", null, (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber).SetCommandStation(train).SetOption("FunctionState", true))));
-                    this.DropDownItems.Add(new LayoutMenuItem("Off", null, (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber).SetCommandStation(train).SetOption("FunctionState", false))));
+                    this.DropDownItems.Add(new LayoutMenuItem("On", null, (sender, e) => Dispatch.Call.TriggerLocomotiveFunctionNumberCommand(commandStation, loco, functionNumber, true)));
+                    this.DropDownItems.Add(new LayoutMenuItem("Off", null, (sender, e) => Dispatch.Call.TriggerLocomotiveFunctionNumberCommand(commandStation, loco, functionNumber, false)));
                 }
                 else
-                    this.Click += (sender, e) => EventManager.Event(new LayoutEvent("trigger-locomotive-function-number", loco, functionNumber).SetCommandStation(train));
+                    this.Click += (sender, e) => Dispatch.Call.TriggerLocomotiveFunctionNumberCommand(commandStation, loco, functionNumber, true);
             }
         }
 

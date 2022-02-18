@@ -178,7 +178,7 @@ namespace LayoutManager.Model {
             this.Action = action;
         }
 
-        public override string ToString() => "Action: " + Action.ToString() + " failed (" + Result.ToString() + ")";
+        public override string ToString() => $"Action: {Action} failed ({Result})";
     }
 
     public enum ActionStatus {
@@ -378,15 +378,15 @@ namespace LayoutManager.Model {
             LayoutActionResult result = LayoutActionResult.Ok;
 
             if (ProgrammingTarget.DecoderType is not DccDecoderTypeInfo decoderType)
-                throw new LayoutException("Decoder is not DCC compatibile");
+                throw new LayoutException("Decoder is not DCC compatible");
 
             foreach (var cv in CVs) {
                 if (useProgramOnMain)
-                    result = (LayoutActionResult)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent<DccProgrammingCV, DccDecoderTypeInfo>("program-CV-POM-request", cv, decoderType).SetCommandStation(commandStation).SetOption("Address", ProgrammingTargetAddress));
+                    result = await Dispatch.Call.ProgramCvPomRequest(commandStation, cv, decoderType, ProgrammingTargetAddress);
                 else if (decoderType.ProgrammingMethod == DccProgrammingMethod.Cv)
-                    result = (LayoutActionResult)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent<DccProgrammingCV, DccDecoderTypeInfo>("program-CV-direct-request", cv, decoderType).SetCommandStation(commandStation));
+                    result = await Dispatch.Call.ProgramCvDirectRequest(commandStation, cv, decoderType);
                 else
-                    result = (LayoutActionResult)await (Task<object>)EventManager.AsyncEvent(new LayoutEvent<DccProgrammingCV, DccDecoderTypeInfo>("program-CV-register-requst", cv, decoderType).SetCommandStation(commandStation));
+                    result = await Dispatch.Call.ProgramCvRegisterRequest(commandStation, cv, decoderType);
 
                 if (IgnoreNoResponseResult && result == LayoutActionResult.NoResponse)
                     result = LayoutActionResult.Ok;
@@ -403,7 +403,7 @@ namespace LayoutManager.Model {
             string sep = "";
 
             foreach (DccProgrammingCV cv in CVs) {
-                s.Append(sep).Append("CV").Append(cv.Number).Append('=').Append(cv.Value.ToString("d")).Append(" (").Append(cv.Value.ToString("x2")).Append(')');
+                s.Append($"{sep}CV{cv.Number}={cv.Value:d} ({cv.Value:x2})");
                 sep = ", ";
             }
 

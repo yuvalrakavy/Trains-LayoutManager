@@ -850,7 +850,7 @@ namespace LayoutManager.Components {
                     signalState = (signalState == LayoutSignalState.Green) ? LayoutSignalState.Red : LayoutSignalState.Green;
 
                 if (connectionPoint != null)
-                    EventManager.Event(new LayoutEvent("change-signal-state-command", new ControlConnectionPointReference(connectionPoint), signalState).SetCommandStation(connectionPoint.Module.Bus));
+                    Dispatch.Call.ChangeSignalStateCommand(connectionPoint.Module.Bus.BusProvider, new ControlConnectionPointReference(connectionPoint), signalState);
             }
         }
 

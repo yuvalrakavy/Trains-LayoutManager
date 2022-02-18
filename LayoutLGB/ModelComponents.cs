@@ -99,41 +99,34 @@ namespace LayoutLGB {
 
         #region Request Event Handlers
 
-        [LayoutEvent("get-command-station-capabilities", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void GetCommandStationCapabilities(LayoutEvent e) {
-            CommandStationCapabilitiesInfo cap = new CommandStationCapabilitiesInfo {
+        [DispatchTarget]
+        private XmlElement GetCommandStationCapabilities([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation) {
+            return new CommandStationCapabilitiesInfo {
                 MinTimeBetweenSpeedSteps = (int?)Element.AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 100
-            };
-            e.Info = cap.Element;
+            }.Element;
         }
 
-        [LayoutEvent("disconnect-power-request")]
-        private void PowerDisconnectRequest(LayoutEvent e) {
-            if (e.Sender == null || e.Sender == this) {
-                commandStationManager.AddCommand(new MTSpowerDisconnect(CommunicationStream));
-                commandStationManager.AddCommand(new MTSresetStation(CommunicationStream));
-            }
-
+        [DispatchTarget]
+        private void DisconnectPowerRequest([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation) {
+            commandStationManager.AddCommand(new MTSpowerDisconnect(CommunicationStream));
+            commandStationManager.AddCommand(new MTSresetStation(CommunicationStream));
             PowerOff();
         }
 
-        [LayoutEvent("connect-power-request")]
-        private void PowerConnectRequest(LayoutEvent e) {
-            if (e.Sender == null || e.Sender == this) {
-                commandStationManager.AddCommand(new MTSresetStation(CommunicationStream));
-                commandStationManager.AddCommand(new MTSpowerConnect(CommunicationStream, XbusID));
-            }
+        [DispatchTarget]
+        private void ConnectPowerRequest([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation) {
+            commandStationManager.AddCommand(new MTSresetStation(CommunicationStream));
+            commandStationManager.AddCommand(new MTSpowerConnect(CommunicationStream, XbusID));
 
             PowerOn();
         }
 
         #region Set function number support
-        [LayoutEvent("get-command-station-set-function-number-support", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void getSetFunctionNumberSupport(LayoutEvent e) {
-            e.Info = new CommandStationSetFunctionNumberSupportInfo() {
-                SetFunctionNumberSupport = SetFunctionNumberSupport.FunctionNumber
-            };
-        }
+        [DispatchTarget]
+        private CommandStationSetFunctionNumberSupportInfo GetCommandStationSetFunctionNumberSupport([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation) => new CommandStationSetFunctionNumberSupportInfo() {
+            SetFunctionNumberSupport = SetFunctionNumberSupport.FunctionNumber
+        };
+
         #endregion
         // Implement command events
         [DispatchTarget]
@@ -146,11 +139,9 @@ namespace LayoutLGB {
             return task;
         }
 
-        [LayoutEvent("change-signal-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private void changeSignalStateCommand(LayoutEvent e) {
-            ControlConnectionPoint connectionPoint = (ControlConnectionPoint)e.Sender;
-            LayoutSignalState state = (LayoutSignalState)e.Info;
-            int address = connectionPoint.Module.Address + connectionPoint.Index;
+        [DispatchTarget]
+        private void ChangeSignalStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, LayoutSignalState state) {
+            int address = connectionPointRef.Module.Address + connectionPointRef.Index;
             int v;
 
             if (state == LayoutSignalState.Green)
@@ -172,7 +163,6 @@ namespace LayoutLGB {
             commandStationManager.AddCommand(new MTSlocomotiveFunction(CommunicationStream, loco.AddressProvider.Unit, 0x80));
         }
 
-        [DispatchTarget(Name = "TriggerLocomotiveFunctionStateCommand")]
         [DispatchTarget]
         void SetLocomotiveFunctionStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, string functionName, bool functionState) {
             LocomotiveFunctionInfo function = locomotive.GetFunctionByName(functionName);
@@ -180,11 +170,9 @@ namespace LayoutLGB {
             commandStationManager.AddCommand(new MTSlocomotiveFunction(CommunicationStream, locomotive.AddressProvider.Unit, function.Number));
         }
 
-        [LayoutEvent("trigger-locomotive-function-number", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void triggerLocomotiveFunctionNumber(LayoutEvent e) {
-            if (e.Sender is LocomotiveInfo loco && e.Info is int functionNumber) {
-                commandStationManager.AddCommand(new MTSlocomotiveFunction(CommunicationStream, loco.AddressProvider.Unit, functionNumber));
-            }
+        [DispatchTarget]
+        void TriggerLocomotiveFunctionNumberCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, int functionNumber, bool functionState) {
+            commandStationManager.AddCommand(new MTSlocomotiveFunction(CommunicationStream, loco.AddressProvider.Unit, functionNumber));
         }
 
         #endregion
@@ -241,7 +229,7 @@ namespace LayoutLGB {
                             MessageBox.Show(LayoutController.ActiveFrameWindow,
                                 "Emergency stop has been engaged. Click on OK to reactivate layout", "Emergency Stop",
                                 MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                            EventManager.Event(new LayoutEvent("connect-power-request", this));
+                            Dispatch.Call.ConnectPowerRequest(this);
                         }
                         else if (message.Value != 0x81)
                             Warning("Unexpected reset station message (value " + message.Value + ")");

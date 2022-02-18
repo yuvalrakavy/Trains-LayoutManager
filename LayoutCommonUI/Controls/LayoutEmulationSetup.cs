@@ -1,6 +1,8 @@
 using System.Xml;
+using MethodDispatcher;
 using LayoutManager.Components;
 using LayoutManager.Model;
+
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
@@ -28,7 +30,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public void Initialize() {
-            var emulationServices = (ILayoutEmulatorServices?)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
+            var emulationServices = Dispatch.Call.GetLayoutEmulationServices();
 
             if (emulationServices != null) {
                 int tickTime = (int?)Element.AttributeValue(LayoutCommandStationComponent.A_EmulationTickTime) ?? 200;

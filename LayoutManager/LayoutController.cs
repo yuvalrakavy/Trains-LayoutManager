@@ -312,7 +312,7 @@ namespace LayoutManager {
 
                     var performTrainsAnalysis = new List<IModelComponentIsCommandStation>();
 
-                    EventManager.Event(new LayoutEvent("query-perform-trains-analysis", this, performTrainsAnalysis));
+                    Dispatch.Call.QueryPerformTrainsAnalysis(performTrainsAnalysis);
                     trainsAnalysisPhaseCount = performTrainsAnalysis.Count;
 
                     if (trainsAnalysisPhaseCount > 0)
@@ -364,19 +364,18 @@ namespace LayoutManager {
             Dispatch.Notification.OnExitOperationMode();
 
             Trace.WriteLine("Before invoking exit-operation-mode-async");
-            await Task.WhenAll(EventManager.AsyncEventBroadcast(new LayoutEvent("exit-operation-mode-async", this)));
+            await Dispatch.Call.ExitOperationModeAsync();
             Trace.WriteLine("After invoking exit-operation-mode-async");
 
             if (simulation)
                 await Task.Delay(200);      // Allow the emulator to process last command
         }
 
-        [LayoutEvent("command-station-trains-analysis-phase-done")]
-        private void TrainsAnalysisPhaseDone(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnCommandStationTrainAnalysisPhaseDone() {
             if (--trainsAnalysisPhaseCount == 0) {
                 EventManager.Event(new LayoutEvent("end-trains-analysis-phase", this));
                 Dispatch.Call.PerformTrainsAnalysis();
-                EventManager.Event(new LayoutEvent("perform-trains-analysis", LayoutModel.Instance));
             }
 
             Debug.Assert(trainsAnalysisPhaseCount >= 0);
@@ -431,14 +430,7 @@ namespace LayoutManager {
                 }
 
                 if (doit) {
-                    var result = EventManager.Event(new LayoutEvent("begin-design-time-layout-activation", this));
-
-                    if (result == null || result is not bool)
-                        ok = false;
-                    else
-                        ok = (bool)result;
-
-                    if (ok)
+                    if (Dispatch.Call.BeginDesignTimeLayoutActivation())
                         layoutDesignTimeActivationNesting++;
                 }
             }
@@ -458,7 +450,7 @@ namespace LayoutManager {
                 Trace.WriteLine("unbalanced enter/exit design time layout activation");
 
             if (--layoutDesignTimeActivationNesting == 0)
-                EventManager.Event(new LayoutEvent("end-design-time-layout-activation", this));
+                Dispatch.Call.EndDesignTimeLayoutActivation();
         }
 
         /// <summary>

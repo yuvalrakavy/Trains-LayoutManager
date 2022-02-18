@@ -20,54 +20,11 @@ namespace LayoutManager {
         UDP,
         Othe,
     };
-
-    public static class CommandStationLayoutEventExtender {
-        /// <summary>
-        /// Add command station identifier to event. This should be call for each event that should be handled by a specific command station.
-        /// It adds CommandStation option section with the command station's ID and name. The command station's event handler can use this information 
-        /// to filter events that it should handle
-        /// </summary>
-        /// <param name="theEvent"></param>
-        /// <param name="commandStation"></param>
-        /// <returns></returns>
-        public static LayoutEvent SetCommandStation(this LayoutEvent theEvent, IModelComponentHasNameAndId commandStation) {
-            return theEvent.SetOption(elementName: "CommandStation", optionName: "ID", id: commandStation.Id).SetOption(elementName: "CommandStation", optionName: "Name", value: commandStation.NameProvider.Name);
-        }
-
-        /// <summary>
-        /// Add command station information based on a command station controlling a train
-        /// </summary>
-        /// <param name="theEvent">the event</param>
-        /// <param name="train">the train that its controlling command station should be used</param>
-        /// <returns></returns>
-        public static LayoutEvent SetCommandStation(this LayoutEvent theEvent, TrainStateInfo train) => SetCommandStation(theEvent, train.CommandStation ?? throw new LayoutException($"Train {train.Name} is not assigned to a command station"));
-
-        /// <summary>
-        /// Add command station information based on the control bus the command station is connected to
-        /// </summary>
-        /// <param name="theEvent"></param>
-        /// <param name="bus"></param>
-        /// <returns></returns>
-        public static LayoutEvent SetCommandStation(this LayoutEvent theEvent, ControlBus bus) {
-            var commandStation = (IModelComponentHasNameAndId)bus.BusProvider;
-
-            return SetCommandStation(theEvent, commandStation);
-        }
-
-        /// <summary>
-        /// Add command station information based on a control connection point reference
-        /// </summary>
-        /// <param name="theEvent"></param>
-        /// <param name="connectionPointRef"></param>
-        /// <returns></returns>
-        public static LayoutEvent SetCommandStation(this LayoutEvent theEvent, ControlConnectionPointReference connectionPointRef) => SetCommandStation(theEvent,
-            Ensure.NotNull<ControlModule>(connectionPointRef.Module, "module").Bus);
-    }
 }
 
 #pragma warning disable CA1036
 namespace LayoutManager.Components {
-    #region Base class for command station components
+#region Base class for command station components
 
     public abstract class LayoutBusProviderWithStreamCommunicationSupport : LayoutBusProviderSupport {
         public const string A_InterfaceType = "InterfaceType";
@@ -150,7 +107,7 @@ namespace LayoutManager.Components {
             get;
         }
 
-        public ILayoutEmulatorServices LayoutEmulationServices => _layoutEmulationServices ??= (ILayoutEmulatorServices)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this))!;
+        public ILayoutEmulatorServices LayoutEmulationServices => _layoutEmulationServices ??= Dispatch.Call.GetLayoutEmulationServices();
 
         public bool EmulateLayout {
             get; set;
@@ -160,14 +117,14 @@ namespace LayoutManager.Components {
             throw new ArgumentException("You must implement a CreateCommandStationEmulator method, or not use layout emulation");
         }
 
-        #region Properties accessible from derived concrete command station component classes
+#region Properties accessible from derived concrete command station component classes
 
 
         public ILayoutInterThreadEventInvoker InterThreadEventInvoker => EventManager.Instance.InterThreadEventInvoker;
 
         public bool OperationMode => operationMode;
 
-        #endregion
+#endregion
 
         public override void OnAddedToModel() {
             base.OnAddedToModel();
@@ -267,20 +224,20 @@ namespace LayoutManager.Components {
             OnInitialize();
 
             // Connect power to the layout
-            EventManager.Event(new LayoutEvent("connect-power-request", this));
-            EventManager.Event(new LayoutEvent("reset-layout-emulation", this));
+            Dispatch.Call.ConnectPowerRequest(this);
+            Dispatch.Call.ResetLayoutEmulation();
 
             OnEnteredOperationMode();
         }
 
-        [LayoutAsyncEvent("exit-operation-mode-async")]
-        protected async virtual Task ExitOperationModeAsync(LayoutEvent e) {
+        [DispatchTarget]
+        protected async virtual Task ExitOperationModeAsync() {
             if (OperationMode) {
                 OnCleanup();
 
                 // Disconnect power to the layout
                 Trace.WriteLine($"{FullDescription} Disconnect track request");
-                EventManager.Event(new LayoutEvent("disconnect-power-request", this));
+                Dispatch.Call.DisconnectPowerRequest(this);
 
                 await OnTerminateCommunication();
                 CloseCommunicationStream();
@@ -308,7 +265,7 @@ namespace LayoutManager.Components {
         private System.Threading.Timer? animatedTrainsTimer;
         private LayoutSelection? animatedTrainsSelection;
 
-        #region Public component properties & methods
+#region Public component properties & methods
 
         public int EmulationTickTime => (int)Element.AttributeValue(A_EmulationTickTime);
 
@@ -329,7 +286,7 @@ namespace LayoutManager.Components {
             }
         }
 
-        #endregion
+#endregion
 
         override protected void OpenCommunicationStream() {
             base.OpenCommunicationStream();
@@ -359,7 +316,7 @@ namespace LayoutManager.Components {
             base.CloseCommunicationStream();
         }
 
-        #region Methods callable from derived concrete command station component classes
+#region Methods callable from derived concrete command station component classes
 
         public override void OnAddedToModel() {
             base.OnAddedToModel();
@@ -399,7 +356,8 @@ namespace LayoutManager.Components {
                 else
                     throw new LayoutControlException("PowerOff while trackPowerOutlet is null");
             }
-            EventManager.Event(new LayoutEvent<IModelComponentIsCommandStation>("command-station-power-off-notification", this));
+
+            Dispatch.Notification.OnCommandStationPowerOff(this);
         }
 
         protected void ProgrammingPowerOn() {
@@ -415,45 +373,42 @@ namespace LayoutManager.Components {
             }
         }
 
-        #region Animate Train (when using emulation)
+#region Animate Train (when using emulation)
 
         private readonly TrackEdgeDictionary currentShownTrainPositions = new();
 
-        [LayoutEvent("show-emulated-locomotive-locations")]
-        protected virtual void ShowTrainPositions(LayoutEvent e) {
-            if (e.Sender == this) {
-                if (LayoutEmulationServices != null && animatedTrainsSelection != null) {
-                    IList<ILocomotiveLocation> locomotiveLocations = LayoutEmulationServices.GetLocomotiveLocations(Id);
+        protected virtual void ShowTrainPositions() {
+            if (LayoutEmulationServices != null && animatedTrainsSelection != null) {
+                IList<ILocomotiveLocation> locomotiveLocations = LayoutEmulationServices.GetLocomotiveLocations(Id);
 
-                    foreach (ILocomotiveLocation locomotiveLocation in locomotiveLocations) {
-                        if (currentShownTrainPositions.Contains(locomotiveLocation.Edge))   // Is is already in selection, do nothing
-                            currentShownTrainPositions.Remove(locomotiveLocation.Edge);
-                        else
-                            animatedTrainsSelection.Add(locomotiveLocation.Track);      // Not found in currently shown, add it to the selection
-                    }
+                foreach (ILocomotiveLocation locomotiveLocation in locomotiveLocations) {
+                    if (currentShownTrainPositions.Contains(locomotiveLocation.Edge))   // Is is already in selection, do nothing
+                        currentShownTrainPositions.Remove(locomotiveLocation.Edge);
+                    else
+                        animatedTrainsSelection.Add(locomotiveLocation.Track);      // Not found in currently shown, add it to the selection
+                }
 
-                    // All edges that are left in the hash table are no longer displayed, remove them from the selection
-                    foreach (TrackEdge edge in currentShownTrainPositions.Keys)
-                        animatedTrainsSelection.Remove(edge.Track);
+                // All edges that are left in the hash table are no longer displayed, remove them from the selection
+                foreach (TrackEdge edge in currentShownTrainPositions.Keys)
+                    animatedTrainsSelection.Remove(edge.Track);
 
-                    currentShownTrainPositions.Clear();
-                    foreach (ILocomotiveLocation locomotiveLocation in locomotiveLocations) {
-                        if (!currentShownTrainPositions.ContainsKey(locomotiveLocation.Edge))
-                            currentShownTrainPositions.Add(locomotiveLocation.Edge);
-                    }
+                currentShownTrainPositions.Clear();
+                foreach (ILocomotiveLocation locomotiveLocation in locomotiveLocations) {
+                    if (!currentShownTrainPositions.ContainsKey(locomotiveLocation.Edge))
+                        currentShownTrainPositions.Add(locomotiveLocation.Edge);
                 }
             }
         }
 
         private void AnimationTimerCallback(object? state) {
-            InterThreadEventInvoker.QueueEvent(new LayoutEvent("show-emulated-locomotive-locations", this));
+            InterThreadEventInvoker.Queue(() => ShowTrainPositions());
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region Overridable properties
+#region Overridable properties
 
         /// <summary>
         /// Does this command station perform train analysis before entering operational mode. Layout analysis is
@@ -465,9 +420,9 @@ namespace LayoutManager.Components {
             get;
         }
 
-        #endregion
+#endregion
 
-        #region Overridable methods
+#region Overridable methods
 
         public virtual int GetLowestLocomotiveAddress(DigitalPowerFormats format) => 1;
 
@@ -480,64 +435,49 @@ namespace LayoutManager.Components {
                 throw new ArgumentException("Unsupported digital power format: " + format.ToString());
         }
 
-        #endregion
+#endregion
 
-        #region Event handlers
+#region Event handlers
 
-        [LayoutEvent("query-perform-trains-analysis")]
-        protected virtual void QueryPerformLayoutAnalysis(LayoutEvent e) {
-            if (TrainsAnalysisSupported) {
-                var needAnalysis = Ensure.NotNull<List<IModelComponentIsCommandStation>>(e.Info, "needAnalysis");
-
+        [DispatchTarget]
+        protected virtual void QueryPerformTrainsAnalysis(List<IModelComponentIsCommandStation> needAnalysis) {
+            if (TrainsAnalysisSupported)
                 needAnalysis.Add(this);
-            }
         }
 
-        [LayoutEvent("begin-design-time-layout-activation")]
-        protected virtual void BeginDesignTimeLayoutActivation(LayoutEvent e) {
+        [DispatchTarget]
+        protected virtual bool BeginDesignTimeLayoutActivation() {
             if (DesignTimeLayoutActivationSupported) {
                 if (!LayoutController.IsDesignTimeActivation) {
                     OnCommunicationSetup();
                     OpenCommunicationStream();
                     OnInitialize();
 
-                    EventManager.Event(new LayoutEvent("connect-track-power-request", this));
+                    Dispatch.Call.ConnectPowerRequest(this);
                 }
-                e.Info = true;
+                return true;
             }
             else
-                e.Info = false;
+                return false;
         }
 
-        [LayoutEvent("end-design-time-layout-activation")]
-        protected virtual void EndDesignTimeLayoutActivation(LayoutEvent e) {
+        [DispatchTarget]
+        protected virtual bool EndDesignTimeLayoutActivation() {
             if (DesignTimeLayoutActivationSupported) {
                 OnCleanup();
 
-                EventManager.Event(new LayoutEvent("disconnect-track-power-request", this));
+                Dispatch.Call.DisconnectPowerRequest(this);
                 OnTerminateCommunication();
                 CloseCommunicationStream();
-                e.Info = true;
+                return true;
             }
             else
-                e.Info = false;
+                return false;
         }
 
-        [LayoutEvent("connect-track-power-request")]
-        virtual protected void OnConnectTrackPower(LayoutEvent e) {
-            if (e.Sender == this)
-                EventManager.Event(new LayoutEvent("connect-power-request", this));
-        }
+#endregion
 
-        [LayoutEvent("disconnect-track-power-request")]
-        virtual protected void OnDisconnectTrackPower(LayoutEvent e) {
-            if (e.Sender == this)
-                EventManager.Event(new LayoutEvent("disconnect-power-request", this));
-        }
-
-        #endregion
-
-        #region IDisposable Members
+#region IDisposable Members
 
         public void Dispose() {
             if (animatedTrainsTimer != null) {
@@ -552,9 +492,9 @@ namespace LayoutManager.Components {
                 programmingPowerOutlet = null;
         }
 
-        #endregion
+#endregion
 
-        #region ILayoutLockResource Members
+#region ILayoutLockResource Members
 
         /// <summary>
         /// Command station is locked when it is used for programming. This prevent a command station from being used
@@ -567,12 +507,12 @@ namespace LayoutManager.Components {
 
         public void FreeResource() { }
 
-        #endregion
+#endregion
     }
 
-    #endregion
+#endregion
 
-    #region Classes used for design time layout activation (for example learn layout)
+#region Classes used for design time layout activation (for example learn layout)
 
     /// <summary>
     /// Information about input received from the layout when the in design time layout activation.
@@ -709,7 +649,7 @@ namespace LayoutManager.Components {
             }
         }
 
-        #region IComparable<CommandStationInputEvent> Members
+#region IComparable<CommandStationInputEvent> Members
 
         public int CompareTo(CommandStationInputEvent? other) {
             if(other == null)
@@ -750,12 +690,12 @@ namespace LayoutManager.Components {
 
         public bool Equals(CommandStationInputEvent other) => CompareTo(other) == 0;
 
-        #endregion
+#endregion
     }
 
-    #endregion
+#endregion
 
-    #region Support for queuing of commands generated by command station components
+#region Support for queuing of commands generated by command station components
 
     public interface IOutputCommand {
         void Do();
@@ -834,7 +774,7 @@ namespace LayoutManager.Components {
         public virtual int Timeout => 2000;
 
         public virtual void OnTimeout() {
-            EventManager.Instance.InterThreadEventInvoker.QueueEvent(new LayoutEvent("add-error", null, "Reply was not received on time for " + this.GetType().Name + " command"));
+            EventManager.Instance.InterThreadEventInvoker.Queue(() => Dispatch.Call.AddError("Reply was not received on time for " + this.GetType().Name + " command", null));
         }
 
         public abstract void OnReply(object replyPacket);
@@ -859,16 +799,16 @@ namespace LayoutManager.Components {
                 if (--passCount == 0) {
                     passCount = -1;
                     if (!LayoutController.IsDesignTimeActivation)
-                        commandStation.InterThreadEventInvoker.QueueEvent(new LayoutEvent("command-station-trains-analysis-phase-done", this));
+                        commandStation.InterThreadEventInvoker.Queue(() => Dispatch.Notification.OnCommandStationTrainAnalysisPhaseDone());
                 }
             }
         }
 
-        #region ICommandStationIdlecommand Members
+#region ICommandStationIdlecommand Members
 
         public bool RemoveFromQueue => passCount == -1;
 
-        #endregion
+#endregion
     }
 
     public interface IOutputIdlecommand : IOutputCommand {
@@ -899,7 +839,7 @@ namespace LayoutManager.Components {
                 queues[i] = new CommandManagerQueue(workToDo, queues);
         }
 
-        #region Operations
+#region Operations
 
         public void Start() {
             Debug.Assert(commandManagerThread == null, "Command Manager thread already running");
@@ -1031,9 +971,9 @@ namespace LayoutManager.Components {
             Trace.WriteLine("Wait for idle done");
         }
 
-        #endregion
+#endregion
 
-        #region Command Manager Thread and methods that run in thread context
+#region Command Manager Thread and methods that run in thread context
 
         protected void CommandManagerThread() {
             long previousIdleCommandTime = 0;
@@ -1120,7 +1060,7 @@ namespace LayoutManager.Components {
             Trace.WriteLineIf(traceOutputManager.TraceInfo, "CommandManagerThread: Terminated");
         }
 
-        #endregion
+#endregion
 
         private class CommandManagerQueue : Queue<IOutputCommand> {
             private readonly ManualResetEvent workToDo;
@@ -1164,9 +1104,9 @@ namespace LayoutManager.Components {
         }
     }
 
-    #endregion
+#endregion
 
-    #region Classes used turnout switching manager
+#region Classes used turnout switching manager
 
     /// <summary>
     /// A structure holding a switching command for a multi-path component
@@ -1205,5 +1145,5 @@ namespace LayoutManager.Components {
         public Guid CommandStationId => ControlPointReference.Module?.Bus.BusProviderId ?? Guid.Empty;
     }
 
-    #endregion
+#endregion
 }

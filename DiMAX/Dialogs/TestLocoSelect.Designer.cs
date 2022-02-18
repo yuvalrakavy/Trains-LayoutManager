@@ -85,7 +85,7 @@
 			this.buttonSendCommand.TabIndex = 5;
 			this.buttonSendCommand.Text = "Send command";
 			this.buttonSendCommand.UseVisualStyleBackColor = true;
-			this.buttonSendCommand.Click += new System.EventHandler(this.buttonSendCommand_Click);
+			this.buttonSendCommand.Click += new System.EventHandler(this.ButtonSendCommand_Click);
 			// 
 			// TestLocoSelect
 			// 

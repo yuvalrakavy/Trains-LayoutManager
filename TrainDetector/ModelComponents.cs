@@ -62,15 +62,11 @@ namespace TrainDetector {
 
         #region Event Handlers
 
-        [LayoutEvent("begin-design-time-layout-activation")]
-        private void BeginDesignTimeLayoutActivation(LayoutEvent e) {
-            e.Info = true;
-        }
+        [DispatchTarget]
+        private bool BeginDesignTimeLayoutActivation() => true;
 
-        [LayoutEvent("end-design-time-layout-activation")]
-        private void EndDesignTimeLayoutActivation(LayoutEvent e) {
-            e.Info = true;
-        }
+        [DispatchTarget]
+        private bool EndDesignTimeLayoutActivation() => true;
 
         [LayoutAsyncEvent("enter-operation-mode-async")]
         private async Task EnterOperationModeAsync(LayoutEvent e) {
@@ -97,11 +93,11 @@ namespace TrainDetector {
             await VerifyControllers();
         }
 
-        [LayoutAsyncEvent("exit-operation-mode-async")]
-        private async Task ExitOperationModeAsync1(LayoutEvent e) {
+        [DispatchTarget]
+        private async Task ExitOperationModeAsync_TrainDetector() {
             var requests = new List<Task<UdpReceiveResult>>(capacity: ipToStateMap.Count);
 
-            // Unsubscrive from all the controllers
+            // Unsubscribe from all the controllers
             foreach(var ipEndPoint in ipToStateMap.Keys) {
                 requests.Add(NetworkHandler.Request(requestNumber => NetworkHandler.SendPacketAsync(new UnsubscribeRequestPacket((UInt16)requestNumber), ipEndPoint)));    
             }

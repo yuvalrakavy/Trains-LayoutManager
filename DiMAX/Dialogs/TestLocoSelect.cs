@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-
+using MethodDispatcher;
 using LayoutManager;
 
 namespace DiMAX.Dialogs {
@@ -13,13 +13,13 @@ namespace DiMAX.Dialogs {
             this.commandStation = commandStation;
         }
 
-        private void buttonSendCommand_Click(object? sender, EventArgs e) {
+        private void ButtonSendCommand_Click(object? sender, EventArgs e) {
             if (!int.TryParse(textBoxAddress.Text, out int address)) {
                 MessageBox.Show("Invalid loco address");
                 return;
             }
 
-            EventManager.AsyncEvent(new LayoutEvent("test-loco-select", this).SetOption("Address", address).SetOption("Select", checkBoxSelect.Checked).SetOption("Active", checkBoxActive.Checked).SetOption("Unconditional", checkBoxUnconditional.Checked).SetCommandStation(commandStation));
+            Dispatch.Call.DiMAXtestLocoSelect(commandStation, address, checkBoxSelect.Checked, checkBoxActive.Checked, checkBoxUnconditional.Checked);
         }
     }
 }

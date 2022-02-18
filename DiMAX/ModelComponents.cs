@@ -142,36 +142,29 @@ namespace DiMAX {
 
         #region Request Event Handlers
 
-        [LayoutEvent("get-command-station-capabilities", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void GetCommandStationCapabilities(LayoutEvent e) {
-            var cap = new CommandStationCapabilitiesInfo {
+        [DispatchTarget]
+        private XmlElement GetCommandStationCapabilities([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation) {
+            return new CommandStationCapabilitiesInfo {
                 MinTimeBetweenSpeedSteps = (int?)Element.AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 100
-            };
-            e.Info = cap.Element;
+            }.Element;
         }
 
-        [LayoutEvent("disconnect-power-request")]
-        private void PowerDisconnectRequest(LayoutEvent e) {
-            if (e.Sender == null || e.Sender == this)
-                OutputManager.AddCommand(new DiMAXpowerDisconnect(this));
-
+        [DispatchTarget]
+        private void DisconnectPowerRequest([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation) {
+            OutputManager.AddCommand(new DiMAXpowerDisconnect(this));
             PowerOff();
         }
 
-        [LayoutEvent("connect-power-request")]
-        private void PowerConnectRequest(LayoutEvent e) {
-            if (e.Sender == null || e.Sender == this)
-                OutputManager.AddCommand(new DiMAXpowerConnect(this));
-
+        [DispatchTarget]
+        private void ConnectPowerRequest([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation) {
+            OutputManager.AddCommand(new DiMAXpowerConnect(this));
             PowerOn();
         }
 
-        [LayoutEvent("get-command-station-set-function-number-support", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private void GetSetFunctionNumberSupport(LayoutEvent e) {
-            e.Info = new CommandStationSetFunctionNumberSupportInfo() {
-                SetFunctionNumberSupport = SetFunctionNumberSupport.FunctionNumberAndBooleanState
-            };
-        }
+        [DispatchTarget]
+        private CommandStationSetFunctionNumberSupportInfo GetCommandStationSetFunctionNumberSupport([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation) => new() {
+            SetFunctionNumberSupport = SetFunctionNumberSupport.FunctionNumberAndBooleanState
+        };
 
         // Implement command events
         [DispatchTarget]
@@ -185,11 +178,9 @@ namespace DiMAX {
             return task;
         }
 
-        [LayoutEvent("change-signal-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private void ChangeSignalStateCommand(LayoutEvent e) {
-            var connectionPoint = Ensure.NotNull<ControlConnectionPoint>(e.Sender, "connectionPoint");
-            var state = Ensure.ValueNotNull<LayoutSignalState>(e.Info, "state");
-            int address = connectionPoint.Module.Address + connectionPoint.Index;
+        [DispatchTarget]
+        private void ChangeSignalStateCommand([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, LayoutSignalState state) {
+            int address = connectionPointRef.Module.Address + connectionPointRef.Index;
             int v;
 
             if (state == LayoutSignalState.Green)
@@ -229,18 +220,16 @@ namespace DiMAX {
             }
         }
 
-        [LayoutEvent("trigger-locomotive-function-number", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void TriggerLocomotiveFunctionNumber(LayoutEvent e) {
-            if (e.Sender is LocomotiveInfo loco && e.Info is int functionNumber) {
-                var train = LayoutModel.StateManager.Trains[loco.Id];
+        [DispatchTarget]
+        void TriggerLocomotiveFunctionNumberCommand([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, int functionNumber, bool functionState) {
+            var train = LayoutModel.StateManager.Trains[loco.Id];
 
-                if (train != null) {
-                    if (loco.DecoderType is DccDecoderTypeInfo decoder) {
-                        if (decoder.ParallelFunctionSupport)
-                            OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, functionNumber, (bool)e.GetOption("FunctionState"), train.Lights));
-                        else
-                            GenerateSerialFunctionCommands(train, loco, functionNumber);
-                    }
+            if (train != null) {
+                if (loco.DecoderType is DccDecoderTypeInfo decoder) {
+                    if (decoder.ParallelFunctionSupport)
+                        OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, functionNumber, functionState, train.Lights));
+                    else
+                        GenerateSerialFunctionCommands(train, loco, functionNumber);
                 }
             }
         }
@@ -278,19 +267,15 @@ namespace DiMAX {
         [LayoutAsyncEvent("disable-DiMAX-status-update", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private Task DisableDiMAXstatusUpdate(LayoutEvent e) => OutputManager.AddCommand(new DiMAXinterfaceAnnouncement(this, false));
 
-        [LayoutAsyncEvent("program-CV-direct-request", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private async Task<object> ProgramCVdirectRequest(LayoutEvent e) {
-            var cv = Ensure.NotNull<DccProgrammingCV>(e.Sender, "register");
-
-            return await (Task<object>)OutputManager.AddCommand(new DiMAXprogramCV(this, cv.Number, cv.Value));
+        [DispatchTarget]
+        private async Task<LayoutActionResult> ProgramCvDirectRequest([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, DccProgrammingCV cv, DccDecoderTypeInfo decoderTypeInfo) {
+            return await (Task<LayoutActionResult>)OutputManager.AddCommand(new DiMAXprogramCV(this, cv.Number, cv.Value));
         }
 
-        private async Task<LayoutActionResult> SetRegister(int register, byte value) => (LayoutActionResult)await (Task<object>)OutputManager.AddCommand(new DiMAXprogramRegister(this, (byte)register, value));
+        private async Task<LayoutActionResult> SetRegister(int register, byte value) => await (Task<LayoutActionResult>)OutputManager.AddCommand(new DiMAXprogramRegister(this, (byte)register, value));
 
-        [LayoutAsyncEvent("program-CV-register-requst", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private async Task<object> ProgramCVregisterRequst(LayoutEvent e) {
-            var cv = Ensure.NotNull<DccProgrammingCV>(e.Sender, "cv");
-
+        [DispatchTarget]
+        private async Task<LayoutActionResult> ProgramCvRegisterRequest([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, DccProgrammingCV cv, DccDecoderTypeInfo decoderTypeInfo) {
             if (cv.Number < 1)
                 throw new ArgumentException("Invalid CV number: " + cv.Number);
 
@@ -299,15 +284,15 @@ namespace DiMAX {
             else {
                 LayoutActionResult r = await SetRegister(6, (byte)cv.Number).ConfigureAwait(false);
 
-                return r == LayoutActionResult.Ok ? await SetRegister(5, cv.Value).ConfigureAwait(false) : (object)r;
+                return r == LayoutActionResult.Ok ? await SetRegister(5, cv.Value).ConfigureAwait(false) : r;
             }
         }
 
-        [LayoutAsyncEvent("program-CV-POM-request", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private async Task<object> ProgramCVPOMrequest(LayoutEvent e) {
-            var cv = Ensure.NotNull<DccProgrammingCV>(e.Sender, "cv");
+        [DispatchTarget]
+        private async Task<LayoutActionResult> ProgramCvPomRequest([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, DccProgrammingCV cv, DccDecoderTypeInfo decoderTypeInfo, int address) {
+            var command = new DiMAXprogramCVonTrack(this, address, cv.Number, cv.Value);
 
-            return await (Task<object>)OutputManager.AddCommand(new DiMAXprogramCVonTrack(this, (int)e.GetOption("Address"), cv.Number, cv.Value));
+            return await (Task<LayoutActionResult>)OutputManager.AddCommand(command);
         }
 
         [DispatchTarget]
@@ -363,7 +348,7 @@ namespace DiMAX {
         }
 
         /// <summary>
-        /// Check if a locomotive is completly inactive. 
+        /// Check if a locomotive is completely inactive. 
         /// </summary>
         private bool IsLocomotiveActive(TrainStateInfo train, LocomotiveInfo locomotive) => train.Speed != 0 || train.Lights || train.HasActiveFunction(locomotive);
 
@@ -410,25 +395,13 @@ namespace DiMAX {
         [DispatchTarget]
         private void OnTripAborted(TrainStateInfo train, TripPlanInfo trip) => OnTripDone(train, trip);
 
-        [LayoutAsyncEvent("test-loco-select", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private Task TestLocoSelect(LayoutEvent e0) {
-            var e = e0;
-
-            int address = (int)e.GetOption("Address");
-            bool select = (bool)e.GetOption("Select");
-            bool active = (bool)e.GetOption("Active");
-            bool unconditional = (bool)e.GetOption("Unconditional");
-
+        [DispatchTarget]
+        private Task DiMAXtestLocoSelect([DispatchFilter(Type="MyId")] IModelComponentHasNameAndId commandStation, int address, bool select, bool active, bool unconditional) {
             return OutputManager.AddCommand(new DiMAXlocomotiveSelection(this, address, select, active, unconditional));
         }
 
-        [LayoutAsyncEvent("test-loco-speed", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private Task TestLocoSpeed(LayoutEvent e0) {
-            var e = e0;
-
-            int address = (int)e.GetOption("Address");
-            int speed = (int)e.GetOption("Speed");
-
+        [DispatchTarget]
+        private Task DiMAXtestLocoSpeed([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, int address, int speed) {
             return OutputManager.AddCommand(new DiMAXlocomotiveMotion(this, address, speed));
         }
 
@@ -698,7 +671,7 @@ namespace DiMAX {
                 2 => DiMAXcondition.Reset,
                 _ => DiMAXcondition.Unknown,
             };
-            EventManager.Event(new LayoutEvent<DiMAXcommandStation, DiMAXstatus>("DiMAX-status-updated", commandStation, this).SetCommandStation(commandStation));
+            Dispatch.Notification.OnDiMAXstatusUpdate(commandStation, this);
         }
 
         internal void ExtendedStatusUpdate(DiMAXcommandStation commandStation, DiMAXpacket statusPacket) {
@@ -714,7 +687,7 @@ namespace DiMAX {
             FreeLocomotiveSlots = statusPacket.Parameters[4] & 0x3f;
             LastUpdate = DateTime.Now;
 
-            EventManager.Event(new LayoutEvent<DiMAXcommandStation, DiMAXstatus>("DiMAX-status-updated", commandStation, this).SetCommandStation(commandStation));
+            Dispatch.Notification.OnDiMAXstatusUpdate(commandStation, this);
         }
     }
 

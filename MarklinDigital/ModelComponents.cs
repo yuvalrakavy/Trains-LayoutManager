@@ -183,29 +183,24 @@ namespace MarklinDigital {
             }
         }
 
-        [LayoutEvent("disconnect-power-request")]
-        private void PowerDisconnectRequest(LayoutEvent e) {
-            if (e.Sender == null || e.Sender == this)
-                commandStationManager?.AddCommand(queuePowerCommands, new MarklinStopCommand(CommunicationStream));
-
+        [DispatchTarget]
+        private void DisconnectPowerRequest([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation) {
+            commandStationManager?.AddCommand(queuePowerCommands, new MarklinStopCommand(CommunicationStream));
             PowerOff();
         }
 
-        [LayoutEvent("connect-power-request")]
-        private void PowerConnectRequest(LayoutEvent e) {
-            if (e.Sender == null || e.Sender == this)
-                commandStationManager?.AddCommand(queuePowerCommands, new MarklinGoCommand(CommunicationStream));
-
+        [DispatchTarget]
+        private void ConnectPowerRequest([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation) {
+            commandStationManager?.AddCommand(queuePowerCommands, new MarklinGoCommand(CommunicationStream));
             PowerOn();
         }
 
-        [LayoutEvent("get-command-station-capabilities", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private void GetCommandStationCapabilities(LayoutEvent e) {
-            var cap = new CommandStationCapabilitiesInfo();
+        [DispatchTarget]
+        private XmlElement GetCommandStationCapabilities([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation) {
             var minTimeBetweenSpeedSteps = (int?)Element.AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 20;
-
-            cap.MinTimeBetweenSpeedSteps = minTimeBetweenSpeedSteps;
-            e.Info = cap.Element;
+            return new CommandStationCapabilitiesInfo {
+                MinTimeBetweenSpeedSteps = minTimeBetweenSpeedSteps
+            }.Element;
         }
 
         // Implement command events
@@ -226,13 +221,11 @@ namespace MarklinDigital {
             return Task.WhenAll(tasks);
         }
 
-        [LayoutEvent("change-signal-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private void ChangeSignalStateCommand(LayoutEvent e) {
+        [DispatchTarget]
+        private void ChangeSignalStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, LayoutSignalState state) {
             if (commandStationManager == null)
                 throw new NullReferenceException(nameof(commandStationManager));
 
-            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender);
-            var state = Ensure.ValueNotNull<LayoutSignalState>(e.Info);
             int address = connectionPointRef.Module.Address + connectionPointRef.Index;
             int v;
 

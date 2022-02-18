@@ -157,35 +157,22 @@ namespace Intellibox {
 
         #region Request Event Handlers
 
-        [LayoutEvent("get-command-station-capabilities", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void GetCommandStationCapabilities(LayoutEvent e) {
-            CommandStationCapabilitiesInfo cap = new() {
+        [DispatchTarget]
+        private XmlElement GetCommandStationCapabilities([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation) {
+            return new CommandStationCapabilitiesInfo {
                 MinTimeBetweenSpeedSteps = (int?)Element.AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 100
-            };
-
-            e.Info = cap.Element;
+            }.Element;
         }
 
-        [LayoutEvent("disconnect-power-request")]
-        private void PowerDisconnectRequest(LayoutEvent e) {
-            if (e.Sender == null || e.Sender == this)
-                commandStationManager?.AddCommand(queuePowerCommands, new IntelliboxPowerOffCommand(this));
-
+        [DispatchTarget]
+        private void DisconnectPowerRequest([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation) {
+            commandStationManager?.AddCommand(queuePowerCommands, new IntelliboxPowerOffCommand(this));
             PowerOff();
         }
 
-        [LayoutEvent("connect-power-request")]
-        private void PowerConnectRequest(LayoutEvent e) {
-            if (e.Sender == null || e.Sender == this)
-                commandStationManager?.AddCommand(queuePowerCommands, new IntelliboxPowerOnCommand(this));
-
-            PowerOn();
-        }
-
-        protected override void OnConnectTrackPower(LayoutEvent e) {
-            if (e.Sender == this)
-                commandStationManager?.AddCommand(queuePowerCommands, new IntelliboxTrackPowerOnCommand(this));
-
+        [DispatchTarget]
+        private void ConnectPowerRequest([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation) {
+            commandStationManager?.AddCommand(queuePowerCommands, new IntelliboxPowerOnCommand(this));
             PowerOn();
         }
 
@@ -237,13 +224,11 @@ namespace Intellibox {
             return Task.WhenAll(tasks);
         }
 
-        [LayoutEvent("change-signal-state-command", IfEvent = "*[CommandStation/@ID='`string(@ID)`']")]
-        private void ChangeSignalStateCommand(LayoutEvent e) {
+        [DispatchTarget]
+        private void ChangeSignalStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, LayoutSignalState state) {
             if (commandStationManager == null)
                 throw new NullReferenceException(nameof(commandStationManager));
 
-            var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender);
-            var state = Ensure.ValueNotNull<LayoutSignalState>(e.Info);
             int address = connectionPointRef.Module.Address + connectionPointRef.Index;
             byte v;
 

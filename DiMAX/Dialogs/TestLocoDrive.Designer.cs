@@ -70,7 +70,7 @@
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "Send command";
             this.buttonOK.UseVisualStyleBackColor = true;
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // TestLocoDrive
             // 

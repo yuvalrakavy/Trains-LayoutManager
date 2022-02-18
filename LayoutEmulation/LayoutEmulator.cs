@@ -327,20 +327,18 @@ namespace LayoutEmulation {
 
         #region External Operations
 
-        [LayoutEvent("initialize-layout-emulation")]
-        private void StartLayoutEmulation(LayoutEvent e) {
-            emulateTrainMotion = (bool?)e.GetOption(LayoutCommandStationComponent.Option_EmulateTrainMotion) ?? false;
+        [DispatchTarget]
+        private void InitializeLayoutEmulation(bool emulateTrainMotion, int emulationTickTime) {
+            this.emulateTrainMotion = emulateTrainMotion;
             if (emulateTrainMotion)
-                tickTime = (int)e.GetOption(LayoutCommandStationComponent.Option_EmulationTickTime);
+                tickTime = emulationTickTime;
         }
 
-        [LayoutEvent("get-layout-emulation-services")]
-        private void GetLayoutEmulationServices(LayoutEvent e) {
-            e.Info = (ILayoutEmulatorServices)this;
-        }
+        [DispatchTarget]
+        private ILayoutEmulatorServices GetLayoutEmulationServices() => this;
 
-        [LayoutEvent("reset-layout-emulation")]
-        private void ResetLayoutEmulation(LayoutEvent e) {
+        [DispatchTarget]
+        private void ResetLayoutEmulation() {
             ResetEmulator();
         }
 

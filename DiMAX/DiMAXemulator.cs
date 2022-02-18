@@ -31,7 +31,7 @@ namespace DiMAX {
 
             traceDiMAXemulator.Level = TraceLevel.Off;      // Until it seems to work
 
-            layoutEmulationServices = Ensure.NotNull<ILayoutEmulatorServices>(EventManager.Event(new LayoutEvent("get-layout-emulation-services", this)));
+            layoutEmulationServices = Dispatch.Call.GetLayoutEmulationServices();
             EventManager.Event(new LayoutEvent("initialize-layout-emulation", this)
                 .SetOption(LayoutCommandStationComponent.Option_EmulateTrainMotion, commandStation.EmulateTrainMotion)
                 .SetOption(LayoutCommandStationComponent.Option_EmulationTickTime, commandStation.EmulationTickTime)

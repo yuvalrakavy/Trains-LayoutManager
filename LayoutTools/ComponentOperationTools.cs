@@ -36,7 +36,7 @@ namespace LayoutManager.Tools {
                     Dispatch.Call.EmergencyStopRequest(reason, commandStation);
             }
             else {
-                EventManager.Event(new LayoutEvent("disconnect-power-request", initiatingCommandStation));
+                Dispatch.Call.DisconnectPowerRequest(initiatingCommandStation);
                 EventManager.Event(new LayoutEvent("command-station-emergency-stop-notification", initiatingCommandStation, reason));
             }
         }
@@ -74,7 +74,7 @@ namespace LayoutManager.Tools {
             else {
                 IModelComponentIsCommandStation commandStation = (IModelComponentIsCommandStation)e.Sender;
 
-                EventManager.Event(new LayoutEvent("connect-power-request", commandStation));
+                Dispatch.Call.ConnectPowerRequest(commandStation);
                 EventManager.Event(new LayoutEvent("command-station-cancel-emergency-stop-notification", commandStation, "User initiated"));
             }
         }

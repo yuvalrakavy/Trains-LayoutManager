@@ -128,21 +128,21 @@ namespace NumatoController {
 
         #region Event Handlers
 
-        [LayoutEvent("begin-design-time-layout-activation")]
-        private void BeginDesignTimeLayoutActivation(LayoutEvent e) {
+        [DispatchTarget]
+        private bool BeginDesignTimeLayoutActivation() {
             OnCommunicationSetup();
             OpenCommunicationStream();
             OnInitialize();
-            e.Info = true;
+            return true;
         }
 
-        [LayoutEvent("end-design-time-layout-activation")]
-        private void EndDesignTimeLayoutActivation(LayoutEvent e) {
+        [DispatchTarget]
+        private bool EndDesignTimeLayoutActivation() {
             OnCleanup();
 
             OnTerminateCommunication().Wait(100);
             CloseCommunicationStream();
-            e.Info = true;
+            return true;
         }
 
         [DispatchTarget]

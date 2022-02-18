@@ -623,7 +623,7 @@ namespace LayoutManager {
 
         [LayoutEvent("tools-menu-open-request")]
         private void OnToolsMenuOpenRequest(LayoutEvent e) {
-            var layoutEmulationServices = (ILayoutEmulatorServices?)EventManager.Event(new LayoutEvent("get-layout-emulation-services", this));
+            var layoutEmulationServices = Dispatch.Call.GetLayoutEmulationServices();
 
             if (layoutEmulationServices != null) {
                 var toolsMenu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
@@ -640,7 +640,7 @@ namespace LayoutManager {
         }
 
         private void OnResetLayoutEmulation(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent("reset-layout-emulation", this));
+            Dispatch.Call.ResetLayoutEmulation();
         }
 
         [LayoutEvent("enter-design-mode")]

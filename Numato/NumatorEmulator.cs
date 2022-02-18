@@ -34,8 +34,8 @@ namespace NumatoController {
             this.pipeName = pipeName;
             this.interThreadEventInvoker = Dispatch.Call.GetInterthreadInvoker();
 
-            layoutEmulationServices = Ensure.NotNull<ILayoutEmulatorServices>(EventManager.Event(new LayoutEvent("get-layout-emulation-services", this)));
-            EventManager.Event(new LayoutEvent("initialize-layout-emulation"));
+            layoutEmulationServices = Dispatch.Call.GetLayoutEmulationServices();
+            Dispatch.Call.InitializeLayoutEmulation(false, 0);
 
             stopInterfaceThrad = new CancellationTokenSource();
             interfaceTask = InterfaceThreadFunction(stopInterfaceThrad.Token);

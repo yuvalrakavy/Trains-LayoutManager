@@ -30,7 +30,6 @@ namespace NCDRelayController {
 
         private ControlBus? _relayBus = null;
         private ControlBus? _inputBus = null;
-        private bool simulation;
         private bool operationMode;
         private Stream? commStream;
         private OutputManager? outputManager;
@@ -164,8 +163,6 @@ namespace NCDRelayController {
 
         [DispatchTarget]
         protected virtual void OnEnteredOperationMode(OperationModeParameters settings) {
-            simulation = settings.Simulation;
-
             OnCommunicationSetup();
             OpenCommunicationStream();
 
@@ -173,16 +170,16 @@ namespace NCDRelayController {
             OnInitialize();
         }
 
-        [LayoutEvent("begin-design-time-layout-activation")]
-        private void BeginDesignTimeLayoutActivation(LayoutEvent e) {
+        [DispatchTarget]
+        private bool BeginDesignTimeLayoutActivation() {
             OnCommunicationSetup();
             OpenCommunicationStream();
             OnInitialize();
-            e.Info = true;
+            return true;
         }
 
-        [LayoutAsyncEvent("exit-operation-mode-async")]
-        protected async virtual Task ExitOperationModeAsync(LayoutEvent e) {
+        [DispatchTarget]
+        protected async virtual Task ExitOperationModeAsync() {
             if (operationMode) {
                 OnCleanup();
 
@@ -193,13 +190,13 @@ namespace NCDRelayController {
             }
         }
 
-        [LayoutEvent("end-design-time-layout-activation")]
-        private void EndDesignTimeLayoutActivation(LayoutEvent e) {
+        [DispatchTarget]
+        private bool EndDesignTimeLayoutActivation() {
             OnCleanup();
 
             OnTerminateCommunication().Wait(500);
             CloseCommunicationStream();
-            e.Info = true;
+            return true;
         }
 
         [DispatchTarget]
