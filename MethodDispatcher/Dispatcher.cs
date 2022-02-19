@@ -6,7 +6,8 @@ namespace MethodDispatcher {
     /// Define custom filter (see AddCustomFilter)
     ///   a custom filter parameters are (filter-value, target object, parameter value)
     ///   
-    using CustomDispatchFilter = Func<string?, object?, object?, bool>;
+    using CustomDispatchParameterFilter = Func<string?, object?, object?, bool>;
+    using CustomDispatchMethodFilter = Func<string?, object?, bool>;
 
     /// <summary>
     /// Dispatcher - a way to call functions without knowing where they reside...
@@ -229,7 +230,8 @@ namespace MethodDispatcher {
     /// </summary>
     public static class Dispatch {
         static readonly Dispatcher _instance;
-        static readonly Dictionary<string, CustomDispatchFilter> _filters = new();
+        static readonly Dictionary<string, CustomDispatchParameterFilter> _parameterFilters = new();
+        static readonly Dictionary<string, CustomDispatchMethodFilter> _methodFilters = new();
 
         static Dispatch() {
             _instance = new Dispatcher();
@@ -282,20 +284,45 @@ namespace MethodDispatcher {
         static public void RemoveObjectInstanceDispatcherTargets(object objectInstance) => _instance.RemoveObjectInstanceDispatchTargets(objectInstance);
 
         /// <summary>
-        /// Add custom filter function.
+        /// Add custom parameter filter function.
         /// 
         /// When defining DispatchTarget a filter is used to decide if the target is applicable based on a argument's value
         /// For example, you can define XPath filter which will make target applicable only if the argument value is XmlElement and
         /// is matching a given XPath
         /// </summary>
-        /// <param name="filterType"></param>
-        /// <param name="filter"></param>
-        static public void AddCustomFilter(string filterType, CustomDispatchFilter filter) {
-            _filters.Add(filterType, filter);
+        /// <param name="filterType">The custom filter name</param>
+        /// <param name="filter">The custom filter function</param>
+        /// <remarks>
+        /// The custom filter is called with the following parameters:
+        ///     optional filter value (DispatchFilter attribute Value argument)
+        ///     reference to the method instance object (or null if method is static)
+        ///     the parameter value
+        /// </remarks>
+        static public void AddCustomParameterFilter(string filterType, CustomDispatchParameterFilter filter) {
+            _parameterFilters.Add(filterType, filter);
         }
 
-        static internal CustomDispatchFilter? GetDispatchFilter(string filterType) {
-            _filters.TryGetValue(filterType, out CustomDispatchFilter? result);
+        /// <summary>
+        /// Add custom method filter
+        /// </summary>
+        /// <param name="filterType">The custom filter name</param>
+        /// <param name="filter">The custom filter function</param>
+        /// <remarks>
+        /// The custom filter function is called with the following parameters:
+        ///     optional filter value (DispatchFilter attribute Value argument)
+        ///     reference to the method instance object (or null if method is static)
+        /// </remarks>
+        static public void AddCustomMethodFilter(string filterName, CustomDispatchMethodFilter filter) {
+            _methodFilters.Add(filterName, filter);
+        }
+
+        static internal CustomDispatchParameterFilter? GetDispatchParameterFilter(string filterType) {
+            _parameterFilters.TryGetValue(filterType, out CustomDispatchParameterFilter? result);
+            return result;
+        }
+
+        static internal CustomDispatchMethodFilter? GetDispatchMethodFilter(string filterType) {
+            _methodFilters.TryGetValue(filterType, out CustomDispatchMethodFilter? result);
             return result;
         }
     }
@@ -355,8 +382,14 @@ namespace MethodDispatcher {
         public bool VerifyTargetReturnType { get; set; } = true;
     }
 
-    [AttributeUsage(AttributeTargets.Parameter)]
+    [AttributeUsage(AttributeTargets.Parameter|AttributeTargets.Method, AllowMultiple =true)]
     public class DispatchFilterAttribute : Attribute {
+        public DispatchFilterAttribute() { }
+        
+        public DispatchFilterAttribute(string type) {
+            Type = type;
+        }
+
         public string? Type { get; set; }
         public string? Value { get; set; }
     }
@@ -383,7 +416,7 @@ namespace MethodDispatcher {
 
         public bool CallBoolFunctions(bool invokeUntil, bool invokeAll, params object?[] parameters) => Targets.InvokeBoolTargets(invokeUntil, invokeAll, parameters);
 
-        public T? CallUtilNotNull<T>(params object?[] parameters) => (T?)Targets.InvokeUntilNotNull(parameters);
+        public T? CallUntilNotNull<T>(params object?[] parameters) => (T?)Targets.InvokeUntilNotNull(parameters);
 
 
         internal DispatchTargets Targets { get; private set; }
@@ -699,7 +732,8 @@ namespace MethodDispatcher {
     }
 
     internal abstract class DispatchTarget {
-        bool? _hasFilters;
+        bool? _hasParameterFilters;
+        bool _hasMethodFilters;
 
         protected MethodInfo Method { get; private set; }
 
@@ -713,6 +747,7 @@ namespace MethodDispatcher {
             Method = method;
             Order =dispatchTargetAttribute.IsOrdered ? dispatchTargetAttribute.Order : null;
             SourceFile = dispatchTargetAttribute.SourceFile;
+            _hasMethodFilters = method.GetCustomAttribute(typeof(DispatchFilterAttribute)) != null;
         }
 
         public abstract bool IsAlive { get; }
@@ -724,38 +759,58 @@ namespace MethodDispatcher {
         protected bool IsApplicable(object? targetObject, object?[] parameters) {
             Debug.Assert(parameters.Length == Method.GetParameters().Length);
 
-            _hasFilters ??= Method.GetParameters().Any(p => p.GetCustomAttribute(typeof(DispatchFilterAttribute)) != null);
+            if(_hasMethodFilters) {
+                foreach(DispatchFilterAttribute filterAttribute in Method.GetCustomAttributes(typeof(DispatchFilterAttribute))) {
+                    if(filterAttribute.Type != null) {
+                        var filter = Dispatch.GetDispatchMethodFilter(filterAttribute.Type) ?? throw new UndefinedDispatchMethodFilterTypeException(SourceFile, filterAttribute.Type);
 
-            if (_hasFilters.Value) {
+                        if (!filter(filterAttribute.Value, targetObject))
+                            return false;
+                    }
+                    else {
+                        throw new MissingCustomMethodFilterTypeException(SourceFile);
+                    }
+                }
+            }
+
+
+            _hasParameterFilters ??= Method.GetParameters().Any(p => p.GetCustomAttribute(typeof(DispatchFilterAttribute)) != null);
+
+            if (_hasParameterFilters.Value) {
                 foreach (var p in Method.GetParameters().Select((parameter, i) => new { TargetParameter = parameter, ParameterValue = parameters[i] })) {
-                    var filterAttribute = (DispatchFilterAttribute?)p.TargetParameter.GetCustomAttribute(typeof(DispatchFilterAttribute));
+                    bool implicitFiltersApplied = false;
 
-                    if (filterAttribute != null) {
-
-                        if(filterAttribute.Type != null) {
-                            var filter = Dispatch.GetDispatchFilter(filterAttribute.Type) ?? throw new UndefinedDispatchFilterTypeException(SourceFile, filterAttribute.Type, p.TargetParameter);
+                    foreach (DispatchFilterAttribute filterAttribute in p.TargetParameter.GetCustomAttributes(typeof(DispatchFilterAttribute))) {
+                        if (filterAttribute.Type != null) {
+                            var filter = Dispatch.GetDispatchParameterFilter(filterAttribute.Type) ?? throw new UndefinedDispatchParameterFilterTypeException(SourceFile, filterAttribute.Type, p.TargetParameter);
 
                             try {
                                 if (!filter(filterAttribute.Value, targetObject, p.ParameterValue))
                                     return false;
-                            } catch(DispatchFilterException ex) {
+                            }
+                            catch (DispatchFilterException ex) {
                                 throw new DispatchFilterException(SourceFile, filterAttribute.Type, p.TargetParameter, ex.Message);
                             }
                         }
 
-                        // Filter by value
-                        if (p.TargetParameter.HasDefaultValue) {
-                            if (p.TargetParameter.DefaultValue == null) {
-                                if (p.ParameterValue != null)
+                        // No need to apply implicit filter more than once (in case parameter has multiple dispatch filters)
+                        if (!implicitFiltersApplied) {
+                            // Filter by value
+                            if (p.TargetParameter.HasDefaultValue) {
+                                if (p.TargetParameter.DefaultValue == null) {
+                                    if (p.ParameterValue != null)
+                                        return false;
+                                }
+                                else if (!p.TargetParameter.DefaultValue.Equals(p.ParameterValue))
                                     return false;
                             }
-                            else if (!p.TargetParameter.DefaultValue.Equals(p.ParameterValue))
-                                return false;
-                        }
 
-                        // Filter by type
-                        if (p.ParameterValue != null &&  !p.TargetParameter.ParameterType.IsAssignableFrom(p.ParameterValue.GetType()))
-                            return false;
+                            // Filter by type
+                            if (p.ParameterValue != null &&  !p.TargetParameter.ParameterType.IsAssignableFrom(p.ParameterValue.GetType()))
+                                return false;
+
+                            implicitFiltersApplied = true;
+                        }
                     }
                 }
             }
@@ -941,9 +996,15 @@ namespace MethodDispatcher {
         }
     }
 
-    public class UndefinedDispatchFilterTypeException : DispatcherException {
-        public UndefinedDispatchFilterTypeException(SourceFileLocation targetSourceFile, string filterType, ParameterInfo taretParameter) : base(targetSourceFile,
+    public class UndefinedDispatchParameterFilterTypeException : DispatcherException {
+        public UndefinedDispatchParameterFilterTypeException(SourceFileLocation targetSourceFile, string filterType, ParameterInfo taretParameter) : base(targetSourceFile,
             $"Using undefined filter type {filterType} for filtering target's parameter '{taretParameter.Name}'") {
+        }
+    }
+
+    public class UndefinedDispatchMethodFilterTypeException : DispatcherException {
+        public UndefinedDispatchMethodFilterTypeException(SourceFileLocation targetSourceFile, string filterType) : base(targetSourceFile,
+            $"Using undefined filter type {filterType} for filtering target method") {
         }
     }
 
@@ -963,5 +1024,12 @@ namespace MethodDispatcher {
 
         }
     }
+
+    public class MissingCustomMethodFilterTypeException : DispatcherException {
+        public MissingCustomMethodFilterTypeException(SourceFileLocation targetSouceFile) : base(targetSouceFile,
+            $"Method DispatchFilter must have a value for Type") {
+        }
+    }
+
     #endregion
 }
