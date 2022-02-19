@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using MethodDispatcher;
 using LayoutManager.Components;
 
 namespace LayoutManager.Tools.Dialogs {
@@ -21,7 +22,7 @@ namespace LayoutManager.Tools.Dialogs {
             LayoutBlockDefinitionComponent blockDefinition = (LayoutBlockDefinitionComponent)listBoxProgrammingLocations.SelectedItem;
 
             if (blockDefinition != null)
-                EventManager.Event(new LayoutEvent("ensure-component-visible", blockDefinition, true).SetFrameWindow(LayoutController.ActiveFrameWindow));
+                Dispatch.Call.EnsureComponentVisible(LayoutController.ActiveFrameWindow.Id, blockDefinition, true);
         }
     }
 }

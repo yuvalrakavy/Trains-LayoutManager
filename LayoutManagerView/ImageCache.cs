@@ -13,42 +13,36 @@ namespace LayoutManager.View {
 
         private string LayoutFileDirectory => layoutFileDirectory ??= Path.GetDirectoryName(LayoutController.LayoutFilename)!;
 
-        private string GetImageFilename(LayoutEvent e) {
-            string imageFilename = Ensure.NotNull<String>(e.Info);
-
+        private string GetImageFilename(string imageFilename) {
             if (!Path.IsPathRooted(imageFilename) && LayoutFileDirectory != null)
                 imageFilename = Path.Combine(LayoutFileDirectory, imageFilename);
             return imageFilename;
         }
 
-        private string GetEffectName(LayoutEvent e) => e.GetOption("Type", "Effect").ValidString();
+        private string GetImageCacheKey(string imageFilename, RotateFlipType effect) => $"{effect}|{GetImageFilename(imageFilename)}";
 
-        private string GetImageCacheKey(LayoutEvent e) => GetEffectName(e) + "|" + GetImageFilename(e);
-
-        [LayoutEvent("get-image-from-cache")]
-        private void GetImageFromCache(LayoutEvent e) {
-            string imageCacheKey = GetImageCacheKey(e);
+        [DispatchTarget]
+        private Image GetImageFromCache(object requestor, string imageFilename, RotateFlipType effect) {
+            string imageCacheKey = GetImageCacheKey(imageFilename, effect);
 
             if (!imageHashtable.TryGetValue(imageCacheKey, out Image? image)) {
                 try {
-                    image = Image.FromFile(GetImageFilename(e));
+                    image = Image.FromFile(GetImageFilename(imageFilename));
                 }
                 catch (Exception ex) {
-                    throw new ImageLoadException(GetImageFilename(e), e.Sender, ex);
+                    throw new ImageLoadException(GetImageFilename(imageFilename), requestor, ex);
                 }
-
-                RotateFlipType effect = (RotateFlipType)Enum.Parse(typeof(RotateFlipType), GetEffectName(e));
 
                 image.RotateFlip(effect);
                 imageHashtable[imageCacheKey] = image;
             }
 
-            e.Info = image;
+            return image;
         }
 
-        [LayoutEvent("remove-image-from-cache")]
-        private void RemoveImageFromCache(LayoutEvent e) {
-            string imageCacheKey = GetImageCacheKey(e);
+        [DispatchTarget]
+        private void RemoveImageFromCache(string imageFilename, RotateFlipType effect) {
+            string imageCacheKey = GetImageCacheKey(imageFilename, effect);
 
             if (imageHashtable.TryGetValue(imageCacheKey, out var image)) {
                 image.Dispose();
@@ -56,8 +50,8 @@ namespace LayoutManager.View {
             }
         }
 
-        [LayoutEvent("clear-image-cache")]
-        private void ClearImageCache(LayoutEvent e) {
+        [DispatchTarget]
+        private void ClearImageCache() {
             foreach (Image image in imageHashtable.Values)
                 image.Dispose();
             imageHashtable.Clear();
@@ -66,12 +60,12 @@ namespace LayoutManager.View {
         [DispatchTarget]
         private void OnNewLayoutDocument(string filename) {
             layoutFileDirectory = null;     // Invalidate it
-            EventManager.Event(new LayoutEvent("clear-image-cache", this));
+            Dispatch.Call.ClearImageCache();
         }
 
-        [LayoutEvent("free-resources")]
-        private void MainWindowMinimizedOrDeactivated(LayoutEvent e) {
-            EventManager.Event(new LayoutEvent("clear-image-cache", this));
+        [DispatchTarget]
+        private void FreeResources() {
+            Dispatch.Call.ClearImageCache();
         }
     }
 }

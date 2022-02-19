@@ -31,8 +31,8 @@ namespace LayoutManager.Logic {
 
         [DispatchTarget]
         static void AddDispatcherFilters() {
-            Dispatch.AddCustomFilter("IsTrainDriver", DriverTypeFilter);
-            Dispatch.AddCustomFilter("IsAutomaticTrainDriver", IsAutomaticTrainDriver);
+            Dispatch.AddCustomParameterFilter("IsTrainDriver", DriverTypeFilter);
+            Dispatch.AddCustomParameterFilter("IsAutomaticTrainDriver", IsAutomaticTrainDriver);
         }
 
     }

@@ -219,7 +219,7 @@ namespace LayoutManager.Dialogs {
         #endregion
 
         private void LearnLayout_FormClosed(object? sender, FormClosedEventArgs e) {
-            EventManager.Event(new LayoutEvent("deselect-control-objects", this).SetFrameWindow(frameWindowId));
+            Dispatch.Call.DeselectControlObjects(frameWindowId);
             LayoutController.Instance.EndDesignTimeActivation();
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
@@ -247,7 +247,7 @@ namespace LayoutManager.Dialogs {
 
         private void UpdateButtons() {
             if (listViewEvents.SelectedItems.Count == 0) {
-                EventManager.Event(new LayoutEvent("deselect-control-objects", this).SetFrameWindow(frameWindowId));
+                Dispatch.Call.DeselectControlObjects(frameWindowId);
                 buttonAction.Enabled = false;
             }
             else {
@@ -255,21 +255,22 @@ namespace LayoutManager.Dialogs {
 
                 switch (selected.Status) {
                     case CommandStationEventStatus.Connected:
-                        EventManager.Event(new LayoutEvent("show-control-connection-point", selected.CommandStationEvent.ConnectionPointRef).SetFrameWindow(frameWindowId));
+                        if(selected.CommandStationEvent.ConnectionPointRef != null)
+                            Dispatch.Call.ShowControlConnectionPoint(frameWindowId, selected.CommandStationEvent.ConnectionPointRef);
                         buttonAction.Enabled = false;   // Already connected
                         break;
 
                     case CommandStationEventStatus.NotConnected:
                         var moduleReference = selected.CommandStationEvent.ConnectionPointRef?.ModuleReference;
 
-                        if(moduleReference != null)
-                            EventManager.Event(new LayoutEvent("show-control-module", moduleReference).SetFrameWindow(frameWindowId));
+                        if (moduleReference != null)
+                            Dispatch.Call.ShowControlModule(frameWindowId, moduleReference);
 
                         buttonAction.Enabled = true;    // Need to connect
                         break;
 
                     case CommandStationEventStatus.NoControlModule:
-                        EventManager.Event(new LayoutEvent("deselect-control-objects", this).SetFrameWindow(frameWindowId));
+                        Dispatch.Call.DeselectControlObjects(frameWindowId);
                         buttonAction.Enabled = true;    // Need to connect
                         break;
                 }
@@ -286,7 +287,7 @@ namespace LayoutManager.Dialogs {
                         var connectionPoint = (ControlConnectionPoint?)EventManager.Event(new LayoutEvent("connect-component-to-control-module-address-request", pickDialog.ConnectionDestination, selected.CommandStationEvent));
 
                         if (connectionPoint != null)
-                            EventManager.Event(new LayoutEvent("show-control-connection-point", new ControlConnectionPointReference(connectionPoint)).SetFrameWindow(frameWindowId));
+                            Dispatch.Call.ShowControlConnectionPoint(frameWindowId, new ControlConnectionPointReference(connectionPoint));
                     }
                 }, null).ShowDialog();
             }

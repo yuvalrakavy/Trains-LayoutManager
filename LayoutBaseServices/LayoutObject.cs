@@ -371,7 +371,7 @@ namespace LayoutManager {
 
         [DispatchTarget]
         public static void AddDispatcherFilters() {
-            Dispatch.AddCustomFilter("IsMyId", MyIdFilter);
+            Dispatch.AddCustomParameterFilter("IsMyId", MyIdFilter);
         }
     }
 }

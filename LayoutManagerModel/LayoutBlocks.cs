@@ -323,7 +323,7 @@ namespace LayoutManager.Model {
 
             if (trainLeavingBlock != null && Environment.TickCount - whenTrainLeftBlock < 1000) {
                 trainLeavingBlock.PlaceInBlock(this, trainLeavingBlockFront);
-                Trace.WriteLine("Redetection of train " + trainLeavingBlock.DisplayName);
+                Trace.WriteLine("Re-detection of train " + trainLeavingBlock.DisplayName);
                 trainLeavingBlock = null;
                 return true;
             }
@@ -335,7 +335,7 @@ namespace LayoutManager.Model {
 
     /// <summary>
     /// Train occupancy block are blocks that are linked to train detection hardware. A train detection block may contain more than
-    /// one logical block. In most cases, it will contain one logical block which is idetical to the train detection block, but if for
+    /// one logical block. In most cases, it will contain one logical block which is identical to the train detection block, but if for
     /// example, the train detection block has a track contact, then the train occupancy block contains two logical block.
     /// </summary>
     public class LayoutOccupancyBlock : LayoutBlockBase {
@@ -347,7 +347,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="block">The block to be added</param>
         /// <remarks>
-        /// Since an occupancy block that contains one logical block is the very common case, it is handled seperatly to save
+        /// Since an occupancy block that contains one logical block is the very common case, it is handled separately to save
         /// the overhead of holding variable array.
         /// </remarks>
         public void AddBlock(LayoutBlock block) {

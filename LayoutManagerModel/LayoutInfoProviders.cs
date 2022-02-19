@@ -13,7 +13,7 @@ using LayoutManager.Components;
 #nullable enable
 namespace LayoutManager.Model {
     /// <summary>
-    /// Base class for information providers. Information providers wrap XML element and add symantics to them.
+    /// Base class for information providers. Information providers wrap XML element and add semantics to them.
     /// </summary>
     public class LayoutInfo : LayoutXmlWrapper {
         private const string A_Id = "ID";

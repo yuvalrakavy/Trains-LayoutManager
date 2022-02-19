@@ -108,7 +108,7 @@ namespace LayoutManager.Components {
         public void RemoveSignalState() {
             LayoutModel.StateManager.Components.Remove(this.Id, "Signal");
             Redraw();
-            EventManager.Event(new LayoutEvent("signal-state-removed", this));
+            Dispatch.Notification.OnSignalStateRemoved(this);
         }
 
         /// <summary>

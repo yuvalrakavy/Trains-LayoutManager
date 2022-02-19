@@ -495,8 +495,8 @@ namespace LayoutManager.Tools {
         }
 
         private void EnsureVisible(ControlAutoConnectRequest request) {
-            if(request.Component!= null)
-                EventManager.Event(new LayoutEvent("ensure-component-visible", (ModelComponent)request.Component, false));
+            if (request.Component is ModelComponent component)
+                Dispatch.Call.EnsureComponentVisible(LayoutController.ActiveFrameWindow.Id, component);
         }
 
         private double Distance(IModelComponent component1, IModelComponent component2) {
@@ -621,9 +621,7 @@ namespace LayoutManager.Tools {
             }
 
             private void Swap(int i1, int i2) {
-                IModelComponentConnectToControl t = components[i1];
-                components[i1] = components[i2];
-                components[i2] = t;
+                (components[i2], components[i1]) = (components[i1], components[i2]);
             }
 
             public void Sort() {
@@ -870,16 +868,13 @@ namespace LayoutManager.Tools {
 
         #region Simulate Command station input event
 
-        [LayoutEvent("tools-menu-open-request", Order = 1000)]
-        private void AddCommandStationEventToToolsMenuOpenRequest(LayoutEvent e) {
+        [DispatchTarget(Order = 1000)]
+        [DispatchFilter("InDesignTimeActivation")]
+        private void ToolsMenuOpenRequest(MenuOrMenuItem toolsMenu) {
             // Check if it make sense to add this menu entry
-            if (LayoutController.IsDesignTimeActivation) {
-                if (LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All).Any(commandStation => commandStation.DesignTimeLayoutActivationSupported)) {
-                    var toolsMenu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-
-                    toolsMenu.Items.Add("Emulate &Command station Event...", null,
-                        (object? sender, EventArgs ea) => new Dialogs.SimulateCommandStationInputEvent().ShowDialog(LayoutController.ActiveFrameWindow));
-                }
+            if (LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All).Any(commandStation => commandStation.DesignTimeLayoutActivationSupported)) {
+                toolsMenu.Items.Add("Emulate &Command station Event...", null,
+                    (object? sender, EventArgs ea) => new Dialogs.SimulateCommandStationInputEvent().ShowDialog(LayoutController.ActiveFrameWindow));
             }
         }
 
@@ -929,19 +924,14 @@ namespace LayoutManager.Tools {
 
         #endregion
 
-        #region Connectable components context menu
+        #region Connectible components context menu
 
-        [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(IModelComponentConnectToControl))]
-        [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(IModelComponentConnectToControl))]
-        private void QueryConnectableComponentContextMenu(LayoutEvent e) {
-            e.Info = e.Sender;
-        }
+        [DispatchTarget]
+        private bool IncludeInComponentContextMenu([DispatchFilter] IModelComponentConnectToControl component) => true;
 
-        [LayoutEvent("add-component-editing-context-menu-entries", Order = 600, SenderType = typeof(IModelComponentConnectToControl))]
-        private void AddConnectableComponentEditingContextMenu(LayoutEvent e) {
-            var component = Ensure.NotNull<IModelComponentConnectToControl>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-
+        [DispatchTarget(Order = 600)]
+        [DispatchFilter(Type = "InDesignMode")]
+        private void AddComponentContextMenuEntries_Design(Guid frameWindowId, [DispatchFilter] IModelComponentConnectToControl component, MenuOrMenuItem menu) {
             if (component.ControlConnectionDescriptions.Count > 0) {
                 if (menu.Items.Count > 0)
                     menu.Items.Add(new ToolStripSeparator());
@@ -1023,8 +1013,8 @@ namespace LayoutManager.Tools {
                                 possibleConnections.Add(connectionDescription);
 
                         if (possibleConnections.Count == 1) {
-                            menu.Items.Add(new ManualConnectComponentMenuItem("Manually connect control module to " + possibleConnections[0].DisplayName, component, possibleConnections[0]));
-                            menu.Items.Add(new AutomaticConnectComponentMenuItem(e.GetFrameWindowId(), "Automatically connect control module to " + possibleConnections[0].DisplayName, component, possibleConnections[0]));
+                            menu.Items.Add(new ManualConnectComponentMenuItem($"Manually connect control module to {possibleConnections[0].DisplayName}", component, possibleConnections[0]));
+                            menu.Items.Add(new AutomaticConnectComponentMenuItem(frameWindowId, $"Automatically connect control module to {possibleConnections[0].DisplayName}", component, possibleConnections[0]));
                         }
                         else {
                             var manualConnectItem = new LayoutMenuItem("Manually connect control module to");
@@ -1032,7 +1022,7 @@ namespace LayoutManager.Tools {
 
                             foreach (ModelComponentControlConnectionDescription connectionDescription in possibleConnections) {
                                 manualConnectItem.DropDownItems.Add(new ManualConnectComponentMenuItem(connectionDescription.DisplayName, component, connectionDescription));
-                                automaticConnectItem.DropDownItems.Add(new AutomaticConnectComponentMenuItem(e.GetFrameWindowId(), connectionDescription.DisplayName, component, connectionDescription));
+                                automaticConnectItem.DropDownItems.Add(new AutomaticConnectComponentMenuItem(frameWindowId, connectionDescription.DisplayName, component, connectionDescription));
                             }
 
                             menu.Items.Add(manualConnectItem);
@@ -1048,7 +1038,7 @@ namespace LayoutManager.Tools {
                         if (connectionPoints.Count == 1) {
                             ControlConnectionPoint connectionPoint = connectionPoints[0];
 
-                            menu.Items.Add(new ShowConnectionPointMenuItem(e.GetFrameWindowId(), $"Show control module connected to {connectionPoint.DisplayName}", connectionPoint));
+                            menu.Items.Add(new ShowConnectionPointMenuItem(frameWindowId, $"Show control module connected to {connectionPoint.DisplayName}", connectionPoint));
                             menu.Items.Add(new DisconnectConnectionPointMenuItem($"Disconnect {connectionPoint.DisplayName} from control module", connectionPoint));
                         }
                         else {
@@ -1056,7 +1046,7 @@ namespace LayoutManager.Tools {
                             var disconnectMenuItem = new LayoutMenuItem("Disconnect control module connected to");
 
                             foreach (ControlConnectionPoint connectionPoint in connectionPoints) {
-                                showConnectionPointItem.DropDownItems.Add(new ShowConnectionPointMenuItem(e.GetFrameWindowId(), connectionPoint.DisplayName, connectionPoint));
+                                showConnectionPointItem.DropDownItems.Add(new ShowConnectionPointMenuItem(frameWindowId, connectionPoint.DisplayName, connectionPoint));
                                 disconnectMenuItem.DropDownItems.Add(new DisconnectConnectionPointMenuItem(connectionPoint.DisplayName, connectionPoint));
                             }
 
@@ -1068,21 +1058,20 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [LayoutEvent("add-component-operation-context-menu-entries", Order = 200, SenderType = typeof(IModelComponentConnectToControl))]
-        private void AddConnectableComponentOperationContextMenu(LayoutEvent e) {
-            var component = Ensure.NotNull<IModelComponentConnectToControl>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+        [DispatchTarget(Order =200)]
+        [DispatchFilter(Type = "InOperationMode")]
+        private void AddComponentContextMenuEntries_Operation(Guid frameWindowId, [DispatchFilter] IModelComponentConnectToControl component, MenuOrMenuItem menu) {
             var connectionPoints = LayoutModel.ControlManager.ConnectionPoints[component];
 
             if (connectionPoints != null) {
                 foreach (ControlConnectionPoint connectionPoint in connectionPoints)
-                    menu.Items.Add(new ShowConnectionPointMenuItem(e.GetFrameWindowId(), "Show " + connectionPoint.DisplayName + " control module", connectionPoint));
+                    menu.Items.Add(new ShowConnectionPointMenuItem(frameWindowId, $"Show {connectionPoint.DisplayName} control module", connectionPoint));
             }
         }
 
         #endregion
 
-        #region Connectable components default action
+        #region Connectible components default action
 
         [LayoutEvent("query-editing-default-action", SenderType = typeof(IModelComponentConnectToControl))]
         private void ConnectableComponentQueryEditingDefaultAction(LayoutEvent e) {
@@ -1097,9 +1086,8 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [LayoutEvent("editing-default-action-command", SenderType = typeof(IModelComponentConnectToControl))]
-        private void ConnectableComponentEditingDefaultAction(LayoutEvent e) {
-            var component = Ensure.NotNull<IModelComponentConnectToControl>(e.Sender);
+        [DispatchTarget]
+        private void EditingDefaultActionCommand([DispatchFilter] IModelComponentConnectToControl component, LayoutHitTestResult hitTestResult) {
             ModelComponentControlConnectionDescription? feedbackConnection = null;
 
             foreach (ModelComponentControlConnectionDescription connectionDescription in component.ControlConnectionDescriptions)
@@ -1121,26 +1109,24 @@ namespace LayoutManager.Tools {
 
         #region Command Station context menu
 
-        [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(IModelComponentIsCommandStation))]
-        private void QueryCommandStationComponentContextMenu(LayoutEvent e) {
-            e.Info = e.Sender;
-        }
+        [DispatchTarget]
+        [DispatchFilter("InDesignMode")]
+        private bool IncludeInComponentContextMenu([DispatchFilter] IModelComponentIsCommandStation component) => true;
 
-        [LayoutEvent("add-component-editing-context-menu-entries", Order = 600, SenderType = typeof(IModelComponentIsCommandStation))]
-        private void AddCommandStationComponentEditingContextMenu(LayoutEvent e) {
-            var thisCommandStation = Ensure.NotNull<IModelComponentIsCommandStation>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+        [DispatchTarget(Order = 600)]
+        [DispatchFilter(Type = "InDesignMode")]
+        private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] IModelComponentIsCommandStation component, MenuOrMenuItem menu) {
 
             // Check if this command station can upgrade any other command station
             var replacableCommandStations = new List<IModelComponentIsCommandStation>();
             foreach (IModelComponentIsCommandStation otherCommandStation in LayoutModel.Components<IModelComponentIsCommandStation>(LayoutPhase.All)) {
-                if (otherCommandStation.Id != thisCommandStation.Id) {
+                if (otherCommandStation.Id != component.Id) {
                     // Check that all other command station buses exists in this command station, and that they are empty
                     bool busCanBeMoved = true;
 
                     foreach (ControlBus otherStationBus in LayoutModel.ControlManager.Buses.Buses(otherCommandStation)) {
                         if (otherStationBus.Modules.Count > 0) {
-                            var thisBus = LayoutModel.ControlManager.Buses.GetBus(thisCommandStation, otherStationBus.BusTypeName);
+                            var thisBus = LayoutModel.ControlManager.Buses.GetBus(component, otherStationBus.BusTypeName);
 
                             if (thisBus == null || thisBus.Modules.Count != 0) {
                                 busCanBeMoved = false;
@@ -1155,7 +1141,7 @@ namespace LayoutManager.Tools {
                     foreach (ILayoutPowerOutlet otherPowerSource in otherCommandStation.PowerOutlets) {
                         bool powerSourceFound = false;
 
-                        foreach (ILayoutPowerOutlet thisPowerSource in thisCommandStation.PowerOutlets) {
+                        foreach (ILayoutPowerOutlet thisPowerSource in component.PowerOutlets) {
                             if (otherPowerSource.OutletDescription == thisPowerSource.OutletDescription) {
                                 powerSourceFound = true;
                                 break;
@@ -1174,15 +1160,15 @@ namespace LayoutManager.Tools {
             }
 
             if (replacableCommandStations.Count == 1) {
-                var otherCommandStation = (IModelComponentIsCommandStation)replacableCommandStations[0];
+                var otherCommandStation = replacableCommandStations[0];
 
-                menu.Items.Add(new ReplaceCommandStationMenuItem(thisCommandStation, otherCommandStation, "This command station replaces command station '" + otherCommandStation.NameProvider.Name + "'"));
+                menu.Items.Add(new ReplaceCommandStationMenuItem(component, otherCommandStation, $"This command station replaces command station '{otherCommandStation.NameProvider.Name}'"));
             }
             else if (replacableCommandStations.Count > 1) {
                 var item = new LayoutMenuItem("This command station replace");
 
                 foreach (IModelComponentIsCommandStation otherCommandStation in replacableCommandStations)
-                    item.DropDownItems.Add(new ReplaceCommandStationMenuItem(thisCommandStation, otherCommandStation, otherCommandStation.NameProvider.Name));
+                    item.DropDownItems.Add(new ReplaceCommandStationMenuItem(component, otherCommandStation, otherCommandStation.NameProvider.Name));
 
                 menu.Items.Add(item);
             }
@@ -1194,9 +1180,8 @@ namespace LayoutManager.Tools {
 
         #region Click to add module
 
-        [LayoutEvent("control-default-action", SenderType = typeof(DrawControlClickToAddModule))]
-        private void DrawControlClickToAddModuleDefaultAction(LayoutEvent e) {
-            var drawObject = Ensure.NotNull<DrawControlClickToAddModule>(e.Sender);
+        [DispatchTarget]
+        private void ControlModuleDefaultAction([DispatchFilter] DrawControlClickToAddModule drawObject) {
             ControlBus bus = drawObject.Bus;
 
             EventManager.Event(bus.BusType.ClickToAddModuleEventName, drawObject);
@@ -1227,16 +1212,14 @@ namespace LayoutManager.Tools {
 
         #region Module
 
-        [LayoutEvent("add-control-editing-context-menu-entries", SenderType = typeof(DrawControlModule))]
-        private void AddControlModuleEditingContextMenu(LayoutEvent e) {
-            var drawObject = Ensure.NotNull<DrawControlModule>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-            var module = drawObject.Module;
+        [DispatchTarget]
+        private void AddControlModuleEditingContextMenuEntries([DispatchFilter] DrawControlModule drawModule, MenuOrMenuItem menu) {
+            var module = drawModule.Module;
 
-            drawObject.Selected = true;
+            drawModule.Selected = true;
 
             if (module.Bus.BusType.Topology == ControlBusTopology.DaisyChain) {
-                var insertModuleMenuItem = new InsertControlModuleMenuItem(drawObject.Viewer.ModuleLocationID, module);
+                var insertModuleMenuItem = new InsertControlModuleMenuItem(drawModule.Viewer.ModuleLocationID, module);
 
                 menu.Items.Add(insertModuleMenuItem);
 
@@ -1249,7 +1232,7 @@ namespace LayoutManager.Tools {
             }
             else {
                 if (module.Bus.BusType.Topology != ControlBusTopology.Fixed && module.Bus.BusType.CanChangeAddress)
-                    menu.Items.Add(new SetControlModuleAddressMenuItem(drawObject.Viewer.ModuleLocationID, module));
+                    menu.Items.Add(new SetControlModuleAddressMenuItem(drawModule.Viewer.ModuleLocationID, module));
 
                 var programmers = LayoutModel.Components<IModelComponentCanProgramLocomotives>(LayoutPhase.Operational);
 
@@ -1277,9 +1260,9 @@ namespace LayoutManager.Tools {
             if (menu.Items.Count > 0)
                 menu.Items.Add(new ToolStripSeparator());
 
-            menu.Items.Add(new SetModuleLocationMenuItem(drawObject.Viewer.ModuleLocationID == Guid.Empty, module));
+            menu.Items.Add(new SetModuleLocationMenuItem(drawModule.Viewer.ModuleLocationID == Guid.Empty, module));
 
-            if(drawObject.Module.Bus.BusType.CanChangeLabel)
+            if(drawModule.Module.Bus.BusType.CanChangeLabel)
                 menu.Items.Add(new SetModuleLabelMenuItem(module));
 
             menu.Items.Add(new ToggleUserActionRequiredMenuItem(module));
@@ -1294,10 +1277,8 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [LayoutEvent("control-default-action", SenderType = typeof(DrawControlModule))]
-        private void ModuleDefaultAction(LayoutEvent e) {
-            var drawObject = Ensure.NotNull<DrawControlModule>(e.Sender);
-
+        [DispatchTarget]
+        private void ControlModuleDefaultAction([DispatchFilter] DrawControlModule drawObject) {
             drawObject.Selected = !drawObject.Selected;
         }
 
@@ -1352,9 +1333,8 @@ namespace LayoutManager.Tools {
 
         #region Connection Point
 
-        [LayoutEvent("control-default-action", SenderType = typeof(DrawControlConnectionPoint))]
-        private void ConnectionPointDefaultAction(LayoutEvent e) {
-            var drawObject = Ensure.NotNull<DrawControlConnectionPoint>(e.Sender);
+        [DispatchTarget]
+        private void ControlModuleDefaultAction([DispatchFilter] DrawControlConnectionPoint drawObject) {
             var connectWhat = (ControlConnectionPointDestination?)EventManager.Event(new LayoutEvent("get-component-to-control-connect", this));
 
             if (connectWhat != null && drawObject.Module.ConnectionPoints.CanBeConnected(connectWhat, drawObject.Index)) {
@@ -1377,10 +1357,8 @@ namespace LayoutManager.Tools {
                 drawObject.Selected = !drawObject.Selected;
         }
 
-        [LayoutEvent("add-control-editing-context-menu-entries", SenderType = typeof(DrawControlConnectionPoint))]
-        private void AddControlConnectionPointEditingContextMenu(LayoutEvent e) {
-            var drawObject = Ensure.NotNull<DrawControlConnectionPoint>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+        [DispatchTarget]
+        private void AddControlModuleEditingContextMenuEntries([DispatchFilter] DrawControlConnectionPoint drawObject, MenuOrMenuItem menu) {
 
             if (drawObject.Module.ConnectionPoints.IsConnected(drawObject.Index))
                 menu.Items.Add(new DisconnectComponentMenuItem(drawObject.Module.ConnectionPoints[drawObject.Index]));
@@ -1394,7 +1372,8 @@ namespace LayoutManager.Tools {
             }
 
             if (drawObject.Module.ConnectionPoints.Usage(drawObject.Index) == ControlConnectionPointUsage.Output)
-                menu.Items.Add(new LayoutMenuItem("&Test", null, (sender, ea) => EventManager.Event(new LayoutEvent("test-layout-object-request", new ControlConnectionPointReference(drawObject.Module, drawObject.Index)).SetFrameWindow(e))));
+                menu.Items.Add(new LayoutMenuItem("&Test", null, (sender, ea) => 
+                    Dispatch.Call.TestLayoutObjectRequest(LayoutController.ActiveFrameWindow.Id, new ControlConnectionPointReference(drawObject.Module, drawObject.Index))));
 
             menu.Items.Add(new ToggleUserActionRequiredMenuItem(new ControlConnectionPointReference(drawObject.Module, drawObject.Index)));
         }
@@ -1403,10 +1382,8 @@ namespace LayoutManager.Tools {
 
         #region Bus
 
-        [LayoutEvent("add-control-editing-context-menu-entries", SenderType = typeof(DrawControlBus))]
-        private void AddControlBusEditingContextMenu(LayoutEvent e) {
-            var drawObject = Ensure.NotNull<DrawControlBus>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+        [DispatchTarget]
+        private void AddControlModuleEditingContextMenuEntries([DispatchFilter] DrawControlBus drawObject, MenuOrMenuItem menu) {
             var otherProviders = new List<IModelComponentIsBusProvider>();
 
             foreach (var busProvider in LayoutModel.Components<IModelComponentIsBusProvider>(LayoutPhase.All)) {
@@ -1438,13 +1415,15 @@ namespace LayoutManager.Tools {
 
         #region Command station
 
-        [LayoutEvent("add-control-editing-context-menu-entries", SenderType = typeof(DrawControlBusProvider))]
-        private void AddControlCommandStationEditingContextMenu(LayoutEvent e) {
-            var drawObject = Ensure.NotNull<DrawControlBusProvider>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+        [DispatchTarget]
+        private void AddComponentInModuleLocationContextMenuEntries(Guid frameWindowId, ModelComponent component, Guid ModuleLocationId, MenuOrMenuItem menu) {
+            Dispatch.Call.AddComponentContextMenuEntries(frameWindowId, component, menu);
+        }
 
+        [DispatchTarget]
+        private void AddControlModuleEditingContextMenuEntries([DispatchFilter] DrawControlBusProvider drawObject, MenuOrMenuItem menu) {
             menu.Items.Add(new ClearAllUserActionRequiredMenuItem(drawObject));
-            EventManager.Event(new LayoutEvent("add-component-editing-context-menu-entries", drawObject.BusProvider, menu).SetOption("ModuleLocationId", drawObject.Viewer.ModuleLocationID));
+            Dispatch.Call.AddComponentInModuleLocationContextMenuEntries(LayoutController.ActiveFrameWindow.Id, (ModelComponent)drawObject.BusProvider, drawObject.Viewer.ModuleLocationID, menu);
         }
 
         #endregion
@@ -1726,7 +1705,7 @@ namespace LayoutManager.Tools {
 
             protected override void OnClick(EventArgs e) {
                 EventManager.Event(new LayoutEvent("request-component-to-control-connect", new ControlConnectionPointDestination(component, connectionDescription)));
-                EventManager.Event(new LayoutEvent("show-layout-control", this));
+                Dispatch.Call.ShowLayoutControl(LayoutController.ActiveFrameWindow.Id);
             }
         }
 
@@ -1776,7 +1755,7 @@ namespace LayoutManager.Tools {
                     var connectionPoint = (ControlConnectionPoint?)EventManager.Event(new LayoutEvent("request-control-auto-connect", request));
 
                     if (connectionPoint != null)
-                        EventManager.Event(new LayoutEvent("show-control-connection-point", new ControlConnectionPointReference(connectionPoint)).SetFrameWindow(frameWindowId));
+                        Dispatch.Call.ShowControlConnectionPoint(frameWindowId, new ControlConnectionPointReference(connectionPoint));
                 }
                 catch (LayoutException ex) {
                     ex.Report();
@@ -1786,7 +1765,7 @@ namespace LayoutManager.Tools {
 
         private class ShowConnectionPointMenuItem : LayoutMenuItem {
             public ShowConnectionPointMenuItem(Guid frameWindowId, string text, ControlConnectionPoint connectionPoint)
-                : base(text, null, (s, ea) => EventManager.Event(new LayoutEvent("show-control-connection-point", new ControlConnectionPointReference(connectionPoint)).SetFrameWindow(frameWindowId))) {
+                : base(text, null, (s, ea) => Dispatch.Call.ShowControlConnectionPoint(frameWindowId, new ControlConnectionPointReference(connectionPoint))) {
             }
         }
 

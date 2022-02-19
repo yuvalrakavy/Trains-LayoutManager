@@ -87,8 +87,8 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="component">Component to add to the selection</param>
         /// <param name="canUndo">If true the operation can be undone</param>
-        /// <param name="containerCommand">if the select operation is part of a compund command then
-        /// this parameter is the compound command object, otherwise is is null</param>
+        /// <param name="containerCommand">if the select operation is part of a compound command then
+        /// this parameter is the compound command object, otherwise is null</param>
         public void Add(ModelComponent component) {
             if (!selection.ContainsKey(component)) {
                 selection.Add(component, null);
@@ -217,7 +217,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Ask all the components to erase themself from the screen
+        /// Ask all the components to erase themselves from the screen
         /// </summary>
         public void EraseImage() {
             foreach (ModelComponent component in this)
@@ -225,7 +225,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Cause the selection to be visiable
+        /// Cause the selection to be visible
         /// </summary>
         /// <param name="selectionLook">The selection's visual look</param>
         /// <param name="zOrder">Can be either ZOrderTopMost or ZOrderBottom</param>
@@ -283,7 +283,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Get data object encupsolating the components in the selection
+        /// Get data object encapsulating the components in the selection
         /// </summary>
         /// <param name="mlOrigin">Origin in which the component location relates to</param>
         /// <returns>The data object</returns>
@@ -321,7 +321,7 @@ namespace LayoutManager.Model {
     }
 
     /// <summary>
-    /// Encupsolate the information on the look of a selection, such as the selection
+    /// Encapsulate the information on the look of a selection, such as the selection
     /// color etc.
     /// </summary>
     public class LayoutSelectionLook : ILayoutSelectionLook {

@@ -477,7 +477,8 @@ namespace LayoutManager.Tools.Dialogs {
                         locoLocation = train.LocomotiveBlock.TrackEdges[0].Track;
                 }
 
-                EventManager.Event(new LayoutEvent("ensure-component-visible", locoLocation, true).SetFrameWindow(LayoutController.ActiveFrameWindow));
+                if(locoLocation != null)
+                    Dispatch.Call.EnsureComponentVisible(LayoutController.ActiveFrameWindow.Id, locoLocation, true);
             }
         }
 

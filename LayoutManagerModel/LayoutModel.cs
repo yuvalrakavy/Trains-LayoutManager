@@ -32,7 +32,7 @@ namespace LayoutManager.Model {
     public enum LayoutPhase {
         Planned = 0x0001,           // Component is planned
         Construction = 0x0002,      // Component is under construction
-        Operational = 0x0004,       // Component is operationl
+        Operational = 0x0004,       // Component is operational
 
         None = 0x0000,
         All = Planned | Construction | Operational,
@@ -212,7 +212,7 @@ namespace LayoutManager.Model {
         public virtual bool FullyConnected => LayoutModel.ControlManager.ConnectionPoints.IsFullyConnected(Id);
 
         /// <summary>
-        /// No specific control module is requried
+        /// No specific control module is required
         /// </summary>
         public virtual string? RequiredControlModuleTypeName => null;
 
@@ -241,7 +241,7 @@ namespace LayoutManager.Model {
         /// if the component would like to save additional information, it must override the WriteXmlFields
         /// method.
         /// </remarks>
-        /// <param name="w">Xml Writer to save the component in</param>
+        /// <param name="w">XML Writer to save the component in</param>
         public void WriteXml(XmlWriter w) {
             w.WriteStartElement(E_Component);
             w.WriteAttributeString(A_Class, XmlConvert.EncodeName(GetType().FullName));
@@ -996,7 +996,7 @@ namespace LayoutManager.Model {
         private Guid id;                             // The area ID
 
         /// <summary>
-        /// Event that is fired when a compomnent changes
+        /// Event that is fired when a component changes
         /// </summary>
         public event EventHandler? AreaChanged;
         public event EventHandler? EraseComponentImage;
@@ -1021,7 +1021,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Return the layout grid. The grid is a hashtable in which the keys are points providing the
+        /// Return the layout grid. The grid is a hash-table in which the keys are points providing the
         /// location on the grid, and the values are LayoutModelSpot which contains all the components that
         /// are in the given location.
         /// </summary>
@@ -1033,7 +1033,7 @@ namespace LayoutManager.Model {
         public Guid AreaGuid => id;
 
         /// <summary>
-        /// Get a hashtable containing all the track links that are in this area.
+        /// Get a hash-table containing all the track links that are in this area.
         /// </summary>
         public LayoutAreaTrackLinksDictionary TrackLinks { get; } = new LayoutAreaTrackLinksDictionary();
 
@@ -1069,7 +1069,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Get the phase (design/construction/opertional) of a given location
+        /// Get the phase (design/construction/operational) of a given location
         /// </summary>
         /// <param name="p">Location</param>
         /// <returns>Phase of this location</returns>
@@ -1156,7 +1156,7 @@ namespace LayoutManager.Model {
                 OnAreaBoundsChanged();
             }
 
-            // need to calculate the bounding rect
+            // need to calculate the bounding rectangle
 
             grid.Remove(spot.Location);
             RemoveSpotLocation(spot);
@@ -1164,7 +1164,7 @@ namespace LayoutManager.Model {
 
         #endregion
 
-        #region Area boundries handling
+        #region Area boundaries handling
 
         /// <summary>
         /// Return a rectangle that bounds all components in the model
@@ -1179,10 +1179,10 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Ensure that the model boundries contain the given point
+        /// Ensure that the model boundaries contain the given point
         /// </summary>
         /// <param name="ml"></param>
-        /// <returns>True if model boundries were modified</returns>
+        /// <returns>True if model boundaries were modified</returns>
         private bool AdjustBounds(Point ml) {
             bool adjusted = false;
             int top = mlBounds.Top;
@@ -1217,7 +1217,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Calcuate the rectangle that bounds the model
+        /// Calculate the rectangle that bounds the model
         /// </summary>
         private void CalculateAreaBounds() {
             mlBounds = new Rectangle(0, 0, 0, 0);
@@ -1246,7 +1246,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Called to inidcate that a new component was added
+        /// Called to indicate that a new component was added
         /// </summary>
         /// <param name="c">The component that was added</param>
         internal void OnComponentAdded(ModelComponent c) {
@@ -1755,7 +1755,7 @@ namespace LayoutManager.Model {
             w.WriteEndElement();
         }
 
-        // On entry: <Layers> (For backward compatability, read and ignore it)
+        // On entry: <Layers> (For backward comparability, read and ignore it)
         private void ParseLayers(XmlReader r) {
             if (r.IsEmptyElement)
                 r.Read();

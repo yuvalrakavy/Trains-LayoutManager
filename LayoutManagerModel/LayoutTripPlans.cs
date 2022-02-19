@@ -668,7 +668,7 @@ namespace LayoutManager.Model {
                     s = "Trip plan '" + TripPlan.Name + "'";
 
                 if (waypoint != null)
-                    s += ", waypoint '" + waypoint.Destination.Name + "'";
+                    s += ", way-point '" + waypoint.Destination.Name + "'";
                 else if (Destination != null)
                     s = "Destination '" + Destination.Name + "'";
 
@@ -700,7 +700,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Check that each location indeed exist in the model.
         /// </summary>
-        /// <returns>true - destination ok, false - destination became empty, should be deleted</returns>
+        /// <returns>true - destination OK, false - destination became empty, should be deleted</returns>
         private static bool CheckDestinationIntegrity(IntegrityContext ic, TripPlanDestinationInfo destination, LayoutPhase phase) {
             List<Guid>? removeList = null;
 
@@ -714,7 +714,7 @@ namespace LayoutManager.Model {
 
             if (removeList != null) {
                 foreach (Guid blockID in removeList) {
-                    ic.Message("Trip plan catalog destination has a reference to non-existence block, removeing it");
+                    ic.Message("Trip plan catalog destination has a reference to non-existence block, removing it");
                     destination.Remove(blockID);
                 }
             }
@@ -735,7 +735,7 @@ namespace LayoutManager.Model {
                     ic.Waypoint = wayPoint;
 
                     if (!CheckDestinationIntegrity(ic, wayPoint.Destination, phase)) {
-                        ic.Message("All the locations (blocks) in this waypoint were removed, removing waypoint");
+                        ic.Message("All the locations (blocks) in this way-point were removed, removing way-point");
                         wayPointRemoveList.Add(wayPoint);
                     }
 
@@ -746,7 +746,7 @@ namespace LayoutManager.Model {
                     tripPlan.Remove(wayPoint);
 
                 if (tripPlan.Count == 0) {
-                    ic.Message("All waypoint were removed, removing trip plan");
+                    ic.Message("All way-point were removed, removing trip plan");
                     tripPlanRemoveList.Add(tripPlan);
                 }
 

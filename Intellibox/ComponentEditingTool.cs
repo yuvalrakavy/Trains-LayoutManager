@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.CommonUI;
@@ -59,16 +60,14 @@ namespace Intellibox {
                 e.Info = false;		// Do not place component
         }
 
-        [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(IntelliboxComponent))]
-        private void QueryTrackContactMenu(LayoutEvent e) {
-            e.Info = e.Sender;
-        }
+        [DispatchTarget]
+        [DispatchFilter("InDesignMode")]
+        private bool IncludeInComponentContextMenu([DispatchFilter] IntelliboxComponent _) => true;
 
-        [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(IntelliboxComponent))]
-        private void AddTrackContactContextMenuEntries(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-            IntelliboxComponent component = Ensure.NotNull<IntelliboxComponent>(e.Sender);
 
+        [DispatchTarget]
+        [DispatchFilter(Type = "InDesignMode")]
+        private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] IntelliboxComponent component, MenuOrMenuItem menu) {
             menu.Items.Add(new IntelliboxMenuItemProperties(component));
         }
 

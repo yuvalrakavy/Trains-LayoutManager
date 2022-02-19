@@ -214,7 +214,7 @@ namespace LayoutManager.Tools {
         private LayoutComponentConnectionPoint? GetLocomotiveFront(LayoutBlockDefinitionComponent blockDefinition, object nameObject) {
             var name = ExtractTrainDisplayName(nameObject);
 
-            EventManager.Event(new LayoutEvent("ensure-component-visible", blockDefinition, false));
+            Dispatch.Call.EnsureComponentVisible(LayoutController.ActiveFrameWindow.Id, blockDefinition);
 
             Dialogs.LocomotiveFront locoFront = new(blockDefinition, name);
             return locoFront.ShowDialog() == DialogResult.OK ? locoFront.Front : null;
@@ -231,7 +231,7 @@ namespace LayoutManager.Tools {
         private TrainFrontAndLength? GetTrainFrontAndLength(LayoutBlockDefinitionComponent blockDefinition, XmlElement collectionElement) { 
             var name = ExtractTrainDisplayName(collectionElement);
 
-            EventManager.Event(new LayoutEvent("ensure-component-visible", blockDefinition, false));
+            Dispatch.Call.EnsureComponentVisible(LayoutController.ActiveFrameWindow.Id, blockDefinition);
 
             Dialogs.TrainFrontAndLength trainFrontAndLength = new(blockDefinition, name);
             return trainFrontAndLength.ShowDialog() == DialogResult.OK ? new TrainFrontAndLength(trainFrontAndLength.Front, trainFrontAndLength.Length) : null;
@@ -320,7 +320,7 @@ namespace LayoutManager.Tools {
             protected override void OnClick(EventArgs e) {
                 base.OnClick(e);
 
-                EventManager.Event(new LayoutEvent("ensure-component-visible", blockInfo, true));
+                Dispatch.Call.EnsureComponentVisible(LayoutController.ActiveFrameWindow.Id, blockInfo, true);
             }
         }
 

@@ -121,18 +121,16 @@ namespace LayoutManager.Tools {
 
         #region IModelComponentIsMultiPath components
 
-        [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(IModelComponentIsDualState))]
-        private void QueryDualStateComponentContextMenu(LayoutEvent e) {
-            e.Info = e.Sender;
-        }
+        [DispatchTarget]
+        [DispatchFilter("InOperationMode")]
+        private bool IncludeInComponentContextMenu([DispatchFilter] IModelComponentIsDualState component) => true;
 
-        [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(IModelComponentIsDualState))]
-        private void AddTurnoutContextMenu(LayoutEvent e) {
-            var component = Ensure.NotNull<ModelComponent>(e.Sender, "component");
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
+        [DispatchTarget]
+        [DispatchFilter(Type = "InOperationMode")]
+        private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] IModelComponentIsDualState component, MenuOrMenuItem menu) {
             var multipath = (IModelComponentIsDualState)component;
 
-            var item = new LayoutComponentMenuItem(component, "&Toggle " + component.ToString(), new EventHandler(this.OnToggleDualStateComponent)) {
+            var item = new LayoutComponentMenuItem((ModelComponent)component, "&Toggle " + component.ToString(), new EventHandler(this.OnToggleDualStateComponent)) {
                 DefaultItem = true
             };
             menu.Items.Add(item);
@@ -174,16 +172,13 @@ namespace LayoutManager.Tools {
 
         #region Signal Component
 
-        [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(LayoutSignalComponent))]
-        private void QuerySignalContextMenu(LayoutEvent e) {
-            e.Info = e.Sender;
-        }
+        [DispatchTarget]
+        [DispatchFilter("InOperationMode")]
+        private bool IncludeInComponentContextMenu([DispatchFilter] LayoutSignalComponent component) => true;
 
-        [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutSignalComponent))]
-        private void AddSignalContextMenu(LayoutEvent e) {
-            var component = Ensure.NotNull<ModelComponent>(e.Sender, "component");
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
-
+        [DispatchTarget]
+        [DispatchFilter(Type = "InOperationMode")]
+        private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] LayoutSignalComponent component, MenuOrMenuItem menu) {
             var item = new LayoutComponentMenuItem(component, "&Toggle signal", new EventHandler(this.OnToggleSignal)) {
                 DefaultItem = true
             };
@@ -239,31 +234,54 @@ namespace LayoutManager.Tools {
                 return false;
         }
 
-        [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(LayoutStraightTrackComponent))]
-        private void QueryStraightTrackContextMenu(LayoutEvent e) {
-            if (!ReflectEventToBlockDefinition(e))
-                e.Info = false;
-        }
-
-        [LayoutEvent("query-operation-drop", SenderType = typeof(LayoutStraightTrackComponent))]
-        [LayoutEvent("do-operation-drop", SenderType = typeof(LayoutStraightTrackComponent))]
-        [LayoutEvent("query-operation-drag", SenderType = typeof(LayoutStraightTrackComponent))]
         [LayoutEvent("get-component-operation-properties-menu-name", SenderType = typeof(LayoutStraightTrackComponent))]
-        [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutStraightTrackComponent))]
-        [LayoutEvent("add-operation-details-window-sections", SenderType = typeof(LayoutStraightTrackComponent))]
         [LayoutEvent("default-action-command", SenderType = typeof(LayoutStraightTrackComponent))]
         private void DoRefelectEventToBlockDefinition(LayoutEvent e) {
             ReflectEventToBlockDefinition(e);
+        }
+
+        [DispatchTarget]
+        [DispatchFilter("InOperationMode")]
+        private bool IncludeInComponentContextMenu([DispatchFilter] LayoutStraightTrackComponent component) => component.BlockDefinitionComponent != null && Dispatch.Call.IncludeInComponentContextMenu(component.BlockDefinitionComponent);
+
+
+        [DispatchTarget]
+        [DispatchFilter(Type = "InOperationMode")]
+        private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] LayoutStraightTrackComponent component, MenuOrMenuItem menu) {
+            if (component.BlockDefinitionComponent != null)
+                Dispatch.Call.AddComponentContextMenuEntries(frameWindowId, component.BlockDefinitionComponent, menu);
+        }
+
+        [DispatchTarget]
+        [DispatchFilter(Type = "InOperationMode")]
+        private void AddDetailsWindowSections_StraigtTrack([DispatchFilter] LayoutStraightTrackComponent track, PopupWindowContainerSection container) {
+            if (track.BlockDefinitionComponent != null)
+                Dispatch.Call.AddDetailsWindowSections(track.BlockDefinitionComponent, container);
+        }
+
+        [DispatchTarget]
+        private void QueryOperationDrop([DispatchFilter] LayoutStraightTrackComponent track, DragEventArgs dragEventArgs) {
+            if (track.BlockDefinitionComponent != null)
+                Dispatch.Call.QueryOperationDrop(track.BlockDefinitionComponent, dragEventArgs);
+        }
+        [DispatchTarget]
+        private void DoOperationDrop([DispatchFilter] LayoutStraightTrackComponent track, DragEventArgs dragEventArgs) {
+            if(track.BlockDefinitionComponent != null)
+                Dispatch.Call.DoOperationDrop(track.BlockDefinitionComponent, dragEventArgs);
+        }
+
+        [DispatchTarget]
+        private object? QueryOperationDrag([DispatchFilter] LayoutStraightTrackComponent track) {
+            return track.BlockDefinitionComponent != null ? Dispatch.Call.QueryOperationDrag(track.BlockDefinitionComponent) : null;
         }
 
         #endregion
 
         #region Block Definition Component
 
-        [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void QueryBlockInfoContextMenu(LayoutEvent e) {
-            e.Info = e.Sender;
-        }
+        [DispatchTarget]
+        [DispatchFilter("InOperationMode")]
+        private bool IncludeInComponentContextMenu([DispatchFilter] LayoutBlockDefinitionComponent component) => true;
 
         private void AddBlockInfoMenuEntries(MenuOrMenuItem m, LayoutBlockDefinitionComponent blockDefinition, IList<TrainStateInfo> trains) {
             bool defaultSet = false;
@@ -277,14 +295,14 @@ namespace LayoutManager.Tools {
             if (tripPlanEditorDialogs.Count == 1) {
                 ITripPlanEditorDialog tripPlanEditorDialog = tripPlanEditorDialogs[0];
 
-                var item = new AddBlockInfoToTripPlanEditorDialog(blockDefinition, tripPlanEditorDialog, "Add &Waypoint");
+                var item = new AddBlockInfoToTripPlanEditorDialog(blockDefinition, tripPlanEditorDialog, "Add &Way-point");
 
                 item.Font = new Font(item.Font, item.Font.Style | FontStyle.Bold);
                 defaultSet = true;
                 m.Items.Add(item);
             }
             else if (tripPlanEditorDialogs.Count > 1) {
-                var addWayPoint = new LayoutMenuItem("Add &Waypoint");
+                var addWayPoint = new LayoutMenuItem("Add &Way-point");
 
                 foreach (ITripPlanEditorDialog tripPlanEditorDialog in tripPlanEditorDialogs)
                     addWayPoint.DropDownItems.Add(new AddBlockInfoToTripPlanEditorDialog(blockDefinition, tripPlanEditorDialog, tripPlanEditorDialog.DialogName));
@@ -563,11 +581,8 @@ namespace LayoutManager.Tools {
             new ToolStripSeparator().AddMeTo(menu);
         }
 
-        [LayoutEvent("query-operation-drop", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void BlockDefinitionQueryDrop(LayoutEvent e) {
-            var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockDefinition");
-            var dragEventArgs = Ensure.NotNull<DragEventArgs>(e.Info, "dragEvent");
-
+        [DispatchTarget]
+        private void QueryOperationDrop([DispatchFilter] LayoutBlockDefinitionComponent blockDefinition, DragEventArgs dragEventArgs) {
             if (dragEventArgs.Data?.GetData(typeof(XmlElement)) is XmlElement element) {
                 if (element.Name == "Locomotive" || element.Name == "Train") {
                     if (!blockDefinition.Block.HasTrains) {
@@ -622,11 +637,8 @@ namespace LayoutManager.Tools {
             catch (OperationCanceledException) { }
         }
 
-        [LayoutEvent("do-operation-drop", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void BlockDefinitionDoDrop(LayoutEvent e) {
-            var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockDefinition");
-            var dragEventArgs = Ensure.NotNull<DragEventArgs>(e.Info, "dragEvent");
-
+        [DispatchTarget]
+        private void DoOperationDrop_BlockDefinition([DispatchFilter] LayoutBlockDefinitionComponent blockDefinition, DragEventArgs dragEventArgs) {
             if (dragEventArgs.Data?.GetData(typeof(XmlElement)) is XmlElement element) {
                 if (element.Name == "Locomotive" || element.Name == "Train") {
                     if (!blockDefinition.Block.HasTrains) {
@@ -673,12 +685,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [LayoutEvent("query-operation-drag", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void BlockDefinitionQueryOperationDrag(LayoutEvent e) {
-            var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockDefinition");
-
-            if (blockDefinition.Block.Trains.Count == 1)
-                e.Info = blockDefinition.Block.Trains[0].Train.Element;
+        [DispatchTarget]
+        private object? QueryOperationDrag([DispatchFilter] LayoutBlockDefinitionComponent blockDefinition) {
+            return (blockDefinition.Block.Trains.Count == 1) ? blockDefinition.Block.Trains[0].Train.Element : null;
         }
 
         [LayoutEvent("get-component-operation-properties-menu-name", SenderType = typeof(LayoutBlockDefinitionComponent))]
@@ -690,20 +699,17 @@ namespace LayoutManager.Tools {
                 e.Info = "Block " + menuName;
         }
 
-        [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void AddBlockInfoContextMenu(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
-            var blockInfo = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockInfo");
-            IList<TrainStateInfo> trains = LayoutModel.StateManager.Trains[blockInfo.Block];
+        [DispatchTarget]
+        [DispatchFilter(Type = "InOperationMode")]
+        private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] LayoutBlockDefinitionComponent component, MenuOrMenuItem menu) {
+            IList<TrainStateInfo> trains = LayoutModel.StateManager.Trains[component.Block];
 
-            AddBlockInfoMenuEntries(menu, blockInfo, trains);
+            AddBlockInfoMenuEntries(menu, component, trains);
         }
 
-        [LayoutEvent("add-operation-details-window-sections", SenderType = typeof(LayoutBlockDefinitionComponent), Order = 1000)]
-        private void AddBlockDefinitionTrainsDetailsWindowSection(LayoutEvent e) {
-            var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender, "blockDefinition");
-            var container = Ensure.NotNull<PopupWindowContainerSection>(e.Info, "container");
-
+        [DispatchTarget(Order = 1000)]
+        [DispatchFilter(Type = "InOperationMode")]
+        private void AddDetailsWindowSections([DispatchFilter] LayoutBlockDefinitionComponent blockDefinition, PopupWindowContainerSection container) {
             if (blockDefinition.Block.HasTrains)
                 foreach (TrainLocationInfo trainLocation in blockDefinition.Block.Trains)
                     EventManager.Event(new LayoutEvent("add-train-details-window-section", trainLocation.Train, container));
@@ -1362,10 +1368,10 @@ namespace LayoutManager.Tools {
 
         #region Track Power Connector component
 
-        [LayoutEvent("add-operation-details-window-sections", SenderType = typeof(LayoutTrackPowerConnectorComponent), Order = 1000)]
-        private void AddTrackPowerConnectorDetailsWindowSection(LayoutEvent e) {
-            var component = Ensure.NotNull<LayoutTrackPowerConnectorComponent>(e.Sender, "component");
-            var container = Ensure.NotNull<PopupWindowContainerSection>(e.Info, "container");
+        [DispatchTarget(Order =1000)]
+        private void AddDetailsWindowSections_PowerConnector([DispatchFilter] LayoutTrackPowerConnectorComponent component, PopupWindowContainerSection container) {
+            if (!LayoutController.IsOperationMode)
+                return;
 
             if (component.Inlet.IsConnected) {
                 ILayoutPower power = component.Inlet.ConnectedOutlet.Power;
@@ -1541,63 +1547,54 @@ namespace LayoutManager.Tools {
             }
         }
 
-#endregion
+        #endregion
 
-#endregion
+        #endregion
 
-#region Track contact component
+        #region Track contact component
 
-        [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(LayoutTrackContactComponent))]
-        private void QueryTrackContactContextMenu(LayoutEvent e) {
-            e.Info = e.Sender;
+        [DispatchTarget]
+        [DispatchFilter("InOperationMode")]
+        private bool IncludeInComponentContextMenu([DispatchFilter] LayoutTrackContactComponent component) => true;
+
+        [DispatchTarget]
+        [DispatchFilter(Type = "InOperationMode")]
+        private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] LayoutTrackContactComponent component, MenuOrMenuItem menu) {
+            menu.Items.Add(new LayoutComponentMenuItem(component, "&Trigger contact", (s, e) => Dispatch.Notification.OnTrackContactTriggered(component)));
         }
 
-        [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutTrackContactComponent))]
-        private void AddTrackContactContextMenu(LayoutEvent e) {
-            var trackContact = Ensure.NotNull<LayoutTrackContactComponent>(e.Sender, "component");
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
+        #endregion
 
-            menu.Items.Add(new LayoutComponentMenuItem(trackContact, "&Trigger contact", (s, e) => Dispatch.Notification.OnTrackContactTriggered(trackContact)));
-        }
+        #region Proximity Sensor component
 
-#endregion
+        [DispatchTarget]
+        [DispatchFilter("InOperationMode")]
+        private bool IncludeInComponentContextMenu([DispatchFilter] LayoutProximitySensorComponent component) => true;
 
-#region Proximity Sensor component
-
-        [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(LayoutProximitySensorComponent))]
-        private void QueryProximitySensorContextMenu(LayoutEvent e) {
-            e.Info = e.Sender;
-        }
-
-        [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutProximitySensorComponent))]
-        private void AddProximitySensorContextMenu(LayoutEvent e) {
-            var component = Ensure.NotNull<LayoutProximitySensorComponent>(e.Sender, "component");
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
-
+        [DispatchTarget]
+        [DispatchFilter(Type = "InOperationMode")]
+        private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] LayoutProximitySensorComponent component, MenuOrMenuItem menu) {
             menu.Items.Add(new LayoutComponentMenuItem(component, "&Proximity sensor active", (s, e) => Dispatch.Notification.OnProximitySensorStateChanged(component, !component.IsTriggered)) {
                 Checked = component.IsTriggered
             });
         }
 
-#endregion
+        #endregion
 
-#region Gate component
+        #region Gate component
 
-        [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(LayoutGateComponent))]
-        private void QueryGateContextMenu(LayoutEvent e) {
-            e.Info = e.Sender;
-        }
+        [DispatchTarget]
+        [DispatchFilter("InOperationMode")]
+        private bool IncludeInComponentContextMenu([DispatchFilter] LayoutGateComponent component) => true;
 
-        [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(LayoutGateComponent))]
-        private void AddGateContextMenu(LayoutEvent e) {
-            var gateComponent = Ensure.NotNull<LayoutGateComponent>(e.Sender, "gateComponent");
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
+        [DispatchTarget]
+        [DispatchFilter(Type = "InOperationMode")]
+        private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] LayoutGateComponent component, MenuOrMenuItem menu) {
+            if (component.GateState != LayoutGateState.Open)
+                menu.Items.Add("Open gate", null, (object? sender, EventArgs a) => Dispatch.Call.OpenGateRequest(component));
 
-            if (gateComponent.GateState != LayoutGateState.Open)
-                menu.Items.Add("Open gate", null, (object? sender, EventArgs a) => EventManager.Event(new LayoutEvent("open-gate-request", gateComponent)));
-
-            if (gateComponent.GateState != LayoutGateState.Close)
-                menu.Items.Add("Close gate", null, (object? sender, EventArgs a) => EventManager.Event(new LayoutEvent("close-gate-request", gateComponent)));
+            if (component.GateState != LayoutGateState.Close)
+                menu.Items.Add("Close gate", null, (object? sender, EventArgs a) => Dispatch.Call.CloseGateRequest(component));
         }
 
 #endregion

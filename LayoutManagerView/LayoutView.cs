@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using MethodDispatcher;
 using LayoutManager.Model;
 
 #pragma warning disable IDE0051, IDE0060, RCS1135, RCS1154, RCS1213
@@ -1667,8 +1668,8 @@ namespace LayoutManager.View {
             e.Info = offScreenBuffer;
         }
 
-        [LayoutEvent("free-resources")]
-        private void FreeOffScreenBuffer(LayoutEvent e) {
+        [DispatchTarget]
+        private void FreeResources() {
             if (offScreenBuffer != null) {
                 offScreenBuffer.Dispose();
                 offScreenBuffer = null;

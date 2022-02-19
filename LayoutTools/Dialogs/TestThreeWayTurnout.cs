@@ -121,10 +121,8 @@ namespace LayoutManager.Tools.Dialogs {
             painter.Paint(e.Graphics);
         }
 
-        [LayoutEvent("query-test-layout-object")]
-        private void QueryTestLayoutObject(LayoutEvent e) {
-            e.Info = this;
-        }
+        [DispatchTarget]
+        private bool QueryTestLayoutObject() => true;
 
         [LayoutEvent("component-connected-to-control-module")]
         [LayoutEvent("component-disconnected-from-control-module")]
@@ -134,7 +132,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void TestThreeWayTurnout_FormClosed(object? sender, FormClosedEventArgs e) {
             LayoutController.Instance.EndDesignTimeActivation();
-            EventManager.Event(new LayoutEvent("deselect-control-objects", this).SetFrameWindow(frameWindowId));
+            Dispatch.Call.DeselectControlObjects(frameWindowId);
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 

@@ -97,20 +97,20 @@ namespace TrainDetector {
 
                 var unassignedSameSensorCountList = from module in UnassignedModules where module.NumberOfConnectionPoints == detectedController.SensorsCount select module;
 
-                if(unassignedSameSensorCountList.Count() > 0) {
-                    var unassignedModule = unassignedSameSensorCountList.Count() == 1 ? unassignedSameSensorCountList.First() : selectUnassignedModule(unassignedSameSensorCountList, detectedController);
+                if(unassignedSameSensorCountList.Any()) {
+                    var unassignedModule = unassignedSameSensorCountList.Count() == 1 ? unassignedSameSensorCountList.First() : SelectUnassignedModule(unassignedSameSensorCountList, detectedController);
 
                     if (unassignedModule != null) {
                         commands.Add(new SetTrainDetectorIpEndPointCommand(new TrainDetectorControllerModule(unassignedModule), detectedController.IpEndPoint));
                         if (unassignedModule.Label != detectedController.Name && unassignedModule.Label != null)
-                            await renameController(detectedController, unassignedModule.Label);
+                            await RenameController(detectedController, unassignedModule.Label);
                         result.AssignedControllers++;
                         continue;
                     }
                 }
 
                 // Add the new detected controller. First check if it has valid name (one that does not already exist).If so it will be renamed
-                var name = Modules.Any(module => module.Label == detectedController.Name) ? formUniqueName(detectedController.Name) : detectedController.Name;
+                var name = Modules.Any(module => module.Label == detectedController.Name) ? FormUniqueName(detectedController.Name) : detectedController.Name;
                 var moduleType = Bus.BusType.ModuleTypes.First();
                 var address = Bus.AllocateFreeAddress(moduleType, ModuleLocationId ?? Guid.Empty);
                 var addCommand = new AddControlModuleCommand(Bus, "TrainDetectorController", ModuleLocationId, address);
@@ -122,7 +122,7 @@ namespace TrainDetector {
 
                 // Rename the controller with the new unique name
                 if(name != detectedController.Name)
-                    await renameController(detectedController, name);
+                    await RenameController(detectedController, name);
                 result.AddedControllers++;
             }
 
@@ -130,14 +130,14 @@ namespace TrainDetector {
             return result;
         }
 
-        private async static Task renameController(DetectedTrainDetectorController detectedController, string name) {
+        private async static Task RenameController(DetectedTrainDetectorController detectedController, string name) {
             using var networkHandler = new NetworkHandler(rawPacket => rawPacket.GetPacketHeader());
 
             networkHandler.Start();
             await networkHandler.Request(requestNumber => networkHandler.SendPacketAsync(new ConfigSetRequestPacket(requestNumber, "Name", name), detectedController.IpEndPoint));
         }
 
-        private TrainDetectorControllerModule? selectUnassignedModule(IEnumerable<TrainDetectorControllerModule> unassignedSameSensorCountList, DetectedTrainDetectorController detectedController) {
+        private TrainDetectorControllerModule? SelectUnassignedModule(IEnumerable<TrainDetectorControllerModule> unassignedSameSensorCountList, DetectedTrainDetectorController detectedController) {
             using var d = new Dialogs.SelectTrainDetectorModule(detectedController, new List<TrainDetectorControllerModule>(unassignedSameSensorCountList));
 
             if (d.ShowDialog() == DialogResult.OK)
@@ -145,7 +145,7 @@ namespace TrainDetector {
             return null;
         }
 
-        private string formUniqueName(string existingName) {
+        private string FormUniqueName(string existingName) {
             int suffix = 1;
 
             while(true) {
@@ -182,16 +182,16 @@ namespace TrainDetector {
 
         public int SensorsCountUpdated { get; set; }
 
-        private string? value(int value, string suffix) => value == 0 ? null : $"{value} train detector {(value == 1 ? "controller" : "controllers")} {suffix}";
+        private string? Value(int value, string suffix) => value == 0 ? null : $"{value} train detector {(value == 1 ? "controller" : "controllers")} {suffix}";
 
         public bool IsEmpty => FoundControllers == 0 && IpAddressChanged == 0 && AddedControllers == 0 && AssignedControllers == 0 && SensorsCountUpdated == 0;
 
         public override string ToString() {
             var parts = new string?[] {
-                value(FoundControllers, "found"),
-                value(IpAddressChanged, "with changed IP adress"),
-                value(AddedControllers, "added"),
-                value(SensorsCountUpdated, "with more sensors"),
+                Value(FoundControllers, "found"),
+                Value(IpAddressChanged, "with changed IP adress"),
+                Value(AddedControllers, "added"),
+                Value(SensorsCountUpdated, "with more sensors"),
             };
 
             return string.Join("\n", parts.Where(p => p != null));

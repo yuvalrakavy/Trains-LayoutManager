@@ -189,7 +189,7 @@ namespace LayoutManager.Tools.Controls {
         #endregion
 
         private void ButtonClose_Click(object? sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent("hide-trips-monitor", this).SetFrameWindow((ILayoutFrameWindow)FindForm()));
+            Dispatch.Call.HideTripsMonitor(((ILayoutFrameWindow)FindForm()).Id);
         }
 
         private void ButtonSave_Click(object? sender, System.EventArgs e) {
@@ -220,7 +220,7 @@ namespace LayoutManager.Tools.Controls {
                     ModelComponent component = selected.Train.LocomotiveBlock.BlockDefinintion;
 
                     if (component != null)
-                        EventManager.Event(new LayoutEvent("ensure-component-visible", component, true).SetFrameWindow(FrameWindow));
+                        Dispatch.Call.EnsureComponentVisible(FrameWindow.Id, component, true);
                 }
             }
 

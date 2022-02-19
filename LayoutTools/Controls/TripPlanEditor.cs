@@ -539,7 +539,7 @@ namespace LayoutManager.Tools.Controls {
                     selectedWaypointSelection.Add(wayPointItem.WayPoint.Destination.Selection);
 
                 if (selectedWaypointSelection.Count > 0)
-                    EventManager.Event(new LayoutEvent("ensure-component-visible", selectedWaypointSelection.Components.First(), false).SetFrameWindow(LayoutController.ActiveFrameWindow));
+                    Dispatch.Call.EnsureComponentVisible(LayoutController.ActiveFrameWindow.Id, selectedWaypointSelection.Components.First(), false);
 
                 UpdateButtons(sender, e);
             }

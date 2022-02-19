@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Windows.Forms;
+using MethodDispatcher;
 using LayoutManager.Model;
 using LayoutManager.CommonUI;
 
@@ -142,10 +143,8 @@ namespace LayoutManager.ControlComponents {
             moduleType.BuiltIn = true;
         }
 
-        [LayoutEvent("add-control-editing-context-menu-entries", Order = 100, SenderType = typeof(DrawControlModule))]
-        private void AddControlModuleEditingContextMenu(LayoutEvent e) {
-            var drawModule = Ensure.NotNull<DrawControlModule>(e.Sender, "drawModule");
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
+        [DispatchTarget(Order = 100)]
+        private void AddControlModuleEditingContextMenuEntries([DispatchFilter] DrawControlModule drawModule, MenuOrMenuItem menu) {
             ControlModuleType moduleType = drawModule.Module.ModuleType;
 
             if (moduleType.TypeName == "K83" || moduleType.TypeName == "K84" || moduleType.TypeName == "74460") {

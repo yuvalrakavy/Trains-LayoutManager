@@ -30,9 +30,9 @@ namespace LayoutManager.Model {
     }
 
     /// <summary>
-    /// Wrapper for Xml element returned by command station component when it is asked to return the address
+    /// Wrapper for XML element returned by command station component when it is asked to return the address
     /// format for various usage. For example, the address definition UI control does that in order to adapt itself
-    /// for the requirment for a specific command station
+    /// for the requirement for a specific command station
     /// </summary>
     public class AddressFormatInfo : LayoutInfo {
         private const string E_AddressFormat = "AddressFormat";

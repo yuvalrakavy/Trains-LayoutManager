@@ -430,13 +430,11 @@ namespace LayoutManager.Tools {
 
         private static readonly LayoutTraceSwitch traceShowTrackDescription = new("ShowTrackDescription", "Show track description menu");
 
-        [LayoutEvent("add-component-operation-context-menu-entries", Order = 900, SenderType = typeof(LayoutTrackComponent))]
-        private void AddTrackDescription(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-            var track = Ensure.NotNull<LayoutTextComponent>(e.Sender);
-
+        [DispatchTarget(Order = 900)]
+        [DispatchFilter(Type = "InOperationMode")]
+        private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] LayoutTrackComponent component, MenuOrMenuItem menu) {
             if (traceShowTrackDescription.TraceInfo)
-                menu.Items.Add("(Track " + track.FullDescription + ")");
+                menu.Items.Add($"(Track {component.FullDescription})");
         }
 
         #endregion

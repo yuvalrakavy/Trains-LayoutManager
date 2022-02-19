@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 using System.Linq;
+using MethodDispatcher;
 using LayoutManager.CommonUI;
 using LayoutManager.Model;
 using LayoutManager.Components;
@@ -93,7 +94,7 @@ namespace LayoutManager.Tools.Dialogs {
                     component = destinationSelection.Components.First();
 
                 if (component != null)
-                    EventManager.Event(new LayoutEvent("ensure-component-visible", component, false));
+                    Dispatch.Call.EnsureComponentVisible(LayoutController.ActiveFrameWindow.Id, component);
             }
         }
 

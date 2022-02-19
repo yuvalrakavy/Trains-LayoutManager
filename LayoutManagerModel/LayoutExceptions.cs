@@ -13,7 +13,7 @@ namespace LayoutManager {
         public LocomotiveInfo Locomotive { get; }
     }
 
-    #region Locomotive Manager Exception classess
+    #region Locomotive Manager Exception classes
 
     public class LocomotiveHasNoAddressException : LayoutLocomotiveException {
         public LocomotiveHasNoAddressException(LocomotiveInfo loco) :
@@ -151,7 +151,7 @@ namespace LayoutManager {
 
     public class CrossingFromManualDispatchRegion : BlockEdgeCrossingException {
         public CrossingFromManualDispatchRegion(LayoutBlockEdgeBase blockEdge) :
-            base(blockEdge, "Unexpected crossing from manual dispatch region to non-manual dispatch resion") {
+            base(blockEdge, "Unexpected crossing from manual dispatch region to non-manual dispatch region") {
         }
 
         protected CrossingFromManualDispatchRegion(LayoutBlockEdgeBase blockEdge, string message) : base(blockEdge, message) {

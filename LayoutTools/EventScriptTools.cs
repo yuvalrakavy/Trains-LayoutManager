@@ -249,23 +249,21 @@ namespace LayoutManager.Tools {
 
         #region Add layout wide policies to tools menu
 
-        [LayoutEvent("tools-menu-open-request", Order = 100)]
-        private void OnToolsMenuOpenRequest(LayoutEvent e) {
-            if (LayoutController.IsOperationMode) {
-                var toolsMenu = Ensure.NotNull<ToolStripMenuItem>(e.Info, "toolsMenu");
-                bool anyAdded = false;
+        [DispatchTarget(Order = 100)]
+        [DispatchFilter("InOperationMode")]
+        private void ToolsMenuOpenRequest(MenuOrMenuItem toolsMenu) {
+            bool anyAdded = false;
 
-                foreach (LayoutPolicyInfo policy in LayoutModel.StateManager.LayoutPolicies)
-                    if (policy.ShowInMenu) {
-                        if (!anyAdded) {
-                            if (toolsMenu.DropDownItems.Count > 0 && toolsMenu.DropDownItems[toolsMenu.DropDownItems.Count - 1] is not ToolStripSeparator)
-                                toolsMenu.DropDownItems.Add(new ToolStripSeparator());
-                            anyAdded = true;
-                        }
-
-                        toolsMenu.DropDownItems.Add(new PolicyMenuItem(policy));
+            foreach (LayoutPolicyInfo policy in LayoutModel.StateManager.LayoutPolicies)
+                if (policy.ShowInMenu) {
+                    if (!anyAdded) {
+                        if (toolsMenu.Items.Count > 0 && toolsMenu.Items[toolsMenu.Items.Count - 1] is not ToolStripSeparator)
+                            toolsMenu.Items.Add(new ToolStripSeparator());
+                        anyAdded = true;
                     }
-            }
+
+                    toolsMenu.Items.Add(new PolicyMenuItem(policy));
+                }
         }
 
         private class PolicyMenuItem : LayoutMenuItem {

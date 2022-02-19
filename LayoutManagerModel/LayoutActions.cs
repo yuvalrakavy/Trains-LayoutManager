@@ -46,13 +46,13 @@ namespace LayoutManager.Model {
         ILayoutAction? Add(string actionType);
 
         /// <summary>
-        /// Remove an action (usually after it has been commited)
+        /// Remove an action (usually after it has been committed)
         /// </summary>
         /// <param name="action">The action to remove</param>
         void Remove(ILayoutAction action);
 
         /// <summary>
-        /// Check whether any action in this container requires that tagret to be connected to (or on) track
+        /// Check whether any action in this container requires that target to be connected to (or on) track
         /// </summary>
         /// <returns>True - target need to be placed on track</returns>
         bool IsTrackRequired();
@@ -129,7 +129,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Check whether any action in this container requires that tagret to be connected to (or on) track
+        /// Check whether any action in this container requires that target to be connected to (or on) track
         /// </summary>
         /// <returns>True - target need to be placed on track</returns>
         public bool IsTrackRequired() => (from action in this where action is ILayoutProgrammingAction select action as ILayoutProgrammingAction).Any(action => action.RequiresTrack);
@@ -203,7 +203,7 @@ namespace LayoutManager.Model {
         void PrepareProgramming();
 
         /// <summary>
-        /// (If true) Treat NoResponse result as Ok
+        /// (If true) Treat NoResponse result as OK
         /// </summary>
         bool IgnoreNoResponseResult { get; set; }
     }

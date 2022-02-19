@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.CommonUI;
@@ -62,16 +63,13 @@ namespace NumatoController {
             command.Add(new SetControlUserActionRequiredCommand(addControlModuleCommand.AddedModule.Module, true));
         }
 
-        [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(NumatoController))]
-        private void QueryEditingMenu(LayoutEvent e) {
-            e.Info = e.Sender;
-        }
+        [DispatchTarget]
+        [DispatchFilter("InDesignMode")]
+        private bool IncludeInComponentContextMenu([DispatchFilter] NumatoController component) => true;
 
-        [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(NumatoController))]
-        private void AddEditingContextMenuEntries(LayoutEvent e) {
-            var component = Ensure.NotNull<NumatoController>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-
+        [DispatchTarget]
+        [DispatchFilter(Type = "InDesignMode")]
+        private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] NumatoController component, MenuOrMenuItem menu) {
             menu.Items.Add("&Properties", null, (s, ea) => {
                 var d = new Dialogs.NumatoControllerProperties(component);
 

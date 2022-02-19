@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.CommonUI;
@@ -57,16 +58,13 @@ namespace LayoutLGB {
                 e.Info = false;     // Do not place component
         }
 
-        [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(MTScentralStation))]
-        private void QueryTrackContactMenu(LayoutEvent e) {
-            e.Info = e.Sender;
-        }
+        [DispatchTarget]
+        [DispatchFilter("InDesignMode")]
+        private bool IncludeInComponentContextMenu([DispatchFilter] MTScentralStation _) => true;
 
-        [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(MTScentralStation))]
-        private void AddTrackContactContextMenuEntries(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-            var component = Ensure.NotNull<MTScentralStation>(e.Sender);
-
+        [DispatchTarget]
+        [DispatchFilter("InDesignMode")]
+        private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] MTScentralStation component, MenuOrMenuItem menu) {
             menu.Items.Add(new MTScentralStationMenuItemProperties(component));
         }
 

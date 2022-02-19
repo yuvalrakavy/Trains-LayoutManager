@@ -63,6 +63,11 @@ namespace LayoutManager {
         public LayoutControllerImplementation() {
             LayoutController.Instance = this;
 
+            // Make sure that these assemblies are loaded so their dispatch source are added
+            ModelDispatchSources.Initialize();
+            ViewDispatchSources.Initialize();
+            CommonUIDispatchSources.Initialize();
+
             try {
                 Dispatch.InitializeDispatcher();
                 Dispatch.Call.AddDispatcherFilters();
@@ -611,6 +616,34 @@ namespace LayoutManager {
         }
 
         #endregion
+
+        [DispatchTarget]
+        static void AddDispatcherFilters() {
+            Dispatch.AddCustomMethodFilter("InOperationMode", (v, target) => {
+                if (v != null)
+                    throw new DispatcherFilterHasValueException();
+                return LayoutController.IsOperationMode;
+            });
+
+            Dispatch.AddCustomMethodFilter("InDesignMode", (v, target) => {
+                if (v != null)
+                    throw new DispatcherFilterHasValueException();
+                return LayoutController.IsDesignMode;
+            });
+
+            Dispatch.AddCustomMethodFilter("InDesignTimeActivation", (v, target) => {
+                if (v != null)
+                    throw new DispatcherFilterHasValueException();
+                return LayoutController.IsDesignTimeActivation;
+            });
+
+            Dispatch.AddCustomMethodFilter("InOperationSimulation", (v, target) => {
+                if (v != null)
+                    throw new DispatcherFilterHasValueException();
+                return LayoutController.IsOperationSimulationMode;
+            });
+
+        }
 
         #region Handle model area /Add/Removed/Rename events
 

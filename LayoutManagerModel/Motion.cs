@@ -16,7 +16,7 @@ namespace LayoutManager.Model {
         RateFixed,
 
         /// <summary>
-        /// Just set the new speeed, the locomotive's hardware will do the acceleration/deceleration
+        /// Just set the new speed, the locomotive's hardware will do the acceleration/deceleration
         /// </summary>
         LocomotiveHardware,
     }
@@ -70,7 +70,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// The total time of the speed change, the value is given in milli-seconds
+        /// The total time of the speed change, the value is given in milliseconds
         /// </summary>
         public int MotionTime {
             get => (int?)AttributeValue(A_MotionTime) ?? 0;

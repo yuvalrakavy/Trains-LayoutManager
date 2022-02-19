@@ -20,89 +20,6 @@ using System.Xml;
 using System.Drawing.Drawing2D;
 
 namespace LayoutManager {
-    public static class FrameWindowDispatchSources {
-        [DispatchSource]
-        public static void ShowMessages(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(ShowMessages)].CallVoid(frameWindowId);
-        }
-
-        [DispatchSource]
-        public static void HideMessages(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(HideMessages)].CallVoid(frameWindowId);
-        }
-
-        [DispatchSource]
-        public static void OnMessagesShown(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(OnMessagesShown)].CallVoid(frameWindowId);
-        }
-
-        [DispatchSource]
-        public static void OnMessagesHidden(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(OnMessagesHidden)].CallVoid(frameWindowId);
-        }
-
-        [DispatchSource]
-        public static void ShowTripsMonitor(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(ShowTripsMonitor)].CallVoid(frameWindowId);
-        }
-
-        [DispatchSource]
-        public static void HideTripsMonitor(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(HideTripsMonitor)].CallVoid(frameWindowId);
-        }
-
-        [DispatchSource]
-        public static void OnTripsMonitorShown(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(OnTripsMonitorShown)].CallVoid(frameWindowId);
-        }
-
-        [DispatchSource]
-        public static void OnTripsMonitorHidden(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(OnTripsMonitorHidden)].CallVoid(frameWindowId);
-        }
-
-        [DispatchSource]
-        public static void ShowLocomotives(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(ShowLocomotives)].CallVoid(frameWindowId);
-        }
-
-        [DispatchSource]
-        public static void HideLocomotives(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(HideLocomotives)].CallVoid(frameWindowId);
-        }
-
-        [DispatchSource]
-        public static void OnLocomotivesShown(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(OnLocomotivesShown)].CallVoid(frameWindowId);
-        }
-
-        [DispatchSource]
-        public static void OnLocomotivesHidden(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(OnLocomotivesHidden)].CallVoid(frameWindowId);
-        }
-
-        [DispatchSource]
-        public static void ShowLayoutControl(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(ShowLayoutControl)].CallVoid(frameWindowId);
-        }
-
-        [DispatchSource]
-        public static void HideLayoutControl(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(HideLayoutControl)].CallVoid(frameWindowId);
-        }
-
-
-        [DispatchSource]
-        public static void OnLayoutControlShown(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(OnLayoutControlShown)].CallVoid(frameWindowId);
-        }
-
-        [DispatchSource]
-        public static void OnLayoutControlHidden(this Dispatcher d, Guid frameWindowId) {
-            d[nameof(OnLayoutControlHidden)].CallVoid(frameWindowId);
-        }
-
-    }
     public partial class FrameWindow : Form, ILayoutFrameWindow {
         private TaskCompletionSource<FrameWindowAction>? tcs;
 
@@ -456,7 +373,7 @@ namespace LayoutManager {
                 //statusBarPanelMode.Text = "Design";
 
                 tripsMonitorHeightInOperationMode = tripsMonitor.Height;
-                EventManager.Event(new LayoutEvent("hide-trips-monitor", this).SetFrameWindow(this));
+                Dispatch.Call.HideTripsMonitor(this.Id);
                 splitContainerTripsMonitor.Panel1Collapsed = true;
 
                 ChangeAllViewsPhases(LayoutPhase.All);      // In editing show all phases
@@ -621,13 +538,11 @@ namespace LayoutManager {
             }
         }
 
-        [LayoutEvent("tools-menu-open-request")]
-        private void OnToolsMenuOpenRequest(LayoutEvent e) {
+        [DispatchTarget]
+        private void ToolsMenuOpenRequest(MenuOrMenuItem toolsMenu) {
             var layoutEmulationServices = Dispatch.Call.GetLayoutEmulationServices();
 
             if (layoutEmulationServices != null) {
-                var toolsMenu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-
                 toolsMenu.Items.Add(new LayoutMenuItem("Reset layout emulation", null, new EventHandler(OnResetLayoutEmulation)));
             }
         }
@@ -730,77 +645,64 @@ namespace LayoutManager {
 
         #region Layout Event handlers
 
-        [LayoutEvent("show-control-connection-point")]
-        private void ShowControlConnectionPoint(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this)) {
-                var connectionPointRef = Ensure.NotNull<ControlConnectionPointReference>(e.Sender);
-
-                EventManager.Event(new LayoutEvent("show-layout-control", this).SetFrameWindow(e));
-                layoutControlViewer.EnsureVisible(connectionPointRef, true);
-            }
+        [DispatchTarget]
+        private void ShowControlConnectionPoint([DispatchFilter(Type = "IsMyId")] Guid frameWindowId, ControlConnectionPointReference connectionPointRef) {
+            Dispatch.Call.ShowLayoutControl(frameWindowId);
+            layoutControlViewer.EnsureVisible(connectionPointRef, true);
         }
 
-        [LayoutEvent("show-control-module")]
-        private void ShowControlModule(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this)) {
-                var moduleRef = Ensure.NotNull<ControlModuleReference>(e.Sender);
-
-                EventManager.Event(new LayoutEvent("show-layout-control", this));
-                layoutControlViewer.EnsureVisible(moduleRef, true);
-            }
+        [DispatchTarget]
+        private void ShowControlModule([DispatchFilter(Type = "IsMyId")] Guid frameWindowId, ControlModuleReference moduleRef) {
+            Dispatch.Call.ShowLayoutControl(frameWindowId);
+            layoutControlViewer.EnsureVisible(moduleRef, true);
         }
 
-        [LayoutEvent("deselect-control-objects")]
-        private void DeselectControlObjects(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this))
-                layoutControlViewer.DeselectAll();
+        [DispatchTarget]
+        private void DeselectControlObjects([DispatchFilter(Type="IsMyId")] Guid frameWindowId) {
+            layoutControlViewer.DeselectAll();
         }
 
-        [LayoutEvent("ensure-component-visible")]
-        private void EnsureComponentVisible(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this)) {
-                var component = Ensure.NotNull<ModelComponent>(e.Sender);
-                LayoutModelArea area = component.Spot.Area;
-                LayoutFrameWindowAreaTabPage? areaPage = null;
-                bool markComponent = Ensure.ValueNotNull<bool>(e.Info);
+        [DispatchTarget]
+        private void EnsureComponentVisible([DispatchFilter(Type="IsMyId")] Guid frameWindowId, ModelComponent component, bool markComponent) {
+            LayoutModelArea area = component.Spot.Area;
+            LayoutFrameWindowAreaTabPage? areaPage = null;
 
-                foreach (LayoutFrameWindowAreaTabPage ap in tabAreas.TabPages)
-                    if (ap.Area == area) {
-                        areaPage = ap;
-                        break;
-                    }
-
-                if (areaPage != null) {
-                    LayoutFrameWindowAreaViewTabPage? bestViewPage = null;
-                    LayoutView.VisibleResult bestVisibleResult = LayoutView.VisibleResult.No;
-
-                    // Figure out what view in this area shows the component best
-
-                    foreach (LayoutFrameWindowAreaViewTabPage vp in areaPage.TabViews.TabPages) {
-                        LayoutView.VisibleResult visibleResult = vp.View.IsComponentVisible(component);
-
-                        if ((int)visibleResult > (int)bestVisibleResult) {
-                            bestVisibleResult = visibleResult;
-                            bestViewPage = vp;
-                        }
-                        else if (visibleResult != LayoutView.VisibleResult.No &&
-                            visibleResult == bestVisibleResult && bestViewPage != null && vp.View.Zoom > bestViewPage.View.Zoom) {
-                            bestVisibleResult = visibleResult;
-                            bestViewPage = vp;
-                        }
-                    }
-
-                    if (bestViewPage == null)
-                        bestViewPage = (LayoutFrameWindowAreaViewTabPage)areaPage.TabViews.TabPages[0];
-
-                    tabAreas.SelectedTab = areaPage;
-                    areaPage.TabViews.SelectedTab = bestViewPage;
-
-                    bestViewPage.View.EnsureVisible(component.Location);
-
-                    if (markComponent)
-                        EventManager.Event(new LayoutEvent("show-marker", component).SetFrameWindow(e));
+            foreach (LayoutFrameWindowAreaTabPage ap in tabAreas.TabPages)
+                if (ap.Area == area) {
+                    areaPage = ap;
+                    break;
                 }
+
+            if (areaPage != null) {
+                LayoutFrameWindowAreaViewTabPage? bestViewPage = null;
+                LayoutView.VisibleResult bestVisibleResult = LayoutView.VisibleResult.No;
+
+                // Figure out what view in this area shows the component best
+
+                foreach (LayoutFrameWindowAreaViewTabPage vp in areaPage.TabViews.TabPages) {
+                    LayoutView.VisibleResult visibleResult = vp.View.IsComponentVisible(component);
+
+                    if ((int)visibleResult > (int)bestVisibleResult) {
+                        bestVisibleResult = visibleResult;
+                        bestViewPage = vp;
+                    }
+                    else if (visibleResult != LayoutView.VisibleResult.No &&
+                        visibleResult == bestVisibleResult && bestViewPage != null && vp.View.Zoom > bestViewPage.View.Zoom) {
+                        bestVisibleResult = visibleResult;
+                        bestViewPage = vp;
+                    }
+                }
+
+                if (bestViewPage == null)
+                    bestViewPage = (LayoutFrameWindowAreaViewTabPage)areaPage.TabViews.TabPages[0];
+
+                tabAreas.SelectedTab = areaPage;
+                areaPage.TabViews.SelectedTab = bestViewPage;
+
+                bestViewPage.View.EnsureVisible(component.Location);
+
+                if (markComponent)
+                    Dispatch.Call.ShowMarker(frameWindowId, component);
             }
         }
 
@@ -827,23 +729,17 @@ namespace LayoutManager {
             toolBarButtonStopAllLocomotives.Checked = allSuspended;
         }
 
-        [LayoutEvent("show-marker")]
-        private void ShowMarker(LayoutEvent e) {
-            if (e.IsThisFrameWindow(this)) {
-                LayoutSelection markerSelection;
+        [DispatchTarget]
+        private void ShowMarker([DispatchFilter(Type="IsMyId")] Guid frameWindowId, object markedObject) {
+            var markerSelection = markedObject switch {
+                ModelComponent component => new LayoutSelection {
+                    component
+                },
+                LayoutSelection selection => selection,
+                _ => throw new ArgumentException("Invalid marker (can be either component or selection"),
+            };
 
-                if (e.Sender is ModelComponent component) {
-                    markerSelection = new LayoutSelection {
-                        component
-                    };
-                }
-                else if (e.Sender is LayoutSelection selection)
-                    markerSelection = selection;
-                else
-                    throw new ArgumentException("Invalid marker (can be either component or selection");
-
-                _ = new Marker(markerSelection);
-            }
+            _ = new Marker(markerSelection);
         }
 
         #region Marker class
@@ -946,83 +842,67 @@ namespace LayoutManager {
         }
 
         [DispatchTarget]
-        private void ShowLayoutControl(Guid frameWindowId) {
-            if (frameWindowId == Id || frameWindowId == Guid.Empty) {
-                layoutControlVisible = true;
-                UpdateLayoutControlVisible();
-            }
+        private void ShowLayoutControl([DispatchFilter(Type="IsMyId")] Guid frameWindowId) {
+            layoutControlVisible = true;
+            UpdateLayoutControlVisible();
         }
 
         [DispatchTarget]
-        private void HideLayoutControl(Guid frameWindowId) {
-            if (frameWindowId == Id || frameWindowId == Guid.Empty) {
-                layoutControlVisible = false;
-                UpdateLayoutControlVisible();
-            }
+        private void HideLayoutControl([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
+            layoutControlVisible = false;
+            UpdateLayoutControlVisible();
         }
 
         [DispatchTarget]
-        private void ShowTripsMonitor(Guid frameWindowId) {
-            if (frameWindowId == Id || frameWindowId == Guid.Empty) {
-                tripsMonitor.Height = ClientSize.Height * 12 / 100;
-                UpdateTripsMonitorVisible();
-            }
+        private void ShowTripsMonitor([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
+            tripsMonitor.Height = ClientSize.Height * 12 / 100;
+            UpdateTripsMonitorVisible();
         }
 
         [DispatchTarget]
-        private void HideTripsMonitor(Guid frameWindowId) {
-            if (frameWindowId == Id || frameWindowId == Guid.Empty) {
-                tripsMonitor.Height = 0;
-                UpdateTripsMonitorVisible();
-            }
+        private void HideTripsMonitor([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
+            tripsMonitor.Height = 0;
+            UpdateTripsMonitorVisible();
         }
 
         [DispatchTarget]
-        private void OnMessagesShown(Guid frameWindowId) {
-            if (frameWindowId == Id)
-                toolBarButtonShowMessages.Checked = true;
+        private void OnMessagesShown([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
+            toolBarButtonShowMessages.Checked = true;
         }
 
         [DispatchTarget]
-        private void OnMessagesHidden(Guid frameWindowId) {
-            if (frameWindowId == Id)
-                toolBarButtonShowMessages.Checked = false;
+        private void OnMessagesHidden([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
+            toolBarButtonShowMessages.Checked = false;
         }
 
         [DispatchTarget]
-        private void OnTripsMonitorShown(Guid frameWindowId) {
-            if(frameWindowId == Id)
-                toolBarButtonShowTripsMonitor.Checked = true;
+        private void OnTripsMonitorShown([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
+            toolBarButtonShowTripsMonitor.Checked = true;
         }
 
         [DispatchTarget]
-        private void OnTripsMonitorHidden(Guid frameWindowId) {
-            if (frameWindowId == Id)
-                toolBarButtonShowTripsMonitor.Checked = false;
+        private void OnTripsMonitorHidden([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
+            toolBarButtonShowTripsMonitor.Checked = false;
         }
 
         [DispatchTarget]
-        private void OnLocomotivesShown(Guid frameWindowId) {
-            if (frameWindowId == Id)
-                toolBarButtonShowLocomotives.Checked = true;
+        private void OnLocomotivesShown([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
+            toolBarButtonShowLocomotives.Checked = true;
         }
 
         [DispatchTarget]
-        private void OnLocomotivesHidden(Guid frameWindowId) {
-            if (frameWindowId == Id)
-                toolBarButtonShowLocomotives.Checked = false;
+        private void OnLocomotivesHidden([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
+            toolBarButtonShowLocomotives.Checked = false;
         }
 
         [DispatchTarget]
-        private void OnLayoutControlShown(Guid frameWindowId) {
-            if (frameWindowId == Id)
-                toolBarButtonShowLayoutControl.Checked = true;
+        private void OnLayoutControlShown([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
+            toolBarButtonShowLayoutControl.Checked = true;
         }
 
         [DispatchTarget]
-        private void OnLayoutControlHidden(Guid frameWindowId) {
-            if (frameWindowId == Id)
-                toolBarButtonShowLayoutControl.Checked = false;
+        private void OnLayoutControlHidden([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
+            toolBarButtonShowLayoutControl.Checked = false;
         }
 
         #endregion
@@ -1141,7 +1021,7 @@ namespace LayoutManager {
                         PopupWindowContainerSection container = new(hitTestResult.View);
 
                         foreach (ModelComponent component in spot)
-                            EventManager.Event(new LayoutEvent("add-" + (LayoutController.IsOperationMode ? "operation" : "editing") + "-details-window-sections", component, container).SetFrameWindow(this));
+                            Dispatch.Call.AddDetailsWindowSections(component, container);
 
                         if (container.Count > 0) {
                             detailsPopupWindow = new DetailsPopupWindow(hitTestResult, container);
@@ -1329,7 +1209,7 @@ namespace LayoutManager {
         private void ToolsToolStripMenuItem_DropDownOpening(object sender, EventArgs e) {
             toolsToolStripMenuItem.DropDownItems.Clear();
 
-            EventManager.Event(new LayoutEvent("tools-menu-open-request", this, new MenuOrMenuItem(toolsToolStripMenuItem)).SetFrameWindow(this));
+            Dispatch.Call.ToolsMenuOpenRequest(new MenuOrMenuItem(toolsToolStripMenuItem));
 
             if (toolsToolStripMenuItem.DropDownItems.Count == 0) {
                 var noTools = new ToolStripMenuItem("No tools") {
@@ -1464,17 +1344,11 @@ namespace LayoutManager {
         }
 
         private void LayoutController_Deactivate(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent("frame-window-deactivated", this).SetFrameWindow(this));
             timerFreeResources.Enabled = true;
         }
 
         private void LayoutController_Resize(object? sender, EventArgs e) {
-            if (this.WindowState == FormWindowState.Minimized) {
-                EventManager.Event(new LayoutEvent("frame-window-minimized", this).SetFrameWindow(this));
-                timerFreeResources.Enabled = true;
-            }
-            else
-                timerFreeResources.Enabled = false;
+            timerFreeResources.Enabled = WindowState == FormWindowState.Minimized;
         }
 
         private void MenuItemSetZoom_Click(object? sender, EventArgs e) {
@@ -1550,7 +1424,7 @@ namespace LayoutManager {
             // 30 seconds (or so) were passed while the application was minimized or deactivated
             // recoverable resources can be disposed.
             Debug.WriteLine("--- LayoutManager application not active - free resources ---");
-            EventManager.Event(new LayoutEvent("free-resources", this).SetFrameWindow(this));
+            Dispatch.Call.FreeResources();
             timerFreeResources.Enabled = false;
         }
 

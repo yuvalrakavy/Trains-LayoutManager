@@ -24,60 +24,34 @@ namespace LayoutManager {
             Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
-        [LayoutEvent("add-editing-empty-spot-context-menu-entries", Order = 0)]
-        private void AddEditingEmptySpotMenuEntries(LayoutEvent e) {
-            var hitTestResult = Ensure.NotNull<LayoutHitTestResult>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-
+        [DispatchTarget(Order = 0)]
+        [DispatchFilter("InDesignMode")]
+        private void AddComponentContextEmptySpotEntries(LayoutHitTestResult hitTestResult, MenuOrMenuItem menu) {
             menu.Items.Add(new MenuItemPasteComponents(hitTestResult));
         }
 
         #region Implement properties for returning various context menu related event names
 
-        protected override string ComponentContextMenuAddTopEntriesEventName => "add-component-editing-context-menu-top-entries";
+        protected override Func<ModelComponent, object?> QueryDragFunction => (component) => Dispatch.Call.QueryEditingDrag(component);
 
-        protected override string ComponentContextMenuQueryEventName => "query-component-editing-context-menu";
+        protected override Action<ModelComponent, DragEventArgs> QueryDropAction => (component, dragEventArgs) => Dispatch.Call.QueryEditingDrop(component, dragEventArgs);
 
-        protected override string ComponentContextMenuQueryCanRemoveEventName => "query-can-remove-model-component";
-
-        protected override string ComponentContextMenuAddEntriesEventName => "add-component-editing-context-menu-entries";
-
-        protected override string ComponentContextMenuAddBottomEntriesEventName => "add-component-editing-context-menu-bottom-entries";
-
-        protected override string ComponentContextMenuAddCommonEntriesEventName => "add-component-editing-context-menu-common-entries";
-
-        protected override string ComponentContextMenuQueryNameEventName => "query-component-editing-context-menu-name";
-
-        protected override string ComponentContextMenuAddEmptySpotEntriesEventName => "add-editing-empty-spot-context-menu-entries";
-
-        protected override string ComponentContextMenuAddSelectionEntriesEventName => "add-editing-selection-menu-entries";
-
-        protected override string QueryDragEventName => "query-editing-drag";
-
-        protected override string DragDoneEventName => "editing-drag-done";
-
-        protected override string QueryDropEventName => "query-editing-drop";
-
-        protected override string DropEventName => "do-editing-drop";
+        protected override Action<ModelComponent, DragEventArgs> DropAction => (component, dragEventArgs) => Dispatch.Call.DoEditingDrop(component, dragEventArgs);
 
         #endregion
 
-        [LayoutEvent("add-component-editing-context-menu-common-entries", Order = 0)]
-        private void AddContextMenuCommonEntries(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-            var hitTestResult = Ensure.NotNull<LayoutHitTestResult>(e.Sender);
-
+        [DispatchTarget(Order = 0)]
+        [DispatchFilter("InDesignMode")]
+        private void AddCommonContextMenuEntries_DeleteAll(LayoutHitTestResult hitTestResult, MenuOrMenuItem menu) {
             if (menu.Items.Count > 0)
                 menu.Items.Add(new ToolStripSeparator());
 
             menu.Items.Add(new MenuItemDeleteAllComponents(hitTestResult));
         }
 
-        [LayoutEvent("add-component-editing-context-menu-common-entries", Order = 200)]
-        private void AddClipboardCommonEntries(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-            var hitTestResult = Ensure.NotNull<LayoutHitTestResult>(e.Sender);
-
+        [DispatchTarget]
+        [DispatchFilter("InDesignMode")]
+        private void AddCommonContextMenuEntries_Clipboard(LayoutHitTestResult hitTestResult, MenuOrMenuItem menu) {
             if (menu.Items.Count > 0)
                 menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add(new MenuItemCopyComponent(hitTestResult));
@@ -92,18 +66,15 @@ namespace LayoutManager {
             }
         }
 
-        [LayoutEvent("add-editing-selection-menu-entries", Order = 0)]
-        private void AddSelectionCommandsMenuEntries(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-
+        [DispatchTarget(Order = 0)]
+        [DispatchFilter("InDesignMode")]
+        private void AddSelectionMenuEntries_Delete(LayoutHitTestResult hitTestResults, MenuOrMenuItem menu) {
             menu.Items.Add(new MenuItemDeleteSelection());
         }
 
-        [LayoutEvent("add-editing-selection-menu-entries", Order = 1000)]
-        private void AddSelectionClipboardMenuEntries(LayoutEvent e) {
-            var hitTestResult = Ensure.NotNull<LayoutHitTestResult>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-
+        [DispatchTarget(Order = 1000)]
+        [DispatchFilter("InDesignMode")]
+        private void AddSelectionMenuEntries_Clipboard(LayoutHitTestResult hitTestResult, MenuOrMenuItem menu) {
             if (menu.Items.Count > 0)
                 menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add(new MenuItemCopySelection(hitTestResult.ModelLocation));
@@ -112,7 +83,7 @@ namespace LayoutManager {
 
             menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add(GetSetPhaseMenuItem((phaseName, phase) => {
-                var command = new LayoutCompoundCommand("Set selection phase to " + phaseName);
+                var command = new LayoutCompoundCommand($"Set selection phase to {phaseName}");
 
                 foreach (var spot in (from component in LayoutController.UserSelection.Components select component.Spot).Distinct())
                     command.Add(new ChangePhaseCommand(spot, phase));
@@ -136,14 +107,14 @@ namespace LayoutManager {
                 oldTrack = spot.Track;
 
                 foreach (ModelComponent c in components)
-                    if (Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("query-editing-default-action", c, (bool)false).SetFrameWindow(hitTestResult.FrameWindow)))) {
+                    if (Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("query-editing-default-action", c, (bool)false)))) {
                         componentWithDefaultEditingAction = c;
                         break;
                     }
 
                 if (componentWithDefaultEditingAction != null) {
                     showComponentsMenu = false;
-                    EventManager.Event(new LayoutEvent("editing-default-action-command", componentWithDefaultEditingAction, hitTestResult).SetFrameWindow(hitTestResult.FrameWindow));
+                    Dispatch.Call.EditingDefaultActionCommand(componentWithDefaultEditingAction, hitTestResult);
                 }
             }
 

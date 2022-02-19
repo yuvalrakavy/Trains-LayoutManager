@@ -93,7 +93,7 @@ namespace LayoutManager.Components {
         /// </summary>
         /// <param name="cp">The connection point</param>
         /// <remarks>
-        /// Only cross and parallel diagnonal components can be part of two blocks. Therefore
+        /// Only cross and parallel diagonal components can be part of two blocks. Therefore
         /// the connection point is required to indicate which block
         /// </remarks>
         LayoutBlock GetBlock(LayoutComponentConnectionPoint cp);
@@ -104,7 +104,7 @@ namespace LayoutManager.Components {
         /// <param name="cp">The connection point</param>
         /// <param name="block">The block</param>
         /// <remarks>
-        /// Only cross and parallel diagnonal components can be part of two blocks. Therefore
+        /// Only cross and parallel diagonal components can be part of two blocks. Therefore
         /// the connection point is required to indicate which block
         /// </remarks>
         void SetBlock(LayoutComponentConnectionPoint cp, LayoutBlock? block);
@@ -297,7 +297,7 @@ namespace LayoutManager.Components {
 
         public override bool DrawOutOfGrid => false;
 
-        #region Track Annoation methods and properties
+        #region Track Annotation methods and properties
 
         public void SetTrackAnnotation() =>
             trackAnnotation = (((Spot[ModelComponentKind.BlockEdge] ?? Spot[ModelComponentKind.BlockInfo]) ?? Spot[ModelComponentKind.TrackIsolation]) ?? Spot[ModelComponentKind.TrackLink]) ?? (this);
@@ -369,7 +369,7 @@ namespace LayoutManager.Components {
         /// <param name="cp">The connection point</param>
         /// <returns>The layout block</returns>
         /// <remarks>
-        /// Straight track are are part of one block, except when this track has a BLOCK_EDGE (track contact).
+        /// Straight track are part of one block, except when this track has a BLOCK_EDGE (track contact).
         /// If the track is associated with a BLOCK_EDGE, then it separate two blocks. One if found in cp1, and the
         /// other in cp2.
         /// </remarks>
@@ -466,7 +466,7 @@ namespace LayoutManager.Components {
 
     /// <summary>
     /// A component that contains two tracks. One connecting between cp1 and cp2
-    /// and the other connects between cp3 and cp4. For example cross, or two diagnal
+    /// and the other connects between cp3 and cp4. For example cross, or two diagonal
     /// tracks.
     /// </summary>
     public class LayoutDoubleTrackComponent : LayoutTrackComponent {

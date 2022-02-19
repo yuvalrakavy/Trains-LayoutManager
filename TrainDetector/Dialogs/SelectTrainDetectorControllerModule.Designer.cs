@@ -63,7 +63,7 @@
             this.radioButtonAssignToController.TabStop = true;
             this.radioButtonAssignToController.Text = "Use on of these controllers:";
             this.radioButtonAssignToController.UseVisualStyleBackColor = true;
-            this.radioButtonAssignToController.CheckedChanged += new System.EventHandler(this.radioButtonAssignToController_CheckedChanged);
+            this.radioButtonAssignToController.CheckedChanged += new System.EventHandler(this.RadioButtonAssignToController_CheckedChanged);
             // 
             // listViewControllerModules
             // 
@@ -83,7 +83,7 @@
             this.listViewControllerModules.TabIndex = 3;
             this.listViewControllerModules.UseCompatibleStateImageBehavior = false;
             this.listViewControllerModules.View = System.Windows.Forms.View.Details;
-            this.listViewControllerModules.SelectedIndexChanged += new System.EventHandler(this.listViewControllerModules_SelectedIndexChanged);
+            this.listViewControllerModules.SelectedIndexChanged += new System.EventHandler(this.ListViewControllerModules_SelectedIndexChanged);
             // 
             // columnHeaderName
             // 
@@ -105,7 +105,7 @@
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 

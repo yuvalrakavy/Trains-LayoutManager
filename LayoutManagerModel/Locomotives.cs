@@ -38,7 +38,7 @@ namespace LayoutManager.Model {
 
     /// <summary>
     /// The orientation of a locomotive in a placeableItem. For example, F7-ABA placeable
-    /// item will have three pleacable item members, oriented Forward, Forward, Backward.
+    /// item will have three placeable item members, oriented Forward, Forward, Backward.
     /// </summary>
     public enum LocomotiveOrientation {
         Forward, Backward, Unknown
@@ -46,7 +46,7 @@ namespace LayoutManager.Model {
 
     [Flags]
     public enum TrainObjectDisplayNameFormat {
-        Plain = 0x0000,                     // Just return the name (no adorments what so ever)
+        Plain = 0x0000,                     // Just return the name (no adornments what so ever)
         IncludeAddress = 0x0001,            // Include locomotive(s) address(es)
         IncludeCollectionId = 0x0002,       // Include collection ID
     }
@@ -56,7 +56,7 @@ namespace LayoutManager.Model {
     #region Locomotive Catalog & Collection
 
     /// <summary>
-    /// Represent a locomotive catalog storage elemenet. The locomotive catalog is built
+    /// Represent a locomotive catalog storage element. The locomotive catalog is built
     /// from several XML documents each containing locomotive type elements. This allow
     /// separation between locomotive types that are defined say by LGB to those defined
     /// by the user.
@@ -296,7 +296,7 @@ namespace LayoutManager.Model {
         public override string DefaultStoreDirectory => GetDataSubdirectoryPath("Catalog");
 
         /// <summary>
-        /// Common locotive function names
+        /// Common locomotive function names
         /// </summary>
         public XmlElement LocomotiveFunctionNames {
             get {
@@ -402,7 +402,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Check that all members of locotive set actually exist. If a member that is not
+        /// Check that all members of locomotive set actually exist. If a member that is not
         /// defined is found, it is removed from the locomotive set, if as a result, the
         /// locomotive set becomes empty, the locomotive set is removed
         /// </summary>
@@ -500,7 +500,7 @@ namespace LayoutManager.Model {
         private const string E_Functions = "Functions";
         private const string A_Kind = "Kind";
         private const string A_Length = "Length";
-        private const string A_Guage = "Guage";
+        private const string A_Guage = "Gauge";
         private const string A_SpeedLimit = "SpeedLimit";
         private const string A_Origin = "Origin";
         private const string A_Store = "Store";
@@ -802,7 +802,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Check if this locomotive has compatible operation characteristics as of another locomotive or
         /// to those of all the members in a locomotive set. All members in a locomotive set must have
-        /// compatible opertion characteristics.
+        /// compatible operation characteristics.
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
@@ -888,7 +888,7 @@ namespace LayoutManager.Model {
 
     #region Saved Train Info and Train info base class (base class for saved train and active train)
 
-    #region Objects referenced by train. Locomotivs & Cars
+    #region Objects referenced by train. Locomotives & Cars
 
     public class TrainLocomotiveInfo : LayoutInfo {
         private const string A_LocomotiveID = "LocomotiveID";
@@ -1110,7 +1110,7 @@ namespace LayoutManager.Model {
     }
 
     /// <summary>
-    /// Comparision operations on train length
+    /// Comparison operations on train length
     /// </summary>
     public enum TrainLengthComparison {
         None,

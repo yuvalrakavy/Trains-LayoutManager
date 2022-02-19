@@ -81,7 +81,7 @@ namespace LayoutManager.Tools.Dialogs {
                     Text = $"{connectionPointRef.Module.ConnectionPoints.GetLabel(connectionPointRef.Index, true)} on {connectionPointRef.Module.Bus.Name}";
                 else {
                     Text = $"{connectionPointRef.ConnectionPoint.DisplayName} at {connectionPointRef.Module.ModuleType.GetConnectionPointAddressText(connectionPointRef.Module.ModuleType, connectionPointRef.Module.Address, connectionPointRef.Index, true)}";
-                    EventManager.Event(new LayoutEvent("show-control-connection-point", connectionPointRef).SetFrameWindow(frameWindowId));
+                    Dispatch.Call.ShowControlConnectionPoint(frameWindowId, connectionPointRef);
                 }
             }
         }
@@ -135,7 +135,7 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void TestLayoutObject_FormClosed(object? sender, FormClosedEventArgs e) {
             LayoutController.Instance.EndDesignTimeActivation();
-            EventManager.Event(new LayoutEvent("deselect-control-objects", this).SetFrameWindow(frameWindowId));
+            Dispatch.Call.DeselectControlObjects(frameWindowId);
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 
@@ -174,10 +174,8 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        [LayoutEvent("query-test-layout-object")]
-        private void QueryTestLayoutObject(LayoutEvent e) {
-            e.Info = this;
-        }
+        [DispatchTarget]
+        private bool QueryTestLayoutObject() => true;
 
         private void PanelIllustration_Paint(object? sender, PaintEventArgs e) {
             Size componentSize = new(58, 58);
@@ -304,7 +302,7 @@ namespace LayoutManager.Tools.Dialogs {
                     if (pickDialog.DialogResult == DialogResult.OK) {
                         ControlConnectionPoint result = Ensure.NotNull<ControlConnectionPoint>(EventManager.Event(new LayoutEvent("connect-component-to-control-module-address-request", pickDialog.ConnectionDestination, csEvent)));
 
-                        EventManager.Event(new LayoutEvent("show-control-connection-point", connectionPointRef).SetFrameWindow(frameWindowId));
+                        Dispatch.Call.ShowControlConnectionPoint(frameWindowId, connectionPointRef);
                         this.component = result.Component;
                         Initialize();
                         panelIllustration.Invalidate();

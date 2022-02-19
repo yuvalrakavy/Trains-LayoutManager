@@ -272,9 +272,9 @@ namespace LayoutManager.CommonUI {
             if (SelectedConnectionPoint != null) {
                 var component = SelectedConnectionPoint.Component;
 
-                if (component != null) {
-                    selectedComponents.Add((ModelComponent)component);
-                    EventManager.Event(new LayoutEvent("ensure-component-visible", component, false).SetFrameWindow(FrameWindow));
+                if (component is ModelComponent aComponent) {
+                    selectedComponents.Add(aComponent);
+                    Dispatch.Call.EnsureComponentVisible(FrameWindow.Id, aComponent);
                 }
             }
 
@@ -796,19 +796,23 @@ namespace LayoutManager.CommonUI {
         public virtual void OnMouseDown(MouseEventArgs e) {
             if (Enabled) {
                 if (e.Button == MouseButtons.Right) {       // Right click
-                    string eventName = "add-control-" + (Viewer.IsOperationMode ? "operation" : "editing") + "-context-menu-entries";
-                    var menu = new ContextMenuStrip();
+                    var contextMenu = new ContextMenuStrip();
+                    var menu = new MenuOrMenuItem(contextMenu);
 
-                    EventManager.Event(new LayoutEvent(eventName, this, menu).SetFrameWindow(Viewer.FrameWindow));
+                    if (Viewer.IsOperationMode)
+                        Dispatch.Call.AddControlModuleOperationContextMenuEntries(this, menu);
+                    else
+                        Dispatch.Call.AddControlModuleEditingContextMenuEntries(this, menu);
+
                     if (menu.Items.Count > 0)
-                        menu.Show(Viewer, Viewer.PointToClient(Control.MousePosition));
+                        contextMenu.Show(Viewer, Viewer.PointToClient(Control.MousePosition));
                 }
             }
         }
 
         public virtual void OnClick(MouseButtons mouseDownButton) {
             if (mouseDownButton == MouseButtons.Left)                                                       // Normal click
-                EventManager.Event(new LayoutEvent("control-default-action", this).SetFrameWindow(Viewer.FrameWindow));
+                Dispatch.Call.ControlModuleDefaultAction(this);
         }
 
         public virtual void OnDoubleClick() {

@@ -22,7 +22,7 @@ namespace LayoutManager.Model {
 
         /// <summary>
         /// RouteQuality which have numeric value less than this one indicate that the route is free
-        /// entries which have numeric value larger than this, indicates the the route is blocked
+        /// entries which have numeric value larger than this, indicates the route is blocked
         /// </summary>
         Free,               //******************
 
@@ -397,7 +397,7 @@ namespace LayoutManager.Model {
 
         /// <summary>
         /// Return the train for which this route is calculated. Please note that it is possible
-        /// that the route is not calculated for a specific train (e.g. in a manual dispatch resgion).
+        /// that the route is not calculated for a specific train (e.g. in a manual dispatch region).
         /// In this case null is returned
         /// </summary>
         public TrainStateInfo? Train => train ??= LayoutModel.StateManager.Trains[routeOwner] as TrainStateInfo;

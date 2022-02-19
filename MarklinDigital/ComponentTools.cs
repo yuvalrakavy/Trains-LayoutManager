@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.CommonUI;
@@ -54,16 +55,13 @@ namespace MarklinDigital {
                 e.Info = false;     // Do not place component
         }
 
-        [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(MarklinDigitalCentralStation))]
-        private void QueryMarklinDigitalMenu(LayoutEvent e) {
-            e.Info = true;
-        }
+        [DispatchTarget]
+        [DispatchFilter("InDesignMode")]
+        private bool IncludeInComponentContextMenu([DispatchFilter] MarklinDigitalCentralStation _) => true;
 
-        [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(MarklinDigitalCentralStation))]
-        private void AddMarklinDigitalContextMenuEntries(LayoutEvent e) {
-            var component = Ensure.NotNull<MarklinDigitalCentralStation>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-
+        [DispatchTarget]
+        [DispatchFilter(Type = "InDesignMode")]
+        private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] MarklinDigitalCentralStation component, MenuOrMenuItem menu) {
             menu.Items.Add(new MarklinDigitalMenuItemProperties(component));
         }
 

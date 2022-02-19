@@ -1,5 +1,8 @@
+using System;
 using System.Windows.Forms;
+using MethodDispatcher;
 using LayoutManager.Model;
+using LayoutManager.CommonUI;
 
 //****
 // This file is no longer used, its functionality was moved to the new publish/subscribe model
@@ -18,31 +21,11 @@ namespace LayoutManager {
 
         #region Implement properties for returning various context menu related event names
 
-        protected override string ComponentContextMenuAddTopEntriesEventName => "add-component-operation-context-menu-top-entries";
+        protected override Func<ModelComponent, object?> QueryDragFunction => (component) => Dispatch.Call.QueryOperationDrag(component);
 
-        protected override string ComponentContextMenuQueryEventName => "query-component-operation-context-menu";
+        protected override Action<ModelComponent, DragEventArgs> QueryDropAction => (component, dragEventArgs) => Dispatch.Call.QueryOperationDrop(component, dragEventArgs);
 
-        protected override string? ComponentContextMenuQueryCanRemoveEventName => null;
-
-        protected override string ComponentContextMenuAddEntriesEventName => "add-component-operation-context-menu-entries";
-
-        protected override string ComponentContextMenuAddBottomEntriesEventName => "add-component-operation-context-menu-bottom-entries";
-
-        protected override string ComponentContextMenuAddCommonEntriesEventName => "add-component-operation-context-menu-common-entries";
-
-        protected override string ComponentContextMenuQueryNameEventName => "query-component-operation-context-menu-name";
-
-        protected override string ComponentContextMenuAddEmptySpotEntriesEventName => "add-operation-empty-spot-context-menu-entries";
-
-        protected override string ComponentContextMenuAddSelectionEntriesEventName => "add-operation-selection-menu-entries";
-
-        protected override string QueryDragEventName => "query-operation-drag";
-
-        protected override string DragDoneEventName => "operation-drag-done";
-
-        protected override string QueryDropEventName => "query-operation-drop";
-
-        protected override string DropEventName => "do-operation-drop";
+        protected override Action<ModelComponent, DragEventArgs> DropAction => (component, dragEventArgs) => Dispatch.Call.DoOperationDrop(component, dragEventArgs);
 
         #endregion
 

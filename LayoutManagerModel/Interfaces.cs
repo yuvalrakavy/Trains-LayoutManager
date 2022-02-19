@@ -105,6 +105,7 @@ namespace LayoutManager {
         public static LayoutModelArea AddArea(string areaName) => Instance.AddArea(areaName);
     }
 
+#if OBSOLETE
     public static class FrameWindoeExtender {
         public static LayoutEvent SetFrameWindow(this LayoutEvent e, Guid frameWindowId) => e.SetOption(elementName: "FrameWindow", optionName: "ID", id: frameWindowId);
 
@@ -120,6 +121,7 @@ namespace LayoutManager {
 
         public static bool IsThisFrameWindow(this LayoutEvent e, ILayoutFrameWindow me) => me.Id == e.GetFrameWindowId();
     }
+#endif
 
     /// <summary>
     /// This interface defines methods that are implemented by the controller and
@@ -211,9 +213,9 @@ namespace LayoutManager {
         BestRoute FindBestRoute(ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, TripPlanDestinationInfo destination, Guid routeOwner, bool trainStopping);
     }
 
-    #endregion
+#endregion
 
-    #region Object property interfaces (mostly UI related)
+#region Object property interfaces (mostly UI related)
 
     public class CreateTrainSettings {
         public string? TrainName { get; set; }
@@ -288,7 +290,7 @@ namespace LayoutManager {
 
         [DispatchTarget]
         public static void AddDispatcherFilters() {
-            Dispatch.AddCustomFilter("IsMyName", MyNameFilter);
+            Dispatch.AddCustomParameterFilter("IsMyName", MyNameFilter);
         }
 
 
@@ -360,7 +362,7 @@ namespace LayoutManager {
     }
 
     /// <summary>
-    /// Encupsolate the visual properties of a selection.
+    /// Encapsulate the visual properties of a selection.
     /// </summary>
     public interface ILayoutSelectionLook {
         /// <summary>
@@ -377,9 +379,9 @@ namespace LayoutManager {
     public interface ILayoutCommandStationEmulator : IDisposable {
     }
 
-    #endregion
+#endregion
 
-    #region Trip Route planning related interfaces
+#region Trip Route planning related interfaces
 
     /// <summary>
     /// Describe one possible route from an origin to a destination.
@@ -492,12 +494,12 @@ namespace LayoutManager {
         void Apply(TripPlanInfo tripPlan);
     }
 
-    #endregion
+#endregion
 
-    #region Model Commands interfaces
+#region Model Commands interfaces
 
     /// <summary>
-    /// Base class for all layout commands. Basically a command encupsolte an operation
+    /// Base class for all layout commands. Basically a command encapsulate an operation
     /// (in most cases on the model). The command has enough information so it can
     /// undo the command
     /// </summary>
@@ -520,7 +522,7 @@ namespace LayoutManager {
         string ToString();
 
         /// <summary>
-        /// True if this command returned the model to its presistent state
+        /// True if this command returned the model to its persistent state
         /// </summary>
         bool IsCheckpoint {
             get;
@@ -533,13 +535,13 @@ namespace LayoutManager {
     /// </summary>
     public interface ILayoutCompoundCommand : ILayoutCommand {
         /// <summary>
-        /// Add a command to the compund command
+        /// Add a command to the compound command
         /// </summary>
         /// <param name="command">The command to be added</param>
         void Add(ILayoutCommand command);
 
         /// <summary>
-        /// The number of commands in the compund command
+        /// The number of commands in the compound command
         /// </summary>
         int Count {
             get;
@@ -586,9 +588,9 @@ namespace LayoutManager {
         string RedoCommandName { get; }
     }
 
-    #endregion
+#endregion
 
-    #region Layout power related interfaces
+#region Layout power related interfaces
     /// <summary>
     /// Enumeration of power type
     /// </summary>
@@ -663,7 +665,7 @@ namespace LayoutManager {
         ILayoutPower? OptionalPower { get; }
 
         /// <summary>
-        /// The powers that can be obtained obtained from this outlet. For example, The outlet of a power selector component can contain
+        /// The powers that can be obtained from this outlet. For example, The outlet of a power selector component can contain
         /// each of the power type that are connected to its inlet
         /// </summary>
         IEnumerable<ILayoutPower> ObtainablePowers { get; }
@@ -672,7 +674,7 @@ namespace LayoutManager {
         /// Select power of a given type
         /// </summary>
         /// <param name="powerType">The power type to select</param>
-        /// <returns>True of power was successfuly selected</returns>
+        /// <returns>True of power was successfully selected</returns>
         bool SelectPower(LayoutPowerType powerType, IList<SwitchingCommand> switchingCommands);
     }
 
@@ -703,12 +705,12 @@ namespace LayoutManager {
         bool IsConnected { get; }
     }
 
-    #endregion
+#endregion
 
-    #region Script Editor related interfaces
+#region Script Editor related interfaces
 
     /// <summary>
-    /// Functionallity implemented by the event script editor
+    /// Functionality implemented by the event script editor
     /// </summary>
     public interface IEventScriptEditor {
         Form Form { get; }
@@ -726,39 +728,39 @@ namespace LayoutManager {
         void SetEventScriptEditor(IEventScriptEditor eventScriptEditor);
     }
 
-    #endregion
+#endregion
 
-    #region Drawing region related interfaces
+#region Drawing region related interfaces
 
     /// <summary>
-    /// Implement by object referenced by Region.Info field to be notifiy when the region is clicked in editing mode.
+    /// Implement by object referenced by Region.Info field to be notify when the region is clicked in editing mode.
     /// </summary>
     public interface ILayoutDrawingRegionInfoEditingOnClick {
         bool OnRegionClick();
     }
 
     /// <summary>
-    /// Implement by object referenced by Region.Info field to be notifiy when the region is right clicked in editing mode.
+    /// Implement by object referenced by Region.Info field to be notify when the region is right clicked in editing mode.
     /// </summary>
     public interface ILayoutDrawingRegionInfoEditingOnRightClick {
         bool OnRegionRightClick();
     }
 
     /// <summary>
-    /// Implement by object referenced by Region.Info field to be notifiy when the region is clicked in operation mode.
+    /// Implement by object referenced by Region.Info field to be notify when the region is clicked in operation mode.
     /// </summary>
     public interface ILayoutDrawingRegionInfoOperationOnClick {
         bool OnRegionClick();
     }
 
     /// <summary>
-    /// Implement by object referenced by Region.Info field to be notifiy when the region is right clicked in operation mode.
+    /// Implement by object referenced by Region.Info field to be notify when the region is right clicked in operation mode.
     /// </summary>
     public interface ILayoutDrawingRegionInfoOperationOnRightClick {
         bool OnRegionRightClick();
     }
 
-    #endregion
+#endregion
 }
 
 

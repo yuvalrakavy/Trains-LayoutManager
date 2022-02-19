@@ -65,7 +65,7 @@ namespace LayoutManager.Model {
         LayoutModelSpotComponentCollection Spot { get; }
 
         /// <summary>
-        /// Generate wanring message in the messages window
+        /// Generate warning message in the messages window
         /// </summary>
         /// <param name="subject"></param>
         /// <param name="message"></param>
@@ -280,7 +280,7 @@ namespace LayoutManager.Model {
         bool IsSplitPoint(LayoutComponentConnectionPoint cp);
 
         /// <summary>
-        /// Return true if the connection point into another path. For example, the straigt and branch of a turnout
+        /// Return true if the connection point into another path. For example, the straight and branch of a turnout
         /// will return true.
         /// </summary>
         /// <param name="cp">The connection point</param>

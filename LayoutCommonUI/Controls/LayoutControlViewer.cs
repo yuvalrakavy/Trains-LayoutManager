@@ -156,7 +156,7 @@ namespace LayoutManager.CommonUI.Controls {
                     break;
                 }
 
-            EventManager.Event(new LayoutEvent("show-layout-control", this));
+            Dispatch.Call.ShowLayoutControl(LayoutController.ActiveFrameWindow.Id);
         }
 
         private void UpdateBusSelector() {

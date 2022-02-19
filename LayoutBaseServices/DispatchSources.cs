@@ -4,6 +4,8 @@ using MethodDispatcher;
 
 namespace LayoutManager {
     public static class BaseServicesDispatchSources {
+        public static void Initialize() { }
+
         [DispatchSource]
         public static void AddDispatcherFilters(this Dispatcher d) {
             d[nameof(AddDispatcherFilters)].CallVoid();

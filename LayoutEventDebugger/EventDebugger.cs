@@ -63,6 +63,7 @@ namespace LayoutEventDebugger {
             EventManager.Event(theEvent);
         }
 
+#if OBSOLETE
         [LayoutEvent("tools-menu-open-request")]
         private void OnToolsMenuOpenRequest(LayoutEvent e) {
             var toolsMenu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
@@ -71,6 +72,7 @@ namespace LayoutEventDebugger {
             toolsMenu.Items.Add(new LayoutMenuItem("&View Subscriptions", null, new EventHandler(this.OnViewSubscriptionsClick)));
             toolsMenu.Items.Add(new LayoutMenuItem("&Trace events", null, new EventHandler(this.OnEventTraceClick)));
         }
+#endif
 
         private void OnEventDebuggerClick(object? sender, EventArgs e) {
             EventDebuggerDialog eventDebuggerDialog = new EventDebuggerDialog(this);

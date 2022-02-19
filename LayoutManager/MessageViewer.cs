@@ -131,7 +131,7 @@ namespace LayoutManager {
         private void SetComponentSelection(ModelComponent component) {
             currentComponentSelection?.Clear();
             currentComponentSelection?.Add(component);
-            EventManager.Event(new LayoutEvent("ensure-component-visible", component, false));
+            Dispatch.Call.EnsureComponentVisible(LayoutController.ActiveFrameWindow.Id, component);
         }
 
         Guid FrameWindowId => ((FrameWindow)ParentForm).Id;

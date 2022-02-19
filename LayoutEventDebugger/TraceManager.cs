@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Reflection;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.CommonUI;
@@ -230,10 +231,9 @@ namespace LayoutEventDebugger {
 
     [LayoutModule("Trace Manager")]
     internal class TraceManagerModule : LayoutModuleBase {
-        [LayoutEvent("tools-menu-open-request")]
-        private void OnToolsMenuOpenRequest(LayoutEvent e) {
-            var toolsMenu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
 
+        [DispatchTarget]
+        private void ToolsMenuOpenRequest(MenuOrMenuItem toolsMenu) {
             toolsMenu.Items.Add("&Trace switches", null, new EventHandler(this.OnSetTraceSwitches));
         }
 

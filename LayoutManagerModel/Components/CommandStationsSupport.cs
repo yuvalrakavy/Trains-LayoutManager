@@ -382,7 +382,7 @@ namespace LayoutManager.Components {
                 IList<ILocomotiveLocation> locomotiveLocations = LayoutEmulationServices.GetLocomotiveLocations(Id);
 
                 foreach (ILocomotiveLocation locomotiveLocation in locomotiveLocations) {
-                    if (currentShownTrainPositions.Contains(locomotiveLocation.Edge))   // Is is already in selection, do nothing
+                    if (currentShownTrainPositions.Contains(locomotiveLocation.Edge))   // Is already in selection, do nothing
                         currentShownTrainPositions.Remove(locomotiveLocation.Edge);
                     else
                         animatedTrainsSelection.Add(locomotiveLocation.Track);      // Not found in currently shown, add it to the selection
@@ -955,7 +955,7 @@ namespace LayoutManager.Components {
             }
 
             if (pendingCommands.Count > 0) {
-                Trace.WriteLineIf(traceOutputManager.TraceVerbose, "Waiting for for command station pending commands");
+                Trace.WriteLineIf(traceOutputManager.TraceVerbose, "Waiting for command station pending commands");
 
                 var pendingCommandsTask = Task.WhenAll(pendingCommands);
 

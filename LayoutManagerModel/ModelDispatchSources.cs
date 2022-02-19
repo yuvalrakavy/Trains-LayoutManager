@@ -7,9 +7,12 @@ using LayoutManager.Model;
 using LayoutManager.Components;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace LayoutManager {
     static public class ModelDispatchSources {
+        public static void Initialize() { }
+
         [DispatchSource]
         public static System.IO.FileStream OpenSerialCommunicationDeviceRequest(this Dispatcher d, XmlElement setupElement) {
             return d[nameof(OpenSerialCommunicationDeviceRequest)].Call<System.IO.FileStream>(setupElement);
@@ -200,7 +203,7 @@ namespace LayoutManager {
 
         [DispatchSource]
         public static LayoutAction? GetAction(this Dispatcher d, XmlElement actionElement, object owner) {
-            return d[nameof(GetAction)].CallUtilNotNull<LayoutAction>(actionElement, owner);
+            return d[nameof(GetAction)].CallUntilNotNull<LayoutAction>(actionElement, owner);
         }
 
         [DispatchSource]
@@ -313,6 +316,13 @@ namespace LayoutManager {
         public static void ChangeSignalStateCommand(this Dispatcher d, IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, LayoutSignalState state) {
             ds_ChangeSignalStateCommand ??= d[nameof(ChangeSignalStateCommand)];
             ds_ChangeSignalStateCommand.CallVoid(commandStation, connectionPointRef, state);
+        }
+
+        static DispatchSource? ds_OnSignalStateRemoved = null;
+        [DispatchSource]
+        public static void OnSignalStateRemoved(this Dispatcher d, LayoutBlockEdgeBase blockEdge) {
+            ds_OnSignalStateRemoved ??= d[nameof(OnSignalStateRemoved)];
+            ds_OnSignalStateRemoved.CallVoid(blockEdge);
         }
 
         [DispatchSource]
@@ -1045,5 +1055,192 @@ namespace LayoutManager {
             return ds_GetCommandStationCapabilities.Call<XmlElement>(commandStation);
         }
 
+        static DispatchSource? ds_GetImageFromCache = null;
+        [DispatchSource]
+        public static Image GetImageFromCache(this Dispatcher d, object requestor, string imageFilename, RotateFlipType effect) {
+            ds_GetImageFromCache ??= d[nameof(GetImageFromCache)];
+            return ds_GetImageFromCache.Call<Image>(requestor, imageFilename, effect);
+        }
+
+        static DispatchSource? ds_RemoveImageFromCache = null;
+        [DispatchSource]
+        public static void RemoveImageFromCache(this Dispatcher d, string imageFilename, RotateFlipType effect) {
+            ds_RemoveImageFromCache ??= d[nameof(RemoveImageFromCache)];
+            ds_RemoveImageFromCache.CallVoid(imageFilename, effect);
+        }
+
+        static DispatchSource? ds_ClearImageCache = null;
+        [DispatchSource]
+        public static void ClearImageCache(this Dispatcher d) {
+            ds_ClearImageCache ??= d[nameof(ClearImageCache)];
+            ds_ClearImageCache.CallVoid();
+        }
+
+        static DispatchSource? ds_FreeResources = null;
+        [DispatchSource]
+        public static void FreeResources(this Dispatcher d) {
+            ds_FreeResources ??= d[nameof(FreeResources)];
+            ds_FreeResources.CallVoid();
+        }
+
+        static DispatchSource? ds_OpenGateRequest = null;
+        [DispatchSource]
+        public static void OpenGateRequest(this Dispatcher d, LayoutGateComponent gate) {
+            ds_OpenGateRequest ??= d[nameof(OpenGateRequest)];
+            ds_OpenGateRequest.CallVoid(gate);
+        }
+
+        static DispatchSource? ds_CloseGateRequest = null;
+        [DispatchSource]
+        public static void CloseGateRequest(this Dispatcher d, LayoutGateComponent gate) {
+            ds_CloseGateRequest ??= d[nameof(CloseGateRequest)];
+            ds_CloseGateRequest.CallVoid(gate);
+        }
+
+        static DispatchSource? ds_OnGateIsOpen = null;
+        [DispatchSource]
+        public static void OnGateIsOpen(this Dispatcher d, LayoutGateComponent gate) {
+            ds_OnGateIsOpen ??= d[nameof(OnGateIsOpen)];
+            ds_OnGateIsOpen.CallVoid(gate);
+        }
+
+        static DispatchSource? ds_OnGateIsClosed = null;
+        [DispatchSource]
+        public static void OnGateIsClosed(this Dispatcher d, LayoutGateComponent gate) {
+            ds_OnGateIsClosed ??= d[nameof(OnGateIsClosed)];
+            ds_OnGateIsClosed.CallVoid(gate);
+        }
+
+        static DispatchSource? ds_OnGateOpenTimeout = null;
+        [DispatchSource]
+        public static void OnGateOpenTimeout(this Dispatcher d, LayoutGateComponent gate) {
+            ds_OnGateOpenTimeout ??= d[nameof(OnGateOpenTimeout)];
+            ds_OnGateOpenTimeout.CallVoid(gate);
+        }
+
+        static DispatchSource? ds_OnGateCloseTimeout = null;
+        [DispatchSource]
+        public static void OnGateCloseTimeout(this Dispatcher d, LayoutGateComponent gate) {
+            ds_OnGateCloseTimeout ??= d[nameof(OnGateCloseTimeout)];
+            ds_OnGateCloseTimeout.CallVoid(gate);
+        }
+
+        // FrameWindow
+
+        static DispatchSource? ds_EnsureComponentVisible = null;
+
+        [DispatchSource]
+        public static void EnsureComponentVisible(this Dispatcher d, Guid frameWindowId, ModelComponent component, bool markComponent = false) {
+            ds_EnsureComponentVisible ??= d[nameof(EnsureComponentVisible)];
+            ds_EnsureComponentVisible.CallVoid(frameWindowId, component, markComponent);
+        }
+
+        static DispatchSource? ds_ShowMarker = null;
+        [DispatchSource]
+        public static void ShowMarker(this Dispatcher d, Guid frameWindowId, object markedObject) {
+            ds_ShowMarker ??= d[nameof(ShowMarker)];
+            ds_ShowMarker.CallVoid(frameWindowId, markedObject);
+        }
+
+        static DispatchSource? ds_DeselectControlObjects = null;
+        [DispatchSource]
+        public static void DeselectControlObjects(this Dispatcher d, Guid frameWindowId) {
+            ds_DeselectControlObjects ??= d[nameof(DeselectControlObjects)];
+            ds_DeselectControlObjects.CallVoid(frameWindowId);
+        }
+
+        static DispatchSource? ds_ShowControlModule = null;
+        [DispatchSource]
+        public static void ShowControlModule(this Dispatcher d, Guid frameWindowId, ControlModuleReference controlModule) {
+            ds_ShowControlModule ??= d[nameof(ShowControlModule)];
+            ds_ShowControlModule.CallVoid(frameWindowId, controlModule);
+        }
+
+        static DispatchSource? ds_ShowControlConnectionPoint = null;
+        [DispatchSource]
+        public static void ShowControlConnectionPoint(this Dispatcher d, Guid frameWindowId, ControlConnectionPointReference connectionPointReference) {
+            ds_ShowControlConnectionPoint ??= d[nameof(ShowControlConnectionPoint)];
+            ds_ShowControlConnectionPoint.CallVoid(frameWindowId, connectionPointReference);
+        }
+
+        [DispatchSource]
+        public static void ShowMessages(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(ShowMessages)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void HideMessages(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(HideMessages)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnMessagesShown(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnMessagesShown)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnMessagesHidden(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnMessagesHidden)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void ShowTripsMonitor(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(ShowTripsMonitor)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void HideTripsMonitor(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(HideTripsMonitor)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnTripsMonitorShown(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnTripsMonitorShown)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnTripsMonitorHidden(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnTripsMonitorHidden)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void ShowLocomotives(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(ShowLocomotives)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void HideLocomotives(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(HideLocomotives)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnLocomotivesShown(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnLocomotivesShown)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnLocomotivesHidden(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnLocomotivesHidden)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void ShowLayoutControl(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(ShowLayoutControl)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void HideLayoutControl(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(HideLayoutControl)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnLayoutControlShown(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnLayoutControlShown)].CallVoid(frameWindowId);
+        }
+
+        [DispatchSource]
+        public static void OnLayoutControlHidden(this Dispatcher d, Guid frameWindowId) {
+            d[nameof(OnLayoutControlHidden)].CallVoid(frameWindowId);
+        }
     }
 }

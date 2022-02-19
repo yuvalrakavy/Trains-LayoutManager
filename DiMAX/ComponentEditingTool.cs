@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using MethodDispatcher;
 
 using LayoutManager.CommonUI;
 using LayoutManager;
@@ -58,16 +59,12 @@ namespace DiMAX {
                 e.Info = false;     // Do not place component
         }
 
-        [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(DiMAXcommandStation))]
-        private void QueryEditingMenu(LayoutEvent e) {
-            e.Info = e.Sender;
-        }
+        [DispatchTarget]
+        private bool IncludeInComponentContextMenu([DispatchFilter] DiMAXcommandStation _) => true;
 
-        [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(DiMAXcommandStation))]
-        private void AddEditingContextMenuEntries(LayoutEvent e) {
-            var component = Ensure.NotNull<DiMAXcommandStation>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-
+        [DispatchTarget]
+        [DispatchFilter(Type="InDesignMode")]
+        private void AddComponentContextMenuEntries_DesignMode(Guid frameWindowId, [DispatchFilter] DiMAXcommandStation component, MenuOrMenuItem menu) {
             menu.Items.Add(new DiMAXcommandStationMenuItemProperties(component));
         }
 
@@ -95,18 +92,11 @@ namespace DiMAX {
 
         #endregion
 
-        [LayoutEvent("query-component-operation-context-menu", SenderType = typeof(DiMAXcommandStation))]
-        private void QueryOperationalMenu(LayoutEvent e) {
-            e.Info = e.Sender;
-        }
-
-        [LayoutEvent("add-component-operation-context-menu-entries", SenderType = typeof(DiMAXcommandStation))]
-        private void AddOperationContextMenuEntries(LayoutEvent e) {
-            var commandStation = Ensure.NotNull<DiMAXcommandStation>(e.Sender);
-            var m = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-
-            m.Items.Add(new LayoutMenuItem("Test locomotive select", null, (_, _) => new Dialogs.TestLocoSelect(commandStation).ShowDialog()));
-            m.Items.Add(new LayoutMenuItem("Test locomotive drive", null, (_, _) => new Dialogs.TestLocoDrive(commandStation).ShowDialog()));
+        [DispatchTarget]
+        [DispatchFilter(Type = "InOperationMode")]
+        private void AddComponentContextMenuEntries_OperationMode(Guid frameWindowId, [DispatchFilter] DiMAXcommandStation component, MenuOrMenuItem menu) {
+            menu.Items.Add(new LayoutMenuItem("Test locomotive select", null, (_, _) => new Dialogs.TestLocoSelect(component).ShowDialog()));
+            menu.Items.Add(new LayoutMenuItem("Test locomotive drive", null, (_, _) => new Dialogs.TestLocoDrive(component).ShowDialog()));
         }
     }
 }

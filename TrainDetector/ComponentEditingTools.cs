@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.Model;
@@ -18,7 +19,7 @@ namespace TrainDetector {
         private void PlaceNumatoTrainDetectpr(LayoutEvent e) {
             var component = Ensure.NotNull<TrainDetectorsComponent>(e.Sender);
 
-            if (LayoutModel.Components<TrainDetectorsComponent>(LayoutPhase.All).Count() > 0) {
+            if (LayoutModel.Components<TrainDetectorsComponent>(LayoutPhase.All).Any()) {
                 MessageBox.Show("Layout cannot contain more than one 'Train Detector' component", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 e.Info = false;
             }
@@ -51,18 +52,13 @@ namespace TrainDetector {
             }
         }
 
-        [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(TrainDetectorsComponent))]
-        private void QueryEditingMenu(LayoutEvent e) {
-            e.Info = e.Sender;
-        }
+        [DispatchTarget]
+        [DispatchFilter("InDesignMode")]
+        private bool IncludeInComponentContextMenu([DispatchFilter] TrainDetectorsComponent _) => true;
 
-
-        [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(TrainDetectorsComponent))]
-        private void AddEditingContextMenuEntries(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-            var component = Ensure.NotNull<TrainDetectorsComponent>(e.Sender);
-            var moduleLocationId = (Guid?)e.GetOption("ModuleLocationId");
-
+        [DispatchTarget]
+        [DispatchFilter("InDesignMode")]
+        private void AddComponentInModuleLocationContextMenuEntries(Guid frameWindowId, [DispatchFilter] TrainDetectorsComponent component, Guid moduleLocationId, MenuOrMenuItem menu) {
             menu.Items.Add("Detect controllers", null, async (s, ea) => {
                 var detector = new TrainDetectorControllersDetection(component.TrainDetectorsBus, moduleLocationId);
                 var result = await detector.UpdateBus();

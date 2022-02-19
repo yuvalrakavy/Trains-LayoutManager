@@ -1012,7 +1012,7 @@ namespace LayoutManager.View {
 
             try {
                 if (!imageProvider.ImageError)
-                    image = (Image?)EventManager.Event(new LayoutEvent("get-image-from-cache", e.Component, imageProvider.ImageFile, imageProvider.ImageCacheEventXml));
+                    image = Dispatch.Call.GetImageFromCache(e.Component, imageProvider.ImageFile, imageProvider.RotateFlipEffect);
             }
             catch (LayoutException lex) {
                 lex.Report();

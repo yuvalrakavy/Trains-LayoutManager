@@ -88,7 +88,7 @@ namespace LayoutManager.Model {
         DaisyChain,
 
         /// <summary>
-        /// Bus is fixed - modules cannot be aded or removed
+        /// Bus is fixed - modules cannot be added or removed
         /// </summary>
         Fixed,
     }
@@ -469,7 +469,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Add a connection point by providing its Xml element. This method is usually called to re-insert a connection
+        /// Add a connection point by providing its XML element. This method is usually called to re-insert a connection
         /// point that was removed. For example, by an Undo of a disconnection command
         /// </summary>
         /// <param name="inConnectionPointElement">The connection point element</param>
@@ -603,7 +603,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Return all the connnection point descriptions that a control connection point may be connected to
+        /// Return all the connection point descriptions that a control connection point may be connected to
         /// </summary>
         /// <param name="component">The component</param>
         /// <param name="index">The control connection point index</param>
@@ -625,7 +625,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Get enumerator for the connection points sorted by index
         /// </summary>
-        /// <returns>Enumerator for conection point sorted by ascending index</returns>
+        /// <returns>Enumerator for connection point sorted by ascending index</returns>
         public new IEnumerator<ControlConnectionPoint> GetEnumerator() => GetSortedIterator((KeyValuePair<int, XmlElement> pair1, KeyValuePair<int, XmlElement> pair2) => pair1.Key - pair2.Key);
     }
 
@@ -719,7 +719,7 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Return all the connnection point descriptions that a control connection point may be connected to
+        /// Return all the connection point descriptions that a control connection point may be connected to
         /// </summary>
         /// <param name="component">The component</param>
         /// <param name="index">The control connection point index</param>
@@ -751,8 +751,8 @@ namespace LayoutManager.Model {
     /// modules are accessories decoders, and feedback units.
     /// </para>
     /// <para>
-    /// Each conrol module supports one or more connection points. A connection point may be "wired" to
-    /// a conrolled component.
+    /// Each control module supports one or more connection points. A connection point may be "wired" to
+    /// a controlled component.
     /// </para>
     /// </summary>
     #pragma warning disable CA1036
@@ -1901,7 +1901,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Get a control connection point for a specific connection
         /// </summary>
-        /// <param name="componentId">The component to which the control moddule is connected</param>
+        /// <param name="componentId">The component to which the control module is connected</param>
         /// <param name="connectionName">The connection name</param>
         /// <returns>The control connection point, or null if the required connection between this component and a control module does not exist</returns>
         public ControlConnectionPoint? GetConnection(IModelComponentHasId component, string connectionName) => GetConnection(component.Id, connectionName);

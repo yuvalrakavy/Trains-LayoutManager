@@ -69,7 +69,7 @@ namespace LayoutManager {
 
         [DispatchTarget]
         public static void AddDispatcherFilters() {
-            Dispatch.AddCustomFilter("XPath", XPathFilter);
+            Dispatch.AddCustomParameterFilter("XPath", XPathFilter);
         }
     }
 

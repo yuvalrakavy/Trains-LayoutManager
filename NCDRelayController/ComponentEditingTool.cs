@@ -1,5 +1,7 @@
+using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using MethodDispatcher;
 
 using LayoutManager;
 using LayoutManager.CommonUI;
@@ -59,16 +61,13 @@ namespace NCDRelayController {
                 e.Info = false;     // Do not place component
         }
 
-        [LayoutEvent("query-component-editing-context-menu", SenderType = typeof(NCDRelayController))]
-        private void QueryEditingMenu(LayoutEvent e) {
-            e.Info = e.Sender;
-        }
+        [DispatchTarget]
+        [DispatchFilter("InDesignMode")]
+        private bool IncludeInComponentContextMenu([DispatchFilter] NCDRelayController component) => true;
 
-        [LayoutEvent("add-component-editing-context-menu-entries", SenderType = typeof(NCDRelayController))]
-        private void AddEditingContextMenuEntries(LayoutEvent e) {
-            var component = Ensure.NotNull<NCDRelayController>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-
+        [DispatchTarget]
+        [DispatchFilter("InDesignMode")]
+        private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] NCDRelayController component, MenuOrMenuItem menu) {
             menu.Items.Add(new LayoutMenuItem("&Properties", null, (s, ea) => {
                 var d = new Dialogs.NCDRelayControllerProperties(component);
 
