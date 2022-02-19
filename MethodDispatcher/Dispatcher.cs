@@ -101,7 +101,12 @@ namespace MethodDispatcher {
                         where method.GetParameters()[0].ParameterType == typeof(Dispatcher)
                         select method;
 
-            foreach (var method in query)
+            var list = query.ToList();
+
+            if(list.Count > 0)
+                Trace.WriteLine($"Defined {list.Count} dispatch sources from {assembly.FullName}");
+
+            foreach (var method in list)
                 DefineSourceMethod(method);
         }
 
@@ -603,7 +608,7 @@ namespace MethodDispatcher {
                     var parameter = parameters[i];
 
                     if (parameter != null) {
-                        if (!sourceParameters[i+1].ParameterType.Equals(parameter.GetType()))
+                        if (!sourceParameters[i+1].ParameterType.IsAssignableFrom(parameter.GetType()))
                             throw new InvokeWrongParameterType(_source, sourceParameters[i+1], parameter.GetType());
                     }
                 }
@@ -733,7 +738,7 @@ namespace MethodDispatcher {
 
     internal abstract class DispatchTarget {
         bool? _hasParameterFilters;
-        bool _hasMethodFilters;
+        readonly bool _hasMethodFilters;
 
         protected MethodInfo Method { get; private set; }
 
