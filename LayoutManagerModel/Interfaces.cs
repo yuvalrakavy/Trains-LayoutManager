@@ -105,24 +105,6 @@ namespace LayoutManager {
         public static LayoutModelArea AddArea(string areaName) => Instance.AddArea(areaName);
     }
 
-#if OBSOLETE
-    public static class FrameWindoeExtender {
-        public static LayoutEvent SetFrameWindow(this LayoutEvent e, Guid frameWindowId) => e.SetOption(elementName: "FrameWindow", optionName: "ID", id: frameWindowId);
-
-        public static LayoutEvent SetFrameWindow(this LayoutEvent e, ILayoutFrameWindow frameWindow) => SetFrameWindow(e, frameWindow.Id);
-
-        public static LayoutEvent SetFrameWindow(this LayoutEvent e, LayoutEvent previousEvent) => SetFrameWindow(e, previousEvent.GetFrameWindowId());
-
-        public static Guid GetFrameWindowId(this LayoutEvent e) {
-            if (e.HasOption(elementName: "FrameWindow", optionName: "ID"))
-                return (Guid?)e.GetOption(elementName: "FrameWindow", optionName: "ID") ?? Guid.Empty;
-            else return LayoutController.ActiveFrameWindow != null ? LayoutController.ActiveFrameWindow.Id : Guid.Empty;
-        }
-
-        public static bool IsThisFrameWindow(this LayoutEvent e, ILayoutFrameWindow me) => me.Id == e.GetFrameWindowId();
-    }
-#endif
-
     /// <summary>
     /// This interface defines methods that are implemented by the controller and
     /// used by the selection class and the view to show/hide selections

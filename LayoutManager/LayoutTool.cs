@@ -48,7 +48,7 @@ namespace LayoutManager {
 
             if (e.HitTestResult != null) {
                 foreach (ModelComponent component in e.HitTestResult.Selection)
-                    QueryDropAction(component, e.DragEventArgs);
+                    Dispatch.Call.QueryDrop(component, e.DragEventArgs);
             }
         }
 
@@ -62,7 +62,7 @@ namespace LayoutManager {
                 return;
 
             foreach (ModelComponent component in e.HitTestResult.Selection)
-                DropAction(component, e.DragEventArgs);
+                Dispatch.Call.DoDrop(component, e.DragEventArgs);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace LayoutManager {
 
             if (e.HitTestResult != null) {
                 foreach (ModelComponent component in e.HitTestResult.Selection) {
-                    draggedObject = QueryDragFunction(component);
+                    draggedObject = Dispatch.Call.QueryDrag(component);
 
                     if(draggedObject != null)
                         break;
@@ -250,21 +250,6 @@ namespace LayoutManager {
             Dispatch.Call.AddComponentContextEmptySpotEntries(hitTestResult, new MenuOrMenuItem(contextMenu));
 
             return contextMenu.Items.Count == 0 ? null : contextMenu;
-        }
-
-        /// <summary>
-        /// Event used to query whether the component on which dragging was initiated has anything to drag
-        /// </summary>
-        protected abstract Func<ModelComponent, object?> QueryDragFunction {
-            get;
-        }
-
-        protected abstract Action<ModelComponent, DragEventArgs> QueryDropAction {
-            get;
-        }
-
-        protected abstract Action<ModelComponent, DragEventArgs> DropAction {
-            get;
         }
 
         /// <summary>

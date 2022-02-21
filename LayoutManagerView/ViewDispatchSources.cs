@@ -10,7 +10,6 @@ namespace LayoutManager {
     public static class ViewDispatchSources {
         public static void Initialize() { }
 
-
         static DispatchSource? ds_AddDetailsWindowSections = null;
         [DispatchSource]
         public static void AddDetailsWindowSections(this Dispatcher d, ModelComponent component, PopupWindowContainerSection container) {
@@ -25,48 +24,26 @@ namespace LayoutManager {
             ds_EditingDefaultActionCommand.CallVoid(component, hitResults);
         }
 
-        static DispatchSource? ds_DoOperationDrop = null;
+        static DispatchSource? ds_DoDrop = null;
         [DispatchSource]
-        public static void DoOperationDrop(this Dispatcher d, ModelComponent component, DragEventArgs dragEventArgs) {
-            ds_DoOperationDrop ??= d[nameof(DoOperationDrop)];
-            ds_DoOperationDrop.CallVoid(component, dragEventArgs);
+        public static void DoDrop(this Dispatcher d, ModelComponent component, DragEventArgs dragEventArgs) {
+            ds_DoDrop ??= d[nameof(DoDrop)];
+            ds_DoDrop.CallVoid(component, dragEventArgs);
         }
 
-        static DispatchSource? ds_DoEditingDrop = null;
+        static DispatchSource? ds_QueryDrop = null;
         [DispatchSource]
-        public static void DoEditingDrop(this Dispatcher d, ModelComponent component, DragEventArgs dragEventArgs) {
-            ds_DoEditingDrop ??= d[nameof(DoEditingDrop)];
-            ds_DoEditingDrop.CallVoid(component, dragEventArgs);
+        public static void QueryDrop(this Dispatcher d, ModelComponent component, DragEventArgs dragEventArgs) {
+            ds_QueryDrop ??= d[nameof(QueryDrop)];
+            ds_QueryDrop.CallVoid(component, dragEventArgs);
         }
 
-        static DispatchSource? ds_QueryOperationDrop = null;
+        static DispatchSource? ds_QueryDrag = null;
         [DispatchSource]
-        public static void QueryOperationDrop(this Dispatcher d, ModelComponent component, DragEventArgs dragEventArgs) {
-            ds_QueryOperationDrop ??= d[nameof(QueryOperationDrop)];
-            ds_QueryOperationDrop.CallVoid(component, dragEventArgs);
+        public static object? QueryDrag(this Dispatcher d, ModelComponent component) {
+            ds_QueryDrag ??= d[nameof(QueryDrag)];
+            return ds_QueryDrag.CallUntilNotNull<Object>(component);
         }
-
-        static DispatchSource? ds_QueryEditingDrop = null;
-        [DispatchSource]
-        public static void QueryEditingDrop(this Dispatcher d, ModelComponent component, DragEventArgs dragEventArgs) {
-            ds_QueryEditingDrop ??= d[nameof(QueryEditingDrop)];
-            ds_QueryEditingDrop.CallVoid(component, dragEventArgs);
-        }
-
-        static DispatchSource? ds_QueryOperationDrag = null;
-        [DispatchSource]
-        public static object? QueryOperationDrag(this Dispatcher d, ModelComponent component) {
-            ds_QueryOperationDrag ??= d[nameof(QueryOperationDrag)];
-            return ds_QueryOperationDrag.CallUntilNotNull<Object>(component);
-        }
-
-        static DispatchSource? ds_QueryEditingDrag = null;
-        [DispatchSource]
-        public static object? QueryEditingDrag(this Dispatcher d, ModelComponent component) {
-            ds_QueryEditingDrag ??= d[nameof(QueryEditingDrag)];
-            return ds_QueryEditingDrag.CallUntilNotNull<Object>(component);
-        }
-
 
         static DispatchSource? ds_OnDragDone = null;
         [DispatchSource]

@@ -246,33 +246,35 @@ namespace LayoutManager.Tools {
 
 
         [DispatchTarget]
-        [DispatchFilter(Type = "InOperationMode")]
+        [DispatchFilter("InOperationMode")]
         private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] LayoutStraightTrackComponent component, MenuOrMenuItem menu) {
             if (component.BlockDefinitionComponent != null)
                 Dispatch.Call.AddComponentContextMenuEntries(frameWindowId, component.BlockDefinitionComponent, menu);
         }
 
         [DispatchTarget]
-        [DispatchFilter(Type = "InOperationMode")]
+        [DispatchFilter("InOperationMode")]
         private void AddDetailsWindowSections_StraigtTrack([DispatchFilter] LayoutStraightTrackComponent track, PopupWindowContainerSection container) {
             if (track.BlockDefinitionComponent != null)
                 Dispatch.Call.AddDetailsWindowSections(track.BlockDefinitionComponent, container);
         }
 
         [DispatchTarget]
-        private void QueryOperationDrop([DispatchFilter] LayoutStraightTrackComponent track, DragEventArgs dragEventArgs) {
+        [DispatchFilter("InOperationMode")]
+        private void QueryDrop([DispatchFilter] LayoutStraightTrackComponent track, DragEventArgs dragEventArgs) {
             if (track.BlockDefinitionComponent != null)
-                Dispatch.Call.QueryOperationDrop(track.BlockDefinitionComponent, dragEventArgs);
+                Dispatch.Call.QueryDrop(track.BlockDefinitionComponent, dragEventArgs);
         }
         [DispatchTarget]
-        private void DoOperationDrop([DispatchFilter] LayoutStraightTrackComponent track, DragEventArgs dragEventArgs) {
+        private void DoDrop([DispatchFilter] LayoutStraightTrackComponent track, DragEventArgs dragEventArgs) {
             if(track.BlockDefinitionComponent != null)
-                Dispatch.Call.DoOperationDrop(track.BlockDefinitionComponent, dragEventArgs);
+                Dispatch.Call.DoDrop(track.BlockDefinitionComponent, dragEventArgs);
         }
 
         [DispatchTarget]
-        private object? QueryOperationDrag([DispatchFilter] LayoutStraightTrackComponent track) {
-            return track.BlockDefinitionComponent != null ? Dispatch.Call.QueryOperationDrag(track.BlockDefinitionComponent) : null;
+        [DispatchFilter("InOperationMode")]
+        private object? QueryDrag([DispatchFilter] LayoutStraightTrackComponent track) {
+            return track.BlockDefinitionComponent != null ? Dispatch.Call.QueryDrag(track.BlockDefinitionComponent) : null;
         }
 
         #endregion
@@ -582,7 +584,8 @@ namespace LayoutManager.Tools {
         }
 
         [DispatchTarget]
-        private void QueryOperationDrop([DispatchFilter] LayoutBlockDefinitionComponent blockDefinition, DragEventArgs dragEventArgs) {
+        [DispatchFilter("InOperationMode")]
+        private void QueryDrop([DispatchFilter] LayoutBlockDefinitionComponent blockDefinition, DragEventArgs dragEventArgs) {
             if (dragEventArgs.Data?.GetData(typeof(XmlElement)) is XmlElement element) {
                 if (element.Name == "Locomotive" || element.Name == "Train") {
                     if (!blockDefinition.Block.HasTrains) {
@@ -638,7 +641,8 @@ namespace LayoutManager.Tools {
         }
 
         [DispatchTarget]
-        private void DoOperationDrop_BlockDefinition([DispatchFilter] LayoutBlockDefinitionComponent blockDefinition, DragEventArgs dragEventArgs) {
+        [DispatchFilter("InOperationMode")]
+        private void DoDrop_BlockDefinition([DispatchFilter] LayoutBlockDefinitionComponent blockDefinition, DragEventArgs dragEventArgs) {
             if (dragEventArgs.Data?.GetData(typeof(XmlElement)) is XmlElement element) {
                 if (element.Name == "Locomotive" || element.Name == "Train") {
                     if (!blockDefinition.Block.HasTrains) {
@@ -686,7 +690,8 @@ namespace LayoutManager.Tools {
         }
 
         [DispatchTarget]
-        private object? QueryOperationDrag([DispatchFilter] LayoutBlockDefinitionComponent blockDefinition) {
+        [DispatchFilter("InOperationMode")]
+        private object? QueryDrag([DispatchFilter] LayoutBlockDefinitionComponent blockDefinition) {
             return (blockDefinition.Block.Trains.Count == 1) ? blockDefinition.Block.Trains[0].Train.Element : null;
         }
 

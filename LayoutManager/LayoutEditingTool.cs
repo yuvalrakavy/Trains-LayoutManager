@@ -30,16 +30,6 @@ namespace LayoutManager {
             menu.Items.Add(new MenuItemPasteComponents(hitTestResult));
         }
 
-        #region Implement properties for returning various context menu related event names
-
-        protected override Func<ModelComponent, object?> QueryDragFunction => (component) => Dispatch.Call.QueryEditingDrag(component);
-
-        protected override Action<ModelComponent, DragEventArgs> QueryDropAction => (component, dragEventArgs) => Dispatch.Call.QueryEditingDrop(component, dragEventArgs);
-
-        protected override Action<ModelComponent, DragEventArgs> DropAction => (component, dragEventArgs) => Dispatch.Call.DoEditingDrop(component, dragEventArgs);
-
-        #endregion
-
         [DispatchTarget(Order = 0)]
         [DispatchFilter("InDesignMode")]
         private void AddCommonContextMenuEntries_DeleteAll(LayoutHitTestResult hitTestResult, MenuOrMenuItem menu) {
