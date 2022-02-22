@@ -219,12 +219,9 @@ namespace LayoutManager.CommonUI.Controls {
                 Policies.Remove(selectedItem.Policy);
         }
 
-        [LayoutEvent("policy-removed")]
-        protected void PolicyRemoved(LayoutEvent e) {
+        [DispatchTarget]
+        protected void OnPolicyRemovedFromCollection(LayoutPoliciesCollection policies, LayoutPolicyInfo policy) {
             if (!editingPolicy) {
-                var policy = Ensure.NotNull<LayoutPolicyInfo>(e.Sender);
-                var policies = Ensure.NotNull<LayoutPoliciesCollection>(e.Info);
-
                 if (policies == this.Policies) {
                     PolicyItem? policyItem = null;
 

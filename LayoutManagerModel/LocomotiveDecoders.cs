@@ -28,17 +28,6 @@ namespace LayoutManager.Model {
         } = TrackGauges.Unknown;
 
         public string TypeName => Manufacturer + Name;
-
-        public static DecoderTypeInfo GetDecoderType(string decoderTypeName) {
-            List<DecoderTypeInfo> decoders = new();
-
-            EventManager.Event(new LayoutEvent("get-decoder-type", decoders).SetOption("DecoderType", decoderTypeName));
-
-            if (decoders.Count > 0)
-                return decoders[0];
-            else
-                throw new LayoutException("Unable to get decoder type " + decoderTypeName);
-        }
     }
 
     public class DecoderWithNumericAddressTypeInfo : DecoderTypeInfo {

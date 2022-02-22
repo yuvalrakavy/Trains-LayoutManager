@@ -483,22 +483,24 @@ namespace LayoutManager.Tools.Controls {
             return train.Id == this.Train.Id ? new TripPlanAssignmentInfo(TripPlan, train) : null;
         }
 
-        [LayoutEvent("policy-added-to-policies-collection")]
-        [LayoutEvent("policy-removed-from-policies-collection")]
-        private void PolicyCollectionUpdated(LayoutEvent e) {
-            var policiesCollection = Ensure.NotNull<LayoutPoliciesCollection>(e.Sender);
-
+        private void PolicyCollectionUpdated(LayoutPoliciesCollection policiesCollection) {
             if (policiesCollection == LayoutModel.StateManager.RideStartPolicies)
                 buildStartConditionMenu = true;
             else if (policiesCollection == LayoutModel.StateManager.DriverInstructionsPolicies)
                 buildDriverInstructionsMenu = true;
         }
 
+        [DispatchTarget]
+        private void OnPolicyAddedToPoliciesCollection(LayoutPoliciesCollection policies, LayoutPolicyInfo policy) => PolicyCollectionUpdated(policies);
+
+        [DispatchTarget]
+        void OnRemovingPolicyFromPoliciesCollection(LayoutPoliciesCollection policies, LayoutPolicyInfo policy) => PolicyCollectionUpdated(policies);
+
         #endregion
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
+            /// <summary> 
+            /// Clean up any resources being used.
+            /// </summary>
         protected override void Dispose(bool disposing) {
             if (disposing) {
                 EventManager.Subscriptions.RemoveObjectSubscriptions(this);

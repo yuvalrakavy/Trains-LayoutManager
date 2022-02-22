@@ -378,11 +378,10 @@ namespace LayoutManager.Model {
             return catalog.GetStandardImage(kind, origin);
         }
 
-        [LayoutEvent("locomotive-type-updated")]
-        private void LocomotiveTypeUpdated(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-            LocomotiveTypeInfo locoType = new(element);
+        [DispatchTarget]
+        private void OnLocomotiveTypeUpdated(LocomotiveTypeInfo locoType) {
             var locoWithTypeElements = CollectionElement.SelectNodes($"Locomotive[@TypeID='{locoType.Id}']");
+            bool shouldSave = false;
 
             if (locoWithTypeElements != null) {
                 foreach (XmlElement locoWithTypeElement in locoWithTypeElements) {
@@ -391,12 +390,12 @@ namespace LayoutManager.Model {
                     if (loco.LinkedToType) {
                         Debug.WriteLine("Updating type information of locomotive " + loco.DisplayName);
                         loco.UpdateFromLocomotiveType(locoType);
-                        e.Info = true;
+                        shouldSave = true;
                     }
                 }
             }
 
-            if ((bool)(e.Info ?? false))
+            if (shouldSave)
                 Save();
         }
 
@@ -642,7 +641,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Decoder type object for the decoder used by this locomotive (type) or null if no decoder is defined
         /// </summary>
-        public DecoderTypeInfo DecoderType => DecoderTypeInfo.GetDecoderType(DecoderTypeName);
+        public DecoderTypeInfo DecoderType => Dispatch.Call.GetDecoderType(DecoderTypeName);
     }
 
     public enum LocomotiveFunctionType {

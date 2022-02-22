@@ -380,58 +380,10 @@ namespace LayoutManager.Model {
         #endregion
     }
 
-    /// <summary>
-    /// Extend layout event with 
-    /// </summary>
-    static public class LayoutEventOperationContextExtender {
-        private const string elementName = "OperationContext";
 
-        /// <summary>
-        /// Set the operation context for which an event is invoked
-        /// </summary>
-        /// <param name="context">The operation context</param>
-        /// <returns>The event</returns>
-        public static LayoutEvent SetOperationContext(this LayoutEvent theEvent, LayoutOperationContext context) {
-            theEvent.SetOption(elementName, "Key", context.Key);
-            return theEvent;
-        }
+#endregion
 
-        /// <summary>
-        /// Copy the operation context of another event to this event
-        /// </summary>
-        /// <param name="otherEvent">The other event</param>
-        /// <returns>The event</returns>
-        public static LayoutEvent CopyOperationContext(this LayoutEvent theEvent, LayoutEvent otherEvent) {
-            theEvent.CopyOptions(otherEvent, elementName);
-            return theEvent;
-        }
-
-        /// <summary>
-        /// Get the operation context under which an event is invoked
-        /// </summary>
-        /// <returns>Operation context or null if this event was not invoked under any operation context</returns>
-        public static LayoutOperationContext? GetOperationContext(this LayoutEvent theEvent) {
-            var key = theEvent.GetOption(optionName: "Key", elementName: elementName).ValidString();
-
-            return key != null
-                ? LayoutModel.StateManager.OperationStates[LayoutOperationContext.ContextSectionName].Get<LayoutOperationContext>(key)
-                : null;
-        }
-
-        /// <summary>
-        /// Return cancellation token that should be used to indicate cancellation of the operation
-        /// </summary>
-        /// <returns>Cancellation token</returns>
-        public static CancellationToken GetCancellationToken(this LayoutEvent theEvent) {
-            var context = GetOperationContext(theEvent);
-
-            return context != null ? context.CancellationToken : System.Threading.CancellationToken.None;
-        }
-    }
-
-    #endregion
-
-    #region Locomotive programming progress state
+#region Locomotive programming progress state
 
     public abstract class ProgrammingState : IOperationState {
         private ILayoutActionContainer? programmingActions;
@@ -468,9 +420,9 @@ namespace LayoutManager.Model {
         }
     }
 
-    #endregion
+#endregion
 
-    #region Trains State
+#region Trains State
 
     public enum TrainPart {
         Locomotive, Car, LastCar, None
@@ -496,7 +448,7 @@ namespace LayoutManager.Model {
             : base(element) {
         }
 
-        #region Properties
+#region Properties
 
         /// <summary>
         /// The collection of track blocks in which the train is currently located on the track
@@ -845,13 +797,13 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool IsPowered => Power != null &&Power.Type == LayoutPowerType.Digital;
 
-        #endregion
+#endregion
 
-        #region Operations
+#region Operations
 
-        #region Train Locomotives Management
+#region Train Locomotives Management
 
-        #region Add Locomotive
+#region Add Locomotive
 
         public override CanPlaceTrainResult AddLocomotive(LocomotiveInfo loco, LocomotiveOrientation orientation, LayoutBlock? block, bool validateAddress) {
             CanPlaceTrainResult result;
@@ -881,7 +833,7 @@ namespace LayoutManager.Model {
                     TrainLocomotiveInfo trainLocomotive = result.TrainLocomotive;
 
                     LayoutModel.StateManager.Trains.IdToTrainStateElement[loco.Id] = Element;
-                    EventManager.Event(new LayoutEvent("locomotive-added-to-train", this, trainLocomotive));
+                    Dispatch.Notification.OnLocomotiveAddedToTrain(trainLocomotive, this);
                 }
             }
 
@@ -901,22 +853,22 @@ namespace LayoutManager.Model {
                 Debug.Fail("Invalid locomotive collection element");
         }
 
-        #endregion
+#endregion
 
         public override void RemoveLocomotive(TrainLocomotiveInfo removedTrainLoco) {
-            EventManager.Event(new LayoutEvent("removing-locomotive-from-train", removedTrainLoco, this));
+            Dispatch.Notification.OnRemovingLocomotiveFromTrain(removedTrainLoco, this);
 
             LayoutModel.StateManager.Trains.IdToTrainStateElement.Remove(removedTrainLoco.Locomotive.Id);
             LayoutModel.StateManager.Trains.IdToTrainStateElement.Remove(removedTrainLoco.CollectionElementId);
 
             base.RemoveLocomotive(removedTrainLoco);
 
-            EventManager.Event(new LayoutEvent("locomotive-removed-from-train", this));
+            Dispatch.Notification.OnLocomotiveRemovedFromTrain(this);
         }
 
-        #endregion
+#endregion
 
-        #region Train location management
+#region Train location management
 
         public TrainLocationInfo? LocationOfBlock(LayoutBlock block) {
             foreach (TrainLocationInfo trainLocation in Locations)
@@ -1009,9 +961,9 @@ namespace LayoutManager.Model {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Value settings
+#region Value settings
 
         /// <summary>
         /// Change the train state speed and direction. This method should not be called directly. It is
@@ -1031,20 +983,19 @@ namespace LayoutManager.Model {
         /// called by the locomotive manager event manager for light state related events.
         /// </summary>
         /// <param name="lights"></param>
-        [LayoutEventDef("train-lights-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(bool))]
         public void SetLightsValue(bool lights) {
             if (lights != Lights) {
                 SetAttributeValue(A_Lights, lights);
-                EventManager.Event(new LayoutEvent("train-lights-changed", this, lights));
+                Dispatch.Notification.OnTrainLightsChanged(this, lights);
             }
         }
 
         private const string A_Name = "Name";
         private const string A_LocomotiveId = "LocomotiveID";
 
-        #endregion
+#endregion
 
-        #region Locomotive special function management
+#region Locomotive special function management
 
         /// <summary>
         /// Find the current state for a given function for a given locomotive.
@@ -1102,26 +1053,22 @@ namespace LayoutManager.Model {
                 : $"<Function Name='{functionName}' />";
         }
 
-        [LayoutEventDef("locomotive-function-state-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
         public void SetLocomotiveFunctionStateValue(String functionName, Guid locomotiveId, bool state) {
             var function = FindFunctionState(functionName, locomotiveId, true);
 
             if (function != null) {
                 function.State = state;
-                EventManager.Event(new LayoutEvent("locomotive-function-state-changed", this,
-                    state, GetFunctionXml(functionName, locomotiveId)));
+                Dispatch.Notification.OnTrainLocomotiveFunctionStateChanged(this, functionName, locomotiveId, state);
             }
         }
 
-        [LayoutEventDef("locomotive-function-state-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
         public void SetLocomotiveFunctionStateValue(int functionNumber, Guid locomotiveId, bool state) {
             var function = FindFunctionState(functionNumber, locomotiveId);
 
             if (function != null) {
                 function.State = state;
 
-                EventManager.Event(new LayoutEvent("locomotive-function-state-changed", this,
-                    state, GetFunctionXml(function.Name, locomotiveId)));
+                Dispatch.Notification.OnTrainLocomotiveFunctionStateChanged(this, function.Name, locomotiveId, state);
             }
         }
 
@@ -1208,12 +1155,10 @@ namespace LayoutManager.Model {
         /// </summary>
         public bool HasActiveFunction() => HasActiveFunction(Guid.Empty);
 
-        #endregion
+#endregion
 
-        #region Speed Limit & Speed
+#region Speed Limit & Speed
 
-        [LayoutEventDef("train-speed-limit-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
-        [LayoutEventDef("train-slow-down-speed-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(int))]
         public void RequestSpeedLimit(int requestedSpeedLimit) {
             if (requestedSpeedLimit < 0)
                 requestedSpeedLimit = RequestedSpeedLimit;
@@ -1245,7 +1190,7 @@ namespace LayoutManager.Model {
 
             if (newCurrentSpeedLimit != CurrentSpeedLimit) {
                 CurrentSpeedLimit = newCurrentSpeedLimit;
-                EventManager.Event(new LayoutEvent("train-speed-limit-changed", this, newCurrentSpeedLimit));
+                Dispatch.Notification.OnTrainSpeedLimitChanged(this, newCurrentSpeedLimit);
             }
 
             // Calculate slow down speed
@@ -1266,7 +1211,7 @@ namespace LayoutManager.Model {
 
             if (newCurrentSlowDownSpeed != CurrentSlowdownSpeed) {
                 CurrentSlowdownSpeed = newCurrentSlowDownSpeed;
-                EventManager.Event(new LayoutEvent("train-slow-down-speed-changed", this, newCurrentSlowDownSpeed));
+                Dispatch.Notification.OnTrainSlowDownSpeedChanged(this, newCurrentSlowDownSpeed);
             }
         }
 
@@ -1284,9 +1229,9 @@ namespace LayoutManager.Model {
         private const string A_StoppedOnBlockCrossing = "StoppedOnBlockCrossing";
         private const string A_LastEnteredBlock = "LastEnteredBlock";
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
         public LayoutBlockEdgeBase? LastCrossedBlockEdge {
             get {
@@ -1336,13 +1281,13 @@ namespace LayoutManager.Model {
             set => SetAttributeValue(A_StoppedOnBlockCrossing, value, removeIf: false);
         }
 
-        #region IEqualityComparer<TrainStateInfo> Members
+#region IEqualityComparer<TrainStateInfo> Members
 
         public bool Equals(TrainStateInfo? x, TrainStateInfo? y) => x != null && y != null && x.Id == y.Id;
 
         public int GetHashCode(TrainStateInfo obj) => obj.Id.GetHashCode();
 
-        #endregion
+#endregion
     }
 
     /// <summary>
@@ -1461,7 +1406,7 @@ namespace LayoutManager.Model {
             : base(trainsStateElement) {
         }
 
-        #region Accessors
+#region Accessors
 
         /// <summary>
         /// Return a list of all locomotive state that are on a given block
@@ -1513,9 +1458,9 @@ namespace LayoutManager.Model {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Operations
+#region Operations
 
         /// <summary>
         /// Remove all state information
@@ -1592,27 +1537,27 @@ namespace LayoutManager.Model {
             }
         }
 
-        #endregion
+#endregion
 
-        #region IEnumerable<TrainStateInfo> Members
+#region IEnumerable<TrainStateInfo> Members
 
         public IEnumerator<TrainStateInfo> GetEnumerator() {
             foreach (XmlElement trainStateElement in Element)
                 yield return new TrainStateInfo(trainStateElement);
         }
 
-        #endregion
+#endregion
 
-        #region IEnumerable Members
+#region IEnumerable Members
 
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-        #endregion
+#endregion
     }
 
-    #endregion
+#endregion
 
-    #region Components State
+#region Components State
 
     public class ComponentsStateInfo : LayoutStateInfoBase {
         private const string E_ComponentState = "ComponentState";
@@ -1623,7 +1568,7 @@ namespace LayoutManager.Model {
             : base(element) {
         }
 
-        #region Accessors
+#region Accessors
 
         /// <summary>
         /// Get complete runtime state element for a given model component
@@ -1667,15 +1612,15 @@ namespace LayoutManager.Model {
         public XmlElement StateOf(Guid componentId, string topicName) => OptionalStateOf(componentId, topicName, true)!;
         public XmlElement StateOf(IModelComponentHasId component, string topicName) => OptionalStateOf(component, topicName, true)!;
 
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
 
         public IDictionary<Guid, XmlElement> IdToComponentStateElement => _idToComponentStateElement;
 
-        #endregion
+#endregion
 
-        #region Operations
+#region Operations
 
         public bool Contains(Guid componentId) => _idToComponentStateElement.ContainsKey(componentId);
 
@@ -1761,12 +1706,12 @@ namespace LayoutManager.Model {
                 Remove((Guid)componentStateElement.AttributeValue(A_Id));
         }
 
-        #endregion
+#endregion
     }
 
-    #endregion
+#endregion
 
-    #region Track Contact State
+#region Track Contact State
 
     public class TrackContactPassingStateInfo : LayoutStateTopicBase {
         private const string A_TrainId = "TrainID";
@@ -1835,11 +1780,11 @@ namespace LayoutManager.Model {
         }
     }
 
-    #endregion
+#endregion
 
-    #region Manual Dispatch Region States
+#region Manual Dispatch Region States
 
-    #region Block ID collection
+#region Block ID collection
 
     public class BlockIdCollection : XmlCollection<Guid>, ICollection<Guid> {
         private const string E_Block = "Block";
@@ -1866,7 +1811,7 @@ namespace LayoutManager.Model {
         }
     }
 
-    #endregion
+#endregion
 
     public class ManualDispatchRegionInfo : LayoutStateInfoBase, IObjectHasId {
         private const string E_Blocks = "Blocks";
@@ -2014,9 +1959,9 @@ namespace LayoutManager.Model {
         }
     }
 
-    #endregion
+#endregion
 
-    #region Layout Verification options
+#region Layout Verification options
 
     public class LayoutVerificationOptions : LayoutStateInfoBase {
         private const string A_IgnoreNotConnectedFeedbacks = "IgnoreNotConnectedFeedbacks";
@@ -2045,7 +1990,7 @@ namespace LayoutManager.Model {
         }
     }
 
-    #endregion
+#endregion
 
     public enum TrainTrackingInManualDispatchRegion {
         None,
@@ -2077,10 +2022,10 @@ namespace LayoutManager.Model {
         }
     }
 
-    #region Train tracking options
-    #endregion
+#region Train tracking options
+#endregion
 
-    #region Policy
+#region Policy
 
     public class LayoutPolicyInfo : LayoutXmlWrapper, IObjectHasId {
         private const string E_Policy = "Policy";
@@ -2240,7 +2185,7 @@ namespace LayoutManager.Model {
             if (policy.Element.OwnerDocument == globalPoliciesElement.OwnerDocument)
                 LayoutModel.WriteModelXmlInfo();
 
-            EventManager.Event(new LayoutEvent("policy-added-to-policies-collection", this, policy));
+            Dispatch.Notification.OnPolicyAddedToPoliciesCollection(this, policy);
         }
 
         public bool Remove(Guid policyId) {
@@ -2249,10 +2194,10 @@ namespace LayoutManager.Model {
             if (policyToRemove != null) {
                 bool save = policyToRemove.Element.OwnerDocument == globalPoliciesElement.OwnerDocument;
 
-                EventManager.Event(new LayoutEvent("policy-removed-from-policies-collection", this, policyToRemove));
+                Dispatch.Notification.OnRemovingPolicyFromPoliciesCollection(this, policyToRemove);
                 policies.Remove(policyToRemove);
 
-                EventManager.Event(new LayoutEvent("policy-removed", policyToRemove, this));
+                Dispatch.Notification.OnPolicyRemovedFromCollection(this, policyToRemove);
                 policyToRemove.Element.ParentNode!.RemoveChild(policyToRemove.Element);
 
                 if (save)
@@ -2293,7 +2238,7 @@ namespace LayoutManager.Model {
             }
         }
 
-        #region ICollection<LayoutPolicyInfo> Members
+#region ICollection<LayoutPolicyInfo> Members
 
         public void Add(LayoutPolicyInfo policy) {
             if (policy.GlobalPolicy)
@@ -2302,16 +2247,16 @@ namespace LayoutManager.Model {
                 policiesElement.AppendChild(policy.Element);
 
             policies.Add(policy);
-            EventManager.Event(new LayoutEvent("policy-added", policy, this));
         }
 
         public void Clear() {
             foreach (LayoutPolicyInfo policy in policies) {
-                EventManager.Event(new LayoutEvent("policy-deleted", policy, this));
+                Dispatch.Notification.OnRemovingPolicyFromPoliciesCollection(this, policy);
                 if (policy.GlobalPolicy)
                     globalPoliciesElement.RemoveChild(policy.Element);
                 else if (policiesElement != null)
                     policiesElement.RemoveChild(policy.Element);
+                Dispatch.Notification.OnPolicyRemovedFromCollection(this, policy);
             }
 
             policies.Clear();
@@ -2337,19 +2282,19 @@ namespace LayoutManager.Model {
 
         public bool Remove(LayoutPolicyInfo policy) => Remove(policy.Id);
 
-        #endregion
+#endregion
 
-        #region IEnumerable<LayoutPolicyInfo> Members
+#region IEnumerable<LayoutPolicyInfo> Members
 
         public IEnumerator<LayoutPolicyInfo> GetEnumerator() => policies.GetEnumerator();
 
-        #endregion
+#endregion
 
-        #region IEnumerable Members
+#region IEnumerable Members
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        #endregion
+#endregion
     }
 
     public class LayoutPolicyType {
@@ -2364,7 +2309,7 @@ namespace LayoutManager.Model {
         }
     }
 
-    #endregion
+#endregion
 
     public class LayoutStateManager : LayoutObject {
         private const string A_AllLayoutManualDispatchRegion = "AllLayoutManualDispatchRegion";
@@ -2528,7 +2473,7 @@ namespace LayoutManager.Model {
                     }
                     catch (LayoutException) {
                         allLayoutManualDispatch = null;
-                        EventManager.Event(new LayoutEvent("all-layout-manual-dispatch-mode-status-changed", this, active));
+                        Dispatch.Notification.OnAllLayoutManualDispatchModeStatusChanged(active);
                         throw;
                     }
                 }
@@ -2538,7 +2483,7 @@ namespace LayoutManager.Model {
                     Element.RemoveAttribute(A_AllLayoutManualDispatchRegion);
                 }
 
-                EventManager.Event(new LayoutEvent("all-layout-manual-dispatch-mode-status-changed", this, active));
+                Dispatch.Notification.OnAllLayoutManualDispatchModeStatusChanged(active);
             }
         }
 

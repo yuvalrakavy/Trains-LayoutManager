@@ -1075,7 +1075,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Get the decoder type associated with modules of this type
         /// </summary>
-        public DecoderTypeInfo DecoderType => DecoderTypeInfo.GetDecoderType(DecoderTypeName);
+        public DecoderTypeInfo DecoderType => Dispatch.Call.GetDecoderType(DecoderTypeName);
 
         /// <summary>
         /// Add bus types on which this control modules can be

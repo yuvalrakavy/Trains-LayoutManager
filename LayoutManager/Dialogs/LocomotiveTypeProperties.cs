@@ -1,7 +1,8 @@
-using LayoutManager.Model;
 using System;
 using System.Windows.Forms;
 using System.Xml;
+using MethodDispatcher;
+using LayoutManager.Model;
 
 namespace LayoutManager.Dialogs {
     /// <summary>
@@ -85,7 +86,7 @@ namespace LayoutManager.Dialogs {
 
             inLocoType.Element = locoType.Element;
 
-            EventManager.Event(new LayoutEvent("locomotive-type-updated", locoType.Element, false));
+            Dispatch.Notification.OnLocomotiveTypeUpdated(locoType);
             DialogResult = DialogResult.OK;
         }
 

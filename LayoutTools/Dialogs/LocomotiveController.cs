@@ -82,49 +82,39 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [DispatchTarget]
-        private void OnTrainPowerChanged([DispatchFilter(Type = "IsMyId")] TrainStateInfo train, ILayoutPower power) {
+        private void OnTrainPowerChanged([DispatchFilter("IsMyId")] TrainStateInfo train, ILayoutPower power) {
             if (power.Type != LayoutPowerType.Digital)
                 this.Close();
         }
 
         [DispatchTarget]
-        private void OnTrainSpeedChanged([DispatchFilter(Type = "IsMyId")] TrainStateInfo train, int speed) {
-            panelInfo.Invalidate();
-        }
-
-        [LayoutEvent("train-speed-limit-changed", IfSender = "*[@ID='`string(@ID)`']")]
-        private void TrainSpeedLimitChanged(LayoutEvent e) {
-            int speedLimit = Ensure.ValueNotNull<int>(e.Info);
-
-            if (speedLimit == 0)
-                labelSpeedLimit.Text = "";
-            else
-                labelSpeedLimit.Text = speedLimit.ToString();
-        }
-
-        [DispatchTarget]
-        private void OnTrainEnteredBlock([DispatchFilter(Type = "IsMyId")] TrainStateInfo train, LayoutBlock block) {
+        private void OnTrainSpeedChanged([DispatchFilter("IsMyId")] TrainStateInfo train, int speed) {
             panelInfo.Invalidate();
         }
 
         [DispatchTarget]
-        private void OnTrainCreated([DispatchFilter(Type = "IsMyId")] TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
+        private void OnTrainSpeedLimitChanged([DispatchFilter("IsMyId")] TrainStateInfo train, int speedLimit) {
+            labelSpeedLimit.Text = speedLimit == 0 ? "" : speedLimit.ToString();
+        }
+
+        [DispatchTarget]
+        private void OnTrainEnteredBlock([DispatchFilter("IsMyId")] TrainStateInfo train, LayoutBlock block) {
             panelInfo.Invalidate();
         }
 
         [DispatchTarget]
-        private void OnTrainExtended([DispatchFilter(Type = "IsMyId")] TrainStateInfo train, LayoutBlock block) {
+        private void OnTrainCreated([DispatchFilter("IsMyId")] TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
             panelInfo.Invalidate();
         }
 
-        [LayoutEvent("train-lights-changed", IfSender = "*[@ID='`string(@ID)`']")]
-        private void LocomotiveLightsChanged(LayoutEvent e) {
-            bool lights = Ensure.ValueNotNull<bool>(e.Info);
+        [DispatchTarget]
+        private void OnTrainExtended([DispatchFilter("IsMyId")] TrainStateInfo train, LayoutBlock block) {
+            panelInfo.Invalidate();
+        }
 
-            if (lights)
-                buttonLight.FlatStyle = FlatStyle.Flat;
-            else
-                buttonLight.FlatStyle = FlatStyle.Standard;
+        [DispatchTarget]
+        private void OnTrainLightsChanged([DispatchFilter("IsMyId")] TrainStateInfo train, bool lights) {
+            buttonLight.FlatStyle =lights ? FlatStyle.Flat : FlatStyle.Standard;
         }
 
         [LayoutEvent("train-configuration-changed", IfSender = "*[@ID='`string(@ID)`']")]

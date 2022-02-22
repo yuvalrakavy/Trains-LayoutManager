@@ -524,10 +524,6 @@ namespace LayoutManager.Model {
 
         public int UnlockedBlocksCount { get; set; }
 
-        public LayoutEvent LockedEvent {
-            set => OnLockGranted = () => EventManager.Event(value);
-        }
-
         public bool IsManualDispatchLock => Type == LayoutLockType.ManualDispatch;
 
         #endregion

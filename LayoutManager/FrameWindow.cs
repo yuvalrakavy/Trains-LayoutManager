@@ -701,10 +701,8 @@ namespace LayoutManager {
             }
         }
 
-        [LayoutEvent("all-layout-manual-dispatch-mode-status-changed")]
-        private void AllLayoutManualDispatchModeStatusChanged(LayoutEvent e) {
-            bool active = Ensure.ValueNotNull<bool>(e.Info);
-
+        [DispatchTarget]
+        private void OnAllLayoutManualDispatchModeStatusChanged(bool active) {
             toolBarButtonToggleAllLayoutManualDispatch.Checked = active;
         }
 

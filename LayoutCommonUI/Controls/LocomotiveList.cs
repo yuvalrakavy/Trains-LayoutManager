@@ -194,8 +194,8 @@ namespace LayoutManager.CommonUI.Controls {
             Invalidate();
         }
 
-        [LayoutEvent("locomotive-removed-from-train")]
-        private void LocomotiveRemovedFromTrack(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnLocomotiveRemovedFromTrain(TrainStateInfo train) {
             UpdateElements();
             Invalidate();
         }

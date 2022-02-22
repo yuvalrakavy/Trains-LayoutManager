@@ -1362,6 +1362,102 @@ namespace LayoutManager {
             ds_OnModelLoaded.CallVoid(model);
         }
 
+        static DispatchSource? ds_OnLocomotiveAddedToTrain = null;
+        [DispatchSource]
+        public static void OnLocomotiveAddedToTrain(this Dispatcher d, TrainLocomotiveInfo trainLocomotive, TrainStateInfo train) {
+            ds_OnLocomotiveAddedToTrain ??= d[nameof(OnLocomotiveAddedToTrain)];
+            ds_OnLocomotiveAddedToTrain.CallVoid(trainLocomotive, train);
+        }
+
+        static DispatchSource? ds_OnRemovingLocomotiveFromTrain = null;
+        [DispatchSource]
+        public static void OnRemovingLocomotiveFromTrain(this Dispatcher d, TrainLocomotiveInfo removedTrainLocomotive, TrainStateInfo train) {
+            ds_OnRemovingLocomotiveFromTrain ??= d[nameof(OnRemovingLocomotiveFromTrain)];
+            ds_OnRemovingLocomotiveFromTrain.CallVoid(removedTrainLocomotive, train);
+        }
+
+        static DispatchSource? ds_OnLocomotiveRemovedFromTrain = null;
+        [DispatchSource]
+        public static void OnLocomotiveRemovedFromTrain(this Dispatcher d, TrainStateInfo train) {
+            ds_OnLocomotiveRemovedFromTrain ??= d[nameof(OnLocomotiveRemovedFromTrain)];
+            ds_OnLocomotiveRemovedFromTrain.CallVoid(train);
+        }
+
+        static DispatchSource? ds_OnTrainLightsChanged = null;
+        [DispatchSource]
+        public static void OnTrainLightsChanged(this Dispatcher d, TrainStateInfo train, bool lightsOn) {
+            ds_OnTrainLightsChanged ??= d[nameof(OnTrainLightsChanged)];
+            ds_OnTrainLightsChanged.CallVoid(train, lightsOn);
+        }
+
+        static DispatchSource? ds_OnTrainLocomotiveFunctionStateChanged = null;
+        [DispatchSource]
+        public static void OnTrainLocomotiveFunctionStateChanged(this Dispatcher d, TrainStateInfo train, string functionName, Guid locomotiveId, bool state) {
+            ds_OnTrainLocomotiveFunctionStateChanged ??= d[nameof(OnLocomotiveFunctionStateChanged)];
+            ds_OnTrainLocomotiveFunctionStateChanged.CallVoid(train, functionName, locomotiveId, state);
+        }
+
+        static DispatchSource? ds_OnTrainSpeedLimitChanged = null;
+        [DispatchSource]
+        public static void OnTrainSpeedLimitChanged(this Dispatcher d, TrainStateInfo train, int speedLimit) {
+            ds_OnTrainSpeedLimitChanged ??= d[nameof(OnTrainSpeedLimitChanged)];
+            ds_OnTrainSpeedLimitChanged.CallVoid(train, speedLimit);
+        }
+
+        static DispatchSource? ds_OnTrainSlowDownSpeedChanged = null;
+        [DispatchSource]
+        public static void OnTrainSlowDownSpeedChanged(this Dispatcher d, TrainStateInfo train, int speed) {
+            ds_OnTrainSlowDownSpeedChanged ??= d[nameof(OnTrainSlowDownSpeedChanged)];
+            ds_OnTrainSlowDownSpeedChanged.CallVoid(train, speed);
+        }
+
+        static DispatchSource? ds_OnPolicyAddedToPoliciesCollection = null;
+        [DispatchSource]
+        public static void OnPolicyAddedToPoliciesCollection(this Dispatcher d, LayoutPoliciesCollection policies, LayoutPolicyInfo policy) {
+            ds_OnPolicyAddedToPoliciesCollection ??= d[nameof(OnPolicyAddedToPoliciesCollection)];
+            ds_OnPolicyAddedToPoliciesCollection.CallVoid(policies, policy);
+        }
+
+        static DispatchSource? ds_OnRemovingPolicyFromPoliciesCollection = null;
+        [DispatchSource]
+        public static void OnRemovingPolicyFromPoliciesCollection(this Dispatcher d, LayoutPoliciesCollection policies, LayoutPolicyInfo policy) {
+            ds_OnRemovingPolicyFromPoliciesCollection ??= d[nameof(OnRemovingPolicyFromPoliciesCollection)];
+            ds_OnRemovingPolicyFromPoliciesCollection.CallVoid(policies, policy);
+        }
+
+        static DispatchSource? ds_OnPolicyRemovedFromCollection = null;
+        [DispatchSource]
+        public static void OnPolicyRemovedFromCollection(this Dispatcher d, LayoutPoliciesCollection policies, LayoutPolicyInfo policy) {
+            ds_OnPolicyRemovedFromCollection ??= d[nameof(OnPolicyRemovedFromCollection)];
+            ds_OnPolicyRemovedFromCollection.CallVoid(policies, policy);
+        }
+
+        static DispatchSource? ds_OnAllLayoutManualDispatchModeStatusChanged = null;
+        [DispatchSource]
+        public static void OnAllLayoutManualDispatchModeStatusChanged(this Dispatcher d, bool active) {
+            ds_OnAllLayoutManualDispatchModeStatusChanged ??= d[nameof(OnAllLayoutManualDispatchModeStatusChanged)];
+            ds_OnAllLayoutManualDispatchModeStatusChanged.CallVoid(active);
+        }
+
+        static DispatchSource? ds_GetDecoderType = null;
+        [DispatchSource]
+        public static DecoderTypeInfo GetDecoderType(this Dispatcher d, string decoderTypeName) {
+            ds_GetDecoderType ??= d[nameof(GetDecoderType)];
+            return ds_GetDecoderType.Call<DecoderTypeInfo>(decoderTypeName);
+        }
+
+        [DispatchSource]
+        public static IEnumerable<DecoderTypeInfo> EnumDecoderTypes(this Dispatcher d) {
+            ds_GetDecoderType ??= d[nameof(GetDecoderType)];
+            return ds_GetDecoderType.CallCollect<DecoderTypeInfo>("ALL");
+        }
+
+        static DispatchSource? ds_OnLocomotiveTypeUpdated = null;
+        [DispatchSource]
+        public static void OnLocomotiveTypeUpdated(this Dispatcher d, LocomotiveTypeInfo locoType) {
+            ds_OnLocomotiveTypeUpdated ??= d[nameof(OnLocomotiveTypeUpdated)];
+            ds_OnLocomotiveTypeUpdated.CallVoid(locoType);
+        }
 
     }
 }

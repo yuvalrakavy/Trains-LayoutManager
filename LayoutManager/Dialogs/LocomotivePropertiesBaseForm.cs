@@ -1,11 +1,12 @@
-using LayoutManager.CommonUI.Controls;
-using LayoutManager.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using MethodDispatcher;
+using LayoutManager.CommonUI.Controls;
+using LayoutManager.Model;
 
 namespace LayoutManager.Dialogs {
     /// <summary>
@@ -85,9 +86,7 @@ namespace LayoutManager.Dialogs {
                 TrackGuageSelector trackGuageSelector = (TrackGuageSelector)nameToControlMap["trackGuageSelector"];
                 var previousSelectionIndex = comboBoxDecoderType.SelectedIndex;
 
-                List<DecoderTypeInfo> decoderTypes = new();
-
-                EventManager.Event(new LayoutEvent("enum-decoder-types", decoderTypes));
+                var decoderTypes = Dispatch.Call.EnumDecoderTypes();
 
                 comboBoxDecoderType.Items.Clear();
 
