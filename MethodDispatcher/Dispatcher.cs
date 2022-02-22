@@ -1,13 +1,13 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Diagnostics;
 
 namespace MethodDispatcher {
+    using CustomDispatchMethodFilter = Func<string?, object?, bool>;
     /// Define custom filter (see AddCustomFilter)
     ///   a custom filter parameters are (filter-value, target object, parameter value)
     ///   
     using CustomDispatchParameterFilter = Func<string?, object?, object?, bool>;
-    using CustomDispatchMethodFilter = Func<string?, object?, bool>;
 
     /// <summary>
     /// Dispatcher - a way to call functions without knowing where they reside...
@@ -103,7 +103,7 @@ namespace MethodDispatcher {
 
             var list = query.ToList();
 
-            if(list.Count > 0)
+            if (list.Count > 0)
                 Trace.WriteLine($"Defined {list.Count} dispatch sources from {assembly.FullName}");
 
             foreach (var method in list)
@@ -111,7 +111,7 @@ namespace MethodDispatcher {
         }
 
         private void DefineSourceMethod(MethodInfo method) {
-            if(!dispatchSources.ContainsKey(method.Name))
+            if (!dispatchSources.ContainsKey(method.Name))
                 dispatchSources.Add(method.Name, new DispatchSource(method));
         }
 
@@ -190,7 +190,8 @@ namespace MethodDispatcher {
                         GetDispatchSource(dispatchTargetAttribute, method).AddInstanceTarget(objectInstance, method, dispatchTargetAttribute);
                     }
                 }
-            } catch(DispatcherException ex) {
+            }
+            catch (DispatcherException ex) {
                 (errors ??= new()).Add(ex);
             }
 
@@ -240,6 +241,8 @@ namespace MethodDispatcher {
 
         static Dispatch() {
             _instance = new Dispatcher();
+            AddCustomParameterFilter("==", EqParameterFilter);
+            AddCustomParameterFilter("!=", NeParameterFilter);
         }
 
         static public Dispatcher Instance => _instance;
@@ -330,6 +333,18 @@ namespace MethodDispatcher {
             _methodFilters.TryGetValue(filterType, out CustomDispatchMethodFilter? result);
             return result;
         }
+
+        static private bool EqParameterFilter(string? filterValue, object? targetObject, object? parameterValue) {
+            if (filterValue == null)
+                throw new DispatchFilterException("Missing value for == filter");
+            return parameterValue != null && filterValue.Equals(parameterValue);
+        }
+
+        static private bool NeParameterFilter(string? filterValue, object? targetObject, object? parameterValue) {
+            if (filterValue == null)
+                throw new DispatchFilterException("Missing value for != filter");
+            return parameterValue != null && !filterValue.Equals(parameterValue);
+        }
     }
 
 
@@ -387,12 +402,17 @@ namespace MethodDispatcher {
         public bool VerifyTargetReturnType { get; set; } = true;
     }
 
-    [AttributeUsage(AttributeTargets.Parameter|AttributeTargets.Method, AllowMultiple =true)]
+    [AttributeUsage(AttributeTargets.Parameter|AttributeTargets.Method, AllowMultiple = true)]
     public class DispatchFilterAttribute : Attribute {
         public DispatchFilterAttribute() { }
-        
+
         public DispatchFilterAttribute(string type) {
             Type = type;
+        }
+
+        public DispatchFilterAttribute(string type, string value) {
+            Type = type;
+            Value = value;
         }
 
         public string? Type { get; set; }
@@ -764,9 +784,9 @@ namespace MethodDispatcher {
         protected bool IsApplicable(object? targetObject, object?[] parameters) {
             Debug.Assert(parameters.Length == Method.GetParameters().Length);
 
-            if(_hasMethodFilters) {
-                foreach(DispatchFilterAttribute filterAttribute in Method.GetCustomAttributes(typeof(DispatchFilterAttribute))) {
-                    if(filterAttribute.Type != null) {
+            if (_hasMethodFilters) {
+                foreach (DispatchFilterAttribute filterAttribute in Method.GetCustomAttributes(typeof(DispatchFilterAttribute))) {
+                    if (filterAttribute.Type != null) {
                         var filter = Dispatch.GetDispatchMethodFilter(filterAttribute.Type) ?? throw new UndefinedDispatchMethodFilterTypeException(SourceFile, filterAttribute.Type);
 
                         if (!filter(filterAttribute.Value, targetObject))
@@ -886,7 +906,7 @@ namespace MethodDispatcher {
             w.WriteLine($"Errors while {title}:");
             w.WriteLine();
 
-            foreach(var error in Errors)
+            foreach (var error in Errors)
                 w.WriteLine(error.Message);
 
         }
@@ -988,7 +1008,7 @@ namespace MethodDispatcher {
             $"Dispatch source {source.SourceFile} returns a single value, however multiple targets returned non-null value: ({string.Join(", ", from target in applicableTargets select target.SourceFile)})") {
         }
     }
-        
+
     public class InvokeIncorrectParametersCount : DispatcherException {
         internal InvokeIncorrectParametersCount(DispatchSource source, int count) : base(
             $"Dispatch source {source.SourceFile} called Invoke with wrong number of parameters (called with {count}, expected {source.SourceMethod.GetParameters().Length-1}). Probably bug in your dispatch source implementation") {
@@ -1015,8 +1035,7 @@ namespace MethodDispatcher {
 
     public class DispatchFilterException : DispatcherException {
         internal DispatchFilterException(SourceFileLocation targetSourceFile, string filterType, ParameterInfo targetParameter, string errorMessage) : base(targetSourceFile,
-            $"Error while applying {filterType} filter on parameter {targetParameter.Name}: {errorMessage}")
-        {
+            $"Error while applying {filterType} filter on parameter {targetParameter.Name}: {errorMessage}") {
         }
 
         public DispatchFilterException(string errorMessage) : base(errorMessage) {
