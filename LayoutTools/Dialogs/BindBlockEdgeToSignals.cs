@@ -88,7 +88,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [DispatchTarget]
-        private void OnRemovedFromModel(ModelComponent component) {
+        private void OnComponentRemovedFromModel(ModelComponent component) {
             if (component is LayoutBlockEdgeBase && component.Id == BlockEdge.Id)
                 Close();
             else if (component is LayoutSignalComponent) {

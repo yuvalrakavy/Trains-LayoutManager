@@ -482,11 +482,6 @@ namespace LayoutManager {
         }
 
         [DispatchSource]
-        public static void OnRemovedFromModel(this Dispatcher d, ModelComponent component) {
-            d[nameof(OnRemovedFromModel)].CallVoid(component);
-        }
-
-        [DispatchSource]
         public static void OnComponentConfigurationChanged(this Dispatcher d, ModelComponent component) {
             d[nameof(OnComponentConfigurationChanged)].CallVoid(component);
         }
@@ -1347,6 +1342,26 @@ namespace LayoutManager {
             ds_GetControlBusType ??= d[nameof(GetControlBusType)];
             return ds_GetControlBusType.Call<ControlBusType>(busTypeName);
         }
+
+        static DispatchSource? ds_OnComponentAddedToModel = null;
+        [DispatchSource]
+        public static void OnComponentAddedToModel(this Dispatcher d, ModelComponent component) {
+            ds_OnComponentAddedToModel ??= d[nameof(OnComponentAddedToModel)];
+            ds_OnComponentAddedToModel.CallVoid(component);
+        }
+
+        [DispatchSource]
+        public static void OnComponentRemovedFromModel(this Dispatcher d, ModelComponent component) {
+            d[nameof(OnComponentRemovedFromModel)].CallVoid(component);
+        }
+
+        static DispatchSource? ds_OnModelLoaded = null;
+        [DispatchSource]
+        public static void OnModelLoaded(this Dispatcher d, LayoutModel model) {
+            ds_OnModelLoaded ??= d[nameof(OnModelLoaded)];
+            ds_OnModelLoaded.CallVoid(model);
+        }
+
 
     }
 }

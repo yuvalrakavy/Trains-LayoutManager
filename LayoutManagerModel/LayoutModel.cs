@@ -163,7 +163,7 @@ namespace LayoutManager.Model {
                 LayoutModel.Instance.AddComponentReference(this.Id, this);
             }
 
-            EventManager.Event(new LayoutEvent("added-to-model", this));
+            Dispatch.Notification.OnComponentAddedToModel(this);
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace LayoutManager.Model {
             Dispatch.RemoveObjectInstanceDispatcherTargets(this);
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
 
-            Dispatch.Notification.OnRemovedFromModel(this);
+            Dispatch.Notification.OnComponentRemovedFromModel(this);
         }
 
         /// <summary>
@@ -1455,11 +1455,6 @@ namespace LayoutManager.Model {
             Clear();
         }
 
-        [LayoutEvent("get-model")]
-        private void GetModel(LayoutEvent e) {
-            e.Info = this;
-        }
-
         public static LayoutModel? OptionalInstance => instance;
 
         public static LayoutModel Instance => OptionalInstance ?? throw new NullReferenceException($"Using LayoutModel.Instance before initialization at {new System.Diagnostics.StackTrace()}");
@@ -1506,11 +1501,6 @@ namespace LayoutManager.Model {
         public LayoutModule? Module { set; get; }
 
         #endregion
-
-        [LayoutEvent("get-control-manager")]
-        private void GetControlManager(LayoutEvent e) {
-            e.Info = ControlManager;
-        }
 
         protected LayoutModelAreaDictionary MyAreas { get; }
 
@@ -1829,7 +1819,7 @@ namespace LayoutManager.Model {
             }
 
             modelIsLoading = false;
-            EventManager.Event(new LayoutEvent("model-loaded", this));
+            Dispatch.Notification.OnModelLoaded(this);
         }
 
         /// <summary>
@@ -1892,14 +1882,6 @@ namespace LayoutManager.Model {
 
             return component;
         }
-    }
-
-    public static class PhaseLayoutEventExtender {
-        private const string Option_Phases = "Phases";
-
-        public static LayoutEvent SetPhases(this LayoutEvent theEvent, LayoutPhase phase) => theEvent.SetOption(Option_Phases, phase.ToString());
-
-        public static LayoutPhase GetPhases(this LayoutEvent theEvent) => theEvent.GetOption(Option_Phases).Enum<LayoutPhase>() ?? LayoutModel.ActivePhases;
     }
 
     public class LayoutXmlTextReader : XmlTextReader, ILayoutXmlContext {

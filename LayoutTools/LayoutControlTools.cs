@@ -905,7 +905,7 @@ namespace LayoutManager.Tools {
         }
 
         [DispatchTarget]
-        private void OnRemovedFromModel_AvoidConnectingRemovedComponents([DispatchFilter] IModelComponentConnectToControl component) {
+        private void OnComponentRemovedFromModel_AvoidConnectingRemovedComponents([DispatchFilter] IModelComponentConnectToControl component) {
             var pendingConnectComponent = (ControlConnectionPointDestination?)EventManager.Event(new LayoutEvent("get-component-to-control-connect", this));
 
             if (pendingConnectComponent != null && component.Id == pendingConnectComponent.Component.Id)
@@ -913,7 +913,7 @@ namespace LayoutManager.Tools {
         }
 
         [DispatchTarget]
-        private void OnRemovedFromModel_CommandStation([DispatchFilter] IModelComponentIsCommandStation commandStation) {
+        private void OnComponentRemovedFromModel_CommandStation([DispatchFilter] IModelComponentIsCommandStation commandStation) {
             foreach (LayoutControlModuleLocationComponent controlModuleLocation in LayoutModel.Components<LayoutControlModuleLocationComponent>(LayoutPhase.All))
                 if (controlModuleLocation.Info.CommandStationId == commandStation.Id)
                     controlModuleLocation.Info.CommandStationId = Guid.Empty;

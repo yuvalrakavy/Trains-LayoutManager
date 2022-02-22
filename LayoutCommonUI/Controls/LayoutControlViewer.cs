@@ -124,7 +124,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         [DispatchTarget]
-        private void OnRemovedFromModel_ModuleLocation([DispatchFilter] LayoutControlModuleLocationComponent component) {
+        private void OnComponentRemovedFromModel_ModuleLocation([DispatchFilter] LayoutControlModuleLocationComponent component) {
             Recalc();
         }
 
@@ -133,12 +133,11 @@ namespace LayoutManager.CommonUI.Controls {
             Recalc();
         }
 
-        [LayoutEvent("model-loaded")]
-        [LayoutEvent("added-to-model", SenderType = typeof(LayoutControlModuleLocationComponent))]
-        private void DoUpdateSelectors(LayoutEvent e) {
-            UpdateSelectors();
-            layoutControlBusViewer.Recalc();
-        }
+        [DispatchTarget]
+        private void OnModelLoaded(LayoutModel model) => Recalc();
+
+        [DispatchTarget]
+        private void OnComponentAddedToModel(ModelComponent component) => Recalc();
 
         [DispatchTarget]
         private void OnControlBusRemoved(IModelComponentIsBusProvider busProvider) => Recalc();

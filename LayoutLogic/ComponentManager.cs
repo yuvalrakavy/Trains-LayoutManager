@@ -242,7 +242,7 @@ namespace LayoutManager.Logic {
         }
 
         [DispatchTarget]
-        private void OnRemovedFromModel_BlockEdge([DispatchFilter] LayoutBlockEdgeBase removedBlockEdge) {
+        private void OnComponentRemovedFromModel_BlockEdge([DispatchFilter] LayoutBlockEdgeBase removedBlockEdge) {
             if (removedBlockEdge.LinkedSignalsElement != null && removedBlockEdge.LinkedSignals.Count > 0) {
                 Dictionary<Guid, LayoutBlockEdgeBase> map = LinkedSignalMap;
                 List<Guid> removeList = new();

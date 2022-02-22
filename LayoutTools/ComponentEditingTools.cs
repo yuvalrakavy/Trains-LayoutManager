@@ -328,7 +328,7 @@ namespace LayoutManager.Tools {
                         case LayoutPhase.Planned: checkPhases = LayoutPhase.All; break;
                     }
 
-                    if (Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("check-layout", this, true).SetPhases(checkPhases)))) {
+                    if(Dispatch.Call.CheckLayout(checkPhases)) {
                         Dispatch.Call.AddPowerConnectorAsResource(component,
                             blockDefinition => {
                                 LayoutXmlInfo xmlInfo = new(blockDefinition);

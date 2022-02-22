@@ -432,25 +432,17 @@ namespace LayoutManager.CommonUI {
 
         #region Layout event handlers
 
-        [LayoutEvent("model-loaded")]
-        private void ModelLoaded(LayoutEvent e) {
-            Recalc();
-        }
+        [DispatchTarget]
+        private void OnModelLoaded(LayoutModel model) => Recalc();
 
         [DispatchTarget]
-        private void OnNewLayoutDocument(string filename) {
-            Recalc();
-        }
+        private void OnNewLayoutDocument(string filename) => Recalc();
 
         [DispatchTarget]
-        private void OnEnteredOperationMode(OperationModeParameters settings) {
-            Recalc();
-        }
+        private void OnEnteredOperationMode(OperationModeParameters settings) => Recalc();
 
         [DispatchTarget]
-        private void OnComponentConfigurationChanged(ModelComponent component) {
-            Recalc();
-        }
+        private void OnComponentConfigurationChanged(ModelComponent component) => Recalc();
 
         [LayoutEvent("enter-design-mode")]
         [LayoutEvent("control-module-address-changed")]
